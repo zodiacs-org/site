@@ -17,7 +17,7 @@ local MCP connection are the available development paths.
 
 These files are prepared packages, not evidence of upload, acceptance or listing.
 
-Current candidates are **Zodiacs 0.5.0** and **Zodiacs Developer 0.3.13**;
+Current candidates are **Zodiacs 0.5.0** and **Zodiacs Developer 0.3.14**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
@@ -26,4 +26,4 @@ occasions panel; the developer ZIP's local server keeps its eight tools and
 reports the 0.5.0 source. See [the 0.4.0 audit](../../docs/platform/zodiacs-ai/AUDIT-0.4.0.md)
 for the last audited acceptance evidence and outstanding release gates.
 
-The October 8 integration retains main's developer 0.3.3 ZIP at its existing path. The earlier PR-carried 0.3.3 bytes are also retained at `history/zodiacs-developer-0.3.3-before-20261008-main.zip`; those two inherited variants have different digests. New combined developer sources used 0.3.6, preserving both inherited byte sequences. Developer 0.3.7 bundles engine 1.0.0, published on npm, and its recipes install 1.0.0 from npm; 0.3.6 and earlier ZIPs keep their bytes.
+The October 8 integration retains main's developer 0.3.3 ZIP at its existing path. The earlier PR-carried 0.3.3 bytes are also retained at `history/zodiacs-developer-0.3.3-before-20261008-main.zip`; those two inherited variants have different digests. New combined developer sources used 0.3.6, preserving both inherited byte sequences. Developer 0.3.7 bundles engine 1.0.0, published on npm, and its recipes install 1.0.0 from npm; 0.3.6 and earlier ZIPs keep their bytes. Developer 0.3.14 bundles engine 1.1.0-rc.1, a vendored candidate not on npm, and its recipes still install 1.0.0 from npm; 0.3.13 and earlier ZIPs keep their bytes.

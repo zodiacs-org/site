@@ -7,8 +7,10 @@ import {
   chineseZodiacAnimals,
   chineseZodiacCopy,
   chineseZodiacLocalizedText,
+  type ChineseZodiacLocale as Locale,
 } from '../../data/chinese-zodiac-localized';
-import { LOCALE_META, localizePath, type ReleasedLocale as Locale } from '../../lib/i18n';
+import { stemBranchYear } from '../../data/chinese-zodiac-zh';
+import { LOCALE_META, isSectionLocale, localizePath } from '../../lib/i18n';
 import '../../styles/chinese-zodiac.css';
 
 interface Props { locale: Exclude<Locale, 'en'> }
@@ -17,6 +19,8 @@ const copy = chineseZodiacCopy(locale);
 const animals = chineseZodiacAnimals(locale);
 const animalBySlug = new Map(animals.map((animal) => [animal.slug, animal]));
 const path = localizePath(locale, '/learn/chinese-zodiac/');
+// Chinese readers know each year by its stem-branch name and need no pinyin.
+const chinese = isSectionLocale(locale);
 const cycle = Array.from({ length: 12 }, (_, index) => 2020 + index);
 const sources = [
   { label: copy.sourceSmithsonianHub, href: 'https://www.si.edu/events/lunar-new-year' },
@@ -78,7 +82,7 @@ const jsonLd = [
       <div class="cz-grid">
         {animals.map((animal) => (
           <a class="cz-card" href={localizePath(locale, `/learn/chinese-zodiac/${animal.slug}/`)}>
-            <span class="cz-card__no">{chineseZodiacLocalizedText(locale, 'numberLabel', { number: String(animal.position).padStart(2, '0') })} · {animal.branch} {animal.branchPinyin}</span>
+            <span class="cz-card__no">{chineseZodiacLocalizedText(locale, 'numberLabel', { number: String(animal.position).padStart(2, '0') })} · {animal.branch}{chinese ? '' : ` ${animal.branchPinyin}`}</span>
             <strong>{animal.name}</strong>
             <span>{animal.association}</span>
             <span class="sr-only">{chineseZodiacLocalizedText(locale, 'itemLink', { animal: animal.name })}</span>
@@ -93,7 +97,7 @@ const jsonLd = [
         {cycle.map((year) => {
           const englishAnimal = chineseAnimalForCycleYear(year);
           const animal = animalBySlug.get(englishAnimal.slug)!;
-          return <li><a href={localizePath(locale, `/learn/chinese-zodiac/${animal.slug}/`)}>{year} · {animal.name}</a></li>;
+          return <li><a href={localizePath(locale, `/learn/chinese-zodiac/${animal.slug}/`)}>{year} · {chinese ? chineseZodiacLocalizedText(locale, 'yearOf', { animal: `${stemBranchYear(year)}${animal.name}` }) : animal.name}</a></li>;
         })}
       </ul>
       <p class="cz-sources">{copy.yearsBoundary}</p>

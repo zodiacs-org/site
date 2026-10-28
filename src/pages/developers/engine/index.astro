@@ -156,17 +156,18 @@ const jsonLd = [
       {!published && (
         <p>
           On npm, the registry read of {candidate.registryObservedOn}{' '}
-          records {candidate.registryVersion} under <code>next</code> and
-          0.1.1-rc.15 under <code>latest</code>.{' '}
+          records {candidate.registryVersion} under <code>latest</code> and
+          0.1.1-rc.16 under <code>next</code>.{' '}
           <code>{`npm install ${candidate.name}@${candidate.registryVersion}`}</code>{' '}
-          installs {candidate.registryVersion}, the version before this candidate,
-          which refuses the sidereal zodiac in <code>@zodiacs/engine/calc</code>.
+          installs {candidate.registryVersion}, the release before this candidate.
+          It computes the same values, but its records list no ids of the{' '}
+          <a href="/developers/conventions/">conventions registry</a>, and it
+          refuses this candidate's records as <code>unsupported_feature</code>.
           It was published from the engine repository's <code>release.yml</code>{' '}
           workflow with SLSA provenance, which names the source repository, the
-          workflow and the commit the package was built from. The retained{' '}
-          <code>npm audit signatures</code> records verified that release on
-          1 and 6 October 2026. Today's registry lookup identifies the same
-          tarball; a fresh signature check is pending.
+          workflow and the commit the package was built from, and{' '}
+          <code>npm audit signatures</code> verified it on 11 October 2026 and
+          again on {candidate.registryObservedOn}.
         </p>
       )}
       <p>

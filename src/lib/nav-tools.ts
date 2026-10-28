@@ -1,4 +1,4 @@
-import type { CatalogLocale as Locale, UiKey } from './i18n';
+import type { PageLocale as Locale, UiKey } from './i18n';
 import { TOOL_ICON_FOR_PATH, type ToolIconName } from './tool-icons';
 
 /**
@@ -87,6 +87,8 @@ const NAV_SUBLABELS = {
     fr: 'Découvre ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.',
     it: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.',
     ru: 'Солнце, Луна, асцендент, планеты, дома и что всё это значит.',
+    'zh-hans': '看看你的太阳、月亮、上升、行星和宫位，以及它们各自的含义。',
+    'zh-hant': '看看你的太陽、月亮、上升、行星和宮位，以及它們各自的含義。',
   },
   compatibility: {
     en: 'Compare two charts and see where they click, clash, and grow.',
@@ -95,6 +97,8 @@ const NAV_SUBLABELS = {
     fr: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.',
     it: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.',
     ru: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.',
+    'zh-hans': '比较两张星盘，看看彼此在哪里契合、在哪里摩擦、又在哪里一起成长。',
+    'zh-hant': '比較兩張星盤，看看彼此在哪裡契合、在哪裡摩擦、又在哪裡一起成長。',
   },
   transits: {
     en: 'Explore today’s planets and their connections to your chart.',
@@ -103,6 +107,8 @@ const NAV_SUBLABELS = {
     fr: 'Explore les planètes du jour et leurs liens avec ton thème.',
     it: 'Esplora i pianeti di oggi e i loro legami con il tuo tema.',
     ru: 'Изучите планеты сегодня и их связи с вашей картой.',
+    'zh-hans': '看看今天的行星，以及它们和你星盘之间的联系。',
+    'zh-hant': '看看今天的行星，以及它們和你星盤之間的聯繫。',
   },
   moon: {
     en: 'How you feel, and what settles you.',
@@ -111,6 +117,8 @@ const NAV_SUBLABELS = {
     fr: 'Ta manière de ressentir et ce qui t’apaise.',
     it: 'Come vivi le emozioni e che cosa ti calma.',
     ru: 'Как вы чувствуете и что помогает вам успокоиться.',
+    'zh-hans': '你感受情绪的方式，以及什么能让你安定下来。',
+    'zh-hant': '你感受情緒的方式，以及什麼能讓你安定下來。',
   },
   rising: {
     en: 'Find the sign people meet first. Birth time helps.',
@@ -119,6 +127,8 @@ const NAV_SUBLABELS = {
     fr: 'Découvre le signe que les autres perçoivent en premier. L’heure de naissance est utile.',
     it: 'Il segno che mostri agli altri al primo incontro. L’ora di nascita aiuta.',
     ru: 'Знак, который другие замечают первым. Нужно время рождения.',
+    'zh-hans': '别人初次认识你时，最先注意到的那一面。有出生时间会算得更准确。',
+    'zh-hant': '別人初次認識你時，最先注意到的那一面。有出生時間會算得更準確。',
   },
   moonPhase: {
     en: 'Tonight’s moon, and the moon of any date you care about.',
@@ -127,6 +137,8 @@ const NAV_SUBLABELS = {
     fr: 'La Lune de ce soir et celle de toute date qui compte pour toi.',
     it: 'La Luna di oggi e quella di qualsiasi data importante per te.',
     ru: 'Луна сегодня и Луна в любую важную для вас дату.',
+    'zh-hans': '今晚的月亮，以及任何一个你在意的日子里的月亮。',
+    'zh-hant': '今晚的月亮，以及任何一個你在意的日子裡的月亮。',
   },
   saturn: {
     en: 'When yours hits, exactly, and what it tends to ask.',
@@ -135,6 +147,8 @@ const NAV_SUBLABELS = {
     fr: 'Quand arrive le tien, à la date près, et ce qu’il demande en général.',
     it: 'Quando arriva il tuo, con precisione, e che cosa tende a chiedere.',
     ru: 'Когда именно случится ваше возвращение и какие вопросы оно обычно ставит.',
+    'zh-hans': '你的土星回归具体在什么时候，以及它通常会引人思考的问题。',
+    'zh-hant': '你的土星回歸具體在什麼時候，以及它通常會引人思考的問題。',
   },
   birthday: {
     en: 'Find your Sun sign from your birthday, including dates near a sign change.',
@@ -143,6 +157,8 @@ const NAV_SUBLABELS = {
     fr: 'Trouve ton signe solaire avec ta date de naissance, même près d’un changement de signe.',
     it: 'Trova il tuo segno solare dalla data di nascita, anche vicino a un cambio di segno.',
     ru: 'Узнайте солнечный знак по дате рождения, в том числе на границе знаков.',
+    'zh-hans': '用生日找到你的太阳星座，星座交界前后的日子也算得清楚。',
+    'zh-hant': '用生日找到你的太陽星座，星座交界前後的日子也算得清楚。',
   },
 } as const satisfies Record<string, Record<Locale, string>>;
 
@@ -198,6 +214,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     footerLabel: {
       en: 'Today', es: 'Hoy', pt: 'Hoje',
       fr: 'Aujourd’hui (en anglais)', it: 'Oggi (in inglese)', ru: 'Сегодня (пока по-английски)',
+      'zh-hans': '今天（英文）', 'zh-hant': '今天（英文）',
     },
     hub: { order: 14, title: 'Today', promise: 'Today’s sky, read against your saved chart.', group: 'sky' },
   },
@@ -312,23 +329,27 @@ export const ALL_TOOLS_LABEL = {
   fr: 'Tous les outils',
   it: 'Tutti gli strumenti',
   ru: 'Все инструменты',
+  'zh-hans': '全部工具',
+  'zh-hant': '全部工具',
 } as const satisfies Record<Locale, string>;
 
 /**
  * Newer sharing and return-visit tools, listed under the main eight in the
- * Tools menu with short labels. Every one has a route in all six locales.
+ * Tools menu with short labels. Every one has a route in all six catalog
+ * locales; the Chinese zodiac section links their English pages.
  */
 export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[] = [
-  { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы' } },
-  { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы' } },
-  { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка' } },
-  { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга' } },
-  { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба' } },
-  { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня' } },
-  { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года' } },
-  { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты' } },
+  { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы', 'zh-hans': '群组星盘', 'zh-hant': '群組星盤' } },
+  { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы', 'zh-hans': '星盘双胞胎', 'zh-hant': '星盤雙胞胎' } },
+  { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка', 'zh-hans': '日月升卡片', 'zh-hant': '日月升卡片' } },
+  { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга', 'zh-hans': '邀请朋友', 'zh-hant': '邀請朋友' } },
+  { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба', 'zh-hans': '天象日历', 'zh-hant': '天象日曆' } },
+  { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },
+  { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года', 'zh-hans': '你的年度星空', 'zh-hant': '你的年度星空' } },
+  { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
 ];
 
 export const NAV_MORE_LABEL = {
   en: 'More to explore', es: 'Más para explorar', pt: 'Mais para explorar', fr: 'À explorer aussi', it: 'Altro da esplorare', ru: 'Ещё стоит посмотреть',
+  'zh-hans': '还可以看看', 'zh-hant': '還可以看看',
 } as const satisfies Record<Locale, string>;

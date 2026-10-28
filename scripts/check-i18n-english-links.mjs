@@ -22,7 +22,7 @@ import { join, relative } from 'node:path';
 import process from 'node:process';
 
 const DIST = join(process.cwd(), 'dist');
-const LOCALE_PREFIXES = ['es', 'pt', 'fr', 'it', 'ru', 'ar'];
+const LOCALE_PREFIXES = ['es', 'pt', 'fr', 'it', 'ru', 'ar', 'zh-hans', 'zh-hant'];
 
 function* htmlFiles(dir) {
   for (const entry of readdirSync(dir)) {

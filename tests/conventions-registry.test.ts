@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import registry from '../src/data/conventions/registry.json';
 import summary from '../src/data/conformance/summary.json';
+import source from '../src/data/conformance/source.json';
 import examples from '../src/lib/compute-api/examples.json';
 import { GET as registryJson } from '../src/pages/developers/conventions/registry.json';
-import { HOUSE_SYSTEMS, natalChart, type ChartFlag, type DeltaT, type DeltaTSegment, type TimeScale, type TimeScaleName } from '@zodiacs/engine';
-import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, type NatalReceipt, type NatalReference } from '@zodiacs/engine/receipt';
+import { ENGINE_VERSION, HOUSE_SYSTEMS, natalChart, type ChartFlag, type DeltaT, type DeltaTSegment, type TimeScale, type TimeScaleName } from '@zodiacs/engine';
+import { CONVENTIONS_REGISTRY, conventionAddress, conventionId, natalConventionIds, parseConventionId } from '@zodiacs/engine/conventions';
+import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, type NatalEnvelope, type NatalReceipt, type NatalReference } from '@zodiacs/engine/receipt';
 import { CALC_AYANAMSAS, CALC_BODIES, CALC_FRAMES, calc, chart, events, houses } from '@zodiacs/engine/calc';
 import { AYANAMSAS } from '@zodiacs/engine/vedic';
 
@@ -28,7 +30,7 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
 }
 
 // The engine versions that wrote each natal conventions set, newest first (src/receipt.ts).
-const SET_RANGES = ['0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
+const SET_RANGES = ['1.1.0-rc.1', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
 
 /** The ids a natal receipt names: each field's namespace and value, as the registry's usedIn lists them. */
 function natalReceiptIds(receipt: Record<string, unknown>): string[] {
@@ -74,6 +76,13 @@ function computeReceiptIds(receipt: Record<string, unknown>): string[] {
   return out;
 }
 
+/** The ids a natal envelope names: its receipt's, and its result's time records read as a calc instant's, sorted and each once. */
+function natalEnvelopeIds(envelope: { receipt: Record<string, unknown>; result: Record<string, unknown> }): string[] {
+  const { receipt, result } = envelope;
+  const instant = { deltaT: result.deltaT, timeScale: result.timeScale };
+  return [...new Set([...natalReceiptIds(receipt), ...calcReceiptIds({ conventions: [], instants: [instant], engine: receipt.engine as never })])].sort();
+}
+
 /** Every calc call the tests make: each frame, center and correction, every body, each ayanamsa, a pinned ΔT, each house system. */
 function calcReceipts() {
   const time = '2000-01-01T12:00:00Z';
@@ -100,8 +109,8 @@ function calcReceipts() {
   return results.filter((result) => result.status === 'ok').map((result) => result.receipt!);
 }
 
-/** Natal receipts across the conditions their fields name: untimed, polar, outside the span, flagged, and each scale. */
-function natalReceipts() {
+/** Natal envelopes across the conditions their fields name: untimed, polar, outside the span, flagged, and each scale. */
+function natalEnvelopes(): NatalEnvelope[] {
   const charts = [
     natalChart({ utc: '1990-06-15T13:30:00Z', timeKnown: true, latitude: 51.5, longitude: -0.12, houseSystem: 'placidus' }),
     natalChart({ utc: '1990-06-15T12:00:00Z', timeKnown: false }),
@@ -114,10 +123,12 @@ function natalReceipts() {
     natalChart({ utc: '1990-06-15T13:30:00Z', timeScale: 'ut1', timeKnown: true, latitude: 0, longitude: 0 }),
   ];
   return [
-    ...charts.map((built) => createNatalEnvelope(built).receipt),
-    createNatalEnvelope(natalChart({ utc: '1990-06-15T12:00:00Z', timeKnown: false }), { reference: 'utc-noon' }).receipt,
-  ] as unknown as Array<Record<string, unknown>>;
+    ...charts.map((built) => createNatalEnvelope(built)),
+    createNatalEnvelope(natalChart({ utc: '1990-06-15T12:00:00Z', timeKnown: false }), { reference: 'utc-noon' }),
+  ];
 }
+const natalReceipts = () => natalEnvelopes().map((envelope) => envelope.receipt as unknown as Record<string, unknown>);
+const fields = (envelope: NatalEnvelope) => envelope as unknown as { receipt: Record<string, unknown>; result: Record<string, unknown> };
 
 describe('the conventions registry', () => {
   it('gives every id its namespace, a definition and a source, once, in a listed group', () => {
@@ -145,7 +156,8 @@ describe('the conventions registry', () => {
     expect(dashedStrings(planted)).toHaveLength(2);
   });
 
-  it('holds every value of every natal conventions set, current where 1.0.0 writes it and superseded where only earlier versions did', () => {
+  it('holds every value of every natal conventions set, current where 1.1.0-rc.1 writes it and superseded where only earlier versions did', () => {
+    expect(SET_RANGES).toHaveLength(NATAL_RECEIPT_CONVENTION_SETS.length);
     const seen = new Set<string>();
     NATAL_RECEIPT_CONVENTION_SETS.forEach((set, index) => {
       for (const [key, value] of Object.entries(set)) {
@@ -204,7 +216,9 @@ describe('the conventions registry', () => {
       Exactly<typeof ABSENCES[number], NonNullable<NatalReceipt['houses']['absenceReason']>>,
     ] = [true, true, true, true, true];
     expect(exact.every(Boolean)).toBe(true);
-    expect(values('flag')).toEqual([...FLAGS]);
+    // The chart flags, and the compute API's own: its time answers flag where the zone histories disagree.
+    expect(values('flag')).toEqual([...FLAGS, 'zone-history-disputed']);
+    expect(JSON.stringify(examples.success.time)).toContain('"zone-history-disputed"');
     expect(values('reference')).toEqual([...REFERENCES]);
     expect(values('time-scale')).toEqual([...SCALES]);
     expect(values('deltat-segment')).toEqual([...SEGMENTS]);
@@ -222,9 +236,32 @@ describe('the conventions registry', () => {
     expect(values('ut1-source')).toEqual([...SOURCES]);
   });
 
+  it('finds in each natal receipt the ids that it and its result name, sorted and each once, as the engine lists them', () => {
+    for (const envelope of natalEnvelopes()) {
+      const bySite = natalEnvelopeIds(fields(envelope));
+      expect(envelope.receipt.conventionIds).toEqual(bySite);
+      expect(natalConventionIds(envelope)).toEqual(bySite);
+      expect(envelope.requiredFeatures).toEqual(['convention-ids']);
+    }
+    // The rule reaches the result: a chart on IERS names its basis only there.
+    expect(natalEnvelopes().some((envelope) => envelope.receipt.conventionIds!.includes('time-basis:iers'))).toBe(true);
+  });
+
+  it('finds in each compute API receipt the ids that its own fields name, sorted and each once', () => {
+    for (const [endpoint, cases] of Object.entries(examples.success as Record<string, Record<string, { receipt: Record<string, unknown>; result: Record<string, unknown> }>>)) {
+      for (const [name, response] of Object.entries(cases)) {
+        const expected = response.receipt.schema === 'zodiacs.compute-receipt.v1'
+          ? [...new Set(computeReceiptIds(response.receipt))].sort()
+          // chart and houses answer with the engine's natal receipt, whose result the answer repeats.
+          : natalEnvelopeIds(response);
+        expect(response.receipt.conventionIds, `${endpoint} ${name}`).toEqual(expected);
+      }
+    }
+  });
+
   it('holds every id that natal, calc and compute API receipts name', () => {
     const named = new Set<string>();
-    for (const receipt of natalReceipts()) for (const id of natalReceiptIds(receipt)) named.add(id);
+    for (const envelope of natalEnvelopes()) for (const id of natalEnvelopeIds(fields(envelope))) named.add(id);
     for (const receipt of calcReceipts()) for (const id of calcReceiptIds(receipt)) named.add(id);
     for (const cases of Object.values(examples.success as Record<string, Record<string, { receipt: Record<string, unknown> }>>)) {
       for (const response of Object.values(cases)) for (const id of computeReceiptIds(response.receipt)) named.add(id);
@@ -238,7 +275,8 @@ describe('the conventions registry', () => {
     // The conditions the samples reach, so the check has bite.
     for (const id of ['flag:no-time', 'flag:polar-fallback', 'flag:outside-reference-span', 'flag:dst-gap', 'flag:dst-fold', 'flag:lmt', 'house-absence:unknown-time',
       'reference:utc-noon', 'time-scale:tt', 'time-scale:ut1', 'time-basis:iers', 'time-basis:delta-t', 'time-basis:pinned', 'deltat-segment:extrapolated',
-      'endpoint:elections', 'void-of-course-bodies:modern', 'search-window:start-exclusive-end-inclusive', 'ephemeris:astronomy-engine@2.1.19']) {
+      'endpoint:elections', 'void-of-course-bodies:modern', 'search-window:start-exclusive-end-inclusive', 'ephemeris:astronomy-engine@2.1.19',
+      'conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt']) {
       expect(named.has(id), id).toBe(true);
     }
   });
@@ -258,12 +296,24 @@ describe('the conventions registry', () => {
     }
   });
 
+  it("writes each id as the engine's conventions entry reads it, and names the engine and the suite it follows", () => {
+    expect(CONVENTIONS_REGISTRY).toBe(registry.base);
+    for (const entry of entries) {
+      expect(parseConventionId(entry.id), entry.id).toEqual({ namespace: entry.namespace, value: entry.value });
+      expect(conventionId(entry.namespace, entry.value), entry.id).toBe(entry.id);
+    }
+    expect(registry.engine).toMatchObject({ package: '@zodiacs/engine', version: ENGINE_VERSION });
+    expect(registry.conformance.suiteVersion).toBe(summary.suiteVersion);
+    expect(registry.conformance.commit).toBe(source.commit);
+  });
+
   it('is served as JSON with the address of each id on the registry page', async () => {
     const response = await (registryJson as unknown as () => Response)();
     const served = await response.json() as { base: string; namespaces: Array<{ entries: Array<{ id: string; uri: string }> }> };
     const uris = served.namespaces.flatMap((space) => space.entries);
     expect(uris.length).toBe(entries.length);
     for (const { id, uri } of uris) {
+      expect(uri, id).toBe(conventionAddress(id));
       expect(uri.startsWith(`${registry.base}#`), id).toBe(true);
       expect(decodeURI(uri.slice(registry.base.length + 1)), id).toBe(id);
       expect(uri, id).not.toMatch(/[\s[\]]/u);

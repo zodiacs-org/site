@@ -59,6 +59,13 @@ const sign = { enum: [...SIGN_SLUGS] };
 const num = { type: 'number' };
 const bool = { type: 'boolean' };
 const str = { type: 'string' };
+/** Ids of the conventions registry, as a receipt lists them: each a namespace, a colon and a value. */
+const conventionIds = (description: string) => ({
+  type: 'array',
+  uniqueItems: true,
+  items: { type: 'string', pattern: '^[A-Za-z][A-Za-z0-9-]*:\\S+$' },
+  description,
+});
 const ZONE_PATTERN = '^[A-Za-z][A-Za-z0-9_+-]*(?:/[A-Za-z0-9_+-]+){0,3}$';
 const requestZone = {
   type: 'string',
@@ -386,11 +393,12 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   CalculationReceipt: {
     type: 'object',
     description: 'The engine\'s own receipt for a chart, as createNatalEnvelope writes it.',
-    required: ['schema', 'instant', 'timeKnown', 'reference', 'localResolution', 'coordinates', 'houses', 'inputFlags', 'resultFlags', 'engine', 'provenance', 'conventions', 'coverage'],
+    required: ['schema', 'instant', 'timeScale', 'timeKnown', 'reference', 'localResolution', 'coordinates', 'houses', 'inputFlags', 'resultFlags', 'engine', 'provenance', 'conventions', 'coverage', 'conventionIds'],
     properties: {
       schema: { const: 'zodiacs.calculation-receipt.draft-v1' },
       instant: outputInstant,
       sourceInstant: { type: ['string', 'null'] },
+      timeScale: { enum: ['utc', 'ut1', 'tt'], description: 'The scale the instant was given on.' },
       timeKnown: bool,
       reference: { enum: ['supplied-instant', 'utc-noon', 'local-noon'] },
       localResolution: nullable({ type: 'object' }),
@@ -402,12 +410,13 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       provenance: nullable({ type: 'object' }),
       conventions: { type: 'object', additionalProperties: str },
       coverage: { type: 'object', additionalProperties: str },
+      conventionIds: conventionIds('Every id of the Zodiacs conventions registry (https://zodiacs.org/developers/conventions/) that the receipt and its result name, in code-unit order, each once, as conventions.conventionIds states.'),
     },
   },
   ComputeReceipt: {
     type: 'object',
     description: 'The receipt for a calculation the engine writes no receipt for: the engine, its conventions and coverage as its own receipts state them, and what this request used.',
-    required: ['schema', 'endpoint', 'engine', 'conventions', 'coverage', 'referenceSpan', 'deltaT'],
+    required: ['schema', 'endpoint', 'engine', 'conventions', 'coverage', 'referenceSpan', 'deltaT', 'conventionIds'],
     properties: {
       schema: { const: COMPUTE_RECEIPT_SCHEMA },
       endpoint: { enum: [...COMPUTE_ENDPOINTS] },
@@ -468,6 +477,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
           completeness: { const: 'tested-not-proven' },
         },
       },
+      conventionIds: conventionIds('Every id of the Zodiacs conventions registry (https://zodiacs.org/developers/conventions/) that this receipt\'s own fields name, in code-unit order, each once: each conventions and coverage field, the ephemeris, the endpoint, each ΔT source\'s model, how local times were read and how a search ran. The result\'s are left out, so the receipt holds nothing the request gave.'),
     },
   },
   Backend: {

@@ -96,11 +96,13 @@ const engineRows = [
           </p>
           <p>
             The verified registry read of {candidate.registryObservedOn} records{' '}
-            {candidate.registryVersion} under <code>next</code> and 0.1.1-rc.15 under{' '}
-            <code>latest</code>.{' '}
+            {candidate.registryVersion} under <code>latest</code> and 0.1.1-rc.16 under{' '}
+            <code>next</code>.{' '}
             <code>{`npm install ${candidate.name}@${candidate.registryVersion}`}</code>{' '}
-            installs {candidate.registryVersion}, the version before this candidate, which
-            refuses the sidereal zodiac in <code>@zodiacs/engine/calc</code>. It was
+            installs {candidate.registryVersion}, the release before this candidate, which
+            computes the same values but lists no{' '}
+            <a href="/developers/conventions/">convention ids</a> in its records and
+            refuses this candidate's records as <code>unsupported_feature</code>. It was
             published from the <code>release.yml</code> workflow of the{' '}
             <a href={candidate.sourceRepository}>engine repository</a> with SLSA
             provenance, which names that repository, the workflow and the commit the

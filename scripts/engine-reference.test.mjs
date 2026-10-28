@@ -7,7 +7,7 @@ import { checkEngineReference } from './check-engine-reference.mjs';
 
 let root, directory, provenance;
 const base = 'https://zodiacs.org/developers/engine/reference/';
-const modules = ['engine','calc','crossings','deltat','geo','houses','receipt','sky','techniques','timing','vedic','window'];
+const modules = ['engine','calc','conventions','crossings','deltat','geo','houses','receipt','sky','techniques','timing','vedic','window'];
 async function put(path, content) {
   await mkdir(dirname(join(directory, path)), { recursive: true });
   await writeFile(join(directory, path), content);
@@ -18,7 +18,7 @@ beforeEach(async () => {
   provenance = JSON.parse(await readFile('public/developers/engine/reference/provenance.json', 'utf8'));
   for (const path of ['index.html', 'modules.html', ...modules.map((name) => `modules/${name}.html`)]) {
     const url = path === 'index.html' ? base : new URL(path, base).href;
-    await put(path, `<head><link rel="canonical" href="${url}"/><meta name="robots" content="noindex,follow"/></head><h1>@zodiacs/engine 1.0.0</h1><footer><nav class="engine-sign-rail"></nav>MIT AND CC-BY-4.0 /about/#editorial-system <a href="${provenance.sourceRepository}/tree/${provenance.sourceCommit}">Source</a></footer>`);
+    await put(path, `<head><link rel="canonical" href="${url}"/><meta name="robots" content="noindex,follow"/></head><h1>@zodiacs/engine 1.1.0-rc.1</h1><footer><nav class="engine-sign-rail"></nav>MIT AND CC-BY-4.0 /about/#editorial-system <a href="${provenance.sourceRepository}/tree/${provenance.sourceCommit}">Source</a></footer>`);
   }
   for (const path of Object.keys(provenance.notices)) {
     const bytes = await readFile(`public/developers/engine/reference/${path}`);
@@ -29,12 +29,13 @@ beforeEach(async () => {
 });
 afterEach(async () => { await rm(root, { recursive: true, force: true }); });
 it('accepts complete reference output and faithful release notices', async () => {
-  expect(await checkEngineReference(root)).toEqual({ pages: 14, errors: [] });
+  expect(await checkEngineReference(root)).toEqual({ pages: 15, errors: [] });
 });
 it.each([
   ['canonical', 'https://zodiacs.org/developers/engine/reference/', 'https://zodiacs.org/sdk/engine/'],
-  ['version', '@zodiacs/engine 1.0.0', '@zodiacs/engine 0.1.1-rc.17'],
-  ['version', '@zodiacs/engine 1.0.0', '@zodiacs/engine 1.0.0-rc.2'],
+  ['version', '@zodiacs/engine 1.1.0-rc.1', '@zodiacs/engine 0.1.1-rc.17'],
+  ['version', '@zodiacs/engine 1.1.0-rc.1', '@zodiacs/engine 1.0.0'],
+  ['version', '@zodiacs/engine 1.1.0-rc.1', '@zodiacs/engine 1.1.0-rc.10'],
   ['licence', 'MIT AND CC-BY-4.0', 'MIT'],
   ['noindex', 'noindex,follow', 'index,follow'],
   ['pinned source', provenance => provenance.sourceCommit, 'main'],
@@ -59,7 +60,7 @@ it('rejects broken local links and fragment links', async () => {
   expect(result.errors).toContain('index.html: missing anchor modules/calc.html#missing');
 });
 it('keeps compatibility-only entries outside the public documentation contract', () => {
-  expect(Object.keys(provenance.api)).toEqual(['.','./calc','./crossings','./deltat','./geo','./houses','./receipt','./sky','./techniques','./timing','./vedic','./window']);
+  expect(Object.keys(provenance.api)).toEqual(['.','./calc','./conventions','./crossings','./deltat','./geo','./houses','./receipt','./sky','./techniques','./timing','./vedic','./window']);
   expect(Object.keys(provenance.excluded)).toEqual(['./internal','./internal/math']);
 });
 it.each([

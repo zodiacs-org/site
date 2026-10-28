@@ -1,11 +1,11 @@
 /**
  * Browser drive for the occasions panel: real Chromium, synthetic host
- * bridges, results from the real occasion tools, no network. Writes
+ * bridges, results from the real occasion tools, local copies of static art. Writes
  * screenshots to docs/platform/zodiacs-ai/evidence/. Run with
  * npx vite-node --script tests/ai-occasions-drive.ts.
  */
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { chromium, type Page } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
@@ -40,17 +40,31 @@ async function show(page: Page, structuredContent: unknown) {
   }, structuredContent);
 }
 
+async function capture(page: Page, filename: string) {
+  await page.waitForFunction(() => {
+    const visible = [...document.querySelectorAll<HTMLImageElement>('.art-frame img')]
+      .filter((img) => getComputedStyle(img).display !== 'none');
+    return visible.length > 0 && visible.every((img) => img.complete && img.naturalWidth > 0);
+  });
+  await page.screenshot({ path: new URL(filename, out).pathname, fullPage: true });
+}
+
 const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS, headless: true });
 const out = new URL('../docs/platform/zodiacs-ai/evidence/', import.meta.url);
 await mkdir(out, { recursive: true });
 const errors: string[] = [];
-let network = 0;
+const network: string[] = [];
 try {
   const context = await browser.newContext({ viewport: { width: 760, height: 900 }, timezoneId: 'Asia/Bangkok' });
+  await context.route('https://zodiacs.org/assets/**', async (route) => {
+    const pathname = new URL(route.request().url()).pathname;
+    const body = await readFile(new URL(`../public${pathname}`, import.meta.url));
+    await route.fulfill({ body, contentType: pathname.endsWith('.avif') ? 'image/avif' : 'image/webp' });
+  });
   const open = async (html = OCCASIONS_HTML) => {
     const page = await context.newPage();
     page.on('pageerror', error => errors.push(error.message));
-    page.on('request', request => { if (!request.url().startsWith('data:')) network++; });
+    page.on('request', request => { if (!request.url().startsWith('data:')) network.push(request.url()); });
     await page.setContent(html);
     return page;
   };
@@ -89,7 +103,7 @@ try {
   const link = page.getByRole('link', { name: 'Open printable card' });
   assert.equal(await link.getAttribute('href'), data.cardUrl);
   assert.ok(data.cardUrl.startsWith('https://zodiacs.org/occasions/#'));
-  await page.screenshot({ path: new URL('occasions-wedding-desktop.png', out).pathname, fullPage: true });
+  await capture(page, 'occasions-wedding-desktop.png');
   // Copy gives the card as plain text.
   // A page set from a string has no origin the clipboard serves, so the drive records the write.
   await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (text: string) => { (window as any).copied = text; } } }); });
@@ -107,7 +121,7 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   const box = await page.locator('article').boundingBox();
   assert.ok(box && box.y < 200, 'On a phone the card starts at the top');
-  await page.screenshot({ path: new URL('occasions-wedding-mobile.png', out).pathname, fullPage: true });
+  await capture(page, 'occasions-wedding-mobile.png');
 
   // A date alone: noon UTC, said so, no evening, and the Moon's change of sign.
   const plain = await open();
@@ -143,7 +157,7 @@ try {
   assert.match(lifeText, /First Jupiter return, age 11/);
   assert.match(lifeText, /Without a birth time, a date can be a day off\./);
   assert.equal(await lives.getByRole('link', { name: 'Open printable card' }).getAttribute('href'), 'https://zodiacs.org/occasions/milestones/#b=1997-03-15');
-  await lives.screenshot({ path: new URL('occasions-milestones-desktop.png', out).pathname, fullPage: true });
+  await capture(lives, 'occasions-milestones-desktop.png');
   // A timed result has no card link (the page could not reproduce it), and the panel offers none.
   const timed = await result('get_life_milestones', { birthDate: '1997-03-15', time: '08:30', zone: 'Europe/Rome' });
   const timedPage = await open();
@@ -182,10 +196,10 @@ try {
   await compare.locator('details.more summary').focus();
   await compare.keyboard.press('Enter');
   assert.equal(await compare.locator('details.more .reasons li').evaluateAll((items) => items.filter((item) => (item as HTMLElement).offsetHeight > 0).length), (pair as any).data.contacts.length - 4);
-  await compare.screenshot({ path: new URL('occasions-compatibility-desktop.png', out).pathname, fullPage: true });
+  await capture(compare, 'occasions-compatibility-desktop.png');
   await compare.setViewportSize({ width: 375, height: 812 });
   assert.equal(await compare.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-  await compare.screenshot({ path: new URL('occasions-compatibility-mobile.png', out).pathname, fullPage: true });
+  await capture(compare, 'occasions-compatibility-mobile.png');
 
   // Compared with a famous person: their name, their page, the score, and that their birth time is unknown.
   const celebrity = await result('get_compatibility', { a: { name: 'Sam', birthDate: '1994-02-01' }, b: { famous: 'Frida Kahlo' } });
@@ -200,10 +214,10 @@ try {
   assert.match(celebrityText, new RegExp(`${(celebrity as any).data.score.overall}\\s*out of 100`, 'u'));
   assert.match(celebrityText, /Frida Kahlo's birth time is not on record/);
   assert.equal(await celebrityPage.getByRole('link', { name: 'Frida Kahlo’s chart' }).getAttribute('href'), 'https://zodiacs.org/people/frida-kahlo/');
-  await celebrityPage.screenshot({ path: new URL('occasions-celebrity-desktop.png', out).pathname, fullPage: true });
+  await capture(celebrityPage, 'occasions-celebrity-desktop.png');
   await celebrityPage.setViewportSize({ width: 375, height: 812 });
   assert.equal(await celebrityPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-  await celebrityPage.screenshot({ path: new URL('occasions-celebrity-mobile.png', out).pathname, fullPage: true });
+  await capture(celebrityPage, 'occasions-celebrity-mobile.png');
   // A famous name Zodiacs does not publish: said plainly, with no chart and no score.
   const unpublished = await open();
   await show(unpublished, await result('get_compatibility', { a: { birthDate: '1994-02-01' }, b: { famous: 'Nobody Anybody Zzyzx' } }));
@@ -227,10 +241,10 @@ try {
   }
   assert.match(await bestPage.locator('article').innerText(), /The card below is for the best day\./u);
   assert.doesNotMatch(await bestPage.locator('article').innerText(), /\d{4}-\d{2}-\d{2}/u);
-  await bestPage.screenshot({ path: new URL('occasions-best-days-desktop.png', out).pathname, fullPage: true });
+  await capture(bestPage, 'occasions-best-days-desktop.png');
   await bestPage.setViewportSize({ width: 375, height: 812 });
   assert.equal(await bestPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-  await bestPage.screenshot({ path: new URL('occasions-best-days-mobile.png', out).pathname, fullPage: true });
+  await capture(bestPage, 'occasions-best-days-mobile.png');
 
   // Chart twins link to each person's page; a famous chart, and a name Zodiacs does not publish.
   const twinsPage = await open();
@@ -242,7 +256,7 @@ try {
   assert.doesNotMatch(twinsText, /\b\d{4}-\d{2}-\d{2}\b/u, 'Birth dates read as dates, not ISO strings');
   assert.match(twinsText, /Born \d{1,2} [A-Z][a-z]{2,4} \d{4}/u);
   assert.doesNotMatch(copyOf(twinsText), /[—–·]/u, 'Lifespans and descriptions read with plain punctuation');
-  await twinsPage.screenshot({ path: new URL('occasions-twins-desktop.png', out).pathname, fullPage: true });
+  await capture(twinsPage, 'occasions-twins-desktop.png');
   const famous = await open();
   const frida = await result('get_famous_chart', { name: 'Frida Kahlo' });
   await show(famous, frida);
@@ -253,7 +267,7 @@ try {
     assert.match(await famous.locator('.meta').innerText(), /Born 6 July 1907 in Coyoacán$/u);
     assert.doesNotMatch(copyOf(await famous.locator('article').innerText()), /[—–·]/u, 'Published copy reads with plain punctuation');
   }
-  await famous.screenshot({ path: new URL('occasions-famous-desktop.png', out).pathname, fullPage: true });
+  await capture(famous, 'occasions-famous-desktop.png');
   const unknown = await open();
   await show(unknown, await result('get_famous_chart', { name: 'Nobody Anybody Zzyzx' }));
   await unknown.getByRole('heading', { name: 'Not one Zodiacs publishes' }).waitFor();
@@ -277,7 +291,7 @@ try {
   // The ring turns to the birthday's sign: Taurus is the big front dot.
   const front = async (target: typeof birthdayPage) => target.locator('article .nameplate svg circle').last().getAttribute('fill');
   assert.equal(await front(birthdayPage), '#5E9E70', 'The birthday card\'s ring brings Taurus to the front');
-  await birthdayPage.screenshot({ path: new URL('occasions-birthday-desktop.png', out).pathname, fullPage: true });
+  await capture(birthdayPage, 'occasions-birthday-desktop.png');
   // A date the site publishes someone for names them, as the date's page does.
   const shared = await open();
   await show(shared, await result('get_birthday', { date: '12-10' }));
@@ -285,7 +299,7 @@ try {
   assert.equal((await shared.locator('article .famous').innerText()).trim(), 'You share a birthday with Ada Lovelace.');
   assert.equal(await shared.getByRole('link', { name: 'Ada Lovelace' }).getAttribute('href'), 'https://zodiacs.org/people/ada-lovelace/');
   assert.equal(await front(shared), '#CF8B3A', 'The 10 December card\'s ring brings Sagittarius to the front');
-  await shared.screenshot({ path: new URL('occasions-birthday-famous-desktop.png', out).pathname, fullPage: true });
+  await capture(shared, 'occasions-birthday-famous-desktop.png');
   const cusp = await open();
   await show(cusp, await result('get_birthday', { date: '03-20' }));
   await cusp.locator('h1').waitFor();
@@ -300,7 +314,7 @@ try {
   const calendarShare = await calendar.getByRole('link', { name: 'Share the sky calendar' }).getAttribute('href');
   assert.equal(calendarShare, (feed as any).data.shareUrl);
   assert.match(calendarShare ?? '', /^https:\/\/zodiacs\.org\/share\/sky-calendar\/\?k=[a-z-]+(?:&b=[a-z]+)?&d=\d{4}-\d{2}-\d{2}$/u);
-  await calendar.screenshot({ path: new URL('occasions-calendar-desktop.png', out).pathname, fullPage: true });
+  await capture(calendar, 'occasions-calendar-desktop.png');
   await unfold(calendar);
   assert.equal(await calendar.getByRole('link', { name: 'Open the sky calendar page' }).getAttribute('href'), 'https://zodiacs.org/sky-calendar/');
 
@@ -329,26 +343,26 @@ try {
   await dark.getByRole('heading', { name: 'Ana & Luis' }).waitFor();
   assert.equal(await dark.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(13, 15, 19)');
   assert.equal(await dark.evaluate(() => getComputedStyle(document.querySelector('.card')!).backgroundColor), 'rgb(22, 25, 31)');
-  await dark.screenshot({ path: new URL('occasions-wedding-dark.png', out).pathname, fullPage: true });
+  await capture(dark, 'occasions-wedding-dark.png');
 
   // An MCP Apps host: the result arrives as a notification, and the panel reports its height.
   const host = await context.newPage();
   host.on('pageerror', error => errors.push(error.message));
   await host.setContent('<iframe style="width:700px;height:600px;border:0"></iframe><script>window.sizes=[];window.addEventListener("message",e=>{const m=e.data;if(m&&m.method==="ui/initialize")e.source.postMessage({jsonrpc:"2.0",id:m.id,result:{protocolVersion:"2026-01-26",hostCapabilities:{},hostContext:{theme:"light"}}},"*");if(m&&m.method==="ui/notifications/size-changed")window.sizes.push(m.params.height);});</script>');
   const frame = host.frames()[1];
-  frame.page().on('request', request => { if (!request.url().startsWith('data:') && !request.url().startsWith('about:')) network++; });
+  frame.page().on('request', request => { if (!request.url().startsWith('data:') && !request.url().startsWith('about:')) network.push(request.url()); });
   await frame.setContent(OCCASIONS_HTML);
   await host.waitForTimeout(300);
   await host.evaluate(content => document.querySelector('iframe')!.contentWindow!.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/tool-result', params: { structuredContent: content } }, '*'), milestones);
   await frame.getByRole('heading', { name: 'Your sky milestones' }).waitFor();
   await host.waitForFunction(() => (window as any).sizes.length > 0);
 
-  assert.equal(network, 0, 'The panel makes no network requests');
+  assert.ok(network.every(url => url.startsWith('https://zodiacs.org/assets/')), 'The panel requests only Zodiacs static art');
   assert.deepEqual(errors, []);
   await writeFile(new URL('occasions-review.json', out), JSON.stringify({
     scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance',
     timezone: 'Asia/Bangkok',
-    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'a birthday shared by its month and day, never the year', 'a birthday names who shares it, as its page does', 'a personal card\'s ring turns to its sign', 'the calendar subscription', 'the calendar shared by its next event', 'the ZODIACS · ORG lockup at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'no external requests'],
+    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'a birthday shared by its month and day, never the year', 'a birthday names who shares it, as its page does', 'a personal card\'s ring turns to its sign', 'the calendar subscription', 'the calendar shared by its next event', 'the ZODIACS · ORG lockup at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'only Zodiacs static art requests'],
   }, null, 2) + '\n');
   console.log('Occasions panel browser QA passed.');
 } finally { await browser.close(); }

@@ -1,0 +1,1194 @@
+
+> zodiacs-org@1.0.0 test
+> vitest run
+
+
+ RUN  v3.2.7 <checkout>
+
+ ✓ src/lib/composite-card.test.ts (21 tests) 64ms
+ ❯ scripts/phase1-acceptance-evidence.test.mjs (5 tests | 1 failed) 4319ms
+   × Phase 1 durable acceptance evidence > contains exact 360px and 1280px captures for every new template 341ms
+     → expected 'b55c65fb243c4517f410797fcd53094c8fe43…' to be '75eaedf08f665ad2980032687a07f6c00cbef…' // Object.is equality
+   ✓ Phase 1 durable acceptance evidence > records the three-page cold read and the deliberate accessory removal 5ms
+   ✓ Phase 1 durable acceptance evidence > invalidates stale evidence when a transitive render source or bundled font changes  2499ms
+   ✓ Phase 1 durable acceptance evidence > keeps server-only email delivery changes outside the Phase 1 visual receipt  787ms
+   ✓ Phase 1 durable acceptance evidence > keeps reviewed template geometry valid across payload-only daily editions  682ms
+ ✓ tests/benchmarks/sky-benchmark.test.ts (22 tests | 1 skipped) 29292ms
+   ✓ the sky-fact benchmark, v0 > is what the generator draws, the questions and key byte for byte and check_sky_fact's answers and facts, and with another engine the generator refuses to draw it again  2128ms
+   ✓ the sky-fact benchmark, v0 > holds check_sky_fact's replies to what decides them, and not to the receipts beside them  1018ms
+   ✓ the sky-fact benchmark, v0 > check_sky_fact gives the key's answer to every question, for every sign, and on the dates around each date answer  5308ms
+   ✓ the sky-fact benchmark, v0 > check_sky_fact finds every entry into a sign while retrograde in the ingress questions' periods, on every date that holds it  8855ms
+   ✓ the sky-fact benchmark, v0 > samples the same longitudes and speeds that positions() reports  4172ms
+   ✓ the sky-fact benchmark, v0 > leaves the Moon at least 45 minutes from a sign boundary in the questions about an instant  6231ms
+   ✓ the benchmark's scorer > gives no credit for the question repeated, a stray no, or an assistant called Gemini, and reads dates written out  337ms
+   ✓ the benchmark's scorer > runs from the command line, through a link too, and names a reply to no question  513ms
+ ✓ scripts/swiss-output-guard.test.mjs (12 tests) 32843ms
+   ✓ Swiss Ephemeris output stays out of the tree > finds no removed or replaced file's bytes under any name, archive members included  32688ms
+ ✓ src/lib/share-positions-callers.test.ts (44 tests) 27160ms
+   ✓ producers of shared chart codes > finds encoder calls in .ts, .tsx, .js, .jsx, .astro and .mdx files, through aliases, namespaces and dynamic imports  3321ms
+   ✓ the audit of encoder callers > fails on .call  486ms
+   ✓ the audit of encoder callers > fails on .apply  768ms
+   ✓ the audit of encoder callers > fails on .bind  584ms
+   ✓ the audit of encoder callers > fails on element access on a namespace  676ms
+   ✓ the audit of encoder callers > fails on element access on a dynamic import  558ms
+   ✓ the audit of encoder callers > fails on a computed destructuring  695ms
+   ✓ the audit of encoder callers > fails on an exported alias  531ms
+   ✓ the audit of encoder callers > fails on a consumer of an exported alias, alone  379ms
+   ✓ the audit of encoder callers > fails on a consumer of an exported alias  842ms
+   ✓ the audit of encoder callers > fails on export *  741ms
+   ✓ the audit of encoder callers > fails on an alias in an .astro template  637ms
+   ✓ the audit of encoder callers > fails on an .astro script  670ms
+   ✓ the audit of encoder callers > fails on a comma callee  747ms
+   ✓ the audit of encoder callers > fails on Reflect.apply  724ms
+   ✓ the audit of encoder callers > fails on a default import  338ms
+   ✓ the audit of encoder callers > fails on an .mdx expression  747ms
+   ✓ the audit of encoder callers > fails on an exported wrapper  384ms
+   ✓ the audit of encoder callers > fails on a re-export from a listed module  1071ms
+   ✓ the audit of encoder callers > fails on an alias exported from a listed module  2114ms
+   ✓ the audit of encoder callers > fails on a named re-export  620ms
+   ✓ the audit of encoder callers > fails on a shared encoder re-exported  399ms
+   ✓ the audit of encoder callers > fails on require  519ms
+   ✓ the audit of encoder callers > fails on a template-literal import  930ms
+   ✓ the audit of encoder callers > fails on a computed import  423ms
+   ✓ the audit of encoder callers > fails on a glob  925ms
+   ✓ the audit of encoder callers > fails on eval  380ms
+   ✓ the audit of encoder callers > fails on a load in an .astro template  669ms
+   ✓ the audit of encoder callers > fails on the module object passed on  756ms
+   ✓ the audit of encoder callers > fails on the module object into a rest element  540ms
+   ✓ the audit of encoder callers > fails on a script tag  560ms
+   ✓ the audit of encoder callers > fails on a type-only import that is not  704ms
+   ✓ the audit of encoder callers > fails on a new call of a shared encoder in a listed producer  1011ms
+   ✓ the audit of encoder callers > fails on a shared encoder as a value in .tsx  337ms
+   ✓ the audit of encoder callers > passes on a type-only import and on a module that only decodes  940ms
+ ✓ scripts/report-bundles.test.mjs (44 tests) 32500ms
+   ✓ actual bundle gate > accepts a factored static engine closure and an inert provenance name  683ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-engine";  703ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: export * from "astronomy-engine";  906ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import /* comment */ ("astronomy-engine");  631ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import (`astronomy-engine`);  703ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require /* comment */ ("astronomy-engine");  636ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-engine/astronomy.browser.js";  578ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-\u0065ngine";  760ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: export * from "\u0061stronomy-engine";  544ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import("astronomy-\x65ngine");  445ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require("astronomy-\u0065ngine");  534ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import(("astronomy-engine"));  638ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require(("astronomy-engine"));  1005ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: (require)("astronomy-engine");  682ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "https://esm.sh/astronomy-engine@2.1.19";  486ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import("https://esm.sh/astronomy-engine");  486ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import { createRequire } from "node:module";  511ms
+   ✓ actual bundle gate > does not parse comments or data strings as vendor imports  515ms
+   ✓ actual bundle gate > rejects the engine when imported eagerly through a shared chunk  445ms
+   ✓ actual bundle gate > rejects a missing dependency rather than measuring a partial closure  740ms
+   ✓ actual bundle gate > rejects shared engine code eagerly loaded by Registry Collection  1016ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/islands/Unexpected.ts  749ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/lib/Unexpected.ts  667ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/islands/SideEffect.ts  1132ms
+   ✓ actual bundle gate > requires both ephemeris fingerprints in the full static closure  735ms
+   ✓ actual bundle gate > enforces the unchanged engine limit across multiple individually small chunks  809ms
+   ✓ worker window engine boundary > rejects runtime window loading outside full.ts: import { birthWindow } from "@zodiacs/engine/window";  577ms
+   ✓ worker window engine boundary > rejects runtime window loading outside full.ts: const load=()=>import("@zodiacs/engine/window");  531ms
+   ✓ worker window engine boundary > rejects runtime window loading outside full.ts: export { birthWindow } from "@zodiacs/engine/window";  592ms
+   ✓ worker window engine boundary > rejects runtime window loading outside full.ts: import {} from "@zodiacs/engine/window";  993ms
+   ✓ worker window engine boundary > rejects runtime window loading outside full.ts: export {} from "@zodiacs/engine/window";  486ms
+   ✓ worker window engine boundary > allows erased types and loading the existing boundary URL  1520ms
+   ✓ worker window engine boundary > requires the birth-window source to consume full.ts, including indirect built dependencies  608ms
+   ✓ standalone widget versus website window imports > keeps a separate unreferenced offline widget outside website roots  488ms
+   ✓ standalone widget versus website window imports > rejects a website load reaching a separate widget runtime: import "./../ai-tools/studio/window.worker";  766ms
+   ✓ standalone widget versus website window imports > rejects a website load reaching a separate widget runtime: const load=()=>import("../ai-tools/studio/window.worker");  500ms
+   ✓ standalone widget versus website window imports > preserves an existing worker compiled through its full boundary  661ms
+   ✓ birth-window worker built boundary > accepts a worker compiled through full.ts with both engine fingerprints  846ms
+   ✓ birth-window worker built boundary > requires an actual source worker to have exactly one compiled bundle  774ms
+   ✓ birth-window worker built boundary > requires the worker core fingerprint rather than an empty successful wrapper  848ms
+   ✓ birth-window worker built boundary > holds the transitive worker closure to the unchanged global chunk budget  707ms
+   ✓ optional review-route budgets > skips natal pair routes a normal build does not emit  925ms
+   ✓ optional review-route budgets > holds every emitted natal pair route to a 0 KB entry closure  1728ms
+   ✓ optional review-route budgets > rejects a malformed optional budget  861ms
+ ✓ src/lib/time/localToUtc-roundtrip.test.ts (13 tests) 37538ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 1 of 12  4273ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 2 of 12  3781ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 3 of 12  3216ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 4 of 12  2448ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 5 of 12  2767ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 6 of 12  3786ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 7 of 12  2426ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 8 of 12  2797ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 9 of 12  2153ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 10 of 12  2891ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 11 of 12  3696ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 12 of 12  3236ms
+ ✓ tests/api/compute-api-elections.test.ts (16 tests) 47267ms
+   ✓ each condition against its own reading of the engine > finds the Moon's void periods that the engine's voidOfCourseWindows finds, to within 2 seconds, over a year and in two other eras  10459ms
+   ✓ each condition against its own reading of the engine > finds the Moon in a sign, a planet retrograde and the Moon waxing where a scan of positions every 10 minutes does  20680ms
+   ✓ each condition against its own reading of the engine > combines conditions as the intersection of each one alone  578ms
+   ✓ the house search > finds the spans in an angular house that a scan every minute finds, to within 2 seconds, sampled hourly and every six hours  7824ms
+   ✓ the house search > samples hourly, narrows each change of house by interpolation, and searches only where the other conditions hold  1190ms
+   ✓ the house search > negates an angular condition within the stretches the other conditions leave, as a scan every minute finds  5592ms
+   ✓ the allowance > refuses a request whose station searches pass the allowance with the positions they read as they step  660ms
+ ✓ src/lib/time/localToUtc-engine.test.ts (21 tests) 14369ms
+   ✓ the site resolver is the engine's > for every zone of the city index, with and without a birthplace longitude  14366ms
+ ✓ tests/api/compute-api-aspects.test.ts (5 tests) 19287ms
+   ✓ compute API aspect facts: requests > names a body, another body and one of the engine's five aspects, at an instant or on a date  376ms
+   ✓ compute API aspect facts: answers > at an instant: true exactly when matchAspect names the aspect, with the values that decide it  1641ms
+   ✓ compute API aspect facts: answers > on a date: depends exactly when the aspect begins or ends in the day, at the instants a minute scan finds  17068ms
+stdout | tests/api/compute-api-playground-code.test.ts > the code the playground shows > runs in every language this machine has, and prints the answer the API gives
+playground code ran in: curl, javascript, python, swift, ruby
+
+ ✓ scripts/astrofolio-identity.test.mjs (27 tests) 28618ms
+   ✓ Astrofolio seasonal identity generator > replays semantically from canonical sources with platform-safe artwork comparison  20340ms
+   ✓ Astrofolio seasonal identity generator > replays every v4 social card from the same deterministic seasonal composition  7932ms
+ ✓ tests/api/compute-api.test.ts (41 tests) 11215ms
+   ✓ compute API validation > passes the resolver one spelling of a zone: 5,000 case variants add no formatter  2544ms
+   ✓ compute API budgets > refuses an events window over 92 days before searching, and completes one of exactly that length  412ms
+   ✓ compute API receipts, backend and citation > identifies a chart's birth details through cite.receipt: its date and place give back its time  4225ms
+   ✓ compute API receipts, backend and citation > identifies the place as well: a chart's date and time give back its place through cite.receipt  788ms
+   ✓ compute API parity with the engine and the site resolver > events are the engine's crossing searches: its longitudes for ingresses, its speed for stations, its elongation for lunations  487ms
+   ✓ compute API parity with the engine and the site resolver > events find the stations, lunations and ingresses the site published for 2026, to within minutes  1041ms
+   ✓ compute API through the compatibility function > answers every compute route from api/compatibility.ts before any route of its own  908ms
+ ✓ scripts/check-developer-authorship.test.mjs (255 tests) 62577ms
+   ✓ served developer documentation authorship > accepts current editorial anchors and Organization markup  761ms
+   ✓ served developer documentation authorship > rejects retired persona in developers/docs/natal/index.html  366ms
+   ✓ served developer documentation authorship > rejects retired persona in developers/new/deep/topic/index.html  404ms
+   ✓ served developer documentation authorship > rejects retired persona in sdk/examples/new/index.html  398ms
+   ✓ served developer documentation authorship > rejects retired persona in widgets/index.html  341ms
+   ✓ served developer documentation authorship > rejects retired persona in examples/new-NOTICE.txt  455ms
+   ✓ served developer documentation authorship > rejects retired editor anchor in sdk/engine/functions/nested/example.html  487ms
+   ✓ served developer documentation authorship > rejects retired editor anchor in examples/new-NOTICE.txt  383ms
+   ✓ served developer documentation authorship > rejects retired editor anchor in developers/new/UPPER.HTML  322ms
+   ✓ served developer documentation authorship > rejects Person markup in developers/engine/reference/release/NOTICE.txt  331ms
+   ✓ served developer documentation authorship > rejects Person markup in sdk/engine/functions/nested/example.html  324ms
+   ✓ served developer documentation authorship > rejects Person markup in sdk/examples/new/index.html  349ms
+   ✓ served developer documentation authorship > rejects Person markup in api/v1/sky/today.md  429ms
+   ✓ served developer documentation authorship > rejects Person markup in api/v1/schema/nested/example.json  317ms
+   ✓ served developer documentation authorship > rejects Person markup in examples/new-manifest.json  391ms
+   ✓ served developer documentation authorship > rejects Person markup in developers/new/UPPER.HTML  536ms
+   ✓ served developer documentation authorship > rejects the persona however its words are separated or cased: "Rowan\r\nVale"  328ms
+   ✓ served developer documentation authorship > rejects the persona however its words are separated or cased: "Rowan&nbsp;Vale"  313ms
+   ✓ served developer documentation authorship > rejects the persona however its words are separated or cased: "Rowan Vale"  359ms
+   ✓ served developer documentation authorship > rejects the persona however its words are separated or cased: "rowan vale"  300ms
+   ✓ served developer documentation authorship > rejects the persona however its words are separated or cased: "Rowan&#32;Vale"  354ms
+   ✓ served developer documentation authorship > rejects the persona however its words are separated or cased: "Rowan&ensp;Vale"  411ms
+   ✓ served developer documentation authorship > rejects the persona however its words are separated or cased: "Rowan&shy;Vale"  356ms
+   ✓ served developer documentation authorship > rejects the editor anchor however the about page is spelled: <a href="https://zodiacs.org/about#editor">  366ms
+   ✓ served developer documentation authorship > rejects the editor anchor however the about page is spelled: <a href="/about/&num;editor">  561ms
+   ✓ served developer documentation authorship > scans 40,000 repeated about-page queries in bounded time  828ms
+   ✓ served developer documentation authorship > scans 40,000 repeated persona starts in bounded time  326ms
+   ✓ served developer documentation authorship > scans 40,000 repeated joined persona starts in bounded time  347ms
+   ✓ served developer documentation authorship > scans 40,000 repeated type attributes in bounded time  420ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/index.html is missing  439ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/browser/index.html is missing  477ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/deno/index.html is missing  320ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/bun/index.html is missing  311ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/transits/index.html is missing  415ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/errors/index.html is missing  352ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/astrology-api/index.html is missing  370ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/birth-chart-api/index.html is missing  316ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/swiss-ephemeris-alternative-javascript/index.html is missing  313ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/deno.md is missing  300ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/cloudflare.md is missing  482ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/transits.md is missing  421ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/synastry.md is missing  532ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/errors.md is missing  363ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/receipts.md is missing  464ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/python.md is missing  341ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/swiss-ephemeris-alternative-javascript.md is missing  351ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/ephemeris-npm.md is missing  397ms
+   ✓ served developer documentation authorship > fails closed when developers/docs/status.md is missing  333ms
+   ✓ served developer documentation authorship > fails closed when developers/playground.md is missing  436ms
+   ✓ served developer documentation authorship > fails closed when developers/conventions/registry.json is missing  337ms
+   ✓ served developer documentation authorship > fails closed when developers/ai/index.html is missing  340ms
+   ✓ served developer documentation authorship > fails closed when developers/compare/index.html is missing  473ms
+   ✓ served developer documentation authorship > fails closed when developers/engine/index.html is missing  375ms
+   ✓ served developer documentation authorship > fails closed when developers/examples/index.html is missing  364ms
+   ✓ served developer documentation authorship > fails closed when developers/sky-benchmark/index.html is missing  528ms
+   ✓ served developer documentation authorship > fails closed when developers/engine/reference/index.html is missing  534ms
+   ✓ served developer documentation authorship > fails closed when developers/engine/reference/release/README.txt is missing  437ms
+   ✓ served developer documentation authorship > fails closed when sdk/engine/modules.html is missing  320ms
+   ✓ served developer documentation authorship > fails closed when llms.txt is missing  452ms
+   ✓ served developer documentation authorship > fails closed when api/v1/index.json is missing  469ms
+   ✓ served developer documentation authorship > fails closed when api/v1/sky/today.md is missing  584ms
+   ✓ served developer documentation authorship > fails closed when examples/mcp-server.json is missing  439ms
+   ✓ served developer documentation authorship > exits successfully for valid output  331ms
+   ✓ served developer documentation authorship > rejects ordinary Person type forms: {"@type":["Thing","https://schema.org/Person"]}  365ms
+   ✓ served developer documentation authorship > rejects ordinary Person type forms: <div itemscope itemtype='http://schema.org/Person'></div>  359ms
+   ✓ served developer documentation authorship > rejects ordinary Person type forms: <div itemscope itemtype="https://schema.org/Thing https://schema.org/Person"></div>  764ms
+   ✓ served developer documentation authorship > rejects ordinary Person type forms: { "@type": `Person` }  559ms
+   ✓ served developer documentation authorship > rejects ordinary Person type forms: {"\u0040type":"Person"}  301ms
+   ✓ served developer documentation authorship > rejects ordinary Person type forms: node['@type'] = 'Person';  333ms
+   ✓ served developer documentation authorship > rejects ordinary Person type forms: <div typeof="schema:Person"></div>  490ms
+   ✓ served developer documentation authorship > rejects ordinary Person type forms: <div itemscope itemtype=https://schema.org/Person></div>  354ms
+   ✓ served developer documentation authorship > reads developers/new/types.d.ts whatever its extension  372ms
+   ✓ served developer documentation authorship > reads sdk/engine/assets/app.js.map whatever its extension  437ms
+   ✓ served developer documentation authorship > reads developers/new/data.cjs whatever its extension  316ms
+   ✓ served developer documentation authorship > reads api/v1/new/readme whatever its extension  449ms
+   ✓ served developer documentation authorship > rejects a symlinked assets/README.md rather than skipping it  302ms
+   ✓ served developer documentation authorship > rejects symlinked directory api/v1 without scanning its target  453ms
+   ✓ served developer documentation authorship > rejects llms.txt symlinks without reading their targets  310ms
+   ✓ served developer documentation authorship > rejects llms-full.txt symlinks without reading their targets  340ms
+ ✓ tests/api/compute-api-playground-code.test.ts (2 tests) 30584ms
+   ✓ the code the playground shows > runs in every language this machine has, and prints the answer the API gives  26015ms
+   ✓ the code the playground shows > sends exactly the text the page shows, in every language this machine has: quotes, escapes, line breaks and control characters  4538ms
+ ✓ src/lib/natal-aspect-pairs.test.ts (9 tests) 10759ms
+   ✓ natal planet-pair evidence > keeps generated evidence deterministic  10648ms
+ ✓ src/lib/share-positions.test.ts (12 tests) 8563ms
+   ✓ what the code of a chart with a birth time gives away before standard time > is now nothing: the shared bodies are those at the whole minute, the same for every longitude that rounds to it  428ms
+   ✓ what a shared positions code leaves of the birthplace > leaves an area about a degree of longitude wide and, from north to south, at least 400 km within 15° of the equator, 200 km within 45° and 70 km within 60°  3573ms
+   ✓ what a shared positions code leaves of the birthplace > can leave much less far from the equator: tens of kilometres in the far north, and on the Arctic Circle a strip less than a kilometre from north to south  4179ms
+ ✓ scripts/games-sql-readiness.test.mjs (4 tests) 6928ms
+   ✓ Zodiac Games SQL container readiness > waits through socket-only initialization before the unchanged SQL sequence  2754ms
+   ✓ Zodiac Games SQL container readiness > retains the bounded readiness failure, diagnostics and container cleanup  3262ms
+   ✓ Zodiac Games SQL container readiness > keeps a real SQL-stage failure fatal without retrying or running later files  682ms
+ ✓ src/server/result-preview.test.ts (52 tests) 68685ms
+   ✓ share preview images > render the compatibility card as a local-asset-only 1200×630 JPEG a link preview takes  3637ms
+   ✓ share preview images > render the date card as a local-asset-only 1200×630 JPEG a link preview takes  2415ms
+   ✓ share preview images > render the accented names card as a local-asset-only 1200×630 JPEG a link preview takes  1734ms
+   ✓ share preview images > render the accented names on a date card as a local-asset-only 1200×630 JPEG a link preview takes  1702ms
+   ✓ share preview images > render the Cyrillic names card as a local-asset-only 1200×630 JPEG a link preview takes  1078ms
+   ✓ share preview images > render the Cyrillic names on a date card as a local-asset-only 1200×630 JPEG a link preview takes  1272ms
+   ✓ share preview images > render the one unknown sign card as a local-asset-only 1200×630 JPEG a link preview takes  1183ms
+   ✓ share preview images > render the birthday card as a local-asset-only 1200×630 JPEG a link preview takes  1159ms
+   ✓ share preview images > render the cusp birthday card as a local-asset-only 1200×630 JPEG a link preview takes  1568ms
+   ✓ share preview images > render the famous birthday card as a local-asset-only 1200×630 JPEG a link preview takes  1406ms
+   ✓ share preview images > render the sky calendar card as a local-asset-only 1200×630 JPEG a link preview takes  1773ms
+   ✓ share preview images > render the horoscope card as a local-asset-only 1200×630 JPEG a link preview takes  1554ms
+   ✓ share preview images > render the week’s horoscope card as a local-asset-only 1200×630 JPEG a link preview takes  1325ms
+   ✓ share preview images > render the chart twins card as a local-asset-only 1200×630 JPEG a link preview takes  1496ms
+   ✓ share preview images > render the chart twins by the Sun card as a local-asset-only 1200×630 JPEG a link preview takes  1364ms
+   ✓ share preview images > render the famous chart card as a local-asset-only 1200×630 JPEG a link preview takes  1373ms
+   ✓ share preview images > render the famous chart with a long name card as a local-asset-only 1200×630 JPEG a link preview takes  1349ms
+   ✓ share preview images > render the life milestone card as a local-asset-only 1200×630 JPEG a link preview takes  1136ms
+   ✓ share preview images > render the milestone that has passed card as a local-asset-only 1200×630 JPEG a link preview takes  1292ms
+   ✓ story pictures > draw the compatibility story as a local-asset-only 1080×1920 JPEG  4462ms
+   ✓ story pictures > draw the long names compared story as a local-asset-only 1080×1920 JPEG  3826ms
+   ✓ story pictures > draw the wedding story as a local-asset-only 1080×1920 JPEG  3876ms
+   ✓ story pictures > draw the accented names on a date story as a local-asset-only 1080×1920 JPEG  3560ms
+   ✓ story pictures > draw the birthday story as a local-asset-only 1080×1920 JPEG  3052ms
+   ✓ story pictures > draw the cusp birthday story as a local-asset-only 1080×1920 JPEG  3077ms
+   ✓ story pictures > draw the sky calendar story as a local-asset-only 1080×1920 JPEG  2846ms
+   ✓ story pictures > draw the horoscope story as a local-asset-only 1080×1920 JPEG  2965ms
+   ✓ story pictures > draw the chart twins story as a local-asset-only 1080×1920 JPEG  3286ms
+   ✓ story pictures > draw the famous chart story as a local-asset-only 1080×1920 JPEG  2317ms
+   ✓ story pictures > draw the famous chart with a long name story as a local-asset-only 1080×1920 JPEG  2540ms
+   ✓ story pictures > draw the life milestone story as a local-asset-only 1080×1920 JPEG  2974ms
+ ✓ scripts/claims-ledger.test.mjs (11 tests) 33008ms
+   ✓ claims ledger > R3 resolves every claim's evidence  1473ms
+ ✓ src/lib/engine/year-scan-returns.test.ts (5 tests) 11148ms
+   ✓ yearScan solar returns come from @zodiacs/engine > matches the site's former scan on seeded synthetic charts and windows  9615ms
+   ✓ yearScan solar returns come from @zodiacs/engine > keeps the window (from, to]: a return at its start is out, one before its end is in  706ms
+   ✓ yearScan solar returns come from @zodiacs/engine > stays inside the reference span, as the scan it replaced did  376ms
+ ✓ src/lib/engine/lite.test.ts (1 test) 8383ms
+   ✓ the homepage's low-precision Sun and Moon > stay within the accuracy its header states, 1900 to 2100  8382ms
+ ✓ src/lib/i18n/ui/build-audit.test.ts (11 tests) 5850ms
+   ✓ built client UI payloads > installs one locale catalog before every island that uses shared UI copy  5654ms
+ ✓ scripts/sitemap-rendered-changes.test.mjs (25 tests) 9759ms
+   ✓ a page’s content > reads nested rules, selector lists, escaped classes, imported stylesheets and the classes around the content  396ms
+   ✓ a page’s content > reads every attribute the site names a media file in  2213ms
+   ✓ a page’s content > reads every attribute the site's stylesheets show with attr()  758ms
+   ✓ comparing two builds > fails a page dated after the day of the builds, changed or not, and exempts only that day itself  611ms
+   ✓ comparing two builds > exits 1 from the command line with the page and its date, and 0 when every change is re-dated  565ms
+   ✓ a pull request that rolls the daily edition > the plan step > compares two commits of one edition  573ms
+   ✓ a pull request that rolls the daily edition > the plan step > passes a head that only rolls the edition, with nothing to compare  682ms
+   ✓ a pull request that rolls the daily edition > the plan step > fails a head that rolls the edition and changes a file of those directories the publication does not write  2783ms
+   ✓ a pull request that rolls the daily edition > the plan step > fails a head that rolls the edition and changes anything else  722ms
+ ✓ src/lib/wallet/holdings.test.ts (28 tests) 4485ms
+   ✓ official holdings resolution > fails closed when any Base response carries a mismatched response id  403ms
+   ✓ official holdings resolution > fails closed when any Base response carries a provider error  403ms
+   ✓ official holdings resolution > fails closed when any Base response carries a array payload  406ms
+   ✓ official holdings resolution > fails closed when any single Base request fails at HTTP or JSON level  805ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a mismatched response id  407ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a provider error  401ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a array payload  404ms
+   ✓ official holdings resolution > fails closed when any single Solana request fails at the HTTP level  405ms
+   ✓ official holdings resolution > retries a failed call once before failing closed  406ms
+   ✓ official holdings resolution > fails closed when the retry also fails, and reports the failure without the address  405ms
+ ✓ src/mcp/sky-tools.test.ts (13 tests) 8392ms
+   ✓ the three tools are the compute API's calculations > returns, for every request of the corpus, the body the compute API's handler answers, with the tool's cite  4408ms
+   ✓ the three tools are the compute API's calculations > holds every result to its output schema, to the JSON Schema a host reads, and to the compute API's OpenAPI response  520ms
+   ✓ the ends of the accepted dates > answers each as the compute API's handler does, flags every fact on a date, and passes every schema and the SDK's client  2177ms
+   ✓ refusals are the compute API's own sentences > sends each result unchanged through the SDK's client, which checks it against the advertised schema  823ms
+ ✓ scripts/engine-install-block.test.mjs (51 tests) 3309ms
+   ✓ the install commands the engine page publishes > guards against what npm really does without a package.json here (F-04)  630ms
+ ✓ src/lib/webmcp/calculators/return-visits.test.ts (31 tests) 5399ms
+   ✓ ReturnPersonal on /your-sky-wrapped/ > finds the year's contacts the page lists: the far north, 2022  324ms
+   ✓ ReturnPersonal on /your-sky-wrapped/ > includes years with contacts  1397ms
+ ✓ src/mcp/outputs.test.ts (28 tests) 7437ms
+   ✓ calculate_natal_chart over the seeded corpus > cites the digest of the calculation receipt, the same for a summary and a record  337ms
+   ✓ calculate_natal_chart over the seeded corpus > identifies a chart's birth details through cite.receipt: its date and place give back its time  3719ms
+   ✓ calculate_natal_chart over the seeded corpus > shows nothing that depends on the place when the time is unknown, while its receipt still holds the place  376ms
+   ✓ calculate_natal_chart over the seeded corpus > identifies the place as well: an unknown-time chart's instant and cite.receipt give back its coordinates  1519ms
+   ✓ the registrations, through the SDK's own client > accepts, as the JSON Schema it advertises, every result of the corpus  559ms
+   ✓ the registrations, through the SDK's own client > sends each result unchanged, and the advertised JSON Schema accepts it  670ms
+ ✓ src/lib/return-image-privacy.test.ts (7 tests) 6781ms
+   ✓ a solar return image > starts from the natal Sun at the whole minute and prints the return to the whole minute  333ms
+   ✓ a solar return image > leaves the birthplace’s latitude to the whole degree of the Ascendant, not a few kilometres  6142ms
+ ✓ tests/api/compute-api-private-state.test.ts (1 test) 5660ms
+   ✓ compute API private module lifetime > clears exact instants and selected caches on success, refusal and failure, without racing another resolver  5658ms
+ ✓ scripts/precision-alpha-types.test.mjs (4 tests) 6270ms
+   ✓ the alpha ships declarations a consumer can actually use > compiles a strict consumer using both entry points and both search modes  1915ms
+   ✓ the alpha ships declarations a consumer can actually use > rejects everything it should, including an exact total off the proved branch  2025ms
+   ✓ the alpha ships declarations a consumer can actually use > compiles a consumer of the experimental subpath, deflected rung included  2328ms
+ ✓ src/lib/engine/void-of-course.test.ts (7 tests) 7884ms
+   ✓ void-of-course Moon > misses no aspect: a fine brute-force sweep finds a reported perfection in every zero-crossing interval  6323ms
+   ✓ void-of-course Moon > reports the traditional Sun-to-Saturn variant with voids that start no earlier than the modern ones  361ms
+   ✓ void-of-course Moon > computes a quarter of windows in a few seconds  903ms
+ ✓ scripts/build-event-horizon.test.mjs (3 tests) 7958ms
+   ✓ Phase 2 five-year event horizon > regenerates the committed 'src/data/sky.json' byte-for-byte  7431ms
+   ✓ Phase 2 five-year event horizon > regenerates the committed 'src/data/eclipses.json' byte-for-byte  523ms
+ ✓ src/ai-tools/share-links.test.ts (17 tests) 14609ms
+   ✓ a life milestone share link > accepts every milestone the tool gives, back to a birth date in 1800  12562ms
+   ✓ a life milestone share link > gives a centenarian’s next milestone a share link  1219ms
+   ✓ the tools’ share links > give chart twins’ signs, a famous chart’s slug and the milestone shown, never a birth date  629ms
+ ✓ scripts/check-source-authorship.test.mjs (22 tests) 5247ms
+   ✓ source authorship guard > passes the repository as it is, with the People subject allowance in use  4431ms
+ ✓ scripts/build-assistant-context.test.mjs (5 tests) 4383ms
+   ✓ assistant site context > contains every tool route and the complete live route families  642ms
+   ✓ assistant site context > keeps privacy, calculation, time-zone, unknown-time, and horoscope-date boundaries explicit  954ms
+   ✓ assistant site context > stays inside the cache-size band without localized routes or consumer-banned vocabulary  814ms
+   ✓ assistant site context > is byte-identical across two builds and matches the committed module  1971ms
+ ✓ src/mcp/time-places.test.ts (13 tests) 4059ms
+   ✓ resolve_birth_time is the compute API's time endpoint > returns, for every request of the corpus, the body the compute API's handler answers, with the tool's cite  440ms
+   ✓ resolve_birth_time is the compute API's time endpoint > holds every result to its output schema, to the JSON Schema a host reads, and to the compute API's OpenAPI response  381ms
+   ✓ search_places is the site's birthplace search > carries every shard of the index the calculators fetch, row for row  2472ms
+   ✓ search_places is the site's birthplace search > lists, for every query, the places the site lists, in the same order  579ms
+ ✓ src/lib/profile/saved-record-inactive.test.ts (4 tests) 3587ms
+   ✓ inactive saved receipt integration boundary > has only the coordinator as runtime caller and no dependency path into legacy profile writers or another private database  3243ms
+ ✓ src/lib/webmcp/calculators/edges.test.ts (2 tests) 4137ms
+   ✓ the tools at the extremes their schemas accept > answer, or refuse with a code that names the reason, never with a failed calculation  4115ms
+ ✓ src/ai-tools/usage.test.ts (21 tests) 2761ms
+   ✓ counting hosted tool calls > counts each handled tool call once, after its reply has ended, including an error result  411ms
+   ✓ counting hosted tool calls > counts the occasion tools only while their switch offers them  771ms
+   ✓ counting hosted tool calls > replies before a slow database answers, then gives up within the timeout without an error  1504ms
+ ✓ src/ai-tools/studio/week.test.ts (14 tests) 3443ms
+   ✓ Your week: the next seven days for a chart > puts exact passes first in time order, then the rest by how close they come  450ms
+   ✓ Your week: the next seven days for a chart > finds the same exact passes as the site transit scanner  971ms
+   ✓ Your week: the next seven days for a chart > matches a ten-minute sweep of the ephemeris: every contact within orb, and only then  1215ms
+   ✓ Your week: the next seven days for a chart > never uses the Moon, rising sign or Midheaven without a birth time, even if they are sent  432ms
+ ✓ src/lib/engine/returns.test.ts (14 tests) 3583ms
+   ✓ saturnReturns > matches all independent nominal-UT1 return passes and three seasons  501ms
+   ✓ saturnReturns > first return begins between ages 27.5 and 30.5 for every fixture  836ms
+   ✓ saturnReturns > every season carries an odd number of crossings  526ms
+   ✓ natal Saturn direction > is direct just before the chart's station and retrograde just after  557ms
+ ✓ src/ai-tools/schema-types.test.ts (3 tests) 2854ms
+   ✓ what the tools return > validates against the schemas they advertise, as a client checks it  2820ms
+ ✓ scripts/mcp-pack-permissions.test.mjs (1 test) 3515ms
+   ✓ packs the complete npm file selection identically from private and Git checkout permissions  3514ms
+ ✓ src/lib/guide-protocol/contract-surface.test.ts (4 tests) 4255ms
+   ✓ Guide draft runtime boundary > keeps the protocol out of browser and legacy runtime graphs  2228ms
+   ✓ Guide draft runtime boundary > confines the Guide kill switch and Claude credential name to the server graph  2023ms
+ ✓ src/lib/horoscope-program.test.ts (15 tests) 4321ms
+   ✓ horoscope program domain > builds one deterministic, serializable six-surface program for all signs  1016ms
+   ✓ horoscope program domain > keeps love actions distinct when Venus and the Moon share a sign  334ms
+   ✓ horoscope program domain > re-frames only the later sign when two tomorrow readings would exceed the distinctness limit  820ms
+   ✓ horoscope program domain > never repeats a passage's opening verb in its follow-up clause  358ms
+   ✓ horoscope program domain > does not treat 2027 daily events as missing yearly-catalog coverage  500ms
+   ✓ horoscope program domain > keeps all twelve readings pairwise distinct, including the long 2027 edition  380ms
+ ✓ scripts/angles-grid.test.mjs (5 tests) 4258ms
+   ✓ the angles against the ERFA arbiter (rule 1b) > agrees with the arbiter's formula on the engine's own sidereal time and true obliquity  3851ms
+   ✓ Placidus near the polar circle (rule 1h) > computes the 320 ladder cases the arbiter's limit of 90° − ε allows, and refuses the other 16  399ms
+ ✓ src/lib/webmcp/calculators/returns.test.ts (27 tests) 3119ms
+   ✓ SaturnReturnCalculator (/saturn-return/) > an untimed birth  506ms
+   ✓ SaturnReturnCalculator (/saturn-return/) > a clock-change gap  498ms
+   ✓ SaturnReturnCalculator (/saturn-return/) > a clock-change fold  329ms
+   ✓ SaturnReturnCalculator (/saturn-return/) > the southern hemisphere  342ms
+   ✓ SaturnReturnCalculator (/saturn-return/) > a date alone (noon UTC)  332ms
+ ✓ src/lib/share-card.test.ts (44 tests) 3534ms
+   ✓ a chart image with birth details hidden > draws a chart with a birth time at its whole UTC minute: the same sheet for every instant that rounds to it  777ms
+   ✓ a chart image with birth details hidden > leaves a solver of the sheet at least the whole minute, so no strip of longitude  767ms
+   ✓ a chart image with birth details hidden > names the Moon’s sign on a card without a birth time only when it held all that date in every time zone  445ms
+   ✓ a chart image with birth details hidden > checks the Moon over a span that holds every date, save in Alaska before 1867 and the Philippines and Micronesia before 1845  1390ms
+ ✓ src/lib/email/daily-sun-state.test.ts (9 tests) 1581ms
+   ✓ durable daily sun confirmation state > dispatches in waitUntil, suppresses duplicate token churn, and safely repairs a replay  536ms
+ ✓ tests/api/compute-api-playground.test.ts (4 tests) 3767ms
+   ✓ the playground's browser run > answers every documented example, and every refusal a body provokes, as the handler does  1736ms
+   ✓ the playground's browser run > is built from the current sources, and the built file answers as they do  1952ms
+ ✓ src/lib/occasions/occasions.test.ts (15 tests) 3428ms
+   ✓ life milestones > dates the Saturn return with every pass, and the Jupiter returns  685ms
+   ✓ life milestones > finds the Uranus opposition in the early forties  631ms
+   ✓ life milestones > counts full moons and Mercury retrogrades lived through  726ms
+   ✓ life milestones > keeps finding Jupiter returns past age 100  1116ms
+ ✓ scripts/sky-api.test.mjs (22 tests) 1978ms
+   ✓ sky data API — coverage and contracts > gives every file operation an example, the file it serves, which its response schema validates  311ms
+   ✓ sky data API — coverage and contracts > advertises exactly the files it writes, and the OpenAPI document covers them all  392ms
+   ✓ sky data API — coverage and contracts > is deterministic, and keeps yearly files and schemas byte-stable across builds  625ms
+   ✓ sky data API — daily payloads > keeps an event thirty minutes ahead even when tenths of a day round to zero  340ms
+ ✓ src/lib/engine/grazing-crossings.test.ts (5 tests) 3686ms
+   ✓ grazing crossing pairs > keeps all three first-return passes for a natal Saturn 0.002° below the 2019 station  351ms
+   ✓ grazing crossing pairs > returns both Jupiter conjunction passes for dips ≤ 0.005° at every scan phase  3319ms
+ ✓ scripts/mcp-install-block.test.mjs (16 tests) 2240ms
+   ✓ the install commands the MCP page publishes > installs and verifies when the archive is the published one  317ms
+   ✓ the install commands the MCP page publishes > leaves nothing behind when it fails (npm ci / tar)  338ms
+ ✓ scripts/build-cabinet-materials.test.mjs (4 tests) 2261ms
+   ✓ cabinet material derivatives > keeps all material artwork centered inside the 14% safe inset  819ms
+   ✓ cabinet material derivatives > preserves one silhouette across every material and output format  1321ms
+ ✓ scripts/independent-copy-verifier.test.ts (10 tests) 5040ms
+   ✓ independent copy verifier > accepts the committed daily and multi-surface packages  799ms
+   ✓ independent copy verifier > independently catches program evidence, declared length, voice, and distinctness  786ms
+   ✓ independent copy verifier > caps exact sentence reuse across signs and surfaces  1249ms
+   ✓ independent copy verifier > rejects near-duplicate actions inside one short-form reading  726ms
+   ✓ independent copy verifier > rejects a tomorrow edition that merely relabels today  765ms
+   ✓ independent copy verifier > independently reconciles prose claims to phase, sign, aspect, house, and event receipts  705ms
+ ✓ scripts/horoscope-program-files.test.ts (5 tests) 3869ms
+   ✓ strict 2027 horoscope fact catalog > renders the complete catalog inside the strict yearly word bounds  930ms
+   ✓ computed daily horoscope editions > passes both validators for the 2026-10-08 edition  1343ms
+   ✓ computed daily horoscope editions > passes both validators for the 2026-10-10 edition  1586ms
+ ✓ scripts/build-pwa-icons.test.mjs (20 tests) 1324ms
+   ✓ PWA icon compositor > writes install metadata from the English catalogue  511ms
+ ✓ tests/api/compute-api-bundle.test.ts (5 tests) 3504ms
+   ✓ the compute API's handler bundle > is what scripts/build-compute-handler.mjs builds from its sources  768ms
+   ✓ the compute API's handler bundle > loads nothing at run time but Node's own modules and the Firewall SDK  363ms
+   ✓ the compute API's handler bundle > answers every documented example as the source handler does  2100ms
+ ✓ src/islands/today/TodayBrief.loading.test.ts (20 tests) 2344ms
+ ✓ scripts/platform-starter.test.mjs (114 tests) 2947ms
+   ✓ examples page artifact identity > renders links, setup values, and release identity from shared metadata  445ms
+ ✓ scripts/crossings-s2.test.mjs (4 tests) 2495ms
+   ✓ the audit s2 cases on the one crossing solver > scans the Moon over 2,600 days at a quarter-day step without a budget, and both sides agree  1249ms
+   ✓ the audit s2 cases on the one crossing solver > scans Saturn from 1900 to 2100 at a five-day step, and both sides agree  1241ms
+ ✓ scripts/mcp-artifact.test.mjs (51 tests) 2667ms
+   ✓ the built server bundle > is what the generator produces from the current source  359ms
+   ✓ the install check a downloader runs > passes every check against the bundle that ships, and there are as many as the documents say  1785ms
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > returns the designed JSON 503 from subscribe without contacting a provider
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ tests/api/compute-api-privacy.test.ts (7 tests) 2469ms
+   ✓ compute API negative control > keeps every canary out of the same places when the compatibility function serves the request, as deployed  1085ms
+   ✓ compute API negative control > writes nothing at all to any console method, the output or a file when the rate limit is not consulted  357ms
+   ✓ the site and the compute API > is called by no page, island or script of the site but the developer playground  867ms
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > returns the localized HTML 503 from a subscribe form post
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > does not let a filled honeypot bypass the unconfigured 503
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ tests/api/email-unconfigured.test.ts (9 tests) 938ms
+ ✓ scripts/db-backup-contract.test.mjs (8 tests) 1428ms
+   ✓ database backup and restore contract > rejects weak and multiline backup passphrases before any database access  834ms
+ ✓ src/ai-tools/http.test.ts (17 tests) 2665ms
+   ✓ stateless MCP HTTP boundary > works with the official SDK client: list, call, widget read and close  1286ms
+   ✓ stateless MCP HTTP boundary > lists and runs the occasion tools only with ZODIACS_OCCASIONS_ENABLED=1  708ms
+ ✓ src/ai-tools/lifetime.test.ts (3 tests) 2886ms
+   ✓ clears actual HTTP bundle state after success and failure  1144ms
+   ✓ clears actual stdio bundle state after success and failure  891ms
+   ✓ clears actual Sky Watch bundle state after success and failure  850ms
+ ✓ scripts/check-programmatic-uniqueness.test.mjs (3 tests) 1282ms
+   ✓ programmatic-page uniqueness gate > keeps all 366 birthday essays below the CI threshold  1096ms
+ ✓ tests/api/runtime-imports.test.ts (11 tests) 1701ms
+   ✓ Vercel API runtime packaging > uses Node ESM-safe relative imports through every handler graph  1656ms
+ ✓ scripts/shelf-figures.test.mjs (10 tests) 2008ms
+   ✓ the committed geometry > still says what the artwork says, and covers what it traced  1783ms
+ ✓ src/ai-tools/studio/model.test.ts (18 tests) 1776ms
+   ✓ the Sun without a birth time > names two signs on a date when the Sun changes sign in some time zone, and one otherwise  1539ms
+ ✓ src/lib/email/daily-api.test.ts (35 tests) 828ms
+   ✓ daily sun confirmation > retries a Resend 429 without moving segment membership for a sign change  505ms
+ ✓ scripts/send-daily-push.test.mjs (45 tests) 739ms
+   ✓ sky-alert event selection and copy > keeps the entire committed editorial stream below three alerts in every seven UTC dates  432ms
+ ✓ src/lib/living-chart/store.test.ts (20 tests) 800ms
+   ✓ LivingChartStore > caps active records at 250 without blocking tombstones  525ms
+ ✓ src/lib/time/zone-case.test.ts (9 tests) 938ms
+   ✓ a zone name in any letter case > gives every tzdb zone the same instant lower-cased and upper-cased, on a birthplace mean time  327ms
+ ✓ src/lib/webmcp/calculator-tools.test.ts (50 tests) 1330ms
+   ✓ each tool's schema and its reader agree > zodiacs.year_wrapped accepts a valid input and answers it  574ms
+ ✓ src/ai-tools/ref.test.ts (4 tests) 1859ms
+   ✓ ?ref= on zodiacs.org links from the tools > tags the links and the card address of a result, and nothing without a ref  1745ms
+ ✓ src/lib/profile/saved-record-store.test.ts (53 tests) 1870ms
+   ✓ owner-bound immutable saved natal operations > serializes concurrent creates and enforces cap40 with insertion atomically  1328ms
+ ✓ src/ai-tools/occasions.test.ts (4 tests) 2103ms
+   ✓ occasion tools behind ZODIACS_OCCASIONS_ENABLED > lists life milestones, the next one and the sky numbers  1718ms
+ ✓ src/lib/account-v2/cutover.test.ts (8 tests) 1236ms
+   ✓ account sync v2 cutover guards > keeps direct private-profile storage access inside approved guarded adapters  1185ms
+ ✓ tests/api/compute-api-openapi.test.ts (5 tests) 1663ms
+   ✓ compute API in the OpenAPI document > validates every example against its schema  393ms
+   ✓ compute API in the OpenAPI document > shows what the handler answers: every example runs through it and the committed responses match  1074ms
+ ✓ src/islands/ChartCalculator.ownership.test.ts (27 tests) 1344ms
+ ✓ src/islands/AccountProfileAccessBootstrap.test.ts (10 tests) 738ms
+ ✓ src/ai-tools/bundle-languages.test.ts (2 tests) 1052ms
+   ✓ answers the sky calendar in every language and keeps a Cyrillic name from the HTTP bundle  670ms
+   ✓ answers the sky calendar in every language and keeps a Cyrillic name from the stdio bundle  381ms
+ ✓ src/lib/personal-calendar/personal-calendar.test.ts (20 tests) 1997ms
+   ✓ personal sky dates > numbers a retrograde loop by all its passes, even those outside the window  1822ms
+ ✓ src/mcp/create-server.test.ts (2 tests) 519ms
+stderr | src/lib/server/transit-calendar.test.ts > subscribable transit calendar > rejects invalid tokens and non-GET requests without scanning
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | src/lib/server/transit-calendar.test.ts > subscribable transit calendar > serves the feed inline with a six-hour shared cache policy
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ src/lib/server/transit-calendar.test.ts (5 tests) 1383ms
+   ✓ subscribable transit calendar > serializes a pinned positions-only token with stable UIDs and valid RFC 5545 lines  608ms
+   ✓ subscribable transit calendar > takes ASC and MC to the whole degree and gives their contacts to the minute, not as exact  522ms
+ ✓ tests/composite-browser-checks.test.mjs (6 tests) 1120ms
+   ✓ PNG observation rejects blank and heading-only images as full composite evidence  1116ms
+ ✓ src/lib/occasions/milestone-card.test.ts (4 tests) 1932ms
+   ✓ milestone card > dates the milestones from a birth date alone  1013ms
+   ✓ milestone card > uses the birth time and place when given  918ms
+ ✓ scripts/build-icons.test.mjs (3 tests) 459ms
+ ✓ scripts/claims-bindings.test.mjs (14 tests) 1317ms
+   ✓ event times against Swiss Ephemeris > were measured on the catalog the site publishes now  365ms
+   ✓ images of one birth shared together > narrow the birthplace about five times with one solar return image, as the privacy page says  568ms
+   ✓ the famous-people pages > keep the reference instant and civil day the birth chart calculator gives for the same place and date  307ms
+stderr | tests/api/aura-holdings.test.ts > Aura holdings endpoint > maps a partial Base RPC batch to unavailable end to end
+aura-holdings lookup failed base calls.slice is not a function
+
+ ✓ tests/api/aura-holdings.test.ts (22 tests) 422ms
+   ✓ Aura holdings endpoint > maps a partial Base RPC batch to unavailable end to end  406ms
+ ✓ src/lib/engine/server-ephemeris.test.ts (3 tests) 1004ms
+   ✓ serverless ephemeris boundary > matches the browser SDK for every supported body across pinned instants  380ms
+   ✓ serverless ephemeris boundary > matches it where the time basis changes: leap seconds, 1972, the UT1 table and the ΔT model  399ms
+ ✓ src/ai-tools/accounts/flag-off.test.ts (1 test) 660ms
+   ✓ the account switch off > leaves initialize, tools/list, resources/list and every account route byte-for-byte as the 0.5.0 server answers them  658ms
+ ✓ src/lib/time/calendar.test.ts (39 tests) 856ms
+   ✓ Julian and Gregorian calendar dates > agrees, day by day from 1500 to 2199, with two counters walked from the 1582 changeover  723ms
+ ✓ src/lib/compare/diff.test.ts (70 tests) 1441ms
+ ✓ src/lib/engine/calculator-receipt.test.ts (58 tests) 653ms
+ ✓ src/lib/engine/transit-window-independent.test.ts (11 tests) 1013ms
+ ✓ src/lib/aura/readings.test.ts (9 tests) 260ms
+ ✓ src/islands/SynastryCalculator.recovery.test.ts (23 tests) 676ms
+ ✓ scripts/build-build-report.test.mjs (5 tests) 482ms
+ ✓ src/lib/events/format.test.ts (5 tests) 129ms
+ ✓ src/lib/engine/lunar-return.test.ts (49 tests) 312ms
+ ✓ scripts/indexnow-changed-urls.test.mjs (26 tests) 921ms
+ ✓ src/lib/assistant/open-assistant.test.ts (35 tests) 749ms
+   ✓ saved-chart assistant context > sends a chart with a birth time as its link carries it, at its UTC instant rounded to the whole minute  377ms
+ ✓ src/lib/return-visits/return-visits.test.ts (20 tests) 482ms
+ ✓ src/lib/email/daily-admin-bootstrap.test.ts (14 tests) 295ms
+ ✓ src/lib/profile/saved-record-access.test.ts (15 tests) 466ms
+ ✓ src/lib/events/publication.test.ts (5 tests) 558ms
+   ✓ bounded event reading revision > revises exactly five readings and dates every page from the latest revision without changing factual descriptors  542ms
+ ✓ tests/api/og-chart-render.test.ts (1 test) 651ms
+   ✓ chart preview renderer > renders the full card as a local-asset-only 1200×630 PNG  650ms
+ ✓ tests/guide-api.test.ts (64 tests) 694ms
+ ✓ tests/conventions-registry.test.ts (12 tests) 590ms
+ ✓ src/mcp/tools.test.ts (43 tests) 905ms
+ ✓ scripts/daily-market-snapshot.test.mjs (7 tests) 400ms
+ ✓ scripts/registry-og.test.mjs (4 tests) 716ms
+   ✓ Registry catalogue OG v4 > publishes twelve unique 1200x630 cards with visible gold sculpture pixels and the lockup in the footer row  458ms
+ ✓ scripts/glossary-crosslinks.test.mjs (1 test) 778ms
+   ✓ glossary crosslinks > stay bounded, English-only, and anchored to real glossary terms  777ms
+ ✓ src/lib/webmcp/calculators/chart.test.ts (50 tests) 1098ms
+   ✓ the chart tools calculate what the chart pages calculate > /birth-chart/, whole sign: a timed birth  329ms
+ ✓ tests/api/compute-api-local-time.test.ts (4 tests) 699ms
+ ✓ src/lib/engine/transit-scan.test.ts (15 tests) 673ms
+   ✓ scanTransitContacts > keeps both close passes around a station instead of cancelling their signs  319ms
+ ✓ src/lib/engine/solar-return.test.ts (10 tests) 629ms
+ ✓ src/lib/chart-images-privacy.test.ts (3 tests) 817ms
+   ✓ pattern and explorer images of a chart with a birth time before standard time > print a pattern’s lossless orbs at the whole minute: one image for every instant in it  693ms
+ ✓ scripts/sign-records.test.mjs (10 tests) 891ms
+ ✓ src/lib/compare/angles.test.ts (14 tests) 604ms
+   ✓ circular angular differences > never exceeds half a turn, and is antisymmetric, at any offset  586ms
+ ✓ src/ai-tools/accounts/http.test.ts (7 tests) 639ms
+   ✓ accounts on: mixed authentication on the hosted MCP > lists the save tool with OAuth and keeps every other tool anonymous  330ms
+ ✓ src/islands/solar-return/compute.test.ts (5 tests) 790ms
+   ✓ solar return calculator model > exercises the island helper against yearScan within a minute  415ms
+ ✓ src/ai-tools/accounts/accounts.test.ts (18 tests) 941ms
+   ✓ what can be saved > works each kind out again with the tool that made it, as bounded plain text  875ms
+ ✓ src/lib/engine/reference-span.test.ts (4 tests) 944ms
+   ✓ the 1800–2199 span of the site's scans > stops a Saturn return scan at the end of 2199  544ms
+   ✓ the 1800–2199 span of the site's scans > marks a year scan that reaches past 2199  371ms
+ ✓ tests/api/og-chart.test.ts (15 tests) 377ms
+ ✓ src/lib/wheel/Wheel.crowding.test.ts (29 tests) 548ms
+ ✓ src/ai-tools/watch/watch.test.ts (37 tests) 281ms
+ ✓ tests/visual/runner-stalls.test.mjs (11 tests) 664ms
+   ✓ what the classifier cannot tell from a stall > finds no XMLHttpRequest in the site's client code  660ms
+ ✓ src/lib/webmcp/calculators/people.test.ts (34 tests) 615ms
+ ✓ scripts/analytics-referrer-privacy.test.mjs (1 test) 867ms
+   ✓ Plausible referrer privacy > nulls the referrer in every source and checked-in outbound payload transform  867ms
+ ✓ src/lib/time/localToUtc-birthplace.test.ts (41 tests) 504ms
+ ✓ src/lib/engine/portable.test.ts (22 tests) 444ms
+ ✓ src/lib/engine/package-integration.test.ts (8 tests) 772ms
+ ✓ src/lib/events/catalog.test.ts (27 tests) 782ms
+ ✓ scripts/engine-reference.test.mjs (42 tests) 2989ms
+ ✓ src/islands/AccountSyncV2Panel.test.tsx (17 tests) 546ms
+   ✓ records erasure plan for sign-out, boundary clear and confirmed deletion > uses the real loader: flag off is disabled, flag on with a failed import is unavailable  330ms
+ ✓ src/lib/disclosure.test.ts (14 tests) 154ms
+ ✓ src/islands/synastry/SendBackExperience.test.tsx (7 tests) 137ms
+ ✓ src/lib/edition-freshness.test.ts (13 tests) 333ms
+   ✓ dated wording on the Spanish and Portuguese daily pages > gives every reading line the templates write a reviewed dated form  313ms
+ ✓ src/lib/invite/api.test.ts (11 tests) 311ms
+ ✓ src/lib/profile/polar-repair.test.ts (37 tests) 520ms
+   ✓ legacy polar saved-chart repair > matches the current engine on the recorded clock throughout a day at 78.2232°  391ms
+ ✓ src/islands/ChartCalculator.confidence.test.ts (27 tests) 208ms
+ ✓ src/islands/lunar-return/compute.test.ts (19 tests) 473ms
+ ✓ src/lib/profile/card-link.test.ts (11 tests) 284ms
+ ✓ src/lib/sharing/sharing.test.ts (9 tests) 261ms
+ ✓ src/ai-tools/features/birthday.test.ts (13 tests) 504ms
+ ✓ src/ai-tools/release-050.test.ts (11 tests) 636ms
+   ✓ the 0.5.0 tools through the tool runner > finds the three best days in a window and makes the card for the best one  301ms
+ ✓ scripts/platform-candidate-docs.test.mjs (25 tests) 541ms
+   ✓ developer candidate documentation > cross-checks source provenance and the linked packaged documents  509ms
+ ✓ src/lib/time/localToUtc-precision.test.ts (36 tests) 379ms
+ ✓ src/lib/today-sky.test.ts (10 tests) 167ms
+ ✓ scripts/verify-phase1-operations.test.mjs (13 tests) 105ms
+ ✓ scripts/of-date-pass-rule-replay.test.mjs (3 tests) 261ms
+ ✓ src/lib/guide-server/safety.test.ts (16 tests) 257ms
+ ✓ src/islands/ChartCompare.test.tsx (19 tests) 4ms
+ ✓ src/islands/BigThreeQuick.recovery.test.ts (19 tests) 440ms
+ ✓ src/lib/occasions/best-dates.test.ts (4 tests) 607ms
+   ✓ bestDays > returns the three best-rated days of a month, best first, each with up to three reasons  384ms
+ ✓ src/ai-tools/features/personal-week.test.ts (2 tests) 327ms
+ ✓ src/ai-tools/studio/inspect.test.ts (7 tests) 179ms
+ ✓ scripts/build-service-worker.test.mjs (10 tests) 486ms
+ ✓ src/ai-tools/tools.test.ts (22 tests) 587ms
+ ✓ src/lib/sign-icon.test.ts (5 tests) 339ms
+ ✓ src/ai-tools/studio/explore.test.ts (16 tests) 373ms
+ ✓ src/lib/profile/store.test.ts (38 tests) 416ms
+ ✓ src/ai-tools/studio/local-time.test.ts (15 tests) 325ms
+ ✓ src/lib/time/localToUtc-history.test.ts (19 tests) 342ms
+ ✓ src/lib/nav-tools.test.ts (12 tests) 6ms
+ ✓ src/islands/SynastryCalculator.share.test.ts (1 test) 214ms
+ ✓ scripts/engine-demo.test.mjs (4 tests) 253ms
+ ✓ src/lib/time-atlas/index.test.ts (4 tests) 291ms
+ ✓ src/lib/time/localDateContainsUtc.test.ts (55 tests) 146ms
+ ✓ scripts/precision-preview.test.mjs (13 tests) 172ms
+ ✓ src/lib/return-visits/sky-month.test.ts (5 tests) 406ms
+ ✓ src/lib/engine/engine.test.ts (53 tests) 381ms
+ ✓ src/lib/birthday-reading.test.ts (3 tests) 267ms
+ ✓ scripts/inline-critical-styles.test.mjs (28 tests) 798ms
+ ✓ scripts/trade-entry.test.mjs (15 tests) 614ms
+ ✓ scripts/daily-snapshot-lib.test.mjs (6 tests) 451ms
+ ✓ scripts/registry-pastel-polish.test.mjs (25 tests) 433ms
+ ✓ scripts/build-i18n-additions.test.mjs (8 tests) 317ms
+ ✓ scripts/registry-gallery-band.test.mjs (18 tests) 186ms
+ ✓ src/islands/LunarReturnCalculator.test.tsx (15 tests) 35ms
+ ✓ src/lib/guide-server/local-safety.test.ts (171 tests) 46ms
+ ✓ scripts/registry-consumer-contract.test.mjs (13 tests) 505ms
+ ✓ src/lib/profile/assistant-saved-reading.test.tsx (5 tests) 375ms
+   ✓ saved assistant reading > displays real chart, comparison and occasion records even without a complete website link  372ms
+ ✓ scripts/build-transits.test.mjs (64 tests) 123504ms
+   ✓ Transit fact generation > regenerates transits-2026-01.json byte for byte from the site engine  1126ms
+   ✓ Transit fact generation > regenerates transits-2026-02.json byte for byte from the site engine  1942ms
+   ✓ Transit fact generation > regenerates transits-2026-03.json byte for byte from the site engine  1924ms
+   ✓ Transit fact generation > regenerates transits-2026-04.json byte for byte from the site engine  2343ms
+   ✓ Transit fact generation > regenerates transits-2026-05.json byte for byte from the site engine  2176ms
+   ✓ Transit fact generation > regenerates transits-2026-06.json byte for byte from the site engine  1772ms
+   ✓ Transit fact generation > regenerates transits-2026-07.json byte for byte from the site engine  1873ms
+   ✓ Transit fact generation > regenerates transits-2026-08.json byte for byte from the site engine  2248ms
+   ✓ Transit fact generation > regenerates transits-2026-09.json byte for byte from the site engine  1858ms
+   ✓ Transit fact generation > regenerates transits-2026-10.json byte for byte from the site engine  2634ms
+   ✓ Transit fact generation > regenerates transits-2026-11.json byte for byte from the site engine  2198ms
+   ✓ Transit fact generation > regenerates transits-2026-12.json byte for byte from the site engine  1746ms
+   ✓ Transit fact generation > regenerates transits-2027-01.json byte for byte from the site engine  2472ms
+   ✓ Transit fact generation > regenerates transits-2027-02.json byte for byte from the site engine  2372ms
+   ✓ Transit fact generation > regenerates transits-2027-03.json byte for byte from the site engine  1638ms
+   ✓ Transit fact generation > regenerates transits-2027-04.json byte for byte from the site engine  2270ms
+   ✓ Transit fact generation > regenerates transits-2027-05.json byte for byte from the site engine  1949ms
+   ✓ Transit fact generation > regenerates transits-2027-06.json byte for byte from the site engine  2235ms
+   ✓ Transit fact generation > regenerates transits-2027-07.json byte for byte from the site engine  2284ms
+   ✓ Transit fact generation > regenerates transits-2027-08.json byte for byte from the site engine  2009ms
+   ✓ Transit fact generation > regenerates transits-2027-09.json byte for byte from the site engine  2438ms
+   ✓ Transit fact generation > regenerates transits-2027-10.json byte for byte from the site engine  2684ms
+   ✓ Transit fact generation > regenerates transits-2027-11.json byte for byte from the site engine  2214ms
+   ✓ Transit fact generation > regenerates transits-2027-12.json byte for byte from the site engine  2102ms
+   ✓ Transit fact generation > regenerates transits-2028-01.json byte for byte from the site engine  1964ms
+   ✓ Transit fact generation > regenerates transits-2028-02.json byte for byte from the site engine  1947ms
+   ✓ Transit fact generation > regenerates transits-2028-03.json byte for byte from the site engine  2042ms
+   ✓ Transit fact generation > regenerates transits-2028-04.json byte for byte from the site engine  1982ms
+   ✓ Transit fact generation > regenerates transits-2028-05.json byte for byte from the site engine  2137ms
+   ✓ Transit fact generation > regenerates transits-2028-06.json byte for byte from the site engine  1618ms
+   ✓ Transit fact generation > regenerates transits-2028-07.json byte for byte from the site engine  2015ms
+   ✓ Transit fact generation > regenerates transits-2028-08.json byte for byte from the site engine  1534ms
+   ✓ Transit fact generation > regenerates transits-2028-09.json byte for byte from the site engine  1942ms
+   ✓ Transit fact generation > regenerates transits-2028-10.json byte for byte from the site engine  1902ms
+   ✓ Transit fact generation > regenerates transits-2028-11.json byte for byte from the site engine  2041ms
+   ✓ Transit fact generation > regenerates transits-2028-12.json byte for byte from the site engine  1876ms
+   ✓ Transit fact generation > regenerates transits-2029-01.json byte for byte from the site engine  1212ms
+   ✓ Transit fact generation > regenerates transits-2029-02.json byte for byte from the site engine  1523ms
+   ✓ Transit fact generation > regenerates transits-2029-03.json byte for byte from the site engine  2435ms
+   ✓ Transit fact generation > regenerates transits-2029-04.json byte for byte from the site engine  2217ms
+   ✓ Transit fact generation > regenerates transits-2029-05.json byte for byte from the site engine  2075ms
+   ✓ Transit fact generation > regenerates transits-2029-06.json byte for byte from the site engine  1913ms
+   ✓ Transit fact generation > regenerates transits-2029-07.json byte for byte from the site engine  2028ms
+   ✓ Transit fact generation > regenerates transits-2029-08.json byte for byte from the site engine  1467ms
+   ✓ Transit fact generation > regenerates transits-2029-09.json byte for byte from the site engine  2234ms
+   ✓ Transit fact generation > regenerates transits-2029-10.json byte for byte from the site engine  2654ms
+   ✓ Transit fact generation > regenerates transits-2029-11.json byte for byte from the site engine  1836ms
+   ✓ Transit fact generation > regenerates transits-2029-12.json byte for byte from the site engine  2209ms
+   ✓ Transit fact generation > regenerates transits-2030-01.json byte for byte from the site engine  2326ms
+   ✓ Transit fact generation > regenerates transits-2030-02.json byte for byte from the site engine  1602ms
+   ✓ Transit fact generation > regenerates transits-2030-03.json byte for byte from the site engine  2182ms
+   ✓ Transit fact generation > regenerates transits-2030-04.json byte for byte from the site engine  2249ms
+   ✓ Transit fact generation > regenerates transits-2030-05.json byte for byte from the site engine  1868ms
+   ✓ Transit fact generation > regenerates transits-2030-06.json byte for byte from the site engine  2191ms
+   ✓ Transit fact generation > regenerates transits-2030-07.json byte for byte from the site engine  1556ms
+   ✓ Transit fact generation > regenerates transits-2030-08.json byte for byte from the site engine  2139ms
+   ✓ Transit fact generation > regenerates transits-2030-09.json byte for byte from the site engine  2153ms
+   ✓ Transit fact generation > regenerates transits-2030-10.json byte for byte from the site engine  1801ms
+   ✓ Transit fact generation > regenerates transits-2030-11.json byte for byte from the site engine  2087ms
+   ✓ Transit fact generation > regenerates transits-2030-12.json byte for byte from the site engine  1860ms
+   ✓ Transit fact generation > preserves both Mercury ingresses when a retrograde turn returns across a cusp the same day  2142ms
+ ✓ src/islands/lunar-return/LunarReturnResult.test.tsx (3 tests) 215ms
+ ✓ src/ai-tools/studio/heading.test.ts (6 tests) 234ms
+ ✓ src/lib/daily-publication.test.ts (17 tests) 305ms
+ ✓ src/lib/chart-context-card.test.ts (31 tests) 258ms
+ ✓ src/islands/explorer/ChartContext.export.test.tsx (9 tests) 68ms
+ ✓ src/islands/ChartCalculator.calendar.test.ts (3 tests) 184ms
+ ✓ src/ai-tools/features/people.test.ts (11 tests) 274ms
+ ✓ scripts/minify-inline-scripts.test.mjs (5 tests) 70ms
+ ✓ tests/api/compute-api-samples.test.ts (2 tests) 159ms
+ ✓ src/lib/occasions/due-window.test.ts (3 tests) 150ms
+ ✓ scripts/engine-entry-imports.test.mjs (2 tests) 151ms
+ ✓ src/lib/chart-date-certainty.test.ts (8 tests) 141ms
+ ✓ src/lib/time/localToUtc-callers.test.ts (3 tests) 163ms
+ ✓ tests/legacy-polar-fixture.test.mjs (14 tests) 254ms
+ ✓ src/lib/occasions/card.test.ts (7 tests) 325ms
+ ✓ scripts/send-daily-email.test.ts (10 tests) 211ms
+ ✓ src/islands/ReturnCalculators.recovery.test.ts (21 tests) 372ms
+ ✓ src/lib/compatibility-card.test.ts (6 tests) 137ms
+ ✓ tests/api/email-subscribe-cooldown.test.ts (3 tests) 88ms
+ ✓ scripts/terminal-public-routes.test.mjs (9 tests) 200ms
+ ✓ src/lib/horoscope-page-data.test.ts (14 tests) 95ms
+ ✓ scripts/methodology-accuracy-claim.test.mjs (21 tests) 180ms
+ ✓ src/lib/i18n/index.test.ts (20 tests) 74ms
+ ✓ src/lib/lunar-return-card.test.ts (20 tests) 103ms
+ ✓ scripts/consumer-boundary-lib.test.mjs (30 tests) 316ms
+ ✓ scripts/registry-risk.test.mjs (9 tests) 297ms
+ ✓ src/lib/moon-certainty.test.tsx (14 tests) 114ms
+ ✓ src/lib/i18n/astrology.test.ts (12 tests) 109ms
+ ✓ src/lib/aura-share-card.test.ts (17 tests) 40ms
+ ✓ scripts/build-search-index.test.mjs (1 test) 57ms
+ ✓ scripts/deltat-monitor.test.mjs (13 tests) 174ms
+ ✓ scripts/registry-research.test.mjs (12 tests) 358ms
+ ✓ src/lib/living-chart/cloud.test.ts (6 tests) 36ms
+ ✓ src/lib/webmcp/register.test.ts (3 tests) 4ms
+ ✓ src/lib/webmcp/calculators/moon-phase.test.ts (10 tests) 128ms
+ ✓ src/lib/geo/rank.test.ts (7 tests) 159ms
+ ✓ scripts/registry-selected-token-chart.test.mjs (27 tests) 93ms
+ ✓ src/islands/ChartCalculator.reference-sun.test.ts (14 tests) 137ms
+ ✓ scripts/sky-api-headers.test.mjs (4 tests) 129ms
+ ✓ src/lib/daily-email/recipients.test.ts (8 tests) 13ms
+ ✓ src/lib/events/interpretations.test.ts (7 tests) 318ms
+ ✓ src/islands/synastry/InviteExperience.test.ts (5 tests) 76ms
+ ✓ src/islands/PlaceSearch.recovery.test.ts (11 tests) 35ms
+ ✓ src/ai-tools/features/compatibility.test.ts (10 tests) 287ms
+ ✓ src/lib/daily-email/delivery.test.ts (15 tests) 71ms
+ ✓ scripts/minify-inline-styles.test.mjs (8 tests) 150ms
+ ✓ scripts/people-font-preload.test.mjs (10 tests) 167ms
+ ✓ scripts/trust-surface-consistency.test.mjs (9 tests) 52ms
+ ✓ src/islands/lunar-return/export-model.test.ts (6 tests) 123ms
+ ✓ src/lib/communication.test.ts (10 tests) 170ms
+ ✓ scripts/shelf-layout.test.mjs (59 tests) 64ms
+ ✓ src/islands/synastry/composite-picture.test.ts (4 tests) 163ms
+ ✓ src/lib/account-api/sync-handler.test.ts (20 tests) 49ms
+ ✓ scripts/home-first-paint.test.mjs (11 tests) 112ms
+ ✓ scripts/astrofolio-canonical.test.mjs (4 tests) 215ms
+ ✓ src/lib/daily-email/content.test.ts (15 tests) 80ms
+ ✓ src/lib/numerology/index.test.ts (155 tests) 126ms
+ ✓ src/islands/ChartCalculator.phase.test.ts (7 tests) 171ms
+ ✓ src/data/ru-guides.test.ts (5 tests) 8ms
+ ✓ scripts/status-archive.test.mjs (4 tests) 37ms
+ ✓ src/islands/ProfileDashboard.recovery.test.ts (17 tests) 137ms
+ ✓ src/lib/phase1-motion-layout-contract.test.ts (12 tests) 67ms
+ ✓ src/islands/MoonPhaseTool.reference.test.ts (36 tests) 211ms
+ ✓ src/lib/profile/daily-email-client.test.ts (13 tests) 192ms
+ ✓ src/lib/transits.test.ts (5 tests) 17ms
+ ✓ scripts/build-sign-art-avif.test.mjs (2 tests) 113ms
+ ✓ src/lib/webmcp/calculators/baby-zodiac.test.ts (8 tests) 33ms
+ ✓ src/lib/profile/today-reading.test.ts (3 tests) 43ms
+ ✓ src/islands/synastry/composite-model.test.tsx (23 tests) 110ms
+ ✓ scripts/daily-fact-audit.test.mjs (3 tests) 117ms
+ ✓ src/lib/time/local-date-reference.test.ts (48 tests) 33ms
+ ✓ src/lib/guide-protocol/adapters.test.ts (17 tests) 61ms
+ ✓ src/lib/sign-display.test.ts (5 tests) 25ms
+ ✓ src/lib/guide-server/openai.test.ts (10 tests) 10ms
+ ✓ tests/api/registry-news.test.ts (17 tests) 157ms
+ ✓ src/lib/engine/progressions.test.ts (3 tests) 170ms
+ ✓ scripts/t17-hydration-diagnostics.test.mjs (4 tests) 52ms
+ ✓ src/lib/account-api/handler.test.ts (18 tests) 78ms
+ ✓ src/lib/time/localToUtc.test.ts (53 tests) 73ms
+ ✓ src/lib/scene/scene.test.ts (15 tests) 119ms
+ ✓ scripts/precision-alpha-contents.test.mjs (3 tests) 30ms
+ ✓ src/lib/engine/independent-references-clock.test.ts (10 tests) 7ms
+ ✓ src/lib/games/share-card.test.ts (10 tests) 38ms
+ ✓ src/islands/PositionsShareSurface.test.tsx (4 tests) 11ms
+ ✓ scripts/github-actions-pins.test.mjs (1 test) 73ms
+ ✓ scripts/exchange-risk.test.mjs (14 tests) 43ms
+ ✓ src/lib/share-card-luminous.test.ts (2 tests) 1ms
+ ✓ src/lib/geo/search.test.ts (8 tests) 109ms
+ ✓ src/lib/time/local-date-intervals.test.ts (79 tests) 57ms
+ ✓ scripts/calculator-first-paint.test.mjs (2 tests) 83ms
+ ✓ src/islands/solar-return/SolarReturnActions.test.tsx (9 tests) 75ms
+ ✓ src/lib/engine/transit-window-core.test.ts (34 tests) 58ms
+ ✓ scripts/technical-audit-remediation.test.mjs (7 tests) 106ms
+ ✓ scripts/exchange-entry.test.mjs (18 tests) 86ms
+ ✓ src/ai-tools/watch/oauth.test.ts (3 tests) 30ms
+ ✓ src/lib/share.test.ts (48 tests) 19ms
+ ✓ src/components/guide/guide-content.test.ts (6 tests) 121ms
+ ✓ scripts/programme-ledger.test.mjs (6 tests) 11ms
+ ✓ scripts/people-pilot.test.mjs (13 tests) 223ms
+ ✓ src/lib/time/fixed-zones.test.ts (3 tests) 20ms
+ ✓ scripts/exchange-chart-model.test.mjs (15 tests) 33ms
+ ✓ scripts/trade-ultra.test.mjs (24 tests) 109ms
+ ✓ scripts/registry-shell-parity.test.mjs (3 tests) 23ms
+ ✓ src/lib/account-api/sync-wire.test.ts (24 tests) 15ms
+ ✓ scripts/registry-hub.test.mjs (8 tests) 58ms
+ ✓ src/lib/account-v2/profile-boundary.test.ts (22 tests) 6ms
+ ✓ src/lib/natal.test.ts (18 tests) 261ms
+ ✓ scripts/sitemap-sections.test.mjs (3 tests) 146ms
+ ✓ tests/thesis-contract.test.mjs (39 tests) 142ms
+ ✓ src/lib/wheel-explain/copy.test.ts (8 tests) 61ms
+ ✓ tests/visual/lighthouse-assets.test.mjs (12 tests) 29ms
+ ✓ scripts/end-card.test.mjs (4 tests) 16ms
+ ✓ src/islands/SkyTicker.test.tsx (2 tests) 16ms
+ ✓ scripts/daily-workflow.test.mjs (4 tests) 62ms
+ ✓ src/lib/birthdays.test.ts (12 tests) 189ms
+ ✓ scripts/archive-data.test.mjs (7 tests) 6ms
+ ✓ src/islands/BirthCalendar.test.tsx (17 tests) 32ms
+ ✓ src/lib/chart-handoff.test.ts (10 tests) 19ms
+ ✓ src/islands/synastry/inviteClient.test.ts (7 tests) 22ms
+ ✓ src/lib/horoscopes.test.ts (10 tests) 19ms
+ ✓ src/islands/SomeoneElseChart.test.ts (7 tests) 32ms
+ ✓ src/lib/chart-shape.test.ts (59 tests) 44ms
+ ✓ src/lib/guide-server/anthropic.test.ts (3 tests) 46ms
+ ✓ scripts/horoscope-route-map.test.mjs (9 tests) 24ms
+ ✓ src/lib/guide-protocol/context-state.test.ts (12 tests) 23ms
+ ✓ src/lib/aspect-pattern-card.test.ts (21 tests) 175ms
+ ✓ src/lib/og-art-cards.test.ts (10 tests) 21ms
+ ✓ tests/portrait-readiness.test.mjs (8 tests) 12ms
+ ✓ scripts/registry-market-snapshot.test.mjs (8 tests) 11ms
+ ✓ src/lib/email/daily-token.test.ts (7 tests) 33ms
+ ✓ scripts/sky-lunations.test.mjs (2 tests) 71ms
+ ✓ src/islands/explorer/ChartContext.test.tsx (8 tests) 50ms
+ ✓ src/lib/declination.test.ts (11 tests) 48ms
+ ✓ scripts/inline-thesis-footer.test.mjs (6 tests) 97ms
+ ✓ src/lib/profile/backup.test.ts (16 tests) 34ms
+ ✓ scripts/natal-aspects-policy.test.mjs (13 tests) 71ms
+ ✓ scripts/exchange-depth.test.mjs (18 tests) 12ms
+ ✓ scripts/trade-panel-model.test.mjs (29 tests) 14ms
+ ✓ src/lib/invite/email.test.ts (5 tests) 36ms
+ ✓ src/data/glossary.test.ts (7 tests) 26ms
+ ✓ src/lib/transit-window-ical.test.ts (5 tests) 16ms
+ ✓ src/islands/aura/AuraTalisman.test.tsx (3 tests) 14ms
+ ✓ scripts/exchange-gecko.test.mjs (26 tests) 51ms
+ ✓ src/islands/aura/AuraCollectionCabinet.test.tsx (12 tests) 17ms
+ ✓ src/lib/growth-link-graph.test.ts (5 tests) 132ms
+ ✓ src/lib/guide-protocol/validators.test.ts (25 tests) 29ms
+ ✓ tests/footer-style-loader.test.mjs (14 tests) 8ms
+ ✓ scripts/terminal-market-notice.test.mjs (4 tests) 56ms
+ ✓ src/lib/living-chart/sync.test.ts (7 tests) 14ms
+ ✓ src/islands/lunar-return/LunarReturnActions.test.tsx (13 tests) 11ms
+ ✓ src/islands/aspect-patterns/AspectPatternActions.test.tsx (12 tests) 65ms
+ ✓ src/lib/learning-source.test.ts (25 tests) 57ms
+ ✓ scripts/people-source-corrections.test.mjs (10 tests) 96ms
+ ✓ scripts/how-to-buy.test.mjs (5 tests) 104ms
+ ✓ src/lib/profile/comparison-link.test.ts (2 tests) 32ms
+ ✓ scripts/deltat-install-guard.test.mjs (5 tests) 8ms
+ ✓ scripts/nav-stability.test.mjs (22 tests) 14ms
+ ✓ src/lib/profile/pairs.test.ts (13 tests) 17ms
+ ✓ src/lib/weekly-digest/delivery.test.ts (21 tests) 68ms
+ ✓ scripts/registry-outlook.test.mjs (7 tests) 84ms
+ ✓ src/lib/auth/oauth.test.ts (6 tests) 6ms
+ ✓ scripts/github-actions-trust-contract.test.mjs (4 tests) 103ms
+ ✓ src/islands/synastry/CompositePanel.test.tsx (22 tests) 69ms
+ ✓ src/islands/WalletChart.test.ts (2 tests) 128ms
+ ✓ src/lib/wheel-explain/hotspots.test.ts (6 tests) 11ms
+ ✓ src/lib/share-results.test.ts (39 tests) 13ms
+ ✓ scripts/developer-structured-data-checks.test.mjs (10 tests) 18ms
+ ✓ src/lib/wheel/wheel-serialization.test.ts (6 tests) 90ms
+ ✓ scripts/audit-with-retry.test.mjs (49 tests) 121ms
+ ✓ scripts/editorial-metadata-checks.test.mjs (5 tests) 16ms
+ ✓ src/lib/engine/aspect-patterns.test.ts (18 tests) 23ms
+ ✓ src/islands/transit/slow-transit-scan.test.ts (6 tests) 133ms
+ ✓ scripts/astrofolio-share-card.test.mjs (4 tests) 140ms
+ ✓ scripts/daily-feed-dates.test.ts (2 tests) 48ms
+ ✓ tests/visual/quiet-sun-fixture.test.mjs (1 test) 107ms
+ ✓ scripts/horoscope-window-files.test.ts (3 tests) 133ms
+ ✓ src/lib/daily.test.ts (11 tests) 9ms
+ ✓ src/islands/ProfileInvites.test.tsx (11 tests) 67ms
+ ✓ src/lib/profile/saved-pages-config.test.ts (22 tests) 10ms
+ ✓ src/mcp/bounds.test.ts (44 tests) 15ms
+ ✓ scripts/build-thesis-disclosure.test.mjs (10 tests) 28ms
+ ✓ tests/visual/lighthouse-gate.test.mjs (12 tests) 14ms
+ ✓ src/lib/developer-playground.test.ts (9 tests) 76ms
+ ✓ src/lib/profile/saved-record.test.ts (17 tests) 92ms
+ ✓ src/lib/aura-cabinet-card.test.ts (19 tests) 7ms
+ ✓ src/islands/ChartCalculator.actions.test.ts (20 tests) 29ms
+ ✓ src/lib/i18n/plural.test.ts (5 tests) 15ms
+ ✓ src/lib/daily-email/schedule.test.ts (3 tests) 21ms
+ ✓ src/lib/year-ahead.test.ts (9 tests) 8ms
+ ✓ scripts/weekly-digest-contract.test.mjs (3 tests) 38ms
+ ✓ src/islands/explorer/EntityPicker.test.tsx (13 tests) 35ms
+ ✓ src/lib/learning-progress.test.ts (12 tests) 15ms
+ ✓ tests/api/compute-api-vercel.test.ts (7 tests) 36ms
+ ✓ src/lib/account-v2/mutation-fingerprint.test.ts (2 tests) 39ms
+ ✓ src/lib/profile/me.test.ts (7 tests) 4ms
+ ✓ src/lib/wallet/aura-connectors.test.ts (2 tests) 5ms
+ ✓ src/lib/hooks/useProfileAccessGeneration.test.ts (5 tests) 51ms
+ ✓ src/lib/webmcp/search.test.ts (27 tests) 35ms
+ ✓ src/lib/chart-context.test.ts (109 tests) 17ms
+ ✓ src/lib/lunar-return-ical.test.ts (10 tests) 9ms
+ ✓ scripts/trust-games.test.mjs (1 test) 7ms
+ ✓ src/data/es-guides.test.ts (1 test) 3ms
+ ✓ src/data/chinese-zodiac-zh.test.ts (5 tests) 6ms
+ ✓ src/islands/aspect-patterns/AspectPatternPanel.test.tsx (9 tests) 11ms
+ ✓ src/lib/tool-icons.test.ts (5 tests) 25ms
+ ✓ scripts/email-capture-deferred.test.mjs (3 tests) 10ms
+ ✓ src/islands/ProfileHome.test.tsx (10 tests) 9ms
+ ✓ src/lib/invite/validate.test.ts (8 tests) 8ms
+ ✓ scripts/pair-page-delivery.test.mjs (6 tests) 16ms
+ ✓ src/islands/explorer/LearningPractice.test.tsx (9 tests) 6ms
+ ✓ src/lib/i18n/daily-reading.test.ts (2 tests) 13ms
+ ✓ scripts/stamp-astrofolio-season.test.mjs (4 tests) 15ms
+stderr | src/lib/games/server.test.ts > handleGamesApi gates > fails closed without Supabase or session configuration
+[games] unconfigured {"hasSupabaseUrl":true,"hasServiceKey":true,"hasSecret":true,"secretLength":5,"secretValid":false}
+
+ ✓ src/lib/wheel/ecliptic3d.test.ts (30 tests) 26ms
+stderr | src/lib/games/server.test.ts > join and check-in > answers 502 when PostgREST fails, never a fabricated result
+[games] upstream PostgREST zodiac_games_join_v1 500
+
+stderr | src/lib/games/server.test.ts > join and check-in > collapses non-PostgREST upstream failures to a fixed token
+[games] upstream fetch failed: https://example.supabase.co
+
+ ✓ src/lib/games/server.test.ts (18 tests) 9ms
+ ✓ src/islands/ChartCalculator.locale.test.ts (7 tests) 71ms
+ ✓ scripts/embed-headers.test.mjs (1 test) 20ms
+ ✓ scripts/race-recap.test.mjs (8 tests) 51ms
+ ✓ scripts/exchange-analytics.test.mjs (9 tests) 14ms
+ ✓ tests/assistant-api.test.ts (23 tests) 25ms
+ ✓ src/lib/reference-captions.test.tsx (26 tests) 16ms
+ ✓ src/lib/upcoming.test.ts (9 tests) 8ms
+ ✓ scripts/check-text-seams.test.mjs (6 tests) 7ms
+ ✓ src/lib/profile/personal-chart.test.ts (3 tests) 1ms
+ ✓ src/lib/birth-time-window.test.ts (8 tests) 7ms
+ ✓ tests/locale-discovery-drive.test.mjs (5 tests) 49ms
+ ✓ src/lib/webmcp/polyfill.test.ts (1 test) 11ms
+ ✓ src/ai-tools/quota.test.ts (4 tests) 4ms
+ ✓ src/lib/profile/merge.test.ts (11 tests) 4ms
+ ✓ scripts/sky-api-quickstart.test.mjs (21 tests) 13ms
+ ✓ src/lib/daily-email/segments.test.ts (3 tests) 6ms
+ ✓ src/lib/auth/oauth-config.test.ts (22 tests) 3ms
+ ✓ src/ai-tools/watch/callback.test.ts (3 tests) 11ms
+ ✓ src/lib/aspect-pattern-model.test.ts (6 tests) 5ms
+ ✓ src/lib/scene/chapters.test.ts (20 tests) 19ms
+ ✓ src/lib/profile/your-people.test.ts (7 tests) 5ms
+ ✓ src/lib/daily-email/sun-authority.test.ts (3 tests) 5ms
+ ✓ scripts/trade-styles.test.mjs (5 tests) 3ms
+ ✓ src/islands/ChartTrust.test.tsx (14 tests) 7ms
+ ✓ src/lib/invite/server.test.ts (5 tests) 6ms
+ ✓ src/islands/aura/AuraResult.test.tsx (3 tests) 17ms
+ ✓ scripts/build-email-inline-images.test.mjs (1 test) 129ms
+ ✓ src/islands/WelcomeBack.test.ts (4 tests) 9ms
+ ✓ src/lib/email/email.test.ts (22 tests) 29ms
+ ✓ src/lib/analytics.test.ts (14 tests) 4ms
+ ✓ src/lib/account-v2/remote-chart.test.ts (3 tests) 4ms
+ ✓ src/lib/account-v2/client.test.ts (8 tests) 70ms
+ ✓ tests/api/push-subscribe.test.ts (5 tests) 6ms
+ ✓ src/lib/wheel/Wheel.spotlight.test.ts (4 tests) 8ms
+ ✓ src/lib/chart-signature.test.ts (10 tests) 6ms
+ ✓ src/islands/transit/transit-search-model.test.ts (2 tests) 18ms
+ ✓ src/lib/ical.test.ts (11 tests) 9ms
+ ✓ src/islands/chart3d/turning.test.ts (13 tests) 14ms
+ ✓ scripts/trade-panel.test.mjs (1 test) 2ms
+ ✓ scripts/search-index-lib.test.mjs (7 tests) 7ms
+ ✓ src/lib/profile/saved-pages-cloud.test.ts (3 tests) 2ms
+ ✓ scripts/registry-aura-entry.test.mjs (10 tests) 4ms
+ ✓ src/lib/aura/copy.test.ts (14 tests) 87ms
+ ✓ src/lib/wallet/providers.test.ts (4 tests) 13ms
+ ✓ src/islands/LearningPath.navigation.test.ts (7 tests) 7ms
+ ✓ scripts/exchange-styles.test.mjs (5 tests) 4ms
+ ✓ src/lib/aura/compose.test.ts (14 tests) 10ms
+ ✓ src/lib/guide-server/quota.test.ts (7 tests) 11ms
+ ✓ scripts/exchange-mobile.test.mjs (5 tests) 3ms
+ ✓ src/lib/webmcp/calculators/numerology.test.ts (7 tests) 10ms
+ ✓ src/islands/ProfileManager.test.ts (13 tests) 9ms
+ ✓ tests/legal-identity.test.ts (2 tests) 38ms
+ ✓ src/lib/solar-return-ical.test.ts (11 tests) 12ms
+ ✓ src/lib/i18n/ui/ru.test.ts (6 tests) 9ms
+ ✓ src/islands/ChartCalculator.registry-bridge.test.ts (1 test) 10ms
+ ✓ src/islands/LearningPath.test.ts (8 tests) 4ms
+ ✓ src/islands/synastry/synastryLines.test.ts (7 tests) 9ms
+ ✓ src/data/fr-guides.test.ts (2 tests) 16ms
+ ✓ src/lib/account-v2/browser-storage.test.ts (3 tests) 3ms
+ ✓ src/islands/AccountSaveAction.test.tsx (6 tests) 6ms
+ ✓ src/islands/synastry/RelationshipWheel.recovery.test.tsx (14 tests) 12ms
+ ✓ src/lib/invite/config.test.ts (7 tests) 8ms
+ ✓ scripts/phase1-scope-guard.test.mjs (30 tests) 17ms
+ ✓ src/lib/living-chart/forecast-snapshot.test.ts (3 tests) 4ms
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > returns the neutral not-found outcome for malformed input
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > caches only public timestamp context and optional official sign slugs
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > caches only public timestamp context and optional official sign slugs
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > is unavailable when the feature flag is off, before any provider call
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ tests/api/wallet-birth.test.ts (4 tests) 6ms
+ ✓ src/lib/account-v2/chart-wire.test.ts (4 tests) 5ms
+ ✓ src/lib/profile/settled-signs.test.ts (6 tests) 6ms
+ ✓ tests/search-learning-checks.test.mjs (10 tests) 3ms
+ ✓ src/data/it-guides.test.ts (2 tests) 18ms
+ ✓ src/islands/SavedRecordsPanel.test.tsx (3 tests) 8ms
+ ✓ src/lib/daily-email/resend-request.test.ts (3 tests) 5ms
+ ✓ src/lib/phase1-design-contract.test.ts (14 tests) 52ms
+ ✓ scripts/http-cache-policy.test.mjs (10 tests) 7ms
+ ✓ scripts/horoscope-freshness-lib.test.mjs (4 tests) 6ms
+ ✓ src/lib/time/birth-calendar.test.ts (17 tests) 3ms
+ ✓ src/islands/explorer/learning-exercises.test.ts (11 tests) 3ms
+ ✓ src/lib/guide-knowledge/retriever.test.ts (5 tests) 20ms
+ ✓ src/lib/games/season.test.ts (8 tests) 8ms
+ ✓ tests/i18n-r2-deferred-styles.test.mjs (7 tests) 3ms
+ ✓ src/strings/seo.ru.test.ts (4 tests) 4ms
+ ✓ src/islands/explorer/ReadingPath.test.tsx (5 tests) 23ms
+ ✓ src/lib/profile/initial.test.tsx (4 tests) 3ms
+ ✓ src/lib/module-load.test.ts (4 tests) 9ms
+ ✓ src/islands/explorer/tour/TourCard.test.tsx (3 tests) 4ms
+ ✓ src/lib/share-card-brand.test.ts (7 tests) 6ms
+ ✓ src/lib/i18n/ui/client.test.ts (4 tests) 3ms
+ ✓ src/lib/living-chart/owner.test.ts (4 tests) 2ms
+ ✓ src/ai-tools/studio/bridge.test.ts (4 tests) 8ms
+ ✓ tests/locale-capture-readiness.test.mjs (19 tests) 4ms
+ ✓ src/lib/compat-score.test.ts (3 tests) 3ms
+ ✓ src/lib/account-v2/auth-epoch.test.ts (3 tests) 3ms
+ ✓ src/islands/explorer/Inspector.test.tsx (4 tests) 6ms
+ ✓ src/lib/account-v2/profile-lease.test.ts (7 tests) 5ms
+ ✓ src/lib/today/index.test.ts (8 tests) 7ms
+ ✓ scripts/trade-wallet.test.mjs (1 test) 2ms
+ ✓ src/lib/wheel/horizon-fixtures.test.ts (13 tests) 6ms
+ ✓ src/lib/hooks/useEngine.test.ts (4 tests) 4ms
+ ✓ src/lib/profile/photo.test.ts (1 test) 1ms
+ ✓ src/islands/EvidenceDisclosure.test.tsx (2 tests) 5ms
+ ✓ src/lib/aura/talisman.test.ts (8 tests) 14ms
+ ✓ src/lib/brand-lockup.test.ts (6 tests) 19ms
+ ✓ scripts/panel-fingerprints.test.mjs (3 tests) 2ms
+ ✓ src/lib/profile/sync.test.ts (4 tests) 2ms
+ ✓ src/lib/share-positions-reading.test.ts (3 tests) 5ms
+ ✓ src/lib/receipt-download.test.ts (5 tests) 6ms
+ ✓ src/lib/account-v2/deletion-recovery.test.ts (1 test) 4ms
+ ✓ src/lib/scene/overlay.test.ts (4 tests) 2ms
+ ✓ src/lib/email/post-chart-state.test.ts (16 tests) 5ms
+ ✓ src/data/chinese-zodiac.test.ts (3 tests) 5ms
+ ✓ src/lib/events/transit-link.test.ts (4 tests) 4ms
+ ✓ src/lib/account-api/encryption.test.ts (12 tests) 11ms
+ ✓ src/lib/account-v2/local-state.test.ts (16 tests) 45ms
+ ✓ src/lib/occasions/date-score.test.ts (3 tests) 4ms
+ ✓ scripts/i18n-hreflang-policy.test.ts (2 tests) 3ms
+ ✓ scripts/hosted-mcp-review.test.mjs (7 tests) 7ms
+ ✓ src/lib/email/weekly-unsubscribe-api.test.ts (5 tests) 16ms
+ ✓ src/lib/account-api/mutation-verifier.test.ts (2 tests) 2ms
+ ✓ src/lib/push.test.ts (4 tests) 4ms
+ ✓ scripts/locale-discovery.test.ts (6 tests) 11ms
+ ✓ scripts/event-article-dates.test.mjs (4 tests) 3ms
+ ✓ src/lib/server/digest-unsubscribe.test.ts (2 tests) 2ms
+ ✓ src/lib/aura/cabinet-finish.test.ts (32 tests) 4ms
+ ✓ src/components/CollectBand.contract.test.ts (3 tests) 7ms
+ ✓ src/lib/profile/post-chart-context.test.ts (4 tests) 4ms
+ ✓ src/islands/solar-return/export-model.test.ts (4 tests) 5ms
+ ✓ scripts/browser-evidence-control.test.mjs (19 tests) 4ms
+ ✓ src/lib/wheel-explain/controller.test.ts (15 tests) 5ms
+ ✓ src/lib/dignities.test.ts (5 tests) 3ms
+ ✓ src/lib/sect.test.ts (11 tests) 4ms
+ ✓ src/strings/seo.test.ts (3 tests) 5ms
+ ✓ src/lib/engine/synastry.test.ts (10 tests) 6ms
+ ✓ scripts/daily-email-canary-workflow.test.mjs (17 tests) 3ms
+ ✓ src/lib/invite/local-links.test.ts (5 tests) 9ms
+ ✓ src/lib/approach.test.ts (4 tests) 4ms
+ ✓ tests/chart-context-observation.test.mjs (2 tests) 2ms
+ ✓ src/lib/share-card-brand-contract.test.ts (18 tests) 12ms
+ ✓ src/lib/aura/persistence.test.ts (9 tests) 6ms
+ ✓ scripts/configure-legacy-analytics.test.mjs (9 tests) 4ms
+ ✓ src/data/pt-guides.test.ts (1 test) 46ms
+ ✓ src/lib/range-words.test.ts (6 tests) 2ms
+ ✓ src/lib/aura/sdk-conformance.test.ts (2 tests) 2ms
+ ✓ src/islands/lunar-return/copy.test.ts (2 tests) 4ms
+ ✓ src/lib/guide-server/security.test.ts (3 tests) 4ms
+ ✓ src/lib/engine/moon-phase-category.test.ts (16 tests) 3ms
+ ✓ src/lib/time/civil-date.test.ts (64 tests) 7ms
+ ✓ scripts/consumer-copy-lib.test.mjs (6 tests) 4ms
+ ✓ src/islands/today/sun-sign-reading.test.ts (1 test) 4ms
+ ✓ src/lib/aura/source-alignment.test.ts (7 tests) 10ms
+ ✓ scripts/indexing-consistency.test.mjs (11 tests) 3ms
+ ✓ tests/vercel-compatibility-routes.test.ts (2 tests) 2ms
+ ✓ src/lib/search/score.test.ts (10 tests) 6ms
+ ✓ src/lib/living-chart/schema.test.ts (5 tests) 6ms
+ ✓ src/lib/seo-lastmod.test.ts (6 tests) 17ms
+ ✓ src/lib/wallet/address.test.ts (3 tests) 2ms
+ ✓ src/lib/games/champions.test.ts (2 tests) 5ms
+ ✓ src/lib/share-synastry.test.ts (6 tests) 6ms
+ ✓ scripts/trust-privacy-boundary.test.mjs (4 tests) 9ms
+ ✓ src/lib/contact-identity.test.ts (1 test) 4ms
+ ✓ src/lib/a2hs.test.ts (3 tests) 2ms
+ ✓ src/lib/footer-boundary.test.mjs (21 tests) 7ms
+ ✓ scripts/organization-identity.test.mjs (15 tests) 9ms
+ ✓ tests/aspect-pattern-observation.test.mjs (3 tests) 2ms
+ ✓ src/islands/CalculationReload.test.ts (7 tests) 3ms
+ ✓ scripts/people-identity-og-review.test.mjs (12 tests) 5ms
+ ✓ src/lib/invite/request.test.ts (3 tests) 2ms
+ ✓ src/lib/aura/analytics.test.ts (12 tests) 4ms
+ ✓ src/islands/solar-return/copy.test.ts (3 tests) 2ms
+ ✓ src/islands/aura/curatorialSets.test.ts (3 tests) 7ms
+ ✓ src/lib/account-v2/feature-flags.test.ts (1 test) 3ms
+ ✓ tests/ru-hero-source.test.mjs (6 tests) 2ms
+ ✓ tests/phase4-sharing-readiness.test.mjs (4 tests) 10ms
+ ✓ src/data/almanac.test.ts (3 tests) 4ms
+ ✓ tests/search-asset-cache.test.mjs (3 tests) 2ms
+ ✓ src/lib/zodiac-dates.test.ts (4 tests) 20ms
+ ✓ scripts/exchange-pools.test.mjs (6 tests) 8ms
+ ✓ src/lib/horoscope-month.test.mjs (4 tests) 2ms
+ ✓ src/lib/pwa-install.test.ts (2 tests) 1ms
+ ✓ src/islands/explorer/tour/progress.test.ts (4 tests) 4ms
+ ✓ scripts/race-close.test.mjs (4 tests) 11ms
+ ✓ src/islands/SynastryCalculator.test.ts (2 tests) 2ms
+ ✓ src/lib/email/template.test.ts (9 tests) 5ms
+ ✓ src/lib/living-chart/feature-flags.test.ts (3 tests) 3ms
+ ✓ src/lib/living-chart/capture-sync-choice.test.ts (4 tests) 6ms
+ ✓ tests/explorer-crowded-wheel-checks.test.mjs (4 tests) 5ms
+ ✓ src/lib/trust-boundary.test.ts (6 tests) 2ms
+ ✓ src/lib/profile/navigation-avatar.test.ts (2 tests) 11ms
+ ✓ src/lib/ring-front.test.ts (3 tests) 4ms
+ ✓ scripts/sync-registry-establishment.test.mjs (1 test) 3ms
+ ✓ src/lib/i18n/ru-runtime/client.test.ts (2 tests) 4ms
+ ✓ src/lib/daily-email/identity.test.ts (3 tests) 5ms
+ ✓ src/lib/engine/year-scan.test.ts (3 tests) 7ms
+ ✓ scripts/build-widget-loader.test.mjs (1 test) 3ms
+ ✓ src/lib/natal-context.test.ts (4 tests) 4ms
+ ✓ scripts/build-distribution.test.mjs (4 tests) 4ms
+ ✓ scripts/people-civil-day-bounds.test.mjs (12 tests) 4ms
+ ✓ src/lib/aura/events.test.ts (4 tests) 3ms
+ ✓ src/islands/synastry/relationshipData.test.ts (3 tests) 4ms
+ ✓ src/lib/widgets.test.ts (4 tests) 58ms
+ ✓ src/lib/account-v2/profile-access.test.ts (7 tests) 3ms
+ ✓ src/lib/composite.test.ts (3 tests) 5ms
+ ✓ src/data/conformance/conformance-data.test.ts (4 tests) 4ms
+ ✓ tests/bio-page.test.ts (4 tests) 4ms
+ ✓ src/lib/wallet/config.test.ts (3 tests) 7ms
+ ✓ src/islands/ProfileSunSignCapture.test.ts (2 tests) 3ms
+ ✓ src/lib/living-chart/initialization-guard.test.ts (2 tests) 10ms
+ ✓ src/islands/transit/TransitRing.test.ts (4 tests) 2ms
+ ✓ src/lib/wallet/share-card.test.ts (3 tests) 2ms
+ ✓ src/lib/compat.test.ts (2 tests) 2ms
+ ✓ scripts/trade-liquidity.test.mjs (3 tests) 2ms
+ ✓ tests/vercel-aura-headers.test.ts (2 tests) 4ms
+ ✓ src/islands/AccountBoundProfileSurface.test.ts (3 tests) 4ms
+ ↓ docs/platform/evidence/swiss-benchmark/prototype/spk.test.mjs (4 tests | 4 skipped)
+ ✓ src/lib/share-card-copy.test.ts (2 tests) 8ms
+ ✓ src/lib/account-v2/pending-operation.test.ts (2 tests) 3ms
+ ✓ tests/lunar-return-observation.test.mjs (2 tests) 1ms
+ ✓ tests/recovery-browser-observation.test.mjs (3 tests) 1ms
+ ✓ tests/solar-return-observation.test.mjs (3 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  scripts/phase1-acceptance-evidence.test.mjs > Phase 1 durable acceptance evidence > contains exact 360px and 1280px captures for every new template
+AssertionError: expected 'b55c65fb243c4517f410797fcd53094c8fe43…' to be '75eaedf08f665ad2980032687a07f6c00cbef…' // Object.is equality
+
+Expected: "75eaedf08f665ad2980032687a07f6c00cbefef2ac82fa1c39d0451acd882f9f"
+Received: "b55c65fb243c4517f410797fcd53094c8fe4361c5cb5c39c5e679b5e86429cc4"
+
+ ❯ scripts/phase1-acceptance-evidence.test.mjs:52:43
+     50|     expect(manifest.browser).toMatch(/^Chromium \d+/);
+     51|     expect(manifest.publicationCanonicalSha256).toMatch(/^[a-f0-9]{64}…
+     52|     expect(manifest.templateSourceSha256).toBe(await phase1TemplateSou…
+       |                                           ^
+     53|     expect(manifest.renderPayloadSha256).toEqual({
+     54|       daily: expect.stringMatching(/^[a-f0-9]{64}$/),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 619 passed | 1 skipped (621)
+      Tests  1 failed | 7958 passed | 5 skipped (7964)
+   Start at  13:31:56
+   Duration  150.81s (transform 31.79s, setup 0ms, collect 194.79s, tests 954.15s, environment 366ms, prepare 59.68s)
+

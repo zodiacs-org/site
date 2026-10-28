@@ -115,8 +115,7 @@ export const CAPABILITIES_OUTPUT = z.strictObject({
   engine: z.strictObject({
     name: z.literal('@zodiacs/engine'),
     version: z.string(),
-    releaseStatus: z.literal('published'),
-    registry: z.literal('npm'),
+    releaseStatus: z.literal('unpublished-candidate'),
   }),
   schemas: z.strictObject({
     envelope: z.literal(NATAL_ENVELOPE_SCHEMA),
@@ -338,6 +337,8 @@ function computeReceipt(tool: ComputeToolName) {
       }),
       runtimeTzdb: z.string().nullable(),
     }).describe('How local times were read: the resolver and its policy, the tzdb release it ships for dates up to 1970-01-01, and the runtime\'s own tzdb, which reads the rest.') } : {}),
+    conventionIds: z.array(z.string())
+      .describe('Every id of the Zodiacs conventions registry (zodiacs.org/developers/conventions) that this receipt\'s own fields name, in code-unit order, each once. The result\'s are left out, so the receipt holds nothing the request gave.'),
   }).describe('The compute API\'s receipt for this calculation: the engine, its conventions and coverage as its own receipts state them, and what this request used. The cite digest is of this object.');
 }
 

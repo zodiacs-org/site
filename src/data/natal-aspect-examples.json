@@ -1,5 +1,5 @@
 {
-  "engineVersion": "1.0.0",
+  "engineVersion": "1.1.0-rc.1",
   "conventions": [
     {
       "type": "conjunction",
@@ -95,7 +95,7 @@
           "residualOrb": 0.2936833142636033,
           "geometry": "square",
           "applying": true,
-          "engineVersion": "1.0.0",
+          "engineVersion": "1.1.0-rc.1",
           "daySpan": {
             "from": {
               "utc": "2001-01-16T00:00:00.000Z",
@@ -143,7 +143,7 @@
           "residualOrb": 0.11200412857954234,
           "geometry": "trine",
           "applying": true,
-          "engineVersion": "1.0.0",
+          "engineVersion": "1.1.0-rc.1",
           "daySpan": {
             "from": {
               "utc": "2001-06-30T00:00:00.000Z",
@@ -256,7 +256,7 @@
           "residualOrb": 0.30215398709924557,
           "geometry": "conjunction",
           "applying": true,
-          "engineVersion": "1.0.0",
+          "engineVersion": "1.1.0-rc.1",
           "daySpan": {
             "from": {
               "utc": "2001-05-19T00:00:00.000Z",
@@ -304,7 +304,7 @@
           "residualOrb": 0.396298864876826,
           "geometry": "opposition",
           "applying": false,
-          "engineVersion": "1.0.0",
+          "engineVersion": "1.1.0-rc.1",
           "daySpan": {
             "from": {
               "utc": "2001-02-11T00:00:00.000Z",
@@ -417,7 +417,7 @@
           "residualOrb": 0.4910122102899095,
           "geometry": "sextile",
           "applying": true,
-          "engineVersion": "1.0.0",
+          "engineVersion": "1.1.0-rc.1",
           "daySpan": {
             "from": {
               "utc": "2002-01-18T00:00:00.000Z",
@@ -465,7 +465,7 @@
           "residualOrb": 0.6410856659763908,
           "geometry": "square",
           "applying": true,
-          "engineVersion": "1.0.0",
+          "engineVersion": "1.1.0-rc.1",
           "daySpan": {
             "from": {
               "utc": "2001-11-22T00:00:00.000Z",

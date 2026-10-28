@@ -1,5 +1,244 @@
 # OpenAI portal review record
 
+## Tool copy checked after R44, 28 October 2026
+
+Dias approved a rescan so that the app's copy of the tools would match
+production after R44 (#840). The portal was read first; the rescan turned
+out not to be needed, so it was not run.
+
+The Zodiacs app now shows **In review**, metadata and skills version 0.5.1,
+and **Not published**. This record's earlier entries describe the 0.5.0
+draft as not submitted; when 0.5.1 was submitted is not recorded here.
+
+The MCP server `zodiacs-sky` shows In review, configured and domain
+verified. Its server instructions and all thirteen tools were last checked
+on 27 October at 22:11:09 Bangkok time, 25 minutes after #840's production
+deployment was ready. The scanned definitions include
+`ui://zodiacs/chart-studio-v6.html` for `open_chart_studio` and the
+`conventionIds` field of `get_sky`'s receipt. Production's `tools/list`
+serves the same thirteen definitions as main's flag-off fixture, which has
+not changed since #840, so the copy under review is current.
+
+The findings are unchanged: `get_occasion_sky` and `get_compatibility` each
+say "This new tool definition needs further review before it can be
+published." Neither is blocking. Nothing in the portal was changed.
+
+## November content refresh prepared locally, 27 October 2026
+
+Main merged PR #835 at `bdf4ef88` while the approved `c626a7b7` release
+was running its checks. The November horoscopes carry their own Phase 1
+screenshots, so GitHub reports a merge conflict. All nineteen conflicting
+files are generated screenshots or their evidence manifest; there is no
+plugin source conflict.
+
+A private candidate merges that already published content and regenerates
+the combined evidence with the official tools. Its complete frozen-clock
+Node 22 build and source checks pass. All 293 AI tests, generated-file and
+package checks, eighteen captures, five evidence tests and nine interrupted
+response cases pass. No check or limit was weakened.
+
+The plugin sources, runtimes, packages, selected icon and demo are unchanged
+from the approved release. The remote PR remains at `c626a7b7`, pending
+owner approval to publish this content and evidence refresh. No portal
+action has been taken.
+
+## Edition layout fixes prepared locally, 27 October 2026
+
+The release remains on hold. Site Check run `40458842151` at the approved
+head `c9736c27` exhausted its one permitted failed-job rerun. Attempt 2
+failed the dated Today page at 360px (CLS 0.00347222900390625) and the
+Aries horoscope at 1280px (CLS 0.01662311862244898). No further rerun was
+requested, no gate was loosened, and no portal action was taken.
+
+A regression pauses the actual responses before the wheel SVG arrives,
+after the period navigation, and after the first sign icon. On the old
+pages it reproduces both failures, including the decorative pseudo-element
+on Today and the sign rail and period navigation on the horoscope.
+Reserving the wheel's square and the controls' rows and sign columns fixes
+the movement. All nine new interrupted-load cases have exactly zero CLS.
+The complete Today browser suite passes 379 assertions in Chromium 149;
+the source check reports no errors or warnings. Settled geometry matches
+the old pages at 360, 900 and 1280px for both surfaces.
+
+The complete merged release candidate builds successfully under Node 22
+with the publication clock pinned to noon UTC. All bundle budgets pass
+without changing a limit. Full CI success remains a condition of
+publication.
+
+All 293 AI tests, package and generated-file checks, and the flag-off
+fixture pass. Phase 1 was recaptured with eighteen screenshots and all five
+evidence checks pass. The same nine interruption cases also pass against
+the complete merged release build. Main's Site Check run `40465453550`
+finished successfully for `e94fdf1a`; the revised candidate still needs its
+own GitHub checks after approval to publish it.
+
+A private candidate combines current main `e94fdf1a`, the layout fix and
+the approved release. Generated files were rebuilt with their tools.
+It preserves main's occasions v8 and horoscopes v6 and their old addresses.
+The reviewed Sky 0.5.1 ZIP, selected icon and demo retain the checksums
+recorded below. The existing remote draft PR remains at `c9736c27`.
+Owner approval is needed before publishing this revised candidate.
+
+## Tilted ring profile picture selected, 27 October 2026
+
+After reviewing the full-size options, Dias selected option 1, the tilted
+ring, and approved adding it to 0.5.1 and publishing through PR #807 once
+its updated checks pass. OpenAI uploads and directory profile changes remain
+subject to separate approval. The earlier PR head `811171f0` finished with
+all checks passing or legitimately skipped; that result does not cover this
+new revision.
+
+The Sky plugin's logo and composer icon now point to
+`./assets/icon-v2.png`. The image is generated from the shared brand ring by
+`ai:build`, verified by `ai:check`, and will be available at
+`https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v2.png`. It is a 512 by
+512 PNG and matches the selected preview byte for byte. Earlier icons and
+the published 0.5.0 ZIP and movie stay unchanged. No panel HTML or resource
+address changes in this icon revision.
+
+Current candidate ZIP: 88,054 bytes, SHA-256
+`d6c440e088474773eac16edf2b89fb0520c880af5407ddc3f4ab7136b3066e13`.
+Avatar SHA-256:
+`739964975885d3a9d0228bb55dda611bacab461ace4a6eec7f00735f3042e5e8`.
+The earlier candidate checksum below records the package before this icon
+revision. No portal upload or profile setting was changed for this step.
+
+
+## Sharper artwork live, 27 October 2026
+
+With Dias's explicit approval, PR #837 merged at
+`922924ee00a3574cd1a2d58dbe62702715630a41`. Production deployment
+`dpl_9bcJHrh6Fnmm5xbf41hPL9VpFvoy` is Ready on zodiacs.org. Main
+Site Check run `40445680773` completed successfully for the same merge
+commit; the preceding daily main run `40424414749` is also green. A direct
+production check confirmed the four current panel addresses and their
+generated fingerprints: sky events v4, Chart Studio v5, horoscopes v5 and
+occasions v7. All seventeen registered old addresses return the corresponding
+current panel. All 32 referenced artwork files return HTTP 200 and match the
+checked files byte for byte. Wedding, horoscope, comparison, chart twins,
+famous chart, milestones and Russian sky calendar tool checks passed.
+The generated receipt is in
+`evidence/card-art-sharpness/production-2026-10-27.json`.
+Plain HTTP checks also confirmed the three remaining share images as
+1200 by 630 JPEGs below 300 KB and their three story pictures as 1080 by
+1920 JPEGs. An unknown famous person returns HTTP 404. The receipt is
+`evidence/card-art-sharpness/share-images-2026-10-27.json`.
+
+Before the deployment, three fresh ChatGPT checks using the existing private
+Zodiacs Release Demo connection passed on their first display: the single-word
+reply without a tool call, the Florence wedding card and today's Leo horoscope.
+The earlier blank reply and initial panel errors did not recur. After the
+approved refresh, fresh comparison, wedding, Leo horoscope, sky events and
+combined chart twins and Frida Kahlo checks also loaded on their first display.
+The comparison scored 58/100 and the wedding 69/100. Opening the returned
+wedding destination preserves Florence, 12 June 2027 and 17:00 and removes
+the referral query as the page loads.
+
+## OpenAI draft inspection, 27 October 2026
+
+Dias approved inspecting the existing draft. It still shows package 0.5.0,
+Not submitted and Not published, with its older About and skill description.
+The domain is verified, authentication is off and thirteen tools are present.
+Seven tool findings still say the new definition needs further review before
+publication. The metadata category has a nonblocking finding: the automated
+check could not confirm Education & Research. No package or listing field was
+changed during this inspection.
+
+Dias separately approved rescanning the existing draft after the production
+check. The scan completed at 10:55:55 Bangkok time. Eleven tools have no
+findings. The remaining findings, for `get_occasion_sky` and
+`get_compatibility`, each say: "This new tool definition needs further review
+before it can be published." No connection or input-definition error was
+reported. The scanned definitions contain occasions v7 and horoscopes v5,
+confirmed in the portal's definition views. The draft remains Not submitted
+and Not published. The local screenshots are retained outside the repository.
+
+Dias also approved refreshing tools for the existing private Zodiacs Release
+Demo connection. The refresh finished without an error. The refreshed checks
+are recorded above. No retry was needed.
+
+The scheduling negative case used no Zodiacs tool and made no change. The
+relationship guarantee case declined the guarantee without calling a tool.
+The stock-picking negative case failed: the host called the horoscope tool
+and suggested an astrology-themed investment list. No private profile details
+or returned investment names are recorded here. A local candidate strengthens
+the horoscope description to decline investment requests without a tool call
+and forbids astrology-themed investment suggestions. A transport regression
+test failed before the change and passes afterward. All 293 AI-tool tests and
+`ai:check` pass locally. This wording change is not deployed and needs a fresh
+host test before submission.
+
+A new 41-second live recording of the comparison and wedding cards has been
+prepared locally for owner review. The edit trims waiting time and crops to
+the conversation, with no browser, account details or unrelated windows in
+the export. Its proposed new address is
+`https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4`; the published
+0.5.0 video stays unchanged. The local 0.5.1 ZIP now references the proposed
+new video and strengthens the investment negative test and release notes.
+The About wording is unchanged from the version Dias reviewed. Nothing has
+been pushed, published or uploaded for these new changes.
+
+Before the avatar revision, the candidate ZIP was 74,350 bytes, SHA-256
+`d5de82e42e3f7fcc37b10f313d531aa42375f3114851b4f833e53dab891b944b`.
+The video is 41 seconds, H.264 at 1080 by 1600 pixels and 30 frames per
+second, with intentionally silent audio. Native project filmstrips and a
+full-speed playback were reviewed locally. The final video SHA-256 is
+`51bb6000a328b5fcb4dec11b5e552ec14bbb31ab60ad9be9443796fe1379ce35`.
+
+## Local artwork check, pending release, 26 October 2026
+
+Dias reported blurry pictures in the wedding and horoscope chat cards. The
+published panels use 400px or 480px, quality 36 artwork at up to 540 CSS
+pixels. A candidate on `codex/card-art-sharpness` loads the larger immutable
+art from zodiacs.org and assigns fresh panel addresses, occasions v6 and
+horoscopes v5. Local browser checks passed for 52 card renders, including
+desktop, phone width, light and dark themes; the occasion browser drive also
+passed. This has not been deployed, rescanned or entered in the OpenAI draft.
+The draft remains unsubmitted and unpublished. Do not treat the candidate as
+live portal evidence.
+
+## ChatGPT release retest, 26 October 2026
+
+The private Zodiacs Release Demo connection still failed in fresh Chat-mode
+conversations. Selecting it and asking for a single-word reply without any
+tool call produced a blank reply. The same prompt returned the requested word
+without a plugin. Two other private Zodiacs test connections on separate
+servers also produced blank replies without calling a tool.
+
+Fresh wedding and Taurus horoscope prompts called the right tools but showed
+"Couldn't display Zodiacs Release Demo" on the first card load and "This
+response couldn't load" for the surrounding reply. **Try again** loaded each
+card with the expected reading; reopening the wedding conversation reproduced
+the first-load failure. Direct production tool calls returned valid wedding
+and horoscope results, and `npm run ai:check` passed on the prepared 0.5.1
+branch after merging the latest `main` locally.
+
+The existing OpenAI draft still shows version 0.5.0, its outdated About text,
+**Not submitted** and **Not published**. No package was uploaded, no rescan or
+attestation was made, and no submission was sent. The first-load problem still
+needs review before release.
+
+## About correction prepared, 20 October 2026
+
+Dias approved replacing only the draft's About text and seeing its preview.
+The portal displays that field as read only and states that review information
+is managed by the plugin ZIP. The current 0.5.0 draft still contains the old
+claim that Zodiacs does not score relationships or rate dates. No ZIP was
+uploaded and no About, test case, attestation or submission was changed.
+The published `zodiacs-sky-0.5.0.zip` remains byte for byte unchanged.
+
+With Dias's separate approval to prepare a candidate, `zodiacs-sky-0.5.1.zip`
+now contains the exact About from `integrations/chatgpt/chatgpt-app-submission.json`
+and release notes that describe the live scoring and ratings accurately.
+`ai:build`, `ai:package` and `ai:check` pass. The package has not been
+uploaded to the portal. A separate approval is required before that step.
+
+Dias also approved refreshing the private Zodiacs Release Demo connection.
+After the refresh, two new chats returned wedding and horoscope answers, but
+both embedded panels still failed on the first display. In earlier fresh
+chats, pressing **Try again** once loaded both redesigned panels. The first
+display issue remains unresolved; a tool refresh did not correct it.
+
 ## Panel address refresh live, 20 October 2026
 
 The source now advertises new addresses for all four redesigned chat panels:

@@ -2069,44 +2069,6 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               timeError={fieldErrors.time ? t(locale, 'birthTimeRequired') : undefined}
               placeError={fieldErrors.place ? t(locale, 'placePickHint') : undefined}
             />
-
-            {mode === 'full' && (
-              <details class="calc__options">
-                <summary>{locale === 'en' ? 'Chart options' : t(locale, 'houseSystem')} <span>· {houseSystem === 'whole' ? t(locale, 'wholeSignDefault') : t(locale, 'placidus')}</span></summary>
-                <div class="field">
-                  <label class="field__label" for="house-system">{t(locale, 'houseSystem')}</label>
-                  <select
-                    id="house-system" class="field__input"
-                    value={houseSystem}
-                    onChange={(e) => {
-                      invalidateProfileHandoff();
-                      setHouseSystem((e.target as HTMLSelectElement).value as HouseSystem);
-                    }}
-                  >
-                    <option value="whole">{t(locale, 'wholeSignDefault')}</option>
-                    <option value="placidus">{t(locale, 'placidus')}</option>
-                  </select>
-                  {locale === 'en' ? (
-                    <>
-                      {/* Keep this sentence aligned with the houseSystemHelp catalog entry. */}
-                      <p class="field__help">
-                        You can keep the default. Change this only if you prefer another house system.
-                      </p>
-                      <p class="field__help">
-                        How the chart divides into twelve areas of life.{' '}
-                        <AstroTerm term="whole-sign-houses" label="Whole sign" surface="birth-chart-form" /> gives
-                        each sign one house; <AstroTerm term="placidus" label="Placidus" surface="birth-chart-form" />{' '}
-                        varies house sizes by exact birth time and place. Planets stay put. Only house
-                        boundaries move.
-                      </p>
-                      <p class="field__help calc__context-cue">{t(locale, 'contextHelpCue')}</p>
-                    </>
-                  ) : (
-                    <p class="field__help">{t(locale, 'houseSystemHelp')}</p>
-                  )}
-                </div>
-              </details>
-            )}
           </div>
 
           <button class="btn btn--primary calc__submit" type="submit" disabled={busy}>
@@ -2123,6 +2085,46 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           <p class="calc__privacy">
             {subjectMode === 'other' ? otherSubjectCopy.privacy : t(locale, 'privacyDevice')}
           </p>
+          {/* The birth chart pages draw the options after the button and the privacy line,
+              so they follow them in the document too: a panel parsed before those rows
+              would move down when they arrive, after the page has already been painted. */}
+          {mode === 'full' && (
+            <details class="calc__options">
+              <summary>{locale === 'en' ? 'Chart options' : t(locale, 'houseSystem')} <span>· {houseSystem === 'whole' ? t(locale, 'wholeSignDefault') : t(locale, 'placidus')}</span></summary>
+              <div class="field">
+                <label class="field__label" for="house-system">{t(locale, 'houseSystem')}</label>
+                <select
+                  id="house-system" class="field__input"
+                  value={houseSystem}
+                  onChange={(e) => {
+                    invalidateProfileHandoff();
+                    setHouseSystem((e.target as HTMLSelectElement).value as HouseSystem);
+                  }}
+                >
+                  <option value="whole">{t(locale, 'wholeSignDefault')}</option>
+                  <option value="placidus">{t(locale, 'placidus')}</option>
+                </select>
+                {locale === 'en' ? (
+                  <>
+                    {/* Keep this sentence aligned with the houseSystemHelp catalog entry. */}
+                    <p class="field__help">
+                      You can keep the default. Change this only if you prefer another house system.
+                    </p>
+                    <p class="field__help">
+                      How the chart divides into twelve areas of life.{' '}
+                      <AstroTerm term="whole-sign-houses" label="Whole sign" surface="birth-chart-form" /> gives
+                      each sign one house; <AstroTerm term="placidus" label="Placidus" surface="birth-chart-form" />{' '}
+                      varies house sizes by exact birth time and place. Planets stay put. Only house
+                      boundaries move.
+                    </p>
+                    <p class="field__help calc__context-cue">{t(locale, 'contextHelpCue')}</p>
+                  </>
+                ) : (
+                  <p class="field__help">{t(locale, 'houseSystemHelp')}</p>
+                )}
+              </div>
+            </details>
+          )}
           {locale === 'en' && <p class="calc__guide">Need a hand? <a href="/ask/" data-assistant-open>Ask Guide</a></p>}
           {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
           <CalculationReload error={error} locale={locale} />

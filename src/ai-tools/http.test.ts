@@ -81,6 +81,9 @@ describe('stateless MCP HTTP boundary', () => {
       expect(launch.isError).toBe(false); expect(OUTPUT_SCHEMAS.open_chart_studio.parse(launch.structuredContent).ok).toBe(true);
       const horoscopes = tools.tools.find(tool => tool.name === 'get_horoscope')!;
       expect(horoscopes.title).toBe('Horoscopes');
+      // Hosts choose a tool from this transport description, before any reading exists.
+      expect(horoscopes.description).toMatch(/Do not call this tool for stock picks, investment advice, financial forecasts, health predictions or guaranteed outcomes/u);
+      expect(horoscopes.description).toMatch(/even when the request mentions a horoscope[.] Decline those requests without a tool call; do not offer astrology-themed investment suggestions/u);
       expect((horoscopes._meta?.ui as { resourceUri?: string } | undefined)?.resourceUri).toBe(HOROSCOPE_URI);
       expect(horoscopes._meta?.['openai/widgetAccessible']).toBe(true);
       expect(horoscopes._meta?.['openai/outputTemplate']).toBe(HOROSCOPE_URI);
@@ -91,6 +94,8 @@ describe('stateless MCP HTTP boundary', () => {
       expect((reading._meta?.['zodiacs/horoscope'] as { sign?: string } | undefined)?.sign).toBe('leo');
       const horoscopePanel = await client.readResource({ uri: HOROSCOPE_URI });
       expect((horoscopePanel.contents[0] as { text: string }).text.startsWith('<!doctype html>')).toBe(true);
+      expect(horoscopePanel.contents[0]._meta?.ui).toMatchObject({ csp: { connectDomains: [], resourceDomains: ['https://zodiacs.org'] } });
+      expect(horoscopePanel.contents[0]._meta?.['openai/widgetCSP']).toMatchObject({ connect_domains: [], resource_domains: ['https://zodiacs.org'] });
       for (const uri of LEGACY_HOROSCOPE_URIS) {
         const previous = await client.readResource({ uri });
         expect(previous.contents[0]).toEqual({ ...horoscopePanel.contents[0], uri });
@@ -219,12 +224,15 @@ describe('stateless MCP HTTP boundary', () => {
       const content = (await readMessage(read)).result.contents[0];
       expect(content.mimeType).toBe('text/html;profile=mcp-app');
       expect(content.text).toContain('<div id="occasions">');
+      expect(content.text).toContain('https://zodiacs.org/assets/card-art/wedding-hero-720.webp');
+      expect(content._meta?.ui).toMatchObject({ csp: { connectDomains: [], resourceDomains: ['https://zodiacs.org'] } });
+      expect(content._meta?.['openai/widgetCSP']).toMatchObject({ connect_domains: [], resource_domains: ['https://zodiacs.org'] });
       for (const uri of LEGACY_OCCASIONS_URIS) {
         const previous = (await readMessage(await post(rpc('resources/read', { uri })))).result.contents[0];
         expect(previous).toEqual({ ...content, uri });
       }
-      // Self-contained: no remote script, style, font or image.
-      expect(content.text).not.toMatch(/(?:src|href)=["']https?:/u);
+      // Scripts and fonts remain inline. The only remote assets are static art on our own site.
+      expect(content.text).not.toMatch(/<(?:script|link)[^>]+(?:src|href)=["']https?:/u);
     } finally { occasionsSwitch = undefined; }
   });
   it('serves the newer per-request protocol envelope without a session', async () => {

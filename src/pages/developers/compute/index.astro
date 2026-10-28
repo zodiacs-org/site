@@ -522,7 +522,12 @@ const jsonLd = [
           For the other five it is <code>zodiacs.compute-receipt.v1</code>: the
           engine's conventions and coverage as its receipts state them, the two
           sources of ΔT its time basis uses, and, where they apply, the
-          search's limits and how local time was read.</li>
+          search's limits and how local time was read. Both list, as{' '}
+          <code>conventionIds</code>, the ids of the{' '}
+          <a href="/developers/conventions/">conventions registry</a> they name:
+          the chart receipt those of its fields and its result, the compute
+          receipt those of its own fields only, so that it holds nothing the
+          request gave.</li>
         <li><code>backend</code>, the engine and its version, and the ephemeris it uses.</li>
         <li><code>cite</code>, what to quote beside a result: <code>url</code>,
           this page at the endpoint's section; <code>receipt</code>, a digest of
@@ -572,7 +577,7 @@ const jsonLd = [
         run: when one is spent the request is refused and nothing is returned.
         The limits were set from local request-cost measurements in every
         year from 1800 to 2199. A fresh local run on 2026-10-07 with engine
-        1.0.0-rc.2, whose code 1.0.0 keeps unchanged, measured 4,600 requests across nine synthetic shapes, after
+        1.0.0-rc.2, whose calculations 1.1.0-rc.1 keeps unchanged, measured 4,600 requests across nine synthetic shapes, after
         two warmups per shape. Observed CPU maxima were 1,001.5 ms for events,
         287.1 ms for positions and 1,447.5 ms for the slowest election shape.
         A separate 5,200-request houses sweep measured a 98.5 ms maximum.

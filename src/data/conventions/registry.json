@@ -1,21 +1,21 @@
 {
   "schema": "zodiacs.conventions-registry.v1",
-  "version": "2026-10-18",
+  "version": "2026-10-27",
   "title": "Conventions registry",
   "base": "https://zodiacs.org/developers/conventions/",
   "license": "CC0-1.0",
-  "idSyntax": "An id is a namespace, a colon and a value. The value is everything after the first colon and may itself hold colons, semicolons, slashes or an @. A receipt that holds a value under a field names the id of that field's namespace and that value.",
+  "idSyntax": "An id is a namespace, a colon and a value. The value is everything after the first colon and may itself hold colons, semicolons, slashes or an @. A receipt that holds a value under a field names the id of that field's namespace and that value. Natal receipts from @zodiacs/engine 1.1.0-rc.1 list, as conventionIds, every id that they and their result name, in code-unit order, each once, and the compute API's receipts list the ids their own fields name in the same way.",
   "engine": {
     "package": "@zodiacs/engine",
-    "version": "1.0.0",
+    "version": "1.1.0-rc.1",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "7307665bdbc432269fdac006104f661be16000bc"
+    "commit": "d9fc39cd4a81488b1bbee7e205901cdf2d755ef4"
   },
   "conformance": {
     "suite": "zodiacs-conformance",
-    "suiteVersion": "0.1.0",
+    "suiteVersion": "0.2.0",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "782b4963a8575fa8d81c602a36285f65fb9ae9bb"
+    "commit": "7e64717bc7dd17f76d124138e811742b055c183a"
   },
   "groups": [
     {
@@ -54,6 +54,7 @@
       "title": "Natal receipt conventions",
       "namespaces": [
         "calendar",
+        "conventionIds",
         "deltaT",
         "localTime",
         "longitudeUnit",
@@ -132,7 +133,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
         },
         {
           "id": "zodiac:sidereal",
@@ -873,7 +874,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0"
         }
       ]
     },
@@ -1128,7 +1129,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
         },
         {
           "id": "speed:degrees-per-day;central-difference-plus-minus-0.25-day",
@@ -1521,7 +1522,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
         },
         {
           "id": "angles:gast-and-mean-obliquity",
@@ -1604,7 +1605,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
         },
         {
           "id": "aspects:major-aspects;sun-moon-eight-planets;no-nodes",
@@ -1669,7 +1670,47 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "conventionIds",
+      "title": "Convention ids",
+      "description": "Whether and how a receipt lists the ids of this registry that it names.",
+      "usedIn": [
+        "natal receipts: conventions.conventionIds"
+      ],
+      "entries": [
+        {
+          "id": "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+          "value": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+          "title": "This registry's ids, listed in the receipt",
+          "definition": "The receipt lists, as conventionIds, every id of this registry that it and its result name, in code-unit order, each once: each conventions and coverage field's key and value, the requested and actual house systems, why there are no houses, each flag, the reference instant, the instant's scale, the ephemeris, and the result's ΔT model and segment, time basis and source of UT1 − UTC. The envelope requires the feature convention-ids, so engines before 1.1.0-rc.1 refuse it. The compute API's receipts quote the engine's set, this key included, and list in their own conventionIds only the ids their fields name, so that they hold nothing a request gave.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.1, src/convention-ids.ts, natalConventionIds",
+              "url": "https://github.com/zodiacs-org/engine/blob/d9fc39cd4a81488b1bbee7e205901cdf2d755ef4/src/convention-ids.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.1, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/d9fc39cd4a81488b1bbee7e205901cdf2d755ef4/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.1, README, Draft natal receipts and local portability",
+              "url": "https://github.com/zodiacs-org/engine/blob/d9fc39cd4a81488b1bbee7e205901cdf2d755ef4/README.md#draft-natal-receipts-and-local-portability"
+            },
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.1, docs/versioning.md, Records",
+              "url": "https://github.com/zodiacs-org/engine/blob/d9fc39cd4a81488b1bbee7e205901cdf2d755ef4/docs/versioning.md#records"
+            },
+            {
+              "title": "zodiacs.org, Compute API, Receipts",
+              "url": "https://zodiacs.org/developers/compute/#receipts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "1.1.0-rc.1"
         }
       ]
     },
@@ -1697,7 +1738,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
         },
         {
           "id": "deltaT:tt-minus-ut1;ut1-read-as-utc;value-in-result",
@@ -1747,7 +1788,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
         }
       ]
     },
@@ -1771,7 +1812,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
         }
       ]
     },
@@ -1795,7 +1836,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
         }
       ]
     },
@@ -1827,7 +1868,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0"
         },
         {
           "id": "moonPosition:astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
@@ -1887,7 +1928,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14"
         },
         {
           "id": "planetPositions:apparent-geocentric-ecliptic-of-date",
@@ -1937,7 +1978,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
         }
       ]
     },
@@ -1984,7 +2025,7 @@
     {
       "name": "flag",
       "title": "Chart flag",
-      "description": "A condition a natal chart reports, in the receipt's input and result flags.",
+      "description": "A condition a natal chart or a compute API answer reports, in the natal receipt's input and result flags or the answer's flags.",
       "usedIn": [
         "natal receipts: inputFlags, resultFlags",
         "compute API answers: flags"
@@ -2064,6 +2105,19 @@
             {
               "title": "@zodiacs/engine 1.0.0, README, the reference span",
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:zone-history-disputed",
+          "value": "zone-history-disputed",
+          "title": "Zone histories disagree",
+          "definition": "Only the compute API's time answers carry it: a date up to 1970-01-01 was read on the zone history the engine ships, and the server's own time zone data gives the zone another offset at the same instant.",
+          "sources": [
+            {
+              "title": "zodiacs.org, Compute API, Time",
+              "url": "https://zodiacs.org/developers/compute/#time"
             }
           ],
           "status": "current"
@@ -2848,9 +2902,10 @@
     {
       "name": "kind",
       "title": "Conformance vector kind",
-      "description": "The quantity a conformance vector tests, as its kind field names it.",
+      "description": "The quantity a conformance vector tests, as its kind field names it. From 0.2.0 each vector also lists it as an id, in conventionIds.",
       "usedIn": [
-        "conformance vectors: kind"
+        "conformance vectors: kind",
+        "conformance vectors: conventionIds, from 0.2.0"
       ],
       "entries": [
         {
@@ -2860,12 +2915,12 @@
           "definition": "L1 (Positions): 240 vectors, tolerance lon ±1″ (on the circle); lat ±1″.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L1-positions.json (L1, Positions; sha256 853486bd33ddf2c136581803aec7df4b069c00f63678861537b2c0b86127366c)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L1-positions.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L1-positions.json (L1, Positions; sha256 4e45a5267d806a38624c6cc1eb29dd66229e5ec908fd87de9e1ec69459bb84b8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L1-positions.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -2877,12 +2932,12 @@
           "definition": "L2 (Houses and angles): 60 vectors, tolerance asc ±1″ (on the circle); mc ±1″ (on the circle).",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L2-houses-angles.json (L2, Houses and angles; sha256 fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L2-houses-angles.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -2894,12 +2949,12 @@
           "definition": "L2 (Houses and angles): 10 vectors, tolerance vertex ±1″ (on the circle); east_point ±1″ (on the circle).",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L2-houses-angles.json (L2, Houses and angles; sha256 fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L2-houses-angles.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -2911,12 +2966,12 @@
           "definition": "L2 (Houses and angles): 80 vectors, tolerance cusps each ±1″ (on the circle), or status exact.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L2-houses-angles.json (L2, Houses and angles; sha256 fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L2-houses-angles.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -2928,12 +2983,12 @@
           "definition": "L3 (Time and calendars): 45 vectors, tolerance status exact; utc_offset_s exact, or status exact, or status exact; utc_offsets_s exact.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -2945,12 +3000,12 @@
           "definition": "L3 (Time and calendars): 5 vectors, tolerance utc_offset_s ±0.001 s.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -2962,12 +3017,12 @@
           "definition": "L3 (Time and calendars): 10 vectors, tolerance tt_minus_utc_s ±0.0005 s.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -2979,12 +3034,12 @@
           "definition": "L3 (Time and calendars): 15 vectors, tolerance delta_t_s ±0.1 s.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -2996,12 +3051,12 @@
           "definition": "L3 (Time and calendars): 25 vectors, tolerance jdn exact.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3013,12 +3068,12 @@
           "definition": "L3 (Time and calendars): 10 vectors, tolerance year exact; month exact; day exact.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3028,9 +3083,10 @@
     {
       "name": "arbiter",
       "title": "Conformance arbiter",
-      "description": "The independent computation that gives a conformance vector its expected value, as its arbiter field names it.",
+      "description": "The independent computation that gives a conformance vector its expected value, as its arbiter field names it. From 0.2.0 each vector also lists it as an id, in conventionIds.",
       "usedIn": [
-        "conformance vectors: arbiter"
+        "conformance vectors: arbiter",
+        "conformance vectors: conventionIds, from 0.2.0"
       ],
       "entries": [
         {
@@ -3040,12 +3096,12 @@
           "definition": "The independent arbiter of L1 (Positions) vectors. Source: NASA JPL Horizons API 1.2 (https://ssd.jpl.nasa.gov/api/horizons.api), fetched 2026-09-22: ephemeris DE441 for every target, with Mars to Pluto as their system barycentres (NAIF 4 to 9); EOP file eop.260922.p261219 (data 1962-01-20 to 2026-09-22, predictions to 2026-12-18). One request per target: EPHEM_TYPE OBSERVER, CENTER 500@399 (the geocentre), QUANTITIES 31 (observer ecliptic longitude and latitude of date of the apparent position: light-time, gravitational deflection by the Sun, stellar aberration), APPARENT AIRLESS, TIME_TYPE TT, TLIST_TYPE JD with the 24 jd_tt values to 8 decimals, ANG_FORMAT DEG, EXTRA_PREC YES, CSV_FORMAT YES. The responses are kept verbatim in sources/horizons-24/, byte for byte as committed in the zodiacs.org site repository (ZodiacsOfficial/site, docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/, commit 3f31ba17), together with Horizons's body-centre files for Mars to Pluto (NAIF 499 to 999, from the satellite solutions mar099, jup365_merged, sat441l, ura184_merged, nep098_merged, plu060_merged), fetched the same way and used only for the body-centre measurement in the uncertainty. Plus the frame conversion: Horizons labels this frame IAU76/80 ecliptic-of-date, and the eopJpl model of it, with its per-instant celestial-pole offsets, is the horizons-frame study in the same repository (docs/platform/evidence/engine-beyond-swiss/horizons-frame/: decompose.py, results.json), the offsets copied into sources/horizons-24/frame-offsets.json.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L1-positions.json (L1, Positions; sha256 853486bd33ddf2c136581803aec7df4b069c00f63678861537b2c0b86127366c)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L1-positions.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L1-positions.json (L1, Positions; sha256 4e45a5267d806a38624c6cc1eb29dd66229e5ec908fd87de9e1ec69459bb84b8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L1-positions.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3057,12 +3113,12 @@
           "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006). Definitions: R. W. Holden, The Elements of House Division (1977); M. P. Munkasey, An Astrological House Formulary; W. M. Smart, Textbook on Spherical Astronomy.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L2-houses-angles.json (L2, Houses and angles; sha256 fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L2-houses-angles.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3074,12 +3130,12 @@
           "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006). Definitions: R. W. Holden, The Elements of House Division (1977); M. P. Munkasey, An Astrological House Formulary; W. M. Smart, Textbook on Spherical Astronomy.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L2-houses-angles.json (L2, Houses and angles; sha256 fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L2-houses-angles.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3091,12 +3147,12 @@
           "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006). Definitions: R. W. Holden, The Elements of House Division (1977); M. P. Munkasey, An Astrological House Formulary; W. M. Smart, Textbook on Spherical Astronomy.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L2-houses-angles.json (L2, Houses and angles; sha256 fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L2-houses-angles.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3108,12 +3164,12 @@
           "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006). Definitions: R. W. Holden, The Elements of House Division (1977); M. P. Munkasey, An Astrological House Formulary; W. M. Smart, Textbook on Spherical Astronomy. Topocentric: W. Polich and A. P. Nelson Page, the topocentric system (tan of the house pole = n/3 · tan φ).",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L2-houses-angles.json (L2, Houses and angles; sha256 fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L2-houses-angles.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3125,12 +3181,12 @@
           "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: Constructions: Placidus de Titis, Tabulae primi mobilis (Milan, 1657; English translation by J. Cooper, Primum Mobile, 1814); W. A. Koch and E. Schaeck, Häusertabellen des Geburtsortes (Göppingen, 1962); both restated in R. W. Holden, The Elements of House Division (L. N. Fowler, Romford, 1977; page numbers not verified for this file). TT, RAMC and ε as in l2-angles-erfa: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006).",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L2-houses-angles.json (L2, Houses and angles; sha256 fc5321b9061b9860bfb9af5254e5813be1c4bc3c858df6f623ea1617b76b88e5)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L2-houses-angles.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3142,12 +3198,12 @@
           "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: IANA time zone database release 2025c: https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz (sha256 4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957) and https://data.iana.org/time-zones/releases/tzcode2025c.tar.gz (sha256 697ebe6625444aef5080f58e49d03424bbb52e08bf483d3ddb5acf10cbd15740), both OpenPGP-signed by Paul Eggert (key 7E37 92A9 D8AC F7D6 33BC 1588 ED97 E90E 62AA 7E34; signatures checked 2026-09-28). The data are the Makefile's `make PACKRATDATA=backzone PACKRATLIST=zone.tab` build: backzone's pre-1970 history for the zone.tab zones that the main data merge into links. Why backzone: a birth chart needs the local time in force where and when the birth happened, often before 1970, and tzdb's default build does not keep that history for these zones; it makes each of them a link to another zone whose clocks have agreed with it since 1970, so the zone answers with the other zone's history (Africa/Banjul at 1880-12-31T12:00:00 gets Abidjan's local mean time, -968 s, instead of its own, -3996 s). The maintainers' caveat applies: the Makefile of tzdata 2025c offers backzone as 'out-of-scope and often-wrong data', and its theory.html says the file 'is less reliable and does not necessarily follow database guidelines'. zic and zdump are built from the same release's tzcode.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3159,12 +3215,12 @@
           "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: The definition of local mean time: mean solar time at east longitude lon runs ahead of UT by lon/15 hours, 240 s of UTC offset per degree.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3176,12 +3232,12 @@
           "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: leap-seconds.list as distributed in tzdata 2025c (IERS Earth Orientation Centre, Paris Observatory; updated through IERS Bulletin C; last update 2025-07-07 (NTP 3960835200); expires 2026-06-28 (NTP 3991593600); its #h line, SHA-1 49db2447571e5e1b2f002a539c8da8e439b8e49e, verified). TT = TAI + 32.184 s exactly (IAU 1991 Resolution A4), so TT - UTC = 32.184 s + (TAI - UTC).",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3193,12 +3249,12 @@
           "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: UT1 - UTC per day at 0h UTC from the IERS finals.all (IAU 2000) file fetched 2026-09-22 (sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1, 3,767,520 bytes), extracted to CSV (MJD, date, I/P flag, UT1 - UTC, formal error) and copied here unchanged; TAI - UTC from leap-seconds.list of tzdata 2025c (arbiter iers-leap-seconds-2025c).",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"
@@ -3210,12 +3266,12 @@
           "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: Richards, E. G. (2013), 'Calendars', in Urban & Seidelmann (eds.), Explanatory Supplement to the Astronomical Almanac, 3rd ed., sec. 15.11 (Algorithms 3 and 4, Julian and Gregorian parameters); Fliegel, H. F. & Van Flandern, T. C. (1968), Communications of the ACM 11(10), 657; Meeus, J. (1998), Astronomical Algorithms, 2nd ed., ch. 7. Both calendars proleptic, astronomical year numbering; the JDN of a civil day is the Julian date at its noon.",
           "sources": [
             {
-              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+              "title": "Conformance suite 0.2.0, vectors/0.2.0/L3-time-calendars.json (L3, Time and calendars; sha256 51a367f9a2e0de7394101204f2e6a6408d1401fbefffb96cc2120d373136be66)",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/vectors/0.2.0/L3-time-calendars.json"
             },
             {
-              "title": "Conformance suite 0.1.0, SPEC.md",
-              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+              "title": "Conformance suite 0.2.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7e64717bc7dd17f76d124138e811742b055c183a/conformance/SPEC.md"
             }
           ],
           "status": "current"

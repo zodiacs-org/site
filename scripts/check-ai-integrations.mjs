@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
+import { PLUGIN_AVATAR_PATH } from './build-plugin-avatar.mjs';
 // OpenAI submission-errors reference, verified 2026-10-06. A valid ZIP can
 // still fail the portal when its listing uses an unsupported category.
 const submissionCategories = new Set(['Productivity', 'Creativity', 'Developer Tools', 'Business & Operations', 'Data & Analytics', 'Communication', 'Education & Research', 'Security', 'Finance', 'Healthcare', 'Travel', 'Entertainment', 'Other']);
@@ -47,6 +48,8 @@ const sky = await json('plugins/zodiacs-sky/plugin.json');
 const skyCompatibility = await json('plugins/zodiacs-sky/.codex-plugin/plugin.json');
 assert.equal(skyCompatibility.version, sky.version);
 const { interface: skyInterface, ...skySettings } = sky.extensions['com.openai'];
+assert.equal(skyInterface.composerIcon, PLUGIN_AVATAR_PATH);
+assert.equal(skyInterface.logo, PLUGIN_AVATAR_PATH);
 assert.deepEqual(skyCompatibility.interface, skyInterface);
 assert.deepEqual(skyCompatibility.extensions['com.openai'], skySettings);
 assert.deepEqual((await json('plugins/zodiacs-sky/.mcp.json')).mcpServers['zodiacs-sky'], { type: 'http', url: 'https://zodiacs.org/mcp' });
@@ -67,6 +70,7 @@ assert.ok(!sky.apps && !sky.hooks && !sky.extensions['com.openai'].apps && !sky.
 assert.deepEqual((await json('plugins/zodiacs-sky/mcp.json')).mcpServers['zodiacs-sky'], { type: 'streamable-http', url: 'https://zodiacs.org/mcp' });
 assert.deepEqual((await json('plugins/zodiacs-developer/mcp.json')).mcpServers['zodiacs-developer'], { type: 'stdio', command: 'node', cwd: './', args: ['${PLUGIN_ROOT}/mcp/server.mjs'] });
 const submission = await json('integrations/chatgpt/chatgpt-app-submission.json');
+assert.equal(skyInterface.longDescription, submission.app_info.description, 'Sky package About must match the reviewed submission copy');
 // 0.5.0: the six released tools and the seven tools that share the occasions panel.
 const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio', 'get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'];
 assert.deepEqual(Object.keys(submission.tools), names);
@@ -104,8 +108,9 @@ await access(new URL('src/pages/horoscopes/[sign]/index.astro', root));
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
 assert.equal(packageInfo.dependencies['@zodiacs/engine'], '1.0.0');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
-// The site/embedded runtime and the external recipes both use the published 1.0.0: the site from its vendored copy of the carried archive, the recipes from npm.
-const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.0.0.tgz');
+// The site/embedded runtime uses the vendored 1.1.0-rc.1 candidate, which npm does not carry; the external
+// recipes keep the published 1.0.0 from npm, which computes the same values.
+const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.1.0-rc.1.tgz');
 // The developer plugin carries the engine's notices as ENGINE-* copies, which
 // its NOTICE says are unchanged; the claims ledger reads the release's own
 // under public/developers/engine/reference/release/.

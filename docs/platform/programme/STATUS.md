@@ -1,3 +1,49 @@
+R44 in production, 2026-10-27 (Asia/Bangkok): accepted.
+
+**Overall delivery: 45%** (45.053% to three decimals): 82.2 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Standards §4.4 is at
+100%.
+
+- **R44, accepted and deployed.** #840 merged as `d698bc08` on your
+  instruction. zodiacs.org serves it from
+  `dpl_9BVVN29Z2d8zWsiBUthJo1ytcePn`, READY in production and built from the
+  merge.
+  - Receipts list the registry's ids. The documented chart and houses
+    receipts and a synthetic polar chart's list the ids they and their
+    result name, by the engine's rule. The positions, events, time,
+    sky-fact and elections receipts list the ids their own fields name.
+    The hosted MCP server's `check_sky_fact` receipt is the compute API's
+    for the same question.
+  - Every id is registered, and every citation digest is its receipt's.
+  - The conformance page links suite 0.2.0, and all 500 of its vectors list
+    their kind and arbiter ids.
+  - The registry serves 156 ids, each with its address.
+  - The checks pass 11 of 11 (engine), 25 of 25 (ids) and 12 of 12
+    (registry). Each control fails exactly the checks that read what it
+    changes. Before the deployment, the registry check failed 7 of 12.
+  - Main's Site Check passed on the merge, all 21 jobs on the first
+    attempt (run 40523018478).
+
+  The record is
+  [the evidence README](../evidence/convention-ids-20261027/README.md).
+- **Checked again on the next deployment, 28 October.** The daily sky
+  commit `457ad878`, whose parent is the merge, went live at 07:16 as
+  `dpl_ErxbAH1Qp8jfhqWVKY3w6CDKpet1`. The same checks pass there, 11 of 11,
+  25 of 25 and 12 of 12, and each control fails the same checks as before.
+  Everything they record by digest is byte for byte what the merge's
+  deployment served, except the OpenAPI document, which names the day's
+  data.
+- **The AI portals, checked 28 October.** OpenAI's copy, under review with
+  0.5.1, was scanned after the deployment and already has the new
+  definitions, so no rescan was needed. The Claude directory keeps its
+  snapshot of 16 October: Sync from server refreshes only the tool names,
+  which have not changed, and the listing's notes give reviewers the current
+  definitions. Asking the directory team to refresh the snapshot is your
+  call.
+- **Not checked.** Request forms beyond the documented ones and one polar
+  chart. The local MCP adapter's own receipt for place searches states no
+  convention, so it lists no ids.
+
 The conventions registry in production, 2026-10-20 (Asia/Bangkok): R44
 stays partial.
 

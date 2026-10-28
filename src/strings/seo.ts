@@ -1,4 +1,4 @@
-import type { CatalogLocale as Locale } from '../lib/i18n/core';
+import { isSectionLocale, type PageLocale as Locale, type SectionLocale } from '../lib/i18n/core';
 import { additionText, localizedAdditionObject } from './additions';
 import { BREADCRUMB_LABELS, OG_EN, SCHEMA_EN, ogImageForPath, ogSpecialForPath } from './seo.en.mjs';
 import { ruOgImageForPath } from './seo.ru.mjs';
@@ -9,6 +9,7 @@ import { ruOgImageForPath } from './seo.ru.mjs';
 
 export function schemaCatalog(locale: Locale) {
   if (locale === 'ru') return RU_SCHEMA;
+  if (isSectionLocale(locale)) return SECTION_SCHEMA[locale];
   return localizedAdditionObject(locale, 'schema', SCHEMA_EN);
 }
 
@@ -17,12 +18,14 @@ export function breadcrumbLabelForLocale(segment: string, locale: Locale): strin
   const english = BREADCRUMB_LABELS[key as keyof typeof BREADCRUMB_LABELS];
   if (!english) return key.replaceAll('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
   if (locale === 'ru') return RU_BREADCRUMB_LABELS[key] ?? english;
+  if (isSectionLocale(locale)) return english;
   return additionText(locale, `schema.breadcrumbLabels.${key}`, english);
 }
 
 /** Resolve only cards that exist for the requested released route family. */
 export function ogImageForPathAndLocale(path: string, locale: Locale): string | null {
   if (locale === 'ru') return ruOgImageForPath(path) ?? ogImageForPath(path);
+  if (isSectionLocale(locale)) return null;
   return ogImageForPath(path);
 }
 
@@ -30,6 +33,9 @@ export function ogAltForPathAndLocale(path: string, locale: Locale): string {
   const normalized = path === '/'
     ? '/'
     : `/${String(path || '/').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '')}/`;
+  // The section locales publish only the Chinese zodiac guide, which uses the
+  // site's fallback card.
+  if (isSectionLocale(locale)) return SECTION_SCHEMA[locale].fallbackAlt;
   const tool = OG_EN.tools.find((entry) => entry.path === normalized);
   if (tool) {
     if (locale === 'ru') return `${RU_OG_TOOL_TITLES[tool.key] ?? tool.title} | Zodiacs.org`;
@@ -56,6 +62,35 @@ const RU_SCHEMA = Object.freeze({
   freePrice: '0',
   currency: 'USD',
 });
+
+const SECTION_SCHEMA = Object.freeze({
+  'zh-hans': Object.freeze({
+    organizationName: 'Zodiacs',
+    organizationAlternateName: 'Zodiacs.org',
+    websiteName: 'Zodiacs.org',
+    websiteDescription: '免费的出生星盘、星盘配对和星座指南，星盘在你自己的浏览器里计算。',
+    breadcrumbHome: 'Zodiacs.org',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: '任何装有现代浏览器的设备',
+    browserRequirements: '需要使用现代浏览器。',
+    freePrice: '0',
+    currency: 'USD',
+    fallbackAlt: 'Zodiacs.org：免费的出生星盘、星座指南和占星工具。',
+  }),
+  'zh-hant': Object.freeze({
+    organizationName: 'Zodiacs',
+    organizationAlternateName: 'Zodiacs.org',
+    websiteName: 'Zodiacs.org',
+    websiteDescription: '免費的出生星盤、星盤配對和星座指南，星盤在你自己的瀏覽器裡計算。',
+    breadcrumbHome: 'Zodiacs.org',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: '任何裝有現代瀏覽器的裝置',
+    browserRequirements: '需要使用現代瀏覽器。',
+    freePrice: '0',
+    currency: 'USD',
+    fallbackAlt: 'Zodiacs.org：免費的出生星盤、星座指南和占星工具。',
+  }),
+} satisfies Record<SectionLocale, Record<string, string>>);
 
 const RU_BREADCRUMB_LABELS: Readonly<Record<string, string>> = Object.freeze({
   about: 'О проекте',

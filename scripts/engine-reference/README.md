@@ -9,11 +9,13 @@ exported functions, parameter and return types, and
 the release's own documentation comments. The **engine** module is the root
 `@zodiacs/engine` import. Other module names are import subpaths, for example
 `@zodiacs/engine/calc`. This reference includes `/crossings` and `/deltat`,
-which are public standalone imports as well as root re-exports.
+which are public standalone imports as well as root re-exports, and
+`/conventions`, a standalone import new in 1.1.0-rc.1 that the root does not
+re-export.
 `/internal` and `/internal/math` are site compatibility entries outside the
 public API promise, may change without notice, and are deliberately excluded.
 
-This is the first stable release, published on npm. Signatures describe the implementation, not proof
+This is a release candidate that npm does not carry; npm serves 1.0.0, which computes the same values. Signatures describe the implementation, not proof
 of accuracy or event-search completeness. Keep the limitations and failed or
 partial measurements in the [engine overview](/developers/engine/#accuracy),
 [release README](/developers/engine/reference/release/README.txt) and

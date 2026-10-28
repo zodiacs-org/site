@@ -52,7 +52,11 @@ const jsonLd = [
         semicolons, slashes or an @. A receipt that holds a value under a field
         names the id of that field's namespace and that value: a natal receipt
         whose <code>conventions.zodiac</code> is <code>tropical</code> names{' '}
-        <code>zodiac:tropical</code>.
+        <code>zodiac:tropical</code>. From @zodiacs/engine 1.1.0-rc.1 a natal
+        receipt also lists, as <code>conventionIds</code>, every id that it and
+        its result name, in code-unit order, each once. The compute API's
+        receipts list the ids their own fields name in the same way, and from
+        conformance suite 0.2.0 each vector lists its kind and its arbiter.
       </p>
       <p>
         Version {registry.version} holds {total} ids in {namespaces.length} namespaces,

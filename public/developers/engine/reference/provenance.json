@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "version": "1.0.0",
-  "sourceCommit": "ca2c8cefbaa1a9d6f5f78ee86713e813633942ca",
-  "sha256": "c4d3754de899fb98882331e6d7b9ce3ce77fb2072baeb002aa0ef8c77b0ab0f6",
+  "version": "1.1.0-rc.1",
+  "sourceCommit": "c41706266caf4dde7e03aaa18c08acd569d19a7e",
+  "sha256": "52352d3f8fde4a262483e4a5a6217e02d814aa53269b49c0333325e6c0d6a7b6",
   "license": "MIT AND CC-BY-4.0",
   "sourceRepository": "https://github.com/zodiacs-org/engine",
-  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/38d31854e5716454921b6ce8a211788a0984328e/artifacts/zodiacs-engine-1.0.0.tgz",
+  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/6ec3464c22581beca1b151b5bcd70fc040ca4adb/artifacts/zodiacs-engine-1.1.0-rc.1.tgz",
   "generator": {
     "typedoc": "0.28.20",
     "typescript": "5.9.3"
@@ -233,6 +233,18 @@
         "chart",
         "events",
         "houses"
+      ]
+    },
+    "./conventions": {
+      "declaration": "./dist/conventions.d.ts",
+      "exports": [
+        "CONVENTIONS_REGISTRY",
+        "ConventionIdParts",
+        "NatalConventionFields",
+        "conventionAddress",
+        "conventionId",
+        "natalConventionIds",
+        "parseConventionId"
       ]
     },
     "./crossings": {
@@ -628,6 +640,6 @@
     "release/LICENSE.txt": "9a8ab25f278db9d59a00ee82d1a82d63ee4891a9c417c53b4e2b9942aaab10df",
     "release/LICENSING.txt": "0bb05bc7302dfcf9362cb294e9f738235cfa33892625a2376502c263485eb303",
     "release/NOTICE.txt": "15b724304a7bebadaed4f6e01631314dab7b5b92b3b84dc3a59864fb6e555cce",
-    "release/README.txt": "eb12921bbae191e5566af811f63bc09ed11a1baeeb196185c183141bd6ac7973"
+    "release/README.txt": "3faf0982966aca0b6d4934f08ebfeee5a1079a4e63505f5352b769b3fe2a7e11"
   }
 }

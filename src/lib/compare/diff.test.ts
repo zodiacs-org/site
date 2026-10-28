@@ -64,6 +64,9 @@ function asWrittenBy(envelope: NatalEnvelope, version: '0.1.1-rc.3' | '0.1.1-rc.
   record.receipt.conventions = { ...(version === '0.1.1-rc.7' ? RC7_CONVENTIONS : RC3_CONVENTIONS) };
   // Nor the time basis that rc.15 records: the instant's scale and how it became UT1 and TT.
   delete record.receipt.timeScale;
+  // Nor the ids that 1.1.0-rc.1 lists, or the feature it requires for them.
+  delete record.receipt.conventionIds;
+  record.requiredFeatures = [];
   delete record.result.deltaT;
   delete record.result.timeScale;
   return record;
@@ -1120,6 +1123,8 @@ describe('the time basis, which records carry from engine 0.1.1-rc.15 on', () =>
     const record = JSON.parse(JSON.stringify(current));
     record.receipt.engine = { ...record.receipt.engine, version: '0.1.1-rc.14' };
     record.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) => 'deltaT' in set && set.deltaT === 'tt-minus-ut1;ut1-read-as-utc;value-in-result') };
+    delete record.receipt.conventionIds;
+    record.requiredFeatures = [];
     delete record.receipt.timeScale;
     delete record.result.timeScale;
     record.result.deltaT = deltaTAt((Date.parse(ORDINARY.utc) - Date.UTC(2000, 0, 1, 12)) / 86_400_000);
@@ -1132,6 +1137,27 @@ describe('the time basis, which records carry from engine 0.1.1-rc.15 on', () =>
     expect(cause(comparison, 'conventions')?.covers).toEqual(expect.arrayContaining(['time-scale', 'convention-timeScale']));
     expect(comparison.differences.some((row) => ['time-basis', 'ut1-utc-seconds'].includes(row.id))).toBe(false);
     expect(cause(comparison, 'unexplained')?.covers ?? []).not.toContain('time-scale');
+  });
+});
+
+describe('the convention ids, from engine 1.1.0-rc.1', () => {
+  it('reads a record that lists no ids as a difference in how records list them, not in conventions', () => {
+    const current = buildEnvelope(ORDINARY);
+    // As 1.0.0 wrote the same chart: rc.16's set, taken by its content, no ids and no feature.
+    const older = JSON.parse(JSON.stringify(current));
+    older.receipt.engine.version = '1.0.0';
+    older.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) => 'nutation' in set && !('conventionIds' in set))! };
+    delete older.receipt.conventionIds;
+    older.requiredFeatures = [];
+    const parsed = parseNatalEnvelope(JSON.stringify(older));
+    expect(parsed.ok ? 'accepted' : parsed.code).toBe('accepted');
+    if (!parsed.ok) return;
+    const comparison = compareEnvelopes(parsed.envelope, current, live);
+    expect(comparison.differences.filter((row) => row.area === 'Conventions').map((row) => row.id)).toEqual(['convention-conventionIds']);
+    expect(comparison.differences.find((row) => row.id === 'convention-conventionIds'))
+      .toMatchObject({ left: '—', right: 'zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt' });
+    expect(comparison.explanations.find((item) => item.id === 'convention-ids')).toMatchObject({ evidence: 'reported', covers: ['convention-conventionIds'] });
+    expect(comparison.explanations.find((item) => item.id === 'conventions')).toBeUndefined();
   });
 });
 
@@ -1153,6 +1179,8 @@ describe('the full-nutation receipt conventions, from engine 0.1.1-rc.16', () =>
     older.receipt.engine.version = '0.1.1-rc.15';
     older.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) =>
       'timeScale' in set && !('nutation' in set))! };
+    delete older.receipt.conventionIds;
+    older.requiredFeatures = [];
     const parsed = parseNatalEnvelope(JSON.stringify(older));
     expect(parsed.ok ? 'accepted' : parsed.code).toBe('accepted');
     if (!parsed.ok) return;

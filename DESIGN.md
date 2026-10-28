@@ -68,7 +68,7 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
 - Everywhere, the wing included: the desktop nav, the footers, the share
   pages, every share and export image, the OG cards, emails and the assistant
   cards. Two exceptions, by the owner's choice: on phones the top bar keeps
-  ZODIACS | ASTROFOLIO, and the favicon, the app icons and the bio page's
+  ZODIACS | ASTROFOLIO, and the favicon, website install icons and the bio page's
   orbit emblem keep the flat ring (`BrandMark.astro`), which reads better
   small. Cards already published under a pinned or dated name keep the
   design they were published with, and a new family takes the lockup: the
@@ -76,6 +76,11 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
   Terminal's v7 card (2026-10-19) replace the v3, v2, v5 and v6 files on the
   pages, and those stay published for links already shared. The homepage,
   the sign guides and the horoscopes moved to the art cards below.
+- Plugin profile pictures use the tilted ring on the dark background, chosen
+  by the owner on 27 October 2026. This exception applies to the Zodiacs
+  plugin, while the website favicon, install icons and bio emblem keep their
+  existing flat ring. The plugin avatar is generated from the shared ring by
+  `scripts/build-plugin-avatar.mjs`, with a fresh versioned public address.
 - In motion: the end card for short videos (`npm run data:end-card`), two
   seconds at 1080 × 1920 in which the ring spins, slows to the brand's own
   front and settles beside the words, a little above the middle of the
@@ -310,19 +315,18 @@ Artwork:
   centred, at 3:2 (a pair as two 5:6 panels); at 530px and below it runs to
   the card's edges at 4:3 (a pair as two 4:5 panels). It fades about a
   sixth on the sides and top and a third at the foot, where the discs sit.
-- Size budgets: the panels make no image requests, so the art is inlined,
-  both twins of every piece. `node scripts/build-card-art.mjs` makes 400px
-  and 480px AVIF variants of each twin (quality 36; AVIF because both twins
-  must fit and at the same size it is about half the bytes of WebP) and
-  JPEGs of the dark twins for the share images, from the largest sources
-  there are (the sign panels' 1200px originals, the pieces' 720px masters)
-  with the cards' dimming baked in (the image renderer cannot read WebP or
-  AVIF). The occasions panel inlines the sign panels at
-  400px and its own four pieces at 480px; the horoscope panel inlines the
-  sign panels at 480px. Each panel stays under its 600 KB build budget
-  (occasions about 572 KB, horoscope about 534 KB). Every image has its
-  width and height set and decodes asynchronously. A host browser without
-  AVIF shows the card without its picture, never a broken frame.
+- Size budgets: following the owner's 26 October sharpness concern, the panels
+  load only the visible art from immutable, owned `zodiacs.org/assets/`
+  URLs. Dark sign panels use the 1200px AVIF, and the daylight twins and
+  four card pieces use their 720px WebP masters. The art URL carries only
+  the static piece name, never a person's name, birth details or score.
+  The host resource policy allows that one static asset origin; all fonts,
+  sign discs, scripts and styles remain inline. This keeps the occasions
+  and horoscope panel HTML near 338 KB and 324 KB respectively, below their
+  600 KB build budget. Every image has its width and height set and decodes
+  asynchronously. `node scripts/build-card-art.mjs` still makes the older
+  400px and 480px AVIF variants and the dark JPEGs used by share images;
+  the current chat panels use the larger published masters.
 - Adding art: generate the dark piece at 1536x1024 (3:2) in the style
   above, then its daylight twin from it with the same subject, framing and
   camera, edges calm and low in detail so they fade cleanly. Name them

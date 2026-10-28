@@ -5,8 +5,8 @@ The plugin skills and site-derived adapter retain the site's license (LICENSE).
 No license of the whole site or independent distribution is implied. Public
 distribution and the adapter's licensing are owner release decisions.
 
-The generated server bundles @zodiacs/engine 1.0.0 (published on npm under
-latest) and astronomy-engine
+The generated server bundles @zodiacs/engine 1.1.0-rc.1 (an unpublished
+candidate; npm serves 1.0.0 under latest) and astronomy-engine
 2.1.19. Engine code is MIT; its Delta-T data includes CC BY 4.0 values from
 Stephenson, Morrison and Hohenkerk (2016). Preserve ENGINE-NOTICE, ENGINE-LICENSE
 and ENGINE-LICENSING, copied unchanged from the installed engine.

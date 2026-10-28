@@ -174,7 +174,7 @@ const jsonLd = [
           it under <code>latest</code>, and <code>get_capabilities</code> labels it published.</>
         ) : (
           <>That engine version is a release candidate that is not on npm: the registry read of{' '}
-          {candidate.registryObservedOn} records {candidate.registryVersion} under <code>next</code>, and{' '}
+          {candidate.registryObservedOn} records {candidate.registryVersion} under <code>latest</code>, and{' '}
           <code>get_capabilities</code> labels it an unpublished candidate.</>
         )}{' '}
         The MCP adapter itself is not on npm. Node {manifest.node}.
@@ -355,10 +355,11 @@ const jsonLd = [
         <code>check_sky_fact</code> and <code>resolve_birth_time</code> cite the
         compute API's receipt for the same calculation, which the reply carries: the
         engine, its conventions and coverage, the reference span, the two sources of
-        ΔT, for a search how it searched and how many evaluations it made, and for a
-        local time how time zones were read. It holds no instant, date, zone or body
-        from the request, and the compute API cites the same digest for the same
-        request.
+        ΔT, for a search how it searched and how many evaluations it made, for a
+        local time how time zones were read, and the ids of the{' '}
+        <a href="/developers/conventions/">conventions registry</a> those fields
+        name. It holds no instant, date, zone or body from the request, and the
+        compute API cites the same digest for the same request.
       </p>
     </div>
 
