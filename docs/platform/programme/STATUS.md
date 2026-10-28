@@ -33,8 +33,13 @@ weighted units accepted; blocked 2% (3), or 1.644%. Standards §4.4 is at
   Everything they record by digest is byte for byte what the merge's
   deployment served, except the OpenAPI document, which names the day's
   data.
-- **Still to do.** A rescan by the AI portals is your call: the hosted tool
-  list changed (the compute receipts' schemas and Chart Studio's address).
+- **The AI portals, checked 28 October.** OpenAI's copy, under review with
+  0.5.1, was scanned after the deployment and already has the new
+  definitions, so no rescan was needed. The Claude directory keeps its
+  snapshot of 16 October: Sync from server refreshes only the tool names,
+  which have not changed, and the listing's notes give reviewers the current
+  definitions. Asking the directory team to refresh the snapshot is your
+  call.
 - **Not checked.** Request forms beyond the documented ones and one polar
   chart. The local MCP adapter's own receipt for place searches states no
   convention, so it lists no ids.

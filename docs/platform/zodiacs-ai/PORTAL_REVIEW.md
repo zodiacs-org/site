@@ -1,5 +1,28 @@
 # OpenAI portal review record
 
+## Tool copy checked after R44, 28 October 2026
+
+Dias approved a rescan so that the app's copy of the tools would match
+production after R44 (#840). The portal was read first; the rescan turned
+out not to be needed, so it was not run.
+
+The Zodiacs app now shows **In review**, metadata and skills version 0.5.1,
+and **Not published**. This record's earlier entries describe the 0.5.0
+draft as not submitted; when 0.5.1 was submitted is not recorded here.
+
+The MCP server `zodiacs-sky` shows In review, configured and domain
+verified. Its server instructions and all thirteen tools were last checked
+on 27 October at 22:11:09 Bangkok time, 25 minutes after #840's production
+deployment was ready. The scanned definitions include
+`ui://zodiacs/chart-studio-v6.html` for `open_chart_studio` and the
+`conventionIds` field of `get_sky`'s receipt. Production's `tools/list`
+serves the same thirteen definitions as main's flag-off fixture, which has
+not changed since #840, so the copy under review is current.
+
+The findings are unchanged: `get_occasion_sky` and `get_compatibility` each
+say "This new tool definition needs further review before it can be
+published." Neither is blocking. Nothing in the portal was changed.
+
 ## November content refresh prepared locally, 27 October 2026
 
 Main merged PR #835 at `bdf4ef88` while the approved `c626a7b7` release
