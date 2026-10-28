@@ -36,7 +36,7 @@ const dailyEndpoints = [
 
 const yearlyEndpoints = [
   [`/api/v1/retrogrades/${yearRange}.json`, 'Retrograde windows intersecting the year: retrograde and direct station instants and signs, pre- and post-shadow boundaries, duration, and clipping flags where the data boundary truncates a window.'],
-  [`/api/v1/stations/${yearRange}.json`, 'Every station — a planet turning retrograde or direct — with its sign and degree.'],
+  [`/api/v1/stations/${yearRange}.json`, 'Every station, where a planet turns retrograde or direct, with its sign and degree.'],
   [`/api/v1/ingresses/${yearRange}.json`, 'Every planetary sign ingress, with the exact instant and whether the planet entered moving retrograde.'],
   [`/api/v1/moon-phases/${yearRange}.json`, 'Every new and full moon with sign, degree, and the traditional full-moon name (Blue for a second full moon in one month).'],
   [`/api/v1/eclipses/${yearRange}.json`, 'Solar and lunar eclipses by instant of greatest eclipse: type, kind, sign, obscuration, and totality length.'],
@@ -98,7 +98,7 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Developer Tools — Local Charts, Sky Data & Embeds | Zodiacs.org"
+  title="Developer Tools for Local Charts, Sky Data & Embeds | Zodiacs.org"
   description={description}
   path="/developers/"
   jsonLd={jsonLd}
@@ -162,8 +162,8 @@ const jsonLd = [
     <div class="prose">
       <p>
         Also here, without an account or a key: <a href="#sky-data">shared sky data</a> as
-        plain JSON files, and <a href="/developers/support/">the support matrix</a> —
-        runtime requirements, the runtimes actually tested and known limits — worth
+        plain JSON files, and <a href="/developers/support/">the support matrix</a>, which covers
+        runtime requirements, the runtimes actually tested and known limits and is worth
         reading before you choose an integration.
       </p>
       <p>
@@ -176,9 +176,9 @@ const jsonLd = [
     <h2 id="sky-data" class="dev-h2">Shared sky data</h2>
     <div class="prose dev-intro">
       <p>
-        The computed dates behind this site's calendars — today's sky, the
+        The computed dates behind this site's calendars (today's sky, the
         weeks ahead, retrograde windows, stations, sign ingresses, moon phases,
-        eclipses, and exact aspects — are published as versioned JSON. The
+        eclipses, and exact aspects) are published as versioned JSON. The
         files are static, cached at the edge, and open to any origin. There is
         no key or signup. These files contain no personal birth data: they describe
         the shared sky, and the site's own{' '}
@@ -207,8 +207,8 @@ const jsonLd = [
     <div class="prose">
       <p>
         Every payload is self-describing. It opens with a{' '}
-        <code>summary</code> — one or two plain sentences that state the
-        file's facts, ready to quote — and carries an <code>about</code> block
+        <code>summary</code>, one or two plain sentences that state the
+        file's facts and are ready to quote, and carries an <code>about</code> block
         that defines each field and its units, a <code>$schema</code> link to
         its JSON Schema, and <code>links</code> to the related files. Raw
         numbers come with formatted twins (<code>lon</code> alongside{' '}
@@ -279,7 +279,7 @@ const jsonLd = [
         renamed or removed; a breaking change would ship under{' '}
         <code>/api/v2/</code> and v1 would keep working. Yearly files are
         byte-stable between data refreshes, so conditional requests are cheap.
-        Year files cover {firstYear}–{lastYear} today and grow as the
+        Year files cover {firstYear} to {lastYear} today and grow as the
         underlying data is extended; read{' '}
         <a href="/api/v1/index.json"><code>index.json</code></a> rather than
         assuming which years exist.
