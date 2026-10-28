@@ -42,8 +42,14 @@ export function recordHelpers(base) {
 
   async function waitKeepState(page, states, options = {}) {
     const wanted = [].concat(states);
-    await page.waitForFunction((list) => list.includes(document.querySelector('[data-record-keep]')?.getAttribute('data-record-keep-state')), wanted, options);
-    return keepState(page);
+    // A cross-tab notification can reopen the scope between the successful
+    // wait and a second DOM read. Return the state the predicate observed.
+    const matched = await page.waitForFunction((list) => {
+      const state = document.querySelector('[data-record-keep]')?.getAttribute('data-record-keep-state');
+      return list.includes(state) ? state : false;
+    }, wanted, options);
+    try { return await matched.jsonValue(); }
+    finally { await matched.dispose(); }
   }
 
   async function keep(page) {
