@@ -1,6 +1,6 @@
 import AspectGlyph from '../../components/AspectGlyph';
 import PlanetGlyph from '../../components/PlanetGlyph';
-import { synastryLine } from '../../lib/compat';
+import { contactLine } from '../../lib/contact-line';
 import { aspectLabel, planetLabel } from '../../lib/i18n/astrology';
 import { t, type CatalogLocale as Locale } from '../../lib/i18n';
 import type { RelationshipContact, RelationshipGridData, RelationshipPointName } from './relationshipData';
@@ -75,7 +75,7 @@ export function AspectGrid({
     : null;
   const curated = selected ? synastryCorpusLine(selected.a, selected.b, selected.type) : null;
   const reading = selected
-    ? curated ?? synastryLine(aLabel, selected.a, bLabel, selected.b, selected.type)
+    ? curated ?? contactLine(aLabel, selected.a, bLabel, selected.b, selected.type)
     : null;
   const caption = formatRelationshipCopy(c.caption, { a: aLabel, b: bLabel });
 

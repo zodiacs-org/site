@@ -1,4 +1,5 @@
 import { moonPhase } from '@zodiacs/engine';
+import { moonPhaseNameFromAngle } from '../lib/engine/lite';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
@@ -58,6 +59,28 @@ export function displayTime(utc: string, zone: string): string {
 
 function failure(tool: AiToolName, code: string, message: string, retryAfterSeconds?: number) {
   return { schema: AI_RESULT_SCHEMA, ok: false as const, tool, error: { code, message, ...(retryAfterSeconds === undefined ? {} : { retryAfterSeconds }) } };
+}
+
+/** The compute API's sentence for a missing field (src/lib/compute-api/validate.ts), which names no field itself. */
+const COMPUTE_REQUIRED = 'This field is required.';
+
+/** A JSON Pointer as an assistant reads a field name: /sign is sign, /local/date is local.date, /bodies/2 is bodies[2]. */
+function fieldName(pointer: string): string {
+  return pointer.slice(1).split('/').map((part) => (/^\d+$/.test(part) ? `[${part}]` : part)).join('.').replace(/\.\[/g, '[');
+}
+
+/**
+ * A compute API refusal with the field it refused named in the sentence, so an
+ * assistant can correct the call: "sign is required." rather than "This field
+ * is required.". The sentence is still fixed text plus the schema's own field
+ * name, never a value from the request; one without a field stays as it is.
+ */
+export function namedRefusal(message: string, pointer: string | undefined): string {
+  if (!pointer) return message;
+  const field = fieldName(pointer);
+  if (message === COMPUTE_REQUIRED) return `${field} is required.`;
+  if (/^(?:Must|Each must) /.test(message)) return `${field} ${message.charAt(0).toLowerCase()}${message.slice(1)}`;
+  return `${field}: ${message}`;
 }
 
 /** The tools this server actually offers with these dependencies. */
@@ -169,7 +192,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const calculation = computePositions(parsePositionsRequest({ instants: [instant], ...(args.bodies ? { bodies: args.bodies } : {}) }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, moonPhase: { name: phase.name, angle: phase.angle, illumination: phase.illumination }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
+        data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
         links = [moonLink, methodLink];
         break;
       }
@@ -368,7 +391,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
     // Validate our own output so callers never receive a success outside its contract.
     return OUTPUT_SCHEMAS[tool].parse(result);
   } catch (error) {
-    if (error instanceof ComputeApiError) return failure(tool, error.detail.code, error.detail.message, error.detail.retryAfterSeconds);
+    if (error instanceof ComputeApiError) return failure(tool, error.detail.code, namedRefusal(error.detail.message, error.detail.pointer), error.detail.retryAfterSeconds);
     return failure(tool, 'calculation-failed', 'Zodiacs could not complete this. Nothing partial is returned; try again.');
   } finally { ownedLocalTime?.dispose(); }
 }

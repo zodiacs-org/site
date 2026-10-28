@@ -1,9 +1,11 @@
 /**
  * The sky at one moment, for an occasion card: where the Sun, Moon and
- * planets stand, which planets are retrograde, and the Moon's phase. Facts
+ * planets stand, which planets are retrograde, and the Moon's phase (named
+ * by the site's standard rule, src/lib/engine/lite.ts). Facts
  * only; the card's interpretation lines are chosen elsewhere.
  */
 import { moonPhase, positions, type BodyName } from '@zodiacs/engine';
+import { moonPhaseNameFromAngle } from '../engine/lite';
 
 /** The bodies an occasion card names, in the order it names them. */
 export const OCCASION_BODIES = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'] as const satisfies readonly BodyName[];
@@ -49,7 +51,7 @@ export function skyAt(instant: Date): OccasionSkyFacts {
     instant: instant.toISOString(),
     bodies,
     moon: {
-      phase: phase.name,
+      phase: moonPhaseNameFromAngle(phase.angle),
       illuminationPercent: Math.round(phase.illumination * 100),
       waxing: phase.waxing,
     },

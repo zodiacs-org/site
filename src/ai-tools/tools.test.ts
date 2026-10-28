@@ -2,8 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { positions, ENGINE_VERSION } from '@zodiacs/engine';
 import { computeEvents } from '../lib/compute-api/endpoints';
 import { parseEventsRequest } from '../lib/compute-api/validate';
-import { executeAiTool, type AiCallContext } from './tools';
-import { AI_TOOL_NAMES } from './contracts';
+import { executeAiTool, namedRefusal, type AiCallContext } from './tools';
+import { moonPhase } from '@zodiacs/engine';
+import { moonPhaseNameFromAngle } from '../lib/engine/lite';
+import { AI_TOOL_NAMES, AI_VERSION } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import { addDays, type HoroscopeWindow } from './horoscope/window';
 const dependencies = { now: () => new Date('2026-10-01T06:00:00Z') };
@@ -159,5 +161,34 @@ describe('horoscopes', () => {
     const visible = JSON.stringify({ title: data.reading, why: data.why, label: data.dateLabel });
     expect(visible).not.toMatch(/UTC|Europe\/London|\d{4}-\d{2}-\d{2}T/);
     expect(data.zoneLabel).toBe('London');
+  });
+  it('reports version 0.5.1', async () => {
+    expect(AI_VERSION).toBe('0.5.1');
+    const result = await executeAiTool('get_capabilities', {}, dependencies);
+    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.5.1');
+    else expect.unreachable();
+  });
+  it('names the missing field in a refusal, with the same code', async () => {
+    const result = await executeAiTool('check_sky_fact', { kind: 'sign', body: 'Moon' }, dependencies);
+    expect(result).toMatchObject({ ok: false, tool: 'check_sky_fact', error: { code: 'invalid-request', message: 'sign is required.' } });
+    const phase = await executeAiTool('check_sky_fact', { kind: 'phase', date: '2026-10-01' }, dependencies);
+    expect(phase).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'phase is required.' } });
+  });
+  it('names fields in every compute refusal sentence', () => {
+    expect(namedRefusal('This field is required.', '/sign')).toBe('sign is required.');
+    expect(namedRefusal('This field is required.', '/local/date')).toBe('local.date is required.');
+    expect(namedRefusal('Must be one of: new, full.', '/phase')).toBe('phase must be one of: new, full.');
+    expect(namedRefusal('Each must be one of: Sun.', '/bodies/2')).toBe('bodies[2] each must be one of: Sun.');
+    expect(namedRefusal('Give exactly one of instant and date.', '')).toBe('Give exactly one of instant and date.');
+    expect(namedRefusal('Give exactly one of instant and date.', undefined)).toBe('Give exactly one of instant and date.');
+  });
+  it('names the Moon phase by the standard rule in get_sky', async () => {
+    // Two days before the full Moon of 25 January 2024: gibbous, not full.
+    const instant = '2024-01-23T17:54:00Z';
+    const result = await executeAiTool('get_sky', { instant }, dependencies);
+    if (result.ok && result.tool === 'get_sky') {
+      expect(result.data.moonPhase.name).toBe('Waxing Gibbous');
+      expect(result.data.moonPhase.name).toBe(moonPhaseNameFromAngle(moonPhase(new Date(instant)).angle));
+    } else expect.unreachable();
   });
 });

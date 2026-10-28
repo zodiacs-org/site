@@ -2,7 +2,8 @@
  * get_compatibility: two birth charts side by side (synastry) for the
  * Zodiacs MCP tools. It reports the chart contacts between the two people
  * and the sign-to-sign facts the compatibility pages show, in the site's
- * own wording (src/lib/compat.ts), with a 0–100 compatibility score and its
+ * own wording (src/lib/compat.ts, with generational contacts worded by
+ * src/lib/contact-line.ts), with a 0–100 compatibility score and its
  * three parts (src/lib/compat-score.ts). It forecasts in astrology's terms;
  * it never guarantees how a relationship will turn out.
  *
@@ -21,7 +22,8 @@
 import { z } from 'zod';
 import { SIGN_SLUGS } from '../../lib/compute-api/constants';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
-import { pairFacts, pairSlug, synastryLine } from '../../lib/compat';
+import { pairFacts, pairSlug } from '../../lib/compat';
+import { contactLine } from '../../lib/contact-line';
 import { scoreCompatibility } from '../../lib/compat-score';
 import { compatibilityShareUrl } from '../../lib/share-results';
 import { compatibilityHandoffPath } from '../../lib/chart-handoff';
@@ -403,7 +405,7 @@ export async function computeCompatibility(
       aspect: contact.type,
       orb: roundOrb(contact.orb),
       generational: isGenerationalContact(contact),
-      line: synastryLine(a.label, contact.a, b.label, contact.b, contact.type),
+      line: contactLine(a.label, contact.a, b.label, contact.b, contact.type),
     })),
     counts: {
       easeful: summary.easeful,

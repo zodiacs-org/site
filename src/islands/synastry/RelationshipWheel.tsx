@@ -14,7 +14,7 @@ import { buildTransitOverlay } from '../../lib/scene/overlay';
 import { collisionNudge } from '../../lib/scene/layout';
 import { overlayBodyId } from '../../lib/scene/types';
 import { renderTransitOverlay } from '../transit/renderTransitOverlay';
-import { synastryLine } from '../../lib/compat';
+import { contactLine } from '../../lib/contact-line';
 import { elementLabel, formatLongitude, signForLongitude, signName } from '../../lib/signs';
 import { aspectLabel, planetLabel } from '../../lib/i18n/astrology';
 import { t, tp, type CatalogLocale as Locale } from '../../lib/i18n';
@@ -215,7 +215,7 @@ function contactReading(
 ): { text: string; curated: boolean } {
   const curated = synastryCorpusLine(contact.a, contact.b, contact.type);
   return {
-    text: curated ?? synastryLine(aLabel, contact.a, bLabel, contact.b, contact.type),
+    text: curated ?? contactLine(aLabel, contact.a, bLabel, contact.b, contact.type),
     curated: curated !== null,
   };
 }

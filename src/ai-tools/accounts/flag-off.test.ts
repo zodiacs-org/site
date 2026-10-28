@@ -11,6 +11,7 @@ import type { HoroscopeWindow } from '../horoscope/window';
  * call to the account tool with exactly the bytes the 0.5.0 submission answers
  * with. The fixture was captured from the base branch before the account code
  * existed; regenerate it only from a released commit (CAPTURE_FLAG_OFF_FIXTURE=1).
+ * 0.5.1 changed only the reported version in it.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];
