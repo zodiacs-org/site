@@ -1,0 +1,77 @@
+---
+import Base from '../../../layouts/Base.astro';
+import '../../../styles/chart-compare.css';
+import '../../../styles/developer-demo.css';
+import DeveloperDemo from '../../../islands/DeveloperDemo';
+import { ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
+
+const title = 'Astrology Data Demo: Three Questions, Real Answers | Zodiacs.org';
+// A plain literal: scripts/build-assistant-context.mjs reads it from the source.
+const description = 'Real engine answers to three questions: a birth chart, the next Mercury retrograde and how two charts compare, each with its JSON, the cURL command, the MCP tool call and how the answer was checked.';
+
+const jsonLd = [
+  {
+    '@type': 'WebApplication',
+    name: 'Zodiacs astrology data demo',
+    url: 'https://zodiacs.org/developers/demo/',
+    description,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Any',
+    isAccessibleForFree: true,
+    provider: ORGANIZATION,
+  },
+  developerBreadcrumb('/developers/demo/', 'Demo'),
+];
+---
+
+<!--
+  privateSurface: a birth typed here stays in the page, which opts out of the
+  site-wide analytics scripts, as /developers/playground/ does.
+-->
+<Base title={title} description={description} path="/developers/demo/" jsonLd={jsonLd} clientUi privateSurface>
+  <section class="section container container--narrow demo-page">
+    <em class="kicker">Demo</em>
+    <h1 class="display">Ask the engine a question.</h1>
+    <div class="prose">
+      <p>
+        Each answer below comes from the code behind the{' '}
+        <a href="/developers/compute/">compute API</a> and the hosted MCP server, not from a mock. With it you get
+        the JSON the API returns, the cURL command that asks the same question, the MCP tool call an assistant would
+        make, and what the answer was compared against.
+      </p>
+    </div>
+
+    <DeveloperDemo client:load />
+
+    <h2 id="what-runs-where">What runs where</h2>
+    <div class="prose">
+      <p>
+        The first answers were computed when this page was built. When you change the date, time or place of the
+        chart, or the date of the Mercury question, the page loads the compute API&rsquo;s own calculations, the
+        bundle <a href="/developers/playground/">the playground</a> runs, and computes the new answer here. This page
+        sends nothing to the API; the commands show how you would.
+      </p>
+      <p>
+        The compatibility answer is fixed. It compares two synthetic births with the hosted server&rsquo;s{' '}
+        <code>get_compatibility</code> tool.
+      </p>
+    </div>
+
+    <h2 id="next-steps">Next steps</h2>
+    <div class="prose">
+      <ul>
+        <li><a href="/developers/compute/">The compute API reference</a>: seven endpoints, their limits and their errors.</li>
+        <li><a href="/developers/playground/">The playground</a>: send any documented request and compare two answers field by field.</li>
+        <li><a href="/developers/mcp/">The local MCP adapter</a> and <a href="/developers/ai/">the hosted MCP server</a>.</li>
+        <li><a href="/developers/engine/#accuracy">How close the engine is</a> to its references.</li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .demo-page h1 { margin: var(--s-1) 0 var(--s-4); }
+  .demo-page > h2 { margin: var(--s-12) 0 var(--s-4); font-size: var(--text-lg); scroll-margin-top: 96px; }
+  .demo-page .prose { max-width: 68ch; }
+  .demo-page .prose code { font-family: var(--font-mono); font-size: .9em; overflow-wrap: anywhere; }
+</style>

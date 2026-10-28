@@ -45,7 +45,7 @@ type RegistryResearchPublication = {
 const registryResearchPublication = registryResearchPublicationData as unknown as RegistryResearchPublication;
 const birthdayFacts = birthdayFactsData as unknown as { days: Record<string, { cusp?: unknown }> };
 const researchLastmod = terminalResearchLastmod(registryResearchPublication);
-const YEARLY_HOROSCOPE_LASTMOD = '2026-10-16';
+const YEARLY_HOROSCOPE_LASTMOD = '2026-10-27';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const THESIS_LASTMOD = '2026-09-05';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
@@ -536,6 +536,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
+  // The assistant showcase and its entry links, first published with this change.
+  ['/apps/', '2026-10-28'] as const,
+  ['/tools/', '2026-10-28'] as const,
+  ['/developers/ai/', '2026-10-28'] as const,
+  // The developer demo, and the developer index that links to it. The day of
+  // the daily edition it was built with; after the engine 1.1.0-rc.1 entry above so it wins.
+  ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-28'] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -638,10 +645,12 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/developers/compare/', priority: 0.6 },
     { loc: '/developers/mcp/', priority: 0.6 },
     { loc: '/developers/ai/', priority: 0.6 },
+    { loc: '/apps/', priority: 0.7 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
     { loc: '/developers/playground/', priority: 0.6 },
+    { loc: '/developers/demo/', priority: 0.6 },
     { loc: '/developers/sky-benchmark/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },

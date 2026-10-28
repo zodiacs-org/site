@@ -1,5 +1,20 @@
 # Claude directory listing
 
+## Second sync, 28 October 2026
+
+Dias approved syncing the tools again after R44 (#840) went live. In the
+full editor, Sync from server was selected, and Dias saved the listing with
+**Save and update submission**. The header then read "updated just now",
+and the status stayed **In review**.
+
+The captured snapshot did not change. The Tools tab still dates the tool
+list 16 October 2026, and the submission's server snapshot is the one
+captured on 16 October at 10:52 UTC. Selecting Sync sent no request from the
+browser; it fills in the tool names, and those are unchanged. The additional
+notes saved earlier the same day still give reviewers the current
+definitions and the four panel addresses, which match production. The
+Self-tested box was left unticked, as it was, and no email was sent.
+
 ## Branding refresh, 28 October 2026
 
 Dias approved refreshing the existing listing, including its profile picture.
