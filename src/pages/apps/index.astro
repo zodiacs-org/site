@@ -1,0 +1,200 @@
+---
+import Base from '../../layouts/Base.astro';
+import captures from '../../data/apps-showcase-images.json';
+const assetRoot = '/assets/ai/showcase/20261028/';
+const image = (name: string) => {
+  const result = captures.images.find((entry) => entry.name === name);
+  if (!result) throw new Error(`Missing showcase image: ${name}`);
+  return { src: assetRoot + result.file, width: result.width, height: result.height };
+};
+const examples = [
+  { id: 'chart', title: 'Your chart, ready to explore.', category: 'Birth charts', description: 'See the planets, signs and houses in an interactive chart. Choose a detail to bring into the conversation.', prompt: 'Open Zodiacs Chart Studio so I can explore my birth chart.', alt: 'Chart Studio displaying its labelled example birth chart, with the chart wheel and an inspector.', image: image('chart'), shape: 'wide' },
+  { id: 'comparison', title: 'Two charts. A conversation starter.', category: 'Compatibility', description: 'Compare two charts and explore their connections, with a reading to discuss together.', prompt: "Use Zodiacs to compare our charts. I was born 3 May 1990 at 8:30 in Madrid. My partner was born 10 August 1992, time unknown.", alt: 'A Zodiacs comparison card for two synthetic birth dates, with Taurus and Leo artwork and the calculated reading.', image: image('comparison'), shape: 'portrait' },
+  { id: 'wedding', title: 'The sky on a day that matters.', category: 'Occasions', description: 'Make a card for a wedding, anniversary or another date you want to remember.', prompt: "Use Zodiacs to make a wedding card for 12 June 2027 at 17:00 in Florence, Italy. Tell us what the sky means in astrology.", alt: 'A Zodiacs wedding card for a synthetic example in Florence on 12 June 2027, with wedding artwork and the reading.', image: image('wedding'), shape: 'portrait' },
+  { id: 'horoscope', title: 'A moment for your sign.', category: 'Horoscopes', description: 'Read your sign’s daily horoscope, change the focus and explore the sky behind the words.', prompt: "Use Zodiacs to show today’s horoscope for Leo in Bangkok.", alt: 'A dated Leo horoscope card with the sign artwork, day and focus controls, and its published reading.', image: image('horoscope'), shape: 'portrait' },
+];
+const title = 'Zodiacs in ChatGPT and Claude | Zodiacs.org';
+const description = 'Explore Zodiacs birth charts, compatibility, occasion cards and horoscopes in your AI conversations. See real card examples, a short demo and connection options.';
+---
+<Base title={title} description={description} path="/apps/" stableTypography minimalNavFontPreloads>
+  <div class="apps-page">
+    <header class="apps-hero kwrap">
+      <div class="apps-hero__copy">
+        <p class="kicker">Zodiacs for your AI conversations</p>
+        <h1><span>A little sky</span> <span>in your</span> <em>conversation.</em></h1>
+        <p class="apps-lede">Your birth chart, the connections between two people, and the sky on a day that matters. Ask in your own words. Explore the card together.</p>
+        <div class="apps-actions">
+          <a class="btn btn--lg" href="#examples">Explore the cards <span class="orb" aria-hidden="true">↓</span></a>
+          <a class="textlink" href="#demo">Watch the 41-second demo <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+        <p class="apps-hero__note">Made for ChatGPT and Claude. Directory listings are currently in review.</p>
+      </div>
+      <figure class="apps-hero__visual">
+        <div class="apps-hero__image"><img {...image('comparison')} alt="A real Zodiacs comparison card using synthetic example birth details." loading="eager" fetchpriority="high" decoding="async" /></div>
+        <figcaption><span>A card to keep the conversation going.</span><a href={assetRoot + 'comparison.webp'} target="_blank" rel="noopener">View the full example <span aria-hidden="true">↗</span></a></figcaption>
+      </figure>
+    </header>
+
+    <section class="apps-availability kwrap" aria-labelledby="availability-title">
+      <div class="apps-availability__intro"><h2 id="availability-title">Where to find Zodiacs</h2><a class="textlink" href="#connect">Connection options <span class="arr" aria-hidden="true">→</span></a></div>
+      <dl>
+        <div><dt>ChatGPT</dt><dd>Directory listing in review</dd></div>
+        <div><dt>Claude</dt><dd>Directory listing in review</dd></div>
+      </dl>
+    </section>
+
+    <section class="apps-examples kwrap ksection" id="examples" aria-labelledby="examples-title">
+      <div class="apps-section-head"><div><p class="kicker">A few things you can ask</p><h2 id="examples-title">Start with something<br />you’re curious about.</h2></div><p>These are captures of the real Zodiacs panels. Birth details are synthetic, and the horoscope is a dated example. Your answer uses the details and date you ask for.</p></div>
+      <div class="apps-examples__grid">
+        {examples.map((example) => (
+          <article class:list={['apps-example', `apps-example--${example.shape}`]} aria-labelledby={`${example.id}-title`}>
+            <a class="apps-example__picture" href={example.image.src} target="_blank" rel="noopener" aria-label={`View full ${example.category.toLowerCase()} example`}>
+              <img {...example.image} alt={example.alt} loading="lazy" decoding="async" />
+              <span class="apps-example__expand" aria-hidden="true">View full card ↗</span>
+            </a>
+            <div class="apps-example__copy"><p class="apps-category">{example.category}</p><h3 id={`${example.id}-title`}>{example.title}</h3><p>{example.description}</p>
+              <div class="apps-prompt"><blockquote id={`${example.id}-prompt`}>{example.prompt}</blockquote><button type="button" data-copy-prompt={`${example.id}-prompt`} aria-label={`Copy ${example.category.toLowerCase()} prompt`}>Copy prompt <span aria-hidden="true">↗</span></button></div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="apps-copy-status" role="status" aria-live="polite"></p>
+      <p class="apps-smallprint">Astrology offers interpretation and reflection. A compatibility score or date rating does not guarantee an outcome.</p>
+    </section>
+
+    <section class="apps-demo ksection" id="demo" aria-labelledby="demo-title">
+      <div class="kwrap apps-demo__layout">
+        <div class="apps-demo__copy"><p class="kicker">See it in a conversation</p><h2 id="demo-title">From a question<br />to a card you can explore.</h2><p>A 41-second walkthrough of the submitted Zodiacs app. Play it when you’re ready.</p><p id="demo-description" class="apps-smallprint">A silent recording using synthetic birth details. First, two charts are compared. Then a wedding card opens for Florence, with its date, time and sky reading. The examples above include full still images and prompts you can read at your own pace.</p></div>
+        <video controls playsinline preload="none" width="1080" height="1600" poster={assetRoot + 'demo-poster.webp'} aria-label="41-second Zodiacs app walkthrough" aria-describedby="demo-description">
+          <source src="/assets/ai/review/zodiacs-sky-0.5.1.mp4" type="video/mp4" />
+          <a href="/assets/ai/review/zodiacs-sky-0.5.1.mp4">Watch the Zodiacs demo</a>
+        </video>
+      </div>
+    </section>
+
+    <section class="apps-connect kwrap ksection" id="connect" aria-labelledby="connect-title">
+      <div class="apps-section-head"><div><p class="kicker">Bring Zodiacs into your conversation</p><h2 id="connect-title">Choose your assistant.</h2></div><p>Zodiacs’ public tools need no Zodiacs account. Your assistant’s plan, connection options and regional availability still apply.</p></div>
+      <div class="apps-connect__rows">
+        <article><div class="apps-connect__platform"><h3>ChatGPT</h3><p>Directory listing in review</p></div><div><p>The submitted app is awaiting OpenAI’s review. An installation link will appear here after approval.</p><a class="textlink" href="/tools/">Explore the tools on the site <span class="arr" aria-hidden="true">→</span></a></div></article>
+        <article><div class="apps-connect__platform"><h3>Claude</h3><p>Directory listing in review</p></div><div><p>The directory listing is awaiting Anthropic’s review. If your Claude account supports custom connectors, you can connect the public server now.</p><details><summary>Connect through a custom connector</summary><ol><li>In Claude, open <strong>Customize</strong>, then <strong>Connectors</strong>.</li><li>Add a custom connector using this server address:<div class="apps-endpoint"><code id="apps-server-address">https://zodiacs.org/mcp</code><button type="button" data-copy-prompt="apps-server-address" aria-label="Copy Zodiacs server address">Copy</button></div></li><li>Enable Zodiacs in a conversation and try an example prompt above.</li></ol><p>Interactive card support depends on the assistant and version you use.</p></details></div></article>
+      </div>
+      <div class="apps-privacy"><h3>A little context before you connect.</h3><p>Public sky questions and Sun-sign horoscopes need no birth details. Chart Studio calculates inside its panel and shares only selections you review. Other tools use the dates and optional details you give for the answer; those details pass through your assistant provider.</p><a class="textlink" href="/privacy/#ai-integrations">Read about privacy <span class="arr" aria-hidden="true">→</span></a></div>
+      <aside class="apps-developers"><p>Building with Zodiacs?</p><a class="textlink" href="/developers/ai/">Developer plugin and connection documentation <span class="arr" aria-hidden="true">→</span></a></aside>
+    </section>
+  </div>
+</Base>
+<script>
+  const status = document.querySelector<HTMLElement>('.apps-copy-status');
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-prompt]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const source = document.getElementById(button.dataset.copyPrompt ?? '');
+      if (!source) return;
+      try {
+        await navigator.clipboard.writeText(source.textContent?.trim() ?? '');
+        if (status) status.textContent = button.dataset.copyPrompt === 'apps-server-address' ? 'Server address copied.' : 'Prompt copied. Paste it into a conversation with Zodiacs enabled.';
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(source);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        if (status) status.textContent = 'Text selected. Use your device’s Copy command.';
+      }
+    });
+  });
+</script>
+<style>
+  .apps-page { --apps-lilac: var(--sign-libra); --apps-peach: var(--sign-cancer); }
+  .apps-hero { display: grid; grid-template-columns: 1.12fr 1fr; gap: clamp(36px, 6vw, 88px); align-items: center; padding-block: clamp(42px, 6vw, 88px) 76px; }
+  .apps-hero h1 { font-family: var(--font-serif); font-size: clamp(3.8rem, 6.6vw, 6.8rem); font-weight: 400; letter-spacing: -.045em; line-height: .96; margin: 20px 0 26px; text-wrap: balance; }
+  .apps-hero h1 > * { display: block; white-space: nowrap; }
+  .apps-hero h1 em { color: var(--apps-lilac); font-weight: 400; }
+  .apps-lede { color: var(--ink-2); font-size: 1.125rem; line-height: 1.7; max-width: 45ch; }
+  .apps-actions { display: flex; flex-wrap: wrap; gap: 26px; align-items: center; margin-top: 30px; }
+  .apps-actions .btn { width: 240px; height: 64px; flex: none; white-space: nowrap; justify-content: space-between; }
+  .apps-actions .btn .orb { flex: 0 0 38px; }
+  .apps-actions > .textlink { width: 17.5rem; display: inline-flex; justify-content: space-between; align-items: center; flex: none; }
+  .apps-hero__note { margin-top: 24px; max-width: 42ch; color: var(--ink-3); font-size: .8125rem; line-height: 1.6; }
+  .apps-hero__visual { margin: 0; min-width: 0; }
+  .apps-hero__image { height: 520px; overflow: hidden; border-radius: 24px; border: 1px solid var(--hair-2); background: #0d0f13; }
+  .apps-hero__image img { width: 100%; height: auto; display: block; }
+  .apps-hero__visual figcaption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 17px 2px 0; font-size: .75rem; color: var(--ink-3); line-height: 1.5; }
+  .apps-hero__visual figcaption a { color: var(--ink-2); text-underline-offset: 4px; }
+  .apps-availability { display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; padding-block: 30px; border-top: 1px solid var(--hair-2); border-bottom: 1px solid var(--hair-2); }
+  .apps-availability__intro h2 { font-family: var(--font-serif); font-weight: 400; font-size: 1.5rem; margin: 0 0 9px; }
+  .apps-availability__intro .textlink { font-size: .8125rem; }
+  .apps-availability dl { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 0; align-items: center; }
+  .apps-availability dt { font-size: 1.0625rem; font-weight: 500; }
+  .apps-availability dd { color: var(--ink-3); font-size: .8125rem; line-height: 1.5; margin: 7px 0 0; }
+  .apps-section-head { display: flex; justify-content: space-between; gap: 40px; align-items: flex-end; margin-bottom: 42px; }
+  .apps-section-head h2 { font-family: var(--font-serif); font-size: clamp(2.5rem, 4.2vw, 4rem); line-height: 1.04; font-weight: 400; letter-spacing: -.025em; margin: 10px 0 0; }
+  .apps-section-head > p { color: var(--ink-2); max-width: 38ch; font-size: .9375rem; line-height: 1.75; margin: 0 0 4px; }
+  .apps-examples__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px 40px; }
+  .apps-example { min-width: 0; }
+  .apps-example:nth-child(even) { padding-top: 80px; }
+  .apps-example__picture { position: relative; display: block; height: 440px; overflow: hidden; background: #0d0f13; border: 1px solid var(--hair-2); border-radius: 18px; }
+  .apps-example__picture img { display: block; width: 100%; height: auto; }
+  .apps-example--wide .apps-example__picture img { width: 100%; height: 100%; object-fit: cover; object-position: 48% 0; }
+  .apps-example__expand { position: absolute; bottom: 18px; right: 18px; background: var(--ink-1); color: var(--bg); border-radius: 100px; padding: 10px 15px; font-size: .75rem; font-weight: 500; }
+  .apps-example__copy { padding-top: 25px; }
+  .apps-category { color: var(--apps-lilac); font-size: .8125rem; margin: 0 0 10px; }
+  .apps-example:nth-child(3) .apps-category { color: var(--apps-peach); }
+  .apps-example h3 { font-family: var(--font-serif); font-size: clamp(1.9rem, 3vw, 2.5rem); font-weight: 400; line-height: 1.1; letter-spacing: -.015em; margin: 0 0 12px; }
+  .apps-example__copy > p:not(.apps-category) { color: var(--ink-2); max-width: 46ch; font-size: .9375rem; line-height: 1.7; margin-bottom: 22px; }
+  .apps-prompt { border-top: 1px solid var(--hair-2); padding-top: 19px; }
+  .apps-prompt blockquote { font-family: var(--font-serif); font-size: 1.25rem; font-style: italic; line-height: 1.5; color: var(--ink-2); margin: 0 0 15px; }
+  .apps-prompt button, .apps-endpoint button { background: none; color: var(--ink-1); font: inherit; font-size: .8125rem; border: 0; cursor: pointer; padding: 9px 0; min-height: 44px; text-decoration: underline; text-underline-offset: 5px; }
+  .apps-prompt button span { display: inline-block; margin-left: 5px; transition: transform 180ms cubic-bezier(.2,.8,.2,1); }
+  .apps-prompt button:hover span { transform: translate(2px,-2px); }
+  .apps-copy-status { min-height: 24px; font-size: .875rem; margin: 24px 0 0; color: var(--apps-lilac); }
+  .apps-smallprint { font-size: .8125rem; color: var(--ink-3); line-height: 1.7; max-width: 86ch; margin: 15px 0 0; }
+  .apps-demo { background: var(--surface); border-block: 1px solid var(--hair-2); }
+  .apps-demo__layout { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 80px; }
+  .apps-demo__copy h2 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(2.5rem, 4.2vw, 4rem); line-height: 1.05; letter-spacing: -.025em; margin-block: 18px 26px; }
+  .apps-demo__copy > p { color: var(--ink-2); line-height: 1.75; }
+  .apps-demo video { display: block; width: 100%; height: auto; aspect-ratio: 27 / 40; background: #0d0f13; border: 1px solid var(--hair-2); border-radius: 22px; }
+  .apps-connect__rows > article { display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; border-top: 1px solid var(--hair-2); padding: 32px 0; }
+  .apps-connect__rows > article:last-child { border-bottom: 1px solid var(--hair-2); }
+  .apps-connect h3 { font-family: var(--font-serif); font-weight: 400; font-size: 2rem; margin: 0 0 10px; }
+  .apps-connect__platform > p { color: var(--apps-lilac); font-size: .8125rem; }
+  .apps-connect__rows > article > div > p { margin-top: 0; }
+  .apps-connect__rows p, .apps-connect li, .apps-privacy p { font-size: .9375rem; line-height: 1.75; color: var(--ink-2); }
+  .apps-connect summary { cursor: pointer; padding: 12px 0; min-height: 44px; text-decoration: underline; text-underline-offset: 5px; }
+  .apps-connect ol { padding-left: 22px; }
+  .apps-connect li { padding: 6px 0; }
+  .apps-endpoint { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-top: 12px; padding: 10px 16px; background: var(--surface); border-radius: 9px; }
+  .apps-endpoint code { font-family: var(--font-mono); font-size: .8125rem; overflow-wrap: anywhere; }
+  .apps-privacy { max-width: 76ch; padding-block: 56px 38px; }
+  .apps-privacy h3 { font-size: 1.75rem; }
+  .apps-developers { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid var(--hair-2); padding-top: 24px; font-size: .875rem; }
+  .apps-developers p { margin: 0; color: var(--ink-3); }
+  #examples, #demo, #connect { scroll-margin-top: 110px; }
+  .apps-page :is(a,button,summary):focus-visible { outline: 2px solid var(--apps-lilac); outline-offset: 5px; }
+  @media (max-width: 900px) {
+    .apps-hero { gap: 32px; }
+    .apps-hero__image { height: 440px; }
+    .apps-section-head { align-items: flex-start; flex-direction: column; gap: 22px; }
+    .apps-section-head > p { max-width: 62ch; }
+    .apps-example__picture { height: 350px; }
+  }
+  @media (max-width: 640px) {
+    .apps-hero { grid-template-columns: 1fr; padding-block: 36px 42px; gap: 38px; }
+    .apps-hero h1 { font-size: clamp(3.25rem, 14vw, 5.5rem); margin-block: 15px 22px; }
+    .apps-lede { font-size: 1rem; }
+    .apps-actions { gap: 22px; margin-top: 24px; }
+    .apps-hero__image { height: 410px; max-width: 430px; }
+    .apps-hero__visual figcaption { max-width: 430px; }
+    .apps-availability { grid-template-columns: 1fr; gap: 25px; padding-block: 26px; }
+    .apps-availability dl { gap: 20px; }
+    .apps-availability dd { font-size: .75rem; }
+    .apps-examples__grid { grid-template-columns: 1fr; gap: 46px; }
+    .apps-example:nth-child(even) { padding-top: 0; }
+    .apps-example__picture { height: 390px; }
+    .apps-example--wide .apps-example__picture { height: 310px; }
+    .apps-section-head { margin-bottom: 30px; }
+    .apps-connect__rows > article { grid-template-columns: 1fr; gap: 17px; padding-block: 26px; }
+    .apps-demo__layout { grid-template-columns: 1fr; gap: 30px; }
+    .apps-demo video { border-radius: 12px; max-width: 430px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .apps-page *, .apps-page *::before, .apps-page *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+</style>
