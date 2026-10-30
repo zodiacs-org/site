@@ -31,7 +31,7 @@
   "generation": {
     "mode": "deterministic-template",
     "generatorId": "zodiacs.daily-renderer.v1.2",
-    "generatorSha256": "f6beab3530b349d576cd6f4c44da8201ed06fd0e3d35813bb24981f39f8d91be",
+    "generatorSha256": "5affa170249b6d0c8efa1e29e3814547692db81f6fb456ea65367791f2e76d43",
     "model": null,
     "freeformModelOutput": false
   },
