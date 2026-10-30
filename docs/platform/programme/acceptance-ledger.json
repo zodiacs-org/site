@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-28 R44 accepted: zodiacs.org serves receipts and conformance vectors that carry the registry's ids (engine 1.1.0-rc.1, suite 0.2.0; #840 merged as d698bc08), checked at its deployment and the next",
+  "asOf": "2026-10-30 P0.7a accepted: public adoption baselines recorded with date and method, the official MCP Registry inventoried in full and citing domains counted in named indexes",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -119,14 +119,17 @@
       "weight": 0.25,
       "gate": "registry downloads, repository stars/forks/dependents, MCP Registry entries, citing domains recorded with date and method",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
+      "status": "accepted",
+      "release": "merged",
       "evidence": [
         "docs/platform/evidence/public-adoption-baseline-20261010/README.md",
         "docs/platform/evidence/public-adoption-baseline-20261010/observation.json",
-        "docs/platform/evidence/public-adoption-baseline-20261010/review.json"
+        "docs/platform/evidence/public-adoption-baseline-20261010/review.json",
+        "docs/platform/evidence/public-adoption-baseline-20261030/README.md",
+        "docs/platform/evidence/public-adoption-baseline-20261030/observation.json",
+        "docs/platform/evidence/public-adoption-baseline-20261030/tools/collect.py"
       ],
-      "notes": "Native read-only run 38049209045, source 042e420925d91ecb6b41ba4120bfdb6c04e2aa49, retains seven original dated public responses. Engine npm downloads, third-party PyPIStats windows, public repository metadata, the anonymous engine dependents page and the named MCP Registry search are recorded with method. MCP npm download statistics are unavailable (404, not zero); the dependents page reports zero listed public repositories/packages, which is not proof of no use; the Registry query is a named search, not a global census. Citation discovery found automatic mirrors/unrelated matches, without a complete adoption or citing-domain census. No P0.7a accepted weight or private analytics baseline."
+      "notes": "Native read-only run 38049209045, source 042e420925d91ecb6b41ba4120bfdb6c04e2aa49, retains seven original dated public responses. Engine npm downloads, third-party PyPIStats windows, public repository metadata, the anonymous engine dependents page and the named MCP Registry search are recorded with method. MCP npm download statistics are unavailable (404, not zero); the dependents page reports zero listed public repositories/packages, which is not proof of no use; the Registry query is a named search, not a global census. Citation discovery found automatic mirrors/unrelated matches, without a complete adoption or citing-domain census. No P0.7a accepted weight or private analytics baseline. Update 2026-10-30 (accepted): a second baseline, collected 15:16:58Z to 15:35:45Z by tools/collect.py with every response digest in observation.json, records each measure the gate names with its date and method: npm @zodiacs/engine 906 downloads in the last month and 58 in the last week (the four other packages are unpublished, 404); PyPI zodiacs 128 in the last month (pypistats, with mirrors) and 153 without mirrors over its 15 listed days; GitHub engine 0 stars, 0 forks and 0 displayed dependents (repositories and packages), site 0 stars and 1 fork; the official MCP Registry inventoried in full (532 pages, 53,123 latest-version servers), 0 entries from zodiacs.org; citing domains 0, counted in named indexes (Wikipedia external links in 20 editions and Wikidata, Hacker News, OpenAlex, GitHub code and issue search outside the organisation, one web search engine; Reddit refused the anonymous request). These close the two gaps the first baseline left (a named search instead of a Registry inventory, and incomplete citation discovery). Counts identify no users; the limits are stated in the README."
     },
     {
       "id": "P0.7b",
