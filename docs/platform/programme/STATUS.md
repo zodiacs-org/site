@@ -1,3 +1,22 @@
+Public adoption baselines, 2026-10-30 (Asia/Bangkok): P0.7a accepted.
+
+**Overall delivery: 45%** (45.190% to three decimals): 82.45 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Phase 0 is at 90%.
+
+- **P0.7a, accepted.** Every public measure its gate names is recorded with
+  its date and method ([the evidence README](../evidence/public-adoption-baseline-20261030/README.md)):
+  - npm `@zodiacs/engine`: 906 downloads in the last month and 58 in the
+    last week; the other four packages are not published.
+  - PyPI `zodiacs`: 128 downloads in the last month.
+  - GitHub: the engine has 0 stars, 0 forks and 0 dependents; the site has
+    0 stars and 1 fork.
+  - The official MCP Registry, inventoried in full (53,123 servers): no
+    entry from zodiacs.org.
+  - Citing domains: none found in Wikipedia (20 editions and Wikidata),
+    Hacker News, OpenAlex, GitHub or web search.
+- **Still to do in Phase 0.** P0.7b needs your Search Console and Bing
+  access.
+
 R44 in production, 2026-10-27 (Asia/Bangkok): accepted.
 
 **Overall delivery: 45%** (45.053% to three decimals): 82.2 of 182.45
