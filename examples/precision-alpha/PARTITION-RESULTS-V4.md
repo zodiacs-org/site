@@ -11,9 +11,10 @@ versions 2 and 3's in the ways listed below. The rule is
 [PARTITION-EVALUATION-V4.md](PARTITION-EVALUATION-V4.md), committed with the
 code, its tests and the tools in `7287ab66`. Until 2026-11-01 the two files
 were `PARTITION-EVALUATION-V2.md` and `PARTITION-RESULTS-V2.md` and called
-this attempt version 2, which is `moon-enclosure`'s name for its second
-attempt; the rule's appended section lists what was renamed. The rule and
-every run below were made without reading versions 2 and 3, although main's
+this attempt version 2, the name the programme's second attempt has on
+`moon-enclosure`; the rule's appended section lists what was renamed. The
+rule and every scored run below were made without reading versions 2 and 3,
+although main's
 `docs/platform/programme/HANDOFF-2026-09-30.md` and `STATUS.md` named them.
 
 ## The four attempts
@@ -70,8 +71,10 @@ the `rule` field of the three harness records, "PARTITION-EVALUATION.md
 sections 5, 6 and 7", is the unchanged harness's fixed label, not this rule.
 The tree that will merge also has P4.2's container format check (merged at
 `c19fc424`), which the runs did not have. Evaluations are the currency, as in
-version 1, and they are deterministic; wall times are not scored. Ratios
-below are rounded down and boundary shares up, so neither flatters version 4.
+version 1, and they are deterministic; wall times are not scored. Version
+4's ratios below are rounded down and its boundary shares up, so neither
+flatters version 4; version 1's figures are quoted as its committed record
+rounds them, to nearest.
 
 ## Versions 2 and 3
 
@@ -217,12 +220,14 @@ gave the same figures, so one row each:
   version 1, 11,871 here). Run alone on this pack on 2026-11-01, post hoc,
   the partition opens 158,121 cells in version 1, the engine audit's figure
   (`docs/platform/evidence/engine-audit-2026-09-22/results/alpha-search-partition.json`),
-  and 11,409 here.
+  and 11,409 here
+  (`evaluation-v4/post-hoc/integrity/runs/pr860-partition-regression-mac-pack.json`).
 
 The version-1 columns are its committed run, on its own pack. Version 1's
 partition on this machine's pack gives the committed run's partition
-evaluations and boundary seconds for all ten bodies (post hoc, 2026-11-01; no
-such run was committed with the result), and its plain search, in
+evaluations and boundary seconds for all ten bodies (post hoc, 2026-11-01,
+`evaluation-v4/post-hoc/integrity/runs/v1-partition-regression-mac-pack.json`; no such run
+was committed with the result), and its plain search, in
 `corpus-v4.json`, gives counts that differ by a few evaluations for four
 bodies (Mars 285,751 here against 285,731 there, Saturn 63,956 against
 63,960, Uranus 58,351 against 58,353, Jupiter 2,105 against 2,106): the two
@@ -329,7 +334,7 @@ apart from its rule label.
 from [`tools/measure/corpus-versions.mjs`](tools/measure/corpus-versions.mjs):
 both versions' plain deflected search on F1 to F10, on one pack. That is one
 of the five rungs `DEFLECTION-EVALUATION.md` (section 2) runs every case
-through, and `moon-enclosure`'s version 2 defined the ten-case corpus as F1
+through (its section 8 defines the ten cases), and `moon-enclosure`'s version 2 defined the ten-case corpus as F1
 to F10 through all five; the rule's "never defined" was written without
 reading it. For the nine bodies other than the Moon the events and the
 evaluation counts are identical (the tool's verdict checks the events; the
@@ -529,8 +534,9 @@ and 11,409 cells (V-1, above).
   tier-A tests (a co-moving Moon among them), the reference sampling of
   section 5 of the rule, and this evaluation corroborate them. Two mutations
   of the argument, the centred reach shrunk and the light-time term dropped,
-  were each caught by the co-moving Moon tests; they were made by hand and
-  are not recorded in a mutation ledger, which BRIEF-v1 M6 asks for.
+  were tried by hand during development; no record of them was kept, so
+  nothing here rests on them, and BRIEF-v1 M6's mutation ledger does not
+  cover this change.
 - That no proof is false where a target's records disagree at a join.
   Neither matrix has such a join, and review A's A-1 shows the light-time
   search, in this code as in version 1's, can miss a root under an

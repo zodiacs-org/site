@@ -285,9 +285,10 @@ weights, and its elongation in centred form, takes the Moon's boundary from
 5.266 to 0.0114 per cent of its window, and every conjunction case is at
 least 5.44x cheaper than the plain search, which on the Moon now finishes
 too. `PARTITION-EVALUATION-V4.md` is the rule and `PARTITION-RESULTS-V4.md`
-the result. Version 1's stand beside them, and so do versions 2 and 3, on
-the unpushed branch `moon-enclosure`, which failed; the result says what
-each found, and that on version 2's holdout this code, run after the
+the result. Version 1's stand beside them (PARTIAL), and so do versions 2
+and 3, on the unpushed branch `moon-enclosure`: version 2 FAIL on E-3 and
+PARTIAL on its holdout (P-2), version 3 FAIL on both corpora. The result
+says what each found, and that on version 2's holdout this code, run after the
 verdict, leaves a boundary span at a record join of the Moon's, 4.44 degrees
 inside the floor.
 

@@ -224,8 +224,10 @@ Declared by the investigator:
    committed.
 
 `run/run.json` and `run/tables.txt` call the F windows the earlier holdouts'
-windows. They are not: F1 to F10 are ten of the 1975 regression cases,
-development data for every version (the numerics review). The run is
+windows. They are the windows the retarded, aberrated and of-date
+evaluations held out (`DEFLECTION-EVALUATION.md` section 8), and for every
+version of this evaluation they are the 1975 regression cases, development
+data, not the 1912 or 2103 holdouts (the numerics review). The run is
 unscored because version 4's rule does not name rungs 1 to 4.
 
 ## record/checks/

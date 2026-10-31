@@ -176,13 +176,16 @@ and 3. So on 2026-11-01 this attempt became version 4:
 
 The tool moved because `moon-enclosure` has its own
 `tools/measure/fixture-matrix.mjs`, the audit's matrix script. In the text
-above, "version 2" means this attempt. The run records as committed in
-`a148bc59` still cite the old names: `corpus-v4.json` and
-`matrix-verdict.json` give their rule as `PARTITION-EVALUATION-V2.md`,
-`matrix-v1.json` and `matrix-v2.json` give their tool as
-`tools/measure/fixture-matrix.mjs`, and the `-v2` in `regression-run-v2.json`,
+above, "version 2" means this attempt. The run records still cite the old
+names: `corpus-v4.json` and `matrix-verdict.json` give their rule as
+`PARTITION-EVALUATION-V2.md`, and the `-v2` in `regression-run-v2.json`,
 `holdout-2007-run-v2.json`, `holdout-2040-run-v2.json` and `matrix-v2.json`
-means this attempt. `corpus-v4.json` is rule V-4's output.
+means this attempt. As committed in `a148bc59`, `matrix-v1.json` and
+`matrix-v2.json` gave their tool as `tools/measure/fixture-matrix.mjs`; made
+again on 2026-11-01 to record their unresolved spans
+([PARTITION-RESULTS-V4.md](PARTITION-RESULTS-V4.md), V-3), they give
+`tools/measure/fixture-matrix-rebuilt.mjs`. `corpus-v4.json` is rule V-4's
+output.
 
 **When it was committed.** `7287ab66` is not a commit of this rule alone. It
 holds 13 files: this rule, the six runtime files under `src/core/` it judges,
@@ -209,8 +212,9 @@ section 5 item 6, section 7) and `docs/platform/programme/STATUS.md`
   audit's script is committed on `moon-enclosure` (`304776162`), with its tree
   and output paths made arguments. The matrix built here is a different one.
 - V-4's "the corpus is never defined in the repository" is not so.
-  `DEFLECTION-EVALUATION.md` runs every case through five rungs (section 2),
-  and `moon-enclosure`'s version 2 defines the ten-case corpus as F1 to F10
+  `DEFLECTION-EVALUATION.md` defines the ten cases, F1 to F10 from 1975-01-01
+  at a 900-day stride (section 8), and runs every case through five rungs
+  (section 2), and `moon-enclosure`'s version 2 defines the ten-case corpus as F1 to F10
   through those five rungs (its section 3b). V-4 runs one of them, the
   deflected rung.
 - The holdouts paragraph names one opened holdout; three were open:

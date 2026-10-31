@@ -10,9 +10,9 @@
  *
  * `--v1` is a precision-alpha tree holding version 1's code; this file's
  * own tree is version 4. Both search the same pack with the same budget.
- * Every event version 1 finds must be found by version 2 within 1e-3 s
+ * Every event version 1 finds must be found by version 4 within 1e-3 s
  * with the same direction; for every body but the Moon, whose cells
- * version 2 does not change, the events must be bit-identical.
+ * version 4 does not change, the events must be bit-identical.
  */
 import { writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';

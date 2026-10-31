@@ -48,7 +48,7 @@ and Phase 4 stays at 5%.
     start a version 4"; the 2026-09-30 handoff plans a new version only
     after `moon-enclosure`'s post-review work, which was not done.
   - Whether a P-2 failure at a record join blocks the gate. Version 4 leaves
-    the cell that starts at a record join as boundary; P-2 passes on its own
+    the cell that starts at a record join inside the floor as boundary; P-2 passes on its own
     corpora only because those joins lie 0.336 and 0.192 degrees from the
     floor, and fails on 1912 (F-99).
   - The scope. Version 4 leaves out the rest of brief v1's M4.1 and M4.2,
