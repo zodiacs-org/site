@@ -73,15 +73,53 @@
 import { fail, PrecisionError } from './errors.mjs';
 import * as I from './interval.mjs';
 import {
-  DEFLECTION_PROFILE, elongationCosInterval, classifyElongationCos,
+  DEFLECTION_PROFILE, MIN_ELONGATION_RAD, COS_MIN_ELONGATION_GUARD, COS_MIN_ELONGATION_EXCLUDE,
+  elongationCosInterval, elongationCosCentred, classifyElongationCos,
 } from './deflection.mjs';
+import { ABS_ERR } from './trig.mjs';
 import {
-  C_KM_S, targetWeights, observerWeights, stateEnclosure, solveTau, coverage,
+  C_KM_S, targetWeights, observerWeights, mergedWeights, withinOneRecord, stateEnclosure, solveTau, coverage,
 } from './retarded.mjs';
 import { enter, leave, charge, setLabel } from './instrument.mjs';
 
-/** The one version number: the operation's contract and its cache keys. */
-export const PARTITION_CONTRACT_ID = 'zodiacs-domain-partition/1';
+/**
+ * The one version number: the operation's contract and its cache keys.
+ *
+ * 2 since the merged-weight geocentric vector and the centred cosine
+ * (PARTITION-EVALUATION-V2.md). A version-1 plan answers the same
+ * question, but with different spans, so it is a different proof and its
+ * key does not match.
+ */
+export const PARTITION_CONTRACT_ID = 'zodiacs-domain-partition/2';
+
+/**
+ * Every numerical choice the spans depend on beyond the request itself,
+ * named, so a cached plan from a build that made another choice is
+ * refused rather than trusted (audit finding alpha-search-partition-5).
+ * Its fingerprint is in every key, and the light-time derivation below
+ * reads its three factors from here rather than from literals.
+ */
+export const NUMERICS_POLICY = Object.freeze({
+  contract: PARTITION_CONTRACT_ID,
+  geocentricVector: 'the split enclosure r_T(t - tau) - r_O(t), met with the merged-weight one [r_T(t) - r_O(t)] + [r_T(t - tau) - r_T(t)] where the target is one polynomial over its emission times',
+  cosElongation: 'the interval form, met with the centred form where every series it rests on is one polynomial over the half-open cell',
+  minElongationRad: MIN_ELONGATION_RAD,
+  cosGuard: COS_MIN_ELONGATION_GUARD,
+  cosExclude: COS_MIN_ELONGATION_EXCLUDE,
+  intervalPad: I.PAD,
+  trigAbsErr: ABS_ERR,
+  clenshawRoundoff: '4 n^2 u sum|c_k|',
+  speedOfLightKmS: C_KM_S,
+  solveTauContraction: 0.5,
+  crudeWindowHalfWidths: 1.2,
+  crudeWindowPadSec: 1,
+  tauWideningFraction: 0.25,
+  lightTimeTightening: '[max(T.lo, |d|.lo/c), min(T.hi, |d|.hi/c)] on every cell',
+  seeds: 'the record edges of the target, observer and Sun series',
+});
+
+/** A short label for NUMERICS_POLICY, as the key carries it. */
+export const NUMERICS_FINGERPRINT = fingerprint(JSON.stringify(NUMERICS_POLICY));
 
 /** What this operation promises, for the result's metadata. */
 export const PARTITION_CONTRACT = Object.freeze({
@@ -146,6 +184,7 @@ export function partitionKey({
 }) {
   return [
     PARTITION_CONTRACT_ID,
+    NUMERICS_FINGERPRINT,
     profile ?? DEFLECTION_PROFILE.id,
     packDigest ?? 'no-digest',
     packStructure ?? 'no-structure',
@@ -323,10 +362,19 @@ function classifyCell(ctx, lo, hi) {
     }
     throw error;
   }
+  const local = localGeometry(ctx, lo, hi);
   leave(token);
 
   const test = enter('partition-domain-test');
-  const d = I.vSub(R.pos, O.pos);
+  let d = I.vSub(R.pos, O.pos);
+  if (local) {
+    // Two enclosures of the same vector; the truth is in both.
+    d = I.vMeet(d, local.d);
+    if (d === null) {
+      leave(test);
+      return { verdict: 'indeterminate', retry: false, why: 'the split and merged enclosures of the geocentric vector do not meet, so one of them is wrong; nothing is decided here' };
+    }
+  }
   const dist = I.norm(d);
   if (!(dist.lo > 0)) {
     leave(test);
@@ -339,7 +387,44 @@ function classifyCell(ctx, lo, hi) {
     return { verdict: 'indeterminate', retry: true, why: 'the observer cannot be bounded away from the centre of the Sun over this span, so the deflector geometry is undefined' };
   }
   const e = [I.div(eRaw[0], en), I.div(eRaw[1], en), I.div(eRaw[2], en)];
-  const cosElongation = elongationCosInterval(e, d, dist);
+  let cosElongation = elongationCosInterval(e, d, dist);
+  let form = 'interval';
+  if (local && local.cosMid) {
+    /**
+     * The centred form, and the rate it needs: an upper bound on
+     * |e'| + |dh'| over this span (see `elongationCosCentred`).
+     *
+     * |e'| <= |u'|/|u| for e = u/|u|, u = r_O - r_Sun, from the velocity
+     * enclosures over the span. |dh'| <= |d'|/|d|, and with
+     * d(t) = r_T(t - tau(t)) - r_O(t),
+     *
+     *   d' = [v_T(t) - v_O(t)] + [v_T(t - tau) - v_T(t)] - v_T(t - tau) tau'
+     *
+     * so |d'| <= max|v_T - v_O| (the merged series' own velocity bound)
+     * + tau_max max|a_T| + max|v_T| max|tau'|, with
+     * |tau'| <= (|v_T| + |v_O|)/(c - |v_T|), the bound `deriveLightTime`
+     * already rests on. Every term is an upper bound over the windows the
+     * span and its emission times reach, which `localGeometry` checked lie
+     * inside one record of every series.
+     */
+    const vT = I.vMag(local.W.vel);
+    const vO = I.vMag(O.vel);
+    if (vT < C_KM_S) {
+      const tauRate = (vT + vO) / (C_KM_S - vT);
+      const dDot = I.vMag(local.A.vel) + T.hi * I.vMag(local.W.acc) + vT * tauRate;
+      const rate = (I.vMag(I.vSub(O.vel, S.vel)) / en.lo + dDot / dist.lo) * (1 + 8 * I.PAD);
+      const centred = elongationCosCentred(local.cosMid, cosElongation, rate, local.half);
+      if (centred) {
+        const both = I.meet(cosElongation, centred);
+        if (both === null) {
+          leave(test);
+          return { verdict: 'indeterminate', retry: false, why: 'the interval and centred enclosures of cos(elongation) do not meet, so one of them is wrong; nothing is decided here' };
+        }
+        cosElongation = both;
+        form = 'centred';
+      }
+    }
+  }
   leave(test);
   /**
    * A tighter light-time interval, for free, from work already done.
@@ -365,6 +450,7 @@ function classifyCell(ctx, lo, hi) {
   return {
     verdict: classifyElongationCos(cosElongation),
     cosElongation,
+    form,
     T: usable,
     /**
      * Whether `T` above was derived on THIS span or inherited unchanged.
@@ -381,6 +467,69 @@ function classifyCell(ctx, lo, hi) {
      */
     tightened: tightenedIsUsable,
   };
+}
+
+/**
+ * The geocentric vector from MERGED weights, and the geometry at the
+ * span's midpoint, for the centred form (version 2 of this partition).
+ *
+ *   d(t) = [r_T(t) - r_O(t)] + [r_T(t - tau) - r_T(t)]
+ *
+ * The first bracket is one weight map at one instant (`mergedWeights`):
+ * for the Moon, the Moon series alone with weight 1 + 1/EMRAT, since the
+ * EMB is in both ends and cancels exactly. The second is the retardation,
+ * by Taylor with remainder about t:
+ *
+ *   r_T(t - tau) - r_T(t) = -tau v_T(t) + (tau^2 / 2) a_T(xi)
+ *
+ * with tau in the inherited interval T and xi in [t - tau, t], so inside
+ * [lo - T.hi, hi]. The split form `r_T(t - tau) - r_O(t)` enclosed apart
+ * carried the EMB's 30 km/s twice: 5,852 km wide over a 60-second Moon
+ * cell against a true variation of 58 km at most, measured in the audit,
+ * where the merged form is a few times the true variation.
+ *
+ * Returns null, and the caller keeps the split form alone, wherever the
+ * argument does not hold: a window crossing a record boundary of any
+ * series used (the stored records are separate fits and do not join
+ * smoothly), or one the records do not cover.
+ */
+function localGeometry(ctx, lo, hi) {
+  const { eph, targets, observer, sun, merged, spend, T, windowEnd } = ctx;
+  // Spans are half-open, so a cell need not reach the record its end
+  // touches; the last one is closed at the request's end, and so is this.
+  const halfOpen = hi < windowEnd;
+  const one = (weights, a, b) => withinOneRecord(eph, weights, a, b, { halfOpen });
+  if (!(
+    one(targets, lo - T.hi, hi)
+    && one(merged, lo, hi)
+    && one(observer, lo, hi)
+    && one(sun, lo, hi)
+  )) return null;
+  try {
+    const tau = I.iv(T.lo, T.hi);
+    const A = stateEnclosure(eph, merged, lo, hi, spend);
+    const W = stateEnclosure(eph, targets, lo - T.hi, hi, spend);
+    const retard = (vel) => I.vAdd(I.vMulI(vel, I.neg(tau)), I.vScale(W.acc, (T.hi * T.hi) / 2));
+    const d = I.vAdd(A.pos, retard(W.vel));
+
+    const mid = (lo + hi) / 2;
+    const half = Math.max(hi - mid, mid - lo);
+    const Am = stateEnclosure(eph, merged, mid, mid, spend);
+    const Vm = stateEnclosure(eph, targets, mid, mid, spend);
+    const Om = stateEnclosure(eph, observer, mid, mid, spend);
+    const Sm = stateEnclosure(eph, sun, mid, mid, spend);
+    const dMid = I.vAdd(Am.pos, retard(Vm.vel));
+    const distMid = I.norm(dMid);
+    const uMid = I.vSub(Om.pos, Sm.pos);
+    const enMid = I.norm(uMid);
+    const cosMid = distMid.lo > 0 && enMid.lo > 0
+      ? elongationCosInterval([I.div(uMid[0], enMid), I.div(uMid[1], enMid), I.div(uMid[2], enMid)], dMid, distMid)
+      : null;
+    return { d, A, W, cosMid, half };
+  } catch (error) {
+    if (error instanceof PrecisionError && error.code === 'out-of-coverage') return null;
+    throw error;
+  }
 }
 
 /**
@@ -411,12 +560,13 @@ function deriveLightTime(ctx, lo, hi) {
   try {
     const O = stateEnclosure(eph, observer, lo, hi, spend);
     const oPoint = stateEnclosure(eph, observer, mid, mid, spend).pos.map((x) => (x.lo + x.hi) / 2);
-    const rough = solveTau(eph, targets, mid, oPoint, 0.5, spend);
+    const rough = solveTau(eph, targets, mid, oPoint, NUMERICS_POLICY.solveTauContraction, spend);
     if (rough.leftCoverage) {
       const [covLo, covHi] = coverage(eph, targets);
       return { ok: false, retry: true, why: `the light-time iteration from ${lo} .. ${hi} s TDB reaches outside the stored records ${covLo} .. ${covHi} s TDB` };
     }
-    const crude = stateEnclosure(eph, targets, lo - rough.tau - 1.2 * half - 1, hi - rough.tau + 1.2 * half + 1, spend);
+    const reach = NUMERICS_POLICY.crudeWindowHalfWidths * half + NUMERICS_POLICY.crudeWindowPadSec;
+    const crude = stateEnclosure(eph, targets, lo - rough.tau - reach, hi - rough.tau + reach, spend);
     const vT = I.vMag(crude.vel);
     const vO = I.vMag(O.vel);
     if (!(vT < C_KM_S)) {
@@ -462,7 +612,7 @@ function deriveLightTime(ctx, lo, hi) {
       // overshoots.
       const lo2 = Math.min(T.lo, phi.lo);
       const hi2 = Math.max(T.hi, phi.hi);
-      const grow = 0.25 * (hi2 - lo2) + p.tauPadFloorSec;
+      const grow = NUMERICS_POLICY.tauWideningFraction * (hi2 - lo2) + p.tauPadFloorSec;
       T = { lo: Math.max(0, lo2 - grow), hi: hi2 + grow };
     }
     return { ok: false, retry: true, why: `the light-time interval for ${lo} .. ${hi} s TDB did not close after ${p.maxTauWidenings} widenings` };
@@ -536,6 +686,7 @@ export function partitionDomain(eph, spec = {}) {
     maxTauWidenings: p.maxTauWidenings,
     tauPadFloorSec: p.tauPadFloorSec,
     profile: DEFLECTION_PROFILE.id,
+    numerics: NUMERICS_FINGERPRINT,
   };
   /**
    * Weaker without a digest, and it says so rather than reading as an
@@ -633,6 +784,7 @@ export function partitionDomain(eph, spec = {}) {
 
   const targets = targetWeights(eph, body);
   const observer = observerWeights(eph);
+  const merged = mergedWeights(targets, observer);
   // Resolved ONCE, before any cell, so a pack with no Sun costs one
   // refusal rather than one per cell.
   const sun = targetWeights(eph, 'Sun');
@@ -659,6 +811,9 @@ export function partitionDomain(eph, spec = {}) {
   let closestAdmissibleCos = -Infinity;
   let widestTauWidenings = 0;
   let relights = 0;
+  /** Cells whose cosine came from the centred form, and from the interval form alone. */
+  let centredCells = 0;
+  let intervalCells = 0;
 
   /**
    * A request that lies WHOLLY outside the records is answered once.
@@ -761,7 +916,7 @@ export function partitionDomain(eph, spec = {}) {
     // whatever width it first succeeds, and inherited from there down.
     for (let i = seeds.length - 1; i >= 0; i -= 1) stack.push({ lo: seeds[i][0], hi: seeds[i][1], T: null, tw: Infinity });
 
-    const ctx = { eph, targets, observer, sun, spend, p };
+    const ctx = { eph, targets, observer, sun, merged, spend, p, windowEnd: b };
     while (stack.length) {
       const cell = stack.pop();
       inFlight = cell;
@@ -803,6 +958,8 @@ export function partitionDomain(eph, spec = {}) {
         widestTauWidenings = Math.max(widestTauWidenings, lt.widenings);
       }
       const out = classifyCell({ ...ctx, T }, lo, hi);
+      if (out.form === 'centred') centredCells += 1;
+      else if (out.form === 'interval') intervalCells += 1;
       if (out.verdict === 'admissible') {
         admissible.push([lo, hi]);
         closestAdmissibleCos = Math.max(closestAdmissibleCos, out.cosElongation.hi);
@@ -888,6 +1045,8 @@ export function partitionDomain(eph, spec = {}) {
     },
     diagnostics: {
       seeds: seeds.length,
+      centredCells,
+      intervalCells,
       widestTauWidenings,
       lightTimeDerivations: relights,
       narrowestBoundarySec: Number.isFinite(narrowestBoundarySec) ? narrowestBoundarySec : null,

@@ -365,3 +365,13 @@ layer useful.
 **That the Moon's window is now cheap.** It is 1.26 million evaluations
 and 19 seconds. What changed is that it terminates with an answer instead
 of a budget message.
+
+*Appended 2026-10-31.* Version 2 of this evaluation,
+[PARTITION-EVALUATION-V2.md](PARTITION-EVALUATION-V2.md), changes the
+enclosures this record traces the two failed targets to, and passes:
+[PARTITION-RESULTS-V2.md](PARTITION-RESULTS-V2.md). The verdict above,
+PARTIAL, is version 1's and stays as it is. The engine audit had also
+measured that the Moon's boundary did not come from the mean-value
+enclosure scaling with the cell, as the P-3 section here says: its width
+was about 2,900 times the cosine's true variation at 60, 600 and 3,600
+seconds alike (finding alpha-search-partition-2).

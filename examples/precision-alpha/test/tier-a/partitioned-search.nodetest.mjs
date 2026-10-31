@@ -182,9 +182,22 @@ test('a plan that did not classify its whole window is refused by default', () =
     'a run over a partial plan inherits the plan\'s status');
   assert.equal(r.execution.finished, false,
     'and must not report itself finished: part of the request was never classified');
-  assert.equal(r.completeness.exhaustiveOverAdmissible, false);
   assert.equal(r.completeness.overRequest, false);
   assert.equal(r.completeness.mayHoldUnfoundSupportedEvents, true);
+
+  // And it SEARCHES the part the plan did classify, which is what the
+  // option is for. Before audit finding alpha-search-partition-1 was
+  // fixed, the inherited status stopped every subsearch: no span was
+  // searched, nothing was found, and this flag read false because nothing
+  // had been examined, not because anything was missed.
+  assert.equal(r.spanResults.length, starved.admissible.length + starved.boundary.length,
+    'every classified span is searched');
+  assert.equal(r.completeness.exhaustiveOverAdmissible, starved.admissible.length > 0,
+    'exhaustive over the admissible spans the plan names, and no further');
+  const full = run({});
+  const inClassified = (t) => [...starved.admissible, ...starved.boundary].some(([lo, hi]) => t >= lo && t < hi);
+  assert.deepEqual(r.events.map((e) => e.tdbSec), full.events.filter((e) => inClassified(e.tdbSec)).map((e) => e.tdbSec),
+    'the events found in the classified part are the full run\'s events there');
 });
 
 // ====================================== 2. two axes, and the tiling holds

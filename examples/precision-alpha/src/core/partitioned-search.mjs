@@ -248,6 +248,15 @@ export function searchDeflectedOverPartition(eph, spec = {}) {
   let cellsUsed = 0;
   let status = 'finished';
   let reason = null;
+  /**
+   * A supplied plan that did not finish, held apart from `status` until
+   * the subsearches are done. Setting `status` from it up front, as the
+   * first version did, made `runOn` skip every span, so
+   * `acceptPartialPlan: true` searched nothing of the part the plan DID
+   * classify, which is what the option promises (audit finding
+   * alpha-search-partition-1). Folded in after the subsearches.
+   */
+  let inherited = null;
   const remaining = () => Math.max(0, maxEvaluations - evaluationsUsed);
 
   // ------------------------------------------------------------- partition
@@ -279,8 +288,10 @@ export function searchDeflectedOverPartition(eph, spec = {}) {
      * top-level status is the field a consumer branches on.
      */
     if (plan.execution.status !== 'finished') {
-      status = plan.execution.status;
-      reason = `the supplied plan stopped with ${plan.execution.status}: ${plan.execution.reason}`;
+      inherited = {
+        status: plan.execution.status,
+        reason: `the supplied plan stopped with ${plan.execution.status}: ${plan.execution.reason}`,
+      };
     }
   } else {
     setLabel('partition');
@@ -520,6 +531,13 @@ export function searchDeflectedOverPartition(eph, spec = {}) {
   const exhaustiveOverAdmissible = status === 'finished'
     && everyAdmissibleSearched
     && !spanResults.some((s) => s.contradiction);
+  // Only now does the plan's own incompleteness reach the request's
+  // status: the classified part was searched above, and the run is still
+  // not finished, because part of the window was never classified.
+  if (inherited) {
+    reason = status === 'finished' ? inherited.reason : `${inherited.reason}; then ${reason}`;
+    status = inherited.status;
+  }
 
   /**
    * Complete over the REQUEST -- the original rule's claim, and the larger

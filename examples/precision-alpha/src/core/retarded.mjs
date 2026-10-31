@@ -12,7 +12,10 @@
  * is what happens if a single geocentric vector is formed first and then
  * shifted -- is a different and wrong quantity, and it is the mistake
  * this file exists to avoid. The two sums are kept apart throughout:
- * `targetWeights` and `observerWeights` never merge.
+ * `targetWeights` and `observerWeights` never merge across two instants.
+ * `mergedWeights` merges them at ONE instant, `r_T(t) - r_O(t)`, which is
+ * a true quantity; the retardation `r_T(t - tau) - r_T(t)` is then added
+ * as a term of its own (`domain-partition.mjs`).
  *
  * Time is TDB seconds past J2000, which is what SPK coefficients are
  * indexed by. No TT or UTC conversion happens anywhere in here; a
@@ -81,6 +84,54 @@ export function observerWeights(eph) {
   const m = new Map([['emb', 1], ['moon', -eph.k]]);
   for (const [k, v] of [...m]) if (v === 0) m.delete(k);
   return m;
+}
+
+/**
+ * The target minus the observer AT THE SAME INSTANT, as one weight map:
+ * each stored series once, with the two weights added.
+ *
+ * Enclosing the target and the observer separately and subtracting loses
+ * every term they share. For the Moon seen from the geocentre the EMB is
+ * in both, and the difference is the Moon series alone with weight
+ * `1 + 1/EMRAT`; enclosed apart, the EMB's 30 km/s enters twice and
+ * cancels in nothing, which over a 60-second cell made the geocentric
+ * vector 100 to 300 times wider than its true variation. The geometric
+ * mode's `contributions()` merged these weights from the start.
+ */
+export function mergedWeights(targets, observer) {
+  const m = new Map(targets);
+  for (const [name, w] of observer) m.set(name, (m.get(name) ?? 0) - w);
+  for (const [k, v] of [...m]) if (v === 0) m.delete(k);
+  return m;
+}
+
+/**
+ * Whether every series in the map is ONE polynomial over the window from
+ * `a` to `b`, by the same index walk `stateEnclosure` uses.
+ *
+ * The stored records are separate fits, and two neighbours disagree where
+ * they meet (0.07 km measured), so a weighted sum is not continuous across
+ * a record boundary. A mean-value or Taylor argument over a window that
+ * crosses one is not an argument: the callers that use one ask this first
+ * and fall back to the per-record hull when the answer is no.
+ *
+ * `halfOpen` reads the window as [a, b): it may end exactly where a
+ * record does, because the instant b itself is not in it. That is the
+ * partition's own endpoint convention (`PARTITION_CONTRACT`), and without
+ * it every cell that ends on a record boundary, which the record-edge
+ * seeds make common, was refused the centred form.
+ */
+export function withinOneRecord(eph, weights, a, b, { halfOpen = false } = {}) {
+  for (const name of weights.keys()) {
+    const s = eph.bodies.get(name);
+    if (!s) return false;
+    let first = Math.min(s.nrec - 1, Math.max(0, Math.floor((a - s.initEt) / s.intervalSec)));
+    while (first > 0 && s.initEt + first * s.intervalSec > a) first -= 1;
+    while (first < s.nrec - 1 && s.initEt + (first + 1) * s.intervalSec <= a) first += 1;
+    const end = s.initEt + (first + 1) * s.intervalSec;
+    if (halfOpen ? b > end : (b >= end && first < s.nrec - 1) || b > end) return false;
+  }
+  return true;
 }
 
 /**

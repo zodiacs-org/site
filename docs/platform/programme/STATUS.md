@@ -1,3 +1,33 @@
+The Moon enclosure fix, 2026-10-31 (Asia/Bangkok): P4.5 accepted.
+
+**Overall delivery: 49%** (49.301% to three decimals): 89.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Phase 4 is at 25%,
+with P4.2 (the pack compiler) accepted just before.
+
+- **P4.5, accepted.** The partition evaluation was run again as a new
+  preregistered version
+  ([the rule](../../../examples/precision-alpha/PARTITION-EVALUATION-V2.md),
+  [the result](../../../examples/precision-alpha/PARTITION-RESULTS-V2.md)),
+  and passes. Version 1's verdict, PARTIAL, stays recorded beside it.
+  - The fix: the geocentric vector is enclosed from merged weights, so the
+    Earth-Moon barycentre's 30 km/s cancels instead of counting twice, and
+    the partition's elongation is enclosed in centred form.
+  - On the regression cases every target holds. The Moon's undecided
+    boundary falls from 5.266 to 0.0114 per cent of its window, and every
+    conjunction case is at least 5.44 times cheaper than the plain search,
+    where version 1 reached only 3.17 on the Moon and 3.95 on Saturn.
+  - The plain deflected Moon search, which used up its whole budget of four
+    million evaluations, now finishes in 1.59 million.
+  - The audit's twenty-fixture matrix, never committed, was rebuilt: no
+    false proof, no lost event, and every planet-like result bit-identical
+    between the versions. On the ten main cases no event is lost and the
+    nine bodies other than the Moon are bit-identical.
+  - Version 1's holdout and a fresh one, opened once, pass every target
+    they score.
+- **Not in this unit:** the rest of version 1's M4 list, such as local
+  derivative bounds, which would decide the triple root that stays
+  undecided in every search mode.
+
 The pack compiler, 2026-10-31 (Asia/Bangkok): P4.2 accepted.
 
 **Overall delivery: 46%** (46.013% to three decimals): 83.95 of 182.45

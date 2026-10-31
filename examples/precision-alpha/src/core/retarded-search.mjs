@@ -33,7 +33,9 @@
 import { fail, PrecisionError } from './errors.mjs';
 import { BARYCENTRE_NOT_CENTRE } from './ephemeris.mjs';
 import { buildResult, SUPPORT, EXTERNAL_UNCERTAINTY as OUTSIDE } from './result.mjs';
-import { C_KM_S, targetWeights, observerWeights, stateEnclosure, solveTau, coverage } from './retarded.mjs';
+import {
+  C_KM_S, targetWeights, observerWeights, mergedWeights, withinOneRecord, stateEnclosure, solveTau, coverage,
+} from './retarded.mjs';
 import { aberrateInterval } from './aberration.mjs';
 import { deflectInterval, DEFLECTION_PROFILE, MIN_ELONGATION_RAD } from './deflection.mjs';
 import { frameMatrixInterval, matApplyI, ttCenturiesInterval, FRAMES, TIME_MODEL } from './frame-of-date.mjs';
@@ -225,8 +227,13 @@ export const RETARDED_DEFAULTS = Object.freeze({
    * ten-thousandth of a second and then say the obvious.
    */
   enclosureFloorSec: 1,
-  /** First half-width of the candidate light-time interval, as a multiple of the solver's own error bound, plus a floor in seconds. */
-  tauPadFactor: 64,
+  /**
+   * A floor, in seconds, added to each side of the candidate light-time
+   * interval. (A `tauPadFactor` sat here, documented as a multiple of the
+   * solver's error bound, and nothing read it: passing 1e-9 or 1e9 changed
+   * nothing. Removed rather than kept as an option that does nothing, so
+   * passing it is now an unknown option, refused.)
+   */
   tauPadFloorSec: 1e-6,
 });
 
@@ -270,6 +277,44 @@ export function deflectorGeometry(O, R, sunRec, sunEm, oneMinus) {
     qRaw: I.vSub(R.pos, sunEm.pos),
     qRawDot: I.vMulI(I.vSub(R.vel, sunEm.vel), oneMinus),
   };
+}
+
+/**
+ * The geocentric vector of one cell from MERGED weights, where the target
+ * and the observer share a stored series, or null.
+ *
+ *   d(t) = [r_T(t) - r_O(t)] + [r_T(t - tau) - r_T(t)]
+ *   r_T(t - tau) - r_T(t) = -tau v_T(t) + (tau^2/2) a_T(xi),  xi in [t - tau, t]
+ *
+ * with tau in T, which the caller has already proved contains the light-
+ * time over the whole cell. Also the relative velocity
+ * v_T(t - tau) - v_O(t) = [v_T(t) - v_O(t)] + [v_T(t - tau) - v_T(t)],
+ * the second term within tau_max max|a_T|.
+ *
+ * Null, and the cell keeps the split form alone, where no series is
+ * shared (nothing cancels, so nothing is gained), where the emission
+ * times cross a record boundary of the target (the records are separate
+ * fits and do not join smoothly, and the Taylor step needs one
+ * polynomial), or where the records do not cover them.
+ */
+function mergedRetardation(eph, targets, observer, t0, t1, T, spend) {
+  if (![...targets.keys()].some((name) => observer.has(name))) return null;
+  // Only the Taylor step needs smoothness, of the target over every
+  // emission time the cell reaches; the same-instant term is enclosed
+  // record by record like any other.
+  if (!withinOneRecord(eph, targets, t0 - T.hi, t1)) return null;
+  const merged = mergedWeights(targets, observer);
+  try {
+    const tau = I.iv(T.lo, T.hi);
+    const A = stateEnclosure(eph, merged, t0, t1, spend);
+    const W = stateEnclosure(eph, targets, t0 - T.hi, t1, spend);
+    const d = I.vAdd(I.vAdd(A.pos, I.vMulI(W.vel, I.neg(tau))), I.vScale(W.acc, (T.hi * T.hi) / 2));
+    const vRel = I.vAdd(A.vel, I.vScale(W.acc, T.hi));
+    return { d, vRel };
+  } catch (error) {
+    if (error instanceof PrecisionError && error.code === 'out-of-coverage') return null;
+    throw error;
+  }
 }
 
 function retardedCell(eph, targets, observer, lambdaDeg, t0, t1, spend, p, aberration = false, ofDate = false, frameProvider = null, deflection = false, sunWeights = null, control = {}) {
@@ -408,7 +453,24 @@ function retardedCell(eph, targets, observer, lambdaDeg, t0, t1, spend, p, aberr
       return { ok: false, retry: false, why: `the target's speed bound over the emission window is ${vMax.toFixed(3)} km/s, which is not below c, so the light-time iteration is not a contraction here` };
     }
 
-    const D = I.vSub(R.pos, O.pos);
+    let D = I.vSub(R.pos, O.pos);
+    // Where the target and the observer share a stored series -- the Moon
+    // seen from the geocentre, both carrying the EMB -- the split form
+    // above encloses that series twice, at two instants, and cancels
+    // nothing: 5,852 km over a 60-second Moon cell where the vector moves
+    // 58 km. The merged form encloses r_T(t) - r_O(t) as one weight map
+    // and adds the retardation r_T(t - tau) - r_T(t) by Taylor about t
+    // (see `localGeometry` in domain-partition.mjs, the same argument).
+    // Both contain d(t); the cell keeps their intersection. Only where a
+    // series is shared, so every other body's cells are bit for bit what
+    // they were.
+    const shared = mergedRetardation(eph, targets, observer, t0, t1, T, spend);
+    if (shared) {
+      D = I.vMeet(D, shared.d);
+      if (D === null) {
+        return { ok: false, retry: false, why: 'the split and merged enclosures of the geocentric vector do not meet, so one of them is wrong; nothing is decided here' };
+      }
+    }
     const dist = I.norm(D);
     if (!(dist.lo > 0)) {
       return { ok: false, retry: true, why: 'the target and the observer cannot be shown to be separated over this cell, so the direction is undefined' };
@@ -429,14 +491,19 @@ function retardedCell(eph, targets, observer, lambdaDeg, t0, t1, spend, p, aberr
     // reception time in this cell there is exactly one light-time in T,
     // and d(t) lies in D.
     const u = [I.div(D[0], dist), I.div(D[1], dist), I.div(D[2], dist)];
-    const vRel = I.vSub(R.vel, O.vel);
+    let vRel = I.vSub(R.vel, O.vel);
+    // v_T(t - tau) - v_O(t) = [v_T(t) - v_O(t)] + [v_T(t - tau) - v_T(t)],
+    // the second within tau_max max|a_T|: the merged form again.
+    if (shared) vRel = I.vMeet(vRel, shared.vRel) ?? vRel;
     const num = I.dot(u, vRel);
     const den = I.add(I.iv(C_KM_S), I.dot(u, R.vel));
     if (den.lo <= 0) return { ok: false, retry: true, why: 'the light-time derivative denominator cannot be bounded away from zero' };
     const tauDot = I.div(num, den);
 
     const oneMinus = I.sub(I.iv(1), tauDot);
-    const dDot = I.vSub(I.vMulI(R.vel, oneMinus), O.vel);
+    let dDot = I.vSub(I.vMulI(R.vel, oneMinus), O.vel);
+    // d' = [v_T(t - tau) - v_O(t)] - v_T(t - tau) tau', the same quantity.
+    if (shared) dDot = I.vMeet(dDot, I.vSub(vRel, I.vMulI(R.vel, tauDot))) ?? dDot;
 
     // ---------------------------------------------- solar deflection
     // Between light-time and aberration, which is the order
