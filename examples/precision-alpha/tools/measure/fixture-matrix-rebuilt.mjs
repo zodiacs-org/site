@@ -1,15 +1,25 @@
 /**
- * The twenty-fixture matrix of PARTITION-EVALUATION-V2.md, rule V-3.
+ * The matrix of PARTITION-EVALUATION-V4.md, rule V-3, rebuilt from the
+ * engine audit's description. Named tools/measure/fixture-matrix.mjs until
+ * 2026-11-01, when this attempt, written as version 2, became version 4.
  *
- *   node tools/measure/fixture-matrix.mjs --alpha=DIR --label=v1|v2 --out=FILE
- *   node tools/measure/fixture-matrix.mjs --compare=V1.json --with=V2.json --out=FILE
+ *   node tools/measure/fixture-matrix-rebuilt.mjs --alpha=DIR --label=v1|v2 --out=FILE
+ *   node tools/measure/fixture-matrix-rebuilt.mjs --compare=V1.json --with=V2.json --out=FILE
  *
- * The engine audit ran a matrix like this and committed only its digests
- * (engine-audit-2026-09-22, LEDGER.md, alpha-search-partition). This
- * rebuilds it from that description, and is committed before its first
- * version-2 run. `--alpha` names the precision-alpha tree whose search
- * code runs; the fixtures' bytes are built by THIS tree's test helpers, so
- * two runs on one machine search identical packs.
+ * The label v2 is this attempt, as in the committed runs. The engine audit's
+ * own matrix script is committed only on branch moon-enclosure (304776162,
+ * as tools/measure/fixture-matrix.mjs, its tree and output paths made
+ * arguments); main holds its digests (engine-audit-2026-09-22,
+ * ARTIFACTS.sha256.tsv). This is a different matrix, written from the
+ * audit's description (LEDGER.md, alpha-search-partition) without reading
+ * that script, and committed before its first run on this attempt's code:
+ * its record-join roots lie on or after the join only, its targets cross
+ * the line of sight at about 86.8 km/s rather than 1 km/s, its windows are
+ * three days, its edge fixtures are defined by their reception roots, its
+ * of-date rung uses a fixed frame, and it adds the Moon-like rows.
+ * `--alpha` names the precision-alpha tree whose search code runs; the
+ * fixtures' bytes are built by THIS tree's test helpers, so two runs on one
+ * machine search identical packs.
  *
  * Every fixture is exact-polynomial: the geocentric vector's ecliptic
  * components are polynomials in time, so the records hold them exactly and
@@ -260,7 +270,7 @@ async function run(alphaDir, label) {
       process.stdout.write(`${label} ${f.id} ${kind}: ${Object.entries(rungs).map(([k, v]) => `${k}=${v.error ? 'ERR' : `${v.found}${v.established ? '!' : '?'}`}`).join(' ')}\n`);
     }
   }
-  return { tool: 'tools/measure/fixture-matrix.mjs', label, alpha: alphaDir, node: process.version, platform: `${process.platform}-${process.arch}`, window: WIN, rows };
+  return { tool: 'tools/measure/fixture-matrix-rebuilt.mjs', label, alpha: alphaDir, node: process.version, platform: `${process.platform}-${process.arch}`, window: WIN, rows };
 }
 
 // -------------------------------------------------------------- the rules
@@ -296,7 +306,7 @@ function compare(v1, v2) {
     }
   }
   return {
-    rule: 'PARTITION-EVALUATION-V2.md V-3',
+    rule: 'PARTITION-EVALUATION-V4.md V-3',
     knownRootChecks: knownChecks,
     falseProofs,
     lostEvents: lost,

@@ -1,11 +1,15 @@
 /**
- * The ten-case regression corpus of PARTITION-EVALUATION-V2.md, rule V-4:
- * the plain deflected search on F1 to F10, version 1 against version 2.
+ * Rule V-4 of PARTITION-EVALUATION-V4.md: the plain deflected search on F1
+ * to F10, version 1 against version 4 (this attempt, written as version 2,
+ * which its output still calls v2). That is the deflected rung only, one of
+ * the five rungs DEFLECTION-EVALUATION.md runs every case through;
+ * moon-enclosure's version 2 defined the ten-case corpus as F1 to F10
+ * through all five.
  *
  *   node tools/measure/corpus-versions.mjs --v1=DIR --pack=FILE --out=FILE
  *
  * `--v1` is a precision-alpha tree holding version 1's code; this file's
- * own tree is version 2. Both search the same pack with the same budget.
+ * own tree is version 4. Both search the same pack with the same budget.
  * Every event version 1 finds must be found by version 2 within 1e-3 s
  * with the same direction; for every body but the Moon, whose cells
  * version 2 does not change, the events must be bit-identical.
@@ -68,7 +72,7 @@ for (let i = 0; i < BODIES.length; i += 1) {
 }
 const failures = rows.filter((r) => !r.skipped && (r.lostEvents.length > 0 || (r.mustBeBitIdentical && !r.bitIdentical)));
 writeFileSync(OUT, `${JSON.stringify({
-  rule: 'PARTITION-EVALUATION-V2.md V-4',
+  rule: 'PARTITION-EVALUATION-V4.md V-4',
   pack: PACK.split('/').pop(),
   packDigest: two.rt.integrity.computedDigest,
   node: process.version,

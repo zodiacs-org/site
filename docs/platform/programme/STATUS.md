@@ -6,8 +6,8 @@ with P4.2 (the pack compiler) accepted just before.
 
 - **P4.5, accepted.** The partition evaluation was run again as a new
   preregistered version
-  ([the rule](../../../examples/precision-alpha/PARTITION-EVALUATION-V2.md),
-  [the result](../../../examples/precision-alpha/PARTITION-RESULTS-V2.md)),
+  ([the rule](../../../examples/precision-alpha/PARTITION-EVALUATION-V4.md),
+  [the result](../../../examples/precision-alpha/PARTITION-RESULTS-V4.md)),
   and passes. Version 1's verdict, PARTIAL, stays recorded beside it.
   - The fix: the geocentric vector is enclosed from merged weights, so the
     Earth-Moon barycentre's 30 km/s cancels instead of counting twice, and

@@ -86,7 +86,8 @@ import { enter, leave, charge, setLabel } from './instrument.mjs';
  * The one version number: the operation's contract and its cache keys.
  *
  * 2 since the merged-weight geocentric vector and the centred cosine
- * (PARTITION-EVALUATION-V2.md). A version-1 plan answers the same
+ * (PARTITION-EVALUATION-V4.md, the evaluation's version 4, written as
+ * version 2). A version-1 plan answers the same
  * question, but with different spans, so it is a different proof and its
  * key does not match.
  */

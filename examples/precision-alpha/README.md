@@ -278,13 +278,18 @@ about 3 per cent more. One repeated longitude query already pays for the
 plan on every conjunction case. `PARTITION-RESULTS.md` has the numbers,
 including the two targets it did not meet.
 
-Version 2 of the partition (`zodiacs-domain-partition/2`) meets them:
-enclosing the Moon's geocentric vector from merged weights, and its
-elongation in centred form, takes the Moon's boundary from 5.266 to 0.0114
-per cent of its window, and every conjunction case is at least 5.44x
-cheaper than the plain search, which on the Moon now finishes too.
-`PARTITION-EVALUATION-V2.md` is the rule and `PARTITION-RESULTS-V2.md` the
-result; version 1's stand beside them.
+The partition's contract 2 (`zodiacs-domain-partition/2`) meets them under
+version 4 of the evaluation, the programme's fourth preregistered attempt,
+on development data: enclosing the Moon's geocentric vector from merged
+weights, and its elongation in centred form, takes the Moon's boundary from
+5.266 to 0.0114 per cent of its window, and every conjunction case is at
+least 5.44x cheaper than the plain search, which on the Moon now finishes
+too. `PARTITION-EVALUATION-V4.md` is the rule and `PARTITION-RESULTS-V4.md`
+the result. Version 1's stand beside them, and so do versions 2 and 3, on
+the unpushed branch `moon-enclosure`, which failed; the result says what
+each found, and that on version 2's holdout this code, run after the
+verdict, leaves a boundary span at a record join of the Moon's, 4.44 degrees
+inside the floor.
 
 No coefficient pack to hand? `examples/04-experimental-aberrated.mjs`,
 `examples/05-experimental-deflected.mjs` and

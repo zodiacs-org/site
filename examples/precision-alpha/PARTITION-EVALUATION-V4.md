@@ -1,4 +1,4 @@
-# The partition evaluation, version 2: the Moon enclosure fix
+# The partition evaluation, version 4 (the programme's fourth preregistered attempt): the Moon enclosure fix
 
 Written on 31 October 2026 (Asia/Bangkok), before any run this file scores.
 Version 1 is [PARTITION-EVALUATION.md](PARTITION-EVALUATION.md) and its
@@ -148,3 +148,89 @@ tests pass. The new enclosures are arguments, in `domain-partition.mjs`,
 `retarded-search.mjs` and `deflection.mjs`; the tests, the reference
 sampling and this evaluation corroborate them. Nothing here measures
 accuracy, and the deflection layer's own usefulness verdict is unchanged.
+
+## Appended 2026-11-01, after the runs
+
+Nothing above is changed but the title line. What follows changes no rule,
+case, window, target, pack, budget, tolerance, knob, threshold, denominator
+or verdict; it records what this file left out.
+[PARTITION-RESULTS-V4.md](PARTITION-RESULTS-V4.md) reports each point beside
+the result.
+
+**The name.** This is the programme's fourth preregistered attempt at the
+partition evaluation, not its second. Branch `moon-enclosure` (head
+`dfa19aa9`; not on GitHub, in the owner's bundle) holds versions 2 and 3:
+`PARTITION-EVALUATION-V2.md`, committed alone in `93acbde2` on 2026-09-30,
+and `PARTITION-EVALUATION-V3.md`, committed alone in `813969fd` the same
+day. Version 2 failed its regression corpus on E-3 and was PARTIAL on its
+holdout on P-2; version 3 failed both, on E-1 and E-3 and on E-3. Main's
+`docs/platform/programme/HANDOFF-2026-09-30.md` calls them P4.5 versions 2
+and 3. So on 2026-11-01 this attempt became version 4:
+
+| until 2026-11-01 | from 2026-11-01 |
+| --- | --- |
+| `PARTITION-EVALUATION-V2.md` | `PARTITION-EVALUATION-V4.md`, this file |
+| `PARTITION-RESULTS-V2.md` | `PARTITION-RESULTS-V4.md` |
+| `docs/platform/evidence/precision-partition/evaluation-v2/` | `docs/platform/evidence/precision-partition/evaluation-v4/` |
+| `tools/measure/fixture-matrix.mjs` | `tools/measure/fixture-matrix-rebuilt.mjs` |
+
+The tool moved because `moon-enclosure` has its own
+`tools/measure/fixture-matrix.mjs`, the audit's matrix script. In the text
+above, "version 2" means this attempt. The run records as committed in
+`a148bc59` still cite the old names: `corpus-v4.json` and
+`matrix-verdict.json` give their rule as `PARTITION-EVALUATION-V2.md`,
+`matrix-v1.json` and `matrix-v2.json` give their tool as
+`tools/measure/fixture-matrix.mjs`, and the `-v2` in `regression-run-v2.json`,
+`holdout-2007-run-v2.json`, `holdout-2040-run-v2.json` and `matrix-v2.json`
+means this attempt. `corpus-v4.json` is rule V-4's output.
+
+**When it was committed.** `7287ab66` is not a commit of this rule alone. It
+holds 13 files: this rule, the six runtime files under `src/core/` it judges,
+three tier-A tests, `tools/measure/corpus-versions.mjs`,
+`tools/measure/fixture-matrix.mjs` and `types/experimental.d.ts`. It was made
+at 23:47:08 on 31 October 2026 (+07:00), after the development runs section 5
+lists, and 42 s after a run of the matrix on version 1's code (23:46:26), the
+run V-3 compares with. The matrix tool had been changed once, after an
+earlier version-1 run, before that one. That run is deterministic and has
+been reproduced since. Every run of version 2's code this rule scores, and
+V-4's run of version 1's code, came after the commit, between 23:47 and
+23:54. Section 5's last sentence is true of version 2's code; it does not say
+that the matrix had been run on version 1.
+
+**What it was written without.** This rule was written without reading
+versions 2 and 3, their holdouts, the audit's matrix as committed on
+`moon-enclosure`, or their reviews, although main's handoff (section 4,
+section 5 item 6, section 7) and `docs/platform/programme/STATUS.md`
+(checkpoint 8) named them. Because of it:
+
+- Section 1 and the opening report version 1 alone; "the two are reported
+  together" leaves out versions 2 and 3.
+- V-3's "The audit's matrix was never committed" is true of main only. The
+  audit's script is committed on `moon-enclosure` (`304776162`), with its tree
+  and output paths made arguments. The matrix built here is a different one.
+- V-4's "the corpus is never defined in the repository" is not so.
+  `DEFLECTION-EVALUATION.md` runs every case through five rungs (section 2),
+  and `moon-enclosure`'s version 2 defines the ten-case corpus as F1 to F10
+  through those five rungs (its section 3b). V-4 runs one of them, the
+  deflected rung.
+- The holdouts paragraph names one opened holdout; three were open:
+  2007-03-15 (version 1), 1912-12-12 (version 2) and 2103-01-23 (version 3).
+  2040-01-01 was picked by hand, as version 1's epoch was, and not drawn by
+  the programme's rule (`docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md`,
+  "Fresh holdouts"), which versions 2 and 3 followed. Its windows overlap none
+  of the four earlier series.
+- Section 2's `acceptPartialPlan` change carries the contradiction that
+  review B of version 2 found in its own version of the change (finding
+  B-2): a plan relabelled as stopped while fully classified gave
+  `completeness.overRequest: true` beside `execution.finished: false`. It
+  reproduces on the code this rule judges.
+
+**Two more points.** Section 3's reproduction figures hold, but no run of
+them was committed with the result. Version 1's partition on this pack,
+rerun on 2026-11-01, gives the committed run's partition evaluations and
+boundary seconds for all ten bodies, and F2's 158,121 cells, which is the
+engine audit's figure
+(`docs/platform/evidence/engine-audit-2026-09-22/results/alpha-search-partition.json`);
+version 1's committed run records 169,565 cells for the whole partitioned
+path. And the verdict paragraph names only V-1 to V-4: it does not say what
+a failure on the fresh holdout would do. None occurred.
