@@ -1,82 +1,82 @@
 {
   "schema": "zodiacs.daily-facts.v1",
-  "date": "2026-10-30",
-  "snapshotAt": "2026-10-30T12:00:00.000Z",
+  "date": "2026-10-31",
+  "snapshotAt": "2026-10-31T12:00:00.000Z",
   "bodies": [
     {
       "body": "Moon",
-      "lon": 95.99696609878208,
+      "lon": 110.37322055327775,
       "sign": "cancer",
-      "degree": 5.996966098782082,
+      "degree": 20.373220553277747,
       "retrograde": false
     },
     {
       "body": "Sun",
-      "lon": 217.07732317010226,
+      "lon": 218.07672761642442,
       "sign": "scorpio",
-      "degree": 7.077323170102318,
+      "degree": 8.076727616424478,
       "retrograde": false
     },
     {
       "body": "Mercury",
-      "lon": 228.18340256685968,
+      "lon": 227.20122737085487,
       "sign": "scorpio",
-      "degree": 18.18340256685974,
+      "degree": 17.201227370854895,
       "retrograde": true
     },
     {
       "body": "Venus",
-      "lon": 207.01743055570165,
+      "lon": 206.4941709383356,
       "sign": "libra",
-      "degree": 27.017430555701594,
+      "degree": 26.49417093833563,
       "retrograde": true
     },
     {
       "body": "Mars",
-      "lon": 137.8624448441186,
+      "lon": 138.36932415515298,
       "sign": "leo",
-      "degree": 17.862444844118613,
+      "degree": 18.36932415515298,
       "retrograde": false
     },
     {
       "body": "Jupiter",
-      "lon": 144.13769941473186,
+      "lon": 144.2615765488888,
       "sign": "leo",
-      "degree": 24.137699414731856,
+      "degree": 24.261576548888797,
       "retrograde": false
     },
     {
       "body": "Saturn",
-      "lon": 9.379130514109193,
+      "lon": 9.315146510174543,
       "sign": "aries",
-      "degree": 9.379130514109193,
+      "degree": 9.315146510174543,
       "retrograde": true
     },
     {
       "body": "Uranus",
-      "lon": 64.7297964159601,
+      "lon": 64.69393939783356,
       "sign": "gemini",
-      "degree": 4.729796415960095,
+      "degree": 4.69393939783356,
       "retrograde": true
     },
     {
       "body": "Neptune",
-      "lon": 2.1191461686537423,
+      "lon": 2.0978681200001006,
       "sign": "aries",
-      "degree": 2.1191461686537423,
+      "degree": 2.0978681200001006,
       "retrograde": true
     },
     {
       "body": "Pluto",
-      "lon": 303.11731537302967,
+      "lon": 303.124422169741,
       "sign": "aquarius",
-      "degree": 3.117315373029669,
+      "degree": 3.124422169741024,
       "retrograde": false
     }
   ],
   "moon": {
-    "phase": "Waning Gibbous",
-    "illumination": 0.758
+    "phase": "Last Quarter",
+    "illumination": 0.652
   },
   "eventsCoverage": "complete",
   "eventsSource": "src/data/transits-2026-10.json",

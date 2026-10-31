@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.horoscope-program.v1",
-  "anchorDate": "2026-10-30",
+  "anchorDate": "2026-10-31",
   "locale": "en",
   "policy": {
     "id": "org.zodiacs.horoscope-program.en",
@@ -617,651 +617,27 @@
       "house": 10
     },
     {
-      "id": "derived:2026-10-30:solar-house:aquarius:h10:fact-2026-10-30-body-sun-1200z",
+      "id": "derived:2026-10-31:solar-house:aquarius:h10:fact-2026-10-31-body-sun-1200z",
       "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
       "label": "Sun in Scorpio maps to Aquarius solar house 10",
-      "at": "2026-10-30T12:00:00.000Z",
+      "at": "2026-10-31T12:00:00.000Z",
       "body": "Sun",
       "sign": "scorpio",
       "sunSign": "aquarius",
       "house": 10
     },
     {
-      "id": "derived:2026-10-30:solar-house:aquarius:h3:fact-2026-10-30-body-saturn-1200z",
+      "id": "derived:2026-10-31:solar-house:aquarius:h3:fact-2026-10-31-body-saturn-1200z",
       "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:saturn:1200z",
-      "sourceFactId": "fact:2026-10-30:body:saturn:1200z",
+      "sourceId": "fact:2026-10-31:body:saturn:1200z",
+      "sourceFactId": "fact:2026-10-31:body:saturn:1200z",
       "label": "Saturn in Aries maps to Aquarius solar house 3",
-      "at": "2026-10-30T12:00:00.000Z",
+      "at": "2026-10-31T12:00:00.000Z",
       "body": "Saturn",
       "sign": "aries",
       "sunSign": "aquarius",
-      "house": 3
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:aquarius:h6:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Aquarius solar house 6",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "aquarius",
-      "house": 6
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:aquarius:h7:fact-2026-10-30-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mars:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mars:1200z",
-      "label": "Mars in Leo maps to Aquarius solar house 7",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "aquarius",
-      "house": 7
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:aquarius:h9:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Aquarius solar house 9",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "aquarius",
-      "house": 9
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:aries:h4:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Aries solar house 4",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "aries",
-      "house": 4
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:aries:h7:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Aries solar house 7",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "aries",
-      "house": 7
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:aries:h8:fact-2026-10-30-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mercury:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mercury:1200z",
-      "label": "Mercury in Scorpio maps to Aries solar house 8",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "aries",
-      "house": 8
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:aries:h8:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Aries solar house 8",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "aries",
-      "house": 8
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:cancer:h1:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Cancer solar house 1",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "cancer",
-      "house": 1
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:cancer:h10:fact-2026-10-30-body-saturn-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:saturn:1200z",
-      "sourceFactId": "fact:2026-10-30:body:saturn:1200z",
-      "label": "Saturn in Aries maps to Cancer solar house 10",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Saturn",
-      "sign": "aries",
-      "sunSign": "cancer",
-      "house": 10
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:cancer:h4:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Cancer solar house 4",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "cancer",
-      "house": 4
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:cancer:h5:fact-2026-10-30-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mercury:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mercury:1200z",
-      "label": "Mercury in Scorpio maps to Cancer solar house 5",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "cancer",
-      "house": 5
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:cancer:h5:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Cancer solar house 5",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "cancer",
-      "house": 5
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:capricorn:h10:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Capricorn solar house 10",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "capricorn",
-      "house": 10
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:capricorn:h11:fact-2026-10-30-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mercury:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mercury:1200z",
-      "label": "Mercury in Scorpio maps to Capricorn solar house 11",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "capricorn",
-      "house": 11
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:capricorn:h11:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Capricorn solar house 11",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "capricorn",
-      "house": 11
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:capricorn:h7:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Capricorn solar house 7",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "capricorn",
-      "house": 7
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:gemini:h2:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Gemini solar house 2",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "gemini",
-      "house": 2
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:gemini:h3:fact-2026-10-30-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mars:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mars:1200z",
-      "label": "Mars in Leo maps to Gemini solar house 3",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "gemini",
-      "house": 3
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:gemini:h5:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Gemini solar house 5",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "gemini",
-      "house": 5
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:gemini:h6:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Gemini solar house 6",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "gemini",
-      "house": 6
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:leo:h12:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Leo solar house 12",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "leo",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:leo:h3:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Leo solar house 3",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "leo",
-      "house": 3
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:leo:h4:fact-2026-10-30-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mercury:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mercury:1200z",
-      "label": "Mercury in Scorpio maps to Leo solar house 4",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "leo",
-      "house": 4
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:leo:h4:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Leo solar house 4",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "leo",
-      "house": 4
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:leo:h9:fact-2026-10-30-body-saturn-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:saturn:1200z",
-      "sourceFactId": "fact:2026-10-30:body:saturn:1200z",
-      "label": "Saturn in Aries maps to Leo solar house 9",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Saturn",
-      "sign": "aries",
-      "sunSign": "leo",
-      "house": 9
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:libra:h1:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Libra solar house 1",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "libra",
-      "house": 1
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:libra:h10:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Libra solar house 10",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "libra",
-      "house": 10
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:libra:h11:fact-2026-10-30-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mars:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mars:1200z",
-      "label": "Mars in Leo maps to Libra solar house 11",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "libra",
-      "house": 11
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:libra:h2:fact-2026-10-30-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mercury:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mercury:1200z",
-      "label": "Mercury in Scorpio maps to Libra solar house 2",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "libra",
-      "house": 2
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:libra:h2:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Libra solar house 2",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "libra",
-      "house": 2
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:pisces:h2:fact-2026-10-30-body-saturn-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:saturn:1200z",
-      "sourceFactId": "fact:2026-10-30:body:saturn:1200z",
-      "label": "Saturn in Aries maps to Pisces solar house 2",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Saturn",
-      "sign": "aries",
-      "sunSign": "pisces",
-      "house": 2
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:pisces:h5:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Pisces solar house 5",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "pisces",
-      "house": 5
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:pisces:h6:fact-2026-10-30-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mars:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mars:1200z",
-      "label": "Mars in Leo maps to Pisces solar house 6",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "pisces",
-      "house": 6
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:pisces:h8:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Pisces solar house 8",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "pisces",
-      "house": 8
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:pisces:h9:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Pisces solar house 9",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "pisces",
-      "house": 9
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:sagittarius:h11:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Sagittarius solar house 11",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "sagittarius",
-      "house": 11
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:sagittarius:h12:fact-2026-10-30-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mercury:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mercury:1200z",
-      "label": "Mercury in Scorpio maps to Sagittarius solar house 12",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "sagittarius",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:sagittarius:h12:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Sagittarius solar house 12",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "sagittarius",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:sagittarius:h8:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Sagittarius solar house 8",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "sagittarius",
-      "house": 8
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:sagittarius:h9:fact-2026-10-30-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mars:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mars:1200z",
-      "label": "Mars in Leo maps to Sagittarius solar house 9",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "sagittarius",
-      "house": 9
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:scorpio:h1:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Scorpio solar house 1",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "scorpio",
-      "house": 1
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:scorpio:h12:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Scorpio solar house 12",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "scorpio",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:scorpio:h6:fact-2026-10-30-body-saturn-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:saturn:1200z",
-      "sourceFactId": "fact:2026-10-30:body:saturn:1200z",
-      "label": "Saturn in Aries maps to Scorpio solar house 6",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Saturn",
-      "sign": "aries",
-      "sunSign": "scorpio",
-      "house": 6
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:scorpio:h9:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Scorpio solar house 9",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "scorpio",
-      "house": 9
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:taurus:h12:fact-2026-10-30-body-saturn-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:saturn:1200z",
-      "sourceFactId": "fact:2026-10-30:body:saturn:1200z",
-      "label": "Saturn in Aries maps to Taurus solar house 12",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Saturn",
-      "sign": "aries",
-      "sunSign": "taurus",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:taurus:h3:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Taurus solar house 3",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "taurus",
-      "house": 3
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:taurus:h6:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Taurus solar house 6",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "taurus",
-      "house": 6
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:taurus:h7:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Taurus solar house 7",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "taurus",
-      "house": 7
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:virgo:h11:fact-2026-10-30-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:moon:1200z",
-      "sourceFactId": "fact:2026-10-30:body:moon:1200z",
-      "label": "Moon in Cancer maps to Virgo solar house 11",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "sunSign": "virgo",
-      "house": 11
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:virgo:h12:fact-2026-10-30-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:mars:1200z",
-      "sourceFactId": "fact:2026-10-30:body:mars:1200z",
-      "label": "Mars in Leo maps to Virgo solar house 12",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "virgo",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:virgo:h2:fact-2026-10-30-body-venus-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:venus:1200z",
-      "sourceFactId": "fact:2026-10-30:body:venus:1200z",
-      "label": "Venus in Libra maps to Virgo solar house 2",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "sunSign": "virgo",
-      "house": 2
-    },
-    {
-      "id": "derived:2026-10-30:solar-house:virgo:h3:fact-2026-10-30-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceId": "fact:2026-10-30:body:sun:1200z",
-      "sourceFactId": "fact:2026-10-30:body:sun:1200z",
-      "label": "Sun in Scorpio maps to Virgo solar house 3",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "sunSign": "virgo",
       "house": 3
     },
     {
@@ -1289,6 +665,18 @@
       "house": 7
     },
     {
+      "id": "derived:2026-10-31:solar-house:aquarius:h9:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Aquarius solar house 9",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "aquarius",
+      "house": 9
+    },
+    {
       "id": "derived:2026-10-31:solar-house:aries:h4:fact-2026-10-31-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:moon:1200z",
@@ -1301,6 +689,18 @@
       "house": 4
     },
     {
+      "id": "derived:2026-10-31:solar-house:aries:h7:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Aries solar house 7",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "aries",
+      "house": 7
+    },
+    {
       "id": "derived:2026-10-31:solar-house:aries:h8:fact-2026-10-31-body-mercury-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:mercury:1200z",
@@ -1308,6 +708,18 @@
       "label": "Mercury in Scorpio maps to Aries solar house 8",
       "at": "2026-10-31T12:00:00.000Z",
       "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "aries",
+      "house": 8
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:aries:h8:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Aries solar house 8",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
       "sign": "scorpio",
       "sunSign": "aries",
       "house": 8
@@ -1337,6 +749,42 @@
       "house": 10
     },
     {
+      "id": "derived:2026-10-31:solar-house:cancer:h4:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Cancer solar house 4",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "cancer",
+      "house": 4
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:cancer:h5:fact-2026-10-31-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-31:body:mercury:1200z",
+      "label": "Mercury in Scorpio maps to Cancer solar house 5",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "cancer",
+      "house": 5
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:cancer:h5:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Cancer solar house 5",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "cancer",
+      "house": 5
+    },
+    {
       "id": "derived:2026-10-31:solar-house:capricorn:h10:fact-2026-10-31-body-venus-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:venus:1200z",
@@ -1347,6 +795,30 @@
       "sign": "libra",
       "sunSign": "capricorn",
       "house": 10
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:capricorn:h11:fact-2026-10-31-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-31:body:mercury:1200z",
+      "label": "Mercury in Scorpio maps to Capricorn solar house 11",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "capricorn",
+      "house": 11
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:capricorn:h11:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Capricorn solar house 11",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "capricorn",
+      "house": 11
     },
     {
       "id": "derived:2026-10-31:solar-house:capricorn:h7:fact-2026-10-31-body-moon-1200z",
@@ -1385,6 +857,30 @@
       "house": 3
     },
     {
+      "id": "derived:2026-10-31:solar-house:gemini:h5:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Gemini solar house 5",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "gemini",
+      "house": 5
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:gemini:h6:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Gemini solar house 6",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "gemini",
+      "house": 6
+    },
+    {
       "id": "derived:2026-10-31:solar-house:leo:h12:fact-2026-10-31-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:moon:1200z",
@@ -1397,6 +893,18 @@
       "house": 12
     },
     {
+      "id": "derived:2026-10-31:solar-house:leo:h3:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Leo solar house 3",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "leo",
+      "house": 3
+    },
+    {
       "id": "derived:2026-10-31:solar-house:leo:h4:fact-2026-10-31-body-mercury-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:mercury:1200z",
@@ -1407,6 +915,42 @@
       "sign": "scorpio",
       "sunSign": "leo",
       "house": 4
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:leo:h4:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Leo solar house 4",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "leo",
+      "house": 4
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:leo:h9:fact-2026-10-31-body-saturn-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:saturn:1200z",
+      "sourceFactId": "fact:2026-10-31:body:saturn:1200z",
+      "label": "Saturn in Aries maps to Leo solar house 9",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Saturn",
+      "sign": "aries",
+      "sunSign": "leo",
+      "house": 9
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:libra:h1:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Libra solar house 1",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "libra",
+      "house": 1
     },
     {
       "id": "derived:2026-10-31:solar-house:libra:h10:fact-2026-10-31-body-moon-1200z",
@@ -1433,6 +977,30 @@
       "house": 11
     },
     {
+      "id": "derived:2026-10-31:solar-house:libra:h2:fact-2026-10-31-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-31:body:mercury:1200z",
+      "label": "Mercury in Scorpio maps to Libra solar house 2",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "libra",
+      "house": 2
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:libra:h2:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Libra solar house 2",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "libra",
+      "house": 2
+    },
+    {
       "id": "derived:2026-10-31:solar-house:pisces:h2:fact-2026-10-31-body-saturn-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:saturn:1200z",
@@ -1457,6 +1025,54 @@
       "house": 5
     },
     {
+      "id": "derived:2026-10-31:solar-house:pisces:h6:fact-2026-10-31-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-31:body:mars:1200z",
+      "label": "Mars in Leo maps to Pisces solar house 6",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "pisces",
+      "house": 6
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:pisces:h8:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Pisces solar house 8",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "pisces",
+      "house": 8
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:pisces:h9:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Pisces solar house 9",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "pisces",
+      "house": 9
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:sagittarius:h11:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Sagittarius solar house 11",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "sagittarius",
+      "house": 11
+    },
+    {
       "id": "derived:2026-10-31:solar-house:sagittarius:h12:fact-2026-10-31-body-mercury-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:mercury:1200z",
@@ -1464,6 +1080,18 @@
       "label": "Mercury in Scorpio maps to Sagittarius solar house 12",
       "at": "2026-10-31T12:00:00.000Z",
       "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "sagittarius",
+      "house": 12
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:sagittarius:h12:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Sagittarius solar house 12",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
       "sign": "scorpio",
       "sunSign": "sagittarius",
       "house": 12
@@ -1479,6 +1107,42 @@
       "sign": "cancer",
       "sunSign": "sagittarius",
       "house": 8
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:sagittarius:h9:fact-2026-10-31-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-31:body:mars:1200z",
+      "label": "Mars in Leo maps to Sagittarius solar house 9",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "sagittarius",
+      "house": 9
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:scorpio:h1:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Scorpio solar house 1",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "scorpio",
+      "house": 1
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:scorpio:h12:fact-2026-10-31-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:venus:1200z",
+      "sourceFactId": "fact:2026-10-31:body:venus:1200z",
+      "label": "Venus in Libra maps to Scorpio solar house 12",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "scorpio",
+      "house": 12
     },
     {
       "id": "derived:2026-10-31:solar-house:scorpio:h6:fact-2026-10-31-body-saturn-1200z",
@@ -1505,6 +1169,18 @@
       "house": 9
     },
     {
+      "id": "derived:2026-10-31:solar-house:taurus:h12:fact-2026-10-31-body-saturn-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:saturn:1200z",
+      "sourceFactId": "fact:2026-10-31:body:saturn:1200z",
+      "label": "Saturn in Aries maps to Taurus solar house 12",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Saturn",
+      "sign": "aries",
+      "sunSign": "taurus",
+      "house": 12
+    },
+    {
       "id": "derived:2026-10-31:solar-house:taurus:h3:fact-2026-10-31-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:moon:1200z",
@@ -1529,6 +1205,18 @@
       "house": 6
     },
     {
+      "id": "derived:2026-10-31:solar-house:taurus:h7:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Taurus solar house 7",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "taurus",
+      "house": 7
+    },
+    {
       "id": "derived:2026-10-31:solar-house:virgo:h11:fact-2026-10-31-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:moon:1200z",
@@ -1541,6 +1229,18 @@
       "house": 11
     },
     {
+      "id": "derived:2026-10-31:solar-house:virgo:h12:fact-2026-10-31-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-31:body:mars:1200z",
+      "label": "Mars in Leo maps to Virgo solar house 12",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "virgo",
+      "house": 12
+    },
+    {
       "id": "derived:2026-10-31:solar-house:virgo:h2:fact-2026-10-31-body-venus-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-10-31:body:venus:1200z",
@@ -1551,6 +1251,30 @@
       "sign": "libra",
       "sunSign": "virgo",
       "house": 2
+    },
+    {
+      "id": "derived:2026-10-31:solar-house:virgo:h3:fact-2026-10-31-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-10-31:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-31:body:sun:1200z",
+      "label": "Sun in Scorpio maps to Virgo solar house 3",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "sunSign": "virgo",
+      "house": 3
+    },
+    {
+      "id": "derived:2026-11-01:solar-house:aquarius:h7:fact-2026-11-01-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:mars:1200z",
+      "sourceFactId": "fact:2026-11-01:body:mars:1200z",
+      "label": "Mars in Leo maps to Aquarius solar house 7",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "aquarius",
+      "house": 7
     },
     {
       "id": "derived:2026-11-01:solar-house:aquarius:h7:fact-2026-11-01-body-moon-1200z",
@@ -1577,6 +1301,30 @@
       "house": 5
     },
     {
+      "id": "derived:2026-11-01:solar-house:aries:h8:fact-2026-11-01-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:mercury:1200z",
+      "sourceFactId": "fact:2026-11-01:body:mercury:1200z",
+      "label": "Mercury in Scorpio maps to Aries solar house 8",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "aries",
+      "house": 8
+    },
+    {
+      "id": "derived:2026-11-01:solar-house:cancer:h10:fact-2026-11-01-body-saturn-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:saturn:1200z",
+      "sourceFactId": "fact:2026-11-01:body:saturn:1200z",
+      "label": "Saturn in Aries maps to Cancer solar house 10",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Saturn",
+      "sign": "aries",
+      "sunSign": "cancer",
+      "house": 10
+    },
+    {
       "id": "derived:2026-11-01:solar-house:cancer:h2:fact-2026-11-01-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-11-01:body:moon:1200z",
@@ -1589,6 +1337,18 @@
       "house": 2
     },
     {
+      "id": "derived:2026-11-01:solar-house:capricorn:h10:fact-2026-11-01-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:venus:1200z",
+      "sourceFactId": "fact:2026-11-01:body:venus:1200z",
+      "label": "Venus in Libra maps to Capricorn solar house 10",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "capricorn",
+      "house": 10
+    },
+    {
       "id": "derived:2026-11-01:solar-house:capricorn:h8:fact-2026-11-01-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-11-01:body:moon:1200z",
@@ -1599,6 +1359,18 @@
       "sign": "leo",
       "sunSign": "capricorn",
       "house": 8
+    },
+    {
+      "id": "derived:2026-11-01:solar-house:gemini:h3:fact-2026-11-01-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:mars:1200z",
+      "sourceFactId": "fact:2026-11-01:body:mars:1200z",
+      "label": "Mars in Leo maps to Gemini solar house 3",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "gemini",
+      "house": 3
     },
     {
       "id": "derived:2026-11-01:solar-house:gemini:h3:fact-2026-11-01-body-moon-1200z",
@@ -1625,6 +1397,30 @@
       "house": 1
     },
     {
+      "id": "derived:2026-11-01:solar-house:leo:h4:fact-2026-11-01-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:mercury:1200z",
+      "sourceFactId": "fact:2026-11-01:body:mercury:1200z",
+      "label": "Mercury in Scorpio maps to Leo solar house 4",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "leo",
+      "house": 4
+    },
+    {
+      "id": "derived:2026-11-01:solar-house:libra:h11:fact-2026-11-01-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:mars:1200z",
+      "sourceFactId": "fact:2026-11-01:body:mars:1200z",
+      "label": "Mars in Leo maps to Libra solar house 11",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "libra",
+      "house": 11
+    },
+    {
       "id": "derived:2026-11-01:solar-house:libra:h11:fact-2026-11-01-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-11-01:body:moon:1200z",
@@ -1637,6 +1433,18 @@
       "house": 11
     },
     {
+      "id": "derived:2026-11-01:solar-house:pisces:h2:fact-2026-11-01-body-saturn-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:saturn:1200z",
+      "sourceFactId": "fact:2026-11-01:body:saturn:1200z",
+      "label": "Saturn in Aries maps to Pisces solar house 2",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Saturn",
+      "sign": "aries",
+      "sunSign": "pisces",
+      "house": 2
+    },
+    {
       "id": "derived:2026-11-01:solar-house:pisces:h6:fact-2026-11-01-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-11-01:body:moon:1200z",
@@ -1647,6 +1455,18 @@
       "sign": "leo",
       "sunSign": "pisces",
       "house": 6
+    },
+    {
+      "id": "derived:2026-11-01:solar-house:sagittarius:h12:fact-2026-11-01-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:mercury:1200z",
+      "sourceFactId": "fact:2026-11-01:body:mercury:1200z",
+      "label": "Mercury in Scorpio maps to Sagittarius solar house 12",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "sagittarius",
+      "house": 12
     },
     {
       "id": "derived:2026-11-01:solar-house:sagittarius:h9:fact-2026-11-01-body-moon-1200z",
@@ -1673,6 +1493,18 @@
       "house": 10
     },
     {
+      "id": "derived:2026-11-01:solar-house:scorpio:h6:fact-2026-11-01-body-saturn-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:saturn:1200z",
+      "sourceFactId": "fact:2026-11-01:body:saturn:1200z",
+      "label": "Saturn in Aries maps to Scorpio solar house 6",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Saturn",
+      "sign": "aries",
+      "sunSign": "scorpio",
+      "house": 6
+    },
+    {
       "id": "derived:2026-11-01:solar-house:taurus:h4:fact-2026-11-01-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-11-01:body:moon:1200z",
@@ -1685,6 +1517,18 @@
       "house": 4
     },
     {
+      "id": "derived:2026-11-01:solar-house:taurus:h6:fact-2026-11-01-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:venus:1200z",
+      "sourceFactId": "fact:2026-11-01:body:venus:1200z",
+      "label": "Venus in Libra maps to Taurus solar house 6",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "taurus",
+      "house": 6
+    },
+    {
       "id": "derived:2026-11-01:solar-house:virgo:h12:fact-2026-11-01-body-moon-1200z",
       "kind": "solar-house",
       "sourceId": "fact:2026-11-01:body:moon:1200z",
@@ -1695,6 +1539,18 @@
       "sign": "leo",
       "sunSign": "virgo",
       "house": 12
+    },
+    {
+      "id": "derived:2026-11-01:solar-house:virgo:h2:fact-2026-11-01-body-venus-1200z",
+      "kind": "solar-house",
+      "sourceId": "fact:2026-11-01:body:venus:1200z",
+      "sourceFactId": "fact:2026-11-01:body:venus:1200z",
+      "label": "Venus in Libra maps to Virgo solar house 2",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "sunSign": "virgo",
+      "house": 2
     },
     {
       "id": "derived:2026-12-13:solar-house:aquarius:h7:fact-2027-event-station-2026-12-13t00-57-26-191z-jupiter-leo:Jupiter",
@@ -5633,73 +5489,6 @@
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-30:body:mars:1200z",
-      "kind": "body-position",
-      "sourceId": "daily-snapshot:2026-10-30:1200z",
-      "label": "Mars 17.9° Leo at 12:00 UTC",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mars",
-      "sign": "leo",
-      "degree": 17.862444844118613,
-      "retrograde": false
-    },
-    {
-      "id": "fact:2026-10-30:body:mercury:1200z",
-      "kind": "body-position",
-      "sourceId": "daily-snapshot:2026-10-30:1200z",
-      "label": "Mercury 18.2° Scorpio, retrograde at 12:00 UTC",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "degree": 18.18340256685974,
-      "retrograde": true
-    },
-    {
-      "id": "fact:2026-10-30:body:moon:1200z",
-      "kind": "body-position",
-      "sourceId": "daily-snapshot:2026-10-30:1200z",
-      "label": "Moon 6.0° Cancer at 12:00 UTC",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Moon",
-      "sign": "cancer",
-      "degree": 5.996966098782082,
-      "moonPhase": "Waning Gibbous",
-      "retrograde": false
-    },
-    {
-      "id": "fact:2026-10-30:body:saturn:1200z",
-      "kind": "body-position",
-      "sourceId": "daily-snapshot:2026-10-30:1200z",
-      "label": "Saturn 9.4° Aries, retrograde at 12:00 UTC",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Saturn",
-      "sign": "aries",
-      "degree": 9.379130514109193,
-      "retrograde": true
-    },
-    {
-      "id": "fact:2026-10-30:body:sun:1200z",
-      "kind": "body-position",
-      "sourceId": "daily-snapshot:2026-10-30:1200z",
-      "label": "Sun 7.1° Scorpio at 12:00 UTC",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Sun",
-      "sign": "scorpio",
-      "degree": 7.077323170102318,
-      "retrograde": false
-    },
-    {
-      "id": "fact:2026-10-30:body:venus:1200z",
-      "kind": "body-position",
-      "sourceId": "daily-snapshot:2026-10-30:1200z",
-      "label": "Venus 27.0° Libra, retrograde at 12:00 UTC",
-      "at": "2026-10-30T12:00:00.000Z",
-      "body": "Venus",
-      "sign": "libra",
-      "degree": 27.017430555701594,
-      "retrograde": true
-    },
-    {
       "id": "fact:2026-10-31:body:mars:1200z",
       "kind": "body-position",
       "sourceId": "daily-snapshot:2026-10-31:1200z",
@@ -5745,6 +5534,17 @@
       "retrograde": true
     },
     {
+      "id": "fact:2026-10-31:body:sun:1200z",
+      "kind": "body-position",
+      "sourceId": "daily-snapshot:2026-10-31:1200z",
+      "label": "Sun 8.1° Scorpio at 12:00 UTC",
+      "at": "2026-10-31T12:00:00.000Z",
+      "body": "Sun",
+      "sign": "scorpio",
+      "degree": 8.076727616424478,
+      "retrograde": false
+    },
+    {
       "id": "fact:2026-10-31:body:venus:1200z",
       "kind": "body-position",
       "sourceId": "daily-snapshot:2026-10-31:1200z",
@@ -5753,6 +5553,28 @@
       "body": "Venus",
       "sign": "libra",
       "degree": 26.49417093833563,
+      "retrograde": true
+    },
+    {
+      "id": "fact:2026-11-01:body:mars:1200z",
+      "kind": "body-position",
+      "sourceId": "daily-snapshot:2026-11-01:1200z",
+      "label": "Mars 18.9° Leo at 12:00 UTC",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Mars",
+      "sign": "leo",
+      "degree": 18.87299200083038,
+      "retrograde": false
+    },
+    {
+      "id": "fact:2026-11-01:body:mercury:1200z",
+      "kind": "body-position",
+      "sourceId": "daily-snapshot:2026-11-01:1200z",
+      "label": "Mercury 16.1° Scorpio, retrograde at 12:00 UTC",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "degree": 16.096118334568246,
       "retrograde": true
     },
     {
@@ -5766,6 +5588,28 @@
       "degree": 4.503049007949187,
       "moonPhase": "Last Quarter",
       "retrograde": false
+    },
+    {
+      "id": "fact:2026-11-01:body:saturn:1200z",
+      "kind": "body-position",
+      "sourceId": "daily-snapshot:2026-11-01:1200z",
+      "label": "Saturn 9.3° Aries, retrograde at 12:00 UTC",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Saturn",
+      "sign": "aries",
+      "degree": 9.25222317438022,
+      "retrograde": true
+    },
+    {
+      "id": "fact:2026-11-01:body:venus:1200z",
+      "kind": "body-position",
+      "sourceId": "daily-snapshot:2026-11-01:1200z",
+      "label": "Venus 26.0° Libra, retrograde at 12:00 UTC",
+      "at": "2026-11-01T12:00:00.000Z",
+      "body": "Venus",
+      "sign": "libra",
+      "degree": 25.998081233796825,
+      "retrograde": true
     },
     {
       "id": "fact:2027:event:eclipse:2027-02-06T15:59:39.357Z:solar-aquarius",
@@ -6087,60 +5931,22 @@
           "surface": "today",
           "sign": "aries",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Aries horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, protect the conditions that make home and private life workable. For Aries, a clean first move matters more than a dramatic sprint. The waning gibbous Moon puts home, family, and your private life on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:aries:h4:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "List what is shared, what is owed, and what must remain private before making the next commitment. In this reading, Mercury retrograde in Scorpio brings attention to shared finances, debts, intimacy, and trust.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:aries:h8:fact-2026-10-30-body-mercury-1200z"
-              ]
-            },
-            {
-              "text": "Connect home, family, and your private life with shared finances, debts, intimacy, and trust; name the first workable move and leave the grand gesture alone.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:aries:h4:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:aries:h8:fact-2026-10-30-body-mercury-1200z"
-              ]
-            }
-          ],
-          "text": "Today, protect the conditions that make home and private life workable. For Aries, a clean first move matters more than a dramatic sprint. The waning gibbous Moon puts home, family, and your private life on the day’s agenda.\n\nList what is shared, what is owed, and what must remain private before making the next commitment. In this reading, Mercury retrograde in Scorpio brings attention to shared finances, debts, intimacy, and trust.\n\nConnect home, family, and your private life with shared finances, debts, intimacy, and trust; name the first workable move and leave the grand gesture alone.",
-          "wordCount": 96
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "aries",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Aries horoscope for tomorrow, October 31, 2026",
+          "title": "Aries horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Restore one part of the private base so tomorrow does not begin in borrowed urgency, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward home, family, and your private life.",
+              "text": "Today, protect the conditions that make home and private life workable. For Aries, a clean first move matters more than a dramatic sprint. The last quarter Moon puts home, family, and your private life on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:aries:h4:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Write down what is owed, what is shared, and what requires consent; Mercury retrograde in Scorpio is one of the conditions shaping shared finances, debts, intimacy, and trust.",
+              "text": "List what is shared, what is owed, and what must remain private before making the next commitment. In this reading, Mercury retrograde in Scorpio brings attention to shared finances, debts, intimacy, and trust.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:mercury:1200z",
                 "derived:2026-10-31:solar-house:aries:h8:fact-2026-10-31-body-mercury-1200z"
@@ -6156,8 +5962,46 @@
               ]
             }
           ],
-          "text": "Restore one part of the private base so tomorrow does not begin in borrowed urgency, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward home, family, and your private life.\n\nWrite down what is owed, what is shared, and what requires consent; Mercury retrograde in Scorpio is one of the conditions shaping shared finances, debts, intimacy, and trust.\n\nConnect home, family, and your private life with shared finances, debts, intimacy, and trust; name the first workable move and leave the grand gesture alone.",
-          "wordCount": 98
+          "text": "Today, protect the conditions that make home and private life workable. For Aries, a clean first move matters more than a dramatic sprint. The last quarter Moon puts home, family, and your private life on the day’s agenda.\n\nList what is shared, what is owed, and what must remain private before making the next commitment. In this reading, Mercury retrograde in Scorpio brings attention to shared finances, debts, intimacy, and trust.\n\nConnect home, family, and your private life with shared finances, debts, intimacy, and trust; name the first workable move and leave the grand gesture alone.",
+          "wordCount": 96
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "aries",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Aries horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Give tomorrow’s pleasure, affection, or creative work a protected time, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward creativity, romance, children, and enjoyment.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:aries:h5:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Write down what is owed, what is shared, and what requires consent; Mercury retrograde in Scorpio is one of the conditions shaping shared finances, debts, intimacy, and trust.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:mercury:1200z",
+                "derived:2026-11-01:solar-house:aries:h8:fact-2026-11-01-body-mercury-1200z"
+              ]
+            },
+            {
+              "text": "Connect creativity, romance, children, and enjoyment with shared finances, debts, intimacy, and trust; name the first workable move and leave the grand gesture alone.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:aries:h5:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:mercury:1200z",
+                "derived:2026-11-01:solar-house:aries:h8:fact-2026-11-01-body-mercury-1200z"
+              ]
+            }
+          ],
+          "text": "Give tomorrow’s pleasure, affection, or creative work a protected time, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward creativity, romance, children, and enjoyment.\n\nWrite down what is owed, what is shared, and what requires consent; Mercury retrograde in Scorpio is one of the conditions shaping shared finances, debts, intimacy, and trust.\n\nConnect creativity, romance, children, and enjoyment with shared finances, debts, intimacy, and trust; name the first workable move and leave the grand gesture alone.",
+          "wordCount": 91
         },
         "weekly": {
           "surface": "weekly",
@@ -6217,25 +6061,25 @@
           "surface": "love",
           "sign": "aries",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Aries love horoscope for October 30, 2026",
+          "title": "Aries love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Treat reciprocity as an observable practice. For Aries, directness works when it also leaves room for an answer. Venus brings partners and one-to-one relationships into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:aries:h7:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:aries:h7:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Make emotional safety tangible in the shared environment. Notice whether the response makes the shared space safer and more workable. The Moon shifts the emotional weather toward home, family, and your private life.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:aries:h4:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:aries:h4:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -6246,25 +6090,25 @@
           "surface": "career",
           "sign": "aries",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Aries career horoscope for October 30, 2026",
+          "title": "Aries career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Review shared costs, obligations, access, and accountability. For Aries, initiative is useful once the target is specific. Mercury retrograde brings shared finances, debts, intimacy, and trust into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:aries:h8:fact-2026-10-30-body-mercury-1200z"
+                "fact:2026-10-31:body:mercury:1200z",
+                "derived:2026-10-31:solar-house:aries:h8:fact-2026-10-31-body-mercury-1200z"
               ]
             },
             {
               "text": "Keep shared commitments and intimacy anchored to one observable result. Record shared costs and ownership now so revision does not become a dispute later. The Sun widens the frame to shared finances, debts, intimacy, and trust.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:aries:h8:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:aries:h8:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -6429,60 +6273,22 @@
           "surface": "today",
           "sign": "taurus",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Taurus horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, clarify the message, route, or conversation closest to hand. For Taurus, steady attention can reveal which pressure is real and which can wait. The waning gibbous Moon puts messages, errands, siblings, and your local community on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:taurus:h3:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Remove one repeated snag from the routine before adding another promise to the week. In this reading, Venus retrograde in Libra brings attention to daily work, health routines, and responsibilities.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:taurus:h6:fact-2026-10-30-body-venus-1200z"
-              ]
-            },
-            {
-              "text": "Connect messages, errands, siblings, and your local community with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:taurus:h3:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:taurus:h6:fact-2026-10-30-body-venus-1200z"
-              ]
-            }
-          ],
-          "text": "Today, clarify the message, route, or conversation closest to hand. For Taurus, steady attention can reveal which pressure is real and which can wait. The waning gibbous Moon puts messages, errands, siblings, and your local community on the day’s agenda.\n\nRemove one repeated snag from the routine before adding another promise to the week. In this reading, Venus retrograde in Libra brings attention to daily work, health routines, and responsibilities.\n\nConnect messages, errands, siblings, and your local community with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working.",
-          "wordCount": 98
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "taurus",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Taurus horoscope for tomorrow, October 31, 2026",
+          "title": "Taurus horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Draft the message or question now, then read it once for what is still unclear, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward messages, errands, siblings, and your local community.",
+              "text": "Today, clarify the message, route, or conversation closest to hand. For Taurus, steady attention can reveal which pressure is real and which can wait. The last quarter Moon puts messages, errands, siblings, and your local community on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:taurus:h3:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Define the smallest workflow change you can observe over a complete day; Venus retrograde in Libra is one of the conditions shaping daily work, health routines, and responsibilities.",
+              "text": "Remove one repeated snag from the routine before adding another promise to the week. In this reading, Venus retrograde in Libra brings attention to daily work, health routines, and responsibilities.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:venus:1200z",
                 "derived:2026-10-31:solar-house:taurus:h6:fact-2026-10-31-body-venus-1200z"
@@ -6498,8 +6304,46 @@
               ]
             }
           ],
-          "text": "Draft the message or question now, then read it once for what is still unclear, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward messages, errands, siblings, and your local community.\n\nDefine the smallest workflow change you can observe over a complete day; Venus retrograde in Libra is one of the conditions shaping daily work, health routines, and responsibilities.\n\nConnect messages, errands, siblings, and your local community with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working.",
-          "wordCount": 102
+          "text": "Today, clarify the message, route, or conversation closest to hand. For Taurus, steady attention can reveal which pressure is real and which can wait. The last quarter Moon puts messages, errands, siblings, and your local community on the day’s agenda.\n\nRemove one repeated snag from the routine before adding another promise to the week. In this reading, Venus retrograde in Libra brings attention to daily work, health routines, and responsibilities.\n\nConnect messages, errands, siblings, and your local community with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working.",
+          "wordCount": 98
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "taurus",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Taurus horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Restore one part of the private base so tomorrow does not begin in borrowed urgency, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward home, family, and your private life.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:taurus:h4:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Define the smallest workflow change you can observe over a complete day; Venus retrograde in Libra is one of the conditions shaping daily work, health routines, and responsibilities.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:venus:1200z",
+                "derived:2026-11-01:solar-house:taurus:h6:fact-2026-11-01-body-venus-1200z"
+              ]
+            },
+            {
+              "text": "Connect home, family, and your private life with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:taurus:h4:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:venus:1200z",
+                "derived:2026-11-01:solar-house:taurus:h6:fact-2026-11-01-body-venus-1200z"
+              ]
+            }
+          ],
+          "text": "Restore one part of the private base so tomorrow does not begin in borrowed urgency, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward home, family, and your private life.\n\nDefine the smallest workflow change you can observe over a complete day; Venus retrograde in Libra is one of the conditions shaping daily work, health routines, and responsibilities.\n\nConnect home, family, and your private life with daily work, health routines, and responsibilities; keep what is sound and alter only the part that has stopped working.",
+          "wordCount": 100
         },
         "weekly": {
           "surface": "weekly",
@@ -6559,25 +6403,25 @@
           "surface": "love",
           "sign": "taurus",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Taurus love horoscope for October 30, 2026",
+          "title": "Taurus love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Look at the small routines through which care is actually delivered. For Taurus, reliability says more than a perfectly staged reassurance. Venus brings daily work, health routines, and responsibilities into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:taurus:h6:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:taurus:h6:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Let a specific conversation replace assumptions. Ask the specific question and let the answer replace the version you rehearsed in advance. The Moon shifts the emotional weather toward messages, errands, siblings, and your local community.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:taurus:h3:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:taurus:h3:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -6588,25 +6432,25 @@
           "surface": "career",
           "sign": "taurus",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Taurus career horoscope for October 30, 2026",
+          "title": "Taurus career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Finish background work and protect concentration from unnecessary display. For Taurus, durable progress begins with the resource already in hand. Saturn retrograde brings rest, privacy, and unfinished matters into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:taurus:h12:fact-2026-10-30-body-saturn-1200z"
+                "fact:2026-10-31:body:saturn:1200z",
+                "derived:2026-10-31:solar-house:taurus:h12:fact-2026-10-31-body-saturn-1200z"
               ]
             },
             {
               "text": "Make roles and terms clear with partners or clients. Write the role, term, and review date so the agreement can change through evidence. The Sun widens the frame to partners and one-to-one relationships.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:taurus:h7:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:taurus:h7:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -6771,60 +6615,22 @@
           "surface": "today",
           "sign": "gemini",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Gemini horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, check the budget of time, attention, and material resources. For Gemini, the sharp question is more valuable than another quick answer. The waning gibbous Moon puts your money, possessions, and priorities on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:gemini:h2:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Write the message plainly, confirm the route, and ask the question that would prevent avoidable confusion. In this reading, Mars in Leo brings attention to messages, errands, siblings, and your local community.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:gemini:h3:fact-2026-10-30-body-mars-1200z"
-              ]
-            },
-            {
-              "text": "Connect your money, possessions, and priorities with messages, errands, siblings, and your local community; write the question down before collecting another opinion.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:gemini:h2:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:gemini:h3:fact-2026-10-30-body-mars-1200z"
-              ]
-            }
-          ],
-          "text": "Today, check the budget of time, attention, and material resources. For Gemini, the sharp question is more valuable than another quick answer. The waning gibbous Moon puts your money, possessions, and priorities on the day’s agenda.\n\nWrite the message plainly, confirm the route, and ask the question that would prevent avoidable confusion. In this reading, Mars in Leo brings attention to messages, errands, siblings, and your local community.\n\nConnect your money, possessions, and priorities with messages, errands, siblings, and your local community; write the question down before collecting another opinion.",
-          "wordCount": 90
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "gemini",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Gemini horoscope for tomorrow, October 31, 2026",
+          "title": "Gemini horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Decide tonight what tomorrow can cost in money, time, and attention, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward your money, possessions, and priorities.",
+              "text": "Today, check the budget of time, attention, and material resources. For Gemini, the sharp question is more valuable than another quick answer. The last quarter Moon puts your money, possessions, and priorities on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:gemini:h2:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Name who needs the message, what they need to know, and when they need it; Mars in Leo is one of the conditions shaping messages, errands, siblings, and your local community.",
+              "text": "Write the message plainly, confirm the route, and ask the question that would prevent avoidable confusion. In this reading, Mars in Leo brings attention to messages, errands, siblings, and your local community.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:mars:1200z",
                 "derived:2026-10-31:solar-house:gemini:h3:fact-2026-10-31-body-mars-1200z"
@@ -6840,8 +6646,46 @@
               ]
             }
           ],
-          "text": "Decide tonight what tomorrow can cost in money, time, and attention, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward your money, possessions, and priorities.\n\nName who needs the message, what they need to know, and when they need it; Mars in Leo is one of the conditions shaping messages, errands, siblings, and your local community.\n\nConnect your money, possessions, and priorities with messages, errands, siblings, and your local community; write the question down before collecting another opinion.",
-          "wordCount": 93
+          "text": "Today, check the budget of time, attention, and material resources. For Gemini, the sharp question is more valuable than another quick answer. The last quarter Moon puts your money, possessions, and priorities on the day’s agenda.\n\nWrite the message plainly, confirm the route, and ask the question that would prevent avoidable confusion. In this reading, Mars in Leo brings attention to messages, errands, siblings, and your local community.\n\nConnect your money, possessions, and priorities with messages, errands, siblings, and your local community; write the question down before collecting another opinion.",
+          "wordCount": 90
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "gemini",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Gemini horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Draft the message or question now, then read it once for what is still unclear, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward messages, errands, siblings, and your local community.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:gemini:h3:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Name who needs the message, what they need to know, and when they need it; Mars in Leo is one of the conditions shaping messages, errands, siblings, and your local community.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:mars:1200z",
+                "derived:2026-11-01:solar-house:gemini:h3:fact-2026-11-01-body-mars-1200z"
+              ]
+            },
+            {
+              "text": "Hold messages, errands, siblings, and your local community at the center of the choice; write the question down before collecting another opinion.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:gemini:h3:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:mars:1200z",
+                "derived:2026-11-01:solar-house:gemini:h3:fact-2026-11-01-body-mars-1200z"
+              ]
+            }
+          ],
+          "text": "Draft the message or question now, then read it once for what is still unclear, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward messages, errands, siblings, and your local community.\n\nName who needs the message, what they need to know, and when they need it; Mars in Leo is one of the conditions shaping messages, errands, siblings, and your local community.\n\nHold messages, errands, siblings, and your local community at the center of the choice; write the question down before collecting another opinion.",
+          "wordCount": 99
         },
         "weekly": {
           "surface": "weekly",
@@ -6901,25 +6745,25 @@
           "surface": "love",
           "sign": "gemini",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Gemini love horoscope for October 30, 2026",
+          "title": "Gemini love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Allow pleasure and affection to be direct rather than overmanaged. For Gemini, curiosity helps when the conversation is allowed to finish. Venus brings creativity, romance, children, and enjoyment into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:gemini:h5:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:gemini:h5:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Notice whether care is supported by consistent values and effort. Judge the response by consistent effort and shared values, not by reassurance alone. The Moon shifts the emotional weather toward your money, possessions, and priorities.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:gemini:h2:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:gemini:h2:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -6930,25 +6774,25 @@
           "surface": "career",
           "sign": "gemini",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Gemini career horoscope for October 30, 2026",
+          "title": "Gemini career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Tighten the brief, message, or nearby exchange. For Gemini, a precise brief will carry farther than scattered cleverness. Mars brings messages, errands, siblings, and your local community into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:gemini:h3:fact-2026-10-30-body-mars-1200z"
+                "fact:2026-10-31:body:mars:1200z",
+                "derived:2026-10-31:solar-house:gemini:h3:fact-2026-10-31-body-mars-1200z"
               ]
             },
             {
               "text": "Repair the workflow before asking effort alone to solve it. Change one part of the workflow and watch the repeatable result before scaling it. The Sun widens the frame to daily work, health routines, and responsibilities.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:gemini:h6:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:gemini:h6:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -7113,60 +6957,22 @@
           "surface": "today",
           "sign": "cancer",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Cancer horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, make your own position visible before reacting to the room. For Cancer, care works best when it includes a boundary around your own time. The waning gibbous Moon puts your identity and how you present yourself on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:cancer:h1:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Choose the finished work, standard, or responsibility you are prepared to make visible. In this reading, Saturn retrograde in Aries brings attention to career, reputation, and public responsibilities.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:cancer:h10:fact-2026-10-30-body-saturn-1200z"
-              ]
-            },
-            {
-              "text": "Connect your identity and how you present yourself with career, reputation, and public responsibilities; separate what needs protection from what simply feels familiar.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:cancer:h1:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:cancer:h10:fact-2026-10-30-body-saturn-1200z"
-              ]
-            }
-          ],
-          "text": "Today, make your own position visible before reacting to the room. For Cancer, care works best when it includes a boundary around your own time. The waning gibbous Moon puts your identity and how you present yourself on the day’s agenda.\n\nChoose the finished work, standard, or responsibility you are prepared to make visible. In this reading, Saturn retrograde in Aries brings attention to career, reputation, and public responsibilities.\n\nConnect your identity and how you present yourself with career, reputation, and public responsibilities; separate what needs protection from what simply feels familiar.",
-          "wordCount": 92
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "cancer",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Cancer horoscope for tomorrow, October 31, 2026",
+          "title": "Cancer horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Set out the first move you want to make before outside reactions set the tone, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward your identity and how you present yourself.",
+              "text": "Today, make your own position visible before reacting to the room. For Cancer, care works best when it includes a boundary around your own time. The last quarter Moon puts your identity and how you present yourself on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:cancer:h1:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Select the finished work or responsibility you are willing to stand behind publicly; Saturn retrograde in Aries is one of the conditions shaping career, reputation, and public responsibilities.",
+              "text": "Choose the finished work, standard, or responsibility you are prepared to make visible. In this reading, Saturn retrograde in Aries brings attention to career, reputation, and public responsibilities.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:saturn:1200z",
                 "derived:2026-10-31:solar-house:cancer:h10:fact-2026-10-31-body-saturn-1200z"
@@ -7182,8 +6988,46 @@
               ]
             }
           ],
-          "text": "Set out the first move you want to make before outside reactions set the tone, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward your identity and how you present yourself.\n\nSelect the finished work or responsibility you are willing to stand behind publicly; Saturn retrograde in Aries is one of the conditions shaping career, reputation, and public responsibilities.\n\nConnect your identity and how you present yourself with career, reputation, and public responsibilities; separate what needs protection from what simply feels familiar.",
-          "wordCount": 97
+          "text": "Today, make your own position visible before reacting to the room. For Cancer, care works best when it includes a boundary around your own time. The last quarter Moon puts your identity and how you present yourself on the day’s agenda.\n\nChoose the finished work, standard, or responsibility you are prepared to make visible. In this reading, Saturn retrograde in Aries brings attention to career, reputation, and public responsibilities.\n\nConnect your identity and how you present yourself with career, reputation, and public responsibilities; separate what needs protection from what simply feels familiar.",
+          "wordCount": 92
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "cancer",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Cancer horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Decide tonight what tomorrow can cost in money, time, and attention, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward your money, possessions, and priorities. For Cancer, the useful test is to separate what needs protection from what simply feels familiar.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:cancer:h2:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Select the finished work or responsibility you are willing to stand behind publicly; Saturn retrograde in Aries is one of the conditions shaping career, reputation, and public responsibilities.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:saturn:1200z",
+                "derived:2026-11-01:solar-house:cancer:h10:fact-2026-11-01-body-saturn-1200z"
+              ]
+            },
+            {
+              "text": "Connect your money, possessions, and priorities with career, reputation, and public responsibilities; separate what needs protection from what simply feels familiar.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:cancer:h2:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:saturn:1200z",
+                "derived:2026-11-01:solar-house:cancer:h10:fact-2026-11-01-body-saturn-1200z"
+              ]
+            }
+          ],
+          "text": "Decide tonight what tomorrow can cost in money, time, and attention, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward your money, possessions, and priorities. For Cancer, the useful test is to separate what needs protection from what simply feels familiar.\n\nSelect the finished work or responsibility you are willing to stand behind publicly; Saturn retrograde in Aries is one of the conditions shaping career, reputation, and public responsibilities.\n\nConnect your money, possessions, and priorities with career, reputation, and public responsibilities; separate what needs protection from what simply feels familiar.",
+          "wordCount": 105
         },
         "weekly": {
           "surface": "weekly",
@@ -7243,25 +7087,25 @@
           "surface": "love",
           "sign": "cancer",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Cancer love horoscope for October 30, 2026",
+          "title": "Cancer love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Make emotional safety tangible in the shared environment. For Cancer, tenderness is clearer when the need beneath it is named. Venus brings home, family, and your private life into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:cancer:h4:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:cancer:h4:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "State your preference without turning it into a demand. Say what you prefer once, then notice whether the response leaves room for both people. The Moon shifts the emotional weather toward your identity and how you present yourself.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:cancer:h1:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:cancer:h1:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -7272,25 +7116,25 @@
           "surface": "career",
           "sign": "cancer",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Cancer career horoscope for October 30, 2026",
+          "title": "Cancer career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Give authorship and creative risk an appropriate share of the schedule. For Cancer, quiet preparation can support a more public decision. Mercury retrograde brings creativity, romance, children, and enjoyment into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:cancer:h5:fact-2026-10-30-body-mercury-1200z"
+                "fact:2026-10-31:body:mercury:1200z",
+                "derived:2026-10-31:solar-house:cancer:h5:fact-2026-10-31-body-mercury-1200z"
               ]
             },
             {
               "text": "Keep creativity, pleasure, and romance anchored to one observable result. Give the draft a review point before visibility turns an experiment into a fixed promise. The Sun widens the frame to creativity, romance, children, and enjoyment.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:cancer:h5:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:cancer:h5:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -7455,60 +7299,22 @@
           "surface": "today",
           "sign": "leo",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Leo horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, leave time for rest and finishing something privately. For Leo, presence is strongest when the point is clearer than the performance. The waning gibbous Moon puts rest, privacy, and unfinished matters on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:leo:h12:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Before agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury retrograde in Scorpio brings attention to home, family, and your private life.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:leo:h4:fact-2026-10-30-body-mercury-1200z"
-              ]
-            },
-            {
-              "text": "Connect rest, privacy, and unfinished matters with home, family, and your private life; choose the contribution you would still value without applause.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:leo:h12:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:leo:h4:fact-2026-10-30-body-mercury-1200z"
-              ]
-            }
-          ],
-          "text": "Today, leave time for rest and finishing something privately. For Leo, presence is strongest when the point is clearer than the performance. The waning gibbous Moon puts rest, privacy, and unfinished matters on the day’s agenda.\n\nBefore agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury retrograde in Scorpio brings attention to home, family, and your private life.\n\nConnect rest, privacy, and unfinished matters with home, family, and your private life; choose the contribution you would still value without applause.",
-          "wordCount": 90
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "leo",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Leo horoscope for tomorrow, October 31, 2026",
+          "title": "Leo horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Clear space for one private conclusion before new demands enter the day, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward rest, privacy, and unfinished matters.",
+              "text": "Today, leave time for rest and finishing something privately. For Leo, presence is strongest when the point is clearer than the performance. The last quarter Moon puts rest, privacy, and unfinished matters on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:leo:h12:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Decide which home condition is essential and which preference can remain flexible; Mercury retrograde in Scorpio is one of the conditions shaping home, family, and your private life.",
+              "text": "Before agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury retrograde in Scorpio brings attention to home, family, and your private life.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:mercury:1200z",
                 "derived:2026-10-31:solar-house:leo:h4:fact-2026-10-31-body-mercury-1200z"
@@ -7524,8 +7330,46 @@
               ]
             }
           ],
-          "text": "Clear space for one private conclusion before new demands enter the day, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward rest, privacy, and unfinished matters.\n\nDecide which home condition is essential and which preference can remain flexible; Mercury retrograde in Scorpio is one of the conditions shaping home, family, and your private life.\n\nConnect rest, privacy, and unfinished matters with home, family, and your private life; choose the contribution you would still value without applause.",
-          "wordCount": 91
+          "text": "Today, leave time for rest and finishing something privately. For Leo, presence is strongest when the point is clearer than the performance. The last quarter Moon puts rest, privacy, and unfinished matters on the day’s agenda.\n\nBefore agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury retrograde in Scorpio brings attention to home, family, and your private life.\n\nConnect rest, privacy, and unfinished matters with home, family, and your private life; choose the contribution you would still value without applause.",
+          "wordCount": 90
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "leo",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Leo horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Set out the first move you want to make before outside reactions set the tone, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward your identity and how you present yourself.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:leo:h1:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Decide which home condition is essential and which preference can remain flexible; Mercury retrograde in Scorpio is one of the conditions shaping home, family, and your private life.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:mercury:1200z",
+                "derived:2026-11-01:solar-house:leo:h4:fact-2026-11-01-body-mercury-1200z"
+              ]
+            },
+            {
+              "text": "Connect your identity and how you present yourself with home, family, and your private life; choose the contribution you would still value without applause.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:leo:h1:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:mercury:1200z",
+                "derived:2026-11-01:solar-house:leo:h4:fact-2026-11-01-body-mercury-1200z"
+              ]
+            }
+          ],
+          "text": "Set out the first move you want to make before outside reactions set the tone, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward your identity and how you present yourself.\n\nDecide which home condition is essential and which preference can remain flexible; Mercury retrograde in Scorpio is one of the conditions shaping home, family, and your private life.\n\nConnect your identity and how you present yourself with home, family, and your private life; choose the contribution you would still value without applause.",
+          "wordCount": 98
         },
         "weekly": {
           "surface": "weekly",
@@ -7585,25 +7429,25 @@
           "surface": "love",
           "sign": "leo",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Leo love horoscope for October 30, 2026",
+          "title": "Leo love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Let a specific conversation replace assumptions. For Leo, warmth lands best when admiration travels in both directions. Venus brings messages, errands, siblings, and your local community into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:leo:h3:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:leo:h3:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Pause before confusing empathy with responsibility for another person. Let the response belong to the other person instead of turning empathy into responsibility for it. The Moon shifts the emotional weather toward rest, privacy, and unfinished matters.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:leo:h12:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:leo:h12:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -7614,25 +7458,25 @@
           "surface": "career",
           "sign": "leo",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Leo career horoscope for October 30, 2026",
+          "title": "Leo career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Connect the task to training, publishing, travel, or a wider field. For Leo, visibility helps when the work underneath it is ready. Saturn retrograde brings travel, learning, beliefs, and long-term plans into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:leo:h9:fact-2026-10-30-body-saturn-1200z"
+                "fact:2026-10-31:body:saturn:1200z",
+                "derived:2026-10-31:solar-house:leo:h9:fact-2026-10-31-body-saturn-1200z"
               ]
             },
             {
               "text": "Stabilize the private base that supports public work. Choose a work rhythm you can revise without destabilizing the private base beneath it. The Sun widens the frame to home, family, and your private life.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:leo:h4:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:leo:h4:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -7797,60 +7641,22 @@
           "surface": "today",
           "sign": "virgo",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Virgo horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, ask which friendship, group, or future plan still has momentum. For Virgo, one useful correction is enough; the whole system does not need rebuilding. The waning gibbous Moon puts friends, groups, and plans for the future on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:virgo:h11:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Put a number beside the cost, the available capacity, and the value you expect in return. In this reading, Venus retrograde in Libra brings attention to your money, possessions, and priorities.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:virgo:h2:fact-2026-10-30-body-venus-1200z"
-              ]
-            },
-            {
-              "text": "Connect friends, groups, and plans for the future with your money, possessions, and priorities; fix the repeatable error and stop before precision turns punitive.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:virgo:h11:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:virgo:h2:fact-2026-10-30-body-venus-1200z"
-              ]
-            }
-          ],
-          "text": "Today, ask which friendship, group, or future plan still has momentum. For Virgo, one useful correction is enough; the whole system does not need rebuilding. The waning gibbous Moon puts friends, groups, and plans for the future on the day’s agenda.\n\nPut a number beside the cost, the available capacity, and the value you expect in return. In this reading, Venus retrograde in Libra brings attention to your money, possessions, and priorities.\n\nConnect friends, groups, and plans for the future with your money, possessions, and priorities; fix the repeatable error and stop before precision turns punitive.",
-          "wordCount": 96
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "virgo",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Virgo horoscope for tomorrow, October 31, 2026",
+          "title": "Virgo horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Confirm which invitation or future plan has an owner and an actual next step, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward friends, groups, and plans for the future.",
+              "text": "Today, ask which friendship, group, or future plan still has momentum. For Virgo, one useful correction is enough; the whole system does not need rebuilding. The last quarter Moon puts friends, groups, and plans for the future on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:virgo:h11:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Choose the resource limit the plan must respect before it can proceed; Venus retrograde in Libra is one of the conditions shaping your money, possessions, and priorities.",
+              "text": "Put a number beside the cost, the available capacity, and the value you expect in return. In this reading, Venus retrograde in Libra brings attention to your money, possessions, and priorities.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:venus:1200z",
                 "derived:2026-10-31:solar-house:virgo:h2:fact-2026-10-31-body-venus-1200z"
@@ -7866,8 +7672,46 @@
               ]
             }
           ],
-          "text": "Confirm which invitation or future plan has an owner and an actual next step, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward friends, groups, and plans for the future.\n\nChoose the resource limit the plan must respect before it can proceed; Venus retrograde in Libra is one of the conditions shaping your money, possessions, and priorities.\n\nConnect friends, groups, and plans for the future with your money, possessions, and priorities; fix the repeatable error and stop before precision turns punitive.",
+          "text": "Today, ask which friendship, group, or future plan still has momentum. For Virgo, one useful correction is enough; the whole system does not need rebuilding. The last quarter Moon puts friends, groups, and plans for the future on the day’s agenda.\n\nPut a number beside the cost, the available capacity, and the value you expect in return. In this reading, Venus retrograde in Libra brings attention to your money, possessions, and priorities.\n\nConnect friends, groups, and plans for the future with your money, possessions, and priorities; fix the repeatable error and stop before precision turns punitive.",
           "wordCount": 96
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "virgo",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Virgo horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Clear space for one private conclusion before new demands enter the day, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward rest, privacy, and unfinished matters.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:virgo:h12:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Choose the resource limit the plan must respect before it can proceed; Venus retrograde in Libra is one of the conditions shaping your money, possessions, and priorities.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:venus:1200z",
+                "derived:2026-11-01:solar-house:virgo:h2:fact-2026-11-01-body-venus-1200z"
+              ]
+            },
+            {
+              "text": "Connect rest, privacy, and unfinished matters with your money, possessions, and priorities; fix the repeatable error and stop before precision turns punitive.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:virgo:h12:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:venus:1200z",
+                "derived:2026-11-01:solar-house:virgo:h2:fact-2026-11-01-body-venus-1200z"
+              ]
+            }
+          ],
+          "text": "Clear space for one private conclusion before new demands enter the day, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward rest, privacy, and unfinished matters.\n\nChoose the resource limit the plan must respect before it can proceed; Venus retrograde in Libra is one of the conditions shaping your money, possessions, and priorities.\n\nConnect rest, privacy, and unfinished matters with your money, possessions, and priorities; fix the repeatable error and stop before precision turns punitive.",
+          "wordCount": 90
         },
         "weekly": {
           "surface": "weekly",
@@ -7927,25 +7771,25 @@
           "surface": "love",
           "sign": "virgo",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Virgo love horoscope for October 30, 2026",
+          "title": "Virgo love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Notice whether care is supported by consistent values and effort. For Virgo, care is easier to feel when it is not disguised as a critique. Venus brings your money, possessions, and priorities into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:virgo:h2:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:virgo:h2:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Let friendship and a shared future carry part of the relationship. Ask whether the response supports both the friendship and the future being discussed. The Moon shifts the emotional weather toward friends, groups, and plans for the future.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:virgo:h11:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:virgo:h11:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -7956,25 +7800,25 @@
           "surface": "career",
           "sign": "virgo",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Virgo career horoscope for October 30, 2026",
+          "title": "Virgo career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Finish background work and protect concentration from unnecessary display. For Virgo, a small operational fix may matter more than a larger announcement. Mars brings rest, privacy, and unfinished matters into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:virgo:h12:fact-2026-10-30-body-mars-1200z"
+                "fact:2026-10-31:body:mars:1200z",
+                "derived:2026-10-31:solar-house:virgo:h12:fact-2026-10-31-body-mars-1200z"
               ]
             },
             {
               "text": "Tighten the brief, message, or nearby exchange. Put the choice in a brief another person can question before the message hardens into policy. The Sun widens the frame to messages, errands, siblings, and your local community.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:virgo:h3:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:virgo:h3:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -8139,60 +7983,22 @@
           "surface": "today",
           "sign": "libra",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Libra horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, choose what should be visible in your work and public role. For Libra, balance comes from a clear choice, not from extending every negotiation. The waning gibbous Moon puts career, reputation, and public responsibilities on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:libra:h10:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Choose one friendship or group plan to follow up on, and agree on a time for the next step. In this reading, Mars in Leo brings attention to friends, groups, and plans for the future.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:libra:h11:fact-2026-10-30-body-mars-1200z"
-              ]
-            },
-            {
-              "text": "Connect career, reputation, and public responsibilities with friends, groups, and plans for the future; make the fair offer once, then allow the response to carry information.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:libra:h10:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:libra:h11:fact-2026-10-30-body-mars-1200z"
-              ]
-            }
-          ],
-          "text": "Today, choose what should be visible in your work and public role. For Libra, balance comes from a clear choice, not from extending every negotiation. The waning gibbous Moon puts career, reputation, and public responsibilities on the day’s agenda.\n\nChoose one friendship or group plan to follow up on, and agree on a time for the next step. In this reading, Mars in Leo brings attention to friends, groups, and plans for the future.\n\nConnect career, reputation, and public responsibilities with friends, groups, and plans for the future; make the fair offer once, then allow the response to carry information.",
-          "wordCount": 100
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "libra",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Libra horoscope for tomorrow, October 31, 2026",
+          "title": "Libra horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Finish one visible result tonight so tomorrow can begin with a real standard, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward career, reputation, and public responsibilities.",
+              "text": "Today, choose what should be visible in your work and public role. For Libra, balance comes from a clear choice, not from extending every negotiation. The last quarter Moon puts career, reputation, and public responsibilities on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:libra:h10:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Give the group plan a next action, an owner, and a time for review; Mars in Leo is one of the conditions shaping friends, groups, and plans for the future.",
+              "text": "Choose one friendship or group plan to follow up on, and agree on a time for the next step. In this reading, Mars in Leo brings attention to friends, groups, and plans for the future.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:mars:1200z",
                 "derived:2026-10-31:solar-house:libra:h11:fact-2026-10-31-body-mars-1200z"
@@ -8208,8 +8014,46 @@
               ]
             }
           ],
-          "text": "Finish one visible result tonight so tomorrow can begin with a real standard, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward career, reputation, and public responsibilities.\n\nGive the group plan a next action, an owner, and a time for review; Mars in Leo is one of the conditions shaping friends, groups, and plans for the future.\n\nConnect career, reputation, and public responsibilities with friends, groups, and plans for the future; make the fair offer once, then allow the response to carry information.",
-          "wordCount": 98
+          "text": "Today, choose what should be visible in your work and public role. For Libra, balance comes from a clear choice, not from extending every negotiation. The last quarter Moon puts career, reputation, and public responsibilities on the day’s agenda.\n\nChoose one friendship or group plan to follow up on, and agree on a time for the next step. In this reading, Mars in Leo brings attention to friends, groups, and plans for the future.\n\nConnect career, reputation, and public responsibilities with friends, groups, and plans for the future; make the fair offer once, then allow the response to carry information.",
+          "wordCount": 100
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "libra",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Libra horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Confirm which invitation or future plan has an owner and an actual next step, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward friends, groups, and plans for the future.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:libra:h11:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Give the group plan a next action, an owner, and a time for review; Mars in Leo is one of the conditions shaping friends, groups, and plans for the future.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:mars:1200z",
+                "derived:2026-11-01:solar-house:libra:h11:fact-2026-11-01-body-mars-1200z"
+              ]
+            },
+            {
+              "text": "Hold friends, groups, and plans for the future at the center of the choice; make the fair offer once, then allow the response to carry information.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:libra:h11:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:mars:1200z",
+                "derived:2026-11-01:solar-house:libra:h11:fact-2026-11-01-body-mars-1200z"
+              ]
+            }
+          ],
+          "text": "Confirm which invitation or future plan has an owner and an actual next step, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward friends, groups, and plans for the future.\n\nGive the group plan a next action, an owner, and a time for review; Mars in Leo is one of the conditions shaping friends, groups, and plans for the future.\n\nHold friends, groups, and plans for the future at the center of the choice; make the fair offer once, then allow the response to carry information.",
+          "wordCount": 101
         },
         "weekly": {
           "surface": "weekly",
@@ -8269,25 +8113,25 @@
           "surface": "love",
           "sign": "libra",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Libra love horoscope for October 30, 2026",
+          "title": "Libra love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "State your preference without turning it into a demand. For Libra, fairness includes saying what you want before reading the room. Venus brings your identity and how you present yourself into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:libra:h1:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:libra:h1:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Consider how private bonds and public obligations affect each other. Notice whether the response can coexist with the public obligations already on the table. The Moon shifts the emotional weather toward career, reputation, and public responsibilities.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:libra:h10:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:libra:h10:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -8298,25 +8142,25 @@
           "surface": "career",
           "sign": "libra",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Libra career horoscope for October 30, 2026",
+          "title": "Libra career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Review compensation, capacity, and the resources behind the plan. For Libra, good collaboration needs terms that everyone can actually see. Mercury retrograde brings your money, possessions, and priorities into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:libra:h2:fact-2026-10-30-body-mercury-1200z"
+                "fact:2026-10-31:body:mercury:1200z",
+                "derived:2026-10-31:solar-house:libra:h2:fact-2026-10-31-body-mercury-1200z"
               ]
             },
             {
               "text": "Keep money and self-worth anchored to one observable result. Keep the choice revisitable by recording its real cost in money, time, and capacity. The Sun widens the frame to your money, possessions, and priorities.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:libra:h2:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:libra:h2:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -8481,60 +8325,22 @@
           "surface": "today",
           "sign": "scorpio",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Scorpio horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, test the larger belief against study, distance, or direct experience. For Scorpio, depth is useful when it produces a fact, a boundary, or a decision. The waning gibbous Moon puts travel, learning, beliefs, and long-term plans on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:scorpio:h9:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Remove one repeated snag from the routine before adding another promise to the week. In this reading, Saturn retrograde in Aries brings attention to daily work, health routines, and responsibilities.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:scorpio:h6:fact-2026-10-30-body-saturn-1200z"
-              ]
-            },
-            {
-              "text": "Connect travel, learning, beliefs, and long-term plans with daily work, health routines, and responsibilities; ask what is known before assigning meaning to what is concealed.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:scorpio:h9:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:scorpio:h6:fact-2026-10-30-body-saturn-1200z"
-              ]
-            }
-          ],
-          "text": "Today, test the larger belief against study, distance, or direct experience. For Scorpio, depth is useful when it produces a fact, a boundary, or a decision. The waning gibbous Moon puts travel, learning, beliefs, and long-term plans on the day’s agenda.\n\nRemove one repeated snag from the routine before adding another promise to the week. In this reading, Saturn retrograde in Aries brings attention to daily work, health routines, and responsibilities.\n\nConnect travel, learning, beliefs, and long-term plans with daily work, health routines, and responsibilities; ask what is known before assigning meaning to what is concealed.",
-          "wordCount": 98
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "scorpio",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Scorpio horoscope for tomorrow, October 31, 2026",
+          "title": "Scorpio horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Choose the source, class, journey, or conversation that can test the larger idea, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward travel, learning, beliefs, and long-term plans.",
+              "text": "Today, test the larger belief against study, distance, or direct experience. For Scorpio, depth is useful when it produces a fact, a boundary, or a decision. The last quarter Moon puts travel, learning, beliefs, and long-term plans on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:scorpio:h9:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Define the smallest workflow change you can observe over a complete day; Saturn retrograde in Aries is one of the conditions shaping daily work, health routines, and responsibilities.",
+              "text": "Remove one repeated snag from the routine before adding another promise to the week. In this reading, Saturn retrograde in Aries brings attention to daily work, health routines, and responsibilities.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:saturn:1200z",
                 "derived:2026-10-31:solar-house:scorpio:h6:fact-2026-10-31-body-saturn-1200z"
@@ -8550,8 +8356,46 @@
               ]
             }
           ],
-          "text": "Choose the source, class, journey, or conversation that can test the larger idea, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward travel, learning, beliefs, and long-term plans.\n\nDefine the smallest workflow change you can observe over a complete day; Saturn retrograde in Aries is one of the conditions shaping daily work, health routines, and responsibilities.\n\nConnect travel, learning, beliefs, and long-term plans with daily work, health routines, and responsibilities; ask what is known before assigning meaning to what is concealed.",
+          "text": "Today, test the larger belief against study, distance, or direct experience. For Scorpio, depth is useful when it produces a fact, a boundary, or a decision. The last quarter Moon puts travel, learning, beliefs, and long-term plans on the day’s agenda.\n\nRemove one repeated snag from the routine before adding another promise to the week. In this reading, Saturn retrograde in Aries brings attention to daily work, health routines, and responsibilities.\n\nConnect travel, learning, beliefs, and long-term plans with daily work, health routines, and responsibilities; ask what is known before assigning meaning to what is concealed.",
           "wordCount": 98
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "scorpio",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Scorpio horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Finish one visible result tonight so tomorrow can begin with a real standard, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward career, reputation, and public responsibilities.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:scorpio:h10:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Define the smallest workflow change you can observe over a complete day; Saturn retrograde in Aries is one of the conditions shaping daily work, health routines, and responsibilities.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:saturn:1200z",
+                "derived:2026-11-01:solar-house:scorpio:h6:fact-2026-11-01-body-saturn-1200z"
+              ]
+            },
+            {
+              "text": "Connect career, reputation, and public responsibilities with daily work, health routines, and responsibilities; ask what is known before assigning meaning to what is concealed.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:scorpio:h10:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:saturn:1200z",
+                "derived:2026-11-01:solar-house:scorpio:h6:fact-2026-11-01-body-saturn-1200z"
+              ]
+            }
+          ],
+          "text": "Finish one visible result tonight so tomorrow can begin with a real standard, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward career, reputation, and public responsibilities.\n\nDefine the smallest workflow change you can observe over a complete day; Saturn retrograde in Aries is one of the conditions shaping daily work, health routines, and responsibilities.\n\nConnect career, reputation, and public responsibilities with daily work, health routines, and responsibilities; ask what is known before assigning meaning to what is concealed.",
+          "wordCount": 94
         },
         "weekly": {
           "surface": "weekly",
@@ -8611,25 +8455,25 @@
           "surface": "love",
           "sign": "scorpio",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Scorpio love horoscope for October 30, 2026",
+          "title": "Scorpio love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Pause before confusing empathy with responsibility for another person. For Scorpio, trust grows through measured disclosure rather than a hidden test. Venus brings rest, privacy, and unfinished matters into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:scorpio:h12:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:scorpio:h12:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Make room for different beliefs without abandoning your own. Listen for the belief behind the response without abandoning the position you actually hold. The Moon shifts the emotional weather toward travel, learning, beliefs, and long-term plans.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:scorpio:h9:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:scorpio:h9:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -8640,25 +8484,25 @@
           "surface": "career",
           "sign": "scorpio",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Scorpio career horoscope for October 30, 2026",
+          "title": "Scorpio career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Repair the workflow before asking effort alone to solve it. For Scorpio, concentrated effort works better than trying to control every variable. Saturn retrograde brings daily work, health routines, and responsibilities into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:scorpio:h6:fact-2026-10-30-body-saturn-1200z"
+                "fact:2026-10-31:body:saturn:1200z",
+                "derived:2026-10-31:solar-house:scorpio:h6:fact-2026-10-31-body-saturn-1200z"
               ]
             },
             {
               "text": "Define how you want to enter the room and begin. Make the opening move revisitable by naming what would justify the next one. The Sun widens the frame to your identity and how you present yourself.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:scorpio:h1:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:scorpio:h1:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -8823,60 +8667,22 @@
           "surface": "today",
           "sign": "sagittarius",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Sagittarius horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, name what is shared, owed, private, or difficult to divide. For Sagittarius, the wider view helps once today’s practical detail has a place in it. The waning gibbous Moon puts shared finances, debts, intimacy, and trust on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:sagittarius:h8:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Close one open loop, protect a quiet block, and let unfinished background work stay out of public view. In this reading, Mercury retrograde in Scorpio brings attention to rest, privacy, and unfinished matters.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:sagittarius:h12:fact-2026-10-30-body-mercury-1200z"
-              ]
-            },
-            {
-              "text": "Connect shared finances, debts, intimacy, and trust with rest, privacy, and unfinished matters; pin the large idea to one appointment, draft, or measurable step.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:sagittarius:h8:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:sagittarius:h12:fact-2026-10-30-body-mercury-1200z"
-              ]
-            }
-          ],
-          "text": "Today, name what is shared, owed, private, or difficult to divide. For Sagittarius, the wider view helps once today’s practical detail has a place in it. The waning gibbous Moon puts shared finances, debts, intimacy, and trust on the day’s agenda.\n\nClose one open loop, protect a quiet block, and let unfinished background work stay out of public view. In this reading, Mercury retrograde in Scorpio brings attention to rest, privacy, and unfinished matters.\n\nConnect shared finances, debts, intimacy, and trust with rest, privacy, and unfinished matters; pin the large idea to one appointment, draft, or measurable step.",
-          "wordCount": 98
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "sagittarius",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Sagittarius horoscope for tomorrow, October 31, 2026",
+          "title": "Sagittarius horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Separate the shared obligation from the part that remains yours alone, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward shared finances, debts, intimacy, and trust.",
+              "text": "Today, name what is shared, owed, private, or difficult to divide. For Sagittarius, the wider view helps once today’s practical detail has a place in it. The last quarter Moon puts shared finances, debts, intimacy, and trust on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:sagittarius:h8:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Protect a quiet interval long enough to distinguish recovery from avoidance; Mercury retrograde in Scorpio is one of the conditions shaping rest, privacy, and unfinished matters.",
+              "text": "Close one open loop, protect a quiet block, and let unfinished background work stay out of public view. In this reading, Mercury retrograde in Scorpio brings attention to rest, privacy, and unfinished matters.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:mercury:1200z",
                 "derived:2026-10-31:solar-house:sagittarius:h12:fact-2026-10-31-body-mercury-1200z"
@@ -8892,8 +8698,46 @@
               ]
             }
           ],
-          "text": "Separate the shared obligation from the part that remains yours alone, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward shared finances, debts, intimacy, and trust.\n\nProtect a quiet interval long enough to distinguish recovery from avoidance; Mercury retrograde in Scorpio is one of the conditions shaping rest, privacy, and unfinished matters.\n\nConnect shared finances, debts, intimacy, and trust with rest, privacy, and unfinished matters; pin the large idea to one appointment, draft, or measurable step.",
-          "wordCount": 91
+          "text": "Today, name what is shared, owed, private, or difficult to divide. For Sagittarius, the wider view helps once today’s practical detail has a place in it. The last quarter Moon puts shared finances, debts, intimacy, and trust on the day’s agenda.\n\nClose one open loop, protect a quiet block, and let unfinished background work stay out of public view. In this reading, Mercury retrograde in Scorpio brings attention to rest, privacy, and unfinished matters.\n\nConnect shared finances, debts, intimacy, and trust with rest, privacy, and unfinished matters; pin the large idea to one appointment, draft, or measurable step.",
+          "wordCount": 98
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "sagittarius",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Sagittarius horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Choose the source, class, journey, or conversation that can test the larger idea, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward travel, learning, beliefs, and long-term plans.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:sagittarius:h9:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Protect a quiet interval long enough to distinguish recovery from avoidance; Mercury retrograde in Scorpio is one of the conditions shaping rest, privacy, and unfinished matters.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:mercury:1200z",
+                "derived:2026-11-01:solar-house:sagittarius:h12:fact-2026-11-01-body-mercury-1200z"
+              ]
+            },
+            {
+              "text": "Connect travel, learning, beliefs, and long-term plans with rest, privacy, and unfinished matters; pin the large idea to one appointment, draft, or measurable step.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:sagittarius:h9:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:mercury:1200z",
+                "derived:2026-11-01:solar-house:sagittarius:h12:fact-2026-11-01-body-mercury-1200z"
+              ]
+            }
+          ],
+          "text": "Choose the source, class, journey, or conversation that can test the larger idea, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward travel, learning, beliefs, and long-term plans.\n\nProtect a quiet interval long enough to distinguish recovery from avoidance; Mercury retrograde in Scorpio is one of the conditions shaping rest, privacy, and unfinished matters.\n\nConnect travel, learning, beliefs, and long-term plans with rest, privacy, and unfinished matters; pin the large idea to one appointment, draft, or measurable step.",
+          "wordCount": 95
         },
         "weekly": {
           "surface": "weekly",
@@ -8953,25 +8797,25 @@
           "surface": "love",
           "sign": "sagittarius",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Sagittarius love horoscope for October 30, 2026",
+          "title": "Sagittarius love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Let friendship and a shared future carry part of the relationship. For Sagittarius, honesty is kindest when timing and tone are part of the truth. Venus brings friends, groups, and plans for the future into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:sagittarius:h11:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:sagittarius:h11:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Approach trust, intimacy, and shared resources with explicit terms. Let the response clarify what can be shared, what stays private, and what needs a firmer term. The Moon shifts the emotional weather toward shared finances, debts, intimacy, and trust.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:sagittarius:h8:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:sagittarius:h8:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -8982,25 +8826,25 @@
           "surface": "career",
           "sign": "sagittarius",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Sagittarius career horoscope for October 30, 2026",
+          "title": "Sagittarius career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Connect the task to training, publishing, travel, or a wider field. For Sagittarius, a promising direction still needs a defined next checkpoint. Mars brings travel, learning, beliefs, and long-term plans into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:sagittarius:h9:fact-2026-10-30-body-mars-1200z"
+                "fact:2026-10-31:body:mars:1200z",
+                "derived:2026-10-31:solar-house:sagittarius:h9:fact-2026-10-31-body-mars-1200z"
               ]
             },
             {
               "text": "Finish background work and protect concentration from unnecessary display. Protect a private review interval before unfinished work is made public. The Sun widens the frame to rest, privacy, and unfinished matters.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:sagittarius:h12:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:sagittarius:h12:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -9165,60 +9009,22 @@
           "surface": "today",
           "sign": "capricorn",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Capricorn horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, put the agreement or disagreement directly on the table. For Capricorn, responsibility is clearer when you distinguish the essential from the inherited. The waning gibbous Moon puts partners and one-to-one relationships on the day’s agenda. For Capricorn, the useful test is to define the minimum sound structure before adding another duty.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:capricorn:h7:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Choose the finished work, standard, or responsibility you are prepared to make visible. In this reading, Venus retrograde in Libra brings attention to career, reputation, and public responsibilities.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:capricorn:h10:fact-2026-10-30-body-venus-1200z"
-              ]
-            },
-            {
-              "text": "Connect partners and one-to-one relationships with career, reputation, and public responsibilities; define the minimum sound structure before adding another duty.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:capricorn:h7:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:capricorn:h10:fact-2026-10-30-body-venus-1200z"
-              ]
-            }
-          ],
-          "text": "Today, put the agreement or disagreement directly on the table. For Capricorn, responsibility is clearer when you distinguish the essential from the inherited. The waning gibbous Moon puts partners and one-to-one relationships on the day’s agenda. For Capricorn, the useful test is to define the minimum sound structure before adding another duty.\n\nChoose the finished work, standard, or responsibility you are prepared to make visible. In this reading, Venus retrograde in Libra brings attention to career, reputation, and public responsibilities.\n\nConnect partners and one-to-one relationships with career, reputation, and public responsibilities; define the minimum sound structure before adding another duty.",
-          "wordCount": 104
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "capricorn",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Capricorn horoscope for tomorrow, October 31, 2026",
+          "title": "Capricorn horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Identify the agreement that needs a direct answer before the day gathers speed, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward partners and one-to-one relationships.",
+              "text": "Today, put the agreement or disagreement directly on the table. For Capricorn, responsibility is clearer when you distinguish the essential from the inherited. The last quarter Moon puts partners and one-to-one relationships on the day’s agenda. For Capricorn, the useful test is to define the minimum sound structure before adding another duty.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:capricorn:h7:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Select the finished work or responsibility you are willing to stand behind publicly; Venus retrograde in Libra is one of the conditions shaping career, reputation, and public responsibilities.",
+              "text": "Choose the finished work, standard, or responsibility you are prepared to make visible. In this reading, Venus retrograde in Libra brings attention to career, reputation, and public responsibilities.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:venus:1200z",
                 "derived:2026-10-31:solar-house:capricorn:h10:fact-2026-10-31-body-venus-1200z"
@@ -9234,8 +9040,46 @@
               ]
             }
           ],
-          "text": "Identify the agreement that needs a direct answer before the day gathers speed, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward partners and one-to-one relationships.\n\nSelect the finished work or responsibility you are willing to stand behind publicly; Venus retrograde in Libra is one of the conditions shaping career, reputation, and public responsibilities.\n\nConnect partners and one-to-one relationships with career, reputation, and public responsibilities; define the minimum sound structure before adding another duty.",
-          "wordCount": 93
+          "text": "Today, put the agreement or disagreement directly on the table. For Capricorn, responsibility is clearer when you distinguish the essential from the inherited. The last quarter Moon puts partners and one-to-one relationships on the day’s agenda. For Capricorn, the useful test is to define the minimum sound structure before adding another duty.\n\nChoose the finished work, standard, or responsibility you are prepared to make visible. In this reading, Venus retrograde in Libra brings attention to career, reputation, and public responsibilities.\n\nConnect partners and one-to-one relationships with career, reputation, and public responsibilities; define the minimum sound structure before adding another duty.",
+          "wordCount": 104
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "capricorn",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Capricorn horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Separate the shared obligation from the part that remains yours alone, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward shared finances, debts, intimacy, and trust.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:capricorn:h8:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Select the finished work or responsibility you are willing to stand behind publicly; Venus retrograde in Libra is one of the conditions shaping career, reputation, and public responsibilities.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:venus:1200z",
+                "derived:2026-11-01:solar-house:capricorn:h10:fact-2026-11-01-body-venus-1200z"
+              ]
+            },
+            {
+              "text": "Connect shared finances, debts, intimacy, and trust with career, reputation, and public responsibilities; define the minimum sound structure before adding another duty.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:capricorn:h8:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:venus:1200z",
+                "derived:2026-11-01:solar-house:capricorn:h10:fact-2026-11-01-body-venus-1200z"
+              ]
+            }
+          ],
+          "text": "Separate the shared obligation from the part that remains yours alone, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward shared finances, debts, intimacy, and trust.\n\nSelect the finished work or responsibility you are willing to stand behind publicly; Venus retrograde in Libra is one of the conditions shaping career, reputation, and public responsibilities.\n\nConnect shared finances, debts, intimacy, and trust with career, reputation, and public responsibilities; define the minimum sound structure before adding another duty.",
+          "wordCount": 91
         },
         "weekly": {
           "surface": "weekly",
@@ -9295,25 +9139,25 @@
           "surface": "love",
           "sign": "capricorn",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Capricorn love horoscope for October 30, 2026",
+          "title": "Capricorn love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Consider how private bonds and public obligations affect each other. For Capricorn, commitment feels warmer when effort and affection are both visible. Venus brings career, reputation, and public responsibilities into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:capricorn:h10:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:capricorn:h10:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Treat reciprocity as an observable practice. Compare what was offered with what was returned instead of translating the response into a hidden riddle. The Moon shifts the emotional weather toward partners and one-to-one relationships.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:capricorn:h7:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:capricorn:h7:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -9324,25 +9168,25 @@
           "surface": "career",
           "sign": "capricorn",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Capricorn career horoscope for October 30, 2026",
+          "title": "Capricorn career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Use the network as a place for contribution, not only exposure. For Capricorn, authority grows through a standard you can maintain. Mercury retrograde brings friends, groups, and plans for the future into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:mercury:1200z",
-                "derived:2026-10-30:solar-house:capricorn:h11:fact-2026-10-30-body-mercury-1200z"
+                "fact:2026-10-31:body:mercury:1200z",
+                "derived:2026-10-31:solar-house:capricorn:h11:fact-2026-10-31-body-mercury-1200z"
               ]
             },
             {
               "text": "Keep friends and future plans anchored to one observable result. Give the collaboration an owner and next checkpoint so the network can improve it. The Sun widens the frame to friends, groups, and plans for the future.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:capricorn:h11:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:capricorn:h11:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -9507,60 +9351,22 @@
           "surface": "today",
           "sign": "aquarius",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Aquarius horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, choose one change that would make your daily work easier. For Aquarius, the original move is the one that improves the system, not merely surprises it. The waning gibbous Moon puts daily work, health routines, and responsibilities on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:aquarius:h6:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "State the term that is still vague and give the other person a real chance to answer it. In this reading, Mars in Leo brings attention to partners and one-to-one relationships.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:aquarius:h7:fact-2026-10-30-body-mars-1200z"
-              ]
-            },
-            {
-              "text": "Connect daily work, health routines, and responsibilities with partners and one-to-one relationships; explain the experiment in terms another person could repeat.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:aquarius:h6:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:aquarius:h7:fact-2026-10-30-body-mars-1200z"
-              ]
-            }
-          ],
-          "text": "Today, choose one change that would make your daily work easier. For Aquarius, the original move is the one that improves the system, not merely surprises it. The waning gibbous Moon puts daily work, health routines, and responsibilities on the day’s agenda.\n\nState the term that is still vague and give the other person a real chance to answer it. In this reading, Mars in Leo brings attention to partners and one-to-one relationships.\n\nConnect daily work, health routines, and responsibilities with partners and one-to-one relationships; explain the experiment in terms another person could repeat.",
-          "wordCount": 98
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "aquarius",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Aquarius horoscope for tomorrow, October 31, 2026",
+          "title": "Aquarius horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Prepare the routine, tool, or handoff that will remove friction from the next workday, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward daily work, health routines, and responsibilities.",
+              "text": "Today, choose one change that would make your daily work easier. For Aquarius, the original move is the one that improves the system, not merely surprises it. The last quarter Moon puts daily work, health routines, and responsibilities on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:aquarius:h6:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Choose the term you will ask the other side to confirm or revise; Mars in Leo is one of the conditions shaping partners and one-to-one relationships.",
+              "text": "State the term that is still vague and give the other person a real chance to answer it. In this reading, Mars in Leo brings attention to partners and one-to-one relationships.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:mars:1200z",
                 "derived:2026-10-31:solar-house:aquarius:h7:fact-2026-10-31-body-mars-1200z"
@@ -9576,8 +9382,46 @@
               ]
             }
           ],
-          "text": "Prepare the routine, tool, or handoff that will remove friction from the next workday, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward daily work, health routines, and responsibilities.\n\nChoose the term you will ask the other side to confirm or revise; Mars in Leo is one of the conditions shaping partners and one-to-one relationships.\n\nConnect daily work, health routines, and responsibilities with partners and one-to-one relationships; explain the experiment in terms another person could repeat.",
-          "wordCount": 95
+          "text": "Today, choose one change that would make your daily work easier. For Aquarius, the original move is the one that improves the system, not merely surprises it. The last quarter Moon puts daily work, health routines, and responsibilities on the day’s agenda.\n\nState the term that is still vague and give the other person a real chance to answer it. In this reading, Mars in Leo brings attention to partners and one-to-one relationships.\n\nConnect daily work, health routines, and responsibilities with partners and one-to-one relationships; explain the experiment in terms another person could repeat.",
+          "wordCount": 98
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "aquarius",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Aquarius horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Identify the agreement that needs a direct answer before the day gathers speed, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward partners and one-to-one relationships.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:aquarius:h7:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Choose the term you will ask the other side to confirm or revise; Mars in Leo is one of the conditions shaping partners and one-to-one relationships.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:mars:1200z",
+                "derived:2026-11-01:solar-house:aquarius:h7:fact-2026-11-01-body-mars-1200z"
+              ]
+            },
+            {
+              "text": "Hold partners and one-to-one relationships at the center of the choice; explain the experiment in terms another person could repeat.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:aquarius:h7:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:mars:1200z",
+                "derived:2026-11-01:solar-house:aquarius:h7:fact-2026-11-01-body-mars-1200z"
+              ]
+            }
+          ],
+          "text": "Identify the agreement that needs a direct answer before the day gathers speed, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward partners and one-to-one relationships.\n\nChoose the term you will ask the other side to confirm or revise; Mars in Leo is one of the conditions shaping partners and one-to-one relationships.\n\nHold partners and one-to-one relationships at the center of the choice; explain the experiment in terms another person could repeat.",
+          "wordCount": 93
         },
         "weekly": {
           "surface": "weekly",
@@ -9637,25 +9481,25 @@
           "surface": "love",
           "sign": "aquarius",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Aquarius love horoscope for October 30, 2026",
+          "title": "Aquarius love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Make room for different beliefs without abandoning your own. For Aquarius, independence and closeness can coexist when expectations are explicit. Venus brings travel, learning, beliefs, and long-term plans into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:aquarius:h9:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:aquarius:h9:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Look at the small routines through which care is actually delivered. Watch what the response changes in the small routines through which care is delivered. The Moon shifts the emotional weather toward daily work, health routines, and responsibilities.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:aquarius:h6:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:aquarius:h6:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -9666,25 +9510,25 @@
           "surface": "career",
           "sign": "aquarius",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Aquarius career horoscope for October 30, 2026",
+          "title": "Aquarius career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Tighten the brief, message, or nearby exchange. For Aquarius, innovation is credible when someone else can understand and use it. Saturn retrograde brings messages, errands, siblings, and your local community into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:aquarius:h3:fact-2026-10-30-body-saturn-1200z"
+                "fact:2026-10-31:body:saturn:1200z",
+                "derived:2026-10-31:solar-house:aquarius:h3:fact-2026-10-31-body-saturn-1200z"
               ]
             },
             {
               "text": "Put the strongest finished work where decision-makers can see it. Set a visible review standard before treating this professional direction as permanent. The Sun widens the frame to career, reputation, and public responsibilities.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:aquarius:h10:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:aquarius:h10:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
@@ -9849,60 +9693,22 @@
           "surface": "today",
           "sign": "pisces",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
-            "utcBasis": true
-          },
-          "title": "Pisces horoscope for October 30, 2026",
-          "status": "publishable",
-          "passages": [
-            {
-              "text": "Today, give play, romance, or creative work a defined place. For Pisces, intuition becomes useful after it is given a boundary and a concrete question. The waning gibbous Moon puts creativity, romance, children, and enjoyment on the day’s agenda.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:pisces:h5:fact-2026-10-30-body-moon-1200z"
-              ]
-            },
-            {
-              "text": "Put a number beside the cost, the available capacity, and the value you expect in return. In this reading, Saturn retrograde in Aries brings attention to your money, possessions, and priorities.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:pisces:h2:fact-2026-10-30-body-saturn-1200z"
-              ]
-            },
-            {
-              "text": "Connect creativity, romance, children, and enjoyment with your money, possessions, and priorities; translate the feeling into one request, sketch, boundary, or pause.",
-              "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:pisces:h5:fact-2026-10-30-body-moon-1200z",
-                "fact:2026-10-30:body:saturn:1200z",
-                "derived:2026-10-30:solar-house:pisces:h2:fact-2026-10-30-body-saturn-1200z"
-              ]
-            }
-          ],
-          "text": "Today, give play, romance, or creative work a defined place. For Pisces, intuition becomes useful after it is given a boundary and a concrete question. The waning gibbous Moon puts creativity, romance, children, and enjoyment on the day’s agenda.\n\nPut a number beside the cost, the available capacity, and the value you expect in return. In this reading, Saturn retrograde in Aries brings attention to your money, possessions, and priorities.\n\nConnect creativity, romance, children, and enjoyment with your money, possessions, and priorities; translate the feeling into one request, sketch, boundary, or pause.",
-          "wordCount": 92
-        },
-        "tomorrow": {
-          "surface": "tomorrow",
-          "sign": "pisces",
-          "period": {
             "from": "2026-10-31",
             "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Pisces horoscope for tomorrow, October 31, 2026",
+          "title": "Pisces horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
-              "text": "Give tomorrow’s pleasure, affection, or creative work a protected time, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward creativity, romance, children, and enjoyment. For Pisces, the useful test is to translate the feeling into one request, sketch, boundary, or pause.",
+              "text": "Today, give play, romance, or creative work a defined place. For Pisces, intuition becomes useful after it is given a boundary and a concrete question. The last quarter Moon puts creativity, romance, children, and enjoyment on the day’s agenda.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:moon:1200z",
                 "derived:2026-10-31:solar-house:pisces:h5:fact-2026-10-31-body-moon-1200z"
               ]
             },
             {
-              "text": "Choose the resource limit the plan must respect before it can proceed; Saturn retrograde in Aries is one of the conditions shaping your money, possessions, and priorities.",
+              "text": "Put a number beside the cost, the available capacity, and the value you expect in return. In this reading, Saturn retrograde in Aries brings attention to your money, possessions, and priorities.",
               "evidenceRefs": [
                 "fact:2026-10-31:body:saturn:1200z",
                 "derived:2026-10-31:solar-house:pisces:h2:fact-2026-10-31-body-saturn-1200z"
@@ -9918,8 +9724,46 @@
               ]
             }
           ],
-          "text": "Give tomorrow’s pleasure, affection, or creative work a protected time, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward creativity, romance, children, and enjoyment. For Pisces, the useful test is to translate the feeling into one request, sketch, boundary, or pause.\n\nChoose the resource limit the plan must respect before it can proceed; Saturn retrograde in Aries is one of the conditions shaping your money, possessions, and priorities.\n\nConnect creativity, romance, children, and enjoyment with your money, possessions, and priorities; translate the feeling into one request, sketch, boundary, or pause.",
-          "wordCount": 105
+          "text": "Today, give play, romance, or creative work a defined place. For Pisces, intuition becomes useful after it is given a boundary and a concrete question. The last quarter Moon puts creativity, romance, children, and enjoyment on the day’s agenda.\n\nPut a number beside the cost, the available capacity, and the value you expect in return. In this reading, Saturn retrograde in Aries brings attention to your money, possessions, and priorities.\n\nConnect creativity, romance, children, and enjoyment with your money, possessions, and priorities; translate the feeling into one request, sketch, boundary, or pause.",
+          "wordCount": 92
+        },
+        "tomorrow": {
+          "surface": "tomorrow",
+          "sign": "pisces",
+          "period": {
+            "from": "2026-11-01",
+            "through": "2026-11-01",
+            "utcBasis": true
+          },
+          "title": "Pisces horoscope for tomorrow, November 1, 2026",
+          "status": "publishable",
+          "passages": [
+            {
+              "text": "Prepare the routine, tool, or handoff that will remove friction from the next workday, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward daily work, health routines, and responsibilities.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:pisces:h6:fact-2026-11-01-body-moon-1200z"
+              ]
+            },
+            {
+              "text": "Choose the resource limit the plan must respect before it can proceed; Saturn retrograde in Aries is one of the conditions shaping your money, possessions, and priorities.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:saturn:1200z",
+                "derived:2026-11-01:solar-house:pisces:h2:fact-2026-11-01-body-saturn-1200z"
+              ]
+            },
+            {
+              "text": "Connect daily work, health routines, and responsibilities with your money, possessions, and priorities; translate the feeling into one request, sketch, boundary, or pause.",
+              "evidenceRefs": [
+                "fact:2026-11-01:body:moon:1200z",
+                "derived:2026-11-01:solar-house:pisces:h6:fact-2026-11-01-body-moon-1200z",
+                "fact:2026-11-01:body:saturn:1200z",
+                "derived:2026-11-01:solar-house:pisces:h2:fact-2026-11-01-body-saturn-1200z"
+              ]
+            }
+          ],
+          "text": "Prepare the routine, tool, or handoff that will remove friction from the next workday, using the lead time to prepare the conditions around the decision before tomorrow begins. As the last quarter Moon develops, tomorrow’s foreground shifts toward daily work, health routines, and responsibilities.\n\nChoose the resource limit the plan must respect before it can proceed; Saturn retrograde in Aries is one of the conditions shaping your money, possessions, and priorities.\n\nConnect daily work, health routines, and responsibilities with your money, possessions, and priorities; translate the feeling into one request, sketch, boundary, or pause.",
+          "wordCount": 94
         },
         "weekly": {
           "surface": "weekly",
@@ -9979,25 +9823,25 @@
           "surface": "love",
           "sign": "pisces",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Pisces love horoscope for October 30, 2026",
+          "title": "Pisces love horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Approach trust, intimacy, and shared resources with explicit terms. For Pisces, empathy needs a clear edge so that closeness does not become guesswork. Venus brings shared finances, debts, intimacy, and trust into the relationship foreground.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:venus:1200z",
-                "derived:2026-10-30:solar-house:pisces:h8:fact-2026-10-30-body-venus-1200z"
+                "fact:2026-10-31:body:venus:1200z",
+                "derived:2026-10-31:solar-house:pisces:h8:fact-2026-10-31-body-venus-1200z"
               ]
             },
             {
               "text": "Allow pleasure and affection to be direct rather than overmanaged. Offer the affection or invitation directly, then let the response set the next pace. The Moon shifts the emotional weather toward creativity, romance, children, and enjoyment.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:moon:1200z",
-                "derived:2026-10-30:solar-house:pisces:h5:fact-2026-10-30-body-moon-1200z"
+                "fact:2026-10-31:body:moon:1200z",
+                "derived:2026-10-31:solar-house:pisces:h5:fact-2026-10-31-body-moon-1200z"
               ]
             }
           ],
@@ -10008,25 +9852,25 @@
           "surface": "career",
           "sign": "pisces",
           "period": {
-            "from": "2026-10-30",
-            "through": "2026-10-30",
+            "from": "2026-10-31",
+            "through": "2026-10-31",
             "utcBasis": true
           },
-          "title": "Pisces career horoscope for October 30, 2026",
+          "title": "Pisces career horoscope for October 31, 2026",
           "status": "publishable",
           "passages": [
             {
               "text": "Repair the workflow before asking effort alone to solve it. For Pisces, imagination carries farther when the handoff and deadline are visible. Mars brings daily work, health routines, and responsibilities into the work picture.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:mars:1200z",
-                "derived:2026-10-30:solar-house:pisces:h6:fact-2026-10-30-body-mars-1200z"
+                "fact:2026-10-31:body:mars:1200z",
+                "derived:2026-10-31:solar-house:pisces:h6:fact-2026-10-31-body-mars-1200z"
               ]
             },
             {
               "text": "Connect the task to training, publishing, travel, or a wider field. Define which new evidence from training, travel, or a wider field would change the choice. The Sun widens the frame to travel, learning, beliefs, and long-term plans.",
               "evidenceRefs": [
-                "fact:2026-10-30:body:sun:1200z",
-                "derived:2026-10-30:solar-house:pisces:h9:fact-2026-10-30-body-sun-1200z"
+                "fact:2026-10-31:body:sun:1200z",
+                "derived:2026-10-31:solar-house:pisces:h9:fact-2026-10-31-body-sun-1200z"
               ]
             }
           ],
