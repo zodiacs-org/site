@@ -248,8 +248,8 @@ same shape apart.
 Two other things are refused, and both are refusals about trust rather
 than about the request. A plan that did not finish classified only part of
 its window, so reusing it answers the request over a fraction of itself;
-`acceptPartialPlan` takes it anyway, and the run then reports
-`finished: false`. And a plan this runtime did not derive — one that came
+`acceptPartialPlan` takes it anyway: the run searches the part the plan
+did classify and then reports `finished: false`. And a plan this runtime did not derive — one that came
 back from a cache, a file or a worker message — is refused outright,
 because a matching key is a fingerprint and not a signature: it says the
 plan is *about* this request, not that anyone proved it.
@@ -273,6 +273,14 @@ inside it; Mercury costs 9.2× less; the conjunction-free controls cost
 about 3 per cent more. One repeated longitude query already pays for the
 plan on every conjunction case. `PARTITION-RESULTS.md` has the numbers,
 including the two targets it did not meet.
+
+Version 2 of the partition (`zodiacs-domain-partition/2`) meets them:
+enclosing the Moon's geocentric vector from merged weights, and its
+elongation in centred form, takes the Moon's boundary from 5.266 to 0.0114
+per cent of its window, and every conjunction case is at least 5.44x
+cheaper than the plain search, which on the Moon now finishes too.
+`PARTITION-EVALUATION-V2.md` is the rule and `PARTITION-RESULTS-V2.md` the
+result; version 1's stand beside them.
 
 No coefficient pack to hand? `examples/04-experimental-aberrated.mjs`,
 `examples/05-experimental-deflected.mjs` and

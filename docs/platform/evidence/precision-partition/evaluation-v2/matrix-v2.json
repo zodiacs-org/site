@@ -1,0 +1,3532 @@
+{
+ "tool": "tools/measure/fixture-matrix.mjs",
+ "label": "v2",
+ "alpha": "<version 2: examples/precision-alpha>",
+ "node": "v22.22.2",
+ "platform": "darwin-arm64",
+ "window": [
+  -129600,
+  129600
+ ],
+ "rows": [
+  {
+   "fixture": "M01-simple",
+   "kind": "planet",
+   "scale": 0.000001152604887044721,
+   "known": {
+    "geometric": [
+     1080
+    ],
+    "retarded": [
+     1413.564095198152
+    ],
+    "aberrated": [
+     1413.564095198152
+    ],
+    "ofDateFixedFrame": [
+     1413.564095198152
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1079.9999758601189,
+       "bracket": [
+        1079.9999356269836,
+        1080.000016093254
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 38,
+     "ms": 5
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1413.5641291737556,
+       "bracket": [
+        1413.5640889406204,
+        1413.5641694068909
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 420,
+     "ms": 11
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1413.5641291737556,
+       "bracket": [
+        1413.5640889406204,
+        1413.5641694068909
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 420,
+     "ms": 3
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1413.5641291737556,
+       "bracket": [
+        1413.5640889406204,
+        1413.5641694068909
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 420,
+     "ms": 4
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1472.1251472830772,
+       "bracket": [
+        1472.125107049942,
+        1472.1251875162125
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 436,
+     "ms": 14
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1472.1199974417686,
+       "bracket": [
+        1472.1199572086334,
+        1472.1200376749039
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 524,
+     "ms": 12
+    }
+   }
+  },
+  {
+   "fixture": "M01-simple",
+   "kind": "moon",
+   "scale": 0.000001152604887044721,
+   "known": {
+    "geometric": [
+     1080
+    ],
+    "retarded": [
+     1168.1381070842035
+    ],
+    "aberrated": null,
+    "ofDateFixedFrame": null,
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1079.9999758601189,
+       "bracket": [
+        1079.9999356269836,
+        1080.000016093254
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 38,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1168.138101696968,
+       "bracket": [
+        1168.1380212306976,
+        1168.1381821632385
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 759,
+     "ms": 3
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1081.334227323532,
+       "bracket": [
+        1081.3340663909912,
+        1081.334388256073
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 752,
+     "ms": 2
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1081.334227323532,
+       "bracket": [
+        1081.3340663909912,
+        1081.334388256073
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 752,
+     "ms": 2
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1139.897659420967,
+       "bracket": [
+        1139.8975789546967,
+        1139.8977398872375
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 761,
+     "ms": 7
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 1139.8975789546967,
+       "bracket": [
+        1139.8974180221558,
+        1139.8977398872375
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1762,
+     "ms": 10
+    }
+   }
+  },
+  {
+   "fixture": "M02-pair-10s",
+   "kind": "planet",
+   "scale": 4.465134089762769e-12,
+   "known": {
+    "geometric": [
+     0,
+     10
+    ],
+    "retarded": [
+     333.5640951981521,
+     343.5640951981521
+    ],
+    "aberrated": [
+     333.5640951981521,
+     343.5640951981521
+    ],
+    "ofDateFixedFrame": [
+     333.5640951981521,
+     343.5640951981521
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 2,
+     "events": [
+      {
+       "t": 0.00004023313522338867,
+       "bracket": [
+        0,
+        0.00008046627044677734
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 9.999985992908478,
+       "bracket": [
+        9.999945759773254,
+        10.000026226043701
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 208,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": 333.5655212402344,
+       "bracket": [
+        333.544921875,
+        333.58612060546875
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 343.55621337890625,
+       "bracket": [
+        343.5150146484375,
+        343.597412109375
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 968,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": 333.5655212402344,
+       "bracket": [
+        333.544921875,
+        333.58612060546875
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 343.55621337890625,
+       "bracket": [
+        343.5150146484375,
+        343.597412109375
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 968,
+     "ms": 2
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": 333.5655212402344,
+       "bracket": [
+        333.544921875,
+        333.58612060546875
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 343.55621337890625,
+       "bracket": [
+        343.5150146484375,
+        343.597412109375
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 968,
+     "ms": 3
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3550.621497631073,
+       "bracket": [
+        -3550.621819496155,
+        -3550.621175765991
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4225.92887878418,
+       "bracket": [
+        4225.9185791015625,
+        4225.939178466797
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 796,
+     "ms": 6
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3550.44986307621,
+       "bracket": [
+        -3550.4499435424805,
+        -3550.4497826099396
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4225.7572039961815,
+       "bracket": [
+        4225.757163763046,
+        4225.757244229317
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1072,
+     "ms": 9
+    }
+   }
+  },
+  {
+   "fixture": "M02-pair-10s",
+   "kind": "moon",
+   "scale": 4.465134089762769e-12,
+   "known": {
+    "geometric": [
+     0,
+     10
+    ],
+    "retarded": [
+     -4727.736584531609,
+     4740.372673304286
+    ],
+    "aberrated": null,
+    "ofDateFixedFrame": null,
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 2,
+     "events": [
+      {
+       "t": 0.00004023313522338867,
+       "bracket": [
+        0,
+        0.00008046627044677734
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 9.999985992908478,
+       "bracket": [
+        9.999945759773254,
+        10.000026226043701
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 208,
+     "ms": 25
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -4727.737140655518,
+       "bracket": [
+        -4727.739715576172,
+        -4727.734565734863
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4740.372276306152,
+       "bracket": [
+        4740.367126464844,
+        4740.377426147461
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1554,
+     "ms": 3
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1707,
+     "ms": 14
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1707,
+     "ms": 4
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3882.9288482666016,
+       "bracket": [
+        -3882.9391479492188,
+        -3882.9185485839844
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 3893.7795639038086,
+       "bracket": [
+        3893.7744140625,
+        3893.784713745117
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1576,
+     "ms": 9
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3882.9288482666016,
+       "bracket": [
+        -3882.9391479492188,
+        -3882.9185485839844
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 3893.7769889831543,
+       "bracket": [
+        3893.7744140625,
+        3893.7795639038086
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 2201,
+     "ms": 28
+    }
+   }
+  },
+  {
+   "fixture": "M03-pair-1s",
+   "kind": "planet",
+   "scale": 4.4652891285427424e-12,
+   "known": {
+    "geometric": [
+     0,
+     1
+    ],
+    "retarded": [
+     333.5640951981521,
+     334.5640951981521
+    ],
+    "aberrated": [
+     333.5640951981521,
+     334.5640951981521
+    ],
+    "ofDateFixedFrame": [
+     333.5640951981521,
+     334.5640951981521
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 2,
+     "events": [
+      {
+       "t": 0.0001609325408935547,
+       "bracket": [
+        0,
+        0.0003218650817871094
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 1.0000348091125488,
+       "bracket": [
+        0.9997129440307617,
+        1.000356674194336
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 209,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": false,
+     "found": 1,
+     "events": [
+      {
+       "t": 334.53369140625,
+       "bracket": [
+        334.2041015625,
+        334.86328125
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1033,
+     "ms": 2
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": false,
+     "found": 1,
+     "events": [
+      {
+       "t": 334.53369140625,
+       "bracket": [
+        334.2041015625,
+        334.86328125
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1033,
+     "ms": 3
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": false,
+     "found": 1,
+     "events": [
+      {
+       "t": 334.53369140625,
+       "bracket": [
+        334.2041015625,
+        334.86328125
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1033,
+     "ms": 2
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3555.051849782467,
+       "bracket": [
+        -3555.051890015602,
+        -3555.0518095493317
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4221.359279751778,
+       "bracket": [
+        4221.359199285507,
+        4221.359360218048
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 876,
+     "ms": 8
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3554.8801749944687,
+       "bracket": [
+        -3554.880255460739,
+        -3554.8800945281982
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4221.187604963779,
+       "bracket": [
+        4221.187564730644,
+        4221.187645196915
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1070,
+     "ms": 13
+    }
+   }
+  },
+  {
+   "fixture": "M04-pair-1ms",
+   "kind": "planet",
+   "scale": 4.465306338511192e-12,
+   "known": {
+    "geometric": [
+     0,
+     0.001
+    ],
+    "retarded": [
+     333.5640951981521,
+     333.56509519815205
+    ],
+    "aberrated": [
+     333.5640951981521,
+     333.56509519815205
+    ],
+    "ofDateFixedFrame": [
+     333.5640951981521,
+     333.56509519815205
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 185,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1743,
+     "ms": 6
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1743,
+     "ms": 3
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1743,
+     "ms": 8
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3555.543941259384,
+       "bracket": [
+        -3555.544102191925,
+        -3555.5437803268433
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4220.852382481098,
+       "bracket": [
+        4220.852342247963,
+        4220.852422714233
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 866,
+     "ms": 13
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3555.372266471386,
+       "bracket": [
+        -3555.372306704521,
+        -3555.3722262382507
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4220.6807076931,
+       "bracket": [
+        4220.680546760559,
+        4220.680868625641
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1057,
+     "ms": 18
+    }
+   }
+  },
+  {
+   "fixture": "M05-tangency",
+   "kind": "planet",
+   "scale": 4.4618628961743836e-12,
+   "known": {
+    "geometric": [],
+    "retarded": [],
+    "aberrated": [],
+    "ofDateFixedFrame": [],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 1,
+     "events": [
+      {
+       "t": 100.00002086162567,
+       "bracket": [
+        100.00002086162567,
+        100.00002086162567
+       ],
+       "direction": null
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 186,
+     "ms": 1
+    },
+    "retarded": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1702,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1702,
+     "ms": 4
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1702,
+     "ms": 18
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3457.0220053195953,
+       "bracket": [
+        -3457.0221662521362,
+        -3457.0218443870544
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4322.327551245689,
+       "bracket": [
+        4322.327470779419,
+        4322.32763171196
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 868,
+     "ms": 7
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3456.850290298462,
+       "bracket": [
+        -3456.851577758789,
+        -3456.8490028381348
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4322.155836224556,
+       "bracket": [
+        4322.1557557582855,
+        4322.155916690826
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1027,
+     "ms": 9
+    }
+   }
+  },
+  {
+   "fixture": "M06-triple-root",
+   "kind": "planet",
+   "scale": 1.7207338589180038e-17,
+   "known": {
+    "geometric": [
+     100
+    ],
+    "retarded": [
+     433.5640951981521
+    ],
+    "aberrated": [
+     433.5640951981521
+    ],
+    "ofDateFixedFrame": [
+     433.5640951981521
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 817780,
+     "ms": 211
+    },
+    "retarded": {
+     "status": "budget-exhausted",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 4000001,
+     "ms": 4396
+    },
+    "aberrated": {
+     "status": "budget-exhausted",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 4000001,
+     "ms": 5051
+    },
+    "ofDateFixedFrame": {
+     "status": "budget-exhausted",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 4000001,
+     "ms": 3811
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 16195.004251599312,
+       "bracket": [
+        16195.004171133041,
+        16195.004332065582
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1083,
+     "ms": 6
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 16194.539719820023,
+       "bracket": [
+        16194.539558887482,
+        16194.539880752563
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1314,
+     "ms": 6
+    }
+   }
+  },
+  {
+   "fixture": "M07-graze-10s",
+   "kind": "planet",
+   "scale": 4.46186288953831e-12,
+   "known": {
+    "geometric": [],
+    "retarded": [],
+    "aberrated": [],
+    "ofDateFixedFrame": [],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 163,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 766,
+     "ms": 2
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 766,
+     "ms": 0
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 766,
+     "ms": 1
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3457.009170949459,
+       "bracket": [
+        -3457.0092111825943,
+        -3457.009130716324
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4322.314716875553,
+       "bracket": [
+        4322.314676642418,
+        4322.314757108688
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 877,
+     "ms": 4
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3456.8374156951904,
+       "bracket": [
+        -3456.8387031555176,
+        -3456.8361282348633
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4322.1429616212845,
+       "bracket": [
+        4322.142881155014,
+        4322.143042087555
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1027,
+     "ms": 4
+    }
+   }
+  },
+  {
+   "fixture": "M08-graze-0.1s",
+   "kind": "planet",
+   "scale": 4.46186289617372e-12,
+   "known": {
+    "geometric": [],
+    "retarded": [],
+    "aberrated": [],
+    "ofDateFixedFrame": [],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 185,
+     "ms": 1
+    },
+    "retarded": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1700,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1700,
+     "ms": 1
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1700,
+     "ms": 1
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3457.0220053195953,
+       "bracket": [
+        -3457.0221662521362,
+        -3457.0218443870544
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4322.327551245689,
+       "bracket": [
+        4322.327470779419,
+        4322.32763171196
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 866,
+     "ms": 5
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3456.850290298462,
+       "bracket": [
+        -3456.851577758789,
+        -3456.8490028381348
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4322.155836224556,
+       "bracket": [
+        4322.1557557582855,
+        4322.155916690826
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1025,
+     "ms": 5
+    }
+   }
+  },
+  {
+   "fixture": "M09-graze-0.01s",
+   "kind": "planet",
+   "scale": 4.461862896174377e-12,
+   "known": {
+    "geometric": [],
+    "retarded": [],
+    "aberrated": [],
+    "ofDateFixedFrame": [],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 185,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1702,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1702,
+     "ms": 2
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1702,
+     "ms": 1
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3457.0220053195953,
+       "bracket": [
+        -3457.0221662521362,
+        -3457.0218443870544
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4322.327551245689,
+       "bracket": [
+        4322.327470779419,
+        4322.32763171196
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 868,
+     "ms": 5
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 2,
+     "events": [
+      {
+       "t": -3456.850290298462,
+       "bracket": [
+        -3456.851577758789,
+        -3456.8490028381348
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 4322.155836224556,
+       "bracket": [
+        4322.1557557582855,
+        4322.155916690826
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1027,
+     "ms": 3
+    }
+   }
+  },
+  {
+   "fixture": "M10-three-in-a-record",
+   "kind": "planet",
+   "scale": 1.2072161253107798e-17,
+   "known": {
+    "geometric": [
+     10000,
+     30000,
+     60000
+    ],
+    "retarded": [
+     10333.564095198151,
+     30333.56409519815,
+     60333.564095198155
+    ],
+    "aberrated": [
+     10333.564095198151,
+     30333.56409519815,
+     60333.564095198155
+    ],
+    "ofDateFixedFrame": [
+     10333.564095198151,
+     30333.56409519815,
+     60333.564095198155
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 3,
+     "events": [
+      {
+       "t": 10000.00003427267,
+       "bracket": [
+        9999.999994039536,
+        10000.000074505806
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 30000.00002235174,
+       "bracket": [
+        29999.999982118607,
+        30000.000062584877
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 60000.00000447035,
+       "bracket": [
+        59999.99996423721,
+        60000.00004470348
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 270,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 3,
+     "events": [
+      {
+       "t": 10333.564107120037,
+       "bracket": [
+        10333.564066886902,
+        10333.564147353172
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 30333.564095199108,
+       "bracket": [
+        30333.564054965973,
+        30333.564135432243
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 60333.564077317715,
+       "bracket": [
+        60333.56403708458,
+        60333.56411755085
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1762,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 3,
+     "events": [
+      {
+       "t": 10333.564107120037,
+       "bracket": [
+        10333.564066886902,
+        10333.564147353172
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 30333.564095199108,
+       "bracket": [
+        30333.564054965973,
+        30333.564135432243
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 60333.564077317715,
+       "bracket": [
+        60333.56403708458,
+        60333.56411755085
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1733,
+     "ms": 1
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 3,
+     "events": [
+      {
+       "t": 10333.564107120037,
+       "bracket": [
+        10333.564066886902,
+        10333.564147353172
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 30333.564095199108,
+       "bracket": [
+        30333.564054965973,
+        30333.564135432243
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 60333.564077317715,
+       "bracket": [
+        60333.56403708458,
+        60333.56411755085
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1733,
+     "ms": 2
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 63481.52278214693,
+       "bracket": [
+        63481.522741913795,
+        63481.522822380066
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1084,
+     "ms": 4
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 63481.28001540899,
+       "bracket": [
+        63481.27997517586,
+        63481.28005564213
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1326,
+     "ms": 5
+    }
+   }
+  },
+  {
+   "fixture": "M10-three-in-a-record",
+   "kind": "moon",
+   "scale": 1.2072161253107798e-17,
+   "known": {
+    "geometric": [
+     10000,
+     30000,
+     60000
+    ],
+    "retarded": [
+     64425.727398396935
+    ],
+    "aberrated": null,
+    "ofDateFixedFrame": null,
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 3,
+     "events": [
+      {
+       "t": 10000.00003427267,
+       "bracket": [
+        9999.999994039536,
+        10000.000074505806
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 30000.00002235174,
+       "bracket": [
+        29999.999982118607,
+        30000.000062584877
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 60000.00000447035,
+       "bracket": [
+        59999.99996423721,
+        60000.00004470348
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 270,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 64425.73013305664,
+       "bracket": [
+        64425.709533691406,
+        64425.750732421875
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1751,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 3,
+     "events": [
+      {
+       "t": 10001.33171081543,
+       "bracket": [
+        10001.321411132812,
+        10001.342010498047
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 30001.327514648438,
+       "bracket": [
+        30001.2451171875,
+        30001.409912109375
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 60001.336669921875,
+       "bracket": [
+        60001.171875,
+        60001.50146484375
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 2909,
+     "ms": 2
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 3,
+     "events": [
+      {
+       "t": 10001.33171081543,
+       "bracket": [
+        10001.321411132812,
+        10001.342010498047
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 30001.327514648438,
+       "bracket": [
+        30001.2451171875,
+        30001.409912109375
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 60001.336669921875,
+       "bracket": [
+        60001.171875,
+        60001.50146484375
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 2909,
+     "ms": 2
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 63149.41921234131,
+       "bracket": [
+        63149.4140625,
+        63149.42436218262
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 2062,
+     "ms": 8
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 63149.41921234131,
+       "bracket": [
+        63149.4140625,
+        63149.42436218262
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 2469,
+     "ms": 7
+    }
+   }
+  },
+  {
+   "fixture": "M11-record-boundary",
+   "kind": "planet",
+   "scale": 8.680555555555555e-7,
+   "known": {
+    "geometric": [
+     86400
+    ],
+    "retarded": [
+     86733.56409519815
+    ],
+    "aberrated": [
+     86733.56409519815
+    ],
+    "ofDateFixedFrame": [
+     86733.56409519815
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 1,
+     "events": [
+      {
+       "t": 86400.00004023314,
+       "bracket": [
+        86400,
+        86400.00008046627
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 40,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 421,
+     "ms": 0
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 421,
+     "ms": 1
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 421,
+     "ms": 0
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86810.43032258749,
+       "bracket": [
+        86810.43028235435,
+        86810.43036282063
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 424,
+     "ms": 3
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86810.4234829545,
+       "bracket": [
+        86810.42344272137,
+        86810.42352318764
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 510,
+     "ms": 2
+    }
+   }
+  },
+  {
+   "fixture": "M12-record-boundary+1e-9",
+   "kind": "planet",
+   "scale": 8.680555555555531e-7,
+   "known": {
+    "geometric": [
+     86400.000000001
+    ],
+    "retarded": [
+     86733.56409519915
+    ],
+    "aberrated": [
+     86733.56409519915
+    ],
+    "ofDateFixedFrame": [
+     86733.56409519915
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": false,
+     "found": 1,
+     "events": [
+      {
+       "t": 86400.00004023314,
+       "bracket": [
+        86400,
+        86400.00008046627
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 40,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 422,
+     "ms": 0
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 422,
+     "ms": 0
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 422,
+     "ms": 1
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86810.43032258749,
+       "bracket": [
+        86810.43028235435,
+        86810.43036282063
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 425,
+     "ms": 1
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86810.4234829545,
+       "bracket": [
+        86810.42344272137,
+        86810.42352318764
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 511,
+     "ms": 3
+    }
+   }
+  },
+  {
+   "fixture": "M13-record-boundary+1e-7",
+   "kind": "planet",
+   "scale": 8.680555555553043e-7,
+   "known": {
+    "geometric": [
+     86400.0000001
+    ],
+    "retarded": [
+     86733.56409529815
+    ],
+    "aberrated": [
+     86733.56409529815
+    ],
+    "ofDateFixedFrame": [
+     86733.56409529815
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86400.00004023314,
+       "bracket": [
+        86400,
+        86400.00008046627
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 37,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 421,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 421,
+     "ms": 0
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 421,
+     "ms": 0
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86810.43032258749,
+       "bracket": [
+        86810.43028235435,
+        86810.43036282063
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 424,
+     "ms": 2
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86810.4234829545,
+       "bracket": [
+        86810.42344272137,
+        86810.42352318764
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 510,
+     "ms": 2
+    }
+   }
+  },
+  {
+   "fixture": "M14-record-boundary+1e-5",
+   "kind": "planet",
+   "scale": 8.680555555304381e-7,
+   "known": {
+    "geometric": [
+     86400.00001
+    ],
+    "retarded": [
+     86733.56410519815
+    ],
+    "aberrated": [
+     86733.56410519815
+    ],
+    "ofDateFixedFrame": [
+     86733.56410519815
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86400.00004023314,
+       "bracket": [
+        86400,
+        86400.00008046627
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 37,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 423,
+     "ms": 0
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 423,
+     "ms": 1
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86733.5641130805,
+       "bracket": [
+        86733.56407284737,
+        86733.56415331364
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 423,
+     "ms": 0
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86810.43040305376,
+       "bracket": [
+        86810.43036282063,
+        86810.4304432869
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 424,
+     "ms": 2
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86810.4234829545,
+       "bracket": [
+        86810.42344272137,
+        86810.42352318764
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 510,
+     "ms": 2
+    }
+   }
+  },
+  {
+   "fixture": "M14-record-boundary+1e-5",
+   "kind": "moon",
+   "scale": 8.680555555304381e-7,
+   "known": {
+    "geometric": [
+     86400.00001
+    ],
+    "retarded": [
+     86516.59780569049
+    ],
+    "aberrated": null,
+    "ofDateFixedFrame": null,
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86400.00004023314,
+       "bracket": [
+        86400,
+        86400.00008046627
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 37,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86516.59787893295,
+       "bracket": [
+        86516.59755706787,
+        86516.59820079803
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 703,
+     "ms": 0
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86401.33429169655,
+       "bracket": [
+        86401.33413076401,
+        86401.33445262909
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 779,
+     "ms": 1
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86401.33429169655,
+       "bracket": [
+        86401.33413076401,
+        86401.33445262909
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 779,
+     "ms": 1
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86478.20436358452,
+       "bracket": [
+        86478.20420265198,
+        86478.20452451706
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 720,
+     "ms": 2
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 86478.20436358452,
+       "bracket": [
+        86478.20420265198,
+        86478.20452451706
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1752,
+     "ms": 6
+    }
+   }
+  },
+  {
+   "fixture": "M15-left-edge",
+   "kind": "planet",
+   "scale": 7.709435208899317e-7,
+   "known": {
+    "geometric": [],
+    "retarded": [
+     -129600
+    ],
+    "aberrated": [
+     -129600
+    ],
+    "ofDateFixedFrame": [
+     -129600
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 4,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 123,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 123,
+     "ms": 0
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 123,
+     "ms": 0
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": -129511.28348261118,
+       "bracket": [
+        -129511.28352284431,
+        -129511.28344237804
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 424,
+     "ms": 11
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": -129511.29120737314,
+       "bracket": [
+        -129511.29124760628,
+        -129511.29116714
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 510,
+     "ms": 3
+    }
+   }
+  },
+  {
+   "fixture": "M16-right-edge",
+   "kind": "planet",
+   "scale": 7.722674915305126e-7,
+   "known": {
+    "geometric": [
+     129266.43590480185
+    ],
+    "retarded": [
+     129600
+    ],
+    "aberrated": [
+     129600
+    ],
+    "ofDateFixedFrame": [
+     129600
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 129266.4358869195,
+       "bracket": [
+        129266.43584668636,
+        129266.43592715263
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 37,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 123,
+     "ms": 0
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 123,
+     "ms": 0
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": false,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 123,
+     "ms": 0
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 103,
+     "ms": 0
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 125,
+     "ms": 1
+    }
+   }
+  },
+  {
+   "fixture": "M17-left-edge+1s",
+   "kind": "planet",
+   "scale": 7.70945502074731e-7,
+   "known": {
+    "geometric": [],
+    "retarded": [
+     -129599
+    ],
+    "aberrated": [
+     -129599
+    ],
+    "ofDateFixedFrame": [
+     -129599
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 4,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": -129599.00000542402,
+       "bracket": [
+        -129599.00004565716,
+        -129598.99996519089
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 402,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": -129599.00000542402,
+       "bracket": [
+        -129599.00004565716,
+        -129598.99996519089
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 402,
+     "ms": 1
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": -129599.00000542402,
+       "bracket": [
+        -129599.00004565716,
+        -129598.99996519089
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 402,
+     "ms": 0
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": -129510.28368920088,
+       "bracket": [
+        -129510.28372943401,
+        -129510.28364896774
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 421,
+     "ms": 3
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": -129510.29141396284,
+       "bracket": [
+        -129510.29145419598,
+        -129510.2913737297
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 507,
+     "ms": 2
+    }
+   }
+  },
+  {
+   "fixture": "M18-right-edge-1s",
+   "kind": "planet",
+   "scale": 7.722694795258918e-7,
+   "known": {
+    "geometric": [
+     129265.43590480185
+    ],
+    "retarded": [
+     129599
+    ],
+    "aberrated": [
+     129599
+    ],
+    "ofDateFixedFrame": [
+     129599
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 129265.43593257666,
+       "bracket": [
+        129265.43589234352,
+        129265.43597280979
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 37,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 129599.00000542402,
+       "bracket": [
+        129598.99996519089,
+        129599.00004565716
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 402,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 129599.00000542402,
+       "bracket": [
+        129598.99996519089,
+        129599.00004565716
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 402,
+     "ms": 0
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 1,
+     "events": [
+      {
+       "t": 129599.00000542402,
+       "bracket": [
+        129598.99996519089,
+        129599.00004565716
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 402,
+     "ms": 0
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 101,
+     "ms": 1
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 123,
+     "ms": 0
+    }
+   }
+  },
+  {
+   "fixture": "M19-four-roots",
+   "kind": "planet",
+   "scale": 7.131710977219439e-23,
+   "known": {
+    "geometric": [
+     -100000,
+     -20000,
+     40000,
+     110000
+    ],
+    "retarded": [
+     -99666.43590480185,
+     -19666.43590480185,
+     40333.564095198155,
+     110333.56409519815
+    ],
+    "aberrated": [
+     -99666.43590480185,
+     -19666.43590480185,
+     40333.564095198155,
+     110333.56409519815
+    ],
+    "ofDateFixedFrame": [
+     -99666.43590480185,
+     -19666.43590480185,
+     40333.564095198155,
+     110333.56409519815
+    ],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -99999.99998062849,
+       "bracket": [
+        -100000.00002086163,
+        -99999.99994039536
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -20000.000028312206,
+       "bracket": [
+        -20000.00006854534,
+        -19999.99998807907
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 40000.00001639128,
+       "bracket": [
+        39999.99997615814,
+        40000.00005662441
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 109999.99997466803,
+       "bracket": [
+        109999.99993443489,
+        110000.00001490116
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 215,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -99666.43590778112,
+       "bracket": [
+        -99666.43594801426,
+        -99666.43586754799
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -19666.43587499857,
+       "bracket": [
+        -19666.435915231705,
+        -19666.435834765434
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 40333.564089238644,
+       "bracket": [
+        40333.56404900551,
+        40333.56412947178
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110333.56412798166,
+       "bracket": [
+        110333.56408774853,
+        110333.5641682148
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1890,
+     "ms": 1
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -99666.43590778112,
+       "bracket": [
+        -99666.43594801426,
+        -99666.43586754799
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -19666.43587499857,
+       "bracket": [
+        -19666.435915231705,
+        -19666.435834765434
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 40333.564089238644,
+       "bracket": [
+        40333.56404900551,
+        40333.56412947178
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110333.56412798166,
+       "bracket": [
+        110333.56408774853,
+        110333.5641682148
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1890,
+     "ms": 1
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -99666.43590778112,
+       "bracket": [
+        -99666.43594801426,
+        -99666.43586754799
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -19666.43587499857,
+       "bracket": [
+        -19666.435915231705,
+        -19666.435834765434
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 40333.564089238644,
+       "bracket": [
+        40333.56404900551,
+        40333.56412947178
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110333.56412798166,
+       "bracket": [
+        110333.56408774853,
+        110333.5641682148
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1890,
+     "ms": 2
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -100069.17860358953,
+       "bracket": [
+        -100069.17864382267,
+        -100069.1785633564
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -18117.08386838436,
+       "bracket": [
+        -18117.08394885063,
+        -18117.08378791809
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 38705.365236103535,
+       "bracket": [
+        38705.3651958704,
+        38705.36527633667
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110815.125708282,
+       "bracket": [
+        110815.12566804886,
+        110815.12574851513
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 1892,
+     "ms": 15
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -100069.14376169443,
+       "bracket": [
+        -100069.14380192757,
+        -100069.1437214613
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -18117.22311526537,
+       "bracket": [
+        -18117.223155498505,
+        -18117.223075032234
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 38705.51224797964,
+       "bracket": [
+        38705.512207746506,
+        38705.512288212776
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110815.08306115866,
+       "bracket": [
+        110815.08302092552,
+        110815.08310139179
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 2311,
+     "ms": 19
+    }
+   }
+  },
+  {
+   "fixture": "M19-four-roots",
+   "kind": "moon",
+   "scale": 7.131710977219439e-23,
+   "known": {
+    "geometric": [
+     -100000,
+     -20000,
+     40000,
+     110000
+    ],
+    "retarded": [
+     -100586.78507040208,
+     -17684.374021803495,
+     37554.81339445291,
+     110721.6178752943
+    ],
+    "aberrated": null,
+    "ofDateFixedFrame": null,
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -99999.99998062849,
+       "bracket": [
+        -100000.00002086163,
+        -99999.99994039536
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -20000.000028312206,
+       "bracket": [
+        -20000.00006854534,
+        -19999.99998807907
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 40000.00001639128,
+       "bracket": [
+        39999.99997615814,
+        40000.00005662441
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 109999.99997466803,
+       "bracket": [
+        109999.99993443489,
+        110000.00001490116
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 215,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -100586.78541183472,
+       "bracket": [
+        -100586.78798675537,
+        -100586.78283691406
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -17684.374809265137,
+       "bracket": [
+        -17684.379959106445,
+        -17684.369659423828
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 37554.8134803772,
+       "bracket": [
+        37554.81090545654,
+        37554.81605529785
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110721.61774635315,
+       "bracket": [
+        110721.61645889282,
+        110721.61903381348
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 3244,
+     "ms": 2
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -99998.66580963135,
+       "bracket": [
+        -99998.67095947266,
+        -99998.66065979004
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -19998.66714477539,
+       "bracket": [
+        -19998.687744140625,
+        -19998.646545410156
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 40001.33571624756,
+       "bracket": [
+        40001.33056640625,
+        40001.34086608887
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110001.33390426636,
+       "bracket": [
+        110001.3313293457,
+        110001.33647918701
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 3215,
+     "ms": 4
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -99998.66580963135,
+       "bracket": [
+        -99998.67095947266,
+        -99998.66065979004
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -19998.66714477539,
+       "bracket": [
+        -19998.687744140625,
+        -19998.646545410156
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 40001.33571624756,
+       "bracket": [
+        40001.33056640625,
+        40001.34086608887
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110001.33390426636,
+       "bracket": [
+        110001.3313293457,
+        110001.33647918701
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 3215,
+     "ms": 2
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -100401.42073631287,
+       "bracket": [
+        -100401.4220237732,
+        -100401.41944885254
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -18449.254989624023,
+       "bracket": [
+        -18449.26528930664,
+        -18449.244689941406
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 38373.06146621704,
+       "bracket": [
+        38373.05889129639,
+        38373.064041137695
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110482.92067050934,
+       "bracket": [
+        110482.92002677917,
+        110482.9213142395
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 3267,
+     "ms": 12
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 4,
+     "events": [
+      {
+       "t": -100401.4200925827,
+       "bracket": [
+        -100401.42073631287,
+        -100401.41944885254
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": -18449.254989624023,
+       "bracket": [
+        -18449.26528930664,
+        -18449.244689941406
+       ],
+       "direction": "increasing"
+      },
+      {
+       "t": 38373.064041137695,
+       "bracket": [
+        38373.05374145508,
+        38373.07434082031
+       ],
+       "direction": "decreasing"
+      },
+      {
+       "t": 110482.92002677917,
+       "bracket": [
+        110482.91873931885,
+        110482.9213142395
+       ],
+       "direction": "increasing"
+      }
+     ],
+     "unresolved": 0,
+     "evaluations": 3579,
+     "ms": 9
+    }
+   }
+  },
+  {
+   "fixture": "M20-no-root",
+   "kind": "planet",
+   "scale": 5.787037037037037e-7,
+   "known": {
+    "geometric": [],
+    "retarded": [],
+    "aberrated": [],
+    "ofDateFixedFrame": [],
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 4,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 103,
+     "ms": 0
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 103,
+     "ms": 0
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 103,
+     "ms": 0
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 103,
+     "ms": 1
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 125,
+     "ms": 0
+    }
+   }
+  },
+  {
+   "fixture": "M20-no-root",
+   "kind": "moon",
+   "scale": 5.787037037037037e-7,
+   "known": {
+    "geometric": [],
+    "retarded": [],
+    "aberrated": null,
+    "ofDateFixedFrame": null,
+    "ofDate": null,
+    "deflected": null
+   },
+   "rungs": {
+    "geometric": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 4,
+     "ms": 0
+    },
+    "retarded": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 186,
+     "ms": 0
+    },
+    "aberrated": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 186,
+     "ms": 0
+    },
+    "ofDateFixedFrame": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 186,
+     "ms": 1
+    },
+    "ofDate": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 186,
+     "ms": 0
+    },
+    "deflected": {
+     "status": "finished",
+     "established": true,
+     "found": 0,
+     "events": [],
+     "unresolved": 0,
+     "evaluations": 1224,
+     "ms": 2
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,560 @@
+{
+ "rule": "PARTITION-EVALUATION-V2.md V-4",
+ "pack": "D-de440s.sealed.zeph",
+ "packDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+ "node": "v22.22.2",
+ "platform": "darwin-arm64",
+ "rows": [
+  {
+   "id": "F1",
+   "body": "Sun",
+   "targetDeg": 68.944945,
+   "v1": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "ms": 23,
+    "events": [
+     {
+      "tdbSec": -776001530.7718501,
+      "bracketTdbSec": [
+       -776001530.7718903,
+       -776001530.7718098
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "ms": 16,
+    "events": [
+     {
+      "tdbSec": -776001530.7718501,
+      "bracketTdbSec": [
+       -776001530.7718903,
+       -776001530.7718098
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  },
+  {
+   "id": "F2",
+   "body": "Moon",
+   "targetDeg": 298.813118,
+   "v1": {
+    "status": "budget-exhausted",
+    "established": false,
+    "evaluations": 4000001,
+    "ms": 11032,
+    "events": [
+     {
+      "tdbSec": -710038772.561597,
+      "bracketTdbSec": [
+       -710038772.5646546,
+       -710038772.5585394
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -707669503.4059525,
+      "bracketTdbSec": [
+       -707669503.4111023,
+       -707669503.4008026
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 1594431,
+    "ms": 3610,
+    "events": [
+     {
+      "tdbSec": -710038772.561597,
+      "bracketTdbSec": [
+       -710038772.5646546,
+       -710038772.5585394
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -707669503.4057915,
+      "bracketTdbSec": [
+       -707669503.4059525,
+       -707669503.4056306
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -705305889.3119752,
+      "bracketTdbSec": [
+       -705305889.3121362,
+       -705305889.3118143
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -702949782.8084171,
+      "bracketTdbSec": [
+       -702949782.808578,
+       -702949782.8082561
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -700597561.3463491,
+      "bracketTdbSec": [
+       -700597561.3464296,
+       -700597561.3462687
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -698241530.8160663,
+      "bracketTdbSec": [
+       -698241530.8163881,
+       -698241530.8157444
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -695876102.0247102,
+      "bracketTdbSec": [
+       -695876102.025032,
+       -695876102.0243883
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -693503229.1362941,
+      "bracketTdbSec": [
+       -693503229.136455,
+       -693503229.1361332
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -691130955.3190202,
+      "bracketTdbSec": [
+       -691130955.3191006,
+       -691130955.3189397
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -688766794.0929472,
+      "bracketTdbSec": [
+       -688766794.0931082,
+       -688766794.0927863
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -686411706.0423642,
+      "bracketTdbSec": [
+       -686411706.0424447,
+       -686411706.0422838
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": false,
+   "mustBeBitIdentical": false
+  },
+  {
+   "id": "F3",
+   "body": "Mercury",
+   "targetDeg": 33.035194,
+   "v1": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 1917153,
+    "ms": 5037,
+    "events": [
+     {
+      "tdbSec": -620481530.7951047,
+      "bracketTdbSec": [
+       -620481530.795145,
+       -620481530.7950646
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 1917153,
+    "ms": 5856,
+    "events": [
+     {
+      "tdbSec": -620481530.7951047,
+      "bracketTdbSec": [
+       -620481530.795145,
+       -620481530.7950646
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  },
+  {
+   "id": "F4",
+   "body": "Venus",
+   "targetDeg": 203.667398,
+   "v1": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 515262,
+    "ms": 2484,
+    "events": []
+   },
+   "v2": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 515262,
+    "ms": 1886,
+    "events": []
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  },
+  {
+   "id": "F5",
+   "body": "Mars",
+   "targetDeg": 47.085193,
+   "v1": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 285751,
+    "ms": 957,
+    "events": [
+     {
+      "tdbSec": -464961530.7609871,
+      "bracketTdbSec": [
+       -464961530.76102734,
+       -464961530.76094687
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 285751,
+    "ms": 1024,
+    "events": [
+     {
+      "tdbSec": -464961530.7609871,
+      "bracketTdbSec": [
+       -464961530.76102734,
+       -464961530.76094687
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  },
+  {
+   "id": "F6",
+   "body": "Jupiter",
+   "targetDeg": 27.653017,
+   "v1": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2105,
+    "ms": 17,
+    "events": [
+     {
+      "tdbSec": -393458832.1332693,
+      "bracketTdbSec": [
+       -393458832.13391304,
+       -393458832.1326256
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -387201530.4896951,
+      "bracketTdbSec": [
+       -387201530.49001694,
+       -387201530.4893732
+      ],
+      "direction": "decreasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2105,
+    "ms": 16,
+    "events": [
+     {
+      "tdbSec": -393458832.1332693,
+      "bracketTdbSec": [
+       -393458832.13391304,
+       -393458832.1326256
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -387201530.4896951,
+      "bracketTdbSec": [
+       -387201530.49001694,
+       -387201530.4893732
+      ],
+      "direction": "decreasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  },
+  {
+   "id": "F7",
+   "body": "Saturn",
+   "targetDeg": 293.142503,
+   "v1": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 63956,
+    "ms": 225,
+    "events": [
+     {
+      "tdbSec": -309441530.61437756,
+      "bracketTdbSec": [
+       -309441530.6144178,
+       -309441530.6143373
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -300087705.8559045,
+      "bracketTdbSec": [
+       -300087705.85594475,
+       -300087705.8558643
+      ],
+      "direction": "decreasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 63956,
+    "ms": 215,
+    "events": [
+     {
+      "tdbSec": -309441530.61437756,
+      "bracketTdbSec": [
+       -309441530.6144178,
+       -309441530.6143373
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -300087705.8559045,
+      "bracketTdbSec": [
+       -300087705.85594475,
+       -300087705.8558643
+      ],
+      "direction": "decreasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  },
+  {
+   "id": "F8",
+   "body": "Uranus",
+   "targetDeg": 284.298936,
+   "v1": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 58351,
+    "ms": 174,
+    "events": [
+     {
+      "tdbSec": -231681530.74589968,
+      "bracketTdbSec": [
+       -231681530.74622154,
+       -231681530.7455778
+      ],
+      "direction": "decreasing"
+     },
+     {
+      "tdbSec": -227408342.4135357,
+      "bracketTdbSec": [
+       -227408342.41361618,
+       -227408342.41345525
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 58351,
+    "ms": 184,
+    "events": [
+     {
+      "tdbSec": -231681530.74589968,
+      "bracketTdbSec": [
+       -231681530.74622154,
+       -231681530.7455778
+      ],
+      "direction": "decreasing"
+     },
+     {
+      "tdbSec": -227408342.4135357,
+      "bracketTdbSec": [
+       -227408342.41361618,
+       -227408342.41345525
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  },
+  {
+   "id": "F9",
+   "body": "Neptune",
+   "targetDeg": 294.224642,
+   "v1": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 55409,
+    "ms": 175,
+    "events": [
+     {
+      "tdbSec": -153921529.57109213,
+      "bracketTdbSec": [
+       -153921529.571414,
+       -153921529.57077026
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -140969016.33826792,
+      "bracketTdbSec": [
+       -140969016.33831823,
+       -140969016.33821762
+      ],
+      "direction": "decreasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 55409,
+    "ms": 172,
+    "events": [
+     {
+      "tdbSec": -153921529.57109213,
+      "bracketTdbSec": [
+       -153921529.571414,
+       -153921529.57077026
+      ],
+      "direction": "increasing"
+     },
+     {
+      "tdbSec": -140969016.33826792,
+      "bracketTdbSec": [
+       -140969016.33831823,
+       -140969016.33821762
+      ],
+      "direction": "decreasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  },
+  {
+   "id": "F10",
+   "body": "Pluto",
+   "targetDeg": 242.85769,
+   "v1": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 5092,
+    "ms": 20,
+    "events": [
+     {
+      "tdbSec": -76161528.07007432,
+      "bracketTdbSec": [
+       -76161528.07023525,
+       -76161528.06991339
+      ],
+      "direction": "decreasing"
+     },
+     {
+      "tdbSec": -74368744.34614778,
+      "bracketTdbSec": [
+       -74368744.34630871,
+       -74368744.34598684
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "v2": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 5092,
+    "ms": 22,
+    "events": [
+     {
+      "tdbSec": -76161528.07007432,
+      "bracketTdbSec": [
+       -76161528.07023525,
+       -76161528.06991339
+      ],
+      "direction": "decreasing"
+     },
+     {
+      "tdbSec": -74368744.34614778,
+      "bracketTdbSec": [
+       -74368744.34630871,
+       -74368744.34598684
+      ],
+      "direction": "increasing"
+     }
+    ]
+   },
+   "lostEvents": [],
+   "bitIdentical": true,
+   "mustBeBitIdentical": true
+  }
+ ],
+ "verdict": "PASS"
+}

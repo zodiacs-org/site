@@ -67,7 +67,7 @@ export const EXPERIMENTAL: Readonly<{
    * version of the same one: see `PartitionedSearchResult`.
    */
   partitioned: Readonly<{
-    planContract: 'zodiacs-domain-partition/1';
+    planContract: 'zodiacs-domain-partition/2';
     searchContract: 'zodiacs-partitioned-search/1';
     whatItIsFor: string;
     independentOfTargetLongitude: string;
@@ -125,7 +125,7 @@ export interface DomainPlanSpec {
  *                cancelled. Not excluded, and not searched-and-empty.
  */
 export interface DomainPlan {
-  readonly contract: 'zodiacs-domain-partition/1';
+  readonly contract: 'zodiacs-domain-partition/2';
   /**
    * The identity this plan is a proof about: pack, observer, body,
    * profile, window, tolerance and numerical policy. A plan whose key does
@@ -297,8 +297,9 @@ export interface PartitionedSearchSpec extends RetardedSearchSpec {
   /**
    * Accept a plan that stopped before classifying its whole window.
    * Without it such a plan is refused, because reusing one answers the
-   * request over a fraction of itself. With it the run inherits the
-   * plan's status and reports `execution.finished: false`.
+   * request over a fraction of itself. With it the run searches the part
+   * the plan did classify, then inherits the plan's status and reports
+   * `execution.finished: false`.
    */
   acceptPartialPlan?: boolean;
 }
@@ -467,7 +468,7 @@ export const OF_DATE_CONTRACT: Readonly<Record<string, unknown>>;
 export const DEFLECTED_CONTRACT: Readonly<Record<string, unknown>>;
 export const RETARDED_DEFAULTS: Readonly<Record<string, number>>;
 export const PARTITION_CONTRACT: Readonly<Record<string, unknown>>;
-export const PARTITION_CONTRACT_ID: 'zodiacs-domain-partition/1';
+export const PARTITION_CONTRACT_ID: 'zodiacs-domain-partition/2';
 export const PARTITION_DEFAULTS: Readonly<Record<string, number>>;
 
 /**
