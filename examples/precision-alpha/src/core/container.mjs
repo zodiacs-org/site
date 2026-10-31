@@ -125,6 +125,7 @@ export function parseContainer(src) {
     fail('truncated', `header declares ${payloadEnd} bytes of pack; only ${digestRegionEnd} precede the digest trailer`);
   }
 
+  validateFormat(header);
   validateCoverage(header);
   const bodies = validateBodies(header, payloadOffset, payloadEnd);
   validateConstants(header);
@@ -140,6 +141,54 @@ export function parseContainer(src) {
 /** Parse a pack that is already fully in memory. */
 export function parseContainerBytes(u8) {
   return parseContainer(memorySource(u8));
+}
+
+/**
+ * The header versions this reader understands, and the convention tokens
+ * each one may carry. A number that is not checked is a number that can
+ * mean something else: before this, any `formatVersion` and any
+ * `conventions` opened, so a pack written to a different Chebyshev or unit
+ * convention would have been read as this one.
+ *
+ * Version 2 (compiler 2.0.0 on) names its conventions with tokens.
+ * Version 1 (compiler 1.x, and the synthetic packs in the examples and
+ * tests) wrote a sentence; the two sentences ever written are the tokens
+ * here, and a version-1 header that states its units must state these.
+ */
+export const FORMAT_VERSIONS = Object.freeze([1, 2]);
+export const CONVENTIONS = Object.freeze({
+  1: Object.freeze({
+    chebyshev: Object.freeze([
+      'p(tau) = sum_k c_k T_k(tau), tau = (t - mid)/radius, c_0 NOT halved (SPK type-2 convention)',
+      'p(tau) = sum_k c_k T_k(tau), tau = (t - mid)/radius, c_0 NOT halved',
+    ]),
+  }),
+  2: Object.freeze({
+    chebyshev: Object.freeze(['spk-type-2']),
+    units: Object.freeze(['km,km/s']),
+  }),
+});
+
+function validateFormat(header) {
+  if (header.format !== 'zodiacs-ephemeris-pack') {
+    fail('bad-header', `format ${JSON.stringify(header.format)} is not "zodiacs-ephemeris-pack"`);
+  }
+  if (!FORMAT_VERSIONS.includes(header.formatVersion)) {
+    fail('unsupported-version', `formatVersion ${JSON.stringify(header.formatVersion)} is not one this reader understands (${FORMAT_VERSIONS.join(', ')})`);
+  }
+  const c = header.conventions;
+  if (!c || typeof c !== 'object' || Array.isArray(c)) fail('bad-header', 'header declares no conventions');
+  const allowed = CONVENTIONS[header.formatVersion];
+  if (!allowed.chebyshev.includes(c.chebyshev)) {
+    fail('bad-header', `conventions.chebyshev ${JSON.stringify(c.chebyshev)} is not a convention format ${header.formatVersion} defines`);
+  }
+  if (header.formatVersion === 1) {
+    if (c.units !== undefined && !(c.units && c.units.position === 'km' && c.units.velocity === 'km/s')) {
+      fail('bad-header', `conventions.units ${JSON.stringify(c.units)} is not km and km/s`);
+    }
+  } else if (!allowed.units.includes(c.units)) {
+    fail('bad-header', `conventions.units ${JSON.stringify(c.units)} is not a convention format ${header.formatVersion} defines`);
+  }
 }
 
 /** The compiler writes TDB seconds past J2000 under these two keys. */

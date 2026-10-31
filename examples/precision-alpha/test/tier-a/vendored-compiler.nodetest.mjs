@@ -56,14 +56,34 @@ test('the compiler reaches nothing outside its own directory', () => {
   }
 });
 
-test('the vendored copy matches the research tree, when the research tree is there', async () => {
-  const research = join(DIR, '..', '..', '..', '..', 'docs', 'platform', 'evidence', 'precision-2026-09-20', 'compiler');
-  if (!existsSync(research)) return;      // a packed archive has no research tree
+// Copied from the research tree as compiler 1.1.0. Compiler 2.0.0 (version
+// 1's M2.1, 2026-10-31) changed four of the files; the research tree stays
+// as the record of what 1.1.0 measured, and SOURCE.md records both copies.
+const UNCHANGED_SINCE_COPY = ['format.mjs', 'runtime.mjs', 'raw/choice.json'];
+const CHANGED_IN_2_0_0 = ['compile.mjs', 'cheb.mjs', 'sources.mjs', 'spkref.mjs'];
+const RESEARCH = join(DIR, '..', '..', '..', '..', 'docs', 'platform', 'evidence', 'precision-2026-09-20', 'compiler');
+
+test('the files 2.0.0 left alone still match the research tree, when the research tree is there', async () => {
+  if (!existsSync(RESEARCH)) return;      // a packed archive has no research tree
   const { createHash } = await import('node:crypto');
   const sha = (p) => createHash('sha256').update(readFileSync(p)).digest('hex');
-  for (const f of ['compile.mjs', 'cheb.mjs', 'format.mjs', 'sources.mjs', 'spkref.mjs', 'runtime.mjs', 'raw/choice.json']) {
-    assert.equal(sha(join(DIR, f)), sha(join(research, f)),
+  for (const f of UNCHANGED_SINCE_COPY) {
+    assert.equal(sha(join(DIR, f)), sha(join(RESEARCH, f)),
       `tools/compiler/${f} has drifted from the research tree it was copied from`);
+  }
+});
+
+test('the files 2.0.0 changed are recorded against the research copies they replaced', async () => {
+  const { createHash } = await import('node:crypto');
+  const sha = (p) => createHash('sha256').update(readFileSync(p)).digest('hex');
+  const doc = readFileSync(join(DIR, 'SOURCE.md'), 'utf8');
+  const recorded = new Map([...doc.matchAll(/^\| (\S+\.mjs) \(1\.1\.0\) \| ([0-9a-f]{64}) \|$/gm)].map((m) => [m[1], m[2]]));
+  assert.deepEqual([...recorded.keys()].sort(), [...CHANGED_IN_2_0_0].sort(), 'SOURCE.md lists the 1.1.0 hash of exactly the files 2.0.0 changed');
+  for (const f of CHANGED_IN_2_0_0) {
+    assert.notEqual(sha(join(DIR, f)), recorded.get(f), `tools/compiler/${f} is listed as changed but is the 1.1.0 copy`);
+    if (existsSync(RESEARCH)) {
+      assert.equal(sha(join(RESEARCH, f)), recorded.get(f), `SOURCE.md records the wrong 1.1.0 hash for ${f}`);
+    }
   }
 });
 
