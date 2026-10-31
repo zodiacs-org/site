@@ -33,7 +33,7 @@ export interface RetardedSearchSpec {
   maxTauWidenings?: number;
   /** Below this width a cell whose enclosures failed is reported, not split. */
   enclosureFloorSec?: number;
-  tauPadFactor?: number;
+  /** A floor, in seconds, added to each side of the candidate light-time interval. */
   tauPadFloorSec?: number;
 }
 

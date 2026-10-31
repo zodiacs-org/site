@@ -57,6 +57,7 @@ import assert from 'node:assert/strict';
 import * as G from './_geometry.mjs';
 import {
   partitionDomain, partitionKey, PARTITION_DEFAULTS, PARTITION_CONTRACT,
+  NUMERICS_POLICY, NUMERICS_FINGERPRINT,
 } from '../../src/core/domain-partition.mjs';
 import {
   MIN_ELONGATION_RAD, COS_MIN_ELONGATION_GUARD, COS_MIN_ELONGATION_EXCLUDE,
@@ -1267,9 +1268,10 @@ test('the key changes when the question changes', () => {
   const onCoarse = partitionDomain(coarse, spec);
   const onFine = partitionDomain(fine, spec);
   assert.notEqual(onCoarse.key, onFine.key, 'two packs of different structure share a partition key');
-  assert.equal(onCoarse.contract, 'zodiacs-domain-partition/1');
-  assert.ok(onCoarse.key.startsWith('zodiacs-domain-partition/1|'),
-    `the key must name the contract it belongs to: ${onCoarse.key}`);
+  assert.equal(onCoarse.contract, 'zodiacs-domain-partition/2');
+  assert.ok(onCoarse.key.startsWith(`zodiacs-domain-partition/2|${NUMERICS_FINGERPRINT}|`),
+    `the key must name the contract and the numerical policy it belongs to: ${onCoarse.key}`);
+  assert.equal(onCoarse.request.identity.numerics, NUMERICS_FINGERPRINT);
   // The window, the body and the tolerance, through the operation.
   // `Moon` rather than a body this synthetic pack has no series for: the
   // point is a key that separates two answerable requests, and an
@@ -1287,6 +1289,23 @@ test('the key changes when the question changes', () => {
 });
 
 // ================================== the deflector as target: the one exception
+test('the numerical policy is in the key, so a plan from another policy does not pass for this one', () => {
+  // Audit finding alpha-search-partition-5: constants that move spans were
+  // not in the key, so a plan built under another choice of them passed the
+  // key check. The policy is one frozen object, its fingerprint is a key
+  // component, and changing any field changes the fingerprint.
+  assert.ok(Object.isFrozen(NUMERICS_POLICY));
+  assert.equal(NUMERICS_POLICY.contract, 'zodiacs-domain-partition/2');
+  const base = {
+    packDigest: 'sha256-aaaa', packStructure: 'structure-aaaa', observer: 'geocentre', body: BODY,
+    fromTdbSec: -1000, toTdbSec: 1000, boundaryToleranceSec: 60,
+    relightWidthRatio: PARTITION_DEFAULTS.relightWidthRatio, maxTauWidenings: PARTITION_DEFAULTS.maxTauWidenings,
+    tauPadFloorSec: PARTITION_DEFAULTS.tauPadFloorSec, profile: DEFLECTION_PROFILE.id,
+  };
+  assert.equal(partitionKey(base).split('|')[1], NUMERICS_FINGERPRINT);
+  assert.match(NUMERICS_FINGERPRINT, /^[0-9a-f]{16}$/);
+});
+
 test('the deflector as target is admitted whole, and only by that rule', () => {
   // A body does not bend its own light, so the profile applies no
   // deflection to the Sun and the elongation floor that restricts every
@@ -1314,7 +1333,7 @@ test('the deflector as target is admitted whole, and only by that rule', () => {
   assert.match(r.diagnostics.deflectorIsTargetWhy, /no deflection is applied to it/);
   // It still carries an identity, so a Sun partition is cached as one
   // answer among others rather than as an unkeyed special case.
-  assert.equal(r.contract, 'zodiacs-domain-partition/1');
+  assert.equal(r.contract, 'zodiacs-domain-partition/2');
   assert.ok(r.key.includes('|Sun|'), `the key must name the body: ${r.key}`);
 
   // NOT REACHABLE BY ACCIDENT. Every other body on the same pack and the
