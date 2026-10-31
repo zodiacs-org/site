@@ -1,5 +1,5 @@
 {
- "tool": "tools/measure/fixture-matrix.mjs",
+ "tool": "tools/measure/fixture-matrix-rebuilt.mjs",
  "label": "v1",
  "alpha": "<version 1: examples/precision-alpha at 931e3281>",
  "node": "v22.22.2",
@@ -64,7 +64,7 @@
      ],
      "unresolved": 0,
      "evaluations": 420,
-     "ms": 9
+     "ms": 5
     },
     "aberrated": {
      "status": "finished",
@@ -82,7 +82,7 @@
      ],
      "unresolved": 0,
      "evaluations": 420,
-     "ms": 4
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -100,7 +100,7 @@
      ],
      "unresolved": 0,
      "evaluations": 420,
-     "ms": 3
+     "ms": 2
     },
     "ofDate": {
      "status": "finished",
@@ -118,7 +118,7 @@
      ],
      "unresolved": 0,
      "evaluations": 436,
-     "ms": 13
+     "ms": 6
     },
     "deflected": {
      "status": "finished",
@@ -136,7 +136,7 @@
      ],
      "unresolved": 0,
      "evaluations": 524,
-     "ms": 10
+     "ms": 4
     }
    }
   },
@@ -173,7 +173,7 @@
      ],
      "unresolved": 0,
      "evaluations": 38,
-     "ms": 1
+     "ms": 0
     },
     "retarded": {
      "status": "finished",
@@ -191,7 +191,7 @@
      ],
      "unresolved": 0,
      "evaluations": 654,
-     "ms": 2
+     "ms": 1
     },
     "aberrated": {
      "status": "finished",
@@ -209,7 +209,7 @@
      ],
      "unresolved": 0,
      "evaluations": 650,
-     "ms": 12
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -227,7 +227,7 @@
      ],
      "unresolved": 0,
      "evaluations": 650,
-     "ms": 11
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -245,7 +245,7 @@
      ],
      "unresolved": 0,
      "evaluations": 656,
-     "ms": 14
+     "ms": 3
     },
     "deflected": {
      "status": "finished",
@@ -263,7 +263,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1944,
-     "ms": 18
+     "ms": 6
     }
    }
   },
@@ -314,7 +314,7 @@
        "direction": "increasing"
       }
      ],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 208,
      "ms": 1
     },
@@ -342,7 +342,7 @@
      ],
      "unresolved": 0,
      "evaluations": 968,
-     "ms": 3
+     "ms": 1
     },
     "aberrated": {
      "status": "finished",
@@ -368,7 +368,7 @@
      ],
      "unresolved": 0,
      "evaluations": 968,
-     "ms": 8
+     "ms": 0
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -394,7 +394,7 @@
      ],
      "unresolved": 0,
      "evaluations": 968,
-     "ms": 2
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -420,7 +420,7 @@
      ],
      "unresolved": 0,
      "evaluations": 796,
-     "ms": 11
+     "ms": 4
     },
     "deflected": {
      "status": "finished",
@@ -446,7 +446,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1072,
-     "ms": 13
+     "ms": 4
     }
    }
   },
@@ -491,9 +491,9 @@
        "direction": "increasing"
       }
      ],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 208,
-     "ms": 1
+     "ms": 0
     },
     "retarded": {
      "status": "finished",
@@ -526,18 +526,18 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 2,
      "evaluations": 1506,
-     "ms": 3
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 2,
      "evaluations": 1506,
-     "ms": 3
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -563,7 +563,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1360,
-     "ms": 7
+     "ms": 4
     },
     "deflected": {
      "status": "finished",
@@ -589,7 +589,7 @@
      ],
      "unresolved": 0,
      "evaluations": 2286,
-     "ms": 14
+     "ms": 5
     }
    }
   },
@@ -640,9 +640,9 @@
        "direction": "increasing"
       }
      ],
-     "unresolved": 0,
+     "unresolved": 2,
      "evaluations": 209,
-     "ms": 1
+     "ms": 0
     },
     "retarded": {
      "status": "finished",
@@ -658,9 +658,9 @@
        "direction": "increasing"
       }
      ],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1033,
-     "ms": 2
+     "ms": 1
     },
     "aberrated": {
      "status": "finished",
@@ -676,9 +676,9 @@
        "direction": "increasing"
       }
      ],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1033,
-     "ms": 2
+     "ms": 0
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -694,9 +694,9 @@
        "direction": "increasing"
       }
      ],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1033,
-     "ms": 3
+     "ms": 2
     },
     "ofDate": {
      "status": "finished",
@@ -722,7 +722,7 @@
      ],
      "unresolved": 0,
      "evaluations": 876,
-     "ms": 10
+     "ms": 3
     },
     "deflected": {
      "status": "finished",
@@ -748,7 +748,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1070,
-     "ms": 10
+     "ms": 4
     }
    }
   },
@@ -782,25 +782,25 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 10,
      "evaluations": 185,
-     "ms": 1
+     "ms": 0
     },
     "retarded": {
      "status": "finished",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1743,
-     "ms": 4
+     "ms": 1
     },
     "aberrated": {
      "status": "finished",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1743,
      "ms": 2
     },
@@ -809,9 +809,9 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1743,
-     "ms": 4
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -837,7 +837,7 @@
      ],
      "unresolved": 0,
      "evaluations": 866,
-     "ms": 7
+     "ms": 4
     },
     "deflected": {
      "status": "finished",
@@ -863,7 +863,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1057,
-     "ms": 8
+     "ms": 4
     }
    }
   },
@@ -894,36 +894,36 @@
        "direction": null
       }
      ],
-     "unresolved": 0,
+     "unresolved": 9,
      "evaluations": 186,
-     "ms": 0
+     "ms": 1
     },
     "retarded": {
      "status": "finished",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1702,
-     "ms": 3
+     "ms": 1
     },
     "aberrated": {
      "status": "finished",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1702,
-     "ms": 4
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1702,
-     "ms": 5
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -949,7 +949,7 @@
      ],
      "unresolved": 0,
      "evaluations": 868,
-     "ms": 11
+     "ms": 4
     },
     "deflected": {
      "status": "finished",
@@ -975,7 +975,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1027,
-     "ms": 12
+     "ms": 4
     }
    }
   },
@@ -1005,36 +1005,36 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 65528,
      "evaluations": 817780,
-     "ms": 215
+     "ms": 110
     },
     "retarded": {
      "status": "budget-exhausted",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 4000001,
-     "ms": 4298
+     "ms": 2150
     },
     "aberrated": {
      "status": "budget-exhausted",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 4000001,
-     "ms": 3800
+     "ms": 2214
     },
     "ofDateFixedFrame": {
      "status": "budget-exhausted",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 4000001,
-     "ms": 3263
+     "ms": 2562
     },
     "ofDate": {
      "status": "finished",
@@ -1052,7 +1052,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1083,
-     "ms": 5
+     "ms": 4
     },
     "deflected": {
      "status": "finished",
@@ -1103,7 +1103,7 @@
      "events": [],
      "unresolved": 0,
      "evaluations": 766,
-     "ms": 1
+     "ms": 0
     },
     "aberrated": {
      "status": "finished",
@@ -1112,7 +1112,7 @@
      "events": [],
      "unresolved": 0,
      "evaluations": 766,
-     "ms": 0
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -1121,7 +1121,7 @@
      "events": [],
      "unresolved": 0,
      "evaluations": 766,
-     "ms": 1
+     "ms": 0
     },
     "ofDate": {
      "status": "finished",
@@ -1173,7 +1173,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1027,
-     "ms": 5
+     "ms": 4
     }
    }
   },
@@ -1195,7 +1195,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 185,
      "ms": 0
     },
@@ -1204,7 +1204,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1700,
      "ms": 1
     },
@@ -1213,7 +1213,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1700,
      "ms": 1
     },
@@ -1222,7 +1222,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1700,
      "ms": 1
     },
@@ -1250,7 +1250,7 @@
      ],
      "unresolved": 0,
      "evaluations": 866,
-     "ms": 6
+     "ms": 3
     },
     "deflected": {
      "status": "finished",
@@ -1276,7 +1276,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1025,
-     "ms": 6
+     "ms": 4
     }
    }
   },
@@ -1298,7 +1298,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 10,
      "evaluations": 185,
      "ms": 0
     },
@@ -1307,27 +1307,27 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1702,
-     "ms": 2
+     "ms": 1
     },
     "aberrated": {
      "status": "finished",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1702,
-     "ms": 2
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 1702,
-     "ms": 2
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -1353,7 +1353,7 @@
      ],
      "unresolved": 0,
      "evaluations": 868,
-     "ms": 6
+     "ms": 3
     },
     "deflected": {
      "status": "finished",
@@ -1379,7 +1379,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1027,
-     "ms": 7
+     "ms": 4
     }
    }
   },
@@ -1478,7 +1478,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1762,
-     "ms": 1
+     "ms": 0
     },
     "aberrated": {
      "status": "finished",
@@ -1546,7 +1546,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1733,
-     "ms": 2
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -1564,7 +1564,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1084,
-     "ms": 7
+     "ms": 4
     },
     "deflected": {
      "status": "finished",
@@ -1582,7 +1582,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1326,
-     "ms": 6
+     "ms": 5
     }
    }
   },
@@ -1637,7 +1637,7 @@
      ],
      "unresolved": 0,
      "evaluations": 270,
-     "ms": 1
+     "ms": 0
     },
     "retarded": {
      "status": "finished",
@@ -1655,7 +1655,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1520,
-     "ms": 0
+     "ms": 1
     },
     "aberrated": {
      "status": "finished",
@@ -1689,7 +1689,7 @@
      ],
      "unresolved": 0,
      "evaluations": 2486,
-     "ms": 2
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -1741,7 +1741,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1780,
-     "ms": 6
+     "ms": 5
     },
     "deflected": {
      "status": "finished",
@@ -1759,7 +1759,7 @@
      ],
      "unresolved": 0,
      "evaluations": 2364,
-     "ms": 7
+     "ms": 4
     }
    }
   },
@@ -1798,7 +1798,7 @@
        "direction": "increasing"
       }
      ],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 40,
      "ms": 0
     },
@@ -1836,7 +1836,7 @@
      ],
      "unresolved": 0,
      "evaluations": 421,
-     "ms": 0
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -1854,7 +1854,7 @@
      ],
      "unresolved": 0,
      "evaluations": 421,
-     "ms": 1
+     "ms": 0
     },
     "ofDate": {
      "status": "finished",
@@ -1872,7 +1872,7 @@
      ],
      "unresolved": 0,
      "evaluations": 424,
-     "ms": 2
+     "ms": 1
     },
     "deflected": {
      "status": "finished",
@@ -1929,7 +1929,7 @@
        "direction": "increasing"
       }
      ],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 40,
      "ms": 0
     },
@@ -1949,7 +1949,7 @@
      ],
      "unresolved": 0,
      "evaluations": 422,
-     "ms": 0
+     "ms": 1
     },
     "aberrated": {
      "status": "finished",
@@ -2021,7 +2021,7 @@
      ],
      "unresolved": 0,
      "evaluations": 511,
-     "ms": 2
+     "ms": 1
     }
    }
   },
@@ -2062,7 +2062,7 @@
      ],
      "unresolved": 0,
      "evaluations": 37,
-     "ms": 0
+     "ms": 1
     },
     "retarded": {
      "status": "finished",
@@ -2080,7 +2080,7 @@
      ],
      "unresolved": 0,
      "evaluations": 421,
-     "ms": 1
+     "ms": 0
     },
     "aberrated": {
      "status": "finished",
@@ -2116,7 +2116,7 @@
      ],
      "unresolved": 0,
      "evaluations": 421,
-     "ms": 1
+     "ms": 0
     },
     "ofDate": {
      "status": "finished",
@@ -2134,7 +2134,7 @@
      ],
      "unresolved": 0,
      "evaluations": 424,
-     "ms": 1
+     "ms": 2
     },
     "deflected": {
      "status": "finished",
@@ -2229,7 +2229,7 @@
      ],
      "unresolved": 0,
      "evaluations": 423,
-     "ms": 1
+     "ms": 0
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -2247,7 +2247,7 @@
      ],
      "unresolved": 0,
      "evaluations": 423,
-     "ms": 0
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -2265,7 +2265,7 @@
      ],
      "unresolved": 0,
      "evaluations": 424,
-     "ms": 2
+     "ms": 1
     },
     "deflected": {
      "status": "finished",
@@ -2338,7 +2338,7 @@
      ],
      "unresolved": 0,
      "evaluations": 604,
-     "ms": 1
+     "ms": 0
     },
     "aberrated": {
      "status": "finished",
@@ -2392,7 +2392,7 @@
      ],
      "unresolved": 0,
      "evaluations": 618,
-     "ms": 2
+     "ms": 1
     },
     "deflected": {
      "status": "finished",
@@ -2410,7 +2410,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1990,
-     "ms": 5
+     "ms": 4
     }
    }
   },
@@ -2447,7 +2447,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 123,
      "ms": 0
     },
@@ -2456,7 +2456,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 123,
      "ms": 0
     },
@@ -2465,9 +2465,9 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 123,
-     "ms": 1
+     "ms": 0
     },
     "ofDate": {
      "status": "finished",
@@ -2503,7 +2503,7 @@
      ],
      "unresolved": 0,
      "evaluations": 510,
-     "ms": 2
+     "ms": 1
     }
    }
   },
@@ -2551,7 +2551,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 123,
      "ms": 0
     },
@@ -2560,7 +2560,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 123,
      "ms": 0
     },
@@ -2569,7 +2569,7 @@
      "established": false,
      "found": 0,
      "events": [],
-     "unresolved": 0,
+     "unresolved": 1,
      "evaluations": 123,
      "ms": 0
     },
@@ -2580,7 +2580,7 @@
      "events": [],
      "unresolved": 0,
      "evaluations": 103,
-     "ms": 0
+     "ms": 1
     },
     "deflected": {
      "status": "finished",
@@ -2589,7 +2589,7 @@
      "events": [],
      "unresolved": 0,
      "evaluations": 125,
-     "ms": 1
+     "ms": 0
     }
    }
   },
@@ -2637,7 +2637,7 @@
      ],
      "unresolved": 0,
      "evaluations": 402,
-     "ms": 1
+     "ms": 0
     },
     "aberrated": {
      "status": "finished",
@@ -2655,7 +2655,7 @@
      ],
      "unresolved": 0,
      "evaluations": 402,
-     "ms": 0
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -2691,7 +2691,7 @@
      ],
      "unresolved": 0,
      "evaluations": 421,
-     "ms": 3
+     "ms": 1
     },
     "deflected": {
      "status": "finished",
@@ -2786,7 +2786,7 @@
      ],
      "unresolved": 0,
      "evaluations": 402,
-     "ms": 0
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -2804,7 +2804,7 @@
      ],
      "unresolved": 0,
      "evaluations": 402,
-     "ms": 1
+     "ms": 0
     },
     "ofDate": {
      "status": "finished",
@@ -2822,7 +2822,7 @@
      "events": [],
      "unresolved": 0,
      "evaluations": 123,
-     "ms": 0
+     "ms": 1
     }
    }
   },
@@ -2983,7 +2983,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1890,
-     "ms": 2
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -3025,7 +3025,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1890,
-     "ms": 2
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -3067,7 +3067,7 @@
      ],
      "unresolved": 0,
      "evaluations": 1892,
-     "ms": 11
+     "ms": 10
     },
     "deflected": {
      "status": "finished",
@@ -3109,7 +3109,7 @@
      ],
      "unresolved": 0,
      "evaluations": 2311,
-     "ms": 10
+     "ms": 8
     }
    }
   },
@@ -3260,7 +3260,7 @@
      ],
      "unresolved": 0,
      "evaluations": 2750,
-     "ms": 2
+     "ms": 1
     },
     "ofDateFixedFrame": {
      "status": "finished",
@@ -3302,7 +3302,7 @@
      ],
      "unresolved": 0,
      "evaluations": 2750,
-     "ms": 2
+     "ms": 1
     },
     "ofDate": {
      "status": "finished",
@@ -3344,7 +3344,7 @@
      ],
      "unresolved": 0,
      "evaluations": 2784,
-     "ms": 8
+     "ms": 7
     },
     "deflected": {
      "status": "finished",
@@ -3386,7 +3386,7 @@
      ],
      "unresolved": 0,
      "evaluations": 3153,
-     "ms": 7
+     "ms": 6
     }
    }
   },
@@ -3446,7 +3446,7 @@
      "events": [],
      "unresolved": 0,
      "evaluations": 103,
-     "ms": 1
+     "ms": 0
     },
     "deflected": {
      "status": "finished",
@@ -3524,7 +3524,7 @@
      "events": [],
      "unresolved": 0,
      "evaluations": 1494,
-     "ms": 3
+     "ms": 2
     }
    }
   }

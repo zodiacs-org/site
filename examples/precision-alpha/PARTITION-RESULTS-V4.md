@@ -148,17 +148,17 @@ the per-cell bounds and the centred form in the search's cells, so the gap
 does not measure how this attempt implemented the two shared ideas.
 
 **How the rules compare.** This attempt's rule is weaker than version 2's in
-these ways: bit-identity where nothing changed is not fatal (it was
-version 2's and version 3's E-3), and E-3's first sense, the released
-`apparent()` bit-identical on a fixed grid, has no counterpart; E-2's
-comparisons on the ten-case corpus, on the regression corpus's plain search
-and between the partition and the search are absent; an event counts as found on a 1e-3 s
+these ways: bit-identity where nothing changed is not fatal (it was version
+2's and version 3's E-3), and E-3's first sense, the released `apparent()`
+bit-identical on a fixed grid, has no counterpart; E-2's comparisons on the
+ten-case corpus, on the regression corpus's plain search and between the
+partition and the search are absent; an event counts as found on a 1e-3 s
 time match, with no bracket test and no one-to-one pairing; the ten-case
 corpus has one rung of five; the matrix is rebuilt from a description, not
 the audit's script; the pack is not held to version 1's digests, and nothing
 stops the run if version 1's counts do not reproduce; the PASS condition
-names only V-1 to V-4; the holdout was picked by hand; the rule was committed
-with the code and after its development runs; the run records name
+names only V-1 to V-4; the holdout was picked by hand; the rule was
+committed with the code and after its development runs; the run records name
 version 1's rule and no commit; and nothing was reviewed. It is stronger in
 one: V-2, the plain Moon search finishing, is fatal, where version 2's P-8
 was not. And it differs in one: P-4 and P-5 take this attempt's own plain
@@ -304,6 +304,24 @@ run: on version 1, the Moon-like reception roots it solved came back
 unbracketed, because the EMB's motion over the light-time moves them by tens
 to thousands of seconds; it now scans the whole window. The version-1 run V-3
 compares with was made after that fix, 42 s before `7287ab66`.
+
+The two matrix files were made again on 2026-11-01. As committed in
+`a148bc59` they recorded 0 unresolved spans for every one of their 156
+results, because the tool read `completeness.unresolved` or `unresolved`,
+neither of which exists; both search modes keep the spans in
+`accounting.unresolved`. The tool now reads that field, and both runs were
+repeated as they were first made: from this tree, so that its test helpers
+build the packs, with `--alpha` naming version 1's tree
+(`examples/precision-alpha` at `23dd8cb7`) and `--label=v1`, then this
+branch's tree and `--label=v2`, and the tree paths replaced by the same
+placeholders. This branch's code differs from `7287ab66`'s only by P4.2's
+container format check and the B-2 refusal. In both files every field but
+the unresolved counts is unchanged, apart from the wall times and the tool's
+own name. 36 results in each now record unresolved spans, the same 36 that
+are not established (the triple root's geometric rung has 65,528); the 120
+established results record 0. `matrix-verdict.json` reads no unresolved
+count and was not made again: recomputed from the new files it is identical,
+apart from its rule label.
 
 ## V-4: F1 to F10 on the deflected rung
 
@@ -543,3 +561,5 @@ and 11,409 cells (V-1, above).
   `ad346680`'s note on the compiler.
 - 2026-11-01: review B's B-2 fixed after the runs, and said so under
   "Review findings on version 2 that reproduce here".
+- 2026-11-01: `matrix-v1.json` and `matrix-v2.json` made again, recording
+  their unresolved spans (V-3).

@@ -217,7 +217,12 @@ async function run(alphaDir, label) {
       bracket: e[bracketKey].map((x) => x * scale),
       direction: e.direction ?? null,
     })),
-    unresolved: (r.completeness?.unresolved ?? r.unresolved ?? []).length,
+    // Both search modes keep their unresolved spans in
+    // `accounting.unresolved`. Until 2026-11-01 this read
+    // `completeness.unresolved` or `unresolved`, neither of which exists,
+    // so every result the tool wrote recorded 0. A result without the
+    // field now records null rather than a count it does not have.
+    unresolved: Array.isArray(r.accounting?.unresolved) ? r.accounting.unresolved.length : null,
     evaluations: r.execution?.evaluations ?? r.evaluations ?? null,
   });
   const attempt = (fn) => {
