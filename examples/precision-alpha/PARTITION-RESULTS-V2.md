@@ -19,8 +19,8 @@ scores.
 
 The runs are in
 [`docs/platform/evidence/precision-partition/evaluation-v2/`](../../docs/platform/evidence/precision-partition/evaluation-v2/),
-on the DE440s pack compiled on this machine by the compiler on `main`
-(container `9856b50f…`; section 3 of the rule says why it stands in for
+on the DE440s pack compiled on this machine by compiler 1.1.0, then on
+`main` (container `9856b50f…`; section 3 of the rule says why it stands in for
 version 1's). Node 22.22.2, darwin-arm64, on 31 October 2026 between 23:47
 and 23:54 Bangkok time. Evaluations are the currency, as in version 1, and
 they are deterministic; wall times are not scored. Ratios below are rounded
