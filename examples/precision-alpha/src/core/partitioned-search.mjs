@@ -180,6 +180,21 @@ export function assertPartitionUsable(plan, {
   }
 
   /**
+   * A plan whose status and classification disagree (review B of
+   * moon-enclosure's version 2, finding B-2). A plan this runtime builds
+   * stops only with a cell in flight, and puts that cell back as
+   * unprocessed, so a plan that says it stopped while leaving nothing
+   * unclassified did not come from here as it stands. Under
+   * `acceptPartialPlan` it was searched in full and its status folded in
+   * afterwards, which claimed an exact total over the request beside
+   * `finished: false`.
+   */
+  if (plan.execution.status !== 'finished' && plan.unprocessed.length === 0) {
+    fail('unsupported-option',
+      `this plan says it stopped with ${plan.execution.status} but leaves nothing unclassified, which no plan this runtime builds does. Rebuild it.`);
+  }
+
+  /**
    * A plan that did not finish classified only part of its window, and
    * the rest is `unprocessed` -- not excluded, not admissible, not
    * anything. Reusing it for a request with a larger budget silently

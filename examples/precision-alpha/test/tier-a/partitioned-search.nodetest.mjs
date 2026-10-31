@@ -200,6 +200,55 @@ test('a plan that did not classify its whole window is refused by default', () =
     'the events found in the classified part are the full run\'s events there');
 });
 
+/**
+ * Review B of moon-enclosure's version 2, finding B-2, as it reproduced on
+ * this code on 2026-11-01. A fully classified plan relabelled as stopped,
+ * imported under `acceptPartialPlan`, was searched in full, and its status
+ * was folded in afterwards: the result said `completeness.overRequest:
+ * true` beside `execution.finished: false`. A plan this runtime builds
+ * stops only with a cell in flight, and puts that cell back as
+ * unprocessed, so a stopped plan with nothing unclassified contradicts
+ * itself.
+ *
+ * Mutation this catches: the status-against-classification check in
+ * `assertPartitionUsable` removed.
+ */
+test('a plan that says it stopped but leaves nothing unclassified is refused (review B-2)', () => {
+  const CLEAR = { body: 'Mars', fromTdbSec: -38 * DAY, toTdbSec: 38 * DAY };
+  const whole = partitionDomain(eph, CLEAR);
+  assert.equal(whole.execution.status, 'finished');
+  assert.equal(whole.unprocessed.length, 0);
+  for (const status of ['budget-exhausted', 'cancelled']) {
+    const relabelled = roundTrip(whole);
+    relabelled.execution.status = status;
+    relabelled.execution.finished = false;
+    for (const acceptPartialPlan of [true, false]) {
+      assert.throws(
+        () => searchDeflectedOverPartition(eph, {
+          ...CLEAR, targetDeg: 95, plan: relabelled, acceptImportedPlan: true, acceptPartialPlan,
+        }),
+        (e) => e.code === 'unsupported-option' && /leaves nothing unclassified/.test(e.message),
+        `${status}, acceptPartialPlan ${acceptPartialPlan}`,
+      );
+    }
+  }
+
+  // A plan that really stopped, native or imported, is still taken under
+  // the option, and claims nothing over the request.
+  const stopped = [1, 10, 100, 1000].map((maxEvaluations) => plan({ maxEvaluations }));
+  stopped.push(plan({ signal: { aborted: true } }));
+  for (const p of stopped) {
+    assert.notEqual(p.execution.status, 'finished');
+    assert.ok(p.unprocessed.length > 0);
+    for (const given of [p, roundTrip(p)]) {
+      const r = run({ plan: given, acceptImportedPlan: given !== p, acceptPartialPlan: true });
+      assert.equal(r.execution.finished, false);
+      assert.equal(r.completeness.overRequest, false);
+      assert.equal(r.eventCount.isExactTotalOverRequest, false);
+    }
+  }
+});
+
 // ====================================== 2. two axes, and the tiling holds
 /**
  * Mutation this catches: pushing unsearched admissible spans into

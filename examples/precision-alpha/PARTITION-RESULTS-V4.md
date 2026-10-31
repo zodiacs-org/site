@@ -488,6 +488,12 @@ own cases, on synthetic packs:
   B-4 and B-5 behave the same on version 1's code. `buildPartitionedResult`,
   which this attempt leaves out, is the M4.2 item meant to refuse B-2's
   contradiction; `moon-enclosure` fixed these in `37268776` and `1894e4c2`.
+  B-2 is fixed here since the runs: `assertPartitionUsable` refuses a plan
+  that says it stopped and leaves nothing unclassified, which no plan this
+  runtime builds does, and a tier-A test in
+  `test/tier-a/partitioned-search.nodetest.mjs` holds it. The scored runs
+  pass in only finished plans this runtime built, which the check leaves
+  alone, so no number above moves. B-1, B-3, B-4 and B-5 are unchanged.
 
 **The pack.** Version 1's partition alone, on this pack, gives the committed
 run's partition evaluations and boundary seconds for all ten bodies, and
@@ -535,3 +541,5 @@ and 11,409 cells (V-1, above).
   added; Neptune's version-1 ratio is given as this file rounds. No scored
   number changed. The text as first committed is in `a148bc59`, with
   `ad346680`'s note on the compiler.
+- 2026-11-01: review B's B-2 fixed after the runs, and said so under
+  "Review findings on version 2 that reproduce here".
