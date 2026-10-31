@@ -1,0 +1,199 @@
+{
+ "tree": "<860-export>/examples/precision-alpha",
+ "rungs": {
+  "retarded": {
+   "fixtures": 48,
+   "missedWhileEstablished": 8,
+   "eventWithoutRootAtJump": 7,
+   "established": 48,
+   "declined": 0,
+   "missedRows": [
+    {
+     "step": -0.07,
+     "eps": -0.01,
+     "roots": [
+      -0.01,
+      0.060000000000000005
+     ],
+     "foundAt": [
+      0.06
+     ]
+    },
+    {
+     "step": -0.07,
+     "eps": -0.001,
+     "roots": [
+      -0.001,
+      0.069
+     ],
+     "foundAt": [
+      0.069
+     ]
+    },
+    {
+     "step": -0.07,
+     "eps": -0.0001,
+     "roots": [
+      -0.0001,
+      0.0699
+     ],
+     "foundAt": [
+      0.0699
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -1,
+     "roots": [
+      -1,
+      0
+     ],
+     "foundAt": [
+      -1
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -0.1,
+     "roots": [
+      -0.1,
+      0.9
+     ],
+     "foundAt": [
+      0.9
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -0.01,
+     "roots": [
+      -0.01,
+      0.99
+     ],
+     "foundAt": [
+      0.99
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -0.001,
+     "roots": [
+      -0.001,
+      0.999
+     ],
+     "foundAt": [
+      0.999
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -0.0001,
+     "roots": [
+      -0.0001,
+      0.9999
+     ],
+     "foundAt": [
+      0.9999
+     ]
+    }
+   ]
+  },
+  "aberrated": {
+   "fixtures": 48,
+   "missedWhileEstablished": 8,
+   "eventWithoutRootAtJump": 7,
+   "established": 48,
+   "declined": 0,
+   "missedRows": [
+    {
+     "step": -0.07,
+     "eps": -0.01,
+     "roots": [
+      -0.01,
+      0.060000000000000005
+     ],
+     "foundAt": [
+      0.06
+     ]
+    },
+    {
+     "step": -0.07,
+     "eps": -0.001,
+     "roots": [
+      -0.001,
+      0.069
+     ],
+     "foundAt": [
+      0.069
+     ]
+    },
+    {
+     "step": -0.07,
+     "eps": -0.0001,
+     "roots": [
+      -0.0001,
+      0.0699
+     ],
+     "foundAt": [
+      0.0699
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -1,
+     "roots": [
+      -1,
+      0
+     ],
+     "foundAt": [
+      -1
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -0.1,
+     "roots": [
+      -0.1,
+      0.9
+     ],
+     "foundAt": [
+      0.9
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -0.01,
+     "roots": [
+      -0.01,
+      0.99
+     ],
+     "foundAt": [
+      0.99
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -0.001,
+     "roots": [
+      -0.001,
+      0.999
+     ],
+     "foundAt": [
+      0.999
+     ]
+    },
+    {
+     "step": -1,
+     "eps": -0.0001,
+     "roots": [
+      -0.0001,
+      0.9999
+     ],
+     "foundAt": [
+      0.9999
+     ]
+    }
+   ]
+  }
+ }
+}

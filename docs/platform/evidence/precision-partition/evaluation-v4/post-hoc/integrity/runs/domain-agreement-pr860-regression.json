@@ -1,0 +1,233 @@
+{
+  "tool": "domain-agreement",
+  "what": "the search's own domain verdict against the partition's, span by span, on the same windows",
+  "epoch": "1975-01-01T00:00:00Z",
+  "pack": "<packs>/D-de440s.sealed.zeph",
+  "packDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+  "edgeToleranceSec": 0.000001,
+  "boundaryToleranceSec": 60,
+  "cases": [
+    {
+      "id": "F1",
+      "body": "Sun",
+      "from": "1975-01-01T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 0,
+      "searchExcludedSpans": 0,
+      "partitionExcludedDays": 0,
+      "partitionExcludedSpans": 0,
+      "partitionBoundaryDays": 0,
+      "partitionAdmissibleDays": 300,
+      "partitionExcludedOutsideSearchExcludedDays": 0,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": null,
+      "contradictions": []
+    },
+    {
+      "id": "F2",
+      "body": "Moon",
+      "from": "1977-06-19T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 4.935830525180532,
+      "searchExcludedSpans": 10,
+      "partitionExcludedDays": 4.938845999078066,
+      "partitionExcludedSpans": 11,
+      "partitionBoundaryDays": 0.033935644621098486,
+      "partitionAdmissibleDays": 295.0272183563008,
+      "partitionExcludedOutsideSearchExcludedDays": 0.00680733179474451,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": 0.9992317690131912,
+      "contradictions": [
+        "6.807e-3 d proved excluded by the partition that the search did not decline"
+      ]
+    },
+    {
+      "id": "F3",
+      "body": "Mercury",
+      "from": "1979-12-06T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 37.08392333984375,
+      "searchExcludedSpans": 5,
+      "partitionExcludedDays": 37.08642578125,
+      "partitionExcludedSpans": 5,
+      "partitionBoundaryDays": 0.01904296875,
+      "partitionAdmissibleDays": 262.89453125,
+      "partitionExcludedOutsideSearchExcludedDays": 0.004196166969039352,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": 0.9999543272277204,
+      "contradictions": [
+        "4.196e-3 d proved excluded by the partition that the search did not decline"
+      ]
+    },
+    {
+      "id": "F4",
+      "body": "Venus",
+      "from": "1982-05-24T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 38.94349670410156,
+      "searchExcludedSpans": 1,
+      "partitionExcludedDays": 38.94268798828125,
+      "partitionExcludedSpans": 1,
+      "partitionBoundaryDays": 0.0091552734375,
+      "partitionAdmissibleDays": 261.04815673828125,
+      "partitionExcludedOutsideSearchExcludedDays": 0,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": 0.9999792336105189,
+      "contradictions": []
+    },
+    {
+      "id": "F5",
+      "body": "Mars",
+      "from": "1984-11-09T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 32.06013488769531,
+      "searchExcludedSpans": 1,
+      "partitionExcludedDays": 32.0595703125,
+      "partitionExcludedSpans": 1,
+      "partitionBoundaryDays": 0.00537109375,
+      "partitionAdmissibleDays": 267.93505859375,
+      "partitionExcludedOutsideSearchExcludedDays": 0,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": 0.9999823901179054,
+      "contradictions": []
+    },
+    {
+      "id": "F6",
+      "body": "Jupiter",
+      "from": "1987-04-28T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 0,
+      "searchExcludedSpans": 0,
+      "partitionExcludedDays": 0,
+      "partitionExcludedSpans": 0,
+      "partitionBoundaryDays": 0,
+      "partitionAdmissibleDays": 300,
+      "partitionExcludedOutsideSearchExcludedDays": 0,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": null,
+      "contradictions": []
+    },
+    {
+      "id": "F7",
+      "body": "Saturn",
+      "from": "1989-10-14T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 11.085487365722656,
+      "searchExcludedSpans": 1,
+      "partitionExcludedDays": 11.08544921875,
+      "partitionExcludedSpans": 1,
+      "partitionBoundaryDays": 0.0009765625,
+      "partitionAdmissibleDays": 288.91357421875,
+      "partitionExcludedOutsideSearchExcludedDays": 0,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": 0.9999965588366666,
+      "contradictions": []
+    },
+    {
+      "id": "F8",
+      "body": "Uranus",
+      "from": "1992-04-01T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 10.388229370117188,
+      "searchExcludedSpans": 1,
+      "partitionExcludedDays": 10.38818359375,
+      "partitionExcludedSpans": 1,
+      "partitionBoundaryDays": 0.0009765625,
+      "partitionAdmissibleDays": 289.61083984375,
+      "partitionExcludedOutsideSearchExcludedDays": 0.00007629393373842593,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": 0.9999882491704649,
+      "contradictions": [
+        "7.629e-5 d proved excluded by the partition that the search did not decline"
+      ]
+    },
+    {
+      "id": "F9",
+      "body": "Neptune",
+      "from": "1994-09-18T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 10.136215209960938,
+      "searchExcludedSpans": 1,
+      "partitionExcludedDays": 10.13623046875,
+      "partitionExcludedSpans": 1,
+      "partitionBoundaryDays": 0.0009765625,
+      "partitionAdmissibleDays": 289.86279296875,
+      "partitionExcludedOutsideSearchExcludedDays": 0.000015258777488425927,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": 1,
+      "contradictions": [
+        "1.526e-5 d proved excluded by the partition that the search did not decline"
+      ]
+    },
+    {
+      "id": "F10",
+      "body": "Pluto",
+      "from": "1997-03-06T00:00:00Z",
+      "searchStatus": "finished",
+      "searchExcludedDays": 0,
+      "searchExcludedSpans": 0,
+      "partitionExcludedDays": 0,
+      "partitionExcludedSpans": 0,
+      "partitionBoundaryDays": 0,
+      "partitionAdmissibleDays": 300,
+      "partitionExcludedOutsideSearchExcludedDays": 0,
+      "partitionExcludedInsideSearchDecidedDays": 0,
+      "searchExcludedInsidePartitionAdmissibleDays": 0,
+      "searchExcludedOutsidePartitionExcludedOrBoundaryDays": 0,
+      "provedFractionOfSearchExcluded": null,
+      "contradictions": []
+    }
+  ],
+  "summary": {
+    "cases": 10,
+    "casesWithSearchExclusions": 7,
+    "casesWithPartitionExclusions": 7,
+    "totalContradictions": 4,
+    "contradictingCases": [
+      {
+        "id": "F2",
+        "contradictions": [
+          "6.807e-3 d proved excluded by the partition that the search did not decline"
+        ]
+      },
+      {
+        "id": "F3",
+        "contradictions": [
+          "4.196e-3 d proved excluded by the partition that the search did not decline"
+        ]
+      },
+      {
+        "id": "F8",
+        "contradictions": [
+          "7.629e-5 d proved excluded by the partition that the search did not decline"
+        ]
+      },
+      {
+        "id": "F9",
+        "contradictions": [
+          "1.526e-5 d proved excluded by the partition that the search did not decline"
+        ]
+      }
+    ]
+  },
+  "passed": false,
+  "passedNote": "corroboration, not proof: two conservative implementations can agree and both be wrong in the same direction"
+}

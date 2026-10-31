@@ -1,0 +1,2376 @@
+[
+ {
+  "id": "tangency",
+  "roots": [],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 11,
+   "excluded": 0,
+   "evaluations": 186,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "retarded": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1719,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "aberrated": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1719,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "ofDateIdentity": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1719,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "ofDateReal": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 891,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259706.37665390968,
+    269356.1087027192
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    null,
+    null
+   ]
+  },
+  "deflected": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1089,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.4563644528388977,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259706.83301836252,
+    269355.6523382664
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    0.4563644528388977,
+    -0.4563644528388977
+   ]
+  }
+ },
+ {
+  "id": "triple-root",
+  "roots": [
+   264200
+  ],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 101850,
+   "excluded": 0,
+   "evaluations": 794201,
+   "matched": 0,
+   "missed": 1,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "retarded": {
+   "found": 0,
+   "established": false,
+   "status": "budget-exhausted",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 4000001,
+   "matched": 0,
+   "missed": 1,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "aberrated": {
+   "found": 0,
+   "established": false,
+   "status": "budget-exhausted",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 4000001,
+   "matched": 0,
+   "missed": 1,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "ofDateIdentity": {
+   "found": 0,
+   "established": false,
+   "status": "budget-exhausted",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 4000001,
+   "matched": 0,
+   "missed": 1,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 2220,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    268908.42933654785
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    4374.865241349675
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 4794,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.27616024017333984,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    268908.1531763077
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -0.27616024017333984
+   ]
+  }
+ },
+ {
+  "id": "left-edge-root",
+  "roots": [
+   264200
+  ],
+  "window": [
+   264200,
+   437000
+  ],
+  "geometric": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 6,
+   "matched": 0,
+   "missed": 1,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 362,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00002803374081850052,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.5641232319
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 362,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00002803374081850052,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.5641232319
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 362,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00002803374081850052,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.5641232319
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 362,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    270991.70530969277
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6458.141214494593
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 444,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.221596822142601,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    270990.4837128706
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.221596822142601
+   ]
+  }
+ },
+ {
+  "id": "right-edge-root",
+  "roots": [
+   264200
+  ],
+  "window": [
+   91400,
+   264200
+  ],
+  "geometric": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 33,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00003725290298461914,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264199.9999627471
+   ]
+  },
+  "retarded": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 67,
+   "matched": 0,
+   "missed": 1,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "WRONG-PROVEN",
+   "times": []
+  },
+  "aberrated": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 67,
+   "matched": 0,
+   "missed": 1,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "WRONG-PROVEN",
+   "times": []
+  },
+  "ofDateIdentity": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 67,
+   "matched": 0,
+   "missed": 1,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "WRONG-PROVEN",
+   "times": []
+  },
+  "ofDateReal": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 67,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": []
+  },
+  "deflected": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 83,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": []
+  }
+ },
+ {
+  "id": "pair-10s",
+  "roots": [
+   264200,
+   264210
+  ],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 204,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00008344650268554688,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264199.9999165535,
+    264209.99994277954
+   ]
+  },
+  "retarded": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1031,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.006355940364301205,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.56704711914,
+    264543.5577392578
+   ]
+  },
+  "aberrated": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1031,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.006355940364301205,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.56704711914,
+    264543.5577392578
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1031,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.006355940364301205,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.56704711914,
+    264543.5577392578
+   ]
+  },
+  "ofDateReal": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 950,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261994.9864089489,
+    267080.8520838618
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    -2538.5776862492785,
+    2537.287988663651
+   ]
+  },
+  "deflected": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1169,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.24055391550064087,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261995.22692263126,
+    267080.6115299463
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    0.24051368236541748,
+    -0.24055391550064087
+   ]
+  }
+ },
+ {
+  "id": "pair-1s",
+  "roots": [
+   264200,
+   264201
+  ],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 2,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 202,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.001049041748046875,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": [
+    264199.99895095825,
+    264201.0005950928
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1180,
+   "matched": 0,
+   "missed": 2,
+   "extra": 1,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "EXTRA-UNPROVEN",
+   "times": [
+    264534.41162109375
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1180,
+   "matched": 0,
+   "missed": 2,
+   "extra": 1,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "EXTRA-UNPROVEN",
+   "times": [
+    264534.41162109375
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1180,
+   "matched": 0,
+   "missed": 2,
+   "extra": 1,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "EXTRA-UNPROVEN",
+   "times": [
+    264534.41162109375
+   ]
+  },
+  "ofDateReal": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 937,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261990.49011468887,
+    267076.3483464718
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    -2543.0739805093035,
+    2541.7842512736097
+   ]
+  },
+  "deflected": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1174,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.24051368236541748,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261990.73062837124,
+    267076.1078327894
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    0.24051368236541748,
+    -0.24051368236541748
+   ]
+  }
+ },
+ {
+  "id": "pair-1ms",
+  "roots": [
+   264200,
+   264200.001
+  ],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 11,
+   "excluded": 0,
+   "evaluations": 186,
+   "matched": 0,
+   "missed": 2,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "retarded": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 2,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "aberrated": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 2,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "ofDateIdentity": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 2,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "HONEST",
+   "times": []
+  },
+  "ofDateReal": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 941,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261989.99058008194,
+    267075.84893256426
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    -2543.573515116237,
+    2542.2838373660925
+   ]
+  },
+  "deflected": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1170,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.24051368236541748,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261990.2310937643,
+    267075.6084188819
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    0.24051368236541748,
+    -0.24051368236541748
+   ]
+  }
+ },
+ {
+  "id": "graze-10s",
+  "roots": [],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 164,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": []
+  },
+  "retarded": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 794,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": []
+  },
+  "aberrated": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 794,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": []
+  },
+  "ofDateIdentity": {
+   "found": 0,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 794,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": []
+  },
+  "ofDateReal": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 948,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261990.0097310543,
+    267075.8287757635
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    null,
+    null
+   ]
+  },
+  "deflected": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1145,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.24051368236541748,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261990.25024473667,
+    267075.58826208115
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    0.24051368236541748,
+    -0.24051368236541748
+   ]
+  }
+ },
+ {
+  "id": "graze-0.1s",
+  "roots": [],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 186,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "retarded": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "aberrated": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "ofDateIdentity": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "ofDateReal": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 959,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261989.99005705118,
+    267075.8484095335
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    null,
+    null
+   ]
+  },
+  "deflected": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1136,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.24055391550064087,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261990.23061096668,
+    267075.60789585114
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    0.24055391550064087,
+    -0.24051368236541748
+   ]
+  }
+ },
+ {
+  "id": "graze-0.01s",
+  "roots": [],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 11,
+   "excluded": 0,
+   "evaluations": 186,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "retarded": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "aberrated": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "ofDateIdentity": {
+   "found": 0,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 1733,
+   "matched": 0,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": []
+  },
+  "ofDateReal": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 961,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261989.99005705118,
+    267075.8484095335
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    null,
+    null
+   ]
+  },
+  "deflected": {
+   "found": 2,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1138,
+   "matched": 2,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.24055391550064087,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    261990.23061096668,
+    267075.60789585114
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    0.24055391550064087,
+    -0.24051368236541748
+   ]
+  }
+ },
+ {
+  "id": "retro-3-in-record",
+  "roots": [
+   264200,
+   271400,
+   278600
+  ],
+  "window": [
+   91400,
+   437000
+  ],
+  "geometric": {
+   "found": 3,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1429,
+   "matched": 3,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00003725290298461914,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264200.0000372529,
+    271400.0000104308,
+    278599.9999836087
+   ]
+  },
+  "retarded": {
+   "found": 3,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 2994,
+   "matched": 3,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.0001594414934515953,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.5641503334,
+    271733.56404304504,
+    278933.5639357567
+   ]
+  },
+  "aberrated": {
+   "found": 3,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 2970,
+   "matched": 3,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.0001594414934515953,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.5641503334,
+    271733.56404304504,
+    278933.5639357567
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 3,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 2970,
+   "matched": 3,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.0001594414934515953,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    264533.5641503334,
+    271733.56404304504,
+    278933.5639357567
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 1756,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    282343.4549957514
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    17809.890900553204
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 2111,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.4276782274246216,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    282343.02731752396
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -0.4276782274246216
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root-0",
+  "roots": [
+   259200
+  ],
+  "window": [
+   86401,
+   431999
+  ],
+  "geometric": {
+   "found": 1,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 41,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00004023313522338867,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": [
+    259200.00004023314
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788235385902226,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788235385902226,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788235385902226,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.601847530372
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root-1e-9",
+  "roots": [
+   259200.000000001
+  ],
+  "window": [
+   86401.00000000099,
+   431999.000000001
+  ],
+  "geometric": {
+   "found": 1,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 41,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00004023214569315314,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": [
+    259200.00004023314
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788136432878673,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788136432878673,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788136432878673,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.601847529382
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root--1e-9",
+  "roots": [
+   259199.999999999
+  ],
+  "window": [
+   86400.99999999901,
+   431998.999999999
+  ],
+  "geometric": {
+   "found": 1,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 41,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00004023214569315314,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": [
+    259199.99995976686
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788334338925779,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788334338925779,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001788334338925779,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.601847531361
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root-1e-8",
+  "roots": [
+   259200.00000001
+  ],
+  "window": [
+   86401.00000001001,
+   431999.00000001
+  ],
+  "geometric": {
+   "found": 1,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 41,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000040223123505711555,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": [
+    259200.00004023314
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017872342141345143,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017872342141345143,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017872342141345143,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.60184752036
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root--1e-8",
+  "roots": [
+   259199.99999999
+  ],
+  "window": [
+   86400.99999998999,
+   431998.99999999
+  ],
+  "geometric": {
+   "found": 1,
+   "established": false,
+   "status": "finished",
+   "unresolved": 1,
+   "excluded": 0,
+   "evaluations": 41,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000040223123505711555,
+   "outsideBracket": 0,
+   "verdict": "FOUND-ALL-UNPROVEN",
+   "times": [
+    259199.99995976686
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017892365576699376,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017892365576699376,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017892365576699376,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.6018475403835
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root-1e-7",
+  "roots": [
+   259200.0000001
+  ],
+  "window": [
+   86401.0000001,
+   431999.0000001
+  ],
+  "geometric": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 41,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000040133134461939335,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259200.00004023314
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017782353097572923,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017782353097572923,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017782353097572923,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.601847430371
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root--1e-7",
+  "roots": [
+   259199.9999999
+  ],
+  "window": [
+   86400.9999999,
+   431998.9999999
+  ],
+  "geometric": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 38,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000040133134461939335,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259199.99995976686
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017982354620471597,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017982354620471597,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.000017982354620471597,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.6018476303725
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root-0.000001",
+  "roots": [
+   259200.000001
+  ],
+  "window": [
+   86401.00000100001,
+   431999.000001
+  ],
+  "geometric": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 38,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.0000392331276088953,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259200.00004023314
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001688234624452889,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001688234624452889,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00001688234624452889,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.601846530364
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ },
+ {
+  "id": "record-edge-root-0.00001",
+  "roots": [
+   259200.00001
+  ],
+  "window": [
+   86401.00000999999,
+   431999.00000999996
+  ],
+  "geometric": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 38,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00003023314638994634,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259200.00004023314
+   ]
+  },
+  "retarded": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00000788236502557993,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "aberrated": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00000788236502557993,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateIdentity": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 404,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0.00000788236502557993,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    259533.5641130805
+   ]
+  },
+  "ofDateReal": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 387,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 0,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265998.1659427285
+   ],
+   "note": "count-only: expected instants taken from itself; compare count/established with the other rungs",
+   "shiftFromRetardedSec": [
+    6464.601837530383
+   ]
+  },
+  "deflected": {
+   "found": 1,
+   "established": true,
+   "status": "finished",
+   "unresolved": 0,
+   "excluded": 0,
+   "evaluations": 476,
+   "matched": 1,
+   "missed": 0,
+   "extra": 0,
+   "worstResidualSec": 1.2216389179229736,
+   "outsideBracket": 0,
+   "verdict": "OK-PROVEN",
+   "times": [
+    265996.9443038106
+   ],
+   "note": "matched against the real-frame of-date instants within 30 s; the deflection at 90 deg elongation moves a 1e-8 rad/s crossing by a few seconds",
+   "shiftFromOfDateSec": [
+    -1.2216389179229736
+   ]
+  }
+ }
+]

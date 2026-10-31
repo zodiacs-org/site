@@ -1,0 +1,2233 @@
+{
+  "tool": "summarise.mjs",
+  "postHoc": "post hoc and unscored for #860: both holdouts were opened by earlier versions",
+  "holdouts": [
+    {
+      "id": "holdout-1912",
+      "earlierName": "bundle version 2 holdout (seed 0xc3c7ac8f, windows from 1912-12-12)",
+      "caseSource": "<moon-enclosure-export>/docs/platform/evidence/precision-partition-v2/holdout/run.json",
+      "caseListDigest": {
+        "file": "<moon-enclosure-export>/docs/platform/evidence/precision-partition-v2/holdout/run.json",
+        "recordedDigest": "23d98094c81a3d44be3c05fec340b7a72a4d584a98845b3b0e4a22e920a05eca",
+        "recomputedDigest": "23d98094c81a3d44be3c05fec340b7a72a4d584a98845b3b0e4a22e920a05eca",
+        "ok": true
+      },
+      "cases": 20,
+      "skipped": 0,
+      "windowsChecked": true,
+      "v1rule": {
+        "P1": {
+          "pass": true,
+          "moon": [
+            {
+              "id": "F2",
+              "status": "finished",
+              "evaluations": 278751,
+              "events": 11
+            },
+            {
+              "id": "A2",
+              "status": "finished",
+              "evaluations": 278751,
+              "events": 10
+            }
+          ]
+        },
+        "P2": {
+          "pass": false,
+          "spansProbed": 84,
+          "failures": 2,
+          "failing": [
+            {
+              "id": "F2",
+              "failures": 1,
+              "failingSpans": [
+                {
+                  "span": [
+                    -2663236800,
+                    -2663236757.8125
+                  ],
+                  "widthSec": 42.1875,
+                  "closestApproachDeg": 4.436650280923557
+                }
+              ]
+            },
+            {
+              "id": "A2",
+              "failures": 1,
+              "failingSpans": [
+                {
+                  "span": [
+                    -2663236800,
+                    -2663236757.8125
+                  ],
+                  "widthSec": 42.1875,
+                  "closestApproachDeg": 4.436650280923557
+                }
+              ]
+            }
+          ]
+        },
+        "P3": {
+          "pass": true,
+          "worstCase": "F2",
+          "worstFraction": 0.00016276041666666666,
+          "worstPercentRoundedUp": 0.0163
+        },
+        "P4": {
+          "pass": true,
+          "basis": "derived: the partition proves some of the window excluded",
+          "cases": 18,
+          "failures": [],
+          "worst": {
+            "id": "F2",
+            "body": "Moon",
+            "baseline": 1402703,
+            "cold": 278751,
+            "ratioRoundedDown": 5.03
+          },
+          "perCase": [
+            {
+              "id": "F2",
+              "body": "Moon",
+              "baseline": 1402703,
+              "cold": 278751,
+              "ratioRoundedDown": 5.03,
+              "pass": true
+            },
+            {
+              "id": "A2",
+              "body": "Moon",
+              "baseline": 1402703,
+              "cold": 278751,
+              "ratioRoundedDown": 5.03,
+              "pass": true
+            },
+            {
+              "id": "F3",
+              "body": "Mercury",
+              "baseline": 1244147,
+              "cold": 48165,
+              "ratioRoundedDown": 25.83,
+              "pass": true
+            },
+            {
+              "id": "A3",
+              "body": "Mercury",
+              "baseline": 1244147,
+              "cold": 48165,
+              "ratioRoundedDown": 25.83,
+              "pass": true
+            },
+            {
+              "id": "F4",
+              "body": "Venus",
+              "baseline": 411020,
+              "cold": 27162,
+              "ratioRoundedDown": 15.13,
+              "pass": true
+            },
+            {
+              "id": "A4",
+              "body": "Venus",
+              "baseline": 411020,
+              "cold": 27162,
+              "ratioRoundedDown": 15.13,
+              "pass": true
+            },
+            {
+              "id": "F5",
+              "body": "Mars",
+              "baseline": 160253,
+              "cold": 12666,
+              "ratioRoundedDown": 12.65,
+              "pass": true
+            },
+            {
+              "id": "A5",
+              "body": "Mars",
+              "baseline": 160253,
+              "cold": 12666,
+              "ratioRoundedDown": 12.65,
+              "pass": true
+            },
+            {
+              "id": "F6",
+              "body": "Jupiter",
+              "baseline": 83128,
+              "cold": 8041,
+              "ratioRoundedDown": 10.33,
+              "pass": true
+            },
+            {
+              "id": "A6",
+              "body": "Jupiter",
+              "baseline": 83128,
+              "cold": 8041,
+              "ratioRoundedDown": 10.33,
+              "pass": true
+            },
+            {
+              "id": "F7",
+              "body": "Saturn",
+              "baseline": 65197,
+              "cold": 8762,
+              "ratioRoundedDown": 7.44,
+              "pass": true
+            },
+            {
+              "id": "A7",
+              "body": "Saturn",
+              "baseline": 65197,
+              "cold": 8762,
+              "ratioRoundedDown": 7.44,
+              "pass": true
+            },
+            {
+              "id": "F8",
+              "body": "Uranus",
+              "baseline": 55682,
+              "cold": 7951,
+              "ratioRoundedDown": 7,
+              "pass": true
+            },
+            {
+              "id": "A8",
+              "body": "Uranus",
+              "baseline": 55682,
+              "cold": 7951,
+              "ratioRoundedDown": 7,
+              "pass": true
+            },
+            {
+              "id": "F9",
+              "body": "Neptune",
+              "baseline": 29355,
+              "cold": 5406,
+              "ratioRoundedDown": 5.43,
+              "pass": true
+            },
+            {
+              "id": "A9",
+              "body": "Neptune",
+              "baseline": 29355,
+              "cold": 5406,
+              "ratioRoundedDown": 5.43,
+              "pass": true
+            },
+            {
+              "id": "F10",
+              "body": "Pluto",
+              "baseline": 66223,
+              "cold": 8615,
+              "ratioRoundedDown": 7.68,
+              "pass": true
+            },
+            {
+              "id": "A10",
+              "body": "Pluto",
+              "baseline": 66223,
+              "cold": 8615,
+              "ratioRoundedDown": 7.68,
+              "pass": true
+            }
+          ]
+        },
+        "P5": {
+          "pass": true,
+          "perCase": [
+            {
+              "id": "F1",
+              "body": "Sun",
+              "baseline": 681,
+              "cold": 681,
+              "ratioRoundedDown": 1,
+              "pass": true
+            },
+            {
+              "id": "A1",
+              "body": "Sun",
+              "baseline": 681,
+              "cold": 681,
+              "ratioRoundedDown": 1,
+              "pass": true
+            }
+          ]
+        },
+        "P6": {
+          "pass": true,
+          "baselineEventsInAdmissible": 36,
+          "lost": 0,
+          "everyMatchedRootBracketed": true,
+          "worstDeltaSec": 0.0006160736083984375,
+          "noCompletenessOverExcludedRequest": true,
+          "noExhaustivenessWithLiveBoundary": true
+        },
+        "P7": {
+          "reportedNotScored": true,
+          "unpartitioned": 2,
+          "partitioned": 2,
+          "denominator": 20,
+          "agree": true,
+          "newMetricExhaustiveOverAdmissible": 20
+        },
+        "harnessVerdict": "PARTIAL: P-1 and P-6 hold; at least one of P-2..P-5 does not, and is recorded with its measured number"
+      },
+      "v2rule": {
+        "pass": true,
+        "perCase": [
+          {
+            "id": "F2",
+            "partitioned": {
+              "status": "finished",
+              "evaluations": 278751
+            },
+            "plain": {
+              "status": "finished",
+              "evaluations": 1402703
+            },
+            "pass": true
+          },
+          {
+            "id": "A2",
+            "partitioned": {
+              "status": "finished",
+              "evaluations": 278751
+            },
+            "plain": {
+              "status": "finished",
+              "evaluations": 1402703
+            },
+            "pass": true
+          }
+        ]
+      },
+      "earlierRuleP4": {
+        "pass": true,
+        "cases": 18,
+        "failures": [],
+        "worst": {
+          "id": "F9",
+          "denominator": 29355,
+          "denominatorStatus": "finished",
+          "cold": 5406,
+          "ratioRoundedDown": 5.43,
+          "lowerBound": false
+        },
+        "worstAgainstAFinishedDenominator": {
+          "id": "F9",
+          "denominator": 29355,
+          "cold": 5406,
+          "ratioRoundedDown": 5.43
+        },
+        "moon": [
+          {
+            "id": "F2",
+            "denominator": 4000001,
+            "denominatorStatus": "budget-exhausted",
+            "cold": 278751,
+            "ratioRoundedDown": 14.34,
+            "lowerBound": true
+          },
+          {
+            "id": "A2",
+            "denominator": 4000001,
+            "denominatorStatus": "budget-exhausted",
+            "cold": 278751,
+            "ratioRoundedDown": 14.34,
+            "lowerBound": true
+          }
+        ],
+        "perCase": [
+          {
+            "id": "F2",
+            "denominator": 4000001,
+            "denominatorStatus": "budget-exhausted",
+            "cold": 278751,
+            "ratioRoundedDown": 14.34,
+            "pass": true
+          },
+          {
+            "id": "A2",
+            "denominator": 4000001,
+            "denominatorStatus": "budget-exhausted",
+            "cold": 278751,
+            "ratioRoundedDown": 14.34,
+            "pass": true
+          },
+          {
+            "id": "F3",
+            "denominator": 1244147,
+            "denominatorStatus": "finished",
+            "cold": 48165,
+            "ratioRoundedDown": 25.83,
+            "pass": true
+          },
+          {
+            "id": "A3",
+            "denominator": 1244147,
+            "denominatorStatus": "finished",
+            "cold": 48165,
+            "ratioRoundedDown": 25.83,
+            "pass": true
+          },
+          {
+            "id": "F4",
+            "denominator": 411020,
+            "denominatorStatus": "finished",
+            "cold": 27162,
+            "ratioRoundedDown": 15.13,
+            "pass": true
+          },
+          {
+            "id": "A4",
+            "denominator": 411020,
+            "denominatorStatus": "finished",
+            "cold": 27162,
+            "ratioRoundedDown": 15.13,
+            "pass": true
+          },
+          {
+            "id": "F5",
+            "denominator": 160253,
+            "denominatorStatus": "finished",
+            "cold": 12666,
+            "ratioRoundedDown": 12.65,
+            "pass": true
+          },
+          {
+            "id": "A5",
+            "denominator": 160253,
+            "denominatorStatus": "finished",
+            "cold": 12666,
+            "ratioRoundedDown": 12.65,
+            "pass": true
+          },
+          {
+            "id": "F6",
+            "denominator": 83128,
+            "denominatorStatus": "finished",
+            "cold": 8041,
+            "ratioRoundedDown": 10.33,
+            "pass": true
+          },
+          {
+            "id": "A6",
+            "denominator": 83128,
+            "denominatorStatus": "finished",
+            "cold": 8041,
+            "ratioRoundedDown": 10.33,
+            "pass": true
+          },
+          {
+            "id": "F7",
+            "denominator": 65197,
+            "denominatorStatus": "finished",
+            "cold": 8762,
+            "ratioRoundedDown": 7.44,
+            "pass": true
+          },
+          {
+            "id": "A7",
+            "denominator": 65197,
+            "denominatorStatus": "finished",
+            "cold": 8762,
+            "ratioRoundedDown": 7.44,
+            "pass": true
+          },
+          {
+            "id": "F8",
+            "denominator": 55682,
+            "denominatorStatus": "finished",
+            "cold": 7951,
+            "ratioRoundedDown": 7,
+            "pass": true
+          },
+          {
+            "id": "A8",
+            "denominator": 55682,
+            "denominatorStatus": "finished",
+            "cold": 7951,
+            "ratioRoundedDown": 7,
+            "pass": true
+          },
+          {
+            "id": "F9",
+            "denominator": 29355,
+            "denominatorStatus": "finished",
+            "cold": 5406,
+            "ratioRoundedDown": 5.43,
+            "pass": true
+          },
+          {
+            "id": "A9",
+            "denominator": 29355,
+            "denominatorStatus": "finished",
+            "cold": 5406,
+            "ratioRoundedDown": 5.43,
+            "pass": true
+          },
+          {
+            "id": "F10",
+            "denominator": 66223,
+            "denominatorStatus": "finished",
+            "cold": 8615,
+            "ratioRoundedDown": 7.68,
+            "pass": true
+          },
+          {
+            "id": "A10",
+            "denominator": 66223,
+            "denominatorStatus": "finished",
+            "cold": 8615,
+            "ratioRoundedDown": 7.68,
+            "pass": true
+          }
+        ]
+      },
+      "earlierRuleP5": {
+        "pass": true,
+        "perCase": [
+          {
+            "id": "F1",
+            "body": "Sun",
+            "denominatorV1Unpartitioned": 681,
+            "cold": 681,
+            "pass": true
+          },
+          {
+            "id": "A1",
+            "body": "Sun",
+            "denominatorV1Unpartitioned": 681,
+            "cold": 681,
+            "pass": true
+          }
+        ]
+      },
+      "earlierRuleP8": {
+        "pass": true,
+        "now": [
+          {
+            "id": "F2",
+            "status": "finished",
+            "evaluations": 1402703,
+            "cells": 53230,
+            "events": 11
+          },
+          {
+            "id": "A2",
+            "status": "finished",
+            "evaluations": 1402703,
+            "cells": 53230,
+            "events": 10
+          }
+        ],
+        "originalRuntime": [
+          {
+            "id": "F2",
+            "status": "budget-exhausted",
+            "evaluations": 4000001,
+            "cells": 167586,
+            "events": 2
+          },
+          {
+            "id": "A2",
+            "status": "budget-exhausted",
+            "evaluations": 4000001,
+            "cells": 167586,
+            "events": 1
+          }
+        ]
+      },
+      "derivedClassesAgreeWithV1": true,
+      "moonBoundary": [
+        {
+          "id": "F2",
+          "boundarySec": 4218.75,
+          "boundarySpans": 20,
+          "percentRoundedUp": 0.0163
+        },
+        {
+          "id": "A2",
+          "boundarySec": 4218.75,
+          "boundarySpans": 20,
+          "percentRoundedUp": 0.0163
+        }
+      ],
+      "joins": [
+        {
+          "window": [
+            "1915-05-31T00:00:00Z",
+            "1916-03-26T00:00:00Z"
+          ],
+          "floorCrossings": 20,
+          "moonJoins": [
+            {
+              "at": "1915-06-08T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 395377.8753108978,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 52.51326709655186
+            },
+            {
+              "at": "1915-07-10T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 175373.67685508728,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 26.94576174658851
+            },
+            {
+              "at": "1915-08-11T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 32184.43582725525,
+              "withinHalfDay": true,
+              "elongationAtJoinDeg": 0.5575493343484875
+            },
+            {
+              "at": "1915-09-12T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -191830.27078437805,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 33.136332353130086
+            },
+            {
+              "at": "1915-10-14T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -425536.7292575836,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 69.31949497091132
+            },
+            {
+              "at": "1915-11-15T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -662151.2355976105,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 102.80819547161427
+            },
+            {
+              "at": "1915-12-17T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -867758.5251026154,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 130.27153489200145
+            },
+            {
+              "at": "1916-01-18T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -1077475.0887088776,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 154.16268255897117
+            },
+            {
+              "at": "1916-02-19T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 1195930.2127666473,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 177.85282940564773
+            },
+            {
+              "at": "1916-03-22T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -1516016.4320163727,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 150.90545316694784
+            }
+          ],
+          "otherJoins": [
+            {
+              "series": "emb",
+              "at": "1916-01-02T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 250173.34917259216,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 45.250530770473986
+            },
+            {
+              "series": "sun",
+              "at": "1915-09-12T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -191830.27078437805,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 33.136332353130086
+            }
+          ],
+          "perCase": {
+            "F2": {
+              "boundarySpans": 20,
+              "boundarySpansWithoutAFloorCrossing": [
+                {
+                  "span": [
+                    -2663236800,
+                    -2663236757.8125
+                  ],
+                  "lengthSec": 42.1875,
+                  "closestApproachDeg": 4.436650280923557,
+                  "joins": [
+                    "moon 1915-08-11T00:00:00 TDB"
+                  ]
+                }
+              ],
+              "selectedJoins": [
+                {
+                  "scope": "asked: a Moon record join",
+                  "at": "1915-08-11T00:00:00 TDB",
+                  "nearestFloorCrossingMinusJoinSec": 32184.43582725525,
+                  "elongationAtJoinDeg": 0.5575493343484875,
+                  "spans": [
+                    {
+                      "source": "#860 plain deflected search: unresolved run",
+                      "span": [
+                        -2663277430.517578,
+                        -2663277380.419922
+                      ],
+                      "lengthSec": 50.09765625,
+                      "fromJoinSec": [
+                        -40630.517578125,
+                        -40580.419921875
+                      ],
+                      "closestApproachDeg": 0.00002221611239061616,
+                      "elongationDeg": [
+                        4.996565945354229,
+                        5.0033896002053675
+                      ],
+                      "p2Pass": true
+                    },
+                    {
+                      "source": "#860 partitioned path: plan boundary span",
+                      "span": [
+                        -2663277426.5625,
+                        -2663277384.375
+                      ],
+                      "lengthSec": 42.1875,
+                      "fromJoinSec": [
+                        -40626.5625,
+                        -40584.375
+                      ],
+                      "closestApproachDeg": 0.00002221611239061616,
+                      "elongationDeg": [
+                        4.997104658257815,
+                        5.002850895152534
+                      ],
+                      "p2Pass": true,
+                      "neighbours": {
+                        "before": "admissible",
+                        "after": "excluded"
+                      }
+                    },
+                    {
+                      "source": "#860 partitioned path: plan boundary span",
+                      "span": [
+                        -2663236800,
+                        -2663236757.8125
+                      ],
+                      "lengthSec": 42.1875,
+                      "fromJoinSec": [
+                        0,
+                        42.1875
+                      ],
+                      "closestApproachDeg": 4.436650280923557,
+                      "elongationDeg": [
+                        0.5575493343484875,
+                        0.5633497190764433
+                      ],
+                      "p2Pass": false,
+                      "neighbours": {
+                        "before": "excluded",
+                        "after": "excluded"
+                      }
+                    },
+                    {
+                      "source": "#860 partitioned path: plan boundary span",
+                      "span": [
+                        -2663204653.125,
+                        -2663204610.9375
+                      ],
+                      "lengthSec": 42.1875,
+                      "fromJoinSec": [
+                        32146.875,
+                        32189.0625
+                      ],
+                      "closestApproachDeg": 0.0000016822711090824782,
+                      "elongationDeg": [
+                        4.994795995108984,
+                        5.000640979002855
+                      ],
+                      "p2Pass": true,
+                      "neighbours": {
+                        "before": "excluded",
+                        "after": "admissible"
+                      }
+                    },
+                    {
+                      "source": "#860 plain deflected search: unresolved run",
+                      "span": [
+                        -2663204635.986328,
+                        -2663204595.1171875
+                      ],
+                      "lengthSec": 40.869140625,
+                      "fromJoinSec": [
+                        32164.013671875,
+                        32204.8828125
+                      ],
+                      "closestApproachDeg": 0.0000016822711090824782,
+                      "elongationDeg": [
+                        4.997170513537665,
+                        5.0028328643113955
+                      ],
+                      "p2Pass": true
+                    }
+                  ],
+                  "earlier": {
+                    "v1": [
+                      {
+                        "source": "earlier v1 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                        "lengthSec": 164531.25,
+                        "fromJoinSec": [
+                          -86948.4375,
+                          77582.8125
+                        ],
+                        "closestApproachDeg": 0.0093153419900327
+                      }
+                    ],
+                    "v2": [
+                      {
+                        "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                        "lengthSec": 42.1875,
+                        "fromJoinSec": [
+                          -40626.5625,
+                          -40584.375
+                        ],
+                        "closestApproachDeg": 0.00002221611239061616
+                      },
+                      {
+                        "source": "earlier v2 plain search: unresolved run (its own pack)",
+                        "lengthSec": 0.6591796875,
+                        "fromJoinSec": [
+                          -40606.1279296875,
+                          -40605.46875
+                        ],
+                        "closestApproachDeg": 2.3021555772828606e-7
+                      },
+                      {
+                        "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                        "lengthSec": 84.375,
+                        "fromJoinSec": [
+                          -42.1875,
+                          42.1875
+                        ],
+                        "closestApproachDeg": 4.436650280923557
+                      },
+                      {
+                        "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                        "lengthSec": 42.1875,
+                        "fromJoinSec": [
+                          32146.875,
+                          32189.0625
+                        ],
+                        "closestApproachDeg": 0.0000016822711090824782
+                      },
+                      {
+                        "source": "earlier v2 plain search: unresolved run (its own pack)",
+                        "lengthSec": 1.318359375,
+                        "fromJoinSec": [
+                          32183.7890625,
+                          32185.107421875
+                        ],
+                        "closestApproachDeg": 0.0000011717450902892779
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "A2": {
+              "boundarySpans": 20,
+              "boundarySpansWithoutAFloorCrossing": [
+                {
+                  "span": [
+                    -2663236800,
+                    -2663236757.8125
+                  ],
+                  "lengthSec": 42.1875,
+                  "closestApproachDeg": 4.436650280923557,
+                  "joins": [
+                    "moon 1915-08-11T00:00:00 TDB"
+                  ]
+                }
+              ],
+              "selectedJoins": [
+                {
+                  "scope": "asked: a Moon record join",
+                  "at": "1915-08-11T00:00:00 TDB",
+                  "nearestFloorCrossingMinusJoinSec": 32184.43582725525,
+                  "elongationAtJoinDeg": 0.5575493343484875,
+                  "spans": [
+                    {
+                      "source": "#860 plain deflected search: unresolved run",
+                      "span": [
+                        -2663277430.517578,
+                        -2663277380.419922
+                      ],
+                      "lengthSec": 50.09765625,
+                      "fromJoinSec": [
+                        -40630.517578125,
+                        -40580.419921875
+                      ],
+                      "closestApproachDeg": 0.00002221611239061616,
+                      "elongationDeg": [
+                        4.996565945354229,
+                        5.0033896002053675
+                      ],
+                      "p2Pass": true
+                    },
+                    {
+                      "source": "#860 partitioned path: plan boundary span",
+                      "span": [
+                        -2663277426.5625,
+                        -2663277384.375
+                      ],
+                      "lengthSec": 42.1875,
+                      "fromJoinSec": [
+                        -40626.5625,
+                        -40584.375
+                      ],
+                      "closestApproachDeg": 0.00002221611239061616,
+                      "elongationDeg": [
+                        4.997104658257815,
+                        5.002850895152534
+                      ],
+                      "p2Pass": true,
+                      "neighbours": {
+                        "before": "admissible",
+                        "after": "excluded"
+                      }
+                    },
+                    {
+                      "source": "#860 partitioned path: plan boundary span",
+                      "span": [
+                        -2663236800,
+                        -2663236757.8125
+                      ],
+                      "lengthSec": 42.1875,
+                      "fromJoinSec": [
+                        0,
+                        42.1875
+                      ],
+                      "closestApproachDeg": 4.436650280923557,
+                      "elongationDeg": [
+                        0.5575493343484875,
+                        0.5633497190764433
+                      ],
+                      "p2Pass": false,
+                      "neighbours": {
+                        "before": "excluded",
+                        "after": "excluded"
+                      }
+                    },
+                    {
+                      "source": "#860 partitioned path: plan boundary span",
+                      "span": [
+                        -2663204653.125,
+                        -2663204610.9375
+                      ],
+                      "lengthSec": 42.1875,
+                      "fromJoinSec": [
+                        32146.875,
+                        32189.0625
+                      ],
+                      "closestApproachDeg": 0.0000016822711090824782,
+                      "elongationDeg": [
+                        4.994795995108984,
+                        5.000640979002855
+                      ],
+                      "p2Pass": true,
+                      "neighbours": {
+                        "before": "excluded",
+                        "after": "admissible"
+                      }
+                    },
+                    {
+                      "source": "#860 plain deflected search: unresolved run",
+                      "span": [
+                        -2663204635.986328,
+                        -2663204595.1171875
+                      ],
+                      "lengthSec": 40.869140625,
+                      "fromJoinSec": [
+                        32164.013671875,
+                        32204.8828125
+                      ],
+                      "closestApproachDeg": 0.0000016822711090824782,
+                      "elongationDeg": [
+                        4.997170513537665,
+                        5.0028328643113955
+                      ],
+                      "p2Pass": true
+                    }
+                  ],
+                  "earlier": {
+                    "v1": [
+                      {
+                        "source": "earlier v1 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                        "lengthSec": 164531.25,
+                        "fromJoinSec": [
+                          -86948.4375,
+                          77582.8125
+                        ],
+                        "closestApproachDeg": 0.0093153419900327
+                      }
+                    ],
+                    "v2": [
+                      {
+                        "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                        "lengthSec": 42.1875,
+                        "fromJoinSec": [
+                          -40626.5625,
+                          -40584.375
+                        ],
+                        "closestApproachDeg": 0.00002221611239061616
+                      },
+                      {
+                        "source": "earlier v2 plain search: unresolved run (its own pack)",
+                        "lengthSec": 0.6591796875,
+                        "fromJoinSec": [
+                          -40606.1279296875,
+                          -40605.46875
+                        ],
+                        "closestApproachDeg": 2.3021555772828606e-7
+                      },
+                      {
+                        "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                        "lengthSec": 84.375,
+                        "fromJoinSec": [
+                          -42.1875,
+                          42.1875
+                        ],
+                        "closestApproachDeg": 4.436650280923557
+                      },
+                      {
+                        "source": "earlier v2 partitioned path: plan boundary span (its own pack, compiler 1.0.0)",
+                        "lengthSec": 42.1875,
+                        "fromJoinSec": [
+                          32146.875,
+                          32189.0625
+                        ],
+                        "closestApproachDeg": 0.0000016822711090824782
+                      },
+                      {
+                        "source": "earlier v2 plain search: unresolved run (its own pack)",
+                        "lengthSec": 1.318359375,
+                        "fromJoinSec": [
+                          32183.7890625,
+                          32185.107421875
+                        ],
+                        "closestApproachDeg": 0.0000011717450902892779
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "versionOneHereVersusEarlierRecord": {
+        "note": "version 1 run here on the 1.1.0 pack against the same code recorded on the earlier 1.0.0 pack; not a rule, a check of #860 section 3's claim that the packs are interchangeable for these figures",
+        "allPartitionedEqual": true,
+        "allPlainEqual": false,
+        "differing": [
+          {
+            "id": "F3",
+            "plainHere": 1244147,
+            "plainRecorded": 1244145,
+            "partitionedHere": 158455,
+            "partitionedRecorded": 158455,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "A3",
+            "plainHere": 1244147,
+            "plainRecorded": 1244145,
+            "partitionedHere": 158455,
+            "partitionedRecorded": 158455,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "F4",
+            "plainHere": 411020,
+            "plainRecorded": 411018,
+            "partitionedHere": 73726,
+            "partitionedRecorded": 73726,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "A4",
+            "plainHere": 411020,
+            "plainRecorded": 411018,
+            "partitionedHere": 73726,
+            "partitionedRecorded": 73726,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "F5",
+            "plainHere": 160253,
+            "plainRecorded": 160251,
+            "partitionedHere": 32753,
+            "partitionedRecorded": 32753,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "A5",
+            "plainHere": 160253,
+            "plainRecorded": 160251,
+            "partitionedHere": 32753,
+            "partitionedRecorded": 32753,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "F6",
+            "plainHere": 83128,
+            "plainRecorded": 83130,
+            "partitionedHere": 17737,
+            "partitionedRecorded": 17737,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "A6",
+            "plainHere": 83128,
+            "plainRecorded": 83130,
+            "partitionedHere": 17737,
+            "partitionedRecorded": 17737,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "F10",
+            "plainHere": 66223,
+            "plainRecorded": 66225,
+            "partitionedHere": 16500,
+            "partitionedRecorded": 16500,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "A10",
+            "plainHere": 66223,
+            "plainRecorded": 66225,
+            "partitionedHere": 16500,
+            "partitionedRecorded": 16500,
+            "plainEqual": false,
+            "partitionedEqual": true
+          }
+        ]
+      },
+      "v4AnalogueOnHoldout": [
+        {
+          "id": "F1",
+          "body": "Sun",
+          "v1Status": "finished",
+          "v1Events": 1,
+          "v2Events": 1,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A1",
+          "body": "Sun",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F2",
+          "body": "Moon",
+          "v1Status": "budget-exhausted",
+          "v1Events": 2,
+          "v2Events": 11,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": false,
+          "evaluationsIdentical": false
+        },
+        {
+          "id": "A2",
+          "body": "Moon",
+          "v1Status": "budget-exhausted",
+          "v1Events": 1,
+          "v2Events": 10,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": false,
+          "evaluationsIdentical": false
+        },
+        {
+          "id": "F3",
+          "body": "Mercury",
+          "v1Status": "finished",
+          "v1Events": 3,
+          "v2Events": 3,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A3",
+          "body": "Mercury",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F4",
+          "body": "Venus",
+          "v1Status": "finished",
+          "v1Events": 1,
+          "v2Events": 1,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A4",
+          "body": "Venus",
+          "v1Status": "finished",
+          "v1Events": 1,
+          "v2Events": 1,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F5",
+          "body": "Mars",
+          "v1Status": "finished",
+          "v1Events": 1,
+          "v2Events": 1,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A5",
+          "body": "Mars",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F6",
+          "body": "Jupiter",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A6",
+          "body": "Jupiter",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F7",
+          "body": "Saturn",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A7",
+          "body": "Saturn",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F8",
+          "body": "Uranus",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A8",
+          "body": "Uranus",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F9",
+          "body": "Neptune",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A9",
+          "body": "Neptune",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F10",
+          "body": "Pluto",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A10",
+          "body": "Pluto",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        }
+      ],
+      "v4AnalogueSummary": {
+        "nonMoonBitIdenticalWithIdenticalEvaluations": true,
+        "v1EventsLost": 0
+      }
+    },
+    {
+      "id": "holdout-2103",
+      "earlierName": "bundle version 3 holdout (seed 0x4e1bbb5d, windows from 2103-01-23)",
+      "caseSource": "<moon-enclosure-export>/docs/platform/evidence/precision-partition-v3/holdout/run.json",
+      "caseListDigest": {
+        "file": "<moon-enclosure-export>/docs/platform/evidence/precision-partition-v3/holdout/run.json",
+        "recordedDigest": "057fec7ffcd347c67a156b4298a8f13daf00968c7cf6e6c27f8d96d9fbe797e1",
+        "recomputedDigest": "057fec7ffcd347c67a156b4298a8f13daf00968c7cf6e6c27f8d96d9fbe797e1",
+        "ok": true
+      },
+      "cases": 20,
+      "skipped": 0,
+      "windowsChecked": true,
+      "v1rule": {
+        "P1": {
+          "pass": true,
+          "moon": [
+            {
+              "id": "F2",
+              "status": "finished",
+              "evaluations": 284398,
+              "events": 11
+            },
+            {
+              "id": "A2",
+              "status": "finished",
+              "evaluations": 284398,
+              "events": 10
+            }
+          ]
+        },
+        "P2": {
+          "pass": true,
+          "spansProbed": 88,
+          "failures": 0,
+          "failing": []
+        },
+        "P3": {
+          "pass": true,
+          "worstCase": "F2",
+          "worstFraction": 0.00010314892534120584,
+          "worstPercentRoundedUp": 0.0104
+        },
+        "P4": {
+          "pass": true,
+          "basis": "derived: the partition proves some of the window excluded",
+          "cases": 16,
+          "failures": [],
+          "worst": {
+            "id": "F2",
+            "body": "Moon",
+            "baseline": 1652244,
+            "cold": 284398,
+            "ratioRoundedDown": 5.8
+          },
+          "perCase": [
+            {
+              "id": "F2",
+              "body": "Moon",
+              "baseline": 1652244,
+              "cold": 284398,
+              "ratioRoundedDown": 5.8,
+              "pass": true
+            },
+            {
+              "id": "A2",
+              "body": "Moon",
+              "baseline": 1652244,
+              "cold": 284398,
+              "ratioRoundedDown": 5.8,
+              "pass": true
+            },
+            {
+              "id": "F3",
+              "body": "Mercury",
+              "baseline": 1152721,
+              "cold": 48021,
+              "ratioRoundedDown": 24,
+              "pass": true
+            },
+            {
+              "id": "A3",
+              "body": "Mercury",
+              "baseline": 1152721,
+              "cold": 48021,
+              "ratioRoundedDown": 24,
+              "pass": true
+            },
+            {
+              "id": "F4",
+              "body": "Venus",
+              "baseline": 445167,
+              "cold": 30422,
+              "ratioRoundedDown": 14.63,
+              "pass": true
+            },
+            {
+              "id": "A4",
+              "body": "Venus",
+              "baseline": 445167,
+              "cold": 30422,
+              "ratioRoundedDown": 14.63,
+              "pass": true
+            },
+            {
+              "id": "F5",
+              "body": "Mars",
+              "baseline": 260263,
+              "cold": 18464,
+              "ratioRoundedDown": 14.09,
+              "pass": true
+            },
+            {
+              "id": "A5",
+              "body": "Mars",
+              "baseline": 260263,
+              "cold": 18464,
+              "ratioRoundedDown": 14.09,
+              "pass": true
+            },
+            {
+              "id": "F6",
+              "body": "Jupiter",
+              "baseline": 84697,
+              "cold": 9438,
+              "ratioRoundedDown": 8.97,
+              "pass": true
+            },
+            {
+              "id": "A6",
+              "body": "Jupiter",
+              "baseline": 84697,
+              "cold": 9438,
+              "ratioRoundedDown": 8.97,
+              "pass": true
+            },
+            {
+              "id": "F7",
+              "body": "Saturn",
+              "baseline": 71972,
+              "cold": 8671,
+              "ratioRoundedDown": 8.3,
+              "pass": true
+            },
+            {
+              "id": "A7",
+              "body": "Saturn",
+              "baseline": 71972,
+              "cold": 8671,
+              "ratioRoundedDown": 8.3,
+              "pass": true
+            },
+            {
+              "id": "F8",
+              "body": "Uranus",
+              "baseline": 56172,
+              "cold": 8230,
+              "ratioRoundedDown": 6.82,
+              "pass": true
+            },
+            {
+              "id": "A8",
+              "body": "Uranus",
+              "baseline": 56172,
+              "cold": 8230,
+              "ratioRoundedDown": 6.82,
+              "pass": true
+            },
+            {
+              "id": "F9",
+              "body": "Neptune",
+              "baseline": 59279,
+              "cold": 8037,
+              "ratioRoundedDown": 7.37,
+              "pass": true
+            },
+            {
+              "id": "A9",
+              "body": "Neptune",
+              "baseline": 59279,
+              "cold": 8037,
+              "ratioRoundedDown": 7.37,
+              "pass": true
+            }
+          ]
+        },
+        "P5": {
+          "pass": true,
+          "perCase": [
+            {
+              "id": "F1",
+              "body": "Sun",
+              "baseline": 601,
+              "cold": 601,
+              "ratioRoundedDown": 1,
+              "pass": true
+            },
+            {
+              "id": "A1",
+              "body": "Sun",
+              "baseline": 601,
+              "cold": 601,
+              "ratioRoundedDown": 1,
+              "pass": true
+            },
+            {
+              "id": "F10",
+              "body": "Pluto",
+              "baseline": 4373,
+              "cold": 4684,
+              "ratioRoundedDown": 0.93,
+              "pass": true
+            },
+            {
+              "id": "A10",
+              "body": "Pluto",
+              "baseline": 4373,
+              "cold": 4684,
+              "ratioRoundedDown": 0.93,
+              "pass": true
+            }
+          ]
+        },
+        "P6": {
+          "pass": true,
+          "baselineEventsInAdmissible": 38,
+          "lost": 0,
+          "everyMatchedRootBracketed": true,
+          "worstDeltaSec": 0.0002231597900390625,
+          "noCompletenessOverExcludedRequest": true,
+          "noExhaustivenessWithLiveBoundary": true
+        },
+        "P7": {
+          "reportedNotScored": true,
+          "unpartitioned": 4,
+          "partitioned": 4,
+          "denominator": 20,
+          "agree": true,
+          "newMetricExhaustiveOverAdmissible": 20
+        },
+        "harnessVerdict": "PASS: every declared target held"
+      },
+      "v2rule": {
+        "pass": true,
+        "perCase": [
+          {
+            "id": "F2",
+            "partitioned": {
+              "status": "finished",
+              "evaluations": 284398
+            },
+            "plain": {
+              "status": "finished",
+              "evaluations": 1652244
+            },
+            "pass": true
+          },
+          {
+            "id": "A2",
+            "partitioned": {
+              "status": "finished",
+              "evaluations": 284398
+            },
+            "plain": {
+              "status": "finished",
+              "evaluations": 1652244
+            },
+            "pass": true
+          }
+        ]
+      },
+      "earlierRuleP4": {
+        "pass": true,
+        "cases": 16,
+        "failures": [],
+        "worst": {
+          "id": "F8",
+          "denominator": 56172,
+          "denominatorStatus": "finished",
+          "cold": 8230,
+          "ratioRoundedDown": 6.82,
+          "lowerBound": false
+        },
+        "worstAgainstAFinishedDenominator": {
+          "id": "F8",
+          "denominator": 56172,
+          "cold": 8230,
+          "ratioRoundedDown": 6.82
+        },
+        "moon": [
+          {
+            "id": "F2",
+            "denominator": 4000001,
+            "denominatorStatus": "budget-exhausted",
+            "cold": 284398,
+            "ratioRoundedDown": 14.06,
+            "lowerBound": true
+          },
+          {
+            "id": "A2",
+            "denominator": 4000001,
+            "denominatorStatus": "budget-exhausted",
+            "cold": 284398,
+            "ratioRoundedDown": 14.06,
+            "lowerBound": true
+          }
+        ],
+        "perCase": [
+          {
+            "id": "F2",
+            "denominator": 4000001,
+            "denominatorStatus": "budget-exhausted",
+            "cold": 284398,
+            "ratioRoundedDown": 14.06,
+            "pass": true
+          },
+          {
+            "id": "A2",
+            "denominator": 4000001,
+            "denominatorStatus": "budget-exhausted",
+            "cold": 284398,
+            "ratioRoundedDown": 14.06,
+            "pass": true
+          },
+          {
+            "id": "F3",
+            "denominator": 1152721,
+            "denominatorStatus": "finished",
+            "cold": 48021,
+            "ratioRoundedDown": 24,
+            "pass": true
+          },
+          {
+            "id": "A3",
+            "denominator": 1152721,
+            "denominatorStatus": "finished",
+            "cold": 48021,
+            "ratioRoundedDown": 24,
+            "pass": true
+          },
+          {
+            "id": "F4",
+            "denominator": 445167,
+            "denominatorStatus": "finished",
+            "cold": 30422,
+            "ratioRoundedDown": 14.63,
+            "pass": true
+          },
+          {
+            "id": "A4",
+            "denominator": 445167,
+            "denominatorStatus": "finished",
+            "cold": 30422,
+            "ratioRoundedDown": 14.63,
+            "pass": true
+          },
+          {
+            "id": "F5",
+            "denominator": 260263,
+            "denominatorStatus": "finished",
+            "cold": 18464,
+            "ratioRoundedDown": 14.09,
+            "pass": true
+          },
+          {
+            "id": "A5",
+            "denominator": 260263,
+            "denominatorStatus": "finished",
+            "cold": 18464,
+            "ratioRoundedDown": 14.09,
+            "pass": true
+          },
+          {
+            "id": "F6",
+            "denominator": 84697,
+            "denominatorStatus": "finished",
+            "cold": 9438,
+            "ratioRoundedDown": 8.97,
+            "pass": true
+          },
+          {
+            "id": "A6",
+            "denominator": 84697,
+            "denominatorStatus": "finished",
+            "cold": 9438,
+            "ratioRoundedDown": 8.97,
+            "pass": true
+          },
+          {
+            "id": "F7",
+            "denominator": 71972,
+            "denominatorStatus": "finished",
+            "cold": 8671,
+            "ratioRoundedDown": 8.3,
+            "pass": true
+          },
+          {
+            "id": "A7",
+            "denominator": 71972,
+            "denominatorStatus": "finished",
+            "cold": 8671,
+            "ratioRoundedDown": 8.3,
+            "pass": true
+          },
+          {
+            "id": "F8",
+            "denominator": 56172,
+            "denominatorStatus": "finished",
+            "cold": 8230,
+            "ratioRoundedDown": 6.82,
+            "pass": true
+          },
+          {
+            "id": "A8",
+            "denominator": 56172,
+            "denominatorStatus": "finished",
+            "cold": 8230,
+            "ratioRoundedDown": 6.82,
+            "pass": true
+          },
+          {
+            "id": "F9",
+            "denominator": 59279,
+            "denominatorStatus": "finished",
+            "cold": 8037,
+            "ratioRoundedDown": 7.37,
+            "pass": true
+          },
+          {
+            "id": "A9",
+            "denominator": 59279,
+            "denominatorStatus": "finished",
+            "cold": 8037,
+            "ratioRoundedDown": 7.37,
+            "pass": true
+          }
+        ]
+      },
+      "earlierRuleP5": {
+        "pass": true,
+        "perCase": [
+          {
+            "id": "F1",
+            "body": "Sun",
+            "denominatorV1Unpartitioned": 601,
+            "cold": 601,
+            "pass": true
+          },
+          {
+            "id": "A1",
+            "body": "Sun",
+            "denominatorV1Unpartitioned": 601,
+            "cold": 601,
+            "pass": true
+          },
+          {
+            "id": "F10",
+            "body": "Pluto",
+            "denominatorV1Unpartitioned": 4373,
+            "cold": 4684,
+            "pass": true
+          },
+          {
+            "id": "A10",
+            "body": "Pluto",
+            "denominatorV1Unpartitioned": 4373,
+            "cold": 4684,
+            "pass": true
+          }
+        ]
+      },
+      "earlierRuleP8": {
+        "pass": true,
+        "now": [
+          {
+            "id": "F2",
+            "status": "finished",
+            "evaluations": 1652244,
+            "cells": 63756,
+            "events": 11
+          },
+          {
+            "id": "A2",
+            "status": "finished",
+            "evaluations": 1652244,
+            "cells": 63756,
+            "events": 10
+          }
+        ],
+        "originalRuntime": [
+          {
+            "id": "F2",
+            "status": "budget-exhausted",
+            "evaluations": 4000001,
+            "cells": 171016,
+            "events": 1
+          },
+          {
+            "id": "A2",
+            "status": "budget-exhausted",
+            "evaluations": 4000001,
+            "cells": 171016,
+            "events": 1
+          }
+        ]
+      },
+      "derivedClassesAgreeWithV1": true,
+      "moonBoundary": [
+        {
+          "id": "F2",
+          "boundarySec": 2673.620144844055,
+          "boundarySpans": 22,
+          "percentRoundedUp": 0.0104
+        },
+        {
+          "id": "A2",
+          "boundarySec": 2673.620144844055,
+          "boundarySpans": 22,
+          "percentRoundedUp": 0.0104
+        }
+      ],
+      "joins": [
+        {
+          "window": [
+            "2105-07-11T00:00:00Z",
+            "2106-05-07T00:00:00Z"
+          ],
+          "floorCrossings": 22,
+          "moonJoins": [
+            {
+              "at": "2105-07-21T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -782436.918466568,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 111.50710191563142
+            },
+            {
+              "at": "2105-08-22T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -1023278.7841968536,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 136.73610691252716
+            },
+            {
+              "at": "2105-09-23T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -1241501.6456775665,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 165.74211128939928
+            },
+            {
+              "at": "2105-10-25T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 1068462.5125713348,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 158.20929475085623
+            },
+            {
+              "at": "2105-11-26T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 876302.5739498138,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 122.3203729111043
+            },
+            {
+              "at": "2105-12-28T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 699214.8303813934,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 92.15171115784867
+            },
+            {
+              "at": "2106-01-29T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 526210.3467769623,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 67.82737047725537
+            },
+            {
+              "at": "2106-03-02T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 315935.57756614685,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 44.735514538883265
+            },
+            {
+              "at": "2106-04-03T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 89742.35304069519,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 17.514274264600186
+            },
+            {
+              "at": "2106-05-05T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -75513.57747840881,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 17.073112220605907
+            }
+          ],
+          "otherJoins": [
+            {
+              "series": "emb",
+              "at": "2105-10-19T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -913745.9104709625,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 121.54106408763772
+            },
+            {
+              "series": "sun",
+              "at": "2106-04-03T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 89742.35304069519,
+              "withinHalfDay": false,
+              "elongationAtJoinDeg": 17.514274264600186
+            }
+          ],
+          "perCase": {
+            "F2": {
+              "boundarySpans": 22,
+              "boundarySpansWithoutAFloorCrossing": [],
+              "selectedJoins": []
+            },
+            "A2": {
+              "boundarySpans": 22,
+              "boundarySpansWithoutAFloorCrossing": [],
+              "selectedJoins": []
+            }
+          }
+        }
+      ],
+      "versionOneHereVersusEarlierRecord": {
+        "note": "version 1 run here on the 1.1.0 pack against the same code recorded on the earlier 1.0.0 pack; not a rule, a check of #860 section 3's claim that the packs are interchangeable for these figures",
+        "allPartitionedEqual": false,
+        "allPlainEqual": false,
+        "differing": [
+          {
+            "id": "F1",
+            "plainHere": 601,
+            "plainRecorded": 600,
+            "partitionedHere": 601,
+            "partitionedRecorded": 600,
+            "plainEqual": false,
+            "partitionedEqual": false
+          },
+          {
+            "id": "A1",
+            "plainHere": 601,
+            "plainRecorded": 600,
+            "partitionedHere": 601,
+            "partitionedRecorded": 600,
+            "plainEqual": false,
+            "partitionedEqual": false
+          },
+          {
+            "id": "F3",
+            "plainHere": 1152721,
+            "plainRecorded": 1152723,
+            "partitionedHere": 150960,
+            "partitionedRecorded": 150960,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "A3",
+            "plainHere": 1152721,
+            "plainRecorded": 1152723,
+            "partitionedHere": 150960,
+            "partitionedRecorded": 150960,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "F5",
+            "plainHere": 260263,
+            "plainRecorded": 260259,
+            "partitionedHere": 49704,
+            "partitionedRecorded": 49704,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "A5",
+            "plainHere": 260263,
+            "plainRecorded": 260259,
+            "partitionedHere": 49704,
+            "partitionedRecorded": 49704,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "F7",
+            "plainHere": 71972,
+            "plainRecorded": 71973,
+            "partitionedHere": 17185,
+            "partitionedRecorded": 17185,
+            "plainEqual": false,
+            "partitionedEqual": true
+          },
+          {
+            "id": "A7",
+            "plainHere": 71972,
+            "plainRecorded": 71973,
+            "partitionedHere": 17185,
+            "partitionedRecorded": 17185,
+            "plainEqual": false,
+            "partitionedEqual": true
+          }
+        ]
+      },
+      "v4AnalogueOnHoldout": [
+        {
+          "id": "F1",
+          "body": "Sun",
+          "v1Status": "finished",
+          "v1Events": 1,
+          "v2Events": 1,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A1",
+          "body": "Sun",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F2",
+          "body": "Moon",
+          "v1Status": "budget-exhausted",
+          "v1Events": 1,
+          "v2Events": 11,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": false,
+          "evaluationsIdentical": false
+        },
+        {
+          "id": "A2",
+          "body": "Moon",
+          "v1Status": "budget-exhausted",
+          "v1Events": 1,
+          "v2Events": 10,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": false,
+          "evaluationsIdentical": false
+        },
+        {
+          "id": "F3",
+          "body": "Mercury",
+          "v1Status": "finished",
+          "v1Events": 3,
+          "v2Events": 3,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A3",
+          "body": "Mercury",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F4",
+          "body": "Venus",
+          "v1Status": "finished",
+          "v1Events": 1,
+          "v2Events": 1,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A4",
+          "body": "Venus",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F5",
+          "body": "Mars",
+          "v1Status": "finished",
+          "v1Events": 1,
+          "v2Events": 1,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A5",
+          "body": "Mars",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F6",
+          "body": "Jupiter",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A6",
+          "body": "Jupiter",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F7",
+          "body": "Saturn",
+          "v1Status": "finished",
+          "v1Events": 1,
+          "v2Events": 1,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A7",
+          "body": "Saturn",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F8",
+          "body": "Uranus",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A8",
+          "body": "Uranus",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F9",
+          "body": "Neptune",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A9",
+          "body": "Neptune",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "F10",
+          "body": "Pluto",
+          "v1Status": "finished",
+          "v1Events": 2,
+          "v2Events": 2,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        },
+        {
+          "id": "A10",
+          "body": "Pluto",
+          "v1Status": "finished",
+          "v1Events": 0,
+          "v2Events": 0,
+          "v1EventsLostByV2Within1e3s": 0,
+          "eventTimesBitIdentical": true,
+          "evaluationsIdentical": true
+        }
+      ],
+      "v4AnalogueSummary": {
+        "nonMoonBitIdenticalWithIdenticalEvaluations": true,
+        "v1EventsLost": 0
+      }
+    }
+  ]
+}

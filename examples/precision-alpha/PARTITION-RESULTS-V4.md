@@ -392,7 +392,8 @@ a record join inside the floor, the worst P-2 span is that cell:
 
 The scored runs record no span positions. These were located on 2026-11-01
 by rerunning the cold partition on F2 alone, which reproduced the committed
-counts exactly (development data, and for 2007 post hoc). P-2 holds on the
+counts exactly (development data, and for 2007 post hoc; `numerics/` in the
+post hoc folder below). P-2 holds on the
 regression corpus and the 2007 holdout only because those joins lie within
 0.5 degrees of the floor. At the 1912 join this code decides the cell that
 ends at the join, which version 2 refused, and still refuses the one that
@@ -413,7 +414,9 @@ code as at `ad346680` (the scored runs' code plus P4.2's container format
 check) and version 1's as at `23dd8cb7`. None of it is scored. The 1912 and
 2103 holdouts are previously seen data for this code; the matrix, the
 ladder and the domain agreement run on development data this rule does not
-name.
+name. The outputs behind every number here, the scripts, the driver's diff
+against the harness and each investigator's declared deviations are in
+[`evaluation-v4/post-hoc/`](../../docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/README.md).
 
 **The 1912 holdout, version 2's.** This attempt's harness, unchanged, run
 with `--epoch=1912-12-12T00:00:00Z`, rebuilds version 2's twenty cases
@@ -563,3 +566,5 @@ and 11,409 cells (V-1, above).
   "Review findings on version 2 that reproduce here".
 - 2026-11-01: `matrix-v1.json` and `matrix-v2.json` made again, recording
   their unresolved spans (V-3).
+- 2026-11-01: the post hoc runs' outputs and scripts committed under
+  `evaluation-v4/post-hoc/`, and linked from "After the verdict".

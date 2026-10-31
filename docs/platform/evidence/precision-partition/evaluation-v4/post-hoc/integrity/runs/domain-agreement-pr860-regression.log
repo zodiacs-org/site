@@ -1,0 +1,43 @@
+F1 Sun: search declined 0.0000 d, partition proved 0.0000 d excluded + 0.0000 d boundary; contradictions 0
+F2 Moon: search declined 4.9358 d, partition proved 4.9388 d excluded + 0.0339 d boundary; contradictions 1
+F3 Mercury: search declined 37.0839 d, partition proved 37.0864 d excluded + 0.0190 d boundary; contradictions 1
+F4 Venus: search declined 38.9435 d, partition proved 38.9427 d excluded + 0.0092 d boundary; contradictions 0
+F5 Mars: search declined 32.0601 d, partition proved 32.0596 d excluded + 0.0054 d boundary; contradictions 0
+F6 Jupiter: search declined 0.0000 d, partition proved 0.0000 d excluded + 0.0000 d boundary; contradictions 0
+F7 Saturn: search declined 11.0855 d, partition proved 11.0854 d excluded + 0.0010 d boundary; contradictions 0
+F8 Uranus: search declined 10.3882 d, partition proved 10.3882 d excluded + 0.0010 d boundary; contradictions 1
+F9 Neptune: search declined 10.1362 d, partition proved 10.1362 d excluded + 0.0010 d boundary; contradictions 1
+F10 Pluto: search declined 0.0000 d, partition proved 0.0000 d excluded + 0.0000 d boundary; contradictions 0
+{
+  "cases": 10,
+  "casesWithSearchExclusions": 7,
+  "casesWithPartitionExclusions": 7,
+  "totalContradictions": 4,
+  "contradictingCases": [
+    {
+      "id": "F2",
+      "contradictions": [
+        "6.807e-3 d proved excluded by the partition that the search did not decline"
+      ]
+    },
+    {
+      "id": "F3",
+      "contradictions": [
+        "4.196e-3 d proved excluded by the partition that the search did not decline"
+      ]
+    },
+    {
+      "id": "F8",
+      "contradictions": [
+        "7.629e-5 d proved excluded by the partition that the search did not decline"
+      ]
+    },
+    {
+      "id": "F9",
+      "contradictions": [
+        "1.526e-5 d proved excluded by the partition that the search did not decline"
+      ]
+    }
+  ]
+}
+passed: false

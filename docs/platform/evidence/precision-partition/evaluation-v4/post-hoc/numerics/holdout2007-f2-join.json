@@ -1,0 +1,138 @@
+{
+ "postHoc": "holdout-2007-run-v2.json F2, #860 code, rerun only to locate the worst P-2 span; post hoc and unscored (the 2007 holdout was opened by version 1)",
+ "reproducesCommitted": {
+  "evaluations": [
+   291281,
+   291281
+  ],
+  "partitionEvaluations": [
+   262300,
+   262300
+  ],
+  "cells": [
+   11797,
+   11797
+  ],
+  "boundarySec": [
+   3153.517736375332,
+   3153.517736375332
+  ],
+  "boundarySpans": [
+   20,
+   20
+  ],
+  "widestBoundarySecField": [
+   42.1875,
+   42.1875
+  ],
+  "worstP2": [
+   0.1920425445428542,
+   0.1920425445428542
+  ]
+ },
+ "widestCoalescedBoundarySpanSec": 1181.25,
+ "boundarySpanWidthsSec": [
+  102.83203125,
+  102.83203125,
+  1181.25,
+  126.5625,
+  42.1875,
+  84.375,
+  42.1875,
+  84.375,
+  42.1875,
+  42.1875,
+  42.1875,
+  84.375,
+  126.5625,
+  126.5625,
+  337.5,
+  337.5,
+  84.375,
+  84.375,
+  39.55183696746826,
+  39.55183690786362
+ ],
+ "worst": {
+  "span": [
+   311688000,
+   311688042.1875
+  ],
+  "widthSec": 42.1875,
+  "isoLo": "2009-11-17T00:00:00.000Z TDB",
+  "closestApproachDeg": 0.1920425445428542,
+  "atTdbSec": 311688042.1875,
+  "minElDeg": 4.805397990048433,
+  "maxElDeg": 4.807957455457146,
+  "joinsWithin120sOfStart": [
+   {
+    "series": "moon",
+    "join": 311688000,
+    "joinIso": "2009-11-17T00:00:00.000Z TDB",
+    "offsetSec": 0
+   },
+   {
+    "series": "sun",
+    "join": 311688000,
+    "joinIso": "2009-11-17T00:00:00.000Z TDB",
+    "offsetSec": 0
+   }
+  ],
+  "joinsWithin120sOfEnd": [
+   {
+    "series": "moon",
+    "join": 311688000,
+    "joinIso": "2009-11-17T00:00:00.000Z TDB",
+    "offsetSec": 42.1875
+   },
+   {
+    "series": "sun",
+    "join": 311688000,
+    "joinIso": "2009-11-17T00:00:00.000Z TDB",
+    "offsetSec": 42.1875
+   }
+  ]
+ },
+ "spansWithAJoinAtAnEnd": [
+  {
+   "span": [
+    311688000,
+    311688042.1875
+   ],
+   "widthSec": 42.1875,
+   "isoLo": "2009-11-17T00:00:00.000Z TDB",
+   "closestApproachDeg": 0.1920425445428542,
+   "atTdbSec": 311688042.1875,
+   "minElDeg": 4.805397990048433,
+   "maxElDeg": 4.807957455457146,
+   "joinsWithin120sOfStart": [
+    {
+     "series": "moon",
+     "join": 311688000,
+     "joinIso": "2009-11-17T00:00:00.000Z TDB",
+     "offsetSec": 0
+    },
+    {
+     "series": "sun",
+     "join": 311688000,
+     "joinIso": "2009-11-17T00:00:00.000Z TDB",
+     "offsetSec": 0
+    }
+   ],
+   "joinsWithin120sOfEnd": [
+    {
+     "series": "moon",
+     "join": 311688000,
+     "joinIso": "2009-11-17T00:00:00.000Z TDB",
+     "offsetSec": 42.1875
+    },
+    {
+     "series": "sun",
+     "join": 311688000,
+     "joinIso": "2009-11-17T00:00:00.000Z TDB",
+     "offsetSec": 42.1875
+    }
+   ]
+  }
+ ]
+}
