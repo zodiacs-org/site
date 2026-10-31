@@ -87,7 +87,11 @@ integrity policy for either to drift from.
 
 1. **Structural validity** — the artifact is self-consistent and safe to read.
    `parseContainer` decides this, synchronously, and allocates nothing from a
-   header number it has not already bounds-checked.
+   header number it has not already bounds-checked. Since 2026-10-31 it also
+   refuses a `formatVersion` it does not know (`unsupported-version`), and
+   `conventions.chebyshev` or `conventions.units` that are not tokens that
+   version defines (`bad-header`): format 2, which compiler 2.0.0 writes,
+   names them `spk-type-2` and `km,km/s`.
 2. **Integrity** — the bytes match a digest. The pack format used here
    (`ZODEPH02`) carries a SHA-256 over *everything before it*, header
    included; the earlier `ZODEPH01` hashed only the payload, which left

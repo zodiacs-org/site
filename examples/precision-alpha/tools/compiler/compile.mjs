@@ -1,54 +1,151 @@
 /**
  * The offline, deterministic data-pack compiler.
  *
- *   node compile.mjs --candidate=A|B|C|D [--kernel=PATH] [--out=PATH]
+ *   node compile.mjs --kernel=PATH [--candidate=A|B|D] [--out=PATH]
+ *                    [--fromYear=YYYY] [--toYear=YYYY] [--bodies=a,b,...]
+ *                    [--producer-name=TEXT] [--producer-institution=TEXT]
+ *   node compile.mjs --help
  *
  * No network. No LLM. No clock, hostname, path or process detail enters the
  * output, so the same kernel and the same settings produce a byte-identical
  * pack; `npm run` is not involved and nothing is read from the environment
- * except the two flags above. Determinism is proved, not asserted: compile
- * twice, hash twice (see measure-determinism.mjs).
+ * except the flags above. Since 2.0.0 the cosines come from `cheb.mjs`'s own
+ * arithmetic rather than `Math.cos`, so that holds across machines too.
  *
  * Candidates, declared before measurement (see RESULTS.md for the hypotheses):
- *   A  keep DE440s's own segmentation; truncate the high-order Chebyshev
+ *   A  keep the kernel's own segmentation; truncate the high-order Chebyshev
  *      coefficients and quantise the rest under an explicit error budget.
  *   B  refit adaptive segments -- interval length and degree chosen per body
  *      from validation error -- with float64 coefficients.
  *   C  a compact residual correction over astronomy-engine's own model.
+ *      Refused since 2.0.0: its error has no proven bound (see below).
  *   D  B plus the same quantiser A uses. Declared after A/B/C and before it
  *      was measured, on the reasoning that A and B attack different costs
  *      (bits per coefficient vs number of coefficients) and compose.
  *
- * Three structural facts about DE440s are exploited by EVERY candidate, and
- * are reported as a separate line item because they are not compression:
+ * Three structural facts about the DE kernels are exploited by EVERY
+ * candidate, and are reported as a separate line item because they are not
+ * compression:
  *   1. segment 399/3 (Earth relative to the Earth-Moon barycentre) equals
  *      -(1/EMRAT) times segment 301/3, to 1 ulp. It is stored as that one
  *      scalar, not as 8.57 MiB of duplicate coefficients.
- *   2. segments 199/1 and 299/2 are identically zero: in DE440s the Mercury
- *      and Venus body centres coincide with their barycentres.
+ *   2. segments 199/1 and 299/2 are identically zero: the Mercury and Venus
+ *      body centres coincide with their barycentres.
  *   3. the DAF file's own headers, comment area and reserved records are not
  *      data and are not carried.
+ *
+ * ## 2.0.0 (2026-10-31): version 1's M2.1
+ *
+ * - The span comes from the kernel: the stretch every segment the pack reads
+ *   covers. 1.x gridded every body over DE440s's 109,600 days whatever the
+ *   kernel, so DE440 compiled to records ending in 1850 and was refused when
+ *   opened, and DE432s's last records ran up to 1,816 days past the kernel,
+ *   where the SPK reader extrapolated its last polynomial.
+ * - B and D lay nrec = ceil(span / L) records of span / nrec each, so the
+ *   last record ends on the coverage stop. Shortening every record a little
+ *   rather than clipping the last one keeps the runtime's records uniform,
+ *   which its validated searches assume; nothing is extrapolated either way.
+ * - Every body is PROVEN inside its position budget or nothing is written:
+ *   the fit is held to half the budget by adding Chebyshev coefficients two
+ *   at a time (up to 64), quantisation takes the other half, and a body
+ *   that still does not fit is a typed refusal. 1.x proved its bounds and
+ *   wrote the pack anyway, with every body over budget.
+ * - `--kernel` is required, `--out` defaults to the working directory,
+ *   `--help` prints this usage, and every refusal is typed.
+ * - The header is format version 2: enumerated convention tokens the
+ *   runtime checks, and a `provenance` block with the producer, the source
+ *   kernel, its hash and citation, and the modification note NAIF's rules
+ *   ask of a modified kernel.
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { basename, resolve } from 'node:path';
 import { SpkRef } from './spkref.mjs';
-import { chebNodes, chebFit, clenshaw, clenshawD } from './cheb.mjs';
-import { BODY_SEGS, BUDGET_KM, SPAN_DAYS, DAY } from './sources.mjs';
-import { MAGIC, ALIGN, align, widthForHalf, writeField, WIDTH_ORDER } from './format.mjs';
+import { chebNodes, chebFit, clenshaw, cosPi } from './cheb.mjs';
+import { BODY_SEGS, BUDGET_KM, DAY } from './sources.mjs';
+import { MAGIC, align, widthForHalf, writeField, WIDTH_ORDER } from './format.mjs';
 
-// 1.1.0 is a METADATA-ONLY change: the licence field below was corrected
-// on 2026-09-20 and nothing that touches a coefficient moved. The payload
-// digest is unchanged, and that is demonstrated rather than asserted --
-// see METADATA-CORRECTION.md.
-export const COMPILER_VERSION = '1.1.0';
+export const COMPILER_VERSION = '2.0.0';
+export const FORMAT_VERSION = 2;
+/** The tokens a format-2 header's `conventions` carries; the runtime enumerates the same. */
+export const CONVENTION_TOKENS = Object.freeze({ chebyshev: 'spk-type-2', units: 'km,km/s' });
+/** The most Chebyshev coefficients the fit may grow to before the body is refused. */
+export const MAX_NCOEF = 64;
 const SQRT3 = Math.sqrt(3);
 const here = (f) => new URL(`./${f}`, import.meta.url);
-
-const argOf = (k, d) => {
-  const hit = process.argv.slice(2).find((a) => a.startsWith(`--${k}=`));
-  return hit ? hit.slice(k.length + 3) : d;
-};
 const sha256 = (buf) => createHash('sha256').update(buf).digest('hex');
+const J2000_UNIX = 946728000;
+
+/** A refusal with a code a caller can branch on. Nothing is written when one is thrown. */
+export class CompileRefusal extends Error {
+  constructor(code, message, details = {}) {
+    super(message);
+    this.name = 'CompileRefusal';
+    this.code = code;
+    this.details = details;
+  }
+}
+
+/** Usage errors exit 2; refusals about the kernel or the result exit 3. */
+const USAGE_CODES = new Set(['bad-arguments', 'kernel-required']);
+
+export const USAGE = `Compile a JPL SPK kernel into a zodiacs ephemeris pack (ZODEPH01).
+
+  node compile.mjs --kernel=PATH [options]
+
+  --kernel=PATH                the SPK kernel to read (required; nothing is fetched)
+  --candidate=A|B|D            A, B or D (default D); C is refused, see compile.mjs
+  --out=PATH                   where to write the pack (default: ./<kernel>-<candidate>.zeph
+                               in the working directory)
+  --fromYear=YYYY --toYear=YYYY
+                               compile only from 1 January of one year to 1 January of
+                               another; both must lie inside the kernel
+  --bodies=a,b,...             a subset of bodies; emb, moon and sun are always included
+  --producer-name=TEXT         who made this pack (default: Zodiacs)
+  --producer-institution=TEXT  their institution (default: zodiacs.org)
+                               NAIF's rules ask a modified kernel to name its last
+                               modifier: a pack you distribute must name you
+  --help                       print this and exit
+
+Every body is proven inside its position budget, or nothing is written and the
+refusal is printed as JSON on stderr (exit 3; usage errors exit 2). Seal the
+result with tools/seal.mjs before opening it with the runtime.
+`;
+
+const FLAGS = ['candidate', 'kernel', 'out', 'fromYear', 'toYear', 'bodies', 'producer-name', 'producer-institution'];
+
+/** Parse `--flag=value` arguments. Unknown, repeated or empty flags are refused, not ignored. */
+export function parseArgs(argv) {
+  const opts = {};
+  for (const a of argv) {
+    if (a === '--help' || a === '-h') return { help: true };
+    const m = /^--([A-Za-z-]+)=([\s\S]*)$/.exec(a);
+    if (!m || !FLAGS.includes(m[1])) throw new CompileRefusal('bad-arguments', `unknown argument ${JSON.stringify(a)}; see --help`);
+    if (m[1] in opts) throw new CompileRefusal('bad-arguments', `--${m[1]} is given twice`);
+    if (m[2] === '') throw new CompileRefusal('bad-arguments', `--${m[1]} is empty`);
+    opts[m[1]] = m[2];
+  }
+  if (opts.kernel === undefined) {
+    throw new CompileRefusal('kernel-required', 'name the kernel with --kernel=PATH; there is no default kernel');
+  }
+  const candidate = (opts.candidate ?? 'D').toUpperCase();
+  if (!/^[ABCD]$/.test(candidate)) throw new CompileRefusal('bad-arguments', `unknown candidate ${JSON.stringify(opts.candidate)}`);
+  for (const k of ['fromYear', 'toYear']) {
+    if (opts[k] !== undefined && !/^-?\d{1,4}$/.test(opts[k])) throw new CompileRefusal('bad-arguments', `--${k} must be a year, got ${JSON.stringify(opts[k])}`);
+  }
+  return {
+    candidate,
+    kernel: opts.kernel,
+    out: opts.out ?? null,
+    fromYear: opts.fromYear === undefined ? null : Number(opts.fromYear),
+    toYear: opts.toYear === undefined ? null : Number(opts.toYear),
+    bodies: opts.bodies ?? null,
+    producer: {
+      name: opts['producer-name'] ?? 'Zodiacs',
+      institution: opts['producer-institution'] ?? 'zodiacs.org',
+    },
+  };
+}
 
 /* ------------------------------------------------------------------ sources */
 
@@ -64,35 +161,6 @@ function frameSource(ref, body, frame) {
     };
   }
   return (et, out) => { ref.state(seg, et, a); out[0] = a[0]; out[1] = a[1]; out[2] = a[2]; };
-}
-
-/** Candidate C subtracts astronomy-engine's own model from the DE vector. */
-async function residualSource(ref, body, base) {
-  const A = await import('astronomy-engine');
-  const AU = 149597870.700;
-  const EMRAT = ref.emrat;
-  const AEB = {
-    mercuryBary: A.Body.Mercury, venusBary: A.Body.Venus, emb: A.Body.EMB, marsBary: A.Body.Mars,
-    jupiterBary: A.Body.Jupiter, saturnBary: A.Body.Saturn, uranusBary: A.Body.Uranus,
-    neptuneBary: A.Body.Neptune, plutoBary: A.Body.Pluto, sun: A.Body.Sun,
-  };
-  const model = (et, out) => {
-    const days = et / DAY;
-    const t = A.MakeTime(days); t.tt = days;            // et is TDB/TT seconds past J2000
-    if (body.name === 'moon') {
-      const g = A.GeoMoonState(t);                       // Moon relative to Earth
-      const f = (EMRAT / (1 + EMRAT)) * AU;              // -> Moon relative to EMB
-      out[0] = g.x * f; out[1] = g.y * f; out[2] = g.z * f;
-      return;
-    }
-    const s = A.BaryState(AEB[body.name], t);
-    out[0] = s.x * AU; out[1] = s.y * AU; out[2] = s.z * AU;
-  };
-  const m = new Float64Array(3); const d = new Float64Array(3);
-  return {
-    source: (et, out) => { base(et, d); model(et, m); out[0] = d[0] - m[0]; out[1] = d[1] - m[1]; out[2] = d[2] - m[2]; },
-    model,
-  };
 }
 
 /* --------------------------------------------------------------- refitting */
@@ -141,6 +209,11 @@ function refit(source, initEt, Lsec, nrec, ncoef) {
  *
  *     |dg/dt| <= (1/radius) * sum_k k^2 |g_k|.
  *
+ * The three components' bounds S_x, S_y, S_z on one interval combine as
+ * sqrt(S_x^2 + S_y^2 + S_z^2), which bounds |g| there because each
+ * component is bounded separately; 1.x multiplied the largest S by sqrt(3)
+ * instead, also a bound and a looser one. The worst interval is the bound.
+ *
  * Both are proven. The only caveat, stated rather than hidden: the
  * re-expansion runs in float64, so the bound itself carries round-off of
  * order 1e-12 km.
@@ -159,7 +232,7 @@ function supBound(c, n) {
   for (let k = 0; k < n; k += 1) s1 += Math.abs(c[k]) * k;
   let peak = 0;
   for (let j = 0; j <= THETA_GRID; j += 1) {
-    const x = Math.abs(clenshaw(c, 0, n, Math.cos((Math.PI * j) / THETA_GRID)));
+    const x = Math.abs(clenshaw(c, 0, n, cosPi(j, THETA_GRID)));
     if (x > peak) peak = x;
   }
   return peak + (Math.PI / (2 * THETA_GRID)) * s1;
@@ -207,6 +280,7 @@ function provenRefitBound(parts, coefFit, initEt, Lsec, nrec, ncoef, T0, T1) {
     let i = Math.floor((mid - initEt) / Lsec);
     if (i < 0) i = 0; if (i > nrec - 1) i = nrec - 1;
     const midF = initEt + i * Lsec + radiusFit;
+    let pos2 = 0; let vel2 = 0;
     for (let c = 0; c < 3; c += 1) {
       for (let j = 0; j < m; j += 1) {
         const t = mid + nodes[j] * rad;
@@ -218,11 +292,13 @@ function provenRefitBound(parts, coefFit, initEt, Lsec, nrec, ncoef, T0, T1) {
       const dk = chebDeriv(gk, m);      // exact Chebyshev coefficients of dg/dtau
       const sp = supBound(gk, m);
       const sv = supBound(dk, m - 1) / rad;
-      if (sp > worstPos) { worstPos = sp; worstAt = mid; }
-      if (sv > worstVel) worstVel = sv;
+      pos2 += sp * sp; vel2 += sv * sv;
     }
+    const sp = Math.sqrt(pos2); const sv = Math.sqrt(vel2);
+    if (sp > worstPos) { worstPos = sp; worstAt = mid; }
+    if (sv > worstVel) worstVel = sv;
   }
-  return { posKm: SQRT3 * worstPos, velKmS: SQRT3 * worstVel, atEt: worstAt, pieces: cuts.length - 1, gridPoints: THETA_GRID };
+  return { posKm: worstPos, velKmS: worstVel, atEt: worstAt, pieces: cuts.length - 1, gridPoints: THETA_GRID };
 }
 
 /**
@@ -272,33 +348,13 @@ function quantise(coef, nrec, ncoef, q) {
   const fieldOffset = new Int32Array(nf);
   let stride = 0;
   for (const f of order) { fieldOffset[f] = stride; stride += widths[f]; }
-  stride = align(stride, 4);
+  // A body with one record stores every coefficient as its own midpoint, so
+  // every width is 0; the runtime refuses a zero stride, so such a record
+  // still takes four (empty) bytes. 1.x wrote stride 0 there, and any crop
+  // shorter than one record of an outer planet compiled to a pack that
+  // could not be opened.
+  stride = Math.max(4, align(stride, 4));
   return { mids, widths, fieldOffset, stride, q };
-}
-
-/* -------------------------------------------------------------- measurement */
-
-/** Densely SAMPLED error of a decoded pack body against the source function. */
-function sampledError(source, decode, initEt, Lsec, nrec, ncoef, samplesPerRecord, refVel) {
-  const p = new Float64Array(3); const q = new Float64Array(6);
-  let maxPos = 0; let maxVel = 0; let atPos = 0;
-  const radius = Lsec / 2;
-  for (let i = 0; i < nrec; i += 1) {
-    for (let s = 0; s < samplesPerRecord; s += 1) {
-      const tau = -1 + (2 * (s + 0.5)) / samplesPerRecord;
-      const et = initEt + i * Lsec + radius + tau * radius;
-      source(et, p);
-      decode(et, q);
-      const d = Math.hypot(q[0] - p[0], q[1] - p[1], q[2] - p[2]);
-      if (d > maxPos) { maxPos = d; atPos = et; }
-      if (refVel) {
-        refVel(et, p);
-        const dv = Math.hypot(q[3] - p[0], q[4] - p[1], q[5] - p[2]);
-        if (dv > maxVel) maxVel = dv;
-      }
-    }
-  }
-  return { maxPosKm: maxPos, maxVelKmS: maxVel, atEt: atPos };
 }
 
 /* -------------------------------------------------------------------- build */
@@ -336,21 +392,132 @@ function encodeBody(spec) {
   };
 }
 
-async function main() {
-  const candidate = (argOf('candidate', 'D')).toUpperCase();
-  if (!'ABCD'.includes(candidate) || candidate.length !== 1) throw new Error(`unknown candidate ${candidate}`);
-  const kernelPath = argOf('kernel', '/tmp/claude-0/swisslab/de440s.bsp');
-  const outPath = argOf('out', new URL(`./packs/${candidate}.zeph`, import.meta.url).pathname);
-  // Experiment (ii) only: a user-selected sub-range or body subset. This is
-  // NOT compression and is never reported as such -- it is a smaller product.
-  const fromYear = argOf('fromYear', null);
-  const toYear = argOf('toYear', null);
-  const wantBodies = argOf('bodies', null);
+/* --------------------------------------------------------------- the kernel */
 
-  const kernelBytes = readFileSync(kernelPath);
-  const ref = new SpkRef(kernelPath);
-  const T0 = ref.segment(1, 0).start;
-  const T1 = ref.segment(1, 0).stop;
+function openKernel(kernelPath) {
+  let kernelBytes;
+  try {
+    kernelBytes = readFileSync(kernelPath);
+  } catch (error) {
+    throw new CompileRefusal('kernel-unreadable', `cannot read ${kernelPath}: ${error.code ?? error.message}`);
+  }
+  let ref;
+  try {
+    ref = new SpkRef(kernelPath);
+  } catch (error) {
+    throw new CompileRefusal('not-an-spk', `${basename(kernelPath)} is not a little-endian DAF/SPK kernel: ${error.message}`);
+  }
+  return { kernelBytes, ref };
+}
+
+/**
+ * Every segment the pack reads, checked before anything is fitted: present,
+ * Chebyshev position-only (SPK type 2) in the J2000 frame, and with records
+ * that cover the segment's own start and stop.
+ */
+function neededSegments(ref, bodies) {
+  const want = new Map();
+  const need = (target, center, why) => {
+    const key = `${target}/${center}`;
+    if (!want.has(key)) want.set(key, { target, center, why });
+  };
+  for (const b of bodies) need(b.target, b.center, b.name);
+  need(10, 0, 'the Sun, which sun-framed bodies are fitted against');
+  need(301, 3, 'the Moon relative to the Earth-Moon barycentre');
+  need(399, 3, 'the Earth relative to the Earth-Moon barycentre, for EMRAT');
+  need(199, 1, 'Mercury relative to its barycentre, checked to be zero');
+  need(299, 2, 'Venus relative to its barycentre, checked to be zero');
+  const segs = [];
+  for (const { target, center, why } of want.values()) {
+    const seg = ref.byKey.get(`${target}/${center}`);
+    if (!seg) throw new CompileRefusal('segment-missing', `the kernel has no segment ${target}/${center} (${why})`, { target, center });
+    if (seg.type !== 2 || seg.frame !== 1) {
+      throw new CompileRefusal('segment-type', `segment ${target}/${center} is SPK type ${seg.type} in frame ${seg.frame}; this compiler reads type 2 in frame 1 (J2000)`, { target, center, type: seg.type, frame: seg.frame });
+    }
+    const recordsStop = seg.init + seg.nrec * seg.intlen;
+    if (seg.init > seg.start || recordsStop < seg.stop) {
+      throw new CompileRefusal('segment-coverage', `segment ${target}/${center} claims ${seg.start}..${seg.stop} s but its records cover ${seg.init}..${recordsStop} s`, { target, center });
+    }
+    segs.push(seg);
+  }
+  return segs;
+}
+
+/** The ephemeris named in the segment names, e.g. "DE-0440LE-0440" -> "DE440". */
+function ephemerisOf(ref) {
+  const names = new Set(ref.segments.map((s) => /DE-0*(\d+)LE-0*\d+/.exec(s.name ?? '')?.[1]).filter(Boolean));
+  return names.size === 1 ? `DE${[...names][0]}` : null;
+}
+
+/** Citations this compiler can state for itself; any other ephemeris is named without one. */
+const CITATIONS = {
+  DE440: {
+    text: 'Park, R. S., Folkner, W. M., Williams, J. G., and Boggs, D. H. (2021). The JPL Planetary and Lunar Ephemerides DE440 and DE441. The Astronomical Journal 161(3), 105.',
+    doi: '10.3847/1538-3881/abd414',
+  },
+};
+
+function provenanceOf(ref, kernelPath, kernelBytes, producer) {
+  const ephemeris = ephemerisOf(ref);
+  const doiInKernel = /DOI:\s*(10\.\d{4,9}\/[^\s]+)/.exec(ref.comment ?? '')?.[1] ?? null;
+  return {
+    producer: { name: producer.name, institution: producer.institution },
+    source: {
+      file: basename(kernelPath),
+      bytes: kernelBytes.length,
+      sha256: sha256(kernelBytes),
+      ephemeris,
+      originalProducer: 'Jet Propulsion Laboratory, California Institute of Technology, distributed by NAIF',
+      citation: CITATIONS[ephemeris] ?? null,
+      doiInKernelComments: doiInKernel,
+    },
+    modification: 'Not a NAIF kernel and not a SPICE kernel. The positions of the source kernel above were refitted as Chebyshev series per body and quantised by the compiler named in this header; each body\'s proven position error against the source is in bodies[].provenPosKm. NAIF\'s rules ask that a modified kernel name whoever made the last modification, here the producer, in place of the original producer, and carry a different file name.',
+    rulesPage: 'https://naif.jpl.nasa.gov/naif/rules.html',
+  };
+}
+
+/* ------------------------------------------------------------------ compile */
+
+/**
+ * Compile in memory. Returns the ZODEPH01 bytes and the header, or throws a
+ * CompileRefusal; it writes nothing.
+ */
+export async function compilePack(opts) {
+  const { candidate } = opts;
+  if (candidate === 'C') {
+    throw new CompileRefusal('no-proven-bound',
+      'candidate C stores a residual over astronomy-engine, which is not a polynomial, so its error has no proven bound; this compiler writes only packs whose every body is proven inside its budget');
+  }
+  const { kernelBytes, ref } = openKernel(opts.kernel);
+
+  const REQUIRED = new Set(['emb', 'moon', 'sun']);
+  let selected = null;
+  if (opts.bodies !== null) {
+    const asked = opts.bodies.split(',');
+    const unknown = asked.filter((n) => !BODY_SEGS.some((b) => b.name === n));
+    if (unknown.length) throw new CompileRefusal('bad-arguments', `unknown bodies: ${unknown.join(', ')}`);
+    // Earth, and therefore the observer, is built from emb and moon, and any
+    // sun-framed body needs the Sun, so a subset always carries those three.
+    selected = new Set([...asked, ...REQUIRED]);
+  }
+  const bodySet = BODY_SEGS.filter((b) => !selected || selected.has(b.name));
+
+  // --- the span, from the kernel ---
+  const segs = neededSegments(ref, bodySet);
+  const T0 = Math.max(...segs.map((s) => s.start));
+  const T1 = Math.min(...segs.map((s) => s.stop));
+  if (!(T1 > T0)) throw new CompileRefusal('empty-window', 'the segments this pack reads share no common time span');
+  // setUTCFullYear, because Date.UTC reads a year below 100 as 1900 + year.
+  const yearEt = (y) => new Date(0).setUTCFullYear(y, 0, 1) / 1000 - J2000_UNIX;
+  const covFrom = opts.fromYear === null ? T0 : yearEt(opts.fromYear);
+  const covTo = opts.toYear === null ? T1 : yearEt(opts.toYear);
+  if (covFrom < T0 || covTo > T1) {
+    throw new CompileRefusal('window-outside-kernel',
+      `the requested window ${new Date((covFrom + J2000_UNIX) * 1000).toISOString()}..${new Date((covTo + J2000_UNIX) * 1000).toISOString()} is not inside the kernel's ${new Date((T0 + J2000_UNIX) * 1000).toISOString()}..${new Date((T1 + J2000_UNIX) * 1000).toISOString()}`,
+      { kernelStartEtSecTdb: T0, kernelStopEtSecTdb: T1 });
+  }
+  if (!(covTo > covFrom)) throw new CompileRefusal('empty-window', 'the coverage window is empty');
+  const cropped = opts.fromYear !== null || opts.toYear !== null || selected !== null;
 
   // --- structural fact 1: Earth/EMB is a scalar multiple of Moon/EMB ---
   const s301 = ref.segment(301, 3); const s399 = ref.segment(399, 3);
@@ -370,35 +537,26 @@ async function main() {
     return { target: t, center: c, maxAbsCoefKm: mx };
   });
 
-  const J2000_UNIX = 946728000;
-  const covFrom = fromYear === null ? T0 : Math.max(T0, Date.UTC(Number(fromYear), 0, 1) / 1000 - J2000_UNIX);
-  const covTo = toYear === null ? T1 : Math.min(T1, Date.UTC(Number(toYear), 0, 1) / 1000 - J2000_UNIX);
-  if (covTo <= covFrom) throw new Error('empty coverage window');
-  const cropped = fromYear !== null || toYear !== null || wantBodies !== null;
-  // Earth, and therefore the observer, is built from emb and moon, and any
-  // sun-framed body needs the Sun, so a subset always carries those three.
-  const REQUIRED = new Set(['emb', 'moon', 'sun']);
-  const selected = wantBodies === null ? null : new Set([...wantBodies.split(','), ...REQUIRED]);
-
   const choice = JSON.parse(readFileSync(here('raw/choice.json'), 'utf8'));
   const bodies = [];
   const blocks = [];
-  const diag = [];
+  const overBudget = [];
 
-  for (const body of BODY_SEGS) {
-    if (selected && !selected.has(body.name)) continue;
+  for (const body of bodySet) {
     const seg = ref.segment(body.target, body.center);
     const budget = BUDGET_KM[body.name];
     const epsFit = 0.5 * budget; const epsQ = 0.5 * budget;
-    let frame; let Ldays; let ncoef; let nrec; let enc; let coef; let source; let modelTag = null;
+    let frame; let Lsec; let ncoef; let nrec; let enc; let coef; let bodyInit;
+    let provenFit; let fitTrail = null; let nominal = null;
 
     if (candidate === 'A') {
-      // keep DE440s's own segmentation exactly; truncate, then quantise.
+      // keep the kernel's own segmentation exactly; truncate, then quantise.
       frame = 'native'; enc = 'q';
-      Ldays = seg.intlen / DAY;
-      var recFrom = Math.max(0, Math.floor((covFrom - seg.init) / seg.intlen));
-      var recTo = Math.min(seg.nrec, Math.ceil((covTo - seg.init) / seg.intlen));
+      Lsec = seg.intlen;
+      const recFrom = Math.max(0, Math.floor((covFrom - seg.init) / seg.intlen));
+      const recTo = Math.min(seg.nrec, Math.ceil((covTo - seg.init) / seg.intlen));
       nrec = recTo - recFrom;
+      bodyInit = seg.init + recFrom * seg.intlen;
       const tail = [];                                  // tail[K] = sum_{k>=K} max_r |c_k|, per component
       const mx = Array.from({ length: 3 }, () => new Float64Array(seg.ncoef));
       for (let r = 0; r < seg.nrec; r += 1) {
@@ -419,50 +577,7 @@ async function main() {
         const off = (r + recFrom) * seg.rsize;
         for (let c = 0; c < 3; c += 1) for (let k = 0; k < ncoef; k += 1) coef[(r * 3 + c) * ncoef + k] = seg.data[off + 2 + c * seg.ncoef + k];
       }
-      source = frameSource(ref, body, 'native');
-      diag.push({ body: body.name, truncatedFrom: seg.ncoef, to: ncoef, provenTruncKm: tail[ncoef] });
-    } else {
-      const pick = choice[body.name][candidate === 'B' ? 'float64' : 'quant'];
-      frame = pick.frame; Ldays = pick.Ldays; ncoef = pick.ncoef;
-      var gridFrom = Math.max(0, Math.floor((covFrom - T0) / (Ldays * DAY)));
-      var gridTo = Math.min(SPAN_DAYS / Ldays, Math.ceil((covTo - T0) / (Ldays * DAY)));
-      nrec = gridTo - gridFrom;
-      enc = candidate === 'B' ? 'f64' : 'q';
-      const base = frameSource(ref, body, frame);
-      if (candidate === 'C') {
-        const r = await residualSource(ref, body, base);
-        source = r.source; modelTag = 'astronomy-engine BaryState/GeoMoonState';
-        // the residual can need a different degree than the absolute vector; walk
-        // n up until the sampled fit error is inside the fit budget, bounded at 64.
-        let n = ncoef;
-        for (; n <= 64; n += 1) {
-          const c2 = refit(source, T0 + gridFrom * Ldays * DAY, Ldays * DAY, nrec, n);
-          const e = sampledFitOnly(source, c2, T0 + gridFrom * Ldays * DAY, Ldays * DAY, nrec, n, 7);
-          if (e <= epsFit) { ncoef = n; coef = c2; break; }
-        }
-        if (!coef) { ncoef = 64; coef = refit(source, T0 + gridFrom * Ldays * DAY, Ldays * DAY, nrec, 64); }
-      } else {
-        source = base;
-        coef = refit(source, T0 + gridFrom * Ldays * DAY, Ldays * DAY, nrec, ncoef);
-      }
-    }
-
-    const Lsec = Ldays * DAY;
-    const gridInit = candidate === 'A' ? 0 : T0 + gridFrom * Lsec;
-    const bodyInit = candidate === 'A' ? seg.init + recFrom * seg.intlen : gridInit;
-    let quant = null; let q = 0;
-    if (enc === 'q') {
-      q = (2 * epsQ) / (SQRT3 * ncoef);
-      quant = quantise(coef, nrec, ncoef, q);
-    }
-    const { buf, layout } = encodeBody({ enc, nrec, ncoef, coef, quant });
-    blocks.push(buf);
-
-    const provenQ = enc === 'q' ? provenQuantBound(ncoef, q, Lsec / 2) : { posKm: 0, velKmS: 0 };
-    let provenFit = { posKm: 0, velKmS: 0 };
-    if (candidate === 'A') {
       // truncation, proven from the coefficient envelope
-      const d = diag.find((x) => x.body === body.name);
       let sv2 = 0;
       for (let c = 0; c < 3; c += 1) {
         let s = 0;
@@ -473,65 +588,110 @@ async function main() {
         }
         sv2 += (s / (seg.intlen / 2)) ** 2;
       }
-      provenFit = { posKm: d.provenTruncKm, velKmS: Math.sqrt(sv2) };
-    } else if (candidate === 'B' || candidate === 'D') {
+      provenFit = { posKm: tail[ncoef] ?? 0, velKmS: Math.sqrt(sv2), truncatedFrom: seg.ncoef };
+    } else {
+      const pick = choice[body.name][candidate === 'B' ? 'float64' : 'quant'];
+      frame = pick.frame; enc = candidate === 'B' ? 'f64' : 'q';
+      nominal = { Ldays: pick.Ldays, ncoef: pick.ncoef };
+      // nrec = ceil(span / L) records of span / nrec each: the last record
+      // ends on the coverage stop, and no record reaches past the kernel.
+      const span = covTo - covFrom;
+      nrec = Math.max(1, Math.ceil(span / (pick.Ldays * DAY) - 1e-9));
+      Lsec = span / nrec;
+      bodyInit = covFrom;
+      const source = frameSource(ref, body, frame);
       const parts = frame === 'sun'
         ? [{ seg, sign: 1 }, { seg: ref.segment(10, 0), sign: -1 }]
         : [{ seg, sign: 1 }];
-      provenFit = provenRefitBound(parts, coef, bodyInit, Lsec, nrec, ncoef, bodyInit, bodyInit + nrec * Lsec);
-    } else {
-      provenFit = { posKm: null, velKmS: null, why: 'the residual is fitted against a model that is not a polynomial, so the exact re-expansion argument does not apply; sampled only' };
+      fitTrail = [];
+      for (ncoef = pick.ncoef; ; ncoef += 2) {
+        coef = refit(source, bodyInit, Lsec, nrec, ncoef);
+        provenFit = provenRefitBound(parts, coef, bodyInit, Lsec, nrec, ncoef, bodyInit, bodyInit + nrec * Lsec);
+        fitTrail.push({ ncoef, provenFitKm: provenFit.posKm });
+        if (provenFit.posKm <= epsFit || ncoef + 2 > MAX_NCOEF) break;
+      }
     }
 
+    let quant = null; let q = 0;
+    if (enc === 'q') {
+      q = (2 * epsQ) / (SQRT3 * ncoef);
+      quant = quantise(coef, nrec, ncoef, q);
+    }
+    const provenQ = enc === 'q' ? provenQuantBound(ncoef, q, Lsec / 2) : { posKm: 0, velKmS: 0 };
+    const provenPosKm = provenFit.posKm + provenQ.posKm;
+    if (!(provenPosKm <= budget)) {
+      overBudget.push({ body: body.name, provenPosKm, budgetKm: budget, provenFitKm: provenFit.posKm, ncoef, fitTrail });
+      continue;
+    }
+    const { buf, layout } = encodeBody({ enc, nrec, ncoef, coef, quant });
+    blocks.push(buf);
     bodies.push({
       name: body.name, target: body.target, center: body.center,
-      frame, encoding: enc, model: modelTag,
-      initEt: bodyInit, intervalSec: Lsec, intervalDays: Ldays, nrec, ncoef,
+      frame, encoding: enc, model: null,
+      initEt: bodyInit, intervalSec: Lsec, intervalDays: Lsec / DAY, nrec, ncoef,
       budgetKm: budget, epsFitKm: epsFit, epsQuantKm: epsQ,
-      provenPosKm: provenFit.posKm === null ? null : provenFit.posKm + provenQ.posKm,
-      provenVelKmS: provenFit.velKmS === null ? null : provenFit.velKmS + provenQ.velKmS,
+      provenPosKm,
+      provenVelKmS: provenFit.velKmS + provenQ.velKmS,
       provenParts: { refit: provenFit, quantisation: provenQ },
+      fit: nominal === null ? null : { nominal, ncoefAdded: ncoef - nominal.ncoef, trail: fitTrail },
       layout, bytes: buf.length,
     });
+  }
+  if (overBudget.length) {
+    throw new CompileRefusal('over-budget',
+      `${overBudget.map((b) => `${b.body} is proven only to ${b.provenPosKm} km against a ${b.budgetKm} km budget`).join('; ')}; nothing was written`,
+      { bodies: overBudget });
   }
 
   // ------------------------------------------------------------- container
   const header = {
     format: 'zodiacs-ephemeris-pack',
-    formatVersion: 1,
+    formatVersion: FORMAT_VERSION,
     candidate,
     compiler: { name: 'zodiacs precision compiler', version: COMPILER_VERSION, sourceSha256: sourceHashes() },
-    input: { file: kernelPath.split('/').pop(), bytes: kernelBytes.length, sha256: sha256(kernelBytes) },
+    input: { file: basename(opts.kernel), bytes: kernelBytes.length, sha256: sha256(kernelBytes) },
+    provenance: provenanceOf(ref, opts.kernel, kernelBytes, opts.producer),
     settings: {
       budgetsKm: BUDGET_KM,
-      budgetSplit: 'half the per-body position budget to the fit, half to quantisation',
+      budgetSplit: 'half of each body\'s position budget to the fit and half to quantisation, each proven; the pack is written only if every body\'s proven total is inside its budget',
+      fitRule: candidate === 'A'
+        ? 'the kernel\'s own records, truncated to the fewest coefficients whose proven tail is inside half the budget'
+        : `start from raw/choice.json's interval and degree; while the proven fit bound exceeds half the budget, add two Chebyshev coefficients, up to ${MAX_NCOEF}`,
+      grid: candidate === 'A'
+        ? 'the kernel\'s own records that meet the coverage window'
+        : 'nrec = ceil(span / L) records of span / nrec each, from the coverage start to the coverage stop',
       quantiser: 'uniform step q = 2*eps/(sqrt(3)*ncoef) per body, round to nearest, per-(component,index) midpoint and byte-aligned width',
-      choiceSource: candidate === 'A' ? 'DE440s segmentation, unchanged' : 'raw/sweep.json -> raw/choice.json',
+      choiceSource: candidate === 'A' ? 'the kernel\'s segmentation, unchanged' : 'raw/sweep.json -> raw/choice.json, swept on DE440s',
     },
     coverage: {
       startEtSecTdb: covFrom, stopEtSecTdb: covTo,
       startUtcApprox: new Date((covFrom + J2000_UNIX) * 1000).toISOString(),
       stopUtcApprox: new Date((covTo + J2000_UNIX) * 1000).toISOString(),
+      kernelStartEtSecTdb: T0, kernelStopEtSecTdb: T1,
       croppedFromKernel: cropped,
       bodySubset: selected ? [...selected].sort() : null,
       timeScale: 'TDB seconds past J2000; the runtime is fed TT, and |TDB-TT| < 2 ms is below every budget here',
       spanDays: (covTo - covFrom) / DAY,
-      kernelSpanDays: SPAN_DAYS,
+      kernelSpanDays: (T1 - T0) / DAY,
     },
     conventions: {
-      frame: 'ICRF / J2000 mean equator and equinox (DE440s segment frame id 1)',
-      units: { position: 'km', velocity: 'km/s' },
+      chebyshev: CONVENTION_TOKENS.chebyshev,
+      units: CONVENTION_TOKENS.units,
+      meaning: {
+        chebyshev: 'p(tau) = sum_k c_k T_k(tau), tau = (t - mid)/radius, c_0 NOT halved (SPK type-2 convention)',
+        units: 'positions in km, velocities in km/s',
+      },
+      frame: 'ICRF / J2000 mean equator and equinox (SPK segment frame id 1)',
       origin: 'per body: see bodies[].frame -- "native" = the DE segment centre, "sun" = heliocentric, "ssb" = solar-system barycentre',
-      chebyshev: 'p(tau) = sum_k c_k T_k(tau), tau = (t - mid)/radius, c_0 NOT halved (SPK type-2 convention)',
       velocity: 'the analytic derivative of the stored polynomial, not a finite difference',
       angles: 'none are stored; every quantity in this pack is a vector component',
     },
     derived: {
-      earth399: { rule: 'r(399 rel 3) = -(1/EMRAT) * r(301 rel 3)', emrat, worstResidualKm: emratWorstKm, note: 'exact in DE440s to 1 ulp; verified over every coefficient of both segments' },
+      earth399: { rule: 'r(399 rel 3) = -(1/EMRAT) * r(301 rel 3)', emrat, worstResidualKm: emratWorstKm, note: 'exact in the DE kernels to 1 ulp; verified over every coefficient of both segments' },
       mercury199: { rule: 'r(199 rel 1) = 0', evidence: zeroSegs[0] },
       venus299: { rule: 'r(299 rel 2) = 0', evidence: zeroSegs[1] },
     },
-    dependencies: dependencies(candidate),
+    dependencies: dependencies(),
     bodies,
     payloadSha256: '0'.repeat(64),
   };
@@ -558,26 +718,7 @@ async function main() {
   out.writeUInt32LE(payloadOffset, 12);
   hjson.copy(out, 16);
   payload.copy(out, payloadOffset);
-
-  mkdirSync(new URL('./packs/', import.meta.url), { recursive: true });
-  writeFileSync(outPath, out);
-  process.stdout.write(`${JSON.stringify({ candidate, out: outPath, bytes: out.length, mib: +(out.length / 1048576).toFixed(4), sha256: sha256(out), headerBytes: hjson.length }, null, 1)}\n`);
-}
-
-function sampledFitOnly(source, coef, initEt, Lsec, nrec, ncoef, per) {
-  const p = new Float64Array(3);
-  const radius = Lsec / 2;
-  let worst = 0;
-  for (let i = 0; i < nrec; i += 1) {
-    for (let s = 0; s < per; s += 1) {
-      const tau = -1 + (2 * (s + 0.5)) / per;
-      source(initEt + i * Lsec + radius + tau * radius, p);
-      let d2 = 0;
-      for (let c = 0; c < 3; c += 1) { const d = clenshaw(coef, (i * 3 + c) * ncoef, ncoef, tau) - p[c]; d2 += d * d; }
-      if (d2 > worst) worst = d2;
-    }
-  }
-  return Math.sqrt(worst);
+  return { bytes: out, header, headerBytes: hjson.length };
 }
 
 function sourceHashes() {
@@ -588,10 +729,10 @@ function sourceHashes() {
   return out;
 }
 
-function dependencies(candidate) {
-  const d = [
+function dependencies() {
+  return [
     {
-      what: 'JPL DE440s SPK kernel',
+      what: 'a JPL DE SPK kernel (see provenance.source)',
       role: 'the only source of position data',
       // Corrected 2026-09-20 under compiler 1.1.0. This field previously
       // said "US Government work, public domain (JPL/Caltech-NASA)". That
@@ -607,14 +748,41 @@ function dependencies(candidate) {
       neededAtRuntime: false,
     },
     { what: 'raw/sweep.json + raw/choice.json', role: 'per-body interval and degree choice', neededAtRuntime: false },
+    { what: 'no Swiss Ephemeris code, data or output', role: 'none: Swiss is a measuring instrument elsewhere in this study and was not consulted by the compiler', neededAtRuntime: false },
   ];
-  if (candidate === 'C') {
-    d.push({ what: 'astronomy-engine 2.1.19', role: 'REQUIRED AT RUNTIME: the pack stores only the residual DE minus this model, so the model must be evaluated on every call and any change to it invalidates the pack', licence: 'MIT', neededAtRuntime: true, pinnedVersion: '2.1.19' });
-  }
-  d.push({ what: 'no Swiss Ephemeris code, data or output', role: 'none: Swiss is a measuring instrument elsewhere in this study and was not consulted by the compiler', neededAtRuntime: false });
-  return d;
 }
 
-export { refit, quantise, provenRefitBound, provenQuantBound, sampledError, frameSource };
+/** The command line: parse, compile, write, report. Returns the exit code. */
+export async function main(argv) {
+  let opts;
+  try {
+    opts = parseArgs(argv);
+    if (opts.help) { process.stdout.write(USAGE); return 0; }
+    const stem = basename(opts.kernel).replace(/\.[^.]*$/, '');
+    const outPath = resolve(opts.out ?? `${stem}-${opts.candidate}.zeph`);
+    if (outPath === resolve(opts.kernel)) {
+      throw new CompileRefusal('out-is-kernel', 'the output path is the kernel itself; a modified kernel must carry a different file name');
+    }
+    const { bytes, header, headerBytes } = await compilePack(opts);
+    try {
+      writeFileSync(outPath, bytes);
+    } catch (error) {
+      throw new CompileRefusal('out-unwritable', `cannot write ${outPath}: ${error.code ?? error.message}`);
+    }
+    process.stdout.write(`${JSON.stringify({
+      candidate: opts.candidate, out: outPath, bytes: bytes.length, mib: +(bytes.length / 1048576).toFixed(4),
+      sha256: sha256(bytes), payloadSha256: header.payloadSha256, headerBytes,
+      coverage: [header.coverage.startUtcApprox, header.coverage.stopUtcApprox],
+      bodies: header.bodies.map((b) => ({ name: b.name, ncoef: b.ncoef, nrec: b.nrec, provenPosKm: b.provenPosKm, budgetKm: b.budgetKm })),
+    }, null, 1)}\n`);
+    return 0;
+  } catch (error) {
+    if (!(error instanceof CompileRefusal)) throw error;
+    process.stderr.write(`${JSON.stringify({ refused: error.code, message: error.message, ...(Object.keys(error.details).length ? { details: error.details } : {}) })}\n`);
+    return USAGE_CODES.has(error.code) ? 2 : 3;
+  }
+}
 
-if (import.meta.url === `file://${process.argv[1]}`) await main();
+export { refit, quantise, provenRefitBound, provenQuantBound, frameSource };
+
+if (import.meta.url === `file://${process.argv[1]}`) process.exitCode = await main(process.argv.slice(2));

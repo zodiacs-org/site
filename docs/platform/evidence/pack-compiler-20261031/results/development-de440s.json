@@ -1,0 +1,253 @@
+{
+ "what": "Development on de440s.bsp (not the rule's evidence): compiler 1.1.0 and compiler 2.0.0 on the same kernel, on this machine",
+ "node": "v22.22.2",
+ "platform": "darwin-arm64",
+ "kernel": {
+  "file": "de440s.bsp",
+  "bytes": 32726016,
+  "sha256": "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2"
+ },
+ "compiler110": {
+  "command": "compile.mjs --candidate=D --kernel=<kernels>/de440s.bsp (the 1.1.0 source on origin/main)",
+  "bytes": 1737632,
+  "payloadSha256": "0c7e1c9357e44f6463dd7f68418865e699a5758325cc04d02a6cd24b56900102",
+  "recordedPayloadSha256Elsewhere": "0a2187642704459a47983c79ed4ecb70deed5ab5ba75465e89319d39089e1afa",
+  "recordedIn": "docs/platform/evidence/precision-2026-09-20/METADATA-CORRECTION.md and the audit (engine-audit-2026-09-22)",
+  "tierB": {
+   "tests": 85,
+   "pass": 85,
+   "fail": 0,
+   "cancelled": 0,
+   "skipped": 0,
+   "todo": 0
+  },
+  "bodies": [
+   {
+    "name": "mercuryBary",
+    "ncoef": 41,
+    "nrec": 1370,
+    "provenPosKm": 0.35951410460773175,
+    "budgetKm": 0.3,
+    "insideBudget": false
+   },
+   {
+    "name": "venusBary",
+    "ncoef": 43,
+    "nrec": 274,
+    "provenPosKm": 0.4063336123216329,
+    "budgetKm": 0.3,
+    "insideBudget": false
+   },
+   {
+    "name": "emb",
+    "ncoef": 31,
+    "nrec": 400,
+    "provenPosKm": 0.42650147731807275,
+    "budgetKm": 0.3,
+    "insideBudget": false
+   },
+   {
+    "name": "marsBary",
+    "ncoef": 39,
+    "nrec": 160,
+    "provenPosKm": 1.0103556029197498,
+    "budgetKm": 0.5,
+    "insideBudget": false
+   },
+   {
+    "name": "jupiterBary",
+    "ncoef": 43,
+    "nrec": 40,
+    "provenPosKm": 1.286036637639937,
+    "budgetKm": 1,
+    "insideBudget": false
+   },
+   {
+    "name": "saturnBary",
+    "ncoef": 22,
+    "nrec": 40,
+    "provenPosKm": 1.2649306362261048,
+    "budgetKm": 1,
+    "insideBudget": false
+   },
+   {
+    "name": "uranusBary",
+    "ncoef": 14,
+    "nrec": 40,
+    "provenPosKm": 1.178145471748695,
+    "budgetKm": 1,
+    "insideBudget": false
+   },
+   {
+    "name": "neptuneBary",
+    "ncoef": 11,
+    "nrec": 40,
+    "provenPosKm": 1.2428379078033673,
+    "budgetKm": 1,
+    "insideBudget": false
+   },
+   {
+    "name": "plutoBary",
+    "ncoef": 10,
+    "nrec": 40,
+    "provenPosKm": 1.275760200205479,
+    "budgetKm": 1,
+    "insideBudget": false
+   },
+   {
+    "name": "sun",
+    "ncoef": 44,
+    "nrec": 274,
+    "provenPosKm": 0.3791545686139889,
+    "budgetKm": 0.3,
+    "insideBudget": false
+   },
+   {
+    "name": "moon",
+    "ncoef": 31,
+    "nrec": 3425,
+    "provenPosKm": 0.022146085907580965,
+    "budgetKm": 0.01,
+    "insideBudget": false
+   }
+  ]
+ },
+ "compiler200": {
+  "command": "compile.mjs --kernel=<kernels>/de440s.bsp",
+  "bytes": 1780464,
+  "fileSha256": "3be30f2cd5ac874a3092f4be6930e76e4e5ca4eb60c5b0359588f0df5ea96d9e",
+  "payloadSha256": "cb745f0b81cf7cdee7dda4278a89ffc31c36da9736915a6c0e2d5d228e69bfe8",
+  "sealedSha256": "a979ea8c85fc2251a70bfecd8fefc8b8efd66bef4f2ac65f6b728f3caf4456c8",
+  "tierB": {
+   "tests": 85,
+   "pass": 85,
+   "fail": 0,
+   "cancelled": 0,
+   "skipped": 0,
+   "todo": 0
+  },
+  "bodies": [
+   {
+    "name": "mercuryBary",
+    "nominalNcoef": 41,
+    "ncoef": 41,
+    "nrec": 1370,
+    "intervalDays": 80,
+    "provenFitKm": 0.1343591692897372,
+    "provenPosKm": 0.28435916928973715,
+    "budgetKm": 0.3,
+    "insideBudget": true
+   },
+   {
+    "name": "venusBary",
+    "nominalNcoef": 43,
+    "ncoef": 45,
+    "nrec": 274,
+    "intervalDays": 400,
+    "provenFitKm": 0.13784418539175636,
+    "provenPosKm": 0.2878441853917564,
+    "budgetKm": 0.3,
+    "insideBudget": true
+   },
+   {
+    "name": "emb",
+    "nominalNcoef": 31,
+    "ncoef": 35,
+    "nrec": 400,
+    "intervalDays": 274,
+    "provenFitKm": 0.14468470540456782,
+    "provenPosKm": 0.2946847054045678,
+    "budgetKm": 0.3,
+    "insideBudget": true
+   },
+   {
+    "name": "marsBary",
+    "nominalNcoef": 39,
+    "ncoef": 43,
+    "nrec": 160,
+    "intervalDays": 685,
+    "provenFitKm": 0.2460060452160054,
+    "provenPosKm": 0.4960060452160054,
+    "budgetKm": 0.5,
+    "insideBudget": true
+   },
+   {
+    "name": "jupiterBary",
+    "nominalNcoef": 43,
+    "ncoef": 43,
+    "nrec": 40,
+    "intervalDays": 2740,
+    "provenFitKm": 0.4626703708587235,
+    "provenPosKm": 0.9626703708587234,
+    "budgetKm": 1,
+    "insideBudget": true
+   },
+   {
+    "name": "saturnBary",
+    "nominalNcoef": 22,
+    "ncoef": 22,
+    "nrec": 40,
+    "intervalDays": 2740,
+    "provenFitKm": 0.44555736222393544,
+    "provenPosKm": 0.9455573622239355,
+    "budgetKm": 1,
+    "insideBudget": true
+   },
+   {
+    "name": "uranusBary",
+    "nominalNcoef": 14,
+    "ncoef": 14,
+    "nrec": 40,
+    "intervalDays": 2740,
+    "provenFitKm": 0.4065282347433787,
+    "provenPosKm": 0.9065282347433787,
+    "budgetKm": 1,
+    "insideBudget": true
+   },
+   {
+    "name": "neptuneBary",
+    "nominalNcoef": 11,
+    "ncoef": 11,
+    "nrec": 40,
+    "intervalDays": 2740,
+    "provenFitKm": 0.4457812055915986,
+    "provenPosKm": 0.9457812055915986,
+    "budgetKm": 1,
+    "insideBudget": true
+   },
+   {
+    "name": "plutoBary",
+    "nominalNcoef": 10,
+    "ncoef": 10,
+    "nrec": 40,
+    "intervalDays": 2740,
+    "provenFitKm": 0.45507652525555664,
+    "provenPosKm": 0.9550765252555566,
+    "budgetKm": 1,
+    "insideBudget": true
+   },
+   {
+    "name": "sun",
+    "nominalNcoef": 44,
+    "ncoef": 46,
+    "nrec": 274,
+    "intervalDays": 400,
+    "provenFitKm": 0.11233386240854022,
+    "provenPosKm": 0.26233386240854023,
+    "budgetKm": 0.3,
+    "insideBudget": true
+   },
+   {
+    "name": "moon",
+    "nominalNcoef": 31,
+    "ncoef": 33,
+    "nrec": 3425,
+    "intervalDays": 32,
+    "provenFitKm": 0.0035331933476198496,
+    "provenPosKm": 0.00853319334761985,
+    "budgetKm": 0.01,
+    "insideBudget": true
+   }
+  ]
+ }
+}
