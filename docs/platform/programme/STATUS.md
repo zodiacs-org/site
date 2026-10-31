@@ -1,9 +1,8 @@
 The Moon enclosure fix, 2026-10-31 (Asia/Bangkok): P4.5 accepted.
 
-**Overall delivery: 48%** (48.479% to three decimals): 88.45 of 182.45
-weighted units accepted; blocked 2% (3), or 1.644%. Phase 4 is at 20%.
-These figures do not include P4.2, in its own pull request; with both, the
-total would be 89.95 (49.301%).
+**Overall delivery: 49%** (49.301% to three decimals): 89.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Phase 4 is at 25%,
+with P4.2 (the pack compiler) accepted just before.
 
 - **P4.5, accepted.** The partition evaluation was run again as a new
   preregistered version
@@ -28,6 +27,35 @@ total would be 89.95 (49.301%).
 - **Not in this unit:** the rest of version 1's M4 list, such as local
   derivative bounds, which would decide the triple root that stays
   undecided in every search mode.
+
+The pack compiler, 2026-10-31 (Asia/Bangkok): P4.2 accepted.
+
+**Overall delivery: 46%** (46.013% to three decimals): 83.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Phase 4 is at 5%, its
+first accepted unit.
+
+- **P4.2, accepted.** Compiler 2.0.0 meets version 1's M2.1, under a rule
+  committed before it ran
+  ([the evidence README](../evidence/pack-compiler-20261031/README.md)):
+  - DE440 whole, DE440 from 1790 to 2210 and DE432s each compile to a pack
+    that opens and answers for all ten bodies, with every body proven
+    inside its position budget. 1.1.0 wrote DE440 packs that the runtime
+    refused, and a DE432s pack that extrapolated past the kernel.
+  - Tier B passes 85 of 85 on the 1790 to 2210 pack (2,489,632 bytes)
+    against `de440.bsp`. The payload digests are recorded, and the cropped
+    compile gives the same bytes twice.
+  - The span comes from the kernel, and the fit grows two coefficients at
+    a time until it is proven inside half its budget, or the pack is
+    refused. On DE440s, 1.1.0's own proven bounds had put all eleven bodies
+    over budget.
+  - The runtime now checks the header's format version and convention
+    tokens, and the header names its producer, source kernel, citation and
+    modification as NAIF's rules ask.
+  - One departure from the brief's wording, stated before the runs: every
+    record is shortened to fit the span exactly, rather than the last one
+    clipped, because the runtime's searches assume equal records.
+- **Not distributed.** No kernel or pack is committed while NAIF has not
+  answered the derived-coefficient question.
 
 Public adoption baselines, 2026-10-30 (Asia/Bangkok): P0.7a accepted.
 

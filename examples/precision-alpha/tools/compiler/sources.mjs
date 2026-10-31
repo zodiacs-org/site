@@ -53,9 +53,11 @@ export const BUDGET_KM = {
   moon: 0.010,
 };
 
-/** Interval lengths, in days, that divide the 109600-day kernel span exactly. */
-export const LADDER = [4, 8, 16, 20, 25, 32, 40, 50, 80, 100, 137, 160, 200, 274, 400, 548, 685, 800, 1096, 1370, 2192, 2740];
-
-export const SPAN_DAYS = 109600;
+/**
+ * The interval lengths in raw/choice.json came from a sweep over DE440s,
+ * whose 109,600-day span each of them divides. Compiler 1.x also gridded
+ * every kernel over those 109,600 days; since 2.0.0 the span comes from the
+ * kernel being compiled, so the ladder and the span are no longer here.
+ */
 export const DAY = 86400;
 export { NAIF };

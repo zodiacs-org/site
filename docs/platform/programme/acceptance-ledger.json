@@ -1878,9 +1878,18 @@
       "weight": 1.5,
       "gate": "v1 M2.1",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/pack-compiler-20261031/README.md",
+        "docs/platform/evidence/pack-compiler-20261031/PREREGISTRATION.md",
+        "docs/platform/evidence/pack-compiler-20261031/results/m21.json",
+        "docs/platform/evidence/pack-compiler-20261031/results/tier-b-de440-1790-2210.tap",
+        "examples/precision-alpha/tools/compiler/compile.mjs",
+        "examples/precision-alpha/test/tier-a/compiler.nodetest.mjs",
+        "examples/precision-alpha/test/tier-a/pack-format.nodetest.mjs"
+      ],
+      "notes": "Accepted 2026-10-31 under the preregistered rule (pack-compiler-20261031): compiler 2.0.0 compiles DE440 whole (6,481,936 bytes), DE440 from 1790 to 2210 (2,489,632 bytes) and DE432s (606,416 bytes) to packs that open and answer for all ten bodies, every body proven inside its position budget; tier B passes 85 of 85 on the 1790 to 2210 pack against de440.bsp; payload digests recorded, and the cropped compile gives the same bytes twice. The span comes from the kernel; nrec = ceil(span/L) records of span/nrec each, a stated departure from the brief's clipped last record that keeps the runtime's records equal; the fit is held to half of each budget by adding coefficients, up to 64, or the pack is refused (1.1.0's own proven bounds put all eleven DE440s bodies over budget); --kernel is required, --out defaults to the working directory, --help is handled and every refusal is typed; format 2 carries convention tokens the runtime now checks and a provenance block (producer, kernel hash, DE440 citation with DOI, NAIF modification note). No kernel or pack is committed while the derived-coefficient question to NAIF is open."
     },
     {
       "id": "P4.3",
