@@ -76,6 +76,16 @@ export const mig = (a) => (a.lo <= 0 && a.hi >= 0 ? 0 : Math.min(Math.abs(a.lo),
 export const width = (a) => a.hi - a.lo;
 export const contains = (outer, inner) => inner.lo >= outer.lo && inner.hi <= outer.hi;
 export const hull = (a, b) => (a === null ? b : widen(Math.min(a.lo, b.lo), Math.max(a.hi, b.hi)));
+/**
+ * The common part of two enclosures of the SAME quantity. Both contain it,
+ * so their intersection does, and needs no widening. Null when they do not
+ * meet, which can only mean one of them is wrong; the caller says so.
+ */
+export function meet(a, b) {
+  const lo = Math.max(a.lo, b.lo);
+  const hi = Math.min(a.hi, b.hi);
+  return lo <= hi ? { lo, hi } : null;
+}
 
 // ------------------------------------------------------------- 3-vectors
 export const vAdd = (a, b) => [add(a[0], b[0]), add(a[1], b[1]), add(a[2], b[2])];
@@ -84,6 +94,11 @@ export const vScale = (a, s) => [scale(a[0], s), scale(a[1], s), scale(a[2], s)]
 /** Componentwise multiply by one interval scalar. */
 export const vMulI = (a, s) => [mul(a[0], s), mul(a[1], s), mul(a[2], s)];
 export const vHull = (a, b) => (a === null ? b : [hull(a[0], b[0]), hull(a[1], b[1]), hull(a[2], b[2])]);
+/** `meet` per component; null if any component's two enclosures do not meet. */
+export function vMeet(a, b) {
+  const out = [meet(a[0], b[0]), meet(a[1], b[1]), meet(a[2], b[2])];
+  return out.every((x) => x !== null) ? out : null;
+}
 export const dot = (a, b) => add(add(mul(a[0], b[0]), mul(a[1], b[1])), mul(a[2], b[2]));
 
 /**

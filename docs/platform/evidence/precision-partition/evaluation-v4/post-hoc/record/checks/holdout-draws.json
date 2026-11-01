@@ -1,0 +1,42 @@
+{
+ "daysInRange": 101172,
+ "draws": {
+  "zodiacs-holdout/P4.5": {
+   "seedHex": "c3c7ac8f",
+   "seed": 3284642959,
+   "firstR": 0.22724378714337945,
+   "startDay": 22990,
+   "start": "1912-12-12"
+  },
+  "zodiacs-holdout/P4.5-v3": {
+   "seedHex": "4e1bbb5d",
+   "seed": 1310440285,
+   "firstR": 0.913576225284487,
+   "startDay": 92428,
+   "start": "2103-01-23"
+  }
+ },
+ "series": {
+  "1975 regression": {
+   "first": "1975-01-01",
+   "lastWindowEnds": "1997-12-31"
+  },
+  "2007 v1 holdout": {
+   "first": "2007-03-15",
+   "lastWindowEnds": "2030-03-14"
+  },
+  "1912 bundle v2 holdout": {
+   "first": "1912-12-12",
+   "lastWindowEnds": "1935-12-12"
+  },
+  "2103 bundle v3 holdout": {
+   "first": "2103-01-23",
+   "lastWindowEnds": "2126-01-22"
+  },
+  "2040 #860 holdout": {
+   "first": "2040-01-01",
+   "lastWindowEnds": "2062-12-31"
+  }
+ },
+ "overlaps": []
+}

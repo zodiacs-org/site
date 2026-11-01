@@ -1,0 +1,154 @@
+{
+  "tool": "mechanism.mjs",
+  "note": "a reconstruction with #860's exported functions and a wider light-time interval than the run used; not a trace of the run",
+  "join": -2663236800,
+  "joinIso": "1915-08-11T00:00:00 TDB",
+  "moonRecordLengthSec": 2764800,
+  "cellWidthSec": 42.1875,
+  "cells": [
+    {
+      "cell": [
+        -2663236884.375,
+        -2663236842.1875
+      ],
+      "cellFromJoinSec": [
+        -84.375,
+        -42.1875
+      ],
+      "lightTimeSec": {
+        "lo": 1.3005140897526541,
+        "hi": 1.302520048846332
+      },
+      "localGeometryEligible": true,
+      "eligibility": {
+        "targetOverEmissionTimes": true,
+        "mergedOverCell": true,
+        "observerOverCell": true,
+        "sunOverCell": true
+      },
+      "splitForm": {
+        "dWidthKm": 4536.696927205252,
+        "cosWidth": 0.03164419097030369,
+        "verdict": "boundary"
+      },
+      "mergedAndCentred": {
+        "dWidthKm": 93.57286254595965,
+        "cosWidth": 0.000003543252993010171,
+        "verdict": "excluded"
+      },
+      "referenceElongationDeg": [
+        0.545948901436452,
+        0.5488489784771511,
+        0.5517490766247539
+      ],
+      "cosFloorMarginAtMid": 0.003759421514228367
+    },
+    {
+      "cell": [
+        -2663236842.1875,
+        -2663236800
+      ],
+      "cellFromJoinSec": [
+        -42.1875,
+        0
+      ],
+      "lightTimeSec": {
+        "lo": 1.300508130628469,
+        "hi": 1.302514089752654
+      },
+      "localGeometryEligible": true,
+      "eligibility": {
+        "targetOverEmissionTimes": true,
+        "mergedOverCell": true,
+        "observerOverCell": true,
+        "sunOverCell": true
+      },
+      "splitForm": {
+        "dWidthKm": 4536.696927205252,
+        "cosWidth": 0.03164426880140292,
+        "verdict": "boundary"
+      },
+      "mergedAndCentred": {
+        "dWidthKm": 93.57286297611427,
+        "cosWidth": 0.000003547477894327855,
+        "verdict": "excluded"
+      },
+      "referenceElongationDeg": [
+        0.5517490766247539,
+        0.5546491957615015,
+        0.5575493343484875
+      ],
+      "cosFloorMarginAtMid": 0.0037584466729531085
+    },
+    {
+      "cell": [
+        -2663236800,
+        -2663236757.8125
+      ],
+      "cellFromJoinSec": [
+        0,
+        42.1875
+      ],
+      "lightTimeSec": {
+        "lo": 1.300502167360256,
+        "hi": 1.3025081306284687
+      },
+      "localGeometryEligible": false,
+      "eligibility": {
+        "targetOverEmissionTimes": false,
+        "mergedOverCell": true,
+        "observerOverCell": true,
+        "sunOverCell": true
+      },
+      "splitForm": {
+        "dWidthKm": 4500.846799538063,
+        "cosWidth": 0.031515753287256754,
+        "verdict": "boundary"
+      },
+      "mergedAndCentred": null,
+      "referenceElongationDeg": [
+        0.5575493343484875,
+        0.5604495380332357,
+        0.5633497190764433
+      ],
+      "cosFloorMarginAtMid": 0.003757461562722497
+    },
+    {
+      "cell": [
+        -2663236757.8125,
+        -2663236715.625
+      ],
+      "cellFromJoinSec": [
+        42.1875,
+        84.375
+      ],
+      "lightTimeSec": {
+        "lo": 1.3004962081817542,
+        "hi": 1.3025021673602557
+      },
+      "localGeometryEligible": true,
+      "eligibility": {
+        "targetOverEmissionTimes": true,
+        "mergedOverCell": true,
+        "observerOverCell": true,
+        "sunOverCell": true
+      },
+      "splitForm": {
+        "dWidthKm": 4502.661521360802,
+        "cosWidth": 0.0315314351216921,
+        "verdict": "boundary"
+      },
+      "mergedAndCentred": {
+        "dWidthKm": 74.7878608078172,
+        "cosWidth": 0.000003304336500531413,
+        "verdict": "excluded"
+      },
+      "referenceElongationDeg": [
+        0.5633497190764433,
+        0.5662499207087627,
+        0.5691501408587403
+      ],
+      "cosFloorMarginAtMid": 0.003756466197473496
+    }
+  ]
+}

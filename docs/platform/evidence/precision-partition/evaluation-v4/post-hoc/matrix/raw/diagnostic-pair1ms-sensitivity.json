@@ -1,0 +1,86 @@
+{
+ "tool": "pair1ms-sensitivity.mjs (results/matrix/scripts)",
+ "tree": "<v1-export>/examples/precision-alpha",
+ "node": "v22.22.2",
+ "platform": "darwin-arm64",
+ "committedLinux": {
+  "found": 2,
+  "unresolved": 9,
+  "evaluations": 190,
+  "times": [
+   264200.00031888485,
+   264200.0007212162
+  ]
+ },
+ "variants": [
+  {
+   "variant": "as the audit builds it",
+   "found": 0,
+   "established": false,
+   "unresolved": 11,
+   "evaluations": 186,
+   "cells": 65,
+   "times": []
+  },
+  {
+   "variant": "displacement x (1 + 2^-52)",
+   "found": 0,
+   "established": false,
+   "unresolved": 11,
+   "evaluations": 186,
+   "cells": 65,
+   "times": []
+  },
+  {
+   "variant": "displacement x (1 - 2^-53)",
+   "found": 2,
+   "established": false,
+   "unresolved": 9,
+   "evaluations": 190,
+   "cells": 65,
+   "times": [
+    264200.00031888485,
+    264200.0007212162
+   ]
+  },
+  {
+   "variant": "Math.cos in the fit +1 ulp",
+   "found": 0,
+   "established": false,
+   "unresolved": 11,
+   "evaluations": 186,
+   "cells": 65,
+   "times": []
+  },
+  {
+   "variant": "Math.cos in the fit -1 ulp",
+   "found": 2,
+   "established": false,
+   "unresolved": 9,
+   "evaluations": 190,
+   "cells": 65,
+   "times": [
+    264199.9976634979,
+    264200.02212524414
+   ]
+  },
+  {
+   "variant": "Math.acos in the fit +1 ulp",
+   "found": 0,
+   "established": false,
+   "unresolved": 11,
+   "evaluations": 186,
+   "cells": 65,
+   "times": []
+  },
+  {
+   "variant": "Math.acos in the fit -1 ulp",
+   "found": 0,
+   "established": false,
+   "unresolved": 11,
+   "evaluations": 186,
+   "cells": 65,
+   "times": []
+  }
+ ]
+}

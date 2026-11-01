@@ -1,0 +1,134 @@
+{
+ "tree": "<v1-export>/examples/precision-alpha",
+ "packDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+ "defaults": {
+  "boundaryToleranceSec": 60,
+  "relightWidthRatio": 8,
+  "maxEvaluations": 4000000,
+  "maxCells": 400000,
+  "maxTauWidenings": 6,
+  "tauPadFloorSec": 0.000001
+ },
+ "cases": [
+  {
+   "id": "F1",
+   "body": "Sun",
+   "status": "finished",
+   "evaluations": 0,
+   "cells": 0,
+   "boundarySec": 0,
+   "boundaryPercentRoundedUp": 0,
+   "boundarySpans": 0,
+   "excludedSpans": 0,
+   "admissibleSpans": 1
+  },
+  {
+   "id": "F2",
+   "body": "Moon",
+   "status": "finished",
+   "evaluations": 939176,
+   "cells": 158121,
+   "boundarySec": 1365028.8583788872,
+   "boundaryPercentRoundedUp": 5.267,
+   "boundarySpans": 10,
+   "excludedSpans": 0,
+   "admissibleSpans": 11
+  },
+  {
+   "id": "F3",
+   "body": "Mercury",
+   "status": "finished",
+   "evaluations": 189574,
+   "cells": 37771,
+   "boundarySec": 128798.4375,
+   "boundaryPercentRoundedUp": 0.497,
+   "boundarySpans": 10,
+   "excludedSpans": 5,
+   "admissibleSpans": 6
+  },
+  {
+   "id": "F4",
+   "body": "Venus",
+   "status": "finished",
+   "evaluations": 73477,
+   "cells": 18308,
+   "boundarySec": 40035.9375,
+   "boundaryPercentRoundedUp": 0.155,
+   "boundarySpans": 2,
+   "excludedSpans": 1,
+   "admissibleSpans": 2
+  },
+  {
+   "id": "F5",
+   "body": "Mars",
+   "status": "finished",
+   "evaluations": 43150,
+   "cells": 10735,
+   "boundarySec": 23456.25,
+   "boundaryPercentRoundedUp": 0.091,
+   "boundarySpans": 2,
+   "excludedSpans": 1,
+   "admissibleSpans": 2
+  },
+  {
+   "id": "F6",
+   "body": "Jupiter",
+   "status": "finished",
+   "evaluations": 371,
+   "cells": 53,
+   "boundarySec": 0,
+   "boundaryPercentRoundedUp": 0,
+   "boundarySpans": 0,
+   "excludedSpans": 0,
+   "admissibleSpans": 1
+  },
+  {
+   "id": "F7",
+   "body": "Saturn",
+   "status": "finished",
+   "evaluations": 10269,
+   "cells": 2522,
+   "boundarySec": 5146.875,
+   "boundaryPercentRoundedUp": 0.02,
+   "boundarySpans": 2,
+   "excludedSpans": 1,
+   "admissibleSpans": 2
+  },
+  {
+   "id": "F8",
+   "body": "Uranus",
+   "status": "finished",
+   "evaluations": 9308,
+   "cells": 2282,
+   "boundarySec": 4682.8125,
+   "boundaryPercentRoundedUp": 0.019,
+   "boundarySpans": 2,
+   "excludedSpans": 1,
+   "admissibleSpans": 2
+  },
+  {
+   "id": "F9",
+   "body": "Neptune",
+   "status": "finished",
+   "evaluations": 8965,
+   "cells": 2195,
+   "boundarySec": 4387.5,
+   "boundaryPercentRoundedUp": 0.017,
+   "boundarySpans": 2,
+   "excludedSpans": 1,
+   "admissibleSpans": 2
+  },
+  {
+   "id": "F10",
+   "body": "Pluto",
+   "status": "finished",
+   "evaluations": 963,
+   "cells": 198,
+   "boundarySec": 0,
+   "boundaryPercentRoundedUp": 0,
+   "boundarySpans": 0,
+   "excludedSpans": 0,
+   "admissibleSpans": 1
+  }
+ ]
+}
