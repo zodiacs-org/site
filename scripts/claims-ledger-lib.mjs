@@ -184,6 +184,8 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /^src\/data\/(?:sky|ingresses|eclipses|birthdays)\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/transits-\d{4}-\d{2}\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/time-atlas\//u, reason: 'the engine repository\'s time atlas, copied byte for byte at a pinned commit and held to its digests: its statements are the atlas\'s own, each rule cited to primary sources and checked by the atlas\'s checks (B3.a)' },
+  { pattern: /^src\/data\/horoscope-months\.json$/u, reason: 'generated from src/content/horoscopes by scripts/build-horoscope-months.mjs; the monthly readings are read there instead' },
+  { pattern: /^src\/data\/lunar-new-year\.json$/u, reason: 'generated Lunar New Year dates with no prose (scripts/build-lunar-new-year.mjs)' },
   { pattern: /^src\/data\/people\.json$/u, reason: 'the people pilot\'s frozen, generated copy; its facts are checked by build-people-pilot.mjs --check' },
   { pattern: /(?:^|\/)fixtures\/|\.fixture\.json$/u, reason: 'test fixtures, not copy' },
 ]);
