@@ -1,0 +1,2458 @@
+{
+  "tool": "partition-evaluation",
+  "rule": "PARTITION-EVALUATION.md sections 5, 6 and 7",
+  "label": "holdout-2103-unmodified-harness",
+  "epoch": "2103-01-23T00:00:00Z",
+  "pack": "<packs>/D-de440s.sealed.zeph",
+  "packDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+  "profile": {
+    "id": "zodiacs-deflected-of-date/1",
+    "deflectors": [
+      "Sun"
+    ],
+    "form": "eraLd with bm = 1, finite-distance source geometry (q is the real Sun-to-source direction at emission, NOT eraLdsun's q = p distant-star approximation)",
+    "srs": 1.97412574336e-8,
+    "solarRadiusKm": 695700,
+    "limiter": "dlim = 1e-6 / max(em^2, 1), ERFA eraLdsun's own. dlim is phi^2/2, the angular separation at which limiting BEGINS -- not an error cap. Below it the deflection is artificially reduced toward zero. The supported domain is set so it never fires inside it; limiterActive is reported regardless.",
+    "minElongationDeg": 5,
+    "epochs": "e and em from the observer and Sun at RECEPTION; q from the source and Sun at EMISSION. ld.c Note 3 prefers the deflector at the ray's closest approach; the split used here is within 3.13e-10 arcsec of that, against 1.96e-5 arcsec for the simpler reception-for-both.",
+    "notApplied": [
+      "deflection by any body other than the Sun",
+      "the second-order term eraLd itself omits: a measured 2.08e-3 arcsec at 0.3 deg elongation, 4.23e-7 arcsec at 5 deg, 4.97e-8 arcsec at 10 deg, against an independent ray integration. A property of the MODEL, not of this implementation",
+      "the Klioner solar-potential term inside the aberration, which is a DIFFERENT term in a different transformation and stays off",
+      "Shapiro (relativistic) delay",
+      "topocentric parallax, diurnal aberration, refraction"
+    ]
+  },
+  "knobs": {
+    "boundaryToleranceSec": 60,
+    "relightWidthRatio": 8,
+    "amended": false
+  },
+  "budgets": {
+    "maxEvaluations": 4000000,
+    "maxCells": 400000,
+    "wallClockMs": 300000,
+    "rootToleranceSec": 0.001,
+    "matchWindowSec": 1
+  },
+  "cases": [
+    {
+      "id": "F1",
+      "series": "main",
+      "body": "Sun",
+      "from": "2103-01-23T00:00:00Z",
+      "to": "2103-11-19T00:00:00Z",
+      "targetDeg": 90.047786,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": true,
+        "events": 1,
+        "evaluations": 601,
+        "cells": 11,
+        "ms": 14,
+        "withinWallClock": true,
+        "excludedSpanDays": 0,
+        "unresolvedRuns": 0
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 1,
+        "eligibilityEstablished": 1,
+        "eligibilityAmbiguous": 0,
+        "overRequest": true,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": false,
+        "evaluations": 601,
+        "partitionEvaluations": 0,
+        "searchEvaluations": 601,
+        "cells": 11,
+        "ms": 8,
+        "withinWallClock": true,
+        "admissibleSec": 25920000,
+        "excludedSec": 0,
+        "boundarySec": 0,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 1,
+        "excludedSpans": 0,
+        "boundarySpans": 0,
+        "narrowestBoundarySec": null,
+        "widestBoundarySec": null
+      },
+      "reference": {
+        "roots": 1,
+        "samples": 14401,
+        "stepSec": 1800,
+        "refusals": 0,
+        "rootsInAdmissible": 1
+      },
+      "correspondence": {
+        "matched": 1,
+        "matchedInAdmissible": 1,
+        "worstDeltaSec": 0.00003337860107421875,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 0,
+        "worstClosestApproachDeg": 0,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 1,
+        "refound": 1,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 1,
+      "ratioIsLowerBound": false,
+      "derivedClass": "no-conjunction"
+    },
+    {
+      "id": "A1",
+      "series": "antipode",
+      "body": "Sun",
+      "from": "2103-01-23T00:00:00Z",
+      "to": "2103-11-19T00:00:00Z",
+      "targetDeg": 270.047786,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": true,
+        "events": 0,
+        "evaluations": 601,
+        "cells": 11,
+        "ms": 5,
+        "withinWallClock": true,
+        "excludedSpanDays": 0,
+        "unresolvedRuns": 0
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 0,
+        "eligibilityEstablished": 0,
+        "eligibilityAmbiguous": 0,
+        "overRequest": true,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": false,
+        "evaluations": 601,
+        "partitionEvaluations": 0,
+        "searchEvaluations": 601,
+        "cells": 11,
+        "ms": 5,
+        "withinWallClock": true,
+        "admissibleSec": 25920000,
+        "excludedSec": 0,
+        "boundarySec": 0,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 1,
+        "excludedSpans": 0,
+        "boundarySpans": 0,
+        "narrowestBoundarySec": null,
+        "widestBoundarySec": null
+      },
+      "reference": {
+        "roots": 0,
+        "samples": 14401,
+        "stepSec": 1800,
+        "refusals": 0,
+        "rootsInAdmissible": 0
+      },
+      "correspondence": {
+        "matched": 0,
+        "matchedInAdmissible": 0,
+        "worstDeltaSec": 0,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 0,
+        "worstClosestApproachDeg": 0,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 0,
+        "refound": 0,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 1,
+      "ratioIsLowerBound": false,
+      "derivedClass": "no-conjunction"
+    },
+    {
+      "id": "F2",
+      "series": "main",
+      "body": "Moon",
+      "from": "2105-07-11T00:00:00Z",
+      "to": "2106-05-07T00:00:00Z",
+      "targetDeg": 270.890294,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 11,
+        "evaluations": 1652244,
+        "cells": 63756,
+        "ms": 3776,
+        "withinWallClock": true,
+        "excludedSpanDays": 5.690907099004145,
+        "unresolvedRuns": 22
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 11,
+        "eligibilityEstablished": 11,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 284398,
+        "partitionEvaluations": 254448,
+        "searchEvaluations": 29950,
+        "cells": 11603,
+        "ms": 494,
+        "withinWallClock": true,
+        "admissibleSec": 25425808.667382717,
+        "excludedSec": 491517.7124724388,
+        "boundarySec": 2673.620144844055,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 12,
+        "excludedSpans": 11,
+        "boundarySpans": 22,
+        "narrowestBoundarySec": 34.27734375,
+        "widestBoundarySec": 52.73015260696411
+      },
+      "reference": {
+        "roots": 11,
+        "samples": 86401,
+        "stepSec": 300,
+        "refusals": 0,
+        "rootsInAdmissible": 11
+      },
+      "correspondence": {
+        "matched": 11,
+        "matchedInAdmissible": 11,
+        "worstDeltaSec": 0.000040531158447265625,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 22,
+        "worstClosestApproachDeg": 0.00009344800151378507,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.00010314892534120584,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 11,
+        "refound": 11,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 5.8096189143383565,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "A2",
+      "series": "antipode",
+      "body": "Moon",
+      "from": "2105-07-11T00:00:00Z",
+      "to": "2106-05-07T00:00:00Z",
+      "targetDeg": 90.890294,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 10,
+        "evaluations": 1652244,
+        "cells": 63756,
+        "ms": 4361,
+        "withinWallClock": true,
+        "excludedSpanDays": 5.690907099004145,
+        "unresolvedRuns": 22
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 10,
+        "eligibilityEstablished": 10,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 284398,
+        "partitionEvaluations": 254448,
+        "searchEvaluations": 29950,
+        "cells": 11603,
+        "ms": 620,
+        "withinWallClock": true,
+        "admissibleSec": 25425808.667382717,
+        "excludedSec": 491517.7124724388,
+        "boundarySec": 2673.620144844055,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 12,
+        "excludedSpans": 11,
+        "boundarySpans": 22,
+        "narrowestBoundarySec": 34.27734375,
+        "widestBoundarySec": 52.73015260696411
+      },
+      "reference": {
+        "roots": 10,
+        "samples": 86401,
+        "stepSec": 300,
+        "refusals": 0,
+        "rootsInAdmissible": 10
+      },
+      "correspondence": {
+        "matched": 10,
+        "matchedInAdmissible": 10,
+        "worstDeltaSec": 0.0000324249267578125,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 22,
+        "worstClosestApproachDeg": 0.00009344800151378507,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.00010314892534120584,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 10,
+        "refound": 10,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 5.8096189143383565,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "F3",
+      "series": "main",
+      "body": "Mercury",
+      "from": "2107-12-28T00:00:00Z",
+      "to": "2108-10-23T00:00:00Z",
+      "targetDeg": 46.645119,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 3,
+        "evaluations": 1152721,
+        "cells": 44339,
+        "ms": 3574,
+        "withinWallClock": true,
+        "excludedSpanDays": 31.192787170410156,
+        "unresolvedRuns": 10
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 3,
+        "eligibilityEstablished": 3,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 48021,
+        "partitionEvaluations": 29089,
+        "searchEvaluations": 18932,
+        "cells": 1961,
+        "ms": 132,
+        "withinWallClock": true,
+        "admissibleSec": 23223923.4375,
+        "excludedSec": 2695064.0625,
+        "boundarySec": 1012.5,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 6,
+        "excludedSpans": 5,
+        "boundarySpans": 10,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 3,
+        "samples": 28801,
+        "stepSec": 900,
+        "refusals": 0,
+        "rootsInAdmissible": 3
+      },
+      "correspondence": {
+        "matched": 3,
+        "matchedInAdmissible": 3,
+        "worstDeltaSec": 0.00021886825561523438,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 10,
+        "worstClosestApproachDeg": 0.000013251593113494664,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.0000390625,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 3,
+        "refound": 3,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 24.004518856333686,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "A3",
+      "series": "antipode",
+      "body": "Mercury",
+      "from": "2107-12-28T00:00:00Z",
+      "to": "2108-10-23T00:00:00Z",
+      "targetDeg": 226.645119,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 0,
+        "evaluations": 1152721,
+        "cells": 44339,
+        "ms": 3620,
+        "withinWallClock": true,
+        "excludedSpanDays": 31.192787170410156,
+        "unresolvedRuns": 10
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 0,
+        "eligibilityEstablished": 0,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 48021,
+        "partitionEvaluations": 29089,
+        "searchEvaluations": 18932,
+        "cells": 1961,
+        "ms": 156,
+        "withinWallClock": true,
+        "admissibleSec": 23223923.4375,
+        "excludedSec": 2695064.0625,
+        "boundarySec": 1012.5,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 6,
+        "excludedSpans": 5,
+        "boundarySpans": 10,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 0,
+        "samples": 28801,
+        "stepSec": 900,
+        "refusals": 0,
+        "rootsInAdmissible": 0
+      },
+      "correspondence": {
+        "matched": 0,
+        "matchedInAdmissible": 0,
+        "worstDeltaSec": 0,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 10,
+        "worstClosestApproachDeg": 0.000013251593113494664,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.0000390625,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 0,
+        "refound": 0,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 24.004518856333686,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "F4",
+      "series": "main",
+      "body": "Venus",
+      "from": "2110-06-15T00:00:00Z",
+      "to": "2111-04-11T00:00:00Z",
+      "targetDeg": 240.855837,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 1,
+        "evaluations": 445167,
+        "cells": 27230,
+        "ms": 2001,
+        "withinWallClock": true,
+        "excludedSpanDays": 36.51411437988281,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 1,
+        "eligibilityEstablished": 1,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 30422,
+        "partitionEvaluations": 16211,
+        "searchEvaluations": 14211,
+        "cells": 1696,
+        "ms": 144,
+        "withinWallClock": true,
+        "admissibleSec": 22764459.375,
+        "excludedSec": 3154696.875,
+        "boundarySec": 843.75,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 1,
+        "samples": 14401,
+        "stepSec": 1800,
+        "refusals": 0,
+        "rootsInAdmissible": 1
+      },
+      "correspondence": {
+        "matched": 1,
+        "matchedInAdmissible": 1,
+        "worstDeltaSec": 0.0000095367431640625,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.000004556588538484618,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.00003255208333333333,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 1,
+        "refound": 1,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 14.633061600157781,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "A4",
+      "series": "antipode",
+      "body": "Venus",
+      "from": "2110-06-15T00:00:00Z",
+      "to": "2111-04-11T00:00:00Z",
+      "targetDeg": 60.855837,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 2,
+        "evaluations": 445167,
+        "cells": 27230,
+        "ms": 2079,
+        "withinWallClock": true,
+        "excludedSpanDays": 36.51411437988281,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 2,
+        "eligibilityEstablished": 2,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 30422,
+        "partitionEvaluations": 16211,
+        "searchEvaluations": 14211,
+        "cells": 1696,
+        "ms": 138,
+        "withinWallClock": true,
+        "admissibleSec": 22764459.375,
+        "excludedSec": 3154696.875,
+        "boundarySec": 843.75,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 2,
+        "samples": 14401,
+        "stepSec": 1800,
+        "refusals": 0,
+        "rootsInAdmissible": 2
+      },
+      "correspondence": {
+        "matched": 2,
+        "matchedInAdmissible": 2,
+        "worstDeltaSec": 0.00001049041748046875,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.000004556588538484618,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.00003255208333333333,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 2,
+        "refound": 2,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 14.633061600157781,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "F5",
+      "series": "main",
+      "body": "Mars",
+      "from": "2112-12-01T00:00:00Z",
+      "to": "2113-09-27T00:00:00Z",
+      "targetDeg": 75.366848,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 1,
+        "evaluations": 260263,
+        "cells": 16483,
+        "ms": 1325,
+        "withinWallClock": true,
+        "excludedSpanDays": 29.830093383789062,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 1,
+        "eligibilityEstablished": 1,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 18464,
+        "partitionEvaluations": 9288,
+        "searchEvaluations": 9176,
+        "cells": 1052,
+        "ms": 82,
+        "withinWallClock": true,
+        "admissibleSec": 23342259.375,
+        "excludedSec": 2577234.375,
+        "boundarySec": 506.25,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 1,
+        "samples": 14401,
+        "stepSec": 1800,
+        "refusals": 0,
+        "rootsInAdmissible": 1
+      },
+      "correspondence": {
+        "matched": 1,
+        "matchedInAdmissible": 1,
+        "worstDeltaSec": 0.000021457672119140625,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 3.080399322286098e-7,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.00001953125,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 1,
+        "refound": 1,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 14.095699740034663,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "A5",
+      "series": "antipode",
+      "body": "Mars",
+      "from": "2112-12-01T00:00:00Z",
+      "to": "2113-09-27T00:00:00Z",
+      "targetDeg": 255.366848,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 0,
+        "evaluations": 260263,
+        "cells": 16483,
+        "ms": 969,
+        "withinWallClock": true,
+        "excludedSpanDays": 29.830093383789062,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 0,
+        "eligibilityEstablished": 0,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 18464,
+        "partitionEvaluations": 9288,
+        "searchEvaluations": 9176,
+        "cells": 1052,
+        "ms": 63,
+        "withinWallClock": true,
+        "admissibleSec": 23342259.375,
+        "excludedSec": 2577234.375,
+        "boundarySec": 506.25,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 0,
+        "samples": 14401,
+        "stepSec": 1800,
+        "refusals": 0,
+        "rootsInAdmissible": 0
+      },
+      "correspondence": {
+        "matched": 0,
+        "matchedInAdmissible": 0,
+        "worstDeltaSec": 0,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 3.080399322286098e-7,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.00001953125,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 0,
+        "refound": 0,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 14.095699740034663,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "F6",
+      "series": "main",
+      "body": "Jupiter",
+      "from": "2115-05-20T00:00:00Z",
+      "to": "2116-03-15T00:00:00Z",
+      "targetDeg": 293.353313,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 2,
+        "evaluations": 84697,
+        "cells": 5283,
+        "ms": 300,
+        "withinWallClock": true,
+        "excludedSpanDays": 12.778701782226562,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 2,
+        "eligibilityEstablished": 2,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 9438,
+        "partitionEvaluations": 3221,
+        "searchEvaluations": 6217,
+        "cells": 472,
+        "ms": 36,
+        "withinWallClock": true,
+        "admissibleSec": 24815784.375,
+        "excludedSec": 1104046.875,
+        "boundarySec": 168.75,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 2,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 2
+      },
+      "correspondence": {
+        "matched": 2,
+        "matchedInAdmissible": 2,
+        "worstDeltaSec": 0.00008630752563476562,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.000005078258488389054,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.000006510416666666667,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 2,
+        "refound": 2,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 8.974041110404746,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "A6",
+      "series": "antipode",
+      "body": "Jupiter",
+      "from": "2115-05-20T00:00:00Z",
+      "to": "2116-03-15T00:00:00Z",
+      "targetDeg": 113.353313,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 0,
+        "evaluations": 84697,
+        "cells": 5283,
+        "ms": 538,
+        "withinWallClock": true,
+        "excludedSpanDays": 12.778701782226562,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 0,
+        "eligibilityEstablished": 0,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 9438,
+        "partitionEvaluations": 3221,
+        "searchEvaluations": 6217,
+        "cells": 472,
+        "ms": 67,
+        "withinWallClock": true,
+        "admissibleSec": 24815784.375,
+        "excludedSec": 1104046.875,
+        "boundarySec": 168.75,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 0,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 0
+      },
+      "correspondence": {
+        "matched": 0,
+        "matchedInAdmissible": 0,
+        "worstDeltaSec": 0,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.000005078258488389054,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.000006510416666666667,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 0,
+        "refound": 0,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 8.974041110404746,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "F7",
+      "series": "main",
+      "body": "Saturn",
+      "from": "2117-11-05T00:00:00Z",
+      "to": "2118-09-01T00:00:00Z",
+      "targetDeg": 49.959943,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 1,
+        "evaluations": 71972,
+        "cells": 4515,
+        "ms": 459,
+        "withinWallClock": true,
+        "excludedSpanDays": 11.038650512695312,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 1,
+        "eligibilityEstablished": 1,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 8671,
+        "partitionEvaluations": 3005,
+        "searchEvaluations": 5666,
+        "cells": 456,
+        "ms": 60,
+        "withinWallClock": true,
+        "admissibleSec": 24966140.625,
+        "excludedSec": 953732.8125,
+        "boundarySec": 126.5625,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 1,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 1
+      },
+      "correspondence": {
+        "matched": 1,
+        "matchedInAdmissible": 1,
+        "worstDeltaSec": 0.00001049041748046875,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.0000035607689099492745,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.0000048828125,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 1,
+        "refound": 1,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 8.300311382770154,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "A7",
+      "series": "antipode",
+      "body": "Saturn",
+      "from": "2117-11-05T00:00:00Z",
+      "to": "2118-09-01T00:00:00Z",
+      "targetDeg": 229.959943,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 0,
+        "evaluations": 71972,
+        "cells": 4515,
+        "ms": 435,
+        "withinWallClock": true,
+        "excludedSpanDays": 11.038650512695312,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 0,
+        "eligibilityEstablished": 0,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 8671,
+        "partitionEvaluations": 3005,
+        "searchEvaluations": 5666,
+        "cells": 456,
+        "ms": 57,
+        "withinWallClock": true,
+        "admissibleSec": 24966140.625,
+        "excludedSec": 953732.8125,
+        "boundarySec": 126.5625,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 0,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 0
+      },
+      "correspondence": {
+        "matched": 0,
+        "matchedInAdmissible": 0,
+        "worstDeltaSec": 0,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.0000035607689099492745,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.0000048828125,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 0,
+        "refound": 0,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 8.300311382770154,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "F8",
+      "series": "main",
+      "body": "Uranus",
+      "from": "2120-04-23T00:00:00Z",
+      "to": "2121-02-17T00:00:00Z",
+      "targetDeg": 110.229869,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 2,
+        "evaluations": 56172,
+        "cells": 3489,
+        "ms": 497,
+        "withinWallClock": true,
+        "excludedSpanDays": 11.166595458984375,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 2,
+        "eligibilityEstablished": 2,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 8230,
+        "partitionEvaluations": 2414,
+        "searchEvaluations": 5816,
+        "cells": 400,
+        "ms": 164,
+        "withinWallClock": true,
+        "admissibleSec": 24955129.6875,
+        "excludedSec": 964785.9375,
+        "boundarySec": 84.375,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 2,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 2
+      },
+      "correspondence": {
+        "matched": 2,
+        "matchedInAdmissible": 2,
+        "worstDeltaSec": 0.000013828277587890625,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.0000029674519952394007,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.0000032552083333333335,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 2,
+        "refound": 2,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 6.825273390036452,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "A8",
+      "series": "antipode",
+      "body": "Uranus",
+      "from": "2120-04-23T00:00:00Z",
+      "to": "2121-02-17T00:00:00Z",
+      "targetDeg": 290.229869,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 0,
+        "evaluations": 56172,
+        "cells": 3489,
+        "ms": 512,
+        "withinWallClock": true,
+        "excludedSpanDays": 11.166595458984375,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 0,
+        "eligibilityEstablished": 0,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 8230,
+        "partitionEvaluations": 2414,
+        "searchEvaluations": 5816,
+        "cells": 400,
+        "ms": 66,
+        "withinWallClock": true,
+        "admissibleSec": 24955129.6875,
+        "excludedSec": 964785.9375,
+        "boundarySec": 84.375,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 42.1875,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 0,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 0
+      },
+      "correspondence": {
+        "matched": 0,
+        "matchedInAdmissible": 0,
+        "worstDeltaSec": 0,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.0000029674519952394007,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.0000032552083333333335,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 0,
+        "refound": 0,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 6.825273390036452,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "F9",
+      "series": "main",
+      "body": "Neptune",
+      "from": "2122-10-10T00:00:00Z",
+      "to": "2123-08-06T00:00:00Z",
+      "targetDeg": 217.269009,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 2,
+        "evaluations": 59279,
+        "cells": 3699,
+        "ms": 386,
+        "withinWallClock": true,
+        "excludedSpanDays": 9.805156618754069,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 2,
+        "eligibilityEstablished": 2,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 8037,
+        "partitionEvaluations": 2318,
+        "searchEvaluations": 5719,
+        "cells": 392,
+        "ms": 240,
+        "withinWallClock": true,
+        "admissibleSec": 25072765.09178734,
+        "excludedSec": 847155.8087615967,
+        "boundarySec": 79.09945106506348,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 36.91195106506348,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 2,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 2
+      },
+      "correspondence": {
+        "matched": 2,
+        "matchedInAdmissible": 2,
+        "worstDeltaSec": 0.000024318695068359375,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.0000032513960395164077,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.000003051676352818807,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 2,
+        "refound": 2,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 7.375762100286177,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "A9",
+      "series": "antipode",
+      "body": "Neptune",
+      "from": "2122-10-10T00:00:00Z",
+      "to": "2123-08-06T00:00:00Z",
+      "targetDeg": 37.269009,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": false,
+        "events": 0,
+        "evaluations": 59279,
+        "cells": 3699,
+        "ms": 532,
+        "withinWallClock": true,
+        "excludedSpanDays": 9.805156618754069,
+        "unresolvedRuns": 2
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 0,
+        "eligibilityEstablished": 0,
+        "eligibilityAmbiguous": 0,
+        "overRequest": false,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": true,
+        "evaluations": 8037,
+        "partitionEvaluations": 2318,
+        "searchEvaluations": 5719,
+        "cells": 392,
+        "ms": 70,
+        "withinWallClock": true,
+        "admissibleSec": 25072765.09178734,
+        "excludedSec": 847155.8087615967,
+        "boundarySec": 79.09945106506348,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 2,
+        "excludedSpans": 1,
+        "boundarySpans": 2,
+        "narrowestBoundarySec": 36.91195106506348,
+        "widestBoundarySec": 42.1875
+      },
+      "reference": {
+        "roots": 0,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 0
+      },
+      "correspondence": {
+        "matched": 0,
+        "matchedInAdmissible": 0,
+        "worstDeltaSec": 0,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 2,
+        "worstClosestApproachDeg": 0.0000032513960395164077,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0.000003051676352818807,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 0,
+        "refound": 0,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 7.375762100286177,
+      "ratioIsLowerBound": false,
+      "derivedClass": "conjunction-heavy"
+    },
+    {
+      "id": "F10",
+      "series": "main",
+      "body": "Pluto",
+      "from": "2125-03-28T00:00:00Z",
+      "to": "2126-01-22T00:00:00Z",
+      "targetDeg": 59.025224,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": true,
+        "events": 2,
+        "evaluations": 4373,
+        "cells": 176,
+        "ms": 61,
+        "withinWallClock": true,
+        "excludedSpanDays": 0,
+        "unresolvedRuns": 0
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 2,
+        "eligibilityEstablished": 2,
+        "eligibilityAmbiguous": 0,
+        "overRequest": true,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": false,
+        "evaluations": 4684,
+        "partitionEvaluations": 692,
+        "searchEvaluations": 3992,
+        "cells": 190,
+        "ms": 47,
+        "withinWallClock": true,
+        "admissibleSec": 25920000,
+        "excludedSec": 0,
+        "boundarySec": 0,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 1,
+        "excludedSpans": 0,
+        "boundarySpans": 0,
+        "narrowestBoundarySec": null,
+        "widestBoundarySec": null
+      },
+      "reference": {
+        "roots": 2,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 2
+      },
+      "correspondence": {
+        "matched": 2,
+        "matchedInAdmissible": 2,
+        "worstDeltaSec": 0.0002231597900390625,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 0,
+        "worstClosestApproachDeg": 0,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 2,
+        "refound": 2,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 0.933603757472246,
+      "ratioIsLowerBound": false,
+      "derivedClass": "no-conjunction"
+    },
+    {
+      "id": "A10",
+      "series": "antipode",
+      "body": "Pluto",
+      "from": "2125-03-28T00:00:00Z",
+      "to": "2126-01-22T00:00:00Z",
+      "targetDeg": 239.025224,
+      "requestDays": 300,
+      "baseline": {
+        "status": "finished",
+        "established": true,
+        "events": 0,
+        "evaluations": 4373,
+        "cells": 176,
+        "ms": 35,
+        "withinWallClock": true,
+        "excludedSpanDays": 0,
+        "unresolvedRuns": 0
+      },
+      "partition": {
+        "status": "finished",
+        "finished": true,
+        "reason": null,
+        "events": 0,
+        "eligibilityEstablished": 0,
+        "eligibilityAmbiguous": 0,
+        "overRequest": true,
+        "exhaustiveOverAdmissible": true,
+        "mayHoldUnfoundSupportedEvents": false,
+        "evaluations": 4684,
+        "partitionEvaluations": 692,
+        "searchEvaluations": 3992,
+        "cells": 190,
+        "ms": 62,
+        "withinWallClock": true,
+        "admissibleSec": 25920000,
+        "excludedSec": 0,
+        "boundarySec": 0,
+        "unprocessedSec": 0,
+        "notSearchedSec": 0,
+        "admissibleNotFullyExaminedSec": 0,
+        "planImported": false,
+        "coversRequestExactly": true,
+        "admissibleSpans": 1,
+        "excludedSpans": 0,
+        "boundarySpans": 0,
+        "narrowestBoundarySec": null,
+        "widestBoundarySec": null
+      },
+      "reference": {
+        "roots": 0,
+        "samples": 7201,
+        "stepSec": 3600,
+        "refusals": 0,
+        "rootsInAdmissible": 0
+      },
+      "correspondence": {
+        "matched": 0,
+        "matchedInAdmissible": 0,
+        "worstDeltaSec": 0,
+        "everyMatchedRootBracketed": true,
+        "withinRootTolerance": true,
+        "unmatchedPartitionEvents": 0,
+        "unmatchedReferenceRootsInAdmissible": 0
+      },
+      "p2": {
+        "boundarySpansProbed": 0,
+        "worstClosestApproachDeg": 0,
+        "failures": 0,
+        "failingSpans": []
+      },
+      "p3": {
+        "boundaryFraction": 0,
+        "limit": 0.01,
+        "pass": true
+      },
+      "p6": {
+        "baselineEventsInAdmissible": 0,
+        "refound": 0,
+        "lost": 0,
+        "lostAt": [],
+        "claimsNoCompletenessOverExcludedRequest": true,
+        "claimsNoExhaustivenessWithLiveBoundary": true
+      },
+      "ratio": 0.933603757472246,
+      "ratioIsLowerBound": false,
+      "derivedClass": "no-conjunction"
+    }
+  ],
+  "repeated": [
+    {
+      "id": "F1",
+      "body": "Sun",
+      "longitudes": [
+        90.047786,
+        180.047786,
+        270.047786,
+        0.047786
+      ],
+      "partitionEvaluations": 0,
+      "partitionMs": 1,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 809,
+      "perQueryBaselineEvaluations": 809,
+      "warmTotalEvaluations": 3236,
+      "baselineTotalEvaluations": 3236,
+      "warmMs": 63,
+      "baselineMs": 56,
+      "breakEvenQueries": null,
+      "breakEvenNote": "no break-even: a warm query costs at least as much as a baseline query on this case"
+    },
+    {
+      "id": "F2",
+      "body": "Moon",
+      "longitudes": [
+        270.890294,
+        0.890294,
+        90.890294,
+        180.890294
+      ],
+      "partitionEvaluations": 254448,
+      "partitionMs": 974,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 30168.5,
+      "perQueryBaselineEvaluations": 1652457,
+      "warmTotalEvaluations": 120674,
+      "baselineTotalEvaluations": 6609828,
+      "warmMs": 527,
+      "baselineMs": 26013,
+      "breakEvenQueries": 1,
+      "breakEvenNote": null
+    },
+    {
+      "id": "F3",
+      "body": "Mercury",
+      "longitudes": [
+        46.645119,
+        136.645119,
+        226.645119,
+        316.645119
+      ],
+      "partitionEvaluations": 29089,
+      "partitionMs": 82,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 17593,
+      "perQueryBaselineEvaluations": 1152470,
+      "warmTotalEvaluations": 70372,
+      "baselineTotalEvaluations": 4609880,
+      "warmMs": 599,
+      "baselineMs": 28978,
+      "breakEvenQueries": 1,
+      "breakEvenNote": null
+    },
+    {
+      "id": "F4",
+      "body": "Venus",
+      "longitudes": [
+        240.855837,
+        330.855837,
+        60.855837,
+        150.855837
+      ],
+      "partitionEvaluations": 16211,
+      "partitionMs": 71,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 13975.5,
+      "perQueryBaselineEvaluations": 444932,
+      "warmTotalEvaluations": 55902,
+      "baselineTotalEvaluations": 1779728,
+      "warmMs": 310,
+      "baselineMs": 7016,
+      "breakEvenQueries": 1,
+      "breakEvenNote": null
+    },
+    {
+      "id": "F5",
+      "body": "Mars",
+      "longitudes": [
+        75.366848,
+        165.366848,
+        255.366848,
+        345.366848
+      ],
+      "partitionEvaluations": 9288,
+      "partitionMs": 18,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 9382,
+      "perQueryBaselineEvaluations": 260457,
+      "warmTotalEvaluations": 37528,
+      "baselineTotalEvaluations": 1041828,
+      "warmMs": 157,
+      "baselineMs": 3688,
+      "breakEvenQueries": 1,
+      "breakEvenNote": null
+    },
+    {
+      "id": "F6",
+      "body": "Jupiter",
+      "longitudes": [
+        293.353313,
+        23.353313,
+        113.353313,
+        203.353313
+      ],
+      "partitionEvaluations": 3221,
+      "partitionMs": 7,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 5666,
+      "perQueryBaselineEvaluations": 84185,
+      "warmTotalEvaluations": 22664,
+      "baselineTotalEvaluations": 336740,
+      "warmMs": 97,
+      "baselineMs": 1183,
+      "breakEvenQueries": 1,
+      "breakEvenNote": null
+    },
+    {
+      "id": "F7",
+      "body": "Saturn",
+      "longitudes": [
+        49.959943,
+        139.959943,
+        229.959943,
+        319.959943
+      ],
+      "partitionEvaluations": 3005,
+      "partitionMs": 5,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 5441,
+      "perQueryBaselineEvaluations": 71747,
+      "warmTotalEvaluations": 21764,
+      "baselineTotalEvaluations": 286988,
+      "warmMs": 102,
+      "baselineMs": 946,
+      "breakEvenQueries": 1,
+      "breakEvenNote": null
+    },
+    {
+      "id": "F8",
+      "body": "Uranus",
+      "longitudes": [
+        110.229869,
+        200.229869,
+        290.229869,
+        20.229869
+      ],
+      "partitionEvaluations": 2414,
+      "partitionMs": 5,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 5341,
+      "perQueryBaselineEvaluations": 55722,
+      "warmTotalEvaluations": 21364,
+      "baselineTotalEvaluations": 222888,
+      "warmMs": 88,
+      "baselineMs": 701,
+      "breakEvenQueries": 1,
+      "breakEvenNote": null
+    },
+    {
+      "id": "F9",
+      "body": "Neptune",
+      "longitudes": [
+        217.269009,
+        307.269009,
+        37.269009,
+        127.269009
+      ],
+      "partitionEvaluations": 2318,
+      "partitionMs": 4,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 5230.5,
+      "perQueryBaselineEvaluations": 58815.5,
+      "warmTotalEvaluations": 20922,
+      "baselineTotalEvaluations": 235262,
+      "warmMs": 84,
+      "baselineMs": 640,
+      "breakEvenQueries": 1,
+      "breakEvenNote": null
+    },
+    {
+      "id": "F10",
+      "body": "Pluto",
+      "longitudes": [
+        59.025224,
+        149.025224,
+        239.025224,
+        329.025224
+      ],
+      "partitionEvaluations": 692,
+      "partitionMs": 2,
+      "partitionReusedEveryQuery": true,
+      "perQueryWarmEvaluations": 3377,
+      "perQueryBaselineEvaluations": 3758,
+      "warmTotalEvaluations": 13508,
+      "baselineTotalEvaluations": 15032,
+      "warmMs": 51,
+      "baselineMs": 56,
+      "breakEvenQueries": 2,
+      "breakEvenNote": null
+    }
+  ],
+  "targets": {
+    "P1": {
+      "target": "both Moon cases reach finished within the unchanged 4,000,000-evaluation whole-request budget",
+      "baseline": [
+        {
+          "id": "F2",
+          "status": "finished",
+          "evaluations": 1652244
+        },
+        {
+          "id": "A2",
+          "status": "finished",
+          "evaluations": 1652244
+        }
+      ],
+      "now": [
+        {
+          "id": "F2",
+          "status": "finished",
+          "evaluations": 284398,
+          "events": 11
+        },
+        {
+          "id": "A2",
+          "status": "finished",
+          "evaluations": 284398,
+          "events": 10
+        }
+      ],
+      "pass": true,
+      "notScored": null
+    },
+    "P2": {
+      "target": "every reported boundary span comes within 0.5 degrees of the 5-degree floor",
+      "spansProbed": 88,
+      "failures": 0,
+      "worstCases": [],
+      "pass": true
+    },
+    "P3": {
+      "target": "total boundary width at most 1% of the requested window",
+      "worst": {
+        "id": "F2",
+        "body": "Moon",
+        "fraction": 0.00010314892534120584
+      },
+      "perCase": [
+        {
+          "id": "F1",
+          "fraction": 0,
+          "pass": true
+        },
+        {
+          "id": "A1",
+          "fraction": 0,
+          "pass": true
+        },
+        {
+          "id": "F2",
+          "fraction": 0.00010314892534120584,
+          "pass": true
+        },
+        {
+          "id": "A2",
+          "fraction": 0.00010314892534120584,
+          "pass": true
+        },
+        {
+          "id": "F3",
+          "fraction": 0.0000390625,
+          "pass": true
+        },
+        {
+          "id": "A3",
+          "fraction": 0.0000390625,
+          "pass": true
+        },
+        {
+          "id": "F4",
+          "fraction": 0.00003255208333333333,
+          "pass": true
+        },
+        {
+          "id": "A4",
+          "fraction": 0.00003255208333333333,
+          "pass": true
+        },
+        {
+          "id": "F5",
+          "fraction": 0.00001953125,
+          "pass": true
+        },
+        {
+          "id": "A5",
+          "fraction": 0.00001953125,
+          "pass": true
+        },
+        {
+          "id": "F6",
+          "fraction": 0.000006510416666666667,
+          "pass": true
+        },
+        {
+          "id": "A6",
+          "fraction": 0.000006510416666666667,
+          "pass": true
+        },
+        {
+          "id": "F7",
+          "fraction": 0.0000048828125,
+          "pass": true
+        },
+        {
+          "id": "A7",
+          "fraction": 0.0000048828125,
+          "pass": true
+        },
+        {
+          "id": "F8",
+          "fraction": 0.0000032552083333333335,
+          "pass": true
+        },
+        {
+          "id": "A8",
+          "fraction": 0.0000032552083333333335,
+          "pass": true
+        },
+        {
+          "id": "F9",
+          "fraction": 0.000003051676352818807,
+          "pass": true
+        },
+        {
+          "id": "A9",
+          "fraction": 0.000003051676352818807,
+          "pass": true
+        },
+        {
+          "id": "F10",
+          "fraction": 0,
+          "pass": true
+        },
+        {
+          "id": "A10",
+          "fraction": 0,
+          "pass": true
+        }
+      ],
+      "failures": [],
+      "pass": true
+    },
+    "P4": {
+      "target": "cold end-to-end evaluations at most 1/4 of the baseline on every conjunction-heavy case",
+      "basis": "derived: the partition proves some of the window excluded",
+      "perCase": [
+        {
+          "id": "F2",
+          "body": "Moon",
+          "baseline": 1652244,
+          "baselineStatus": "finished",
+          "cold": 284398,
+          "ratio": 5.8096189143383565,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "A2",
+          "body": "Moon",
+          "baseline": 1652244,
+          "baselineStatus": "finished",
+          "cold": 284398,
+          "ratio": 5.8096189143383565,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "F3",
+          "body": "Mercury",
+          "baseline": 1152721,
+          "baselineStatus": "finished",
+          "cold": 48021,
+          "ratio": 24.004518856333686,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "A3",
+          "body": "Mercury",
+          "baseline": 1152721,
+          "baselineStatus": "finished",
+          "cold": 48021,
+          "ratio": 24.004518856333686,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "F4",
+          "body": "Venus",
+          "baseline": 445167,
+          "baselineStatus": "finished",
+          "cold": 30422,
+          "ratio": 14.633061600157781,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "A4",
+          "body": "Venus",
+          "baseline": 445167,
+          "baselineStatus": "finished",
+          "cold": 30422,
+          "ratio": 14.633061600157781,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "F5",
+          "body": "Mars",
+          "baseline": 260263,
+          "baselineStatus": "finished",
+          "cold": 18464,
+          "ratio": 14.095699740034663,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "A5",
+          "body": "Mars",
+          "baseline": 260263,
+          "baselineStatus": "finished",
+          "cold": 18464,
+          "ratio": 14.095699740034663,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "F6",
+          "body": "Jupiter",
+          "baseline": 84697,
+          "baselineStatus": "finished",
+          "cold": 9438,
+          "ratio": 8.974041110404746,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "A6",
+          "body": "Jupiter",
+          "baseline": 84697,
+          "baselineStatus": "finished",
+          "cold": 9438,
+          "ratio": 8.974041110404746,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "F7",
+          "body": "Saturn",
+          "baseline": 71972,
+          "baselineStatus": "finished",
+          "cold": 8671,
+          "ratio": 8.300311382770154,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "A7",
+          "body": "Saturn",
+          "baseline": 71972,
+          "baselineStatus": "finished",
+          "cold": 8671,
+          "ratio": 8.300311382770154,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "F8",
+          "body": "Uranus",
+          "baseline": 56172,
+          "baselineStatus": "finished",
+          "cold": 8230,
+          "ratio": 6.825273390036452,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "A8",
+          "body": "Uranus",
+          "baseline": 56172,
+          "baselineStatus": "finished",
+          "cold": 8230,
+          "ratio": 6.825273390036452,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "F9",
+          "body": "Neptune",
+          "baseline": 59279,
+          "baselineStatus": "finished",
+          "cold": 8037,
+          "ratio": 7.375762100286177,
+          "ratioIsLowerBound": false,
+          "pass": true
+        },
+        {
+          "id": "A9",
+          "body": "Neptune",
+          "baseline": 59279,
+          "baselineStatus": "finished",
+          "cold": 8037,
+          "ratio": 7.375762100286177,
+          "ratioIsLowerBound": false,
+          "pass": true
+        }
+      ],
+      "againstATruncatedBaseline": [],
+      "againstATruncatedBaselineNote": "the denominator on these is the 4,000,000 budget ceiling, not a measured cost: the baseline never finished, so the true factor is unknown and at least the ratio shown. Scored literally regardless.",
+      "pass": true,
+      "notScored": null
+    },
+    "P5": {
+      "target": "cold end-to-end evaluations at most 2x the baseline on every case with no conjunction",
+      "basis": "derived: the partition proves none of the window excluded",
+      "perCase": [
+        {
+          "id": "F1",
+          "body": "Sun",
+          "baseline": 601,
+          "cold": 601,
+          "ratio": 1,
+          "pass": true
+        },
+        {
+          "id": "A1",
+          "body": "Sun",
+          "baseline": 601,
+          "cold": 601,
+          "ratio": 1,
+          "pass": true
+        },
+        {
+          "id": "F10",
+          "body": "Pluto",
+          "baseline": 4373,
+          "cold": 4684,
+          "ratio": 0.933603757472246,
+          "pass": true
+        },
+        {
+          "id": "A10",
+          "body": "Pluto",
+          "baseline": 4373,
+          "cold": 4684,
+          "ratio": 0.933603757472246,
+          "pass": true
+        }
+      ],
+      "pass": true,
+      "notScored": null
+    },
+    "P6": {
+      "target": "no baseline event inside a proved-admissible span is lost; no claim is stronger than what was proved",
+      "baselineEventsInAdmissible": 38,
+      "lost": 0,
+      "lostCases": [],
+      "everyMatchedRootBracketed": true,
+      "worstDeltaSec": 0.0002231597900390625,
+      "withinRootTolerance": true,
+      "noCompletenessOverExcludedRequest": true,
+      "noExhaustivenessWithLiveBoundary": true,
+      "pass": true
+    },
+    "P7": {
+      "target": "the original full-window completeness score, by the original rule, over the same cases; 6 of 20 on the regression corpus",
+      "denominator": 20,
+      "originalRuleOnBaseline": 4,
+      "originalRuleOnPartitionedPath": 4,
+      "agree": true,
+      "disagreements": [],
+      "newMetricExhaustiveOverAdmissible": 20,
+      "newMetricNote": "a DIFFERENT claim with its own denominator: exhaustive over the spans the partition proves admissible, not over the request",
+      "pass": null,
+      "passNote": "the 6-of-20 figure is a property of the regression corpus; on any other corpus the score is reported, not scored"
+    }
+  },
+  "derivedAgreesWithNames": {
+    "checked": false,
+    "conjunctionHeavy": [
+      {
+        "id": "F2",
+        "named": "conjunction-heavy",
+        "derived": "conjunction-heavy",
+        "agrees": true
+      },
+      {
+        "id": "A2",
+        "named": "conjunction-heavy",
+        "derived": "conjunction-heavy",
+        "agrees": true
+      },
+      {
+        "id": "F3",
+        "named": "conjunction-heavy",
+        "derived": "conjunction-heavy",
+        "agrees": true
+      },
+      {
+        "id": "F7",
+        "named": "conjunction-heavy",
+        "derived": "conjunction-heavy",
+        "agrees": true
+      }
+    ],
+    "noConjunction": [
+      {
+        "id": "F6",
+        "named": "no-conjunction",
+        "derived": "conjunction-heavy",
+        "agrees": false
+      },
+      {
+        "id": "F1",
+        "named": "no-conjunction",
+        "derived": "no-conjunction",
+        "agrees": true
+      },
+      {
+        "id": "F10",
+        "named": "no-conjunction",
+        "derived": "no-conjunction",
+        "agrees": true
+      }
+    ],
+    "allAgree": null
+  },
+  "verdict": {
+    "fatal": false,
+    "partial": false,
+    "notScored": [
+      "P7"
+    ],
+    "filtered": false,
+    "summary": "PASS: every declared target held"
+  }
+}

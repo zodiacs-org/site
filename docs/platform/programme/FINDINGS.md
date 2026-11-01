@@ -91,6 +91,11 @@ Severity follows the audit's scale:
 | F-96 | minor | process | #744's Site Check (run 38514642153, 2026-10-14 05:30 UTC) failed one visual-regression case, the full-moon event page at 390 px (0.3291% of pixels against a 0.1% limit), on a change that renders no page: the screenshot has none of the page's serif and monospace text, as text in a face with blocking display has none while the face loads, and the visual test draws its headings in test-only faces with blocking display; the sans-serif text is drawn, and main's run an hour earlier measured 0.0000% on the same case | open: wait for every face the page draws with, including faces that start loading after the wait begins (the same class as F-93); fixed in the visual harness on 2026-10-15. The cause is the capture itself: Chromium's full-page capture (Page.captureScreenshot with captureBeyondViewport, which Playwright uses for fullPage) recreates the page's CSS font faces, which load again during the capture, so a capture that paints before they reload draws text in a blocking face blank; every full-page capture fires the FontFaceSet `loading` event (locally each one recreated all 24 of the home page's faces, and Site Check run 38624394905 logged the event on every capture of home-desktop), while a viewport capture or a resize recreates none. Before each capture the harness now loads every face the drawn text needs, up to 30 s, and fails naming any that failed to load; a capture that misses the unchanged 0.1% limit is taken again, at most three times, and `--update` writes a baseline only when two captures in a row agree. Locally, a first capture with its headings blanked (1.86% off) was retaken and passed at 0.0000%, and with `--update` the blank capture did not become the baseline |
 | F-97 | minor | search | IndexNow Changes submits a page as changed only when its sitemap date changes, and `src/pages/sitemap.xml.ts` keeps evergreen pages' dates by hand ("When an evergreen page's rendered source changes, update its entry here in the same commit"), with no check: #740 changed `/developers/compare/` (still dated 2026-10-11) and #742 changed `/developers/compute/` and `/developers/mcp/` (still 2026-10-12), so a later run would not have submitted them; the first production run did only because it covered every URL dated within 30 days | found by Codex on #745; the three pages are re-dated in #745; open: a check that ties a page's rendered change to its sitemap date, which S8 needs; fixed on 2026-10-15: the Sitemap Dates workflow builds each pull request's base and head with site-check's production-flags environment (the daily email chain's stand-ins included, after Codex found them missing) under one pinned clock and fails when a sitemap page's content (title, description, and the text, links and image descriptions of its `<main>`) changed while its date did not and is earlier than the edition's day. Run on the merges of 2026-10-13 and 2026-10-14, it named the three pages #745 re-dated and seven more still undated in production (`/developers/`, `/developers/docs/`, `/developers/docs/astrology-mcp-server/` and four Portuguese pages #737's first-day ordinal changed), which the same change re-dates. Codex's later findings on #752 are fixed in the same change: a pull request that only rolls the daily edition (the files the daily publication writes: twelve Registry sign pages, and research items only as new files) passes with nothing to compare; a page dated after the edition's day fails; copy held in attributes (placeholders, accessible names, tooltips, shown input values, and the data-label the stylesheets show), the files a page's media show (lazy-loaded ones included), what its inline SVGs draw, and the words its stylesheets add (each with its selector and the rules around it, from linked, inline and imported stylesheets, where its markup or an element it sits in carries their rule's classes) are fingerprinted; and IndexNow Changes resubmits a page dated in the last three days whose content digest moved since its last run, so a second change the same day, or one that becomes live a day later, is submitted. Text a script writes in answer to the visitor is outside the fingerprint, as it is outside a page's indexable content (docs/platform/evidence/indexnow-changes-20261014/README.md) |
 | F-98 | minor | process | Site Check's I18n route-boundary regression (`tests/i18n-r0-drive.mjs`) failed now and then on /es/learn/ with "near-viewport footer CSS waited for window load" and "footer CSS waited for the post-load fallback (null >= … + 250)": on the first attempts of #775's run 39103684996 (2026-10-18 06:41 UTC), #784's run 39211508684 and #781's run 39224024706, and on main's run 39159775076 at `cb4b0a5e`; locally main's build failed it in 4 of 5 runs at `bdcef5f6` and in 1 of 5 at `a353c2b2`. #775 brought `192b43ba`, after which the footer loader learns whether the footer starts near the screen from its IntersectionObserver's first report instead of reading the footer's position while the page parses, and Chromium computes that report in the first frame after the loader observes the footer. On /es/learn/ the parser waits at the navigation's first classic script for the render-blocking stylesheet; when Chromium paints its first frame before the parser reaches the footer, the report needs the next frame, which comes after the page, with nothing left to load, has fired DOMContentLoaded and window load. The drive read the page once, right after DOMContentLoaded, and in those runs found no request yet (`null`), though the observer's report requested the stylesheet a frame later, not the post-load fallback (`docs/platform/evidence/footer-first-report-20261019/README.md`) | fixed here, in the drive; the loader is unchanged, since a request a frame after window load on a page with nothing left to load is what `192b43ba` chose over reading the footer's position while the page parses: the drive waits for the loader's decision (the stylesheet link, or a distant footer's hold dropped) instead of reading the page at DOMContentLoaded; it holds the page's font requests open, so that window load cannot fire, and requires the request before it, which only the observer's report can then make; and with nothing held it keeps the check that the request comes before the post-load fallback. On `a353c2b2`'s build the drive passed 10 of 10 runs; with the loader made to judge the footer distant it fails both checks, and with the request moved to window load it fails the first |
+| F-99 | minor | precision alpha | Version 4 of the partition evaluation refuses its merged and centred enclosures to a cell that starts at a record join, so near a conjunction that cell stays boundary: it is P-2's worst span on every Moon case with a join inside the floor (36.918 s at the barycentre's join of 1978-04-08, 0.336257° from the floor; 42.1875 s at the Moon's and the Sun's joins of 2009-11-17, 0.192043°), and post hoc, on version 2's 1912 holdout, a P-2 failure (42.1875 s at the Moon's join of 1915-08-11, 4.436650°); no test covers a join inside the floor | open, for the owner: whether a P-2 failure at a record join blocks P4.5's gate |
+| F-100 | major | precision alpha | The light-time search treats a cell whose emission times straddle a target's record join as one smooth function (review A of `moon-enclosure`'s version 2, finding A-1, unsound): on synthetic packs whose records disagree by 0.07 or 1 km at the join it misses a root under an established result in 8 of 48 fixtures on each of the retarded and aberrated rungs, and reports a crossing in 7 where the function only jumps; version 1's code gives the same counts | open: inherited, and not changed by version 4; `moon-enclosure` fixed it in `7e6b315b` and its version 3 replaced that fix with join location, neither on main |
+| F-101 | minor | precision alpha | Review B's B-1, B-3, B-4 and B-5 on `moon-enclosure`'s version 2 reproduce on version 4 as on version 1: an imported plan that says it finished with half its admissible span unclassified, under `acceptPartialPlan`, gives `finished: true` with 3,283,200 s unclassified; a cancelled plan given `tauPadFactor` and an unknown option returns `cancelled` without refusing them; `partitionDomain` accepts `maxEvaluations` 0, `relightWidthRatio` -3 and `tauPadFloorSec` -1; a plan with no `execution` fails with a TypeError | open: inherited; `moon-enclosure` fixed them in `37268776` and `1894e4c2` |
+| F-102 | minor | precision alpha | Version 4's change to `acceptPartialPlan` let a fully classified plan relabelled as stopped be searched in full, so the result claimed `completeness.overRequest: true` beside `execution.finished: false` (review B's B-2; version 1 gives `overRequest: false`) | fixed in `d389bab0`: `assertPartitionUsable` refuses a plan that says it stopped and leaves nothing unclassified; a tier-A test fails without the check |
+| F-103 | minor | precision alpha | `tools/measure/domain-agreement.mjs`, unchanged, reports 4 contradictions for version 4 on the regression corpus (588 s on F2, 362 s on F3, 6.6 s on F8 and 1.3 s on F9 that the partition proves excluded and the plain search does not decline), against 0 for version 1 on the same pack and for versions 2 and 3; none of that time lies inside a span the search decided | open, for the owner: version 4's rule does not run the tool, where version 2's E-2 counted it as fatal |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it; merged in #600 (`6cc4d477`) |
@@ -1057,3 +1062,125 @@ adoption changes neither its status nor the fixed denominator.
   accepted every title and "1º" form and changed the birthday sky line in both
   languages to join the year with "de" ("1º de janeiro de 1990", "1 de enero
   de 2026"). The drive checks the tab title on all nine routes.
+
+### F-99: a boundary span at every record join inside the floor (minor, precision alpha)
+
+- **Found.** By the investigation of 2026-11-01 that found the programme's
+  versions 2 and 3 of the partition evaluation on `moon-enclosure`, with the
+  span positions recomputed by its numerics review
+  (`docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/`, `numerics/` and `holdouts/`).
+- **What.** Version 4's partition uses the merged geocentric vector and the
+  centred cosine only where every series they rest on is one polynomial over
+  the cell (`withinOneRecord`, half open). A cell that starts at the record
+  join of a series the target rests on reaches back across it by its
+  emission times, so it falls back to the split and interval enclosures,
+  which near a conjunction are too wide to decide, and it stays boundary at
+  the 60 s tolerance. In every Moon window with a join inside the floor,
+  P-2's worst span is that cell: on the regression corpus, 36.918 s from the
+  barycentre's join of 1978-04-08 00:00:00 TDB, 0.336257° from the floor; on
+  the 2007 holdout, 42.1875 s from the Moon's and the Sun's joins of
+  2009-11-17, 0.192043°; and on version 2's 1912 holdout, post hoc, 42.1875 s
+  from the Moon's join of 1915-08-11, 4.436650°, where P-2 allows 0.5°, so
+  version 4's own harness scores that holdout PARTIAL. It is the mechanism of
+  version 2's holdout failure. Version 4 decides the cell that ends at the
+  join, which version 2 refused, and still refuses the one that starts at
+  it. The Moon windows of version 4's 2040 holdout and version 3's 2103
+  holdout hold no join inside the floor (the nearest are 11.773° and
+  17.073° from the Sun), so they cannot show it.
+- **Why it matters.** Nothing is claimed wrongly: each span is reported as
+  boundary. But P-2 passes on version 4's own corpora only because those
+  joins lie within 0.5° of the floor, and P4.4's completeness units depend on
+  P4.5. No test covers a join inside the floor: version 4's co-moving Moon
+  test uses smooth records, where version 3 added two such tests.
+- **Disposition.** Open, for the owner: whether a P-2 failure at a record
+  join blocks P4.5's gate (`examples/precision-alpha/PARTITION-RESULTS-V4.md`,
+  "P-2 at record joins"). Version 3 removed the mechanism by making every
+  join a cell edge, and failed E-1 and E-3 doing it.
+
+### F-100: the light-time search across a target's record join (major, precision alpha)
+
+- **Found.** By review A of `moon-enclosure`'s version 2 (finding A-1,
+  unsound), on 2026-09-30, and reproduced on version 4's and version 1's
+  code on 2026-11-01 with the reviewer's own sweep (`docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/`,
+  `record/checks/`).
+- **What.** The light-time search's exclusion and monotone tests treat a
+  cell whose emission times straddle a target's record join as one smooth
+  function, though records are separate fits and need not meet at their
+  join. On synthetic packs whose records disagree by 0.07 or 1 km at the
+  join, the retarded and aberrated rungs each establish all 48 fixtures,
+  miss a root under an established result in 8, and report a crossing in 7
+  where the pack's function only jumps. Version 1's code gives the same
+  counts.
+- **Why it matters.** An established result that misses a root is a false
+  proof. Neither fixture matrix the evaluations ran has a record that
+  disagrees with the next at their join, so their "no false proof" covers
+  continuous joins only. How far the real packs' records disagree at their
+  joins is not measured here.
+- **Disposition.** Open: inherited from version 1 and not changed by version
+  4. `moon-enclosure` fixed it in `7e6b315b`, and its version 3 replaced that
+  fix with join location; neither is on main. P4.4's proven verdicts would
+  rest on these searches.
+
+### F-101: review B's findings on supplied plans and options, inherited (minor, precision alpha)
+
+- **Found.** By review B of `moon-enclosure`'s version 2 (findings B-1, B-3,
+  B-4 and B-5), and reproduced on version 4's and version 1's code on
+  2026-11-01 with the reviewer's own cases (`docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/`, `record/checks/`).
+- **What.** On the synthetic pack: an imported plan that says it finished,
+  with half its admissible span moved to unprocessed, accepted with
+  `acceptImportedPlan` and `acceptPartialPlan`, gives
+  `execution.finished: true` with 3,283,200 s unclassified (B-1); a
+  cancelled plan given `tauPadFactor`, which version 4 removed, and an
+  unknown option returns `cancelled` without refusing either (B-3);
+  `partitionDomain` accepts `maxEvaluations` 0, `relightWidthRatio` -3 and
+  `tauPadFloorSec` -1 (B-4); a plan with no `execution` fails with a
+  TypeError (B-5). Each behaves the same on version 1's code.
+- **Why it matters.** All four sit on the boundary of supplied plans and
+  options, which no evaluation exercises. B-1 reports a finished run over
+  time nobody classified; the others accept input that should be refused,
+  or refuse it with the wrong error.
+- **Disposition.** Open. `moon-enclosure` fixed them in `37268776` and
+  `1894e4c2`. The fix for B-2 (F-102) does not cover B-1, the other
+  direction of the same disagreement.
+
+### F-102: a plan relabelled as stopped gave an exact total beside an unfinished run (minor, precision alpha; fixed here)
+
+- **Found.** By review B of `moon-enclosure`'s version 2 (finding B-2), in
+  that branch's own change to `acceptPartialPlan`, and reproduced on version
+  4's code on 2026-11-01. Version 1's code gives `overRequest: false`.
+- **What.** Version 4 makes `acceptPartialPlan` search what a partial plan
+  classified, and folds the plan's status in afterwards (audit finding
+  alpha-search-partition-1). A fully classified plan relabelled
+  `budget-exhausted` or `cancelled`, imported under the option, was
+  searched in full, so the result claimed `completeness.overRequest: true`,
+  an exact total over the request, beside `execution.finished: false`.
+- **Disposition.** Fixed in `d389bab0`. A plan this runtime builds stops
+  only with a cell in flight and puts that cell back as unprocessed, so
+  `assertPartitionUsable` now refuses a plan that says it stopped and leaves
+  nothing unclassified, with or without the option. The tier-A test in
+  `examples/precision-alpha/test/tier-a/partitioned-search.nodetest.mjs`
+  failed before the check and passes with it; plans that really stopped,
+  native or imported, are still accepted. The scored runs pass in only
+  finished plans this runtime built, so no recorded count moves.
+
+### F-103: the domain agreement fails for version 4 (minor, precision alpha)
+
+- **Found.** On 2026-11-01, post hoc, running
+  `examples/precision-alpha/tools/measure/domain-agreement.mjs` unchanged on
+  the ten main regression cases (`docs/platform/evidence/precision-partition/evaluation-v4/post-hoc/`, `integrity/`).
+- **What.** The tool compares the partition with the plain deflected
+  search's own domain verdict. For version 4 it reports 4 contradictions:
+  588 s on F2, 362 s on F3, 6.6 s on F8 and 1.3 s on F9 that the partition
+  proves excluded and the plain search does not decline. None of that time
+  lies inside a span the search decided. Version 1 on the same pack reports
+  0, and versions 2 and 3 recorded 0 on their own runs.
+- **Why it matters.** Version 4 tightens the partition's enclosures for
+  every body (the merged vector and the centred cosine) and the search's
+  only for the Moon (the merged vector), so the partition now proves
+  exclusion where the search neither declines nor decides. That fails the
+  tool's containment test as the tool defines it; it contradicts nothing
+  the search decided. Version 2's rule counted this test in E-2, which was
+  fatal there; version 4's rule does not run it.
+- **Disposition.** Open, for the owner: whether the relation should hold
+  for version 4, which would take the same enclosures in the search's
+  cells, or be restated.

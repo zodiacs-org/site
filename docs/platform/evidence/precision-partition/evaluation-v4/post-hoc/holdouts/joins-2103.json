@@ -1,0 +1,1065 @@
+{
+  "tool": "joins.mjs",
+  "postHoc": "post hoc and unscored: these holdouts were opened by earlier versions and are previously seen data for #860.",
+  "run": "<post-hoc>/holdouts/holdout-2103-run.json",
+  "label": "holdout-2103",
+  "packDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+  "floorDeg": 5,
+  "method": {
+    "joins": "record edges initEt + k * intervalSec of the stored series, strictly inside the window; times only",
+    "crossings": "tier-B deflected reference, elongation every 300 s, sign changes of (elongation - 5) bisected to 1e-3 s",
+    "selection": "Moon-series joins within 43,200 s of a reference floor crossing, plus the 1915-08-11 00:00 TDB join wherever it lies in a window",
+    "spans": "boundary or unresolved spans meeting [J - 86,400 s, J + 86,400 s]",
+    "p2": "65 samples, lo + (hi - lo) k / 64, min |elongation - 5 deg|, as the harness approachesFloor does"
+  },
+  "windows": [
+    {
+      "cases": [
+        "F2",
+        "A2"
+      ],
+      "window": [
+        3329985669.184,
+        3355905669.184
+      ],
+      "windowIso": [
+        "2105-07-11T00:00:00Z",
+        "2106-05-07T00:00:00Z"
+      ],
+      "floorCrossings": [
+        {
+          "tdbSec": 3330022438.432104,
+          "bracketTdbSec": [
+            3330022438.431818,
+            3330022438.43239
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2105-07-11T10:13:58.432Z TDB"
+        },
+        {
+          "tdbSec": 3330067163.0815334,
+          "bracketTdbSec": [
+            3330067163.0812473,
+            3330067163.0818195
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2105-07-11T22:39:23.081Z TDB"
+        },
+        {
+          "tdbSec": 3332573949.971182,
+          "bracketTdbSec": [
+            3332573949.970896,
+            3332573949.971468
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2105-08-09T22:59:09.971Z TDB"
+        },
+        {
+          "tdbSec": 3332591121.215803,
+          "bracketTdbSec": [
+            3332591121.215517,
+            3332591121.2160892
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2105-08-10T03:45:21.215Z TDB"
+        },
+        {
+          "tdbSec": 3335119896.069891,
+          "bracketTdbSec": [
+            3335119896.069605,
+            3335119896.070177
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2105-09-08T10:11:36.069Z TDB"
+        },
+        {
+          "tdbSec": 3335137698.3543224,
+          "bracketTdbSec": [
+            3335137698.3540363,
+            3335137698.3546085
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2105-09-08T15:08:18.354Z TDB"
+        },
+        {
+          "tdbSec": 3337658279.5820065,
+          "bracketTdbSec": [
+            3337658279.5817204,
+            3337658279.5822926
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2105-10-07T19:17:59.582Z TDB"
+        },
+        {
+          "tdbSec": 3337711854.089529,
+          "bracketTdbSec": [
+            3337711854.089243,
+            3337711854.089815
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2105-10-08T10:10:54.089Z TDB"
+        },
+        {
+          "tdbSec": 3340212462.5125713,
+          "bracketTdbSec": [
+            3340212462.512285,
+            3340212462.5128574
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2105-11-06T08:47:42.512Z TDB"
+        },
+        {
+          "tdbSec": 3340288865.153105,
+          "bracketTdbSec": [
+            3340288865.1528187,
+            3340288865.153391
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2105-11-07T06:01:05.153Z TDB"
+        },
+        {
+          "tdbSec": 3342785102.57395,
+          "bracketTdbSec": [
+            3342785102.5736637,
+            3342785102.574236
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2105-12-06T03:25:02.573Z TDB"
+        },
+        {
+          "tdbSec": 3342861095.3941174,
+          "bracketTdbSec": [
+            3342861095.3938313,
+            3342861095.3944035
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2105-12-07T00:31:35.394Z TDB"
+        },
+        {
+          "tdbSec": 3345372814.8303814,
+          "bracketTdbSec": [
+            3345372814.8300953,
+            3345372814.8306675
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2106-01-05T02:13:34.830Z TDB"
+        },
+        {
+          "tdbSec": 3345423615.4165096,
+          "bracketTdbSec": [
+            3345423615.4162235,
+            3345423615.4167957
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2106-01-05T16:20:15.416Z TDB"
+        },
+        {
+          "tdbSec": 3347964610.346777,
+          "bracketTdbSec": [
+            3347964610.346491,
+            3347964610.347063
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2106-02-04T02:10:10.346Z TDB"
+        },
+        {
+          "tdbSec": 3347975738.220579,
+          "bracketTdbSec": [
+            3347975738.220293,
+            3347975738.2208652
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2106-02-04T05:15:38.220Z TDB"
+        },
+        {
+          "tdbSec": 3350519135.577566,
+          "bracketTdbSec": [
+            3350519135.57728,
+            3350519135.5778522
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2106-03-05T15:45:35.577Z TDB"
+        },
+        {
+          "tdbSec": 3350547383.8659115,
+          "bracketTdbSec": [
+            3350547383.8656254,
+            3350547383.8661976
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2106-03-05T23:36:23.865Z TDB"
+        },
+        {
+          "tdbSec": 3353057742.3530407,
+          "bracketTdbSec": [
+            3353057742.3527546,
+            3353057742.353327
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2106-04-04T00:55:42.353Z TDB"
+        },
+        {
+          "tdbSec": 3353111855.332548,
+          "bracketTdbSec": [
+            3353111855.332262,
+            3353111855.3328342
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2106-04-04T15:57:35.332Z TDB"
+        },
+        {
+          "tdbSec": 3355594435.3593655,
+          "bracketTdbSec": [
+            3355594435.3590794,
+            3355594435.3596516
+          ],
+          "direction": "ingress (elongation falls below the floor)",
+          "tdbIso": "2106-05-03T09:33:55.359Z TDB"
+        },
+        {
+          "tdbSec": 3355657286.4225216,
+          "bracketTdbSec": [
+            3355657286.4222355,
+            3355657286.4228077
+          ],
+          "direction": "egress (elongation rises above the floor)",
+          "tdbIso": "2106-05-04T03:01:26.422Z TDB"
+        }
+      ],
+      "floorCrossingScan": {
+        "stepSec": 300,
+        "samples": 86401,
+        "refusals": 0
+      },
+      "recordJoins": [
+        {
+          "series": "moon",
+          "recordLengthSec": 2764800,
+          "joins": [
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2917,
+              "tdbSec": 3330849600,
+              "tdbIso": "2105-07-21T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -782436.918466568,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 111.50710191563142,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2918,
+              "tdbSec": 3333614400,
+              "tdbIso": "2105-08-22T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -1023278.7841968536,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 136.73610691252716,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2919,
+              "tdbSec": 3336379200,
+              "tdbIso": "2105-09-23T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -1241501.6456775665,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 165.74211128939928,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2920,
+              "tdbSec": 3339144000,
+              "tdbIso": "2105-10-25T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 1068462.5125713348,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 158.20929475085623,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2921,
+              "tdbSec": 3341908800,
+              "tdbIso": "2105-11-26T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 876302.5739498138,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 122.3203729111043,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2922,
+              "tdbSec": 3344673600,
+              "tdbIso": "2105-12-28T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 699214.8303813934,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 92.15171115784867,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2923,
+              "tdbSec": 3347438400,
+              "tdbIso": "2106-01-29T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 526210.3467769623,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 67.82737047725537,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2924,
+              "tdbSec": 3350203200,
+              "tdbIso": "2106-03-02T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 315935.57756614685,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 44.735514538883265,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2925,
+              "tdbSec": 3352968000,
+              "tdbIso": "2106-04-03T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 89742.35304069519,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 17.514274264600186,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            },
+            {
+              "series": "moon",
+              "recordIndexStartingHere": 2926,
+              "tdbSec": 3355732800,
+              "tdbIso": "2106-05-05T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -75513.57747840881,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 17.073112220605907,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            }
+          ]
+        },
+        {
+          "series": "emb",
+          "recordLengthSec": 23673600,
+          "joins": [
+            {
+              "series": "emb",
+              "recordIndexStartingHere": 341,
+              "tdbSec": 3338625600,
+              "tdbIso": "2105-10-19T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": -913745.9104709625,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 121.54106408763772,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            }
+          ]
+        },
+        {
+          "series": "sun",
+          "recordLengthSec": 34560000,
+          "joins": [
+            {
+              "series": "sun",
+              "recordIndexStartingHere": 234,
+              "tdbSec": 3352968000,
+              "tdbIso": "2106-04-03T00:00:00 TDB",
+              "nearestFloorCrossingMinusJoinSec": 89742.35304069519,
+              "withinHalfDayOfFloorCrossing": false,
+              "elongationAtJoinDeg": 17.514274264600186,
+              "isDecisiveJoin": false,
+              "insideFloorAtJoin": false
+            }
+          ]
+        }
+      ],
+      "perCase": {
+        "F2": {
+          "selectedJoins": [],
+          "boundarySpans": [
+            {
+              "span": [
+                3330022369.3700314,
+                3330022474.830336
+              ],
+              "lengthSec": 105.46030473709106,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000016231733880545107,
+              "p2Pass": true,
+              "minElongationDeg": 4.99596915807055,
+              "maxElongationDeg": 5.007657296976582,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3330067137.269371,
+                3330067189.9995236
+              ],
+              "lengthSec": 52.73015260696411,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000029768487213921446,
+              "p2Pass": true,
+              "minElongationDeg": 4.997167989601189,
+              "maxElongationDeg": 5.0029550179422495,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3332573845.3125,
+                3332574056.25
+              ],
+              "lengthSec": 210.9375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003084627128036033,
+              "p2Pass": true,
+              "minElongationDeg": 4.995977388923927,
+              "maxElongationDeg": 5.004007232704203,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3332591015.625,
+                3332591226.5625
+              ],
+              "lengthSec": 210.9375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000004624943895414901,
+              "p2Pass": true,
+              "minElongationDeg": 4.996020536032321,
+              "maxElongationDeg": 5.004015908945384,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3335119776.5625,
+                3335119987.5
+              ],
+              "lengthSec": 210.9375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000029871603821618464,
+              "p2Pass": true,
+              "minElongationDeg": 4.996820968589823,
+              "maxElongationDeg": 5.004201876063543,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3335137579.6875,
+                3335137790.625
+              ],
+              "lengthSec": 210.9375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 5.072286501928147e-7,
+              "p2Pass": true,
+              "minElongationDeg": 4.995897877615144,
+              "maxElongationDeg": 5.003225156856591,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3337658259.0820312,
+                3337658293.359375
+              ],
+              "lengthSec": 34.27734375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000013939092486481286,
+              "p2Pass": true,
+              "minElongationDeg": 4.998701263455226,
+              "maxElongationDeg": 5.00193308622853,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3337711834.5703125,
+                3337711868.8476562
+              ],
+              "lengthSec": 34.27734375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00002221261074897285,
+              "p2Pass": true,
+              "minElongationDeg": 4.998179197032364,
+              "maxElongationDeg": 5.001377129682523,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3340212440.625,
+                3340212482.8125
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000016718346710575815,
+              "p2Pass": true,
+              "minElongationDeg": 4.997482592767064,
+              "maxElongationDeg": 5.002714426622233,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3340288842.1875,
+                3340288884.375
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000013026397848392435,
+              "p2Pass": true,
+              "minElongationDeg": 4.997175034105278,
+              "maxElongationDeg": 5.002364573087103,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3342785076.5625,
+                3342785118.75
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003616743560552749,
+              "p2Pass": true,
+              "minElongationDeg": 4.998071687364018,
+              "maxElongationDeg": 5.003100914306243,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3342861056.25,
+                3342861140.625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000484550569277431,
+              "p2Pass": true,
+              "minElongationDeg": 4.995333299751172,
+              "maxElongationDeg": 5.005392860051409,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3345372773.4375,
+                3345372857.8125
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00004286432867317558,
+              "p2Pass": true,
+              "minElongationDeg": 4.996485808939122,
+              "maxElongationDeg": 5.003387554039925,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3345423567.1875,
+                3345423651.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000045252980264365306,
+              "p2Pass": true,
+              "minElongationDeg": 4.996034783763003,
+              "maxElongationDeg": 5.00297467142893,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3347964435.9375,
+                3347964773.4375
+              ],
+              "lengthSec": 337.5,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000075406646713460646,
+              "p2Pass": true,
+              "minElongationDeg": 4.996859469983281,
+              "maxElongationDeg": 5.00345934621104,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3347975573.4375,
+                3347975910.9375
+              ],
+              "lengthSec": 337.5,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000025577209298965897,
+              "p2Pass": true,
+              "minElongationDeg": 4.996820451494542,
+              "maxElongationDeg": 5.003433195639869,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3350519057.8125,
+                3350519184.375
+              ],
+              "lengthSec": 126.5625,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003579600561032237,
+              "p2Pass": true,
+              "minElongationDeg": 4.997279082730442,
+              "maxElongationDeg": 5.004352376597986,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3350547323.4375,
+                3350547450
+              ],
+              "lengthSec": 126.5625,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00004922029825316088,
+              "p2Pass": true,
+              "minElongationDeg": 4.996607735138923,
+              "maxElongationDeg": 5.0037266826231965,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3353057690.625,
+                3353057775
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000037821528512616,
+              "p2Pass": true,
+              "minElongationDeg": 4.996045870783172,
+              "maxElongationDeg": 5.006268469937322,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3353111817.1875,
+                3353111901.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000010733982924726604,
+              "p2Pass": true,
+              "minElongationDeg": 4.995317057960248,
+              "maxElongationDeg": 5.005678590370909,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3355594425,
+                3355594467.1875
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00002938934346818911,
+              "p2Pass": true,
+              "minElongationDeg": 4.995013444737616,
+              "maxElongationDeg": 5.001623000713676,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3355657242.1875,
+                3355657326.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00009344800151378507,
+              "p2Pass": true,
+              "minElongationDeg": 4.992982966553795,
+              "maxElongationDeg": 5.0063675202590945,
+              "refusals": 0,
+              "samples": 65
+            }
+          ],
+          "boundarySpansWithoutAFloorCrossing": 0,
+          "p2FailuresByThisProbe": 0
+        },
+        "A2": {
+          "selectedJoins": [],
+          "boundarySpans": [
+            {
+              "span": [
+                3330022369.3700314,
+                3330022474.830336
+              ],
+              "lengthSec": 105.46030473709106,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000016231733880545107,
+              "p2Pass": true,
+              "minElongationDeg": 4.99596915807055,
+              "maxElongationDeg": 5.007657296976582,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3330067137.269371,
+                3330067189.9995236
+              ],
+              "lengthSec": 52.73015260696411,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000029768487213921446,
+              "p2Pass": true,
+              "minElongationDeg": 4.997167989601189,
+              "maxElongationDeg": 5.0029550179422495,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3332573845.3125,
+                3332574056.25
+              ],
+              "lengthSec": 210.9375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003084627128036033,
+              "p2Pass": true,
+              "minElongationDeg": 4.995977388923927,
+              "maxElongationDeg": 5.004007232704203,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3332591015.625,
+                3332591226.5625
+              ],
+              "lengthSec": 210.9375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000004624943895414901,
+              "p2Pass": true,
+              "minElongationDeg": 4.996020536032321,
+              "maxElongationDeg": 5.004015908945384,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3335119776.5625,
+                3335119987.5
+              ],
+              "lengthSec": 210.9375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000029871603821618464,
+              "p2Pass": true,
+              "minElongationDeg": 4.996820968589823,
+              "maxElongationDeg": 5.004201876063543,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3335137579.6875,
+                3335137790.625
+              ],
+              "lengthSec": 210.9375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 5.072286501928147e-7,
+              "p2Pass": true,
+              "minElongationDeg": 4.995897877615144,
+              "maxElongationDeg": 5.003225156856591,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3337658259.0820312,
+                3337658293.359375
+              ],
+              "lengthSec": 34.27734375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000013939092486481286,
+              "p2Pass": true,
+              "minElongationDeg": 4.998701263455226,
+              "maxElongationDeg": 5.00193308622853,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3337711834.5703125,
+                3337711868.8476562
+              ],
+              "lengthSec": 34.27734375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00002221261074897285,
+              "p2Pass": true,
+              "minElongationDeg": 4.998179197032364,
+              "maxElongationDeg": 5.001377129682523,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3340212440.625,
+                3340212482.8125
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000016718346710575815,
+              "p2Pass": true,
+              "minElongationDeg": 4.997482592767064,
+              "maxElongationDeg": 5.002714426622233,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3340288842.1875,
+                3340288884.375
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000013026397848392435,
+              "p2Pass": true,
+              "minElongationDeg": 4.997175034105278,
+              "maxElongationDeg": 5.002364573087103,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3342785076.5625,
+                3342785118.75
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003616743560552749,
+              "p2Pass": true,
+              "minElongationDeg": 4.998071687364018,
+              "maxElongationDeg": 5.003100914306243,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3342861056.25,
+                3342861140.625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000484550569277431,
+              "p2Pass": true,
+              "minElongationDeg": 4.995333299751172,
+              "maxElongationDeg": 5.005392860051409,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3345372773.4375,
+                3345372857.8125
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00004286432867317558,
+              "p2Pass": true,
+              "minElongationDeg": 4.996485808939122,
+              "maxElongationDeg": 5.003387554039925,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3345423567.1875,
+                3345423651.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000045252980264365306,
+              "p2Pass": true,
+              "minElongationDeg": 4.996034783763003,
+              "maxElongationDeg": 5.00297467142893,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3347964435.9375,
+                3347964773.4375
+              ],
+              "lengthSec": 337.5,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.0000075406646713460646,
+              "p2Pass": true,
+              "minElongationDeg": 4.996859469983281,
+              "maxElongationDeg": 5.00345934621104,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3347975573.4375,
+                3347975910.9375
+              ],
+              "lengthSec": 337.5,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000025577209298965897,
+              "p2Pass": true,
+              "minElongationDeg": 4.996820451494542,
+              "maxElongationDeg": 5.003433195639869,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3350519057.8125,
+                3350519184.375
+              ],
+              "lengthSec": 126.5625,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00003579600561032237,
+              "p2Pass": true,
+              "minElongationDeg": 4.997279082730442,
+              "maxElongationDeg": 5.004352376597986,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3350547323.4375,
+                3350547450
+              ],
+              "lengthSec": 126.5625,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00004922029825316088,
+              "p2Pass": true,
+              "minElongationDeg": 4.996607735138923,
+              "maxElongationDeg": 5.0037266826231965,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3353057690.625,
+                3353057775
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000037821528512616,
+              "p2Pass": true,
+              "minElongationDeg": 4.996045870783172,
+              "maxElongationDeg": 5.006268469937322,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3353111817.1875,
+                3353111901.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.000010733982924726604,
+              "p2Pass": true,
+              "minElongationDeg": 4.995317057960248,
+              "maxElongationDeg": 5.005678590370909,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3355594425,
+                3355594467.1875
+              ],
+              "lengthSec": 42.1875,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00002938934346818911,
+              "p2Pass": true,
+              "minElongationDeg": 4.995013444737616,
+              "maxElongationDeg": 5.001623000713676,
+              "refusals": 0,
+              "samples": 65
+            },
+            {
+              "span": [
+                3355657242.1875,
+                3355657326.5625
+              ],
+              "lengthSec": 84.375,
+              "floorCrossingInside": true,
+              "joinsWithin2sOfSpan": [],
+              "closestApproachDeg": 0.00009344800151378507,
+              "p2Pass": true,
+              "minElongationDeg": 4.992982966553795,
+              "maxElongationDeg": 5.0063675202590945,
+              "refusals": 0,
+              "samples": 65
+            }
+          ],
+          "boundarySpansWithoutAFloorCrossing": 0,
+          "p2FailuresByThisProbe": 0
+        }
+      },
+      "partitionIdenticalAcrossCases": true
+    }
+  ]
+}

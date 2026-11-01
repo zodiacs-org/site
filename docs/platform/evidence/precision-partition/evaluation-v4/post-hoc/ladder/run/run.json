@@ -1,0 +1,1789 @@
+{
+ "tool": "results/ladder/tools/ladder.mjs",
+ "label": "ladder",
+ "rule": "bundle examples/precision-alpha/PARTITION-EVALUATION-V2.md (dfa19aa9) section 3b (corpus), section 5 (identity, same event, bit-identical) and section 6 E-1, E-2 second bullet, E-3; with A-1 appended before that rule's run",
+ "scored": false,
+ "scoredNote": "Post hoc and unscored. The F windows are the earlier holdouts' windows, opened by earlier versions; for #860's code they are previously seen data.",
+ "filtered": null,
+ "deviations": [
+  "The pack is the one #860 evaluated on (container 9856b50f, payload 0c7e1c93, compiler 1.1.0 on this Mac), not the pack the earlier rule fixes in its section 2 (container 4cc6f85a, payload 0a218764, compiler 1.0.0). The earlier harness refuses any other pack and stops; this tool checks the pack against the 9856b50f digests instead, and compares its version 1 numbers with the version 1 numbers the earlier run recorded on its own pack, so the effect of the pack is measured rather than assumed.",
+  "Section 2 also requires the original runtime to reproduce the committed twenty-case run case for case before anything is compared. The twenty cases are not this label's task and were not run, so that precondition is not checked here.",
+  "\"v2\" in the earlier rule means the bundle's own version 2 code. Here the same rule is applied with #860's code in that place.",
+  "The earlier harness verifies the original tree blob by blob against 23dd8cb7 at start; this label does that in provenance.json (read-only git ls-tree), for the src directory and the deflected reference, not for the whole package directory.",
+  "The deflected rung is run here directly with the whole-request budgets (4,000,000 evaluations, 400,000 cells). The earlier harness reused its twenty-case baseline run for it, which is the same call with the same arguments.",
+  "The F windows and targets are the earlier holdouts' (1975-01-01 epoch). For #860's code they are previously seen data, so everything here is post hoc and unscored."
+ ],
+ "startedAt": "2026-10-31T19:29:40.262Z",
+ "finishedAt": "2026-10-31T19:30:10.396Z",
+ "node": "v22.22.2",
+ "platform": "darwin-arm64",
+ "cpus": 10,
+ "loadAverage": {
+  "atStart": [
+   4.12744140625,
+   4.11474609375,
+   3.8701171875
+  ],
+  "atEnd": [
+   4.099609375,
+   4.11669921875,
+   3.87890625
+  ]
+ },
+ "trees": {
+  "v1": "<v1-export>/examples/precision-alpha",
+  "v2": "<860-export>/examples/precision-alpha"
+ },
+ "pack": {
+  "path": "<packs>/D-de440s.sealed.zeph",
+  "bytes": 1737664,
+  "fileSha256": "00a56b4c3e80b55d8cceb5d0c66388449713abeba7ca11727d3154f597b32a6c",
+  "payloadSha256": "0c7e1c9357e44f6463dd7f68418865e699a5758325cc04d02a6cd24b56900102",
+  "headerPayloadSha256": "0c7e1c9357e44f6463dd7f68418865e699a5758325cc04d02a6cd24b56900102",
+  "containerDigest": {
+   "v1": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+   "v2": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355"
+  },
+  "compiler": "1.1.0",
+  "coverage": {
+   "startEtSecTdb": -4734072000,
+   "stopEtSecTdb": 4735368000
+  },
+  "expected": {
+   "containerDigest": "9856b50ffebfa06c39f81d941fa7b63e99b9376e88bb1fadefe4be5f7e5a3355",
+   "payloadPrefix": "0c7e1c93"
+  },
+  "ok": true
+ },
+ "frozen": {
+  "v1": {
+   "retardedBudgets": {
+    "maxEvaluations": 4000000,
+    "maxCells": 400000
+   },
+   "validatedDefaults": {
+    "minWidthSec": 0.0001,
+    "maxEvaluations": 2000000,
+    "maxCells": 400000
+   },
+   "retardedDefaults": {
+    "minWidthSec": 0.0001,
+    "maxEvaluations": 4000000,
+    "maxCells": 400000,
+    "maxTauWidenings": 6,
+    "enclosureFloorSec": 1,
+    "tauPadFactor": 64,
+    "tauPadFloorSec": 0.000001
+   },
+   "profile": {
+    "id": "zodiacs-deflected-of-date/1",
+    "deflectors": [
+     "Sun"
+    ],
+    "form": "eraLd with bm = 1, finite-distance source geometry (q is the real Sun-to-source direction at emission, NOT eraLdsun's q = p distant-star approximation)",
+    "srs": 1.97412574336e-8,
+    "solarRadiusKm": 695700,
+    "limiter": "dlim = 1e-6 / max(em^2, 1), ERFA eraLdsun's own. dlim is phi^2/2, the angular separation at which limiting BEGINS -- not an error cap. Below it the deflection is artificially reduced toward zero. The supported domain is set so it never fires inside it; limiterActive is reported regardless.",
+    "minElongationDeg": 5,
+    "epochs": "e and em from the observer and Sun at RECEPTION; q from the source and Sun at EMISSION. ld.c Note 3 prefers the deflector at the ray's closest approach; the split used here is within 3.13e-10 arcsec of that, against 1.96e-5 arcsec for the simpler reception-for-both.",
+    "notApplied": [
+     "deflection by any body other than the Sun",
+     "the second-order term eraLd itself omits: a measured 2.08e-3 arcsec at 0.3 deg elongation, 4.23e-7 arcsec at 5 deg, 4.97e-8 arcsec at 10 deg, against an independent ray integration. A property of the MODEL, not of this implementation",
+     "the Klioner solar-potential term inside the aberration, which is a DIFFERENT term in a different transformation and stays off",
+     "Shapiro (relativistic) delay",
+     "topocentric parallax, diurnal aberration, refraction"
+    ]
+   }
+  },
+  "v2": {
+   "retardedBudgets": {
+    "maxEvaluations": 4000000,
+    "maxCells": 400000
+   },
+   "validatedDefaults": {
+    "minWidthSec": 0.0001,
+    "maxEvaluations": 2000000,
+    "maxCells": 400000
+   },
+   "retardedDefaults": {
+    "minWidthSec": 0.0001,
+    "maxEvaluations": 4000000,
+    "maxCells": 400000,
+    "maxTauWidenings": 6,
+    "enclosureFloorSec": 1,
+    "tauPadFloorSec": 0.000001
+   },
+   "profile": {
+    "id": "zodiacs-deflected-of-date/1",
+    "deflectors": [
+     "Sun"
+    ],
+    "form": "eraLd with bm = 1, finite-distance source geometry (q is the real Sun-to-source direction at emission, NOT eraLdsun's q = p distant-star approximation)",
+    "srs": 1.97412574336e-8,
+    "solarRadiusKm": 695700,
+    "limiter": "dlim = 1e-6 / max(em^2, 1), ERFA eraLdsun's own. dlim is phi^2/2, the angular separation at which limiting BEGINS -- not an error cap. Below it the deflection is artificially reduced toward zero. The supported domain is set so it never fires inside it; limiterActive is reported regardless.",
+    "minElongationDeg": 5,
+    "epochs": "e and em from the observer and Sun at RECEPTION; q from the source and Sun at EMISSION. ld.c Note 3 prefers the deflector at the ray's closest approach; the split used here is within 3.13e-10 arcsec of that, against 1.96e-5 arcsec for the simpler reception-for-both.",
+    "notApplied": [
+     "deflection by any body other than the Sun",
+     "the second-order term eraLd itself omits: a measured 2.08e-3 arcsec at 0.3 deg elongation, 4.23e-7 arcsec at 5 deg, 4.97e-8 arcsec at 10 deg, against an independent ray integration. A property of the MODEL, not of this implementation",
+     "the Klioner solar-potential term inside the aberration, which is a DIFFERENT term in a different transformation and stays off",
+     "Shapiro (relativistic) delay",
+     "topocentric parallax, diurnal aberration, refraction"
+    ]
+   }
+  }
+ },
+ "budgets": {
+  "geometric": "package default (VALIDATED_DEFAULTS), as the earlier harness passes none for rung 1",
+  "retardedAberratedOfDate": "package defaults (RETARDED_DEFAULTS), checked equal to 4,000,000 evaluations and 400,000 cells in both trees",
+  "deflected": {
+   "maxEvaluations": 4000000,
+   "maxCells": 400000
+  },
+  "wallClockMs": 300000,
+  "rootToleranceSec": 0.001,
+  "matchWindowSec": 1
+ },
+ "cases": [
+  {
+   "id": "F1",
+   "body": "Sun",
+   "fromIso": "1975-01-01T00:00:00Z",
+   "toIso": "1975-10-28T00:00:00Z",
+   "fromTdbSec": -788961530.816,
+   "toTdbSec": -763041530.816,
+   "targetDeg": 68.944945
+  },
+  {
+   "id": "F2",
+   "body": "Moon",
+   "fromIso": "1977-06-19T00:00:00Z",
+   "toIso": "1978-04-15T00:00:00Z",
+   "fromTdbSec": -711201530.816,
+   "toTdbSec": -685281530.816,
+   "targetDeg": 298.813118
+  },
+  {
+   "id": "F3",
+   "body": "Mercury",
+   "fromIso": "1979-12-06T00:00:00Z",
+   "toIso": "1980-10-01T00:00:00Z",
+   "fromTdbSec": -633441530.816,
+   "toTdbSec": -607521530.816,
+   "targetDeg": 33.035194
+  },
+  {
+   "id": "F4",
+   "body": "Venus",
+   "fromIso": "1982-05-24T00:00:00Z",
+   "toIso": "1983-03-20T00:00:00Z",
+   "fromTdbSec": -555681530.816,
+   "toTdbSec": -529761530.816,
+   "targetDeg": 203.667398
+  },
+  {
+   "id": "F5",
+   "body": "Mars",
+   "fromIso": "1984-11-09T00:00:00Z",
+   "toIso": "1985-09-05T00:00:00Z",
+   "fromTdbSec": -477921530.816,
+   "toTdbSec": -452001530.816,
+   "targetDeg": 47.085193
+  },
+  {
+   "id": "F6",
+   "body": "Jupiter",
+   "fromIso": "1987-04-28T00:00:00Z",
+   "toIso": "1988-02-22T00:00:00Z",
+   "fromTdbSec": -400161530.816,
+   "toTdbSec": -374241530.816,
+   "targetDeg": 27.653017
+  },
+  {
+   "id": "F7",
+   "body": "Saturn",
+   "fromIso": "1989-10-14T00:00:00Z",
+   "toIso": "1990-08-10T00:00:00Z",
+   "fromTdbSec": -322401530.816,
+   "toTdbSec": -296481530.816,
+   "targetDeg": 293.142503
+  },
+  {
+   "id": "F8",
+   "body": "Uranus",
+   "fromIso": "1992-04-01T00:00:00Z",
+   "toIso": "1993-01-26T00:00:00Z",
+   "fromTdbSec": -244641530.816,
+   "toTdbSec": -218721530.816,
+   "targetDeg": 284.298936
+  },
+  {
+   "id": "F9",
+   "body": "Neptune",
+   "fromIso": "1994-09-18T00:00:00Z",
+   "toIso": "1995-07-15T00:00:00Z",
+   "fromTdbSec": -166881530.816,
+   "toTdbSec": -140961530.816,
+   "targetDeg": 294.224642
+  },
+  {
+   "id": "F10",
+   "body": "Pluto",
+   "fromIso": "1997-03-06T00:00:00Z",
+   "toIso": "1997-12-31T00:00:00Z",
+   "fromTdbSec": -89121530.816,
+   "toTdbSec": -63201530.816,
+   "targetDeg": 242.85769
+  }
+ ],
+ "targetAgreement": [
+  {
+   "id": "F1",
+   "body": "Sun",
+   "targetDeg": 68.944945,
+   "treesAgree": true,
+   "committed": 68.944945,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F2",
+   "body": "Moon",
+   "targetDeg": 298.813118,
+   "treesAgree": true,
+   "committed": 298.813118,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F3",
+   "body": "Mercury",
+   "targetDeg": 33.035194,
+   "treesAgree": true,
+   "committed": 33.035194,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F4",
+   "body": "Venus",
+   "targetDeg": 203.667398,
+   "treesAgree": true,
+   "committed": 203.667398,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F5",
+   "body": "Mars",
+   "targetDeg": 47.085193,
+   "treesAgree": true,
+   "committed": 47.085193,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F6",
+   "body": "Jupiter",
+   "targetDeg": 27.653017,
+   "treesAgree": true,
+   "committed": 27.653017,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F7",
+   "body": "Saturn",
+   "targetDeg": 293.142503,
+   "treesAgree": true,
+   "committed": 293.142503,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F8",
+   "body": "Uranus",
+   "targetDeg": 284.298936,
+   "treesAgree": true,
+   "committed": 284.298936,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F9",
+   "body": "Neptune",
+   "targetDeg": 294.224642,
+   "treesAgree": true,
+   "committed": 294.224642,
+   "equalsCommitted": true
+  },
+  {
+   "id": "F10",
+   "body": "Pluto",
+   "targetDeg": 242.85769,
+   "treesAgree": true,
+   "committed": 242.85769,
+   "equalsCommitted": true
+  }
+ ],
+ "scores": {
+  "E1": {
+   "rule": "section 6 E-1, the ten-case corpus part: no v1 event lost (section 5), in any rung; a rung that threw on either side is a failure (harness, review B-16)",
+   "eventsLost": 0,
+   "where": [],
+   "threw": [],
+   "ambiguousPairings": [],
+   "taskDefinitionLost": 0,
+   "taskDefinitionWhere": [],
+   "pass": true
+  },
+  "E2": {
+   "rule": "section 6 E-2, second bullet: on the ten-case corpus, wherever v1 and v2 both establish completeness for a (case, rung), their event counts are equal",
+   "bothEstablished": [
+    "F1 geometric",
+    "F1 retarded",
+    "F1 aberrated",
+    "F1 ofDate",
+    "F1 deflected",
+    "F2 geometric",
+    "F2 retarded",
+    "F2 aberrated",
+    "F2 ofDate",
+    "F3 geometric",
+    "F3 retarded",
+    "F3 aberrated",
+    "F3 ofDate",
+    "F4 geometric",
+    "F4 retarded",
+    "F4 aberrated",
+    "F4 ofDate",
+    "F5 geometric",
+    "F5 retarded",
+    "F5 aberrated",
+    "F5 ofDate",
+    "F6 geometric",
+    "F6 retarded",
+    "F6 aberrated",
+    "F6 ofDate",
+    "F6 deflected",
+    "F7 geometric",
+    "F7 retarded",
+    "F7 aberrated",
+    "F7 ofDate",
+    "F8 geometric",
+    "F8 retarded",
+    "F8 aberrated",
+    "F8 ofDate",
+    "F9 geometric",
+    "F9 retarded",
+    "F9 aberrated",
+    "F9 ofDate",
+    "F10 geometric",
+    "F10 retarded",
+    "F10 aberrated",
+    "F10 ofDate",
+    "F10 deflected"
+   ],
+   "unequal": [],
+   "pass": true
+  },
+  "E3": {
+   "rule": "section 6 E-3, section 5 sense 2 on the ten-case corpus (unamended, and under the appended amendment A-1), with sense 1 (the apparent() grid over the ten F windows) beside it",
+   "sense2": {
+    "sameCountResults": 46,
+    "differentCountResults": [
+     "F2 retarded",
+     "F2 aberrated",
+     "F2 ofDate",
+     "F2 deflected"
+    ],
+    "unamendedFailures": [],
+    "amendedFailures": [],
+    "eventsInSameCountResults": 71,
+    "bitIdenticalEventsInSameCountResults": 71,
+    "passUnamended": true,
+    "passAmendedA1": true
+   },
+   "sense1": {
+    "windows": 10,
+    "instants": 100,
+    "calls": 1000,
+    "threw": 0,
+    "differing": 0,
+    "firstDiffering": [],
+    "digestV1": "3c7a5d5162f88b7586e043e04bf3ea84be39e6faa06b832176bf96017ede038f",
+    "digestV2": "3c7a5d5162f88b7586e043e04bf3ea84be39e6faa06b832176bf96017ede038f",
+    "pass": true
+   },
+   "passUnamended": true,
+   "passAmendedA1": true
+  },
+  "nonMoonCheck": {
+   "claim": "#860: the search changes only cells whose target and observer share a stored series, so every other body must be identical, evaluation counts included",
+   "results": 45,
+   "wholeResultIdentical": 45,
+   "countsAndEventsIdentical": 45,
+   "failures": [],
+   "pass": true
+  }
+ },
+ "perRung": [
+  {
+   "rung": "validated-geometric",
+   "key": "geometric",
+   "lostEvents": 0,
+   "lostEventsTaskDefinition": 0,
+   "countMismatches": 0,
+   "bothEstablished": 10,
+   "sameCountResults": 10,
+   "unamendedE3Failures": 0,
+   "amendedE3Failures": 0,
+   "nonMoonBitIdentical": true,
+   "moon": {
+    "v1": {
+     "status": "finished",
+     "established": true,
+     "evaluations": 1316,
+     "cells": 290,
+     "events": 11
+    },
+    "v2": {
+     "status": "finished",
+     "established": true,
+     "evaluations": 1316,
+     "cells": 290,
+     "events": 11
+    },
+    "lost": 0,
+    "sameEventPairs": 11,
+    "bitIdenticalPairs": 11,
+    "wholeResultIdentical": true
+   }
+  },
+  {
+   "rung": "validated-retarded-geometric",
+   "key": "retarded",
+   "lostEvents": 0,
+   "lostEventsTaskDefinition": 0,
+   "countMismatches": 0,
+   "bothEstablished": 10,
+   "sameCountResults": 9,
+   "unamendedE3Failures": 0,
+   "amendedE3Failures": 0,
+   "nonMoonBitIdentical": true,
+   "moon": {
+    "v1": {
+     "status": "finished",
+     "established": true,
+     "evaluations": 264348,
+     "cells": 10130,
+     "events": 11
+    },
+    "v2": {
+     "status": "finished",
+     "established": true,
+     "evaluations": 31312,
+     "cells": 592,
+     "events": 11
+    },
+    "lost": 0,
+    "sameEventPairs": 11,
+    "bitIdenticalPairs": 0,
+    "wholeResultIdentical": false
+   }
+  },
+  {
+   "rung": "validated-retarded-aberrated",
+   "key": "aberrated",
+   "lostEvents": 0,
+   "lostEventsTaskDefinition": 0,
+   "countMismatches": 0,
+   "bothEstablished": 10,
+   "sameCountResults": 9,
+   "unamendedE3Failures": 0,
+   "amendedE3Failures": 0,
+   "nonMoonBitIdentical": true,
+   "moon": {
+    "v1": {
+     "status": "finished",
+     "established": true,
+     "evaluations": 264328,
+     "cells": 10130,
+     "events": 11
+    },
+    "v2": {
+     "status": "finished",
+     "established": true,
+     "evaluations": 28384,
+     "cells": 484,
+     "events": 11
+    },
+    "lost": 0,
+    "sameEventPairs": 11,
+    "bitIdenticalPairs": 2,
+    "wholeResultIdentical": false
+   }
+  },
+  {
+   "rung": "validated-retarded-aberrated-of-date",
+   "key": "ofDate",
+   "lostEvents": 0,
+   "lostEventsTaskDefinition": 0,
+   "countMismatches": 0,
+   "bothEstablished": 10,
+   "sameCountResults": 9,
+   "unamendedE3Failures": 0,
+   "amendedE3Failures": 0,
+   "nonMoonBitIdentical": true,
+   "moon": {
+    "v1": {
+     "status": "finished",
+     "established": true,
+     "evaluations": 269422,
+     "cells": 10320,
+     "events": 11
+    },
+    "v2": {
+     "status": "finished",
+     "established": true,
+     "evaluations": 28204,
+     "cells": 490,
+     "events": 11
+    },
+    "lost": 0,
+    "sameEventPairs": 11,
+    "bitIdenticalPairs": 1,
+    "wholeResultIdentical": false
+   }
+  },
+  {
+   "rung": "validated-retarded-aberrated-deflected-of-date",
+   "key": "deflected",
+   "lostEvents": 0,
+   "lostEventsTaskDefinition": 0,
+   "countMismatches": 0,
+   "bothEstablished": 3,
+   "sameCountResults": 9,
+   "unamendedE3Failures": 0,
+   "amendedE3Failures": 0,
+   "nonMoonBitIdentical": true,
+   "moon": {
+    "v1": {
+     "status": "budget-exhausted",
+     "established": false,
+     "evaluations": 4000001,
+     "cells": 157818,
+     "events": 2
+    },
+    "v2": {
+     "status": "finished",
+     "established": false,
+     "evaluations": 1594431,
+     "cells": 61718,
+     "events": 11
+    },
+    "lost": 0,
+    "sameEventPairs": 2,
+    "bitIdenticalPairs": 1,
+    "wholeResultIdentical": false
+   }
+  }
+ ],
+ "packEffectOnV1": [
+  {
+   "id": "F1",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 57,
+    "cells": 12,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 57,
+    "cells": 12,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F1",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "cells": 12,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "cells": 12,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F1",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "cells": 12,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "cells": 12,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F1",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "cells": 12,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "cells": 12,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F1",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "cells": 12,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 635,
+    "cells": 12,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F2",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1316,
+    "cells": 290,
+    "events": 11
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1316,
+    "cells": 290,
+    "events": 11
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F2",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 264348,
+    "cells": 10130,
+    "events": 11
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 264348,
+    "cells": 10130,
+    "events": 11
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F2",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 264328,
+    "cells": 10130,
+    "events": 11
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 264328,
+    "cells": 10130,
+    "events": 11
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F2",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 269422,
+    "cells": 10320,
+    "events": 11
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 269422,
+    "cells": 10320,
+    "events": 11
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F2",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "budget-exhausted",
+    "established": false,
+    "evaluations": 4000001,
+    "cells": 157818,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "budget-exhausted",
+    "established": false,
+    "evaluations": 4000001,
+    "cells": 157818,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F3",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 128,
+    "cells": 55,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 128,
+    "cells": 55,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F3",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2307,
+    "cells": 47,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2307,
+    "cells": 47,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F3",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2307,
+    "cells": 47,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2307,
+    "cells": 47,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F3",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2307,
+    "cells": 47,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2307,
+    "cells": 47,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F3",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 1917153,
+    "cells": 74085,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 1917153,
+    "cells": 74085,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F4",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 154,
+    "cells": 24,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 154,
+    "cells": 24,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F4",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1671,
+    "cells": 18,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1671,
+    "cells": 18,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F4",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1671,
+    "cells": 18,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1671,
+    "cells": 18,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F4",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1622,
+    "cells": 18,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1622,
+    "cells": 18,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F4",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 515262,
+    "cells": 30438,
+    "events": 0
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 515262,
+    "cells": 30438,
+    "events": 0
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F5",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 52,
+    "cells": 11,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 52,
+    "cells": 11,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F5",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 706,
+    "cells": 11,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 706,
+    "cells": 11,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F5",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 706,
+    "cells": 11,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 706,
+    "cells": 11,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F5",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 684,
+    "cells": 11,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 684,
+    "cells": 11,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F5",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 285731,
+    "cells": 17405,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 285751,
+    "cells": 17405,
+    "events": 1
+   },
+   "countsEqual": false,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F6",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 144,
+    "cells": 33,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 144,
+    "cells": 33,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F6",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1190,
+    "cells": 17,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1190,
+    "cells": 17,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F6",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1209,
+    "cells": 17,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1209,
+    "cells": 17,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F6",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1205,
+    "cells": 17,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1206,
+    "cells": 17,
+    "events": 2
+   },
+   "countsEqual": false,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F6",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2106,
+    "cells": 55,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 2105,
+    "cells": 55,
+    "events": 2
+   },
+   "countsEqual": false,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F7",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 105,
+    "cells": 16,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 105,
+    "cells": 16,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F7",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1066,
+    "cells": 12,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1066,
+    "cells": 12,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F7",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1076,
+    "cells": 12,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1076,
+    "cells": 12,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F7",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1051,
+    "cells": 12,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1050,
+    "cells": 12,
+    "events": 2
+   },
+   "countsEqual": false,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F7",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 63960,
+    "cells": 3978,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 63956,
+    "cells": 3978,
+    "events": 2
+   },
+   "countsEqual": false,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F8",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 134,
+    "cells": 30,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 134,
+    "cells": 30,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F8",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1188,
+    "cells": 20,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1188,
+    "cells": 20,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F8",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1177,
+    "cells": 20,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1178,
+    "cells": 20,
+    "events": 2
+   },
+   "countsEqual": false,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F8",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1242,
+    "cells": 20,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1242,
+    "cells": 20,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F8",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 58353,
+    "cells": 3616,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 58351,
+    "cells": 3616,
+    "events": 2
+   },
+   "countsEqual": false,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F9",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 67,
+    "cells": 15,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 67,
+    "cells": 15,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F9",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 685,
+    "cells": 13,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 685,
+    "cells": 13,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F9",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 685,
+    "cells": 13,
+    "events": 1
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 685,
+    "cells": 13,
+    "events": 1
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F9",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1045,
+    "cells": 13,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1045,
+    "cells": 13,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F9",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 55409,
+    "cells": 3445,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": false,
+    "evaluations": 55409,
+    "cells": 3445,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F10",
+   "rung": "geometric",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 131,
+    "cells": 51,
+    "events": 0
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 131,
+    "cells": 51,
+    "events": 0
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F10",
+   "rung": "retarded",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 686,
+    "cells": 27,
+    "events": 0
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 686,
+    "cells": 27,
+    "events": 0
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F10",
+   "rung": "aberrated",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 728,
+    "cells": 29,
+    "events": 0
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 728,
+    "cells": 29,
+    "events": 0
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F10",
+   "rung": "ofDate",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1271,
+    "cells": 23,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 1271,
+    "cells": 23,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  },
+  {
+   "id": "F10",
+   "rung": "deflected",
+   "comparable": true,
+   "recordedOnPack4cc6f85a": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 5092,
+    "cells": 207,
+    "events": 2
+   },
+   "thisPack9856b50f": {
+    "status": "finished",
+    "established": true,
+    "evaluations": 5092,
+    "cells": 207,
+    "events": 2
+   },
+   "countsEqual": true,
+   "eventCountEqual": true,
+   "eventsBitIdentical": true,
+   "sameEventLost": 0
+  }
+ ],
+ "v4Reproduction": [
+  {
+   "id": "F1",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F2",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F3",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F4",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F5",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F6",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F7",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F8",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F9",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  },
+  {
+   "id": "F10",
+   "v1Reproduced": true,
+   "v2Reproduced": true
+  }
+ ]
+}

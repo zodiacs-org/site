@@ -1,3 +1,68 @@
+The Moon enclosure fix, 2026-11-01 (Asia/Bangkok): P4.5 validated, not
+accepted.
+
+**Overall delivery: 46%** (46.013% to three decimals): 83.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from P4.2's
+entry below: P4.5 moves from not-started to validated, which does not count,
+and Phase 4 stays at 5%.
+
+- **P4.5, validated, pending the owner.** The partition evaluation was run
+  again as the programme's fourth preregistered attempt, version 4
+  ([the rule](../../../examples/precision-alpha/PARTITION-EVALUATION-V4.md),
+  [the result](../../../examples/precision-alpha/PARTITION-RESULTS-V4.md)),
+  and passes its own rule on development data. The three before it stay
+  recorded beside it: version 1 is PARTIAL (P-3, P-4); versions 2 and 3, on
+  the unpushed branch `moon-enclosure` (2026-09-30, in the owner's bundle),
+  are FAIL on E-3 with the holdout PARTIAL on P-2, and FAIL on both corpora.
+  Version 4's rule and runs were made without reading them, although this
+  file (checkpoint 8) and the 2026-09-30 handoff named them. It was written
+  as version 2, and renamed on 2026-11-01.
+  - The fix: the geocentric vector is enclosed from merged weights, so the
+    Earth-Moon barycentre's 30 km/s cancels instead of counting twice, and
+    the partition's elongation is enclosed in centred form.
+  - On the regression cases every target holds. The Moon's undecided
+    boundary falls from 5.266 to 0.0114 per cent of its window, and every
+    conjunction case is at least 5.44 times cheaper than the plain search,
+    where version 1 reached only 3.17 on the Moon and 3.95 on Saturn. The
+    plain deflected Moon search, which used up its whole budget of four
+    million evaluations, now finishes in 1.59 million.
+  - A fixture matrix rebuilt from the audit's description (the audit's own
+    is committed on `moon-enclosure`, not on main): no false proof on
+    fixtures whose records join continuously, no lost event, and every
+    planet-like result bit-identical between the versions, by construction.
+    On the ten main cases, deflected rung only, no event is lost and the nine
+    bodies other than the Moon are bit-identical.
+  - Version 1's holdout, and a fresh one picked by hand at 2040-01-01,
+    outside the programme's seeded rule, pass every target they score; the
+    fresh one is reported beside the verdict.
+  - After the verdict, post hoc and unscored: on version 2's 1912 holdout
+    this code's own harness gives PARTIAL, on P-2, at the Moon's record join
+    of 1915-08-11, a 42 s boundary span 4.44 degrees inside the floor, which
+    is how version 2's holdout failed; on version 3's 2103 holdout it gives
+    PASS. The audit's matrix gives 120 results identical to version 1's, the
+    five-rung ladder loses no event, and the domain-agreement tool reports
+    four contradictions (F2, F3, F8, F9).
+- **Owner decisions that acceptance waits for.**
+  - Whether a fourth attempt may count. Version 3's preregistered rule says
+    "No fourth version is started from it", and its status note "Do not
+    start a version 4"; the 2026-09-30 handoff plans a new version only
+    after `moon-enclosure`'s post-review work, which was not done.
+  - Whether a P-2 failure at a record join blocks the gate. Version 4 leaves
+    the cell that starts at a record join inside the floor as boundary; P-2 passes on its own
+    corpora only because those joins lie 0.336 and 0.192 degrees from the
+    floor, and fails on 1912 (F-99).
+  - The scope. Version 4 leaves out the rest of brief v1's M4.1 and M4.2,
+    such as local derivative bounds and `buildPartitionedResult`, which
+    narrows P4.5's source; no recorded decision does that. On
+    `moon-enclosure`'s version 2 the local bounds let the triple root's
+    light-time rungs finish but did not decide it.
+- **Findings.** F-99 to F-103: the record-join refusal and its P-2 spans;
+  review A's A-1, an unsound case inherited from version 1; review B's B-1
+  and B-3 to B-5, inherited; B-2, new with version 4 and fixed; and the
+  domain agreement.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 46% (83.95 of 182.45); blocked 2% (3)`.
+
 The pack compiler, 2026-10-31 (Asia/Bangkok): P4.2 accepted.
 
 **Overall delivery: 46%** (46.013% to three decimals): 83.95 of 182.45

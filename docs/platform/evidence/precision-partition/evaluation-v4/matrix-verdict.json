@@ -1,0 +1,8 @@
+{
+ "rule": "PARTITION-EVALUATION-V2.md V-3",
+ "knownRootChecks": 116,
+ "falseProofs": [],
+ "lostEvents": [],
+ "planetLikeRungsNotBitIdentical": [],
+ "verdict": "PASS"
+}

@@ -1,0 +1,36 @@
+{
+ "tree": "<repo>/examples/precision-alpha",
+ "B-2": {
+  "threw": "unsupported-option",
+  "message": "this plan says it stopped with budget-exhausted but leaves nothing unclassified, which no plan this runtime builds does. Rebuild it."
+ },
+ "B-1": {
+  "accepted": true,
+  "finished": true,
+  "unprocessedSec": 3283200
+ },
+ "B-5": {
+  "threw": "TypeError",
+  "message": "Cannot read properties of undefined (reading 'status')"
+ },
+ "B-3": {
+  "ok": "cancelled"
+ },
+ "B-4": {
+  "maxEvaluations=0": {
+   "accepted": true,
+   "status": "budget-exhausted",
+   "evaluations": 1
+  },
+  "relightWidthRatio=-3": {
+   "accepted": true,
+   "status": "finished",
+   "evaluations": 6017
+  },
+  "tauPadFloorSec=-1": {
+   "accepted": true,
+   "status": "finished",
+   "evaluations": 139447
+  }
+ }
+}
