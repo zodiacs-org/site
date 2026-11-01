@@ -280,6 +280,19 @@ describe('the time atlas dataset, version 0.1.0', () => {
         tzdbOffset: entry.tzdbOffset, tzdbAbbreviation: entry.tzdbAbbreviation, differenceSeconds: entry.differenceSeconds, explanation: entry.explanation,
       });
     });
+    // The rules the 108 rows name, and the rows by their rule's version and flag (C5's first bullet).
+    const rulesById = new Map(['rules-fr.json', 'rules-als.json', 'rules-us.json']
+      .flatMap((name) => dataFiles[name].rules ?? []).map((rule) => [rule.id, rule]));
+    expect(rulesById.size).toBe(59);
+    expect(rowRules(DIFFERENCES, rulesById)).toEqual({
+      rules: 31, versions: { 1: 46, 2: 44, 3: 18 }, flags: { documented: 54, inferred: 32, uncertain: 22 },
+    });
+
+    // Control: one rule's flag changed, fr-wet-1916 (version 3, documented, on 10 rows) made uncertain, in a copy of the rules.
+    const wet = rulesById.get('fr-wet-1916')!;
+    expect([wet.version, wet.uncertainty.flag, DIFFERENCES.filter((difference) => difference.atlasRule === wet.id).length]).toEqual([3, 'documented', 10]);
+    const reflagged = new Map(rulesById).set(wet.id, { ...wet, uncertainty: { ...wet.uncertainty, flag: 'uncertain' } });
+    expect(rowRules(DIFFERENCES, reflagged).flags).toEqual({ documented: 44, inferred: 32, uncertain: 32 });
 
     // Controls, each on a cloned copy of the differences.
     const changedTo = structuredClone(DIFFERENCES);
@@ -500,6 +513,23 @@ function newYorkRounding(summary: ReturnType<typeof summaryRows>, tables: Return
   return period.result.kind === 'rounding' && period.from === '1870-01-01T04:56:01.620Z' && period.to === '1883-11-18T17:00:00Z'
     && period.rule === 'us-nyc-city-time-before-1883' && period.atlasOffset === '-4:56:01.620' && `${period.tzdbOffset} ${period.tzdbAbbreviation}` === '-4:56:02 LMT'
     ? String(period.result.ms) : null;
+}
+
+/** How many rules the differences name, and the differences tallied by their rule's version and flag. */
+function rowRules(differences: Difference[], rules: Map<string, Rule>) {
+  const named = differences.map((difference) => {
+    const rule = rules.get(difference.atlasRule);
+    if (!rule) throw new Error(`no rule ${difference.atlasRule}`);
+    return rule;
+  });
+  const tally = (values: (string | number)[]) => Object.fromEntries(
+    [...new Set(values)].sort().map((value) => [value, values.filter((other) => other === value).length]),
+  );
+  return {
+    rules: new Set(differences.map((difference) => difference.atlasRule)).size,
+    versions: tally(named.map((rule) => rule.version)),
+    flags: tally(named.map((rule) => rule.uncertainty.flag)),
+  };
 }
 
 /** The explanations that match a difference, as atlas/tools/compare-tzdb.mjs matches them. */

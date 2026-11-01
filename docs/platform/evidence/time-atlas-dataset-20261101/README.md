@@ -120,7 +120,10 @@ shows:
   information;
 - the 77 spans of agreement, and New York City's rounding-only period (380 ms);
 - every one of the 287 periods side by side, each of the 108 differences with
-  its own anchor and a link to its one explanation;
+  its own anchor and a link to its one explanation; the 108 name 31 rules,
+  with versions 1, 2 and 3 on 46, 44 and 18 rows and flags documented,
+  inferred and uncertain on 54, 32 and 22 rows (test 7 holds these figures,
+  with a control that makes `fr-wet-1916`, on 10 rows, uncertain);
 - the 11 explanations with their counts (42, 24, 18, 8, 5, 3, 2, 2, 2, 1 and
   1), their text, the two findings about tzdb 2025c under the label "Finding
   about tzdb 2025c, not sent to the tz project", and links to the 37 sources
