@@ -207,6 +207,7 @@ export const DENSE_FILES = Object.freeze([
   'public/llms-full.txt',
   'public/llms.txt',
   'src/pages/developers/engine/index.astro',
+  'src/pages/developers/time-atlas/index.astro',
   'src/pages/methodology/index.astro',
   'src/pages/privacy/index.astro',
 ]);

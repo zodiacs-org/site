@@ -17,7 +17,12 @@ import {
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
-import { timeAtlasFileProblems } from '../scripts/check-time-atlas.mjs';
+import { TIME_ATLAS_DATA_FILES, timeAtlasFileProblems, timeAtlasPageProblems } from '../scripts/check-time-atlas.mjs';
+import {
+  INDEX_FILE, agreementSpans, atlasViewer, citationAnchor, citedSources, comparisonBase, joinDifferences, pairId, placeTables,
+  ruleAnchor, summaryRows, type Difference, type Explanation,
+} from '../src/pages/developers/time-atlas/_atlas';
+import { ATLAS_COMMIT, ATLAS_SOURCE } from '../src/lib/time-atlas/index';
 
 const FOLDER = 'public/developers/time-atlas/0.1.0';
 const SOURCE_DATA = 'src/data/time-atlas';
@@ -213,4 +218,371 @@ describe('the time atlas dataset, version 0.1.0', () => {
     const changed = atlasCounts(manifest, { ...dataFiles, 'rules-fr.json': rules });
     expect(changed.flags).toEqual({ documented: 26, inferred: 27, uncertain: 6 });
   });
+
+  // ---------- the viewer's data (C5) ----------
+
+  it('reads the comparison as TZDB-DIFFERENCES.md states it: 23 place and zone pairs, 287 periods, 178 agreeing, 1 within a second and 108 differing', () => {
+    const summary = summaryRows(REPORT);
+    const tables = placeTables(REPORT);
+    const agreement = agreementSpans(REPORT);
+    expect(summary).toHaveLength(23);
+    for (const row of summary) expect(row.compared, row.place).toBe(row.agree + row.differ + row.rounding);
+    expect(tableCountsMatch(summary, tables)).toBe(true);
+    expect(summary.reduce((sum, row) => sum + row.compared, 0)).toBe(287);
+    expect(summary.reduce((sum, row) => sum + row.agree, 0)).toBe(178);
+    expect(summary.reduce((sum, row) => sum + row.rounding, 0)).toBe(1);
+    expect(summary.reduce((sum, row) => sum + row.differ, 0)).toBe(108);
+    expect(summary.filter((row) => row.differ > 0)).toHaveLength(22);
+    expect(pairsMatchPlaces(summary)).toBe(true);
+    expect(summary.filter((row) => row.informational).map((row) => `${row.place} ${row.zone}`)).toEqual(['fr-strasbourg Europe/Berlin', 'fr-metz Europe/Berlin']);
+    expect(new Set(tables.flatMap((table) => table.rows.map((row) => row.rule))).size).toBe(58);
+    expect(newYorkRounding(summary, tables)).toBe('380');
+    expect(agreement).toHaveLength(23);
+    expect(agreement.reduce((sum, row) => sum + row.spans.length, 0)).toBe(77);
+    expect(agreement.map((row) => `${row.place}|${row.zone}`)).toEqual(summary.map((row) => `${row.place}|${row.zone}`));
+    expect(comparisonBase(REPORT)).toEqual({
+      tzdb: '2025c',
+      tarballSha256: '4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957',
+      treeFiles: 598,
+      treeSha256: '98ba2bd3eb549fced32814888318d478c96eb65d5fa5b482ee1d89ebb298bcc5',
+      window: ['1870-01-01T00:00:00', '1920-01-01T00:00:00'],
+    });
+
+    // Controls, each on a copy of the Markdown text.
+    const lines = REPORT.split('\n');
+    const firstSummaryRow = lines.findIndex((line) => line.startsWith('| Paris (`fr-paris`) | Europe/Paris | 16 '));
+    const withoutRow = [...lines.slice(0, firstSummaryRow), ...lines.slice(firstSummaryRow + 1)].join('\n');
+    expect(summaryRows(withoutRow)).toHaveLength(22);
+    expect(pairsMatchPlaces(summaryRows(withoutRow))).toBe(false);
+    const oneAgreementDiffers = REPORT.replace('| `fr-paris-mean-time-before-1891` | +0:09:21 | +0:09:21 LMT | agrees |', '| `fr-paris-mean-time-before-1891` | +0:09:21 | +0:09:21 LMT | differs by 1 s |');
+    expect(oneAgreementDiffers).not.toBe(REPORT);
+    expect(tableCountsMatch(summaryRows(oneAgreementDiffers), placeTables(oneAgreementDiffers))).toBe(false);
+    const roundingAgrees = REPORT.replace('| rounding (380 ms) |', '| agrees |');
+    expect(roundingAgrees).not.toBe(REPORT);
+    expect(tableCountsMatch(summaryRows(roundingAgrees), placeTables(roundingAgrees))).toBe(false);
+    expect(newYorkRounding(summaryRows(roundingAgrees), placeTables(roundingAgrees))).toBeNull();
+    const otherTarball = REPORT.replace('4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957', '0'.repeat(64));
+    expect(comparisonBase(otherTarball).tarballSha256).toBe('0'.repeat(64));
+  });
+
+  it('finds in the place tables exactly the 108 differences of tzdb/differences.json, in order, with their offsets', () => {
+    const tables = placeTables(REPORT);
+    const differing = joinDifferences(tables, DIFFERENCES).filter((row) => row.result.kind === 'differs');
+    expect(differing).toHaveLength(108);
+    differing.forEach((row, at) => {
+      const entry = DIFFERENCES[at];
+      expect({
+        place: row.place, zone: row.zone, from: row.from, to: row.to, atlasRule: row.rule, atlasOffset: row.atlasOffset,
+        tzdbOffset: row.tzdbOffset, tzdbAbbreviation: row.tzdbAbbreviation,
+        differenceSeconds: row.result.kind === 'differs' ? Number(row.result.seconds) : null, explanation: row.explanation,
+      }, `difference ${at + 1}`).toEqual({
+        place: entry.place, zone: entry.zone, from: entry.from, to: entry.to, atlasRule: entry.atlasRule, atlasOffset: entry.atlasOffset,
+        tzdbOffset: entry.tzdbOffset, tzdbAbbreviation: entry.tzdbAbbreviation, differenceSeconds: entry.differenceSeconds, explanation: entry.explanation,
+      });
+    });
+
+    // Controls, each on a cloned copy of the differences.
+    const changedTo = structuredClone(DIFFERENCES);
+    changedTo[5].to = '1891-03-17T00:17:57.707Z';
+    expect(() => joinDifferences(tables, changedTo)).toThrow(/difference 6 does not match the row of fr-brest against Europe\/Paris from 1891-03-15T23:50:39Z/u);
+    const removed = DIFFERENCES.filter((_, at) => at !== 0);
+    expect(() => joinDifferences(tables, removed)).toThrow(/difference 1 does not match the row of fr-paris against Europe\/Paris from 1916-10-01T00:00:00Z/u);
+    const changedOffset = structuredClone(DIFFERENCES);
+    changedOffset[2].tzdbOffset = '+1:00:01';
+    expect(() => joinDifferences(tables, changedOffset)).toThrow(/difference 3 does not match the row of fr-paris against Europe\/Paris from 1918-10-06T00:00:00Z/u);
+  });
+
+  it('matches each difference to exactly one of the 11 explanations on its place, zone, rule and both offsets', () => {
+    expect(EXPLANATIONS).toHaveLength(11);
+    const matched = DIFFERENCES.map((difference) => explaining(EXPLANATIONS, difference));
+    matched.forEach((ids, at) => expect(ids, `difference ${at + 1}`).toEqual([DIFFERENCES[at].explanation]));
+    for (const explanation of EXPLANATIONS) expect(matched.some((ids) => ids.includes(explanation.id)), explanation.id).toBe(true);
+    const counts = Object.fromEntries(EXPLANATIONS.map((explanation) => [explanation.id, DIFFERENCES.filter((difference) => difference.explanation === explanation.id).length]));
+    expect(counts).toEqual({
+      'fr-summer-time-end-hour': 42, 'als-mos-german-rule': 24, 'fr-own-mean-time-before-1891': 18, 'als-mos-not-berlin': 8,
+      'us-city-time-before-standard-time': 5, 'us-standard-time-adopted-later': 3, 'als-strasbourg-five-minutes': 2,
+      'de-reich-law-1893-instant': 2, 'us-city-time-whole-minutes': 2, 'us-washington-until-1884': 1, 'us-louisville-city-clock': 1,
+    });
+    const informational = new Set(summaryRows(REPORT).filter((row) => row.informational).map((row) => `${row.place}|${row.zone}`));
+    const own = DIFFERENCES.filter((difference) => !informational.has(`${difference.place}|${difference.zone}`));
+    expect([own.length, DIFFERENCES.length - own.length]).toEqual([98, 10]);
+    expect(DIFFERENCES.filter((difference) => difference.place === 'fr-strasbourg' && difference.zone === 'Europe/Berlin')).toHaveLength(5);
+    expect(DIFFERENCES.filter((difference) => difference.place === 'fr-metz' && difference.zone === 'Europe/Berlin')).toHaveLength(5);
+    expect(EXPLANATIONS.reduce((sum, explanation) => sum + explanation.citations.length, 0)).toBe(48);
+    const sources = citedSources(EXPLANATIONS, CITATION_FILES);
+    expect(sources).toHaveLength(37);
+    expect(sources.filter((source) => source.gloss)).toHaveLength(13);
+
+    // Controls.
+    const moved = { ...DIFFERENCES[0], tzdbOffsetSeconds: DIFFERENCES[0].tzdbOffsetSeconds + 1 };
+    expect(explaining(EXPLANATIONS, moved)).toEqual([]);
+    const swapped = EXPLANATIONS.map((explanation) => ({ ...explanation }));
+    [swapped[0].id, swapped[1].id] = [swapped[1].id, swapped[0].id];
+    expect(DIFFERENCES.some((difference) => JSON.stringify(explaining(swapped, difference)) !== JSON.stringify([difference.explanation]))).toBe(true);
+    const fewer = EXPLANATIONS.filter((explanation) => explanation.id !== 'us-louisville-city-clock');
+    expect(explaining(fewer, DIFFERENCES.find((difference) => difference.explanation === 'us-louisville-city-clock')!)).toEqual([]);
+    const misspelt = EXPLANATIONS.map((explanation, at) => (at === 1 ? { ...explanation, citations: ['fr-senat-1891-02-17-restauration', ...explanation.citations.slice(1)] } : explanation));
+    expect(() => citedSources(misspelt, CITATION_FILES)).toThrow('time atlas: no citation fr-senat-1891-02-17-restauration');
+  });
+
+  it('builds the viewer with every period once, each difference under its explanation, and an anchor for every explanation, source, pair, row and rule', () => {
+    const viewer = atlasViewer();
+    const periods = viewer.pairs.flatMap((pair) => pair.periods);
+    expect(periods).toHaveLength(287);
+    expect(periods.filter((period) => period.explanation)).toHaveLength(108);
+    expect(viewer.totals).toEqual({
+      comparisons: 23, compared: 287, agree: 178, rounding: 1, differ: 108, withDifference: 22, ownZone: 98, informational: 10, spans: 77,
+    });
+    for (const explanation of viewer.explanations) {
+      const own = periods.filter((period) => period.explanation === explanation.id);
+      expect(explanation.count, explanation.id).toBe(own.length);
+      expect(explanation.pairs, explanation.id).toEqual([...new Set(own.map((period) => pairId(period.place, period.zone)))]);
+    }
+    expect(viewer.citations).toHaveLength(37);
+    expect(new Set(viewer.citations.map((source) => source.id)).size).toBe(37);
+    expect(viewer.rules).toHaveLength(59);
+    for (const rule of viewer.rules) expect([1, 2, 3].includes(rule.version) && ['documented', 'inferred', 'uncertain'].includes(rule.flag), rule.id).toBe(true);
+    expect(viewer.rules.reduce((sum, rule) => sum + rule.changes.length, 0)).toBe(45);
+    const ruleIds = new Set(viewer.rules.map((rule) => rule.id));
+    for (const period of periods) expect(ruleIds.has(period.rule), period.rule).toBe(true);
+    const ids = [
+      ...SECTION_IDS,
+      ...viewer.explanations.map((explanation) => explanation.id),
+      ...viewer.citations.map((source) => citationAnchor(source.id)),
+      ...viewer.pairs.map((pair) => pair.id),
+      ...periods.filter((period) => period.id).map((period) => period.id!),
+      ...viewer.rules.map((rule) => ruleAnchor(rule.id)),
+    ];
+    expect(ids).toHaveLength(SECTION_IDS.length + 11 + 37 + 23 + 108 + 59);
+    expect(new Set(ids).size).toBe(ids.length);
+
+    // Control: a viewer built from place tables with the first differing row removed.
+    const withoutFirst = REPORT.replace('| 1916-10-01T00:00:00Z | 1916-10-01T23:00:00Z | 23.00 h | `fr-wet-1916` | +0:00:00 | +1:00:00 WEST | differs by -3600 s |\n', '');
+    expect(withoutFirst).not.toBe(REPORT);
+    expect(() => atlasViewer(withoutFirst)).toThrow(/time atlas: difference 1 does not match the row of fr-paris against Europe\/Paris from 1917-10-07T00:00:00Z/u);
+  });
+
+  it('shows nothing with an en or em dash, and leaves out the excerpts, the only atlas strings that have them', () => {
+    const viewer = atlasViewer();
+    expect(dashedStrings(viewer)).toEqual([]);
+    expect(viewer.citations.some((source) => 'excerpt' in source)).toBe(false);
+    const excerpts = CITATION_FILES.flatMap((file) => file.citations.map((source) => source.excerpt));
+    expect(dashedStrings(excerpts)).toHaveLength(8);
+    expect(excerpts.reduce((sum, excerpt) => sum + (excerpt.match(DASH) ?? []).length, 0)).toBe(9);
+    for (const path of ['src/pages/developers/time-atlas/index.astro', 'src/pages/developers/time-atlas/_atlas.ts', 'scripts/check-time-atlas.mjs']) {
+      expect(dashedStrings([readFileSync(path, 'utf8')]), path).toEqual([]);
+    }
+    expect(dashedStrings([hubCard()])).toEqual([]);
+
+    // Control: the same walker finds a planted en dash between 1870 and 1919.
+    expect(dashedStrings({ ...viewer, planted: ['1870\u20131919'] })).toEqual(['1870\u20131919']);
+  });
+
+  it("names the version and commit the compute API's reading names", () => {
+    const index = readJson(join(FOLDER, 'files.json'));
+    expect(ATLAS_SOURCE.version).toBe(index.version);
+    expect(ATLAS_COMMIT).toBe(index.source.commit);
+    expect(ATLAS_SOURCE.licence).toBe('CC BY 4.0');
+    expect(manifest.license).toBe('CC-BY-4.0');
+  });
+
+  it("holds the page's checks over the built site to the files, and fails each planted fault", () => {
+    const inputs = pageInputs();
+    const reference = syntheticReference();
+    const page = syntheticPage();
+    expect(timeAtlasPageProblems({ ...inputs, page, reference })).toEqual([]);
+
+    const first = DIFFERENCES[0];
+    const firstRow = page.indexOf('<tr id="fr-paris-europe-paris-1916-10-01t00-00-00z"');
+    const firstRowEnd = page.indexOf('</tr>', firstRow) + '</tr>'.length;
+    const excerpt = CITATION_FILES.flatMap((file) => file.citations).find((source) => source.id === 'fr-jo-1891-03-15-law')!.excerpt;
+    const geo = manifest.longitudeSource;
+    const controls: [string, string, RegExp, string][] = [
+      ['an explanation section dropped', page.replace(/<section id="us-louisville-city-clock"[\s\S]*?<\/section>/u, ''), /^viewer: the explanation sections are not/u, 'viewer'],
+      ['a data-explanation changed', page.replace(`data-explanation="${first.explanation}"`, 'data-explanation="als-mos-german-rule"'), /^viewer: the difference rows do not name/u, 'viewer'],
+      ['the first difference row removed', page.slice(0, firstRow) + page.slice(firstRowEnd), /^viewer: 107 difference rows with an anchor, not 108$/u, 'viewer'],
+      ['a tzdb offset changed', page.slice(0, firstRow) + page.slice(firstRow, firstRowEnd).replace('+1:00:00 WEST', '+1:00:01 WEST') + page.slice(firstRowEnd), /^viewer: difference 1 \(fr-paris against Europe\/Paris from 1916-10-01T00:00:00Z\) does not show/u, 'viewer'],
+      ['a finding\'s label removed', page.replace('<strong>Finding about tzdb 2025c, not sent to the tz project:</strong>', ''), /^viewer: fr-summer-time-end-hour lacks the label/u, 'viewer'],
+      ['an excerpt inserted', page.replace('<li id="cite-fr-jo-1891-03-15-law" data-citation>', `<li id="cite-fr-jo-1891-03-15-law" data-citation><q>${html(excerpt)}</q>`), /^viewer: the excerpt of fr-jo-1891-03-15-law is on the page$/u, 'viewer'],
+      ['a GeoNames field altered', page.replace(html(geo.changes), html(geo.changes.replace('copied unchanged', 'copied'))), /^licence: item 3 of the licence and attribution text/u, 'licence'],
+      ['the correction form\'s link removed', page.replace(`<a href="${html(FORM_URL)}">Atlas correction issue</a>`, 'Atlas correction issue'), /^corrections: "Atlas correction issue" does not link/u, 'corrections'],
+      ['an in-page link to a missing id', page.replace('</main>', '<p><a href="#nowhere">nowhere</a></p></main>'), /^viewer: the link to #nowhere has no target$/u, 'viewer'],
+      ['an id duplicated', page.replace('</main>', '<p id="files">again</p></main>'), /^viewer: the id files appears twice$/u, 'viewer'],
+      ['a file link missing', page.replace('href="/developers/time-atlas/0.1.0/README.md"', 'href="/developers/time-atlas/0.1.0/README.txt"'), /^viewer: the files table does not link README\.md/u, 'viewer'],
+      ['a script in <main>', page.replace('</main>', '<script>1</script></main>'), /^viewer: <main> holds a script$/u, 'viewer'],
+      ['an en dash', page.replace('</main>', '<p>1870\u20131919</p></main>'), /^viewer: 1 en or em dashes, raw or as references$/u, 'viewer'],
+      ['an em dash as a reference', page.replace('</main>', `<p>1870${'&' + 'mdash;'}1919</p></main>`), /^viewer: 1 en or em dashes, raw or as references$/u, 'viewer'],
+    ];
+    for (const [name, planted, problem, part] of controls) {
+      expect(planted, name).not.toBe(page);
+      const problems = timeAtlasPageProblems({ ...inputs, page: planted, reference });
+      expect(problems.some((found) => problem.test(found)), `${name}: ${problems.join('; ')}`).toBe(true);
+      expect(problems.every((found) => found.startsWith(`${part}: `)), `${name} fails only its part: ${problems.join('; ')}`).toBe(true);
+    }
+  });
+
+  it('states in the hub card the counts the files give', () => {
+    const places = readJson(join(FOLDER, 'data/places.json')).places.length;
+    expect(places).toBe(21);
+    const matcher = (text: string) => squash(text).includes(`for ${places} places of France and the United States`);
+    expect(matcher(hubCard())).toBe(true);
+    // Control: the same matcher on the card with another count.
+    expect(matcher(hubCard().replace(`for ${places} places`, 'for 20 places'))).toBe(false);
+  });
 });
+
+// ---------- helpers for the viewer's data and the page check ----------
+
+const REPORT = readFileSync(join(FOLDER, 'TZDB-DIFFERENCES.md'), 'utf8');
+const DIFFERENCES: Difference[] = readJson(join(FOLDER, 'tzdb/differences.json')).differences;
+const EXPLANATIONS: Explanation[] = readJson(join(FOLDER, 'data/tzdb-explanations.json')).explanations;
+const CITATION_FILES = ['citations-fr.json', 'citations-als.json', 'citations-us.json'].map((name) => readJson(join(FOLDER, 'data', name)));
+const SECTION_IDS = ['files', 'licence', 'cite', 'corrections', 'comparison', 'explanations', 'sources', 'places', 'rules', 'limits'];
+const FORM_URL = 'https://github.com/zodiacs-org/engine/issues/new?template=atlas-correction.yml';
+const DASH = /[\u2013\u2014]/gu;
+const squash = (text: string) => text.replace(/\s+/gu, ' ').trim();
+
+/** Whether each summary row's counts are its place table's. */
+function tableCountsMatch(summary: ReturnType<typeof summaryRows>, tables: ReturnType<typeof placeTables>): boolean {
+  return summary.length === tables.length && summary.every((row, at) => {
+    const table = tables[at];
+    const count = (kind: string) => table.rows.filter((period) => period.result.kind === kind).length;
+    return table.place === row.place && table.zone === row.zone && table.rows.length === row.compared
+      && count('agrees') === row.agree && count('differs') === row.differ && count('rounding') === row.rounding;
+  });
+}
+
+/** Whether the comparisons are each place's own zone, and its compareZones, in places.json's order. */
+function pairsMatchPlaces(summary: ReturnType<typeof summaryRows>): boolean {
+  const places: { id: string; tzdbZone: string; compareZones?: string[] }[] = readJson(join(FOLDER, 'data/places.json')).places;
+  const expected = places.flatMap((place) => [`${place.id}|${place.tzdbZone}|own`, ...(place.compareZones ?? []).map((zone) => `${place.id}|${zone}|information`)]);
+  return JSON.stringify(summary.map((row) => `${row.place}|${row.zone}|${row.informational ? 'information' : 'own'}`)) === JSON.stringify(expected);
+}
+
+/** New York's one rounding period's milliseconds, or null when it has none or differs. */
+function newYorkRounding(summary: ReturnType<typeof summaryRows>, tables: ReturnType<typeof placeTables>): string | null {
+  const row = summary.find((entry) => entry.place === 'us-new-york');
+  const rounding = tables.find((table) => table.place === 'us-new-york')?.rows.filter((period) => period.result.kind === 'rounding') ?? [];
+  if (!row || row.differ !== 0 || row.rounding !== 1 || rounding.length !== 1) return null;
+  const [period] = rounding;
+  return period.result.kind === 'rounding' && period.from === '1870-01-01T04:56:01.620Z' && period.to === '1883-11-18T17:00:00Z'
+    && period.rule === 'us-nyc-city-time-before-1883' && period.atlasOffset === '-4:56:01.620' && `${period.tzdbOffset} ${period.tzdbAbbreviation}` === '-4:56:02 LMT'
+    ? String(period.result.ms) : null;
+}
+
+/** The explanations that match a difference, as atlas/tools/compare-tzdb.mjs matches them. */
+function explaining(explanations: Explanation[], difference: Difference): string[] {
+  const same = (a: number, b: number) => Math.abs(a - b) < 0.0005;
+  return explanations.filter((explanation) => {
+    const match = (explanation as unknown as { match: { places: string[]; zones: string[]; rules: string[]; atlasOffsets: number[]; tzdbOffsets: number[] } }).match;
+    return match.places.includes(difference.place) && match.zones.includes(difference.zone) && match.rules.includes(difference.atlasRule)
+      && match.atlasOffsets.some((value) => same(value, difference.atlasOffsetSeconds))
+      && match.tzdbOffsets.some((value) => same(value, difference.tzdbOffsetSeconds));
+  }).map((explanation) => explanation.id);
+}
+
+/** Every string under a value that holds an en or em dash. */
+function dashedStrings(value: unknown): string[] {
+  if (typeof value === 'string') return value.match(DASH) ? [value] : [];
+  if (Array.isArray(value)) return value.flatMap(dashedStrings);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(dashedStrings);
+  return [];
+}
+
+/** The hub's card for the atlas, as its source writes it. */
+function hubCard(): string {
+  const source = readFileSync('src/pages/developers/index.astro', 'utf8');
+  const link = source.indexOf('<a href="/developers/time-atlas/">');
+  const start = source.lastIndexOf('<li>', link);
+  const end = source.indexOf('</li>', link);
+  expect(link > 0 && start > 0 && end > link, 'the hub has a card for the atlas').toBe(true);
+  return source.slice(start, end + '</li>'.length);
+}
+
+const html = (text: string | number) => String(text).replace(/&/gu, '&amp;').replace(/</gu, '&lt;').replace(/>/gu, '&gt;').replace(/"/gu, '&quot;').replace(/'/gu, '&#39;');
+
+/** The published files, as the page check takes them. */
+function pageInputs() {
+  return {
+    index: readFileSync(join(FOLDER, 'files.json'), 'utf8'),
+    data: Object.fromEntries(TIME_ATLAS_DATA_FILES.map((name: string) => [name, readJson(join(FOLDER, 'data', name))])),
+    differences: readJson(join(FOLDER, 'tzdb/differences.json')),
+    report: REPORT,
+  };
+}
+
+const SCRIPTS = '<script type="application/ld+json">JSON</script><script src="/assets/site.js"></script>';
+function syntheticReference(): string {
+  return `<!doctype html><html><head>${SCRIPTS.replace('JSON', '{}')}</head><body><main id="main"><p>reference</p></main></body></html>`;
+}
+
+/** A page rendered here from the real data, holding every row, section, entry, link and text the page check reads. */
+function syntheticPage(): string {
+  const viewer = atlasViewer();
+  const { version, base, totals, manifest: atlas } = viewer;
+  const folder = `/developers/time-atlas/${version}`;
+  const geo = atlas.longitudeSource;
+  const engine = `https://github.com/zodiacs-org/engine/blob/${viewer.commit}`;
+  const dataset = {
+    '@type': 'Dataset', name: atlas.name, version, temporalCoverage: '1870-01-01/1919-12-31', isAccessibleForFree: true,
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+    distribution: viewer.files.map((file) => ({ '@type': 'DataDownload', contentUrl: `https://zodiacs.org${folder}/${file.path}` })),
+  };
+  const out: string[] = [`<!doctype html><html><head>${SCRIPTS.replace('JSON', JSON.stringify([dataset]))}</head><body><main id="main">`];
+  out.push('<nav>', ...SECTION_IDS.map((id) => `<a href="#${id}">${id}</a>`), '</nav>');
+  out.push('<h2 id="files">The files</h2><table>');
+  for (const file of [{ path: INDEX_FILE.path, source: "the site's index", bytes: INDEX_FILE.bytes, sha256: INDEX_FILE.sha256 }, ...viewer.files]) {
+    out.push(`<tr data-file="${html(file.path)}"><th><a href="${folder}/${html(file.path)}"><code>${html(file.path)}</code></a></th><td>${html(file.source)}</td><td>${file.bytes}</td><td>${file.sha256}</td></tr>`);
+  }
+  out.push('</table>');
+  out.push('<h2 id="licence">Licence and attribution</h2>');
+  out.push(`<p>The Zodiacs.org historical time atlas, version ${version}, is licensed under the Creative Commons Attribution 4.0 International licence (CC BY 4.0), <a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>. The licensor is Zodiacs.org. The licence&#39;s text is <a href="${folder}/LICENSE.txt">LICENSE.txt</a> in the version&#39;s folder.</p>`);
+  out.push(`<p>${html(geo.attribution)} ${html(geo.dataset)}, <a href="${html(geo.url)}">${html(geo.url)}</a>, retrieved ${html(geo.retrieved)}, SHA-256 <code>${html(geo.sha256)}</code>, licensed under ${html(geo.license)}, <a href="${html(geo.licenseUrl)}">${html(geo.licenseUrl)}</a>. Changes: ${html(geo.changes)}</p>`);
+  out.push(`<p>The atlas&#39;s tools and its schema, in atlas/tools/ and atlas/schema/ of the engine repository, are under the MIT licence, whose text is that repository&#39;s <a href="${engine}/LICENSE">LICENSE</a>. They are not among the files published here.</p>`);
+  out.push(`<p>As far as the atlas could establish, every text its citations quote is in the public domain, and LICENSING.md says why for each kind of source. The licence covers the atlas&#39;s own work, not the texts it quotes, and no scan or OCR text of a source is copied.</p>`);
+  out.push(`<p>The tzdb ${base.tzdb} extract the comparison uses, atlas/tzdb/tzdb-${base.tzdb}.json in the engine repository, is in the public domain like tzdb itself. It is linked here, not published.</p>`);
+  out.push(`<h2 id="cite">How to cite</h2><p>Cite it as:</p><pre><code>Zodiacs.org historical time atlas, version ${version}, https://zodiacs.org/developers/time-atlas/ (its files are listed in https://zodiacs.org${folder}/files.json), from ${viewer.sourceUrl}, licensed CC BY 4.0.</code></pre><p>Cite the rule ids and versions you relied on.</p>`);
+  out.push(`<h2 id="corrections">Corrections</h2><p>To correct the atlas or add to it, open an <a href="${html(FORM_URL)}">Atlas correction issue</a> in zodiacs-org/engine, or a pull request there, giving the rule id (or the place and period), what the clock showed and when it changed, with the clock the change is read on, and a citation to a primary source: its type, title, date and issuer, a stable link, the page and column, its language, and a verbatim excerpt of at most 40 words in the original language. Issues there are public. <a href="${folder}/CORRECTIONS.md">CORRECTIONS.md</a> says how a correction is reviewed. The copy in this version&#39;s folder is frozen; <a href="https://github.com/zodiacs-org/engine/blob/main/atlas/CORRECTIONS.md">the live one</a>, with its log, is on the engine&#39;s main branch. An accepted correction gives the rule a new version, and the site publishes the changed atlas only as a new version, at its own path. The files of ${version} never change.</p>`);
+  out.push(`<h2 id="comparison">The comparison</h2><p>The base is tzdb ${base.tzdb} with backzone. The tarball&#39;s SHA-256 is <code>${base.tarballSha256}</code>, and the compiled tree has ${base.treeFiles} files, with the digest <code>${base.treeSha256}</code>, over ${base.window[0]} to ${base.window[1]}. A difference is a period in which the two offsets differ by one second or more. tzdb stores whole seconds.</p>`);
+  out.push('<table>');
+  for (const pair of viewer.pairs) {
+    const s = pair.summary;
+    out.push(`<tr data-comparison="${html(`${pair.place}|${pair.zone}`)}" data-counts="${s.compared} ${s.agree} ${s.differ} ${s.rounding} ${s.daysDiffering}"><th><a href="#${pair.id}">${html(pair.name)}</a> <code>${pair.place}</code></th><td>${html(pair.zone)}${pair.informational ? ' (for information)' : ''}</td></tr>`);
+  }
+  out.push(`</table><p>${totals.compared} periods.</p>`);
+  out.push(`<p>Two explanations end with a finding about tzdb ${base.tzdb}, quoted as the atlas states it. At version ${version} neither had been sent to the tz project.</p>`);
+  out.push('<h2 id="explanations">Explanations</h2>');
+  for (const explanation of viewer.explanations) {
+    out.push(`<section id="${explanation.id}" data-explanation-section data-count="${explanation.count}"><h3><code>${explanation.id}</code></h3><p><code>${html(explanation.category)}</code>, ${explanation.count} ${explanation.count === 1 ? 'period' : 'periods'}</p><p>${html(explanation.explanation)}</p>`);
+    if (explanation.tzdbReport) out.push(`<p><strong>Finding about tzdb 2025c, not sent to the tz project:</strong> ${html(explanation.tzdbReport)}</p>`);
+    out.push(`<p>${explanation.pairs.map((id) => `<a href="#${id}">${id}</a>`).join(', ')}</p><p>${explanation.citations.map((id) => `<a href="#${citationAnchor(id)}"><code>${id}</code></a>`).join(', ')}</p></section>`);
+  }
+  out.push('<h2 id="sources">Sources</h2><ol>');
+  for (const source of viewer.citations) {
+    out.push(`<li id="${citationAnchor(source.id)}" data-citation><p><code>${source.id}</code> <span lang="${source.language}">${html(source.title)}</span>, ${html(source.date)}, ${html(source.issuer ?? '')}, ${html(source.publication ?? '')}, ${html(source.locator)}. <a href="${html(source.url)}">Source</a></p>${source.gloss ? `<p>${html(source.gloss)}</p>` : ''}</li>`);
+  }
+  out.push('</ol><h2 id="places">Place by place</h2>');
+  for (const pair of viewer.pairs) {
+    out.push(`<section id="${pair.id}" data-pair="${html(`${pair.place}|${pair.zone}`)}"><h3>${html(pair.name)} (<code>${pair.place}</code>) against ${html(pair.zone)}${pair.informational ? ' (for information)' : ''}</h3><ul>`);
+    for (const span of pair.agree) out.push(`<li data-agree>${span.from} to ${span.to}</li>`);
+    out.push('</ul><table>');
+    for (const period of pair.periods) {
+      const rule = `<td><a href="#${ruleAnchor(period.rule)}"><code>${period.rule}</code></a> v${period.ruleVersion}, ${period.ruleFlag}</td>`;
+      const cells = `<td>${period.from}</td><td>${period.to}</td><td>${period.length}</td>${rule}<td>${html(period.atlasOffset)}</td><td>${html(period.tzdbOffset)} ${period.tzdbAbbreviation}</td>`;
+      if (period.result.kind === 'differs') {
+        out.push(`<tr id="${period.id}" data-result="differs" data-explanation="${period.explanation}">${cells}<td>differs by ${period.result.seconds} s, explained by <a href="#${period.explanation}"><code>${period.explanation}</code></a></td></tr>`);
+      } else {
+        out.push(`<tr data-result="${period.result.kind}">${cells}<td>${period.result.kind === 'rounding' ? `within a second (${period.result.ms} ms)` : 'agrees'}</td></tr>`);
+      }
+    }
+    out.push('</table></section>');
+  }
+  out.push('<h2 id="rules">Rules</h2><dl>');
+  for (const rule of viewer.rules) {
+    out.push(`<dt id="${ruleAnchor(rule.id)}" data-rule data-version="${rule.version}" data-flag="${rule.flag}"><code>${rule.id}</code> ${html(rule.title)}, version ${rule.version}</dt><dd><p>${rule.flag}: ${html(rule.reason)}</p>`);
+    out.push(rule.changes.length ? `<ul>${rule.changes.map((change) => `<li data-change>Version ${change.version}, ${change.date}: ${html(change.summary)}</li>`).join('')}</ul>` : '<p>No changes.</p>');
+    out.push('</dd>');
+  }
+  out.push('</dl><h2 id="limits">Limits</h2><p>Limits.</p></main></body></html>');
+  return out.join('\n');
+}

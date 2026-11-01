@@ -1,0 +1,479 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { ORGANIZATION, SITE, SKY_DATA_LICENSE, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
+import { FOLDER, INDEX_FILE, atlasViewer, citationAnchor, mediaType, ruleAnchor, temporalCoverage } from './_atlas';
+
+const viewer = atlasViewer();
+const { counts, totals, base, manifest, version } = viewer;
+const geo = manifest.longitudeSource;
+const short = viewer.commit.slice(0, 8);
+const engine = `https://github.com/zodiacs-org/engine/blob/${viewer.commit}`;
+const FORM = 'https://github.com/zodiacs-org/engine/issues/new?template=atlas-correction.yml';
+const LIVE_CORRECTIONS = 'https://github.com/zodiacs-org/engine/blob/main/atlas/CORRECTIONS.md';
+const pageUrl = `${SITE}/developers/time-atlas/`;
+const citation = `Zodiacs.org historical time atlas, version ${version}, ${pageUrl} (its files are listed in ${SITE}${FOLDER}/files.json), from ${viewer.sourceUrl}, licensed CC BY 4.0.`;
+
+const title = "Historical Time Atlas Dataset, 1870 to 1919 | Zodiacs.org";
+const description = "What civil clocks showed in 21 places of France and the United States from 1870 to 1919, each rule cited to a primary source, with every period of its comparison with tzdb 2025c and the explanation of each difference. Version 0.1.0, under CC BY 4.0.";
+
+// What each file is, from the "What is here" table of the atlas's README.md.
+const WHAT: Record<string, string> = {
+  'files.json': "The site's index of this version: each file's source, size, SHA-256 and git blob",
+  'data/atlas.json': 'The manifest: the version, the coverage window, the data files and the longitude source',
+  'data/places.json': 'The covered places, with their GeoNames ids and coordinates, their jurisdictions and the tzdb zones they are compared with',
+  'data/leads.json': 'Secondary works and tzdb comments that pointed to sources, never cited',
+  'data/citations-fr.json': 'The primary sources for France, one entry per passage relied on',
+  'data/rules-fr.json': 'The jurisdictions and rules of France outside Alsace and Moselle',
+  'data/citations-als.json': 'The primary sources for Alsace and Moselle',
+  'data/rules-als.json': 'The jurisdictions and rules of Alsace and Moselle',
+  'data/citations-us.json': 'The primary sources for the United States',
+  'data/rules-us.json': 'The jurisdictions and rules of the United States',
+  'data/tzdb-explanations.json': 'Why the atlas differs from tzdb, each explanation with its citations',
+  'tzdb/differences.json': 'Every period in which a place differs from tzdb 2025c by a second or more, with its explanation',
+  'TZDB-DIFFERENCES.md': 'Every period of the comparison with tzdb 2025c with backzone, each difference explained',
+  'README.md': 'What the atlas is, the rules for its data and how a rule reads',
+  'COVERAGE.md': 'The places, the window and what is left out',
+  'CORRECTIONS.md': 'How corrections are accepted and reviewed, and their log',
+  'LICENSING.md': 'Which licence covers which file, and what the atlas quotes and copies',
+  'LICENSE.txt': 'The text of CC BY 4.0',
+};
+const RULE_GROUPS = [['fr', 'France'], ['als', 'Alsace and Moselle'], ['us', 'The United States']] as const;
+const COUNTRIES: Record<string, string> = { FR: 'France', US: 'United States' };
+const pairById = new Map(viewer.pairs.map((pair) => [pair.id, pair]));
+const rounding = viewer.pairs.flatMap((pair) => pair.periods.filter((period) => period.result.kind === 'rounding').map((period) => ({ pair, period })));
+const findings = viewer.explanations.filter((explanation) => explanation.tzdbReport);
+
+const jsonLd = [{
+  '@type': 'Dataset',
+  name: `${manifest.name}, version ${version}`,
+  description,
+  url: pageUrl,
+  version,
+  temporalCoverage: temporalCoverage(manifest),
+  isAccessibleForFree: true,
+  // CC BY 4.0, the licence atlas.json states (DECISIONS-2026-09-28 §7), the same URL as the sky data's.
+  license: SKY_DATA_LICENSE,
+  creator: ORGANIZATION,
+  distribution: viewer.files.map((file) => ({
+    '@type': 'DataDownload', name: file.path, encodingFormat: mediaType(file.path), contentUrl: `${SITE}${FOLDER}/${file.path}`,
+  })),
+}, developerBreadcrumb('/developers/time-atlas/', 'Historical time atlas')];
+---
+<Base title={title} description={description} path="/developers/time-atlas/" jsonLd={jsonLd}>
+  <section class="section container container--narrow atlas-page">
+    <em class="kicker">Historical time atlas</em>
+    <h1 class="display">Check what the clocks said in {counts.places} places, 1870 to 1919.</h1>
+
+    <div class="prose">
+      <p>
+        The atlas records what the civil clocks showed in {counts.places} places of France,
+        including Alsace and Moselle under German rule, and of the United States, from 1 January 1870
+        to the end of 1919: local mean time, then railway or city time, then standard time, and
+        summer time where it applied. Each of its {counts.rules} rules cites a primary source and
+        carries a version and an uncertainty flag: {counts.documented} are documented,{' '}
+        {counts.inferred} inferred and {counts.uncertain} uncertain.
+      </p>
+      <p>
+        Version {version} is published here byte for byte from the engine repository at commit{' '}
+        <code>{short}</code>, under CC BY 4.0. This page shows its comparison with tzdb 2025c with
+        backzone: every period of every place, and for each difference the explanation the atlas
+        gives, with its sources. The <a href="/developers/compute/">compute API</a>'s time endpoint and the{' '}
+        <a href="/developers/mcp/">MCP adapter</a>'s <code>resolve_birth_time</code> read this same
+        version at an atlas place, beside tzdb's reading.
+      </p>
+    </div>
+
+    <nav class="atlas-toc" aria-label="On this page">
+      <ul>
+        <li><a href="#files">The files</a></li>
+        <li><a href="#licence">Licence and attribution</a></li>
+        <li><a href="#cite">How to cite</a></li>
+        <li><a href="#corrections">Corrections</a></li>
+        <li><a href="#comparison">The comparison</a></li>
+        <li><a href="#explanations">Explanations</a></li>
+        <li><a href="#sources">Sources</a></li>
+        <li><a href="#places">Place by place</a></li>
+        <li><a href="#rules">Rules and their versions</a></li>
+        <li><a href="#limits">Limits</a></li>
+      </ul>
+    </nav>
+
+    <h2 id="files">The files</h2>
+    <div class="prose">
+      <p>
+        The version's folder keeps the layout of the engine repository's <code>atlas/</code>, so the
+        documents' references to one another keep their meaning. Each file is that repository's file
+        at commit <code>{short}</code>, byte for byte, and files.json lists each with its size, SHA-256
+        and git blob, and the commit and tree it came from.
+      </p>
+    </div>
+    <div class="atlas-table-wrap" tabindex="0" role="region" aria-label="The files of this version">
+      <table>
+        <thead>
+          <tr><th scope="col">File</th><th scope="col">Source at {short}</th><th scope="col">What it is</th><th scope="col">Bytes</th><th scope="col">SHA-256</th></tr>
+        </thead>
+        <tbody>
+          <tr data-file={INDEX_FILE.path}>
+            <th scope="row"><a href={`${FOLDER}/${INDEX_FILE.path}`}><code>{INDEX_FILE.path}</code></a></th>
+            <td>the site's index</td>
+            <td>{WHAT[INDEX_FILE.path]}</td>
+            <td>{INDEX_FILE.bytes}</td>
+            <td><code>{INDEX_FILE.sha256}</code></td>
+          </tr>
+          {viewer.files.map((file) => (
+            <tr data-file={file.path}>
+              <th scope="row"><a href={`${FOLDER}/${file.path}`}><code>{file.path}</code></a></th>
+              <td><code>{file.source}</code></td>
+              <td>{WHAT[file.path]}</td>
+              <td>{file.bytes}</td>
+              <td><code>{file.sha256}</code></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <div class="prose">
+      <p>
+        LICENSE.txt is the atlas's <code>LICENSE</code>, renamed so that browsers show it as text; its
+        bytes are unchanged. files.json is the site's index of the {viewer.files.length} files, not an
+        atlas file.
+      </p>
+      <p>
+        Every data file opens with <code>"$schema": "../schema/atlas.schema.json"</code>, a path in the
+        engine repository. The published bytes cannot change, so that path does not resolve here:{' '}
+        <a href={`${engine}/atlas/schema/atlas.schema.json`}>the schema</a> is in the engine
+        repository at the same commit.
+      </p>
+      <p>To check a file, fetch it and compare its SHA-256 with the table's:</p>
+    </div>
+    <pre tabindex="0" role="region" aria-label="Checking one file"><code>{`curl -sO ${SITE}${FOLDER}/data/places.json
+shasum -a 256 places.json`}</code></pre>
+    <div class="prose">
+      <p>
+        Not published here: <a href={`${viewer.sourceUrl}/schema`}>the JSON Schema</a> and{' '}
+        <a href={`${viewer.sourceUrl}/tools`}>the tools</a>, which are MIT code, and{' '}
+        <a href={`${engine}/atlas/tzdb/tzdb-2025c.json`}>the tzdb 2025c extract</a> the comparison
+        reads. Each is in the engine repository at commit <code>{short}</code>, where the comparison
+        can be rebuilt and checked:
+      </p>
+    </div>
+    <pre tabindex="0" role="region" aria-label="Rebuilding the comparison"><code>{`git clone https://github.com/zodiacs-org/engine.git
+cd engine && git checkout ${viewer.commit}
+node atlas/tools/check.mjs
+node atlas/tools/compare-tzdb.mjs --check`}</code></pre>
+    <div class="prose">
+      <p>
+        <code>check.mjs</code> runs the atlas's checks, rebuilds the comparison from the data and the
+        extract, and fails if either published comparison file differs from it;{' '}
+        <code>compare-tzdb.mjs --check</code> does the same for the comparison alone.
+      </p>
+    </div>
+
+    <h2 id="licence">Licence and attribution</h2>
+    <div class="prose">
+      <p>
+        The Zodiacs.org historical time atlas, version {version}, is licensed under the Creative
+        Commons Attribution 4.0 International licence (CC BY 4.0),{' '}
+        <a href={SKY_DATA_LICENSE}>{SKY_DATA_LICENSE}</a>. The licensor is Zodiacs.org. The licence's
+        text is <a href={`${FOLDER}/LICENSE.txt`}>LICENSE.txt</a> in the version's folder.
+      </p>
+      <p data-attribution>
+        {geo.attribution} {geo.dataset}, <a href={geo.url}>{geo.url}</a>, retrieved {geo.retrieved},
+        SHA-256 <code>{geo.sha256}</code>, licensed under {geo.license},{' '}
+        <a href={geo.licenseUrl}>{geo.licenseUrl}</a>. Changes: {geo.changes}
+      </p>
+      <p>Keep this attribution when you redistribute data/places.json.</p>
+      <p>
+        The atlas's tools and its schema, in <a href={`${viewer.sourceUrl}/tools`}>atlas/tools/</a>{' '}
+        and <a href={`${viewer.sourceUrl}/schema`}>atlas/schema/</a> of the engine repository, are
+        under the MIT licence, whose text is that repository's <a href={`${engine}/LICENSE`}>LICENSE</a>.
+        They are not among the files published here.
+      </p>
+      <p>
+        As far as the atlas could establish, every text its citations quote is in the public domain,
+        and <a href={`${FOLDER}/LICENSING.md`}>LICENSING.md</a> says why for each kind of source. The
+        licence covers the atlas's own work, not the texts it quotes, and no scan or OCR text of a
+        source is copied.
+      </p>
+      <p>
+        The tzdb 2025c extract the comparison uses,{' '}
+        <a href={`${engine}/atlas/tzdb/tzdb-2025c.json`}>atlas/tzdb/tzdb-2025c.json</a> in the engine
+        repository, is in the public domain like tzdb itself. It is linked here, not published.
+      </p>
+    </div>
+
+    <h2 id="cite">How to cite</h2>
+    <div class="prose">
+      <p>Cite it as:</p>
+    </div>
+    <pre tabindex="0" role="region" aria-label="The citation"><code>{citation}</code></pre>
+    <div class="prose">
+      <p>Cite the rule ids and versions you relied on.</p>
+      <p>
+        README.md, published unchanged, cites the engine repository's main branch, which moves; the
+        form above names this version and its commit.
+      </p>
+    </div>
+
+    <h2 id="corrections">Corrections</h2>
+    <div class="prose">
+      <p>
+        To correct the atlas or add to it, open an <a href={FORM}>Atlas correction issue</a> in
+        zodiacs-org/engine, or a pull request there, giving the rule id (or the place and period),
+        what the clock showed and when it changed, with the clock the change is read on, and a
+        citation to a primary source: its type, title, date and issuer, a stable link, the page and
+        column, its language, and a verbatim excerpt of at most 40 words in the original language.
+        Issues there are public. <a href={`${FOLDER}/CORRECTIONS.md`}>CORRECTIONS.md</a> says how a
+        correction is reviewed. The copy in this version's folder is frozen;{' '}
+        <a href={LIVE_CORRECTIONS}>the live one</a>, with its log, is on the engine's main branch. An
+        accepted correction gives the rule a new version, and the site publishes the changed atlas
+        only as a new version, at its own path. The files of {version} never change.
+      </p>
+    </div>
+
+    <h2 id="comparison">The comparison with tzdb {base.tzdb}</h2>
+    <div class="prose">
+      <p>
+        The base is tzdb {base.tzdb} with backzone, built by the L3 conformance recipe. The tarball's
+        SHA-256 is <code>{base.tarballSha256}</code>, and the compiled tree has {base.treeFiles}{' '}
+        files, with the digest <code>{base.treeSha256}</code>. Each place is compared over the
+        window {base.window[0]} to {base.window[1]}, local time, with the zone tzdb uses for it, and
+        Strasbourg and Metz also with Europe/Berlin, for information.
+      </p>
+      <p>
+        A difference is a period in which the two offsets differ by one second or more. tzdb stores
+        whole seconds, so offsets less than a second apart count as rounding, not as a difference.
+        Civil time is compared; the railway clocks the atlas records are not. Times are UTC.
+      </p>
+      <p>
+        tzdb is the comparison base, not a source: each difference is decided by the atlas's own
+        citations.
+      </p>
+    </div>
+    <div class="atlas-table-wrap" tabindex="0" role="region" aria-label="The comparisons, by place and zone">
+      <table>
+        <thead>
+          <tr><th scope="col">Place</th><th scope="col">Zone</th><th scope="col">Periods compared</th><th scope="col">Agree</th><th scope="col">Differ</th><th scope="col">Within a second</th><th scope="col">Days differing</th></tr>
+        </thead>
+        <tbody>
+          {viewer.pairs.map((pair) => (
+            <tr data-comparison={`${pair.place}|${pair.zone}`} data-counts={`${pair.summary.compared} ${pair.summary.agree} ${pair.summary.differ} ${pair.summary.rounding} ${pair.summary.daysDiffering}`}>
+              <th scope="row"><a href={`#${pair.id}`}>{pair.name}</a> <code>{pair.place}</code></th>
+              <td>{pair.zone}{pair.informational ? ' (for information)' : ''}</td>
+              <td>{pair.summary.compared}</td>
+              <td>{pair.summary.agree}</td>
+              <td>{pair.summary.differ}</td>
+              <td>{pair.summary.rounding}</td>
+              <td>{pair.summary.daysDiffering}</td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr><th scope="row" colspan="2">All {totals.comparisons}</th><td>{totals.compared}</td><td>{totals.agree}</td><td>{totals.differ}</td><td>{totals.rounding}</td><td></td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="prose">
+      <p>
+        Of the {totals.compared} periods, {totals.agree} agree, {totals.differ} differ and{' '}
+        {totals.rounding} is rounding only; {totals.withDifference} of the {totals.comparisons}{' '}
+        comparisons have a difference. The {totals.differ} differences are {totals.ownZone} against
+        the places' own zones and {totals.informational} against Europe/Berlin, for information. Each
+        is matched by exactly one of the {viewer.explanations.length} explanations below, on its
+        place, zone and rule and both offsets.
+      </p>
+      {rounding.map(({ pair, period }) => (
+        <p data-rounding>
+          The rounding-only period is {pair.name}'s, from {period.from} to {period.to}, under the rule{' '}
+          <a href={`#${ruleAnchor(period.rule)}`}><code>{period.rule}</code></a>: the atlas gives{' '}
+          {period.atlasOffset} and tzdb {period.tzdbOffset} {period.tzdbAbbreviation},{' '}
+          {period.result.kind === 'rounding' ? period.result.ms : ''} ms apart. It is not a difference,
+          because tzdb stores whole seconds.
+        </p>
+      ))}
+      <p>
+        Each place's section below lists the spans in which the atlas and tzdb agree to within a
+        second, {totals.spans} in all, and then every period side by side.
+      </p>
+      <p>
+        Two explanations end with a finding about tzdb 2025c, quoted as the atlas states it. At
+        version 0.1.0 neither had been sent to the tz project.
+      </p>
+      <ul>
+        {findings.map((explanation) => (
+          <li><a href={`#${explanation.id}`}><code>{explanation.id}</code></a></li>
+        ))}
+      </ul>
+    </div>
+
+    <h2 id="explanations">Explanations</h2>
+    {viewer.explanations.map((explanation) => (
+      <section id={explanation.id} class="atlas-block" data-explanation-section data-count={explanation.count}>
+        <h3><code>{explanation.id}</code></h3>
+        <p class="atlas-meta"><code>{explanation.category}</code>, {explanation.count} {explanation.count === 1 ? 'period' : 'periods'}</p>
+        <p>{explanation.explanation}</p>
+        {explanation.tzdbReport && (
+          <p><strong>Finding about tzdb 2025c, not sent to the tz project:</strong>{' '}{explanation.tzdbReport}</p>
+        )}
+        <p class="atlas-meta">
+          Explains periods of{' '}
+          {explanation.pairs.map((id, index) => (
+            <>{index ? ', ' : ''}<a href={`#${id}`}>{pairById.get(id)!.name} against {pairById.get(id)!.zone}</a></>
+          ))}.
+        </p>
+        <p class="atlas-meta">
+          Sources:{' '}
+          {explanation.citations.map((id, index) => (
+            <>{index ? ', ' : ''}<a href={`#${citationAnchor(id)}`}><code>{id}</code></a></>
+          ))}.
+        </p>
+      </section>
+    ))}
+
+    <h2 id="sources">Sources</h2>
+    <div class="prose">
+      <p>
+        The {viewer.citations.length} sources the explanations cite, each once, in the order they are
+        first cited. Their verbatim excerpts, in the original languages, are in the citation files.
+      </p>
+    </div>
+    <ol class="atlas-sources">
+      {viewer.citations.map((source) => (
+        <li id={citationAnchor(source.id)} data-citation>
+          <p>
+            <code>{source.id}</code>{' '}
+            <span lang={source.language}>{source.title}</span>, {source.date}, {source.issuer},{' '}
+            {source.publication}, {source.locator}.{' '}
+            <a href={source.url}>Source</a>
+          </p>
+          {source.gloss && <p class="atlas-meta">{source.gloss}</p>}
+        </li>
+      ))}
+    </ol>
+
+    <h2 id="places">Place by place</h2>
+    <div class="prose">
+      <p>
+        Every period of every comparison, in the order of TZDB-DIFFERENCES.md: its start and end in
+        UTC, its length, the atlas rule with its version and flag, both offsets, and the result. A
+        difference is in seconds, the atlas's offset minus tzdb's.
+      </p>
+    </div>
+    {viewer.pairs.map((pair) => (
+      <section id={pair.id} class="atlas-block" data-pair={`${pair.place}|${pair.zone}`}>
+        <h3>{pair.name} (<code>{pair.place}</code>) against {pair.zone}{pair.informational ? ' (for information)' : ''}</h3>
+        <p class="atlas-meta">{pair.admin1}, {COUNTRIES[pair.country]}</p>
+        <p>Agree (UTC):</p>
+        <ul class="atlas-spans">
+          {pair.agree.map((span) => <li data-agree>{span.from} to {span.to}</li>)}
+        </ul>
+        <div class="atlas-table-wrap" tabindex="0" role="region" aria-label={`Periods of ${pair.name} against ${pair.zone}`}>
+          <table>
+            <thead>
+              <tr><th scope="col">From (UTC)</th><th scope="col">To (UTC)</th><th scope="col">Length</th><th scope="col">Atlas rule</th><th scope="col">Atlas</th><th scope="col">tzdb</th><th scope="col">Result</th></tr>
+            </thead>
+            <tbody>
+              {pair.periods.map((period) => period.result.kind === 'differs' ? (
+                <tr id={period.id} data-result="differs" data-explanation={period.explanation} class="atlas-differs">
+                  <td>{period.from}</td>
+                  <td>{period.to}</td>
+                  <td>{period.length}</td>
+                  <td><a href={`#${ruleAnchor(period.rule)}`}><code>{period.rule}</code></a> v{period.ruleVersion}, {period.ruleFlag}</td>
+                  <td>{period.atlasOffset}</td>
+                  <td>{period.tzdbOffset} {period.tzdbAbbreviation}</td>
+                  <td>differs by {period.result.seconds} s, explained by <a href={`#${period.explanation}`}><code>{period.explanation}</code></a></td>
+                </tr>
+              ) : (
+                <tr data-result={period.result.kind}>
+                  <td>{period.from}</td>
+                  <td>{period.to}</td>
+                  <td>{period.length}</td>
+                  <td><a href={`#${ruleAnchor(period.rule)}`}><code>{period.rule}</code></a> v{period.ruleVersion}, {period.ruleFlag}</td>
+                  <td>{period.atlasOffset}</td>
+                  <td>{period.tzdbOffset} {period.tzdbAbbreviation}</td>
+                  <td>{period.result.kind === 'rounding' ? `within a second (${period.result.ms} ms)` : 'agrees'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    ))}
+
+    <h2 id="rules">Rules and their versions</h2>
+    <div class="prose">
+      <p>
+        All {counts.rules} rules, each with its version, its uncertainty flag and its reason, and every
+        change recorded before version {version}: {counts.changeEntries} changes in all.
+      </p>
+    </div>
+    {RULE_GROUPS.map(([group, heading]) => (
+      <>
+        <h3>{heading}</h3>
+        <dl class="atlas-rules">
+          {viewer.rules.filter((rule) => rule.group === group).map((rule) => (
+            <>
+              <dt id={ruleAnchor(rule.id)} data-rule data-version={rule.version} data-flag={rule.flag}><code>{rule.id}</code> {rule.title}, version {rule.version}</dt>
+              <dd>
+                <p><span class="atlas-flag">{rule.flag}</span>: {rule.reason}</p>
+                {rule.changes.length ? (
+                  <ul>
+                    {rule.changes.map((change) => <li data-change>Version {change.version}, {change.date}: {change.summary}</li>)}
+                  </ul>
+                ) : (
+                  <p class="atlas-meta">No changes before version {version}.</p>
+                )}
+              </dd>
+            </>
+          ))}
+        </dl>
+      </>
+    ))}
+
+    <h2 id="limits">Limits</h2>
+    <div class="prose">
+      <ul>
+        <li>France and the United States only, from 1870 to 1919, in {counts.places} places; <a href={`${FOLDER}/COVERAGE.md`}>COVERAGE.md</a> says what is left out.</li>
+        <li>The comparison is with tzdb 2025c only, and later tzdb releases may differ.</li>
+        <li>Railway clocks are not compared: the comparison reads civil clocks only.</li>
+        <li>The excerpts are not shown here. They are in the citation files, verbatim and in the original languages.</li>
+        <li>The files are served without a CORS header, so a script on another site cannot read them in a browser.</li>
+        <li>The copy of CORRECTIONS.md in this version keeps an empty log; the live log is in the engine repository.</li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .atlas-page h1 { margin: var(--s-1) 0 var(--s-4); }
+  .atlas-page h2 { margin: var(--s-12) 0 var(--s-4); font-size: var(--text-lg); scroll-margin-top: 96px; }
+  .atlas-page h3 { margin: var(--s-8) 0 var(--s-2); font-size: var(--text-base); scroll-margin-top: 96px; }
+  .atlas-page .prose { max-width: 68ch; }
+  .atlas-page code { font-family: var(--font-mono); font-size: .9em; overflow-wrap: anywhere; }
+  .atlas-toc ul { list-style: none; padding: 0; margin: var(--s-6) 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); font-size: var(--text-sm); }
+  .atlas-toc a:focus-visible, .atlas-page a:focus-visible { outline: 2px solid var(--text-2); outline-offset: 4px; }
+  .atlas-block { scroll-margin-top: 96px; max-width: 100%; }
+  .atlas-block p { max-width: 68ch; }
+  .atlas-meta { color: var(--muted); font-size: var(--text-sm); }
+  .atlas-flag { font-family: var(--font-mono); font-size: .9em; color: var(--text-2); }
+  .atlas-spans { margin: var(--s-2) 0; padding-left: var(--s-6); font-family: var(--font-mono); font-size: var(--text-sm); }
+  .atlas-sources { padding-left: var(--s-6); }
+  .atlas-sources li { margin: var(--s-3) 0; scroll-margin-top: 96px; }
+  .atlas-sources p { margin: var(--s-1) 0; max-width: 68ch; }
+  .atlas-rules dt { margin-top: var(--s-4); font-weight: 500; scroll-margin-top: 96px; }
+  .atlas-rules dd { margin: var(--s-1) 0 0; max-width: 68ch; }
+  .atlas-rules dd p { margin: var(--s-1) 0; }
+  .atlas-rules ul { margin: var(--s-1) 0; padding-left: var(--s-6); font-size: var(--text-sm); }
+  pre { margin: var(--s-4) 0; padding: var(--s-4); border: 1px solid var(--hair-2); border-radius: var(--r-sm); max-width: 100%; overflow-x: auto; font-size: var(--text-sm); line-height: 1.7; }
+  pre:focus-visible, .atlas-table-wrap:focus-visible { outline: 2px solid var(--text-2); outline-offset: 4px; }
+  pre code { overflow-wrap: normal; white-space: pre; }
+  .atlas-table-wrap { overflow-x: auto; margin: var(--s-4) 0; }
+  .atlas-table-wrap table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  .atlas-table-wrap th,
+  .atlas-table-wrap td { padding: 8px 10px; border-bottom: 1px solid var(--hair-1); text-align: left; vertical-align: top; }
+  .atlas-table-wrap thead th { color: var(--faint); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .atlas-table-wrap tbody th { font-weight: 500; }
+  .atlas-table-wrap td { font-family: var(--font-mono); }
+  .atlas-table-wrap .atlas-differs td { color: var(--text); }
+  .atlas-table-wrap tr:target { outline: 1px solid var(--text-2); }
+</style>

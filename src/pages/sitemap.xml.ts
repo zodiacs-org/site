@@ -350,6 +350,10 @@ const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
 ];
+// The time atlas dataset (B3.c): its page, and the developer index's card for it, on the day of the
+// daily edition they were built with; listed last in EVERGREEN_LASTMOD so the index's date wins.
+const TIME_ATLAS_LASTMOD = '2026-11-01';
+const TIME_ATLAS_ROUTES = ['/developers/time-atlas/', '/developers/'] as const;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -543,6 +547,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The developer demo, and the developer index that links to it. The day of
   // the daily edition it was built with; after the engine 1.1.0-rc.1 entry above so it wins.
   ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-28'] as const),
+  // The time atlas dataset and the developer index's card for it, last so this date wins.
+  ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -652,6 +658,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/developers/playground/', priority: 0.6 },
     { loc: '/developers/demo/', priority: 0.6 },
     { loc: '/developers/sky-benchmark/', priority: 0.6 },
+    { loc: '/developers/time-atlas/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },
     // Locale variants and hreflang blocks are added below through the same
