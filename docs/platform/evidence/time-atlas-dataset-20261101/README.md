@@ -139,9 +139,10 @@ shows:
 - the files with their digests, the licence and attribution text, the
   citation form, the correction route and the limits.
 
-The page's HTML as built is 392,022 bytes. It holds no en or em dash; the
-nine em dashes of the atlas are in eight citation excerpts, which stay in the
-published files.
+The page's HTML as built at `61875dc9`, after the review's fixes, is 392,125
+bytes (392,022 at `96670534`). It holds no en or em dash; the nine em dashes
+of the atlas are in eight citation excerpts, which stay in the published
+files.
 
 ## The checks in this repository
 
@@ -178,12 +179,15 @@ Beside them:
   entry's version beside its date and summary; and its dash rule counts a
   numeric reference once decoded, so one with leading zeros counts, as does
   one without its semicolon. Test 12 plants each of these faults; on the
-  built page of `96670534`, each planted in memory, the check before the
-  change found none of them and the check after it finds each one.
+  built pages of `96670534` and `61875dc9`, each fault planted in memory, the
+  check before the change found none of them and the check after it finds
+  each one, as its only problem.
 - `scripts/check-dist.mjs` runs both on every build ("time atlas: ..."), and
   its sitemap total is main's plus one (1452 to 1453). With the first
   difference row removed from the built page it failed 112 checks, all
-  "time atlas: viewer: ...".
+  "time atlas: viewer: ..."; the page check as changed after the review, run
+  in memory on the build of `61875dc9` with that row removed, gives the same
+  112, all "viewer".
 - `scripts/developer-structured-data-checks.mjs` holds the page's Dataset
   (C7): CC BY 4.0 exactly, version 0.1.0, span `1870-01-01/1919-12-31`, the
   seventeen files as DataDownloads with their media types, each served, and
@@ -265,17 +269,30 @@ Counts only, with the owner-approved scanner and both pattern sets, over
 `54deb7e8..c6cec93a` once the files were in: 0 lines added in the 2 commits
 with either set, and 487 lines in the tree, main's figure.
 
+Over the whole branch, after the review's fixes, `54deb7e8..61875dc9` (13
+commits, no merges): both pattern sets reported 0 lines added and 487 lines
+in the tree, equal to main's 487, read again with both sets over
+`54deb7e8^..54deb7e8`. Each of the four reports has one "Birth data found"
+line and no line starting with Error. Before the fixes, over
+`54deb7e8..d0e413a8` (8 commits), the build and the review had each read
+the same counts. The commit that adds this paragraph changes only this
+README and the two local reports.
+
 ## Local runs of the production check
 
-[tools/production-check.mjs](tools/production-check.mjs) was run against the
-branch's build of `96670534` (K7), after the pre-push list had passed on it,
-served by `astro preview` as the drives serve it
-(`tests/visual/preview-server.mjs`), before any pull request opened:
+[tools/production-check.mjs](tools/production-check.mjs) was first run
+against the branch's build of `96670534` (K7), after the pre-push list had
+passed on it. After the review's fixes, `local/local.json` and
+`local/local-controls.json` were replaced with the same two runs against the
+branch's build of `61875dc954f60ec40a703631fc75d34507feffc2`, the last
+commit that changes the page, its check or its tests, served by
+`astro preview` as the drives serve it (`tests/visual/preview-server.mjs`),
+before any pull request opened:
 
 ```sh
-node tools/production-check.mjs - 966705341fcce0fd5760ed96a5765490524782b1 local/local.json http://127.0.0.1:4431
+node tools/production-check.mjs - 61875dc954f60ec40a703631fc75d34507feffc2 local/local.json http://127.0.0.1:4431
 TIME_ATLAS_CHECK_CONTROL=row-removed,tzdb-offset,explanation-removed,label-removed,excerpt-inserted,geonames-changes,form-link-removed \
-  node tools/production-check.mjs - 966705341fcce0fd5760ed96a5765490524782b1 local/local-controls.json http://127.0.0.1:4431
+  node tools/production-check.mjs - 61875dc954f60ec40a703631fc75d34507feffc2 local/local-controls.json http://127.0.0.1:4431
 ```
 
 | report | run | passed | failing |
@@ -289,18 +306,22 @@ TIME_ATLAS_CHECK_CONTROL=row-removed,tzdb-offset,explanation-removed,label-remov
 | | `geonames-changes` | 22 of 23 | check 4 |
 | | `form-link-removed` | 22 of 23 | check 5 |
 
-A local run has no alias, so check 1 is not run. The preview server sends
-the published files without a charset parameter, so the media type is
-compared without it here; on zodiacs.org `charset=utf-8` is required as
-well. Checks 5 to 22 also read raw.githubusercontent.com: the correction
-form's definition at engine main, named "Atlas correction", and each file's
-bytes at engine `7307665b`, which equal the served bytes and the commit's.
-The preview server sent no `Access-Control-Allow-Origin` header for any of
-the seventeen files. The two file controls, `one-byte` and
-`engine-c4e70330`, belong to the production record; tried once against the
-same build, each passed 22 of 23 and failed exactly README.md's check.
+The runs against `96670534` had given the same results. The page served this
+time was the build's own, 392,125 bytes, SHA-256
+`0859a811d323be738a98663da6baf5dd9b0ad251b0fa453210aca170dc7f661b`, held to
+the page check as `61875dc9` holds it. A local run has no alias, so check 1
+is not run. The preview server sends the published files without a charset
+parameter, so the media type is compared without it here; on zodiacs.org
+`charset=utf-8` is required as well. Checks 5 to 22 also read
+raw.githubusercontent.com: the correction form's definition at engine main,
+named "Atlas correction", and each file's bytes at engine `7307665b`, which
+equal the served bytes and the commit's. The preview server sent no
+`Access-Control-Allow-Origin` header for any of the seventeen files. The two
+file controls, `one-byte` and `engine-c4e70330`, belong to the production
+record; tried once against each of the two builds, each passed 22 of 23 and
+failed exactly README.md's check.
 
-The pre-push list ran on `96670534` before these runs, one step at a time.
+The pre-push list ran on `96670534` before the first runs, one step at a time.
 Every step exited 0 (the build's prebuild with the daily verification and
 the freshness gate on the edition of 1 November, and its postbuild with
 check-dist, schema:check and the Phase 1 receipt `1e81c55f...`) but two.
@@ -314,6 +335,21 @@ installed for Playwright on this machine: `npm run test:firstuse:browser`
 exited 1, so that gate has not passed (see "Open for the owner"). The
 optional local Sitemap Dates comparison, which needs a second build of main,
 was not run.
+
+After the review's fixes, on `61875dc9` and one step after another: the
+build, with its prebuild on the edition of 1 November and its postbuild
+(check-dist with the time atlas block, schema:check and the Phase 1 receipt
+`1e81c55f...`), exited 0; `npm test` after it passed 625 files (1 skipped)
+and 8,026 tests (5 skipped); `npm run check` gave 0 errors and 0 warnings;
+`--unlisted` and `--orphans` printed 0; the Phase 1 scope guard passed (54
+changed paths, protected scope untouched); the local runs above gave the
+table's results; and the dash check on added lines printed nothing, with 7
+lines in its control on `data/citations-fr.json` and 13 in the generated
+guide's added lines. `npm run ai:check`, `mcp:build:check`, `mcp:pack:check`,
+the compute handler's and the cities' `--check` and
+`node scripts/programme-ledger.mjs --check` exited 0 too. The four
+developer-guide checks and the two hub drives were not run again: the fixes
+change neither the guides nor the hub.
 
 ## Overlaps
 
@@ -391,5 +427,7 @@ was not run.
 - The playground's engine bundle carries the atlas data without naming the
   atlas (`scripts/build-playground-engine.mjs`); a later change can add the
   credit.
-- The independent review, the draft pull request and the production record
-  come after this branch.
+- The draft pull request and the production record come after this branch.
+  The independent review read the branch at `d0e413a8`; the commits after it
+  answer six of its seven problems, and the seventh, the first-use drive's
+  Firefox half, is the owner's to decide (see "Open for the owner").

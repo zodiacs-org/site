@@ -2,9 +2,9 @@
   "schema": "zodiacs.time-atlas-production.v1",
   "base": "http://127.0.0.1:4431",
   "control": null,
-  "commit": "966705341fcce0fd5760ed96a5765490524782b1",
+  "commit": "61875dc954f60ec40a703631fc75d34507feffc2",
   "deployment": null,
-  "readAt": "2026-11-01T01:37:33.075Z",
+  "readAt": "2026-11-01T03:16:06.759Z",
   "passed": 23,
   "of": 23,
   "checks": [
@@ -20,8 +20,8 @@
       "name": "3 the page holds the viewer: the base, the 23 comparisons, every period, each difference with its explanation, the explanations and findings, the sources, the rules, the files; no excerpt, no en or em dash, nothing more to run or load, a target for every link",
       "ok": true,
       "detail": {
-        "sha256": "10daac27615a20b02cbfc1835f854535b147518af048c5a042c337e676f72c92",
-        "bytes": 392022,
+        "sha256": "0859a811d323be738a98663da6baf5dd9b0ad251b0fa453210aca170dc7f661b",
+        "bytes": 392125,
         "problems": [],
         "more": 0
       }
@@ -45,7 +45,7 @@
       }
     },
     {
-      "name": "6 /developers/time-atlas/0.1.0/data/atlas.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "6 /developers/time-atlas/0.1.0/data/atlas.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -62,7 +62,7 @@
       }
     },
     {
-      "name": "7 /developers/time-atlas/0.1.0/data/places.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "7 /developers/time-atlas/0.1.0/data/places.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -79,7 +79,7 @@
       }
     },
     {
-      "name": "8 /developers/time-atlas/0.1.0/data/leads.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "8 /developers/time-atlas/0.1.0/data/leads.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -96,7 +96,7 @@
       }
     },
     {
-      "name": "9 /developers/time-atlas/0.1.0/data/citations-fr.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "9 /developers/time-atlas/0.1.0/data/citations-fr.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -113,7 +113,7 @@
       }
     },
     {
-      "name": "10 /developers/time-atlas/0.1.0/data/rules-fr.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "10 /developers/time-atlas/0.1.0/data/rules-fr.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -130,7 +130,7 @@
       }
     },
     {
-      "name": "11 /developers/time-atlas/0.1.0/data/citations-als.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "11 /developers/time-atlas/0.1.0/data/citations-als.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -147,7 +147,7 @@
       }
     },
     {
-      "name": "12 /developers/time-atlas/0.1.0/data/rules-als.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "12 /developers/time-atlas/0.1.0/data/rules-als.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -164,7 +164,7 @@
       }
     },
     {
-      "name": "13 /developers/time-atlas/0.1.0/data/citations-us.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "13 /developers/time-atlas/0.1.0/data/citations-us.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -181,7 +181,7 @@
       }
     },
     {
-      "name": "14 /developers/time-atlas/0.1.0/data/rules-us.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "14 /developers/time-atlas/0.1.0/data/rules-us.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -198,7 +198,7 @@
       }
     },
     {
-      "name": "15 /developers/time-atlas/0.1.0/data/tzdb-explanations.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "15 /developers/time-atlas/0.1.0/data/tzdb-explanations.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -215,7 +215,7 @@
       }
     },
     {
-      "name": "16 /developers/time-atlas/0.1.0/tzdb/differences.json answers 200 as application/json with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "16 /developers/time-atlas/0.1.0/tzdb/differences.json answers 200 as application/json with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -232,7 +232,7 @@
       }
     },
     {
-      "name": "17 /developers/time-atlas/0.1.0/TZDB-DIFFERENCES.md answers 200 as text/markdown with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "17 /developers/time-atlas/0.1.0/TZDB-DIFFERENCES.md answers 200 as text/markdown with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -249,7 +249,7 @@
       }
     },
     {
-      "name": "18 /developers/time-atlas/0.1.0/README.md answers 200 as text/markdown with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "18 /developers/time-atlas/0.1.0/README.md answers 200 as text/markdown with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -266,7 +266,7 @@
       }
     },
     {
-      "name": "19 /developers/time-atlas/0.1.0/COVERAGE.md answers 200 as text/markdown with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "19 /developers/time-atlas/0.1.0/COVERAGE.md answers 200 as text/markdown with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -283,7 +283,7 @@
       }
     },
     {
-      "name": "20 /developers/time-atlas/0.1.0/CORRECTIONS.md answers 200 as text/markdown with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "20 /developers/time-atlas/0.1.0/CORRECTIONS.md answers 200 as text/markdown with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -300,7 +300,7 @@
       }
     },
     {
-      "name": "21 /developers/time-atlas/0.1.0/LICENSING.md answers 200 as text/markdown with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "21 /developers/time-atlas/0.1.0/LICENSING.md answers 200 as text/markdown with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -317,7 +317,7 @@
       }
     },
     {
-      "name": "22 /developers/time-atlas/0.1.0/LICENSE.txt answers 200 as text/plain with the bytes of 96670534 and of the engine at 7307665b",
+      "name": "22 /developers/time-atlas/0.1.0/LICENSE.txt answers 200 as text/plain with the bytes of 61875dc9 and of the engine at 7307665b",
       "ok": true,
       "detail": {
         "status": 200,
@@ -334,7 +334,7 @@
       }
     },
     {
-      "name": "23 /developers/time-atlas/0.1.0/files.json answers 200 as application/json with the bytes of 96670534",
+      "name": "23 /developers/time-atlas/0.1.0/files.json answers 200 as application/json with the bytes of 61875dc9",
       "ok": true,
       "detail": {
         "status": 200,
