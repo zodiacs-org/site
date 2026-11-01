@@ -49,12 +49,17 @@ source in `atlas/` of zodiacs-org/engine at
 
 ## How the bytes were copied (C3)
 
-The engine clone was read only with `git show`, `git ls-tree`,
-`git cat-file` and `git archive`, and its HEAD
-(`4b116cc72acfdce22a542e3d09c42bf2acd94a83`) did not move. Every archive
-named `atlas` only and excluded `docs/evidence/calc-sidereal-2026-10-05/`
-explicitly; nothing in that folder was opened, read, run or searched. Two
-extracts were made outside every repository:
+The engine clone was read with `git show`, `git ls-tree`, `git cat-file` and
+`git archive` of `atlas/`, and its HEAD
+(`4b116cc72acfdce22a542e3d09c42bf2acd94a83`) did not move, with one
+exception. After the local runs of the production check, one
+`git -C <engine> status --porcelain` compared the clone's whole working tree
+with its index, `docs/evidence/calc-sidereal-2026-10-05/` included, against
+the owner's rule that the folder be left out of every recursive scan. It
+printed nothing, and no file of that folder was opened or printed by hand
+(see "Departures"). Every archive named `atlas` only and excluded
+`docs/evidence/calc-sidereal-2026-10-05/` explicitly. Two extracts were made
+outside every repository:
 
 ```sh
 git -C <engine> archive 7307665bdbc432269fdac006104f661be16000bc -- atlas ':(exclude)docs/evidence/calc-sidereal-2026-10-05' | tar -x -C <extract>
@@ -294,11 +299,13 @@ check-dist, schema:check and the Phase 1 receipt `1e81c55f...`) but two.
 `npm test` run before the build, with no `dist/`, failed the nine cases of
 `scripts/people-font-preload.test.mjs` that read `dist/` and do not skip
 without it; run again after the build, as CI's Site Check runs it, it
-passed: 625 files, 8,026 tests, 5 skipped. The first-use drive's Firefox
-half could not start, as no Firefox is installed for Playwright on this
-machine; its Chromium half passed 44 of 44, the hub's ten cards in order
-among them, and the hub drive passed. The optional local Sitemap Dates
-comparison, which needs a second build of main, was not run.
+passed: 625 files, 8,026 tests, 5 skipped. The hub drive passed, and the
+first-use drive's Chromium half passed 44 of 44, the hub's ten cards in
+order among them, but its Firefox half could not start, as no Firefox is
+installed for Playwright on this machine: `npm run test:firstuse:browser`
+exited 1, so that gate has not passed (see "Open for the owner"). The
+optional local Sitemap Dates comparison, which needs a second build of main,
+was not run.
 
 ## Overlaps
 
@@ -334,6 +341,33 @@ comparison, which needs a second build of main, was not run.
 - The claim binds, besides the version, the licence and the 108 differences,
   the counts the atlas's own check printed (C4), so that the counts it
   restates are bound to the atlas's output.
+- The owner's rule for the engine clone was broken once. After the local
+  runs of the production check, one `git -C <engine> status --porcelain` was
+  run to see that the clone was clean. It compares the clone's whole working
+  tree with its index, `docs/evidence/calc-sidereal-2026-10-05/` included,
+  and the owner's rule leaves that folder out of every recursive scan. It
+  printed nothing, and no file of that folder was opened or printed by hand.
+  Every other read of the clone in the build and its review was `git show`,
+  `git ls-tree`, `git cat-file` or `git archive` of `atlas/`, and the fixes
+  after the review did not read it. This goes in the pull request's body and
+  to the owner.
+
+## Open for the owner
+
+- The first-use drive's Firefox half. The site gates require the handover's
+  full list to pass before every push, and the list includes the two hub
+  drives run locally. `npm run test:firstuse:browser` runs the first-use
+  drive in Chromium and in Firefox: Chromium passed 44 of 44, but no Firefox
+  is installed for Playwright on this machine, so the Firefox half never
+  started and the command exited 1. No CI workflow runs the drives, so
+  nothing else covers that half, and the gate has not passed. Installing
+  Playwright's own Firefox build (`npx playwright install firefox` in the
+  clone) is a download that needs the owner's permission, and nothing was
+  downloaded. The owner decides: with that permission, Firefox is installed,
+  `nice -n 10 npm run test:firstuse:browser` runs again on the build and both
+  halves are recorded here; without it, the gap goes in the pull request's
+  body as a departure from the site gates, and the owner accepts it before
+  the push.
 
 ## Not done
 
