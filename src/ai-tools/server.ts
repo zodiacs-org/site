@@ -27,6 +27,9 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_sky_calendar: { uri: OCCASIONS_URI, icon: 'occasions' },
 };
 
+/** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
+const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits']);
+
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
 
@@ -75,7 +78,7 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
       title: TOOL_TITLES[tool], description: TOOL_DESCRIPTIONS[tool],
       ...(panel ? { icons: [{ src: `https://zodiacs.org/assets/ai/${panel.icon}.svg`, mimeType: 'image/svg+xml', sizes: ['20x20'] }] } : {}),
       inputSchema: INPUT_SCHEMAS[tool], outputSchema: OUTPUT_SCHEMAS[tool],
-      annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: tool !== 'get_sky' && tool !== 'get_upcoming_events' && tool !== 'get_horoscope' && tool !== 'get_life_milestones' && tool !== 'get_birthday' && tool !== 'get_sky_calendar' },
+      annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: !CLOCK_DEPENDENT.has(tool) },
       _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
       const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };

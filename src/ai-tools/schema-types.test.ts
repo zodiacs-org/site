@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
-import { ALL_AI_TOOL_NAMES, INPUT_SCHEMAS, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
+import { EVERY_AI_TOOL_NAME, INPUT_SCHEMAS, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { SAVE_OUTPUT_SCHEMA, SAVE_TOOL_NAME, saveInput } from './accounts/contracts';
 import { executeAiTool } from './tools';
 import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
@@ -16,7 +16,7 @@ type Converts = { '~standard': { jsonSchema: Record<'input' | 'output', (options
 const advertised = (schema: unknown, io: 'input' | 'output') => (schema as Converts)['~standard'].jsonSchema[io]({ target: 'draft-2020-12' });
 
 const TOOLS: Array<[string, unknown, unknown]> = [
-  ...ALL_AI_TOOL_NAMES.map((tool): [string, unknown, unknown] => [tool, INPUT_SCHEMAS[tool], OUTPUT_SCHEMAS[tool]]),
+  ...EVERY_AI_TOOL_NAME.map((tool): [string, unknown, unknown] => [tool, INPUT_SCHEMAS[tool], OUTPUT_SCHEMAS[tool]]),
   [SAVE_TOOL_NAME, saveInput, SAVE_OUTPUT_SCHEMA],
 ];
 
@@ -121,7 +121,7 @@ describe('what the tools return', () => {
   it('validates against the schemas they advertise, as a client checks it', async () => {
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);
-    const validators = new Map(ALL_AI_TOOL_NAMES.map((tool) => [tool, ajv.compile(advertised(OUTPUT_SCHEMAS[tool], 'output'))]));
+    const validators = new Map(EVERY_AI_TOOL_NAME.map((tool) => [tool, ajv.compile(advertised(OUTPUT_SCHEMAS[tool], 'output'))]));
     const dependencies = { occasions: true, horoscopeWindow: async () => committedWindow as HoroscopeWindow, allowEvents: async () => 'allowed' as const };
     const invalid: string[] = [];
     const refused: string[] = [];

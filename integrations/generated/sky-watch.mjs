@@ -1180,6 +1180,18 @@ function computeHouses(system, input, angles) {
       throw new RangeError(`Unknown house system ${String(system)}.`);
   }
 }
+function houseOf(longitude2, cusps) {
+  if (cusps.length !== 12) throw new RangeError("House cusps must contain 12 longitudes.");
+  for (let index = 0; index < 12; index += 1) {
+    const start = cusps[index];
+    const end = cusps[(index + 1) % 12];
+    if (start === void 0 || end === void 0) continue;
+    const span = normalizeLongitude(end - start);
+    const offset = normalizeLongitude(longitude2 - start);
+    if (offset < span || span === 0) return index + 1;
+  }
+  return 12;
+}
 
 // node_modules/astronomy-engine/esm/astronomy.js
 /**
@@ -2477,10 +2489,10 @@ function precession_rot(time, dir) {
   throw "Invalid precess direction";
 }
 var Vector = class {
-  constructor(x, y, z8, t) {
+  constructor(x, y, z13, t) {
     this.x = x;
     this.y = y;
-    this.z = z8;
+    this.z = z13;
     this.t = t;
   }
   /**
@@ -2492,10 +2504,10 @@ var Vector = class {
   }
 };
 var StateVector = class {
-  constructor(x, y, z8, vx, vy, vz, t) {
+  constructor(x, y, z13, vx, vy, vz, t) {
     this.x = x;
     this.y = y;
-    this.z = z8;
+    this.z = z13;
     this.vx = vx;
     this.vy = vy;
     this.vz = vz;
@@ -2701,10 +2713,10 @@ var PlutoStateTable = [
   [73e4, [4.24325283709, -30.118201690825, -10.707441231349], [0.0031725847067411, 1609846120227e-16, -90672150593868e-17]]
 ];
 var TerseVector = class _TerseVector {
-  constructor(x, y, z8) {
+  constructor(x, y, z13) {
     this.x = x;
     this.y = y;
-    this.z = z8;
+    this.z = z13;
   }
   clone() {
     return new _TerseVector(this.x, this.y, this.z);
@@ -3115,7 +3127,7 @@ function coefficients() {
 }
 var OFFSETS = [-135e-6, 388e-6];
 var NUTATION_TERMS = 77;
-function nutation(t, terms = NUTATION_TERMS) {
+function nutation(t, terms2 = NUTATION_TERMS) {
   const c = coefficients();
   const re = [];
   const im = [];
@@ -3139,7 +3151,7 @@ function nutation(t, terms = NUTATION_TERMS) {
   }
   let dp = 0;
   let de = 0;
-  for (let i = terms - 1; i >= 0; i -= 1) {
+  for (let i = terms2 - 1; i >= 0; i -= 1) {
     let cos = 1;
     let sin = 0;
     for (let j = 0; j < 5; j += 1) {
@@ -3219,17 +3231,17 @@ function eclipticFrame(tt) {
   };
   return last;
 }
-function meanEcliptic(frame, x, y, z8) {
+function meanEcliptic(frame, x, y, z13) {
   const m = frame.rows;
   return [
-    m[0] * x + m[1] * y + m[2] * z8,
-    m[3] * x + m[4] * y + m[5] * z8,
-    m[6] * x + m[7] * y + m[8] * z8
+    m[0] * x + m[1] * y + m[2] * z13,
+    m[3] * x + m[4] * y + m[5] * z13,
+    m[6] * x + m[7] * y + m[8] * z13
   ];
 }
-function eclipticOfDate(x, y, z8, tt) {
+function eclipticOfDate(x, y, z13, tt) {
   const frame = eclipticFrame(tt);
-  const [ex, ey, ez] = meanEcliptic(frame, x, y, z8);
+  const [ex, ey, ez] = meanEcliptic(frame, x, y, z13);
   return {
     lon: normalizeLongitude(Math.atan2(ey, ex) * RAD22 + frame.tilt.dpsi / 3600),
     lat: Math.asin(ez / Math.hypot(ex, ey, ez)) * RAD22
@@ -4489,8 +4501,8 @@ function validateLocal(value, receipt, timeBasis22) {
   } catch {
     fail("invalid_context");
   }
-  const zone6 = text(local.timeZone, 128);
-  if (!/^[A-Za-z][A-Za-z0-9._+-]*(?:\/[A-Za-z0-9._+-]+){0,3}$/.test(zone6)) fail("invalid_context");
+  const zone7 = text(local.timeZone, 128);
+  if (!/^[A-Za-z][A-Za-z0-9._+-]*(?:\/[A-Za-z0-9._+-]+){0,3}$/.test(zone7)) fail("invalid_context");
   const offset = number(local.offsetMinutes, -1440, 1440);
   const shift2 = number(local.gapShiftMinutes, 0, 2880);
   const offsetMs = offset * 6e4, shiftMs = shift2 * 6e4;
@@ -4518,10 +4530,10 @@ function validateLocalRecord(local, receipt, date3, offset, shift2) {
   const flags = receipt.inputFlags;
   const lmt = has2("clock") ? choice(local.clock, ["local-mean-time", "legal"]) === "local-mean-time" : flags.includes("lmt");
   const gap = flags.includes("dst-gap");
-  const fold = flags.includes("dst-fold");
+  const fold2 = flags.includes("dst-fold");
   if (
     // A local time resolves to UTC.
-    receipt.timeScale !== "utc" || written !== null && (!parseCalendarDate(written, calendar) || (calendar === "gregorian" ? written : julianToGregorian(written)) !== date3) || form !== void 0 && form !== "host" && version2 === null || flags.includes("lmt") !== lmt || local.transition === null && (gap || fold)
+    receipt.timeScale !== "utc" || written !== null && (!parseCalendarDate(written, calendar) || (calendar === "gregorian" ? written : julianToGregorian(written)) !== date3) || form !== void 0 && form !== "host" && version2 === null || flags.includes("lmt") !== lmt || local.transition === null && (gap || fold2)
   )
     fail("invalid_context");
   let before2 = null;
@@ -4535,7 +4547,7 @@ function validateLocalRecord(local, receipt, date3, offset, shift2) {
     const near = (a, b) => Math.abs(a - b) <= 1e-9;
     if (
       // A change of half a day or more moves the date: a move across the date line.
-      choice(transition.cause, ["dst", "legal-change", "date-line"]) === "date-line" !== Math.abs(after - before2) >= 720 || !(gap ? after > before2 && near(after - before2, shift2) && near(offset, after) && at <= instant2 : fold ? after < before2 && near(offset, before2) && at > instant2 : near(offset, after) && at <= instant2)
+      choice(transition.cause, ["dst", "legal-change", "date-line"]) === "date-line" !== Math.abs(after - before2) >= 720 || !(gap ? after > before2 && near(after - before2, shift2) && near(offset, after) && at <= instant2 : fold2 ? after < before2 && near(offset, before2) && at > instant2 : near(offset, after) && at <= instant2)
     )
       fail("invalid_context");
   }
@@ -6001,16 +6013,16 @@ function instantAt(value, pointer) {
   const text2 = stringAt(value, pointer);
   const match = text2.length <= 29 ? INSTANT.exec(text2) : null;
   if (!match) throw invalidRequest(pointer, TEXT.instantFormat);
-  const [, y, mo, d, h, mi, s, , zone6] = match;
+  const [, y, mo, d, h, mi, s, , zone7] = match;
   const year = Number(y);
   const month = Number(mo);
   const day = Number(d);
   if (month < 1 || month > 12 || day < 1 || day > daysInMonth(year, month) || Number(h) > 23 || Number(mi) > 59 || s !== void 0 && Number(s) > 59) {
     throw invalidRequest(pointer, TEXT.instantCalendar);
   }
-  if (zone6 !== "Z") {
-    const hours = Number(zone6.slice(1, 3));
-    const minutes = Number(zone6.slice(4, 6));
+  if (zone7 !== "Z") {
+    const hours = Number(zone7.slice(1, 3));
+    const minutes = Number(zone7.slice(4, 6));
     if (minutes > 59 || hours * 60 + minutes > 14 * 60) throw invalidRequest(pointer, TEXT.instantOffset);
   }
   const ms = Date.parse(text2);
@@ -6022,9 +6034,9 @@ function dateAt(value, pointer) {
   if (!parseCivilDate(text2) || text2 < FIRST_DATE || text2 > LAST_DATE) throw invalidRequest(pointer, TEXT.date);
   return text2;
 }
-function zoneKnown(zone6) {
+function zoneKnown(zone7) {
   try {
-    new Intl.DateTimeFormat("en-US", { timeZone: zone6 });
+    new Intl.DateTimeFormat("en-US", { timeZone: zone7 });
     return true;
   } catch {
     return false;
@@ -6083,8 +6095,8 @@ function parseEventsRequest(value) {
 }
 async function factDay(object2, zones) {
   const date3 = dateAt(required(object2, "date", ""), "/date");
-  const zone6 = has(object2, "zone") ? await zoneAt(object2.zone, "/zone", zones) : null;
-  return { date: date3, zone: zone6 };
+  const zone7 = has(object2, "zone") ? await zoneAt(object2.zone, "/zone", zones) : null;
+  return { date: date3, zone: zone7 };
 }
 async function factWhen(object2, zones) {
   if (has(object2, "instant") === has(object2, "date")) throw invalidRequest("", TEXT.instantOrDate);
@@ -6547,7 +6559,7 @@ async function computeApiRateLimit(req, id = COMPUTE_RATE_LIMIT_ID) {
 }
 
 // src/ai-tools/contracts.ts
-import { z as z4 } from "zod";
+import { z as z9 } from "zod";
 
 // src/lib/compute-api/openapi.ts
 var ref = (name) => ({ $ref: `#/components/schemas/${name}` });
@@ -7387,8 +7399,8 @@ function equatorRows(tt, kind) {
   const { mobl, tobl, dpsi } = frame.tilt;
   return kind === "mean" ? toEquator(frame.rows, mobl * DEG6) : toEquator(toTrueEquinox(frame.rows, dpsi * ARCSEC4), tobl * DEG6);
 }
-function turn2(m, x, y, z8) {
-  return [m[0] * x + m[1] * y + m[2] * z8, m[3] * x + m[4] * y + m[5] * z8, m[6] * x + m[7] * y + m[8] * z8];
+function turn2(m, x, y, z13) {
+  return [m[0] * x + m[1] * y + m[2] * z13, m[3] * x + m[4] * y + m[5] * z13, m[6] * x + m[7] * y + m[8] * z13];
 }
 
 // node_modules/@zodiacs/engine/dist/sky.js
@@ -7502,16 +7514,16 @@ function stateAt2(body2, site, conventions, ms) {
     const sinT = Math.sin(theta);
     const x = vx - (n + h) * cosPhi * cosT / KM_PER_AU2;
     const y = vy - (n + h) * cosPhi * sinT / KM_PER_AU2;
-    const z8 = vz - (n * (1 - E2) + h) * sinPhi / KM_PER_AU2;
+    const z13 = vz - (n * (1 - E2) + h) * sinPhi / KM_PER_AU2;
     const east = -x * sinT + y * cosT;
     const radial = x * cosT + y * sinT;
-    const north = -radial * sinPhi + z8 * cosPhi;
-    const up = radial * cosPhi + z8 * sinPhi;
+    const north = -radial * sinPhi + z13 * cosPhi;
+    const up = radial * cosPhi + z13 * sinPhi;
     const altitude = Math.atan2(up, Math.hypot(east, north)) / RAD6;
     const azimuth = (Math.atan2(east, north) / RAD6 % 360 + 360) % 360;
     const hourAngle = ((theta - Math.atan2(y, x)) / RAD6 % 360 + 360) % 360;
     const radius = body2 === "Sun" || body2 === "Moon" ? SKY_RADII_KM[body2] : 0;
-    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z8) * KM_PER_AU2)) / RAD6;
+    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z13) * KM_PER_AU2)) / RAD6;
     const limb = conventions.limb === "upper" ? 1 : conventions.limb === "lower" ? -1 : 0;
     const horizon = -conventions.refractionArcmin / 60 - limb * semiDiameter;
     return { above: altitude - horizon, altitude, azimuth, hourAngle };
@@ -8757,6 +8769,15 @@ function validSavedId(value) {
   if (!id || id.length > SAVED_ID_MAX || /[\u0000-\u001f\u007f]/.test(id)) return null;
   return id;
 }
+var DATE_PARAM = "date";
+var TIME_PARAM = "time";
+var UNKNOWN_TIME = "unknown";
+function dateHandoffFragment(date3, time) {
+  const params = new URLSearchParams();
+  params.set(DATE_PARAM, date3);
+  params.set(TIME_PARAM, time ?? UNKNOWN_TIME);
+  return params.toString();
+}
 function compatibilityHandoffPath(other, mine, path = "/compatibility/") {
   const query = new URLSearchParams();
   const fragment = new URLSearchParams();
@@ -8960,10 +8981,10 @@ var ELEMENT_ORDER = {
   air: ["gemini", "libra", "aquarius"],
   water: ["cancer", "scorpio", "pisces"]
 };
-function decanRuler(signSlug3, decan) {
-  const sign2 = signBySlug(signSlug3);
+function decanRuler(signSlug4, decan) {
+  const sign2 = signBySlug(signSlug4);
   const seq = ELEMENT_ORDER[sign2.element];
-  const idx = seq.indexOf(signSlug3);
+  const idx = seq.indexOf(signSlug4);
   const rulingSign = signBySlug(seq[(idx + decan - 1) % 3]);
   return rulingSign.classicRuler ?? rulingSign.ruler;
 }
@@ -17457,10 +17478,10 @@ function skyCalendarShareUrl(origin, event2) {
   const share = skyCalendarShareFromEvent(event2);
   return share && validDate2(share.date) ? `${origin}${SKY_CALENDAR_SHARE_PATH}?${skyCalendarQuery({ ...share, ref: null })}` : null;
 }
-function horoscopeShareUrl(origin, source, ref2 = null) {
+function horoscopeShareUrl(origin, source, ref3 = null) {
   if (!isSign2(source.sign) || !validDate2(source.date) || !SHARE_FOCUSES.includes(source.focus)) return null;
   if (source.week && !isMonday(source.date)) return null;
-  const share = { sign: source.sign, date: source.date, week: source.week, focus: source.week ? "general" : source.focus, ref: ref2 };
+  const share = { sign: source.sign, date: source.date, week: source.week, focus: source.week ? "general" : source.focus, ref: ref3 };
   return `${origin}${HOROSCOPE_SHARE_PATH}?${horoscopeQuery(share, true)}`;
 }
 function chartTwinsQuery(share, withRef2 = false) {
@@ -17862,7 +17883,7 @@ async function personChart(person, fallback3, clock2) {
     houseSystem: "whole",
     timeKnown
   });
-  const lonOf = (body2) => chart.bodies.find((row) => row.body === body2)?.lon ?? Number.NaN;
+  const lonOf2 = (body2) => chart.bodies.find((row) => row.body === body2)?.lon ?? Number.NaN;
   const angles = timeKnown && placed ? chart.angles : null;
   return {
     person,
@@ -17872,8 +17893,8 @@ async function personChart(person, fallback3, clock2) {
     timeKnown,
     placed,
     chart,
-    sunIndex: settledSignIndex("Sun", lonOf("Sun"), timeKnown),
-    moonIndex: settledSignIndex("Moon", lonOf("Moon"), timeKnown),
+    sunIndex: settledSignIndex("Sun", lonOf2("Sun"), timeKnown),
+    moonIndex: settledSignIndex("Moon", lonOf2("Moon"), timeKnown),
     risingIndex: angles ? signIndexForLongitude2(angles.asc) : null,
     bodies: chart.bodies.filter((row) => timeKnown || row.body !== "Moon").map((row) => ({ body: row.body, lon: row.lon }))
   };
@@ -25210,6 +25231,7 @@ function dateAt2(milliseconds, label) {
   return new Date(milliseconds);
 }
 var SOLAR_RETURN_WINDOW_DAYS = 200;
+var SOLAR_RETURN_LOOKBACK_DAYS = 370;
 var SOLAR_RETURN_STEP_DAYS = 1;
 function solarReturnInstant(natalSunLongitude, near) {
   const target = finiteDegrees(natalSunLongitude, "natalSunLongitude");
@@ -25226,6 +25248,21 @@ function solarReturnInstant(natalSunLongitude, near) {
   if (first2 === void 0) throw new RangeError("No solar return found in the scan window.");
   const closest = crossings.reduce((best, crossing) => Math.abs(crossing.at.getTime() - center) < Math.abs(best.at.getTime() - center) ? crossing : best, first2);
   return new Date(closest.at.getTime());
+}
+function mostRecentSolarReturnInstant(natalSunLongitude, at) {
+  const target = finiteDegrees(natalSunLongitude, "natalSunLongitude");
+  const end = dateFrom(at, "at").getTime();
+  const crossings = findLongitudeCrossingsWith(
+    bodyLongitude,
+    "Sun",
+    target,
+    dateAt2(end - SOLAR_RETURN_LOOKBACK_DAYS * DAY_MS5, "The solar return window"),
+    new Date(end),
+    SOLAR_RETURN_STEP_DAYS
+  ).filter((crossing) => crossing.at.getTime() <= end);
+  const last2 = crossings[crossings.length - 1];
+  if (last2 === void 0) throw new RangeError("No previous solar return found in the scan window.");
+  return new Date(last2.at.getTime());
 }
 var DEG8 = Math.PI / 180;
 
@@ -25264,6 +25301,38 @@ var SUN = {
   aquarius: "You think from orbit: patterns first, people as systems, loyalty expressed through ideas and independence. The warmth is real; it just arrives on a delay.",
   pisces: "Your edges are porous: you absorb moods, read subtext, and imagine your way into other lives without trying. Boundaries are not a betrayal of that gift. They are its maintenance."
 };
+var MOON = {
+  aries: "Feelings arrive as action impulses: anger before sadness, movement before words. You process by doing; hard conversations land better after a run.",
+  taurus: "You settle yourself through the senses: food, comfort, routine, one unhurried evening. Emotional safety means knowing nothing important will change without warning.",
+  gemini: "You metabolize feelings by naming them: talking, texting, journaling them into shape. Restlessness is usually a signal you need new input, not a new life.",
+  cancer: "The Moon rules Cancer, and it shows: tidal moods, elephant memory, fierce protectiveness. Home is not a place so much as a feeling you can carry and recreate.",
+  leo: "You need to be someone\u2019s favorite, not everyone\u2019s, someone\u2019s. Appreciation is oxygen; give it as freely as you need it and your relationships thrive.",
+  virgo: "In this tradition, worry is how your care sounds from the inside. You soothe yourself by making order (lists, plans, a clean kitchen) and love others through useful details.",
+  libra: "Conflict sits in your body like static; you feel best when things are fair and aesthetically calm. The practice: disagreeing early, before the resentment invoices arrive.",
+  scorpio: "You feel everything at full depth and show almost none of it on purpose. Intimacy for you is letting one person watch the water level change.",
+  sagittarius: "Your moods need mileage, literal or intellectual. When feelings close in, you widen the frame: the joke, the trip, the bigger picture that makes it survivable.",
+  capricorn: "You were the emotionally competent one early, and it stuck. Feelings get processed privately, on a schedule. Letting someone witness the process is the intimacy upgrade.",
+  aquarius: "You observe your own emotions from a small distance before joining them. That delay is not coldness. It is analysis. Naming it out loud keeps loved ones from guessing.",
+  pisces: "You are the room\u2019s emotional weather station, receiving everything, including what nobody said. Solitude is not withdrawal. It is how you find out which feelings were yours."
+};
+var RISING = {
+  aries: "People meet your momentum before they meet you: decisive, direct, already halfway out the door. Rooms hand you the lead whether you asked or not.",
+  taurus: "You read as calm, solid, and unhurried, the person who will obviously still be here next year. It buys trust on sight; use it.",
+  gemini: "First impression: quick, verbal, visibly curious. Strangers tell you things in checkout lines. You seem younger than your age for most of your life.",
+  cancer: "You come across softer than you are: approachable, receptive, a safe place to land. People confide fast; your boundaries decide what happens next.",
+  leo: "You register as warm and slightly luminous; people assume confidence even on your worst day. The entrance is noticed. So is the exit.",
+  virgo: "You present as composed, precise, quietly evaluating, the competent one. People bring you their broken things: plans, sentences, occasionally lives.",
+  libra: "You arrive agreeable, polished, easy to seat next to anyone. The diplomacy is real, but so is the steel it gracefully upholsters.",
+  scorpio: 'You read as private and magnetic. People feel watched, in a way most of them like. You get told "I thought you were intimidating" for life.',
+  sagittarius: "You come across open, funny, and about to suggest something. Strangers assume you know the good spots. You usually do.",
+  capricorn: "You present older than your years early on, then apparently stop aging out of spite. First impression: serious, capable, dry, the one who read the contract.",
+  aquarius: "You register as interesting before friendly: original angle, unbothered air, allergic to the expected. People remember what you said.",
+  pisces: "You arrive gentle and a little unplaceable; people project freely onto the soft focus. Your attention feels like empathy because it is."
+};
+function bigThree(kind, slug) {
+  const table = kind === "sun" ? SUN : kind === "moon" ? MOON : RISING;
+  return table[slug] ?? "";
+}
 
 // src/data/sky.json
 var sky_default = {
@@ -27325,12 +27394,12 @@ var HOROSCOPE_PERIODS = ["day", "week"];
 var HOROSCOPE_DISCLOSURE = "For reflection. Astrology does not establish what will happen in your life.";
 var WHY_NOTE = "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.";
 var cap = (value) => value[0].toUpperCase() + value.slice(1);
-function zoneLabel(zone6) {
-  if (zone6 === "UTC" || zone6 === "Etc/UTC") return "UTC";
-  return (zone6.split("/").pop() ?? zone6).replaceAll("_", " ");
+function zoneLabel(zone7) {
+  if (zone7 === "UTC" || zone7 === "Etc/UTC") return "UTC";
+  return (zone7.split("/").pop() ?? zone7).replaceAll("_", " ");
 }
-function dateInZone(now, zone6) {
-  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: zone6, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(now);
+function dateInZone(now, zone7) {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: zone7, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(now);
   return ["year", "month", "day"].map((type) => parts.find((part) => part.type === type).value).join("-");
 }
 var noon = (date3) => /* @__PURE__ */ new Date(`${date3}T12:00:00.000Z`);
@@ -27344,8 +27413,8 @@ function weekLabel(from, through) {
   const day = (date3) => format2(date3, { day: "numeric" });
   return fromMonth === throughMonth ? `Week of ${day(from)}\u2013${day(through)} ${throughMonth}` : `Week of ${day(from)} ${fromMonth} \u2013 ${day(through)} ${throughMonth}`;
 }
-function localWhen(at, zone6) {
-  return new Intl.DateTimeFormat("en-GB", { timeZone: zone6, weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true }).format(new Date(at));
+function localWhen(at, zone7) {
+  return new Intl.DateTimeFormat("en-GB", { timeZone: zone7, weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true }).format(new Date(at));
 }
 function ordinal(value) {
   const tens = value % 100;
@@ -27374,7 +27443,7 @@ function houseText(receipt) {
   const placed = receipt.label.split(" maps to ")[0];
   return `${placed}: your ${ordinal(receipt.house ?? 0)} solar house`;
 }
-function why(window, reading, zone6) {
+function why(window, reading, zone7) {
   const ids = new Set(reading.passages.flatMap((passage) => passage.evidenceRefs));
   for (const id of [...ids]) {
     const fact = window.evidence[id]?.sourceFactId;
@@ -27383,16 +27452,16 @@ function why(window, reading, zone6) {
   const receipts = [...ids].map((id) => window.evidence[id]).filter((receipt) => !!receipt);
   const facts = [];
   for (const receipt of receipts.filter((item) => item.kind !== "solar-house").sort((left, right) => left.at.localeCompare(right.at))) {
-    const fact = { text: factText(receipt), when: localWhen(receipt.at, zone6) };
+    const fact = { text: factText(receipt), when: localWhen(receipt.at, zone7) };
     if (!facts.some((known) => known.text === fact.text && known.when === fact.when)) facts.push(fact);
   }
   const houses = [...new Set(receipts.filter((item) => item.kind === "solar-house").map(houseText))];
   return { note: WHY_NOTE, facts, houses };
 }
-function resolveHoroscope(window, request2, zone6, zoneSource, localDate, origin) {
+function resolveHoroscope(window, request2, zone7, zoneSource, localDate, origin) {
   const date3 = request2.date ?? localDate;
   const focus = request2.period === "week" ? "general" : request2.focus;
-  const base = { period: request2.period, focus, date: date3, dateLabel: dayLabel(date3), zone: zone6, zoneLabel: zoneLabel(zone6), zoneSource, disclosure: HOROSCOPE_DISCLOSURE };
+  const base = { period: request2.period, focus, date: date3, dateLabel: dayLabel(date3), zone: zone7, zoneLabel: zoneLabel(zone7), zoneSource, disclosure: HOROSCOPE_DISCLOSURE };
   if (!request2.sign) return { ...base, status: "choose-sign" };
   const sign2 = request2.sign;
   const named = { ...base, sign: sign2, signName: cap(sign2) };
@@ -27427,7 +27496,7 @@ function resolveHoroscope(window, request2, zone6, zoneSource, localDate, origin
       title: `${cap(sign2)} \xB7 ${label}${suffix}`,
       paragraphs: reading.passages.map((passage) => passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })
     },
-    why: why(window, reading, zone6),
+    why: why(window, reading, zone7),
     ...origin === void 0 ? {} : {
       shareUrl: horoscopeShareUrl(origin, { sign: sign2, date: request2.period === "week" ? reading.period.from : date3, week: request2.period === "week", focus })
     }
@@ -27456,11 +27525,11 @@ function panelReading(window, reading, shareUrl) {
   };
 }
 function horoscopePanel(window, sign2, requested, share) {
-  const link4 = (date3, week, focus) => share ? horoscopeShareUrl(share.origin, { sign: sign2, date: date3, week, focus }, share.ref) : null;
+  const link5 = (date3, week, focus) => share ? horoscopeShareUrl(share.origin, { sign: sign2, date: date3, week, focus }, share.ref) : null;
   const weeks = [];
   for (const edition of window.editions) {
     const weekly = edition.signs[sign2].weekly;
-    const week = panelReading(window, weekly, link4(weekly.period.from, true, "general"));
+    const week = panelReading(window, weekly, link5(weekly.period.from, true, "general"));
     if (!weeks.some((known) => known.from === week.from)) weeks.push(week);
   }
   return {
@@ -27470,9 +27539,9 @@ function horoscopePanel(window, sign2, requested, share) {
     days: window.editions.map((edition) => ({
       date: edition.anchorDate,
       focuses: {
-        general: panelReading(window, edition.signs[sign2].today, link4(edition.anchorDate, false, "general")),
-        love: panelReading(window, edition.signs[sign2].love, link4(edition.anchorDate, false, "love")),
-        career: panelReading(window, edition.signs[sign2].career, link4(edition.anchorDate, false, "career"))
+        general: panelReading(window, edition.signs[sign2].today, link5(edition.anchorDate, false, "general")),
+        love: panelReading(window, edition.signs[sign2].love, link5(edition.anchorDate, false, "love")),
+        career: panelReading(window, edition.signs[sign2].career, link5(edition.anchorDate, false, "career"))
       }
     })),
     weeks,
@@ -27481,13 +27550,6287 @@ function horoscopePanel(window, sign2, requested, share) {
   };
 }
 
+// src/ai-tools/features/natal-chart.ts
+import { z as z4 } from "zod";
+
+// src/lib/natal.ts
+var ORDINAL = [
+  "",
+  "first",
+  "second",
+  "third",
+  "fourth",
+  "fifth",
+  "sixth",
+  "seventh",
+  "eighth",
+  "ninth",
+  "tenth",
+  "eleventh",
+  "twelfth"
+];
+var NATAL_HOUSE_THEME = {
+  1: "first impressions, instinct, and the way you arrive",
+  2: "earning, owning, and what security is made of",
+  3: "language, siblings, short trips, and the everyday mind",
+  4: "home, roots, family, and where you go to be unobserved",
+  5: "pleasure, romance, children, and what you make for its own sake",
+  6: "routines, health, craft, and the daily load",
+  7: "partnership, the people you meet as equals",
+  8: "shared resources, intimacy, and what gets merged",
+  9: "travel, study, belief, and the long view",
+  10: "career, reputation, and the public record",
+  11: "friends, groups, allies, and the future you point at",
+  12: "solitude, rest, and what runs beneath awareness"
+};
+var PLACED = {
+  Sun: "centers itself in",
+  Moon: "keeps its tides in",
+  Mercury: "does its thinking in",
+  Venus: "looks for beauty in",
+  Mars: "spends its heat in",
+  Jupiter: "wants more room in",
+  Saturn: "keeps its ledger in",
+  Uranus: "refuses to settle in",
+  Neptune: "softens the walls of",
+  Pluto: "digs deepest in"
+};
+var NATAL_ASPECT = {
+  conjunction: {
+    verb: "is fused to",
+    gloss: "run as one instrument, hard to play separately"
+  },
+  sextile: {
+    verb: "has an open line to",
+    gloss: "cooperate whenever you remember to ask"
+  },
+  square: {
+    verb: "grinds against",
+    gloss: "pull in directions ninety degrees apart: permanent friction, and the strength that comes from working against it"
+  },
+  trine: {
+    verb: "runs downhill into",
+    gloss: "help each other so smoothly the gift is easy to miss"
+  },
+  opposition: {
+    verb: "faces off with",
+    gloss: "hold opposite ends of one axis, taking turns unless you seat them both"
+  }
+};
+var CURATED = {
+  "Sun:1": "Your Sun sits in the first house. The self and the surface are the same layer, and people meet most of who you are in the first minute.",
+  "Moon:4": "Your Moon keeps its tides in the fourth house, home terrain for it; feelings need a private floor, and given one, they steady the whole chart.",
+  "Saturn:12": "Your Saturn keeps its ledger in the twelfth house. The accounting happens out of sight, and the discipline that costs you most is the kind nobody watches you practice.",
+  "Pluto:1": "Your Pluto digs deepest in the first house. Intensity arrives before your name does, and people tend to react to you before you have done anything.",
+  "Neptune:10": "Your Neptune softens the walls of the tenth house. The career refuses to stay literal; the public role works best when it carries some of the dream with it.",
+  "Mars:7": "Your Mars spends its heat in the seventh house. You meet your own drive most clearly in other people, which makes partners both the spark and the sparring ring.",
+  "Venus:2": "Your Venus looks for beauty in the second house. Taste and security share a wallet, and what you own has to please you, not just hold value.",
+  "Mercury:3": "Your Mercury does its thinking in the third house, its home terrain; the everyday mind runs fast, in words, and mostly out loud."
+};
+var NATAL_ASPECT_LINES = {
+  "Sun:conjunction:Moon": "Your Sun is fused to your Moon. You were born near a new moon, and what you want and what you need mostly agree; the risk is not noticing there are two of them.",
+  "Sun:opposition:Moon": "Your Sun faces off with your Moon, a full-moon birth; wanting and needing sit at opposite ends of one axis, and the life work is refusing to pick a permanent side.",
+  "Sun:square:Moon": "Your Sun grinds against your Moon. What you are building and what would feel like home pull at right angles, and every big decision has to answer to both.",
+  "Venus:conjunction:Mars": "Your Venus is fused to your Mars. Wanting and pursuing fire together; the charm has momentum, and the appetite has taste.",
+  "Moon:square:Saturn": "Your Moon grinds against your Saturn. Feelings meet a strict doorman, and the early lesson that comfort must be earned takes deliberate unlearning.",
+  "Sun:conjunction:Mercury": "Your Sun is fused to your Mercury. The self and its narrator share a desk, which makes the account vivid and the distance between you and your own opinions small.",
+  "Sun:sextile:Mars": "Your Sun has an open line to your Mars. A clear purpose can give you the push to begin. Choose a first step small enough to take while the intention is fresh.",
+  "Sun:square:Neptune": "Your Sun grinds against your Neptune. An imagined version of yourself can compete with the life you are living. Try an idea in ordinary conditions before treating it as your calling.",
+  "Sun:trine:Jupiter": "Your Sun runs downhill into your Jupiter. Confidence can grow through learning, travel, or a wider view. Give that optimism a specific question to explore.",
+  "Sun:conjunction:Venus": "Your Sun is fused to your Venus. What you value can be closely tied to how you see yourself. Notice which preferences remain yours when nobody else is there to approve them.",
+  "Sun:trine:Pluto": "Your Sun runs downhill into your Pluto. Sustained attention can help you remake something that no longer fits. Choose what deserves that depth, and leave room for what can stay simple.",
+  "Sun:sextile:Pluto": "Your Sun has an open line to your Pluto. An honest look beneath the surface can clarify your next direction. Start with one pattern you have the power to change.",
+  "Sun:square:Mars": "Your Sun grinds against your Mars. The urge to act can outrun the purpose behind it. Before taking on a challenge, ask whether winning it would move you toward what matters.",
+  "Sun:sextile:Uranus": "Your Sun has an open line to your Uranus. Trying a different route can reveal a direction that feels more your own. A small experiment gives you room to change without overturning everything.",
+  "Sun:sextile:Saturn": "Your Sun has an open line to your Saturn. A manageable commitment can turn intention into something lasting. Pick a rhythm you can keep, then let the repeated effort count.",
+  "Sun:square:Saturn": "Your Sun grinds against your Saturn. High standards can make each choice feel like a test of your worth. Define what is enough for this task before asking yourself for more.",
+  "Mars:sextile:Uranus": "Your Mars has an open line to your Uranus. A change of method can restore momentum when effort stalls. Test a different tool or approach before simply pushing harder.",
+  "Sun:sextile:Neptune": "Your Sun has an open line to your Neptune. Imagination can suggest a direction that a practical plan has missed. Give the idea a small, tangible form and see what it teaches you.",
+  "Sun:square:Pluto": "Your Sun grinds against your Pluto. Holding to your direction can become tangled with holding control. Notice where a firm choice would serve you better than a struggle for the last word.",
+  "Sun:conjunction:Jupiter": "Your Sun is fused to your Jupiter. Growth can feel central to who you are, making the next possibility hard to pass up. Choose which opportunity deserves your full attention.",
+  "Sun:square:Jupiter": "Your Sun grinds against your Jupiter. Enthusiasm can stretch a promise beyond the time or energy available. Check the size of the commitment while there is still room to adjust it.",
+  "Sun:conjunction:Mars": "Your Sun is fused to your Mars. Acting on a desire can feel like declaring who you are. Leave yourself a pause in which changing your approach is allowed to count as strength.",
+  "Sun:trine:Mars": "Your Sun runs downhill into your Mars. Purpose and action can reinforce each other with little persuasion. Use that ease on a chosen goal, and check whether the goal still fits as you go.",
+  "Mercury:trine:Saturn": "Your Mercury runs downhill into your Saturn. Patient thinking can turn a complicated idea into a clear structure. Use an outline or a careful question, while leaving space for evidence that changes the plan.",
+  "Sun:trine:Neptune": "Your Sun runs downhill into your Neptune. Imagination and empathy can become natural ways of expressing yourself. Give them a medium, and keep time for your own wishes alongside what you absorb from others.",
+  "Mars:trine:Neptune": "Your Mars runs downhill into your Neptune. An image, cause, or creative practice can draw effort from you without much forcing. Notice which inspiration still supports action after the first rush fades.",
+  "Sun:opposition:Mars": "Your Sun faces off with your Mars. Pursuing your direction and answering a challenge can pull you into different positions. Decide what you want before letting a contest set the terms.",
+  "Sun:conjunction:Neptune": "Your Sun is fused to your Neptune. Imagination can be woven into your sense of self, making possibilities feel personal. Let a vision guide an experiment without requiring it to explain your whole life.",
+  "Venus:conjunction:Pluto": "Your Venus is fused to your Pluto. Affection and taste can invite deep investment. Make room to name what you want and to hear a different answer without turning closeness into a test.",
+  "Mars:opposition:Neptune": "Your Mars faces off with your Neptune. Direct action and an ideal can pull apart when the next step is unclear. Name what is yours to do, then choose a step whose result you can observe.",
+  "Venus:conjunction:Jupiter": "Your Venus is fused to your Jupiter. Enjoyment and generosity can grow together, making a good experience easy to extend. Choose what you want to share and how much room you have for it.",
+  "Sun:sextile:Moon": "Your Sun has an open line to your Moon. Checking what you need can help you choose a direction. Make that check part of a decision, instead of waiting for discomfort to interrupt it.",
+  "Sun:trine:Moon": "Your Sun runs downhill into your Moon. Your direction and your need for comfort can support each other easily. Notice when familiar choices nourish you and when you are ready to try something else.",
+  "Moon:conjunction:Mercury": "Your Moon is fused to your Mercury. Feelings can quickly become words, and words can change how you feel. Leave room to describe an emotion before deciding what it means.",
+  "Moon:square:Mercury": "Your Moon grinds against your Mercury. The explanation that makes sense may not match the feeling underneath it. Give each a separate sentence before asking them to agree.",
+  "Moon:trine:Venus": "Your Moon runs downhill into your Venus. Comfort and affection can meet in small gestures, familiar pleasures, or a welcoming space. Ask which gesture would feel caring to the person receiving it."
+};
+var NATAL_PLANET_ORDER = [
+  "Sun",
+  "Moon",
+  "Mercury",
+  "Venus",
+  "Mars",
+  "Jupiter",
+  "Saturn",
+  "Uranus",
+  "Neptune",
+  "Pluto"
+];
+function aspectKey(a, type, b) {
+  const first2 = NATAL_PLANET_ORDER.indexOf(a);
+  const second = NATAL_PLANET_ORDER.indexOf(b);
+  return first2 >= 0 && second >= 0 && first2 > second ? `${b}:${type}:${a}` : `${a}:${type}:${b}`;
+}
+function planetInHouseLine(body2, house, opts = {}) {
+  const curated = CURATED[`${body2}:${house}`];
+  if (curated) return curated;
+  const verb = PLACED[body2];
+  const theme = NATAL_HOUSE_THEME[house];
+  if (!verb || !theme) return `Your ${body2} occupies the ${ORDINAL[house] ?? `${house}th`} house.`;
+  if (opts.withTheme === false) return `Your ${body2} ${verb} the ${ORDINAL[house]} house too.`;
+  return `Your ${body2} ${verb} the ${ORDINAL[house]} house: ${theme}.`;
+}
+function natalAspectLine(a, type, b) {
+  const curated = NATAL_ASPECT_LINES[aspectKey(a, type, b)];
+  if (curated) return curated;
+  const roleA = BODY_ROLE[a] ?? a.toLowerCase();
+  const roleB = BODY_ROLE[b] ?? b.toLowerCase();
+  const phrase = NATAL_ASPECT[type];
+  if (!phrase) return `Your ${a} aspects your ${b}.`;
+  return `Your ${a} ${phrase.verb} your ${b}. Your ${roleA} and your ${roleB} ${phrase.gloss}.`;
+}
+function topAspects(aspects, n = 4) {
+  const score2 = (x) => x.orb - (x.a === "Sun" || x.a === "Moon" || x.b === "Sun" || x.b === "Moon" ? 1.5 : 0);
+  return [...aspects].sort((x, y) => score2(x) - score2(y)).slice(0, n);
+}
+var ELEMENT_ABSENCE = {
+  fire: "no planet in fire. Initiative is a practice here, not a reflex",
+  earth: "no planet in earth. The practical layer has to be built by hand",
+  air: "no planet in air. Distance from a question takes deliberate effort",
+  water: "no planet in water. Feelings arrive on a delay, through the body or in private"
+};
+var ELEMENT_DOMINANT = {
+  fire: "the chart runs hot: initiative first, reflection after",
+  earth: "the chart is load-bearing: real things, on real timelines",
+  air: "the chart lives in language: patterns first, then feelings",
+  water: "the chart reads the room before the memo: feeling is the first sense"
+};
+var MODALITY_DOMINANT = {
+  cardinal: "heavy on cardinal signs, better at starting than sustaining",
+  fixed: "heavy on fixed signs, slow to commit, nearly impossible to move after",
+  mutable: "heavy on mutable signs, built to adapt, tempted to drift"
+};
+function chartWeather(bodies, houseOfBody) {
+  const lines = [];
+  const elements = elementBalance2(bodies);
+  const modalities = modalityBalance2(bodies);
+  const elEntries = Object.entries(elements).sort((a, b) => b[1] - a[1]);
+  const [topEl, topElCount] = elEntries[0];
+  const missing = elEntries.filter(([, c]) => c === 0).map(([e]) => e);
+  if (topElCount >= 4) {
+    lines.push(`${cap2(topEl)} carries ${topElCount} of the ten planets. ${cap2(ELEMENT_DOMINANT[topEl])}.`);
+  } else {
+    lines.push("The elements sit in rough balance. No single temperament runs the show.");
+  }
+  for (const el of missing) lines.push(`There is ${ELEMENT_ABSENCE[el]}.`);
+  const modEntries = Object.entries(modalities).sort(
+    (a, b) => b[1] - a[1]
+  );
+  const [topMod, topModCount] = modEntries[0];
+  if (topModCount >= 5) lines.push(`${cap2(String(topMod))} count ${topModCount} of ten: ${MODALITY_DOMINANT[topMod]}.`);
+  const rx = bodies.filter((b) => b.retrograde).length;
+  if (rx >= 3) {
+    lines.push(
+      `${rx} planets were retrograde when you were born, a chart that does much of its work on the second pass.`
+    );
+  }
+  const bySign = /* @__PURE__ */ new Map();
+  for (const b of bodies) {
+    if (!b.sign) continue;
+    bySign.set(b.sign, [...bySign.get(b.sign) ?? [], b.body]);
+  }
+  for (const [sign2, members] of bySign) {
+    if (members.length >= 3) {
+      lines.push(
+        `${members.join(", ")} all sit in ${cap2(sign2)}, a stellium; that sign's agenda gets ${members.length} votes.`
+      );
+    }
+  }
+  if (houseOfBody) {
+    const byHouse = /* @__PURE__ */ new Map();
+    for (const b of bodies) {
+      const h = houseOfBody(b.body);
+      if (!h) continue;
+      byHouse.set(h, [...byHouse.get(h) ?? [], b.body]);
+    }
+    for (const [house, members] of byHouse) {
+      if (members.length >= 3) {
+        lines.push(
+          `${members.join(", ")} share your ${ORDINAL[house]} house. ${cap2(NATAL_HOUSE_THEME[house])} takes outsized weight.`
+        );
+      }
+    }
+  }
+  return { lines, elements, modalities };
+}
+var cap2 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// src/lib/sign-display.ts
+var SIGN_TAGLINE_OVERRIDES = {
+  aries: "First out of the gate. Direct, fast, unafraid to start."
+};
+function signTagline(sign2) {
+  const resolved = typeof sign2 === "string" ? signBySlug(sign2) : sign2;
+  return SIGN_TAGLINE_OVERRIDES[resolved.slug] ?? resolved.essence;
+}
+
+// src/lib/natal-context.ts
+var NATAL_BODY_THEME = Object.freeze({
+  Sun: {
+    what: "The Sun represents identity, vitality, and the direction you grow into over time.",
+    topic: "identity and direction"
+  },
+  Moon: {
+    what: "The Moon represents emotional needs, instinctive reactions, memory, and what helps you feel safe.",
+    topic: "emotional needs and instincts"
+  },
+  Mercury: {
+    what: "Mercury represents how you think, learn, speak, and make sense of what is happening.",
+    topic: "thinking and communication"
+  },
+  Venus: {
+    what: "Venus represents attraction, affection, taste, pleasure, and how you create harmony with other people.",
+    topic: "affection, pleasure, and values"
+  },
+  Mars: {
+    what: "Mars represents drive, desire, anger, courage, and how you act when something matters.",
+    topic: "drive and self-assertion"
+  },
+  Jupiter: {
+    what: "Jupiter represents growth, confidence, belief, opportunity, and where you look for a wider horizon.",
+    topic: "growth and belief"
+  },
+  Saturn: {
+    what: "Saturn represents limits, responsibility, patience, and the skills you build through sustained effort.",
+    topic: "responsibility and long-term growth"
+  },
+  Uranus: {
+    what: "Uranus represents independence, disruption, invention, and the part of you that resists an inherited script.",
+    topic: "independence and change"
+  },
+  Neptune: {
+    what: "Neptune represents imagination, ideals, longing, sensitivity, and the places where boundaries can blur.",
+    topic: "imagination and ideals"
+  },
+  Pluto: {
+    what: "Pluto represents power, compulsion, release, and the slow changes that remake something from the roots.",
+    topic: "power and deep change"
+  },
+  "North Node": {
+    what: "The North Node is a calculated point where the Moon\u2019s orbit crosses the Sun\u2019s apparent path. Modern astrology treats it as a direction of growth, not a fixed destiny.",
+    topic: "a direction of growth"
+  },
+  "South Node": {
+    what: "The South Node is the calculated point exactly opposite the North Node. Modern astrology associates it with familiar patterns and existing strengths, not a fixed past or destiny.",
+    topic: "familiar patterns and existing strengths"
+  }
+});
+var ORDINAL2 = [
+  "",
+  "first",
+  "second",
+  "third",
+  "fourth",
+  "fifth",
+  "sixth",
+  "seventh",
+  "eighth",
+  "ninth",
+  "tenth",
+  "eleventh",
+  "twelfth"
+];
+function isNode(body2) {
+  return body2 === "North Node" || body2 === "South Node";
+}
+function signContext(sign2) {
+  const essence = signTagline(sign2);
+  return `In ${sign2.name}, it takes on a ${sign2.modality} ${sign2.element} style. ${essence}`;
+}
+function houseContext(house) {
+  if (house == null) {
+    return "A birth time is needed to place it in a house, so this chart cannot say which area of life carries it.";
+  }
+  const theme = NATAL_HOUSE_THEME[house];
+  if (!theme) return `It falls in house ${house}, the life area where this placement is most likely to show up.`;
+  return `The ${ORDINAL2[house] ?? `${house}th`} house brings it into ${theme}.`;
+}
+function motionContext(body2, speed) {
+  if (speed == null) return void 0;
+  if (isNode(body2)) {
+    return speed < 0 ? "The negative speed is normal: lunar nodes usually move backward through the zodiac. Astrologers do not read this like a retrograde planet." : "The true node can briefly move forward. That motion does not make it a planet or make this interpretation stronger.";
+  }
+  if (speed >= 0) return void 0;
+  return `${body2} appeared to move backward from Earth when you were born. Astrology calls this retrograde; the planet did not reverse its orbit.`;
+}
+function placementContext(body2, signSlug4, house, speed) {
+  const theme = NATAL_BODY_THEME[body2];
+  const sign2 = signBySlug(signSlug4);
+  const location = houseContext(house);
+  const housePhrase = house == null ? "The missing birth time means the life area remains open." : `The ${ORDINAL2[house] ?? `${house}th`} house shows the life area where that pattern is most visible.`;
+  const synthesis = isNode(body2) ? `${sign2.name} describes the style of ${theme.topic}. ${housePhrase} This is a symbolic lens, not a prediction or fixed destiny.` : `${sign2.name} shapes your ${theme.topic}; ${housePhrase} It describes a tendency, not a guarantee of what will happen.`;
+  return {
+    what: theme.what,
+    how: signContext(sign2),
+    where: location,
+    synthesis,
+    motionNote: motionContext(body2, speed)
+  };
+}
+
+// src/ai-tools/features/natal-chart.ts
+var DEFAULT_ORIGIN3 = "https://zodiacs.org";
+var ZONE_PATTERN4 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var PLAIN_TEXT2 = /^[^\u0000-\u001f\u007f<>{}[\]\\`]+$/u;
+var HOUR3 = 36e5;
+var NATAL_MIN_YEAR = 1800;
+var NATAL_MAX_YEAR = 2199;
+var NATAL_TOP_ASPECTS = 8;
+var NATAL_NOTE = "Astrology\u2019s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.";
+var PLANETS2 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+var natalChartInput = z4.strictObject({
+  birthDate: z4.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
+  time: z4.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, such as 08:30, only if the person knows it. Never guess it. Needs zone."),
+  zone: z4.string().min(1).max(64).regex(ZONE_PATTERN4).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
+  latitude: z4.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign and the houses. Give it with longitude and zone. Nothing is stored."),
+  longitude: z4.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
+  place: z4.string().trim().min(1).max(80).regex(PLAIN_TEXT2).optional().describe("Optional birthplace name, such as Madrid, Spain. Display only: it is not used in the calculation and is not stored.")
+}).superRefine((args, context) => {
+  if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
+  if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
+});
+var signSlug3 = z4.enum(SIGNS2.map((sign2) => sign2.slug));
+var tally2 = (keys) => z4.object(Object.fromEntries(keys.map((key) => [key, z4.number().int().min(0)])));
+var bigThreeEntry = z4.object({
+  /** The sign when the chart settles it; null when it is unknown. */
+  sign: signSlug3.nullable(),
+  /** Without a birth time, the signs the body could be in that day; with one, just its sign. Empty for an unknown rising sign. */
+  possibleSigns: z4.array(signSlug3),
+  meaning: z4.string().nullable(),
+  pageUrl: z4.url().nullable()
+});
+var natalChartData = z4.object({
+  birthDate: z4.string(),
+  time: z4.string().nullable(),
+  zone: z4.string().nullable(),
+  place: z4.string().nullable(),
+  timeKnown: z4.boolean(),
+  placed: z4.boolean(),
+  /** The instant the chart is cast for: the birth time, else local noon (or noon UTC without a zone). */
+  castFor: z4.object({ utc: z4.string(), basis: z4.enum(["birth-time", "local-noon", "utc-noon"]) }),
+  houseSystem: z4.enum(["whole-sign"]).nullable(),
+  sun: bigThreeEntry,
+  moon: bigThreeEntry,
+  rising: bigThreeEntry,
+  planets: z4.array(z4.object({
+    body: z4.enum(PLANETS2),
+    sign: signSlug3.nullable(),
+    possibleSigns: z4.array(signSlug3),
+    /** Degree and minute in the sign, such as 12°37′ Taurus; null when the sign is unknown. */
+    position: z4.string().nullable(),
+    retrograde: z4.boolean(),
+    house: z4.number().int().min(1).max(12).nullable(),
+    signLine: z4.string().nullable(),
+    houseLine: z4.string().nullable(),
+    pageUrl: z4.url().nullable()
+  })).length(PLANETS2.length),
+  angles: z4.object({ ascendant: z4.string(), midheaven: z4.string() }).nullable(),
+  aspects: z4.array(z4.object({
+    a: z4.enum(PLANETS2),
+    b: z4.enum(PLANETS2),
+    type: z4.enum(["conjunction", "sextile", "square", "trine", "opposition"]),
+    orb: z4.number().min(0),
+    line: z4.string()
+  })).max(NATAL_TOP_ASPECTS),
+  balance: z4.object({ elements: tally2(["fire", "earth", "air", "water"]), modalities: tally2(["cardinal", "fixed", "mutable"]), lines: z4.array(z4.string()) }),
+  /** What the chart cannot say from the details given, in plain sentences. */
+  unknown: z4.array(z4.string()),
+  chartUrl: z4.url(),
+  note: z4.literal(NATAL_NOTE)
+});
+async function localInstant2(date3, time, zone7, longitude2, clock2) {
+  await clock2.prepareLocalTime(date3, zone7);
+  return (longitude2 !== void 0 ? clock2.resolveLocalToUtc(date3, time, zone7, { longitude: longitude2 }) : clock2.resolveLocalToUtc(date3, time, zone7)).utc;
+}
+var slugAt2 = (index) => index === null ? null : SIGNS2[index].slug;
+var signName4 = (slug) => SIGNS2.find((sign2) => sign2.slug === slug).name;
+var placementUrl = (origin, body2, slug) => `${origin}/learn/placements/${body2.toLowerCase()}-in-${slug}/`;
+async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3) {
+  const date3 = parseCivilDate(args.birthDate);
+  if (!date3 || date3.year < NATAL_MIN_YEAR || date3.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
+  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+  const timeKnown = args.time !== void 0;
+  const placed = args.latitude !== void 0 && args.longitude !== void 0;
+  const utc = args.zone ? await localInstant2(args.birthDate, args.time ?? "12:00", args.zone, args.longitude, clock2) : /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
+  const chart = computeChart3({ utc, ...placed ? { latitude: args.latitude, longitude: args.longitude } : {}, houseSystem: "whole", timeKnown });
+  const angles = timeKnown && placed ? chart.angles : null;
+  let possible = (body2) => [slugAt2(signIndexForLongitude2(lonOf(chart, body2)))];
+  if (!timeKnown) {
+    const [first2, last2] = args.zone ? [await localInstant2(args.birthDate, "00:00", args.zone, args.longitude, clock2), await localInstant2(args.birthDate, "23:59", args.zone, args.longitude, clock2)] : [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR3), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR3)];
+    const ends = [first2, last2].map((at) => computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }));
+    possible = (body2) => {
+      const indices = new Set(ends.map((end) => signIndexForLongitude2(lonOf(end, body2))));
+      const [a, b] = [signIndexForLongitude2(lonOf(ends[0], body2)), signIndexForLongitude2(lonOf(ends[1], body2))];
+      if (a !== b) for (let index = a; index !== b; index = (index + 1) % 12) indices.add(index);
+      return [...indices].map((index) => SIGNS2[index].slug);
+    };
+  }
+  const settled = (body2) => timeKnown || possible(body2).length === 1 ? possible(body2)[0] : null;
+  const houseFor = (lon) => angles && chart.houses ? houseOf(lon, chart.houses.cusps) : null;
+  const planets = PLANETS2.map((body2) => {
+    const row = chart.bodies.find((entry) => entry.body === body2);
+    const sign2 = settled(body2);
+    const house = sign2 ? houseFor(row.lon) : null;
+    const context = sign2 ? placementContext(body2, sign2, house, row.speed) : null;
+    return {
+      body: body2,
+      sign: sign2,
+      possibleSigns: possible(body2),
+      position: sign2 ? formatLongitude(row.lon) : null,
+      retrograde: row.retrograde,
+      house,
+      signLine: context ? context.how : null,
+      houseLine: house ? planetInHouseLine(body2, house) : null,
+      pageUrl: sign2 ? placementUrl(origin, body2, sign2) : null
+    };
+  });
+  const sun = planets[0];
+  const moon = planets[1];
+  const risingSlug = angles ? SIGNS2[signIndexForLongitude2(angles.asc)].slug : null;
+  const aspectBodies = new Set(timeKnown ? PLANETS2 : PLANETS2.filter((body2) => body2 !== "Moon"));
+  const aspects = topAspects(chart.aspects.filter((aspect) => aspectBodies.has(aspect.a) && aspectBodies.has(aspect.b)), NATAL_TOP_ASPECTS).map((aspect) => ({ a: aspect.a, b: aspect.b, type: aspect.type, orb: Math.round(aspect.orb * 10) / 10, line: natalAspectLine(aspect.a, aspect.type, aspect.b) }));
+  const weatherBodies = PLANETS2.map((body2) => {
+    const row = chart.bodies.find((entry) => entry.body === body2);
+    return { body: body2, lon: row.lon, retrograde: row.retrograde, sign: settled(body2) ?? void 0 };
+  });
+  const weather = chartWeather(weatherBodies, angles ? (body2) => houseFor(chart.bodies.find((entry) => entry.body === body2).lon) : void 0);
+  const unknown = [];
+  if (!timeKnown) {
+    unknown.push("No birth time was given, so the rising sign and the houses are unknown, and the chart is cast for midday.");
+    unknown.push(moon.possibleSigns.length > 1 ? `The Moon changed sign that day: it was in ${moon.possibleSigns.map(signName4).join(" or ")}, depending on the birth time.` : `The Moon stayed in ${signName4(moon.possibleSigns[0])} all that day, but its exact degree and aspects need the birth time.`);
+    for (const row of planets.slice(2)) {
+      if (!row.sign) unknown.push(`${row.body} changed sign that day, from ${row.possibleSigns.map(signName4).join(" to ")}; the birth time settles it.`);
+    }
+    if (!sun.sign) unknown.push(`The Sun changed sign that day, from ${sun.possibleSigns.map(signName4).join(" to ")}; the birth time settles the Sun sign.`);
+  } else if (!placed) {
+    unknown.push("No birthplace coordinates were given, so the rising sign and the houses are unknown.");
+  }
+  if (!args.zone) unknown.push("No time zone was given, so the chart is cast for noon UTC on the birth date.");
+  const big = (kind, slug, options, url) => ({
+    sign: slug,
+    possibleSigns: options,
+    meaning: slug ? bigThree(kind, slug) || null : null,
+    pageUrl: url
+  });
+  const chartUrl = placed && args.zone ? `${origin}/birth-chart/#c=${encodeChartLink({ date: args.birthDate, time: args.time ?? null, timeKnown, lat: args.latitude, lon: args.longitude, tz: args.zone, ...args.place ? { place: args.place } : {}, houseSystem: "whole" })}` : `${origin}/birth-chart/#${dateHandoffFragment(args.birthDate, args.time ?? null)}`;
+  const data = {
+    birthDate: args.birthDate,
+    time: args.time ?? null,
+    zone: args.zone ?? null,
+    place: args.place ?? null,
+    timeKnown,
+    placed,
+    castFor: { utc: utc.toISOString(), basis: timeKnown ? "birth-time" : args.zone ? "local-noon" : "utc-noon" },
+    houseSystem: angles ? "whole-sign" : null,
+    sun: big("sun", sun.sign, sun.possibleSigns, sun.sign ? `${origin}/${sun.sign}/` : null),
+    moon: big("moon", moon.sign, moon.possibleSigns, moon.sign ? placementUrl(origin, "Moon", moon.sign) : null),
+    rising: big("rising", risingSlug, risingSlug ? [risingSlug] : [], risingSlug ? `${origin}/rising-sign/${risingSlug}/` : null),
+    planets,
+    angles: angles ? { ascendant: formatLongitude(angles.asc), midheaven: formatLongitude(angles.mc) } : null,
+    aspects,
+    balance: { elements: weather.elements, modalities: weather.modalities, lines: weather.lines },
+    unknown,
+    chartUrl,
+    note: NATAL_NOTE
+  };
+  const links = [
+    { title: "Open this chart on Zodiacs", url: chartUrl },
+    ...sun.sign ? [{ title: `${signName4(sun.sign)} on Zodiacs`, url: `${origin}/${sun.sign}/` }] : [],
+    { title: "How to read a birth chart", url: `${origin}/learn/how-to-read-a-birth-chart/` }
+  ];
+  return { data, links };
+}
+function lonOf(chart, body2) {
+  return chart.bodies.find((row) => row.body === body2).lon;
+}
+
+// src/ai-tools/features/horoscope-period.ts
+import { z as z5 } from "zod";
+
+// src/data/ingresses.json
+var ingresses_default = {
+  generatedAt: "2026-10-07T14:49:40.658Z",
+  horizons: [
+    {
+      planets: [
+        "Sun",
+        "Mercury",
+        "Venus",
+        "Mars"
+      ],
+      from: "2026-01-01",
+      to: "2029-07-01"
+    },
+    {
+      planets: [
+        "Jupiter"
+      ],
+      from: "2014-01-01",
+      to: "2046-01-01"
+    },
+    {
+      planets: [
+        "Saturn"
+      ],
+      from: "1980-01-01",
+      to: "2080-01-01"
+    },
+    {
+      planets: [
+        "Uranus",
+        "Neptune",
+        "Pluto"
+      ],
+      from: "1900-01-01",
+      to: "2100-01-01"
+    }
+  ],
+  windows: [
+    {
+      planet: "Neptune",
+      sign: "cancer",
+      from: "1901-07-19T23:29:00.641Z",
+      to: "1901-12-25T14:13:06.211Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "gemini",
+      from: "1901-12-25T14:13:06.211Z",
+      to: "1902-05-21T12:52:02.763Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "cancer",
+      from: "1902-05-21T12:52:02.763Z",
+      to: "1914-09-23T16:52:34.739Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "capricorn",
+      from: "1904-12-20T13:57:32.463Z",
+      to: "1912-01-30T23:14:11.697Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aquarius",
+      from: "1912-01-30T23:14:11.697Z",
+      to: "1912-09-04T15:42:28.390Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "capricorn",
+      from: "1912-09-04T15:42:28.390Z",
+      to: "1912-11-12T09:39:58.118Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "cancer",
+      from: "1912-09-10T14:32:21.239Z",
+      to: "1912-10-20T10:21:21.845Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "gemini",
+      from: "1912-10-20T10:21:21.845Z",
+      to: "1913-07-09T21:45:48.287Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aquarius",
+      from: "1912-11-12T09:39:58.118Z",
+      to: "1919-04-01T01:52:27.035Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "cancer",
+      from: "1913-07-09T21:45:48.287Z",
+      to: "1913-12-28T05:01:58.873Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "gemini",
+      from: "1913-12-28T05:01:58.873Z",
+      to: "1914-05-26T20:02:48.457Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "cancer",
+      from: "1914-05-26T20:02:48.457Z",
+      to: "1937-10-07T11:36:34.157Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "leo",
+      from: "1914-09-23T16:52:34.739Z",
+      to: "1914-12-15T00:38:41.036Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "cancer",
+      from: "1914-12-15T00:38:41.036Z",
+      to: "1915-07-19T11:15:45.527Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "leo",
+      from: "1915-07-19T11:15:45.527Z",
+      to: "1916-03-19T23:32:55.824Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "cancer",
+      from: "1916-03-19T23:32:55.824Z",
+      to: "1916-05-02T02:55:44.508Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "leo",
+      from: "1916-05-02T02:55:44.508Z",
+      to: "1928-09-21T09:51:02.284Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "pisces",
+      from: "1919-04-01T01:52:27.035Z",
+      to: "1919-08-16T22:07:08.928Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aquarius",
+      from: "1919-08-16T22:07:08.928Z",
+      to: "1920-01-22T18:25:26.167Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "pisces",
+      from: "1920-01-22T18:25:26.167Z",
+      to: "1927-03-31T17:26:06.062Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aries",
+      from: "1927-03-31T17:26:06.062Z",
+      to: "1927-11-04T10:16:23.526Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "pisces",
+      from: "1927-11-04T10:16:23.526Z",
+      to: "1928-01-13T09:02:35.919Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aries",
+      from: "1928-01-13T09:02:35.919Z",
+      to: "1934-06-06T14:54:35.747Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "virgo",
+      from: "1928-09-21T09:51:02.284Z",
+      to: "1929-02-19T14:13:43.764Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "leo",
+      from: "1929-02-19T14:13:43.764Z",
+      to: "1929-07-24T12:51:44.286Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "virgo",
+      from: "1929-07-24T12:51:44.286Z",
+      to: "1942-10-03T16:51:59.248Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "taurus",
+      from: "1934-06-06T14:54:35.747Z",
+      to: "1934-10-10T01:33:44.659Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aries",
+      from: "1934-10-10T01:33:44.659Z",
+      to: "1935-03-28T02:18:02.285Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "taurus",
+      from: "1935-03-28T02:18:02.285Z",
+      to: "1941-08-07T15:07:59.967Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "leo",
+      from: "1937-10-07T11:36:34.157Z",
+      to: "1937-11-25T09:51:28.774Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "cancer",
+      from: "1937-11-25T09:51:28.774Z",
+      to: "1938-08-03T17:42:52.610Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "leo",
+      from: "1938-08-03T17:42:52.610Z",
+      to: "1939-02-07T13:16:47.709Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "cancer",
+      from: "1939-02-07T13:16:47.709Z",
+      to: "1939-06-14T04:29:10.131Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "leo",
+      from: "1939-06-14T04:29:10.131Z",
+      to: "1956-10-20T05:50:23.612Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "gemini",
+      from: "1941-08-07T15:07:59.967Z",
+      to: "1941-10-05T02:30:03.882Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "taurus",
+      from: "1941-10-05T02:30:03.882Z",
+      to: "1942-05-15T03:57:36.019Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "gemini",
+      from: "1942-05-15T03:57:36.019Z",
+      to: "1948-08-30T15:29:03.842Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "libra",
+      from: "1942-10-03T16:51:59.248Z",
+      to: "1943-04-17T11:01:26.945Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "virgo",
+      from: "1943-04-17T11:01:26.945Z",
+      to: "1943-08-02T19:07:47.182Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "libra",
+      from: "1943-08-02T19:07:47.182Z",
+      to: "1955-12-24T18:37:19.894Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "cancer",
+      from: "1948-08-30T15:29:03.842Z",
+      to: "1948-11-12T13:36:28.321Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "gemini",
+      from: "1948-11-12T13:36:28.321Z",
+      to: "1949-06-10T04:04:53.940Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "cancer",
+      from: "1949-06-10T04:04:53.940Z",
+      to: "1955-08-24T18:15:39.230Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "leo",
+      from: "1955-08-24T18:15:39.230Z",
+      to: "1956-01-28T01:49:40.386Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "scorpio",
+      from: "1955-12-24T18:37:19.894Z",
+      to: "1956-03-11T22:16:00.578Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "cancer",
+      from: "1956-01-28T01:49:40.386Z",
+      to: "1956-06-10T01:48:02.005Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "libra",
+      from: "1956-03-11T22:16:00.578Z",
+      to: "1956-10-19T11:19:43.841Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "leo",
+      from: "1956-06-10T01:48:02.005Z",
+      to: "1961-11-01T15:34:47.047Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "scorpio",
+      from: "1956-10-19T11:19:43.841Z",
+      to: "1957-06-15T14:43:15.762Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "virgo",
+      from: "1956-10-20T05:50:23.612Z",
+      to: "1957-01-15T03:08:33.359Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "leo",
+      from: "1957-01-15T03:08:33.359Z",
+      to: "1957-08-19T04:09:39.469Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "libra",
+      from: "1957-06-15T14:43:15.762Z",
+      to: "1957-08-06T13:29:47.128Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "scorpio",
+      from: "1957-08-06T13:29:47.128Z",
+      to: "1970-01-04T23:38:20.179Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "virgo",
+      from: "1957-08-19T04:09:39.469Z",
+      to: "1958-04-11T15:29:30.537Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "leo",
+      from: "1958-04-11T15:29:30.537Z",
+      to: "1958-06-10T18:19:45.557Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "virgo",
+      from: "1958-06-10T18:19:45.557Z",
+      to: "1971-10-05T05:50:43.733Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "virgo",
+      from: "1961-11-01T15:34:47.047Z",
+      to: "1962-01-10T06:18:39.392Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "leo",
+      from: "1962-01-10T06:18:39.392Z",
+      to: "1962-08-10T01:09:50.201Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "virgo",
+      from: "1962-08-10T01:09:50.201Z",
+      to: "1968-09-28T16:48:07.937Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "libra",
+      from: "1968-09-28T16:48:07.937Z",
+      to: "1969-05-20T18:20:11.038Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "virgo",
+      from: "1969-05-20T18:20:11.038Z",
+      to: "1969-06-24T12:52:41.098Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "libra",
+      from: "1969-06-24T12:52:41.098Z",
+      to: "1974-11-21T09:58:08.644Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "sagittarius",
+      from: "1970-01-04T23:38:20.179Z",
+      to: "1970-05-02T21:04:14.648Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "scorpio",
+      from: "1970-05-02T21:04:14.648Z",
+      to: "1970-11-06T19:20:38.357Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "sagittarius",
+      from: "1970-11-06T19:20:38.357Z",
+      to: "1984-01-19T04:45:01.798Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "libra",
+      from: "1971-10-05T05:50:43.733Z",
+      to: "1972-04-17T08:26:45.321Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "virgo",
+      from: "1972-04-17T08:26:45.321Z",
+      to: "1972-07-30T11:02:55.930Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "libra",
+      from: "1972-07-30T11:02:55.930Z",
+      to: "1983-11-05T20:39:19.668Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "scorpio",
+      from: "1974-11-21T09:58:08.644Z",
+      to: "1975-05-01T17:08:58.274Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "libra",
+      from: "1975-05-01T17:08:58.274Z",
+      to: "1975-09-08T05:41:27.963Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "scorpio",
+      from: "1975-09-08T05:41:27.963Z",
+      to: "1981-02-17T11:28:35.712Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "libra",
+      from: "1980-09-21T11:01:17.672Z",
+      to: "1982-11-29T10:25:27.675Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "sagittarius",
+      from: "1981-02-17T11:28:35.712Z",
+      to: "1981-03-20T20:44:20.111Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "scorpio",
+      from: "1981-03-20T20:44:20.111Z",
+      to: "1981-11-16T12:33:20.196Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "sagittarius",
+      from: "1981-11-16T12:33:20.196Z",
+      to: "1988-02-15T01:14:59.043Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "1982-11-29T10:25:27.675Z",
+      to: "1983-05-06T19:30:18.084Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "libra",
+      from: "1983-05-06T19:30:18.084Z",
+      to: "1983-08-24T11:55:12.143Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "1983-08-24T11:55:12.143Z",
+      to: "1985-11-17T01:58:37.779Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "scorpio",
+      from: "1983-11-05T20:39:19.668Z",
+      to: "1984-05-18T15:20:22.364Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "capricorn",
+      from: "1984-01-19T04:45:01.798Z",
+      to: "1984-06-22T22:48:37.782Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "libra",
+      from: "1984-05-18T15:20:22.364Z",
+      to: "1984-08-28T04:04:18.878Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "sagittarius",
+      from: "1984-06-22T22:48:37.782Z",
+      to: "1984-11-21T15:03:37.404Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "scorpio",
+      from: "1984-08-28T04:04:18.878Z",
+      to: "1995-01-17T08:52:13.546Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "capricorn",
+      from: "1984-11-21T15:03:37.404Z",
+      to: "1998-01-29T01:29:44.384Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "sagittarius",
+      from: "1985-11-17T01:58:37.779Z",
+      to: "1988-02-13T23:36:15.882Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "capricorn",
+      from: "1988-02-13T23:36:15.882Z",
+      to: "1988-06-10T05:36:26.511Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "capricorn",
+      from: "1988-02-15T01:14:59.043Z",
+      to: "1988-05-27T00:03:25.888Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "sagittarius",
+      from: "1988-05-27T00:03:25.888Z",
+      to: "1988-12-02T16:11:52.907Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "sagittarius",
+      from: "1988-06-10T05:36:26.511Z",
+      to: "1988-11-12T09:20:41.955Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "capricorn",
+      from: "1988-11-12T09:20:41.955Z",
+      to: "1991-02-06T18:50:54.883Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "capricorn",
+      from: "1988-12-02T16:11:52.907Z",
+      to: "1995-04-01T14:02:15.680Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aquarius",
+      from: "1991-02-06T18:50:54.883Z",
+      to: "1993-05-21T05:00:30.087Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "pisces",
+      from: "1993-05-21T05:00:30.087Z",
+      to: "1993-06-30T08:21:58.949Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aquarius",
+      from: "1993-06-30T08:21:58.949Z",
+      to: "1994-01-28T23:50:07.849Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "pisces",
+      from: "1994-01-28T23:50:07.849Z",
+      to: "1996-04-07T08:53:37.447Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "sagittarius",
+      from: "1995-01-17T08:52:13.546Z",
+      to: "1995-04-21T03:19:56.326Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aquarius",
+      from: "1995-04-01T14:02:15.680Z",
+      to: "1995-06-08T23:37:32.553Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "scorpio",
+      from: "1995-04-21T03:19:56.326Z",
+      to: "1995-11-10T18:59:21.958Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "capricorn",
+      from: "1995-06-08T23:37:32.553Z",
+      to: "1996-01-12T08:03:42.774Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "sagittarius",
+      from: "1995-11-10T18:59:21.958Z",
+      to: "2008-01-26T02:41:18.589Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aquarius",
+      from: "1996-01-12T08:03:42.774Z",
+      to: "2003-03-10T21:30:53.592Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aries",
+      from: "1996-04-07T08:53:37.447Z",
+      to: "1998-06-09T06:09:49.841Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "aquarius",
+      from: "1998-01-29T01:29:44.384Z",
+      to: "1998-08-23T02:39:13.921Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "taurus",
+      from: "1998-06-09T06:09:49.841Z",
+      to: "1998-10-25T18:32:21.468Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "capricorn",
+      from: "1998-08-23T02:39:13.921Z",
+      to: "1998-11-27T23:09:48.701Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aries",
+      from: "1998-10-25T18:32:21.468Z",
+      to: "1999-03-01T01:34:18.933Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "aquarius",
+      from: "1998-11-27T23:09:48.701Z",
+      to: "2011-04-04T10:08:13.463Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "taurus",
+      from: "1999-03-01T01:34:18.933Z",
+      to: "2000-08-10T01:34:34.649Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "gemini",
+      from: "2000-08-10T01:34:34.649Z",
+      to: "2000-10-16T01:53:55.693Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "taurus",
+      from: "2000-10-16T01:53:55.693Z",
+      to: "2001-04-20T21:23:28.830Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "gemini",
+      from: "2001-04-20T21:23:28.830Z",
+      to: "2003-06-04T01:22:16.060Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "pisces",
+      from: "2003-03-10T21:30:53.592Z",
+      to: "2003-09-15T02:48:18.878Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "cancer",
+      from: "2003-06-04T01:22:16.060Z",
+      to: "2005-07-16T12:26:17.868Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aquarius",
+      from: "2003-09-15T02:48:18.878Z",
+      to: "2003-12-30T10:00:24.889Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "pisces",
+      from: "2003-12-30T10:00:24.889Z",
+      to: "2010-05-28T01:52:20.564Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "leo",
+      from: "2005-07-16T12:26:17.868Z",
+      to: "2007-09-02T13:40:44.614Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "virgo",
+      from: "2007-09-02T13:40:44.614Z",
+      to: "2009-10-29T17:25:16.908Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "capricorn",
+      from: "2008-01-26T02:41:18.589Z",
+      to: "2008-06-14T05:08:07.145Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "sagittarius",
+      from: "2008-06-14T05:08:07.145Z",
+      to: "2008-11-27T01:05:44.674Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "capricorn",
+      from: "2008-11-27T01:05:44.674Z",
+      to: "2023-03-23T12:48:15.218Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "libra",
+      from: "2009-10-29T17:25:16.908Z",
+      to: "2010-04-07T18:18:53.210Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "virgo",
+      from: "2010-04-07T18:18:53.210Z",
+      to: "2010-07-21T15:36:36.756Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aries",
+      from: "2010-05-28T01:52:20.564Z",
+      to: "2010-08-14T03:25:55.806Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "libra",
+      from: "2010-07-21T15:36:36.756Z",
+      to: "2012-10-05T20:34:48.808Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "pisces",
+      from: "2010-08-14T03:25:55.806Z",
+      to: "2011-03-12T01:00:04.660Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aries",
+      from: "2011-03-12T01:00:04.660Z",
+      to: "2018-05-15T14:58:56.635Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "pisces",
+      from: "2011-04-04T10:08:13.463Z",
+      to: "2011-08-05T07:19:01.333Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "aquarius",
+      from: "2011-08-05T07:19:01.333Z",
+      to: "2012-02-03T16:09:53.390Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "pisces",
+      from: "2012-02-03T16:09:53.390Z",
+      to: "2025-03-30T09:57:19.227Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "2012-10-05T20:34:48.808Z",
+      to: "2014-12-23T16:33:36.456Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "leo",
+      from: "2014-07-16T10:31:14.692Z",
+      to: "2015-08-11T11:06:50.577Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "sagittarius",
+      from: "2014-12-23T16:33:36.456Z",
+      to: "2015-06-15T00:36:44.316Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "2015-06-15T00:36:44.316Z",
+      to: "2015-09-18T02:45:20.982Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "virgo",
+      from: "2015-08-11T11:06:50.577Z",
+      to: "2016-09-09T11:08:05.600Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "sagittarius",
+      from: "2015-09-18T02:45:20.982Z",
+      to: "2017-12-20T04:45:58.239Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "libra",
+      from: "2016-09-09T11:08:05.600Z",
+      to: "2017-10-10T13:15:26.976Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "scorpio",
+      from: "2017-10-10T13:15:26.976Z",
+      to: "2018-11-08T12:31:35.800Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "capricorn",
+      from: "2017-12-20T04:45:58.239Z",
+      to: "2020-03-22T04:12:05.391Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "taurus",
+      from: "2018-05-15T14:58:56.635Z",
+      to: "2018-11-06T19:23:11.945Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aries",
+      from: "2018-11-06T19:23:11.945Z",
+      to: "2019-03-06T08:05:24.224Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "sagittarius",
+      from: "2018-11-08T12:31:35.800Z",
+      to: "2019-12-02T18:12:28.498Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "taurus",
+      from: "2019-03-06T08:05:24.224Z",
+      to: "2025-07-07T07:58:22.576Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "capricorn",
+      from: "2019-12-02T18:12:28.498Z",
+      to: "2020-12-19T13:09:09.864Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aquarius",
+      from: "2020-03-22T04:12:05.391Z",
+      to: "2020-07-01T23:27:33.977Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "capricorn",
+      from: "2020-07-01T23:27:33.977Z",
+      to: "2020-12-17T05:02:00.354Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aquarius",
+      from: "2020-12-17T05:02:00.354Z",
+      to: "2023-03-07T13:41:14.855Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aquarius",
+      from: "2020-12-19T13:09:09.864Z",
+      to: "2021-05-13T22:49:23.451Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "pisces",
+      from: "2021-05-13T22:49:23.451Z",
+      to: "2021-07-28T12:24:53.307Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aquarius",
+      from: "2021-07-28T12:24:53.307Z",
+      to: "2021-12-29T04:16:59.015Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "pisces",
+      from: "2021-12-29T04:16:59.015Z",
+      to: "2022-05-10T23:29:49.375Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aries",
+      from: "2022-05-10T23:29:49.375Z",
+      to: "2022-10-28T04:44:40.270Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "pisces",
+      from: "2022-10-28T04:44:40.270Z",
+      to: "2022-12-20T14:54:48.638Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aries",
+      from: "2022-12-20T14:54:48.638Z",
+      to: "2023-05-16T17:28:05.018Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "pisces",
+      from: "2023-03-07T13:41:14.855Z",
+      to: "2025-05-25T04:16:42.370Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aquarius",
+      from: "2023-03-23T12:48:15.218Z",
+      to: "2023-06-11T09:04:12.650Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "taurus",
+      from: "2023-05-16T17:28:05.018Z",
+      to: "2024-05-25T23:20:00.831Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "capricorn",
+      from: "2023-06-11T09:04:12.650Z",
+      to: "2024-01-21T01:10:40.625Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aquarius",
+      from: "2024-01-21T01:10:40.625Z",
+      to: "2024-09-01T23:29:02.533Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "gemini",
+      from: "2024-05-25T23:20:00.831Z",
+      to: "2025-06-09T21:04:57.144Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "capricorn",
+      from: "2024-09-01T23:29:02.533Z",
+      to: "2024-11-19T21:06:21.066Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aquarius",
+      from: "2024-11-19T21:06:21.066Z",
+      to: "2043-03-09T01:55:54.796Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "aries",
+      from: "2025-03-30T09:57:19.227Z",
+      to: "2025-10-22T13:18:34.123Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aries",
+      from: "2025-05-25T04:16:42.370Z",
+      to: "2025-09-01T07:14:17.845Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "cancer",
+      from: "2025-06-09T21:04:57.144Z",
+      to: "2026-06-30T05:56:21.335Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "gemini",
+      from: "2025-07-07T07:58:22.576Z",
+      to: "2025-11-08T02:04:28.463Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "pisces",
+      from: "2025-09-01T07:14:17.845Z",
+      to: "2026-02-14T00:39:37.844Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "pisces",
+      from: "2025-10-22T13:18:34.123Z",
+      to: "2026-01-26T14:30:44.561Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "taurus",
+      from: "2025-11-08T02:04:28.463Z",
+      to: "2026-04-26T01:01:21.002Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "capricorn",
+      from: "2026-01-01T21:11:14.814Z",
+      to: "2026-01-20T16:41:31.148Z"
+    },
+    {
+      planet: "Venus",
+      sign: "aquarius",
+      from: "2026-01-17T12:42:51.211Z",
+      to: "2026-02-10T10:18:09.031Z"
+    },
+    {
+      planet: "Sun",
+      sign: "aquarius",
+      from: "2026-01-20T01:44:40.353Z",
+      to: "2026-02-18T15:51:32.642Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aquarius",
+      from: "2026-01-20T16:41:31.148Z",
+      to: "2026-02-06T22:48:04.616Z"
+    },
+    {
+      planet: "Mars",
+      sign: "aquarius",
+      from: "2026-01-23T09:16:24.668Z",
+      to: "2026-03-02T14:15:46.387Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "aries",
+      from: "2026-01-26T14:30:44.561Z",
+      to: "2038-05-21T23:49:22.797Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "pisces",
+      from: "2026-02-06T22:48:04.616Z",
+      to: "2026-04-15T03:21:21.875Z"
+    },
+    {
+      planet: "Venus",
+      sign: "pisces",
+      from: "2026-02-10T10:18:09.031Z",
+      to: "2026-03-06T10:45:08.163Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aries",
+      from: "2026-02-14T00:39:37.844Z",
+      to: "2028-04-13T04:05:03.310Z"
+    },
+    {
+      planet: "Sun",
+      sign: "pisces",
+      from: "2026-02-18T15:51:32.642Z",
+      to: "2026-03-20T14:45:40.057Z"
+    },
+    {
+      planet: "Mars",
+      sign: "pisces",
+      from: "2026-03-02T14:15:46.387Z",
+      to: "2026-04-09T19:36:33.734Z"
+    },
+    {
+      planet: "Venus",
+      sign: "aries",
+      from: "2026-03-06T10:45:08.163Z",
+      to: "2026-03-30T16:00:07.607Z"
+    },
+    {
+      planet: "Sun",
+      sign: "aries",
+      from: "2026-03-20T14:45:40.057Z",
+      to: "2026-04-20T01:39:18.241Z"
+    },
+    {
+      planet: "Venus",
+      sign: "taurus",
+      from: "2026-03-30T16:00:07.607Z",
+      to: "2026-04-24T04:02:57.942Z"
+    },
+    {
+      planet: "Mars",
+      sign: "aries",
+      from: "2026-04-09T19:36:33.734Z",
+      to: "2026-05-18T22:26:05.783Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aries",
+      from: "2026-04-15T03:21:21.875Z",
+      to: "2026-05-03T02:57:19.096Z"
+    },
+    {
+      planet: "Sun",
+      sign: "taurus",
+      from: "2026-04-20T01:39:18.241Z",
+      to: "2026-05-21T00:37:29.057Z"
+    },
+    {
+      planet: "Venus",
+      sign: "gemini",
+      from: "2026-04-24T04:02:57.942Z",
+      to: "2026-05-19T01:05:13.651Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "gemini",
+      from: "2026-04-26T01:01:21.002Z",
+      to: "2032-08-03T18:48:05.207Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "taurus",
+      from: "2026-05-03T02:57:19.096Z",
+      to: "2026-05-17T10:26:26.650Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "gemini",
+      from: "2026-05-17T10:26:26.650Z",
+      to: "2026-06-01T11:55:48.975Z"
+    },
+    {
+      planet: "Mars",
+      sign: "taurus",
+      from: "2026-05-18T22:26:05.783Z",
+      to: "2026-06-28T19:29:43.951Z"
+    },
+    {
+      planet: "Venus",
+      sign: "cancer",
+      from: "2026-05-19T01:05:13.651Z",
+      to: "2026-06-13T10:47:00.491Z"
+    },
+    {
+      planet: "Sun",
+      sign: "gemini",
+      from: "2026-05-21T00:37:29.057Z",
+      to: "2026-06-21T08:25:14.559Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "cancer",
+      from: "2026-06-01T11:55:48.975Z",
+      to: "2026-08-09T16:28:16.322Z"
+    },
+    {
+      planet: "Venus",
+      sign: "leo",
+      from: "2026-06-13T10:47:00.491Z",
+      to: "2026-07-09T17:22:32.792Z"
+    },
+    {
+      planet: "Sun",
+      sign: "cancer",
+      from: "2026-06-21T08:25:14.559Z",
+      to: "2026-07-22T19:13:32.361Z"
+    },
+    {
+      planet: "Mars",
+      sign: "gemini",
+      from: "2026-06-28T19:29:43.951Z",
+      to: "2026-08-11T08:31:07.818Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "leo",
+      from: "2026-06-30T05:56:21.335Z",
+      to: "2027-07-26T04:45:27.093Z"
+    },
+    {
+      planet: "Venus",
+      sign: "virgo",
+      from: "2026-07-09T17:22:32.792Z",
+      to: "2026-08-06T19:13:53.723Z"
+    },
+    {
+      planet: "Sun",
+      sign: "leo",
+      from: "2026-07-22T19:13:32.361Z",
+      to: "2026-08-23T02:19:10.281Z"
+    },
+    {
+      planet: "Venus",
+      sign: "libra",
+      from: "2026-08-06T19:13:53.723Z",
+      to: "2026-09-10T08:12:49.810Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "leo",
+      from: "2026-08-09T16:28:16.322Z",
+      to: "2026-08-25T11:04:25.579Z"
+    },
+    {
+      planet: "Mars",
+      sign: "cancer",
+      from: "2026-08-11T08:31:07.818Z",
+      to: "2026-09-28T02:49:07.307Z"
+    },
+    {
+      planet: "Sun",
+      sign: "virgo",
+      from: "2026-08-23T02:19:10.281Z",
+      to: "2026-09-23T00:05:46.706Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "virgo",
+      from: "2026-08-25T11:04:25.579Z",
+      to: "2026-09-10T16:21:19.823Z"
+    },
+    {
+      planet: "Venus",
+      sign: "scorpio",
+      from: "2026-09-10T08:12:49.810Z",
+      to: "2026-10-25T08:57:04.018Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "libra",
+      from: "2026-09-10T16:21:19.823Z",
+      to: "2026-09-30T11:44:48.723Z"
+    },
+    {
+      planet: "Sun",
+      sign: "libra",
+      from: "2026-09-23T00:05:46.706Z",
+      to: "2026-10-23T09:38:28.074Z"
+    },
+    {
+      planet: "Mars",
+      sign: "leo",
+      from: "2026-09-28T02:49:07.307Z",
+      to: "2026-11-25T23:37:31.441Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "scorpio",
+      from: "2026-09-30T11:44:48.723Z",
+      to: "2026-12-06T08:33:58.463Z"
+    },
+    {
+      planet: "Sun",
+      sign: "scorpio",
+      from: "2026-10-23T09:38:28.074Z",
+      to: "2026-11-22T07:23:34.315Z"
+    },
+    {
+      planet: "Venus",
+      sign: "libra",
+      from: "2026-10-25T08:57:04.018Z",
+      to: "2026-12-04T08:14:41.932Z"
+    },
+    {
+      planet: "Sun",
+      sign: "sagittarius",
+      from: "2026-11-22T07:23:34.315Z",
+      to: "2026-12-21T20:50:20.394Z"
+    },
+    {
+      planet: "Mars",
+      sign: "virgo",
+      from: "2026-11-25T23:37:31.441Z",
+      to: "2027-02-21T14:15:58.995Z"
+    },
+    {
+      planet: "Venus",
+      sign: "scorpio",
+      from: "2026-12-04T08:14:41.932Z",
+      to: "2027-01-07T08:53:41.526Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "sagittarius",
+      from: "2026-12-06T08:33:58.463Z",
+      to: "2026-12-25T18:23:01.041Z"
+    },
+    {
+      planet: "Sun",
+      sign: "capricorn",
+      from: "2026-12-21T20:50:20.394Z",
+      to: "2027-01-20T07:30:01.008Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "capricorn",
+      from: "2026-12-25T18:23:01.041Z",
+      to: "2027-01-13T06:06:28.708Z"
+    },
+    {
+      planet: "Venus",
+      sign: "sagittarius",
+      from: "2027-01-07T08:53:41.526Z",
+      to: "2027-02-03T14:30:39.185Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aquarius",
+      from: "2027-01-13T06:06:28.708Z",
+      to: "2027-02-01T01:26:53.058Z"
+    },
+    {
+      planet: "Sun",
+      sign: "aquarius",
+      from: "2027-01-20T07:30:01.008Z",
+      to: "2027-02-18T21:33:42.774Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "pisces",
+      from: "2027-02-01T01:26:53.058Z",
+      to: "2027-02-18T12:17:12.747Z"
+    },
+    {
+      planet: "Venus",
+      sign: "capricorn",
+      from: "2027-02-03T14:30:39.185Z",
+      to: "2027-03-01T06:32:17.719Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aquarius",
+      from: "2027-02-18T12:17:12.747Z",
+      to: "2027-03-18T10:02:19.132Z"
+    },
+    {
+      planet: "Sun",
+      sign: "pisces",
+      from: "2027-02-18T21:33:42.774Z",
+      to: "2027-03-20T20:24:47.823Z"
+    },
+    {
+      planet: "Mars",
+      sign: "leo",
+      from: "2027-02-21T14:15:58.995Z",
+      to: "2027-05-14T14:47:36.526Z"
+    },
+    {
+      planet: "Venus",
+      sign: "aquarius",
+      from: "2027-03-01T06:32:17.719Z",
+      to: "2027-03-26T08:16:23.240Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "pisces",
+      from: "2027-03-18T10:02:19.132Z",
+      to: "2027-04-08T23:20:39.929Z"
+    },
+    {
+      planet: "Sun",
+      sign: "aries",
+      from: "2027-03-20T20:24:47.823Z",
+      to: "2027-04-20T07:17:31.376Z"
+    },
+    {
+      planet: "Venus",
+      sign: "pisces",
+      from: "2027-03-26T08:16:23.240Z",
+      to: "2027-04-20T03:56:50.696Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aries",
+      from: "2027-04-08T23:20:39.929Z",
+      to: "2027-04-24T22:18:42.342Z"
+    },
+    {
+      planet: "Venus",
+      sign: "aries",
+      from: "2027-04-20T03:56:50.696Z",
+      to: "2027-05-14T21:01:13.559Z"
+    },
+    {
+      planet: "Sun",
+      sign: "taurus",
+      from: "2027-04-20T07:17:31.376Z",
+      to: "2027-05-21T06:18:06.904Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "taurus",
+      from: "2027-04-24T22:18:42.342Z",
+      to: "2027-05-09T01:58:07.190Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "gemini",
+      from: "2027-05-09T01:58:07.190Z",
+      to: "2027-05-28T17:07:27.409Z"
+    },
+    {
+      planet: "Mars",
+      sign: "virgo",
+      from: "2027-05-14T14:47:36.526Z",
+      to: "2027-07-15T05:40:21.241Z"
+    },
+    {
+      planet: "Venus",
+      sign: "taurus",
+      from: "2027-05-14T21:01:13.559Z",
+      to: "2027-06-08T12:32:03.134Z"
+    },
+    {
+      planet: "Sun",
+      sign: "gemini",
+      from: "2027-05-21T06:18:06.904Z",
+      to: "2027-06-21T14:10:48.439Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "cancer",
+      from: "2027-05-28T17:07:27.409Z",
+      to: "2027-06-26T07:23:36.540Z"
+    },
+    {
+      planet: "Venus",
+      sign: "gemini",
+      from: "2027-06-08T12:32:03.134Z",
+      to: "2027-07-03T02:00:41.005Z"
+    },
+    {
+      planet: "Sun",
+      sign: "cancer",
+      from: "2027-06-21T14:10:48.439Z",
+      to: "2027-07-23T01:04:38.468Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "gemini",
+      from: "2027-06-26T07:23:36.540Z",
+      to: "2027-07-12T13:45:23.735Z"
+    },
+    {
+      planet: "Venus",
+      sign: "cancer",
+      from: "2027-07-03T02:00:41.005Z",
+      to: "2027-07-27T12:30:00.362Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "cancer",
+      from: "2027-07-12T13:45:23.735Z",
+      to: "2027-08-02T10:52:29.216Z"
+    },
+    {
+      planet: "Mars",
+      sign: "libra",
+      from: "2027-07-15T05:40:21.241Z",
+      to: "2027-09-02T01:51:46.554Z"
+    },
+    {
+      planet: "Sun",
+      sign: "leo",
+      from: "2027-07-23T01:04:38.468Z",
+      to: "2027-08-23T08:14:06.233Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "virgo",
+      from: "2027-07-26T04:45:27.093Z",
+      to: "2028-08-24T05:04:19.914Z"
+    },
+    {
+      planet: "Venus",
+      sign: "leo",
+      from: "2027-07-27T12:30:00.362Z",
+      to: "2027-08-20T19:42:01.407Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "leo",
+      from: "2027-08-02T10:52:29.216Z",
+      to: "2027-08-17T04:43:14.124Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "virgo",
+      from: "2027-08-17T04:43:14.124Z",
+      to: "2027-09-03T11:36:38.232Z"
+    },
+    {
+      planet: "Venus",
+      sign: "virgo",
+      from: "2027-08-20T19:42:01.407Z",
+      to: "2027-09-14T00:24:15.282Z"
+    },
+    {
+      planet: "Sun",
+      sign: "virgo",
+      from: "2027-08-23T08:14:06.233Z",
+      to: "2027-09-23T06:01:26.907Z"
+    },
+    {
+      planet: "Mars",
+      sign: "scorpio",
+      from: "2027-09-02T01:51:46.554Z",
+      to: "2027-10-15T23:13:34.306Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "libra",
+      from: "2027-09-03T11:36:38.232Z",
+      to: "2027-09-27T09:08:42.439Z"
+    },
+    {
+      planet: "Venus",
+      sign: "libra",
+      from: "2027-09-14T00:24:15.282Z",
+      to: "2027-10-08T03:58:50.173Z"
+    },
+    {
+      planet: "Sun",
+      sign: "libra",
+      from: "2027-09-23T06:01:26.907Z",
+      to: "2027-10-23T15:32:49.070Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "scorpio",
+      from: "2027-09-27T09:08:42.439Z",
+      to: "2027-10-16T07:38:07.544Z"
+    },
+    {
+      planet: "Venus",
+      sign: "scorpio",
+      from: "2027-10-08T03:58:50.173Z",
+      to: "2027-11-01T07:34:27.356Z"
+    },
+    {
+      planet: "Mars",
+      sign: "sagittarius",
+      from: "2027-10-15T23:13:34.306Z",
+      to: "2027-11-25T18:37:58.660Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "libra",
+      from: "2027-10-16T07:38:07.544Z",
+      to: "2027-11-10T00:26:35.810Z"
+    },
+    {
+      planet: "Sun",
+      sign: "scorpio",
+      from: "2027-10-23T15:32:49.070Z",
+      to: "2027-11-22T13:16:21.481Z"
+    },
+    {
+      planet: "Venus",
+      sign: "sagittarius",
+      from: "2027-11-01T07:34:27.356Z",
+      to: "2027-11-25T11:59:16.534Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "scorpio",
+      from: "2027-11-10T00:26:35.810Z",
+      to: "2027-11-29T10:23:46.264Z"
+    },
+    {
+      planet: "Sun",
+      sign: "sagittarius",
+      from: "2027-11-22T13:16:21.481Z",
+      to: "2027-12-22T02:42:17.442Z"
+    },
+    {
+      planet: "Venus",
+      sign: "capricorn",
+      from: "2027-11-25T11:59:16.534Z",
+      to: "2027-12-19T18:39:57.187Z"
+    },
+    {
+      planet: "Mars",
+      sign: "capricorn",
+      from: "2027-11-25T18:37:58.660Z",
+      to: "2028-01-03T16:01:06.622Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "sagittarius",
+      from: "2027-11-29T10:23:46.264Z",
+      to: "2027-12-18T11:58:19.205Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "capricorn",
+      from: "2027-12-18T11:58:19.205Z",
+      to: "2028-01-06T05:58:06.886Z"
+    },
+    {
+      planet: "Venus",
+      sign: "aquarius",
+      from: "2027-12-19T18:39:57.187Z",
+      to: "2028-01-13T07:19:49.145Z"
+    },
+    {
+      planet: "Sun",
+      sign: "capricorn",
+      from: "2027-12-22T02:42:17.442Z",
+      to: "2028-01-20T13:21:54.843Z"
+    },
+    {
+      planet: "Mars",
+      sign: "aquarius",
+      from: "2028-01-03T16:01:06.622Z",
+      to: "2028-02-10T16:31:30.903Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aquarius",
+      from: "2028-01-06T05:58:06.886Z",
+      to: "2028-03-13T07:07:18.071Z"
+    },
+    {
+      planet: "Venus",
+      sign: "pisces",
+      from: "2028-01-13T07:19:49.145Z",
+      to: "2028-02-07T10:00:35.600Z"
+    },
+    {
+      planet: "Sun",
+      sign: "aquarius",
+      from: "2028-01-20T13:21:54.843Z",
+      to: "2028-02-19T03:25:53.685Z"
+    },
+    {
+      planet: "Venus",
+      sign: "aries",
+      from: "2028-02-07T10:00:35.600Z",
+      to: "2028-03-04T20:00:16.574Z"
+    },
+    {
+      planet: "Mars",
+      sign: "pisces",
+      from: "2028-02-10T16:31:30.903Z",
+      to: "2028-03-19T19:36:01.229Z"
+    },
+    {
+      planet: "Sun",
+      sign: "pisces",
+      from: "2028-02-19T03:25:53.685Z",
+      to: "2028-03-20T02:17:05.984Z"
+    },
+    {
+      planet: "Venus",
+      sign: "taurus",
+      from: "2028-03-04T20:00:16.574Z",
+      to: "2028-04-03T20:27:52.062Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "pisces",
+      from: "2028-03-13T07:07:18.071Z",
+      to: "2028-03-31T12:28:17.303Z"
+    },
+    {
+      planet: "Mars",
+      sign: "aries",
+      from: "2028-03-19T19:36:01.229Z",
+      to: "2028-04-27T22:21:19.123Z"
+    },
+    {
+      planet: "Sun",
+      sign: "aries",
+      from: "2028-03-20T02:17:05.984Z",
+      to: "2028-04-19T13:09:38.456Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aries",
+      from: "2028-03-31T12:28:17.303Z",
+      to: "2028-04-15T11:49:02.981Z"
+    },
+    {
+      planet: "Venus",
+      sign: "gemini",
+      from: "2028-04-03T20:27:52.062Z",
+      to: "2028-08-07T15:25:46.680Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "taurus",
+      from: "2028-04-13T04:05:03.310Z",
+      to: "2030-06-01T02:32:43.173Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "taurus",
+      from: "2028-04-15T11:49:02.981Z",
+      to: "2028-05-01T01:42:46.253Z"
+    },
+    {
+      planet: "Sun",
+      sign: "taurus",
+      from: "2028-04-19T13:09:38.456Z",
+      to: "2028-05-20T12:09:57.112Z"
+    },
+    {
+      planet: "Mars",
+      sign: "taurus",
+      from: "2028-04-27T22:21:19.123Z",
+      to: "2028-06-07T18:20:19.130Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "gemini",
+      from: "2028-05-01T01:42:46.253Z",
+      to: "2028-07-09T01:36:55.776Z"
+    },
+    {
+      planet: "Sun",
+      sign: "gemini",
+      from: "2028-05-20T12:09:57.112Z",
+      to: "2028-06-20T20:01:58.005Z"
+    },
+    {
+      planet: "Mars",
+      sign: "gemini",
+      from: "2028-06-07T18:20:19.130Z",
+      to: "2028-07-20T20:09:44.107Z"
+    },
+    {
+      planet: "Sun",
+      sign: "cancer",
+      from: "2028-06-20T20:01:58.005Z",
+      to: "2028-07-22T06:54:07.859Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "cancer",
+      from: "2028-07-09T01:36:55.776Z",
+      to: "2028-07-24T01:50:12.436Z"
+    },
+    {
+      planet: "Mars",
+      sign: "cancer",
+      from: "2028-07-20T20:09:44.107Z",
+      to: "2028-09-04T14:36:08.692Z"
+    },
+    {
+      planet: "Sun",
+      sign: "leo",
+      from: "2028-07-22T06:54:07.859Z",
+      to: "2028-08-22T14:01:12.151Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "leo",
+      from: "2028-07-24T01:50:12.436Z",
+      to: "2028-08-08T05:09:27.773Z"
+    },
+    {
+      planet: "Venus",
+      sign: "cancer",
+      from: "2028-08-07T15:25:46.680Z",
+      to: "2028-09-05T23:17:40.529Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "virgo",
+      from: "2028-08-08T05:09:27.773Z",
+      to: "2028-08-27T13:07:42.893Z"
+    },
+    {
+      planet: "Sun",
+      sign: "virgo",
+      from: "2028-08-22T14:01:12.151Z",
+      to: "2028-09-22T11:45:33.774Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "libra",
+      from: "2028-08-24T05:04:19.914Z",
+      to: "2029-09-24T06:27:17.997Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "libra",
+      from: "2028-08-27T13:07:42.893Z",
+      to: "2028-11-02T15:03:37.569Z"
+    },
+    {
+      planet: "Mars",
+      sign: "leo",
+      from: "2028-09-04T14:36:08.692Z",
+      to: "2028-10-24T01:11:13.769Z"
+    },
+    {
+      planet: "Venus",
+      sign: "leo",
+      from: "2028-09-05T23:17:40.529Z",
+      to: "2028-10-02T10:07:47.672Z"
+    },
+    {
+      planet: "Sun",
+      sign: "libra",
+      from: "2028-09-22T11:45:33.774Z",
+      to: "2028-10-22T21:13:37.237Z"
+    },
+    {
+      planet: "Venus",
+      sign: "virgo",
+      from: "2028-10-02T10:07:47.672Z",
+      to: "2028-10-27T13:51:23.193Z"
+    },
+    {
+      planet: "Sun",
+      sign: "scorpio",
+      from: "2028-10-22T21:13:37.237Z",
+      to: "2028-11-21T18:54:41.848Z"
+    },
+    {
+      planet: "Mars",
+      sign: "virgo",
+      from: "2028-10-24T01:11:13.769Z",
+      to: "2028-12-21T08:46:40.351Z"
+    },
+    {
+      planet: "Venus",
+      sign: "libra",
+      from: "2028-10-27T13:51:23.193Z",
+      to: "2028-11-21T00:57:47.715Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "scorpio",
+      from: "2028-11-02T15:03:37.569Z",
+      to: "2028-11-21T03:59:33.370Z"
+    },
+    {
+      planet: "Venus",
+      sign: "scorpio",
+      from: "2028-11-21T00:57:47.715Z",
+      to: "2028-12-15T03:39:08.058Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "sagittarius",
+      from: "2028-11-21T03:59:33.370Z",
+      to: "2028-12-10T09:11:48.183Z"
+    },
+    {
+      planet: "Sun",
+      sign: "sagittarius",
+      from: "2028-11-21T18:54:41.848Z",
+      to: "2028-12-21T08:20:05.075Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "capricorn",
+      from: "2028-12-10T09:11:48.183Z",
+      to: "2028-12-31T14:50:26.470Z"
+    },
+    {
+      planet: "Venus",
+      sign: "sagittarius",
+      from: "2028-12-15T03:39:08.058Z",
+      to: "2029-01-08T02:47:23.198Z"
+    },
+    {
+      planet: "Sun",
+      sign: "capricorn",
+      from: "2028-12-21T08:20:05.075Z",
+      to: "2029-01-19T19:01:13.173Z"
+    },
+    {
+      planet: "Mars",
+      sign: "libra",
+      from: "2028-12-21T08:46:40.351Z",
+      to: "2029-04-07T13:09:02.386Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aquarius",
+      from: "2028-12-31T14:50:26.470Z",
+      to: "2029-01-13T12:13:08.171Z"
+    },
+    {
+      planet: "Venus",
+      sign: "capricorn",
+      from: "2029-01-08T02:47:23.198Z",
+      to: "2029-02-01T01:03:33.043Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "capricorn",
+      from: "2029-01-13T12:13:08.171Z",
+      to: "2029-02-13T17:51:56.531Z"
+    },
+    {
+      planet: "Sun",
+      sign: "aquarius",
+      from: "2029-01-19T19:01:13.173Z",
+      to: "2029-02-18T09:07:56.915Z"
+    },
+    {
+      planet: "Venus",
+      sign: "aquarius",
+      from: "2029-02-01T01:03:33.043Z",
+      to: "2029-02-25T00:03:31.719Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aquarius",
+      from: "2029-02-13T17:51:56.531Z",
+      to: "2029-03-06T18:15:26.743Z"
+    },
+    {
+      planet: "Sun",
+      sign: "pisces",
+      from: "2029-02-18T09:07:56.915Z",
+      to: "2029-03-20T08:01:45.604Z"
+    },
+    {
+      planet: "Venus",
+      sign: "pisces",
+      from: "2029-02-25T00:03:31.719Z",
+      to: "2029-03-21T01:03:41.488Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "pisces",
+      from: "2029-03-06T18:15:26.743Z",
+      to: "2029-03-23T12:18:32.631Z"
+    },
+    {
+      planet: "Sun",
+      sign: "aries",
+      from: "2029-03-20T08:01:45.604Z",
+      to: "2029-04-19T18:55:36.148Z"
+    },
+    {
+      planet: "Venus",
+      sign: "aries",
+      from: "2029-03-21T01:03:41.488Z",
+      to: "2029-04-14T05:06:34.223Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "aries",
+      from: "2029-03-23T12:18:32.631Z",
+      to: "2029-04-07T08:51:17.660Z"
+    },
+    {
+      planet: "Mercury",
+      sign: "taurus",
+      from: "2029-04-07T08:51:17.660Z",
+      to: "2029-06-13T16:46:00.176Z"
+    },
+    {
+      planet: "Mars",
+      sign: "virgo",
+      from: "2029-04-07T13:09:02.386Z",
+      to: "2029-06-05T04:47:38.248Z"
+    },
+    {
+      planet: "Venus",
+      sign: "taurus",
+      from: "2029-04-14T05:06:34.223Z",
+      to: "2029-05-08T12:46:23.776Z"
+    },
+    {
+      planet: "Sun",
+      sign: "taurus",
+      from: "2029-04-19T18:55:36.148Z",
+      to: "2029-05-20T17:56:04.032Z"
+    },
+    {
+      planet: "Venus",
+      sign: "gemini",
+      from: "2029-05-08T12:46:23.776Z",
+      to: "2029-06-02T00:10:49.702Z"
+    },
+    {
+      planet: "Sun",
+      sign: "gemini",
+      from: "2029-05-20T17:56:04.032Z",
+      to: "2029-06-21T01:48:33.188Z"
+    },
+    {
+      planet: "Venus",
+      sign: "cancer",
+      from: "2029-06-02T00:10:49.702Z",
+      to: "2029-06-26T15:37:02.443Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "scorpio",
+      from: "2029-09-24T06:27:17.997Z",
+      to: "2030-10-22T23:13:59.291Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "gemini",
+      from: "2030-06-01T02:32:43.173Z",
+      to: "2032-07-14T02:15:31.206Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "sagittarius",
+      from: "2030-10-22T23:13:59.291Z",
+      to: "2031-11-15T10:27:33.907Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "capricorn",
+      from: "2031-11-15T10:27:33.907Z",
+      to: "2032-04-12T00:57:24.830Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aquarius",
+      from: "2032-04-12T00:57:24.830Z",
+      to: "2032-06-26T12:56:48.966Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "capricorn",
+      from: "2032-06-26T12:56:48.966Z",
+      to: "2032-11-30T03:33:05.427Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "cancer",
+      from: "2032-07-14T02:15:31.206Z",
+      to: "2034-08-27T03:04:07.128Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "cancer",
+      from: "2032-08-03T18:48:05.207Z",
+      to: "2032-12-12T05:49:40.493Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aquarius",
+      from: "2032-11-30T03:33:05.427Z",
+      to: "2033-04-14T22:42:57.562Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "gemini",
+      from: "2032-12-12T05:49:40.493Z",
+      to: "2033-05-22T13:38:13.291Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "pisces",
+      from: "2033-04-14T22:42:57.562Z",
+      to: "2033-09-12T22:32:07.221Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "cancer",
+      from: "2033-05-22T13:38:13.291Z",
+      to: "2039-08-06T10:23:36.438Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aquarius",
+      from: "2033-09-12T22:32:07.221Z",
+      to: "2033-12-01T22:29:42.839Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "pisces",
+      from: "2033-12-01T22:29:42.839Z",
+      to: "2034-04-21T09:34:40.349Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aries",
+      from: "2034-04-21T09:34:40.349Z",
+      to: "2035-04-29T18:53:33.396Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "leo",
+      from: "2034-08-27T03:04:07.128Z",
+      to: "2035-02-15T19:04:48.128Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "cancer",
+      from: "2035-02-15T19:04:48.128Z",
+      to: "2035-05-11T21:06:58.042Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "taurus",
+      from: "2035-04-29T18:53:33.396Z",
+      to: "2036-05-09T14:48:05.303Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "leo",
+      from: "2035-05-11T21:06:58.042Z",
+      to: "2036-10-16T07:13:15.388Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "gemini",
+      from: "2036-05-09T14:48:05.303Z",
+      to: "2037-05-24T02:11:49.413Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "virgo",
+      from: "2036-10-16T07:13:15.388Z",
+      to: "2037-02-11T07:22:11.053Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "leo",
+      from: "2037-02-11T07:22:11.053Z",
+      to: "2037-07-07T02:04:46.508Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "cancer",
+      from: "2037-05-24T02:11:49.413Z",
+      to: "2038-06-12T15:32:05.380Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "virgo",
+      from: "2037-07-07T02:04:46.508Z",
+      to: "2039-09-05T15:10:49.764Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "taurus",
+      from: "2038-05-21T23:49:22.797Z",
+      to: "2038-10-21T13:01:10.682Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "leo",
+      from: "2038-06-12T15:32:05.380Z",
+      to: "2038-11-16T21:23:23.866Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "aries",
+      from: "2038-10-21T13:01:10.682Z",
+      to: "2039-03-23T20:10:45.658Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "virgo",
+      from: "2038-11-16T21:23:23.866Z",
+      to: "2039-01-16T14:51:40.093Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "leo",
+      from: "2039-01-16T14:51:40.093Z",
+      to: "2039-07-08T00:25:28.801Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "taurus",
+      from: "2039-03-23T20:10:45.658Z",
+      to: "2051-07-16T12:25:47.773Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "virgo",
+      from: "2039-07-08T00:25:28.801Z",
+      to: "2039-12-12T21:50:08.885Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "leo",
+      from: "2039-08-06T10:23:36.438Z",
+      to: "2040-02-25T07:15:27.450Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "libra",
+      from: "2039-09-05T15:10:49.764Z",
+      to: "2041-11-11T10:44:50.652Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "libra",
+      from: "2039-12-12T21:50:08.885Z",
+      to: "2040-02-20T05:49:10.706Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "virgo",
+      from: "2040-02-20T05:49:10.706Z",
+      to: "2040-08-05T22:03:19.716Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "cancer",
+      from: "2040-02-25T07:15:27.450Z",
+      to: "2040-05-15T22:27:01.444Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "leo",
+      from: "2040-05-15T22:27:01.444Z",
+      to: "2045-10-06T06:31:52.134Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "libra",
+      from: "2040-08-05T22:03:19.716Z",
+      to: "2041-01-11T19:33:31.101Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "scorpio",
+      from: "2041-01-11T19:33:31.101Z",
+      to: "2041-03-20T23:56:10.521Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "libra",
+      from: "2041-03-20T23:56:10.521Z",
+      to: "2041-09-06T00:18:25.236Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "scorpio",
+      from: "2041-09-06T00:18:25.236Z",
+      to: "2042-02-08T23:55:27.613Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "2041-11-11T10:44:50.652Z",
+      to: "2042-06-21T11:56:09.656Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "sagittarius",
+      from: "2042-02-08T23:55:27.613Z",
+      to: "2042-04-24T12:40:16.798Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "scorpio",
+      from: "2042-04-24T12:40:16.798Z",
+      to: "2042-10-04T09:57:33.317Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "libra",
+      from: "2042-06-21T11:56:09.656Z",
+      to: "2042-07-14T12:34:34.024Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "2042-07-14T12:34:34.024Z",
+      to: "2044-02-21T13:58:19.466Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "sagittarius",
+      from: "2042-10-04T09:57:33.317Z",
+      to: "2043-03-01T17:01:12.604Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "capricorn",
+      from: "2043-03-01T17:01:12.604Z",
+      to: "2043-06-09T21:46:05.628Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "pisces",
+      from: "2043-03-09T01:55:54.796Z",
+      to: "2043-09-01T01:55:29.583Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "sagittarius",
+      from: "2043-06-09T21:46:05.628Z",
+      to: "2043-10-26T11:32:24.057Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aquarius",
+      from: "2043-09-01T01:55:29.583Z",
+      to: "2044-01-19T10:51:04.490Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "capricorn",
+      from: "2043-10-26T11:32:24.057Z",
+      to: "2044-03-15T04:34:52.941Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "pisces",
+      from: "2044-01-19T10:51:04.490Z",
+      to: "2066-06-18T00:54:24.936Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "sagittarius",
+      from: "2044-02-21T13:58:19.466Z",
+      to: "2044-03-25T10:29:27.410Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aquarius",
+      from: "2044-03-15T04:34:52.941Z",
+      to: "2044-08-09T12:21:11.433Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "2044-03-25T10:29:27.410Z",
+      to: "2044-10-31T12:43:56.759Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "capricorn",
+      from: "2044-08-09T12:21:11.433Z",
+      to: "2044-11-04T17:48:22.071Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "sagittarius",
+      from: "2044-10-31T12:43:56.759Z",
+      to: "2047-01-24T15:39:51.069Z"
+    },
+    {
+      planet: "Jupiter",
+      sign: "aquarius",
+      from: "2044-11-04T17:48:22.071Z",
+      to: "2045-03-26T05:15:55.431Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "virgo",
+      from: "2045-10-06T06:31:52.134Z",
+      to: "2046-02-08T19:48:04.185Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "leo",
+      from: "2046-02-08T19:48:04.185Z",
+      to: "2046-07-22T21:48:02.693Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "virgo",
+      from: "2046-07-22T21:48:02.693Z",
+      to: "2051-12-08T19:49:45.718Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "capricorn",
+      from: "2047-01-24T15:39:51.069Z",
+      to: "2047-07-11T02:56:41.029Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "sagittarius",
+      from: "2047-07-11T02:56:41.029Z",
+      to: "2047-10-22T11:15:26.097Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "capricorn",
+      from: "2047-10-22T11:15:26.097Z",
+      to: "2050-01-21T13:27:29.396Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aquarius",
+      from: "2050-01-21T13:27:29.396Z",
+      to: "2052-04-16T14:06:56.263Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "gemini",
+      from: "2051-07-16T12:25:47.773Z",
+      to: "2051-10-22T23:13:41.988Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "taurus",
+      from: "2051-10-22T23:13:41.988Z",
+      to: "2052-05-12T10:30:47.088Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "libra",
+      from: "2051-12-08T19:49:45.718Z",
+      to: "2052-02-01T04:05:08.171Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "virgo",
+      from: "2052-02-01T04:05:08.171Z",
+      to: "2052-09-11T07:44:25.707Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "pisces",
+      from: "2052-04-16T14:06:56.263Z",
+      to: "2052-08-09T03:18:12.733Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "gemini",
+      from: "2052-05-12T10:30:47.088Z",
+      to: "2065-07-03T06:43:20.750Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aquarius",
+      from: "2052-08-09T03:18:12.733Z",
+      to: "2053-01-11T03:02:39.870Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "libra",
+      from: "2052-09-11T07:44:25.707Z",
+      to: "2058-11-03T09:33:39.787Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "pisces",
+      from: "2053-01-11T03:02:39.870Z",
+      to: "2055-03-22T18:42:15.409Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aries",
+      from: "2055-03-22T18:42:15.409Z",
+      to: "2057-05-20T06:07:06.013Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "taurus",
+      from: "2057-05-20T06:07:06.013Z",
+      to: "2057-11-29T18:27:50.297Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aries",
+      from: "2057-11-29T18:27:50.297Z",
+      to: "2058-01-31T09:40:02.750Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "taurus",
+      from: "2058-01-31T09:40:02.750Z",
+      to: "2059-07-12T20:12:43.466Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "scorpio",
+      from: "2058-11-03T09:33:39.787Z",
+      to: "2059-06-01T19:04:48.582Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "libra",
+      from: "2059-06-01T19:04:48.582Z",
+      to: "2059-08-11T18:53:54.860Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "gemini",
+      from: "2059-07-12T20:12:43.466Z",
+      to: "2059-11-21T10:12:20.304Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "scorpio",
+      from: "2059-08-11T18:53:54.860Z",
+      to: "2065-01-10T19:50:04.793Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "taurus",
+      from: "2059-11-21T10:12:20.304Z",
+      to: "2060-03-31T11:44:02.663Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "gemini",
+      from: "2060-03-31T11:44:02.663Z",
+      to: "2061-09-01T07:22:14.576Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "cancer",
+      from: "2061-09-01T07:22:14.576Z",
+      to: "2061-11-24T19:18:59.355Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "gemini",
+      from: "2061-11-24T19:18:59.355Z",
+      to: "2062-05-16T10:53:07.654Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "cancer",
+      from: "2062-05-16T10:53:07.654Z",
+      to: "2064-06-28T19:41:20.704Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "leo",
+      from: "2064-06-28T19:41:20.704Z",
+      to: "2066-08-16T07:11:14.345Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "sagittarius",
+      from: "2065-01-10T19:50:04.793Z",
+      to: "2065-05-01T09:13:43.191Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "scorpio",
+      from: "2065-05-01T09:13:43.191Z",
+      to: "2065-10-28T20:47:54.385Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "cancer",
+      from: "2065-07-03T06:43:20.750Z",
+      to: "2066-01-14T21:47:37.543Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "sagittarius",
+      from: "2065-10-28T20:47:54.385Z",
+      to: "2072-01-22T11:36:32.834Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "gemini",
+      from: "2066-01-14T21:47:37.543Z",
+      to: "2066-05-01T21:08:30.863Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "cancer",
+      from: "2066-05-01T21:08:30.863Z",
+      to: "2078-09-01T07:11:45.678Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aries",
+      from: "2066-06-18T00:54:24.936Z",
+      to: "2066-07-11T12:27:37.361Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "pisces",
+      from: "2066-07-11T12:27:37.361Z",
+      to: "2067-04-08T23:43:48.264Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "virgo",
+      from: "2066-08-16T07:11:14.345Z",
+      to: "2068-10-11T02:54:09.047Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aries",
+      from: "2067-04-08T23:43:48.264Z",
+      to: "2067-09-27T14:34:57.604Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "pisces",
+      from: "2067-09-27T14:34:57.604Z",
+      to: "2068-02-23T15:24:22.965Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aries",
+      from: "2068-02-23T15:24:22.965Z",
+      to: "2095-06-09T07:56:39.972Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "libra",
+      from: "2068-10-11T02:54:09.047Z",
+      to: "2070-12-25T20:33:04.720Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "2070-12-25T20:33:04.720Z",
+      to: "2071-03-27T18:36:41.164Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "libra",
+      from: "2071-03-27T18:36:41.164Z",
+      to: "2071-09-18T17:12:28.428Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "scorpio",
+      from: "2071-09-18T17:12:28.428Z",
+      to: "2073-12-06T02:40:28.532Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "capricorn",
+      from: "2072-01-22T11:36:32.834Z",
+      to: "2072-06-25T10:22:11.774Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "sagittarius",
+      from: "2072-06-25T10:22:11.774Z",
+      to: "2072-11-12T05:04:18.719Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "capricorn",
+      from: "2072-11-12T05:04:18.719Z",
+      to: "2079-03-02T16:47:13.551Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "sagittarius",
+      from: "2073-12-06T02:40:28.532Z",
+      to: "2076-12-03T15:48:45.725Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "capricorn",
+      from: "2076-12-03T15:48:45.725Z",
+      to: "2079-02-28T17:24:52.581Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "leo",
+      from: "2078-09-01T07:11:45.678Z",
+      to: "2079-01-06T12:51:49.658Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "cancer",
+      from: "2079-01-06T12:51:49.658Z",
+      to: "2079-07-03T04:02:24.799Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "aquarius",
+      from: "2079-02-28T17:24:52.581Z",
+      to: "2079-08-02T12:29:40.257Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aquarius",
+      from: "2079-03-02T16:47:13.551Z",
+      to: "2079-07-13T13:01:27.593Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "leo",
+      from: "2079-07-03T04:02:24.799Z",
+      to: "2092-09-04T12:09:44.526Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "capricorn",
+      from: "2079-07-13T13:01:27.593Z",
+      to: "2079-12-23T06:12:24.809Z"
+    },
+    {
+      planet: "Saturn",
+      sign: "capricorn",
+      from: "2079-08-02T12:29:40.257Z",
+      to: "2079-11-27T14:13:46.088Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aquarius",
+      from: "2079-12-23T06:12:24.809Z",
+      to: "2087-02-18T22:38:19.264Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "pisces",
+      from: "2087-02-18T22:38:19.264Z",
+      to: "2094-04-28T18:40:31.362Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "virgo",
+      from: "2092-09-04T12:09:44.526Z",
+      to: "2093-03-11T17:44:51.174Z"
+    },
+    {
+      planet: "Neptune",
+      sign: "leo",
+      from: "2093-03-11T17:44:51.174Z",
+      to: "2093-07-05T09:03:43.851Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "aries",
+      from: "2094-04-28T18:40:31.362Z",
+      to: "2094-09-16T15:47:41.847Z"
+    },
+    {
+      planet: "Uranus",
+      sign: "pisces",
+      from: "2094-09-16T15:47:41.847Z",
+      to: "2095-02-19T03:30:40.057Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "taurus",
+      from: "2095-06-09T07:56:39.972Z",
+      to: "2095-09-20T18:49:50.717Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aries",
+      from: "2095-09-20T18:49:50.717Z",
+      to: "2096-04-23T01:23:22.100Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "taurus",
+      from: "2096-04-23T01:23:22.100Z",
+      to: "2096-11-14T11:37:15.414Z"
+    },
+    {
+      planet: "Pluto",
+      sign: "aries",
+      from: "2096-11-14T11:37:15.414Z",
+      to: "2097-03-10T03:24:14.725Z"
+    }
+  ]
+};
+
+// src/lib/daily.ts
+function solarHouse(planetSign, sunSign) {
+  const p = SIGN_SLUGS3.indexOf(planetSign);
+  const s = SIGN_SLUGS3.indexOf(sunSign);
+  return (p - s + 12) % 12 + 1;
+}
+function wholeSignHouseFromAsc(planetSign, ascSign) {
+  const p = SIGN_SLUGS3.indexOf(planetSign);
+  const a = SIGN_SLUGS3.indexOf(ascSign);
+  return (p - a + 12) % 12 + 1;
+}
+var HOUSE_THEME = {
+  1: "your identity and how you present yourself",
+  2: "your money, possessions, and priorities",
+  3: "messages, errands, siblings, and your local community",
+  4: "home, family, and your private life",
+  5: "creativity, romance, children, and enjoyment",
+  6: "daily work, health routines, and responsibilities",
+  7: "partners and one-to-one relationships",
+  8: "shared finances, debts, intimacy, and trust",
+  9: "travel, learning, beliefs, and long-term plans",
+  10: "career, reputation, and public responsibilities",
+  11: "friends, groups, and plans for the future",
+  12: "rest, privacy, and unfinished matters"
+};
+
+// src/ai-tools/features/horoscope-period.ts
+var DAY9 = 864e5;
+var ZONE_PATTERN5 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var ORDINAL3 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
+var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var HOROSCOPE_PERIOD_KINDS = ["month", "year", "week"];
+var YEAR_PLANETS = ["Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+var FOCUS_RULE = {
+  love: { planets: ["Venus", "Mars"], houses: [5, 7, 8], words: "Venus and Mars, and events in your fifth, seventh and eighth solar houses (romance, partners and intimacy)" },
+  career: { planets: ["Saturn", "Jupiter", "Mars"], houses: [6, 10, 11], words: "Saturn, Jupiter and Mars, and events in your sixth, tenth and eleventh solar houses (daily work, career and long-term plans)" }
+};
+var horoscopePeriodInput = z5.strictObject({
+  sign: z5.enum(HOROSCOPE_SIGNS).describe("Sun sign. Never guess it; ask the person if they have not said."),
+  period: z5.enum(HOROSCOPE_PERIOD_KINDS).describe("month, year or week."),
+  focus: z5.enum(HOROSCOPE_FOCUSES).optional().describe("general (the default), love or career. For a week it adds that focus's daily readings; for every period it keeps the sky events that bear on it."),
+  date: z5.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe("Any day in the month, year or week wanted, such as 2026-12-01 for December 2026. Leave it out for the person's current month, year or week."),
+  zone: z5.string().min(1).max(64).regex(ZONE_PATTERN5).optional().describe("The person's time zone, such as America/New_York, so the period and dates are their own. Without it, UTC.")
+});
+var paragraph = z5.object({ heading: z5.string().optional(), text: z5.string() });
+var horoscopePeriodData = z5.object({
+  status: z5.enum(["available", "sky-only"]),
+  sign: z5.enum(HOROSCOPE_SIGNS),
+  signName: z5.string(),
+  period: z5.enum(HOROSCOPE_PERIOD_KINDS),
+  focus: z5.enum(HOROSCOPE_FOCUSES),
+  /** The period's first and last day on the person's clock, and its name. */
+  from: z5.string(),
+  to: z5.string(),
+  label: z5.string(),
+  zone: z5.string(),
+  /** The published reading for the period; null when none is published, and message says why. */
+  reading: z5.object({ title: z5.string(), paragraphs: z5.array(paragraph), published: z5.string().nullable() }).nullable(),
+  /** For a week with love or career: that focus's daily readings published for days in the week. */
+  focusReadings: z5.array(z5.object({ date: z5.string(), title: z5.string(), paragraphs: z5.array(paragraph) })),
+  /** The period's sky for the sign: dated events in the sign's solar houses, soonest first. */
+  sky: z5.array(z5.object({
+    date: z5.string(),
+    utc: z5.string(),
+    kind: z5.enum(["ingress", "station", "lunation", "eclipse"]),
+    planet: z5.string(),
+    sign: z5.string(),
+    house: z5.number().int().min(1).max(12),
+    line: z5.string()
+  })),
+  message: z5.string().nullable(),
+  /** What else is published: monthly readings by month and yearly readings by year. */
+  available: z5.object({ months: z5.array(z5.string()), years: z5.array(z5.number().int()) }),
+  pageUrl: z5.url(),
+  disclosure: z5.string()
+});
+var cap3 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var addDays = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY9).toISOString().slice(0, 10);
+var monthLabel = (month) => `${MONTHS[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
+var shortDay = (date3) => `${Number(date3.slice(8, 10))} ${MONTHS[Number(date3.slice(5, 7)) - 1]} ${date3.slice(0, 4)}`;
+function dayOn(iso3, timeZone) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short" }).formatToParts(new Date(iso3)).map((part) => [part.type, part.value]));
+  return `${parts.weekday} ${parts.day} ${parts.month}`;
+}
+function skyLine(kind, planet, type, sign2, house, day) {
+  const where = `your ${ORDINAL3[house]} solar house, ${HOUSE_THEME[house]}`;
+  if (kind === "ingress") return `${planet} enters ${cap3(sign2)} on ${day}, moving into ${where}.`;
+  if (kind === "station") return `${planet} turns ${type} in ${cap3(sign2)} on ${day}, in ${where}: ${type === "retrograde" ? "a time for revisions there" : "forward motion returns there"}.`;
+  if (kind === "lunation") return `${type === "new" ? "New" : "Full"} Moon in ${cap3(sign2)} on ${day}, in ${where}: ${type === "new" ? "a clean line to start something" : "something comes due"}.`;
+  return `${cap3(type ?? "")} eclipse in ${cap3(sign2)} on ${day}, in ${where}: a marker the year turns on.`;
+}
+async function getHoroscopePeriod(args, today, zone7, clock2, sources, origin) {
+  const focus = args.focus ?? "general";
+  const date3 = args.date ?? today;
+  if (Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) || (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) !== date3) throw new RangeError("date must be a real date, such as 2026-12-01.");
+  const sign2 = args.sign;
+  const signName6 = cap3(sign2);
+  const months = await sources.months();
+  const servedMonths = Object.keys(months.months).filter((month) => month <= today.slice(0, 7)).sort();
+  const program = args.period === "year" ? await sources.program() : null;
+  const years = program ? Object.keys(program.signs[0]?.readings ?? {}).map((surface) => /^yearly-(\d{4})$/u.exec(surface)?.[1]).filter((year) => !!year).map(Number) : [2027];
+  const start = async (day) => {
+    await clock2.prepareLocalTime(day, zone7);
+    return clock2.resolveLocalToUtc(day, "00:00", zone7).utc;
+  };
+  let from;
+  let to;
+  let label;
+  if (args.period === "month") {
+    from = `${date3.slice(0, 7)}-01`;
+    to = addDays(`${addDays(from, 32).slice(0, 7)}-01`, -1);
+    label = monthLabel(from);
+  } else if (args.period === "year") {
+    from = `${date3.slice(0, 4)}-01-01`;
+    to = `${date3.slice(0, 4)}-12-31`;
+    label = date3.slice(0, 4);
+  } else {
+    const weekday = ((/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).getUTCDay() + 6) % 7;
+    from = addDays(date3, -weekday);
+    to = addDays(from, 6);
+    label = `Week of ${shortDay(from)}`;
+  }
+  const fromUtc = await start(from);
+  const toUtc = await start(addDays(to, 1));
+  let reading = null;
+  const focusReadings = [];
+  const notes = [];
+  let pageUrl = `${origin}/horoscopes/${sign2}/`;
+  if (args.period === "month") {
+    const month = from.slice(0, 7);
+    const entry = servedMonths.includes(month) ? months.months[month][sign2] : void 0;
+    if (entry) {
+      reading = { title: `${signName6} \xB7 ${label}`, paragraphs: entry.paragraphs.map((text2) => ({ text: text2 })), published: entry.published };
+      if (month === servedMonths.at(-1)) pageUrl = `${origin}/horoscopes/${sign2}/monthly/`;
+    } else notes.push(month > today.slice(0, 7) ? `The ${label} reading for ${signName6} isn't published yet; monthly readings appear on the first of the month.` : `Zodiacs has no published ${label} reading for ${signName6} to give here.`);
+  } else if (args.period === "year") {
+    const yearly = program.signs.find((entry) => entry.sign === sign2)?.readings[`yearly-${label}`];
+    if (yearly && yearly.status === "publishable") {
+      reading = { title: yearly.title, paragraphs: yearly.passages.map((passage) => passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text }), published: null };
+      pageUrl = `${origin}/horoscopes/${sign2}/${label}/`;
+    } else notes.push(`Zodiacs publishes the yearly reading for ${years.join(" and ")}; there is none for ${label}.`);
+  } else {
+    const window = await sources.window();
+    const weekly = resolveHoroscope(window, { sign: sign2, period: "week", focus: "general", date: date3 }, zone7, "request", today);
+    if (weekly.status === "available" && weekly.reading) {
+      reading = { title: `${signName6} \xB7 ${label}`, paragraphs: weekly.reading.paragraphs, published: null };
+      pageUrl = `${origin}/horoscopes/${sign2}/weekly/`;
+    } else notes.push(`The weekly reading for ${label} isn't kept here; Zodiacs keeps the current week's.`);
+    if (focus !== "general") {
+      for (const edition of window.editions.filter((candidate) => candidate.anchorDate >= from && candidate.anchorDate <= to)) {
+        const daily = resolveHoroscope(window, { sign: sign2, period: "day", focus, date: edition.anchorDate }, zone7, "request", today);
+        if (daily.status === "available" && daily.reading) focusReadings.push({ date: edition.anchorDate, title: daily.reading.title, paragraphs: daily.reading.paragraphs });
+      }
+      notes.push(focusReadings.length ? `Zodiacs writes ${focus} readings by the day; these are the ones published for days in this week.` : `Zodiacs writes ${focus} readings by the day, and none is kept for days in this week.`);
+      pageUrl = `${origin}/horoscopes/${sign2}/${focus}/`;
+    }
+  }
+  let raw = [];
+  if (args.period === "year") {
+    raw = ingresses_default.windows.filter((window) => YEAR_PLANETS.includes(window.planet) && window.from >= fromUtc.toISOString() && window.from < toUtc.toISOString()).map((window) => ({ kind: "ingress", at: window.from, planet: window.planet, sign: window.sign }));
+    const yearsCovered = ingresses_default.horizons.filter((horizon) => horizon.planets.some((planet) => YEAR_PLANETS.includes(planet)));
+    if (yearsCovered.some((horizon) => to > horizon.to || from < horizon.from)) notes.push("Sign changes are listed only within the years the ingress table covers.");
+  } else {
+    if (sources.allowEvents) {
+      const verdict = await sources.allowEvents();
+      if (verdict !== "allowed") return { refused: verdict === "limited" ? "rate-limited" : "rate-limit-unavailable" };
+    }
+    const calculation = computeEvents(parseEventsRequest({ from: fromUtc.toISOString(), to: toUtc.toISOString() }));
+    raw = calculation.result.events.map((event2) => ({
+      kind: event2.kind,
+      at: event2.at,
+      planet: event2.kind === "lunation" ? "Moon" : event2.body,
+      sign: event2.sign,
+      ...event2.type ? { type: event2.type } : {}
+    }));
+  }
+  const eclipses = eclipses_default.eclipses.filter((eclipse) => eclipse.peak >= fromUtc.toISOString() && eclipse.peak < toUtc.toISOString()).map((eclipse) => ({ kind: "eclipse", at: eclipse.peak, planet: eclipse.type === "solar" ? "Sun" : "Moon", sign: eclipse.sign, type: eclipse.type }));
+  if (to > eclipses_default.to.slice(0, 10) || from < eclipses_default.from.slice(0, 10)) notes.push("Eclipses are listed for 2026 to 2030, the years the eclipse table covers.");
+  let sky = [...raw, ...eclipses].sort((a, b) => a.at.localeCompare(b.at)).map((event2) => {
+    const house = solarHouse(event2.sign, sign2);
+    const day = dayOn(event2.at, zone7);
+    return { date: day, utc: event2.at, kind: event2.kind, planet: event2.planet, sign: event2.sign, house, line: skyLine(event2.kind, event2.planet, event2.type, event2.sign, house, day) };
+  });
+  if (focus !== "general") {
+    const rule = FOCUS_RULE[focus];
+    sky = sky.filter((event2) => rule.planets.includes(event2.planet) || rule.houses.includes(event2.house));
+    notes.push(`For ${focus}, the sky keeps ${rule.words}.`);
+  }
+  if (args.period !== "week" && focus !== "general" && reading) notes.push(`The ${args.period === "month" ? "monthly" : "yearly"} reading itself is written for the whole sign, not only ${focus}.`);
+  const data = {
+    status: reading || focusReadings.length ? "available" : "sky-only",
+    sign: sign2,
+    signName: signName6,
+    period: args.period,
+    focus,
+    from,
+    to,
+    label,
+    zone: zone7,
+    reading,
+    focusReadings,
+    sky,
+    message: notes.length ? notes.join(" ") : null,
+    available: { months: servedMonths, years },
+    pageUrl,
+    disclosure: HOROSCOPE_DISCLOSURE
+  };
+  return { data, links: [{ title: `${signName6} horoscopes on Zodiacs`, url: pageUrl }, { title: "Transits this month", url: `${origin}/transits/` }] };
+}
+
+// src/ai-tools/features/chinese-zodiac.ts
+import { z as z6 } from "zod";
+
+// src/data/lunar-new-year.json
+var lunar_new_year_default = {
+  schema: "zodiacs.lunar-new-year.v1",
+  rule: "First day of the first month of the Chinese calendar, on China Standard Time (UTC+8) from 1929 and Beijing mean time before, from astronomy-engine new Moons and solar terms; scripts/build-lunar-new-year.mjs.",
+  from: 1900,
+  to: 2101,
+  dates: {
+    "1900": "1900-01-31",
+    "1901": "1901-02-19",
+    "1902": "1902-02-08",
+    "1903": "1903-01-29",
+    "1904": "1904-02-16",
+    "1905": "1905-02-04",
+    "1906": "1906-01-25",
+    "1907": "1907-02-13",
+    "1908": "1908-02-02",
+    "1909": "1909-01-22",
+    "1910": "1910-02-10",
+    "1911": "1911-01-30",
+    "1912": "1912-02-18",
+    "1913": "1913-02-06",
+    "1914": "1914-01-26",
+    "1915": "1915-02-14",
+    "1916": "1916-02-03",
+    "1917": "1917-01-23",
+    "1918": "1918-02-11",
+    "1919": "1919-02-01",
+    "1920": "1920-02-20",
+    "1921": "1921-02-08",
+    "1922": "1922-01-28",
+    "1923": "1923-02-16",
+    "1924": "1924-02-05",
+    "1925": "1925-01-24",
+    "1926": "1926-02-13",
+    "1927": "1927-02-02",
+    "1928": "1928-01-23",
+    "1929": "1929-02-10",
+    "1930": "1930-01-30",
+    "1931": "1931-02-17",
+    "1932": "1932-02-06",
+    "1933": "1933-01-26",
+    "1934": "1934-02-14",
+    "1935": "1935-02-04",
+    "1936": "1936-01-24",
+    "1937": "1937-02-11",
+    "1938": "1938-01-31",
+    "1939": "1939-02-19",
+    "1940": "1940-02-08",
+    "1941": "1941-01-27",
+    "1942": "1942-02-15",
+    "1943": "1943-02-05",
+    "1944": "1944-01-25",
+    "1945": "1945-02-13",
+    "1946": "1946-02-02",
+    "1947": "1947-01-22",
+    "1948": "1948-02-10",
+    "1949": "1949-01-29",
+    "1950": "1950-02-17",
+    "1951": "1951-02-06",
+    "1952": "1952-01-27",
+    "1953": "1953-02-14",
+    "1954": "1954-02-03",
+    "1955": "1955-01-24",
+    "1956": "1956-02-12",
+    "1957": "1957-01-31",
+    "1958": "1958-02-18",
+    "1959": "1959-02-08",
+    "1960": "1960-01-28",
+    "1961": "1961-02-15",
+    "1962": "1962-02-05",
+    "1963": "1963-01-25",
+    "1964": "1964-02-13",
+    "1965": "1965-02-02",
+    "1966": "1966-01-21",
+    "1967": "1967-02-09",
+    "1968": "1968-01-30",
+    "1969": "1969-02-17",
+    "1970": "1970-02-06",
+    "1971": "1971-01-27",
+    "1972": "1972-02-15",
+    "1973": "1973-02-03",
+    "1974": "1974-01-23",
+    "1975": "1975-02-11",
+    "1976": "1976-01-31",
+    "1977": "1977-02-18",
+    "1978": "1978-02-07",
+    "1979": "1979-01-28",
+    "1980": "1980-02-16",
+    "1981": "1981-02-05",
+    "1982": "1982-01-25",
+    "1983": "1983-02-13",
+    "1984": "1984-02-02",
+    "1985": "1985-02-20",
+    "1986": "1986-02-09",
+    "1987": "1987-01-29",
+    "1988": "1988-02-17",
+    "1989": "1989-02-06",
+    "1990": "1990-01-27",
+    "1991": "1991-02-15",
+    "1992": "1992-02-04",
+    "1993": "1993-01-23",
+    "1994": "1994-02-10",
+    "1995": "1995-01-31",
+    "1996": "1996-02-19",
+    "1997": "1997-02-07",
+    "1998": "1998-01-28",
+    "1999": "1999-02-16",
+    "2000": "2000-02-05",
+    "2001": "2001-01-24",
+    "2002": "2002-02-12",
+    "2003": "2003-02-01",
+    "2004": "2004-01-22",
+    "2005": "2005-02-09",
+    "2006": "2006-01-29",
+    "2007": "2007-02-18",
+    "2008": "2008-02-07",
+    "2009": "2009-01-26",
+    "2010": "2010-02-14",
+    "2011": "2011-02-03",
+    "2012": "2012-01-23",
+    "2013": "2013-02-10",
+    "2014": "2014-01-31",
+    "2015": "2015-02-19",
+    "2016": "2016-02-08",
+    "2017": "2017-01-28",
+    "2018": "2018-02-16",
+    "2019": "2019-02-05",
+    "2020": "2020-01-25",
+    "2021": "2021-02-12",
+    "2022": "2022-02-01",
+    "2023": "2023-01-22",
+    "2024": "2024-02-10",
+    "2025": "2025-01-29",
+    "2026": "2026-02-17",
+    "2027": "2027-02-06",
+    "2028": "2028-01-26",
+    "2029": "2029-02-13",
+    "2030": "2030-02-03",
+    "2031": "2031-01-23",
+    "2032": "2032-02-11",
+    "2033": "2033-01-31",
+    "2034": "2034-02-19",
+    "2035": "2035-02-08",
+    "2036": "2036-01-28",
+    "2037": "2037-02-15",
+    "2038": "2038-02-04",
+    "2039": "2039-01-24",
+    "2040": "2040-02-12",
+    "2041": "2041-02-01",
+    "2042": "2042-01-22",
+    "2043": "2043-02-10",
+    "2044": "2044-01-30",
+    "2045": "2045-02-17",
+    "2046": "2046-02-06",
+    "2047": "2047-01-26",
+    "2048": "2048-02-14",
+    "2049": "2049-02-02",
+    "2050": "2050-01-23",
+    "2051": "2051-02-11",
+    "2052": "2052-02-01",
+    "2053": "2053-02-19",
+    "2054": "2054-02-08",
+    "2055": "2055-01-28",
+    "2056": "2056-02-15",
+    "2057": "2057-02-04",
+    "2058": "2058-01-24",
+    "2059": "2059-02-12",
+    "2060": "2060-02-02",
+    "2061": "2061-01-21",
+    "2062": "2062-02-09",
+    "2063": "2063-01-29",
+    "2064": "2064-02-17",
+    "2065": "2065-02-05",
+    "2066": "2066-01-26",
+    "2067": "2067-02-14",
+    "2068": "2068-02-03",
+    "2069": "2069-01-23",
+    "2070": "2070-02-11",
+    "2071": "2071-01-31",
+    "2072": "2072-02-19",
+    "2073": "2073-02-07",
+    "2074": "2074-01-27",
+    "2075": "2075-02-15",
+    "2076": "2076-02-05",
+    "2077": "2077-01-24",
+    "2078": "2078-02-12",
+    "2079": "2079-02-02",
+    "2080": "2080-01-22",
+    "2081": "2081-02-09",
+    "2082": "2082-01-29",
+    "2083": "2083-02-17",
+    "2084": "2084-02-06",
+    "2085": "2085-01-26",
+    "2086": "2086-02-14",
+    "2087": "2087-02-03",
+    "2088": "2088-01-24",
+    "2089": "2089-02-10",
+    "2090": "2090-01-30",
+    "2091": "2091-02-18",
+    "2092": "2092-02-07",
+    "2093": "2093-01-27",
+    "2094": "2094-02-15",
+    "2095": "2095-02-05",
+    "2096": "2096-01-25",
+    "2097": "2097-02-12",
+    "2098": "2098-02-01",
+    "2099": "2099-01-21",
+    "2100": "2100-02-09",
+    "2101": "2101-01-29"
+  }
+};
+
+// src/data/chinese-zodiac.ts
+var CHINESE_ZODIAC_ANIMALS = [
+  { slug: "rat", name: "Rat", branch: "\u5B50", branchPinyin: "z\u01D0", position: 1, association: "Traditionally associated with alertness, adaptability, and finding a way through constrained circumstances.", context: "The Rat opens the twelve-year sequence. Modern personality summaries often call it resourceful; that is a cultural association, not a measured trait." },
+  { slug: "ox", name: "Ox", branch: "\u4E11", branchPinyin: "ch\u01D2u", position: 2, association: "Traditionally associated with steady labor, endurance, and practical responsibility.", context: "Ox and water buffalo may be treated as the same zodiac category in Chinese art. The image emphasizes sustained work rather than speed." },
+  { slug: "tiger", name: "Tiger", branch: "\u5BC5", branchPinyin: "y\xEDn", position: 3, association: "Traditionally associated with courage, force, and protection.", context: "The Tiger carries a protective as well as a bold register in Chinese visual culture. Short personality lists capture only one use of the symbol." },
+  { slug: "rabbit", name: "Rabbit", branch: "\u536F", branchPinyin: "m\u01CEo", position: 4, association: "Traditionally associated with vigilance, grace, and careful movement.", context: "English sources may use Rabbit or Hare. Regional zodiac traditions can name a different animal, which is one reason this guide stays specific to the Chinese cycle." },
+  { slug: "dragon", name: "Dragon", branch: "\u8FB0", branchPinyin: "ch\xE9n", position: 5, association: "Traditionally associated with auspicious power, vitality, and authority.", context: "The Dragon is the sequence\u2019s mythic animal. It carries a different cultural register from the adversarial dragon familiar in much European storytelling." },
+  { slug: "snake", name: "Snake", branch: "\u5DF3", branchPinyin: "s\xEC", position: 6, association: "Traditionally associated with perception, reserve, and transformation.", context: "The Snake follows the Dragon in the cycle. Interpretive traits vary by source, family, and region; the calendar position is the stable fact." },
+  { slug: "horse", name: "Horse", branch: "\u5348", branchPinyin: "w\u01D4", position: 7, association: "Traditionally associated with effort, bravery, resilience, and movement.", context: "The Horse is seventh in the sequence. Smithsonian material for the 2026 Fire Horse foregrounds hard work, bravery, and resilience." },
+  { slug: "goat", name: "Goat", branch: "\u672A", branchPinyin: "w\xE8i", position: 8, association: "Traditionally associated with care, harmony, and creative cultivation.", context: "Goat, Ram, and Sheep all appear in English-language renderings. The underlying Chinese term does not force the same species distinction English does." },
+  { slug: "monkey", name: "Monkey", branch: "\u7533", branchPinyin: "sh\u0113n", position: 9, association: "Traditionally associated with ingenuity, play, and quick adjustment.", context: "The Monkey is ninth. Folklore and popular personality readings add layers beyond the calendrical animal; those layers are not uniform across all Chinese communities." },
+  { slug: "rooster", name: "Rooster", branch: "\u9149", branchPinyin: "y\u01D2u", position: 10, association: "Traditionally associated with diligence, timekeeping, and industriousness.", context: "The Met notes the rooster\u2019s early rising as the basis for associations with diligence and industry, while also documenting its long use as an auspicious art motif." },
+  { slug: "dog", name: "Dog", branch: "\u620C", branchPinyin: "x\u016B", position: 11, association: "Traditionally associated with loyalty, watchfulness, and protection.", context: "The Dog is eleventh. As on every page in this guide, the association describes a tradition of interpretation, not a personality diagnosis." },
+  { slug: "pig", name: "Pig", branch: "\u4EA5", branchPinyin: "h\xE0i", position: 12, association: "Traditionally associated with plenty, generosity, and completion.", context: "The Pig closes the animal sequence before it returns to Rat. Boar and Pig both occur in English-language references." }
+];
+var CHINESE_ZODIAC_COPY = Object.freeze({
+  kicker: "Chinese zodiac",
+  hubTitle: "The twelve-year animal cycle.",
+  hubIntro: "A careful introduction to the Chinese zodiac: its animal sequence, year tables, historical frame, and the boundary that does not fall on January 1.",
+  separateTitle: "A separate system from Western tropical astrology",
+  separateBody: "Western tropical astrology maps planets against twelve sectors of the ecliptic and uses an exact birth moment. The Chinese zodiac pages here begin with a lunisolar calendar year and its animal branch. The two systems can be studied beside each other, but one does not translate into the other.",
+  historyTitle: "What the cycle records",
+  historyBody: "The twelve animals are paired with the twelve Earthly Branches. Historical evidence places the animal-calendar association in China by the third century BCE, firmly established by the first century. The branches also combine with ten Heavenly Stems in a sixty-part cycle.",
+  boundaryTitle: "The year starts at Lunar New Year",
+  boundaryBody: "An animal year does not switch on January 1. If a birth date falls in January or early February, check the Lunar New Year date for that calendar year before choosing an animal. Dates also vary across Asian traditions, and not every community uses the same zodiac.",
+  sourceTitle: "Museum and cultural sources",
+  sequenceTitle: "The twelve animals, in order",
+  yearsTitle: "Recent and upcoming cycle years",
+  animalKicker: "Animal year guide",
+  branchLabel: "Earthly Branch",
+  sequenceLabel: "Sequence position",
+  associationLabel: "Traditional association",
+  yearsLabel: "Cycle years",
+  yearsBoundary: "These labels name the lunisolar year that begins during the listed Gregorian year. January and early-February births may belong to the preceding animal.",
+  limitsTitle: "What this does, and does not, tell you",
+  limitsBody: "The annual animal is one calendar layer. A fuller Chinese astrology reading may also consider the Heavenly Stem and element, month, day, and hour. A year animal alone cannot determine a personality or predict an outcome.",
+  allAnimals: "All twelve animal years",
+  previous: "Previous animal",
+  next: "Next animal",
+  westernLink: "Read how Western tropical zodiac dates work",
+  chartLink: "Calculate a Western tropical birth chart",
+  iconRailNote: "The colored discs are Zodiacs.org\u2019s Western-sign site mark. They are not substitutes for, or mappings to, the Chinese zodiac animals.",
+  itemLink: "Read the Year of the {animal}",
+  siteName: "Zodiacs.org",
+  learnLabel: "Learn",
+  metaHubTitle: "Chinese Zodiac: The Twelve Animal Years | Zodiacs.org",
+  metaAnimalTitle: "Year of the {animal}: Chinese Zodiac Years | Zodiacs.org",
+  metaAnimalDescription: "Year of the {animal}: cycle years, Earthly Branch {branch} ({pinyin}), traditional associations, and the Lunar New Year boundary.",
+  yearOf: "Year of the {animal}",
+  numberLabel: "N\xBA {number}",
+  positionValue: "{position} of 12",
+  sourceSmithsonian: "Smithsonian, Chinese zodiac sequence and Lunar New Year context",
+  sourceSmithsonianHub: "Smithsonian, Lunar New Year and the zodiac sequence",
+  sourceMet: "The Met, the twelve-year animal calendar and its history",
+  sourceMetHub: "The Met, history of the twelve-animal calendar cycle",
+  sourceMetBulletin: "The Met Bulletin, animals, branches, and the sixty-part cycle"
+});
+function chineseAnimalForCycleYear(year) {
+  const index = ((year - 2020) % 12 + 12) % 12;
+  return CHINESE_ZODIAC_ANIMALS[index];
+}
+
+// src/data/chinese-zodiac-zh.ts
+var HEAVENLY_STEMS = "\u7532\u4E59\u4E19\u4E01\u620A\u5DF1\u5E9A\u8F9B\u58EC\u7678";
+var EARTHLY_BRANCHES = "\u5B50\u4E11\u5BC5\u536F\u8FB0\u5DF3\u5348\u672A\u7533\u9149\u620C\u4EA5";
+function stemBranchYear(year) {
+  const offset = year - 1984;
+  return HEAVENLY_STEMS[(offset % 10 + 10) % 10] + EARTHLY_BRANCHES[(offset % 12 + 12) % 12];
+}
+
+// src/ai-tools/features/chinese-zodiac.ts
+var DEFAULT_ORIGIN4 = "https://zodiacs.org";
+var DATES = lunar_new_year_default.dates;
+var CHINESE_FIRST_YEAR = lunar_new_year_default.from;
+var CHINESE_LAST_YEAR = lunar_new_year_default.to - 1;
+var CHINESE_ZODIAC_NOTE = "Traditional associations of the Chinese calendar, for reflection: not a personality test or a prediction.";
+var ZONE_PATTERN6 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var chineseZodiacInput = z6.strictObject({
+  birthDate: z6.string().regex(/^(?:19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe(`The birth date, such as 1990-01-20 (${lunar_new_year_default.from + 1} to ${lunar_new_year_default.to - 1}). A date before that year's Lunar New Year belongs to the previous animal. Give this or year.`),
+  year: z6.number().int().min(lunar_new_year_default.from + 1).max(lunar_new_year_default.to - 1).optional().describe("A year, such as 1990, when the person gives only a year. The answer says which animal applies before that year's Lunar New Year."),
+  zone: z6.string().min(1).max(64).regex(ZONE_PATTERN6).optional().describe("The person's time zone, such as Asia/Singapore, so the current year is worked out for their own date. Without it, UTC.")
+}).superRefine((args, context) => {
+  if (args.birthDate !== void 0 && args.year !== void 0) context.addIssue({ code: "custom", message: "Give birthDate or year, not both." });
+});
+var ELEMENTS2 = ["wood", "fire", "earth", "metal", "water"];
+var ANIMAL_SLUGS = CHINESE_ZODIAC_ANIMALS.map((animal) => animal.slug);
+var animalRef = z6.object({ slug: z6.enum(ANIMAL_SLUGS), name: z6.string(), pageUrl: z6.url() });
+var animalYear = z6.object({
+  /** The Chinese calendar year: the Gregorian year its Lunar New Year falls in. */
+  year: z6.number().int(),
+  animal: animalRef.extend({ branch: z6.string(), branchPinyin: z6.string(), position: z6.number().int().min(1).max(12) }),
+  element: z6.enum(ELEMENTS2),
+  yinYang: z6.enum(["yin", "yang"]),
+  /** The year's stem and branch, such as 丙午. */
+  stemBranch: z6.string(),
+  /** The year's name in plain words, such as "Fire Horse (yang)". */
+  label: z6.string(),
+  /** The first and last day of the year: its Lunar New Year and the day before the next one. */
+  starts: z6.string(),
+  ends: z6.string()
+});
+var chineseZodiacData = z6.object({
+  /** What the answer was worked out from. */
+  from: z6.enum(["birth-date", "year", "today"]),
+  birthDate: z6.string().nullable(),
+  /** The person's animal year: from the birth date, or the year as given. Null with neither. */
+  person: animalYear.extend({
+    association: z6.string(),
+    context: z6.string(),
+    pairings: z6.object({
+      harmony: z6.array(animalRef).length(2),
+      partner: animalRef,
+      opposite: animalRef,
+      text: z6.string()
+    })
+  }).nullable(),
+  /** How the Lunar New Year boundary applied. */
+  boundary: z6.object({
+    lunarNewYear: z6.string(),
+    /** For a birth date: whether it falls before that Gregorian year's Lunar New Year. Null for a year. */
+    beforeNewYear: z6.boolean().nullable(),
+    /** For a year alone: the animal of anyone born before its Lunar New Year. */
+    earlierAnimal: animalRef.nullable(),
+    text: z6.string()
+  }).nullable(),
+  current: animalYear,
+  today: z6.string(),
+  zone: z6.string(),
+  guideUrl: z6.url(),
+  note: z6.literal(CHINESE_ZODIAC_NOTE)
+});
+function chineseElement(year) {
+  const stem = ((year - 1984) % 10 + 10) % 10;
+  return { element: ELEMENTS2[Math.floor(stem / 2)], yinYang: stem % 2 === 0 ? "yang" : "yin" };
+}
+function lunarNewYearOf(year) {
+  const date3 = DATES[String(year)];
+  if (!date3) throw new RangeError(`Lunar New Year dates cover ${CHINESE_FIRST_YEAR} to ${CHINESE_LAST_YEAR}.`);
+  return date3;
+}
+function chineseYearOf(date3) {
+  const year = Number(date3.slice(0, 4));
+  return date3 < lunarNewYearOf(year) ? year - 1 : year;
+}
+var animalAt = (position2) => CHINESE_ZODIAC_ANIMALS[((position2 - 1) % 12 + 12) % 12];
+var animalPage = (origin, slug) => `${origin}/learn/chinese-zodiac/${slug}/`;
+var ref2 = (origin, animal) => ({ slug: animal.slug, name: animal.name, pageUrl: animalPage(origin, animal.slug) });
+var cap4 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var dayBefore = (date3) => new Date(Date.parse(`${date3}T00:00:00Z`) - 864e5).toISOString().slice(0, 10);
+var SIX_HARMONY = { rat: "ox", ox: "rat", tiger: "pig", pig: "tiger", rabbit: "dog", dog: "rabbit", dragon: "rooster", rooster: "dragon", snake: "monkey", monkey: "snake", horse: "goat", goat: "horse" };
+function longDate(date3) {
+  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(/* @__PURE__ */ new Date(`${date3}T00:00:00Z`));
+}
+function yearFacts(year, origin) {
+  const animal = chineseAnimalForCycleYear(year);
+  const { element, yinYang } = chineseElement(year);
+  const starts = lunarNewYearOf(year);
+  return {
+    year,
+    animal: { ...ref2(origin, animal), branch: animal.branch, branchPinyin: animal.branchPinyin, position: animal.position },
+    element,
+    yinYang,
+    stemBranch: stemBranchYear(year),
+    label: `${cap4(element)} ${animal.name} (${yinYang})`,
+    starts,
+    ends: dayBefore(lunarNewYearOf(year + 1))
+  };
+}
+function pairings(animal, origin) {
+  const harmony = [animalAt(animal.position + 4), animalAt(animal.position + 8)];
+  const partner = CHINESE_ZODIAC_ANIMALS.find((entry) => entry.slug === SIX_HARMONY[animal.slug]);
+  const opposite = animalAt(animal.position + 6);
+  return {
+    harmony: harmony.map((entry) => ref2(origin, entry)),
+    partner: ref2(origin, partner),
+    opposite: ref2(origin, opposite),
+    text: `Tradition groups the ${animal.name} with the ${harmony[0].name} and the ${harmony[1].name} as a harmonious three (\u4E09\u5408), pairs it with the ${partner.name} (\u516D\u5408), and sets it opposite the ${opposite.name} (\u516D\u51B2), a pairing read as a clash.`
+  };
+}
+function getChineseZodiac(args, today, zone7, origin = DEFAULT_ORIGIN4) {
+  const currentYear = chineseYearOf(today);
+  let personYear = null;
+  let boundary = null;
+  if (args.birthDate !== void 0) {
+    const parsed = parseCivilDate(args.birthDate);
+    if (!parsed) throw new RangeError("birthDate must be a real date, such as 1990-01-20.");
+    if (parsed.year <= CHINESE_FIRST_YEAR || parsed.year > CHINESE_LAST_YEAR) throw new RangeError(`birthDate must fall from ${CHINESE_FIRST_YEAR + 1} to ${CHINESE_LAST_YEAR}.`);
+    const newYear = lunarNewYearOf(parsed.year);
+    const before2 = args.birthDate < newYear;
+    personYear = before2 ? parsed.year - 1 : parsed.year;
+    const animal = chineseAnimalForCycleYear(personYear);
+    boundary = {
+      lunarNewYear: newYear,
+      beforeNewYear: before2,
+      earlierAnimal: null,
+      text: before2 ? `Born on ${longDate(args.birthDate)}, before the Lunar New Year of ${longDate(newYear)}, so the year is still the ${animal.name} year that began in ${personYear}.` : `Born on ${longDate(args.birthDate)}, on or after the Lunar New Year of ${longDate(newYear)}, so the year is the ${animal.name} year of ${personYear}.`
+    };
+  } else if (args.year !== void 0) {
+    personYear = args.year;
+    const newYear = lunarNewYearOf(args.year);
+    const earlier = chineseAnimalForCycleYear(args.year - 1);
+    boundary = {
+      lunarNewYear: newYear,
+      beforeNewYear: null,
+      earlierAnimal: ref2(origin, earlier),
+      text: `The ${chineseAnimalForCycleYear(args.year).name} year of ${args.year} began on ${longDate(newYear)}. Anyone born in ${args.year} before that day belongs to the ${earlier.name} year of ${args.year - 1}; ask for the birth date to be sure.`
+    };
+  }
+  let person = null;
+  if (personYear !== null) {
+    const animal = chineseAnimalForCycleYear(personYear);
+    person = { ...yearFacts(personYear, origin), association: animal.association, context: animal.context, pairings: pairings(animal, origin) };
+  }
+  const data = {
+    from: args.birthDate !== void 0 ? "birth-date" : args.year !== void 0 ? "year" : "today",
+    birthDate: args.birthDate ?? null,
+    person,
+    boundary,
+    current: yearFacts(currentYear, origin),
+    today,
+    zone: zone7,
+    guideUrl: `${origin}/learn/chinese-zodiac/`,
+    note: CHINESE_ZODIAC_NOTE
+  };
+  const links = [
+    ...person ? [{ title: `The ${person.animal.name} on Zodiacs`, url: person.animal.pageUrl }] : [],
+    ...person?.animal.slug !== data.current.animal.slug ? [{ title: `The ${data.current.animal.name}, this year's animal`, url: data.current.animal.pageUrl }] : [],
+    { title: "The Chinese zodiac on Zodiacs", url: data.guideUrl }
+  ];
+  return { data, links };
+}
+
+// src/ai-tools/features/personal-transits.ts
+import { z as z7 } from "zod";
+
+// src/lib/engine/returns.ts
+var DAY10 = 864e5;
+function findLongitudeCrossings2(body2, targetLon, from, to, stepDays = 5) {
+  if (!(to.getTime() > from.getTime())) return [];
+  return findLongitudeCrossingsWith(bodyLongitude2, body2, targetLon, from, to, stepDays);
+}
+function groupIntoSeasons2(crossings, gapDays = 400) {
+  const seasons = [];
+  for (const c of crossings) {
+    const cur = seasons[seasons.length - 1];
+    if (cur && c.at.getTime() - cur.last.getTime() <= gapDays * DAY10) {
+      cur.crossings.push(c);
+      cur.last = c.at;
+    } else {
+      seasons.push({ index: seasons.length + 1, crossings: [c], first: c.at, last: c.at });
+    }
+  }
+  return seasons;
+}
+function saturnReturns(birthUtc) {
+  const natalLon = bodyLongitude2("Saturn", birthUtc);
+  const speed = longitudeSpeed2("Saturn", birthUtc);
+  const window = clipToReferenceSpan(
+    new Date(birthUtc.getTime() + 26 * 365.25 * DAY10),
+    new Date(birthUtc.getTime() + 92 * 365.25 * DAY10)
+  );
+  const crossings = window ? findLongitudeCrossings2("Saturn", natalLon, window.from, window.to) : [];
+  return {
+    natalLon,
+    natalRetrograde: speed < 0,
+    seasons: groupIntoSeasons2(crossings),
+    rangeClipped: !window || window.clipped,
+    searched: window ? { from: window.from, to: window.to } : null
+  };
+}
+
+// src/lib/engine/transit-scan-shared.ts
+var TRANSIT_BODY_ORDER = [
+  "Sun",
+  "Moon",
+  "Mercury",
+  "Venus",
+  "Mars",
+  "Jupiter",
+  "Saturn",
+  "Uranus",
+  "Neptune",
+  "Pluto"
+];
+var DEFAULT_TRANSIT_BODIES = [
+  "Sun",
+  "Mercury",
+  "Venus",
+  "Mars",
+  "Jupiter",
+  "Saturn",
+  "Uranus",
+  "Neptune",
+  "Pluto"
+];
+var SLOW_TRANSIT_BODIES = [
+  "Jupiter",
+  "Saturn",
+  "Uranus",
+  "Neptune",
+  "Pluto"
+];
+var MAJOR_ASPECT_ORDER = [
+  "conjunction",
+  "sextile",
+  "square",
+  "trine",
+  "opposition"
+];
+var NATAL_POINT_ORDER = [
+  ...TRANSIT_BODY_ORDER,
+  "ASC",
+  "MC"
+];
+
+// src/lib/engine/transit-scan-core.ts
+var DAY11 = 864e5;
+var MINUTE = 6e4;
+var BOUNDARY_EPSILON_MS = 100;
+var ASPECT_TARGET_OFFSETS = {
+  conjunction: [0],
+  sextile: [60, 300],
+  square: [90, 270],
+  trine: [120, 240],
+  opposition: [180]
+};
+var STEP_DAYS2 = {
+  Sun: 1,
+  Moon: 0.25,
+  Mercury: 0.5,
+  Venus: 1,
+  Mars: 1,
+  Jupiter: 2,
+  Saturn: 5,
+  Uranus: 5,
+  Neptune: 5,
+  Pluto: 5
+};
+var TRANSIT_BODY_SET = new Set(TRANSIT_BODY_ORDER);
+var BODY_INDEX = new Map(TRANSIT_BODY_ORDER.map((body2, index) => [body2, index]));
+var NATAL_INDEX = new Map(
+  NATAL_POINT_ORDER.map((point, index) => [point, index])
+);
+var ASPECT_INDEX = new Map(MAJOR_ASPECT_ORDER.map((aspect, index) => [aspect, index]));
+function validDate3(date3) {
+  return Number.isFinite(date3.getTime());
+}
+function assertWindow(from, to) {
+  if (!validDate3(from) || !validDate3(to)) throw new RangeError("Transit window dates must be valid.");
+  if (from.getTime() > to.getTime()) throw new RangeError("Transit window must have from <= to.");
+}
+function normalizeLongitude3(lon) {
+  if (!Number.isFinite(lon)) throw new RangeError("Transit longitudes must be finite.");
+  return (lon % 360 + 360) % 360;
+}
+function angularError(targetLon, transitLon) {
+  const distance2 = Math.abs(((transitLon - targetLon + 540) % 360 + 360) % 360 - 180);
+  return distance2;
+}
+function signedAngularDelta(referenceLon, lon) {
+  return ((lon - referenceLon + 540) % 360 + 360) % 360 - 180;
+}
+function isTransitBody(body2) {
+  return TRANSIT_BODY_SET.has(body2);
+}
+function natalTransitPoints(chart) {
+  const byBody = /* @__PURE__ */ new Map();
+  for (const position2 of chart.bodies) {
+    if (isTransitBody(position2.body)) byBody.set(position2.body, normalizeLongitude3(position2.lon));
+  }
+  const points = TRANSIT_BODY_ORDER.flatMap((body2) => {
+    const lon = byBody.get(body2);
+    return lon === void 0 ? [] : [{ name: body2, lon }];
+  });
+  if (chart.angles) {
+    points.push(
+      { name: "ASC", lon: normalizeLongitude3(chart.angles.asc) },
+      { name: "MC", lon: normalizeLongitude3(chart.angles.mc) }
+    );
+  }
+  return points;
+}
+function aspectTargetLongitudes(natalLon, aspect) {
+  const lon = normalizeLongitude3(natalLon);
+  return ASPECT_TARGET_OFFSETS[aspect].map((offset) => normalizeLongitude3(lon + offset));
+}
+function selectedTransitBodies(options) {
+  const selected = new Set(options.transitBodies ?? DEFAULT_TRANSIT_BODIES);
+  if (options.includeMoon) selected.add("Moon");
+  else selected.delete("Moon");
+  return TRANSIT_BODY_ORDER.filter((body2) => selected.has(body2));
+}
+function selectedNatalPoints(natal, options) {
+  const points = natalTransitPoints(natal);
+  if (options.natalPoints === void 0) return points;
+  const selected = new Set(options.natalPoints);
+  return points.filter((point) => selected.has(point.name));
+}
+function selectedAspects(options) {
+  if (options.aspects === void 0) return [...MAJOR_ASPECT_ORDER];
+  const selected = new Set(options.aspects);
+  return MAJOR_ASPECT_ORDER.filter((aspect) => selected.has(aspect));
+}
+function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
+  const referenceLon = ephemeris.bodyLongitude(body2, new Date((fromMs + toMs) / 2));
+  const valueAt = (time) => {
+    const lon = ephemeris.bodyLongitude(body2, new Date(time));
+    return referenceLon + signedAngularDelta(referenceLon, lon);
+  };
+  let lo = fromMs;
+  let hi = toMs;
+  for (let i = 0; i < 56; i += 1) {
+    const third = (hi - lo) / 3;
+    const left = lo + third;
+    const right = hi - third;
+    const leftValue = valueAt(left);
+    const rightValue = valueAt(right);
+    if (maximize ? leftValue < rightValue : leftValue > rightValue) lo = left;
+    else hi = right;
+  }
+  const center = Math.round((lo + hi) / 2);
+  let bestMs = center;
+  let bestValue = valueAt(center);
+  for (let offset = -3; offset <= 3; offset += 1) {
+    const candidateMs = center + offset;
+    const candidateValue = valueAt(candidateMs);
+    if (maximize ? candidateValue > bestValue : candidateValue < bestValue) {
+      bestMs = candidateMs;
+      bestValue = candidateValue;
+    }
+  }
+  return new Date(bestMs);
+}
+function stationBreakpoints(ephemeris, body2, from, to, stepDays) {
+  const stations = [];
+  const stepMs = stepDays * DAY11;
+  const toMs = to.getTime();
+  let previousMs = from.getTime();
+  let previousSpeed = ephemeris.longitudeSpeed(body2, from);
+  while (previousMs < toMs) {
+    const currentMs = Math.min(previousMs + stepMs, toMs);
+    const currentSpeed = ephemeris.longitudeSpeed(body2, new Date(currentMs));
+    const previousSign = Math.sign(previousSpeed);
+    const currentSign = Math.sign(currentSpeed);
+    if (!(previousSign === 0 && currentSign === 0) && (previousSign === 0 || currentSign === 0 || previousSign !== currentSign)) {
+      stations.push(refineLongitudeExtremum(
+        ephemeris,
+        body2,
+        Math.max(from.getTime(), previousMs - stepMs),
+        Math.min(toMs, currentMs + stepMs),
+        previousSpeed > currentSpeed
+      ));
+    }
+    previousMs = currentMs;
+    previousSpeed = currentSpeed;
+  }
+  return stations.filter((station) => station.getTime() > from.getTime() && station.getTime() < toMs).filter((station, index, all) => index === 0 || station.getTime() - all[index - 1].getTime() > MINUTE);
+}
+function scanTransitContactsWith(ephemeris, natal, from, to, options = {}) {
+  assertWindow(from, to);
+  const points = selectedNatalPoints(natal, options);
+  const bodies = selectedTransitBodies(options);
+  const aspects = selectedAspects(options);
+  if (points.length === 0 || bodies.length === 0 || aspects.length === 0) return [];
+  const fromMs = from.getTime();
+  const toMs = to.getTime();
+  const contacts = /* @__PURE__ */ new Map();
+  for (const transitBody2 of bodies) {
+    const stepDays = STEP_DAYS2[transitBody2];
+    const stations = stationBreakpoints(ephemeris, transitBody2, from, to, stepDays);
+    const boundaries = [from, ...stations, to];
+    for (const point of points) {
+      for (const aspect of aspects) {
+        for (const targetLon of aspectTargetLongitudes(point.lon, aspect)) {
+          const hits = boundaries.slice(0, -1).flatMap((boundary, index) => ephemeris.findLongitudeCrossings(
+            transitBody2,
+            targetLon,
+            boundary,
+            boundaries[index + 1],
+            stepDays
+          ));
+          for (const station of stations) {
+            const stationMs = station.getTime();
+            const stationLon = ephemeris.bodyLongitude(transitBody2, station);
+            const resolution = Math.max(
+              angularError(
+                stationLon,
+                ephemeris.bodyLongitude(transitBody2, new Date(stationMs - 500))
+              ),
+              angularError(
+                stationLon,
+                ephemeris.bodyLongitude(transitBody2, new Date(stationMs + 500))
+              )
+            ) + 1e-12;
+            const hasNearbyCrossing = hits.some((hit) => Math.abs(hit.at.getTime() - stationMs) <= MINUTE);
+            if (!hasNearbyCrossing && angularError(targetLon, stationLon) <= resolution) {
+              hits.push({ at: station, retrograde: false });
+            }
+          }
+          if (angularError(targetLon, ephemeris.bodyLongitude(transitBody2, from)) < 1e-8) {
+            hits.unshift({ at: new Date(fromMs), retrograde: false });
+          }
+          for (const hit of hits) {
+            let exactMs = hit.at.getTime();
+            if (exactMs < fromMs - BOUNDARY_EPSILON_MS || exactMs > toMs + BOUNDARY_EPSILON_MS) continue;
+            if (Math.abs(exactMs - fromMs) <= BOUNDARY_EPSILON_MS) exactMs = fromMs;
+            if (Math.abs(exactMs - toMs) <= BOUNDARY_EPSILON_MS) exactMs = toMs;
+            const exact = new Date(exactMs);
+            const contact = {
+              transitBody: transitBody2,
+              natalPoint: point.name,
+              aspect,
+              exactUtc: exact.toISOString()
+            };
+            const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
+            const sameContact = contacts.get(key) ?? [];
+            const duplicate = sameContact.find((existing) => Math.abs(existing.exactMs - exactMs) < 100);
+            if (!duplicate) {
+              sameContact.push({ ...contact, exactMs });
+              contacts.set(key, sameContact);
+            }
+          }
+        }
+      }
+    }
+  }
+  const numberedContacts = [...contacts.values()].flatMap((group) => {
+    const chronological = [...group].sort((a, b) => a.exactMs - b.exactMs);
+    const passCount = chronological.length;
+    return chronological.map((contact, index) => ({
+      ...contact,
+      pass: index + 1,
+      passCount
+    }));
+  });
+  return numberedContacts.sort((a, b) => a.exactUtc.localeCompare(b.exactUtc) || (BODY_INDEX.get(a.transitBody) ?? 0) - (BODY_INDEX.get(b.transitBody) ?? 0) || (NATAL_INDEX.get(a.natalPoint) ?? 0) - (NATAL_INDEX.get(b.natalPoint) ?? 0) || (ASPECT_INDEX.get(a.aspect) ?? 0) - (ASPECT_INDEX.get(b.aspect) ?? 0)).map(({ exactMs: _exactMs, ...contact }) => contact);
+}
+function createTransitScanner(ephemeris) {
+  return {
+    scanTransitContacts: (natal, from, to, options) => scanTransitContactsWith(ephemeris, natal, from, to, options)
+  };
+}
+
+// src/lib/engine/transit-scan.ts
+var TRANSIT_BODY_SET2 = new Set(TRANSIT_BODY_ORDER);
+var { scanTransitContacts } = createTransitScanner({
+  bodyLongitude: bodyLongitude2,
+  findLongitudeCrossings: findLongitudeCrossings2,
+  longitudeSpeed: longitudeSpeed2
+});
+
+// src/lib/engine/year-scan.ts
+var DAY_MS6 = 864e5;
+var ASPECT_OFFSETS2 = [
+  { aspect: "conjunction", offsets: [0] },
+  { aspect: "square", offsets: [90, 270] },
+  { aspect: "opposition", offsets: [180] }
+];
+function solarReturnsIn(natalSunLon, window) {
+  const instants = [];
+  for (let at = window.to; ; ) {
+    const instant2 = mostRecentSolarReturnInstant(natalSunLon, at);
+    if (instant2.getTime() <= window.from.getTime()) return instants;
+    instants.unshift(instant2.toISOString());
+    at = new Date(instant2.getTime() - DAY_MS6);
+  }
+}
+function yearScan(natal, from, to) {
+  const window = clipToReferenceSpan(from, to);
+  const scan = (body2, lon, step) => window ? findLongitudeCrossings2(body2, lon, window.from, window.to, step) : [];
+  const solarReturns = window ? solarReturnsIn(natal.sunLon, window) : [];
+  const points = [
+    { name: "Sun", lon: natal.sunLon }
+  ];
+  if (natal.moonLon != null) points.push({ name: "Moon", lon: natal.moonLon });
+  if (natal.ascLon != null) points.push({ name: "ASC", lon: natal.ascLon });
+  const aspects = [];
+  for (const body2 of ["Jupiter", "Saturn"]) {
+    for (const point of points) {
+      for (const { aspect, offsets } of ASPECT_OFFSETS2) {
+        const crossings = offsets.flatMap((off) => scan(body2, (point.lon + off) % 360)).sort((a, b) => a.at.getTime() - b.at.getTime());
+        for (const season of groupIntoSeasons2(crossings, 300)) {
+          aspects.push({
+            body: body2,
+            aspect,
+            natal: point.name,
+            from: season.first.toISOString(),
+            to: season.last.toISOString(),
+            passes: season.crossings.length
+          });
+        }
+      }
+    }
+  }
+  aspects.sort((a, b) => a.from.localeCompare(b.from));
+  const saturn = saturnReturns(natal.birthUtc);
+  const saturnSeasons = saturn.seasons.map((s) => ({
+    index: s.index,
+    from: s.first.toISOString(),
+    to: s.last.toISOString()
+  }));
+  return { solarReturns, aspects, saturnSeasons, rangeClipped: !window || window.clipped || saturn.rangeClipped };
+}
+
+// src/lib/transits.ts
+var TRANSIT_ORB = 3;
+var MOVER = {
+  Sun: "a few days of spotlight",
+  Moon: "a few hours of weather",
+  Mercury: "a busy stretch for messages and errands",
+  Venus: "a soft stretch of warmth and appetite",
+  Mars: "a charged stretch of heat and urgency",
+  Jupiter: "a generous stretch of confidence",
+  Saturn: "a long season of pressure and accounting",
+  Uranus: "a jolt of disruption that repeats for months",
+  Neptune: "a slow fog of longing and blur",
+  Pluto: "a years-long excavation"
+};
+var ASPECT_VERB = {
+  conjunction: {
+    verb: "sits on",
+    gloss: "and for a while it colors everything there"
+  },
+  sextile: {
+    verb: "opens a door for",
+    gloss: "an opening that rewards you if you take it"
+  },
+  square: {
+    verb: "pushes against",
+    gloss: "friction that will not resolve on its own"
+  },
+  trine: {
+    verb: "flows through",
+    gloss: "help that arrives without being asked"
+  },
+  opposition: {
+    verb: "stands opposite",
+    gloss: "a tension best met head-on rather than absorbed"
+  }
+};
+function transitLine(transiting, type, natal) {
+  const role = BODY_ROLE[natal] ?? `natal ${natal}`;
+  const mover = MOVER[transiting];
+  const phrase = ASPECT_VERB[type];
+  if (!phrase || !mover) return `${transiting} aspects your ${role}.`;
+  return `${transiting} ${phrase.verb} your ${role}: ${mover}, ${phrase.gloss}.`;
+}
+
+// src/lib/upcoming.ts
+var shortest = (a, b) => {
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+};
+function eclipseHits(eclipses, natal, now, orb = 3) {
+  const hits = [];
+  for (const e of eclipses) {
+    if (new Date(e.peak) <= now) continue;
+    let best = null;
+    for (const n of natal) {
+      if (!(n.body in BODY_ROLE)) continue;
+      const conj = shortest(e.lon, n.lon);
+      const opp = Math.abs(180 - shortest(e.lon, n.lon));
+      const contact = conj <= opp ? "conjunction" : "opposition";
+      const d = Math.min(conj, opp);
+      if (d <= orb && (!best || d < best.orb)) {
+        best = { eclipse: e, body: n.body, natalLon: n.lon, orb: +d.toFixed(1), contact };
+      }
+    }
+    if (best) hits.push(best);
+  }
+  return hits.sort((a, b) => a.eclipse.peak.localeCompare(b.eclipse.peak));
+}
+var MONTHS2 = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec"
+];
+var monthDay = (iso3) => {
+  const d = new Date(iso3);
+  return `${MONTHS2[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+};
+var cap5 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+function eclipseHitLine(hit) {
+  const e = hit.eclipse;
+  const where = hit.contact === "conjunction" ? `lands on your ${hit.body}` : `lands directly across from your ${hit.body}`;
+  const role = BODY_ROLE[hit.body] ?? hit.body.toLowerCase();
+  return `The ${e.kind} ${e.type} eclipse of ${monthDay(e.peak)} (${e.degree.toFixed(1)}\xB0 ${cap5(e.sign)}) ${where}. Eclipses tend to fast-forward whatever house your ${role} runs.`;
+}
+
+// src/lib/year-ahead.ts
+var ASC_LINE = {
+  conjunction: {
+    Jupiter: "Jupiter crosses your rising degree. The outward year gets bigger: more room, more visibility, more yes.",
+    Saturn: "Saturn crosses your rising degree, a season of taking yourself more seriously, and being taken that way."
+  },
+  square: {
+    Jupiter: "Jupiter squares your rising degree, growth that argues with the image you present; the fix is updating the image.",
+    Saturn: "Saturn squares your rising degree. Structure presses on how you show up; commitments want renegotiating."
+  },
+  opposition: {
+    Jupiter: "Jupiter stands opposite your rising degree. The year grows through other people: partners, audiences, the ones across the table.",
+    Saturn: "Saturn stands opposite your rising degree. Relationships get weighed; what survives the audit is yours."
+  }
+};
+function aspectLine(e) {
+  if (e.natal === "ASC") return ASC_LINE[e.aspect][e.body];
+  return transitLine(e.body, e.aspect, e.natal);
+}
+function aspectReceipt(e) {
+  const when = e.from === e.to || monthDay(e.from) === monthDay(e.to) ? monthDay(e.from) : `${monthDay(e.from)} to ${monthDay(e.to)}`;
+  const passes = e.passes > 1 ? ` \xB7 ${e.passes} exact passes` : "";
+  return `${e.body} ${e.aspect} Natal ${e.natal} \xB7 ${when}${passes}`;
+}
+function solarReturnEvents(scan) {
+  return scan.solarReturns.map((at) => {
+    const d = new Date(at);
+    const hh = String(d.getUTCHours()).padStart(2, "0");
+    const mm = String(d.getUTCMinutes()).padStart(2, "0");
+    return {
+      at,
+      kind: "solar-return",
+      body: "Sun",
+      line: "Your solar return: the Sun back on its natal degree, the moment your birthday actually lands. The year resets here.",
+      receipt: `solar return \xB7 ${monthDay(at)}, ${hh}:${mm} UTC`
+    };
+  });
+}
+function aspectEvents(scan) {
+  return scan.aspects.map((e) => ({
+    at: e.from,
+    ...e.to !== e.from ? { endAt: e.to } : {},
+    kind: "aspect",
+    body: e.body,
+    line: aspectLine(e),
+    receipt: aspectReceipt(e)
+  }));
+}
+var cap6 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+function ingressEvents(windows, sunSign, risingSign, from, to) {
+  const out = [];
+  for (const w of windows) {
+    if (w.planet !== "Jupiter" && w.planet !== "Saturn") continue;
+    const start = new Date(w.from);
+    if (start < from || start > to) continue;
+    const yours = w.sign === sunSign ? " That is your sun sign. The cycle starts again where your chart keeps its engine." : risingSign && w.sign === risingSign ? " That is your rising sign. The change shows up first in how you meet the world." : "";
+    const tone = w.planet === "Jupiter" ? "about a year of growth pointed there" : "about two and a half years of slow structure built there";
+    out.push({
+      at: w.from,
+      kind: "ingress",
+      body: w.planet,
+      line: `${w.planet} enters ${cap6(w.sign)} on ${monthDay(w.from)}, ${tone}.${yours}`,
+      receipt: `${w.planet} \u2192 ${cap6(w.sign)} \xB7 ${monthDay(w.from)}`
+    });
+  }
+  return out;
+}
+function eclipseEvents(eclipses, natal, from, to, orb = 3) {
+  return eclipseHits(eclipses, natal, from, orb).filter((h) => new Date(h.eclipse.peak) <= to).map((h) => ({
+    at: h.eclipse.peak,
+    kind: "eclipse",
+    body: h.eclipse.type === "solar" ? "Sun" : "Moon",
+    line: eclipseHitLine(h),
+    receipt: `${h.eclipse.type} eclipse \xB7 ${monthDay(h.eclipse.peak)} \xB7 orb ${h.orb.toFixed(1)}\xB0`
+  }));
+}
+var ORDINAL4 = ["", "first", "second", "third", "fourth"];
+function saturnSeasonEvents(seasons, from, to) {
+  return seasons.filter((s) => new Date(s.to) >= from && new Date(s.from) <= to).map((s) => {
+    const label = ORDINAL4[s.index] ?? `${s.index}th`;
+    const oneDay = monthDay(s.from) === monthDay(s.to);
+    return {
+      at: s.from,
+      ...oneDay ? {} : { endAt: s.to },
+      kind: "saturn-return",
+      body: "Saturn",
+      line: oneDay ? `Your ${label} Saturn return lands around ${monthDay(s.from)}, the long audit of what you have built, in one clean pass.` : `Your ${label} Saturn return runs ${monthDay(s.from)} to ${monthDay(s.to)}, the long audit of what you have built, arriving in passes.`,
+      receipt: `Saturn return ${s.index} \xB7 ${oneDay ? monthDay(s.from) : `${monthDay(s.from)} to ${monthDay(s.to)}`}`
+    };
+  });
+}
+function assembleYearAhead(parts) {
+  return parts.flat().sort((a, b) => a.at.localeCompare(b.at));
+}
+
+// src/ai-tools/features/personal-transits.ts
+var DAY12 = 864e5;
+var ZONE_PATTERN7 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var DATE2 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
+var TRANSITS_MAX_DAYS = 366;
+var TRANSITS_DEFAULT_DAYS = 30;
+var TRANSITS_PERSONAL_DAYS = 92;
+var TRANSITS_LIMIT = 60;
+var TRANSITS_NOTE = "Astrology\u2019s reading of the sky meeting your birth chart, for reflection: not a guarantee, and not a forecast of health or money.";
+var ORDINAL5 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
+var zone3 = z7.string().min(1).max(64).regex(ZONE_PATTERN7);
+var personalTransitsInput = z7.strictObject({
+  birthDate: z7.string().regex(DATE2).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
+  time: z7.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, only if the person knows it. Never guess it. Needs zone. Without it the Moon, rising degree and Midheaven are left out."),
+  zone: zone3.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
+  latitude: z7.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising degree and Midheaven. Give it with longitude and zone. Nothing is stored."),
+  longitude: z7.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
+  mode: z7.enum(["window", "year-ahead"]).optional().describe("window (the default): every exact contact between from and to. year-ahead: the year from today, with Jupiter and Saturn, the solar return, a Saturn return, sign changes and eclipses near the chart."),
+  from: z7.string().regex(DATE2).optional().describe("For window: the first day, such as 2026-11-01. Defaults to today."),
+  to: z7.string().regex(DATE2).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to ${TRANSITS_DEFAULT_DAYS} days after from.`),
+  currentZone: zone3.optional().describe("The person's time zone now, such as Asia/Bangkok, so dates read on their clock. Defaults to the birthplace zone, else UTC.")
+}).superRefine((args, context) => {
+  if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
+  if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
+  if (args.mode === "year-ahead" && (args.from !== void 0 || args.to !== void 0)) context.addIssue({ code: "custom", message: "year-ahead always starts today; leave out from and to." });
+});
+var transitBody = z7.enum(TRANSIT_BODY_ORDER);
+var natalPoint = z7.enum([...TRANSIT_BODY_ORDER, "ASC", "MC"]);
+var personalTransitsData = z7.object({
+  mode: z7.enum(["window", "year-ahead"]),
+  birthDate: z7.string(),
+  timeKnown: z7.boolean(),
+  placed: z7.boolean(),
+  from: z7.string(),
+  to: z7.string(),
+  zone: z7.string(),
+  /** The moving planets scanned and the chart points they were measured against. */
+  scanned: z7.object({ planets: z7.array(transitBody), points: z7.array(natalPoint) }),
+  /** Window mode: exact contacts, soonest first. */
+  contacts: z7.array(z7.object({
+    date: z7.string(),
+    exactUtc: z7.string(),
+    planet: transitBody,
+    aspect: z7.enum(["conjunction", "sextile", "square", "trine", "opposition"]),
+    point: natalPoint,
+    /** Which exact pass this is, of how many in the window (a retrograde loop makes three). */
+    pass: z7.number().int().min(1),
+    passCount: z7.number().int().min(1),
+    title: z7.string(),
+    line: z7.string()
+  })).max(TRANSITS_LIMIT),
+  /** Contacts found before the list was cut to its limit. */
+  found: z7.number().int().min(0),
+  /** Year-ahead mode: the timeline, soonest first. */
+  highlights: z7.array(z7.object({
+    date: z7.string(),
+    endDate: z7.string().nullable(),
+    kind: z7.enum(["solar-return", "aspect", "ingress", "eclipse", "saturn-return"]),
+    planet: z7.string(),
+    line: z7.string(),
+    /** With a birth time and place: the natal house a sign change falls in. */
+    house: z7.object({ number: z7.number().int().min(1).max(12), line: z7.string() }).nullable()
+  })),
+  /** What the answer leaves out from the details given, and where the tables stop. */
+  limits: z7.array(z7.string()),
+  pageUrl: z7.url(),
+  note: z7.literal(TRANSITS_NOTE)
+});
+function dateIn(at, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(at);
+  const part = (type) => parts.find((entry) => entry.type === type).value;
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+function dayLabel2(iso3, timeZone) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short", year: "numeric" }).formatToParts(new Date(iso3)).map((part) => [part.type, part.value]));
+  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+}
+var POINT_NAME = { ASC: "rising degree", MC: "Midheaven" };
+var pointName = (point) => POINT_NAME[point] ?? point;
+var cap7 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+async function startOfDay(date3, timeZone, clock2) {
+  await clock2.prepareLocalTime(date3, timeZone);
+  return clock2.resolveLocalToUtc(date3, "00:00", timeZone).utc;
+}
+async function getPersonalTransits(args, now, clock2, origin) {
+  const birth = parseCivilDate(args.birthDate);
+  if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
+  if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
+  const timeKnown = args.time !== void 0;
+  const placed = args.latitude !== void 0 && args.longitude !== void 0;
+  let birthUtc;
+  if (args.zone) {
+    await clock2.prepareLocalTime(args.birthDate, args.zone);
+    const time = args.time ?? "12:00";
+    birthUtc = (args.longitude !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: args.longitude }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+  } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
+  const chart = computeChart3({ utc: birthUtc, ...placed ? { latitude: args.latitude, longitude: args.longitude } : {}, houseSystem: "whole", timeKnown });
+  const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
+  const shownZone = args.currentZone ?? args.zone ?? "UTC";
+  const today = dateIn(now, shownZone);
+  const lon = (body2) => chart.bodies.find((row) => row.body === body2).lon;
+  const limits2 = [];
+  if (!timeKnown) limits2.push("No birth time was given, so the Moon, the rising degree and the Midheaven are left out; contacts to the other planets can shift by about a day.");
+  else if (!placed) limits2.push("No birthplace coordinates were given, so the rising degree and the Midheaven are left out.");
+  const points = [...TRANSIT_BODY_ORDER.filter((body2) => timeKnown || body2 !== "Moon"), ...angles ? ["ASC", "MC"] : []];
+  const pageUrl = `${origin}/transits/`;
+  const mode = args.mode ?? "window";
+  if (mode === "window") {
+    const fromDate = args.from ?? today;
+    const toDate2 = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + TRANSITS_DEFAULT_DAYS * DAY12).toISOString().slice(0, 10);
+    if (!parseCivilDate(fromDate) || !parseCivilDate(toDate2)) throw new RangeError("from and to must be real dates, such as 2026-11-01.");
+    const days = Math.round((Date.parse(`${toDate2}T00:00:00Z`) - Date.parse(`${fromDate}T00:00:00Z`)) / DAY12);
+    if (days < 0) throw new RangeError("to must be on or after from.");
+    if (days > TRANSITS_MAX_DAYS) throw new RangeError(`The window is at most ${TRANSITS_MAX_DAYS} days; to is ${days} days after from.`);
+    const fromUtc2 = await startOfDay(fromDate, shownZone, clock2);
+    const nextDay = new Date(Date.parse(`${toDate2}T00:00:00Z`) + DAY12).toISOString().slice(0, 10);
+    const toUtc2 = await startOfDay(nextDay, shownZone, clock2);
+    const planets = days <= TRANSITS_PERSONAL_DAYS ? [...DEFAULT_TRANSIT_BODIES] : [...SLOW_TRANSIT_BODIES];
+    if (days > TRANSITS_PERSONAL_DAYS) limits2.push(`Windows longer than ${TRANSITS_PERSONAL_DAYS} days list only Jupiter, Saturn, Uranus, Neptune and Pluto; ask for a shorter window for the Sun, Mercury, Venus and Mars.`);
+    const natal = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles };
+    const found = scanTransitContacts(natal, fromUtc2, toUtc2, { transitBodies: planets, natalPoints: points }).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
+    if (found.length > TRANSITS_LIMIT) limits2.push(`${found.length} contacts were found; the first ${TRANSITS_LIMIT} are listed. Ask for a shorter window for the rest.`);
+    const contacts = found.slice(0, TRANSITS_LIMIT).map((contact) => ({
+      date: dayLabel2(contact.exactUtc, shownZone),
+      exactUtc: contact.exactUtc,
+      planet: contact.transitBody,
+      aspect: contact.aspect,
+      point: contact.natalPoint,
+      pass: contact.pass,
+      passCount: contact.passCount,
+      title: `${contact.transitBody} ${contact.aspect} your ${pointName(contact.natalPoint)}`,
+      line: transitLine(contact.transitBody, contact.aspect, pointName(contact.natalPoint))
+    }));
+    return {
+      data: { mode, birthDate: args.birthDate, timeKnown, placed, from: fromDate, to: toDate2, zone: shownZone, scanned: { planets, points }, contacts, found: found.length, highlights: [], limits: limits2, pageUrl, note: TRANSITS_NOTE },
+      links: [{ title: "Transits on Zodiacs", url: pageUrl }, { title: "Your birth chart on Zodiacs", url: `${origin}/birth-chart/` }]
+    };
+  }
+  const fromUtc = await startOfDay(today, shownZone, clock2);
+  const toUtc = new Date(fromUtc.getTime() + 365 * DAY12);
+  const scan = yearScan({ sunLon: lon("Sun"), moonLon: timeKnown ? lon("Moon") : null, ascLon: angles ? angles.asc : null, birthUtc }, fromUtc, toUtc);
+  const sunSign = SIGNS2[signIndexForLongitude2(lon("Sun"))].slug;
+  const risingSign = angles ? SIGNS2[signIndexForLongitude2(angles.asc)].slug : null;
+  const natalBodies = chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body) && (timeKnown || row.body !== "Moon")).map(({ body: body2, lon: at }) => ({ body: body2, lon: at }));
+  const ingressWindows = ingresses_default.windows;
+  const ingresses = ingressEvents(ingressWindows, sunSign, risingSign, fromUtc, toUtc);
+  const ingressSign = new Map(ingressWindows.map((window) => [`${window.planet}|${window.from}`, window.sign]));
+  const events = assembleYearAhead([
+    solarReturnEvents(scan),
+    aspectEvents(scan),
+    saturnSeasonEvents(scan.saturnSeasons, fromUtc, toUtc),
+    ingresses,
+    eclipseEvents(eclipses_default.eclipses, natalBodies, fromUtc, toUtc)
+  ]);
+  const highlights = events.map((event2) => {
+    const sign2 = event2.kind === "ingress" ? ingressSign.get(`${event2.body}|${event2.at}`) : void 0;
+    const number2 = sign2 && risingSign ? wholeSignHouseFromAsc(sign2, risingSign) : null;
+    return {
+      date: dayLabel2(event2.at, shownZone),
+      endDate: event2.endAt ? dayLabel2(event2.endAt, shownZone) : null,
+      kind: event2.kind,
+      planet: event2.body,
+      line: event2.line,
+      house: number2 ? { number: number2, line: `In your chart, ${cap7(sign2)} is your ${ORDINAL5[number2]} house: ${NATAL_HOUSE_THEME[number2]}.` } : null
+    };
+  });
+  const toDate = dateIn(new Date(toUtc.getTime() - 1), shownZone);
+  const eclipsesEnd = dateIn(new Date(Date.parse(eclipses_default.to) - 1), "UTC");
+  if (toDate > eclipsesEnd) limits2.push(`Eclipses are listed up to ${dayLabel2(`${eclipsesEnd}T12:00:00Z`, "UTC")}, where the eclipse table ends.`);
+  if (scan.rangeClipped) limits2.push("The scan stops at the end of 2199.");
+  if (!risingSign) limits2.push("Without a birth time and place, sign changes are not placed in your houses.");
+  return {
+    data: { mode, birthDate: args.birthDate, timeKnown, placed, from: today, to: toDate, zone: shownZone, scanned: { planets: ["Jupiter", "Saturn"], points: ["Sun", ...timeKnown ? ["Moon"] : [], ...angles ? ["ASC"] : []] }, contacts: [], found: 0, highlights, limits: limits2, pageUrl, note: TRANSITS_NOTE },
+    links: [{ title: "Transits on Zodiacs", url: pageUrl }, { title: "Your birth chart on Zodiacs", url: `${origin}/birth-chart/` }]
+  };
+}
+
+// src/ai-tools/features/explain.ts
+import { z as z8 } from "zod";
+
+// src/data/context-help.ts
+var CONTEXT_TERMS = Object.freeze([
+  {
+    slug: "birth-chart",
+    plainDefinition: "A snapshot of where the planets appeared at the moment you were born.",
+    aliases: ["natal chart"],
+    category: "setup",
+    level: "core"
+  },
+  {
+    slug: "big-three",
+    plainDefinition: "Your Sun, Moon, and rising signs, the three quickest entry points into a birth chart.",
+    aliases: ["sun moon rising"],
+    category: "setup",
+    level: "core"
+  },
+  {
+    slug: "house-system",
+    plainDefinition: "A method for dividing a birth chart into twelve areas of life.",
+    aliases: ["houses setting"],
+    category: "setup",
+    level: "core"
+  },
+  {
+    slug: "whole-sign-houses",
+    plainDefinition: "A house system in which each zodiac sign becomes one complete 30\xB0 house.",
+    aliases: ["whole sign", "whole sign house system"],
+    category: "setup",
+    level: "core"
+  },
+  {
+    slug: "placidus",
+    plainDefinition: "A house system that uses your exact birth time and location to create houses of different sizes.",
+    aliases: ["placidus houses"],
+    category: "setup",
+    level: "core"
+  },
+  {
+    slug: "degree",
+    plainDefinition: "A unit for locating something precisely around the 360\xB0 chart circle.",
+    aliases: ["degrees"],
+    category: "anatomy",
+    level: "core"
+  },
+  {
+    slug: "placement",
+    plainDefinition: "A planet in a particular sign, degree, and, when birth time is known, house.",
+    aliases: ["placements"],
+    category: "anatomy",
+    level: "core"
+  },
+  {
+    slug: "house",
+    plainDefinition: "One of twelve chart areas describing where a theme tends to show up in life.",
+    aliases: ["houses"],
+    category: "anatomy",
+    level: "core"
+  },
+  {
+    slug: "cusp",
+    plainDefinition: "The boundary where one sign or house ends and the next begins.",
+    aliases: ["house cusp"],
+    category: "anatomy",
+    level: "intermediate"
+  },
+  {
+    slug: "rising-sign",
+    plainDefinition: "The sign rising on the eastern horizon at your birth; it depends on an accurate time and place.",
+    aliases: ["rising", "ascendant sign"],
+    category: "anatomy",
+    level: "core"
+  },
+  {
+    slug: "north-node",
+    plainDefinition: "A calculated point where the Moon\u2019s orbit crosses the Sun\u2019s apparent path, often read as a direction of growth rather than a fixed destiny.",
+    aliases: ["north lunar node"],
+    category: "anatomy",
+    level: "core"
+  },
+  {
+    slug: "south-node",
+    plainDefinition: "The calculated point opposite the North Node, often associated with familiar patterns and existing strengths.",
+    aliases: ["south lunar node"],
+    category: "anatomy",
+    level: "core"
+  },
+  {
+    slug: "ascendant",
+    plainDefinition: "The exact point rising on the eastern horizon, often shortened to ASC.",
+    aliases: ["asc", "asc."],
+    category: "anatomy",
+    level: "core"
+  },
+  {
+    slug: "midheaven",
+    plainDefinition: "A chart angle associated with public life and direction, often shortened to MC.",
+    aliases: ["mc", "medium coeli"],
+    category: "anatomy",
+    level: "intermediate"
+  },
+  {
+    slug: "aspect",
+    plainDefinition: "A measured angle between two chart points that astrologers read as a relationship between them.",
+    aliases: ["aspects"],
+    category: "aspect",
+    level: "core"
+  },
+  {
+    slug: "conjunction",
+    plainDefinition: "A 0\xB0 aspect that concentrates two parts of the chart in the same place.",
+    aliases: ["conjunct"],
+    category: "aspect",
+    level: "core"
+  },
+  {
+    slug: "sextile",
+    plainDefinition: "A 60\xB0 aspect read as an opportunity for two parts of the chart to cooperate.",
+    category: "aspect",
+    level: "core"
+  },
+  {
+    slug: "square",
+    plainDefinition: "A 90\xB0 aspect read as friction that asks for action or adjustment.",
+    category: "aspect",
+    level: "core"
+  },
+  {
+    slug: "trine",
+    plainDefinition: "A 120\xB0 aspect read as an easy-flowing connection between two parts of the chart.",
+    category: "aspect",
+    level: "core"
+  },
+  {
+    slug: "opposition",
+    plainDefinition: "A 180\xB0 aspect that places two chart points across from one another.",
+    aliases: ["opposite"],
+    category: "aspect",
+    level: "core"
+  },
+  {
+    slug: "orb",
+    plainDefinition: "How far an aspect is from exact; a smaller orb means a tighter aspect.",
+    aliases: ["aspect orb"],
+    category: "aspect",
+    level: "intermediate"
+  },
+  {
+    slug: "applying",
+    plainDefinition: "An aspect moving closer to its exact angle.",
+    aliases: ["applying aspect"],
+    category: "aspect",
+    level: "intermediate"
+  },
+  {
+    slug: "separating",
+    plainDefinition: "An aspect moving away from its exact angle.",
+    aliases: ["separating aspect"],
+    category: "aspect",
+    level: "intermediate"
+  },
+  {
+    slug: "essential-dignity",
+    plainDefinition: "A traditional system for describing how supported a planet is considered in a sign.",
+    aliases: ["dignity", "dignities"],
+    category: "dignity",
+    level: "intermediate"
+  },
+  {
+    slug: "domicile",
+    plainDefinition: "A traditional dignity label meaning a planet is in a sign it rules.",
+    aliases: ["rulership dignity"],
+    category: "dignity",
+    level: "intermediate"
+  },
+  {
+    slug: "exaltation",
+    plainDefinition: "A traditional dignity label meaning a planet is considered especially supported in that sign.",
+    aliases: ["exalted"],
+    category: "dignity",
+    level: "intermediate"
+  },
+  {
+    slug: "detriment",
+    plainDefinition: "A traditional dignity label for a planet in the sign opposite one it rules.",
+    category: "dignity",
+    level: "intermediate"
+  },
+  {
+    slug: "fall",
+    plainDefinition: "A traditional dignity label for a planet in the sign opposite its exaltation.",
+    category: "dignity",
+    level: "intermediate"
+  },
+  {
+    slug: "retrograde",
+    plainDefinition: "A period when a planet appears to move backward from Earth; it has not reversed its orbit.",
+    aliases: ["rx", "retrograde motion"],
+    category: "timing",
+    level: "core"
+  },
+  {
+    slug: "station",
+    plainDefinition: "The moment a planet appears to stop before changing between direct and retrograde motion.",
+    aliases: ["stations", "station direct", "station retrograde"],
+    category: "timing",
+    level: "intermediate"
+  },
+  {
+    slug: "ingress",
+    plainDefinition: "The exact moment a planet enters a new zodiac sign.",
+    aliases: ["enters a sign"],
+    category: "timing",
+    level: "intermediate"
+  },
+  {
+    slug: "transit",
+    plainDefinition: "A current moving planet compared with a fixed point in a birth chart.",
+    aliases: ["transits"],
+    category: "timing",
+    level: "core"
+  },
+  {
+    slug: "progression",
+    plainDefinition: "A symbolic timing technique that advances a birth chart by a set rule.",
+    aliases: ["progressed chart", "progressions"],
+    category: "timing",
+    level: "advanced"
+  },
+  {
+    slug: "solar-return",
+    plainDefinition: "The yearly moment when the Sun returns to its exact birth-chart position.",
+    aliases: ["solar return chart"],
+    category: "timing",
+    level: "intermediate"
+  },
+  {
+    slug: "element",
+    plainDefinition: "A sign family (fire, earth, air, or water) used to describe its basic style.",
+    aliases: ["elements"],
+    category: "sign-quality",
+    level: "core"
+  },
+  {
+    slug: "modality",
+    plainDefinition: "A sign family (cardinal, fixed, or mutable) describing how it begins, sustains, or adapts.",
+    aliases: ["modalities", "quality"],
+    category: "sign-quality",
+    level: "core"
+  },
+  {
+    slug: "cardinal",
+    plainDefinition: "The modality associated with beginning, initiating, and setting direction.",
+    category: "sign-quality",
+    level: "intermediate"
+  },
+  {
+    slug: "fixed",
+    plainDefinition: "The modality associated with sustaining, concentrating, and holding steady.",
+    category: "sign-quality",
+    level: "intermediate"
+  },
+  {
+    slug: "mutable",
+    plainDefinition: "The modality associated with adapting, transitioning, and making changes.",
+    category: "sign-quality",
+    level: "intermediate"
+  },
+  {
+    slug: "stellium",
+    plainDefinition: "A cluster of three or more major chart bodies in the same sign or house.",
+    aliases: ["stelliums"],
+    category: "anatomy",
+    level: "intermediate"
+  }
+]);
+var BEGINNER_TERM_SLUGS = Object.freeze([
+  "birth-chart",
+  "big-three",
+  "rising-sign",
+  "house-system",
+  "whole-sign-houses",
+  "placidus",
+  "house",
+  "aspect",
+  "conjunction",
+  "sextile",
+  "square",
+  "trine",
+  "opposition",
+  "retrograde",
+  "transit"
+]);
+function normalizeContextTerm(value) {
+  return value.trim().toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+var contextTermsByKey = /* @__PURE__ */ new Map();
+for (const entry of CONTEXT_TERMS) {
+  contextTermsByKey.set(normalizeContextTerm(entry.slug), entry);
+  for (const alias of entry.aliases ?? []) {
+    contextTermsByKey.set(normalizeContextTerm(alias), entry);
+  }
+}
+
+// src/data/glossary.ts
+function aspectDefinition(type) {
+  const definition = ASPECTS2.find((candidate) => candidate.type === type);
+  if (!definition) throw new Error(`Missing aspect definition for ${type}`);
+  return definition;
+}
+function aspectReceipt2(type) {
+  const definition = aspectDefinition(type);
+  return `Exact ${definition.angle}\xB0 \xB7 natal orb \u2264 ${definition.orb}\xB0 \xB7 with Sun or Moon \u2264 ${definition.orbLuminary}\xB0`;
+}
+var conjunction = aspectDefinition("conjunction");
+var sextile = aspectDefinition("sextile");
+var square = aspectDefinition("square");
+var trine = aspectDefinition("trine");
+var opposition = aspectDefinition("opposition");
+var terms = [
+  {
+    slug: "zodiac",
+    term: "Zodiac",
+    definition: "The zodiac is the coordinate band around the ecliptic used to describe where chart bodies appear in longitude. This site divides it into twelve tropical signs of equal size.",
+    related: ["ecliptic", "zodiac-sign", "tropical-zodiac"],
+    link: { href: "/learn/zodiac-dates/", label: "See the zodiac table" }
+  },
+  {
+    slug: "zodiac-sign",
+    term: "Zodiac sign",
+    definition: "A zodiac sign is one of twelve equal sections of zodiac longitude. A placement enters a sign when its longitude crosses that section\u2019s boundary.",
+    receipt: "Twelve signs \xB7 30\xB0 each",
+    related: ["zodiac", "ingress", "placement"],
+    link: { href: "/learn/zodiac-dates/", label: "See all twelve signs" }
+  },
+  {
+    slug: "tropical-zodiac",
+    term: "Tropical zodiac",
+    definition: "The tropical zodiac fixes 0\xB0 Aries to the March equinox and measures twelve equal signs from that point. This site computes tropical positions rather than sidereal positions.",
+    receipt: "Aries begins at 0\xB0 tropical longitude",
+    related: ["sidereal-zodiac", "precession", "zodiac-longitude"],
+    link: { href: "/learn/zodiac-dates/", label: "See tropical sign boundaries" }
+  },
+  {
+    slug: "sidereal-zodiac",
+    term: "Sidereal zodiac",
+    definition: "A sidereal zodiac keeps its signs aligned to a chosen stellar reference through an offset often called an ayanamsha. This site does not compute sidereal charts; its chart positions are tropical.",
+    related: ["tropical-zodiac", "precession"]
+  },
+  {
+    slug: "precession",
+    term: "Precession",
+    definition: "Precession is the slow change in the orientation of Earth\u2019s rotational axis, which shifts the equinoxes relative to the stars. It is the reason tropical and sidereal zodiac frames do not stay aligned.",
+    related: ["tropical-zodiac", "sidereal-zodiac", "ecliptic"],
+    link: { href: "/methodology/", label: "Read the calculation method" }
+  },
+  {
+    slug: "zodiac-season",
+    term: "Zodiac season",
+    definition: "A zodiac season is the interval while the tropical Sun occupies one sign. It begins at one exact solar ingress; the year changes that UTC instant, and time zones change its local civil date and clock time.",
+    related: ["sun", "ingress", "tropical-zodiac"],
+    link: { href: "/learn/zodiac-dates/", label: "See exact Sun ingresses" }
+  },
+  {
+    slug: "element",
+    term: "Element",
+    definition: "Element is a four-part classification that groups the signs as fire, earth, air, or water. Each element contains one cardinal, one fixed, and one mutable sign.",
+    related: ["fire", "earth", "air", "water", "modality"],
+    link: { href: "/learn/zodiac-dates/", label: "Compare sign elements" }
+  },
+  {
+    slug: "fire",
+    term: "Fire",
+    definition: "Fire is the element assigned to Aries, Leo, and Sagittarius. In this site\u2019s readings, it describes emphasis on initiative, expression, and conviction rather than a physical substance.",
+    related: ["aries", "leo", "sagittarius", "element"]
+  },
+  {
+    slug: "earth",
+    term: "Earth",
+    definition: "Earth is the element assigned to Taurus, Virgo, and Capricorn. In this site\u2019s readings, it describes emphasis on material conditions, maintenance, and practical results.",
+    related: ["taurus", "virgo", "capricorn", "element"]
+  },
+  {
+    slug: "air",
+    term: "Air",
+    definition: "Air is the element assigned to Gemini, Libra, and Aquarius. In this site\u2019s readings, it describes emphasis on language, exchange, and systems of thought.",
+    related: ["gemini", "libra", "aquarius", "element"]
+  },
+  {
+    slug: "water",
+    term: "Water",
+    definition: "Water is the element assigned to Cancer, Scorpio, and Pisces. In this site\u2019s readings, it describes emphasis on feeling, attachment, memory, and permeability.",
+    related: ["cancer", "scorpio", "pisces", "element"]
+  },
+  {
+    slug: "modality",
+    term: "Modality",
+    definition: "Modality classifies signs by how they meet a season: cardinal signs begin, fixed signs sustain, and mutable signs transition. Each modality includes one sign from every element.",
+    related: ["cardinal", "fixed", "mutable", "element"],
+    link: { href: "/learn/zodiac-dates/", label: "Compare sign modalities" }
+  },
+  {
+    slug: "cardinal",
+    term: "Cardinal",
+    definition: "Cardinal is the modality of Aries, Cancer, Libra, and Capricorn. These four signs begin the tropical seasons and are read through initiation and direction.",
+    related: ["aries", "cancer", "libra", "capricorn", "modality"]
+  },
+  {
+    slug: "fixed",
+    term: "Fixed",
+    definition: "Fixed is the modality of Taurus, Leo, Scorpio, and Aquarius. These four signs occupy the middle of the tropical seasons and are read through continuity and concentration.",
+    related: ["taurus", "leo", "scorpio", "aquarius", "modality"]
+  },
+  {
+    slug: "mutable",
+    term: "Mutable",
+    definition: "Mutable is the modality of Gemini, Virgo, Sagittarius, and Pisces. These four signs close the tropical seasons and are read through adjustment and transition.",
+    related: ["gemini", "virgo", "sagittarius", "pisces", "modality"]
+  },
+  {
+    slug: "polarity",
+    term: "Polarity",
+    definition: "Polarity divides the signs into alternating day and night groups, also called positive and negative in some texts. This site uses the day and night labels to avoid treating either half as better or worse.",
+    related: ["day-sign", "night-sign", "zodiac-sign"],
+    link: { href: "/learn/zodiac-dates/", label: "Compare sign polarities" }
+  },
+  {
+    slug: "day-sign",
+    term: "Day sign",
+    definition: "A day sign belongs to the outward-facing half of the zodiac\u2019s alternating polarity. Aries, Gemini, Leo, Libra, Sagittarius, and Aquarius make up this group.",
+    related: ["night-sign", "polarity"]
+  },
+  {
+    slug: "night-sign",
+    term: "Night sign",
+    definition: "A night sign belongs to the inward-facing half of the zodiac\u2019s alternating polarity. Taurus, Cancer, Virgo, Scorpio, Capricorn, and Pisces make up this group.",
+    related: ["day-sign", "polarity"]
+  },
+  {
+    slug: "aries",
+    term: "Aries",
+    definition: "Aries is the first tropical sign, spanning 0\xB0 through just under 30\xB0 of zodiac longitude. It is a cardinal fire day sign ruled by Mars in both modern and classical tables.",
+    related: ["fire", "cardinal", "mars", "first-house"],
+    link: { href: "/aries/", label: "Read the Aries guide" }
+  },
+  {
+    slug: "taurus",
+    term: "Taurus",
+    definition: "Taurus is the second tropical sign, spanning 30\xB0 through just under 60\xB0 of zodiac longitude. It is a fixed earth night sign ruled by Venus in both modern and classical tables.",
+    related: ["earth", "fixed", "venus", "second-house"],
+    link: { href: "/taurus/", label: "Read the Taurus guide" }
+  },
+  {
+    slug: "gemini",
+    term: "Gemini",
+    definition: "Gemini is the third tropical sign, spanning 60\xB0 through just under 90\xB0 of zodiac longitude. It is a mutable air day sign ruled by Mercury in both modern and classical tables.",
+    related: ["air", "mutable", "mercury", "third-house"],
+    link: { href: "/gemini/", label: "Read the Gemini guide" }
+  },
+  {
+    slug: "cancer",
+    term: "Cancer",
+    definition: "Cancer is the fourth tropical sign, spanning 90\xB0 through just under 120\xB0 of zodiac longitude. It is a cardinal water night sign ruled by the Moon in both modern and classical tables.",
+    related: ["water", "cardinal", "moon", "fourth-house"],
+    link: { href: "/cancer/", label: "Read the Cancer guide" }
+  },
+  {
+    slug: "leo",
+    term: "Leo",
+    definition: "Leo is the fifth tropical sign, spanning 120\xB0 through just under 150\xB0 of zodiac longitude. It is a fixed fire day sign ruled by the Sun in both modern and classical tables.",
+    related: ["fire", "fixed", "sun", "fifth-house"],
+    link: { href: "/leo/", label: "Read the Leo guide" }
+  },
+  {
+    slug: "virgo",
+    term: "Virgo",
+    definition: "Virgo is the sixth tropical sign, spanning 150\xB0 through just under 180\xB0 of zodiac longitude. It is a mutable earth night sign ruled by Mercury in both modern and classical tables.",
+    related: ["earth", "mutable", "mercury", "sixth-house"],
+    link: { href: "/virgo/", label: "Read the Virgo guide" }
+  },
+  {
+    slug: "libra",
+    term: "Libra",
+    definition: "Libra is the seventh tropical sign, spanning 180\xB0 through just under 210\xB0 of zodiac longitude. It is a cardinal air day sign ruled by Venus in both modern and classical tables.",
+    related: ["air", "cardinal", "venus", "seventh-house"],
+    link: { href: "/libra/", label: "Read the Libra guide" }
+  },
+  {
+    slug: "scorpio",
+    term: "Scorpio",
+    definition: "Scorpio is the eighth tropical sign, spanning 210\xB0 through just under 240\xB0 of zodiac longitude. It is a fixed water night sign ruled by Pluto in the modern table and Mars in the classical table.",
+    related: ["water", "fixed", "pluto", "mars", "eighth-house"],
+    link: { href: "/scorpio/", label: "Read the Scorpio guide" }
+  },
+  {
+    slug: "sagittarius",
+    term: "Sagittarius",
+    definition: "Sagittarius is the ninth tropical sign, spanning 240\xB0 through just under 270\xB0 of zodiac longitude. It is a mutable fire day sign ruled by Jupiter in both modern and classical tables.",
+    related: ["fire", "mutable", "jupiter", "ninth-house"],
+    link: { href: "/sagittarius/", label: "Read the Sagittarius guide" }
+  },
+  {
+    slug: "capricorn",
+    term: "Capricorn",
+    definition: "Capricorn is the tenth tropical sign, spanning 270\xB0 through just under 300\xB0 of zodiac longitude. It is a cardinal earth night sign ruled by Saturn in both modern and classical tables.",
+    related: ["earth", "cardinal", "saturn", "tenth-house"],
+    link: { href: "/capricorn/", label: "Read the Capricorn guide" }
+  },
+  {
+    slug: "aquarius",
+    term: "Aquarius",
+    definition: "Aquarius is the eleventh tropical sign, spanning 300\xB0 through just under 330\xB0 of zodiac longitude. It is a fixed air day sign ruled by Uranus in the modern table and Saturn in the classical table.",
+    related: ["air", "fixed", "uranus", "saturn", "eleventh-house"],
+    link: { href: "/aquarius/", label: "Read the Aquarius guide" }
+  },
+  {
+    slug: "pisces",
+    term: "Pisces",
+    definition: "Pisces is the twelfth tropical sign, spanning 330\xB0 through just under 360\xB0 of zodiac longitude. It is a mutable water night sign ruled by Neptune in the modern table and Jupiter in the classical table.",
+    related: ["water", "mutable", "neptune", "jupiter", "twelfth-house"],
+    link: { href: "/pisces/", label: "Read the Pisces guide" }
+  },
+  {
+    slug: "angle",
+    term: "Angle",
+    definition: "An angle is one of four chart points derived from a known time and place: the ascendant, midheaven, descendant, and IC. These points anchor the horizon and meridian axes and are omitted when birth time is unknown.",
+    related: ["ascendant", "midheaven", "descendant", "ic"],
+    link: { href: "/birth-chart/", label: "Calculate chart angles" }
+  },
+  {
+    slug: "ascendant",
+    term: "Ascendant",
+    definition: "The ascendant is the ecliptic degree rising on the eastern horizon at a specific time and place. It anchors the first house and supplies the rising sign; without a known birth time, this site omits the angles and houses.",
+    receipt: "Descendant = Ascendant + 180\xB0",
+    related: ["rising-sign", "descendant", "first-house", "angle"],
+    link: { href: "/rising-sign/", label: "Calculate the ascendant" }
+  },
+  {
+    slug: "big-three",
+    term: "Big three",
+    definition: "The big three are the Sun sign, Moon sign, and rising sign. The first two come from body longitude, while the rising sign also requires an accurate time and place.",
+    related: ["sun-sign", "moon-sign", "rising-sign"],
+    link: { href: "/birth-chart/", label: "Calculate the big three" }
+  },
+  {
+    slug: "birth-chart",
+    term: "Birth chart (natal chart)",
+    definition: "A birth chart is a map of apparent geocentric positions for one birth moment. This site calculates tropical longitudes, signs, major aspects, and, when time and place are known, angles and houses.",
+    related: ["placement", "aspect", "house", "angle"],
+    link: { href: "/birth-chart/", label: "Calculate a birth chart" }
+  },
+  {
+    slug: "chart-ruler",
+    term: "Chart ruler",
+    definition: "The chart ruler is the planet that classically rules the rising sign. This site uses traditional rulership for that label, so a known ascendant is required.",
+    related: ["rising-sign", "ascendant", "classical-ruler", "rulership"],
+    link: { href: "/rising-sign/", label: "Find the chart ruler" }
+  },
+  {
+    slug: "cusp",
+    term: "Cusp",
+    definition: "A cusp is a boundary, usually between houses or between zodiac signs in date-based shorthand. A computed sign changes only at an exact ingress, while house cusps depend on the selected house system.",
+    related: ["ingress", "house-system", "zodiac-sign"],
+    link: { href: "/birthday/", label: "Check a birthday boundary" }
+  },
+  {
+    slug: "decan",
+    term: "Decan",
+    definition: "A decan is one of three equal divisions within a zodiac sign. This site uses ten-degree triplicity decans and assigns their rulers from the classical table.",
+    receipt: "Three decans per sign \xB7 10\xB0 each",
+    related: ["degree", "zodiac-sign", "classical-ruler"],
+    link: { href: "/birthday/", label: "Look up birthday decans" }
+  },
+  {
+    slug: "degree",
+    term: "Degree",
+    definition: "A degree is one three-hundred-and-sixtieth of a circle and the basic unit used for chart longitude. Sign degree describes a position within its thirty-degree sign, while zodiac longitude describes its position around the full circle.",
+    receipt: "One full circle = 360\xB0",
+    related: ["zodiac-longitude", "zodiac-sign", "orb"]
+  },
+  {
+    slug: "descendant",
+    term: "Descendant",
+    definition: "The descendant is the ecliptic degree setting on the western horizon at a specific time and place. It is exactly opposite the ascendant and anchors the seventh-house side of the chart.",
+    receipt: "Descendant = Ascendant + 180\xB0",
+    related: ["ascendant", "seventh-house", "angle"],
+    link: { href: "/birth-chart/", label: "Calculate chart angles" }
+  },
+  {
+    slug: "ecliptic",
+    term: "Ecliptic",
+    definition: "The ecliptic is the apparent annual path of the Sun against the sky and the reference plane for zodiac coordinates. Chart longitude runs along this plane, while ecliptic latitude measures distance north or south of it.",
+    related: ["zodiac-longitude", "ecliptic-latitude", "zodiac"],
+    link: { href: "/methodology/", label: "Read the coordinate method" }
+  },
+  {
+    slug: "ecliptic-latitude",
+    term: "Ecliptic latitude",
+    definition: "Ecliptic latitude is angular distance north or south of the ecliptic plane. The engine retains it for body positions, but sign and house placement on this site use zodiac longitude.",
+    related: ["ecliptic", "zodiac-longitude", "placement", "declination"],
+    link: { href: "/methodology/", label: "Read the coordinate method" }
+  },
+  {
+    slug: "declination",
+    term: "Declination",
+    definition: "Declination is angular distance north or south of the celestial equator, which is a different reference plane from the ecliptic and so a different measurement from ecliptic latitude. A chart wheel does not carry it: the wheel plots zodiac longitude only. The dimensional view on the birth-chart page computes declination for the ten Sun-through-Pluto bodies and draws the circles they ride.",
+    receipt: "Bounded by the obliquity of the ecliptic, \xB123.44\xB0",
+    related: ["ecliptic-latitude", "out-of-bounds", "parallel", "contraparallel"],
+    link: { href: "/birth-chart/three-dimensions/#declination", label: "Read how declination works" }
+  },
+  {
+    slug: "out-of-bounds",
+    term: "Out of bounds",
+    definition: "A body is out of bounds when its declination passes \xB123.44\xB0, further north or south of the celestial equator than the Sun itself ever travels. The Moon and Mercury reach it most often, Venus and Mars less so, and the Sun never can, because that limit is the Sun\u2019s own path. The dimensional view on the birth-chart page marks any body outside the bounds circles.",
+    receipt: "Out of bounds when |declination| > 23.44\xB0",
+    aliases: ["oob"],
+    related: ["declination", "ecliptic", "moon"],
+    link: { href: "/birth-chart/three-dimensions/#out-of-bounds", label: "Read how out of bounds works" }
+  },
+  {
+    slug: "parallel",
+    term: "Parallel",
+    definition: "A parallel joins two bodies at the same declination on the same side of the celestial equator, and traditional practice reads it much as it reads a conjunction. Because it measures height above the equator rather than position round the zodiac, a parallel can hold between bodies that stand half the wheel apart and show no longitude aspect at all. This site marks parallels within 1\xB0 of exact, or 1.5\xB0 when the Sun or Moon is one of the pair.",
+    receipt: "Same-side declinations within 1\xB0 \xB7 1.5\xB0 with Sun or Moon",
+    aliases: ["declination aspect"],
+    related: ["contraparallel", "declination", "conjunction", "aspect"],
+    link: { href: "/birth-chart/three-dimensions/#parallels", label: "Read how parallels work" }
+  },
+  {
+    slug: "contraparallel",
+    term: "Contraparallel",
+    definition: "A contraparallel joins two bodies at the same declination on opposite sides of the celestial equator, mirrored across it, and traditional practice reads it much as it reads an opposition. Like the parallel it is invisible on a chart wheel, which plots zodiac longitude and not declination. This site marks contraparallels within 1\xB0 of exact, or 1.5\xB0 when the Sun or Moon is one of the pair.",
+    receipt: "Mirrored declinations within 1\xB0 \xB7 1.5\xB0 with Sun or Moon",
+    related: ["parallel", "declination", "opposition", "aspect"],
+    link: { href: "/birth-chart/three-dimensions/#parallels", label: "Read how contraparallels work" }
+  },
+  {
+    slug: "ephemeris",
+    term: "Ephemeris",
+    definition: "An ephemeris is a table or computational model of astronomical positions over time. This site obtains planetary and lunar positions from Astronomy Engine instead of reading a printed table.",
+    related: ["apparent-position", "geocentric-position", "transit"],
+    link: { href: "/methodology/", label: "Read the engine method" }
+  },
+  {
+    slug: "geocentric-position",
+    term: "Geocentric position",
+    definition: "A geocentric position describes where a body appears from the center of Earth rather than from the Sun. Natal positions and transits on this site use the geocentric frame.",
+    related: ["apparent-position", "ephemeris", "zodiac-longitude"],
+    link: { href: "/methodology/", label: "Read the position method" }
+  },
+  {
+    slug: "apparent-position",
+    term: "Apparent position",
+    definition: "An apparent position includes observational corrections that affect where a body appears at a given instant. This site\u2019s planetary longitudes include light-time, aberration, and nutation through Astronomy Engine.",
+    related: ["geocentric-position", "ephemeris", "zodiac-longitude"],
+    link: { href: "/methodology/", label: "Read the position method" }
+  },
+  {
+    slug: "glyph",
+    term: "Glyph",
+    definition: "A glyph is the compact symbol used to label a sign, planet, or aspect. It is a display shorthand; the underlying chart data remains a named body, sign, or aspect type.",
+    related: ["zodiac-sign", "planet", "aspect"]
+  },
+  {
+    slug: "hemisphere",
+    term: "Hemisphere",
+    definition: "Hemisphere can refer to Earth\u2019s northern or southern half when discussing seasons. Tropical sign longitudes stay the same in both hemispheres, while the associated civil seasons reverse.",
+    related: ["zodiac-season", "tropical-zodiac"],
+    link: { href: "/learn/zodiac-dates/", label: "Compare both hemispheres" }
+  },
+  {
+    slug: "house",
+    term: "House",
+    definition: "A house is one of twelve chart sectors used to locate a placement within areas of life. House assignment requires a time, place, and house system; it is not determined by sign alone.",
+    related: ["house-system", "cusp", "placement"],
+    link: { href: "/learn/houses/", label: "Read the house guides" }
+  },
+  {
+    slug: "house-system",
+    term: "House system",
+    definition: "A house system is a rule for turning the local sky and ascendant into twelve house sectors. This site offers whole-sign and Placidus houses, with a documented polar fallback.",
+    related: ["whole-sign-houses", "placidus", "polar-fallback"],
+    link: { href: "/birth-chart/", label: "Compare house systems" }
+  },
+  {
+    slug: "ic",
+    term: "IC (Imum Coeli)",
+    definition: "The IC is the ecliptic point opposite the midheaven on the local meridian axis. It anchors the lower half of the chart but is not universally identical to the fourth-house cusp.",
+    receipt: "IC = Midheaven + 180\xB0",
+    related: ["midheaven", "fourth-house", "angle"],
+    link: { href: "/birth-chart/", label: "Calculate chart angles" }
+  },
+  {
+    slug: "midheaven",
+    term: "Midheaven (MC)",
+    definition: "The midheaven is the ecliptic point where the local meridian reaches the upper half of the chart. It is an angle associated with public direction, but in whole-sign houses it need not equal the tenth-house cusp.",
+    related: ["ic", "tenth-house", "angle", "whole-sign-houses"],
+    link: { href: "/birth-chart/", label: "Calculate the midheaven" }
+  },
+  {
+    slug: "modern-ruler",
+    term: "Modern ruler",
+    definition: "A modern ruler is the planet assigned to a sign after the discoveries of Uranus, Neptune, and Pluto. On this site those assignments differ from the classical table only for Aquarius, Pisces, and Scorpio.",
+    related: ["classical-ruler", "rulership", "uranus", "neptune", "pluto"],
+    link: { href: "/learn/zodiac-dates/", label: "Compare sign rulers" }
+  },
+  {
+    slug: "natural-house",
+    term: "Natural house",
+    definition: "The sign-house correspondence, often called the \u201Cnatural house\u201D scheme, is a modern teaching device that pairs Aries with the first house, Taurus with the second, and so on. It is not a traditional rulership table and never determines the houses in a calculated natal chart.",
+    related: ["house", "zodiac-sign", "whole-sign-houses"],
+    link: { href: "/learn/houses/", label: "Read the house guides" }
+  },
+  {
+    slug: "no-time-chart",
+    term: "No-time chart",
+    definition: "A no-time chart is the reduced chart used when a birth time is unknown. This site uses local noon for body positions and omits angles and houses rather than presenting uncertain values.",
+    related: ["birth-chart", "angle", "house"],
+    link: { href: "/birth-chart/", label: "Calculate a chart" }
+  },
+  {
+    slug: "placement",
+    term: "Placement",
+    definition: "A placement is a chart body located by sign and degree, and by house when time and place are known. A phrase such as \u201CVenus in Taurus\u201D names the body and sign portion of that result.",
+    related: ["planet", "zodiac-sign", "house", "degree"],
+    link: { href: "/learn/placements/", label: "Browse placement guides" }
+  },
+  {
+    slug: "placidus",
+    term: "Placidus",
+    definition: "Placidus divides the houses through time-based semi-arcs, so its intermediate cusps vary with latitude and birth time. This site falls back to whole-sign houses inside the polar circle, where the absolute latitude is 90\xB0 minus the obliquity or more (about 66.56\xB0) and the Placidus solver is undefined.",
+    receipt: "Polar fallback: |latitude| \u2265 90\xB0 \u2212 \u03B5 (about 66.56\xB0)",
+    related: ["house-system", "whole-sign-houses", "polar-fallback"],
+    link: { href: "/birth-chart/", label: "Use Placidus houses" }
+  },
+  {
+    slug: "polar-fallback",
+    term: "Polar fallback",
+    definition: "Polar fallback is the switch from Placidus to whole-sign houses where the Placidus cusp calculation cannot resolve. This site applies it inside the polar circle, where the absolute latitude is 90\xB0 minus the obliquity or more, and also if circumpolar cusp math degenerates.",
+    receipt: "Fallback when |latitude| \u2265 90\xB0 \u2212 \u03B5 or cusp math is undefined",
+    related: ["placidus", "whole-sign-houses", "house-system"],
+    link: { href: "/birth-chart/", label: "Read the house-system options" }
+  },
+  {
+    slug: "quadrant",
+    term: "Quadrant",
+    definition: "A quadrant is one of four chart regions bounded by the ascendant-descendant and midheaven-IC axes. Quadrant house systems such as Placidus subdivide those regions into three houses each.",
+    related: ["angle", "placidus", "house-system"]
+  },
+  {
+    slug: "rising-sign",
+    term: "Rising sign",
+    definition: "The rising sign is the tropical sign containing the ascendant. It changes with local time and place, so a date alone cannot establish it.",
+    related: ["ascendant", "chart-ruler", "big-three"],
+    link: { href: "/rising-sign/", label: "Calculate the rising sign" }
+  },
+  {
+    slug: "rulership",
+    term: "Rulership",
+    definition: "Rulership is the convention that assigns one or more planets to each zodiac sign. This site displays both modern and classical rulers and uses the classical table for chart rulers and decans.",
+    related: ["modern-ruler", "classical-ruler", "chart-ruler"],
+    link: { href: "/learn/zodiac-dates/", label: "Compare rulership tables" }
+  },
+  {
+    slug: "sun-sign",
+    term: "Sun sign",
+    definition: "The Sun sign is the tropical sign containing the Sun at a given instant. A birthday near an ingress needs its year and time checked because the boundary does not fall at one fixed civil date.",
+    related: ["sun", "big-three", "ingress"],
+    link: { href: "/birthday/", label: "Look up a birthday" }
+  },
+  {
+    slug: "moon-sign",
+    term: "Moon sign",
+    definition: "The Moon sign is the tropical sign containing the Moon at a given instant. Because the Moon moves quickly, birth time can change the answer on a sign-boundary day.",
+    related: ["moon", "big-three", "ingress"],
+    link: { href: "/moon-sign/", label: "Calculate the Moon sign" }
+  },
+  {
+    slug: "classical-ruler",
+    term: "Classical ruler",
+    definition: "A classical ruler comes from the seven-body rulership scheme used before Uranus, Neptune, and Pluto were discovered. This site keeps that table for chart rulers, decans, and traditional dignity calculations.",
+    related: ["modern-ruler", "rulership", "essential-dignity"],
+    link: { href: "/learn/zodiac-dates/", label: "Compare sign rulers" }
+  },
+  {
+    slug: "whole-sign-houses",
+    term: "Whole-sign houses",
+    definition: "Whole-sign houses make the ascendant\u2019s entire sign the first house and assign each following sign to the next house. Every house spans thirty degrees, while the ascendant and midheaven remain separate angle degrees within the chart.",
+    receipt: "Twelve houses \xB7 30\xB0 each",
+    related: ["house-system", "placidus", "ascendant"],
+    link: { href: "/birth-chart/", label: "Use whole-sign houses" }
+  },
+  {
+    slug: "zodiac-longitude",
+    term: "Zodiac longitude",
+    definition: "Zodiac longitude is angular position measured eastward around the ecliptic from 0\xB0 Aries. This site normalizes it to the range from 0\xB0 up to, but not including, 360\xB0.",
+    related: ["degree", "ecliptic", "tropical-zodiac"],
+    link: { href: "/methodology/", label: "Read the coordinate method" }
+  },
+  {
+    slug: "first-house",
+    term: "First house",
+    definition: "The first house begins the house sequence and covers self-presentation, approach, and the body\u2019s immediate way of meeting the world. Its starting boundary is tied to the ascendant, though the exact cusp treatment depends on the house system.",
+    related: ["ascendant", "seventh-house", "house"],
+    link: { href: "/learn/houses/first-house/", label: "Read the first-house guide" }
+  },
+  {
+    slug: "second-house",
+    term: "Second house",
+    definition: "The second house covers personal resources, possessions, earning, and the standards used to decide what is worth keeping. It stands opposite the eighth house, which deals with shared resources and obligations.",
+    related: ["eighth-house", "house"],
+    link: { href: "/learn/houses/second-house/", label: "Read the second-house guide" }
+  },
+  {
+    slug: "third-house",
+    term: "Third house",
+    definition: "The third house covers local movement, routine communication, siblings, neighbors, and early learning. It stands opposite the ninth house, which widens the frame toward distance, belief, and advanced study.",
+    related: ["ninth-house", "house"],
+    link: { href: "/learn/houses/third-house/", label: "Read the third-house guide" }
+  },
+  {
+    slug: "fourth-house",
+    term: "Fourth house",
+    definition: "The fourth house covers home, roots, family history, privacy, and the conditions that make a place feel secure. It stands opposite the tenth house, placing private foundations across from public direction.",
+    related: ["tenth-house", "ic", "house"],
+    link: { href: "/learn/houses/fourth-house/", label: "Read the fourth-house guide" }
+  },
+  {
+    slug: "fifth-house",
+    term: "Fifth house",
+    definition: "The fifth house covers play, creative authorship, romance, pleasure, and relationships with children. It stands opposite the eleventh house, setting personal expression across from groups and shared futures.",
+    related: ["eleventh-house", "house"],
+    link: { href: "/learn/houses/fifth-house/", label: "Read the fifth-house guide" }
+  },
+  {
+    slug: "sixth-house",
+    term: "Sixth house",
+    definition: "The sixth house covers daily work, maintenance, health routines, service, and the systems that keep life functioning. It stands opposite the twelfth house, contrasting visible upkeep with retreat and what happens outside ordinary notice.",
+    related: ["twelfth-house", "house"],
+    link: { href: "/learn/houses/sixth-house/", label: "Read the sixth-house guide" }
+  },
+  {
+    slug: "seventh-house",
+    term: "Seventh house",
+    definition: "The seventh house covers one-to-one partnership, agreement, negotiation, and open opposition. It faces the first house across the ascendant-descendant axis.",
+    related: ["first-house", "descendant", "house"],
+    link: { href: "/learn/houses/seventh-house/", label: "Read the seventh-house guide" }
+  },
+  {
+    slug: "eighth-house",
+    term: "Eighth house",
+    definition: "The eighth house covers shared resources, debt, inheritance, dependency, and changes that cannot be handled alone. It stands opposite the second house, placing joint obligations across from personal holdings.",
+    related: ["second-house", "house"],
+    link: { href: "/learn/houses/eighth-house/", label: "Read the eighth-house guide" }
+  },
+  {
+    slug: "ninth-house",
+    term: "Ninth house",
+    definition: "The ninth house covers long-distance travel, higher study, law, publishing, religion, and frameworks of meaning. It stands opposite the third house, widening local facts into larger systems.",
+    related: ["third-house", "house"],
+    link: { href: "/learn/houses/ninth-house/", label: "Read the ninth-house guide" }
+  },
+  {
+    slug: "tenth-house",
+    term: "Tenth house",
+    definition: "The tenth house covers vocation, reputation, authority, responsibility, and visible contribution. It stands opposite the fourth house, placing public direction across from private foundations.",
+    related: ["fourth-house", "midheaven", "house"],
+    link: { href: "/learn/houses/tenth-house/", label: "Read the tenth-house guide" }
+  },
+  {
+    slug: "eleventh-house",
+    term: "Eleventh house",
+    definition: "The eleventh house covers friendship, communities, alliances, audiences, and plans that require more than one person. It stands opposite the fifth house, balancing collective aims with personal authorship.",
+    related: ["fifth-house", "house"],
+    link: { href: "/learn/houses/eleventh-house/", label: "Read the eleventh-house guide" }
+  },
+  {
+    slug: "twelfth-house",
+    term: "Twelfth house",
+    definition: "The twelfth house covers retreat, seclusion, institutions, hidden costs, and patterns that operate outside immediate awareness. It stands opposite the sixth house, setting withdrawal across from daily maintenance.",
+    related: ["sixth-house", "house"],
+    link: { href: "/learn/houses/twelfth-house/", label: "Read the twelfth-house guide" }
+  },
+  {
+    slug: "aspect",
+    term: "Aspect",
+    definition: "An aspect is a recognized angular relationship between two chart positions. This site calculates the five major aspects and reports the distance from each exact angle as its orb.",
+    related: ["major-aspect", "angular-separation", "orb"],
+    link: { href: "/learn/aspects/", label: "Read the aspect guides" }
+  },
+  {
+    slug: "major-aspect",
+    term: "Major aspect",
+    definition: "Major aspect is the collective label for conjunction, sextile, square, trine, and opposition. Those are the only aspect types used by this site\u2019s natal and synastry calculations.",
+    related: ["conjunction", "sextile", "square", "trine", "opposition"],
+    link: { href: "/learn/aspects/", label: "Compare the five aspects" }
+  },
+  {
+    slug: "angular-separation",
+    term: "Angular separation",
+    definition: "Angular separation is the shortest distance between two zodiac longitudes around the circle. For aspect matching, this site expresses that distance from 0\xB0 through 180\xB0.",
+    related: ["aspect", "zodiac-longitude", "orb"]
+  },
+  {
+    slug: "conjunction",
+    term: "Conjunction",
+    definition: `A conjunction places two chart bodies together at the same zodiac longitude. Its exact angular separation is ${conjunction.angle}\xB0, and the engine treats closeness as concentration rather than ease or strain by itself.`,
+    receipt: aspectReceipt2("conjunction"),
+    related: ["aspect", "orb", "applying", "separating"],
+    link: { href: "/learn/aspects/conjunction/", label: "Read the conjunction guide" }
+  },
+  {
+    slug: "sextile",
+    term: "Sextile",
+    definition: `A sextile places two chart bodies two signs apart in the zodiac geometry. Its exact angular separation is ${sextile.angle}\xB0, and this site reads it as an opening that still requires participation.`,
+    receipt: aspectReceipt2("sextile"),
+    related: ["aspect", "orb", "applying", "separating"],
+    link: { href: "/learn/aspects/sextile/", label: "Read the sextile guide" }
+  },
+  {
+    slug: "square",
+    term: "Square",
+    definition: `A square places two chart bodies a quarter-circle apart. Its exact angular separation is ${square.angle}\xB0, and this site reads it as friction that presses for a response.`,
+    receipt: aspectReceipt2("square"),
+    related: ["aspect", "orb", "applying", "separating"],
+    link: { href: "/learn/aspects/square/", label: "Read the square guide" }
+  },
+  {
+    slug: "trine",
+    term: "Trine",
+    definition: `A trine places two chart bodies four signs apart in the zodiac geometry. Its exact angular separation is ${trine.angle}\xB0, and this site reads it as a channel that tends to operate with less resistance.`,
+    receipt: aspectReceipt2("trine"),
+    related: ["aspect", "orb", "applying", "separating"],
+    link: { href: "/learn/aspects/trine/", label: "Read the trine guide" }
+  },
+  {
+    slug: "opposition",
+    term: "Opposition",
+    definition: `An opposition places two chart bodies across the zodiac from one another. Its exact angular separation is ${opposition.angle}\xB0, and this site reads it through polarity, encounter, and competing demands.`,
+    receipt: aspectReceipt2("opposition"),
+    related: ["aspect", "orb", "applying", "separating"],
+    link: { href: "/learn/aspects/opposition/", label: "Read the opposition guide" }
+  },
+  {
+    slug: "orb",
+    term: "Orb",
+    definition: `An orb is the distance between an aspect\u2019s current separation and its exact angle. This site uses aspect-specific limits for natal charts and a ${TRANSIT_ORB}\xB0 limit for active transits.`,
+    receipt: `Active transit orb \u2264 ${TRANSIT_ORB}\xB0`,
+    related: ["aspect", "exact-aspect", "transit"],
+    link: { href: "/transits/", label: "Read active transits" }
+  },
+  {
+    slug: "applying",
+    term: "Applying aspect",
+    definition: "An aspect is applying when the moving positions are drawing closer to the aspect\u2019s exact angle. The natal engine labels the aspect applying while its distance from exact is shrinking, judged from the two bodies\u2019 relative speed at that moment; fixed-chart synastry does not assign applying or separating status.",
+    related: ["separating", "exact-aspect", "aspect"]
+  },
+  {
+    slug: "separating",
+    term: "Separating aspect",
+    definition: "An aspect is separating when the same 0.02-day forward-speed check does not reduce its distance from the exact angle. It describes direction of motion, not whether the aspect is strong enough to be included.",
+    related: ["applying", "exact-aspect", "orb"]
+  },
+  {
+    slug: "exact-aspect",
+    term: "Exact aspect",
+    definition: "An exact aspect occurs when angular separation equals the aspect\u2019s defining angle. An exact transit contact is timestamped at that crossing, including repeated crossings caused by retrograde motion.",
+    related: ["partile", "orb", "transit", "retrograde-loop"]
+  },
+  {
+    slug: "partile",
+    term: "Partile aspect",
+    definition: "Partile is a traditional label for an aspect that is exact or very close to exact, with usage varying by school. Because traditions set that threshold differently, this site reports the actual orb instead of labeling an aspect partile.",
+    related: ["exact-aspect", "orb", "aspect"]
+  },
+  {
+    slug: "planet",
+    term: "Planet",
+    definition: "Planet is the general chart label for a moving body whose zodiac position is calculated, even though astrology conventionally includes the Sun and Moon in the same list. This site calculates positions for the Sun through Pluto and both lunar nodes, and does not calculate Chiron or asteroids.",
+    related: ["luminary", "personal-planets", "outer-planets", "lunar-nodes"],
+    link: { href: "/learn/planets/", label: "Read the planet guides" }
+  },
+  {
+    slug: "luminary",
+    term: "Luminary",
+    definition: "Luminary is the shared astrological label for the Sun and Moon. This site gives aspects involving either luminary a wider natal orb than the same aspect between two other bodies.",
+    related: ["sun", "moon", "aspect", "orb"],
+    link: { href: "/learn/planets/", label: "Read the planet guides" }
+  },
+  {
+    slug: "sect",
+    term: "Sect",
+    definition: "Sect divides charts into those born by day and those born by night, according to whether the Sun stood above or below the horizon at the moment of birth. The tradition sorts the planets by the same halves: Sun, Jupiter, and Saturn belong to the day, and Moon, Venus, and Mars to the night, with whichever group matches the chart said to be in sect. Mercury takes the half it rises in. Sect needs a birth time and place, because it needs a horizon.",
+    receipt: "Day chart when the Sun\u2019s altitude at birth is 0\xB0 or above",
+    aliases: ["day chart", "night chart", "diurnal chart", "nocturnal chart"],
+    related: ["sect-light", "ascendant", "no-time-chart", "luminary"],
+    link: { href: "/birth-chart/three-dimensions/#sect", label: "Read how sect works" }
+  },
+  {
+    slug: "sect-light",
+    term: "Sect light",
+    definition: "The sect light is the luminary that belongs to the chart\u2019s own half of the day: the Sun in a chart born by day, the Moon in one born by night. Traditional practice gives it first weight among the ten bodies. The dimensional view on the birth-chart page rings whichever luminary holds the role.",
+    receipt: "Sun by day \xB7 Moon by night",
+    related: ["sect", "luminary", "sun", "moon"],
+    link: { href: "/birth-chart/three-dimensions/#sect", label: "Read how the sect light works" }
+  },
+  {
+    slug: "personal-planets",
+    term: "Personal planets",
+    definition: "Personal planets is a practical grouping for the Sun, Moon, Mercury, Venus, and Mars in chart interpretation. Their placements describe the faster, more individual layer of the chart, though the label is interpretive rather than astronomical.",
+    related: ["sun", "moon", "mercury", "venus", "mars"],
+    link: { href: "/learn/planets/", label: "Read the planet guides" }
+  },
+  {
+    slug: "outer-planets",
+    term: "Outer planets",
+    definition: "Outer planets is the astrological grouping for Uranus, Neptune, and Pluto. Their slow motion makes sign placements broadly generational, while house placement and exact aspects make their role more specific to one chart.",
+    related: ["uranus", "neptune", "pluto", "placement"],
+    link: { href: "/learn/planets/", label: "Read the planet guides" }
+  },
+  {
+    slug: "sun",
+    term: "Sun",
+    definition: "The Sun is the star at the center of the solar system and one of astrology\u2019s two luminaries. In this site\u2019s readings, its placement describes identity, direction, and the part of life organized around being fully oneself.",
+    related: ["luminary", "sun-sign", "solar-return"],
+    link: { href: "/learn/planets/sun/", label: "Read the Sun guide" }
+  },
+  {
+    slug: "moon",
+    term: "Moon",
+    definition: "The Moon is Earth\u2019s natural satellite and the faster of astrology\u2019s two luminaries. In this site\u2019s readings, its placement describes emotional regulation, habits, memory, and what creates a sense of safety.",
+    receipt: "The Moon moves about 13\xB0 a day",
+    related: ["luminary", "moon-sign", "moon-phase"],
+    link: { href: "/learn/planets/moon/", label: "Read the Moon guide" }
+  },
+  {
+    slug: "mercury",
+    term: "Mercury",
+    definition: "Mercury is the chart body associated here with attention, language, learning, messages, and exchange. Its sign describes style, while its house locates where those processes are most active when a birth time is known.",
+    related: ["personal-planets", "retrograde", "placement"],
+    link: { href: "/learn/planets/mercury/", label: "Read the Mercury guide" }
+  },
+  {
+    slug: "venus",
+    term: "Venus",
+    definition: "Venus is the chart body associated here with attraction, taste, reciprocity, pleasure, and value. Its placement describes what draws a person in and how they negotiate closeness and preference.",
+    related: ["personal-planets", "placement", "rulership"],
+    link: { href: "/learn/planets/venus/", label: "Read the Venus guide" }
+  },
+  {
+    slug: "mars",
+    term: "Mars",
+    definition: "Mars is the chart body associated here with action, assertion, conflict, appetite, and the use of force. Its placement describes how energy starts, pushes, defends, and spends itself.",
+    related: ["personal-planets", "placement", "rulership"],
+    link: { href: "/learn/planets/mars/", label: "Read the Mars guide" }
+  },
+  {
+    slug: "jupiter",
+    term: "Jupiter",
+    definition: "Jupiter is the chart body associated here with growth, confidence, opportunity, belief, and the widening of range. Its placement can describe where a chart expects more room and where excess needs proportion.",
+    related: ["planet", "return", "placement"],
+    link: { href: "/learn/planets/jupiter/", label: "Read the Jupiter guide" }
+  },
+  {
+    slug: "saturn",
+    term: "Saturn",
+    definition: "Saturn is the chart body associated here with limits, structure, duty, delay, craft, and accountability. Its natal placement supplies the longitude used to calculate an exact Saturn return.",
+    related: ["saturn-return", "return", "placement"],
+    link: { href: "/learn/planets/saturn/", label: "Read the Saturn guide" }
+  },
+  {
+    slug: "uranus",
+    term: "Uranus",
+    definition: "Uranus is the chart body associated here with disruption, independence, invention, and departures from an established pattern. It is used as Aquarius\u2019s modern ruler while Saturn remains the sign\u2019s classical ruler.",
+    related: ["outer-planets", "aquarius", "modern-ruler"],
+    link: { href: "/learn/planets/uranus/", label: "Read the Uranus guide" }
+  },
+  {
+    slug: "neptune",
+    term: "Neptune",
+    definition: "Neptune is the chart body associated here with imagination, idealization, diffusion, longing, and uncertain boundaries. It is used as Pisces\u2019s modern ruler while Jupiter remains the sign\u2019s classical ruler.",
+    related: ["outer-planets", "pisces", "modern-ruler"],
+    link: { href: "/learn/planets/neptune/", label: "Read the Neptune guide" }
+  },
+  {
+    slug: "pluto",
+    term: "Pluto",
+    definition: "Pluto is the chart body associated here with power, compulsion, elimination, and slow structural change. It is used as Scorpio\u2019s modern ruler while Mars remains the sign\u2019s classical ruler.",
+    related: ["outer-planets", "scorpio", "modern-ruler"],
+    link: { href: "/learn/planets/pluto/", label: "Read the Pluto guide" }
+  },
+  {
+    slug: "lunar-nodes",
+    term: "Lunar nodes",
+    definition: "The lunar nodes are the two points where the Moon\u2019s orbit crosses the ecliptic. This site calculates the true North Node and derives the exactly opposite South Node, but excludes both from natal and synastry aspect detection.",
+    related: ["north-node", "south-node", "true-node", "ecliptic"],
+    link: { href: "/methodology/", label: "Read the node method" }
+  },
+  {
+    slug: "north-node",
+    term: "North Node",
+    definition: "The North Node is the ascending intersection where the Moon\u2019s orbit crosses from south to north of the ecliptic. This site computes its true, instantaneous position and places the South Node opposite it.",
+    related: ["south-node", "true-node", "lunar-nodes"]
+  },
+  {
+    slug: "south-node",
+    term: "South Node",
+    definition: "The South Node is the descending lunar-orbit intersection opposite the North Node. This site derives it by adding half a circle to the true North Node longitude.",
+    receipt: "South Node = North Node + 180\xB0",
+    related: ["north-node", "true-node", "lunar-nodes"]
+  },
+  {
+    slug: "true-node",
+    term: "True node",
+    definition: "The true node follows the instantaneous intersection of the Moon\u2019s changing orbital plane with the ecliptic. This site uses that true position rather than a smoothed mean node.",
+    related: ["lunar-nodes", "north-node", "ecliptic"],
+    link: { href: "/methodology/", label: "Read the node method" }
+  },
+  {
+    slug: "essential-dignity",
+    term: "Essential dignity",
+    definition: "Essential dignity is a traditional classification of how a planet is placed by sign, using labels such as domicile, exaltation, detriment, and fall. This site applies that table only to the Sun, Moon, Mercury, Venus, Mars, Jupiter, and Saturn.",
+    related: ["domicile", "exaltation", "detriment", "fall"]
+  },
+  {
+    slug: "domicile",
+    term: "Domicile",
+    definition: "Domicile means a planet occupies a sign it classically rules. It is one of the essential-dignity labels calculated here for the seven traditional chart bodies.",
+    related: ["essential-dignity", "rulership", "detriment"]
+  },
+  {
+    slug: "exaltation",
+    term: "Exaltation",
+    definition: "Exaltation is a traditional dignity assigned when a planet occupies a particular honored sign. It stands opposite fall in the dignity table used by this site.",
+    related: ["essential-dignity", "fall", "domicile"]
+  },
+  {
+    slug: "detriment",
+    term: "Detriment",
+    definition: "Detriment means a planet occupies the sign opposite one of its classical domiciles. It is a sign-based dignity label, not a measurement of aspect strength or transit intensity.",
+    related: ["essential-dignity", "domicile", "fall"]
+  },
+  {
+    slug: "fall",
+    term: "Fall",
+    definition: "Fall means a planet occupies the sign opposite its traditional exaltation. It belongs to the essential-dignity table and does not mean that every expression of the placement is uniformly weak.",
+    related: ["essential-dignity", "exaltation", "detriment"]
+  },
+  {
+    slug: "direct",
+    term: "Direct motion",
+    definition: "Direct motion means a body\u2019s apparent geocentric zodiac longitude is increasing with time. A station separates a direct interval from a retrograde interval.",
+    related: ["retrograde", "station", "zodiac-longitude"],
+    link: { href: "/retrogrades/", label: "See retrograde periods" }
+  },
+  {
+    slug: "retrograde",
+    term: "Retrograde motion",
+    definition: "Retrograde motion means a body\u2019s apparent geocentric zodiac longitude is decreasing for a time, even though the body has not reversed its physical orbit. The loop can carry a transit across the same natal point more than once.",
+    related: ["direct", "station", "retrograde-loop", "transit"],
+    link: { href: "/retrogrades/", label: "See retrograde periods" }
+  },
+  {
+    slug: "retrograde-loop",
+    term: "Retrograde loop",
+    definition: "A retrograde loop is the apparent path through a section of zodiac longitude as a body slows, reverses, and later resumes direct motion. It can create two or three exact contacts to the same natal point within one broader transit.",
+    related: ["retrograde", "station", "exact-aspect", "transit"],
+    link: { href: "/retrogrades/", label: "See retrograde periods" }
+  },
+  {
+    slug: "station",
+    term: "Station",
+    definition: "A station is the instant when apparent longitude speed passes through zero as a body changes direction. The site derives station times from computed motion rather than from a fixed calendar rule.",
+    related: ["direct", "retrograde", "zodiac-longitude"],
+    link: { href: "/retrogrades/", label: "See planetary stations" }
+  },
+  {
+    slug: "ingress",
+    term: "Ingress",
+    definition: "An ingress is the exact instant a body crosses into a new zodiac sign. The zodiac-dates table gives the Sun\u2019s tropical ingresses in UTC instead of treating calendar dates as fixed boundaries.",
+    receipt: "Each tropical sign spans 30\xB0 of longitude",
+    related: ["transit", "zodiac-sign", "zodiac-season"],
+    link: { href: "/learn/zodiac-dates/", label: "See exact Sun ingresses" }
+  },
+  {
+    slug: "transit",
+    term: "Transit",
+    definition: `A transit compares a moving sky position with a fixed point in a natal chart. This site counts an active transit when a major aspect is within ${TRANSIT_ORB}\xB0 of exact and can scan for the exact UTC contact.`,
+    receipt: `Transits read as active within ${TRANSIT_ORB}\xB0 of exact`,
+    related: ["orb", "exact-aspect", "ingress", "return"],
+    link: { href: "/transits/", label: "Track current transits" }
+  },
+  {
+    slug: "return",
+    term: "Return",
+    definition: "A return occurs when a transiting body reaches the same zodiac longitude it held in a natal chart. Retrograde motion can produce multiple exact crossings, which remain separate return instants.",
+    related: ["solar-return", "saturn-return", "transit", "retrograde-loop"],
+    link: { href: "/saturn-return/", label: "Calculate a Saturn return" }
+  },
+  {
+    slug: "progression",
+    term: "Progression",
+    definition: "A progression advances a natal chart by a symbolic timing rule rather than using the sky positions of the target date directly. This site does not calculate progressed charts.",
+    related: ["transit", "return", "birth-chart"]
+  },
+  {
+    slug: "solar-return",
+    term: "Solar return",
+    definition: "A solar return is the exact instant the transiting Sun reaches its natal zodiac longitude. It usually falls near the civil birthday, but its UTC time is set by the longitude crossing rather than the calendar alone.",
+    related: ["sun", "return", "exact-aspect"],
+    link: { href: "/saturn-return/", label: "Read about exact returns" }
+  },
+  {
+    slug: "saturn-return",
+    term: "Saturn return",
+    definition: "A Saturn return is an exact crossing of transiting Saturn over natal Saturn\u2019s zodiac longitude. This site preserves separate direct and retrograde passes instead of collapsing a multi-pass return into one date.",
+    related: ["saturn", "return", "retrograde-loop"],
+    link: { href: "/saturn-return/", label: "Calculate a Saturn return" }
+  },
+  {
+    slug: "moon-phase",
+    term: "Moon phase",
+    definition: "Moon phase describes the illumination cycle created by the changing angular relationship between the Sun and Moon as seen from Earth. This site calculates the phase for an entered moment; location is used only to resolve that moment from local time.",
+    related: ["moon", "lunation", "new-moon", "full-moon"],
+    link: { href: "/moon-phase/", label: "Calculate a Moon phase" }
+  },
+  {
+    slug: "lunation",
+    term: "Lunation",
+    definition: "A lunation is the cycle from one new moon to the next, or a particular new or full moon within that cycle. Eclipses are lunations that occur close enough to the lunar nodes for the Sun, Earth, and Moon to align.",
+    related: ["new-moon", "full-moon", "eclipse", "lunar-nodes"],
+    link: { href: "/moon-phase/", label: "Check the lunar cycle" }
+  },
+  {
+    slug: "new-moon",
+    term: "New moon",
+    definition: "A new moon occurs when the Sun and Moon have the same geocentric ecliptic longitude. The Moon is then near the Sun in the sky, and a solar eclipse is possible only when the alignment is also near a node.",
+    related: ["lunation", "solar-eclipse", "moon-phase"],
+    link: { href: "/moon-phase/", label: "Check the current Moon phase" }
+  },
+  {
+    slug: "full-moon",
+    term: "Full moon",
+    definition: "A full moon occurs when the Sun and Moon are opposite in geocentric ecliptic longitude. A lunar eclipse is possible only when that opposition is also close enough to the lunar nodes.",
+    related: ["lunation", "lunar-eclipse", "moon-phase"],
+    link: { href: "/full-moon-calendar/", label: "See the full-moon calendar" }
+  },
+  {
+    slug: "eclipse",
+    term: "Eclipse",
+    definition: "An eclipse occurs when a new- or full-moon alignment falls close enough to the lunar nodes for the Sun, Earth, and Moon to line up. At a solar eclipse the Moon blocks the Sun from part of Earth; at a lunar eclipse Earth\u2019s shadow falls on the Moon. This site publishes computed eclipse dates and checks conjunctions and oppositions to natal Sun-through-Pluto positions.",
+    related: ["solar-eclipse", "lunar-eclipse", "eclipse-season", "lunar-nodes"],
+    link: { href: "/eclipses/", label: "See upcoming eclipses" }
+  },
+  {
+    slug: "solar-eclipse",
+    term: "Solar eclipse",
+    definition: "A solar eclipse occurs at a new moon when the Moon crosses between Earth and the Sun closely enough to obscure the Sun from part of Earth. Its exact visibility depends on location even though the geocentric lunation has one UTC instant.",
+    related: ["new-moon", "eclipse", "eclipse-season"],
+    link: { href: "/eclipses/", label: "See upcoming solar eclipses" }
+  },
+  {
+    slug: "lunar-eclipse",
+    term: "Lunar eclipse",
+    definition: "A lunar eclipse occurs at a full moon when the Moon passes through Earth\u2019s shadow. It can be seen from the night side of Earth when the Moon is above the horizon.",
+    related: ["full-moon", "eclipse", "eclipse-season"],
+    link: { href: "/eclipses/", label: "See upcoming lunar eclipses" }
+  },
+  {
+    slug: "eclipse-season",
+    term: "Eclipse season",
+    definition: "An eclipse season is a period when the Sun is close enough to a lunar node for a new or full moon to produce an eclipse. It commonly contains a solar eclipse and a lunar eclipse separated by about half a lunation.",
+    related: ["solar-eclipse", "lunar-eclipse", "lunar-nodes", "lunation"],
+    link: { href: "/eclipses/", label: "See the eclipse calendar" }
+  },
+  {
+    slug: "void-of-course-moon",
+    term: "Void-of-course Moon",
+    definition: "Under the common modern rule, the Moon is void of course from its last exact major aspect in a sign until it enters the next sign. Definitions differ over which aspects and bodies count; this site uses the five Ptolemaic aspects to the Sun through Pluto and lists every void to the minute.",
+    related: ["moon", "applying", "major-aspect", "ingress"],
+    link: { href: "/void-of-course-moon/", label: "See the void-of-course calendar" }
+  },
+  {
+    slug: "synastry",
+    term: "Synastry",
+    definition: "Synastry compares placements in two natal charts, keeping both charts intact rather than blending them into one. This site calculates major inter-chart aspects among the Sun through Pluto and sorts them by exactness.",
+    related: ["bi-wheel", "inter-chart-aspect", "composite-chart"],
+    link: { href: "/compatibility/", label: "Compare two birth charts" }
+  },
+  {
+    slug: "bi-wheel",
+    term: "Bi-wheel",
+    definition: "A bi-wheel draws two charts on concentric rings so their placements can be compared around one zodiac circle. On this site it visualizes synastry between two fixed natal charts.",
+    related: ["synastry", "inter-chart-aspect", "birth-chart"],
+    link: { href: "/compatibility/", label: "Open the relationship wheel" }
+  },
+  {
+    slug: "inter-chart-aspect",
+    term: "Inter-chart aspect",
+    definition: "An inter-chart aspect connects a body in one natal chart with a body in another. This site tests the Sun through Pluto in each chart with the same major-aspect orb table used for natal bodies, without applying or separating labels.",
+    related: ["synastry", "aspect", "orb", "bi-wheel"],
+    link: { href: "/compatibility/", label: "Compare inter-chart aspects" }
+  },
+  {
+    slug: "composite-chart",
+    term: "Composite chart",
+    definition: "A composite chart places symbolic points at the midpoints of two natal charts and treats the result as a chart of the relationship. This site computes inter-chart synastry, not composite charts.",
+    related: ["synastry", "bi-wheel", "inter-chart-aspect"],
+    link: { href: "/compatibility/", label: "Use the synastry calculator" }
+  },
+  {
+    slug: "utc",
+    term: "UTC",
+    definition: "UTC is the common time standard used to publish one unambiguous instant worldwide. This site converts local birth input through historical time-zone rules and reports exact astronomical events in UTC.",
+    related: ["time-zone", "local-mean-time", "ephemeris"],
+    link: { href: "/methodology/", label: "Read the time method" }
+  },
+  {
+    slug: "local-mean-time",
+    term: "Local mean time",
+    definition: "Local mean time is civil time based on the average Sun at a place\u2019s longitude, used historically before standard time zones became common. For a birth from before its place adopted a legal time, this site works out the birthplace\u2019s own local mean time from its longitude rather than asking for a manual UTC offset.",
+    related: ["time-zone", "utc"],
+    link: { href: "/methodology/", label: "Read the time method" }
+  },
+  {
+    slug: "time-zone",
+    term: "Time zone",
+    definition: "A time zone is a set of civil-clock rules that maps local date and time to UTC, including historical offset changes. This site uses IANA time-zone data so daylight-saving and earlier rule changes are resolved for the entered place.",
+    related: ["utc", "local-mean-time", "birth-chart"],
+    link: { href: "/methodology/", label: "Read the time-zone method" }
+  },
+  {
+    slug: "stellium",
+    term: "Stellium",
+    definition: "A stellium is a concentration of several chart bodies in one sign or house. This site flags three or more of the ten Sun-through-Pluto bodies in one sign, or in one house when houses are available.",
+    receipt: "Stellium threshold: 3+ Sun-through-Pluto bodies",
+    related: ["placement", "zodiac-sign", "house"],
+    link: { href: "/birth-chart/", label: "Calculate chart clusters" }
+  }
+];
+function compareTerms(a, b) {
+  const left = a.term.toLowerCase();
+  const right = b.term.toLowerCase();
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+var GLOSSARY = Object.freeze(
+  terms.map((entry) => {
+    const context = CONTEXT_TERMS.find((candidate) => candidate.slug === entry.slug);
+    return context ? { ...entry, ...context } : entry;
+  }).sort(compareTerms)
+);
+var glossaryByKey = /* @__PURE__ */ new Map();
+for (const entry of GLOSSARY) {
+  glossaryByKey.set(normalizeContextTerm(entry.slug), entry);
+  glossaryByKey.set(normalizeContextTerm(entry.term), entry);
+  for (const alias of entry.aliases ?? []) {
+    glossaryByKey.set(normalizeContextTerm(alias), entry);
+  }
+}
+
+// src/ai-tools/features/explain.ts
+var DEFAULT_ORIGIN5 = "https://zodiacs.org";
+var EXPLAIN_NOTE = "An introduction to how astrology reads these ideas, not a claim that they determine anything.";
+var MONTHS3 = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var PLANETS3 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+var HOUSE_SLUGS = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
+var ASPECTS3 = ["conjunction", "sextile", "square", "trine", "opposition"];
+var explainInput = z8.strictObject({
+  topic: z8.string().trim().min(1).max(80).describe("What to explain, in a few words: a sign (leo), a planet (Mercury), the houses or one house (seventh house), aspects or one aspect (square), retrogrades or Mercury retrograde, Moon phases, the rising sign, the big three, cusps, Saturn return, elements, modalities, transits, synastry, eclipses or the Chinese zodiac.")
+});
+var link2 = z8.object({ title: z8.string(), url: z8.url() });
+var explainData = z8.object({
+  found: z8.boolean(),
+  query: z8.string(),
+  /** The curated topic matched, such as mercury-retrograde; null when none matched. */
+  topic: z8.string().nullable(),
+  title: z8.string().nullable(),
+  /** The explainer, in short plain paragraphs. */
+  paragraphs: z8.array(z8.string()),
+  /** Terms the explainer leans on, with the glossary's definitions. */
+  terms: z8.array(z8.object({ term: z8.string(), definition: z8.string(), url: z8.url() })),
+  /** Pages on zodiacs.org that cover the topic. */
+  pages: z8.array(link2),
+  /** Nearby topics this tool can explain next. */
+  related: z8.array(z8.string()),
+  /** When nothing matched: every topic this tool explains. */
+  topics: z8.array(z8.string()),
+  message: z8.string().nullable(),
+  note: z8.literal(EXPLAIN_NOTE)
+});
+var GLOSSARY_BY_SLUG = new Map(GLOSSARY.map((term2) => [term2.slug, term2]));
+var term = (slug) => {
+  const found = GLOSSARY_BY_SLUG.get(slug);
+  if (!found) throw new Error(`No glossary term ${slug}`);
+  return found;
+};
+var signRange = (sign2) => `${sign2.start[1]} ${MONTHS3[sign2.start[0] - 1]} to ${sign2.end[1]} ${MONTHS3[sign2.end[0] - 1]}`;
+var cap8 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var TOPICS = [
+  ...SIGNS2.map((sign2) => ({
+    key: sign2.slug,
+    title: sign2.name,
+    aliases: [`${sign2.slug} sign`, `${sign2.slug} traits`, `${sign2.slug} personality`],
+    glossary: [sign2.slug, "sun-sign"],
+    extra: () => [
+      `${sign2.name} runs from about ${signRange(sign2)} in the tropical zodiac; the exact day the Sun enters it moves by a day or so from year to year. It is a ${sign2.modality} ${sign2.element} sign ruled by ${sign2.ruler}${sign2.classicRuler ? ` (traditionally ${sign2.classicRuler})` : ""}.`,
+      bigThree("sun", sign2.slug),
+      `As a rising sign: ${bigThree("rising", sign2.slug)}`
+    ],
+    pages: [{ title: `${sign2.name} on Zodiacs`, path: `/${sign2.slug}/` }, { title: `${sign2.name} rising`, path: `/rising-sign/${sign2.slug}/` }, { title: `${sign2.name} horoscope`, path: `/horoscopes/${sign2.slug}/` }],
+    related: ["elements", "modalities", "big-three"]
+  })),
+  ...PLANETS3.map((planet) => ({
+    key: planet.toLowerCase(),
+    title: planet,
+    aliases: [`planet ${planet.toLowerCase()}`, `the ${planet.toLowerCase()}`],
+    glossary: [planet.toLowerCase()],
+    extra: () => [NATAL_BODY_THEME[planet].what],
+    pages: [{ title: `${planet} on Zodiacs`, path: `/learn/planets/${planet.toLowerCase()}/` }],
+    related: ["planets", "houses", ...planet === "Mercury" ? ["mercury-retrograde"] : planet === "Saturn" ? ["saturn-return"] : planet === "Moon" ? ["moon-phases", "moon-sign"] : []]
+  })),
+  { key: "planets", title: "The planets", aliases: ["planet", "personal planets", "outer planets", "luminaries"], glossary: ["planet", "luminary", "personal-planets", "outer-planets"], pages: [{ title: "The planets", path: "/learn/planets/" }], related: PLANETS3.map((planet) => planet.toLowerCase()) },
+  {
+    key: "houses",
+    title: "The houses",
+    aliases: ["house", "astrological houses", "twelve houses", "house system", "whole sign houses", "placidus"],
+    glossary: ["house", "natural-house", "house-system", "whole-sign-houses", "placidus"],
+    extra: () => [`Each house is a life area: ${HOUSE_SLUGS.map((slug, index) => `the ${slug}, ${NATAL_HOUSE_THEME[index + 1]}`).join("; ")}.`],
+    pages: [{ title: "The houses", path: "/learn/houses/" }],
+    related: ["rising-sign", "birth-chart", ...HOUSE_SLUGS.map((slug) => `${slug}-house`)]
+  },
+  ...HOUSE_SLUGS.map((slug, index) => ({
+    key: `${slug}-house`,
+    title: `The ${cap8(slug)} house`,
+    aliases: [`${index + 1} house`, `${index + 1}th house`, `house ${index + 1}`, `${["1st", "2nd", "3rd"][index] ?? `${index + 1}th`} house`],
+    glossary: [`${slug}-house`],
+    extra: () => [`In a birth chart, the ${slug} house covers ${NATAL_HOUSE_THEME[index + 1]}.`],
+    pages: [{ title: `The ${slug} house`, path: `/learn/houses/${slug}-house/` }],
+    related: ["houses"]
+  })),
+  { key: "aspects", title: "Aspects", aliases: ["aspect", "major aspects", "orb", "orbs"], glossary: ["aspect", "major-aspect", "orb", "exact-aspect", "applying", "separating"], pages: [{ title: "Aspects", path: "/learn/aspects/" }], related: ASPECTS3 },
+  ...ASPECTS3.map((aspect) => ({ key: aspect, title: cap8(aspect), aliases: [`${aspect} aspect`, `${aspect}s`], glossary: [aspect], pages: [{ title: cap8(aspect), path: `/learn/aspects/${aspect}/` }], related: ["aspects"] })),
+  { key: "retrogrades", title: "Retrogrades", aliases: ["retrograde", "retrograde planets", "planet retrograde", "station", "stationing", "direct motion", "rx"], glossary: ["retrograde", "station", "direct", "retrograde-loop"], pages: [{ title: "Retrogrades", path: "/retrogrades/" }, { title: "Mercury retrograde", path: "/mercury-retrograde/" }], related: ["mercury-retrograde", "transits"] },
+  {
+    key: "mercury-retrograde",
+    title: "Mercury retrograde",
+    aliases: ["mercury in retrograde", "mercury rx", "mercury retrograde meaning"],
+    glossary: ["retrograde", "mercury", "station"],
+    extra: () => ["Mercury turns retrograde three or four times a year, for about three weeks each time. Astrology reads those weeks as a time for reviewing, rechecking and finishing rather than launching, because Mercury rules messages, plans and travel."],
+    pages: [{ title: "Mercury retrograde", path: "/mercury-retrograde/" }, { title: "Retrogrades", path: "/retrogrades/" }],
+    related: ["retrogrades", "mercury"]
+  },
+  { key: "moon-phases", title: "Moon phases", aliases: ["moon phase", "lunar phases", "new moon", "full moon", "lunation", "lunar cycle"], glossary: ["moon-phase", "new-moon", "full-moon", "lunation"], pages: [{ title: "Moon phases", path: "/moon-phase/" }, { title: "Full Moon calendar", path: "/full-moon-calendar/" }], related: ["moon", "void-of-course-moon", "eclipses"] },
+  { key: "void-of-course-moon", title: "The void-of-course Moon", aliases: ["void of course", "void of course moon", "voc moon", "moon void of course"], glossary: ["void-of-course-moon"], pages: [{ title: "Void-of-course Moon", path: "/void-of-course-moon/" }], related: ["moon-phases", "moon"] },
+  { key: "eclipses", title: "Eclipses", aliases: ["eclipse", "solar eclipse", "lunar eclipse", "eclipse season"], glossary: ["eclipse", "solar-eclipse", "lunar-eclipse", "eclipse-season"], pages: [{ title: "Eclipses", path: "/eclipses/" }], related: ["moon-phases", "lunar-nodes"] },
+  { key: "rising-sign", title: "The rising sign", aliases: ["rising", "ascendant", "asc", "my rising sign", "chart ruler"], glossary: ["rising-sign", "ascendant", "chart-ruler"], pages: [{ title: "Rising signs", path: "/rising-sign/" }], related: ["big-three", "houses"] },
+  { key: "big-three", title: "The big three", aliases: ["big 3", "sun moon rising", "sun moon and rising"], glossary: ["big-three", "sun-sign", "moon-sign", "rising-sign"], pages: [{ title: "The big three", path: "/big-three/" }, { title: "Your birth chart", path: "/birth-chart/" }], related: ["sun-sign", "moon-sign", "rising-sign"] },
+  { key: "sun-sign", title: "The Sun sign", aliases: ["star sign", "zodiac sign", "my sign", "horoscope sign"], glossary: ["sun-sign", "zodiac-sign", "zodiac-season"], pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }], related: ["big-three", "cusps"] },
+  { key: "moon-sign", title: "The Moon sign", aliases: ["moon sign meaning", "my moon sign"], glossary: ["moon-sign", "moon"], pages: [{ title: "Moon signs", path: "/moon-sign/" }], related: ["big-three", "moon-phases"] },
+  { key: "birth-chart", title: "The birth chart", aliases: ["natal chart", "chart", "how to read a birth chart", "reading a chart", "placements", "placement", "no time chart", "stellium"], glossary: ["birth-chart", "placement", "no-time-chart", "stellium"], pages: [{ title: "How to read a birth chart", path: "/learn/how-to-read-a-birth-chart/" }, { title: "Your birth chart", path: "/birth-chart/" }, { title: "Placements", path: "/learn/placements/" }], related: ["big-three", "houses", "aspects"] },
+  { key: "cusps", title: "Cusps", aliases: ["cusp", "born on the cusp", "cusp sign", "decan", "decans"], glossary: ["cusp", "decan", "sun-sign"], pages: [{ title: "Birthdays", path: "/birthday/" }, { title: "Zodiac dates", path: "/learn/zodiac-dates/" }], related: ["sun-sign"] },
+  { key: "saturn-return", title: "The Saturn return", aliases: ["saturn returns", "my saturn return"], glossary: ["saturn-return", "return", "saturn"], pages: [{ title: "Saturn return", path: "/saturn-return/" }], related: ["solar-return", "transits", "saturn"] },
+  { key: "solar-return", title: "The solar return", aliases: ["solar return chart", "birthday chart"], glossary: ["solar-return", "return"], pages: [{ title: "Solar return", path: "/solar-return/" }], related: ["saturn-return"] },
+  {
+    key: "elements",
+    title: "The elements",
+    aliases: ["element", "fire signs", "earth signs", "air signs", "water signs", "fire", "earth", "air", "water"],
+    glossary: ["element", "fire", "earth", "air", "water"],
+    extra: () => ["fire", "earth", "air", "water"].map((element) => `${cap8(element)} signs: ${SIGNS2.filter((sign2) => sign2.element === element).map((sign2) => sign2.name).join(", ")}.`),
+    pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }],
+    related: ["modalities", "polarity"]
+  },
+  {
+    key: "modalities",
+    title: "The modalities",
+    aliases: ["modality", "modes", "qualities", "cardinal", "fixed", "mutable", "cardinal signs", "fixed signs", "mutable signs"],
+    glossary: ["modality", "cardinal", "fixed", "mutable"],
+    extra: () => ["cardinal", "fixed", "mutable"].map((modality) => `${cap8(modality)} signs: ${SIGNS2.filter((sign2) => sign2.modality === modality).map((sign2) => sign2.name).join(", ")}.`),
+    pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }],
+    related: ["elements", "polarity"]
+  },
+  { key: "polarity", title: "Polarity", aliases: ["day signs", "night signs", "masculine and feminine signs"], glossary: ["polarity", "day-sign", "night-sign"], pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }], related: ["elements", "modalities"] },
+  { key: "rulership", title: "Rulership and dignity", aliases: ["ruler", "rulers", "ruling planet", "dignity", "dignities", "domicile", "exaltation", "detriment", "fall"], glossary: ["rulership", "modern-ruler", "classical-ruler", "essential-dignity", "domicile", "exaltation", "detriment", "fall"], pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }], related: ["planets"] },
+  { key: "transits", title: "Transits", aliases: ["transit", "current transits", "personal transits", "ingress", "ingresses", "sign change"], glossary: ["transit", "orb", "ingress"], pages: [{ title: "Transits", path: "/transits/" }], related: ["retrogrades", "saturn-return", "aspects"] },
+  { key: "synastry", title: "Synastry", aliases: ["compatibility", "relationship astrology", "composite chart", "chart comparison", "synastry basics"], glossary: ["synastry", "inter-chart-aspect", "composite-chart", "bi-wheel"], pages: [{ title: "Compatibility", path: "/compatibility/" }], related: ["aspects", "elements"] },
+  { key: "zodiac", title: "The zodiac", aliases: ["tropical zodiac", "sidereal zodiac", "precession", "zodiac signs", "ecliptic"], glossary: ["zodiac", "tropical-zodiac", "sidereal-zodiac", "precession", "ecliptic"], pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }, { title: "How we calculate", path: "/methodology/" }], related: ["sun-sign", "elements"] },
+  { key: "lunar-nodes", title: "The lunar nodes", aliases: ["nodes", "north node", "south node", "true node"], glossary: ["lunar-nodes", "north-node", "south-node", "true-node"], pages: [{ title: "How we calculate", path: "/methodology/" }], related: ["eclipses"] },
+  {
+    key: "chinese-zodiac",
+    title: "The Chinese zodiac",
+    aliases: ["chinese astrology", "chinese zodiac basics", "chinese animal", "zodiac animals", "lunar new year", "chinese new year"],
+    glossary: [],
+    extra: () => [CHINESE_ZODIAC_COPY.hubIntro, CHINESE_ZODIAC_COPY.separateBody, CHINESE_ZODIAC_COPY.historyBody, CHINESE_ZODIAC_COPY.boundaryBody],
+    pages: [{ title: "The Chinese zodiac", path: "/learn/chinese-zodiac/" }],
+    related: ["zodiac"]
+  }
+];
+var OUT_OF_SCOPE = ["tarot", "numerology", "horary", "vedic", "jyotish", "sidereal astrology", "human design", "palmistry", "i ching", "crystals", "kabbalah"];
+var EXPLAIN_TOPICS = TOPICS.map((topic) => topic.key);
+function fold(text2) {
+  return text2.normalize("NFKD").replace(new RegExp("\\p{M}", "gu"), "").toLowerCase().replace(/[^a-z0-9 ]+/gu, " ").replace(/\b(what|whats|is|are|does|do|mean|means|meaning|explain|tell|me|about|the|a|an|in|astrology|my|of|how|work|works)\b/gu, " ").replace(/\s+/gu, " ").trim();
+}
+function matchTopic(query) {
+  const folded = fold(query);
+  if (!folded) return null;
+  const names = TOPICS.flatMap((topic) => [topic.key.replace(/-/gu, " "), fold(topic.title), ...topic.aliases.map(fold)].filter(Boolean).map((name) => ({ name, topic })));
+  const exact = names.find((entry) => entry.name === folded);
+  if (exact) return exact.topic;
+  const contained = names.filter((entry) => ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
+  return contained[0]?.topic ?? null;
+}
+function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
+  const folded = fold(args.topic);
+  const outside = OUT_OF_SCOPE.find((name) => ` ${folded} `.includes(` ${name} `));
+  const topic = outside ? null : matchTopic(args.topic);
+  if (!topic) {
+    const data2 = {
+      found: false,
+      query: args.topic,
+      topic: null,
+      title: null,
+      paragraphs: [],
+      terms: [],
+      pages: [],
+      related: [],
+      topics: [...EXPLAIN_TOPICS],
+      message: outside ? `Zodiacs explains Western tropical astrology and the Chinese zodiac; it does not cover ${outside}. Say so plainly rather than explaining it from Zodiacs.` : "Zodiacs has no explainer for that topic. Choose one of the listed topics, or answer without Zodiacs.",
+      note: EXPLAIN_NOTE
+    };
+    return { data: data2, links: [{ title: "Learn astrology on Zodiacs", url: `${origin}/learn/` }, { title: "Glossary", url: `${origin}/learn/glossary/` }] };
+  }
+  const terms2 = topic.glossary.map(term);
+  const lead = terms2[0];
+  const paragraphs = [
+    ...lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : [],
+    ...topic.extra?.() ?? []
+  ].filter((paragraph2, index, all) => paragraph2 && all.indexOf(paragraph2) === index);
+  const pages = topic.pages.map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
+  const data = {
+    found: true,
+    query: args.topic,
+    topic: topic.key,
+    title: topic.title,
+    paragraphs,
+    terms: terms2.slice(lead ? 1 : 0).map((entry) => ({ term: entry.term, definition: entry.plainDefinition ?? entry.definition, url: `${origin}/learn/glossary/#${entry.slug}` })),
+    pages,
+    related: topic.related.filter((key) => EXPLAIN_TOPICS.includes(key)),
+    topics: [],
+    message: null,
+    note: EXPLAIN_NOTE
+  };
+  return { data, links: [...pages, { title: "Glossary", url: `${origin}/learn/glossary/` }] };
+}
+
 // src/ai-tools/contracts.ts
-var AI_VERSION = "0.5.1";
+var AI_VERSION = "0.6.0";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
 var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
 var OCCASION_TOOL_NAMES = ["get_occasion_sky", "get_life_milestones", "get_compatibility", "find_chart_twins", "get_famous_chart", "get_birthday", "get_sky_calendar"];
 var ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES];
+var COVERAGE_TOOL_NAMES = ["get_natal_chart", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "explain_astrology"];
+var EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES];
 var OCCASIONS_SWITCH_ENV = "ZODIACS_OCCASIONS_ENABLED";
+var COVERAGE_SWITCH_ENV = "ZODIACS_COVERAGE_ENABLED";
 var MAX_EVENT_DAYS = BUDGETS["events.windowDays"];
 var MAX_HTTP_BYTES = 16384;
 var AI_ROUTE_PARAM = "__zodiacs_ai";
@@ -27513,43 +33856,48 @@ var TOOL_TITLES = {
   find_chart_twins: "Chart twins",
   get_famous_chart: "A famous birth chart",
   get_birthday: "Your birthday",
-  get_sky_calendar: "Sky calendar for your calendar app"
+  get_sky_calendar: "Sky calendar for your calendar app",
+  get_natal_chart: "Birth chart readout",
+  get_horoscope_period: "Monthly, yearly and weekly horoscopes",
+  get_chinese_zodiac: "Chinese zodiac",
+  get_personal_transits: "Your transits",
+  explain_astrology: "Astrology explained"
 };
-var instant = z4.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
-var ZONE_PATTERN4 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
-var zone3 = z4.string().min(1).max(64).regex(ZONE_PATTERN4).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
-var date = z4.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var wallClock = z4.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
+var instant = z9.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
+var ZONE_PATTERN8 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var zone4 = z9.string().min(1).max(64).regex(ZONE_PATTERN8).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
+var date = z9.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var wallClock = z9.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 var INPUT_SCHEMAS = {
-  get_capabilities: z4.strictObject({}),
-  open_chart_studio: z4.strictObject({}),
-  get_sky: z4.strictObject({ instant: instant.optional(), zone: zone3.optional(), bodies: z4.array(z4.enum(POSITION_BODIES)).min(1).max(12).optional() }),
-  get_upcoming_events: z4.strictObject({ from: instant.optional(), to: instant.optional(), zone: zone3.optional(), bodies: z4.array(z4.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z4.array(z4.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
+  get_capabilities: z9.strictObject({}),
+  open_chart_studio: z9.strictObject({}),
+  get_sky: z9.strictObject({ instant: instant.optional(), zone: zone4.optional(), bodies: z9.array(z9.enum(POSITION_BODIES)).min(1).max(12).optional() }),
+  get_upcoming_events: z9.strictObject({ from: instant.optional(), to: instant.optional(), zone: zone4.optional(), bodies: z9.array(z9.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z9.array(z9.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
     if ((!args.from || !args.to) && Object.keys(args).length !== 0) context.addIssue({ code: "custom", message: "Supply both from and to, or an empty object for the next seven days in UTC." });
   }),
-  check_sky_fact: z4.strictObject({ kind: z4.enum(["sign", "retrograde", "ingress", "phase"]), body: z4.enum(EVENT_BODIES).optional(), sign: z4.enum(SIGN_SLUGS).optional(), phase: z4.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone3.optional() }),
-  get_occasion_sky: z4.strictObject({
-    occasion: z4.enum(OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering."),
+  check_sky_fact: z9.strictObject({ kind: z9.enum(["sign", "retrograde", "ingress", "phase"]), body: z9.enum(EVENT_BODIES).optional(), sign: z9.enum(SIGN_SLUGS).optional(), phase: z9.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone4.optional() }),
+  get_occasion_sky: z9.strictObject({
+    occasion: z9.enum(OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering."),
     date: date.optional().describe("The day, such as 2027-06-12 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
     searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo."),
     searchTo: date.optional().describe("The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
     time: wallClock.optional().describe("The local clock time, such as 19:00, if the person gives one. Needs zone."),
-    zone: zone3.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
-    latitude: z4.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
-    longitude: z4.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
-    place: z4.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored."),
-    names: z4.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
+    zone: zone4.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
+    latitude: z9.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
+    longitude: z9.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
+    place: z9.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored."),
+    names: z9.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
   }).superRefine((args, context) => {
     if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
     if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A time or a place needs its time zone." });
     if (args.searchFrom === void 0 !== (args.searchTo === void 0)) context.addIssue({ code: "custom", message: "Give searchFrom and searchTo together." });
     if (args.date === void 0 && args.searchFrom === void 0) context.addIssue({ code: "custom", message: "Give a date, or a window to search." });
   }),
-  get_life_milestones: z4.strictObject({
+  get_life_milestones: z9.strictObject({
     birthDate: date.describe("The birth date, such as 1997-03-15."),
     time: wallClock.optional().describe("The birth time on the local clock, if known. Needs zone."),
-    zone: zone3.optional().describe("The birthplace's time zone, such as Europe/London. Needed with a time."),
-    longitude: z4.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
+    zone: zone4.optional().describe("The birthplace's time zone, such as Europe/London. Needed with a time."),
+    longitude: z9.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
   }).superRefine((args, context) => {
     if (args.time !== void 0 && !args.zone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
   }),
@@ -27558,18 +33906,23 @@ var INPUT_SCHEMAS = {
   get_famous_chart: famousChartInput,
   get_birthday: birthdayInput,
   get_sky_calendar: skyCalendarInput,
-  get_horoscope: z4.strictObject({
-    sign: z4.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
-    period: z4.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
-    focus: z4.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
+  get_natal_chart: natalChartInput,
+  get_horoscope_period: horoscopePeriodInput,
+  get_chinese_zodiac: chineseZodiacInput,
+  get_personal_transits: personalTransitsInput,
+  explain_astrology: explainInput,
+  get_horoscope: z9.strictObject({
+    sign: z9.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
+    period: z9.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
+    focus: z9.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
     date: date.optional().describe("A date such as 2026-10-08. Leave it out for the person's today."),
-    zone: zone3.optional(),
+    zone: zone4.optional(),
     birthDate: date.optional().describe("Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored."),
-    birthTime: z4.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
-    birthZone: zone3.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored.")
+    birthTime: z9.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
+    birthZone: zone4.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored.")
   }).refine((args) => args.birthDate !== void 0 || args.birthTime === void 0 && args.birthZone === void 0, { message: "A birth time or birthplace zone needs the birth date." })
 };
-var link2 = z4.object({ title: z4.string(), url: z4.url() });
+var link3 = z9.object({ title: z9.string(), url: z9.url() });
 function inlined(schema) {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== "object") return schema;
@@ -27583,117 +33936,117 @@ function inlined(schema) {
 }
 function computeValue(component) {
   if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
-  return z4.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(COMPUTE_SCHEMAS[component]));
+  return z9.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(COMPUTE_SCHEMAS[component]));
 }
-var calculationOf = (result) => z4.object({
-  schema: z4.string(),
+var calculationOf = (result) => z9.object({
+  schema: z9.string(),
   result,
   receipt: computeValue("ComputeReceipt"),
   backend: computeValue("Backend"),
-  cite: z4.object({ url: z4.url(), receipt: z4.string(), engine: z4.string(), version: z4.string() })
+  cite: z9.object({ url: z9.url(), receipt: z9.string(), engine: z9.string(), version: z9.string() })
 });
-var statements2 = z4.record(z4.string(), z4.string());
-var limits = z4.object({
-  from: z4.string(),
-  to: z4.string(),
-  eventWindowDays: z4.number().int(),
-  eventKinds: z4.array(z4.enum(EVENT_KINDS)),
-  samples: z4.number().int(),
-  factSamples: z4.number().int()
+var statements2 = z9.record(z9.string(), z9.string());
+var limits = z9.object({
+  from: z9.string(),
+  to: z9.string(),
+  eventWindowDays: z9.number().int(),
+  eventKinds: z9.array(z9.enum(EVENT_KINDS)),
+  samples: z9.number().int(),
+  factSamples: z9.number().int()
 });
-var localTime = z4.object({ utc: z4.string(), zone: z4.string(), display: z4.string() });
-var body = z4.object({ body: z4.string(), lon: z4.number(), lat: z4.number(), speed: z4.number(), retrograde: z4.boolean(), sign: z4.string(), degree: z4.number() });
-var positionResult = z4.object({ instants: z4.array(z4.object({ instant: z4.string(), bodies: z4.array(body), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z4.array(z4.string()) })) });
-var event = z4.object({ kind: z4.enum(EVENT_KINDS), at: z4.string(), localAt: z4.string(), body: z4.string().optional(), sign: z4.string(), type: z4.string().optional(), retrograde: z4.boolean().optional(), lon: z4.number().optional(), degree: z4.number().optional() });
-var personal = z4.object({ timeKnown: z4.boolean(), items: z4.array(z4.object({ title: z4.string(), line: z4.string(), when: z4.string() })), note: z4.string() });
-var horoscope = z4.object({
-  status: z4.enum(["available", "unavailable", "choose-sign"]),
-  sign: z4.enum(HOROSCOPE_SIGNS).optional(),
-  signName: z4.string().optional(),
-  period: z4.enum(HOROSCOPE_PERIODS),
-  focus: z4.enum(HOROSCOPE_FOCUSES),
-  date: z4.string(),
-  dateLabel: z4.string(),
-  zone: z4.string(),
-  zoneLabel: z4.string(),
-  zoneSource: z4.enum(["request", "assistant", "default"]),
-  reading: z4.object({ title: z4.string(), paragraphs: z4.array(z4.object({ heading: z4.string().optional(), text: z4.string() })) }).optional(),
-  why: z4.object({ note: z4.string(), facts: z4.array(z4.object({ text: z4.string(), when: z4.string() })), houses: z4.array(z4.string()) }).optional(),
-  available: z4.array(z4.object({ date: z4.string(), label: z4.string() })).optional(),
-  message: z4.string().optional(),
+var localTime = z9.object({ utc: z9.string(), zone: z9.string(), display: z9.string() });
+var body = z9.object({ body: z9.string(), lon: z9.number(), lat: z9.number(), speed: z9.number(), retrograde: z9.boolean(), sign: z9.string(), degree: z9.number() });
+var positionResult = z9.object({ instants: z9.array(z9.object({ instant: z9.string(), bodies: z9.array(body), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z9.array(z9.string()) })) });
+var event = z9.object({ kind: z9.enum(EVENT_KINDS), at: z9.string(), localAt: z9.string(), body: z9.string().optional(), sign: z9.string(), type: z9.string().optional(), retrograde: z9.boolean().optional(), lon: z9.number().optional(), degree: z9.number().optional() });
+var personal = z9.object({ timeKnown: z9.boolean(), items: z9.array(z9.object({ title: z9.string(), line: z9.string(), when: z9.string() })), note: z9.string() });
+var horoscope = z9.object({
+  status: z9.enum(["available", "unavailable", "choose-sign"]),
+  sign: z9.enum(HOROSCOPE_SIGNS).optional(),
+  signName: z9.string().optional(),
+  period: z9.enum(HOROSCOPE_PERIODS),
+  focus: z9.enum(HOROSCOPE_FOCUSES),
+  date: z9.string(),
+  dateLabel: z9.string(),
+  zone: z9.string(),
+  zoneLabel: z9.string(),
+  zoneSource: z9.enum(["request", "assistant", "default"]),
+  reading: z9.object({ title: z9.string(), paragraphs: z9.array(z9.object({ heading: z9.string().optional(), text: z9.string() })) }).optional(),
+  why: z9.object({ note: z9.string(), facts: z9.array(z9.object({ text: z9.string(), when: z9.string() })), houses: z9.array(z9.string()) }).optional(),
+  available: z9.array(z9.object({ date: z9.string(), label: z9.string() })).optional(),
+  message: z9.string().optional(),
   personal: personal.optional(),
   /** The share link for the reading shown, when there is one. */
-  shareUrl: z4.url().nullable().optional(),
-  disclosure: z4.string()
+  shareUrl: z9.url().nullable().optional(),
+  disclosure: z9.string()
 });
-var clockTime2 = z4.object({ utc: z4.string(), local: z4.string() });
+var clockTime2 = z9.object({ utc: z9.string(), local: z9.string() });
 var occasionNote = "Astrology\u2019s reading of the day, for insight and fun, not a guarantee of how it will go.";
-var occasionSky = z4.object({
-  occasion: z4.enum(OCCASION_KINDS),
-  date: z4.string(),
-  time: z4.string().nullable(),
-  zone: z4.string().nullable(),
-  place: z4.string().nullable(),
-  names: z4.string().nullable(),
-  card: z4.object({ title: z4.string(), interpretation: z4.string(), closing: z4.string() }),
+var occasionSky = z9.object({
+  occasion: z9.enum(OCCASION_KINDS),
+  date: z9.string(),
+  time: z9.string().nullable(),
+  zone: z9.string().nullable(),
+  place: z9.string().nullable(),
+  names: z9.string().nullable(),
+  card: z9.object({ title: z9.string(), interpretation: z9.string(), closing: z9.string() }),
   instant: clockTime2,
-  instantIs: z4.enum(["given-time", "local-noon", "utc-noon"]),
-  sky: z4.object({
-    bodies: z4.array(z4.object({ body: z4.string(), sign: z4.string(), degree: z4.number(), retrograde: z4.boolean() })),
-    moon: z4.object({ phase: z4.string(), illuminationPercent: z4.number(), waxing: z4.boolean() }),
-    retrograde: z4.array(z4.string())
+  instantIs: z9.enum(["given-time", "local-noon", "utc-noon"]),
+  sky: z9.object({
+    bodies: z9.array(z9.object({ body: z9.string(), sign: z9.string(), degree: z9.number(), retrograde: z9.boolean() })),
+    moon: z9.object({ phase: z9.string(), illuminationPercent: z9.number(), waxing: z9.boolean() }),
+    retrograde: z9.array(z9.string())
   }),
-  moonSignChange: z4.object({ from: z4.string(), to: z4.string() }).nullable(),
-  evening: z4.object({
+  moonSignChange: z9.object({ from: z9.string(), to: z9.string() }).nullable(),
+  evening: z9.object({
     sunrise: clockTime2.nullable(),
     sunset: clockTime2.nullable(),
-    goldenHour: z4.object({ start: clockTime2, end: clockTime2 }).nullable(),
+    goldenHour: z9.object({ start: clockTime2, end: clockTime2 }).nullable(),
     civilDusk: clockTime2.nullable(),
     moonrise: clockTime2.nullable(),
     moonset: clockTime2.nullable(),
-    moonHighest: z4.object({ at: clockTime2, altitude: z4.number() }).nullable(),
-    planetsAfterDusk: z4.array(z4.string()),
-    flags: z4.array(z4.string())
+    moonHighest: z9.object({ at: clockTime2, altitude: z9.number() }).nullable(),
+    planetsAfterDusk: z9.array(z9.string()),
+    flags: z9.array(z9.string())
   }).nullable(),
-  rating: z4.object({ score: z4.number().int().min(0).max(100), verdict: z4.string(), reasons: z4.array(z4.string()) }),
+  rating: z9.object({ score: z9.number().int().min(0).max(100), verdict: z9.string(), reasons: z9.array(z9.string()) }),
   /** With a search window: the three best-rated days in it, best first; the card is for date, else the best day. */
-  bestDays: z4.object({
-    from: z4.string(),
-    to: z4.string(),
-    days: z4.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
-    best: z4.array(z4.object({ date: z4.string(), score: z4.number().int().min(0).max(100), verdict: z4.string(), reasons: z4.array(z4.string()) })).max(3)
+  bestDays: z9.object({
+    from: z9.string(),
+    to: z9.string(),
+    days: z9.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
+    best: z9.array(z9.object({ date: z9.string(), score: z9.number().int().min(0).max(100), verdict: z9.string(), reasons: z9.array(z9.string()) })).max(3)
   }).nullable(),
-  cardUrl: z4.url().nullable(),
-  shareUrl: z4.url().nullable(),
-  note: z4.literal(occasionNote)
+  cardUrl: z9.url().nullable(),
+  shareUrl: z9.url().nullable(),
+  note: z9.literal(occasionNote)
 });
-var milestone = z4.object({
-  kind: z4.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
-  name: z4.string(),
-  index: z4.number(),
-  age: z4.number(),
-  first: z4.string(),
-  last: z4.string(),
-  passes: z4.array(z4.object({ at: z4.string(), retrograde: z4.boolean() }))
+var milestone = z9.object({
+  kind: z9.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
+  name: z9.string(),
+  index: z9.number(),
+  age: z9.number(),
+  first: z9.string(),
+  last: z9.string(),
+  passes: z9.array(z9.object({ at: z9.string(), retrograde: z9.boolean() }))
 });
-var lifeMilestones = z4.object({
-  birthDate: z4.string(),
-  timeKnown: z4.boolean(),
-  asOf: z4.string(),
-  milestones: z4.array(milestone),
+var lifeMilestones = z9.object({
+  birthDate: z9.string(),
+  timeKnown: z9.boolean(),
+  asOf: z9.string(),
+  milestones: z9.array(milestone),
   next: milestone.nullable(),
-  numbers: z4.object({ fullMoons: z4.number(), mercuryRetrogrades: z4.number(), jupiterReturns: z4.number() }),
-  cardUrl: z4.url().nullable(),
-  shareUrl: z4.url().nullable(),
-  note: z4.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
+  numbers: z9.object({ fullMoons: z9.number(), mercuryRetrogrades: z9.number(), jupiterReturns: z9.number() }),
+  cardUrl: z9.url().nullable(),
+  shareUrl: z9.url().nullable(),
+  note: z9.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
 });
 var OCCASION_NOTE = occasionNote;
 var dataSchemas = {
-  open_chart_studio: z4.object({ title: z4.literal("Chart Studio"), calculation: z4.literal("browser-local"), initialChart: z4.literal("birth-details"), sharing: z4.literal("user-reviewed-selection-only") }),
-  get_capabilities: z4.object({ name: z4.literal("Zodiacs"), version: z4.string(), engine: computeValue("Backend"), tools: z4.array(z4.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z4.string(), limitations: z4.array(z4.string()) }),
-  get_sky: z4.object({ mode: z4.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z4.object({ name: z4.string(), angle: z4.number(), illumination: z4.number() }), interpretation: z4.literal("Astronomical calculations; no personal prediction is supplied.") }),
-  get_upcoming_events: z4.object({ from: z4.string(), to: z4.string(), zone: z4.string(), events: z4.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z4.literal("tested-not-proven") }),
-  check_sky_fact: z4.object({ answer: z4.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z4.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
+  open_chart_studio: z9.object({ title: z9.literal("Chart Studio"), calculation: z9.literal("browser-local"), initialChart: z9.literal("birth-details"), sharing: z9.literal("user-reviewed-selection-only") }),
+  get_capabilities: z9.object({ name: z9.literal("Zodiacs"), version: z9.string(), engine: computeValue("Backend"), tools: z9.array(z9.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z9.string(), limitations: z9.array(z9.string()) }),
+  get_sky: z9.object({ mode: z9.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z9.object({ name: z9.string(), angle: z9.number(), illumination: z9.number() }), interpretation: z9.literal("Astronomical calculations; no personal prediction is supplied.") }),
+  get_upcoming_events: z9.object({ from: z9.string(), to: z9.string(), zone: z9.string(), events: z9.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z9.literal("tested-not-proven") }),
+  check_sky_fact: z9.object({ answer: z9.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z9.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
   get_horoscope: horoscope,
   get_occasion_sky: occasionSky,
   get_life_milestones: lifeMilestones,
@@ -27701,13 +34054,19 @@ var dataSchemas = {
   find_chart_twins: chartTwinsData,
   get_famous_chart: famousChartData,
   get_birthday: birthdayData,
-  get_sky_calendar: skyCalendarData
+  get_sky_calendar: skyCalendarData,
+  get_natal_chart: natalChartData,
+  get_horoscope_period: horoscopePeriodData,
+  get_chinese_zodiac: chineseZodiacData,
+  get_personal_transits: personalTransitsData,
+  explain_astrology: explainData
 };
-var ERROR_SCHEMA = z4.object({ schema: z4.literal(AI_RESULT_SCHEMA), ok: z4.literal(false), tool: z4.enum(ALL_AI_TOOL_NAMES), error: z4.object({ code: z4.string(), message: z4.string(), retryAfterSeconds: z4.number().optional() }) });
+var ERROR_SCHEMA = z9.object({ schema: z9.literal(AI_RESULT_SCHEMA), ok: z9.literal(false), tool: z9.enum(ALL_AI_TOOL_NAMES), error: z9.object({ code: z9.string(), message: z9.string(), retryAfterSeconds: z9.number().optional() }) });
+var COVERAGE_ERROR_SCHEMA = z9.object({ schema: z9.literal(AI_RESULT_SCHEMA), ok: z9.literal(false), tool: z9.enum(COVERAGE_TOOL_NAMES), error: z9.object({ code: z9.string(), message: z9.string(), retryAfterSeconds: z9.number().optional() }) });
 function outputSchema(tool, data) {
-  return z4.union([
-    z4.object({ schema: z4.literal(AI_RESULT_SCHEMA), ok: z4.literal(true), tool: z4.literal(tool), data, links: z4.array(link2) }),
-    ERROR_SCHEMA
+  return z9.union([
+    z9.object({ schema: z9.literal(AI_RESULT_SCHEMA), ok: z9.literal(true), tool: z9.literal(tool), data, links: z9.array(link3) }),
+    COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : ERROR_SCHEMA
   ]);
 }
 var OUTPUT_SCHEMAS = {
@@ -27723,7 +34082,12 @@ var OUTPUT_SCHEMAS = {
   find_chart_twins: outputSchema("find_chart_twins", dataSchemas.find_chart_twins),
   get_famous_chart: outputSchema("get_famous_chart", dataSchemas.get_famous_chart),
   get_birthday: outputSchema("get_birthday", dataSchemas.get_birthday),
-  get_sky_calendar: outputSchema("get_sky_calendar", dataSchemas.get_sky_calendar)
+  get_sky_calendar: outputSchema("get_sky_calendar", dataSchemas.get_sky_calendar),
+  get_natal_chart: outputSchema("get_natal_chart", dataSchemas.get_natal_chart),
+  get_horoscope_period: outputSchema("get_horoscope_period", dataSchemas.get_horoscope_period),
+  get_chinese_zodiac: outputSchema("get_chinese_zodiac", dataSchemas.get_chinese_zodiac),
+  get_personal_transits: outputSchema("get_personal_transits", dataSchemas.get_personal_transits),
+  explain_astrology: outputSchema("explain_astrology", dataSchemas.explain_astrology)
 };
 var TOOL_DESCRIPTIONS = {
   open_chart_studio: "Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do not ask for birth details first. The chart is calculated inside the panel; you see only the parts the person chooses to share.",
@@ -27738,7 +34102,12 @@ var TOOL_DESCRIPTIONS = {
   find_chart_twins: "Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart. If they want to share it, give them the returned shareUrl exactly; it carries their signs, never the birth date.",
   get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up. If they want to share the chart, give them the returned shareUrl exactly.",
   get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it carries the month and day, never the year.",
-  get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event."
+  get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event.",
+  get_natal_chart: "Reads one person's birth chart: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets, and the balance of elements and modes, each with what astrology traditionally reads into it. It needs the birth date; add the birth time, the birthplace's time zone and its latitude and longitude when the person gives them, and never guess a birth time. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. For an interactive chart the person fills in themselves, use open_chart_studio instead. Give the returned chartUrl exactly to open the chart on Zodiacs.",
+  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year or a week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses. Monthly readings are published from the first of each month; the yearly reading covers 2027; the week is the current week's reading, and with focus love or career it adds that focus's daily readings in the week and keeps the sky events that bear on it. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. For today's or tomorrow's horoscope use get_horoscope. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
+  get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own.",
+  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Give the birth date, and the time, birthplace time zone and coordinates if known; never guess a birth time. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon and rising degree, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. Present the lines as astrology's reading, never a guarantee, and do not turn them into health or money predictions.",
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own reference text, with links to the zodiacs.org pages about it: a sign and its traits, a planet, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'."
 };
 
 // src/ai-tools/server.ts
@@ -28210,7 +34579,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const sign2 = match[1] === "-" ? -1 : 1;
       return sign2 * (Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0) + Number(match[4] ?? 0) / 60);
     }
-    var DAY15 = 864e5;
+    var DAY17 = 864e5;
     var PROBE = 36 * 36e5;
     var MAX_DEPARTURE_SECONDS = 180 * 60;
     var FIXED_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
@@ -28239,8 +34608,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       if (first2) {
         return second ? { chosen: first2, kind: "fold", at: firstChange(clockAt, first2.utcMs, second.utcMs) } : { chosen: first2, kind: null, at: null };
       }
-      let lo = wallMs - PROBE - DAY15;
-      let hi = wallMs + PROBE + DAY15;
+      let lo = wallMs - PROBE - DAY17;
+      let hi = wallMs + PROBE + DAY17;
       while (hi - lo > 1) {
         const mid = Math.floor((lo + hi) / 2);
         if (mid + clockAt(mid) * 1e3 > wallMs) hi = mid;
@@ -28308,7 +34677,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       wall.setUTCFullYear(civil.year, civil.month - 1, civil.day);
       const wallMs = wall.setUTCHours(Number(hhmm[1]), Number(hhmm[2]));
       const loaded = FIXED_ZONE.test(timeZone) ? null : loadedHistory(timeZone);
-      if (loaded === void 0 && wallMs < DAY15) throw new ZoneHistoryNotLoadedError();
+      if (loaded === void 0 && wallMs < DAY17) throw new ZoneHistoryNotLoadedError();
       const history = loaded ?? null;
       const zoneAt2 = zoneClock(timeZone, history);
       const place2 = longitude2 !== void 0 && history ? birthplaceClock(history, wallMs, longitude2, zoneAt2) : null;
@@ -28345,7 +34714,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const flags = kind ? [kind === "gap" ? "dst-gap" : "dst-fold"] : [];
       if (lmt) flags.push("lmt");
       const localMeanTime = longitude2 !== void 0 && place2 && (inEra || kind === "gap" && reading.at === place2.endMs) ? { longitude: longitude2, zoneOffsetMinutes: zoneReading.chosen.offset / 60 } : null;
-      const zone6 = shipped ? {
+      const zone7 = shipped ? {
         source: "tzdb",
         tzdbVersion: TZDB.version,
         dataForm: history.hostLegal ? "main" : "main+backzone",
@@ -28363,7 +34732,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
         jump: kind && transition ? { kind, cause: transition.cause } : null,
         transition,
         localMeanTime,
-        zone: zone6,
+        zone: zone7,
         intlOffsetMinutes: shipped ? offsetAt(timeZone, chosen.utcMs) : null,
         calendarNote: country === void 0 ? null : noteFor(gregorianDate, calendar, country),
         localResolution: {
@@ -28375,8 +34744,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
           policy: { fold: "earlier", gap: "shift-forward" },
           calendar,
           writtenDate: date3,
-          tzdbVersion: zone6.tzdbVersion,
-          dataForm: zone6.dataForm,
+          tzdbVersion: zone7.tzdbVersion,
+          dataForm: zone7.dataForm,
           clock: lmt ? "local-mean-time" : "legal",
           transition,
           localMeanTime
@@ -28455,45 +34824,9 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
   return localTimeModule;
 }
 
-// src/lib/engine/returns.ts
-var DAY9 = 864e5;
-function findLongitudeCrossings2(body2, targetLon, from, to, stepDays = 5) {
-  if (!(to.getTime() > from.getTime())) return [];
-  return findLongitudeCrossingsWith(bodyLongitude2, body2, targetLon, from, to, stepDays);
-}
-function groupIntoSeasons2(crossings, gapDays = 400) {
-  const seasons = [];
-  for (const c of crossings) {
-    const cur = seasons[seasons.length - 1];
-    if (cur && c.at.getTime() - cur.last.getTime() <= gapDays * DAY9) {
-      cur.crossings.push(c);
-      cur.last = c.at;
-    } else {
-      seasons.push({ index: seasons.length + 1, crossings: [c], first: c.at, last: c.at });
-    }
-  }
-  return seasons;
-}
-function saturnReturns(birthUtc) {
-  const natalLon = bodyLongitude2("Saturn", birthUtc);
-  const speed = longitudeSpeed2("Saturn", birthUtc);
-  const window = clipToReferenceSpan(
-    new Date(birthUtc.getTime() + 26 * 365.25 * DAY9),
-    new Date(birthUtc.getTime() + 92 * 365.25 * DAY9)
-  );
-  const crossings = window ? findLongitudeCrossings2("Saturn", natalLon, window.from, window.to) : [];
-  return {
-    natalLon,
-    natalRetrograde: speed < 0,
-    seasons: groupIntoSeasons2(crossings),
-    rangeClipped: !window || window.clipped,
-    searched: window ? { from: window.from, to: window.to } : null
-  };
-}
-
 // src/lib/occasions/milestones.ts
-var DAY10 = 864e5;
-var YEAR2 = 365.25 * DAY10;
+var DAY13 = 864e5;
+var YEAR2 = 365.25 * DAY13;
 var SYNODIC_MONTH = 29.530588;
 var MERCURY_STEP_DAYS = 4;
 function ageAt(birth, at) {
@@ -28521,7 +34854,7 @@ function fullMoonsBetween(from, to) {
   if (!(to.getTime() > from.getTime())) return 0;
   const start = moonPhase(from).angle;
   const end = moonPhase(to).angle;
-  const days = (to.getTime() - from.getTime()) / DAY10;
+  const days = (to.getTime() - from.getTime()) / DAY13;
   const remainder = ((end - start) % 360 + 360) % 360;
   const turns = Math.round((days * 360 / SYNODIC_MONTH - remainder) / 360);
   const gained = turns * 360 + remainder;
@@ -28531,7 +34864,7 @@ function fullMoonsBetween(from, to) {
 function mercuryRetrogradesBetween(from, to) {
   let count = 0;
   let previous = longitudeSpeed2("Mercury", from);
-  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY10; ; t += MERCURY_STEP_DAYS * DAY10) {
+  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY13; ; t += MERCURY_STEP_DAYS * DAY13) {
     const at = Math.min(t, to.getTime());
     const speed = longitudeSpeed2("Mercury", new Date(at));
     if (previous >= 0 && speed < 0) count += 1;
@@ -28589,7 +34922,7 @@ var MILESTONE_WORDS = {
 };
 
 // src/lib/occasions/milestone-card.ts
-var DAY11 = 864e5;
+var DAY14 = 864e5;
 async function milestoneCard(input, asOf, clock2) {
   if (!validOccasionDate(input.birthDate)) throw new RangeError("The birth date must be a real date from 1800 to 2199.");
   if (input.time !== null && !/^([01]\d|2[0-3]):[0-5]\d$/u.test(input.time)) throw new RangeError("The time must be HH:MM.");
@@ -28601,282 +34934,17 @@ async function milestoneCard(input, asOf, clock2) {
     birth = (input.birthplace ? resolveLocalToUtc(input.birthDate, input.time, input.timeZone, { longitude: input.birthplace.lon }) : resolveLocalToUtc(input.birthDate, input.time, input.timeZone)).utc;
   } else {
     const [year, month, day] = input.birthDate.split("-").map(Number);
-    birth = new Date(Date.UTC(year, month - 1, day) + DAY11 / 2);
+    birth = new Date(Date.UTC(year, month - 1, day) + DAY14 / 2);
   }
   if (birth.getTime() > asOf.getTime()) throw new RangeError("The birth date is in the future.");
   return { ...lifeMilestones2(birth, asOf), timeKnown: input.time !== null };
-}
-
-// src/lib/engine/transit-scan-shared.ts
-var TRANSIT_BODY_ORDER = [
-  "Sun",
-  "Moon",
-  "Mercury",
-  "Venus",
-  "Mars",
-  "Jupiter",
-  "Saturn",
-  "Uranus",
-  "Neptune",
-  "Pluto"
-];
-var DEFAULT_TRANSIT_BODIES = [
-  "Sun",
-  "Mercury",
-  "Venus",
-  "Mars",
-  "Jupiter",
-  "Saturn",
-  "Uranus",
-  "Neptune",
-  "Pluto"
-];
-var MAJOR_ASPECT_ORDER = [
-  "conjunction",
-  "sextile",
-  "square",
-  "trine",
-  "opposition"
-];
-var NATAL_POINT_ORDER = [
-  ...TRANSIT_BODY_ORDER,
-  "ASC",
-  "MC"
-];
-
-// src/lib/engine/transit-scan-core.ts
-var DAY12 = 864e5;
-var MINUTE = 6e4;
-var BOUNDARY_EPSILON_MS = 100;
-var ASPECT_TARGET_OFFSETS = {
-  conjunction: [0],
-  sextile: [60, 300],
-  square: [90, 270],
-  trine: [120, 240],
-  opposition: [180]
-};
-var STEP_DAYS2 = {
-  Sun: 1,
-  Moon: 0.25,
-  Mercury: 0.5,
-  Venus: 1,
-  Mars: 1,
-  Jupiter: 2,
-  Saturn: 5,
-  Uranus: 5,
-  Neptune: 5,
-  Pluto: 5
-};
-var TRANSIT_BODY_SET = new Set(TRANSIT_BODY_ORDER);
-var BODY_INDEX = new Map(TRANSIT_BODY_ORDER.map((body2, index) => [body2, index]));
-var NATAL_INDEX = new Map(
-  NATAL_POINT_ORDER.map((point, index) => [point, index])
-);
-var ASPECT_INDEX = new Map(MAJOR_ASPECT_ORDER.map((aspect, index) => [aspect, index]));
-function validDate3(date3) {
-  return Number.isFinite(date3.getTime());
-}
-function assertWindow(from, to) {
-  if (!validDate3(from) || !validDate3(to)) throw new RangeError("Transit window dates must be valid.");
-  if (from.getTime() > to.getTime()) throw new RangeError("Transit window must have from <= to.");
-}
-function normalizeLongitude3(lon) {
-  if (!Number.isFinite(lon)) throw new RangeError("Transit longitudes must be finite.");
-  return (lon % 360 + 360) % 360;
-}
-function angularError(targetLon, transitLon) {
-  const distance2 = Math.abs(((transitLon - targetLon + 540) % 360 + 360) % 360 - 180);
-  return distance2;
-}
-function signedAngularDelta(referenceLon, lon) {
-  return ((lon - referenceLon + 540) % 360 + 360) % 360 - 180;
-}
-function isTransitBody(body2) {
-  return TRANSIT_BODY_SET.has(body2);
-}
-function natalTransitPoints(chart) {
-  const byBody = /* @__PURE__ */ new Map();
-  for (const position2 of chart.bodies) {
-    if (isTransitBody(position2.body)) byBody.set(position2.body, normalizeLongitude3(position2.lon));
-  }
-  const points = TRANSIT_BODY_ORDER.flatMap((body2) => {
-    const lon = byBody.get(body2);
-    return lon === void 0 ? [] : [{ name: body2, lon }];
-  });
-  if (chart.angles) {
-    points.push(
-      { name: "ASC", lon: normalizeLongitude3(chart.angles.asc) },
-      { name: "MC", lon: normalizeLongitude3(chart.angles.mc) }
-    );
-  }
-  return points;
-}
-function aspectTargetLongitudes(natalLon, aspect) {
-  const lon = normalizeLongitude3(natalLon);
-  return ASPECT_TARGET_OFFSETS[aspect].map((offset) => normalizeLongitude3(lon + offset));
-}
-function selectedTransitBodies(options) {
-  const selected = new Set(options.transitBodies ?? DEFAULT_TRANSIT_BODIES);
-  if (options.includeMoon) selected.add("Moon");
-  else selected.delete("Moon");
-  return TRANSIT_BODY_ORDER.filter((body2) => selected.has(body2));
-}
-function selectedNatalPoints(natal, options) {
-  const points = natalTransitPoints(natal);
-  if (options.natalPoints === void 0) return points;
-  const selected = new Set(options.natalPoints);
-  return points.filter((point) => selected.has(point.name));
-}
-function selectedAspects(options) {
-  if (options.aspects === void 0) return [...MAJOR_ASPECT_ORDER];
-  const selected = new Set(options.aspects);
-  return MAJOR_ASPECT_ORDER.filter((aspect) => selected.has(aspect));
-}
-function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
-  const referenceLon = ephemeris.bodyLongitude(body2, new Date((fromMs + toMs) / 2));
-  const valueAt = (time) => {
-    const lon = ephemeris.bodyLongitude(body2, new Date(time));
-    return referenceLon + signedAngularDelta(referenceLon, lon);
-  };
-  let lo = fromMs;
-  let hi = toMs;
-  for (let i = 0; i < 56; i += 1) {
-    const third = (hi - lo) / 3;
-    const left = lo + third;
-    const right = hi - third;
-    const leftValue = valueAt(left);
-    const rightValue = valueAt(right);
-    if (maximize ? leftValue < rightValue : leftValue > rightValue) lo = left;
-    else hi = right;
-  }
-  const center = Math.round((lo + hi) / 2);
-  let bestMs = center;
-  let bestValue = valueAt(center);
-  for (let offset = -3; offset <= 3; offset += 1) {
-    const candidateMs = center + offset;
-    const candidateValue = valueAt(candidateMs);
-    if (maximize ? candidateValue > bestValue : candidateValue < bestValue) {
-      bestMs = candidateMs;
-      bestValue = candidateValue;
-    }
-  }
-  return new Date(bestMs);
-}
-function stationBreakpoints(ephemeris, body2, from, to, stepDays) {
-  const stations = [];
-  const stepMs = stepDays * DAY12;
-  const toMs = to.getTime();
-  let previousMs = from.getTime();
-  let previousSpeed = ephemeris.longitudeSpeed(body2, from);
-  while (previousMs < toMs) {
-    const currentMs = Math.min(previousMs + stepMs, toMs);
-    const currentSpeed = ephemeris.longitudeSpeed(body2, new Date(currentMs));
-    const previousSign = Math.sign(previousSpeed);
-    const currentSign = Math.sign(currentSpeed);
-    if (!(previousSign === 0 && currentSign === 0) && (previousSign === 0 || currentSign === 0 || previousSign !== currentSign)) {
-      stations.push(refineLongitudeExtremum(
-        ephemeris,
-        body2,
-        Math.max(from.getTime(), previousMs - stepMs),
-        Math.min(toMs, currentMs + stepMs),
-        previousSpeed > currentSpeed
-      ));
-    }
-    previousMs = currentMs;
-    previousSpeed = currentSpeed;
-  }
-  return stations.filter((station) => station.getTime() > from.getTime() && station.getTime() < toMs).filter((station, index, all) => index === 0 || station.getTime() - all[index - 1].getTime() > MINUTE);
-}
-function scanTransitContactsWith(ephemeris, natal, from, to, options = {}) {
-  assertWindow(from, to);
-  const points = selectedNatalPoints(natal, options);
-  const bodies = selectedTransitBodies(options);
-  const aspects = selectedAspects(options);
-  if (points.length === 0 || bodies.length === 0 || aspects.length === 0) return [];
-  const fromMs = from.getTime();
-  const toMs = to.getTime();
-  const contacts = /* @__PURE__ */ new Map();
-  for (const transitBody of bodies) {
-    const stepDays = STEP_DAYS2[transitBody];
-    const stations = stationBreakpoints(ephemeris, transitBody, from, to, stepDays);
-    const boundaries = [from, ...stations, to];
-    for (const point of points) {
-      for (const aspect of aspects) {
-        for (const targetLon of aspectTargetLongitudes(point.lon, aspect)) {
-          const hits = boundaries.slice(0, -1).flatMap((boundary, index) => ephemeris.findLongitudeCrossings(
-            transitBody,
-            targetLon,
-            boundary,
-            boundaries[index + 1],
-            stepDays
-          ));
-          for (const station of stations) {
-            const stationMs = station.getTime();
-            const stationLon = ephemeris.bodyLongitude(transitBody, station);
-            const resolution = Math.max(
-              angularError(
-                stationLon,
-                ephemeris.bodyLongitude(transitBody, new Date(stationMs - 500))
-              ),
-              angularError(
-                stationLon,
-                ephemeris.bodyLongitude(transitBody, new Date(stationMs + 500))
-              )
-            ) + 1e-12;
-            const hasNearbyCrossing = hits.some((hit) => Math.abs(hit.at.getTime() - stationMs) <= MINUTE);
-            if (!hasNearbyCrossing && angularError(targetLon, stationLon) <= resolution) {
-              hits.push({ at: station, retrograde: false });
-            }
-          }
-          if (angularError(targetLon, ephemeris.bodyLongitude(transitBody, from)) < 1e-8) {
-            hits.unshift({ at: new Date(fromMs), retrograde: false });
-          }
-          for (const hit of hits) {
-            let exactMs = hit.at.getTime();
-            if (exactMs < fromMs - BOUNDARY_EPSILON_MS || exactMs > toMs + BOUNDARY_EPSILON_MS) continue;
-            if (Math.abs(exactMs - fromMs) <= BOUNDARY_EPSILON_MS) exactMs = fromMs;
-            if (Math.abs(exactMs - toMs) <= BOUNDARY_EPSILON_MS) exactMs = toMs;
-            const exact = new Date(exactMs);
-            const contact = {
-              transitBody,
-              natalPoint: point.name,
-              aspect,
-              exactUtc: exact.toISOString()
-            };
-            const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
-            const sameContact = contacts.get(key) ?? [];
-            const duplicate = sameContact.find((existing) => Math.abs(existing.exactMs - exactMs) < 100);
-            if (!duplicate) {
-              sameContact.push({ ...contact, exactMs });
-              contacts.set(key, sameContact);
-            }
-          }
-        }
-      }
-    }
-  }
-  const numberedContacts = [...contacts.values()].flatMap((group) => {
-    const chronological = [...group].sort((a, b) => a.exactMs - b.exactMs);
-    const passCount = chronological.length;
-    return chronological.map((contact, index) => ({
-      ...contact,
-      pass: index + 1,
-      passCount
-    }));
-  });
-  return numberedContacts.sort((a, b) => a.exactUtc.localeCompare(b.exactUtc) || (BODY_INDEX.get(a.transitBody) ?? 0) - (BODY_INDEX.get(b.transitBody) ?? 0) || (NATAL_INDEX.get(a.natalPoint) ?? 0) - (NATAL_INDEX.get(b.natalPoint) ?? 0) || (ASPECT_INDEX.get(a.aspect) ?? 0) - (ASPECT_INDEX.get(b.aspect) ?? 0)).map(({ exactMs: _exactMs, ...contact }) => contact);
-}
-function createTransitScanner(ephemeris) {
-  return {
-    scanTransitContacts: (natal, from, to, options) => scanTransitContactsWith(ephemeris, natal, from, to, options)
-  };
 }
 
 // src/ai-tools/studio/week.ts
 var WEEK_DAYS = 7;
 var WEEK_ORB = 3;
 var WEEK_LIMIT = 5;
-var DAY13 = 864e5;
+var DAY15 = 864e5;
 var SAMPLE_MS = 6 * 36e5;
 var UNTIMED_LEFT_OUT = ["Moon", "ASC", "MC"];
 function remember(ephemeris) {
@@ -28907,7 +34975,7 @@ function scanYourWeek(request2, ephemeris, limit = WEEK_LIMIT) {
   const fromMs = Date.parse(request2.fromUtc);
   if (!Number.isFinite(fromMs)) throw new RangeError("The week needs a valid start.");
   if (typeof request2.timeKnown !== "boolean") throw new RangeError("Confirm whether the birth time is known.");
-  const toMs = fromMs + WEEK_DAYS * DAY13;
+  const toMs = fromMs + WEEK_DAYS * DAY15;
   const from = new Date(fromMs), to = new Date(toMs);
   const natal = request2.timeKnown ? request2.natal : { bodies: request2.natal.bodies, angles: null };
   const points = natalTransitPoints(natal).filter((point) => request2.timeKnown || !UNTIMED_LEFT_OUT.includes(point.name));
@@ -28932,13 +35000,13 @@ function scanYourWeek(request2, ephemeris, limit = WEEK_LIMIT) {
   }
   const samples = Array.from({ length: Math.floor((toMs - fromMs) / SAMPLE_MS) + 1 }, (_, index) => fromMs + index * SAMPLE_MS);
   const items = [];
-  for (const transitBody of DEFAULT_TRANSIT_BODIES) {
-    const lonAt = (ms) => sky.bodyLongitude(transitBody, new Date(ms));
+  for (const transitBody2 of DEFAULT_TRANSIT_BODIES) {
+    const lonAt = (ms) => sky.bodyLongitude(transitBody2, new Date(ms));
     for (const point of points) {
       for (const aspect of MAJOR_ASPECT_ORDER) {
         const targets = aspectTargetLongitudes(point.lon, aspect);
         const orbAt = (ms) => Math.min(...targets.map((target) => distance(target, lonAt(ms))));
-        const key = `${transitBody}|${point.name}|${aspect}`;
+        const key = `${transitBody2}|${point.name}|${aspect}`;
         const cuts = [.../* @__PURE__ */ new Set([fromMs, ...(edges.get(key) ?? []).filter((ms) => ms > fromMs && ms < toMs), toMs])].sort((a, b) => a - b);
         const periods = [];
         for (let index = 0; index < cuts.length - 1; index += 1) {
@@ -28952,7 +35020,7 @@ function scanYourWeek(request2, ephemeris, limit = WEEK_LIMIT) {
           const passes = (exact.get(key) ?? []).filter((ms) => ms >= start && ms <= end).sort((a, b) => a - b);
           const closestOrb = passes.length ? 0 : Math.min(orbAt(start), orbAt(end), ...samples.filter((ms) => ms > start && ms < end).map(orbAt));
           items.push({
-            transitBody,
+            transitBody: transitBody2,
             natalPoint: point.name,
             aspect,
             startUtc: new Date(start).toISOString(),
@@ -28974,54 +35042,11 @@ function scanYourWeek(request2, ephemeris, limit = WEEK_LIMIT) {
 // src/ai-tools/studio/week-local.ts
 var computeYourWeek = (request2) => scanYourWeek(request2, { bodyLongitude: bodyLongitude2, longitudeSpeed: longitudeSpeed2 });
 
-// src/lib/transits.ts
-var MOVER = {
-  Sun: "a few days of spotlight",
-  Moon: "a few hours of weather",
-  Mercury: "a busy stretch for messages and errands",
-  Venus: "a soft stretch of warmth and appetite",
-  Mars: "a charged stretch of heat and urgency",
-  Jupiter: "a generous stretch of confidence",
-  Saturn: "a long season of pressure and accounting",
-  Uranus: "a jolt of disruption that repeats for months",
-  Neptune: "a slow fog of longing and blur",
-  Pluto: "a years-long excavation"
-};
-var ASPECT_VERB = {
-  conjunction: {
-    verb: "sits on",
-    gloss: "and for a while it colors everything there"
-  },
-  sextile: {
-    verb: "opens a door for",
-    gloss: "an opening that rewards you if you take it"
-  },
-  square: {
-    verb: "pushes against",
-    gloss: "friction that will not resolve on its own"
-  },
-  trine: {
-    verb: "flows through",
-    gloss: "help that arrives without being asked"
-  },
-  opposition: {
-    verb: "stands opposite",
-    gloss: "a tension best met head-on rather than absorbed"
-  }
-};
-function transitLine(transiting, type, natal) {
-  const role = BODY_ROLE[natal] ?? `natal ${natal}`;
-  const mover = MOVER[transiting];
-  const phrase = ASPECT_VERB[type];
-  if (!phrase || !mover) return `${transiting} aspects your ${role}.`;
-  return `${transiting} ${phrase.verb} your ${role}: ${mover}, ${phrase.gloss}.`;
-}
-
 // src/ai-tools/studio/week-words.ts
-var POINT_NAME = { ASC: "rising sign", MC: "Midheaven" };
-var pointName = (point) => POINT_NAME[point] ?? point;
-var weekTitle = (item) => `${item.transitBody} ${item.aspect} your ${pointName(item.natalPoint)}`;
-var weekLine = (item) => transitLine(item.transitBody, item.aspect, pointName(item.natalPoint));
+var POINT_NAME2 = { ASC: "rising sign", MC: "Midheaven" };
+var pointName2 = (point) => POINT_NAME2[point] ?? point;
+var weekTitle = (item) => `${item.transitBody} ${item.aspect} your ${pointName2(item.natalPoint)}`;
+var weekLine = (item) => transitLine(item.transitBody, item.aspect, pointName2(item.natalPoint));
 function weekDay(iso3, timeZone) {
   const parts = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", ...timeZone ? { timeZone } : {} }).formatToParts(new Date(iso3));
   const part = (type) => parts.find((item) => item.type === type)?.value ?? "";
@@ -29036,7 +35061,7 @@ function weekDates(item, timeZone) {
 
 // src/ai-tools/features/personal-week.ts
 var PERSONAL_WEEK_NOTE = "From your own birth chart: astrology\u2019s forecast for your week, not a guarantee.";
-async function personalWeek(input, now, clock2, zone6) {
+async function personalWeek(input, now, clock2, zone7) {
   const date3 = parseCivilDate(input.birthDate);
   if (!date3 || date3.year < 1800 || date3.year > 2199) throw new RangeError("The birth date must be a real date from 1800 to 2199.");
   if (input.birthTime !== void 0 && !parseCivilTime(input.birthTime)) throw new RangeError("The birth time must be HH:MM.");
@@ -29058,7 +35083,7 @@ async function personalWeek(input, now, clock2, zone6) {
   });
   return {
     timeKnown,
-    items: week.items.map((item) => ({ title: weekTitle(item), line: weekLine(item), when: weekDates(item, zone6) })),
+    items: week.items.map((item) => ({ title: weekTitle(item), line: weekLine(item), when: weekDates(item, zone7) })),
     note: PERSONAL_WEEK_NOTE
   };
 }
@@ -29069,8 +35094,8 @@ var PRIVACY = "Public-sky tools and horoscopes need no birth details and save no
 var methodLink = { title: "How we calculate", url: `${ORIGIN}/methodology/` };
 var moonLink = { title: "Explore Moon phases", url: `${ORIGIN}/moon-phase/` };
 var LIMITS = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS["events.samples"], factSamples: BUDGETS["sky-fact.samples"] };
-function displayTime(utc, zone6) {
-  return new Intl.DateTimeFormat("en-GB", { timeZone: zone6, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZoneName: "shortOffset" }).format(new Date(utc));
+function displayTime(utc, zone7) {
+  return new Intl.DateTimeFormat("en-GB", { timeZone: zone7, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZoneName: "shortOffset" }).format(new Date(utc));
 }
 function failure(tool, code, message, retryAfterSeconds) {
   return { schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code, message, ...retryAfterSeconds === void 0 ? {} : { retryAfterSeconds } } };
@@ -29088,14 +35113,46 @@ function namedRefusal(message, pointer) {
 }
 function offeredTools(dependencies) {
   const released = AI_TOOL_NAMES.filter((tool) => tool !== "get_horoscope" || !!dependencies.horoscopeWindow);
-  return dependencies.occasions ? [...released, ...OCCASION_TOOL_NAMES] : released;
+  if (!dependencies.occasions) return released;
+  if (!dependencies.coverage) return [...released, ...OCCASION_TOOL_NAMES];
+  const coverage = COVERAGE_TOOL_NAMES.filter((tool) => tool !== "get_horoscope_period" || !!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram);
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage];
 }
-function clockTime3(utc, zone6) {
-  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: zone6 ?? "UTC", weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(utc)).map((part) => [part.type, part.value]));
+var isCoverageTool = (tool) => COVERAGE_TOOL_NAMES.includes(tool);
+var FIELD_FORMAT = {
+  birthDate: "a date such as 1990-05-03",
+  date: "a date such as 2026-12-01",
+  from: "a date such as 2026-11-01",
+  to: "a date such as 2026-12-01",
+  time: "a time such as 08:30",
+  zone: "a time zone name such as Europe/London",
+  currentZone: "a time zone name such as Asia/Bangkok",
+  place: "plain text"
+};
+function coverageInputRefusal(tool, input) {
+  const parsed = INPUT_SCHEMAS[tool].safeParse(input ?? {});
+  if (parsed.success) return null;
+  const record2 = input && typeof input === "object" ? input : {};
+  const sentences = parsed.error.issues.map((issue) => {
+    const field = issue.path.map(String).join(".");
+    if (issue.code === "unrecognized_keys") return "Leave out fields this tool does not take.";
+    if (issue.code === "custom" || !field) return issue.message;
+    if (issue.path.length === 1 && record2[field] === void 0) return `${field} is required.`;
+    if (issue.code === "invalid_value" && "values" in issue) return `${field} must be one of: ${issue.values.join(", ")}.`;
+    if (issue.code === "too_small" && "minimum" in issue && issue.origin === "number") return `${field} must be at least ${String(issue.minimum)}.`;
+    if (issue.code === "too_big" && "maximum" in issue && issue.origin === "number") return `${field} must be at most ${String(issue.maximum)}.`;
+    if (issue.code === "invalid_type" && issue.expected === "number") return `${field} must be a number.`;
+    if (issue.code === "invalid_type" && issue.expected === "int") return `${field} must be a whole number.`;
+    return `${field} must be ${FIELD_FORMAT[field] ?? "in the documented form"}.`;
+  });
+  return failure(tool, "invalid-request", [...new Set(sentences)].slice(0, 3).join(" "));
+}
+function clockTime3(utc, zone7) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: zone7 ?? "UTC", weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(utc)).map((part) => [part.type, part.value]));
   const local = `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
-  return { utc, local: zone6 ? local : `${local} UTC` };
+  return { utc, local: zone7 ? local : `${local} UTC` };
 }
-var optionalClock = (utc, zone6) => utc ? clockTime3(utc, zone6) : null;
+var optionalClock = (utc, zone7) => utc ? clockTime3(utc, zone7) : null;
 function occasionCardUrl(args) {
   if (args.zone && (args.latitude === void 0 || args.longitude === void 0)) return null;
   const params = new URLSearchParams({ o: args.occasion, d: args.date });
@@ -29113,16 +35170,16 @@ function milestoneRow(milestone2) {
   return { kind: milestone2.kind, name: MILESTONE_WORDS[milestone2.kind].name, index: milestone2.index, age: milestone2.age, first: milestone2.first, last: milestone2.last, passes: milestone2.passes };
 }
 var occasionsLink = { title: "Occasion cards on Zodiacs", url: `${ORIGIN}/occasions/` };
-function refUrl(url, ref2) {
+function refUrl(url, ref3) {
   if (!url.startsWith(`${ORIGIN}/`)) return url;
   const hash = url.indexOf("#");
   const [base, fragment] = hash === -1 ? [url, ""] : [url.slice(0, hash), url.slice(hash)];
-  return `${base}${base.includes("?") ? "&" : "?"}ref=${ref2}${fragment}`;
+  return `${base}${base.includes("?") ? "&" : "?"}ref=${ref3}${fragment}`;
 }
-function withRef(value, ref2, key = "") {
-  if (typeof value === "string") return /(^url|Url)$/u.test(key) && key !== "feedUrl" ? refUrl(value, ref2) : value;
-  if (Array.isArray(value)) return value.map((item) => withRef(item, ref2));
-  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, withRef(item, ref2, name)]));
+function withRef(value, ref3, key = "") {
+  if (typeof value === "string") return /(^url|Url)$/u.test(key) && key !== "feedUrl" ? refUrl(value, ref3) : value;
+  if (Array.isArray(value)) return value.map((item) => withRef(item, ref3));
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, withRef(item, ref3, name)]));
   return value;
 }
 async function feature(run2) {
@@ -29139,6 +35196,11 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
   const resolveZone = (name) => localTime2().canonicalZoneName(name);
   try {
     if (OCCASION_TOOL_NAMES.includes(tool) && !dependencies.occasions) return failure(tool, "unavailable", "This tool is not offered here.");
+    if (COVERAGE_TOOL_NAMES.includes(tool) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
+    if (isCoverageTool(tool)) {
+      const refusal = coverageInputRefusal(tool, input);
+      if (refusal) return refusal;
+    }
     const parsed = INPUT_SCHEMAS[tool].safeParse(input);
     if (!parsed.success) return failure(tool, "invalid-request", "Zodiacs could not use those details. Check the sign, date or time zone and try again.");
     let data;
@@ -29151,12 +35213,17 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
       }
       case "get_capabilities": {
         const statements3 = engineStatements();
-        data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offeredTools(dependencies), limits: LIMITS, conventions: statements3.conventions, coverage: statements3.coverage, privacy: dependencies.occasions ? PRIVACY_WITH_BIRTH_TOOLS : PRIVACY, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", "No eclipse or aspect search, birth-time rectification, reminders or account access.", dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
+        data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offeredTools(dependencies).filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS, conventions: statements3.conventions, coverage: statements3.coverage, privacy: dependencies.occasions ? PRIVACY_WITH_BIRTH_TOOLS : PRIVACY, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", "No eclipse or aspect search, birth-time rectification, reminders or account access.", dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
         if (dependencies.occasions) {
           const capabilities = data;
           capabilities.privacy += " The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result, including any card link that carries the details after its #, goes to the assistant. The famous-chart and sky-calendar tools need no personal details.";
           capabilities.limitations.push("The occasion tools give the sky on a date, rate it from 0 to 100 by astrology's traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology's life milestones; they do not guarantee how a day will go.");
           capabilities.limitations.push("Compatibility scores two charts by astrology's reading of their contacts; it does not guarantee how a relationship will go. Famous charts, alone or compared with someone's own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.");
+        }
+        if (dependencies.occasions && dependencies.coverage) {
+          const capabilities = data;
+          capabilities.privacy += " The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.";
+          capabilities.limitations.push("Version 0.6.0 adds tools listed in tools/list: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac, dated personal transits for up to 366 days or the year ahead, and explainers of astrology basics. They give astrology's reading, never a guarantee, and no health or money predictions.");
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data;
@@ -29172,12 +35239,12 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
       }
       case "get_sky": {
         const args = INPUT_SCHEMAS.get_sky.parse(input);
-        const zone6 = await zoneAt(args.zone ?? "UTC", "/zone", resolveZone);
+        const zone7 = await zoneAt(args.zone ?? "UTC", "/zone", resolveZone);
         const instant2 = args.instant ?? (dependencies.now?.() ?? /* @__PURE__ */ new Date()).toISOString();
         const calculation = computePositions(parsePositionsRequest({ instants: [instant2], ...args.bodies ? { bodies: args.bodies } : {} }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone6, display: displayTime(utc, zone6) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
+        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone7, display: displayTime(utc, zone7) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
         links = [moonLink, methodLink];
         break;
       }
@@ -29186,7 +35253,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const { zone: requestedZone, ...explicitRequest } = args;
         const now = args.from ? void 0 : dependencies.now?.() ?? /* @__PURE__ */ new Date();
         const request2 = now ? { from: now.toISOString(), to: new Date(now.getTime() + 7 * 864e5).toISOString() } : explicitRequest;
-        const zone6 = await zoneAt(requestedZone ?? "UTC", "/zone", resolveZone);
+        const zone7 = await zoneAt(requestedZone ?? "UTC", "/zone", resolveZone);
         const parsedRequest = parseEventsRequest(request2);
         if (parsedRequest.to.getTime() - parsedRequest.from.getTime() > MAX_EVENT_DAYS * 864e5) return failure(tool, "budget-exhausted", `An event window is at most ${MAX_EVENT_DAYS} days long.`);
         if (dependencies.allowEvents) {
@@ -29194,7 +35261,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone: zone6, events: calculation.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone6) })), calculation, completeness: calculation.receipt.search.completeness };
+        data = { from: calculation.result.from, to: calculation.result.to, zone: zone7, events: calculation.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone7) })), calculation, completeness: calculation.receipt.search.completeness };
         links = [{ title: "Explore the lunar calendar", url: `${ORIGIN}/full-moon-calendar/` }, { title: "Explore retrogrades", url: `${ORIGIN}/retrogrades/` }, methodLink];
         break;
       }
@@ -29214,26 +35281,26 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
       case "get_horoscope": {
         if (!dependencies.horoscopeWindow) return failure(tool, "unavailable", "Horoscopes are not offered here.");
         const args = INPUT_SCHEMAS.get_horoscope.parse(input);
-        let zone6 = "UTC";
+        let zone7 = "UTC";
         let zoneSource = "default";
         if (args.zone) {
           try {
-            zone6 = await zoneAt(args.zone, "/zone", resolveZone);
+            zone7 = await zoneAt(args.zone, "/zone", resolveZone);
             zoneSource = "request";
           } catch {
             return failure(tool, "invalid-timezone", "Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
           }
         } else if (context.hostZone) {
           try {
-            zone6 = await zoneAt(context.hostZone, "/zone", resolveZone);
+            zone7 = await zoneAt(context.hostZone, "/zone", resolveZone);
             zoneSource = "assistant";
           } catch {
           }
         }
         const window = await dependencies.horoscopeWindow();
-        const localDate = dateInZone(dependencies.now?.() ?? /* @__PURE__ */ new Date(), zone6);
+        const localDate = dateInZone(dependencies.now?.() ?? /* @__PURE__ */ new Date(), zone7);
         const request2 = { period: args.period ?? "day", focus: args.focus ?? "general", ...args.sign ? { sign: args.sign } : {}, ...args.date ? { date: args.date } : {} };
-        data = resolveHoroscope(window, request2, zone6, zoneSource, localDate, ORIGIN);
+        data = resolveHoroscope(window, request2, zone7, zoneSource, localDate, ORIGIN);
         if (args.birthDate && dependencies.occasions) {
           let birthZone;
           if (args.birthZone) {
@@ -29244,19 +35311,19 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             }
           }
           try {
-            data.personal = await personalWeek({ birthDate: args.birthDate, ...args.birthTime ? { birthTime: args.birthTime } : {}, ...birthZone ? { birthZone } : {} }, dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2(), zone6);
+            data.personal = await personalWeek({ birthDate: args.birthDate, ...args.birthTime ? { birthTime: args.birthTime } : {}, ...birthZone ? { birthZone } : {} }, dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2(), zone7);
           } catch (error) {
             if (error instanceof RangeError) return failure(tool, "invalid-request", error.message);
             throw error;
           }
         }
-        if (args.sign) context.horoscopePanel = horoscopePanel(window, args.sign, { period: request2.period, focus: request2.focus, ...args.date ? { date: args.date } : {}, ...zoneSource === "default" ? {} : { zone: zone6 } }, { origin: ORIGIN, ref: context.ref ?? null });
+        if (args.sign) context.horoscopePanel = horoscopePanel(window, args.sign, { period: request2.period, focus: request2.focus, ...args.date ? { date: args.date } : {}, ...zoneSource === "default" ? {} : { zone: zone7 } }, { origin: ORIGIN, ref: context.ref ?? null });
         links = [...args.sign ? [{ title: `${args.sign[0].toUpperCase()}${args.sign.slice(1)} on Zodiacs`, url: `${ORIGIN}/horoscopes/${args.sign}/` }] : [], methodLink];
         break;
       }
       case "get_occasion_sky": {
         const args = INPUT_SCHEMAS.get_occasion_sky.parse(input);
-        const zone6 = args.zone ? await zoneAt(args.zone, "/zone", resolveZone) : null;
+        const zone7 = args.zone ? await zoneAt(args.zone, "/zone", resolveZone) : null;
         const hasPlace = args.latitude !== void 0 && args.longitude !== void 0;
         let card;
         let best = null;
@@ -29268,7 +35335,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
               from: args.searchFrom,
               to: args.searchTo,
               time: args.time ?? null,
-              timeZone: zone6,
+              timeZone: zone7,
               longitude: hasPlace ? args.longitude : null
             }, localTime2());
           }
@@ -29277,7 +35344,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             occasion: args.occasion,
             date: date3,
             time: args.time ?? null,
-            timeZone: zone6,
+            timeZone: zone7,
             place: hasPlace ? { name: args.place ?? "", lat: args.latitude, lon: args.longitude } : null
           }, localTime2());
         } catch (error) {
@@ -29285,7 +35352,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           throw error;
         }
         const evening = card.evening;
-        const cardUrl = occasionCardUrl({ ...args, date: date3, ...zone6 ? { zone: zone6 } : {} });
+        const cardUrl = occasionCardUrl({ ...args, date: date3, ...zone7 ? { zone: zone7 } : {} });
         const rating = rateOccasionDate(args.occasion, card.sky);
         const signOf = (body2) => card.sky.bodies.find((row) => row.body === body2)?.sign ?? null;
         const shareUrl = occasionShareUrl(ORIGIN, { occasion: args.occasion, date: date3, names: args.names ?? null, place: args.place ?? null, sun: signOf("Sun"), moon: signOf("Moon"), score: rating.score });
@@ -29293,24 +35360,24 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           occasion: args.occasion,
           date: date3,
           time: args.time ?? null,
-          zone: zone6,
+          zone: zone7,
           place: args.place ?? null,
           names: args.names ?? null,
           card: card.words,
-          instant: clockTime3(card.instant, zone6),
-          instantIs: args.time ? "given-time" : zone6 ? "local-noon" : "utc-noon",
+          instant: clockTime3(card.instant, zone7),
+          instantIs: args.time ? "given-time" : zone7 ? "local-noon" : "utc-noon",
           sky: { bodies: card.sky.bodies, moon: card.sky.moon, retrograde: card.sky.retrograde },
           moonSignChange: card.moonSignChange,
           rating,
           bestDays: best,
           evening: evening ? {
-            sunrise: optionalClock(evening.sunrise, zone6),
-            sunset: optionalClock(evening.sunset, zone6),
-            goldenHour: evening.goldenHour ? { start: clockTime3(evening.goldenHour.start, zone6), end: clockTime3(evening.goldenHour.end, zone6) } : null,
-            civilDusk: optionalClock(evening.civilDusk, zone6),
-            moonrise: optionalClock(evening.moon.rise, zone6),
-            moonset: optionalClock(evening.moon.set, zone6),
-            moonHighest: evening.moon.highest ? { at: clockTime3(evening.moon.highest.at, zone6), altitude: evening.moon.highest.altitude } : null,
+            sunrise: optionalClock(evening.sunrise, zone7),
+            sunset: optionalClock(evening.sunset, zone7),
+            goldenHour: evening.goldenHour ? { start: clockTime3(evening.goldenHour.start, zone7), end: clockTime3(evening.goldenHour.end, zone7) } : null,
+            civilDusk: optionalClock(evening.civilDusk, zone7),
+            moonrise: optionalClock(evening.moon.rise, zone7),
+            moonset: optionalClock(evening.moon.set, zone7),
+            moonHighest: evening.moon.highest ? { at: clockTime3(evening.moon.highest.at, zone7), altitude: evening.moon.highest.altitude } : null,
             planetsAfterDusk: evening.planetsAfterDusk,
             flags: evening.flags
           } : null,
@@ -29323,13 +35390,13 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
       }
       case "get_life_milestones": {
         const args = INPUT_SCHEMAS.get_life_milestones.parse(input);
-        const zone6 = args.zone ? await zoneAt(args.zone, "/zone", resolveZone) : null;
+        const zone7 = args.zone ? await zoneAt(args.zone, "/zone", resolveZone) : null;
         let card;
         try {
           card = await milestoneCard({
             birthDate: args.birthDate,
             time: args.time ?? null,
-            timeZone: zone6,
+            timeZone: zone7,
             birthplace: args.longitude !== void 0 ? { lon: args.longitude } : null
           }, dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2());
         } catch (error) {
@@ -29390,10 +35457,82 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         ({ data, links } = getSkyCalendar(INPUT_SCHEMAS.get_sky_calendar.parse(input), dependencies.now?.() ?? /* @__PURE__ */ new Date()));
         break;
       }
+      case "get_natal_chart": {
+        const args = INPUT_SCHEMAS.get_natal_chart.parse(input);
+        const zone7 = args.zone ? await zoneAt(args.zone, "/zone", resolveZone) : void 0;
+        const result2 = await feature(() => getNatalChart({ ...args, ...zone7 ? { zone: zone7 } : {} }, localTime2(), ORIGIN));
+        if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
+        ({ data, links } = result2);
+        break;
+      }
+      case "get_horoscope_period": {
+        const args = INPUT_SCHEMAS.get_horoscope_period.parse(input);
+        let zone7 = "UTC";
+        if (args.zone) {
+          try {
+            zone7 = await zoneAt(args.zone, "/zone", resolveZone);
+          } catch {
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+          }
+        } else if (context.hostZone) {
+          try {
+            zone7 = await zoneAt(context.hostZone, "/zone", resolveZone);
+          } catch {
+          }
+        }
+        const result2 = await feature(() => getHoroscopePeriod(args, dateInZone(dependencies.now?.() ?? /* @__PURE__ */ new Date(), zone7), zone7, localTime2(), {
+          window: dependencies.horoscopeWindow,
+          months: dependencies.horoscopeMonths,
+          program: dependencies.horoscopeProgram,
+          ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}
+        }, ORIGIN));
+        if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
+        if ("refused" in result2) return failure(tool, result2.refused, "Zodiacs is busy. Try again in a minute.", result2.refused === "rate-limited" ? 60 : 300);
+        ({ data, links } = result2);
+        break;
+      }
+      case "get_chinese_zodiac": {
+        const args = INPUT_SCHEMAS.get_chinese_zodiac.parse(input);
+        let zone7 = "UTC";
+        if (args.zone) zone7 = await zoneAt(args.zone, "/zone", resolveZone);
+        else if (context.hostZone) {
+          try {
+            zone7 = await zoneAt(context.hostZone, "/zone", resolveZone);
+          } catch {
+          }
+        }
+        const result2 = await feature(async () => getChineseZodiac(args, dateInZone(dependencies.now?.() ?? /* @__PURE__ */ new Date(), zone7), zone7, ORIGIN));
+        if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
+        ({ data, links } = result2);
+        break;
+      }
+      case "get_personal_transits": {
+        const args = INPUT_SCHEMAS.get_personal_transits.parse(input);
+        const zone7 = args.zone ? await zoneAt(args.zone, "/zone", resolveZone) : void 0;
+        let currentZone = args.currentZone ? await zoneAt(args.currentZone, "/currentZone", resolveZone) : void 0;
+        if (!currentZone && !zone7 && context.hostZone) {
+          try {
+            currentZone = await zoneAt(context.hostZone, "/currentZone", resolveZone);
+          } catch {
+          }
+        }
+        if (dependencies.allowEvents) {
+          const verdict = await dependencies.allowEvents();
+          if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
+        }
+        const result2 = await feature(() => getPersonalTransits({ ...args, ...zone7 ? { zone: zone7 } : {}, ...currentZone ? { currentZone } : {} }, dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2(), ORIGIN));
+        if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
+        ({ data, links } = result2);
+        break;
+      }
+      case "explain_astrology": {
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN));
+        break;
+      }
     }
     if (context.ref) {
       data = withRef(data, context.ref);
-      links = links.map((link4) => ({ ...link4, url: refUrl(link4.url, context.ref) }));
+      links = links.map((link5) => ({ ...link5, url: refUrl(link5.url, context.ref) }));
     }
     const result = { schema: AI_RESULT_SCHEMA, ok: true, tool, data, links };
     return OUTPUT_SCHEMAS[tool].parse(result);
@@ -29550,7 +35689,7 @@ var WIDGET_HTML = `<!doctype html>
 
 // src/ai-tools/watch/service.ts
 import { ProtocolError } from "@modelcontextprotocol/server";
-import { z as z6 } from "zod";
+import { z as z11 } from "zod";
 
 // src/ai-tools/watch/callback.ts
 import { lookup } from "node:dns/promises";
@@ -29672,12 +35811,12 @@ async function verifyCallback(url, secret, id, post, now) {
 }
 
 // src/ai-tools/watch/contracts.ts
-import { z as z5 } from "zod";
+import { z as z10 } from "zod";
 var WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
-var DAY14 = 864e5;
+var DAY16 = 864e5;
 var BODIES4 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
-var zone4 = z5.string().max(80).default("UTC").refine((value) => {
+var zone5 = z10.string().max(80).default("UTC").refine((value) => {
   try {
     new Intl.DateTimeFormat("en", { timeZone: value });
     return true;
@@ -29685,18 +35824,18 @@ var zone4 = z5.string().max(80).default("UTC").refine((value) => {
     return false;
   }
 });
-var choices = (values) => z5.array(z5.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
+var choices = (values) => z10.array(z10.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
 var FILTERS = {
-  "zodiacs.sky.ingress": z5.object({ bodies: choices(BODIES4), zone: zone4 }).strict(),
-  "zodiacs.sky.station": z5.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone4 }).strict(),
-  "zodiacs.sky.lunation": z5.object({ phases: choices(["new", "full"]), zone: zone4 }).strict()
+  "zodiacs.sky.ingress": z10.object({ bodies: choices(BODIES4), zone: zone5 }).strict(),
+  "zodiacs.sky.station": z10.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone5 }).strict(),
+  "zodiacs.sky.lunation": z10.object({ phases: choices(["new", "full"]), zone: zone5 }).strict()
 };
-var subscriptionParams = z5.object({
-  name: z5.enum(NAMES),
-  arguments: z5.unknown(),
-  delivery: z5.object({ mode: z5.literal("webhook"), url: z5.string().max(2048), secret: z5.string().max(100) }).strict(),
-  cursor: z5.null().optional(),
-  ttlMs: z5.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
+var subscriptionParams = z10.object({
+  name: z10.enum(NAMES),
+  arguments: z10.unknown(),
+  delivery: z10.object({ mode: z10.literal("webhook"), url: z10.string().max(2048), secret: z10.string().max(100) }).strict(),
+  cursor: z10.null().optional(),
+  ttlMs: z10.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
 }).strict();
 var unsubscribeParams = subscriptionParams.omit({ ttlMs: true, cursor: true }).extend({
   delivery: subscriptionParams.shape.delivery.omit({ secret: true })
@@ -29850,7 +35989,7 @@ var SkyWatch = class {
       expected_revision: previous?.revision ?? 0,
       rotated: previousValue !== null && previousValue.secret !== secret,
       verified: needsVerification,
-      ttl_ms: Math.min(params.ttlMs ?? DAY14, 7 * DAY14)
+      ttl_ms: Math.min(params.ttlMs ?? DAY16, 7 * DAY16)
     });
     if (!result) throw new ProtocolError(-32e3, "Subscription changed or access expired. Retry the request.");
     return { id, refreshBefore: result.expires_at, cursor: null, truncated: false };
@@ -29871,14 +36010,14 @@ function configuredSkyWatch(env) {
   return new SkyWatch(rpc, env.ZODIACS_SKY_WATCH_KEY, callbackPost, Date.now, configuredWatchOAuth(env, rpc));
 }
 function registerSkyWatch(server, watch, owner) {
-  const meta = { _meta: z6.record(z6.string(), z6.unknown()).optional() };
+  const meta = { _meta: z11.record(z11.string(), z11.unknown()).optional() };
   const guarded2 = (run2) => run2().catch((error) => {
     if (error instanceof ProtocolError) throw error;
     throw new ProtocolError(-32602, "The event request could not be completed under its schema or availability requirements.");
   });
   server.server.setRequestHandler(
     "events/list",
-    { params: z6.object({ ...meta, cursor: z6.null().optional() }).strict() },
+    { params: z11.object({ ...meta, cursor: z11.null().optional() }).strict() },
     async () => ({ events: EVENT_DEFINITIONS })
   );
   server.server.setRequestHandler(
@@ -29894,7 +36033,7 @@ function registerSkyWatch(server, watch, owner) {
 }
 
 // src/ai-tools/accounts/contracts.ts
-import { z as z7 } from "zod";
+import { z as z12 } from "zod";
 var ACCOUNTS_SWITCH_ENV = "ZODIACS_ACCOUNTS_ENABLED";
 var SAVE_TOOL_NAME = "save_to_zodiacs";
 var ACCOUNT_SCOPES = ["openid"];
@@ -29905,20 +36044,20 @@ var MAX_SAVED_RECORD_BYTES = 8192;
 var MAX_SAVED_STRING = 600;
 var MAX_LABEL = 80;
 var PROFILE_URL = `${ORIGIN}/profile/`;
-var PLAIN_TEXT2 = /^[^\u0000-\u001f\u007f-\u009f<>{}[\]\\`]+$/u;
-var plainText2 = (max) => z7.string().trim().min(1).max(max).regex(PLAIN_TEXT2, "Use plain text.");
-var date2 = z7.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var zone5 = z7.string().min(1).max(64).regex(ZONE_PATTERN4);
-var weekInput = z7.strictObject({
+var PLAIN_TEXT3 = /^[^\u0000-\u001f\u007f-\u009f<>{}[\]\\`]+$/u;
+var plainText2 = (max) => z12.string().trim().min(1).max(max).regex(PLAIN_TEXT3, "Use plain text.");
+var date2 = z12.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var zone6 = z12.string().min(1).max(64).regex(ZONE_PATTERN8);
+var weekInput = z12.strictObject({
   birthDate: date2.describe("The birth date given to get_horoscope, such as 1990-05-03."),
-  birthTime: z7.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
-  birthZone: zone5.optional().describe("The birthplace's time zone, needed with birthTime."),
-  zone: zone5.optional().describe("The person's own time zone, for the dates of the week.")
+  birthTime: z12.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
+  birthZone: zone6.optional().describe("The birthplace's time zone, needed with birthTime."),
+  zone: zone6.optional().describe("The person's own time zone, for the dates of the week.")
 }).superRefine((args, context) => {
   if (args.birthTime !== void 0 && !args.birthZone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
 });
-var saveInput = z7.strictObject({
-  kind: z7.enum(SAVE_KINDS).describe("What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the personal week from get_horoscope)."),
+var saveInput = z12.strictObject({
+  kind: z12.enum(SAVE_KINDS).describe("What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the personal week from get_horoscope)."),
   label: plainText2(MAX_LABEL).optional().describe('Optional short name for the saved item, such as "Our wedding day". Plain text.'),
   chart: compatibilityPerson.optional().describe('For kind chart: the same details as one side of get_compatibility, or { famous: "<name>" }.'),
   comparison: compatibilityInput.optional().describe("For kind comparison: exactly the arguments given to get_compatibility."),
@@ -29928,27 +36067,27 @@ var saveInput = z7.strictObject({
   const given = ["chart", "comparison", "occasion", "week"].filter((key) => args[key] !== void 0);
   if (given.length !== 1 || given[0] !== args.kind) context.addIssue({ code: "custom", message: "Give exactly the details for the kind being saved." });
 });
-var link3 = z7.object({ title: z7.string(), url: z7.url() });
-var saveData = z7.object({
-  saved: z7.literal(true),
-  id: z7.uuid(),
-  kind: z7.enum(SAVE_KINDS),
-  title: z7.string(),
-  summary: z7.string(),
-  savedAt: z7.string(),
+var link4 = z12.object({ title: z12.string(), url: z12.url() });
+var saveData = z12.object({
+  saved: z12.literal(true),
+  id: z12.uuid(),
+  kind: z12.enum(SAVE_KINDS),
+  title: z12.string(),
+  summary: z12.string(),
+  savedAt: z12.string(),
   /** True when the same item was already in the account; it is not saved twice. */
-  alreadySaved: z7.boolean(),
-  profileUrl: z7.url(),
-  note: z7.string()
+  alreadySaved: z12.boolean(),
+  profileUrl: z12.url(),
+  note: z12.string()
 });
-var SAVE_ERROR_SCHEMA = z7.object({
-  schema: z7.literal(AI_RESULT_SCHEMA),
-  ok: z7.literal(false),
-  tool: z7.literal(SAVE_TOOL_NAME),
-  error: z7.object({ code: z7.string(), message: z7.string(), retryAfterSeconds: z7.number().optional() })
+var SAVE_ERROR_SCHEMA = z12.object({
+  schema: z12.literal(AI_RESULT_SCHEMA),
+  ok: z12.literal(false),
+  tool: z12.literal(SAVE_TOOL_NAME),
+  error: z12.object({ code: z12.string(), message: z12.string(), retryAfterSeconds: z12.number().optional() })
 });
-var SAVE_OUTPUT_SCHEMA = z7.union([
-  z7.object({ schema: z7.literal(AI_RESULT_SCHEMA), ok: z7.literal(true), tool: z7.literal(SAVE_TOOL_NAME), data: saveData, links: z7.array(link3) }),
+var SAVE_OUTPUT_SCHEMA = z12.union([
+  z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(true), tool: z12.literal(SAVE_TOOL_NAME), data: saveData, links: z12.array(link4) }),
   SAVE_ERROR_SCHEMA
 ]);
 var SAVE_TITLE = "Save to my Zodiacs account";
@@ -29965,7 +36104,7 @@ var PAGE_PATHS = {
   week: /^\/horoscopes\//u
 };
 var sitePath = (url) => url.startsWith(`${ORIGIN}/`) ? url.slice(ORIGIN.length) : url;
-var signName4 = (slug) => slug ? SIGNS2.find((sign2) => sign2.slug === slug)?.name ?? null : null;
+var signName5 = (slug) => slug ? SIGNS2.find((sign2) => sign2.slug === slug)?.name ?? null : null;
 var OCCASION_NAMES = {
   wedding: "Wedding",
   anniversary: "Anniversary",
@@ -29981,7 +36120,7 @@ var OCCASION_NAMES = {
   gathering: "A gathering"
 };
 function chartLine(row) {
-  const parts = [signName4(row.sun) && `Sun in ${signName4(row.sun)}`, signName4(row.moon) && `Moon in ${signName4(row.moon)}`, signName4(row.rising) && `${signName4(row.rising)} rising`].filter(Boolean);
+  const parts = [signName5(row.sun) && `Sun in ${signName5(row.sun)}`, signName5(row.moon) && `Moon in ${signName5(row.moon)}`, signName5(row.rising) && `${signName5(row.rising)} rising`].filter(Boolean);
   return parts.length ? parts.join(", ") : "The Sun changed sign that day, so the sign depends on the birth time.";
 }
 function recordProblem(record2) {
@@ -29990,7 +36129,7 @@ function recordProblem(record2) {
     if (problem) return;
     if (typeof value === "string") {
       if (value.length > MAX_SAVED_STRING) problem = "too-long";
-      else if (value.length && !PLAIN_TEXT2.test(value) && !/(^url|Url)$/u.test(key)) problem = "not-plain-text";
+      else if (value.length && !PLAIN_TEXT3.test(value) && !/(^url|Url)$/u.test(key)) problem = "not-plain-text";
       else if (/(^url|Url)$/u.test(key) && !value.startsWith(`${ORIGIN}/`)) problem = "foreign-link";
     } else if (Array.isArray(value)) value.forEach((item) => walk(item, key));
     else if (value && typeof value === "object") for (const [name, item] of Object.entries(value)) walk(item, name);
@@ -30017,15 +36156,15 @@ async function buildSavedRecord(input, dependencies = {}) {
       case "chart": {
         const person = input.chart;
         if (person.famous !== void 0 && compatibilityMissing({ a: person, b: person })) return { failure: "Zodiacs has no chart for that name in its famous-people directory." };
-        const zone6 = person.zone ? await zoneAt(person.zone, "/chart/zone", (name) => localTime2().canonicalZoneName(name)) : void 0;
-        const row = await computePersonChart(zone6 ? { ...person, zone: zone6 } : person, localTime2());
-        const chartLink = !row.famous && zone6 && person.latitude !== void 0 && person.longitude !== void 0 ? `/birth-chart/#c=${encodeChartLink({
+        const zone7 = person.zone ? await zoneAt(person.zone, "/chart/zone", (name) => localTime2().canonicalZoneName(name)) : void 0;
+        const row = await computePersonChart(zone7 ? { ...person, zone: zone7 } : person, localTime2());
+        const chartLink = !row.famous && zone7 && person.latitude !== void 0 && person.longitude !== void 0 ? `/birth-chart/#c=${encodeChartLink({
           date: row.birthDate,
           time: person.time ?? null,
           timeKnown: person.time !== void 0,
           lat: person.latitude,
           lon: person.longitude,
-          tz: zone6,
+          tz: zone7,
           ...person.name ? { name: person.name } : {},
           ...person.place ? { place: person.place } : {},
           houseSystem: "whole"
@@ -30035,7 +36174,7 @@ async function buildSavedRecord(input, dependencies = {}) {
           kind: "chart",
           title: label ?? (row.famous ? `${row.name}'s chart` : row.name ? `${row.name}'s birth chart` : `Birth chart, ${row.birthDate}`),
           summary: chartLine(row),
-          data: { ...row, ...person.time && !row.famous ? { time: person.time } : {}, ...zone6 && !row.famous ? { zone: zone6 } : {} },
+          data: { ...row, ...person.time && !row.famous ? { time: person.time } : {}, ...zone7 && !row.famous ? { zone: zone7 } : {} },
           links: row.url ? [{ title: `${row.name}'s chart on Zodiacs`, url: row.url }] : [{ title: "Your birth chart on Zodiacs", url: `${ORIGIN}/birth-chart/` }]
         }, (saved) => row.url ? sitePath(row.url) : chartLink ?? `/birth-chart/#saved=${saved}`);
       }
@@ -30095,16 +36234,16 @@ async function buildSavedRecord(input, dependencies = {}) {
       case "week": {
         const args = input.week;
         const resolve2 = (name) => localTime2().canonicalZoneName(name);
-        const zone6 = args.zone ? await zoneAt(args.zone, "/week/zone", resolve2) : "UTC";
+        const zone7 = args.zone ? await zoneAt(args.zone, "/week/zone", resolve2) : "UTC";
         const birthZone = args.birthZone ? await zoneAt(args.birthZone, "/week/birthZone", resolve2) : void 0;
-        const week = await personalWeek({ birthDate: args.birthDate, ...args.birthTime ? { birthTime: args.birthTime } : {}, ...birthZone ? { birthZone } : {} }, now, localTime2(), zone6);
-        const from = dateInZone(now, zone6);
+        const week = await personalWeek({ birthDate: args.birthDate, ...args.birthTime ? { birthTime: args.birthTime } : {}, ...birthZone ? { birthZone } : {} }, now, localTime2(), zone7);
+        const from = dateInZone(now, zone7);
         return linked({
           schema: SAVED_RECORD_SCHEMA,
           kind: "week",
           title: label ?? `Your week from ${from}`,
           summary: week.items[0] ? `${week.items[0].title}. ${week.items[0].when}` : "No close contacts to your chart this week.",
-          data: { from, zone: zone6, birthDate: args.birthDate, timeKnown: week.timeKnown, items: week.items, note: week.note },
+          data: { from, zone: zone7, birthDate: args.birthDate, timeKnown: week.timeKnown, items: week.items, note: week.note },
           links: [{ title: "Horoscopes on Zodiacs", url: `${ORIGIN}/horoscopes/` }]
         }, (saved) => `/horoscopes/#week=${from}&saved=${saved}`);
       }
@@ -30121,7 +36260,7 @@ async function buildSavedRecord(input, dependencies = {}) {
 function failure2(code, message) {
   return { schema: AI_RESULT_SCHEMA, ok: false, tool: SAVE_TOOL_NAME, error: { code, message } };
 }
-async function saveToZodiacs(raw, principal, store, dependencies = {}, ref2) {
+async function saveToZodiacs(raw, principal, store, dependencies = {}, ref3) {
   const parsed = saveInput.safeParse(raw);
   if (!parsed.success) return failure2("invalid-request", "Zodiacs could not use those details. Pass kind and exactly the arguments the earlier tool was given.");
   let record2;
@@ -30140,7 +36279,7 @@ async function saveToZodiacs(raw, principal, store, dependencies = {}, ref2) {
   }
   if (stored === "full") return failure2("account-full", "Your Zodiacs account already holds the most saved items it can. Delete some on your profile, then try again.");
   if (!stored) return failure2("authentication-required", "Sign in to your Zodiacs account again to save this.");
-  const profileUrl = ref2 ? refUrl(PROFILE_URL, ref2) : PROFILE_URL;
+  const profileUrl = ref3 ? refUrl(PROFILE_URL, ref3) : PROFILE_URL;
   return SAVE_OUTPUT_SCHEMA.parse({
     schema: AI_RESULT_SCHEMA,
     ok: true,
@@ -30254,6 +36393,7 @@ var PANELS = {
   get_birthday: { uri: OCCASIONS_URI, icon: "occasions" },
   get_sky_calendar: { uri: OCCASIONS_URI, icon: "occasions" }
 };
+var CLOCK_DEPENDENT = /* @__PURE__ */ new Set(["get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits"]);
 var artResourceDomains = ["https://zodiacs.org"];
 var panelMeta = (preferredDisplayMode, art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, "openai/widgetCSP": { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, "openai/widgetPrefersBorder": true, "openai/ui": { availableDisplayModes: ["inline", "fullscreen"], preferredDisplayMode } });
 function hostZoneFrom(meta) {
@@ -30298,7 +36438,7 @@ function createAiServer(dependencies, watch, account) {
       ...panel ? { icons: [{ src: `https://zodiacs.org/assets/ai/${panel.icon}.svg`, mimeType: "image/svg+xml", sizes: ["20x20"] }] } : {},
       inputSchema: INPUT_SCHEMAS[tool],
       outputSchema: OUTPUT_SCHEMAS[tool],
-      annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: tool !== "get_sky" && tool !== "get_upcoming_events" && tool !== "get_horoscope" && tool !== "get_life_milestones" && tool !== "get_birthday" && tool !== "get_sky_calendar" },
+      annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: !CLOCK_DEPENDENT.has(tool) },
       _meta: { ...!watch ? { securitySchemes: [{ type: "noauth" }] } : watch.service.oauth ? { securitySchemes: [{ type: "oauth2", scopes: WATCH_SCOPES }] } : {}, ...panel ? { ui: { resourceUri: panel.uri, visibility: ["model", "app"] }, "openai/outputTemplate": panel.uri, "openai/ui": { entrypoints: [{ type: "global" }, { type: "thread" }] }, ...tool === "get_horoscope" ? { "openai/widgetAccessible": true } : {} } : {} }
     }, async (args, ctx) => {
       const context = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
@@ -30384,7 +36524,7 @@ async function reserveAiQuota(kind, env, fetcher = fetch) {
 
 // src/ai-tools/usage.ts
 var USAGE_HOSTS = ["chatgpt", "claude", "other"];
-var COUNTED_TOOL_NAMES = [...ALL_AI_TOOL_NAMES, SAVE_TOOL_NAME];
+var COUNTED_TOOL_NAMES = [...EVERY_AI_TOOL_NAME, SAVE_TOOL_NAME];
 var USAGE_TIMEOUT_MS = 1500;
 function usageHostFamily(userAgent) {
   if (typeof userAgent !== "string") return "other";
@@ -30597,7 +36737,7 @@ function createAiNodeHandler(options = {}) {
       let calledTool;
       if (message.method === "tools/call" && message.params && typeof message.params === "object") {
         const name = message.params.name;
-        const offered = env[OCCASIONS_SWITCH_ENV] === "1" ? [...ALL_AI_TOOL_NAMES, ...account ? [SAVE_TOOL_NAME] : []] : AI_TOOL_NAMES;
+        const offered = env[OCCASIONS_SWITCH_ENV] === "1" ? [...env[COVERAGE_SWITCH_ENV] === "1" ? EVERY_AI_TOOL_NAME : ALL_AI_TOOL_NAMES, ...account ? [SAVE_TOOL_NAME] : []] : AI_TOOL_NAMES;
         if (offered.includes(String(name))) operation = String(name);
         if (typeof name === "string" && name === operation) calledTool = name;
       }
@@ -30609,7 +36749,7 @@ function createAiNodeHandler(options = {}) {
         res.end(JSON.stringify({ jsonrpc: "2.0", id: typeof message.id === "string" || typeof message.id === "number" ? message.id : null, error: { code: -32601, message: "This MCP operation is not supported." } }));
         return;
       }
-      const dependencies = { ...options.dependencies ?? {}, ...env[OCCASIONS_SWITCH_ENV] === "1" ? { occasions: true } : {}, ...account ? { accounts: true } : {}, allowEvents: async () => {
+      const dependencies = { ...options.dependencies ?? {}, ...env[OCCASIONS_SWITCH_ENV] === "1" ? { occasions: true, ...env[COVERAGE_SWITCH_ENV] === "1" ? { coverage: true } : {} } : {}, ...account ? { accounts: true } : {}, allowEvents: async () => {
         try {
           const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
           return addressVerdict === "allowed" ? await atomicQuota("event") : addressVerdict;
@@ -30632,7 +36772,10 @@ function createAiNodeHandler(options = {}) {
         });
         if (response.body) {
           let sanitize2 = function(text3) {
-            return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text3)));
+            const parsed = JSON.parse(text3);
+            const named = calledTool && COVERAGE_TOOL_NAMES.includes(calledTool) && parsed.result?.isError && !parsed.result?.structuredContent ? coverageInputRefusal(calledTool, message.params.arguments) : null;
+            if (named) return JSON.stringify({ ...parsed, result: { isError: true, content: [{ type: "text", text: JSON.stringify(named) }], structuredContent: named } });
+            return JSON.stringify(sanitizeProtocolMessage(parsed));
           };
           var sanitize = sanitize2;
           const reply = await response.text();
@@ -30715,9 +36858,9 @@ async function calculateWindow(from, to) {
 async function fillWatchLedger(rpc, now = Date.now(), calculate = calculateWindow) {
   let filled = 0;
   for (; filled < 3; filled++) {
-    const from = await rpc("window", { version: WATCH_VERSION, start: new Date(Math.floor(now / DAY14) * DAY14).toISOString() });
-    if (Date.parse(from) >= Math.floor(now / DAY14) * DAY14 + 2 * DAY14) break;
-    const to = new Date(Date.parse(from) + DAY14).toISOString();
+    const from = await rpc("window", { version: WATCH_VERSION, start: new Date(Math.floor(now / DAY16) * DAY16).toISOString() });
+    if (Date.parse(from) >= Math.floor(now / DAY16) * DAY16 + 2 * DAY16) break;
+    const to = new Date(Date.parse(from) + DAY16).toISOString();
     const events = await calculate(from, to);
     await rpc("ingest", { version: WATCH_VERSION, from, to, events });
   }
