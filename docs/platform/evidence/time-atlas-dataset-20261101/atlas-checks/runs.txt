@@ -1,0 +1,34 @@
+The atlas's own checks (C4), run on 1 November 2026 with Node 22.22.2 on two
+extracts of zodiacs-org/engine at 7307665bdbc432269fdac006104f661be16000bc,
+each made with
+
+  git archive 7307665bdbc432269fdac006104f661be16000bc -- atlas ':(exclude)docs/evidence/calc-sidereal-2026-10-05' | tar -x -C <extract>
+
+(atlas/ only; docs/evidence/calc-sidereal-2026-10-05/ is excluded and was
+never read). <extract> and <control extract> stand for the two folders,
+outside every repository. Each output file holds what the command printed
+on stdout and stderr.
+
+command                                                          exit  output
+node <extract>/atlas/tools/check.mjs                             0     check-7307665b.txt
+node <extract>/atlas/tools/compare-tzdb.mjs --check              0     compare-7307665b.txt
+node --test <extract>/atlas/tools/selftest.mjs                   0     selftest-7307665b.txt
+
+Control 1, on <control extract> with one byte of atlas/tzdb/differences.json
+changed (the first "differenceSeconds": -3600 made -3601, byte 562, the JSON
+still valid):
+
+node <control extract>/atlas/tools/check.mjs                     1     control-one-byte-check.txt
+node <control extract>/atlas/tools/compare-tzdb.mjs --check      1     control-one-byte-compare.txt
+
+The control extract was then made again from a fresh archive (identical to
+<extract>, by diff -r) before control 2.
+
+Control 2, on <control extract> with "fr-paris" removed from the places that
+fr-summer-time-end-hour matches (line 12 of atlas/data/tzdb-explanations.json),
+the rest of the file byte for byte:
+
+node <control extract>/atlas/tools/check.mjs                     1     control-fr-paris-check.txt
+
+compare-tzdb.mjs was never run without --check, which would rewrite the two
+comparison files.

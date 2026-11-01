@@ -153,8 +153,12 @@ export const SCOPE_ADD = Object.freeze([
  * navigation, built from the code's names and comments, which the pages
  * render; its styles and icons); the archives of past releases, served
  * unchanged as published, whose current files are read from their sources;
- * and the sky benchmark's v0 files under /developers/sky-benchmark/, a frozen
- * dataset of questions, answers and its scorer, which its page describes.
+ * the sky benchmark's v0 files under /developers/sky-benchmark/, a frozen
+ * dataset of questions, answers and its scorer, which its page describes;
+ * and the time atlas's 0.1.0 files under /developers/time-atlas/, the engine
+ * repository's atlas copied byte for byte at a pinned commit and held to its
+ * digests, whose statements are the atlas's own (as for src/data/time-atlas/
+ * below), which its page describes.
  */
 export const SCOPE_ADD_TREES = Object.freeze([
   { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt|json)$/u },

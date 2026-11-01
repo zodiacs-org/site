@@ -18,6 +18,15 @@ if (!Array.isArray(developerGuides)
   || new Set(developerGuides.map((guide) => guide.slug)).size !== developerGuides.length) {
   throw new Error('Invalid developer guide catalogue');
 }
+// The time atlas's published files (B3.c), as its index lists them.
+const timeAtlasIndex = JSON.parse(await readFile(
+  new URL('../public/developers/time-atlas/0.1.0/files.json', import.meta.url), 'utf8',
+));
+if (!Array.isArray(timeAtlasIndex.files)
+  || timeAtlasIndex.files.some(({ path }) => typeof path !== 'string' || path.startsWith('/')
+    || path.split('/').some((part) => part === '' || part === '.' || part === '..'))) {
+  throw new Error('Invalid time atlas file index');
+}
 export const generatedDeveloperDocuments = Object.freeze({
   'docs/[...guide].astro': [
     'developers/docs/index.html',
@@ -43,6 +52,8 @@ export const requiredDocuments = [
   'developers/engine/reference/release/LICENSING.txt',
   'developers/engine/reference/release/NOTICE.txt',
   'developers/engine/reference/release/README.txt',
+  'developers/time-atlas/0.1.0/files.json',
+  ...timeAtlasIndex.files.map((file) => `developers/time-atlas/0.1.0/${file.path}`),
   'sdk/index.html', 'sdk/examples/simastry-aura/index.html',
   'sdk/engine/index.html', 'sdk/engine/modules.html',
   'llms.txt', 'llms-full.txt', 'api/v1/llms.txt', 'api/v1/index.json',

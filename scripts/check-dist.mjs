@@ -34,6 +34,7 @@ import {
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
+import { TIME_ATLAS_FOLDER, timeAtlasFileProblems } from './check-time-atlas.mjs';
 import {
   ABSENT_LOCALES,
   HREFLANG_LOCALE_POLICY,
@@ -787,6 +788,15 @@ if (!(await exists(twinDirectoryPath))) {
     if (servedEntries.map((entry) => entry.id).join('\n') !== registryIds.join('\n') || misaddressed.length) {
       fail('conventions: registry.json must give every id of the registry, in order, with its address on the page');
     }
+  }
+}
+// The time atlas 0.1.0 (B3.c): the files its index lists, as listed.
+{
+  const folder = resolve(root, TIME_ATLAS_FOLDER);
+  if (!(await exists(resolve(folder, 'files.json')))) {
+    fail(`time atlas: missing ${TIME_ATLAS_FOLDER}/files.json`);
+  } else {
+    for (const problem of await timeAtlasFileProblems(folder)) fail(`time atlas: ${problem}`);
   }
 }
 for (const relativePath of [
