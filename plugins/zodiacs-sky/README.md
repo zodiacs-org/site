@@ -20,14 +20,27 @@ The public Zodiacs plugin: one onboarding skill and a remote MCP connection to
 | `get_occasion_sky` | The sky on a day | Occasions panel |
 | `get_life_milestones` | Life milestones | Occasions panel |
 | `get_sky_calendar` | Sky calendar for your calendar app | Occasions panel |
+| `get_natal_chart` | Birth chart readout | — |
+| `get_horoscope_period` | Monthly, yearly and weekly horoscopes | — |
+| `get_chinese_zodiac` | Chinese zodiac | — |
+| `get_personal_transits` | Your transits | — |
+| `explain_astrology` | Astrology explained | — |
 
-The last seven were introduced in 0.5.0. They share the current panel
-`ui://zodiacs/occasions-v7.html` and are offered where
+Seven were introduced in 0.5.0. They share the current panel
+`ui://zodiacs/occasions-v8.html` and are offered where
 `ZODIACS_OCCASIONS_ENABLED=1`. Production has them enabled. The comparison,
 chart-twin, birthday, occasion and milestone tools
 take the dates, times and places a person gives in the conversation, calculate
 from them for that call and keep none of them; the famous-chart and calendar
 tools take no personal details.
+
+The last five were introduced in 0.6.0 and are offered where
+`ZODIACS_COVERAGE_ENABLED=1` joins the occasions switch; until the owner sets it,
+production lists the thirteen above. They answer in text and structured
+content, with no panel. The natal chart,
+transit and Chinese zodiac tools take a birth date (and, for the first two, an
+optional time, time zone and coordinates) for that call only and keep none of
+it; the period horoscope and explainer tools take no personal details.
 
 No account is needed. Horoscopes come from
 `src/data/horoscope-window.json`, which the daily publication rebuilds each

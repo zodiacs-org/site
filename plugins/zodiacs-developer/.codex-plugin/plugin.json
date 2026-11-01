@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-developer",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "Build and verify astrology integrations with the published Zodiacs engine, bounded sky tools and local chart comparison.",
   "author": {
     "name": "Zodiacs LLC",
@@ -46,7 +46,7 @@
     "com.openai": {
       "onboardingSkill": "./skills/build-with-zodiacs/SKILL.md",
       "publication": {
-        "release_notes": "0.3.14: Its local chart tools are MCP adapter 0.1.0-rc.25's, which bundle engine 1.1.0-rc.1, an unpublished candidate with 1.0.0's values. The records it writes list the ids of the Zodiacs conventions registry that they name, which 1.0.0 refuses, and get_local_chart_capabilities labels the engine an unpublished candidate. Its external recipes still install 1.0.0 from npm. Earlier review archives remain available."
+        "release_notes": "0.3.15: Rebuilt with the hosted server's 0.6.0 source; its local tools, their schemas and the engine are unchanged, and get_local_chart_capabilities reports adapter version 0.6.0. 0.3.14: Its local chart tools are MCP adapter 0.1.0-rc.25's, which bundle engine 1.1.0-rc.1, an unpublished candidate with 1.0.0's values. The records it writes list the ids of the Zodiacs conventions registry that they name, which 1.0.0 refuses, and get_local_chart_capabilities labels the engine an unpublished candidate. Its external recipes still install 1.0.0 from npm. Earlier review archives remain available."
       }
     }
   }
