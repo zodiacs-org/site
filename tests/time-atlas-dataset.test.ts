@@ -429,6 +429,38 @@ describe('the time atlas dataset, version 0.1.0', () => {
     // Control: the same matcher on the card with another count.
     expect(matcher(hubCard().replace(`for ${places} places`, 'for 20 places'))).toBe(false);
   });
+
+  it('states in both llms entries the counts and the commit the files give', () => {
+    const short = readFileSync('public/llms.txt', 'utf8').split('\n').find((line) => line.startsWith('Historical time atlas, version '));
+    const full = /^### Time atlas\n([\s\S]*?)\n### /mu.exec(readFileSync('public/llms-full.txt', 'utf8'))?.[1];
+    expect(short, 'llms.txt has the time atlas entry').toBeDefined();
+    expect(full, 'llms-full.txt has the time atlas section').toBeDefined();
+    const summary = summaryRows(REPORT);
+    const informational = new Set(summary.filter((row) => row.informational).map((row) => `${row.place}|${row.zone}`));
+    const counts = {
+      places: readJson(join(FOLDER, 'data/places.json')).places.length,
+      differ: DIFFERENCES.length,
+      explanations: EXPLANATIONS.length,
+      pairs: summary.length,
+      periods: summary.reduce((sum, row) => sum + row.compared, 0),
+      own: DIFFERENCES.filter((difference) => !informational.has(`${difference.place}|${difference.zone}`)).length,
+      berlin: DIFFERENCES.filter((difference) => informational.has(`${difference.place}|${difference.zone}`)).length,
+    };
+    expect(counts).toEqual({ places: 21, differ: 108, explanations: 11, pairs: 23, periods: 287, own: 98, berlin: 10 });
+    const commit = readJson(join(FOLDER, 'files.json')).source.commit.slice(0, 8);
+    const shortMatchers = [`${counts.places} places`, `${counts.differ} periods`, `${counts.explanations} explanations`, commit];
+    const fullMatchers = [
+      `${counts.places} places`, `${counts.pairs} place and zone pairs`, `${counts.periods} periods`, `${counts.differ} that differ`,
+      `${counts.own} against the places' own zones`, `${counts.berlin} against Europe/Berlin`, `${counts.explanations} explanations`, commit,
+    ];
+    for (const matcher of shortMatchers) expect(short, matcher).toContain(matcher);
+    for (const matcher of fullMatchers) expect(full, matcher).toContain(matcher);
+
+    // Controls: each matcher fails on a copy with its number changed.
+    const bump = (text: string, matcher: string) => text.replace(matcher, matcher.replace(/\d+/u, (number) => String(Number(number) + 1)));
+    for (const matcher of shortMatchers.slice(0, -1)) expect(bump(short!, matcher).includes(matcher), matcher).toBe(false);
+    for (const matcher of fullMatchers.slice(0, -1)) expect(bump(full!, matcher).includes(matcher), matcher).toBe(false);
+  });
 });
 
 // ---------- helpers for the viewer's data and the page check ----------
