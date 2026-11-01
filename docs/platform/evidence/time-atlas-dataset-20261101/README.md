@@ -227,6 +227,54 @@ Counts only, with the owner-approved scanner and both pattern sets, over
 `54deb7e8..c6cec93a` once the files were in: 0 lines added in the 2 commits
 with either set, and 487 lines in the tree, main's figure.
 
+## Local runs of the production check
+
+[tools/production-check.mjs](tools/production-check.mjs) was run against the
+branch's build of `96670534` (K7), after the pre-push list had passed on it,
+served by `astro preview` as the drives serve it
+(`tests/visual/preview-server.mjs`), before any pull request opened:
+
+```sh
+node tools/production-check.mjs - 966705341fcce0fd5760ed96a5765490524782b1 local/local.json http://127.0.0.1:4431
+TIME_ATLAS_CHECK_CONTROL=row-removed,tzdb-offset,explanation-removed,label-removed,excerpt-inserted,geonames-changes,form-link-removed \
+  node tools/production-check.mjs - 966705341fcce0fd5760ed96a5765490524782b1 local/local-controls.json http://127.0.0.1:4431
+```
+
+| report | run | passed | failing |
+| --- | --- | ---: | --- |
+| [local/local.json](local/local.json) | as built | 23 of 23 | none |
+| [local/local-controls.json](local/local-controls.json) | `row-removed` | 22 of 23 | check 3 |
+| | `tzdb-offset` | 22 of 23 | check 3 |
+| | `explanation-removed` | 22 of 23 | check 3 |
+| | `label-removed` | 22 of 23 | check 3 |
+| | `excerpt-inserted` | 22 of 23 | check 3 |
+| | `geonames-changes` | 22 of 23 | check 4 |
+| | `form-link-removed` | 22 of 23 | check 5 |
+
+A local run has no alias, so check 1 is not run. The preview server sends
+the published files without a charset parameter, so the media type is
+compared without it here; on zodiacs.org `charset=utf-8` is required as
+well. Checks 5 to 22 also read raw.githubusercontent.com: the correction
+form's definition at engine main, named "Atlas correction", and each file's
+bytes at engine `7307665b`, which equal the served bytes and the commit's.
+The preview server sent no `Access-Control-Allow-Origin` header for any of
+the seventeen files. The two file controls, `one-byte` and
+`engine-c4e70330`, belong to the production record; tried once against the
+same build, each passed 22 of 23 and failed exactly README.md's check.
+
+The pre-push list ran on `96670534` before these runs, one step at a time.
+Every step exited 0 (the build's prebuild with the daily verification and
+the freshness gate on the edition of 1 November, and its postbuild with
+check-dist, schema:check and the Phase 1 receipt `1e81c55f...`) but two.
+`npm test` run before the build, with no `dist/`, failed the nine cases of
+`scripts/people-font-preload.test.mjs` that read `dist/` and do not skip
+without it; run again after the build, as CI's Site Check runs it, it
+passed: 625 files, 8,026 tests, 5 skipped. The first-use drive's Firefox
+half could not start, as no Firefox is installed for Playwright on this
+machine; its Chromium half passed 44 of 44, the hub's ten cards in order
+among them, and the hub drive passed. The optional local Sitemap Dates
+comparison, which needs a second build of main, was not run.
+
 ## Overlaps
 
 - Draft site#852 rewrites copy on the hub page this unit adds a card to;
