@@ -50,6 +50,9 @@ const PUBLISHED: ReadonlyArray<readonly [string, string, number, string, string]
   ['LICENSE.txt', 'atlas/LICENSE', 18657, '9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411', 'da6ab6cc8f333d7e89a99812866df8f24374d47c'],
 ];
 
+/** What a failure of the published bytes says (C2): the version's files are fixed once released. */
+const FROZEN = 'the files of 0.1.0 never change: publish a changed atlas as a new version, at its own path';
+
 // Computed here, apart from scripts/check-time-atlas.mjs, so the check and the test do not share a mistake.
 const sha256Of = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex');
 const gitBlobOf = (bytes: Buffer) => createHash('sha1').update(Buffer.concat([Buffer.from(`blob ${bytes.length}\0`), bytes])).digest('hex');
@@ -113,9 +116,9 @@ const dataFiles: AtlasFiles = Object.fromEntries(manifest.files.map((name: strin
 describe('the time atlas dataset, version 0.1.0', () => {
   it('publishes exactly the seventeen atlas files and their index, none missing, none extra and no link', async () => {
     const entries = walk(FOLDER);
-    expect(entries.map((entry) => entry.path)).toEqual(['files.json', ...PUBLISHED.map(([path]) => path)].sort());
-    for (const entry of entries) expect(entry.regular, entry.path).toBe(true);
-    expect(await timeAtlasFileProblems(FOLDER)).toEqual([]);
+    expect(entries.map((entry) => entry.path), `${FOLDER}: ${FROZEN}`).toEqual(['files.json', ...PUBLISHED.map(([path]) => path)].sort());
+    for (const entry of entries) expect(entry.regular, `${entry.path}: ${FROZEN}`).toBe(true);
+    expect(await timeAtlasFileProblems(FOLDER), `${FOLDER}: ${FROZEN}`).toEqual([]);
 
     // Controls, each on a copy: a file removed, a file the dataset does not carry added, a file replaced by a link.
     const removed = copyOfFolder();
@@ -135,9 +138,9 @@ describe('the time atlas dataset, version 0.1.0', () => {
   it("keeps the bytes the engine repository's atlas had at 7307665b, file by file", async () => {
     for (const [path, , bytes, digest, blob] of PUBLISHED) {
       const data = readFileSync(join(FOLDER, path));
-      expect(data.length, path).toBe(bytes);
-      expect(sha256Of(data), path).toBe(digest);
-      expect(gitBlobOf(data), path).toBe(blob);
+      expect(data.length, `${path}: ${FROZEN}`).toBe(bytes);
+      expect(sha256Of(data), `${path}: ${FROZEN}`).toBe(digest);
+      expect(gitBlobOf(data), `${path}: ${FROZEN}`).toBe(blob);
     }
     expect(PUBLISHED.reduce((sum, [, , bytes]) => sum + bytes, 0)).toBe(396_147);
 
@@ -188,8 +191,8 @@ describe('the time atlas dataset, version 0.1.0', () => {
     expect(index.files.map((file: { path: string }) => file.path)).toEqual(PUBLISHED.map(([path]) => path));
     for (const [i, [path, source, bytes, digest, blob]] of PUBLISHED.entries()) {
       const data = readFileSync(join(FOLDER, path));
-      expect(index.files[i], path).toEqual({ path, source, bytes: data.length, sha256: sha256Of(data), gitBlob: gitBlobOf(data) });
-      expect([bytes, digest, blob], path).toEqual([data.length, sha256Of(data), gitBlobOf(data)]);
+      expect(index.files[i], `${path}: ${FROZEN}`).toEqual({ path, source, bytes: data.length, sha256: sha256Of(data), gitBlob: gitBlobOf(data) });
+      expect([bytes, digest, blob], `${path}: ${FROZEN}`).toEqual([data.length, sha256Of(data), gitBlobOf(data)]);
     }
 
     // Control: an index with one file's size wrong.
