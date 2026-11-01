@@ -346,9 +346,10 @@ check-dist, schema:check and the Phase 1 receipt `1e81c55f...`) but two.
 without it; run again after the build, as CI's Site Check runs it, it
 passed: 625 files, 8,026 tests, 5 skipped. The hub drive passed, and the
 first-use drive's Chromium half passed 44 of 44, the hub's ten cards in
-order among them, but its Firefox half could not start, as no Firefox is
-installed for Playwright on this machine: `npm run test:firstuse:browser`
-exited 1, so that gate has not passed (see "Open for the owner"). The
+order among them, but its Firefox half could not start, as no Firefox was
+installed for Playwright on this machine then (later installed, it does not
+start on this Mac): `npm run test:firstuse:browser` exited 1, so that gate
+has not passed (see "Open for the owner"). The
 optional local Sitemap Dates comparison, which needs a second build of main,
 was not run.
 
@@ -427,17 +428,20 @@ change neither the guides nor the hub.
 - The first-use drive's Firefox half. The site gates require the handover's
   full list to pass before every push, and the list includes the two hub
   drives run locally. `npm run test:firstuse:browser` runs the first-use
-  drive in Chromium and in Firefox: Chromium passed 44 of 44, but no Firefox
-  is installed for Playwright on this machine, so the Firefox half never
-  started and the command exited 1. No CI workflow runs the drives, so
-  nothing else covers that half, and the gate has not passed. Installing
-  Playwright's own Firefox build (`npx playwright install firefox` in the
-  clone) is a download that needs the owner's permission, and nothing was
-  downloaded. The owner decides: with that permission, Firefox is installed,
-  `nice -n 10 npm run test:firstuse:browser` runs again on the build and both
-  halves are recorded here; without it, the gap goes in the pull request's
-  body as a departure from the site gates, and the owner accepts it before
-  the push.
+  drive in Chromium and in Firefox. Chromium passed 44 of 44. No CI workflow
+  runs the drives, so nothing else covers the Firefox half, and that gate
+  has not passed. With the owner's permission (1 November 2026), the
+  clone's own Playwright (`playwright-core` 1.61.1) installed the Firefox
+  build it expects, Firefox 151.0, build 1532 (98.8 MiB downloaded). On this
+  Mac, macOS 27.0.1, that build does not start headless: run on the build of
+  `7a7702a5`, the drive stopped at Firefox's launch after 180 s, Firefox
+  having printed `sandbox_extension_issue_file_to_process failed ...
+  Operation not permitted` and `RenderCompositorSWGL failed mapping default
+  framebuffer`. A one-page launch outside the command sandbox, with
+  Firefox's own sandboxes switched off (`MOZ_DISABLE_*_SANDBOX=1`), stopped
+  the same way at the compositor error. So the Firefox half could not be
+  run here. It goes in the pull request's body as a departure from the site
+  gates, for the owner to accept.
 
 ## The independent review
 
@@ -454,8 +458,9 @@ are answered by the commits named below; the fourth is the owner's:
    excluded folder was read or searched: the C3 section and "Departures"
    record the build's `git status` (`4f7af81f`), and the scoping's (this
    commit).
-4. The first-use drive's Firefox half has not passed: it is open for the
-   owner (see "Open for the owner").
+4. The first-use drive's Firefox half has not passed: Firefox, installed
+   with the owner's permission, does not start on this Mac, so it is a
+   departure for the owner to accept (see "Open for the owner").
 5. A failure of the published bytes named only the path: each now also says
    that the files of 0.1.0 never change and that a changed atlas is
    published as a new version, at its own path (`a7178ce4`).
@@ -510,4 +515,5 @@ outside the repository.
 - The draft pull request and the production record come after this branch.
   The independent review read the branch at `d0e413a8`; the commits after it
   answer six of its seven problems, and the fourth, the first-use drive's
-  Firefox half, is the owner's to decide (see "Open for the owner").
+  Firefox half, could not be run here and is the owner's to accept (see
+  "Open for the owner").
