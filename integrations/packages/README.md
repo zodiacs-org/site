@@ -16,8 +16,16 @@ requires an OpenAI-supported distribution path; the repo marketplace and direct
 local MCP connection are the available development paths.
 
 These files are prepared packages, not evidence of upload, acceptance or listing.
+`ai:package` never rewrites an archive that already exists: a change needs a
+new version, so every earlier ZIP keeps its bytes.
 
-Current candidates are **Zodiacs 0.5.0** and **Zodiacs Developer 0.3.14**;
+Zodiacs 0.6.0 adds five read-only tools offered where `ZODIACS_COVERAGE_ENABLED=1`
+joins the occasions switch, and an About that names the score and rating out of
+100 and the new features. 0.5.1 was in OpenAI review on 28 October; see
+[RESUBMISSION-0.6.0](../../docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md).
+Developer 0.3.15 is rebuilt from the 0.6.0 source with unchanged local tools.
+
+Current candidates are **Zodiacs 0.6.0** and **Zodiacs Developer 0.3.15**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
