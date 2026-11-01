@@ -380,7 +380,8 @@ export function timeAtlasPageProblems({ page, reference, index: indexText, data,
       const wants = [period.from, period.to, period.length, period.rule, `${period.tzdb} ${period.abbreviation}`, period.atlas,
         rule ? `v${rule.version}, ${rule.uncertainty.flag}` : '(no such rule)'];
       if (period.kind === 'rounding') wants.push(`${period.ms} ms`);
-      if (shownRows[row].groups[0] !== period.kind || wants.some((want) => !cells.includes(want))) {
+      const columns = [period.from, period.to, period.length, `${period.rule} ${rule ? `v${rule.version}, ${rule.uncertainty.flag}` : '(no such rule)'}`, period.atlas, `${period.tzdb} ${period.abbreviation}`];
+      if (shownRows[row].groups[0] !== period.kind || wants.some((want) => !cells.includes(want)) || JSON.stringify(cellsOf(shownRows[row].inner).slice(0, 6)) !== JSON.stringify(columns)) {
         viewer(`period ${row + 1} of ${table.place} against ${table.zone} is not the report's row`);
       }
       // The result cell, the row's last, reads as the report's result; a difference's goes on to name its explanation.
@@ -407,7 +408,8 @@ export function timeAtlasPageProblems({ page, reference, index: indexText, data,
       entry.atlasOffset, `${entry.tzdbOffset} ${entry.tzdbAbbreviation}`, `differs by ${entry.differenceSeconds} s`];
     if (!section || decodeEntities(section.groups[1]) !== `${entry.place}|${entry.zone}`) {
       viewer(`difference ${at + 1} is not in the section of ${entry.place} against ${entry.zone}`);
-    } else if (wants.some((want) => !cells.includes(want)) || !shown.inner.includes(`href="#${entry.explanation}"`)) {
+    } else if (wants.some((want) => !cells.includes(want)) || !shown.inner.includes(`href="#${entry.explanation}"`)
+        || cellsOf(shown.inner).at(-1) !== `differs by ${entry.differenceSeconds} s, explained by ${entry.explanation}`) {
       viewer(`difference ${at + 1} (${entry.place} against ${entry.zone} from ${entry.from}) does not show what tzdb/differences.json gives`);
     }
   });
@@ -472,7 +474,7 @@ export function timeAtlasPageProblems({ page, reference, index: indexText, data,
     const said = pageText(entry.inner);
     const shownChanges = (entry.inner.match(/<li data-change\b/gu) ?? []).length;
     changes += shownChanges;
-    if (Number(entry.groups[1]) !== rule.version || entry.groups[2] !== rule.uncertainty.flag || !has(said, rule.title) || !has(said, rule.uncertainty.reason)) {
+    if (Number(entry.groups[1]) !== rule.version || entry.groups[2] !== rule.uncertainty.flag || !has(said, `${rule.id} ${rule.title}, version ${rule.version}`) || !has(said, `${rule.uncertainty.flag}: ${rule.uncertainty.reason}`)) {
       viewer(`rule ${rule.id} does not give its title, version ${rule.version}, flag ${rule.uncertainty.flag} and reason`);
     }
     const listed = rule.changes ?? [];

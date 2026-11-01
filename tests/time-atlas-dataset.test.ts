@@ -179,16 +179,19 @@ describe('the time atlas dataset, version 0.1.0', () => {
 
   it('lists each file in files.json with its size, SHA-256, git blob and source, and the commit and tree it came from', async () => {
     const index = readJson(join(FOLDER, 'files.json'));
-    expect(Object.keys(index)).toEqual(['schema', 'name', 'version', 'license', 'licenseUrl', 'source', 'files']);
-    expect(index.schema).toBe('zodiacs.time-atlas-files.v1');
-    expect(index.name).toBe(manifest.name);
-    expect(index.version).toBe(manifest.version);
-    expect(index.version).toBe('0.1.0');
-    expect(index.license).toBe(manifest.license);
-    expect(index.license).toBe('CC-BY-4.0');
-    expect(index.licenseUrl).toBe('https://creativecommons.org/licenses/by/4.0/');
-    expect(index.source).toEqual({ repository: 'https://github.com/zodiacs-org/engine', commit: COMMIT, tree: TREE, path: 'atlas' });
-    expect(index.files.map((file: { path: string }) => file.path)).toEqual(PUBLISHED.map(([path]) => path));
+    const indexBytes = readFileSync(join(FOLDER, 'files.json'));
+    const INDEX = `files.json: ${FROZEN}`;
+    expect([indexBytes.length, sha256Of(indexBytes)], INDEX).toEqual([4837, 'c5015f8eb2cd5cc635ef4f395453a97476270bae44eaad10bf81ea82389dc5d3']);
+    expect(Object.keys(index), INDEX).toEqual(['schema', 'name', 'version', 'license', 'licenseUrl', 'source', 'files']);
+    expect(index.schema, INDEX).toBe('zodiacs.time-atlas-files.v1');
+    expect(index.name, INDEX).toBe(manifest.name);
+    expect(index.version, INDEX).toBe(manifest.version);
+    expect(index.version, INDEX).toBe('0.1.0');
+    expect(index.license, INDEX).toBe(manifest.license);
+    expect(index.license, INDEX).toBe('CC-BY-4.0');
+    expect(index.licenseUrl, INDEX).toBe('https://creativecommons.org/licenses/by/4.0/');
+    expect(index.source, INDEX).toEqual({ repository: 'https://github.com/zodiacs-org/engine', commit: COMMIT, tree: TREE, path: 'atlas' });
+    expect(index.files.map((file: { path: string }) => file.path), INDEX).toEqual(PUBLISHED.map(([path]) => path));
     for (const [i, [path, source, bytes, digest, blob]] of PUBLISHED.entries()) {
       const data = readFileSync(join(FOLDER, path));
       expect(index.files[i], `${path}: ${FROZEN}`).toEqual({ path, source, bytes: data.length, sha256: sha256Of(data), gitBlob: gitBlobOf(data) });
@@ -440,6 +443,10 @@ describe('the time atlas dataset, version 0.1.0', () => {
       ['an em dash as a reference without its semicolon', page.replace('</main>', `<p>1870${'&#' + '8212'} 1919</p></main>`), /^viewer: 1 en or em dashes, raw or as references$/u, 'viewer'],
       ['a change entry with another version', page.replace(/<li data-change>Version (\d+),/u, (_, version: string) => `<li data-change>Version ${Number(version) + 1},`), /^viewer: rule [a-z0-9-]+ does not list its \d+ changes, each with its version, date and summary$/u, 'viewer'],
       ['a count shown as another number', within(firstComparison, firstComparisonEnd, '<td>16</td>', '<td>17</td>'), /^viewer: comparison row 1 does not show Europe\/Paris \| 16 \| 12 \| 4 \| 0 \| 3\.8 in its cells/u, 'viewer'],
+      ['a rule entry showing another version', page.replace(/(<dt id="rule-[^"]+" data-rule data-version="\d+"[^>]*>[^<]*<code>[^<]*<\/code>[^<]*, version )(\d+)<\/dt>/u, (_, head: string, v: string) => `${head}${Number(v) + 1}</dt>`), /^viewer: rule [a-z0-9-]+ does not give its title, version \d+, flag [a-z]+ and reason$/u, 'viewer'],
+      ['a rule entry showing another flag', page.replace(/(data-flag="documented"[^>]*>[\s\S]*?<\/dt><dd><p>)documented:/u, (_, head: string) => `${head}inferred:`), /^viewer: rule [a-z0-9-]+ does not give its title, version \d+, flag documented and reason$/u, 'viewer'],
+      ['a difference naming another explanation than it links', page.slice(0, firstRow) + page.slice(firstRow, firstRowEnd).replace(`<code>${first.explanation}</code></a></td></tr>`, '<code>als-mos-german-rule</code></a></td></tr>') + page.slice(firstRowEnd), /^viewer: difference 1 \(fr-paris against Europe\/Paris from 1916-10-01T00:00:00Z\) does not show/u, 'viewer'],
+      ['a difference with its two offsets swapped', page.slice(0, firstRow) + page.slice(firstRow, firstRowEnd).replace('<td>+0:00:00</td><td>+1:00:00 WEST</td>', '<td>+1:00:00 WEST</td><td>+0:00:00</td>') + page.slice(firstRowEnd), /^viewer: period \d+ of fr-paris against Europe\/Paris is not the report's row$/u, 'viewer'],
       ['an agreeing period whose result reads as a difference', within(firstAgreeing, firstAgreeingEnd, '<td>agrees</td>', '<td>differs by 60 s</td>'), /^viewer: period \d+ of fr-paris against Europe\/Paris does not read "agrees" in its result cell$/u, 'viewer'],
     ];
     for (const [name, planted, problem, part] of controls) {
