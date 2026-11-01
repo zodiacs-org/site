@@ -55,12 +55,13 @@ not move, and the atlas was read from it with `git show`, `git ls-tree`,
 name in two other ways: `git show -s HEAD`, to confirm its HEAD, and, in the
 review, the root `LICENSE` and `.github/ISSUE_TEMPLATE/atlas-correction.yml`,
 listed by name without recursion, the first lines of the `LICENSE` blob
-included. One read broke the owner's rule for the clone: after the local
+included. In the build, one read broke the owner's rule for the clone: after the local
 runs of the production check, one `git -C <engine> status --porcelain`
 compared the clone's whole working tree with its index,
 `docs/evidence/calc-sidereal-2026-10-05/` included, against the owner's rule
 that the folder be left out of every recursive scan. It printed nothing, and
-no file of that folder was opened or printed by hand (see "Departures").
+no file of that folder was opened or printed by hand (see "Departures",
+which also gives the reads made when the unit was scoped).
 Every archive named `atlas` only and excluded
 `docs/evidence/calc-sidereal-2026-10-05/` explicitly. Two extracts were made
 outside every repository:
@@ -400,7 +401,14 @@ change neither the guides nor the hub.
 - The claim binds, besides the version, the licence and the 108 differences,
   the counts the atlas's own check printed (C4), so that the counts it
   restates are bound to the atlas's output.
-- The owner's rule for the engine clone was broken once. After the local
+- The owner's rule for the engine clone was broken four times: three times
+  when the unit was scoped, before the preregistration, and once in the
+  build. When the site was mapped, two `git status --short` runs in the
+  clone, and when the build plan was drafted, one
+  `git -C <engine> status --porcelain`, checked that the clone was clean;
+  each compared the whole working tree with its index, the folder included,
+  printed nothing and opened no file of the folder. In the build, after the
+  local
   runs of the production check, one `git -C <engine> status --porcelain` was
   run to see that the clone was clean. It compares the clone's whole working
   tree with its index, `docs/evidence/calc-sidereal-2026-10-05/` included,
@@ -441,17 +449,20 @@ are answered by the commits named below; the fourth is the owner's:
    says (`eeee0b60`).
 2. No test held the 108 differing rows to their 31 rules, versions and
    flags: test 7 does, with a control (`1263020a`).
-3. This README said the engine clone was read only with git commands that
-   name `atlas/`: the C3 section and "Departures" record the one
-   `git status` (`4f7af81f`).
+3. This README said the engine clone was read only with `git show`,
+   `git ls-tree`, `git cat-file` and `git archive`, and that nothing in the
+   excluded folder was read or searched: the C3 section and "Departures"
+   record the build's `git status` (`4f7af81f`), and the scoping's (this
+   commit).
 4. The first-use drive's Firefox half has not passed: it is open for the
    owner (see "Open for the owner").
 5. A failure of the published bytes named only the path: each now also says
    that the files of 0.1.0 never change and that a changed atlas is
    published as a new version, at its own path (`a7178ce4`).
-6. The page check missed zero-padded and semicolon-less dash references, a
-   change entry's version, the comparison rows' cells and the periods'
-   result cells: it reads each now, and test 12 plants each (`61875dc9`).
+6. The page check missed zero-padded dash references, a change entry's
+   version, the comparison rows' cells and the periods' result cells: it
+   reads each now, references without their semicolon too, and test 12
+   plants each (`61875dc9`).
 7. The final private search was not recorded: it is, under "The private
    search" (`be6728d5`).
 
