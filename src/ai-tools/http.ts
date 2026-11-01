@@ -5,6 +5,7 @@ import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, 
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
+import { argumentRefusal } from './argument-hints';
 import { reserveAiQuota, type QuotaKind } from './quota';
 import { countAiToolCall, usageHostFamily, type UsageHost } from './usage';
 import { configuredSkyWatch, type SkyWatch } from './watch/service';
@@ -192,7 +193,13 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     let text: string;
     let body: unknown;
     try { text = await readBody(req); body = JSON.parse(text); }
-    catch (error) { return send(res, error instanceof Error && error.message === 'payload-too-large' ? 413 : 400, error instanceof Error && error.message === 'payload-too-large' ? 'payload-too-large' : 'invalid-json'); }
+    catch (error) {
+      if (error instanceof Error && error.message === 'payload-too-large') return send(res, 413, 'payload-too-large');
+      // Unparseable JSON gets the JSON-RPC parse error a client library expects.
+      res.statusCode = 400; for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error: the body is not valid JSON.', data: { code: 'invalid-json' } } })); return;
+    }
     if (!body || typeof body !== 'object' || Array.isArray(body)) return send(res, 400, 'invalid-json-rpc');
     const message = body as Record<string, unknown>;
     let calledTool: CountedToolName | undefined;
@@ -203,6 +210,17 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       if (offered.includes(String(name))) operation = String(name);
       if (typeof name === 'string' && name === operation) calledTool = name as CountedToolName;
     }
+    // get_upcoming_events also takes plain YYYY-MM-DD bounds: from becomes that day's
+    // start and to that day's end in UTC, before the unchanged input schema sees them.
+    if (calledTool === 'get_upcoming_events') {
+      const args = (message.params as Record<string, unknown>).arguments as Record<string, unknown> | undefined;
+      let changed = false;
+      for (const [key, clock] of [['from', 'T00:00:00Z'], ['to', 'T23:59:59Z']] as const) {
+        if (args && typeof args[key] === 'string' && /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/.test(args[key] as string)) { args[key] = `${args[key]}${clock}`; changed = true; }
+      }
+      if (changed) text = JSON.stringify(body);
+    }
+    const refusal = calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments) : undefined;
     const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
     if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
     if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list', ...(watch ? ['events/list', 'events/subscribe', 'events/unsubscribe'] : [])].includes(String(message.method))) {
@@ -234,7 +252,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         const panelResource = message.method === 'resources/read' && typeof resourceUri === 'string' && LARGE_PANEL_URIS.has(resourceUri);
         if (Buffer.byteLength(reply) > (panelResource ? 2_100_000 : 262144)) throw new Error('output-budget');
         function sanitize(text: string) {
-          return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text)));
+          return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text), refusal));
         }
         let safeReply = reply;
         if (response.headers.get('content-type')?.includes('text/event-stream')) {
