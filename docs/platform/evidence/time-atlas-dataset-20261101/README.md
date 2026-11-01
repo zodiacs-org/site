@@ -201,16 +201,38 @@ files, the C3 and C4 outputs, an external item for the engine tree at
 
 | | records |
 | --- | ---: |
-| sentences selected and recorded | 54 |
-| on the new claim | 41 |
+| sentences selected and recorded | 60 |
+| on the new claim | 45 |
 | on existing claims (`time.atlas-reading`) | 2 |
-| exempt (not-a-claim 4, definitional 3, navigation 2, limitation 2) | 11 |
+| exempt (not-a-claim 4, definitional 3, navigation 2, limitation 4) | 13 |
 
-The 54 are the page's 41, the hub card's 1, llms.txt's 1 and
+The 60 are the page's 47, the hub card's 1, llms.txt's 1 and
 llms-full.txt's 11. `--unlisted` and `--orphans` print 0, and
 `maxOpenOverstated` stays 11. Control: with the record of "Two explanations
 end with a finding about tzdb 2025c, quoted as the atlas states it." removed
 from the ledger, `--unlisted` reported exactly that one sentence.
+
+Sentences the extractor misses. The review found six sentences about time
+handling on the page that the extractor did not select, so they had no
+record: the three of the paragraph under the comparisons table (the totals,
+the 98 and the 10, and one explanation for each difference), the rules
+paragraph, and the Limits items on the coverage and on railway clocks. The
+first sentence of that paragraph, the rules sentence and the two Limits items
+were reworded to name what they are about (tzdb 2025c, the historical time
+atlas), which brings them under the extractor; the paragraph's other two
+sentences come in with its first, as the page is dense. The four are on the
+new claim, whose statement gained "22 of the 23 comparisons have a
+difference" and "45 change entries on 38 rules", and the two Limits items are
+exempt as limitations. The 61 sentences of the page that the extractor reads
+and does not select were then read by hand: file descriptions, headings,
+table cells, the licence and correction text and navigation, none of them a
+statement about time handling but the h1. Of the hub card only its h2 is
+not selected, and of the two llms blocks every sentence is. The h1 and the
+hub card's h2 ("Check what the clocks said, 1870 to 1919") are headings and
+have no record, unless the owner counts them as sentences about time
+handling.
+Control: with the rules sentence's record left out of the ledger in memory,
+the selection reported exactly that sentence unlisted.
 
 ## Phase 1 (C9)
 

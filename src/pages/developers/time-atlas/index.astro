@@ -275,12 +275,12 @@ node atlas/tools/compare-tzdb.mjs --check`}</code></pre>
     </div>
     <div class="prose">
       <p>
-        Of the {totals.compared} periods, {totals.agree} agree, {totals.differ} differ and{' '}
-        {totals.rounding} is rounding only; {totals.withDifference} of the {totals.comparisons}{' '}
-        comparisons have a difference. The {totals.differ} differences are {totals.ownZone} against
-        the places' own zones and {totals.informational} against Europe/Berlin, for information. Each
-        is matched by exactly one of the {viewer.explanations.length} explanations below, on its
-        place, zone and rule and both offsets.
+        Of the {totals.compared} periods compared with tzdb {base.tzdb}, {totals.agree} agree,{' '}
+        {totals.differ} differ and {totals.rounding} is rounding only; {totals.withDifference} of the{' '}
+        {totals.comparisons} comparisons have a difference. The {totals.differ} differences are{' '}
+        {totals.ownZone} against the places' own zones and {totals.informational} against
+        Europe/Berlin, for information. Each is matched by exactly one of the{' '}
+        {viewer.explanations.length} explanations below, on its place, zone and rule and both offsets.
       </p>
       {rounding.map(({ pair, period }) => (
         <p data-rounding>
@@ -403,8 +403,9 @@ node atlas/tools/compare-tzdb.mjs --check`}</code></pre>
     <h2 id="rules">Rules and their versions</h2>
     <div class="prose">
       <p>
-        All {counts.rules} rules, each with its version, its uncertainty flag and its reason, and every
-        change recorded before version {version}: {counts.changeEntries} changes in all.
+        All {counts.rules} rules of the historical time atlas, each with its version, its uncertainty
+        flag and its reason, and every change recorded before version {version}:{' '}
+        {counts.changeEntries} changes in all.
       </p>
     </div>
     {RULE_GROUPS.map(([group, heading]) => (
@@ -433,9 +434,9 @@ node atlas/tools/compare-tzdb.mjs --check`}</code></pre>
     <h2 id="limits">Limits</h2>
     <div class="prose">
       <ul>
-        <li>France and the United States only, from 1870 to 1919, in {counts.places} places; <a href={`${FOLDER}/COVERAGE.md`}>COVERAGE.md</a> says what is left out.</li>
+        <li>The historical time atlas covers France and the United States only, from 1870 to 1919, in {counts.places} places; <a href={`${FOLDER}/COVERAGE.md`}>COVERAGE.md</a> says what is left out.</li>
         <li>The comparison is with tzdb 2025c only, and later tzdb releases may differ.</li>
-        <li>Railway clocks are not compared: the comparison reads civil clocks only.</li>
+        <li>Railway clocks are not compared with tzdb 2025c: the comparison reads civil clocks only.</li>
         <li>The excerpts are not shown here. They are in the citation files, verbatim and in the original languages.</li>
         <li>The files are served without a CORS header, so a script on another site cannot read them in a browser.</li>
         <li>The copy of CORRECTIONS.md in this version keeps an empty log; the live log is in the engine repository.</li>
