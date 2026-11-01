@@ -22,6 +22,10 @@
       "src": "^/\\.well-known/openai-apps-challenge$"
     },
     {
+      "source": "/.well-known/google-connected-apps",
+      "src": "^/\\.well-known/google-connected-apps$"
+    },
+    {
       "source": "/sky-calendar.ics",
       "src": "^/sky-calendar\\.ics$"
     },
