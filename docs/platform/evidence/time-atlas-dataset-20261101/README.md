@@ -49,15 +49,19 @@ source in `atlas/` of zodiacs-org/engine at
 
 ## How the bytes were copied (C3)
 
-The engine clone was read with `git show`, `git ls-tree`, `git cat-file` and
-`git archive` of `atlas/`, and its HEAD
-(`4b116cc72acfdce22a542e3d09c42bf2acd94a83`) did not move, with one
-exception. After the local runs of the production check, one
-`git -C <engine> status --porcelain` compared the clone's whole working tree
-with its index, `docs/evidence/calc-sidereal-2026-10-05/` included, against
-the owner's rule that the folder be left out of every recursive scan. It
-printed nothing, and no file of that folder was opened or printed by hand
-(see "Departures"). Every archive named `atlas` only and excluded
+The engine clone's HEAD (`4b116cc72acfdce22a542e3d09c42bf2acd94a83`) did
+not move, and the atlas was read from it with `git show`, `git ls-tree`,
+`git cat-file` and `git archive` of `atlas/`. The clone was also read by
+name in two other ways: `git show -s HEAD`, to confirm its HEAD, and, in the
+review, the root `LICENSE` and `.github/ISSUE_TEMPLATE/atlas-correction.yml`,
+listed by name without recursion, the first lines of the `LICENSE` blob
+included. One read broke the owner's rule for the clone: after the local
+runs of the production check, one `git -C <engine> status --porcelain`
+compared the clone's whole working tree with its index,
+`docs/evidence/calc-sidereal-2026-10-05/` included, against the owner's rule
+that the folder be left out of every recursive scan. It printed nothing, and
+no file of that folder was opened or printed by hand (see "Departures").
+Every archive named `atlas` only and excluded
 `docs/evidence/calc-sidereal-2026-10-05/` explicitly. Two extracts were made
 outside every repository:
 
@@ -181,13 +185,19 @@ Beside them:
   one without its semicolon. Test 12 plants each of these faults; on the
   built pages of `96670534` and `61875dc9`, each fault planted in memory, the
   check before the change found none of them and the check after it finds
-  each one, as its only problem.
+  each one, as its only problem. Since the second review it also reads each
+  period row's first six cells in order, the explanation each difference's
+  result cell names, and the version and flag each rule entry shows beside
+  its title and reason (`823ed051`). Test 12 plants the four faults these
+  catch; on the built page of `823ed051`, each planted in memory, the check
+  of `be6728d5` finds none of them and the check of `823ed051` each one, as
+  its only problem.
 - `scripts/check-dist.mjs` runs both on every build ("time atlas: ..."), and
   its sitemap total is main's plus one (1452 to 1453). With the first
   difference row removed from the built page it failed 112 checks, all
   "time atlas: viewer: ..."; the page check as changed after the review, run
   in memory on the build of `61875dc9` with that row removed, gives the same
-  112, all "viewer".
+  112, all "viewer", and so does the check of `823ed051` on its own build.
 - `scripts/developer-structured-data-checks.mjs` holds the page's Dataset
   (C7): CC BY 4.0 exactly, version 0.1.0, span `1870-01-01/1919-12-31`, the
   seventeen files as DataDownloads with their media types, each served, and
@@ -269,30 +279,34 @@ Counts only, with the owner-approved scanner and both pattern sets, over
 `54deb7e8..c6cec93a` once the files were in: 0 lines added in the 2 commits
 with either set, and 487 lines in the tree, main's figure.
 
-Over the whole branch, after the review's fixes, `54deb7e8..61875dc9` (13
-commits, no merges): both pattern sets reported 0 lines added and 487 lines
-in the tree, equal to main's 487, read again with both sets over
-`54deb7e8^..54deb7e8`. Each of the four reports has one "Birth data found"
-line and no line starting with Error. Before the fixes, over
-`54deb7e8..d0e413a8` (8 commits), the build and the review had each read
-the same counts. The commit that adds this paragraph changes only this
-README and the two local reports.
+Over the whole branch, after the second review's fixes,
+`54deb7e8..823ed051` (15 commits, no merges): both pattern sets reported 0
+lines added and 487 lines in the tree, equal to main's 487, read again with
+both sets over `54deb7e8^..54deb7e8`. Each of the four reports has one
+"Birth data found" line and no line starting with Error. Before, the build
+and the review over `54deb7e8..d0e413a8` (8 commits), and the fixes after
+the review over `54deb7e8..61875dc9` (13 commits) and `54deb7e8..be6728d5`
+(14 commits), had each read the same counts. The commit that adds this
+paragraph changes only this README and the two local reports.
 
 ## Local runs of the production check
 
 [tools/production-check.mjs](tools/production-check.mjs) was first run
 against the branch's build of `96670534` (K7), after the pre-push list had
-passed on it. After the review's fixes, `local/local.json` and
+passed on it, and again after the review's fixes against the build of
+`61875dc9`. After the second review's fixes, `local/local.json` and
 `local/local-controls.json` were replaced with the same two runs against the
-branch's build of `61875dc954f60ec40a703631fc75d34507feffc2`, the last
+branch's build of `823ed051bdd12442a809e28b96591af2de12af92`, the last
 commit that changes the page, its check or its tests, served by
 `astro preview` as the drives serve it (`tests/visual/preview-server.mjs`),
-before any pull request opened:
+before any pull request opened. That build, with its prebuild on the edition
+of 1 November and its postbuild (check-dist with the time atlas block,
+schema:check and the Phase 1 receipt `1e81c55f...`), exited 0. The runs:
 
 ```sh
-node tools/production-check.mjs - 61875dc954f60ec40a703631fc75d34507feffc2 local/local.json http://127.0.0.1:4431
+node tools/production-check.mjs - 823ed051bdd12442a809e28b96591af2de12af92 local/local.json http://127.0.0.1:4431
 TIME_ATLAS_CHECK_CONTROL=row-removed,tzdb-offset,explanation-removed,label-removed,excerpt-inserted,geonames-changes,form-link-removed \
-  node tools/production-check.mjs - 61875dc954f60ec40a703631fc75d34507feffc2 local/local-controls.json http://127.0.0.1:4431
+  node tools/production-check.mjs - 823ed051bdd12442a809e28b96591af2de12af92 local/local-controls.json http://127.0.0.1:4431
 ```
 
 | report | run | passed | failing |
@@ -306,10 +320,11 @@ TIME_ATLAS_CHECK_CONTROL=row-removed,tzdb-offset,explanation-removed,label-remov
 | | `geonames-changes` | 22 of 23 | check 4 |
 | | `form-link-removed` | 22 of 23 | check 5 |
 
-The runs against `96670534` had given the same results. The page served this
-time was the build's own, 392,125 bytes, SHA-256
-`0859a811d323be738a98663da6baf5dd9b0ad251b0fa453210aca170dc7f661b`, held to
-the page check as `61875dc9` holds it. A local run has no alias, so check 1
+The runs against `96670534` and `61875dc9` had given the same results. The
+page served this time was the build's own, 392,125 bytes, SHA-256
+`0859a811d323be738a98663da6baf5dd9b0ad251b0fa453210aca170dc7f661b`, the
+same bytes as the build of `61875dc9`, held to the page check as `823ed051`
+holds it. A local run has no alias, so check 1
 is not run. The preview server sends the published files without a charset
 parameter, so the media type is compared without it here; on zodiacs.org
 `charset=utf-8` is required as well. Checks 5 to 22 also read
@@ -318,8 +333,8 @@ named "Atlas correction", and each file's bytes at engine `7307665b`, which
 equal the served bytes and the commit's. The preview server sent no
 `Access-Control-Allow-Origin` header for any of the seventeen files. The two
 file controls, `one-byte` and `engine-c4e70330`, belong to the production
-record; tried once against each of the two builds, each passed 22 of 23 and
-failed exactly README.md's check.
+record; tried once against each of the builds of `96670534` and `61875dc9`,
+each passed 22 of 23 and failed exactly README.md's check.
 
 The pre-push list ran on `96670534` before the first runs, one step at a time.
 Every step exited 0 (the build's prebuild with the daily verification and
@@ -342,7 +357,7 @@ build, with its prebuild on the edition of 1 November and its postbuild
 `1e81c55f...`), exited 0; `npm test` after it passed 625 files (1 skipped)
 and 8,026 tests (5 skipped); `npm run check` gave 0 errors and 0 warnings;
 `--unlisted` and `--orphans` printed 0; the Phase 1 scope guard passed (54
-changed paths, protected scope untouched); the local runs above gave the
+changed paths, protected scope untouched); the two local runs gave the
 table's results; and the dash check on added lines printed nothing, with 7
 lines in its control on `data/citations-fr.json` and 13 in the generated
 guide's added lines. `npm run ai:check`, `mcp:build:check`, `mcp:pack:check`,
@@ -392,9 +407,12 @@ change neither the guides nor the hub.
   and the owner's rule leaves that folder out of every recursive scan. It
   printed nothing, and no file of that folder was opened or printed by hand.
   Every other read of the clone in the build and its review was `git show`,
-  `git ls-tree`, `git cat-file` or `git archive` of `atlas/`, and the fixes
-  after the review did not read it. This goes in the pull request's body and
-  to the owner.
+  `git ls-tree`, `git cat-file` or `git archive` of `atlas/`,
+  `git show -s HEAD` to confirm its HEAD, or, in the review, the root
+  `LICENSE` and `.github/ISSUE_TEMPLATE/atlas-correction.yml`, listed by name
+  without recursion, the first lines of the `LICENSE` blob included. The
+  fixes after each review, and the second review, did not read the clone.
+  This goes in the pull request's body and to the owner.
 
 ## Open for the owner
 
@@ -413,6 +431,57 @@ change neither the guides nor the hub.
   body as a departure from the site gates, and the owner accepts it before
   the push.
 
+## The independent review
+
+The review read the branch at `d0e413a8` and reported seven problems. Six
+are answered by the commits named below; the fourth is the owner's:
+
+1. Six sentences about time handling on the page had no claims record: four
+   were reworded and all six recorded, as "Sentences the extractor misses"
+   says (`eeee0b60`).
+2. No test held the 108 differing rows to their 31 rules, versions and
+   flags: test 7 does, with a control (`1263020a`).
+3. This README said the engine clone was read only with git commands that
+   name `atlas/`: the C3 section and "Departures" record the one
+   `git status` (`4f7af81f`).
+4. The first-use drive's Firefox half has not passed: it is open for the
+   owner (see "Open for the owner").
+5. A failure of the published bytes named only the path: each now also says
+   that the files of 0.1.0 never change and that a changed atlas is
+   published as a new version, at its own path (`a7178ce4`).
+6. The page check missed zero-padded and semicolon-less dash references, a
+   change entry's version, the comparison rows' cells and the periods'
+   result cells: it reads each now, and test 12 plants each (`61875dc9`).
+7. The final private search was not recorded: it is, under "The private
+   search" (`be6728d5`).
+
+A second review read the branch at `be6728d5`. It found the first, second,
+fifth, sixth and seventh problems fixed as stated, the third fixed with one
+overstatement left, and the fourth rightly left open for the owner. Its
+smaller items were answered after it:
+
+- The page check still accepted four faults of the sixth problem's kind: a
+  rule entry showing another version, or another flag, than its attributes
+  give, a difference naming another explanation than the one it links, and
+  a difference with its two offsets swapped. Since `823ed051` the check
+  reads each period row's first six cells in order, the explanation each
+  difference's result cell names, and the version and flag each rule entry
+  shows beside its title and reason, and test 12 plants each of the four
+  faults.
+- A change to files.json, itself a file of 0.1.0, did not fail with the
+  fifth problem's message: since `823ed051` test 4 holds its 4,837 bytes and
+  its SHA-256, and says that the files of 0.1.0 never change.
+- This README overstated how the engine clone was read, did not record the
+  review with its answers, and called the Firefox half the seventh problem.
+  The commit that adds this section corrects the C3 section, "Departures"
+  and "Not done", replaces the local runs with runs against the build of
+  `823ed051`, and records the private search over the branch to `823ed051`.
+
+The second review's other items need nothing in the branch: the pull
+request's body and the notice to the owner (the Firefox half and the
+`git status` departure), a count in a hand-off note, and scratch files
+outside the repository.
+
 ## Not done
 
 - No tag, GitHub release, DOI or deposit: each is the owner's (reach item
@@ -429,5 +498,5 @@ change neither the guides nor the hub.
   credit.
 - The draft pull request and the production record come after this branch.
   The independent review read the branch at `d0e413a8`; the commits after it
-  answer six of its seven problems, and the seventh, the first-use drive's
+  answer six of its seven problems, and the fourth, the first-use drive's
   Firefox half, is the owner's to decide (see "Open for the owner").
