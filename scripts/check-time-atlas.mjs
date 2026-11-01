@@ -145,8 +145,23 @@ export function pageText(html) {
 /** An attribute value as the page writes it, so a URL with & is found as &amp;. */
 const attribute = (value) => String(value).replace(/&/gu, '&amp;').replace(/"/gu, '&quot;');
 
-/** The dash rule: U+2013 and U+2014, raw or as character references. */
-const DASHES = /[\u2013\u2014]|&(?:[nm]dash);|&#(?:821[12]|x201[34]);/giu;
+/**
+ * The dash rule: U+2013 and U+2014, raw or as character references. A named
+ * reference is counted as written; a numeric one is counted once decoded, so
+ * one written with leading zeros, in hex or in decimal, counts too, and so
+ * does a numeric one written without its semicolon, which a browser still
+ * decodes.
+ */
+function dashesIn(html) {
+  return [
+    ...(html.match(/&(?:[nm]dash);/giu) ?? []),
+    ...(decodeEntities(html).match(/[\u2013\u2014]/gu) ?? []),
+    ...(html.match(/&#(?:x0*201[34](?![0-9a-f;])|0*821[12](?![0-9;]))/giu) ?? []),
+  ];
+}
+
+/** The text of each cell of a table row's HTML, as a reader sees it. */
+const cellsOf = (html) => [...html.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gu)].map((match) => pageText(match[1]));
 
 /** The report's own tables, read here apart from the page's helper. */
 export function readReport(markdown) {
@@ -312,15 +327,18 @@ export function timeAtlasPageProblems({ page, reference, index: indexText, data,
     ]) if (!needle || !has(said, needle)) viewer(`the comparison section lacks ${what}`);
   }
 
-  // Item 2, the comparisons, in the Summary's order with its counts.
+  // Item 2, the comparisons, in the Summary's order with its counts, in the row's attributes and in the cells a reader sees.
   const rows = elements(page, /<tr data-comparison="([^"]*)" data-counts="([^"]*)"[^>]*>/gu, '</tr>');
   if (rows.length !== summary.length) viewer(`${rows.length} comparison rows, not ${summary.length}`);
   summary.forEach((row, at) => {
     const shown = rows[at];
+    const cells = [`${row.zone}${row.informational ? ' (for information)' : ''}`, ...row.counts.split(' ')];
     if (!shown || decodeEntities(shown.groups[0]) !== `${row.place}|${row.zone}` || shown.groups[1] !== row.counts) {
       viewer(`comparison row ${at + 1} is not ${row.place} against ${row.zone} with ${row.counts}`);
     } else if (!has(pageText(shown.inner), row.name) || pageText(shown.inner).includes('(for information)') !== row.informational) {
       viewer(`comparison row ${at + 1} does not name ${row.name} or mark its zone as the Summary does`);
+    } else if (JSON.stringify(cellsOf(shown.inner)) !== JSON.stringify(cells)) {
+      viewer(`comparison row ${at + 1} does not show ${cells.join(' | ')} in its cells, as the Summary gives them`);
     }
   });
 
@@ -364,6 +382,12 @@ export function timeAtlasPageProblems({ page, reference, index: indexText, data,
       if (period.kind === 'rounding') wants.push(`${period.ms} ms`);
       if (shownRows[row].groups[0] !== period.kind || wants.some((want) => !cells.includes(want))) {
         viewer(`period ${row + 1} of ${table.place} against ${table.zone} is not the report's row`);
+      }
+      // The result cell, the row's last, reads as the report's result; a difference's goes on to name its explanation.
+      const result = period.kind === 'agrees' ? 'agrees' : period.kind === 'rounding' ? `within a second (${period.ms} ms)` : `differs by ${period.seconds} s`;
+      const shownResult = cellsOf(shownRows[row].inner).at(-1) ?? '';
+      if (shownResult !== result && !(period.kind === 'differs' && shownResult.startsWith(`${result}, explained by `))) {
+        viewer(`period ${row + 1} of ${table.place} against ${table.zone} does not read "${result}" in its result cell`);
       }
     });
   });
@@ -452,8 +476,8 @@ export function timeAtlasPageProblems({ page, reference, index: indexText, data,
       viewer(`rule ${rule.id} does not give its title, version ${rule.version}, flag ${rule.uncertainty.flag} and reason`);
     }
     const listed = rule.changes ?? [];
-    if (shownChanges !== listed.length || listed.some((change) => !has(said, change.summary) || !said.includes(change.date))) {
-      viewer(`rule ${rule.id} does not list its ${listed.length} changes`);
+    if (shownChanges !== listed.length || listed.some((change) => !has(said, `Version ${change.version}, ${change.date}: ${change.summary}`))) {
+      viewer(`rule ${rule.id} does not list its ${listed.length} changes, each with its version, date and summary`);
     }
   }
   const allChanges = [...rules.values()].reduce((total, rule) => total + (rule.changes ?? []).length, 0);
@@ -503,7 +527,7 @@ export function timeAtlasPageProblems({ page, reference, index: indexText, data,
   }
 
   // The dash rule.
-  const dashes = page.match(DASHES) ?? [];
+  const dashes = dashesIn(page);
   if (dashes.length) viewer(`${dashes.length} en or em dashes, raw or as references`);
 
   // The licence and attribution text, and the citation form (items 1 to 6 of the preregistration's text).

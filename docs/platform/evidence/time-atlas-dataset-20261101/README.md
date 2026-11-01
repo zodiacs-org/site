@@ -171,7 +171,15 @@ Beside them:
   apart from `_atlas.ts`, and names each problem's part: "viewer" (items 1
   to 10 of the preregistration's list, the excerpts, the dashes, the scripts,
   the in-page links and ids), "licence" (the licence and attribution text,
-  the citation form and the Dataset markup) or "corrections".
+  the citation form and the Dataset markup) or "corrections". Since the
+  review it also reads each comparison row's cells (the zone, marked for
+  information where it is, and the five counts) and each period's result
+  cell as a reader sees them, not only their attributes, and each change
+  entry's version beside its date and summary; and its dash rule counts a
+  numeric reference once decoded, so one with leading zeros counts, as does
+  one without its semicolon. Test 12 plants each of these faults; on the
+  built page of `96670534`, each planted in memory, the check before the
+  change found none of them and the check after it finds each one.
 - `scripts/check-dist.mjs` runs both on every build ("time atlas: ..."), and
   its sitemap total is main's plus one (1452 to 1453). With the first
   difference row removed from the built page it failed 112 checks, all

@@ -413,6 +413,12 @@ describe('the time atlas dataset, version 0.1.0', () => {
     const firstRowEnd = page.indexOf('</tr>', firstRow) + '</tr>'.length;
     const excerpt = CITATION_FILES.flatMap((file) => file.citations).find((source) => source.id === 'fr-jo-1891-03-15-law')!.excerpt;
     const geo = manifest.longitudeSource;
+    const firstComparison = page.indexOf('<tr data-comparison="fr-paris|Europe/Paris"');
+    const firstComparisonEnd = page.indexOf('</tr>', firstComparison);
+    const firstAgreeing = page.indexOf('<tr data-result="agrees">');
+    const firstAgreeingEnd = page.indexOf('</tr>', firstAgreeing);
+    /** The page with `from` replaced by `to` between two offsets only. */
+    const within = (start: number, end: number, from: string, to: string) => page.slice(0, start) + page.slice(start, end).replace(from, to) + page.slice(end);
     const controls: [string, string, RegExp, string][] = [
       ['an explanation section dropped', page.replace(/<section id="us-louisville-city-clock"[\s\S]*?<\/section>/u, ''), /^viewer: the explanation sections are not/u, 'viewer'],
       ['a data-explanation changed', page.replace(`data-explanation="${first.explanation}"`, 'data-explanation="als-mos-german-rule"'), /^viewer: the difference rows do not name/u, 'viewer'],
@@ -428,6 +434,13 @@ describe('the time atlas dataset, version 0.1.0', () => {
       ['a script in <main>', page.replace('</main>', '<script>1</script></main>'), /^viewer: <main> holds a script$/u, 'viewer'],
       ['an en dash', page.replace('</main>', '<p>1870\u20131919</p></main>'), /^viewer: 1 en or em dashes, raw or as references$/u, 'viewer'],
       ['an em dash as a reference', page.replace('</main>', `<p>1870${'&' + 'mdash;'}1919</p></main>`), /^viewer: 1 en or em dashes, raw or as references$/u, 'viewer'],
+      // Each reference is built from two strings, so this file holds none.
+      ['an em dash as a zero-padded hex reference', page.replace('</main>', `<p>1870${'&#x0' + '2014;'}1919</p></main>`), /^viewer: 1 en or em dashes, raw or as references$/u, 'viewer'],
+      ['an en dash as a zero-padded decimal reference', page.replace('</main>', `<p>1870${'&#0' + '8211;'}1919</p></main>`), /^viewer: 1 en or em dashes, raw or as references$/u, 'viewer'],
+      ['an em dash as a reference without its semicolon', page.replace('</main>', `<p>1870${'&#' + '8212'} 1919</p></main>`), /^viewer: 1 en or em dashes, raw or as references$/u, 'viewer'],
+      ['a change entry with another version', page.replace(/<li data-change>Version (\d+),/u, (_, version: string) => `<li data-change>Version ${Number(version) + 1},`), /^viewer: rule [a-z0-9-]+ does not list its \d+ changes, each with its version, date and summary$/u, 'viewer'],
+      ['a count shown as another number', within(firstComparison, firstComparisonEnd, '<td>16</td>', '<td>17</td>'), /^viewer: comparison row 1 does not show Europe\/Paris \| 16 \| 12 \| 4 \| 0 \| 3\.8 in its cells/u, 'viewer'],
+      ['an agreeing period whose result reads as a difference', within(firstAgreeing, firstAgreeingEnd, '<td>agrees</td>', '<td>differs by 60 s</td>'), /^viewer: period \d+ of fr-paris against Europe\/Paris does not read "agrees" in its result cell$/u, 'viewer'],
     ];
     for (const [name, planted, problem, part] of controls) {
       expect(planted, name).not.toBe(page);
@@ -612,7 +625,7 @@ function syntheticPage(): string {
   out.push('<table>');
   for (const pair of viewer.pairs) {
     const s = pair.summary;
-    out.push(`<tr data-comparison="${html(`${pair.place}|${pair.zone}`)}" data-counts="${s.compared} ${s.agree} ${s.differ} ${s.rounding} ${s.daysDiffering}"><th><a href="#${pair.id}">${html(pair.name)}</a> <code>${pair.place}</code></th><td>${html(pair.zone)}${pair.informational ? ' (for information)' : ''}</td></tr>`);
+    out.push(`<tr data-comparison="${html(`${pair.place}|${pair.zone}`)}" data-counts="${s.compared} ${s.agree} ${s.differ} ${s.rounding} ${s.daysDiffering}"><th><a href="#${pair.id}">${html(pair.name)}</a> <code>${pair.place}</code></th><td>${html(pair.zone)}${pair.informational ? ' (for information)' : ''}</td>${[s.compared, s.agree, s.differ, s.rounding, s.daysDiffering].map((count) => `<td>${count}</td>`).join('')}</tr>`);
   }
   out.push(`</table><p>${totals.compared} periods.</p>`);
   out.push(`<p>Two explanations end with a finding about tzdb ${base.tzdb}, quoted as the atlas states it. At version ${version} neither had been sent to the tz project.</p>`);
