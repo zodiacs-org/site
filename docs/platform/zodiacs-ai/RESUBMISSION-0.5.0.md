@@ -1,5 +1,7 @@
 # Resubmitting Zodiacs 0.5.0
 
+Google (Gemini and Search) listing, prepared 1 November 2026: [google-connected-apps/LISTING.md](google-connected-apps/LISTING.md).
+
 Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.

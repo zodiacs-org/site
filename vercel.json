@@ -445,6 +445,19 @@
       ]
     },
     {
+      "source": "/.well-known/google-connected-apps",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
       "source": "/sky-calendar.ics",
       "headers": [
         { "key": "Content-Type", "value": "text/calendar; charset=utf-8" },

@@ -1,5 +1,7 @@
 # Claude directory listing
 
+Google (Gemini and Search) listing, prepared 1 November 2026: [../google-connected-apps/LISTING.md](../google-connected-apps/LISTING.md).
+
 ## Second sync, 28 October 2026
 
 Dias approved syncing the tools again after R44 (#840) went live. In the
