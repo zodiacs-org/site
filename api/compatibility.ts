@@ -45,6 +45,12 @@ export function compatibilityInviteHandlerForAction(value: unknown): InviteHandl
 }
 
 export default async function handler(req: any, res: any): Promise<void> {
+  // /mcp/engine, the Astrologer bot's engine tools, a server of its own (src/engine-mcp/).
+  if (req.query?.__zodiacs_engine !== undefined) {
+    const { default: engine } = await import('./_engine/handler.js');
+    await engine(req, res);
+    return;
+  }
   if (req.query?.__zodiacs_ai !== undefined) {
     const { default: ai } = await import('./_ai/handler.js');
     await ai(req, res);

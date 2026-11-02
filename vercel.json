@@ -378,6 +378,18 @@
       "destination": "/api/compatibility?__zodiacs_compute=chart"
     },
     {
+      "source": "/mcp/engine",
+      "destination": "/api/compatibility?__zodiacs_engine=1"
+    },
+    {
+      "source": "/mcp/engine/",
+      "destination": "/api/compatibility?__zodiacs_engine=1"
+    },
+    {
+      "source": "/mcp/engine/health",
+      "destination": "/api/compatibility?__zodiacs_engine=health"
+    },
+    {
       "source": "/mcp",
       "destination": "/api/compatibility?__zodiacs_ai=1"
     },

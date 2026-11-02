@@ -537,8 +537,10 @@ describe('the site and the compute API', () => {
     const importOf = (target: string) => new RegExp(
       `(?:\\bfrom\\s*|\\bimport\\s*|\\bimport\\s*\\(\\s*|\\brequire\\s*\\(\\s*)['"\`][^'"\`]*${target}`, 'u');
     const ADAPTER_IMPORT = importOf('\\/mcp\\/');
-    // The companion's server-only stdio entry reuses the local MCP operations.
-    const ADAPTER_IMPORTERS = new Set(['src/ai-tools/local.ts']);
+    // The companion's server-only stdio entry reuses the local MCP operations,
+    // and /mcp/engine's place search reads the place index's import-free
+    // description (src/mcp/places-source.ts) and nothing else of the adapter.
+    const ADAPTER_IMPORTERS = new Set(['src/ai-tools/local.ts', 'src/engine-mcp/places.ts']);
     const PATHS = /\/api\/(?:v1\/(?:chart|positions|houses|events|time|sky-fact|elections)\b|compute\b)/u;
     const IMPORT = importOf('compute-api(?:\\/|[\'"\`])');
     const files: string[] = [];

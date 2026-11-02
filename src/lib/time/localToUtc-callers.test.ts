@@ -15,6 +15,8 @@ import { describe, expect, it } from 'vitest';
 const root = resolve(process.cwd(), 'src');
 
 const WITHOUT_LONGITUDE: Record<string, string> = {
+  'engine-mcp/reading-facts.ts': 'the engine repository\'s reading facts, copied: its birth call passes input.lon; the window and birthday calls read dates on or after 1971, where no place used local mean time',
+  'engine-mcp/tools.ts': 'resolve_civil_time keeps the engine tool\'s contract (engine PR #74): the longitude is optional and passed whenever the caller gives one',
   'islands/WalletChart.tsx': 'Registry scope, frozen for Phase 1; planets only, no angles',
   'lib/occasions/card.ts': 'an occasion card with a time and zone but no place; with a place the other call passes its .lon',
   'lib/occasions/milestone-card.ts': 'a birth time and zone without a birthplace; with one the other call passes its .lon',
@@ -29,6 +31,7 @@ const WITHOUT_LONGITUDE: Record<string, string> = {
  * (FINDINGS F-83).
  */
 const UNPREPARED: Record<string, string> = {
+  'engine-mcp/reading-facts.ts': 'the engine repository\'s reading facts, copied: it prepares the birth date; its window and birthday dates are on or after 1971 (the /mcp/engine schema refuses an earlier window start), which the engine reads from Intl with no history to load',
   'islands/WalletChart.tsx': 'Registry scope, frozen for Phase 1; not served while no wallet chain is configured (F-83)',
 };
 
