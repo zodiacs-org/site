@@ -46,6 +46,12 @@ describe('get_horoscope_period', () => {
     expect(data.message).toContain("isn't published yet");
     expect(data.sky.length).toBeGreaterThan(0);
     expect(data.available.months).toEqual(['2026-10', '2026-11']);
+    expect(data.available.years).toEqual([2026, 2027]);
+  });
+
+  it('lists the published yearly readings for week answers too, not a fixed year', async () => {
+    const week = await period({ sign: 'leo', period: 'week' });
+    expect(week.available.years).toEqual([2026, 2027]);
   });
 
   it('gives the 2026 yearly reading for this year, with its page', async () => {
