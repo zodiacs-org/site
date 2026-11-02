@@ -63,6 +63,15 @@ describe('get_natal_chart', () => {
     expect(timed.sun.sign).toBe('pisces');
   });
 
+  it('lists only the two signs a retrograde body crossed on the birth day', async () => {
+    // Mercury, retrograde, went back from Aries into Pisces around the turn of 29 to 30 March 2025.
+    const data = await chart({ birthDate: '2025-03-30' });
+    const mercury = data.planets.find((row) => row.body === 'Mercury')!;
+    expect(mercury.retrograde).toBe(true);
+    expect(mercury).toMatchObject({ sign: null, possibleSigns: ['aries', 'pisces'] });
+    expect(data.planets.every((row) => row.possibleSigns.length <= 2)).toBe(true);
+  });
+
   it('needs a time zone with a time or a place, and names a missing birth date', async () => {
     expect(await executeAiTool('get_natal_chart', { birthDate: '1990-05-03', time: '08:30' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'A birth time or a place needs its time zone.' } });
     expect(await executeAiTool('get_natal_chart', { time: '08:30', zone: 'Europe/Madrid' }, on)).toMatchObject({ ok: false, error: { message: 'birthDate is required.' } });

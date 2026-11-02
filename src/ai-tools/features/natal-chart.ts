@@ -136,8 +136,11 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
     possible = (body) => {
       const indices = new Set(ends.map((end) => signIndexForLongitude(lonOf(end, body))));
       // A body that changes sign during the day was in each sign from the first to the last.
-      const [a, b] = [signIndexForLongitude(lonOf(ends[0], body)), signIndexForLongitude(lonOf(ends[1], body))];
-      if (a !== b) for (let index = a; index !== b; index = (index + 1) % 12) indices.add(index);
+      // Walk in the direction the body moved, so a retrograde crossing lists only the signs it passed.
+      const [from, to] = [lonOf(ends[0], body), lonOf(ends[1], body)];
+      const [a, b] = [signIndexForLongitude(from), signIndexForLongitude(to)];
+      const step = ((to - from + 540) % 360) - 180 < 0 ? 11 : 1;
+      if (a !== b) for (let index = a; index !== b; index = (index + step) % 12) indices.add(index);
       return [...indices].map((index) => SIGNS[index].slug);
     };
   }

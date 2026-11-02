@@ -27981,8 +27981,10 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3) {
     const ends = [first2, last2].map((at) => computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }));
     possible = (body2) => {
       const indices = new Set(ends.map((end) => signIndexForLongitude2(lonOf(end, body2))));
-      const [a, b] = [signIndexForLongitude2(lonOf(ends[0], body2)), signIndexForLongitude2(lonOf(ends[1], body2))];
-      if (a !== b) for (let index = a; index !== b; index = (index + 1) % 12) indices.add(index);
+      const [from, to] = [lonOf(ends[0], body2), lonOf(ends[1], body2)];
+      const [a, b] = [signIndexForLongitude2(from), signIndexForLongitude2(to)];
+      const step = (to - from + 540) % 360 - 180 < 0 ? 11 : 1;
+      if (a !== b) for (let index = a; index !== b; index = (index + step) % 12) indices.add(index);
       return [...indices].map((index) => SIGNS2[index].slug);
     };
   }
@@ -33726,14 +33728,14 @@ var TOPICS = [
   { key: "big-three", title: "The big three", aliases: ["big 3", "sun moon rising", "sun moon and rising"], glossary: ["big-three", "sun-sign", "moon-sign", "rising-sign"], pages: [{ title: "The big three", path: "/big-three/" }, { title: "Your birth chart", path: "/birth-chart/" }], related: ["sun-sign", "moon-sign", "rising-sign"] },
   { key: "sun-sign", title: "The Sun sign", aliases: ["star sign", "zodiac sign", "my sign", "horoscope sign"], glossary: ["sun-sign", "zodiac-sign", "zodiac-season"], pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }], related: ["big-three", "cusps"] },
   { key: "moon-sign", title: "The Moon sign", aliases: ["moon sign meaning", "my moon sign"], glossary: ["moon-sign", "moon"], pages: [{ title: "Moon signs", path: "/moon-sign/" }], related: ["big-three", "moon-phases"] },
-  { key: "birth-chart", title: "The birth chart", aliases: ["natal chart", "chart", "how to read a birth chart", "reading a chart", "placements", "placement", "no time chart", "stellium"], glossary: ["birth-chart", "placement", "no-time-chart", "stellium"], pages: [{ title: "How to read a birth chart", path: "/learn/how-to-read-a-birth-chart/" }, { title: "Your birth chart", path: "/birth-chart/" }, { title: "Placements", path: "/learn/placements/" }], related: ["big-three", "houses", "aspects"] },
+  { key: "birth-chart", title: "The birth chart", aliases: ["natal chart", "chart", "birth chart", "read chart", "chart reading", "how to read a birth chart", "reading a chart", "placements", "placement", "no time chart", "stellium"], glossary: ["birth-chart", "placement", "no-time-chart", "stellium"], pages: [{ title: "How to read a birth chart", path: "/learn/how-to-read-a-birth-chart/" }, { title: "Your birth chart", path: "/birth-chart/" }, { title: "Placements", path: "/learn/placements/" }], related: ["big-three", "houses", "aspects"] },
   { key: "cusps", title: "Cusps", aliases: ["cusp", "born on the cusp", "cusp sign", "decan", "decans"], glossary: ["cusp", "decan", "sun-sign"], pages: [{ title: "Birthdays", path: "/birthday/" }, { title: "Zodiac dates", path: "/learn/zodiac-dates/" }], related: ["sun-sign"] },
   { key: "saturn-return", title: "The Saturn return", aliases: ["saturn returns", "my saturn return"], glossary: ["saturn-return", "return", "saturn"], pages: [{ title: "Saturn return", path: "/saturn-return/" }], related: ["solar-return", "transits", "saturn"] },
   { key: "solar-return", title: "The solar return", aliases: ["solar return chart", "birthday chart"], glossary: ["solar-return", "return"], pages: [{ title: "Solar return", path: "/solar-return/" }], related: ["saturn-return"] },
   {
     key: "elements",
     title: "The elements",
-    aliases: ["element", "fire signs", "earth signs", "air signs", "water signs", "fire", "earth", "air", "water"],
+    aliases: ["element", "fire signs", "earth signs", "air signs", "water signs", "fire sign", "earth sign", "air sign", "water sign", "fire", "earth", "air", "water"],
     glossary: ["element", "fire", "earth", "air", "water"],
     extra: () => ["fire", "earth", "air", "water"].map((element) => `${cap8(element)} signs: ${SIGNS2.filter((sign2) => sign2.element === element).map((sign2) => sign2.name).join(", ")}.`),
     pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }],
@@ -33766,21 +33768,67 @@ var TOPICS = [
 ];
 var OUT_OF_SCOPE = ["tarot", "numerology", "horary", "vedic", "jyotish", "sidereal astrology", "human design", "palmistry", "i ching", "crystals", "kabbalah"];
 var EXPLAIN_TOPICS = TOPICS.map((topic) => topic.key);
+function clean2(text2) {
+  return text2.normalize("NFKD").replace(new RegExp("\\p{M}", "gu"), "").toLowerCase().replace(/[^a-z0-9 ]+/gu, " ").replace(/\s+/gu, " ").trim();
+}
 function fold(text2) {
-  return text2.normalize("NFKD").replace(new RegExp("\\p{M}", "gu"), "").toLowerCase().replace(/[^a-z0-9 ]+/gu, " ").replace(/\b(what|whats|is|are|does|do|mean|means|meaning|explain|tell|me|about|the|a|an|in|astrology|my|of|how|work|works)\b/gu, " ").replace(/\s+/gu, " ").trim();
+  return clean2(text2).replace(/\b(what|whats|is|are|does|do|mean|means|meaning|explain|tell|me|about|the|a|an|in|astrology|my|of|how|work|works)\b/gu, " ").replace(/\s+/gu, " ").trim();
+}
+var WHOLE_QUERY_ONLY = /* @__PURE__ */ new Set(["fall", "fire", "earth", "air", "water", "chart", "fixed", "cardinal", "mutable", "modes", "qualities", "asc", "rx", "orb", "orbs", "station", "ruler", "rulers", "nodes"]);
+var PLANET_WORDS = PLANETS3.map((planet) => planet.toLowerCase()).join("|");
+var SIGN_WORDS = SIGNS2.map((sign2) => sign2.slug).join("|");
+var HOUSE_WORDS = `${HOUSE_SLUGS.join("|")}|1[0-2](?:st|nd|rd|th)?|[1-9](?:st|nd|rd|th)?`;
+var PLANET_IN_SIGN = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (${SIGN_WORDS})\\b`, "u");
+var SIGN_PLANET = new RegExp(`\\b(${SIGN_WORDS}) (${PLANET_WORDS})\\b`, "u");
+var PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my )?(?:(${HOUSE_WORDS}) house|house (1[0-2]|[1-9]))\\b`, "u");
+var DIGNITY = /\b(?:in|its|their) (?:fall|detriment|exaltation|domicile)\b/u;
+function matchPlacement(query) {
+  const text2 = clean2(query);
+  const planetNamed = (word) => PLANETS3.find((planet) => planet.toLowerCase() === word);
+  const house = text2.match(PLANET_IN_HOUSE);
+  if (house) {
+    const word = house[2] ?? house[3];
+    const index = HOUSE_SLUGS.indexOf(word);
+    return { planet: planetNamed(house[1]), sign: null, house: index >= 0 ? index + 1 : Number.parseInt(word, 10) };
+  }
+  const inSign = text2.match(PLANET_IN_SIGN);
+  if (inSign) return { planet: planetNamed(inSign[1]), sign: SIGNS2.find((sign2) => sign2.slug === inSign[2]), house: null };
+  const signFirst = text2.match(SIGN_PLANET);
+  if (signFirst) return { planet: planetNamed(signFirst[2]), sign: SIGNS2.find((sign2) => sign2.slug === signFirst[1]), house: null };
+  return null;
 }
 function matchTopic(query) {
+  const placement = matchPlacement(query);
+  if (placement) return TOPICS.find((topic) => topic.key === placement.planet.toLowerCase());
+  if (DIGNITY.test(clean2(query))) return TOPICS.find((topic) => topic.key === "rulership");
   const folded = fold(query);
   if (!folded) return null;
   const names = TOPICS.flatMap((topic) => [topic.key.replace(/-/gu, " "), fold(topic.title), ...topic.aliases.map(fold)].filter(Boolean).map((name) => ({ name, topic })));
   const exact = names.find((entry) => entry.name === folded);
   if (exact) return exact.topic;
-  const contained = names.filter((entry) => ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
+  const contained = names.filter((entry) => !WHOLE_QUERY_ONLY.has(entry.name) && ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
   return contained[0]?.topic ?? null;
 }
+function placementParts({ planet, sign: sign2, house }) {
+  if (sign2) {
+    return {
+      title: `${planet} in ${sign2.name}`,
+      paragraphs: [placementContext(planet, sign2.slug, null).how],
+      pages: [{ title: `${planet} in ${sign2.name}`, path: `/learn/placements/${planet.toLowerCase()}-in-${sign2.slug}/` }, { title: `${sign2.name} on Zodiacs`, path: `/${sign2.slug}/` }],
+      related: [sign2.slug, "birth-chart"]
+    };
+  }
+  const slug = HOUSE_SLUGS[house - 1];
+  return {
+    title: `${planet} in the ${cap8(slug)} house`,
+    paragraphs: [planetInHouseLine(planet, house)],
+    pages: [{ title: `The ${slug} house`, path: `/learn/houses/${slug}-house/` }],
+    related: [`${slug}-house`, "houses", "birth-chart"]
+  };
+}
 function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
-  const folded = fold(args.topic);
-  const outside = OUT_OF_SCOPE.find((name) => ` ${folded} `.includes(` ${name} `));
+  const words = clean2(args.topic);
+  const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
   const topic = outside ? null : matchTopic(args.topic);
   if (!topic) {
     const data2 = {
@@ -33804,16 +33852,19 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
     ...lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : [],
     ...topic.extra?.() ?? []
   ].filter((paragraph2, index, all) => paragraph2 && all.indexOf(paragraph2) === index);
-  const pages = topic.pages.map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
+  const placement = matchPlacement(args.topic);
+  const placed = placement ? placementParts(placement) : null;
+  if (placed) paragraphs.push(...placed.paragraphs);
+  const pages = [...placed?.pages ?? [], ...topic.pages].map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
   const data = {
     found: true,
     query: args.topic,
     topic: topic.key,
-    title: topic.title,
+    title: placed?.title ?? topic.title,
     paragraphs,
     terms: terms2.slice(lead ? 1 : 0).map((entry) => ({ term: entry.term, definition: entry.plainDefinition ?? entry.definition, url: `${origin}/learn/glossary/#${entry.slug}` })),
     pages,
-    related: topic.related.filter((key) => EXPLAIN_TOPICS.includes(key)),
+    related: [.../* @__PURE__ */ new Set([...placed?.related ?? [], ...topic.related])].filter((key) => EXPLAIN_TOPICS.includes(key)),
     topics: [],
     message: null,
     note: EXPLAIN_NOTE

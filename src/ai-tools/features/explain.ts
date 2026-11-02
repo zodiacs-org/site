@@ -7,14 +7,16 @@
  * (src/data/chinese-zodiac.ts). A topic is matched from free text against a
  * curated list; a topic outside it, such as tarot, numerology, horary or
  * Vedic astrology, gets found: false and the list, never an improvised
- * explainer. Pure: no network, storage or logging.
+ * explainer. A placement, such as Moon in Scorpio or Mars in the tenth house,
+ * is answered from the planet's topic with the sign or house added and the
+ * placement page linked. Pure: no network, storage or logging.
  */
 import { z } from 'zod';
 import { CHINESE_ZODIAC_COPY } from '../../data/chinese-zodiac';
 import { GLOSSARY, type GlossaryTerm } from '../../data/glossary';
 import { bigThree } from '../../lib/interpretations';
-import { NATAL_HOUSE_THEME } from '../../lib/natal';
-import { NATAL_BODY_THEME } from '../../lib/natal-context';
+import { NATAL_HOUSE_THEME, planetInHouseLine } from '../../lib/natal';
+import { NATAL_BODY_THEME, placementContext } from '../../lib/natal-context';
 import { SIGNS, type Sign } from '../../lib/signs';
 import type { BodyName } from '../../lib/engine/types';
 
@@ -117,12 +119,12 @@ const TOPICS: Topic[] = [
   { key: 'big-three', title: 'The big three', aliases: ['big 3', 'sun moon rising', 'sun moon and rising'], glossary: ['big-three', 'sun-sign', 'moon-sign', 'rising-sign'], pages: [{ title: 'The big three', path: '/big-three/' }, { title: 'Your birth chart', path: '/birth-chart/' }], related: ['sun-sign', 'moon-sign', 'rising-sign'] },
   { key: 'sun-sign', title: 'The Sun sign', aliases: ['star sign', 'zodiac sign', 'my sign', 'horoscope sign'], glossary: ['sun-sign', 'zodiac-sign', 'zodiac-season'], pages: [{ title: 'Zodiac dates', path: '/learn/zodiac-dates/' }], related: ['big-three', 'cusps'] },
   { key: 'moon-sign', title: 'The Moon sign', aliases: ['moon sign meaning', 'my moon sign'], glossary: ['moon-sign', 'moon'], pages: [{ title: 'Moon signs', path: '/moon-sign/' }], related: ['big-three', 'moon-phases'] },
-  { key: 'birth-chart', title: 'The birth chart', aliases: ['natal chart', 'chart', 'how to read a birth chart', 'reading a chart', 'placements', 'placement', 'no time chart', 'stellium'], glossary: ['birth-chart', 'placement', 'no-time-chart', 'stellium'], pages: [{ title: 'How to read a birth chart', path: '/learn/how-to-read-a-birth-chart/' }, { title: 'Your birth chart', path: '/birth-chart/' }, { title: 'Placements', path: '/learn/placements/' }], related: ['big-three', 'houses', 'aspects'] },
+  { key: 'birth-chart', title: 'The birth chart', aliases: ['natal chart', 'chart', 'birth chart', 'read chart', 'chart reading', 'how to read a birth chart', 'reading a chart', 'placements', 'placement', 'no time chart', 'stellium'], glossary: ['birth-chart', 'placement', 'no-time-chart', 'stellium'], pages: [{ title: 'How to read a birth chart', path: '/learn/how-to-read-a-birth-chart/' }, { title: 'Your birth chart', path: '/birth-chart/' }, { title: 'Placements', path: '/learn/placements/' }], related: ['big-three', 'houses', 'aspects'] },
   { key: 'cusps', title: 'Cusps', aliases: ['cusp', 'born on the cusp', 'cusp sign', 'decan', 'decans'], glossary: ['cusp', 'decan', 'sun-sign'], pages: [{ title: 'Birthdays', path: '/birthday/' }, { title: 'Zodiac dates', path: '/learn/zodiac-dates/' }], related: ['sun-sign'] },
   { key: 'saturn-return', title: 'The Saturn return', aliases: ['saturn returns', 'my saturn return'], glossary: ['saturn-return', 'return', 'saturn'], pages: [{ title: 'Saturn return', path: '/saturn-return/' }], related: ['solar-return', 'transits', 'saturn'] },
   { key: 'solar-return', title: 'The solar return', aliases: ['solar return chart', 'birthday chart'], glossary: ['solar-return', 'return'], pages: [{ title: 'Solar return', path: '/solar-return/' }], related: ['saturn-return'] },
   {
-    key: 'elements', title: 'The elements', aliases: ['element', 'fire signs', 'earth signs', 'air signs', 'water signs', 'fire', 'earth', 'air', 'water'], glossary: ['element', 'fire', 'earth', 'air', 'water'],
+    key: 'elements', title: 'The elements', aliases: ['element', 'fire signs', 'earth signs', 'air signs', 'water signs', 'fire sign', 'earth sign', 'air sign', 'water sign', 'fire', 'earth', 'air', 'water'], glossary: ['element', 'fire', 'earth', 'air', 'water'],
     extra: () => (['fire', 'earth', 'air', 'water'] as const).map((element) => `${cap(element)} signs: ${SIGNS.filter((sign) => sign.element === element).map((sign) => sign.name).join(', ')}.`),
     pages: [{ title: 'Zodiac dates', path: '/learn/zodiac-dates/' }], related: ['modalities', 'polarity'],
   },
@@ -149,28 +151,89 @@ const OUT_OF_SCOPE = ['tarot', 'numerology', 'horary', 'vedic', 'jyotish', 'side
 
 export const EXPLAIN_TOPICS: readonly string[] = TOPICS.map((topic) => topic.key);
 
-/** Lower case, accents and punctuation folded, "what is" and similar framing dropped. */
+/** Lower case, with accents and punctuation folded; every word kept. */
+function clean(text: string): string {
+  return text.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9 ]+/gu, ' ').replace(/\s+/gu, ' ').trim();
+}
+
+/** As clean, with "what is" and similar framing dropped. */
 function fold(text: string): string {
-  return text.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase()
-    .replace(/[^a-z0-9 ]+/gu, ' ')
+  return clean(text)
     .replace(/\b(what|whats|is|are|does|do|mean|means|meaning|explain|tell|me|about|the|a|an|in|astrology|my|of|how|work|works)\b/gu, ' ')
     .replace(/\s+/gu, ' ').trim();
 }
 
-/** The curated topic a query names, or null. Exact keys and aliases first, then the longest one contained in the query. */
+/**
+ * Aliases that are everyday words too (fall, fire, earth, chart): they name a
+ * topic only when they are the whole query, so "falling in love" or "is the
+ * Earth round" never reaches rulership or the elements.
+ */
+const WHOLE_QUERY_ONLY = new Set(['fall', 'fire', 'earth', 'air', 'water', 'chart', 'fixed', 'cardinal', 'mutable', 'modes', 'qualities', 'asc', 'rx', 'orb', 'orbs', 'station', 'ruler', 'rulers', 'nodes']);
+
+const PLANET_WORDS = PLANETS.map((planet) => planet.toLowerCase()).join('|');
+const SIGN_WORDS = SIGNS.map((sign) => sign.slug).join('|');
+const HOUSE_WORDS = `${HOUSE_SLUGS.join('|')}|1[0-2](?:st|nd|rd|th)?|[1-9](?:st|nd|rd|th)?`;
+const PLANET_IN_SIGN = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (${SIGN_WORDS})\\b`, 'u');
+const SIGN_PLANET = new RegExp(`\\b(${SIGN_WORDS}) (${PLANET_WORDS})\\b`, 'u');
+const PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my )?(?:(${HOUSE_WORDS}) house|house (1[0-2]|[1-9]))\\b`, 'u');
+const DIGNITY = /\b(?:in|its|their) (?:fall|detriment|exaltation|domicile)\b/u;
+
+export interface Placement { planet: (typeof PLANETS)[number]; sign: Sign | null; house: number | null }
+
+/** A planet placed in a sign or a house, as in "Moon in Scorpio", "Scorpio Moon" or "Mars in the 10th house"; null otherwise. */
+export function matchPlacement(query: string): Placement | null {
+  const text = clean(query);
+  const planetNamed = (word: string) => PLANETS.find((planet) => planet.toLowerCase() === word)!;
+  const house = text.match(PLANET_IN_HOUSE);
+  if (house) {
+    const word = house[2] ?? house[3];
+    const index = HOUSE_SLUGS.indexOf(word);
+    return { planet: planetNamed(house[1]), sign: null, house: index >= 0 ? index + 1 : Number.parseInt(word, 10) };
+  }
+  const inSign = text.match(PLANET_IN_SIGN);
+  if (inSign) return { planet: planetNamed(inSign[1]), sign: SIGNS.find((sign) => sign.slug === inSign[2])!, house: null };
+  const signFirst = text.match(SIGN_PLANET);
+  if (signFirst) return { planet: planetNamed(signFirst[2]), sign: SIGNS.find((sign) => sign.slug === signFirst[1])!, house: null };
+  return null;
+}
+
+/** The curated topic a query names, or null. A placement names its planet; then exact keys and aliases, then the longest one contained in the query. */
 export function matchTopic(query: string): Topic | null {
+  const placement = matchPlacement(query);
+  if (placement) return TOPICS.find((topic) => topic.key === placement.planet.toLowerCase())!;
+  if (DIGNITY.test(clean(query))) return TOPICS.find((topic) => topic.key === 'rulership')!;
   const folded = fold(query);
   if (!folded) return null;
   const names = TOPICS.flatMap((topic) => [topic.key.replace(/-/gu, ' '), fold(topic.title), ...topic.aliases.map(fold)].filter(Boolean).map((name) => ({ name, topic })));
   const exact = names.find((entry) => entry.name === folded);
   if (exact) return exact.topic;
-  const contained = names.filter((entry) => ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
+  const contained = names.filter((entry) => !WHOLE_QUERY_ONLY.has(entry.name) && ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
   return contained[0]?.topic ?? null;
 }
 
+/** What a placement adds to its planet's explainer: the sign's style or the house's life area, and their pages. */
+function placementParts({ planet, sign, house }: Placement): { title: string; paragraphs: string[]; pages: Topic['pages']; related: string[] } {
+  if (sign) {
+    return {
+      title: `${planet} in ${sign.name}`,
+      paragraphs: [placementContext(planet as BodyName, sign.slug, null).how],
+      pages: [{ title: `${planet} in ${sign.name}`, path: `/learn/placements/${planet.toLowerCase()}-in-${sign.slug}/` }, { title: `${sign.name} on Zodiacs`, path: `/${sign.slug}/` }],
+      related: [sign.slug, 'birth-chart'],
+    };
+  }
+  const slug = HOUSE_SLUGS[house! - 1];
+  return {
+    title: `${planet} in the ${cap(slug)} house`,
+    paragraphs: [planetInHouseLine(planet, house!)],
+    pages: [{ title: `The ${slug} house`, path: `/learn/houses/${slug}-house/` }],
+    related: [`${slug}-house`, 'houses', 'birth-chart'],
+  };
+}
+
 export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): { data: ExplainData; links: { title: string; url: string }[] } {
-  const folded = fold(args.topic);
-  const outside = OUT_OF_SCOPE.find((name) => ` ${folded} `.includes(` ${name} `));
+  // Checked on the words as written, so "sidereal astrology" is seen before "astrology" is dropped.
+  const words = clean(args.topic);
+  const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
   const topic = outside ? null : matchTopic(args.topic);
   if (!topic) {
     const data: ExplainData = {
@@ -188,16 +251,19 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
     ...(lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : []),
     ...(topic.extra?.() ?? []),
   ].filter((paragraph, index, all) => paragraph && all.indexOf(paragraph) === index);
-  const pages = topic.pages.map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
+  const placement = matchPlacement(args.topic);
+  const placed = placement ? placementParts(placement) : null;
+  if (placed) paragraphs.push(...placed.paragraphs);
+  const pages = [...(placed?.pages ?? []), ...topic.pages].map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
   const data: ExplainData = {
     found: true,
     query: args.topic,
     topic: topic.key,
-    title: topic.title,
+    title: placed?.title ?? topic.title,
     paragraphs,
     terms: terms.slice(lead ? 1 : 0).map((entry) => ({ term: entry.term, definition: entry.plainDefinition ?? entry.definition, url: `${origin}/learn/glossary/#${entry.slug}` })),
     pages,
-    related: topic.related.filter((key) => EXPLAIN_TOPICS.includes(key)),
+    related: [...new Set([...(placed?.related ?? []), ...topic.related])].filter((key) => EXPLAIN_TOPICS.includes(key)),
     topics: [],
     message: null,
     note: EXPLAIN_NOTE,
