@@ -7,7 +7,7 @@ import type {
 } from './horoscope-program';
 import { signBySlug } from './signs';
 
-export type HoroscopePageSurface = 'today' | 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | 'year';
+export type HoroscopePageSurface = 'today' | 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | 'year' | 'year2026';
 
 export interface HoroscopeSkyMarker {
   label: string;
@@ -71,7 +71,19 @@ const SURFACE_KEY: Record<Exclude<HoroscopePageSurface, 'monthly'>, HoroscopeSur
   love: 'love',
   career: 'career',
   year: 'yearly-2027',
+  year2026: 'yearly-2026',
 };
+
+/** The yearly pages, each with the year its reading covers and the day it was first published. */
+const YEAR_PAGES: Partial<Record<HoroscopePageSurface, { year: string; published: string }>> = {
+  year: { year: '2027', published: '2026-07-19T00:00:00.000Z' },
+  year2026: { year: '2026', published: '2026-11-02T00:00:00.000Z' },
+};
+
+/** The year a yearly page covers, or undefined for every other surface. */
+export function horoscopePageYear(surface: HoroscopePageSurface): string | undefined {
+  return YEAR_PAGES[surface]?.year;
+}
 
 const TITLE: Record<Exclude<HoroscopePageSurface, 'monthly'>, string> = {
   today: 'daily horoscope',
@@ -80,9 +92,10 @@ const TITLE: Record<Exclude<HoroscopePageSurface, 'monthly'>, string> = {
   love: 'love horoscope',
   career: 'career horoscope',
   year: '2027 horoscope',
+  year2026: '2026 horoscope',
 };
 
-const SECTION_HEADS: Record<Exclude<HoroscopePageSurface, 'monthly' | 'year'>, string[]> = {
+const SECTION_HEADS: Record<Exclude<HoroscopePageSurface, 'monthly' | 'year' | 'year2026'>, string[]> = {
   today: ['What matters now', 'Where to focus', 'Something to notice'],
   tomorrow: ['What matters tomorrow', 'Where to focus', 'Something to notice'],
   weekly: ['The week begins', 'Early week', 'Midweek', 'A turning point', 'The week closes'],
@@ -97,6 +110,7 @@ const SKY_STRIP_LABEL: Record<Exclude<HoroscopePageSurface, 'monthly'>, string> 
   love: 'Relationship sky',
   career: 'Work sky',
   year: '2027 sky markers',
+  year2026: '2026 sky markers',
 };
 
 const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
@@ -118,7 +132,8 @@ function dateLabel(date: string, short = false): string {
 }
 
 function periodLabel(reading: HoroscopeReading, surface: Exclude<HoroscopePageSurface, 'monthly'>): string {
-  if (surface === 'year') return '2027';
+  const year = horoscopePageYear(surface);
+  if (year) return year;
   if (surface === 'weekly') {
     return `${dateLabel(reading.period.from, true)} to ${dateLabel(reading.period.through, true)}`;
   }
@@ -302,7 +317,7 @@ function descriptionFor(
   if (surface === 'career') {
     return `${signName} career horoscope for ${label}: where to focus your effort and what can move work forward.`;
   }
-  return `${signName} 2027 horoscope: the year’s turning points in love, work, home, and personal growth.`;
+  return `${signName} ${horoscopePageYear(surface)} horoscope: the year’s turning points in love, work, home, and personal growth.`;
 }
 
 function introFor(
@@ -314,7 +329,7 @@ function introFor(
   if (surface === 'weekly') return `The choices and turning points shaping ${signName}’s week.`;
   if (surface === 'love') return `What connection is asking of ${signName} now.`;
   if (surface === 'career') return `Where ${signName}’s effort can make the most difference.`;
-  return `The turning points shaping ${signName}’s 2027.`;
+  return `The turning points shaping ${signName}’s ${horoscopePageYear(surface)}.`;
 }
 
 export function pageReadingFromProgram(
@@ -331,7 +346,8 @@ export function pageReadingFromProgram(
   const signData = signBySlug(sign);
   const receipts = evidenceMap(program);
   const label = periodLabel(reading, surface);
-  const heads = surface === 'year' ? null : SECTION_HEADS[surface];
+  const yearPage = YEAR_PAGES[surface];
+  const heads = surface === 'year' || surface === 'year2026' ? null : SECTION_HEADS[surface];
   const sections = reading.passages.map((passage, index) => ({
     heading: passage.heading
       ?? heads?.[index]
@@ -350,18 +366,18 @@ export function pageReadingFromProgram(
     .map((passage) => passage.text.trim().split(/\s+/u).filter(Boolean).length)
     .reduce((sum, count) => sum + count, 0);
   const skyStrip = skyStripFor(reading, surface, receipts);
-  const datePublished = surface === 'year'
-    ? '2026-07-19T00:00:00.000Z'
+  const datePublished = yearPage
+    ? yearPage.published
     : surface === 'weekly'
       ? `${reading.period.from}T00:00:00.000Z`
       : `${program.anchorDate}T00:00:00.000Z`;
-  const dateModified = surface === 'year'
+  const dateModified = yearPage
     ? datePublished
     : surface === 'weekly'
       ? datePublished
     : `${program.anchorDate}T00:00:00.000Z`;
-  const sourceNote = surface === 'year'
-    ? `The dates and positions here come from the 2027 eclipse, ingress, and retrograde calendar. Each event is read through ${signData.name} solar houses; all times use UTC.`
+  const sourceNote = yearPage
+    ? `The dates and positions here come from the ${yearPage.year} eclipse, ingress, and retrograde calendar. Each event is read through ${signData.name} solar houses; all times use UTC.`
     : surface === 'weekly'
       ? `The astrology here follows seven noon-UTC sky snapshots from ${reading.period.from} through ${reading.period.through}. Each section connects to the recorded position or exact event shown below.`
       : `The astrology here follows the ${reading.period.from} noon-UTC sky. Each section connects to the recorded position or exact event shown below.`;

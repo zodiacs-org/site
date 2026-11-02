@@ -86,8 +86,8 @@ const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 // through the share control), so the count per pair page is derived from the
 // page's own links instead of being fixed.
 const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-z0-9_-]+\.css$/u];
-// 103 entry pages carry 204 inlined stylesheets; feature flags do not change it.
-const entryInlinedStylesheets = 204;
+// 115 entry pages carry 228 inlined stylesheets; feature flags do not change it.
+const entryInlinedStylesheets = 228;
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
   // on the render path. The complete route bundle still loads after first
@@ -106,8 +106,8 @@ const targetPaths = [
   'today/index.html',
   ...signs.map((sign) => `horoscopes/${sign}/index.html`),
   // Every horoscope period opens on the same sign-art hero, which is its
-  // mobile LCP. Keep all seven periods on the same delivery path as Daily.
-  ...signs.flatMap((sign) => ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2027'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
+  // mobile LCP. Keep every period on the same delivery path as Daily.
+  ...signs.flatMap((sign) => ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2026', '2027'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
   'ru/index.html',
   'ru/birth-chart/index.html',
   ...pairPaths,
@@ -558,13 +558,13 @@ async function main() {
   // the calculator's, at least Base, the pair styles and the wheel.
   if (
     pages + alreadyInlined !== targetPaths.length
-    || targetPaths.length !== 103 + pairPathSet.size
+    || targetPaths.length !== 115 + pairPathSet.size
     || stylesheets !== entryInlinedStylesheets
     || pairStylesheets !== expectedPairStylesheets
     || pairStylesheets < pairPathSet.size * 3
   ) {
     throw new Error(
-      `inline-critical-styles: expected ${103 + pairPathSet.size} pages, ${entryInlinedStylesheets} entry and ${expectedPairStylesheets} (min ${pairPathSet.size * 3}) pair stylesheets inlined, found ${pages + alreadyInlined} / ${stylesheets} / ${pairStylesheets}`,
+      `inline-critical-styles: expected ${115 + pairPathSet.size} pages, ${entryInlinedStylesheets} entry and ${expectedPairStylesheets} (min ${pairPathSet.size * 3}) pair stylesheets inlined, found ${pages + alreadyInlined} / ${stylesheets} / ${pairStylesheets}`,
     );
   }
   stylesheets += pairStylesheets;

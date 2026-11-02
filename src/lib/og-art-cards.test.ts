@@ -134,7 +134,8 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       expect(source, page).not.toContain('/assets/og/v2/sign/');
     }
     const horoscopes = read('src/components/HoroscopeProgramPage.astro');
-    expect(horoscopes).toContain('const ogImage = horoscopeArtCard(sign.slug, surface);');
+    // The 2026 yearly pages have no card of their own and share the sign guide's.
+    expect(horoscopes).toContain("const ogImage = surface === 'year2026' ? signArtCard(sign.slug) : horoscopeArtCard(sign.slug, surface);");
     expect(horoscopes).not.toContain('/assets/og/v2/horoscope/');
   });
 });
