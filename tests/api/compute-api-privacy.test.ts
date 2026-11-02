@@ -512,6 +512,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/birthday.ts', 'src/ai-tools/features/compatibility.ts', 'src/ai-tools/features/people.ts',
       // The horoscope tool's personal week, and the account save tool that works results out again, are server-only too.
       'src/ai-tools/features/personal-week.ts', 'src/ai-tools/accounts/save.ts',
+      // The 0.6.0 tools' server-only modules: local times for a birth chart and its transits, and a period's sky events.
+      'src/ai-tools/features/natal-chart.ts', 'src/ai-tools/features/personal-transits.ts', 'src/ai-tools/features/horoscope-period.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the

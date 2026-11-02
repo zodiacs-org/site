@@ -183,6 +183,19 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   (also run by `ai:build`, verified by `ai:check`): the compact index of the
   people the site's directory publishes, for the `find_chart_twins` and
   `get_famous_chart` tools; it never includes anyone `INDEXABLE_PEOPLE` leaves out.
+- `src/data/horoscope-months.json` ← `node scripts/build-horoscope-months.mjs`
+  (the published monthly horoscopes in `src/content/horoscopes/` as plain
+  paragraphs, for the hosted `get_horoscope_period` tool, which
+  `api/_ai/handler.ts` reads at call time like the window. A month is included
+  only when all twelve signs are written, none is a draft and none has an em or
+  en dash; rerun it whenever a month is written or edited. `--check` and
+  `src/ai-tools/features/horoscope-period.test.ts` catch drift)
+- `src/data/lunar-new-year.json` ← `node scripts/build-lunar-new-year.mjs`
+  (Lunar New Year dates 1900 to 2101 for `get_chinese_zodiac`, from
+  astronomy-engine new Moons and solar terms on China Standard Time, Beijing
+  mean time before 1929; `--check` and
+  `src/ai-tools/features/chinese-zodiac.test.ts`, which also holds it to
+  published dates, catch drift)
 - `src/data/horoscope-window.json` ← `vite-node --script
   scripts/build-horoscope-window.ts` (the daily workflow rebuilds it after the
   day's program; `verify-horoscope-window.ts --replay` checks it). It holds the
