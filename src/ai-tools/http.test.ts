@@ -245,3 +245,30 @@ describe('stateless MCP HTTP boundary', () => {
     expect((await readMessage(response)).result.tools.map((tool: { name: string }) => tool.name)).toEqual(AI_TOOL_NAMES);
   });
 });
+
+describe('named argument refusals and protocol errors', () => {
+  beforeAll(() => { occasionsSwitch = '1'; });
+  afterAll(() => { occasionsSwitch = undefined; });
+  const call = async (name: string, args: unknown) => readMessage(await post(rpc('tools/call', { name, arguments: args }), { 'MCP-Protocol-Version': '2025-06-18' }));
+  it('names a missing field and an enum field, never echoing values', async () => {
+    const missing = await call('get_life_milestones', {});
+    expect(missing.result.isError).toBe(true);
+    expect(missing.result.structuredContent).toMatchObject({ ok: false, tool: 'get_life_milestones', error: { code: 'invalid-arguments', message: 'birthDate is required.' } });
+    const sign = await call('get_horoscope', { sign: 'ophiuchus' });
+    expect(sign.result.structuredContent.error.message).toMatch(/^sign must be one of: aries, /);
+    expect(JSON.stringify(sign)).not.toContain('ophiuchus');
+    const extra = await call('get_sky', { secretField: 'x' });
+    expect(JSON.stringify(extra)).not.toContain('secretField');
+  });
+  it('accepts plain dates on get_upcoming_events and explains any other form', async () => {
+    const plain = await call('get_upcoming_events', { from: '2026-11-01', to: '2026-11-20' });
+    expect(plain.result.isError).toBeFalsy();
+    const reply = await call('get_upcoming_events', { from: '1 Nov 2026', to: '2026-11-20' });
+    expect(reply.result.structuredContent.error.message).toContain('from is not in the accepted form. Use an ISO 8601 time with Z or an offset');
+  });
+  it('answers bad JSON with a JSON-RPC parse error', async () => {
+    const bad = await fetch(base, { method: 'POST', headers, body: '{"jsonrpc":"2.0",' });
+    expect(bad.status).toBe(400);
+    expect((await bad.json()).error.code).toBe(-32700);
+  });
+});

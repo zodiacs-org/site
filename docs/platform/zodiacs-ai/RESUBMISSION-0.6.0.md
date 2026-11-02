@@ -19,8 +19,8 @@ in `claude-directory/RESYNC-0.6.0.md`.
   bytes, SHA-256
   `27dd5c66570ccfe58af01696980c0db98c19f68666eb5e79f3a90e2260eff03b`
   (members listed in `integrations/packages/manifest.json`).
-- **Developer plugin:** `zodiacs-developer-0.3.16.zip`, 3,419,448 bytes,
-  SHA-256 `6fe2c332081ba4f1eba051e304874e1ec5b5eb12875b621e1d2a653ace88fe58`.
+- **Developer plugin:** `zodiacs-developer-0.3.17.zip`, 3,419,885 bytes,
+  SHA-256 `e516233a7ccf82cef665743f6622443221f40dfd75401ac2db39fb2e7e7d13a9`.
   It is not part of the OpenAI submission; its local tools are unchanged. It replaces 0.3.15,
   which keeps its bytes, with the hosted server's corrected placement and
   untimed sign answers.

@@ -101,9 +101,9 @@ describe('the five 0.6.0 tools', () => {
     const unknown = await call('get_natal_chart', { birthDate: '1990-05-03', secretPassword: 'x' });
     expect(unknown.structuredContent.error.message).toBe('Leave out fields this tool does not take.');
     expect(JSON.stringify(unknown)).not.toContain('secretPassword');
-    // The thirteen keep their sanitized wording.
+    // The thirteen name the field too, since the live audit fixes (#865).
     const old = await call('get_life_milestones', {});
-    expect(old.content[0].text).toBe('The tool arguments do not match the supported schema.');
+    expect(JSON.parse(old.content[0].text).error).toEqual({ code: 'invalid-arguments', message: 'birthDate is required.' });
   });
 
   it('answer through the hosted server with structured content and the same JSON as text', async () => {
