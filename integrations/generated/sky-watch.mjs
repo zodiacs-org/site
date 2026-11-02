@@ -194,7 +194,7 @@ var COMPUTE_RECEIPT_SCHEMA = "zodiacs.compute-receipt.v1";
 // src/lib/compute-api/handler.ts
 import { checkRateLimit } from "@vercel/firewall";
 
-// node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
   version: "2026-09-24",
@@ -475,7 +475,7 @@ function deltaT(ut) {
   return seconds(2e3 + ut / 365.25);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
 var REFERENCE_SPAN = /* @__PURE__ */ Object.freeze({
   from: "1800-01-01T00:00:00.000Z",
   to: "2200-01-01T00:00:00.000Z"
@@ -684,7 +684,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-YJ7WZ7NS.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-YJ7WZ7NS.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -878,7 +878,7 @@ function degreeInSign(lon) {
 var ENGINE_VERSION = "1.1.0-rc.1";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
-// node_modules/@zodiacs/engine/dist/chunk-VDVUUMY2.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-VDVUUMY2.js
 var DEG = Math.PI / 180;
 var RAD = 180 / Math.PI;
 var HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze([
@@ -1181,7 +1181,7 @@ function computeHouses(system, input, angles) {
   }
 }
 
-// node_modules/astronomy-engine/esm/astronomy.js
+// ../site-coverage/node_modules/astronomy-engine/esm/astronomy.js
 /**
     @preserve
 
@@ -3088,7 +3088,7 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// node_modules/@zodiacs/engine/dist/chunk-W2TMLFJ3.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-W2TMLFJ3.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
 var DEG2 = Math.PI / 180;
 var RAD2 = 180 / Math.PI;
@@ -3426,7 +3426,7 @@ function chartAt(input) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
 var ISO_INSTANT = /^(\d{4}|[+-]\d{6})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2})))?$/;
 function validIsoInput(input) {
   const match = ISO_INSTANT.exec(input);
@@ -3458,7 +3458,7 @@ function dateFrom(input, label) {
   return date3;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
 var DAY3 = 864e5;
 var REFINE_STEPS = 24;
 var EDGE_PROBE_MAX_MS = 6e4;
@@ -3691,7 +3691,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
 var HOUSE_SYSTEM_NAMES2 = [
   "whole",
   "placidus",
@@ -3772,7 +3772,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-FRYARIYL.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-FRYARIYL.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -3860,7 +3860,7 @@ function moonPhase(date3) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
 var NAMESPACE = /^[A-Za-z][A-Za-z0-9-]*$/u;
 var VALUE = /^[^\s\p{Cc}\p{Cf}\p{Cs}]+$/u;
 function conventionId(namespace, value) {
@@ -3897,7 +3897,7 @@ function natalConventionIds(envelope) {
   return [...ids].sort();
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
 var julianLeap = (year) => year % 4 === 0;
 var gregorianLeap = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 function parseCalendarDate(value, calendar) {
@@ -3946,7 +3946,7 @@ function julianToGregorian(value) {
   return date3 ? format(civilDateOf(julianDayNumber(date3, "julian"), "gregorian")) : null;
 }
 
-// node_modules/@zodiacs/engine/dist/receipt.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/receipt.js
 var SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 var DIGITS = /^\d+$/;
 function isVersion(value) {
@@ -7349,7 +7349,7 @@ var OCCASION_KINDS = [
   "gathering"
 ];
 
-// node_modules/@zodiacs/engine/dist/chunk-DGR3SZ7M.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/chunk-DGR3SZ7M.js
 var DEG6 = Math.PI / 180;
 var ARCSEC4 = DEG6 / 3600;
 function toEquator(m, angle) {
@@ -7391,7 +7391,7 @@ function turn2(m, x, y, z8) {
   return [m[0] * x + m[1] * y + m[2] * z8, m[3] * x + m[4] * y + m[5] * z8, m[6] * x + m[7] * y + m[8] * z8];
 }
 
-// node_modules/@zodiacs/engine/dist/sky.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/sky.js
 function firstMillisecond(reached, estimate) {
   const start = Math.round(estimate);
   let lo = start - 4;
@@ -25198,7 +25198,7 @@ var birthdays_default = {
   }
 };
 
-// node_modules/@zodiacs/engine/dist/techniques.js
+// ../site-coverage/node_modules/@zodiacs/engine/dist/techniques.js
 var DAY_MS5 = 864e5;
 var MAX_DATE_MS = 864e13;
 function finiteDegrees(value, label) {
@@ -30340,16 +30340,67 @@ function registerSaveTool(server, dependencies, account) {
 }
 
 // src/ai-tools/sanitize.ts
-function sanitizeProtocolMessage(message) {
+function sanitizeProtocolMessage(message, refusal) {
   if (message.error) message.error = {
     code: message.error.code,
     message: "The MCP request does not match a supported operation or schema.",
     ...message.error.code === -32015 ? { data: { reason: message.error.data?.reason === "timeout" ? "timeout" : "challenge_failed" } } : {}
   };
   else if (message.result?.isError && !message.result?.structuredContent?.schema && message.result.content?.some((item) => item.type === "text" && item.text.startsWith("Input validation error:"))) {
-    message.result.content = [{ type: "text", text: "The tool arguments do not match the supported schema." }];
+    if (refusal) {
+      message.result.structuredContent = refusal;
+      message.result.content = [{ type: "text", text: JSON.stringify(refusal) }];
+    } else message.result.content = [{ type: "text", text: "The tool arguments do not match the supported schema." }];
   }
   return message;
+}
+
+// src/ai-tools/argument-hints.ts
+var shapeOf = (schema) => schema?.shape ?? schema?._zod?.def?.shape ?? (schema?._zod?.def?.innerType ? shapeOf(schema._zod.def.innerType) : schema?._zod?.def?.in ? shapeOf(schema._zod.def.in) : void 0);
+var unwrap = (schema) => {
+  let s = schema;
+  for (let i = 0; i < 6 && s?._zod?.def?.innerType; i++) s = s._zod.def.innerType;
+  return s;
+};
+var ISO_HINT = " Use an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00, not a plain date.";
+function fieldAt(schema, path) {
+  let current = schema;
+  const names = [];
+  for (const key of path) {
+    if (typeof key === "number") {
+      const inner = unwrap(current)?._zod?.def?.element;
+      if (!inner) return void 0;
+      current = inner;
+      names.push(`[${key}]`);
+      continue;
+    }
+    const shape = shapeOf(unwrap(current));
+    if (typeof key !== "string" || !shape || !Object.prototype.hasOwnProperty.call(shape, key)) return void 0;
+    current = shape[key];
+    names.push(names.length ? `.${key}` : key);
+  }
+  return names.length ? { name: names.join(""), field: current } : void 0;
+}
+function sentence(issue, schema) {
+  if (issue.code === "custom") return issue.message;
+  if (issue.code === "unrecognized_keys") return "The arguments include a field this tool does not accept; call tools/list for its fields.";
+  const located = fieldAt(schema, issue.path);
+  if (!located) return "The arguments do not match the input schema; call tools/list for its fields.";
+  const { name, field } = located;
+  const inner = unwrap(field);
+  const description = field?.description ?? inner?.description;
+  if (issue.code === "invalid_type" && issue.input === void 0) return `${name} is required.`;
+  if (issue.code === "invalid_value" && Array.isArray(issue.values)) return `${name} must be one of: ${issue.values.join(", ")}.`;
+  const iso3 = /ISO 8601 time with Z or an offset/.test(description ?? "");
+  return `${name} is not in the accepted form.${iso3 ? ISO_HINT : description ? ` ${description}` : ""}`;
+}
+function argumentRefusal(tool, args) {
+  const schema = INPUT_SCHEMAS[tool];
+  if (!schema) return void 0;
+  const parsed = schema.safeParse(args ?? {});
+  if (parsed.success) return void 0;
+  const message = [...new Set(parsed.error.issues.slice(0, 4).map((issue) => sentence(issue, schema)))].join(" ");
+  return { schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code: "invalid-arguments", message } };
 }
 
 // src/ai-tools/quota.ts
@@ -30590,7 +30641,12 @@ function createAiNodeHandler(options = {}) {
         text2 = await readBody(req);
         body2 = JSON.parse(text2);
       } catch (error) {
-        return send(res, error instanceof Error && error.message === "payload-too-large" ? 413 : 400, error instanceof Error && error.message === "payload-too-large" ? "payload-too-large" : "invalid-json");
+        if (error instanceof Error && error.message === "payload-too-large") return send(res, 413, "payload-too-large");
+        res.statusCode = 400;
+        for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        res.end(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error: the body is not valid JSON.", data: { code: "invalid-json" } } }));
+        return;
       }
       if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
       const message = body2;
@@ -30601,6 +30657,18 @@ function createAiNodeHandler(options = {}) {
         if (offered.includes(String(name))) operation = String(name);
         if (typeof name === "string" && name === operation) calledTool = name;
       }
+      if (calledTool === "get_upcoming_events") {
+        const args = message.params.arguments;
+        let changed = false;
+        for (const [key, clock2] of [["from", "T00:00:00Z"], ["to", "T23:59:59Z"]]) {
+          if (args && typeof args[key] === "string" && /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/.test(args[key])) {
+            args[key] = `${args[key]}${clock2}`;
+            changed = true;
+          }
+        }
+        if (changed) text2 = JSON.stringify(body2);
+      }
+      const refusal = calledTool ? argumentRefusal(calledTool, message.params.arguments) : void 0;
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
       if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list", ...watch ? ["events/list", "events/subscribe", "events/unsubscribe"] : []].includes(String(message.method))) {
@@ -30632,7 +30700,7 @@ function createAiNodeHandler(options = {}) {
         });
         if (response.body) {
           let sanitize2 = function(text3) {
-            return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text3)));
+            return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text3), refusal));
           };
           var sanitize = sanitize2;
           const reply = await response.text();
