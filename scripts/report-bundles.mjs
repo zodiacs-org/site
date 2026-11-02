@@ -325,8 +325,27 @@ if (
   fail(`engine source isolation: expected only ${allowedDirectVendorImporters.join(', ')} to import astronomy-engine directly; found ${directVendorImporters.join(', ') || 'none'}`);
 }
 const allowedEngineImporter = 'src/lib/engine/full.ts';
-if (engineInternalImporters.length !== 1 || engineInternalImporters[0] !== allowedEngineImporter) {
+// /mcp/engine's reading facts (generated from the engine repository) read
+// bodyLongitude and longitudeSpeed directly: the public positions() computes
+// every body per call and made a sheet ten times slower. It is server-only,
+// so no page, island or browser chunk may reach it.
+const serverEngineImporter = 'src/engine-mcp/reading-facts.ts';
+const browserEngineInternalImporters = engineInternalImporters.filter((path) => path !== serverEngineImporter);
+if (browserEngineInternalImporters.length !== 1 || browserEngineInternalImporters[0] !== allowedEngineImporter) {
   fail(`engine source isolation: expected only ${allowedEngineImporter} to import @zodiacs/engine/internal; found ${engineInternalImporters.join(', ') || 'none'}`);
+}
+const browserRoots = [...sourceRuntimeImports.keys()].filter((path) => /^src\/(?:pages|islands|components|layouts|scripts)\//.test(path));
+const browserReach = new Set(browserRoots);
+for (const current of browserRoots) {
+  for (const specifier of sourceRuntimeImports.get(current) ?? []) {
+    const base = relative(repo, resolve(repo, dirname(current), specifier)).split(sep).join('/');
+    const stem = base.replace(/\.(?:js|mjs)$/, '');
+    const target = [base, ...['.ts', '.tsx', '.js', '.mjs', '.astro', '/index.ts', '/index.tsx'].map((ext) => stem + ext)].find((path) => sourceRuntimeImports.has(path));
+    if (target && !browserReach.has(target)) { browserReach.add(target); browserRoots.push(target); }
+  }
+}
+if ([...browserReach].some((path) => path.startsWith('src/engine-mcp/'))) {
+  fail('engine source isolation: a page, island, component, layout or script reaches src/engine-mcp/, which is server-only');
 }
 if(websiteWindowRuntimeImporters.some(path=>path!==allowedEngineImporter)){
   fail(`engine source isolation: window runtime must use ${allowedEngineImporter}; found ${websiteWindowRuntimeImporters.join(', ')}`);
