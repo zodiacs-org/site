@@ -15,7 +15,7 @@ import { HOUSE_THEME, type Daily } from '../lib/daily';
 import { HOROSCOPE_WHEEL_SIZE, horoscopeWheelFocus } from '../lib/horoscope-wheel';
 import { datedEditionText, editionDateLabel } from '../lib/edition-freshness';
 import { EDITOR_AUTHOR } from '../lib/editorial';
-import { horoscopeArtCard } from '../lib/og-art-cards.mjs';
+import { horoscopeArtCard, signArtCard } from '../lib/og-art-cards.mjs';
 import { PLANET_GLYPH } from '../lib/glyphs/paths';
 import { currentHoroscopeMonth, utcMonth } from '../lib/horoscope-month.mjs';
 import { monthLabel } from '../lib/horoscopes';
@@ -26,6 +26,7 @@ import { signDateRange } from '../lib/sign-display';
 import {
   degreeLabel,
   horoscopeHubTeaser,
+  horoscopePageYear,
   pageReadingFromProgram,
   type HoroscopePageSurface as HoroscopeSurface,
   type HoroscopeProgramPageReading,
@@ -83,6 +84,11 @@ const QUICK_PROMPTS: Record<HoroscopeSurface, readonly string[]> = {
     'Which 2027 sky events does this reading follow?',
     CHART_PROMPT,
   ],
+  year2026: [
+    `What are the big themes of 2026 for ${sign.name}?`,
+    'Which 2026 sky events does this reading follow?',
+    CHART_PROMPT,
+  ],
 };
 
 const SURFACE_META = {
@@ -135,6 +141,13 @@ const SURFACE_META = {
     kicker: 'Year ahead',
     faq: 'A year-ahead sun-sign horoscope is a broad map of the year’s major cycles. A birth time allows a personal chart to place those cycles in your actual houses.',
   },
+  year2026: {
+    slug: '2026',
+    nav: '2026',
+    label: `${sign.name} in 2026`,
+    kicker: 'The whole year',
+    faq: 'A sun-sign horoscope for the whole year is a broad map of its major cycles. A birth time allows a personal chart to place those cycles in your actual houses.',
+  },
 } as const;
 
 type SurfaceKey = keyof typeof SURFACE_META;
@@ -145,7 +158,9 @@ const surfacePath = (signSlugValue: string, key: SurfaceKey) => {
   return slug ? `/horoscopes/${signSlugValue}/${slug}/` : `/horoscopes/${signSlugValue}/`;
 };
 const path = surfacePath(sign.slug, surface);
-const ogImage = horoscopeArtCard(sign.slug, surface);
+// The 2026 pages have no art card of their own yet, so they share the sign guide's.
+const ogImage = surface === 'year2026' ? signArtCard(sign.slug) : horoscopeArtCard(sign.slug, surface);
+const pageYear = horoscopePageYear(surface);
 const canonicalUrl = `https://zodiacs.org${path}`;
 const hasEditorial = Astro.slots.has('editorial');
 const hasEnhancement = Astro.slots.has('enhancement');
@@ -162,7 +177,7 @@ const utcClock = (iso: string) => new Intl.DateTimeFormat('en-GB', {
 }).format(new Date(iso));
 
 // ── The program's own periods, for the switch and the "More for" list ──
-const programSurfaces = ['tomorrow', 'weekly', 'love', 'career', 'year'] as const;
+const programSurfaces = ['tomorrow', 'weekly', 'love', 'career', 'year2026', 'year'] as const;
 const programReadings = Object.fromEntries(programSurfaces.map((key) => [
   key,
   key === surface ? reading : pageReadingFromProgram(program, sign.slug as never, key),
@@ -189,6 +204,7 @@ const moreRows: Array<{ key: SurfaceKey; title: string; note: string; teaser: st
   { key: 'monthly', title: SURFACE_META.monthly.label, note: monthShown ? monthLabel(monthShown) : '', teaser: monthlyLead },
   { key: 'love', title: SURFACE_META.love.label, note: SURFACE_META.love.kicker, teaser: firstPassage('love') },
   { key: 'career', title: SURFACE_META.career.label, note: SURFACE_META.career.kicker, teaser: firstPassage('career') },
+  { key: 'year2026', title: SURFACE_META.year2026.label, note: SURFACE_META.year2026.kicker, teaser: firstPassage('year2026') },
   { key: 'year', title: SURFACE_META.year.label, note: SURFACE_META.year.kicker, teaser: firstPassage('year') },
 ] as Array<{ key: SurfaceKey; title: string; note: string; teaser: string }>)
   .map((row) => ({ ...row, teaser: row.teaser ? horoscopeHubTeaser(row.teaser, 132) : '' }));
@@ -286,10 +302,10 @@ const skySub = daySpan
   : surface === 'weekly'
     ? 'The skies this week’s reading follows, day by day.'
     : 'Dated markers this reading follows.';
-const skyBasis = surface === 'monthly' || surface === 'year' ? 'UTC' : 'noon UTC';
+const skyBasis = surface === 'monthly' || pageYear ? 'UTC' : 'noon UTC';
 const moonRow = skyRows.find((row) => row.body === 'Moon' && reading.sky?.some((planet) => planet.id === row.id) && !row.detail.startsWith('Exact'));
 const moonPhase = daySpan && moonRow ? reading.sky?.find((planet) => planet.id === moonRow.id)?.detail : undefined;
-const showPlanets = surface !== 'year';
+const showPlanets = !pageYear;
 
 // "Also in this sky": the edition's other exact events and the Sun, when
 // the reading itself does not already name them.
@@ -315,7 +331,7 @@ const words = reading.wordCount ?? reading.sections
   .map((section) => section.body.trim().split(/\s+/u).length)
   .reduce((sum, count) => sum + count, 0);
 const minutes = Math.max(1, Math.round(words / 200));
-const noteLabel = surface === 'year' ? `2027 for ${sign.name}` : `${meta.label} for ${sign.name}`;
+const noteLabel = pageYear ? `${pageYear} for ${sign.name}` : `${meta.label} for ${sign.name}`;
 
 // ── The wheel: the edition's sky at noon UTC, counted from this sign ──
 const signIndex = SIGNS.findIndex((entry) => entry.slug === sign.slug);

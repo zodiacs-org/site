@@ -2,7 +2,7 @@
  * Deterministic build-time horoscope program.
  *
  * This module never computes astronomy and never invents a missing transit.
- * It accepts validated daily snapshots and a normalized 2027 event catalog,
+ * It accepts validated daily snapshots and normalized 2026 and 2027 event catalogs,
  * maps those facts through whole-sign solar houses, and composes curated copy.
  * Missing periods return an explicit `insufficient-evidence` reading so a page
  * generator can hold publication instead of filling the gap with vague prose.
@@ -54,6 +54,7 @@ export const HOROSCOPE_WORD_BOUNDS: Record<HoroscopeSurface, { min: number; max:
   weekly: { min: 200, max: 300 },
   love: { min: 60, max: 100 },
   career: { min: 60, max: 100 },
+  'yearly-2026': { min: 1_200, max: 1_800 },
   'yearly-2027': { min: 1_200, max: 1_800 },
 };
 
@@ -63,6 +64,7 @@ export const HOROSCOPE_DISTINCTNESS_LIMITS: Record<HoroscopeSurface, number> = {
   weekly: 0.55,
   love: 0.55,
   career: 0.55,
+  'yearly-2026': 0.72,
   'yearly-2027': 0.72,
 };
 
@@ -91,8 +93,13 @@ const KITCHEN_FIRST_OPENING = /^(?:the\s+)?(?:sun|moon|mercury|venus|mars|jupite
 const CANONICAL_SIGNS = new Set<string>(SIGN_SLUGS);
 const CANONICAL_EVENT_KINDS = new Set(['ingress', 'lunation', 'station', 'aspect', 'eclipse']);
 const SURFACES: readonly HoroscopeSurface[] = [
-  'today', 'tomorrow', 'weekly', 'love', 'career', 'yearly-2027',
+  'today', 'tomorrow', 'weekly', 'love', 'career', 'yearly-2026', 'yearly-2027',
 ];
+/** The yearly editions, each with its own event catalog and surface. */
+const YEARLY_EDITIONS = [2026, 2027] as const;
+type YearlyEdition = (typeof YEARLY_EDITIONS)[number];
+const yearlySurfaceKey = (year: YearlyEdition): HoroscopeSurface => `yearly-${year}`;
+const isYearlySurface = (surface: HoroscopeSurface): boolean => surface.startsWith('yearly-');
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -530,6 +537,25 @@ const YEAR_EDITORIAL: Record<HoroscopeSign, YearEditorialProfile> = {
   },
 };
 
+/**
+ * The 2026 edition's opening lines. The rest of each profile is the sign's
+ * own register and serves both years; the opening names the year it reads.
+ */
+const YEAR_2026_OPENING: Record<HoroscopeSign, string> = {
+  aries: '2026 puts who you are becoming at the front of your life. Choose a direction you can sustain rather than answering every challenge at once.',
+  taurus: 'Your 2026 asks what steadiness is for: keep the routine that still supports you and revise the one that only spares you a decision.',
+  gemini: '2026 brings attention back to your own voice. Choose the conversations and plans that deserve your full curiosity, and let the rest fall quiet.',
+  cancer: 'Your 2026 begins close to home and widens toward what you can offer from it. Care lasts longer when its limits are as plain as its warmth.',
+  leo: '2026 asks you to separate being seen from being known, and to value work and affection that would matter even without an audience.',
+  virgo: 'Your 2026 is a year of quiet groundwork: measure progress by what has become simpler, not by what has been announced.',
+  libra: '2026 asks where agreement has become a habit rather than a choice. Partnerships work better when your own terms are spoken early and plainly.',
+  scorpio: 'Your 2026 favors work you can repeat over efforts you have to summon; depth serves you best inside a routine that leaves room for rest.',
+  sagittarius: '2026 brings your search for meaning closer to everyday pleasure and creative risk. A larger idea earns its place when it changes an ordinary week.',
+  capricorn: 'Your 2026 asks the structure you have built to make room for a private life, so that home and public duty each get a plan of their own.',
+  aquarius: '2026 asks you to turn ideas into conversations other people can join, explained clearly enough for someone else to question or carry forward.',
+  pisces: 'Your 2026 asks what you value enough to protect. Sensitivity becomes practical when it shapes how you spend your time and care.',
+};
+
 function cap(value: string): string {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
@@ -643,24 +669,44 @@ export function validateHoroscopeProgramInput(
     });
   }
 
-  if (input.yearlyEvents !== undefined && !Array.isArray(input.yearlyEvents)) {
-    failures.push(violation('INPUT-YEAR-EVENTS', 'input.yearlyEvents', 'yearlyEvents must be an array when supplied'));
+  for (const year of YEARLY_EDITIONS) {
+    failures.push(...validateYearlyEvents(yearlyEventsFor(input, year), yearlyInputField(year), year));
+  }
+  return failures;
+}
+
+function yearlyInputField(year: YearlyEdition): string {
+  return year === 2027 ? 'yearlyEvents' : `yearlyEvents${year}`;
+}
+
+function yearlyEventsFor(input: BuildHoroscopeProgramInput, year: YearlyEdition): readonly HoroscopeProgramEvent[] | undefined {
+  return year === 2027 ? input.yearlyEvents : input.yearlyEvents2026;
+}
+
+function validateYearlyEvents(
+  events: readonly HoroscopeProgramEvent[] | undefined,
+  field: string,
+  year: YearlyEdition,
+): HoroscopeProgramViolation[] {
+  const failures: HoroscopeProgramViolation[] = [];
+  if (events !== undefined && !Array.isArray(events)) {
+    failures.push(violation('INPUT-YEAR-EVENTS', `input.${field}`, `${field} must be an array when supplied`));
   } else {
     const identities = new Set<string>();
-    (input.yearlyEvents ?? []).forEach((event, index) => {
-      const path = `input.yearlyEvents[${index}]`;
+    (events ?? []).forEach((event, index) => {
+      const path = `input.${field}[${index}]`;
       if (!CANONICAL_EVENT_KINDS.has(event.kind)) {
         failures.push(violation('INPUT-EVENT-KIND', `${path}.kind`, `unsupported event kind ${String(event.kind)}`));
       }
-      const isYearInstant = isInstant(event.at) && event.at.slice(0, 4) === '2027';
+      const isYearInstant = isInstant(event.at) && event.at.slice(0, 4) === String(year);
       const isAdjacentStationBoundary = event.kind === 'station'
         && isInstant(event.at)
-        && (event.at.slice(0, 4) === '2026' || event.at.slice(0, 4) === '2028');
+        && (event.at.slice(0, 4) === String(year - 1) || event.at.slice(0, 4) === String(year + 1));
       if (!isYearInstant && !isAdjacentStationBoundary) {
         failures.push(violation(
           'INPUT-EVENT-INSTANT',
           `${path}.at`,
-          'yearly event must use a canonical 2027 instant; station boundaries may use adjacent 2026/2028 instants',
+          `yearly event must use a canonical ${year} instant; station boundaries may use adjacent ${year - 1}/${year + 1} instants`,
         ));
       }
       for (const [key, value] of [['sign', event.sign], ['aSign', event.aSign], ['bSign', event.bSign]] as const) {
@@ -743,11 +789,11 @@ class EvidenceCatalog {
   event(
     event: HoroscopeProgramEvent,
     sunSign: HoroscopeSign,
-    source: { date?: string; sourceId: string },
+    source: { date?: string; year?: YearlyEdition; sourceId: string },
   ): string[] {
     const eventId = source.date
       ? dailyEventFactId(source.date, event as DailyEvent)
-      : `fact:2027:event:${event.kind}:${event.at}:${factToken(eventIdentity(event))}`;
+      : `fact:${source.year ?? 2027}:event:${event.kind}:${event.at}:${factToken(eventIdentity(event))}`;
     const label = eventLabel(event);
     this.receipts.set(eventId, {
       id: eventId,
@@ -891,12 +937,12 @@ function fallbackReading(
   period: { from: string; through: string },
   reason: string,
 ): HoroscopeReading {
-  const text = `${cap(sign)} ${surface.replace('yearly-2027', '2027')} is being held because ${reason}. Zodiacs.org does not replace missing sky data with generic predictions.`;
+  const text = `${cap(sign)} ${surface.replace(/^yearly-/u, '')} is being held because ${reason}. Zodiacs.org does not replace missing sky data with generic predictions.`;
   return {
     surface,
     sign,
     period: { ...period, utcBasis: true },
-    title: `${cap(sign)} ${surface === 'yearly-2027' ? '2027 horoscope' : `${cap(surface)} horoscope`}`,
+    title: `${cap(sign)} ${isYearlySurface(surface) ? `${surface.slice('yearly-'.length)} horoscope` : `${cap(surface)} horoscope`}`,
     status: 'insufficient-evidence',
     fallbackReason: reason,
     passages: [{ text, evidenceRefs: [] }],
@@ -922,7 +968,7 @@ function padReading(
     `Bring the symbolism down to one honest question you can act on.`,
   ];
   const initialCount = horoscopeWordCount(passages.map((item) => item.text).join(' '));
-  if (surface === 'yearly-2027' && initialCount < min) {
+  if (isYearlySurface(surface) && initialCount < min) {
     throw new Error(`Yearly renderer produced ${initialCount} words; editorial copy may not be padded with generic filler`);
   }
   let index = 0;
@@ -1207,8 +1253,8 @@ function weeklySurface(sign: HoroscopeSign, days: Daily[], catalog: EvidenceCata
   return reading('weekly', sign, { from: start.date, through: end.date }, `${cap(sign)} weekly horoscope, ${dateRangeLabel(start.date, end.date)}`, passages);
 }
 
-function hasYearCoverage(events: readonly HoroscopeProgramEvent[]): boolean {
-  const inYear = events.filter((event) => event.at.startsWith('2027-'));
+function hasYearCoverage(events: readonly HoroscopeProgramEvent[], year: YearlyEdition): boolean {
+  const inYear = events.filter((event) => event.at.startsWith(`${year}-`));
   const kinds = new Set(inYear.map((event) => event.kind));
   const stationTypes = new Set(
     events.filter((event) => event.kind === 'station').map((event) => event.type),
@@ -1327,6 +1373,7 @@ function yearPhasePassage(
   events: readonly HoroscopeProgramEvent[],
   phaseIndex: number,
   catalog: EvidenceCatalog,
+  year: YearlyEdition,
 ): HoroscopePassage {
   const houses = dominantYearHouses(events, sign);
   const primary = houses[0];
@@ -1345,7 +1392,7 @@ function yearPhasePassage(
     `The final quarter consolidates what you have learned about ${HOUSE_SECTION[primary]} in relation to ${HOUSE_SECTION[secondary]}; keep only the response you can maintain instead of staging a last-minute reinvention.`,
   ];
   const refs = events.flatMap((event) => (
-    catalog.event(event, sign, { sourceId: event.sourceId ?? 'input:yearlyEvents' })
+    catalog.event(event, sign, { year, sourceId: event.sourceId ?? 'input:yearlyEvents' })
   ));
   const beats = events.map((event, index) => yearEventBeat(event, sign, phaseIndex * 7 + index));
   return passage(
@@ -1363,12 +1410,13 @@ function yearThemePassage(
   action: Readonly<Record<number, string>>,
   variant: number,
   catalog: EvidenceCatalog,
+  year: YearlyEdition,
 ): HoroscopePassage {
   const [first, second = first] = events;
   const firstHouse = eventHouses(first, sign)[0];
   const secondHouse = eventHouses(second, sign)[0];
   const refs = [...events.flatMap((event) => (
-    catalog.event(event, sign, { sourceId: event.sourceId ?? 'input:yearlyEvents' })
+    catalog.event(event, sign, { year, sourceId: event.sourceId ?? 'input:yearlyEvents' })
   ))];
   const firstAction = variant % 2 === 0
     ? (action[firstHouse] ?? HOUSE_ACTION[firstHouse])
@@ -1411,25 +1459,30 @@ function yearlySurface(
   sign: HoroscopeSign,
   events: readonly HoroscopeProgramEvent[],
   catalog: EvidenceCatalog,
+  year: YearlyEdition,
 ): HoroscopeReading {
   // Adjacent-year station boundaries keep overlapping retrograde periods
-  // complete in the fact catalog. Reader copy remains a 2027 edition.
+  // complete in the fact catalog. Reader copy remains the edition's own year.
   const ordered = events
-    .filter((event) => event.at.startsWith('2027-'))
+    .filter((event) => event.at.startsWith(`${year}-`))
     .sort((left, right) => left.at.localeCompare(right.at));
   const passages: HoroscopePassage[] = [];
-  // Register the complete catalog, including 2026/2028 station boundaries,
-  // even though only in-year events are narrated below.
+  // Register the complete catalog, including adjacent-year station
+  // boundaries, even though only in-year events are narrated below.
   for (const event of events) {
-    catalog.event(event, sign, { sourceId: event.sourceId ?? 'input:yearlyEvents' });
+    catalog.event(event, sign, { year, sourceId: event.sourceId ?? 'input:yearlyEvents' });
   }
   const first = ordered[0];
   const last = ordered[ordered.length - 1];
-  const ingress = ordered.find((event) => event.kind === 'ingress') ?? ordered[Math.floor(ordered.length / 2)];
+  // The longer-range marker is Jupiter's ingress when the year has one, and
+  // otherwise an ingress that is not already the first or last date named.
+  const ingress = ordered.find((event) => event.kind === 'ingress' && event.planet === 'Jupiter')
+    ?? ordered.find((event) => event.kind === 'ingress' && event !== first && event !== last)
+    ?? ordered[Math.floor(ordered.length / 2)];
   const openingRefs = [
-    ...catalog.event(first, sign, { sourceId: first.sourceId ?? 'input:yearlyEvents' }),
-    ...catalog.event(ingress, sign, { sourceId: ingress.sourceId ?? 'input:yearlyEvents' }),
-    ...catalog.event(last, sign, { sourceId: last.sourceId ?? 'input:yearlyEvents' }),
+    ...catalog.event(first, sign, { year, sourceId: first.sourceId ?? 'input:yearlyEvents' }),
+    ...catalog.event(ingress, sign, { year, sourceId: ingress.sourceId ?? 'input:yearlyEvents' }),
+    ...catalog.event(last, sign, { year, sourceId: last.sourceId ?? 'input:yearlyEvents' }),
   ];
   const firstHouse = eventHouses(first, sign)[0];
   const ingressHouse = eventHouses(ingress, sign)[0];
@@ -1440,9 +1493,9 @@ function yearlySurface(
     HOUSE_SECTION[lastHouse],
   ]);
   passages.push(passage(
-    `${YEAR_EDITORIAL[sign].opening} The practical through-line is simple: ${SIGN_REGISTER[sign].year}. Your first dated checkpoint for ${HOUSE_SECTION[firstHouse]} is ${eventName(first)} on ${shortDateLabel(first.at)}. ${eventName(ingress)} on ${shortDateLabel(ingress.at)} changes the longer-range emphasis around ${HOUSE_SECTION[ingressHouse]}, while ${eventName(last)} on ${shortDateLabel(last.at)} gives ${HOUSE_SECTION[lastHouse]} a final review point. None of those dates assigns an outcome; compare ${openingAreas} with what is actually happening, then keep the choice that fits your circumstances.`,
+    `${year === 2026 ? YEAR_2026_OPENING[sign] : YEAR_EDITORIAL[sign].opening} The practical through-line is simple: ${SIGN_REGISTER[sign].year}. Your first dated checkpoint for ${HOUSE_SECTION[firstHouse]} is ${eventName(first)} on ${shortDateLabel(first.at)}. ${eventName(ingress)} on ${shortDateLabel(ingress.at)} changes the longer-range emphasis around ${HOUSE_SECTION[ingressHouse]}, while ${eventName(last)} on ${shortDateLabel(last.at)} gives ${HOUSE_SECTION[lastHouse]} a final review point. None of those dates assigns an outcome; compare ${openingAreas} with what is actually happening, then keep the choice that fits your circumstances.`,
     openingRefs,
-    `The shape of ${cap(sign)}’s 2027`,
+    `The shape of ${cap(sign)}’s ${year}`,
   ));
 
   for (const [phaseIndex, phase] of YEAR_PHASES.entries()) {
@@ -1450,7 +1503,7 @@ function yearlySurface(
       const month = new Date(event.at).getUTCMonth();
       return month >= phase.fromMonth && month <= phase.throughMonth;
     });
-    if (phaseEvents.length) passages.push(yearPhasePassage(sign, phaseEvents, phaseIndex, catalog));
+    if (phaseEvents.length) passages.push(yearPhasePassage(sign, phaseEvents, phaseIndex, catalog, year));
   }
 
   const signOffset = SIGN_SLUGS.indexOf(sign);
@@ -1462,6 +1515,7 @@ function yearlySurface(
     LOVE_ACTION,
     0,
     catalog,
+    year,
   ));
   passages.push(yearThemePassage(
     sign,
@@ -1471,6 +1525,7 @@ function yearlySurface(
     CAREER_ACTION,
     1,
     catalog,
+    year,
   ));
   passages.push(yearThemePassage(
     sign,
@@ -1480,6 +1535,7 @@ function yearlySurface(
     HOUSE_ACTION,
     2,
     catalog,
+    year,
   ));
   passages.push(yearThemePassage(
     sign,
@@ -1489,15 +1545,25 @@ function yearlySurface(
     HOUSE_ACTION,
     3,
     catalog,
+    year,
   ));
 
-  passages.push(passage(
-    `${YEAR_EDITORIAL[sign].close} Put three events in your calendar now (${eventName(first)} on ${shortDateLabel(first.at)}, ${eventName(ingress)} on ${shortDateLabel(ingress.at)}, and ${eventName(last)} on ${shortDateLabel(last.at)}) as a working plan for this principle: ${SIGN_REGISTER[sign].year}. At each one, write what changed, what did not, and what you will do next; for ${cap(sign)}, the year’s practice is to ${SIGN_REGISTER[sign].test}, with the dates providing structure while your decisions and circumstances remain the substance.`,
-    openingRefs,
-    'A three-date plan for the year',
-  ));
+  const threeDates = `${eventName(first)} on ${shortDateLabel(first.at)}, ${eventName(ingress)} on ${shortDateLabel(ingress.at)}, and ${eventName(last)} on ${shortDateLabel(last.at)}`;
+  // The 2026 edition is published late in its own year, so its close frames
+  // the three dates as a review rather than a calendar to fill in.
+  passages.push(year === 2026
+    ? passage(
+      `Use three dates to review the year (${threeDates}) with this principle in view: ${SIGN_REGISTER[sign].year}. At each, note what changed and what you want to carry into ${year + 1}; for ${cap(sign)}, the practice is to ${SIGN_REGISTER[sign].test}, while your own choices remain the substance.`,
+      openingRefs,
+      'Three dates to review the year by',
+    )
+    : passage(
+      `${YEAR_EDITORIAL[sign].close} Put three events in your calendar now (${threeDates}) as a working plan for this principle: ${SIGN_REGISTER[sign].year}. At each one, write what changed, what did not, and what you will do next; for ${cap(sign)}, the year’s practice is to ${SIGN_REGISTER[sign].test}, with the dates providing structure while your decisions and circumstances remain the substance.`,
+      openingRefs,
+      'A three-date plan for the year',
+    ));
 
-  return reading('yearly-2027', sign, { from: '2027-01-01', through: '2027-12-31' }, `${cap(sign)} 2027 horoscope`, passages);
+  return reading(yearlySurfaceKey(year), sign, { from: `${year}-01-01`, through: `${year}-12-31` }, `${cap(sign)} ${year} horoscope`, passages);
 }
 
 export class HoroscopeProgramInputError extends Error {
@@ -1518,8 +1584,11 @@ export function buildHoroscopeProgram(input: BuildHoroscopeProgramInput): Horosc
   const tomorrow = snapshots.get(tomorrowDate);
   const week = isoWeek(input.anchorDate);
   const weekDays = week.dates.map((date) => snapshots.get(date)).filter((value): value is Daily => Boolean(value));
-  const yearlyEvents = input.yearlyEvents ?? [];
-  const yearComplete = hasYearCoverage(yearlyEvents);
+  const yearlyCatalogs = YEARLY_EDITIONS.map((year) => {
+    const events = yearlyEventsFor(input, year) ?? [];
+    return { year, events, complete: hasYearCoverage(events, year) };
+  });
+  const yearComplete = (year: YearlyEdition) => yearlyCatalogs.some((entry) => entry.year === year && entry.complete);
   const catalog = new EvidenceCatalog();
 
   const signs: HoroscopeSignProgram[] = SIGN_SLUGS.map((sign) => {
@@ -1538,9 +1607,9 @@ export function buildHoroscopeProgram(input: BuildHoroscopeProgramInput): Horosc
     const weeklyReading = weekDays.length === 7
       ? weeklySurface(sign, weekDays, catalog)
       : fallbackReading('weekly', sign, { from: week.from, through: week.through }, `only ${weekDays.length} of 7 ISO-week snapshots were supplied`);
-    const yearlyReading = yearComplete
-      ? yearlySurface(sign, yearlyEvents, catalog)
-      : fallbackReading('yearly-2027', sign, { from: '2027-01-01', through: '2027-12-31' }, 'the 2027 catalog does not yet include at least six major events with ingress, eclipse, and retrograde/direct station coverage');
+    const [yearly2026, yearly2027] = yearlyCatalogs.map(({ year, events, complete }) => (complete
+      ? yearlySurface(sign, events, catalog, year)
+      : fallbackReading(yearlySurfaceKey(year), sign, { from: `${year}-01-01`, through: `${year}-12-31` }, `the ${year} catalog does not yet include at least six major events with ingress, eclipse, and retrograde/direct station coverage`)));
     return {
       sign,
       readings: {
@@ -1549,7 +1618,8 @@ export function buildHoroscopeProgram(input: BuildHoroscopeProgramInput): Horosc
         weekly: weeklyReading,
         love: loveReading,
         career: careerReading,
-        'yearly-2027': yearlyReading,
+        'yearly-2026': yearly2026,
+        'yearly-2027': yearly2027,
       },
     };
   });
@@ -1571,7 +1641,8 @@ export function buildHoroscopeProgram(input: BuildHoroscopeProgramInput): Horosc
       today: today ? 'complete' : 'unavailable',
       tomorrow: tomorrow ? 'complete' : 'unavailable',
       isoWeek: weekDays.length === 7 ? 'complete' : weekDays.length ? 'partial' : 'unavailable',
-      yearly2027: yearComplete ? 'complete' : 'insufficient',
+      yearly2026: yearComplete(2026) ? 'complete' : 'insufficient',
+      yearly2027: yearComplete(2027) ? 'complete' : 'insufficient',
     },
     evidence: catalog.values(),
     signs,
@@ -1642,14 +1713,17 @@ export function validateHoroscopeProgram(program: HoroscopeProgram): HoroscopePr
       ));
     }
   }
-  const yearlyEventIds = new Set(program.evidence
-    // Daily receipts in a 2027 edition also have 2027 instants, but they are
-    // deliberately scoped to that day/week. Only IDs minted by the yearly
-    // catalog belong to the all-events yearly coverage contract.
-    .filter((receipt) => receipt.kind === 'sky-event'
-      && receipt.id.startsWith('fact:2027:event:')
-      && receipt.at.startsWith('2027-'))
-    .map((receipt) => receipt.id));
+  const yearlyEventIds = (surface: HoroscopeSurface) => {
+    const year = surface.slice('yearly-'.length);
+    return new Set(program.evidence
+      // Daily receipts in a yearly edition's year also have in-year instants,
+      // but they are deliberately scoped to that day/week. Only IDs minted by
+      // the year's catalog belong to its all-events coverage contract.
+      .filter((receipt) => receipt.kind === 'sky-event'
+        && receipt.id.startsWith(`fact:${year}:event:`)
+        && receipt.at.startsWith(`${year}-`))
+      .map((receipt) => receipt.id));
+  };
 
   for (const [signIndex, signProgram] of program.signs.entries()) {
     for (const surface of SURFACES) {
@@ -1697,7 +1771,7 @@ export function validateHoroscopeProgram(program: HoroscopeProgram): HoroscopePr
             ));
           }
         });
-        if (surface === 'yearly-2027') {
+        if (isYearlySurface(surface)) {
           const headings = item.passages.map((entry) => entry.heading?.trim()).filter(Boolean) as string[];
           if (headings.length !== item.passages.length || new Set(headings).size !== headings.length
             || item.passages.length < 8) {
@@ -1708,7 +1782,7 @@ export function validateHoroscopeProgram(program: HoroscopeProgram): HoroscopePr
             ));
           }
           const referenced = new Set(item.passages.flatMap((entry) => entry.evidenceRefs));
-          const missingEvents = [...yearlyEventIds].filter((id) => !referenced.has(id));
+          const missingEvents = [...yearlyEventIds(surface)].filter((id) => !referenced.has(id));
           if (missingEvents.length) {
             failures.push(violation(
               'EVIDENCE-YEAR-COVERAGE',

@@ -45,7 +45,10 @@ type RegistryResearchPublication = {
 const registryResearchPublication = registryResearchPublicationData as unknown as RegistryResearchPublication;
 const birthdayFacts = birthdayFactsData as unknown as { days: Record<string, { cusp?: unknown }> };
 const researchLastmod = terminalResearchLastmod(registryResearchPublication);
-const YEARLY_HOROSCOPE_LASTMOD = '2026-10-27';
+// Both yearly pages last changed when the 2026 reading was published and
+// joined each horoscope page's "More for" list.
+const YEARLY_HOROSCOPE_LASTMOD = '2026-11-02';
+const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-02';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const THESIS_LASTMOD = '2026-09-05';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
@@ -731,6 +734,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
         { loc: `${root}monthly/`, priority: 0.72, lastmod: laterDate(monthlyLastmod, HOROSCOPE_TEMPLATE_LASTMOD) },
         { loc: `${root}love/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
         { loc: `${root}career/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
+        { loc: `${root}2026/`, priority: 0.66, lastmod: YEARLY_2026_HOROSCOPE_LASTMOD },
         { loc: `${root}2027/`, priority: 0.68, lastmod: YEARLY_HOROSCOPE_LASTMOD },
       ];
     }),

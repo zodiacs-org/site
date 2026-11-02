@@ -15,7 +15,7 @@ import { horoscopeWheelFocus, horoscopeWheelSvg } from '../../../lib/horoscope-w
 import { SIGNS } from '../../../lib/signs';
 
 /** One wheel per period page; monthly reads dated events, so none is lit. */
-const HOROSCOPE_WHEEL_PERIODS = ['today', 'tomorrow', 'weekly', 'monthly', 'love', 'career', 'year'] as const;
+const HOROSCOPE_WHEEL_PERIODS = ['today', 'tomorrow', 'weekly', 'monthly', 'love', 'career', 'year2026', 'year'] as const;
 type Period = (typeof HOROSCOPE_WHEEL_PERIODS)[number];
 
 export function getStaticPaths() {

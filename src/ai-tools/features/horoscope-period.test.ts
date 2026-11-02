@@ -48,6 +48,14 @@ describe('get_horoscope_period', () => {
     expect(data.available.months).toEqual(['2026-10', '2026-11']);
   });
 
+  it('gives the 2026 yearly reading for this year, with its page', async () => {
+    const year = await period({ sign: 'capricorn', period: 'year' });
+    expect(year).toMatchObject({ status: 'available', label: '2026', pageUrl: 'https://zodiacs.org/horoscopes/capricorn/2026/' });
+    expect(year.reading!.title).toBe('Capricorn 2026 horoscope');
+    expect(year.reading!.paragraphs[0]).toMatchObject({ heading: 'The shape of Capricorn’s 2026' });
+    expect(year.available.years).toEqual([2026, 2027]);
+  });
+
   it('gives the 2027 yearly reading, and only the sky for a year without one', async () => {
     const year = await period({ sign: 'virgo', period: 'year', date: '2027-03-01' });
     expect(year).toMatchObject({ status: 'available', label: '2027', pageUrl: 'https://zodiacs.org/horoscopes/virgo/2027/' });
@@ -56,7 +64,7 @@ describe('get_horoscope_period', () => {
     expect(year.sky.some((event) => event.kind === 'eclipse')).toBe(true);
     const later = await period({ sign: 'virgo', period: 'year', date: '2028-03-01' });
     expect(later).toMatchObject({ status: 'sky-only', reading: null });
-    expect(later.message).toContain('Zodiacs publishes the yearly reading for 2027');
+    expect(later.message).toContain('Zodiacs publishes the yearly reading for 2026 and 2027');
   });
 
   it("gives the week's reading, and for love that week's love readings and the sky that bears on love", async () => {

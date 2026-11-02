@@ -24,7 +24,7 @@ const FIXTURE = [...new Set([
     '/people/', '/events/', '/eclipses/', '/eclipses/2027/', '/full-moon-calendar/2027/', '/mercury-retrograde/2027/',
     '/void-of-course-moon/', '/learn/houses/', '/learn/aspects/sun-moon/', '/compatibility/aries-leo/',
     '/numerology/life-path/7/', '/developers/docs/', '/developers/compute/', '/people/ada-lovelace/',
-    ...SIGNS.flatMap((sign) => [`/${sign}/`, `/rising-sign/${sign}/`, `/horoscopes/${sign}/`, `/horoscopes/${sign}/weekly/`, `/horoscopes/${sign}/2027/`]),
+    ...SIGNS.flatMap((sign) => [`/${sign}/`, `/rising-sign/${sign}/`, `/horoscopes/${sign}/`, `/horoscopes/${sign}/weekly/`, `/horoscopes/${sign}/2026/`, `/horoscopes/${sign}/2027/`]),
     ...BIRTHDAY_PATHS,
     ...CHINESE_ZODIAC_PATHS,
     ...eventsPublication.pages.map((page) => page.path),

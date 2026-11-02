@@ -100,6 +100,54 @@ describe('strict 2027 horoscope fact catalog', () => {
   });
 });
 
+describe('strict 2026 horoscope fact catalog', () => {
+  const tableStart = (skyData as { from: string }).from;
+  const overlapping2026 = (skyData as { retrogrades: RetrogradeWindow[] }).retrogrades
+    .filter((window) => window.from < '2027-01-01T00:00:00.000Z' && (window.to === null || window.to > '2026-01-01T00:00:00.000Z'));
+
+  it('keeps only the direct station of a retrograde already under way where sky.json begins', async () => {
+    const clipped = overlapping2026.filter((window) => window.from === tableStart);
+    expect(clipped.map((window) => window.planet).sort()).toEqual(['Jupiter', 'Uranus']);
+
+    const events = await yearlyEvents(2026);
+    const stations = events.filter((event) => event.kind === 'station');
+    expect(stations.some((event) => event.at === tableStart)).toBe(false);
+    expect(stations).toHaveLength(overlapping2026.length * 2 - clipped.length);
+    for (const window of clipped) {
+      expect(stations).toContainEqual(expect.objectContaining({ planet: window.planet, type: 'direct', at: window.to }));
+    }
+    expect(events.filter((event) => event.kind !== 'station').every((event) => event.at.startsWith('2026-'))).toBe(true);
+  });
+
+  it('lists the slow planets\' 2026 sign changes and the four 2026 eclipses', async () => {
+    const events = await yearlyEvents(2026);
+    expect(events.filter((event) => event.kind === 'ingress').map((event) => `${event.planet} ${event.sign} ${event.at.slice(0, 10)}`)).toEqual([
+      'Neptune aries 2026-01-26',
+      'Saturn aries 2026-02-14',
+      'Uranus gemini 2026-04-26',
+      'Jupiter leo 2026-06-30',
+    ]);
+    expect(events.filter((event) => event.kind === 'eclipse').map((event) => `${event.type} ${event.sign} ${event.at.slice(0, 10)}`)).toEqual([
+      'solar aquarius 2026-02-17',
+      'lunar virgo 2026-03-03',
+      'solar leo 2026-08-12',
+      'lunar pisces 2026-08-28',
+    ]);
+  });
+
+  it('renders the complete catalog inside the strict yearly word bounds', async () => {
+    const { input, program, violations } = await expectedHoroscopeProgram();
+    expect(violations).toEqual([]);
+    expect(input.yearlyEvents2026).toHaveLength(28);
+    expect(program.coverage.yearly2026).toBe('complete');
+    for (const entry of program.signs) {
+      const reading = entry.readings['yearly-2026'];
+      expect(reading.wordCount, entry.sign).toBeGreaterThanOrEqual(HOROSCOPE_WORD_BOUNDS['yearly-2026'].min);
+      expect(reading.wordCount, entry.sign).toBeLessThanOrEqual(HOROSCOPE_WORD_BOUNDS['yearly-2026'].max);
+    }
+  });
+});
+
 function addDays(date: string, amount: number): string {
   const value = new Date(`${date}T00:00:00.000Z`);
   value.setUTCDate(value.getUTCDate() + amount);
@@ -122,6 +170,7 @@ describe('computed daily horoscope editions', () => {
         computeDailySnapshot(date, HOROSCOPE_REPO_ROOT) as Promise<Daily>
       ))),
       yearlyEvents: await yearlyEvents(),
+      yearlyEvents2026: await yearlyEvents(2026),
     };
     const program = buildHoroscopeProgram(input);
     expect(validateHoroscopeProgramAgainstInput(input, program)).toEqual([]);
