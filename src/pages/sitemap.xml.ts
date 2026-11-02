@@ -45,7 +45,9 @@ type RegistryResearchPublication = {
 const registryResearchPublication = registryResearchPublicationData as unknown as RegistryResearchPublication;
 const birthdayFacts = birthdayFactsData as unknown as { days: Record<string, { cusp?: unknown }> };
 const researchLastmod = terminalResearchLastmod(registryResearchPublication);
-const YEARLY_HOROSCOPE_LASTMOD = '2026-10-27';
+// Both yearly pages last changed when the 2026 reading was published and
+// joined each horoscope page's "More for" list.
+const YEARLY_HOROSCOPE_LASTMOD = '2026-11-02';
 const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-02';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const THESIS_LASTMOD = '2026-09-05';
