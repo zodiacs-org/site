@@ -206,9 +206,16 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `src/ai-tools/` and the compatibility manifest). `integrations/packages/`
   ZIPs and manifest ← `npm run ai:package`. `npm run ai:check` checks drift.
   The hosted MCP at /mcp is switched on in production with
-  `ZODIACS_MCP_ENABLED=1` and is the only hosted MCP server; its exact optional
+  `ZODIACS_MCP_ENABLED=1` and is the consumer MCP server; its exact optional
   staging hostname is configured with `ZODIACS_MCP_STAGING_HOST`. See
-  `docs/platform/zodiacs-ai/LAUNCH.md`.
+  `docs/platform/zodiacs-ai/LAUNCH.md`. A second server, /mcp/engine
+  (`src/engine-mcp/`, off unless `ZODIACS_ENGINE_MCP_ENABLED=1`), hosts the
+  engine tools of the Astrologer bot; it shares no tool with /mcp. See
+  `docs/platform/zodiacs-ai/ENGINE-MCP.md`.
+- `src/engine-mcp/reading-facts.ts` ← `node scripts/sync-reading-facts.mjs
+  <engine checkout> [ref]` (the engine repository's
+  `bots/astrologer/facts/reading-facts.ts` with its imports mapped to the
+  vendored package; never edit it by hand).
 - `api/_assistant/persona.ts` is Fable-authored source; edit it only via Fable.
 - `public/assets/og/v2/` ← `node --experimental-strip-types
   scripts/build-og-void.mjs` (ALL share cards sitewide since Part Q — wing

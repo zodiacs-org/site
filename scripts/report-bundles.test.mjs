@@ -106,6 +106,15 @@ describe('actual bundle gate', () => {
     expect(result.output).toContain('engine source isolation');
   });
 
+  it('accepts the server-only /mcp/engine reading facts and rejects a page that reaches them', () => {
+    const server = { 'src/engine-mcp/reading-facts.ts': 'import { bodyLongitude } from "@zodiacs/engine/internal";',
+      'src/engine-mcp/tools.ts': 'import { buildReadingFacts } from "./reading-facts.js";' };
+    expect(check(server).code).toBe(0);
+    const reached = check({ ...server, 'src/pages/leak.astro': '---\nimport { buildReadingFacts } from "../engine-mcp/tools.js";\n---\n' });
+    expect(reached.code).toBe(1);
+    expect(reached.output).toContain('src/engine-mcp/, which is server-only');
+  });
+
   it('requires both ephemeris fingerprints in the full static closure', () => {
     const result = check({ 'dist/_astro/engine-core.fixture.js': 'export const engine="Value is not boolean:";' });
     expect(result.code).toBe(1);
