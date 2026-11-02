@@ -9,12 +9,14 @@ import { scanTransitContacts } from '../src/lib/engine/transit-scan';
 
 const cases = JSON.parse(await readFile(new URL('../integrations/chatgpt/evaluation-cases.json', import.meta.url), 'utf8'));
 const horoscopeWindow = JSON.parse(await readFile(new URL('../src/data/horoscope-window.json', import.meta.url), 'utf8'));
-assert.equal(cases.length, 54);
+const horoscopeMonths = JSON.parse(await readFile(new URL('../src/data/horoscope-months.json', import.meta.url), 'utf8'));
+const horoscopeProgram = JSON.parse(await readFile(new URL('../src/data/horoscope-program.json', import.meta.url), 'utf8'));
+assert.equal(cases.length, 70);
 const timings: number[] = [], results = [];
 for (const entry of cases) {
   const start = performance.now();
-  // occasions: the 0.5.0 tools, as production offers them with ZODIACS_OCCASIONS_ENABLED=1.
-  const result = await executeAiTool(entry.tool as AiToolName, entry.args, { now: () => new Date('2026-10-01T06:00:00Z'), horoscopeWindow: async () => horoscopeWindow, occasions: true });
+  // occasions and coverage: the 0.5.0 and 0.6.0 tools, as production offers them with ZODIACS_OCCASIONS_ENABLED=1 and ZODIACS_COVERAGE_ENABLED=1.
+  const result = await executeAiTool(entry.tool as AiToolName, entry.args, { now: () => new Date('2026-10-01T06:00:00Z'), horoscopeWindow: async () => horoscopeWindow, horoscopeMonths: async () => horoscopeMonths, horoscopeProgram: async () => horoscopeProgram, occasions: true, coverage: true });
   timings.push(performance.now() - start);
   assert.equal(result.ok, entry.ok, `${entry.id}: expected ${entry.ok}, received ${JSON.stringify(result)}`);
   assert.ok(!JSON.stringify(result).includes('private-canary'));
@@ -22,6 +24,8 @@ for (const entry of cases) {
     if (entry.answer && result.tool === 'check_sky_fact') assert.equal(result.data.answer, entry.answer);
     if (entry.empty && result.tool === 'get_upcoming_events') assert.equal(result.data.events.length, 0);
     if (entry.found !== undefined && result.tool === 'get_famous_chart') assert.equal(result.data.found, entry.found);
+    if (result.tool === 'explain_astrology' && /tarot/u.test(entry.prompt)) assert.equal(result.data.found, false, `${entry.id}: tarot is not explained`);
+    if (result.tool === 'get_natal_chart' && !result.data.timeKnown) assert.equal(result.data.rising.sign, null, `${entry.id}: no rising sign without a time`);
     if (result.tool === 'get_compatibility') assert.ok(!/score|percent|soulmate/iu.test(JSON.stringify(result.data.contacts)), `${entry.id}: no score`);
     for (const link of result.links) { const url = new URL(link.url); assert.equal(url.origin, 'https://zodiacs.org'); assert.equal(url.search, ''); }
   }

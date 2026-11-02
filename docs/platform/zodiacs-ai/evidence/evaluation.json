@@ -1,7 +1,7 @@
 {
   "schema": "zodiacs.ai-evaluation.v1",
   "scope": "Local adapter with preselected tools and synthetic inputs; not LLM routing, host acceptance, accuracy-reference, load or production latency testing.",
-  "engine": "1.0.0",
+  "engine": "1.1.0-rc.1",
   "cases": [
     {
       "id": "01",
@@ -272,11 +272,91 @@
       "id": "54",
       "passed": true,
       "tool": "get_sky_calendar"
+    },
+    {
+      "id": "55",
+      "passed": true,
+      "tool": "get_natal_chart"
+    },
+    {
+      "id": "56",
+      "passed": true,
+      "tool": "get_natal_chart"
+    },
+    {
+      "id": "57",
+      "passed": true,
+      "tool": "get_natal_chart"
+    },
+    {
+      "id": "58",
+      "passed": true,
+      "tool": "get_horoscope_period"
+    },
+    {
+      "id": "59",
+      "passed": true,
+      "tool": "get_horoscope_period"
+    },
+    {
+      "id": "60",
+      "passed": true,
+      "tool": "get_horoscope_period"
+    },
+    {
+      "id": "61",
+      "passed": true,
+      "tool": "get_horoscope_period"
+    },
+    {
+      "id": "62",
+      "passed": true,
+      "tool": "get_chinese_zodiac"
+    },
+    {
+      "id": "63",
+      "passed": true,
+      "tool": "get_chinese_zodiac"
+    },
+    {
+      "id": "64",
+      "passed": true,
+      "tool": "get_chinese_zodiac"
+    },
+    {
+      "id": "65",
+      "passed": true,
+      "tool": "get_personal_transits"
+    },
+    {
+      "id": "66",
+      "passed": true,
+      "tool": "get_personal_transits"
+    },
+    {
+      "id": "67",
+      "passed": true,
+      "tool": "get_personal_transits"
+    },
+    {
+      "id": "68",
+      "passed": true,
+      "tool": "explain_astrology"
+    },
+    {
+      "id": "69",
+      "passed": true,
+      "tool": "explain_astrology"
+    },
+    {
+      "id": "70",
+      "passed": true,
+      "tool": "explain_astrology"
     }
   ],
   "localMilliseconds": {
-    "median": 2.909759000000122,
-    "p95": 72.41722600000003
+    "median": 2.0546390000001793,
+    "p95": 64.13097900000002
   },
   "unverified": [
     "Actual ChatGPT and Codex host acceptance",

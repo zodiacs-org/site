@@ -1,7 +1,7 @@
 {
   "name": "zodiacs-sky",
-  "version": "0.5.1",
-  "description": "Check what's happening in the sky, read the horoscope for your sign, explore your own birth chart, compare two charts and see the sky on the days that matter.",
+  "version": "0.6.0",
+  "description": "Check what's happening in the sky, read daily to yearly horoscopes for your sign, explore your own birth chart and transits, compare two charts, find your Chinese zodiac animal and see the sky on the days that matter.",
   "author": {
     "name": "Zodiacs LLC",
     "email": "admin@zodiacs.org",

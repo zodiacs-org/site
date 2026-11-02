@@ -3,7 +3,10 @@ import { createServer, request, type Server } from 'node:http';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createAiNodeHandler } from '../http';
 import committedWindow from '../../data/horoscope-window.json';
+import committedMonths from '../../data/horoscope-months.json';
+import committedProgram from '../../data/horoscope-program.json';
 import type { HoroscopeWindow } from '../horoscope/window';
+import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
 
 /**
  * The account switch defaults off. Off (unset, empty, '0' or anything but '1'),
@@ -11,7 +14,9 @@ import type { HoroscopeWindow } from '../horoscope/window';
  * call to the account tool with exactly the bytes the 0.5.0 submission answers
  * with. The fixture was captured from the base branch before the account code
  * existed; regenerate it only from a released commit (CAPTURE_FLAG_OFF_FIXTURE=1).
- * 0.5.1 changed only the reported version in it.
+ * 0.5.1 changed only the reported version in it, and so did 0.6.0 in the released and occasions scenarios.
+ * 0.6.0 added the coverage scenario (ZODIACS_COVERAGE_ENABLED=1 with the occasion tools), whose tools/list is the
+ * thirteen entries byte for byte and then the five 0.6.0 tools (src/ai-tools/release-060.test.ts).
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];
@@ -24,7 +29,9 @@ async function serve(env: Record<string, string | undefined>) {
   servers.push(server);
   const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
   handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ...env }, allowedHosts: [host], rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
-    countUsage: async () => undefined, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } });
+    countUsage: async () => undefined, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow,
+      // As api/_ai/handler.ts supplies them, so the occasions scenario lists every tool production lists.
+      horoscopeMonths: async () => committedMonths, horoscopeProgram: async () => committedProgram as unknown as HoroscopeProgram } });
   return host;
 }
 
@@ -40,7 +47,7 @@ function post(host: string, path: string, body: unknown, headers: Record<string,
 }
 
 const rpc = (method: string, params: unknown = {}) => ({ jsonrpc: '2.0', id: 1, method, params });
-const SCENARIOS = { released: {}, occasions: { ZODIACS_OCCASIONS_ENABLED: '1' } } as const;
+const SCENARIOS = { released: {}, occasions: { ZODIACS_OCCASIONS_ENABLED: '1' }, coverage: { ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' } } as const;
 const REQUESTS: Record<string, [string, unknown, Record<string, string>?]> = {
   initialize: ['/mcp', rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'flag-off', version: '1' } })],
   toolsList: ['/mcp', rpc('tools/list')],

@@ -1,10 +1,11 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName } from './contracts';
+import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName, type CoverageToolName } from './contracts';
 import { createAiServer } from './server';
-import type { AiDependencies } from './tools';
+import { coverageInputRefusal, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
+import { argumentRefusal } from './argument-hints';
 import { reserveAiQuota, type QuotaKind } from './quota';
 import { countAiToolCall, usageHostFamily, type UsageHost } from './usage';
 import { configuredSkyWatch, type SkyWatch } from './watch/service';
@@ -192,24 +193,41 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     let text: string;
     let body: unknown;
     try { text = await readBody(req); body = JSON.parse(text); }
-    catch (error) { return send(res, error instanceof Error && error.message === 'payload-too-large' ? 413 : 400, error instanceof Error && error.message === 'payload-too-large' ? 'payload-too-large' : 'invalid-json'); }
+    catch (error) {
+      if (error instanceof Error && error.message === 'payload-too-large') return send(res, 413, 'payload-too-large');
+      // Unparseable JSON gets the JSON-RPC parse error a client library expects.
+      res.statusCode = 400; for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error: the body is not valid JSON.', data: { code: 'invalid-json' } } })); return;
+    }
     if (!body || typeof body !== 'object' || Array.isArray(body)) return send(res, 400, 'invalid-json-rpc');
     const message = body as Record<string, unknown>;
     let calledTool: CountedToolName | undefined;
     if (message.method === 'tools/call' && message.params && typeof message.params === 'object') {
       const name = (message.params as Record<string, unknown>).name;
       // Only offered tools are counted: the occasion tools count only while their switch is on, the save tool only with accounts.
-      const offered: readonly string[] = env[OCCASIONS_SWITCH_ENV] === '1' ? [...ALL_AI_TOOL_NAMES, ...(account ? [SAVE_TOOL_NAME] : [])] : AI_TOOL_NAMES;
+      const offered: readonly string[] = env[OCCASIONS_SWITCH_ENV] === '1' ? [...(env[COVERAGE_SWITCH_ENV] === '1' ? EVERY_AI_TOOL_NAME : ALL_AI_TOOL_NAMES), ...(account ? [SAVE_TOOL_NAME] : [])] : AI_TOOL_NAMES;
       if (offered.includes(String(name))) operation = String(name);
       if (typeof name === 'string' && name === operation) calledTool = name as CountedToolName;
     }
+    // get_upcoming_events also takes plain YYYY-MM-DD bounds: from becomes that day's
+    // start and to that day's end in UTC, before the unchanged input schema sees them.
+    if (calledTool === 'get_upcoming_events') {
+      const args = (message.params as Record<string, unknown>).arguments as Record<string, unknown> | undefined;
+      let changed = false;
+      for (const [key, clock] of [['from', 'T00:00:00Z'], ['to', 'T23:59:59Z']] as const) {
+        if (args && typeof args[key] === 'string' && /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/.test(args[key] as string)) { args[key] = `${args[key]}${clock}`; changed = true; }
+      }
+      if (changed) text = JSON.stringify(body);
+    }
+    const refusal = calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments) : undefined;
     const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
     if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
     if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list', ...(watch ? ['events/list', 'events/subscribe', 'events/unsubscribe'] : [])].includes(String(message.method))) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
-    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
+    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
       try {
         const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
@@ -234,7 +252,12 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         const panelResource = message.method === 'resources/read' && typeof resourceUri === 'string' && LARGE_PANEL_URIS.has(resourceUri);
         if (Buffer.byteLength(reply) > (panelResource ? 2_100_000 : 262144)) throw new Error('output-budget');
         function sanitize(text: string) {
-          return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text)));
+          const parsed = JSON.parse(text);
+          // A 0.6.0 tool's arguments refused by the SDK's schema check get the tool's own field-named refusal.
+          const named = calledTool && (COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) && parsed.result?.isError && !parsed.result?.structuredContent
+            ? coverageInputRefusal(calledTool as CoverageToolName, (message.params as { arguments?: unknown }).arguments) : null;
+          if (named) return JSON.stringify({ ...parsed, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(named) }], structuredContent: named } });
+          return JSON.stringify(sanitizeProtocolMessage(parsed, refusal));
         }
         let safeReply = reply;
         if (response.headers.get('content-type')?.includes('text/event-stream')) {

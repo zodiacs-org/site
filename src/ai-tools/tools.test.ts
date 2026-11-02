@@ -162,10 +162,10 @@ describe('horoscopes', () => {
     expect(visible).not.toMatch(/UTC|Europe\/London|\d{4}-\d{2}-\d{2}T/);
     expect(data.zoneLabel).toBe('London');
   });
-  it('reports version 0.5.1', async () => {
-    expect(AI_VERSION).toBe('0.5.1');
+  it('reports version 0.6.0', async () => {
+    expect(AI_VERSION).toBe('0.6.0');
     const result = await executeAiTool('get_capabilities', {}, dependencies);
-    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.5.1');
+    if (result.ok && result.tool === 'get_capabilities') expect(result.data.version).toBe('0.6.0');
     else expect.unreachable();
   });
   it('names the missing field in a refusal, with the same code', async () => {

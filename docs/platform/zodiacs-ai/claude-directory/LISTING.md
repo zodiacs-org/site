@@ -1,5 +1,12 @@
 # Claude directory listing
 
+## 0.6.0 prepared, 2 November 2026
+
+Five read-only tools are ready behind `ZODIACS_COVERAGE_ENABLED`, with the
+thirteen in review unchanged. Nothing was synced, saved or sent. The steps,
+a 1,511-character description and a draft note to the reviewers are in
+[RESYNC-0.6.0.md](RESYNC-0.6.0.md).
+
 ## Second sync, 28 October 2026
 
 Dias approved syncing the tools again after R44 (#840) went live. In the

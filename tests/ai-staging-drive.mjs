@@ -58,10 +58,12 @@ try {
   }
   await client.connect(new StreamableHTTPClientTransport(url, { fetch: pacedFetch, requestInit: { headers } }));
   const tools = (await client.listTools()).tools;
-  // 0.5.0 acceptance runs with ZODIACS_OCCASIONS_ENABLED=1 on the staging deployment.
-  assert.equal(tools.length, 13);
+  // 0.5.0 acceptance runs with ZODIACS_OCCASIONS_ENABLED=1 on the staging deployment; 0.6.0 acceptance adds
+  // ZODIACS_COVERAGE_ENABLED=1 and its five tools (ZODIACS_STAGING_COVERAGE=1 tells this drive to expect them).
+  const coverage = process.env.ZODIACS_STAGING_COVERAGE === '1';
+  assert.equal(tools.length, coverage ? 18 : 13);
   for (const tool of tools) { assert.equal(tool.outputSchema.type, 'object'); assert.equal(tool.annotations.readOnlyHint, true); }
-  record('thirteen read-only tools and output schemas');
+  record(`${coverage ? 'eighteen' : 'thirteen'} read-only tools and output schemas`);
   const launcher = tools.find(tool => tool.name === 'open_chart_studio');
   assert.deepEqual(launcher.inputSchema.properties, {});
   assert.equal(launcher.inputSchema.additionalProperties, false);
@@ -83,12 +85,19 @@ try {
     ['get_famous_chart', { name: 'Frida Kahlo' }],
     ['get_birthday', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }],
     ['get_sky_calendar', {}],
+    ...(coverage ? [
+      ['get_natal_chart', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 }],
+      ['get_horoscope_period', { sign: 'leo', period: 'month' }],
+      ['get_chinese_zodiac', { birthDate: '1990-01-20' }],
+      ['get_personal_transits', { birthDate: '1990-05-03' }],
+      ['explain_astrology', { topic: 'Mercury retrograde' }],
+    ] : []),
   ];
   for (const [name, args] of calls) {
     const start = performance.now();
     const result = await client.callTool({ name, arguments: args });
     assert.equal(result.isError, false); assert.equal(result.structuredContent.ok, true);
-    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.5.1');
+    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.6.0');
     if (name === 'get_horoscope') assert.equal(result.structuredContent.data.status, 'available');
     if (name === 'open_chart_studio') assert.deepEqual(result.structuredContent.data, {
       title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only',

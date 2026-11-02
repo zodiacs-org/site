@@ -18,7 +18,14 @@ import { personalWeek } from './features/personal-week';
 import { bestDays, type BestDays } from '../lib/occasions/best-dates';
 import { occasionShareUrl } from '../lib/share-results';
 import { milestoneShareUrl } from './share-links';
-import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
+import { getNatalChart } from './features/natal-chart';
+import { getHoroscopePeriod, type HoroscopeMonths } from './features/horoscope-period';
+import { getChineseZodiac } from './features/chinese-zodiac';
+import { getPersonalTransits } from './features/personal-transits';
+import { explainAstrology } from './features/explain';
+import type { HoroscopeProgram } from '../lib/horoscope-program-types';
+import type { z } from 'zod';
+import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName, type CoverageToolName } from './contracts';
 import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
 
@@ -33,6 +40,12 @@ export interface AiDependencies {
   horoscopeWindow?: () => Promise<HoroscopeWindow>;
   /** The occasion tools (ZODIACS_OCCASIONS_ENABLED=1); off until their release. */
   occasions?: boolean;
+  /** The 0.6.0 tools (ZODIACS_COVERAGE_ENABLED=1), offered only with the occasion tools. */
+  coverage?: boolean;
+  /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
+  horoscopeMonths?: () => Promise<HoroscopeMonths>;
+  /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
+  horoscopeProgram?: () => Promise<HoroscopeProgram>;
   /** save_to_zodiacs is offered (ZODIACS_ACCOUNTS_ENABLED=1 with the occasion tools); changes the declared privacy/limitations. */
   accounts?: boolean;
 }
@@ -86,7 +99,43 @@ export function namedRefusal(message: string, pointer: string | undefined): stri
 /** The tools this server actually offers with these dependencies. */
 export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   const released: AiToolName[] = AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope' || !!dependencies.horoscopeWindow);
-  return dependencies.occasions ? [...released, ...OCCASION_TOOL_NAMES] : released;
+  if (!dependencies.occasions) return released;
+  if (!dependencies.coverage) return [...released, ...OCCASION_TOOL_NAMES];
+  // The period horoscope reads the published months and the program alongside the daily window.
+  const coverage = COVERAGE_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope_period' || (!!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram));
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage];
+}
+
+const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
+
+/** What a field must look like, for refusals that say how to fix it. */
+const FIELD_FORMAT: Record<string, string> = {
+  birthDate: 'a date such as 1990-05-03', date: 'a date such as 2026-12-01', from: 'a date such as 2026-11-01', to: 'a date such as 2026-12-01',
+  time: 'a time such as 08:30', zone: 'a time zone name such as Europe/London', currentZone: 'a time zone name such as Asia/Bangkok', place: 'plain text',
+};
+
+/**
+ * A 0.6.0 tool's refusal of arguments its schema does not accept, naming each field: "birthDate is required.",
+ * "period must be one of: month, year, week.". The sentences are fixed text and the schema's own field names and
+ * values; nothing from the request is repeated, so an unknown property's name never comes back.
+ */
+export function coverageInputRefusal(tool: CoverageToolName, input: unknown) {
+  const parsed = INPUT_SCHEMAS[tool].safeParse(input ?? {});
+  if (parsed.success) return null;
+  const record = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
+  const sentences = parsed.error.issues.map((issue: z.core.$ZodIssue) => {
+    const field = issue.path.map(String).join('.');
+    if (issue.code === 'unrecognized_keys') return 'Leave out fields this tool does not take.';
+    if (issue.code === 'custom' || !field) return issue.message;
+    if (issue.path.length === 1 && record[field] === undefined) return `${field} is required.`;
+    if (issue.code === 'invalid_value' && 'values' in issue) return `${field} must be one of: ${(issue.values as unknown[]).join(', ')}.`;
+    if (issue.code === 'too_small' && 'minimum' in issue && issue.origin === 'number') return `${field} must be at least ${String(issue.minimum)}.`;
+    if (issue.code === 'too_big' && 'maximum' in issue && issue.origin === 'number') return `${field} must be at most ${String(issue.maximum)}.`;
+    if (issue.code === 'invalid_type' && issue.expected === 'number') return `${field} must be a number.`;
+    if (issue.code === 'invalid_type' && issue.expected === 'int') return `${field} must be a whole number.`;
+    return `${field} must be ${FIELD_FORMAT[field] ?? 'in the documented form'}.`;
+  });
+  return failure(tool, 'invalid-request', [...new Set(sentences)].slice(0, 3).join(' '));
 }
 
 /** A computed instant as UTC and as the place's clock reads it. */
@@ -154,6 +203,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     if ((OCCASION_TOOL_NAMES as readonly string[]).includes(tool) && !dependencies.occasions) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    if ((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    if (isCoverageTool(tool)) { const refusal = coverageInputRefusal(tool, input); if (refusal) return refusal; }
     const parsed = INPUT_SCHEMAS[tool].safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
     let data: unknown;
@@ -166,12 +217,18 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       }
       case 'get_capabilities': {
         const statements = engineStatements();
-        data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offeredTools(dependencies), limits: LIMITS, conventions: statements.conventions, coverage: statements.coverage, privacy: dependencies.occasions ? PRIVACY_WITH_BIRTH_TOOLS : PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', 'No eclipse or aspect search, birth-time rectification, reminders or account access.', dependencies.occasions ? 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person’s own chart.' : 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
+        // The capabilities' tool list keeps the thirteen names its published schema allows; tools/list names the 0.6.0 tools.
+        data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offeredTools(dependencies).filter((name) => (ALL_AI_TOOL_NAMES as readonly string[]).includes(name)), limits: LIMITS, conventions: statements.conventions, coverage: statements.coverage, privacy: dependencies.occasions ? PRIVACY_WITH_BIRTH_TOOLS : PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', 'No eclipse or aspect search, birth-time rectification, reminders or account access.', dependencies.occasions ? 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person’s own chart.' : 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
         if (dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result, including any card link that carries the details after its #, goes to the assistant. The famous-chart and sky-calendar tools need no personal details.';
           capabilities.limitations.push('The occasion tools give the sky on a date, rate it from 0 to 100 by astrology\'s traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology\'s life milestones; they do not guarantee how a day will go.');
           capabilities.limitations.push('Compatibility scores two charts by astrology\'s reading of their contacts; it does not guarantee how a relationship will go. Famous charts, alone or compared with someone\'s own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
+        }
+        if (dependencies.occasions && dependencies.coverage) {
+          const capabilities = data as { privacy: string; limitations: string[] };
+          capabilities.privacy += ' The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.';
+          capabilities.limitations.push('Version 0.6.0 adds tools listed in tools/list: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac, dated personal transits for up to 366 days or the year ahead, and explainers of astrology basics. They give astrology\'s reading, never a guarantee, and no health or money predictions.');
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -380,6 +437,61 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       }
       case 'get_sky_calendar': {
         ({ data, links } = getSkyCalendar(INPUT_SCHEMAS.get_sky_calendar.parse(input), dependencies.now?.() ?? new Date()));
+        break;
+      }
+      case 'get_natal_chart': {
+        const args = INPUT_SCHEMAS.get_natal_chart.parse(input);
+        const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : undefined;
+        const result = await feature(() => getNatalChart({ ...args, ...(zone ? { zone } : {}) }, localTime(), ORIGIN));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'get_horoscope_period': {
+        const args = INPUT_SCHEMAS.get_horoscope_period.parse(input);
+        let zone = 'UTC';
+        if (args.zone) {
+          try { zone = await zoneAt(args.zone, '/zone', resolveZone); }
+          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok."); }
+        } else if (context.hostZone) {
+          try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); } catch { /* keep UTC */ }
+        }
+        const result = await feature(() => getHoroscopePeriod(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, localTime(), {
+          window: dependencies.horoscopeWindow!, months: dependencies.horoscopeMonths!, program: dependencies.horoscopeProgram!,
+          ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
+        }, ORIGIN));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        if ('refused' in result) return failure(tool, result.refused, 'Zodiacs is busy. Try again in a minute.', result.refused === 'rate-limited' ? 60 : 300);
+        ({ data, links } = result);
+        break;
+      }
+      case 'get_chinese_zodiac': {
+        const args = INPUT_SCHEMAS.get_chinese_zodiac.parse(input);
+        let zone = 'UTC';
+        if (args.zone) zone = await zoneAt(args.zone, '/zone', resolveZone);
+        else if (context.hostZone) { try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); } catch { /* keep UTC */ } }
+        const result = await feature(async () => getChineseZodiac(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, ORIGIN));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'get_personal_transits': {
+        const args = INPUT_SCHEMAS.get_personal_transits.parse(input);
+        const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : undefined;
+        let currentZone = args.currentZone ? await zoneAt(args.currentZone, '/currentZone', resolveZone) : undefined;
+        if (!currentZone && !zone && context.hostZone) { try { currentZone = await zoneAt(context.hostZone, '/currentZone', resolveZone); } catch { /* keep the default */ } }
+        // A scan of the sky over a window is an event search; count it as one at the hosted boundary.
+        if (dependencies.allowEvents) {
+          const verdict = await dependencies.allowEvents();
+          if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
+        }
+        const result = await feature(() => getPersonalTransits({ ...args, ...(zone ? { zone } : {}), ...(currentZone ? { currentZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), ORIGIN));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'explain_astrology': {
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN));
         break;
       }
     }
