@@ -155,6 +155,16 @@ run_phase6_sql_file \
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_save_tool.sql"
 
+# The 0.6.0 tools join the counted names. Same replay rule.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261101181545_zodiacs_mcp_usage_060_tools.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261101181545_zodiacs_mcp_usage_060_tools.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_060_tools.sql"
+
 # Save to my Zodiacs account: OAuth clients, the Auth projection, the token
 # hook, saved items and their RPC. A reviewed SQL Editor replay must be harmless.
 run_phase6_sql_file \

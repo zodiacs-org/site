@@ -1,56 +1,754 @@
 [
-  {"id":"01","prompt":"What can Zodiacs do?","tool":"get_capabilities","args":{},"ok":true},
-  {"id":"02","prompt":"Show the sky now.","tool":"get_sky","args":{},"ok":true},
-  {"id":"03","prompt":"Show the sky at this offset instant.","tool":"get_sky","args":{"instant":"2026-10-01T11:30:00+05:30"},"ok":true},
-  {"id":"04","prompt":"Show the sky in Bangkok.","tool":"get_sky","args":{"zone":"Asia/Bangkok"},"ok":true},
-  {"id":"05","prompt":"Show the sky in New York.","tool":"get_sky","args":{"zone":"America/New_York"},"ok":true},
-  {"id":"06","prompt":"Show only the Sun and Mercury.","tool":"get_sky","args":{"bodies":["Sun","Mercury"]},"ok":true},
-  {"id":"07","prompt":"Show the earliest supported sky with limitations.","tool":"get_sky","args":{"instant":"1800-01-01T00:00:00Z"},"ok":true},
-  {"id":"08","prompt":"Show the latest supported year with limitations.","tool":"get_sky","args":{"instant":"2199-12-31T00:00:00Z"},"ok":true},
-  {"id":"09","prompt":"Show the J2000 sky.","tool":"get_sky","args":{"instant":"2000-01-01T12:00:00Z"},"ok":true},
-  {"id":"10","prompt":"Show the Moon only.","tool":"get_sky","args":{"bodies":["Moon"]},"ok":true},
-  {"id":"11","prompt":"What changes this week?","tool":"get_upcoming_events","args":{"from":"2026-10-01T00:00:00Z","to":"2026-10-08T00:00:00Z"},"ok":true},
-  {"id":"12","prompt":"Find this month's lunar events.","tool":"get_upcoming_events","args":{"from":"2026-10-01T00:00:00Z","to":"2026-10-31T00:00:00Z","kinds":["lunation"]},"ok":true},
-  {"id":"13","prompt":"Find Moon sign changes in Bangkok.","tool":"get_upcoming_events","args":{"from":"2026-10-01T00:00:00Z","to":"2026-10-08T00:00:00Z","kinds":["ingress"],"bodies":["Moon"],"zone":"Asia/Bangkok"},"ok":true},
-  {"id":"14","prompt":"Find Mercury stations this month.","tool":"get_upcoming_events","args":{"from":"2026-10-01T00:00:00Z","to":"2026-10-31T00:00:00Z","kinds":["station"],"bodies":["Mercury"]},"ok":true},
-  {"id":"15","prompt":"Find lunar events in this quiet hour.","tool":"get_upcoming_events","args":{"from":"2026-10-01T00:00:00Z","to":"2026-10-01T01:00:00Z","kinds":["lunation"]},"ok":true,"empty":true},
-  {"id":"16","prompt":"Search exactly 92 days.","tool":"get_upcoming_events","args":{"from":"2026-10-01T00:00:00Z","to":"2027-01-01T00:00:00Z","kinds":["lunation"]},"ok":true},
-  {"id":"17","prompt":"Search a reversed window.","tool":"get_upcoming_events","args":{"from":"2026-10-08T00:00:00Z","to":"2026-10-01T00:00:00Z"},"ok":false},
-  {"id":"18","prompt":"Search 93 days.","tool":"get_upcoming_events","args":{"from":"2026-10-01T00:00:00Z","to":"2027-01-02T00:00:00Z"},"ok":false},
-  {"id":"19","prompt":"Compute eclipse events.","tool":"get_upcoming_events","args":{"from":"2026-10-01T00:00:00Z","to":"2026-10-08T00:00:00Z","kinds":["eclipse"]},"ok":false},
-  {"id":"20","prompt":"Duplicate a body input.","tool":"get_sky","args":{"bodies":["Sun","Sun"]},"ok":false},
-  {"id":"21","prompt":"Is the Sun in Libra at this instant?","tool":"check_sky_fact","args":{"kind":"sign","body":"Sun","sign":"libra","instant":"2026-10-01T00:00:00Z"},"ok":true,"answer":"true"},
-  {"id":"22","prompt":"Is the Sun in Aries at this instant?","tool":"check_sky_fact","args":{"kind":"sign","body":"Sun","sign":"aries","instant":"2026-10-01T00:00:00Z"},"ok":true,"answer":"false"},
-  {"id":"23","prompt":"Is Mercury retrograde at this instant?","tool":"check_sky_fact","args":{"kind":"retrograde","body":"Mercury","instant":"2026-10-01T00:00:00Z"},"ok":true},
-  {"id":"24","prompt":"Did the Sun enter Libra on this date without a timezone?","tool":"check_sky_fact","args":{"kind":"ingress","body":"Sun","sign":"libra","date":"2026-09-23"},"ok":true,"answer":"depends"},
-  {"id":"25","prompt":"Was there a new Moon on this date, timezone unspecified?","tool":"check_sky_fact","args":{"kind":"phase","phase":"new","date":"2026-10-10"},"ok":true},
-  {"id":"26","prompt":"Check the lunar date in UTC.","tool":"check_sky_fact","args":{"kind":"phase","phase":"new","date":"2026-10-10","zone":"UTC"},"ok":true},
-  {"id":"27","prompt":"Check the ingress in Bangkok's local day.","tool":"check_sky_fact","args":{"kind":"ingress","body":"Sun","sign":"libra","date":"2026-09-23","zone":"Asia/Bangkok"},"ok":true},
-  {"id":"28","prompt":"Check a civil date that Apia skipped.","tool":"check_sky_fact","args":{"kind":"phase","phase":"full","date":"2011-12-30","zone":"Pacific/Apia"},"ok":false},
-  {"id":"29","prompt":"Check February 30.","tool":"check_sky_fact","args":{"kind":"phase","phase":"new","date":"2026-02-30"},"ok":false},
-  {"id":"30","prompt":"Supply both an instant and a date.","tool":"check_sky_fact","args":{"kind":"retrograde","body":"Mercury","date":"2026-10-01","instant":"2026-10-01T00:00:00Z"},"ok":false},
-  {"id":"31","prompt":"Show today's horoscope for Leo.","tool":"get_horoscope","args":{"sign":"leo"},"ok":true},
-  {"id":"32","prompt":"Show me today's horoscope.","tool":"get_horoscope","args":{},"ok":true},
-  {"id":"33","prompt":"Show this week's love horoscope for Pisces in Sydney.","tool":"get_horoscope","args":{"sign":"pisces","period":"week","focus":"love","zone":"Australia/Sydney"},"ok":true},
-  {"id":"34","prompt":"Treat a private value given as a time zone as data.","tool":"get_horoscope","args":{"sign":"aries","zone":"private-canary-1985"},"ok":false},
-  {"id":"35","prompt":"Send a personal field to a public-sky tool.","tool":"get_sky","args":{"birthDetails":"private-canary-1985"},"ok":false},
-  {"id":"36","prompt":"Use a nonexistent timezone.","tool":"get_sky","args":{"zone":"Not/AZone"},"ok":false},
-  {"id":"37","prompt":"Supply an instant without an offset.","tool":"get_sky","args":{"instant":"2026-10-01T00:00:00"},"ok":false},
-  {"id":"38","prompt":"Predict a relationship outcome.","tool":"check_sky_fact","args":{"kind":"relationship-prediction"},"ok":false},
-  {"id":"39","prompt":"Schedule a reminder.","tool":"get_capabilities","args":{"schedule":"tomorrow"},"ok":false},
-  {"id":"40","prompt":"Predict a stock-market outcome.","tool":"check_sky_fact","args":{"kind":"investment-prediction"},"ok":false},
-  {"id":"41","prompt":"Make a card with the sky on our wedding day in Florence.","tool":"get_occasion_sky","args":{"occasion":"wedding","date":"2027-06-12","time":"17:00","zone":"Europe/Rome","latitude":43.7696,"longitude":11.2558,"place":"Florence, Italy"},"ok":true},
-  {"id":"42","prompt":"Give a wedding time without its time zone.","tool":"get_occasion_sky","args":{"occasion":"wedding","date":"2027-06-12","time":"17:00"},"ok":false},
-  {"id":"43","prompt":"List my life milestones from my birth date.","tool":"get_life_milestones","args":{"birthDate":"1990-05-03"},"ok":true},
-  {"id":"44","prompt":"Give a birth time without its time zone.","tool":"get_life_milestones","args":{"birthDate":"1990-05-03","time":"08:30"},"ok":false},
-  {"id":"45","prompt":"Compare two charts from birth dates alone.","tool":"get_compatibility","args":{"a":{"birthDate":"1990-05-03"},"b":{"birthDate":"1992-08-10"}},"ok":true},
-  {"id":"46","prompt":"Compare two charts, one with a birth time and place in Madrid.","tool":"get_compatibility","args":{"a":{"name":"Ana","birthDate":"1990-05-03","time":"08:30","zone":"Europe/Madrid","latitude":40.4168,"longitude":-3.7038},"b":{"birthDate":"1992-08-10"}},"ok":true},
-  {"id":"47","prompt":"Compare with a birth date that does not exist.","tool":"get_compatibility","args":{"a":{"birthDate":"1990-02-30"},"b":{"birthDate":"1992-08-10"}},"ok":false},
-  {"id":"48","prompt":"Compare with only one person.","tool":"get_compatibility","args":{"a":{"birthDate":"1990-05-03"}},"ok":false},
-  {"id":"49","prompt":"Which famous people share my Sun sign?","tool":"find_chart_twins","args":{"birthDate":"1990-05-03"},"ok":true},
-  {"id":"50","prompt":"Show Frida Kahlo's chart.","tool":"get_famous_chart","args":{"name":"Frida Kahlo"},"ok":true,"found":true},
-  {"id":"51","prompt":"Show the chart of someone Zodiacs does not publish.","tool":"get_famous_chart","args":{"name":"Nobody Anybody Zzyzx"},"ok":true,"found":false},
-  {"id":"52","prompt":"What is the sky like on 3 May?","tool":"get_birthday","args":{"date":"05-03"},"ok":true},
-  {"id":"53","prompt":"When is my solar return this year?","tool":"get_birthday","args":{"birthDate":"1990-05-03","time":"08:30","zone":"Europe/Madrid"},"ok":true},
-  {"id":"54","prompt":"Add the sky calendar to my calendar app.","tool":"get_sky_calendar","args":{},"ok":true}
+  {
+    "id": "01",
+    "prompt": "What can Zodiacs do?",
+    "tool": "get_capabilities",
+    "args": {},
+    "ok": true
+  },
+  {
+    "id": "02",
+    "prompt": "Show the sky now.",
+    "tool": "get_sky",
+    "args": {},
+    "ok": true
+  },
+  {
+    "id": "03",
+    "prompt": "Show the sky at this offset instant.",
+    "tool": "get_sky",
+    "args": {
+      "instant": "2026-10-01T11:30:00+05:30"
+    },
+    "ok": true
+  },
+  {
+    "id": "04",
+    "prompt": "Show the sky in Bangkok.",
+    "tool": "get_sky",
+    "args": {
+      "zone": "Asia/Bangkok"
+    },
+    "ok": true
+  },
+  {
+    "id": "05",
+    "prompt": "Show the sky in New York.",
+    "tool": "get_sky",
+    "args": {
+      "zone": "America/New_York"
+    },
+    "ok": true
+  },
+  {
+    "id": "06",
+    "prompt": "Show only the Sun and Mercury.",
+    "tool": "get_sky",
+    "args": {
+      "bodies": [
+        "Sun",
+        "Mercury"
+      ]
+    },
+    "ok": true
+  },
+  {
+    "id": "07",
+    "prompt": "Show the earliest supported sky with limitations.",
+    "tool": "get_sky",
+    "args": {
+      "instant": "1800-01-01T00:00:00Z"
+    },
+    "ok": true
+  },
+  {
+    "id": "08",
+    "prompt": "Show the latest supported year with limitations.",
+    "tool": "get_sky",
+    "args": {
+      "instant": "2199-12-31T00:00:00Z"
+    },
+    "ok": true
+  },
+  {
+    "id": "09",
+    "prompt": "Show the J2000 sky.",
+    "tool": "get_sky",
+    "args": {
+      "instant": "2000-01-01T12:00:00Z"
+    },
+    "ok": true
+  },
+  {
+    "id": "10",
+    "prompt": "Show the Moon only.",
+    "tool": "get_sky",
+    "args": {
+      "bodies": [
+        "Moon"
+      ]
+    },
+    "ok": true
+  },
+  {
+    "id": "11",
+    "prompt": "What changes this week?",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2026-10-08T00:00:00Z"
+    },
+    "ok": true
+  },
+  {
+    "id": "12",
+    "prompt": "Find this month's lunar events.",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2026-10-31T00:00:00Z",
+      "kinds": [
+        "lunation"
+      ]
+    },
+    "ok": true
+  },
+  {
+    "id": "13",
+    "prompt": "Find Moon sign changes in Bangkok.",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2026-10-08T00:00:00Z",
+      "kinds": [
+        "ingress"
+      ],
+      "bodies": [
+        "Moon"
+      ],
+      "zone": "Asia/Bangkok"
+    },
+    "ok": true
+  },
+  {
+    "id": "14",
+    "prompt": "Find Mercury stations this month.",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2026-10-31T00:00:00Z",
+      "kinds": [
+        "station"
+      ],
+      "bodies": [
+        "Mercury"
+      ]
+    },
+    "ok": true
+  },
+  {
+    "id": "15",
+    "prompt": "Find lunar events in this quiet hour.",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2026-10-01T01:00:00Z",
+      "kinds": [
+        "lunation"
+      ]
+    },
+    "ok": true,
+    "empty": true
+  },
+  {
+    "id": "16",
+    "prompt": "Search exactly 92 days.",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2027-01-01T00:00:00Z",
+      "kinds": [
+        "lunation"
+      ]
+    },
+    "ok": true
+  },
+  {
+    "id": "17",
+    "prompt": "Search a reversed window.",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-08T00:00:00Z",
+      "to": "2026-10-01T00:00:00Z"
+    },
+    "ok": false
+  },
+  {
+    "id": "18",
+    "prompt": "Search 93 days.",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2027-01-02T00:00:00Z"
+    },
+    "ok": false
+  },
+  {
+    "id": "19",
+    "prompt": "Compute eclipse events.",
+    "tool": "get_upcoming_events",
+    "args": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2026-10-08T00:00:00Z",
+      "kinds": [
+        "eclipse"
+      ]
+    },
+    "ok": false
+  },
+  {
+    "id": "20",
+    "prompt": "Duplicate a body input.",
+    "tool": "get_sky",
+    "args": {
+      "bodies": [
+        "Sun",
+        "Sun"
+      ]
+    },
+    "ok": false
+  },
+  {
+    "id": "21",
+    "prompt": "Is the Sun in Libra at this instant?",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "sign",
+      "body": "Sun",
+      "sign": "libra",
+      "instant": "2026-10-01T00:00:00Z"
+    },
+    "ok": true,
+    "answer": "true"
+  },
+  {
+    "id": "22",
+    "prompt": "Is the Sun in Aries at this instant?",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "sign",
+      "body": "Sun",
+      "sign": "aries",
+      "instant": "2026-10-01T00:00:00Z"
+    },
+    "ok": true,
+    "answer": "false"
+  },
+  {
+    "id": "23",
+    "prompt": "Is Mercury retrograde at this instant?",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "retrograde",
+      "body": "Mercury",
+      "instant": "2026-10-01T00:00:00Z"
+    },
+    "ok": true
+  },
+  {
+    "id": "24",
+    "prompt": "Did the Sun enter Libra on this date without a timezone?",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "ingress",
+      "body": "Sun",
+      "sign": "libra",
+      "date": "2026-09-23"
+    },
+    "ok": true,
+    "answer": "depends"
+  },
+  {
+    "id": "25",
+    "prompt": "Was there a new Moon on this date, timezone unspecified?",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "phase",
+      "phase": "new",
+      "date": "2026-10-10"
+    },
+    "ok": true
+  },
+  {
+    "id": "26",
+    "prompt": "Check the lunar date in UTC.",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "phase",
+      "phase": "new",
+      "date": "2026-10-10",
+      "zone": "UTC"
+    },
+    "ok": true
+  },
+  {
+    "id": "27",
+    "prompt": "Check the ingress in Bangkok's local day.",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "ingress",
+      "body": "Sun",
+      "sign": "libra",
+      "date": "2026-09-23",
+      "zone": "Asia/Bangkok"
+    },
+    "ok": true
+  },
+  {
+    "id": "28",
+    "prompt": "Check a civil date that Apia skipped.",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "phase",
+      "phase": "full",
+      "date": "2011-12-30",
+      "zone": "Pacific/Apia"
+    },
+    "ok": false
+  },
+  {
+    "id": "29",
+    "prompt": "Check February 30.",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "phase",
+      "phase": "new",
+      "date": "2026-02-30"
+    },
+    "ok": false
+  },
+  {
+    "id": "30",
+    "prompt": "Supply both an instant and a date.",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "retrograde",
+      "body": "Mercury",
+      "date": "2026-10-01",
+      "instant": "2026-10-01T00:00:00Z"
+    },
+    "ok": false
+  },
+  {
+    "id": "31",
+    "prompt": "Show today's horoscope for Leo.",
+    "tool": "get_horoscope",
+    "args": {
+      "sign": "leo"
+    },
+    "ok": true
+  },
+  {
+    "id": "32",
+    "prompt": "Show me today's horoscope.",
+    "tool": "get_horoscope",
+    "args": {},
+    "ok": true
+  },
+  {
+    "id": "33",
+    "prompt": "Show this week's love horoscope for Pisces in Sydney.",
+    "tool": "get_horoscope",
+    "args": {
+      "sign": "pisces",
+      "period": "week",
+      "focus": "love",
+      "zone": "Australia/Sydney"
+    },
+    "ok": true
+  },
+  {
+    "id": "34",
+    "prompt": "Treat a private value given as a time zone as data.",
+    "tool": "get_horoscope",
+    "args": {
+      "sign": "aries",
+      "zone": "private-canary-1985"
+    },
+    "ok": false
+  },
+  {
+    "id": "35",
+    "prompt": "Send a personal field to a public-sky tool.",
+    "tool": "get_sky",
+    "args": {
+      "birthDetails": "private-canary-1985"
+    },
+    "ok": false
+  },
+  {
+    "id": "36",
+    "prompt": "Use a nonexistent timezone.",
+    "tool": "get_sky",
+    "args": {
+      "zone": "Not/AZone"
+    },
+    "ok": false
+  },
+  {
+    "id": "37",
+    "prompt": "Supply an instant without an offset.",
+    "tool": "get_sky",
+    "args": {
+      "instant": "2026-10-01T00:00:00"
+    },
+    "ok": false
+  },
+  {
+    "id": "38",
+    "prompt": "Predict a relationship outcome.",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "relationship-prediction"
+    },
+    "ok": false
+  },
+  {
+    "id": "39",
+    "prompt": "Schedule a reminder.",
+    "tool": "get_capabilities",
+    "args": {
+      "schedule": "tomorrow"
+    },
+    "ok": false
+  },
+  {
+    "id": "40",
+    "prompt": "Predict a stock-market outcome.",
+    "tool": "check_sky_fact",
+    "args": {
+      "kind": "investment-prediction"
+    },
+    "ok": false
+  },
+  {
+    "id": "41",
+    "prompt": "Make a card with the sky on our wedding day in Florence.",
+    "tool": "get_occasion_sky",
+    "args": {
+      "occasion": "wedding",
+      "date": "2027-06-12",
+      "time": "17:00",
+      "zone": "Europe/Rome",
+      "latitude": 43.7696,
+      "longitude": 11.2558,
+      "place": "Florence, Italy"
+    },
+    "ok": true
+  },
+  {
+    "id": "42",
+    "prompt": "Give a wedding time without its time zone.",
+    "tool": "get_occasion_sky",
+    "args": {
+      "occasion": "wedding",
+      "date": "2027-06-12",
+      "time": "17:00"
+    },
+    "ok": false
+  },
+  {
+    "id": "43",
+    "prompt": "List my life milestones from my birth date.",
+    "tool": "get_life_milestones",
+    "args": {
+      "birthDate": "1990-05-03"
+    },
+    "ok": true
+  },
+  {
+    "id": "44",
+    "prompt": "Give a birth time without its time zone.",
+    "tool": "get_life_milestones",
+    "args": {
+      "birthDate": "1990-05-03",
+      "time": "08:30"
+    },
+    "ok": false
+  },
+  {
+    "id": "45",
+    "prompt": "Compare two charts from birth dates alone.",
+    "tool": "get_compatibility",
+    "args": {
+      "a": {
+        "birthDate": "1990-05-03"
+      },
+      "b": {
+        "birthDate": "1992-08-10"
+      }
+    },
+    "ok": true
+  },
+  {
+    "id": "46",
+    "prompt": "Compare two charts, one with a birth time and place in Madrid.",
+    "tool": "get_compatibility",
+    "args": {
+      "a": {
+        "name": "Ana",
+        "birthDate": "1990-05-03",
+        "time": "08:30",
+        "zone": "Europe/Madrid",
+        "latitude": 40.4168,
+        "longitude": -3.7038
+      },
+      "b": {
+        "birthDate": "1992-08-10"
+      }
+    },
+    "ok": true
+  },
+  {
+    "id": "47",
+    "prompt": "Compare with a birth date that does not exist.",
+    "tool": "get_compatibility",
+    "args": {
+      "a": {
+        "birthDate": "1990-02-30"
+      },
+      "b": {
+        "birthDate": "1992-08-10"
+      }
+    },
+    "ok": false
+  },
+  {
+    "id": "48",
+    "prompt": "Compare with only one person.",
+    "tool": "get_compatibility",
+    "args": {
+      "a": {
+        "birthDate": "1990-05-03"
+      }
+    },
+    "ok": false
+  },
+  {
+    "id": "49",
+    "prompt": "Which famous people share my Sun sign?",
+    "tool": "find_chart_twins",
+    "args": {
+      "birthDate": "1990-05-03"
+    },
+    "ok": true
+  },
+  {
+    "id": "50",
+    "prompt": "Show Frida Kahlo's chart.",
+    "tool": "get_famous_chart",
+    "args": {
+      "name": "Frida Kahlo"
+    },
+    "ok": true,
+    "found": true
+  },
+  {
+    "id": "51",
+    "prompt": "Show the chart of someone Zodiacs does not publish.",
+    "tool": "get_famous_chart",
+    "args": {
+      "name": "Nobody Anybody Zzyzx"
+    },
+    "ok": true,
+    "found": false
+  },
+  {
+    "id": "52",
+    "prompt": "What is the sky like on 3 May?",
+    "tool": "get_birthday",
+    "args": {
+      "date": "05-03"
+    },
+    "ok": true
+  },
+  {
+    "id": "53",
+    "prompt": "When is my solar return this year?",
+    "tool": "get_birthday",
+    "args": {
+      "birthDate": "1990-05-03",
+      "time": "08:30",
+      "zone": "Europe/Madrid"
+    },
+    "ok": true
+  },
+  {
+    "id": "54",
+    "prompt": "Add the sky calendar to my calendar app.",
+    "tool": "get_sky_calendar",
+    "args": {},
+    "ok": true
+  },
+  {
+    "id": "55",
+    "prompt": "Read my birth chart: born 3 May 1990 at 8:30 in Madrid.",
+    "tool": "get_natal_chart",
+    "args": {
+      "birthDate": "1990-05-03",
+      "time": "08:30",
+      "zone": "Europe/Madrid",
+      "latitude": 40.4168,
+      "longitude": -3.7038,
+      "place": "Madrid, Spain"
+    },
+    "ok": true
+  },
+  {
+    "id": "56",
+    "prompt": "What's my chart? I was born on 3 May 1990 but don't know the time.",
+    "tool": "get_natal_chart",
+    "args": {
+      "birthDate": "1990-05-03"
+    },
+    "ok": true
+  },
+  {
+    "id": "57",
+    "prompt": "Read my chart, I was born at 8:30.",
+    "tool": "get_natal_chart",
+    "args": {
+      "time": "08:30",
+      "zone": "Europe/Madrid"
+    },
+    "ok": false
+  },
+  {
+    "id": "58",
+    "prompt": "What's the monthly horoscope for Leo?",
+    "tool": "get_horoscope_period",
+    "args": {
+      "sign": "leo",
+      "period": "month"
+    },
+    "ok": true
+  },
+  {
+    "id": "59",
+    "prompt": "Give me Virgo's horoscope for 2027.",
+    "tool": "get_horoscope_period",
+    "args": {
+      "sign": "virgo",
+      "period": "year",
+      "date": "2027-01-01"
+    },
+    "ok": true
+  },
+  {
+    "id": "60",
+    "prompt": "Scorpio love horoscope for this week.",
+    "tool": "get_horoscope_period",
+    "args": {
+      "sign": "scorpio",
+      "period": "week",
+      "focus": "love"
+    },
+    "ok": true
+  },
+  {
+    "id": "61",
+    "prompt": "Monthly horoscope for the sign Ophiuchus.",
+    "tool": "get_horoscope_period",
+    "args": {
+      "sign": "ophiuchus",
+      "period": "month"
+    },
+    "ok": false
+  },
+  {
+    "id": "62",
+    "prompt": "What's my Chinese zodiac sign? I was born 20 January 1990.",
+    "tool": "get_chinese_zodiac",
+    "args": {
+      "birthDate": "1990-01-20"
+    },
+    "ok": true
+  },
+  {
+    "id": "63",
+    "prompt": "I was born in 1988; what animal am I in the Chinese zodiac?",
+    "tool": "get_chinese_zodiac",
+    "args": {
+      "year": 1988
+    },
+    "ok": true
+  },
+  {
+    "id": "64",
+    "prompt": "What year of the Chinese zodiac is it now?",
+    "tool": "get_chinese_zodiac",
+    "args": {},
+    "ok": true
+  },
+  {
+    "id": "65",
+    "prompt": "What transits are coming up for me? Born 3 May 1990 at 8:30 in Madrid.",
+    "tool": "get_personal_transits",
+    "args": {
+      "birthDate": "1990-05-03",
+      "time": "08:30",
+      "zone": "Europe/Madrid",
+      "latitude": 40.4168,
+      "longitude": -3.7038
+    },
+    "ok": true
+  },
+  {
+    "id": "66",
+    "prompt": "What does my year ahead look like astrologically? Born 15 August 1985.",
+    "tool": "get_personal_transits",
+    "args": {
+      "birthDate": "1985-08-15",
+      "mode": "year-ahead"
+    },
+    "ok": true
+  },
+  {
+    "id": "67",
+    "prompt": "Show my transits for the next two years. Born 15 August 1985.",
+    "tool": "get_personal_transits",
+    "args": {
+      "birthDate": "1985-08-15",
+      "from": "2026-10-01",
+      "to": "2028-10-01"
+    },
+    "ok": false
+  },
+  {
+    "id": "68",
+    "prompt": "What does Mercury retrograde mean?",
+    "tool": "explain_astrology",
+    "args": {
+      "topic": "Mercury retrograde"
+    },
+    "ok": true
+  },
+  {
+    "id": "69",
+    "prompt": "What is the seventh house about?",
+    "tool": "explain_astrology",
+    "args": {
+      "topic": "seventh house"
+    },
+    "ok": true
+  },
+  {
+    "id": "70",
+    "prompt": "Explain what a tarot reading means.",
+    "tool": "explain_astrology",
+    "args": {
+      "topic": "tarot"
+    },
+    "ok": true
+  }
 ]

@@ -1,13 +1,44 @@
 {
   "synthetic": true,
   "description": "Concept demonstration only; arbitrary date, unknown time, no angles or houses. Contacts are numerical facts, not predictions. Scanner completeness is not proven.",
-  "engine": "1.0.0",
+  "engine": "1.1.0-rc.1",
   "natal": {
     "receipt": {
+      "conventionIds": [
+        "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+        "angles:gast-and-true-obliquity",
+        "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+        "assessment:finite-reference-cases-only",
+        "broadDateRange:not-certified",
+        "calendar:proleptic-gregorian",
+        "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+        "deltaT:tt-minus-ut1;value-in-result",
+        "deltat-model:iers-utc/1",
+        "deltat-segment:observed",
+        "ephemeris:astronomy-engine@2.1.19",
+        "flag:no-time",
+        "house-absence:unknown-time",
+        "house:whole",
+        "inputSyntax:not-an-astronomical-accuracy-guarantee",
+        "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+        "longitudeUnit:degrees-[0,360)",
+        "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+        "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+        "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+        "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+        "reference:utc-noon",
+        "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+        "time-basis:iers",
+        "time-scale:utc",
+        "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+        "ut1-source:observed",
+        "zodiac:tropical"
+      ],
       "conventions": {
         "angles": "gast-and-true-obliquity",
         "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
         "calendar": "proleptic-gregorian",
+        "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
         "deltaT": "tt-minus-ut1;value-in-result",
         "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
         "longitudeUnit": "degrees-[0,360)",
@@ -32,7 +63,7 @@
           "version": "2.1.19"
         },
         "name": "@zodiacs/engine",
-        "version": "1.0.0"
+        "version": "1.1.0-rc.1"
       },
       "houses": {
         "absenceReason": "unknown-time",
@@ -52,7 +83,9 @@
       "timeKnown": false,
       "timeScale": "utc"
     },
-    "requiredFeatures": [],
+    "requiredFeatures": [
+      "convention-ids"
+    ],
     "result": {
       "angles": null,
       "aspects": [

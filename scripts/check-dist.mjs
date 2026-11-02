@@ -82,6 +82,7 @@ const PHASE1_HOROSCOPE_PATHS = ZODIAC_SIGN_SLUGS.flatMap((sign) => [
   `/horoscopes/${sign}/monthly/`,
   `/horoscopes/${sign}/love/`,
   `/horoscopes/${sign}/career/`,
+  `/horoscopes/${sign}/2026/`,
   `/horoscopes/${sign}/2027/`,
 ]);
 const PHASE1_READER_PATHS = new Set(['/today/', '/horoscopes/', ...PHASE1_HOROSCOPE_PATHS]);
@@ -1343,8 +1344,9 @@ const sitemapPolicy = {
   // Terminal Research adds its archive alone (indexedRegistryResearchPaths): its
   // published notes (227 that day) left the sitemap as noindex pages on 2026-10-26.
   // +1 for /apps/, the English assistant showcase.
+  // +12 for the English-only 2026 yearly horoscope pages.
   // +1 for /developers/time-atlas/, the time atlas dataset and its comparison with tzdb 2025c.
-  total: 1453 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  total: 1465 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1356,7 +1358,7 @@ const sitemapPolicy = {
   // 13 pages in English, es, pt, fr, it, zh-hans and zh-hant.
   chineseZodiac: 91,
   disclosures: 6,
-  extendedHoroscopePages: 72,
+  extendedHoroscopePages: 84,
   dailyReadingPages: 42,
   eventPages: publishedEventPaths.size,
   peoplePages: indexablePeoplePaths.size,
@@ -1370,7 +1372,7 @@ const indexedFamilies = [
   { label: 'disclosures', pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?disclosure\/$/, expected: sitemapPolicy.disclosures, localized: true },
   {
     label: 'English-only extended horoscope pages',
-    pattern: /^\/horoscopes\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/(?:tomorrow|weekly|monthly|love|career|2027)\/$/,
+    pattern: /^\/horoscopes\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/(?:tomorrow|weekly|monthly|love|career|2026|2027)\/$/,
     expected: sitemapPolicy.extendedHoroscopePages,
     localized: false,
   },

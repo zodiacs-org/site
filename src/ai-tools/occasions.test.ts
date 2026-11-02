@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_AI_TOOL_NAMES, AI_TOOL_NAMES, OCCASION_TOOL_NAMES, OUTPUT_SCHEMAS } from './contracts';
+import { ALL_AI_TOOL_NAMES, AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, OCCASION_TOOL_NAMES, OUTPUT_SCHEMAS } from './contracts';
 import { executeAiTool, offeredTools } from './tools';
 
 const off = { now: () => new Date('2026-10-11T12:00:00Z') };
@@ -9,6 +9,10 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
   it('are neither offered nor run until the switch is on', async () => {
     expect(offeredTools(off)).toEqual(AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope'));
     expect(offeredTools(on)).toEqual([...AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope'), ...OCCASION_TOOL_NAMES]);
+    // The 0.6.0 tools need their own switch as well, and the period horoscope its three sources.
+    expect(offeredTools({ ...off, coverage: true })).toEqual(offeredTools(off));
+    expect(offeredTools({ ...on, coverage: true })).toEqual([...offeredTools(on), ...COVERAGE_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope_period')]);
+    expect(await executeAiTool('get_natal_chart', { birthDate: '1990-05-03' }, on)).toMatchObject({ ok: false, error: { code: 'unavailable' } });
     const hidden = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12' }, off);
     expect(hidden).toMatchObject({ ok: false, error: { code: 'unavailable' } });
     const capabilities = await executeAiTool('get_capabilities', {}, on);

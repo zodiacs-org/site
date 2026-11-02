@@ -7,8 +7,13 @@ import { compatibilityInput, compatibilityResult } from './features/compatibilit
 import { chartTwinsData, chartTwinsInput, famousChartData, famousChartInput } from './features/people';
 import { birthdayData, birthdayInput, skyCalendarData, skyCalendarInput } from './features/birthday';
 import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS } from './horoscope/reading';
+import { natalChartData, natalChartInput } from './features/natal-chart';
+import { horoscopePeriodData, horoscopePeriodInput } from './features/horoscope-period';
+import { chineseZodiacData, chineseZodiacInput } from './features/chinese-zodiac';
+import { personalTransitsData, personalTransitsInput } from './features/personal-transits';
+import { explainData, explainInput } from './features/explain';
 
-export const AI_VERSION = '0.5.1';
+export const AI_VERSION = '0.6.0';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 /** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;
@@ -17,9 +22,24 @@ export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_event
  * Offered only where ZODIACS_OCCASIONS_ENABLED=1 (docs/platform/zodiacs-ai/OCCASIONS.md).
  */
 export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'] as const;
+/**
+ * The 0.5 tools: the thirteen the directories reviewed. Their tools/list entries, including this list as the
+ * error branch's and get_capabilities' tool enum, stay byte for byte as published (src/ai-tools/release-060.test.ts).
+ */
 export const ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES] as const;
-export type AiToolName = typeof ALL_AI_TOOL_NAMES[number];
+/**
+ * The 0.6.0 tools: a natal chart readout, monthly, yearly and weekly horoscopes, the Chinese zodiac, personal
+ * transits and astrology explainers. Read-only and anonymous like the others. Offered only where
+ * ZODIACS_COVERAGE_ENABLED=1 joins ZODIACS_OCCASIONS_ENABLED=1, so a deployment changes nothing the directories
+ * see until the owner switches them on (docs/platform/zodiacs-ai/claude-directory/RESYNC-0.6.0.md).
+ */
+export const COVERAGE_TOOL_NAMES = ['get_natal_chart', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'explain_astrology'] as const;
+/** Every tool the hosted server can offer, in tools/list order. */
+export const EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES] as const;
+export type AiToolName = typeof EVERY_AI_TOOL_NAME[number];
+export type CoverageToolName = typeof COVERAGE_TOOL_NAMES[number];
 export const OCCASIONS_SWITCH_ENV = 'ZODIACS_OCCASIONS_ENABLED';
+export const COVERAGE_SWITCH_ENV = 'ZODIACS_COVERAGE_ENABLED';
 /** The compute API's own events bound. */
 export const MAX_EVENT_DAYS = BUDGETS['events.windowDays'];
 export const MAX_HTTP_BYTES = 16_384;
@@ -56,6 +76,11 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   get_famous_chart: 'A famous birth chart',
   get_birthday: 'Your birthday',
   get_sky_calendar: 'Sky calendar for your calendar app',
+  get_natal_chart: 'Birth chart readout',
+  get_horoscope_period: 'Monthly, yearly and weekly horoscopes',
+  get_chinese_zodiac: 'Chinese zodiac',
+  get_personal_transits: 'Your transits',
+  explain_astrology: 'Astrology explained',
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).');
@@ -104,6 +129,11 @@ export const INPUT_SCHEMAS = {
   get_famous_chart: famousChartInput,
   get_birthday: birthdayInput,
   get_sky_calendar: skyCalendarInput,
+  get_natal_chart: natalChartInput,
+  get_horoscope_period: horoscopePeriodInput,
+  get_chinese_zodiac: chineseZodiacInput,
+  get_personal_transits: personalTransitsInput,
+  explain_astrology: explainInput,
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
@@ -236,13 +266,20 @@ const dataSchemas = {
   get_famous_chart: famousChartData,
   get_birthday: birthdayData,
   get_sky_calendar: skyCalendarData,
+  get_natal_chart: natalChartData,
+  get_horoscope_period: horoscopePeriodData,
+  get_chinese_zodiac: chineseZodiacData,
+  get_personal_transits: personalTransitsData,
+  explain_astrology: explainData,
 };
 
 export const ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(ALL_AI_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** The 0.6.0 tools' refusal: the same shape, naming only their own tools, so the 0.5 schemas keep their bytes. */
+export const COVERAGE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(COVERAGE_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: S) {
   return z.union([
     z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(true), tool: z.literal(tool), data, links: z.array(link) }),
-    ERROR_SCHEMA,
+    (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) ? COVERAGE_ERROR_SCHEMA : ERROR_SCHEMA,
   ]);
 }
 export const OUTPUT_SCHEMAS = {
@@ -257,6 +294,11 @@ export const OUTPUT_SCHEMAS = {
   get_famous_chart: outputSchema('get_famous_chart', dataSchemas.get_famous_chart),
   get_birthday: outputSchema('get_birthday', dataSchemas.get_birthday),
   get_sky_calendar: outputSchema('get_sky_calendar', dataSchemas.get_sky_calendar),
+  get_natal_chart: outputSchema('get_natal_chart', dataSchemas.get_natal_chart),
+  get_horoscope_period: outputSchema('get_horoscope_period', dataSchemas.get_horoscope_period),
+  get_chinese_zodiac: outputSchema('get_chinese_zodiac', dataSchemas.get_chinese_zodiac),
+  get_personal_transits: outputSchema('get_personal_transits', dataSchemas.get_personal_transits),
+  explain_astrology: outputSchema('explain_astrology', dataSchemas.explain_astrology),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
@@ -274,4 +316,9 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up. If they want to share the chart, give them the returned shareUrl exactly.",
   get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it carries the month and day, never the year.",
   get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event.",
+  get_natal_chart: "Reads one person's birth chart: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets, and the balance of elements and modes, each with what astrology traditionally reads into it. It needs the birth date; add the birth time, the birthplace's time zone and its latitude and longitude when the person gives them, and never guess a birth time. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. For an interactive chart the person fills in themselves, use open_chart_studio instead. Give the returned chartUrl exactly to open the chart on Zodiacs.",
+  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year or a week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses. Monthly readings are published from the first of each month; the yearly reading covers 2027; the week is the current week's reading, and with focus love or career it adds that focus's daily readings in the week and keeps the sky events that bear on it. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. For today's or tomorrow's horoscope use get_horoscope. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
+  get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own.",
+  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Give the birth date, and the time, birthplace time zone and coordinates if known; never guess a birth time. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon and rising degree, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. Present the lines as astrology's reading, never a guarantee, and do not turn them into health or money predictions.",
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own reference text, with links to the zodiacs.org pages about it: a sign and its traits, a planet, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'.",
 };
