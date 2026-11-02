@@ -30340,16 +30340,67 @@ function registerSaveTool(server, dependencies, account) {
 }
 
 // src/ai-tools/sanitize.ts
-function sanitizeProtocolMessage(message) {
+function sanitizeProtocolMessage(message, refusal) {
   if (message.error) message.error = {
     code: message.error.code,
     message: "The MCP request does not match a supported operation or schema.",
     ...message.error.code === -32015 ? { data: { reason: message.error.data?.reason === "timeout" ? "timeout" : "challenge_failed" } } : {}
   };
   else if (message.result?.isError && !message.result?.structuredContent?.schema && message.result.content?.some((item) => item.type === "text" && item.text.startsWith("Input validation error:"))) {
-    message.result.content = [{ type: "text", text: "The tool arguments do not match the supported schema." }];
+    if (refusal) {
+      message.result.structuredContent = refusal;
+      message.result.content = [{ type: "text", text: JSON.stringify(refusal) }];
+    } else message.result.content = [{ type: "text", text: "The tool arguments do not match the supported schema." }];
   }
   return message;
+}
+
+// src/ai-tools/argument-hints.ts
+var shapeOf = (schema) => schema?.shape ?? schema?._zod?.def?.shape ?? (schema?._zod?.def?.innerType ? shapeOf(schema._zod.def.innerType) : schema?._zod?.def?.in ? shapeOf(schema._zod.def.in) : void 0);
+var unwrap = (schema) => {
+  let s = schema;
+  for (let i = 0; i < 6 && s?._zod?.def?.innerType; i++) s = s._zod.def.innerType;
+  return s;
+};
+var ISO_HINT = " Use an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00, not a plain date.";
+function fieldAt(schema, path) {
+  let current = schema;
+  const names = [];
+  for (const key of path) {
+    if (typeof key === "number") {
+      const inner = unwrap(current)?._zod?.def?.element;
+      if (!inner) return void 0;
+      current = inner;
+      names.push(`[${key}]`);
+      continue;
+    }
+    const shape = shapeOf(unwrap(current));
+    if (typeof key !== "string" || !shape || !Object.prototype.hasOwnProperty.call(shape, key)) return void 0;
+    current = shape[key];
+    names.push(names.length ? `.${key}` : key);
+  }
+  return names.length ? { name: names.join(""), field: current } : void 0;
+}
+function sentence(issue, schema) {
+  if (issue.code === "custom") return issue.message;
+  if (issue.code === "unrecognized_keys") return "The arguments include a field this tool does not accept; call tools/list for its fields.";
+  const located = fieldAt(schema, issue.path);
+  if (!located) return "The arguments do not match the input schema; call tools/list for its fields.";
+  const { name, field } = located;
+  const inner = unwrap(field);
+  const description = field?.description ?? inner?.description;
+  if (issue.code === "invalid_type" && issue.input === void 0) return `${name} is required.`;
+  if (issue.code === "invalid_value" && Array.isArray(issue.values)) return `${name} must be one of: ${issue.values.join(", ")}.`;
+  const iso3 = /ISO 8601 time with Z or an offset/.test(description ?? "");
+  return `${name} is not in the accepted form.${iso3 ? ISO_HINT : description ? ` ${description}` : ""}`;
+}
+function argumentRefusal(tool, args) {
+  const schema = INPUT_SCHEMAS[tool];
+  if (!schema) return void 0;
+  const parsed = schema.safeParse(args ?? {});
+  if (parsed.success) return void 0;
+  const message = [...new Set(parsed.error.issues.slice(0, 4).map((issue) => sentence(issue, schema)))].join(" ");
+  return { schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code: "invalid-arguments", message } };
 }
 
 // src/ai-tools/quota.ts
@@ -30590,7 +30641,12 @@ function createAiNodeHandler(options = {}) {
         text2 = await readBody(req);
         body2 = JSON.parse(text2);
       } catch (error) {
-        return send(res, error instanceof Error && error.message === "payload-too-large" ? 413 : 400, error instanceof Error && error.message === "payload-too-large" ? "payload-too-large" : "invalid-json");
+        if (error instanceof Error && error.message === "payload-too-large") return send(res, 413, "payload-too-large");
+        res.statusCode = 400;
+        for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        res.end(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error: the body is not valid JSON.", data: { code: "invalid-json" } } }));
+        return;
       }
       if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
       const message = body2;
@@ -30601,6 +30657,18 @@ function createAiNodeHandler(options = {}) {
         if (offered.includes(String(name))) operation = String(name);
         if (typeof name === "string" && name === operation) calledTool = name;
       }
+      if (calledTool === "get_upcoming_events") {
+        const args = message.params.arguments;
+        let changed = false;
+        for (const [key, clock2] of [["from", "T00:00:00Z"], ["to", "T23:59:59Z"]]) {
+          if (args && typeof args[key] === "string" && /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/.test(args[key])) {
+            args[key] = `${args[key]}${clock2}`;
+            changed = true;
+          }
+        }
+        if (changed) text2 = JSON.stringify(body2);
+      }
+      const refusal = calledTool ? argumentRefusal(calledTool, message.params.arguments) : void 0;
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
       if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list", ...watch ? ["events/list", "events/subscribe", "events/unsubscribe"] : []].includes(String(message.method))) {
@@ -30632,7 +30700,7 @@ function createAiNodeHandler(options = {}) {
         });
         if (response.body) {
           let sanitize2 = function(text3) {
-            return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text3)));
+            return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text3), refusal));
           };
           var sanitize = sanitize2;
           const reply = await response.text();
