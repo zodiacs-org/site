@@ -237,6 +237,8 @@ describe('Phase 1 layout and motion contract', () => {
     expect(todayPageRule).toContain(
       "font-family: Arial, 'Liberation Sans', system-ui, -apple-system, sans-serif;",
     );
+    expect(today).toMatch(/\.today-skyline \.skyticker \{ font-family: var\(--today-face\); \}/u);
+    expect(today).toMatch(/\.today-skyline \.skyticker__label \{[^}]*font-family: Georgia, 'Liberation Serif', 'Times New Roman', serif;/u);
     expect(todayPageRule).not.toContain('Fallback');
     for (const phase1Surface of [today, hub, program]) {
       expect(phase1Surface).toMatch(/<Base\s+[\s\S]*?stableTypography/u);
