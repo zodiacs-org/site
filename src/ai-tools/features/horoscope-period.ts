@@ -6,7 +6,7 @@
  *   /horoscopes/{sign}/monthly/ page's text, as src/data/horoscope-months.json),
  *   served from the month's first day as the page is.
  * - year: the yearly reading the horoscope program publishes
- *   (src/data/horoscope-program.json, the /horoscopes/{sign}/2027/ page).
+ *   (src/data/horoscope-program.json, the /horoscopes/{sign}/{year}/ pages).
  * - week: the weekly reading get_horoscope gives (the horoscope window), and
  *   for love or career that focus's daily readings in the same week.
  *
@@ -133,8 +133,9 @@ export async function getHoroscopePeriod(
   const months = await sources.months();
   // A month written ahead is served from its first day, as the monthly page is.
   const servedMonths = Object.keys(months.months).filter((month) => month <= today.slice(0, 7)).sort();
-  const program = args.period === 'year' ? await sources.program() : null;
-  const years = program ? Object.keys(program.signs[0]?.readings ?? {}).map((surface) => /^yearly-(\d{4})$/u.exec(surface)?.[1]).filter((year): year is string => !!year).map(Number) : [2027];
+  // The years on offer come from the yearly readings the program actually holds, for every period.
+  const program = await sources.program();
+  const years = Object.keys(program.signs[0]?.readings ?? {}).map((surface) => /^yearly-(\d{4})$/u.exec(surface)?.[1]).filter((year): year is string => !!year).map(Number).sort((a, b) => a - b);
   const start = async (day: string) => { await clock.prepareLocalTime(day, zone); return clock.resolveLocalToUtc(day, '00:00', zone).utc; };
 
   let from: string;
@@ -164,7 +165,7 @@ export async function getHoroscopePeriod(
       ? `The ${label} reading for ${signName} isn't published yet; monthly readings appear on the first of the month.`
       : `Zodiacs has no published ${label} reading for ${signName} to give here.`);
   } else if (args.period === 'year') {
-    const yearly = program!.signs.find((entry) => entry.sign === sign)?.readings[`yearly-${label}` as keyof HoroscopeProgram['signs'][number]['readings']];
+    const yearly = program.signs.find((entry) => entry.sign === sign)?.readings[`yearly-${label}` as keyof HoroscopeProgram['signs'][number]['readings']];
     if (yearly && yearly.status === 'publishable') {
       reading = { title: yearly.title, paragraphs: yearly.passages.map((passage) => (passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })), published: null };
       pageUrl = `${origin}/horoscopes/${sign}/${label}/`;
