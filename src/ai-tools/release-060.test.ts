@@ -33,6 +33,8 @@ beforeAll(async () => {
   const handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' }, allowedHosts, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
     countUsage: async () => undefined, dependencies: { horoscopeWindow: window, horoscopeMonths: months, horoscopeProgram: program } });
   server = createServer((req, res) => { void handle(req, res); });
+  // Long tests in between leave the client's pooled socket idle; keep it open so it is never reset mid-suite.
+  server.keepAliveTimeout = 10 * 60_000;
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
   allowedHosts.push(host);
