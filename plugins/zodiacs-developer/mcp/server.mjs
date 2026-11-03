@@ -36665,6 +36665,17 @@ function normaliseCoverageInput(tool, input) {
   const lower = sign2.trim().toLowerCase();
   return HOROSCOPE_SIGNS.includes(lower) ? { ...input, sign: lower } : input;
 }
+function normaliseCoverageCall(message) {
+  if (!message || typeof message !== "object" || Array.isArray(message)) return false;
+  const { method, params } = message;
+  if (method !== "tools/call" || !params || typeof params !== "object" || Array.isArray(params)) return false;
+  const call = params;
+  if (typeof call.name !== "string" || !COVERAGE_TOOL_NAMES.includes(call.name)) return false;
+  const input = normaliseCoverageInput(call.name, call.arguments);
+  if (input === call.arguments) return false;
+  call.arguments = input;
+  return true;
+}
 async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, context = {}) {
   input = normaliseCoverageInput(tool, input);
   let ownedLocalTime;
@@ -37659,6 +37670,15 @@ function build() {
   server.registerTool("compare_calculation_records", { description: `Compare two record strings locally. Pass the record field from calculate_natal_chart with output: record. Do not pass paths or URLs. Preserve evidence levels. ${PRIVACY.assistant}`, inputSchema: COMPARE_INPUT, annotations: READ_ONLY }, (args) => respond(() => compareCalculationRecords(args)));
   return server;
 }
+function normaliseLine(line) {
+  try {
+    const message = JSON.parse(line.toString("utf8"));
+    return normaliseCoverageCall(message) ? Buffer.from(`${JSON.stringify(message)}
+`) : line;
+  } catch {
+    return line;
+  }
+}
 var pending = [];
 var size = 0;
 var dropping = false;
@@ -37682,7 +37702,7 @@ var gate = new Transform({ transform(chunk, _encoding, done) {
     pending.push(part);
     size += part.length;
     if (newline >= 0) {
-      this.push(Buffer.concat(pending, size));
+      this.push(normaliseLine(Buffer.concat(pending, size)));
       pending = [];
       size = 0;
     }

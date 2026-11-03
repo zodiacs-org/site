@@ -193,3 +193,30 @@ describe('every link the 0.6.0 tools return', () => {
     expect([...missing]).toEqual([]);
   }, 120_000);
 });
+
+describe('get_horoscope_period over /mcp takes a sign as written', () => {
+  const call = async (name: string, args: unknown) => (await rpc('tools/call', { name, arguments: args })).result;
+
+  it('lower-cases and trims the sign before the SDK checks the published enum', async () => {
+    const expected = await call('get_horoscope_period', { sign: 'leo', period: 'month', date: '2026-11-01' });
+    expect(expected.isError).toBeFalsy();
+    expect(expected.structuredContent.ok).toBe(true);
+    expect(expected.structuredContent.data.sign).toBe('leo');
+    for (const sign of ['Leo', 'LEO', ' leo ']) {
+      const result = await call('get_horoscope_period', { sign, period: 'month', date: '2026-11-01' });
+      expect(result.isError, sign).toBeFalsy();
+      expect(result.structuredContent, sign).toEqual(expected.structuredContent);
+    }
+  });
+
+  it('still refuses a sign that is not one, and leaves the thirteen tools as they were', async () => {
+    expect((await call('get_horoscope_period', { sign: 'Lion', period: 'month' })).structuredContent.error.message).toBe(`sign must be one of: ${HOROSCOPE_SIGNS.join(', ')}.`);
+    // get_horoscope's published enum is lower case and its arguments reach the SDK unchanged.
+    const old = await call('get_horoscope', { sign: 'Leo' });
+    expect(old.isError).toBe(true);
+    expect(old.structuredContent?.ok).not.toBe(true);
+    const ok = await call('get_horoscope', { sign: 'leo' });
+    expect(ok.isError).toBeFalsy();
+    expect(ok.structuredContent.ok).toBe(true);
+  });
+});

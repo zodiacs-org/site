@@ -223,6 +223,23 @@ export function normaliseCoverageInput(tool: AiToolName, input: unknown): unknow
   return (HOROSCOPE_SIGNS as readonly string[]).includes(lower) ? { ...input, sign: lower } : input;
 }
 
+/**
+ * The same, for a JSON-RPC tools/call message before the MCP SDK checks it against the published schema: a 0.6.0
+ * tool's arguments are replaced in place with their normalised form. True when they changed; any other message,
+ * including a call to one of the thirteen, is left as it is.
+ */
+export function normaliseCoverageCall(message: unknown): boolean {
+  if (!message || typeof message !== 'object' || Array.isArray(message)) return false;
+  const { method, params } = message as Record<string, unknown>;
+  if (method !== 'tools/call' || !params || typeof params !== 'object' || Array.isArray(params)) return false;
+  const call = params as Record<string, unknown>;
+  if (typeof call.name !== 'string' || !(COVERAGE_TOOL_NAMES as readonly string[]).includes(call.name)) return false;
+  const input = normaliseCoverageInput(call.name as CoverageToolName, call.arguments);
+  if (input === call.arguments) return false;
+  call.arguments = input;
+  return true;
+}
+
 /** One typed operation per call. No network, persistence or logs; the horoscope window is read through its injected loader. */
 export async function executeAiTool(tool: AiToolName, input: unknown, dependencies: AiDependencies, context: AiCallContext = {}) {
   input = normaliseCoverageInput(tool, input);

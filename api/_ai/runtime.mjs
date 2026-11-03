@@ -35422,6 +35422,17 @@ function normaliseCoverageInput(tool, input) {
   const lower = sign2.trim().toLowerCase();
   return HOROSCOPE_SIGNS.includes(lower) ? { ...input, sign: lower } : input;
 }
+function normaliseCoverageCall(message) {
+  if (!message || typeof message !== "object" || Array.isArray(message)) return false;
+  const { method, params } = message;
+  if (method !== "tools/call" || !params || typeof params !== "object" || Array.isArray(params)) return false;
+  const call = params;
+  if (typeof call.name !== "string" || !COVERAGE_TOOL_NAMES.includes(call.name)) return false;
+  const input = normaliseCoverageInput(call.name, call.arguments);
+  if (input === call.arguments) return false;
+  call.arguments = input;
+  return true;
+}
 async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, context = {}) {
   input = normaliseCoverageInput(tool, input);
   let ownedLocalTime;
@@ -37043,6 +37054,7 @@ function createAiNodeHandler(options = {}) {
         }
         if (changed) text2 = JSON.stringify(body2);
       }
+      if (calledTool && normaliseCoverageCall(body2)) text2 = JSON.stringify(body2);
       const refusal = calledTool ? argumentRefusal(calledTool, message.params.arguments) : void 0;
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
