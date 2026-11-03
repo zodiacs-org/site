@@ -89,6 +89,13 @@ describe('explain_astrology', () => {
     expect(data.related).toContain('tenth-house');
     expect(JSON.stringify(data)).not.toMatch(/[–—]/u);
     expect(matchPlacement('Mars in the 13th house')).toBeNull();
+    // A degree or decan is not a house.
+    for (const query of ['Jupiter in 12° Leo', 'Jupiter in 12 degrees Leo', 'Moon in the first decan of Scorpio', 'Venus in the 3rd degree of Taurus']) {
+      expect(matchPlacement(query)?.house ?? null, query).toBeNull();
+    }
+    for (const query of ['Moon in the 13th degree of Scorpio', 'Mars in the 13th decan']) {
+      expect(matchNoSuchHouse(query), query).toBeNull();
+    }
     expect(matchPlacement('Is Mercury in retrograde')).toBeNull();
   });
 

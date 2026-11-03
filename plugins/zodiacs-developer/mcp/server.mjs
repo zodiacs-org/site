@@ -35127,7 +35127,8 @@ var SIGN_WORDS = SIGNS2.map((sign2) => sign2.slug).join("|");
 var HOUSE_WORDS = `${HOUSE_SLUGS.join("|")}|1[0-2](?:st|nd|rd|th)?|[1-9](?:st|nd|rd|th)?`;
 var PLANET_IN_SIGN = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (${SIGN_WORDS})\\b`, "u");
 var SIGN_PLANET = new RegExp(`\\b(${SIGN_WORDS}) (${PLANET_WORDS})\\b`, "u");
-var PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(?:(${HOUSE_WORDS})(?: house)?|house (1[0-2]|[1-9]))\\b`, "u");
+var NOT_A_HOUSE = `(?! (?:degrees?|deg|decans?|minutes?|of|${SIGN_WORDS})\\b)`;
+var PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(?:(${HOUSE_WORDS})(?: house\\b|\\b${NOT_A_HOUSE})|house (1[0-2]|[1-9])\\b)`, "u");
 var HOUSE_PLANET = new RegExp(`\\b(${HOUSE_WORDS}) house (${PLANET_WORDS})\\b`, "u");
 var PLANET_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (${HOUSE_WORDS}) house\\b`, "u");
 var SIGN_RISING = new RegExp(`\\b(${SIGN_WORDS}) (?:rising|ascendant|asc)\\b`, "u");
@@ -35137,7 +35138,7 @@ var IC_WORDS = "ic|imum coeli";
 var ANGLE_IN_SIGN = new RegExp(`\\b(${MC_WORDS}|${IC_WORDS})(?: sign)? (?:is |in |of )+(${SIGN_WORDS})\\b`, "u");
 var SIGN_ANGLE = new RegExp(`\\b(${SIGN_WORDS}) (${MC_WORDS}|${IC_WORDS})\\b`, "u");
 var BEYOND_TWELVE = ["zeroth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth"];
-var NO_SUCH_HOUSE = new RegExp(`\\b(?:(\\d+(?:st|nd|rd|th)?|${BEYOND_TWELVE.join("|")}) house|house (\\d+)|(?:${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(\\d+(?:st|nd|rd|th)|${BEYOND_TWELVE.join("|")}))\\b`, "u");
+var NO_SUCH_HOUSE = new RegExp(`\\b(?:(\\d+(?:st|nd|rd|th)?|${BEYOND_TWELVE.join("|")}) house|house (\\d+)|(?:${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(\\d+(?:st|nd|rd|th)|${BEYOND_TWELVE.join("|")})\\b${NOT_A_HOUSE})\\b`, "u");
 var DIGNITY = /\b(?:in|its|their) (?:fall|detriment|exaltation|domicile)\b/u;
 function matchPlacement(query) {
   const text2 = clean2(query);

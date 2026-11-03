@@ -186,7 +186,10 @@ const HOUSE_WORDS = `${HOUSE_SLUGS.join('|')}|1[0-2](?:st|nd|rd|th)?|[1-9](?:st|
 const PLANET_IN_SIGN = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (${SIGN_WORDS})\\b`, 'u');
 const SIGN_PLANET = new RegExp(`\\b(${SIGN_WORDS}) (${PLANET_WORDS})\\b`, 'u');
 // "Jupiter in the 12th house", "Jupiter in 12th", "Jupiter in the twelfth", "Venus in house 7".
-const PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(?:(${HOUSE_WORDS})(?: house)?|house (1[0-2]|[1-9]))\\b`, 'u');
+// A bare number or ordinal names a house only when no degree, decan or sign follows it:
+// "Jupiter in 12 Leo" and "Moon in the first decan of Scorpio" are not house placements.
+const NOT_A_HOUSE = `(?! (?:degrees?|deg|decans?|minutes?|of|${SIGN_WORDS})\\b)`;
+const PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(?:(${HOUSE_WORDS})(?: house\\b|\\b${NOT_A_HOUSE})|house (1[0-2]|[1-9])\\b)`, 'u');
 // "12th house Jupiter", "Jupiter 12th house".
 const HOUSE_PLANET = new RegExp(`\\b(${HOUSE_WORDS}) house (${PLANET_WORDS})\\b`, 'u');
 const PLANET_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (${HOUSE_WORDS}) house\\b`, 'u');
@@ -200,7 +203,7 @@ const ANGLE_IN_SIGN = new RegExp(`\\b(${MC_WORDS}|${IC_WORDS})(?: sign)? (?:is |
 const SIGN_ANGLE = new RegExp(`\\b(${SIGN_WORDS}) (${MC_WORDS}|${IC_WORDS})\\b`, 'u');
 const BEYOND_TWELVE = ['zeroth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth'];
 // A house past the twelfth (or a zeroth), with or without the word house after a planet.
-const NO_SUCH_HOUSE = new RegExp(`\\b(?:(\\d+(?:st|nd|rd|th)?|${BEYOND_TWELVE.join('|')}) house|house (\\d+)|(?:${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(\\d+(?:st|nd|rd|th)|${BEYOND_TWELVE.join('|')}))\\b`, 'u');
+const NO_SUCH_HOUSE = new RegExp(`\\b(?:(\\d+(?:st|nd|rd|th)?|${BEYOND_TWELVE.join('|')}) house|house (\\d+)|(?:${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(\\d+(?:st|nd|rd|th)|${BEYOND_TWELVE.join('|')})\\b${NOT_A_HOUSE})\\b`, 'u');
 const DIGNITY = /\b(?:in|its|their) (?:fall|detriment|exaltation|domicile)\b/u;
 
 export interface Placement { planet: (typeof PLANETS)[number]; sign: Sign | null; house: number | null }
