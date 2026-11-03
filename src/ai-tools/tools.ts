@@ -18,7 +18,7 @@ import { personalWeek } from './features/personal-week';
 import { bestDays, type BestDays } from '../lib/occasions/best-dates';
 import { occasionShareUrl } from '../lib/share-results';
 import { milestoneShareUrl } from './share-links';
-import { getNatalChart } from './features/natal-chart';
+import { NATAL_MAX_YEAR, NATAL_MIN_YEAR, getNatalChart } from './features/natal-chart';
 import { getHoroscopePeriod, type HoroscopeMonths } from './features/horoscope-period';
 import { getChineseZodiac } from './features/chinese-zodiac';
 import { getPersonalTransits } from './features/personal-transits';
@@ -26,7 +26,7 @@ import { explainAstrology } from './features/explain';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName, type CoverageToolName } from './contracts';
-import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
+import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
 
 export interface AiDependencies {
@@ -122,6 +122,12 @@ const FIELD_FORMAT: Record<string, string> = {
   time: 'a time such as 08:30', zone: 'a time zone name such as Europe/London', currentZone: 'a time zone name such as Asia/Bangkok', place: 'plain text',
 };
 
+/** The birth years a tool takes, named when a date in the right form falls outside them (1799-05-03). */
+const BIRTH_YEARS: Partial<Record<CoverageToolName, string>> = {
+  get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
+  get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
+};
+
 /**
  * A 0.6.0 tool's refusal of arguments its schema does not accept, naming each field: "birthDate is required.",
  * "period must be one of: month, year, week.". The sentences are fixed text and the schema's own field names and
@@ -141,6 +147,7 @@ export function coverageInputRefusal(tool: CoverageToolName, input: unknown) {
     if (issue.code === 'too_big' && 'maximum' in issue && issue.origin === 'number') return `${field} must be at most ${String(issue.maximum)}.`;
     if (issue.code === 'invalid_type' && issue.expected === 'number') return `${field} must be a number.`;
     if (issue.code === 'invalid_type' && issue.expected === 'int') return `${field} must be a whole number.`;
+    if (field === 'birthDate' && BIRTH_YEARS[tool] && typeof record.birthDate === 'string' && /^\d{4}-\d{2}-\d{2}$/u.test(record.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1990-05-03.`;
     return `${field} must be ${FIELD_FORMAT[field] ?? 'in the documented form'}.`;
   });
   return failure(tool, 'invalid-request', [...new Set(sentences)].slice(0, 3).join(' '));
@@ -204,8 +211,21 @@ async function feature<T>(run: () => Promise<T>): Promise<T | { failure: string 
   }
 }
 
+/**
+ * get_horoscope_period takes a sign as written ("Leo", "LEO", " leo "): it is lower-cased before validation, so the
+ * published schema keeps its lower-case enum and any other value is refused as before.
+ */
+export function normaliseCoverageInput(tool: AiToolName, input: unknown): unknown {
+  if (tool !== 'get_horoscope_period' || !input || typeof input !== 'object' || Array.isArray(input)) return input;
+  const sign = (input as Record<string, unknown>).sign;
+  if (typeof sign !== 'string') return input;
+  const lower = sign.trim().toLowerCase();
+  return (HOROSCOPE_SIGNS as readonly string[]).includes(lower) ? { ...input, sign: lower } : input;
+}
+
 /** One typed operation per call. No network, persistence or logs; the horoscope window is read through its injected loader. */
 export async function executeAiTool(tool: AiToolName, input: unknown, dependencies: AiDependencies, context: AiCallContext = {}) {
+  input = normaliseCoverageInput(tool, input);
   let ownedLocalTime: ReturnType<typeof createLocalTimeModule> | undefined;
   const localTime = () => dependencies.localTime ?? (ownedLocalTime ??= createLocalTimeModule());
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);

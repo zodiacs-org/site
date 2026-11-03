@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { executeAiTool } from '../tools';
 import { bigThree } from '../../lib/interpretations';
-import { EXPLAIN_TOPICS, explainAstrology, matchNoSuchHouse, matchPlacement, matchRising, matchTopic } from './explain';
+import { EXPLAIN_TOPICS, explainAstrology, matchAngleSign, matchNoSuchHouse, matchPlacement, matchRising, matchTopic } from './explain';
 
 const on = { occasions: true, coverage: true };
 
@@ -151,9 +151,50 @@ describe('explain_astrology', () => {
     for (const query of ['12th house', 'Moon in the 1st house', 'jupiter in 12th', 'houses']) expect(matchNoSuchHouse(query), query).toBeNull();
     const { data } = explainAstrology({ topic: 'Moon in the 13th house' });
     expect(data).toMatchObject({ found: true, topic: 'houses' });
-    expect(data.paragraphs[0]).toBe('There is no 13th house. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.');
-    expect(data.message).toBe('Western astrology has twelve houses; there is no 13th house. Say so plainly before explaining the twelve.');
+    expect(data.paragraphs[0]).toBe('There is no 13th house; houses are numbered 1 to 12. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.');
+    expect(data.message).toBe('Western astrology has twelve houses, numbered 1 to 12; there is no 13th house. Say so plainly before explaining the twelve.');
     expect(data.title).toBe('The houses');
     expect(JSON.stringify(data)).not.toMatch(/[–—]/u);
+  });
+
+  it('writes a bare number as "house 0", never "0 house"', () => {
+    for (const query of ['house 0', 'Moon in house 0']) {
+      const { data } = explainAstrology({ topic: query });
+      expect(data.paragraphs[0], query).toBe('There is no house 0; houses are numbered 1 to 12. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.');
+      expect(data.message, query).toContain('there is no house 0.');
+      expect(JSON.stringify(data), query).not.toMatch(/\b0 house/u);
+    }
+    expect(explainAstrology({ topic: 'zeroth house' }).data.paragraphs[0]).toMatch(/^There is no zeroth house; houses are numbered 1 to 12\./u);
+  });
+
+  it('answers the Midheaven in a sign as the Midheaven plus the sign, and says Zodiacs has no separate reading for it', () => {
+    for (const query of ['midheaven in capricorn', 'MC in Capricorn', 'mc in capricorn', 'Capricorn midheaven', 'my midheaven is in capricorn', 'M.C. in Capricorn']) {
+      expect(matchAngleSign(query), query).toMatchObject({ angle: 'midheaven', sign: { slug: 'capricorn' } });
+      const { data } = explainAstrology({ topic: query });
+      expect(data, query).toMatchObject({ found: true, topic: 'midheaven', title: 'Midheaven in Capricorn' });
+      expect(data.paragraphs[0], query).toContain('The midheaven is the ecliptic point');
+      expect(data.paragraphs.join(' '), query).toContain('Zodiacs has no separate reading for the Midheaven in Capricorn.');
+      expect(data.paragraphs.join(' '), query).toContain('Capricorn is the tenth tropical sign');
+      expect(data.pages.map((page) => page.url), query).toContain('https://zodiacs.org/capricorn/');
+      expect(JSON.stringify(data), query).not.toMatch(/[–—]/u);
+    }
+    expect(explainAstrology({ topic: 'midheaven' }).data.title).toBe('The Midheaven');
+    expect(matchAngleSign('capricorn')).toBeNull();
+    expect(matchAngleSign('Moon in Capricorn')).toBeNull();
+  });
+
+  it('explains the IC as the point opposite the Midheaven, without matching "ic" inside other words', () => {
+    for (const query of ['IC', 'ic', 'imum coeli', 'What is the IC?', 'the IC in astrology', 'Imum Coeli']) expect(matchTopic(query)?.key, query).toBe('ic');
+    const { data } = explainAstrology({ topic: 'IC' });
+    expect(data).toMatchObject({ found: true, topic: 'ic', title: 'The IC (Imum Coeli)' });
+    const text = data.paragraphs.join(' ');
+    expect(text).toContain('opposite the Midheaven, at the base of the chart');
+    expect(text).toContain('cusp of the fourth house');
+    expect(text).toContain('In whole-sign houses, which Zodiacs uses, it does not always fall in the fourth');
+    expect(data.related).toContain('midheaven');
+    expect(explainAstrology({ topic: 'IC in Cancer' }).data).toMatchObject({ topic: 'ic', title: 'IC in Cancer' });
+    for (const query of ['basic chart', 'picture of my chart', 'ice', 'magic', 'icy moon', 'stoic leo', 'music']) expect(matchTopic(query)?.key ?? null, query).not.toBe('ic');
+    expect(matchTopic('Midheaven')?.key).toBe('midheaven');
+    expect(matchTopic('mc')?.key).toBe('midheaven');
   });
 });

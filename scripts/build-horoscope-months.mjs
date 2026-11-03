@@ -6,13 +6,13 @@
  *
  * Source: src/content/horoscopes/YYYY-MM-{sign}.mdx, the same files the
  * /horoscopes/{sign}/monthly/ page renders. A month is included only when all
- * twelve signs are written and none is a draft. The assistant copy carries
- * no em or en dash: months written before the cleanup in #843 (July to
- * September 2026) keep their dashes on the site, and here each one becomes a
- * comma, "to" between numbers or a hyphen inside a compound such as
- * Mars-Saturn (undash). A month written ahead is
- * included here but served only from its first day, as the page does
- * (src/lib/horoscope-month.mjs).
+ * twelve signs are written, none is a draft and none has an em or en dash or
+ * a spaced hyphen used as one. The paragraphs are the source's words as
+ * written, with line breaks joined: the July to September 2026 copy was
+ * rewritten without dashes, so no month needs its punctuation changed here,
+ * and a month that brings a dash back is left out until it is rewritten.
+ * A month written ahead is included here but served only from its first
+ * day, as the page does (src/lib/horoscope-month.mjs).
  *
  * Usage: node scripts/build-horoscope-months.mjs [--check]
  */
@@ -29,24 +29,13 @@ function parse(text, file) {
     const at = line.indexOf(':');
     return [line.slice(0, at).trim(), line.slice(at + 1).trim().replace(/^"(.*)"$/u, '$1')];
   }));
-  const paragraphs = match[2].split(/\n\s*\n/u).map((block) => undash(block.replace(/\s*\n\s*/gu, ' ').trim())).filter(Boolean);
+  const paragraphs = match[2].split(/\n\s*\n/u).map((block) => block.replace(/\s*\n\s*/gu, ' ').trim()).filter(Boolean);
   return { sign: meta.sign, month: meta.month, published: meta.published, updated: meta.updated, draft: meta.draft === 'true', paragraphs };
 }
 
-/**
- * The assistant copy of a paragraph without em or en dashes: "4–6" becomes
- * "4 to 6", "Mars–Saturn" becomes "Mars-Saturn", and a dash used as
- * punctuation (spaced, unspaced or a spaced hyphen) becomes a comma.
- */
-export function undash(text) {
-  return text
-    .replace(/(\d)\s*[–—]\s*(?=\d)/gu, '$1 to ')
-    .replace(/(\p{L})–(?=\p{L})/gu, '$1-')
-    .replace(/\s*[–—]\s*|\s+-\s+/gu, ', ')
-    .replace(/^,\s*/u, '')
-    .replace(/,\s*([,.;:!?])/gu, '$1')
-    .replace(/,\s*$/u, '')
-    .trim();
+/** True when a paragraph has an em or en dash, or a spaced hyphen standing in for one. */
+export function hasDash(text) {
+  return /[–—]|\s-\s/u.test(text);
 }
 
 export async function render() {
@@ -62,8 +51,8 @@ export async function render() {
   const left = [];
   for (const [month, entries] of [...byMonth].sort(([a], [b]) => a.localeCompare(b))) {
     const complete = SIGNS.every((sign) => entries.some((entry) => entry.sign === sign && !entry.draft));
-    // undash leaves none; checked again so a new kind of dash can never reach the assistant.
-    const dashFree = entries.every((entry) => !entry.paragraphs.some((paragraph) => /[–—]/u.test(paragraph)));
+    // The copy rule: a month with a dash anywhere is left out, so no dash ever reaches the assistant.
+    const dashFree = entries.every((entry) => !entry.paragraphs.some(hasDash));
     // Markup would reach the assistant as literal characters; the monthly copy is plain prose.
     const plain = entries.every((entry) => !entry.paragraphs.some((paragraph) => /[<>{}[\]`*#_]/u.test(paragraph)));
     if (!complete || !dashFree || !plain) { left.push(month); continue; }

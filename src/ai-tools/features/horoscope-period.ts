@@ -164,7 +164,7 @@ export async function getHoroscopePeriod(
       if (month === servedMonths.at(-1)) pageUrl = `${origin}/horoscopes/${sign}/monthly/`;
     } else notes.push(month > today.slice(0, 7)
       ? `The ${label} reading for ${signName} isn't published yet; monthly readings appear on the first of the month.`
-      : `The ${label} reading for ${signName} is not available through this tool yet${servedMonths.length ? `; it serves the monthly readings from ${monthLabel(servedMonths[0])} to ${monthLabel(servedMonths.at(-1)!)}` : ''}. The ${signName} horoscope pages on Zodiacs are linked.`);
+      : `The ${label} reading for ${signName} is outside the range this tool serves${servedMonths.length ? `: Zodiacs serves the monthly readings from ${monthLabel(servedMonths[0])} to ${monthLabel(servedMonths.at(-1)!)} only` : ''}. The ${signName} horoscope pages on Zodiacs are linked.`);
   } else if (args.period === 'year') {
     const yearly = program.signs.find((entry) => entry.sign === sign)?.readings[`yearly-${label}` as keyof HoroscopeProgram['signs'][number]['readings']];
     if (yearly && yearly.status === 'publishable') {

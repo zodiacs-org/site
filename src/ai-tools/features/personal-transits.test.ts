@@ -13,12 +13,14 @@ const MADRID = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', 
 describe('get_personal_transits', () => {
   it('lists the next 30 days of exact contacts by default, soonest first, with the site’s transit sentences', async () => {
     const data = await transits(MADRID);
-    expect(data).toMatchObject({ mode: 'window', from: '2026-11-02', to: '2026-12-02', zone: 'Europe/Madrid', timeKnown: true, placed: true });
+    expect(data).toMatchObject({ mode: 'window', from: '2026-11-02', to: '2026-12-01', zone: 'Europe/Madrid', timeKnown: true, placed: true });
+    // Both ends included: 2 November to 1 December is exactly 30 days.
+    expect((Date.parse(`${data.to}T00:00:00Z`) - Date.parse(`${data.from}T00:00:00Z`)) / 86_400_000 + 1).toBe(30);
     expect(data.scanned.points).toEqual(expect.arrayContaining(['Moon', 'ASC', 'MC']));
     expect(data.contacts.length).toBeGreaterThan(5);
     expect(data.contacts.map((contact) => contact.exactUtc)).toEqual([...data.contacts.map((contact) => contact.exactUtc)].sort());
     for (const contact of data.contacts) {
-      expect(contact.exactUtc >= '2026-11-01T23:00:00.000Z' && contact.exactUtc < '2026-12-02T23:00:00.000Z').toBe(true);
+      expect(contact.exactUtc >= '2026-11-01T23:00:00.000Z' && contact.exactUtc < '2026-12-01T23:00:00.000Z').toBe(true);
       expect(contact.line.startsWith(contact.planet)).toBe(true);
     }
     expect(data.note).toContain('not a guarantee');

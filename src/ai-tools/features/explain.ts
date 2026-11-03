@@ -117,9 +117,14 @@ const TOPICS: Topic[] = [
   { key: 'eclipses', title: 'Eclipses', aliases: ['eclipse', 'solar eclipse', 'lunar eclipse', 'eclipse season'], glossary: ['eclipse', 'solar-eclipse', 'lunar-eclipse', 'eclipse-season'], pages: [{ title: 'Eclipses', path: '/eclipses/' }], related: ['moon-phases', 'lunar-nodes'] },
   { key: 'rising-sign', title: 'The rising sign', aliases: ['rising', 'ascendant', 'asc', 'my rising sign', 'chart ruler'], glossary: ['rising-sign', 'ascendant', 'chart-ruler'], pages: [{ title: 'Rising signs', path: '/rising-sign/' }], related: ['big-three', 'houses'] },
   {
-    key: 'midheaven', title: 'The Midheaven', aliases: ['mc', 'medium coeli', 'mid heaven', 'midheaven mc', 'imum coeli', 'ic'], glossary: ['midheaven', 'ic', 'angle'],
+    key: 'midheaven', title: 'The Midheaven', aliases: ['mc', 'medium coeli', 'mid heaven', 'midheaven mc'], glossary: ['midheaven', 'ic', 'angle'],
     extra: () => [`The Midheaven needs a birth time and place, because it moves through the whole zodiac in about a day. Astrology reads it with the tenth house, which covers ${NATAL_HOUSE_THEME[10]}; in whole-sign houses, which Zodiacs uses, it does not always fall in the tenth.`],
-    pages: [{ title: 'The tenth house', path: '/learn/houses/tenth-house/' }, { title: 'Midheaven in the glossary', path: '/learn/glossary/#midheaven' }], related: ['tenth-house', 'rising-sign', 'houses'],
+    pages: [{ title: 'The tenth house', path: '/learn/houses/tenth-house/' }, { title: 'Midheaven in the glossary', path: '/learn/glossary/#midheaven' }], related: ['tenth-house', 'ic', 'rising-sign', 'houses'],
+  },
+  {
+    key: 'ic', title: 'The IC (Imum Coeli)', aliases: ['imum coeli', 'ic', 'ic angle', 'immum coeli'], glossary: ['ic', 'midheaven', 'angle', 'fourth-house'],
+    extra: () => [`The IC is the point opposite the Midheaven, at the base of the chart. Like the Midheaven it needs a birth time and place. In quadrant house systems such as Placidus it is the cusp of the fourth house, which covers ${NATAL_HOUSE_THEME[4]}. In whole-sign houses, which Zodiacs uses, it does not always fall in the fourth, so it is read as a point of its own.`],
+    pages: [{ title: 'The fourth house', path: '/learn/houses/fourth-house/' }, { title: 'IC in the glossary', path: '/learn/glossary/#ic' }], related: ['midheaven', 'fourth-house', 'houses'],
   },
   { key: 'big-three', title: 'The big three', aliases: ['big 3', 'sun moon rising', 'sun moon and rising'], glossary: ['big-three', 'sun-sign', 'moon-sign', 'rising-sign'], pages: [{ title: 'The big three', path: '/big-three/' }, { title: 'Your birth chart', path: '/birth-chart/' }], related: ['sun-sign', 'moon-sign', 'rising-sign'] },
   { key: 'sun-sign', title: 'The Sun sign', aliases: ['star sign', 'zodiac sign', 'my sign', 'horoscope sign'], glossary: ['sun-sign', 'zodiac-sign', 'zodiac-season'], pages: [{ title: 'Zodiac dates', path: '/learn/zodiac-dates/' }], related: ['big-three', 'cusps'] },
@@ -188,6 +193,11 @@ const PLANET_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (${HOUSE_WORDS}) house\\b`
 // "Leo rising", "Virgo ascendant", "ascendant in Virgo", "rising sign Leo".
 const SIGN_RISING = new RegExp(`\\b(${SIGN_WORDS}) (?:rising|ascendant|asc)\\b`, 'u');
 const RISING_SIGN = new RegExp(`\\b(?:rising|ascendant|asc)(?: sign)? (?:is |in |of )?(${SIGN_WORDS})\\b`, 'u');
+// "Midheaven in Capricorn", "MC in Capricorn", "Capricorn Midheaven", "IC in Cancer", "imum coeli in Cancer".
+const MC_WORDS = 'midheaven|mid heaven|mc|m c|medium coeli';
+const IC_WORDS = 'ic|imum coeli';
+const ANGLE_IN_SIGN = new RegExp(`\\b(${MC_WORDS}|${IC_WORDS})(?: sign)? (?:is |in |of )+(${SIGN_WORDS})\\b`, 'u');
+const SIGN_ANGLE = new RegExp(`\\b(${SIGN_WORDS}) (${MC_WORDS}|${IC_WORDS})\\b`, 'u');
 const BEYOND_TWELVE = ['zeroth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth'];
 // A house past the twelfth (or a zeroth), with or without the word house after a planet.
 const NO_SUCH_HOUSE = new RegExp(`\\b(?:(\\d+(?:st|nd|rd|th)?|${BEYOND_TWELVE.join('|')}) house|house (\\d+)|(?:${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(\\d+(?:st|nd|rd|th)|${BEYOND_TWELVE.join('|')}))\\b`, 'u');
@@ -220,6 +230,18 @@ export function matchRising(query: string): Sign | null {
   return slug ? SIGNS.find((sign) => sign.slug === slug)! : null;
 }
 
+export interface AnglePlacement { angle: 'midheaven' | 'ic'; sign: Sign }
+
+/** The Midheaven or the IC in a sign, as in "Midheaven in Capricorn", "MC in Capricorn" or "Cancer IC"; null otherwise. */
+export function matchAngleSign(query: string): AnglePlacement | null {
+  const text = clean(query);
+  const inSign = text.match(ANGLE_IN_SIGN);
+  const signFirst = inSign ? null : text.match(SIGN_ANGLE);
+  const [word, slug] = inSign ? [inSign[1], inSign[2]] : signFirst ? [signFirst[2], signFirst[1]] : [null, null];
+  if (!word || !slug) return null;
+  return { angle: new RegExp(`^(?:${IC_WORDS})$`, 'u').test(word) ? 'ic' : 'midheaven', sign: SIGNS.find((sign) => sign.slug === slug)! };
+}
+
 /** A house the chart does not have, as written ("13th", "thirteenth"), for "Moon in the 13th house"; null otherwise. */
 export function matchNoSuchHouse(query: string): string | null {
   const match = clean(query).match(NO_SUCH_HOUSE);
@@ -236,6 +258,8 @@ export function matchTopic(query: string): Topic | null {
   const placement = matchPlacement(query);
   if (placement) return TOPICS.find((topic) => topic.key === placement.planet.toLowerCase())!;
   if (matchRising(query)) return TOPICS.find((topic) => topic.key === 'rising-sign')!;
+  const angle = matchAngleSign(query);
+  if (angle) return TOPICS.find((topic) => topic.key === angle.angle)!;
   if (DIGNITY.test(clean(query))) return TOPICS.find((topic) => topic.key === 'rulership')!;
   const folded = fold(query);
   if (!folded) return null;
@@ -253,6 +277,24 @@ function risingParts(sign: Sign): { title: string; paragraphs: string[]; pages: 
     paragraphs: [bigThree('rising', sign.slug)],
     pages: [{ title: `${sign.name} rising`, path: `/rising-sign/${sign.slug}/` }, { title: `${sign.name} on Zodiacs`, path: `/${sign.slug}/` }],
     related: [sign.slug, 'big-three'],
+  };
+}
+
+/**
+ * What a sign adds to the Midheaven or IC explainer. Zodiacs writes no reading of its own for an angle in a sign, so
+ * the answer says so and gives the two parts it is read from: the angle (above) and the sign, in the glossary's words.
+ */
+function angleParts({ angle, sign }: AnglePlacement): { title: string; paragraphs: string[]; pages: Topic['pages']; related: string[] } {
+  const name = angle === 'midheaven' ? 'Midheaven' : 'IC';
+  const house = angle === 'midheaven' ? 10 : 4;
+  return {
+    title: `${name} in ${sign.name}`,
+    paragraphs: [
+      `Zodiacs has no separate reading for the ${name} in ${sign.name}. Astrology reads it by combining the two: the ${name}'s themes (${NATAL_HOUSE_THEME[house]}) expressed in ${sign.name}'s style.`,
+      `${term(sign.slug).definition} For the sign's style, this is how Zodiacs reads ${sign.name} as a Sun sign: ${bigThree('sun', sign.slug)}`,
+    ],
+    pages: [{ title: `${sign.name} on Zodiacs`, path: `/${sign.slug}/` }],
+    related: [sign.slug, 'birth-chart'],
   };
 }
 
@@ -294,8 +336,10 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
   const lead = terms[0];
   // "Moon in the 13th house": say first that there is no such house, then explain the twelve.
   const noSuchHouse = matchNoSuchHouse(args.topic);
+  // A bare number reads as "house 0", an ordinal or a word as "13th house" or "zeroth house".
+  const noSuchHouseName = noSuchHouse && /^\d+$/u.test(noSuchHouse) ? `house ${noSuchHouse}` : `${noSuchHouse} house`;
   const noSuchHouseLine = noSuchHouse
-    ? `There is no ${noSuchHouse} house. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.`
+    ? `There is no ${noSuchHouseName}; houses are numbered 1 to 12. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.`
     : null;
   const paragraphs = [
     ...(noSuchHouseLine ? [noSuchHouseLine] : []),
@@ -304,7 +348,8 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
   ].filter((paragraph, index, all) => paragraph && all.indexOf(paragraph) === index);
   const placement = noSuchHouse ? null : matchPlacement(args.topic);
   const rising = noSuchHouse || placement ? null : matchRising(args.topic);
-  const placed = placement ? placementParts(placement) : rising ? risingParts(rising) : null;
+  const angle = noSuchHouse || placement || rising ? null : matchAngleSign(args.topic);
+  const placed = placement ? placementParts(placement) : rising ? risingParts(rising) : angle ? angleParts(angle) : null;
   if (placed) paragraphs.push(...placed.paragraphs);
   const pages = [...(placed?.pages ?? []), ...topic.pages].map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
   const data: ExplainData = {
@@ -317,7 +362,7 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
     pages,
     related: [...new Set([...(placed?.related ?? []), ...topic.related])].filter((key) => EXPLAIN_TOPICS.includes(key)),
     topics: [],
-    message: noSuchHouse ? `Western astrology has twelve houses; there is no ${noSuchHouse} house. Say so plainly before explaining the twelve.` : null,
+    message: noSuchHouse ? `Western astrology has twelve houses, numbered 1 to 12; there is no ${noSuchHouseName}. Say so plainly before explaining the twelve.` : null,
     note: EXPLAIN_NOTE,
   };
   return { data, links: [...pages, { title: 'Glossary', url: `${origin}/learn/glossary/` }] };

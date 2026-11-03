@@ -97,6 +97,21 @@ describe('get_natal_chart', () => {
     expect(JSON.stringify(data)).not.toMatch(/[–—]/u);
   });
 
+  it('names the new date when the clock skipped a whole day, as Samoa did on 30 December 2011', async () => {
+    const data = await chart({ birthDate: '2011-12-30', time: '12:00', zone: 'Pacific/Apia', latitude: -13.83, longitude: -171.76 });
+    expect(data.timeNote).toMatchObject({ kind: 'dst-gap', shiftMinutes: 1440, offsetUsed: '+14:00' });
+    expect(data.timeNote!.text).toBe('12:00 did not exist on 2011-12-30 in Pacific/Apia: the clocks jumped forward past it. The chart is cast for 12:00 on 2011-12-31 on the new clock (UTC+14:00), 1440 minutes later. Check the birth time with the person if it matters.');
+  });
+
+  it('names the birth years it takes when a date falls outside them', async () => {
+    for (const tool of ['get_natal_chart', 'get_personal_transits'] as const) {
+      for (const birthDate of ['1799-05-03', '2200-01-01']) {
+        expect(await executeAiTool(tool, { birthDate }, on), `${tool} ${birthDate}`).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'birthDate must be a date from 1800 to 2199, such as 1990-05-03.' } });
+      }
+      expect(await executeAiTool(tool, { birthDate: '3 May 1990' }, on)).toMatchObject({ ok: false, error: { message: 'birthDate must be a date such as 1990-05-03.' } });
+    }
+  });
+
   it('says when a birth time happened twice, and which one the chart uses', async () => {
     // 01:30 on 1 November 2026 showed twice in New York: first on EDT (05:30Z), then on EST (06:30Z).
     const data = await chart({ birthDate: '2026-11-01', time: '01:30', zone: 'America/New_York' });

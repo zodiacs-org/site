@@ -141,9 +141,12 @@ export function birthTimeNote(date: string, time: string, zone: string, resolved
     const local = new Date(resolved.utc.getTime() + resolved.offsetMinutes * 60_000);
     const shiftMinutes = Math.round((local.getTime() - Date.UTC(year, month - 1, day, hour, minute)) / 60_000);
     const shown = local.toISOString().slice(11, 16);
+    // A skipped day (Samoa, 30 December 2011) moves the chart to another date; the note names it.
+    const shownDate = local.toISOString().slice(0, 10);
+    const onDate = shownDate === date ? '' : ` on ${shownDate}`;
     return {
       kind: 'dst-gap', shiftMinutes, offsetUsed,
-      text: `${time} did not exist on ${date} in ${zone}: the clocks jumped forward past it. The chart is cast for ${shown} on the new clock (UTC${offsetUsed}), ${shiftMinutes} minute${shiftMinutes === 1 ? '' : 's'} later. Check the birth time with the person if it matters.`,
+      text: `${time} did not exist on ${date} in ${zone}: the clocks jumped forward past it. The chart is cast for ${shown}${onDate} on the new clock (UTC${offsetUsed}), ${shiftMinutes} minute${shiftMinutes === 1 ? '' : 's'} later. Check the birth time with the person if it matters.`,
     };
   }
   if (resolved.flags.includes('dst-fold')) {
