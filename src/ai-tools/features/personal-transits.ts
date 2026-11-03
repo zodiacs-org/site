@@ -11,9 +11,15 @@
  *   keep to Jupiter, Saturn, Uranus, Neptune and Pluto.
  * - year-ahead: the profile's year-ahead timeline (src/lib/year-ahead.ts):
  *   Jupiter and Saturn on the Sun, Moon and rising degree, the solar return,
+ *   Jupiter and Saturn's exact contacts to Mercury, Venus and Mars, and
+ *   Uranus, Neptune and Pluto's to the Sun, Moon (with a birth time),
+ *   Mercury, Venus and Mars (from the transit scanner, so a chart without a
+ *   birth time still has a full year),
  *   a Saturn return, Jupiter and Saturn changing sign (with the natal house
  *   the sign falls in when the time and place are known) and eclipses near
  *   natal planets, from the committed ingress and eclipse tables.
+ *
+ * A window never starts before the birth date: there is no chart to meet yet.
  *
  * The words are astrology's reading of each contact, never a guarantee, and
  * nothing here predicts health or money. Pure: no network, storage or logging.
@@ -54,7 +60,7 @@ export const personalTransitsInput = z.strictObject({
   longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
   mode: z.enum(['window', 'year-ahead']).optional().describe('window (the default): every exact contact between from and to. year-ahead: the year from today, with Jupiter and Saturn, the solar return, a Saturn return, sign changes and eclipses near the chart.'),
   from: z.string().regex(DATE).optional().describe('For window: the first day, such as 2026-11-01. Defaults to today.'),
-  to: z.string().regex(DATE).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to ${TRANSITS_DEFAULT_DAYS} days after from.`),
+  to: z.string().regex(DATE).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to a ${TRANSITS_DEFAULT_DAYS}-day window, from included.`),
   currentZone: zone.optional().describe("The person's time zone now, such as Asia/Bangkok, so dates read on their clock. Defaults to the birthplace zone, else UTC."),
 }).superRefine((args, context) => {
   if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
@@ -122,6 +128,13 @@ function dayLabel(iso: string, timeZone: string): string {
 }
 const POINT_NAME: Partial<Record<NatalPoint, string>> = { ASC: 'rising degree', MC: 'Midheaven' };
 const pointName = (point: NatalPoint) => POINT_NAME[point] ?? point;
+/** The natal planets year-ahead adds Jupiter and Saturn contacts to, beside the profile timeline's Sun, Moon and rising degree. */
+const YEAR_AHEAD_PERSONAL_POINTS: NatalPoint[] = ['Mercury', 'Venus', 'Mars'];
+/** The slow planets whose contacts to the personal planets (the Moon only with a birth time) year-ahead adds too. */
+const YEAR_AHEAD_OUTER: TransitBody[] = ['Uranus', 'Neptune', 'Pluto'];
+const YEAR_AHEAD_PLANETS: TransitBody[] = ['Jupiter', 'Saturn', ...YEAR_AHEAD_OUTER];
+const BEFORE_BIRTH = 'The window starts before the birth date; give a from date on or after the birth date.';
+const YEAR_BEFORE_BIRTH = 'year-ahead starts today, which is before the birth date.';
 const cap = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 /** The instant a local date starts on a zone's clock. */
@@ -156,11 +169,13 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
 
   if (mode === 'window') {
     const fromDate = args.from ?? today;
-    const toDate = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + TRANSITS_DEFAULT_DAYS * DAY).toISOString().slice(0, 10);
+    // from and to are both included, so the default window ends 29 days after from: 30 days in all.
+    const toDate = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + (TRANSITS_DEFAULT_DAYS - 1) * DAY).toISOString().slice(0, 10);
     if (!parseCivilDate(fromDate) || !parseCivilDate(toDate)) throw new RangeError('from and to must be real dates, such as 2026-11-01.');
     const days = Math.round((Date.parse(`${toDate}T00:00:00Z`) - Date.parse(`${fromDate}T00:00:00Z`)) / DAY);
     if (days < 0) throw new RangeError('to must be on or after from.');
     if (days > TRANSITS_MAX_DAYS) throw new RangeError(`The window is at most ${TRANSITS_MAX_DAYS} days; to is ${days} days after from.`);
+    if (fromDate < args.birthDate) throw new RangeError(BEFORE_BIRTH);
     const fromUtc = await startOfDay(fromDate, shownZone, clock);
     const nextDay = new Date(Date.parse(`${toDate}T00:00:00Z`) + DAY).toISOString().slice(0, 10);
     const toUtc = await startOfDay(nextDay, shownZone, clock);
@@ -188,6 +203,7 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
   }
 
   // year-ahead: the twelve months from today on the person's clock.
+  if (today < args.birthDate) throw new RangeError(YEAR_BEFORE_BIRTH);
   const fromUtc = await startOfDay(today, shownZone, clock);
   const toUtc = new Date(fromUtc.getTime() + 365 * DAY);
   const scan = yearScan({ sunLon: lon('Sun'), moonLon: timeKnown ? lon('Moon') : null, ascLon: angles ? angles.asc : null, birthUtc }, fromUtc, toUtc);
@@ -197,9 +213,33 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
   const ingressWindows = (ingressTable.windows as IngressWindow[]);
   const ingresses = ingressEvents(ingressWindows, sunSign, risingSign, fromUtc, toUtc);
   const ingressSign = new Map(ingressWindows.map((window) => [`${window.planet}|${window.from}`, window.sign]));
+  const natal = { bodies: chart.bodies.filter((row) => (TRANSIT_BODY_ORDER as readonly string[]).includes(row.body)).map(({ body, lon: at }) => ({ body, lon: at })), angles: null };
+  // Jupiter and Saturn on Mercury, Venus and Mars, and Uranus, Neptune and Pluto on those and the Sun and Moon:
+  // one entry per contact, from its first exact pass to its last.
+  const outerPoints: NatalPoint[] = ['Sun', ...(timeKnown ? ['Moon' as const] : []), ...YEAR_AHEAD_PERSONAL_POINTS];
+  const slowContacts = [
+    ...scanTransitContacts(natal, fromUtc, toUtc, { transitBodies: ['Jupiter', 'Saturn'], natalPoints: YEAR_AHEAD_PERSONAL_POINTS }),
+    ...scanTransitContacts(natal, fromUtc, toUtc, { transitBodies: YEAR_AHEAD_OUTER, natalPoints: outerPoints }),
+  ];
+  const personal = new Map<string, { first: string; last: string; planet: TransitBody; aspect: string; point: NatalPoint }>();
+  for (const contact of slowContacts.sort((a, b) => a.exactUtc.localeCompare(b.exactUtc))) {
+    const key = `${contact.transitBody}|${contact.aspect}|${contact.natalPoint}`;
+    const entry = personal.get(key);
+    if (entry) entry.last = contact.exactUtc;
+    else personal.set(key, { first: contact.exactUtc, last: contact.exactUtc, planet: contact.transitBody, aspect: contact.aspect, point: contact.natalPoint });
+  }
+  const personalEvents: YearAheadEvent[] = [...personal.values()].map((entry) => ({
+    at: entry.first,
+    ...(entry.last !== entry.first ? { endAt: entry.last } : {}),
+    kind: 'aspect' as const,
+    body: entry.planet,
+    line: transitLine(entry.planet, entry.aspect, entry.point),
+    receipt: `${entry.planet} ${entry.aspect} Natal ${entry.point}`,
+  }));
   const events: YearAheadEvent[] = assembleYearAhead([
     solarReturnEvents(scan),
     aspectEvents(scan),
+    personalEvents,
     saturnSeasonEvents(scan.saturnSeasons, fromUtc, toUtc),
     ingresses,
     eclipseEvents(eclipseTable.eclipses as EclipseRecord[], natalBodies, fromUtc, toUtc),
@@ -223,7 +263,7 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
   if (scan.rangeClipped) limits.push('The scan stops at the end of 2199.');
   if (!risingSign) limits.push('Without a birth time and place, sign changes are not placed in your houses.');
   return {
-    data: { mode, birthDate: args.birthDate, timeKnown, placed, from: today, to: toDate, zone: shownZone, scanned: { planets: ['Jupiter', 'Saturn'], points: (['Sun', ...(timeKnown ? ['Moon'] : []), ...(angles ? ['ASC'] : [])] as NatalPoint[]) }, contacts: [], found: 0, highlights, limits, pageUrl, note: TRANSITS_NOTE },
+    data: { mode, birthDate: args.birthDate, timeKnown, placed, from: today, to: toDate, zone: shownZone, scanned: { planets: [...YEAR_AHEAD_PLANETS], points: (['Sun', ...(timeKnown ? ['Moon'] : []), ...YEAR_AHEAD_PERSONAL_POINTS, ...(angles ? ['ASC'] : [])] as NatalPoint[]) }, contacts: [], found: 0, highlights, limits, pageUrl, note: TRANSITS_NOTE },
     links: [{ title: 'Transits on Zodiacs', url: pageUrl }, { title: 'Your birth chart on Zodiacs', url: `${origin}/birth-chart/` }],
   };
 }

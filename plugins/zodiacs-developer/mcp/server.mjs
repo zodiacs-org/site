@@ -29204,12 +29204,60 @@ var natalChartData = z6.object({
   balance: z6.object({ elements: tally2(["fire", "earth", "air", "water"]), modalities: tally2(["cardinal", "fixed", "mutable"]), lines: z6.array(z6.string()) }),
   /** What the chart cannot say from the details given, in plain sentences. */
   unknown: z6.array(z6.string()),
+  /**
+   * Present only when the birth time fell in a daylight saving change: a gap (the clock skipped it, so the chart
+   * is cast that many minutes later) or a fold (the clock showed it twice; the chart uses the first).
+   */
+  timeNote: z6.object({
+    kind: z6.enum(["dst-gap", "dst-fold"]),
+    /** For a gap, how far forward the time was moved; 0 for a fold. */
+    shiftMinutes: z6.number().min(0),
+    /** The UTC offset the chart used, such as -04:00. */
+    offsetUsed: z6.string(),
+    text: z6.string()
+  }).optional(),
   chartUrl: z6.url(),
   note: z6.literal(NATAL_NOTE)
 });
-async function localInstant2(date3, time, zone7, longitude2, clock2) {
+async function resolveLocal2(date3, time, zone7, longitude2, clock2) {
   await clock2.prepareLocalTime(date3, zone7);
-  return (longitude2 !== void 0 ? clock2.resolveLocalToUtc(date3, time, zone7, { longitude: longitude2 }) : clock2.resolveLocalToUtc(date3, time, zone7)).utc;
+  return longitude2 !== void 0 ? clock2.resolveLocalToUtc(date3, time, zone7, { longitude: longitude2 }) : clock2.resolveLocalToUtc(date3, time, zone7);
+}
+async function localInstant2(date3, time, zone7, longitude2, clock2) {
+  return (await resolveLocal2(date3, time, zone7, longitude2, clock2)).utc;
+}
+function offsetText(minutes) {
+  const rounded = Math.round(minutes);
+  const sign2 = rounded < 0 ? "-" : "+";
+  const abs = Math.abs(rounded);
+  return `${sign2}${String(Math.floor(abs / 60)).padStart(2, "0")}:${String(abs % 60).padStart(2, "0")}`;
+}
+function birthTimeNote(date3, time, zone7, resolved) {
+  const offsetUsed = offsetText(resolved.offsetMinutes);
+  if (resolved.flags.includes("dst-gap")) {
+    const [year, month, day] = date3.split("-").map(Number);
+    const [hour, minute] = time.split(":").map(Number);
+    const local = new Date(resolved.utc.getTime() + resolved.offsetMinutes * 6e4);
+    const shiftMinutes = Math.round((local.getTime() - Date.UTC(year, month - 1, day, hour, minute)) / 6e4);
+    const shown = local.toISOString().slice(11, 16);
+    const shownDate = local.toISOString().slice(0, 10);
+    const onDate = shownDate === date3 ? "" : ` on ${shownDate}`;
+    return {
+      kind: "dst-gap",
+      shiftMinutes,
+      offsetUsed,
+      text: `${time} did not exist on ${date3} in ${zone7}: the clocks jumped forward past it. The chart is cast for ${shown}${onDate} on the new clock (UTC${offsetUsed}), ${shiftMinutes} minute${shiftMinutes === 1 ? "" : "s"} later. Check the birth time with the person if it matters.`
+    };
+  }
+  if (resolved.flags.includes("dst-fold")) {
+    return {
+      kind: "dst-fold",
+      shiftMinutes: 0,
+      offsetUsed,
+      text: `${time} happened twice on ${date3} in ${zone7}, because the clocks went back. The chart uses the first time (UTC${offsetUsed}); a birth in the repeated hour would move the Moon, the rising sign and the houses, so ask which it was if it matters.`
+    };
+  }
+  return void 0;
 }
 var slugAt2 = (index) => index === null ? null : SIGNS2[index].slug;
 var signName4 = (slug) => SIGNS2.find((sign2) => sign2.slug === slug).name;
@@ -29220,7 +29268,9 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3) {
   if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
   const timeKnown = args.time !== void 0;
   const placed = args.latitude !== void 0 && args.longitude !== void 0;
-  const utc = args.zone ? await localInstant2(args.birthDate, args.time ?? "12:00", args.zone, args.longitude, clock2) : /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
+  const resolved = args.zone ? await resolveLocal2(args.birthDate, args.time ?? "12:00", args.zone, args.longitude, clock2) : null;
+  const utc = resolved ? resolved.utc : /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
+  const timeNote = resolved && args.time !== void 0 ? birthTimeNote(args.birthDate, args.time, args.zone, resolved) : void 0;
   const chart = computeChart2({ utc, ...placed ? { latitude: args.latitude, longitude: args.longitude } : {}, houseSystem: "whole", timeKnown });
   const angles = timeKnown && placed ? chart.angles : null;
   let possible = (body2) => [slugAt2(signIndexForLongitude2(lonOf(chart, body2)))];
@@ -29301,6 +29351,7 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3) {
     aspects,
     balance: { elements: weather.elements, modalities: weather.modalities, lines: weather.lines },
     unknown,
+    ...timeNote ? { timeNote } : {},
     chartUrl,
     note: NATAL_NOTE
   };
@@ -32254,7 +32305,7 @@ async function getHoroscopePeriod(args, today, zone7, clock2, sources, origin) {
     if (entry) {
       reading = { title: `${signName6} \xB7 ${label}`, paragraphs: entry.paragraphs.map((text2) => ({ text: text2 })), published: entry.published };
       if (month === servedMonths.at(-1)) pageUrl = `${origin}/horoscopes/${sign2}/monthly/`;
-    } else notes.push(month > today.slice(0, 7) ? `The ${label} reading for ${signName6} isn't published yet; monthly readings appear on the first of the month.` : `Zodiacs has no published ${label} reading for ${signName6} to give here.`);
+    } else notes.push(month > today.slice(0, 7) ? `The ${label} reading for ${signName6} isn't published yet; monthly readings appear on the first of the month.` : `The ${label} reading for ${signName6} is outside the range this tool serves${servedMonths.length ? `: Zodiacs serves the monthly readings from ${monthLabel(servedMonths[0])} to ${monthLabel(servedMonths.at(-1))} only` : ""}. The ${signName6} horoscope pages on Zodiacs are linked.`);
   } else if (args.period === "year") {
     const yearly = program.signs.find((entry) => entry.sign === sign2)?.readings[`yearly-${label}`];
     if (yearly && yearly.status === "publishable") {
@@ -32295,6 +32346,7 @@ async function getHoroscopePeriod(args, today, zone7, clock2, sources, origin) {
       sign: event2.sign,
       ...event2.type ? { type: event2.type } : {}
     }));
+    if (args.period === "month") raw = raw.filter((event2) => !(event2.kind === "ingress" && event2.planet === "Moon"));
   }
   const eclipses = eclipses_default.eclipses.filter((eclipse) => eclipse.peak >= fromUtc.toISOString() && eclipse.peak < toUtc.toISOString()).map((eclipse) => ({ kind: "eclipse", at: eclipse.peak, planet: eclipse.type === "solar" ? "Sun" : "Moon", sign: eclipse.sign, type: eclipse.type }));
   if (to > eclipses_default.to.slice(0, 10) || from < eclipses_default.from.slice(0, 10)) notes.push("Eclipses are listed for 2026 to 2030, the years the eclipse table covers.");
@@ -33357,7 +33409,7 @@ var personalTransitsInput = z9.strictObject({
   longitude: z9.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
   mode: z9.enum(["window", "year-ahead"]).optional().describe("window (the default): every exact contact between from and to. year-ahead: the year from today, with Jupiter and Saturn, the solar return, a Saturn return, sign changes and eclipses near the chart."),
   from: z9.string().regex(DATE2).optional().describe("For window: the first day, such as 2026-11-01. Defaults to today."),
-  to: z9.string().regex(DATE2).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to ${TRANSITS_DEFAULT_DAYS} days after from.`),
+  to: z9.string().regex(DATE2).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to a ${TRANSITS_DEFAULT_DAYS}-day window, from included.`),
   currentZone: zone3.optional().describe("The person's time zone now, such as Asia/Bangkok, so dates read on their clock. Defaults to the birthplace zone, else UTC.")
 }).superRefine((args, context) => {
   if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
@@ -33417,6 +33469,11 @@ function dayLabel2(iso3, timeZone) {
 }
 var POINT_NAME = { ASC: "rising degree", MC: "Midheaven" };
 var pointName = (point) => POINT_NAME[point] ?? point;
+var YEAR_AHEAD_PERSONAL_POINTS = ["Mercury", "Venus", "Mars"];
+var YEAR_AHEAD_OUTER = ["Uranus", "Neptune", "Pluto"];
+var YEAR_AHEAD_PLANETS = ["Jupiter", "Saturn", ...YEAR_AHEAD_OUTER];
+var BEFORE_BIRTH = "The window starts before the birth date; give a from date on or after the birth date.";
+var YEAR_BEFORE_BIRTH = "year-ahead starts today, which is before the birth date.";
 var cap7 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 async function startOfDay(date3, timeZone, clock2) {
   await clock2.prepareLocalTime(date3, timeZone);
@@ -33447,18 +33504,19 @@ async function getPersonalTransits(args, now, clock2, origin) {
   const mode = args.mode ?? "window";
   if (mode === "window") {
     const fromDate = args.from ?? today;
-    const toDate2 = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + TRANSITS_DEFAULT_DAYS * DAY12).toISOString().slice(0, 10);
+    const toDate2 = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + (TRANSITS_DEFAULT_DAYS - 1) * DAY12).toISOString().slice(0, 10);
     if (!parseCivilDate(fromDate) || !parseCivilDate(toDate2)) throw new RangeError("from and to must be real dates, such as 2026-11-01.");
     const days = Math.round((Date.parse(`${toDate2}T00:00:00Z`) - Date.parse(`${fromDate}T00:00:00Z`)) / DAY12);
     if (days < 0) throw new RangeError("to must be on or after from.");
     if (days > TRANSITS_MAX_DAYS) throw new RangeError(`The window is at most ${TRANSITS_MAX_DAYS} days; to is ${days} days after from.`);
+    if (fromDate < args.birthDate) throw new RangeError(BEFORE_BIRTH);
     const fromUtc2 = await startOfDay(fromDate, shownZone, clock2);
     const nextDay = new Date(Date.parse(`${toDate2}T00:00:00Z`) + DAY12).toISOString().slice(0, 10);
     const toUtc2 = await startOfDay(nextDay, shownZone, clock2);
     const planets = days <= TRANSITS_PERSONAL_DAYS ? [...DEFAULT_TRANSIT_BODIES] : [...SLOW_TRANSIT_BODIES];
     if (days > TRANSITS_PERSONAL_DAYS) limits2.push(`Windows longer than ${TRANSITS_PERSONAL_DAYS} days list only Jupiter, Saturn, Uranus, Neptune and Pluto; ask for a shorter window for the Sun, Mercury, Venus and Mars.`);
-    const natal = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles };
-    const found = scanTransitContacts(natal, fromUtc2, toUtc2, { transitBodies: planets, natalPoints: points }).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
+    const natal2 = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles };
+    const found = scanTransitContacts(natal2, fromUtc2, toUtc2, { transitBodies: planets, natalPoints: points }).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
     if (found.length > TRANSITS_LIMIT) limits2.push(`${found.length} contacts were found; the first ${TRANSITS_LIMIT} are listed. Ask for a shorter window for the rest.`);
     const contacts = found.slice(0, TRANSITS_LIMIT).map((contact) => ({
       date: dayLabel2(contact.exactUtc, shownZone),
@@ -33476,6 +33534,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
       links: [{ title: "Transits on Zodiacs", url: pageUrl }, { title: "Your birth chart on Zodiacs", url: `${origin}/birth-chart/` }]
     };
   }
+  if (today < args.birthDate) throw new RangeError(YEAR_BEFORE_BIRTH);
   const fromUtc = await startOfDay(today, shownZone, clock2);
   const toUtc = new Date(fromUtc.getTime() + 365 * DAY12);
   const scan = yearScan({ sunLon: lon("Sun"), moonLon: timeKnown ? lon("Moon") : null, ascLon: angles ? angles.asc : null, birthUtc }, fromUtc, toUtc);
@@ -33485,9 +33544,31 @@ async function getPersonalTransits(args, now, clock2, origin) {
   const ingressWindows = ingresses_default.windows;
   const ingresses = ingressEvents(ingressWindows, sunSign, risingSign, fromUtc, toUtc);
   const ingressSign = new Map(ingressWindows.map((window) => [`${window.planet}|${window.from}`, window.sign]));
+  const natal = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles: null };
+  const outerPoints = ["Sun", ...timeKnown ? ["Moon"] : [], ...YEAR_AHEAD_PERSONAL_POINTS];
+  const slowContacts = [
+    ...scanTransitContacts(natal, fromUtc, toUtc, { transitBodies: ["Jupiter", "Saturn"], natalPoints: YEAR_AHEAD_PERSONAL_POINTS }),
+    ...scanTransitContacts(natal, fromUtc, toUtc, { transitBodies: YEAR_AHEAD_OUTER, natalPoints: outerPoints })
+  ];
+  const personal2 = /* @__PURE__ */ new Map();
+  for (const contact of slowContacts.sort((a, b) => a.exactUtc.localeCompare(b.exactUtc))) {
+    const key = `${contact.transitBody}|${contact.aspect}|${contact.natalPoint}`;
+    const entry = personal2.get(key);
+    if (entry) entry.last = contact.exactUtc;
+    else personal2.set(key, { first: contact.exactUtc, last: contact.exactUtc, planet: contact.transitBody, aspect: contact.aspect, point: contact.natalPoint });
+  }
+  const personalEvents = [...personal2.values()].map((entry) => ({
+    at: entry.first,
+    ...entry.last !== entry.first ? { endAt: entry.last } : {},
+    kind: "aspect",
+    body: entry.planet,
+    line: transitLine(entry.planet, entry.aspect, entry.point),
+    receipt: `${entry.planet} ${entry.aspect} Natal ${entry.point}`
+  }));
   const events = assembleYearAhead([
     solarReturnEvents(scan),
     aspectEvents(scan),
+    personalEvents,
     saturnSeasonEvents(scan.saturnSeasons, fromUtc, toUtc),
     ingresses,
     eclipseEvents(eclipses_default.eclipses, natalBodies, fromUtc, toUtc)
@@ -33510,7 +33591,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
   if (scan.rangeClipped) limits2.push("The scan stops at the end of 2199.");
   if (!risingSign) limits2.push("Without a birth time and place, sign changes are not placed in your houses.");
   return {
-    data: { mode, birthDate: args.birthDate, timeKnown, placed, from: today, to: toDate, zone: shownZone, scanned: { planets: ["Jupiter", "Saturn"], points: ["Sun", ...timeKnown ? ["Moon"] : [], ...angles ? ["ASC"] : []] }, contacts: [], found: 0, highlights, limits: limits2, pageUrl, note: TRANSITS_NOTE },
+    data: { mode, birthDate: args.birthDate, timeKnown, placed, from: today, to: toDate, zone: shownZone, scanned: { planets: [...YEAR_AHEAD_PLANETS], points: ["Sun", ...timeKnown ? ["Moon"] : [], ...YEAR_AHEAD_PERSONAL_POINTS, ...angles ? ["ASC"] : []] }, contacts: [], found: 0, highlights, limits: limits2, pageUrl, note: TRANSITS_NOTE },
     links: [{ title: "Transits on Zodiacs", url: pageUrl }, { title: "Your birth chart on Zodiacs", url: `${origin}/birth-chart/` }]
   };
 }
@@ -34885,7 +34966,7 @@ var PLANETS3 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", 
 var HOUSE_SLUGS = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 var ASPECTS3 = ["conjunction", "sextile", "square", "trine", "opposition"];
 var explainInput = z10.strictObject({
-  topic: z10.string().trim().min(1).max(80).describe("What to explain, in a few words: a sign (leo), a planet (Mercury), the houses or one house (seventh house), aspects or one aspect (square), retrogrades or Mercury retrograde, Moon phases, the rising sign, the big three, cusps, Saturn return, elements, modalities, transits, synastry, eclipses or the Chinese zodiac.")
+  topic: z10.string().trim().min(1).max(80).describe("What to explain, in a few words: a sign (leo), a planet (Mercury), a placement (Moon in Scorpio, Jupiter in the 12th), the houses or one house (seventh house), aspects or one aspect (square), retrogrades or Mercury retrograde, Moon phases, the rising sign or a sign rising (Leo rising), the Midheaven, the big three, cusps, Saturn return, elements, modalities, transits, synastry, eclipses or the Chinese zodiac.")
 });
 var link2 = z10.object({ title: z10.string(), url: z10.url() });
 var explainData = z10.object({
@@ -34973,6 +35054,24 @@ var TOPICS = [
   { key: "void-of-course-moon", title: "The void-of-course Moon", aliases: ["void of course", "void of course moon", "voc moon", "moon void of course"], glossary: ["void-of-course-moon"], pages: [{ title: "Void-of-course Moon", path: "/void-of-course-moon/" }], related: ["moon-phases", "moon"] },
   { key: "eclipses", title: "Eclipses", aliases: ["eclipse", "solar eclipse", "lunar eclipse", "eclipse season"], glossary: ["eclipse", "solar-eclipse", "lunar-eclipse", "eclipse-season"], pages: [{ title: "Eclipses", path: "/eclipses/" }], related: ["moon-phases", "lunar-nodes"] },
   { key: "rising-sign", title: "The rising sign", aliases: ["rising", "ascendant", "asc", "my rising sign", "chart ruler"], glossary: ["rising-sign", "ascendant", "chart-ruler"], pages: [{ title: "Rising signs", path: "/rising-sign/" }], related: ["big-three", "houses"] },
+  {
+    key: "midheaven",
+    title: "The Midheaven",
+    aliases: ["mc", "medium coeli", "mid heaven", "midheaven mc"],
+    glossary: ["midheaven", "ic", "angle"],
+    extra: () => [`The Midheaven needs a birth time and place, because it moves through the whole zodiac in about a day. Astrology reads it with the tenth house, which covers ${NATAL_HOUSE_THEME[10]}; in whole-sign houses, which Zodiacs uses, it does not always fall in the tenth.`],
+    pages: [{ title: "The tenth house", path: "/learn/houses/tenth-house/" }, { title: "Midheaven in the glossary", path: "/learn/glossary/#midheaven" }],
+    related: ["tenth-house", "ic", "rising-sign", "houses"]
+  },
+  {
+    key: "ic",
+    title: "The IC (Imum Coeli)",
+    aliases: ["imum coeli", "ic", "ic angle", "immum coeli"],
+    glossary: ["ic", "midheaven", "angle", "fourth-house"],
+    extra: () => [`The IC is the point opposite the Midheaven, at the base of the chart. Like the Midheaven it needs a birth time and place. In quadrant house systems such as Placidus it is the cusp of the fourth house, which covers ${NATAL_HOUSE_THEME[4]}. In whole-sign houses, which Zodiacs uses, it does not always fall in the fourth, so it is read as a point of its own.`],
+    pages: [{ title: "The fourth house", path: "/learn/houses/fourth-house/" }, { title: "IC in the glossary", path: "/learn/glossary/#ic" }],
+    related: ["midheaven", "fourth-house", "houses"]
+  },
   { key: "big-three", title: "The big three", aliases: ["big 3", "sun moon rising", "sun moon and rising"], glossary: ["big-three", "sun-sign", "moon-sign", "rising-sign"], pages: [{ title: "The big three", path: "/big-three/" }, { title: "Your birth chart", path: "/birth-chart/" }], related: ["sun-sign", "moon-sign", "rising-sign"] },
   { key: "sun-sign", title: "The Sun sign", aliases: ["star sign", "zodiac sign", "my sign", "horoscope sign"], glossary: ["sun-sign", "zodiac-sign", "zodiac-season"], pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }], related: ["big-three", "cusps"] },
   { key: "moon-sign", title: "The Moon sign", aliases: ["moon sign meaning", "my moon sign"], glossary: ["moon-sign", "moon"], pages: [{ title: "Moon signs", path: "/moon-sign/" }], related: ["big-three", "moon-phases"] },
@@ -35028,26 +35127,63 @@ var SIGN_WORDS = SIGNS2.map((sign2) => sign2.slug).join("|");
 var HOUSE_WORDS = `${HOUSE_SLUGS.join("|")}|1[0-2](?:st|nd|rd|th)?|[1-9](?:st|nd|rd|th)?`;
 var PLANET_IN_SIGN = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (${SIGN_WORDS})\\b`, "u");
 var SIGN_PLANET = new RegExp(`\\b(${SIGN_WORDS}) (${PLANET_WORDS})\\b`, "u");
-var PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my )?(?:(${HOUSE_WORDS}) house|house (1[0-2]|[1-9]))\\b`, "u");
+var NOT_A_HOUSE = `(?! (?:degrees?|deg|decans?|minutes?|of|${SIGN_WORDS})\\b)`;
+var PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(?:(${HOUSE_WORDS})(?: house\\b|\\b${NOT_A_HOUSE})|house (1[0-2]|[1-9])\\b)`, "u");
+var HOUSE_PLANET = new RegExp(`\\b(${HOUSE_WORDS}) house (${PLANET_WORDS})\\b`, "u");
+var PLANET_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (${HOUSE_WORDS}) house\\b`, "u");
+var SIGN_RISING = new RegExp(`\\b(${SIGN_WORDS}) (?:rising|ascendant|asc)\\b`, "u");
+var RISING_SIGN = new RegExp(`\\b(?:rising|ascendant|asc)(?: sign)? (?:is |in |of )?(${SIGN_WORDS})\\b`, "u");
+var MC_WORDS = "midheaven|mid heaven|mc|m c|medium coeli";
+var IC_WORDS = "ic|imum coeli";
+var ANGLE_IN_SIGN = new RegExp(`\\b(${MC_WORDS}|${IC_WORDS})(?: sign)? (?:is |in |of )+(${SIGN_WORDS})\\b`, "u");
+var SIGN_ANGLE = new RegExp(`\\b(${SIGN_WORDS}) (${MC_WORDS}|${IC_WORDS})\\b`, "u");
+var BEYOND_TWELVE = ["zeroth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth"];
+var NO_SUCH_HOUSE = new RegExp(`\\b(?:(\\d+(?:st|nd|rd|th)?|${BEYOND_TWELVE.join("|")}) house|house (\\d+)|(?:${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(\\d+(?:st|nd|rd|th)|${BEYOND_TWELVE.join("|")})\\b${NOT_A_HOUSE})\\b`, "u");
 var DIGNITY = /\b(?:in|its|their) (?:fall|detriment|exaltation|domicile)\b/u;
 function matchPlacement(query) {
   const text2 = clean2(query);
   const planetNamed = (word) => PLANETS3.find((planet) => planet.toLowerCase() === word);
+  const houseNumber = (word) => HOUSE_SLUGS.includes(word) ? HOUSE_SLUGS.indexOf(word) + 1 : Number.parseInt(word, 10);
   const house = text2.match(PLANET_IN_HOUSE);
-  if (house) {
-    const word = house[2] ?? house[3];
-    const index = HOUSE_SLUGS.indexOf(word);
-    return { planet: planetNamed(house[1]), sign: null, house: index >= 0 ? index + 1 : Number.parseInt(word, 10) };
-  }
+  if (house) return { planet: planetNamed(house[1]), sign: null, house: houseNumber(house[2] ?? house[3]) };
+  const houseFirst = text2.match(HOUSE_PLANET);
+  if (houseFirst) return { planet: planetNamed(houseFirst[2]), sign: null, house: houseNumber(houseFirst[1]) };
+  const planetHouse = text2.match(PLANET_HOUSE);
+  if (planetHouse) return { planet: planetNamed(planetHouse[1]), sign: null, house: houseNumber(planetHouse[2]) };
   const inSign = text2.match(PLANET_IN_SIGN);
   if (inSign) return { planet: planetNamed(inSign[1]), sign: SIGNS2.find((sign2) => sign2.slug === inSign[2]), house: null };
   const signFirst = text2.match(SIGN_PLANET);
   if (signFirst) return { planet: planetNamed(signFirst[2]), sign: SIGNS2.find((sign2) => sign2.slug === signFirst[1]), house: null };
   return null;
 }
+function matchRising(query) {
+  const text2 = clean2(query);
+  const slug = text2.match(SIGN_RISING)?.[1] ?? text2.match(RISING_SIGN)?.[1];
+  return slug ? SIGNS2.find((sign2) => sign2.slug === slug) : null;
+}
+function matchAngleSign(query) {
+  const text2 = clean2(query);
+  const inSign = text2.match(ANGLE_IN_SIGN);
+  const signFirst = inSign ? null : text2.match(SIGN_ANGLE);
+  const [word, slug] = inSign ? [inSign[1], inSign[2]] : signFirst ? [signFirst[2], signFirst[1]] : [null, null];
+  if (!word || !slug) return null;
+  return { angle: new RegExp(`^(?:${IC_WORDS})$`, "u").test(word) ? "ic" : "midheaven", sign: SIGNS2.find((sign2) => sign2.slug === slug) };
+}
+function matchNoSuchHouse(query) {
+  const match = clean2(query).match(NO_SUCH_HOUSE);
+  if (!match) return null;
+  const written = match[1] ?? match[2] ?? match[3];
+  if (BEYOND_TWELVE.includes(written)) return written;
+  const number2 = Number.parseInt(written, 10);
+  return number2 >= 1 && number2 <= 12 ? null : written;
+}
 function matchTopic(query) {
+  if (matchNoSuchHouse(query)) return TOPICS.find((topic) => topic.key === "houses");
   const placement = matchPlacement(query);
   if (placement) return TOPICS.find((topic) => topic.key === placement.planet.toLowerCase());
+  if (matchRising(query)) return TOPICS.find((topic) => topic.key === "rising-sign");
+  const angle = matchAngleSign(query);
+  if (angle) return TOPICS.find((topic) => topic.key === angle.angle);
   if (DIGNITY.test(clean2(query))) return TOPICS.find((topic) => topic.key === "rulership");
   const folded = fold(query);
   if (!folded) return null;
@@ -35056,6 +35192,27 @@ function matchTopic(query) {
   if (exact) return exact.topic;
   const contained = names.filter((entry) => !WHOLE_QUERY_ONLY.has(entry.name) && ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
   return contained[0]?.topic ?? null;
+}
+function risingParts(sign2) {
+  return {
+    title: `${sign2.name} rising`,
+    paragraphs: [bigThree("rising", sign2.slug)],
+    pages: [{ title: `${sign2.name} rising`, path: `/rising-sign/${sign2.slug}/` }, { title: `${sign2.name} on Zodiacs`, path: `/${sign2.slug}/` }],
+    related: [sign2.slug, "big-three"]
+  };
+}
+function angleParts({ angle, sign: sign2 }) {
+  const name = angle === "midheaven" ? "Midheaven" : "IC";
+  const house = angle === "midheaven" ? 10 : 4;
+  return {
+    title: `${name} in ${sign2.name}`,
+    paragraphs: [
+      `Zodiacs has no separate reading for the ${name} in ${sign2.name}. Astrology reads it by combining the two: the ${name}'s themes (${NATAL_HOUSE_THEME[house]}) expressed in ${sign2.name}'s style.`,
+      `${term(sign2.slug).definition} For the sign's style, this is how Zodiacs reads ${sign2.name} as a Sun sign: ${bigThree("sun", sign2.slug)}`
+    ],
+    pages: [{ title: `${sign2.name} on Zodiacs`, path: `/${sign2.slug}/` }],
+    related: [sign2.slug, "birth-chart"]
+  };
 }
 function placementParts({ planet, sign: sign2, house }) {
   if (sign2) {
@@ -35096,12 +35253,18 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
   }
   const terms2 = topic.glossary.map(term);
   const lead = terms2[0];
+  const noSuchHouse = matchNoSuchHouse(args.topic);
+  const noSuchHouseName = noSuchHouse && /^\d+$/u.test(noSuchHouse) ? `house ${noSuchHouse}` : `${noSuchHouse} house`;
+  const noSuchHouseLine = noSuchHouse ? `There is no ${noSuchHouseName}; houses are numbered 1 to 12. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.` : null;
   const paragraphs = [
+    ...noSuchHouseLine ? [noSuchHouseLine] : [],
     ...lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : [],
     ...topic.extra?.() ?? []
   ].filter((paragraph2, index, all) => paragraph2 && all.indexOf(paragraph2) === index);
-  const placement = matchPlacement(args.topic);
-  const placed = placement ? placementParts(placement) : null;
+  const placement = noSuchHouse ? null : matchPlacement(args.topic);
+  const rising = noSuchHouse || placement ? null : matchRising(args.topic);
+  const angle = noSuchHouse || placement || rising ? null : matchAngleSign(args.topic);
+  const placed = placement ? placementParts(placement) : rising ? risingParts(rising) : angle ? angleParts(angle) : null;
   if (placed) paragraphs.push(...placed.paragraphs);
   const pages = [...placed?.pages ?? [], ...topic.pages].map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
   const data = {
@@ -35114,7 +35277,7 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
     pages,
     related: [.../* @__PURE__ */ new Set([...placed?.related ?? [], ...topic.related])].filter((key) => EXPLAIN_TOPICS.includes(key)),
     topics: [],
-    message: null,
+    message: noSuchHouse ? `Western astrology has twelve houses, numbered 1 to 12; there is no ${noSuchHouseName}. Say so plainly before explaining the twelve.` : null,
     note: EXPLAIN_NOTE
   };
   return { data, links: [...pages, { title: "Glossary", url: `${origin}/learn/glossary/` }] };
@@ -35397,11 +35560,11 @@ var TOOL_DESCRIPTIONS = {
   get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up. If they want to share the chart, give them the returned shareUrl exactly.",
   get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it carries the month and day, never the year.",
   get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event.",
-  get_natal_chart: "Reads one person's birth chart: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets, and the balance of elements and modes, each with what astrology traditionally reads into it. It needs the birth date; add the birth time, the birthplace's time zone and its latitude and longitude when the person gives them, and never guess a birth time. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. For an interactive chart the person fills in themselves, use open_chart_studio instead. Give the returned chartUrl exactly to open the chart on Zodiacs.",
-  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year or a week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027; the week is the current week's reading, and with focus love or career it adds that focus's daily readings in the week and keeps the sky events that bear on it. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. For today's or tomorrow's horoscope use get_horoscope. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
+  get_natal_chart: "Reads one person's birth chart: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets, and the balance of elements and modes, each with what astrology traditionally reads into it. It needs the birth date; add the birth time, the birthplace's time zone and its latitude and longitude when the person gives them, and never guess a birth time. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used; tell the person. For an interactive chart the person fills in themselves, use open_chart_studio instead. Give the returned chartUrl exactly to open the chart on Zodiacs.",
+  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year or a week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027; the week is the current week's reading, and with focus love or career it adds that focus's daily readings in the week and keeps the sky events that bear on it. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. For today's or tomorrow's horoscope use get_horoscope. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
   get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own.",
-  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Give the birth date, and the time, birthplace time zone and coordinates if known; never guess a birth time. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon and rising degree, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. Present the lines as astrology's reading, never a guarantee, and do not turn them into health or money predictions.",
-  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own reference text, with links to the zodiacs.org pages about it: a sign and its traits, a planet, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'."
+  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Give the birth date, and the time, birthplace time zone and coordinates if known; never guess a birth time. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. Present the lines as astrology's reading, never a guarantee, and do not turn them into health or money predictions.",
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own reference text, with links to the zodiacs.org pages about it: a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'."
 };
 
 // src/ai-tools/server.ts
@@ -36413,6 +36576,13 @@ function offeredTools(dependencies) {
   return [...released, ...OCCASION_TOOL_NAMES, ...coverage];
 }
 var isCoverageTool = (tool) => COVERAGE_TOOL_NAMES.includes(tool);
+var COVERAGE_TOOL_SUMMARY = {
+  get_natal_chart: "a birth chart readout",
+  get_horoscope_period: "monthly, yearly and weekly horoscopes from the published readings",
+  get_chinese_zodiac: "the Chinese zodiac",
+  get_personal_transits: "dated personal transits for up to 366 days or the year ahead",
+  explain_astrology: "explainers of astrology basics"
+};
 var FIELD_FORMAT = {
   birthDate: "a date such as 1990-05-03",
   date: "a date such as 2026-12-01",
@@ -36422,6 +36592,10 @@ var FIELD_FORMAT = {
   zone: "a time zone name such as Europe/London",
   currentZone: "a time zone name such as Asia/Bangkok",
   place: "plain text"
+};
+var BIRTH_YEARS = {
+  get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
+  get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`
 };
 function coverageInputRefusal(tool, input) {
   const parsed = INPUT_SCHEMAS[tool].safeParse(input ?? {});
@@ -36437,6 +36611,7 @@ function coverageInputRefusal(tool, input) {
     if (issue.code === "too_big" && "maximum" in issue && issue.origin === "number") return `${field} must be at most ${String(issue.maximum)}.`;
     if (issue.code === "invalid_type" && issue.expected === "number") return `${field} must be a number.`;
     if (issue.code === "invalid_type" && issue.expected === "int") return `${field} must be a whole number.`;
+    if (field === "birthDate" && BIRTH_YEARS[tool] && typeof record2.birthDate === "string" && /^\d{4}-\d{2}-\d{2}$/u.test(record2.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1990-05-03.`;
     return `${field} must be ${FIELD_FORMAT[field] ?? "in the documented form"}.`;
   });
   return failure(tool, "invalid-request", [...new Set(sentences)].slice(0, 3).join(" "));
@@ -36484,7 +36659,26 @@ async function feature(run2) {
     throw error;
   }
 }
+function normaliseCoverageInput(tool, input) {
+  if (tool !== "get_horoscope_period" || !input || typeof input !== "object" || Array.isArray(input)) return input;
+  const sign2 = input.sign;
+  if (typeof sign2 !== "string") return input;
+  const lower = sign2.trim().toLowerCase();
+  return HOROSCOPE_SIGNS.includes(lower) ? { ...input, sign: lower } : input;
+}
+function normaliseCoverageCall(message) {
+  if (!message || typeof message !== "object" || Array.isArray(message)) return false;
+  const { method, params } = message;
+  if (method !== "tools/call" || !params || typeof params !== "object" || Array.isArray(params)) return false;
+  const call = params;
+  if (typeof call.name !== "string" || !COVERAGE_TOOL_NAMES.includes(call.name)) return false;
+  const input = normaliseCoverageInput(call.name, call.arguments);
+  if (input === call.arguments) return false;
+  call.arguments = input;
+  return true;
+}
 async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, context = {}) {
+  input = normaliseCoverageInput(tool, input);
   let ownedLocalTime;
   const localTime2 = () => dependencies.localTime ?? (ownedLocalTime ??= createLocalTimeModule());
   const resolveZone = (name) => localTime2().canonicalZoneName(name);
@@ -36517,7 +36711,9 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         if (dependencies.occasions && dependencies.coverage) {
           const capabilities = data;
           capabilities.privacy += " The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.";
-          capabilities.limitations.push("Version 0.6.0 adds tools listed in tools/list: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac, dated personal transits for up to 366 days or the year ahead, and explainers of astrology basics. They give astrology's reading, never a guarantee, and no health or money predictions.");
+          const added = offeredTools(dependencies).filter(isCoverageTool).map((name) => `${name} (${COVERAGE_TOOL_SUMMARY[name]})`);
+          const listed = data.tools.length;
+          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(", ")}${added.length > 1 ? " and " : ""}${added.at(-1)}. They give astrology's reading, never a guarantee, and no health or money predictions. With them Zodiacs offers ${listed + added.length} tools: the ${listed} in the tools field and these ${added.length}.`);
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data;
@@ -37475,6 +37671,15 @@ function build() {
   server.registerTool("compare_calculation_records", { description: `Compare two record strings locally. Pass the record field from calculate_natal_chart with output: record. Do not pass paths or URLs. Preserve evidence levels. ${PRIVACY.assistant}`, inputSchema: COMPARE_INPUT, annotations: READ_ONLY }, (args) => respond(() => compareCalculationRecords(args)));
   return server;
 }
+function normaliseLine(line) {
+  try {
+    const message = JSON.parse(line.toString("utf8"));
+    return normaliseCoverageCall(message) ? Buffer.from(`${JSON.stringify(message)}
+`) : line;
+  } catch {
+    return line;
+  }
+}
 var pending = [];
 var size = 0;
 var dropping = false;
@@ -37498,7 +37703,7 @@ var gate = new Transform({ transform(chunk, _encoding, done) {
     pending.push(part);
     size += part.length;
     if (newline >= 0) {
-      this.push(Buffer.concat(pending, size));
+      this.push(normaliseLine(Buffer.concat(pending, size)));
       pending = [];
       size = 0;
     }

@@ -18,7 +18,7 @@ import { personalWeek } from './features/personal-week';
 import { bestDays, type BestDays } from '../lib/occasions/best-dates';
 import { occasionShareUrl } from '../lib/share-results';
 import { milestoneShareUrl } from './share-links';
-import { getNatalChart } from './features/natal-chart';
+import { NATAL_MAX_YEAR, NATAL_MIN_YEAR, getNatalChart } from './features/natal-chart';
 import { getHoroscopePeriod, type HoroscopeMonths } from './features/horoscope-period';
 import { getChineseZodiac } from './features/chinese-zodiac';
 import { getPersonalTransits } from './features/personal-transits';
@@ -26,7 +26,7 @@ import { explainAstrology } from './features/explain';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName, type CoverageToolName } from './contracts';
-import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
+import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
 
 export interface AiDependencies {
@@ -107,11 +107,25 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
+/** What each 0.6.0 tool does, for get_capabilities. */
+const COVERAGE_TOOL_SUMMARY: Record<CoverageToolName, string> = {
+  get_natal_chart: 'a birth chart readout',
+  get_horoscope_period: 'monthly, yearly and weekly horoscopes from the published readings',
+  get_chinese_zodiac: 'the Chinese zodiac',
+  get_personal_transits: 'dated personal transits for up to 366 days or the year ahead',
+  explain_astrology: 'explainers of astrology basics',
+};
 
 /** What a field must look like, for refusals that say how to fix it. */
 const FIELD_FORMAT: Record<string, string> = {
   birthDate: 'a date such as 1990-05-03', date: 'a date such as 2026-12-01', from: 'a date such as 2026-11-01', to: 'a date such as 2026-12-01',
   time: 'a time such as 08:30', zone: 'a time zone name such as Europe/London', currentZone: 'a time zone name such as Asia/Bangkok', place: 'plain text',
+};
+
+/** The birth years a tool takes, named when a date in the right form falls outside them (1799-05-03). */
+const BIRTH_YEARS: Partial<Record<CoverageToolName, string>> = {
+  get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
+  get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
 };
 
 /**
@@ -133,6 +147,7 @@ export function coverageInputRefusal(tool: CoverageToolName, input: unknown) {
     if (issue.code === 'too_big' && 'maximum' in issue && issue.origin === 'number') return `${field} must be at most ${String(issue.maximum)}.`;
     if (issue.code === 'invalid_type' && issue.expected === 'number') return `${field} must be a number.`;
     if (issue.code === 'invalid_type' && issue.expected === 'int') return `${field} must be a whole number.`;
+    if (field === 'birthDate' && BIRTH_YEARS[tool] && typeof record.birthDate === 'string' && /^\d{4}-\d{2}-\d{2}$/u.test(record.birthDate)) return `birthDate must be a date from ${BIRTH_YEARS[tool]}, such as 1990-05-03.`;
     return `${field} must be ${FIELD_FORMAT[field] ?? 'in the documented form'}.`;
   });
   return failure(tool, 'invalid-request', [...new Set(sentences)].slice(0, 3).join(' '));
@@ -196,8 +211,38 @@ async function feature<T>(run: () => Promise<T>): Promise<T | { failure: string 
   }
 }
 
+/**
+ * get_horoscope_period takes a sign as written ("Leo", "LEO", " leo "): it is lower-cased before validation, so the
+ * published schema keeps its lower-case enum and any other value is refused as before.
+ */
+export function normaliseCoverageInput(tool: AiToolName, input: unknown): unknown {
+  if (tool !== 'get_horoscope_period' || !input || typeof input !== 'object' || Array.isArray(input)) return input;
+  const sign = (input as Record<string, unknown>).sign;
+  if (typeof sign !== 'string') return input;
+  const lower = sign.trim().toLowerCase();
+  return (HOROSCOPE_SIGNS as readonly string[]).includes(lower) ? { ...input, sign: lower } : input;
+}
+
+/**
+ * The same, for a JSON-RPC tools/call message before the MCP SDK checks it against the published schema: a 0.6.0
+ * tool's arguments are replaced in place with their normalised form. True when they changed; any other message,
+ * including a call to one of the thirteen, is left as it is.
+ */
+export function normaliseCoverageCall(message: unknown): boolean {
+  if (!message || typeof message !== 'object' || Array.isArray(message)) return false;
+  const { method, params } = message as Record<string, unknown>;
+  if (method !== 'tools/call' || !params || typeof params !== 'object' || Array.isArray(params)) return false;
+  const call = params as Record<string, unknown>;
+  if (typeof call.name !== 'string' || !(COVERAGE_TOOL_NAMES as readonly string[]).includes(call.name)) return false;
+  const input = normaliseCoverageInput(call.name as CoverageToolName, call.arguments);
+  if (input === call.arguments) return false;
+  call.arguments = input;
+  return true;
+}
+
 /** One typed operation per call. No network, persistence or logs; the horoscope window is read through its injected loader. */
 export async function executeAiTool(tool: AiToolName, input: unknown, dependencies: AiDependencies, context: AiCallContext = {}) {
+  input = normaliseCoverageInput(tool, input);
   let ownedLocalTime: ReturnType<typeof createLocalTimeModule> | undefined;
   const localTime = () => dependencies.localTime ?? (ownedLocalTime ??= createLocalTimeModule());
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
@@ -228,7 +273,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         if (dependencies.occasions && dependencies.coverage) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.';
-          capabilities.limitations.push('Version 0.6.0 adds tools listed in tools/list: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac, dated personal transits for up to 366 days or the year ahead, and explainers of astrology basics. They give astrology\'s reading, never a guarantee, and no health or money predictions.');
+          // The tools field's enum is the thirteen published names, so the 0.6.0 tools are named here, by their tools/list names.
+          const added = offeredTools(dependencies).filter(isCoverageTool).map((name) => `${name} (${COVERAGE_TOOL_SUMMARY[name]})`);
+          const listed = (data as { tools: string[] }).tools.length;
+          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(', ')}${added.length > 1 ? ' and ' : ''}${added.at(-1)}. They give astrology's reading, never a guarantee, and no health or money predictions. With them Zodiacs offers ${listed + added.length} tools: the ${listed} in the tools field and these ${added.length}.`);
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };

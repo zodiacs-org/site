@@ -13,12 +13,14 @@ const MADRID = { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', 
 describe('get_personal_transits', () => {
   it('lists the next 30 days of exact contacts by default, soonest first, with the site’s transit sentences', async () => {
     const data = await transits(MADRID);
-    expect(data).toMatchObject({ mode: 'window', from: '2026-11-02', to: '2026-12-02', zone: 'Europe/Madrid', timeKnown: true, placed: true });
+    expect(data).toMatchObject({ mode: 'window', from: '2026-11-02', to: '2026-12-01', zone: 'Europe/Madrid', timeKnown: true, placed: true });
+    // Both ends included: 2 November to 1 December is exactly 30 days.
+    expect((Date.parse(`${data.to}T00:00:00Z`) - Date.parse(`${data.from}T00:00:00Z`)) / 86_400_000 + 1).toBe(30);
     expect(data.scanned.points).toEqual(expect.arrayContaining(['Moon', 'ASC', 'MC']));
     expect(data.contacts.length).toBeGreaterThan(5);
     expect(data.contacts.map((contact) => contact.exactUtc)).toEqual([...data.contacts.map((contact) => contact.exactUtc)].sort());
     for (const contact of data.contacts) {
-      expect(contact.exactUtc >= '2026-11-01T23:00:00.000Z' && contact.exactUtc < '2026-12-02T23:00:00.000Z').toBe(true);
+      expect(contact.exactUtc >= '2026-11-01T23:00:00.000Z' && contact.exactUtc < '2026-12-01T23:00:00.000Z').toBe(true);
       expect(contact.line.startsWith(contact.planet)).toBe(true);
     }
     expect(data.note).toContain('not a guarantee');
@@ -62,5 +64,28 @@ describe('get_personal_transits', () => {
     const year = await transits({ ...MADRID, mode: 'year-ahead' });
     const words = JSON.stringify([data.contacts, year.highlights]);
     expect(words).not.toMatch(/\b(illness|disease|surgery|diagnos|invest|stock|lottery|profit|guarantee[sd]?)\b/iu);
+  });
+
+  it('refuses a window that starts before the birth date, and a year ahead before the birth', async () => {
+    expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', from: '1850-01-01', to: '1850-12-01' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'The window starts before the birth date; give a from date on or after the birth date.' } });
+    expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', from: '1990-05-02', to: '1990-05-10' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+    expect(await executeAiTool('get_personal_transits', { birthDate: '2100-05-03' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+    expect(await executeAiTool('get_personal_transits', { birthDate: '2100-05-03', mode: 'year-ahead' }, on)).toMatchObject({ ok: false, error: { message: 'year-ahead starts today, which is before the birth date.' } });
+    expect((await transits({ birthDate: '1990-05-03', from: '1990-05-03', to: '1990-05-10' })).from).toBe('1990-05-03');
+  });
+
+  it('gives a fuller year ahead without a birth time: the slow planets on the personal planets too', async () => {
+    const data = await transits({ birthDate: '1990-05-03', mode: 'year-ahead' });
+    expect(data.scanned).toEqual({ planets: ['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'], points: ['Sun', 'Mercury', 'Venus', 'Mars'] });
+    expect(data.highlights.length).toBeGreaterThanOrEqual(6);
+    const aspects = data.highlights.filter((item) => item.kind === 'aspect');
+    // Uranus squares natal Mars three times from August to October 2027: one entry spanning the passes.
+    expect(aspects.find((item) => item.planet === 'Uranus')).toMatchObject({ date: 'Mon 9 Aug 2027', endDate: 'Fri 22 Oct 2027' });
+    expect(aspects.find((item) => item.planet === 'Uranus')!.line).toMatch(/^Uranus /u);
+    expect(aspects.some((item) => item.planet === 'Jupiter' && item.line.includes('your way of thinking'))).toBe(true);
+    expect(JSON.stringify(data)).not.toMatch(/[–—]/u);
+    const timed = await transits({ ...MADRID, mode: 'year-ahead' });
+    expect(timed.scanned.points).toEqual(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'ASC']);
+    expect(timed.highlights.length).toBeGreaterThan(data.highlights.length);
   });
 });

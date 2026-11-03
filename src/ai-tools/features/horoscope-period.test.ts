@@ -7,7 +7,7 @@ import committedProgram from '../../data/horoscope-program.json';
 import type { HoroscopeWindow } from '../horoscope/window';
 import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
 import type { HoroscopePeriodData } from './horoscope-period';
-import { render } from '../../../scripts/build-horoscope-months.mjs';
+import { hasDash, render } from '../../../scripts/build-horoscope-months.mjs';
 
 const dependencies = {
   occasions: true, coverage: true, now: () => new Date('2026-11-02T05:00:00Z'),
@@ -27,7 +27,67 @@ describe('the monthly readings file', () => {
   });
 });
 
+describe('the monthly readings file', () => {
+  it('serves July to September 2026 as written, rewritten without dashes, with no punctuation changed by the build', async () => {
+    const { left } = await render();
+    for (const month of ['2026-07', '2026-08', '2026-09']) {
+      expect(left).not.toContain(month);
+      expect(Object.keys(committedMonths.months), month).toContain(month);
+      const signs = committedMonths.months[month as keyof typeof committedMonths.months];
+      expect(JSON.stringify(signs), month).not.toMatch(/[\u2013\u2014]|\s-\s/u);
+      for (const [sign, entry] of Object.entries(signs)) {
+        // Each paragraph is the source's own words with the line breaks joined.
+        const source = readFileSync(new URL(`../../content/horoscopes/${month}-${sign}.mdx`, import.meta.url), 'utf8').replace(/\s+/gu, ' ');
+        for (const paragraph of entry.paragraphs) expect(source, `${month} ${sign}`).toContain(paragraph);
+      }
+    }
+    expect(JSON.stringify(committedMonths)).not.toMatch(/[\u2013\u2014]/u);
+  });
+
+  it('leaves out any month with an em or en dash, or a spaced hyphen used as one', () => {
+    expect(hasDash('the new moon \u2014 a total solar eclipse')).toBe(true);
+    expect(hasDash('days 4\u20136 of the month')).toBe(true);
+    expect(hasDash('a plan - and more')).toBe(true);
+    expect(hasDash('a well-known plan, and days 4 to 6')).toBe(false);
+  });
+});
+
 describe('get_horoscope_period', () => {
+  it('serves the September 2026 reading with no dashes, and a month sky without the Moon changing sign', async () => {
+    const data = await period({ sign: 'leo', period: 'month', date: '2026-09-15' });
+    expect(data).toMatchObject({ status: 'available', label: 'September 2026', from: '2026-09-01', to: '2026-09-30' });
+    expect(data.reading!.published).toBe(committedMonths.months['2026-09'].leo.published);
+    expect(JSON.stringify(data)).not.toMatch(/[\u2013\u2014]/u);
+    expect(data.sky.some((event) => event.kind === 'ingress' && event.planet === 'Moon')).toBe(false);
+    expect(data.sky.some((event) => event.kind === 'lunation')).toBe(true);
+    const november = await period({ sign: 'leo', period: 'month' });
+    expect(november.sky.some((event) => event.kind === 'ingress' && event.planet === 'Moon')).toBe(false);
+    expect(november.sky.length).toBeLessThan(10);
+  });
+
+  it('never says Zodiacs has no reading for a month it does not serve', async () => {
+    const data = await period({ sign: 'leo', period: 'month', date: '2026-03-10' });
+    expect(data.status).toBe('sky-only');
+    expect(data.message).toBe('The March 2026 reading for Leo is outside the range this tool serves: Zodiacs serves the monthly readings from July 2026 to November 2026 only. The Leo horoscope pages on Zodiacs are linked.');
+    expect(data.message).not.toMatch(/no published/u);
+    expect(data.pageUrl).toBe('https://zodiacs.org/horoscopes/leo/');
+  });
+
+  it('does not suggest a reading is coming for a month long past, such as 1900', async () => {
+    const data = await period({ sign: 'leo', period: 'month', date: '1900-03-10' });
+    expect(data).toMatchObject({ status: 'sky-only', reading: null });
+    expect(data.message).toContain('Zodiacs serves the monthly readings from July 2026 to November 2026 only');
+    expect(data.message).not.toMatch(/\byet\b|coming|soon|will be/u);
+  });
+
+  it('takes the sign in any capitalisation, and still refuses a sign it does not know', async () => {
+    const lower = await period({ sign: 'leo', period: 'month', date: '2026-09-15' });
+    for (const sign of ['Leo', 'LEO', ' leo ']) expect(await period({ sign, period: 'month', date: '2026-09-15' }), sign).toEqual(lower);
+    expect(await executeAiTool('get_horoscope_period', { sign: 'Ophiuchus', period: 'month' }, dependencies)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+    expect(await executeAiTool('get_horoscope_period', { sign: 'Le o', period: 'month' }, dependencies)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+  });
+
+
   it("gives the month's published reading, word for word, with the month's sky in the sign's solar houses", async () => {
     const data = await period({ sign: 'leo', period: 'month' });
     expect(data).toMatchObject({ status: 'available', from: '2026-11-01', to: '2026-11-30', label: 'November 2026', pageUrl: 'https://zodiacs.org/horoscopes/leo/monthly/' });
@@ -45,7 +105,7 @@ describe('get_horoscope_period', () => {
     expect(data.reading).toBeNull();
     expect(data.message).toContain("isn't published yet");
     expect(data.sky.length).toBeGreaterThan(0);
-    expect(data.available.months).toEqual(['2026-10', '2026-11']);
+    expect(data.available.months).toEqual(['2026-07', '2026-08', '2026-09', '2026-10', '2026-11']);
     expect(data.available.years).toEqual([2026, 2027]);
   });
 

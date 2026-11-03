@@ -26,7 +26,7 @@ joins the occasions switch, and an About that names the score and rating out of
 Developer 0.3.16 is rebuilt from the corrected 0.6.0 source with unchanged local
 tools; 0.3.15 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.0** and **Zodiacs Developer 0.3.18**;
+Current candidates are **Zodiacs 0.6.0** and **Zodiacs Developer 0.3.19**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

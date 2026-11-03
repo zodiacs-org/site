@@ -3,7 +3,7 @@ import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerd
 import { computeApiRateLimit } from '../lib/compute-api/handler';
 import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName, type CoverageToolName } from './contracts';
 import { createAiServer } from './server';
-import { coverageInputRefusal, type AiDependencies } from './tools';
+import { coverageInputRefusal, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { argumentRefusal } from './argument-hints';
 import { reserveAiQuota, type QuotaKind } from './quota';
@@ -220,6 +220,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       }
       if (changed) text = JSON.stringify(body);
     }
+    // A 0.6.0 tool's sign arrives as written ("Leo"); it is lower-cased before the SDK checks the published enum.
+    if (calledTool && normaliseCoverageCall(body)) text = JSON.stringify(body);
     const refusal = calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments) : undefined;
     const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
     if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');

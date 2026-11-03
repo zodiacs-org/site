@@ -33,6 +33,8 @@ beforeAll(async () => {
   const handle = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ZODIACS_COVERAGE_ENABLED: '1' }, allowedHosts, rateLimit: async () => 'allowed', atomicQuota: async () => 'allowed',
     countUsage: async () => undefined, dependencies: { horoscopeWindow: window, horoscopeMonths: months, horoscopeProgram: program } });
   server = createServer((req, res) => { void handle(req, res); });
+  // Long tests in between leave the client's pooled socket idle; keep it open so it is never reset mid-suite.
+  server.keepAliveTimeout = 10 * 60_000;
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   const host = `127.0.0.1:${(server.address() as { port: number }).port}`;
   allowedHosts.push(host);
@@ -69,6 +71,31 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(capabilities.data.version).toBe('0.6.0');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
+  });
+});
+
+describe('get_capabilities names every tool offered', () => {
+  const sources = { horoscopeWindow: window, horoscopeMonths: months, horoscopeProgram: program };
+  it('names all eighteen with coverage on: the thirteen in tools, the five by name in limitations', async () => {
+    const result = await executeAiTool('get_capabilities', {}, { occasions: true, coverage: true, ...sources });
+    if (!result.ok || result.tool !== 'get_capabilities') throw new Error(JSON.stringify(result));
+    expect(result.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
+    const text = result.data.limitations.join(' ');
+    const named = EVERY_AI_TOOL_NAME.filter((name) => result.data.tools.includes(name as never) || text.includes(`${name} (`));
+    expect(named).toEqual([...EVERY_AI_TOOL_NAME]);
+    expect(named).toHaveLength(18);
+    expect(text).toContain('Version 0.6.0 adds tools listed in tools/list: get_natal_chart (a birth chart readout), get_horoscope_period (');
+    expect(text).toContain('With them Zodiacs offers 18 tools: the 13 in the tools field and these 5.');
+    expect(text).not.toMatch(/[–—]/u);
+  });
+
+  it('names only the thirteen with coverage off', async () => {
+    const result = await executeAiTool('get_capabilities', {}, { occasions: true, ...sources });
+    if (!result.ok || result.tool !== 'get_capabilities') throw new Error(JSON.stringify(result));
+    expect(result.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
+    expect(result.data.tools).toHaveLength(13);
+    const text = JSON.stringify(result.data);
+    for (const name of COVERAGE_TOOL_NAMES) expect(text, name).not.toContain(name);
   });
 });
 
@@ -167,4 +194,31 @@ describe('every link the 0.6.0 tools return', () => {
     }
     expect([...missing]).toEqual([]);
   }, 120_000);
+});
+
+describe('get_horoscope_period over /mcp takes a sign as written', () => {
+  const call = async (name: string, args: unknown) => (await rpc('tools/call', { name, arguments: args })).result;
+
+  it('lower-cases and trims the sign before the SDK checks the published enum', async () => {
+    const expected = await call('get_horoscope_period', { sign: 'leo', period: 'month', date: '2026-11-01' });
+    expect(expected.isError).toBeFalsy();
+    expect(expected.structuredContent.ok).toBe(true);
+    expect(expected.structuredContent.data.sign).toBe('leo');
+    for (const sign of ['Leo', 'LEO', ' leo ']) {
+      const result = await call('get_horoscope_period', { sign, period: 'month', date: '2026-11-01' });
+      expect(result.isError, sign).toBeFalsy();
+      expect(result.structuredContent, sign).toEqual(expected.structuredContent);
+    }
+  });
+
+  it('still refuses a sign that is not one, and leaves the thirteen tools as they were', async () => {
+    expect((await call('get_horoscope_period', { sign: 'Lion', period: 'month' })).structuredContent.error.message).toBe(`sign must be one of: ${HOROSCOPE_SIGNS.join(', ')}.`);
+    // get_horoscope's published enum is lower case and its arguments reach the SDK unchanged.
+    const old = await call('get_horoscope', { sign: 'Leo' });
+    expect(old.isError).toBe(true);
+    expect(old.structuredContent?.ok).not.toBe(true);
+    const ok = await call('get_horoscope', { sign: 'leo' });
+    expect(ok.isError).toBeFalsy();
+    expect(ok.structuredContent.ok).toBe(true);
+  });
 });
