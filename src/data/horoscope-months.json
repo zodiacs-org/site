@@ -2,6 +2,376 @@
   "schema": "zodiacs.horoscope-months.v1",
   "source": "src/content/horoscopes",
   "months": {
+    "2026-07": {
+      "aries": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "July runs on your ruler. Mars spends the month in Gemini, your solar third house of errands, messages, and neighborhood logistics, and it opens loudly: Mars meets Uranus on July 4, which is the sky's version of a group chat catching fire. Expect the surprise text, the sudden plan, the detour that turns out to be the point. Say yes to the fast ones, but reread before you hit send.",
+          "The month's real weight sits at home. The Sun squares Saturn in your sign on July 6, and the friction is familiar: obligations to family or household pressing against what you're trying to become. The new moon in Cancer on July 14 is the reset that squares like that ask for, a genuine fresh start under your own roof, whether that's a lease, a conversation, or a room finally cleared. Mercury has been retrograde in the same territory all month; it stations direct on July 23, so let domestic negotiations and paperwork settle after that date rather than before.",
+          "Two stations land in Aries itself: Neptune turns retrograde on July 7, and Saturn follows on July 26. Both are slow-planet weather rather than daily news, but the Saturn one is worth respecting, the discipline project you started this spring goes into review mode through year's end. Keep what held; drop what was posture.",
+          "Then the sky pays for the effort. The Sun enters Leo and your fifth house of pleasure, romance, and self-made things on July 22, and meets Jupiter there on July 29, the brightest day on your calendar this month, made for the launch, the date, the opening night. That same day's full moon in Aquarius lights your house of friends and future plans: something you make for joy finds its audience. Mars sextile Saturn on July 19 already gave you the proof, speed and structure, for once, on the same side."
+        ]
+      },
+      "taurus": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "Money moves first this month. Mars and Uranus share Gemini, your solar second house of income and what you own, and they meet on July 4. That is the surprise expense, the sudden side offer, the subscription you cancel out of principle. Quick money decisions are fine through that weekend as long as they are reversible; the irreversible ones can wait.",
+          "Venus, your ruler, enters Virgo and your fifth house of romance and self-made pleasure on July 9, which sweetens the middle of the month considerably, the date, the studio afternoon, the thing you make because you want to. Just watch July 13, when Venus squares Uranus back in that money house: the impulse purchase will be wearing a very good disguise. Plan something inexpensive and excellent instead.",
+          "The new moon on July 14 lands in Cancer and your third house, errands, siblings, the neighborhood orbit. It is a real fresh start for a message, a course, a local commitment. Mercury has been retrograde in that same house all month, though, and it stations direct on July 23: draft the email and the agreement now, send and sign after the 23rd.",
+          "The finish is domestic, and bright. The Sun enters Leo and your fourth house of home and family on July 22, then meets Jupiter there on July 29, the best day of the month for the housewarming, the offer on the place, the family table with everyone actually at it. The same day's full moon at 6° Aquarius lights your tenth house of career, so something public peaks at the exact moment the home news arrives. If July 27's Sun-Pluto opposition puts a demanding voice from work on the line, you are allowed to let it ring. This round goes to the house."
+        ]
+      },
+      "gemini": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "For once the sky moves at your speed. Mars is in Gemini from the first of the month to the last, your solar first house, and on July 4 it meets Uranus, also in your sign. That is initiative with a live wire in it: the announcement, the haircut, the thing you finally quit. The next day, July 5, Mars trines Pluto and sextiles Neptune, which gives the bold move both traction and a reason. If you have been waiting for a starting gun, this is what one sounds like.",
+          "The money picture asks for more patience. Mercury, your ruler, is retrograde in Cancer, your second house of income, until it stations direct on July 23. The new moon there on July 14 is the right moment to pick the financial goal: the rate you will ask for, the budget you will actually keep. Set it on the 14th; sign it after the 23rd. The Sun's square to Saturn on July 6 sketches the tension early, a cost on one side, a commitment to friends or a long-range plan on the other. Only one gets funded this month, and that is fine.",
+          "July 19 is quietly useful: Mars in your sign sextiles Saturn in your eleventh house, and the people who share your long game show up with actual help. Take it.",
+          "Then the month hands you the microphone. The Sun enters Leo and your third house of messages, pitches, and the near neighborhood on July 22, and meets Jupiter there on July 29, the best talking day of your year. Send the pitch, publish the piece, make the ask you have been rehearsing. That same day's full moon in Aquarius falls in your ninth house of travel and study: the faraway thing, the trip, the application, the audience in another time zone, comes to a head at the exact moment you find the words."
+        ]
+      },
+      "cancer": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "Your year restarts on July 14. The new moon lands at 22° Cancer that morning, your solar first house, and it is the cleanest reset the calendar offers you. One caveat: Mercury is retrograde in your sign until July 23, so treat the weeks around the new moon as revision rather than debut. Rewrite the bio, rebook the appointment, repair the friendship. The launch keeps better after the 23rd.",
+          "July 6 is the day to keep your temper filed. The Sun in your sign squares Saturn in Aries, your tenth house of career, the deadline that ignores your birthday month, the boss who wants it anyway. Meet the obligation without renegotiating your whole job on the spot; Saturn stations retrograde on July 26, and the pressure that felt permanent goes into review through fall.",
+          "Mars spends the month in Gemini, your twelfth house, backstage. Its meeting with Uranus on July 4 can register as restlessness with no visible cause, or a sudden need to vanish for a day. That is not a crisis; it is a scheduling instruction. Book the actual rest. The quiet work pays anyway: Mars sextiles Saturn on July 19, and something finished privately earns credit publicly.",
+          "Then the ledger turns friendly. The Sun enters Leo and your second house of income on July 22 and meets Jupiter there on July 29, the single brightest money day of your year. Send the invoice. Have the raise conversation. Name the number without apologizing for it. The same day's full moon in Aquarius falls in your eighth house of shared finances, so a joint matter, the loan, the reimbursement, the split, comes to a head at the same time. Settle it on the 29th, while the light is good."
+        ]
+      },
+      "leo": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "The first three weeks are the wind-up. The Sun sits in Cancer, your solar twelfth house of rest and the backstage, until July 22, and Mercury is retrograde there until July 23. The new moon on July 14 lands in that same quiet territory: use it to close the old year on purpose. Cancel what you kept out of politeness, sleep unreasonable amounts, let the drafts stay drafts. Your season is coming; arrive rested.",
+          "Your friends will not be resting. Mars and Uranus meet in Gemini, your eleventh house, on July 4, the invitation that materializes an hour before it happens, the plan that reroutes twice and improves both times. Say yes to the holiday-weekend chaos; that corner of your chart is where the month is loudest until yours begins.",
+          "Jupiter has been in Leo since June 30, and on July 20 it opposes Pluto in your seventh house of partnership: as your momentum becomes visible, someone close may respond by gripping tighter. The Sun repeats the opposition on July 27. Neither day calls for a showdown, just say where you are going, and mean the invitation to come along.",
+          "Then the sky clears its throat. The Sun enters your sign on July 22 and meets Jupiter at 6° Leo on July 29, the brightest day of your year, not just your month. Launch the thing, throw the party, make the ask that felt too big in March. And because the same day's full moon at 6° Aquarius falls in your partnership house, the answer arrives in person: a relationship reaches full clarity right as you reach full volume. The 29th is the whole point of your July. Build toward it."
+        ]
+      },
+      "virgo": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "Work gets loud before you do. Mars spends July in Gemini, your solar tenth house of career, and it collides with Uranus there on July 4: the reorg, the scope change, the client who discovers a deadline over the holiday weekend. You are the person who can fix it, which is exactly why you should decide out loud what fixing it costs. July 19, when Mars sextiles Saturn, is the day the dust settles into something durable, the approval, the signed-off plan.",
+          "Mercury, your ruler, complicates the social calendar: it is retrograde in Cancer, your eleventh house of friends and future plans, until July 23. The new moon there on July 14 genuinely does open a new circle or revive an old plan, just confirm every date twice and expect the group thread to contradict itself until the 23rd.",
+          "Venus enters your sign on July 9, which suits you: for the rest of the month you look the way you feel on your best days. When Venus squares Uranus on July 13, the temptation is to let a chaotic Monday at work talk you into reinventing yourself by Friday. Keep the haircut; skip the resignation letter.",
+          "The month ends in your favorite register, privately. The Sun enters Leo and your twelfth house on July 22, then meets Jupiter there on July 29: the best day of the month is one nobody else sees. The finished draft, the retreat, the long unscheduled afternoon. That same day's full moon at 6° Aquarius lands in your sixth house of workload and routine, so the sprint you have been running crests and clears at once. Finish it, hand it off, and take the quiet win with both hands."
+        ]
+      },
+      "libra": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "The public part of your month comes first. The Sun crosses Cancer, your solar tenth house of career and reputation, until July 22, and the new moon there on July 14 is a genuine professional reset: the application, the title conversation, the portfolio finally reorganized. One timing note: Mercury is retrograde in that same house until July 23, so write everything on the 14th and submit it after the 23rd.",
+          "July 6 names the month's central tension. The Sun squares Saturn in Aries, your seventh house, the job pulling one way, the partnership pulling the other, both with a point. Saturn has been asking your closest relationship to grow up all year; it stations retrograde on July 26, and the agreements you made in spring go into review through fall. Reread them together rather than separately.",
+          "Two smaller weathers, worth using. Mars and Uranus meet in Gemini, your ninth house, on July 4, if a trip proposes itself out of nowhere, book it before the fare changes its mind. And Venus, your ruler, slips into Virgo and your twelfth house on July 9: schedule real solitude on purpose, because the social battery you pretend is infinite is not.",
+          "You will want it charged. The Sun enters Leo and your eleventh house of friends on July 22, then meets Jupiter there on July 29, the best social day of your year, the room where the introduction that matters actually happens. The same day's full moon at 6° Aquarius lights your fifth house of romance and creative work: something you love reaches full volume in front of exactly the right people. Go to the party on the 29th. Stay late."
+        ]
+      },
+      "scorpio": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "Distance suits you this month. The July 14 new moon at 22° Cancer lands in your solar ninth house, travel, study, and what you actually believe. That's the fresh start: the course you enroll in, the trip you finally plan, the conviction you say out loud. One asterisk: Mercury is retrograde in the same territory until it stations direct on July 23, so sketch the itinerary early but buy the nonrefundable parts after that date. The Sun's square to Saturn on July 6 names the obstacle in advance, your workload, arguing that you can't possibly leave. It's arguing; it isn't right.",
+          "Mars spends July in Gemini, your eighth house of shared money and private arrangements, and the opening weekend is loud: Mars meets Uranus on July 4, the surprise statement, the joint-account jolt, the renegotiation nobody scheduled. The next day is better than it looks. Mars trines Pluto on July 5, your two rulers cooperating, which favors the deliberate money conversation over the reactive one. If something needs signing, the Mars sextile to Saturn on July 19 is the steady day for it.",
+          "Career is the big story late. Jupiter is newly settled in Leo, your tenth house, and the Sun joins it, entering Leo on July 22, then conjunct Jupiter at 6° Leo on July 29, the month's brightest professional day. Put the visible thing on it: the pitch, the review, the launch. Notice what pulls the other way, though. Jupiter opposes Pluto on July 20, the Sun repeats it on July 27, both dragging the same axis toward your fourth house of home, and the July 29 full moon lands at 6° Aquarius in that very house. On the day work applauds, something domestic comes to a head. Go home for dinner anyway.",
+          "The stations are quieter weather: Neptune turns retrograde on July 7 and Saturn on July 26, both in your sixth house of routines and health. The regimen you built this spring goes under review through year's end. Keep the parts you actually do."
+        ]
+      },
+      "sagittarius": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "Jupiter, your planet, is settling into Leo and your solar ninth house, travel, study, the far edge of the map, and July gives it a proper welcome. The Sun arrives in Leo on July 22 and meets Jupiter at 6° Leo on July 29: the month's best day, and yours in particular. Book the trip around it, sit the exam near it, publish the thing on it. Jupiter's trine to Neptune on July 20 adds imagination to the planning, the destination that sounds slightly implausible is the one worth pricing.",
+          "Partnership supplies the plot twists. Mars is in Gemini, your seventh house, all month, and it meets Uranus on July 4, expect the person closest to you to do something genuinely unscripted. Give it room; the relationship is asking for movement, not an exit. Venus enters Virgo and your tenth house of career on July 9, and its square to Uranus on July 13 puts your work schedule and your partner's spontaneity briefly at odds. The durable version arrives on July 19, when Mars sextiles Saturn, a plan made together that actually holds.",
+          "Shared money asks for patience first. The Sun squares Saturn on July 6, an obligation involving someone else's resources pressing on your own commitments, and Mercury is retrograde in your eighth house until July 23, so joint paperwork signed before then tends to come back for edits. The new moon on July 14, at 22° Cancer in that same house, is the honest reset, the shared budget talked through, the application started clean. Just date the signatures after the 23rd.",
+          "One review notice: Saturn stations retrograde on July 26 in your fifth house, where Neptune has been retrograde since July 7, and a romantic or creative commitment from the spring goes into reconsideration through year's end. Meanwhile the July 29 full moon at 6° Aquarius fills your third house of messages on the month's brightest day, the phone will not stop. Answer the sibling first."
+        ]
+      },
+      "capricorn": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "On July 6 the Sun squares Saturn, your planet, and the month states its theme early. The Sun sits in Cancer, your solar seventh house of partnership; Saturn sits in Aries, your fourth of home and family. Someone close wants more from you than the household currently has to spare, or the household wants more than the relationship does. Neither side is wrong. Set aside the week for it.",
+          "The repair kit arrives mid-month. The new moon on July 14, at 22° Cancer, is a clean start in that same partnership house, the honest conversation, the second chance, the contract renewed on better terms. Mercury has been retrograde there all month and stations direct on July 23, so give anything negotiated before that date one more read after it. Old agreements resurfacing in early July are material for the new moon, not verdicts.",
+          "Work runs hot and then sorts itself out. Mars conjunct Uranus on July 4, in your sixth house of routines, is the schedule flipped without notice, the outage, the coverage gap, the reorganized week. Mars sextile Saturn on July 19 is the fix that holds; lock the new routine in then.",
+          "Money is the late-month story, on both sides of the ledger. Jupiter opposes Pluto on July 20 across your eighth and second houses, what you share versus what is yours, and the Sun repeats the question on July 27. Then July 29 stacks the deck: the Sun meets Jupiter at 6° Leo in your eighth house, the month's brightest day, good for the loan approval, the settlement, the partner's good news, while the full moon at 6° Aquarius lands in your second. Send the invoice that morning.",
+          "Saturn itself stations retrograde on July 26 in your fourth house. The home project or family arrangement you committed to this spring goes into review through year's end, keep the load-bearing parts, renegotiate the rest."
+        ]
+      },
+      "aquarius": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "For once, the month's closing act is addressed to you: the July 29 full moon lands at 6° Aquarius, your solar first house, and most of what comes before it is buildup. First-house culminations are personal. Something about how you live, look, or introduce yourself reaches full size, in front of witnesses.",
+          "The buildup runs through partnership. Jupiter is in Leo, your seventh house, and on July 20 it opposes Pluto in your own sign: a partner's expansion pressing on who you're becoming, the offer to merge homes, calendars, or plans, generous and a little engulfing at once. The Sun repeats the opposition on July 27, then meets Jupiter at 6° Leo on July 29, the month's warmest day, and that one belongs to the two of you. Make the offer, or accept it, and then, under your own full moon that same evening, check that the deal still fits the person you actually are. It probably does. Say so.",
+          "Romance and side projects get the early fireworks. Mars in Gemini, your fifth house, meets Uranus, your planet, on July 4: the spontaneous date, the idea that arrives sideways, the collaboration that starts as a joke. Mars trine Pluto the next day, July 5, gives it staying power. What sparks that weekend is allowed to become serious.",
+          "The unglamorous middle matters too. The Sun squares Saturn on July 6, your workload leaning on the errands-and-paperwork grind in your third house, and the new moon on July 14, at 22° Cancer in your sixth house, is the reset your routine has been asking for: the sleep schedule, the checkup, the calendar rebuilt around how you actually work. Mercury is retrograde in that same house until July 23, so book the appointments but expect the times to move until then. Saturn stations retrograde on July 26 in your third, the writing project or the sibling arrangement goes into review. A pause, not a cancellation."
+        ]
+      },
+      "pisces": {
+        "published": "2026-07-05",
+        "updated": "2026-07-05",
+        "paragraphs": [
+          "Circle July 14. The new moon that day, at 22° Cancer, lands in your solar fifth house, romance, play, and the creative work that is yours alone. It's the cleanest fresh start of your summer: ask the person out, start the draft, book the studio time. The footnote is Mercury, retrograde in that same house until July 23, the old flame who resurfaces or the stalled project that stirs in early July deserves a look, but wait until after the 23rd to call it back on.",
+          "Partnership warms up on schedule. Venus enters Virgo, your seventh house, on July 9, and most of the month is easier for couples and close collaborators because of it. The one dated bump: Venus squares Uranus on July 13, when a household surprise tests everyone's patience, likely the aftershock of July 4, when Mars met Uranus in your fourth house and something at home changed without asking first. The appliance, the roommate's announcement, the sudden idea about moving. Gather the estimates early, but the Mars-Saturn sextile on July 19 is when the repair, the quote, or the family decision turns sensible.",
+          "Work grows, and pleasantly, if you pace it. Jupiter is in Leo, your sixth house of routines and health, and the Sun joins it, entering Leo on July 22, then conjunct Jupiter at 6° Leo on July 29, the brightest day of the month. Say yes to the bigger role that day. The caution is the axis it sits on: Jupiter opposed Pluto on July 20, the Sun repeats it on July 27, and both point at your twelfth house of rest, more work only holds up if the recovery is scheduled alongside it. Fittingly, the July 29 full moon at 6° Aquarius lands in that twelfth house the same day. Take the win, then take the night off.",
+          "About money: the Sun-Saturn square on July 6 prices the month's fun against the budget, and Saturn stations retrograde in your second house on July 26, with Neptune retrograde there since July 7. The spending plan goes under review through fall. Decide nothing dramatic, keep paying the same bills and let the numbers sit still."
+        ]
+      }
+    },
+    "2026-08": {
+      "aries": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "August starts by asking what you are willing to take seriously because you enjoy it. Leo is your solar fifth house of pleasure, romance, and self-made work, and the Sun trines Saturn in Aries on August 7. That is not glamour. It is practice: the date that deserves planning, the creative thing that needs a schedule, the child or project that wants your steadier attention.",
+          "The middle of the month is even louder there. Mercury enters Leo on August 9 and runs straight into a stack of aspects on Wednesday, August 12: opposition Pluto, trine Neptune, sextile Uranus. That same day brings the new moon, a total solar eclipse, at 20° Leo. Keep the announcement simple; the audience, the dream, and the surprise variable are all in the room. Mercury meets Jupiter on August 15, and Venus sextiles Jupiter on August 17. If one day this month deserves the pitch, the invitation, or the opening night, choose the 15th through the 17th.",
+          "Partnership gets its own chapter once Venus enters Libra on August 6. The Venus trine to Pluto and opposition to Neptune on August 10 can make a relationship feel both fated and difficult to read. Ask the plain question. By August 21, when Venus opposes Saturn in your sign, the answer has to live inside time, limits, and actual behavior.",
+          "Home needs care, not drama. Mars enters Cancer on August 11 and squares Neptune on August 17, fogging the family conversation or household plan. Delay the righteous speech until you know what happened. The Sun enters Virgo on August 23, Mercury follows on August 25, and the August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lands in your twelfth house. Rest is not a moral failure. That same day, Mercury and the Sun both square Uranus: the calendar changes. Let it."
+        ]
+      },
+      "taurus": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "August begins at home. Leo is your solar fourth house, and the Sun trines Saturn on August 7 from that private territory to your twelfth house of rest. The message is not subtle: make the house quieter, make the boundary real, stop calling exhaustion a personality trait.",
+          "The real domestic reset arrives on Wednesday, August 12. Mercury, newly in Leo since August 9, opposes Pluto, trines Neptune, and sextiles Uranus that day, and the new moon, a total solar eclipse, lands at 20° Leo. A family conversation, lease matter, renovation, or room-by-room decision can move fast. Keep the plan flexible: Uranus is in Gemini, your second house, so the surprise probably has a cost. Mercury meets Jupiter in Leo on August 15, and that is the warmer day for the generous version, the family table, the good news, the big yes about where you live.",
+          "Venus, your planet, enters Libra on August 6 and your sixth house of work, health, and the small systems that keep a life running. Its trine to Pluto and opposition to Neptune on August 10 asks whether the routine serves your future or just looks graceful from the outside. The Venus-Jupiter sextile on August 17 helps; the Venus-Saturn opposition on August 21 insists the help needs structure.",
+          "Mars enters Cancer on August 11, your third house of messages and local motion. When Mars squares Neptune on August 17, do not answer the confusing text while angry. By August 23 the Sun enters Virgo, your fifth house, and Mercury follows on August 25. Pleasure returns, but the August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lights your eleventh house of friends just as Mercury and the Sun square Uranus. The group plan changes. The better one may be the second version."
+        ]
+      },
+      "gemini": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "August gives you the microphone, then asks you to use it carefully. Leo is your solar third house of messages, siblings, errands, and the near neighborhood. Mercury, your planet, enters Leo on August 9, and by Wednesday, August 12 it is opposite Pluto, trine Neptune, and sextile Uranus in Gemini. The sentence has reach. It also has consequences. Say the true thing, but do not make it harder than truth requires.",
+          "That same day, the new moon, a total solar eclipse, lands at 20° Leo. Start the writing project, local commitment, conversation, class, or pitch. Mercury meets Jupiter on August 15 in the same house, which is the month's best day for words that need to travel: the proposal, the announcement, the application, the message you want forwarded.",
+          "Money and workload ask for cleaner edges. Venus enters Libra on August 6, your fifth house, and August 10 can feel both magnetic and confusing as Venus trines Pluto and opposes Neptune. Enjoy the invitation without turning it into a life plan by midnight. Mars enters Cancer on August 11, your second house, then squares Neptune on August 17. A cost may be blurry, or a desire may be dressed up as necessity. Get the number in writing.",
+          "August 17 also brings Mercury trine Saturn and Venus sextile Jupiter, so the same day that muddles one corner steadies another. Choose the version with a receipt and a calendar. The Sun enters Virgo on August 23 and Mercury follows on August 25, moving attention to home and family. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lights your career house while Mercury and the Sun both square Uranus in your sign. A public matter peaks; your private life may not stay quiet while it does."
+        ]
+      },
+      "cancer": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "The month is blunt about money, value, and what you are willing to ask for. Leo is your solar second house, and the Sun trines Saturn on August 7 from there to your career house. A rate, role, invoice, or budget can get real because you treat it like a grown-up matter instead of a hope.",
+          "The middle of the month does more. Mercury enters Leo on August 9, then opposes Pluto, trines Neptune, and sextiles Uranus on Wednesday, August 12. That same day brings the new moon, a total solar eclipse, at 20° Leo. Start the new money plan, but make room for the hidden detail: taxes, shared resources, a friend's advice, or the private fear that has been steering the numbers. Mercury meets Jupiter on August 15, and Venus sextiles Jupiter on August 17. If you need to name the number, that window is the friendliest one.",
+          "Mars enters Cancer on August 11, giving you more heat than usual. Useful, if aimed. On August 17 Mars squares Neptune in Aries, your tenth house, so do not let a vague professional pressure turn into a personal emergency. Ask what is actually due, by whom, and when. The answer may be smaller than the feeling.",
+          "Home softens once Venus enters Libra on August 6. Its trine to Pluto and opposition to Neptune on August 10 can make a family or household matter feel tender and overlarge at once. By August 21, when Venus opposes Saturn, the repair needs a boundary, not just goodwill. The Sun enters Virgo on August 23 and Mercury follows on August 25, shifting you into messages and local logistics. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lights your ninth house of travel, study, and belief while Mercury and the Sun square Uranus. The route changes; the larger direction does not have to."
+        ]
+      },
+      "leo": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "This is your month, but not the loud kind. The Sun is in Leo until August 23, your solar first house, and it trines Saturn on August 7. That is a clean green light for serious self-definition: the promise you can keep, the plan you can repeat, the version of confidence that does not need applause to stand up.",
+          "The main reset arrives on Wednesday, August 12. The new moon, a total solar eclipse, lands at 20° Leo, and Mercury, newly in your sign since August 9, spends the same day opposite Pluto, trine Neptune, and sextile Uranus. You may hear yourself say something that changes the room. Good. Just remember Pluto is in your partnership house; the other person is not a prop in your reveal. Mercury meets Jupiter in Leo on August 15, your best day for the announcement, the ask, the introduction, or the first step into a larger role.",
+          "Venus enters Libra on August 6, sweetening your third house of messages and local plans. August 10 is more complicated: Venus trines Pluto and opposes Neptune, so a conversation can feel intimate and slightly unreal at once. Keep it beautiful, but check the facts. Venus sextile Jupiter on August 17 is easier; Venus opposition Saturn on August 21 asks whether the words match the commitment.",
+          "Mars enters Cancer on August 11, your twelfth house, and squares Neptune on August 17. Restlessness may have no obvious target. Do not invent one. The Sun enters Virgo on August 23, Mercury follows on August 25, and attention turns to money and self-worth. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lights shared resources while Mercury and the Sun square Uranus in your friendship house. Someone's plan changes the math. Recalculate before reacting."
+        ]
+      },
+      "virgo": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "The first three weeks are backstage. Leo is your solar twelfth house of rest, privacy, and unfinished business, and the Sun trines Saturn on August 7. That is useful solitude: the appointment kept, the old obligation closed, the quiet discipline that makes your next year possible.",
+          "Mercury, your planet, enters Leo on August 9 and makes August 12 unusually busy behind the curtain: opposition Pluto, trine Neptune, sextile Uranus. The same day brings the new moon, a total solar eclipse, at 20° Leo. Something private is ready for a reset, a sleep pattern, a secret worry, a draft, a goodbye. Do not rush to make it public. Mercury meets Jupiter on August 15, still in that hidden house, and the good news may arrive as relief rather than applause.",
+          "Money improves with manners once Venus enters Libra on August 6, your second house. Venus trines Pluto and opposes Neptune on August 10; the opportunity can be real, but the shared-cost piece may be foggy. Ask the extra question. Venus sextile Jupiter on August 17 helps you get paid for work done quietly, while Venus opposite Saturn on August 21 asks for a cleaner boundary around debt, obligation, or someone else's expectations.",
+          "Mars enters Cancer on August 11, your eleventh house of friends and future plans, then squares Neptune on August 17. A group promise may be badly defined. Put names next to tasks. Your season begins when the Sun enters Virgo on August 23; Mercury follows on August 25. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lands in your partnership house, while Mercury and the Sun square Uranus in your career house. A relationship reaches clarity just as work changes shape. Answer both, in that order."
+        ]
+      },
+      "libra": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "Your month starts in the room where people know your name. Leo is your solar eleventh house of friends, collaborators, and future plans. The Sun trines Saturn on August 7, and a group plan can become real because someone finally agrees to the structure. Be that someone if nobody else volunteers.",
+          "Venus, your planet, enters Libra on August 6. That is a return of social ease, but not a free pass to blur yourself into everyone else's weather. August 10 is the test: Venus trines Pluto and opposes Neptune, pulling romance, friendship, and partnership into the same charged frame. If a bond feels enormous, give it a little time before you rename your life around it. Venus sextiles Jupiter on August 17, a much easier day for pleasure, introductions, and being liked by the right people. Venus opposes Saturn on August 21, and the same relationship has to show its practical side.",
+          "The new moon on Wednesday, August 12, a total solar eclipse, lands at 20° Leo in your eleventh house. Mercury entered Leo on August 9 and also opposes Pluto, trines Neptune, and sextiles Uranus that day. Start the shared project, but do not pretend everyone has the same motive. The motive does not need to be pure; it needs to be spoken.",
+          "Mars enters Cancer on August 11, your career house, then squares Neptune on August 17. A public obligation could become strangely slippery: unclear authority, vague instructions, a moving target. Get it in writing. The Sun enters Virgo on August 23 and Mercury follows on August 25, moving you toward rest. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lights your workload while Mercury and the Sun square Uranus. The schedule changes because it has to. Do less, better."
+        ]
+      },
+      "scorpio": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "August is public. Leo is your solar tenth house of career, reputation, and the thing people can point to. The Sun trines Saturn on August 7, and the month rewards work with a spine: the portfolio cleaned up, the title clarified, the responsibility named instead of carried invisibly.",
+          "The career reset lands on Wednesday, August 12. Mercury has just entered Leo on August 9, and on the 12th it opposes Pluto in your fourth house, trines Neptune in your sixth, and sextiles Uranus in your eighth. The new moon, a total solar eclipse, arrives that same day at 20° Leo. A public beginning is possible, but it pulls on home, health, and shared resources at once. Do not call that a bad omen. Call it the full scope.",
+          "Mercury meets Jupiter in Leo on August 15, the best day for the pitch, interview, launch, or conversation with someone who can open a door. Venus sextiles Jupiter on August 17 from your private twelfth house, which suggests quiet support behind the scenes. Let the ally stay unnamed if that keeps the peace.",
+          "Venus enters Libra on August 6, and August 10 is private but potent: Venus trines Pluto and opposes Neptune. A hidden feeling may grow larger than the facts. Give it air, not a verdict. By August 21, Venus opposes Saturn, and a secret, rest pattern, or old attachment meets a boundary.",
+          "Mars enters Cancer on August 11, your ninth house of travel and belief, then squares Neptune on August 17. The trip, course, or legal detail needs clean directions. The Sun enters Virgo on August 23, Mercury follows on August 25, and friends return to the foreground. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lights romance and creative work while both Mercury and the Sun square Uranus. A shared-money surprise may interrupt the celebration; it does not cancel it."
+        ]
+      },
+      "sagittarius": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "August speaks your language first: distance, study, travel, publishing, the big frame. Leo is your solar ninth house, and the Sun trines Saturn on August 7. The dream gets better when it has dates, documents, and a route. Build the container; do not just point at the horizon.",
+          "Mercury enters Leo on August 9, then turns Wednesday, August 12 into a busy map. Mercury opposes Pluto, trines Neptune, and sextiles Uranus, while the new moon, a total solar eclipse, lands at 20° Leo. A trip, course, application, or belief gets a clean starting line. Partnership is part of the weather because Uranus is in Gemini, your seventh house; the other person's news may change the plan in a useful way. Mercury meets Jupiter on August 15, and that is your best day for sending the form, booking the clean version, or making the ask across a distance.",
+          "Friends and collaborators warm up once Venus enters Libra on August 6. Its trine to Pluto and opposition to Neptune on August 10 can make a group dynamic feel both powerful and hard to read. Enjoy the room without promising it your whole future. Venus sextile Jupiter on August 17 is much cleaner; Venus opposition Saturn on August 21 asks which friendship or plan can handle grown-up limits.",
+          "Mars enters Cancer on August 11, your eighth house of shared money and private arrangements. When Mars squares Neptune on August 17, do not gloss over the joint-cost detail. The Sun enters Virgo and your career house on August 23; Mercury follows on August 25. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lands at home, while Mercury and the Sun square Uranus. Career moves; household plans answer back."
+        ]
+      },
+      "capricorn": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "August begins with shared resources, private obligations, and the part of the ledger nobody sees from the outside. Leo is your solar eighth house, and the Sun trines Saturn on August 7. A difficult money or trust matter can get steadier because you stop treating it as too delicate to name.",
+          "Mercury enters Leo on August 9, then Wednesday, August 12 puts the eighth house under a bright lamp: Mercury opposes Pluto, trines Neptune, sextiles Uranus, and the new moon, a total solar eclipse, lands at 20° Leo. Start the repayment plan, the shared budget, the honest conversation about what one person owes another. The Uranus piece runs through your sixth house, so the surprise may involve workload or health logistics. Put the practical change in the plan from the beginning.",
+          "Mercury meets Jupiter on August 15, still in that shared-resource house. It is a good day for a generous settlement, a helpful offer, or an agreement that gives everyone more room. Venus sextiles Jupiter on August 17 from your career house, which can bring public support. Do not overpromise just because the door opens.",
+          "Venus enters Libra on August 6 and your tenth house of reputation. August 10 is complicated but useful: Venus trines Pluto and opposes Neptune, so you may be seen more clearly by some people and more idealized by others. By August 21, Venus opposes Saturn in your fourth house. Work success still has to fit inside family, home, and the life that receives you after the meeting.",
+          "Mars enters Cancer on August 11, your partnership house, then squares Neptune on August 17. Do not fight over a foggy premise. The Sun enters Virgo on August 23 and Mercury follows on August 25, opening the map again. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lights the message, contract, or sibling matter while Mercury and the Sun square Uranus. Read it twice."
+        ]
+      },
+      "aquarius": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "Partnership carries the month. Leo is your solar seventh house of close relationships, collaborators, and the person across the table. The Sun trines Saturn on August 7, and a relationship can grow up without becoming grim. Name the agreement. Put it on the calendar. Let reliability be romantic for once.",
+          "Mercury enters Leo on August 9, then August 12 turns the conversation into the main event. Mercury opposes Pluto in Aquarius, trines Neptune, and sextiles Uranus; the new moon, a total solar eclipse, lands at 20° Leo the same day. Someone else's words may press directly on your identity. That does not make them wrong, but it does mean you should not surrender the whole room. Start the partnership chapter with a sentence that includes both people.",
+          "Mercury meets Jupiter in Leo on August 15. If there is an offer, date, contract, introduction, or reconciliation to make, that is the generous day. Venus sextile Jupiter on August 17 helps from Libra, your ninth house: distance, travel, study, or shared belief opens the door. Venus opposition Saturn on August 21 asks which version survives ordinary limits.",
+          "Work and health need precision once Mars enters Cancer on August 11. Mars squares Neptune on August 17, and a confusing instruction, symptom, or task list can waste a lot of heat. Ask for specifics before you spend yourself. The Sun enters Virgo on August 23, Mercury follows on August 25, and shared resources come forward. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces lights your second house of income and value while Mercury and the Sun square Uranus in your fifth. A creative or romantic surprise changes the math. Count again, then answer."
+        ]
+      },
+      "pisces": {
+        "published": "2026-07-14",
+        "updated": "2026-07-14",
+        "paragraphs": [
+          "August starts with the body, the calendar, and the work that repeats whether or not you feel inspired. Leo is your solar sixth house of routines, health, and service. The Sun trines Saturn on August 7, and the practical habit has more power than the dramatic vow. Choose the repeatable thing.",
+          "Mercury enters Leo on August 9, then Wednesday, August 12 brings the new moon, a total solar eclipse, at 20° Leo and three Mercury aspects at once: opposition Pluto, trine Neptune, sextile Uranus. The routine reset is real, but it is not simple. Private pressure, self-worth, and the home situation all have opinions. Write the schedule that can survive those opinions, not the one that looks best in a notes app.",
+          "Mercury meets Jupiter in Leo on August 15, a useful day for the checkup, hire, workflow, or request for help. Venus sextile Jupiter on August 17 adds cooperation from the shared-resource side. The caution is Mars: it enters Cancer on August 11, your fifth house of romance and creative work, then squares Neptune on August 17. A crush, project, or pleasure plan can fog the numbers. Enjoy it; do not fund it blindly.",
+          "Venus enters Libra on August 6, your eighth house, and August 10 is tender: Venus trines Pluto and opposes Neptune. Intimacy can deepen, but idealizing someone's promise is still idealizing. Venus opposes Saturn on August 21, and the same matter asks for a boundary around money, time, or emotional labor.",
+          "Partnership takes over when the Sun enters Virgo on August 23 and Mercury follows on August 25. The August 28 full moon, a deep partial lunar eclipse, at 4.9° Pisces is yours, a first-house culmination, while Mercury and the Sun square Uranus. A relationship conversation may change fast. Let clarity arrive before certainty."
+        ]
+      }
+    },
+    "2026-09": {
+      "aries": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "September starts with a wall worth pushing against. Mars squares Saturn on September 1, your ruler in Cancer, your solar fourth house of home and family, grinding against Saturn retrograde in your own sign. The household task is real and so is your shortage of patience for it. Do the thing slowly and once; the square rewards method, not force.",
+          "The Sun spends the first three weeks in Virgo, your sixth house of work, health, and routines, and the new moon at 18.4° Virgo on September 11 is the year's cleanest reset for exactly that territory: the schedule, the checkup, the habit you keep meaning to start. The day before, on September 10, three things move at once, Mercury enters Libra and your partnership house, Venus enters Scorpio and your house of shared money, and Uranus stations retrograde at 5.7° Gemini, sending your calendar of errands and plans into review. Expect one commitment to reshuffle.",
+          "The partnership conversation matters most. Mercury opposes Saturn on September 18, someone's limit gets said out loud; take it as information, not verdict, and then sextiles Jupiter in your fifth house on September 21, when the same dialogue turns generous. Venus square Pluto on September 15 is the money edge: a joint expense and a friend's expectation pulling in different directions. Name the number.",
+          "The Sun enters Libra on September 23 and relationship season begins in earnest. The full moon at 3.6° Aries on September 26 is yours, a personal decision reaching its visible end, but it arrives with the Sun opposite Neptune that same day, so let anything blurry stay unsigned for a beat; the Sun's trine to Pluto that day says the deep change holds anyway. Then September 28 pays out: Mars enters Leo and your fifth house of pleasure and self-made things, and the Sun trines Uranus. The month that began with a wall ends with an open door."
+        ]
+      },
+      "taurus": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "The Sun opens the month in Virgo, your solar fifth house of pleasure, romance, and things made for their own sake, and the new moon at 18.4° Virgo on September 11 is the invitation: start the project you would do even if nobody watched. September 1 sets a sterner tone first, Mars in Cancer, your house of errands and messages, squares Saturn, so the week's friction is logistics against old obligations. Answer the backlog before it answers you.",
+          "September 10 is the hinge day. Venus, your ruler, enters Scorpio and your partnership house, warming the month's relationships with more intensity than comfort. Mercury enters Libra, your sixth house of work and routines, and Uranus, stationing retrograde at 5.7° Gemini that same day, begins a months-long review of your money house. Income that changed shape this year gets re-examined, not undone.",
+          "Venus square Pluto on September 15 runs through your career angle: charm meets a power structure, and the honest move is to want what you want out loud. Mercury's work-house run is busy, opposite Saturn on September 18, when a professional limit needs restating without apology, then sextile Jupiter in your home house on September 21, the best day of the month to settle a domestic or family plan on friendly terms.",
+          "The Sun enters Libra on September 23 and work season begins; the routines you reset at the new moon get their first real test. The full moon at 3.6° Aries on September 26 lands in your twelfth house of rest and unfinished business, something you have carried quietly is done, and you are allowed to put it down. With the Sun opposite Neptune the same day, skip the dramatic exit; just close the door gently. Mars enters Leo and your home house on September 28 while the Sun trines Uranus, and the last days favor moving furniture, literal or otherwise. Mercury enters Scorpio on September 30: the partnership conversation deepens on the month's final day."
+        ]
+      },
+      "gemini": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "The month's headline is in your own sign: Uranus stations retrograde at 5.7° Gemini on September 10. The reinvention you have been running all year goes into review through the winter, not reversed, just audited. Keep what changed you; drop what merely startled people.",
+          "Before that, September 1 opens on a money squeeze. Mars in Cancer, your solar second house of income, squares Saturn in your house of friends and future plans: the group commitment and the bank balance disagree. Say the real number and the tension does its job.",
+          "Your ruler makes this a talkative month. Mercury enters Libra and your fifth house of pleasure and romance on September 10, and then works through the sky point by point: trine Pluto and opposite Neptune on September 12, one conversation that goes satisfyingly deep and another that goes pleasantly nowhere; learn to tell them apart, then trine Uranus in your sign on September 14, when the right sentence arrives sideways. September 18 brings Mercury opposite Saturn: a friend's no, or a plan's ceiling, said plainly. September 21 answers it with Mercury sextile Jupiter in your house of errands and messages, the yes shows up in the ordinary channel, probably mid-scroll.",
+          "The new moon at 18.4° Virgo on September 11 is a home reset: lease, room, or one honest conversation under your own roof. Venus enters Scorpio and your work-and-routines house on September 10 and squares Pluto on September 15, office affections and office politics briefly share a desk; keep receipts.",
+          "The Sun enters Libra on September 23, beginning your best social stretch of the season, and the full moon at 3.6° Aries on September 26 brings a friendship or group effort to its visible peak. The Sun trines Uranus on September 28 as Mars enters Leo, your third house, the month ends at your natural speed, which is to say quick. Mercury dives into Scorpio and your work house on September 30; October opens with sharper questions."
+        ]
+      },
+      "cancer": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "Mars has been in your sign, and on September 1 it squares Saturn in your solar tenth house of career and reputation. The push you want to make and the authority that says not yet meet head-on in the month's first hours. The square is not a stop sign; it is a demand for form. Bring the plan, not just the energy.",
+          "The Sun's Virgo weeks light your third house of messages, errands, and near territory, and the new moon at 18.4° Virgo on September 11 is the communication reset, the inbox declared bankrupt, the sibling called back, the course begun. The day before, September 10, rearranges the board: Venus enters Scorpio and your fifth house of romance and play, Mercury enters Libra and your home house, and Uranus stations retrograde at 5.7° Gemini in your twelfth, the year's background changes get reviewed where nobody can see them yet.",
+          "Home is where the talking happens. Mercury opposes Saturn on September 18, and the career limit from the 1st reappears in a domestic conversation; say what the job actually requires. Mercury sextile Jupiter in your money house on September 21 is the month's easiest win, a number improves because someone likes how you asked. Venus square Pluto on September 15 cuts through your house of shared finances: desire and debt briefly hold hands. Check what the sweet arrangement costs.",
+          "The Sun enters Libra on September 23, turning the light on home and family matters for a month. Then September 26 concentrates the sky: the full moon at 3.6° Aries peaks in your career house while the Sun opposes Neptune and trines Pluto, public work reaches its moment, the story around it goes soft at the edges, and the durable part survives anyway. Deliver facts and let the fog pass. Mars enters Leo and your income house on September 28: effort starts converting to money. Mercury enters Scorpio on September 30, and the romance gets its words back."
+        ]
+      },
+      "leo": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "Jupiter is still in your sign, and the month's kindest aspect points straight at it: Mercury sextile Jupiter on September 21, from your solar third house of messages, no less, is your good-news day. A conversation, an offer, an email that reads like the sky owed you one. Circle it.",
+          "The start is quieter and grittier. Mars squares Saturn on September 1 from your twelfth house of rest and unfinished business against Saturn in your ninth: the trip, degree, or big idea says wait while your energy runs backstage. Use the first week to finish rather than launch. Money gets the daylight instead, the Sun's Virgo weeks light your second house of income, and the new moon at 18.4° Virgo on September 11 is the earnings reset: the rate raised, the budget rebuilt, the invoice finally sent.",
+          "September 10 moves three pieces at once. Mercury enters Libra and starts its errand-house run, trine Pluto and opposite Neptune on September 12 (one sharp conversation, one slippery one), trine Uranus in your house of friends on September 14, opposite Saturn on September 18, when the distant plan asks for a realistic schedule. Venus enters Scorpio and your home-and-family house the same day, then squares Pluto on September 15: affection and control briefly argue over a domestic decision. Choose warmth with a spine. And Uranus stations retrograde at 5.7° Gemini in your eleventh, the group project rethinks itself; let it.",
+          "The Sun enters Libra on September 23, and the pace picks up in your near world. The full moon at 3.6° Aries on September 26 culminates in your ninth house, the faraway thing (a journey, a publication, a belief) reaches its turning point, with the Sun opposite Neptune the same day advising you to check the itinerary twice. Then the sky hands you the keys: Mars enters Leo on September 28, the Sun trines Uranus, and the year's most decisive stretch of energy in your own sign begins."
+        ]
+      },
+      "virgo": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "This is your reset. The new moon on September 11 lands at 18.4° Virgo, in your own sign, your solar first house, and it is the year's best starting line for anything that begins with you: the body, the name, the way you introduce the work. Write the intention down; you of all signs will want the record.",
+          "The month opens on other people's friction. Mars in Cancer, your house of friends and future plans, squares Saturn in your eighth on September 1: a group ambition runs into someone's shared-money limit. Let the budget speak first. Your ruler then gets busy, Mercury enters Libra and your income house on September 10 and works the money angles all month: trine Pluto in your house of work on September 12 (a precise conversation that actually moves a number), opposite Neptune in your eighth the same day (a joint figure that will not add up until you ask twice), trine Uranus across your career angle on September 14, the useful surprise from above, and opposite Saturn on September 18, when a debt or obligation states its terms. September 21 is the exhale: Mercury sextile Jupiter in your twelfth, relief arriving quietly, the way you prefer it.",
+          "September 10 also brings Venus into Scorpio and your house of errands and near territory, the neighborhood gets more interesting, and Uranus stations retrograde at 5.7° Gemini in your tenth: the career change of the past year goes under review. Venus square Pluto on September 15 puts a charged edge on workplace niceties; stay kind, stay unbought.",
+          "The Sun enters Libra on September 23 and money season follows the personal one. The full moon at 3.6° Aries on September 26 culminates in your eighth house, a loan, a merger of resources, an intimacy reaching its honest shape, while the Sun opposes Neptune and trines Pluto the same day: release the fantasy version, keep the durable one. Mars enters Leo and your twelfth on September 28. The last days ask for rest, and you will have earned it."
+        ]
+      },
+      "libra": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "The month belongs to you from September 23, when the Sun enters Libra at the equinox. Before that, the Virgo weeks run through your solar twelfth house of rest and loose ends, treat the new moon at 18.4° Virgo on September 11 as permission to close tabs, cancel gracefully, and sleep.",
+          "Your voice arrives ahead of your season: Mercury enters Libra on September 10 and spends the month making your case. September 12 is its double feature, trine Pluto in your fifth house, when a creative or romantic conversation goes satisfyingly deep, and opposite Neptune in your partnership house, when another one dissolves into mist; do not sign anything during the mist. Mercury trine Uranus on September 14 opens an unexpected door at distance, travel, study, publishing, and Mercury opposite Saturn on September 18 is the partner's hard limit, spoken. Saturn has been retrograde in your seventh house all season; the 18th just gives it words. September 21 answers with Mercury sextile Jupiter in your house of friends: the network says yes.",
+          "Money moves early too. Venus, your ruler, enters Scorpio and your second house on September 10 and squares Pluto in your fifth on September 15, income and indulgence negotiate; decide the number before the checkout screen does. September 1's Mars-Saturn square, from your career angle into your seventh, sets the month's opening question: how much of the push at work belongs to you, and how much to the partnership behind it.",
+          "Then the sky answers plainly. The full moon at 3.6° Aries on September 26 culminates in your partnership house, a relationship reaches its visible truth, while the Sun opposes Neptune in the same degree zone: see the person, not the ideal. The Sun's trines to Pluto on September 26 and Uranus on September 28 say what remains is sturdier than what dissolves. Mars enters Leo and your eleventh house on September 28, and your season opens with allies at your back. Mercury enters Scorpio on September 30: money gets the last word."
+        ]
+      },
+      "scorpio": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "Venus enters your sign on September 10, and the month tilts your way, more attention, better lighting, the old gravity back. The catch comes five days later: Venus squares Pluto on September 15, from Scorpio into your solar fourth house of home and family. Someone at home has opinions about the new shine. The square is workable if you refuse the power struggle and keep the affection.",
+          "September 1 opens with your ruler under pressure: Mars in Cancer, your ninth house of travel, study, and conviction, squares Saturn in your sixth. The far plan meets the near workload, and the workload wins the first round, schedule the dream instead of abandoning it. The Sun's Virgo weeks warm your house of friends and shared efforts, and the new moon at 18.4° Virgo on September 11 is the group reset: the team re-formed around what it actually does. The same season runs quiet currents underneath, Mercury enters Libra and your twelfth house on September 10, and its aspects there are private weather: trine Pluto on September 12, when a buried thing explains itself; opposite Saturn on September 18, when an old duty asks for a decision you have postponed. Uranus stations retrograde at 5.7° Gemini in your eighth house the same week, sending a shared-money arrangement into slow review.",
+          "September 21 is worth planning around: Mercury sextile Jupiter across your career angle, the quiet word in the right ear, and it lands. The Sun enters Libra on September 23, and the pre-season hush begins; rest is strategy now. The full moon at 3.6° Aries on September 26 culminates in your sixth house, a workload or health effort peaks and can finally be right-sized, while the Sun opposes Neptune the same day: check what the job actually requires versus what you have been assuming. Mars enters Leo and your tenth house on September 28, lighting the career burner for October. Mercury enters Scorpio on September 30, and on the month's last day the words are yours again."
+        ]
+      },
+      "sagittarius": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "The Virgo weeks put you in public. The Sun crosses your solar tenth house of career and reputation through September 22, and the new moon at 18.4° Virgo on September 11 is the professional reset, the role renamed, the pitch rebuilt, the application sent. Aim it deliberately; tenth-house new moons reward the ones who file paperwork.",
+          "September 1 opens with a money knot: Mars in Cancer, your eighth house of shared resources, squares Saturn in your fifth. A joint cost presses against something you love, a child's expense, a creative budget, the holiday fund. The square wants a ruling, not a mood. Your ruler stays generous through it: Jupiter sits in Leo, your ninth house, your home territory of journeys and big ideas, and Mercury sextile Jupiter on September 21 is the month's green light, likely arriving through a friend or the wider network.",
+          "Mercury's Libra run works your social wiring: it enters your eleventh house on September 10; goes trine Pluto and opposite Neptune on September 12, one contact with real leverage, one with beautiful vapor; know which is which, then trine Uranus across your partnership angle on September 14, when someone surprises you in a useful way, and opposite Saturn on September 18, when a romance or creative plan meets its deadline. Venus slips into Scorpio and your twelfth house on September 10, affection goes private for a few weeks, and squares Pluto on September 15: the unsaid thing gains weight; say it or set it down. Uranus stations retrograde at 5.7° Gemini on the 10th, turning the partnership question of the past year into a review rather than a referendum.",
+          "The Sun enters Libra on September 23 and the month's last week is your payoff. The full moon at 3.6° Aries on September 26 culminates in your fifth house, the creative thing or the romance reaches full size, and the Sun trine Uranus on September 28 lands as Mars enters Leo, your ninth: the road opens, and you were built for exactly that."
+        ]
+      },
+      "capricorn": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "September 1 sets the theme in one aspect: Mars in Cancer, your solar seventh house of partnership, squares Saturn in your fourth. The person across the table pushes; the household says hold. Neither is wrong, the square is asking you to renegotiate the load-bearing agreement, not to win it.",
+          "The Virgo weeks are your widening lens. The Sun crosses your ninth house of travel, study, and long bets through September 22, and the new moon at 18.4° Virgo on September 11 is the reset for exactly that: the course, the visa, the thesis, the plan with a horizon past December. Mercury enters Libra and your career house on September 10 and gives the month its professional spine, trine Pluto in your money house on September 12, when a negotiation quietly finds its real number, and opposite Neptune in your fourth the same day, when the home story and the work story blur; keep them in separate documents. Mercury trine Uranus in your sixth on September 14 fixes a workflow with one odd idea. Then September 18, Mercury opposite Saturn: the family limit gets said to the boss, or the boss's limit gets said at home. You have rehearsed this sentence all month; deliver it flat and kind.",
+          "Elsewhere, Venus enters Scorpio and your house of friends on September 10, the network turns warmer and more loyal, then squares Pluto in your second on September 15: generosity and budget disagree by an exact amount. Uranus stations retrograde at 5.7° Gemini in your sixth, and the routine you rebuilt this year goes into review; keep the parts that survived contact with real weeks. Mercury sextile Jupiter on September 21 favors shared finances, refinance, split, settle.",
+          "The Sun enters Libra on September 23 and career season opens. The full moon at 3.6° Aries on September 26 culminates at home, a move, repair, or family matter reaches its turning point, while the Sun opposes Neptune and trines Pluto the same day: let the sentimental fog pass and act on the structural fact. Mars enters Leo and your eighth house on September 28. October's finances start now."
+        ]
+      },
+      "aquarius": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "Pluto in your sign is this month's quiet anchor, and the sky keeps checking in with it: Mercury trine Pluto on September 12, Neptune sextile Pluto on September 16, the Sun trine Pluto on September 26. None of these are loud days; together they are a season of the long self-renovation getting reinforcement from every direction. The September 16 sextile in particular is slow-planet weather, Neptune in your solar third house easing the way you explain the person you are becoming.",
+          "The ground-level month starts with a grind: Mars in Cancer, your sixth house of work and health, squares Saturn in that same third house on September 1. The workload argues with the schedule; write the timetable you can actually keep. The Sun's Virgo weeks run through your eighth house of shared money, and the new moon at 18.4° Virgo on September 11 is the reset there, the debt plan, the split bill, the password finally handed over.",
+          "September 10 is dense: Mercury enters Libra and your ninth house, opening a month of bigger questions; Venus enters Scorpio at the top of your chart, making your public work unusually magnetic; and Uranus, your ruler, stations retrograde at 5.7° Gemini in your fifth house, the creative experiment of the past year goes into revision, which is not the same as rejection. Venus square Pluto on September 15 is the one to handle with gloves: career charm meets your own agenda, and the clean move is stating openly what you are building. Mercury opposite Saturn on September 18 brings a hard answer from near quarters; Mercury sextile Jupiter in your partnership house on September 21 brings the soft one that matters more.",
+          "The Sun enters Libra on September 23, and the horizon house lights up, book the trip, enroll, publish. The full moon at 3.6° Aries on September 26 culminates in your third house: a message, decision, or sibling matter reaches its full stop. Mars enters Leo and your seventh house on September 28 while the Sun trines Uranus: the month ends with a partner bringing the energy, and you, for once, happy to share the wheel."
+        ]
+      },
+      "pisces": {
+        "published": "2026-09-01",
+        "updated": "2026-09-01",
+        "paragraphs": [
+          "The Virgo weeks put the other person in the light. The Sun crosses your solar seventh house of partnership through September 22, and the new moon at 18.4° Virgo on September 11 is the fresh start that house has been waiting for, the talk that resets terms, the first date that feels like a plan, the working alliance made official.",
+          "Money is the month's serious thread. Saturn sits retrograde in your second house, and September 1's Mars-Saturn square, Mars in Cancer, your fifth house of romance, children, and self-made things, prices the fun against the budget in the first week. Then your ruler complicates the arithmetic: Neptune, also in your second house, takes the Sun's opposition on September 26, the month's fog bank, and it sits directly on the numbers. Between those bookends, Mercury enters Libra and your eighth house on September 10 and negotiates the shared side: opposite Neptune on September 12 (a joint figure that needs a second source), opposite Saturn on September 18 (the repayment schedule, stated), and sextile Jupiter in your sixth on September 21, the month's best day for work, where the steady thing quietly grows.",
+          "September 10 also sends Venus into Scorpio and your ninth house, affection wants distance, a trip, a shared conviction, before its square to Pluto on September 15 asks what you are still carrying in private. Uranus stations retrograde at 5.7° Gemini in your fourth house the same day: the home changes of the past year go into review; live in them before you redraw them.",
+          "The Sun enters Libra on September 23 and the deep-ledger season begins. The full moon at 3.6° Aries on September 26 culminates in your money house the same day as that Neptune opposition, an income matter reaches its visible peak just as the story around it goes soft. Read the statement, not the mood; the Sun's trine to Pluto says the sound part holds. Mars enters Leo and your sixth house on September 28, and the last days trade drama for traction. Mercury enters Scorpio on September 30: the horizon calls first thing in October."
+        ]
+      }
+    },
     "2026-10": {
       "aries": {
         "published": "2026-10-01",

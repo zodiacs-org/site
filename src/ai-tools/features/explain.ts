@@ -28,7 +28,7 @@ const HOUSE_SLUGS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'se
 const ASPECTS = ['conjunction', 'sextile', 'square', 'trine', 'opposition'];
 
 export const explainInput = z.strictObject({
-  topic: z.string().trim().min(1).max(80).describe('What to explain, in a few words: a sign (leo), a planet (Mercury), the houses or one house (seventh house), aspects or one aspect (square), retrogrades or Mercury retrograde, Moon phases, the rising sign, the big three, cusps, Saturn return, elements, modalities, transits, synastry, eclipses or the Chinese zodiac.'),
+  topic: z.string().trim().min(1).max(80).describe('What to explain, in a few words: a sign (leo), a planet (Mercury), a placement (Moon in Scorpio, Jupiter in the 12th), the houses or one house (seventh house), aspects or one aspect (square), retrogrades or Mercury retrograde, Moon phases, the rising sign or a sign rising (Leo rising), the Midheaven, the big three, cusps, Saturn return, elements, modalities, transits, synastry, eclipses or the Chinese zodiac.'),
 });
 export type ExplainInput = z.infer<typeof explainInput>;
 
@@ -116,6 +116,11 @@ const TOPICS: Topic[] = [
   { key: 'void-of-course-moon', title: 'The void-of-course Moon', aliases: ['void of course', 'void of course moon', 'voc moon', 'moon void of course'], glossary: ['void-of-course-moon'], pages: [{ title: 'Void-of-course Moon', path: '/void-of-course-moon/' }], related: ['moon-phases', 'moon'] },
   { key: 'eclipses', title: 'Eclipses', aliases: ['eclipse', 'solar eclipse', 'lunar eclipse', 'eclipse season'], glossary: ['eclipse', 'solar-eclipse', 'lunar-eclipse', 'eclipse-season'], pages: [{ title: 'Eclipses', path: '/eclipses/' }], related: ['moon-phases', 'lunar-nodes'] },
   { key: 'rising-sign', title: 'The rising sign', aliases: ['rising', 'ascendant', 'asc', 'my rising sign', 'chart ruler'], glossary: ['rising-sign', 'ascendant', 'chart-ruler'], pages: [{ title: 'Rising signs', path: '/rising-sign/' }], related: ['big-three', 'houses'] },
+  {
+    key: 'midheaven', title: 'The Midheaven', aliases: ['mc', 'medium coeli', 'mid heaven', 'midheaven mc', 'imum coeli', 'ic'], glossary: ['midheaven', 'ic', 'angle'],
+    extra: () => [`The Midheaven needs a birth time and place, because it moves through the whole zodiac in about a day. Astrology reads it with the tenth house, which covers ${NATAL_HOUSE_THEME[10]}; in whole-sign houses, which Zodiacs uses, it does not always fall in the tenth.`],
+    pages: [{ title: 'The tenth house', path: '/learn/houses/tenth-house/' }, { title: 'Midheaven in the glossary', path: '/learn/glossary/#midheaven' }], related: ['tenth-house', 'rising-sign', 'houses'],
+  },
   { key: 'big-three', title: 'The big three', aliases: ['big 3', 'sun moon rising', 'sun moon and rising'], glossary: ['big-three', 'sun-sign', 'moon-sign', 'rising-sign'], pages: [{ title: 'The big three', path: '/big-three/' }, { title: 'Your birth chart', path: '/birth-chart/' }], related: ['sun-sign', 'moon-sign', 'rising-sign'] },
   { key: 'sun-sign', title: 'The Sun sign', aliases: ['star sign', 'zodiac sign', 'my sign', 'horoscope sign'], glossary: ['sun-sign', 'zodiac-sign', 'zodiac-season'], pages: [{ title: 'Zodiac dates', path: '/learn/zodiac-dates/' }], related: ['big-three', 'cusps'] },
   { key: 'moon-sign', title: 'The Moon sign', aliases: ['moon sign meaning', 'my moon sign'], glossary: ['moon-sign', 'moon'], pages: [{ title: 'Moon signs', path: '/moon-sign/' }], related: ['big-three', 'moon-phases'] },
@@ -175,7 +180,17 @@ const SIGN_WORDS = SIGNS.map((sign) => sign.slug).join('|');
 const HOUSE_WORDS = `${HOUSE_SLUGS.join('|')}|1[0-2](?:st|nd|rd|th)?|[1-9](?:st|nd|rd|th)?`;
 const PLANET_IN_SIGN = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (${SIGN_WORDS})\\b`, 'u');
 const SIGN_PLANET = new RegExp(`\\b(${SIGN_WORDS}) (${PLANET_WORDS})\\b`, 'u');
-const PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my )?(?:(${HOUSE_WORDS}) house|house (1[0-2]|[1-9]))\\b`, 'u');
+// "Jupiter in the 12th house", "Jupiter in 12th", "Jupiter in the twelfth", "Venus in house 7".
+const PLANET_IN_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(?:(${HOUSE_WORDS})(?: house)?|house (1[0-2]|[1-9]))\\b`, 'u');
+// "12th house Jupiter", "Jupiter 12th house".
+const HOUSE_PLANET = new RegExp(`\\b(${HOUSE_WORDS}) house (${PLANET_WORDS})\\b`, 'u');
+const PLANET_HOUSE = new RegExp(`\\b(${PLANET_WORDS}) (${HOUSE_WORDS}) house\\b`, 'u');
+// "Leo rising", "Virgo ascendant", "ascendant in Virgo", "rising sign Leo".
+const SIGN_RISING = new RegExp(`\\b(${SIGN_WORDS}) (?:rising|ascendant|asc)\\b`, 'u');
+const RISING_SIGN = new RegExp(`\\b(?:rising|ascendant|asc)(?: sign)? (?:is |in |of )?(${SIGN_WORDS})\\b`, 'u');
+const BEYOND_TWELVE = ['zeroth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth'];
+// A house past the twelfth (or a zeroth), with or without the word house after a planet.
+const NO_SUCH_HOUSE = new RegExp(`\\b(?:(\\d+(?:st|nd|rd|th)?|${BEYOND_TWELVE.join('|')}) house|house (\\d+)|(?:${PLANET_WORDS}) (?:is )?in (?:the |my |your )?(\\d+(?:st|nd|rd|th)|${BEYOND_TWELVE.join('|')}))\\b`, 'u');
 const DIGNITY = /\b(?:in|its|their) (?:fall|detriment|exaltation|domicile)\b/u;
 
 export interface Placement { planet: (typeof PLANETS)[number]; sign: Sign | null; house: number | null }
@@ -184,12 +199,13 @@ export interface Placement { planet: (typeof PLANETS)[number]; sign: Sign | null
 export function matchPlacement(query: string): Placement | null {
   const text = clean(query);
   const planetNamed = (word: string) => PLANETS.find((planet) => planet.toLowerCase() === word)!;
+  const houseNumber = (word: string) => (HOUSE_SLUGS.includes(word) ? HOUSE_SLUGS.indexOf(word) + 1 : Number.parseInt(word, 10));
   const house = text.match(PLANET_IN_HOUSE);
-  if (house) {
-    const word = house[2] ?? house[3];
-    const index = HOUSE_SLUGS.indexOf(word);
-    return { planet: planetNamed(house[1]), sign: null, house: index >= 0 ? index + 1 : Number.parseInt(word, 10) };
-  }
+  if (house) return { planet: planetNamed(house[1]), sign: null, house: houseNumber(house[2] ?? house[3]) };
+  const houseFirst = text.match(HOUSE_PLANET);
+  if (houseFirst) return { planet: planetNamed(houseFirst[2]), sign: null, house: houseNumber(houseFirst[1]) };
+  const planetHouse = text.match(PLANET_HOUSE);
+  if (planetHouse) return { planet: planetNamed(planetHouse[1]), sign: null, house: houseNumber(planetHouse[2]) };
   const inSign = text.match(PLANET_IN_SIGN);
   if (inSign) return { planet: planetNamed(inSign[1]), sign: SIGNS.find((sign) => sign.slug === inSign[2])!, house: null };
   const signFirst = text.match(SIGN_PLANET);
@@ -197,10 +213,29 @@ export function matchPlacement(query: string): Placement | null {
   return null;
 }
 
-/** The curated topic a query names, or null. A placement names its planet; then exact keys and aliases, then the longest one contained in the query. */
+/** The sign a query puts on the ascendant, as in "Leo rising", "Virgo ascendant" or "ascendant in Virgo"; null otherwise. */
+export function matchRising(query: string): Sign | null {
+  const text = clean(query);
+  const slug = text.match(SIGN_RISING)?.[1] ?? text.match(RISING_SIGN)?.[1];
+  return slug ? SIGNS.find((sign) => sign.slug === slug)! : null;
+}
+
+/** A house the chart does not have, as written ("13th", "thirteenth"), for "Moon in the 13th house"; null otherwise. */
+export function matchNoSuchHouse(query: string): string | null {
+  const match = clean(query).match(NO_SUCH_HOUSE);
+  if (!match) return null;
+  const written = match[1] ?? match[2] ?? match[3];
+  if (BEYOND_TWELVE.includes(written)) return written;
+  const number = Number.parseInt(written, 10);
+  return number >= 1 && number <= 12 ? null : written;
+}
+
+/** The curated topic a query names, or null. A placement names its planet, a sign rising the rising sign; then exact keys and aliases, then the longest one contained in the query. */
 export function matchTopic(query: string): Topic | null {
+  if (matchNoSuchHouse(query)) return TOPICS.find((topic) => topic.key === 'houses')!;
   const placement = matchPlacement(query);
   if (placement) return TOPICS.find((topic) => topic.key === placement.planet.toLowerCase())!;
+  if (matchRising(query)) return TOPICS.find((topic) => topic.key === 'rising-sign')!;
   if (DIGNITY.test(clean(query))) return TOPICS.find((topic) => topic.key === 'rulership')!;
   const folded = fold(query);
   if (!folded) return null;
@@ -209,6 +244,16 @@ export function matchTopic(query: string): Topic | null {
   if (exact) return exact.topic;
   const contained = names.filter((entry) => !WHOLE_QUERY_ONLY.has(entry.name) && ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
   return contained[0]?.topic ?? null;
+}
+
+/** What a sign on the ascendant adds to the rising-sign explainer: the site's reading of that rising sign and its page. */
+function risingParts(sign: Sign): { title: string; paragraphs: string[]; pages: Topic['pages']; related: string[] } {
+  return {
+    title: `${sign.name} rising`,
+    paragraphs: [bigThree('rising', sign.slug)],
+    pages: [{ title: `${sign.name} rising`, path: `/rising-sign/${sign.slug}/` }, { title: `${sign.name} on Zodiacs`, path: `/${sign.slug}/` }],
+    related: [sign.slug, 'big-three'],
+  };
 }
 
 /** What a placement adds to its planet's explainer: the sign's style or the house's life area, and their pages. */
@@ -247,12 +292,19 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
   }
   const terms = topic.glossary.map(term);
   const lead = terms[0];
+  // "Moon in the 13th house": say first that there is no such house, then explain the twelve.
+  const noSuchHouse = matchNoSuchHouse(args.topic);
+  const noSuchHouseLine = noSuchHouse
+    ? `There is no ${noSuchHouse} house. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.`
+    : null;
   const paragraphs = [
+    ...(noSuchHouseLine ? [noSuchHouseLine] : []),
     ...(lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : []),
     ...(topic.extra?.() ?? []),
   ].filter((paragraph, index, all) => paragraph && all.indexOf(paragraph) === index);
-  const placement = matchPlacement(args.topic);
-  const placed = placement ? placementParts(placement) : null;
+  const placement = noSuchHouse ? null : matchPlacement(args.topic);
+  const rising = noSuchHouse || placement ? null : matchRising(args.topic);
+  const placed = placement ? placementParts(placement) : rising ? risingParts(rising) : null;
   if (placed) paragraphs.push(...placed.paragraphs);
   const pages = [...(placed?.pages ?? []), ...topic.pages].map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
   const data: ExplainData = {
@@ -265,7 +317,7 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
     pages,
     related: [...new Set([...(placed?.related ?? []), ...topic.related])].filter((key) => EXPLAIN_TOPICS.includes(key)),
     topics: [],
-    message: null,
+    message: noSuchHouse ? `Western astrology has twelve houses; there is no ${noSuchHouse} house. Say so plainly before explaining the twelve.` : null,
     note: EXPLAIN_NOTE,
   };
   return { data, links: [...pages, { title: 'Glossary', url: `${origin}/learn/glossary/` }] };

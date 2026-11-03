@@ -96,6 +96,18 @@ export const natalChartData = z.object({
   balance: z.object({ elements: tally(['fire', 'earth', 'air', 'water']), modalities: tally(['cardinal', 'fixed', 'mutable']), lines: z.array(z.string()) }),
   /** What the chart cannot say from the details given, in plain sentences. */
   unknown: z.array(z.string()),
+  /**
+   * Present only when the birth time fell in a daylight saving change: a gap (the clock skipped it, so the chart
+   * is cast that many minutes later) or a fold (the clock showed it twice; the chart uses the first).
+   */
+  timeNote: z.object({
+    kind: z.enum(['dst-gap', 'dst-fold']),
+    /** For a gap, how far forward the time was moved; 0 for a fold. */
+    shiftMinutes: z.number().min(0),
+    /** The UTC offset the chart used, such as -04:00. */
+    offsetUsed: z.string(),
+    text: z.string(),
+  }).optional(),
   chartUrl: z.url(),
   note: z.literal(NATAL_NOTE),
 });
@@ -104,9 +116,43 @@ export type NatalChartData = z.infer<typeof natalChartData>;
 /** The resolver methods this module calls; api/_compute/local-time.mjs supplies them. */
 export type NatalClock = Pick<LocalTimeModule, 'prepareLocalTime' | 'resolveLocalToUtc'>;
 
-async function localInstant(date: string, time: string, zone: string, longitude: number | undefined, clock: NatalClock): Promise<Date> {
+async function resolveLocal(date: string, time: string, zone: string, longitude: number | undefined, clock: NatalClock) {
   await clock.prepareLocalTime(date, zone);
-  return (longitude !== undefined ? clock.resolveLocalToUtc(date, time, zone, { longitude }) : clock.resolveLocalToUtc(date, time, zone)).utc;
+  return longitude !== undefined ? clock.resolveLocalToUtc(date, time, zone, { longitude }) : clock.resolveLocalToUtc(date, time, zone);
+}
+async function localInstant(date: string, time: string, zone: string, longitude: number | undefined, clock: NatalClock): Promise<Date> {
+  return (await resolveLocal(date, time, zone, longitude, clock)).utc;
+}
+
+/** Minutes east of UTC as +HH:MM, rounded to the minute (a local mean time offset runs to seconds). */
+function offsetText(minutes: number): string {
+  const rounded = Math.round(minutes);
+  const sign = rounded < 0 ? '-' : '+';
+  const abs = Math.abs(rounded);
+  return `${sign}${String(Math.floor(abs / 60)).padStart(2, '0')}:${String(abs % 60).padStart(2, '0')}`;
+}
+
+/** What a birth time in a daylight saving gap or fold did to the chart, in a plain sentence; undefined otherwise. */
+export function birthTimeNote(date: string, time: string, zone: string, resolved: { utc: Date; offsetMinutes: number; flags: readonly string[] }): NatalChartData['timeNote'] {
+  const offsetUsed = offsetText(resolved.offsetMinutes);
+  if (resolved.flags.includes('dst-gap')) {
+    const [year, month, day] = date.split('-').map(Number);
+    const [hour, minute] = time.split(':').map(Number);
+    const local = new Date(resolved.utc.getTime() + resolved.offsetMinutes * 60_000);
+    const shiftMinutes = Math.round((local.getTime() - Date.UTC(year, month - 1, day, hour, minute)) / 60_000);
+    const shown = local.toISOString().slice(11, 16);
+    return {
+      kind: 'dst-gap', shiftMinutes, offsetUsed,
+      text: `${time} did not exist on ${date} in ${zone}: the clocks jumped forward past it. The chart is cast for ${shown} on the new clock (UTC${offsetUsed}), ${shiftMinutes} minute${shiftMinutes === 1 ? '' : 's'} later. Check the birth time with the person if it matters.`,
+    };
+  }
+  if (resolved.flags.includes('dst-fold')) {
+    return {
+      kind: 'dst-fold', shiftMinutes: 0, offsetUsed,
+      text: `${time} happened twice on ${date} in ${zone}, because the clocks went back. The chart uses the first time (UTC${offsetUsed}); a birth in the repeated hour would move the Moon, the rising sign and the houses, so ask which it was if it matters.`,
+    };
+  }
+  return undefined;
 }
 
 const slugAt = (index: number | null) => (index === null ? null : SIGNS[index].slug);
@@ -119,9 +165,9 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
   const timeKnown = args.time !== undefined;
   const placed = args.latitude !== undefined && args.longitude !== undefined;
-  const utc = args.zone
-    ? await localInstant(args.birthDate, args.time ?? '12:00', args.zone, args.longitude, clock)
-    : new Date(`${args.birthDate}T12:00:00Z`);
+  const resolved = args.zone ? await resolveLocal(args.birthDate, args.time ?? '12:00', args.zone, args.longitude, clock) : null;
+  const utc = resolved ? resolved.utc : new Date(`${args.birthDate}T12:00:00Z`);
+  const timeNote = resolved && args.time !== undefined ? birthTimeNote(args.birthDate, args.time, args.zone!, resolved) : undefined;
   const chart = computeChart({ utc, ...(placed ? { latitude: args.latitude, longitude: args.longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed ? chart.angles : null;
 
@@ -218,6 +264,7 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
     aspects,
     balance: { elements: weather.elements as Record<Element, number>, modalities: weather.modalities as Record<Modality, number>, lines: weather.lines },
     unknown,
+    ...(timeNote ? { timeNote } : {}),
     chartUrl,
     note: NATAL_NOTE,
   };

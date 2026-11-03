@@ -72,6 +72,31 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
   });
 });
 
+describe('get_capabilities names every tool offered', () => {
+  const sources = { horoscopeWindow: window, horoscopeMonths: months, horoscopeProgram: program };
+  it('names all eighteen with coverage on: the thirteen in tools, the five by name in limitations', async () => {
+    const result = await executeAiTool('get_capabilities', {}, { occasions: true, coverage: true, ...sources });
+    if (!result.ok || result.tool !== 'get_capabilities') throw new Error(JSON.stringify(result));
+    expect(result.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
+    const text = result.data.limitations.join(' ');
+    const named = EVERY_AI_TOOL_NAME.filter((name) => result.data.tools.includes(name as never) || text.includes(`${name} (`));
+    expect(named).toEqual([...EVERY_AI_TOOL_NAME]);
+    expect(named).toHaveLength(18);
+    expect(text).toContain('Version 0.6.0 adds tools listed in tools/list: get_natal_chart (a birth chart readout), get_horoscope_period (');
+    expect(text).toContain('With them Zodiacs offers 18 tools: the 13 in the tools field and these 5.');
+    expect(text).not.toMatch(/[–—]/u);
+  });
+
+  it('names only the thirteen with coverage off', async () => {
+    const result = await executeAiTool('get_capabilities', {}, { occasions: true, ...sources });
+    if (!result.ok || result.tool !== 'get_capabilities') throw new Error(JSON.stringify(result));
+    expect(result.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
+    expect(result.data.tools).toHaveLength(13);
+    const text = JSON.stringify(result.data);
+    for (const name of COVERAGE_TOOL_NAMES) expect(text, name).not.toContain(name);
+  });
+});
+
 describe('the five 0.6.0 tools', () => {
   it('are read-only, closed-world, non-destructive and anonymous, with a title in the annotations and no panel', async () => {
     const tools = (await rpc('tools/list', {})).result.tools as { name: string; title: string; description: string; annotations: Record<string, unknown>; _meta: Record<string, unknown>; inputSchema: { type: string; properties: Record<string, { type?: string }> } }[];

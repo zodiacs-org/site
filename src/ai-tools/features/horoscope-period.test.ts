@@ -7,7 +7,7 @@ import committedProgram from '../../data/horoscope-program.json';
 import type { HoroscopeWindow } from '../horoscope/window';
 import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
 import type { HoroscopePeriodData } from './horoscope-period';
-import { render } from '../../../scripts/build-horoscope-months.mjs';
+import { render, undash } from '../../../scripts/build-horoscope-months.mjs';
 
 const dependencies = {
   occasions: true, coverage: true, now: () => new Date('2026-11-02T05:00:00Z'),
@@ -27,7 +27,46 @@ describe('the monthly readings file', () => {
   });
 });
 
+describe('the monthly readings file', () => {
+  it('takes the dashes out of the months written before the copy rule, so July to September 2026 are served', async () => {
+    expect(undash('the new moon — a total solar eclipse — at 20° Leo.')).toBe('the new moon, a total solar eclipse, at 20° Leo.');
+    expect(undash('the Mars–Saturn sextile on July 19')).toBe('the Mars-Saturn sextile on July 19');
+    expect(undash('days 4–6 of the month')).toBe('days 4 to 6 of the month');
+    expect(undash('until July 22 — and then')).toBe('until July 22, and then');
+    expect(undash('the cleanest reset of the year —.')).toBe('the cleanest reset of the year.');
+    expect(undash('— a plan made together')).toBe('a plan made together');
+    expect(undash('a well-known plan - and more')).toBe('a well-known plan, and more');
+    const { left } = await render();
+    expect(left).not.toContain('2026-07');
+    for (const month of ['2026-07', '2026-08', '2026-09']) {
+      expect(Object.keys(committedMonths.months), month).toContain(month);
+      expect(JSON.stringify(committedMonths.months[month as keyof typeof committedMonths.months]), month).not.toMatch(/[–—]/u);
+    }
+  });
+});
+
 describe('get_horoscope_period', () => {
+  it('serves the September 2026 reading with no dashes, and a month sky without the Moon changing sign', async () => {
+    const data = await period({ sign: 'leo', period: 'month', date: '2026-09-15' });
+    expect(data).toMatchObject({ status: 'available', label: 'September 2026', from: '2026-09-01', to: '2026-09-30' });
+    expect(data.reading!.published).toBe(committedMonths.months['2026-09'].leo.published);
+    expect(JSON.stringify(data)).not.toMatch(/[\u2013\u2014]/u);
+    expect(data.sky.some((event) => event.kind === 'ingress' && event.planet === 'Moon')).toBe(false);
+    expect(data.sky.some((event) => event.kind === 'lunation')).toBe(true);
+    const november = await period({ sign: 'leo', period: 'month' });
+    expect(november.sky.some((event) => event.kind === 'ingress' && event.planet === 'Moon')).toBe(false);
+    expect(november.sky.length).toBeLessThan(10);
+  });
+
+  it('never says Zodiacs has no reading for a month it does not serve', async () => {
+    const data = await period({ sign: 'leo', period: 'month', date: '2026-03-10' });
+    expect(data.status).toBe('sky-only');
+    expect(data.message).toBe('The March 2026 reading for Leo is not available through this tool yet; it serves the monthly readings from July 2026 to November 2026. The Leo horoscope pages on Zodiacs are linked.');
+    expect(data.message).not.toMatch(/no published/u);
+    expect(data.pageUrl).toBe('https://zodiacs.org/horoscopes/leo/');
+  });
+
+
   it("gives the month's published reading, word for word, with the month's sky in the sign's solar houses", async () => {
     const data = await period({ sign: 'leo', period: 'month' });
     expect(data).toMatchObject({ status: 'available', from: '2026-11-01', to: '2026-11-30', label: 'November 2026', pageUrl: 'https://zodiacs.org/horoscopes/leo/monthly/' });
@@ -45,7 +84,7 @@ describe('get_horoscope_period', () => {
     expect(data.reading).toBeNull();
     expect(data.message).toContain("isn't published yet");
     expect(data.sky.length).toBeGreaterThan(0);
-    expect(data.available.months).toEqual(['2026-10', '2026-11']);
+    expect(data.available.months).toEqual(['2026-07', '2026-08', '2026-09', '2026-10', '2026-11']);
     expect(data.available.years).toEqual([2026, 2027]);
   });
 

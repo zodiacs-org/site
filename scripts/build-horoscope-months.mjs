@@ -6,9 +6,11 @@
  *
  * Source: src/content/horoscopes/YYYY-MM-{sign}.mdx, the same files the
  * /horoscopes/{sign}/monthly/ page renders. A month is included only when all
- * twelve signs are written, none is a draft and none uses an em or en dash
- * (the assistant copy rule; July to September 2026 predate the cleanup in
- * #843 and stay out until their copy is cleaned). A month written ahead is
+ * twelve signs are written and none is a draft. The assistant copy carries
+ * no em or en dash: months written before the cleanup in #843 (July to
+ * September 2026) keep their dashes on the site, and here each one becomes a
+ * comma, "to" between numbers or a hyphen inside a compound such as
+ * Mars-Saturn (undash). A month written ahead is
  * included here but served only from its first day, as the page does
  * (src/lib/horoscope-month.mjs).
  *
@@ -27,8 +29,24 @@ function parse(text, file) {
     const at = line.indexOf(':');
     return [line.slice(0, at).trim(), line.slice(at + 1).trim().replace(/^"(.*)"$/u, '$1')];
   }));
-  const paragraphs = match[2].split(/\n\s*\n/u).map((block) => block.replace(/\s*\n\s*/gu, ' ').trim()).filter(Boolean);
+  const paragraphs = match[2].split(/\n\s*\n/u).map((block) => undash(block.replace(/\s*\n\s*/gu, ' ').trim())).filter(Boolean);
   return { sign: meta.sign, month: meta.month, published: meta.published, updated: meta.updated, draft: meta.draft === 'true', paragraphs };
+}
+
+/**
+ * The assistant copy of a paragraph without em or en dashes: "4–6" becomes
+ * "4 to 6", "Mars–Saturn" becomes "Mars-Saturn", and a dash used as
+ * punctuation (spaced, unspaced or a spaced hyphen) becomes a comma.
+ */
+export function undash(text) {
+  return text
+    .replace(/(\d)\s*[–—]\s*(?=\d)/gu, '$1 to ')
+    .replace(/(\p{L})–(?=\p{L})/gu, '$1-')
+    .replace(/\s*[–—]\s*|\s+-\s+/gu, ', ')
+    .replace(/^,\s*/u, '')
+    .replace(/,\s*([,.;:!?])/gu, '$1')
+    .replace(/,\s*$/u, '')
+    .trim();
 }
 
 export async function render() {
@@ -44,6 +62,7 @@ export async function render() {
   const left = [];
   for (const [month, entries] of [...byMonth].sort(([a], [b]) => a.localeCompare(b))) {
     const complete = SIGNS.every((sign) => entries.some((entry) => entry.sign === sign && !entry.draft));
+    // undash leaves none; checked again so a new kind of dash can never reach the assistant.
     const dashFree = entries.every((entry) => !entry.paragraphs.some((paragraph) => /[–—]/u.test(paragraph)));
     // Markup would reach the assistant as literal characters; the monthly copy is plain prose.
     const plain = entries.every((entry) => !entry.paragraphs.some((paragraph) => /[<>{}[\]`*#_]/u.test(paragraph)));
@@ -64,6 +83,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.log('Verified src/data/horoscope-months.json');
   } else {
     await writeFile(OUT, text);
-    console.log(`Built src/data/horoscope-months.json${left.length ? ` (left out until complete and dash-free: ${left.join(', ')})` : ''}`);
+    console.log(`Built src/data/horoscope-months.json${left.length ? ` (left out until complete, dash-free and plain: ${left.join(', ')})` : ''}`);
   }
 }

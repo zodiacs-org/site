@@ -107,6 +107,14 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
+/** What each 0.6.0 tool does, for get_capabilities. */
+const COVERAGE_TOOL_SUMMARY: Record<CoverageToolName, string> = {
+  get_natal_chart: 'a birth chart readout',
+  get_horoscope_period: 'monthly, yearly and weekly horoscopes from the published readings',
+  get_chinese_zodiac: 'the Chinese zodiac',
+  get_personal_transits: 'dated personal transits for up to 366 days or the year ahead',
+  explain_astrology: 'explainers of astrology basics',
+};
 
 /** What a field must look like, for refusals that say how to fix it. */
 const FIELD_FORMAT: Record<string, string> = {
@@ -228,7 +236,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         if (dependencies.occasions && dependencies.coverage) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.';
-          capabilities.limitations.push('Version 0.6.0 adds tools listed in tools/list: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac, dated personal transits for up to 366 days or the year ahead, and explainers of astrology basics. They give astrology\'s reading, never a guarantee, and no health or money predictions.');
+          // The tools field's enum is the thirteen published names, so the 0.6.0 tools are named here, by their tools/list names.
+          const added = offeredTools(dependencies).filter(isCoverageTool).map((name) => `${name} (${COVERAGE_TOOL_SUMMARY[name]})`);
+          const listed = (data as { tools: string[] }).tools.length;
+          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(', ')}${added.length > 1 ? ' and ' : ''}${added.at(-1)}. They give astrology's reading, never a guarantee, and no health or money predictions. With them Zodiacs offers ${listed + added.length} tools: the ${listed} in the tools field and these ${added.length}.`);
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };

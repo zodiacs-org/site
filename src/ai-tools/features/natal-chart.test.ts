@@ -85,4 +85,30 @@ describe('get_natal_chart', () => {
     expect(result.data.zone).toBe('Europe/Madrid');
     expect(result.data.chartUrl).toMatch(/^https:\/\/zodiacs\.org\/birth-chart\/\?ref=assistant#c=/u);
   });
+
+  it('says when a birth time fell in a daylight saving gap, and how far it moved', async () => {
+    // 02:30 on 8 March 2026 never showed on New York clocks: they went from 02:00 straight to 03:00 EDT.
+    const data = await chart({ birthDate: '2026-03-08', time: '02:30', zone: 'America/New_York', latitude: 40.7128, longitude: -74.006 });
+    expect(data.castFor).toEqual({ utc: '2026-03-08T07:30:00.000Z', basis: 'birth-time' });
+    expect(data.timeNote).toEqual({
+      kind: 'dst-gap', shiftMinutes: 60, offsetUsed: '-04:00',
+      text: '02:30 did not exist on 2026-03-08 in America/New_York: the clocks jumped forward past it. The chart is cast for 03:30 on the new clock (UTC-04:00), 60 minutes later. Check the birth time with the person if it matters.',
+    });
+    expect(JSON.stringify(data)).not.toMatch(/[–—]/u);
+  });
+
+  it('says when a birth time happened twice, and which one the chart uses', async () => {
+    // 01:30 on 1 November 2026 showed twice in New York: first on EDT (05:30Z), then on EST (06:30Z).
+    const data = await chart({ birthDate: '2026-11-01', time: '01:30', zone: 'America/New_York' });
+    expect(data.castFor.utc).toBe('2026-11-01T05:30:00.000Z');
+    expect(data.timeNote).toMatchObject({ kind: 'dst-fold', shiftMinutes: 0, offsetUsed: '-04:00' });
+    expect(data.timeNote!.text).toContain('happened twice on 2026-11-01 in America/New_York');
+    expect(data.timeNote!.text).toContain('uses the first time (UTC-04:00)');
+  });
+
+  it('adds no time note for an ordinary birth time or without one', async () => {
+    expect((await chart(MADRID)).timeNote).toBeUndefined();
+    expect((await chart({ birthDate: '2026-03-08', zone: 'America/New_York' })).timeNote).toBeUndefined();
+    expect('timeNote' in (await chart({ birthDate: '1990-05-03' }))).toBe(false);
+  });
 });

@@ -14,7 +14,8 @@
  * retrograde or direct, new and full Moons and eclipses, each placed in the
  * sign's whole-sign solar house with the daily horoscope's house wording
  * (src/lib/daily.ts HOUSE_THEME). For love or career the sky keeps the events
- * that bear on that focus. The sky comes from the compute API's event search
+ * that bear on that focus. A month's sky leaves out the Moon's sign changes,
+ * a dozen or more a month, so the slower events stay readable. The sky comes from the compute API's event search
  * (months and weeks) and the committed ingress and eclipse tables (years);
  * nothing is invented when a reading is not published, and the answer says so.
  */
@@ -163,7 +164,7 @@ export async function getHoroscopePeriod(
       if (month === servedMonths.at(-1)) pageUrl = `${origin}/horoscopes/${sign}/monthly/`;
     } else notes.push(month > today.slice(0, 7)
       ? `The ${label} reading for ${signName} isn't published yet; monthly readings appear on the first of the month.`
-      : `Zodiacs has no published ${label} reading for ${signName} to give here.`);
+      : `The ${label} reading for ${signName} is not available through this tool yet${servedMonths.length ? `; it serves the monthly readings from ${monthLabel(servedMonths[0])} to ${monthLabel(servedMonths.at(-1)!)}` : ''}. The ${signName} horoscope pages on Zodiacs are linked.`);
   } else if (args.period === 'year') {
     const yearly = program.signs.find((entry) => entry.sign === sign)?.readings[`yearly-${label}` as keyof HoroscopeProgram['signs'][number]['readings']];
     if (yearly && yearly.status === 'publishable') {
@@ -208,6 +209,8 @@ export async function getHoroscopePeriod(
     raw = calculation.result.events.map((event: { kind: 'ingress' | 'station' | 'lunation'; at: string; body?: string; sign: string; type?: string }) => ({
       kind: event.kind, at: event.at, planet: event.kind === 'lunation' ? 'Moon' : event.body!, sign: event.sign, ...(event.type ? { type: event.type } : {}),
     }));
+    // The Moon changes sign every two to three days; over a month those changes would bury the rest.
+    if (args.period === 'month') raw = raw.filter((event) => !(event.kind === 'ingress' && event.planet === 'Moon'));
   }
   const eclipses = (eclipseTable.eclipses as { type: string; peak: string; sign: string }[])
     .filter((eclipse) => eclipse.peak >= fromUtc.toISOString() && eclipse.peak < toUtc.toISOString())
