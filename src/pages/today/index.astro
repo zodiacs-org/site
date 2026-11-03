@@ -728,6 +728,17 @@ const monthDay = (iso: string) => ({
 
   /* ── 2. The sky line ──────────────────────────────────────────── */
   .today-skyline { margin-top: 18px; }
+  /* The shared ticker reads var(--font-sans). On this page that variable is
+     a local() face, and on Linux it can settle one frame late. The long
+     retrograde item then drops to the next line at 412px, which the dated
+     edition check counts as CLS. The page body already paints the native
+     stack directly. The line does the same, including the date label, whose
+     size is 14px times the 76.8% EB Garamond fallback adjustment. */
+  .today-skyline .skyticker { font-family: var(--today-face); }
+  .today-skyline .skyticker__label {
+    font-family: Georgia, 'Liberation Serif', 'Times New Roman', serif;
+    font-size: 10.75px;
+  }
   @media (min-width: 1101px) {
     .today-skyline .skyticker { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
     .today-skyline .skyticker::-webkit-scrollbar { display: none; }
