@@ -16,6 +16,11 @@ predictions and never predicts outcomes (the 15 October 2026 note, and the
 listing description below). That portal copy has not been resubmitted. This
 note records the product rule. It does not change the submitted listing.
 
+The next resubmission must update that directory text. It still says Zodiacs
+does not make personal predictions ("no personal predictions"). Replace that
+with Dias's 4 November 2026 rule: share the forecasts plainly and confidently,
+with a percentage that is confidence in the reading.
+
 ## 0.6.0 prepared, 2 November 2026
 
 Five read-only tools are ready behind `ZODIACS_COVERAGE_ENABLED`, with the

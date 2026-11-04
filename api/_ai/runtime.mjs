@@ -17922,7 +17922,7 @@ function minorScore(score2) {
   const overall = Math.round(score2.areas.communication * 0.5 + score2.areas.stability * 0.5);
   const communicationLeads = score2.areas.communication >= score2.areas.stability;
   const close2 = Math.abs(score2.areas.communication - score2.areas.stability) < 6;
-  const headline = close2 ? "Communication and long-term stability are evenly matched in this pairing. Romantic and attraction readings are left out because both birth dates are under 18." : `${communicationLeads ? "Communication" : "Long-term stability"} is the strongest part of this pairing; ${communicationLeads ? "long-term stability" : "communication"} will take the most work. Romantic and attraction readings are left out because both birth dates are under 18.`;
+  const headline = close2 ? "Communication and long-term stability are evenly matched in this pairing. Romantic and attraction readings are left out because a birth date is under 18." : `${communicationLeads ? "Communication" : "Long-term stability"} is the strongest part of this pairing; ${communicationLeads ? "long-term stability" : "communication"} will take the most work. Romantic and attraction readings are left out because a birth date is under 18.`;
   return {
     overall,
     areas: { attraction: score2.areas.communication, communication: score2.areas.communication, stability: score2.areas.stability },
@@ -17954,15 +17954,15 @@ async function computeCompatibility(args, localTime2, origin = "https://zodiacs.
   const elB = elementOf(b.sunIndex);
   const scored = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
   const todayDate = today.toISOString().slice(0, 10);
-  const bothYoung = isUnder18(a.birthDate, todayDate) && isUnder18(b.birthDate, todayDate);
-  const score2 = bothYoung ? minorScore(scored) : scored;
+  const young = isUnder18(a.birthDate, todayDate) || isUnder18(b.birthDate, todayDate);
+  const score2 = young ? minorScore(scored) : scored;
   const notes = notesFor(a, b);
-  if (bothYoung) notes.push("Both birth dates are under 18, so romantic and attraction readings are left out. The attraction field repeats the communication score and is not a romance rating. The share link is left empty.");
+  if (young) notes.push("A birth date is under 18, so romantic and attraction readings are left out. The attraction field repeats the communication score and is not a romance rating. The share link is left empty.");
   const data = {
     a: personRow(a, origin),
     b: personRow(b, origin),
     score: score2,
-    signPair: bothYoung && signPair ? {
+    signPair: young && signPair ? {
       ...signPair,
       element: { label: softenMinor(signPair.element.label), note: softenMinor(signPair.element.note) },
       modality: { label: softenMinor(signPair.modality.label), note: softenMinor(signPair.modality.note) },
@@ -17974,7 +17974,7 @@ async function computeCompatibility(args, localTime2, origin = "https://zodiacs.
       aspect: contact.type,
       orb: roundOrb(contact.orb),
       generational: isGenerationalContact(contact),
-      line: bothYoung ? softenMinor(contactLine(a.label, contact.a, b.label, contact.b, contact.type)) : contactLine(a.label, contact.a, b.label, contact.b, contact.type)
+      line: young ? softenMinor(contactLine(a.label, contact.a, b.label, contact.b, contact.type)) : contactLine(a.label, contact.a, b.label, contact.b, contact.type)
     })),
     counts: {
       easeful: summary.easeful,
@@ -17987,7 +17987,7 @@ async function computeCompatibility(args, localTime2, origin = "https://zodiacs.
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
     cardUrl,
     // The share image labels one number Attraction. Leaving it empty is the only way to omit that framing without changing the published schema, which requires the integer.
-    shareUrl: bothYoung ? null : compatibilityShareUrl(origin, {
+    shareUrl: young ? null : compatibilityShareUrl(origin, {
       a: { name: a.famous?.name ?? a.person.name ?? null, sun: sunA },
       b: { name: b.famous?.name ?? b.person.name ?? null, sun: sunB },
       score: score2
@@ -36642,8 +36642,22 @@ function clockTime3(utc, zone7) {
   return { utc, local: zone7 ? local : `${local} UTC` };
 }
 var optionalClock = (utc, zone7) => utc ? clockTime3(utc, zone7) : null;
-var occasionPageUrl = `${ORIGIN}/occasions/`;
 var BIRTH_OCCASIONS = /* @__PURE__ */ new Set(["birthday", "baby"]);
+var occasionPageUrl = `${ORIGIN}/occasions/`;
+function occasionCardUrl(args) {
+  if (BIRTH_OCCASIONS.has(args.occasion)) return occasionPageUrl;
+  if (args.zone && (args.latitude === void 0 || args.longitude === void 0)) return null;
+  const params = new URLSearchParams({ o: args.occasion, d: args.date });
+  if (args.names) params.set("n", args.names);
+  if (args.time) params.set("t", args.time);
+  if (args.zone && args.latitude !== void 0 && args.longitude !== void 0) {
+    params.set("tz", args.zone);
+    params.set("lat", args.latitude.toFixed(4));
+    params.set("lon", args.longitude.toFixed(4));
+    if (args.place) params.set("place", args.place);
+  }
+  return `${ORIGIN}/occasions/#${params.toString()}`;
+}
 function milestoneRow(milestone2) {
   return { kind: milestone2.kind, name: MILESTONE_WORDS[milestone2.kind].name, index: milestone2.index, age: milestone2.age, first: milestone2.first, last: milestone2.last, passes: milestone2.passes };
 }
@@ -36713,7 +36727,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offeredTools(dependencies).filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS2, conventions: statements3.conventions, coverage: statements3.coverage, privacy: dependencies.occasions ? PRIVACY_WITH_BIRTH_TOOLS : PRIVACY, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", "There is no free-form eclipse or aspect search. No birth-time rectification, reminders or account access.", dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
         if (dependencies.occasions) {
           const capabilities = data;
-          capabilities.privacy += " The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call. Tools never store, log or share those birth details. Card links are the page address and do not carry a birth date, birth time, place or coordinates. A share link for a birthday or a baby's arrival is left empty, because that date is a birth date. The result goes to the assistant. The famous-chart and sky-calendar tools need no personal details.";
+          capabilities.privacy += " The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call. Tools never store, log or share those birth details. A wedding or other occasion card link carries that day, and the place, time and coordinates when they were given. A birthday or a baby's arrival keeps the page address only, with no date, time, place or coordinates, and its share link is left empty, because that date is a birth date. The result goes to the assistant. The famous-chart and sky-calendar tools need no personal details.";
           capabilities.limitations.push("The occasion tools give the sky on a date, rate it from 0 to 100 by astrology's traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology's life milestones; they do not guarantee how a day will go.");
           capabilities.limitations.push("Compatibility scores two charts by astrology's reading of their contacts; it does not guarantee how a relationship will go. Famous charts, alone or compared with someone's own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.");
           if (!dependencies.coverage) capabilities.limitations.push("Which tool: what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; one birthday, get_birthday; lifetime returns, get_life_milestones.");
@@ -36853,7 +36867,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           throw error;
         }
         const evening = card.evening;
-        const cardUrl = occasionPageUrl;
+        const cardUrl = occasionCardUrl({ ...args, date: date3, ...zone7 ? { zone: zone7 } : {} });
         const rating = rateOccasionDate(args.occasion, card.sky);
         const signOf = (body2) => card.sky.bodies.find((row) => row.body === body2)?.sign ?? null;
         const shareUrl = BIRTH_OCCASIONS.has(args.occasion) ? null : occasionShareUrl(ORIGIN, { occasion: args.occasion, date: date3, names: args.names ?? null, place: args.place ?? null, sun: signOf("Sun"), moon: signOf("Moon"), score: rating.score });
@@ -36886,7 +36900,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           shareUrl,
           note: OCCASION_NOTE
         };
-        links = [occasionsLink, methodLink];
+        links = [...cardUrl && !cardUrl.endsWith("/occasions/") ? [{ title: "Open the printable card", url: cardUrl }] : [], occasionsLink, methodLink];
         break;
       }
       case "get_life_milestones": {

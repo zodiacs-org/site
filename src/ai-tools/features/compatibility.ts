@@ -339,16 +339,16 @@ export function compatibilityMissing(args: CompatibilityInput, origin = 'https:/
 
 /**
  * The published schema requires an attraction integer, so it cannot be omitted.
- * For two people under 18 it repeats the communication score, and the overall
- * score is communication and stability only. The headline does not rank romance.
+ * When either birth date is under 18 it repeats the communication score, and
+ * the overall score is communication and stability only. The headline does not rank romance.
  */
 function minorScore(score: ReturnType<typeof scoreCompatibility>): ReturnType<typeof scoreCompatibility> {
   const overall = Math.round(score.areas.communication * 0.5 + score.areas.stability * 0.5);
   const communicationLeads = score.areas.communication >= score.areas.stability;
   const close = Math.abs(score.areas.communication - score.areas.stability) < 6;
   const headline = close
-    ? 'Communication and long-term stability are evenly matched in this pairing. Romantic and attraction readings are left out because both birth dates are under 18.'
-    : `${communicationLeads ? 'Communication' : 'Long-term stability'} is the strongest part of this pairing; ${communicationLeads ? 'long-term stability' : 'communication'} will take the most work. Romantic and attraction readings are left out because both birth dates are under 18.`;
+    ? 'Communication and long-term stability are evenly matched in this pairing. Romantic and attraction readings are left out because a birth date is under 18.'
+    : `${communicationLeads ? 'Communication' : 'Long-term stability'} is the strongest part of this pairing; ${communicationLeads ? 'long-term stability' : 'communication'} will take the most work. Romantic and attraction readings are left out because a birth date is under 18.`;
   return {
     overall,
     areas: { attraction: score.areas.communication, communication: score.areas.communication, stability: score.areas.stability },
@@ -397,17 +397,17 @@ export async function computeCompatibility(
   const elB = elementOf(b.sunIndex);
   const scored = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
   const todayDate = today.toISOString().slice(0, 10);
-  // Both birth dates under 18. One child with an adult, or a famous adult, keeps the ordinary score.
-  const bothYoung = isUnder18(a.birthDate, todayDate) && isUnder18(b.birthDate, todayDate);
-  const score = bothYoung ? minorScore(scored) : scored;
+  // Either birth date under 18, including one child with an adult. Two adults keep the ordinary score.
+  const young = isUnder18(a.birthDate, todayDate) || isUnder18(b.birthDate, todayDate);
+  const score = young ? minorScore(scored) : scored;
   const notes = notesFor(a, b);
-  if (bothYoung) notes.push('Both birth dates are under 18, so romantic and attraction readings are left out. The attraction field repeats the communication score and is not a romance rating. The share link is left empty.');
+  if (young) notes.push('A birth date is under 18, so romantic and attraction readings are left out. The attraction field repeats the communication score and is not a romance rating. The share link is left empty.');
 
   const data: CompatibilityData = {
     a: personRow(a, origin),
     b: personRow(b, origin),
     score,
-    signPair: bothYoung && signPair ? {
+    signPair: young && signPair ? {
       ...signPair,
       element: { label: softenMinor(signPair.element.label), note: softenMinor(signPair.element.note) },
       modality: { label: softenMinor(signPair.modality.label), note: softenMinor(signPair.modality.note) },
@@ -419,7 +419,7 @@ export async function computeCompatibility(
       aspect: contact.type,
       orb: roundOrb(contact.orb),
       generational: isGenerationalContact(contact),
-      line: bothYoung ? softenMinor(contactLine(a.label, contact.a, b.label, contact.b, contact.type)) : contactLine(a.label, contact.a, b.label, contact.b, contact.type),
+      line: young ? softenMinor(contactLine(a.label, contact.a, b.label, contact.b, contact.type)) : contactLine(a.label, contact.a, b.label, contact.b, contact.type),
     })),
     counts: {
       easeful: summary.easeful,
@@ -432,7 +432,7 @@ export async function computeCompatibility(
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
     cardUrl,
     // The share image labels one number Attraction. Leaving it empty is the only way to omit that framing without changing the published schema, which requires the integer.
-    shareUrl: bothYoung ? null : compatibilityShareUrl(origin, {
+    shareUrl: young ? null : compatibilityShareUrl(origin, {
       a: { name: a.famous?.name ?? a.person.name ?? null, sun: sunA },
       b: { name: b.famous?.name ?? b.person.name ?? null, sun: sunB },
       score,

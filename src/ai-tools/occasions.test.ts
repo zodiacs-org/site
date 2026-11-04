@@ -42,8 +42,10 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(result.data.evening?.goldenHour?.start.local).toBe('Sat 12 Jun 2027, 20:13');
     expect(result.data.evening?.planetsAfterDusk).toEqual(expect.arrayContaining(['Mars', 'Jupiter']));
     expect(result.data.card.title.length).toBeGreaterThan(0);
-    expect(result.data.cardUrl).toBe('https://zodiacs.org/occasions/');
-    expect(result.data.cardUrl).not.toMatch(/#|2027|Florence|43\./u);
+    expect(result.data.cardUrl?.startsWith('https://zodiacs.org/occasions/#o=wedding&d=2027-06-12')).toBe(true);
+    expect(result.data.cardUrl).not.toContain('?');
+    expect(result.data.cardUrl).toContain('tz=Europe%2FRome');
+    expect(result.data.cardUrl).toContain('place=Florence');
     // The share link has the names, the day, the place name, the signs and the rating; no time, zone or coordinates.
     expect(result.data.shareUrl).toBe(`https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&n=Ana+%26+Luca&p=Florence%2C+Italy&sun=gemini&moon=libra&score=${result.data.rating.score}&v=${{ 'An excellent day for it': 'excellent', 'A good day for it': 'good', 'A fair day, with a few cautions': 'fair', 'A challenging day for it': 'challenging' }[result.data.rating.verdict]}`);
     expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(result).success).toBe(true);
@@ -57,10 +59,10 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(result.data.moonSignChange).toEqual({ from: 'pisces', to: 'aries' });
     const refused = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', time: '19:00' }, on);
     expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
-    // The card link is the page address. It does not carry the time or the zone.
+    // The page reads a zone only with coordinates, so a time and zone alone get no card link.
     const zoneOnly = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', time: '19:00', zone: 'Europe/Rome' }, on);
     if (!zoneOnly.ok || zoneOnly.tool !== 'get_occasion_sky') throw new Error('expected a card');
-    expect(zoneOnly.data.cardUrl).toBe('https://zodiacs.org/occasions/');
+    expect(zoneOnly.data.cardUrl).toBeNull();
     const birthday = await executeAiTool('get_occasion_sky', { occasion: 'birthday', date: '2010-04-02', place: 'Florence, Italy' }, on);
     if (!birthday.ok || birthday.tool !== 'get_occasion_sky') throw new Error('expected a birthday');
     expect(birthday.data.shareUrl).toBeNull();

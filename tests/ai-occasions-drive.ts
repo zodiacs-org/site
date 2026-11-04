@@ -102,8 +102,9 @@ try {
   assert.doesNotMatch(copyOf(card), /[—–·]/u, 'No dashes or middle dots in the card');
   const link = page.getByRole('link', { name: 'Open printable card' });
   assert.equal(await link.getAttribute('href'), data.cardUrl);
-  assert.equal(data.cardUrl, 'https://zodiacs.org/occasions/');
-  assert.doesNotMatch(data.cardUrl, /#|2026|Florence|43\./u);
+  assert.ok(data.cardUrl.startsWith('https://zodiacs.org/occasions/#'));
+  assert.match(data.cardUrl, /d=2027-06-12/);
+  assert.match(data.cardUrl, /Florence/);
   await capture(page, 'occasions-wedding-desktop.png');
   // Copy gives the card as plain text.
   // A page set from a string has no origin the clipboard serves, so the drive records the write.

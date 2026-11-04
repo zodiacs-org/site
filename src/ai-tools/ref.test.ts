@@ -43,17 +43,20 @@ describe('?ref= on zodiacs.org links from the tools', () => {
       latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy',
     }, on, { ref: 'chatgpt' });
     if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
-    expect(result.links[0]).toEqual({ title: 'Occasion cards on Zodiacs', url: 'https://zodiacs.org/occasions/?ref=chatgpt' });
-    expect(result.data.cardUrl).toBe('https://zodiacs.org/occasions/?ref=chatgpt');
-    expect(result.data.cardUrl).not.toMatch(/#|17:00|43\.|Florence|Europe/u);
+    expect(result.links[0]).toEqual({ title: 'Open the printable card', url: result.data.cardUrl });
     expect(new URL(result.data.shareUrl!).searchParams.get('ref')).toBe('chatgpt');
-    expect(result.data.shareUrl).not.toMatch(/17:00|43\.7696|Europe%2FRome/u);
+    const url = new URL(result.links[0].url);
+    expect([...url.searchParams]).toEqual([['ref', 'chatgpt']]);
+    expect(Object.fromEntries(new URLSearchParams(url.hash.slice(1)))).toEqual({
+      o: 'wedding', d: '2027-06-12', t: '17:00', tz: 'Europe/Rome',
+      lat: '43.7696', lon: '11.2558', place: 'Florence, Italy',
+    });
 
     const noPlace = await executeAiTool('get_occasion_sky', {
       occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome',
     }, on, { ref: 'chatgpt' });
     if (!noPlace.ok || noPlace.tool !== 'get_occasion_sky') throw new Error('expected a card');
-    expect(noPlace.data.cardUrl).toBe('https://zodiacs.org/occasions/?ref=chatgpt');
+    expect(noPlace.data.cardUrl).toBeNull();
     expect(noPlace.links[0].url).toBe('https://zodiacs.org/occasions/?ref=chatgpt');
   });
 });
