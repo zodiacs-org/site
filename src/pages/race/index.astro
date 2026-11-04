@@ -5,6 +5,7 @@ import RaceBoard from '../../islands/RaceBoard';
 import { SIGNS, signBySlug } from '../../lib/signs';
 import { championSeasons, currentAnnouncement } from '../../lib/games/champions';
 import { daysLeftInSeason, isoWeekUtc, seasonInstanceAt } from '../../lib/games/season';
+import { announcementResult } from '../games/_season-result';
 import '../../styles/race.css';
 
 const gamesEnabled = (import.meta.env.PUBLIC_ZODIAC_GAMES_ENABLED
@@ -25,7 +26,6 @@ const raceSigns = SIGNS.map(({ slug, name, glyph, hue }) => ({ slug, name, glyph
 // engraved above the board while its successor season runs.
 const champion = currentAnnouncement(championSeasons(), buildInstant);
 const championSignEntry = champion ? signBySlug(champion.champion) : null;
-const runnerUpName = champion ? signBySlug(champion.runnerUp).name : '';
 
 const title = 'The Race: The Zodiac Games | Zodiacs.org';
 const description =
@@ -67,7 +67,7 @@ const description =
           <p class="race-champion__sign display">{championSignEntry.name}</p>
           <p class="race-champion__title">{champion.seasonName} Season Champion · {champion.year}</p>
           <p class="race-champion__detail">
-            Won by {champion.marginPoints.toLocaleString('en')} {champion.marginPoints === 1 ? 'point' : 'points'} over {runnerUpName}. Engraved. Permanent.
+            {announcementResult(champion)} Engraved. Permanent.
           </p>
           <a href="/games/history/">See the Trophy Hall →</a>
         </div>
