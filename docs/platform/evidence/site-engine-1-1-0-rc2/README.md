@@ -31,10 +31,15 @@ is filled by the commit that makes its runs.
 | [regenerated-outputs.json](regenerated-outputs.json), `tools/regenerate.py`, `tools/check-regenerated-outputs.py` | the engine-derived data regenerated on 1.1.0-rc.2, file by file against the base | the adoption |
 | `tools/compare-mcp-versions.mjs` | the MCP adapter comparison's tool; its record is [../mcp-adapter/mcp-rc25-rc26.json](../mcp-adapter/mcp-rc25-rc26.json) | the adoption |
 | [accuracy-refresh/](accuracy-refresh/), `tools/refresh-accuracy.sh` | the two Swiss statistics the accuracy claims bind to, on 1.1.0-rc.2 (aggregates only) | the adoption |
+| [lite/parity.json](lite/parity.json), [lite/controls/](lite/controls/) | the lite parity record, and both attempts at its tool's controls | the parity record's commit, then the site checks |
+| [lite/](lite/) `b1-bundles.txt` to `b6-check-16.txt`, `bundles-*.json` | lite B1 to B6 on the adoption head, with their controls and the four byte reports | the site checks |
+| [time-entry/s2.txt](time-entry/s2.txt) and its outputs | F-53's S2: the search, the archives, the private-state test and the packaged functions | the site checks |
+| [f89-checks.txt](f89-checks.txt) | F-89's S2 and S3 | the site checks |
+| [entry-graphs.txt](entry-graphs.txt), `tools/compare-entry-graphs.mjs` | each public entry's code, 1.1.0-rc.1 against 1.1.0-rc.2 | the site checks |
+| [mcp-pin.txt](mcp-pin.txt), [regenerated-outputs-check.txt](regenerated-outputs-check.txt) | the MCP adapter's pin to the adoption commit, and the regenerated outputs checked against the base | the site checks |
+| `tools/verify-production.mjs` | every production check of [PRODUCTION-CHECKS.md](PRODUCTION-CHECKS.md), committed before any production run | the site checks |
 
-Still to come, each by the commit that makes it: the lite parity record and
-the bundle reports, F-53's S2, the entry graphs, the regenerated outputs'
-check against the base, the MCP archive's pin, the local gate and the
+Still to come, each by the commit that makes it: the local gate and the
 private search, the Phase 1 captures, and production.
 
 ## The adoption
@@ -188,6 +193,142 @@ Apart from the bundle gate's tests above, two tests fail:
   makes, because the panel embeds the engine, changes one of them. Neither
   the test nor the move is changed in this commit; the next one settles it
   (D-11).
+
+## The site checks
+
+Phase J of the plan, on 4 November, on the adoption head: J-1 on `83f168d8`,
+J-2 to J-6 on `92702bb9` (which only adds J-1's record and the amendment
+below), J-6's second claims attempt and J-7 to J-12 on `64096451` (which only
+restates one claim). macOS arm64, Node 22.22.2, one heavy job at a time;
+every control was put back and checked by its SHA-256. Nothing here is
+recorded `accepted`.
+
+- **Lite parity (J-1)** ([lite/parity.json](lite/parity.json)). One formal
+  run on `83f168d8` against the base, seed text `site-engine-1-1-0-rc2-lite`:
+  it passes, with no unexplained difference, no failed comparison and no
+  referee disagreement, and S2-P raises no owner question. Declinations:
+  9,548 cases, 89 agree, 9,459 differ, each by a cause its section allows
+  (73,126 values by `declination-formula` and 11,768 by `separation-exact`,
+  each within 1e-12 degrees; `sun-bound-exemption` 6; `orb-boundary` 2;
+  `declination-validation` 24, recorded). Sect: 24,072 cases, 23,868 agree,
+  204 differ, all in recorded sections (`sect-convention` 188,
+  `sect-validation` 16). Composite: 2,310 cases, 2,300 agree, 10 recorded
+  refusals. Dignities: 312 cases, 295 agree, 17 differ
+  (`site-prototype-lookup` 10, a site defect the adapter removes;
+  `dignity-validation` 7, recorded).
+- **The tool's controls (J-1), in two attempts** ([lite/controls/](lite/controls/)).
+  The first, on `83f168d8`, passed 29 of its 30 tests: control 5's test
+  counted no unexplained difference in D2-P because it counted the record's
+  list of unexplained entries, which the tool stops at 5,000, and D2-R alone
+  filled it. The dated amendment in [lite/PREREGISTRATION.md](lite/PREREGISTRATION.md)
+  section 11 ("control 5 counted a capped list") changes that count, not the
+  control. The second attempt, on `92702bb9`, citing the first, passed 30 of
+  30: control 5 gave D2-R 32,094, D2-P 2,662 and D2-T 28 unexplained
+  differences, with 5,000 entries listed and 29,784 left out of the list.
+  Both logs are kept (`controls-attempt-1.log`, `controls-attempt-2.log`).
+- **B1, the route budgets on both builds (J-2)** ([lite/b1-bundles.txt](lite/b1-bundles.txt)).
+  `report-bundles.mjs --fail` passes on the default build and with
+  production's flags, `budgets.json` unchanged: `/birth-chart/` 67,546 bytes
+  by default and 70,731 with production's flags, of 72,704; the engine
+  chunk's closure 33,361 bytes of its 33,380.4 on both (33,267 on the base).
+  The grown closures are named with the engine files they hold. rc.2's chunk
+  split (rc.1's `chunk-YJ7WZ7NS`, `chunk-VDVUUMY2` and `chunk-W2TMLFJ3` give
+  way to `chunk-F4JKI3XV`, `chunk-RMBWKZI2`, `chunk-NNOSOOWS` and
+  `chunk-NIRYKLHT`) adds 94 bytes and one chunk to the engine chunk's
+  closure. `/birth-chart/` grows by 584 bytes by default and 579 with
+  production's flags, and by one chunk: 447 bytes of it in the dignity
+  adapter's chunk, which now holds `lite-dignities.js`, the rest in the
+  split and in three of the site's own chunks. Control: `/birth-chart/` set
+  1 KB under its measured value made `--fail` exit 1 on each build.
+- **B2 (J-3)** ([lite/b2-closures.txt](lite/b2-closures.txt)): the three lazy
+  views' closures hold neither ephemeris marker on either build. Control: a
+  build whose composite adapter takes `compositeMidpoints` from
+  `@zodiacs/engine/techniques` (rc.16's regression; its `./lite` import kept,
+  so that B3's list does not change) fails, with the marker in the
+  RelationshipWheel closure; a clean rebuild then passes.
+- **B3 (J-4)** ([lite/b3-importers.txt](lite/b3-importers.txt)): only the four
+  adapters import `./lite`, and nothing imports `./calc` or `./vedic`.
+  Control: a temporary fifth importer fails the report.
+- **B4 (J-5)** ([lite/b4-suites.txt](lite/b4-suites.txt)): the suites pass
+  against the adapters, 289 tests in 19 files. Each control failed its
+  suites: sect with the altitude test written `> 0` (1 test); Mercury exalted
+  in Gemini, in the dignity suite (1) and chart-context's (7); the latitude
+  dropped from `declinationOf` (2); the composite midpoint on the longer arc,
+  in the composite suite (2) and the synastry tests (11). The dignity adapter
+  holds no table since the adapters' commit, so that control changes the
+  rule where it lives, the installed package's `dist/lite-dignities.js` (the
+  parity tool's control 8 makes the same edit on a scratch copy); the package
+  was compared with the vendored archive file by file afterwards.
+- **B5 version 2 (J-6)** ([lite/b5-reference-and-claims.txt](lite/b5-reference-and-claims.txt)),
+  in two parts. The reference builds from the archive with its
+  export-coverage assertion (15 public entry points), and fails it with
+  `sectReading` left out of `./lite`'s documented names; the planted sentence
+  is listed in both files with the plants and in neither without them. The
+  claims rules: the first attempt, on `92702bb9`, failed R3 alone, because
+  `product.ai-coverage-tools` cited a test by the title D-11 had renamed;
+  `64096451` restates that claim (D-11 below), and the second attempt, citing
+  the first, passed (the claims test and `release-060.test.ts`, 23 of 23).
+- **B6 (J-7)** ([lite/b6-check-16.txt](lite/b6-check-16.txt)): check 16
+  passes (the validator 12,109 of 12,109 checks); run on a scratch copy of
+  the pilot table's text with Mercury's exaltation in Gemini it finds 2
+  differences, the frozen file unchanged.
+- **F-53's S2 (J-8)** ([time-entry/s2.txt](time-entry/s2.txt)). The search
+  finds nothing on the head; on the base it finds 34 lines in 20 files, the
+  same as in Phase C: the five importers in `src/` and `scripts/`, the
+  private-state test's path, the copies in the five generated bundles and the
+  import in `engine-clock.ts`, beside the generator, the module and the lines
+  that name them. Member by member, plugin 0.3.21's ZIP and adapter rc.26's
+  archive do not name the module, while the base's 0.3.20 ZIP and rc.25
+  archive do. The private-state test passes. A functions-only `vercel build`
+  (D-6; Vercel CLI 62.0.0, as rc.16's packaged-functions record), with a
+  hand-written project link, an empty local environment file, a disposable
+  HOME and the install and the site build switched off in a local copy of
+  `vercel.json`, packaged 12 functions without a pull, a login or a link.
+  The calendar and compute functions carry `@zodiacs/engine/time` and no file
+  that names the module, the compute function carries the compute bundle
+  byte for byte, and both entries and the compute handler load under
+  `node --no-experimental-detect-module`. The lockfile and `node_modules`
+  did not change, and `.vercel` was removed.
+- **F-89's S2 and S3 (J-9)** ([f89-checks.txt](f89-checks.txt)): the
+  reference's drift check passes; with the ratchet left at 11 the claims test
+  fails R5 ("only 2 overstated claims remain open"); the programme ledger
+  regenerates with P1.14's row unchanged, and from a scratch copy with P1.14
+  `accepted` that row differs.
+- **The entry graphs (J-10)** ([entry-graphs.txt](entry-graphs.txt), by
+  `tools/compare-entry-graphs.mjs`, 1.1.0-rc.1's tool with its comment
+  adapted). Of the 17 entries the package exports, 5 load 1.1.0-rc.1's code
+  apart from the version string, chunk names and chunk order, `./lite` and
+  `./time` are new, and the other 10 differ through the chunk split above,
+  `./calc`, `./techniques` and `./vedic` also in their own files.
+- **The MCP pin (J-11)** ([mcp-pin.txt](mcp-pin.txt)):
+  `public/examples/mcp-server.json` names the adoption commit `620403bc` as
+  the archive's artifact commit (D-5); the archive's bytes did not move, and
+  `npm run mcp:pack:check` passes.
+- **The regenerated outputs (J-12)** ([regenerated-outputs-check.txt](regenerated-outputs-check.txt)):
+  the record now names its candidate commit, the adoption commit, as
+  1.1.0-rc.1's names its own, so that it is checked there after merges of
+  main; `tools/check-regenerated-outputs.py` passes: 74 outputs, 65
+  identical, 7 base bytes kept and 2 regenerated.
+- **The production check** (`tools/verify-production.mjs`): 1.1.0-rc.1's
+  tool adapted to [PRODUCTION-CHECKS.md](PRODUCTION-CHECKS.md) and committed
+  before any production run: R1 to R11, D1 to D3, C9, V1 and S3b, and a
+  `--control` mode for the run on the deployment before the merge, in which
+  every check with a control must fail. It finds production's own view and
+  engine chunks by following chunk references from `/birth-chart/` and
+  `/compatibility/`, and sends the compute API two POSTs: the documented
+  positions request and S3b's control request. Before this commit it ran only
+  against a local static copy of this head's build, never production; there
+  every check passed except R11 and S3b, which need the API. Found while
+  writing it: over a millisecond the time records' `deltaT.seconds` does not
+  move at its stored precision, but `timeScale.ut1MinusUtc` and both sigmas
+  do, so S3b's control request still differs from `timeBasis` at the original
+  instants, as PRODUCTION-CHECKS.md requires; only that file's parenthetical
+  reason is loose.
+- **The programme ledger.** A dated note on P2.E.declinations (with the
+  correction the lite preregistration's section 9 asks for: the site took
+  the mean obliquity of date whenever it had an instant), P2.E.sect,
+  P2.E.composite, P2.E.dignities, P2.B.vargas and P1.M3c. No status, release
+  or `asOf` changes before production; `LEDGER.md` is regenerated.
 
 ## Decisions taken without asking, under the owner's delegation
 

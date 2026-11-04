@@ -102,3 +102,36 @@ on the build.
    module, its declarations, its generator and the CI step are deleted.
 3. S2 on the adoption head: the full list of checks before every push, and
    the search of the base and of the head for the module (its control).
+
+## S2 on the adoption head
+
+Run on 4 November (the adoption plan's J-8) on `64096451`; the record is
+[s2.txt](s2.txt), beside its outputs.
+
+- **The search.** Phase C's search finds nothing in `src/`, `scripts/`,
+  `tests/`, `api/`, `plugins/`, `examples/`, `integrations/generated/` or
+  `docs/engine-validation/` on the head. Its control, the same search on the
+  base, finds 34 lines in 20 files ([s2-search-base.txt](s2-search-base.txt)),
+  the same as in Phase C, among them every place S2 names.
+- **The new archives**, member by member (decision D-7,
+  [s2-archives.json](s2-archives.json)): plugin 0.3.21's ZIP and adapter
+  rc.26's archive do not name the module; the base's 0.3.20 ZIP and rc.25
+  archive, the scan's control, do.
+- **The private-state test** of the compute bundle passes.
+- **The packaged functions** (decision D-6, [s2-functions.json](s2-functions.json),
+  [s2-vercel-build.log](s2-vercel-build.log)). A functions-only
+  `npx vercel build` (CLI 62.0.0) with a hand-written project link, an empty
+  local environment file, a disposable HOME and the install and the site
+  build switched off in a local copy of `vercel.json` packaged 12 functions;
+  no pull, login or link was asked for. The calendar function carries
+  `@zodiacs/engine/time` and no file naming the module, and so does the
+  compute function, whose compute bundle is the checkout's byte for byte.
+  `api/calendar/transits.js`, `api/compatibility.js` and
+  `api/_compute/handler.js` each load in a fresh process under
+  `node --no-experimental-detect-module`. The CLI's own install found the
+  dependencies up to date; the lockfile and `node_modules` did not change,
+  and `.vercel` was removed.
+
+The rest of S2 is the full list of checks before the push (the local gate,
+`../validation/`), and `report-bundles` on both builds is lite B1
+([../lite/b1-bundles.txt](../lite/b1-bundles.txt)).

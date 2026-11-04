@@ -170,3 +170,32 @@ head.
 
 [B5-VERSION-2.md](B5-VERSION-2.md) is B5's version 2: the claims extractor's
 control with a planted sentence that the extractor's lexicon selects.
+
+## Results on the adoption head
+
+Run on 4 November (the adoption plan's Phase J, J-1 to J-7), macOS arm64,
+Node 22.22.2; the evidence README's section "The site checks" gives the
+figures.
+
+- **The parity record** ([parity.json](parity.json)): one formal run on
+  `83f168d8` against the base `0bf69bd5`, with the seed text above. It
+  passes: no unexplained difference, no failed comparison, no referee
+  disagreement and no owner question from S2-P. It is committed as written,
+  and is not run again.
+- **The tool's controls**, in two attempts ([controls/](controls/)). The
+  first, on `83f168d8` ([controls/controls-attempt-1.log](controls/controls-attempt-1.log)),
+  passed 29 of 30: control 5's test counted the record's capped list of
+  unexplained entries, so it found none in D2-P. After the dated amendment
+  of [PREREGISTRATION.md](PREREGISTRATION.md) section 11 ("control 5 counted
+  a capped list"), the second, on `92702bb9`, citing the first
+  ([controls/controls-attempt-2.log](controls/controls-attempt-2.log)),
+  passed 30 of 30, control 5 with D2-R 32,094, D2-P 2,662 and D2-T 28
+  unexplained differences.
+- **B1 to B6**, each with its control: [b1-bundles.txt](b1-bundles.txt)
+  (with the byte reports `bundles-default.json`, `bundles-production.json`
+  and the base's `bundles-base-default.json`, `bundles-base-production.json`),
+  [b2-closures.txt](b2-closures.txt), [b3-importers.txt](b3-importers.txt),
+  [b4-suites.txt](b4-suites.txt), [b5-reference-and-claims.txt](b5-reference-and-claims.txt)
+  (B5 version 2, and the claims rules' two attempts) and
+  [b6-check-16.txt](b6-check-16.txt). Every check passes and every control
+  failed as it must.

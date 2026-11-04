@@ -1,0 +1,20 @@
+{
+  "schema": "zodiacs.log-normalization.v1",
+  "what": "Records whose committed bytes differ from what the tool wrote, why, and both digests. The captured bytes stay outside Git.",
+  "files": [
+    {
+      "path": "lite/controls/controls-attempt-1.log",
+      "tool": "npx vitest run --reporter=verbose lite/tools/compare-lite.test.mjs with COMPARE_LITE_BASE, 2026-11-04, first attempt (83f168d8)",
+      "capturedSha256": "bca084339cb09ce6bcf809cc92611e0f85c7799bd436727607ca2e537824f621",
+      "committedSha256": "5ac84be5edcf10064d4bf80ddd9a750e9d55f2f1bcc2f644efa7585fbe080ac7",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "lite/controls/controls-attempt-2.log",
+      "tool": "the same, second attempt (92702bb9)",
+      "capturedSha256": "6d8abe428de9afcd1b63a5233645b647cd536a7fa79c0d512d8e5d455d6ae52c",
+      "committedSha256": "f560457858fc61660d7059bf478e89b25b9d3748ddc218eeaac03aa57ac94053",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "pattern": "time-basis\\.(mjs|d\\.mts)|build-time-basis",
+  "archives": [
+    {
+      "archive": "integrations/packages/zodiacs-developer-0.3.21.zip",
+      "sha256": "57cf428911388ad23f838a040a565c94bca5506ab05f1f75e0ed6ab3d457027e",
+      "bytes": 5398759,
+      "members": 20,
+      "membersMatching": 0,
+      "matchingLines": 0,
+      "matches": []
+    },
+    {
+      "archive": "public/examples/zodiacs-mcp-server-0.1.0-rc.26.tgz",
+      "sha256": "48b7a36c775df1b4793a250612f082956d1723e7c20f537d6a83451bfb0ffccc",
+      "bytes": 905475,
+      "members": 7,
+      "membersMatching": 0,
+      "matchingLines": 0,
+      "matches": []
+    },
+    {
+      "archive": "integrations/packages/zodiacs-developer-0.3.20.zip",
+      "sha256": "e7a1630350079e9f349edbab2fa1b67f6d96ea2fbe6872e0a6a283effc345580",
+      "bytes": 5408981,
+      "members": 20,
+      "membersMatching": 1,
+      "matchingLines": 1,
+      "matches": [
+        {
+          "member": "mcp/server.mjs",
+          "lines": 1
+        }
+      ]
+    },
+    {
+      "archive": "public/examples/zodiacs-mcp-server-0.1.0-rc.25.tgz",
+      "sha256": "26c7c04b360d46134a7747530a45fa1e8bea3487291ca472af1cb5a82053fbbb",
+      "bytes": 913196,
+      "members": 7,
+      "membersMatching": 2,
+      "matchingLines": 2,
+      "matches": [
+        {
+          "member": "package/candidate.json",
+          "lines": 1
+        },
+        {
+          "member": "package/server.mjs",
+          "lines": 1
+        }
+      ]
+    }
+  ]
+}
