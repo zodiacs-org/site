@@ -6,6 +6,7 @@ import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/cli
 import { STUDIO_HTML } from '../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
+import { READINGS_HTML } from '../integrations/generated/readings.mjs';
 
 const packageInfo = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const expectedEngine = packageInfo.dependencies['@zodiacs/engine'].match(/zodiacs-engine-(.+)\.tgz$/)[1];
@@ -97,7 +98,7 @@ try {
     const start = performance.now();
     const result = await client.callTool({ name, arguments: args });
     assert.equal(result.isError, false); assert.equal(result.structuredContent.ok, true);
-    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.6.0');
+    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.6.1');
     if (name === 'get_horoscope') assert.equal(result.structuredContent.data.status, 'available');
     if (name === 'open_chart_studio') assert.deepEqual(result.structuredContent.data, {
       title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only',
@@ -136,6 +137,15 @@ try {
   record('native occasions resource matches the bundle with owned static art', {
     bytes: Buffer.byteLength(occasions.text), sha256: createHash('sha256').update(occasions.text).digest('hex'),
   });
+  if (coverage) {
+    const readings = (await client.readResource({ uri: 'ui://zodiacs/readings-v1.html' })).contents[0];
+    assert.equal(readings.mimeType, 'text/html;profile=mcp-app');
+    assert.equal(readings.text, READINGS_HTML);
+    assert.equal(readings._meta['openai/ui'].preferredDisplayMode, 'inline');
+    const natal = tools.find((tool) => tool.name === 'get_natal_chart');
+    assert.deepEqual(natal._meta['openai/ui'].entrypoints, [{ type: 'thread' }]);
+    record('readings panel is inline and has no sidebar launch');
+  }
   const studio = (await client.readResource({ uri: 'ui://zodiacs/chart-studio-v6.html' })).contents[0];
   assert.equal(studio.mimeType, 'text/html;profile=mcp-app');
   assert.equal(studio.text, STUDIO_HTML);

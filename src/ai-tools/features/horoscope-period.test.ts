@@ -68,7 +68,8 @@ describe('get_horoscope_period', () => {
   it('never says Zodiacs has no reading for a month it does not serve', async () => {
     const data = await period({ sign: 'leo', period: 'month', date: '2026-03-10' });
     expect(data.status).toBe('sky-only');
-    expect(data.message).toBe('The March 2026 reading for Leo is outside the range this tool serves: Zodiacs serves the monthly readings from July 2026 to November 2026 only. The Leo horoscope pages on Zodiacs are linked.');
+    expect(data.message).toBe('The March 2026 reading for Leo is outside the range this tool serves: Zodiacs serves the monthly readings from July 2026 to November 2026 only. The Leo horoscope pages on Zodiacs are linked. Dates assume UTC because no time zone was given.');
+    expect(data.zoneSource).toBe('default');
     expect(data.message).not.toMatch(/no published/u);
     expect(data.pageUrl).toBe('https://zodiacs.org/horoscopes/leo/');
   });
@@ -138,7 +139,7 @@ describe('get_horoscope_period', () => {
     expect(week).toMatchObject({ from: '2026-11-02', to: '2026-11-08', label: 'Week of 2 November 2026', pageUrl: 'https://zodiacs.org/horoscopes/leo/love/' });
     expect(week.reading!.title).toBe('Leo · Week of 2 November 2026');
     const loveDates = week.focusReadings.map((reading) => reading.date);
-    expect(loveDates).toContain('2026-11-02');
+    expect(loveDates).toContain('2026-11-03');
     expect(loveDates.every((date) => date >= '2026-11-02' && date <= '2026-11-08')).toBe(true);
     expect([...loveDates].sort()).toEqual(loveDates);
     expect(week.sky.every((event) => ['Venus', 'Mars'].includes(event.planet) || [5, 7, 8].includes(event.house))).toBe(true);

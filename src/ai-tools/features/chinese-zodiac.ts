@@ -84,6 +84,8 @@ export const chineseZodiacData = z.object({
   current: animalYear,
   today: z.string(),
   zone: z.string(),
+  /** Set when the current year was worked out in UTC because no time zone was given. */
+  zoneNote: z.string().nullable(),
   guideUrl: z.url(),
   note: z.literal(CHINESE_ZODIAC_NOTE),
 });
@@ -149,7 +151,7 @@ function pairings(animal: ChineseZodiacAnimal, origin: string) {
 }
 
 /** The answer for one call. `today` is the person's own date (YYYY-MM-DD) in `zone`. */
-export function getChineseZodiac(args: ChineseZodiacInput, today: string, zone: string, origin = DEFAULT_ORIGIN): { data: ChineseZodiacData; links: { title: string; url: string }[] } {
+export function getChineseZodiac(args: ChineseZodiacInput, today: string, zone: string, origin = DEFAULT_ORIGIN, zoneAssumed = false): { data: ChineseZodiacData; links: { title: string; url: string }[] } {
   const currentYear = chineseYearOf(today);
   let personYear: number | null = null;
   let boundary: ChineseZodiacData['boundary'] = null;
@@ -193,6 +195,7 @@ export function getChineseZodiac(args: ChineseZodiacInput, today: string, zone: 
     current: yearFacts(currentYear, origin),
     today,
     zone,
+    zoneNote: zoneAssumed ? 'The current year assumes UTC because no time zone was given.' : null,
     guideUrl: `${origin}/learn/chinese-zodiac/`,
     note: CHINESE_ZODIAC_NOTE,
   };

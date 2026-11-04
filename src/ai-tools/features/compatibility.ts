@@ -26,12 +26,10 @@ import { pairFacts, pairSlug } from '../../lib/compat';
 import { contactLine } from '../../lib/contact-line';
 import { scoreCompatibility } from '../../lib/compat-score';
 import { compatibilityShareUrl } from '../../lib/share-results';
-import { compatibilityHandoffPath } from '../../lib/chart-handoff';
 import { computeChart } from '../../lib/engine/full.js';
 import { isGenerationalContact, summarizePair, type MinimalBody } from '../../lib/engine/synastry';
 import type { Chart } from '../../lib/engine/types';
 import { settledSignIndex } from '../../lib/profile/settled-signs';
-import type { ShareChartInput } from '../../lib/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { NOT_FOUND_NOTE, searchPeople, type IndexPerson } from './people';
@@ -274,22 +272,6 @@ async function personChart(person: CompatibilityPerson, fallback: string, clock:
   };
 }
 
-function shareInput(side: PersonChart): ShareChartInput | null {
-  const { person } = side;
-  if (!person.zone || person.latitude === undefined || person.longitude === undefined || person.birthDate === undefined) return null;
-  return {
-    date: person.birthDate,
-    time: person.time ?? null,
-    timeKnown: side.timeKnown,
-    lat: person.latitude,
-    lon: person.longitude,
-    tz: person.zone,
-    ...(person.name ? { name: person.name } : {}),
-    ...(person.place ? { place: person.place } : {}),
-    houseSystem: 'whole',
-  };
-}
-
 const slugAt = (index: number | null) => (index === null ? null : SIGNS[index].slug);
 const roundOrb = (orb: number) => Math.round(orb * 10) / 10;
 
@@ -383,11 +365,10 @@ export async function computeCompatibility(
     };
   }
 
-  const shareA = shareInput(a);
-  const shareB = shareInput(b);
-  const cardUrl = shareA && shareB
-    ? `${origin}${compatibilityHandoffPath(shareB, { kind: 'input', input: shareA })}`
-    : null;
+  // The handoff fragment would carry both birth dates, times, places and coordinates.
+  // The share link already leaves those out. Opening the filled comparison
+  // without those details in the address needs a reviewed version of this tool.
+  const cardUrl = null;
 
   const elementOf = (index: number | null) => (index === null ? null : SIGNS[index].element);
   const elA = elementOf(a.sunIndex);

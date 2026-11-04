@@ -1,9 +1,10 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, type AiToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, COVERAGE_TOOL_NAMES, type AiToolName } from './contracts';
 import { executeAiTool, offeredTools, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
+import { READINGS_HTML } from '../../integrations/generated/readings.mjs';
 import { WIDGET_HTML } from '../../integrations/generated/sky-calendar.mjs';
 import { registerSkyWatch, type SkyWatch } from './watch/service';
 import type { Principal } from './watch/contracts';
@@ -12,7 +13,7 @@ import { ACCOUNT_SCOPES, SAVE_DESCRIPTION, SAVE_OUTPUT_SCHEMA, SAVE_TITLE, SAVE_
 import { saveToZodiacs, type AccountPrincipal } from './accounts/save';
 import { signInChallenge, type AccountsService } from './accounts/service';
 
-const INSTRUCTIONS = 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never guess a birth time or a sign. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology’s reading. Zodiacs does not schedule anything, pick investments, make health predictions or guarantee how anything will turn out; do not call its tools for those requests, and say plainly that it cannot.';
+const INSTRUCTIONS = 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. If a tool says it assumed UTC, say that. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never put a birth date, birth time, birthplace, coordinates or place name into a link you write. Never guess a birth time or a sign. Ask before using someone else\'s birth details. Birth details are used for that answer only: Zodiacs does not store them, log them or share them. If a person is under 18, or a birth date is under 18, do not frame the reading as romance, attraction or a sexual relationship, and say that Zodiacs does not give that framing for anyone under 18. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology’s reading, and state each confidence percentage the tool returns. Zodiacs does not schedule anything, pick investments, give financial or medical advice, or guarantee how anything will turn out; do not call its tools for those requests, and say plainly that it cannot.';
 
 const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_upcoming_events: { uri: WIDGET_URI, icon: 'sky-calendar' },
@@ -25,6 +26,11 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_famous_chart: { uri: OCCASIONS_URI, icon: 'occasions' },
   get_birthday: { uri: OCCASIONS_URI, icon: 'occasions' },
   get_sky_calendar: { uri: OCCASIONS_URI, icon: 'occasions' },
+  get_natal_chart: { uri: READINGS_URI, icon: 'readings' },
+  get_horoscope_period: { uri: READINGS_URI, icon: 'readings' },
+  get_chinese_zodiac: { uri: READINGS_URI, icon: 'readings' },
+  get_personal_transits: { uri: READINGS_URI, icon: 'readings' },
+  explain_astrology: { uri: READINGS_URI, icon: 'readings' },
 };
 
 /** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
@@ -33,10 +39,18 @@ const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcomi
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
 
-/** The time zone ChatGPT shares with a tool call, if any (a coarse location hint, never stored). */
+const HOST_ZONE_KEYS = ['openai/userLocation', 'anthropic/userLocation', 'claude/userLocation'] as const;
+
+/** A time zone a host shares with a tool call (ChatGPT or Claude), if any. A coarse hint, never stored. */
 export function hostZoneFrom(meta: unknown): string | undefined {
-  const location = (meta as Record<string, unknown> | undefined)?.['openai/userLocation'] as Record<string, unknown> | undefined;
-  return typeof location?.timezone === 'string' && location.timezone.length <= 64 ? location.timezone : undefined;
+  const record = meta as Record<string, unknown> | undefined;
+  if (!record) return undefined;
+  for (const key of HOST_ZONE_KEYS) {
+    const location = record[key] as Record<string, unknown> | undefined;
+    const timezone = location?.timezone ?? location?.timeZone;
+    if (typeof timezone === 'string' && timezone.length > 0 && timezone.length <= 64) return timezone;
+  }
+  return undefined;
 }
 
 /** ChatGPT marks its calls with openai/ metadata; any other host is counted as an assistant. */
@@ -68,6 +82,10 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     title: 'Zodiacs horoscopes', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it." },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: HOROSCOPES_HTML, _meta: panelMeta('inline', true) }] }));
+  if (tools.some((tool) => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool))) server.registerResource('readings', READINGS_URI, {
+    title: 'Zodiacs readings', mimeType: 'text/html;profile=mcp-app',
+    _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A birth chart, a monthly, yearly or weekly horoscope, the Chinese zodiac, personal transits, or a short explainer. Inline only.' },
+  }, () => ({ contents: [{ uri: READINGS_URI, mimeType: 'text/html;profile=mcp-app', text: READINGS_HTML, _meta: panelMeta('inline', true) }] }));
   if (tools.some((tool) => PANELS[tool]?.uri === OCCASIONS_URI)) for (const { uri, name } of versions('occasions', [OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS])) server.registerResource(name, uri, {
     title: 'Zodiacs occasions', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar.' },
@@ -79,7 +97,7 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
       ...(panel ? { icons: [{ src: `https://zodiacs.org/assets/ai/${panel.icon}.svg`, mimeType: 'image/svg+xml', sizes: ['20x20'] }] } : {}),
       inputSchema: INPUT_SCHEMAS[tool], outputSchema: OUTPUT_SCHEMAS[tool],
       annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: !CLOCK_DEPENDENT.has(tool) },
-      _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
+      _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: panel.uri === READINGS_URI ? [{ type: 'thread' }] : [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
       const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
       const result = await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);

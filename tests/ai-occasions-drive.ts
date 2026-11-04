@@ -189,7 +189,9 @@ try {
   assert.doesNotMatch(compareText.replace(plainWords((pair as any).data.note), ''), /guarantee|soulmate|destined|doomed/iu);
   assert.match(compareText, /not a guarantee/);
   assert.match(compareText, /^ZODIACS·ORG\n/u, 'Every card opens with the ZODIACS · ORG lockup');
-  assert.ok((await compare.getByRole('link', { name: 'Open both charts' }).getAttribute('href'))!.startsWith('https://zodiacs.org/compatibility/#'));
+  assert.equal((pair as any).data.cardUrl, null);
+  assert.equal(await compare.getByRole('link', { name: 'Read this pair' }).getAttribute('href'), (pair as any).data.pageUrl);
+  assert.doesNotMatch((pair as any).data.pageUrl, /#/u);
   assert.equal(await compare.getByRole('link', { name: 'Share the reading' }).getAttribute('href'), (pair as any).data.shareUrl);
   // Four contacts show; the rest open from the keyboard.
   assert.equal(await compare.locator('.card-section > .reasons li').count(), 4);

@@ -3,6 +3,7 @@ import { expect, it } from 'vitest';
 import { STUDIO_HTML } from '../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
+import { READINGS_HTML } from '../integrations/generated/readings.mjs';
 import { WIDGET_HTML } from '../integrations/generated/sky-calendar.mjs';
 import { assertPanelFingerprints, nextPanelFingerprints, panelFingerprintEntries } from './panel-fingerprints.mjs';
 
@@ -12,6 +13,7 @@ const entries = await panelFingerprintEntries({
   'chart-studio': STUDIO_HTML,
   horoscopes: HOROSCOPES_HTML,
   occasions: OCCASIONS_HTML,
+  readings: READINGS_HTML,
 });
 
 it('keeps each current panel URI tied to its HTML', () => {

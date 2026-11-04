@@ -56,7 +56,7 @@ describe('get_personal_transits', () => {
 
   it('names a missing birth date and needs a zone with a time', async () => {
     expect(await executeAiTool('get_personal_transits', {}, on)).toMatchObject({ ok: false, error: { message: 'birthDate is required.' } });
-    expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', time: '08:30' }, on)).toMatchObject({ ok: false, error: { message: 'A birth time or a place needs its time zone.' } });
+    expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', time: '08:30' }, on)).toMatchObject({ ok: false, error: { message: 'A birth time or coordinates need a time zone, or a place name Zodiacs can resolve.' } });
   });
 
   it('never words a contact as a health or money prediction', async () => {
@@ -87,5 +87,27 @@ describe('get_personal_transits', () => {
     const timed = await transits({ ...MADRID, mode: 'year-ahead' });
     expect(timed.scanned.points).toEqual(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'ASC']);
     expect(timed.highlights.length).toBeGreaterThan(data.highlights.length);
+  });
+
+  it('dates the window on the current location when one is given, and says when it assumed the birthplace clock', async () => {
+    const birthplace = await transits(MADRID);
+    expect(birthplace.zone).toBe('Europe/Madrid');
+    expect(birthplace.limits.join(' ')).toContain('birthplace clock');
+    expect(birthplace.contacts[0].line).toMatch(/Confidence \d+%\.?$/u);
+    const moved = await executeAiTool('get_personal_transits', MADRID, on, { hostZone: 'America/New_York' });
+    if (!moved.ok || moved.tool !== 'get_personal_transits') throw new Error(JSON.stringify(moved));
+    expect(moved.data.zone).toBe('America/New_York');
+    expect(moved.data.limits.join(' ')).not.toContain('birthplace clock');
+    const place = await transits({ birthDate: '1990-05-03', time: '08:30', place: 'Madrid, Spain', currentZone: 'America/New_York' });
+    expect(place.zone).toBe('America/New_York');
+    expect(place.placed).toBe(true);
+    expect(place.placeNote).toMatch(/Madrid/u);
+  });
+
+  it('leaves romantic wording out of a transit list for someone under 18', async () => {
+    const data = await transits({ birthDate: '2015-06-01', from: '2026-11-01', to: '2026-11-20' });
+    expect(data.under18).toBe(true);
+    expect(data.limits.join(' ')).toContain('under 18');
+    expect(JSON.stringify(data.contacts)).not.toMatch(/\b(romance|romantic|attraction|intimacy)\b/iu);
   });
 });

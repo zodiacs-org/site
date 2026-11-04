@@ -20,10 +20,9 @@ import type { BodyName, Chart } from '../../lib/engine/types';
 import { bigThree } from '../../lib/interpretations';
 import { chartWeather, natalAspectLine, planetInHouseLine, topAspects } from '../../lib/natal';
 import { placementContext } from '../../lib/natal-context';
-import { encodeChartLink } from '../../lib/share';
-import { dateHandoffFragment } from '../../lib/chart-handoff';
 import { SIGNS, formatLongitude, signIndexForLongitude, type Element, type Modality } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from './reading-guards';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -43,10 +42,10 @@ export const natalChartInput = z.strictObject({
   zone: z.string().min(1).max(64).regex(ZONE_PATTERN).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign and the houses. Give it with longitude and zone. Nothing is stored."),
   longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
-  place: z.string().trim().min(1).max(80).regex(PLAIN_TEXT).optional().describe('Optional birthplace name, such as Madrid, Spain. Display only: it is not used in the calculation and is not stored.'),
+  place: z.string().trim().min(1).max(80).regex(PLAIN_TEXT).optional().describe('Optional birthplace name, such as Madrid, Spain. When coordinates or the time zone are missing, the name is resolved to a city. Nothing is stored.'),
 }).superRefine((args, context) => {
   if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
-  if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });
+  if ((args.time !== undefined || args.latitude !== undefined) && !args.zone && !args.place) context.addIssue({ code: 'custom', message: 'A birth time or coordinates need a time zone, or a place name Zodiacs can resolve.' });
 });
 export type NatalChartInput = z.infer<typeof natalChartInput>;
 
@@ -108,7 +107,12 @@ export const natalChartData = z.object({
     offsetUsed: z.string(),
     text: z.string(),
   }).optional(),
+  /** The chart page. It carries no birth date, time, place or coordinates. */
   chartUrl: z.url(),
+  /** Set when a place name was resolved, or when it disagrees with the coordinates or zone. */
+  placeNote: z.string().optional(),
+  /** True when the birth date is under 18 on the day of the call. Romantic readings are left out. */
+  under18: z.boolean(),
   note: z.literal(NATAL_NOTE),
 });
 export type NatalChartData = z.infer<typeof natalChartData>;
@@ -162,7 +166,7 @@ const slugAt = (index: number | null) => (index === null ? null : SIGNS[index].s
 const signName = (slug: string) => SIGNS.find((sign) => sign.slug === slug)!.name;
 const placementUrl = (origin: string, body: string, slug: string) => `${origin}/learn/placements/${body.toLowerCase()}-in-${slug}/`;
 
-export async function getNatalChart(args: NatalChartInput, clock: NatalClock, origin = DEFAULT_ORIGIN): Promise<{ data: NatalChartData; links: { title: string; url: string }[] }> {
+export async function getNatalChart(args: NatalChartInput & { placeNote?: string }, clock: NatalClock, origin = DEFAULT_ORIGIN, today = '2000-01-01'): Promise<{ data: NatalChartData; links: { title: string; url: string }[] }> {
   const date = parseCivilDate(args.birthDate);
   if (!date || date.year < NATAL_MIN_YEAR || date.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -209,8 +213,8 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
       position: sign ? formatLongitude(row.lon) : null,
       retrograde: row.retrograde,
       house,
-      signLine: context ? context.how : null,
-      houseLine: house ? planetInHouseLine(body, house) : null,
+      signLine: context ? softenHealth(context.how) : null,
+      houseLine: house ? softenHealth(planetInHouseLine(body, house)) : null,
       pageUrl: sign ? placementUrl(origin, body, sign) : null,
     };
   });
@@ -247,9 +251,15 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
   const big = (kind: 'sun' | 'moon' | 'rising', slug: string | null, options: string[], url: string | null) => ({
     sign: slug, possibleSigns: options, meaning: slug ? bigThree(kind, slug) || null : null, pageUrl: url,
   });
-  const chartUrl = placed && args.zone
-    ? `${origin}/birth-chart/#c=${encodeChartLink({ date: args.birthDate, time: args.time ?? null, timeKnown, lat: args.latitude!, lon: args.longitude!, tz: args.zone, ...(args.place ? { place: args.place } : {}), houseSystem: 'whole' })}`
-    : `${origin}/birth-chart/#${dateHandoffFragment(args.birthDate, args.time ?? null)}`;
+  // The page only. A fragment would carry the birth date, time, place and coordinates, which a forwarded link would too.
+  const chartUrl = `${origin}/birth-chart/`;
+  const under18 = isUnder18(args.birthDate, today);
+  const guard = (text: string) => (under18 ? softenMinor(softenHealth(text)) : softenHealth(text));
+  const guardedBig = (kind: 'sun' | 'moon' | 'rising', slug: string | null, options: string[], url: string | null) => {
+    const entry = big(kind, slug, options, url);
+    return { ...entry, meaning: entry.meaning ? guard(entry.meaning) : null };
+  };
+  if (under18) unknown.push(MINOR_NOTE);
   const data: NatalChartData = {
     birthDate: args.birthDate,
     time: args.time ?? null,
@@ -259,16 +269,18 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
     placed,
     castFor: { utc: utc.toISOString(), basis: timeKnown ? 'birth-time' : args.zone ? 'local-noon' : 'utc-noon' },
     houseSystem: angles ? 'whole-sign' : null,
-    sun: big('sun', sun.sign, sun.possibleSigns, sun.sign ? `${origin}/${sun.sign}/` : null),
-    moon: big('moon', moon.sign, moon.possibleSigns, moon.sign ? placementUrl(origin, 'Moon', moon.sign) : null),
-    rising: big('rising', risingSlug, risingSlug ? [risingSlug] : [], risingSlug ? `${origin}/rising-sign/${risingSlug}/` : null),
-    planets,
+    sun: guardedBig('sun', sun.sign, sun.possibleSigns, sun.sign ? `${origin}/${sun.sign}/` : null),
+    moon: guardedBig('moon', moon.sign, moon.possibleSigns, moon.sign ? placementUrl(origin, 'Moon', moon.sign) : null),
+    rising: guardedBig('rising', risingSlug, risingSlug ? [risingSlug] : [], risingSlug ? `${origin}/rising-sign/${risingSlug}/` : null),
+    planets: planets.map((row) => ({ ...row, signLine: row.signLine ? guard(row.signLine) : null, houseLine: row.houseLine ? guard(row.houseLine) : null })),
     angles: angles ? { ascendant: formatLongitude(angles.asc), midheaven: formatLongitude(angles.mc) } : null,
-    aspects,
-    balance: { elements: weather.elements as Record<Element, number>, modalities: weather.modalities as Record<Modality, number>, lines: weather.lines },
+    aspects: aspects.map((aspect) => ({ ...aspect, line: guard(aspect.line) })),
+    balance: { elements: weather.elements as Record<Element, number>, modalities: weather.modalities as Record<Modality, number>, lines: weather.lines.map(guard) },
     unknown,
     ...(timeNote ? { timeNote } : {}),
     chartUrl,
+    ...(args.placeNote ? { placeNote: args.placeNote } : {}),
+    under18,
     note: NATAL_NOTE,
   };
   const links = [

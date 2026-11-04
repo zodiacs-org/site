@@ -1,6 +1,5 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
-import { decodeChartLink } from '../../lib/share';
 import { NOT_FOUND_NOTE } from './people';
 import {
   COMPATIBILITY_NOTE,
@@ -77,10 +76,8 @@ describe('computeCompatibility', () => {
     expect(data.shareUrl).toMatch(/^https:\/\/example\.test\/share\/compatibility\/\?a=Ana&as=aquarius&b=Ben&bs=scorpio&score=\d+&attraction=\d+&communication=\d+&stability=\d+&v=[a-z]+$/u);
     expect(data.shareUrl).not.toMatch(/1991|1989|08|22%3A|Madrid|Europe|America|40\.|74/u);
 
-    expect(data.cardUrl).toMatch(/^https:\/\/example\.test\/compatibility\/#a=1\.[\w-]+&b=1\.[\w-]+$/u);
-    const fragment = new URLSearchParams(new URL(data.cardUrl!).hash.slice(1));
-    expect(decodeChartLink(fragment.get('a')!)).toMatchObject({ date: '1991-02-14', time: '08:30', tz: 'Europe/Madrid', name: 'Ana', place: 'Madrid, Spain' });
-    expect(decodeChartLink(fragment.get('b')!)).toMatchObject({ date: '1989-11-03', time: '22:15', tz: 'America/New_York', name: 'Ben' });
+    // The handoff fragment would carry both birth details. The share link does not, so cardUrl stays empty.
+    expect(data.cardUrl).toBeNull();
 
     expect(data.contacts.length).toBe(8);
     for (const row of data.contacts) {
@@ -98,7 +95,8 @@ describe('computeCompatibility', () => {
       b: { birthDate: '1989-11-03', time: '22:15', zone: 'America/New_York', latitude: 40.7128, longitude: -74.006 },
     });
     const { data } = await computeCompatibility(args, localTime);
-    expect(data.cardUrl?.startsWith('https://zodiacs.org/compatibility/#')).toBe(true);
+    expect(data.cardUrl).toBeNull();
+    expect(data.shareUrl).not.toMatch(/1991|1989|Europe|America|40\./u);
     expect(data.contacts[0].line.startsWith('Person A’s ')).toBe(true);
   });
 

@@ -66,9 +66,9 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
 
   it('reports 0.6.0 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.0' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.1' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.0');
+    expect(capabilities.data.version).toBe('0.6.1');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });
@@ -85,6 +85,9 @@ describe('get_capabilities names every tool offered', () => {
     expect(named).toEqual([...EVERY_AI_TOOL_NAME]);
     expect(named).toHaveLength(18);
     expect(text).toContain('Version 0.6.0 adds tools listed in tools/list: get_natal_chart (a birth chart readout), get_horoscope_period (');
+    expect(text).toContain('Which tool: today, tomorrow or this week\'s general Sun-sign horoscope, get_horoscope');
+    expect(text).toContain('There is no free-form eclipse or aspect search.');
+    expect(text).not.toContain('No eclipse or aspect search');
     expect(text).toContain('With them Zodiacs offers 18 tools: the 13 in the tools field and these 5.');
     expect(text).not.toMatch(/[–—]/u);
   });
@@ -100,13 +103,19 @@ describe('get_capabilities names every tool offered', () => {
 });
 
 describe('the five 0.6.0 tools', () => {
-  it('are read-only, closed-world, non-destructive and anonymous, with a title in the annotations and no panel', async () => {
-    const tools = (await rpc('tools/list', {})).result.tools as { name: string; title: string; description: string; annotations: Record<string, unknown>; _meta: Record<string, unknown>; inputSchema: { type: string; properties: Record<string, { type?: string }> } }[];
+  it('are read-only, closed-world, non-destructive and anonymous, with the readings panel inline and no sidebar launch', async () => {
+    const tools = (await rpc('tools/list', {})).result.tools as { name: string; title: string; description: string; annotations: Record<string, unknown>; _meta: Record<string, unknown>; icons?: unknown; inputSchema: { type: string; properties: Record<string, { type?: string }> } }[];
     for (const name of COVERAGE_TOOL_NAMES) {
       const tool = tools.find(entry => entry.name === name)!;
       expect(tool.title).toBe(TOOL_TITLES[name]);
       expect(tool.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false, openWorldHint: false, title: TOOL_TITLES[name] });
-      expect(tool._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
+      expect(tool._meta).toEqual({
+        securitySchemes: [{ type: 'noauth' }],
+        ui: { resourceUri: 'ui://zodiacs/readings-v1.html', visibility: ['model', 'app'] },
+        'openai/outputTemplate': 'ui://zodiacs/readings-v1.html',
+        'openai/ui': { entrypoints: [{ type: 'thread' }] },
+      });
+      expect(tool.icons).toEqual([{ src: 'https://zodiacs.org/assets/ai/readings.svg', mimeType: 'image/svg+xml', sizes: ['20x20'] }]);
       expect(tool.description).toBe(TOOL_DESCRIPTIONS[name]);
       // Flat inputs: every property is a plain value, never an object to fill in.
       for (const property of Object.values(tool.inputSchema.properties)) expect(['string', 'number', 'integer']).toContain(property.type);

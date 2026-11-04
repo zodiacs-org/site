@@ -29,8 +29,10 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
 ### Product rules
 
 - The site is dark only. Do not add a light theme or a theme switch.
-- No predictions on the site. Horoscopes stay reflective: they describe the
-  sky and invite reflection, they never forecast outcomes.
+- Horoscopes and transit readings are forecasts. Share them plainly and
+  confidently, each with the percentage confidence the tool gives. They are
+  not health, financial or medical advice, and they are not a promise of how
+  anything will turn out.
 - No token, market or crypto language on consumer surfaces. The approved
   exception is the Collect band and the other sanctioned wing links described
   in `CLAUDE.md` ("One design system, two content registers").

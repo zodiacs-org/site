@@ -100,16 +100,11 @@ try {
   if (out) await share.screenshot({ path: resolve(out, 'share-page-wedding-390.png'), fullPage: true });
   checked.push('Share the reading: /share/occasion/ opens with its 1200x630 preview image');
 
-  // Two charts: Open both charts and Share the reading.
-  const both = await context.newPage();
-  await both.goto(local(pair.data.cardUrl));
-  await both.getByText('Ana', { exact: false }).first().waitFor({ timeout: 20_000 });
-  await both.waitForFunction(() => /Luis/u.test(document.body.innerText) && /\b\d{1,3}\b/u.test(document.body.innerText), undefined, { timeout: 20_000 });
-  const bothText = await both.locator('main').innerText();
-  assert.match(bothText, /Ana/u);
-  assert.match(bothText, /Luis/u);
-  if (out) await both.screenshot({ path: resolve(out, 'printable-compatibility-390.png'), fullPage: true });
-  checked.push('Open both charts: /compatibility/ opens with Ana and Luis from the link');
+  // The comparison card no longer carries both birth details. The share page does not either.
+  assert.equal(pair.data.cardUrl, null);
+  assert.ok(pair.data.pageUrl?.includes('/compatibility/'));
+  assert.doesNotMatch(`${pair.data.pageUrl} ${pair.data.shareUrl}`, /1990|1992|#a=/u);
+  checked.push('Compare two charts: cardUrl is empty and the share link leaves the birth details out');
   const pairShare = await context.newPage();
   await pairShare.goto(local(pair.data.shareUrl));
   await pairShare.locator('img.card').waitFor();

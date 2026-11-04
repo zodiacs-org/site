@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { refFrom } from './server';
+import { hostZoneFrom, refFrom } from './server';
 import { executeAiTool, refUrl } from './tools';
 
 const on = { now: () => new Date('2026-10-11T12:00:00Z'), occasions: true };
@@ -16,6 +16,10 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     expect(refFrom({ 'openai/userLocation': { timezone: 'Europe/Rome' } })).toBe('chatgpt');
     expect(refFrom({ progressToken: 1 })).toBe('assistant');
     expect(refFrom(undefined)).toBe('assistant');
+    expect(hostZoneFrom({ 'openai/userLocation': { timezone: 'Asia/Bangkok' } })).toBe('Asia/Bangkok');
+    expect(hostZoneFrom({ 'anthropic/userLocation': { timezone: 'Europe/Paris' } })).toBe('Europe/Paris');
+    expect(hostZoneFrom({ 'claude/userLocation': { timeZone: 'America/New_York' } })).toBe('America/New_York');
+    expect(hostZoneFrom({})).toBeUndefined();
   });
 
   it('tags the links and the card address of a result, and nothing without a ref', async () => {

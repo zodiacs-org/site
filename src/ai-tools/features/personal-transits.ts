@@ -39,6 +39,7 @@ import type { EclipseRecord } from '../../lib/upcoming';
 import { aspectEvents, assembleYearAhead, eclipseEvents, ingressEvents, saturnSeasonEvents, solarReturnEvents, type IngressWindow, type YearAheadEvent } from '../../lib/year-ahead';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { MINOR_NOTE, forecastConfidence, isUnder18, softenHealth, softenMinor, withConfidence } from './reading-guards';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -48,7 +49,7 @@ export const TRANSITS_DEFAULT_DAYS = 30;
 /** Up to this many days, the Sun, Mercury, Venus and Mars are scanned too. */
 export const TRANSITS_PERSONAL_DAYS = 92;
 export const TRANSITS_LIMIT = 60;
-export const TRANSITS_NOTE = 'Astrology’s reading of the sky meeting your birth chart, for reflection: not a guarantee, and not a forecast of health or money.';
+export const TRANSITS_NOTE = 'Astrology’s reading of the sky meeting your birth chart, shared plainly, each line with its confidence percentage. The percentage is how settled the date is from the details given. It is not a guarantee, and it is not health, financial or medical advice.';
 const ORDINAL = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'];
 
 const zone = z.string().min(1).max(64).regex(ZONE_PATTERN);
@@ -61,10 +62,11 @@ export const personalTransitsInput = z.strictObject({
   mode: z.enum(['window', 'year-ahead']).optional().describe('window (the default): every exact contact between from and to. year-ahead: the year from today, with Jupiter and Saturn, the solar return, a Saturn return, sign changes and eclipses near the chart.'),
   from: z.string().regex(DATE).optional().describe('For window: the first day, such as 2026-11-01. Defaults to today.'),
   to: z.string().regex(DATE).optional().describe(`For window: the last day, at most ${TRANSITS_MAX_DAYS} days after from. Defaults to a ${TRANSITS_DEFAULT_DAYS}-day window, from included.`),
-  currentZone: zone.optional().describe("The person's time zone now, such as Asia/Bangkok, so dates read on their clock. Defaults to the birthplace zone, else UTC."),
+  place: z.string().trim().min(1).max(80).optional().describe('Optional birthplace name, such as Madrid, Spain. When coordinates or the time zone are missing, the name is resolved to a city. Nothing is stored.'),
+  currentZone: zone.optional().describe("Where the person lives now, such as Asia/Bangkok, so dates fall on their own clock. Without it, dates use the birthplace clock, or UTC if that is missing too, and the answer says which."),
 }).superRefine((args, context) => {
   if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
-  if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });
+  if ((args.time !== undefined || args.latitude !== undefined) && !args.zone && !args.place) context.addIssue({ code: 'custom', message: 'A birth time or coordinates need a time zone, or a place name Zodiacs can resolve.' });
   if (args.mode === 'year-ahead' && (args.from !== undefined || args.to !== undefined)) context.addIssue({ code: 'custom', message: 'year-ahead always starts today; leave out from and to.' });
 });
 export type PersonalTransitsInput = z.infer<typeof personalTransitsInput>;
@@ -93,6 +95,8 @@ export const personalTransitsData = z.object({
     passCount: z.number().int().min(1),
     title: z.string(),
     line: z.string(),
+    /** How settled the date is, from 0 to 100. Not a chance the reading will come true. */
+    confidence: z.number().int().min(0).max(100),
   })).max(TRANSITS_LIMIT),
   /** Contacts found before the list was cut to its limit. */
   found: z.number().int().min(0),
@@ -103,11 +107,16 @@ export const personalTransitsData = z.object({
     kind: z.enum(['solar-return', 'aspect', 'ingress', 'eclipse', 'saturn-return']),
     planet: z.string(),
     line: z.string(),
+    confidence: z.number().int().min(0).max(100),
     /** With a birth time and place: the natal house a sign change falls in. */
     house: z.object({ number: z.number().int().min(1).max(12), line: z.string() }).nullable(),
   })),
   /** What the answer leaves out from the details given, and where the tables stop. */
   limits: z.array(z.string()),
+  /** The natal Sun sign, for the panel's art. Null only when the Sun changed sign that day and no time was given. */
+  sun: z.string().nullable(),
+  placeNote: z.string().optional(),
+  under18: z.boolean(),
   pageUrl: z.url(),
   note: z.literal(TRANSITS_NOTE),
 });
@@ -143,7 +152,7 @@ async function startOfDay(date: string, timeZone: string, clock: TransitClock): 
   return clock.resolveLocalToUtc(date, '00:00', timeZone).utc;
 }
 
-export async function getPersonalTransits(args: PersonalTransitsInput, now: Date, clock: TransitClock, origin: string): Promise<{ data: PersonalTransitsData; links: { title: string; url: string }[] }> {
+export async function getPersonalTransits(args: PersonalTransitsInput & { placeNote?: string }, now: Date, clock: TransitClock, origin: string): Promise<{ data: PersonalTransitsData; links: { title: string; url: string }[] }> {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError('birthDate must be a real date from 1800 to 2199.');
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -159,8 +168,16 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   const shownZone = args.currentZone ?? args.zone ?? 'UTC';
   const today = dateIn(now, shownZone);
+  const clockKind = args.currentZone ? 'current' as const : args.zone ? 'birthplace' as const : 'utc' as const;
+  const under18 = isUnder18(args.birthDate, today);
+  const guard = (text: string) => (under18 ? softenMinor(softenHealth(text)) : softenHealth(text));
+  const say = (text: string, point?: string) => withConfidence(guard(text), forecastConfidence({ clock: clockKind, timeKnown, point }));
   const lon = (body: string) => chart.bodies.find((row) => row.body === body)!.lon;
+  const sun = SIGNS[signIndexForLongitude(lon('Sun'))].slug;
   const limits: string[] = [];
+  if (!args.currentZone && args.zone) limits.push(`Dates are on the birthplace clock (${shownZone}) because no current location was given.`);
+  if (!args.currentZone && !args.zone) limits.push('Dates assume UTC because no time zone was given.');
+  if (under18) limits.push(MINOR_NOTE);
   if (!timeKnown) limits.push('No birth time was given, so the Moon, the rising degree and the Midheaven are left out; contacts to the other planets can shift by about a day.');
   else if (!placed) limits.push('No birthplace coordinates were given, so the rising degree and the Midheaven are left out.');
   const points: NatalPoint[] = [...TRANSIT_BODY_ORDER.filter((body) => timeKnown || body !== 'Moon'), ...(angles ? ['ASC', 'MC'] as const : [])];
@@ -194,10 +211,11 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
       pass: contact.pass,
       passCount: contact.passCount,
       title: `${contact.transitBody} ${contact.aspect} your ${pointName(contact.natalPoint)}`,
-      line: transitLine(contact.transitBody, contact.aspect, pointName(contact.natalPoint)),
+      line: say(transitLine(contact.transitBody, contact.aspect, pointName(contact.natalPoint)), contact.natalPoint),
+      confidence: forecastConfidence({ clock: clockKind, timeKnown, point: contact.natalPoint }),
     }));
     return {
-      data: { mode, birthDate: args.birthDate, timeKnown, placed, from: fromDate, to: toDate, zone: shownZone, scanned: { planets, points }, contacts, found: found.length, highlights: [], limits, pageUrl, note: TRANSITS_NOTE },
+      data: { mode, birthDate: args.birthDate, timeKnown, placed, from: fromDate, to: toDate, zone: shownZone, scanned: { planets, points }, contacts, found: found.length, highlights: [], limits, sun, ...(args.placeNote ? { placeNote: args.placeNote } : {}), under18, pageUrl, note: TRANSITS_NOTE },
       links: [{ title: 'Transits on Zodiacs', url: pageUrl }, { title: 'Your birth chart on Zodiacs', url: `${origin}/birth-chart/` }],
     };
   }
@@ -253,8 +271,9 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
       endDate: event.endAt ? dayLabel(event.endAt, shownZone) : null,
       kind: event.kind,
       planet: event.body,
-      line: event.line,
-      house: number ? { number, line: `In your chart, ${cap(sign!)} is your ${ORDINAL[number]} house: ${NATAL_HOUSE_THEME[number]}.` } : null,
+      line: say(event.line),
+      confidence: forecastConfidence({ clock: clockKind, timeKnown }),
+      house: number ? { number, line: guard(`In your chart, ${cap(sign!)} is your ${ORDINAL[number]} house: ${NATAL_HOUSE_THEME[number]}.`) } : null,
     };
   });
   const toDate = dateIn(new Date(toUtc.getTime() - 1), shownZone);
@@ -263,7 +282,7 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
   if (scan.rangeClipped) limits.push('The scan stops at the end of 2199.');
   if (!risingSign) limits.push('Without a birth time and place, sign changes are not placed in your houses.');
   return {
-    data: { mode, birthDate: args.birthDate, timeKnown, placed, from: today, to: toDate, zone: shownZone, scanned: { planets: [...YEAR_AHEAD_PLANETS], points: (['Sun', ...(timeKnown ? ['Moon'] : []), ...YEAR_AHEAD_PERSONAL_POINTS, ...(angles ? ['ASC'] : [])] as NatalPoint[]) }, contacts: [], found: 0, highlights, limits, pageUrl, note: TRANSITS_NOTE },
+    data: { mode, birthDate: args.birthDate, timeKnown, placed, from: today, to: toDate, zone: shownZone, scanned: { planets: [...YEAR_AHEAD_PLANETS], points: (['Sun', ...(timeKnown ? ['Moon'] : []), ...YEAR_AHEAD_PERSONAL_POINTS, ...(angles ? ['ASC'] : [])] as NatalPoint[]) }, contacts: [], found: 0, highlights, limits, sun, ...(args.placeNote ? { placeNote: args.placeNote } : {}), under18, pageUrl, note: TRANSITS_NOTE },
     links: [{ title: 'Transits on Zodiacs', url: pageUrl }, { title: 'Your birth chart on Zodiacs', url: `${origin}/birth-chart/` }],
   };
 }

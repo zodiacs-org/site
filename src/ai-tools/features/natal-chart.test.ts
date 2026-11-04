@@ -27,7 +27,10 @@ describe('get_natal_chart', () => {
     expect(elements.fire + elements.earth + elements.air + elements.water).toBe(10);
     expect(modalities.cardinal + modalities.fixed + modalities.mutable).toBe(10);
     expect(data.unknown).toEqual([]);
-    expect(data.chartUrl).toMatch(/^https:\/\/zodiacs\.org\/birth-chart\/#c=/u);
+    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/');
+    const urls = [...JSON.stringify(data).matchAll(/https:\/\/[^"\\]+/gu)].map((match) => match[0]);
+    for (const url of urls) expect(url, url).not.toMatch(/1990-05-03|40\.4168|-3\.7038|Madrid|#c=/u);
+    expect(data.under18).toBe(false);
     expect(data.sun.meaning).toBeTruthy();
     expect(data.rising.pageUrl).toBe('https://zodiacs.org/rising-sign/gemini/');
   });
@@ -43,7 +46,8 @@ describe('get_natal_chart', () => {
     expect(data.aspects.some((aspect) => aspect.a === 'Moon' || aspect.b === 'Moon')).toBe(false);
     expect(data.unknown.join(' ')).toContain('rising sign and the houses are unknown');
     expect(data.unknown.join(' ')).toContain('Leo or Virgo');
-    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/#date=1990-05-03&time=unknown');
+    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/');
+    expect(data.chartUrl).not.toContain('1990');
   });
 
   it('states a Moon sign without a time only when the whole birth day keeps it there', async () => {
@@ -73,7 +77,7 @@ describe('get_natal_chart', () => {
   });
 
   it('needs a time zone with a time or a place, and names a missing birth date', async () => {
-    expect(await executeAiTool('get_natal_chart', { birthDate: '1990-05-03', time: '08:30' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'A birth time or a place needs its time zone.' } });
+    expect(await executeAiTool('get_natal_chart', { birthDate: '1990-05-03', time: '08:30' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'A birth time or coordinates need a time zone, or a place name Zodiacs can resolve.' } });
     expect(await executeAiTool('get_natal_chart', { time: '08:30', zone: 'Europe/Madrid' }, on)).toMatchObject({ ok: false, error: { message: 'birthDate is required.' } });
     expect(await executeAiTool('get_natal_chart', { birthDate: '1990-05-03', latitude: 40 , zone: 'Europe/Madrid' }, on)).toMatchObject({ ok: false, error: { message: 'Give latitude and longitude together.' } });
     expect(await executeAiTool('get_natal_chart', { birthDate: '1990-13-03' }, on)).toMatchObject({ ok: false, error: { message: 'birthDate must be a real date from 1800 to 2199.' } });
@@ -83,7 +87,8 @@ describe('get_natal_chart', () => {
     const result = await executeAiTool('get_natal_chart', { ...MADRID, zone: 'europe/madrid' }, on, { ref: 'assistant' });
     if (!result.ok || result.tool !== 'get_natal_chart') throw new Error('refused');
     expect(result.data.zone).toBe('Europe/Madrid');
-    expect(result.data.chartUrl).toMatch(/^https:\/\/zodiacs\.org\/birth-chart\/\?ref=assistant#c=/u);
+    expect(result.data.chartUrl).toBe('https://zodiacs.org/birth-chart/?ref=assistant');
+    expect(result.data.chartUrl).not.toMatch(/1990|40\.|Madrid|#/u);
   });
 
   it('says when a birth time fell in a daylight saving gap, and how far it moved', async () => {
@@ -125,5 +130,24 @@ describe('get_natal_chart', () => {
     expect((await chart(MADRID)).timeNote).toBeUndefined();
     expect((await chart({ birthDate: '2026-03-08', zone: 'America/New_York' })).timeNote).toBeUndefined();
     expect('timeNote' in (await chart({ birthDate: '1990-05-03' }))).toBe(false);
+  });
+
+  it('resolves a place name to coordinates and a time zone, and names a mismatch', async () => {
+    const resolved = await chart({ birthDate: '1990-05-03', time: '08:30', place: 'Madrid, Spain' });
+    expect(resolved.zone).toBe('Europe/Madrid');
+    expect(resolved.placed).toBe(true);
+    expect(resolved.rising.sign).toBe('gemini');
+    expect(resolved.placeNote).toMatch(/Madrid/u);
+    const mismatch = await chart({ birthDate: '1990-05-03', time: '08:30', zone: 'America/New_York', latitude: 40.7128, longitude: -74.006, place: 'Madrid, Spain' });
+    expect(mismatch.zone).toBe('America/New_York');
+    expect(mismatch.placeNote).toMatch(/uses the coordinates and time zone you supplied/u);
+    expect(mismatch.castFor.utc).not.toBe(resolved.castFor.utc);
+  });
+
+  it('leaves romantic wording out when the birth date is under 18', async () => {
+    const data = await chart({ birthDate: '2015-06-01', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 });
+    expect(data.under18).toBe(true);
+    expect(JSON.stringify(data)).toMatch(/under 18/u);
+    expect(JSON.stringify({ planets: data.planets, sun: data.sun, moon: data.moon, rising: data.rising, aspects: data.aspects, balance: data.balance })).not.toMatch(/\b(romance|romantic|attraction|intimacy)\b/iu);
   });
 });

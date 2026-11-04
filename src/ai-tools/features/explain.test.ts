@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { executeAiTool } from '../tools';
 import { bigThree } from '../../lib/interpretations';
+import { pairPagesFromDisk } from '../../../scripts/build-pair-pages.mjs';
+import pairPages from './pair-pages.json';
 import { EXPLAIN_TOPICS, explainAstrology, matchAngleSign, matchNoSuchHouse, matchPlacement, matchRising, matchTopic } from './explain';
 
 const on = { occasions: true, coverage: true };
@@ -203,5 +205,20 @@ describe('explain_astrology', () => {
     for (const query of ['basic chart', 'picture of my chart', 'ice', 'magic', 'icy moon', 'stoic leo', 'music']) expect(matchTopic(query)?.key ?? null, query).not.toBe('ic');
     expect(matchTopic('Midheaven')?.key).toBe('midheaven');
     expect(matchTopic('mc')?.key).toBe('midheaven');
+  });
+
+  it('explains a Sun-sign pair from the compatibility page, and says to leave romance out for anyone under 18', async () => {
+    const { data, links } = explainAstrology({ topic: 'Are Leo and Scorpio compatible?' });
+    expect(data.found).toBe(true);
+    expect(data.topic).toBe('leo-scorpio');
+    expect(data.paragraphs.join(' ')).toContain('One loves on the record');
+    expect(data.paragraphs.join(' ')).toContain('Confidence 70%');
+    expect(data.message).toMatch(/under 18/u);
+    expect(data.pages[0].url).toBe('https://zodiacs.org/compatibility/leo-scorpio/');
+    expect(links.map((link) => link.url).join(' ')).not.toMatch(/birthDate|latitude|#c=/u);
+    expect(explainAstrology({ topic: 'leo' }).data.topic).toBe('leo');
+    expect(pairPages).toEqual(await pairPagesFromDisk());
+    const sixth = explainAstrology({ topic: 'sixth house' }).data.paragraphs.join(' ');
+    expect(sixth).not.toMatch(/\bhealth\b/iu);
   });
 });

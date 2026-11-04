@@ -36,8 +36,8 @@ tools take no personal details.
 
 The last five were introduced in 0.6.0 and are offered where
 `ZODIACS_COVERAGE_ENABLED=1` joins the occasions switch; until the owner sets it,
-production lists the thirteen above. They answer in text and structured
-content, with no panel. The natal chart,
+production lists the thirteen above. From 0.6.1 they open the inline readings
+panel `ui://zodiacs/readings-v1.html` (no sidebar launch). The natal chart,
 transit and Chinese zodiac tools take a birth date (and, for the first two, an
 optional time, time zone and coordinates) for that call only and keep none of
 it; the period horoscope and explainer tools take no personal details.

@@ -1,6 +1,6 @@
 ---
 name: explore-the-sky
-description: Answer questions about the sky, the horoscope for a Sun sign, a person's own birth chart and transits, two people's charts, famous charts, the Chinese zodiac, astrology basics, birthdays and days that matter with Zodiacs. Use it for what's happening in the sky, retrogrades, Moon phases, daily, weekly, monthly and yearly Sun-sign horoscopes, an interactive birth chart or a chart readout, personal transits and the year ahead, chart comparisons, chart twins, Chinese zodiac animals, explainers of astrology terms, birthdays and solar returns, occasion cards with a rating for the date, compatibility scores, life milestones and the sky calendar subscription; not for scheduling, investments or health predictions.
+description: Answer questions about the sky, the horoscope for a Sun sign, a person's own birth chart and transits, two people's charts, famous charts, the Chinese zodiac, astrology basics, birthdays and days that matter with Zodiacs. Use it for what's happening in the sky, retrogrades, Moon phases, daily, weekly, monthly and yearly Sun-sign horoscopes, an interactive birth chart or a chart readout, personal transits and the year ahead, chart comparisons, chart twins, Chinese zodiac animals, explainers of astrology terms, birthdays and solar returns, occasion cards with a rating for the date, compatibility scores, life milestones and the sky calendar subscription; not for scheduling, investments, financial advice or health predictions.
 ---
 
 Answer in plain words first, on the person's own clock when you know their
@@ -17,37 +17,46 @@ time zone.
   answer as it is and explain that the answer changes with the time zone. Ask
   where the person is when that decides the answer; never infer it from their
   language or birthplace.
-- **Horoscopes.** Use `get_horoscope` with the person's Sun sign. If you don't
-  know their sign, leave it out so they can choose; never guess it. Pass their
-  time zone if you know it. Share the reading as written, keep its date, and
-  present it as reflection.
+- **Horoscopes.** Use `get_horoscope` for today, tomorrow or this week's
+  general Sun-sign horoscope. If you don't know their sign, leave it out so
+  they can choose; never guess it. Pass their time zone if you know it. For a
+  month or a year, or for the week's love or career readings together, use
+  `get_horoscope_period`. Share each forecast plainly and confidently, with
+  the confidence percentage the tool returns. Pass a birth date to
+  `get_horoscope` only when the person asked for a personal week from their
+  own chart.
 - **Birth charts.** Use `open_chart_studio` with no arguments. Don't collect
   birth details in the chat: the panel asks for them and works out the chart
   there. You see only the parts the person chooses to share.
-- **A birth chart read in the conversation.** When the person gives their birth
-  details and wants the chart read here, use `get_natal_chart` with the birth
-  date, and the time, the birthplace's time zone and coordinates if they give
-  them. Never guess a birth time. Without one, say what is unknown: the rising
-  sign, the houses and, on a day the Moon changed sign, the Moon sign, which the
-  tool gives as two possibilities.
+- **A birth chart read in the conversation.** When the person has already given
+  a birth date and wants the chart read here, use `get_natal_chart`. Add the
+  time, zone and coordinates only as given. A place name is enough for the
+  tool to resolve coordinates and a time zone, and it names a mismatch. Never
+  guess a birth time. Without one, say what is unknown. `chartUrl` opens the
+  chart page and does not carry the birth date, time, place or coordinates.
+  Do not put those details into any link. If they have not given a birth date,
+  or want to explore the chart themselves, use `open_chart_studio`.
 - **Monthly, yearly and weekly horoscopes.** Use `get_horoscope_period` with the
   Sun sign and `month`, `year` or `week`, and `love` or `career` as the focus if
   asked. Share the published reading as written. If none is published for that
   period, say so and give the period's sky instead; never write a reading of
   your own.
-- **Personal transits and the year ahead.** Use `get_personal_transits` with the
-  birth date (and time, zone and coordinates if known): a window of up to 366
-  days, the next 30 by default, or `mode: "year-ahead"` for the year's
-  highlights. Give the dates and the astrology's reading, never a guarantee, and
-  no health or money predictions.
+- **Personal transits and the year ahead.** Use `get_personal_transits` for
+  "my transits" or "my year ahead", with the birth date (and time, zone and
+  coordinates if known). Pass `currentZone` for where they live now so the
+  dates fall on that clock. Share each line plainly with its confidence
+  percentage. No health, financial or medical advice.
 - **The Chinese zodiac.** Use `get_chinese_zodiac` with the birth date, or the
   year if that is all the person gives. A date before that year's Lunar New Year
   belongs to the previous animal; with only a year, say which animal applies
   before its Lunar New Year.
-- **What an astrology term means.** Use `explain_astrology` with the topic in a
-  few words, such as Mercury retrograde, the seventh house or the rising sign.
-  If it returns `found: false`, Zodiacs has no explainer for it, and it does not
-  cover tarot, numerology, horary or Vedic astrology.
+- **What an astrology term means, or whether two Sun signs are compatible.**
+  Use `explain_astrology` with the topic in a few words, such as Mercury
+  retrograde, the seventh house, the rising sign, or Leo and Scorpio. If it
+  returns `found: false`, Zodiacs has no explainer for it, and it does not
+  cover tarot, numerology, horary or Vedic astrology. For anyone under 18,
+  give the element and modality pattern and do not frame a pair as romance
+  or attraction.
 - **Comparing two charts.** Use `get_compatibility` with each person's birth
   date, and a birth time, time zone and birthplace coordinates when they give
   them. Lead with the compatibility score out of 100 and its verdict, then the
@@ -67,12 +76,19 @@ time zone.
   asked for the best days for an occasion, give the window as `searchFrom` and
   `searchTo` (up to 92 days); it returns the three best-rated days. When asked
   which of a few named dates is best, rate each one and compare them.
-- **The sky calendar in their own calendar app.** Use `get_sky_calendar` and
-  share the subscription link and how to add it. It creates no calendar
-  entries.
+- **The sky calendar in their own calendar app.** Use `get_sky_calendar` when
+  they want to subscribe in Google Calendar, Apple Calendar or Outlook. Use
+  `get_upcoming_events` when they want what changes in the sky over a window.
+  The subscription creates no calendar entries.
+
+Ask before using someone else's birth details. Those details are used for
+that answer only: Zodiacs does not store them, log them or share them, and
+they must not be written into a link. If the person is under 18, do not
+frame any reading as romance, attraction or a sexual relationship.
 
 Give Zodiacs' forecasts, scores and ratings plainly and confidently, as
-astrology's reading. Don't make health predictions, pick investments or
+astrology's reading, and state each confidence percentage a tool returns.
+Don't give health, financial or medical advice, pick investments or
 guarantee any outcome. Mention versions,
 receipts or UTC only if the person asks how something was calculated, then
 link to https://zodiacs.org/methodology/. If a tool says Zodiacs is busy, say
