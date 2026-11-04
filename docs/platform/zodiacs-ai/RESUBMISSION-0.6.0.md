@@ -9,13 +9,14 @@ in `claude-directory/RESYNC-0.6.0.md`.
 
 Prepared on branch `feat/listing-text-0-6-2`; nothing uploaded. Dias chose to
 package the new listing text (option B of the 4 November listing draft), so
-upload `integrations/packages/zodiacs-sky-0.6.2.zip` (98,007 bytes, SHA-256
-`993c5428d0a589532bf9a57ed09a2d8fa17a4e7e5933003f94f574fa9574c21d`) instead of
+upload `integrations/packages/zodiacs-sky-0.6.2.zip` (97,995 bytes, SHA-256
+`3670ee6670e491a98fdcdc20e494836fe8b0add91b944601fa55d07cc5b885d0`) instead of
 the 0.6.1 ZIP. It carries a new About, the subtitle "Sky, horoscopes & birth
 charts", three starter prompts that need no personal details, the
-capabilities with the town and time zone lookup, and five review cases, three
-of which need no personal details; `find_chart_twins` moves from the cases to
-the reviewer prompts. `chatgpt-app-submission.json` carries the same About and
+capabilities with the town and time zone lookup, and five review cases, none
+with anyone's own birth details: the comparison case scores two famous charts
+Zodiacs publishes, and `find_chart_twins` moves from the cases to the reviewer
+prompts. `chatgpt-app-submission.json` carries the same About and
 cases and adds `find_birthplace`'s justifications. The server reports 0.6.2;
 the 19 tools, their definitions and the panels are unchanged, and the rest
 of the 0.6.1 update below still applies.

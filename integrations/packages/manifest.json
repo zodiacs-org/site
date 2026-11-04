@@ -6,8 +6,8 @@
       "name": "zodiacs-sky",
       "version": "0.6.2",
       "file": "zodiacs-sky-0.6.2.zip",
-      "bytes": 98007,
-      "sha256": "993c5428d0a589532bf9a57ed09a2d8fa17a4e7e5933003f94f574fa9574c21d",
+      "bytes": 97995,
+      "sha256": "3670ee6670e491a98fdcdc20e494836fe8b0add91b944601fa55d07cc5b885d0",
       "members": [
         {
           "path": ".claude-plugin/plugin.json",
@@ -16,8 +16,8 @@
         },
         {
           "path": ".codex-plugin/plugin.json",
-          "bytes": 10850,
-          "sha256": "9717ffa9b725fcfbcf646a55221889706062e1a5faad6e497092e20f2d61969e"
+          "bytes": 10844,
+          "sha256": "38c73cec700797a2bfffdc8eca5fd6ebc1b8c24f5f328f1824358bb1d9aa9a08"
         },
         {
           "path": ".mcp.json",
@@ -56,8 +56,8 @@
         },
         {
           "path": "plugin.json",
-          "bytes": 11005,
-          "sha256": "7349c9a14eacc95cbc39cfcb21333dcd546a8166f465a0a87ec5968047dd421f"
+          "bytes": 10999,
+          "sha256": "7c30cde350e1ee0f26e2abe79fd36f72422b01b4220a7b9d32f2b07e6f60d876"
         },
         {
           "path": "skills/explore-the-sky/SKILL.md",

@@ -92,10 +92,10 @@ for (const [index, entry] of submission.test_cases.entries()) {
     assert.ok(names.includes(name)); coveredTools.add(name);
   }
 }
-// Five positive cases cannot cover nineteen tools. From 0.6.2 three of them need no personal
-// details (a sky question, a horoscope, a famous chart with an explainer); the other two keep
-// the date rating and the comparison the scan flagged, with find_birthplace for their towns.
-// find_chart_twins moved to the reviewer prompts.
+// Five positive cases cannot cover nineteen tools. From 0.6.2 none of them states anyone's own
+// birth details: a sky question, a horoscope, a famous chart with an explainer, the date rating
+// with find_birthplace for its town, and a comparison of two famous charts, which keep the two
+// tools the scan flagged. find_chart_twins moved to the reviewer prompts.
 for (const name of ['get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'get_famous_chart', 'explain_astrology', 'get_occasion_sky', 'get_compatibility', 'find_birthplace']) assert.ok(coveredTools.has(name), `The review scenarios cover ${name}`);
 for (const entry of submission.negative_test_cases) assert.equal(entry.tools_triggered, null);
 const evaluationCases = await json('integrations/chatgpt/evaluation-cases.json');
