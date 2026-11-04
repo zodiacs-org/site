@@ -94,8 +94,8 @@ on Node 24.21.0, as for 1.1.0-rc.1). Nothing here is recorded `accepted`.
 - **Developer plugin 0.3.21** (0.3.20 went to #877). `npm run ai:check`
   passes. This commit moved Chart Studio's panel to `chart-studio-v7.html`,
   v6 staying a legacy address, because the panel embeds the engine; D-12
-  takes the move back. Main's #881 then made its own 0.3.21, so after the
-  merge (D-13) this branch's plugin is 0.3.22.
+  takes the move back. Main's #881 then made its own 0.3.21, and #882 its
+  own 0.3.22, so after the merges (D-13) this branch's plugin is 0.3.23.
 - **Accuracy refresh** ([accuracy-refresh/](accuracy-refresh/)). Both Swiss
   statistics runs, on 1.1.0-rc.2: every statistic equals 1.1.0-rc.1's, and
   only the engine version and the digest of the per-instant dump differ.
@@ -426,7 +426,7 @@ so does OQ10's Q5.
   panel's Chart Inspector runs 1.1.0-rc.1, so it does not reproduce records
   that 1.1.0-rc.2 writes (the site's, the compute API's, adapter rc.26's and
   the developer plugin's own tools'); the plugin's README and its 0.3.22
-  release note say so.
+  release note say so (0.3.23's, after the merge of #882).
 - **D-13** (4 November, the merge of main `f45734dc`). #881 put the hosted
   server on 0.6.1 (the readings panel, the under-18 rule, the narrower
   links) and made a Developer 0.3.21 from it, while this branch had made its
@@ -438,6 +438,13 @@ so does OQ10's Q5.
   to `readings-v3.html`'s recorded bytes, so the adoption leaves both as #881
   published them. `npm run ai:check` passed, `npm run check` reported 0
   errors, and the AI, claims, fingerprint and sitemap tests passed 460 of 460.
+  #882 then packaged Zodiacs 0.6.2's listing text with a Developer 0.3.22 of
+  its own, so the merge of main `f95e57e3` makes this branch's plugin 0.3.23
+  the same way: main's 0.3.22 and Sky 0.6.2 keep their bytes, the flag-off
+  fixture differs from main's only in the engine's version, and Chart
+  Studio's source fingerprint did not move; `npm run ai:check`, `npm run
+  check`, the ledger checks and 445 AI, claims, fingerprint and 3D view
+  tests passed.
 - **D-14** (4 November, after the gate's first run). That run, on `e7068c9d`,
   failed two steps of section 6 apart from the Phase 1 capture test it
   accepts. The type check found two errors in D-11's test helper; `52ed7473`
@@ -456,8 +463,9 @@ so does OQ10's Q5.
   passes; the plan takes them again from this pull request's Browser
   Evidence run (C8). Its notes, acted on: the Chart Studio pin's
   `SOURCE_SHA256` and the Chart Inspector note (D-12); the plugin's README
-  still named 0.3.21, so it names 0.3.22, and the 0.3.22 archive, never
-  pushed, was packed again; and `src/islands/chart3d/EclipticView.tsx`
+  still named 0.3.21, so it named 0.3.22 (0.3.23 since #882), and the
+  0.3.22 archive, never pushed, was packed again before main's 0.3.22
+  replaced it; and `src/islands/chart3d/EclipticView.tsx`
   called the engine's declination function, which also finds every pair's
   aspects, on each frame of a turning sphere, so the declinations are now
   computed once per chart. Left as they are: the engine chunk's 19 bytes of
