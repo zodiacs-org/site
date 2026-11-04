@@ -1,0 +1,63 @@
+
+> zodiacs-org@1.0.0 ai:check
+> node scripts/build-ai-integrations.mjs --check && node scripts/check-ai-integrations.mjs && python3 scripts/package-ai-integrations.py --check
+
+Verified plugin avatar (512px, shared tilted ring)
+Verified the sky calendar (86515 bytes, self-contained)
+▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+
+    src/lib/engine/full.ts:38:5:
+      38 │   if(import.meta.env.ZODIACS_BIRTH_WINDOW_WORKER){
+         ╵      ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+
+    src/lib/engine/full.ts:38:5:
+      38 │   if(import.meta.env.ZODIACS_BIRTH_WINDOW_WORKER){
+         ╵      ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+Kept Chart Studio's published panel (1001895 bytes, ui://zodiacs/chart-studio-v6.html); the source builds (1005353 bytes) but is not published
+▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+
+    src/lib/i18n/ru-runtime/index.ts:7:9:
+      7 │   return import.meta.env.SSR ? serverRussianRuntime() : clientRussi...
+        ╵          ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+Verified the horoscope panel (323970 bytes, owned public art)
+▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+
+    src/lib/i18n/ru-runtime/index.ts:7:9:
+      7 │   return import.meta.env.SSR ? serverRussianRuntime() : clientRussi...
+        ╵          ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+Verified the occasions panel (338377 bytes, owned public art)
+▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+
+    src/lib/i18n/ru-runtime/index.ts:7:9:
+      7 │   return import.meta.env.SSR ? serverRussianRuntime() : clientRussi...
+        ╵          ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+Verified the readings panel (325047 bytes, owned public art)
+Verified panel fingerprints (5 current URIs)
+Verified the account consent page (232985 bytes)
+Verified api/_ai/runtime.mjs (3893804 bytes)
+Verified plugins/zodiacs-developer/mcp/server.mjs (5890232 bytes)
+Verified integrations/generated/sky-watch.mjs (3897524 bytes)
+Verified plugins/zodiacs-developer/plugin.json
+Verified plugins/zodiacs-developer/mcp.json
+Verified plugins/zodiacs-sky/.codex-plugin/plugin.json
+Verified plugins/zodiacs-sky/.mcp.json
+Verified plugins/zodiacs-sky/.claude-plugin/plugin.json
+AI package contracts: manifests, submission cases, versions, routes, canonical links and engine notices verified.
+Verified zodiacs-sky-0.6.2.zip (97995 bytes)
+Verified zodiacs-developer-0.3.23.zip (6009419 bytes)

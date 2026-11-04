@@ -1,0 +1,45 @@
+Private birth-data search, 2026-11-04 (counts only)
+
+Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
+(SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), run
+from this checkout with Node 22.22.2, with the programme's private-scan
+classifiers for merges, bundles and archives (merge-aware-added.mjs,
+tree-delta-categories.mjs, classify-bundle-context.mjs, classify-archives.mjs,
+classify-archive-context.mjs).
+Patterns: the owner's two private pattern sets, kept outside every repository
+with the raw outputs. No pattern, matched line, label or path is recorded here.
+The owner's excluded engine file does not exist in this repository; the
+tool's exclusion is stated in its output all the same.
+
+Each pattern set gives the same counts.
+
+First run, before the first push, over origin/main..b5c5b46d with main at
+f95e57e3: the branch's 19 commits, three of them merges of main (e7068c9d of
+a2eed287, 92d27904 of f45734dc, 36f126b1 of f95e57e3). It reads every added
+line, every added or changed binary with gzip contents read, added paths and
+messages, and the head's tree.
+
+- The commits add 167 birth-data lines. The head's tree holds 566, against
+  548 in main's tree as merged (f95e57e3). The 18 more are all in the two new
+  archives' copies of their bundles, developer plugin 0.3.23's ZIP and MCP
+  adapter 0.1.0-rc.26's archive (5 places in each); no place in main's tree
+  gains or loses a line.
+- Read against each parent: the adoption commit 620403bc adds 9 data-pattern
+  and 19 name-pattern lines and D-12's rebuild e22eeb73 adds 4 and 8, all in
+  regenerated bundles and archives. Each merge of main, read against main,
+  adds the branch's lines again (9 and 19 at e7068c9d, 5 and 11 at 92d27904
+  and at 36f126b1), and read against the branch only main's own (0 and 3,
+  0 and 8). Every other commit adds none.
+- Bundles: the 13 matching lines the range leaves in regenerated bundles hold
+  23 matches, each with the same 200 characters on either side in main's
+  file; the bundles hold 21 matches on main and 21 on the head.
+- Archives: 83 matching lines in the 11 archive places the range adds (7 ZIP,
+  4 tgz). 81 are their base source's lines apart from version strings and
+  digests. The other 2 hold 4 matches, each with the same 200 characters on
+  either side in the base source: lines that changed elsewhere. The archive
+  members hold 24 matches, as their base sources do.
+
+Every matching line the branch adds is birth data main already carries,
+re-emitted by regenerated bundles and their archive copies. The tree's lines
+predate this adoption and stay as the earlier records classified them; no
+blanket privacy clearance of the tree is claimed.

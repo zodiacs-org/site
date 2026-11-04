@@ -1,0 +1,86 @@
+
+> zodiacs-org@1.0.0 ai:test
+> vitest run src/ai-tools && node tests/ai-integrations-drive.mjs && npm test --prefix plugins/zodiacs-developer
+
+
+ RUN  v3.2.7 <checkout>
+
+ ✓ src/ai-tools/features/horoscope-period.test.ts (17 tests) 1162ms
+ ✓ src/ai-tools/studio/week.test.ts (14 tests) 1609ms
+   ✓ Your week: the next seven days for a chart > matches a ten-minute sweep of the ephemeris: every contact within orb, and only then  1050ms
+ ✓ src/ai-tools/output-dashes.test.ts (2 tests) 937ms
+   ✓ MCP tool output has no en or em dashes > keeps dashes out of forecast, chart, people and place answers  936ms
+ ✓ src/ai-tools/schema-types.test.ts (3 tests) 1291ms
+   ✓ what the tools return > validates against the schemas they advertise, as a client checks it  1261ms
+ ✓ src/ai-tools/http.test.ts (21 tests) 1247ms
+   ✓ stateless MCP HTTP boundary > works with the official SDK client: list, call, widget read and close  537ms
+ ✓ src/ai-tools/bundle-languages.test.ts (2 tests) 670ms
+   ✓ answers the sky calendar in every language and keeps a Cyrillic name from the HTTP bundle  345ms
+   ✓ answers the sky calendar in every language and keeps a Cyrillic name from the stdio bundle  324ms
+ ✓ src/ai-tools/usage.test.ts (21 tests) 2034ms
+   ✓ counting hosted tool calls > counts the occasion tools only while their switch offers them  367ms
+   ✓ counting hosted tool calls > replies before a slow database answers, then gives up within the timeout without an error  1505ms
+ ✓ src/ai-tools/features/chinese-zodiac.test.ts (10 tests) 660ms
+   ✓ the Lunar New Year table > is what the generator makes, so it can be rebuilt and checked  629ms
+ ✓ src/ai-tools/lifetime.test.ts (3 tests) 1275ms
+   ✓ clears actual HTTP bundle state after success and failure  418ms
+   ✓ clears actual stdio bundle state after success and failure  385ms
+   ✓ clears actual Sky Watch bundle state after success and failure  472ms
+ ✓ src/ai-tools/occasions.test.ts (5 tests) 951ms
+   ✓ occasion tools behind ZODIACS_OCCASIONS_ENABLED > lists life milestones, the next one and the sky numbers  715ms
+ ✓ src/ai-tools/accounts/flag-off.test.ts (1 test) 794ms
+   ✓ the account switch off > leaves initialize, tools/list, resources/list and every account route byte-for-byte as the 0.5.0 server answers them  792ms
+ ✓ src/ai-tools/accounts/accounts.test.ts (19 tests) 485ms
+ ✓ src/ai-tools/studio/model.test.ts (18 tests) 648ms
+   ✓ the Sun without a birth time > names two signs on a date when the Sun changes sign in some time zone, and one otherwise  575ms
+ ✓ src/ai-tools/features/explain.test.ts (19 tests) 145ms
+ ✓ src/ai-tools/accounts/http.test.ts (8 tests) 222ms
+ ✓ src/ai-tools/ref.test.ts (5 tests) 655ms
+   ✓ ?ref= on zodiacs.org links from the tools > tags the links and the card address of a result, and nothing without a ref  588ms
+ ✓ src/ai-tools/features/birthday.test.ts (13 tests) 236ms
+ ✓ src/ai-tools/release-050.test.ts (11 tests) 239ms
+ ✓ src/ai-tools/features/personal-week.test.ts (4 tests) 234ms
+ ✓ src/ai-tools/studio/local-time.test.ts (15 tests) 228ms
+ ✓ src/ai-tools/tools.test.ts (26 tests) 287ms
+ ✓ src/ai-tools/studio/inspect.test.ts (7 tests) 106ms
+ ✓ src/ai-tools/studio/heading.test.ts (6 tests) 81ms
+ ✓ src/ai-tools/features/natal-chart.test.ts (14 tests) 144ms
+ ✓ src/ai-tools/studio/explore.test.ts (16 tests) 131ms
+ ✓ src/ai-tools/features/compatibility.test.ts (14 tests) 195ms
+ ✓ src/ai-tools/watch/watch.test.ts (37 tests) 152ms
+ ✓ src/ai-tools/watch/oauth.test.ts (3 tests) 19ms
+ ✓ src/ai-tools/features/birthplace.test.ts (6 tests) 151ms
+ ✓ src/ai-tools/watch/callback.test.ts (3 tests) 8ms
+ ✓ src/ai-tools/studio/bridge.test.ts (4 tests) 7ms
+ ✓ src/ai-tools/quota.test.ts (4 tests) 4ms
+ ✓ src/ai-tools/features/people.test.ts (11 tests) 107ms
+ ✓ src/ai-tools/version.test.ts (4 tests) 88ms
+ ✓ src/ai-tools/share-links.test.ts (18 tests) 6345ms
+   ✓ a life milestone share link > accepts every milestone the tool gives, back to a birth date in 1800  5897ms
+ ✓ src/ai-tools/release-060.test.ts (11 tests) 6790ms
+   ✓ the five 0.6.0 tools > answer through the hosted server with structured content and the same JSON as text  800ms
+   ✓ every link the 0.6.0 tools return > opens a page the site builds  5489ms
+ ✓ src/ai-tools/features/personal-transits.test.ts (13 tests) 12189ms
+   ✓ get_personal_transits > lists the next 30 days of exact contacts by default, soonest first, with the site’s transit sentences  853ms
+   ✓ get_personal_transits > leaves out the Moon and the angles without a birth time, and says so  567ms
+   ✓ get_personal_transits > keeps long windows to the slow planets, up to 366 days  1416ms
+   ✓ get_personal_transits > gives the year ahead: the solar return, Jupiter and Saturn, sign changes in natal houses and eclipses  556ms
+   ✓ get_personal_transits > never words a contact as a health or money prediction  3423ms
+   ✓ get_personal_transits > refuses a window that starts before the birth date, and a year ahead before the birth  331ms
+   ✓ get_personal_transits > gives a fuller year ahead without a birth time: the slow planets on the personal planets too  617ms
+   ✓ get_personal_transits > labels each contact with a reading confidence from the birth details  632ms
+   ✓ get_personal_transits > says which clock the dates are on, and assumes UTC only when no zone was given or shared  1110ms
+   ✓ get_personal_transits > leaves romantic wording out when the birth date is under 18, and never reads the sixth house as health  2081ms
+   ✓ get_personal_transits > gives the natal Sun sign for the panel, and none when an untimed birth day changed it  566ms
+
+ Test Files  37 passed (37)
+      Tests  408 passed (408)
+   Start at  21:51:25
+   Duration  13.12s (transform 2.23s, setup 0ms, collect 16.45s, tests 42.53s, environment 4ms, prepare 2.08s)
+
+Developer bundle: manifest, three skills, eight MCP tools, synthetic record comparison and privacy recovery passed.
+
+> zodiacs-developer-plugin@0.3.23 test
+> node examples/verify.mjs
+
+Published-engine recipes: version, offset equivalence, unknown time, Moon phase and calendar passed.

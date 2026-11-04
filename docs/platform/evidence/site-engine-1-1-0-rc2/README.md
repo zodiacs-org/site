@@ -39,8 +39,9 @@ is filled by the commit that makes its runs.
 | [mcp-pin.txt](mcp-pin.txt), [regenerated-outputs-check.txt](regenerated-outputs-check.txt) | the MCP adapter's pin to the adoption commit, and the regenerated outputs checked against the base | the site checks |
 | `tools/verify-production.mjs` | every production check of [PRODUCTION-CHECKS.md](PRODUCTION-CHECKS.md), committed before any production run | the site checks |
 
-Still to come, each by the commit that makes it: the local gate and the
-private search, the Phase 1 captures, and production.
+Still to come, each by the commit that makes it: the Phase 1 captures and
+production. The local gate's logs are in [validation/](validation/), and the
+private search's counts in [history-check.txt](history-check.txt).
 
 ## The adoption
 
@@ -332,6 +333,44 @@ recorded `accepted`.
   the mean obliquity of date whenever it had an instant), P2.E.sect,
   P2.E.composite, P2.E.dignities, P2.B.vargas and P1.M3c. No status, release
   or `asOf` changes before production; `LEDGER.md` is regenerated.
+
+## The local gate
+
+Section 6's full list, `prepush.sh`: one step at a time under `nice -n 10`,
+a free-space check before each, Node 22.22.2 on macOS arm64. Its logs are in
+[validation/](validation/), normalised as
+[log-normalization.json](log-normalization.json) records.
+
+- **First attempt**, on `e7068c9d` (the merge of `a2eed287`): 39 of 42 steps
+  passed. The full suite failed only the Phase 1 capture test, accepted until
+  C8; the type check found two errors in D-11's test helper (`52ed7473`
+  fixed them); the developer first-use drive failed only its Firefox launch
+  (D-14).
+- **Second attempt**, on `02d550fc` (D-12 and the merge of `f45734dc`):
+  stopped by hand during its 37th step, webmcp, to act on the independent
+  review (D-15). Every step before it passed but the two accepted failures.
+- **Third attempt**, on `b5c5b46d` (D-15 and the merge of `f95e57e3`): 40 of
+  42 steps exit 0. The full suite fails only the Phase 1 capture test (8,174
+  passed, 13 skipped, 1 failed, in 637 files), and the first-use drive only
+  its Firefox launch, its other 44 checks passing. Both builds pass their
+  budgets (`/birth-chart/` 66.0 KB by default and 69.1 KB with production's
+  flags, of 71 KB; the engine chunk within its 33,380.4 bytes), the
+  independent references differ from the committed ones only by D-9's
+  recorded arm64 last bits, the wing drift is empty, the three MCP drives'
+  rewritten records were restored from git, and the tree was clean at the
+  end.
+
+## The private search
+
+[history-check.txt](history-check.txt), counts only, both of the owner's
+pattern sets, over the branch's 19 commits and its tree, before the first
+push. Every matching line the branch adds is birth data main already
+carries, re-emitted by regenerated bundles and their archive copies: the
+bundles' 23 matches each sit in the same 200 characters on either side as on
+main, and of the archives' 83 matching lines, 81 are their base source's
+lines apart from versions and digests and the other 2 hold 4 matches with
+the same 200 characters on either side. The tree's 18 lines more than main's
+are the two new archives' copies of their bundles.
 
 ## Decisions taken without asking, under the owner's delegation
 

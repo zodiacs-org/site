@@ -1,0 +1,47 @@
+PASS  chromium/desktop: hub leads with the jobs, the two ways to calculate first, then compare and the AI integrations, then the conformance suite, the conventions registry, the benchmark and the time atlas
+PASS  chromium/desktop: no horizontal overflow on the hub
+PASS  chromium/desktop: hub renders without page errors
+PASS  chromium/desktop: prerequisites come before the command block
+PASS  chromium/desktop: the privacy distinction comes before both
+PASS  chromium/desktop: the install block is the whole subshell, rendered
+PASS  chromium/desktop: it compares the published digest rather than printing one
+PASS  chromium/desktop: nothing is created or unpacked before that comparison
+PASS  chromium/desktop: the download is pinned to the commit that holds the archive
+PASS  chromium/desktop: a synthetic request and its expected result are shown
+PASS  chromium/desktop: the accepted record format is named
+PASS  chromium/desktop: the record is described as a field of the reply
+PASS  chromium/desktop: the input range is not offered as a validated accuracy range
+PASS  chromium/desktop: the first preset demonstrates a cause
+PASS  chromium/desktop: the first preset runs and names a cause, not an empty answer
+PASS  chromium/desktop: and it does not claim the cusps agree while listing moved cusps
+PASS  chromium/desktop: the page says where records come from
+PASS  chromium/desktop: it does not promise another program's export
+PASS  chromium/desktop: the widgets page carries the privacy note in full
+PASS  chromium/desktop: it names the city-list request as well as the asset request
+PASS  chromium/desktop: keyboard focus enters the page visibly
+PASS  chromium/desktop: nothing left the origin
+PASS  chromium/mobile: hub leads with the jobs, the two ways to calculate first, then compare and the AI integrations, then the conformance suite, the conventions registry, the benchmark and the time atlas
+PASS  chromium/mobile: no horizontal overflow on the hub
+PASS  chromium/mobile: hub renders without page errors
+PASS  chromium/mobile: prerequisites come before the command block
+PASS  chromium/mobile: the privacy distinction comes before both
+PASS  chromium/mobile: the install block is the whole subshell, rendered
+PASS  chromium/mobile: it compares the published digest rather than printing one
+PASS  chromium/mobile: nothing is created or unpacked before that comparison
+PASS  chromium/mobile: the download is pinned to the commit that holds the archive
+PASS  chromium/mobile: a synthetic request and its expected result are shown
+PASS  chromium/mobile: the accepted record format is named
+PASS  chromium/mobile: the record is described as a field of the reply
+PASS  chromium/mobile: the input range is not offered as a validated accuracy range
+PASS  chromium/mobile: the first preset demonstrates a cause
+PASS  chromium/mobile: the first preset runs and names a cause, not an empty answer
+PASS  chromium/mobile: and it does not claim the cusps agree while listing moved cusps
+PASS  chromium/mobile: the page says where records come from
+PASS  chromium/mobile: it does not promise another program's export
+PASS  chromium/mobile: the widgets page carries the privacy note in full
+PASS  chromium/mobile: it names the city-list request as well as the asset request
+PASS  chromium/mobile: keyboard focus enters the page visibly
+PASS  chromium/mobile: nothing left the origin
+FAIL  firefox: launches · "browserType.launch: Timeout 180000ms exceeded.\nCall log:\n  - <launching> <home>/Library/Caches/ms-playwright/firefox-1532/firefox/Nightly.app/Contents/MacOS/firefox -no-remote -headless -profile <tmp>/playwright_firefoxdev_profile-hdGK7G -juggler-pipe -silent\n  - <launched> pid=89133\n  - [pid=89133][err] *** You are running in headless mode.\n  - [pid=89133][err] sandbox_extension_issue_file_to_process failed for <home>/Library/Caches/ms-playwright/firefox-1532/firefox/Nightly.app/Contents/MacOS/plugin-container.app: 1 (Operation not permitted)\n  - [pid=89133][out] Crash Annotation GraphicsCriticalError: |[0][GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt (t=2.26274) [GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt\n"
+
+1 FAILURES
