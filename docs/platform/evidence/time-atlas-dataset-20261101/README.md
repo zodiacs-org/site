@@ -368,6 +368,147 @@ the compute handler's and the cities' `--check` and
 developer-guide checks and the two hub drives were not run again: the fixes
 change neither the guides nor the hub.
 
+## Production
+
+#862 was merged on the owner's approval on 4 November 2026 at 10:53:59 ICT
+(03:53:59Z) as `2f2a56699c10a8d1de1b2b5a731d0122a0a11ff2`, a merge commit
+whose parents are main `e632fe4c` (the daily edition of 4 November) and the
+head `25e5216a`. Times in this section are UTC.
+
+### The owner's reply
+
+The request for the merge carried the preregistration's question. The
+owner's reply, given in chat on 4 November 2026, in full:
+
+> i have no idea what those things are that are still with me and you can go ahead and merge and continue. Resolve it yourself.
+
+Before the merge, #862's body gained this first paragraph:
+
+> **Resolved on 2026-11-04.** The owner approved the merge and asked that the two questions below be settled without them. As this body says, approving the merge with no tag, release or DOI named accepts the reading of "released" (release state `deployed`). The other question, accepting the first-use drive's unrun Firefox half as a departure, would be the programme passing its own unit, which zodiacs.org's `DECISIONS-2026-10-05.md` §4 keeps from it under a delegation. So the departure stays recorded and not accepted, and the record PR after this merge records B3.c as `validated` with release state `deployed`, not `accepted`. A later owner ruling on the Firefox half, or a run of it where Playwright's Firefox starts, can move it to `accepted`.
+
+The preregistration accepts its reading of "released" with an approval
+"given in reply, with no other answer", and records "any other answer" as
+given. This reply approves the merge and also hands the open questions to
+the programme to settle.
+[DECISIONS-2026-10-05.md](../../programme/DECISIONS-2026-10-05.md) §4 keeps
+the programme from accepting its own unit's reading or departure under a
+delegation, so this record goes further than that paragraph on the first
+question: neither the reading of "released" nor the first-use drive's
+unrun Firefox half is accepted. B3.c is recorded `validated`, release
+`deployed`, with `blockedBy` naming the owner's acceptance of both, or, for
+the Firefox half, a run of it where Playwright's Firefox starts. So a run of
+that half alone would not move B3.c to `accepted`, as the paragraph said it
+could. The production evidence below stands either way.
+
+### The merge and its deployment
+
+- Vercel built `dpl_5L1BPzRrw9QY9DmaJUnf7KzzoiVz` from the merge for
+  production from 03:54:04Z. It was READY at 04:02:16Z, the zodiacs.org
+  alias moved to it then, and the merge's Vercel status turned to success
+  at 04:02:17Z.
+- The alias was read three times through the Vercel connector (team
+  `team_Ue0ac8HT1b3TAzaDDZBTFhQt`, project
+  `prj_nRTO3q3aNYLfaM3dotAowOc028fO`), each time with the deployment it
+  named. Each record keeps only `deploymentId`, `aliasUpdatedAt`,
+  `readyState`, `target` and `githubCommitSha`, and `recordedAt` is when it
+  was written down:
+  - [alias-before.json](production/alias-before.json), 03:57:46Z:
+    `dpl_7oWVdoEKjmaUWqGw9AVJPYH45dFT`, built from `e632fe4c`, while the
+    merge's deployment was building;
+  - [alias-at-merge.json](production/alias-at-merge.json), 04:04:38Z: the
+    merge's deployment, before the checks;
+  - [alias-after.json](production/alias-after.json), 04:05:33Z: the same
+    deployment, with the same `updatedAt`, after them. The alias did not
+    move during the checks.
+- The site serves no commit of its own: the service worker's cache version
+  is a digest of the files it caches. The build identity is the commit
+  Vercel records for the deployment the alias names, which check 1 reads,
+  and it is `2f2a5669` itself.
+
+### The production check
+
+[tools/production-check.mjs](tools/production-check.mjs) ran from the
+programme's clone of the site on a Mac16,10 (Apple M4, arm64) under macOS
+27.0.1 with Node 22.22.2, with the merge as `<commit>` in every run. The
+tool and `scripts/check-time-atlas.mjs` it imports are the merge's (blobs
+`e11df9ae` and `4c375b09`, the same at the head `25e5216a`, which was
+checked out for the first run):
+
+```sh
+M=2f2a56699c10a8d1de1b2b5a731d0122a0a11ff2
+node tools/production-check.mjs production/alias-before.json $M production/control-before.json
+node tools/production-check.mjs production/alias-at-merge.json $M production/production-at-merge.json
+TIME_ATLAS_CHECK_CONTROL=one-byte node tools/production-check.mjs production/alias-at-merge.json $M production/control-one-byte.json
+TIME_ATLAS_CHECK_CONTROL=engine-c4e70330 node tools/production-check.mjs production/alias-at-merge.json $M production/control-engine-c4e70330.json
+TIME_ATLAS_CHECK_CONTROL=row-removed node tools/production-check.mjs production/alias-at-merge.json $M production/control-row-removed.json
+```
+
+| report | against | read at | passed | failing | preregistered |
+| --- | --- | --- | ---: | --- | --- |
+| [control-before.json](production/control-before.json) | zodiacs.org at `dpl_7oWVdoEKjmaUWqGw9AVJPYH45dFT` (`e632fe4c`), after the merge and before its deployment | 03:58:12Z | 0 of 24 | all | 0 of 24 |
+| [production-at-merge.json](production/production-at-merge.json) | zodiacs.org at `dpl_5L1BPzRrw9QY9DmaJUnf7KzzoiVz`, built from the merge | 04:04:55Z | 24 of 24 | none | 24 of 24 |
+| [control-one-byte.json](production/control-one-byte.json) | the same, expecting README.md with its last byte changed | 04:05:03Z | 23 of 24 | 18, README.md | 23 of 24, README.md failing |
+| [control-engine-c4e70330.json](production/control-engine-c4e70330.json) | the same, comparing with raw GitHub at engine `c4e70330` | 04:05:12Z | 23 of 24 | 18, README.md | 23 of 24, README.md failing |
+| [control-row-removed.json](production/control-row-removed.json) | the same, with the first difference row removed from the served page before check 3 | 04:05:14Z | 23 of 24 | 3 | 23 of 24, check 3 failing |
+
+- The window between the merge and its deployment was caught, so the
+  control before the deployment ran after the merge, with the merge as
+  `<commit>`: the same command that then passed. The preregistration's
+  other form of that control, before the merge with the head as
+  `<commit>`, was not needed.
+- At the merge's deployment, `/developers/time-atlas/` answered 200 as
+  `text/html; charset=utf-8`, 411,624 bytes, SHA-256
+  `ec72b4d0e40cbe6b630a7872cf5d55f2a4a6301301bf2056fc4f5cc06325f818`, and
+  the page check as the merge holds it found no problem in its viewer,
+  licence or corrections parts. The correction form's definition at engine
+  main is named "Atlas correction".
+- Each of the 17 files answered 200 with its media type and
+  `charset=utf-8`, and its body had the index's SHA-256 and the bytes that
+  the merge holds and that raw.githubusercontent.com serves for engine
+  `7307665b`. `files.json` answered 200 as `application/json;
+  charset=utf-8` with the merge's bytes.
+- `/developers/` links the page, `sitemap.xml` lists it with the lastmod
+  2026-11-01, and `llms.txt` and `llms-full.txt` give its address.
+- With the first difference row removed, the page check reported 112
+  problems, all in its viewer part, as check-dist did for the same fault on
+  the local builds.
+- Production sent `Access-Control-Allow-Origin: *` with each of the 17
+  files, where the local preview server sent none and the preregistration's
+  default was no CORS header for the folder. `vercel.json`, which this unit
+  did not change, has no rule for these paths (its
+  `Access-Control-Allow-Origin` rules name `/api/v1/` and two registry
+  files), and the same header came with the 404 answers in the control
+  before the deployment, so it does not come from a rule of this
+  repository.
+
+### Main's Site Check on the merge
+
+[Run 41769911262](https://github.com/zodiacs-org/site/actions/runs/41769911262),
+the Site Check of the merge's push to main, failed on its first attempt: 20
+of its 21 jobs passed, and Build & Check failed at its step "Verify AI
+integration candidates" on one test outside this unit,
+`src/ai-tools/features/horoscope-period.test.ts`, "gives the week's
+reading, and for love that week's love readings and the sky that bears on
+love". The test fixes its clock at 2 November 2026 and expects that week's
+love readings to include one dated 2 November. It reads the committed
+horoscope window, which the daily edition of 4 November (`e632fe4c`, the
+merge's first parent) rewrote, and the readings it finds now start on 3
+November. #862 changed none of the files the test reads. On this machine
+the same test fails in the same way at `e632fe4c`, before the merge, and at
+the merge itself. The result comes from committed data, not from timing,
+so it is no flake, and a rerun of the same commit would fail again; none
+was made. The production record's fourth condition, main's Site Check
+passing on the merge, is therefore not met, for a reason outside this
+unit. B3.c is recorded `validated` either way (above).
+
+### C1 after the merge
+
+`git rev-list --reverse 2f2a5669^1..2f2a5669^2` lists 20 commits. The
+first, `572ea3d3`, adds only PREREGISTRATION.md, with author and commit
+dates of 2026-11-01T07:30:14+07:00; the earliest date of the other 19,
+author or commit, is 07:39:06+07:00 the same day. The merge kept the record
+first in main's history.
+
 ## Overlaps
 
 - Draft site#852 rewrites copy on the hub page this unit adds a card to;
