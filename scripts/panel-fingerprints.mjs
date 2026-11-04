@@ -9,6 +9,7 @@ const PANELS = [
   ['chart-studio', 'src/ai-tools/contracts.ts', 'STUDIO_URI'],
   ['horoscopes', 'src/ai-tools/horoscope/reading.ts', 'HOROSCOPE_URI'],
   ['occasions', 'src/ai-tools/contracts.ts', 'OCCASIONS_URI'],
+  ['readings', 'src/ai-tools/contracts.ts', 'READINGS_URI'],
 ];
 
 async function currentUri(path, symbol) {

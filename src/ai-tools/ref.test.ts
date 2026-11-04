@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { refFrom } from './server';
+import { hostZoneFrom, refFrom } from './server';
 import { executeAiTool, refUrl } from './tools';
 
 const on = { now: () => new Date('2026-10-11T12:00:00Z'), occasions: true };
@@ -16,6 +16,18 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     expect(refFrom({ 'openai/userLocation': { timezone: 'Europe/Rome' } })).toBe('chatgpt');
     expect(refFrom({ progressToken: 1 })).toBe('assistant');
     expect(refFrom(undefined)).toBe('assistant');
+  });
+
+  it('reads a time zone only from ChatGPT\'s user location, and none otherwise', () => {
+    expect(hostZoneFrom({ 'openai/userLocation': { timezone: 'Asia/Bangkok' } })).toBe('Asia/Bangkok');
+    expect(hostZoneFrom({ 'openai/userLocation': { timeZone: 'Europe/Rome' } })).toBe('Europe/Rome');
+    expect(hostZoneFrom({ 'openai/userLocation': { timezone: '' } })).toBeUndefined();
+    expect(hostZoneFrom({ 'openai/userLocation': { timezone: 'x'.repeat(65) } })).toBeUndefined();
+    // Claude's tool calls carry no documented location; an absent hint leaves the tools on UTC, which they then say.
+    expect(hostZoneFrom({ 'anthropic/userLocation': { timezone: 'Europe/Paris' } })).toBeUndefined();
+    expect(hostZoneFrom({ 'claude/userLocation': { timeZone: 'America/New_York' } })).toBeUndefined();
+    expect(hostZoneFrom({})).toBeUndefined();
+    expect(hostZoneFrom(undefined)).toBeUndefined();
   });
 
   it('tags the links and the card address of a result, and nothing without a ref', async () => {

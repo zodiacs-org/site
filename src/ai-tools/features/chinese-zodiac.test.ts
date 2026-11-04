@@ -82,3 +82,15 @@ describe('get_chinese_zodiac', () => {
     expect(await executeAiTool('get_chinese_zodiac', { year: 1990 }, { now: on.now, occasions: true })).toMatchObject({ ok: false, error: { code: 'unavailable' } });
   });
 });
+
+describe('the time zone behind the current year', () => {
+  it('says it assumed UTC only when no zone was given or shared', async () => {
+    expect((await call({ birthDate: '1990-01-20' })).zoneNote).toBe('The current year assumes UTC because no time zone was given.');
+    expect((await call({ birthDate: '1990-01-20', zone: 'Asia/Shanghai' })).zoneNote).toBeNull();
+    const shared = await executeAiTool('get_chinese_zodiac', { birthDate: '1990-01-20' }, on, { hostZone: 'Asia/Bangkok' });
+    if (!shared.ok || shared.tool !== 'get_chinese_zodiac') throw new Error(JSON.stringify(shared));
+    expect(shared.data.zone).toBe('Asia/Bangkok');
+    expect(shared.data.zoneNote).toBeNull();
+  });
+});
+

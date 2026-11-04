@@ -30,6 +30,7 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
 import { HOROSCOPE_DISCLOSURE, HOROSCOPE_FOCUSES, HOROSCOPE_SIGNS, resolveHoroscope, type HoroscopeFocus } from '../horoscope/reading';
 import { readingConfidence, readingConfidenceLabel } from '../reading-confidence';
 import type { HoroscopeWindow } from '../horoscope/window';
+import { softenHealth } from './reading-guards';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -69,6 +70,8 @@ export const horoscopePeriodData = z.object({
   to: z.string(),
   label: z.string(),
   zone: z.string(),
+  /** request: the call named a zone. assistant: the host shared one. default: UTC was assumed, and message says so. */
+  zoneSource: z.enum(['request', 'assistant', 'default']),
   /** The published reading for the period; null when none is published, and message says why. */
   reading: z.object({ title: z.string(), paragraphs: z.array(paragraph), published: z.string().nullable() }).nullable(),
   /** For a week with love or career: that focus's daily readings published for days in the week. */
@@ -126,6 +129,7 @@ export async function getHoroscopePeriod(
   args: HoroscopePeriodInput,
   today: string,
   zone: string,
+  zoneSource: HoroscopePeriodData['zoneSource'],
   clock: Pick<LocalTimeModule, 'prepareLocalTime' | 'resolveLocalToUtc'>,
   sources: HoroscopePeriodSources,
   origin: string,
@@ -225,7 +229,8 @@ export async function getHoroscopePeriod(
   let sky = [...raw, ...eclipses].sort((a, b) => a.at.localeCompare(b.at)).map((event) => {
     const house = solarHouse(event.sign, sign);
     const day = dayOn(event.at, zone);
-    return { date: day, utc: event.at, kind: event.kind, planet: event.planet, sign: event.sign, house, line: skyLine(event.kind, event.planet, event.type, event.sign, house, day) };
+    // The sixth house reads as daily work and upkeep, never as a health forecast.
+    return { date: day, utc: event.at, kind: event.kind, planet: event.planet, sign: event.sign, house, line: softenHealth(skyLine(event.kind, event.planet, event.type, event.sign, house, day)) };
   });
   if (focus !== 'general') {
     const rule = FOCUS_RULE[focus];
@@ -233,10 +238,13 @@ export async function getHoroscopePeriod(
     notes.push(`For ${focus}, the sky keeps ${rule.words}.`);
   }
   if (args.period !== 'week' && focus !== 'general' && reading) notes.push(`The ${args.period === 'month' ? 'monthly' : 'yearly'} reading itself is written for the whole sign, not only ${focus}.`);
+  if (focus === 'love') notes.push('If the person is under 18, do not frame this as romance or attraction.');
+  // Said only when no zone was given or shared: the dates are then UTC's.
+  if (zoneSource === 'default') notes.push('Dates assume UTC because no time zone was given.');
 
   const data: HoroscopePeriodData = {
     status: reading || focusReadings.length ? 'available' : 'sky-only',
-    sign, signName, period: args.period, focus, from, to, label, zone,
+    sign, signName, period: args.period, focus, from, to, label, zone, zoneSource,
     reading, focusReadings, sky,
     message: notes.length ? notes.join(' ') : null,
     available: { months: servedMonths, years },

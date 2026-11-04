@@ -1,8 +1,9 @@
 /**
  * The cards' links work end to end against this build: "Open printable
- * card" and "Open both charts" open the site pages from dist/ with the same
- * date, time, place and people the card shows, and "Share the reading"
- * opens the share page, whose preview image renders. A local server stands
+ * card" opens the site page from dist/ on the same day, at the same time and
+ * on the place's clock the card shows, never with the names or the place
+ * name, which links leave out, and "Share the reading" opens the share page,
+ * whose preview image renders. A comparison has no card link. A local server stands
  * in for zodiacs.org: dist/ for pages, the share handlers for /share/ and
  * /api/og/. Run after npm run build; manual, not part of CI.
  *
@@ -77,14 +78,14 @@ try {
   await printable.goto(local(wedding.data.cardUrl));
   await printable.locator('.occasion-card').waitFor({ timeout: 20_000 });
   const printed = await printable.locator('.occasion-card').innerText();
-  assert.match(printed, /Ana & Luis/u);
   assert.match(printed, /The sky on your wedding day/u);
   assert.match(printed, /12 June 2027/u);
   assert.match(printed, /17:00/u);
-  assert.match(printed, /Florence, Italy/u);
   assert.match(printed, /20:13/u, 'Golden hour on the place\'s clock, as on the card');
+  // The link leaves the names and the place name out, so the page cannot show them.
+  assert.doesNotMatch(printed, /Ana|Luis|Florence/u);
   if (out) await printable.screenshot({ path: resolve(out, 'printable-wedding-390.png'), fullPage: true });
-  checked.push('Open printable card: /occasions/ shows Ana & Luis, 12 June 2027, 17:00, Florence, Italy and golden hour at 20:13');
+  checked.push('Open printable card: /occasions/ shows 12 June 2027, 17:00 and golden hour at 20:13, with no names or place name');
 
   // Share the reading: the share page, its title and its preview image.
   const share = await context.newPage();
@@ -96,33 +97,29 @@ try {
   assert.equal(picture.status(), 200);
   assert.equal(picture.headers()['content-type'], 'image/jpeg');
   assert.ok(await share.locator('img.card').evaluate((img) => (img as HTMLImageElement).naturalWidth === 1200));
-  assert.match(await share.locator('h1').innerText(), /Ana & Luis/u);
+  assert.doesNotMatch(await share.locator('h1').innerText(), /Ana|Luis/u);
   if (out) await share.screenshot({ path: resolve(out, 'share-page-wedding-390.png'), fullPage: true });
   checked.push('Share the reading: /share/occasion/ opens with its 1200x630 preview image');
 
-  // Two charts: Open both charts and Share the reading.
-  const both = await context.newPage();
-  await both.goto(local(pair.data.cardUrl));
-  await both.getByText('Ana', { exact: false }).first().waitFor({ timeout: 20_000 });
-  await both.waitForFunction(() => /Luis/u.test(document.body.innerText) && /\b\d{1,3}\b/u.test(document.body.innerText), undefined, { timeout: 20_000 });
-  const bothText = await both.locator('main').innerText();
-  assert.match(bothText, /Ana/u);
-  assert.match(bothText, /Luis/u);
-  if (out) await both.screenshot({ path: resolve(out, 'printable-compatibility-390.png'), fullPage: true });
-  checked.push('Open both charts: /compatibility/ opens with Ana and Luis from the link');
+  // Two charts: no card link carries both birth details any more, and the share link leaves them and the names out.
+  assert.equal(pair.data.cardUrl, null);
+  assert.ok(pair.data.pageUrl?.includes('/compatibility/'));
+  assert.doesNotMatch(`${pair.data.pageUrl} ${pair.data.shareUrl}`, /1990|1992|Ana|Luis|#a=/u);
+  checked.push('Compare two charts: no card link, and the share link leaves the birth details and names out');
   const pairShare = await context.newPage();
   await pairShare.goto(local(pair.data.shareUrl));
   await pairShare.locator('img.card').waitFor();
-  assert.match(await pairShare.locator('h1').innerText(), /Ana and Luis/u);
+  assert.match(await pairShare.locator('h1').innerText(), /Person A and Person B/u);
   assert.ok(await pairShare.locator('img.card').evaluate((img) => (img as HTMLImageElement).naturalWidth === 1200));
   if (out) await pairShare.screenshot({ path: resolve(out, 'share-page-compatibility-390.png'), fullPage: true });
   checked.push('Share the reading: /share/compatibility/ opens with its preview image');
 
-  // Milestones: the printable card.
+  // Milestones: the page itself, with no birth date in its address.
+  assert.equal(milestones.data.cardUrl, 'https://zodiacs.org/occasions/milestones/');
   const lives = await context.newPage();
   await lives.goto(local(milestones.data.cardUrl));
   await lives.waitForFunction(() => /Saturn return/u.test(document.body.innerText), undefined, { timeout: 20_000 });
   if (out) await lives.screenshot({ path: resolve(out, 'printable-milestones-390.png'), fullPage: true });
-  checked.push('Open printable card: /occasions/milestones/ draws the Saturn return from the link');
+  checked.push('Open printable card: /occasions/milestones/ opens the milestones page, with no birth date in the link');
 } finally { await browser.close(); server.close(); }
 console.log(`Card links verified:\n- ${checked.join('\n- ')}`);

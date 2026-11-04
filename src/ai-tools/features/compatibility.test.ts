@@ -1,8 +1,13 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { NOT_FOUND_NOTE } from './people';
+import { executeAiTool } from '../tools';
+import { OUTPUT_SCHEMAS } from '../contracts';
+import { buildSavedRecord } from '../accounts/save';
+import { saveInput } from '../accounts/contracts';
 import {
   COMPATIBILITY_NOTE,
+  MINOR_COMPATIBILITY_REFUSAL,
   compatibilityData,
   compatibilityInput,
   compatibilityMissing,
@@ -186,3 +191,34 @@ describe('computeCompatibility with generational contacts', () => {
     }
   });
 });
+
+describe('get_compatibility when either birth date is under 18', () => {
+  const today = new Date('2026-11-04T12:00:00Z');
+  const on = { occasions: true, now: () => today };
+
+  it('refuses with a plain message and no score, verdict or share link, in the published error shape', async () => {
+    const pair = { a: { birthDate: '2012-03-14' }, b: { birthDate: '1990-04-10' } };
+    const result = await executeAiTool('get_compatibility', pair, on);
+    expect(result).toEqual({ schema: 'zodiacs.ai-tool-result.v1', ok: false, tool: 'get_compatibility', error: { code: 'invalid-request', message: MINOR_COMPATIBILITY_REFUSAL } });
+    expect(MINOR_COMPATIBILITY_REFUSAL).toBe('Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading.');
+    // The frozen output schema takes the refusal as its error branch, so no client sees a broken result.
+    expect(OUTPUT_SCHEMAS.get_compatibility.safeParse(result).success).toBe(true);
+    expect(JSON.stringify(result)).not.toMatch(/score|verdict|share|2012|1990/u);
+    await expect(computeCompatibility(compatibilityInput.parse(pair), localTime, 'https://zodiacs.org', today)).rejects.toThrow(MINOR_COMPATIBILITY_REFUSAL);
+  });
+
+  it('applies to either side, a timed chart too, and turns at the eighteenth birthday', async () => {
+    const pair = (a: Record<string, unknown>, b: Record<string, unknown>) => executeAiTool('get_compatibility', { a, b }, on);
+    expect(await pair({ birthDate: '1990-04-10' }, { birthDate: '2009-11-05' })).toMatchObject({ ok: false, error: { code: 'invalid-request', message: MINOR_COMPATIBILITY_REFUSAL } });
+    expect(await pair({ birthDate: '2010-06-01', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 }, { famous: 'Frida Kahlo' })).toMatchObject({ ok: false, error: { message: MINOR_COMPATIBILITY_REFUSAL } });
+    const adults = await pair({ birthDate: '1990-04-10' }, { birthDate: '2008-11-04' });
+    expect(adults.ok).toBe(true);
+    if (adults.ok && adults.tool === 'get_compatibility' && !('found' in adults.data)) expect(adults.data.shareUrl).toMatch(/^https:\/\/zodiacs\.org\/share\//u);
+  });
+
+  it('saves nothing for a pair with someone under 18', async () => {
+    const record = await buildSavedRecord(saveInput.parse({ kind: 'comparison', comparison: { a: { birthDate: '2012-03-14' }, b: { birthDate: '1990-04-10' } } }), { now: () => today });
+    expect(record).toEqual({ failure: MINOR_COMPATIBILITY_REFUSAL });
+  });
+});
+

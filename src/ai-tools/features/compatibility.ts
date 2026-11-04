@@ -35,6 +35,7 @@ import { settledSignIndex } from '../../lib/profile/settled-signs';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { NOT_FOUND_NOTE, searchPeople, type IndexPerson } from './people';
+import { isUnder18 } from './reading-guards';
 
 export const COMPATIBILITY_MIN_YEAR = 1800;
 export const COMPATIBILITY_MAX_YEAR = 2199;
@@ -342,17 +343,29 @@ export function compatibilityMissing(args: CompatibilityInput, origin = 'https:/
 }
 
 /**
+ * Compatibility readings are for two adults. When either birth date is under 18 on the reading date the tool
+ * refuses with this sentence (code invalid-request): no score, verdict or share link. The published panel draws an
+ * Attraction tile for every result and its definition is frozen, so no reading is the only safe answer.
+ */
+export const MINOR_COMPATIBILITY_REFUSAL = 'Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading.';
+
+/**
  * Compare two birth charts. Throws RangeError with a plain message for a
  * date, time or zone the calculation cannot take, or a famous name the
- * directory does not have (check compatibilityMissing first).
+ * directory does not have (check compatibilityMissing first), and with
+ * MINOR_COMPATIBILITY_REFUSAL when either birth date is under 18 on `today`.
  */
 export async function computeCompatibility(
   args: CompatibilityInput,
   localTime: CompatibilityClock,
   origin = 'https://zodiacs.org',
+  today = new Date(),
 ): Promise<{ data: CompatibilityData; links: CompatibilityLink[] }> {
   const a = await personChart(args.a, 'Person A', localTime);
   const b = await personChart(args.b, 'Person B', localTime);
+  // Either birth date under 18, including one child with an adult: no reading at all.
+  const todayDate = today.toISOString().slice(0, 10);
+  if (isUnder18(a.birthDate, todayDate) || isUnder18(b.birthDate, todayDate)) throw new RangeError(MINOR_COMPATIBILITY_REFUSAL);
   const summary = summarizePair(a.bodies, b.bodies, COMPATIBILITY_TOP_CONTACTS);
 
   const sunA = slugAt(a.sunIndex);
