@@ -13,9 +13,10 @@
  * - void-of-course Moon periods from src/data/void-of-course.ts, the module the site's own
  *   /void-of-course-moon/ calendar reads, so the two give the same times: from the Moon's last exact
  *   Ptolemaic aspect in a sign to the Sun or a planet from Mercury to Pluto until it enters the next
- *   sign (src/data/conventions/registry.json, void-of-course-bodies:modern), searched up to 31 days at a time.
+ *   sign (src/data/conventions/registry.json, void-of-course-bodies:modern), searched up to 31 days at a time;
+ * - Chiron's stations and sign changes from its NASA JPL Horizons table (chiron.ts), from 1800 to 2199.
  * An event links to its own page only where the site publishes one (src/data/events-publication.json),
- * else to the page that lists that kind of event. These are calculated facts: no forecast and no
+ * else to the page that lists that kind of event; no page lists Chiron's. These are calculated facts: no forecast and no
  * reading-confidence label. Pure: no network, storage or logging.
  */
 import { z } from 'zod';
@@ -30,6 +31,7 @@ import { eclipseId, ingressId, isoDay, lunationId, retrogradeId } from '../../li
 import { publishedEventById } from '../../lib/events/publication';
 import { SIGNS, formatLongitude, signIndexForLongitude } from '../../lib/signs';
 import { SITE_VOID_CONVENTION_IDS, siteVoidOfCourseWindows } from '../../data/void-of-course';
+import { chironEvents } from './chiron';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -37,9 +39,16 @@ const DATE = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 
 export const SKY_EVENT_KINDS = ['solar-eclipse', 'lunar-eclipse', 'station', 'ingress', 'new-moon', 'full-moon', 'void-of-course'] as const;
 export type SkyEventKind = typeof SKY_EVENT_KINDS[number];
-/** The planets whose stations and sign changes the tool lists. The Moon's sign changes are get_upcoming_events'. */
-export const SKY_EVENT_PLANETS = ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
+/**
+ * The bodies whose stations and sign changes the tool lists: the planets, and Chiron from its Horizons table. The
+ * Moon's sign changes are get_upcoming_events'.
+ */
+export const SKY_EVENT_PLANETS = ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Chiron'] as const;
 export type SkyEventPlanet = typeof SKY_EVENT_PLANETS[number];
+/** The planets whose sign changes come from the ingress table: all but Chiron. */
+type TablePlanet = Exclude<SkyEventPlanet, 'Chiron'>;
+/** Why a Chiron station's time is looser than its position. */
+export const CHIRON_STATION_NOTE = 'Chiron\'s station times can be up to about two hours out: its positions come from a table every 24 days, and it barely moves for days either side of a station.';
 /** The kinds searched when none are named: everything but void-of-course periods, which come only on request. */
 export const DEFAULT_SKY_EVENT_KINDS: readonly SkyEventKind[] = SKY_EVENT_KINDS.filter((kind) => kind !== 'void-of-course');
 /** A window is at most two years long, from its first day to the same date two years later. */
@@ -52,7 +61,7 @@ export const SKY_EVENTS_NOTE = 'Calculated dates and positions, not forecasts. W
 
 export const skyEventsInput = z.strictObject({
   kinds: z.array(z.enum(SKY_EVENT_KINDS)).min(1).max(SKY_EVENT_KINDS.length).optional().describe('Which events to find: solar-eclipse, lunar-eclipse, station (a planet turning retrograde or direct), ingress (a planet changing sign), new-moon, full-moon or void-of-course. Leave it out for every kind but void-of-course, which comes only when named.'),
-  planets: z.array(z.enum(SKY_EVENT_PLANETS)).min(1).max(SKY_EVENT_PLANETS.length).optional().describe('Optional: keep the stations and sign changes of these planets, such as Mercury. Without kinds it finds only their stations and sign changes. It does not filter eclipses, new and full Moons or void-of-course periods.'),
+  planets: z.array(z.enum(SKY_EVENT_PLANETS)).min(1).max(SKY_EVENT_PLANETS.length).optional().describe('Optional: keep the stations and sign changes of these planets, such as Mercury, or of Chiron. Without kinds it finds only their stations and sign changes. It does not filter eclipses, new and full Moons or void-of-course periods.'),
   from: z.string().regex(DATE).optional().describe("The first day to search, such as 2027-01-01, on the person's clock. Leave it out for today."),
   to: z.string().regex(DATE).optional().describe('The last day to search, at most two years after from, and at most 30 days after it (31 days in all) when kinds includes void-of-course. Leave it out for a year from from, or a week for void-of-course periods.'),
   zone: z.string().min(1).max(64).regex(ZONE_PATTERN).optional().describe("The person's time zone, such as America/New_York, so the days and times are on their clock. Without it, UTC."),
@@ -75,7 +84,7 @@ export const skyEvent = z.object({
   at: moment,
   /** A void-of-course period: when it ends, as the Moon enters nextSign. Null for every other kind. */
   until: moment.nullable(),
-  /** The planet that stations or changes sign; null for eclipses, new and full Moons and void-of-course periods. */
+  /** The planet, or Chiron, that stations or changes sign; null for eclipses, new and full Moons and void-of-course periods. */
   planet: z.enum(SKY_EVENT_PLANETS).nullable(),
   /** The sign it happens in: the sign entered, the sign of the station, the eclipsed Sun's or Moon's sign, the Moon's sign at a new or full Moon, or the sign the Moon is void in. */
   sign: signSlug,
@@ -150,7 +159,7 @@ function momentOf(at: Date, zone: string, zoneSource: SkyEventsData['zoneSource'
 }
 
 /** The sign a planet enters at a boundary, read from the engine a minute after the crossing. */
-function signAfter(rows: ReturnType<typeof positionsMemo>, planet: SkyEventPlanet, at: Date): { sign: string; retrograde: boolean } {
+function signAfter(rows: ReturnType<typeof positionsMemo>, planet: TablePlanet, at: Date): { sign: string; retrograde: boolean } {
   const row = rowOf(rows(new Date(at.getTime() + 60_000)), planet);
   return { sign: SIGNS[signIndexForLongitude(row.lon)].slug, retrograde: row.speed < 0 };
 }
@@ -197,6 +206,7 @@ function pageFor(origin: string, event: Raw): string | null {
       return (committed ? published(origin, lunationId(type, committed.at)) : null) ?? (type === 'full' ? `${origin}/full-moon-calendar/` : `${origin}/moon-phase/`);
     }
     case 'station': {
+      if (event.planet === 'Chiron') return null;
       const window = retrogradeWindowOf(event.planet!, event.at, event.type as 'retrograde' | 'direct');
       if (!window) return `${origin}/retrogrades/`;
       const own = STATION_PAGE_PLANETS.includes(event.planet!) ? published(origin, retrogradeId(event.planet!, window.from)) : null;
@@ -269,14 +279,14 @@ function lineOf(event: Raw, at: z.infer<typeof moment>, until: z.infer<typeof mo
 }
 
 /** What the ingress table covers for a planet: its group's horizon, as the table states it. */
-function ingressHorizon(planet: SkyEventPlanet): { from: string; to: string } {
+function ingressHorizon(planet: TablePlanet): { from: string; to: string } {
   const horizon = ingressTable.horizons.find((entry) => entry.planets.includes(planet));
   if (!horizon) throw new Error(`The ingress table has no horizon for ${planet}.`);
   return { from: horizon.from, to: horizon.to };
 }
 
 /** Every sign change of a planet in the ingress table: each closed window's start, and the last window's end. */
-function ingressesOf(planet: SkyEventPlanet, rows: ReturnType<typeof positionsMemo>): Raw[] {
+function ingressesOf(planet: TablePlanet, rows: ReturnType<typeof positionsMemo>): Raw[] {
   const own = INGRESS_WINDOWS.filter((window) => window.planet === planet).sort((a, b) => a.from.localeCompare(b.from));
   const out: Raw[] = own.map((window, index) => {
     const previous = own[index - 1]?.sign;
@@ -336,7 +346,7 @@ export async function searchSkyEvents(args: SkyEventsInput, clock: SkyEventsCloc
   }
   if (kinds.includes('ingress')) {
     const outside: string[] = [];
-    for (const planet of planets ?? SKY_EVENT_PLANETS) {
+    for (const planet of (planets ?? SKY_EVENT_PLANETS as readonly SkyEventPlanet[]).filter((body): body is TablePlanet => body !== 'Chiron')) {
       for (const ingress of ingressesOf(planet, rows)) if (inside(ingress.at)) raw.push(ingress);
       const horizon = ingressHorizon(planet);
       if (from < horizon.from || to >= horizon.to) outside.push(planet === 'Sun' ? 'the Sun' : planet);
@@ -357,6 +367,19 @@ export async function searchSkyEvents(args: SkyEventsInput, clock: SkyEventsCloc
         raw.push({ kind: 'station', at: crossing.at, planet: body, sign: SIGNS[signIndexForLongitude(lon)].slug, lon, type: crossing.retrograde ? 'retrograde' : 'direct' });
       }
     }
+  }
+  // Chiron's, from its Horizons table: the engine has no Chiron, and the ingress table none either.
+  if ((kinds.includes('station') || kinds.includes('ingress')) && (!planets || planets.includes('Chiron'))) {
+    const chiron = chironEvents(start, end);
+    for (const event of chiron.events) {
+      if (!kinds.includes(event.kind)) continue;
+      const sign = SIGNS[event.sign].slug;
+      raw.push(event.kind === 'station'
+        ? { kind: 'station', at: event.at, planet: 'Chiron', sign, lon: event.lon, type: event.retrograde ? 'retrograde' : 'direct' }
+        : { kind: 'ingress', at: event.at, planet: 'Chiron', sign, extra: { retrograde: event.retrograde } });
+    }
+    if (chiron.clipped) notes.push('Chiron\'s stations and sign changes are listed from 1 January 1800 to 31 December 2199, the years its NASA JPL Horizons positions cover.');
+    if (kinds.includes('station') && chiron.events.some((event) => event.kind === 'station')) notes.push(CHIRON_STATION_NOTE);
   }
   for (const [kind, phase] of [['new-moon', PHASES.new], ['full-moon', PHASES.full]] as const) {
     if (!kinds.includes(kind)) continue;

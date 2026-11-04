@@ -20,8 +20,10 @@
  * With ZODIACS_SKY_EVENTS_ENABLED=1 (options.skyEvents) it explains, in plain
  * words first, the lunar nodes, the void-of-course Moon, Placidus and
  * whole-sign houses, eclipses, stations and retrograde loops, new and full
- * Moons and ingresses, each with its pages and the tool that dates it
- * (search_sky_events, get_natal_chart). Switched off, it answers as before.
+ * Moons, ingresses and Chiron, each with its pages and the tool that dates it
+ * (search_sky_events, get_natal_chart). Any question naming Chiron is Chiron's,
+ * with its sign or house added when one is named. Switched off, it answers as
+ * before.
  */
 import { z } from 'zod';
 import { CHINESE_ZODIAC_COPY } from '../../data/chinese-zodiac';
@@ -35,6 +37,7 @@ import { SIGNS, type Sign } from '../../lib/signs';
 import type { BodyName } from '../../lib/engine/types';
 import { MOON_MONTH_NAMES } from '../../lib/events/format';
 import { softenHealth, softenMinor } from './reading-guards';
+import { chironHouseLine, chironSignLine } from './chiron';
 import pairPages from './pair-pages.json';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
@@ -50,7 +53,7 @@ export const explainInput = z.strictObject({
 export type ExplainInput = z.infer<typeof explainInput>;
 /** With ZODIACS_SKY_EVENTS_ENABLED=1: the same field, naming the topics the switch adds. */
 export const explainInputWithSkyEvents = z.strictObject({
-  topic: z.string().trim().min(1).max(80).describe('What to explain, in a few words: a sign (leo), a planet (Mercury), a placement (Moon in Scorpio, Jupiter in the 12th), the houses or one house (seventh house), Placidus or whole-sign houses, aspects or one aspect (square), retrogrades, stations or Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (sign changes), the rising sign or a sign rising (Leo rising), the Midheaven, the big three, cusps, Saturn return, elements, modalities, transits, synastry or the Chinese zodiac.'),
+  topic: z.string().trim().min(1).max(80).describe('What to explain, in a few words: a sign (leo), a planet (Mercury), a placement (Moon in Scorpio, Jupiter in the 12th), Chiron or Chiron in a sign or house, the houses or one house (seventh house), Placidus or whole-sign houses, aspects or one aspect (square), retrogrades, stations or Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (sign changes), the rising sign or a sign rising (Leo rising), the Midheaven, the big three, cusps, Saturn return, elements, modalities, transits, synastry or the Chinese zodiac.'),
 });
 
 const link = z.object({ title: z.string(), url: z.url() });
@@ -234,6 +237,22 @@ const SKY_EVENTS_REWRITTEN: Record<string, Topic> = {
 };
 /** New topics, each placed after the topic it was part of, which gives up the aliases that now lead to it. */
 const SKY_EVENTS_ADDED: Record<string, { topic: Topic; drop: string[] }> = {
+  planets: {
+    drop: [],
+    topic: {
+      key: 'chiron', title: 'Chiron',
+      aliases: ['planet chiron', 'chiron placement', 'chiron sign', 'my chiron', 'wounded healer', 'the wounded healer', 'chiron return', 'chiron retrograde', 'chiron in my chart', '2060 chiron', 'centaur chiron'],
+      glossary: [], plainFirst: true,
+      extra: () => [
+        'Chiron is a small body, part asteroid and part comet, that orbits the Sun between Saturn and Uranus once about every 50 years. It was found in 1977 and named after the centaur of Greek myth, a teacher and healer who could not cure his own wound.',
+        'Astrology reads Chiron as an old hurt or sensitive spot, and the understanding that grows from living with it, which a person can later offer others. Its sign describes the style of that sensitive spot, and its house the area of life where it shows. It is a symbolic reading, not a prediction or a fixed destiny.',
+        'Its orbit is long and stretched, so Chiron spends anything from little more than a year in Virgo or Libra to eight or nine years in Aries. It turns retrograde for four to five months each year, and comes back to the degree it held at birth at about age 50, which astrologers call the Chiron return.',
+        'Zodiacs takes Chiron\'s positions from NASA JPL Horizons, for 1800 to 2199. For a person\'s own Chiron, with its sign, house and aspects, use get_natal_chart; for the dates Chiron turns retrograde or direct or changes sign, use search_sky_events.',
+      ],
+      pages: [{ title: 'The planets', path: '/learn/planets/' }, { title: 'How to read a birth chart', path: '/learn/how-to-read-a-birth-chart/' }, { title: 'Retrogrades', path: '/retrogrades/' }],
+      related: ['planets', 'saturn', 'uranus', 'retrogrades', 'birth-chart'],
+    },
+  },
   houses: {
     drop: ['house system', 'whole sign houses', 'placidus'],
     topic: {
@@ -410,6 +429,8 @@ export function matchNoSuchHouse(query: string): string | null {
 export function matchTopic(query: string, options: ExplainOptions = {}): Topic | null {
   const topics = topicsFor(options);
   if (matchNoSuchHouse(query)) return topics.find((topic) => topic.key === 'houses')!;
+  // With the sky events switch, a question naming Chiron is Chiron's, whatever sign or house it names with it.
+  if (options.skyEvents && CHIRON.test(clean(query))) return topics.find((topic) => topic.key === 'chiron')!;
   const placement = matchPlacement(query);
   if (placement) return topics.find((topic) => topic.key === placement.planet.toLowerCase())!;
   if (matchRising(query)) return topics.find((topic) => topic.key === 'rising-sign')!;
@@ -471,6 +492,27 @@ function placementParts({ planet, sign, house }: Placement): { title: string; pa
     pages: [{ title: `The ${slug} house`, path: `/learn/houses/${slug}-house/` }],
     related: [`${slug}-house`, 'houses', 'birth-chart'],
   };
+}
+
+const CHIRON = /\bchiron\b/u;
+// "Chiron in Aries", "Aries Chiron", "Chiron in the 12th house", "12th house Chiron", "Chiron 12th house".
+const CHIRON_IN_SIGN = new RegExp(`\\bchiron (?:is )?in (${SIGN_WORDS})\\b|\\b(${SIGN_WORDS}) chiron\\b`, 'u');
+const CHIRON_IN_HOUSE = new RegExp(`\\bchiron (?:is )?in (?:the |my |your )?(?:(${HOUSE_WORDS})(?: house\\b|\\b${NOT_A_HOUSE})|house (1[0-2]|[1-9])\\b)|\\b(${HOUSE_WORDS}) house chiron\\b|\\bchiron (${HOUSE_WORDS}) house\\b`, 'u');
+
+/** What a sign or a house adds to the Chiron explainer, in the words get_natal_chart gives them; null when neither is named. */
+function chironParts(query: string): { title: string; paragraphs: string[]; pages: Topic['pages']; related: string[] } | null {
+  const text = clean(query);
+  const inSign = text.match(CHIRON_IN_SIGN);
+  const slug = inSign?.[1] ?? inSign?.[2];
+  if (slug) {
+    const sign = SIGNS.find((entry) => entry.slug === slug)!;
+    return { title: `Chiron in ${sign.name}`, paragraphs: [chironSignLine(sign.slug, 'Chiron')], pages: [{ title: `${sign.name} on Zodiacs`, path: `/${sign.slug}/` }], related: [sign.slug, 'birth-chart'] };
+  }
+  const word = text.match(CHIRON_IN_HOUSE)?.slice(1).find(Boolean);
+  if (!word) return null;
+  const house = HOUSE_SLUGS.includes(word) ? HOUSE_SLUGS.indexOf(word) + 1 : Number.parseInt(word, 10);
+  const name = HOUSE_SLUGS[house - 1];
+  return { title: `Chiron in the ${cap(name)} house`, paragraphs: [chironHouseLine(house, 'Chiron')], pages: [{ title: `The ${name} house`, path: `/learn/houses/${name}-house/` }], related: [`${name}-house`, 'houses', 'birth-chart'] };
 }
 
 /** A friendship question about two signs: "Leo and Scorpio friendship", "are a Leo and a Scorpio good friends". */
@@ -613,10 +655,12 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN, op
     ...(noSuchHouseLine ? [noSuchHouseLine] : []),
     ...body,
   ].filter((paragraph, index, all) => paragraph && all.indexOf(paragraph) === index).map(softenHealth);
-  const placement = noSuchHouse ? null : matchPlacement(args.topic);
-  const rising = noSuchHouse || placement ? null : matchRising(args.topic);
-  const angle = noSuchHouse || placement || rising ? null : matchAngleSign(args.topic);
-  const placed = placement ? placementParts(placement) : rising ? risingParts(rising) : angle ? angleParts(angle) : null;
+  // Chiron's explainer adds the sign or house its question names, and no planet's (the topic exists only with the switch).
+  const chiron = topic.key === 'chiron';
+  const placement = noSuchHouse || chiron ? null : matchPlacement(args.topic);
+  const rising = noSuchHouse || placement || chiron ? null : matchRising(args.topic);
+  const angle = noSuchHouse || placement || rising || chiron ? null : matchAngleSign(args.topic);
+  const placed = chiron ? chironParts(args.topic) : placement ? placementParts(placement) : rising ? risingParts(rising) : angle ? angleParts(angle) : null;
   if (placed) paragraphs.push(...placed.paragraphs.map(softenHealth));
   const pages = [...(placed?.pages ?? []), ...topic.pages].map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
   const data: ExplainData = {

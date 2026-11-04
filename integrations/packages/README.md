@@ -36,9 +36,12 @@ unchanged local tools. 0.6.1 and 0.3.21 keep their bytes. Developer 0.3.23 is
 rebuilt from the 0.6.2 source that adds `search_sky_events`, the natal chart's
 lunar nodes and Placidus houses behind `ZODIACS_SKY_EVENTS_ENABLED`, which its
 local server does not set; its local tools are unchanged, Zodiacs stays 0.6.2,
-and 0.3.22 keeps its bytes.
+and 0.3.22 keeps its bytes. Developer 0.3.24 is rebuilt from the 0.6.2 source
+that adds Chiron, from NASA JPL Horizons positions for 1800 to 2199, to the
+natal chart, `search_sky_events` and `explain_astrology` behind the same switch;
+its local tools are unchanged, Zodiacs stays 0.6.2, and 0.3.23 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.23**;
+Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.24**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
