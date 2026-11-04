@@ -27,7 +27,7 @@ import { searchSkyEvents } from './features/sky-events';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, inputSchemaFor, type AiToolName, type CoverageToolName, type PlaceToolName, type SkyEventsToolName } from './contracts';
-import { readingConfidenceLabel, readingDetail } from './reading-confidence';
+import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
 import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
@@ -81,6 +81,14 @@ const privacyWithBirthTools = (accounts: boolean) => `Public-sky tools and Sun-s
 const PRIVACY = `Public-sky tools and horoscopes need no birth details and save no request or result. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure; the local developer server runs on its own machine. Chart Studio calculates in the browser; only explicitly reviewed selections are sent to the assistant, and downloaded records contain personal chart data. Hosting-layer request metadata has a separate retention policy, set out in the privacy policy: ${PRIVACY_POLICY}. Links to zodiacs.org end in ?ref=chatgpt or ?ref=assistant so the site can count those visits; the page removes it as it opens.`;
 const methodLink = { title: 'How we calculate', url: `${ORIGIN}/methodology/` };
 const moonLink = { title: 'Explore Moon phases', url: `${ORIGIN}/moon-phase/` };
+/** The page get_sky_calendar points to, where the sky calendar is added to a calendar app. */
+const calendarLink = { title: 'New and full Moons, eclipses and retrogrades in your calendar app (get_sky_calendar)', url: `${ORIGIN}/sky-calendar/` };
+/** The daily horoscope email's sign-up on the sign's horoscope page (or the horoscopes page, to choose a sign). */
+export function dailyEmailLink(origin: string, sign?: string): { title: string; url: string } {
+  return sign
+    ? { title: `The ${sign.charAt(0).toUpperCase()}${sign.slice(1)} horoscope by email each morning`, url: `${origin}/horoscopes/${sign}/#daily-email` }
+    : { title: 'Your horoscope by email each morning', url: `${origin}/horoscopes/#daily-email` };
+}
 const LIMITS = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS['events.samples'], factSamples: BUDGETS['sky-fact.samples'] };
 
 export function displayTime(utc: string, zone: string): string {
@@ -355,7 +363,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
         data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
-        links = [moonLink, methodLink];
+        links = [moonLink, methodLink, calendarLink];
         break;
       }
       case 'get_upcoming_events': {
@@ -392,6 +400,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         }
         const calculation = await computeSkyFact(request, { localTime: localTime() });
         data = { answer: calculation.result.answer, calculation, interpretation: 'The verdict checks an astronomical proposition, not an astrological prediction.' };
+        links = [methodLink, calendarLink];
         break;
       }
       case 'get_horoscope': {
@@ -432,7 +441,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           }
         }
         if (args.sign) context.horoscopePanel = horoscopePanel(window, args.sign, { period: request.period, focus: request.focus, ...(args.date ? { date: args.date } : {}), ...(zoneSource === 'default' ? {} : { zone }) }, { origin: ORIGIN, ref: context.ref ?? null });
-        links = [...(args.sign ? [{ title: `${args.sign[0].toUpperCase()}${args.sign.slice(1)} on Zodiacs`, url: `${ORIGIN}/horoscopes/${args.sign}/` }] : []), methodLink];
+        links = [...(args.sign ? [{ title: `${args.sign[0].toUpperCase()}${args.sign.slice(1)} on Zodiacs`, url: `${ORIGIN}/horoscopes/${args.sign}/` }] : []), methodLink, dailyEmailLink(ORIGIN, args.sign)];
         break;
       }
       case 'get_occasion_sky': {
@@ -472,7 +481,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const signOf = (body: string) => card.sky.bodies.find((row) => row.body === body)?.sign ?? null;
         // The share link carries the day, the Sun and Moon signs and the rating. Names stay out of the link.
         // A birthday, a baby's arrival, or a coming of age gets none: that date can be a birth date.
-        const shareUrl = BIRTH_OCCASIONS.has(args.occasion) ? null : occasionShareUrl(ORIGIN, { occasion: args.occasion, date, names: null, place: null, sun: signOf('Sun'), moon: signOf('Moon'), score: rating.score });
+        const shareUrl = BIRTH_OCCASIONS.has(args.occasion) ? null : occasionShareUrl(ORIGIN, { occasion: args.occasion, date, names: null, place: null, sun: signOf('Sun'), moon: signOf('Moon'), score: rating.score, confidence: readingConfidence(detail) });
         const printable = cardUrl !== null;
         data = {
           occasion: args.occasion, date, time: args.time ?? null, zone, place: args.place ?? null, names: args.names ?? null,
@@ -592,7 +601,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const result = await feature(() => getHoroscopePeriod(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, zoneSource, localTime(), {
           window: dependencies.horoscopeWindow!, months: dependencies.horoscopeMonths!, program: dependencies.horoscopeProgram!,
           ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
-        }, ORIGIN));
+        }, ORIGIN, { skyEvents }));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         if ('refused' in result) return failure(tool, result.refused, 'Zodiacs is busy. Try again in a minute.', result.refused === 'rate-limited' ? 60 : 300);
         ({ data, links } = result);
@@ -604,7 +613,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         let zoneAssumed = true;
         if (args.zone) { zone = await zoneAt(args.zone, '/zone', resolveZone); zoneAssumed = false; }
         else if (context.hostZone) { try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); zoneAssumed = false; } catch { /* keep UTC and say so */ } }
-        const result = await feature(async () => getChineseZodiac(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, ORIGIN, zoneAssumed));
+        const result = await feature(async () => getChineseZodiac(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, ORIGIN, zoneAssumed, { skyEvents }));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;

@@ -2,8 +2,10 @@
  * Share links for two results of the Zodiacs app: a compatibility score and
  * a date's rating. The link's query string carries only what its preview
  * image shows: first names or "Person A/B", Sun and Moon signs, the scores
- * and a verdict key, and for a date the occasion, the day and a place name.
- * It never carries a birth date, a time or coordinates.
+ * and a verdict key, and for a date the occasion, the day and a place name,
+ * and for either the reading's confidence (src/ai-tools/reading-confidence.ts),
+ * one of the values that rule gives. It never carries a birth date, a time or
+ * coordinates.
  *
  * Every parameter is checked against a fixed vocabulary or a short plain-text
  * pattern; a query with anything else is not a share query. Pure: no network,
@@ -13,6 +15,7 @@ import { COMPAT_VERDICTS, compatVerdictKey, type CompatVerdictKey } from './comp
 import { DATE_VERDICTS, dateVerdictKey, type DateVerdictKey } from './occasions/date-score.js';
 import { OCCASION_KINDS, type OccasionKind } from './occasions/kinds.js';
 import { parseCivilDate } from './time/civil-date.js';
+import { DAY_CONFIDENCES, PAIR_CONFIDENCES } from '../ai-tools/reading-confidence.js';
 
 export const SHARE_SIGNS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -26,8 +29,8 @@ export const OCCASION_SHARE_PATH = '/share/occasion/';
 export const COMPATIBILITY_SHARE_IMAGE_PATH = '/api/og/compatibility-image';
 export const OCCASION_SHARE_IMAGE_PATH = '/api/og/occasion-image';
 
-export const COMPATIBILITY_SHARE_KEYS: readonly string[] = Object.freeze(['a', 'b', 'as', 'bs', 'score', 'attraction', 'communication', 'stability', 'v', 'ref']);
-export const OCCASION_SHARE_KEYS: readonly string[] = Object.freeze(['o', 'd', 'n', 'p', 'sun', 'moon', 'score', 'v', 'ref']);
+export const COMPATIBILITY_SHARE_KEYS: readonly string[] = Object.freeze(['a', 'b', 'as', 'bs', 'score', 'attraction', 'communication', 'stability', 'v', 'c', 'ref']);
+export const OCCASION_SHARE_KEYS: readonly string[] = Object.freeze(['o', 'd', 'n', 'p', 'sun', 'moon', 'score', 'v', 'c', 'ref']);
 
 export interface CompatibilityShare {
   a: string | null;
@@ -39,6 +42,8 @@ export interface CompatibilityShare {
   communication: number;
   stability: number;
   verdict: CompatVerdictKey;
+  /** The reading's confidence (PAIR_CONFIDENCES); null on a link made before the label. */
+  confidence: number | null;
   ref: ShareRef | null;
 }
 
@@ -51,6 +56,8 @@ export interface OccasionShare {
   moon: ShareSign | null;
   score: number;
   verdict: DateVerdictKey;
+  /** The reading's confidence (DAY_CONFIDENCES); null on a link made before the label. */
+  confidence: number | null;
   ref: ShareRef | null;
 }
 
@@ -115,6 +122,8 @@ export interface CompatibilityShareSource {
   a: { name: string | null; sun: string | null };
   b: { name: string | null; sun: string | null };
   score: { overall: number; areas: { attraction: number; communication: number; stability: number } };
+  /** The reading's confidence, as readingConfidence gives it for the coarser of the two charts. */
+  confidence?: number | null;
 }
 
 /** The query of a share: in a fixed order, with ?ref= only when asked for (the image's query has none). */
@@ -129,6 +138,7 @@ export function compatibilityQuery(share: CompatibilityShare, withRef = false): 
   params.set('communication', String(share.communication));
   params.set('stability', String(share.stability));
   params.set('v', share.verdict);
+  if (share.confidence !== null) params.set('c', String(share.confidence));
   if (withRef && share.ref) params.set('ref', share.ref);
   return params.toString();
 }
@@ -141,13 +151,20 @@ export function occasionQuery(share: OccasionShare, withRef = false): string {
   if (share.moon) params.set('moon', share.moon);
   params.set('score', String(share.score));
   params.set('v', share.verdict);
+  if (share.confidence !== null) params.set('c', String(share.confidence));
   if (withRef && share.ref) params.set('ref', share.ref);
   return params.toString();
 }
 
+/** A confidence a link may carry: absent, or one of the values the rule gives for that kind of reading. */
+const confidenceOf = (value: number | null | undefined, allowed: readonly number[]): number | null | undefined =>
+  (value === null || value === undefined ? null : allowed.includes(value) ? value : undefined);
+
 export function compatibilityShareQuery(source: CompatibilityShareSource): string | null {
   const { overall, areas } = source.score;
   if (![overall, areas.attraction, areas.communication, areas.stability].every(isScore)) return null;
+  const confidence = confidenceOf(source.confidence, PAIR_CONFIDENCES);
+  if (confidence === undefined) return null;
   return compatibilityQuery({
     a: shareName(source.a.name),
     b: shareName(source.b.name),
@@ -158,6 +175,7 @@ export function compatibilityShareQuery(source: CompatibilityShareSource): strin
     communication: areas.communication,
     stability: areas.stability,
     verdict: compatVerdictKey(overall),
+    confidence,
     ref: null,
   });
 }
@@ -170,10 +188,14 @@ export interface OccasionShareSource {
   sun: string | null;
   moon: string | null;
   score: number;
+  /** The reading's confidence, as readingConfidence gives it for the day's details. */
+  confidence?: number | null;
 }
 
 export function occasionShareQuery(source: OccasionShareSource): string | null {
   if (!isScore(source.score) || !(OCCASION_KINDS as readonly string[]).includes(source.occasion) || !validDate(source.date)) return null;
+  const confidence = confidenceOf(source.confidence, DAY_CONFIDENCES);
+  if (confidence === undefined) return null;
   return occasionQuery({
     occasion: source.occasion,
     date: source.date,
@@ -183,6 +205,7 @@ export function occasionShareQuery(source: OccasionShareSource): string | null {
     moon: isSign(source.moon) ? source.moon : null,
     score: source.score,
     verdict: dateVerdictKey(source.score),
+    confidence,
     ref: null,
   });
 }
@@ -224,6 +247,12 @@ function readScore(value: string | undefined): number | null {
   return value !== undefined && SCORE_RE.test(value) ? Number(value) : null;
 }
 
+/** A link's confidence: absent (null), one of the allowed values, or not a share (undefined). */
+function readConfidence(value: string | undefined, allowed: readonly number[]): number | null | undefined {
+  if (value === undefined) return null;
+  return /^[1-9][0-9]$/u.test(value) && allowed.includes(Number(value)) ? Number(value) : undefined;
+}
+
 function readOptional<T>(value: string | undefined, read: (value: string) => T | null): T | null | undefined {
   if (value === undefined) return null;
   const parsed = read(value);
@@ -246,9 +275,10 @@ export function parseCompatibilityShare(params: URLSearchParams): CompatibilityS
   const b = readOptional(fields.get('b'), (value) => plain(value, NAME_RE, SHARE_NAME_MAX));
   const aSun = readOptional(fields.get('as'), readSign);
   const bSun = readOptional(fields.get('bs'), readSign);
+  const confidence = readConfidence(fields.get('c'), PAIR_CONFIDENCES);
   const ref = readRef(fields.get('ref'));
-  if (a === undefined || b === undefined || aSun === undefined || bSun === undefined || ref === undefined) return null;
-  return { a, b, aSun, bSun, score, attraction, communication, stability, verdict: verdict as CompatVerdictKey, ref };
+  if (a === undefined || b === undefined || aSun === undefined || bSun === undefined || confidence === undefined || ref === undefined) return null;
+  return { a, b, aSun, bSun, score, attraction, communication, stability, verdict: verdict as CompatVerdictKey, confidence, ref };
 }
 
 export function parseOccasionShare(params: URLSearchParams): OccasionShare | null {
@@ -265,7 +295,8 @@ export function parseOccasionShare(params: URLSearchParams): OccasionShare | nul
   const place = readOptional(fields.get('p'), (value) => plain(value, PLACE_RE, SHARE_PLACE_MAX));
   const sun = readOptional(fields.get('sun'), readSign);
   const moon = readOptional(fields.get('moon'), readSign);
+  const confidence = readConfidence(fields.get('c'), DAY_CONFIDENCES);
   const ref = readRef(fields.get('ref'));
-  if (names === undefined || place === undefined || sun === undefined || moon === undefined || ref === undefined) return null;
-  return { occasion: occasion as OccasionKind, date, names, place, sun, moon, score, verdict: verdict as DateVerdictKey, ref };
+  if (names === undefined || place === undefined || sun === undefined || moon === undefined || confidence === undefined || ref === undefined) return null;
+  return { occasion: occasion as OccasionKind, date, names, place, sun, moon, score, verdict: verdict as DateVerdictKey, confidence, ref };
 }

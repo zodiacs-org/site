@@ -26,7 +26,8 @@ import { pairFacts, pairSlug } from '../../lib/compat';
 import { contactLine } from '../../lib/contact-line';
 import { scoreCompatibility } from '../../lib/compat-score';
 import { compatibilityShareUrl } from '../../lib/share-results';
-import { coarserDetail, readingConfidenceLabel, readingDetail } from '../reading-confidence';
+import { inviteShareUrl } from '../share-links';
+import { coarserDetail, readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { roundCoordinate } from '../plain-text';
 import { computeChart } from '../../lib/engine/full.js';
 import { isGenerationalContact, summarizePair, type MinimalBody } from '../../lib/engine/synastry';
@@ -141,7 +142,7 @@ export const compatibilityData = z.object({
   modalities: z.object({ a: modalityTally, b: modalityTally }),
   pageUrl: z.string().nullable(),
   cardUrl: z.string().nullable(),
-  /** A link to share the score: first names or Person A/B, Sun signs and the scores, no birth details. */
+  /** A link to share the score: first names or Person A/B, Sun signs, the scores and the reading's confidence, no birth details. */
   shareUrl: z.string().nullable(),
   notes: z.array(z.string()),
   note: z.literal(COMPATIBILITY_NOTE),
@@ -422,6 +423,7 @@ export async function computeCompatibility(
       a: { name: null, sun: sunA },
       b: { name: null, sun: sunB },
       score,
+      confidence: readingConfidence(detail, tight),
     }),
     notes: [...notesFor(a, b), label],
     note: COMPATIBILITY_NOTE,
@@ -434,6 +436,9 @@ export async function computeCompatibility(
       { title: 'Compatibility on Zodiacs', url: `${origin}/compatibility/` },
       { title: 'Resolve a town or city (find_birthplace)', url: `${origin}/birth-chart/` },
       { title: 'How we calculate', url: `${origin}/methodology/` },
+      // Two adults (there is no reading otherwise), neither a famous chart: the other person can read the pair from
+      // their own chart through the private invite. The link carries the two Sun signs at most, never a birth detail.
+      ...(a.famous || b.famous ? [] : [{ title: 'Invite your partner to compare charts on Zodiacs', url: inviteShareUrl(origin, { sun: sunA, partner: sunB }) }]),
     ],
   };
 }

@@ -20,7 +20,10 @@
  * gives Chiron too, which the engine does not have: its position from NASA JPL
  * Horizons through chiron.ts, with its sign, degree, retrograde flag, house and
  * aspects to the planets, under the chart's own orbs. From 1800 to 2199 only;
- * outside those years Chiron is left out with a plain note.
+ * outside those years Chiron is left out with a plain note. It gives a share
+ * link to the big three's card too (src/ai-tools/share-links.ts): the Sun
+ * sign, the Moon sign when the day settles it and the rising sign when it is
+ * known, never the birth date, time or place.
  */
 import { z } from 'zod';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
@@ -36,6 +39,7 @@ import { SIGNS, formatLongitude, signIndexForLongitude, type Element, type Modal
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from './reading-guards';
 import { CHIRON_ABOUT, CHIRON_MEANING, CHIRON_OUTSIDE, chironAspectLine, chironAt, chironHouseLine, chironSignLine, chironSignsBetween } from './chiron';
+import { bigThreeShareUrl } from '../share-links';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -174,13 +178,15 @@ const chironEntry = z.object({
   /** Its aspects to the planets under the chart's own orbs, closest first; none to the Moon without a birth time. */
   aspects: z.array(z.object({ body: z.enum(PLANETS), type: z.enum(ASPECT_TYPES), orb: z.number().min(0), line: z.string() })).max(PLANETS.length),
 });
-/** With ZODIACS_SKY_EVENTS_ENABLED=1: the readout with the house system used, a note when Placidus could not be, the lunar nodes and Chiron. */
+/** With ZODIACS_SKY_EVENTS_ENABLED=1: the readout with the house system used, a note when Placidus could not be, the lunar nodes, Chiron and the big three's share link. */
 export const natalChartDataWithNodes = natalChartData.extend({
   houseSystem: z.enum(NATAL_HOUSE_SYSTEMS).nullable(),
   /** Why the chart has no Placidus houses when they were asked for, in a plain sentence; null otherwise. */
   houseNote: z.string().nullable(),
   nodes: z.object({ node: z.literal(NATAL_NODE), about: z.literal(NATAL_NODE_ABOUT), north: nodeEntry, south: nodeEntry }),
   chiron: chironEntry.nullable(),
+  /** The big three's card: the Sun sign, the Moon sign when settled, the rising sign when known; never the birth date. Null when the Sun changed sign that day. */
+  shareUrl: z.url().nullable(),
 });
 export type NatalChartDataWithNodes = z.infer<typeof natalChartDataWithNodes>;
 
@@ -419,6 +425,7 @@ export async function getNatalChart(args: NatalChartInput | NatalChartInputWithH
     houseNote,
     nodes,
     chiron,
+    shareUrl: bigThreeShareUrl(origin, { sun: sun.sign, moon: moon.sign, rising: risingSlug }),
   } : null;
   const links = [
     { title: 'Open the birth chart page on Zodiacs', url: chartUrl },

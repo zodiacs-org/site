@@ -1,13 +1,20 @@
 /**
- * Share links for eight assistant cards: a compatibility score, a date's
- * rating, a birthday, the sky calendar's next event, a horoscope, chart
- * twins, a famous chart and a life milestone. Each has
+ * Share links for eleven assistant cards: a compatibility score, a date's
+ * rating, a birthday, the sky calendar's next event, a horoscope (a day, a
+ * week, a month or a year), chart twins, a famous chart, a life milestone,
+ * the big three, the Chinese zodiac and an invitation to compare charts. Each has
  * a page with the result's picture and a way to try it, the 1200×630
  * preview image link previews show, and a 1080×1920 picture to post as a story. They read only the link's checked query
  * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
  * site's own committed data (the birthday table, the sky calendar's events,
  * the published horoscopes and the famous-people directory); nothing is looked up elsewhere, stored or
- * logged, and every response is uncacheable and kept out of search.
+ * logged, and every response is uncacheable and kept out of search. A card
+ * that shows a forecast or a score prints its "Reading confidence NN%" label
+ * (src/ai-tools/reading-confidence.ts), from the link's own value or, for a
+ * Sun-sign horoscope, from the published reading. A compatibility or date link
+ * made before the assistant tools stopped writing names (0.6.1) still opens, but
+ * its names and place are dropped as soon as it is read (readCompatibilityShare,
+ * readOccasionShare): no page, picture or link drawn from it carries them.
  */
 import { readFile } from 'node:fs/promises';
 import { encode as encodeJpeg } from 'jpeg-js';
@@ -21,8 +28,16 @@ import {
   writeNodeResponse,
 } from './chart-preview.js';
 import {
+  bigThreeCardModel,
+  type BigThreeCardModel,
   birthdayCardModel,
   type BirthdayCardModel,
+  chineseZodiacCardModel,
+  type ChineseZodiacCardModel,
+  inviteCardModel,
+  type InviteCardModel,
+  type PublishedMonths,
+  type PublishedYears,
   chartTwinsCardModel,
   type ChartTwinsCardModel,
   famousChartCardModel,
@@ -48,6 +63,22 @@ import {
 } from './result-preview-model.js';
 import { HUES } from './chart-preview-model.js';
 import {
+  BIG_THREE_SHARE_IMAGE_PATH,
+  BIG_THREE_SHARE_KEYS,
+  BIG_THREE_SHARE_PATH,
+  bigThreeQuery,
+  CHINESE_ZODIAC_SHARE_IMAGE_PATH,
+  CHINESE_ZODIAC_SHARE_KEYS,
+  CHINESE_ZODIAC_SHARE_PATH,
+  chineseZodiacQuery,
+  INVITE_SHARE_IMAGE_PATH,
+  INVITE_SHARE_KEYS,
+  INVITE_SHARE_PATH,
+  inviteQuery,
+  parseBigThreeShare,
+  parseChineseZodiacShare,
+  parseInviteShare,
+  type HoroscopeShare,
   BIRTHDAY_SHARE_IMAGE_PATH,
   BIRTHDAY_SHARE_KEYS,
   BIRTHDAY_SHARE_PATH,
@@ -95,9 +126,26 @@ import {
   occasionQuery,
   parseCompatibilityShare,
   parseOccasionShare,
+  type CompatibilityShare,
+  type OccasionShare,
   type ShareRef,
   type ShareSign,
 } from '../lib/share-results.js';
+
+/**
+ * A compatibility link as the server reads it: the first names an older link carries in a and b are dropped, so no
+ * page, picture, story or link made from it shows them. The keys stay readable, so that link still opens.
+ */
+export function readCompatibilityShare(params: URLSearchParams): CompatibilityShare | null {
+  const share = parseCompatibilityShare(params);
+  return share && { ...share, a: null, b: null };
+}
+
+/** A date's link as the server reads it: an older link's names (n) and place (p) are dropped, as above. */
+export function readOccasionShare(params: URLSearchParams): OccasionShare | null {
+  const share = parseOccasionShare(params);
+  return share && { ...share, names: null, place: null };
+}
 
 export const RESULT_SHARE_ROUTE_KEY = '__zodiacs_share';
 export const RESULT_SHARE_ROUTES = [
@@ -106,6 +154,8 @@ export const RESULT_SHARE_ROUTES = [
   'compatibility-story', 'occasion-story', 'birthday-story', 'sky-calendar-story', 'horoscope-story',
   'chart-twins-link', 'chart-twins-image', 'chart-twins-story', 'famous-chart-link', 'famous-chart-image', 'famous-chart-story',
   'milestone-link', 'milestone-image', 'milestone-story',
+  'big-three-link', 'big-three-image', 'big-three-story', 'chinese-zodiac-link', 'chinese-zodiac-image', 'chinese-zodiac-story',
+  'invite-link', 'invite-image', 'invite-story',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -118,6 +168,9 @@ export const HOROSCOPE_SHARE_STORY_PATH = '/api/og/horoscope-story';
 export const CHART_TWINS_SHARE_STORY_PATH = '/api/og/chart-twins-story';
 export const FAMOUS_CHART_SHARE_STORY_PATH = '/api/og/famous-chart-story';
 export const MILESTONE_SHARE_STORY_PATH = '/api/og/milestone-story';
+export const BIG_THREE_SHARE_STORY_PATH = '/api/og/big-three-story';
+export const CHINESE_ZODIAC_SHARE_STORY_PATH = '/api/og/chinese-zodiac-story';
+export const INVITE_SHARE_STORY_PATH = '/api/og/invite-story';
 
 /** An image route takes only its own keys, each once; a page skips the ones it does not use. */
 const isPictureRoute = (route: ResultShareRoute) => route.endsWith('-image') || route.endsWith('-story');
@@ -186,9 +239,12 @@ async function discImages(signs: readonly PreviewSign[]): Promise<Map<ShareSign,
 
 // The cards' hero art at its largest (scripts/build-card-art.mjs): most pieces
 // at 1200px, as JPEG because the renderer cannot decode WebP, with the cards' dimming of the dark art
-// (saturate .92, brightness .86) already in the file. Every piece is 3:2.
+// (saturate .92, brightness .86) already in the file. Every piece is 3:2 but the twelve Chinese zodiac
+// animals (public/assets/art/chinese-zodiac/), which keep their 16:9 at 1600px and are drawn around
+// where the animal stands (CHINESE_FOCUS).
 // One literal address per piece, so the deployment's file tracing packs them all.
-export type ShareArt = ShareSign | 'wedding-hero' | 'sky-calendar-hero' | 'twins-hero' | 'milestones-hero';
+export type ChineseArt = `chinese-${'rat' | 'ox' | 'tiger' | 'rabbit' | 'dragon' | 'snake' | 'horse' | 'goat' | 'monkey' | 'rooster' | 'dog' | 'pig'}`;
+export type ShareArt = ShareSign | 'wedding-hero' | 'sky-calendar-hero' | 'twins-hero' | 'milestones-hero' | ChineseArt;
 const ART_FILES: Readonly<Record<ShareArt, URL>> = {
   aries: new URL('../../public/assets/card-art/share/aries-1200.jpg', import.meta.url),
   taurus: new URL('../../public/assets/card-art/share/taurus-1200.jpg', import.meta.url),
@@ -206,6 +262,28 @@ const ART_FILES: Readonly<Record<ShareArt, URL>> = {
   'sky-calendar-hero': new URL('../../public/assets/card-art/share/sky-calendar-hero-1200.jpg', import.meta.url),
   'twins-hero': new URL('../../public/assets/card-art/share/twins-hero-1200.jpg', import.meta.url),
   'milestones-hero': new URL('../../public/assets/card-art/share/milestones-hero-1200.jpg', import.meta.url),
+  'chinese-rat': new URL('../../public/assets/card-art/share/chinese-rat-1600.jpg', import.meta.url),
+  'chinese-ox': new URL('../../public/assets/card-art/share/chinese-ox-1600.jpg', import.meta.url),
+  'chinese-tiger': new URL('../../public/assets/card-art/share/chinese-tiger-1600.jpg', import.meta.url),
+  'chinese-rabbit': new URL('../../public/assets/card-art/share/chinese-rabbit-1600.jpg', import.meta.url),
+  'chinese-dragon': new URL('../../public/assets/card-art/share/chinese-dragon-1600.jpg', import.meta.url),
+  'chinese-snake': new URL('../../public/assets/card-art/share/chinese-snake-1600.jpg', import.meta.url),
+  'chinese-horse': new URL('../../public/assets/card-art/share/chinese-horse-1600.jpg', import.meta.url),
+  'chinese-goat': new URL('../../public/assets/card-art/share/chinese-goat-1600.jpg', import.meta.url),
+  'chinese-monkey': new URL('../../public/assets/card-art/share/chinese-monkey-1600.jpg', import.meta.url),
+  'chinese-rooster': new URL('../../public/assets/card-art/share/chinese-rooster-1600.jpg', import.meta.url),
+  'chinese-dog': new URL('../../public/assets/card-art/share/chinese-dog-1600.jpg', import.meta.url),
+  'chinese-pig': new URL('../../public/assets/card-art/share/chinese-pig-1600.jpg', import.meta.url),
+};
+
+/**
+ * Where each animal stands across its 16:9 piece, from 0 at the left edge to 1 at the right: the card's plate and
+ * the story's band bring that point as near their middle as the piece allows, so an animal drawn at one side of its
+ * piece is still shown whole.
+ */
+export const CHINESE_FOCUS: Readonly<Record<string, number>> = {
+  rat: 0.68, ox: 0.5, tiger: 0.46, rabbit: 0.25, dragon: 0.63, snake: 0.47,
+  horse: 0.72, goat: 0.52, monkey: 0.3, rooster: 0.24, dog: 0.55, pig: 0.4,
 };
 const arts = new Map<ShareArt, Promise<string>>();
 
@@ -255,6 +333,35 @@ function loadShareData(): Promise<ShareData> {
   shareData = pending;
   void pending.catch(() => { if (shareData === pending) shareData = null; });
   return pending;
+}
+
+/** The published monthly and yearly readings, read only when a month's or year's horoscope is asked for. */
+interface PeriodData { months: PublishedMonths; years: PublishedYears }
+let periodData: Promise<PeriodData> | null = null;
+
+function loadPeriodData(): Promise<PeriodData> {
+  if (periodData) return periodData;
+  const pending = Promise.all([
+    readJson<PublishedMonths>(new URL('../data/horoscope-months.json', import.meta.url)),
+    readJson<PublishedYears>(new URL('../data/horoscope-program.json', import.meta.url)),
+  ]).then(([months, program]) => ({
+    months: { months: months.months },
+    // Only the yearly readings; the program's daily surfaces are the window's to share.
+    years: { signs: program.signs.map((entry) => ({ sign: entry.sign, readings: Object.fromEntries(Object.entries(entry.readings).filter(([surface]) => surface.startsWith('yearly-'))) })) },
+  }));
+  periodData = pending;
+  void pending.catch(() => { if (periodData === pending) periodData = null; });
+  return pending;
+}
+
+/** A horoscope's model from the site's data: the window for a day or week, the published readings for a month or year. */
+async function horoscopeModel(share: HoroscopeShare): Promise<HoroscopeCardModel | null | 'unavailable'> {
+  const data = await loadShareData().catch(() => null);
+  if (!data) return 'unavailable';
+  if (share.period !== 'month' && share.period !== 'year') return horoscopeCardModel(share, data.horoscopes);
+  const periods = await loadPeriodData().catch(() => null);
+  if (!periods) return 'unavailable';
+  return horoscopeCardModel(share, data.horoscopes, { ...periods, now: new Date() });
 }
 
 /** A compatibility image shows both Sun signs' panels; a date's shows the wedding piece or the Sun sign's panel. */
@@ -382,13 +489,19 @@ function fit(lines: string[], width: number, max: number, min: number): number {
 
 const titleLine = (text: string, size: number) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: size, lineHeight: 1.03, color: INK } }, text);
 
-/** The words at the bottom left: the discs, the kicker in the card's hue, the title, and the score in a line. */
-function words(parts: { discs: VNode<any>[]; kicker: string; hue: string; title: VNode<any>[]; line: string | VNode<any>[] }) {
+/** A forecast's or score's "Reading confidence NN%", set small under its line in the cards' muted ink. */
+const confidenceLine = (label: string | null | undefined, size = 24, marginTop = 12) => (label
+  ? [h('div', { style: { display: 'flex', fontSize: size, lineHeight: 1.3, color: CARD_MUTED, marginTop: `${marginTop}px`, letterSpacing: '0.01em' } }, label)]
+  : []);
+
+/** The words at the bottom left: the discs, the kicker in the card's hue, the title, the score in a line, and the reading's confidence under it. */
+function words(parts: { discs: VNode<any>[]; kicker: string; hue: string; title: VNode<any>[]; line: string | VNode<any>[]; confidence?: string | null }) {
   return h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '64px', width: `${TEXT_WIDTH}px` } },
     ...parts.discs,
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: parts.hue } }, parts.kicker),
     ...parts.title,
-    h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '18px', maxWidth: '600px', textWrap: 'balance' } }, ...(typeof parts.line === 'string' ? [parts.line] : parts.line)));
+    h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '18px', maxWidth: '600px', textWrap: 'balance' } }, ...(typeof parts.line === 'string' ? [parts.line] : parts.line)),
+    ...confidenceLine(parts.confidence));
 }
 
 /**
@@ -425,6 +538,7 @@ export function compatibilityCard(model: CompatibilityCardModel, images: Map<Sha
     hue: model.people[0].hue,
     title: lines.map((line) => titleLine(line, size)),
     line: `${model.score} out of 100. ${model.verdict}`,
+    confidence: model.confidence,
   }), model.people[0].slug);
 }
 
@@ -432,13 +546,13 @@ export function compatibilityCard(model: CompatibilityCardModel, images: Map<Sha
 const titleBlock = (title: string) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: fit([title], TEXT_WIDTH, 76, 44), lineHeight: 1.03, color: INK, textWrap: 'balance' } }, title);
 
 export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
-  const title = model.names ?? model.headline;
   return frame(art, words({
     discs: discRow(model.signs, images),
-    kicker: model.names ? model.headline : 'The sky on the day',
+    kicker: 'The sky on the day',
     hue: model.ring[0],
-    title: [titleBlock(title)],
+    title: [titleBlock(model.headline)],
     line: `${model.score} out of 100. ${model.verdict}`,
+    confidence: model.confidence,
   }));
 }
 
@@ -453,9 +567,9 @@ export function skyCalendarCard(model: SkyCalendarCardModel, art: string[]) {
   return frame(art, words({ discs: [], kicker: 'Sky calendar', hue: HUES.scorpio, title: [titleBlock('The sky in your calendar')], line: model.line }));
 }
 
-/** A horoscope: the sign's panel, the day or week, the sign, and the reading's own line for it. */
+/** A horoscope: the sign's panel, the day, week, month or year, the sign, the reading's own line for it and its confidence. */
 export function horoscopeCard(model: HoroscopeCardModel, images: Map<ShareSign, string>, art: string[]) {
-  return frame(art, words({ discs: discRow([model.sign], images), kicker: model.kicker, hue: model.hue, title: [titleBlock(model.signName)], line: model.line }), model.sign.slug);
+  return frame(art, words({ discs: discRow([model.sign], images), kicker: model.kicker, hue: model.hue, title: [titleBlock(model.signName)], line: model.line, confidence: model.confidence }), model.sign.slug);
 }
 
 /** A quote behind a rule in the card's hue, as the sky calendar's story sets its event. */
@@ -509,6 +623,87 @@ export function milestoneCard(model: MilestoneCardModel, art: string[]) {
     h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '30px' } }, model.line)));
 }
 
+/** One of the big three: its sign's disc and its name, or, for an undetermined Moon, an empty ring and the words in italic. */
+function bigThreeRow(row: { slug: ShareSign | null; text: string }, images: Map<ShareSign, string>, size: number, disc: number, gap: number) {
+  const src = row.slug ? images.get(row.slug) : undefined;
+  return h('div', { style: { display: 'flex', alignItems: 'center', marginTop: `${gap}px` } },
+    src
+      ? h('img', { src, width: disc, height: disc, style: { width: `${disc}px`, height: `${disc}px`, flexShrink: 0 } })
+      : h('div', { style: { display: 'flex', width: `${disc}px`, height: `${disc}px`, borderRadius: '999px', border: '2px solid rgba(198,204,218,0.3)', flexShrink: 0 } }),
+    h('div', { style: { display: 'flex', marginLeft: `${Math.round(disc * 0.42)}px`, fontFamily: SERIF, lineHeight: 1.05,
+      ...(row.slug ? { fontWeight: 500, fontSize: size, color: INK } : { fontStyle: 'italic', fontWeight: 400, fontSize: Math.round(size * 0.78), color: INK_SOFT }) } }, row.text));
+}
+
+/**
+ * The big three (A, the three as a list): the Sun's panel facing the Moon's when the Moon is settled, and the three
+ * rows, each with its sign's disc; an undetermined Moon says so, and the rising sign appears only when it is known.
+ */
+export function bigThreeCard(model: BigThreeCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const size = fit(model.rows.map((row) => row.text), TEXT_WIDTH - 76, 60, 40);
+  return frame(art, h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '64px', width: `${TEXT_WIDTH}px` } },
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: model.hue, marginBottom: '6px' } }, 'The big three'),
+    ...model.rows.map((row) => bigThreeRow(row, images, size, 52, 14))), model.sun);
+}
+
+const PLATE_LEFT = 480;
+const PLATE_WIDTH = WIDTH - PLATE_LEFT;
+let plateShade: string | null = null;
+
+/**
+ * The darkening over a Chinese zodiac plate, in the void's colour, worked out once as the panels' is: its left edge
+ * fades into the ground the words sit on, an oval vignette keeps the animal lit, and the shade from the left the
+ * other cards use runs over it all.
+ */
+function plateOverlay(): string {
+  if (plateShade) return plateShade;
+  const png = new PNG({ width: WIDTH, height: HEIGHT });
+  for (let y = 0; y < HEIGHT; y += 1) {
+    for (let x = 0; x < WIDTH; x += 1) {
+      const px = x + 0.5;
+      const py = y + 0.5;
+      let clear = 0;
+      if (px > PLATE_LEFT) {
+        const edge = Math.min(1, (px - PLATE_LEFT) / 160);
+        const oval = Math.hypot((px - PLATE_LEFT - 0.55 * PLATE_WIDTH) / (0.6 * PLATE_WIDTH), (py - 0.5 * HEIGHT) / (0.62 * HEIGHT));
+        clear = edge * edge * (3 - 2 * edge) * (1 - ramp(oval, VIGNETTE)) * (1 - ramp(px / WIDTH, SHADE) * 0.6);
+      }
+      const at = (y * WIDTH + x) * 4;
+      png.data[at] = 6;
+      png.data[at + 1] = 7;
+      png.data[at + 2] = 9;
+      png.data[at + 3] = Math.round((1 - clear) * 255);
+    }
+  }
+  plateShade = `data:image/png;base64,${PNG.sync.write(png).toString('base64')}`;
+  return plateShade;
+}
+
+/** A 16:9 piece as tall as its box, with the point `focus` across it brought as near the box's middle as the piece allows. */
+function focusedPanel(src: string, box: { left: number; top: number; width: number; height: number }, focus: number) {
+  const width = Math.round((box.height * 16) / 9);
+  const left = Math.round(Math.min(0, Math.max(box.width - width, box.width / 2 - focus * width)));
+  return h('div', { style: { display: 'flex', position: 'absolute', left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px`, overflow: 'hidden' } },
+    h('img', { src, width, height: box.height, style: { position: 'absolute', left: `${left}px`, top: '0px', width: `${width}px`, height: `${box.height}px` } }));
+}
+
+/**
+ * The Chinese zodiac (A, the animal as a trophy): the animal's own piece as a plate on the right, faded into the
+ * ground on its left, and the animal, its own element and the yin or yang of its years. It names no year, and no
+ * sign, so it has no disc and the brand's own ring.
+ */
+export function chineseZodiacCard(model: ChineseZodiacCardModel, art: string) {
+  return h('div', { style: { width: `${WIDTH}px`, height: `${HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto' } },
+    focusedPanel(art, { left: PLATE_LEFT, top: 0, width: PLATE_WIDTH, height: HEIGHT }, CHINESE_FOCUS[model.slug] ?? 0.5),
+    h('img', { src: plateOverlay(), width: WIDTH, height: HEIGHT, style: { position: 'absolute', left: '0px', top: '0px', width: `${WIDTH}px`, height: `${HEIGHT}px` } }),
+    nameplate(null),
+    words({ discs: [], kicker: 'Chinese zodiac', hue: INK_SOFT, title: [titleBlock(model.title), italicLine(model.detail, 34, 12)], line: model.association }));
+}
+
+/** An invitation to compare charts (C, the keepsake): the two Sun signs' panels facing each other, or one, and the invitation. */
+export function inviteCard(model: InviteCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return frame(art, words({ discs: discRow(model.signs, images), kicker: 'An invitation', hue: model.hue, title: [titleBlock('Compare our charts')], line: model.line }), model.front);
+}
+
 // ── Responses ────────────────────────────────────────────────────────
 
 function errorResponse(status: number): Response {
@@ -555,7 +750,7 @@ async function renderImage(element: VNode<any>, size: { width: number; height: n
 
 export async function handleCompatibilityImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
-  const share = parseCompatibilityShare(new URL(request.url).searchParams);
+  const share = readCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
   const [images, art] = await Promise.all([discImages(model.people), Promise.all(compatibilityArt(share).map(artImage))]).catch(() => [null, null] as const);
@@ -565,7 +760,7 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
-  const share = parseOccasionShare(new URL(request.url).searchParams);
+  const share = readOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
   const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
@@ -611,9 +806,8 @@ export async function handleHoroscopeImageRequest(request: Request): Promise<Res
   if (request.method !== 'GET') return errorResponse(405);
   const share = parseHoroscopeShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
-  const data = await loadShareData().catch(() => null);
-  if (!data) return errorResponse(503);
-  const model = horoscopeCardModel(share, data.horoscopes);
+  const model = await horoscopeModel(share);
+  if (model === 'unavailable') return errorResponse(503);
   if (!model) return errorResponse(400);
   return imageFor([model.sign], [share.sign], (images, art) => horoscopeCard(model, images, art));
 }
@@ -648,6 +842,36 @@ export async function handleMilestoneImageRequest(request: Request): Promise<Res
   return imageFor([], ['milestones-hero'], (_images, art) => milestoneCard(model, art));
 }
 
+/** The big three's art: the Sun's panel facing the Moon's when the Moon is settled, else the Sun's alone. */
+const bigThreeArt = (share: { sun: ShareSign; moon: ShareSign | null }): ShareArt[] => (share.moon ? [share.sun, share.moon] : [share.sun]);
+const chineseArt = (slug: string) => `chinese-${slug}` as ChineseArt;
+
+export async function handleBigThreeImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseBigThreeShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = bigThreeCardModel(share);
+  return imageFor(model.signs, bigThreeArt(share), (images, art) => bigThreeCard(model, images, art));
+}
+
+export async function handleChineseZodiacImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseChineseZodiacShare(new URL(request.url).searchParams);
+  const model = share ? chineseZodiacCardModel(share) : null;
+  if (!model) return errorResponse(400);
+  const art = await artImage(chineseArt(model.slug)).catch(() => null);
+  if (!art) return errorResponse(503);
+  return renderImage(chineseZodiacCard(model, art));
+}
+
+export async function handleInviteImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseInviteShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = inviteCardModel(share);
+  return imageFor(model.signs, artOfSigns(model.signs), (images, art) => inviteCard(model, images, art));
+}
+
 // ── Stories (1080×1920) ──────────────────────────────────────────────
 //
 // The picture to post as a story, in the layouts the owner picked for each
@@ -679,8 +903,13 @@ function storyArtPanel(src: string, box: { left: number; width: number }, size: 
 }
 
 const STORY_FADE: readonly (readonly [number, number])[] = [[0, 0.58], [0.2, 0.12], [0.3, 0], [0.56, 0], [0.92, 1]];
+/**
+ * A pair of sign panels is 800px tall, so on the big three's and an invitation's stories the fade ends before their
+ * lower edge rather than past it; the compatibility story keeps STORY_FADE, its ring drawn over that edge.
+ */
+const STORY_PAIR_FADE: readonly (readonly [number, number])[] = [[0, 0.58], [0.2, 0.12], [0.3, 0], [0.42, 0], [0.665, 1]];
 const STORY_EDGE: readonly (readonly [number, number])[] = [[0.62, 0], [1, 0.55]];
-const storyOverlays = new Map<boolean, string>();
+const storyOverlays = new Map<string, string>();
 
 /**
  * The darkening over a story's art, in the void's colour, worked out once
@@ -689,14 +918,15 @@ const storyOverlays = new Map<boolean, string>();
  * void from just past halfway down the band, a soft darkening towards the
  * sides, and for a pair the seam where the two panels meet.
  */
-function storyOverlay(pair: boolean): string {
-  const known = storyOverlays.get(pair);
+function storyOverlay(pair: boolean, stops: readonly (readonly [number, number])[] = STORY_FADE): string {
+  const key = `${pair}:${stops === STORY_FADE ? 'band' : 'pair'}`;
+  const known = storyOverlays.get(key);
   if (known) return known;
   const png = new PNG({ width: STORY_WIDTH, height: STORY_ART_HEIGHT });
   const half = STORY_WIDTH / 2;
   const seam = half * 0.16;
   for (let y = 0; y < STORY_ART_HEIGHT; y += 1) {
-    const fade = ramp((y + 0.5) / STORY_ART_HEIGHT, STORY_FADE);
+    const fade = ramp((y + 0.5) / STORY_ART_HEIGHT, stops);
     for (let x = 0; x < STORY_WIDTH; x += 1) {
       const px = x + 0.5;
       let clear = (1 - fade) * (1 - ramp(Math.abs(px - half) / half, STORY_EDGE));
@@ -709,18 +939,21 @@ function storyOverlay(pair: boolean): string {
     }
   }
   const src = `data:image/png;base64,${PNG.sync.write(png).toString('base64')}`;
-  storyOverlays.set(pair, src);
+  storyOverlays.set(key, src);
   return src;
 }
 
-/** The art across the top: one piece, or two sign panels facing each other. */
-function storyArt(images: string[]) {
+/** The art across the top: one piece, or two sign panels facing each other, faded into the void (a pair's fade may end above its lower edge). */
+function storyArt(images: string[], pairFade: readonly (readonly [number, number])[] = STORY_FADE) {
   const pair = images.length === 2;
   const panels = pair
     ? [storyArtPanel(images[0], { left: 0, width: STORY_WIDTH / 2 }, 1200, 0, true), storyArtPanel(images[1], { left: STORY_WIDTH / 2, width: STORY_WIDTH / 2 }, 1200, 0, false)]
     : [storyArtPanel(images[0], { left: 0, width: STORY_WIDTH }, 1680, 0, false)];
-  return [...panels, h('img', { src: storyOverlay(pair), width: STORY_WIDTH, height: STORY_ART_HEIGHT, style: { position: 'absolute', left: '0px', top: '0px', width: `${STORY_WIDTH}px`, height: `${STORY_ART_HEIGHT}px` } })];
+  return [...panels, h('img', { src: storyOverlay(pair, pair ? pairFade : STORY_FADE), width: STORY_WIDTH, height: STORY_ART_HEIGHT, style: { position: 'absolute', left: '0px', top: '0px', width: `${STORY_WIDTH}px`, height: `${STORY_ART_HEIGHT}px` } })];
 }
+
+/** A forecast's or score's "Reading confidence NN%" on a story, under its line. */
+const storyConfidence = (label: string | null) => confidenceLine(label, 30, 18);
 
 /** The lockup in its pill, centred under the apps' top bar. */
 function storyLockup(front: ShareSign | null) {
@@ -767,11 +1000,11 @@ function storyColumn(children: VNode<any>[], align: 'center' | 'flex-start' = 'c
     } }, ...children);
 }
 
-function storyFrame(art: string[], column: VNode<any>, front: ShareSign | null = null) {
+function storyFrame(art: string[], column: VNode<any>, front: ShareSign | null = null, pairFade: readonly (readonly [number, number])[] = STORY_FADE) {
   return h('div', { style: {
       width: `${STORY_WIDTH}px`, height: `${STORY_HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto',
     } },
-    ...storyArt(art),
+    ...storyArt(art, pairFade),
     storyLockup(front),
     column);
 }
@@ -799,7 +1032,7 @@ function storyRing(score: number, hues: [string, string], size: number, stroke: 
       h('div', { style: { display: 'flex', fontSize: labelSize, color: MUTED, marginTop: `${Math.round(numberSize * 0.06)}px` } }, 'out of 100')));
 }
 
-/** Compatibility (A, the score as a trophy): both panels, the discs, the ring, the verdict and the two names. */
+/** Compatibility (A, the score as a trophy): both panels, the discs, the ring, the verdict and Person A and Person B. */
 export function compatibilityStory(model: CompatibilityCardModel, images: Map<ShareSign, string>, art: string[]) {
   const nameSize = storyFit([`${model.first} and ${model.second}`], 96, 56);
   const areas = model.areas.map((area, index) => `${index === 0 ? area.label : area.label.toLowerCase()} ${area.value}`).join(', ');
@@ -812,21 +1045,22 @@ export function compatibilityStory(model: CompatibilityCardModel, images: Map<Sh
       h('span', { style: { fontStyle: 'italic', fontWeight: 400, color: INK_SOFT, marginLeft: `${Math.round(nameSize * 0.26)}px`, marginRight: `${Math.round(nameSize * 0.26)}px` } }, 'and'),
       model.second),
     storyLine(`${areas}.`, 36),
+    ...storyConfidence(model.confidence),
     storyAction('Check your own compatibility', 'zodiacs.org/compatibility'),
   ]), model.people[0].slug);
 }
 
-/** A date (C, the keepsake): the wedding piece or the Sun's panel, the names, and the score kept small. */
+/** A date (C, the keepsake): the wedding piece or the Sun's panel, the occasion, and the score kept small. */
 export function occasionStory(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
-  const title = model.names ?? model.headline;
   return storyFrame(art, storyColumn([
     ...storyDiscs(model.signs, images),
-    storyKicker(model.names ? model.headline : 'The sky on the day', model.ring[0]),
-    storyTitle(title, storyFit([title], 110, 64)),
+    storyKicker('The sky on the day', model.ring[0]),
+    storyTitle(model.headline, storyFit([model.headline], 110, 64)),
     h('div', { style: { display: 'flex', alignItems: 'center', marginTop: '34px' } },
       storyRing(model.score, model.ring, 150, 10, 56, 17),
       h('div', { style: { display: 'flex', fontSize: 40, lineHeight: 1.25, color: INK, marginLeft: '28px', maxWidth: '560px' } }, model.verdict)),
     storyLine(model.when, 34),
+    ...storyConfidence(model.confidence),
     storyAction('Rate your own date', 'zodiacs.org/occasions'),
   ]));
 }
@@ -854,13 +1088,14 @@ export function skyCalendarStory(model: SkyCalendarCardModel, art: string[]) {
   ], 'flex-start'));
 }
 
-/** A horoscope (C, the keepsake): the sign's panel, the day or week, the sign and the reading's own line. */
+/** A horoscope (C, the keepsake): the sign's panel, the day, week, month or year, the sign, the reading's own line and its confidence. */
 export function horoscopeStory(model: HoroscopeCardModel, images: Map<ShareSign, string>, art: string[]) {
   return storyFrame(art, storyColumn([
     ...storyDiscs([model.sign], images),
     storyKicker(model.kicker, model.hue),
     storyTitle(model.signName, storyFit([model.signName], 124, 72)),
     storyLine(model.line),
+    ...storyConfidence(model.confidence),
     storyAction('Read your own horoscope', 'zodiacs.org/horoscopes'),
   ]), model.sign.slug);
 }
@@ -900,11 +1135,47 @@ export function milestoneStory(model: MilestoneCardModel, art: string[]) {
   ]));
 }
 
+/** The big three (A, the three as a list): the Sun's panel facing the Moon's, and the rows, each with its disc. */
+export function bigThreeStory(model: BigThreeCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const size = fit(model.rows.map((row) => row.text), STORY_WIDTH - 144 - 120, 92, 56);
+  return storyFrame(art, storyColumn([
+    storyKicker('The big three', model.hue),
+    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '10px' } }, ...model.rows.map((row) => bigThreeRow(row, images, size, 84, 26))),
+    storyAction('Find your big three', 'zodiacs.org/big-three'),
+  ]), model.sun, STORY_PAIR_FADE);
+}
+
+/** The Chinese zodiac (A, the animal as a trophy): the animal's piece across the top, around where it stands, and the animal, its own element, the yin or yang of its years and its associations. Never a year. */
+export function chineseZodiacStory(model: ChineseZodiacCardModel, art: string) {
+  return h('div', { style: { width: `${STORY_WIDTH}px`, height: `${STORY_HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto' } },
+    focusedPanel(art, { left: 0, top: 0, width: STORY_WIDTH, height: 1120 }, CHINESE_FOCUS[model.slug] ?? 0.5),
+    h('img', { src: storyOverlay(false), width: STORY_WIDTH, height: STORY_ART_HEIGHT, style: { position: 'absolute', left: '0px', top: '0px', width: `${STORY_WIDTH}px`, height: `${STORY_ART_HEIGHT}px` } }),
+    storyLockup(null),
+    storyColumn([
+      storyKicker('Chinese zodiac', INK_SOFT),
+      storyTitle(model.title, storyFit([model.title], 112, 64)),
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 52, lineHeight: 1.2, color: INK_SOFT, marginTop: '22px' } }, model.detail),
+      storyLine(model.association, 38),
+      storyAction(`Read about the ${model.name}`, `zodiacs.org/learn/chinese-zodiac/${model.slug}`),
+    ]));
+}
+
+/** An invitation to compare charts (C, the keepsake): the two panels facing each other, the discs and the invitation. */
+export function inviteStory(model: InviteCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return storyFrame(art, storyColumn([
+    ...storyDiscs(model.signs, images),
+    storyKicker('An invitation', model.hue),
+    storyTitle('Compare our charts', storyFit(['Compare our charts'], 112, 64)),
+    storyLine(model.line),
+    storyAction('Invite someone to compare charts', 'zodiacs.org/compatibility/invite'),
+  ]), model.front, STORY_PAIR_FADE);
+}
+
 const renderStory = (element: VNode<any>) => renderImage(element, STORY_SIZE);
 
 export async function handleCompatibilityStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
-  const share = parseCompatibilityShare(new URL(request.url).searchParams);
+  const share = readCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
   const [images, art] = await Promise.all([discImages(model.people), Promise.all(compatibilityArt(share).map(artImage))]).catch(() => [null, null] as const);
@@ -914,7 +1185,7 @@ export async function handleCompatibilityStoryRequest(request: Request): Promise
 
 export async function handleOccasionStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
-  const share = parseOccasionShare(new URL(request.url).searchParams);
+  const share = readOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
   const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
@@ -954,9 +1225,8 @@ export async function handleHoroscopeStoryRequest(request: Request): Promise<Res
   if (request.method !== 'GET') return errorResponse(405);
   const share = parseHoroscopeShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
-  const data = await loadShareData().catch(() => null);
-  if (!data) return errorResponse(503);
-  const model = horoscopeCardModel(share, data.horoscopes);
+  const model = await horoscopeModel(share);
+  if (model === 'unavailable') return errorResponse(503);
   if (!model) return errorResponse(400);
   return storyFor([model.sign], [share.sign], (images, art) => horoscopeStory(model, images, art));
 }
@@ -989,6 +1259,32 @@ export async function handleMilestoneStoryRequest(request: Request): Promise<Res
   if (!share) return errorResponse(400);
   const model = milestoneCardModel(share);
   return storyFor([], ['milestones-hero'], (_images, art) => milestoneStory(model, art));
+}
+
+export async function handleBigThreeStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseBigThreeShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = bigThreeCardModel(share);
+  return storyFor(model.signs, bigThreeArt(share), (images, art) => bigThreeStory(model, images, art));
+}
+
+export async function handleChineseZodiacStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseChineseZodiacShare(new URL(request.url).searchParams);
+  const model = share ? chineseZodiacCardModel(share) : null;
+  if (!model) return errorResponse(400);
+  const art = await artImage(chineseArt(model.slug)).catch(() => null);
+  if (!art) return errorResponse(503);
+  return renderStory(chineseZodiacStory(model, art));
+}
+
+export async function handleInviteStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseInviteShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = inviteCardModel(share);
+  return storyFor(model.signs, artOfSigns(model.signs), (images, art) => inviteStory(model, images, art));
 }
 
 // ── The page a share link opens ──────────────────────────────────────
@@ -1179,13 +1475,21 @@ export async function handleSkyCalendarLinkRequest(request: Request): Promise<Re
   }));
 }
 
+/** A month's or year's own page on the site, beside the way to read your own. */
+function periodPage(share: HoroscopeShare, signName: string): SharePage['more'] {
+  if (share.period === 'month') return { label: `${signName}’s monthly horoscope`, href: withRef(`/horoscopes/${share.sign}/monthly/`, share.ref) };
+  if (share.period === 'year') return { label: `${signName}’s ${share.date.slice(0, 4)} horoscope`, href: withRef(`/horoscopes/${share.sign}/${share.date.slice(0, 4)}/`, share.ref) };
+  return undefined;
+}
+
 export async function handleHoroscopeLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
   const share = parseHoroscopeShare(url.searchParams);
-  const data = share ? await loadShareData().catch(() => null) : null;
-  const model = share && data ? horoscopeCardModel(share, data.horoscopes) : null;
-  if (!share || !model) return htmlResponse(sharePageHtml(defaultHoroscopePage(url.origin)));
+  const model = share ? await horoscopeModel(share) : null;
+  if (!share || !model || model === 'unavailable') return htmlResponse(sharePageHtml(defaultHoroscopePage(url.origin)));
+  const confidence = model.confidence ? ` ${model.confidence}.` : '';
+  const more = periodPage(share, model.signName);
   return htmlResponse(sharePageHtml({
     title: `${model.heading} on Zodiacs`,
     // A reading no longer kept here still names its sign and the sign's dates.
@@ -1194,9 +1498,10 @@ export async function handleHoroscopeLinkRequest(request: Request): Promise<Resp
     imageUrl: `${url.origin}${HOROSCOPE_SHARE_IMAGE_PATH}?${horoscopeQuery(share)}`,
     story: { href: `${HOROSCOPE_SHARE_STORY_PATH}?${horoscopeQuery(share)}`, filename: `zodiacs-${share.sign}-horoscope-story.jpg` },
     imageType: 'image/jpeg',
-    imageAlt: `${model.heading}: ${model.line}`,
-    explanation: model.passage ?? 'Zodiacs writes a horoscope for each Sun sign every day, from that day’s sky. This one is no longer kept here; today’s are on zodiacs.org.',
+    imageAlt: `${model.heading}: ${model.line}${confidence}`,
+    explanation: model.passage ? `${model.passage}${confidence}` : 'Zodiacs writes a horoscope for each Sun sign every day, from that day’s sky. This one is no longer kept here; today’s are on zodiacs.org.',
     action: { label: 'Read your own horoscope', href: withRef('/horoscopes/', share.ref) },
+    ...(more ? { more } : {}),
     note: HOROSCOPE_DISCLOSURE,
   }));
 }
@@ -1204,7 +1509,7 @@ export async function handleHoroscopeLinkRequest(request: Request): Promise<Resp
 export async function handleCompatibilityLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
-  const share = parseCompatibilityShare(url.searchParams);
+  const share = readCompatibilityShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultCompatibilityPage(url.origin)));
   const model = compatibilityCardModel(share);
   return htmlResponse(sharePageHtml({
@@ -1214,8 +1519,8 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
     imageUrl: `${url.origin}${COMPATIBILITY_SHARE_IMAGE_PATH}?${compatibilityQuery(share)}`,
     story: { href: `${COMPATIBILITY_SHARE_STORY_PATH}?${compatibilityQuery(share)}`, filename: 'zodiacs-compatibility-story.jpg' },
     imageType: 'image/jpeg',
-    imageAlt: `${model.first} and ${model.second}, ${model.score} out of 100. ${model.summary}`,
-    explanation: `${model.first} and ${model.second} compared their birth charts on Zodiacs: ${model.score} out of 100, ${model.verdict.charAt(0).toLowerCase()}${model.verdict.slice(1)}. The score reads the contacts between the two charts and their Sun signs’ elements.`,
+    imageAlt: `${model.first} and ${model.second}, ${model.score} out of 100. ${model.summary}${model.confidence ? ` ${model.confidence}.` : ''}`,
+    explanation: `${model.first} and ${model.second} compared their birth charts on Zodiacs: ${model.score} out of 100, ${model.verdict.charAt(0).toLowerCase()}${model.verdict.slice(1)}. The score reads the contacts between the two charts and their Sun signs’ elements.${model.confidence ? ` ${model.confidence}.` : ''}`,
     action: { label: 'Check your own compatibility', href: withRef('/compatibility/', share.ref) },
     note: SHARE_NOTE,
   }));
@@ -1224,18 +1529,18 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
 export async function handleOccasionLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
-  const share = parseOccasionShare(url.searchParams);
+  const share = readOccasionShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultOccasionPage(url.origin)));
   const model = occasionCardModel(share);
   return htmlResponse(sharePageHtml({
     title: `${model.title} on Zodiacs`,
     description: model.summary,
-    heading: model.names ? `${model.names}: ${model.headline.charAt(0).toLowerCase()}${model.headline.slice(1)}` : model.headline,
+    heading: model.headline,
     imageUrl: `${url.origin}${OCCASION_SHARE_IMAGE_PATH}?${occasionQuery(share)}`,
     story: { href: `${OCCASION_SHARE_STORY_PATH}?${occasionQuery(share)}`, filename: `zodiacs-${share.occasion}-story.jpg` },
     imageType: 'image/jpeg',
-    imageAlt: `${model.headline}, ${model.when}: ${model.score} out of 100. ${model.verdict}.`,
-    explanation: `Zodiacs rated this date ${model.score} out of 100 from the sky that day: the Moon’s phase and sign, Venus, and any planets in retrograde.`,
+    imageAlt: `${model.headline}, ${model.when}: ${model.score} out of 100. ${model.verdict}.${model.confidence ? ` ${model.confidence}.` : ''}`,
+    explanation: `Zodiacs rated this date ${model.score} out of 100 from the sky that day: the Moon’s phase and sign, Venus, and any planets in retrograde.${model.confidence ? ` ${model.confidence}.` : ''}`,
     action: { label: 'Rate your own date', href: withRef('/occasions/', share.ref) },
     note: SHARE_NOTE,
   }));
@@ -1358,6 +1663,118 @@ export async function handleMilestoneLinkRequest(request: Request): Promise<Resp
   }));
 }
 
+/** The birth chart tool's note (src/ai-tools/features/natal-chart.ts, NATAL_NOTE), which the big three's page keeps. */
+const BIG_THREE_NOTE = 'Astrology’s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.';
+/** The Chinese zodiac tool's note (src/ai-tools/features/chinese-zodiac.ts, CHINESE_ZODIAC_NOTE), which its page keeps. */
+const CHINESE_ZODIAC_NOTE = 'Traditional associations of the Chinese calendar, for reflection: not a personality test or a prediction.';
+/** After the compatibility invite page's lede (src/lib/sharing/copy-en.ts, inviteLede), for whoever opens an invitation. */
+const INVITE_ABOUT = 'Add your chart first, then send the link: the other person adds theirs, and you both see how the two charts meet.';
+
+function defaultBigThreePage(origin: string): SharePage {
+  return {
+    title: 'The big three on Zodiacs',
+    description: 'Your Sun, Moon and rising signs.',
+    heading: 'Your Sun, Moon and rising',
+    imageUrl: `${origin}/assets/og/v2/tool/big-three.png`,
+    imageType: 'image/png',
+    imageAlt: 'The big three on Zodiacs',
+    explanation: 'Zodiacs finds your Sun, Moon and rising signs from your birth date. A birth time is needed for your rising sign.',
+    action: { label: 'Find your big three', href: '/big-three/' },
+    note: BIG_THREE_NOTE,
+  };
+}
+
+function defaultChineseZodiacPage(origin: string): SharePage {
+  return {
+    title: 'The Chinese zodiac on Zodiacs',
+    description: 'The twelve animals of the Chinese calendar, and the Lunar New Year that starts each animal year.',
+    heading: 'The Chinese zodiac',
+    imageUrl: `${origin}/assets/og/v2/share.png`,
+    imageType: 'image/png',
+    imageAlt: 'Zodiacs',
+    explanation: 'Zodiacs’ guide to the Chinese zodiac: the twelve animals in order, their traditional associations, and the Lunar New Year that starts each animal year.',
+    action: { label: 'Read the guide', href: '/learn/chinese-zodiac/' },
+    note: CHINESE_ZODIAC_NOTE,
+  };
+}
+
+function defaultInvitePage(origin: string): SharePage {
+  return {
+    title: 'Compare charts on Zodiacs',
+    description: 'Invite someone to compare birth charts with you.',
+    heading: 'Invite someone to compare charts',
+    imageUrl: `${origin}/assets/og/v2/tool/compatibility-private-invite.png`,
+    imageType: 'image/png',
+    imageAlt: 'Compare charts on Zodiacs',
+    explanation: INVITE_ABOUT,
+    action: { label: 'Make an invite link', href: '/compatibility/invite/' },
+    note: SHARE_NOTE,
+  };
+}
+
+export async function handleBigThreeLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseBigThreeShare(url.searchParams);
+  if (!share) return htmlResponse(sharePageHtml(defaultBigThreePage(url.origin)));
+  const model = bigThreeCardModel(share);
+  return htmlResponse(sharePageHtml({
+    title: `${model.title}: the big three on Zodiacs`,
+    description: model.about,
+    heading: model.title,
+    imageUrl: `${url.origin}${BIG_THREE_SHARE_IMAGE_PATH}?${bigThreeQuery(share)}`,
+    story: { href: `${BIG_THREE_SHARE_STORY_PATH}?${bigThreeQuery(share)}`, filename: `zodiacs-big-three-${share.sun}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `The big three: ${model.title}.`,
+    explanation: model.about,
+    action: { label: 'Find your big three', href: withRef('/big-three/', share.ref) },
+    more: { label: 'Open the birth chart page', href: withRef('/birth-chart/', share.ref) },
+    note: BIG_THREE_NOTE,
+  }));
+}
+
+export async function handleChineseZodiacLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseChineseZodiacShare(url.searchParams);
+  const model = share ? chineseZodiacCardModel(share) : null;
+  if (!share || !model) return htmlResponse(sharePageHtml(defaultChineseZodiacPage(url.origin)));
+  return htmlResponse(sharePageHtml({
+    title: `${model.title}: the Chinese zodiac on Zodiacs`,
+    description: `${model.detail}. ${model.association}`,
+    heading: model.title,
+    imageUrl: `${url.origin}${CHINESE_ZODIAC_SHARE_IMAGE_PATH}?${chineseZodiacQuery(share)}`,
+    story: { href: `${CHINESE_ZODIAC_SHARE_STORY_PATH}?${chineseZodiacQuery(share)}`, filename: `zodiacs-chinese-zodiac-${model.slug}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `The Chinese zodiac: ${model.title}. ${model.detail}.`,
+    explanation: `${model.detail}. ${model.element.charAt(0).toUpperCase()}${model.element.slice(1)} is the ${model.name}’s own element, from its Earthly Branch ${model.branch}, whatever the year. ${model.association} ${model.context}`,
+    action: { label: `Read about the ${model.name}`, href: withRef(`/learn/chinese-zodiac/${model.slug}/`, share.ref) },
+    more: { label: 'All twelve animals', href: withRef('/learn/chinese-zodiac/', share.ref) },
+    note: CHINESE_ZODIAC_NOTE,
+  }));
+}
+
+export async function handleInviteLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseInviteShare(url.searchParams);
+  if (!share) return htmlResponse(sharePageHtml(defaultInvitePage(url.origin)));
+  const model = inviteCardModel(share);
+  return htmlResponse(sharePageHtml({
+    title: 'Compare our charts on Zodiacs',
+    description: `${model.line} An invitation to compare birth charts on Zodiacs.`,
+    heading: 'Compare our charts',
+    imageUrl: `${url.origin}${INVITE_SHARE_IMAGE_PATH}?${inviteQuery(share)}`,
+    story: { href: `${INVITE_SHARE_STORY_PATH}?${inviteQuery(share)}`, filename: 'zodiacs-invite-story.jpg' },
+    imageType: 'image/jpeg',
+    imageAlt: `An invitation to compare charts: ${model.line}`,
+    explanation: `${model.line} ${INVITE_ABOUT}`,
+    action: { label: 'Make an invite link', href: withRef('/compatibility/invite/', share.ref) },
+    more: { label: 'Compare two charts now', href: withRef('/compatibility/', share.ref) },
+    note: SHARE_NOTE,
+  }));
+}
+
 // ── The deployed function's entry ────────────────────────────────────
 
 const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response> }>> = {
@@ -1385,6 +1802,15 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'milestone-link': { path: MILESTONE_SHARE_PATH, keys: MILESTONE_SHARE_KEYS, handle: (request) => handleMilestoneLinkRequest(request) },
   'milestone-image': { path: MILESTONE_SHARE_IMAGE_PATH, keys: MILESTONE_SHARE_KEYS, handle: (request) => handleMilestoneImageRequest(request) },
   'milestone-story': { path: MILESTONE_SHARE_STORY_PATH, keys: MILESTONE_SHARE_KEYS, handle: (request) => handleMilestoneStoryRequest(request) },
+  'big-three-link': { path: BIG_THREE_SHARE_PATH, keys: BIG_THREE_SHARE_KEYS, handle: handleBigThreeLinkRequest },
+  'big-three-image': { path: BIG_THREE_SHARE_IMAGE_PATH, keys: BIG_THREE_SHARE_KEYS, handle: handleBigThreeImageRequest },
+  'big-three-story': { path: BIG_THREE_SHARE_STORY_PATH, keys: BIG_THREE_SHARE_KEYS, handle: handleBigThreeStoryRequest },
+  'chinese-zodiac-link': { path: CHINESE_ZODIAC_SHARE_PATH, keys: CHINESE_ZODIAC_SHARE_KEYS, handle: handleChineseZodiacLinkRequest },
+  'chinese-zodiac-image': { path: CHINESE_ZODIAC_SHARE_IMAGE_PATH, keys: CHINESE_ZODIAC_SHARE_KEYS, handle: handleChineseZodiacImageRequest },
+  'chinese-zodiac-story': { path: CHINESE_ZODIAC_SHARE_STORY_PATH, keys: CHINESE_ZODIAC_SHARE_KEYS, handle: handleChineseZodiacStoryRequest },
+  'invite-link': { path: INVITE_SHARE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteLinkRequest },
+  'invite-image': { path: INVITE_SHARE_IMAGE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteImageRequest },
+  'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);

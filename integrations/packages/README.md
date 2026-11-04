@@ -40,8 +40,15 @@ and 0.3.22 keeps its bytes. Developer 0.3.24 is rebuilt from the 0.6.2 source
 that adds Chiron, from NASA JPL Horizons positions for 1800 to 2199, to the
 natal chart, `search_sky_events` and `explain_astrology` behind the same switch;
 its local tools are unchanged, Zodiacs stays 0.6.2, and 0.3.23 keeps its bytes.
+Developer 0.3.25 is rebuilt from the 0.6.2 source whose answers link back to
+zodiacs.org (the sky calendar, the daily horoscope email and an invitation to
+compare charts) and whose compatibility and date share links carry the reading
+confidence; the share links for the big three, the Chinese zodiac's animal and a
+month's or year's horoscope, and the readings panel with the lunar nodes and
+Chiron, sit behind the same switch. Its local tools are unchanged, Zodiacs stays
+0.6.2, and 0.3.24 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.24**;
+Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.25**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

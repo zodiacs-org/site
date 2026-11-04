@@ -34,6 +34,22 @@ export function readingConfidence(detail: ReadingDetail, tightOrb = false): numb
   return Math.min(95, base + (tightOrb ? 5 : 0));
 }
 
-export function readingConfidenceLabel(detail: ReadingDetail, tightOrb = false): string {
-  return `Reading confidence ${readingConfidence(detail, tightOrb)}%`;
+/** The label for a value this rule gives, as a share card prints it. */
+export function readingConfidenceText(value: number): string {
+  return `Reading confidence ${value}%`;
 }
+
+export function readingConfidenceLabel(detail: ReadingDetail, tightOrb = false): string {
+  return readingConfidenceText(readingConfidence(detail, tightOrb));
+}
+
+/**
+ * The values a reading of two dated charts can have: a date, or a date with a
+ * time and a place, each with or without a contact under 1 degree. A
+ * compatibility share link may carry only one of these.
+ */
+export const PAIR_CONFIDENCES: readonly number[] = Object.freeze([...new Set((['date', 'timed-place'] as const)
+  .flatMap((detail) => [readingConfidence(detail), readingConfidence(detail, true)]))]);
+
+/** The values a dated day's reading can have, with no contact to tighten it. An occasion share link may carry only one of these. */
+export const DAY_CONFIDENCES: readonly number[] = Object.freeze([readingConfidence('date'), readingConfidence('timed-place')]);

@@ -2,6 +2,18 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { OUTPUT_SCHEMAS } from './contracts';
 import {
+  bigThreeQuery,
+  bigThreeShareUrl,
+  CHINESE_SHARE_FIRST_YEAR,
+  CHINESE_SHARE_LAST_YEAR,
+  chineseZodiacQuery,
+  chineseZodiacShareUrl,
+  horoscopePeriodShareUrl,
+  inviteQuery,
+  inviteShareUrl,
+  parseBigThreeShare,
+  parseChineseZodiacShare,
+  parseInviteShare,
   birthdayQuery,
   birthdayShareUrl,
   chartTwinsQuery,
@@ -27,6 +39,9 @@ import { lifeMilestones } from '../lib/occasions/milestones';
 import { matchTwins } from '../lib/sharing/twins';
 import { twinMatches, type IndexedPerson } from '../server/result-preview-model';
 import peopleIndex from './features/people-index.json';
+import { CHINESE_FIRST_YEAR, CHINESE_LAST_YEAR, chineseElement } from './features/chinese-zodiac';
+import { chineseZodiacCardModel } from '../server/result-preview-model';
+import { chineseAnimalForCycleYear } from '../data/chinese-zodiac';
 
 const params = (query: string) => new URLSearchParams(query);
 const NOW = new Date('2026-10-18T12:00:00Z');
@@ -79,10 +94,103 @@ describe('a horoscope share link', () => {
   });
 
   it('never carries text, and refuses a day and a week together', () => {
-    expect(parseHoroscopeShare(params('s=leo&w=2026-10-12'))).toEqual({ sign: 'leo', date: '2026-10-12', week: true, focus: 'general', ref: null });
+    expect(parseHoroscopeShare(params('s=leo&w=2026-10-12'))).toEqual({ sign: 'leo', date: '2026-10-12', period: 'week', focus: 'general', ref: null });
     expect(horoscopeQuery(parseHoroscopeShare(params('s=leo&d=2026-10-17&f=general'))!)).toBe('s=leo&d=2026-10-17');
     for (const query of ['s=leo', 's=leo&d=2026-10-17&w=2026-10-12', 's=leo&w=2026-10-12&f=love', 's=leo&d=2026-10-17&f=money', 's=leo&d=2026-10-17&text=You+will+win', 's=leo&w=2026-10-14', 'd=2026-10-17']) {
       expect(parseHoroscopeShare(params(query)), query).toBeNull();
+    }
+  });
+});
+
+describe('a month\'s or year\'s horoscope share link', () => {
+  it('names the sign and the month or the year, from any day in it', () => {
+    expect(horoscopePeriodShareUrl('https://zodiacs.org', { sign: 'leo', period: 'month', date: '2026-11-05' })).toBe('https://zodiacs.org/share/horoscope/?s=leo&m=2026-11');
+    expect(horoscopePeriodShareUrl('https://zodiacs.org', { sign: 'leo', period: 'year', date: '2027-03-01' })).toBe('https://zodiacs.org/share/horoscope/?s=leo&y=2027');
+    expect(horoscopePeriodShareUrl('https://zodiacs.org', { sign: 'lion', period: 'month', date: '2026-11-05' })).toBeNull();
+    expect(parseHoroscopeShare(params('s=leo&m=2026-11&ref=chatgpt'))).toEqual({ sign: 'leo', date: '2026-11-01', period: 'month', focus: 'general', ref: 'chatgpt' });
+    expect(parseHoroscopeShare(params('s=leo&y=2027'))).toEqual({ sign: 'leo', date: '2027-01-01', period: 'year', focus: 'general', ref: null });
+    expect(horoscopeQuery(parseHoroscopeShare(params('s=leo&m=2026-11'))!)).toBe('s=leo&m=2026-11');
+    expect(horoscopeQuery(parseHoroscopeShare(params('s=leo&y=2027'))!)).toBe('s=leo&y=2027');
+  });
+
+  it('takes one period, never a focus beside a month or a year, and nothing but a month or a year in its form', () => {
+    for (const query of ['s=leo&m=2026-11&y=2026', 's=leo&m=2026-11&d=2026-11-05', 's=leo&m=2026-11&f=love', 's=leo&y=2026&f=career', 's=leo&m=2026-13', 's=leo&m=2026-1', 's=leo&m=November', 's=leo&y=26', 's=leo&y=2300', 's=leo&y=2026&w=2026-10-12', 'm=2026-11']) {
+      expect(parseHoroscopeShare(params(query)), query).toBeNull();
+    }
+  });
+});
+
+describe('a big three share link', () => {
+  it('carries the Sun, the Moon when the chart settles it and the rising sign only when it is known', () => {
+    expect(bigThreeShareUrl('https://zodiacs.org', { sun: 'leo', moon: 'aries', rising: 'libra' })).toBe('https://zodiacs.org/share/big-three/?s=leo&m=aries&r=libra');
+    expect(bigThreeShareUrl('https://zodiacs.org', { sun: 'leo', moon: 'aries', rising: null })).toBe('https://zodiacs.org/share/big-three/?s=leo&m=aries');
+    // Untimed on a day the Moon changed sign: the card says the Moon sign is undetermined.
+    expect(bigThreeShareUrl('https://zodiacs.org', { sun: 'leo', moon: null, rising: null })).toBe('https://zodiacs.org/share/big-three/?s=leo');
+    // A rising sign takes a birth time, which settles the Moon; without the Moon the link carries the Sun alone.
+    expect(bigThreeShareUrl('https://zodiacs.org', { sun: 'leo', moon: null, rising: 'libra' })).toBe('https://zodiacs.org/share/big-three/?s=leo');
+    expect(bigThreeShareUrl('https://zodiacs.org', { sun: null, moon: 'aries', rising: 'libra' })).toBeNull();
+  });
+
+  it('reads back exactly what it wrote, and nothing else', () => {
+    const share = parseBigThreeShare(params('s=leo&m=aries&r=libra&ref=chatgpt'))!;
+    expect(share).toEqual({ sun: 'leo', moon: 'aries', rising: 'libra', ref: 'chatgpt' });
+    expect(bigThreeQuery(share, true)).toBe('s=leo&m=aries&r=libra&ref=chatgpt');
+    expect(parseBigThreeShare(params('s=leo'))).toEqual({ sun: 'leo', moon: null, rising: null, ref: null });
+    for (const query of ['m=aries', 's=leo&r=libra', 's=ophiuchus', 's=leo&m=moon', 's=leo&d=1990-08-01', 's=leo&t=08%3A30', 's=leo&lat=40.42', 's=leo&n=Ana', 's=leo&s=virgo', 's=leo&ref=x']) {
+      expect(parseBigThreeShare(params(query)), query).toBeNull();
+    }
+  });
+});
+
+describe('a Chinese zodiac share link', () => {
+  it('names the animal alone, never a year: a year asked about could be a birth year', () => {
+    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'horse' })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=horse');
+    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'snake' })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=snake');
+    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'cat' })).toBeNull();
+    // Whatever else a caller hands it, the link is the animal's.
+    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'horse', year: 1990 } as { animal: string })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=horse');
+  });
+
+  it('reads back exactly what it wrote, and nothing else', () => {
+    expect(parseChineseZodiacShare(params('a=horse&ref=assistant'))).toEqual({ animal: 'horse', ref: 'assistant' });
+    expect(chineseZodiacQuery(parseChineseZodiacShare(params('a=horse'))!)).toBe('a=horse');
+    expect(parseChineseZodiacShare(params('a=rabbit'))).toEqual({ animal: 'rabbit', ref: null });
+    for (const query of ['y=2026', 'a=cat', 'a=horse&d=1990-01-20', 'a=horse&a=rat', 'a=horse&e=fire', 'a=horse&y=2026&y=2026']) {
+      expect(parseChineseZodiacShare(params(query)), query).toBeNull();
+    }
+  });
+
+  it('still opens an older link that carries the year, checked as before, and drops it', () => {
+    expect(parseChineseZodiacShare(params('a=horse&y=2026&ref=assistant'))).toEqual({ animal: 'horse', ref: 'assistant' });
+    expect(chineseZodiacQuery(parseChineseZodiacShare(params('a=horse&y=1990'))!, true)).toBe('a=horse');
+    // Another animal's year, a malformed one, and the animal's own years just outside those the tool answers for.
+    const outside = [CHINESE_SHARE_FIRST_YEAR - 1, CHINESE_SHARE_LAST_YEAR + 1].map((year) => `a=${chineseAnimalForCycleYear(year).slug}&y=${year}`);
+    for (const query of ['a=horse&y=2025', 'a=horse&y=02026', 'a=horse&y=2026.0', ...outside]) {
+      expect(parseChineseZodiacShare(params(query)), query).toBeNull();
+    }
+    expect([CHINESE_SHARE_FIRST_YEAR, CHINESE_SHARE_LAST_YEAR]).toEqual([CHINESE_FIRST_YEAR + 1, CHINESE_LAST_YEAR]);
+  });
+
+  it('draws a card that is the same for every year of the animal: its yin or yang is the one get_chinese_zodiac gives each of its years', () => {
+    for (let year = CHINESE_SHARE_FIRST_YEAR; year <= CHINESE_SHARE_LAST_YEAR; year += 1) {
+      const animal = chineseAnimalForCycleYear(year).slug;
+      const card = chineseZodiacCardModel({ animal, ref: null })!;
+      expect(card.yinYang, String(year)).toBe(chineseElement(year).yinYang);
+      expect(chineseZodiacCardModel(parseChineseZodiacShare(params(`a=${animal}&y=${year}`))!), String(year)).toEqual(card);
+    }
+  });
+});
+
+describe('an invitation to compare charts', () => {
+  it('carries the two Sun signs when known, and nothing else', () => {
+    expect(inviteShareUrl('https://zodiacs.org', { sun: 'taurus', partner: 'scorpio' })).toBe('https://zodiacs.org/share/invite/?s=taurus&p=scorpio');
+    expect(inviteShareUrl('https://zodiacs.org', { sun: null, partner: 'scorpio' })).toBe('https://zodiacs.org/share/invite/?p=scorpio');
+    expect(inviteShareUrl('https://zodiacs.org', { sun: null, partner: null })).toBe('https://zodiacs.org/share/invite/');
+    expect(parseInviteShare(params('s=taurus&p=scorpio&ref=chatgpt'))).toEqual({ sun: 'taurus', partner: 'scorpio', ref: 'chatgpt' });
+    expect(inviteQuery(parseInviteShare(params('p=scorpio&s=taurus'))!)).toBe('s=taurus&p=scorpio');
+    // The bare page is the plain one; any birth detail or name makes it no invitation.
+    for (const query of ['', 'ref=chatgpt', 's=ophiuchus', 's=taurus&n=Ana', 's=taurus&d=1990-05-03', 's=taurus&p=scorpio&t=08%3A30', 's=taurus&s=leo']) {
+      expect(parseInviteShare(params(query)), query).toBeNull();
     }
   });
 });

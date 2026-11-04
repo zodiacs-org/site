@@ -53,7 +53,7 @@ describe('compatibility share links', () => {
 
   it('read back exactly what they carry', () => {
     expect(parseCompatibilityShare(params(`${COMPAT}&ref=chatgpt`))).toEqual({
-      a: 'Ana', b: 'Luis', aSun: 'leo', bSun: 'libra', score: 78, attraction: 82, communication: 71, stability: 80, verdict: 'strong', ref: 'chatgpt',
+      a: 'Ana', b: 'Luis', aSun: 'leo', bSun: 'libra', score: 78, attraction: 82, communication: 71, stability: 80, verdict: 'strong', confidence: null, ref: 'chatgpt',
     });
     expect(parseCompatibilityShare(params('score=0&attraction=100&communication=5&stability=99&v=mixed'))).toMatchObject({ a: null, b: null, aSun: null, bSun: null });
   });
@@ -77,8 +77,26 @@ describe('compatibility share links', () => {
     ['a padded name', COMPAT.replace('a=Ana', 'a=+Ana')],
     ['a name in a script the card cannot draw', COMPAT.replace('a=Ana', `a=${encodeURIComponent('Ελένη')}`)],
     ['an unknown ref', `${COMPAT}&ref=newsletter`],
+    ['a confidence the rule never gives', `${COMPAT}&c=50`],
+    ['a sign-only confidence on a pair', `${COMPAT}&c=40`],
+    ['a padded confidence', `${COMPAT}&c=070`],
+    ['a confidence with a percent sign', `${COMPAT}&c=70%25`],
+    ['a repeated confidence', `${COMPAT}&c=70&c=75`],
   ])('refuse %s', (_label, query) => {
     expect(parseCompatibilityShare(params(query))).toBeNull();
+  });
+
+  it('carry the reading confidence the tool gave, one of the values its rule gives for two dated charts', () => {
+    const score = { overall: 78, areas: { attraction: 82, communication: 71, stability: 80 } };
+    for (const confidence of [55, 60, 70, 75]) {
+      const url = compatibilityShareUrl('https://zodiacs.org', { a: { name: null, sun: 'leo' }, b: { name: null, sun: 'libra' }, score, confidence })!;
+      expect(new URL(url).searchParams.get('c')).toBe(String(confidence));
+      expect(parseCompatibilityShare(new URL(url).searchParams)).toMatchObject({ confidence });
+      expect(compatibilityQuery(parseCompatibilityShare(new URL(url).searchParams)!)).toBe(new URL(url).search.slice(1));
+    }
+    // A link made before the label still opens, without one; a value the rule never gives makes no link.
+    expect(parseCompatibilityShare(params(COMPAT))).toMatchObject({ confidence: null });
+    expect(compatibilityShareUrl('https://zodiacs.org', { a: { name: null, sun: 'leo' }, b: { name: null, sun: 'libra' }, score, confidence: 99 })).toBeNull();
   });
 });
 
@@ -114,7 +132,7 @@ describe('date share links', () => {
 
   it('read back exactly what they carry', () => {
     expect(parseOccasionShare(params(`${OCCASION}&ref=assistant`))).toEqual({
-      occasion: 'wedding', date: '2027-06-12', names: 'Ana & Luis', place: 'Florence', sun: 'gemini', moon: 'libra', score: 84, verdict: 'excellent', ref: 'assistant',
+      occasion: 'wedding', date: '2027-06-12', names: 'Ana & Luis', place: 'Florence', sun: 'gemini', moon: 'libra', score: 84, verdict: 'excellent', confidence: null, ref: 'assistant',
     });
   });
 
@@ -133,7 +151,18 @@ describe('date share links', () => {
     ['a long place', OCCASION.replace('p=Florence', `p=${'F'.repeat(49)}`)],
     ['long names', OCCASION.replace('n=Ana+%26+Luis', `n=${'A'.repeat(41)}`)],
     ['a repeated key', `${OCCASION}&o=wedding`],
+    ['a confidence the rule never gives a day', `${OCCASION}&c=60`],
+    ['a confidence out of range', `${OCCASION}&c=100`],
   ])('refuse %s', (_label, query) => {
     expect(parseOccasionShare(params(query))).toBeNull();
+  });
+
+  it('carry the reading confidence of the day: a date alone, or with a time and a place', () => {
+    for (const confidence of [55, 70]) {
+      const url = occasionShareUrl('https://zodiacs.org', { occasion: 'wedding', date: '2027-06-12', names: null, place: null, sun: 'gemini', moon: 'libra', score: 84, confidence })!;
+      expect(url).toBe(`https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&sun=gemini&moon=libra&score=84&v=excellent&c=${confidence}`);
+      expect(parseOccasionShare(new URL(url).searchParams)).toMatchObject({ confidence });
+    }
+    expect(occasionShareUrl('https://zodiacs.org', { occasion: 'wedding', date: '2027-06-12', names: null, place: null, sun: 'gemini', moon: 'libra', score: 84, confidence: 75 })).toBeNull();
   });
 });
