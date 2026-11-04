@@ -28,9 +28,13 @@ tools; 0.3.15 keeps its bytes. Zodiacs 0.6.1 gives the five 0.6.0 tools the
 inline readings panel, offers `find_birthplace` with them, and carries the
 4 November forecast rule, the under-18 rule and the link privacy wording;
 Developer 0.3.21 is rebuilt from that source with unchanged local tools. 0.6.0
-and 0.3.20 keep their bytes.
+and 0.3.20 keep their bytes. Zodiacs 0.6.2 packages the listing text chosen on
+4 November: an About, subtitle, starter prompts, capabilities and review cases
+that lead with the tools needing no personal details. The server reports 0.6.2
+and its tools are unchanged; Developer 0.3.22 is rebuilt from that source with
+unchanged local tools. 0.6.1 and 0.3.21 keep their bytes.
 
-Current candidates are **Zodiacs 0.6.1** and **Zodiacs Developer 0.3.21**;
+Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.22**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

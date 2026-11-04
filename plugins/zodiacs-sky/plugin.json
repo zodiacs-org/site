@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "zodiacs-sky",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Check what's happening in the sky, read daily to yearly horoscopes for your sign, explore your own birth chart and transits, compare two charts, find your Chinese zodiac animal and see the sky on the days that matter.",
   "author": {
     "name": "Zodiacs LLC",
@@ -22,24 +22,25 @@
     "com.openai": {
       "interface": {
         "displayName": "Zodiacs",
-        "shortDescription": "Birth charts & horoscopes",
-        "longDescription": "Explore your birth chart, see how compatible you are with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then tells you what astrology says about it.\n\nBuild an interactive birth chart, or get a readout of your chart in the conversation: your Sun, Moon and rising signs, each planet's sign and house, the closest aspects and your balance of elements, with what astrology reads into each. Compare two people's charts, whether partners, friends or family, and get a compatibility score out of 100 for attraction, communication and long-term stability, or see how you match with a famous person Zodiacs publishes. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.\n\nRead daily, weekly, monthly and yearly Sun-sign horoscopes, with love and career readings and a personal forecast for your week from your own chart. See your personal transits: the dates the planets meet your own chart over the coming weeks or months, or the highlights of your year ahead. Follow Moon phases, retrogrades and planets changing signs, and subscribe to the sky calendar in Google Calendar, Apple Calendar or Outlook.\n\nFind your Chinese zodiac animal, element and yin or yang, with the Lunar New Year boundary worked out for January and February birthdays. Ask what Mercury retrograde, the rising sign, the houses or a Saturn return mean, and get a short explainer with links to learn more.\n\nSee the sky on your birthday and when your solar return falls, find milestones such as your Saturn return, or make a keepsake card for a wedding or another day that matters, with a rating out of 100 for how the stars favour the date, or find the best-rated days in a month for it. Share your score or rating as a picture link. With a place, the card adds sunset, golden hour and the evening sky.\n\nZodiacs gives clear forecasts, scores and ratings, and always shows the astrology behind them: compatibility is scored and dates are rated out of 100 by astrology's traditional reading. It doesn't pick investments, make health predictions or guarantee how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.\n\nNo Zodiacs account is needed. Chart Studio calculates your chart inside the panel, and you choose what to share with the assistant. Other tools use the details you give for that answer only; Zodiacs doesn't keep them. The sky calendar is a link you choose whether to add.",
+        "shortDescription": "Sky, horoscopes & birth charts",
+        "longDescription": "See what is happening in the sky, read the horoscope Zodiacs publishes for your sign, and explore your own chart when you want to. Zodiacs calculates the sky itself, and its answers link to pages on zodiacs.org where you can read more.\n\nMany answers need no personal details at all. Check whether Mercury is retrograde, see where the planets are right now, and follow the new and full Moons, retrogrades and sign changes ahead in your own time zone. Subscribe to the Zodiacs sky calendar in Google Calendar, Apple Calendar or Outlook. Ask what a term means, such as the rising sign, the houses or a Saturn return, or how two Sun signs get along. Look up the chart of a famous person Zodiacs publishes, or find the Chinese zodiac animal for a year.\n\nRead daily, weekly, monthly and yearly Sun-sign horoscopes, with love and career readings, exactly as Zodiacs publishes them for your sign.\n\nWhen you want a personal reading, a birth date is enough. A birth time and town only sharpen it. Get a readout of your birth chart, your transits and the highlights of your year ahead, your life milestones such as your Saturn return, your solar return, and the famous people who share your signs. Compare two adults' charts, whether partners, friends or family, for a compatibility score out of 100 for attraction, communication and long-term stability; for anyone under 18, Zodiacs gives a friendship reading of the two Sun signs instead. Or build an interactive chart in Chart Studio, which works it out inside its own panel.\n\nMake a keepsake card for a wedding, an anniversary or another day that matters, with a rating out of 100 for how the stars favour the date, or find the best-rated days in a month. With a town, the card adds sunset, golden hour and the evening sky. Name a town and Zodiacs finds its coordinates and time zone in the list it carries, which covers towns and cities of 15,000 people or more, so for those you don't need to look up coordinates.\n\nZodiacs states its forecasts plainly and confidently and shows the astrology behind each one. Every forecast carries a label such as \"Reading confidence 70%\": confidence in the reading, which rises with the detail you give, never the odds that something happens. Zodiacs never picks or times investments, and gives no betting tips, sports picks, election forecasts, health predictions or guarantees. If a birth time is missing, it says what can still be worked out instead of guessing.\n\nNo account is needed. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. Details you give are used for that answer only. Ask before using someone else's birth details.",
         "developerName": "Zodiacs LLC",
         "category": "Education & Research",
         "capabilities": [
-          "Sky calendar",
-          "Horoscopes",
           "Sky fact checks",
-          "Interactive birth chart",
-          "Chart comparison",
-          "Famous charts",
-          "Birthdays and occasions",
+          "Sky calendar",
           "Calendar subscription",
-          "Birth chart readouts",
-          "Monthly and yearly horoscopes",
-          "Personal transits",
+          "Astrology explainers",
+          "Famous charts",
           "Chinese zodiac",
-          "Astrology explainers"
+          "Horoscopes",
+          "Monthly and yearly horoscopes",
+          "Birth chart readouts",
+          "Interactive birth chart",
+          "Personal transits",
+          "Chart comparison",
+          "Birthdays and occasions",
+          "Town and time zone lookup"
         ],
         "websiteURL": "https://zodiacs.org/",
         "supportURL": "https://zodiacs.org/about/",
@@ -48,43 +49,43 @@
         "composerIcon": "./assets/icon-v2.png",
         "logo": "./assets/icon-v2.png",
         "defaultPrompt": [
-          "Show my horoscope for today",
           "Is Mercury retrograde right now?",
-          "Help me read my birth chart"
+          "Show my horoscope for today",
+          "What does a Saturn return mean?"
         ]
       },
       "review": {
         "test_cases": {
           "positive": [
             {
-              "description": "A yes-or-no sky question and what changes this week, in the person's time zone.",
+              "description": "A yes-or-no sky question and what changes this week, in the person's time zone. No personal details needed.",
               "prompt": "Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Bangkok.",
               "tools_triggered": "check_sky_fact, get_upcoming_events",
               "expected_behavior": "Answers yes or no about Mercury, then lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Bangkok, in plain words, and renders the sky calendar. Keeps astronomy separate from astrological meaning."
             },
             {
-              "description": "A dated Sun-sign horoscope for the person's own day.",
+              "description": "A dated Sun-sign horoscope for the person's own day. No personal details needed.",
               "prompt": "Show today's horoscope for Leo.",
               "tools_triggered": "get_horoscope",
-              "expected_behavior": "Shows the Leo reading dated for the person's own day in their time zone, renders the horoscope panel, keeps the reading's date and presents it as reflection, not a personal forecast."
+              "expected_behavior": "Shows the Leo reading as published for the person's own day in their time zone, states it plainly with its Reading confidence label, renders the horoscope panel and keeps the reading's date. Asks for no birth details."
             },
             {
-              "description": "Compare two people's charts and score their compatibility.",
-              "prompt": "Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992.",
-              "tools_triggered": "get_compatibility",
-              "expected_behavior": "Gives a compatibility score out of 100 with scores for attraction, communication and long-term stability and a one-line verdict, then both Sun signs, a Moon sign only where the birth details settle it, a rising sign only for the person with a birth time and place, and the closest contacts between the two charts with what each means, and renders the comparison card. Presents it as astrology's reading, not a guarantee of how the relationship will go."
+              "description": "A famous person's published chart and an astrology explainer. No personal details needed.",
+              "prompt": "What does Frida Kahlo's chart look like? And what does a Saturn return mean?",
+              "tools_triggered": "get_famous_chart, explain_astrology",
+              "expected_behavior": "Gives Frida Kahlo's Sun sign and the planets' signs from her published page, noting they are read at a reference noon, not a birth time, with a link to her page; it never makes up a chart for someone Zodiacs does not publish. Then explains a Saturn return in plain words, about every 29.5 years and around ages 29, 58 and 88, in the readings panel with links to zodiacs.org."
             },
             {
-              "description": "Famous people who share the person's sign, and a famous person's published chart.",
-              "prompt": "I was born on 3 May 1990. Which famous people share my Sun sign? And what does Frida Kahlo's chart look like?",
-              "tools_triggered": "find_chart_twins, get_famous_chart",
-              "expected_behavior": "Names famous people Zodiacs publishes charts for who share the Taurus Sun, with a link to each chart, then gives Frida Kahlo's Sun sign and the planets' signs from her published page, noting they are read at a reference noon, not a birth time. Without a birth time it compares the Sun only and says so. It never makes up a chart for someone Zodiacs does not publish."
-            },
-            {
-              "description": "Rate a day that matters and make a card with its sky.",
+              "description": "Rate a day that matters and make a card with its sky. Needs no birth date.",
               "prompt": "We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day.",
-              "tools_triggered": "get_occasion_sky",
-              "expected_behavior": "Renders a wedding card that rates the date out of 100 with a verdict and its astrological reasons, such as the Moon's phase and sign, Venus and any retrograde planets, plus the Sun and Moon signs, sunset, golden hour and the planets visible at 17:00 in Florence. Does not guarantee how the day will go."
+              "tools_triggered": "find_birthplace, get_occasion_sky",
+              "expected_behavior": "Finds Florence's coordinates and time zone itself instead of asking for them, then renders a wedding card that rates the date out of 100 with a verdict, its astrological reasons and a Reading confidence label, plus the Sun and Moon signs, sunset, golden hour and the planets visible at 17:00 in Florence. Does not guarantee how the day will go. A share link carries only the day, the Sun and Moon signs and the rating."
+            },
+            {
+              "description": "Compare two famous people's published charts and score their compatibility. No personal details needed.",
+              "prompt": "How compatible were Marilyn Monroe and Arthur Miller, going by their charts?",
+              "tools_triggered": "get_compatibility",
+              "expected_behavior": "Compares the two charts Zodiacs publishes without asking for anyone's birth details: a compatibility score of 80 out of 100, \"A strong match\", with attraction 85, communication 79 and long-term stability 75 and a Reading confidence 60% label, then the Gemini and Libra Suns and the closest contacts with what each means, and renders the comparison card. Says neither birth time is on record, so each chart is read at 12:00 in the birthplace with no Moon or rising sign, and links to both people's pages on zodiacs.org. Presents it plainly as astrology's reading, not a guarantee. A share link carries only the Sun signs and the scores."
             }
           ],
           "negative": [
@@ -110,7 +111,7 @@
         "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4"
       },
       "publication": {
-        "release_notes": "0.6.1: The five tools from 0.6.0 open an inline readings panel, with no sidebar launch, and find_birthplace turns a town or city name into coordinates and a time zone for the chart tools. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. Forecasts carry a reading-confidence label, readings for anyone under 18 leave out romance and attraction, and compatibility is for two adults. The thirteen published tools are unchanged. 0.6.0: Adds five read-only tools with no sign-in: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac with the Lunar New Year boundary, dated personal transits and the year ahead, and explainers of astrology basics. The thirteen existing tools are unchanged. The About now names the compatibility score and the date rating out of 100 and the new features."
+        "release_notes": "0.6.2: The About, starter prompts and test cases now lead with the tools that need no personal details. 0.6.1: The five tools from 0.6.0 open an inline readings panel, with no sidebar launch, and find_birthplace turns a town or city name into coordinates and a time zone for the chart tools. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. Forecasts carry a reading-confidence label, readings for anyone under 18 leave out romance and attraction, and compatibility is for two adults. The thirteen published tools are unchanged. 0.6.0: Adds five read-only tools with no sign-in: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac with the Lunar New Year boundary, dated personal transits and the year ahead, and explainers of astrology basics. The thirteen existing tools are unchanged. The About now names the compatibility score and the date rating out of 100 and the new features."
       },
       "onboardingSkill": "./skills/explore-the-sky/SKILL.md"
     }

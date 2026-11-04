@@ -71,9 +71,10 @@ assert.deepEqual((await json('plugins/zodiacs-sky/mcp.json')).mcpServers['zodiac
 assert.deepEqual((await json('plugins/zodiacs-developer/mcp.json')).mcpServers['zodiacs-developer'], { type: 'stdio', command: 'node', cwd: './', args: ['${PLUGIN_ROOT}/mcp/server.mjs'] });
 const submission = await json('integrations/chatgpt/chatgpt-app-submission.json');
 assert.equal(skyInterface.longDescription, submission.app_info.description, 'Sky package About must match the reviewed submission copy');
-// 0.5.0: the six released tools and the seven tools that share the occasions panel. 0.6.0 adds five.
+// 0.5.0: the six released tools and the seven tools that share the occasions panel. 0.6.0 adds five, and
+// 0.6.2 lists find_birthplace (offered since 0.6.1) with its own justifications.
 const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio', 'get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar',
-  'get_natal_chart', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'explain_astrology'];
+  'get_natal_chart', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'explain_astrology', 'find_birthplace'];
 assert.deepEqual(Object.keys(submission.tools), names);
 assert.equal(submission.schema_version, 1); assert.ok(submission.app_info.subtitle.length <= 30);
 assert.equal(submission.app_info.category, 'EDUCATION');
@@ -91,14 +92,17 @@ for (const [index, entry] of submission.test_cases.entries()) {
     assert.ok(names.includes(name)); coveredTools.add(name);
   }
 }
-// Five positive cases cannot cover eighteen tools; they keep one sky and one horoscope
-// scenario and spend the rest on the 0.5.0 tools reviewers have not seen.
-for (const name of ['get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_occasion_sky']) assert.ok(coveredTools.has(name), `The review scenarios cover ${name}`);
+// Five positive cases cannot cover nineteen tools. From 0.6.2 none of them states anyone's own
+// birth details: a sky question, a horoscope, a famous chart with an explainer, the date rating
+// with find_birthplace for its town, and a comparison of two famous charts, which keep the two
+// tools the scan flagged. find_chart_twins moved to the reviewer prompts.
+for (const name of ['get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'get_famous_chart', 'explain_astrology', 'get_occasion_sky', 'get_compatibility', 'find_birthplace']) assert.ok(coveredTools.has(name), `The review scenarios cover ${name}`);
 for (const entry of submission.negative_test_cases) assert.equal(entry.tools_triggered, null);
 const evaluationCases = await json('integrations/chatgpt/evaluation-cases.json');
 assert.equal(evaluationCases.length, 70);
-// The five 0.6.0 tools are past the five-case review limit, so the evaluation set covers each of them.
-for (const name of names.slice(13)) assert.ok(evaluationCases.some(entry => entry.tool === name && entry.ok), `An evaluation case runs ${name}`);
+// The five 0.6.0 tools are past the five-case review limit, so the evaluation set covers each of them;
+// find_birthplace, listed after them, is in the review cases themselves.
+for (const name of names.slice(13, 18)) assert.ok(evaluationCases.some(entry => entry.tool === name && entry.ok), `An evaluation case runs ${name}`);
 const vercel = await json('vercel.json');
 for (const [source, route] of [['/mcp', '1'], ['/mcp/', '1'], ['/mcp/health', 'health'], ['/mcp/health/', 'health']]) {
   assert.ok(vercel.rewrites.some(entry => entry.source === source && entry.destination === `/api/compatibility?__zodiacs_ai=${route}`));
