@@ -164,15 +164,15 @@ function clockTime(utc: string, zone: string | null) {
 }
 const optionalClock = (utc: string | null, zone: string | null) => (utc ? clockTime(utc, zone) : null);
 
-/** Birthday and a baby's arrival: the occasion date is a birth date, so it stays out of every link. */
-const BIRTH_OCCASIONS = new Set(['birthday', 'baby']);
+/** A birthday, a baby's arrival, or a coming of age: the date can be a birth date, so it stays out of every link. */
+const BIRTH_OCCASIONS = new Set(['birthday', 'baby', 'coming-of-age']);
 const occasionPageUrl = `${ORIGIN}/occasions/`;
 
 /**
  * The occasion page for a day that is not a birth date: the date, and the place,
  * time and coordinates when they were given, after #, as the page's own Copy link
  * makes it. A zone without coordinates gets no link, because the page would open
- * a different card. A birthday or a baby's arrival is the page address only.
+ * a different card. A birthday, a baby's arrival, or a coming of age is the page address only.
  */
 function occasionCardUrl(args: { occasion: string; date: string; time?: string; zone?: string; latitude?: number; longitude?: number; place?: string; names?: string }): string | null {
   if (BIRTH_OCCASIONS.has(args.occasion)) return occasionPageUrl;
@@ -273,7 +273,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offeredTools(dependencies).filter((name) => (ALL_AI_TOOL_NAMES as readonly string[]).includes(name)), limits: LIMITS, conventions: statements.conventions, coverage: statements.coverage, privacy: dependencies.occasions ? PRIVACY_WITH_BIRTH_TOOLS : PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', 'There is no free-form eclipse or aspect search. No birth-time rectification, reminders or account access.', dependencies.occasions ? 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person’s own chart.' : 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
         if (dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
-          capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call. Tools never store, log or share those birth details. A wedding or other occasion card link carries that day, and the place, time and coordinates when they were given. A birthday or a baby\'s arrival keeps the page address only, with no date, time, place or coordinates, and its share link is left empty, because that date is a birth date. The result goes to the assistant. The famous-chart and sky-calendar tools need no personal details.';
+          capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call. Tools never store, log or share those birth details. A wedding or other occasion card link carries that day, and the place, time and coordinates when they were given. A birthday, a baby\'s arrival, or a coming of age keeps the page address only, with no date, time, place or coordinates, and its share link is left empty, because that date can be a birth date. The result goes to the assistant. The famous-chart and sky-calendar tools need no personal details.';
           capabilities.limitations.push('The occasion tools give the sky on a date, rate it from 0 to 100 by astrology\'s traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology\'s life milestones; they do not guarantee how a day will go.');
           capabilities.limitations.push('Compatibility scores two charts by astrology\'s reading of their contacts; it does not guarantee how a relationship will go. Famous charts, alone or compared with someone\'s own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
           if (!dependencies.coverage) capabilities.limitations.push('Which tool: what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; one birthday, get_birthday; lifetime returns, get_life_milestones.');
@@ -406,7 +406,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const cardUrl = occasionCardUrl({ ...args, date, ...(zone ? { zone } : {}) });
         const rating = rateOccasionDate(args.occasion, card.sky);
         const signOf = (body: string) => card.sky.bodies.find((row) => row.body === body)?.sign ?? null;
-        // A wedding or other occasion can share its date and place. A birthday or a baby's arrival cannot: that date is a birth date.
+        // A wedding or other occasion can share its date and place. A birthday, a baby's arrival, or a coming of age cannot: that date can be a birth date.
         const shareUrl = BIRTH_OCCASIONS.has(args.occasion) ? null : occasionShareUrl(ORIGIN, { occasion: args.occasion, date, names: args.names ?? null, place: args.place ?? null, sun: signOf('Sun'), moon: signOf('Moon'), score: rating.score });
         data = {
           occasion: args.occasion, date, time: args.time ?? null, zone, place: args.place ?? null, names: args.names ?? null,

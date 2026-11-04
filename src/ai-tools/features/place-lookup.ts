@@ -6,7 +6,7 @@
  * are kept and the answer says so. Pure: no network, storage or logging.
  */
 import { fold, foldedQuery, queryRows, shardKey, type City, type CityIndex, type Row } from '../../lib/geo/rank';
-import { PLACE_SHARDS } from '../../mcp/places';
+import { PLACE_SHARDS } from '../../lib/geo/place-shards';
 import indexJson from '../../../public/data/cities/index.json';
 
 const index = indexJson as unknown as CityIndex;
@@ -100,17 +100,18 @@ export function applyPlace<T extends { place?: string; latitude?: number; longit
   const assumed = ambiguous ? ` Using ${label}, the largest match. Say if you meant another.` : '';
   const ignoredHint = hint && hinted.length === 0 ? ` The words after the comma did not match that city.` : '';
   const hasCoords = args.latitude !== undefined && args.longitude !== undefined;
+  const zoneOff = !!args.zone && !sameZone(args.zone, chosen.tz);
   if (!hasCoords) {
+    const zone = zoneOff ? ` Its time zone is ${chosen.tz}, not ${args.zone}. The chart uses the time zone you supplied.` : '';
     return {
       ...args,
       latitude: chosen.lat,
       longitude: chosen.lon,
       zone: args.zone ?? chosen.tz,
-      placeNote: `Place read as ${label} (${chosen.lat.toFixed(2)}, ${chosen.lon.toFixed(2)}, ${chosen.tz}).${assumed}${ignoredHint}`,
+      placeNote: `Place read as ${label} (${chosen.lat.toFixed(2)}, ${chosen.lon.toFixed(2)}, ${chosen.tz}).${zone}${assumed}${ignoredHint}`,
     };
   }
   const km = kmBetween(args.latitude!, args.longitude!, chosen.lat, chosen.lon);
-  const zoneOff = !!args.zone && !sameZone(args.zone, chosen.tz);
   if (km > MATCH_KM || zoneOff) {
     const where = km > MATCH_KM ? `about ${Math.round(km)} km from the coordinates given` : 'near the coordinates given';
     const zone = zoneOff ? ` Its time zone is ${chosen.tz}, not ${args.zone}.` : '';

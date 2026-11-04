@@ -88,10 +88,10 @@ export function recordDigest(record: Omit<SavedRecord, 'href'>): string {
 }
 
 /**
- * The filled occasion page a signed-in person chose to keep. The tool's own
- * card link is only the page address and does not carry these details.
- * A zone without coordinates cannot reopen on the page, so that saved link
- * keeps the day and the names only, as before.
+ * The occasion page a signed-in person chose to keep. A birthday, a baby's
+ * arrival, or a coming of age leaves those details out of the tool's card
+ * link; this account link still reopens that card. A zone without coordinates
+ * cannot reopen on the page, so that saved link keeps the day and the names only.
  */
 function savedOccasionPath(
   args: { latitude?: number; longitude?: number },

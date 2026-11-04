@@ -67,6 +67,14 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     if (!birthday.ok || birthday.tool !== 'get_occasion_sky') throw new Error('expected a birthday');
     expect(birthday.data.shareUrl).toBeNull();
     expect(birthday.data.cardUrl).not.toMatch(/2010|Florence/u);
+    const comingOfAge = await executeAiTool('get_occasion_sky', {
+      occasion: 'coming-of-age', date: '2010-04-02', time: '18:00', zone: 'Europe/Rome',
+      latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy', names: 'Ana',
+    }, on);
+    if (!comingOfAge.ok || comingOfAge.tool !== 'get_occasion_sky') throw new Error('expected a coming of age');
+    expect(comingOfAge.data.shareUrl).toBeNull();
+    expect(comingOfAge.data.cardUrl).toBe('https://zodiacs.org/occasions/');
+    expect(comingOfAge.data.cardUrl).not.toMatch(/2010|Florence|18:00|43\./u);
     expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(zoneOnly).success).toBe(true);
     const half = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', zone: 'Europe/Rome', latitude: 43.77 }, on);
     expect(half.ok).toBe(false);
