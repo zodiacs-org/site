@@ -35016,7 +35016,29 @@ function matchSignPair(query) {
   if (unique.length === 2 && (compatibility || friendship || bare)) return { a: unique[0], b: unique[1], friendship };
   return null;
 }
-var asFriends = (text2) => softenMinor(text2).replace(/\bmake-ups\b/gu, "repairs").replace(/\bPassion\b/gu, "Drive");
+var FRIENDSHIP_ELEMENTS = {
+  "fire+fire": "Full speed. You both bring lots of energy and bold plans, and your quick quarrels are soon forgotten.",
+  "earth+fire": "Quick and careful. One rushes ahead and the other checks the plan: together you get a lot done, though you may disagree about pace.",
+  "air+fire": "Big plans. Lively talk and big ideas: one asks the questions, the other gets things moving, and there is rarely a dull day.",
+  "fire+water": "Bold and gentle. One acts fast and the other feels deeply: you can learn a lot from each other if you are patient with each other\u2019s moods.",
+  "earth+earth": "Steady friends. Reliable and loyal: you can count on each other, though your plans can settle into a routine.",
+  "air+earth": "Dreamer and planner. One brings the ideas and the other makes them practical: you balance each other, though one may find the other too dreamy or too careful.",
+  "earth+water": "Trusted friends. One listens closely and the other keeps things steady, and your trust in each other grows over time.",
+  "air+air": "Endless talk. The conversation never runs out and you both give each other space, though deeper worries can go unsaid.",
+  "air+water": "Head and heart. One wants to talk things through and the other wants to feel them out: with patience, you understand each other well.",
+  "water+water": "Kindred spirits. You understand each other quickly and notice each other\u2019s moods, so small kindnesses go a long way."
+};
+var FRIENDSHIP_POLARITY = {
+  "day+day": "Both outgoing: active, sociable friends who are rarely still.",
+  "night+night": "Both private: a quiet, loyal friendship that grows with time.",
+  "day+night": "One outgoing, one private: you balance each other, as one talks it out and the other thinks it through."
+};
+var pairKey = (a, b) => [a, b].sort().join("+");
+function asFriends(pattern) {
+  const { a, b } = pattern.facts;
+  const modality = pattern.modalityNote.replace(/\bpartnership\b/gu, "friendship");
+  return softenMinor(softenHealth(`${FRIENDSHIP_ELEMENTS[pairKey(a.element, b.element)]} ${modality} ${FRIENDSHIP_POLARITY[pairKey(a.polarity, b.polarity)]} ${pattern.rulers}.`));
+}
 var PAIR_GUIDANCE = "If either person is under 18, give the friendship reading instead: the same two signs with the word friendship in the topic. Do not frame the pair as romance or attraction.";
 var FRIENDSHIP_GUIDANCE = "A friendship reading: the element and modality pattern of the two Sun signs only, with each sign's page. The sign-pair essays and their links are left out.";
 function signPairAnswer(query, a, b, friendship, origin) {
@@ -35031,9 +35053,9 @@ function signPairAnswer(query, a, b, friendship, origin) {
       topic: slug,
       title: `${names} as friends`,
       paragraphs: [
-        `${names} as friends. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
+        `${names} as friends. ${asFriends(pattern)}`,
         "This is the Sun-sign pattern; the rest of both charts changes how a friendship is lived."
-      ].map((text2) => asFriends(softenHealth(text2))),
+      ],
       terms: [],
       pages: signPages,
       related: ["elements", "modalities"].filter((key) => EXPLAIN_TOPICS.includes(key)),

@@ -23,7 +23,7 @@ import { GLOSSARY, type GlossaryTerm } from '../../data/glossary';
 import { bigThree } from '../../lib/interpretations';
 import { NATAL_HOUSE_THEME, planetInHouseLine } from '../../lib/natal';
 import { NATAL_BODY_THEME, placementContext } from '../../lib/natal-context';
-import { pairPattern } from '../../lib/compat-reading';
+import { pairPattern, type PairPattern } from '../../lib/compat-reading';
 import { pairSlug } from '../../lib/compat';
 import { SIGNS, type Sign } from '../../lib/signs';
 import type { BodyName } from '../../lib/engine/types';
@@ -351,15 +351,46 @@ export function matchSignPair(query: string): { a: string; b: string; friendship
   return null;
 }
 
-/** The pattern's words for a friendship: softenMinor's, and a fight's make-up becomes a repair. */
-const asFriends = (text: string) => softenMinor(text).replace(/\bmake-ups\b/gu, 'repairs').replace(/\bPassion\b/gu, 'Drive');
+/**
+ * How two Sun signs' elements get along as friends, by element pair. The pair pages' taglines (compat.ts) are
+ * written about couples, and a friendship reading is also the one given for anyone under 18, so it never uses
+ * them: these lines are about energy, pace, plans and how the two talk.
+ */
+const FRIENDSHIP_ELEMENTS: Record<string, string> = {
+  'fire+fire': 'Full speed. You both bring lots of energy and bold plans, and your quick quarrels are soon forgotten.',
+  'earth+fire': 'Quick and careful. One rushes ahead and the other checks the plan: together you get a lot done, though you may disagree about pace.',
+  'air+fire': 'Big plans. Lively talk and big ideas: one asks the questions, the other gets things moving, and there is rarely a dull day.',
+  'fire+water': 'Bold and gentle. One acts fast and the other feels deeply: you can learn a lot from each other if you are patient with each other’s moods.',
+  'earth+earth': 'Steady friends. Reliable and loyal: you can count on each other, though your plans can settle into a routine.',
+  'air+earth': 'Dreamer and planner. One brings the ideas and the other makes them practical: you balance each other, though one may find the other too dreamy or too careful.',
+  'earth+water': 'Trusted friends. One listens closely and the other keeps things steady, and your trust in each other grows over time.',
+  'air+air': 'Endless talk. The conversation never runs out and you both give each other space, though deeper worries can go unsaid.',
+  'air+water': 'Head and heart. One wants to talk things through and the other wants to feel them out: with patience, you understand each other well.',
+  'water+water': 'Kindred spirits. You understand each other quickly and notice each other’s moods, so small kindnesses go a long way.',
+};
+
+/** The same for outgoing (day) and private (night) signs. */
+const FRIENDSHIP_POLARITY: Record<string, string> = {
+  'day+day': 'Both outgoing: active, sociable friends who are rarely still.',
+  'night+night': 'Both private: a quiet, loyal friendship that grows with time.',
+  'day+night': 'One outgoing, one private: you balance each other, as one talks it out and the other thinks it through.',
+};
+
+const pairKey = (a: string, b: string) => [a, b].sort().join('+');
+
+/** The Sun-sign pattern in a friendship's words: the lines above, and the modality line with a friendship in it. */
+function asFriends(pattern: PairPattern): string {
+  const { a, b } = pattern.facts;
+  const modality = pattern.modalityNote.replace(/\bpartnership\b/gu, 'friendship');
+  return softenMinor(softenHealth(`${FRIENDSHIP_ELEMENTS[pairKey(a.element, b.element)]} ${modality} ${FRIENDSHIP_POLARITY[pairKey(a.polarity, b.polarity)]} ${pattern.rulers}.`));
+}
 
 const PAIR_GUIDANCE = 'If either person is under 18, give the friendship reading instead: the same two signs with the word friendship in the topic. Do not frame the pair as romance or attraction.';
 const FRIENDSHIP_GUIDANCE = 'A friendship reading: the element and modality pattern of the two Sun signs only, with each sign\'s page. The sign-pair essays and their links are left out.';
 
 /**
  * A Sun-sign pair from its compatibility page: the pattern, then the page's essay. As friends: the pattern alone,
- * in words with no romance, linking the two sign pages rather than the pair page.
+ * in friendship words (asFriends), linking the two sign pages rather than the pair page.
  */
 function signPairAnswer(query: string, a: string, b: string, friendship: boolean, origin: string): { data: ExplainData; links: { title: string; url: string }[] } {
   const slug = pairSlug(a, b);
@@ -373,9 +404,9 @@ function signPairAnswer(query: string, a: string, b: string, friendship: boolean
       topic: slug,
       title: `${names} as friends`,
       paragraphs: [
-        `${names} as friends. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
+        `${names} as friends. ${asFriends(pattern)}`,
         'This is the Sun-sign pattern; the rest of both charts changes how a friendship is lived.',
-      ].map((text) => asFriends(softenHealth(text))),
+      ],
       terms: [],
       pages: signPages,
       related: ['elements', 'modalities'].filter((key) => EXPLAIN_TOPICS.includes(key)),

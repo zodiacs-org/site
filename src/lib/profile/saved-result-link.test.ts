@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 import { buildSavedRecord } from '../../ai-tools/accounts/save';
 import { saveInput } from '../../ai-tools/accounts/contracts';
 import { SAVED_RESULT_FORWARD, savedResultDigest, savedResultExploreHref, savedResultProfileHref } from './saved-result-link';
@@ -39,6 +40,17 @@ describe('a link to one saved result', () => {
     expect(savedResultExploreHref(`/occasions/#saved=${DIGEST}`)).toBe('/occasions/');
     expect(savedResultExploreHref('/occasions/#o=wedding&d=2027-06-12')).toBe('/occasions/#o=wedding&d=2027-06-12');
     expect(savedResultExploreHref('/people/frida-kahlo/')).toBe('/people/frida-kahlo/');
+  });
+
+  it('declares nothing on the page it runs on', () => {
+    // Run as a classic inline script would, on a stand-in window: the forward still happens, and no name is left behind.
+    for (const hash of [`#saved=${DIGEST}`, '#c=1.abc']) {
+      const page: Record<string, unknown> = { location: { hash, replace: (to: string) => { page.forwardedTo = to; } } };
+      runInNewContext(SAVED_RESULT_FORWARD, page);
+      expect(page.forwardedTo, hash).toBe(hash.startsWith('#saved=') ? `/profile/#saved=${DIGEST}` : undefined);
+      expect(Object.keys(page).filter((name) => name !== 'location' && name !== 'forwardedTo'), hash).toEqual([]);
+    }
+    expect(SAVED_RESULT_FORWARD).toMatch(/^\(function \(\) \{[\s\S]*\}\)\(\);$/u);
   });
 
   it('is sent on to the profile by the pages it names, and every other link is left alone', () => {

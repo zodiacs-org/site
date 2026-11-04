@@ -36,7 +36,8 @@ export function savedResultExploreHref(href: string): string {
 
 /**
  * The inline script the pages a saved link names run first (before anything
- * paints): a #saved= link goes on to the profile's saved list. Kept here, with
- * the pattern above, so the pages and the tests use the same words.
+ * paints): a #saved= link goes on to the profile's saved list. It runs in its
+ * own function, so it leaves no global behind. Kept here, with the pattern
+ * above, so the pages and the tests use the same words.
  */
-export const SAVED_RESULT_FORWARD = "var savedResult = /(?:^#|[#&])saved=([0-9a-f]{16})(?:&|$)/.exec(location.hash); if (savedResult) location.replace('/profile/#saved=' + savedResult[1]);";
+export const SAVED_RESULT_FORWARD = "(function () { var saved = /(?:^#|[#&])saved=([0-9a-f]{16})(?:&|$)/.exec(location.hash); if (saved) location.replace('/profile/#saved=' + saved[1]); })();";

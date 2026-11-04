@@ -262,11 +262,19 @@ describe('explain_astrology', () => {
       expect(links.map((link) => link.url).join(' '), topic).not.toContain('/compatibility/');
       expect(JSON.stringify(data)).not.toMatch(/confidence/iu);
     }
-    // Every one of the 78 pairs, and the guidance the assistant is given with it.
+    // Every one of the 78 pairs, both ways round, and the guidance the assistant is given with it: nothing a parent
+    // would read as romance or flirting, because this is also the reading for anyone under 18.
+    const SUGGESTIVE = /\b(?:steam\w*|heat\w*|hot\w*|pull\w*|spark\w*|chemistry|attract\w*|passion\w*|desir\w*)\b/iu;
     for (const a of SIGNS) for (const b of SIGNS) {
       const { data } = explainAstrology({ topic: `${a.name} and ${b.name} friendship` });
-      expect(JSON.stringify([data.title, data.paragraphs, data.message]), `${a.name} and ${b.name}`).not.toMatch(ROMANCE);
+      const text = JSON.stringify([data.title, data.paragraphs, data.message]);
+      expect(text, `${a.name} and ${b.name}`).not.toMatch(ROMANCE);
+      expect(text, `${a.name} and ${b.name}`).not.toMatch(SUGGESTIVE);
     }
+    // The element line is the friendship one; the pair page's own tagline stays on the adult reading.
+    expect(explainAstrology({ topic: 'Leo and Scorpio friendship' }).data.paragraphs[0]).toMatch(/^Leo and Scorpio as friends\. Bold and gentle\. /u);
+    expect(explainAstrology({ topic: 'Aries and Leo friendship' }).data.paragraphs[0]).toMatch(/^Aries and Leo as friends\. Full speed\. /u);
+    expect(explainAstrology({ topic: 'Leo and Scorpio' }).data.paragraphs[0]).toContain('Steam. Passion meets feeling');
     expect(explainAstrology({ topic: 'Leo and Scorpio friendship' }).data.pages.map((page) => page.url)).toEqual(['https://zodiacs.org/leo/', 'https://zodiacs.org/scorpio/']);
     // Asked as a pair without friendship, the answer is the pair page, essay and all.
     expect(explainAstrology({ topic: 'Leo and Scorpio' }).data.pages[0].url).toBe('https://zodiacs.org/compatibility/leo-scorpio/');
