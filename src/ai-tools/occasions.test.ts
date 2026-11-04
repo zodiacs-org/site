@@ -72,6 +72,24 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(half.ok).toBe(false);
   });
 
+  it('keeps a birth date out of every link: a birthday, a baby or a coming of age opens the page address only', async () => {
+    for (const occasion of ['baby', 'birthday', 'coming-of-age']) {
+      const result = await executeAiTool('get_occasion_sky', { occasion, date: '2026-05-03', time: '08:15', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278, place: 'London' }, on);
+      if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
+      expect(result.data.cardUrl).toBe('https://zodiacs.org/occasions/');
+      expect(result.data.shareUrl).toBeNull();
+      const links = JSON.stringify(result.links);
+      for (const detail of ['2026-05-03', '05-03', '08:15', '08%3A15', '51.5', '-0.1', 'London']) expect(links).not.toContain(detail);
+      expect(result.links.map((link) => link.title)).not.toContain('Open the printable card');
+      expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(result).success).toBe(true);
+    }
+    // A wedding is not a birth date, so its card still opens on that day.
+    const wedding = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', time: '19:00', zone: 'Europe/Rome', latitude: 43.77, longitude: 11.25 }, on);
+    if (!wedding.ok || wedding.tool !== 'get_occasion_sky') throw new Error('expected a card');
+    expect(wedding.data.cardUrl).toContain('#o=wedding&d=2027-06-12');
+    expect(wedding.data.shareUrl).toContain('2027-06-12');
+  });
+
   it('lists life milestones, the next one and the sky numbers', async () => {
     const result = await executeAiTool('get_life_milestones', { birthDate: '1997-03-15' }, on);
     expect(result.ok).toBe(true);

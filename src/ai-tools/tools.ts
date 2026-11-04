@@ -173,12 +173,17 @@ function clockTime(utc: string, zone: string | null) {
 }
 const optionalClock = (utc: string | null, zone: string | null) => (utc ? clockTime(utc, zone) : null);
 
+/** A birthday, a baby's arrival, or a coming of age: the date can be a birth date, so it stays out of every link. */
+const BIRTH_OCCASIONS = new Set(['birthday', 'baby', 'coming-of-age']);
+const occasionPageUrl = `${ORIGIN}/occasions/`;
+
 /**
  * The card page with its details after the #, as the site's own Copy link makes it. The page reads a
  * zone only with the place's coordinates, so a zone without them gets no link rather than one that
- * opens on a different card.
+ * opens on a different card. A birthday, a baby's arrival, or a coming of age is the page address only.
  */
 function occasionCardUrl(args: { occasion: string; date: string; time?: string; zone?: string; latitude?: number; longitude?: number; place?: string; names?: string }): string | null {
+  if (BIRTH_OCCASIONS.has(args.occasion)) return occasionPageUrl;
   if (args.zone && (args.latitude === undefined || args.longitude === undefined)) return null;
   const params = new URLSearchParams({ o: args.occasion, d: args.date });
   if (args.time) params.set('t', args.time);
@@ -427,7 +432,9 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         if (best) best = { ...best, best: best.best.map((day) => withLabel(day)) };
         const signOf = (body: string) => card.sky.bodies.find((row) => row.body === body)?.sign ?? null;
         // The share link carries the day, the Sun and Moon signs and the rating. Names stay out of the link.
-        const shareUrl = occasionShareUrl(ORIGIN, { occasion: args.occasion, date, names: null, place: null, sun: signOf('Sun'), moon: signOf('Moon'), score: rating.score });
+        // A birthday, a baby's arrival, or a coming of age gets none: that date can be a birth date.
+        const shareUrl = BIRTH_OCCASIONS.has(args.occasion) ? null : occasionShareUrl(ORIGIN, { occasion: args.occasion, date, names: null, place: null, sun: signOf('Sun'), moon: signOf('Moon'), score: rating.score });
+        const printable = cardUrl !== null && cardUrl !== occasionPageUrl;
         data = {
           occasion: args.occasion, date, time: args.time ?? null, zone, place: args.place ?? null, names: args.names ?? null,
           card: card.words,
@@ -449,10 +456,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           note: OCCASION_NOTE,
         };
         links = [
-          ...(cardUrl ? [{ title: 'Open the printable card', url: cardUrl }] : [occasionsLink]),
+          ...(printable ? [{ title: 'Open the printable card', url: cardUrl }] : [occasionsLink]),
           { title: 'The sky at a chosen moment (get_sky)', url: `${ORIGIN}/today/` },
           { title: 'Resolve a town or city (find_birthplace)', url: `${ORIGIN}/birth-chart/` },
-          ...(cardUrl ? [occasionsLink] : []),
+          ...(printable ? [occasionsLink] : []),
           methodLink,
         ];
         break;

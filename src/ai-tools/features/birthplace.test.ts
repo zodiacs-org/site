@@ -55,6 +55,31 @@ describe('find_birthplace', () => {
     }
   });
 
+  it('finds towns whose names read like streets, and St, St. and Saint alike', async () => {
+    for (const spelling of ['St. Louis', 'St Louis', 'Saint Louis']) {
+      const found = await places({ place: spelling, country: 'United States' });
+      expect(found.places.map((place) => place.name)).toContain('St. Louis');
+      expect(found.places[0].name).toBe('St. Louis');
+    }
+    expect((await places({ place: 'St. Petersburg' })).places.map((place) => place.country)).toEqual(expect.arrayContaining(['Russia', 'United States']));
+    expect((await places({ place: 'Terrace', country: 'Canada' })).places[0]).toMatchObject({ name: 'Terrace', country: 'Canada' });
+    expect((await places({ place: 'Temple Terrace' })).places[0]).toMatchObject({ name: 'Temple Terrace', country: 'United States' });
+    // A town too small for the index gets the index's own answer, not a street refusal.
+    const small = await places({ place: 'Lane Cove' });
+    expect(small.places).toEqual([]);
+    expect(small.message).toContain('15,000 people or more');
+    expect(await executeAiTool('find_birthplace', { place: '1600 Pennsylvania Avenue' }, on)).toMatchObject({ ok: false, error: { message: 'Give a town or city name, not a street address.' } });
+    expect(await executeAiTool('find_birthplace', { place: 'Flat 3, 12 High Street' }, on)).toMatchObject({ ok: false });
+  });
+
+  it('reads a country as its whole name or whole words of it', async () => {
+    expect((await places({ place: 'Muscat', country: 'Oman' })).places[0]).toMatchObject({ name: 'Muscat', country: 'Oman' });
+    expect((await places({ place: 'Bucharest', country: 'Oman' })).places).toEqual([]);
+    expect((await places({ place: 'Mogadishu', country: 'Mali' })).places).toEqual([]);
+    expect((await places({ place: 'Lagos', country: 'Niger' })).places).toEqual([]);
+    expect((await places({ place: 'Seoul', country: 'Korea' })).places[0]).toMatchObject({ name: 'Seoul', country: 'South Korea' });
+  });
+
   it('is not offered until the coverage switch is on', async () => {
     expect(await executeAiTool('find_birthplace', { place: 'London' }, { occasions: true })).toMatchObject({ ok: false, error: { code: 'unavailable' } });
   });

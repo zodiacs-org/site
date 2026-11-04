@@ -41,7 +41,7 @@ import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../reading-confidence';
 import { roundCoordinate } from '../plain-text';
-import type { TransitContact } from '../../lib/engine/transit-scan';
+import type { NatalTransitChart, TransitContact } from '../../lib/engine/transit-scan';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -200,6 +200,27 @@ export function numberTransitPasses<T extends Pick<TransitContact, 'transitBody'
   });
 }
 
+/**
+ * The contacts in a window, with every pass of their loops in the wider span.
+ * The window is scanned for every planet, point and aspect; the wider span only
+ * for each planet, point and aspect that meets inside the window and can loop.
+ * The scanner treats each of those on its own, so their passes match one scan
+ * of the whole span, at a fraction of the work. The Sun never turns back, so
+ * each of its contacts is a single pass and needs no wider scan.
+ */
+function scanTransitLoops(natal: NatalTransitChart, from: Date, to: Date, loopFrom: Date, loopTo: Date, planets: readonly TransitBody[], points: readonly NatalPoint[]): TransitContact[] {
+  const inWindow = scanTransitContacts(natal, from, to, { transitBodies: planets, natalPoints: points });
+  const loops = (contact: TransitContact) => (LOOP_GAP_DAYS[contact.transitBody] ?? 0) > 0;
+  const single = inWindow.filter((contact) => !loops(contact));
+  const keys = new Map<string, TransitContact>();
+  for (const contact of inWindow.filter(loops)) keys.set(`${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`, contact);
+  return [
+    ...single,
+    ...[...keys.values()].flatMap((contact) =>
+      scanTransitContacts(natal, loopFrom, loopTo, { transitBodies: [contact.transitBody], natalPoints: [contact.natalPoint], aspects: [contact.aspect] })),
+  ];
+}
+
 const BEFORE_BIRTH = 'The window starts before the birth date; give a from date on or after the birth date.';
 const YEAR_BEFORE_BIRTH = 'year-ahead starts today, which is before the birth date.';
 const cap = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
@@ -257,7 +278,7 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
     const expandedTo = new Date(Math.min(SPAN_END, toUtc.getTime() + pad * DAY));
     const fromIso = fromUtc.toISOString();
     const toIso = toUtc.toISOString();
-    const found = numberTransitPasses(scanTransitContacts(natal, expandedFrom, expandedTo, { transitBodies: planets, natalPoints: points }))
+    const found = numberTransitPasses(scanTransitLoops(natal, fromUtc, toUtc, expandedFrom, expandedTo, planets, points))
       .filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso)
       .sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
     if (found.length > TRANSITS_LIMIT) limits.push(`${found.length} contacts were found; the first ${TRANSITS_LIMIT} are listed. Ask for a shorter window for the rest.`);

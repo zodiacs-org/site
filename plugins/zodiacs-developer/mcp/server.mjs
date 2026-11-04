@@ -33505,6 +33505,17 @@ function numberTransitPasses(contacts) {
     return { ...contact, pass: info.pass, passCount: info.passCount, firstPassUtc: info.first, lastPassUtc: info.last };
   });
 }
+function scanTransitLoops(natal, from, to, loopFrom, loopTo, planets, points) {
+  const inWindow = scanTransitContacts(natal, from, to, { transitBodies: planets, natalPoints: points });
+  const loops = (contact) => (LOOP_GAP_DAYS[contact.transitBody] ?? 0) > 0;
+  const single = inWindow.filter((contact) => !loops(contact));
+  const keys = /* @__PURE__ */ new Map();
+  for (const contact of inWindow.filter(loops)) keys.set(`${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`, contact);
+  return [
+    ...single,
+    ...[...keys.values()].flatMap((contact) => scanTransitContacts(natal, loopFrom, loopTo, { transitBodies: [contact.transitBody], natalPoints: [contact.natalPoint], aspects: [contact.aspect] }))
+  ];
+}
 var BEFORE_BIRTH = "The window starts before the birth date; give a from date on or after the birth date.";
 var YEAR_BEFORE_BIRTH = "year-ahead starts today, which is before the birth date.";
 var cap7 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
@@ -33557,7 +33568,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
     const expandedTo = new Date(Math.min(SPAN_END, toUtc2.getTime() + pad2 * DAY12));
     const fromIso = fromUtc2.toISOString();
     const toIso = toUtc2.toISOString();
-    const found = numberTransitPasses(scanTransitContacts(natal2, expandedFrom, expandedTo, { transitBodies: planets, natalPoints: points })).filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
+    const found = numberTransitPasses(scanTransitLoops(natal2, fromUtc2, toUtc2, expandedFrom, expandedTo, planets, points)).filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
     if (found.length > TRANSITS_LIMIT) limits2.push(`${found.length} contacts were found; the first ${TRANSITS_LIMIT} are listed. Ask for a shorter window for the rest.`);
     const contacts = found.slice(0, TRANSITS_LIMIT).map((contact) => {
       const label = readingConfidenceLabel(detail, true);
@@ -35423,7 +35434,7 @@ function rankCities(index, rows2, q, limit) {
 var DATE3 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var LIMIT = 5;
 var RANK_LIMIT = 40;
-var STREET = /(?:^\d+\b|\b(?:street|avenue|boulevard|lane|drive|court|highway|crescent|terrace|alley)\b|\bst\.)/iu;
+var HOUSE_NUMBER = /(?:^|[\s,])\d+[a-z]?(?=[\s,]|$)/iu;
 var COUNTRY_ALIAS = {
   uk: "united kingdom",
   britain: "united kingdom",
@@ -35469,9 +35480,28 @@ function countryFold(hint2) {
   return COUNTRY_ALIAS[folded] ?? folded;
 }
 function countryMatches(country, hint2) {
+  const words = (text2) => ` ${text2.replace(/[^a-z0-9]+/gu, " ").trim()} `;
   const wanted = countryFold(hint2);
   const name = fold2(country);
-  return name === wanted || name.includes(wanted) || wanted.includes(name);
+  if (!words(wanted).trim()) return name === wanted;
+  return words(name).includes(words(wanted)) || words(wanted).includes(words(name));
+}
+function queryVariants(place2) {
+  const query = foldedQuery(place2);
+  if (!query) return [];
+  const rest = /^(?:st\.?|saint)\s+(.+)$/u.exec(query)?.[1];
+  return rest ? [.../* @__PURE__ */ new Set([query, `st. ${rest}`, `st ${rest}`, `saint ${rest}`])] : [query];
+}
+function rankPlaces(table, variants) {
+  const rank = (query) => {
+    const key = shardKey(query);
+    return rankCities(table.index, queryRows(table.index, table.shards[key] ?? [], key), query, RANK_LIMIT);
+  };
+  if (variants.length <= 1) return variants.length ? rank(variants[0]) : [];
+  const found = /* @__PURE__ */ new Map();
+  for (const query of variants) for (const city of rank(query)) found.set(`${city.name}|${city.lat}|${city.lon}`, city);
+  const starts = (city) => variants.some((query) => fold2(city.name).startsWith(query));
+  return [...found.values()].sort((a, b) => Number(starts(b)) - Number(starts(a)) || b.pop - a.pop).slice(0, RANK_LIMIT);
 }
 function offsetText2(minutes) {
   const rounded = Math.round(minutes);
@@ -35483,17 +35513,15 @@ function todayUtc(now) {
   return now.toISOString().slice(0, 10);
 }
 async function findBirthplace(args, now, clock2, table) {
-  if (STREET.test(args.place)) throw new RangeError("Give a town or city name, not a street address.");
   const date3 = args.date ?? todayUtc(now);
   if (Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) || (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) !== date3) {
     throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
   }
   const year = Number(date3.slice(0, 4));
   if (year < 1800 || year > 2199) throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
-  const query = foldedQuery(args.place);
-  const key = query ? shardKey(query) : "0";
-  const ranked = query ? rankCities(table.index, queryRows(table.index, table.shards[key] ?? [], key), query, RANK_LIMIT) : [];
+  const ranked = rankPlaces(table, queryVariants(args.place));
   const matched = args.country ? ranked.filter((city) => countryMatches(city.country, args.country)) : ranked;
+  if (!matched.length && HOUSE_NUMBER.test(args.place)) throw new RangeError("Give a town or city name, not a street address.");
   const chosen = matched.slice(0, LIMIT);
   const places = [];
   for (const city of chosen) {
@@ -36999,7 +37027,10 @@ function clockTime3(utc, zone7) {
   return { utc, local: zone7 ? local : `${local} UTC` };
 }
 var optionalClock = (utc, zone7) => utc ? clockTime3(utc, zone7) : null;
+var BIRTH_OCCASIONS = /* @__PURE__ */ new Set(["birthday", "baby", "coming-of-age"]);
+var occasionPageUrl = `${ORIGIN}/occasions/`;
 function occasionCardUrl(args) {
+  if (BIRTH_OCCASIONS.has(args.occasion)) return occasionPageUrl;
   if (args.zone && (args.latitude === void 0 || args.longitude === void 0)) return null;
   const params = new URLSearchParams({ o: args.occasion, d: args.date });
   if (args.time) params.set("t", args.time);
@@ -37237,7 +37268,8 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const rating = withLabel(rateOccasionDate(args.occasion, card.sky));
         if (best) best = { ...best, best: best.best.map((day) => withLabel(day)) };
         const signOf = (body2) => card.sky.bodies.find((row) => row.body === body2)?.sign ?? null;
-        const shareUrl = occasionShareUrl(ORIGIN, { occasion: args.occasion, date: date3, names: null, place: null, sun: signOf("Sun"), moon: signOf("Moon"), score: rating.score });
+        const shareUrl = BIRTH_OCCASIONS.has(args.occasion) ? null : occasionShareUrl(ORIGIN, { occasion: args.occasion, date: date3, names: null, place: null, sun: signOf("Sun"), moon: signOf("Moon"), score: rating.score });
+        const printable = cardUrl !== null && cardUrl !== occasionPageUrl;
         data = {
           occasion: args.occasion,
           date: date3,
@@ -37268,10 +37300,10 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           note: OCCASION_NOTE
         };
         links = [
-          ...cardUrl ? [{ title: "Open the printable card", url: cardUrl }] : [occasionsLink],
+          ...printable ? [{ title: "Open the printable card", url: cardUrl }] : [occasionsLink],
           { title: "The sky at a chosen moment (get_sky)", url: `${ORIGIN}/today/` },
           { title: "Resolve a town or city (find_birthplace)", url: `${ORIGIN}/birth-chart/` },
-          ...cardUrl ? [occasionsLink] : [],
+          ...printable ? [occasionsLink] : [],
           methodLink
         ];
         break;
