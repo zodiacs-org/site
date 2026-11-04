@@ -531,8 +531,8 @@ function ut1Sigma(utcMs) {
   const days = (utcMs - UT1_OBSERVED_TO_MS) / DAY - 1;
   const errors = UT1_DATA.predictedErrors;
   const k = Math.max(0, Math.min(errors.length - 2, Math.floor(days / 10)));
-  const span = k + 1 === errors.length - 1 ? UT1_DATA.to - UT1_DATA.observedTo - 1 - 10 * k : 10;
-  const fraction = Math.max(0, Math.min(1, (days - 10 * k) / span));
+  const span2 = k + 1 === errors.length - 1 ? UT1_DATA.to - UT1_DATA.observedTo - 1 - 10 * k : 10;
+  const fraction = Math.max(0, Math.min(1, (days - 10 * k) / span2));
   return (errors[k] + fraction * (errors[k + 1] - errors[k])) / 1e6 + UT1_DATA.bound;
 }
 var fallback = () => ({ seconds: 0, sigma: UT1_FALLBACK_BAND, source: "fallback" });
@@ -672,7 +672,7 @@ function matchAspect(aBody, aLongitude, bBody, bLongitude) {
 }
 function findAspects(bodies) {
   const candidates = bodies.filter((body2) => ASPECT_BODY_SET.has(body2.body));
-  const aspects = [];
+  const aspects2 = [];
   for (let first2 = 0; first2 < candidates.length; first2 += 1) {
     for (let second = first2 + 1; second < candidates.length; second += 1) {
       const a = candidates[first2];
@@ -680,7 +680,7 @@ function findAspects(bodies) {
       if (!a || !b) continue;
       const match = matchAspect(a.body, a.lon, b.body, b.lon);
       if (!match) continue;
-      aspects.push({
+      aspects2.push({
         a: a.body,
         b: b.body,
         type: match.definition.type,
@@ -689,7 +689,7 @@ function findAspects(bodies) {
       });
     }
   }
-  return aspects.sort((a, b) => a.orb - b.orb);
+  return aspects2.sort((a, b) => a.orb - b.orb);
 }
 var SIGNS = /* @__PURE__ */ Object.freeze([
   /* @__PURE__ */ Object.freeze({
@@ -789,6 +789,7 @@ var SIGNS = /* @__PURE__ */ Object.freeze([
     naturalHouse: 12
   })
 ]);
+var SIGN_SLUGS = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ SIGNS.map((sign2) => sign2.slug));
 function normalizeLongitude(lon) {
   if (!Number.isFinite(lon)) throw new RangeError("Longitude must be finite.");
   return (lon % 360 + 360) % 360;
@@ -2218,9 +2219,9 @@ function houseOf(longitude2, cusps) {
     const start = cusps[index];
     const end = cusps[(index + 1) % 12];
     if (start === void 0 || end === void 0) continue;
-    const span = normalizeLongitude(end - start);
+    const span2 = normalizeLongitude(end - start);
     const offset = normalizeLongitude(longitude2 - start);
-    if (offset < span || span === 0) return index + 1;
+    if (offset < span2 || span2 === 0) return index + 1;
   }
   return 12;
 }
@@ -3521,10 +3522,10 @@ function precession_rot(time, dir) {
   throw "Invalid precess direction";
 }
 var Vector = class {
-  constructor(x, y, z16, t) {
+  constructor(x, y, z17, t) {
     this.x = x;
     this.y = y;
-    this.z = z16;
+    this.z = z17;
     this.t = t;
   }
   /**
@@ -3536,10 +3537,10 @@ var Vector = class {
   }
 };
 var StateVector = class {
-  constructor(x, y, z16, vx, vy, vz, t) {
+  constructor(x, y, z17, vx, vy, vz, t) {
     this.x = x;
     this.y = y;
-    this.z = z16;
+    this.z = z17;
     this.vx = vx;
     this.vy = vy;
     this.vz = vz;
@@ -3745,10 +3746,10 @@ var PlutoStateTable = [
   [73e4, [4.24325283709, -30.118201690825, -10.707441231349], [0.0031725847067411, 1609846120227e-16, -90672150593868e-17]]
 ];
 var TerseVector = class _TerseVector {
-  constructor(x, y, z16) {
+  constructor(x, y, z17) {
     this.x = x;
     this.y = y;
-    this.z = z16;
+    this.z = z17;
   }
   clone() {
     return new _TerseVector(this.x, this.y, this.z);
@@ -3816,9 +3817,9 @@ function AdjustBarycenterPosVel(ssb, tt, body2, planet_gm) {
   return planet;
 }
 function AccelerationIncrement(small_pos, gm, major_pos) {
-  const delta = major_pos.sub(small_pos);
-  const r2 = delta.quadrature();
-  return delta.mul(gm / (r2 * Math.sqrt(r2)));
+  const delta2 = major_pos.sub(small_pos);
+  const r2 = delta2.quadrature();
+  return delta2.mul(gm / (r2 * Math.sqrt(r2)));
 }
 var major_bodies_t = class {
   constructor(tt) {
@@ -4263,17 +4264,17 @@ function eclipticFrame(tt) {
   };
   return last;
 }
-function meanEcliptic(frame, x, y, z16) {
+function meanEcliptic(frame, x, y, z17) {
   const m = frame.rows;
   return [
-    m[0] * x + m[1] * y + m[2] * z16,
-    m[3] * x + m[4] * y + m[5] * z16,
-    m[6] * x + m[7] * y + m[8] * z16
+    m[0] * x + m[1] * y + m[2] * z17,
+    m[3] * x + m[4] * y + m[5] * z17,
+    m[6] * x + m[7] * y + m[8] * z17
   ];
 }
-function eclipticOfDate(x, y, z16, tt) {
+function eclipticOfDate(x, y, z17, tt) {
   const frame = eclipticFrame(tt);
-  const [ex, ey, ez] = meanEcliptic(frame, x, y, z16);
+  const [ex, ey, ez] = meanEcliptic(frame, x, y, z17);
   return {
     lon: normalizeLongitude(Math.atan2(ey, ex) * RAD22 + frame.tilt.dpsi / 3600),
     lat: Math.asin(ez / Math.hypot(ex, ey, ez)) * RAD22
@@ -5006,8 +5007,8 @@ function replayInputOf(envelope) {
 }
 function collectDifferences(left, right) {
   const rows2 = [];
-  const add = (id, area, label, a, b, kind, delta = null) => {
-    rows2.push({ id, area, label, left: a, right: b, delta, kind });
+  const add = (id, area, label, a, b, kind, delta2 = null) => {
+    rows2.push({ id, area, label, left: a, right: b, delta: delta2, kind });
   };
   const text2 = (id, area, label, a, b) => {
     const x = a === null || a === void 0 ? "\u2014" : String(a);
@@ -6505,8 +6506,8 @@ function ut1Sigma2(utcMs) {
   const days = (utcMs - UT1_OBSERVED_TO_MS2) / DAY4 - 1;
   const errors = UT1_DATA2.predictedErrors;
   const k = Math.max(0, Math.min(errors.length - 2, Math.floor(days / 10)));
-  const span = k + 1 === errors.length - 1 ? UT1_DATA2.to - UT1_DATA2.observedTo - 1 - 10 * k : 10;
-  const fraction = Math.max(0, Math.min(1, (days - 10 * k) / span));
+  const span2 = k + 1 === errors.length - 1 ? UT1_DATA2.to - UT1_DATA2.observedTo - 1 - 10 * k : 10;
+  const fraction = Math.max(0, Math.min(1, (days - 10 * k) / span2));
   return (errors[k] + fraction * (errors[k + 1] - errors[k])) / 1e6 + UT1_DATA2.bound;
 }
 var fallback2 = () => ({ seconds: 0, sigma: UT1_FALLBACK_BAND2, source: "fallback" });
@@ -6935,6 +6936,21 @@ function timeResolutionFacts(module) {
   };
 }
 
+// node_modules/@zodiacs/engine/dist/conventions.js
+var CONVENTIONS_REGISTRY = "https://zodiacs.org/developers/conventions/";
+function parseConventionId(id) {
+  const colon = typeof id === "string" ? id.indexOf(":") : -1;
+  if (colon < 0) throw new RangeError("A convention id is a namespace, a colon and a value.");
+  const namespace = id.slice(0, colon);
+  const value = id.slice(colon + 1);
+  conventionId(namespace, value);
+  return { namespace, value };
+}
+function conventionAddress(id) {
+  parseConventionId(id);
+  return `${CONVENTIONS_REGISTRY}#${encodeURI(id)}`;
+}
+
 // src/lib/compute-api/receipt.ts
 var BACKEND = Object.freeze({
   name: "@zodiacs/engine",
@@ -7313,47 +7329,47 @@ async function computeSkyFact(request, dependencies) {
   }
   const day = "day" in request ? request.day : request.when;
   const window = await dayWindow(day, dependencies);
-  const span = searchSpan(window);
+  const span2 = searchSpan(window);
   const anyZone = window.basis === "any-zone-day";
-  const flags = spanFlags(window.from, span.to);
+  const flags = spanFlags(window.from, span2.to);
   let answer;
   let facts;
   switch (request.kind) {
     case "sign": {
       const index = SIGN_SLUGS2.indexOf(request.sign);
       const atStart = stateAt(rowsAt(window.from), request.body);
-      const changes = [index * 30, (index + 1) % 12 * 30].flatMap((boundary) => signCrossings(request.body, boundary, span.from, span.to, budget).map((crossing) => ({ at: iso(crossing.at), into: signEntered(boundary, crossing.retrograde), retrograde: crossing.retrograde }))).sort((a, b) => a.at.localeCompare(b.at));
+      const changes = [index * 30, (index + 1) % 12 * 30].flatMap((boundary) => signCrossings(request.body, boundary, span2.from, span2.to, budget).map((crossing) => ({ at: iso(crossing.at), into: signEntered(boundary, crossing.retrograde), retrograde: crossing.retrograde }))).sort((a, b) => a.at.localeCompare(b.at));
       answer = changes.length > 0 ? "depends" : atStart.sign === request.sign ? "true" : "false";
-      facts = { atStart, atEnd: stateAt(rowsAt(span.to), request.body), changes, flags };
+      facts = { atStart, atEnd: stateAt(rowsAt(span2.to), request.body), changes, flags };
       break;
     }
     case "retrograde": {
       const atStart = stateAt(rowsAt(window.from), request.body);
-      const stations = STATION_BODIES.includes(request.body) ? stationCrossings(request.body, span.from, span.to, budget, rowsAt).map((crossing) => ({ at: iso(crossing.at), type: crossing.retrograde ? "retrograde" : "direct" })) : [];
+      const stations = STATION_BODIES.includes(request.body) ? stationCrossings(request.body, span2.from, span2.to, budget, rowsAt).map((crossing) => ({ at: iso(crossing.at), type: crossing.retrograde ? "retrograde" : "direct" })) : [];
       answer = stations.length > 0 ? "depends" : atStart.retrograde ? "true" : "false";
-      facts = { atStart, atEnd: stateAt(rowsAt(span.to), request.body), stations, flags };
+      facts = { atStart, atEnd: stateAt(rowsAt(span2.to), request.body), stations, flags };
       break;
     }
     case "ingress": {
       const index = SIGN_SLUGS2.indexOf(request.sign);
-      const ingresses = [
-        ...signCrossings(request.body, index * 30, span.from, span.to, budget).filter((crossing) => !crossing.retrograde),
-        ...signCrossings(request.body, (index + 1) % 12 * 30, span.from, span.to, budget).filter((crossing) => crossing.retrograde)
+      const ingresses2 = [
+        ...signCrossings(request.body, index * 30, span2.from, span2.to, budget).filter((crossing) => !crossing.retrograde),
+        ...signCrossings(request.body, (index + 1) % 12 * 30, span2.from, span2.to, budget).filter((crossing) => crossing.retrograde)
       ].map((crossing) => ({ at: iso(crossing.at), retrograde: crossing.retrograde })).sort((a, b) => a.at.localeCompare(b.at));
-      answer = ingresses.length === 0 ? "false" : anyZone ? "depends" : "true";
-      facts = { ingresses, flags };
+      answer = ingresses2.length === 0 ? "false" : anyZone ? "depends" : "true";
+      facts = { ingresses: ingresses2, flags };
       break;
     }
     case "phase": {
-      const lunations = phaseCrossings(PHASES[request.phase], span.from, span.to, budget).map((crossing) => ({ at: iso(crossing.at), ...placeOf(rowOf(rowsAt(crossing.at), "Moon").lon) }));
+      const lunations = phaseCrossings(PHASES[request.phase], span2.from, span2.to, budget).map((crossing) => ({ at: iso(crossing.at), ...placeOf(rowOf(rowsAt(crossing.at), "Moon").lon) }));
       answer = lunations.length === 0 ? "false" : anyZone ? "depends" : "true";
       facts = { lunations, flags };
       break;
     }
     case "aspect": {
       const rule = aspectRule(request.aspect, request.body, request.other);
-      const changes = aspectEdges(rule).flatMap((edge) => relativeCrossings(request, edge.lon, span.from, span.to, budget, rowsAt).map((crossing) => ({ at: iso(crossing.at), holds: edge.lower !== crossing.retrograde }))).sort((a, b) => a.at.localeCompare(b.at));
-      const exact = aspectExactness(rule).flatMap((target) => relativeCrossings(request, target, span.from, span.to, budget, rowsAt)).map((crossing) => {
+      const changes = aspectEdges(rule).flatMap((edge) => relativeCrossings(request, edge.lon, span2.from, span2.to, budget, rowsAt).map((crossing) => ({ at: iso(crossing.at), holds: edge.lower !== crossing.retrograde }))).sort((a, b) => a.at.localeCompare(b.at));
+      const exact = aspectExactness(rule).flatMap((target) => relativeCrossings(request, target, span2.from, span2.to, budget, rowsAt)).map((crossing) => {
         const rows2 = rowsAt(crossing.at);
         return { at: iso(crossing.at), body: placeOf(rowOf(rows2, request.body).lon), other: placeOf(rowOf(rows2, request.other).lon) };
       }).sort((a, b) => a.at.localeCompare(b.at));
@@ -7361,7 +7377,7 @@ async function computeSkyFact(request, dependencies) {
       answer = changes.length > 0 ? "depends" : aspectHolds(startRows, request) ? "true" : "false";
       facts = {
         atStart: aspectState(startRows, request, rule),
-        atEnd: aspectState(rowsAt(span.to), request, rule),
+        atEnd: aspectState(rowsAt(span2.to), request, rule),
         allowedOrb: rule.allowedOrb,
         changes,
         exact,
@@ -7807,7 +7823,7 @@ function refusalOf(error) {
 var trimStop = (message) => message.replace(/\.+$/, "");
 
 // src/ai-tools/contracts.ts
-import { z as z12 } from "zod";
+import { z as z13 } from "zod";
 
 // src/lib/compute-api/openapi.ts
 var ref = (name) => ({ $ref: `#/components/schemas/${name}` });
@@ -8647,8 +8663,8 @@ function equatorRows(tt, kind) {
   const { mobl, tobl, dpsi } = frame.tilt;
   return kind === "mean" ? toEquator(frame.rows, mobl * DEG6) : toEquator(toTrueEquinox(frame.rows, dpsi * ARCSEC4), tobl * DEG6);
 }
-function turn2(m, x, y, z16) {
-  return [m[0] * x + m[1] * y + m[2] * z16, m[3] * x + m[4] * y + m[5] * z16, m[6] * x + m[7] * y + m[8] * z16];
+function turn2(m, x, y, z17) {
+  return [m[0] * x + m[1] * y + m[2] * z17, m[3] * x + m[4] * y + m[5] * z17, m[6] * x + m[7] * y + m[8] * z17];
 }
 
 // node_modules/@zodiacs/engine/dist/sky.js
@@ -8762,16 +8778,16 @@ function stateAt2(body2, site, conventions, ms) {
     const sinT = Math.sin(theta);
     const x = vx - (n + h) * cosPhi * cosT / KM_PER_AU2;
     const y = vy - (n + h) * cosPhi * sinT / KM_PER_AU2;
-    const z16 = vz - (n * (1 - E2) + h) * sinPhi / KM_PER_AU2;
+    const z17 = vz - (n * (1 - E2) + h) * sinPhi / KM_PER_AU2;
     const east = -x * sinT + y * cosT;
     const radial = x * cosT + y * sinT;
-    const north = -radial * sinPhi + z16 * cosPhi;
-    const up = radial * cosPhi + z16 * sinPhi;
+    const north = -radial * sinPhi + z17 * cosPhi;
+    const up = radial * cosPhi + z17 * sinPhi;
     const altitude = Math.atan2(up, Math.hypot(east, north)) / RAD6;
     const azimuth = (Math.atan2(east, north) / RAD6 % 360 + 360) % 360;
     const hourAngle = ((theta - Math.atan2(y, x)) / RAD6 % 360 + 360) % 360;
     const radius = body2 === "Sun" || body2 === "Moon" ? SKY_RADII_KM[body2] : 0;
-    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z16) * KM_PER_AU2)) / RAD6;
+    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z17) * KM_PER_AU2)) / RAD6;
     const limb = conventions.limb === "upper" ? 1 : conventions.limb === "lower" ? -1 : 0;
     const horizon = -conventions.refractionArcmin / 60 - limb * semiDiameter;
     return { above: altitude - horizon, altitude, azimuth, hourAngle };
@@ -8927,8 +8943,8 @@ function sunAltitude(at, latitude, longitude2) {
   const { rightAscension, declination } = sunEquatorial(at);
   const hourAngle = (siderealTime(at) + longitude2 - rightAscension) * RAD7;
   const phi = latitude * RAD7;
-  const delta = declination * RAD7;
-  return Math.asin(Math.sin(phi) * Math.sin(delta) + Math.cos(phi) * Math.cos(delta) * Math.cos(hourAngle)) / RAD7;
+  const delta2 = declination * RAD7;
+  return Math.asin(Math.sin(phi) * Math.sin(delta2) + Math.cos(phi) * Math.cos(delta2) * Math.cos(hourAngle)) / RAD7;
 }
 function sunDescendsThrough(altitude, from, to, latitude, longitude2) {
   let lo = from.getTime();
@@ -10118,11 +10134,11 @@ function modalityBalance2(bodies) {
   }
   return out;
 }
-function rankedContacts(aspects) {
-  return [...aspects].sort((one, other) => Number(isGenerationalContact(one)) - Number(isGenerationalContact(other)) || one.orb - other.orb);
+function rankedContacts(aspects2) {
+  return [...aspects2].sort((one, other) => Number(isGenerationalContact(one)) - Number(isGenerationalContact(other)) || one.orb - other.orb);
 }
 function summarizePair2(a, b, topN = 8) {
-  const aspects = findInterAspects2(a, b);
+  const aspects2 = findInterAspects2(a, b);
   const counts = {
     conjunction: 0,
     sextile: 0,
@@ -10130,10 +10146,10 @@ function summarizePair2(a, b, topN = 8) {
     trine: 0,
     opposition: 0
   };
-  for (const asp of aspects) counts[asp.type] += 1;
+  for (const asp of aspects2) counts[asp.type] += 1;
   return {
-    aspects,
-    top: rankedContacts(aspects).slice(0, topN),
+    aspects: aspects2,
+    top: rankedContacts(aspects2).slice(0, topN),
     counts,
     easeful: counts.trine + counts.sextile,
     charged: counts.square + counts.opposition,
@@ -10212,10 +10228,10 @@ var ELEMENT_ORDER = {
   air: ["gemini", "libra", "aquarius"],
   water: ["cancer", "scorpio", "pisces"]
 };
-function decanRuler(signSlug4, decan) {
-  const sign2 = signBySlug(signSlug4);
+function decanRuler(signSlug5, decan) {
+  const sign2 = signBySlug(signSlug5);
   const seq = ELEMENT_ORDER[sign2.element];
-  const idx = seq.indexOf(signSlug4);
+  const idx = seq.indexOf(signSlug5);
   const rulingSign = signBySlug(seq[(idx + decan - 1) % 3]);
   return rulingSign.classicRuler ?? rulingSign.ruler;
 }
@@ -26464,9 +26480,38 @@ var birthdays_default = {
   }
 };
 
+// node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
+function readOptions(value, allowed, label) {
+  const out = /* @__PURE__ */ Object.create(null);
+  if (value === void 0) return out;
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    throw new RangeError(`${label} must be an options object.`);
+  }
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) {
+    throw new RangeError(`${label} must be a plain options object.`);
+  }
+  for (const key of Reflect.ownKeys(value)) {
+    if (typeof key !== "string" || !allowed.includes(key)) {
+      throw new RangeError(`${label} has an unknown option: ${String(key)}.`);
+    }
+    const slot = Object.getOwnPropertyDescriptor(value, key);
+    if (!slot || !("value" in slot) || !slot.enumerable) {
+      throw new RangeError(`${label} must contain only plain data properties.`);
+    }
+    if (slot.value !== void 0) out[key] = slot.value;
+  }
+  return out;
+}
+
 // node_modules/@zodiacs/engine/dist/techniques.js
 var DAY_MS4 = 864e5;
 var MAX_DATE_MS = 864e13;
+function oneOf2(value, allowed, fallback3, label) {
+  if (value === void 0) return fallback3;
+  if (typeof value === "string" && allowed.includes(value)) return value;
+  throw new RangeError(`${label} must be one of ${allowed.map((name) => `"${name}"`).join(", ")}.`);
+}
 function finiteDegrees(value, label) {
   if (typeof value !== "number" || !Number.isFinite(value)) throw new RangeError(`${label} must be a finite number of degrees.`);
   return value;
@@ -26510,6 +26555,110 @@ function mostRecentSolarReturnInstant(natalSunLongitude, at) {
   return new Date(last2.at.getTime());
 }
 var DEG8 = Math.PI / 180;
+var VOID_BODIES = /* @__PURE__ */ Object.freeze({
+  modern: /* @__PURE__ */ Object.freeze(["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]),
+  traditional: /* @__PURE__ */ Object.freeze(["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"])
+});
+var VOID_OF_COURSE_CONVENTION = /* @__PURE__ */ Object.freeze({
+  name: "last-exact-ptolemaic-aspect-to-sign-exit",
+  aspects: /* @__PURE__ */ Object.freeze(["conjunction", "sextile", "square", "trine", "opposition"]),
+  defaultBodies: "modern",
+  source: "Lilly, Christian Astrology (1647), p. 112"
+});
+var OFFSETS2 = [
+  ["conjunction", 0],
+  ["sextile", 60],
+  ["sextile", 300],
+  ["square", 90],
+  ["square", 270],
+  ["trine", 120],
+  ["trine", 240],
+  ["opposition", 180]
+];
+var VOID_OF_COURSE_MAX_DAYS = 3660;
+var BODY_SETS = ["modern", "traditional"];
+var bodiesOf = (options) => VOID_BODIES[oneOf2(readOptions(options, ["bodies"], "void-of-course options").bodies, BODY_SETS, "modern", "bodies")];
+function span(from, to) {
+  const start = dateFrom(from, "from").getTime();
+  const end = dateFrom(to, "to").getTime();
+  if (start > end) throw new RangeError("from must not be after to.");
+  if (end - start > VOID_OF_COURSE_MAX_DAYS * DAY_MS4) throw new RangeError(`The window must not exceed ${VOID_OF_COURSE_MAX_DAYS} days.`);
+  return [start, end];
+}
+function delta(a, b) {
+  const d = ((b - a) % 360 + 360) % 360;
+  return d > 180 ? d - 360 : d;
+}
+function ingresses(fromT, toT) {
+  const out = [];
+  if (!(toT > fromT)) return out;
+  for (let signIndex = 0; signIndex < 12; signIndex += 1) {
+    for (const crossing of findLongitudeCrossingsWith(bodyLongitude, "Moon", signIndex * 30, new Date(fromT), new Date(toT), 0.25)) {
+      if (!crossing.retrograde) out.push({ at: crossing.at, signIndex });
+    }
+  }
+  return out.sort((a, b) => a.at.getTime() - b.at.getTime());
+}
+function aspects(fromT, toT, bodies) {
+  if (!(toT > fromT)) return [];
+  const pairs = bodies.flatMap((body2) => OFFSETS2.map(([type, offset]) => ({ body: body2, type, offset })));
+  const separation2 = (body2, angle, t) => delta(bodyLongitude(body2, new Date(t)) + angle, bodyLongitude("Moon", new Date(t)));
+  const out = [];
+  let prevT = fromT;
+  const prev = pairs.map(({ body: body2, offset }) => separation2(body2, offset, prevT));
+  while (prevT < toT) {
+    const t = Math.min(prevT + DAY_MS4 / 8, toT);
+    const moonLon = bodyLongitude("Moon", new Date(t));
+    const bodyLons = new Map(bodies.map((body2) => [body2, bodyLongitude(body2, new Date(t))]));
+    pairs.forEach(({ body: body2, type, offset }, i) => {
+      const cur = delta((bodyLons.get(body2) ?? 0) + offset, moonLon);
+      const before2 = prev[i];
+      if (cur === 0 && before2 !== 0 && Math.abs(before2) < 90) {
+        out.push({ at: new Date(t), body: body2, aspect: type, moonLon });
+      } else if (before2 !== 0 && cur !== 0 && Math.sign(cur) !== Math.sign(before2) && Math.abs(cur) < 90 && Math.abs(before2) < 90) {
+        let lo = prevT;
+        let hi = t;
+        const rising = cur > before2;
+        for (let k = 0; k < 26; k += 1) {
+          const mid = (lo + hi) / 2;
+          if (separation2(body2, offset, mid) > 0 === rising) hi = mid;
+          else lo = mid;
+        }
+        const at = new Date(hi);
+        out.push({ at, body: body2, aspect: type, moonLon: bodyLongitude("Moon", at) });
+      }
+      prev[i] = cur;
+    });
+    prevT = t;
+  }
+  return out.sort((a, b) => a.at.getTime() - b.at.getTime());
+}
+function windows(fromT, toT, bodies) {
+  const list3 = ingresses(fromT - 4 * DAY_MS4, toT);
+  const out = [];
+  for (let i = 1; i < list3.length; i += 1) {
+    const entered = list3[i - 1];
+    const leaving = list3[i];
+    const end = leaving.at.getTime();
+    if (end <= fromT) continue;
+    const inSign = aspects(entered.at.getTime(), end, bodies).filter((aspect) => aspect.at.getTime() < end);
+    const lastAspect = inSign[inSign.length - 1] ?? null;
+    out.push(
+      Object.freeze({
+        from: new Date((lastAspect ?? entered).at.getTime()),
+        to: new Date(end),
+        lastAspect: lastAspect && Object.freeze(lastAspect),
+        sign: SIGN_SLUGS[entered.signIndex],
+        nextSign: SIGN_SLUGS[leaving.signIndex]
+      })
+    );
+  }
+  return out;
+}
+function voidOfCourseWindows(from, to, options) {
+  const bodies = bodiesOf(options);
+  return Object.freeze(windows(...span(from, to), bodies));
+}
 
 // src/lib/engine/reference-span.ts
 var REFERENCE_SPAN_START_MS = Date.parse("1800-01-01T00:00:00Z");
@@ -28477,12 +28626,12 @@ async function getBirthday(input, localTime2, now, origin = DEFAULT_ORIGIN2) {
       nearestDegrees: dist,
       text: dist >= 1.5 ? `Not a cusp date. Across ${years} the Sun sits at least ${dist}\xB0 inside ${sign2.name} on ${pageLabel}, so the sign never changes with the year.` : `Close to the ${nearPrev ? "previous" : "next"} sign's boundary, about ${dist}\xB0 at the nearest, but on the ${sign2.name} side in every year from ${YEAR_FROM} to ${YEAR_TO}.`
     };
-    const span = decanSpan(entry);
+    const span2 = decanSpan(entry);
     decan = {
-      first: span.lo,
-      last: span.hi,
-      rulers: span.hiRuler ? [span.ruler, span.hiRuler] : [span.ruler],
-      text: span.lo === span.hi ? `The ${decanOrdinal(span.lo)} decan of ${sign2.name} (${(span.lo - 1) * 10}\xB0\u2013${span.lo * 10}\xB0), whose traditional ruler is ${span.ruler}.` : `The date straddles the ${span.lo * 10}\xB0 line: depending on the birth year and hour, the Sun falls in the ${decanOrdinal(span.lo)} or ${decanOrdinal(span.hi)} decan of ${sign2.name} (traditional rulers ${span.ruler} and ${span.hiRuler}).`
+      first: span2.lo,
+      last: span2.hi,
+      rulers: span2.hiRuler ? [span2.ruler, span2.hiRuler] : [span2.ruler],
+      text: span2.lo === span2.hi ? `The ${decanOrdinal(span2.lo)} decan of ${sign2.name} (${(span2.lo - 1) * 10}\xB0\u2013${span2.lo * 10}\xB0), whose traditional ruler is ${span2.ruler}.` : `The date straddles the ${span2.lo * 10}\xB0 line: depending on the birth year and hour, the Sun falls in the ${decanOrdinal(span2.lo)} or ${decanOrdinal(span2.hi)} decan of ${sign2.name} (traditional rulers ${span2.ruler} and ${span2.hiRuler}).`
     };
   } else if (entry.cusp) {
     const summary = cuspSummary(entry.cusp);
@@ -29115,9 +29264,9 @@ function motionContext(body2, speed) {
   if (speed >= 0) return void 0;
   return `${body2} appeared to move backward from Earth when you were born. Astrology calls this retrograde; the planet did not reverse its orbit.`;
 }
-function placementContext(body2, signSlug4, house, speed) {
+function placementContext(body2, signSlug5, house, speed) {
   const theme = NATAL_BODY_THEME[body2];
-  const sign2 = signBySlug(signSlug4);
+  const sign2 = signBySlug(signSlug5);
   const location = houseContext(house);
   const housePhrase = house == null ? "The missing birth time means the life area remains open." : `The ${ORDINAL2[house] ?? `${house}th`} house shows the life area where that pattern is most visible.`;
   const synthesis = isNode(body2) ? `${sign2.name} describes the style of ${theme.topic}. ${housePhrase} This is a symbolic lens, not a prediction or fixed destiny.` : `${sign2.name} shapes your ${theme.topic}; ${housePhrase} It describes a tendency, not a guarantee of what will happen.`;
@@ -29140,17 +29289,24 @@ var NATAL_MAX_YEAR = 2199;
 var NATAL_TOP_ASPECTS = 8;
 var NATAL_NOTE = "Astrology\u2019s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.";
 var PLANETS2 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
-var natalChartInput = z6.strictObject({
+var natalChartFields = {
   birthDate: z6.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1990-05-03 (years 1800 to 2199)."),
   time: z6.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, such as 08:30, only if the person knows it. Never guess it. Needs zone."),
   zone: z6.string().min(1).max(64).regex(ZONE_PATTERN4).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z6.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign and the houses. Give it with longitude and zone. Nothing is stored."),
   longitude: z6.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
   place: z6.string().trim().min(1).max(80).regex(PLAIN_TEXT2).optional().describe("Optional birthplace name, such as Madrid, Spain. Display only: it is not used in the calculation and is not stored.")
-}).superRefine((args, context) => {
+};
+function natalChartRules(args, context) {
   if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
   if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A birth time or a place needs its time zone." });
-});
+}
+var natalChartInput = z6.strictObject(natalChartFields).superRefine(natalChartRules);
+var NATAL_HOUSE_SYSTEMS = ["whole-sign", "placidus"];
+var natalChartInputWithHouses = z6.strictObject({
+  ...natalChartFields,
+  houseSystem: z6.enum(NATAL_HOUSE_SYSTEMS).optional().describe("Optional: whole-sign (the default) or placidus. Houses need the birth time and place. Placidus cannot be drawn from about 66.6 degrees latitude north or south; there the chart uses whole-sign houses and houseNote says so.")
+}).superRefine(natalChartRules);
 var signSlug3 = z6.enum(SIGNS2.map((sign2) => sign2.slug));
 var tally2 = (keys) => z6.object(Object.fromEntries(keys.map((key) => [key, z6.number().int().min(0)])));
 var bigThreeEntry = z6.object({
@@ -29215,6 +29371,26 @@ var natalChartData = z6.object({
   under18: z6.boolean(),
   note: z6.literal(NATAL_NOTE)
 });
+var NATAL_NODE = "true";
+var NATAL_NODE_ABOUT = "These are the true nodes: where the Moon's orbit crossed the ecliptic at the moment of birth. Some astrologers use the mean node, an averaged position that can differ from it by up to about two degrees, so a node near the edge of a sign can fall in the next sign under the other convention. The South Node is always exactly opposite the North Node.";
+var nodeEntry = z6.object({
+  sign: signSlug3.nullable(),
+  /** Without a birth time, the signs the node could be in that day; with one, just its sign. */
+  possibleSigns: z6.array(signSlug3),
+  /** Degree and minute in the sign, such as 8°07′ Aquarius; null when the sign is unknown. */
+  position: z6.string().nullable(),
+  house: z6.number().int().min(1).max(12).nullable(),
+  /** What astrology reads into the node, in the site's words. */
+  meaning: z6.string(),
+  signLine: z6.string().nullable(),
+  houseLine: z6.string().nullable()
+});
+var natalChartDataWithNodes = natalChartData.extend({
+  houseSystem: z6.enum(NATAL_HOUSE_SYSTEMS).nullable(),
+  /** Why the chart has no Placidus houses when they were asked for, in a plain sentence; null otherwise. */
+  houseNote: z6.string().nullable(),
+  nodes: z6.object({ node: z6.literal(NATAL_NODE), about: z6.literal(NATAL_NODE_ABOUT), north: nodeEntry, south: nodeEntry })
+});
 async function resolveLocal2(date3, time, zone7, longitude2, clock2) {
   await clock2.prepareLocalTime(date3, zone7);
   return longitude2 !== void 0 ? clock2.resolveLocalToUtc(date3, time, zone7, { longitude: longitude2 }) : clock2.resolveLocalToUtc(date3, time, zone7);
@@ -29258,7 +29434,7 @@ function birthTimeNote(date3, time, zone7, resolved) {
 var slugAt2 = (index) => index === null ? null : SIGNS2[index].slug;
 var signName4 = (slug) => SIGNS2.find((sign2) => sign2.slug === slug).name;
 var placementUrl = (origin, body2, slug) => `${origin}/learn/placements/${body2.toLowerCase()}-in-${slug}/`;
-async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10)) {
+async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), options = {}) {
   const date3 = parseCivilDate(args.birthDate);
   if (!date3 || date3.year < NATAL_MIN_YEAR || date3.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
   if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
@@ -29269,7 +29445,8 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today = (/*
   const resolved = args.zone ? await resolveLocal2(args.birthDate, args.time ?? "12:00", args.zone, longitude2, clock2) : null;
   const utc = resolved ? resolved.utc : /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
   const timeNote = resolved && args.time !== void 0 ? birthTimeNote(args.birthDate, args.time, args.zone, resolved) : void 0;
-  const chart = computeChart2({ utc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
+  const placidus = !!options.skyEvents && "houseSystem" in args && args.houseSystem === "placidus";
+  const chart = computeChart2({ utc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: placidus ? "placidus" : "whole", timeKnown });
   const angles = timeKnown && placed ? chart.angles : null;
   let possible = (body2) => [slugAt2(signIndexForLongitude2(lonOf(chart, body2)))];
   if (!timeKnown) {
@@ -29307,7 +29484,7 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today = (/*
   const moon = planets[1];
   const risingSlug = angles ? SIGNS2[signIndexForLongitude2(angles.asc)].slug : null;
   const aspectBodies = new Set(timeKnown ? PLANETS2 : PLANETS2.filter((body2) => body2 !== "Moon"));
-  const aspects = chart.aspects.filter((aspect) => aspectBodies.has(aspect.a) && aspectBodies.has(aspect.b)).sort((a, b) => a.orb - b.orb || a.a.localeCompare(b.a) || a.b.localeCompare(b.b)).slice(0, NATAL_TOP_ASPECTS).map((aspect) => ({ a: aspect.a, b: aspect.b, type: aspect.type, orb: Math.round(aspect.orb * 10) / 10, line: natalAspectLine(aspect.a, aspect.type, aspect.b) }));
+  const aspects2 = chart.aspects.filter((aspect) => aspectBodies.has(aspect.a) && aspectBodies.has(aspect.b)).sort((a, b) => a.orb - b.orb || a.a.localeCompare(b.a) || a.b.localeCompare(b.b)).slice(0, NATAL_TOP_ASPECTS).map((aspect) => ({ a: aspect.a, b: aspect.b, type: aspect.type, orb: Math.round(aspect.orb * 10) / 10, line: natalAspectLine(aspect.a, aspect.type, aspect.b) }));
   const weatherBodies = PLANETS2.map((body2) => {
     const row = chart.bodies.find((entry) => entry.body === body2);
     return { body: body2, lon: row.lon, retrograde: row.retrograde, sign: settled(body2) ?? void 0 };
@@ -29325,19 +29502,37 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today = (/*
     unknown.push("No birthplace coordinates were given, so the rising sign and the houses are unknown.");
   }
   if (!args.zone) unknown.push("No time zone was given, so the chart is cast for noon UTC on the birth date.");
-  const big = (kind, slug, options, url) => ({
+  const big = (kind, slug, options2, url) => ({
     sign: slug,
-    possibleSigns: options,
+    possibleSigns: options2,
     meaning: slug ? bigThree(kind, slug) || null : null,
     pageUrl: url
   });
   const chartUrl = `${origin}/birth-chart/`;
   const under18 = isUnder18(args.birthDate, today);
   const guard = (text2) => under18 ? softenMinor(softenHealth(text2)) : softenHealth(text2);
-  const guardedBig = (kind, slug, options, url) => {
-    const entry = big(kind, slug, options, url);
+  const guardedBig = (kind, slug, options2, url) => {
+    const entry = big(kind, slug, options2, url);
     return { ...entry, meaning: entry.meaning ? guard(entry.meaning) : null };
   };
+  const node = (body2) => {
+    const row = chart.bodies.find((entry) => entry.body === body2);
+    const sign2 = settled(body2);
+    const house = sign2 ? houseFor(row.lon) : null;
+    const context = sign2 ? placementContext(body2, sign2, house, row.speed) : null;
+    return {
+      sign: sign2,
+      possibleSigns: possible(body2),
+      position: sign2 ? formatLongitude(row.lon) : null,
+      house,
+      meaning: guard(NATAL_BODY_THEME[body2].what),
+      signLine: context ? guard(context.how) : null,
+      houseLine: context && house ? guard(context.where) : null
+    };
+  };
+  const nodes = options.skyEvents ? { node: NATAL_NODE, about: NATAL_NODE_ABOUT, north: node("North Node"), south: node("South Node") } : null;
+  if (nodes && !nodes.north.sign) unknown.push(`The lunar nodes changed sign that day, the North Node from ${nodes.north.possibleSigns.map(signName4).join(" to ")}; the birth time settles it.`);
+  const houseNote = !placidus ? null : !angles ? "Placidus houses need the birth time and place, so the chart has no houses." : chart.flags.includes("polar-fallback") ? `Placidus houses cannot be drawn at ${Math.abs(latitude).toFixed(2)} degrees ${latitude >= 0 ? "north" : "south"}: from about 66.6 degrees latitude some degrees of the zodiac never rise or set, so the chart uses whole-sign houses instead.` : null;
   if (under18) unknown.push(MINOR_NOTE);
   const data = {
     birthDate: args.birthDate,
@@ -29353,7 +29548,7 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today = (/*
     rising: guardedBig("rising", risingSlug, risingSlug ? [risingSlug] : [], risingSlug ? `${origin}/rising-sign/${risingSlug}/` : null),
     planets: planets.map((row) => ({ ...row, signLine: row.signLine ? guard(row.signLine) : null, houseLine: row.houseLine ? guard(row.houseLine) : null })),
     angles: angles ? { ascendant: formatLongitude(angles.asc), midheaven: formatLongitude(angles.mc) } : null,
-    aspects: aspects.map((aspect) => ({ ...aspect, line: guard(aspect.line) })),
+    aspects: aspects2.map((aspect) => ({ ...aspect, line: guard(aspect.line) })),
     balance: { elements: weather.elements, modalities: weather.modalities, lines: weather.lines.map(guard) },
     unknown,
     ...timeNote ? { timeNote } : {},
@@ -29361,13 +29556,19 @@ async function getNatalChart(args, clock2, origin = DEFAULT_ORIGIN3, today = (/*
     under18,
     note: NATAL_NOTE
   };
+  const withNodes = nodes ? {
+    ...data,
+    houseSystem: angles ? chart.houses?.system === "placidus" ? "placidus" : "whole-sign" : null,
+    houseNote,
+    nodes
+  } : null;
   const links = [
     { title: "Open the birth chart page on Zodiacs", url: chartUrl },
     { title: "Resolve a town or city (find_birthplace)", url: `${origin}/birth-chart/` },
     ...sun.sign ? [{ title: `${signName4(sun.sign)} on Zodiacs`, url: `${origin}/${sun.sign}/` }] : [],
     { title: "How to read a birth chart", url: `${origin}/learn/how-to-read-a-birth-chart/` }
   ];
-  return { data, links };
+  return { data: withNodes ?? data, links };
 }
 function lonOf(chart, body2) {
   return chart.bodies.find((row) => row.body === body2).lon;
@@ -32279,7 +32480,7 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
   const date3 = args.date ?? today;
   if (Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) || (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) !== date3) throw new RangeError("date must be a real date, such as 2026-12-01.");
   const sign2 = args.sign;
-  const signName6 = cap3(sign2);
+  const signName7 = cap3(sign2);
   const months = await sources.months();
   const servedMonths = Object.keys(months.months).filter((month) => month <= today.slice(0, 7)).sort();
   const program = await sources.program();
@@ -32315,9 +32516,9 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
     const month = from.slice(0, 7);
     const entry = servedMonths.includes(month) ? months.months[month][sign2] : void 0;
     if (entry) {
-      reading = { title: `${signName6} \xB7 ${label}`, paragraphs: entry.paragraphs.map((text2) => ({ text: text2 })), published: entry.published };
+      reading = { title: `${signName7} \xB7 ${label}`, paragraphs: entry.paragraphs.map((text2) => ({ text: text2 })), published: entry.published };
       if (month === servedMonths.at(-1)) pageUrl = `${origin}/horoscopes/${sign2}/monthly/`;
-    } else notes.push(month > today.slice(0, 7) ? `The ${label} reading for ${signName6} isn't published yet; monthly readings appear on the first of the month.` : `The ${label} reading for ${signName6} is outside the range this tool serves${servedMonths.length ? `: Zodiacs serves the monthly readings from ${monthLabel(servedMonths[0])} to ${monthLabel(servedMonths.at(-1))} only` : ""}. The ${signName6} horoscope pages on Zodiacs are linked.`);
+    } else notes.push(month > today.slice(0, 7) ? `The ${label} reading for ${signName7} isn't published yet; monthly readings appear on the first of the month.` : `The ${label} reading for ${signName7} is outside the range this tool serves${servedMonths.length ? `: Zodiacs serves the monthly readings from ${monthLabel(servedMonths[0])} to ${monthLabel(servedMonths.at(-1))} only` : ""}. The ${signName7} horoscope pages on Zodiacs are linked.`);
   } else if (args.period === "year") {
     const yearly = program.signs.find((entry) => entry.sign === sign2)?.readings[`yearly-${label}`];
     if (yearly && yearly.status === "publishable") {
@@ -32331,7 +32532,7 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
     const window = await sources.window();
     const weekly = resolveHoroscope(window, { sign: sign2, period: "week", focus: "general", date: date3 }, zone7, "request", today);
     if (weekly.status === "available" && weekly.reading) {
-      reading = { title: `${signName6} \xB7 ${label}`, paragraphs: weekly.reading.paragraphs, published: null };
+      reading = { title: `${signName7} \xB7 ${label}`, paragraphs: weekly.reading.paragraphs, published: null };
       pageUrl = `${origin}/horoscopes/${sign2}/weekly/`;
     } else notes.push(`The weekly reading for ${label} isn't kept here; Zodiacs keeps the current week's.`);
     for (const edition of window.editions.filter((candidate) => candidate.anchorDate >= from && candidate.anchorDate <= to)) {
@@ -32379,7 +32580,7 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
   const data = {
     status: reading || focusReadings.length ? "available" : "sky-only",
     sign: sign2,
-    signName: signName6,
+    signName: signName7,
     period: args.period,
     focus,
     from,
@@ -32397,7 +32598,7 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
     confidenceLabel: readingConfidenceLabel("sign"),
     disclosure: `${HOROSCOPE_DISCLOSURE} ${readingConfidenceLabel("sign")}.`
   };
-  return { data, links: [{ title: `${signName6} horoscopes on Zodiacs`, url: pageUrl }, { title: "Transits this month", url: `${origin}/transits/` }] };
+  return { data, links: [{ title: `${signName7} horoscopes on Zodiacs`, url: pageUrl }, { title: "Transits this month", url: `${origin}/transits/` }] };
 }
 
 // src/ai-tools/features/chinese-zodiac.ts
@@ -33080,8 +33281,8 @@ function scanTransitContactsWith(ephemeris, natal, from, to, options = {}) {
   assertWindow(from, to);
   const points = selectedNatalPoints(natal, options);
   const bodies = selectedTransitBodies(options);
-  const aspects = selectedAspects(options);
-  if (points.length === 0 || bodies.length === 0 || aspects.length === 0) return [];
+  const aspects2 = selectedAspects(options);
+  if (points.length === 0 || bodies.length === 0 || aspects2.length === 0) return [];
   const fromMs = from.getTime();
   const toMs = to.getTime();
   const contacts = /* @__PURE__ */ new Map();
@@ -33090,7 +33291,7 @@ function scanTransitContactsWith(ephemeris, natal, from, to, options = {}) {
     const stations = stationBreakpoints(ephemeris, transitBody2, from, to, stepDays);
     const boundaries = [from, ...stations, to];
     for (const point of points) {
-      for (const aspect of aspects) {
+      for (const aspect of aspects2) {
         for (const targetLon of aspectTargetLongitudes(point.lon, aspect)) {
           const hits = boundaries.slice(0, -1).flatMap((boundary, index) => ephemeris.findLongitudeCrossings(
             transitBody2,
@@ -33194,13 +33395,13 @@ function yearScan(natal, from, to) {
   ];
   if (natal.moonLon != null) points.push({ name: "Moon", lon: natal.moonLon });
   if (natal.ascLon != null) points.push({ name: "ASC", lon: natal.ascLon });
-  const aspects = [];
+  const aspects2 = [];
   for (const body2 of ["Jupiter", "Saturn"]) {
     for (const point of points) {
       for (const { aspect, offsets } of ASPECT_OFFSETS) {
         const crossings = offsets.flatMap((off) => scan(body2, (point.lon + off) % 360)).sort((a, b) => a.at.getTime() - b.at.getTime());
         for (const season of groupIntoSeasons2(crossings, 300)) {
-          aspects.push({
+          aspects2.push({
             body: body2,
             aspect,
             natal: point.name,
@@ -33212,14 +33413,14 @@ function yearScan(natal, from, to) {
       }
     }
   }
-  aspects.sort((a, b) => a.from.localeCompare(b.from));
+  aspects2.sort((a, b) => a.from.localeCompare(b.from));
   const saturn = saturnReturns(natal.birthUtc);
   const saturnSeasons = saturn.seasons.map((s) => ({
     index: s.index,
     from: s.first.toISOString(),
     to: s.last.toISOString()
   }));
-  return { solarReturns, aspects, saturnSeasons, rangeClipped: !window || window.clipped || saturn.rangeClipped };
+  return { solarReturns, aspects: aspects2, saturnSeasons, rangeClipped: !window || window.clipped || saturn.rangeClipped };
 }
 
 // src/lib/transits.ts
@@ -33365,9 +33566,9 @@ function aspectEvents(scan) {
   }));
 }
 var cap6 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-function ingressEvents(windows, sunSign, risingSign, from, to) {
+function ingressEvents(windows2, sunSign, risingSign, from, to) {
   const out = [];
-  for (const w of windows) {
+  for (const w of windows2) {
     if (w.planet !== "Jupiter" && w.planet !== "Saturn") continue;
     const start = new Date(w.from);
     if (start < from || start > to) continue;
@@ -33676,7 +33877,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
   const risingSign = angles ? SIGNS2[signIndexForLongitude2(angles.asc)].slug : null;
   const natalBodies = chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body) && (timeKnown || row.body !== "Moon")).map(({ body: body2, lon: at }) => ({ body: body2, lon: at }));
   const ingressWindows = ingresses_default.windows;
-  const ingresses = ingressEvents(ingressWindows, sunSign, risingSign, fromUtc, toUtc);
+  const ingresses2 = ingressEvents(ingressWindows, sunSign, risingSign, fromUtc, toUtc);
   const ingressSign = new Map(ingressWindows.map((window) => [`${window.planet}|${window.from}`, window.sign]));
   const natal = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles: null };
   const outerPoints = ["Sun", ...timeKnown ? ["Moon"] : [], ...YEAR_AHEAD_PERSONAL_POINTS];
@@ -33704,7 +33905,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
     aspectEvents(scan),
     personalEvents,
     saturnSeasonEvents(scan.saturnSeasons, fromUtc, toUtc),
-    ingresses,
+    ingresses2,
     eclipseEvents(eclipses_default.eclipses, natalBodies, fromUtc, toUtc)
   ]);
   const highlights = events.map((event2) => {
@@ -35132,6 +35333,35 @@ function pairPattern(slugA, slugB) {
   };
 }
 
+// src/lib/events/format.ts
+var MOON_MONTH_NAMES = [
+  "Wolf",
+  "Snow",
+  "Worm",
+  "Pink",
+  "Flower",
+  "Strawberry",
+  "Buck",
+  "Sturgeon",
+  "Corn",
+  "Hunter\u2019s",
+  "Beaver",
+  "Cold"
+];
+var isoDay = (iso3) => iso3.slice(0, 10);
+function lunationId(type, atIso) {
+  return `${type}-moon-${isoDay(atIso)}`;
+}
+function eclipseId(atIso) {
+  return `eclipse-${isoDay(atIso)}`;
+}
+function retrogradeId(planet, fromIso) {
+  return `${planet.toLowerCase()}-retrograde-${isoDay(fromIso)}`;
+}
+function ingressId(planet, sign2, atIso) {
+  return `${planet.toLowerCase()}-enters-${sign2}-${isoDay(atIso)}`;
+}
+
 // src/ai-tools/features/pair-pages.json
 var pair_pages_default = {
   "aquarius-aquarius": [
@@ -35980,6 +36210,9 @@ var ASPECTS3 = ["conjunction", "sextile", "square", "trine", "opposition"];
 var explainInput = z10.strictObject({
   topic: z10.string().trim().min(1).max(80).describe("What to explain, in a few words: a sign (leo), a planet (Mercury), a placement (Moon in Scorpio, Jupiter in the 12th), the houses or one house (seventh house), aspects or one aspect (square), retrogrades or Mercury retrograde, Moon phases, the rising sign or a sign rising (Leo rising), the Midheaven, the big three, cusps, Saturn return, elements, modalities, transits, synastry, eclipses or the Chinese zodiac.")
 });
+var explainInputWithSkyEvents = z10.strictObject({
+  topic: z10.string().trim().min(1).max(80).describe("What to explain, in a few words: a sign (leo), a planet (Mercury), a placement (Moon in Scorpio, Jupiter in the 12th), the houses or one house (seventh house), Placidus or whole-sign houses, aspects or one aspect (square), retrogrades, stations or Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (sign changes), the rising sign or a sign rising (Leo rising), the Midheaven, the big three, cusps, Saturn return, elements, modalities, transits, synastry or the Chinese zodiac.")
+});
 var link2 = z10.object({ title: z10.string(), url: z10.url() });
 var explainData = z10.object({
   found: z10.boolean(),
@@ -36135,6 +36368,134 @@ var TOPICS = [
 ];
 var OUT_OF_SCOPE = ["tarot", "numerology", "horary", "vedic", "jyotish", "sidereal astrology", "human design", "palmistry", "i ching", "crystals", "kabbalah"];
 var EXPLAIN_TOPICS = TOPICS.map((topic) => topic.key);
+var SKY_EVENTS_REWRITTEN = {
+  "lunar-nodes": {
+    key: "lunar-nodes",
+    title: "The lunar nodes",
+    aliases: ["nodes", "north node", "south node", "true node", "mean node", "lunar node", "moon nodes", "nodes of the moon", "north and south node"],
+    glossary: ["lunar-nodes", "north-node", "south-node", "true-node"],
+    plainFirst: true,
+    extra: () => [
+      "The lunar nodes are the two points where the Moon's path around the sky crosses the Sun's. The North Node is where the Moon crosses going north, and the South Node sits exactly opposite it. The nodes drift backward through the zodiac and go all the way round in about 18.6 years, so they stay about a year and a half in each sign.",
+      "Astrology reads the North Node as a direction of growth, what a person is learning to reach for, and the South Node as familiar patterns and existing strengths, what comes easily. It is a symbolic reading, not a fixed destiny.",
+      "Eclipses happen when a new or full Moon falls near the nodes, so each year's eclipses fall in or near the signs the nodes are passing through.",
+      "Zodiacs uses the true node, where the Moon's orbit crosses the ecliptic at that moment. Some astrologers use the mean node, an averaged position that can differ from it by up to about two degrees. For a person's own North and South Node, with their signs and houses, use get_natal_chart."
+    ],
+    pages: [{ title: "Eclipses", path: "/eclipses/" }, { title: "How we calculate", path: "/methodology/" }, { title: "Lunar nodes in the glossary", path: "/learn/glossary/#lunar-nodes" }],
+    related: ["eclipses", "birth-chart"]
+  },
+  "void-of-course-moon": {
+    key: "void-of-course-moon",
+    title: "The void-of-course Moon",
+    aliases: ["void of course", "void of course moon", "voc moon", "moon void of course", "void moon"],
+    glossary: ["void-of-course-moon"],
+    plainFirst: true,
+    extra: () => [
+      "The Moon is void of course between its last major aspect in a sign and its entry into the next sign. Once it has made that last contact, a conjunction, sextile, square, trine or opposition to the Sun or a planet, it makes no other until it changes sign. These stretches come every two to three days, as the Moon changes sign, and last from a few minutes to a day or two.",
+      "Astrology reads a void-of-course Moon as a pause: a poor moment to start something that needs to go somewhere, and a fair one for finishing, resting or routine.",
+      "Which bodies count differs between astrologers: traditional astrologers stop at Saturn, so under their rule some periods begin earlier. Zodiacs counts the Sun and every planet through Pluto, on its void-of-course calendar and in search_sky_events alike, so both give the same times. For the periods in the coming weeks, use search_sky_events."
+    ],
+    pages: [{ title: "Void-of-course Moon calendar", path: "/void-of-course-moon/" }, { title: "The void-of-course rule in the conventions registry", path: "/developers/conventions/#void-of-course-bodies:modern" }],
+    related: ["moon-phases", "moon", "new-and-full-moons"]
+  },
+  eclipses: {
+    key: "eclipses",
+    title: "Eclipses",
+    aliases: ["eclipse", "solar eclipse", "lunar eclipse", "eclipse season", "solar eclipses", "lunar eclipses", "blood moon"],
+    glossary: ["eclipse", "solar-eclipse", "lunar-eclipse", "eclipse-season"],
+    plainFirst: true,
+    extra: () => [
+      "An eclipse is a new or full Moon that falls close to the lunar nodes, so the Sun, Earth and Moon line up. At a solar eclipse the new Moon passes in front of the Sun and hides some or all of it from people in its path. At a lunar eclipse the full Moon passes through Earth's shadow and dims, turning red when the eclipse is total.",
+      "Eclipses come in seasons about six months apart, usually a solar and a lunar eclipse two weeks from each other, so there are four to seven a year.",
+      "Astrology reads eclipses as stronger new and full Moons: a solar eclipse as a fresh start, a lunar eclipse as something coming to a head, in the area of life where it falls in a chart.",
+      "For the dates, signs and local times of the eclipses from 2026 to 2030, use search_sky_events."
+    ],
+    pages: [{ title: "Eclipses", path: "/eclipses/" }, { title: "Eclipses in 2027", path: "/eclipses/2027/" }],
+    related: ["moon-phases", "lunar-nodes", "new-and-full-moons"]
+  }
+};
+var SKY_EVENTS_ADDED = {
+  houses: {
+    drop: ["house system", "whole sign houses", "placidus"],
+    topic: {
+      key: "house-systems",
+      title: "Placidus and whole-sign houses",
+      aliases: ["house system", "house systems", "placidus", "placidus houses", "placidus house system", "whole sign", "whole sign houses", "whole sign house system", "placidus vs whole sign", "placidus or whole sign", "whole sign vs placidus", "whole sign or placidus", "placidus and whole sign", "quadrant houses", "polar fallback"],
+      glossary: ["house-system", "whole-sign-houses", "placidus", "polar-fallback"],
+      plainFirst: true,
+      extra: () => [
+        "A house system decides where each of the twelve houses begins. In whole-sign houses each house is one whole sign: the sign rising at birth is the first house, the next sign the second, and so on round the chart. It is the oldest way of drawing houses and the simplest to read, and Zodiacs uses it unless asked for another.",
+        "Placidus divides the sky by time instead: it splits the time each degree takes to travel from the horizon to the top of the sky, and from the bottom of the sky back up to the horizon, into thirds. Its houses come in different sizes and usually begin partway through a sign. It is the most common system in modern Western astrology.",
+        "The two can put a planet near the start or end of a sign in different houses, so the same chart can read a little differently. The rising sign and the Midheaven are the same in both; in whole-sign houses the Midheaven need not fall in the tenth house.",
+        "Placidus cannot be drawn far from the equator: from about 66.6 degrees north or south, some degrees of the zodiac never rise or set, so Zodiacs uses whole-sign houses there and says so. For Placidus houses in a chart, give get_natal_chart houseSystem placidus."
+      ],
+      pages: [{ title: "Compare house systems on the birth chart page", path: "/birth-chart/" }, { title: "The houses", path: "/learn/houses/" }, { title: "How we calculate", path: "/methodology/" }],
+      related: ["houses", "rising-sign", "midheaven", "birth-chart"]
+    }
+  },
+  retrogrades: {
+    drop: ["station", "stationing"],
+    topic: {
+      key: "stations",
+      title: "Stations and retrograde loops",
+      aliases: ["station", "stations", "stationing", "stationary", "planet stationing", "stations retrograde", "stations direct", "station retrograde", "station direct", "stationing retrograde", "stationing direct", "turns direct", "turning direct", "goes direct", "going direct", "retrograde station", "direct station", "retrograde loop", "retrograde loops", "retrograde shadow", "shadow period", "pre shadow", "post shadow"],
+      glossary: ["station", "retrograde-loop", "direct", "retrograde"],
+      plainFirst: true,
+      extra: () => [
+        "A planet stations when it seems to stand still in the sky before it changes direction. At its retrograde station it starts to move backward through the zodiac; at its direct station, weeks or months later, it moves forward again. The planet's orbit does not change: this is how it looks from a moving Earth.",
+        "The path between the two stations is the retrograde loop. The planet crosses the same few degrees three times, forward, back and forward again, so a degree in that stretch can be met three times. Astrologers call that stretch the shadow: the planet enters it before the retrograde station and leaves it after the direct one.",
+        "Astrology treats a station as the turning point of a retrograde and the station degree as its most sensitive point. The days around it, when the planet barely moves, are read as the time its themes are strongest.",
+        "For the dates and degrees of the stations of Mercury through Pluto, months or years ahead, use search_sky_events."
+      ],
+      pages: [{ title: "Retrogrades", path: "/retrogrades/" }, { title: "Mercury retrograde", path: "/mercury-retrograde/" }],
+      related: ["retrogrades", "mercury-retrograde", "transits"]
+    }
+  },
+  "moon-phases": {
+    drop: ["new moon", "full moon", "lunation"],
+    topic: {
+      key: "new-and-full-moons",
+      title: "New and full Moons",
+      aliases: ["new moon", "full moon", "new moons", "full moons", "new and full moon", "new and full moons", "lunation", "lunations", "blue moon", "full moon names"],
+      glossary: ["new-moon", "full-moon", "lunation"],
+      plainFirst: true,
+      extra: () => [
+        "At a new Moon the Moon and the Sun are at the same degree of the same sign, so the Moon's lit side faces away from Earth and it cannot be seen. About two weeks later, at the full Moon, the Moon is opposite the Sun and fully lit. One new Moon to the next takes about 29.5 days, so a year has twelve or thirteen of each.",
+        "Astrology reads a new Moon as a time to begin and set intentions, and a full Moon as a time when something comes to a head, is finished or is seen clearly. Each is read through its sign: a full Moon in Taurus touches Taurus themes. When one falls near the lunar nodes it is also an eclipse.",
+        `Full Moons also carry traditional names, one for each month, from the ${MOON_MONTH_NAMES[0]} Moon in January to the ${MOON_MONTH_NAMES[11]} Moon in December; a second full Moon in one calendar month is a blue moon.`,
+        "For the dates, signs and local times of the new and full Moons months or years ahead, use search_sky_events."
+      ],
+      pages: [{ title: "Full Moon calendar", path: "/full-moon-calendar/" }, { title: "Moon phases", path: "/moon-phase/" }],
+      related: ["moon-phases", "eclipses", "moon"]
+    }
+  },
+  transits: {
+    drop: ["ingress", "ingresses", "sign change"],
+    topic: {
+      key: "ingresses",
+      title: "Ingresses: planets changing sign",
+      aliases: ["ingress", "ingresses", "sign change", "sign changes", "changes sign", "changing signs", "changing sign", "enters a sign", "entering a sign", "planet changes sign", "planets changing signs"],
+      glossary: ["ingress", "zodiac-season"],
+      plainFirst: true,
+      extra: () => [
+        "An ingress is the moment a planet moves into a new sign. The Sun changes sign about once a month, which is why each sign has its season. The Moon changes sign every two to three days. Mercury, Venus and Mars take weeks to months, Jupiter about a year, Saturn about two and a half years, and Uranus, Neptune and Pluto from seven to more than twenty years.",
+        "Astrology reads an ingress as a change of tone: the planet's themes start to take on the style of the new sign. A planet that turns retrograde can slip back into the sign it just left and enter the new one again, so a slow planet's change of sign often comes in two or three steps.",
+        "For the dates of the sign changes of the Sun through Pluto, months or years ahead, use search_sky_events; the Moon's are in get_upcoming_events."
+      ],
+      pages: [{ title: "Zodiac dates: when the Sun changes sign", path: "/learn/zodiac-dates/" }, { title: "Sky events", path: "/events/" }, { title: "Transits", path: "/transits/" }],
+      related: ["transits", "sun-sign", "retrogrades", "stations"]
+    }
+  }
+};
+var SKY_EVENTS_TOPICS = TOPICS.flatMap((topic) => {
+  const added = SKY_EVENTS_ADDED[topic.key];
+  const kept2 = SKY_EVENTS_REWRITTEN[topic.key] ?? (added ? { ...topic, aliases: topic.aliases.filter((alias) => !added.drop.includes(alias)), related: [...topic.related, added.topic.key] } : topic);
+  return added ? [kept2, added.topic] : [kept2];
+});
+var EXPLAIN_TOPICS_SKY_EVENTS = SKY_EVENTS_TOPICS.map((topic) => topic.key);
+var WHOLE_QUERY_ONLY_SKY_EVENTS = /* @__PURE__ */ new Set(["stations", "stationary", "whole sign"]);
+var topicsFor = (options) => options.skyEvents ? SKY_EVENTS_TOPICS : TOPICS;
+var keysFor = (options) => options.skyEvents ? EXPLAIN_TOPICS_SKY_EVENTS : EXPLAIN_TOPICS;
 function clean(text2) {
   return text2.normalize("NFKD").replace(new RegExp("\\p{M}", "gu"), "").toLowerCase().replace(/[^a-z0-9 ]+/gu, " ").replace(/\s+/gu, " ").trim();
 }
@@ -36197,20 +36558,22 @@ function matchNoSuchHouse(query) {
   const number2 = Number.parseInt(written, 10);
   return number2 >= 1 && number2 <= 12 ? null : written;
 }
-function matchTopic(query) {
-  if (matchNoSuchHouse(query)) return TOPICS.find((topic) => topic.key === "houses");
+function matchTopic(query, options = {}) {
+  const topics = topicsFor(options);
+  if (matchNoSuchHouse(query)) return topics.find((topic) => topic.key === "houses");
   const placement = matchPlacement(query);
-  if (placement) return TOPICS.find((topic) => topic.key === placement.planet.toLowerCase());
-  if (matchRising(query)) return TOPICS.find((topic) => topic.key === "rising-sign");
+  if (placement) return topics.find((topic) => topic.key === placement.planet.toLowerCase());
+  if (matchRising(query)) return topics.find((topic) => topic.key === "rising-sign");
   const angle = matchAngleSign(query);
-  if (angle) return TOPICS.find((topic) => topic.key === angle.angle);
-  if (DIGNITY.test(clean(query))) return TOPICS.find((topic) => topic.key === "rulership");
+  if (angle) return topics.find((topic) => topic.key === angle.angle);
+  if (DIGNITY.test(clean(query))) return topics.find((topic) => topic.key === "rulership");
   const folded = fold(query);
   if (!folded) return null;
-  const names = TOPICS.flatMap((topic) => [topic.key.replace(/-/gu, " "), fold(topic.title), ...topic.aliases.map(fold)].filter(Boolean).map((name) => ({ name, topic })));
+  const names = topics.flatMap((topic) => [topic.key.replace(/-/gu, " "), fold(topic.title), ...topic.aliases.map(fold)].filter(Boolean).map((name) => ({ name, topic })));
   const exact = names.find((entry) => entry.name === folded);
   if (exact) return exact.topic;
-  const contained = names.filter((entry) => !WHOLE_QUERY_ONLY.has(entry.name) && ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
+  const wholeQueryOnly = (name) => WHOLE_QUERY_ONLY.has(name) || !!options.skyEvents && WHOLE_QUERY_ONLY_SKY_EVENTS.has(name);
+  const contained = names.filter((entry) => !wholeQueryOnly(entry.name) && ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
   return contained[0]?.topic ?? null;
 }
 function risingParts(sign2) {
@@ -36335,12 +36698,13 @@ function signPairAnswer(query, a, b, friendship, origin) {
   };
   return { data, links: [page, { title: "Compatibility on Zodiacs", url: `${origin}/compatibility/` }] };
 }
-function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
+function explainAstrology(args, origin = DEFAULT_ORIGIN5, options = {}) {
+  const keys = keysFor(options);
   const words = clean(args.topic);
   const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
   const pair = outside ? null : matchSignPair(args.topic);
   if (pair) return signPairAnswer(args.topic, pair.a, pair.b, pair.friendship, origin);
-  const topic = outside ? null : matchTopic(args.topic);
+  const topic = outside ? null : matchTopic(args.topic, options);
   if (!topic) {
     const data2 = {
       found: false,
@@ -36351,7 +36715,7 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
       terms: [],
       pages: [],
       related: [],
-      topics: [...EXPLAIN_TOPICS],
+      topics: [...keys],
       message: outside ? `Zodiacs explains Western tropical astrology and the Chinese zodiac; it does not cover ${outside}. Say so plainly rather than explaining it from Zodiacs.` : "Zodiacs has no explainer for that topic. Choose one of the listed topics, or answer without Zodiacs.",
       note: EXPLAIN_NOTE
     };
@@ -36364,7 +36728,7 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
   const noSuchHouseLine = noSuchHouse ? `There is no ${noSuchHouseName}; houses are numbered 1 to 12. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.` : null;
   const glossaryLead = lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : [];
   const extra = topic.extra?.() ?? [];
-  const body2 = topic.key === "saturn-return" ? [...extra, ...glossaryLead] : [...glossaryLead, ...extra];
+  const body2 = topic.key === "saturn-return" || topic.plainFirst ? [...extra, ...glossaryLead] : [...glossaryLead, ...extra];
   const paragraphs = [
     ...noSuchHouseLine ? [noSuchHouseLine] : [],
     ...body2
@@ -36383,7 +36747,7 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
     paragraphs,
     terms: terms2.slice(lead ? 1 : 0).map((entry) => ({ term: entry.term, definition: entry.plainDefinition ?? entry.definition, url: `${origin}/learn/glossary/#${entry.slug}` })),
     pages,
-    related: [.../* @__PURE__ */ new Set([...placed?.related ?? [], ...topic.related])].filter((key) => EXPLAIN_TOPICS.includes(key)),
+    related: [.../* @__PURE__ */ new Set([...placed?.related ?? [], ...topic.related])].filter((key) => keys.includes(key)),
     topics: [],
     message: noSuchHouse ? `Western astrology has twelve houses, numbered 1 to 12; there is no ${noSuchHouseName}. Say so plainly before explaining the twelve.` : null,
     note: EXPLAIN_NOTE
@@ -36585,6 +36949,4047 @@ async function findBirthplace(args, now, clock2, table) {
   };
 }
 
+// src/ai-tools/features/sky-events.ts
+import { z as z12 } from "zod";
+
+// src/data/events-publication.json
+var events_publication_default = {
+  schema: "zodiacs.events-publication.v1",
+  locale: "en",
+  window: {
+    from: "2026-01-01T00:00:00.000Z",
+    to: "2028-01-01T00:00:00.000Z"
+  },
+  lastModified: "2026-10-16",
+  hub: {
+    path: "/events/",
+    title: "Sky events",
+    card: "/assets/og/v2/events/index.png",
+    indexEligible: true
+  },
+  pages: [
+    {
+      id: "full-moon-2026-01-03",
+      path: "/full-moon/2026-01-03/",
+      title: "Full moon in Cancer, January 3, 2026",
+      anchor: "2026-01-03T10:02:55.863Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "The Wolf Moon: the Moon stands opposite the Sun in Cancer.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-01-03.png"
+    },
+    {
+      id: "new-moon-2026-01-18",
+      path: "/new-moon/2026-01-18/",
+      title: "New moon in Capricorn, January 18, 2026",
+      anchor: "2026-01-18T19:52:01.736Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-01-18.png"
+    },
+    {
+      id: "saturn-sextile-uranus-2026-01-20",
+      path: "/events/saturn-sextile-uranus-2026-01-20/",
+      title: "Saturn sextile Uranus, January 20, 2026",
+      anchor: "2026-01-20T05:44:16.218Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Saturn",
+        "Uranus"
+      ],
+      signs: [
+        "pisces",
+        "taurus"
+      ],
+      summary: "Saturn and Uranus reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/saturn-sextile-uranus-2026-01-20.png"
+    },
+    {
+      id: "neptune-enters-aries-2026-01-26",
+      path: "/events/neptune-enters-aries-2026-01-26/",
+      title: "Neptune enters Aries, January 26, 2026",
+      anchor: "2026-01-26T14:30:44.561Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Neptune"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Neptune moves into Aries from Pisces.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/neptune-enters-aries-2026-01-26.png"
+    },
+    {
+      id: "full-moon-2026-02-01",
+      path: "/full-moon/2026-02-01/",
+      title: "Full moon in Leo, February 1, 2026",
+      anchor: "2026-02-01T22:09:17.527Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "The Snow Moon: the Moon stands opposite the Sun in Leo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-02-01.png"
+    },
+    {
+      id: "saturn-enters-aries-2026-02-14",
+      path: "/events/saturn-enters-aries-2026-02-14/",
+      title: "Saturn enters Aries, February 14, 2026",
+      anchor: "2026-02-14T00:39:37.844Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Saturn"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Saturn moves into Aries from Pisces.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/saturn-enters-aries-2026-02-14.png"
+    },
+    {
+      id: "new-moon-2026-02-17",
+      path: "/new-moon/2026-02-17/",
+      title: "New moon in Aquarius, February 17, 2026",
+      anchor: "2026-02-17T12:01:12.344Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-02-17.png"
+    },
+    {
+      id: "eclipse-2026-02-17",
+      path: "/eclipses/2026-02-17/",
+      title: "Annular solar eclipse in Aquarius, February 17, 2026",
+      anchor: "2026-02-17T12:11:59.944Z",
+      family: "eclipse",
+      subtype: "solar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "A new moon crosses the Sun's face in Aquarius.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2026-02-17.png"
+    },
+    {
+      id: "saturn-conjunction-neptune-2026-02-20",
+      path: "/events/saturn-conjunction-neptune-2026-02-20/",
+      title: "Saturn conjunction Neptune, February 20, 2026",
+      anchor: "2026-02-20T18:29:22.728Z",
+      family: "aspect",
+      subtype: "conjunction",
+      bodies: [
+        "Saturn",
+        "Neptune"
+      ],
+      signs: [
+        "aries",
+        "aries"
+      ],
+      summary: "Saturn and Neptune reach an exact conjunction.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/saturn-conjunction-neptune-2026-02-20.png"
+    },
+    {
+      id: "mercury-retrograde-2026-02-26",
+      path: "/mercury-retrograde/2026-02-26/",
+      title: "Mercury retrograde, February 2026",
+      anchor: "2026-02-26T06:47:25.019Z",
+      family: "retrograde",
+      subtype: "cycle",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "Mercury appears to reverse through Pisces.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/mercury-retrograde-2026-02-26.png"
+    },
+    {
+      id: "eclipse-2026-03-03",
+      path: "/eclipses/2026-03-03/",
+      title: "Total lunar eclipse in Virgo, March 3, 2026",
+      anchor: "2026-03-03T11:33:46.313Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "A full moon passes through Earth's shadow in Virgo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2026-03-03.png"
+    },
+    {
+      id: "full-moon-2026-03-03",
+      path: "/full-moon/2026-03-03/",
+      title: "Full moon in Virgo, March 3, 2026",
+      anchor: "2026-03-03T11:37:57.684Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "The Worm Moon: the Moon stands opposite the Sun in Virgo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-03-03.png"
+    },
+    {
+      id: "new-moon-2026-03-19",
+      path: "/new-moon/2026-03-19/",
+      title: "New moon in Pisces, March 19, 2026",
+      anchor: "2026-03-19T01:23:33.883Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "Sun and Moon meet in Pisces; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-03-19.png"
+    },
+    {
+      id: "saturn-sextile-pluto-2026-03-28",
+      path: "/events/saturn-sextile-pluto-2026-03-28/",
+      title: "Saturn sextile Pluto, March 28, 2026",
+      anchor: "2026-03-28T22:34:36.112Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Saturn",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Saturn and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/saturn-sextile-pluto-2026-03-28.png"
+    },
+    {
+      id: "full-moon-2026-04-02",
+      path: "/full-moon/2026-04-02/",
+      title: "Full moon in Libra, April 2, 2026",
+      anchor: "2026-04-02T02:12:00.538Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "The Pink Moon: the Moon stands opposite the Sun in Libra.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-04-02.png"
+    },
+    {
+      id: "new-moon-2026-04-17",
+      path: "/new-moon/2026-04-17/",
+      title: "New moon in Aries, April 17, 2026",
+      anchor: "2026-04-17T11:51:52.041Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Sun and Moon meet in Aries; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-04-17.png"
+    },
+    {
+      id: "uranus-enters-gemini-2026-04-26",
+      path: "/events/uranus-enters-gemini-2026-04-26/",
+      title: "Uranus enters Gemini, April 26, 2026",
+      anchor: "2026-04-26T01:01:21.002Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Uranus"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Uranus moves into Gemini from Taurus.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/uranus-enters-gemini-2026-04-26.png"
+    },
+    {
+      id: "full-moon-2026-05-01",
+      path: "/full-moon/2026-05-01/",
+      title: "Full moon in Scorpio, May 1, 2026",
+      anchor: "2026-05-01T17:23:09.934Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-05-01.png"
+    },
+    {
+      id: "new-moon-2026-05-16",
+      path: "/new-moon/2026-05-16/",
+      title: "New moon in Taurus, May 16, 2026",
+      anchor: "2026-05-16T20:01:04.323Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "Sun and Moon meet in Taurus; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-05-16.png"
+    },
+    {
+      id: "full-moon-2026-05-31",
+      path: "/full-moon/2026-05-31/",
+      title: "Full moon in Sagittarius, May 31, 2026",
+      anchor: "2026-05-31T08:45:10.106Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "sagittarius"
+      ],
+      summary: "A blue moon: the Moon stands opposite the Sun in Sagittarius.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-05-31.png"
+    },
+    {
+      id: "new-moon-2026-06-15",
+      path: "/new-moon/2026-06-15/",
+      title: "New moon in Gemini, June 15, 2026",
+      anchor: "2026-06-15T02:54:11.458Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Sun and Moon meet in Gemini; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-06-15.png"
+    },
+    {
+      id: "mercury-retrograde-2026-06-29",
+      path: "/mercury-retrograde/2026-06-29/",
+      title: "Mercury retrograde, June 2026",
+      anchor: "2026-06-29T17:37:11.542Z",
+      family: "retrograde",
+      subtype: "cycle",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Mercury appears to reverse through Cancer.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/mercury-retrograde-2026-06-29.png"
+    },
+    {
+      id: "full-moon-2026-06-29",
+      path: "/full-moon/2026-06-29/",
+      title: "Full moon in Capricorn, June 29, 2026",
+      anchor: "2026-06-29T23:56:39.855Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "The Strawberry Moon: the Moon stands opposite the Sun in Capricorn.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-06-29.png"
+    },
+    {
+      id: "jupiter-enters-leo-2026-06-30",
+      path: "/events/jupiter-enters-leo-2026-06-30/",
+      title: "Jupiter enters Leo, June 30, 2026",
+      anchor: "2026-06-30T05:56:21.335Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Jupiter"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Jupiter moves into Leo from Cancer.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-enters-leo-2026-06-30.png"
+    },
+    {
+      id: "new-moon-2026-07-14",
+      path: "/new-moon/2026-07-14/",
+      title: "New moon in Cancer, July 14, 2026",
+      anchor: "2026-07-14T09:43:36.119Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Sun and Moon meet in Cancer; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-07-14.png"
+    },
+    {
+      id: "uranus-sextile-neptune-2026-07-15",
+      path: "/events/uranus-sextile-neptune-2026-07-15/",
+      title: "Uranus sextile Neptune, July 15, 2026",
+      anchor: "2026-07-15T22:23:00.761Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Uranus",
+        "Neptune"
+      ],
+      signs: [
+        "gemini",
+        "aries"
+      ],
+      summary: "Uranus and Neptune reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/uranus-sextile-neptune-2026-07-15.png"
+    },
+    {
+      id: "uranus-trine-pluto-2026-07-18",
+      path: "/events/uranus-trine-pluto-2026-07-18/",
+      title: "Uranus trine Pluto, July 18, 2026",
+      anchor: "2026-07-18T04:39:50.707Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Uranus",
+        "Pluto"
+      ],
+      signs: [
+        "gemini",
+        "aquarius"
+      ],
+      summary: "Uranus and Pluto reach an exact trine.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/uranus-trine-pluto-2026-07-18.png"
+    },
+    {
+      id: "jupiter-trine-neptune-2026-07-20",
+      path: "/events/jupiter-trine-neptune-2026-07-20/",
+      title: "Jupiter trine Neptune, July 20, 2026",
+      anchor: "2026-07-20T07:47:59.076Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Jupiter",
+        "Neptune"
+      ],
+      signs: [
+        "leo",
+        "aries"
+      ],
+      summary: "Jupiter and Neptune reach an exact trine.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-trine-neptune-2026-07-20.png"
+    },
+    {
+      id: "jupiter-opposition-pluto-2026-07-20",
+      path: "/events/jupiter-opposition-pluto-2026-07-20/",
+      title: "Jupiter opposition Pluto, July 20, 2026",
+      anchor: "2026-07-20T14:45:49.903Z",
+      family: "aspect",
+      subtype: "opposition",
+      bodies: [
+        "Jupiter",
+        "Pluto"
+      ],
+      signs: [
+        "leo",
+        "aquarius"
+      ],
+      summary: "Jupiter and Pluto reach an exact opposition.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-opposition-pluto-2026-07-20.png"
+    },
+    {
+      id: "jupiter-sextile-uranus-2026-07-21",
+      path: "/events/jupiter-sextile-uranus-2026-07-21/",
+      title: "Jupiter sextile Uranus, July 21, 2026",
+      anchor: "2026-07-21T11:13:13.623Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Jupiter",
+        "Uranus"
+      ],
+      signs: [
+        "leo",
+        "gemini"
+      ],
+      summary: "Jupiter and Uranus reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-sextile-uranus-2026-07-21.png"
+    },
+    {
+      id: "neptune-sextile-pluto-2026-07-24",
+      path: "/events/neptune-sextile-pluto-2026-07-24/",
+      title: "Neptune sextile Pluto, July 24, 2026",
+      anchor: "2026-07-24T23:09:38.401Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Neptune",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Neptune and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/neptune-sextile-pluto-2026-07-24.png"
+    },
+    {
+      id: "full-moon-2026-07-29",
+      path: "/full-moon/2026-07-29/",
+      title: "Full moon in Aquarius, July 29, 2026",
+      anchor: "2026-07-29T14:35:42.223Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "The Buck Moon: the Moon stands opposite the Sun in Aquarius.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-07-29.png"
+    },
+    {
+      id: "new-moon-2026-08-12",
+      path: "/new-moon/2026-08-12/",
+      title: "New moon in Leo, August 12, 2026",
+      anchor: "2026-08-12T17:36:41.548Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Sun and Moon meet in Leo; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-08-12.png"
+    },
+    {
+      id: "eclipse-2026-08-12",
+      path: "/eclipses/2026-08-12/",
+      title: "Total solar eclipse in Leo, August 12, 2026",
+      anchor: "2026-08-12T17:45:53.037Z",
+      family: "eclipse",
+      subtype: "solar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "A new moon crosses the Sun's face in Leo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2026-08-12.png"
+    },
+    {
+      id: "eclipse-2026-08-28",
+      path: "/eclipses/2026-08-28/",
+      title: "Partial lunar eclipse in Pisces, August 28, 2026",
+      anchor: "2026-08-28T04:12:55.340Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "A full moon passes through Earth's shadow in Pisces.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2026-08-28.png"
+    },
+    {
+      id: "full-moon-2026-08-28",
+      path: "/full-moon/2026-08-28/",
+      title: "Full moon in Pisces, August 28, 2026",
+      anchor: "2026-08-28T04:18:31.156Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "The Sturgeon Moon: the Moon stands opposite the Sun in Pisces.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-08-28.png"
+    },
+    {
+      id: "jupiter-trine-saturn-2026-08-31",
+      path: "/events/jupiter-trine-saturn-2026-08-31/",
+      title: "Jupiter trine Saturn, August 31, 2026",
+      anchor: "2026-08-31T22:05:22.447Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Jupiter",
+        "Saturn"
+      ],
+      signs: [
+        "leo",
+        "aries"
+      ],
+      summary: "Jupiter and Saturn reach an exact trine.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-trine-saturn-2026-08-31.png"
+    },
+    {
+      id: "new-moon-2026-09-11",
+      path: "/new-moon/2026-09-11/",
+      title: "New moon in Virgo, September 11, 2026",
+      anchor: "2026-09-11T03:26:56.471Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "Sun and Moon meet in Virgo; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-09-11.png"
+    },
+    {
+      id: "neptune-sextile-pluto-2026-09-16",
+      path: "/events/neptune-sextile-pluto-2026-09-16/",
+      title: "Neptune sextile Pluto, September 16, 2026",
+      anchor: "2026-09-16T08:31:19.127Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Neptune",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Neptune and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/neptune-sextile-pluto-2026-09-16.png"
+    },
+    {
+      id: "full-moon-2026-09-26",
+      path: "/full-moon/2026-09-26/",
+      title: "Full moon in Aries, September 26, 2026",
+      anchor: "2026-09-26T16:48:59.556Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "The Corn Moon: the Moon stands opposite the Sun in Aries.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-09-26.png"
+    },
+    {
+      id: "venus-retrograde-2026-10-03",
+      path: "/venus-retrograde/2026-10-03/",
+      title: "Venus retrograde, October 2026",
+      anchor: "2026-10-03T07:10:25.341Z",
+      family: "retrograde",
+      subtype: "cycle",
+      bodies: [
+        "Venus"
+      ],
+      signs: [
+        "libra",
+        "scorpio"
+      ],
+      summary: "Venus appears to reverse through Libra and Scorpio.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/venus-retrograde-2026-10-03.png"
+    },
+    {
+      id: "new-moon-2026-10-10",
+      path: "/new-moon/2026-10-10/",
+      title: "New moon in Libra, October 10, 2026",
+      anchor: "2026-10-10T15:50:02.149Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "Sun and Moon meet in Libra; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-10-10.png"
+    },
+    {
+      id: "mercury-retrograde-2026-10-24",
+      path: "/mercury-retrograde/2026-10-24/",
+      title: "Mercury retrograde, October 2026",
+      anchor: "2026-10-24T07:14:22.646Z",
+      family: "retrograde",
+      subtype: "cycle",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Mercury appears to reverse through Scorpio.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/mercury-retrograde-2026-10-24.png"
+    },
+    {
+      id: "full-moon-2026-10-26",
+      path: "/full-moon/2026-10-26/",
+      title: "Full moon in Taurus, October 26, 2026",
+      anchor: "2026-10-26T04:11:45.019Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "The Hunter\u2019s Moon: the Moon stands opposite the Sun in Taurus.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-10-26.png"
+    },
+    {
+      id: "new-moon-2026-11-09",
+      path: "/new-moon/2026-11-09/",
+      title: "New moon in Scorpio, November 9, 2026",
+      anchor: "2026-11-09T07:02:05.269Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-11-09.png"
+    },
+    {
+      id: "full-moon-2026-11-24",
+      path: "/full-moon/2026-11-24/",
+      title: "Full moon in Gemini, November 24, 2026",
+      anchor: "2026-11-24T14:53:35.120Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "The Beaver Moon: the Moon stands opposite the Sun in Gemini.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-11-24.png"
+    },
+    {
+      id: "uranus-trine-pluto-2026-11-29",
+      path: "/events/uranus-trine-pluto-2026-11-29/",
+      title: "Uranus trine Pluto, November 29, 2026",
+      anchor: "2026-11-29T11:27:06.991Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Uranus",
+        "Pluto"
+      ],
+      signs: [
+        "gemini",
+        "aquarius"
+      ],
+      summary: "Uranus and Pluto reach an exact trine.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/uranus-trine-pluto-2026-11-29.png"
+    },
+    {
+      id: "new-moon-2026-12-09",
+      path: "/new-moon/2026-12-09/",
+      title: "New moon in Sagittarius, December 9, 2026",
+      anchor: "2026-12-09T00:51:52.151Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "sagittarius"
+      ],
+      summary: "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2026-12-09.png"
+    },
+    {
+      id: "full-moon-2026-12-24",
+      path: "/full-moon/2026-12-24/",
+      title: "Full moon in Cancer, December 24, 2026",
+      anchor: "2026-12-24T01:28:16.590Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "The Cold Moon: the Moon stands opposite the Sun in Cancer.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2026-12-24.png"
+    },
+    {
+      id: "new-moon-2027-01-07",
+      path: "/new-moon/2027-01-07/",
+      title: "New moon in Capricorn, January 7, 2027",
+      anchor: "2027-01-07T20:24:26.069Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-01-07.png"
+    },
+    {
+      id: "mars-retrograde-2027-01-10",
+      path: "/mars-retrograde/2027-01-10/",
+      title: "Mars retrograde, January 2027",
+      anchor: "2027-01-10T13:00:54.491Z",
+      family: "retrograde",
+      subtype: "cycle",
+      bodies: [
+        "Mars"
+      ],
+      signs: [
+        "leo",
+        "virgo"
+      ],
+      summary: "Mars appears to reverse through Leo and Virgo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/mars-retrograde-2027-01-10.png"
+    },
+    {
+      id: "uranus-sextile-neptune-2027-01-15",
+      path: "/events/uranus-sextile-neptune-2027-01-15/",
+      title: "Uranus sextile Neptune, January 15, 2027",
+      anchor: "2027-01-15T07:21:23.862Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Uranus",
+        "Neptune"
+      ],
+      signs: [
+        "gemini",
+        "aries"
+      ],
+      summary: "Uranus and Neptune reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/uranus-sextile-neptune-2027-01-15.png"
+    },
+    {
+      id: "full-moon-2027-01-22",
+      path: "/full-moon/2027-01-22/",
+      title: "Full moon in Leo, January 22, 2027",
+      anchor: "2027-01-22T12:17:21.585Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "The Wolf Moon: the Moon stands opposite the Sun in Leo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-01-22.png"
+    },
+    {
+      id: "new-moon-2027-02-06",
+      path: "/new-moon/2027-02-06/",
+      title: "New moon in Aquarius, February 6, 2027",
+      anchor: "2027-02-06T15:56:08.653Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-02-06.png"
+    },
+    {
+      id: "eclipse-2027-02-06",
+      path: "/eclipses/2027-02-06/",
+      title: "Annular solar eclipse in Aquarius, February 6, 2027",
+      anchor: "2027-02-06T15:59:39.357Z",
+      family: "eclipse",
+      subtype: "solar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "A new moon crosses the Sun's face in Aquarius.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2027-02-06.png"
+    },
+    {
+      id: "mercury-retrograde-2027-02-09",
+      path: "/mercury-retrograde/2027-02-09/",
+      title: "Mercury retrograde, February 2027",
+      anchor: "2027-02-09T17:35:41.894Z",
+      family: "retrograde",
+      subtype: "cycle",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "aquarius",
+        "pisces"
+      ],
+      summary: "Mercury appears to reverse through Aquarius and Pisces.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/mercury-retrograde-2027-02-09.png"
+    },
+    {
+      id: "eclipse-2027-02-20",
+      path: "/eclipses/2027-02-20/",
+      title: "Penumbral lunar eclipse in Virgo, February 20, 2027",
+      anchor: "2027-02-20T23:12:50.555Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "A full moon passes through Earth's shadow in Virgo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2027-02-20.png"
+    },
+    {
+      id: "full-moon-2027-02-20",
+      path: "/full-moon/2027-02-20/",
+      title: "Full moon in Virgo, February 20, 2027",
+      anchor: "2027-02-20T23:23:37.619Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "The Snow Moon: the Moon stands opposite the Sun in Virgo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-02-20.png"
+    },
+    {
+      id: "new-moon-2027-03-08",
+      path: "/new-moon/2027-03-08/",
+      title: "New moon in Pisces, March 8, 2027",
+      anchor: "2027-03-08T09:29:31.050Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "Sun and Moon meet in Pisces; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-03-08.png"
+    },
+    {
+      id: "full-moon-2027-03-22",
+      path: "/full-moon/2027-03-22/",
+      title: "Full moon in Libra, March 22, 2027",
+      anchor: "2027-03-22T10:43:48.340Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "The Worm Moon: the Moon stands opposite the Sun in Libra.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-03-22.png"
+    },
+    {
+      id: "jupiter-trine-saturn-2027-04-03",
+      path: "/events/jupiter-trine-saturn-2027-04-03/",
+      title: "Jupiter trine Saturn, April 3, 2027",
+      anchor: "2027-04-03T13:23:03.398Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Jupiter",
+        "Saturn"
+      ],
+      signs: [
+        "leo",
+        "aries"
+      ],
+      summary: "Jupiter and Saturn reach an exact trine.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-trine-saturn-2027-04-03.png"
+    },
+    {
+      id: "new-moon-2027-04-06",
+      path: "/new-moon/2027-04-06/",
+      title: "New moon in Aries, April 6, 2027",
+      anchor: "2027-04-06T23:51:12.161Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Sun and Moon meet in Aries; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-04-06.png"
+    },
+    {
+      id: "full-moon-2027-04-20",
+      path: "/full-moon/2027-04-20/",
+      title: "Full moon in Scorpio, April 20, 2027",
+      anchor: "2027-04-20T22:27:11.909Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "The Pink Moon: the Moon stands opposite the Sun in Scorpio.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-04-20.png"
+    },
+    {
+      id: "new-moon-2027-05-06",
+      path: "/new-moon/2027-05-06/",
+      title: "New moon in Taurus, May 6, 2027",
+      anchor: "2027-05-06T10:58:40.128Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "Sun and Moon meet in Taurus; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-05-06.png"
+    },
+    {
+      id: "full-moon-2027-05-20",
+      path: "/full-moon/2027-05-20/",
+      title: "Full moon in Scorpio, May 20, 2027",
+      anchor: "2027-05-20T10:59:04.599Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-05-20.png"
+    },
+    {
+      id: "new-moon-2027-06-04",
+      path: "/new-moon/2027-06-04/",
+      title: "New moon in Gemini, June 4, 2027",
+      anchor: "2027-06-04T19:40:22.676Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Sun and Moon meet in Gemini; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-06-04.png"
+    },
+    {
+      id: "uranus-sextile-neptune-2027-06-06",
+      path: "/events/uranus-sextile-neptune-2027-06-06/",
+      title: "Uranus sextile Neptune, June 6, 2027",
+      anchor: "2027-06-06T12:03:37.528Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Uranus",
+        "Neptune"
+      ],
+      signs: [
+        "gemini",
+        "aries"
+      ],
+      summary: "Uranus and Neptune reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/uranus-sextile-neptune-2027-06-06.png"
+    },
+    {
+      id: "mercury-retrograde-2027-06-10",
+      path: "/mercury-retrograde/2027-06-10/",
+      title: "Mercury retrograde, June 2027",
+      anchor: "2027-06-10T18:19:04.335Z",
+      family: "retrograde",
+      subtype: "cycle",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "gemini",
+        "cancer"
+      ],
+      summary: "Mercury appears to reverse through Gemini and Cancer.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/mercury-retrograde-2027-06-10.png"
+    },
+    {
+      id: "uranus-trine-pluto-2027-06-15",
+      path: "/events/uranus-trine-pluto-2027-06-15/",
+      title: "Uranus trine Pluto, June 15, 2027",
+      anchor: "2027-06-15T08:01:32.585Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Uranus",
+        "Pluto"
+      ],
+      signs: [
+        "gemini",
+        "aquarius"
+      ],
+      summary: "Uranus and Pluto reach an exact trine.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/uranus-trine-pluto-2027-06-15.png"
+    },
+    {
+      id: "full-moon-2027-06-19",
+      path: "/full-moon/2027-06-19/",
+      title: "Full moon in Sagittarius, June 19, 2027",
+      anchor: "2027-06-19T00:44:24.732Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "sagittarius"
+      ],
+      summary: "The Strawberry Moon: the Moon stands opposite the Sun in Sagittarius.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-06-19.png"
+    },
+    {
+      id: "neptune-sextile-pluto-2027-06-28",
+      path: "/events/neptune-sextile-pluto-2027-06-28/",
+      title: "Neptune sextile Pluto, June 28, 2027",
+      anchor: "2027-06-28T20:34:28.560Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Neptune",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Neptune and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/neptune-sextile-pluto-2027-06-28.png"
+    },
+    {
+      id: "new-moon-2027-07-04",
+      path: "/new-moon/2027-07-04/",
+      title: "New moon in Cancer, July 4, 2027",
+      anchor: "2027-07-04T03:02:05.654Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Sun and Moon meet in Cancer; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-07-04.png"
+    },
+    {
+      id: "jupiter-trine-saturn-2027-07-11",
+      path: "/events/jupiter-trine-saturn-2027-07-11/",
+      title: "Jupiter trine Saturn, July 11, 2027",
+      anchor: "2027-07-11T22:45:55.067Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Jupiter",
+        "Saturn"
+      ],
+      signs: [
+        "leo",
+        "aries"
+      ],
+      summary: "Jupiter and Saturn reach an exact trine.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-trine-saturn-2027-07-11.png"
+    },
+    {
+      id: "full-moon-2027-07-18",
+      path: "/full-moon/2027-07-18/",
+      title: "Full moon in Capricorn, July 18, 2027",
+      anchor: "2027-07-18T15:44:58.351Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "The Buck Moon: the Moon stands opposite the Sun in Capricorn.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-07-18.png"
+    },
+    {
+      id: "eclipse-2027-07-18",
+      path: "/eclipses/2027-07-18/",
+      title: "Penumbral lunar eclipse in Capricorn, July 18, 2027",
+      anchor: "2027-07-18T16:03:01.519Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "A full moon passes through Earth's shadow in Capricorn.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2027-07-18.png"
+    },
+    {
+      id: "jupiter-enters-virgo-2027-07-26",
+      path: "/events/jupiter-enters-virgo-2027-07-26/",
+      title: "Jupiter enters Virgo, July 26, 2027",
+      anchor: "2027-07-26T04:45:27.093Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Jupiter"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "Jupiter moves into Virgo from Leo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-enters-virgo-2027-07-26.png"
+    },
+    {
+      id: "new-moon-2027-08-02",
+      path: "/new-moon/2027-08-02/",
+      title: "New moon in Leo, August 2, 2027",
+      anchor: "2027-08-02T10:05:15.113Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Sun and Moon meet in Leo; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-08-02.png"
+    },
+    {
+      id: "eclipse-2027-08-02",
+      path: "/eclipses/2027-08-02/",
+      title: "Total solar eclipse in Leo, August 2, 2027",
+      anchor: "2027-08-02T10:06:41.309Z",
+      family: "eclipse",
+      subtype: "solar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "A new moon crosses the Sun's face in Leo.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2027-08-02.png"
+    },
+    {
+      id: "eclipse-2027-08-17",
+      path: "/eclipses/2027-08-17/",
+      title: "Penumbral lunar eclipse in Aquarius, August 17, 2027",
+      anchor: "2027-08-17T07:13:51.637Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "A full moon passes through Earth's shadow in Aquarius.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/eclipse-2027-08-17.png"
+    },
+    {
+      id: "full-moon-2027-08-17",
+      path: "/full-moon/2027-08-17/",
+      title: "Full moon in Aquarius, August 17, 2027",
+      anchor: "2027-08-17T07:28:42.380Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "The Sturgeon Moon: the Moon stands opposite the Sun in Aquarius.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-08-17.png"
+    },
+    {
+      id: "new-moon-2027-08-31",
+      path: "/new-moon/2027-08-31/",
+      title: "New moon in Virgo, August 31, 2027",
+      anchor: "2027-08-31T17:41:13.048Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "Sun and Moon meet in Virgo; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-08-31.png"
+    },
+    {
+      id: "jupiter-square-uranus-2027-09-10",
+      path: "/events/jupiter-square-uranus-2027-09-10/",
+      title: "Jupiter square Uranus, September 10, 2027",
+      anchor: "2027-09-10T16:36:59.814Z",
+      family: "aspect",
+      subtype: "square",
+      bodies: [
+        "Jupiter",
+        "Uranus"
+      ],
+      signs: [
+        "virgo",
+        "gemini"
+      ],
+      summary: "Jupiter and Uranus reach an exact square.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/jupiter-square-uranus-2027-09-10.png"
+    },
+    {
+      id: "full-moon-2027-09-15",
+      path: "/full-moon/2027-09-15/",
+      title: "Full moon in Pisces, September 15, 2027",
+      anchor: "2027-09-15T23:03:33.051Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-09-15.png"
+    },
+    {
+      id: "new-moon-2027-09-30",
+      path: "/new-moon/2027-09-30/",
+      title: "New moon in Libra, September 30, 2027",
+      anchor: "2027-09-30T02:36:05.212Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "Sun and Moon meet in Libra; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-09-30.png"
+    },
+    {
+      id: "mercury-retrograde-2027-10-07",
+      path: "/mercury-retrograde/2027-10-07/",
+      title: "Mercury retrograde, October 2027",
+      anchor: "2027-10-07T14:39:08.875Z",
+      family: "retrograde",
+      subtype: "cycle",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "libra",
+        "scorpio"
+      ],
+      summary: "Mercury appears to reverse through Libra and Scorpio.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/mercury-retrograde-2027-10-07.png"
+    },
+    {
+      id: "full-moon-2027-10-15",
+      path: "/full-moon/2027-10-15/",
+      title: "Full moon in Aries, October 15, 2027",
+      anchor: "2027-10-15T13:46:59.502Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "The Hunter\u2019s Moon: the Moon stands opposite the Sun in Aries.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-10-15.png"
+    },
+    {
+      id: "neptune-sextile-pluto-2027-10-16",
+      path: "/events/neptune-sextile-pluto-2027-10-16/",
+      title: "Neptune sextile Pluto, October 16, 2027",
+      anchor: "2027-10-16T18:03:57.633Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Neptune",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Neptune and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/neptune-sextile-pluto-2027-10-16.png"
+    },
+    {
+      id: "new-moon-2027-10-29",
+      path: "/new-moon/2027-10-29/",
+      title: "New moon in Scorpio, October 29, 2027",
+      anchor: "2027-10-29T13:36:32.787Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-10-29.png"
+    },
+    {
+      id: "full-moon-2027-11-14",
+      path: "/full-moon/2027-11-14/",
+      title: "Full moon in Taurus, November 14, 2027",
+      anchor: "2027-11-14T03:25:53.355Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-11-14.png"
+    },
+    {
+      id: "new-moon-2027-11-28",
+      path: "/new-moon/2027-11-28/",
+      title: "New moon in Sagittarius, November 28, 2027",
+      anchor: "2027-11-28T03:24:24.613Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "sagittarius"
+      ],
+      summary: "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-11-28.png"
+    },
+    {
+      id: "full-moon-2027-12-13",
+      path: "/full-moon/2027-12-13/",
+      title: "Full moon in Gemini, December 13, 2027",
+      anchor: "2027-12-13T16:08:48.111Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/full-moon-2027-12-13.png"
+    },
+    {
+      id: "new-moon-2027-12-27",
+      path: "/new-moon/2027-12-27/",
+      title: "New moon in Capricorn, December 27, 2027",
+      anchor: "2027-12-27T20:12:18.829Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      lastModified: "2026-10-16",
+      card: "/assets/og/v2/events/new-moon-2027-12-27.png"
+    }
+  ],
+  timeline: [
+    {
+      id: "full-moon-2026-01-03",
+      path: "/full-moon/2026-01-03/",
+      title: "Full moon in Cancer, January 3, 2026",
+      anchor: "2026-01-03T10:02:55.863Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "The Wolf Moon: the Moon stands opposite the Sun in Cancer.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-01-18",
+      path: "/new-moon/2026-01-18/",
+      title: "New moon in Capricorn, January 18, 2026",
+      anchor: "2026-01-18T19:52:01.736Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "saturn-sextile-uranus-2026-01-20",
+      path: "/events/saturn-sextile-uranus-2026-01-20/",
+      title: "Saturn sextile Uranus, January 20, 2026",
+      anchor: "2026-01-20T05:44:16.218Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Saturn",
+        "Uranus"
+      ],
+      signs: [
+        "pisces",
+        "taurus"
+      ],
+      summary: "Saturn and Uranus reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-enters-aries-2026-01-26",
+      path: "/events/neptune-enters-aries-2026-01-26/",
+      title: "Neptune enters Aries, January 26, 2026",
+      anchor: "2026-01-26T14:30:44.561Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Neptune"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Neptune moves into Aries from Pisces.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-02-01",
+      path: "/full-moon/2026-02-01/",
+      title: "Full moon in Leo, February 1, 2026",
+      anchor: "2026-02-01T22:09:17.527Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "The Snow Moon: the Moon stands opposite the Sun in Leo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-stations-direct-2026-02-04",
+      path: "/retrogrades/#retrograde-uranus-2026-01-01",
+      title: "Uranus stations direct, February 4, 2026",
+      anchor: "2026-02-04T02:32:26.776Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Uranus"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "Uranus stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "saturn-enters-aries-2026-02-14",
+      path: "/events/saturn-enters-aries-2026-02-14/",
+      title: "Saturn enters Aries, February 14, 2026",
+      anchor: "2026-02-14T00:39:37.844Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Saturn"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Saturn moves into Aries from Pisces.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-02-17",
+      path: "/new-moon/2026-02-17/",
+      title: "New moon in Aquarius, February 17, 2026",
+      anchor: "2026-02-17T12:01:12.344Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2026-02-17",
+      path: "/eclipses/2026-02-17/",
+      title: "Annular solar eclipse in Aquarius, February 17, 2026",
+      anchor: "2026-02-17T12:11:59.944Z",
+      family: "eclipse",
+      subtype: "solar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "A new moon crosses the Sun's face in Aquarius.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "saturn-conjunction-neptune-2026-02-20",
+      path: "/events/saturn-conjunction-neptune-2026-02-20/",
+      title: "Saturn conjunction Neptune, February 20, 2026",
+      anchor: "2026-02-20T18:29:22.728Z",
+      family: "aspect",
+      subtype: "conjunction",
+      bodies: [
+        "Saturn",
+        "Neptune"
+      ],
+      signs: [
+        "aries",
+        "aries"
+      ],
+      summary: "Saturn and Neptune reach an exact conjunction.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-retrograde-2026-02-26",
+      path: "/mercury-retrograde/2026-02-26/",
+      title: "Mercury stations retrograde, February 26, 2026",
+      anchor: "2026-02-26T06:47:25.019Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "Mercury slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2026-03-03",
+      path: "/eclipses/2026-03-03/",
+      title: "Total lunar eclipse in Virgo, March 3, 2026",
+      anchor: "2026-03-03T11:33:46.313Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "A full moon passes through Earth's shadow in Virgo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-03-03",
+      path: "/full-moon/2026-03-03/",
+      title: "Full moon in Virgo, March 3, 2026",
+      anchor: "2026-03-03T11:37:57.684Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "The Worm Moon: the Moon stands opposite the Sun in Virgo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-stations-direct-2026-03-11",
+      path: "/retrogrades/#retrograde-jupiter-2026-01-01",
+      title: "Jupiter stations direct, March 11, 2026",
+      anchor: "2026-03-11T03:29:02.870Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Jupiter"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Jupiter stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-03-19",
+      path: "/new-moon/2026-03-19/",
+      title: "New moon in Pisces, March 19, 2026",
+      anchor: "2026-03-19T01:23:33.883Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "Sun and Moon meet in Pisces; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-direct-2026-03-20",
+      path: "/mercury-retrograde/2026-02-26/",
+      title: "Mercury stations direct, March 20, 2026",
+      anchor: "2026-03-20T19:35:04.540Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "Mercury stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "saturn-sextile-pluto-2026-03-28",
+      path: "/events/saturn-sextile-pluto-2026-03-28/",
+      title: "Saturn sextile Pluto, March 28, 2026",
+      anchor: "2026-03-28T22:34:36.112Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Saturn",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Saturn and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-04-02",
+      path: "/full-moon/2026-04-02/",
+      title: "Full moon in Libra, April 2, 2026",
+      anchor: "2026-04-02T02:12:00.538Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "The Pink Moon: the Moon stands opposite the Sun in Libra.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-04-17",
+      path: "/new-moon/2026-04-17/",
+      title: "New moon in Aries, April 17, 2026",
+      anchor: "2026-04-17T11:51:52.041Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Sun and Moon meet in Aries; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-enters-gemini-2026-04-26",
+      path: "/events/uranus-enters-gemini-2026-04-26/",
+      title: "Uranus enters Gemini, April 26, 2026",
+      anchor: "2026-04-26T01:01:21.002Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Uranus"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Uranus moves into Gemini from Taurus.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-05-01",
+      path: "/full-moon/2026-05-01/",
+      title: "Full moon in Scorpio, May 1, 2026",
+      anchor: "2026-05-01T17:23:09.934Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "pluto-stations-retrograde-2026-05-06",
+      path: "/retrogrades/#retrograde-pluto-2026-05-06",
+      title: "Pluto stations retrograde, May 6, 2026",
+      anchor: "2026-05-06T15:34:24.550Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Pluto"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Pluto slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-05-16",
+      path: "/new-moon/2026-05-16/",
+      title: "New moon in Taurus, May 16, 2026",
+      anchor: "2026-05-16T20:01:04.323Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "Sun and Moon meet in Taurus; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-05-31",
+      path: "/full-moon/2026-05-31/",
+      title: "Full moon in Sagittarius, May 31, 2026",
+      anchor: "2026-05-31T08:45:10.106Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "sagittarius"
+      ],
+      summary: "A blue moon: the Moon stands opposite the Sun in Sagittarius.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-06-15",
+      path: "/new-moon/2026-06-15/",
+      title: "New moon in Gemini, June 15, 2026",
+      anchor: "2026-06-15T02:54:11.458Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Sun and Moon meet in Gemini; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-retrograde-2026-06-29",
+      path: "/mercury-retrograde/2026-06-29/",
+      title: "Mercury stations retrograde, June 29, 2026",
+      anchor: "2026-06-29T17:37:11.542Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Mercury slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-06-29",
+      path: "/full-moon/2026-06-29/",
+      title: "Full moon in Capricorn, June 29, 2026",
+      anchor: "2026-06-29T23:56:39.855Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "The Strawberry Moon: the Moon stands opposite the Sun in Capricorn.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-enters-leo-2026-06-30",
+      path: "/events/jupiter-enters-leo-2026-06-30/",
+      title: "Jupiter enters Leo, June 30, 2026",
+      anchor: "2026-06-30T05:56:21.335Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Jupiter"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Jupiter moves into Leo from Cancer.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-stations-retrograde-2026-07-07",
+      path: "/retrogrades/#retrograde-neptune-2026-07-07",
+      title: "Neptune stations retrograde, July 7, 2026",
+      anchor: "2026-07-07T11:01:01.523Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Neptune"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Neptune slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-07-14",
+      path: "/new-moon/2026-07-14/",
+      title: "New moon in Cancer, July 14, 2026",
+      anchor: "2026-07-14T09:43:36.119Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Sun and Moon meet in Cancer; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-sextile-neptune-2026-07-15",
+      path: "/events/uranus-sextile-neptune-2026-07-15/",
+      title: "Uranus sextile Neptune, July 15, 2026",
+      anchor: "2026-07-15T22:23:00.761Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Uranus",
+        "Neptune"
+      ],
+      signs: [
+        "gemini",
+        "aries"
+      ],
+      summary: "Uranus and Neptune reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-trine-pluto-2026-07-18",
+      path: "/events/uranus-trine-pluto-2026-07-18/",
+      title: "Uranus trine Pluto, July 18, 2026",
+      anchor: "2026-07-18T04:39:50.707Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Uranus",
+        "Pluto"
+      ],
+      signs: [
+        "gemini",
+        "aquarius"
+      ],
+      summary: "Uranus and Pluto reach an exact trine.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-trine-neptune-2026-07-20",
+      path: "/events/jupiter-trine-neptune-2026-07-20/",
+      title: "Jupiter trine Neptune, July 20, 2026",
+      anchor: "2026-07-20T07:47:59.076Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Jupiter",
+        "Neptune"
+      ],
+      signs: [
+        "leo",
+        "aries"
+      ],
+      summary: "Jupiter and Neptune reach an exact trine.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-opposition-pluto-2026-07-20",
+      path: "/events/jupiter-opposition-pluto-2026-07-20/",
+      title: "Jupiter opposition Pluto, July 20, 2026",
+      anchor: "2026-07-20T14:45:49.903Z",
+      family: "aspect",
+      subtype: "opposition",
+      bodies: [
+        "Jupiter",
+        "Pluto"
+      ],
+      signs: [
+        "leo",
+        "aquarius"
+      ],
+      summary: "Jupiter and Pluto reach an exact opposition.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-sextile-uranus-2026-07-21",
+      path: "/events/jupiter-sextile-uranus-2026-07-21/",
+      title: "Jupiter sextile Uranus, July 21, 2026",
+      anchor: "2026-07-21T11:13:13.623Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Jupiter",
+        "Uranus"
+      ],
+      signs: [
+        "leo",
+        "gemini"
+      ],
+      summary: "Jupiter and Uranus reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-direct-2026-07-23",
+      path: "/mercury-retrograde/2026-06-29/",
+      title: "Mercury stations direct, July 23, 2026",
+      anchor: "2026-07-23T22:56:24.667Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Mercury stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-sextile-pluto-2026-07-24",
+      path: "/events/neptune-sextile-pluto-2026-07-24/",
+      title: "Neptune sextile Pluto, July 24, 2026",
+      anchor: "2026-07-24T23:09:38.401Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Neptune",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Neptune and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "saturn-stations-retrograde-2026-07-26",
+      path: "/retrogrades/#retrograde-saturn-2026-07-26",
+      title: "Saturn stations retrograde, July 26, 2026",
+      anchor: "2026-07-26T19:53:13.505Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Saturn"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Saturn slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-07-29",
+      path: "/full-moon/2026-07-29/",
+      title: "Full moon in Aquarius, July 29, 2026",
+      anchor: "2026-07-29T14:35:42.223Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "The Buck Moon: the Moon stands opposite the Sun in Aquarius.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-08-12",
+      path: "/new-moon/2026-08-12/",
+      title: "New moon in Leo, August 12, 2026",
+      anchor: "2026-08-12T17:36:41.548Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Sun and Moon meet in Leo; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2026-08-12",
+      path: "/eclipses/2026-08-12/",
+      title: "Total solar eclipse in Leo, August 12, 2026",
+      anchor: "2026-08-12T17:45:53.037Z",
+      family: "eclipse",
+      subtype: "solar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "A new moon crosses the Sun's face in Leo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2026-08-28",
+      path: "/eclipses/2026-08-28/",
+      title: "Partial lunar eclipse in Pisces, August 28, 2026",
+      anchor: "2026-08-28T04:12:55.340Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "A full moon passes through Earth's shadow in Pisces.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-08-28",
+      path: "/full-moon/2026-08-28/",
+      title: "Full moon in Pisces, August 28, 2026",
+      anchor: "2026-08-28T04:18:31.156Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "The Sturgeon Moon: the Moon stands opposite the Sun in Pisces.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-trine-saturn-2026-08-31",
+      path: "/events/jupiter-trine-saturn-2026-08-31/",
+      title: "Jupiter trine Saturn, August 31, 2026",
+      anchor: "2026-08-31T22:05:22.447Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Jupiter",
+        "Saturn"
+      ],
+      signs: [
+        "leo",
+        "aries"
+      ],
+      summary: "Jupiter and Saturn reach an exact trine.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-stations-retrograde-2026-09-10",
+      path: "/retrogrades/#retrograde-uranus-2026-09-10",
+      title: "Uranus stations retrograde, September 10, 2026",
+      anchor: "2026-09-10T18:28:28.593Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Uranus"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Uranus slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-09-11",
+      path: "/new-moon/2026-09-11/",
+      title: "New moon in Virgo, September 11, 2026",
+      anchor: "2026-09-11T03:26:56.471Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "Sun and Moon meet in Virgo; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-sextile-pluto-2026-09-16",
+      path: "/events/neptune-sextile-pluto-2026-09-16/",
+      title: "Neptune sextile Pluto, September 16, 2026",
+      anchor: "2026-09-16T08:31:19.127Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Neptune",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Neptune and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-09-26",
+      path: "/full-moon/2026-09-26/",
+      title: "Full moon in Aries, September 26, 2026",
+      anchor: "2026-09-26T16:48:59.556Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "The Corn Moon: the Moon stands opposite the Sun in Aries.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "venus-stations-retrograde-2026-10-03",
+      path: "/venus-retrograde/2026-10-03/",
+      title: "Venus stations retrograde, October 3, 2026",
+      anchor: "2026-10-03T07:10:25.341Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Venus"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Venus slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-10-10",
+      path: "/new-moon/2026-10-10/",
+      title: "New moon in Libra, October 10, 2026",
+      anchor: "2026-10-10T15:50:02.149Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "Sun and Moon meet in Libra; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "pluto-stations-direct-2026-10-16",
+      path: "/retrogrades/#retrograde-pluto-2026-05-06",
+      title: "Pluto stations direct, October 16, 2026",
+      anchor: "2026-10-16T02:39:22.059Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Pluto"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Pluto stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-retrograde-2026-10-24",
+      path: "/mercury-retrograde/2026-10-24/",
+      title: "Mercury stations retrograde, October 24, 2026",
+      anchor: "2026-10-24T07:14:22.646Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Mercury slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-10-26",
+      path: "/full-moon/2026-10-26/",
+      title: "Full moon in Taurus, October 26, 2026",
+      anchor: "2026-10-26T04:11:45.019Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "The Hunter\u2019s Moon: the Moon stands opposite the Sun in Taurus.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-11-09",
+      path: "/new-moon/2026-11-09/",
+      title: "New moon in Scorpio, November 9, 2026",
+      anchor: "2026-11-09T07:02:05.269Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-direct-2026-11-13",
+      path: "/mercury-retrograde/2026-10-24/",
+      title: "Mercury stations direct, November 13, 2026",
+      anchor: "2026-11-13T15:53:06.474Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Mercury stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "venus-stations-direct-2026-11-14",
+      path: "/venus-retrograde/2026-10-03/",
+      title: "Venus stations direct, November 14, 2026",
+      anchor: "2026-11-14T00:21:21.444Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Venus"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "Venus stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-11-24",
+      path: "/full-moon/2026-11-24/",
+      title: "Full moon in Gemini, November 24, 2026",
+      anchor: "2026-11-24T14:53:35.120Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "The Beaver Moon: the Moon stands opposite the Sun in Gemini.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-trine-pluto-2026-11-29",
+      path: "/events/uranus-trine-pluto-2026-11-29/",
+      title: "Uranus trine Pluto, November 29, 2026",
+      anchor: "2026-11-29T11:27:06.991Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Uranus",
+        "Pluto"
+      ],
+      signs: [
+        "gemini",
+        "aquarius"
+      ],
+      summary: "Uranus and Pluto reach an exact trine.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2026-12-09",
+      path: "/new-moon/2026-12-09/",
+      title: "New moon in Sagittarius, December 9, 2026",
+      anchor: "2026-12-09T00:51:52.151Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "sagittarius"
+      ],
+      summary: "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "saturn-stations-direct-2026-12-10",
+      path: "/retrogrades/#retrograde-saturn-2026-07-26",
+      title: "Saturn stations direct, December 10, 2026",
+      anchor: "2026-12-10T23:28:30.790Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Saturn"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Saturn stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-stations-direct-2026-12-12",
+      path: "/retrogrades/#retrograde-neptune-2026-07-07",
+      title: "Neptune stations direct, December 12, 2026",
+      anchor: "2026-12-12T22:23:17.899Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Neptune"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Neptune stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-stations-retrograde-2026-12-13",
+      path: "/retrogrades/#retrograde-jupiter-2026-12-13",
+      title: "Jupiter stations retrograde, December 13, 2026",
+      anchor: "2026-12-13T00:57:26.191Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Jupiter"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Jupiter slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2026-12-24",
+      path: "/full-moon/2026-12-24/",
+      title: "Full moon in Cancer, December 24, 2026",
+      anchor: "2026-12-24T01:28:16.590Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "The Cold Moon: the Moon stands opposite the Sun in Cancer.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-01-07",
+      path: "/new-moon/2027-01-07/",
+      title: "New moon in Capricorn, January 7, 2027",
+      anchor: "2027-01-07T20:24:26.069Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mars-stations-retrograde-2027-01-10",
+      path: "/mars-retrograde/2027-01-10/",
+      title: "Mars stations retrograde, January 10, 2027",
+      anchor: "2027-01-10T13:00:54.491Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Mars"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "Mars slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-sextile-neptune-2027-01-15",
+      path: "/events/uranus-sextile-neptune-2027-01-15/",
+      title: "Uranus sextile Neptune, January 15, 2027",
+      anchor: "2027-01-15T07:21:23.862Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Uranus",
+        "Neptune"
+      ],
+      signs: [
+        "gemini",
+        "aries"
+      ],
+      summary: "Uranus and Neptune reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-01-22",
+      path: "/full-moon/2027-01-22/",
+      title: "Full moon in Leo, January 22, 2027",
+      anchor: "2027-01-22T12:17:21.585Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "The Wolf Moon: the Moon stands opposite the Sun in Leo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-02-06",
+      path: "/new-moon/2027-02-06/",
+      title: "New moon in Aquarius, February 6, 2027",
+      anchor: "2027-02-06T15:56:08.653Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Sun and Moon meet in Aquarius; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2027-02-06",
+      path: "/eclipses/2027-02-06/",
+      title: "Annular solar eclipse in Aquarius, February 6, 2027",
+      anchor: "2027-02-06T15:59:39.357Z",
+      family: "eclipse",
+      subtype: "solar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "A new moon crosses the Sun's face in Aquarius.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-stations-direct-2027-02-08",
+      path: "/retrogrades/#retrograde-uranus-2026-09-10",
+      title: "Uranus stations direct, February 8, 2027",
+      anchor: "2027-02-08T12:28:27.274Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Uranus"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Uranus stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-retrograde-2027-02-09",
+      path: "/mercury-retrograde/2027-02-09/",
+      title: "Mercury stations retrograde, February 9, 2027",
+      anchor: "2027-02-09T17:35:41.894Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "Mercury slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2027-02-20",
+      path: "/eclipses/2027-02-20/",
+      title: "Penumbral lunar eclipse in Virgo, February 20, 2027",
+      anchor: "2027-02-20T23:12:50.555Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "A full moon passes through Earth's shadow in Virgo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-02-20",
+      path: "/full-moon/2027-02-20/",
+      title: "Full moon in Virgo, February 20, 2027",
+      anchor: "2027-02-20T23:23:37.619Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "The Snow Moon: the Moon stands opposite the Sun in Virgo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-direct-2027-03-03",
+      path: "/mercury-retrograde/2027-02-09/",
+      title: "Mercury stations direct, March 3, 2027",
+      anchor: "2027-03-03T12:35:47.606Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Mercury stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-03-08",
+      path: "/new-moon/2027-03-08/",
+      title: "New moon in Pisces, March 8, 2027",
+      anchor: "2027-03-08T09:29:31.050Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "Sun and Moon meet in Pisces; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-03-22",
+      path: "/full-moon/2027-03-22/",
+      title: "Full moon in Libra, March 22, 2027",
+      anchor: "2027-03-22T10:43:48.340Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "The Worm Moon: the Moon stands opposite the Sun in Libra.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mars-stations-direct-2027-04-01",
+      path: "/mars-retrograde/2027-01-10/",
+      title: "Mars stations direct, April 1, 2027",
+      anchor: "2027-04-01T14:11:19.833Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Mars"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Mars stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-trine-saturn-2027-04-03",
+      path: "/events/jupiter-trine-saturn-2027-04-03/",
+      title: "Jupiter trine Saturn, April 3, 2027",
+      anchor: "2027-04-03T13:23:03.398Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Jupiter",
+        "Saturn"
+      ],
+      signs: [
+        "leo",
+        "aries"
+      ],
+      summary: "Jupiter and Saturn reach an exact trine.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-04-06",
+      path: "/new-moon/2027-04-06/",
+      title: "New moon in Aries, April 6, 2027",
+      anchor: "2027-04-06T23:51:12.161Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Sun and Moon meet in Aries; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-stations-direct-2027-04-13",
+      path: "/retrogrades/#retrograde-jupiter-2026-12-13",
+      title: "Jupiter stations direct, April 13, 2027",
+      anchor: "2027-04-13T02:08:29.765Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Jupiter"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Jupiter stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-04-20",
+      path: "/full-moon/2027-04-20/",
+      title: "Full moon in Scorpio, April 20, 2027",
+      anchor: "2027-04-20T22:27:11.909Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "The Pink Moon: the Moon stands opposite the Sun in Scorpio.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-05-06",
+      path: "/new-moon/2027-05-06/",
+      title: "New moon in Taurus, May 6, 2027",
+      anchor: "2027-05-06T10:58:40.128Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "Sun and Moon meet in Taurus; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "pluto-stations-retrograde-2027-05-08",
+      path: "/retrogrades/#retrograde-pluto-2027-05-08",
+      title: "Pluto stations retrograde, May 8, 2027",
+      anchor: "2027-05-08T12:55:38.085Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Pluto"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Pluto slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-05-20",
+      path: "/full-moon/2027-05-20/",
+      title: "Full moon in Scorpio, May 20, 2027",
+      anchor: "2027-05-20T10:59:04.599Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-06-04",
+      path: "/new-moon/2027-06-04/",
+      title: "New moon in Gemini, June 4, 2027",
+      anchor: "2027-06-04T19:40:22.676Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Sun and Moon meet in Gemini; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-sextile-neptune-2027-06-06",
+      path: "/events/uranus-sextile-neptune-2027-06-06/",
+      title: "Uranus sextile Neptune, June 6, 2027",
+      anchor: "2027-06-06T12:03:37.528Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Uranus",
+        "Neptune"
+      ],
+      signs: [
+        "gemini",
+        "aries"
+      ],
+      summary: "Uranus and Neptune reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-retrograde-2027-06-10",
+      path: "/mercury-retrograde/2027-06-10/",
+      title: "Mercury stations retrograde, June 10, 2027",
+      anchor: "2027-06-10T18:19:04.335Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Mercury slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-trine-pluto-2027-06-15",
+      path: "/events/uranus-trine-pluto-2027-06-15/",
+      title: "Uranus trine Pluto, June 15, 2027",
+      anchor: "2027-06-15T08:01:32.585Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Uranus",
+        "Pluto"
+      ],
+      signs: [
+        "gemini",
+        "aquarius"
+      ],
+      summary: "Uranus and Pluto reach an exact trine.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-06-19",
+      path: "/full-moon/2027-06-19/",
+      title: "Full moon in Sagittarius, June 19, 2027",
+      anchor: "2027-06-19T00:44:24.732Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "sagittarius"
+      ],
+      summary: "The Strawberry Moon: the Moon stands opposite the Sun in Sagittarius.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-sextile-pluto-2027-06-28",
+      path: "/events/neptune-sextile-pluto-2027-06-28/",
+      title: "Neptune sextile Pluto, June 28, 2027",
+      anchor: "2027-06-28T20:34:28.560Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Neptune",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Neptune and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-07-04",
+      path: "/new-moon/2027-07-04/",
+      title: "New moon in Cancer, July 4, 2027",
+      anchor: "2027-07-04T03:02:05.654Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "cancer"
+      ],
+      summary: "Sun and Moon meet in Cancer; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-direct-2027-07-04",
+      path: "/mercury-retrograde/2027-06-10/",
+      title: "Mercury stations direct, July 4, 2027",
+      anchor: "2027-07-04T19:39:55.898Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Mercury stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-stations-retrograde-2027-07-09",
+      path: "/retrogrades/#retrograde-neptune-2027-07-09",
+      title: "Neptune stations retrograde, July 9, 2027",
+      anchor: "2027-07-09T22:44:01.113Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Neptune"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Neptune slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-trine-saturn-2027-07-11",
+      path: "/events/jupiter-trine-saturn-2027-07-11/",
+      title: "Jupiter trine Saturn, July 11, 2027",
+      anchor: "2027-07-11T22:45:55.067Z",
+      family: "aspect",
+      subtype: "trine",
+      bodies: [
+        "Jupiter",
+        "Saturn"
+      ],
+      signs: [
+        "leo",
+        "aries"
+      ],
+      summary: "Jupiter and Saturn reach an exact trine.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-07-18",
+      path: "/full-moon/2027-07-18/",
+      title: "Full moon in Capricorn, July 18, 2027",
+      anchor: "2027-07-18T15:44:58.351Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "The Buck Moon: the Moon stands opposite the Sun in Capricorn.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2027-07-18",
+      path: "/eclipses/2027-07-18/",
+      title: "Penumbral lunar eclipse in Capricorn, July 18, 2027",
+      anchor: "2027-07-18T16:03:01.519Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "A full moon passes through Earth's shadow in Capricorn.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-enters-virgo-2027-07-26",
+      path: "/events/jupiter-enters-virgo-2027-07-26/",
+      title: "Jupiter enters Virgo, July 26, 2027",
+      anchor: "2027-07-26T04:45:27.093Z",
+      family: "ingress",
+      subtype: "ingress",
+      bodies: [
+        "Jupiter"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "Jupiter moves into Virgo from Leo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-08-02",
+      path: "/new-moon/2027-08-02/",
+      title: "New moon in Leo, August 2, 2027",
+      anchor: "2027-08-02T10:05:15.113Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "Sun and Moon meet in Leo; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2027-08-02",
+      path: "/eclipses/2027-08-02/",
+      title: "Total solar eclipse in Leo, August 2, 2027",
+      anchor: "2027-08-02T10:06:41.309Z",
+      family: "eclipse",
+      subtype: "solar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "leo"
+      ],
+      summary: "A new moon crosses the Sun's face in Leo.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "saturn-stations-retrograde-2027-08-09",
+      path: "/retrogrades/#retrograde-saturn-2027-08-09",
+      title: "Saturn stations retrograde, August 9, 2027",
+      anchor: "2027-08-09T18:00:44.823Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Saturn"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Saturn slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "eclipse-2027-08-17",
+      path: "/eclipses/2027-08-17/",
+      title: "Penumbral lunar eclipse in Aquarius, August 17, 2027",
+      anchor: "2027-08-17T07:13:51.637Z",
+      family: "eclipse",
+      subtype: "lunar",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "A full moon passes through Earth's shadow in Aquarius.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-08-17",
+      path: "/full-moon/2027-08-17/",
+      title: "Full moon in Aquarius, August 17, 2027",
+      anchor: "2027-08-17T07:28:42.380Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "The Sturgeon Moon: the Moon stands opposite the Sun in Aquarius.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-08-31",
+      path: "/new-moon/2027-08-31/",
+      title: "New moon in Virgo, August 31, 2027",
+      anchor: "2027-08-31T17:41:13.048Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "virgo"
+      ],
+      summary: "Sun and Moon meet in Virgo; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "jupiter-square-uranus-2027-09-10",
+      path: "/events/jupiter-square-uranus-2027-09-10/",
+      title: "Jupiter square Uranus, September 10, 2027",
+      anchor: "2027-09-10T16:36:59.814Z",
+      family: "aspect",
+      subtype: "square",
+      bodies: [
+        "Jupiter",
+        "Uranus"
+      ],
+      signs: [
+        "virgo",
+        "gemini"
+      ],
+      summary: "Jupiter and Uranus reach an exact square.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "uranus-stations-retrograde-2027-09-15",
+      path: "/retrogrades/#retrograde-uranus-2027-09-15",
+      title: "Uranus stations retrograde, September 15, 2027",
+      anchor: "2027-09-15T09:10:05.125Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Uranus"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "Uranus slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-09-15",
+      path: "/full-moon/2027-09-15/",
+      title: "Full moon in Pisces, September 15, 2027",
+      anchor: "2027-09-15T23:03:33.051Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "pisces"
+      ],
+      summary: "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-09-30",
+      path: "/new-moon/2027-09-30/",
+      title: "New moon in Libra, September 30, 2027",
+      anchor: "2027-09-30T02:36:05.212Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "Sun and Moon meet in Libra; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-retrograde-2027-10-07",
+      path: "/mercury-retrograde/2027-10-07/",
+      title: "Mercury stations retrograde, October 7, 2027",
+      anchor: "2027-10-07T14:39:08.875Z",
+      family: "station",
+      subtype: "retrograde",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Mercury slows to a standstill and turns retrograde.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-10-15",
+      path: "/full-moon/2027-10-15/",
+      title: "Full moon in Aries, October 15, 2027",
+      anchor: "2027-10-15T13:46:59.502Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "The Hunter\u2019s Moon: the Moon stands opposite the Sun in Aries.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-sextile-pluto-2027-10-16",
+      path: "/events/neptune-sextile-pluto-2027-10-16/",
+      title: "Neptune sextile Pluto, October 16, 2027",
+      anchor: "2027-10-16T18:03:57.633Z",
+      family: "aspect",
+      subtype: "sextile",
+      bodies: [
+        "Neptune",
+        "Pluto"
+      ],
+      signs: [
+        "aries",
+        "aquarius"
+      ],
+      summary: "Neptune and Pluto reach an exact sextile.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "pluto-stations-direct-2027-10-18",
+      path: "/retrogrades/#retrograde-pluto-2027-05-08",
+      title: "Pluto stations direct, October 18, 2027",
+      anchor: "2027-10-18T03:49:21.034Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Pluto"
+      ],
+      signs: [
+        "aquarius"
+      ],
+      summary: "Pluto stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "mercury-stations-direct-2027-10-28",
+      path: "/mercury-retrograde/2027-10-07/",
+      title: "Mercury stations direct, October 28, 2027",
+      anchor: "2027-10-28T14:11:14.559Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Mercury"
+      ],
+      signs: [
+        "libra"
+      ],
+      summary: "Mercury stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-10-29",
+      path: "/new-moon/2027-10-29/",
+      title: "New moon in Scorpio, October 29, 2027",
+      anchor: "2027-10-29T13:36:32.787Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "scorpio"
+      ],
+      summary: "Sun and Moon meet in Scorpio; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-11-14",
+      path: "/full-moon/2027-11-14/",
+      title: "Full moon in Taurus, November 14, 2027",
+      anchor: "2027-11-14T03:25:53.355Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "taurus"
+      ],
+      summary: "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-11-28",
+      path: "/new-moon/2027-11-28/",
+      title: "New moon in Sagittarius, November 28, 2027",
+      anchor: "2027-11-28T03:24:24.613Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "sagittarius"
+      ],
+      summary: "Sun and Moon meet in Sagittarius; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "full-moon-2027-12-13",
+      path: "/full-moon/2027-12-13/",
+      title: "Full moon in Gemini, December 13, 2027",
+      anchor: "2027-12-13T16:08:48.111Z",
+      family: "lunation",
+      subtype: "full",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "gemini"
+      ],
+      summary: "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "neptune-stations-direct-2027-12-15",
+      path: "/retrogrades/#retrograde-neptune-2027-07-09",
+      title: "Neptune stations direct, December 15, 2027",
+      anchor: "2027-12-15T09:13:20.243Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Neptune"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Neptune stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "saturn-stations-direct-2027-12-24",
+      path: "/retrogrades/#retrograde-saturn-2027-08-09",
+      title: "Saturn stations direct, December 24, 2027",
+      anchor: "2027-12-24T02:41:54.989Z",
+      family: "station",
+      subtype: "direct",
+      bodies: [
+        "Saturn"
+      ],
+      signs: [
+        "aries"
+      ],
+      summary: "Saturn stands still, then resumes forward motion.",
+      lastModified: "2026-10-16"
+    },
+    {
+      id: "new-moon-2027-12-27",
+      path: "/new-moon/2027-12-27/",
+      title: "New moon in Capricorn, December 27, 2027",
+      anchor: "2027-12-27T20:12:18.829Z",
+      family: "lunation",
+      subtype: "new",
+      bodies: [
+        "Moon",
+        "Sun"
+      ],
+      signs: [
+        "capricorn"
+      ],
+      summary: "Sun and Moon meet in Capricorn; the month's quiet reset.",
+      lastModified: "2026-10-16"
+    }
+  ]
+};
+
+// src/lib/events/publication.ts
+var eventsPublication = events_publication_default;
+var publishedEventPages = eventsPublication.pages;
+var publishedEventById = new Map(
+  publishedEventPages.map((event2) => [event2.id, event2])
+);
+
+// src/data/void-of-course.ts
+var SITE_VOID_BODIES = VOID_OF_COURSE_CONVENTION.defaultBodies;
+var SITE_VOID_BODY_NAMES = VOID_BODIES[SITE_VOID_BODIES];
+var SITE_VOID_CONVENTION_IDS = [
+  `void-of-course:${VOID_OF_COURSE_CONVENTION.name}`,
+  `void-of-course-bodies:${SITE_VOID_BODIES}`
+];
+function siteVoidOfCourseWindows(from, to) {
+  return voidOfCourseWindows(from, to);
+}
+
+// src/ai-tools/features/sky-events.ts
+var DAY13 = 864e5;
+var ZONE_PATTERN8 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var DATE4 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
+var SKY_EVENT_KINDS = ["solar-eclipse", "lunar-eclipse", "station", "ingress", "new-moon", "full-moon", "void-of-course"];
+var SKY_EVENT_PLANETS = ["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+var DEFAULT_SKY_EVENT_KINDS = SKY_EVENT_KINDS.filter((kind) => kind !== "void-of-course");
+var SKY_EVENTS_MAX_YEARS = 2;
+var VOID_OF_COURSE_MAX_DAYS2 = 31;
+var SKY_EVENTS_DEFAULT_LIMIT = 25;
+var SKY_EVENTS_MAX_LIMIT = 100;
+var SKY_EVENTS_NOTE = "Calculated dates and positions, not forecasts. What an event means in astrology is a separate reading.";
+var skyEventsInput = z12.strictObject({
+  kinds: z12.array(z12.enum(SKY_EVENT_KINDS)).min(1).max(SKY_EVENT_KINDS.length).optional().describe("Which events to find: solar-eclipse, lunar-eclipse, station (a planet turning retrograde or direct), ingress (a planet changing sign), new-moon, full-moon or void-of-course. Leave it out for every kind but void-of-course, which comes only when named."),
+  planets: z12.array(z12.enum(SKY_EVENT_PLANETS)).min(1).max(SKY_EVENT_PLANETS.length).optional().describe("Optional: keep the stations and sign changes of these planets, such as Mercury. Without kinds it finds only their stations and sign changes. It does not filter eclipses, new and full Moons or void-of-course periods."),
+  from: z12.string().regex(DATE4).optional().describe("The first day to search, such as 2027-01-01, on the person's clock. Leave it out for today."),
+  to: z12.string().regex(DATE4).optional().describe("The last day to search, at most two years after from, and at most 30 days after it (31 days in all) when kinds includes void-of-course. Leave it out for a year from from, or a week for void-of-course periods."),
+  zone: z12.string().min(1).max(64).regex(ZONE_PATTERN8).optional().describe("The person's time zone, such as America/New_York, so the days and times are on their clock. Without it, UTC."),
+  limit: z12.number().int().min(1).max(SKY_EVENTS_MAX_LIMIT).optional().describe(`How many events to return, soonest first: ${SKY_EVENTS_DEFAULT_LIMIT} unless given, at most ${SKY_EVENTS_MAX_LIMIT}.`)
+});
+var signSlug4 = z12.enum(SIGNS2.map((sign2) => sign2.slug));
+var moment = z12.object({
+  /** The instant in UTC, ISO 8601. */
+  utc: z12.string(),
+  /** The same instant on the person's clock, such as Wed 12 Aug 2026, 19:45 (with UTC when no zone was given). */
+  local: z12.string()
+});
+var skyEvent = z12.object({
+  kind: z12.enum(SKY_EVENT_KINDS),
+  /** Such as Total solar eclipse in Leo, Mercury turns retrograde in Sagittarius or Full Moon in Taurus. */
+  title: z12.string(),
+  /** When it happens; for a void-of-course period, when it begins. */
+  at: moment,
+  /** A void-of-course period: when it ends, as the Moon enters nextSign. Null for every other kind. */
+  until: moment.nullable(),
+  /** The planet that stations or changes sign; null for eclipses, new and full Moons and void-of-course periods. */
+  planet: z12.enum(SKY_EVENT_PLANETS).nullable(),
+  /** The sign it happens in: the sign entered, the sign of the station, the eclipsed Sun's or Moon's sign, the Moon's sign at a new or full Moon, or the sign the Moon is void in. */
+  sign: signSlug4,
+  /** A void-of-course period: the sign the Moon enters when it ends. Null otherwise. */
+  nextSign: signSlug4.nullable(),
+  /** Degree and minute in the sign at that moment, such as 20°00′ Leo; null for a sign change, which is at the sign's edge, and a void-of-course period. */
+  position: z12.string().nullable(),
+  /** An eclipse: total, annular, partial or penumbral. A station: retrograde or direct. Null otherwise. */
+  type: z12.enum(["total", "annular", "partial", "penumbral", "retrograde", "direct"]).nullable(),
+  /** One plain sentence about the event, with no forecast. */
+  line: z12.string(),
+  /** The event's page on zodiacs.org where one is published, else the page that lists that kind of event; null when there is none. */
+  pageUrl: z12.url().nullable()
+});
+var skyEventsData = z12.object({
+  /** The first and last day searched, on the person's clock. */
+  from: z12.string(),
+  to: z12.string(),
+  zone: z12.string(),
+  /** request: the call named a zone. assistant: the host shared one. default: UTC was assumed, and message says so. */
+  zoneSource: z12.enum(["request", "assistant", "default"]),
+  kinds: z12.array(z12.enum(SKY_EVENT_KINDS)),
+  planets: z12.array(z12.enum(SKY_EVENT_PLANETS)).nullable(),
+  /** The events found, soonest first, at most limit of them. */
+  events: z12.array(skyEvent),
+  /** How many events the window holds; more than events.length when the limit cut the list. */
+  total: z12.number().int().min(0),
+  truncated: z12.boolean(),
+  /** The conventions registry entries the answer follows, with their addresses: the void-of-course rule when periods were searched. */
+  conventions: z12.array(z12.object({ id: z12.string(), url: z12.url() })),
+  /** What the answer leaves out or assumes, in plain sentences; null when there is nothing to add. */
+  message: z12.string().nullable(),
+  note: z12.literal(SKY_EVENTS_NOTE)
+});
+var cap9 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var signName5 = (slug) => SIGNS2.find((sign2) => sign2.slug === slug).name;
+var isRealDate = (date3) => !Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) && (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) === date3;
+var addDays2 = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY13).toISOString().slice(0, 10);
+var daysBetween = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY13);
+var yearsLater = (date3, years) => {
+  const [year, month, day] = date3.split("-").map(Number);
+  return new Date(Date.UTC(year + years, month - 1, day)).toISOString().slice(0, 10);
+};
+var MONTHS4 = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var longDay = (date3) => `${Number(date3.slice(8, 10))} ${MONTHS4[Number(date3.slice(5, 7)) - 1]} ${date3.slice(0, 4)}`;
+function momentOf(at, zone7, zoneSource) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: zone7, weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(at).map((part) => [part.type, part.value]));
+  const local = `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
+  return { utc: at.toISOString(), local: zoneSource === "default" ? `${local} UTC` : local };
+}
+function signAfter(rows2, planet, at) {
+  const row = rowOf(rows2(new Date(at.getTime() + 6e4)), planet);
+  return { sign: SIGNS2[signIndexForLongitude2(row.lon)].slug, retrograde: row.speed < 0 };
+}
+var ECLIPSES = eclipses_default.eclipses;
+var INGRESS_WINDOWS = ingresses_default.windows;
+var RETROGRADES = sky_default.retrogrades;
+var SKY_FROM = sky_default.from;
+var STATION_PAGE_PLANETS = ["Mercury", "Venus", "Mars"];
+function published(origin, id) {
+  const page = publishedEventById.get(id);
+  return page ? `${origin}${page.path}` : null;
+}
+function retrogradeWindowOf(planet, at, direction) {
+  return RETROGRADES.find((window) => {
+    const edge = direction === "retrograde" ? window.from : window.to;
+    return window.planet === planet && edge !== null && !(direction === "retrograde" && edge === SKY_FROM) && Math.abs(Date.parse(edge) - at.getTime()) <= 2 * DAY13;
+  });
+}
+function pageFor(origin, event2) {
+  switch (event2.kind) {
+    case "solar-eclipse":
+    case "lunar-eclipse":
+      return published(origin, eclipseId(event2.at.toISOString())) ?? `${origin}/eclipses/`;
+    case "new-moon":
+    case "full-moon": {
+      const type = event2.kind === "new-moon" ? "new" : "full";
+      const committed = sky_default.moons.find((moon) => moon.type === type && Math.abs(Date.parse(moon.at) - event2.at.getTime()) <= 6 * 36e5);
+      return (committed ? published(origin, lunationId(type, committed.at)) : null) ?? (type === "full" ? `${origin}/full-moon-calendar/` : `${origin}/moon-phase/`);
+    }
+    case "station": {
+      const window = retrogradeWindowOf(event2.planet, event2.at, event2.type);
+      if (!window) return `${origin}/retrogrades/`;
+      const own = STATION_PAGE_PLANETS.includes(event2.planet) ? published(origin, retrogradeId(event2.planet, window.from)) : null;
+      return own ?? `${origin}/retrogrades/#retrograde-${event2.planet.toLowerCase()}-${isoDay(window.from)}`;
+    }
+    case "ingress":
+      return published(origin, ingressId(event2.planet, event2.sign, event2.at.toISOString())) ?? (event2.planet === "Sun" ? `${origin}/learn/zodiac-dates/` : null);
+    case "void-of-course":
+      return `${origin}/void-of-course-moon/`;
+  }
+}
+var ECLIPSE_LINE = {
+  "solar:total": "the new Moon covers the Sun completely along a narrow path on Earth, and partly on either side of it",
+  "solar:annular": "the new Moon passes centrally over the Sun but is too small to cover it, leaving a ring of sunlight along a narrow path",
+  "solar:partial": "the new Moon covers part of the Sun, seen from part of Earth",
+  "lunar:total": "the full Moon passes completely into Earth's shadow",
+  "lunar:partial": "part of the full Moon passes into Earth's dark shadow",
+  "lunar:penumbral": "the full Moon passes through Earth's faint outer shadow, and the dimming is slight"
+};
+var ASPECT_VERB2 = { conjunction: "conjunct", sextile: "sextile", square: "square", trine: "trine", opposition: "opposite" };
+function titleOf(event2) {
+  switch (event2.kind) {
+    case "solar-eclipse":
+      return `${cap9(event2.type)} solar eclipse in ${signName5(event2.sign)}`;
+    case "lunar-eclipse":
+      return `${cap9(event2.type)} lunar eclipse in ${signName5(event2.sign)}`;
+    case "station":
+      return `${event2.planet} turns ${event2.type} in ${signName5(event2.sign)}`;
+    case "ingress": {
+      const planet = event2.planet === "Sun" ? "The Sun" : event2.planet;
+      return event2.extra?.retrograde ? `${planet} moves back into ${signName5(event2.sign)}` : `${planet} enters ${signName5(event2.sign)}`;
+    }
+    case "new-moon":
+      return `New Moon in ${signName5(event2.sign)}`;
+    case "full-moon":
+      return `Full Moon in ${signName5(event2.sign)}`;
+    case "void-of-course":
+      return `Void-of-course Moon in ${signName5(event2.sign)}`;
+  }
+}
+function lineOf(event2, at, until, eclipseOn) {
+  const where = event2.lon === void 0 ? signName5(event2.sign) : formatLongitude(event2.lon);
+  switch (event2.kind) {
+    case "solar-eclipse":
+    case "lunar-eclipse": {
+      const body2 = event2.kind === "solar-eclipse" ? "solar" : "lunar";
+      const minutes = event2.extra?.totalMinutes;
+      return `${cap9(event2.type)} ${body2} eclipse at ${where}: ${ECLIPSE_LINE[`${body2}:${event2.type}`]}${minutes ? `, with totality lasting about ${minutes} minutes` : ""}.`;
+    }
+    case "station":
+      return event2.type === "retrograde" ? `${event2.planet} stands still at ${where} and turns retrograde: from here it appears to move backward through the zodiac.` : `${event2.planet} stands still at ${where} and turns direct: from here it moves forward through the zodiac again.`;
+    case "ingress":
+      if (event2.extra?.retrograde) return `${event2.planet} moves back into ${signName5(event2.sign)} while it is retrograde.`;
+      return event2.planet === "Sun" ? `The Sun enters ${signName5(event2.sign)}, and ${signName5(event2.sign)} season begins.` : `${event2.planet} moves into ${signName5(event2.sign)}.`;
+    case "new-moon":
+    case "full-moon": {
+      const eclipse = eclipseOn(event2);
+      const base = event2.kind === "new-moon" ? `New Moon at ${where}: the Moon and the Sun meet in ${signName5(event2.sign)}.` : `Full Moon at ${where}: the Moon is opposite the Sun.`;
+      return eclipse ? `${base} It is also ${eclipse.type === "annular" ? "an" : "a"} ${eclipse.type} ${eclipse.kind === "solar-eclipse" ? "solar" : "lunar"} eclipse.` : base;
+    }
+    case "void-of-course": {
+      const last2 = event2.extra?.lastAspect;
+      const next = `until it enters ${signName5(event2.nextSign)} at ${until.local}`;
+      return last2 ? `The Moon is void of course in ${signName5(event2.sign)} from ${at.local}, after its last major aspect there (Moon ${ASPECT_VERB2[last2.aspect] ?? last2.aspect} ${last2.body}), ${next}.` : `The Moon is void of course for its whole time in ${signName5(event2.sign)}, from ${at.local}, as it makes no major aspect to the Sun or a planet there, ${next}.`;
+    }
+  }
+}
+function ingressHorizon(planet) {
+  const horizon = ingresses_default.horizons.find((entry) => entry.planets.includes(planet));
+  if (!horizon) throw new Error(`The ingress table has no horizon for ${planet}.`);
+  return { from: horizon.from, to: horizon.to };
+}
+function ingressesOf(planet, rows2) {
+  const own = INGRESS_WINDOWS.filter((window) => window.planet === planet).sort((a, b) => a.from.localeCompare(b.from));
+  const out = own.map((window, index) => {
+    const previous = own[index - 1]?.sign;
+    const retrograde = previous !== void 0 ? SIGNS2.findIndex((sign2) => sign2.slug === window.sign) === (SIGNS2.findIndex((sign2) => sign2.slug === previous) + 11) % 12 : signAfter(rows2, planet, new Date(window.from)).retrograde;
+    return { kind: "ingress", at: new Date(window.from), planet, sign: window.sign, extra: { retrograde } };
+  });
+  const last2 = own.at(-1);
+  if (last2) {
+    const entered = signAfter(rows2, planet, new Date(last2.to));
+    out.push({ kind: "ingress", at: new Date(last2.to), planet, sign: entered.sign, extra: { retrograde: entered.retrograde } });
+  }
+  return out;
+}
+var listWords2 = (items) => items.length <= 2 ? items.join(" and ") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+async function searchSkyEvents(args, clock2, options) {
+  const { zone: zone7, zoneSource, origin } = options;
+  const planets = args.planets ? SKY_EVENT_PLANETS.filter((planet) => args.planets.includes(planet)) : null;
+  const kinds = args.kinds ? SKY_EVENT_KINDS.filter((kind) => args.kinds.includes(kind)) : planets ? ["station", "ingress"] : [...DEFAULT_SKY_EVENT_KINDS];
+  const voids = kinds.includes("void-of-course");
+  const from = args.from ?? options.today;
+  if (!isRealDate(from)) throw new RangeError("from must be a real date, such as 2027-01-01.");
+  const to = args.to ?? (voids ? addDays2(from, 6) : addDays2(yearsLater(from, 1), -1));
+  if (!isRealDate(to)) throw new RangeError("to must be a real date, such as 2027-12-31.");
+  if (to < from) throw new RangeError("to must be the same day as from or later.");
+  if (to > yearsLater(from, SKY_EVENTS_MAX_YEARS)) throw new RangeError("to must be at most two years after from. Search a longer span in parts.");
+  if (voids && daysBetween(from, to) + 1 > VOID_OF_COURSE_MAX_DAYS2) throw new RangeError(`Void-of-course Moon periods are searched up to ${VOID_OF_COURSE_MAX_DAYS2} days at a time: give a to at most 30 days after from, or ask for them on their own.`);
+  const limit = args.limit ?? SKY_EVENTS_DEFAULT_LIMIT;
+  const midnight = async (day) => {
+    await clock2.prepareLocalTime(day, zone7);
+    return clock2.resolveLocalToUtc(day, "00:00", zone7).utc;
+  };
+  const start = await midnight(from);
+  const end = await midnight(addDays2(to, 1));
+  const inside = (at) => at.getTime() >= start.getTime() && at.getTime() < end.getTime();
+  const searches = kinds.some((kind) => kind === "station" || kind === "new-moon" || kind === "full-moon" || kind === "void-of-course");
+  if (searches && options.allowEvents) {
+    const verdict = await options.allowEvents();
+    if (verdict !== "allowed") return { refused: verdict === "limited" ? "rate-limited" : "rate-limit-unavailable" };
+  }
+  const rows2 = positionsMemo();
+  const raw = [];
+  const notes = [];
+  for (const eclipse of ECLIPSES) {
+    const kind = eclipse.type === "solar" ? "solar-eclipse" : "lunar-eclipse";
+    const at = new Date(eclipse.peak);
+    if (inside(at)) raw.push({ kind, at, sign: eclipse.sign, lon: eclipse.lon, type: eclipse.kind, extra: { ...eclipse.totalMinutes ? { totalMinutes: eclipse.totalMinutes } : {} } });
+  }
+  const eclipseKinds = kinds.filter((kind) => kind === "solar-eclipse" || kind === "lunar-eclipse");
+  if (eclipseKinds.length && (start.toISOString() < eclipses_default.from || end.toISOString() > eclipses_default.to)) {
+    notes.push(`Eclipses are listed from ${longDay(eclipses_default.from.slice(0, 10))} to ${longDay(addDays2(eclipses_default.to.slice(0, 10), -1))}, the years the eclipse table covers.`);
+  }
+  if (kinds.includes("ingress")) {
+    const outside = [];
+    for (const planet of planets ?? SKY_EVENT_PLANETS) {
+      for (const ingress of ingressesOf(planet, rows2)) if (inside(ingress.at)) raw.push(ingress);
+      const horizon = ingressHorizon(planet);
+      if (from < horizon.from || to >= horizon.to) outside.push(planet === "Sun" ? "the Sun" : planet);
+    }
+    if (outside.length) {
+      const spans = ingresses_default.horizons.filter((horizon) => horizon.planets.some((planet) => outside.includes(planet === "Sun" ? "the Sun" : planet))).map((horizon) => `${listWords2(horizon.planets.map((planet) => planet === "Sun" ? "the Sun" : planet))} from ${longDay(horizon.from)} to ${longDay(addDays2(horizon.to, -1))}`);
+      notes.push(`Sign changes come from the ingress table, which covers ${listWords2(spans)}; outside those dates none are listed.`);
+    }
+  }
+  const budget = new SampleBudget("events.samples");
+  if (kinds.includes("station")) {
+    for (const body2 of STATION_BODIES) {
+      if (planets && !planets.includes(body2)) continue;
+      for (const crossing of stationCrossings(body2, start, end, budget, rows2)) {
+        const lon = rowOf(rows2(crossing.at), body2).lon;
+        raw.push({ kind: "station", at: crossing.at, planet: body2, sign: SIGNS2[signIndexForLongitude2(lon)].slug, lon, type: crossing.retrograde ? "retrograde" : "direct" });
+      }
+    }
+  }
+  for (const [kind, phase] of [["new-moon", PHASES.new], ["full-moon", PHASES.full]]) {
+    if (!kinds.includes(kind)) continue;
+    for (const crossing of phaseCrossings(phase, start, end, budget)) {
+      const lon = rowOf(rows2(crossing.at), "Moon").lon;
+      raw.push({ kind, at: crossing.at, sign: SIGNS2[signIndexForLongitude2(lon)].slug, lon });
+    }
+  }
+  if (voids) {
+    const periods = siteVoidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY13));
+    for (const period of periods) {
+      if (period.from.getTime() >= end.getTime() || period.to.getTime() <= start.getTime()) continue;
+      raw.push({ kind: "void-of-course", at: period.from, until: period.to, sign: period.sign, nextSign: period.nextSign, extra: { lastAspect: period.lastAspect ? { body: period.lastAspect.body, aspect: period.lastAspect.aspect } : null } });
+    }
+    notes.push("Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, and give the same times: from the Moon's last exact major aspect (conjunction, sextile, square, trine or opposition) to the Sun or a planet from Mercury to Pluto in a sign until it enters the next sign.");
+  }
+  const wanted = raw.filter((event2) => kinds.includes(event2.kind)).sort((a, b) => a.at.getTime() - b.at.getTime() || SKY_EVENT_KINDS.indexOf(a.kind) - SKY_EVENT_KINDS.indexOf(b.kind) || (a.planet ? SKY_EVENT_PLANETS.indexOf(a.planet) : -1) - (b.planet ? SKY_EVENT_PLANETS.indexOf(b.planet) : -1));
+  const eclipses = raw.filter((event2) => event2.kind === "solar-eclipse" || event2.kind === "lunar-eclipse");
+  const eclipseOn = (event2) => eclipses.find((eclipse) => eclipse.kind === (event2.kind === "new-moon" ? "solar-eclipse" : "lunar-eclipse") && Math.abs(eclipse.at.getTime() - event2.at.getTime()) <= 6 * 36e5);
+  const events = wanted.slice(0, limit).map((event2) => {
+    const at = momentOf(event2.at, zone7, zoneSource);
+    const until = event2.until ? momentOf(event2.until, zone7, zoneSource) : null;
+    return {
+      kind: event2.kind,
+      title: titleOf(event2),
+      at,
+      until,
+      planet: event2.planet ?? null,
+      sign: event2.sign,
+      nextSign: event2.nextSign ?? null,
+      position: event2.kind === "ingress" || event2.kind === "void-of-course" || event2.lon === void 0 ? null : formatLongitude(event2.lon),
+      type: event2.type ?? null,
+      line: lineOf(event2, at, until, eclipseOn),
+      pageUrl: pageFor(origin, event2)
+    };
+  });
+  const truncated = wanted.length > events.length;
+  if (truncated) notes.push(`These are the first ${events.length} of ${wanted.length} events; narrow the kinds or planets, shorten the window, or raise limit (at most ${SKY_EVENTS_MAX_LIMIT}) for the rest.`);
+  if (!wanted.length) notes.push(`None of these events falls between ${longDay(from)} and ${longDay(to)}.`);
+  if (zoneSource === "default") notes.push("Days and times are in UTC because no time zone was given.");
+  const data = {
+    from,
+    to,
+    zone: zone7,
+    zoneSource,
+    kinds,
+    planets,
+    events,
+    total: wanted.length,
+    truncated,
+    conventions: voids ? SITE_VOID_CONVENTION_IDS.map((id) => ({ id, url: conventionAddress(id) })) : [],
+    message: notes.length ? notes.join(" ") : null,
+    note: SKY_EVENTS_NOTE
+  };
+  const links = [
+    { title: "Sky events on Zodiacs", url: `${origin}/events/` },
+    ...eclipseKinds.length ? [{ title: "Eclipses", url: `${origin}/eclipses/` }] : [],
+    ...kinds.includes("station") ? [{ title: "Retrogrades", url: `${origin}/retrogrades/` }] : [],
+    ...voids ? [{ title: "Void-of-course Moon calendar", url: `${origin}/void-of-course-moon/` }] : [],
+    { title: "What changes in the sky over the next days or weeks (get_upcoming_events)", url: `${origin}/today/` },
+    { title: "Follow eclipses, retrogrades and Moons in a calendar app (get_sky_calendar)", url: `${origin}/sky-calendar/` },
+    { title: "How we calculate", url: `${origin}/methodology/` }
+  ];
+  return { data, links };
+}
+
 // src/ai-tools/contracts.ts
 var AI_VERSION = "0.6.2";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
@@ -36594,6 +40999,8 @@ var ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES];
 var COVERAGE_TOOL_NAMES = ["get_natal_chart", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "explain_astrology"];
 var PLACE_TOOL_NAMES = ["find_birthplace"];
 var EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES, ...PLACE_TOOL_NAMES];
+var SKY_EVENTS_TOOL_NAMES = ["search_sky_events"];
+var EVERY_TOOL_WITH_SKY_EVENTS = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES];
 var MAX_EVENT_DAYS = BUDGETS["events.windowDays"];
 var ORIGIN = "https://zodiacs.org";
 var WIDGET_URI = "ui://zodiacs/sky-events-v4.html";
@@ -36623,43 +41030,44 @@ var TOOL_TITLES = {
   get_chinese_zodiac: "Chinese zodiac",
   get_personal_transits: "Your transits",
   explain_astrology: "Astrology explained",
-  find_birthplace: "Find a birthplace"
+  find_birthplace: "Find a birthplace",
+  search_sky_events: "Search sky events"
 };
-var instant = z12.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
-var ZONE_PATTERN8 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
-var zone4 = z12.string().min(1).max(64).regex(ZONE_PATTERN8).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
-var date = z12.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var wallClock = z12.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
+var instant = z13.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
+var ZONE_PATTERN9 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var zone4 = z13.string().min(1).max(64).regex(ZONE_PATTERN9).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
+var date = z13.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var wallClock = z13.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 var INPUT_SCHEMAS = {
-  get_capabilities: z12.strictObject({}),
-  open_chart_studio: z12.strictObject({}),
-  get_sky: z12.strictObject({ instant: instant.optional(), zone: zone4.optional(), bodies: z12.array(z12.enum(POSITION_BODIES)).min(1).max(12).optional() }),
-  get_upcoming_events: z12.strictObject({ from: instant.optional(), to: instant.optional(), zone: zone4.optional(), bodies: z12.array(z12.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z12.array(z12.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
+  get_capabilities: z13.strictObject({}),
+  open_chart_studio: z13.strictObject({}),
+  get_sky: z13.strictObject({ instant: instant.optional(), zone: zone4.optional(), bodies: z13.array(z13.enum(POSITION_BODIES)).min(1).max(12).optional() }),
+  get_upcoming_events: z13.strictObject({ from: instant.optional(), to: instant.optional(), zone: zone4.optional(), bodies: z13.array(z13.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z13.array(z13.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
     if ((!args.from || !args.to) && Object.keys(args).length !== 0) context.addIssue({ code: "custom", message: "Supply both from and to, or an empty object for the next seven days in UTC." });
   }),
-  check_sky_fact: z12.strictObject({ kind: z12.enum(["sign", "retrograde", "ingress", "phase"]), body: z12.enum(EVENT_BODIES).optional(), sign: z12.enum(SIGN_SLUGS2).optional(), phase: z12.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone4.optional() }),
-  get_occasion_sky: z12.strictObject({
-    occasion: z12.enum(OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering."),
+  check_sky_fact: z13.strictObject({ kind: z13.enum(["sign", "retrograde", "ingress", "phase"]), body: z13.enum(EVENT_BODIES).optional(), sign: z13.enum(SIGN_SLUGS2).optional(), phase: z13.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone4.optional() }),
+  get_occasion_sky: z13.strictObject({
+    occasion: z13.enum(OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering."),
     date: date.optional().describe("The day, such as 2027-06-12 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
     searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo."),
     searchTo: date.optional().describe("The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
     time: wallClock.optional().describe("The local clock time, such as 19:00, if the person gives one. Needs zone."),
     zone: zone4.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
-    latitude: z12.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
-    longitude: z12.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
-    place: z12.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored."),
-    names: z12.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
+    latitude: z13.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
+    longitude: z13.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
+    place: z13.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored."),
+    names: z13.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
   }).superRefine((args, context) => {
     if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
     if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A time or a place needs its time zone." });
     if (args.searchFrom === void 0 !== (args.searchTo === void 0)) context.addIssue({ code: "custom", message: "Give searchFrom and searchTo together." });
     if (args.date === void 0 && args.searchFrom === void 0) context.addIssue({ code: "custom", message: "Give a date, or a window to search." });
   }),
-  get_life_milestones: z12.strictObject({
+  get_life_milestones: z13.strictObject({
     birthDate: date.describe("The birth date, such as 1997-03-15."),
     time: wallClock.optional().describe("The birth time on the local clock, if known. Needs zone."),
     zone: zone4.optional().describe("The birthplace's time zone, such as Europe/London. Needed with a time."),
-    longitude: z12.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
+    longitude: z13.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
   }).superRefine((args, context) => {
     if (args.time !== void 0 && !args.zone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
   }),
@@ -36674,18 +41082,19 @@ var INPUT_SCHEMAS = {
   get_personal_transits: personalTransitsInput,
   explain_astrology: explainInput,
   find_birthplace: birthplaceInput,
-  get_horoscope: z12.strictObject({
-    sign: z12.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
-    period: z12.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
-    focus: z12.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
+  search_sky_events: skyEventsInput,
+  get_horoscope: z13.strictObject({
+    sign: z13.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
+    period: z13.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
+    focus: z13.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
     date: date.optional().describe("A date such as 2026-10-08. Leave it out for the person's today."),
     zone: zone4.optional(),
     birthDate: date.optional().describe("Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored."),
-    birthTime: z12.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
+    birthTime: z13.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
     birthZone: zone4.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored.")
   }).refine((args) => args.birthDate !== void 0 || args.birthTime === void 0 && args.birthZone === void 0, { message: "A birth time or birthplace zone needs the birth date." })
 };
-var link3 = z12.object({ title: z12.string(), url: z12.url() });
+var link3 = z13.object({ title: z13.string(), url: z13.url() });
 function inlined(schema) {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== "object") return schema;
@@ -36699,117 +41108,117 @@ function inlined(schema) {
 }
 function computeValue(component) {
   if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
-  return z12.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(COMPUTE_SCHEMAS[component]));
+  return z13.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(COMPUTE_SCHEMAS[component]));
 }
-var calculationOf = (result) => z12.object({
-  schema: z12.string(),
+var calculationOf = (result) => z13.object({
+  schema: z13.string(),
   result,
   receipt: computeValue("ComputeReceipt"),
   backend: computeValue("Backend"),
-  cite: z12.object({ url: z12.url(), receipt: z12.string(), engine: z12.string(), version: z12.string() })
+  cite: z13.object({ url: z13.url(), receipt: z13.string(), engine: z13.string(), version: z13.string() })
 });
-var statements2 = z12.record(z12.string(), z12.string());
-var limits = z12.object({
-  from: z12.string(),
-  to: z12.string(),
-  eventWindowDays: z12.number().int(),
-  eventKinds: z12.array(z12.enum(EVENT_KINDS)),
-  samples: z12.number().int(),
-  factSamples: z12.number().int()
+var statements2 = z13.record(z13.string(), z13.string());
+var limits = z13.object({
+  from: z13.string(),
+  to: z13.string(),
+  eventWindowDays: z13.number().int(),
+  eventKinds: z13.array(z13.enum(EVENT_KINDS)),
+  samples: z13.number().int(),
+  factSamples: z13.number().int()
 });
-var localTime = z12.object({ utc: z12.string(), zone: z12.string(), display: z12.string() });
-var body = z12.object({ body: z12.string(), lon: z12.number(), lat: z12.number(), speed: z12.number(), retrograde: z12.boolean(), sign: z12.string(), degree: z12.number() });
-var positionResult = z12.object({ instants: z12.array(z12.object({ instant: z12.string(), bodies: z12.array(body), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z12.array(z12.string()) })) });
-var event = z12.object({ kind: z12.enum(EVENT_KINDS), at: z12.string(), localAt: z12.string(), body: z12.string().optional(), sign: z12.string(), type: z12.string().optional(), retrograde: z12.boolean().optional(), lon: z12.number().optional(), degree: z12.number().optional() });
-var personal = z12.object({ timeKnown: z12.boolean(), items: z12.array(z12.object({ title: z12.string(), line: z12.string(), when: z12.string() })), note: z12.string() });
-var horoscope = z12.object({
-  status: z12.enum(["available", "unavailable", "choose-sign"]),
-  sign: z12.enum(HOROSCOPE_SIGNS).optional(),
-  signName: z12.string().optional(),
-  period: z12.enum(HOROSCOPE_PERIODS),
-  focus: z12.enum(HOROSCOPE_FOCUSES),
-  date: z12.string(),
-  dateLabel: z12.string(),
-  zone: z12.string(),
-  zoneLabel: z12.string(),
-  zoneSource: z12.enum(["request", "assistant", "default"]),
-  reading: z12.object({ title: z12.string(), paragraphs: z12.array(z12.object({ heading: z12.string().optional(), text: z12.string() })) }).optional(),
-  why: z12.object({ note: z12.string(), facts: z12.array(z12.object({ text: z12.string(), when: z12.string() })), houses: z12.array(z12.string()) }).optional(),
-  available: z12.array(z12.object({ date: z12.string(), label: z12.string() })).optional(),
-  message: z12.string().optional(),
+var localTime = z13.object({ utc: z13.string(), zone: z13.string(), display: z13.string() });
+var body = z13.object({ body: z13.string(), lon: z13.number(), lat: z13.number(), speed: z13.number(), retrograde: z13.boolean(), sign: z13.string(), degree: z13.number() });
+var positionResult = z13.object({ instants: z13.array(z13.object({ instant: z13.string(), bodies: z13.array(body), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z13.array(z13.string()) })) });
+var event = z13.object({ kind: z13.enum(EVENT_KINDS), at: z13.string(), localAt: z13.string(), body: z13.string().optional(), sign: z13.string(), type: z13.string().optional(), retrograde: z13.boolean().optional(), lon: z13.number().optional(), degree: z13.number().optional() });
+var personal = z13.object({ timeKnown: z13.boolean(), items: z13.array(z13.object({ title: z13.string(), line: z13.string(), when: z13.string() })), note: z13.string() });
+var horoscope = z13.object({
+  status: z13.enum(["available", "unavailable", "choose-sign"]),
+  sign: z13.enum(HOROSCOPE_SIGNS).optional(),
+  signName: z13.string().optional(),
+  period: z13.enum(HOROSCOPE_PERIODS),
+  focus: z13.enum(HOROSCOPE_FOCUSES),
+  date: z13.string(),
+  dateLabel: z13.string(),
+  zone: z13.string(),
+  zoneLabel: z13.string(),
+  zoneSource: z13.enum(["request", "assistant", "default"]),
+  reading: z13.object({ title: z13.string(), paragraphs: z13.array(z13.object({ heading: z13.string().optional(), text: z13.string() })) }).optional(),
+  why: z13.object({ note: z13.string(), facts: z13.array(z13.object({ text: z13.string(), when: z13.string() })), houses: z13.array(z13.string()) }).optional(),
+  available: z13.array(z13.object({ date: z13.string(), label: z13.string() })).optional(),
+  message: z13.string().optional(),
   personal: personal.optional(),
   /** The share link for the reading shown, when there is one. */
-  shareUrl: z12.url().nullable().optional(),
-  disclosure: z12.string()
+  shareUrl: z13.url().nullable().optional(),
+  disclosure: z13.string()
 });
-var clockTime2 = z12.object({ utc: z12.string(), local: z12.string() });
+var clockTime2 = z13.object({ utc: z13.string(), local: z13.string() });
 var occasionNote = "Astrology\u2019s reading of the day, for insight and fun, not a guarantee of how it will go.";
-var occasionSky = z12.object({
-  occasion: z12.enum(OCCASION_KINDS),
-  date: z12.string(),
-  time: z12.string().nullable(),
-  zone: z12.string().nullable(),
-  place: z12.string().nullable(),
-  names: z12.string().nullable(),
-  card: z12.object({ title: z12.string(), interpretation: z12.string(), closing: z12.string() }),
+var occasionSky = z13.object({
+  occasion: z13.enum(OCCASION_KINDS),
+  date: z13.string(),
+  time: z13.string().nullable(),
+  zone: z13.string().nullable(),
+  place: z13.string().nullable(),
+  names: z13.string().nullable(),
+  card: z13.object({ title: z13.string(), interpretation: z13.string(), closing: z13.string() }),
   instant: clockTime2,
-  instantIs: z12.enum(["given-time", "local-noon", "utc-noon"]),
-  sky: z12.object({
-    bodies: z12.array(z12.object({ body: z12.string(), sign: z12.string(), degree: z12.number(), retrograde: z12.boolean() })),
-    moon: z12.object({ phase: z12.string(), illuminationPercent: z12.number(), waxing: z12.boolean() }),
-    retrograde: z12.array(z12.string())
+  instantIs: z13.enum(["given-time", "local-noon", "utc-noon"]),
+  sky: z13.object({
+    bodies: z13.array(z13.object({ body: z13.string(), sign: z13.string(), degree: z13.number(), retrograde: z13.boolean() })),
+    moon: z13.object({ phase: z13.string(), illuminationPercent: z13.number(), waxing: z13.boolean() }),
+    retrograde: z13.array(z13.string())
   }),
-  moonSignChange: z12.object({ from: z12.string(), to: z12.string() }).nullable(),
-  evening: z12.object({
+  moonSignChange: z13.object({ from: z13.string(), to: z13.string() }).nullable(),
+  evening: z13.object({
     sunrise: clockTime2.nullable(),
     sunset: clockTime2.nullable(),
-    goldenHour: z12.object({ start: clockTime2, end: clockTime2 }).nullable(),
+    goldenHour: z13.object({ start: clockTime2, end: clockTime2 }).nullable(),
     civilDusk: clockTime2.nullable(),
     moonrise: clockTime2.nullable(),
     moonset: clockTime2.nullable(),
-    moonHighest: z12.object({ at: clockTime2, altitude: z12.number() }).nullable(),
-    planetsAfterDusk: z12.array(z12.string()),
-    flags: z12.array(z12.string())
+    moonHighest: z13.object({ at: clockTime2, altitude: z13.number() }).nullable(),
+    planetsAfterDusk: z13.array(z13.string()),
+    flags: z13.array(z13.string())
   }).nullable(),
-  rating: z12.object({ score: z12.number().int().min(0).max(100), verdict: z12.string(), reasons: z12.array(z12.string()) }),
+  rating: z13.object({ score: z13.number().int().min(0).max(100), verdict: z13.string(), reasons: z13.array(z13.string()) }),
   /** With a search window: the three best-rated days in it, best first; the card is for date, else the best day. */
-  bestDays: z12.object({
-    from: z12.string(),
-    to: z12.string(),
-    days: z12.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
-    best: z12.array(z12.object({ date: z12.string(), score: z12.number().int().min(0).max(100), verdict: z12.string(), reasons: z12.array(z12.string()) })).max(3)
+  bestDays: z13.object({
+    from: z13.string(),
+    to: z13.string(),
+    days: z13.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
+    best: z13.array(z13.object({ date: z13.string(), score: z13.number().int().min(0).max(100), verdict: z13.string(), reasons: z13.array(z13.string()) })).max(3)
   }).nullable(),
-  cardUrl: z12.url().nullable(),
-  shareUrl: z12.url().nullable(),
-  note: z12.literal(occasionNote)
+  cardUrl: z13.url().nullable(),
+  shareUrl: z13.url().nullable(),
+  note: z13.literal(occasionNote)
 });
-var milestone = z12.object({
-  kind: z12.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
-  name: z12.string(),
-  index: z12.number(),
-  age: z12.number(),
-  first: z12.string(),
-  last: z12.string(),
-  passes: z12.array(z12.object({ at: z12.string(), retrograde: z12.boolean() }))
+var milestone = z13.object({
+  kind: z13.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
+  name: z13.string(),
+  index: z13.number(),
+  age: z13.number(),
+  first: z13.string(),
+  last: z13.string(),
+  passes: z13.array(z13.object({ at: z13.string(), retrograde: z13.boolean() }))
 });
-var lifeMilestones = z12.object({
-  birthDate: z12.string(),
-  timeKnown: z12.boolean(),
-  asOf: z12.string(),
-  milestones: z12.array(milestone),
+var lifeMilestones = z13.object({
+  birthDate: z13.string(),
+  timeKnown: z13.boolean(),
+  asOf: z13.string(),
+  milestones: z13.array(milestone),
   next: milestone.nullable(),
-  numbers: z12.object({ fullMoons: z12.number(), mercuryRetrogrades: z12.number(), jupiterReturns: z12.number() }),
-  cardUrl: z12.url().nullable(),
-  shareUrl: z12.url().nullable(),
-  note: z12.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
+  numbers: z13.object({ fullMoons: z13.number(), mercuryRetrogrades: z13.number(), jupiterReturns: z13.number() }),
+  cardUrl: z13.url().nullable(),
+  shareUrl: z13.url().nullable(),
+  note: z13.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
 });
 var OCCASION_NOTE = occasionNote;
 var dataSchemas = {
-  open_chart_studio: z12.object({ title: z12.literal("Chart Studio"), calculation: z12.literal("browser-local"), initialChart: z12.literal("birth-details"), sharing: z12.literal("user-reviewed-selection-only") }),
-  get_capabilities: z12.object({ name: z12.literal("Zodiacs"), version: z12.string(), engine: computeValue("Backend"), tools: z12.array(z12.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z12.string(), limitations: z12.array(z12.string()) }),
-  get_sky: z12.object({ mode: z12.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z12.object({ name: z12.string(), angle: z12.number(), illumination: z12.number() }), interpretation: z12.literal("Astronomical calculations; no personal prediction is supplied.") }),
-  get_upcoming_events: z12.object({ from: z12.string(), to: z12.string(), zone: z12.string(), events: z12.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z12.literal("tested-not-proven") }),
-  check_sky_fact: z12.object({ answer: z12.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z12.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
+  open_chart_studio: z13.object({ title: z13.literal("Chart Studio"), calculation: z13.literal("browser-local"), initialChart: z13.literal("birth-details"), sharing: z13.literal("user-reviewed-selection-only") }),
+  get_capabilities: z13.object({ name: z13.literal("Zodiacs"), version: z13.string(), engine: computeValue("Backend"), tools: z13.array(z13.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z13.string(), limitations: z13.array(z13.string()) }),
+  get_sky: z13.object({ mode: z13.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z13.object({ name: z13.string(), angle: z13.number(), illumination: z13.number() }), interpretation: z13.literal("Astronomical calculations; no personal prediction is supplied.") }),
+  get_upcoming_events: z13.object({ from: z13.string(), to: z13.string(), zone: z13.string(), events: z13.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z13.literal("tested-not-proven") }),
+  check_sky_fact: z13.object({ answer: z13.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z13.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
   get_horoscope: horoscope,
   get_occasion_sky: occasionSky,
   get_life_milestones: lifeMilestones,
@@ -36823,15 +41232,17 @@ var dataSchemas = {
   get_chinese_zodiac: chineseZodiacData,
   get_personal_transits: personalTransitsData,
   explain_astrology: explainData,
-  find_birthplace: birthplaceData
+  find_birthplace: birthplaceData,
+  search_sky_events: skyEventsData
 };
-var ERROR_SCHEMA = z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(false), tool: z12.enum(ALL_AI_TOOL_NAMES), error: z12.object({ code: z12.string(), message: z12.string(), retryAfterSeconds: z12.number().optional() }) });
-var COVERAGE_ERROR_SCHEMA = z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(false), tool: z12.enum(COVERAGE_TOOL_NAMES), error: z12.object({ code: z12.string(), message: z12.string(), retryAfterSeconds: z12.number().optional() }) });
-var PLACE_ERROR_SCHEMA = z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(false), tool: z12.enum(PLACE_TOOL_NAMES), error: z12.object({ code: z12.string(), message: z12.string(), retryAfterSeconds: z12.number().optional() }) });
+var ERROR_SCHEMA = z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(false), tool: z13.enum(ALL_AI_TOOL_NAMES), error: z13.object({ code: z13.string(), message: z13.string(), retryAfterSeconds: z13.number().optional() }) });
+var COVERAGE_ERROR_SCHEMA = z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(false), tool: z13.enum(COVERAGE_TOOL_NAMES), error: z13.object({ code: z13.string(), message: z13.string(), retryAfterSeconds: z13.number().optional() }) });
+var PLACE_ERROR_SCHEMA = z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(false), tool: z13.enum(PLACE_TOOL_NAMES), error: z13.object({ code: z13.string(), message: z13.string(), retryAfterSeconds: z13.number().optional() }) });
+var SKY_EVENTS_ERROR_SCHEMA = z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(false), tool: z13.enum(SKY_EVENTS_TOOL_NAMES), error: z13.object({ code: z13.string(), message: z13.string(), retryAfterSeconds: z13.number().optional() }) });
 function outputSchema(tool, data) {
-  const error = COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : PLACE_TOOL_NAMES.includes(tool) ? PLACE_ERROR_SCHEMA : ERROR_SCHEMA;
-  return z12.union([
-    z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(true), tool: z12.literal(tool), data, links: z12.array(link3) }),
+  const error = COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : PLACE_TOOL_NAMES.includes(tool) ? PLACE_ERROR_SCHEMA : SKY_EVENTS_TOOL_NAMES.includes(tool) ? SKY_EVENTS_ERROR_SCHEMA : ERROR_SCHEMA;
+  return z13.union([
+    z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(true), tool: z13.literal(tool), data, links: z13.array(link3) }),
     error
   ]);
 }
@@ -36854,7 +41265,8 @@ var OUTPUT_SCHEMAS = {
   get_chinese_zodiac: outputSchema("get_chinese_zodiac", dataSchemas.get_chinese_zodiac),
   get_personal_transits: outputSchema("get_personal_transits", dataSchemas.get_personal_transits),
   explain_astrology: outputSchema("explain_astrology", dataSchemas.explain_astrology),
-  find_birthplace: outputSchema("find_birthplace", dataSchemas.find_birthplace)
+  find_birthplace: outputSchema("find_birthplace", dataSchemas.find_birthplace),
+  search_sky_events: outputSchema("search_sky_events", dataSchemas.search_sky_events)
 };
 var TOOL_DESCRIPTIONS = {
   open_chart_studio: "Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do not ask for birth details first. The chart is calculated inside the panel; you see only the parts the person chooses to share.",
@@ -36875,8 +41287,23 @@ var TOOL_DESCRIPTIONS = {
   get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own. Without a zone the current year assumes UTC and the answer says so.",
   get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Use it for my transits, what's coming up for me, or my year ahead, once the person has given a birth date; for a Sun-sign horoscope use get_horoscope or get_horoscope_period. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Pass currentZone, where they live now, so the dates fall on their own clock. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. If the birth date is under 18, do not frame the lines as romance or attraction. Present each line plainly and confidently as astrology's reading, with its reading-confidence label, never as a guarantee, and never turn a line into health, financial or medical advice.",
   explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.",
-  find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place."
+  find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place.",
+  search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets turning retrograde or direct (stations), planets changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, with the same times: from the Moon's last major aspect to the Sun or a planet through Pluto in a sign until it enters the next sign. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts: share them as facts, and keep what they mean in astrology separate."
 };
+var SKY_EVENTS_INPUT_SCHEMAS = {
+  get_natal_chart: natalChartInputWithHouses,
+  explain_astrology: explainInputWithSkyEvents
+};
+var SKY_EVENTS_OUTPUT_SCHEMAS = {
+  get_natal_chart: outputSchema("get_natal_chart", natalChartDataWithNodes)
+};
+var SKY_EVENTS_TOOL_DESCRIPTIONS = {
+  get_natal_chart: `${TOOL_DESCRIPTIONS.get_natal_chart} Houses are whole-sign unless houseSystem is placidus; Placidus cannot be drawn from about 66.6 degrees latitude, so there the chart uses whole-sign houses and houseNote says so. It also gives the North and South Nodes, the true node rather than the mean node, with their signs and houses.`,
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, Placidus and whole-sign houses, aspects or one aspect, retrogrades, stations and retrograde loops, Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (planets changing sign), the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For the dates of eclipses, stations, sign changes, new and full Moons and void-of-course periods, use search_sky_events. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction."
+};
+var inputSchemaFor = (tool, skyEvents2) => (skyEvents2 ? SKY_EVENTS_INPUT_SCHEMAS[tool] : void 0) ?? INPUT_SCHEMAS[tool];
+var outputSchemaFor = (tool, skyEvents2) => (skyEvents2 ? SKY_EVENTS_OUTPUT_SCHEMAS[tool] : void 0) ?? OUTPUT_SCHEMAS[tool];
+var descriptionFor = (tool, skyEvents2) => (skyEvents2 ? SKY_EVENTS_TOOL_DESCRIPTIONS[tool] : void 0) ?? TOOL_DESCRIPTIONS[tool];
 
 // public/data/cities/index.json
 var cities_default = { version: 1, source: "GeoNames cities15000 (CC BY 4.0)", count: 33934, tz: ["Europe/Andorra", "Asia/Dubai", "Asia/Kabul", "America/Antigua", "America/Anguilla", "Europe/Tirane", "Asia/Yerevan", "Africa/Luanda", "America/Argentina/Buenos_Aires", "America/Argentina/Cordoba", "America/Argentina/Salta", "America/Argentina/Tucuman", "America/Argentina/San_Juan", "America/Argentina/Ushuaia", "America/Argentina/Catamarca", "America/Argentina/Jujuy", "America/Argentina/Mendoza", "America/Argentina/San_Luis", "America/Argentina/Rio_Gallegos", "America/Argentina/La_Rioja", "Pacific/Pago_Pago", "Europe/Vienna", "Australia/Adelaide", "Australia/Perth", "Australia/Brisbane", "Australia/Darwin", "Australia/Melbourne", "Australia/Sydney", "Australia/Hobart", "Australia/Broken_Hill", "America/Aruba", "Europe/Mariehamn", "Asia/Baku", "Europe/Sarajevo", "America/Barbados", "Asia/Dhaka", "Europe/Brussels", "Africa/Ouagadougou", "Europe/Sofia", "Asia/Bahrain", "Africa/Bujumbura", "Africa/Porto-Novo", "America/St_Barthelemy", "Atlantic/Bermuda", "Asia/Brunei", "America/La_Paz", "America/Kralendijk", "America/Fortaleza", "America/Recife", "America/Belem", "America/Maceio", "America/Manaus", "America/Bahia", "America/Araguaina", "America/Santarem", "America/Sao_Paulo", "America/Cuiaba", "America/Campo_Grande", "America/Rio_Branco", "America/Porto_Velho", "America/Eirunepe", "America/Boa_Vista", "America/Nassau", "Asia/Thimphu", "Africa/Gaborone", "Europe/Minsk", "America/Belize", "America/Vancouver", "America/Toronto", "America/Edmonton", "America/Halifax", "America/Winnipeg", "America/St_Johns", "America/Moncton", "America/Dawson_Creek", "America/Glace_Bay", "America/Regina", "America/Swift_Current", "America/Whitehorse", "Indian/Cocos", "Africa/Lubumbashi", "Africa/Kinshasa", "Africa/Bangui", "Africa/Brazzaville", "Europe/Zurich", "Africa/Abidjan", "Pacific/Rarotonga", "America/Santiago", "America/Punta_Arenas", "America/Coyhaique", "Africa/Douala", "Asia/Shanghai", "Asia/Urumqi", "Asia/Macau", "America/Bogota", "America/Costa_Rica", "America/Havana", "Atlantic/Cape_Verde", "America/Curacao", "Indian/Christmas", "Asia/Famagusta", "Asia/Nicosia", "Europe/Prague", "Europe/Berlin", "Africa/Djibouti", "Europe/Copenhagen", "America/Dominica", "America/Santo_Domingo", "Africa/Algiers", "America/Guayaquil", "Europe/Tallinn", "Africa/Cairo", "Africa/El_Aaiun", "Africa/Asmara", "Europe/Madrid", "Atlantic/Canary", "Africa/Ceuta", "Africa/Addis_Ababa", "Europe/Helsinki", "Pacific/Fiji", "Atlantic/Stanley", "Pacific/Pohnpei", "Atlantic/Faroe", "Europe/Paris", "Africa/Libreville", "Europe/London", "America/Grenada", "Asia/Tbilisi", "Europe/Moscow", "America/Cayenne", "Europe/Guernsey", "Africa/Accra", "Europe/Gibraltar", "America/Nuuk", "Africa/Banjul", "Africa/Conakry", "America/Guadeloupe", "Africa/Malabo", "Europe/Athens", "Atlantic/South_Georgia", "America/Guatemala", "Pacific/Guam", "Africa/Bissau", "America/Guyana", "Asia/Hong_Kong", "America/Tegucigalpa", "Europe/Zagreb", "America/Port-au-Prince", "Europe/Budapest", "Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura", "Asia/Pontianak", "Asia/Ho_Chi_Minh", "Europe/Dublin", "Asia/Jerusalem", "Europe/Isle_of_Man", "Asia/Kolkata", "Asia/Baghdad", "Asia/Tehran", "Atlantic/Reykjavik", "Europe/Rome", "Europe/Jersey", "America/Jamaica", "Asia/Amman", "Asia/Tokyo", "Africa/Nairobi", "Asia/Bishkek", "Asia/Phnom_Penh", "Pacific/Tarawa", "Indian/Comoro", "America/St_Kitts", "Asia/Pyongyang", "Asia/Seoul", "Asia/Kuwait", "America/Cayman", "Asia/Aqtau", "Asia/Aqtobe", "Asia/Atyrau", "Asia/Oral", "Asia/Almaty", "Asia/Qyzylorda", "Asia/Qostanay", "Asia/Vientiane", "Asia/Beirut", "America/St_Lucia", "Europe/Vaduz", "Asia/Colombo", "Africa/Monrovia", "Africa/Maseru", "Europe/Vilnius", "Europe/Luxembourg", "Europe/Riga", "Africa/Tripoli", "Africa/Casablanca", "Europe/Monaco", "Europe/Chisinau", "Europe/Podgorica", "America/Marigot", "Indian/Antananarivo", "Pacific/Majuro", "Europe/Skopje", "Africa/Bamako", "Asia/Yangon", "Asia/Hovd", "Asia/Ulaanbaatar", "Pacific/Saipan", "America/Martinique", "Africa/Nouakchott", "America/Montserrat", "Europe/Malta", "Indian/Mauritius", "Indian/Maldives", "Africa/Blantyre", "America/Monterrey", "America/Mexico_City", "America/Merida", "America/Cancun", "America/Matamoros", "America/Hermosillo", "America/Mazatlan", "America/Tijuana", "America/Ojinaga", "America/Chihuahua", "America/Bahia_Banderas", "America/Ciudad_Juarez", "Asia/Kuala_Lumpur", "Asia/Kuching", "Africa/Maputo", "Africa/Windhoek", "Pacific/Noumea", "Africa/Niamey", "Pacific/Norfolk", "Africa/Lagos", "America/Managua", "Europe/Amsterdam", "Europe/Oslo", "Asia/Kathmandu", "Pacific/Nauru", "Pacific/Niue", "Pacific/Auckland", "Asia/Muscat", "America/Panama", "America/Lima", "Pacific/Tahiti", "Pacific/Port_Moresby", "Pacific/Bougainville", "Asia/Manila", "Asia/Karachi", "Europe/Warsaw", "America/Miquelon", "Pacific/Pitcairn", "America/Puerto_Rico", "Asia/Gaza", "Asia/Hebron", "Europe/Lisbon", "Atlantic/Madeira", "Atlantic/Azores", "Pacific/Palau", "America/Asuncion", "Asia/Qatar", "Indian/Reunion", "Europe/Bucharest", "Europe/Belgrade", "Asia/Yekaterinburg", "Europe/Volgograd", "Europe/Samara", "Europe/Kaliningrad", "Europe/Saratov", "Europe/Kirov", "Europe/Ulyanovsk", "Europe/Astrakhan", "Asia/Barnaul", "Asia/Novokuznetsk", "Asia/Krasnoyarsk", "Asia/Tomsk", "Asia/Novosibirsk", "Asia/Irkutsk", "Asia/Omsk", "Asia/Yakutsk", "Asia/Vladivostok", "Asia/Chita", "Asia/Kamchatka", "Asia/Sakhalin", "Asia/Magadan", "Asia/Anadyr", "Africa/Kigali", "Asia/Riyadh", "Pacific/Guadalcanal", "Indian/Mahe", "Africa/Khartoum", "Europe/Stockholm", "Asia/Singapore", "Atlantic/St_Helena", "Europe/Ljubljana", "Arctic/Longyearbyen", "Europe/Bratislava", "Africa/Freetown", "Europe/San_Marino", "Africa/Dakar", "Africa/Mogadishu", "America/Paramaribo", "Africa/Juba", "Africa/Sao_Tome", "America/El_Salvador", "America/Lower_Princes", "Asia/Damascus", "Africa/Mbabane", "America/Grand_Turk", "Africa/Ndjamena", "Indian/Kerguelen", "Africa/Lome", "Asia/Bangkok", "Asia/Dushanbe", "Asia/Dili", "Asia/Ashgabat", "Africa/Tunis", "Pacific/Tongatapu", "Europe/Istanbul", "America/Port_of_Spain", "Pacific/Funafuti", "Asia/Taipei", "Africa/Dar_es_Salaam", "Europe/Kyiv", "Europe/Simferopol", "Africa/Kampala", "America/New_York", "America/Chicago", "America/Indiana/Indianapolis", "America/Kentucky/Louisville", "America/Indiana/Vincennes", "America/Detroit", "America/Los_Angeles", "America/Phoenix", "America/Denver", "America/Juneau", "America/Boise", "America/North_Dakota/New_Salem", "Pacific/Honolulu", "America/Anchorage", "America/Montevideo", "Asia/Samarkand", "Asia/Tashkent", "Europe/Vatican", "America/St_Vincent", "America/Caracas", "America/Tortola", "America/St_Thomas", "Pacific/Efate", "Pacific/Wallis", "Pacific/Apia", "Asia/Aden", "Indian/Mayotte", "Africa/Johannesburg", "Africa/Lusaka", "Africa/Harare"], admin1: ["Escaldes-Engordany", "Andorra la Vella", "Dubai", "Umm Al Quwain", "Fujairah", "Ras Al Khaimah", "Abu Dhabi", "Sharjah", "Ajman", "Nimroz", "Bamyan", "Takhar", "Herat", "Jowzjan", "Ghowr", "Sar-e Pol Province", "Samangan", "Kunduz", "Baghlan", "Kabul", "Daykundi", "Faryab", "Laghman", "Balkh", "Helmand", "Khowst", "Kandahar", "Badakhshan", "Nangarhar", "Parwan", "Badghis", "Ghazni", "Paktia", "Farah", "Logar", "Kunar", "Panjshir", "Saint John Parish", "The Valley", "Vlore County", "Korce County", "Elbasan County", "Kukes County", "Gjirokaster County", "Diber County", "Tirana", "Shkoder County", "Durres County", "Fier County", "Lezhe County", "Berat County", "Syunik", "Ararat", "Yerevan", "Armavir", "Gegharkunik", "Lori", "Tavush", "Kotayk", "Shirak", "Aragatsotn", "Lunda Sul", "Luanda Norte", "Moxico", "Cuanza Norte", "Luanda", "Uige", "Bengo", "Zaire", "Kwanza Sul", "Malanje", "Cabinda", "Cunene", "Huambo", "Namibe", "Huila", "Bie", "Cubango", "Benguela", "Buenos Aires", "Misiones", "Buenos Aires F.D.", "Santa Fe", "Entre Rios", "Corrientes", "Chaco", "Formosa", "Neuquen", "Tucuman", "Rio Negro", "San Juan", "Cordoba", "Tierra del Fuego", "Chubut", "Santiago del Estero", "Salta", "La Pampa", "Jujuy", "Mendoza", "San Luis", "Catamarca", "Santa Cruz", "La Rioja", "Eastern District", "State of Vienna", "Carinthia", "Tyrol", "Lower Austria", "Styria", "Upper Austria", "State of Salzburg", "Vorarlberg", "Burgenland", "South Australia", "Western Australia", "Queensland", "Northern Territory", "Victoria", "New South Wales", "Australian Capital Territory", "Tasmania", "", "Mariehamn", "Saatli", "Shusha", "Salyan District", "Nakhchivan", "Neftcala", "Lerik District", "Lankaran", "Imisli", "Fuzuli District", "Jalilabad", "Bilasuvar District", "Beylaqan", "Astara", "Shirvan", "Agdam", "Zaqatala District", "Baki", "Yevlax City", "Goygol Rayon", "Xacmaz", "Ucar", "Tartar District", "Sumqayit", "Siazan Rayon", "Abseron", "Shamkir Rayon", "Samaxi", "Shaki City", "Sabirabad District", "Qusar District", "Quba", "Haciqabul", "Qazax", "Mingacevir City", "Kurdamir District", "Tovuz District", "Ismayilli District", "Goeycay", "Ganja City", "Shabran", "Barda", "Agsu District", "Agdas", "Aghjabadi Rayon", "Federation of B&H", "Srpska", "Brcko", "Saint Michael", "Rangpur Division", "Chittagong", "Dhaka Division", "Sylhet Division", "Mymensingh Division", "Rajshahi Division", "Khulna Division", "Barisal Division", "Flanders", "Brussels Capital", "Wallonia", "Plateau-Central", "Centre", "Centre-Est", "Centre-Nord", "Nord", "Boucle du Mouhoun", "Centre-Ouest", "Centre-Sud", "Hauts-Bassins", "Cascades Region", "Est", "Sud-Ouest", "Sahel", "Yambol", "Vratsa", "Vidin", "Pazardzhik", "Veliko Tarnovo", "Varna", "Targovishte", "Lovech", "Dobrich", "Haskovo", "Stara Zagora", "Kyustendil", "Sofia-Capital", "Smolyan", "Sliven", "Silistra", "Shumen", "Gabrovo", "Blagoevgrad", "Sofia", "Ruse", "Razgrad", "Plovdiv", "Pleven", "Pernik", "Montana", "Kardzhali", "Burgas", "Manama", "Southern Governorate", "Northern", "Muharraq", "Bururi", "Rumonge", "Bujumbura Rural", "Bujumbura Mairie", "Gitega", "Cankuzo", "Bubanza", "Cibitoke", "Ngozi", "Kayanza", "Kirundo", "Atlantique", "Kouffo", "Atakora", "Borgou", "Oueme", "Alibori", "Mono", "Collines", "Plateau", "Zou", "Donga", "Littoral", "Hamilton city", "Tutong", "Belait", "Brunei-Muara District", "Tarija Department", "Santa Cruz Department", "Cochabamba", "Potosi Department", "La Paz Department", "Beni Department", "Chuquisaca Department", "Oruro", "Pando", "Bonaire", "Maranhao", "Pernambuco", "Para", "Paraiba", "Ceara", "Alagoas", "Piaui", "Amazonas", "Bahia", "Rio Grande do Norte", "Tocantins", "Amapa", "Sergipe", "Santa Catarina", "Sao Paulo", "Rio de Janeiro", "Espirito Santo", "Minas Gerais", "Rio Grande do Sul", "Parana", "Mato Grosso", "Goias", "Mato Grosso do Sul", "Federal District", "Acre", "Rondonia", "Roraima", "New Providence", "Freeport", "Thimphu District", "Punakha", "Chukha", "Tsirang District", "Central", "South-East", "Kweneng", "Selibe Phikwe", "Ngwaketsi", "Kgatleng", "North-West", "Lobatse", "Ghanzi", "Gaborone", "City of Francistown", "Jwaneng", "Minsk", "Homyel' Voblasc'", "Vitebsk", "Grodnenskaya", "Brest", "Mogilev", "Minsk City", "Belize District", "Orange Walk District", "Cayo District", "British Columbia", "Ontario", "Quebec", "Alberta", "Nova Scotia", "Manitoba", "Prince Edward Island", "Newfoundland and Labrador", "New Brunswick", "Saskatchewan", "Yukon", "Northwest Territories", "Tshopo", "Haut-Uele", "South Kivu", "Kasai", "North Kivu", "Haut-Katanga", "Tanganyika", "Lomami", "Haut-Lomami", "Ituri", "East Kasai", "Sankuru", "Mongala", "Maniema", "Kasai-Central", "Nord-Ubangi", "Bas-Uele", "Tshuapa", "Lualaba", "Sud-Ubangi", "Bas-Congo", "Mai-Ndombe", "Equateur", "Kwilu", "Kinshasa", "Kwango", "Haut-Mbomou", "Bamingui-Bangoran", "Ouaka", "Haute-Kotto", "Mbomou", "Basse-Kotto", "Ombella-M'Poko", "Kemo", "Lim-Pende", "Sangha-Mbaere", "Lobaye", "Nana-Grebizi", "Ouham-Fafa", "Mambere", "Ouham-Pende", "Nana-Mambere", "Ouham", "Mambere-Kadei", "Bangui", "Lekoumou", "Pointe-Noire", "Cuvette", "Sangha", "Niari", "Bouenza", "Likouala", "Plateaux", "Brazzaville", "Zurich", "Zug", "Vaud", "Saint Gallen", "Aargau", "Geneva", "Bern", "Solothurn", "Valais", "Schwyz", "Schaffhausen", "Neuchatel", "Basel-Landschaft", "Lucerne", "Ticino", "Thurgau", "Appenzell Ausserrhoden", "Fribourg", "Grisons", "Basel-City", "Sassandra-Marahoue", "Montagnes", "Lacs District", "Bas-Sassandra District", "Woroba", "Vallee du Bandama District", "Savanes District", "Lagunes District", "Zanzan District", "Goh-Djiboua", "Denguele District", "Comoe District", "Abidjan Autonomous District", "Rarotonga", "Valparaiso", "Araucania", "Coquimbo Region", "Atacama", "Los Rios Region", "Biobio", "Antofagasta", "Maule Region", "Santiago Metropolitan", "O'Higgins Region", "Nuble", "Los Lagos Region", "Region of Magallanes", "Aysen", "Tarapaca", "Arica y Parinacota Region", "East", "Far North", "North", "West", "South-West", "Adamaoua", "South", "Yunnan", "Xinjiang", "Tibet", "Gansu", "Qinghai", "Sichuan", "Jiangsu", "Hainan", "Guizhou", "Shandong", "Shaanxi", "Chongqing", "Hunan", "Henan", "Shanghai", "Zhejiang", "Liaoning", "Ningxia", "Hubei", "Hebei", "Shanxi", "Guangdong", "Fujian", "Guangxi", "Jiangxi", "Anhui", "Tianjin", "Inner Mongolia", "Beijing", "Jilin", "Heilongjiang", "Cundinamarca", "Valle del Cauca Department", "Antioquia", "Casanare Department", "Meta Department", "Norte de Santander Department", "La Guajira Department", "Caldas Department", "Santander Department", "Cesar Department", "Bolivar", "Narino", "Boyaca", "Sucre Department", "Cauca Department", "Huila Department", "Arauca Department", "Choco", "Atlantico", "Magdalena Department", "Risaralda Department", "San Andres y Providencia", "Tolima Department", "Quindio Department", "Caqueta", "Putumayo Department", "Vichada Department", "Vaupes", "Amazonas Department", "Bogota D.C.", "Guaviare Department", "Cartago Province", "San Jose", "Limon Province", "Heredia Province", "Alajuela Province", "Puntarenas Province", "Guanacaste Province", "Granma Province", "Sancti Spiritus Province", "Pinar del Rio", "Havana", "Camaguey", "Ciego de Avila Province", "Matanzas Province", "Holguin Province", "Villa Clara Province", "Santiago de Cuba Province", "Mayabeque", "Artemisa", "Cienfuegos Province", "Guantanamo Province", "Las Tunas Province", "Isla de la Juventud", "Praia", "Sao Vicente", "Sal", "Ammochostos", "Limassol", "Nicosia", "Pafos", "Larnaka", "Keryneia", "Hradec Kralove Region", "South Moravian", "Zlin", "Prague", "Vysocina", "Usti nad Labem Region", "Pardubice Region", "Moravian-Silesian Region", "South Bohemian Region", "Olomouc Region", "Carlsbad Region", "Central Bohemia", "Plzen Region", "Liberec Region", "Saxony", "Rheinland-Pfalz", "North Rhine-Westphalia", "Brandenburg", "Bavaria", "Saxony-Anhalt", "State of Berlin", "Lower Saxony", "Hesse", "Mecklenburg-Vorpommern", "Hamburg", "Baden-Wurttemberg", "Thuringia", "Schleswig-Holstein", "Saarland", "Bremen", "Tadjourah", "Obock", "Djibouti", "Dikhil", "Arta", "Ali Sabieh", "Zealand", "Central Jutland", "South Denmark", "Capital Region", "North Denmark", "Saint George Parish", "Nacional", "Santiago Province", "San Cristobal", "El Seibo", "Barahona Province", "San Pedro de Macoris", "San Juan Province", "San Jose de Ocoa", "Duarte Province", "Monte Cristi Province", "Puerto Plata", "La Altagracia Province", "Hermanas Mirabal", "Santiago Rodriguez", "Monte Plata Province", "Baoruco Province", "Maria Trinidad Sanchez", "Espaillat Province", "Valverde Province", "La Romana", "La Vega", "Hato Mayor Province", "Dajabon", "Sanchez Ramirez", "Monsenor Nouel", "Santo Domingo Province", "Peravia", "Azua Province", "Boumerdes", "Constantine", "Biskra", "Algiers", "Relizane", "Touggourt", "Tlemcen", "Tizi Ouzou", "Tissemsilt", "Tipaza", "Tindouf", "Timimoun", "Bejaia", "Mascara", "Tiaret", "Chlef", "Mila", "Tebessa", "Batna", "Tamanrasset", "Skikda", "Bouira", "Blida", "Souk Ahras", "Ouled Djellal", "Oran", "Sidi Bel Abbes", "El Mghair", "M'Sila", "Setif", "Saida", "Ouargla", "El Oued", "Adrar", "Bordj Bou Arreridj", "Oum el Bouaghi", "Guelma", "Mostaganem", "Ain Defla", "Ghardaia", "Djelfa", "Medea", "Naama", "Laghouat", "Khenchela", "Jijel", "Ain Temouchent", "El Tarf", "Annaba", "El Menia", "El Bayadh", "Bechar", "In Salah", "Zamora Chinchipe", "Guayas", "Los Rios", "Carchi", "Napo", "Manabi", "Santo Domingo de los Tsachilas", "El Oro", "Santa Elena", "Esmeraldas", "Chimborazo Province", "Pichincha", "Pastaza Province", "Cotopaxi", "Orellana Province", "Tungurahua Province", "Imbabura", "Morona-Santiago Province", "Loja", "Canar", "Sucumbios", "Azuay", "Viljandimaa", "Tartu", "Harjumaa", "Paernumaa", "Ida-Virumaa", "Gharbia", "Red Sea", "Qalyubia", "Dakahlia", "Sohag", "Luxor", "Faiyum", "Monufia", "Beni Suweif", "Matruh", "Kafr el-Sheikh", "Asyut", "Beheira", "South Sinai", "Sharqia", "Minya", "North Sinai", "Qena", "New Valley", "Damietta", "Giza", "Cairo", "Aswan", "Ismailia", "Port Said", "Alexandria", "Suez", "Northern Red Sea", "Anseba", "Gash-Barka", "Maekel", "Southern Red Sea", "Debub", "Andalusia", "Extremadura", "Murcia", "Canary Islands", "Valencia", "Castille-La Mancha", "Balearic Islands", "Melilla", "Basque Country", "Aragon", "Castille and Leon", "Galicia", "Madrid", "Catalonia", "Navarre", "Cantabria", "Asturias", "Ceuta", "Somali", "Oromiya", "South Ethiopia Regional State", "Sidama Region", "Tigray", "Amhara", "Central Ethiopia Regional State", "South West Ethiopia Peoples' Region", "Afar", "Binshangul Gumuz", "Harari", "Gambela", "Dire Dawa", "Addis Ababa", "Pirkanmaa", "North Ostrobothnia", "Uusimaa", "North Savo", "Ostrobothnia", "Southwest Finland", "Lapland", "South Ostrobothnia", "South Savo", "Kanta-Haeme", "Satakunta", "Paijat-Hame", "Central Finland", "South Karelia", "Kymenlaakso", "North Karelia", "Central Ostrobothnia", "Kainuu", "Western", "Pohnpei State", "Streymoy", "Ile-de-France", "Grand Est", "Hauts-de-France", "Rhone-Alpes", "Provence-Alpes-Cote d'Azur", "Brittany", "New Aquitaine", "Centre-Val de Loire", "Bourgogne", "Pays de la Loire", "Normandy", "Occitanie", "Corsica", "Nyanga", "Ogooue-Maritime", "Woleu-Ntem", "Moyen-Ogooue", "Estuaire", "Ngouni", "Haut-Ogooue", "Ogooue-Ivindo", "Ogooue-Lolo", "England", "Wales", "Scotland", "Northern Ireland", "Samegrelo and Zemo Svaneti", "Imereti", "Shida Kartli", "Kakheti", "Tbilisi", "Abkhazia", "Kvemo Kartli", "Adjara", "Samtskhe-Javakheti", "Guyane", "St Peter Port", "Bono East", "Bono", "Upper West", "Greater Accra", "Ashanti", "Eastern", "Savannah", "Upper East", "North East", "Ahafo", "Volta", "Oti", "Western North", "Sermersooq", "Lower River", "Banjul", "North Bank", "Upper River", "Faranah", "Boke Region", "Labe Region", "Kindia", "Kankan Region", "Mamou Region", "Nzerekore Region", "Conakry", "Guadeloupe", "Kie-Ntem", "Bioko Norte", "Litoral", "Djibloho", "Attica", "Thessaly", "Peloponnese", "Central Greece", "Crete", "Epirus", "West Greece", "North Aegean", "South Aegean", "Central Macedonia", "East Macedonia and Thrace", "West Macedonia", "Ionian Islands", "Chimaltenango", "Zacapa", "Guatemala", "Totonicapan", "Sacatepequez", "Huehuetenango", "Solola", "Escuintla", "Quiche", "Suchitepeque", "Retalhuleu", "San Marcos", "Alta Verapaz", "Jalapa", "Peten", "El Progreso", "Quetzaltenango", "Baja Verapaz", "Izabal Department", "Jutiapa", "Santa Rosa Department", "Chiquimula", "Tamuning", "Yigo", "Dededo", "Hagatna", "Mangilao", "Bafata", "Bissau", "Gabu", "East Berbice-Corentyne", "Upper Demerara-Berbice", "Demerara-Mahaica", "Tsuen Wan", "Yuen Long", "Kwun Tong District", "Yau Tsim Mong District", "Wong Tai Sin District", "Sha Tin", "Kowloon City", "Wan Chai", "Southern District", "Tuen Mun", "Kwai Tsing District", "Sai Kung District", "Tai Po", "North District", "Sham Shui Po District", "Islands", "Central and Western", "Cortes Department", "Yoro Department", "Intibuca Department", "Comayagua Department", "Colon Department", "El Paraiso Department", "Atlantida Department", "Francisco Morazan Department", "Copan Department", "Santa Barbara Department", "Valle Department", "Choluteca Department", "Lempira Department", "Olancho Department", "Ocotepeque Department", "Zagreb County", "Zagreb", "Zadar", "Vukovar-Srijem", "Varazdin", "Split-Dalmatia", "Brod-Posavina", "Pozega-Slavonia", "Sisak-Moslavina", "Sibenik-Knin", "Primorje-Gorski Kotar", "Istria", "County of Osijek-Baranja", "Koprivnica-Krizevci", "Dubrovnik-Neretva", "Megimurje", "Bjelovar-Bilogora", "Karlovac", "Artibonite", "Ouest", "Nord-Est", "Nord-Ouest", "Nippes", "Grand'Anse", "Sud-Est", "Sud", "Jasz-Nagykun-Szolnok", "Borsod-Abauj-Zemplen", "Csongrad", "Bekes County", "Hajdu-Bihar", "Szabolcs-Szatmar-Bereg", "Heves County", "Pest County", "Budapest", "Zala County", "Veszprem", "Komarom-Esztergom", "Vas County", "Tolna County", "Fejer", "Gyor-Moson-Sopron", "Somogy County", "Nograd", "Baranya", "Bacs-Kiskun", "North Sumatra", "Aceh", "Yogyakarta", "Central Java", "East Java", "West Java", "South Sulawesi", "Highland Papua", "Southwest Papua", "East Nusa Tenggara", "Jakarta", "Bali", "Maluku", "North Sulawesi", "North Maluku", "Central Papua", "Lampung", "North Kalimantan", "Riau Islands", "Bangka-Belitung Islands", "South Sumatra", "South Kalimantan", "Banten", "West Nusa Tenggara", "West Kalimantan", "Jambi", "West Sumatra", "Central Kalimantan", "East Kalimantan", "West Papua", "Southeast Sulawesi", "Central Sulawesi", "West Sulawesi", "Riau", "Gorontalo", "Papua", "Bengkulu", "South Papua", "Leinster", "Munster", "Connacht", "Ulster", "Jerusalem", "Central District", "Haifa", "Northern District", "Tel Aviv", "Judea and Samaria Area", "Douglas", "Jammu and Kashmir", "Tamil Nadu", "Nagaland", "Uttar Pradesh", "Telangana", "Maharashtra", "Karnataka", "Andhra Pradesh", "Haryana", "Rajasthan", "Bihar", "Madhya Pradesh", "Gujarat", "Kerala", "Puducherry", "Goa", "Uttarakhand", "Punjab", "Himachal Pradesh", "Chhattisgarh", "West Bengal", "Manipur", "Assam", "Tripura", "Meghalaya", "Odisha", "Arunachal Pradesh", "Jharkhand", "Dadra and Nagar Haveli and Daman and Diu", "Mizoram", "Delhi", "Andaman and Nicobar", "Ladakh", "Sikkim", "Chandigarh", "Duhok", "Basra", "Salah ad Din", "Kirkuk", "Nineveh", "Erbil", "Babil", "Sulaymaniyah", "Anbar", "Dhi Qar", "Maysan", "Diyala", "Karbala", "Halabja", "Baghdad", "Wasit", "Muthanna", "Al-Qadisiyah", "Najaf", "Tehran", "Qazvin Province", "Mazandaran", "East Azerbaijan", "Lorestan Province", "Kermanshah Province", "Semnan", "Golestan", "Zanjan", "Gilan Province", "Alborz Province", "Khuzestan", "Bushehr", "Fars", "Kohgiluyeh and Boyer-Ahmad", "Yazd Province", "Kerman", "Hamadan Province", "Razavi Khorasan", "West Azerbaijan", "Markazi", "North Khorasan", "Chaharmahal and Bakhtiari", "Isfahan", "Kurdistan Province", "Qom Province", "Hormozgan", "South Khorasan Province", "Ardabil Province", "Ilam Province", "Sistan and Baluchestan", "Northeast", "Southern Peninsula", "Sicily", "Calabria", "Sardinia", "Apulia", "Emilia-Romagna", "Campania", "Lombardy", "Veneto", "Lazio", "Tuscany", "Piedmont", "Liguria", "Abruzzo", "Friuli Venezia Giulia", "Trentino-Alto Adige", "The Marches", "Umbria", "Molise", "Basilicate", "Aosta Valley", "St Helier", "Saint Catherine Parish", "Westmoreland", "Saint Ann Parish", "Saint Andrew Parish", "Saint James Parish", "Clarendon", "Manchester", "Kingston", "Amman", "Balqa", "Madaba", "Ma'an", "Irbid", "Jerash", "Karak", "Zarqa", "Tafielah", "Ajloun", "Mafraq", "Aqaba", "Wakayama", "Kanagawa", "Hyogo", "Kagawa", "Gifu", "Fukuoka", "Ibaraki", "Kyoto", "Saitama", "Gunma", "Niigata", "Tottori", "Okinawa", "Tokyo", "Mie", "Oita", "Shiga", "Kumamoto", "Toyama", "Shimane", "Osaka", "Yamaguchi", "Nara", "Kochi", "Shizuoka", "Tochigi", "Hiroshima", "Tokushima", "Ishikawa", "Ehime", "Saga", "Chiba", "Kagoshima", "Yamanashi", "Nagano", "Okayama", "Aichi", "Yamagata", "Fukui", "Miyazaki", "Nagasaki", "Akita", "Fukushima", "Miyagi", "Iwate", "Hokkaido", "Aomori", "Makueni County", "Bungoma County", "Kilifi County", "Kirinyaga County", "Wajir County", "Taita Taveta", "Kwale County", "Nairobi County", "Nyeri County", "Kiambu County", "Migori County", "Nakuru County", "Mandera County", "Homa Bay County", "Kisii County", "Nyamira county", "Laikipia", "Kajiado County", "Narok County", "Kitui County", "Machakos County", "Murang'A", "Kakamega County", "Kisumu County", "Marsabit County", "Mombasa County", "Meru County", "Vihiga County", "Tana River County", "Samburu County", "Busia County", "West Pokot County", "Turkana County", "Lamu", "Trans Nzoia", "Kericho County", "Nandi", "Baringo", "Marakwet District", "Isiolo County", "Uasin Gishu County", "Nyandarua County", "Garissa County", "Embu County", "Tharaka - Nithi", "Siaya County", "Batken", "Issyk-Kul", "Chuy Region", "Jalal-Abad Region", "Talas Region", "Osh Region", "Naryn Region", "Bishkek", "Phnom Penh", "Kandal", "Takeo", "Svay Rieng", "Tboung Khmum", "Stung Treng", "Kratie", "Banteay Meanchey", "Siem Reap", "Prey Veng", "Pursat", "Kampong Speu Province", "Kampong Thom", "Otar Meanchey", "Battambang", "Kampong Cham", "Preah Vihear", "Pailin", "Ratanakiri", "Kep", "Koh Kong", "Kampot", "Preah Sihanouk", "Kampong Chhnang", "Gilbert Islands", "Anjouan", "Grande Comore", "Moheli", "Saint George Basseterre", "South Hwanghae", "Kangwon-do", "South Pyongan", "Pyongyang", "North Hwanghae", "South Hamgyong", "Nampo", "P'yongan-bukto", "Kaesong", "North Hamgyong", "Chagang", "Rason", "Yanggang-do", "Gyeongsangbuk-do", "Gangwon-do", "Jeollanam-do", "North Chungcheong", "Gyeonggi-do", "Chungcheongnam-do", "Gyeongsangnam-do", "Jeju-do", "Jeollabuk-do", "Ulsan", "Daejeon", "Daegu", "Seoul", "Busan", "Gwangju", "Incheon", "Sejong-si", "Al Farwaniyah", "Hawalli", "Al Ahmadi", "Al Asimah", "Al Jahra Governorate", "Mubarak al Kabir", "West Bay", "George Town", "Mangystau", "Aktobe", "Atyrau Oblisi", "West Kazakhstan", "Karaganda", "East Kazakhstan", "Kyzylorda", "Ulytau Region", "Kostanay", "Zhambyl", "Turkistan", "Zhetysu Region", "Almaty Region", "Shymkent", "Aqmola", "Abai Region", "North Kazakhstan", "Pavlodar Region", "Baikonur", "Astana", "Almaty", "Vientiane Prefecture", "Houaphan", "Savannakhet Province", "Champasak Province", "Oudomxai", "Vientiane", "Loungnamtha", "Xiangkhoang", "Bolikhamsai", "Khammouane Province", "Luang Prabang Province", "Salavan Province", "Bokeo", "Xekong", "Bekaa", "North Lebanon", "South Governorate", "Baalbek-Hermel Governorate", "Beirut", "Mount Lebanon", "Nabatieh", "Gros-Islet", "Castries", "Vaduz", "Western Province", "Southern Province", "Northern Province", "Eastern Province", "Sabaragamuwa Province", "North Western Province", "Central Province", "Uva Province", "North Central Province", "Grand Gedeh County", "Nimba", "Lofa County", "Bomi County", "Maryland County", "Montserrado County", "Margibi County", "Sinoe County", "Bong County", "Grand Bassa County", "Berea", "Quthing", "Qacha's Nek District", "Mohale's Hoek District", "Maseru District", "Leribe", "Mafeteng District", "Butha-Buthe", "Thaba-Tseka", "Utena", "Vilnius", "Telsiai", "Taurage County", "Siauliai", "Panevezys", "Klaipeda County", "Marijampole County", "Kaunas", "Alytus", "Luxembourg", "Esch-sur-Alzette", "Valmiera", "Ventspils", "Tukums Municipality", "Salaspils Municipality", "Riga", "Rezekne", "Ogre", "Liepaja", "Jurmala", "Jelgava", "Jekabpils Municipality", "Daugavpils", "Cesis Municipality", "Marupe", "Al Butnan", "Banghazi", "Darnah", "Al Wahat", "Al Kufrah", "Al Marj", "Al Jabal al Akhdar", "An Nuqat al Khams", "Misratah", "Jabal al Gharbi", "Al Marqab", "Tripoli", "Surt", "Az Zawiyah", "Sabha District", "Nalut", "Murzuq District", "Al Jafarah", "Al Jufrah", "Wadi ash Shati'", "Wadi al Hayat", "Laayoune-Sakia El Hamra", "Marrakesh-Safi", "Beni Mellal-Khenifra", "Oriental", "Draa-Tafilalet", "Souss-Massa", "Casablanca-Settat", "Tanger-Tetouan-Al Hoceima", "Rabat-Sale-Kenitra", "Fes-Meknes", "Guelmim-Oued Noun", "Municipality of Monaco", "Raionul Edinet", "Ungheni", "Transnistria", "Straseni", "Singerei", "Soroca District", "Orhei", "Hincesti", "Chisinau Municipality", "Causeni", "Floresti", "Drochia", "Gagauzia", "Cahul", "Bender Municipality", "Balti", "Podgorica", "Pljevlja", "Opstina Niksic", "Herceg Novi", "Cetinje", "Budva", "Bijelo Polje", "Bar", "Atsinanana", "Atsimo-Atsinanana", "Fitovinany Region", "Analanjirofo", "Bongolava", "Androy", "Betsiboka", "Atsimo-Andrefana", "Anosy", "Itasy", "Vakinankaratra", "Boeny", "Sava", "Vatovavy Region", "Analamanga", "Menabe", "Alaotra Mangoro", "Melaky", "Ihorombe", "Upper Matsiatra", "Amoron'i Mania", "Diana", "Majuro Atoll", "Zhelino", "Vinica", "Veles", "Tetovo", "Tearce", "Studenichani", "Strumica", "Struga", "Shtip", "Grad Skopje", "Resen", "Radovish", "Prilep", "Ohrid", "Vrapchishte", "Negotino", "Lipkovo", "Kumanovo", "Kriva Palanka", "Kochani", "Kichevo", "Kavadarci", "Bogovinje", "Gostivar", "Gevgelija", "Delchevo", "Debar", "Brvenica", "Bitola", "Ilinden", "Centar Zhupa", "Sikasso", "Koulikoro", "Tombouctou", "Segou", "Kayes", "Mopti", "Kidal", "Gao", "Bamako", "Menaka", "Bago Region", "Ayeyarwady", "Yangon", "Sagaing Region", "Magway", "Mon", "Shan State", "Mandalay Region", "Tanintharyi Region", "Rakhine", "Kachin State", "Nay Pyi Taw", "Kayin State", "Kayah State", "Chin State", "Dzabkhan", "Uvs Province", "Bayan-OElgii Province", "Hovd", "Govi-Altai Province", "Ulaanbaatar", "Arkhangai Province", "Selenge Province", "Hentiy", "Khoevsgoel Province", "OEvoerhangay", "Orhon", "Central Aimak", "Darhan Uul", "OEmnoegovi", "East Aimak", "East Gobi Aymag", "Bulgan", "Bayankhongor", "Suhbaatar", "Our Lady of Carmo", "Saint Francis Xavier", "Saipan", "Martinique", "Tiris Zemmour", "Hodh Ech Chargi", "Trarza", "Guidimaka", "Assaba", "Dakhlet Nouadhibou", "Brakna", "Gorgol", "Hodh El Gharbi", "Inchiri", "Nouakchott West", "Nouakchott North", "Saint Anthony", "Saint Peter", "Haz-Zabbar", "Valletta", "Tas-Sliema", "Saint Paul's Bay", "Qormi", "Il-Mosta", "Birkirkara", "Plaines Wilhems", "Pamplemousses", "Moka", "Port Louis", "Grand Port", "Riviere du Rempart", "Flacq", "Black River", "Kaafu Atoll", "Northern Region", "Southern Region", "Central Region", "Tamaulipas", "San Luis Potosi", "Mexico", "Guerrero", "Puebla", "Hidalgo", "Morelos", "Chiapas", "Mexico City", "Veracruz", "Tabasco", "Yucatan", "Quintana Roo", "Queretaro", "Oaxaca", "Tlaxcala", "Nuevo Leon", "Campeche", "Sonora", "Sinaloa", "Jalisco", "Baja California", "Michoacan", "Zacatecas", "Guanajuato", "Coahuila", "Colima", "Nayarit", "Durango", "Baja California Sur", "Aguascalientes", "Chihuahua", "Kedah", "Pahang", "Perak", "Selangor", "Johor", "Terengganu", "Penang", "Sabah", "Labuan", "Kelantan", "Sarawak", "Negeri Sembilan", "Melaka", "Kuala Lumpur", "Perlis", "Putrajaya", "Gaza Province", "Sofala", "Inhambane Province", "Tete", "Zambezia Province", "Cabo Delgado Province", "Maputo Province", "Nampula", "Maputo City", "Manica", "Niassa Province", "Kavango East", "Zambezi Region", "Khomas Region", "Oshikoto Region", "Erongo Region", "Hardap Region", "Otjozondjupa Region", "Oshana Region", "Karas Region", "Omaheke Region", "Ohangwena Region", "South Province", "Dosso Region", "Tahoua Region", "Zinder Region", "Tillaberi Region", "Maradi Region", "Niamey", "Diffa", "Agadez", "Kebbi", "Niger State", "Kaduna State", "Adamawa", "Bayelsa State", "Taraba State", "Kano State", "Delta", "Nasarawa State", "Akwa Ibom State", "Edo State", "Abia State", "Cross River State", "Anambra", "Sokoto", "Zamfara State", "Benue State", "Lagos", "Oyo State", "Ogun State", "Yobe State", "Rivers State", "Gombe State", "Kwara State", "Plateau State", "Osun State", "Ondo State", "Imo State", "Kogi State", "Ekiti State", "Enugu State", "Borno State", "Katsina State", "FCT", "Jigawa State", "Bauchi", "Ebonyi State", "Managua Department", "Madriz Department", "Chinandega Department", "North Caribbean Coast", "Carazo Department", "Rivas Department", "Matagalpa Department", "South Caribbean Coast", "Nueva Segovia Department", "Granada Department", "Leon Department", "Masaya Department", "Chontales Department", "Jinotega Department", "Esteli Department", "Boaco Department", "Overijssel", "South Holland", "Gelderland", "Utrecht", "Flevoland", "North Holland", "Groningen", "Limburg", "North Brabant", "Zeeland", "Friesland", "Drenthe", "Finnmark", "Trondelag", "Troms", "Vestfold", "Rogaland", "Telemark", "Ostfold", "Oslo", "Vestland", "More og Romsdal", "Nordland", "Akershus", "Innlandet", "Agder", "Buskerud", "Gandaki Pradesh", "Lumbini Province", "Sudurpashchim Pradesh", "Madhesh", "Bagmati Province", "Koshi", "Karnali Pradesh", "Yaren District", "Wellington Region", "Manawatu-Wanganui", "Canterbury", "Waikato Region", "Nelson Region", "Tasman District", "Auckland", "Taranaki Region", "Hawke's Bay Region", "Southland", "Otago", "Gisborne", "Bay of Plenty", "Northland", "Marlborough", "Southeastern Governorate", "Al Batinah North", "Ad Dakhiliyah", "Dhofar", "Muscat", "Musandam Governorate", "Ad Dhahirah", "Northeastern Governorate", "Al Batinah South", "Al Buraimi", "Panama Oeste Province", "Panama", "Veraguas Province", "Colon", "Cocle", "Chiriqui Province", "Bocas del Toro Province", "Loreto", "La Libertad", "San Martin Department", "Tumbes", "Huanuco Department", "Piura", "Lambayeque", "Ucayali", "Cajamarca Department", "Ancash", "Cuzco Department", "Junin", "Madre de Dios", "Tacna", "Lima region", "Ica", "Puno", "Moquegua Department", "Arequipa", "Lima Province", "Ayacucho", "Huancavelica", "Pasco", "Callao", "Apurimac Department", "Iles du Vent", "East Sepik Province", "National Capital", "Oro Province", "Western Highlands Province", "Southern Highlands Province", "Madang Province", "Morobe Province", "East New Britain Province", "West New Britain Province", "Eastern Highlands Province", "Bougainville", "Eastern Visayas", "Central Luzon", "Zamboanga Peninsula", "Autonomous Region in Muslim Mindanao", "Bicol Region", "Ilocos", "Western Visayas", "Calabarzon", "Mimaropa", "Caraga", "National Capital Region", "Northern Mindanao", "Soccsksargen", "Cagayan Valley", "Central Visayas", "Davao Region", "Cordillera", "Sindh", "Azad Kashmir", "Balochistan", "Khyber Pakhtunkhwa", "Gilgit-Baltistan", "Islamabad", "Mazovia", "Lublin", "Podlasie", "Lesser Poland", "Lodz Voivodeship", "Subcarpathia", "Warmia-Masuria", "Swietokrzyskie", "Silesia", "Greater Poland", "Lower Silesia", "Lubusz", "Pomerania", "Kujawsko-Pomorskie", "West Pomerania", "Opole Voivodeship", "Saint-Pierre", "Aguadilla", "Arecibo", "Barceloneta", "Bayamon", "Caguas", "Toa Baja", "Carolina", "Catano", "Cayey", "Fajardo", "Guayama", "Guaynabo", "Humacao", "Manati", "Mayagueez", "Ponce", "Trujillo Alto", "Vega Baja", "Yauco", "Gaza Strip", "West Bank", "Lisbon", "Santarem", "Faro", "Setubal", "Madeira", "Portalegre", "Leiria", "Evora", "Castelo Branco", "Beja", "Viseu", "Vila Real", "Porto", "Aveiro", "Viana do Castelo", "Guarda", "Coimbra", "Braga", "Braganca", "Azores", "Melekeok", "Concepcion", "Guaira", "Presidente Hayes", "Central Department", "Misiones Department", "Alto Parana Department", "Neembucu Department", "Amambay Department", "Boqueron Department", "Itapua", "Caaguazu Department", "Caazapa", "Cordillera Department", "Asuncion", "Baladiyat ad Dawhah", "Umm Salal", "Al-Shahaniya", "Baladiyat ar Rayyan", "Al Daayen", "Al Wakrah", "Al Khor", "Reunion", "Teleorman County", "Brasov County", "Salaj County", "Hunedoara County", "Ilfov", "Maramures", "Suceava", "Vaslui County", "Ialomita County", "Cluj County", "Tulcea County", "Mures County", "Covasna County", "Neamt County", "Gorj County", "Dambovita County", "Timis County", "Galati County", "Olt", "Sibiu County", "Alba County", "Satu Mare County", "Bihor County", "Valcea County", "Buzau County", "Caras-Severin County", "Prahova", "Arges", "Calarasi County", "Harghita County", "Constanta County", "Bacau County", "Iasi County", "Giurgiu County", "Vrancea", "Dolj", "Mehedinti County", "Botosani County", "Bucharest", "Braila County", "Bistrita-Nasaud County", "Arad County", "Vojvodina", "Central Serbia", "Tver Oblast", "St.-Petersburg", "Ryazan Oblast", "Moscow", "Rostov", "Moscow Oblast", "Chelyabinsk", "Bryansk Oblast", "Volgograd Oblast", "Samara Oblast", "Tambov Oblast", "Stavropol Kray", "Kursk Oblast", "Kaliningrad Oblast", "Tatarstan Republic", "Karachayevo-Cherkesiya Republic", "Nizhny Novgorod Oblast", "Penza Oblast", "Murmansk", "Vladimir Oblast", "Mariy-El Republic", "Krasnodar Krai", "Saratov Oblast", "Komi", "Lipetsk Oblast", "Tula Oblast", "Orenburg Oblast", "Smolensk Oblast", "Yaroslavl Oblast", "Kirov Oblast", "Bashkortostan Republic", "Arkhangelskaya", "Adygeya Republic", "Leningradskaya Oblast'", "Udmurtiya Republic", "Voronezh Oblast", "Vologda Oblast", "Kostroma Oblast", "North Ossetia-Alania", "Ivanovo Oblast", "Perm Krai", "Pskov Oblast", "Belgorod Oblast", "Novgorod Oblast", "Chechnya", "Ulyanovsk", "Kabardino-Balkariya Republic", "Ingushetiya Republic", "Kaluga Oblast", "Karelia", "Chuvash Republic", "Sverdlovsk Oblast", "Mordoviya Republic", "Oryol oblast", "Nenets", "Dagestan", "Astrakhan Oblast", "Kalmykiya Republic", "Tyumen Oblast", "Altai Krai", "Kuzbass", "Krasnoyarsk Krai", "Khanty-Mansia", "Tomsk Oblast", "Novosibirsk Oblast", "Irkutsk Oblast", "Yamalo-Nenets", "Omsk Oblast", "Kurgan Oblast", "Khakasiya Republic", "Altai", "Republic of Tyva", "Amur Oblast", "Sakha", "Khabarovsk", "Primorye", "Buryatiya Republic", "Zabaykalskiy (Transbaikal) Kray", "Jewish Autonomous Oblast", "Kamchatka", "Sakhalin Oblast", "Magadan Oblast", "Chukotka", "Kigali", "Medina Region", "Tabuk Region", "Northern Borders Region", "Mecca Region", "Al Jawf Region", "Al-Qassim Region", "Riyadh Region", "Jazan Region", "'Asir Region", "Najran Region", "Ha'il Region", "Al Bahah Region", "Honiara", "Guadalcanal Province", "La Riviere Anglaise", "Northern State", "Central Darfur", "Al Jazirah", "Sennar", "North Kordofan", "Khartoum", "Southern Darfur", "White Nile", "River Nile", "Northern Darfur", "Al Qadarif", "Kassala", "Southern Kordofan", "West Kordofan", "Blue Nile", "Western Darfur", "Eastern Darfur", "Vaesterbotten", "Norrbotten", "Skane", "Gotland", "Kronoberg", "Vaestra Goetaland", "Kalmar", "Vaestmanland", "Stockholm", "Joenkoeping", "Halland", "Uppsala", "Vaesternorrland", "Gaevleborg", "Jaemtland", "OErebro", "Soedermanland", "OEstergoetland", "Dalarna", "Vaermland", "Blekinge", "Saint Helena", "Municipality of Trbovlje", "Urban Municipality of Velenje", "Urban Municipality of Ptuj", "Urban Municipality of Novo Mesto", "Urban Municipality of Maribor", "Ljubljana", "Urban Municipality of Kranj", "Urban Municipality of Koper", "Urban Municipality of Celje", "Svalbard", "Presov Region", "Kosice Region", "Banska Bystrica Region", "Zilina Region", "Bratislava Region", "Trnava Region", "Trencin Region", "Nitra Region", "Western Area", "North West", "San Marino", "Ziguinchor", "Kolda", "Diourbel Region", "Thies", "Matam", "Tambacounda", "Sedhiou", "Dakar", "Saint-Louis", "Fatick", "Kaolack", "Louga", "Kaffrine", "Kedougou", "Lower Shabeelle", "Woqooyi Galbeed", "Awdal", "Bari", "Banaadir", "Gedo", "Lower Juba", "Middle Juba", "Middle Shabele", "Nugaal", "Mudug", "Bay", "Sanaag", "Galguduud", "Hiiraan", "Togdheer", "Sool", "Paramaribo District", "Wanica District", "Central Equatoria", "Western Equatoria", "Northern Bahr al Ghazal", "Western Bahr al Ghazal", "Eastern Equatoria", "Warrap", "Lakes", "Upper Nile", "Unity", "Jonglei", "Sao Tome Island", "Usulutan", "San Salvador Department", "Sonsonate Department", "Cabanas", "San Vicente Department", "Santa Ana Department", "San Miguel Department", "Cuscatlan", "Morazan", "La Libertad Department", "La Union", "Chalatenango Department", "Ahuachapan", "Rif-dimashq", "Hama", "Tartus", "Aleppo", "Homs", "Daraa", "Deir ez-Zor", "Idlib", "Damascus Governorate", "Latakia", "Al-Hasakah", "Raqqa", "Suwayda", "Quneitra", "Hhohho Region", "Manzini Region", "Wadi Fira", "Sila", "Ennedi-Ouest", "Salamat", "Ouadai", "Moyen-Chari", "Mayo-Kebbi Ouest", "Batha", "N'Djamena", "Barh el Gazel", "Logone Occidental", "Guera", "Mandoul", "Hadjer-Lamis", "Kanem", "Chari-Baguirmi", "Tandjile", "Mayo-Kebbi Est", "Logone Oriental", "Borkou", "Lac", "Ennedi-Est", "Kerguelen", "Maritime", "Centrale", "Kara", "Savanes", "Phuket", "Prachuap Khiri Khan", "Phetchaburi", "Trang", "Nakhon Si Thammarat", "Lampang", "Uthai Thani", "Kanchanaburi", "Tak", "Surat Thani", "Sukhothai", "Chiang Mai", "Ratchaburi", "Ranong province", "Phayao", "Lamphun", "Chiang Rai", "Nakhon Sawan", "Chumphon", "Krabi", "Kamphaeng Phet", "Kalasin", "Udon Thani", "Songkhla", "Bangkok", "Nakhon Ratchasima", "Samut Prakan", "Nong Bua Lamphu", "Yasothon", "Pattani", "Yala", "Ang Thong", "Phetchabun", "Ubon Ratchathani", "Sakon Nakhon", "Loei", "Phra Nakhon Si Ayutthaya", "Sa Kaeo", "Uttaradit", "Trat", "Phichit", "Chanthaburi", "Nong Khai", "Narathiwat", "Surin", "Suphan Buri", "Si Sa Ket", "Chon Buri", "Sing Buri", "Prachin Buri", "Bueng Kan", "Satun", "Saraburi", "Samut Songkhram", "Samut Sakhon", "Nakhon Pathom", "Roi Et", "Rayong", "Buriram", "Chaiyaphum", "Phrae", "Phitsanulok", "Phatthalung", "Chachoengsao", "Pathum Thani", "Nonthaburi", "Nan", "Nakhon Phanom", "Nakhon Nayok", "Mukdahan", "Maha Sarakham", "Lopburi", "Khon Kaen", "Chai Nat", "Amnat Charoen", "Khatlon Province", "Sughd", "Republican Subordination", "Gorno-Badakhshan", "Dushanbe", "Cova Lima", "Liquica", "Bobonaro", "Dili Municipality", "Baucau", "Ermera", "Aileu", "Lautem", "Balkan", "Ahal", "Ashgabat", "Dasoguz", "Mary", "Lebap", "Sousse Governorate", "Zaghouan Governorate", "Manouba", "Gafsa", "Tunis Governorate", "Bizerte Governorate", "Tozeur Governorate", "Tataouine", "Kasserine Governorate", "Nabeul Governorate", "Kef Governorate", "Beja Governorate", "Gabes Governorate", "Monastir Governorate", "Jendouba Governorate", "Ariana Governorate", "Siliana Governorate", "Sidi Bouzid Governorate", "Sfax Governorate", "Ben Arous Governorate", "Mahdia Governorate", "Kebili Governorate", "Medenine Governorate", "Kairouan", "Tongatapu", "Hakkari", "Yozgat", "Adana", "Mardin", "Hatay", "Aydin", "Mugla", "Isparta", "Kayseri", "Sanliurfa", "Mus", "Van", "Erzincan", "Usak", "Izmir Province", "Nevsehir Province", "Manisa", "Tunceli", "Kuetahya", "Bitlis", "Mersin", "Balikesir", "Bingoel", "Sivas", "Sirnak", "Diyarbakir Province", "Siirt", "Konya", "Antalya", "Ankara", "Denizli", "Afyonkarahisar Province", "Kahramanmaras", "Agri", "Erzurum", "Osmaniye", "Aksaray", "Gaziantep", "Nigde Province", "Kirsehir", "Malatya", "Batman", "Elazig", "Kirikkale", "Kilis", "Karaman", "Adiyaman Province", "Igdir", "Canakkale", "Eskisehir", "Burdur", "Bilecik", "Zonguldak Province", "Tokat Province", "Istanbul", "Trabzon", "Bursa Province", "Kocaeli", "Yalova", "Samsun", "Edirne", "Ordu", "Kastamonu", "Giresun", "Tekirdag", "Amasya", "Corum", "Sinop", "Kars Province", "Sakarya", "Karabuek Province", "Rize Province", "Kirklareli", "Guemueshane Province", "Duzce", "Artvin", "Bolu", "Cankiri", "Bayburt Province", "Bartin", "Ardahan", "Tunapuna/Piarco", "Tobago", "Sangre Grande Regional Corporation", "San Fernando", "Mayaro", "Port of Spain", "Point Fortin", "San Juan/Laventille", "Diego Martin Regional Corporation", "Chaguanas", "Borough of Arima", "Funafuti", "Taiwan", "Taipei", "Takao", "Fukien", "Zanzibar Urban/West", "Pemba North", "Songwe", "Pwani", "Geita", "Kigoma", "Mbeya", "Katavi", "Kilimanjaro", "Mwanza", "Arusha", "Tabora", "Shinyanga", "Mara", "Tanga", "Rukwa", "Simiyu", "Zanzibar Central/South", "Singida", "Kagera", "Njombe", "Morogoro", "Manyara", "Dodoma", "Pemba South", "Ruvuma", "Dar es Salaam Region", "Iringa", "Lindi", "Mtwara", "Zanzibar North", "Sumy", "Donetsk", "Cherkasy", "Lviv", "Kirovohrad", "Zhytomyr Oblast", "Vinnytsia", "Dnipropetrovsk", "Rivne Oblast", "Zaporizhzhia", "Odesa", "Luhansk", "Crimea", "Kyiv Oblast", "Zakarpattia", "Kyiv City", "Mykolaiv", "Khmelnytskyi", "Kharkiv", "Volyn", "Kherson", "Ternopil", "Sevastopol City", "Chernihiv Oblast", "Poltava", "Ivano-Frankivsk", "Chernivtsi", "Eastern Region", "Western Region", "Virginia", "Alabama", "Kentucky", "Tennessee", "Arkansas", "District of Columbia", "Delaware", "Florida", "Georgia", "Illinois", "Indiana", "Kansas", "Louisiana", "Maryland", "Missouri", "Mississippi", "North Carolina", "New Jersey", "Ohio", "Oklahoma", "Pennsylvania", "South Carolina", "Texas", "West Virginia", "Massachusetts", "Connecticut", "Michigan", "Iowa", "Maine", "Minnesota", "North Dakota", "Nebraska", "New Hampshire", "New York", "Rhode Island", "South Dakota", "Vermont", "Wisconsin", "California", "Arizona", "Colorado", "New Mexico", "Nevada", "Utah", "Alaska", "Idaho", "Oregon", "Washington", "Wyoming", "Hawaii", "Rio Negro Department", "Flores Department", "Treinta y Tres Department", "Tacuarembo Department", "Canelones", "San Jose Department", "Maldonado", "Salto Department", "Rocha Department", "Rivera Department", "Paysandu Department", "Montevideo Department", "Lavalleja", "Soriano", "Cerro Largo", "Durazno Department", "Colonia", "Artigas", "Karakalpakstan", "Jizzakh Region", "Samarqand Region", "Surxondaryo Region", "Qashqadaryo", "Bukhara", "Tashkent Region", "Tashkent", "Fergana", "Sirdaryo Region", "Navoiy Region", "Namangan", "Xorazm Region", "Andijan Region", "Nueva Esparta", "Anzoategui", "Barinas", "Guarico", "Yaracuy", "Aragua", "Portuguesa", "Trujillo", "Carabobo", "Tachira", "Delta Amacuro", "Merida", "Falcon", "Cojedes", "Zulia", "Monagas", "Miranda", "Lara", "Vargas", "Sucre", "Apure", "Distrito Federal", "Saint Thomas Island", "Saint Croix Island", "Nghe An Province", "Hanoi", "Lao Cai", "Dong Nai", "Ho Chi Minh City (HCMC)", "An Giang", "Ca Mau", "Can Tho City", "Phu Tho", "Vinh Long", "Bac Ninh", "Quang Ninh", "Dak Lak", "Tuyen Quang", "Khanh Hoa", "Ha Tinh Province", "Cao Bang Province", "Tay Ninh", "Dong Thap", "Lang Son Province", "Thanh Hoa Province", "Thai Nguyen", "Hung Yen Province", "Da Nang City", "Son La Province", "Gia Lai", "Quang Tri", "Quang Ngai", "Ninh Binh", "Thua Thien Hue Province", "Lam Dong", "GJien Bien Province", "Hai Phong", "Lai Chau Province", "Shefa", "Uvea", "Tuamasaga", "Mitrovica", "Gjilan", "Ferizaj", "Prizren", "Pristina", "Pec", "Gjakova", "Abyan Governorate", "Al Hudaydah", "Ibb Governorate", "Ta'izz", "Sanaa Governorate", "Amanat Alasimah", "Sa'dah", "Ma'rib", "Lahij", "Hajjah", "Muhafazat Hadramaout", "Dhamar", "Shabwah", "Omran", "Al Jawf", "Al Bayda", "Aden", "Mamoudzou", "Dzaoudzi", "Koungou", "Gauteng", "Free State", "Mpumalanga", "Eastern Cape", "KwaZulu-Natal", "Northern Cape", "Limpopo", "Western Cape", "Luapula Province", "Muchinga", "North-Western", "Copperbelt", "Lusaka Province", "Masvingo Province", "Matabeleland North", "Midlands Province", "Mashonaland East Province", "Manicaland", "Mashonaland West", "Mashonaland Central", "Harare", "Matabeleland South Province", "Bulawayo"], countries: ["Andorra", "United Arab Emirates", "Afghanistan", "Antigua and Barbuda", "Anguilla", "Albania", "Armenia", "Angola", "Argentina", "American Samoa", "Austria", "Australia", "Aruba", "Aland Islands", "Azerbaijan", "Bosnia and Herzegovina", "Barbados", "Bangladesh", "Belgium", "Burkina Faso", "Bulgaria", "Bahrain", "Burundi", "Benin", "Saint Barthelemy", "Bermuda", "Brunei", "Bolivia", "Bonaire, Saint Eustatius and Saba ", "Brazil", "Bahamas", "Bhutan", "Botswana", "Belarus", "Belize", "Canada", "Cocos Islands", "Democratic Republic of the Congo", "Central African Republic", "Republic of the Congo", "Switzerland", "Ivory Coast", "Cook Islands", "Chile", "Cameroon", "China", "Colombia", "Costa Rica", "Cuba", "Cabo Verde", "Curacao", "Christmas Island", "Cyprus", "Czechia", "Germany", "Djibouti", "Denmark", "Dominica", "Dominican Republic", "Algeria", "Ecuador", "Estonia", "Egypt", "Western Sahara", "Eritrea", "Spain", "Ethiopia", "Finland", "Fiji", "Falkland Islands", "Micronesia", "Faroe Islands", "France", "Gabon", "United Kingdom", "Grenada", "Georgia", "French Guiana", "Guernsey", "Ghana", "Gibraltar", "Greenland", "Gambia", "Guinea", "Guadeloupe", "Equatorial Guinea", "Greece", "South Georgia and the South Sandwich Islands", "Guatemala", "Guam", "Guinea-Bissau", "Guyana", "Hong Kong", "Honduras", "Croatia", "Haiti", "Hungary", "Indonesia", "Ireland", "Israel", "Isle of Man", "India", "Iraq", "Iran", "Iceland", "Italy", "Jersey", "Jamaica", "Jordan", "Japan", "Kenya", "Kyrgyzstan", "Cambodia", "Kiribati", "Comoros", "Saint Kitts and Nevis", "North Korea", "South Korea", "Kuwait", "Cayman Islands", "Kazakhstan", "Laos", "Lebanon", "Saint Lucia", "Liechtenstein", "Sri Lanka", "Liberia", "Lesotho", "Lithuania", "Luxembourg", "Latvia", "Libya", "Morocco", "Monaco", "Moldova", "Montenegro", "Saint Martin", "Madagascar", "Marshall Islands", "North Macedonia", "Mali", "Myanmar", "Mongolia", "Macao", "Northern Mariana Islands", "Martinique", "Mauritania", "Montserrat", "Malta", "Mauritius", "Maldives", "Malawi", "Mexico", "Malaysia", "Mozambique", "Namibia", "New Caledonia", "Niger", "Norfolk Island", "Nigeria", "Nicaragua", "The Netherlands", "Norway", "Nepal", "Nauru", "Niue", "New Zealand", "Oman", "Panama", "Peru", "French Polynesia", "Papua New Guinea", "Philippines", "Pakistan", "Poland", "Saint Pierre and Miquelon", "Pitcairn", "Puerto Rico", "Palestinian Territory", "Portugal", "Palau", "Paraguay", "Qatar", "Reunion", "Romania", "Serbia", "Russia", "Rwanda", "Saudi Arabia", "Solomon Islands", "Seychelles", "Sudan", "Sweden", "Singapore", "Saint Helena", "Slovenia", "Svalbard and Jan Mayen", "Slovakia", "Sierra Leone", "San Marino", "Senegal", "Somalia", "Suriname", "South Sudan", "Sao Tome and Principe", "El Salvador", "Sint Maarten", "Syria", "Eswatini", "Turks and Caicos Islands", "Chad", "French Southern Territories", "Togo", "Thailand", "Tajikistan", "Timor Leste", "Turkmenistan", "Tunisia", "Tonga", "Turkey", "Trinidad and Tobago", "Tuvalu", "Taiwan", "Tanzania", "Ukraine", "Uganda", "United States", "Uruguay", "Uzbekistan", "Vatican", "Saint Vincent and the Grenadines", "Venezuela", "British Virgin Islands", "U.S. Virgin Islands", "Vietnam", "Vanuatu", "Wallis and Futuna", "Samoa", "Kosovo", "Yemen", "Mayotte", "South Africa", "Zambia", "Zimbabwe"], shards: ["0", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"], also: { a: [["\u2018Ajl\u016Bn", "'Ajlun", 1138, 108, 3233, 3575, 164, 125557], ["'\u0100kra", "'Akra", 1052, 102, 3673, 4388, 158, 105370], ["\u2018Amr\u0101n", "'Amran", 2683, 239, 1566, 4394, 351, 90792], ["\u2018Alemaya", "'Alemaya", 738, 66, 939, 4201, 117, 63700], ["'\u0100rdamat\u0101", "'Ardamata", 2099, 191, 1348, 2249, 290, 55637], ["'Al\u012B \u0100b\u0101d-e Kat\u016Bl", "'Ali Abad-e Katul", 1074, 103, 3691, 5487, 159, 52838], ["\u2018Ayn al \u2018Arab", "'Ayn al 'Arab", 2204, 207, 3689, 3835, 306, 5e4], ["\u2018Afr\u012Bn", "`Afrin", 2204, 207, 3651, 3687, 306, 48693], ["\u2019A\xEFn Azel", "'Ain Azel", 635, 59, 3582, 551, 108, 37970], ["\u2019A\xEFn el Turk", "'Ain el Turk", 631, 59, 3574, -77, 108, 36326], ["\u2019A\xEFn Deheb", "'Ain Deheb", 620, 59, 3484, 155, 108, 36146], ["\u2018Afak", "'Afak", 1065, 102, 3206, 4525, 158, 35536], ["\u2019A\xEFn Merane", "'Ain Merane", 621, 59, 3616, 97, 108, 34413], ["\u2019A\xEFn el Melh", "'Ain el Melh", 634, 59, 3484, 416, 108, 32880], ["\u2019A\xEFn el Bell", "'Ain el Bell", 646, 59, 3434, 322, 108, 31916], ["\u2019A\xEFn Benian", "'Ain Benian", 609, 59, 3680, 292, 108, 31102], ["\u2019A\xEFn Abid", "'Ain Abid", 607, 59, 3623, 694, 108, 29486], ["\u2019A\xEFn el Hammam", "'Ain el Hammam", 613, 59, 3656, 431, 108, 28029], ["\u2018Anah", "'Anah", 1056, 102, 3437, 4198, 158, 27e3], ["\u2018\u0100m\u016Bd\u0101", "'Amuda", 2211, 207, 3710, 4093, 306, 26821], ["\u2018A\u0163\u0101r\u016Bt", "'Atarut", 1897, 178, 3187, 3522, 254, 25595], ["\u2018Ara-\u2018Ar\u2018ara", "`Ara-`Ar`ara", 1008, 99, 3250, 3509, 155, 24904], ["\u2018Alem T\u2019\u0113na", "'Alem T'ena", 738, 66, 830, 3895, 117, 23700], ["\u2018Alem Ketema", "'Alem Ketema", 742, 66, 1008, 3903, 117, 23500], ["\u2018\u0100l\u012B Shahr", "'Ali Shahr", 1079, 103, 2893, 5107, 159, 23178], ["\u2018Aqrah", "'Aqrah", 1052, 102, 3676, 4389, 158, 23e3], ["\u2018Anat al Qad\u012Bmah", "'Anat al Qadimah", 1056, 102, 3447, 4194, 158, 19719], ["\u2018Al\u012B al Gharb\u012B", "'Ali al Gharbi", 1058, 102, 3246, 4669, 158, 19711], ["\u2018Anbar\u0101b\u0101d", "'Anbarabad", 1083, 103, 2848, 5785, 159, 18185], ["\u2018Abas\u0101n al Kab\u012Brah", "'Abasan al Kabirah", 1896, 178, 3132, 3434, 253, 18163], ["\u2018Ar\u2018ara BaNegev", "'Ar'ara BaNegev", 894, 99, 3116, 3502, 155, 17640], ["\u2018Anjarah", "`Anjarah", 1138, 108, 3231, 3575, 164, 17634], ["\u2019A\xEFn el Berd", "'Ain el Berd", 632, 59, 3536, -51, 108, 16548]], d: [["\u0110\u1ED1ng \u0110a", "GJong GJa", 2627, 234, 2101, 10583, 312, 371606], ["\u0110i\u1EC7n B\xE0n", "GJien Ban", 2649, 234, 1589, 10825, 153, 226564], ["Donostia / San Sebasti\xE1n", "San Sebastian", 727, 65, 4331, -197, 114, 185357], ["\u0110\u1ED3ng Xo\xE0i", "GJong Xoai", 2629, 234, 1153, 10688, 153, 168e3], ["\u0110\u01B0c Tr\u1ECDng", "GJuc Trong", 2656, 234, 1174, 10837, 153, 161232], ["\u0110\u1EE9c Ph\u1ED5", "GJuc Pho", 2653, 234, 1481, 10896, 153, 155743], ["\u0110\u1ED3ng H\u1EDBi", "GJong Hoi", 2652, 234, 1747, 10662, 312, 133672], ["\u0110\u1ED1 S\u01A1n", "GJo Son", 2658, 234, 2071, 10679, 153, 51417], ["\u0110an Ph\u01B0\u1EE3ng", "GJan Phuong", 2627, 234, 2109, 10566, 312, 39917], ["\u0110\xF4ng Ph\xFA", "GJong Phu", 2649, 234, 1567, 10822, 153, 34122], ["\u0110akovo", "GJakovo", 930, 94, 4531, 1841, 146, 16875], ["\u0110\u1EA1i L\u1ED9c", "GJai Loc", 2649, 234, 1588, 10812, 153, 16215], ["\u0110inh V\u0103n", "GJinh Van", 2656, 234, 1179, 10824, 153, 16036]], e: [["\u02BBEwa Gentry-West Loch", "'Ewa Gentry-West Loch", 2569, 226, 2135, -15803, 338, 35828], ["\u2018Ewa Gentry", "'Ewa Gentry", 2569, 226, 2134, -15803, 338, 22690], ["\u02BBEwa Beach-Iroquois Point", "'Ewa Beach-Iroquois Point", 2569, 226, 2132, -15799, 338, 21088], ["\u2018Eyn-e Do", "'Eyn-e Do", 1078, 103, 3135, 4860, 159, 17653], ["\u2018Ewa Beach", "'Ewa Beach", 2569, 226, 2132, -15801, 338, 16415]], h: [["Hondarribia", "Fuenterrabia", 727, 65, 4337, -180, 114, 16458]], i: [["\u2018Ibr\u012B", "'Ibri", 1789, 167, 2323, 5652, 241, 163473], ["\u2018Izbat \u2018Al\u012B as Sayyid", "'Izbat 'Ali as Sayyid", 698, 62, 3116, 3015, 111, 53079], ["\u2018Irb\u012Bn", "`Irbin", 2201, 207, 3354, 3637, 306, 42474], ["\u2018Irqah", "'Irqah", 2075, 188, 2468, 4661, 287, 42179], ["\u2018Izbat al Burj", "`Izbat al Burj", 689, 62, 3151, 3184, 111, 37953], ["\u2018Izr\u0101", "`Izra", 1135, 108, 3116, 3569, 164, 22756], ["\u2018Inak", "'Inak", 1357, 188, 2652, 5003, 287, 20038]], s: [["'s-Hertogenbosch", 0, 1741, 161, 5170, 530, 235, 160783], ["'s-Gravenzande", 0, 1734, 161, 5200, 417, 235, 19190]], u: [["\u2018Uy\u016Bn al Jiw\u0101\u2019", "'Uyun al Jiwa'", 2074, 188, 2650, 4363, 287, 15619]] } };
@@ -37468,7 +41895,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const sign2 = match[1] === "-" ? -1 : 1;
       return sign2 * (Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0) + Number(match[4] ?? 0) / 60);
     }
-    var DAY17 = 864e5;
+    var DAY18 = 864e5;
     var PROBE = 36 * 36e5;
     var MAX_DEPARTURE_SECONDS = 180 * 60;
     var FIXED_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
@@ -37497,8 +41924,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       if (first2) {
         return second ? { chosen: first2, kind: "fold", at: firstChange(clockAt, first2.utcMs, second.utcMs) } : { chosen: first2, kind: null, at: null };
       }
-      let lo = wallMs - PROBE - DAY17;
-      let hi = wallMs + PROBE + DAY17;
+      let lo = wallMs - PROBE - DAY18;
+      let hi = wallMs + PROBE + DAY18;
       while (hi - lo > 1) {
         const mid = Math.floor((lo + hi) / 2);
         if (mid + clockAt(mid) * 1e3 > wallMs) hi = mid;
@@ -37532,7 +41959,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
         lineEnds: era.slice(0, -1).map(([until]) => until)
       };
     }
-    function readOptions(options) {
+    function readOptions2(options) {
       if (options === void 0) return { calendar: "gregorian" };
       if (!options || typeof options !== "object" || Array.isArray(options)) {
         throw new RangeError("options must be an object.");
@@ -37553,7 +41980,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
     var pad2 = (value, width = 2) => String(value).padStart(width, "0");
     function resolveLocalToUtc(date3, time, timeZone, options) {
       offsetFormatter(timeZone);
-      const { longitude: longitude2, calendar, country } = readOptions(options);
+      const { longitude: longitude2, calendar, country } = readOptions2(options);
       const written = parseCalendarDate2(date3, calendar);
       const hhmm = typeof time === "string" ? /^([01]\d|2[0-3]):([0-5]\d)$/u.exec(time) : null;
       if (!written || !hhmm) {
@@ -37566,7 +41993,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       wall.setUTCFullYear(civil.year, civil.month - 1, civil.day);
       const wallMs = wall.setUTCHours(Number(hhmm[1]), Number(hhmm[2]));
       const loaded = FIXED_ZONE.test(timeZone) ? null : loadedHistory(timeZone);
-      if (loaded === void 0 && wallMs < DAY17) throw new ZoneHistoryNotLoadedError();
+      if (loaded === void 0 && wallMs < DAY18) throw new ZoneHistoryNotLoadedError();
       const history = loaded ?? null;
       const zoneAt2 = zoneClock(timeZone, history);
       const place2 = longitude2 !== void 0 && history ? birthplaceClock(history, wallMs, longitude2, zoneAt2) : null;
@@ -37714,8 +42141,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
 }
 
 // src/lib/occasions/milestones.ts
-var DAY13 = 864e5;
-var YEAR2 = 365.25 * DAY13;
+var DAY14 = 864e5;
+var YEAR2 = 365.25 * DAY14;
 var SYNODIC_MONTH = 29.530588;
 var MERCURY_STEP_DAYS = 4;
 function ageAt(birth, at) {
@@ -37743,7 +42170,7 @@ function fullMoonsBetween(from, to) {
   if (!(to.getTime() > from.getTime())) return 0;
   const start = moonPhase(from).angle;
   const end = moonPhase(to).angle;
-  const days = (to.getTime() - from.getTime()) / DAY13;
+  const days = (to.getTime() - from.getTime()) / DAY14;
   const remainder = ((end - start) % 360 + 360) % 360;
   const turns = Math.round((days * 360 / SYNODIC_MONTH - remainder) / 360);
   const gained = turns * 360 + remainder;
@@ -37753,7 +42180,7 @@ function fullMoonsBetween(from, to) {
 function mercuryRetrogradesBetween(from, to) {
   let count = 0;
   let previous = longitudeSpeed2("Mercury", from);
-  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY13; ; t += MERCURY_STEP_DAYS * DAY13) {
+  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY14; ; t += MERCURY_STEP_DAYS * DAY14) {
     const at = Math.min(t, to.getTime());
     const speed = longitudeSpeed2("Mercury", new Date(at));
     if (previous >= 0 && speed < 0) count += 1;
@@ -37811,7 +42238,7 @@ var MILESTONE_WORDS = {
 };
 
 // src/lib/occasions/milestone-card.ts
-var DAY14 = 864e5;
+var DAY15 = 864e5;
 async function milestoneCard(input, asOf, clock2) {
   if (!validOccasionDate(input.birthDate)) throw new RangeError("The birth date must be a real date from 1800 to 2199.");
   if (input.time !== null && !/^([01]\d|2[0-3]):[0-5]\d$/u.test(input.time)) throw new RangeError("The time must be HH:MM.");
@@ -37823,7 +42250,7 @@ async function milestoneCard(input, asOf, clock2) {
     birth = (input.birthplace ? resolveLocalToUtc(input.birthDate, input.time, input.timeZone, { longitude: input.birthplace.lon }) : resolveLocalToUtc(input.birthDate, input.time, input.timeZone)).utc;
   } else {
     const [year, month, day] = input.birthDate.split("-").map(Number);
-    birth = new Date(Date.UTC(year, month - 1, day) + DAY14 / 2);
+    birth = new Date(Date.UTC(year, month - 1, day) + DAY15 / 2);
   }
   if (birth.getTime() > asOf.getTime()) throw new RangeError("The birth date is in the future.");
   return { ...lifeMilestones2(birth, asOf), timeKnown: input.time !== null };
@@ -37833,7 +42260,7 @@ async function milestoneCard(input, asOf, clock2) {
 var WEEK_DAYS = 7;
 var WEEK_ORB = 3;
 var WEEK_LIMIT = 5;
-var DAY15 = 864e5;
+var DAY16 = 864e5;
 var SAMPLE_MS = 6 * 36e5;
 var UNTIMED_LEFT_OUT = ["Moon", "ASC", "MC"];
 function remember(ephemeris) {
@@ -37864,7 +42291,7 @@ function scanYourWeek(request, ephemeris, limit = WEEK_LIMIT) {
   const fromMs = Date.parse(request.fromUtc);
   if (!Number.isFinite(fromMs)) throw new RangeError("The week needs a valid start.");
   if (typeof request.timeKnown !== "boolean") throw new RangeError("Confirm whether the birth time is known.");
-  const toMs = fromMs + WEEK_DAYS * DAY15;
+  const toMs = fromMs + WEEK_DAYS * DAY16;
   const from = new Date(fromMs), to = new Date(toMs);
   const natal = request.timeKnown ? request.natal : { bodies: request.natal.bodies, angles: null };
   const points = natalTransitPoints(natal).filter((point) => request.timeKnown || !UNTIMED_LEFT_OUT.includes(point.name));
@@ -37943,9 +42370,9 @@ function weekDay(iso3, timeZone) {
 }
 function weekDates(item, timeZone) {
   const start = weekDay(item.startUtc, timeZone), end = weekDay(item.endUtc, timeZone);
-  const span = item.startClipped && item.endClipped ? "All week" : item.startClipped ? `Until ${end}` : item.endClipped ? `From ${start}` : start === end ? start : `${start} to ${end}`;
+  const span2 = item.startClipped && item.endClipped ? "All week" : item.startClipped ? `Until ${end}` : item.endClipped ? `From ${start}` : start === end ? start : `${start} to ${end}`;
   const exact = [...new Set(item.exactUtc.map((at) => weekDay(at, timeZone)))];
-  return exact.length ? `${span} \xB7 exact on ${exact.join(" and ")}` : span;
+  return exact.length ? `${span2} \xB7 exact on ${exact.join(" and ")}` : span2;
 }
 
 // src/ai-tools/features/personal-week.ts
@@ -38010,15 +42437,22 @@ function namedRefusal(message, pointer) {
   if (/^(?:Must|Each must) /.test(message)) return `${field} ${message.charAt(0).toLowerCase()}${message.slice(1)}`;
   return `${field}: ${message}`;
 }
+function skyEventsOn2(dependencies) {
+  return !!(dependencies.occasions && dependencies.coverage && dependencies.skyEvents);
+}
 function offeredTools(dependencies) {
   const released = AI_TOOL_NAMES.filter((tool) => tool !== "get_horoscope" || !!dependencies.horoscopeWindow);
   if (!dependencies.occasions) return released;
   if (!dependencies.coverage) return [...released, ...OCCASION_TOOL_NAMES];
   const coverage = COVERAGE_TOOL_NAMES.filter((tool) => tool !== "get_horoscope_period" || !!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram);
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES];
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...skyEventsOn2(dependencies) ? SKY_EVENTS_TOOL_NAMES : []];
 }
 var isCoverageTool = (tool) => COVERAGE_TOOL_NAMES.includes(tool);
 var isPlaceTool = (tool) => PLACE_TOOL_NAMES.includes(tool);
+var isSkyEventsTool = (tool) => SKY_EVENTS_TOOL_NAMES.includes(tool);
+var SKY_EVENTS_TOOL_SUMMARY = {
+  search_sky_events: "eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods, months or years ahead"
+};
 var COVERAGE_TOOL_SUMMARY = {
   get_natal_chart: "a birth chart readout",
   get_horoscope_period: "monthly, yearly and weekly horoscopes from the published readings",
@@ -38040,12 +42474,12 @@ var BIRTH_YEARS = {
   get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`
 };
-function coverageInputRefusal(tool, input) {
-  const parsed = INPUT_SCHEMAS[tool].safeParse(input ?? {});
+function coverageInputRefusal(tool, input, schema = INPUT_SCHEMAS[tool]) {
+  const parsed = schema.safeParse(input ?? {});
   if (parsed.success) return null;
   const record2 = input && typeof input === "object" ? input : {};
   const sentences = parsed.error.issues.map((issue) => {
-    const field = issue.path.map(String).join(".");
+    const field = issue.path.map((part) => typeof part === "number" ? `[${part}]` : String(part)).join(".").replace(/\.\[/gu, "[");
     if (issue.code === "unrecognized_keys") return "Leave out fields this tool does not take.";
     if (issue.code === "custom" || !field) return issue.message;
     if (issue.path.length === 1 && record2[field] === void 0) return `${field} is required.`;
@@ -38122,17 +42556,18 @@ function normaliseCoverageCall(message) {
 }
 async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, context = {}) {
   input = normaliseCoverageInput(tool, input);
+  const skyEvents2 = skyEventsOn2(dependencies);
   let ownedLocalTime;
   const localTime2 = () => dependencies.localTime ?? (ownedLocalTime ??= createLocalTimeModule());
   const resolveZone = (name) => localTime2().canonicalZoneName(name);
   try {
     if (OCCASION_TOOL_NAMES.includes(tool) && !dependencies.occasions) return failure(tool, "unavailable", "This tool is not offered here.");
-    if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
-    if (isCoverageTool(tool) || isPlaceTool(tool)) {
-      const refusal = coverageInputRefusal(tool, input);
+    if ((COVERAGE_TOOL_NAMES.includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, "unavailable", "This tool is not offered here.");
+    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool)) {
+      const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents2));
       if (refusal) return refusal;
     }
-    const parsed = INPUT_SCHEMAS[tool].safeParse(input);
+    const parsed = inputSchemaFor(tool, skyEvents2).safeParse(input);
     if (!parsed.success) return failure(tool, "invalid-request", "Zodiacs could not use those details. Check the sign, date or time zone and try again.");
     let data;
     let links = [methodLink];
@@ -38145,8 +42580,9 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
       case "get_capabilities": {
         const statements3 = engineStatements();
         const offered = offeredTools(dependencies);
-        const eclipseLine = dependencies.coverage ? "Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations. No birth-time rectification, reminders or account access." : "Eclipses are listed by get_sky_calendar. get_upcoming_events lists ingresses, stations and lunations, not eclipses or aspects. No birth-time rectification, reminders or account access.";
-        data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS2, conventions: statements3.conventions, coverage: { ...statements3.coverage, tools: offered.join(", "), eclipses: dependencies.coverage ? "get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : "get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.", aspects: dependencies.coverage ? "get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects." : "get_upcoming_events does not search aspects." }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY2, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", eclipseLine, dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
+        const eclipseLine = skyEvents2 ? "Eclipses are listed by search_sky_events, get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations over the next days or weeks; search_sky_events finds eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods months or years ahead. No birth-time rectification, reminders or account access." : dependencies.coverage ? "Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations. No birth-time rectification, reminders or account access." : "Eclipses are listed by get_sky_calendar. get_upcoming_events lists ingresses, stations and lunations, not eclipses or aspects. No birth-time rectification, reminders or account access.";
+        const skyEventsCoverage = skyEvents2 ? { skyEvents: "search_sky_events gives eclipses from the eclipse table (2026 to 2030), sign changes of the Sun through Pluto from the ingress table, stations and new and full Moons from the engine for windows of up to two years, and void-of-course Moon periods under the rule of the void-of-course calendar (the last major aspect to the Sun or a planet through Pluto), with its times, up to 31 days at a time." } : {};
+        data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS2, conventions: statements3.conventions, coverage: { ...statements3.coverage, tools: offered.join(", "), eclipses: skyEvents2 ? "search_sky_events lists the eclipses from 2026 to 2030; get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : dependencies.coverage ? "get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : "get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.", aspects: dependencies.coverage ? "get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects." : "get_upcoming_events does not search aspects.", ...skyEventsCoverage }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY2, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", eclipseLine, dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
         if (dependencies.occasions) {
           const capabilities = data;
           capabilities.privacy += " The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday, a baby's arrival or a coming of age gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details.";
@@ -38157,18 +42593,22 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         if (dependencies.occasions && dependencies.coverage) {
           const capabilities = data;
           capabilities.privacy += " The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.";
+          if (skyEvents2) capabilities.privacy += " The sky events search takes no personal details.";
           const added = [
             ...offeredTools(dependencies).filter(isCoverageTool).map((name) => `${name} (${COVERAGE_TOOL_SUMMARY[name]})`),
             ...offeredTools(dependencies).filter(isPlaceTool).map((name) => `${name} (a town or city name, with coordinates and a time zone for the chart tools)`)
           ];
           const listed = data.tools.length;
-          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(", ")}${added.length > 1 ? " and " : ""}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice. With them Zodiacs offers ${listed + added.length} tools: the ${listed} in the tools field and these ${added.length}.`);
+          const skyTools = offeredTools(dependencies).filter(isSkyEventsTool).map((name) => `${name} (${SKY_EVENTS_TOOL_SUMMARY[name]})`);
+          const skyLine2 = skyTools.length ? ` ${skyTools.join(", ")} ${skyTools.length > 1 ? "are" : "is"} also listed there: calculated dates with no reading and no confidence label.` : "";
+          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(", ")}${added.length > 1 ? " and " : ""}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice.${skyLine2} With them Zodiacs offers ${listed + added.length + skyTools.length} tools: the ${listed} in the tools field and these ${added.length + skyTools.length}.`);
           capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes("find_birthplace") ? " a town or city named instead of coordinates, find_birthplace;" : ""} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
+          if (skyEvents2) capabilities.limitations.push("Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet's next retrograde, when a planet changes sign, every full Moon next year or this week's void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and takes houseSystem placidus for Placidus houses.");
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data;
           capabilities.privacy += " Only the save tool needs an account: when the person signs in to their own Zodiacs account and asks to keep a chart, comparison, occasion card or personal week, Zodiacs works it out again from the same details and saves that result, including the birth dates and names in it, to their account until they delete it. It saves no conversation text.";
-          capabilities.limitations[2] = dependencies.coverage ? "Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects are listed by get_personal_transits. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one." : "Eclipses are listed by get_sky_calendar. get_upcoming_events does not search aspects. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one.";
+          capabilities.limitations[2] = skyEvents2 ? "Eclipses are listed by search_sky_events, get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects are listed by get_personal_transits. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one." : dependencies.coverage ? "Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects are listed by get_personal_transits. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one." : "Eclipses are listed by get_sky_calendar. get_upcoming_events does not search aspects. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one.";
         }
         if (dependencies.skyWatch) {
           const capabilities = data;
@@ -38202,7 +42642,14 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         }
         const calculation = computeEvents(parsedRequest);
         data = { from: calculation.result.from, to: calculation.result.to, zone: zone7, events: calculation.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone7) })), calculation, completeness: calculation.receipt.search.completeness };
-        links = [{ title: "Subscribe to these in your calendar (get_sky_calendar)", url: `${ORIGIN}/sky-calendar/` }, { title: "Explore the lunar calendar", url: `${ORIGIN}/full-moon-calendar/` }, { title: "Explore retrogrades", url: `${ORIGIN}/retrogrades/` }, methodLink];
+        links = [
+          { title: "Subscribe to these in your calendar (get_sky_calendar)", url: `${ORIGIN}/sky-calendar/` },
+          // With the sky events switch, the tool for one kind of event further ahead.
+          ...skyEvents2 ? [{ title: "Eclipses, stations, sign changes and Moons months or years ahead (search_sky_events)", url: `${ORIGIN}/events/` }] : [],
+          { title: "Explore the lunar calendar", url: `${ORIGIN}/full-moon-calendar/` },
+          { title: "Explore retrogrades", url: `${ORIGIN}/retrogrades/` },
+          methodLink
+        ];
         break;
       }
       case "check_sky_fact": {
@@ -38414,13 +42861,14 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
       }
       case "get_sky_calendar": {
         ({ data, links } = getSkyCalendar(INPUT_SCHEMAS.get_sky_calendar.parse(input), dependencies.now?.() ?? /* @__PURE__ */ new Date()));
+        if (skyEvents2) links = [...links, { title: "A list of eclipses, stations, sign changes or Moons between two dates (search_sky_events)", url: `${ORIGIN}/events/` }];
         break;
       }
       case "get_natal_chart": {
-        const args = INPUT_SCHEMAS.get_natal_chart.parse(input);
+        const args = (skyEvents2 ? natalChartInputWithHouses : INPUT_SCHEMAS.get_natal_chart).parse(input);
         const zone7 = args.zone ? await zoneAt(args.zone, "/zone", resolveZone) : void 0;
         const today = (dependencies.now?.() ?? /* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-        const result2 = await feature(() => getNatalChart({ ...args, ...zone7 ? { zone: zone7 } : {} }, localTime2(), ORIGIN, today));
+        const result2 = await feature(() => getNatalChart({ ...args, ...zone7 ? { zone: zone7 } : {} }, localTime2(), ORIGIN, today, { skyEvents: skyEvents2 }));
         if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
         ({ data, links } = result2);
         break;
@@ -38493,7 +42941,37 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         break;
       }
       case "explain_astrology": {
-        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN));
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents: skyEvents2 }));
+        break;
+      }
+      case "search_sky_events": {
+        const args = INPUT_SCHEMAS.search_sky_events.parse(input);
+        let zone7 = "UTC";
+        let zoneSource = "default";
+        if (args.zone) {
+          try {
+            zone7 = await zoneAt(args.zone, "/zone", resolveZone);
+            zoneSource = "request";
+          } catch {
+            return failure(tool, "invalid-timezone", "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok.");
+          }
+        } else if (context.hostZone) {
+          try {
+            zone7 = await zoneAt(context.hostZone, "/zone", resolveZone);
+            zoneSource = "assistant";
+          } catch {
+          }
+        }
+        const result2 = await feature(() => searchSkyEvents(args, localTime2(), {
+          zone: zone7,
+          zoneSource,
+          today: dateInZone(dependencies.now?.() ?? /* @__PURE__ */ new Date(), zone7),
+          origin: ORIGIN,
+          ...dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}
+        }));
+        if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
+        if ("refused" in result2) return failure(tool, result2.refused, "Zodiacs is busy. Try again in a minute.", result2.refused === "rate-limited" ? 60 : 300);
+        ({ data, links } = result2);
         break;
       }
       case "find_birthplace": {
@@ -38510,7 +42988,9 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
       links = links.map((link5) => ({ ...link5, url: refUrl(link5.url, context.ref) }));
     }
     const result = { schema: AI_RESULT_SCHEMA, ok: true, tool, data, links };
-    return stripConsumerDashes(OUTPUT_SCHEMAS[tool].parse(result));
+    const schema = OUTPUT_SCHEMAS[tool];
+    const wider = skyEvents2 ? SKY_EVENTS_OUTPUT_SCHEMAS[tool] : void 0;
+    return stripConsumerDashes(wider ? wider.parse(result) : schema.parse(result));
   } catch (error) {
     if (error instanceof ComputeApiError) return failure(tool, error.detail.code, namedRefusal(error.detail.message, error.detail.pointer), error.detail.retryAfterSeconds);
     return failure(tool, "calculation-failed", "Zodiacs could not complete this. Nothing partial is returned; try again.");
@@ -38667,7 +43147,7 @@ var WIDGET_HTML = `<!doctype html>
 
 // src/ai-tools/watch/service.ts
 import { ProtocolError } from "@modelcontextprotocol/server";
-import { z as z14 } from "zod";
+import { z as z15 } from "zod";
 
 // src/ai-tools/watch/callback.ts
 import { BlockList, isIP } from "node:net";
@@ -38678,11 +43158,11 @@ global6.addSubnet("2000::", 3, "ipv6");
 for (const [ip, prefix] of [["2001::", 23], ["2001:db8::", 32], ["2002::", 16], ["3fff::", 20]]) blocked.addSubnet(ip, prefix, "ipv6");
 
 // src/ai-tools/watch/contracts.ts
-import { z as z13 } from "zod";
+import { z as z14 } from "zod";
 var WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
 var BODIES4 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
-var zone5 = z13.string().max(80).default("UTC").refine((value) => {
+var zone5 = z14.string().max(80).default("UTC").refine((value) => {
   try {
     new Intl.DateTimeFormat("en", { timeZone: value });
     return true;
@@ -38690,18 +43170,18 @@ var zone5 = z13.string().max(80).default("UTC").refine((value) => {
     return false;
   }
 });
-var choices = (values) => z13.array(z13.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
+var choices = (values) => z14.array(z14.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
 var FILTERS = {
-  "zodiacs.sky.ingress": z13.object({ bodies: choices(BODIES4), zone: zone5 }).strict(),
-  "zodiacs.sky.station": z13.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone5 }).strict(),
-  "zodiacs.sky.lunation": z13.object({ phases: choices(["new", "full"]), zone: zone5 }).strict()
+  "zodiacs.sky.ingress": z14.object({ bodies: choices(BODIES4), zone: zone5 }).strict(),
+  "zodiacs.sky.station": z14.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone5 }).strict(),
+  "zodiacs.sky.lunation": z14.object({ phases: choices(["new", "full"]), zone: zone5 }).strict()
 };
-var subscriptionParams = z13.object({
-  name: z13.enum(NAMES),
-  arguments: z13.unknown(),
-  delivery: z13.object({ mode: z13.literal("webhook"), url: z13.string().max(2048), secret: z13.string().max(100) }).strict(),
-  cursor: z13.null().optional(),
-  ttlMs: z13.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
+var subscriptionParams = z14.object({
+  name: z14.enum(NAMES),
+  arguments: z14.unknown(),
+  delivery: z14.object({ mode: z14.literal("webhook"), url: z14.string().max(2048), secret: z14.string().max(100) }).strict(),
+  cursor: z14.null().optional(),
+  ttlMs: z14.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
 }).strict();
 var unsubscribeParams = subscriptionParams.omit({ ttlMs: true, cursor: true }).extend({
   delivery: subscriptionParams.shape.delivery.omit({ secret: true })
@@ -38733,14 +43213,14 @@ var WATCH_SCOPES = ["openid"];
 
 // src/ai-tools/watch/service.ts
 function registerSkyWatch(server, watch, owner) {
-  const meta = { _meta: z14.record(z14.string(), z14.unknown()).optional() };
+  const meta = { _meta: z15.record(z15.string(), z15.unknown()).optional() };
   const guarded2 = (run2) => run2().catch((error) => {
     if (error instanceof ProtocolError) throw error;
     throw new ProtocolError(-32602, "The event request could not be completed under its schema or availability requirements.");
   });
   server.server.setRequestHandler(
     "events/list",
-    { params: z14.object({ ...meta, cursor: z14.null().optional() }).strict() },
+    { params: z15.object({ ...meta, cursor: z15.null().optional() }).strict() },
     async () => ({ events: EVENT_DEFINITIONS })
   );
   server.server.setRequestHandler(
@@ -38756,7 +43236,7 @@ function registerSkyWatch(server, watch, owner) {
 }
 
 // src/ai-tools/accounts/contracts.ts
-import { z as z15 } from "zod";
+import { z as z16 } from "zod";
 var SAVE_TOOL_NAME = "save_to_zodiacs";
 var ACCOUNT_SCOPES = ["openid"];
 var SAVE_KINDS = ["chart", "comparison", "occasion", "week"];
@@ -38766,19 +43246,19 @@ var MAX_SAVED_STRING = 600;
 var MAX_LABEL = 80;
 var PROFILE_URL = `${ORIGIN}/profile/`;
 var PLAIN_TEXT3 = /^[^\u0000-\u001f\u007f-\u009f<>{}[\]\\`]+$/u;
-var plainText2 = (max) => z15.string().trim().min(1).max(max).regex(PLAIN_TEXT3, "Use plain text.");
-var date2 = z15.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var zone6 = z15.string().min(1).max(64).regex(ZONE_PATTERN8);
-var weekInput = z15.strictObject({
+var plainText2 = (max) => z16.string().trim().min(1).max(max).regex(PLAIN_TEXT3, "Use plain text.");
+var date2 = z16.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var zone6 = z16.string().min(1).max(64).regex(ZONE_PATTERN9);
+var weekInput = z16.strictObject({
   birthDate: date2.describe("The birth date given to get_horoscope, such as 1990-05-03."),
-  birthTime: z15.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
+  birthTime: z16.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("The birth time, if one was given; needs birthZone."),
   birthZone: zone6.optional().describe("The birthplace's time zone, needed with birthTime."),
   zone: zone6.optional().describe("The person's own time zone, for the dates of the week.")
 }).superRefine((args, context) => {
   if (args.birthTime !== void 0 && !args.birthZone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
 });
-var saveInput = z15.strictObject({
-  kind: z15.enum(SAVE_KINDS).describe("What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the personal week from get_horoscope)."),
+var saveInput = z16.strictObject({
+  kind: z16.enum(SAVE_KINDS).describe("What to save: chart (one person's chart), comparison (get_compatibility), occasion (get_occasion_sky) or week (the personal week from get_horoscope)."),
   label: plainText2(MAX_LABEL).optional().describe('Optional short name for the saved item, such as "Our wedding day". Plain text.'),
   chart: compatibilityPerson.optional().describe('For kind chart: the same details as one side of get_compatibility, or { famous: "<name>" }.'),
   comparison: compatibilityInput.optional().describe("For kind comparison: exactly the arguments given to get_compatibility."),
@@ -38788,27 +43268,27 @@ var saveInput = z15.strictObject({
   const given = ["chart", "comparison", "occasion", "week"].filter((key) => args[key] !== void 0);
   if (given.length !== 1 || given[0] !== args.kind) context.addIssue({ code: "custom", message: "Give exactly the details for the kind being saved." });
 });
-var link4 = z15.object({ title: z15.string(), url: z15.url() });
-var saveData = z15.object({
-  saved: z15.literal(true),
-  id: z15.uuid(),
-  kind: z15.enum(SAVE_KINDS),
-  title: z15.string(),
-  summary: z15.string(),
-  savedAt: z15.string(),
+var link4 = z16.object({ title: z16.string(), url: z16.url() });
+var saveData = z16.object({
+  saved: z16.literal(true),
+  id: z16.uuid(),
+  kind: z16.enum(SAVE_KINDS),
+  title: z16.string(),
+  summary: z16.string(),
+  savedAt: z16.string(),
   /** True when the same item was already in the account; it is not saved twice. */
-  alreadySaved: z15.boolean(),
-  profileUrl: z15.url(),
-  note: z15.string()
+  alreadySaved: z16.boolean(),
+  profileUrl: z16.url(),
+  note: z16.string()
 });
-var SAVE_ERROR_SCHEMA = z15.object({
-  schema: z15.literal(AI_RESULT_SCHEMA),
-  ok: z15.literal(false),
-  tool: z15.literal(SAVE_TOOL_NAME),
-  error: z15.object({ code: z15.string(), message: z15.string(), retryAfterSeconds: z15.number().optional() })
+var SAVE_ERROR_SCHEMA = z16.object({
+  schema: z16.literal(AI_RESULT_SCHEMA),
+  ok: z16.literal(false),
+  tool: z16.literal(SAVE_TOOL_NAME),
+  error: z16.object({ code: z16.string(), message: z16.string(), retryAfterSeconds: z16.number().optional() })
 });
-var SAVE_OUTPUT_SCHEMA = z15.union([
-  z15.object({ schema: z15.literal(AI_RESULT_SCHEMA), ok: z15.literal(true), tool: z15.literal(SAVE_TOOL_NAME), data: saveData, links: z15.array(link4) }),
+var SAVE_OUTPUT_SCHEMA = z16.union([
+  z16.object({ schema: z16.literal(AI_RESULT_SCHEMA), ok: z16.literal(true), tool: z16.literal(SAVE_TOOL_NAME), data: saveData, links: z16.array(link4) }),
   SAVE_ERROR_SCHEMA
 ]);
 var SAVE_TITLE = "Save to my Zodiacs account";
@@ -38824,7 +43304,7 @@ var PAGE_PATHS = {
   week: /^\/horoscopes\//u
 };
 var sitePath = (url) => url.startsWith(`${ORIGIN}/`) ? url.slice(ORIGIN.length) : url;
-var signName5 = (slug) => slug ? SIGNS2.find((sign2) => sign2.slug === slug)?.name ?? null : null;
+var signName6 = (slug) => slug ? SIGNS2.find((sign2) => sign2.slug === slug)?.name ?? null : null;
 var OCCASION_NAMES = {
   wedding: "Wedding",
   anniversary: "Anniversary",
@@ -38840,7 +43320,7 @@ var OCCASION_NAMES = {
   gathering: "A gathering"
 };
 function chartLine(row) {
-  const parts = [signName5(row.sun) && `Sun in ${signName5(row.sun)}`, signName5(row.moon) && `Moon in ${signName5(row.moon)}`, signName5(row.rising) && `${signName5(row.rising)} rising`].filter(Boolean);
+  const parts = [signName6(row.sun) && `Sun in ${signName6(row.sun)}`, signName6(row.moon) && `Moon in ${signName6(row.moon)}`, signName6(row.rising) && `${signName6(row.rising)} rising`].filter(Boolean);
   return parts.length ? parts.join(", ") : "The Sun changed sign that day, so the sign depends on the birth time.";
 }
 function recordProblem(record2) {
@@ -39047,7 +43527,7 @@ var PANELS = {
   get_personal_transits: { uri: READINGS_URI, icon: "readings" },
   explain_astrology: { uri: READINGS_URI, icon: "readings" }
 };
-var CLOCK_DEPENDENT = /* @__PURE__ */ new Set(["get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "find_birthplace"]);
+var CLOCK_DEPENDENT = /* @__PURE__ */ new Set(["get_sky", "get_upcoming_events", "get_horoscope", "get_life_milestones", "get_birthday", "get_sky_calendar", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "find_birthplace", "search_sky_events"]);
 var artResourceDomains = ["https://zodiacs.org"];
 var panelMeta = (preferredDisplayMode, art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, "openai/widgetCSP": { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, "openai/widgetPrefersBorder": true, "openai/ui": { availableDisplayModes: ["inline", "fullscreen"], preferredDisplayMode } });
 var HOST_ZONE_KEYS = ["openai/userLocation"];
@@ -39081,6 +43561,7 @@ function createAiServer(dependencies, watch, account) {
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, "openai/widgetDescription": "An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation." }
   }, () => ({ contents: [{ uri, mimeType: "text/html;profile=mcp-app", text: STUDIO_HTML, _meta: panelMeta("fullscreen") }] }));
   const tools = offeredTools(dependencies);
+  const skyEvents2 = skyEventsOn2(dependencies);
   if (tools.includes("get_horoscope")) for (const { uri, name } of versions("horoscopes", [HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS])) server.registerResource(name, uri, {
     title: "Zodiacs horoscopes",
     mimeType: "text/html;profile=mcp-app",
@@ -39100,10 +43581,10 @@ function createAiServer(dependencies, watch, account) {
     const panel = PANELS[tool];
     server.registerTool(tool, {
       title: TOOL_TITLES[tool],
-      description: TOOL_DESCRIPTIONS[tool],
+      description: descriptionFor(tool, skyEvents2),
       ...panel ? { icons: [{ src: `https://zodiacs.org/assets/ai/${panel.icon}.svg`, mimeType: "image/svg+xml", sizes: ["20x20"] }] } : {},
-      inputSchema: INPUT_SCHEMAS[tool],
-      outputSchema: OUTPUT_SCHEMAS[tool],
+      inputSchema: inputSchemaFor(tool, skyEvents2),
+      outputSchema: outputSchemaFor(tool, skyEvents2),
       annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: !CLOCK_DEPENDENT.has(tool) },
       _meta: { ...!watch ? { securitySchemes: [{ type: "noauth" }] } : watch.service.oauth ? { securitySchemes: [{ type: "oauth2", scopes: WATCH_SCOPES }] } : {}, ...panel ? { ui: { resourceUri: panel.uri, visibility: ["model", "app"] }, "openai/outputTemplate": panel.uri, "openai/ui": { entrypoints: panel.uri === READINGS_URI ? [{ type: "thread" }] : [{ type: "global" }, { type: "thread" }] }, ...tool === "get_horoscope" ? { "openai/widgetAccessible": true } : {} } : {} }
     }, async (args, ctx) => {

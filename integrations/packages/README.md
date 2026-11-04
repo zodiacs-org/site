@@ -32,9 +32,13 @@ and 0.3.20 keep their bytes. Zodiacs 0.6.2 packages the listing text chosen on
 4 November: an About, subtitle, starter prompts, capabilities and review cases
 that lead with the tools needing no personal details. The server reports 0.6.2
 and its tools are unchanged; Developer 0.3.22 is rebuilt from that source with
-unchanged local tools. 0.6.1 and 0.3.21 keep their bytes.
+unchanged local tools. 0.6.1 and 0.3.21 keep their bytes. Developer 0.3.23 is
+rebuilt from the 0.6.2 source that adds `search_sky_events`, the natal chart's
+lunar nodes and Placidus houses behind `ZODIACS_SKY_EVENTS_ENABLED`, which its
+local server does not set; its local tools are unchanged, Zodiacs stays 0.6.2,
+and 0.3.22 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.22**;
+Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.23**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

@@ -2856,9 +2856,10 @@
     {
       "name": "void-of-course",
       "title": "Void of course",
-      "description": "The void-of-course rule an election search used.",
+      "description": "The void-of-course rule an election search, or a search of void-of-course Moon periods, used.",
       "usedIn": [
-        "compute API receipts: electionSearch.voidOfCourse.convention"
+        "compute API receipts: electionSearch.voidOfCourse.convention",
+        "hosted MCP search_sky_events results: conventions"
       ],
       "entries": [
         {
@@ -2881,18 +2882,23 @@
       "title": "Void-of-course bodies",
       "description": "Which bodies count for the void-of-course rule.",
       "usedIn": [
-        "compute API receipts: electionSearch.voidOfCourse.bodies"
+        "compute API receipts: electionSearch.voidOfCourse.bodies",
+        "hosted MCP search_sky_events results: conventions"
       ],
       "entries": [
         {
           "id": "void-of-course-bodies:modern",
           "value": "modern",
           "title": "Modern",
-          "definition": "The bodies whose aspects with the Moon count: the Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto.",
+          "definition": "The bodies whose aspects with the Moon count: the Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto. A void-of-course period then runs from the Moon's last exact conjunction, sextile, square, trine or opposition to one of them in a sign until the Moon enters the next sign. The void-of-course calendar on zodiacs.org and the hosted search_sky_events both follow this rule.",
           "sources": [
             {
               "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
               "url": "https://zodiacs.org/api/v1/openapi.json"
+            },
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.1, src/techniques/void-of-course.ts, VOID_BODIES.modern, the engine's default, which the site's void-of-course calendar and search_sky_events read through src/data/void-of-course.ts",
+              "url": "https://github.com/zodiacs-org/engine/blob/d9fc39cd4a81488b1bbee7e205901cdf2d755ef4/src/techniques/void-of-course.ts"
             }
           ],
           "status": "current"
