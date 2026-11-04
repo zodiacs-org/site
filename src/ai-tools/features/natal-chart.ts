@@ -18,10 +18,9 @@ import { computeChart } from '../../lib/engine/full.js';
 import { houseOf } from '../../lib/engine/houses';
 import type { BodyName, Chart } from '../../lib/engine/types';
 import { bigThree } from '../../lib/interpretations';
-import { chartWeather, natalAspectLine, planetInHouseLine, topAspects } from '../../lib/natal';
+import { chartWeather, natalAspectLine, planetInHouseLine } from '../../lib/natal';
 import { placementContext } from '../../lib/natal-context';
-import { encodeChartLink } from '../../lib/share';
-import { dateHandoffFragment } from '../../lib/chart-handoff';
+import { roundCoordinate } from '../plain-text';
 import { SIGNS, formatLongitude, signIndexForLongitude, type Element, type Modality } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 
@@ -31,7 +30,7 @@ const PLAIN_TEXT = /^[^\u0000-\u001f\u007f<>{}[\]\\`]+$/u;
 const HOUR = 3_600_000;
 export const NATAL_MIN_YEAR = 1800;
 export const NATAL_MAX_YEAR = 2199;
-/** How many aspects the readout lists, closest first with the Sun and Moon weighted, as the chart page reads them. */
+/** How many aspects the readout lists, closest first by orb. */
 export const NATAL_TOP_ASPECTS = 8;
 export const NATAL_NOTE = 'Astrology’s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.';
 const PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
@@ -167,11 +166,13 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
   if (!date || date.year < NATAL_MIN_YEAR || date.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
   const timeKnown = args.time !== undefined;
-  const placed = args.latitude !== undefined && args.longitude !== undefined;
-  const resolved = args.zone ? await resolveLocal(args.birthDate, args.time ?? '12:00', args.zone, args.longitude, clock) : null;
+  const latitude = args.latitude === undefined ? undefined : roundCoordinate(args.latitude);
+  const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
+  const placed = latitude !== undefined && longitude !== undefined;
+  const resolved = args.zone ? await resolveLocal(args.birthDate, args.time ?? '12:00', args.zone, longitude, clock) : null;
   const utc = resolved ? resolved.utc : new Date(`${args.birthDate}T12:00:00Z`);
   const timeNote = resolved && args.time !== undefined ? birthTimeNote(args.birthDate, args.time, args.zone!, resolved) : undefined;
-  const chart = computeChart({ utc, ...(placed ? { latitude: args.latitude, longitude: args.longitude } : {}), houseSystem: 'whole', timeKnown });
+  const chart = computeChart({ utc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed ? chart.angles : null;
 
   // Without a birth time, the signs each body passed through on the birth day: the local day with a zone,
@@ -179,7 +180,7 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
   let possible: (body: Planet) => string[] = (body) => [slugAt(signIndexForLongitude(lonOf(chart, body)))!];
   if (!timeKnown) {
     const [first, last] = args.zone
-      ? [await localInstant(args.birthDate, '00:00', args.zone, args.longitude, clock), await localInstant(args.birthDate, '23:59', args.zone, args.longitude, clock)]
+      ? [await localInstant(args.birthDate, '00:00', args.zone, longitude, clock), await localInstant(args.birthDate, '23:59', args.zone, longitude, clock)]
       : [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR)];
     const ends = [first, last].map((at) => computeChart({ utc: at, houseSystem: 'whole', timeKnown: false }));
     possible = (body) => {
@@ -220,7 +221,10 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
 
   // Untimed, the Moon can move about thirteen degrees through the day, so its aspects are left out.
   const aspectBodies = new Set<string>(timeKnown ? PLANETS : PLANETS.filter((body) => body !== 'Moon'));
-  const aspects = topAspects(chart.aspects.filter((aspect) => aspectBodies.has(aspect.a) && aspectBodies.has(aspect.b)), NATAL_TOP_ASPECTS)
+  const aspects = chart.aspects
+    .filter((aspect) => aspectBodies.has(aspect.a) && aspectBodies.has(aspect.b))
+    .sort((a, b) => a.orb - b.orb || a.a.localeCompare(b.a) || a.b.localeCompare(b.b))
+    .slice(0, NATAL_TOP_ASPECTS)
     .map((aspect) => ({ a: aspect.a as Planet, b: aspect.b as Planet, type: aspect.type, orb: Math.round(aspect.orb * 10) / 10, line: natalAspectLine(aspect.a, aspect.type, aspect.b) }));
 
   const weatherBodies = PLANETS.map((body) => {
@@ -247,9 +251,8 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
   const big = (kind: 'sun' | 'moon' | 'rising', slug: string | null, options: string[], url: string | null) => ({
     sign: slug, possibleSigns: options, meaning: slug ? bigThree(kind, slug) || null : null, pageUrl: url,
   });
-  const chartUrl = placed && args.zone
-    ? `${origin}/birth-chart/#c=${encodeChartLink({ date: args.birthDate, time: args.time ?? null, timeKnown, lat: args.latitude!, lon: args.longitude!, tz: args.zone, ...(args.place ? { place: args.place } : {}), houseSystem: 'whole' })}`
-    : `${origin}/birth-chart/#${dateHandoffFragment(args.birthDate, args.time ?? null)}`;
+  // The page link carries no birth date, time, name or coordinates. The readout stays in the answer.
+  const chartUrl = `${origin}/birth-chart/`;
   const data: NatalChartData = {
     birthDate: args.birthDate,
     time: args.time ?? null,
@@ -272,7 +275,8 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
     note: NATAL_NOTE,
   };
   const links = [
-    { title: 'Open this chart on Zodiacs', url: chartUrl },
+    { title: 'Open the birth chart page on Zodiacs', url: chartUrl },
+    { title: 'Resolve a town or city (find_birthplace)', url: `${origin}/birth-chart/` },
     ...(sun.sign ? [{ title: `${signName(sun.sign)} on Zodiacs`, url: `${origin}/${sun.sign}/` }] : []),
     { title: 'How to read a birth chart', url: `${origin}/learn/how-to-read-a-birth-chart/` },
   ];

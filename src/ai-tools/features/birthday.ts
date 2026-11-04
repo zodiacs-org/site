@@ -406,7 +406,7 @@ export function getSkyCalendar(
       apple: `On an iPhone, iPad or Mac, open ${subscribeUrl}; or in Calendar on a Mac choose File → New Calendar Subscription and paste ${feedUrl}.`,
       outlook: `In Outlook, choose Add calendar → Subscribe from web, and paste ${feedUrl}.`,
     },
-    note: 'A public feed of computed sky events; it takes no personal details. Subscribing keeps it up to date, and times show in your calendar\'s time zone.',
+    note: 'A public feed of computed sky events; it takes no personal details. Subscribing keeps it up to date, and times show in your calendar\'s time zone. For a list between two dates, use get_upcoming_events.',
   });
   return { data, links: [{ title: 'Sky calendar on Zodiacs', url: pageUrl }] };
 }

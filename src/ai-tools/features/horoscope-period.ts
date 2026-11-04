@@ -28,6 +28,7 @@ import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { HOUSE_THEME, solarHouse } from '../../lib/daily';
 import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
 import { HOROSCOPE_DISCLOSURE, HOROSCOPE_FOCUSES, HOROSCOPE_SIGNS, resolveHoroscope, type HoroscopeFocus } from '../horoscope/reading';
+import { readingConfidence, readingConfidenceLabel } from '../reading-confidence';
 import type { HoroscopeWindow } from '../horoscope/window';
 
 const DAY = 86_400_000;
@@ -86,6 +87,9 @@ export const horoscopePeriodData = z.object({
   /** What else is published: monthly readings by month and yearly readings by year. */
   available: z.object({ months: z.array(z.string()), years: z.array(z.number().int()) }),
   pageUrl: z.url(),
+  /** How specific the reading is: a Sun-sign period is sign only. */
+  confidence: z.number().int().min(40).max(95),
+  confidenceLabel: z.string(),
   disclosure: z.string(),
 });
 export type HoroscopePeriodData = z.infer<typeof horoscopePeriodData>;
@@ -171,6 +175,10 @@ export async function getHoroscopePeriod(
       reading = { title: yearly.title, paragraphs: yearly.passages.map((passage) => (passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })), published: null };
       pageUrl = `${origin}/horoscopes/${sign}/${label}/`;
     } else notes.push(`Zodiacs publishes the yearly reading for ${years.join(' and ')}; there is none for ${label}.`);
+  } else if (focus === 'general') {
+    // The general week is get_horoscope's reading. This tool keeps a week for love and career.
+    notes.push('For this week\'s general horoscope, use get_horoscope. This tool keeps a week for love and career.');
+    pageUrl = `${origin}/horoscopes/${sign}/`;
   } else {
     const window = await sources.window();
     const weekly = resolveHoroscope(window, { sign, period: 'week', focus: 'general', date }, zone, 'request', today);
@@ -179,16 +187,14 @@ export async function getHoroscopePeriod(
       reading = { title: `${signName} · ${label}`, paragraphs: weekly.reading.paragraphs, published: null };
       pageUrl = `${origin}/horoscopes/${sign}/weekly/`;
     } else notes.push(`The weekly reading for ${label} isn't kept here; Zodiacs keeps the current week's.`);
-    if (focus !== 'general') {
-      for (const edition of window.editions.filter((candidate) => candidate.anchorDate >= from && candidate.anchorDate <= to)) {
-        const daily = resolveHoroscope(window, { sign, period: 'day', focus, date: edition.anchorDate }, zone, 'request', today);
-        if (daily.status === 'available' && daily.reading) focusReadings.push({ date: edition.anchorDate, title: daily.reading.title, paragraphs: daily.reading.paragraphs });
-      }
-      notes.push(focusReadings.length
-        ? `Zodiacs writes ${focus} readings by the day; these are the ones published for days in this week.`
-        : `Zodiacs writes ${focus} readings by the day, and none is kept for days in this week.`);
-      pageUrl = `${origin}/horoscopes/${sign}/${focus}/`;
+    for (const edition of window.editions.filter((candidate) => candidate.anchorDate >= from && candidate.anchorDate <= to)) {
+      const daily = resolveHoroscope(window, { sign, period: 'day', focus, date: edition.anchorDate }, zone, 'request', today);
+      if (daily.status === 'available' && daily.reading) focusReadings.push({ date: edition.anchorDate, title: daily.reading.title, paragraphs: daily.reading.paragraphs });
     }
+    notes.push(focusReadings.length
+      ? `Zodiacs writes ${focus} readings by the day; these are the ones published for days in this week.`
+      : `Zodiacs writes ${focus} readings by the day, and none is kept for days in this week.`);
+    pageUrl = `${origin}/horoscopes/${sign}/${focus}/`;
   }
 
   // The sky: the compute API's event search for a month or week, the committed tables for a year.
@@ -235,7 +241,9 @@ export async function getHoroscopePeriod(
     message: notes.length ? notes.join(' ') : null,
     available: { months: servedMonths, years },
     pageUrl,
-    disclosure: HOROSCOPE_DISCLOSURE,
+    confidence: readingConfidence('sign'),
+    confidenceLabel: readingConfidenceLabel('sign'),
+    disclosure: `${HOROSCOPE_DISCLOSURE} ${readingConfidenceLabel('sign')}.`,
   };
   return { data, links: [{ title: `${signName} horoscopes on Zodiacs`, url: pageUrl }, { title: 'Transits this month', url: `${origin}/transits/` }] };
 }

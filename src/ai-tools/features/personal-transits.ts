@@ -39,6 +39,9 @@ import type { EclipseRecord } from '../../lib/upcoming';
 import { aspectEvents, assembleYearAhead, eclipseEvents, ingressEvents, saturnSeasonEvents, solarReturnEvents, type IngressWindow, type YearAheadEvent } from '../../lib/year-ahead';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { readingConfidence, readingConfidenceLabel, readingDetail, type ReadingDetail } from '../reading-confidence';
+import { roundCoordinate } from '../plain-text';
+import type { TransitContact } from '../../lib/engine/transit-scan';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -88,9 +91,14 @@ export const personalTransitsData = z.object({
     planet: transitBody,
     aspect: z.enum(['conjunction', 'sextile', 'square', 'trine', 'opposition']),
     point: natalPoint,
-    /** Which exact pass this is, of how many in the window (a retrograde loop makes three). */
+    /** Which exact pass this is, of how many in the whole retrograde loop (a loop makes three). */
     pass: z.number().int().min(1),
     passCount: z.number().int().min(1),
+    /** The first and last exact passes of that loop, as dates on the person's clock. */
+    firstPass: z.string(),
+    lastPass: z.string(),
+    confidence: z.number().int().min(40).max(95),
+    confidenceLabel: z.string(),
     title: z.string(),
     line: z.string(),
   })).max(TRANSITS_LIMIT),
@@ -103,6 +111,8 @@ export const personalTransitsData = z.object({
     kind: z.enum(['solar-return', 'aspect', 'ingress', 'eclipse', 'saturn-return']),
     planet: z.string(),
     line: z.string(),
+    confidence: z.number().int().min(40).max(95),
+    confidenceLabel: z.string(),
     /** With a birth time and place: the natal house a sign change falls in. */
     house: z.object({ number: z.number().int().min(1).max(12), line: z.string() }).nullable(),
   })),
@@ -133,6 +143,63 @@ const YEAR_AHEAD_PERSONAL_POINTS: NatalPoint[] = ['Mercury', 'Venus', 'Mars'];
 /** The slow planets whose contacts to the personal planets (the Moon only with a birth time) year-ahead adds too. */
 const YEAR_AHEAD_OUTER: TransitBody[] = ['Uranus', 'Neptune', 'Pluto'];
 const YEAR_AHEAD_PLANETS: TransitBody[] = ['Jupiter', 'Saturn', ...YEAR_AHEAD_OUTER];
+/**
+ * How far to look outside a window so a retrograde loop's other passes are
+ * counted, and how wide a gap still belongs to one loop. The next Mercury
+ * retrograde is about four months later, so a 60-day gap keeps two loops apart.
+ */
+const LOOP_PAD_DAYS: Record<string, number> = {
+  Mercury: 70, Venus: 100, Mars: 160, Jupiter: 220, Saturn: 220, Uranus: 250, Neptune: 250, Pluto: 250,
+};
+const LOOP_GAP_DAYS: Record<string, number> = {
+  Mercury: 60, Venus: 100, Mars: 180, Jupiter: 250, Saturn: 250, Uranus: 300, Neptune: 300, Pluto: 300,
+};
+const SPAN_START = Date.parse('1800-01-01T00:00:00.000Z');
+const SPAN_END = Date.parse('2200-01-01T00:00:00.000Z');
+
+export function transitLoopPadDays(planets: readonly string[]): number {
+  return planets.reduce((pad, planet) => Math.max(pad, LOOP_PAD_DAYS[planet] ?? 0), 0);
+}
+
+/**
+ * Number each contact inside its retrograde loop, not only inside the dates
+ * that were scanned. Passes of one body, point and aspect stay in one loop
+ * while the gap between them is within that body's loop, and the next loop
+ * starts again at pass 1.
+ */
+export function numberTransitPasses<T extends Pick<TransitContact, 'transitBody' | 'natalPoint' | 'aspect' | 'exactUtc'>>(contacts: readonly T[]): (T & { pass: number; passCount: number; firstPassUtc: string; lastPassUtc: string })[] {
+  const groups = new Map<string, T[]>();
+  for (const contact of contacts) {
+    const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
+    const list = groups.get(key);
+    if (list) list.push(contact);
+    else groups.set(key, [contact]);
+  }
+  const numbered = new Map<T, { pass: number; passCount: number; first: string; last: string }>();
+  for (const list of groups.values()) {
+    const gap = (LOOP_GAP_DAYS[list[0].transitBody] ?? 0) * DAY;
+    const sorted = [...list].sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
+    let cluster: T[] = [];
+    const flush = () => {
+      if (!cluster.length) return;
+      const first = cluster[0].exactUtc;
+      const last = cluster[cluster.length - 1].exactUtc;
+      cluster.forEach((contact, index) => numbered.set(contact, { pass: index + 1, passCount: cluster.length, first, last }));
+      cluster = [];
+    };
+    for (const contact of sorted) {
+      const previous = cluster.at(-1);
+      if (previous && Date.parse(contact.exactUtc) - Date.parse(previous.exactUtc) > gap) flush();
+      cluster.push(contact);
+    }
+    flush();
+  }
+  return contacts.map((contact) => {
+    const info = numbered.get(contact)!;
+    return { ...contact, pass: info.pass, passCount: info.passCount, firstPassUtc: info.first, lastPassUtc: info.last };
+  });
+}
+
 const BEFORE_BIRTH = 'The window starts before the birth date; give a from date on or after the birth date.';
 const YEAR_BEFORE_BIRTH = 'year-ahead starts today, which is before the birth date.';
 const cap = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
@@ -147,15 +214,18 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError('birthDate must be a real date from 1800 to 2199.');
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
+  const latitude = args.latitude === undefined ? undefined : roundCoordinate(args.latitude);
+  const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
   const timeKnown = args.time !== undefined;
-  const placed = args.latitude !== undefined && args.longitude !== undefined;
+  const placed = latitude !== undefined && longitude !== undefined;
+  const detail: ReadingDetail = readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed });
   let birthUtc: Date;
   if (args.zone) {
     await clock.prepareLocalTime(args.birthDate, args.zone);
     const time = args.time ?? '12:00';
-    birthUtc = (args.longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: args.longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+    birthUtc = (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
-  const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude: args.latitude, longitude: args.longitude } : {}), houseSystem: 'whole', timeKnown });
+  const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
   const shownZone = args.currentZone ?? args.zone ?? 'UTC';
   const today = dateIn(now, shownZone);
@@ -182,23 +252,40 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
     const planets: TransitBody[] = days <= TRANSITS_PERSONAL_DAYS ? [...DEFAULT_TRANSIT_BODIES] : [...SLOW_TRANSIT_BODIES];
     if (days > TRANSITS_PERSONAL_DAYS) limits.push(`Windows longer than ${TRANSITS_PERSONAL_DAYS} days list only Jupiter, Saturn, Uranus, Neptune and Pluto; ask for a shorter window for the Sun, Mercury, Venus and Mars.`);
     const natal = { bodies: chart.bodies.filter((row) => (TRANSIT_BODY_ORDER as readonly string[]).includes(row.body)).map(({ body, lon: at }) => ({ body, lon: at })), angles };
-    const found = scanTransitContacts(natal, fromUtc, toUtc, { transitBodies: planets, natalPoints: points })
+    const pad = transitLoopPadDays(planets);
+    const expandedFrom = new Date(Math.max(SPAN_START, fromUtc.getTime() - pad * DAY));
+    const expandedTo = new Date(Math.min(SPAN_END, toUtc.getTime() + pad * DAY));
+    const fromIso = fromUtc.toISOString();
+    const toIso = toUtc.toISOString();
+    const found = numberTransitPasses(scanTransitContacts(natal, expandedFrom, expandedTo, { transitBodies: planets, natalPoints: points }))
+      .filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso)
       .sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
     if (found.length > TRANSITS_LIMIT) limits.push(`${found.length} contacts were found; the first ${TRANSITS_LIMIT} are listed. Ask for a shorter window for the rest.`);
-    const contacts = found.slice(0, TRANSITS_LIMIT).map((contact) => ({
-      date: dayLabel(contact.exactUtc, shownZone),
-      exactUtc: contact.exactUtc,
-      planet: contact.transitBody,
-      aspect: contact.aspect,
-      point: contact.natalPoint,
-      pass: contact.pass,
-      passCount: contact.passCount,
-      title: `${contact.transitBody} ${contact.aspect} your ${pointName(contact.natalPoint)}`,
-      line: transitLine(contact.transitBody, contact.aspect, pointName(contact.natalPoint)),
-    }));
+    const contacts = found.slice(0, TRANSITS_LIMIT).map((contact) => {
+      const label = readingConfidenceLabel(detail, true);
+      return {
+        date: dayLabel(contact.exactUtc, shownZone),
+        exactUtc: contact.exactUtc,
+        planet: contact.transitBody,
+        aspect: contact.aspect,
+        point: contact.natalPoint,
+        pass: contact.pass,
+        passCount: contact.passCount,
+        firstPass: dateIn(new Date(contact.firstPassUtc), shownZone),
+        lastPass: dateIn(new Date(contact.lastPassUtc), shownZone),
+        confidence: readingConfidence(detail, true),
+        confidenceLabel: label,
+        title: `${contact.transitBody} ${contact.aspect} your ${pointName(contact.natalPoint)}`,
+        line: `${transitLine(contact.transitBody, contact.aspect, pointName(contact.natalPoint))} ${label}.`,
+      };
+    });
     return {
       data: { mode, birthDate: args.birthDate, timeKnown, placed, from: fromDate, to: toDate, zone: shownZone, scanned: { planets, points }, contacts, found: found.length, highlights: [], limits, pageUrl, note: TRANSITS_NOTE },
-      links: [{ title: 'Transits on Zodiacs', url: pageUrl }, { title: 'Your birth chart on Zodiacs', url: `${origin}/birth-chart/` }],
+      links: [
+        { title: 'Transits on Zodiacs', url: pageUrl },
+        { title: 'Your birth chart on Zodiacs', url: `${origin}/birth-chart/` },
+        { title: 'Resolve a town or city (find_birthplace)', url: `${origin}/birth-chart/` },
+      ],
     };
   }
 
@@ -248,12 +335,15 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
     // A sign change lands in one natal house when the rising sign is known (whole-sign houses).
     const sign = event.kind === 'ingress' ? ingressSign.get(`${event.body}|${event.at}`) : undefined;
     const number = sign && risingSign ? wholeSignHouseFromAsc(sign, risingSign) : null;
+    const label = readingConfidenceLabel(detail, event.kind === 'aspect');
     return {
       date: dayLabel(event.at, shownZone),
       endDate: event.endAt ? dayLabel(event.endAt, shownZone) : null,
       kind: event.kind,
       planet: event.body,
-      line: event.line,
+      line: `${event.line} ${label}.`,
+      confidence: readingConfidence(detail, event.kind === 'aspect'),
+      confidenceLabel: label,
       house: number ? { number, line: `In your chart, ${cap(sign!)} is your ${ORDINAL[number]} house: ${NATAL_HOUSE_THEME[number]}.` } : null,
     };
   });
@@ -264,6 +354,10 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
   if (!risingSign) limits.push('Without a birth time and place, sign changes are not placed in your houses.');
   return {
     data: { mode, birthDate: args.birthDate, timeKnown, placed, from: today, to: toDate, zone: shownZone, scanned: { planets: [...YEAR_AHEAD_PLANETS], points: (['Sun', ...(timeKnown ? ['Moon'] : []), ...YEAR_AHEAD_PERSONAL_POINTS, ...(angles ? ['ASC'] : [])] as NatalPoint[]) }, contacts: [], found: 0, highlights, limits, pageUrl, note: TRANSITS_NOTE },
-    links: [{ title: 'Transits on Zodiacs', url: pageUrl }, { title: 'Your birth chart on Zodiacs', url: `${origin}/birth-chart/` }],
+    links: [
+      { title: 'Transits on Zodiacs', url: pageUrl },
+      { title: 'Your birth chart on Zodiacs', url: `${origin}/birth-chart/` },
+      { title: 'Resolve a town or city (find_birthplace)', url: `${origin}/birth-chart/` },
+    ],
   };
 }
