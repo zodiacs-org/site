@@ -419,6 +419,14 @@ so does OQ10's Q5.
   the site, the MCP server's tools and the developer plugin run 1.1.0-rc.2;
   to end the pin, set `PUBLISHED` to null and give the panel a new address.
   Its controls are in [d12-chart-studio-pin.txt](d12-chart-studio-pin.txt).
+  After the independent review (D-15) the pin also records `SOURCE_SHA256`,
+  the panel this source builds while pinned, so a change to the studio's
+  source, the engine or anything else the panel bundles fails instead of
+  going unpublished unnoticed. One consequence stays while the pin holds: the
+  panel's Chart Inspector runs 1.1.0-rc.1, so it does not reproduce records
+  that 1.1.0-rc.2 writes (the site's, the compute API's, adapter rc.26's and
+  the developer plugin's own tools'); the plugin's README and its 0.3.22
+  release note say so.
 - **D-13** (4 November, the merge of main `f45734dc`). #881 put the hosted
   server on 0.6.1 (the readings panel, the under-18 rule, the narrower
   links) and made a Developer 0.3.21 from it, while this branch had made its
@@ -442,3 +450,19 @@ so does OQ10's Q5.
   a departure for the owner to ratify; the drive's Chromium half stays a
   check that stops the push. The gate runs again on the merged head as a
   second attempt citing the first (`rc2a-e7068c9d-prepush-times.txt`).
+- **D-15** (4 November, the independent review of `02d550fc`, which
+  AGENTS.md asks for before a merge). Its verdict named one blocker: the
+  Phase 1 captures are stale, so CI's suite fails on this branch while main
+  passes; the plan takes them again from this pull request's Browser
+  Evidence run (C8). Its notes, acted on: the Chart Studio pin's
+  `SOURCE_SHA256` and the Chart Inspector note (D-12); the plugin's README
+  still named 0.3.21, so it names 0.3.22, and the 0.3.22 archive, never
+  pushed, was packed again; and `src/islands/chart3d/EclipticView.tsx`
+  called the engine's declination function, which also finds every pair's
+  aspects, on each frame of a turning sphere, so the declinations are now
+  computed once per chart. Left as they are: the engine chunk's 19 bytes of
+  headroom, within its budget, and the ledger notes' "not yet merged", which
+  the record pull request updates. The gate's second attempt was stopped
+  during its 37th step to make these changes, every step before it passing
+  but the two accepted failures; the third attempt runs on the head that
+  carries them.
