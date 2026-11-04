@@ -36393,9 +36393,9 @@ var SKY_EVENTS_REWRITTEN = {
     extra: () => [
       "The Moon is void of course between its last major aspect in a sign and its entry into the next sign. Once it has made that last contact, a conjunction, sextile, square, trine or opposition to the Sun or a planet, it makes no other until it changes sign. These stretches come every two to three days, as the Moon changes sign, and last from a few minutes to a day or two.",
       "Astrology reads a void-of-course Moon as a pause: a poor moment to start something that needs to go somewhere, and a fair one for finishing, resting or routine.",
-      "Which bodies count differs between astrologers. The void-of-course calendar on Zodiacs counts the Sun and every planet through Pluto. search_sky_events uses the traditional rule, which stops at Saturn, so a period there can begin earlier than on the calendar page; both end when the Moon enters the next sign. For the periods in the coming weeks, use search_sky_events."
+      "Which bodies count differs between astrologers: traditional astrologers stop at Saturn, so under their rule some periods begin earlier. Zodiacs counts the Sun and every planet through Pluto, on its void-of-course calendar and in search_sky_events alike, so both give the same times. For the periods in the coming weeks, use search_sky_events."
     ],
-    pages: [{ title: "Void-of-course Moon calendar", path: "/void-of-course-moon/" }, { title: "The traditional void-of-course rule", path: "/developers/conventions/#void-of-course-bodies:traditional" }],
+    pages: [{ title: "Void-of-course Moon calendar", path: "/void-of-course-moon/" }, { title: "The void-of-course rule in the conventions registry", path: "/developers/conventions/#void-of-course-bodies:modern" }],
     related: ["moon-phases", "moon", "new-and-full-moons"]
   },
   eclipses: {
@@ -40651,6 +40651,17 @@ var publishedEventById = new Map(
   publishedEventPages.map((event2) => [event2.id, event2])
 );
 
+// src/data/void-of-course.ts
+var SITE_VOID_BODIES = VOID_OF_COURSE_CONVENTION.defaultBodies;
+var SITE_VOID_BODY_NAMES = VOID_BODIES[SITE_VOID_BODIES];
+var SITE_VOID_CONVENTION_IDS = [
+  `void-of-course:${VOID_OF_COURSE_CONVENTION.name}`,
+  `void-of-course-bodies:${SITE_VOID_BODIES}`
+];
+function siteVoidOfCourseWindows(from, to) {
+  return voidOfCourseWindows(from, to);
+}
+
 // src/ai-tools/features/sky-events.ts
 var DAY13 = 864e5;
 var ZONE_PATTERN8 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -40662,11 +40673,6 @@ var SKY_EVENTS_MAX_YEARS = 2;
 var VOID_OF_COURSE_MAX_DAYS2 = 31;
 var SKY_EVENTS_DEFAULT_LIMIT = 25;
 var SKY_EVENTS_MAX_LIMIT = 100;
-var SKY_EVENTS_VOID_BODIES = "traditional";
-var SKY_EVENTS_VOID_CONVENTION_IDS = [
-  `void-of-course:${VOID_OF_COURSE_CONVENTION.name}`,
-  `void-of-course-bodies:${SKY_EVENTS_VOID_BODIES}`
-];
 var SKY_EVENTS_NOTE = "Calculated dates and positions, not forecasts. What an event means in astrology is a separate reading.";
 var skyEventsInput = z12.strictObject({
   kinds: z12.array(z12.enum(SKY_EVENT_KINDS)).min(1).max(SKY_EVENT_KINDS.length).optional().describe("Which events to find: solar-eclipse, lunar-eclipse, station (a planet turning retrograde or direct), ingress (a planet changing sign), new-moon, full-moon or void-of-course. Leave it out for every kind but void-of-course, which comes only when named."),
@@ -40836,7 +40842,7 @@ function lineOf(event2, at, until, eclipseOn) {
     case "void-of-course": {
       const last2 = event2.extra?.lastAspect;
       const next = `until it enters ${signName5(event2.nextSign)} at ${until.local}`;
-      return last2 ? `The Moon is void of course in ${signName5(event2.sign)} from ${at.local}, after its last major aspect there (Moon ${ASPECT_VERB2[last2.aspect] ?? last2.aspect} ${last2.body}), ${next}.` : `The Moon is void of course for its whole time in ${signName5(event2.sign)}, from ${at.local}, as it makes no major aspect to the Sun through Saturn there, ${next}.`;
+      return last2 ? `The Moon is void of course in ${signName5(event2.sign)} from ${at.local}, after its last major aspect there (Moon ${ASPECT_VERB2[last2.aspect] ?? last2.aspect} ${last2.body}), ${next}.` : `The Moon is void of course for its whole time in ${signName5(event2.sign)}, from ${at.local}, as it makes no major aspect to the Sun or a planet there, ${next}.`;
     }
   }
 }
@@ -40927,12 +40933,12 @@ async function searchSkyEvents(args, clock2, options) {
     }
   }
   if (voids) {
-    const periods = voidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY13), { bodies: SKY_EVENTS_VOID_BODIES });
+    const periods = siteVoidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY13));
     for (const period of periods) {
       if (period.from.getTime() >= end.getTime() || period.to.getTime() <= start.getTime()) continue;
       raw.push({ kind: "void-of-course", at: period.from, until: period.to, sign: period.sign, nextSign: period.nextSign, extra: { lastAspect: period.lastAspect ? { body: period.lastAspect.body, aspect: period.lastAspect.aspect } : null } });
     }
-    notes.push("Void-of-course periods follow the traditional rule: from the Moon's last exact major aspect (conjunction, sextile, square, trine or opposition) to the Sun, Mercury, Venus, Mars, Jupiter or Saturn in a sign until it enters the next sign. The calendar page on zodiacs.org also counts Uranus, Neptune and Pluto, so a period there can begin later; both end at the same moment.");
+    notes.push("Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, and give the same times: from the Moon's last exact major aspect (conjunction, sextile, square, trine or opposition) to the Sun or a planet from Mercury to Pluto in a sign until it enters the next sign.");
   }
   const wanted = raw.filter((event2) => kinds.includes(event2.kind)).sort((a, b) => a.at.getTime() - b.at.getTime() || SKY_EVENT_KINDS.indexOf(a.kind) - SKY_EVENT_KINDS.indexOf(b.kind) || (a.planet ? SKY_EVENT_PLANETS.indexOf(a.planet) : -1) - (b.planet ? SKY_EVENT_PLANETS.indexOf(b.planet) : -1));
   const eclipses = raw.filter((event2) => event2.kind === "solar-eclipse" || event2.kind === "lunar-eclipse");
@@ -40968,7 +40974,7 @@ async function searchSkyEvents(args, clock2, options) {
     events,
     total: wanted.length,
     truncated,
-    conventions: voids ? SKY_EVENTS_VOID_CONVENTION_IDS.map((id) => ({ id, url: conventionAddress(id) })) : [],
+    conventions: voids ? SITE_VOID_CONVENTION_IDS.map((id) => ({ id, url: conventionAddress(id) })) : [],
     message: notes.length ? notes.join(" ") : null,
     note: SKY_EVENTS_NOTE
   };
@@ -40983,7 +40989,6 @@ async function searchSkyEvents(args, clock2, options) {
   ];
   return { data, links };
 }
-var SKY_EVENTS_VOID_BODY_NAMES = VOID_BODIES[SKY_EVENTS_VOID_BODIES];
 
 // src/ai-tools/contracts.ts
 var AI_VERSION = "0.6.1";
@@ -41283,7 +41288,7 @@ var TOOL_DESCRIPTIONS = {
   get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Use it for my transits, what's coming up for me, or my year ahead, once the person has given a birth date; for a Sun-sign horoscope use get_horoscope or get_horoscope_period. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Pass currentZone, where they live now, so the dates fall on their own clock. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. If the birth date is under 18, do not frame the lines as romance or attraction. Present each line plainly and confidently as astrology's reading, with its reading-confidence label, never as a guarantee, and never turn a line into health, financial or medical advice.",
   explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.",
   find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place.",
-  search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets turning retrograde or direct (stations), planets changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts: share them as facts, and keep what they mean in astrology separate."
+  search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets turning retrograde or direct (stations), planets changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, with the same times: from the Moon's last major aspect to the Sun or a planet through Pluto in a sign until it enters the next sign. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts: share them as facts, and keep what they mean in astrology separate."
 };
 var SKY_EVENTS_INPUT_SCHEMAS = {
   get_natal_chart: natalChartInputWithHouses,
@@ -42576,7 +42581,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const statements3 = engineStatements();
         const offered = offeredTools(dependencies);
         const eclipseLine = skyEvents2 ? "Eclipses are listed by search_sky_events, get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations over the next days or weeks; search_sky_events finds eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods months or years ahead. No birth-time rectification, reminders or account access." : dependencies.coverage ? "Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations. No birth-time rectification, reminders or account access." : "Eclipses are listed by get_sky_calendar. get_upcoming_events lists ingresses, stations and lunations, not eclipses or aspects. No birth-time rectification, reminders or account access.";
-        const skyEventsCoverage = skyEvents2 ? { skyEvents: "search_sky_events gives eclipses from the eclipse table (2026 to 2030), sign changes of the Sun through Pluto from the ingress table, stations and new and full Moons from the engine for windows of up to two years, and void-of-course Moon periods under the traditional rule (aspects to the Sun through Saturn), up to 31 days at a time." } : {};
+        const skyEventsCoverage = skyEvents2 ? { skyEvents: "search_sky_events gives eclipses from the eclipse table (2026 to 2030), sign changes of the Sun through Pluto from the ingress table, stations and new and full Moons from the engine for windows of up to two years, and void-of-course Moon periods under the rule of the void-of-course calendar (the last major aspect to the Sun or a planet through Pluto), with its times, up to 31 days at a time." } : {};
         data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS2, conventions: statements3.conventions, coverage: { ...statements3.coverage, tools: offered.join(", "), eclipses: skyEvents2 ? "search_sky_events lists the eclipses from 2026 to 2030; get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : dependencies.coverage ? "get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : "get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.", aspects: dependencies.coverage ? "get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects." : "get_upcoming_events does not search aspects.", ...skyEventsCoverage }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY2, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", eclipseLine, dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
         if (dependencies.occasions) {
           const capabilities = data;

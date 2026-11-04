@@ -283,7 +283,7 @@ describe('the conventions registry', () => {
     // The conditions the samples reach, so the check has bite.
     for (const id of ['flag:no-time', 'flag:polar-fallback', 'flag:outside-reference-span', 'flag:dst-gap', 'flag:dst-fold', 'flag:lmt', 'house-absence:unknown-time',
       'reference:utc-noon', 'time-scale:tt', 'time-scale:ut1', 'time-basis:iers', 'time-basis:delta-t', 'time-basis:pinned', 'deltat-segment:extrapolated',
-      'endpoint:elections', 'void-of-course-bodies:modern', 'void-of-course-bodies:traditional', 'search-window:start-exclusive-end-inclusive', 'ephemeris:astronomy-engine@2.1.19',
+      'endpoint:elections', 'void-of-course-bodies:modern', 'search-window:start-exclusive-end-inclusive', 'ephemeris:astronomy-engine@2.1.19',
       'conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt']) {
       expect(named.has(id), id).toBe(true);
     }

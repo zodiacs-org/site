@@ -1,20 +1,21 @@
 ---
 import Base from '../../layouts/Base.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
-import { voidOfCourseAt, voidOfCourseWindows, type VoidOfCourseWindow } from '@zodiacs/engine/techniques';
+import { siteVoidOfCourseAt, siteVoidOfCourseWindows, type VoidOfCourseWindow } from '../../data/void-of-course';
 import { signBySlug } from '../../lib/signs';
 
 // Build-time: every void-of-course window from the start of this month to
 // the end of the month after next, computed in Node by @zodiacs/engine, the
 // same engine as every chart on the site, under its one named convention
 // (VOID_OF_COURSE_CONVENTION: the last exact Ptolemaic aspect in a sign to
-// the Moon's entry into the next). The browser only converts the instants to
-// the reader's time zone and marks the window in progress.
+// the Moon's entry into the next). src/data/void-of-course.ts holds the call,
+// so the hosted search_sky_events lists the same periods. The browser only
+// converts the instants to the reader's time zone and marks the window in progress.
 const buildNow = new Date();
 const rangeFrom = new Date(Date.UTC(buildNow.getUTCFullYear(), buildNow.getUTCMonth(), 1));
 const rangeTo = new Date(Date.UTC(buildNow.getUTCFullYear(), buildNow.getUTCMonth() + 3, 1));
-const windows = voidOfCourseWindows(rangeFrom, rangeTo);
-const status = voidOfCourseAt(buildNow);
+const windows = siteVoidOfCourseWindows(rangeFrom, rangeTo);
+const status = siteVoidOfCourseAt(buildNow);
 
 const monthLabel = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 const dayLabel = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });

@@ -10,17 +10,16 @@
  * - sign changes of the Sun through Pluto from src/data/ingresses.json, within the dates it covers;
  * - stations and new and full Moons from the compute API's event searches (the engine's crossing
  *   solver, as get_upcoming_events runs it), over windows of up to two years;
- * - void-of-course Moon periods from the engine's voidOfCourseWindows under the traditional rule:
- *   from the Moon's last exact Ptolemaic aspect in a sign to the Sun, Mercury, Venus, Mars, Jupiter
- *   or Saturn until it enters the next sign (src/data/conventions/registry.json,
- *   void-of-course-bodies:traditional), searched up to 31 days at a time.
+ * - void-of-course Moon periods from src/data/void-of-course.ts, the module the site's own
+ *   /void-of-course-moon/ calendar reads, so the two give the same times: from the Moon's last exact
+ *   Ptolemaic aspect in a sign to the Sun or a planet from Mercury to Pluto until it enters the next
+ *   sign (src/data/conventions/registry.json, void-of-course-bodies:modern), searched up to 31 days at a time.
  * An event links to its own page only where the site publishes one (src/data/events-publication.json),
  * else to the page that lists that kind of event. These are calculated facts: no forecast and no
  * reading-confidence label. Pure: no network, storage or logging.
  */
 import { z } from 'zod';
 import { conventionAddress } from '@zodiacs/engine/conventions';
-import { VOID_BODIES, VOID_OF_COURSE_CONVENTION, voidOfCourseWindows } from '@zodiacs/engine/techniques';
 import eclipseTable from '../../data/eclipses.json';
 import ingressTable from '../../data/ingresses.json';
 import sky from '../../data/sky.json';
@@ -30,6 +29,7 @@ import { SampleBudget, phaseCrossings, positionsMemo, rowOf, stationCrossings } 
 import { eclipseId, ingressId, isoDay, lunationId, retrogradeId } from '../../lib/events/format';
 import { publishedEventById } from '../../lib/events/publication';
 import { SIGNS, formatLongitude, signIndexForLongitude } from '../../lib/signs';
+import { SITE_VOID_CONVENTION_IDS, siteVoidOfCourseWindows } from '../../data/void-of-course';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -48,12 +48,6 @@ export const SKY_EVENTS_MAX_YEARS = 2;
 export const VOID_OF_COURSE_MAX_DAYS = 31;
 export const SKY_EVENTS_DEFAULT_LIMIT = 25;
 export const SKY_EVENTS_MAX_LIMIT = 100;
-/** The rule the void-of-course periods follow: the engine's convention with the traditional bodies, the Sun to Saturn. */
-export const SKY_EVENTS_VOID_BODIES = 'traditional' as const;
-export const SKY_EVENTS_VOID_CONVENTION_IDS = [
-  `void-of-course:${VOID_OF_COURSE_CONVENTION.name}`,
-  `void-of-course-bodies:${SKY_EVENTS_VOID_BODIES}`,
-] as const;
 export const SKY_EVENTS_NOTE = 'Calculated dates and positions, not forecasts. What an event means in astrology is a separate reading.';
 
 export const skyEventsInput = z.strictObject({
@@ -269,7 +263,7 @@ function lineOf(event: Raw, at: z.infer<typeof moment>, until: z.infer<typeof mo
       const next = `until it enters ${signName(event.nextSign!)} at ${until!.local}`;
       return last
         ? `The Moon is void of course in ${signName(event.sign)} from ${at.local}, after its last major aspect there (Moon ${ASPECT_VERB[last.aspect] ?? last.aspect} ${last.body}), ${next}.`
-        : `The Moon is void of course for its whole time in ${signName(event.sign)}, from ${at.local}, as it makes no major aspect to the Sun through Saturn there, ${next}.`;
+        : `The Moon is void of course for its whole time in ${signName(event.sign)}, from ${at.local}, as it makes no major aspect to the Sun or a planet there, ${next}.`;
     }
   }
 }
@@ -373,12 +367,13 @@ export async function searchSkyEvents(args: SkyEventsInput, clock: SkyEventsCloc
   }
   if (voids) {
     // A period ends when the Moon enters the next sign; scanning past the window's end keeps one that begins inside it.
-    const periods = voidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY), { bodies: SKY_EVENTS_VOID_BODIES });
+    // The calendar page's own periods (src/data/void-of-course.ts), so the two give the same times.
+    const periods = siteVoidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY));
     for (const period of periods) {
       if (period.from.getTime() >= end.getTime() || period.to.getTime() <= start.getTime()) continue;
       raw.push({ kind: 'void-of-course', at: period.from, until: period.to, sign: period.sign, nextSign: period.nextSign, extra: { lastAspect: period.lastAspect ? { body: period.lastAspect.body, aspect: period.lastAspect.aspect } : null } });
     }
-    notes.push('Void-of-course periods follow the traditional rule: from the Moon\'s last exact major aspect (conjunction, sextile, square, trine or opposition) to the Sun, Mercury, Venus, Mars, Jupiter or Saturn in a sign until it enters the next sign. The calendar page on zodiacs.org also counts Uranus, Neptune and Pluto, so a period there can begin later; both end at the same moment.');
+    notes.push('Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, and give the same times: from the Moon\'s last exact major aspect (conjunction, sextile, square, trine or opposition) to the Sun or a planet from Mercury to Pluto in a sign until it enters the next sign.');
   }
 
   const wanted = raw.filter((event) => kinds.includes(event.kind))
@@ -412,7 +407,7 @@ export async function searchSkyEvents(args: SkyEventsInput, clock: SkyEventsCloc
     from, to, zone, zoneSource, kinds, planets, events,
     total: wanted.length,
     truncated,
-    conventions: voids ? SKY_EVENTS_VOID_CONVENTION_IDS.map((id) => ({ id, url: conventionAddress(id) })) : [],
+    conventions: voids ? SITE_VOID_CONVENTION_IDS.map((id) => ({ id, url: conventionAddress(id) })) : [],
     message: notes.length ? notes.join(' ') : null,
     note: SKY_EVENTS_NOTE,
   };
@@ -427,6 +422,3 @@ export async function searchSkyEvents(args: SkyEventsInput, clock: SkyEventsCloc
   ];
   return { data, links };
 }
-
-/** The bodies whose aspects end a void-of-course period here, as the engine names them. */
-export const SKY_EVENTS_VOID_BODY_NAMES: readonly string[] = VOID_BODIES[SKY_EVENTS_VOID_BODIES];

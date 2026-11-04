@@ -214,9 +214,9 @@ const SKY_EVENTS_REWRITTEN: Record<string, Topic> = {
     extra: () => [
       'The Moon is void of course between its last major aspect in a sign and its entry into the next sign. Once it has made that last contact, a conjunction, sextile, square, trine or opposition to the Sun or a planet, it makes no other until it changes sign. These stretches come every two to three days, as the Moon changes sign, and last from a few minutes to a day or two.',
       'Astrology reads a void-of-course Moon as a pause: a poor moment to start something that needs to go somewhere, and a fair one for finishing, resting or routine.',
-      'Which bodies count differs between astrologers. The void-of-course calendar on Zodiacs counts the Sun and every planet through Pluto. search_sky_events uses the traditional rule, which stops at Saturn, so a period there can begin earlier than on the calendar page; both end when the Moon enters the next sign. For the periods in the coming weeks, use search_sky_events.',
+      'Which bodies count differs between astrologers: traditional astrologers stop at Saturn, so under their rule some periods begin earlier. Zodiacs counts the Sun and every planet through Pluto, on its void-of-course calendar and in search_sky_events alike, so both give the same times. For the periods in the coming weeks, use search_sky_events.',
     ],
-    pages: [{ title: 'Void-of-course Moon calendar', path: '/void-of-course-moon/' }, { title: 'The traditional void-of-course rule', path: '/developers/conventions/#void-of-course-bodies:traditional' }],
+    pages: [{ title: 'Void-of-course Moon calendar', path: '/void-of-course-moon/' }, { title: 'The void-of-course rule in the conventions registry', path: '/developers/conventions/#void-of-course-bodies:modern' }],
     related: ['moon-phases', 'moon', 'new-and-full-moons'],
   },
   eclipses: {

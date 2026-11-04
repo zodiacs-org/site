@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { voidOfCourseWindows } from '@zodiacs/engine/techniques';
 import { executeAiTool } from '../tools';
 import { EXPLAIN_TOPICS, EXPLAIN_TOPICS_SKY_EVENTS, explainAstrology, matchTopic } from './explain';
-import { SKY_EVENTS_NOTE, SKY_EVENTS_VOID_BODY_NAMES, SKY_EVENTS_VOID_CONVENTION_IDS } from './sky-events';
+import { SKY_EVENTS_NOTE } from './sky-events';
+import { SITE_VOID_BODY_NAMES, SITE_VOID_CONVENTION_IDS, siteVoidOfCourseWindows } from '../../data/void-of-course';
 import { NATAL_NODE_ABOUT } from './natal-chart';
 import { publishedEventById } from '../../lib/events/publication';
 import registry from '../../data/conventions/registry.json';
@@ -91,32 +92,45 @@ describe('search_sky_events', () => {
     expect(lunar.data.events[0].line).toContain('with totality lasting about 59 minutes');
   });
 
-  it('gives each void-of-course period under the traditional rule, which begins no later than the calendar page\'s and ends with it', async () => {
-    // In September 2023 Uranus, Neptune and Pluto stood late in their signs, so the Moon's last aspect in a sign was
-    // often to one of them, and the two rules part. In 2026 and 2027 they stand early in their signs and agree.
+  it('gives each void-of-course period exactly as the site\'s calendar computes it, through the module the page reads', async () => {
+    // September 2023: Uranus, Neptune and Pluto stood late in their signs, so the Moon's last aspect in a sign was
+    // often to one of them, which is where a rule that stops at Saturn would part from the calendar.
     const result = await search({ kinds: ['void-of-course'], from: '2023-09-01', to: '2023-09-30', zone: 'Asia/Bangkok', limit: 100 });
     const periods = result.data.events;
-    expect(periods.length).toBeGreaterThan(10);
-    expect(result.data.conventions).toEqual(SKY_EVENTS_VOID_CONVENTION_IDS.map((id) => ({ id, url: `https://zodiacs.org/developers/conventions/#${id}` })));
-    expect(SKY_EVENTS_VOID_BODY_NAMES).toEqual(['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn']);
-    expect(result.data.message).toContain('the traditional rule');
-    const modern = voidOfCourseWindows(new Date('2023-08-25T00:00:00Z'), new Date('2023-10-05T00:00:00Z'));
+    expect(periods).toHaveLength(13);
+    expect(result.data.conventions).toEqual(SITE_VOID_CONVENTION_IDS.map((id) => ({ id, url: `https://zodiacs.org/developers/conventions/#${id}` })));
+    expect(SITE_VOID_CONVENTION_IDS).toEqual(['void-of-course:last-exact-ptolemaic-aspect-to-sign-exit', 'void-of-course-bodies:modern']);
+    expect(SITE_VOID_BODY_NAMES).toEqual(['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']);
+    expect(result.data.message).toContain('Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, and give the same times');
+    // The calendar's own computation over the same scan, 00:00 on 1 September to 3 days past the window in Bangkok: the
+    // same periods to the millisecond.
+    const start = Date.parse('2023-08-31T17:00:00Z');
+    const end = Date.parse('2023-09-30T17:00:00Z');
+    const calendar = siteVoidOfCourseWindows(new Date(start), new Date(end + 3 * 86_400_000)).filter((window) => window.from.getTime() < end && window.to.getTime() > start);
+    expect(periods.map((period) => [period.at.utc, period.until!.utc, period.sign, period.nextSign])).toEqual(calendar.map((window) => [window.from.toISOString(), window.to.toISOString(), window.sign, window.nextSign]));
+    // And they are the engine's default windows, which the page asked for directly before it read the shared module.
+    const engine = voidOfCourseWindows(new Date(start), new Date(end + 3 * 86_400_000));
+    expect(engine.map((window) => window.from.getTime())).toEqual(siteVoidOfCourseWindows(new Date(start), new Date(end + 3 * 86_400_000)).map((window) => window.from.getTime()));
+    // The page as built in September 2023 scans from the 1st to 1 December: the month in UTC gives its periods to the millisecond.
+    const utc = (await search({ kinds: ['void-of-course'], from: '2023-09-01', to: '2023-09-30', zone: 'UTC', limit: 100 })).data.events;
+    const built = siteVoidOfCourseWindows(new Date(Date.UTC(2023, 8, 1)), new Date(Date.UTC(2023, 11, 1)))
+      .filter((window) => window.from.getTime() < Date.UTC(2023, 9, 1) && window.to.getTime() > Date.UTC(2023, 8, 1));
+    expect(utc).toHaveLength(14);
+    expect(utc.map((period) => [period.at.utc, period.until!.utc])).toEqual(built.map((window) => [window.from.toISOString(), window.to.toISOString()]));
     for (const period of periods) {
       expect(period).toMatchObject({ kind: 'void-of-course', planet: null, position: null, type: null, pageUrl: 'https://zodiacs.org/void-of-course-moon/' });
-      expect(period.until).not.toBeNull();
       expect(period.title).toBe(`Void-of-course Moon in ${period.sign[0].toUpperCase()}${period.sign.slice(1)}`);
-      // The same ingress, found by a scan that starts elsewhere, can differ by a millisecond.
-      const twin = modern.find((window) => Math.abs(window.to.getTime() - Date.parse(period.until!.utc)) < 1000)!;
-      expect(twin, period.until!.utc).toBeDefined();
-      expect(twin.nextSign).toBe(period.nextSign);
-      expect(Date.parse(period.at.utc)).toBeLessThanOrEqual(twin.from.getTime());
-      // The last aspect named is one to the Sun through Saturn.
       const aspect = /\(Moon \w+ (\w+)\)/u.exec(period.line)?.[1];
-      if (aspect) expect(SKY_EVENTS_VOID_BODY_NAMES).toContain(aspect);
+      if (aspect) expect(SITE_VOID_BODY_NAMES).toContain(aspect);
       expect(period.line).toContain(`until it enters ${period.nextSign![0].toUpperCase()}${period.nextSign!.slice(1)} at ${period.until!.local}`);
     }
-    // Most periods that month start earlier than the modern rule's, where Uranus, Neptune or Pluto made the last aspect.
-    expect(periods.filter((period) => modern.some((window) => Math.abs(window.to.getTime() - Date.parse(period.until!.utc)) < 1000 && Date.parse(period.at.utc) < window.from.getTime() - 60_000)).length).toBeGreaterThan(5);
+    // That month most last aspects were to an outer planet, which the calendar counts.
+    expect(periods.filter((period) => /\(Moon \w+ (?:Uranus|Neptune|Pluto)\)/u.test(period.line)).length).toBeGreaterThan(5);
+    // The calendar page reads the same module, so the two cannot drift apart.
+    const page = readFileSync(new URL('src/pages/void-of-course-moon/index.astro', root), 'utf8');
+    expect(page).toContain("from '../../data/void-of-course';");
+    expect(page).toContain('siteVoidOfCourseWindows(rangeFrom, rangeTo)');
+    expect(page).not.toMatch(/from '@zodiacs\/engine\/techniques'/u);
     // A period under way when the window opens is kept.
     const first = await search({ kinds: ['void-of-course'], from: '2026-11-05', to: '2026-11-05' });
     for (const period of first.data.events) expect(Date.parse(period.until!.utc)).toBeGreaterThan(Date.parse('2026-11-05T00:00:00Z'));
@@ -216,7 +230,7 @@ describe('the other tools with the sky events switch', () => {
     expect(text).toContain('search_sky_events (eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods, months or years ahead) is also listed there');
     expect(text).toContain('With them Zodiacs offers 20 tools: the 13 in the tools field and these 7.');
     expect(text).toContain('Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead');
-    expect(result.data.coverage.skyEvents).toContain('void-of-course Moon periods under the traditional rule');
+    expect(result.data.coverage.skyEvents).toContain('void-of-course Moon periods under the rule of the void-of-course calendar');
     expect(result.data.coverage.eclipses).toMatch(/^search_sky_events lists the eclipses from 2026 to 2030/u);
     expect(result.data.privacy).toContain('The sky events search takes no personal details.');
     expect(JSON.stringify(result.data)).not.toMatch(DASH);
@@ -305,8 +319,8 @@ describe('explain_astrology with the sky events switch', () => {
     expect(nodes).toContain('Zodiacs uses the true node');
     expect(nodes).toContain('up to about two degrees');
     const voids = explainAstrology({ topic: 'void of course moon' }, 'https://zodiacs.org', { skyEvents: true }).data;
-    expect(voids.paragraphs.join(' ')).toContain('search_sky_events uses the traditional rule, which stops at Saturn');
-    expect(voids.pages.map((page) => page.url)).toContain('https://zodiacs.org/developers/conventions/#void-of-course-bodies:traditional');
+    expect(voids.paragraphs.join(' ')).toContain('Zodiacs counts the Sun and every planet through Pluto, on its void-of-course calendar and in search_sky_events alike, so both give the same times.');
+    expect(voids.pages.map((page) => page.url)).toContain('https://zodiacs.org/developers/conventions/#void-of-course-bodies:modern');
   });
 
   it('matches the ways people ask, and leaves everyday words alone', () => {
@@ -334,10 +348,12 @@ describe('explain_astrology with the sky events switch', () => {
     expect(unknown.data.topics).toEqual([...EXPLAIN_TOPICS]);
   });
 
-  it('records the traditional void-of-course rule in the conventions registry', () => {
-    const entry = registry.namespaces.find((space) => space.name === 'void-of-course-bodies')!.entries.find((candidate) => candidate.id === 'void-of-course-bodies:traditional')!;
-    expect(entry).toMatchObject({ value: 'traditional', status: 'current' });
-    expect(entry.definition).toContain('the Sun, Mercury, Venus, Mars, Jupiter and Saturn');
-    expect(registry.namespaces.find((space) => space.name === 'void-of-course')!.usedIn).toContain('hosted MCP search_sky_events results: conventions');
+  it('names the registry\'s void-of-course rule, the calendar\'s own, and no other', () => {
+    const bodies = registry.namespaces.find((space) => space.name === 'void-of-course-bodies')!;
+    expect(bodies.entries.map((entry) => entry.id)).toEqual(['void-of-course-bodies:modern']);
+    expect(bodies.entries[0].definition).toContain('the Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto');
+    for (const name of ['void-of-course', 'void-of-course-bodies']) {
+      expect(registry.namespaces.find((space) => space.name === name)!.usedIn, name).toContain('hosted MCP search_sky_events results: conventions');
+    }
   });
 });

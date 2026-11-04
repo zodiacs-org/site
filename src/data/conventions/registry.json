@@ -2890,27 +2890,15 @@
           "id": "void-of-course-bodies:modern",
           "value": "modern",
           "title": "Modern",
-          "definition": "The bodies whose aspects with the Moon count: the Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto.",
+          "definition": "The bodies whose aspects with the Moon count: the Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto. A void-of-course period then runs from the Moon's last exact conjunction, sextile, square, trine or opposition to one of them in a sign until the Moon enters the next sign. The void-of-course calendar on zodiacs.org and the hosted search_sky_events both follow this rule.",
           "sources": [
             {
               "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
               "url": "https://zodiacs.org/api/v1/openapi.json"
-            }
-          ],
-          "status": "current"
-        },
-        {
-          "id": "void-of-course-bodies:traditional",
-          "value": "traditional",
-          "title": "Traditional",
-          "definition": "The bodies whose aspects with the Moon count: the Sun, Mercury, Venus, Mars, Jupiter and Saturn. A void-of-course period then runs from the Moon's last exact conjunction, sextile, square, trine or opposition to one of them in a sign until the Moon enters the next sign, so it begins no later than under the modern bodies and ends at the same moment.",
-          "sources": [
-            {
-              "title": "@zodiacs/engine 1.1.0-rc.1, src/techniques/void-of-course.ts, VOID_BODIES.traditional",
-              "url": "https://github.com/zodiacs-org/engine/blob/d9fc39cd4a81488b1bbee7e205901cdf2d755ef4/src/techniques/void-of-course.ts"
             },
             {
-              "title": "William Lilly, Christian Astrology (1647), p. 112"
+              "title": "@zodiacs/engine 1.1.0-rc.1, src/techniques/void-of-course.ts, VOID_BODIES.modern, the engine's default, which the site's void-of-course calendar and search_sky_events read through src/data/void-of-course.ts",
+              "url": "https://github.com/zodiacs-org/engine/blob/d9fc39cd4a81488b1bbee7e205901cdf2d755ef4/src/techniques/void-of-course.ts"
             }
           ],
           "status": "current"
