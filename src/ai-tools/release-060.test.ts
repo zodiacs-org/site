@@ -30,7 +30,7 @@ const LIVE = JSON.parse(readFileSync(new URL('docs/platform/zodiacs-ai/evidence/
  * Any other change, or another move, fails until this pair is changed by hand.
  */
 const PANEL_MOVE = { tool: 'open_chart_studio', from: 'ui://zodiacs/chart-studio-v6.html', to: 'ui://zodiacs/chart-studio-v7.html' } as const;
-const moved = (tool: Record<string, unknown>) => tool.name !== PANEL_MOVE.tool ? tool
+const moved = (tool: Record<string, unknown>): Record<string, unknown> => tool.name !== PANEL_MOVE.tool ? tool
   : { ...tool, _meta: JSON.parse(JSON.stringify(tool._meta).split(PANEL_MOVE.from).join(PANEL_MOVE.to)) };
 const count = (text: string, part: string) => text.split(part).length - 1;
 const window = async () => committedWindow as HoroscopeWindow;
