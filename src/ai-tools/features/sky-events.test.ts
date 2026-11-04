@@ -142,7 +142,8 @@ describe('search_sky_events', () => {
     const events = [...result.data.events, ...more.data.events];
     expect(events.length).toBeGreaterThan(100);
     for (const event of events) {
-      if (event.pageUrl === null) { expect(['Mercury', 'Venus', 'Mars']).toContain(event.planet); continue; }
+      // Mercury, Venus and Mars have pages for some stations only, and no page lists Chiron's.
+      if (event.pageUrl === null) { expect(['Mercury', 'Venus', 'Mars', 'Chiron']).toContain(event.planet); continue; }
       expect(pageExists(event.pageUrl), event.pageUrl).toBe(true);
     }
     const urls = events.map((event) => event.pageUrl);
@@ -161,7 +162,7 @@ describe('search_sky_events', () => {
     expect((await refusal({ kinds: ['full-moon'], from: '2026-12-01', to: '2026-11-30' })).message).toBe('to must be the same day as from or later.');
     expect((await refusal({ kinds: ['full-moon'], from: '2026-02-30' })).message).toBe('from must be a real date, such as 2027-01-01.');
     expect((await refusal({ kinds: ['eclipse'] }))).toEqual({ code: 'invalid-request', message: 'kinds[0] must be one of: solar-eclipse, lunar-eclipse, station, ingress, new-moon, full-moon, void-of-course.' });
-    expect((await refusal({ planets: ['Moon'] })).message).toBe('planets[0] must be one of: Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto.');
+    expect((await refusal({ planets: ['Moon'] })).message).toBe('planets[0] must be one of: Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, Chiron.');
     expect((await refusal({ limit: 101 })).message).toBe('limit must be at most 100.');
     expect((await refusal({ from: '4 November 2026' })).message).toBe('from must be a date such as 2026-11-01.');
     const unknown = await executeAiTool('search_sky_events', { kinds: ['full-moon'], birthDate: 'private-canary-1985' }, on);
@@ -295,10 +296,10 @@ describe('get_natal_chart with the sky events switch', () => {
 });
 
 describe('explain_astrology with the sky events switch', () => {
-  const NEW = ['lunar-nodes', 'void-of-course-moon', 'house-systems', 'eclipses', 'stations', 'new-and-full-moons', 'ingresses'];
+  const NEW = ['lunar-nodes', 'void-of-course-moon', 'house-systems', 'eclipses', 'stations', 'new-and-full-moons', 'ingresses', 'chiron'];
 
-  it('explains the seven topics in plain words first, with their pages, and points to the tool that dates them', async () => {
-    expect(EXPLAIN_TOPICS_SKY_EVENTS.filter((key) => !EXPLAIN_TOPICS.includes(key))).toEqual(['house-systems', 'stations', 'new-and-full-moons', 'ingresses']);
+  it('explains the eight topics in plain words first, with their pages, and points to the tool that dates them', async () => {
+    expect(EXPLAIN_TOPICS_SKY_EVENTS.filter((key) => !EXPLAIN_TOPICS.includes(key))).toEqual(['chiron', 'house-systems', 'stations', 'new-and-full-moons', 'ingresses']);
     for (const key of NEW) {
       const result = await executeAiTool('explain_astrology', { topic: key.replace(/-/gu, ' ') }, on);
       if (!result.ok || result.tool !== 'explain_astrology') throw new Error(JSON.stringify(result));

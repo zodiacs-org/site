@@ -128,6 +128,9 @@ describe('the sky events switch on', () => {
     expect(natal.inputSchema.properties.houseSystem).toMatchObject({ type: 'string', enum: ['whole-sign', 'placidus'] });
     expect(Object.keys(natal.inputSchema.properties)).toEqual([...Object.keys(natalBefore.inputSchema.properties), 'houseSystem']);
     expect(JSON.stringify(natal.outputSchema)).toContain('"nodes"');
+    // Chiron, from NASA JPL Horizons positions, in the natal chart and the explainer.
+    expect(natal.description).toContain('and Chiron, from NASA JPL Horizons positions for 1800 to 2199');
+    expect(JSON.stringify(natal.outputSchema)).toContain('"chiron"');
     expect(natal.outputSchema.anyOf[0].properties.data.properties.shareUrl).toEqual({ anyOf: [{ type: 'string', format: 'uri' }, { type: 'null' }] });
     expect(natal.description).toContain('If they want to share their big three, give them the returned shareUrl exactly');
     // Its panel is the one that lists the lunar nodes; every other part of its _meta is as main has it.
@@ -136,6 +139,7 @@ describe('the sky events switch on', () => {
     const explain = tools.find((tool) => tool.name === 'explain_astrology')!;
     expect(explain.description).toContain('use search_sky_events');
     expect(explain.inputSchema.properties.topic.description).toContain('the lunar nodes');
+    expect(explain.inputSchema.properties.topic.description).toContain('Chiron or Chiron in a sign or house');
     expect(JSON.stringify(explain.outputSchema)).toBe(JSON.stringify(before.find((tool) => tool.name === 'explain_astrology')!.outputSchema));
     const sky = tools.at(-1)!;
     expect(sky).toMatchObject({ name: 'search_sky_events', title: TOOL_TITLES.search_sky_events, description: TOOL_DESCRIPTIONS.search_sky_events,
@@ -144,6 +148,7 @@ describe('the sky events switch on', () => {
     expect(sky).not.toHaveProperty('icons');
     expect(Object.keys(sky.inputSchema.properties)).toEqual(['kinds', 'planets', 'from', 'to', 'zone', 'limit']);
     expect(sky.description).toContain('use get_upcoming_events');
+    expect(sky.description).toContain('planets and Chiron turning retrograde or direct');
     expect(sky.description).toContain('use get_sky_calendar');
     expect(`${sky.title} ${sky.description} ${JSON.stringify(sky.inputSchema)}`).not.toMatch(/[–—]|crypto|token|blockchain|market/iu);
     // One new resource, the natal chart's panel, listed after the readings panel the others keep; initialize is unchanged.
@@ -167,7 +172,7 @@ describe('the sky events switch on', () => {
     expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
     expect(counted).toContain('search_sky_events');
     const natal = await call(host, 'get_natal_chart', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, houseSystem: 'placidus' });
-    expect(natal.structuredContent.data).toMatchObject({ houseSystem: 'placidus', nodes: { node: 'true' } });
+    expect(natal.structuredContent.data).toMatchObject({ houseSystem: 'placidus', nodes: { node: 'true' }, chiron: { sign: 'cancer', retrograde: false } });
   });
 
   it('answers with results that validate against the output schemas tools/list advertises, as a client checks them', async () => {
