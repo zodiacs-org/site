@@ -61,7 +61,7 @@ async function rpc(method: string, params: unknown) {
 }
 
 describe('0.6.0 keeps the thirteen published tools as they are', () => {
-  it('lists the thirteen live definitions byte for byte apart from Chart Studio\'s panel address, then the five new tools', async () => {
+  it("lists the thirteen live definitions byte for byte apart from Chart Studio's panel address, then the five new tools", async () => {
     const live = LIVE.result.tools as Record<string, unknown>[];
     const tools = (await rpc('tools/list', {})).result.tools as Record<string, unknown>[];
     expect(live.map(tool => tool.name)).toEqual([...ALL_AI_TOOL_NAMES]);

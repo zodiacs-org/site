@@ -249,4 +249,8 @@ so does OQ10's Q5.
   `docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md` and
   `claude-directory/RESYNC-0.6.0.md`, with their drafted reviewer notes, now
   say that a rescan shows this one changed field. No portal step is taken:
-  each stays with the owner.
+  each stays with the owner. The claims ledger's `product.ai-coverage-tools`,
+  which said the thirteen keep their published definitions byte for byte and
+  cited the test by its old title, now names the one moved address and cites
+  both tests; the claims test failed on the old title in Phase J (J-6, rule
+  R3) and passed on the change.
