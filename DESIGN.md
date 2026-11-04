@@ -238,7 +238,7 @@ the top and fades into the void; the lockup sits at 28px in a pill under the
 apps' top bar (296px down); the words end 380px above the bottom, clear of
 the reply bar, with the way to try it and the address. Compatibility shows
 the score as a trophy (A: both panels facing, the discs, a 400px ring, the
-verdict, the two names); the sky calendar shows its event as a quote (B: the
+verdict, Person A and Person B); the sky calendar shows its event as a quote (B: the
 Sky dial, the event in large italic behind a rule); a date, a birthday and a
 horoscope are keepsakes (C), a date keeping its score small, so a low score
 never headlines a wedding. The drawn arrow stands in for the text arrow,
@@ -379,8 +379,8 @@ one line.
 
 | Card | Image | Kicker, title, line |
 | --- | --- | --- |
-| Two charts | `/api/og/compatibility-image` | "Two charts compared", "Ana and Luis", "60 out of 100. A good match, with some work to do" |
-| A date | `/api/og/occasion-image` | "Our wedding", "Ana & Luis", "69 out of 100. A good day for it" |
+| Two charts | `/api/og/compatibility-image` | "Two charts compared", "Person A and Person B", "60 out of 100. A good match, with some work to do"; never a name: an older link's first names are dropped |
+| A date | `/api/og/occasion-image` | "The sky on the day", "Our wedding", "69 out of 100. A good day for it"; never names or a place: an older link's are dropped |
 | A birthday | `/api/og/birthday-image` | "A birthday", "3 May birthdays", "Taurus Sun" (a cusp date: both signs, "On the cusp of Aries and Taurus"); with a famous birthday, "Taurus Sun, like Audrey Hepburn" |
 | Sky calendar | `/api/og/sky-calendar-image` | "Sky calendar", "The sky in your calendar", "Mercury retrograde, Sat 24 Oct to Fri 13 Nov." (no disc: it names no sign, as on its card) |
 | A horoscope | `/api/og/horoscope-image` | "Horoscope for Saturday 17 October", "Leo", the reading's own line for the sign ("For Leo, …"); a month's or year's ("Horoscope for November 2026", "Horoscope for 2026") quotes the published reading's first sentence of 150 characters or fewer |

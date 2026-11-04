@@ -65,14 +65,18 @@ import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
 import { CHINESE_ZODIAC_NOTE } from '../ai-tools/features/chinese-zodiac';
 import { HOROSCOPE_DISCLOSURE } from '../ai-tools/horoscope/reading';
 
-const COMPAT = 'a=Ana&as=leo&b=Luis&bs=libra&score=78&attraction=82&communication=71&stability=80&v=strong';
+const COMPAT = 'as=leo&bs=libra&score=78&attraction=82&communication=71&stability=80&v=strong';
+/** The same result as a link made before the assistant tools stopped writing names (0.6.1): it opens, without them. */
+const COMPAT_NAMED = 'a=Ana&as=leo&b=Luis&bs=libra&score=78&attraction=82&communication=71&stability=80&v=strong';
 const json = <T>(path: string): T => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8')) as T;
 const DAYS = json<{ days: Record<string, { sign?: string; cusp?: { a: string; b: string } }> }>('../data/birthdays.json').days;
 const SKY_EVENTS = skyEvents({ ...json<any>('../data/sky.json'), eclipses: json<any>('../data/eclipses.json').eclipses });
 const WINDOW = json<HoroscopeWindow>('../data/horoscope-window.json');
 const TODAY = WINDOW.generatedFor;
 const WEEK = WINDOW.editions.find((edition) => edition.anchorDate === TODAY)!.signs.leo.weekly.period;
-const OCCASION = 'o=wedding&d=2027-06-12&n=Ana+%26+Luis&p=Florence&sun=gemini&moon=libra&score=84&v=excellent';
+const OCCASION = 'o=wedding&d=2027-06-12&sun=gemini&moon=libra&score=84&v=excellent';
+/** The same date as an older link with the couple's names and the place: it opens, without them. */
+const OCCASION_NAMED = 'o=wedding&d=2027-06-12&n=Ana+%26+Luis&p=Florence&sun=gemini&moon=libra&score=84&v=excellent';
 const FAMOUS = famousBirthdays(json<{ people: Parameters<typeof famousBirthdays>[0] }>('../ai-tools/features/people-index.json').people);
 const PEOPLE = json<{ people: IndexedPerson[] }>('../ai-tools/features/people-index.json').people;
 const SATURN = 'k=saturn-return&i=1&a=29';
@@ -101,15 +105,17 @@ function nodeResponse() {
 }
 
 describe('share card models', () => {
-  it('show names, signs in their hues, the score, the verdict and the three areas', () => {
+  it('show Person A and Person B, signs in their hues, the score, the verdict and the three areas, never a name', () => {
     const model = compatibilityCardModel(parseCompatibilityShare(new URLSearchParams(COMPAT))!);
     expect(model).toMatchObject({
-      first: 'Ana', second: 'Luis', score: 78, verdict: 'A strong match',
+      first: 'Person A', second: 'Person B', score: 78, verdict: 'A strong match',
       people: [{ slug: 'leo', label: 'Leo Sun', hue: '#E0A9B4' }, { slug: 'libra', label: 'Libra Sun', hue: '#D3A9DE' }],
       ring: ['#E0A9B4', '#D3A9DE'],
       areas: [{ label: 'Attraction', value: 82 }, { label: 'Communication', value: 71 }, { label: 'Stability', value: 80 }],
-      title: 'Ana and Luis: 78/100',
+      title: 'Person A and Person B: 78/100',
     });
+    // Handed an older link's names, the card is the same.
+    expect(compatibilityCardModel(parseCompatibilityShare(new URLSearchParams(COMPAT_NAMED))!)).toEqual(model);
   });
 
   it('call unnamed people Person A and Person B, and draw an unknown sign in the neutral tone', () => {
@@ -119,13 +125,16 @@ describe('share card models', () => {
     expect(model.verdict).toBe('A challenging match');
   });
 
-  it('give a date its headline, the day in words, the place and the Sun and Moon', () => {
+  it('give a date its headline, the day in words and the Sun and Moon, never names or a place', () => {
     const model = occasionCardModel(parseOccasionShare(new URLSearchParams(OCCASION))!);
     expect(model).toMatchObject({
-      names: 'Ana & Luis', headline: 'Our wedding', when: 'Saturday, 12 June 2027 in Florence', score: 84, verdict: 'An excellent day for it',
+      headline: 'Our wedding', when: 'Saturday, 12 June 2027', score: 84, verdict: 'An excellent day for it',
       signs: [{ label: 'Gemini Sun' }, { label: 'Libra Moon' }],
-      title: 'Ana & Luis: Wedding, 84/100',
+      title: 'Wedding, 84/100',
     });
+    expect(model).not.toHaveProperty('names');
+    // Handed an older link's names and place, the card is the same.
+    expect(occasionCardModel(parseOccasionShare(new URLSearchParams(OCCASION_NAMED))!)).toEqual(model);
     expect(longDate('1999-08-11')).toBe('Wednesday, 11 August 1999');
   });
 });
@@ -314,7 +323,7 @@ describe('share link pages', () => {
     expect(html).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(html).toContain(`<img class="card" src="${image}"`);
     expect(html).toContain('<a class="cta" href="/compatibility/?ref=chatgpt">Check your own compatibility</a>');
-    expect(html).toContain('<title>Ana and Luis: 78/100 on Zodiacs</title>');
+    expect(html).toContain('<title>Person A and Person B: 78/100 on Zodiacs</title>');
     expect(html).not.toMatch(/ref=chatgpt[^"]*"[^>]*og:image|image\?[^"]*ref=/u);
     // The same result as a 1080×1920 picture, to save and post as a story.
     expect(html).toContain(`<p class="story"><a href="/api/og/compatibility-story?${COMPAT.replaceAll('&', '&amp;')}" download="zodiacs-compatibility-story.jpg">Save the picture for your story</a></p>`);
@@ -325,9 +334,45 @@ describe('share link pages', () => {
     const html = await response.text();
     expect(html).toContain(`content="https://zodiacs.org/api/og/occasion-image?${OCCASION.replaceAll('&', '&amp;')}"`);
     expect(html).toContain('<a class="cta" href="/occasions/">Rate your own date</a>');
-    expect(html).toContain('Ana &amp; Luis: our wedding');
+    expect(html).toContain('<h1>Our wedding</h1>');
     expect(html).toContain('download="zodiacs-wedding-story.jpg"');
   });
+
+  it('open an older link with names and a place, and show neither in the HTML, the title, the description or the image', async () => {
+    const names = /Ana|Luis|Florence/u;
+    const pages = [
+      [handleCompatibilityLinkRequest, 'compatibility', COMPAT_NAMED, COMPAT],
+      [handleOccasionLinkRequest, 'occasion', OCCASION_NAMED, OCCASION],
+    ] as const;
+    for (const [handle, kind, named, plain] of pages) {
+      const response = await handle(new Request(`https://zodiacs.org/share/${kind}/?${named}&ref=chatgpt`));
+      const html = await response.text();
+      expect(response.status, kind).toBe(200);
+      expect(html, kind).toContain(`content="https://zodiacs.org/api/og/${kind}-image?${plain.replaceAll('&', '&amp;')}"`);
+      for (const part of [html.match(/<title>[^<]*<\/title>/u)?.[0], html.match(/<meta name="description" content="[^"]*">/u)?.[0], html.match(/<meta property="og:title" content="[^"]*">/u)?.[0]]) {
+        expect(part, kind).toBeTruthy();
+        expect(part, kind).not.toMatch(names);
+      }
+      expect(html, kind).not.toMatch(names);
+      // The page is the one the same link without them opens.
+      expect(html, kind).toBe(await (await handle(new Request(`https://zodiacs.org/share/${kind}/?${plain}&ref=chatgpt`))).text());
+    }
+    // The preview image and the story are the nameless link's pictures, byte for byte.
+    const pictures = [
+      [handleCompatibilityImageRequest, 'compatibility-image', COMPAT_NAMED, COMPAT],
+      [handleCompatibilityStoryRequest, 'compatibility-story', COMPAT_NAMED, COMPAT],
+      [handleOccasionImageRequest, 'occasion-image', OCCASION_NAMED, OCCASION],
+      [handleOccasionStoryRequest, 'occasion-story', OCCASION_NAMED, OCCASION],
+    ] as const;
+    for (const [handle, route, named, plain] of pictures) {
+      const [withNames, without] = await Promise.all([named, plain].map(async (query) => {
+        const response = await handle(new Request(`https://zodiacs.org/api/og/${route}?${query}`));
+        expect(response.status, route).toBe(200);
+        return Buffer.from(await response.arrayBuffer());
+      }));
+      expect(withNames.equals(without), route).toBe(true);
+    }
+  }, 60_000);
 
   it('open the plain page, with the site’s own card, for a query that is not a share', async () => {
     const response = await handleCompatibilityLinkRequest(new Request('https://zodiacs.org/share/compatibility/?a=%3Cscript%3E&score=78'));
@@ -543,10 +588,10 @@ describe('share preview images', () => {
   it.each([
     ['compatibility', () => handleCompatibilityImageRequest(new Request(`https://zodiacs.org/api/og/compatibility-image?${COMPAT}`))],
     ['date', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${OCCASION}`))],
-    ['accented names', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?a=%C5%81ukasz&b=Zo%C3%AB&score=63&attraction=70&communication=59&stability=58&v=good'))],
-    ['accented names on a date', () => handleOccasionImageRequest(new Request('https://zodiacs.org/api/og/occasion-image?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
-    ['Cyrillic names', () => handleCompatibilityImageRequest(new Request(`https://zodiacs.org/api/og/compatibility-image?${new URLSearchParams({ a: 'Анна', b: 'Иван', score: '63', attraction: '70', communication: '59', stability: '58', v: 'good' })}`))],
-    ['Cyrillic names on a date', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${new URLSearchParams({ o: 'anniversary', d: '2027-09-04', n: 'Анна & Іван', p: 'Київ', sun: 'virgo', moon: 'pisces', score: '72', v: 'good' })}`))],
+    ['older link with accented names', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?a=%C5%81ukasz&b=Zo%C3%AB&score=63&attraction=70&communication=59&stability=58&v=good'))],
+    ['older date link with accented names and place', () => handleOccasionImageRequest(new Request('https://zodiacs.org/api/og/occasion-image?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
+    ['older link with Cyrillic names', () => handleCompatibilityImageRequest(new Request(`https://zodiacs.org/api/og/compatibility-image?${new URLSearchParams({ a: 'Анна', b: 'Иван', score: '63', attraction: '70', communication: '59', stability: '58', v: 'good' })}`))],
+    ['older date link with Cyrillic names and place', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${new URLSearchParams({ o: 'anniversary', d: '2027-09-04', n: 'Анна & Іван', p: 'Київ', sun: 'virgo', moon: 'pisces', score: '72', v: 'good' })}`))],
     ['one unknown sign', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?bs=pisces&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
     ['birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=05-03'))],
     ['cusp birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=04-20'))],
@@ -622,9 +667,9 @@ describe('share preview images', () => {
 describe('story pictures', () => {
   it.each([
     ['compatibility', () => handleCompatibilityStoryRequest(new Request(`https://zodiacs.org/api/og/compatibility-story?${COMPAT}`))],
-    ['long names compared', () => handleCompatibilityStoryRequest(new Request('https://zodiacs.org/api/og/compatibility-story?a=Maximiliana&as=capricorn&b=Bartholomew&bs=sagittarius&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
+    ['older link with long names', () => handleCompatibilityStoryRequest(new Request('https://zodiacs.org/api/og/compatibility-story?a=Maximiliana&as=capricorn&b=Bartholomew&bs=sagittarius&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
     ['wedding', () => handleOccasionStoryRequest(new Request(`https://zodiacs.org/api/og/occasion-story?${OCCASION}`))],
-    ['accented names on a date', () => handleOccasionStoryRequest(new Request('https://zodiacs.org/api/og/occasion-story?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
+    ['older date link with accented names and place', () => handleOccasionStoryRequest(new Request('https://zodiacs.org/api/og/occasion-story?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
     ['birthday', () => handleBirthdayStoryRequest(new Request('https://zodiacs.org/api/og/birthday-story?d=05-03'))],
     ['cusp birthday', () => handleBirthdayStoryRequest(new Request('https://zodiacs.org/api/og/birthday-story?d=04-20'))],
     ['sky calendar', () => handleSkyCalendarStoryRequest(new Request('https://zodiacs.org/api/og/sky-calendar-story?k=retrograde&b=mercury&d=2026-10-24'))],

@@ -67,7 +67,6 @@ export interface CompatibilityCardModel {
 }
 
 export interface OccasionCardModel {
-  names: string | null;
   headline: string;
   when: string;
   score: number;
@@ -86,9 +85,13 @@ function previewSign(slug: ShareSign | null, body: 'Sun' | 'Moon', unknown: stri
     : { slug: null, label: unknown, hue: NEUTRAL_HUE };
 }
 
+/**
+ * The two people are Person A and Person B. An older link's first names (a and b, which the assistant tools stopped
+ * writing in 0.6.1) are never drawn: a share link never carries a name.
+ */
 export function compatibilityCardModel(share: CompatibilityShare): CompatibilityCardModel {
-  const first = share.a ?? 'Person A';
-  const second = share.b ?? 'Person B';
+  const first = 'Person A';
+  const second = 'Person B';
   const people: [PreviewSign, PreviewSign] = [
     previewSign(share.aSun, 'Sun', 'Sun sign on the cusp'),
     previewSign(share.bSun, 'Sun', 'Sun sign on the cusp'),
@@ -121,8 +124,9 @@ export function longDate(date: string): string {
   return `${parts.weekday}, ${parts.day} ${parts.month} ${parts.year}`;
 }
 
+/** A date: the occasion, its day and the sky. An older link's names and place (n and p) are never drawn. */
 export function occasionCardModel(share: OccasionShare): OccasionCardModel {
-  const when = share.place ? `${longDate(share.date)} in ${share.place}` : longDate(share.date);
+  const when = longDate(share.date);
   const signs = [
     previewSign(share.sun, 'Sun', 'Sun'),
     previewSign(share.moon, 'Moon', 'Moon'),
@@ -134,14 +138,13 @@ export function occasionCardModel(share: OccasionShare): OccasionCardModel {
     share.moon ? HUES[share.moon] : share.sun ? HUES[share.sun] : NEUTRAL_HUE,
   ];
   return {
-    names: share.names,
     headline,
     when,
     score: share.score,
     verdict,
     signs,
     ring,
-    title: `${share.names ? `${share.names}: ` : ''}${OCCASION_LABELS[share.occasion].replace(/ \(.*\)$/u, '')}, ${share.score}/100`,
+    title: `${OCCASION_LABELS[share.occasion].replace(/ \(.*\)$/u, '')}, ${share.score}/100`,
     summary: `${verdict}. ${when}.`,
     confidence: share.confidence === null ? null : readingConfidenceText(share.confidence),
   };

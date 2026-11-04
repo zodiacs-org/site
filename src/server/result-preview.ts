@@ -11,7 +11,10 @@
  * logged, and every response is uncacheable and kept out of search. A card
  * that shows a forecast or a score prints its "Reading confidence NN%" label
  * (src/ai-tools/reading-confidence.ts), from the link's own value or, for a
- * Sun-sign horoscope, from the published reading.
+ * Sun-sign horoscope, from the published reading. A compatibility or date link
+ * made before the assistant tools stopped writing names (0.6.1) still opens, but
+ * its names and place are dropped as soon as it is read (readCompatibilityShare,
+ * readOccasionShare): no page, picture or link drawn from it carries them.
  */
 import { readFile } from 'node:fs/promises';
 import { encode as encodeJpeg } from 'jpeg-js';
@@ -123,9 +126,26 @@ import {
   occasionQuery,
   parseCompatibilityShare,
   parseOccasionShare,
+  type CompatibilityShare,
+  type OccasionShare,
   type ShareRef,
   type ShareSign,
 } from '../lib/share-results.js';
+
+/**
+ * A compatibility link as the server reads it: the first names an older link carries in a and b are dropped, so no
+ * page, picture, story or link made from it shows them. The keys stay readable, so that link still opens.
+ */
+export function readCompatibilityShare(params: URLSearchParams): CompatibilityShare | null {
+  const share = parseCompatibilityShare(params);
+  return share && { ...share, a: null, b: null };
+}
+
+/** A date's link as the server reads it: an older link's names (n) and place (p) are dropped, as above. */
+export function readOccasionShare(params: URLSearchParams): OccasionShare | null {
+  const share = parseOccasionShare(params);
+  return share && { ...share, names: null, place: null };
+}
 
 export const RESULT_SHARE_ROUTE_KEY = '__zodiacs_share';
 export const RESULT_SHARE_ROUTES = [
@@ -526,12 +546,11 @@ export function compatibilityCard(model: CompatibilityCardModel, images: Map<Sha
 const titleBlock = (title: string) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: fit([title], TEXT_WIDTH, 76, 44), lineHeight: 1.03, color: INK, textWrap: 'balance' } }, title);
 
 export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
-  const title = model.names ?? model.headline;
   return frame(art, words({
     discs: discRow(model.signs, images),
-    kicker: model.names ? model.headline : 'The sky on the day',
+    kicker: 'The sky on the day',
     hue: model.ring[0],
-    title: [titleBlock(title)],
+    title: [titleBlock(model.headline)],
     line: `${model.score} out of 100. ${model.verdict}`,
     confidence: model.confidence,
   }));
@@ -731,7 +750,7 @@ async function renderImage(element: VNode<any>, size: { width: number; height: n
 
 export async function handleCompatibilityImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
-  const share = parseCompatibilityShare(new URL(request.url).searchParams);
+  const share = readCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
   const [images, art] = await Promise.all([discImages(model.people), Promise.all(compatibilityArt(share).map(artImage))]).catch(() => [null, null] as const);
@@ -741,7 +760,7 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
-  const share = parseOccasionShare(new URL(request.url).searchParams);
+  const share = readOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
   const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
@@ -1013,7 +1032,7 @@ function storyRing(score: number, hues: [string, string], size: number, stroke: 
       h('div', { style: { display: 'flex', fontSize: labelSize, color: MUTED, marginTop: `${Math.round(numberSize * 0.06)}px` } }, 'out of 100')));
 }
 
-/** Compatibility (A, the score as a trophy): both panels, the discs, the ring, the verdict and the two names. */
+/** Compatibility (A, the score as a trophy): both panels, the discs, the ring, the verdict and Person A and Person B. */
 export function compatibilityStory(model: CompatibilityCardModel, images: Map<ShareSign, string>, art: string[]) {
   const nameSize = storyFit([`${model.first} and ${model.second}`], 96, 56);
   const areas = model.areas.map((area, index) => `${index === 0 ? area.label : area.label.toLowerCase()} ${area.value}`).join(', ');
@@ -1031,13 +1050,12 @@ export function compatibilityStory(model: CompatibilityCardModel, images: Map<Sh
   ]), model.people[0].slug);
 }
 
-/** A date (C, the keepsake): the wedding piece or the Sun's panel, the names, and the score kept small. */
+/** A date (C, the keepsake): the wedding piece or the Sun's panel, the occasion, and the score kept small. */
 export function occasionStory(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
-  const title = model.names ?? model.headline;
   return storyFrame(art, storyColumn([
     ...storyDiscs(model.signs, images),
-    storyKicker(model.names ? model.headline : 'The sky on the day', model.ring[0]),
-    storyTitle(title, storyFit([title], 110, 64)),
+    storyKicker('The sky on the day', model.ring[0]),
+    storyTitle(model.headline, storyFit([model.headline], 110, 64)),
     h('div', { style: { display: 'flex', alignItems: 'center', marginTop: '34px' } },
       storyRing(model.score, model.ring, 150, 10, 56, 17),
       h('div', { style: { display: 'flex', fontSize: 40, lineHeight: 1.25, color: INK, marginLeft: '28px', maxWidth: '560px' } }, model.verdict)),
@@ -1157,7 +1175,7 @@ const renderStory = (element: VNode<any>) => renderImage(element, STORY_SIZE);
 
 export async function handleCompatibilityStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
-  const share = parseCompatibilityShare(new URL(request.url).searchParams);
+  const share = readCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
   const [images, art] = await Promise.all([discImages(model.people), Promise.all(compatibilityArt(share).map(artImage))]).catch(() => [null, null] as const);
@@ -1167,7 +1185,7 @@ export async function handleCompatibilityStoryRequest(request: Request): Promise
 
 export async function handleOccasionStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
-  const share = parseOccasionShare(new URL(request.url).searchParams);
+  const share = readOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
   const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
@@ -1491,7 +1509,7 @@ export async function handleHoroscopeLinkRequest(request: Request): Promise<Resp
 export async function handleCompatibilityLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
-  const share = parseCompatibilityShare(url.searchParams);
+  const share = readCompatibilityShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultCompatibilityPage(url.origin)));
   const model = compatibilityCardModel(share);
   return htmlResponse(sharePageHtml({
@@ -1511,13 +1529,13 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
 export async function handleOccasionLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
-  const share = parseOccasionShare(url.searchParams);
+  const share = readOccasionShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultOccasionPage(url.origin)));
   const model = occasionCardModel(share);
   return htmlResponse(sharePageHtml({
     title: `${model.title} on Zodiacs`,
     description: model.summary,
-    heading: model.names ? `${model.names}: ${model.headline.charAt(0).toLowerCase()}${model.headline.slice(1)}` : model.headline,
+    heading: model.headline,
     imageUrl: `${url.origin}${OCCASION_SHARE_IMAGE_PATH}?${occasionQuery(share)}`,
     story: { href: `${OCCASION_SHARE_STORY_PATH}?${occasionQuery(share)}`, filename: `zodiacs-${share.occasion}-story.jpg` },
     imageType: 'image/jpeg',
