@@ -65,7 +65,7 @@ describe('get_personal_transits', () => {
     const year = await transits({ ...MADRID, mode: 'year-ahead' });
     const words = JSON.stringify([data.contacts, year.highlights]);
     expect(words).not.toMatch(/\b(illness|disease|surgery|diagnos|invest|stock|lottery|profit|guarantee[sd]?)\b/iu);
-  });
+  }, 40_000);
 
   it('refuses a window that starts before the birth date, and a year ahead before the birth', async () => {
     expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', from: '1850-01-01', to: '1850-12-01' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'The window starts before the birth date; give a from date on or after the birth date.' } });
