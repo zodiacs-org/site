@@ -55,6 +55,23 @@ const save = rpc('tools/call', { name: SAVE_TOOL_NAME, arguments: { kind: 'occas
 const on = { ZODIACS_ACCOUNTS_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1' };
 
 describe('accounts on: mixed authentication on the hosted MCP', () => {
+  it('names the saved page as the one exception to storing no birth details, and only while saving is on', async () => {
+    const exception = 'The only exception is a page a signed-in person chooses to save to their own account.';
+    const never = 'Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day.';
+    const { service } = fakeService();
+    const { host } = await serve(on, { accounts: service });
+    const init = (await call(host, '/mcp', 'POST', rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'accounts-on', version: '1' } }))).message.result;
+    expect(init.instructions).toContain(`${never} ${exception}`);
+    const capabilities = (await call(host, '/mcp', 'POST', rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).message.result.structuredContent;
+    expect(capabilities.data.privacy).toContain(`${never} ${exception}`);
+    const off = await serve({ ZODIACS_OCCASIONS_ENABLED: '1' });
+    const offInit = (await call(off.host, '/mcp', 'POST', rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'accounts-off', version: '1' } }))).message.result;
+    expect(offInit.instructions).toContain(never);
+    expect(offInit.instructions).not.toContain(exception);
+    const offCapabilities = (await call(off.host, '/mcp', 'POST', rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).message.result.structuredContent;
+    expect(offCapabilities.data.privacy).not.toContain(exception);
+  });
+
   it('lists the save tool with OAuth and keeps every other tool anonymous', async () => {
     const { service } = fakeService();
     const { host } = await serve(on, { accounts: service });

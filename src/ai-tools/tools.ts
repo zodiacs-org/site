@@ -14,7 +14,7 @@ import { compatibilityMissing, computeCompatibility } from './features/compatibi
 import { findChartTwins, getFamousChart } from './features/people';
 import { getBirthday, getSkyCalendar } from './features/birthday';
 import { rateOccasionDate } from '../lib/occasions/date-score';
-import { personalWeek } from './features/personal-week';
+import { guardPersonalWeek, personalWeek } from './features/personal-week';
 import { bestDays, type BestDays } from '../lib/occasions/best-dates';
 import { occasionShareUrl } from '../lib/share-results';
 import { milestoneShareUrl } from './share-links';
@@ -69,7 +69,9 @@ export interface AiCallContext {
 }
 
 const PRIVACY_POLICY = 'https://zodiacs.org/privacy/';
-const PRIVACY_WITH_BIRTH_TOOLS = `Public-sky tools and Sun-sign horoscopes need no birth details. The compatibility, occasion, chart-twin, birthday and milestone tools, and a personal weekly forecast in get_horoscope, take the dates you give for that answer only and save none of them. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure. Chart Studio calculates in the browser; only explicitly reviewed selections are sent to the assistant. Hosting-layer request metadata has a separate retention policy, set out in the privacy policy: ${PRIVACY_POLICY}. Links to zodiacs.org end in ?ref=chatgpt or ?ref=assistant so the site can count those visits; the page removes it as it opens.`;
+/** With saving switched on (ZODIACS_ACCOUNTS_ENABLED=1), the one place a birth detail is kept: the person's own saved page. */
+export const SAVED_PAGE_EXCEPTION = 'The only exception is a page a signed-in person chooses to save to their own account.';
+const privacyWithBirthTools = (accounts: boolean) => `Public-sky tools and Sun-sign horoscopes need no birth details. The compatibility, occasion, chart-twin, birthday and milestone tools, and a personal weekly forecast in get_horoscope, take the dates you give for that answer only and save none of them. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day.${accounts ? ` ${SAVED_PAGE_EXCEPTION}` : ''} Ask before using someone else's birth details. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure. Chart Studio calculates in the browser; only explicitly reviewed selections are sent to the assistant. Hosting-layer request metadata has a separate retention policy, set out in the privacy policy: ${PRIVACY_POLICY}. Links to zodiacs.org end in ?ref=chatgpt or ?ref=assistant so the site can count those visits; the page removes it as it opens.`;
 const PRIVACY = `Public-sky tools and horoscopes need no birth details and save no request or result. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure; the local developer server runs on its own machine. Chart Studio calculates in the browser; only explicitly reviewed selections are sent to the assistant, and downloaded records contain personal chart data. Hosting-layer request metadata has a separate retention policy, set out in the privacy policy: ${PRIVACY_POLICY}. Links to zodiacs.org end in ?ref=chatgpt or ?ref=assistant so the site can count those visits; the page removes it as it opens.`;
 const methodLink = { title: 'How we calculate', url: `${ORIGIN}/methodology/` };
 const moonLink = { title: 'Explore Moon phases', url: `${ORIGIN}/moon-phase/` };
@@ -174,16 +176,16 @@ function clockTime(utc: string, zone: string | null) {
 const optionalClock = (utc: string | null, zone: string | null) => (utc ? clockTime(utc, zone) : null);
 
 /** A birthday, a baby's arrival, or a coming of age: the date can be a birth date, so it stays out of every link. */
-const BIRTH_OCCASIONS = new Set(['birthday', 'baby', 'coming-of-age']);
-const occasionPageUrl = `${ORIGIN}/occasions/`;
+export const BIRTH_OCCASIONS: ReadonlySet<string> = new Set(['birthday', 'baby', 'coming-of-age']);
 
 /**
  * The card page with its details after the #, as the site's own Copy link makes it. The page reads a
  * zone only with the place's coordinates, so a zone without them gets no link rather than one that
- * opens on a different card. A birthday, a baby's arrival, or a coming of age is the page address only.
+ * opens on a different card. A birthday, a baby's arrival, or a coming of age gets no card link: the
+ * answer's links then give the occasions page, as the published description says to use when cardUrl is null.
  */
 function occasionCardUrl(args: { occasion: string; date: string; time?: string; zone?: string; latitude?: number; longitude?: number; place?: string; names?: string }): string | null {
-  if (BIRTH_OCCASIONS.has(args.occasion)) return occasionPageUrl;
+  if (BIRTH_OCCASIONS.has(args.occasion)) return null;
   if (args.zone && (args.latitude === undefined || args.longitude === undefined)) return null;
   const params = new URLSearchParams({ o: args.occasion, d: args.date });
   if (args.time) params.set('t', args.time);
@@ -280,12 +282,13 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const eclipseLine = dependencies.coverage
           ? 'Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations. No birth-time rectification, reminders or account access.'
           : 'Eclipses are listed by get_sky_calendar. get_upcoming_events lists ingresses, stations and lunations, not eclipses or aspects. No birth-time rectification, reminders or account access.';
-        data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => (ALL_AI_TOOL_NAMES as readonly string[]).includes(name)), limits: LIMITS, conventions: statements.conventions, coverage: { ...statements.coverage, tools: offered.join(', '), eclipses: dependencies.coverage ? 'get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations.' : 'get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.', aspects: dependencies.coverage ? 'get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects.' : 'get_upcoming_events does not search aspects.' }, privacy: dependencies.occasions ? PRIVACY_WITH_BIRTH_TOOLS : PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', eclipseLine, dependencies.occasions ? 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person’s own chart.' : 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
+        data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => (ALL_AI_TOOL_NAMES as readonly string[]).includes(name)), limits: LIMITS, conventions: statements.conventions, coverage: { ...statements.coverage, tools: offered.join(', '), eclipses: dependencies.coverage ? 'get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations.' : 'get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.', aspects: dependencies.coverage ? 'get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects.' : 'get_upcoming_events does not search aspects.' }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', eclipseLine, dependencies.occasions ? 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person’s own chart.' : 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
         if (dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
-          capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. The famous-chart and sky-calendar tools need no personal details.';
+          capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday, a baby\'s arrival or a coming of age gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details.';
           capabilities.limitations.push('The occasion tools give the sky on a date, rate it from 0 to 100 by astrology\'s traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology\'s life milestones; they do not guarantee how a day will go.');
-          capabilities.limitations.push('Compatibility scores two charts by astrology\'s reading of their contacts; it does not guarantee how a relationship will go. Famous charts, alone or compared with someone\'s own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
+          capabilities.limitations.push('Compatibility scores two charts by astrology\'s reading of their contacts; it does not guarantee how a relationship will go. Compatibility readings are for two adults: when either birth date is under 18 it gives no reading, and points to a friendship reading of the two Sun signs instead. Famous charts, alone or compared with someone\'s own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
+          if (!dependencies.coverage) capabilities.limitations.push('Which tool: what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; one birthday, get_birthday; lifetime returns, get_life_milestones.');
         }
         if (dependencies.occasions && dependencies.coverage) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -296,7 +299,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
             ...offeredTools(dependencies).filter(isPlaceTool).map((name) => `${name} (a town or city name, with coordinates and a time zone for the chart tools)`),
           ];
           const listed = (data as { tools: string[] }).tools.length;
-          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(', ')}${added.length > 1 ? ' and ' : ''}${added.at(-1)}. They give astrology's reading, never a guarantee, and no health or money predictions. With them Zodiacs offers ${listed + added.length} tools: the ${listed} in the tools field and these ${added.length}.`);
+          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(', ')}${added.length > 1 ? ' and ' : ''}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice. With them Zodiacs offers ${listed + added.length} tools: the ${listed} in the tools field and these ${added.length}.`);
+          capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes('find_birthplace') ? ' a town or city named instead of coordinates, find_birthplace;' : ''} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -383,7 +387,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
             catch { return failure(tool, 'invalid-timezone', "Zodiacs doesn't recognise that birthplace time zone. Use a name such as Europe/London."); }
           }
           try {
-            const personal = await personalWeek({ birthDate: args.birthDate, ...(args.birthTime ? { birthTime: args.birthTime } : {}), ...(birthZone ? { birthZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), zone);
+            // Under 18 on the person's own date, no line reads as romance.
+            const personal = guardPersonalWeek(await personalWeek({ birthDate: args.birthDate, ...(args.birthTime ? { birthTime: args.birthTime } : {}), ...(birthZone ? { birthZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), zone), args.birthDate, localDate);
             const personalLabel = readingConfidenceLabel(readingDetail({ hasDate: true, hasTime: args.birthTime !== undefined, hasPlace: false }));
             personal.note = `${personal.note} ${personalLabel}. For the dates of these contacts, use get_personal_transits.`;
             (data as { personal?: unknown }).personal = personal;
@@ -434,7 +439,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         // The share link carries the day, the Sun and Moon signs and the rating. Names stay out of the link.
         // A birthday, a baby's arrival, or a coming of age gets none: that date can be a birth date.
         const shareUrl = BIRTH_OCCASIONS.has(args.occasion) ? null : occasionShareUrl(ORIGIN, { occasion: args.occasion, date, names: null, place: null, sun: signOf('Sun'), moon: signOf('Moon'), score: rating.score });
-        const printable = cardUrl !== null && cardUrl !== occasionPageUrl;
+        const printable = cardUrl !== null;
         data = {
           occasion: args.occasion, date, time: args.time ?? null, zone, place: args.place ?? null, names: args.names ?? null,
           card: card.words,
@@ -504,7 +509,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           links = [{ title: 'Famous birth charts on Zodiacs', url: missing.directoryUrl }];
           break;
         }
-        const result = await feature(() => computeCompatibility(pair, localTime()));
+        const result = await feature(() => computeCompatibility(pair, localTime(), ORIGIN, dependencies.now?.() ?? new Date()));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;
@@ -532,7 +537,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       case 'get_natal_chart': {
         const args = INPUT_SCHEMAS.get_natal_chart.parse(input);
         const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : undefined;
-        const result = await feature(() => getNatalChart({ ...args, ...(zone ? { zone } : {}) }, localTime(), ORIGIN));
+        const today = (dependencies.now?.() ?? new Date()).toISOString().slice(0, 10);
+        const result = await feature(() => getNatalChart({ ...args, ...(zone ? { zone } : {}) }, localTime(), ORIGIN, today));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;
@@ -540,13 +546,14 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       case 'get_horoscope_period': {
         const args = INPUT_SCHEMAS.get_horoscope_period.parse(input);
         let zone = 'UTC';
+        let zoneSource: 'request' | 'assistant' | 'default' = 'default';
         if (args.zone) {
-          try { zone = await zoneAt(args.zone, '/zone', resolveZone); }
+          try { zone = await zoneAt(args.zone, '/zone', resolveZone); zoneSource = 'request'; }
           catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok."); }
         } else if (context.hostZone) {
-          try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); } catch { /* keep UTC */ }
+          try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); zoneSource = 'assistant'; } catch { /* keep UTC and say so */ }
         }
-        const result = await feature(() => getHoroscopePeriod(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, localTime(), {
+        const result = await feature(() => getHoroscopePeriod(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, zoneSource, localTime(), {
           window: dependencies.horoscopeWindow!, months: dependencies.horoscopeMonths!, program: dependencies.horoscopeProgram!,
           ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
         }, ORIGIN));
@@ -558,9 +565,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       case 'get_chinese_zodiac': {
         const args = INPUT_SCHEMAS.get_chinese_zodiac.parse(input);
         let zone = 'UTC';
-        if (args.zone) zone = await zoneAt(args.zone, '/zone', resolveZone);
-        else if (context.hostZone) { try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); } catch { /* keep UTC */ } }
-        const result = await feature(async () => getChineseZodiac(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, ORIGIN));
+        let zoneAssumed = true;
+        if (args.zone) { zone = await zoneAt(args.zone, '/zone', resolveZone); zoneAssumed = false; }
+        else if (context.hostZone) { try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); zoneAssumed = false; } catch { /* keep UTC and say so */ } }
+        const result = await feature(async () => getChineseZodiac(args, dateInZone(dependencies.now?.() ?? new Date(), zone), zone, ORIGIN, zoneAssumed));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;
@@ -569,7 +577,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const args = INPUT_SCHEMAS.get_personal_transits.parse(input);
         const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : undefined;
         let currentZone = args.currentZone ? await zoneAt(args.currentZone, '/currentZone', resolveZone) : undefined;
-        if (!currentZone && !zone && context.hostZone) { try { currentZone = await zoneAt(context.hostZone, '/currentZone', resolveZone); } catch { /* keep the default */ } }
+        // A zone the assistant shares is where the person is now, so it sets the clock even when a birthplace zone was given.
+        if (!currentZone && context.hostZone) { try { currentZone = await zoneAt(context.hostZone, '/currentZone', resolveZone); } catch { /* the answer says which clock it used */ } }
         // A scan of the sky over a window is an event search; count it as one at the hosted boundary.
         if (dependencies.allowEvents) {
           const verdict = await dependencies.allowEvents();

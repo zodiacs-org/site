@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_WIDGET_URIS, LEGACY_STUDIO_URIS, LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, LEGACY_OCCASIONS_URIS, OCCASION_TOOL_NAMES } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_WIDGET_URIS, LEGACY_STUDIO_URIS, LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, LEGACY_OCCASIONS_URIS, OCCASION_TOOL_NAMES, READINGS_URI, COVERAGE_TOOL_NAMES } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
@@ -14,7 +14,8 @@ let atomicRequest: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 let atomicEvent: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 const atomicCounted: string[] = [];
 let occasionsSwitch: string | undefined;
-const env = { get ZODIACS_MCP_ENABLED() { return enabled; }, get ZODIACS_OCCASIONS_ENABLED() { return occasionsSwitch; } };
+let coverageSwitch: string | undefined;
+const env = { get ZODIACS_MCP_ENABLED() { return enabled; }, get ZODIACS_OCCASIONS_ENABLED() { return occasionsSwitch; }, get ZODIACS_COVERAGE_ENABLED() { return coverageSwitch; } };
 beforeAll(async () => {
   server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); return kind === 'request' ? atomicRequest : atomicEvent; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -234,6 +235,37 @@ describe('stateless MCP HTTP boundary', () => {
       // Scripts and fonts remain inline. The only remote assets are static art on our own site.
       expect(content.text).not.toMatch(/<(?:script|link)[^>]+(?:src|href)=["']https?:/u);
     } finally { occasionsSwitch = undefined; }
+  });
+  it('lists and reads the readings panel only while coverage is on, inline and without a sidebar launch', async () => {
+    const resources = async () => (await readMessage(await post(rpc('resources/list')))).result.resources.map((resource: { uri: string }) => resource.uri);
+    expect(READINGS_URI).toBe('ui://zodiacs/readings-v3.html');
+    occasionsSwitch = '1';
+    try {
+      expect(await resources()).not.toContain(READINGS_URI);
+      coverageSwitch = '1';
+      const listed = await resources();
+      expect(listed).toContain(READINGS_URI);
+      // The retired staging addresses are never served.
+      for (const retired of ['ui://zodiacs/readings-v1.html', 'ui://zodiacs/readings-v2.html']) expect(listed).not.toContain(retired);
+      const tools = (await readMessage(await post(rpc('tools/list')))).result.tools;
+      // get_horoscope_period also needs the published months and the program, which this server is not given.
+      for (const name of COVERAGE_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope_period')) {
+        const meta = tools.find((tool: { name: string }) => tool.name === name)._meta;
+        expect(meta['openai/outputTemplate']).toBe(READINGS_URI);
+        expect(meta.ui.resourceUri).toBe(READINGS_URI);
+        expect(meta['openai/ui'].entrypoints).toEqual([{ type: 'thread' }]);
+      }
+      const read = await post(rpc('resources/read', { uri: READINGS_URI }));
+      expect(read.status).toBe(200);
+      const content = (await readMessage(read)).result.contents[0];
+      expect(content.mimeType).toBe('text/html;profile=mcp-app');
+      expect(content.text).toContain('<div id="readings">');
+      expect(content.text).toContain('https://zodiacs.org/assets/sign-art/leo-1200.avif');
+      expect(content.text).toContain('https://zodiacs.org/assets/art/chinese-zodiac/rat-1280.webp');
+      expect(content._meta?.ui).toMatchObject({ csp: { connectDomains: [], resourceDomains: ['https://zodiacs.org'] } });
+      expect(content._meta?.['openai/ui']).toMatchObject({ preferredDisplayMode: 'inline' });
+      expect(content.text).not.toMatch(/<(?:script|link)[^>]+(?:src|href)=["']https?:/u);
+    } finally { coverageSwitch = undefined; occasionsSwitch = undefined; }
   });
   it('serves the newer per-request protocol envelope without a session', async () => {
     const response = await post(rpc('tools/list', { _meta: {

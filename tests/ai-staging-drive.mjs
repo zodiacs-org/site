@@ -6,6 +6,7 @@ import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/cli
 import { STUDIO_HTML } from '../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
+import { READINGS_HTML } from '../integrations/generated/readings.mjs';
 
 const packageInfo = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const expectedEngine = packageInfo.dependencies['@zodiacs/engine'].match(/zodiacs-engine-(.+)\.tgz$/)[1];
@@ -59,11 +60,11 @@ try {
   await client.connect(new StreamableHTTPClientTransport(url, { fetch: pacedFetch, requestInit: { headers } }));
   const tools = (await client.listTools()).tools;
   // 0.5.0 acceptance runs with ZODIACS_OCCASIONS_ENABLED=1 on the staging deployment; 0.6.0 acceptance adds
-  // ZODIACS_COVERAGE_ENABLED=1 and its five tools (ZODIACS_STAGING_COVERAGE=1 tells this drive to expect them).
+  // ZODIACS_COVERAGE_ENABLED=1, its five tools and find_birthplace (ZODIACS_STAGING_COVERAGE=1 tells this drive to expect them).
   const coverage = process.env.ZODIACS_STAGING_COVERAGE === '1';
-  assert.equal(tools.length, coverage ? 18 : 13);
+  assert.equal(tools.length, coverage ? 19 : 13);
   for (const tool of tools) { assert.equal(tool.outputSchema.type, 'object'); assert.equal(tool.annotations.readOnlyHint, true); }
-  record(`${coverage ? 'eighteen' : 'thirteen'} read-only tools and output schemas`);
+  record(`${coverage ? 'nineteen' : 'thirteen'} read-only tools and output schemas`);
   const launcher = tools.find(tool => tool.name === 'open_chart_studio');
   assert.deepEqual(launcher.inputSchema.properties, {});
   assert.equal(launcher.inputSchema.additionalProperties, false);
@@ -91,13 +92,14 @@ try {
       ['get_chinese_zodiac', { birthDate: '1990-01-20' }],
       ['get_personal_transits', { birthDate: '1990-05-03' }],
       ['explain_astrology', { topic: 'Mercury retrograde' }],
+      ['find_birthplace', { place: 'Madrid', country: 'Spain', date: '1990-05-03' }],
     ] : []),
   ];
   for (const [name, args] of calls) {
     const start = performance.now();
     const result = await client.callTool({ name, arguments: args });
     assert.equal(result.isError, false); assert.equal(result.structuredContent.ok, true);
-    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.6.0');
+    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.6.1');
     if (name === 'get_horoscope') assert.equal(result.structuredContent.data.status, 'available');
     if (name === 'open_chart_studio') assert.deepEqual(result.structuredContent.data, {
       title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only',
@@ -136,6 +138,19 @@ try {
   record('native occasions resource matches the bundle with owned static art', {
     bytes: Buffer.byteLength(occasions.text), sha256: createHash('sha256').update(occasions.text).digest('hex'),
   });
+  if (coverage) {
+    // The five coverage tools' panel: inline, with no sidebar launch.
+    const readings = (await client.readResource({ uri: 'ui://zodiacs/readings-v3.html' })).contents[0];
+    assert.equal(readings.mimeType, 'text/html;profile=mcp-app');
+    assert.equal(readings.text, READINGS_HTML);
+    assert.equal(readings._meta['openai/ui'].preferredDisplayMode, 'inline');
+    const natal = tools.find((tool) => tool.name === 'get_natal_chart');
+    assert.equal(natal._meta.ui.resourceUri, 'ui://zodiacs/readings-v3.html');
+    assert.deepEqual(natal._meta['openai/ui'].entrypoints, [{ type: 'thread' }]);
+    record('readings panel matches the bundle, inline with no sidebar launch', {
+      bytes: Buffer.byteLength(readings.text), sha256: createHash('sha256').update(readings.text).digest('hex'),
+    });
+  }
   const studio = (await client.readResource({ uri: 'ui://zodiacs/chart-studio-v6.html' })).contents[0];
   assert.equal(studio.mimeType, 'text/html;profile=mcp-app');
   assert.equal(studio.text, STUDIO_HTML);

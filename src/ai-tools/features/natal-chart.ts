@@ -23,6 +23,7 @@ import { placementContext } from '../../lib/natal-context';
 import { roundCoordinate } from '../plain-text';
 import { SIGNS, formatLongitude, signIndexForLongitude, type Element, type Modality } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from './reading-guards';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -107,7 +108,10 @@ export const natalChartData = z.object({
     offsetUsed: z.string(),
     text: z.string(),
   }).optional(),
+  /** The birth chart page. It carries no birth date, time, place or coordinates. */
   chartUrl: z.url(),
+  /** True when the birth date is under 18 on the day of the call. Romantic and attraction readings are left out. */
+  under18: z.boolean(),
   note: z.literal(NATAL_NOTE),
 });
 export type NatalChartData = z.infer<typeof natalChartData>;
@@ -161,7 +165,8 @@ const slugAt = (index: number | null) => (index === null ? null : SIGNS[index].s
 const signName = (slug: string) => SIGNS.find((sign) => sign.slug === slug)!.name;
 const placementUrl = (origin: string, body: string, slug: string) => `${origin}/learn/placements/${body.toLowerCase()}-in-${slug}/`;
 
-export async function getNatalChart(args: NatalChartInput, clock: NatalClock, origin = DEFAULT_ORIGIN): Promise<{ data: NatalChartData; links: { title: string; url: string }[] }> {
+/** `today` is the caller's date (YYYY-MM-DD), for the under-18 rule. */
+export async function getNatalChart(args: NatalChartInput, clock: NatalClock, origin = DEFAULT_ORIGIN, today = new Date().toISOString().slice(0, 10)): Promise<{ data: NatalChartData; links: { title: string; url: string }[] }> {
   const date = parseCivilDate(args.birthDate);
   if (!date || date.year < NATAL_MIN_YEAR || date.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -253,6 +258,14 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
   });
   // The page link carries no birth date, time, name or coordinates. The readout stays in the answer.
   const chartUrl = `${origin}/birth-chart/`;
+  // Under 18, romantic and attraction wording is left out of every line; the sixth house never reads as health.
+  const under18 = isUnder18(args.birthDate, today);
+  const guard = (text: string) => (under18 ? softenMinor(softenHealth(text)) : softenHealth(text));
+  const guardedBig = (kind: 'sun' | 'moon' | 'rising', slug: string | null, options: string[], url: string | null) => {
+    const entry = big(kind, slug, options, url);
+    return { ...entry, meaning: entry.meaning ? guard(entry.meaning) : null };
+  };
+  if (under18) unknown.push(MINOR_NOTE);
   const data: NatalChartData = {
     birthDate: args.birthDate,
     time: args.time ?? null,
@@ -262,16 +275,17 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
     placed,
     castFor: { utc: utc.toISOString(), basis: timeKnown ? 'birth-time' : args.zone ? 'local-noon' : 'utc-noon' },
     houseSystem: angles ? 'whole-sign' : null,
-    sun: big('sun', sun.sign, sun.possibleSigns, sun.sign ? `${origin}/${sun.sign}/` : null),
-    moon: big('moon', moon.sign, moon.possibleSigns, moon.sign ? placementUrl(origin, 'Moon', moon.sign) : null),
-    rising: big('rising', risingSlug, risingSlug ? [risingSlug] : [], risingSlug ? `${origin}/rising-sign/${risingSlug}/` : null),
-    planets,
+    sun: guardedBig('sun', sun.sign, sun.possibleSigns, sun.sign ? `${origin}/${sun.sign}/` : null),
+    moon: guardedBig('moon', moon.sign, moon.possibleSigns, moon.sign ? placementUrl(origin, 'Moon', moon.sign) : null),
+    rising: guardedBig('rising', risingSlug, risingSlug ? [risingSlug] : [], risingSlug ? `${origin}/rising-sign/${risingSlug}/` : null),
+    planets: planets.map((row) => ({ ...row, signLine: row.signLine ? guard(row.signLine) : null, houseLine: row.houseLine ? guard(row.houseLine) : null })),
     angles: angles ? { ascendant: formatLongitude(angles.asc), midheaven: formatLongitude(angles.mc) } : null,
-    aspects,
-    balance: { elements: weather.elements as Record<Element, number>, modalities: weather.modalities as Record<Modality, number>, lines: weather.lines },
+    aspects: aspects.map((aspect) => ({ ...aspect, line: guard(aspect.line) })),
+    balance: { elements: weather.elements as Record<Element, number>, modalities: weather.modalities as Record<Modality, number>, lines: weather.lines.map(guard) },
     unknown,
     ...(timeNote ? { timeNote } : {}),
     chartUrl,
+    under18,
     note: NATAL_NOTE,
   };
   const links = [

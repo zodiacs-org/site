@@ -57,8 +57,9 @@ const WEEK = WINDOW.editions.find((edition) => edition.anchorDate === TODAY)!.si
 const OCCASION = 'o=wedding&d=2027-06-12&n=Ana+%26+Luis&p=Florence&sun=gemini&moon=libra&score=84&v=excellent';
 const FAMOUS = famousBirthdays(json<{ people: Parameters<typeof famousBirthdays>[0] }>('../ai-tools/features/people-index.json').people);
 const PEOPLE = json<{ people: IndexedPerson[] }>('../ai-tools/features/people-index.json').people;
-const SATURN = 'k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31';
-const ON = (date: string) => () => new Date(`${date}T12:00:00Z`);
+const SATURN = 'k=saturn-return&i=1&a=29';
+/** A milestone link made before the pass dates were left out: it still opens, drawn without them. */
+const SATURN_OLDER = 'k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31';
 const nativeFetch = globalThis.fetch;
 
 afterEach(() => {
@@ -189,12 +190,13 @@ describe('chart twins, famous chart and milestone share models', () => {
     expect(famousChartCardModel({ slug: 'someone-else', ref: null }, PEOPLE)).toBeNull();
   });
 
-  it('say whether a milestone is coming or under way on the day the link opens', () => {
+  it('name a milestone and its age, with no dates, for a new link and an older one alike', () => {
     const share = parseMilestoneShare(new URLSearchParams(SATURN))!;
-    expect(milestoneCardModel(share, ON('2026-01-10')())).toMatchObject({ title: 'First Saturn return', heading: 'First Saturn return, at 29', status: 'Coming up', span: '23 April to 31 December 2026' });
-    expect(milestoneCardModel(share, ON('2026-10-19')()).status).toBe('Under way now');
-    expect(milestoneCardModel(share, ON('2027-02-01')()).status).toBeNull();
-    expect(milestoneCardModel(parseMilestoneShare(new URLSearchParams('k=uranus-opposition&i=1&a=42&f=2027-03-02&l=2027-03-02'))!, ON('2026-10-19')())).toMatchObject({ title: 'Uranus opposition', span: '2 March 2027' });
+    const model = milestoneCardModel(share);
+    expect(model).toMatchObject({ title: 'First Saturn return', heading: 'First Saturn return, at 29', line: 'Saturn comes back to its place at birth' });
+    expect(milestoneCardModel(parseMilestoneShare(new URLSearchParams(SATURN_OLDER))!)).toEqual(model);
+    expect(JSON.stringify(model)).not.toMatch(/2026|April|December/u);
+    expect(milestoneCardModel(parseMilestoneShare(new URLSearchParams('k=uranus-opposition&i=1&a=42&f=2027-03-02&l=2027-03-02'))!)).toMatchObject({ title: 'Uranus opposition', line: 'Uranus stands opposite its place at birth' });
   });
 });
 
@@ -291,11 +293,17 @@ describe('share link pages', () => {
     expect(famous).toContain('content="https://zodiacs.org/api/og/famous-chart-image?p=frida-kahlo"');
     expect(famous).toContain('<a class="cta" href="/people/frida-kahlo/">Open Frida Kahlo’s chart</a>');
     expect(famous).toContain('a reference instant, not a birth time.');
-    const milestone = await (await handleMilestoneLinkRequest(new Request(`https://zodiacs.org/share/milestone/?${SATURN}`), ON('2026-10-19'))).text();
+    const milestone = await (await handleMilestoneLinkRequest(new Request(`https://zodiacs.org/share/milestone/?${SATURN}`))).text();
     expect(milestone).toContain('<h1>First Saturn return, at 29</h1>');
-    expect(milestone).toContain('Under way now: 23 April to 31 December 2026.');
+    expect(milestone).toContain('Saturn comes back to its place at birth.');
     expect(milestone).toContain('<a class="cta" href="/occasions/milestones/">Find your own milestones</a>');
     expect(milestone).toContain(`content="https://zodiacs.org/api/og/milestone-image?${SATURN.replaceAll('&', '&amp;')}"`);
+    // An older link still opens the same page, and its dates go no further: not into the text, the picture or the story.
+    const older = await (await handleMilestoneLinkRequest(new Request(`https://zodiacs.org/share/milestone/?${SATURN_OLDER}`))).text();
+    expect(older).toContain('<h1>First Saturn return, at 29</h1>');
+    expect(older).toContain(`content="https://zodiacs.org/api/og/milestone-image?${SATURN.replaceAll('&', '&amp;')}"`);
+    expect(older).toContain(`href="/api/og/milestone-story?${SATURN.replaceAll('&', '&amp;')}"`);
+    for (const page of [milestone, older]) expect(page).not.toMatch(/2026-04-23|2026-12-31|23 April|31 December|[?;]f=|[?;]l=/u);
     for (const page of [twins, famous, milestone]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
     // A bare address opens the directory; a named person absent from the directory is not a share.
     expect(await (await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/'))).text()).toContain('<h1>Famous birth charts</h1>');
@@ -380,8 +388,9 @@ describe('share preview images', () => {
     ['chart twins by the Sun', () => handleChartTwinsImageRequest(new Request('https://zodiacs.org/api/og/chart-twins-image?s=pisces'))],
     ['famous chart', () => handleFamousChartImageRequest(new Request('https://zodiacs.org/api/og/famous-chart-image?p=frida-kahlo'))],
     ['famous chart with a long name', () => handleFamousChartImageRequest(new Request('https://zodiacs.org/api/og/famous-chart-image?p=wolfgang-amadeus-mozart'))],
-    ['life milestone', () => handleMilestoneImageRequest(new Request(`https://zodiacs.org/api/og/milestone-image?${SATURN}`), ON('2026-10-19'))],
-    ['milestone that has passed', () => handleMilestoneImageRequest(new Request('https://zodiacs.org/api/og/milestone-image?k=jupiter-return&i=2&a=23&f=2020-01-10&l=2020-01-10'), ON('2026-10-19'))],
+    ['life milestone', () => handleMilestoneImageRequest(new Request(`https://zodiacs.org/api/og/milestone-image?${SATURN}`))],
+    ['life milestone from an older link with its dates', () => handleMilestoneImageRequest(new Request(`https://zodiacs.org/api/og/milestone-image?${SATURN_OLDER}`))],
+    ['Uranus opposition', () => handleMilestoneImageRequest(new Request('https://zodiacs.org/api/og/milestone-image?k=uranus-opposition&i=1&a=42'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -435,7 +444,8 @@ describe('story pictures', () => {
     ['chart twins', () => handleChartTwinsStoryRequest(new Request('https://zodiacs.org/api/og/chart-twins-story?s=taurus&m=leo'))],
     ['famous chart', () => handleFamousChartStoryRequest(new Request('https://zodiacs.org/api/og/famous-chart-story?p=frida-kahlo'))],
     ['famous chart with a long name', () => handleFamousChartStoryRequest(new Request('https://zodiacs.org/api/og/famous-chart-story?p=wolfgang-amadeus-mozart'))],
-    ['life milestone', () => handleMilestoneStoryRequest(new Request(`https://zodiacs.org/api/og/milestone-story?${SATURN}`), ON('2026-10-19'))],
+    ['life milestone', () => handleMilestoneStoryRequest(new Request(`https://zodiacs.org/api/og/milestone-story?${SATURN}`))],
+    ['life milestone from an older link with its dates', () => handleMilestoneStoryRequest(new Request(`https://zodiacs.org/api/og/milestone-story?${SATURN_OLDER}`))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');

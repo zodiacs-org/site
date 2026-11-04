@@ -498,7 +498,7 @@ function ageRing(age: number, hue: string, size: number, stroke: number, numberS
       h('div', { style: { display: 'flex', fontSize: labelSize, color: MUTED, marginTop: `${Math.round(numberSize * 0.08)}px` } }, 'age')));
 }
 
-/** A life milestone (A, the number as a trophy): the hourglass, the age in its ring beside the milestone, whether it is coming or under way, and its dates. */
+/** A life milestone (A, the number as a trophy): the hourglass, the age in its ring beside the milestone, and what the milestone is. No dates: they lead back to the birth date. */
 export function milestoneCard(model: MilestoneCardModel, art: string[]) {
   return frame(art, h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '64px', width: `${TEXT_WIDTH}px` } },
     h('div', { style: { display: 'flex', alignItems: 'center' } },
@@ -506,8 +506,7 @@ export function milestoneCard(model: MilestoneCardModel, art: string[]) {
       h('div', { style: { display: 'flex', flexDirection: 'column', marginLeft: '30px', flexGrow: 1 } },
         h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: model.hue } }, 'Life milestones'),
         titleLine(model.title, fit([model.title], TEXT_WIDTH - 202, 60, 40)))),
-    ...(model.status ? [italicLine(model.status, 34, 30)] : []),
-    h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: model.status ? '6px' : '30px' } }, model.span)));
+    h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '30px' } }, model.line)));
 }
 
 // ── Responses ────────────────────────────────────────────────────────
@@ -641,11 +640,11 @@ export async function handleFamousChartImageRequest(request: Request): Promise<R
   return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => famousChartCard(model, images, art));
 }
 
-export async function handleMilestoneImageRequest(request: Request, now: () => Date = () => new Date()): Promise<Response> {
+export async function handleMilestoneImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const share = parseMilestoneShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
-  const model = milestoneCardModel(share, now());
+  const model = milestoneCardModel(share);
   return imageFor([], ['milestones-hero'], (_images, art) => milestoneCard(model, art));
 }
 
@@ -888,7 +887,7 @@ export function famousChartStory(model: FamousChartCardModel, images: Map<ShareS
   ]), model.sign.slug);
 }
 
-/** A life milestone (C, the keepsake): the hourglass, the milestone, and the age kept small beside whether it is coming and its dates. */
+/** A life milestone (C, the keepsake): the hourglass, the milestone, and the age kept small beside what the milestone is. No dates. */
 export function milestoneStory(model: MilestoneCardModel, art: string[]) {
   return storyFrame(art, storyColumn([
     storyKicker('Life milestones', model.hue),
@@ -896,8 +895,7 @@ export function milestoneStory(model: MilestoneCardModel, art: string[]) {
     h('div', { style: { display: 'flex', alignItems: 'center', marginTop: '40px', padding: '18px 40px 18px 18px', borderRadius: '999px', background: 'rgba(15,18,26,0.82)', border: `1px solid ${HAIRLINE}` } },
       ageRing(model.age, model.hue, 176, 3, 76, 22),
       h('div', { style: { display: 'flex', flexDirection: 'column', marginLeft: '30px', maxWidth: '560px' } },
-        ...(model.status ? [h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 44, lineHeight: 1.2, color: INK } }, model.status)] : []),
-        h('div', { style: { display: 'flex', fontSize: 34, lineHeight: 1.3, color: INK_SOFT, marginTop: model.status ? '8px' : '0px' } }, model.span))),
+        h('div', { style: { display: 'flex', fontSize: 34, lineHeight: 1.3, color: INK_SOFT, textWrap: 'balance' } }, model.line))),
     storyAction('When is yours?', 'zodiacs.org/occasions/milestones'),
   ]));
 }
@@ -985,11 +983,11 @@ export async function handleFamousChartStoryRequest(request: Request): Promise<R
   return storyFor([model.sign], artOfSigns([model.sign]), (images, art) => famousChartStory(model, images, art));
 }
 
-export async function handleMilestoneStoryRequest(request: Request, now: () => Date = () => new Date()): Promise<Response> {
+export async function handleMilestoneStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const share = parseMilestoneShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
-  const model = milestoneCardModel(share, now());
+  const model = milestoneCardModel(share);
   return storyFor([], ['milestones-hero'], (_images, art) => milestoneStory(model, art));
 }
 
@@ -1339,22 +1337,22 @@ export async function handleFamousChartLinkRequest(request: Request): Promise<Re
   }));
 }
 
-export async function handleMilestoneLinkRequest(request: Request, now: () => Date = () => new Date()): Promise<Response> {
+export async function handleMilestoneLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
   const share = parseMilestoneShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultMilestonePage(url.origin)));
-  const model = milestoneCardModel(share, now());
-  const when = model.status ? `${model.status}: ${model.span}` : model.span;
+  const model = milestoneCardModel(share);
+  // The picture and story addresses are rebuilt from the kind, ordinal and age, so an older link's dates go no further.
   return htmlResponse(sharePageHtml({
     title: `${model.heading}: life milestones on Zodiacs`,
-    description: `${when}. ${model.about}`,
+    description: `${model.line}. ${model.about}`,
     heading: model.heading,
     imageUrl: `${url.origin}${MILESTONE_SHARE_IMAGE_PATH}?${milestoneQuery(share)}`,
     story: { href: `${MILESTONE_SHARE_STORY_PATH}?${milestoneQuery(share)}`, filename: `zodiacs-${share.kind}-${share.index}-story.jpg` },
     imageType: 'image/jpeg',
-    imageAlt: `${model.heading}. ${when}.`,
-    explanation: `${when}. ${model.about}`,
+    imageAlt: `${model.heading}. ${model.line}.`,
+    explanation: model.about,
     action: { label: 'Find your own milestones', href: withRef('/occasions/milestones/', share.ref) },
     note: MILESTONE_NOTE,
   }));

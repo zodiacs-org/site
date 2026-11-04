@@ -38,15 +38,19 @@ Kinds and links:
 
 | tool kind | `saved_pages.kind` | link |
 | --- | --- | --- |
-| `chart` | `chart` | `/birth-chart/#c=…` with a birthplace; `/people/<slug>/` for a famous chart; otherwise `/birth-chart/#saved=<digest>` |
-| `comparison` | `compatibility` | the comparison link `/compatibility/#a=…&b=…` when both sides have a place; otherwise the sign-pair page with `#saved=<digest>` |
-| `occasion` | `occasion` | the card link `/occasions/#…`; without coordinates, `/occasions/#o=…&d=…` |
+| `chart` | `chart` | `/people/<slug>/` for a famous chart; otherwise `/birth-chart/#saved=<digest>`, never the birth details |
+| `comparison` | `compatibility` | the sign-pair page with `#saved=<digest>`; `/compatibility/#saved=<digest>` when a Sun sign is not known |
+| `occasion` | `occasion` | the card link `/occasions/#o=…&d=…`, carrying the day and at most its time, zone and coordinates rounded to two decimals, never names or a place name; `/occasions/#saved=<digest>` for a birthday, a baby's arrival or a coming of age |
 | `week` | `week` | `/horoscopes/#week=<date>&saved=<digest>` |
 
 The `#saved=` part is the first 16 hex characters of a SHA-256 of the worked-out
-result. It only keeps different results apart, because `saved_pages` keeps one row
-per account and link. Those pages ignore it, and the summary and `detail` hold
-the result.
+result. It keeps different results apart, because `saved_pages` keeps one row per
+account and link, and it carries no birth detail. Every page such a link names
+sends it on to `/profile/#saved=<digest>` before anything paints
+(`src/lib/profile/saved-result-link.ts`), where the saved list opens that result
+for the signed-in person and asks anyone signed out to sign in. The summary and
+`detail` hold the result; "Explore more on Zodiacs" in the profile opens the
+page without the `#saved=` part.
 
 The `detail` record has schema `zodiacs.assistant-save.v1`. Every string is plain
 text (no control characters, markup, brackets or backticks) and at most 600

@@ -15,7 +15,7 @@ import {
 import { HUES } from './chart-preview-model.js';
 import { returnText } from '../lib/return-visits/copy.js';
 import { signBySlug } from '../lib/signs.js';
-import { dateRange, fullDate, plain } from '../ai-tools/card-kit/words.js';
+import { fullDate, plain } from '../ai-tools/card-kit/words.js';
 import { MILESTONE_WORDS } from '../lib/occasions/milestone-words.js';
 import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
@@ -441,24 +441,29 @@ export interface MilestoneCardModel {
   title: string;
   /** "First Saturn return, at 29" */
   heading: string;
-  /** Read on the day the link opens: before the first pass, between the passes, or nothing once it is over. */
-  status: 'Coming up' | 'Under way now' | null;
-  /** "23 April to 31 December 2026", or one day. */
-  span: string;
+  /**
+   * What the milestone is, the same for everyone who reaches it: "Saturn comes back to its place at birth". A link
+   * carries no dates, because the days of the passes lead back to the birth date.
+   */
+  line: string;
   about: string;
   hue: string;
 }
 
-export function milestoneCardModel(share: MilestoneShare, now: Date): MilestoneCardModel {
+const MILESTONE_LINE: Readonly<Record<ShareMilestoneKind, string>> = {
+  'jupiter-return': 'Jupiter comes back to its place at birth',
+  'saturn-return': 'Saturn comes back to its place at birth',
+  'uranus-opposition': 'Uranus stands opposite its place at birth',
+};
+
+export function milestoneCardModel(share: MilestoneShare): MilestoneCardModel {
   const name = share.kind === 'uranus-opposition' ? MILESTONE_WORDS[share.kind].name : `${ordinal(share.index)} ${MILESTONE_WORDS[share.kind].name}`;
   const title = cap(name);
-  const today = now.toISOString().slice(0, 10);
   return {
     age: share.age,
     title,
     heading: `${title}, at ${share.age}`,
-    status: today < share.first ? 'Coming up' : today <= share.last ? 'Under way now' : null,
-    span: share.first === share.last ? fullDate(share.first) : dateRange(share.first, share.last).replace(/^from /u, ''),
+    line: MILESTONE_LINE[share.kind],
     about: MILESTONE_WORDS[share.kind].about,
     hue: HUES[MILESTONE_SIGN[share.kind]],
   };

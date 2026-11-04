@@ -4,6 +4,7 @@ import OccasionSky from '../../islands/OccasionSky.tsx';
 import '../../styles/calculator.css';
 import '../../styles/occasions.css';
 import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
+import { SAVED_RESULT_FORWARD } from '../../lib/profile/saved-result-link';
 
 const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
 
@@ -48,6 +49,8 @@ const jsonLd = [
   path="/occasions/"
   jsonLd={jsonLd}
 >
+  {/* A birthday, a baby's arrival or a coming of age saved from an assistant links here by its digest alone (#saved=…): it opens on the profile's saved list. */}
+  <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
       <h1 class="display">The sky on your day</h1>

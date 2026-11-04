@@ -1,6 +1,7 @@
 ---
 import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import Base from '../../layouts/Base.astro';
+import { SAVED_RESULT_FORWARD } from '../../lib/profile/saved-result-link';
 import Faq from '../../components/Faq.astro';
 import RaceRamp from '../../components/RaceRamp.astro';
 import SignIcon from '../../components/SignIcon.astro';
@@ -58,6 +59,8 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
   jsonLd={jsonLd}
   glass
 >
+  {/* A comparison saved from an assistant without a sign pair links here by its digest alone (#saved=…): it opens on the profile's saved list. */}
+  <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
   <section class="section--tight container container--narrow" id="calculator">
     <div class="compat-hero">
       <h1 class="display">Check your astrology compatibility.</h1>

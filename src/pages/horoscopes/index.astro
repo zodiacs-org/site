@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { SAVED_RESULT_FORWARD } from '../../lib/profile/saved-result-link';
 import EditionText from '../../components/EditionText.astro';
 import RaceRamp from '../../components/RaceRamp.astro';
 import SignIcon from '../../components/SignIcon.astro';
@@ -56,6 +57,8 @@ const jsonLd = [
   imageAlt="Daily horoscopes for all twelve signs, Zodiacs.org"
   jsonLd={jsonLd}
 >
+  {/* A personal week saved from an assistant links here by its digest (#week=…&saved=…): it opens on the profile's saved list. */}
+  <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
   <section class="section--tight container container--narrow" data-edition-content="true">
     <div class="horo-hero">
       <h1 class="display">Daily horoscopes</h1>

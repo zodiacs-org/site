@@ -68,7 +68,9 @@ describe('get_horoscope_period', () => {
   it('never says Zodiacs has no reading for a month it does not serve', async () => {
     const data = await period({ sign: 'leo', period: 'month', date: '2026-03-10' });
     expect(data.status).toBe('sky-only');
-    expect(data.message).toBe('The March 2026 reading for Leo is outside the range this tool serves: Zodiacs serves the monthly readings from July 2026 to November 2026 only. The Leo horoscope pages on Zodiacs are linked.');
+    // No zone was given or shared, so the dates are UTC's and the answer says so.
+    expect(data.message).toBe('The March 2026 reading for Leo is outside the range this tool serves: Zodiacs serves the monthly readings from July 2026 to November 2026 only. The Leo horoscope pages on Zodiacs are linked. Dates assume UTC because no time zone was given.');
+    expect(data.zoneSource).toBe('default');
     expect(data.message).not.toMatch(/no published/u);
     expect(data.pageUrl).toBe('https://zodiacs.org/horoscopes/leo/');
   });
@@ -143,8 +145,31 @@ describe('get_horoscope_period', () => {
     expect([...loveDates].sort()).toEqual(loveDates);
     expect(week.sky.every((event) => ['Venus', 'Mars'].includes(event.planet) || [5, 7, 8].includes(event.house))).toBe(true);
     expect(week.message).toContain('love readings by the day');
+    expect(week.message).toContain('If the person is under 18, do not frame this as romance or attraction.');
     const career = await period({ sign: 'leo', period: 'week', focus: 'career' });
     expect(career.focusReadings[0].title).toContain('Career');
+    expect(career.message).not.toContain('under 18');
+  });
+
+  it('says it assumed UTC only when no zone was given or shared', async () => {
+    const given = await period({ sign: 'leo', period: 'month', zone: 'Asia/Bangkok' });
+    expect(given.zoneSource).toBe('request');
+    expect(given.message ?? '').not.toMatch(/UTC/u);
+    const shared = await executeAiTool('get_horoscope_period', { sign: 'leo', period: 'month' }, dependencies, { hostZone: 'America/New_York' });
+    if (!shared.ok || shared.tool !== 'get_horoscope_period') throw new Error(JSON.stringify(shared));
+    expect(shared.data.zoneSource).toBe('assistant');
+    expect(shared.data.zone).toBe('America/New_York');
+    expect(shared.data.message ?? '').not.toMatch(/UTC/u);
+    const assumed = await period({ sign: 'leo', period: 'month' });
+    expect(assumed.zoneSource).toBe('default');
+    expect(assumed.message).toContain('Dates assume UTC because no time zone was given.');
+  });
+
+  it('never reads the sixth house as health', async () => {
+    for (const sign of ['aries', 'leo', 'pisces']) {
+      const data = await period({ sign, period: 'year', date: '2027-06-01', zone: 'Europe/London' });
+      expect(data.sky.map((event) => event.line).join(' '), sign).not.toMatch(/\bhealth\b/iu);
+    }
   });
 
   it('never writes a reading of its own, and refuses a sign it does not know', async () => {

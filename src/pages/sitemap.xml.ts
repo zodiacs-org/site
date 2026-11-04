@@ -563,6 +563,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The developer demo, recorded again with reading confidence labels and share links
   // that carry no birth details.
   ['/developers/demo/', '2026-11-04'] as const,
+  // The privacy page's assistant section: what the app's links carry (never a birth year, time, place or names,
+  // and a birthday link only the month and day). The day of the daily edition it was built with.
+  ['/privacy/', '2026-11-04'] as const,
   // The time atlas dataset and the developer index's card for it.
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
   // Engine 1.1.0-rc.2's pages, last so this date wins.
