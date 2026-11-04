@@ -260,7 +260,13 @@ describe('usage counting for the save tool', () => {
     const added = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_060_tools.sql'));
     expect(added).toHaveLength(1);
     expect(added[0] > save[0]).toBe(true);
-    const latest = [...readFileSync(`${root}supabase/migrations/${added[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
+    const at060 = [...readFileSync(`${root}supabase/migrations/${added[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
+    expect(at060).toHaveLength(2);
+    for (const list of at060) expect(list).toEqual([...EVERY_AI_TOOL_NAME.filter((name) => name !== 'find_birthplace'), SAVE_TOOL_NAME]);
+    const birthplace = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_birthplace.sql'));
+    expect(birthplace).toHaveLength(1);
+    expect(birthplace[0] > added[0]).toBe(true);
+    const latest = [...readFileSync(`${root}supabase/migrations/${birthplace[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
     expect(latest).toHaveLength(2);
     for (const list of latest) expect(list).toEqual([...COUNTED_TOOL_NAMES]);
   });

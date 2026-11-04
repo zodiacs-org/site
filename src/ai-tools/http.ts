@@ -1,7 +1,7 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName, type CoverageToolName } from './contracts';
+import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName, type CoverageToolName, type PlaceToolName } from './contracts';
 import { createAiServer } from './server';
 import { coverageInputRefusal, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
@@ -256,8 +256,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         function sanitize(text: string) {
           const parsed = JSON.parse(text);
           // A 0.6.0 tool's arguments refused by the SDK's schema check get the tool's own field-named refusal.
-          const named = calledTool && (COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) && parsed.result?.isError && !parsed.result?.structuredContent
-            ? coverageInputRefusal(calledTool as CoverageToolName, (message.params as { arguments?: unknown }).arguments) : null;
+          const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent
+            ? coverageInputRefusal(calledTool as CoverageToolName | PlaceToolName, (message.params as { arguments?: unknown }).arguments) : null;
           if (named) return JSON.stringify({ ...parsed, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(named) }], structuredContent: named } });
           return JSON.stringify(sanitizeProtocolMessage(parsed, refusal));
         }

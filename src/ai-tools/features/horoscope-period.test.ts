@@ -138,8 +138,8 @@ describe('get_horoscope_period', () => {
     expect(week).toMatchObject({ from: '2026-11-02', to: '2026-11-08', label: 'Week of 2 November 2026', pageUrl: 'https://zodiacs.org/horoscopes/leo/love/' });
     expect(week.reading!.title).toBe('Leo · Week of 2 November 2026');
     const loveDates = week.focusReadings.map((reading) => reading.date);
-    expect(loveDates).toContain('2026-11-02');
-    expect(loveDates.every((date) => date >= '2026-11-02' && date <= '2026-11-08')).toBe(true);
+    expect(loveDates[0]).toBe('2026-11-03');
+    expect(loveDates.every((date) => date >= week.from && date <= week.to)).toBe(true);
     expect([...loveDates].sort()).toEqual(loveDates);
     expect(week.sky.every((event) => ['Venus', 'Mars'].includes(event.planet) || [5, 7, 8].includes(event.house))).toBe(true);
     expect(week.message).toContain('love readings by the day');
@@ -150,7 +150,8 @@ describe('get_horoscope_period', () => {
   it('never writes a reading of its own, and refuses a sign it does not know', async () => {
     const away = await period({ sign: 'pisces', period: 'week', date: '2027-04-07' });
     expect(away.reading).toBeNull();
-    expect(away.message).toContain("isn't kept here");
+    expect(away.message).toContain('use get_horoscope');
+    expect(away.confidenceLabel).toBe('Reading confidence 40%');
     expect(await executeAiTool('get_horoscope_period', { sign: 'ophiuchus', period: 'month' }, dependencies)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
     expect(await executeAiTool('get_horoscope_period', { period: 'month' }, dependencies)).toMatchObject({ ok: false, error: { message: 'sign is required.' } });
   });

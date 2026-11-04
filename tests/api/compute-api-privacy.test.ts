@@ -514,6 +514,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/personal-week.ts', 'src/ai-tools/accounts/save.ts',
       // The 0.6.0 tools' server-only modules: local times for a birth chart and its transits, and a period's sky events.
       'src/ai-tools/features/natal-chart.ts', 'src/ai-tools/features/personal-transits.ts', 'src/ai-tools/features/horoscope-period.ts',
+      // find_birthplace resolves a place's clock with the same local-time operations.
+      'src/ai-tools/features/birthplace.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the

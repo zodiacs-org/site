@@ -22,7 +22,7 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     const tagged = await executeAiTool('get_life_milestones', { birthDate: '1997-03-15' }, on, { ref: 'chatgpt' });
     expect(tagged.ok).toBe(true);
     if (tagged.ok && tagged.tool === 'get_life_milestones') {
-      expect(tagged.data.cardUrl).toBe('https://zodiacs.org/occasions/milestones/?ref=chatgpt#b=1997-03-15');
+      expect(tagged.data.cardUrl).toBe('https://zodiacs.org/occasions/milestones/?ref=chatgpt');
       for (const link of tagged.links) expect(link.url).toMatch(/\?ref=chatgpt$/u);
     }
     const calendar = await executeAiTool('get_sky_calendar', {}, on, { ref: 'chatgpt' });
@@ -43,7 +43,7 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     expect([...url.searchParams]).toEqual([['ref', 'chatgpt']]);
     expect(Object.fromEntries(new URLSearchParams(url.hash.slice(1)))).toEqual({
       o: 'wedding', d: '2027-06-12', t: '17:00', tz: 'Europe/Rome',
-      lat: '43.7696', lon: '11.2558', place: 'Florence, Italy',
+      lat: '43.77', lon: '11.26',
     });
 
     const noPlace = await executeAiTool('get_occasion_sky', {

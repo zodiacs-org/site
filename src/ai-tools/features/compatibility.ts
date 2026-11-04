@@ -26,12 +26,12 @@ import { pairFacts, pairSlug } from '../../lib/compat';
 import { contactLine } from '../../lib/contact-line';
 import { scoreCompatibility } from '../../lib/compat-score';
 import { compatibilityShareUrl } from '../../lib/share-results';
-import { compatibilityHandoffPath } from '../../lib/chart-handoff';
+import { coarserDetail, readingConfidenceLabel, readingDetail } from '../reading-confidence';
+import { roundCoordinate } from '../plain-text';
 import { computeChart } from '../../lib/engine/full.js';
 import { isGenerationalContact, summarizePair, type MinimalBody } from '../../lib/engine/synastry';
 import type { Chart } from '../../lib/engine/types';
 import { settledSignIndex } from '../../lib/profile/settled-signs';
-import type { ShareChartInput } from '../../lib/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { NOT_FOUND_NOTE, searchPeople, type IndexPerson } from './people';
@@ -247,11 +247,14 @@ async function personChart(person: CompatibilityPerson, fallback: string, clock:
   if (person.birthDate === undefined) throw new RangeError(`${fallback}: give a birth date, or a famous person.`);
   checkPerson({ ...person, birthDate: person.birthDate }, fallback);
   const timeKnown = person.time !== undefined;
-  const placed = person.latitude !== undefined && person.longitude !== undefined;
-  const utc = await birthInstant({ ...person, birthDate: person.birthDate }, clock);
+  const latitude = person.latitude === undefined ? undefined : roundCoordinate(person.latitude);
+  const longitude = person.longitude === undefined ? undefined : roundCoordinate(person.longitude);
+  const placed = latitude !== undefined && longitude !== undefined;
+  const rounded = { ...person, ...(latitude !== undefined && longitude !== undefined ? { latitude, longitude } : {}) };
+  const utc = await birthInstant({ ...rounded, birthDate: person.birthDate }, clock);
   const chart = computeChart({
     utc,
-    ...(placed ? { latitude: person.latitude, longitude: person.longitude } : {}),
+    ...(placed ? { latitude, longitude } : {}),
     houseSystem: 'whole',
     timeKnown,
   });
@@ -271,22 +274,6 @@ async function personChart(person: CompatibilityPerson, fallback: string, clock:
     bodies: chart.bodies
       .filter((row) => timeKnown || row.body !== 'Moon')
       .map((row) => ({ body: row.body, lon: row.lon })),
-  };
-}
-
-function shareInput(side: PersonChart): ShareChartInput | null {
-  const { person } = side;
-  if (!person.zone || person.latitude === undefined || person.longitude === undefined || person.birthDate === undefined) return null;
-  return {
-    date: person.birthDate,
-    time: person.time ?? null,
-    timeKnown: side.timeKnown,
-    lat: person.latitude,
-    lon: person.longitude,
-    tz: person.zone,
-    ...(person.name ? { name: person.name } : {}),
-    ...(person.place ? { place: person.place } : {}),
-    houseSystem: 'whole',
   };
 }
 
@@ -383,16 +370,17 @@ export async function computeCompatibility(
     };
   }
 
-  const shareA = shareInput(a);
-  const shareB = shareInput(b);
-  const cardUrl = shareA && shareB
-    ? `${origin}${compatibilityHandoffPath(shareB, { kind: 'input', input: shareA })}`
-    : null;
-
   const elementOf = (index: number | null) => (index === null ? null : SIGNS[index].element);
   const elA = elementOf(a.sunIndex);
   const elB = elementOf(b.sunIndex);
   const score = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
+  const detail = coarserDetail(
+    readingDetail({ hasDate: true, hasTime: a.timeKnown, hasPlace: a.placed }),
+    readingDetail({ hasDate: true, hasTime: b.timeKnown, hasPlace: b.placed }),
+  );
+  const tight = summary.top.some((contact) => contact.orb < 1);
+  const label = readingConfidenceLabel(detail, tight);
+  score.headline = `${score.headline} ${label}.`;
 
   const data: CompatibilityData = {
     a: personRow(a, origin),
@@ -416,13 +404,13 @@ export async function computeCompatibility(
     elements: { a: { ...summary.elements.a }, b: { ...summary.elements.b } },
     modalities: { a: { ...summary.modalities.a }, b: { ...summary.modalities.b } },
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
-    cardUrl,
+    cardUrl: null,
     shareUrl: compatibilityShareUrl(origin, {
-      a: { name: a.famous?.name ?? a.person.name ?? null, sun: sunA },
-      b: { name: b.famous?.name ?? b.person.name ?? null, sun: sunB },
+      a: { name: null, sun: sunA },
+      b: { name: null, sun: sunB },
       score,
     }),
-    notes: notesFor(a, b),
+    notes: [...notesFor(a, b), label],
     note: COMPATIBILITY_NOTE,
   };
 
@@ -431,6 +419,7 @@ export async function computeCompatibility(
     links: [
       ...[a, b].filter((side) => side.famous).map((side) => ({ title: `${side.famous!.name}'s chart on Zodiacs`, url: `${origin}/people/${side.famous!.slug}/` })),
       { title: 'Compatibility on Zodiacs', url: `${origin}/compatibility/` },
+      { title: 'Resolve a town or city (find_birthplace)', url: `${origin}/birth-chart/` },
       { title: 'How we calculate', url: `${origin}/methodology/` },
     ],
   };

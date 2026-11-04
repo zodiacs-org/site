@@ -12,6 +12,7 @@ import { horoscopePeriodData, horoscopePeriodInput } from './features/horoscope-
 import { chineseZodiacData, chineseZodiacInput } from './features/chinese-zodiac';
 import { personalTransitsData, personalTransitsInput } from './features/personal-transits';
 import { explainData, explainInput } from './features/explain';
+import { birthplaceData, birthplaceInput } from './features/birthplace';
 
 export const AI_VERSION = '0.6.0';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
@@ -34,10 +35,16 @@ export const ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES] as c
  * see until the owner switches them on (docs/platform/zodiacs-ai/claude-directory/RESYNC-0.6.0.md).
  */
 export const COVERAGE_TOOL_NAMES = ['get_natal_chart', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'explain_astrology'] as const;
+/**
+ * A public place name for the chart tools. Offered with the coverage tools, after them, so the thirteen
+ * published definitions stay the first thirteen entries in tools/list.
+ */
+export const PLACE_TOOL_NAMES = ['find_birthplace'] as const;
 /** Every tool the hosted server can offer, in tools/list order. */
-export const EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES] as const;
+export const EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES, ...PLACE_TOOL_NAMES] as const;
 export type AiToolName = typeof EVERY_AI_TOOL_NAME[number];
 export type CoverageToolName = typeof COVERAGE_TOOL_NAMES[number];
+export type PlaceToolName = typeof PLACE_TOOL_NAMES[number];
 export const OCCASIONS_SWITCH_ENV = 'ZODIACS_OCCASIONS_ENABLED';
 export const COVERAGE_SWITCH_ENV = 'ZODIACS_COVERAGE_ENABLED';
 /** The compute API's own events bound. */
@@ -81,6 +88,7 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   get_chinese_zodiac: 'Chinese zodiac',
   get_personal_transits: 'Your transits',
   explain_astrology: 'Astrology explained',
+  find_birthplace: 'Find a birthplace',
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).');
@@ -134,6 +142,7 @@ export const INPUT_SCHEMAS = {
   get_chinese_zodiac: chineseZodiacInput,
   get_personal_transits: personalTransitsInput,
   explain_astrology: explainInput,
+  find_birthplace: birthplaceInput,
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
@@ -271,15 +280,21 @@ const dataSchemas = {
   get_chinese_zodiac: chineseZodiacData,
   get_personal_transits: personalTransitsData,
   explain_astrology: explainData,
+  find_birthplace: birthplaceData,
 };
 
 export const ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(ALL_AI_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 /** The 0.6.0 tools' refusal: the same shape, naming only their own tools, so the 0.5 schemas keep their bytes. */
 export const COVERAGE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(COVERAGE_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** find_birthplace names only itself, so the five coverage tools keep their error enum. */
+export const PLACE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(PLACE_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: S) {
+  const error = (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool)
+    ? COVERAGE_ERROR_SCHEMA
+    : (PLACE_TOOL_NAMES as readonly string[]).includes(tool) ? PLACE_ERROR_SCHEMA : ERROR_SCHEMA;
   return z.union([
     z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(true), tool: z.literal(tool), data, links: z.array(link) }),
-    (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) ? COVERAGE_ERROR_SCHEMA : ERROR_SCHEMA,
+    error,
   ]);
 }
 export const OUTPUT_SCHEMAS = {
@@ -299,6 +314,7 @@ export const OUTPUT_SCHEMAS = {
   get_chinese_zodiac: outputSchema('get_chinese_zodiac', dataSchemas.get_chinese_zodiac),
   get_personal_transits: outputSchema('get_personal_transits', dataSchemas.get_personal_transits),
   explain_astrology: outputSchema('explain_astrology', dataSchemas.explain_astrology),
+  find_birthplace: outputSchema('find_birthplace', dataSchemas.find_birthplace),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
@@ -316,9 +332,10 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up. If they want to share the chart, give them the returned shareUrl exactly.",
   get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it carries the month and day, never the year.",
   get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event.",
-  get_natal_chart: "Reads one person's birth chart: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets, and the balance of elements and modes, each with what astrology traditionally reads into it. It needs the birth date; add the birth time, the birthplace's time zone and its latitude and longitude when the person gives them, and never guess a birth time. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used; tell the person. For an interactive chart the person fills in themselves, use open_chart_studio instead. Give the returned chartUrl exactly to open the chart on Zodiacs.",
-  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year or a week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027; the week is the current week's reading, and with focus love or career it adds that focus's daily readings in the week and keeps the sky events that bear on it. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. For today's or tomorrow's horoscope use get_horoscope. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
+  get_natal_chart: "Reads one person's birth chart: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets (the tightest by orb), and the balance of elements and modes, each with what astrology traditionally reads into it. It needs the birth date; add the birth time, the birthplace's time zone and its latitude and longitude when the person gives them, and never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used; tell the person. For an interactive chart the person fills in themselves, use open_chart_studio instead. chartUrl opens the birth chart page and does not carry the birth details.",
+  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year, or a love or career week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027. A week is only for focus love or career: it adds that focus's daily readings in the week and keeps the sky events that bear on it. For a general week, and for today's or tomorrow's horoscope, use get_horoscope. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
   get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own.",
-  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Give the birth date, and the time, birthplace time zone and coordinates if known; never guess a birth time. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. Present the lines as astrology's reading, never a guarantee, and do not turn them into health or money predictions.",
+  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Give the birth date, and the time, birthplace time zone and coordinates if known; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. Present the lines as astrology's reading, never a guarantee, and do not turn them into health or money predictions.",
   explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own reference text, with links to the zodiacs.org pages about it: a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'.",
+  find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place.",
 };

@@ -43,6 +43,14 @@ describe('explain_astrology', () => {
     }
   });
 
+  it('explains what a Saturn return is, and when it falls', () => {
+    const { data } = explainAstrology({ topic: 'saturn return' });
+    expect(data.paragraphs[0]).toContain('29.5 years');
+    expect(data.paragraphs[0]).toContain('around age 29');
+    expect(data.paragraphs[0].toLowerCase()).toContain('responsibility');
+    expect(data.paragraphs.join(' ')).toContain('get_life_milestones');
+  });
+
   it('points a sign to its guide, its rising-sign page and its horoscope', () => {
     const { data } = explainAstrology({ topic: 'leo' });
     expect(data.pages.map((page) => page.url)).toEqual(['https://zodiacs.org/leo/', 'https://zodiacs.org/rising-sign/leo/', 'https://zodiacs.org/horoscopes/leo/']);

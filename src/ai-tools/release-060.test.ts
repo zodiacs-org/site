@@ -64,6 +64,17 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(JSON.stringify(tools.slice(0, live.length))).toBe(JSON.stringify(live));
   });
 
+  it('keeps the thirteen published names, descriptions and input schemas byte for byte', async () => {
+    const live = LIVE.result.tools as { name: string; description: string; inputSchema: unknown }[];
+    const tools = (await rpc('tools/list', {})).result.tools as { name: string; description: string; inputSchema: unknown }[];
+    expect(live).toHaveLength(13);
+    for (const [index, published] of live.entries()) {
+      expect(tools[index].name, published.name).toBe(published.name);
+      expect(tools[index].description, published.name).toBe(published.description);
+      expect(JSON.stringify(tools[index].inputSchema), published.name).toBe(JSON.stringify(published.inputSchema));
+    }
+  });
+
   it('reports 0.6.0 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
     expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.0' });
@@ -83,9 +94,14 @@ describe('get_capabilities names every tool offered', () => {
     const text = result.data.limitations.join(' ');
     const named = EVERY_AI_TOOL_NAME.filter((name) => result.data.tools.includes(name as never) || text.includes(`${name} (`));
     expect(named).toEqual([...EVERY_AI_TOOL_NAME]);
-    expect(named).toHaveLength(18);
+    expect(named).toHaveLength(19);
     expect(text).toContain('Version 0.6.0 adds tools listed in tools/list: get_natal_chart (a birth chart readout), get_horoscope_period (');
-    expect(text).toContain('With them Zodiacs offers 18 tools: the 13 in the tools field and these 5.');
+    expect(text).toContain('and find_birthplace (a town or city name, with coordinates and a time zone for the chart tools).');
+    expect(text).toContain('With them Zodiacs offers 19 tools: the 13 in the tools field and these 6.');
+    expect(result.data.coverage.eclipses).toContain('get_horoscope_period');
+    expect(result.data.coverage.aspects).toContain('get_personal_transits');
+    expect(result.data.coverage.tools.split(', ')).toHaveLength(19);
+    expect(result.data.privacy).toContain('https://zodiacs.org/privacy/');
     expect(text).not.toMatch(/[–—]/u);
   });
 
