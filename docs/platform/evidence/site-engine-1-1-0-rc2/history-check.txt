@@ -43,3 +43,9 @@ Every matching line the branch adds is birth data main already carries,
 re-emitted by regenerated bundles and their archive copies. The tree's lines
 predate this adoption and stay as the earlier records classified them; no
 blanket privacy clearance of the tree is claimed.
+
+Second run, after the commit that first recorded this search (add301ac),
+over origin/main..add301ac, both sets: the same counts, 167 lines in the
+commits and 566 in the tree; read against its parent, add301ac adds no
+matching line. The commit after it changes only this description, and adds
+no matching line either.
