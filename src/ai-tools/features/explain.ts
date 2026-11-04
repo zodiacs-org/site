@@ -9,7 +9,11 @@
  * Vedic astrology, gets found: false and the list, never an improvised
  * explainer. A placement, such as Moon in Scorpio or Mars in the tenth house,
  * is answered from the planet's topic with the sign or house added and the
- * placement page linked. Pure: no network, storage or logging.
+ * placement page linked. Two Sun signs in a compatibility question, such as
+ * "Leo and Scorpio", are answered from the sign-pair page's own essay
+ * (pair-pages.json, built by scripts/build-pair-pages.mjs from
+ * src/content/pairs/). An explainer explains; it carries no reading-confidence
+ * label. Pure: no network, storage or logging.
  */
 import { z } from 'zod';
 import { CHINESE_ZODIAC_COPY } from '../../data/chinese-zodiac';
@@ -17,8 +21,12 @@ import { GLOSSARY, type GlossaryTerm } from '../../data/glossary';
 import { bigThree } from '../../lib/interpretations';
 import { NATAL_HOUSE_THEME, planetInHouseLine } from '../../lib/natal';
 import { NATAL_BODY_THEME, placementContext } from '../../lib/natal-context';
+import { pairPattern } from '../../lib/compat-reading';
+import { pairSlug } from '../../lib/compat';
 import { SIGNS, type Sign } from '../../lib/signs';
 import type { BodyName } from '../../lib/engine/types';
+import { softenHealth } from './reading-guards';
+import pairPages from './pair-pages.json';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 export const EXPLAIN_NOTE = 'An introduction to how astrology reads these ideas, not a claim that they determine anything.';
@@ -324,10 +332,55 @@ function placementParts({ planet, sign, house }: Placement): { title: string; pa
   };
 }
 
+/** Two Sun signs in a compatibility question, such as "Leo and Scorpio" or "are leo and scorpio compatible". */
+export function matchSignPair(query: string): { a: string; b: string } | null {
+  const text = clean(query);
+  const joined = text.match(new RegExp(`\\b(${SIGN_WORDS})\\s+(?:and|with)\\s+(${SIGN_WORDS})\\b`, 'u'));
+  if (joined) return { a: joined[1], b: joined[2] };
+  const signs = [...text.matchAll(new RegExp(`\\b(${SIGN_WORDS})\\b`, 'gu'))].map((match) => match[1]);
+  const unique = [...new Set(signs)];
+  const compatibility = /\b(?:compatib\w*|synastry)\b/u.test(text);
+  const bare = signs.length === 2 && text.split(' ').filter(Boolean).length <= 3;
+  if (unique.length === 2 && (compatibility || bare)) return { a: unique[0], b: unique[1] };
+  return null;
+}
+
+const PAIR_GUIDANCE = 'If either person is under 18, give the element and modality pattern and do not frame the pair as romance or attraction.';
+
+/** A Sun-sign pair from its compatibility page: the pattern, then the page's essay. */
+function signPairAnswer(query: string, a: string, b: string, origin: string): { data: ExplainData; links: { title: string; url: string }[] } {
+  const slug = pairSlug(a, b);
+  const pattern = pairPattern(a, b);
+  const names = pattern.facts.same ? `Two ${pattern.facts.a.name} people` : `${pattern.facts.a.name} and ${pattern.facts.b.name}`;
+  const essay = (pairPages as Record<string, string[]>)[slug] ?? [];
+  const paragraphs = [
+    `${names}. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
+    'This is the Sun-sign pattern; the rest of both charts changes how it is lived.',
+    ...essay,
+  ].map(softenHealth);
+  const page = { title: `${names} on Zodiacs`, url: `${origin}/compatibility/${slug}/` };
+  const data: ExplainData = {
+    found: true,
+    query,
+    topic: slug,
+    title: names,
+    paragraphs,
+    terms: [],
+    pages: [page],
+    related: ['synastry', 'elements', 'modalities'].filter((key) => EXPLAIN_TOPICS.includes(key)),
+    topics: [],
+    message: PAIR_GUIDANCE,
+    note: EXPLAIN_NOTE,
+  };
+  return { data, links: [page, { title: 'Compatibility on Zodiacs', url: `${origin}/compatibility/` }] };
+}
+
 export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): { data: ExplainData; links: { title: string; url: string }[] } {
   // Checked on the words as written, so "sidereal astrology" is seen before "astrology" is dropped.
   const words = clean(args.topic);
   const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
+  const pair = outside ? null : matchSignPair(args.topic);
+  if (pair) return signPairAnswer(args.topic, pair.a, pair.b, origin);
   const topic = outside ? null : matchTopic(args.topic);
   if (!topic) {
     const data: ExplainData = {
@@ -355,12 +408,12 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
   const paragraphs = [
     ...(noSuchHouseLine ? [noSuchHouseLine] : []),
     ...body,
-  ].filter((paragraph, index, all) => paragraph && all.indexOf(paragraph) === index);
+  ].filter((paragraph, index, all) => paragraph && all.indexOf(paragraph) === index).map(softenHealth);
   const placement = noSuchHouse ? null : matchPlacement(args.topic);
   const rising = noSuchHouse || placement ? null : matchRising(args.topic);
   const angle = noSuchHouse || placement || rising ? null : matchAngleSign(args.topic);
   const placed = placement ? placementParts(placement) : rising ? risingParts(rising) : angle ? angleParts(angle) : null;
-  if (placed) paragraphs.push(...placed.paragraphs);
+  if (placed) paragraphs.push(...placed.paragraphs.map(softenHealth));
   const pages = [...(placed?.pages ?? []), ...topic.pages].map((page) => ({ title: page.title, url: `${origin}${page.path}` }));
   const data: ExplainData = {
     found: true,

@@ -1,8 +1,44 @@
-# Claude directory: re-sync for Zodiacs 0.6.0
+# Claude directory: re-sync for Zodiacs 0.6.0 and 0.6.1
 
-Prepared 2 November 2026 on branch `feat/mcp-consumer-coverage`. Nothing has
-been pushed, deployed, synced, uploaded or sent. Every step below that touches
-production, the portal or email needs Dias's separate yes.
+Prepared 2 November 2026 on branch `feat/mcp-consumer-coverage` for 0.6.0, and
+brought up to date on 4 November 2026 for 0.6.1 (branch
+`feat/readings-panel-0-6-1`). Nothing has been synced, uploaded or sent. Every
+step below that touches production, the portal or email needs Dias's separate
+yes.
+
+## What 0.6.1 changes
+
+- **Version.** The hosted server reports 0.6.1 in `initialize` and in
+  `get_capabilities`; the consumer package is `zodiacs-sky` 0.6.1.
+- **Nineteen tools with both switches on.** `find_birthplace` (0.6.0 on `main`,
+  4 November) follows the five 0.6.0 tools: it turns a town or city name into
+  coordinates and a time zone from the GeoNames list bundled with Zodiacs. Its
+  usage counter is `supabase/migrations/20261104103000_zodiacs_mcp_usage_birthplace.sql`.
+- **The readings panel.** The five 0.6.0 tools open the inline panel
+  `ui://zodiacs/readings-v3.html` (no sidebar launch; registered only while
+  they are offered). `readings-v1` and `readings-v2` were staging builds and
+  are recorded as retired in `src/ai-tools/panel-fingerprints.json`.
+- **Forecast rule (4 November).** Forecasts are shared plainly and
+  confidently, each with a label written exactly "Reading confidence NN%": 40
+  for a Sun sign alone, 55 for a date without both a clock time and a place, 70
+  for a date with both, and 5 more when a named contact's orb is under 1
+  degree, never past 95 (`src/ai-tools/reading-confidence.ts`). An explainer
+  carries no label.
+- **Under 18.** When either birth date is under 18, `get_compatibility` scores
+  communication and stability only (its attraction field repeats the
+  communication score), leaves out romantic and attraction wording and gives no
+  share link. The natal chart and transit readings leave that wording out too.
+- **Privacy.** Zodiacs never stores or logs birth details. Links never carry a
+  birth year, time, place or names; a birthday link carries only the month and
+  day. A birthday, a baby's arrival or a coming of age gets no card link and no
+  share link, and a life milestone's share link carries its kind, ordinal and
+  age only (older links with the pass dates still open, without them).
+- **The thirteen tools are unchanged.** Their definitions, `_meta` included,
+  still match the live snapshot byte for byte (`src/ai-tools/release-060.test.ts`).
+  The server instructions and the `get_capabilities` text change.
+
+The sections below are the 0.6.0 record, with the counts, checks and texts
+brought up to 0.6.1.
 
 ## What changed
 
@@ -31,7 +67,7 @@ production, the portal or email needs Dias's separate yes.
   `supabase/migrations/20261101181545_zodiacs_mcp_usage_060_tools.sql`, not
   applied anywhere.
 
-## The tool list after the switch (18)
+## The tool list after the switch (19)
 
 | # | Tool | Title | Status | Takes personal details |
 | --- | --- | --- | --- | --- |
@@ -53,6 +89,7 @@ production, the portal or email needs Dias's separate yes.
 | 16 | `get_chinese_zodiac` | Chinese zodiac | new | birth date or year |
 | 17 | `get_personal_transits` | Your transits | new | birth date, optional time, zone, coordinates |
 | 18 | `explain_astrology` | Astrology explained | new | no |
+| 19 | `find_birthplace` | Find a birthplace | new on 4 November | a town or city name |
 
 What the new ones do:
 
@@ -86,17 +123,19 @@ What the new ones do:
    `ZODIACS_OCCASIONS_ENABLED=1` and `ZODIACS_COVERAGE_ENABLED=1`, as
    `LAUNCH.md` describes, then run
    `ZODIACS_STAGING_COVERAGE=1 ZODIACS_STAGING_MCP_URL=<alias>/mcp ZODIACS_STAGING_COOKIE_FILE=<file> node tests/ai-staging-drive.mjs`.
-   It expects eighteen tools and calls each new one once.
+   It expects nineteen tools, calls each new one once and reads the readings
+   panel.
 4. **Production switch-on.** In Vercel (team `zodiacsofficial`, project
    `zodiacs-org`) add `ZODIACS_COVERAGE_ENABLED=1` for **Production** only and
    redeploy (the privacy page is prerendered, so it needs the rebuild). Roll
    back by removing the variable and redeploying.
 5. **Check production** (no credentials needed):
-   - `tools/list` at `https://zodiacs.org/mcp` lists 18 tools, the first
+   - `tools/list` at `https://zodiacs.org/mcp` lists 19 tools, the first
      thirteen as before. `node /workspace/repos/mcp051-tools/compare-tools.mjs`
-     against the committed live snapshot will now report 18 versus 13; compare
+     against the committed live snapshot will now report 19 versus 13; compare
      the first thirteen entries, as `release-060.test.ts` does.
-   - `initialize` reports `0.6.0`.
+   - `initialize` reports `0.6.1`, and `resources/list` includes
+     `ui://zodiacs/readings-v3.html`.
    - `/privacy/` reads "Its occasion, compatibility, chart-twin, birthday,
      birth chart, transit and Chinese zodiac tools take the dates you give
      them".
@@ -109,11 +148,11 @@ screen names below are the ones recorded in `LISTING.md` on 28 October.
 
 1. Open https://claude.ai/directory/manage, choose the **Zodiacs** listing
    (slug `zodiacs`, status In review) and open the full editor.
-2. In **Tools**, select **Sync from server**. Check that eighteen tools are
+2. In **Tools**, select **Sync from server**. Check that nineteen tools are
    listed, all marked read-only. If it still shows thirteen, the production
    switch or redeploy is missing; stop there.
 3. **Description** (2,000 characters at most). The ChatGPT About is 2,529
-   characters, so use this 1,511-character version:
+   characters, so use this 1,620-character version:
 
    > Explore your birth chart, see how compatible you are with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then tells you what astrology says about it.
    >
@@ -123,16 +162,16 @@ screen names below are the ones recorded in `LISTING.md` on 28 October.
    >
    > See the sky on your birthday and your solar return, find milestones such as your Saturn return, or make a keepsake card for a wedding or another day that matters, with a rating out of 100 for the date or the best-rated days in a month.
    >
-   > Zodiacs gives clear forecasts, scores and ratings, and always shows the astrology behind them. It doesn't pick investments, make health predictions or guarantee how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.
+   > Zodiacs gives clear forecasts, scores and ratings, each forecast with a reading confidence, and always shows the astrology behind them. It doesn't pick investments, make health predictions or guarantee how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.
    >
-   > No account is needed. Zodiacs uses the details you give for that answer only and doesn't keep them.
+   > No account is needed. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day.
 
 4. **Additional notes for reviewers**: add
 
-   > 0.6.0 adds five read-only tools with no sign-in and no panel: get_natal_chart, get_horoscope_period, get_chinese_zodiac, get_personal_transits and explain_astrology. The thirteen earlier tools are unchanged. The natal chart, transit and Chinese zodiac tools use a birth date (and optional time, time zone and coordinates) for that answer only; nothing is stored. Try: "Read my birth chart: born 3 May 1990 at 8:30 in Madrid." / "What's the monthly horoscope for Leo?" / "What's my Chinese zodiac sign? I was born 20 January 1990." / "What transits are coming up for me? Born 3 May 1990." / "What does Mercury retrograde mean?"
+   > 0.6.1 offers six read-only tools beyond the thirteen in review, with no sign-in: get_natal_chart, get_horoscope_period, get_chinese_zodiac, get_personal_transits and explain_astrology, which open an inline readings panel with no sidebar launch, and find_birthplace, which turns a town or city name into coordinates and a time zone. The thirteen earlier tools are unchanged. Forecasts carry a label such as "Reading confidence 55%", which says how specific the details were, never the odds that something happens. Readings for anyone under 18 leave out romance and attraction. The natal chart, transit and Chinese zodiac tools use a birth date (and optional time, time zone and coordinates) for that answer only. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. Try: "Read my birth chart: born 3 May 1990 at 8:30 in Madrid." / "What's the monthly horoscope for Leo?" / "What's my Chinese zodiac sign? I was born 20 January 1990." / "What transits are coming up for me? Born 3 May 1990." / "Are Leo and Scorpio compatible?"
 
 5. Leave the one-liner, categories, carousel and the **Self-tested** box as
-   they are, unless Dias has run all eighteen tools in Claude.
+   they are, unless Dias has run all nineteen tools in Claude.
 6. Save with **Save and update submission**. On 28 October the captured
    snapshot date did not change after a sync; record what the page shows and
    do not claim the snapshot was refreshed unless it says so.
@@ -143,10 +182,10 @@ screen names below are the ones recorded in `LISTING.md` on 28 October.
 `LISTING.md` records that a correction of the 15 October note was already sent
 that day at 18:01 UTC as a reply on ticket #145701231. This draft restates
 that correction, in case a reviewer works from the first note, and announces
-0.6.0. Send it only with Dias's yes, from admin@zodiacs.org, as a reply on the
+0.6.1. Send it only with Dias's yes, from admin@zodiacs.org, as a reply on the
 same ticket, after the production switch-on.
 
-> Subject: Re: Zodiacs connector (zodiacs.org/mcp): 0.6.0 tools and a correction
+> Subject: Re: Zodiacs connector (zodiacs.org/mcp): 0.6.1 tools and a correction
 >
 > Hello,
 >
@@ -154,9 +193,9 @@ same ticket, after the production switch-on.
 >
 > First, a correction that stands for this review. Our note of 15 October said that Zodiacs never chooses or ranks dates, scores relationships or predicts outcomes. That is not accurate for the live tools, and we corrected it the same day: get_compatibility gives a compatibility score out of 100 with scores for attraction, communication and long-term stability, and get_occasion_sky rates a date out of 100 and can list the three best-rated days in a range of up to 92 days. Every result gives its astrological reasons and presents itself as astrology's reading, not a guarantee. Zodiacs does not pick investments, make health predictions or guarantee outcomes.
 >
-> Second, version 0.6.0 is now live and adds five read-only tools, with no sign-in and no panel: get_natal_chart (a birth chart readout), get_horoscope_period (monthly, yearly and weekly horoscopes from our published readings), get_chinese_zodiac, get_personal_transits and explain_astrology (short explainers with links to our pages). The thirteen earlier tools are unchanged; their definitions are byte for byte the ones you scanned. We have synced the tool list in the directory editor.
+> Second, version 0.6.1 is now live and offers six read-only tools beyond the thirteen, with no sign-in: get_natal_chart (a birth chart readout), get_horoscope_period (monthly, yearly and weekly horoscopes from our published readings), get_chinese_zodiac, get_personal_transits and explain_astrology (short explainers with links to our pages, including Sun-sign pairs), which open an inline readings panel with no sidebar launch, and find_birthplace (a town or city name to coordinates and a time zone, from a list bundled with Zodiacs). The thirteen earlier tools are unchanged; their definitions are byte for byte the ones you scanned. Forecasts now carry a reading-confidence label, which says how specific the details were, never the odds that something happens, and readings for anyone under 18 leave out romance and attraction. We have synced the tool list in the directory editor.
 >
-> Data handling is unchanged: the natal chart, transit and Chinese zodiac tools use a birth date (and an optional time, time zone and coordinates) for that answer only and store nothing. Anonymous daily usage totals hold only the tool name, the day and the assistant family.
+> Data handling: the natal chart, transit and Chinese zodiac tools use a birth date (and an optional time, time zone and coordinates) for that answer only. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. Anonymous daily usage totals hold only the tool name, the day and the assistant family.
 >
 > Privacy policy: https://zodiacs.org/privacy/
 > Documentation: https://zodiacs.org/developers/ai/
@@ -173,5 +212,5 @@ branch; it is on `feat/google-connected-apps` (local commit `9dfe7cdc` in
 branch copies into `evidence/0.6.0/`. When both branches are on `main` and the
 switch is on, update that folder's `LISTING.md` tool list with the five rows
 above and recapture its `tools-list` snapshot; its `schema-identity.txt`
-whole-list comparison will then show 18 against 13, and only the first
+whole-list comparison will then show 19 against 13, and only the first
 thirteen entries should be held identical.

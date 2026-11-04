@@ -5,11 +5,11 @@ import { ComputeApiError } from '../../lib/compute-api/errors';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { SIGNS } from '../../lib/signs';
 import { AI_RESULT_SCHEMA, ORIGIN } from '../contracts';
-import { executeAiTool, refUrl } from '../tools';
+import { BIRTH_OCCASIONS, executeAiTool, refUrl } from '../tools';
+import { roundCoordinate } from '../plain-text';
 import { compatibilityMissing, computePersonChart, type CompatibilityData } from '../features/compatibility';
 import { personalWeek } from '../features/personal-week';
 import { dateInZone } from '../horoscope/reading';
-import { encodeChartLink } from '../../lib/share';
 import {
   MAX_SAVED_RECORD_BYTES, MAX_SAVED_STRING, PLAIN_TEXT, PROFILE_URL, SAVE_NOTE, SAVE_OUTPUT_SCHEMA, SAVE_TOOL_NAME,
   SAVED_RECORD_SCHEMA, saveInput, type SaveInput, type SaveKind, type SaveResult,
@@ -88,6 +88,31 @@ export function recordDigest(record: Omit<SavedRecord, 'href'>): string {
 }
 
 /**
+ * The occasion page a signed-in person chose to keep, by the rule the tool's own links follow. A birthday, a
+ * baby's arrival or a coming of age is the page address only: that date can be a birth date. Any other occasion
+ * reopens its card from the day, and the time, zone and coordinates (two decimals) when the page can take them;
+ * never names or a place name. A zone without coordinates cannot reopen on the page, so that link keeps the day only.
+ * Null when only the page address can be kept; the caller then adds the saved result's digest, which the
+ * saved_pages (user_id, href) key needs to keep two such saves apart and which carries no date.
+ */
+export function savedOccasionPath(
+  args: { latitude?: number; longitude?: number },
+  data: { occasion: string; date: string; time: string | null; zone: string | null },
+): string | null {
+  if (BIRTH_OCCASIONS.has(data.occasion)) return null;
+  const params = new URLSearchParams({ o: data.occasion, d: data.date });
+  const hasCoords = args.latitude !== undefined && args.longitude !== undefined;
+  if (data.zone && !hasCoords) return `/occasions/#${params.toString()}`;
+  if (data.time) params.set('t', data.time);
+  if (data.zone && hasCoords) {
+    params.set('tz', data.zone);
+    params.set('lat', roundCoordinate(args.latitude!).toFixed(2));
+    params.set('lon', roundCoordinate(args.longitude!).toFixed(2));
+  }
+  return `/occasions/#${params.toString()}`;
+}
+
+/**
  * Works the result out again with the tool that produced it, and keeps the
  * parts worth keeping. Nothing the assistant writes is stored except the
  * optional plain-text label. Returns a plain refusal for details the tool
@@ -108,17 +133,15 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
         if (person.famous !== undefined && compatibilityMissing({ a: person, b: person })) return { failure: 'Zodiacs has no chart for that name in its famous-people directory.' };
         const zone = person.zone ? await zoneAt(person.zone, '/chart/zone', (name) => localTime().canonicalZoneName(name)) : undefined;
         const row = await computePersonChart(zone ? { ...person, zone } : person, localTime());
-        const chartLink = !row.famous && zone && person.latitude !== undefined && person.longitude !== undefined
-          ? `/birth-chart/#c=${encodeChartLink({ date: row.birthDate, time: person.time ?? null, timeKnown: person.time !== undefined, lat: person.latitude, lon: person.longitude, tz: zone,
-            ...(person.name ? { name: person.name } : {}), ...(person.place ? { place: person.place } : {}), houseSystem: 'whole' })}`
-          : null;
+        // The saved chart is read on the profile. Its link is the page with the result's digest after the #, never the
+        // birth date, time, place or name: links never carry those.
         return linked({
           schema: SAVED_RECORD_SCHEMA, kind: 'chart',
           title: label ?? (row.famous ? `${row.name}'s chart` : row.name ? `${row.name}'s birth chart` : `Birth chart, ${row.birthDate}`),
           summary: chartLine(row),
           data: { ...row, ...(person.time && !row.famous ? { time: person.time } : {}), ...(zone && !row.famous ? { zone } : {}) },
           links: row.url ? [{ title: `${row.name}'s chart on Zodiacs`, url: row.url }] : [{ title: 'Your birth chart on Zodiacs', url: `${ORIGIN}/birth-chart/` }],
-        }, (saved) => (row.url ? sitePath(row.url) : chartLink ?? `/birth-chart/#saved=${saved}`));
+        }, (saved) => (row.url ? sitePath(row.url) : `/birth-chart/#saved=${saved}`));
       }
       case 'comparison': {
         const result = await executeAiTool('get_compatibility', input.comparison, tools);
@@ -140,8 +163,8 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
         if (result.tool !== 'get_occasion_sky') return { failure: 'Zodiacs could not work that out again.' };
         const data = result.data;
         const sign = (body: string) => data.sky.bodies.find((row) => row.body === body)?.sign ?? null;
-        // Without coordinates the card page cannot take the zone, so the link reopens the day's card as the page draws it.
-        const fallback = new URLSearchParams({ o: data.occasion, d: data.date, ...(data.names ? { n: data.names } : {}) });
+        // The same rule as the tool's links: no names, no place name, and no date for a birth occasion.
+        const path = savedOccasionPath(input.occasion!, data);
         return linked({
           schema: SAVED_RECORD_SCHEMA, kind: 'occasion',
           title: label ?? `${OCCASION_NAMES[data.occasion] ?? 'Occasion'}, ${data.date}: ${data.rating.score} out of 100`,
@@ -150,8 +173,8 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
             rating: data.rating, sky: { sun: sign('Sun'), moon: sign('Moon'), moonPhase: data.sky.moon.phase, retrograde: data.sky.retrograde },
             bestDays: data.bestDays ? { from: data.bestDays.from, to: data.bestDays.to, best: data.bestDays.best.map(({ date, score, verdict }) => ({ date, score, verdict })) } : null,
             cardUrl: data.cardUrl, note: data.note },
-          links: data.cardUrl ? [{ title: 'Open the printable card', url: data.cardUrl }] : [{ title: 'Occasion cards on Zodiacs', url: `${ORIGIN}/occasions/` }],
-        }, () => (data.cardUrl ? sitePath(data.cardUrl) : `/occasions/#${fallback.toString()}`));
+          links: path ? [{ title: 'Open the printable card', url: `${ORIGIN}${path}` }] : [{ title: 'Occasion cards on Zodiacs', url: `${ORIGIN}/occasions/` }],
+        }, (saved) => path ?? `/occasions/#saved=${saved}`);
       }
       case 'week': {
         const args = input.week!;

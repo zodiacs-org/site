@@ -24,7 +24,7 @@ import { SIGN_SLUGS } from '../../lib/compute-api/constants';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { pairFacts, pairSlug } from '../../lib/compat';
 import { contactLine } from '../../lib/contact-line';
-import { scoreCompatibility } from '../../lib/compat-score';
+import { COMPAT_VERDICTS, compatVerdictKey, scoreCompatibility } from '../../lib/compat-score';
 import { compatibilityShareUrl } from '../../lib/share-results';
 import { coarserDetail, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { roundCoordinate } from '../plain-text';
@@ -35,6 +35,7 @@ import { settledSignIndex } from '../../lib/profile/settled-signs';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { NOT_FOUND_NOTE, searchPeople, type IndexPerson } from './people';
+import { isUnder18, softenMinor } from './reading-guards';
 
 export const COMPATIBILITY_MIN_YEAR = 1800;
 export const COMPATIBILITY_MAX_YEAR = 2199;
@@ -342,14 +343,38 @@ export function compatibilityMissing(args: CompatibilityInput, origin = 'https:/
 }
 
 /**
+ * The score when either birth date is under 18. The published schema requires
+ * an attraction integer, so it repeats the communication score, and the overall
+ * score is communication and stability only. The headline does not rank romance.
+ */
+export function minorScore(score: ReturnType<typeof scoreCompatibility>): ReturnType<typeof scoreCompatibility> {
+  const overall = Math.round(score.areas.communication * 0.5 + score.areas.stability * 0.5);
+  const communicationLeads = score.areas.communication >= score.areas.stability;
+  const close = Math.abs(score.areas.communication - score.areas.stability) < 6;
+  const headline = close
+    ? 'Communication and long-term stability are evenly matched in this pairing. Romantic and attraction readings are left out because a birth date is under 18.'
+    : `${communicationLeads ? 'Communication' : 'Long-term stability'} is the strongest part of this pairing; ${communicationLeads ? 'long-term stability' : 'communication'} will take the most work. Romantic and attraction readings are left out because a birth date is under 18.`;
+  return {
+    overall,
+    areas: { attraction: score.areas.communication, communication: score.areas.communication, stability: score.areas.stability },
+    verdict: COMPAT_VERDICTS[compatVerdictKey(overall)],
+    headline,
+  };
+}
+
+export const MINOR_PAIR_NOTE = 'A birth date is under 18, so romantic and attraction readings are left out. The attraction field repeats the communication score and is not a romance rating. The share link is left empty.';
+
+/**
  * Compare two birth charts. Throws RangeError with a plain message for a
  * date, time or zone the calculation cannot take, or a famous name the
- * directory does not have (check compatibilityMissing first).
+ * directory does not have (check compatibilityMissing first). `today` is the
+ * date the under-18 rule is read on.
  */
 export async function computeCompatibility(
   args: CompatibilityInput,
   localTime: CompatibilityClock,
   origin = 'https://zodiacs.org',
+  today = new Date(),
 ): Promise<{ data: CompatibilityData; links: CompatibilityLink[] }> {
   const a = await personChart(args.a, 'Person A', localTime);
   const b = await personChart(args.b, 'Person B', localTime);
@@ -373,7 +398,12 @@ export async function computeCompatibility(
   const elementOf = (index: number | null) => (index === null ? null : SIGNS[index].element);
   const elA = elementOf(a.sunIndex);
   const elB = elementOf(b.sunIndex);
-  const score = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
+  // Either birth date under 18, including one child with an adult: no romance or attraction framing, and no share
+  // image, whose card labels one number Attraction. Two adults keep the ordinary score.
+  const todayDate = today.toISOString().slice(0, 10);
+  const young = isUnder18(a.birthDate, todayDate) || isUnder18(b.birthDate, todayDate);
+  const scored = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
+  const score = young ? minorScore(scored) : scored;
   const detail = coarserDetail(
     readingDetail({ hasDate: true, hasTime: a.timeKnown, hasPlace: a.placed }),
     readingDetail({ hasDate: true, hasTime: b.timeKnown, hasPlace: b.placed }),
@@ -386,14 +416,19 @@ export async function computeCompatibility(
     a: personRow(a, origin),
     b: personRow(b, origin),
     score,
-    signPair,
+    signPair: young && signPair ? {
+      ...signPair,
+      element: { label: softenMinor(signPair.element.label), note: softenMinor(signPair.element.note) },
+      modality: { label: softenMinor(signPair.modality.label), note: softenMinor(signPair.modality.note) },
+      polarity: softenMinor(signPair.polarity),
+    } : signPair,
     contacts: summary.top.map((contact) => ({
       aBody: contact.a as CompatibilityData['contacts'][number]['aBody'],
       bBody: contact.b as CompatibilityData['contacts'][number]['bBody'],
       aspect: contact.type,
       orb: roundOrb(contact.orb),
       generational: isGenerationalContact(contact),
-      line: contactLine(a.label, contact.a, b.label, contact.b, contact.type),
+      line: young ? softenMinor(contactLine(a.label, contact.a, b.label, contact.b, contact.type)) : contactLine(a.label, contact.a, b.label, contact.b, contact.type),
     })),
     counts: {
       easeful: summary.easeful,
@@ -405,12 +440,12 @@ export async function computeCompatibility(
     modalities: { a: { ...summary.modalities.a }, b: { ...summary.modalities.b } },
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
     cardUrl: null,
-    shareUrl: compatibilityShareUrl(origin, {
+    shareUrl: young ? null : compatibilityShareUrl(origin, {
       a: { name: null, sun: sunA },
       b: { name: null, sun: sunB },
       score,
     }),
-    notes: [...notesFor(a, b), label],
+    notes: [...notesFor(a, b), ...(young ? [MINOR_PAIR_NOTE] : []), label],
     note: COMPATIBILITY_NOTE,
   };
 

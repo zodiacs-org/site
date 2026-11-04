@@ -103,6 +103,10 @@ try {
   const link = page.getByRole('link', { name: 'Open printable card' });
   assert.equal(await link.getAttribute('href'), data.cardUrl);
   assert.ok(data.cardUrl.startsWith('https://zodiacs.org/occasions/#'));
+  // The card link opens that day; names and the place name stay out of it, and coordinates are rounded.
+  assert.match(data.cardUrl, /d=2027-06-12/u);
+  assert.match(data.cardUrl, /lat=43\.77&lon=11\.26/u);
+  assert.doesNotMatch(data.cardUrl, /Florence|Ana|Luis|43\.7696/u);
   await capture(page, 'occasions-wedding-desktop.png');
   // Copy gives the card as plain text.
   // A page set from a string has no origin the clipboard serves, so the drive records the write.
@@ -134,6 +138,10 @@ try {
   assert.match(babyText, /Pisces to Aries Moon/);
   assert.match(babyText, /The Moon changes sign that day\. Add the time to pin it down\./);
   assert.doesNotMatch(babyText, /Golden hour|Sunset/);
+  // A baby's arrival can be a birth date: no card link and no share link, so the card offers neither.
+  assert.equal((baby as any).data.cardUrl, null);
+  assert.equal((baby as any).data.shareUrl, null);
+  assert.equal(await plain.getByRole('link', { name: /printable card|Share/u }).count(), 0);
 
   // A place name with no zone or coordinates is shown, and the line does not claim there was no place.
   const named = await open();
@@ -156,7 +164,9 @@ try {
   assert.match(lifeText, /Mercury retrogrades\s+93/);
   assert.match(lifeText, /First Jupiter return, age 11/);
   assert.match(lifeText, /Without a birth time, a date can be a day off\./);
-  assert.equal(await lives.getByRole('link', { name: 'Open printable card' }).getAttribute('href'), 'https://zodiacs.org/occasions/milestones/#b=1997-03-15');
+  // The milestones page, with no birth date in its address; the share link names the milestone and its age only.
+  assert.equal(await lives.getByRole('link', { name: 'Open printable card' }).getAttribute('href'), 'https://zodiacs.org/occasions/milestones/');
+  assert.equal(await lives.getByRole('link', { name: 'Share your milestone' }).getAttribute('href'), 'https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=29');
   await capture(lives, 'occasions-milestones-desktop.png');
   // A timed result has no card link (the page could not reproduce it), and the panel offers none.
   const timed = await result('get_life_milestones', { birthDate: '1997-03-15', time: '08:30', zone: 'Europe/Rome' });
@@ -189,7 +199,10 @@ try {
   assert.doesNotMatch(compareText.replace(plainWords((pair as any).data.note), ''), /guarantee|soulmate|destined|doomed/iu);
   assert.match(compareText, /not a guarantee/);
   assert.match(compareText, /^ZODIACS·ORG\n/u, 'Every card opens with the ZODIACS · ORG lockup');
-  assert.ok((await compare.getByRole('link', { name: 'Open both charts' }).getAttribute('href'))!.startsWith('https://zodiacs.org/compatibility/#'));
+  // The comparison carries no birth details in a link: no card link, so the pair page opens instead.
+  assert.equal((pair as any).data.cardUrl, null);
+  assert.equal(await compare.getByRole('link', { name: 'Read this pair' }).getAttribute('href'), (pair as any).data.pageUrl);
+  assert.doesNotMatch(`${(pair as any).data.pageUrl} ${(pair as any).data.shareUrl}`, /1990|1992|Ana|Luis|#/u);
   assert.equal(await compare.getByRole('link', { name: 'Share the reading' }).getAttribute('href'), (pair as any).data.shareUrl);
   // Four contacts show; the rest open from the keyboard.
   assert.equal(await compare.locator('.card-section > .reasons li').count(), 4);

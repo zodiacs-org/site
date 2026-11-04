@@ -186,3 +186,35 @@ describe('computeCompatibility with generational contacts', () => {
     }
   });
 });
+
+describe('computeCompatibility when either birth date is under 18', () => {
+  const today = new Date('2026-11-04T12:00:00Z');
+  const ROMANCE = /\b(?:romance|romantic|attraction|intimacy|sexual|chemistry|in love)\b/iu;
+
+  it('scores communication and stability only, says why, and gives no share link', async () => {
+    const args = compatibilityInput.parse({ a: { birthDate: '2012-03-14' }, b: { birthDate: '1990-04-10' } });
+    const adult = compatibilityInput.parse({ a: { birthDate: '1985-03-14' }, b: { birthDate: '1990-04-10' } });
+    const { data } = await computeCompatibility(args, localTime, 'https://zodiacs.org', today);
+    expect(compatibilityData.parse(data)).toEqual(data);
+    const { communication, stability, attraction } = data.score.areas;
+    // The published schema needs an attraction integer: it repeats communication and does not count.
+    expect(attraction).toBe(communication);
+    expect(data.score.overall).toBe(Math.round(communication * 0.5 + stability * 0.5));
+    expect(data.score.headline).toContain('Romantic and attraction readings are left out because a birth date is under 18.');
+    expect(data.score.headline).toMatch(/Reading confidence \d+%\.$/u);
+    expect(data.shareUrl).toBeNull();
+    expect(data.notes.join(' ')).toContain('The attraction field repeats the communication score and is not a romance rating.');
+    // The words a person reads: the verdict, the sign pair and every contact line (the areas' key is the schema's own).
+    expect(JSON.stringify({ verdict: data.score.verdict, signPair: data.signPair, contacts: data.contacts.map((contact) => contact.line) })).not.toMatch(ROMANCE);
+    // Two adults keep the ordinary score and share link.
+    const grown = (await computeCompatibility(adult, localTime, 'https://zodiacs.org', today)).data;
+    expect(grown.shareUrl).toMatch(/^https:\/\/zodiacs\.org\/share\//u);
+    expect(grown.notes.join(' ')).not.toContain('under 18');
+  });
+
+  it('applies to either side and turns at the eighteenth birthday', async () => {
+    const pair = (a: string, b: string) => compatibilityInput.parse({ a: { birthDate: a }, b: { birthDate: b } });
+    expect((await computeCompatibility(pair('1990-04-10', '2009-11-05'), localTime, 'https://zodiacs.org', today)).data.shareUrl).toBeNull();
+    expect((await computeCompatibility(pair('1990-04-10', '2008-11-04'), localTime, 'https://zodiacs.org', today)).data.shareUrl).not.toBeNull();
+  });
+});

@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createServer, type Server } from 'node:http';
 import { existsSync, readFileSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
-import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
+import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
 import { executeAiTool } from './tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
@@ -18,6 +18,8 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * 0.6.0 adds five tools and changes nothing about the thirteen the directories reviewed. The live tools/list,
  * fetched from https://zodiacs.org/mcp on 1 November 2026, is kept in
  * docs/platform/zodiacs-ai/evidence/0.6.0/; every one of its thirteen entries must come back byte for byte.
+ * 0.6.1 changes the reported version and gives the five coverage tools the inline readings panel; the thirteen
+ * entries, their _meta included, still come back byte for byte.
  */
 const root = new URL('../../', import.meta.url);
 const LIVE = JSON.parse(readFileSync(new URL('docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', root), 'utf8'));
@@ -75,11 +77,11 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     }
   });
 
-  it('reports 0.6.0 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
+  it('reports 0.6.1 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.0' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.1' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.0');
+    expect(capabilities.data.version).toBe('0.6.1');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });
@@ -102,6 +104,13 @@ describe('get_capabilities names every tool offered', () => {
     expect(result.data.coverage.aspects).toContain('get_personal_transits');
     expect(result.data.coverage.tools.split(', ')).toHaveLength(19);
     expect(result.data.privacy).toContain('https://zodiacs.org/privacy/');
+    expect(result.data.privacy).toContain('Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day.');
+    expect(result.data.privacy).toContain('Ask before using someone else\'s birth details.');
+    expect(result.data.privacy).not.toMatch(/never share|or share/u);
+    expect(text).toContain('Which tool: today, tomorrow or this week\'s general Sun-sign horoscope, get_horoscope;');
+    expect(text).toContain('a town or city named instead of coordinates, find_birthplace;');
+    expect(text).toContain('whether two Sun signs are compatible, explain_astrology.');
+    expect(text).toContain('with a reading-confidence label on each forecast');
     expect(text).not.toMatch(/[–—]/u);
   });
 
@@ -112,17 +121,25 @@ describe('get_capabilities names every tool offered', () => {
     expect(result.data.tools).toHaveLength(13);
     const text = JSON.stringify(result.data);
     for (const name of COVERAGE_TOOL_NAMES) expect(text, name).not.toContain(name);
+    expect(result.data.limitations.join(' ')).toContain('Which tool: what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar;');
   });
 });
 
 describe('the five 0.6.0 tools', () => {
-  it('are read-only, closed-world, non-destructive and anonymous, with a title in the annotations and no panel', async () => {
-    const tools = (await rpc('tools/list', {})).result.tools as { name: string; title: string; description: string; annotations: Record<string, unknown>; _meta: Record<string, unknown>; inputSchema: { type: string; properties: Record<string, { type?: string }> } }[];
+  it('are read-only, closed-world, non-destructive and anonymous, with the readings panel inline and no sidebar launch', async () => {
+    const tools = (await rpc('tools/list', {})).result.tools as { name: string; title: string; description: string; annotations: Record<string, unknown>; _meta: Record<string, unknown>; icons?: unknown; inputSchema: { type: string; properties: Record<string, { type?: string }> } }[];
+    expect(READINGS_URI).toBe('ui://zodiacs/readings-v3.html');
     for (const name of COVERAGE_TOOL_NAMES) {
       const tool = tools.find(entry => entry.name === name)!;
       expect(tool.title).toBe(TOOL_TITLES[name]);
       expect(tool.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false, openWorldHint: false, title: TOOL_TITLES[name] });
-      expect(tool._meta).toEqual({ securitySchemes: [{ type: 'noauth' }] });
+      expect(tool._meta).toEqual({
+        securitySchemes: [{ type: 'noauth' }],
+        ui: { resourceUri: READINGS_URI, visibility: ['model', 'app'] },
+        'openai/outputTemplate': READINGS_URI,
+        'openai/ui': { entrypoints: [{ type: 'thread' }] },
+      });
+      expect(tool.icons).toEqual([{ src: 'https://zodiacs.org/assets/ai/readings.svg', mimeType: 'image/svg+xml', sizes: ['20x20'] }]);
       expect(tool.description).toBe(TOOL_DESCRIPTIONS[name]);
       // Flat inputs: every property is a plain value, never an object to fill in.
       for (const property of Object.values(tool.inputSchema.properties)) expect(['string', 'number', 'integer']).toContain(property.type);
@@ -178,6 +195,7 @@ function routeExists(path: string): boolean {
   if (parts[0] === 'rising-sign' && parts.length === 2) return signs.includes(parts[1]) && page('rising-sign/[sign].astro');
   if (parts[0] === 'horoscopes' && parts.length >= 2 && signs.includes(parts[1])) return page(`horoscopes/[sign]/${parts.slice(2).join('/')}${parts.length > 2 ? '/' : ''}index.astro`);
   if (parts[0] === 'learn' && parts.length === 3 && ['planets', 'houses', 'aspects', 'placements'].includes(parts[1])) return content(`learn/${parts[1]}/${parts[2]}.mdx`) && page(`learn/${parts[1]}/[slug].astro`);
+  if (parts[0] === 'compatibility' && parts.length === 2) return content(`pairs/${parts[1]}.mdx`) && page('compatibility/[pair]/index.astro');
   if (parts[0] === 'learn' && parts[1] === 'chinese-zodiac' && parts.length === 3) return CHINESE_ZODIAC_ANIMALS.some(animal => animal.slug === parts[2]) && page('learn/chinese-zodiac/[animal]/index.astro');
   return page(`${parts.join('/')}${parts.length && parts[0] ? '/' : ''}index.astro`) || page(`${parts.join('/')}.astro`);
 }
@@ -188,6 +206,8 @@ describe('every link the 0.6.0 tools return', () => {
     const calls: [typeof COVERAGE_TOOL_NAMES[number], Record<string, unknown>][] = [
       ...EXPLAIN_TOPICS.map((topic): [typeof COVERAGE_TOOL_NAMES[number], Record<string, unknown>] => ['explain_astrology', { topic }]),
       ['explain_astrology', { topic: 'tarot' }],
+      ['explain_astrology', { topic: 'Are Leo and Scorpio compatible?' }],
+      ['explain_astrology', { topic: 'Pisces and Pisces' }],
       ...HOROSCOPE_SIGNS.flatMap((sign) => (['month', 'year', 'week'] as const).flatMap((period) => (['general', 'love', 'career'] as const).map((focus): [typeof COVERAGE_TOOL_NAMES[number], Record<string, unknown>] => ['get_horoscope_period', { sign, period, focus, ...(period === 'year' ? { date: '2027-06-01' } : {}) }]))),
       ['get_horoscope_period', { sign: 'leo', period: 'year' }],
       ...['1990-05-03', '1972-08-15', '2000-11-11'].flatMap((birthDate): [typeof COVERAGE_TOOL_NAMES[number], Record<string, unknown>][] => [

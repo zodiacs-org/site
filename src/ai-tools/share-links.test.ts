@@ -125,11 +125,19 @@ describe('a famous chart share link', () => {
 describe('a life milestone share link', () => {
   const saturn = { kind: 'saturn-return', index: 1, age: 29, first: '2026-04-23T08:01:00.000Z', last: '2026-12-31T02:00:00.000Z' };
 
-  it('carries the milestone, its age and its days, never the birth date', () => {
-    expect(milestoneShareUrl('https://zodiacs.org', saturn)).toBe('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31');
-    const share = parseMilestoneShare(params('k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31&ref=chatgpt'))!;
-    expect(share).toEqual({ kind: 'saturn-return', index: 1, age: 29, first: '2026-04-23', last: '2026-12-31', ref: 'chatgpt' });
-    expect(milestoneQuery(share, true)).toBe('k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31&ref=chatgpt');
+  it('carries the milestone and its age, never the birth date or the days of its passes', () => {
+    // The first and last days lead back to the birth date, so a new link leaves them out.
+    expect(milestoneShareUrl('https://zodiacs.org', saturn)).toBe('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=29');
+    const share = parseMilestoneShare(params('k=saturn-return&i=1&a=29&ref=chatgpt'))!;
+    expect(share).toEqual({ kind: 'saturn-return', index: 1, age: 29, ref: 'chatgpt' });
+    expect(milestoneQuery(share, true)).toBe('k=saturn-return&i=1&a=29&ref=chatgpt');
+  });
+
+  it('still opens an older link that carries the first and last days, and drops them', () => {
+    const older = parseMilestoneShare(params('k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31&ref=chatgpt'))!;
+    expect(older).toEqual({ kind: 'saturn-return', index: 1, age: 29, ref: 'chatgpt' });
+    expect(milestoneQuery(older)).toBe('k=saturn-return&i=1&a=29');
+    expect(parseMilestoneShare(params('k=uranus-opposition&i=1&a=42&f=2027-03-02&l=2027-03-02'))).toEqual({ kind: 'uranus-opposition', index: 1, age: 42, ref: null });
   });
 
   it('refuses a milestone that does not come at that age, or passes out of order', () => {
@@ -142,6 +150,11 @@ describe('a life milestone share link', () => {
       'k=saturn-return&i=01&a=29&f=2026-04-23&l=2026-12-31',
       'k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31&b=1997-03-15',
       'k=saturn-return&i=1&a=29&f=2026-04-23',
+      'k=saturn-return&i=1&a=29&l=2026-12-31',
+      'k=saturn-return&i=1&a=29&f=1997-03-15x&l=2026-12-31',
+      'k=saturn-return&i=1&a=12',
+      'k=saturn-return&i=1',
+      'k=saturn-return&i=1&a=29&a=30',
     ]) expect(parseMilestoneShare(params(query)), query).toBeNull();
   });
 
@@ -237,8 +250,9 @@ describe('the tools’ share links', () => {
     expect(OUTPUT_SCHEMAS.get_life_milestones.safeParse(milestones).success).toBe(true);
     if (milestones.ok && milestones.tool === 'get_life_milestones') {
       const next = milestones.data.next!;
-      expect(milestones.data.shareUrl).toBe(`https://zodiacs.org/share/milestone/?k=${next.kind}&i=${next.index}&a=${next.age}&f=${next.first.slice(0, 10)}&l=${next.last.slice(0, 10)}`);
+      expect(milestones.data.shareUrl).toBe(`https://zodiacs.org/share/milestone/?k=${next.kind}&i=${next.index}&a=${next.age}`);
       expect(milestones.data.shareUrl).not.toContain('1997');
+      expect(milestones.data.shareUrl).not.toMatch(/[?&][fl]=|\d{4}-\d{2}-\d{2}/u);
     }
   });
 });

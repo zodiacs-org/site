@@ -24,9 +24,13 @@ joins the occasions switch, and an About that names the score and rating out of
 100 and the new features. 0.5.1 was in OpenAI review on 28 October; see
 [RESUBMISSION-0.6.0](../../docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md).
 Developer 0.3.16 is rebuilt from the corrected 0.6.0 source with unchanged local
-tools; 0.3.15 keeps its bytes.
+tools; 0.3.15 keeps its bytes. Zodiacs 0.6.1 gives the five 0.6.0 tools the
+inline readings panel, offers `find_birthplace` with them, and carries the
+4 November forecast rule, the under-18 rule and the link privacy wording;
+Developer 0.3.21 is rebuilt from that source with unchanged local tools. 0.6.0
+and 0.3.20 keep their bytes.
 
-Current candidates are **Zodiacs 0.6.0** and **Zodiacs Developer 0.3.20**;
+Current candidates are **Zodiacs 0.6.1** and **Zodiacs Developer 0.3.21**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

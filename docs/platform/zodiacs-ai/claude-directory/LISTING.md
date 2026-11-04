@@ -1,5 +1,35 @@
 # Claude directory listing
 
+## Product rule and 0.6.1 prepared, 4 November 2026
+
+Dias replaced the "no predictions" rule for astrology readings on 4 November
+2026. Horoscopes and transit readings are forecasts: share them plainly and
+confidently, each with a label written exactly "Reading confidence NN%". The
+number is how specific the details were, never the odds that an event
+happens, by the one rule in `src/ai-tools/reading-confidence.ts`: 40 for a Sun
+sign alone, 55 for a date without both a clock time and a place, 70 for a date
+with a clock time and a place, and 5 more when a named contact's orb is under
+1 degree, never past 95. An explainer carries no label. Forecasts are not
+health, financial or medical advice and not a promise of an outcome. The
+8 October 2026 ban on betting tips, sports picks, market timing and election
+forecasts stays. The decision is recorded in `docs/STRATEGY.md`.
+
+Privacy, as the server now states it: Zodiacs never stores or logs birth
+details. Links never carry a birth year, time, place or names; a birthday link
+carries only the month and day. Ask before using someone else's birth details.
+
+`main` offers 19 tools where both switches are on: the thirteen in review, byte
+for byte, then the five 0.6.0 tools and `find_birthplace`. Version 0.6.1 adds
+the inline readings panel `ui://zodiacs/readings-v3.html` for the five 0.6.0
+tools (no sidebar launch), the under-18 rule and the privacy and forecast
+wording above. The steps and the updated reviewer note are in
+[RESYNC-0.6.0.md](RESYNC-0.6.0.md). Nothing was synced, saved or sent.
+
+The directory text already submitted still says Zodiacs makes no personal
+predictions (the 15 October 2026 note and the description below). That portal
+copy has not been resubmitted, and this note does not change it. The next
+resubmission must replace it with the 4 November rule.
+
 ## 0.6.0 prepared, 2 November 2026
 
 Five read-only tools are ready behind `ZODIACS_COVERAGE_ENABLED`, with the

@@ -18,19 +18,33 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
 ### Identity and publishing
 
 - Commit as `admin@zodiacs.org` (name "Zodiacs Admin"). Never put a model
-  name or a personal email address in a commit, a pull request, or a file.
-- Open draft pull requests only. Never merge, never mark a pull request ready
-  for review, and never push to `main`. The owner decides every merge.
-- Post nothing publicly: no social posts, no release notes, no comments on
-  other projects, no messages to people.
+  name or a personal email address in a commit, a pull request or a file.
+  When merging, check that the merge commit's author is Zodiacs.
+- Open pull requests as drafts. The owner pre-approves a merge when CI is
+  green (or each failure is shown to be unrelated and also fails on `main`),
+  an independent review finds no blockers, the live site is checked after the
+  merge (revert if it is broken), and the merge is logged in the pinned Merge
+  log issue (#879). Never push to `main`.
+- Additive database migrations (nothing deleted, no personal data touched)
+  may be applied after review and logged in #879; anything that deletes data
+  needs the owner's yes. A feature flag may be switched to fix a live problem,
+  logged in #879; secret values stay with the owner.
+- Ask the owner before spending money, submitting to a directory, deleting
+  data, posting publicly outside this repository, or messaging people.
 - Never touch the `claude/zodiacs-handover-pr-review-tv7ni0` branch.
 - Never read, print or commit credentials, tokens or `.env` values.
 
 ### Product rules
 
+- Forecasts are stated plainly and confidently, each with a "Reading
+  confidence NN%" label (`src/ai-tools/reading-confidence.ts`). No betting
+  tips, sports picks, market timing, election forecasts, health predictions
+  or guarantees.
+- Never store or log users' birth details. Links never carry a birth year,
+  time, place or names; a birthday link carries only the month and day.
+- The 13 published MCP tool definitions stay byte-identical
+  (`src/ai-tools/release-060.test.ts`).
 - The site is dark only. Do not add a light theme or a theme switch.
-- No predictions on the site. Horoscopes stay reflective: they describe the
-  sky and invite reflection, they never forecast outcomes.
 - No token, market or crypto language on consumer surfaces. The approved
   exception is the Collect band and the other sanctioned wing links described
   in `CLAUDE.md` ("One design system, two content registers").

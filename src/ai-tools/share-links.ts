@@ -17,8 +17,10 @@
  *   settled it; the server matches the famous people from the site's own
  *   directory, so no name is carried;
  * - a famous chart: the directory slug of a person the site publishes;
- * - a life milestone: its kind, which one (first, second …), the age it
- *   comes at and its first and last days, never the birth date.
+ * - a life milestone: its kind, which one (first, second …) and the age it
+ *   comes at, never the birth date. The days of its passes stay out too,
+ *   because they lead back to the birth date. A link made before that, with
+ *   the first and last days as f and l, still opens, and is drawn without them.
  *
  * The server checks each one against the site's own data before it draws
  * anything: the birthday table, the sky calendar's events, the published
@@ -104,9 +106,6 @@ export interface MilestoneShare {
   index: number;
   /** The age at the first pass. */
   age: number;
-  /** The first and last passes' dates (UTC). */
-  first: string;
-  last: string;
   ref: ShareRef | null;
 }
 
@@ -157,20 +156,23 @@ function validMonthDay(month: number, day: number): boolean {
 
 const dayNumber = (date: string) => Date.parse(`${date}T00:00:00Z`) / 86_400_000;
 
-/**
- * A milestone a link may name: a real kind and ordinal, an age near when
- * that milestone comes, and passes that start on or before
- * they end and run no longer than the slowest one does.
- */
+/** A milestone a link may name: a real kind and ordinal, and an age near when that milestone comes. */
 function validMilestone(share: Omit<MilestoneShare, 'ref'>): boolean {
   if (!(MILESTONE_KINDS as readonly string[]).includes(share.kind)) return false;
   if (!Number.isInteger(share.index) || share.index < 1 || share.index > MILESTONE_INDEX_MAX) return false;
   if (!Number.isInteger(share.age) || share.age < 1 || share.age > MILESTONE_AGE_MAX) return false;
   if (share.kind === 'uranus-opposition' && share.index !== 1) return false;
   const { cycle, within } = MILESTONE_AGES[share.kind];
-  if (Math.abs(share.age - share.index * cycle) > within) return false;
-  if (!validDate(share.first) || !validDate(share.last)) return false;
-  const span = dayNumber(share.last) - dayNumber(share.first);
+  return Math.abs(share.age - share.index * cycle) <= within;
+}
+
+/**
+ * An older link's first and last days, which it is still checked against before it opens: passes that
+ * start on or before they end and run no longer than the slowest one does. New links leave them out.
+ */
+function validPasses(first: string, last: string): boolean {
+  if (!validDate(first) || !validDate(last)) return false;
+  const span = dayNumber(last) - dayNumber(first);
   return span >= 0 && span <= MILESTONE_SPAN_MAX;
 }
 
@@ -254,7 +256,7 @@ export function famousChartQuery(share: FamousChartShare, withRef = false): stri
 }
 
 export function milestoneQuery(share: MilestoneShare, withRef = false): string {
-  const params = new URLSearchParams({ k: share.kind, i: String(share.index), a: String(share.age), f: share.first, l: share.last });
+  const params = new URLSearchParams({ k: share.kind, i: String(share.index), a: String(share.age) });
   if (withRef && share.ref) params.set('ref', share.ref);
   return params.toString();
 }
@@ -270,9 +272,9 @@ export function famousChartShareUrl(origin: string, slug: string): string | null
   return SLUG_RE.test(slug) && slug.length <= SLUG_MAX ? `${origin}${FAMOUS_CHART_SHARE_PATH}?${famousChartQuery({ slug, ref: null })}` : null;
 }
 
-/** A life milestone's share link, from the tool's milestone row: its kind, ordinal, age and the days of its first and last passes. */
-export function milestoneShareUrl(origin: string, milestone: { kind: string; index: number; age: number; first: string; last: string }): string | null {
-  const share = { kind: milestone.kind as ShareMilestoneKind, index: milestone.index, age: milestone.age, first: milestone.first.slice(0, 10), last: milestone.last.slice(0, 10) };
+/** A life milestone's share link, from the tool's milestone row: its kind, ordinal and age, never the days of its passes. */
+export function milestoneShareUrl(origin: string, milestone: { kind: string; index: number; age: number }): string | null {
+  const share = { kind: milestone.kind as ShareMilestoneKind, index: milestone.index, age: milestone.age };
   return validMilestone(share) ? `${origin}${MILESTONE_SHARE_PATH}?${milestoneQuery({ ...share, ref: null })}` : null;
 }
 
@@ -356,13 +358,16 @@ export function parseFamousChartShare(params: URLSearchParams): FamousChartShare
   return { slug, ref };
 }
 
+/** A milestone link, new (k, i, a) or older (with f and l too, both or neither, checked and then dropped). */
 export function parseMilestoneShare(params: URLSearchParams): MilestoneShare | null {
   const fields = strictParams(params, MILESTONE_SHARE_KEYS);
   if (!fields) return null;
   const [kind, index, age, first, last] = ['k', 'i', 'a', 'f', 'l'].map((key) => fields.get(key));
   const ref = readRef(fields.get('ref'));
-  if (kind === undefined || index === undefined || age === undefined || first === undefined || last === undefined || ref === undefined) return null;
+  if (kind === undefined || index === undefined || age === undefined || ref === undefined) return null;
   if (!INDEX_RE.test(index) || !AGE_RE.test(age)) return null;
-  const share = { kind: kind as ShareMilestoneKind, index: Number(index), age: Number(age), first, last };
+  if ((first === undefined) !== (last === undefined)) return null;
+  if (first !== undefined && last !== undefined && !validPasses(first, last)) return null;
+  const share = { kind: kind as ShareMilestoneKind, index: Number(index), age: Number(age) };
   return validMilestone(share) ? { ...share, ref } : null;
 }

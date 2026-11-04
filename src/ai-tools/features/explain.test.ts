@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { executeAiTool } from '../tools';
 import { bigThree } from '../../lib/interpretations';
-import { EXPLAIN_TOPICS, explainAstrology, matchAngleSign, matchNoSuchHouse, matchPlacement, matchRising, matchTopic } from './explain';
+import { pairPagesFromDisk } from '../../../scripts/build-pair-pages.mjs';
+import pairPages from './pair-pages.json';
+import { EXPLAIN_TOPICS, explainAstrology, matchAngleSign, matchNoSuchHouse, matchPlacement, matchRising, matchSignPair, matchTopic } from './explain';
 
 const on = { occasions: true, coverage: true };
 
@@ -212,4 +214,39 @@ describe('explain_astrology', () => {
     expect(matchTopic('Midheaven')?.key).toBe('midheaven');
     expect(matchTopic('mc')?.key).toBe('midheaven');
   });
+
+  it('explains a Sun-sign pair from its compatibility page, with no confidence label, and says to leave romance out for anyone under 18', async () => {
+    const { data, links } = explainAstrology({ topic: 'Are Leo and Scorpio compatible?' });
+    expect(data.found).toBe(true);
+    expect(data.topic).toBe('leo-scorpio');
+    expect(data.title).toBe('Leo and Scorpio');
+    expect(data.paragraphs.join(' ')).toContain('One loves on the record');
+    expect(data.paragraphs[1]).toBe('This is the Sun-sign pattern; the rest of both charts changes how it is lived.');
+    // An explainer explains; it does not forecast, so it carries no reading-confidence label.
+    expect(JSON.stringify(data)).not.toMatch(/confidence/iu);
+    expect(data.message).toBe('If either person is under 18, give the element and modality pattern and do not frame the pair as romance or attraction.');
+    expect(data.pages[0].url).toBe('https://zodiacs.org/compatibility/leo-scorpio/');
+    expect(links.map((link) => link.url).join(' ')).not.toMatch(/birthDate|latitude|#c=/u);
+    expect(JSON.stringify(data)).not.toMatch(/[\u2013\u2014]/u);
+    expect(explainAstrology({ topic: 'scorpio and leo' }).data.topic).toBe('leo-scorpio');
+    expect(explainAstrology({ topic: 'Pisces with Pisces' }).data.title).toBe('Two Pisces people');
+    expect(pairPages).toEqual(await pairPagesFromDisk());
+    expect(Object.keys(pairPages)).toHaveLength(78);
+  });
+
+  it('keeps a single sign, a placement or a sign rising out of the pair answer', () => {
+    expect(matchSignPair('leo')).toBeNull();
+    expect(matchSignPair('Leo rising and Scorpio Moon')).toBeNull();
+    expect(matchSignPair('Mars in Leo and Venus in Scorpio')).toBeNull();
+    expect(matchSignPair('leo scorpio')).toEqual({ a: 'leo', b: 'scorpio' });
+    expect(explainAstrology({ topic: 'leo' }).data.topic).toBe('leo');
+    expect(explainAstrology({ topic: 'Moon in Scorpio' }).data.topic).not.toBe('leo-scorpio');
+  });
+
+  it('never reads the sixth house as health', () => {
+    const sixth = explainAstrology({ topic: 'sixth house' }).data.paragraphs.join(' ');
+    expect(sixth).toContain('sixth house');
+    expect(sixth).not.toMatch(/\bhealth\b/iu);
+  });
 });
+

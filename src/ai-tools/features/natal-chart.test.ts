@@ -128,4 +128,22 @@ describe('get_natal_chart', () => {
     expect((await chart({ birthDate: '2026-03-08', zone: 'America/New_York' })).timeNote).toBeUndefined();
     expect('timeNote' in (await chart({ birthDate: '1990-05-03' }))).toBe(false);
   });
+
+  it('leaves romantic wording out when the birth date is under 18, and never reads the sixth house as health', async () => {
+    const young = await chart({ birthDate: '2015-06-01', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 });
+    expect(young.under18).toBe(true);
+    expect(young.unknown).toContain('This birth date is under 18, so romantic and attraction readings are left out.');
+    expect(JSON.stringify({ planets: young.planets, sun: young.sun, moon: young.moon, rising: young.rising, aspects: young.aspects, balance: young.balance })).not.toMatch(/\b(?:romance|romantic|attraction|intimacy|sexual|chemistry)\b/iu);
+    const adult = await chart(MADRID);
+    expect(adult.under18).toBe(false);
+    expect(adult.unknown.join(' ')).not.toContain('under 18');
+    for (const data of [young, adult]) expect(JSON.stringify(data.planets.map((row) => row.houseLine))).not.toMatch(/\bhealth\b/iu);
+  });
+
+  it('keeps the birth details out of every link it returns', async () => {
+    const result = await executeAiTool('get_natal_chart', MADRID, on);
+    if (!result.ok || result.tool !== 'get_natal_chart') throw new Error(JSON.stringify(result));
+    const urls = [...JSON.stringify(result).matchAll(/https:\/\/[^"\\]+/gu)].map((match) => match[0]);
+    for (const url of urls) expect(url, url).not.toMatch(/1990-05-03|08:30|40\.4|-3\.7|Madrid|#c=/u);
+  });
 });
