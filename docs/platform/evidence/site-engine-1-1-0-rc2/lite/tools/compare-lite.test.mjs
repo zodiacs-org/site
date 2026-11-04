@@ -182,7 +182,10 @@ function runWithPlan(plan) {
     rmSync(work, { recursive: true, force: true });
   }
 }
-const unexplainedIn = (record, section) => record.unexplained.filter((entry) => entry.section === section).length;
+// A section's unexplained differences, summed over its comparisons in the record's sections, which the tool
+// does not cap. Its list of entries stops at 5,000 (LIST_LIMIT), so counting the list gave 0 for any section
+// after one that filled it (amendment of 2026-11-04, "control 5 counted a capped list").
+const unexplainedIn = (record, section) => Object.values(record.sections[section].comparisons).reduce((sum, row) => sum + (row.causes.unexplained ?? 0), 0);
 const failsIn = (record, section) => Object.values(record.sections[section].comparisons).some((row) => row.pass === false);
 
 const WRAPPERS = {
@@ -231,7 +234,9 @@ describe.skipIf(!BASE)('compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE)'
   }, TIMEOUT);
   it('control 5: a base declinationOf without the ecliptic latitude gives unexplained differences in D2-R, D2-P and D2-T', () => {
     const record = runWithPlan({ control: 5, sections: ['D2-R', 'D2-P', 'D2-T'], siteMutations: [{ file: 'src/lib/wheel/ecliptic3d.ts', from: 'const b = latDeg * RAD;', to: 'const b = 0 * RAD;' }] });
-    for (const section of ['D2-R', 'D2-P', 'D2-T']) expect(unexplainedIn(record, section)).toBeGreaterThan(0);
+    const counts = Object.fromEntries(['D2-R', 'D2-P', 'D2-T'].map((section) => [section, unexplainedIn(record, section)]));
+    console.log(`control 5: unexplained differences by section ${JSON.stringify(counts)}; entries listed ${record.unexplained.length}, omitted from the lists ${record.listOmitted}`);
+    for (const section of ['D2-R', 'D2-P', 'D2-T']) expect(counts[section]).toBeGreaterThan(0);
   }, TIMEOUT);
   it('control 6: an adapter with the Moon as the sect light by day fails S2-A', () => {
     const record = runWithPlan({ control: '6a', sections: ['S2-A'], headWrappers: { 'src/lib/sect.ts': WRAPPERS.moonLightByDay } });

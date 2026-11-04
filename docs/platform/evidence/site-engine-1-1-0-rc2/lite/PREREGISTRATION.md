@@ -839,3 +839,25 @@ entry's own. `docs/lite.md` now also says what review 2 found missing there:
 for a Sun exactly on the ascendant, whose altitude taken on the ecliptic is 0,
 the two conventions disagree, the altitude rule giving the day and the
 ecliptic rule the night.
+
+**2026-11-04, after the adoption's first run of the controls: control 5
+counted a capped list.** The parity record of J-1 (the adoption plan's Phase
+J, run once on `83f168d8`) passed, and then the tool's test ran its controls:
+29 of its 30 tests passed, and control 5's failed with "expected 0 to be
+greater than 0" (programme log `rc2a-83f168d8-j1-lite-controls.log`). The
+test counted a section's unexplained differences in the record's list of
+unexplained entries, which `compare-lite.mjs` stops at 5,000 (`LIST_LIMIT`),
+counting the rest only in `listOmitted`. With the latitude dropped, D2-R alone
+gives more than 5,000, so the list filled inside D2-R and no entry of D2-P or
+D2-T could appear in it, whatever the tool found there. That run's record was
+not kept. The test now counts each section's unexplained differences in the
+record's sections (`causes.unexplained`, summed over its comparisons), which
+the tool does not cap, and control 5 prints the three counts with the list's
+length and `listOmitted`. Control 1 uses the same count. Nothing else changes:
+not the mutation, the sections, the requirement of section 4.5 (unexplained
+differences in each of D2-R, D2-P and D2-T), the tool, the record or its
+pass condition, which already requires `listOmitted` to be 0. The test runs
+again in full as a second attempt that cites the first; the first's log stays
+in the evidence. Adopted after the first attempt's result was seen, so under
+this section the units it bears on stay `validated` until the owner ratifies
+it, as OQ5 already keeps them.
