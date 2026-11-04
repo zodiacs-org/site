@@ -3,7 +3,8 @@
  * bridge, results from the real coverage tools and find_birthplace. Writes
  * docs/platform/zodiacs-ai/evidence/readings-leo-scorpio.png. Then the panel
  * offered while ZODIACS_SKY_EVENTS_ENABLED=1: its birth chart lists the lunar
- * nodes, each body with its glyph. Run with
+ * nodes and Chiron, each body with its glyph, and leaves Chiron out when the
+ * chart has none. Run with
  * npx vite-node --script tests/ai-readings-drive.ts [-- --out <dir>] (the
  * second panel's screenshot goes to <dir> when given).
  */
@@ -13,6 +14,7 @@ import { chromium, type Page } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { READINGS_HTML } from '../integrations/generated/readings.mjs';
 import { READINGS_SKY_EVENTS_HTML } from '../integrations/generated/readings-sky-events.mjs';
+import { CHIRON_GLYPH } from '../src/lib/glyphs/paths';
 import { executeAiTool } from '../src/ai-tools/tools';
 import { loadPlaceTable } from '../src/ai-tools/features/place-table';
 import committedWindow from '../src/data/horoscope-window.json';
@@ -44,7 +46,7 @@ const period = await result('get_horoscope_period', { sign: 'leo', period: 'mont
 const animal = await result('get_chinese_zodiac', { birthDate: '1990-01-20', zone: 'Asia/Shanghai' });
 const transits = await result('get_personal_transits', { birthDate: '1990-05-03', from: '2026-11-01', to: '2026-11-15', currentZone: 'America/New_York' });
 const term = await result('explain_astrology', { topic: 'Are Leo and Scorpio compatible?' });
-// With the sky events switch: the same chart with its lunar nodes.
+// With the sky events switch: the same chart with its lunar nodes and Chiron.
 const withNodes = await executeAiTool('get_natal_chart', { birthDate: '1990-05-03', time: '08:30', zone: madrid.timeZone, latitude: madrid.latitude, longitude: madrid.longitude }, { ...dependencies, skyEvents: true });
 assert.equal(withNodes.ok, true, 'get_natal_chart answered with the sky events switch');
 const argv = process.argv.slice(2);
@@ -141,16 +143,32 @@ try {
   const north = (withNodes as unknown as { data: { nodes: { north: { sign: string } ; south: { sign: string } } } }).data.nodes;
   assert.match(nodeText, new RegExp(`North Node\\s+${north.north.sign.charAt(0).toUpperCase()}${north.north.sign.slice(1)}`, 'u'));
   assert.match(nodeText, new RegExp(`South Node\\s+${north.south.sign.charAt(0).toUpperCase()}${north.south.sign.slice(1)}`, 'u'));
-  // Every body row, the planets' and the nodes', leads with its glyph.
-  assert.equal(await nodesPage.locator('dl.facts dt svg').count(), 10);
+  // Chiron, beside the nodes, drawn with its own glyph.
+  const chironHeading = nodesPage.getByRole('heading', { name: 'Chiron', exact: true });
+  const chironSection = nodesPage.locator('section.card-section', { has: chironHeading });
+  const chiron = (withNodes as unknown as { data: { chiron: { sign: string } } }).data.chiron;
+  assert.match(await chironSection.innerText(), new RegExp(`Chiron\\s+${chiron.sign.charAt(0).toUpperCase()}${chiron.sign.slice(1)}`, 'u'));
+  assert.equal(await chironSection.locator('dt svg path').getAttribute('d'), CHIRON_GLYPH.match(/d="([^"]+)"/u)![1]);
+  // Every body row, the planets', the nodes' and Chiron's, leads with its glyph.
+  assert.equal(await nodesPage.locator('dl.facts dt svg').count(), 11);
   assert.equal(await nodesSection.locator('dt svg').count(), 2);
+  assert.equal(await chironSection.locator('dt svg').count(), 1);
   assert.equal(await nodesPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   assert.equal(errors.join('\n'), '');
-  checked.push(`sky events panel: the birth chart lists the North Node in ${north.north.sign} and the South Node in ${north.south.sign}, each body with its glyph`);
+  checked.push(`sky events panel: the birth chart lists the North Node in ${north.north.sign}, the South Node in ${north.south.sign} and Chiron in ${chiron.sign}, each body with its glyph`);
   if (shots) {
     await mkdir(shots, { recursive: true });
     await nodesSection.scrollIntoViewIfNeeded();
     await nodesPage.screenshot({ path: new URL('readings-sky-events-nodes.png', shots).pathname, fullPage: true });
   }
+  // A chart without Chiron (outside 1800 to 2199 it is null) lists the nodes alone.
+  const noChiron = structuredClone(withNodes) as unknown as { data: { chiron: unknown } };
+  noChiron.data.chiron = null;
+  await show(nodesPage, noChiron);
+  await chironHeading.waitFor({ state: 'detached' });
+  assert.equal(await nodesSection.locator('dt svg').count(), 2);
+  assert.equal(await nodesPage.locator('dl.facts dt svg').count(), 10);
+  assert.equal(errors.join('\n'), '');
+  checked.push('sky events panel: a chart without Chiron lists the nodes alone');
 } finally { await browser.close(); }
 console.log(`Readings panel drive:\n- ${checked.join('\n- ')}`);

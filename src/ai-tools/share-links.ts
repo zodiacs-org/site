@@ -25,9 +25,12 @@
  * - the big three: the Sun sign, the Moon sign when the chart settles it (the
  *   card says the Moon sign is undetermined otherwise) and the rising sign
  *   only when it is known, never the birth date;
- * - the Chinese zodiac: the animal, and the year only when the answer was for
- *   a year rather than a birth date, so a birth date's card names the animal
- *   alone (its element would narrow the birth year);
+ * - the Chinese zodiac: the animal alone, never a year, whatever the answer
+ *   was for: a year asked about could be the person's birth year, and a year's
+ *   element with its animal names the year in the sixty-year cycle. The card
+ *   gives the animal's own element and the yin or yang of its years, the same
+ *   in every year of that animal. A link made before that, with the year as y,
+ *   still opens, and is drawn without it.
  * - an invitation to compare charts (the private compatibility invite at
  *   /compatibility/invite/): the Sun signs of the two people, when known, and
  *   no other detail of either.
@@ -68,6 +71,7 @@ export const CHART_TWINS_SHARE_KEYS: readonly string[] = Object.freeze(['s', 'm'
 export const FAMOUS_CHART_SHARE_KEYS: readonly string[] = Object.freeze(['p', 'ref']);
 export const MILESTONE_SHARE_KEYS: readonly string[] = Object.freeze(['k', 'i', 'a', 'f', 'l', 'ref']);
 export const BIG_THREE_SHARE_KEYS: readonly string[] = Object.freeze(['s', 'm', 'r', 'ref']);
+/** y is only an older link's year: checked, then dropped. */
 export const CHINESE_ZODIAC_SHARE_KEYS: readonly string[] = Object.freeze(['a', 'y', 'ref']);
 export const INVITE_SHARE_KEYS: readonly string[] = Object.freeze(['s', 'p', 'ref']);
 
@@ -83,7 +87,7 @@ export type ShareMilestoneKind = (typeof MILESTONE_KINDS)[number];
 export const HOROSCOPE_SHARE_PERIODS = ['day', 'week', 'month', 'year'] as const;
 export type HoroscopeSharePeriod = (typeof HOROSCOPE_SHARE_PERIODS)[number];
 export const CHINESE_ANIMALS: readonly string[] = Object.freeze(CHINESE_ZODIAC_ANIMALS.map((animal) => animal.slug));
-/** The Chinese years get_chinese_zodiac answers for (src/data/lunar-new-year.json, a year inside each end). */
+/** The Chinese years get_chinese_zodiac answers for (src/data/lunar-new-year.json, a year inside each end): an older link's year is one of them. */
 export const CHINESE_SHARE_FIRST_YEAR = 1901;
 export const CHINESE_SHARE_LAST_YEAR = 2100;
 
@@ -146,10 +150,8 @@ export interface BigThreeShare {
 }
 
 export interface ChineseZodiacShare {
-  /** An animal slug (src/data/chinese-zodiac.ts). */
+  /** An animal slug (src/data/chinese-zodiac.ts). Never a year. */
   animal: string;
-  /** The Chinese year, only for an answer about a year; its animal is the link's. Null for a birth date's. */
-  year: number | null;
   ref: ShareRef | null;
 }
 
@@ -349,7 +351,6 @@ export function bigThreeQuery(share: BigThreeShare, withRef = false): string {
 
 export function chineseZodiacQuery(share: ChineseZodiacShare, withRef = false): string {
   const params = new URLSearchParams({ a: share.animal });
-  if (share.year !== null) params.set('y', String(share.year));
   if (withRef && share.ref) params.set('ref', share.ref);
   return params.toString();
 }
@@ -373,19 +374,18 @@ export function bigThreeShareUrl(origin: string, chart: { sun: string | null; mo
   return `${origin}${BIG_THREE_SHARE_PATH}?${bigThreeQuery({ sun: chart.sun, moon, rising, ref: null })}`;
 }
 
-/** A year the Chinese zodiac card may name, with its animal. */
+/** An older link's year: one get_chinese_zodiac answers for, and its animal the link's. */
 function validChineseYear(year: number, animal: string): boolean {
   return Number.isInteger(year) && year >= CHINESE_SHARE_FIRST_YEAR && year <= CHINESE_SHARE_LAST_YEAR && chineseAnimalForCycleYear(year).slug === animal;
 }
 
 /**
- * The Chinese zodiac's share link: the animal, and the year only when the answer was for a year (pass null for a
- * birth date's answer, whose year would lead back to the birth date).
+ * The Chinese zodiac's share link: the animal alone, for a year's answer and a birth date's alike. Never a year: it
+ * could be the person's birth year, and a year's element with its animal would name it in the sixty-year cycle.
  */
-export function chineseZodiacShareUrl(origin: string, source: { animal: string; year: number | null }): string | null {
+export function chineseZodiacShareUrl(origin: string, source: { animal: string }): string | null {
   if (!CHINESE_ANIMALS.includes(source.animal)) return null;
-  if (source.year !== null && !validChineseYear(source.year, source.animal)) return null;
-  return `${origin}${CHINESE_ZODIAC_SHARE_PATH}?${chineseZodiacQuery({ animal: source.animal, year: source.year, ref: null })}`;
+  return `${origin}${CHINESE_ZODIAC_SHARE_PATH}?${chineseZodiacQuery({ animal: source.animal, ref: null })}`;
 }
 
 /** An invitation to compare charts: the two Sun signs when known, and nothing else; the bare page when neither is. */
@@ -511,8 +511,9 @@ export function parseChineseZodiacShare(params: URLSearchParams): ChineseZodiacS
   const year = fields.get('y');
   const ref = readRef(fields.get('ref'));
   if (animal === undefined || !CHINESE_ANIMALS.includes(animal) || ref === undefined) return null;
-  if (year === undefined) return { animal, year: null, ref };
-  return /^[12][0-9]{3}$/u.test(year) && validChineseYear(Number(year), animal) ? { animal, year: Number(year), ref } : null;
+  // An older link's year is still checked before it opens, then dropped: the card never names a year.
+  if (year !== undefined && !(/^[12][0-9]{3}$/u.test(year) && validChineseYear(Number(year), animal))) return null;
+  return { animal, ref };
 }
 
 /** An invitation names at least one Sun sign; the bare page is the plain one. */

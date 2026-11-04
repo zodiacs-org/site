@@ -11,9 +11,10 @@
  * storage or logging.
  *
  * With ZODIACS_SKY_EVENTS_ENABLED=1 (options.skyEvents) the answer also has a
- * share link to its card (src/ai-tools/share-links.ts): the animal, and the
- * year only when the answer was for a year or for today, never for a birth
- * date, whose year and element would lead back to it.
+ * share link to its card (src/ai-tools/share-links.ts): the animal alone,
+ * never a date or a year, whatever the answer was for. A year asked about
+ * could be the person's birth year, and a year's element with its animal
+ * would name it in the sixty-year cycle.
  */
 import { z } from 'zod';
 import lunarNewYear from '../../data/lunar-new-year.json';
@@ -98,7 +99,7 @@ export const chineseZodiacData = z.object({
 export type ChineseZodiacData = z.infer<typeof chineseZodiacData>;
 /** With ZODIACS_SKY_EVENTS_ENABLED=1: the same answer, and the share link to its card. */
 export const chineseZodiacDataWithShare = chineseZodiacData.extend({
-  /** The card: the animal, with the year only for a year's answer or today's, never a birth date's year. */
+  /** The card: the animal alone, with its own element and the yin or yang of its years; never a date or a year. */
   shareUrl: z.url().nullable(),
 });
 export type ChineseZodiacDataWithShare = z.infer<typeof chineseZodiacDataWithShare>;
@@ -223,5 +224,5 @@ export function getChineseZodiac(args: ChineseZodiacInput, today: string, zone: 
   ];
   if (!options.skyEvents) return { data, links };
   const shown = data.person ?? data.current;
-  return { data: { ...data, shareUrl: chineseZodiacShareUrl(origin, { animal: shown.animal.slug, year: data.from === 'birth-date' ? null : shown.year }) }, links };
+  return { data: { ...data, shareUrl: chineseZodiacShareUrl(origin, { animal: shown.animal.slug }) }, links };
 }

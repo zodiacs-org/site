@@ -40,7 +40,8 @@ import { matchTwins } from '../lib/sharing/twins';
 import { twinMatches, type IndexedPerson } from '../server/result-preview-model';
 import peopleIndex from './features/people-index.json';
 import { CHINESE_FIRST_YEAR, CHINESE_LAST_YEAR, chineseElement } from './features/chinese-zodiac';
-import { chineseYearElement } from '../server/result-preview-model';
+import { chineseZodiacCardModel } from '../server/result-preview-model';
+import { chineseAnimalForCycleYear } from '../data/chinese-zodiac';
 
 const params = (query: string) => new URLSearchParams(query);
 const NOW = new Date('2026-10-18T12:00:00Z');
@@ -142,26 +143,41 @@ describe('a big three share link', () => {
 });
 
 describe('a Chinese zodiac share link', () => {
-  it('names the animal, with the year only for a year\'s answer, and that year\'s own animal', () => {
-    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'horse', year: 2026 })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=horse&y=2026');
-    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'snake', year: null })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=snake');
-    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'horse', year: 2025 })).toBeNull();
-    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'cat', year: null })).toBeNull();
-    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'rat', year: CHINESE_SHARE_FIRST_YEAR - 1 })).toBeNull();
+  it('names the animal alone, never a year: a year asked about could be a birth year', () => {
+    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'horse' })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=horse');
+    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'snake' })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=snake');
+    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'cat' })).toBeNull();
+    // Whatever else a caller hands it, the link is the animal's.
+    expect(chineseZodiacShareUrl('https://zodiacs.org', { animal: 'horse', year: 1990 } as { animal: string })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=horse');
   });
 
   it('reads back exactly what it wrote, and nothing else', () => {
-    expect(parseChineseZodiacShare(params('a=horse&y=2026&ref=assistant'))).toEqual({ animal: 'horse', year: 2026, ref: 'assistant' });
-    expect(chineseZodiacQuery(parseChineseZodiacShare(params('a=horse&y=2026'))!)).toBe('a=horse&y=2026');
-    expect(parseChineseZodiacShare(params('a=rabbit'))).toEqual({ animal: 'rabbit', year: null, ref: null });
-    for (const query of ['y=2026', 'a=horse&y=2025', 'a=horse&y=02026', 'a=horse&y=2026.0', 'a=cat', 'a=horse&d=1990-01-20', 'a=horse&a=rat', 'a=horse&e=fire', `a=rat&y=${CHINESE_SHARE_LAST_YEAR + 1}`]) {
+    expect(parseChineseZodiacShare(params('a=horse&ref=assistant'))).toEqual({ animal: 'horse', ref: 'assistant' });
+    expect(chineseZodiacQuery(parseChineseZodiacShare(params('a=horse'))!)).toBe('a=horse');
+    expect(parseChineseZodiacShare(params('a=rabbit'))).toEqual({ animal: 'rabbit', ref: null });
+    for (const query of ['y=2026', 'a=cat', 'a=horse&d=1990-01-20', 'a=horse&a=rat', 'a=horse&e=fire', 'a=horse&y=2026&y=2026']) {
       expect(parseChineseZodiacShare(params(query)), query).toBeNull();
     }
   });
 
-  it('takes the years get_chinese_zodiac answers for, and gives each year the element and yin or yang the tool gives it', () => {
+  it('still opens an older link that carries the year, checked as before, and drops it', () => {
+    expect(parseChineseZodiacShare(params('a=horse&y=2026&ref=assistant'))).toEqual({ animal: 'horse', ref: 'assistant' });
+    expect(chineseZodiacQuery(parseChineseZodiacShare(params('a=horse&y=1990'))!, true)).toBe('a=horse');
+    // Another animal's year, a malformed one, and the animal's own years just outside those the tool answers for.
+    const outside = [CHINESE_SHARE_FIRST_YEAR - 1, CHINESE_SHARE_LAST_YEAR + 1].map((year) => `a=${chineseAnimalForCycleYear(year).slug}&y=${year}`);
+    for (const query of ['a=horse&y=2025', 'a=horse&y=02026', 'a=horse&y=2026.0', ...outside]) {
+      expect(parseChineseZodiacShare(params(query)), query).toBeNull();
+    }
     expect([CHINESE_SHARE_FIRST_YEAR, CHINESE_SHARE_LAST_YEAR]).toEqual([CHINESE_FIRST_YEAR + 1, CHINESE_LAST_YEAR]);
-    for (let year = CHINESE_SHARE_FIRST_YEAR; year <= CHINESE_SHARE_LAST_YEAR; year += 1) expect(chineseYearElement(year), String(year)).toEqual(chineseElement(year));
+  });
+
+  it('draws a card that is the same for every year of the animal: its yin or yang is the one get_chinese_zodiac gives each of its years', () => {
+    for (let year = CHINESE_SHARE_FIRST_YEAR; year <= CHINESE_SHARE_LAST_YEAR; year += 1) {
+      const animal = chineseAnimalForCycleYear(year).slug;
+      const card = chineseZodiacCardModel({ animal, ref: null })!;
+      expect(card.yinYang, String(year)).toBe(chineseElement(year).yinYang);
+      expect(chineseZodiacCardModel(parseChineseZodiacShare(params(`a=${animal}&y=${year}`))!), String(year)).toEqual(card);
+    }
   });
 });
 

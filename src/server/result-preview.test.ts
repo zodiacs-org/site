@@ -248,13 +248,17 @@ describe('big three, Chinese zodiac and invitation share models', () => {
     expect(bigThreeCardModel(parseBigThreeShare(new URLSearchParams('s=leo&m=leo'))!).rows.map((row) => row.text)).toEqual(['Leo Sun', 'Leo Moon']);
   });
 
-  it('give a year\'s animal its element and yin or yang, and a birth date\'s animal no year', () => {
-    expect(chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=horse&y=2026'))!)).toMatchObject({ title: 'The Fire Horse', detail: '2026, a yang year', element: 'fire', yinYang: 'yang', year: 2026 });
-    expect(chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=snake&y=2025'))!)).toMatchObject({ title: 'The Wood Snake', detail: '2025, a yin year' });
-    const birth = chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=ox'))!)!;
-    expect(birth).toMatchObject({ title: 'The Ox', detail: 'Born in an Ox year', year: null, element: null, yinYang: null });
-    // What the card prints for a birth date's animal names no year and no element, which would narrow the birth year.
-    expect(`${birth.title} ${birth.detail}`).not.toMatch(/\d|wood|fire|earth|metal|water|yin|yang/iu);
+  it('give the animal its own element and the yin or yang of its years, and never a year', () => {
+    const horse = chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=horse'))!)!;
+    expect(horse).toEqual({ slug: 'horse', name: 'Horse', title: 'The Horse', detail: 'Its element is fire, and Horse years are yang', element: 'fire', yinYang: 'yang', branch: '午',
+      association: expect.any(String), context: expect.any(String) });
+    expect(chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=ox'))!)).toMatchObject({ title: 'The Ox', detail: 'Its element is earth, and Ox years are yin' });
+    // The animals' own elements, from their Earthly Branches, in the cycle's order.
+    expect(['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig'].map((animal) => chineseZodiacCardModel({ animal, ref: null })!.element))
+      .toEqual(['water', 'earth', 'wood', 'wood', 'earth', 'fire', 'fire', 'earth', 'metal', 'metal', 'earth', 'water']);
+    // An older link's year opens the same card: the year is gone, and nothing on the card is a year's own.
+    expect(chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=horse&y=1990'))!)).toEqual(horse);
+    expect(`${horse.title} ${horse.detail}`).not.toMatch(/\d/u);
   });
 
   it('name the two Sun signs of an invitation, or the one that is known', () => {
@@ -416,15 +420,19 @@ describe('share link pages', () => {
     expect(big).toContain(NATAL_NOTE);
     const untimed = await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=sagittarius'))).text();
     expect(untimed).toContain('<h1>Sagittarius Sun, Moon sign undetermined</h1>');
-    const chinese = await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=horse&y=2026'))).text();
-    expect(chinese).toContain('<title>The Fire Horse, 2026: the Chinese zodiac on Zodiacs</title>');
-    expect(chinese).toContain('content="https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&amp;y=2026"');
+    const chinese = await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=horse'))).text();
+    expect(chinese).toContain('<title>The Horse: the Chinese zodiac on Zodiacs</title>');
+    expect(chinese).toContain('content="https://zodiacs.org/api/og/chinese-zodiac-image?a=horse"');
+    expect(chinese).toContain('Its element is fire, and Horse years are yang. Fire is the Horse’s own element, from its Earthly Branch 午, whatever the year.');
     expect(chinese).toContain('<a class="cta" href="/learn/chinese-zodiac/horse/">Read about the Horse</a>');
     expect(chinese).toContain('<a class="more" href="/learn/chinese-zodiac/">All twelve animals</a>');
     expect(chinese).toContain(CHINESE_ZODIAC_NOTE);
-    const animal = await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=snake'))).text();
+    // An older link with its year still opens, drawn and linked without it.
+    const animal = await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=snake&y=1989'))).text();
     expect(animal).toContain('<h1>The Snake</h1>');
-    expect(animal).toContain('Born in a Snake year.');
+    expect(animal).toContain('Its element is fire, and Snake years are yin.');
+    expect(animal).toContain('content="https://zodiacs.org/api/og/chinese-zodiac-image?a=snake"');
+    expect(animal).toContain('href="/api/og/chinese-zodiac-story?a=snake"');
     expect(animal.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/\b(?:18|19|20|21)\d\d\b/u);
     const invite = await (await handleInviteLinkRequest(new Request('https://zodiacs.org/share/invite/?s=taurus&p=scorpio&ref=chatgpt'))).text();
     expect(invite).toContain('<h1>Compare our charts</h1>');
@@ -559,8 +567,8 @@ describe('share preview images', () => {
     ['year’s horoscope', () => handleHoroscopeImageRequest(new Request('https://zodiacs.org/api/og/horoscope-image?s=aquarius&y=2026'))],
     ['big three', () => handleBigThreeImageRequest(new Request('https://zodiacs.org/api/og/big-three-image?s=leo&m=aries&r=libra'))],
     ['big three with the Moon undetermined', () => handleBigThreeImageRequest(new Request('https://zodiacs.org/api/og/big-three-image?s=sagittarius'))],
-    ['Chinese zodiac year', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&y=2026'))],
-    ['Chinese zodiac animal', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=rabbit'))],
+    ['Chinese zodiac', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=rabbit'))],
+    ['Chinese zodiac from an older link with its year', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&y=2026'))],
     ['invitation', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?s=taurus&p=scorpio'))],
     ['invitation with one sign', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?p=gemini'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
@@ -630,7 +638,7 @@ describe('story pictures', () => {
     ['year’s horoscope', () => handleHoroscopeStoryRequest(new Request('https://zodiacs.org/api/og/horoscope-story?s=leo&y=2026'))],
     ['big three', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=leo&m=aries&r=sagittarius'))],
     ['big three with the Moon undetermined', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=sagittarius'))],
-    ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger&y=2034'))],
+    ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger'))],
     ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {

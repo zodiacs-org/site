@@ -582,36 +582,46 @@ export interface ChineseZodiacCardModel {
   slug: string;
   /** "Horse" */
   name: string;
-  /** "The Fire Horse" for a year, "The Horse" for a birth date's animal. */
+  /** "The Horse" */
   title: string;
-  /** "2026, a yang year", or "Born in a Horse year" (an Ox year): a birth date's card names no year. */
+  /** "Its element is fire, and Horse years are yang": the same for every year of the animal, so it names none. */
   detail: string;
-  year: number | null;
-  /** The year's element and yin or yang, from its Heavenly Stem; null without a year. */
-  element: string | null;
-  yinYang: 'yin' | 'yang' | null;
+  /** The animal's own element, from its Earthly Branch. */
+  element: ChineseElement;
+  /** The yin or yang of every year of the animal (a year's stem always shares its branch's). */
+  yinYang: 'yin' | 'yang';
+  /** Its Earthly Branch, such as 午. */
+  branch: string;
   /** The animal's traditional associations, in the site's guide's words. */
   association: string;
   context: string;
 }
 
-const CHINESE_ELEMENTS = ['wood', 'fire', 'earth', 'metal', 'water'] as const;
+type ChineseElement = 'wood' | 'fire' | 'earth' | 'metal' | 'water';
+/**
+ * Each animal's own element, from its Earthly Branch: 子 water, 丑 earth, 寅 and 卯 wood, 辰 earth, 巳 and 午 fire,
+ * 未 earth, 申 and 酉 metal, 戌 earth, 亥 water. A year's element comes from its Heavenly Stem and turns every two
+ * years, so with the animal it would name the year in the sixty-year cycle; the animal's own names none.
+ */
+const CHINESE_BRANCH_ELEMENT: Readonly<Record<string, ChineseElement>> = Object.freeze({
+  rat: 'water', ox: 'earth', tiger: 'wood', rabbit: 'wood', dragon: 'earth', snake: 'fire',
+  horse: 'fire', goat: 'earth', monkey: 'metal', rooster: 'metal', dog: 'earth', pig: 'water',
+});
 
-/** A Chinese year's element and yin or yang from its Heavenly Stem: two years each, wood first, from 1984 (甲子), as get_chinese_zodiac gives them. */
-export function chineseYearElement(year: number): { element: typeof CHINESE_ELEMENTS[number]; yinYang: 'yin' | 'yang' } {
-  const stem = ((year - 1984) % 10 + 10) % 10;
-  return { element: CHINESE_ELEMENTS[Math.floor(stem / 2)], yinYang: stem % 2 === 0 ? 'yang' : 'yin' };
-}
-
-/** The Chinese zodiac: the animal, and with a year its element and yin or yang. */
+/**
+ * The Chinese zodiac: the animal, its own element and the yin or yang of its years (the Rat's and every second
+ * animal's after it yang, the others yin), never a year: the card is the same for every year of the animal.
+ */
 export function chineseZodiacCardModel(share: ChineseZodiacShare): ChineseZodiacCardModel | null {
   const animal = CHINESE_ZODIAC_ANIMALS.find((entry) => entry.slug === share.animal);
-  if (!animal) return null;
-  const base = { slug: animal.slug, name: animal.name, association: animal.association, context: animal.context };
-  const article = /^[AEIOU]/u.test(animal.name) ? 'an' : 'a';
-  if (share.year === null) return { ...base, title: `The ${animal.name}`, detail: `Born in ${article} ${animal.name} year`, year: null, element: null, yinYang: null };
-  const { element, yinYang } = chineseYearElement(share.year);
-  return { ...base, title: `The ${cap(element)} ${animal.name}`, detail: `${share.year}, a ${yinYang} year`, year: share.year, element, yinYang };
+  const element = animal ? CHINESE_BRANCH_ELEMENT[animal.slug] : undefined;
+  if (!animal || !element) return null;
+  const yinYang = animal.position % 2 === 1 ? 'yang' : 'yin';
+  return {
+    slug: animal.slug, name: animal.name, title: `The ${animal.name}`,
+    detail: `Its element is ${element}, and ${animal.name} years are ${yinYang}`,
+    element, yinYang, branch: animal.branch, association: animal.association, context: animal.context,
+  };
 }
 
 export interface InviteCardModel {

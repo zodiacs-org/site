@@ -215,9 +215,10 @@ describe('the sky events switch on', () => {
     const untimed = await call(host, 'get_natal_chart', { birthDate: '1990-05-04' });
     const moon = untimed.structuredContent.data.moon;
     expect(untimed.structuredContent.data.shareUrl).toBe(moon.sign ? `https://zodiacs.org/share/big-three/?s=taurus&m=${moon.sign}&ref=assistant` : 'https://zodiacs.org/share/big-three/?s=taurus&ref=assistant');
-    // A birth date's animal alone; a year's or today's with the year.
+    // The animal alone, never a year: a year asked about could be the person's birth year. Today's too.
     expect(await share(host, 'get_chinese_zodiac', { birthDate: '1990-01-20' })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=snake&ref=assistant');
-    expect(await share(host, 'get_chinese_zodiac', { year: 2026 })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=horse&y=2026&ref=assistant');
+    expect(await share(host, 'get_chinese_zodiac', { year: 1990 })).toBe('https://zodiacs.org/share/chinese-zodiac/?a=horse&ref=assistant');
+    expect(await share(host, 'get_chinese_zodiac', {})).toMatch(/^https:\/\/zodiacs\.org\/share\/chinese-zodiac\/\?a=[a-z]+&ref=assistant$/u);
     expect(await share(host, 'get_horoscope_period', { sign: 'leo', period: 'month', date: '2026-11-05' })).toBe('https://zodiacs.org/share/horoscope/?s=leo&m=2026-11&ref=assistant');
     expect(await share(host, 'get_horoscope_period', { sign: 'leo', period: 'year', date: '2027-03-01' })).toBe('https://zodiacs.org/share/horoscope/?s=leo&y=2027&ref=assistant');
     expect(await share(host, 'get_horoscope_period', { sign: 'leo', period: 'week', focus: 'career' })).toBeNull();

@@ -669,8 +669,8 @@ function focusedPanel(src: string, box: { left: number; top: number; width: numb
 
 /**
  * The Chinese zodiac (A, the animal as a trophy): the animal's own piece as a plate on the right, faded into the
- * ground on its left, and the animal, its element and yin or yang with the year, or a birth date's animal alone.
- * It names no sign, so it has no disc and the brand's own ring.
+ * ground on its left, and the animal, its own element and the yin or yang of its years. It names no year, and no
+ * sign, so it has no disc and the brand's own ring.
  */
 export function chineseZodiacCard(model: ChineseZodiacCardModel, art: string) {
   return h('div', { style: { width: `${WIDTH}px`, height: `${HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto' } },
@@ -1127,7 +1127,7 @@ export function bigThreeStory(model: BigThreeCardModel, images: Map<ShareSign, s
   ]), model.sun, STORY_PAIR_FADE);
 }
 
-/** The Chinese zodiac (A, the animal as a trophy): the animal's piece across the top, around where it stands, and the animal, its year's element and yin or yang, and its associations. */
+/** The Chinese zodiac (A, the animal as a trophy): the animal's piece across the top, around where it stands, and the animal, its own element, the yin or yang of its years and its associations. Never a year. */
 export function chineseZodiacStory(model: ChineseZodiacCardModel, art: string) {
   return h('div', { style: { width: `${STORY_WIDTH}px`, height: `${STORY_HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto' } },
     focusedPanel(art, { left: 0, top: 0, width: STORY_WIDTH, height: 1120 }, CHINESE_FOCUS[model.slug] ?? 0.5),
@@ -1722,14 +1722,14 @@ export async function handleChineseZodiacLinkRequest(request: Request): Promise<
   const model = share ? chineseZodiacCardModel(share) : null;
   if (!share || !model) return htmlResponse(sharePageHtml(defaultChineseZodiacPage(url.origin)));
   return htmlResponse(sharePageHtml({
-    title: `${model.title}${model.year === null ? '' : `, ${model.year}`}: the Chinese zodiac on Zodiacs`,
+    title: `${model.title}: the Chinese zodiac on Zodiacs`,
     description: `${model.detail}. ${model.association}`,
     heading: model.title,
     imageUrl: `${url.origin}${CHINESE_ZODIAC_SHARE_IMAGE_PATH}?${chineseZodiacQuery(share)}`,
     story: { href: `${CHINESE_ZODIAC_SHARE_STORY_PATH}?${chineseZodiacQuery(share)}`, filename: `zodiacs-chinese-zodiac-${model.slug}-story.jpg` },
     imageType: 'image/jpeg',
     imageAlt: `The Chinese zodiac: ${model.title}. ${model.detail}.`,
-    explanation: `${model.detail}. ${model.association} ${model.context}`,
+    explanation: `${model.detail}. ${model.element.charAt(0).toUpperCase()}${model.element.slice(1)} is the ${model.name}’s own element, from its Earthly Branch ${model.branch}, whatever the year. ${model.association} ${model.context}`,
     action: { label: `Read about the ${model.name}`, href: withRef(`/learn/chinese-zodiac/${model.slug}/`, share.ref) },
     more: { label: 'All twelve animals', href: withRef('/learn/chinese-zodiac/', share.ref) },
     note: CHINESE_ZODIAC_NOTE,
