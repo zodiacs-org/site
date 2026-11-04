@@ -61,6 +61,12 @@ export const DEVELOPER_PAGES = Object.freeze({
     // CC0 1.0, as for the conformance vectors (docs/platform/programme/DECISIONS-2026-10-05.md §3).
     licenses: { Dataset: [CONFORMANCE_LICENSE] },
   },
+  '/developers/time-atlas/': {
+    types: ['Dataset'],
+    breadcrumb: 'Historical time atlas',
+    // CC BY 4.0, the licence atlas.json states (DECISIONS-2026-09-28 §7), the same URL as the sky data's.
+    licenses: { Dataset: [SKY_DATA_LICENSE] },
+  },
 });
 
 /**
@@ -90,12 +96,27 @@ export function skyDataFiles(folders) {
 export const SKY_DATA_FOLDERS = Object.freeze(['planets', 'retrogrades', 'stations', 'ingresses', 'moon-phases', 'eclipses', 'aspects']);
 
 /**
+ * The time atlas's span as dates: the first day of its coverage, and its last
+ * day, the day before the end when the end is a local midnight. Written apart
+ * from the page's own computation, so that a wrong span on the page cannot
+ * also be the expected one.
+ */
+export function atlasSpan(coverage) {
+  const end = coverage.end.slice(0, 10);
+  const last = /T00:00(?::00)?$/u.test(coverage.end)
+    ? new Date(Date.UTC(Number(end.slice(0, 4)), Number(end.slice(5, 7)) - 1, Number(end.slice(8, 10)) - 1)).toISOString().slice(0, 10)
+    : end;
+  return `${coverage.start.slice(0, 10)}/${last}`;
+}
+
+/**
  * What each page's markup must state, from the records it is built from:
  * the engine's candidate record, the MCP manifest, the conformance suite's
  * source and summary, the conventions registry, the built sky API's index and
- * data files, and the benchmark's questions.
+ * data files, the benchmark's questions, and the time atlas's file index and
+ * manifest (timeAtlas: { files, manifest }).
  */
-export function developerExpectations({ candidate, manifest, conformanceSource, conformanceSummary, conventionsRegistry, skyIndex, skyFiles, benchmarkItems }) {
+export function developerExpectations({ candidate, manifest, conformanceSource, conformanceSummary, conventionsRegistry, skyIndex, skyFiles, benchmarkItems, timeAtlas }) {
   return {
     '/developers/': {
       Dataset: {
@@ -121,6 +142,13 @@ export function developerExpectations({ candidate, manifest, conformanceSource, 
         version: benchmarkItems.version,
         temporalCoverage: `${benchmarkItems.dates.from}/${benchmarkItems.dates.to}`,
         contentUrls: ['items.json', 'key.json', 'tool-answers.json'].map((name) => `${SITE}/developers/sky-benchmark/${benchmarkItems.version}/${name}`),
+      },
+    },
+    '/developers/time-atlas/': {
+      Dataset: {
+        version: timeAtlas.manifest.version,
+        temporalCoverage: atlasSpan(timeAtlas.manifest.coverage),
+        contentUrls: timeAtlas.files.files.map((file) => `${SITE}/developers/time-atlas/${timeAtlas.files.version}/${file.path}`),
       },
     },
   };

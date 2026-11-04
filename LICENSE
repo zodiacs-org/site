@@ -18,6 +18,14 @@ Parts with their own terms:
   its own licence files.
 - The shared sky data the site publishes under /api/v1/ is licensed under
   CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+- The Zodiacs.org historical time atlas, in src/data/time-atlas/ and
+  public/developers/time-atlas/ (its files and their index), is licensed
+  under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Its
+  places.json carries place names and coordinates from GeoNames under
+  CC BY 4.0, as its atlas.json records. src/lib/time-atlas/lib.mjs is the
+  atlas's resolver, under the MIT licence, with its loader changed for the
+  site. Their source is
+  https://github.com/zodiacs-org/engine/tree/7307665bdbc432269fdac006104f661be16000bc/atlas.
 - Place names and coordinates are from GeoNames (https://www.geonames.org/),
   licensed under CC BY 4.0 and converted into the site's own format.
 - Third-party packages keep their own licences.

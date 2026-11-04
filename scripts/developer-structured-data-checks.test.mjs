@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
-  DEVELOPER_PAGES, OPENAPI_URL, SKY_DATA_FOLDERS, conformanceUrls, developerExpectations, developerStructuredDataErrors,
+  DEVELOPER_PAGES, OPENAPI_URL, SKY_DATA_FOLDERS, atlasSpan, conformanceUrls, developerExpectations, developerStructuredDataErrors,
   mcpArchiveUrl, servesUrlIn, skyDataFiles,
 } from './developer-structured-data-checks.mjs';
 import {
@@ -21,6 +21,7 @@ const SERVED = new Set([
   '/developers/conventions/', '/developers/conventions/registry.json',
   '/developers/sky-benchmark/', '/api/v1/openapi.json', '/api/v1/signs.json', '/api/v1/aspects/2026.json',
   '/developers/sky-benchmark/v0/items.json', '/developers/sky-benchmark/v0/key.json', '/developers/sky-benchmark/v0/tool-answers.json',
+  '/developers/time-atlas/', '/developers/time-atlas/0.1.0/data/atlas.json', '/developers/time-atlas/0.1.0/tzdb/differences.json',
 ]);
 const servesUrl = (url) => SERVED.has(url.pathname) && (!url.hash || (url.pathname === '/developers/' && url.hash === '#sky-data'));
 
@@ -34,6 +35,10 @@ const expected = developerExpectations({
   skyIndex: { coverage: { years: { from: 2026, to: 2030 } } },
   skyFiles: ['/api/v1/signs.json', '/api/v1/aspects/2026.json'],
   benchmarkItems: { version: 'v0', dates: { from: '1900-01-01', to: '2049-12-31' } },
+  timeAtlas: {
+    files: { version: '0.1.0', files: [{ path: 'data/atlas.json' }, { path: 'tzdb/differences.json' }] },
+    manifest: { version: '0.1.0', coverage: { start: '1870-01-01T00:00:00', end: '1920-01-01T00:00:00' } },
+  },
 });
 const context = { servesUrl, expected };
 const check = (path, nodes) => developerStructuredDataErrors(path, nodes, context);
@@ -118,6 +123,19 @@ const benchmark = () => ({
   creator: ORGANIZATION,
   distribution: ['items.json', 'key.json', 'tool-answers.json'].map((name) => ({ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE}/developers/sky-benchmark/v0/${name}` })),
 });
+const atlas = () => ({
+  '@type': 'Dataset',
+  name: 'Zodiacs.org historical time atlas, version 0.1.0',
+  description: 'Clocks.',
+  url: `${SITE}/developers/time-atlas/`,
+  version: '0.1.0',
+  temporalCoverage: '1870-01-01/1919-12-31',
+  isAccessibleForFree: true,
+  license: SKY_DATA_LICENSE,
+  creator: ORGANIZATION,
+  distribution: [['data/atlas.json', 'application/json'], ['tzdb/differences.json', 'application/json']]
+    .map(([path, encodingFormat]) => ({ '@type': 'DataDownload', name: path, encodingFormat, contentUrl: `${SITE}/developers/time-atlas/0.1.0/${path}` })),
+});
 const pages = () => ({
   '/developers/': [ORG_NODE, webApi(`${SITE}/developers/#sky-data`), skyData()],
   '/developers/engine/': [ORG_NODE, engineApp(), engineSource(), developerBreadcrumb('/developers/engine/', 'Zodiacs Engine')],
@@ -126,13 +144,14 @@ const pages = () => ({
   '/developers/conformance/': [ORG_NODE, conformance(), developerBreadcrumb('/developers/conformance/', 'Conformance suite')],
   '/developers/conventions/': [ORG_NODE, conventions(), developerBreadcrumb('/developers/conventions/', 'Conventions registry')],
   '/developers/sky-benchmark/': [ORG_NODE, benchmark(), developerBreadcrumb('/developers/sky-benchmark/', 'Sky-fact benchmark')],
+  '/developers/time-atlas/': [ORG_NODE, atlas(), developerBreadcrumb('/developers/time-atlas/', 'Historical time atlas')],
 });
 /** The page's nodes with the node of `type` changed. */
 const edited = (path, type, change) => pages()[path].map((node) => (node['@type'] === type ? change({ ...node }) : node));
 
 describe("the developer pages' structured data", () => {
   it('names a contract for each developer page that carries markup', () => {
-    expect(Object.keys(DEVELOPER_PAGES)).toEqual(['/developers/', '/developers/engine/', '/developers/mcp/', '/developers/compute/', '/developers/conformance/', '/developers/conventions/', '/developers/sky-benchmark/']);
+    expect(Object.keys(DEVELOPER_PAGES)).toEqual(['/developers/', '/developers/engine/', '/developers/mcp/', '/developers/compute/', '/developers/conformance/', '/developers/conventions/', '/developers/sky-benchmark/', '/developers/time-atlas/']);
   });
 
   it('passes every page as it should be, and ignores pages outside the contract', () => {
@@ -272,12 +291,40 @@ describe("the developer pages' structured data", () => {
     const candidate = read('../src/data/platform-engine-candidate.json');
     const items = read('../public/developers/sky-benchmark/v0/items.json');
     const registry = read('../src/data/conventions/registry.json');
+    const atlasFiles = read('../public/developers/time-atlas/0.1.0/files.json');
+    const atlasManifest = read('../public/developers/time-atlas/0.1.0/data/atlas.json');
     const real = developerExpectations({
       candidate, manifest, conformanceSource: source, conformanceSummary: summary, conventionsRegistry: registry,
       skyIndex: { coverage: { years: { from: 2026, to: 2030 } } }, skyFiles: [], benchmarkItems: items,
+      timeAtlas: { files: atlasFiles, manifest: atlasManifest },
     });
     expect(real['/developers/engine/'].SoftwareApplication).toEqual({ softwareVersion: candidate.version, downloadUrl: candidate.artifactUrl });
     expect(real['/developers/sky-benchmark/'].Dataset.temporalCoverage).toBe(`${items.dates.from}/${items.dates.to}`);
     expect(real['/developers/conventions/'].Dataset).toEqual({ version: registry.version, contentUrls: ['https://zodiacs.org/developers/conventions/registry.json'] });
+    expect(real['/developers/time-atlas/'].Dataset).toEqual({
+      version: '0.1.0',
+      temporalCoverage: '1870-01-01/1919-12-31',
+      contentUrls: atlasFiles.files.map((file) => `https://zodiacs.org/developers/time-atlas/0.1.0/${file.path}`),
+    });
+    expect(real['/developers/time-atlas/'].Dataset.contentUrls).toHaveLength(17);
+  });
+
+  it("holds the time atlas page's Dataset to its licence, version, span and files, and its breadcrumb to the page's name", () => {
+    const path = '/developers/time-atlas/';
+    expect(check(path, pages()[path])).toEqual([]);
+    expect(atlasSpan({ start: '1870-01-01T00:00:00', end: '1920-01-01T00:00:00' })).toBe('1870-01-01/1919-12-31');
+    expect(atlasSpan({ start: '1870-01-01T00:00:00', end: '1920-03-01T12:00:00' })).toBe('1870-01-01/1920-03-01');
+    expect(check(path, edited(path, 'Dataset', (node) => ({ ...node, license: CONFORMANCE_LICENSE }))))
+      .toEqual([`${path}: Dataset.license should be ${JSON.stringify([SKY_DATA_LICENSE])}, not ${JSON.stringify([CONFORMANCE_LICENSE])}`]);
+    expect(check(path, edited(path, 'Dataset', ({ license, ...rest }) => rest)))
+      .toEqual([`${path}: Dataset.license should be ${JSON.stringify([SKY_DATA_LICENSE])}, not null`]);
+    expect(check(path, edited(path, 'Dataset', (node) => ({ ...node, version: '0.1.1' }))))
+      .toEqual([`${path}: Dataset.version should be "0.1.0", not "0.1.1"`]);
+    expect(check(path, edited(path, 'Dataset', (node) => ({ ...node, temporalCoverage: '1870-01-01T00:00:00/1920-01-01T00:00:00' }))))
+      .toContain(`${path}: Dataset.temporalCoverage is not a start/end span: "1870-01-01T00:00:00/1920-01-01T00:00:00"`);
+    expect(check(path, edited(path, 'Dataset', (node) => ({ ...node, distribution: node.distribution.slice(0, 1) }))))
+      .toEqual([expect.stringMatching(/^\/developers\/time-atlas\/: Dataset\.distribution should list 2 files/u)]);
+    expect(check(path, [ORG_NODE, atlas(), developerBreadcrumb(path, 'Time-atlas')]))
+      .toEqual([`${path}: breadcrumb should be Zodiacs.org \u203a Developers \u203a Historical time atlas, linked to /, /developers/ and ${path}, not Zodiacs.org \u203a Developers \u203a Time-atlas`]);
   });
 });

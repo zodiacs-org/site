@@ -75,6 +75,8 @@ Conventions registry (every id a Zodiacs receipt or conformance vector names, su
 
 Sky-fact benchmark for AI assistants (version 0: 300 questions about the sky that a calculation settles, each asking for its answer in a fixed form — the sign of a body at an instant or on a date, whether a planet was retrograde on a date, and the date of an ingress or a lunation — with the engine's answer key, which agrees with NASA JPL Horizons on every answer, a scorer with no dependencies, and check_sky_fact's reply to each, which gives the key's answer every time, though both read the same engine; no assistant has been scored on it yet): https://zodiacs.org/developers/sky-benchmark/
 
+Historical time atlas, version 0.1.0 (what civil clocks showed in 21 places of France and the United States from 1870 to 1919, each rule cited to a primary source with a version and an uncertainty flag; its ten data files and its comparison with tzdb 2025c with backzone, 108 periods that differ by a second or more, each with one of 11 explanations, copied byte for byte from the engine repository at commit 7307665b with their SHA-256 in files.json; CC BY 4.0, with GeoNames attribution; corrections go to zodiacs-org/engine): https://zodiacs.org/developers/time-atlas/ | Files: https://zodiacs.org/developers/time-atlas/0.1.0/files.json
+
 ## Developer quickstarts and recipes
 
 These guides describe the version named on the engine page, `@zodiacs/engine` 1.1.0-rc.1, a release candidate that npm does not carry; npm publishes 1.0.0, which computes the same values, under `latest`. Hosted recipes disclose their HTTP boundary. Each page has a Markdown twin.

@@ -34,6 +34,7 @@ import {
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
+import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
 import {
   ABSENT_LOCALES,
   HREFLANG_LOCALE_POLICY,
@@ -790,6 +791,35 @@ if (!(await exists(twinDirectoryPath))) {
     }
   }
 }
+// The time atlas 0.1.0 (B3.c): the files its index lists, as listed, and its page, held to those files
+// (the preregistration's C6), with the sky benchmark's page as the reference for the scripts it loads.
+{
+  const folder = resolve(root, TIME_ATLAS_FOLDER);
+  const pagePath = resolve(root, 'developers/time-atlas/index.html');
+  const referencePath = resolve(root, 'developers/sky-benchmark/index.html');
+  if (!(await exists(resolve(folder, 'files.json')))) {
+    fail(`time atlas: missing ${TIME_ATLAS_FOLDER}/files.json`);
+  } else {
+    const fileProblems = await timeAtlasFileProblems(folder);
+    for (const problem of fileProblems) fail(`time atlas: ${problem}`);
+    if (!(await exists(pagePath))) {
+      fail('time atlas: missing developers/time-atlas/index.html');
+    } else if (!(await exists(referencePath))) {
+      fail('time atlas: missing developers/sky-benchmark/index.html, the reference for the page\'s scripts');
+    } else if (!fileProblems.length) {
+      const read = (path) => readFile(resolve(folder, path), 'utf8');
+      const data = Object.fromEntries(await Promise.all(TIME_ATLAS_DATA_FILES.map(async (name) => [name, JSON.parse(await read(`data/${name}`))])));
+      for (const problem of timeAtlasPageProblems({
+        page: await readFile(pagePath, 'utf8'),
+        reference: await readFile(referencePath, 'utf8'),
+        index: await read('files.json'),
+        data,
+        differences: JSON.parse(await read('tzdb/differences.json')),
+        report: await read('TZDB-DIFFERENCES.md'),
+      })) fail(`time atlas: ${problem}`);
+    }
+  }
+}
 for (const relativePath of [
   'es/index.html',
   'es/aries/index.html',
@@ -1315,7 +1345,8 @@ const sitemapPolicy = {
   // published notes (227 that day) left the sitemap as noindex pages on 2026-10-26.
   // +1 for /apps/, the English assistant showcase.
   // +12 for the English-only 2026 yearly horoscope pages.
-  total: 1464 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /developers/time-atlas/, the time atlas dataset and its comparison with tzdb 2025c.
+  total: 1465 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)

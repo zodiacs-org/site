@@ -16,6 +16,7 @@ import starterEngine from '../../../examples/platform/candidate.json';
 import mcp from '../../../public/examples/mcp-server.json';
 import sky from '../../data/sky.json';
 import eclipses from '../../data/eclipses.json';
+import atlasFiles from '../../../public/developers/time-atlas/0.1.0/files.json';
 import { FREE_OFFER, OPENAPI_URL, ORGANIZATION, SITE, SKY_DATA_LICENSE } from '../../lib/developer-structured-data.mjs';
 
 // The same month snapshots the generator reads decide which year files exist,
@@ -156,6 +157,11 @@ const jsonLd = [
           <p class="dev-status">Available · version 0</p>
           <h2><a href="/developers/sky-benchmark/">Test an assistant on questions about the sky</a></h2>
           <p>Questions a calculation settles (which sign a body was in, whether a planet was retrograde, when the Moon was full), with the engine's answer to each, a scorer that reads replies without a person, and the MCP adapter's check_sky_fact reply to each.</p>
+        </li>
+        <li>
+          <p class="dev-status">Available · atlas {atlasFiles.version}</p>
+          <h2><a href="/developers/time-atlas/">Check what the clocks said, 1870 to 1919</a></h2>
+          <p>The historical time atlas for 21 places of France and the United States, each rule cited to a primary source, under CC BY 4.0, with every period of its comparison with tzdb 2025c and the explanation of each difference.</p>
         </li>
       </ul>
     </nav>

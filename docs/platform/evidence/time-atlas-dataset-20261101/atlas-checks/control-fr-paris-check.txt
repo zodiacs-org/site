@@ -1,0 +1,7 @@
+atlas: 6 problem(s)
+  tzdb: fr-paris against Europe/Paris from 1916-10-01T00:00:00Z to 1916-10-01T23:00:00Z (fr-wet-1916, atlas +0:00:00, tzdb +1:00:00) differs by -3600 s with no explanation
+  tzdb: fr-paris against Europe/Paris from 1917-10-07T00:00:00Z to 1917-10-07T23:00:00Z (fr-wet-1917, atlas +0:00:00, tzdb +1:00:00) differs by -3600 s with no explanation
+  tzdb: fr-paris against Europe/Paris from 1918-10-06T00:00:00Z to 1918-10-06T23:00:00Z (fr-wet-1918, atlas +0:00:00, tzdb +1:00:00) differs by -3600 s with no explanation
+  tzdb: fr-paris against Europe/Paris from 1919-10-05T00:00:00Z to 1919-10-05T23:00:00Z (fr-wet-1919, atlas +0:00:00, tzdb +1:00:00) differs by -3600 s with no explanation
+  tzdb: atlas/tzdb/differences.json is stale; run node atlas/tools/compare-tzdb.mjs
+  tzdb: atlas/TZDB-DIFFERENCES.md is stale; run node atlas/tools/compare-tzdb.mjs

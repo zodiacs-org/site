@@ -22,14 +22,15 @@ try {
       const response = await page.goto(`${baseURL}/developers/`, { waitUntil: 'networkidle' });
       assert.equal(response.status(), 200);
       const paths = page.getByRole('navigation', { name: 'Developer integration paths', exact: true });
-      // The nine cards, in the order the hub presents them. The order is the
+      // The ten cards, in the order the hub presents them. The order is the
       // point: an earlier version led with sky data and a hosted API that did
       // not exist yet, so a first-time reader met the two things they could not
       // use before the two they could. The two ways to calculate a chart come
       // first, in your own process and then on our server; the conformance
-      // suite, the conventions registry and the sky-fact benchmark, which are
-      // for people testing an engine or an assistant or reading its receipts
-      // rather than using one, come last.
+      // suite, the conventions registry, the sky-fact benchmark and the time
+      // atlas, which are for people testing an engine or an assistant, reading
+      // its receipts or checking historical time rather than using one, come
+      // last.
       const cards = [
         ['Calculate a chart', '/developers/engine/'],
         ['Calculate on our server', '/developers/compute/'],
@@ -40,6 +41,7 @@ try {
         ['Check an engine against independent references', '/developers/conformance/'],
         ['Look up what a receipt\'s ids mean', '/developers/conventions/'],
         ['Test an assistant on questions about the sky', '/developers/sky-benchmark/'],
+        ['Check what the clocks said, 1870 to 1919', '/developers/time-atlas/'],
       ];
       for (const [name, href] of cards) {
         assert.equal(await paths.getByRole('link', { name, exact: true }).getAttribute('href'), href);

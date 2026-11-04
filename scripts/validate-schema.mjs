@@ -36,6 +36,10 @@ const developerExpected = developerExpectations({
   skyIndex: readJson(resolve(dist, 'api/v1/index.json')),
   skyFiles: skyDataFiles(Object.fromEntries(SKY_DATA_FOLDERS.map((folder) => [folder, readdirSync(resolve(dist, 'api/v1', folder)).sort()]))),
   benchmarkItems: readJson(resolve(repo, 'public/developers/sky-benchmark/v0/items.json')),
+  timeAtlas: {
+    files: readJson(resolve(repo, 'public/developers/time-atlas/0.1.0/files.json')),
+    manifest: readJson(resolve(repo, 'public/developers/time-atlas/0.1.0/data/atlas.json')),
+  },
 });
 let documentCount = 0;
 let nodeCount = 0;
