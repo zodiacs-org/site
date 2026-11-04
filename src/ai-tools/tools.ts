@@ -18,14 +18,15 @@ import { guardPersonalWeek, personalWeek } from './features/personal-week';
 import { bestDays, type BestDays } from '../lib/occasions/best-dates';
 import { occasionShareUrl } from '../lib/share-results';
 import { milestoneShareUrl } from './share-links';
-import { NATAL_MAX_YEAR, NATAL_MIN_YEAR, getNatalChart } from './features/natal-chart';
+import { NATAL_MAX_YEAR, NATAL_MIN_YEAR, getNatalChart, natalChartInputWithHouses } from './features/natal-chart';
 import { getHoroscopePeriod, type HoroscopeMonths } from './features/horoscope-period';
 import { getChineseZodiac } from './features/chinese-zodiac';
 import { getPersonalTransits } from './features/personal-transits';
 import { explainAstrology } from './features/explain';
+import { searchSkyEvents } from './features/sky-events';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
-import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, type AiToolName, type CoverageToolName, type PlaceToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, inputSchemaFor, type AiToolName, type CoverageToolName, type PlaceToolName, type SkyEventsToolName } from './contracts';
 import { readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
@@ -45,6 +46,11 @@ export interface AiDependencies {
   occasions?: boolean;
   /** The 0.6.0 tools (ZODIACS_COVERAGE_ENABLED=1), offered only with the occasion tools. */
   coverage?: boolean;
+  /**
+   * search_sky_events, the natal chart's house system and nodes, and explain_astrology's event and house topics
+   * (ZODIACS_SKY_EVENTS_ENABLED=1), in effect only with the coverage and occasion tools (skyEventsOn).
+   */
+  skyEvents?: boolean;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -107,6 +113,11 @@ export function namedRefusal(message: string, pointer: string | undefined): stri
   return `${field}: ${message}`;
 }
 
+/** Whether the sky events switch is in effect: it joins the occasion and coverage switches, and alone changes nothing. */
+export function skyEventsOn(dependencies: AiDependencies): boolean {
+  return !!(dependencies.occasions && dependencies.coverage && dependencies.skyEvents);
+}
+
 /** The tools this server actually offers with these dependencies. */
 export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   const released: AiToolName[] = AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope' || !!dependencies.horoscopeWindow);
@@ -114,11 +125,17 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   if (!dependencies.coverage) return [...released, ...OCCASION_TOOL_NAMES];
   // The period horoscope reads the published months and the program alongside the daily window.
   const coverage = COVERAGE_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope_period' || (!!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram));
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES];
+  // search_sky_events comes last, so the nineteen entries before it keep their places.
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : [])];
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
 const isPlaceTool = (tool: string): tool is PlaceToolName => (PLACE_TOOL_NAMES as readonly string[]).includes(tool);
+export const isSkyEventsTool = (tool: string): tool is SkyEventsToolName => (SKY_EVENTS_TOOL_NAMES as readonly string[]).includes(tool);
+/** What search_sky_events does, for get_capabilities. */
+const SKY_EVENTS_TOOL_SUMMARY: Record<SkyEventsToolName, string> = {
+  search_sky_events: 'eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods, months or years ahead',
+};
 /** What each 0.6.0 tool does, for get_capabilities. */
 const COVERAGE_TOOL_SUMMARY: Record<CoverageToolName, string> = {
   get_natal_chart: 'a birth chart readout',
@@ -135,7 +152,7 @@ const FIELD_FORMAT: Record<string, string> = {
 };
 
 /** The birth years a tool takes, named when a date in the right form falls outside them (1799-05-03). */
-const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName, string>> = {
+const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName, string>> = {
   get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
 };
@@ -143,14 +160,15 @@ const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName, string>> = {
 /**
  * A 0.6.0 tool's refusal of arguments its schema does not accept, naming each field: "birthDate is required.",
  * "period must be one of: month, year, week.". The sentences are fixed text and the schema's own field names and
- * values; nothing from the request is repeated, so an unknown property's name never comes back.
+ * values; nothing from the request is repeated, so an unknown property's name never comes back. `schema` is the
+ * tool's input schema in effect, its sky events form while that switch is on; an array item is named as kinds[0].
  */
-export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName, input: unknown) {
-  const parsed = INPUT_SCHEMAS[tool].safeParse(input ?? {});
+export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
+  const parsed = schema.safeParse(input ?? {});
   if (parsed.success) return null;
   const record = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
   const sentences = parsed.error.issues.map((issue: z.core.$ZodIssue) => {
-    const field = issue.path.map(String).join('.');
+    const field = issue.path.map((part) => (typeof part === 'number' ? `[${part}]` : String(part))).join('.').replace(/\.\[/gu, '[');
     if (issue.code === 'unrecognized_keys') return 'Leave out fields this tool does not take.';
     if (issue.code === 'custom' || !field) return issue.message;
     if (issue.path.length === 1 && record[field] === undefined) return `${field} is required.`;
@@ -258,14 +276,16 @@ export function normaliseCoverageCall(message: unknown): boolean {
 /** One typed operation per call. No network, persistence or logs; the horoscope window is read through its injected loader. */
 export async function executeAiTool(tool: AiToolName, input: unknown, dependencies: AiDependencies, context: AiCallContext = {}) {
   input = normaliseCoverageInput(tool, input);
+  // With the sky events switch on, the natal chart and the explainer take their wider forms (contracts.ts).
+  const skyEvents = skyEventsOn(dependencies);
   let ownedLocalTime: ReturnType<typeof createLocalTimeModule> | undefined;
   const localTime = () => dependencies.localTime ?? (ownedLocalTime ??= createLocalTimeModule());
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     if ((OCCASION_TOOL_NAMES as readonly string[]).includes(tool) && !dependencies.occasions) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (isCoverageTool(tool) || isPlaceTool(tool)) { const refusal = coverageInputRefusal(tool, input); if (refusal) return refusal; }
-    const parsed = INPUT_SCHEMAS[tool].safeParse(input);
+    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents)); if (refusal) return refusal; }
+    const parsed = inputSchemaFor(tool, skyEvents).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
     let data: unknown;
     let links: { title: string; url: string }[] = [methodLink];
@@ -279,10 +299,14 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const statements = engineStatements();
         // The capabilities' tool list keeps the thirteen names its published schema allows; tools/list names the 0.6.0 tools.
         const offered = offeredTools(dependencies);
-        const eclipseLine = dependencies.coverage
-          ? 'Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations. No birth-time rectification, reminders or account access.'
-          : 'Eclipses are listed by get_sky_calendar. get_upcoming_events lists ingresses, stations and lunations, not eclipses or aspects. No birth-time rectification, reminders or account access.';
-        data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => (ALL_AI_TOOL_NAMES as readonly string[]).includes(name)), limits: LIMITS, conventions: statements.conventions, coverage: { ...statements.coverage, tools: offered.join(', '), eclipses: dependencies.coverage ? 'get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations.' : 'get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.', aspects: dependencies.coverage ? 'get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects.' : 'get_upcoming_events does not search aspects.' }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', eclipseLine, dependencies.occasions ? 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person’s own chart.' : 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
+        const eclipseLine = skyEvents
+          ? 'Eclipses are listed by search_sky_events, get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations over the next days or weeks; search_sky_events finds eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods months or years ahead. No birth-time rectification, reminders or account access.'
+          : dependencies.coverage
+            ? 'Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations. No birth-time rectification, reminders or account access.'
+            : 'Eclipses are listed by get_sky_calendar. get_upcoming_events lists ingresses, stations and lunations, not eclipses or aspects. No birth-time rectification, reminders or account access.';
+        // search_sky_events adds what it covers to the coverage statements, after the keys every other answer has.
+        const skyEventsCoverage = skyEvents ? { skyEvents: 'search_sky_events gives eclipses from the eclipse table (2026 to 2030), sign changes of the Sun through Pluto from the ingress table, stations and new and full Moons from the engine for windows of up to two years, and void-of-course Moon periods under the traditional rule (aspects to the Sun through Saturn), up to 31 days at a time.' } : {};
+        data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => (ALL_AI_TOOL_NAMES as readonly string[]).includes(name)), limits: LIMITS, conventions: statements.conventions, coverage: { ...statements.coverage, tools: offered.join(', '), eclipses: skyEvents ? 'search_sky_events lists the eclipses from 2026 to 2030; get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations.' : dependencies.coverage ? 'get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations.' : 'get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.', aspects: dependencies.coverage ? 'get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects.' : 'get_upcoming_events does not search aspects.', ...skyEventsCoverage }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', eclipseLine, dependencies.occasions ? 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person’s own chart.' : 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
         if (dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday, a baby\'s arrival or a coming of age gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details.';
@@ -293,21 +317,28 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         if (dependencies.occasions && dependencies.coverage) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' The natal chart, personal transit and Chinese zodiac tools take a birth date, with an optional time, time zone and coordinates for the first two, for that call only and save none of it; the period horoscope and explainer tools take no personal details.';
+          if (skyEvents) capabilities.privacy += ' The sky events search takes no personal details.';
           // The tools field's enum is the thirteen published names, so the 0.6.0 tools are named here, by their tools/list names.
           const added = [
             ...offeredTools(dependencies).filter(isCoverageTool).map((name) => `${name} (${COVERAGE_TOOL_SUMMARY[name]})`),
             ...offeredTools(dependencies).filter(isPlaceTool).map((name) => `${name} (a town or city name, with coordinates and a time zone for the chart tools)`),
           ];
           const listed = (data as { tools: string[] }).tools.length;
-          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(', ')}${added.length > 1 ? ' and ' : ''}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice. With them Zodiacs offers ${listed + added.length} tools: the ${listed} in the tools field and these ${added.length}.`);
+          // With the sky events switch, search_sky_events follows them in tools/list; it gives calculated dates, not readings.
+          const skyTools = offeredTools(dependencies).filter(isSkyEventsTool).map((name) => `${name} (${SKY_EVENTS_TOOL_SUMMARY[name]})`);
+          const skyLine = skyTools.length ? ` ${skyTools.join(', ')} ${skyTools.length > 1 ? 'are' : 'is'} also listed there: calculated dates with no reading and no confidence label.` : '';
+          capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(', ')}${added.length > 1 ? ' and ' : ''}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice.${skyLine} With them Zodiacs offers ${listed + added.length + skyTools.length} tools: the ${listed} in the tools field and these ${added.length + skyTools.length}.`);
           capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes('find_birthplace') ? ' a town or city named instead of coordinates, find_birthplace;' : ''} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
+          if (skyEvents) capabilities.limitations.push('Which tool for sky events: what changes in the sky over the next days or weeks (up to 92 days), get_upcoming_events; one kind of event months or years ahead, such as the next eclipses, a planet\'s next retrograde, when a planet changes sign, every full Moon next year or this week\'s void-of-course Moon periods, search_sky_events; eclipses, retrograde periods and Moons in a calendar app, get_sky_calendar; a yes or no check on one moment or day, check_sky_fact. In a birth chart, get_natal_chart gives the lunar nodes and takes houseSystem placidus for Placidus houses.');
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' Only the save tool needs an account: when the person signs in to their own Zodiacs account and asks to keep a chart, comparison, occasion card or personal week, Zodiacs works it out again from the same details and saves that result, including the birth dates and names in it, to their account until they delete it. It saves no conversation text.';
-          capabilities.limitations[2] = dependencies.coverage
-            ? 'Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects are listed by get_personal_transits. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one.'
-            : 'Eclipses are listed by get_sky_calendar. get_upcoming_events does not search aspects. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one.';
+          capabilities.limitations[2] = skyEvents
+            ? 'Eclipses are listed by search_sky_events, get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects are listed by get_personal_transits. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one.'
+            : dependencies.coverage
+              ? 'Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects are listed by get_personal_transits. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one.'
+              : 'Eclipses are listed by get_sky_calendar. get_upcoming_events does not search aspects. No birth-time rectification or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one.';
         }
         if (dependencies.skyWatch) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -341,7 +372,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         }
         const calculation = computeEvents(parsedRequest);
         data = { from: calculation.result.from, to: calculation.result.to, zone, events: calculation.result.events.map(event => ({ ...event, localAt: displayTime(event.at, zone) })), calculation, completeness: calculation.receipt.search!.completeness };
-        links = [{ title: 'Subscribe to these in your calendar (get_sky_calendar)', url: `${ORIGIN}/sky-calendar/` }, { title: 'Explore the lunar calendar', url: `${ORIGIN}/full-moon-calendar/` }, { title: 'Explore retrogrades', url: `${ORIGIN}/retrogrades/` }, methodLink];
+        links = [{ title: 'Subscribe to these in your calendar (get_sky_calendar)', url: `${ORIGIN}/sky-calendar/` },
+          // With the sky events switch, the tool for one kind of event further ahead.
+          ...(skyEvents ? [{ title: 'Eclipses, stations, sign changes and Moons months or years ahead (search_sky_events)', url: `${ORIGIN}/events/` }] : []),
+          { title: 'Explore the lunar calendar', url: `${ORIGIN}/full-moon-calendar/` }, { title: 'Explore retrogrades', url: `${ORIGIN}/retrogrades/` }, methodLink];
         break;
       }
       case 'check_sky_fact': {
@@ -532,13 +566,15 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       }
       case 'get_sky_calendar': {
         ({ data, links } = getSkyCalendar(INPUT_SCHEMAS.get_sky_calendar.parse(input), dependencies.now?.() ?? new Date()));
+        // With the sky events switch, a list of one kind of event between two dates is search_sky_events'.
+        if (skyEvents) links = [...links, { title: 'A list of eclipses, stations, sign changes or Moons between two dates (search_sky_events)', url: `${ORIGIN}/events/` }];
         break;
       }
       case 'get_natal_chart': {
-        const args = INPUT_SCHEMAS.get_natal_chart.parse(input);
+        const args = (skyEvents ? natalChartInputWithHouses : INPUT_SCHEMAS.get_natal_chart).parse(input);
         const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : undefined;
         const today = (dependencies.now?.() ?? new Date()).toISOString().slice(0, 10);
-        const result = await feature(() => getNatalChart({ ...args, ...(zone ? { zone } : {}) }, localTime(), ORIGIN, today));
+        const result = await feature(() => getNatalChart({ ...args, ...(zone ? { zone } : {}) }, localTime(), ORIGIN, today, { skyEvents }));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;
@@ -590,7 +626,26 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         break;
       }
       case 'explain_astrology': {
-        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN));
+        ({ data, links } = explainAstrology(INPUT_SCHEMAS.explain_astrology.parse(input), ORIGIN, { skyEvents }));
+        break;
+      }
+      case 'search_sky_events': {
+        const args = INPUT_SCHEMAS.search_sky_events.parse(input);
+        let zone = 'UTC';
+        let zoneSource: 'request' | 'assistant' | 'default' = 'default';
+        if (args.zone) {
+          try { zone = await zoneAt(args.zone, '/zone', resolveZone); zoneSource = 'request'; }
+          catch { return failure(tool, 'invalid-timezone', "zone: Zodiacs doesn't recognise that time zone. Use a name such as Europe/London or Asia/Bangkok."); }
+        } else if (context.hostZone) {
+          try { zone = await zoneAt(context.hostZone, '/zone', resolveZone); zoneSource = 'assistant'; } catch { /* keep UTC and say so */ }
+        }
+        const result = await feature(() => searchSkyEvents(args, localTime(), {
+          zone, zoneSource, today: dateInZone(dependencies.now?.() ?? new Date(), zone), origin: ORIGIN,
+          ...(dependencies.allowEvents ? { allowEvents: dependencies.allowEvents } : {}),
+        }));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        if ('refused' in result) return failure(tool, result.refused, 'Zodiacs is busy. Try again in a minute.', result.refused === 'rate-limited' ? 60 : 300);
+        ({ data, links } = result);
         break;
       }
       case 'find_birthplace': {
@@ -608,7 +663,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
     }
     const result = { schema: AI_RESULT_SCHEMA, ok: true as const, tool, data, links };
     // Validate our own output so callers never receive a success outside its contract, then clear dashes from the text.
-    return stripConsumerDashes(OUTPUT_SCHEMAS[tool].parse(result));
+    // With the sky events switch a tool's wider result is checked against its wider schema (contracts.ts).
+    const schema = OUTPUT_SCHEMAS[tool];
+    const wider = skyEvents ? SKY_EVENTS_OUTPUT_SCHEMAS[tool] : undefined;
+    return stripConsumerDashes((wider ? wider.parse(result) : schema.parse(result)) as ReturnType<typeof schema.parse>);
   } catch (error) {
     if (error instanceof ComputeApiError) return failure(tool, error.detail.code, namedRefusal(error.detail.message, error.detail.pointer), error.detail.retryAfterSeconds);
     return failure(tool, 'calculation-failed', 'Zodiacs could not complete this. Nothing partial is returned; try again.');

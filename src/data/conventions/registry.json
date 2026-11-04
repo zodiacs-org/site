@@ -2856,9 +2856,10 @@
     {
       "name": "void-of-course",
       "title": "Void of course",
-      "description": "The void-of-course rule an election search used.",
+      "description": "The void-of-course rule an election search, or a search of void-of-course Moon periods, used.",
       "usedIn": [
-        "compute API receipts: electionSearch.voidOfCourse.convention"
+        "compute API receipts: electionSearch.voidOfCourse.convention",
+        "hosted MCP search_sky_events results: conventions"
       ],
       "entries": [
         {
@@ -2881,7 +2882,8 @@
       "title": "Void-of-course bodies",
       "description": "Which bodies count for the void-of-course rule.",
       "usedIn": [
-        "compute API receipts: electionSearch.voidOfCourse.bodies"
+        "compute API receipts: electionSearch.voidOfCourse.bodies",
+        "hosted MCP search_sky_events results: conventions"
       ],
       "entries": [
         {
@@ -2893,6 +2895,22 @@
             {
               "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
               "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "void-of-course-bodies:traditional",
+          "value": "traditional",
+          "title": "Traditional",
+          "definition": "The bodies whose aspects with the Moon count: the Sun, Mercury, Venus, Mars, Jupiter and Saturn. A void-of-course period then runs from the Moon's last exact conjunction, sextile, square, trine or opposition to one of them in a sign until the Moon enters the next sign, so it begins no later than under the modern bodies and ends at the same moment.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.1, src/techniques/void-of-course.ts, VOID_BODIES.traditional",
+              "url": "https://github.com/zodiacs-org/engine/blob/d9fc39cd4a81488b1bbee7e205901cdf2d755ef4/src/techniques/void-of-course.ts"
+            },
+            {
+              "title": "William Lilly, Christian Astrology (1647), p. 112"
             }
           ],
           "status": "current"
