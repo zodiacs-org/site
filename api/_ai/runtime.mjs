@@ -17718,7 +17718,8 @@ var MINOR_WORDS = [
   [/\bintimacy\b/giu, "trust"],
   [/\bin love\b/giu, "close"],
   [/\bsexual\b/giu, "private"],
-  [/\bchemistry\b/giu, "pull"]
+  [/\bchemistry\b/giu, "pull"],
+  [/\bway of loving\b/giu, "way of caring"]
 ];
 function softenMinor(text2) {
   return MINOR_WORDS.reduce((out, [pattern, word]) => out.replace(pattern, (match) => match[0] === match[0].toUpperCase() ? word[0].toUpperCase() + word.slice(1) : word), text2);
@@ -17950,22 +17951,12 @@ function compatibilityMissing(args, origin = "https://zodiacs.org") {
   }
   return null;
 }
-function minorScore(score2) {
-  const overall = Math.round(score2.areas.communication * 0.5 + score2.areas.stability * 0.5);
-  const communicationLeads = score2.areas.communication >= score2.areas.stability;
-  const close2 = Math.abs(score2.areas.communication - score2.areas.stability) < 6;
-  const headline = close2 ? "Communication and long-term stability are evenly matched in this pairing. Romantic and attraction readings are left out because a birth date is under 18." : `${communicationLeads ? "Communication" : "Long-term stability"} is the strongest part of this pairing; ${communicationLeads ? "long-term stability" : "communication"} will take the most work. Romantic and attraction readings are left out because a birth date is under 18.`;
-  return {
-    overall,
-    areas: { attraction: score2.areas.communication, communication: score2.areas.communication, stability: score2.areas.stability },
-    verdict: COMPAT_VERDICTS[compatVerdictKey(overall)],
-    headline
-  };
-}
-var MINOR_PAIR_NOTE = "A birth date is under 18, so romantic and attraction readings are left out. The attraction field repeats the communication score and is not a romance rating. The share link is left empty.";
+var MINOR_COMPATIBILITY_REFUSAL = "Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading.";
 async function computeCompatibility(args, localTime2, origin = "https://zodiacs.org", today = /* @__PURE__ */ new Date()) {
   const a = await personChart(args.a, "Person A", localTime2);
   const b = await personChart(args.b, "Person B", localTime2);
+  const todayDate = today.toISOString().slice(0, 10);
+  if (isUnder18(a.birthDate, todayDate) || isUnder18(b.birthDate, todayDate)) throw new RangeError(MINOR_COMPATIBILITY_REFUSAL);
   const summary = summarizePair2(a.bodies, b.bodies, COMPATIBILITY_TOP_CONTACTS);
   const sunA = slugAt(a.sunIndex);
   const sunB = slugAt(b.sunIndex);
@@ -17984,10 +17975,7 @@ async function computeCompatibility(args, localTime2, origin = "https://zodiacs.
   const elementOf = (index) => index === null ? null : SIGNS2[index].element;
   const elA = elementOf(a.sunIndex);
   const elB = elementOf(b.sunIndex);
-  const todayDate = today.toISOString().slice(0, 10);
-  const young = isUnder18(a.birthDate, todayDate) || isUnder18(b.birthDate, todayDate);
-  const scored = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
-  const score2 = young ? minorScore(scored) : scored;
+  const score2 = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
   const detail = coarserDetail(
     readingDetail({ hasDate: true, hasTime: a.timeKnown, hasPlace: a.placed }),
     readingDetail({ hasDate: true, hasTime: b.timeKnown, hasPlace: b.placed })
@@ -17999,19 +17987,14 @@ async function computeCompatibility(args, localTime2, origin = "https://zodiacs.
     a: personRow(a, origin),
     b: personRow(b, origin),
     score: score2,
-    signPair: young && signPair ? {
-      ...signPair,
-      element: { label: softenMinor(signPair.element.label), note: softenMinor(signPair.element.note) },
-      modality: { label: softenMinor(signPair.modality.label), note: softenMinor(signPair.modality.note) },
-      polarity: softenMinor(signPair.polarity)
-    } : signPair,
+    signPair,
     contacts: summary.top.map((contact) => ({
       aBody: contact.a,
       bBody: contact.b,
       aspect: contact.type,
       orb: roundOrb(contact.orb),
       generational: isGenerationalContact(contact),
-      line: young ? softenMinor(contactLine(a.label, contact.a, b.label, contact.b, contact.type)) : contactLine(a.label, contact.a, b.label, contact.b, contact.type)
+      line: contactLine(a.label, contact.a, b.label, contact.b, contact.type)
     })),
     counts: {
       easeful: summary.easeful,
@@ -18023,12 +18006,12 @@ async function computeCompatibility(args, localTime2, origin = "https://zodiacs.
     modalities: { a: { ...summary.modalities.a }, b: { ...summary.modalities.b } },
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
     cardUrl: null,
-    shareUrl: young ? null : compatibilityShareUrl(origin, {
+    shareUrl: compatibilityShareUrl(origin, {
       a: { name: null, sun: sunA },
       b: { name: null, sun: sunB },
       score: score2
     }),
-    notes: [...notesFor(a, b), ...young ? [MINOR_PAIR_NOTE] : [], label],
+    notes: [...notesFor(a, b), label],
     note: COMPATIBILITY_NOTE
   };
   return {
@@ -35020,22 +35003,46 @@ function placementParts({ planet, sign: sign2, house }) {
     related: [`${slug}-house`, "houses", "birth-chart"]
   };
 }
+var FRIENDSHIP = /\b(?:friend\w*|platonic)\b/u;
 function matchSignPair(query) {
   const text2 = clean(query);
+  const friendship = FRIENDSHIP.test(text2);
   const joined = text2.match(new RegExp(`\\b(${SIGN_WORDS})\\s+(?:and|with)\\s+(${SIGN_WORDS})\\b`, "u"));
-  if (joined) return { a: joined[1], b: joined[2] };
+  if (joined) return { a: joined[1], b: joined[2], friendship };
   const signs = [...text2.matchAll(new RegExp(`\\b(${SIGN_WORDS})\\b`, "gu"))].map((match) => match[1]);
   const unique = [...new Set(signs)];
   const compatibility = /\b(?:compatib\w*|synastry)\b/u.test(text2);
   const bare = signs.length === 2 && text2.split(" ").filter(Boolean).length <= 3;
-  if (unique.length === 2 && (compatibility || bare)) return { a: unique[0], b: unique[1] };
+  if (unique.length === 2 && (compatibility || friendship || bare)) return { a: unique[0], b: unique[1], friendship };
   return null;
 }
-var PAIR_GUIDANCE = "If either person is under 18, give the element and modality pattern and do not frame the pair as romance or attraction.";
-function signPairAnswer(query, a, b, origin) {
+var asFriends = (text2) => softenMinor(text2).replace(/\bmake-ups\b/gu, "repairs").replace(/\bPassion\b/gu, "Drive");
+var PAIR_GUIDANCE = "If either person is under 18, give the friendship reading instead: the same two signs with the word friendship in the topic. Do not frame the pair as romance or attraction.";
+var FRIENDSHIP_GUIDANCE = "A friendship reading: the element and modality pattern of the two Sun signs only, with each sign's page. The sign-pair essays and their links are left out.";
+function signPairAnswer(query, a, b, friendship, origin) {
   const slug = pairSlug(a, b);
   const pattern = pairPattern(a, b);
   const names = pattern.facts.same ? `Two ${pattern.facts.a.name} people` : `${pattern.facts.a.name} and ${pattern.facts.b.name}`;
+  if (friendship) {
+    const signPages = [.../* @__PURE__ */ new Set([pattern.facts.a, pattern.facts.b])].map((sign2) => ({ title: `${sign2.name} on Zodiacs`, url: `${origin}/${sign2.slug}/` }));
+    const data2 = {
+      found: true,
+      query,
+      topic: slug,
+      title: `${names} as friends`,
+      paragraphs: [
+        `${names} as friends. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
+        "This is the Sun-sign pattern; the rest of both charts changes how a friendship is lived."
+      ].map((text2) => asFriends(softenHealth(text2))),
+      terms: [],
+      pages: signPages,
+      related: ["elements", "modalities"].filter((key) => EXPLAIN_TOPICS.includes(key)),
+      topics: [],
+      message: FRIENDSHIP_GUIDANCE,
+      note: EXPLAIN_NOTE
+    };
+    return { data: data2, links: signPages };
+  }
   const essay = pair_pages_default[slug] ?? [];
   const paragraphs = [
     `${names}. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
@@ -35062,7 +35069,7 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
   const words = clean(args.topic);
   const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
   const pair = outside ? null : matchSignPair(args.topic);
-  if (pair) return signPairAnswer(args.topic, pair.a, pair.b, origin);
+  if (pair) return signPairAnswer(args.topic, pair.a, pair.b, pair.friendship, origin);
   const topic = outside ? null : matchTopic(args.topic);
   if (!topic) {
     const data2 = {
@@ -35602,7 +35609,7 @@ var TOOL_DESCRIPTIONS = {
   get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year, or a love or career week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027. A week is only for focus love or career: it adds that focus's daily readings in the week and keeps the sky events that bear on it. For a general week, and for today's or tomorrow's horoscope, use get_horoscope. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. If the person is under 18, do not use focus love and do not frame the reading as romance or attraction. Share the forecast plainly and confidently, with the reading-confidence label it returns. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
   get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own. Without a zone the current year assumes UTC and the answer says so.",
   get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Use it for my transits, what's coming up for me, or my year ahead, once the person has given a birth date; for a Sun-sign horoscope use get_horoscope or get_horoscope_period. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Pass currentZone, where they live now, so the dates fall on their own clock. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. If the birth date is under 18, do not frame the lines as romance or attraction. Present each line plainly and confidently as astrology's reading, with its reading-confidence label, never as a guarantee, and never turn a line into health, financial or medical advice.",
-  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the element and modality pattern and do not frame the pair as romance or attraction.",
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.",
   find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place."
 };
 
@@ -36583,10 +36590,19 @@ async function personalWeek(input, now, clock2, zone7) {
     note: PERSONAL_WEEK_NOTE
   };
 }
+function guardPersonalWeek(week, birthDate, today) {
+  if (!isUnder18(birthDate, today)) return week;
+  return {
+    ...week,
+    items: week.items.map((item) => ({ ...item, title: softenMinor(item.title), line: softenMinor(item.line) })),
+    note: `${week.note} ${MINOR_NOTE}`
+  };
+}
 
 // src/ai-tools/tools.ts
 var PRIVACY_POLICY = "https://zodiacs.org/privacy/";
-var PRIVACY_WITH_BIRTH_TOOLS = `Public-sky tools and Sun-sign horoscopes need no birth details. The compatibility, occasion, chart-twin, birthday and milestone tools, and a personal weekly forecast in get_horoscope, take the dates you give for that answer only and save none of them. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. Ask before using someone else's birth details. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure. Chart Studio calculates in the browser; only explicitly reviewed selections are sent to the assistant. Hosting-layer request metadata has a separate retention policy, set out in the privacy policy: ${PRIVACY_POLICY}. Links to zodiacs.org end in ?ref=chatgpt or ?ref=assistant so the site can count those visits; the page removes it as it opens.`;
+var SAVED_PAGE_EXCEPTION = "The only exception is a page a signed-in person chooses to save to their own account.";
+var privacyWithBirthTools = (accounts) => `Public-sky tools and Sun-sign horoscopes need no birth details. The compatibility, occasion, chart-twin, birthday and milestone tools, and a personal weekly forecast in get_horoscope, take the dates you give for that answer only and save none of them. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day.${accounts ? ` ${SAVED_PAGE_EXCEPTION}` : ""} Ask before using someone else's birth details. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure. Chart Studio calculates in the browser; only explicitly reviewed selections are sent to the assistant. Hosting-layer request metadata has a separate retention policy, set out in the privacy policy: ${PRIVACY_POLICY}. Links to zodiacs.org end in ?ref=chatgpt or ?ref=assistant so the site can count those visits; the page removes it as it opens.`;
 var PRIVACY = `Public-sky tools and horoscopes need no birth details and save no request or result. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure; the local developer server runs on its own machine. Chart Studio calculates in the browser; only explicitly reviewed selections are sent to the assistant, and downloaded records contain personal chart data. Hosting-layer request metadata has a separate retention policy, set out in the privacy policy: ${PRIVACY_POLICY}. Links to zodiacs.org end in ?ref=chatgpt or ?ref=assistant so the site can count those visits; the page removes it as it opens.`;
 var methodLink = { title: "How we calculate", url: `${ORIGIN}/methodology/` };
 var moonLink = { title: "Explore Moon phases", url: `${ORIGIN}/moon-phase/` };
@@ -36744,12 +36760,12 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const statements3 = engineStatements();
         const offered = offeredTools(dependencies);
         const eclipseLine = dependencies.coverage ? "Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations. No birth-time rectification, reminders or account access." : "Eclipses are listed by get_sky_calendar. get_upcoming_events lists ingresses, stations and lunations, not eclipses or aspects. No birth-time rectification, reminders or account access.";
-        data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS, conventions: statements3.conventions, coverage: { ...statements3.coverage, tools: offered.join(", "), eclipses: dependencies.coverage ? "get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : "get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.", aspects: dependencies.coverage ? "get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects." : "get_upcoming_events does not search aspects." }, privacy: dependencies.occasions ? PRIVACY_WITH_BIRTH_TOOLS : PRIVACY, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", eclipseLine, dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
+        data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS, conventions: statements3.conventions, coverage: { ...statements3.coverage, tools: offered.join(", "), eclipses: dependencies.coverage ? "get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : "get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.", aspects: dependencies.coverage ? "get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects." : "get_upcoming_events does not search aspects." }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", eclipseLine, dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
         if (dependencies.occasions) {
           const capabilities = data;
           capabilities.privacy += " The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday, a baby's arrival or a coming of age gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details.";
           capabilities.limitations.push("The occasion tools give the sky on a date, rate it from 0 to 100 by astrology's traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology's life milestones; they do not guarantee how a day will go.");
-          capabilities.limitations.push("Compatibility scores two charts by astrology's reading of their contacts; it does not guarantee how a relationship will go. When either birth date is under 18, it leaves out romantic and attraction readings and gives no share link. Famous charts, alone or compared with someone's own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.");
+          capabilities.limitations.push("Compatibility scores two charts by astrology's reading of their contacts; it does not guarantee how a relationship will go. Compatibility readings are for two adults: when either birth date is under 18 it gives no reading, and points to a friendship reading of the two Sun signs instead. Famous charts, alone or compared with someone's own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.");
           if (!dependencies.coverage) capabilities.limitations.push("Which tool: what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; one birthday, get_birthday; lifetime returns, get_life_milestones.");
         }
         if (dependencies.occasions && dependencies.coverage) {
@@ -36761,7 +36777,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           ];
           const listed = data.tools.length;
           capabilities.limitations.push(`Version 0.6.0 adds tools listed in tools/list: ${added.slice(0, -1).join(", ")}${added.length > 1 ? " and " : ""}${added.at(-1)}. They give astrology's reading plainly, with a reading-confidence label on each forecast (how specific the details were, not the odds that an event happens), never a guarantee, and no health, financial or medical advice. With them Zodiacs offers ${listed + added.length} tools: the ${listed} in the tools field and these ${added.length}.`);
-          capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes("find_birthplace") ? " a town or city named instead of coordinates, find_birthplace;" : ""} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, or whether two Sun signs are compatible, explain_astrology.`);
+          capabilities.limitations.push(`Which tool: today, tomorrow or this week's general Sun-sign horoscope, get_horoscope; a month or a year, or the week's love or career readings together, get_horoscope_period; transits to a person's own chart or their year ahead, get_personal_transits; one birthday, get_birthday; lifetime returns, get_life_milestones; a chart read in the chat once a birth date is given, get_natal_chart, or open_chart_studio for the person to fill in;${offered.includes("find_birthplace") ? " a town or city named instead of coordinates, find_birthplace;" : ""} what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; a yes or no sky check, check_sky_fact; what a term means, whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.`);
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data;
@@ -36852,7 +36868,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             }
           }
           try {
-            const personal2 = await personalWeek({ birthDate: args.birthDate, ...args.birthTime ? { birthTime: args.birthTime } : {}, ...birthZone ? { birthZone } : {} }, dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2(), zone7);
+            const personal2 = guardPersonalWeek(await personalWeek({ birthDate: args.birthDate, ...args.birthTime ? { birthTime: args.birthTime } : {}, ...birthZone ? { birthZone } : {} }, dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2(), zone7), args.birthDate, localDate);
             const personalLabel = readingConfidenceLabel(readingDetail({ hasDate: true, hasTime: args.birthTime !== void 0, hasPlace: false }));
             personal2.note = `${personal2.note} ${personalLabel}. For the dates of these contacts, use get_personal_transits.`;
             data.personal = personal2;
@@ -37814,8 +37830,8 @@ async function buildSavedRecord(input, dependencies = {}) {
         const resolve2 = (name) => localTime2().canonicalZoneName(name);
         const zone7 = args.zone ? await zoneAt(args.zone, "/week/zone", resolve2) : "UTC";
         const birthZone = args.birthZone ? await zoneAt(args.birthZone, "/week/birthZone", resolve2) : void 0;
-        const week = await personalWeek({ birthDate: args.birthDate, ...args.birthTime ? { birthTime: args.birthTime } : {}, ...birthZone ? { birthZone } : {} }, now, localTime2(), zone7);
         const from = dateInZone(now, zone7);
+        const week = guardPersonalWeek(await personalWeek({ birthDate: args.birthDate, ...args.birthTime ? { birthTime: args.birthTime } : {}, ...birthZone ? { birthZone } : {} }, now, localTime2(), zone7), args.birthDate, from);
         return linked({
           schema: SAVED_RECORD_SCHEMA,
           kind: "week",
@@ -37958,7 +37974,9 @@ function signInChallenge(oauth) {
 }
 
 // src/ai-tools/server.ts
-var INSTRUCTIONS = "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never put a birth date, birth time, birthplace, coordinates or place name into a link you write. Never guess a birth time or a sign. Ask before using someone else's birth details. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day. If a person or a birth date is under 18, do not frame the reading as romance, attraction or a sexual relationship, and say that Zodiacs does not give that framing for anyone under 18. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology\u2019s reading, with each reading-confidence label a tool returns: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice; do not call its tools for any of these requests, and say plainly that it cannot.";
+function instructions(accounts) {
+  return "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never put a birth date, birth time, birthplace, coordinates or place name into a link you write. Never guess a birth time or a sign. Ask before using someone else's birth details. Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day." + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : "") + " If a person or a birth date is under 18, do not frame the reading as romance, attraction or a sexual relationship, and say that Zodiacs does not give that framing for anyone under 18. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology\u2019s reading, with each reading-confidence label a tool returns: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice; do not call its tools for any of these requests, and say plainly that it cannot.";
+}
 var PANELS = {
   get_upcoming_events: { uri: WIDGET_URI, icon: "sky-calendar" },
   open_chart_studio: { uri: STUDIO_URI, icon: "chart-studio" },
@@ -37996,7 +38014,7 @@ function refFrom(meta) {
 function createAiServer(dependencies, watch, account) {
   const server = new McpServer({ name: "zodiacs", version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...watch ? { events: {} } : {} },
-    instructions: INSTRUCTIONS
+    instructions: instructions(!!account && !!dependencies.occasions)
   });
   const versions = (name, uris) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ""}` }));
   for (const { uri, name } of versions("sky-events", [WIDGET_URI, ...LEGACY_WIDGET_URIS])) server.registerResource(name, uri, {

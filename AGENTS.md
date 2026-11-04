@@ -56,7 +56,8 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
 - The zero-CLS gates must hold. A known micro-CLS flake (for example the
   `/today/` sky ticker at about 0.001) gets exactly one rerun; a second
   failure is real and must be fixed.
-- "Done" means CI is green on the pull request, not an agent saying so.
+- "Done" means CI is green on the pull request (or each failure is shown to
+  be unrelated and also fails on `main`), not an agent saying so.
 
 ### Working alongside other jobs
 

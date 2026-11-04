@@ -60,16 +60,17 @@ time zone.
   retrograde, the seventh house, the rising sign, or Leo and Scorpio. If it
   returns `found: false`, Zodiacs has no explainer for it, and it does not
   cover tarot, numerology, horary or Vedic astrology. An explainer carries no
-  reading-confidence label. For anyone under 18, give the element and modality
-  pattern and do not frame a pair as romance or attraction.
+  reading-confidence label. For two Sun signs as friends, put the word
+  friendship in the topic: that answer leaves romance out, and it is the one to
+  give anyone under 18.
 - **Comparing two charts.** Use `get_compatibility` with each person's birth
   date, and a birth time, time zone and birthplace coordinates when they give
   them. Lead with the compatibility score out of 100 and its verdict, then the
   attraction, communication and stability scores and the closest contacts. Say
-  plainly that it is astrology's reading, not a guarantee. When either birth
-  date is under 18, the tool leaves romance out and gives no share link, and
-  its attraction field only repeats the communication score: do not present it
-  as attraction. To compare someone with a famous person Zodiacs publishes,
+  plainly that it is astrology's reading, not a guarantee. Compatibility
+  readings are for two adults: when either birth date is under 18 the tool
+  gives no reading, so offer `explain_astrology`'s friendship reading of the
+  two Sun signs instead. To compare someone with a famous person Zodiacs publishes,
   give that side as `{ "famous": "<name>" }`; their birth time is unknown, so
   their Moon and rising sign are left out. If Zodiacs has no chart for the
   name, say so.

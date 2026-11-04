@@ -3,6 +3,8 @@
  * occasion cards a signed-in person saved, each a link back to its page.
  * A page someone chose to save before signing in is saved here once the
  * session arrives. Renders nothing unless PUBLIC_ACCOUNT_SAVES_ENABLED is on.
+ * A link to one saved result (/profile/#saved=<digest>, where the pages a
+ * saved link names send it) opens that result's saved reading.
  */
 import { useEffect, useState } from 'preact/hooks';
 import {
@@ -13,6 +15,7 @@ import {
   type SavedPageDraft,
 } from '../lib/profile/saved-pages-config';
 import { assistantSavedReading, type SavedReading } from '../lib/profile/assistant-saved-reading';
+import { savedResultDigest, savedResultExploreHref } from '../lib/profile/saved-result-link';
 import '../styles/account.css';
 
 interface Props {
@@ -37,6 +40,8 @@ const COPY = {
   fromAssistant: 'from your assistant',
   download: 'Download as JSON',
   downloadError: 'Your saved pages could not be downloaded. Try again.',
+  savedSignIn: 'Sign in above to read the saved result this link opens.',
+  savedMissing: 'That saved result is not in this account. It may have been removed.',
 } as const;
 
 function savedOn(iso: string): string {
@@ -48,6 +53,14 @@ export default function SavedPagesPanel({ enabled }: Props) {
   const [pages, setPages] = useState<SavedPage[]>([]);
   const [pending, setPending] = useState<SavedPageDraft | null>(null);
   const [status, setStatus] = useState<{ text: string; error?: boolean } | null>(null);
+  // The saved result a /profile/#saved=<digest> link asks for, read once.
+  const [linked] = useState(() => (typeof window === 'undefined' ? null : savedResultDigest(window.location.hash)));
+  const openId = linked ? pages.find((page) => savedResultDigest(page.href) === linked)?.id ?? null : null;
+  useEffect(() => {
+    if (load !== 'ready' || !linked) return;
+    if (!openId) { setStatus({ text: COPY.savedMissing, error: true }); return; }
+    document.getElementById(`saved-row-${openId}`)?.scrollIntoView({ block: 'start' });
+  }, [load, linked, openId]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -102,13 +115,13 @@ export default function SavedPagesPanel({ enabled }: Props) {
 
   if (!enabled || load === 'loading') return null;
   if (load === 'signed-out') {
-    if (!pending) return null;
+    if (!pending && !linked) return null;
     return (
       <section class="saved-pages shell" id="saved-pages" aria-labelledby="saved-pages-title">
         <div class="core saved-pages__core">
           <div class="saved-pages__head">
             <h2 id="saved-pages-title">{COPY.title}</h2>
-            <p>{COPY.pending} <strong>{pending.title}</strong></p>
+            {pending ? <p>{COPY.pending} <strong>{pending.title}</strong></p> : <p>{COPY.savedSignIn}</p>}
           </div>
         </div>
       </section>
@@ -159,7 +172,7 @@ export default function SavedPagesPanel({ enabled }: Props) {
         ) : (
           <ul class="saved-pages__list" role="list">
             {pages.map((page) => (
-              <li key={page.id} class="saved-pages__row">
+              <li key={page.id} id={`saved-row-${page.id}`} class="saved-pages__row">
                 {page.source === 'assistant' ? <button type="button" class="saved-pages__link saved-pages__open" aria-controls={`saved-reading-${page.id}`} onClick={() => {
                   const detail = document.getElementById(`saved-reading-${page.id}`);
                   if (detail instanceof HTMLDetailsElement) detail.open = !detail.open;
@@ -172,7 +185,7 @@ export default function SavedPagesPanel({ enabled }: Props) {
                   onClick={() => void remove(page)}
                   aria-label={`${COPY.remove}: ${page.title}`}
                 >{COPY.remove}</button>
-                {page.source === 'assistant' && <AssistantReading page={page} />}
+                {page.source === 'assistant' && <AssistantReading page={page} startOpen={page.id === openId} />}
               </li>
             ))}
           </ul>
@@ -189,8 +202,8 @@ export default function SavedPagesPanel({ enabled }: Props) {
 }
 
 /** Loaded on demand; unmounting on an account change drops all reading state. */
-function AssistantReading({ page }: { page: SavedPage }) {
-  const [open, setOpen] = useState(false);
+function AssistantReading({ page, startOpen = false }: { page: SavedPage; startOpen?: boolean }) {
+  const [open, setOpen] = useState(startOpen);
   const [reading, setReading] = useState<SavedReading | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -205,11 +218,12 @@ function AssistantReading({ page }: { page: SavedPage }) {
       }).catch(() => { if (active) setFailed(true); });
     return () => { active = false; };
   }, [open, page.id, page.kind]);
-  return <details class="saved-pages__reading" id={`saved-reading-${page.id}`} onToggle={(event) => setOpen(event.currentTarget.open)}>
+  return <details class="saved-pages__reading" id={`saved-reading-${page.id}`} open={startOpen} onToggle={(event) => setOpen(event.currentTarget.open)}>
     <summary>Read saved result</summary>
     {open && (reading ? <>
       <SavedReadingContent reading={reading} />
-      <a href={page.href}>{page.kind === 'week' || page.href.includes('saved=') ? 'Explore more on Zodiacs' : 'Open on website'}</a>
+      {/* A saved= link only leads back here, so "Explore more" opens the page itself. */}
+      <a href={savedResultExploreHref(page.href)}>{page.kind === 'week' || page.href.includes('saved=') ? 'Explore more on Zodiacs' : 'Open on website'}</a>
     </> : <p role="status">{failed ? 'This saved reading could not be opened. Close it and try again.' : 'Loading your saved reading…'}</p>)}
   </details>;
 }

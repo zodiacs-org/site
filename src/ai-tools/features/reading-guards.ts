@@ -1,7 +1,8 @@
 /**
- * Shared limits for the coverage tools and get_compatibility: whether a birth
- * date is under 18, and the house wording that would otherwise pull a reading
- * toward health or romance. Reading confidence has its own rule, in
+ * Shared limits for the coverage tools and the personal week in get_horoscope:
+ * whether a birth date is under 18, and the house wording that would otherwise
+ * pull a reading toward health or romance. get_compatibility gives no reading
+ * at all when either birth date is under 18. Reading confidence has its own rule, in
  * ../reading-confidence.ts. Pure. Nothing here is stored or logged.
  */
 
@@ -28,6 +29,7 @@ const MINOR_WORDS: [RegExp, string][] = [
   [/\bin love\b/giu, 'close'],
   [/\bsexual\b/giu, 'private'],
   [/\bchemistry\b/giu, 'pull'],
+  [/\bway of loving\b/giu, 'way of caring'],
 ];
 
 /** Romantic and attraction wording, left out of a reading for someone under 18. A capital stays a capital. */

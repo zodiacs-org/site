@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { SAVED_RESULT_FORWARD } from '../../lib/profile/saved-result-link';
 import ArtFrame from '../../components/ArtFrame.astro';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import ToolIcon from '../../components/ToolIcon.astro';
@@ -135,6 +136,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   imageAlt="Free birth chart calculator, Zodiacs.org"
   jsonLd={jsonLd}
 >
+  {/* A chart saved from an assistant links here by its digest alone (#saved=…): it opens on the profile's saved list. */}
+  <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
   <script slot="head" is:inline>
     try {
       var chartShareParams = new URLSearchParams(location.hash.slice(1));

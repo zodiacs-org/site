@@ -12,8 +12,10 @@
  * placement page linked. Two Sun signs in a compatibility question, such as
  * "Leo and Scorpio", are answered from the sign-pair page's own essay
  * (pair-pages.json, built by scripts/build-pair-pages.mjs from
- * src/content/pairs/). An explainer explains; it carries no reading-confidence
- * label. Pure: no network, storage or logging.
+ * src/content/pairs/); asked about them as friends, it gives the pattern alone,
+ * with no romantic wording, because the pair pages are written about romance.
+ * An explainer explains; it carries no reading-confidence label. Pure: no
+ * network, storage or logging.
  */
 import { z } from 'zod';
 import { CHINESE_ZODIAC_COPY } from '../../data/chinese-zodiac';
@@ -25,7 +27,7 @@ import { pairPattern } from '../../lib/compat-reading';
 import { pairSlug } from '../../lib/compat';
 import { SIGNS, type Sign } from '../../lib/signs';
 import type { BodyName } from '../../lib/engine/types';
-import { softenHealth } from './reading-guards';
+import { softenHealth, softenMinor } from './reading-guards';
 import pairPages from './pair-pages.json';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
@@ -332,26 +334,57 @@ function placementParts({ planet, sign, house }: Placement): { title: string; pa
   };
 }
 
-/** Two Sun signs in a compatibility question, such as "Leo and Scorpio" or "are leo and scorpio compatible". */
-export function matchSignPair(query: string): { a: string; b: string } | null {
+/** A friendship question about two signs: "Leo and Scorpio friendship", "are a Leo and a Scorpio good friends". */
+const FRIENDSHIP = /\b(?:friend\w*|platonic)\b/u;
+
+/** Two Sun signs in a compatibility or friendship question, such as "Leo and Scorpio" or "are leo and scorpio compatible". */
+export function matchSignPair(query: string): { a: string; b: string; friendship: boolean } | null {
   const text = clean(query);
+  const friendship = FRIENDSHIP.test(text);
   const joined = text.match(new RegExp(`\\b(${SIGN_WORDS})\\s+(?:and|with)\\s+(${SIGN_WORDS})\\b`, 'u'));
-  if (joined) return { a: joined[1], b: joined[2] };
+  if (joined) return { a: joined[1], b: joined[2], friendship };
   const signs = [...text.matchAll(new RegExp(`\\b(${SIGN_WORDS})\\b`, 'gu'))].map((match) => match[1]);
   const unique = [...new Set(signs)];
   const compatibility = /\b(?:compatib\w*|synastry)\b/u.test(text);
   const bare = signs.length === 2 && text.split(' ').filter(Boolean).length <= 3;
-  if (unique.length === 2 && (compatibility || bare)) return { a: unique[0], b: unique[1] };
+  if (unique.length === 2 && (compatibility || friendship || bare)) return { a: unique[0], b: unique[1], friendship };
   return null;
 }
 
-const PAIR_GUIDANCE = 'If either person is under 18, give the element and modality pattern and do not frame the pair as romance or attraction.';
+/** The pattern's words for a friendship: softenMinor's, and a fight's make-up becomes a repair. */
+const asFriends = (text: string) => softenMinor(text).replace(/\bmake-ups\b/gu, 'repairs').replace(/\bPassion\b/gu, 'Drive');
 
-/** A Sun-sign pair from its compatibility page: the pattern, then the page's essay. */
-function signPairAnswer(query: string, a: string, b: string, origin: string): { data: ExplainData; links: { title: string; url: string }[] } {
+const PAIR_GUIDANCE = 'If either person is under 18, give the friendship reading instead: the same two signs with the word friendship in the topic. Do not frame the pair as romance or attraction.';
+const FRIENDSHIP_GUIDANCE = 'A friendship reading: the element and modality pattern of the two Sun signs only, with each sign\'s page. The sign-pair essays and their links are left out.';
+
+/**
+ * A Sun-sign pair from its compatibility page: the pattern, then the page's essay. As friends: the pattern alone,
+ * in words with no romance, linking the two sign pages rather than the pair page.
+ */
+function signPairAnswer(query: string, a: string, b: string, friendship: boolean, origin: string): { data: ExplainData; links: { title: string; url: string }[] } {
   const slug = pairSlug(a, b);
   const pattern = pairPattern(a, b);
   const names = pattern.facts.same ? `Two ${pattern.facts.a.name} people` : `${pattern.facts.a.name} and ${pattern.facts.b.name}`;
+  if (friendship) {
+    const signPages = [...new Set([pattern.facts.a, pattern.facts.b])].map((sign) => ({ title: `${sign.name} on Zodiacs`, url: `${origin}/${sign.slug}/` }));
+    const data: ExplainData = {
+      found: true,
+      query,
+      topic: slug,
+      title: `${names} as friends`,
+      paragraphs: [
+        `${names} as friends. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
+        'This is the Sun-sign pattern; the rest of both charts changes how a friendship is lived.',
+      ].map((text) => asFriends(softenHealth(text))),
+      terms: [],
+      pages: signPages,
+      related: ['elements', 'modalities'].filter((key) => EXPLAIN_TOPICS.includes(key)),
+      topics: [],
+      message: FRIENDSHIP_GUIDANCE,
+      note: EXPLAIN_NOTE,
+    };
+    return { data, links: signPages };
+  }
   const essay = (pairPages as Record<string, string[]>)[slug] ?? [];
   const paragraphs = [
     `${names}. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
@@ -380,7 +413,7 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
   const words = clean(args.topic);
   const outside = OUT_OF_SCOPE.find((name) => ` ${words} `.includes(` ${name} `));
   const pair = outside ? null : matchSignPair(args.topic);
-  if (pair) return signPairAnswer(args.topic, pair.a, pair.b, origin);
+  if (pair) return signPairAnswer(args.topic, pair.a, pair.b, pair.friendship, origin);
   const topic = outside ? null : matchTopic(args.topic);
   if (!topic) {
     const data: ExplainData = {

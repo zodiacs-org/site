@@ -109,7 +109,8 @@ describe('get_capabilities names every tool offered', () => {
     expect(result.data.privacy).not.toMatch(/never share|or share/u);
     expect(text).toContain('Which tool: today, tomorrow or this week\'s general Sun-sign horoscope, get_horoscope;');
     expect(text).toContain('a town or city named instead of coordinates, find_birthplace;');
-    expect(text).toContain('whether two Sun signs are compatible, explain_astrology.');
+    expect(text).toContain('whether two Sun signs are compatible, or two Sun signs as friends, explain_astrology.');
+    expect(text).toContain('Compatibility readings are for two adults');
     expect(text).toContain('with a reading-confidence label on each forecast');
     expect(text).not.toMatch(/[–—]/u);
   });
@@ -208,6 +209,7 @@ describe('every link the 0.6.0 tools return', () => {
       ['explain_astrology', { topic: 'tarot' }],
       ['explain_astrology', { topic: 'Are Leo and Scorpio compatible?' }],
       ['explain_astrology', { topic: 'Pisces and Pisces' }],
+      ['explain_astrology', { topic: 'Leo and Scorpio friendship' }],
       ...HOROSCOPE_SIGNS.flatMap((sign) => (['month', 'year', 'week'] as const).flatMap((period) => (['general', 'love', 'career'] as const).map((focus): [typeof COVERAGE_TOOL_NAMES[number], Record<string, unknown>] => ['get_horoscope_period', { sign, period, focus, ...(period === 'year' ? { date: '2027-06-01' } : {}) }]))),
       ['get_horoscope_period', { sign: 'leo', period: 'year' }],
       ...['1990-05-03', '1972-08-15', '2000-11-11'].flatMap((birthDate): [typeof COVERAGE_TOOL_NAMES[number], Record<string, unknown>][] => [

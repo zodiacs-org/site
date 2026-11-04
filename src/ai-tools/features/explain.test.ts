@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { executeAiTool } from '../tools';
 import { bigThree } from '../../lib/interpretations';
+import { SIGNS } from '../../lib/signs';
 import { pairPagesFromDisk } from '../../../scripts/build-pair-pages.mjs';
 import pairPages from './pair-pages.json';
 import { EXPLAIN_TOPICS, explainAstrology, matchAngleSign, matchNoSuchHouse, matchPlacement, matchRising, matchSignPair, matchTopic } from './explain';
@@ -224,7 +225,7 @@ describe('explain_astrology', () => {
     expect(data.paragraphs[1]).toBe('This is the Sun-sign pattern; the rest of both charts changes how it is lived.');
     // An explainer explains; it does not forecast, so it carries no reading-confidence label.
     expect(JSON.stringify(data)).not.toMatch(/confidence/iu);
-    expect(data.message).toBe('If either person is under 18, give the element and modality pattern and do not frame the pair as romance or attraction.');
+    expect(data.message).toBe('If either person is under 18, give the friendship reading instead: the same two signs with the word friendship in the topic. Do not frame the pair as romance or attraction.');
     expect(data.pages[0].url).toBe('https://zodiacs.org/compatibility/leo-scorpio/');
     expect(links.map((link) => link.url).join(' ')).not.toMatch(/birthDate|latitude|#c=/u);
     expect(JSON.stringify(data)).not.toMatch(/[\u2013\u2014]/u);
@@ -238,7 +239,7 @@ describe('explain_astrology', () => {
     expect(matchSignPair('leo')).toBeNull();
     expect(matchSignPair('Leo rising and Scorpio Moon')).toBeNull();
     expect(matchSignPair('Mars in Leo and Venus in Scorpio')).toBeNull();
-    expect(matchSignPair('leo scorpio')).toEqual({ a: 'leo', b: 'scorpio' });
+    expect(matchSignPair('leo scorpio')).toEqual({ a: 'leo', b: 'scorpio', friendship: false });
     expect(explainAstrology({ topic: 'leo' }).data.topic).toBe('leo');
     expect(explainAstrology({ topic: 'Moon in Scorpio' }).data.topic).not.toBe('leo-scorpio');
   });
@@ -247,6 +248,30 @@ describe('explain_astrology', () => {
     const sixth = explainAstrology({ topic: 'sixth house' }).data.paragraphs.join(' ');
     expect(sixth).toContain('sixth house');
     expect(sixth).not.toMatch(/\bhealth\b/iu);
+  });
+
+  it('gives two Sun signs as friends the pattern alone, with no romance, and the two sign pages', () => {
+    const ROMANCE = /\b(?:romance|romantic|attraction|intimacy|sexual|chemistry|passion|in love|loves?|lovers?|dating|make-ups|partners?)\b/iu;
+    for (const topic of ['Leo and Scorpio friendship', 'Are a Leo and a Scorpio good friends?', 'leo scorpio friends', 'Aries and Leo as friends', 'Taurus and Taurus friendship']) {
+      const { data, links } = explainAstrology({ topic });
+      expect(data.found, topic).toBe(true);
+      expect(data.title, topic).toMatch(/ as friends$/u);
+      expect(data.paragraphs, topic).toHaveLength(2);
+      expect(JSON.stringify([data.title, data.paragraphs]), topic).not.toMatch(ROMANCE);
+      expect(data.message).toContain('friendship reading');
+      expect(links.map((link) => link.url).join(' '), topic).not.toContain('/compatibility/');
+      expect(JSON.stringify(data)).not.toMatch(/confidence/iu);
+    }
+    // Every one of the 78 pairs, and the guidance the assistant is given with it.
+    for (const a of SIGNS) for (const b of SIGNS) {
+      const { data } = explainAstrology({ topic: `${a.name} and ${b.name} friendship` });
+      expect(JSON.stringify([data.title, data.paragraphs, data.message]), `${a.name} and ${b.name}`).not.toMatch(ROMANCE);
+    }
+    expect(explainAstrology({ topic: 'Leo and Scorpio friendship' }).data.pages.map((page) => page.url)).toEqual(['https://zodiacs.org/leo/', 'https://zodiacs.org/scorpio/']);
+    // Asked as a pair without friendship, the answer is the pair page, essay and all.
+    expect(explainAstrology({ topic: 'Leo and Scorpio' }).data.pages[0].url).toBe('https://zodiacs.org/compatibility/leo-scorpio/');
+    expect(matchSignPair('Leo and Scorpio friendship')).toEqual({ a: 'leo', b: 'scorpio', friendship: true });
+    expect(matchSignPair('leo and scorpio')).toEqual({ a: 'leo', b: 'scorpio', friendship: false });
   });
 });
 

@@ -8,8 +8,8 @@ in `claude-directory/RESYNC-0.6.0.md`.
 ## 0.6.1 update, 4 November 2026
 
 Prepared on branch `feat/readings-panel-0-6-1`; nothing uploaded. Upload
-`integrations/packages/zodiacs-sky-0.6.1.zip` (96,435 bytes, SHA-256
-`d22187a05a2f9298e54431422c656439bcf7b0db558aa1596d71292d150f7127`) in place
+`integrations/packages/zodiacs-sky-0.6.1.zip` (96,537 bytes, SHA-256
+`b52ffc5710100a09ca4b9ab299ca391f91b1f49e7d03f8b76240566b7554956a`) in place
 of the 0.6.0 ZIP in step 3 below, and expect 19 tools wherever the steps say
 18: the thirteen in review, byte for byte, then the five 0.6.0 tools and
 `find_birthplace`. The five 0.6.0 tools now open the inline readings panel
@@ -17,9 +17,11 @@ of the 0.6.0 ZIP in step 3 below, and expect 19 tools wherever the steps say
 of it is worth adding if the portal asks for one. Forecasts carry a label such
 as "Reading confidence 55%" (how specific the details were, never the odds
 that something happens), readings for anyone under 18 leave out romance and
-attraction, and the server says: Zodiacs never stores or logs birth details.
-Links never carry a birth year, time, place or names; a birthday link carries
-only the month and day. The About and the test cases are unchanged.
+attraction, get_compatibility refuses a pair with someone under 18 and points
+to a friendship reading of the two Sun signs, and the server says: Zodiacs
+never stores or logs birth details. Links never carry a birth year, time,
+place or names; a birthday link carries only the month and day. The About and
+the test cases are unchanged.
 
 ## Where things stand
 

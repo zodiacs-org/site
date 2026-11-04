@@ -24,10 +24,12 @@ yes.
   for a date with both, and 5 more when a named contact's orb is under 1
   degree, never past 95 (`src/ai-tools/reading-confidence.ts`). An explainer
   carries no label.
-- **Under 18.** When either birth date is under 18, `get_compatibility` scores
-  communication and stability only (its attraction field repeats the
-  communication score), leaves out romantic and attraction wording and gives no
-  share link. The natal chart and transit readings leave that wording out too.
+- **Under 18.** Compatibility readings are for two adults: when either birth
+  date is under 18, `get_compatibility` gives no reading (an `invalid-request`
+  refusal that points to `explain_astrology`'s friendship reading of the two Sun
+  signs), because the published panel shows an Attraction score on every
+  result. The natal chart, transit and personal week readings leave romantic
+  and attraction wording out.
 - **Privacy.** Zodiacs never stores or logs birth details. Links never carry a
   birth year, time, place or names; a birthday link carries only the month and
   day. A birthday, a baby's arrival or a coming of age gets no card link and no

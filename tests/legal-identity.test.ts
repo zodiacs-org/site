@@ -49,7 +49,7 @@ describe('public legal identity', () => {
     // 30-day request-log retention for the hosted MCP server, and on 14 October,
     // when it named the ?ref= on links from the Zodiacs app and the wording its
     // 0.5.0 tools switch on, and on 4 November, when its assistant paragraphs
-    // said what the app's links carry and named a third assistant.
+    // said what the app's links carry.
     expect(about).toContain("dateModified: '2026-10-16T00:00:00.000Z'");
     expect(terms).toContain("const updated = '3 October 2026'");
     expect(terms).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");

@@ -9,6 +9,7 @@ import { computeChart } from '../../lib/engine/full.js';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { computeYourWeek } from '../studio/week-local';
 import { weekDates, weekLine, weekTitle } from '../studio/week-words';
+import { MINOR_NOTE, isUnder18, softenMinor } from './reading-guards';
 
 export interface PersonalWeekInput { birthDate: string; birthTime?: string; birthZone?: string }
 export interface PersonalWeek {
@@ -48,5 +49,19 @@ export async function personalWeek(
     timeKnown,
     items: week.items.map((item) => ({ title: weekTitle(item), line: weekLine(item), when: weekDates(item, zone) })),
     note: PERSONAL_WEEK_NOTE,
+  };
+}
+
+/**
+ * A personal week for a birth date under 18 on `today` (YYYY-MM-DD, the person's own date): every title and
+ * line goes through softenMinor, so no line reads as romance, and the note says why. Anyone else's week is
+ * returned as it is.
+ */
+export function guardPersonalWeek(week: PersonalWeek, birthDate: string, today: string): PersonalWeek {
+  if (!isUnder18(birthDate, today)) return week;
+  return {
+    ...week,
+    items: week.items.map((item) => ({ ...item, title: softenMinor(item.title), line: softenMinor(item.line) })),
+    note: `${week.note} ${MINOR_NOTE}`,
   };
 }

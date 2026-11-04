@@ -8,7 +8,7 @@ import { AI_RESULT_SCHEMA, ORIGIN } from '../contracts';
 import { BIRTH_OCCASIONS, executeAiTool, refUrl } from '../tools';
 import { roundCoordinate } from '../plain-text';
 import { compatibilityMissing, computePersonChart, type CompatibilityData } from '../features/compatibility';
-import { personalWeek } from '../features/personal-week';
+import { guardPersonalWeek, personalWeek } from '../features/personal-week';
 import { dateInZone } from '../horoscope/reading';
 import {
   MAX_SAVED_RECORD_BYTES, MAX_SAVED_STRING, PLAIN_TEXT, PROFILE_URL, SAVE_NOTE, SAVE_OUTPUT_SCHEMA, SAVE_TOOL_NAME,
@@ -181,8 +181,8 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
         const resolve = (name: string) => localTime().canonicalZoneName(name);
         const zone = args.zone ? await zoneAt(args.zone, '/week/zone', resolve) : 'UTC';
         const birthZone = args.birthZone ? await zoneAt(args.birthZone, '/week/birthZone', resolve) : undefined;
-        const week = await personalWeek({ birthDate: args.birthDate, ...(args.birthTime ? { birthTime: args.birthTime } : {}), ...(birthZone ? { birthZone } : {}) }, now, localTime(), zone);
         const from = dateInZone(now, zone);
+        const week = guardPersonalWeek(await personalWeek({ birthDate: args.birthDate, ...(args.birthTime ? { birthTime: args.birthTime } : {}), ...(birthZone ? { birthZone } : {}) }, now, localTime(), zone), args.birthDate, from);
         return linked({
           schema: SAVED_RECORD_SCHEMA, kind: 'week',
           title: label ?? `Your week from ${from}`,
