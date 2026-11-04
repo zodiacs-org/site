@@ -142,6 +142,30 @@ is to be shown on the constructed case alone, not on the corpus (a plan with
 `sharedCharts: false`, which the tool also refuses without a plan), once the
 adapters the tool reads at the head exist.
 
+**2026-11-04, the result on the constructed case alone.** At the head where
+the four adapters first exist (`2617db5a`), the tool (SHA-256
+`72546938…c8d3`, as committed) ran twice on `CONTROL_ONE_CASE` alone, with
+plans that run D2-A only and leave the shared charts out
+([controls/](controls/); `controls/make-plans.mjs` writes both plans from the
+tool's own constant):
+`nice -n 10 node <this folder>/tools/compare-lite.mjs 0bf69bd56aaec8fbfd99bd4b45877064dc1234df --plan <plan>`.
+
+- With control 1's change, the base's `DECLINATION_ORB_LUMINARY` written
+  1.4999, D2-A finds the Sun and Moon parallel at orb 1.4999500000000001
+  (maximum orb 1.5) in the adapter's and the package's results and not in
+  the base's: 2 unexplained differences, both pair presence; S-A fails, and
+  the referee disagrees with none
+  ([controls/control-1-constructed-case.json](controls/control-1-constructed-case.json)).
+- With no change, the same case agrees in both comparisons, with no
+  difference
+  ([controls/constructed-case-unchanged.json](controls/constructed-case-unchanged.json)).
+
+So control 1 can now fail. A run with a plan never passes the tool's
+verdict, which only the formal run without a plan can pass, so both records
+say `pass: false`; their declinations unit is false and true. The control's
+run on the corpus, with the other controls, is Phase J's, on the adoption's
+head.
+
 ## B5
 
 [B5-VERSION-2.md](B5-VERSION-2.md) is B5's version 2: the claims extractor's

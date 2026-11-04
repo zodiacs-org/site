@@ -22,11 +22,23 @@ function check(changes = {}) {
     'dist/_astro/full.fixture.js': 'import { engine } from "./engine-core.fixture.js";export { engine };',
     'dist/_astro/engine-core.fixture.js': 'export const engine=["Value is not boolean:","Light-travel time solver did not converge"];',
     'dist/_astro/receipt.fixture.js': 'export const provenance={name:"astronomy-engine"};',
-    'src/lib/engine/server-ephemeris.ts': 'import * as A from "astronomy-engine";',
+    // The three lazy views whose static closures must hold no engine marker (lite B2).
+    'dist/_astro/EclipticView.fixture.js': 'export const view="ecliptic";',
+    'dist/_astro/RelationshipWheel.fixture.js': 'export const view="relationship";',
+    'dist/_astro/ChartCalculator.fixture.js': 'export const view="calculator";',
+    'src/lib/engine/server-ephemeris.ts': 'import * as A from "astronomy-engine";import { timeBasis } from "@zodiacs/engine/time";',
     'src/lib/engine/full.ts': 'import { computeChart } from "@zodiacs/engine/internal";',
     'src/lib/engine/aspects.ts': 'import { A } from "@zodiacs/engine/internal/math";',
     'src/lib/engine/houses.ts': 'import { H } from "@zodiacs/engine/internal/math";',
     'src/lib/engine/types.ts': 'import { T } from "@zodiacs/engine/internal/math";',
+    // The allowed importers of @zodiacs/engine/time and @zodiacs/engine/lite, and an api/ the
+    // lite check walks (since engine 1.1.0-rc.2).
+    'src/lib/compute-api/endpoints.ts': 'import { timeBasis } from "@zodiacs/engine/time";',
+    'src/lib/composite.ts': 'import { compositeMidpoints } from "@zodiacs/engine/lite";',
+    'src/lib/declination.ts': 'import { findDeclinationAspects } from "@zodiacs/engine/lite";',
+    'src/lib/dignities.ts': 'import { dignitiesFor } from "@zodiacs/engine/lite";',
+    'src/lib/sect.ts': 'import { sectReading } from "@zodiacs/engine/lite";',
+    'api/handler.ts': 'export default function handler() {}',
     ...changes,
   };
   for (const [name, contents] of Object.entries(files)) {

@@ -68,9 +68,10 @@ function verifyWindow(window: TransitWindow, expected: Component, budget: number
 describe('independent A–I transit-window references', () => {
   it('retains the reference bytes, and D’s second period keeps an unresolved exact topology', () => {
     const bytes = readFileSync(new URL('./fixtures/transit-window-horizons.json', import.meta.url));
-    // 1.0.0-rc.2, 1.0.0 and 1.1.0-rc.1 rebuilds: engine version metadata only; policies and
+    // 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 rebuilds: engine version metadata only (and
+    // 1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time); policies and
     // retained Horizons responses are unchanged.
-    expect(createHash('sha256').update(bytes).digest('hex')).toBe('00a4b70f2012dd2e470a9a0e2e6dfc06df5938e9679815716f123802fafd7793');
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe('b92633a8cc71b3b9eedc26714ff8bace9ba483b9b750c48702e8010e4075b949');
     expect(fixtures.cases).toHaveLength(9);
     expect(fixtures.cases.reduce((sum, item) => sum + item.geometries.length, 0)).toBe(30);
     // Uranus turns 0.0442° from the D target, inside the 0.05° budget: no

@@ -30,7 +30,7 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
 }
 
 // The engine versions that wrote each natal conventions set, newest first (src/receipt.ts).
-const SET_RANGES = ['1.1.0-rc.1', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
+const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
 
 /** The ids a natal receipt names: each field's namespace and value, as the registry's usedIn lists them. */
 function natalReceiptIds(receipt: Record<string, unknown>): string[] {
@@ -156,7 +156,7 @@ describe('the conventions registry', () => {
     expect(dashedStrings(planted)).toHaveLength(2);
   });
 
-  it('holds every value of every natal conventions set, current where 1.1.0-rc.1 writes it and superseded where only earlier versions did', () => {
+  it('holds every value of every natal conventions set, current where 1.1.0-rc.2 writes it and superseded where only earlier versions did', () => {
     expect(SET_RANGES).toHaveLength(NATAL_RECEIPT_CONVENTION_SETS.length);
     const seen = new Set<string>();
     NATAL_RECEIPT_CONVENTION_SETS.forEach((set, index) => {

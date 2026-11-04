@@ -59,7 +59,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.25.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.26.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -352,7 +352,7 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
       "version": "2.1.19"
     },
     "name": "@zodiacs/engine",
-    "version": "1.1.0-rc.1"
+    "version": "1.1.0-rc.2"
   },
   "timeKnown": true,
   "houses": {
@@ -397,9 +397,9 @@ request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
   ],
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
-    "receipt": "sha256:ecb9bfa0d95887a9f033a21f9d8c5f7d4bfd9eaecd67e308148a211063c3dca2",
+    "receipt": "sha256:76d953cb7a695181809da13b2b4f2cf817d81a3101b1dc076fda58176fc1f1be",
     "engine": "@zodiacs/engine",
-    "version": "1.1.0-rc.1"
+    "version": "1.1.0-rc.2"
   }
 }
 ```
@@ -493,7 +493,7 @@ are separate fields, so a fallback is visible rather than silent.
         "houses-actual",
         "houses-system"
       ],
-      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 1.1.0-rc.1, and changing only the house system turns each one into the other, in both directions."
+      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 1.1.0-rc.2, and changing only the house system turns each one into the other, in both directions."
     }
   ],
   "limits": [
@@ -505,19 +505,19 @@ are separate fields, so a fallback is visible rather than silent.
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.25" },
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.26" },
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "1.1.0-rc.1",
+      "version": "1.1.0-rc.2",
       "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" }
     },
     "output": "summary"
   },
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
-    "receipt": "sha256:e157b67386338939e032ccd8310cf3e54d7efa17cb25ed6f9146f0bf48ef8db7",
+    "receipt": "sha256:cb5c82d0a8bfed9561188a37f274faa303526f4a82bd89857e7e075c3abc53cd",
     "engine": "@zodiacs/engine",
-    "version": "1.1.0-rc.1"
+    "version": "1.1.0-rc.2"
   }
 }
 ```
@@ -542,7 +542,7 @@ API uses on each of its answers:
   that does not move;
 - `receipt`: `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON;
 - `engine` and `version`: the engine that calculated, `@zodiacs/engine`
-  1.1.0-rc.1.
+  1.1.0-rc.2.
 
 A chart cites the engine's calculation receipt, the `receipt` inside the record
 that `output: "record"` returns for the same arguments, so a summary and a
@@ -592,8 +592,8 @@ request.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.25`, unpublished candidate |
-| engine | `@zodiacs/engine` `1.1.0-rc.1`, unpublished candidate, bundled into `server.mjs`; npm serves `1.0.0` under `latest` |
+| adapter | `0.1.0-rc.26`, unpublished candidate |
+| engine | `@zodiacs/engine` `1.1.0-rc.2`, unpublished candidate, bundled into `server.mjs`; npm serves `1.0.0` under `latest` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |
@@ -644,15 +644,18 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   supports and the adapter adopts it rather than inventing a wider one.
 - **Not on npm.** This adapter is not published under any name, and
   `get_capabilities` labels it `unpublished-candidate`. Nor is the engine it
-  bundles: npm does not carry `@zodiacs/engine` 1.1.0-rc.1, and
+  bundles: npm does not carry `@zodiacs/engine` 1.1.0-rc.2, and
   `get_capabilities` labels it `unpublished-candidate` too. npm serves 1.0.0
   under `latest`, published on 2026-10-11, which computes the same values.
-  1.1.0-rc.1's records list the ids of the Zodiacs conventions registry they
-  name, and 1.0.0, like adapters up to rc.24, refuses them as
-  `unsupported_feature`. `server.mjs` is built from the engine's carried
-  archive. This adapter does not import `calc` or Vedic; its finite comparison
-  with rc.18 is recorded in the site adoption. rc.25 bundles 1.1.0-rc.1 in
-  place of 1.0.0, and its comparison with rc.24 is recorded with that change.
+  From 1.1.0-rc.1 the engine's records list the ids of the Zodiacs
+  conventions registry they name, and 1.0.0, like adapters up to rc.24,
+  refuses them as `unsupported_feature`. `server.mjs` is built from the
+  engine's carried archive. This adapter does not import `calc` or Vedic; its
+  finite comparison with rc.18 is recorded in the site adoption. rc.26
+  bundles 1.1.0-rc.2 in place of 1.1.0-rc.1, with the engine's own time
+  basis in place of the site's copy of it, and its comparison with rc.25 is
+  recorded with that change. rc.25 bundles 1.1.0-rc.1 in place of 1.0.0, and
+  its comparison with rc.24 is recorded with that change.
   rc.24 adds `resolve_birth_time`
   and `search_places`, with the zone histories, the time atlas and the place
   index they read, which take `server.mjs` to about 2.5 MB; rc.23 adds aspect facts to
@@ -718,7 +721,7 @@ on dates chosen for what they exercise.
 ## Licence
 
 MIT AND CC-BY-4.0. The adapter's own code is MIT. `server.mjs` bundles
-`@zodiacs/engine` 1.1.0-rc.1, whose ΔT module contains 32 values of Table S15
+`@zodiacs/engine` 1.1.0-rc.2, whose ΔT module contains 32 values of Table S15
 of Stephenson, Morrison and Hohenkerk (2016) under CC BY 4.0, whose time
 basis carries the IERS leap-second list and a UT1 − UTC table derived from
 IERS data, and whose `geo` entry carries zone histories compiled from the IANA

@@ -31,10 +31,10 @@ const registry = JSON.parse(read('docs/platform/evidence/site-engine-rc15/npm-re
 const rc16Release = JSON.parse(read('docs/platform/evidence/site-engine-rc16/npm-release/verification-receipt.json'));
 // The same tool's read of 1.0.0, published on 2026-10-11, the day the site vendored it.
 const release = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0/npm-registry.json'));
-// What npm served on 2026-10-27, when the site vendored 1.1.0-rc.1, which is not on npm: the same tool's read
-// of 1.0.0, and the registry's dist-tags and versions (docs/platform/evidence/site-engine-1-1-0-rc1/).
-const registryNow = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0-rc1/npm-registry-1-0-0.json'));
-const npmView = read('docs/platform/evidence/site-engine-1-1-0-rc1/npm-view.txt');
+// What npm served on 2026-11-04, when the site vendored 1.1.0-rc.2, which is not on npm: the same tool's read
+// of 1.0.0, and the registry's dist-tags and versions (docs/platform/evidence/site-engine-1-1-0-rc2/).
+const registryNow = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0-rc2/npm-registry-1-0-0.json'));
+const npmView = read('docs/platform/evidence/site-engine-1-1-0-rc2/npm-view.txt');
 
 describe('developer candidate documentation', () => {
   it('identifies the installed public engine and exact archived package', () => {
@@ -50,7 +50,7 @@ describe('developer candidate documentation', () => {
     expect(lock.packages[`node_modules/${candidate.name}`].integrity)
       .toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
     const files = readPackageArchive(archive);
-    expect(files.size).toBe(77);
+    expect(files.size).toBe(90);
     for (const [path, bytes] of files) {
       // Buffer.equals checks length and every byte without walking a large
       // archive member through the assertion library's generic object comparer.
@@ -143,8 +143,8 @@ describe('developer candidate documentation', () => {
     expect(receipt.types).toBe('passed');
   });
 
-  it('records the vendored 1.1.0-rc.1 candidate beside the published 1.0.0, and retains the earlier rc.16 and rc.15 provenance', () => {
-    // 1.1.0-rc.1 is vendored and not on npm. npm serves 1.0.0 under `latest`, published by the engine's Release
+  it('records the vendored 1.1.0-rc.2 candidate beside the published 1.0.0, and retains the earlier rc.16 and rc.15 provenance', () => {
+    // 1.1.0-rc.2 is vendored and not on npm. npm serves 1.0.0 under `latest`, published by the engine's Release
     // workflow on 2026-10-11 and read again with its attestation verified on the day the site vendored the candidate.
     expect(candidate.releaseStatus).toBe('vendored-candidate');
     expect(candidate.releaseLabel).toBe('Vendored candidate');
@@ -158,7 +158,7 @@ describe('developer candidate documentation', () => {
     expect(npmView).toContain(`'${candidate.name}@${candidate.version}' is not in this registry.`);
     const published = readFileSync(resolve(root, `vendor/zodiacs-engine-${candidate.registryVersion}.tgz`));
     const publishedHex = createHash('sha512').update(published).digest('hex');
-    for (const [when, record] of [['2026-10-11', release], ['2026-10-27', registryNow]]) {
+    for (const [when, record] of [['2026-10-11', release], ['2026-11-04', registryNow]]) {
       expect(record.readAt.slice(0, 10), when).toBe(when);
       expect(record.package).toBe(candidate.name);
       expect(record.version).toBe(candidate.registryVersion);
