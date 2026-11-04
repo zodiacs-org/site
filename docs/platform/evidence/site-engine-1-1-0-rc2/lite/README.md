@@ -122,6 +122,26 @@ the 3,000 charts' 51,000 luminary pairs below one, so the control may find no
 difference to show. If it finds none, it has not behaved as run, and that is
 recorded as it is; nothing here changes it.
 
+**2026-11-04, before any run: control 1's input made able to fail.** Decided
+by the adoption's coordinator under the owner's delegation of 2026-11-04, and
+committed before either tool of this folder has run. As the note above says,
+the luminary orb written 1.4999 changes a result only where a luminary pair's
+declinations lie more than 1.4999 and at most 1.5 degrees apart, and the
+3,000 charts may hold no such pair. So control 1's input now holds, besides
+the charts, one constructed pair (`CONTROL_ONE_CASE` in the tool): the Sun at
+longitude 10 and latitude 10 and the Moon at longitude 200 and latitude
+8.50005, at obliquity 0, where the declination is the latitude, so their
+declinations lie 1.49995 degrees apart, inside (1.4999, 1.5]. The base's rule
+written 1.4999 must drop that pair while the adapter and the package keep it:
+a pair in one result only, its orb 5e-5 from its maximum orb of 1.5, far
+outside `orb-boundary`'s 1e-12, so an unexplained difference in D2-A. The
+case reaches the tool only through a control's plan (`constructedD2A`), which
+the tool refuses without a plan, so it is never part of the parity corpus. No
+rule, threshold, cause or other control changes. That the control now fails
+is to be shown on the constructed case alone, not on the corpus (a plan with
+`sharedCharts: false`, which the tool also refuses without a plan), once the
+adapters the tool reads at the head exist.
+
 ## B5
 
 [B5-VERSION-2.md](B5-VERSION-2.md) is B5's version 2: the claims extractor's

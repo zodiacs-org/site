@@ -13,7 +13,9 @@ committed before its first production run.
 once the adoption's merge has deployed (`production/production-at-merge.json`)
 and again on the next production deployment (`production/production-later.json`).
 Every check's control runs before the merge, on the deployment then serving
-the site, and must fail there. The expected values are read from the merge
+the site, and must fail there. The one exception is S3a, time-entry S3's
+calendar request, which is not run at all (decided on 2026-11-04, before any
+run: see F-53 below). The expected values are read from the merge
 commit (its candidate record, MCP manifest and documented example), never
 from a working tree.
 
@@ -87,9 +89,9 @@ adoption rewrites them), taken from the merge commit by the tool as
   is served (200), and the engine chunk names 1.1.0-rc.2 (D3). Control:
   before the merge that page is not served.
 
-## F-53 (time-entry S3): two requests, each with a control request
+## F-53 (time-entry S3): two requests named, the first not run
 
-- **S3a, the calendar function.**
+- **S3a, the calendar function (named, and not run).**
   `GET /api/calendar/transits?token=<X>`, where `<X>` is
   `encodePositionsLink` (`src/lib/share-positions.ts`) of the synthetic
   chart that `src/lib/engine/full.ts`'s `computeChart` casts at the merge
@@ -110,9 +112,27 @@ adoption rewrites them), taken from the merge commit by the tool as
   production path that loads `server-ephemeris.ts` is the signed-in,
   canary-only creation of a compatibility invite
   (`src/lib/invite/routes/invites.ts` line 64, through `api/compatibility.ts`),
-  which a check without an account cannot make. How time-entry S3's first
-  request is met is a decision for before the production run; this file names
-  the request as the adoption plan words it and does not decide it.
+  which a check without an account cannot make.
+
+  **Decided on 2026-11-04, before any run: S3a is not run.** The adoption's
+  coordinator decided it under the owner's delegation of 2026-11-04, and it
+  is recorded here before any production check named in this file, and
+  before any tool committed in this folder, has run. Why: the request cannot reach `server-ephemeris.ts` in
+  production, because `/api/calendar/transits` has answered `410` to every
+  request since #628 (`250d62af`, 2026-10-03); and the only other
+  production path that loads that adapter, the creation of a compatibility
+  invite, needs a signed-in account and is open to the canary only, while no
+  agent of the programme holds an account or signs in. No substitute request
+  is made in its place. The switch in `server-ephemeris.ts` (its time basis
+  taken from `@zodiacs/engine/time` in place of the generated module) is
+  covered on the build by S1b ([time-entry/](time-entry/),
+  `tools/adapter-parity.mjs`): the adapter bundled with the site's esbuild
+  for Node, packages left external as Vercel leaves them, once importing the
+  committed module and once the package, must give the same `bodyLongitude`
+  and `longitudeSpeed` (`Object.is`) for the 12 bodies at the 14,765 K1
+  instants, before any import changes. S3b below keeps its request and its
+  control unchanged. Time-entry S3's record will say that its first request
+  was not run, and why.
 - **S3b, the compute API.** `POST /api/v1/positions` with the documented
   example (R10) as its body:
   `{"instants":["2026-09-29T12:00:00Z","2026-12-31T00:00:00-05:00"],"bodies":["Sun","Moon","Mercury"]}`.

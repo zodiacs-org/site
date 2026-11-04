@@ -42,8 +42,14 @@
  * doubles in D2-A and D2-T.
  *
  * --plan names a JSON file for the tool's own controls (compare-lite.test.mjs,
- * section 4.5): { sections, siteMutations, headWrappers, packageMutations }.
- * A record made with a plan says so and is never the parity record.
+ * section 4.5): { sections, siteMutations, headWrappers, packageMutations,
+ * constructedD2A, sharedCharts }. A record made with a plan says so and is
+ * never the parity record. constructedD2A (added 2026-11-04, before any run)
+ * lists constructed cases ({ label, bodies, obliquity }) that D2-A compares
+ * after the shared charts, and sharedCharts: false leaves the 3,000 charts
+ * out; both belong to a plan only, and the tool refuses them without one, so
+ * neither ever reaches the parity corpus. Control 1 gives D2-A
+ * CONTROL_ONE_CASE (../README.md, the note of 2026-11-04).
  */
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -124,6 +130,20 @@ export function stream(section, seedText = SEED_TEXT) {
   };
   return { next, uniform, integer, shuffle, instant: (low, high) => Math.floor(uniform(low, high)) };
 }
+
+/**
+ * Control 1's constructed case, added on 2026-11-04 before any run (the
+ * coordinator's decision; ../README.md): a luminary pair whose declinations,
+ * at obliquity 0 where the declination is the latitude, lie 1.49995 degrees
+ * apart, inside (1.4999, 1.5], so that the base's luminary orb written 1.4999
+ * must drop a pair that the adapter and the package keep. It reaches D2-A only
+ * through a control's plan (constructedD2A), never the parity corpus.
+ */
+export const CONTROL_ONE_CASE = Object.freeze({
+  label: 'control 1 only: a luminary pair at orb 1.49995 (obliquity 0, declinations 10 and 8.50005)',
+  bodies: Object.freeze([Object.freeze({ body: 'Sun', lon: 10, lat: 10 }), Object.freeze({ body: 'Moon', lon: 200, lat: 8.50005 })]),
+  obliquity: 0,
+});
 
 const FROM = Date.parse('1800-01-02T00:00:00Z');
 const TO = Date.parse('2199-12-30T00:00:00Z');
@@ -568,10 +588,20 @@ export async function runParity({
   siteMutations = [],
   headWrappers = {},
   packageMutations = [],
+  constructedD2A = [],
+  sharedCharts = true,
   seedText = SEED_TEXT,
   plan = null,
 } = {}) {
   if (!HEX40.test(baseCommit ?? '')) throw new Error('the base commit must be 40 hexadecimal characters');
+  if (plan === null && (constructedD2A.length > 0 || sharedCharts !== true)) {
+    throw new Error('constructed cases and sharedCharts: false belong to a control\'s plan, never to the parity record');
+  }
+  for (const constructed of constructedD2A) {
+    if (typeof constructed?.label !== 'string' || !Array.isArray(constructed.bodies) || typeof constructed.obliquity !== 'number') {
+      throw new Error('a constructed D2-A case is { label, bodies, obliquity }');
+    }
+  }
   const head = headCommit ?? execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
   if (!HEX40.test(head)) throw new Error('the head commit must be 40 hexadecimal characters');
   const unknown = sections.filter((section) => !SECTIONS.includes(section));
@@ -660,7 +690,7 @@ export async function runParity({
     const obliquityAt = (ms) => S.houses.meanObliquity(S.ecliptic3d.julianCenturies(ms));
     const viewBodies = (rows) => rows.filter((row) => VIEW_BODIES.includes(row.body)).map((row) => ({ body: row.body, lon: row.lon, lat: row.lat }));
     let charts = [];
-    if (sections.some((section) => CHART_SECTIONS.has(section))) {
+    if (sharedCharts && sections.some((section) => CHART_SECTIONS.has(section))) {
       const random = stream('charts', seedText);
       for (let index = 0; index < 3000; index += 1) {
         const ms = random.instant(FROM, TO);
@@ -712,6 +742,15 @@ export async function runParity({
         recorder.record(sa, chartLabel(chart), aspectDifferences(s, outcome(() => A.declination.findDeclinationAspects(chart.bodies, chart.obliquity)), input));
         recorder.record(sp, chartLabel(chart), aspectDifferences(s, packageAspects(chart.bodies, chart.obliquity), input));
         refereeCase(chartLabel(chart), chart.bodies, chart.obliquity);
+      }
+      // A control's constructed cases (its plan's constructedD2A), after the charts; never in the parity record.
+      for (const constructed of constructedD2A) {
+        const label = { constructed: constructed.label };
+        const input = { bodies: constructed.bodies, obliquity: constructed.obliquity };
+        const s = outcome(() => S.declination.findDeclinationAspects(constructed.bodies, constructed.obliquity));
+        recorder.record(sa, label, aspectDifferences(s, outcome(() => A.declination.findDeclinationAspects(constructed.bodies, constructed.obliquity)), input));
+        recorder.record(sp, label, aspectDifferences(s, packageAspects(constructed.bodies, constructed.obliquity), input));
+        refereeCase(label, constructed.bodies, constructed.obliquity);
       }
     }
     if (run.has('D2-R')) {
@@ -1130,6 +1169,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     siteMutations: plan?.siteMutations ?? [],
     headWrappers: plan?.headWrappers ?? {},
     packageMutations: plan?.packageMutations ?? [],
+    constructedD2A: plan?.constructedD2A ?? [],
+    sharedCharts: plan?.sharedCharts ?? true,
     plan,
   });
   process.stdout.write(`${JSON.stringify(report, (_key, value) => (typeof value === 'number' && !Number.isFinite(value) ? String(value) : value), 2)}\n`);

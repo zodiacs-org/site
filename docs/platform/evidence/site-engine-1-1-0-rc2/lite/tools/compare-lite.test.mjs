@@ -20,7 +20,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-import { assignCause, CAUSE_ORDER, refereeAgrees, refereeAspects } from './compare-lite.mjs';
+import { assignCause, CAUSE_ORDER, CONTROL_ONE_CASE, refereeAgrees, refereeAspects } from './compare-lite.mjs';
 
 const T = 1e-12;
 const OBLIQUITY = 23.4392911;
@@ -215,8 +215,10 @@ export function compositeMidpoints(a: any, b: any) {
 };
 
 describe.skipIf(!BASE)('compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE)', () => {
+  // Control 1's input holds, besides the 3,000 charts, one constructed luminary pair 1.49995 degrees
+  // apart (CONTROL_ONE_CASE, added 2026-11-04 before any run), so that the changed rule must drop a pair.
   it('control 1: the base\'s luminary orb 1.5 written 1.4999 gives unexplained differences in D2-A', () => {
-    const record = runWithPlan({ control: 1, sections: ['D2-A'], siteMutations: [{ file: 'src/lib/declination.ts', from: 'export const DECLINATION_ORB_LUMINARY = 1.5;', to: 'export const DECLINATION_ORB_LUMINARY = 1.4999;' }] });
+    const record = runWithPlan({ control: 1, sections: ['D2-A'], siteMutations: [{ file: 'src/lib/declination.ts', from: 'export const DECLINATION_ORB_LUMINARY = 1.5;', to: 'export const DECLINATION_ORB_LUMINARY = 1.4999;' }], constructedD2A: [CONTROL_ONE_CASE] });
     expect(unexplainedIn(record, 'D2-A')).toBeGreaterThan(0);
   }, TIMEOUT);
   it('control 3: an adapter whose altitude test is written > 0 fails S2-B', () => {
