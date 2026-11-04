@@ -20,7 +20,6 @@
     "src/lib/compute-api/constants.ts",
     "src/lib/compute-api/errors.ts",
     "src/lib/compute-api/local-time.ts",
-    "src/lib/engine/time-basis.mjs",
     "src/lib/time/civil-date.ts",
     "src/lib/compare/diff.ts",
     "src/lib/compare/angles.ts",

@@ -6,8 +6,8 @@
  * `outsideReferenceSpan`, `searchLongitudeCrossings`,
  * `searchLongitudeCrossingsWith`, and for an aspect `matchAspect`,
  * `separation` and `aspectMotion`), from the engine's own time basis, which
- * src/lib/engine/time-basis.mjs carries because the package does not export
- * it, or, for local civil time, from the engine's own resolver,
+ * the package exports as @zodiacs/engine/time (since 1.1.0-rc.2), or, for
+ * local civil time, from the engine's own resolver,
  * @zodiacs/engine/geo (./local-time.ts). The engine's
  * `/receipt` entry point writes the chart receipt. Nothing here keeps
  * anything once the request is answered.
@@ -34,7 +34,7 @@ import {
   type LongitudeCrossing,
 } from '@zodiacs/engine';
 import { createNatalEnvelope, type NatalEnvelopeContext, type NatalReceipt } from '@zodiacs/engine/receipt';
-import { timeBasis, type TimeBasis } from '../engine/time-basis.mjs';
+import { timeBasis, type TimeBasis } from '@zodiacs/engine/time';
 import { GREGORIAN_ADOPTION } from '../../data/gregorian-adoption.js';
 import { adoptionNote } from '../time/birth-calendar.js';
 import { ATLAS_SOURCE, atlasReading } from '../time-atlas/index.js';

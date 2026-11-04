@@ -288,6 +288,7 @@ const sourceFiles = await walk(resolve(repo, 'src'), (path) =>
 const directVendorImporters = [];
 const engineInternalImporters = [];
 const engineMathImporters = [];
+const engineTimeImporters = [];
 const windowRuntimeImporters = [];
 const sourceRuntimeImports = new Map();
 for (const path of sourceFiles) {
@@ -299,6 +300,7 @@ for (const path of sourceFiles) {
   if (hasVendorImport) directVendorImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal')) engineInternalImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal/math')) engineMathImporters.push(relativePath);
+  if (specifiers.includes('@zodiacs/engine/time')) engineTimeImporters.push(relativePath);
   if(runtimeWindowImport(source,relativePath))windowRuntimeImporters.push(relativePath);
   sourceRuntimeImports.set(relativePath,runtimeLocalImports(source,relativePath));
 }
@@ -342,6 +344,20 @@ if (
   || engineMathImporters.some((path, index) => path !== allowedMathImporters[index])
 ) {
   fail(`engine math isolation: expected ${allowedMathImporters.join(', ')}; found ${engineMathImporters.join(', ') || 'none'}`);
+}
+// @zodiacs/engine/time (since 1.1.0-rc.2) carries the engine's time basis,
+// nutation and frame of date for the two server-side importers only, so that
+// no browser island pulls the entry's frame chunks by accident.
+const allowedTimeImporters = [
+  'src/lib/compute-api/endpoints.ts',
+  'src/lib/engine/server-ephemeris.ts',
+];
+engineTimeImporters.sort();
+if (
+  engineTimeImporters.length !== allowedTimeImporters.length
+  || engineTimeImporters.some((path, index) => path !== allowedTimeImporters[index])
+) {
+  fail(`engine time isolation: expected ${allowedTimeImporters.join(', ')}; found ${engineTimeImporters.join(', ') || 'none'}`);
 }
 
 const homepage = routeRows.find(({ route }) => route === '/');

@@ -137,8 +137,7 @@ export async function buildComputeHandlerBundle() {
   const [file] = result.outputFiles;
   const text = addComputeLifetimeBoundary(file.text);
   const inputs = Object.keys(result.metafile.inputs).sort();
-  const reviewedInputs = inputs.filter((input) => /^node_modules\/(?:@zodiacs\/engine|astronomy-engine)\//u.test(input)
-    || input === 'src/lib/engine/time-basis.mjs');
+  const reviewedInputs = inputs.filter((input) => /^node_modules\/(?:@zodiacs\/engine|astronomy-engine)\//u.test(input));
   const reviewedHash = createHash('sha256');
   for (const input of reviewedInputs) {
     reviewedHash.update(input).update('\0').update(await readFile(resolve(ROOT, input))).update('\0');
