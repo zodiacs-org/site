@@ -15,7 +15,7 @@ import { explainData, explainInput, explainInputWithSkyEvents } from './features
 import { birthplaceData, birthplaceInput } from './features/birthplace';
 import { skyEventsData, skyEventsInput } from './features/sky-events';
 
-export const AI_VERSION = '0.6.1';
+export const AI_VERSION = '0.6.2';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 /** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;
