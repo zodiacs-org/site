@@ -1,0 +1,88 @@
+{
+ "what": "The Chiron table (src/data/chiron.json), interpolated by src/ai-tools/features/chiron.ts, against every daily NASA JPL Horizons value from 1800-01-01 to 2199-12-31 TT that is not a table row: the longitude in arcseconds, and the daily motion in arcseconds a day against the central difference of the Horizons values a day either side. Statistics only; the responses are not kept.",
+ "query": "fetch.py --dense: observer quantity 31, 2060;, 500@399, TT, airless, every day from 1799-06-01 to 2200-07-01 in 16,000-day requests",
+ "measured": "2026-11-04",
+ "table": {
+  "sha256": "de50b41fe0abad886e8fe0c0bc3ed9670c67df0b6a9648de41bf267f52d541c2",
+  "stepDays": 24,
+  "points": 8
+ },
+ "responses": [
+  {
+   "file": "daily-2378282.5.txt",
+   "bytes": 742254,
+   "sha256": "5fbc1a70c50aa0c3f590a87b626a1807df8702efb36d899b22ed83f8cf784aad"
+  },
+  {
+   "file": "daily-2394282.5.txt",
+   "bytes": 742254,
+   "sha256": "3e4b72f04b28380c3b6af06a0b9b399a256a6ed0fc393b892ddf53cb8fd9d64a"
+  },
+  {
+   "file": "daily-2410282.5.txt",
+   "bytes": 742254,
+   "sha256": "6e86f57434cbbc718558a4ddfd0b79ccfd149f01fec7dd41ab06672f5eb88e94"
+  },
+  {
+   "file": "daily-2426282.5.txt",
+   "bytes": 742254,
+   "sha256": "5af882aecdf9e6f9404007957e147dbb22df9409ebbed0f2710befc233642313"
+  },
+  {
+   "file": "daily-2442282.5.txt",
+   "bytes": 742254,
+   "sha256": "bcafdef7e699eefd7c8220e63a4d3b63da3f6bdfda1ffea916fc0e336d8da606"
+  },
+  {
+   "file": "daily-2458282.5.txt",
+   "bytes": 742254,
+   "sha256": "b0f8139fb22a58bbcd645be2010bea9827e4b6edd02579387ff392aa38c0e8ac"
+  },
+  {
+   "file": "daily-2474282.5.txt",
+   "bytes": 742254,
+   "sha256": "0fdb188f44eba12705bc9ef41682db0c8c1a94bf08b8ea68af79105ebd9bc0ab"
+  },
+  {
+   "file": "daily-2490282.5.txt",
+   "bytes": 742254,
+   "sha256": "71fd205f162edf08d428f96542598dfe62b2043cd614cf1806ac4488bab8fe68"
+  },
+  {
+   "file": "daily-2506282.5.txt",
+   "bytes": 742254,
+   "sha256": "3b3e3929a31c92e9ee94ac286019f96bfb939ee4f04e1e91835d58cc66bcdcf1"
+  },
+  {
+   "file": "daily-2522282.5.txt",
+   "bytes": 120932,
+   "sha256": "ed742558745770d10ce9e00a8ac3e52e2a0dab730a625bc0d36cde1cedf5000e"
+  }
+ ],
+ "longitudeArcsec": {
+  "count": 140009,
+  "median": 0.363,
+  "p99": 1.544,
+  "max": 2.507,
+  "worstJdTT": 2449812.5
+ },
+ "dailyMotionArcsecPerDay": {
+  "count": 140009,
+  "median": 0.078,
+  "p99": 0.269,
+  "max": 1.027,
+  "worstJdTT": 2461515.5
+ },
+ "stations": {
+  "daily": 784,
+  "table": 784,
+  "maxHoursApart": 12.84,
+  "fewestDaysBetween": 128
+ },
+ "signChanges": {
+  "daily": 235,
+  "table": 235,
+  "maxHoursApart": 0.34,
+  "fewestDaysBetween": 28.1
+ }
+}
