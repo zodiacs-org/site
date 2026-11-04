@@ -1,6 +1,8 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { readFileSync } from 'node:fs';
+import Ajv2020 from 'ajv/dist/2020';
+import addFormats from 'ajv-formats';
 import { createAiNodeHandler } from './http';
 import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, SKY_EVENTS_SWITCH_ENV, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
@@ -141,6 +143,31 @@ describe('the sky events switch on', () => {
     const natal = await call(host, 'get_natal_chart', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7, houseSystem: 'placidus' });
     expect(natal.structuredContent.data).toMatchObject({ houseSystem: 'placidus', nodes: { node: 'true' } });
   });
+
+  it('answers with results that validate against the output schemas tools/list advertises, as a client checks them', async () => {
+    const host = await serve(env);
+    const tools = message((await post(host, rpc('tools/list'))).text).result.tools as { name: string; outputSchema: object }[];
+    const ajv = new Ajv2020({ strict: false, allErrors: true });
+    addFormats(ajv);
+    const calls: [string, Record<string, unknown>][] = [
+      ['search_sky_events', {}],
+      ['search_sky_events', { kinds: ['solar-eclipse', 'lunar-eclipse', 'station', 'ingress', 'new-moon', 'full-moon'], from: '2026-11-04', to: '2028-11-04', limit: 100, zone: 'Asia/Bangkok' }],
+      ['search_sky_events', { kinds: ['void-of-course'], from: '2026-11-04', to: '2026-12-04', limit: 100 }],
+      ['search_sky_events', { kinds: ['solar-eclipse'], from: '2031-01-01', to: '2031-12-31' }],
+      ['get_natal_chart', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Oslo', latitude: 69.65, longitude: 18.96, houseSystem: 'placidus' }],
+      ['get_natal_chart', { birthDate: '1990-05-03' }],
+      ['explain_astrology', { topic: 'placidus vs whole sign' }],
+      ['get_upcoming_events', {}],
+      ['get_sky_calendar', {}],
+      ['get_capabilities', {}],
+    ];
+    for (const [name, args] of calls) {
+      const result = await call(host, name, args);
+      expect(result.isError, `${name} ${JSON.stringify(args)}`).toBe(false);
+      const validate = ajv.compile(tools.find((tool) => tool.name === name)!.outputSchema);
+      expect(validate(result.structuredContent), `${name} ${JSON.stringify(args)}: ${ajv.errorsText(validate.errors)}`).toBe(true);
+    }
+  }, 60_000);
 
   it('names the field the SDK refuses, never repeating what was sent', async () => {
     const host = await serve(env);
