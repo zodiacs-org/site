@@ -545,7 +545,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/ai/', '2026-10-28'] as const,
   // The developer demo, and the developer index that links to it. The day of
   // the daily edition it was built with; after the engine 1.1.0-rc.1 entry above so it wins.
-  ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-28'] as const),
+  ['/developers/demo/', '2026-11-04'] as const,
+  ['/developers/', '2026-10-28'] as const,
 ]);
 
 function getLastmod(loc: string): string {

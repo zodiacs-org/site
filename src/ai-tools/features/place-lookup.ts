@@ -6,7 +6,7 @@
  * are kept and the answer says so. Pure: no network, storage or logging.
  */
 import { fold, foldedQuery, queryRows, shardKey, type City, type CityIndex, type Row } from '../../lib/geo/rank';
-import { PLACE_SHARDS } from '../../lib/geo/place-shards';
+import { PLACE_SHARDS } from './place-shards';
 import indexJson from '../../../public/data/cities/index.json';
 
 const index = indexJson as unknown as CityIndex;

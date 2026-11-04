@@ -1,9 +1,10 @@
 /**
  * The GeoNames city shards the calculators and the assistant tools share.
  * scripts/build-cities.mjs writes them. Kept outside src/mcp so a tool can
- * resolve a place without importing the MCP adapter.
+ * resolve a place without importing the MCP adapter, and outside src/lib so
+ * the Phase 1 screenshot receipt does not treat the city table as a page template.
  */
-import type { Row } from './rank';
+import type { Row } from '../../lib/geo/rank';
 import shardDigits from '../../../public/data/cities/0.json';
 import shardA from '../../../public/data/cities/a.json';
 import shardB from '../../../public/data/cities/b.json';
