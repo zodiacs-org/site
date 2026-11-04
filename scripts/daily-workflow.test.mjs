@@ -33,10 +33,12 @@ describe('daily publication operations', () => {
   });
 
   it('publishes through a pull request when the protected branch refuses a direct push', async () => {
-    const [daily, snapshot, transits, publisher] = await Promise.all([
+    const [daily, snapshot, transits, seasonClose, weeklyRecap, publisher] = await Promise.all([
       read('.github/workflows/daily-horoscopes.yml'),
       read('.github/workflows/registry-market-snapshot.yml'),
       read('.github/workflows/transits-monthly.yml'),
+      read('.github/workflows/race-season-close.yml'),
+      read('.github/workflows/race-weekly-recap.yml'),
       read('scripts/publish-through-pr.sh'),
     ]);
 
@@ -44,13 +46,28 @@ describe('daily publication operations', () => {
     // actor is ever granted); GH006 — "changes must be made through a pull
     // request" — hands the same verified commit to the shared publisher,
     // which opens and squash-merges a pull request with the workflow token.
-    for (const [name, workflow] of Object.entries({ daily, snapshot, transits })) {
+    // The Race workflows pushed straight to main with no fallback and failed
+    // every run from 2026-08-31 (recap) and 2026-09-23 (season close).
+    for (const [name, workflow] of Object.entries({ daily, snapshot, transits, seasonClose, weeklyRecap })) {
       expect(workflow, name).toContain('pull-requests: write');
       expect(workflow, name).toContain('actions: write');
       expect(workflow, name).toContain('GH_TOKEN: ${{ github.token }}');
       expect(workflow, name).toContain('if grep -q "GH006" "$RUNNER_TEMP/publish-push.err"; then');
       expect(workflow, name).toContain('bash scripts/publish-through-pr.sh');
     }
+    for (const [name, workflow] of Object.entries({ seasonClose, weeklyRecap })) {
+      expect(workflow, name).toContain('VERIFIED_BASE_SHA=$(git rev-parse HEAD)');
+      expect(workflow, name).toContain('bash scripts/publish-through-pr.sh "$DEFAULT_BRANCH" "$VERIFIED_BASE_SHA"');
+      expect(workflow, name).not.toMatch(/git push origin HEAD:\$\{\{/);
+    }
+
+    // A Trophy Hall engraving still waiting in its pull request means main is
+    // behind; opening a second one could engrave the same season twice.
+    const guard = seasonClose.indexOf('select(.title | startswith("Trophy Hall: engrave"))');
+    expect(guard).toBeGreaterThan(-1);
+    expect(guard).toBeLessThan(seasonClose.indexOf('git push origin "HEAD:$DEFAULT_BRANCH"'));
+    expect(seasonClose).toContain('git commit -m "Trophy Hall: engrave ${ENGRAVED:-the newly closed season}"');
+    expect(seasonClose).toContain('ENGRAVED: ${{ steps.close.outputs.engraved }}');
     expect(daily).toContain('bash scripts/publish-through-pr.sh "$DEFAULT_BRANCH" "$VERIFIED_BASE_SHA"');
     expect(daily).toContain('echo "commit_sha=$(git rev-parse "origin/$DEFAULT_BRANCH")" >> "$GITHUB_OUTPUT"');
 
