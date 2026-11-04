@@ -94,7 +94,8 @@ on Node 24.21.0, as for 1.1.0-rc.1). Nothing here is recorded `accepted`.
 - **Developer plugin 0.3.21** (0.3.20 went to #877). `npm run ai:check`
   passes. This commit moved Chart Studio's panel to `chart-studio-v7.html`,
   v6 staying a legacy address, because the panel embeds the engine; D-12
-  takes the move back.
+  takes the move back. Main's #881 then made its own 0.3.21, so after the
+  merge (D-13) this branch's plugin is 0.3.22.
 - **Accuracy refresh** ([accuracy-refresh/](accuracy-refresh/)). Both Swiss
   statistics runs, on 1.1.0-rc.2: every statistic equals 1.1.0-rc.1's, and
   only the engine version and the digest of the per-instant dump differ.
@@ -418,3 +419,26 @@ so does OQ10's Q5.
   the site, the MCP server's tools and the developer plugin run 1.1.0-rc.2;
   to end the pin, set `PUBLISHED` to null and give the panel a new address.
   Its controls are in [d12-chart-studio-pin.txt](d12-chart-studio-pin.txt).
+- **D-13** (4 November, the merge of main `f45734dc`). #881 put the hosted
+  server on 0.6.1 (the readings panel, the under-18 rule, the narrower
+  links) and made a Developer 0.3.21 from it, while this branch had made its
+  own 0.3.21 with engine 1.1.0-rc.2. Main's 0.3.21 keeps its bytes; the
+  merged plugin is 0.3.22, 0.3.21's source with this branch's local chart
+  tools, and its release note says so. The generated server, the sky watch,
+  the plugin manifests and the flag-off fixture were rebuilt from the merged
+  source; Sky 0.6.1's archive rebuilt to main's bytes, and the readings panel
+  to `readings-v3.html`'s recorded bytes, so the adoption leaves both as #881
+  published them. `npm run ai:check` passed, `npm run check` reported 0
+  errors, and the AI, claims, fingerprint and sitemap tests passed 460 of 460.
+- **D-14** (4 November, after the gate's first run). That run, on `e7068c9d`,
+  failed two steps of section 6 apart from the Phase 1 capture test it
+  accepts. The type check found two errors in D-11's test helper; `52ed7473`
+  typed it, and D-12 then put the test back as it is on main. The developer
+  first-use drive passed its 44 Chromium checks and failed its one Firefox
+  check, "firefox: launches": Playwright's Firefox 151 (build 1532) does not
+  start headless on this Mac's macOS 27.0.1 within 180 seconds, as the B3.c
+  record found the same day, and CI does not run the drive. The Firefox
+  launch joins section 6's accepted failures for this branch's gate runs, as
+  a departure for the owner to ratify; the drive's Chromium half stays a
+  check that stops the push. The gate runs again on the merged head as a
+  second attempt citing the first (`rc2a-e7068c9d-prepush-times.txt`).
