@@ -59,6 +59,40 @@ carried for reference and the adoption does not run it. `corpora.mjs` and
   and checked byte for byte against the archive
   ([../ARTIFACT-IDENTITY.md](../ARTIFACT-IDENTITY.md)).
 
+## Results with the module still in place (S1, T4 and S1b)
+
+Run once each on 2026-11-04 (10:50 to 10:51 UTC), on the commit that settled
+two site checks before they ran (`59d4d97f`, over the preregistrations' commit
+`f8a8f09d`), with 1.1.0-rc.2 installed from the vendored archive (SHA-256
+`c5aef0e3...5351c`) and `package.json` and the lock not yet committed; Node
+22.22.2 on macOS arm64, astronomy-engine 2.1.19, esbuild 0.28.1, each run
+alone under `nice -n 10`. The committed module and its declarations had the
+pins above. Every main run passed with no difference, and every control
+failed as it must:
+
+| Check | Record | Counts | Differences | Verdict |
+| --- | --- | --- | --- | --- |
+| S1 | [s1-generator-check.json](s1-generator-check.json) | 14,765 instants (equal to K1), 177,180 longitudes; `EPHEMERIS_SPAN` equal | 0 records, 0 longitudes | pass |
+| S1 control a (astronomy-engine's `Ecliptic()`) | [controls/s1-a.json](controls/s1-a.json) | as S1 | 147,650 longitudes, at all 14,765 instants | failed, as it must |
+| S1 control b (ΔT 1 ms off) | [controls/s1-b.json](controls/s1-b.json) | as S1 | all 14,765 records; 177,177 longitudes | failed, as it must |
+| T4 | [t4.json](t4.json) | 1,033,254 records (K1 14,765, K2 100,000, K3 41, on three scales and three settings); 266,400 `elapsedDays` pairs (108 left out, outside the `Date` range); the frame at 114,907 TTs, 10,916,165 numbers, 15 vectors | 0 records, 0 pairs, 0 frame numbers; span equal | pass |
+| T4 control a (last leap second removed) | [controls/t4-a.json](controls/t4-a.json) | as T4 | 8,671 records: every unpinned UTC record from 2017-01-01 to 2027-10-02 (1,734 of 1,734), none outside; 90 pairs | failed, as it must |
+| T4 control b (first nutation coefficient changed) | [controls/t4-b.json](controls/t4-b.json) | as T4 | frames at all 114,907 TTs (1,952,159 numbers), no record | failed, as it must |
+| T4 control c (the module one millisecond later) | [controls/t4-c.json](controls/t4-c.json) | as T4 | all 1,033,254 records | failed, as it must |
+| S1b | [s1b.json](s1b.json) | 14,765 instants, 177,180 `bodyLongitude` and 177,180 `longitudeSpeed` values, 0 errors | 0 values | pass |
+| S1b control (first nutation coefficient changed) | [controls/s1b.json](controls/s1b.json) | as S1b | 243,598 values, at all 14,765 instants | failed, as it must |
+
+T4's counts are the engine's formal run's (1,033,254 records, 266,400 pairs,
+114,907 TTs, no difference). The run logs are kept outside the repository with
+the programme's notes (`logs/rc2a-59d4d97f-phase-f-*`). A control's record has
+`"pass": false` and `"controlBehaved": true`, and its tool exits 1 by design.
+
+S3, the production check, keeps only its compute API request: its calendar
+request is not run, as [../PRODUCTION-CHECKS.md](../PRODUCTION-CHECKS.md)
+records (decided on 2026-11-04, before any run), and the switch in
+`server-ephemeris.ts` that request would have reached is the one S1b covers
+on the build.
+
 ## Order
 
 1. With the module still in place and the archive installed: S1 and its

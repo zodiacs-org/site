@@ -1,0 +1,145 @@
+{
+ "check": "S1",
+ "tool": "generator-check.mjs",
+ "retargets": "scripts/build-time-basis.mjs's check (site main 0bf69bd5) at @zodiacs/engine/time",
+ "package": {
+  "name": "@zodiacs/engine",
+  "version": "1.1.0-rc.2"
+ },
+ "siteDependency": "file:vendor/zodiacs-engine-1.1.0-rc.2.tgz",
+ "vendoredArchiveSha256": "c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c",
+ "astronomyEngine": "2.1.19",
+ "control": "b",
+ "controlBehaved": true,
+ "instantsAreK1": true,
+ "ephemerisSpanEqual": true,
+ "counts": {
+  "instants": 14765,
+  "longitudes": 177180
+ },
+ "differences": {
+  "records": 14765,
+  "longitudes": 177177,
+  "instantsWithLongitudeDifferences": 14765
+ },
+ "examples": [
+  {
+   "ms": -5364619200000,
+   "what": "record"
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Sun",
+   "entry": 280.93927171165353,
+   "chart": 280.93927172344365
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Moon",
+   "entry": 354.70233535570884,
+   "chart": 354.70233549890656
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Mercury",
+   "entry": 267.94230469519044,
+   "chart": 267.94230468635465
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Venus",
+   "entry": 234.1509040318393,
+   "chart": 234.15090404395698
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Mars",
+   "entry": 244.68342318484366,
+   "chart": 244.68342319287996
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Jupiter",
+   "entry": 84.46438100718063,
+   "chart": 84.46438100573175
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Saturn",
+   "entry": 128.76430094661174,
+   "chart": 128.76430094583503
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Uranus",
+   "entry": 177.12642626489298,
+   "chart": 177.12642626489196
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Neptune",
+   "entry": 226.6294202654356,
+   "chart": 226.62942026572253
+  },
+  {
+   "ms": -5364619200000,
+   "body": "Pluto",
+   "entry": 331.4262553776536,
+   "chart": 331.4262553778756
+  },
+  {
+   "ms": -5364619200000,
+   "body": "North Node",
+   "entry": 34.164035777671586,
+   "chart": 34.163997696965396
+  },
+  {
+   "ms": -5364619200000,
+   "body": "South Node",
+   "entry": 214.16403577767164,
+   "chart": 214.16399769696545
+  },
+  {
+   "ms": -5363755200000,
+   "what": "record"
+  },
+  {
+   "ms": -5363755200000,
+   "body": "Sun",
+   "entry": 291.129496587817,
+   "chart": 291.1294965996081
+  },
+  {
+   "ms": -5363755200000,
+   "body": "Moon",
+   "entry": 115.89289105408449,
+   "chart": 115.89289120305301
+  },
+  {
+   "ms": -5363755200000,
+   "body": "Mercury",
+   "entry": 268.0036763686561,
+   "chart": 268.00367637589795
+  },
+  {
+   "ms": -5363755200000,
+   "body": "Venus",
+   "entry": 244.88372309094677,
+   "chart": 244.88372310363457
+  },
+  {
+   "ms": -5363755200000,
+   "body": "Mars",
+   "entry": 251.65351882487516,
+   "chart": 251.65351883296563
+  },
+  {
+   "ms": -5363755200000,
+   "body": "Jupiter",
+   "entry": 83.30251536387243,
+   "chart": 83.30251536264518
+  }
+ ],
+ "node": "v22.22.2",
+ "pass": false
+}
