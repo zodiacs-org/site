@@ -21,6 +21,7 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * 0.6.1 changes the reported version, the server instructions and the get_capabilities text in every scenario, and
  * gives the five coverage tools the readings panel (readings-v3) in the coverage scenario's tools/list and
  * resources/list. The released and occasions scenarios' tools/list and resources/list stay byte for byte.
+ * 0.6.2 changes only the reported version, in every scenario.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];
