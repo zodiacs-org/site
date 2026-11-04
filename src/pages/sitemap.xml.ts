@@ -547,9 +547,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/apps/', '2026-10-28'] as const,
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
-  // The developer demo, and the developer index that links to it. The day of
-  // the daily edition it was built with; after the engine 1.1.0-rc.1 entry above so it wins.
-  ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-28'] as const),
+  // The developer index that links to the demo. The day of the daily edition it was
+  // built with; after the engine 1.1.0-rc.1 entry above so it wins.
+  ['/developers/', '2026-10-28'] as const,
+  // The developer demo, recorded again with reading confidence labels and share links
+  // that carry no birth details.
+  ['/developers/demo/', '2026-11-04'] as const,
   // The time atlas dataset and the developer index's card for it, last so this date wins.
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
 ]);

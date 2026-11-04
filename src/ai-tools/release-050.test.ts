@@ -108,7 +108,8 @@ describe('review fixes for the predictions release', () => {
     const result = await executeAiTool('get_compatibility', { a: { name: 'Sam', birthDate: '1994-02-01' }, b: { famous: 'Frida Kahlo' } }, on);
     expect(result.ok).toBe(true);
     if (result.ok && result.tool === 'get_compatibility' && 'shareUrl' in result.data) {
-      expect(new URL(result.data.shareUrl as string).searchParams.get('b')).toBe('Frida Kahlo');
+      expect(new URL(result.data.shareUrl as string).searchParams.get('b')).toBeNull();
+      expect(result.data.shareUrl).not.toContain('Kahlo');
     }
   });
 

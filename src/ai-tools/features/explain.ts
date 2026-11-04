@@ -131,7 +131,11 @@ const TOPICS: Topic[] = [
   { key: 'moon-sign', title: 'The Moon sign', aliases: ['moon sign meaning', 'my moon sign'], glossary: ['moon-sign', 'moon'], pages: [{ title: 'Moon signs', path: '/moon-sign/' }], related: ['big-three', 'moon-phases'] },
   { key: 'birth-chart', title: 'The birth chart', aliases: ['natal chart', 'chart', 'birth chart', 'read chart', 'chart reading', 'how to read a birth chart', 'reading a chart', 'placements', 'placement', 'no time chart', 'stellium'], glossary: ['birth-chart', 'placement', 'no-time-chart', 'stellium'], pages: [{ title: 'How to read a birth chart', path: '/learn/how-to-read-a-birth-chart/' }, { title: 'Your birth chart', path: '/birth-chart/' }, { title: 'Placements', path: '/learn/placements/' }], related: ['big-three', 'houses', 'aspects'] },
   { key: 'cusps', title: 'Cusps', aliases: ['cusp', 'born on the cusp', 'cusp sign', 'decan', 'decans'], glossary: ['cusp', 'decan', 'sun-sign'], pages: [{ title: 'Birthdays', path: '/birthday/' }, { title: 'Zodiac dates', path: '/learn/zodiac-dates/' }], related: ['sun-sign'] },
-  { key: 'saturn-return', title: 'The Saturn return', aliases: ['saturn returns', 'my saturn return'], glossary: ['saturn-return', 'return', 'saturn'], pages: [{ title: 'Saturn return', path: '/saturn-return/' }], related: ['solar-return', 'transits', 'saturn'] },
+  {
+    key: 'saturn-return', title: 'The Saturn return', aliases: ['saturn returns', 'my saturn return'], glossary: ['saturn-return', 'return', 'saturn'],
+    extra: () => ['A Saturn return is when Saturn comes back to the zodiac degree it occupied at birth. Saturn takes about 29.5 years to go around the zodiac, so the first return falls around age 29, the second around 58 and the third around 88. Astrology reads it as a reckoning with responsibility, work and the structures a person has built: a season of sorting what still holds. Retrograde motion can make Saturn cross that degree more than once, and each crossing is kept as its own date. For the dates, use get_life_milestones or get_personal_transits.'],
+    pages: [{ title: 'Saturn return', path: '/saturn-return/' }], related: ['solar-return', 'transits', 'saturn'],
+  },
   { key: 'solar-return', title: 'The solar return', aliases: ['solar return chart', 'birthday chart'], glossary: ['solar-return', 'return'], pages: [{ title: 'Solar return', path: '/solar-return/' }], related: ['saturn-return'] },
   {
     key: 'elements', title: 'The elements', aliases: ['element', 'fire signs', 'earth signs', 'air signs', 'water signs', 'fire sign', 'earth sign', 'air sign', 'water sign', 'fire', 'earth', 'air', 'water'], glossary: ['element', 'fire', 'earth', 'air', 'water'],
@@ -151,7 +155,7 @@ const TOPICS: Topic[] = [
   { key: 'lunar-nodes', title: 'The lunar nodes', aliases: ['nodes', 'north node', 'south node', 'true node'], glossary: ['lunar-nodes', 'north-node', 'south-node', 'true-node'], pages: [{ title: 'How we calculate', path: '/methodology/' }], related: ['eclipses'] },
   {
     key: 'chinese-zodiac', title: 'The Chinese zodiac', aliases: ['chinese astrology', 'chinese zodiac basics', 'chinese animal', 'zodiac animals', 'lunar new year', 'chinese new year'], glossary: [],
-    extra: () => [CHINESE_ZODIAC_COPY.hubIntro, CHINESE_ZODIAC_COPY.separateBody, CHINESE_ZODIAC_COPY.historyBody, CHINESE_ZODIAC_COPY.boundaryBody],
+    extra: () => [CHINESE_ZODIAC_COPY.hubIntro, CHINESE_ZODIAC_COPY.separateBody, CHINESE_ZODIAC_COPY.historyBody, CHINESE_ZODIAC_COPY.boundaryBody, 'For one person\'s animal from a birth date, use get_chinese_zodiac.'],
     pages: [{ title: 'The Chinese zodiac', path: '/learn/chinese-zodiac/' }], related: ['zodiac'],
   },
 ];
@@ -344,10 +348,13 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN): {
   const noSuchHouseLine = noSuchHouse
     ? `There is no ${noSuchHouseName}; houses are numbered 1 to 12. A birth chart in Western astrology has exactly twelve houses, and every planet falls in one of them.`
     : null;
+  const glossaryLead = lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : [];
+  const extra = topic.extra?.() ?? [];
+  // The Saturn return's meaning leads. The glossary line after it is how the dates are kept.
+  const body = topic.key === 'saturn-return' ? [...extra, ...glossaryLead] : [...glossaryLead, ...extra];
   const paragraphs = [
     ...(noSuchHouseLine ? [noSuchHouseLine] : []),
-    ...(lead ? [lead.plainDefinition ? `${lead.plainDefinition} ${lead.definition}` : lead.definition] : []),
-    ...(topic.extra?.() ?? []),
+    ...body,
   ].filter((paragraph, index, all) => paragraph && all.indexOf(paragraph) === index);
   const placement = noSuchHouse ? null : matchPlacement(args.topic);
   const rising = noSuchHouse || placement ? null : matchRising(args.topic);

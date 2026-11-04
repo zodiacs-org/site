@@ -4,8 +4,10 @@ name: Race Season Close
 # Runs shortly after UTC midnight daily; on the morning after a season
 # boundary it fetches the closed season's immutable archive from the PUBLIC
 # standings endpoint (no secret) and appends one entry to
-# src/data/games/champions.json — committed once, never edited. Every other
-# day it exits without writing. The daily site build publishes the result.
+# src/data/games/champions.json, committed once and never edited. A season
+# that closed while runs could not publish is caught up, oldest first, by
+# the next run that can. Every other day it exits without writing. The
+# daily site build publishes the result.
 on:
   schedule:
     - cron: "23 0 * * *"
@@ -22,6 +24,8 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write
+      pull-requests: write
+      actions: write
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -33,17 +37,43 @@ jobs:
         with:
           node-version: 22
 
-      - name: Lock the previous season if it just closed
+      - name: Lock every closed season the Hall is missing
+        id: close
         run: node scripts/close-race-season.mjs
 
       - name: Commit the Trophy Hall entry
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          ENGRAVED: ${{ steps.close.outputs.engraved }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if git diff --quiet src/data/games/champions.json; then
+          if git diff --quiet -- src/data/games/champions.json; then
             echo "No newly closed season to engrave."
             exit 0
           fi
+          # An engraving still waiting in its pull request means main is
+          # behind, not that these seasons are new: a second pull request
+          # could engrave them twice. A person merges or closes it first.
+          waiting=$(gh pr list --state open --limit 100 --json title,url \
+            --jq '[.[] | select(.title | startswith("Trophy Hall: engrave")) | .url] | join(" ")')
+          if [ -n "$waiting" ]; then
+            echo "::error title=A Trophy Hall pull request is still open::Merge or close $waiting first; the next run engraves whatever main still lacks." >&2
+            exit 1
+          fi
+          VERIFIED_BASE_SHA=$(git rev-parse HEAD)
           git config user.name "zodiacs-recap-bot"
           git config user.email "actions@users.noreply.github.com"
           git add src/data/games/champions.json
-          git commit -m "Trophy Hall: engrave the newly closed season"
-          git push origin HEAD:${{ github.event.repository.default_branch }}
+          git commit -m "Trophy Hall: engrave ${ENGRAVED:-the newly closed season}"
+          # The protected default branch requires a pull request (GH006 on a
+          # direct push): try the direct push, then publish the same commit
+          # through a pull request the workflow opens and merges itself.
+          if ! git push origin "HEAD:$DEFAULT_BRANCH" 2>"$RUNNER_TEMP/publish-push.err"; then
+            cat "$RUNNER_TEMP/publish-push.err" >&2
+            if grep -q "GH006" "$RUNNER_TEMP/publish-push.err"; then
+              bash scripts/publish-through-pr.sh "$DEFAULT_BRANCH" "$VERIFIED_BASE_SHA" "$(git log -1 --format=%s)"
+            else
+              echo "Default branch advanced during publish; rerun the workflow" >&2
+              exit 1
+            fi
+          fi

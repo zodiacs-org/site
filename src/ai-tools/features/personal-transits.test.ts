@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { scanTransitContacts } from '../../lib/engine/transit-scan';
 import { executeAiTool } from '../tools';
-import type { PersonalTransitsData } from './personal-transits';
+import { numberTransitPasses, type PersonalTransitsData } from './personal-transits';
 
 const on = { occasions: true, coverage: true, now: () => new Date('2026-11-02T05:00:00Z') };
 async function transits(args: Record<string, unknown>): Promise<PersonalTransitsData> {
@@ -64,7 +65,7 @@ describe('get_personal_transits', () => {
     const year = await transits({ ...MADRID, mode: 'year-ahead' });
     const words = JSON.stringify([data.contacts, year.highlights]);
     expect(words).not.toMatch(/\b(illness|disease|surgery|diagnos|invest|stock|lottery|profit|guarantee[sd]?)\b/iu);
-  });
+  }, 40_000);
 
   it('refuses a window that starts before the birth date, and a year ahead before the birth', async () => {
     expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', from: '1850-01-01', to: '1850-12-01' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'The window starts before the birth date; give a from date on or after the birth date.' } });
@@ -88,4 +89,36 @@ describe('get_personal_transits', () => {
     expect(timed.scanned.points).toEqual(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'ASC']);
     expect(timed.highlights.length).toBeGreaterThan(data.highlights.length);
   });
+
+  it('counts Mercury and Venus passes across the whole retrograde loop, not only the window', () => {
+    const from = new Date('2026-11-04T00:00:00.000Z');
+    const to = new Date('2026-12-01T00:00:00.000Z');
+    const day = 86_400_000;
+    const scan = (lon: number, body: 'Mercury' | 'Venus', pad: number) => {
+      const natal = { bodies: [{ body: 'Jupiter' as const, lon }], angles: null };
+      const expanded = scanTransitContacts(natal, new Date(from.getTime() - pad * day), new Date(to.getTime() + pad * day), { transitBodies: [body], natalPoints: ['Jupiter'] });
+      const numbered = numberTransitPasses(expanded);
+      return numbered.filter((contact) => contact.exactUtc >= from.toISOString() && contact.exactUtc <= to.toISOString());
+    };
+    // 12° Scorpio sits inside the October to November 2026 Mercury retrograde.
+    const mercury = scan(222, 'Mercury', 70);
+    expect(mercury.length).toBeGreaterThan(0);
+    expect(mercury.every((contact) => contact.passCount === 3)).toBe(true);
+    expect(mercury.some((contact) => contact.pass > 1)).toBe(true);
+    expect(mercury.every((contact) => contact.firstPassUtc < from.toISOString() || contact.pass === 1)).toBe(true);
+    // 26° Libra sits inside the autumn 2026 Venus retrograde.
+    const venus = scan(206, 'Venus', 100);
+    expect(venus.length).toBeGreaterThan(0);
+    expect(venus.every((contact) => contact.passCount === 3)).toBe(true);
+    expect(venus.some((contact) => contact.pass === 3)).toBe(true);
+  });
+
+  it('labels each contact with a reading confidence from the birth details', async () => {
+    const dated = await transits({ birthDate: '1990-05-03', from: '2026-11-01', to: '2026-11-20' });
+    expect(dated.contacts[0].confidenceLabel).toBe('Reading confidence 60%');
+    const placed = await transits({ ...MADRID, from: '2026-11-01', to: '2026-11-20' });
+    expect(placed.contacts[0].confidenceLabel).toBe('Reading confidence 75%');
+    expect(placed.contacts.every((contact) => contact.pass >= 1 && contact.pass <= contact.passCount)).toBe(true);
+    expect(placed.contacts.every((contact) => contact.firstPass <= contact.lastPass)).toBe(true);
+  }, 40_000);
 });

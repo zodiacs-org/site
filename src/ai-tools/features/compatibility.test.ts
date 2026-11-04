@@ -1,6 +1,5 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
-import { decodeChartLink } from '../../lib/share';
 import { NOT_FOUND_NOTE } from './people';
 import {
   COMPATIBILITY_NOTE,
@@ -53,6 +52,7 @@ describe('computeCompatibility', () => {
     });
     expect(links).toEqual([
       { title: 'Compatibility on Zodiacs', url: 'https://zodiacs.org/compatibility/' },
+      { title: 'Resolve a town or city (find_birthplace)', url: 'https://zodiacs.org/birth-chart/' },
       { title: 'How we calculate', url: 'https://zodiacs.org/methodology/' },
     ]);
     expect(stringsOf(data)).not.toMatch(FORBIDDEN);
@@ -71,16 +71,13 @@ describe('computeCompatibility', () => {
     expect(data.a.rising).not.toBeNull();
     expect(data.b.rising).not.toBeNull();
     expect(data.a.moon).not.toBeNull();
-    expect(data.notes).toEqual([]);
+    expect(data.notes).toEqual([expect.stringMatching(/^Reading confidence \d+%$/u)]);
+    expect(data.score.headline).toContain('Reading confidence');
     expect(data.pageUrl).toBe('https://example.test/compatibility/scorpio-aquarius/');
-    // Names and Sun signs go in the share link; birth dates, times, zones and places never do.
-    expect(data.shareUrl).toMatch(/^https:\/\/example\.test\/share\/compatibility\/\?a=Ana&as=aquarius&b=Ben&bs=scorpio&score=\d+&attraction=\d+&communication=\d+&stability=\d+&v=[a-z]+$/u);
-    expect(data.shareUrl).not.toMatch(/1991|1989|08|22%3A|Madrid|Europe|America|40\.|74/u);
-
-    expect(data.cardUrl).toMatch(/^https:\/\/example\.test\/compatibility\/#a=1\.[\w-]+&b=1\.[\w-]+$/u);
-    const fragment = new URLSearchParams(new URL(data.cardUrl!).hash.slice(1));
-    expect(decodeChartLink(fragment.get('a')!)).toMatchObject({ date: '1991-02-14', time: '08:30', tz: 'Europe/Madrid', name: 'Ana', place: 'Madrid, Spain' });
-    expect(decodeChartLink(fragment.get('b')!)).toMatchObject({ date: '1989-11-03', time: '22:15', tz: 'America/New_York', name: 'Ben' });
+    // Sun signs and scores go in the share link. Names, birth dates, times, zones and places stay out.
+    expect(data.shareUrl).toMatch(/^https:\/\/example\.test\/share\/compatibility\/\?as=aquarius&bs=scorpio&score=\d+&attraction=\d+&communication=\d+&stability=\d+&v=[a-z]+$/u);
+    expect(data.shareUrl).not.toMatch(/Ana|Ben|1991|1989|Madrid|Europe|America|40\.|74/u);
+    expect(data.cardUrl).toBeNull();
 
     expect(data.contacts.length).toBe(8);
     for (const row of data.contacts) {
@@ -98,7 +95,7 @@ describe('computeCompatibility', () => {
       b: { birthDate: '1989-11-03', time: '22:15', zone: 'America/New_York', latitude: 40.7128, longitude: -74.006 },
     });
     const { data } = await computeCompatibility(args, localTime);
-    expect(data.cardUrl?.startsWith('https://zodiacs.org/compatibility/#')).toBe(true);
+    expect(data.cardUrl).toBeNull();
     expect(data.contacts[0].line.startsWith('Person A’s ')).toBe(true);
   });
 
@@ -154,7 +151,8 @@ describe('computeCompatibility with a famous person', () => {
     const { data } = await computeCompatibility(compatibilityInput.parse({ a: { famous: 'Ada Lovelace' }, b: { famous: 'Alan Turing' } }), localTime);
     expect(data.a).toMatchObject({ sun: 'sagittarius', famous: true });
     expect(data.b.famous).toBe(true);
-    expect(data.notes).toHaveLength(2);
+    expect(data.notes.filter((note) => !note.startsWith('Reading confidence'))).toHaveLength(2);
+    expect(data.notes.at(-1)).toMatch(/^Reading confidence \d+%$/u);
     expect(stringsOf(data)).not.toMatch(FORBIDDEN);
   });
 

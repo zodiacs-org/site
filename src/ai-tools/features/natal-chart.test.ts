@@ -22,12 +22,14 @@ describe('get_natal_chart', () => {
     expect(data.planets[0]).toMatchObject({ body: 'Sun', sign: 'taurus', house: 12, pageUrl: 'https://zodiacs.org/learn/placements/sun-in-taurus/' });
     expect(data.aspects.length).toBeGreaterThan(0);
     expect(data.aspects.length).toBeLessThanOrEqual(8);
+    expect(data.aspects.map((aspect) => aspect.orb)).toEqual([...data.aspects.map((aspect) => aspect.orb)].sort((a, b) => a - b));
     expect(data.aspects.every((aspect) => aspect.line.includes(aspect.a) || aspect.line.length > 20)).toBe(true);
     const { elements, modalities } = data.balance;
     expect(elements.fire + elements.earth + elements.air + elements.water).toBe(10);
     expect(modalities.cardinal + modalities.fixed + modalities.mutable).toBe(10);
     expect(data.unknown).toEqual([]);
-    expect(data.chartUrl).toMatch(/^https:\/\/zodiacs\.org\/birth-chart\/#c=/u);
+    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/');
+    expect(data.chartUrl).not.toContain('1990');
     expect(data.sun.meaning).toBeTruthy();
     expect(data.rising.pageUrl).toBe('https://zodiacs.org/rising-sign/gemini/');
   });
@@ -43,7 +45,7 @@ describe('get_natal_chart', () => {
     expect(data.aspects.some((aspect) => aspect.a === 'Moon' || aspect.b === 'Moon')).toBe(false);
     expect(data.unknown.join(' ')).toContain('rising sign and the houses are unknown');
     expect(data.unknown.join(' ')).toContain('Leo or Virgo');
-    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/#date=1990-05-03&time=unknown');
+    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/');
   });
 
   it('states a Moon sign without a time only when the whole birth day keeps it there', async () => {
@@ -83,7 +85,7 @@ describe('get_natal_chart', () => {
     const result = await executeAiTool('get_natal_chart', { ...MADRID, zone: 'europe/madrid' }, on, { ref: 'assistant' });
     if (!result.ok || result.tool !== 'get_natal_chart') throw new Error('refused');
     expect(result.data.zone).toBe('Europe/Madrid');
-    expect(result.data.chartUrl).toMatch(/^https:\/\/zodiacs\.org\/birth-chart\/\?ref=assistant#c=/u);
+    expect(result.data.chartUrl).toBe('https://zodiacs.org/birth-chart/?ref=assistant');
   });
 
   it('says when a birth time fell in a daylight saving gap, and how far it moved', async () => {
