@@ -551,9 +551,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // built with; after the engine 1.1.0-rc.1 entry above so it wins.
   ['/developers/', '2026-10-28'] as const,
   // The developer demo, recorded again with reading confidence labels and share links
-  // that carry no birth details, then with the compatibility share link's reading
-  // confidence and the invitation to compare charts.
-  ['/developers/demo/', '2026-11-05'] as const,
+  // that carry no birth details.
+  ['/developers/demo/', '2026-11-04'] as const,
   // The privacy page's assistant section: what the app's links carry (never a birth year, time, place or names,
   // and a birthday link only the month and day). The day of the daily edition it was built with.
   ['/privacy/', '2026-11-04'] as const,
