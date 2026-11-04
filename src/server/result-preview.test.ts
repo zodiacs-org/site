@@ -28,8 +28,23 @@ import {
   handleMilestoneImageRequest,
   handleMilestoneLinkRequest,
   handleMilestoneStoryRequest,
+  handleBigThreeImageRequest,
+  handleBigThreeLinkRequest,
+  handleBigThreeStoryRequest,
+  handleChineseZodiacImageRequest,
+  handleChineseZodiacLinkRequest,
+  handleChineseZodiacStoryRequest,
+  handleInviteImageRequest,
+  handleInviteLinkRequest,
+  handleInviteStoryRequest,
+  RESULT_SHARE_ROUTES,
 } from './result-preview';
 import {
+  bigThreeCardModel,
+  chineseZodiacCardModel,
+  inviteCardModel,
+  type PublishedMonths,
+  type PublishedYears,
   birthdayCardModel,
   chartTwinsCardModel,
   compatibilityCardModel,
@@ -44,8 +59,11 @@ import {
   skyCalendarCardModel,
   skyEvents,
 } from './result-preview-model';
-import { parseBirthdayShare, parseChartTwinsShare, parseFamousChartShare, parseHoroscopeShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
+import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
+import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
+import { CHINESE_ZODIAC_NOTE } from '../ai-tools/features/chinese-zodiac';
+import { HOROSCOPE_DISCLOSURE } from '../ai-tools/horoscope/reading';
 
 const COMPAT = 'a=Ana&as=leo&b=Luis&bs=libra&score=78&attraction=82&communication=71&stability=80&v=strong';
 const json = <T>(path: string): T => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8')) as T;
@@ -60,6 +78,11 @@ const PEOPLE = json<{ people: IndexedPerson[] }>('../ai-tools/features/people-in
 const SATURN = 'k=saturn-return&i=1&a=29';
 /** A milestone link made before the pass dates were left out: it still opens, drawn without them. */
 const SATURN_OLDER = 'k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31';
+const MONTHS = json<PublishedMonths>('../data/horoscope-months.json');
+const PROGRAM = json<PublishedYears>('../data/horoscope-program.json');
+/** The latest month the committed readings hold, served from its first day. */
+const LATEST_MONTH = Object.keys(MONTHS.months).sort().at(-1)!;
+const SERVED = new Date(`${LATEST_MONTH}-15T12:00:00Z`);
 const nativeFetch = globalThis.fetch;
 
 afterEach(() => {
@@ -166,6 +189,77 @@ describe('birthday, sky calendar and horoscope share models', () => {
     // The window can already carry next week's edition (it rolls on Sundays), so step past the latest week, not today's.
     const latestWeek = WINDOW.editions.map((edition) => edition.signs.leo.weekly.period.from).sort().at(-1)!;
     expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&w=${after(latestWeek, 7)}`))!, WINDOW)).toBeNull();
+  });
+});
+
+describe('confidence labels on the cards that show a forecast or a score', () => {
+  it('print the link\'s own value on a compatibility or date card, and nothing on a link made before the label', () => {
+    expect(compatibilityCardModel(parseCompatibilityShare(new URLSearchParams(`${COMPAT}&c=70`))!).confidence).toBe('Reading confidence 70%');
+    expect(compatibilityCardModel(parseCompatibilityShare(new URLSearchParams(COMPAT))!).confidence).toBeNull();
+    expect(occasionCardModel(parseOccasionShare(new URLSearchParams(`${OCCASION}&c=55`))!).confidence).toBe('Reading confidence 55%');
+    expect(occasionCardModel(parseOccasionShare(new URLSearchParams(OCCASION))!).confidence).toBeNull();
+  });
+
+  it('print a Sun-sign horoscope\'s 40% whenever the card quotes a published reading, and nothing once it is gone', () => {
+    expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&d=${TODAY}`))!, WINDOW)!.confidence).toBe('Reading confidence 40%');
+    expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams('s=leo&d=2026-09-01'))!, WINDOW)!.confidence).toBeNull();
+  });
+});
+
+describe('month and year horoscope share models', () => {
+  const model = (query: string, now = SERVED) => horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(query))!, WINDOW, { months: MONTHS, years: PROGRAM, now });
+
+  it('quote a published month\'s opening, with the month in the kicker and the reading\'s confidence', () => {
+    const month = model(`s=leo&m=${LATEST_MONTH}`)!;
+    const paragraphs = MONTHS.months[LATEST_MONTH].leo.paragraphs.join(' ');
+    expect(month.kicker).toMatch(/^Horoscope for [A-Z][a-z]+ \d{4}$/u);
+    expect(month.heading).toBe(`Leo ${month.kicker.charAt(0).toLowerCase()}${month.kicker.slice(1)}`);
+    expect(paragraphs).toContain(month.line);
+    expect(month.line.length).toBeLessThanOrEqual(150);
+    expect(month.passage).toBe(MONTHS.months[LATEST_MONTH].leo.paragraphs[0]);
+    expect(month.confidence).toBe('Reading confidence 40%');
+  });
+
+  it('quote a published year, and refuse a month or year the site does not publish, or a month before its first day', () => {
+    const year = model('s=aquarius&y=2026')!;
+    expect(year).toMatchObject({ kicker: 'Horoscope for 2026', heading: 'Aquarius horoscope for 2026', confidence: 'Reading confidence 40%' });
+    expect(model('s=leo&y=2031')).toBeNull();
+    expect(model('s=leo&m=2020-01')).toBeNull();
+    // A month written ahead is not shown before its first day reaches the earliest clock on Earth.
+    expect(model(`s=leo&m=${LATEST_MONTH}`, new Date(Date.parse(`${LATEST_MONTH}-01T00:00:00+14:00`) - 60_000))).toBeNull();
+    expect(model(`s=leo&m=${LATEST_MONTH}`, new Date(Date.parse(`${LATEST_MONTH}-01T00:00:00+14:00`)))).not.toBeNull();
+    // Every sign's every published month and year has a line of its own to quote.
+    for (const sign of Object.keys(MONTHS.months[LATEST_MONTH])) {
+      for (const month of Object.keys(MONTHS.months)) expect(model(`s=${sign}&m=${month}`)?.confidence, `${sign} ${month}`).toBe('Reading confidence 40%');
+      for (const y of ['2026', '2027']) expect(model(`s=${sign}&y=${y}`)?.confidence, `${sign} ${y}`).toBe('Reading confidence 40%');
+    }
+  });
+});
+
+describe('big three, Chinese zodiac and invitation share models', () => {
+  it('list the big three, saying when the Moon is undetermined and leaving out a rising sign that is not known', () => {
+    expect(bigThreeCardModel(parseBigThreeShare(new URLSearchParams('s=leo&m=aries&r=libra'))!)).toMatchObject({
+      rows: [{ slug: 'leo', text: 'Leo Sun' }, { slug: 'aries', text: 'Aries Moon' }, { slug: 'libra', text: 'Libra rising' }],
+      title: 'Leo Sun, Aries Moon, Libra rising', about: 'The big three: the Sun sign, the Moon sign and the rising sign.',
+    });
+    const untimed = bigThreeCardModel(parseBigThreeShare(new URLSearchParams('s=sagittarius'))!);
+    expect(untimed.rows).toEqual([{ slug: 'sagittarius', text: 'Sagittarius Sun' }, { slug: null, text: 'Moon sign undetermined' }]);
+    expect(untimed.about).toBe('The big three: the Sun sign, the Moon sign and the rising sign. The Moon changed sign on the birth day, so its sign needs the birth time. The rising sign needs the birth time and place.');
+    expect(bigThreeCardModel(parseBigThreeShare(new URLSearchParams('s=leo&m=leo'))!).rows.map((row) => row.text)).toEqual(['Leo Sun', 'Leo Moon']);
+  });
+
+  it('give a year\'s animal its element and yin or yang, and a birth date\'s animal no year', () => {
+    expect(chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=horse&y=2026'))!)).toMatchObject({ title: 'The Fire Horse', detail: '2026, a yang year', element: 'fire', yinYang: 'yang', year: 2026 });
+    expect(chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=snake&y=2025'))!)).toMatchObject({ title: 'The Wood Snake', detail: '2025, a yin year' });
+    const birth = chineseZodiacCardModel(parseChineseZodiacShare(new URLSearchParams('a=ox'))!)!;
+    expect(birth).toMatchObject({ title: 'The Ox', detail: 'Born in an Ox year', year: null, element: null, yinYang: null });
+    // What the card prints for a birth date's animal names no year and no element, which would narrow the birth year.
+    expect(`${birth.title} ${birth.detail}`).not.toMatch(/\d|wood|fire|earth|metal|water|yin|yang/iu);
+  });
+
+  it('name the two Sun signs of an invitation, or the one that is known', () => {
+    expect(inviteCardModel(parseInviteShare(new URLSearchParams('s=taurus&p=scorpio'))!)).toMatchObject({ line: 'Taurus and Scorpio. Two birth charts, read together.', front: 'taurus' });
+    expect(inviteCardModel(parseInviteShare(new URLSearchParams('p=scorpio'))!)).toMatchObject({ line: 'Scorpio Sun. Two birth charts, read together.', front: null });
   });
 });
 
@@ -312,6 +406,68 @@ describe('share link pages', () => {
     expect(await (await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/saturn-return.png"');
   });
 
+  it('give the big three, the Chinese zodiac and an invitation their own page, preview, story and way to try it', async () => {
+    const big = await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&m=aries&r=libra&ref=chatgpt'))).text();
+    expect(big).toContain('<h1>Leo Sun, Aries Moon, Libra rising</h1>');
+    expect(big).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/big-three-image?s=leo&amp;m=aries&amp;r=libra">');
+    expect(big).toContain('<a class="cta" href="/big-three/?ref=chatgpt">Find your big three</a>');
+    expect(big).toContain('<a class="more" href="/birth-chart/?ref=chatgpt">Open the birth chart page</a>');
+    expect(big).toContain('href="/api/og/big-three-story?s=leo&amp;m=aries&amp;r=libra" download="zodiacs-big-three-leo-story.jpg"');
+    expect(big).toContain(NATAL_NOTE);
+    const untimed = await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=sagittarius'))).text();
+    expect(untimed).toContain('<h1>Sagittarius Sun, Moon sign undetermined</h1>');
+    const chinese = await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=horse&y=2026'))).text();
+    expect(chinese).toContain('<title>The Fire Horse, 2026: the Chinese zodiac on Zodiacs</title>');
+    expect(chinese).toContain('content="https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&amp;y=2026"');
+    expect(chinese).toContain('<a class="cta" href="/learn/chinese-zodiac/horse/">Read about the Horse</a>');
+    expect(chinese).toContain('<a class="more" href="/learn/chinese-zodiac/">All twelve animals</a>');
+    expect(chinese).toContain(CHINESE_ZODIAC_NOTE);
+    const animal = await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=snake'))).text();
+    expect(animal).toContain('<h1>The Snake</h1>');
+    expect(animal).toContain('Born in a Snake year.');
+    expect(animal.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/\b(?:18|19|20|21)\d\d\b/u);
+    const invite = await (await handleInviteLinkRequest(new Request('https://zodiacs.org/share/invite/?s=taurus&p=scorpio&ref=chatgpt'))).text();
+    expect(invite).toContain('<h1>Compare our charts</h1>');
+    expect(invite).toContain('content="https://zodiacs.org/api/og/invite-image?s=taurus&amp;p=scorpio"');
+    expect(invite).toContain('<a class="cta" href="/compatibility/invite/?ref=chatgpt">Make an invite link</a>');
+    expect(invite).toContain('<a class="more" href="/compatibility/?ref=chatgpt">Compare two charts now</a>');
+    expect(invite).toContain('Taurus and Scorpio. Two birth charts, read together.');
+    for (const page of [big, untimed, chinese, animal, invite]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
+    // A bare address or a query that is not a share opens the plain page, with the site's own card.
+    expect(await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&d=1990-08-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/big-three.png"');
+    expect(await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=horse&y=2025'))).text()).toContain('<h1>The Chinese zodiac</h1>');
+    const bare = await (await handleInviteLinkRequest(new Request('https://zodiacs.org/share/invite/'))).text();
+    expect(bare).toContain('content="https://zodiacs.org/assets/og/v2/tool/compatibility-private-invite.png"');
+    expect(bare).toContain('<a class="cta" href="/compatibility/invite/">Make an invite link</a>');
+  });
+
+  it('give a month\'s and a year\'s horoscope the horoscope page, with the reading, its confidence and the period\'s own page', async () => {
+    vi.useFakeTimers({ now: SERVED, toFake: ['Date'] });
+    try {
+      const month = await (await handleHoroscopeLinkRequest(new Request(`https://zodiacs.org/share/horoscope/?s=leo&m=${LATEST_MONTH}&ref=chatgpt`))).text();
+      expect(month).toMatch(/<h1>Leo horoscope for [A-Z][a-z]+ \d{4}<\/h1>/u);
+      expect(month).toContain(`content="https://zodiacs.org/api/og/horoscope-image?s=leo&amp;m=${LATEST_MONTH}"`);
+      expect(month).toContain('Reading confidence 40%.');
+      expect(month).toContain('<a class="more" href="/horoscopes/leo/monthly/?ref=chatgpt">Leo’s monthly horoscope</a>');
+      expect(month).toContain(HOROSCOPE_DISCLOSURE);
+      const year = await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2027'))).text();
+      expect(year).toContain('<h1>Leo horoscope for 2027</h1>');
+      expect(year).toContain('<a class="more" href="/horoscopes/leo/2027/">Leo’s 2027 horoscope</a>');
+      expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&y=2031'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('carry the reading confidence on the compatibility, date and horoscope pages', async () => {
+    const compat = await (await handleCompatibilityLinkRequest(new Request(`https://zodiacs.org/share/compatibility/?${COMPAT}&c=75`))).text();
+    expect(compat).toContain('Sun signs’ elements. Reading confidence 75%.</p>');
+    expect(compat).toContain(`content="https://zodiacs.org/api/og/compatibility-image?${COMPAT.replaceAll('&', '&amp;')}&amp;c=75"`);
+    const date = await (await handleOccasionLinkRequest(new Request(`https://zodiacs.org/share/occasion/?${OCCASION}&c=70`))).text();
+    expect(date).toContain('any planets in retrograde. Reading confidence 70%.');
+    const day = await (await handleHoroscopeLinkRequest(new Request(`https://zodiacs.org/share/horoscope/?s=leo&d=${TODAY}`))).text();
+    expect(day).toContain('Reading confidence 40%.');
+    expect(await (await handleCompatibilityLinkRequest(new Request(`https://zodiacs.org/share/compatibility/?${COMPAT}`))).text()).not.toContain('Reading confidence');
+  });
+
   it('refuse other methods', async () => {
     expect((await handleCompatibilityLinkRequest(new Request(`https://zodiacs.org/share/compatibility/?${COMPAT}`, { method: 'POST' }))).status).toBe(405);
     expect((await handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${OCCASION}`, { method: 'POST' }))).status).toBe(405);
@@ -333,7 +489,13 @@ describe('the deployed entry', () => {
       ['/share/chart-twins/', 'chart-twins-link'], ['/api/og/chart-twins-image', 'chart-twins-image'], ['/api/og/chart-twins-story', 'chart-twins-story'],
       ['/share/famous-chart/', 'famous-chart-link'], ['/api/og/famous-chart-image', 'famous-chart-image'], ['/api/og/famous-chart-story', 'famous-chart-story'],
       ['/share/milestone/', 'milestone-link'], ['/api/og/milestone-image', 'milestone-image'], ['/api/og/milestone-story', 'milestone-story'],
+      ['/share/big-three/', 'big-three-link'], ['/api/og/big-three-image', 'big-three-image'], ['/api/og/big-three-story', 'big-three-story'],
+      ['/share/chinese-zodiac/', 'chinese-zodiac-link'], ['/api/og/chinese-zodiac-image', 'chinese-zodiac-image'], ['/api/og/chinese-zodiac-story', 'chinese-zodiac-story'],
+      ['/share/invite/', 'invite-link'], ['/api/og/invite-image', 'invite-image'], ['/api/og/invite-story', 'invite-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
+    // Every route the function answers is reached by one rewrite, and every share rewrite names a route it answers.
+    const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
+    expect(shareRewrites.map((rewrite) => rewrite.destination.split('__zodiacs_share=')[1]).sort()).toEqual([...RESULT_SHARE_ROUTES].sort());
     const source = readFileSync(new URL('../../api/compatibility.ts', import.meta.url), 'utf8');
     expect(source).toContain("from '../src/server/result-preview.js'");
   });
@@ -391,6 +553,16 @@ describe('share preview images', () => {
     ['life milestone', () => handleMilestoneImageRequest(new Request(`https://zodiacs.org/api/og/milestone-image?${SATURN}`))],
     ['life milestone from an older link with its dates', () => handleMilestoneImageRequest(new Request(`https://zodiacs.org/api/og/milestone-image?${SATURN_OLDER}`))],
     ['Uranus opposition', () => handleMilestoneImageRequest(new Request('https://zodiacs.org/api/og/milestone-image?k=uranus-opposition&i=1&a=42'))],
+    ['compatibility with its confidence', () => handleCompatibilityImageRequest(new Request(`https://zodiacs.org/api/og/compatibility-image?${COMPAT}&c=70`))],
+    ['date with its confidence', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${OCCASION}&c=55`))],
+    ['month’s horoscope', () => handleHoroscopeImageRequest(new Request(`https://zodiacs.org/api/og/horoscope-image?s=leo&m=${Object.keys(json<PublishedMonths>('../data/horoscope-months.json').months).sort()[0]}`))],
+    ['year’s horoscope', () => handleHoroscopeImageRequest(new Request('https://zodiacs.org/api/og/horoscope-image?s=aquarius&y=2026'))],
+    ['big three', () => handleBigThreeImageRequest(new Request('https://zodiacs.org/api/og/big-three-image?s=leo&m=aries&r=libra'))],
+    ['big three with the Moon undetermined', () => handleBigThreeImageRequest(new Request('https://zodiacs.org/api/og/big-three-image?s=sagittarius'))],
+    ['Chinese zodiac year', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&y=2026'))],
+    ['Chinese zodiac animal', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=rabbit'))],
+    ['invitation', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?s=taurus&p=scorpio'))],
+    ['invitation with one sign', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?p=gemini'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -427,6 +599,14 @@ describe('share preview images', () => {
       [handleFamousChartImageRequest, 'https://zodiacs.org/api/og/famous-chart-image?p=someone-else'],
       [handleChartTwinsImageRequest, 'https://zodiacs.org/api/og/chart-twins-image?s=taurus&n=Audrey'],
       [handleMilestoneImageRequest, 'https://zodiacs.org/api/og/milestone-image?k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31'],
+      [handleHoroscopeImageRequest, 'https://zodiacs.org/api/og/horoscope-image?s=leo&y=2031'],
+      [handleHoroscopeImageRequest, 'https://zodiacs.org/api/og/horoscope-image?s=leo&m=2020-01'],
+      [handleBigThreeImageRequest, 'https://zodiacs.org/api/og/big-three-image?s=leo&r=libra'],
+      [handleChineseZodiacImageRequest, 'https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&y=2025'],
+      [handleChineseZodiacImageRequest, 'https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&d=1990-01-20'],
+      [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image'],
+      [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image?s=taurus&n=Ana'],
+      [handleCompatibilityImageRequest, `https://zodiacs.org/api/og/compatibility-image?${COMPAT}&c=99`],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });
@@ -446,6 +626,12 @@ describe('story pictures', () => {
     ['famous chart with a long name', () => handleFamousChartStoryRequest(new Request('https://zodiacs.org/api/og/famous-chart-story?p=wolfgang-amadeus-mozart'))],
     ['life milestone', () => handleMilestoneStoryRequest(new Request(`https://zodiacs.org/api/og/milestone-story?${SATURN}`))],
     ['life milestone from an older link with its dates', () => handleMilestoneStoryRequest(new Request(`https://zodiacs.org/api/og/milestone-story?${SATURN_OLDER}`))],
+    ['compatibility with its confidence', () => handleCompatibilityStoryRequest(new Request(`https://zodiacs.org/api/og/compatibility-story?${COMPAT}&c=75`))],
+    ['year’s horoscope', () => handleHoroscopeStoryRequest(new Request('https://zodiacs.org/api/og/horoscope-story?s=leo&y=2026'))],
+    ['big three', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=leo&m=aries&r=sagittarius'))],
+    ['big three with the Moon undetermined', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=sagittarius'))],
+    ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger&y=2034'))],
+    ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');
@@ -469,5 +655,8 @@ describe('story pictures', () => {
     expect((await handleBirthdayStoryRequest(new Request('https://zodiacs.org/api/og/birthday-story?d=05-03&s=leo'))).status).toBe(400);
     expect((await handleHoroscopeStoryRequest(new Request('https://zodiacs.org/api/og/horoscope-story?s=leo&d=2199-01-01'))).status).toBe(400);
     expect((await handleOccasionStoryRequest(new Request(`https://zodiacs.org/api/og/occasion-story?${OCCASION}`, { method: 'POST' }))).status).toBe(405);
+    expect((await handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=leo&d=1990-08-01'))).status).toBe(400);
+    expect((await handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=cat'))).status).toBe(400);
+    expect((await handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio&n=Luis'))).status).toBe(400);
   });
 });

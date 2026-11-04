@@ -342,6 +342,42 @@
       "destination": "/api/compatibility?__zodiacs_share=milestone-story"
     },
     {
+      "source": "/share/big-three/",
+      "destination": "/api/compatibility?__zodiacs_share=big-three-link"
+    },
+    {
+      "source": "/api/og/big-three-image",
+      "destination": "/api/compatibility?__zodiacs_share=big-three-image"
+    },
+    {
+      "source": "/api/og/big-three-story",
+      "destination": "/api/compatibility?__zodiacs_share=big-three-story"
+    },
+    {
+      "source": "/share/chinese-zodiac/",
+      "destination": "/api/compatibility?__zodiacs_share=chinese-zodiac-link"
+    },
+    {
+      "source": "/api/og/chinese-zodiac-image",
+      "destination": "/api/compatibility?__zodiacs_share=chinese-zodiac-image"
+    },
+    {
+      "source": "/api/og/chinese-zodiac-story",
+      "destination": "/api/compatibility?__zodiacs_share=chinese-zodiac-story"
+    },
+    {
+      "source": "/share/invite/",
+      "destination": "/api/compatibility?__zodiacs_share=invite-link"
+    },
+    {
+      "source": "/api/og/invite-image",
+      "destination": "/api/compatibility?__zodiacs_share=invite-image"
+    },
+    {
+      "source": "/api/og/invite-story",
+      "destination": "/api/compatibility?__zodiacs_share=invite-story"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },

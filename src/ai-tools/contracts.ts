@@ -8,8 +8,8 @@ import { chartTwinsData, chartTwinsInput, famousChartData, famousChartInput } fr
 import { birthdayData, birthdayInput, skyCalendarData, skyCalendarInput } from './features/birthday';
 import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS } from './horoscope/reading';
 import { natalChartData, natalChartDataWithNodes, natalChartInput, natalChartInputWithHouses } from './features/natal-chart';
-import { horoscopePeriodData, horoscopePeriodInput } from './features/horoscope-period';
-import { chineseZodiacData, chineseZodiacInput } from './features/chinese-zodiac';
+import { horoscopePeriodData, horoscopePeriodDataWithShare, horoscopePeriodInput } from './features/horoscope-period';
+import { chineseZodiacData, chineseZodiacDataWithShare, chineseZodiacInput } from './features/chinese-zodiac';
 import { personalTransitsData, personalTransitsInput } from './features/personal-transits';
 import { explainData, explainInput, explainInputWithSkyEvents } from './features/explain';
 import { birthplaceData, birthplaceInput } from './features/birthplace';
@@ -86,6 +86,11 @@ export const OCCASIONS_URI = 'ui://zodiacs/occasions-v8.html';
  * can be reused for other bytes.
  */
 export const READINGS_URI = 'ui://zodiacs/readings-v3.html';
+/**
+ * The readings panel while ZODIACS_SKY_EVENTS_ENABLED=1, for get_natal_chart alone: the same cards, with the lunar
+ * nodes listed in the birth chart (src/ai-tools/readings-panel/views-sky-events.tsx). Switched off, nothing names it.
+ */
+export const READINGS_SKY_EVENTS_URI = 'ui://zodiacs/readings-v4.html';
 export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v7.html', 'ui://zodiacs/occasions-v6.html', 'ui://zodiacs/occasions-v5.html', 'ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
@@ -370,8 +375,9 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
 };
 
 /**
- * With ZODIACS_SKY_EVENTS_ENABLED=1 two coverage tools say and take more: get_natal_chart a house system and the lunar
- * nodes, explain_astrology the event and house topics it then explains. Switched off, every definition is the one above.
+ * With ZODIACS_SKY_EVENTS_ENABLED=1 four coverage tools say, take or return more: get_natal_chart a house system, the
+ * lunar nodes and the big three's share link, explain_astrology the event and house topics it then explains, and
+ * get_chinese_zodiac and get_horoscope_period the share links to their cards. Switched off, every definition is the one above.
  */
 export const SKY_EVENTS_INPUT_SCHEMAS: Partial<Record<AiToolName, z.ZodType>> = {
   get_natal_chart: natalChartInputWithHouses,
@@ -379,9 +385,13 @@ export const SKY_EVENTS_INPUT_SCHEMAS: Partial<Record<AiToolName, z.ZodType>> = 
 };
 export const SKY_EVENTS_OUTPUT_SCHEMAS: Partial<Record<AiToolName, z.ZodType>> = {
   get_natal_chart: outputSchema('get_natal_chart', natalChartDataWithNodes),
+  get_chinese_zodiac: outputSchema('get_chinese_zodiac', chineseZodiacDataWithShare),
+  get_horoscope_period: outputSchema('get_horoscope_period', horoscopePeriodDataWithShare),
 };
 export const SKY_EVENTS_TOOL_DESCRIPTIONS: Partial<Record<AiToolName, string>> = {
-  get_natal_chart: `${TOOL_DESCRIPTIONS.get_natal_chart} Houses are whole-sign unless houseSystem is placidus; Placidus cannot be drawn from about 66.6 degrees latitude, so there the chart uses whole-sign houses and houseNote says so. It also gives the North and South Nodes, the true node rather than the mean node, with their signs and houses.`,
+  get_natal_chart: `${TOOL_DESCRIPTIONS.get_natal_chart} Houses are whole-sign unless houseSystem is placidus; Placidus cannot be drawn from about 66.6 degrees latitude, so there the chart uses whole-sign houses and houseNote says so. It also gives the North and South Nodes, the true node rather than the mean node, with their signs and houses. If they want to share their big three, give them the returned shareUrl exactly; it carries the Sun, Moon and rising signs, never the birth date.`,
+  get_chinese_zodiac: `${TOOL_DESCRIPTIONS.get_chinese_zodiac} If they want to share it, give them the returned shareUrl exactly; for a birth date it names the animal alone, never the date or the year.`,
+  get_horoscope_period: `${TOOL_DESCRIPTIONS.get_horoscope_period} If they want to share a month's or a year's published reading, give them the returned shareUrl exactly.`,
   explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, Placidus and whole-sign houses, aspects or one aspect, retrogrades, stations and retrograde loops, Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (planets changing sign), the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For the dates of eclipses, stations, sign changes, new and full Moons and void-of-course periods, use search_sky_events. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.",
 };
 /** A tool's published input schema, or its sky events form while that switch is on. */

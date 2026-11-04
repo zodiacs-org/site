@@ -43,6 +43,13 @@ export const PLANET_GLYPH: Record<string, string> = {
   'South Node': `<path d="M8 4.8v3.4a4.3 4.8 0 1 0 8 0V4.8"/>${DOT(8, 4.8, 1.4)}${DOT(16, 4.8, 1.4)}`,
 };
 
+/**
+ * ⚷ Chiron, the key: a K on a stem over a small circle, drawn as PLANET_GLYPH draws a body. The glyph alone: no
+ * chart lists Chiron yet, and it joins PLANET_GLYPH when one does. Kept apart until then because Chart Studio, a
+ * published panel whose bytes are fixed (src/ai-tools/panel-fingerprints.json), bundles PLANET_GLYPH whole.
+ */
+export const CHIRON_GLYPH = `<path d="M11 3.8v10.8M11 9.2l4.6-4.6M11 9.2l4.6 4.6"/><circle cx="11" cy="17.4" r="2.8"/>`;
+
 /** The five major aspects the engine draws. */
 export const ASPECT_GLYPH: Record<string, string> = {
   // ☌ circle with a radiating arm

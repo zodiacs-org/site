@@ -16,7 +16,10 @@
  * system, whole-sign (the default) or Placidus, which falls back to whole sign
  * where the engine cannot draw it (from about 66.6 degrees latitude, the
  * polar-fallback flag), and gives the North and South Nodes: the engine's true
- * node, which it states, with the site's node wording (natal-context.ts).
+ * node, which it states, with the site's node wording (natal-context.ts), and a
+ * share link to the big three's card (src/ai-tools/share-links.ts): the Sun
+ * sign, the Moon sign when the day settles it and the rising sign when it is
+ * known, never the birth date, time or place.
  */
 import { z } from 'zod';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
@@ -30,6 +33,7 @@ import { roundCoordinate } from '../plain-text';
 import { SIGNS, formatLongitude, signIndexForLongitude, type Element, type Modality } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from './reading-guards';
+import { bigThreeShareUrl } from '../share-links';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -148,12 +152,14 @@ const nodeEntry = z.object({
   signLine: z.string().nullable(),
   houseLine: z.string().nullable(),
 });
-/** With ZODIACS_SKY_EVENTS_ENABLED=1: the readout with the house system used, a note when Placidus could not be, and the lunar nodes. */
+/** With ZODIACS_SKY_EVENTS_ENABLED=1: the readout with the house system used, a note when Placidus could not be, the lunar nodes and the big three's share link. */
 export const natalChartDataWithNodes = natalChartData.extend({
   houseSystem: z.enum(NATAL_HOUSE_SYSTEMS).nullable(),
   /** Why the chart has no Placidus houses when they were asked for, in a plain sentence; null otherwise. */
   houseNote: z.string().nullable(),
   nodes: z.object({ node: z.literal(NATAL_NODE), about: z.literal(NATAL_NODE_ABOUT), north: nodeEntry, south: nodeEntry }),
+  /** The big three's card: the Sun sign, the Moon sign when settled, the rising sign when known; never the birth date. Null when the Sun changed sign that day. */
+  shareUrl: z.url().nullable(),
 });
 export type NatalChartDataWithNodes = z.infer<typeof natalChartDataWithNodes>;
 
@@ -360,6 +366,7 @@ export async function getNatalChart(args: NatalChartInput | NatalChartInputWithH
     houseSystem: angles ? (chart.houses?.system === 'placidus' ? 'placidus' : 'whole-sign') : null,
     houseNote,
     nodes,
+    shareUrl: bigThreeShareUrl(origin, { sun: sun.sign, moon: moon.sign, rising: risingSlug }),
   } : null;
   const links = [
     { title: 'Open the birth chart page on Zodiacs', url: chartUrl },

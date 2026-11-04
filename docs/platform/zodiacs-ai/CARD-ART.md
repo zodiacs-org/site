@@ -15,6 +15,7 @@ Cards", Artwork).
 | `sky-calendar-hero` | The sky calendar card, the occasions panel's empty state, share images with no Sun sign |
 | `milestones-hero` | The life milestones card |
 | `twins-hero` | The chart twins card |
+| `chinese-<animal>` | The Chinese zodiac share card and its story: the site's own twelve animal pieces (`public/assets/art/chinese-zodiac/<animal>-1920.webp`), kept 16:9 as `card-art/share/chinese-<animal>-1600.jpg` with the share images' dimming (`node scripts/build-card-art.mjs --chinese-zodiac`). No new art: the renderer draws each piece around where its animal stands (`CHINESE_FOCUS` in `src/server/result-preview.ts`) |
 
 Every prompt ends with the same style line, so new pieces match: painterly,
 dimmed, one warm spotlight, brass clockwork dials, pastel accents, a frontal

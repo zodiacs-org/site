@@ -18,6 +18,10 @@
  * a dozen or more a month, so the slower events stay readable. The sky comes from the compute API's event search
  * (months and weeks) and the committed ingress and eclipse tables (years);
  * nothing is invented when a reading is not published, and the answer says so.
+ *
+ * With ZODIACS_SKY_EVENTS_ENABLED=1 (options.skyEvents) a published month's or
+ * year's reading also comes with a share link to its card
+ * (src/ai-tools/share-links.ts), which carries the sign and the period only.
  */
 import { z } from 'zod';
 import eclipseTable from '../../data/eclipses.json';
@@ -29,6 +33,7 @@ import { HOUSE_THEME, solarHouse } from '../../lib/daily';
 import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
 import { HOROSCOPE_DISCLOSURE, HOROSCOPE_FOCUSES, HOROSCOPE_SIGNS, resolveHoroscope, type HoroscopeFocus } from '../horoscope/reading';
 import { readingConfidence, readingConfidenceLabel } from '../reading-confidence';
+import { horoscopePeriodShareUrl } from '../share-links';
 import type { HoroscopeWindow } from '../horoscope/window';
 import { softenHealth } from './reading-guards';
 
@@ -96,6 +101,17 @@ export const horoscopePeriodData = z.object({
   disclosure: z.string(),
 });
 export type HoroscopePeriodData = z.infer<typeof horoscopePeriodData>;
+/** With ZODIACS_SKY_EVENTS_ENABLED=1: the same answer, and the share link for a published month's or year's reading. */
+export const horoscopePeriodDataWithShare = horoscopePeriodData.extend({
+  /** The card of the month's or year's published reading, by its sign and period alone; null for a week or with no reading. */
+  shareUrl: z.url().nullable(),
+});
+export type HoroscopePeriodDataWithShare = z.infer<typeof horoscopePeriodDataWithShare>;
+
+export interface HoroscopePeriodOptions {
+  /** ZODIACS_SKY_EVENTS_ENABLED=1: add shareUrl. */
+  skyEvents?: boolean;
+}
 
 export interface HoroscopePeriodSources {
   window: () => Promise<HoroscopeWindow>;
@@ -133,7 +149,8 @@ export async function getHoroscopePeriod(
   clock: Pick<LocalTimeModule, 'prepareLocalTime' | 'resolveLocalToUtc'>,
   sources: HoroscopePeriodSources,
   origin: string,
-): Promise<{ data: HoroscopePeriodData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
+  options: HoroscopePeriodOptions = {},
+): Promise<{ data: HoroscopePeriodData | HoroscopePeriodDataWithShare; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
   const focus = args.focus ?? 'general';
   const date = args.date ?? today;
   if (Number.isNaN(Date.parse(`${date}T00:00:00Z`)) || new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date) throw new RangeError('date must be a real date, such as 2026-12-01.');
@@ -253,5 +270,14 @@ export async function getHoroscopePeriod(
     confidenceLabel: readingConfidenceLabel('sign'),
     disclosure: `${HOROSCOPE_DISCLOSURE} ${readingConfidenceLabel('sign')}.`,
   };
-  return { data, links: [{ title: `${signName} horoscopes on Zodiacs`, url: pageUrl }, { title: 'Transits this month', url: `${origin}/transits/` }] };
+  const links = [
+    { title: `${signName} horoscopes on Zodiacs`, url: pageUrl },
+    { title: 'Transits this month', url: `${origin}/transits/` },
+    // The daily email's sign-up, on the sign's own horoscope page.
+    { title: `The ${signName} horoscope by email each morning`, url: `${origin}/horoscopes/${sign}/#daily-email` },
+  ];
+  if (!options.skyEvents) return { data, links };
+  // A week's love or career readings are daily ones; only a published month or year has a card of its own.
+  const shareUrl = reading && args.period !== 'week' ? horoscopePeriodShareUrl(origin, { sign, period: args.period, date: from }) : null;
+  return { data: { ...data, shareUrl }, links };
 }

@@ -19,12 +19,17 @@ import { fullDate, plain } from '../ai-tools/card-kit/words.js';
 import { MILESTONE_WORDS } from '../lib/occasions/milestone-words.js';
 import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
+import { readingConfidence, readingConfidenceText } from '../ai-tools/reading-confidence.js';
+import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac.js';
 import {
   SKY_PLANETS,
+  type BigThreeShare,
   type BirthdayShare,
   type ChartTwinsShare,
+  type ChineseZodiacShare,
   type FamousChartShare,
   type HoroscopeShare,
+  type InviteShare,
   type MilestoneShare,
   type ShareMilestoneKind,
   type SkyCalendarShare,
@@ -57,6 +62,8 @@ export interface CompatibilityCardModel {
   /** For the page title and the image's alternative text. */
   title: string;
   summary: string;
+  /** "Reading confidence 70%", from the link's own value; null on a link made before the label. */
+  confidence: string | null;
 }
 
 export interface OccasionCardModel {
@@ -69,6 +76,8 @@ export interface OccasionCardModel {
   ring: [string, string];
   title: string;
   summary: string;
+  /** "Reading confidence 55%", from the link's own value; null on a link made before the label. */
+  confidence: string | null;
 }
 
 function previewSign(slug: ShareSign | null, body: 'Sun' | 'Moon', unknown: string): PreviewSign {
@@ -100,6 +109,7 @@ export function compatibilityCardModel(share: CompatibilityShare): Compatibility
     ring: [people[0].hue, people[1].hue],
     title: `${first} and ${second}: ${share.score}/100`,
     summary: `${verdict}. Attraction ${share.attraction}, communication ${share.communication}, long-term stability ${share.stability}.`,
+    confidence: share.confidence === null ? null : readingConfidenceText(share.confidence),
   };
 }
 
@@ -133,6 +143,7 @@ export function occasionCardModel(share: OccasionShare): OccasionCardModel {
     ring,
     title: `${share.names ? `${share.names}: ` : ''}${OCCASION_LABELS[share.occasion].replace(/ \(.*\)$/u, '')}, ${share.score}/100`,
     summary: `${verdict}. ${when}.`,
+    confidence: share.confidence === null ? null : readingConfidenceText(share.confidence),
   };
 }
 
@@ -285,16 +296,32 @@ export function skyCalendarCardModel(share: SkyCalendarShare, events: readonly S
 export interface HoroscopeCardModel {
   sign: PreviewSign;
   signName: string;
-  /** "Horoscope for Saturday 17 October", "Love horoscope for …", "Horoscope for 12 to 18 October". */
+  /** "Horoscope for Saturday 17 October", "Love horoscope for …", "Horoscope for 12 to 18 October", "Horoscope for November 2026", "Horoscope for 2026". */
   kicker: string;
   /** "Leo horoscope for Saturday 17 October", for the page. */
   heading: string;
-  /** The reading's line for the sign ("For Leo, …"), or the sign's dates when the reading is no longer kept. */
+  /** The reading's line for the sign ("For Leo, …", or a month's or year's opening sentence), or the sign's dates when the reading is no longer kept. */
   line: string;
   /** The reading's first passage, when it is kept. */
   passage: string | null;
+  /** "Reading confidence 40%": a Sun-sign reading's label, whenever the card quotes the reading. */
+  confidence: string | null;
   hue: string;
 }
+
+/** The published monthly readings, as src/data/horoscope-months.json holds them. */
+export interface PublishedMonths { months: Readonly<Record<string, Readonly<Record<string, { published: string; paragraphs: readonly string[] }>>>> }
+/** The yearly readings the horoscope program publishes, as src/data/horoscope-program.json holds them. */
+export interface PublishedYears {
+  signs: readonly { sign: string; readings: Readonly<Record<string, { status: string; passages: readonly { heading?: string; text: string }[] } | undefined>> }[];
+}
+
+/** The longest opening a month's or year's card quotes; a longer first sentence gives way to the next one that fits. */
+const PERIOD_LINE_MAX = 150;
+const SIGN_READING_CONFIDENCE = readingConfidenceText(readingConfidence('sign'));
+const sentences = (text: string) => text.split(/(?<=[.!?])\s+/u).filter(Boolean);
+/** A monthly reading is served from its first day, as the monthly page is; the earliest clock on Earth reaches it first (UTC+14). */
+const servedBy = (published: string, now: Date) => Date.parse(`${published}T00:00:00+14:00`) <= now.getTime();
 
 const addDays = (date: string, days: number) => new Date(Date.parse(`${date}T12:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
 const MONTH_DAY = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' });
@@ -309,20 +336,26 @@ function weekWords(from: string, through: string): string {
  * the week, from the horoscope window the assistant reads. It quotes the
  * reading's own line for the sign; the link never carries any text.
  */
-export function horoscopeCardModel(share: HoroscopeShare, window: Pick<HoroscopeWindow, 'editions'>): HoroscopeCardModel | null {
+export function horoscopeCardModel(
+  share: HoroscopeShare,
+  window: Pick<HoroscopeWindow, 'editions'>,
+  periods: { months?: PublishedMonths; years?: PublishedYears; now?: Date } = {},
+): HoroscopeCardModel | null {
+  if (share.period === 'month' || share.period === 'year') return periodHoroscopeModel(share, periods);
   const name = signName(share.sign);
+  const week = share.period === 'week';
   // A day or week after the latest the window holds has not been published yet, so there is nothing to share.
-  const published = window.editions.map((edition) => (share.week ? edition.signs[share.sign].weekly.period.from : edition.anchorDate));
+  const published = window.editions.map((edition) => (week ? edition.signs[share.sign].weekly.period.from : edition.anchorDate));
   const latest = published.length ? published.reduce((a, b) => (b > a ? b : a)) : null;
   if (!latest || share.date > latest) return null;
-  const reading = share.week
+  const reading = week
     ? window.editions.map((edition) => edition.signs[share.sign].weekly).find((candidate) => candidate.period.from === share.date)
     : window.editions.find((edition) => edition.anchorDate === share.date)?.signs[share.sign][share.focus === 'general' ? 'today' : share.focus];
   const kept = reading && reading.status === 'publishable' ? reading : null;
   const text = kept ? kept.passages.map((passage) => passage.text).join(' ') : '';
   const quoted = new RegExp(`For ${name}, [^.!?]+[.!?]`, 'u').exec(text)?.[0];
-  const when = share.week ? weekWords(share.date, kept?.period.through ?? addDays(share.date, 6)) : dayLabel(share.date);
-  const focusWord = share.week || share.focus === 'general' ? '' : `${cap(share.focus)} `;
+  const when = week ? weekWords(share.date, kept?.period.through ?? addDays(share.date, 6)) : dayLabel(share.date);
+  const focusWord = week || share.focus === 'general' ? '' : `${cap(share.focus)} `;
   return {
     sign: sunOf(share.sign),
     signName: name,
@@ -330,6 +363,42 @@ export function horoscopeCardModel(share: HoroscopeShare, window: Pick<Horoscope
     heading: `${name} ${focusWord.toLowerCase()}horoscope for ${when}`,
     line: quoted ? plain(quoted) : plain(signBySlug(share.sign).dates),
     passage: kept?.passages[0] ? plain(kept.passages[0].text) : null,
+    // A Sun-sign reading is read from the sign alone (src/ai-tools/reading-confidence.ts); a card that no longer quotes one shows no label.
+    confidence: quoted ? SIGN_READING_CONFIDENCE : null,
+    hue: HUES[share.sign],
+  };
+}
+
+/**
+ * A month's or year's horoscope: the reading the site publishes for the sign (the monthly page's text, served from
+ * the month's first day, or the program's yearly reading), quoting its opening sentence. Null when the site does not
+ * publish that reading, so a link can only show what the site says.
+ */
+function periodHoroscopeModel(share: HoroscopeShare, periods: { months?: PublishedMonths; years?: PublishedYears; now?: Date }): HoroscopeCardModel | null {
+  const name = signName(share.sign);
+  let paragraphs: readonly string[] | null = null;
+  let when: string;
+  if (share.period === 'month') {
+    const month = share.date.slice(0, 7);
+    const entry = periods.months?.months[month]?.[share.sign];
+    if (entry && servedBy(entry.published, periods.now ?? new Date())) paragraphs = entry.paragraphs;
+    when = `${MONTH_NAMES[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
+  } else {
+    const year = share.date.slice(0, 4);
+    const reading = periods.years?.signs.find((entry) => entry.sign === share.sign)?.readings[`yearly-${year}`];
+    if (reading && reading.status === 'publishable') paragraphs = reading.passages.map((passage) => passage.text);
+    when = year;
+  }
+  if (!paragraphs || paragraphs.length === 0) return null;
+  const line = paragraphs.flatMap((paragraph) => sentences(plain(paragraph))).find((sentence) => sentence.length <= PERIOD_LINE_MAX);
+  return {
+    sign: sunOf(share.sign),
+    signName: name,
+    kicker: `Horoscope for ${when}`,
+    heading: `${name} horoscope for ${when}`,
+    line: line ?? plain(signBySlug(share.sign).dates),
+    passage: plain(paragraphs[0]),
+    confidence: line ? SIGN_READING_CONFIDENCE : null,
     hue: HUES[share.sign],
   };
 }
@@ -467,4 +536,97 @@ export function milestoneCardModel(share: MilestoneShare): MilestoneCardModel {
     about: MILESTONE_WORDS[share.kind].about,
     hue: HUES[MILESTONE_SIGN[share.kind]],
   };
+}
+
+// ── The big three, the Chinese zodiac and an invitation (src/ai-tools/share-links.ts) ──
+
+export interface BigThreeCardModel {
+  sun: ShareSign;
+  /** The signs the card's discs show: the Sun, then the Moon and rising sign when the link names them. */
+  signs: PreviewSign[];
+  /** The rows as the card sets them: "Leo Sun", "Aries Moon" or "Moon sign undetermined", and "Libra rising" when it is known. */
+  rows: { slug: ShareSign | null; text: string }[];
+  /** "Leo Sun, Aries Moon, Libra rising", for the page. */
+  title: string;
+  /** What the three are, and what the chart could not settle. */
+  about: string;
+  hue: string;
+}
+
+/** The big three: the Sun, the Moon or that its sign is undetermined, and the rising sign only when it is known. */
+export function bigThreeCardModel(share: BigThreeShare): BigThreeCardModel {
+  const rows: BigThreeCardModel['rows'] = [
+    { slug: share.sun, text: `${signName(share.sun)} Sun` },
+    share.moon ? { slug: share.moon, text: `${signName(share.moon)} Moon` } : { slug: null, text: 'Moon sign undetermined' },
+    ...(share.rising ? [{ slug: share.rising, text: `${signName(share.rising)} rising` }] : []),
+  ];
+  const unsettled = [
+    ...(share.moon ? [] : ['The Moon changed sign on the birth day, so its sign needs the birth time.']),
+    ...(share.rising ? [] : ['The rising sign needs the birth time and place.']),
+  ];
+  return {
+    sun: share.sun,
+    signs: [
+      sunOf(share.sun),
+      ...(share.moon ? [{ slug: share.moon, label: `${signName(share.moon)} Moon`, hue: HUES[share.moon] }] : []),
+      ...(share.rising ? [{ slug: share.rising, label: `${signName(share.rising)} rising`, hue: HUES[share.rising] }] : []),
+    ],
+    rows,
+    title: rows.map((row) => row.text).join(', '),
+    about: ['The big three: the Sun sign, the Moon sign and the rising sign.', ...unsettled].join(' '),
+    hue: HUES[share.sun],
+  };
+}
+
+export interface ChineseZodiacCardModel {
+  slug: string;
+  /** "Horse" */
+  name: string;
+  /** "The Fire Horse" for a year, "The Horse" for a birth date's animal. */
+  title: string;
+  /** "2026, a yang year", or "Born in a Horse year" (an Ox year): a birth date's card names no year. */
+  detail: string;
+  year: number | null;
+  /** The year's element and yin or yang, from its Heavenly Stem; null without a year. */
+  element: string | null;
+  yinYang: 'yin' | 'yang' | null;
+  /** The animal's traditional associations, in the site's guide's words. */
+  association: string;
+  context: string;
+}
+
+const CHINESE_ELEMENTS = ['wood', 'fire', 'earth', 'metal', 'water'] as const;
+
+/** A Chinese year's element and yin or yang from its Heavenly Stem: two years each, wood first, from 1984 (甲子), as get_chinese_zodiac gives them. */
+export function chineseYearElement(year: number): { element: typeof CHINESE_ELEMENTS[number]; yinYang: 'yin' | 'yang' } {
+  const stem = ((year - 1984) % 10 + 10) % 10;
+  return { element: CHINESE_ELEMENTS[Math.floor(stem / 2)], yinYang: stem % 2 === 0 ? 'yang' : 'yin' };
+}
+
+/** The Chinese zodiac: the animal, and with a year its element and yin or yang. */
+export function chineseZodiacCardModel(share: ChineseZodiacShare): ChineseZodiacCardModel | null {
+  const animal = CHINESE_ZODIAC_ANIMALS.find((entry) => entry.slug === share.animal);
+  if (!animal) return null;
+  const base = { slug: animal.slug, name: animal.name, association: animal.association, context: animal.context };
+  const article = /^[AEIOU]/u.test(animal.name) ? 'an' : 'a';
+  if (share.year === null) return { ...base, title: `The ${animal.name}`, detail: `Born in ${article} ${animal.name} year`, year: null, element: null, yinYang: null };
+  const { element, yinYang } = chineseYearElement(share.year);
+  return { ...base, title: `The ${cap(element)} ${animal.name}`, detail: `${share.year}, a ${yinYang} year`, year: share.year, element, yinYang };
+}
+
+export interface InviteCardModel {
+  signs: PreviewSign[];
+  /** "Leo and Aries. Two birth charts, read together." */
+  line: string;
+  /** The first sign's hue, for the kicker. */
+  hue: string;
+  /** The Sun sign the ring brings to the front: the inviting person's, when known. */
+  front: ShareSign | null;
+}
+
+/** An invitation to compare charts: the Sun signs it names, and nothing else about either person. */
+export function inviteCardModel(share: InviteShare): InviteCardModel {
+  const signs = [share.sun, share.partner].filter((slug): slug is ShareSign => slug !== null).map(sunOf);
+  const names = signs.length === 2 ? `${signName(signs[0].slug!)} and ${signName(signs[1].slug!)}` : `${signName(signs[0].slug!)} Sun`;
+  return { signs, line: `${names}. Two birth charts, read together.`, hue: signs[0].hue, front: share.sun };
 }

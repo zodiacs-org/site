@@ -36,9 +36,16 @@ unchanged local tools. 0.6.1 and 0.3.21 keep their bytes. Developer 0.3.23 is
 rebuilt from the 0.6.2 source that adds `search_sky_events`, the natal chart's
 lunar nodes and Placidus houses behind `ZODIACS_SKY_EVENTS_ENABLED`, which its
 local server does not set; its local tools are unchanged, Zodiacs stays 0.6.2,
-and 0.3.22 keeps its bytes.
+and 0.3.22 keeps its bytes. Developer 0.3.24 is rebuilt from the 0.6.2 source
+whose answers link back to zodiacs.org (the sky calendar beside `get_sky` and
+`check_sky_fact`, the daily horoscope email, an invitation after a reading of
+two adults) and whose compatibility and date share links carry the reading
+confidence; the big three, Chinese zodiac and month or year horoscope share
+links and the readings panel that lists the lunar nodes stay behind
+`ZODIACS_SKY_EVENTS_ENABLED`. Its local chart tools are unchanged, Zodiacs
+stays 0.6.2, and 0.3.23 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.23**;
+Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.24**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

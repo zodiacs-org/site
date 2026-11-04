@@ -1,14 +1,18 @@
 /**
  * Browser drive for the readings panel: real Chromium, a synthetic host
  * bridge, results from the real coverage tools and find_birthplace. Writes
- * docs/platform/zodiacs-ai/evidence/readings-leo-scorpio.png. Run with
- * npx vite-node --script tests/ai-readings-drive.ts.
+ * docs/platform/zodiacs-ai/evidence/readings-leo-scorpio.png. Then the panel
+ * offered while ZODIACS_SKY_EVENTS_ENABLED=1: its birth chart lists the lunar
+ * nodes, each body with its glyph. Run with
+ * npx vite-node --script tests/ai-readings-drive.ts [-- --out <dir>] (the
+ * second panel's screenshot goes to <dir> when given).
  */
 import assert from 'node:assert/strict';
 import { mkdir, readFile } from 'node:fs/promises';
 import { chromium, type Page } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { READINGS_HTML } from '../integrations/generated/readings.mjs';
+import { READINGS_SKY_EVENTS_HTML } from '../integrations/generated/readings-sky-events.mjs';
 import { executeAiTool } from '../src/ai-tools/tools';
 import { loadPlaceTable } from '../src/ai-tools/features/place-table';
 import committedWindow from '../src/data/horoscope-window.json';
@@ -40,6 +44,11 @@ const period = await result('get_horoscope_period', { sign: 'leo', period: 'mont
 const animal = await result('get_chinese_zodiac', { birthDate: '1990-01-20', zone: 'Asia/Shanghai' });
 const transits = await result('get_personal_transits', { birthDate: '1990-05-03', from: '2026-11-01', to: '2026-11-15', currentZone: 'America/New_York' });
 const term = await result('explain_astrology', { topic: 'Are Leo and Scorpio compatible?' });
+// With the sky events switch: the same chart with its lunar nodes.
+const withNodes = await executeAiTool('get_natal_chart', { birthDate: '1990-05-03', time: '08:30', zone: madrid.timeZone, latitude: madrid.latitude, longitude: madrid.longitude }, { ...dependencies, skyEvents: true });
+assert.equal(withNodes.ok, true, 'get_natal_chart answered with the sky events switch');
+const argv = process.argv.slice(2);
+const shots = argv.includes('--out') ? new URL(`file://${argv[argv.indexOf('--out') + 1].replace(/\/?$/u, '/')}`) : null;
 
 async function show(page: Page, structuredContent: unknown) {
   await page.evaluate(content => {
@@ -119,5 +128,29 @@ try {
   checked.push('a Sun-sign pair: the pair page, the under-18 guidance and no confidence label');
   assert.equal(errors.join('\n'), '');
   await page.screenshot({ path: new URL('readings-leo-scorpio.png', out).pathname, fullPage: true });
+
+  // The panel offered while ZODIACS_SKY_EVENTS_ENABLED=1: the published one, but the birth chart lists the lunar nodes.
+  const nodesPage = await context.newPage();
+  nodesPage.on('pageerror', error => errors.push(error.message));
+  await nodesPage.setContent(READINGS_SKY_EVENTS_HTML);
+  await show(nodesPage, withNodes);
+  await nodesPage.getByRole('heading', { name: 'Taurus Sun' }).waitFor();
+  await unfold(nodesPage);
+  const nodesSection = nodesPage.locator('section.card-section', { has: nodesPage.getByRole('heading', { name: 'The lunar nodes' }) });
+  const nodeText = await nodesSection.innerText();
+  const north = (withNodes as unknown as { data: { nodes: { north: { sign: string } ; south: { sign: string } } } }).data.nodes;
+  assert.match(nodeText, new RegExp(`North Node\\s+${north.north.sign.charAt(0).toUpperCase()}${north.north.sign.slice(1)}`, 'u'));
+  assert.match(nodeText, new RegExp(`South Node\\s+${north.south.sign.charAt(0).toUpperCase()}${north.south.sign.slice(1)}`, 'u'));
+  // Every body row, the planets' and the nodes', leads with its glyph.
+  assert.equal(await nodesPage.locator('dl.facts dt svg').count(), 10);
+  assert.equal(await nodesSection.locator('dt svg').count(), 2);
+  assert.equal(await nodesPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  assert.equal(errors.join('\n'), '');
+  checked.push(`sky events panel: the birth chart lists the North Node in ${north.north.sign} and the South Node in ${north.south.sign}, each body with its glyph`);
+  if (shots) {
+    await mkdir(shots, { recursive: true });
+    await nodesSection.scrollIntoViewIfNeeded();
+    await nodesPage.screenshot({ path: new URL('readings-sky-events-nodes.png', shots).pathname, fullPage: true });
+  }
 } finally { await browser.close(); }
 console.log(`Readings panel drive:\n- ${checked.join('\n- ')}`);

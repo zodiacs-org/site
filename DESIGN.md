@@ -383,7 +383,20 @@ one line.
 | A date | `/api/og/occasion-image` | "Our wedding", "Ana & Luis", "69 out of 100. A good day for it" |
 | A birthday | `/api/og/birthday-image` | "A birthday", "3 May birthdays", "Taurus Sun" (a cusp date: both signs, "On the cusp of Aries and Taurus"); with a famous birthday, "Taurus Sun, like Audrey Hepburn" |
 | Sky calendar | `/api/og/sky-calendar-image` | "Sky calendar", "The sky in your calendar", "Mercury retrograde, Sat 24 Oct to Fri 13 Nov." (no disc: it names no sign, as on its card) |
-| A horoscope | `/api/og/horoscope-image` | "Horoscope for Saturday 17 October", "Leo", the reading's own line for the sign ("For Leo, …") |
+| A horoscope | `/api/og/horoscope-image` | "Horoscope for Saturday 17 October", "Leo", the reading's own line for the sign ("For Leo, …"); a month's or year's ("Horoscope for November 2026", "Horoscope for 2026") quotes the published reading's first sentence of 150 characters or fewer |
+| The big three | `/api/og/big-three-image` | "The big three", then a row for each with its disc: "Leo Sun", "Aries Moon" or, in italic beside an empty ring, "Moon sign undetermined", and "Libra rising" only when it is known; the Sun's panel faces the Moon's when the Moon is settled |
+| Chinese zodiac | `/api/og/chinese-zodiac-image` | "Chinese zodiac", "The Fire Horse", "2026, a yang year" in italic, the animal's traditional associations; for a birth date's animal, "The Horse", "Born in a Horse year" and no year or element. The animal's own piece (`public/assets/art/chinese-zodiac/`) is a plate on the right, drawn around where the animal stands, faded into the ground on its left; no disc |
+| An invitation | `/api/og/invite-image` | "An invitation", "Compare our charts", "Taurus and Scorpio. Two birth charts, read together." on the two Sun signs' panels facing each other; its page leads to the private invite at `/compatibility/invite/` |
+
+A card that shows a forecast or a score prints its "Reading confidence NN%"
+(`src/ai-tools/reading-confidence.ts`) under its line in the cards' muted ink,
+24px on the preview and 30px on the story: a horoscope's 40% whenever it
+quotes a published reading, and a compatibility score's or a date's from the
+link's own `c`, which carries only a value the rule gives for that reading
+(55, 60, 70 or 75 for two charts; 55 or 70 for a day). A link made before the
+label opens as it did, without one. The big three, the Chinese zodiac and an
+invitation forecast nothing and carry no label. Their stories with two panels
+fade out above the panels' lower edge.
 
 Their links (`src/lib/share-results.ts`, `src/ai-tools/share-links.ts`)
 carry only what the picture shows, and the server checks the last three
