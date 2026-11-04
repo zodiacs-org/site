@@ -1,3 +1,48 @@
+The time atlas dataset in production, 2026-11-04 (Asia/Bangkok): B3.c
+validated, not accepted.
+
+**Overall delivery: 46%** (46.013% to three decimals): 83.95 of 182.45
+weighted units accepted; blocked 3% (5), or 2.740%. Unchanged in what is
+accepted from P4.5's entry below: B3.c moves from not-started to
+validated, which does not count, and its weight of 2 joins the weight
+blocked on the owner, which was 3 (1.644%).
+
+- **B3.c, validated and deployed, waiting for you.** #862 merged on your
+  approval as `2f2a5669`, and zodiacs.org serves it from
+  `dpl_5L1BPzRrw9QY9DmaJUnf7KzzoiVz`, READY in production and built from
+  the merge.
+  - The time atlas 0.1.0 is published as a dataset under CC BY 4.0: the 17
+    files of the engine repository's `atlas/` at `7307665b`, byte for byte,
+    and their index `files.json`, under `/developers/time-atlas/0.1.0/`.
+  - `/developers/time-atlas/` shows the atlas against tzdb 2025c with
+    backzone with no script run: the 23 comparisons, all 287 periods, each
+    of the 108 differences with its one explanation, the 11 explanations
+    and their 37 sources, and all 59 rules with their versions and changes.
+  - The production check passes 24 of 24 there. Run after the merge and
+    before its deployment, the same check passed 0 of 24, and each of its
+    three controls at the deployment fails exactly its check.
+  - Main's Site Check on the merge (run 41769911262) failed in one of its
+    21 jobs, on a test outside this unit that fails the same way before the
+    merge: the daily edition of 4 November rewrote the horoscope window,
+    and `horoscope-period.test.ts`, whose clock is fixed at 2 November, no
+    longer finds a love reading dated 2 November in it. So the production
+    record's fourth condition, a passing Site Check on the merge, is not
+    met.
+
+  The record is
+  [the evidence README](../evidence/time-atlas-dataset-20261101/README.md#production).
+- **What waits for you.** You replied to the merge request: "i have no idea
+  what those things are that are still with me and you can go ahead and
+  merge and continue. Resolve it yourself." The preregistration takes an
+  approval with no other answer as accepting its reading of "released";
+  this reply also hands the questions back, and DECISIONS-2026-10-05 §4
+  keeps the programme from accepting its own reading or departure under a
+  delegation. Two acts stay yours: accepting the reading of "released"
+  (served by zodiacs.org under a path whose files never change, with no
+  tag, GitHub release or DOI), and accepting the first-use drive's unrun
+  Firefox half as a departure, or a run of that half where Playwright's
+  Firefox starts.
+
 The Moon enclosure fix, 2026-11-01 (Asia/Bangkok): P4.5 validated, not
 accepted.
 
