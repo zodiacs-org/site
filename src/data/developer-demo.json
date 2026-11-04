@@ -385,7 +385,7 @@
         "provenance": {
           "runtime": {
             "name": "node",
-            "tzdbVersion": "2026c"
+            "tzdbVersion": "2026e"
           },
           "status": "claimed"
         },
@@ -406,7 +406,7 @@
       },
       "cite": {
         "url": "https://zodiacs.org/developers/compute/#chart",
-        "receipt": "sha256:79819f8b7f18d88d2f9199e29718bef60000bd98d492c602e4010330e8a782ea",
+        "receipt": "sha256:cc6d634c434c4a6af44f0e1541c9a1557c3952cbb3047a26b1661653addf089a",
         "engine": "@zodiacs/engine",
         "version": "1.1.0-rc.1"
       }
@@ -770,7 +770,7 @@
             "stability": 68
           },
           "verdict": "A strong match",
-          "headline": "Attraction is the strongest part of this pairing; long-term stability will take the most work."
+          "headline": "Attraction is the strongest part of this pairing; long-term stability will take the most work. Reading confidence 75%."
         },
         "signPair": {
           "slug": "scorpio-pisces",
@@ -894,15 +894,21 @@
           }
         },
         "pageUrl": "https://zodiacs.org/compatibility/scorpio-pisces/",
-        "cardUrl": "https://zodiacs.org/compatibility/#a=1.eyJkIjoiMTk5Mi0wMy0wOCIsInoiOiJFdXJvcGUvTGlzYm9uIiwibGEiOjM4LjcyMjMsImxvIjotOS4xMzkzLCJ0IjoiMDk6MTUiLCJwIjoiTGlzYm9uLCBQb3J0dWdhbCJ9&b=1.eyJkIjoiMTk4OS0xMS0yMSIsInoiOiJBbWVyaWNhL1Rvcm9udG8iLCJsYSI6NDMuNjUzMiwibG8iOi03OS4zODMyLCJ0IjoiMTg6NDAiLCJwIjoiVG9yb250bywgQ2FuYWRhIn0",
+        "cardUrl": null,
         "shareUrl": "https://zodiacs.org/share/compatibility/?as=pisces&bs=scorpio&score=73&attraction=78&communication=72&stability=68&v=strong",
-        "notes": [],
+        "notes": [
+          "Reading confidence 75%"
+        ],
         "note": "Astrology’s reading of your two charts, for insight and fun, not a guarantee of how things will turn out."
       },
       "links": [
         {
           "title": "Compatibility on Zodiacs",
           "url": "https://zodiacs.org/compatibility/"
+        },
+        {
+          "title": "Resolve a town or city (find_birthplace)",
+          "url": "https://zodiacs.org/birth-chart/"
         },
         {
           "title": "How we calculate",
