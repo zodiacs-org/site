@@ -106,7 +106,10 @@ committed bundles of the base, `0bf69bd5` (the `-main` files):
 In each, the same 45 bindings of the copy are gone and `RAD32` is new, and
 the nine write sites gone are the copy's; every other write site is main's.
 All three move the Chart Studio panel's address to `chart-studio-v7.html`,
-keeping v6 as a legacy address, because the panel embeds the engine.
+keeping v6 as a legacy address, because the panel embeds the engine. D-12
+(see the README) later takes that move back: the three bundles name
+`chart-studio-v6.html` again, as main's do, and nothing else this review
+covers changes.
 
 ## Limits
 

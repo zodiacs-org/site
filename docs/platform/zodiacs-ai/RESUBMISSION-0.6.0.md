@@ -33,14 +33,8 @@ in `claude-directory/RESYNC-0.6.0.md`.
   joins `ZODIACS_OCCASIONS_ENABLED=1`; until then production lists the
   thirteen tools under review, unchanged except the reported version.
 - The thirteen tools' definitions are byte for byte the live ones of
-  1 November (`src/ai-tools/release-060.test.ts`) apart from one field, so a
-  rescan would show five new definitions and that one changed field. Since
-  4 November, when the site adopted engine 1.1.0-rc.2, `open_chart_studio`'s
-  `_meta` names Chart Studio's panel at `ui://zodiacs/chart-studio-v7.html`
-  in place of `chart-studio-v6.html` (in `ui.resourceUri` and
-  `openai/outputTemplate`): the panel embeds the engine, so its bytes changed
-  and it took a new address. The v6 address, which the copy scanned on
-  27 October names, stays registered and serves the same panel.
+  1 November (`src/ai-tools/release-060.test.ts`), so a rescan would show five
+  new definitions and no changed ones.
 - **About** (2,529 characters; the plugin's `longDescription` and the
   submission's `app_info.description` are the same text): it now names the
   compatibility score out of 100 and the date rating out of 100 accurately, and

@@ -92,8 +92,9 @@ on Node 24.21.0, as for 1.1.0-rc.1). Nothing here is recorded `accepted`.
   rides this commit with an artifact commit of forty zeros; Phase J pins it
   to this commit (D-5).
 - **Developer plugin 0.3.21** (0.3.20 went to #877). `npm run ai:check`
-  passes. Chart Studio's panel moves to `chart-studio-v7.html`, v6 staying a
-  legacy address, because the panel embeds the engine.
+  passes. This commit moved Chart Studio's panel to `chart-studio-v7.html`,
+  v6 staying a legacy address, because the panel embeds the engine; D-12
+  takes the move back.
 - **Accuracy refresh** ([accuracy-refresh/](accuracy-refresh/)). Both Swiss
   statistics runs, on 1.1.0-rc.2: every statistic equals 1.1.0-rc.1's, and
   only the engine version and the digest of the per-instant dump differ.
@@ -192,7 +193,7 @@ Apart from the bundle gate's tests above, two tests fail:
   published tools to that list, and the move to v7 that the plan's I-8
   makes, because the panel embeds the engine, changes one of them. Neither
   the test nor the move is changed in this commit; the next one settles it
-  (D-11).
+  (D-11), and D-12 later restores the test as it was.
 
 ## The site checks
 
@@ -268,6 +269,7 @@ recorded `accepted`.
   `product.ai-coverage-tools` cited a test by the title D-11 had renamed;
   `64096451` restates that claim (D-11 below), and the second attempt, citing
   the first, passed (the claims test and `release-060.test.ts`, 23 of 23).
+  D-12 later puts the claim and the test back as they are on main.
 - **B6 (J-7)** ([lite/b6-check-16.txt](lite/b6-check-16.txt)): check 16
   passes (the validator 12,109 of 12,109 checks); run on a scratch copy of
   the pilot table's text with Mercury's exaltation in Gemini it finds 2
@@ -373,7 +375,8 @@ so does OQ10's Q5.
 - **D-10.** Both pull requests are merged with merge commits when every
   check is green; the units are recorded `validated`, with the owner's
   ratification as their blocker, and nothing is recorded `accepted`.
-- **D-11** (4 November, after the adoption commit). Chart Studio moves to
+- **D-11** (4 November, after the adoption commit; withdrawn by D-12).
+  Chart Studio moves to
   `chart-studio-v7.html`, as the plan's I-8 says, and
   `src/ai-tools/release-060.test.ts` names that one move. The thirteen
   published tools must still match the live `tools/list` of 1 November byte
@@ -395,3 +398,23 @@ so does OQ10's Q5.
   cited the test by its old title, now names the one moved address and cites
   both tests; the claims test failed on the old title in Phase J (J-6, rule
   R3) and passed on the change.
+- **D-12** (4 November, after the gate's first run on `e7068c9d`). D-11 is
+  withdrawn. Main's #881, merged at 12:51Z that day, added a product rule to
+  `AGENTS.md`: the 13 published MCP tool definitions stay byte-identical
+  (`src/ai-tools/release-060.test.ts`). D-11's move changes one field of one
+  of them, so the panel keeps the bytes `chart-studio-v6.html` was recorded
+  with, the other way D-11 named, but without a second engine:
+  `scripts/build-chart-studio.mjs` pins the published panel (`PUBLISHED`).
+  The source still builds, on 1.1.0-rc.2, so a broken source fails, but
+  `integrations/generated/chart-studio.mjs` keeps the bytes engine
+  1.1.0-rc.1 built, which must match v6's recorded fingerprint, and
+  `STUDIO_URI` must stay v6. `contracts.ts`, `panel-fingerprints.json`, the
+  generated panel, `release-060.test.ts`, the two portal notes and the claim
+  `product.ai-coverage-tools` are back to their bytes on main, as are the
+  panel addresses in the MCP and staging drives; the flag-off fixture,
+  captured again, differs from main's only in the engine's version. v7 was
+  never pushed, so its fingerprint goes with it. Until a release may change the
+  definitions, Chart Studio's panel therefore runs engine 1.1.0-rc.1, while
+  the site, the MCP server's tools and the developer plugin run 1.1.0-rc.2;
+  to end the pin, set `PUBLISHED` to null and give the panel a new address.
+  Its controls are in [d12-chart-studio-pin.txt](d12-chart-studio-pin.txt).
