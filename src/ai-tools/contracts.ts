@@ -59,7 +59,7 @@ export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
 /** The occasion tools' panel, offered only while ZODIACS_OCCASIONS_ENABLED=1. */
 export const OCCASIONS_URI = 'ui://zodiacs/occasions-v8.html';
 /** The five coverage tools' panel. Registered only while those tools are offered. */
-export const READINGS_URI = 'ui://zodiacs/readings-v1.html';
+export const READINGS_URI = 'ui://zodiacs/readings-v2.html';
 export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v7.html', 'ui://zodiacs/occasions-v6.html', 'ui://zodiacs/occasions-v5.html', 'ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 

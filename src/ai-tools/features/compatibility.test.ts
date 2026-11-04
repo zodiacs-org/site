@@ -120,6 +120,27 @@ describe('computeCompatibility', () => {
     expect(data.elements.a.fire + data.elements.a.earth + data.elements.a.air + data.elements.a.water).toBe(10);
   });
 
+  it('leaves the romance score out when both birth dates are under 18', async () => {
+    const today = new Date('2026-11-04T12:00:00Z');
+    const args = compatibilityInput.parse({ a: { birthDate: '2015-06-01' }, b: { birthDate: '2014-03-03' } });
+    const { data } = await computeCompatibility(args, localTime, 'https://zodiacs.org', today);
+    expect(compatibilityData.parse(data)).toEqual(data);
+    expect(data.score.areas.attraction).toBe(data.score.areas.communication);
+    expect(data.score.headline).not.toMatch(/^Attraction\b/u);
+    expect(data.score.headline).toMatch(/under 18/u);
+    expect(data.shareUrl).toBeNull();
+    expect(data.notes.some((note) => note.includes('not a romance rating'))).toBe(true);
+    expect(data.contacts.map((row) => row.line).join(' ')).not.toMatch(/\b(romance|romantic|intimacy)\b/iu);
+    const mixed = await computeCompatibility(
+      compatibilityInput.parse({ a: { birthDate: '2015-06-01' }, b: { birthDate: '1990-04-10' } }),
+      localTime,
+      'https://zodiacs.org',
+      today,
+    );
+    expect(mixed.data.shareUrl).not.toBeNull();
+    expect(mixed.data.notes.some((note) => note.includes('under 18'))).toBe(false);
+  });
+
   it('refuses inputs the calculation cannot take', async () => {
     expect(compatibilityInput.safeParse({ a: { birthDate: '1990-01-01', time: '10:00' }, b: { birthDate: '1990-01-01' } }).success).toBe(false);
     expect(compatibilityInput.safeParse({ a: { birthDate: '1990-01-01', zone: 'UTC', latitude: 10 }, b: { birthDate: '1990-01-01' } }).success).toBe(false);

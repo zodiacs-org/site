@@ -29,7 +29,7 @@ import { HOUSE_THEME, solarHouse } from '../../lib/daily';
 import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
 import { HOROSCOPE_FOCUSES, HOROSCOPE_SIGNS, resolveHoroscope, type HoroscopeFocus } from '../horoscope/reading';
 import type { HoroscopeWindow } from '../horoscope/window';
-import { forecastConfidence, softenHealth, withConfidence } from './reading-guards';
+import { PUBLISHED_READING_CONFIDENCE, forecastConfidence, softenHealth, withConfidence } from './reading-guards';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -170,7 +170,7 @@ export async function getHoroscopePeriod(
     const month = from.slice(0, 7);
     const entry = servedMonths.includes(month) ? months.months[month][sign] : undefined;
     if (entry) {
-      reading = { title: `${signName} · ${label}`, paragraphs: entry.paragraphs.map((text) => ({ text })), published: entry.published, confidence: 85 };
+      reading = { title: `${signName} · ${label}`, paragraphs: entry.paragraphs.map((text) => ({ text })), published: entry.published, confidence: PUBLISHED_READING_CONFIDENCE };
       if (month === servedMonths.at(-1)) pageUrl = `${origin}/horoscopes/${sign}/monthly/`;
     } else notes.push(month > today.slice(0, 7)
       ? `The ${label} reading for ${signName} isn't published yet; monthly readings appear on the first of the month.`
@@ -178,7 +178,7 @@ export async function getHoroscopePeriod(
   } else if (args.period === 'year') {
     const yearly = program.signs.find((entry) => entry.sign === sign)?.readings[`yearly-${label}` as keyof HoroscopeProgram['signs'][number]['readings']];
     if (yearly && yearly.status === 'publishable') {
-      reading = { title: yearly.title, paragraphs: yearly.passages.map((passage) => (passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })), published: null, confidence: 85 };
+      reading = { title: yearly.title, paragraphs: yearly.passages.map((passage) => (passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })), published: null, confidence: PUBLISHED_READING_CONFIDENCE };
       pageUrl = `${origin}/horoscopes/${sign}/${label}/`;
     } else notes.push(`Zodiacs publishes the yearly reading for ${years.join(' and ')}; there is none for ${label}.`);
   } else {
@@ -186,13 +186,13 @@ export async function getHoroscopePeriod(
     const weekly = resolveHoroscope(window, { sign, period: 'week', focus: 'general', date }, zone, 'request', today);
     if (weekly.status === 'available' && weekly.reading) {
       // The window's own title writes the week as a range with a dash; the label here has none.
-      reading = { title: `${signName} · ${label}`, paragraphs: weekly.reading.paragraphs, published: null, confidence: 85 };
+      reading = { title: `${signName} · ${label}`, paragraphs: weekly.reading.paragraphs, published: null, confidence: PUBLISHED_READING_CONFIDENCE };
       pageUrl = `${origin}/horoscopes/${sign}/weekly/`;
     } else notes.push(`The weekly reading for ${label} isn't kept here; Zodiacs keeps the current week's.`);
     if (focus !== 'general') {
       for (const edition of window.editions.filter((candidate) => candidate.anchorDate >= from && candidate.anchorDate <= to)) {
         const daily = resolveHoroscope(window, { sign, period: 'day', focus, date: edition.anchorDate }, zone, 'request', today);
-        if (daily.status === 'available' && daily.reading) focusReadings.push({ date: edition.anchorDate, title: daily.reading.title, paragraphs: daily.reading.paragraphs, confidence: 85 });
+        if (daily.status === 'available' && daily.reading) focusReadings.push({ date: edition.anchorDate, title: daily.reading.title, paragraphs: daily.reading.paragraphs, confidence: PUBLISHED_READING_CONFIDENCE });
       }
       notes.push(focusReadings.length
         ? `Zodiacs writes ${focus} readings by the day; these are the ones published for days in this week.`

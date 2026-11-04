@@ -1,5 +1,21 @@
 # Claude directory listing
 
+## Product rule, 4 November 2026
+
+Dias replaced the "no predictions" rule for astrology readings. Horoscopes and
+transit readings are forecasts. Share them plainly and confidently. A
+percentage is confidence in the reading, written as "Reading confidence 85%",
+never as the odds that an event happens. It is not health, financial or
+medical advice, and it is not a promise of an outcome. How the number is
+derived is in `docs/STRATEGY.md` (the 4 November 2026 decision). The 8 October
+2026 ban on betting tips, sports picks, market timing and election forecasts
+stays.
+
+The directory text already submitted still says Zodiacs does not make personal
+predictions and never predicts outcomes (the 15 October 2026 note, and the
+listing description below). That portal copy has not been resubmitted. This
+note records the product rule. It does not change the submitted listing.
+
 ## 0.6.0 prepared, 2 November 2026
 
 Five read-only tools are ready behind `ZODIACS_COVERAGE_ENABLED`, with the

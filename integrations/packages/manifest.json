@@ -6,8 +6,8 @@
       "name": "zodiacs-sky",
       "version": "0.6.1",
       "file": "zodiacs-sky-0.6.1.zip",
-      "bytes": 94547,
-      "sha256": "eb0cd5ab5b0c01d9221cef2fad2a1d74c3493182ea40e1f17aa25e08ec0563ef",
+      "bytes": 94730,
+      "sha256": "38fc5bf3c9d680c95ffd68677a381f2fb234cb4af822ba3b3d30693fb2e7ab3c",
       "members": [
         {
           "path": ".claude-plugin/plugin.json",
@@ -37,7 +37,7 @@
         {
           "path": "README.md",
           "bytes": 3026,
-          "sha256": "b292562942c9e7853884d7214373db3a16bb47ab7f59d6bb09677ec4495776f0"
+          "sha256": "d2d77821fe1bc20b01f652d033431877c0d81c38bbe834c740d7ff4a00fd71a7"
         },
         {
           "path": "assets/icon-v2.png",
@@ -61,8 +61,8 @@
         },
         {
           "path": "skills/explore-the-sky/SKILL.md",
-          "bytes": 6936,
-          "sha256": "0d561ddaa6a98546f028f15e5f37395fe2e7d8eaa94de977cfcbb7e3735fe372"
+          "bytes": 7119,
+          "sha256": "e04dfc7b362d9e0e384d1ce60e166fce7aea85188ae52d8c23962009d3d832b0"
         }
       ]
     },
@@ -70,8 +70,8 @@
       "name": "zodiacs-developer",
       "version": "0.3.20",
       "file": "zodiacs-developer-0.3.20.zip",
-      "bytes": 6252317,
-      "sha256": "c098ca1fd0feb51609f483434670ae64e5b26358ade65140a07e6a78c8368352",
+      "bytes": 6006780,
+      "sha256": "8a6a67df1d3239287a7cba8b7a63782193f29c594362543166b17608ef3651fb",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
@@ -140,8 +140,8 @@
         },
         {
           "path": "mcp/server.mjs",
-          "bytes": 6136962,
-          "sha256": "b352d97f88f0a2df27f6429e19f9accfc97c0db60802ec1f8ba20e086bfe7989"
+          "bytes": 5891425,
+          "sha256": "6eac1751db8bb2022b9dea7fce2459c4c5dae3943383140f739002a0c8efa2d8"
         },
         {
           "path": "package-lock.json",

@@ -138,7 +138,7 @@ try {
     bytes: Buffer.byteLength(occasions.text), sha256: createHash('sha256').update(occasions.text).digest('hex'),
   });
   if (coverage) {
-    const readings = (await client.readResource({ uri: 'ui://zodiacs/readings-v1.html' })).contents[0];
+    const readings = (await client.readResource({ uri: 'ui://zodiacs/readings-v2.html' })).contents[0];
     assert.equal(readings.mimeType, 'text/html;profile=mcp-app');
     assert.equal(readings.text, READINGS_HTML);
     assert.equal(readings._meta['openai/ui'].preferredDisplayMode, 'inline');

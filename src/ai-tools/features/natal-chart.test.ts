@@ -142,6 +142,9 @@ describe('get_natal_chart', () => {
     expect(mismatch.zone).toBe('America/New_York');
     expect(mismatch.placeNote).toMatch(/uses the coordinates and time zone you supplied/u);
     expect(mismatch.castFor.utc).not.toBe(resolved.castFor.utc);
+    const alias = await chart({ birthDate: '1990-05-03', time: '08:30', zone: 'US/Eastern', latitude: 40.7128, longitude: -74.006, place: 'New York' });
+    expect(alias.zone).toBe('US/Eastern');
+    expect(alias.placeNote ?? '').not.toMatch(/not US\/Eastern/u);
   });
 
   it('leaves romantic wording out when the birth date is under 18', async () => {

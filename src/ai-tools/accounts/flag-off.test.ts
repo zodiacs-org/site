@@ -18,7 +18,8 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * 0.6.0 added the coverage scenario (ZODIACS_COVERAGE_ENABLED=1 with the occasion tools), whose tools/list is the
  * thirteen entries byte for byte and then the five 0.6.0 tools (src/ai-tools/release-060.test.ts).
  * 0.6.1 changes the reported version, the server instructions and get_capabilities text, and gives the five
- * coverage tools the readings panel. The released and occasions tools/list entries stay byte for byte.
+ * coverage tools the readings panel. The review follow-up narrows the privacy wording and moves the readings
+ * panel to readings-v2. The released and occasions tools/list entries stay byte for byte.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

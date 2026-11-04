@@ -63,6 +63,15 @@ function hintMatches(city: City, hint: string): boolean {
   return fold(city.admin1).includes(folded) || fold(city.country) === folded || fold(countryName(city.country)) === folded || fold(labelOf(city)).includes(folded);
 }
 
+/** True when two zone names are the same clock, including a legacy link such as US/Eastern. */
+function sameZone(left: string, right: string): boolean {
+  if (left.toLowerCase() === right.toLowerCase()) return true;
+  const resolved = (name: string) => {
+    try { return new Intl.DateTimeFormat('en-US', { timeZone: name }).resolvedOptions().timeZone; } catch { return name; }
+  };
+  return resolved(left) === resolved(right);
+}
+
 function kmBetween(latA: number, lonA: number, latB: number, lonB: number): number {
   const toRad = (degrees: number) => degrees * Math.PI / 180;
   const dLat = toRad(latB - latA);
@@ -101,7 +110,7 @@ export function applyPlace<T extends { place?: string; latitude?: number; longit
     };
   }
   const km = kmBetween(args.latitude!, args.longitude!, chosen.lat, chosen.lon);
-  const zoneOff = !!args.zone && args.zone.toLowerCase() !== chosen.tz.toLowerCase();
+  const zoneOff = !!args.zone && !sameZone(args.zone, chosen.tz);
   if (km > MATCH_KM || zoneOff) {
     const where = km > MATCH_KM ? `about ${Math.round(km)} km from the coordinates given` : 'near the coordinates given';
     const zone = zoneOff ? ` Its time zone is ${chosen.tz}, not ${args.zone}.` : '';

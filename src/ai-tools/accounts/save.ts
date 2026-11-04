@@ -88,6 +88,30 @@ export function recordDigest(record: Omit<SavedRecord, 'href'>): string {
 }
 
 /**
+ * The filled occasion page a signed-in person chose to keep. The tool's own
+ * card link is only the page address and does not carry these details.
+ * A zone without coordinates cannot reopen on the page, so that saved link
+ * keeps the day and the names only, as before.
+ */
+function savedOccasionPath(
+  args: { latitude?: number; longitude?: number },
+  data: { occasion: string; date: string; time: string | null; zone: string | null; place: string | null; names: string | null },
+): string {
+  const params = new URLSearchParams({ o: data.occasion, d: data.date });
+  if (data.names) params.set('n', data.names);
+  const hasCoords = args.latitude !== undefined && args.longitude !== undefined;
+  if (data.zone && !hasCoords) return `/occasions/#${params.toString()}`;
+  if (data.time) params.set('t', data.time);
+  if (data.zone && hasCoords) {
+    params.set('tz', data.zone);
+    params.set('lat', args.latitude!.toFixed(4));
+    params.set('lon', args.longitude!.toFixed(4));
+    if (data.place) params.set('place', data.place);
+  }
+  return `/occasions/#${params.toString()}`;
+}
+
+/**
  * Works the result out again with the tool that produced it, and keeps the
  * parts worth keeping. Nothing the assistant writes is stored except the
  * optional plain-text label. Returns a plain refusal for details the tool
@@ -140,8 +164,8 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
         if (result.tool !== 'get_occasion_sky') return { failure: 'Zodiacs could not work that out again.' };
         const data = result.data;
         const sign = (body: string) => data.sky.bodies.find((row) => row.body === body)?.sign ?? null;
-        // Without coordinates the card page cannot take the zone, so the link reopens the day's card as the page draws it.
-        const fallback = new URLSearchParams({ o: data.occasion, d: data.date, ...(data.names ? { n: data.names } : {}) });
+        // The tool's card link is only the page. The account keeps the details the person chose to save, and reopens that card.
+        const href = savedOccasionPath(input.occasion!, data);
         return linked({
           schema: SAVED_RECORD_SCHEMA, kind: 'occasion',
           title: label ?? `${OCCASION_NAMES[data.occasion] ?? 'Occasion'}, ${data.date}: ${data.rating.score} out of 100`,
@@ -150,8 +174,8 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
             rating: data.rating, sky: { sun: sign('Sun'), moon: sign('Moon'), moonPhase: data.sky.moon.phase, retrograde: data.sky.retrograde },
             bestDays: data.bestDays ? { from: data.bestDays.from, to: data.bestDays.to, best: data.bestDays.best.map(({ date, score, verdict }) => ({ date, score, verdict })) } : null,
             cardUrl: data.cardUrl, note: data.note },
-          links: data.cardUrl ? [{ title: 'Open the printable card', url: data.cardUrl }] : [{ title: 'Occasion cards on Zodiacs', url: `${ORIGIN}/occasions/` }],
-        }, () => (data.cardUrl ? sitePath(data.cardUrl) : `/occasions/#${fallback.toString()}`));
+          links: [{ title: 'Open the printable card', url: `${ORIGIN}${href}` }],
+        }, () => href);
       }
       case 'week': {
         const args = input.week!;

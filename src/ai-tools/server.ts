@@ -13,7 +13,7 @@ import { ACCOUNT_SCOPES, SAVE_DESCRIPTION, SAVE_OUTPUT_SCHEMA, SAVE_TITLE, SAVE_
 import { saveToZodiacs, type AccountPrincipal } from './accounts/save';
 import { signInChallenge, type AccountsService } from './accounts/service';
 
-const INSTRUCTIONS = 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. If a tool says it assumed UTC, say that. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never put a birth date, birth time, birthplace, coordinates or place name into a link you write. Never guess a birth time or a sign. Ask before using someone else\'s birth details. Birth details are used for that answer only: Zodiacs does not store them, log them or share them. If a person is under 18, or a birth date is under 18, do not frame the reading as romance, attraction or a sexual relationship, and say that Zodiacs does not give that framing for anyone under 18. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology’s reading, and state each confidence percentage the tool returns. Zodiacs does not schedule anything, pick investments, give financial or medical advice, or guarantee how anything will turn out; do not call its tools for those requests, and say plainly that it cannot.';
+const INSTRUCTIONS = 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. If a tool says it assumed UTC, say that. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never put a birth date, birth time, birthplace, coordinates or place name into a link you write. Never guess a birth time or a sign. Ask before using someone else\'s birth details. Tools never store, log or share birth details. Only a page a signed-in person chooses to save keeps those details in their Zodiacs account. If a person is under 18, or a birth date is under 18, do not frame the reading as romance, attraction or a sexual relationship, and say that Zodiacs does not give that framing for anyone under 18. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology’s reading. State each reading-confidence percentage the tool returns: it is confidence in the reading, never the odds that an event happens. Zodiacs does not schedule anything, pick investments, give financial or medical advice, or guarantee how anything will turn out; do not call its tools for those requests, and say plainly that it cannot.';
 
 const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_upcoming_events: { uri: WIDGET_URI, icon: 'sky-calendar' },
@@ -39,9 +39,13 @@ const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcomi
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
 
-const HOST_ZONE_KEYS = ['openai/userLocation', 'anthropic/userLocation', 'claude/userLocation'] as const;
+// ChatGPT sends openai/userLocation.timezone on a tool call. Claude's MCP
+// connector does not: its tool-call metadata has no documented user location,
+// and an MCP Apps host time zone is delivered to the widget, not this server.
+// With no hint the result says it assumed UTC.
+const HOST_ZONE_KEYS = ['openai/userLocation'] as const;
 
-/** A time zone a host shares with a tool call (ChatGPT or Claude), if any. A coarse hint, never stored. */
+/** A time zone ChatGPT shares with a tool call, if any. A coarse hint, never stored. */
 export function hostZoneFrom(meta: unknown): string | undefined {
   const record = meta as Record<string, unknown> | undefined;
   if (!record) return undefined;

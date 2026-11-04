@@ -1,5 +1,7 @@
+import { readFileSync, readdirSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
-import { extname, relative, resolve } from 'node:path';
+import { extname, relative, resolve, dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 import { createHash } from 'node:crypto';
 
@@ -445,6 +447,45 @@ function isOwnerTrustStatement(fragment) {
     && OWNER_TRUST_COPY_HASHES.has(createHash('sha256').update(fragment.text).digest('hex'));
 }
 
+/**
+ * GeoNames place names in the three generated AI bundles. The whole city
+ * list is one JavaScript module, so a name such as Solana or Mercado is its
+ * own string. Only that exact string is allowed, and only in those files: a
+ * sentence that mentions the name still fails, and the same literal fails
+ * anywhere else.
+ */
+const GEONAMES_BUNDLES = new Set([
+  'api/_ai/runtime.mjs',
+  'plugins/zodiacs-developer/mcp/server.mjs',
+  'integrations/generated/sky-watch.mjs',
+]);
+let geonamesNames;
+function geonamesPlaceNames() {
+  if (geonamesNames) return geonamesNames;
+  geonamesNames = new Set();
+  const dir = join(dirname(fileURLToPath(import.meta.url)), '../public/data/cities');
+  const addRow = (row) => {
+    if (typeof row?.[0] === 'string' && row[0]) geonamesNames.add(row[0]);
+    if (typeof row?.[1] === 'string' && row[1]) geonamesNames.add(row[1]);
+  };
+  for (const file of readdirSync(dir)) {
+    if (!file.endsWith('.json')) continue;
+    const data = JSON.parse(readFileSync(join(dir, file), 'utf8'));
+    if (file === 'index.json') {
+      for (const name of [...(data.admin1 ?? []), ...(data.countries ?? [])]) {
+        if (typeof name === 'string' && name) geonamesNames.add(name);
+      }
+      for (const rows of Object.values(data.also ?? {})) for (const row of rows) addRow(row);
+      continue;
+    }
+    for (const row of data) addRow(row);
+  }
+  return geonamesNames;
+}
+function isGeonamesPlaceLiteral(fragment) {
+  return GEONAMES_BUNDLES.has(fragment.file) && geonamesPlaceNames().has(fragment.text);
+}
+
 function vocabularyAllowed(fragment) {
   return isOwnerTrustStatement(fragment)
     || isReadOnlyPosture(fragment)
@@ -452,6 +493,7 @@ function vocabularyAllowed(fragment) {
     || isLegalDefensiveFragment(fragment)
     || isWingCatalogFragment(fragment)
     || isAstrofolioNavigationDescription(fragment)
+    || isGeonamesPlaceLiteral(fragment)
     || isPureRouteOrState(fragment.text)
     || isTechnicalState(fragment);
 }

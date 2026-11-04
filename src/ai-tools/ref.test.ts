@@ -17,8 +17,9 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     expect(refFrom({ progressToken: 1 })).toBe('assistant');
     expect(refFrom(undefined)).toBe('assistant');
     expect(hostZoneFrom({ 'openai/userLocation': { timezone: 'Asia/Bangkok' } })).toBe('Asia/Bangkok');
-    expect(hostZoneFrom({ 'anthropic/userLocation': { timezone: 'Europe/Paris' } })).toBe('Europe/Paris');
-    expect(hostZoneFrom({ 'claude/userLocation': { timeZone: 'America/New_York' } })).toBe('America/New_York');
+    // Claude's tool calls do not send a documented location. An absent hint stays UTC.
+    expect(hostZoneFrom({ 'anthropic/userLocation': { timezone: 'Europe/Paris' } })).toBeUndefined();
+    expect(hostZoneFrom({ 'claude/userLocation': { timeZone: 'America/New_York' } })).toBeUndefined();
     expect(hostZoneFrom({})).toBeUndefined();
   });
 
@@ -26,7 +27,8 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     const tagged = await executeAiTool('get_life_milestones', { birthDate: '1997-03-15' }, on, { ref: 'chatgpt' });
     expect(tagged.ok).toBe(true);
     if (tagged.ok && tagged.tool === 'get_life_milestones') {
-      expect(tagged.data.cardUrl).toBe('https://zodiacs.org/occasions/milestones/?ref=chatgpt#b=1997-03-15');
+      expect(tagged.data.cardUrl).toBe('https://zodiacs.org/occasions/milestones/?ref=chatgpt');
+      expect(tagged.data.cardUrl).not.toContain('1997');
       for (const link of tagged.links) expect(link.url).toMatch(/\?ref=chatgpt$/u);
     }
     const calendar = await executeAiTool('get_sky_calendar', {}, on, { ref: 'chatgpt' });
@@ -41,20 +43,17 @@ describe('?ref= on zodiacs.org links from the tools', () => {
       latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy',
     }, on, { ref: 'chatgpt' });
     if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
-    expect(result.links[0]).toEqual({ title: 'Open the printable card', url: result.data.cardUrl });
+    expect(result.links[0]).toEqual({ title: 'Occasion cards on Zodiacs', url: 'https://zodiacs.org/occasions/?ref=chatgpt' });
+    expect(result.data.cardUrl).toBe('https://zodiacs.org/occasions/?ref=chatgpt');
+    expect(result.data.cardUrl).not.toMatch(/#|17:00|43\.|Florence|Europe/u);
     expect(new URL(result.data.shareUrl!).searchParams.get('ref')).toBe('chatgpt');
-    const url = new URL(result.links[0].url);
-    expect([...url.searchParams]).toEqual([['ref', 'chatgpt']]);
-    expect(Object.fromEntries(new URLSearchParams(url.hash.slice(1)))).toEqual({
-      o: 'wedding', d: '2027-06-12', t: '17:00', tz: 'Europe/Rome',
-      lat: '43.7696', lon: '11.2558', place: 'Florence, Italy',
-    });
+    expect(result.data.shareUrl).not.toMatch(/17:00|43\.7696|Europe%2FRome/u);
 
     const noPlace = await executeAiTool('get_occasion_sky', {
       occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome',
     }, on, { ref: 'chatgpt' });
     if (!noPlace.ok || noPlace.tool !== 'get_occasion_sky') throw new Error('expected a card');
-    expect(noPlace.data.cardUrl).toBeNull();
+    expect(noPlace.data.cardUrl).toBe('https://zodiacs.org/occasions/?ref=chatgpt');
     expect(noPlace.links[0].url).toBe('https://zodiacs.org/occasions/?ref=chatgpt');
   });
 });

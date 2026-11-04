@@ -93,7 +93,7 @@ describe('get_personal_transits', () => {
     const birthplace = await transits(MADRID);
     expect(birthplace.zone).toBe('Europe/Madrid');
     expect(birthplace.limits.join(' ')).toContain('birthplace clock');
-    expect(birthplace.contacts[0].line).toMatch(/Confidence \d+%\.?$/u);
+    expect(birthplace.contacts[0].line).toMatch(/Reading confidence \d+%\.?$/u);
     const moved = await executeAiTool('get_personal_transits', MADRID, on, { hostZone: 'America/New_York' });
     if (!moved.ok || moved.tool !== 'get_personal_transits') throw new Error(JSON.stringify(moved));
     expect(moved.data.zone).toBe('America/New_York');

@@ -13,11 +13,23 @@ export function isUnder18(birthDate: string, today: string): boolean {
 }
 
 /**
- * How settled a forecast's date is, from 0 to 100. It is not a chance that
- * a life event will happen. A current location's clock is the most settled;
- * a birthplace clock is used only when no current location was given; UTC
- * is the assumption when no zone was given at all.
+ * How settled a forecast's date is, from 0 to 100. Phrase it as confidence
+ * in the reading. It is not the odds that a life event will happen.
+ * A current location's clock is the most settled; a birthplace clock is
+ * used only when no current location was given; UTC is the assumption when
+ * no zone was given at all.
+ * 90: current clock, birth time known (84 for the Moon, rising or Midheaven).
+ * 72: current clock, birth time unknown.
+ * 80: birthplace clock, birth time known (76 for the Moon, rising or Midheaven).
+ * 70: birthplace clock, birth time unknown.
+ * 64: UTC assumed.
+ * A published Sun-sign horoscope uses PUBLISHED_READING_CONFIDENCE (85):
+ * the edition's date is fixed, so that figure is the editorial line's own
+ * confidence. A Sun-sign pair explainer uses 70, because only the two Suns
+ * are in the pattern.
  */
+export const PUBLISHED_READING_CONFIDENCE = 85;
+
 export function forecastConfidence(options: { clock: 'current' | 'birthplace' | 'utc'; timeKnown: boolean; point?: string }): number {
   if (options.clock === 'utc') return 64;
   const sensitive = options.point === 'Moon' || options.point === 'ASC' || options.point === 'MC' || options.point === 'rising degree' || options.point === 'Midheaven';
@@ -26,9 +38,9 @@ export function forecastConfidence(options: { clock: 'current' | 'birthplace' | 
   return sensitive ? 84 : 90;
 }
 
-/** The sentence the assistant reads with the line. */
+/** The sentence the assistant reads with the line. Confidence in the reading, not odds. */
 export function withConfidence(line: string, confidence: number): string {
-  return `${line} Confidence ${confidence}%.`;
+  return `${line} Reading confidence ${confidence}%.`;
 }
 
 /** The sixth-house themes, without a health reading, so a line does not become medical advice. */

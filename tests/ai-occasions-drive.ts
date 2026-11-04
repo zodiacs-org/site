@@ -102,7 +102,8 @@ try {
   assert.doesNotMatch(copyOf(card), /[—–·]/u, 'No dashes or middle dots in the card');
   const link = page.getByRole('link', { name: 'Open printable card' });
   assert.equal(await link.getAttribute('href'), data.cardUrl);
-  assert.ok(data.cardUrl.startsWith('https://zodiacs.org/occasions/#'));
+  assert.equal(data.cardUrl, 'https://zodiacs.org/occasions/');
+  assert.doesNotMatch(data.cardUrl, /#|2026|Florence|43\./u);
   await capture(page, 'occasions-wedding-desktop.png');
   // Copy gives the card as plain text.
   // A page set from a string has no origin the clipboard serves, so the drive records the write.
@@ -156,7 +157,8 @@ try {
   assert.match(lifeText, /Mercury retrogrades\s+93/);
   assert.match(lifeText, /First Jupiter return, age 11/);
   assert.match(lifeText, /Without a birth time, a date can be a day off\./);
-  assert.equal(await lives.getByRole('link', { name: 'Open printable card' }).getAttribute('href'), 'https://zodiacs.org/occasions/milestones/#b=1997-03-15');
+  assert.equal(await lives.getByRole('link', { name: 'Open printable card' }).getAttribute('href'), 'https://zodiacs.org/occasions/milestones/');
+  assert.doesNotMatch(await lives.getByRole('link', { name: 'Open printable card' }).getAttribute('href') ?? '', /1997/u);
   await capture(lives, 'occasions-milestones-desktop.png');
   // A timed result has no card link (the page could not reproduce it), and the panel offers none.
   const timed = await result('get_life_milestones', { birthDate: '1997-03-15', time: '08:30', zone: 'Europe/Rome' });

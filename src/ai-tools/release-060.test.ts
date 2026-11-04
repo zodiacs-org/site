@@ -111,8 +111,8 @@ describe('the five 0.6.0 tools', () => {
       expect(tool.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false, openWorldHint: false, title: TOOL_TITLES[name] });
       expect(tool._meta).toEqual({
         securitySchemes: [{ type: 'noauth' }],
-        ui: { resourceUri: 'ui://zodiacs/readings-v1.html', visibility: ['model', 'app'] },
-        'openai/outputTemplate': 'ui://zodiacs/readings-v1.html',
+        ui: { resourceUri: 'ui://zodiacs/readings-v2.html', visibility: ['model', 'app'] },
+        'openai/outputTemplate': 'ui://zodiacs/readings-v2.html',
         'openai/ui': { entrypoints: [{ type: 'thread' }] },
       });
       expect(tool.icons).toEqual([{ src: 'https://zodiacs.org/assets/ai/readings.svg', mimeType: 'image/svg+xml', sizes: ['20x20'] }]);

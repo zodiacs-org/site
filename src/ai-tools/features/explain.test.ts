@@ -212,7 +212,7 @@ describe('explain_astrology', () => {
     expect(data.found).toBe(true);
     expect(data.topic).toBe('leo-scorpio');
     expect(data.paragraphs.join(' ')).toContain('One loves on the record');
-    expect(data.paragraphs.join(' ')).toContain('Confidence 70%');
+    expect(data.paragraphs.join(' ')).toContain('Reading confidence 70%');
     expect(data.message).toMatch(/under 18/u);
     expect(data.pages[0].url).toBe('https://zodiacs.org/compatibility/leo-scorpio/');
     expect(links.map((link) => link.url).join(' ')).not.toMatch(/birthDate|latitude|#c=/u);

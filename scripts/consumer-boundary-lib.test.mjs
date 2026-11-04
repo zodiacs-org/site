@@ -61,6 +61,15 @@ const description = 'A free astrology calculator.';
     expect(violations.every(({ text }) => text.includes('Meet the official Zodiac token.'))).toBe(true);
   });
 
+  it('allows an exact GeoNames place name in the AI bundles and still flags a sentence', () => {
+    expect(rules('export const city = "Solana";', 'api/_ai/runtime.mjs')).toEqual([]);
+    expect(rules('export const city = "Ahualulco de Mercado";', 'plugins/zodiacs-developer/mcp/server.mjs')).toEqual([]);
+    expect(rules('export const city = "Market Harborough";', 'integrations/generated/sky-watch.mjs')).toEqual([]);
+    expect(rules('export const note = "Solana is a chain.";', 'api/_ai/runtime.mjs').length).toBeGreaterThan(0);
+    expect(rules('export const city = "Solana";', 'src/pages/index.astro').length).toBeGreaterThan(0);
+    expect(rules('export const pitch = "Trade the Zodiac token.";', 'api/_ai/runtime.mjs').length).toBeGreaterThan(0);
+  });
+
   it.each([
     ['src/islands/Example.tsx', 'export const View = () => <p>A crypto market shortcut.</p>;'],
     ['src/lib/email/example.ts', "export const body = 'Buy this Zodiac token today.';"],

@@ -59,7 +59,7 @@ try {
 
   await show(page, natal);
   await page.getByRole('heading', { name: 'Taurus Sun' }).waitFor();
-  const open = page.getByRole('link', { name: 'Open your chart' });
+  const open = page.getByRole('link', { name: 'Open the chart page' });
   assert.equal(await open.getAttribute('href'), 'https://zodiacs.org/birth-chart/');
   assert.doesNotMatch(await open.getAttribute('href') ?? '', /1990|Madrid|40\./u);
   await page.locator('details.fold > summary').click();

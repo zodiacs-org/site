@@ -346,7 +346,7 @@ function signPairAnswer(query: string, a: string, b: string, origin: string): { 
   const essay = (pairPages as Record<string, string[]>)[slug] ?? [];
   const paragraphs = [
     `${names}. ${pattern.elementNote} ${pattern.modalityNote} ${pattern.polarityNote} ${pattern.rulers}.`,
-    'Confidence 70%. This is the Sun-sign pattern; the rest of both charts changes how it is lived.',
+    'Reading confidence 70%. This is the Sun-sign pattern; the rest of both charts changes how it is lived.',
     ...essay,
   ].map(softenHealth);
   const page = { title: `${names} on Zodiacs`, url: `${origin}/compatibility/${slug}/` };

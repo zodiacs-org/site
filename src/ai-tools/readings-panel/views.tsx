@@ -49,7 +49,7 @@ export function NatalChart({ data }: { data: NatalChartData }) {
       {data.balance.lines.length > 0 && <Section title="Balance"><ul class="reading-list">{data.balance.lines.map((line) => <li key={line}>{plain(line)}</li>)}</ul></Section>}
       <CopyCard text={text} label="Copy the reading"/>
     </Fold>
-    <Actions primary={{ label: 'Open your chart', href: data.chartUrl }}/>
+    <Actions primary={{ label: 'Open the chart page', href: data.chartUrl }}/>
     <FinePrint>{plain(data.note)}</FinePrint>
   </Card>;
 }
@@ -59,12 +59,12 @@ export function HoroscopePeriod({ data }: { data: HoroscopePeriodData }) {
   const text = [data.signName, data.label, reading, ...data.sky.map((event) => plain(event.line)), data.pageUrl].join('\n');
   return <Card hue={hueOf(data.sign)} front={data.sign}>
     <Keepsake kicker={capital(data.period)} title={`${data.signName}`} art={[{ src: artOf(data.sign) }]} signs={[icon(data.sign)]}
-      meta={<>{data.label}{data.reading ? <>, confidence <strong>{data.reading.confidence}%</strong></> : ''}</>}/>
+      meta={<>{data.label}{data.reading ? <>, reading confidence <strong>{data.reading.confidence}%</strong></> : ''}</>}/>
     <Hero verdict={data.status === 'available' ? 'Published reading' : 'Sky only'} summary={plain(data.reading?.paragraphs[0]?.text ?? data.message ?? '')}/>
     <Fold hint={holds([data.reading && 'the reading', data.sky.length > 0 && 'the sky', 'the page'])}>
       {data.reading?.paragraphs.map((paragraph, index) => <p class="insight" key={index}>{paragraph.heading ? <strong>{paragraph.heading}. </strong> : null}{plain(paragraph.text)}</p>)}
       {data.message && <p class="quiet">{data.message}</p>}
-      {data.focusReadings.length > 0 && <Section title="This week's days"><ul class="reading-list">{data.focusReadings.map((day) => <li key={day.date}><strong>{day.date}</strong> {plain(day.paragraphs[0]?.text ?? '')} Confidence {day.confidence}%.</li>)}</ul></Section>}
+      {data.focusReadings.length > 0 && <Section title="This week's days"><ul class="reading-list">{data.focusReadings.map((day) => <li key={day.date}><strong>{day.date}</strong> {plain(day.paragraphs[0]?.text ?? '')} Reading confidence {day.confidence}%.</li>)}</ul></Section>}
       {data.sky.length > 0 && <Section title="The sky"><ul class="reading-list">{data.sky.map((event) => <li key={event.utc}>{plain(event.line)}</li>)}</ul></Section>}
       <CopyCard text={text} label="Copy the reading"/>
     </Fold>
@@ -97,7 +97,7 @@ export function PersonalTransits({ data }: { data: PersonalTransitsData }) {
   return <Card hue={hueOf(data.sun)} front={data.sun}>
     <Keepsake kicker={data.mode === 'year-ahead' ? 'Year ahead' : 'Transits'} title={data.sun ? `${signName(data.sun)} Sun` : 'Your transits'} art={[{ src: artOf(data.sun ?? 'milestones-hero') }]} signs={[icon(data.sun)]}
       meta={<>{data.from} to {data.to}, {data.zone}</>}/>
-    <Hero verdict={rows[0] ? `${rows[0].confidence}%` : 'Nothing in this window'} summary={rows[0] ? plain(rows[0].line) : data.limits[0]}/>
+    <Hero verdict={rows[0] ? `Reading confidence ${rows[0].confidence}%` : 'Nothing in this window'} summary={rows[0] ? plain(rows[0].line) : data.limits[0]}/>
     <Fold hint={holds([rows.length > 0 && 'the dates', 'what was left out'])}>
       {rows.length > 0 && <ul class="reading-list">{rows.map((row) => <li key={row.key}><strong>{row.date}</strong> {plain(row.line)}</li>)}</ul>}
       {data.limits.map((line) => <p class="quiet" key={line}>{line}</p>)}

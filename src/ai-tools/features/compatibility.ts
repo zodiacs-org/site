@@ -24,7 +24,7 @@ import { SIGN_SLUGS } from '../../lib/compute-api/constants';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { pairFacts, pairSlug } from '../../lib/compat';
 import { contactLine } from '../../lib/contact-line';
-import { scoreCompatibility } from '../../lib/compat-score';
+import { COMPAT_VERDICTS, compatVerdictKey, scoreCompatibility } from '../../lib/compat-score';
 import { compatibilityShareUrl } from '../../lib/share-results';
 import { computeChart } from '../../lib/engine/full.js';
 import { isGenerationalContact, summarizePair, type MinimalBody } from '../../lib/engine/synastry';
@@ -33,6 +33,7 @@ import { settledSignIndex } from '../../lib/profile/settled-signs';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { NOT_FOUND_NOTE, searchPeople, type IndexPerson } from './people';
+import { isUnder18, softenMinor } from './reading-guards';
 
 export const COMPATIBILITY_MIN_YEAR = 1800;
 export const COMPATIBILITY_MAX_YEAR = 2199;
@@ -337,6 +338,26 @@ export function compatibilityMissing(args: CompatibilityInput, origin = 'https:/
 }
 
 /**
+ * The published schema requires an attraction integer, so it cannot be omitted.
+ * For two people under 18 it repeats the communication score, and the overall
+ * score is communication and stability only. The headline does not rank romance.
+ */
+function minorScore(score: ReturnType<typeof scoreCompatibility>): ReturnType<typeof scoreCompatibility> {
+  const overall = Math.round(score.areas.communication * 0.5 + score.areas.stability * 0.5);
+  const communicationLeads = score.areas.communication >= score.areas.stability;
+  const close = Math.abs(score.areas.communication - score.areas.stability) < 6;
+  const headline = close
+    ? 'Communication and long-term stability are evenly matched in this pairing. Romantic and attraction readings are left out because both birth dates are under 18.'
+    : `${communicationLeads ? 'Communication' : 'Long-term stability'} is the strongest part of this pairing; ${communicationLeads ? 'long-term stability' : 'communication'} will take the most work. Romantic and attraction readings are left out because both birth dates are under 18.`;
+  return {
+    overall,
+    areas: { attraction: score.areas.communication, communication: score.areas.communication, stability: score.areas.stability },
+    verdict: COMPAT_VERDICTS[compatVerdictKey(overall)],
+    headline,
+  };
+}
+
+/**
  * Compare two birth charts. Throws RangeError with a plain message for a
  * date, time or zone the calculation cannot take, or a famous name the
  * directory does not have (check compatibilityMissing first).
@@ -345,6 +366,7 @@ export async function computeCompatibility(
   args: CompatibilityInput,
   localTime: CompatibilityClock,
   origin = 'https://zodiacs.org',
+  today = new Date(),
 ): Promise<{ data: CompatibilityData; links: CompatibilityLink[] }> {
   const a = await personChart(args.a, 'Person A', localTime);
   const b = await personChart(args.b, 'Person B', localTime);
@@ -373,20 +395,31 @@ export async function computeCompatibility(
   const elementOf = (index: number | null) => (index === null ? null : SIGNS[index].element);
   const elA = elementOf(a.sunIndex);
   const elB = elementOf(b.sunIndex);
-  const score = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
+  const scored = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
+  const todayDate = today.toISOString().slice(0, 10);
+  // Both birth dates under 18. One child with an adult, or a famous adult, keeps the ordinary score.
+  const bothYoung = isUnder18(a.birthDate, todayDate) && isUnder18(b.birthDate, todayDate);
+  const score = bothYoung ? minorScore(scored) : scored;
+  const notes = notesFor(a, b);
+  if (bothYoung) notes.push('Both birth dates are under 18, so romantic and attraction readings are left out. The attraction field repeats the communication score and is not a romance rating. The share link is left empty.');
 
   const data: CompatibilityData = {
     a: personRow(a, origin),
     b: personRow(b, origin),
     score,
-    signPair,
+    signPair: bothYoung && signPair ? {
+      ...signPair,
+      element: { label: softenMinor(signPair.element.label), note: softenMinor(signPair.element.note) },
+      modality: { label: softenMinor(signPair.modality.label), note: softenMinor(signPair.modality.note) },
+      polarity: softenMinor(signPair.polarity),
+    } : signPair,
     contacts: summary.top.map((contact) => ({
       aBody: contact.a as CompatibilityData['contacts'][number]['aBody'],
       bBody: contact.b as CompatibilityData['contacts'][number]['bBody'],
       aspect: contact.type,
       orb: roundOrb(contact.orb),
       generational: isGenerationalContact(contact),
-      line: contactLine(a.label, contact.a, b.label, contact.b, contact.type),
+      line: bothYoung ? softenMinor(contactLine(a.label, contact.a, b.label, contact.b, contact.type)) : contactLine(a.label, contact.a, b.label, contact.b, contact.type),
     })),
     counts: {
       easeful: summary.easeful,
@@ -398,12 +431,13 @@ export async function computeCompatibility(
     modalities: { a: { ...summary.modalities.a }, b: { ...summary.modalities.b } },
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
     cardUrl,
-    shareUrl: compatibilityShareUrl(origin, {
+    // The share image labels one number Attraction. Leaving it empty is the only way to omit that framing without changing the published schema, which requires the integer.
+    shareUrl: bothYoung ? null : compatibilityShareUrl(origin, {
       a: { name: a.famous?.name ?? a.person.name ?? null, sun: sunA },
       b: { name: b.famous?.name ?? b.person.name ?? null, sun: sunB },
       score,
     }),
-    notes: notesFor(a, b),
+    notes,
     note: COMPATIBILITY_NOTE,
   };
 

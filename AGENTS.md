@@ -30,9 +30,10 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
 
 - The site is dark only. Do not add a light theme or a theme switch.
 - Horoscopes and transit readings are forecasts. Share them plainly and
-  confidently, each with the percentage confidence the tool gives. They are
-  not health, financial or medical advice, and they are not a promise of how
-  anything will turn out.
+  confidently, each with the tool's reading-confidence percentage (confidence
+  in the reading, never the odds that an event happens). They are not health,
+  financial or medical advice, and they are not a promise of how anything
+  will turn out.
 - No token, market or crypto language on consumer surfaces. The approved
   exception is the Collect band and the other sanctioned wing links described
   in `CLAUDE.md` ("One design system, two content registers").
