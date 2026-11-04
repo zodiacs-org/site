@@ -186,9 +186,8 @@ Apart from the bundle gate's tests above, two tests fail:
   2026-11-01 names `chart-studio-v6.html`. The test holds 0.6.0's thirteen
   published tools to that list, and the move to v7 that the plan's I-8
   makes, because the panel embeds the engine, changes one of them. Neither
-  the test nor the move is changed here; the push waits for a decision
-  (the plan's section 12 leaves the AI portals' rescans to the owner if the
-  hosted tool list changes).
+  the test nor the move is changed in this commit; the next one settles it
+  (D-11).
 
 ## Decisions taken without asking, under the owner's delegation
 
@@ -233,3 +232,21 @@ so does OQ10's Q5.
 - **D-10.** Both pull requests are merged with merge commits when every
   check is green; the units are recorded `validated`, with the owner's
   ratification as their blocker, and nothing is recorded `accepted`.
+- **D-11** (4 November, after the adoption commit). Chart Studio moves to
+  `chart-studio-v7.html`, as the plan's I-8 says, and
+  `src/ai-tools/release-060.test.ts` names that one move. The thirteen
+  published tools must still match the live `tools/list` of 1 November byte
+  for byte, apart from the panel address in `open_chart_studio`'s `_meta`
+  (`ui.resourceUri` and `openai/outputTemplate`); the old address must stay
+  registered and serve the same panel as the new one; any other change, or a
+  further move, fails the test. Its control: with `STUDIO_URI` set to
+  `chart-studio-v8.html` in the working tree, two of its twelve tests failed,
+  and the file was restored. The other way, keeping the panel's bytes so that
+  the list stays as it was, would build Chart Studio on a second engine,
+  1.1.0-rc.1, beside the adopted one. 1.1.0-rc.1's adoption moved the panel
+  from v5 to v6 the same way (#840). OpenAI's copy of 0.5.1, in review,
+  was scanned on 27 October and names v6, which the server keeps serving.
+  `docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md` and
+  `claude-directory/RESYNC-0.6.0.md`, with their drafted reviewer notes, now
+  say that a rescan shows this one changed field. No portal step is taken:
+  each stays with the owner.

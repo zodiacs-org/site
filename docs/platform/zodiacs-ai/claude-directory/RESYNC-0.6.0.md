@@ -14,11 +14,16 @@ production, the portal or email needs Dias's separate yes.
   thirteen tools now in review. The switch exists because both the Claude
   listing and the OpenAI app (0.5.1, In review per `PORTAL_REVIEW.md`, 28
   October) read the same live server: merging alone changes nothing they see.
-- **The thirteen tools are unchanged.** Names, titles, descriptions, input
-  schemas, output schemas, annotations, `_meta` and icons match the live
-  `tools/list` of 1 November 2026 byte for byte
+- **The thirteen tools are unchanged apart from one field.** Names, titles,
+  descriptions, input schemas, output schemas, annotations, `_meta` and icons
+  match the live `tools/list` of 1 November 2026 byte for byte
   (`docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json`,
-  held by `src/ai-tools/release-060.test.ts`). With the new switch off, every
+  held by `src/ai-tools/release-060.test.ts`), except Chart Studio's panel
+  address. Since 4 November, when the site adopted engine 1.1.0-rc.2,
+  `open_chart_studio`'s `_meta` names `ui://zodiacs/chart-studio-v7.html` in
+  place of `chart-studio-v6.html`: the panel embeds the engine, so its bytes
+  changed and it took a new address. The v6 address stays registered and
+  serves the same panel. With the new switch off, every
   response in the flag-off fixture equals main's except the version string.
   `get_capabilities` keeps its published output schema, so its `tools` list
   still names the thirteen; the new tools appear in `tools/list` only.
@@ -40,7 +45,7 @@ production, the portal or email needs Dias's separate yes.
 | 3 | `get_upcoming_events` | Sky calendar | unchanged | no |
 | 4 | `check_sky_fact` | Check a sky fact | unchanged | no |
 | 5 | `get_horoscope` | Horoscopes | unchanged | optional birth date |
-| 6 | `open_chart_studio` | Chart Studio | unchanged | in the panel only |
+| 6 | `open_chart_studio` | Chart Studio | panel address only (v6 to v7) | in the panel only |
 | 7 | `get_occasion_sky` | The sky on a day | unchanged | dates, optional place and names |
 | 8 | `get_life_milestones` | Life milestones | unchanged | birth date |
 | 9 | `get_compatibility` | Compare two charts | unchanged | two birth dates |
@@ -129,7 +134,7 @@ screen names below are the ones recorded in `LISTING.md` on 28 October.
 
 4. **Additional notes for reviewers**: add
 
-   > 0.6.0 adds five read-only tools with no sign-in and no panel: get_natal_chart, get_horoscope_period, get_chinese_zodiac, get_personal_transits and explain_astrology. The thirteen earlier tools are unchanged. The natal chart, transit and Chinese zodiac tools use a birth date (and optional time, time zone and coordinates) for that answer only; nothing is stored. Try: "Read my birth chart: born 3 May 1990 at 8:30 in Madrid." / "What's the monthly horoscope for Leo?" / "What's my Chinese zodiac sign? I was born 20 January 1990." / "What transits are coming up for me? Born 3 May 1990." / "What does Mercury retrograde mean?"
+   > 0.6.0 adds five read-only tools with no sign-in and no panel: get_natal_chart, get_horoscope_period, get_chinese_zodiac, get_personal_transits and explain_astrology. The thirteen earlier tools are unchanged, except that open_chart_studio's panel is now at ui://zodiacs/chart-studio-v7.html, because it embeds our calculation engine, which moved to version 1.1.0-rc.2; chart-studio-v6.html still serves the same panel. The natal chart, transit and Chinese zodiac tools use a birth date (and optional time, time zone and coordinates) for that answer only; nothing is stored. Try: "Read my birth chart: born 3 May 1990 at 8:30 in Madrid." / "What's the monthly horoscope for Leo?" / "What's my Chinese zodiac sign? I was born 20 January 1990." / "What transits are coming up for me? Born 3 May 1990." / "What does Mercury retrograde mean?"
 
 5. Leave the one-liner, categories, carousel and the **Self-tested** box as
    they are, unless Dias has run all eighteen tools in Claude.
@@ -154,7 +159,7 @@ same ticket, after the production switch-on.
 >
 > First, a correction that stands for this review. Our note of 15 October said that Zodiacs never chooses or ranks dates, scores relationships or predicts outcomes. That is not accurate for the live tools, and we corrected it the same day: get_compatibility gives a compatibility score out of 100 with scores for attraction, communication and long-term stability, and get_occasion_sky rates a date out of 100 and can list the three best-rated days in a range of up to 92 days. Every result gives its astrological reasons and presents itself as astrology's reading, not a guarantee. Zodiacs does not pick investments, make health predictions or guarantee outcomes.
 >
-> Second, version 0.6.0 is now live and adds five read-only tools, with no sign-in and no panel: get_natal_chart (a birth chart readout), get_horoscope_period (monthly, yearly and weekly horoscopes from our published readings), get_chinese_zodiac, get_personal_transits and explain_astrology (short explainers with links to our pages). The thirteen earlier tools are unchanged; their definitions are byte for byte the ones you scanned. We have synced the tool list in the directory editor.
+> Second, version 0.6.0 is now live and adds five read-only tools, with no sign-in and no panel: get_natal_chart (a birth chart readout), get_horoscope_period (monthly, yearly and weekly horoscopes from our published readings), get_chinese_zodiac, get_personal_transits and explain_astrology (short explainers with links to our pages). The thirteen earlier tools are unchanged apart from one field: open_chart_studio now names its panel at ui://zodiacs/chart-studio-v7.html instead of chart-studio-v6.html, because the panel embeds our calculation engine, which moved to version 1.1.0-rc.2, and the old address still serves the same panel. Every other part of their definitions is byte for byte what the server listed on 1 November. We have synced the tool list in the directory editor.
 >
 > Data handling is unchanged: the natal chart, transit and Chinese zodiac tools use a birth date (and an optional time, time zone and coordinates) for that answer only and store nothing. Anonymous daily usage totals hold only the tool name, the day and the assistant family.
 >

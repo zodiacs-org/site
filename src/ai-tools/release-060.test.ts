@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createServer, type Server } from 'node:http';
 import { existsSync, readFileSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
-import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
+import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, LEGACY_STUDIO_URIS, STUDIO_URI, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
 import { executeAiTool } from './tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
@@ -17,10 +17,22 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 /**
  * 0.6.0 adds five tools and changes nothing about the thirteen the directories reviewed. The live tools/list,
  * fetched from https://zodiacs.org/mcp on 1 November 2026, is kept in
- * docs/platform/zodiacs-ai/evidence/0.6.0/; every one of its thirteen entries must come back byte for byte.
+ * docs/platform/zodiacs-ai/evidence/0.6.0/; every one of its thirteen entries must come back byte for byte,
+ * apart from the one move named in PANEL_MOVE.
  */
 const root = new URL('../../', import.meta.url);
 const LIVE = JSON.parse(readFileSync(new URL('docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', root), 'utf8'));
+/**
+ * The one change to the thirteen since that list (4 November 2026, the adoption of engine 1.1.0-rc.2): Chart
+ * Studio's panel embeds the engine, so its bytes changed and, as scripts/panel-fingerprints.mjs requires, it took
+ * a new address. open_chart_studio's _meta names the new address where the live list named the old one, and the
+ * old one stays registered and serves the same panel, so a host holding the reviewed definition still opens it.
+ * Any other change, or another move, fails until this pair is changed by hand.
+ */
+const PANEL_MOVE = { tool: 'open_chart_studio', from: 'ui://zodiacs/chart-studio-v6.html', to: 'ui://zodiacs/chart-studio-v7.html' } as const;
+const moved = (tool: Record<string, unknown>) => tool.name !== PANEL_MOVE.tool ? tool
+  : { ...tool, _meta: JSON.parse(JSON.stringify(tool._meta).split(PANEL_MOVE.from).join(PANEL_MOVE.to)) };
+const count = (text: string, part: string) => text.split(part).length - 1;
 const window = async () => committedWindow as HoroscopeWindow;
 const months = async () => committedMonths;
 const program = async () => committedProgram as unknown as HoroscopeProgram;
@@ -49,19 +61,35 @@ async function rpc(method: string, params: unknown) {
 }
 
 describe('0.6.0 keeps the thirteen published tools as they are', () => {
-  it('lists the thirteen live definitions byte for byte, then the five new tools', async () => {
-    const live = LIVE.result.tools as { name: string }[];
+  it('lists the thirteen live definitions byte for byte apart from Chart Studio\'s panel address, then the five new tools', async () => {
+    const live = LIVE.result.tools as Record<string, unknown>[];
     const tools = (await rpc('tools/list', {})).result.tools as Record<string, unknown>[];
     expect(live.map(tool => tool.name)).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(tools.map(tool => tool.name)).toEqual([...EVERY_AI_TOOL_NAME]);
-    for (const [index, published] of live.entries()) {
+    // The move is the current one, the old address is still offered, and the live list named it only in that
+    // tool's _meta (ui.resourceUri and openai/outputTemplate).
+    expect(STUDIO_URI).toBe(PANEL_MOVE.to);
+    expect(LEGACY_STUDIO_URIS).toContain(PANEL_MOVE.from);
+    expect(count(JSON.stringify(live), PANEL_MOVE.from)).toBe(2);
+    expect(count(JSON.stringify(live.find(tool => tool.name === PANEL_MOVE.tool)?._meta), PANEL_MOVE.from)).toBe(2);
+    const expected = live.map(moved);
+    for (const [index, published] of expected.entries()) {
       // Whole entries, and each field on its own so a failure names it.
       for (const field of ['name', 'title', 'description', 'inputSchema', 'outputSchema', 'annotations', '_meta', 'icons']) {
-        expect(JSON.stringify(tools[index][field]), `${published.name}.${field}`).toBe(JSON.stringify((published as Record<string, unknown>)[field]));
+        expect(JSON.stringify(tools[index][field]), `${published.name}.${field}`).toBe(JSON.stringify(published[field]));
       }
       expect(JSON.stringify(tools[index])).toBe(JSON.stringify(published));
     }
-    expect(JSON.stringify(tools.slice(0, live.length))).toBe(JSON.stringify(live));
+    expect(JSON.stringify(tools.slice(0, live.length))).toBe(JSON.stringify(expected));
+  });
+
+  it('still serves Chart Studio at the address the live list named, with the same panel as the new one', async () => {
+    const read = async (uri: string) => (await rpc('resources/read', { uri })).result.contents[0] as { uri: string; text: string };
+    const [old, current] = [await read(PANEL_MOVE.from), await read(PANEL_MOVE.to)];
+    expect(old.uri).toBe(PANEL_MOVE.from);
+    expect(current.uri).toBe(PANEL_MOVE.to);
+    expect(old.text.startsWith('<!doctype html>')).toBe(true);
+    expect(old.text).toBe(current.text);
   });
 
   it('keeps the thirteen published names, descriptions and input schemas byte for byte', async () => {
