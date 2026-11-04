@@ -28,7 +28,7 @@ import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, type AiToolName, type CoverageToolName, type PlaceToolName } from './contracts';
 import { readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
-import { findBirthplace } from './features/birthplace';
+import { findBirthplace, type PlaceTable } from './features/birthplace';
 import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
 
@@ -51,6 +51,11 @@ export interface AiDependencies {
   horoscopeProgram?: () => Promise<HoroscopeProgram>;
   /** save_to_zodiacs is offered (ZODIACS_ACCOUNTS_ENABLED=1 with the occasion tools); changes the declared privacy/limitations. */
   accounts?: boolean;
+  /**
+   * The GeoNames place index for find_birthplace. The host loads it beside the
+   * function so the shared runtime does not carry the place names as copy.
+   */
+  placeTable?: () => Promise<PlaceTable>;
 }
 
 /** Per-call facts from the host and results meant only for the panel. */
@@ -573,7 +578,9 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         break;
       }
       case 'find_birthplace': {
-        const result = await feature(() => findBirthplace(INPUT_SCHEMAS.find_birthplace.parse(input), dependencies.now?.() ?? new Date(), localTime()));
+        if (!dependencies.placeTable) return failure(tool, 'unavailable', 'Place lookup is not offered here.');
+        const table = await dependencies.placeTable();
+        const result = await feature(() => findBirthplace(INPUT_SCHEMAS.find_birthplace.parse(input), dependencies.now?.() ?? new Date(), localTime(), table));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;

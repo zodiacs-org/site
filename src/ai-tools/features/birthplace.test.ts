@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { executeAiTool } from '../tools';
 import type { BirthplaceData } from './birthplace';
+import { loadPlaceTable } from './place-table';
 
-const on = { occasions: true, coverage: true, now: () => new Date('2026-11-04T12:00:00Z') };
+const on = { occasions: true, coverage: true, now: () => new Date('2026-11-04T12:00:00Z'), placeTable: async () => loadPlaceTable() };
 
 async function places(args: Record<string, unknown>): Promise<BirthplaceData> {
   const result = await executeAiTool('find_birthplace', args, on);

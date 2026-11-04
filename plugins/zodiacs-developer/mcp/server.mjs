@@ -7809,7 +7809,7 @@ function refusalOf(error) {
 var trimStop = (message) => message.replace(/\.+$/, "");
 
 // src/ai-tools/contracts.ts
-import { z as z13 } from "zod";
+import { z as z12 } from "zod";
 
 // src/lib/compute-api/openapi.ts
 var ref = (name) => ({ $ref: `#/components/schemas/${name}` });
@@ -35355,7 +35355,7 @@ function explainAstrology(args, origin = DEFAULT_ORIGIN5) {
 }
 
 // src/ai-tools/features/birthplace.ts
-import { z as z12 } from "zod";
+import { z as z11 } from "zod";
 
 // src/lib/geo/rank.ts
 var ASCII_LETTERS = {
@@ -35421,11 +35421,413 @@ function rankCities(index, rows2, q, limit) {
   }));
 }
 
+// src/ai-tools/features/birthplace.ts
+var DATE3 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
+var LIMIT = 5;
+var RANK_LIMIT = 40;
+var STREET = /(?:^\d+\b|\b(?:street|avenue|boulevard|lane|drive|court|highway|crescent|terrace|alley)\b|\bst\.)/iu;
+var COUNTRY_ALIAS = {
+  uk: "united kingdom",
+  britain: "united kingdom",
+  "great britain": "united kingdom",
+  england: "united kingdom",
+  scotland: "united kingdom",
+  wales: "united kingdom",
+  us: "united states",
+  usa: "united states",
+  america: "united states",
+  uae: "united arab emirates"
+};
+var birthplaceInput = z11.strictObject({
+  place: z11.string().trim().min(2).max(80).describe("A town or city name, such as London or Almaty. Not a street address. Nothing is stored."),
+  country: z11.string().trim().min(2).max(60).optional().describe("Optional country when several places share the name, such as United Kingdom or Kazakhstan."),
+  date: z11.string().regex(DATE3).optional().describe("Optional date, such as 1990-05-03 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.")
+});
+var placeRow = z11.object({
+  name: z11.string(),
+  region: z11.string(),
+  country: z11.string(),
+  latitude: z11.number(),
+  longitude: z11.number(),
+  timeZone: z11.string(),
+  /** The UTC offset at noon on the date, such as +01:00. */
+  offset: z11.string(),
+  offsetMinutes: z11.number().int()
+});
+var birthplaceData = z11.object({
+  place: z11.string(),
+  country: z11.string().nullable(),
+  date: z11.string(),
+  places: z11.array(placeRow).max(LIMIT),
+  message: z11.string().nullable(),
+  source: z11.object({
+    name: z11.literal("GeoNames cities15000"),
+    licence: z11.literal("CC BY 4.0"),
+    note: z11.string()
+  })
+});
+function countryFold(hint2) {
+  const folded = fold2(hint2.trim());
+  return COUNTRY_ALIAS[folded] ?? folded;
+}
+function countryMatches(country, hint2) {
+  const wanted = countryFold(hint2);
+  const name = fold2(country);
+  return name === wanted || name.includes(wanted) || wanted.includes(name);
+}
+function offsetText2(minutes) {
+  const rounded = Math.round(minutes);
+  const sign2 = rounded < 0 ? "-" : "+";
+  const abs = Math.abs(rounded);
+  return `${sign2}${String(Math.floor(abs / 60)).padStart(2, "0")}:${String(abs % 60).padStart(2, "0")}`;
+}
+function todayUtc(now) {
+  return now.toISOString().slice(0, 10);
+}
+async function findBirthplace(args, now, clock2, table) {
+  if (STREET.test(args.place)) throw new RangeError("Give a town or city name, not a street address.");
+  const date3 = args.date ?? todayUtc(now);
+  if (Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) || (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) !== date3) {
+    throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
+  }
+  const year = Number(date3.slice(0, 4));
+  if (year < 1800 || year > 2199) throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
+  const query = foldedQuery(args.place);
+  const key = query ? shardKey(query) : "0";
+  const ranked = query ? rankCities(table.index, queryRows(table.index, table.shards[key] ?? [], key), query, RANK_LIMIT) : [];
+  const matched = args.country ? ranked.filter((city) => countryMatches(city.country, args.country)) : ranked;
+  const chosen = matched.slice(0, LIMIT);
+  const places = [];
+  for (const city of chosen) {
+    await clock2.prepareLocalTime(date3, city.tz);
+    const resolved = clock2.resolveLocalToUtc(date3, "12:00", city.tz);
+    places.push({
+      name: city.name,
+      region: city.admin1,
+      country: city.country,
+      latitude: roundCoordinate(city.lat),
+      longitude: roundCoordinate(city.lon),
+      timeZone: city.tz,
+      offset: offsetText2(resolved.offsetMinutes),
+      offsetMinutes: Math.round(resolved.offsetMinutes)
+    });
+  }
+  const message = places.length ? null : args.country ? "No town or city in that country matches. Try the name on its own, or another spelling. The index lists places of 15,000 people or more." : "No town or city matches. Try another spelling. The index lists places of 15,000 people or more.";
+  const data = {
+    place: args.place,
+    country: args.country ?? null,
+    date: date3,
+    places,
+    message,
+    source: {
+      name: "GeoNames cities15000",
+      licence: "CC BY 4.0",
+      note: "Resolved from the place index shipped with Zodiacs. The name is not sent anywhere, and nothing is stored. Pass the latitude, longitude and time zone to a chart tool."
+    }
+  };
+  return {
+    data,
+    links: [{ title: "Birth chart on Zodiacs", url: "https://zodiacs.org/birth-chart/" }]
+  };
+}
+
+// src/ai-tools/contracts.ts
+var AI_VERSION = "0.6.0";
+var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
+var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
+var OCCASION_TOOL_NAMES = ["get_occasion_sky", "get_life_milestones", "get_compatibility", "find_chart_twins", "get_famous_chart", "get_birthday", "get_sky_calendar"];
+var ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES];
+var COVERAGE_TOOL_NAMES = ["get_natal_chart", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "explain_astrology"];
+var PLACE_TOOL_NAMES = ["find_birthplace"];
+var EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES, ...PLACE_TOOL_NAMES];
+var MAX_EVENT_DAYS = BUDGETS["events.windowDays"];
+var ORIGIN = "https://zodiacs.org";
+var WIDGET_URI = "ui://zodiacs/sky-events-v4.html";
+var LEGACY_WIDGET_URIS = ["ui://zodiacs/sky-events-v3.html", "ui://zodiacs/sky-events-v2.html", "ui://zodiacs/sky-events-v1.html"];
+var STUDIO_URI = "ui://zodiacs/chart-studio-v6.html";
+var LEGACY_STUDIO_URIS = ["ui://zodiacs/chart-studio-v5.html", "ui://zodiacs/chart-studio-v4.html", "ui://zodiacs/chart-studio-v3.html", "ui://zodiacs/chart-studio-v2.html", "ui://zodiacs/chart-studio-v1.html"];
+var OCCASIONS_URI = "ui://zodiacs/occasions-v8.html";
+var LEGACY_OCCASIONS_URIS = ["ui://zodiacs/occasions-v7.html", "ui://zodiacs/occasions-v6.html", "ui://zodiacs/occasions-v5.html", "ui://zodiacs/occasions-v4.html", "ui://zodiacs/occasions-v3.html", "ui://zodiacs/occasions-v2.html", "ui://zodiacs/occasions-v1.html"];
+var READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true };
+var TOOL_TITLES = {
+  get_capabilities: "What Zodiacs can do",
+  get_sky: "Sky right now",
+  get_upcoming_events: "Sky calendar",
+  check_sky_fact: "Check a sky fact",
+  get_horoscope: "Horoscopes",
+  open_chart_studio: "Chart Studio",
+  get_occasion_sky: "The sky on a day",
+  get_life_milestones: "Life milestones",
+  get_compatibility: "Compare two charts",
+  find_chart_twins: "Chart twins",
+  get_famous_chart: "A famous birth chart",
+  get_birthday: "Your birthday",
+  get_sky_calendar: "Sky calendar for your calendar app",
+  get_natal_chart: "Birth chart readout",
+  get_horoscope_period: "Monthly, yearly and weekly horoscopes",
+  get_chinese_zodiac: "Chinese zodiac",
+  get_personal_transits: "Your transits",
+  explain_astrology: "Astrology explained",
+  find_birthplace: "Find a birthplace"
+};
+var instant = z12.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
+var ZONE_PATTERN8 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var zone4 = z12.string().min(1).max(64).regex(ZONE_PATTERN8).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
+var date = z12.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+var wallClock = z12.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
+var INPUT_SCHEMAS = {
+  get_capabilities: z12.strictObject({}),
+  open_chart_studio: z12.strictObject({}),
+  get_sky: z12.strictObject({ instant: instant.optional(), zone: zone4.optional(), bodies: z12.array(z12.enum(POSITION_BODIES)).min(1).max(12).optional() }),
+  get_upcoming_events: z12.strictObject({ from: instant.optional(), to: instant.optional(), zone: zone4.optional(), bodies: z12.array(z12.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z12.array(z12.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
+    if ((!args.from || !args.to) && Object.keys(args).length !== 0) context.addIssue({ code: "custom", message: "Supply both from and to, or an empty object for the next seven days in UTC." });
+  }),
+  check_sky_fact: z12.strictObject({ kind: z12.enum(["sign", "retrograde", "ingress", "phase"]), body: z12.enum(EVENT_BODIES).optional(), sign: z12.enum(SIGN_SLUGS2).optional(), phase: z12.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone4.optional() }),
+  get_occasion_sky: z12.strictObject({
+    occasion: z12.enum(OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering."),
+    date: date.optional().describe("The day, such as 2027-06-12 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
+    searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo."),
+    searchTo: date.optional().describe("The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
+    time: wallClock.optional().describe("The local clock time, such as 19:00, if the person gives one. Needs zone."),
+    zone: zone4.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
+    latitude: z12.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
+    longitude: z12.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
+    place: z12.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored."),
+    names: z12.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
+  }).superRefine((args, context) => {
+    if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
+    if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A time or a place needs its time zone." });
+    if (args.searchFrom === void 0 !== (args.searchTo === void 0)) context.addIssue({ code: "custom", message: "Give searchFrom and searchTo together." });
+    if (args.date === void 0 && args.searchFrom === void 0) context.addIssue({ code: "custom", message: "Give a date, or a window to search." });
+  }),
+  get_life_milestones: z12.strictObject({
+    birthDate: date.describe("The birth date, such as 1997-03-15."),
+    time: wallClock.optional().describe("The birth time on the local clock, if known. Needs zone."),
+    zone: zone4.optional().describe("The birthplace's time zone, such as Europe/London. Needed with a time."),
+    longitude: z12.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
+  }).superRefine((args, context) => {
+    if (args.time !== void 0 && !args.zone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
+  }),
+  get_compatibility: compatibilityInput,
+  find_chart_twins: chartTwinsInput,
+  get_famous_chart: famousChartInput,
+  get_birthday: birthdayInput,
+  get_sky_calendar: skyCalendarInput,
+  get_natal_chart: natalChartInput,
+  get_horoscope_period: horoscopePeriodInput,
+  get_chinese_zodiac: chineseZodiacInput,
+  get_personal_transits: personalTransitsInput,
+  explain_astrology: explainInput,
+  find_birthplace: birthplaceInput,
+  get_horoscope: z12.strictObject({
+    sign: z12.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
+    period: z12.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
+    focus: z12.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
+    date: date.optional().describe("A date such as 2026-10-08. Leave it out for the person's today."),
+    zone: zone4.optional(),
+    birthDate: date.optional().describe("Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored."),
+    birthTime: z12.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
+    birthZone: zone4.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored.")
+  }).refine((args) => args.birthDate !== void 0 || args.birthTime === void 0 && args.birthZone === void 0, { message: "A birth time or birthplace zone needs the birth date." })
+};
+var link3 = z12.object({ title: z12.string(), url: z12.url() });
+function inlined(schema) {
+  if (Array.isArray(schema)) return schema.map(inlined);
+  if (!schema || typeof schema !== "object") return schema;
+  const node = schema;
+  if (typeof node.$ref === "string") {
+    const component = COMPUTE_SCHEMAS[node.$ref.replace("#/components/schemas/", "")];
+    if (!component) throw new Error(`No compute API component for ${node.$ref}`);
+    return inlined(component);
+  }
+  return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
+}
+function computeValue(component) {
+  if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
+  return z12.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(COMPUTE_SCHEMAS[component]));
+}
+var calculationOf = (result) => z12.object({
+  schema: z12.string(),
+  result,
+  receipt: computeValue("ComputeReceipt"),
+  backend: computeValue("Backend"),
+  cite: z12.object({ url: z12.url(), receipt: z12.string(), engine: z12.string(), version: z12.string() })
+});
+var statements2 = z12.record(z12.string(), z12.string());
+var limits = z12.object({
+  from: z12.string(),
+  to: z12.string(),
+  eventWindowDays: z12.number().int(),
+  eventKinds: z12.array(z12.enum(EVENT_KINDS)),
+  samples: z12.number().int(),
+  factSamples: z12.number().int()
+});
+var localTime = z12.object({ utc: z12.string(), zone: z12.string(), display: z12.string() });
+var body = z12.object({ body: z12.string(), lon: z12.number(), lat: z12.number(), speed: z12.number(), retrograde: z12.boolean(), sign: z12.string(), degree: z12.number() });
+var positionResult = z12.object({ instants: z12.array(z12.object({ instant: z12.string(), bodies: z12.array(body), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z12.array(z12.string()) })) });
+var event = z12.object({ kind: z12.enum(EVENT_KINDS), at: z12.string(), localAt: z12.string(), body: z12.string().optional(), sign: z12.string(), type: z12.string().optional(), retrograde: z12.boolean().optional(), lon: z12.number().optional(), degree: z12.number().optional() });
+var personal = z12.object({ timeKnown: z12.boolean(), items: z12.array(z12.object({ title: z12.string(), line: z12.string(), when: z12.string() })), note: z12.string() });
+var horoscope = z12.object({
+  status: z12.enum(["available", "unavailable", "choose-sign"]),
+  sign: z12.enum(HOROSCOPE_SIGNS).optional(),
+  signName: z12.string().optional(),
+  period: z12.enum(HOROSCOPE_PERIODS),
+  focus: z12.enum(HOROSCOPE_FOCUSES),
+  date: z12.string(),
+  dateLabel: z12.string(),
+  zone: z12.string(),
+  zoneLabel: z12.string(),
+  zoneSource: z12.enum(["request", "assistant", "default"]),
+  reading: z12.object({ title: z12.string(), paragraphs: z12.array(z12.object({ heading: z12.string().optional(), text: z12.string() })) }).optional(),
+  why: z12.object({ note: z12.string(), facts: z12.array(z12.object({ text: z12.string(), when: z12.string() })), houses: z12.array(z12.string()) }).optional(),
+  available: z12.array(z12.object({ date: z12.string(), label: z12.string() })).optional(),
+  message: z12.string().optional(),
+  personal: personal.optional(),
+  /** The share link for the reading shown, when there is one. */
+  shareUrl: z12.url().nullable().optional(),
+  disclosure: z12.string()
+});
+var clockTime2 = z12.object({ utc: z12.string(), local: z12.string() });
+var occasionNote = "Astrology\u2019s reading of the day, for insight and fun, not a guarantee of how it will go.";
+var occasionSky = z12.object({
+  occasion: z12.enum(OCCASION_KINDS),
+  date: z12.string(),
+  time: z12.string().nullable(),
+  zone: z12.string().nullable(),
+  place: z12.string().nullable(),
+  names: z12.string().nullable(),
+  card: z12.object({ title: z12.string(), interpretation: z12.string(), closing: z12.string() }),
+  instant: clockTime2,
+  instantIs: z12.enum(["given-time", "local-noon", "utc-noon"]),
+  sky: z12.object({
+    bodies: z12.array(z12.object({ body: z12.string(), sign: z12.string(), degree: z12.number(), retrograde: z12.boolean() })),
+    moon: z12.object({ phase: z12.string(), illuminationPercent: z12.number(), waxing: z12.boolean() }),
+    retrograde: z12.array(z12.string())
+  }),
+  moonSignChange: z12.object({ from: z12.string(), to: z12.string() }).nullable(),
+  evening: z12.object({
+    sunrise: clockTime2.nullable(),
+    sunset: clockTime2.nullable(),
+    goldenHour: z12.object({ start: clockTime2, end: clockTime2 }).nullable(),
+    civilDusk: clockTime2.nullable(),
+    moonrise: clockTime2.nullable(),
+    moonset: clockTime2.nullable(),
+    moonHighest: z12.object({ at: clockTime2, altitude: z12.number() }).nullable(),
+    planetsAfterDusk: z12.array(z12.string()),
+    flags: z12.array(z12.string())
+  }).nullable(),
+  rating: z12.object({ score: z12.number().int().min(0).max(100), verdict: z12.string(), reasons: z12.array(z12.string()) }),
+  /** With a search window: the three best-rated days in it, best first; the card is for date, else the best day. */
+  bestDays: z12.object({
+    from: z12.string(),
+    to: z12.string(),
+    days: z12.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
+    best: z12.array(z12.object({ date: z12.string(), score: z12.number().int().min(0).max(100), verdict: z12.string(), reasons: z12.array(z12.string()) })).max(3)
+  }).nullable(),
+  cardUrl: z12.url().nullable(),
+  shareUrl: z12.url().nullable(),
+  note: z12.literal(occasionNote)
+});
+var milestone = z12.object({
+  kind: z12.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
+  name: z12.string(),
+  index: z12.number(),
+  age: z12.number(),
+  first: z12.string(),
+  last: z12.string(),
+  passes: z12.array(z12.object({ at: z12.string(), retrograde: z12.boolean() }))
+});
+var lifeMilestones = z12.object({
+  birthDate: z12.string(),
+  timeKnown: z12.boolean(),
+  asOf: z12.string(),
+  milestones: z12.array(milestone),
+  next: milestone.nullable(),
+  numbers: z12.object({ fullMoons: z12.number(), mercuryRetrogrades: z12.number(), jupiterReturns: z12.number() }),
+  cardUrl: z12.url().nullable(),
+  shareUrl: z12.url().nullable(),
+  note: z12.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
+});
+var OCCASION_NOTE = occasionNote;
+var dataSchemas = {
+  open_chart_studio: z12.object({ title: z12.literal("Chart Studio"), calculation: z12.literal("browser-local"), initialChart: z12.literal("birth-details"), sharing: z12.literal("user-reviewed-selection-only") }),
+  get_capabilities: z12.object({ name: z12.literal("Zodiacs"), version: z12.string(), engine: computeValue("Backend"), tools: z12.array(z12.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z12.string(), limitations: z12.array(z12.string()) }),
+  get_sky: z12.object({ mode: z12.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z12.object({ name: z12.string(), angle: z12.number(), illumination: z12.number() }), interpretation: z12.literal("Astronomical calculations; no personal prediction is supplied.") }),
+  get_upcoming_events: z12.object({ from: z12.string(), to: z12.string(), zone: z12.string(), events: z12.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z12.literal("tested-not-proven") }),
+  check_sky_fact: z12.object({ answer: z12.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z12.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
+  get_horoscope: horoscope,
+  get_occasion_sky: occasionSky,
+  get_life_milestones: lifeMilestones,
+  get_compatibility: compatibilityResult,
+  find_chart_twins: chartTwinsData,
+  get_famous_chart: famousChartData,
+  get_birthday: birthdayData,
+  get_sky_calendar: skyCalendarData,
+  get_natal_chart: natalChartData,
+  get_horoscope_period: horoscopePeriodData,
+  get_chinese_zodiac: chineseZodiacData,
+  get_personal_transits: personalTransitsData,
+  explain_astrology: explainData,
+  find_birthplace: birthplaceData
+};
+var ERROR_SCHEMA = z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(false), tool: z12.enum(ALL_AI_TOOL_NAMES), error: z12.object({ code: z12.string(), message: z12.string(), retryAfterSeconds: z12.number().optional() }) });
+var COVERAGE_ERROR_SCHEMA = z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(false), tool: z12.enum(COVERAGE_TOOL_NAMES), error: z12.object({ code: z12.string(), message: z12.string(), retryAfterSeconds: z12.number().optional() }) });
+var PLACE_ERROR_SCHEMA = z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(false), tool: z12.enum(PLACE_TOOL_NAMES), error: z12.object({ code: z12.string(), message: z12.string(), retryAfterSeconds: z12.number().optional() }) });
+function outputSchema(tool, data) {
+  const error = COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : PLACE_TOOL_NAMES.includes(tool) ? PLACE_ERROR_SCHEMA : ERROR_SCHEMA;
+  return z12.union([
+    z12.object({ schema: z12.literal(AI_RESULT_SCHEMA), ok: z12.literal(true), tool: z12.literal(tool), data, links: z12.array(link3) }),
+    error
+  ]);
+}
+var OUTPUT_SCHEMAS = {
+  open_chart_studio: outputSchema("open_chart_studio", dataSchemas.open_chart_studio),
+  get_capabilities: outputSchema("get_capabilities", dataSchemas.get_capabilities),
+  get_sky: outputSchema("get_sky", dataSchemas.get_sky),
+  get_upcoming_events: outputSchema("get_upcoming_events", dataSchemas.get_upcoming_events),
+  check_sky_fact: outputSchema("check_sky_fact", dataSchemas.check_sky_fact),
+  get_horoscope: outputSchema("get_horoscope", dataSchemas.get_horoscope),
+  get_occasion_sky: outputSchema("get_occasion_sky", dataSchemas.get_occasion_sky),
+  get_life_milestones: outputSchema("get_life_milestones", dataSchemas.get_life_milestones),
+  get_compatibility: outputSchema("get_compatibility", dataSchemas.get_compatibility),
+  find_chart_twins: outputSchema("find_chart_twins", dataSchemas.find_chart_twins),
+  get_famous_chart: outputSchema("get_famous_chart", dataSchemas.get_famous_chart),
+  get_birthday: outputSchema("get_birthday", dataSchemas.get_birthday),
+  get_sky_calendar: outputSchema("get_sky_calendar", dataSchemas.get_sky_calendar),
+  get_natal_chart: outputSchema("get_natal_chart", dataSchemas.get_natal_chart),
+  get_horoscope_period: outputSchema("get_horoscope_period", dataSchemas.get_horoscope_period),
+  get_chinese_zodiac: outputSchema("get_chinese_zodiac", dataSchemas.get_chinese_zodiac),
+  get_personal_transits: outputSchema("get_personal_transits", dataSchemas.get_personal_transits),
+  explain_astrology: outputSchema("explain_astrology", dataSchemas.explain_astrology),
+  find_birthplace: outputSchema("find_birthplace", dataSchemas.find_birthplace)
+};
+var TOOL_DESCRIPTIONS = {
+  open_chart_studio: "Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do not ask for birth details first. The chart is calculated inside the panel; you see only the parts the person chooses to share.",
+  get_capabilities: "Lists what Zodiacs can do, its limits and how it handles privacy. Use it when the person asks what Zodiacs can do, or when you need those details before choosing another tool. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes, so do not call it to check before turning those requests down. No sign-in or birth details needed.",
+  get_sky: "Shows where the Sun, Moon and planets are right now, or at a moment the person names, with the Moon's phase. Pass the person's time zone if you know it so times read on their clock. Astronomy only; it makes no personal prediction.",
+  get_upcoming_events: "Shows what changes in the sky over the coming days or weeks: planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days. Supply from and to, and the person's time zone. With no arguments it opens the calendar for the next seven days. It does not list eclipses or every aspect.",
+  check_sky_fact: "Checks a claim such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?' and answers yes, no, or that it depends on the time zone when the answer changes during that day. Use instant or date for sign and retrograde checks, date for ingress and Moon-phase checks. Astronomy only; it cannot check predictions. API documentation: https://zodiacs.org/developers/compute/ .",
+  get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Do not call this tool for stock picks, investment advice, financial forecasts, health predictions or guaranteed outcomes, even when the request mentions a horoscope. Decline those requests without a tool call; do not offer astrology-themed investment suggestions. Use it for a horoscope or reflective reading. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written and keep its dates. If the person gives their birth date (and time and birthplace zone if known), pass them too: the result adds a personal forecast for their week from their own chart. Lead with those personal lines, with their dates. If you can schedule tasks for the person, offer once, briefly, to send them their horoscope every morning; Zodiacs itself sends no notifications. If they want to share the reading, give them the returned shareUrl exactly.",
+  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, the day a baby arrived, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It also rates the date from 0 to 100 with a verdict and the astrological reasons (Venus, the Moon's phase and sign, retrograde planets); share the rating and its reasons plainly. When asked for the best days for an occasion, give the window as searchFrom and searchTo (up to 92 days, such as a whole month); it rates every day in it and returns the three best-rated days with their reasons, and the card for the best one unless a date is also given. When asked which of a few named dates is best, call it for each date and compare the ratings. It never guarantees how the day will go. For the printable card, copy the returned cardUrl exactly, including every field after #; do not reconstruct it from the conversation. If cardUrl is null, use the returned page link. If they want to share the rating, give them the returned shareUrl exactly.",
+  get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it shows the milestone the card leads with, never the birth date.",
+  get_compatibility: `Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member, or with a famous person. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. To compare someone with a famous person Zodiacs publishes, give that side as { famous: "<name>" } instead: it uses their published chart for noon on their birth date, without a Moon or rising sign, and links to their page. If Zodiacs has no chart for that name it says so (found: false); never make one up. It returns a compatibility score out of 100 with scores for attraction, communication and long-term stability, a verdict and a headline: lead with the score and verdict in plain words, then the strongest and hardest contacts. Present it as astrology's reading, never a guarantee of how the relationship will turn out. If they want to share the score, give them the returned shareUrl exactly.`,
+  find_chart_twins: "Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart. If they want to share it, give them the returned shareUrl exactly; it carries their signs, never the birth date.",
+  get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up. If they want to share the chart, give them the returned shareUrl exactly.",
+  get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it carries the month and day, never the year.",
+  get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event.",
+  get_natal_chart: "Reads one person's birth chart: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets (the tightest by orb), and the balance of elements and modes, each with what astrology traditionally reads into it. It needs the birth date; add the birth time, the birthplace's time zone and its latitude and longitude when the person gives them, and never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used; tell the person. For an interactive chart the person fills in themselves, use open_chart_studio instead. chartUrl opens the birth chart page and does not carry the birth details.",
+  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year, or a love or career week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027. A week is only for focus love or career: it adds that focus's daily readings in the week and keeps the sky events that bear on it. For a general week, and for today's or tomorrow's horoscope, use get_horoscope. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
+  get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own.",
+  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Give the birth date, and the time, birthplace time zone and coordinates if known; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. Present the lines as astrology's reading, never a guarantee, and do not turn them into health or money predictions.",
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own reference text, with links to the zodiacs.org pages about it: a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'.",
+  find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place."
+};
+
 // public/data/cities/index.json
 var cities_default = { version: 1, source: "GeoNames cities15000 (CC BY 4.0)", count: 33934, tz: ["Europe/Andorra", "Asia/Dubai", "Asia/Kabul", "America/Antigua", "America/Anguilla", "Europe/Tirane", "Asia/Yerevan", "Africa/Luanda", "America/Argentina/Buenos_Aires", "America/Argentina/Cordoba", "America/Argentina/Salta", "America/Argentina/Tucuman", "America/Argentina/San_Juan", "America/Argentina/Ushuaia", "America/Argentina/Catamarca", "America/Argentina/Jujuy", "America/Argentina/Mendoza", "America/Argentina/San_Luis", "America/Argentina/Rio_Gallegos", "America/Argentina/La_Rioja", "Pacific/Pago_Pago", "Europe/Vienna", "Australia/Adelaide", "Australia/Perth", "Australia/Brisbane", "Australia/Darwin", "Australia/Melbourne", "Australia/Sydney", "Australia/Hobart", "Australia/Broken_Hill", "America/Aruba", "Europe/Mariehamn", "Asia/Baku", "Europe/Sarajevo", "America/Barbados", "Asia/Dhaka", "Europe/Brussels", "Africa/Ouagadougou", "Europe/Sofia", "Asia/Bahrain", "Africa/Bujumbura", "Africa/Porto-Novo", "America/St_Barthelemy", "Atlantic/Bermuda", "Asia/Brunei", "America/La_Paz", "America/Kralendijk", "America/Fortaleza", "America/Recife", "America/Belem", "America/Maceio", "America/Manaus", "America/Bahia", "America/Araguaina", "America/Santarem", "America/Sao_Paulo", "America/Cuiaba", "America/Campo_Grande", "America/Rio_Branco", "America/Porto_Velho", "America/Eirunepe", "America/Boa_Vista", "America/Nassau", "Asia/Thimphu", "Africa/Gaborone", "Europe/Minsk", "America/Belize", "America/Vancouver", "America/Toronto", "America/Edmonton", "America/Halifax", "America/Winnipeg", "America/St_Johns", "America/Moncton", "America/Dawson_Creek", "America/Glace_Bay", "America/Regina", "America/Swift_Current", "America/Whitehorse", "Indian/Cocos", "Africa/Lubumbashi", "Africa/Kinshasa", "Africa/Bangui", "Africa/Brazzaville", "Europe/Zurich", "Africa/Abidjan", "Pacific/Rarotonga", "America/Santiago", "America/Punta_Arenas", "America/Coyhaique", "Africa/Douala", "Asia/Shanghai", "Asia/Urumqi", "Asia/Macau", "America/Bogota", "America/Costa_Rica", "America/Havana", "Atlantic/Cape_Verde", "America/Curacao", "Indian/Christmas", "Asia/Famagusta", "Asia/Nicosia", "Europe/Prague", "Europe/Berlin", "Africa/Djibouti", "Europe/Copenhagen", "America/Dominica", "America/Santo_Domingo", "Africa/Algiers", "America/Guayaquil", "Europe/Tallinn", "Africa/Cairo", "Africa/El_Aaiun", "Africa/Asmara", "Europe/Madrid", "Atlantic/Canary", "Africa/Ceuta", "Africa/Addis_Ababa", "Europe/Helsinki", "Pacific/Fiji", "Atlantic/Stanley", "Pacific/Pohnpei", "Atlantic/Faroe", "Europe/Paris", "Africa/Libreville", "Europe/London", "America/Grenada", "Asia/Tbilisi", "Europe/Moscow", "America/Cayenne", "Europe/Guernsey", "Africa/Accra", "Europe/Gibraltar", "America/Nuuk", "Africa/Banjul", "Africa/Conakry", "America/Guadeloupe", "Africa/Malabo", "Europe/Athens", "Atlantic/South_Georgia", "America/Guatemala", "Pacific/Guam", "Africa/Bissau", "America/Guyana", "Asia/Hong_Kong", "America/Tegucigalpa", "Europe/Zagreb", "America/Port-au-Prince", "Europe/Budapest", "Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura", "Asia/Pontianak", "Asia/Ho_Chi_Minh", "Europe/Dublin", "Asia/Jerusalem", "Europe/Isle_of_Man", "Asia/Kolkata", "Asia/Baghdad", "Asia/Tehran", "Atlantic/Reykjavik", "Europe/Rome", "Europe/Jersey", "America/Jamaica", "Asia/Amman", "Asia/Tokyo", "Africa/Nairobi", "Asia/Bishkek", "Asia/Phnom_Penh", "Pacific/Tarawa", "Indian/Comoro", "America/St_Kitts", "Asia/Pyongyang", "Asia/Seoul", "Asia/Kuwait", "America/Cayman", "Asia/Aqtau", "Asia/Aqtobe", "Asia/Atyrau", "Asia/Oral", "Asia/Almaty", "Asia/Qyzylorda", "Asia/Qostanay", "Asia/Vientiane", "Asia/Beirut", "America/St_Lucia", "Europe/Vaduz", "Asia/Colombo", "Africa/Monrovia", "Africa/Maseru", "Europe/Vilnius", "Europe/Luxembourg", "Europe/Riga", "Africa/Tripoli", "Africa/Casablanca", "Europe/Monaco", "Europe/Chisinau", "Europe/Podgorica", "America/Marigot", "Indian/Antananarivo", "Pacific/Majuro", "Europe/Skopje", "Africa/Bamako", "Asia/Yangon", "Asia/Hovd", "Asia/Ulaanbaatar", "Pacific/Saipan", "America/Martinique", "Africa/Nouakchott", "America/Montserrat", "Europe/Malta", "Indian/Mauritius", "Indian/Maldives", "Africa/Blantyre", "America/Monterrey", "America/Mexico_City", "America/Merida", "America/Cancun", "America/Matamoros", "America/Hermosillo", "America/Mazatlan", "America/Tijuana", "America/Ojinaga", "America/Chihuahua", "America/Bahia_Banderas", "America/Ciudad_Juarez", "Asia/Kuala_Lumpur", "Asia/Kuching", "Africa/Maputo", "Africa/Windhoek", "Pacific/Noumea", "Africa/Niamey", "Pacific/Norfolk", "Africa/Lagos", "America/Managua", "Europe/Amsterdam", "Europe/Oslo", "Asia/Kathmandu", "Pacific/Nauru", "Pacific/Niue", "Pacific/Auckland", "Asia/Muscat", "America/Panama", "America/Lima", "Pacific/Tahiti", "Pacific/Port_Moresby", "Pacific/Bougainville", "Asia/Manila", "Asia/Karachi", "Europe/Warsaw", "America/Miquelon", "Pacific/Pitcairn", "America/Puerto_Rico", "Asia/Gaza", "Asia/Hebron", "Europe/Lisbon", "Atlantic/Madeira", "Atlantic/Azores", "Pacific/Palau", "America/Asuncion", "Asia/Qatar", "Indian/Reunion", "Europe/Bucharest", "Europe/Belgrade", "Asia/Yekaterinburg", "Europe/Volgograd", "Europe/Samara", "Europe/Kaliningrad", "Europe/Saratov", "Europe/Kirov", "Europe/Ulyanovsk", "Europe/Astrakhan", "Asia/Barnaul", "Asia/Novokuznetsk", "Asia/Krasnoyarsk", "Asia/Tomsk", "Asia/Novosibirsk", "Asia/Irkutsk", "Asia/Omsk", "Asia/Yakutsk", "Asia/Vladivostok", "Asia/Chita", "Asia/Kamchatka", "Asia/Sakhalin", "Asia/Magadan", "Asia/Anadyr", "Africa/Kigali", "Asia/Riyadh", "Pacific/Guadalcanal", "Indian/Mahe", "Africa/Khartoum", "Europe/Stockholm", "Asia/Singapore", "Atlantic/St_Helena", "Europe/Ljubljana", "Arctic/Longyearbyen", "Europe/Bratislava", "Africa/Freetown", "Europe/San_Marino", "Africa/Dakar", "Africa/Mogadishu", "America/Paramaribo", "Africa/Juba", "Africa/Sao_Tome", "America/El_Salvador", "America/Lower_Princes", "Asia/Damascus", "Africa/Mbabane", "America/Grand_Turk", "Africa/Ndjamena", "Indian/Kerguelen", "Africa/Lome", "Asia/Bangkok", "Asia/Dushanbe", "Asia/Dili", "Asia/Ashgabat", "Africa/Tunis", "Pacific/Tongatapu", "Europe/Istanbul", "America/Port_of_Spain", "Pacific/Funafuti", "Asia/Taipei", "Africa/Dar_es_Salaam", "Europe/Kyiv", "Europe/Simferopol", "Africa/Kampala", "America/New_York", "America/Chicago", "America/Indiana/Indianapolis", "America/Kentucky/Louisville", "America/Indiana/Vincennes", "America/Detroit", "America/Los_Angeles", "America/Phoenix", "America/Denver", "America/Juneau", "America/Boise", "America/North_Dakota/New_Salem", "Pacific/Honolulu", "America/Anchorage", "America/Montevideo", "Asia/Samarkand", "Asia/Tashkent", "Europe/Vatican", "America/St_Vincent", "America/Caracas", "America/Tortola", "America/St_Thomas", "Pacific/Efate", "Pacific/Wallis", "Pacific/Apia", "Asia/Aden", "Indian/Mayotte", "Africa/Johannesburg", "Africa/Lusaka", "Africa/Harare"], admin1: ["Escaldes-Engordany", "Andorra la Vella", "Dubai", "Umm Al Quwain", "Fujairah", "Ras Al Khaimah", "Abu Dhabi", "Sharjah", "Ajman", "Nimroz", "Bamyan", "Takhar", "Herat", "Jowzjan", "Ghowr", "Sar-e Pol Province", "Samangan", "Kunduz", "Baghlan", "Kabul", "Daykundi", "Faryab", "Laghman", "Balkh", "Helmand", "Khowst", "Kandahar", "Badakhshan", "Nangarhar", "Parwan", "Badghis", "Ghazni", "Paktia", "Farah", "Logar", "Kunar", "Panjshir", "Saint John Parish", "The Valley", "Vlore County", "Korce County", "Elbasan County", "Kukes County", "Gjirokaster County", "Diber County", "Tirana", "Shkoder County", "Durres County", "Fier County", "Lezhe County", "Berat County", "Syunik", "Ararat", "Yerevan", "Armavir", "Gegharkunik", "Lori", "Tavush", "Kotayk", "Shirak", "Aragatsotn", "Lunda Sul", "Luanda Norte", "Moxico", "Cuanza Norte", "Luanda", "Uige", "Bengo", "Zaire", "Kwanza Sul", "Malanje", "Cabinda", "Cunene", "Huambo", "Namibe", "Huila", "Bie", "Cubango", "Benguela", "Buenos Aires", "Misiones", "Buenos Aires F.D.", "Santa Fe", "Entre Rios", "Corrientes", "Chaco", "Formosa", "Neuquen", "Tucuman", "Rio Negro", "San Juan", "Cordoba", "Tierra del Fuego", "Chubut", "Santiago del Estero", "Salta", "La Pampa", "Jujuy", "Mendoza", "San Luis", "Catamarca", "Santa Cruz", "La Rioja", "Eastern District", "State of Vienna", "Carinthia", "Tyrol", "Lower Austria", "Styria", "Upper Austria", "State of Salzburg", "Vorarlberg", "Burgenland", "South Australia", "Western Australia", "Queensland", "Northern Territory", "Victoria", "New South Wales", "Australian Capital Territory", "Tasmania", "", "Mariehamn", "Saatli", "Shusha", "Salyan District", "Nakhchivan", "Neftcala", "Lerik District", "Lankaran", "Imisli", "Fuzuli District", "Jalilabad", "Bilasuvar District", "Beylaqan", "Astara", "Shirvan", "Agdam", "Zaqatala District", "Baki", "Yevlax City", "Goygol Rayon", "Xacmaz", "Ucar", "Tartar District", "Sumqayit", "Siazan Rayon", "Abseron", "Shamkir Rayon", "Samaxi", "Shaki City", "Sabirabad District", "Qusar District", "Quba", "Haciqabul", "Qazax", "Mingacevir City", "Kurdamir District", "Tovuz District", "Ismayilli District", "Goeycay", "Ganja City", "Shabran", "Barda", "Agsu District", "Agdas", "Aghjabadi Rayon", "Federation of B&H", "Srpska", "Brcko", "Saint Michael", "Rangpur Division", "Chittagong", "Dhaka Division", "Sylhet Division", "Mymensingh Division", "Rajshahi Division", "Khulna Division", "Barisal Division", "Flanders", "Brussels Capital", "Wallonia", "Plateau-Central", "Centre", "Centre-Est", "Centre-Nord", "Nord", "Boucle du Mouhoun", "Centre-Ouest", "Centre-Sud", "Hauts-Bassins", "Cascades Region", "Est", "Sud-Ouest", "Sahel", "Yambol", "Vratsa", "Vidin", "Pazardzhik", "Veliko Tarnovo", "Varna", "Targovishte", "Lovech", "Dobrich", "Haskovo", "Stara Zagora", "Kyustendil", "Sofia-Capital", "Smolyan", "Sliven", "Silistra", "Shumen", "Gabrovo", "Blagoevgrad", "Sofia", "Ruse", "Razgrad", "Plovdiv", "Pleven", "Pernik", "Montana", "Kardzhali", "Burgas", "Manama", "Southern Governorate", "Northern", "Muharraq", "Bururi", "Rumonge", "Bujumbura Rural", "Bujumbura Mairie", "Gitega", "Cankuzo", "Bubanza", "Cibitoke", "Ngozi", "Kayanza", "Kirundo", "Atlantique", "Kouffo", "Atakora", "Borgou", "Oueme", "Alibori", "Mono", "Collines", "Plateau", "Zou", "Donga", "Littoral", "Hamilton city", "Tutong", "Belait", "Brunei-Muara District", "Tarija Department", "Santa Cruz Department", "Cochabamba", "Potosi Department", "La Paz Department", "Beni Department", "Chuquisaca Department", "Oruro", "Pando", "Bonaire", "Maranhao", "Pernambuco", "Para", "Paraiba", "Ceara", "Alagoas", "Piaui", "Amazonas", "Bahia", "Rio Grande do Norte", "Tocantins", "Amapa", "Sergipe", "Santa Catarina", "Sao Paulo", "Rio de Janeiro", "Espirito Santo", "Minas Gerais", "Rio Grande do Sul", "Parana", "Mato Grosso", "Goias", "Mato Grosso do Sul", "Federal District", "Acre", "Rondonia", "Roraima", "New Providence", "Freeport", "Thimphu District", "Punakha", "Chukha", "Tsirang District", "Central", "South-East", "Kweneng", "Selibe Phikwe", "Ngwaketsi", "Kgatleng", "North-West", "Lobatse", "Ghanzi", "Gaborone", "City of Francistown", "Jwaneng", "Minsk", "Homyel' Voblasc'", "Vitebsk", "Grodnenskaya", "Brest", "Mogilev", "Minsk City", "Belize District", "Orange Walk District", "Cayo District", "British Columbia", "Ontario", "Quebec", "Alberta", "Nova Scotia", "Manitoba", "Prince Edward Island", "Newfoundland and Labrador", "New Brunswick", "Saskatchewan", "Yukon", "Northwest Territories", "Tshopo", "Haut-Uele", "South Kivu", "Kasai", "North Kivu", "Haut-Katanga", "Tanganyika", "Lomami", "Haut-Lomami", "Ituri", "East Kasai", "Sankuru", "Mongala", "Maniema", "Kasai-Central", "Nord-Ubangi", "Bas-Uele", "Tshuapa", "Lualaba", "Sud-Ubangi", "Bas-Congo", "Mai-Ndombe", "Equateur", "Kwilu", "Kinshasa", "Kwango", "Haut-Mbomou", "Bamingui-Bangoran", "Ouaka", "Haute-Kotto", "Mbomou", "Basse-Kotto", "Ombella-M'Poko", "Kemo", "Lim-Pende", "Sangha-Mbaere", "Lobaye", "Nana-Grebizi", "Ouham-Fafa", "Mambere", "Ouham-Pende", "Nana-Mambere", "Ouham", "Mambere-Kadei", "Bangui", "Lekoumou", "Pointe-Noire", "Cuvette", "Sangha", "Niari", "Bouenza", "Likouala", "Plateaux", "Brazzaville", "Zurich", "Zug", "Vaud", "Saint Gallen", "Aargau", "Geneva", "Bern", "Solothurn", "Valais", "Schwyz", "Schaffhausen", "Neuchatel", "Basel-Landschaft", "Lucerne", "Ticino", "Thurgau", "Appenzell Ausserrhoden", "Fribourg", "Grisons", "Basel-City", "Sassandra-Marahoue", "Montagnes", "Lacs District", "Bas-Sassandra District", "Woroba", "Vallee du Bandama District", "Savanes District", "Lagunes District", "Zanzan District", "Goh-Djiboua", "Denguele District", "Comoe District", "Abidjan Autonomous District", "Rarotonga", "Valparaiso", "Araucania", "Coquimbo Region", "Atacama", "Los Rios Region", "Biobio", "Antofagasta", "Maule Region", "Santiago Metropolitan", "O'Higgins Region", "Nuble", "Los Lagos Region", "Region of Magallanes", "Aysen", "Tarapaca", "Arica y Parinacota Region", "East", "Far North", "North", "West", "South-West", "Adamaoua", "South", "Yunnan", "Xinjiang", "Tibet", "Gansu", "Qinghai", "Sichuan", "Jiangsu", "Hainan", "Guizhou", "Shandong", "Shaanxi", "Chongqing", "Hunan", "Henan", "Shanghai", "Zhejiang", "Liaoning", "Ningxia", "Hubei", "Hebei", "Shanxi", "Guangdong", "Fujian", "Guangxi", "Jiangxi", "Anhui", "Tianjin", "Inner Mongolia", "Beijing", "Jilin", "Heilongjiang", "Cundinamarca", "Valle del Cauca Department", "Antioquia", "Casanare Department", "Meta Department", "Norte de Santander Department", "La Guajira Department", "Caldas Department", "Santander Department", "Cesar Department", "Bolivar", "Narino", "Boyaca", "Sucre Department", "Cauca Department", "Huila Department", "Arauca Department", "Choco", "Atlantico", "Magdalena Department", "Risaralda Department", "San Andres y Providencia", "Tolima Department", "Quindio Department", "Caqueta", "Putumayo Department", "Vichada Department", "Vaupes", "Amazonas Department", "Bogota D.C.", "Guaviare Department", "Cartago Province", "San Jose", "Limon Province", "Heredia Province", "Alajuela Province", "Puntarenas Province", "Guanacaste Province", "Granma Province", "Sancti Spiritus Province", "Pinar del Rio", "Havana", "Camaguey", "Ciego de Avila Province", "Matanzas Province", "Holguin Province", "Villa Clara Province", "Santiago de Cuba Province", "Mayabeque", "Artemisa", "Cienfuegos Province", "Guantanamo Province", "Las Tunas Province", "Isla de la Juventud", "Praia", "Sao Vicente", "Sal", "Ammochostos", "Limassol", "Nicosia", "Pafos", "Larnaka", "Keryneia", "Hradec Kralove Region", "South Moravian", "Zlin", "Prague", "Vysocina", "Usti nad Labem Region", "Pardubice Region", "Moravian-Silesian Region", "South Bohemian Region", "Olomouc Region", "Carlsbad Region", "Central Bohemia", "Plzen Region", "Liberec Region", "Saxony", "Rheinland-Pfalz", "North Rhine-Westphalia", "Brandenburg", "Bavaria", "Saxony-Anhalt", "State of Berlin", "Lower Saxony", "Hesse", "Mecklenburg-Vorpommern", "Hamburg", "Baden-Wurttemberg", "Thuringia", "Schleswig-Holstein", "Saarland", "Bremen", "Tadjourah", "Obock", "Djibouti", "Dikhil", "Arta", "Ali Sabieh", "Zealand", "Central Jutland", "South Denmark", "Capital Region", "North Denmark", "Saint George Parish", "Nacional", "Santiago Province", "San Cristobal", "El Seibo", "Barahona Province", "San Pedro de Macoris", "San Juan Province", "San Jose de Ocoa", "Duarte Province", "Monte Cristi Province", "Puerto Plata", "La Altagracia Province", "Hermanas Mirabal", "Santiago Rodriguez", "Monte Plata Province", "Baoruco Province", "Maria Trinidad Sanchez", "Espaillat Province", "Valverde Province", "La Romana", "La Vega", "Hato Mayor Province", "Dajabon", "Sanchez Ramirez", "Monsenor Nouel", "Santo Domingo Province", "Peravia", "Azua Province", "Boumerdes", "Constantine", "Biskra", "Algiers", "Relizane", "Touggourt", "Tlemcen", "Tizi Ouzou", "Tissemsilt", "Tipaza", "Tindouf", "Timimoun", "Bejaia", "Mascara", "Tiaret", "Chlef", "Mila", "Tebessa", "Batna", "Tamanrasset", "Skikda", "Bouira", "Blida", "Souk Ahras", "Ouled Djellal", "Oran", "Sidi Bel Abbes", "El Mghair", "M'Sila", "Setif", "Saida", "Ouargla", "El Oued", "Adrar", "Bordj Bou Arreridj", "Oum el Bouaghi", "Guelma", "Mostaganem", "Ain Defla", "Ghardaia", "Djelfa", "Medea", "Naama", "Laghouat", "Khenchela", "Jijel", "Ain Temouchent", "El Tarf", "Annaba", "El Menia", "El Bayadh", "Bechar", "In Salah", "Zamora Chinchipe", "Guayas", "Los Rios", "Carchi", "Napo", "Manabi", "Santo Domingo de los Tsachilas", "El Oro", "Santa Elena", "Esmeraldas", "Chimborazo Province", "Pichincha", "Pastaza Province", "Cotopaxi", "Orellana Province", "Tungurahua Province", "Imbabura", "Morona-Santiago Province", "Loja", "Canar", "Sucumbios", "Azuay", "Viljandimaa", "Tartu", "Harjumaa", "Paernumaa", "Ida-Virumaa", "Gharbia", "Red Sea", "Qalyubia", "Dakahlia", "Sohag", "Luxor", "Faiyum", "Monufia", "Beni Suweif", "Matruh", "Kafr el-Sheikh", "Asyut", "Beheira", "South Sinai", "Sharqia", "Minya", "North Sinai", "Qena", "New Valley", "Damietta", "Giza", "Cairo", "Aswan", "Ismailia", "Port Said", "Alexandria", "Suez", "Northern Red Sea", "Anseba", "Gash-Barka", "Maekel", "Southern Red Sea", "Debub", "Andalusia", "Extremadura", "Murcia", "Canary Islands", "Valencia", "Castille-La Mancha", "Balearic Islands", "Melilla", "Basque Country", "Aragon", "Castille and Leon", "Galicia", "Madrid", "Catalonia", "Navarre", "Cantabria", "Asturias", "Ceuta", "Somali", "Oromiya", "South Ethiopia Regional State", "Sidama Region", "Tigray", "Amhara", "Central Ethiopia Regional State", "South West Ethiopia Peoples' Region", "Afar", "Binshangul Gumuz", "Harari", "Gambela", "Dire Dawa", "Addis Ababa", "Pirkanmaa", "North Ostrobothnia", "Uusimaa", "North Savo", "Ostrobothnia", "Southwest Finland", "Lapland", "South Ostrobothnia", "South Savo", "Kanta-Haeme", "Satakunta", "Paijat-Hame", "Central Finland", "South Karelia", "Kymenlaakso", "North Karelia", "Central Ostrobothnia", "Kainuu", "Western", "Pohnpei State", "Streymoy", "Ile-de-France", "Grand Est", "Hauts-de-France", "Rhone-Alpes", "Provence-Alpes-Cote d'Azur", "Brittany", "New Aquitaine", "Centre-Val de Loire", "Bourgogne", "Pays de la Loire", "Normandy", "Occitanie", "Corsica", "Nyanga", "Ogooue-Maritime", "Woleu-Ntem", "Moyen-Ogooue", "Estuaire", "Ngouni", "Haut-Ogooue", "Ogooue-Ivindo", "Ogooue-Lolo", "England", "Wales", "Scotland", "Northern Ireland", "Samegrelo and Zemo Svaneti", "Imereti", "Shida Kartli", "Kakheti", "Tbilisi", "Abkhazia", "Kvemo Kartli", "Adjara", "Samtskhe-Javakheti", "Guyane", "St Peter Port", "Bono East", "Bono", "Upper West", "Greater Accra", "Ashanti", "Eastern", "Savannah", "Upper East", "North East", "Ahafo", "Volta", "Oti", "Western North", "Sermersooq", "Lower River", "Banjul", "North Bank", "Upper River", "Faranah", "Boke Region", "Labe Region", "Kindia", "Kankan Region", "Mamou Region", "Nzerekore Region", "Conakry", "Guadeloupe", "Kie-Ntem", "Bioko Norte", "Litoral", "Djibloho", "Attica", "Thessaly", "Peloponnese", "Central Greece", "Crete", "Epirus", "West Greece", "North Aegean", "South Aegean", "Central Macedonia", "East Macedonia and Thrace", "West Macedonia", "Ionian Islands", "Chimaltenango", "Zacapa", "Guatemala", "Totonicapan", "Sacatepequez", "Huehuetenango", "Solola", "Escuintla", "Quiche", "Suchitepeque", "Retalhuleu", "San Marcos", "Alta Verapaz", "Jalapa", "Peten", "El Progreso", "Quetzaltenango", "Baja Verapaz", "Izabal Department", "Jutiapa", "Santa Rosa Department", "Chiquimula", "Tamuning", "Yigo", "Dededo", "Hagatna", "Mangilao", "Bafata", "Bissau", "Gabu", "East Berbice-Corentyne", "Upper Demerara-Berbice", "Demerara-Mahaica", "Tsuen Wan", "Yuen Long", "Kwun Tong District", "Yau Tsim Mong District", "Wong Tai Sin District", "Sha Tin", "Kowloon City", "Wan Chai", "Southern District", "Tuen Mun", "Kwai Tsing District", "Sai Kung District", "Tai Po", "North District", "Sham Shui Po District", "Islands", "Central and Western", "Cortes Department", "Yoro Department", "Intibuca Department", "Comayagua Department", "Colon Department", "El Paraiso Department", "Atlantida Department", "Francisco Morazan Department", "Copan Department", "Santa Barbara Department", "Valle Department", "Choluteca Department", "Lempira Department", "Olancho Department", "Ocotepeque Department", "Zagreb County", "Zagreb", "Zadar", "Vukovar-Srijem", "Varazdin", "Split-Dalmatia", "Brod-Posavina", "Pozega-Slavonia", "Sisak-Moslavina", "Sibenik-Knin", "Primorje-Gorski Kotar", "Istria", "County of Osijek-Baranja", "Koprivnica-Krizevci", "Dubrovnik-Neretva", "Megimurje", "Bjelovar-Bilogora", "Karlovac", "Artibonite", "Ouest", "Nord-Est", "Nord-Ouest", "Nippes", "Grand'Anse", "Sud-Est", "Sud", "Jasz-Nagykun-Szolnok", "Borsod-Abauj-Zemplen", "Csongrad", "Bekes County", "Hajdu-Bihar", "Szabolcs-Szatmar-Bereg", "Heves County", "Pest County", "Budapest", "Zala County", "Veszprem", "Komarom-Esztergom", "Vas County", "Tolna County", "Fejer", "Gyor-Moson-Sopron", "Somogy County", "Nograd", "Baranya", "Bacs-Kiskun", "North Sumatra", "Aceh", "Yogyakarta", "Central Java", "East Java", "West Java", "South Sulawesi", "Highland Papua", "Southwest Papua", "East Nusa Tenggara", "Jakarta", "Bali", "Maluku", "North Sulawesi", "North Maluku", "Central Papua", "Lampung", "North Kalimantan", "Riau Islands", "Bangka-Belitung Islands", "South Sumatra", "South Kalimantan", "Banten", "West Nusa Tenggara", "West Kalimantan", "Jambi", "West Sumatra", "Central Kalimantan", "East Kalimantan", "West Papua", "Southeast Sulawesi", "Central Sulawesi", "West Sulawesi", "Riau", "Gorontalo", "Papua", "Bengkulu", "South Papua", "Leinster", "Munster", "Connacht", "Ulster", "Jerusalem", "Central District", "Haifa", "Northern District", "Tel Aviv", "Judea and Samaria Area", "Douglas", "Jammu and Kashmir", "Tamil Nadu", "Nagaland", "Uttar Pradesh", "Telangana", "Maharashtra", "Karnataka", "Andhra Pradesh", "Haryana", "Rajasthan", "Bihar", "Madhya Pradesh", "Gujarat", "Kerala", "Puducherry", "Goa", "Uttarakhand", "Punjab", "Himachal Pradesh", "Chhattisgarh", "West Bengal", "Manipur", "Assam", "Tripura", "Meghalaya", "Odisha", "Arunachal Pradesh", "Jharkhand", "Dadra and Nagar Haveli and Daman and Diu", "Mizoram", "Delhi", "Andaman and Nicobar", "Ladakh", "Sikkim", "Chandigarh", "Duhok", "Basra", "Salah ad Din", "Kirkuk", "Nineveh", "Erbil", "Babil", "Sulaymaniyah", "Anbar", "Dhi Qar", "Maysan", "Diyala", "Karbala", "Halabja", "Baghdad", "Wasit", "Muthanna", "Al-Qadisiyah", "Najaf", "Tehran", "Qazvin Province", "Mazandaran", "East Azerbaijan", "Lorestan Province", "Kermanshah Province", "Semnan", "Golestan", "Zanjan", "Gilan Province", "Alborz Province", "Khuzestan", "Bushehr", "Fars", "Kohgiluyeh and Boyer-Ahmad", "Yazd Province", "Kerman", "Hamadan Province", "Razavi Khorasan", "West Azerbaijan", "Markazi", "North Khorasan", "Chaharmahal and Bakhtiari", "Isfahan", "Kurdistan Province", "Qom Province", "Hormozgan", "South Khorasan Province", "Ardabil Province", "Ilam Province", "Sistan and Baluchestan", "Northeast", "Southern Peninsula", "Sicily", "Calabria", "Sardinia", "Apulia", "Emilia-Romagna", "Campania", "Lombardy", "Veneto", "Lazio", "Tuscany", "Piedmont", "Liguria", "Abruzzo", "Friuli Venezia Giulia", "Trentino-Alto Adige", "The Marches", "Umbria", "Molise", "Basilicate", "Aosta Valley", "St Helier", "Saint Catherine Parish", "Westmoreland", "Saint Ann Parish", "Saint Andrew Parish", "Saint James Parish", "Clarendon", "Manchester", "Kingston", "Amman", "Balqa", "Madaba", "Ma'an", "Irbid", "Jerash", "Karak", "Zarqa", "Tafielah", "Ajloun", "Mafraq", "Aqaba", "Wakayama", "Kanagawa", "Hyogo", "Kagawa", "Gifu", "Fukuoka", "Ibaraki", "Kyoto", "Saitama", "Gunma", "Niigata", "Tottori", "Okinawa", "Tokyo", "Mie", "Oita", "Shiga", "Kumamoto", "Toyama", "Shimane", "Osaka", "Yamaguchi", "Nara", "Kochi", "Shizuoka", "Tochigi", "Hiroshima", "Tokushima", "Ishikawa", "Ehime", "Saga", "Chiba", "Kagoshima", "Yamanashi", "Nagano", "Okayama", "Aichi", "Yamagata", "Fukui", "Miyazaki", "Nagasaki", "Akita", "Fukushima", "Miyagi", "Iwate", "Hokkaido", "Aomori", "Makueni County", "Bungoma County", "Kilifi County", "Kirinyaga County", "Wajir County", "Taita Taveta", "Kwale County", "Nairobi County", "Nyeri County", "Kiambu County", "Migori County", "Nakuru County", "Mandera County", "Homa Bay County", "Kisii County", "Nyamira county", "Laikipia", "Kajiado County", "Narok County", "Kitui County", "Machakos County", "Murang'A", "Kakamega County", "Kisumu County", "Marsabit County", "Mombasa County", "Meru County", "Vihiga County", "Tana River County", "Samburu County", "Busia County", "West Pokot County", "Turkana County", "Lamu", "Trans Nzoia", "Kericho County", "Nandi", "Baringo", "Marakwet District", "Isiolo County", "Uasin Gishu County", "Nyandarua County", "Garissa County", "Embu County", "Tharaka - Nithi", "Siaya County", "Batken", "Issyk-Kul", "Chuy Region", "Jalal-Abad Region", "Talas Region", "Osh Region", "Naryn Region", "Bishkek", "Phnom Penh", "Kandal", "Takeo", "Svay Rieng", "Tboung Khmum", "Stung Treng", "Kratie", "Banteay Meanchey", "Siem Reap", "Prey Veng", "Pursat", "Kampong Speu Province", "Kampong Thom", "Otar Meanchey", "Battambang", "Kampong Cham", "Preah Vihear", "Pailin", "Ratanakiri", "Kep", "Koh Kong", "Kampot", "Preah Sihanouk", "Kampong Chhnang", "Gilbert Islands", "Anjouan", "Grande Comore", "Moheli", "Saint George Basseterre", "South Hwanghae", "Kangwon-do", "South Pyongan", "Pyongyang", "North Hwanghae", "South Hamgyong", "Nampo", "P'yongan-bukto", "Kaesong", "North Hamgyong", "Chagang", "Rason", "Yanggang-do", "Gyeongsangbuk-do", "Gangwon-do", "Jeollanam-do", "North Chungcheong", "Gyeonggi-do", "Chungcheongnam-do", "Gyeongsangnam-do", "Jeju-do", "Jeollabuk-do", "Ulsan", "Daejeon", "Daegu", "Seoul", "Busan", "Gwangju", "Incheon", "Sejong-si", "Al Farwaniyah", "Hawalli", "Al Ahmadi", "Al Asimah", "Al Jahra Governorate", "Mubarak al Kabir", "West Bay", "George Town", "Mangystau", "Aktobe", "Atyrau Oblisi", "West Kazakhstan", "Karaganda", "East Kazakhstan", "Kyzylorda", "Ulytau Region", "Kostanay", "Zhambyl", "Turkistan", "Zhetysu Region", "Almaty Region", "Shymkent", "Aqmola", "Abai Region", "North Kazakhstan", "Pavlodar Region", "Baikonur", "Astana", "Almaty", "Vientiane Prefecture", "Houaphan", "Savannakhet Province", "Champasak Province", "Oudomxai", "Vientiane", "Loungnamtha", "Xiangkhoang", "Bolikhamsai", "Khammouane Province", "Luang Prabang Province", "Salavan Province", "Bokeo", "Xekong", "Bekaa", "North Lebanon", "South Governorate", "Baalbek-Hermel Governorate", "Beirut", "Mount Lebanon", "Nabatieh", "Gros-Islet", "Castries", "Vaduz", "Western Province", "Southern Province", "Northern Province", "Eastern Province", "Sabaragamuwa Province", "North Western Province", "Central Province", "Uva Province", "North Central Province", "Grand Gedeh County", "Nimba", "Lofa County", "Bomi County", "Maryland County", "Montserrado County", "Margibi County", "Sinoe County", "Bong County", "Grand Bassa County", "Berea", "Quthing", "Qacha's Nek District", "Mohale's Hoek District", "Maseru District", "Leribe", "Mafeteng District", "Butha-Buthe", "Thaba-Tseka", "Utena", "Vilnius", "Telsiai", "Taurage County", "Siauliai", "Panevezys", "Klaipeda County", "Marijampole County", "Kaunas", "Alytus", "Luxembourg", "Esch-sur-Alzette", "Valmiera", "Ventspils", "Tukums Municipality", "Salaspils Municipality", "Riga", "Rezekne", "Ogre", "Liepaja", "Jurmala", "Jelgava", "Jekabpils Municipality", "Daugavpils", "Cesis Municipality", "Marupe", "Al Butnan", "Banghazi", "Darnah", "Al Wahat", "Al Kufrah", "Al Marj", "Al Jabal al Akhdar", "An Nuqat al Khams", "Misratah", "Jabal al Gharbi", "Al Marqab", "Tripoli", "Surt", "Az Zawiyah", "Sabha District", "Nalut", "Murzuq District", "Al Jafarah", "Al Jufrah", "Wadi ash Shati'", "Wadi al Hayat", "Laayoune-Sakia El Hamra", "Marrakesh-Safi", "Beni Mellal-Khenifra", "Oriental", "Draa-Tafilalet", "Souss-Massa", "Casablanca-Settat", "Tanger-Tetouan-Al Hoceima", "Rabat-Sale-Kenitra", "Fes-Meknes", "Guelmim-Oued Noun", "Municipality of Monaco", "Raionul Edinet", "Ungheni", "Transnistria", "Straseni", "Singerei", "Soroca District", "Orhei", "Hincesti", "Chisinau Municipality", "Causeni", "Floresti", "Drochia", "Gagauzia", "Cahul", "Bender Municipality", "Balti", "Podgorica", "Pljevlja", "Opstina Niksic", "Herceg Novi", "Cetinje", "Budva", "Bijelo Polje", "Bar", "Atsinanana", "Atsimo-Atsinanana", "Fitovinany Region", "Analanjirofo", "Bongolava", "Androy", "Betsiboka", "Atsimo-Andrefana", "Anosy", "Itasy", "Vakinankaratra", "Boeny", "Sava", "Vatovavy Region", "Analamanga", "Menabe", "Alaotra Mangoro", "Melaky", "Ihorombe", "Upper Matsiatra", "Amoron'i Mania", "Diana", "Majuro Atoll", "Zhelino", "Vinica", "Veles", "Tetovo", "Tearce", "Studenichani", "Strumica", "Struga", "Shtip", "Grad Skopje", "Resen", "Radovish", "Prilep", "Ohrid", "Vrapchishte", "Negotino", "Lipkovo", "Kumanovo", "Kriva Palanka", "Kochani", "Kichevo", "Kavadarci", "Bogovinje", "Gostivar", "Gevgelija", "Delchevo", "Debar", "Brvenica", "Bitola", "Ilinden", "Centar Zhupa", "Sikasso", "Koulikoro", "Tombouctou", "Segou", "Kayes", "Mopti", "Kidal", "Gao", "Bamako", "Menaka", "Bago Region", "Ayeyarwady", "Yangon", "Sagaing Region", "Magway", "Mon", "Shan State", "Mandalay Region", "Tanintharyi Region", "Rakhine", "Kachin State", "Nay Pyi Taw", "Kayin State", "Kayah State", "Chin State", "Dzabkhan", "Uvs Province", "Bayan-OElgii Province", "Hovd", "Govi-Altai Province", "Ulaanbaatar", "Arkhangai Province", "Selenge Province", "Hentiy", "Khoevsgoel Province", "OEvoerhangay", "Orhon", "Central Aimak", "Darhan Uul", "OEmnoegovi", "East Aimak", "East Gobi Aymag", "Bulgan", "Bayankhongor", "Suhbaatar", "Our Lady of Carmo", "Saint Francis Xavier", "Saipan", "Martinique", "Tiris Zemmour", "Hodh Ech Chargi", "Trarza", "Guidimaka", "Assaba", "Dakhlet Nouadhibou", "Brakna", "Gorgol", "Hodh El Gharbi", "Inchiri", "Nouakchott West", "Nouakchott North", "Saint Anthony", "Saint Peter", "Haz-Zabbar", "Valletta", "Tas-Sliema", "Saint Paul's Bay", "Qormi", "Il-Mosta", "Birkirkara", "Plaines Wilhems", "Pamplemousses", "Moka", "Port Louis", "Grand Port", "Riviere du Rempart", "Flacq", "Black River", "Kaafu Atoll", "Northern Region", "Southern Region", "Central Region", "Tamaulipas", "San Luis Potosi", "Mexico", "Guerrero", "Puebla", "Hidalgo", "Morelos", "Chiapas", "Mexico City", "Veracruz", "Tabasco", "Yucatan", "Quintana Roo", "Queretaro", "Oaxaca", "Tlaxcala", "Nuevo Leon", "Campeche", "Sonora", "Sinaloa", "Jalisco", "Baja California", "Michoacan", "Zacatecas", "Guanajuato", "Coahuila", "Colima", "Nayarit", "Durango", "Baja California Sur", "Aguascalientes", "Chihuahua", "Kedah", "Pahang", "Perak", "Selangor", "Johor", "Terengganu", "Penang", "Sabah", "Labuan", "Kelantan", "Sarawak", "Negeri Sembilan", "Melaka", "Kuala Lumpur", "Perlis", "Putrajaya", "Gaza Province", "Sofala", "Inhambane Province", "Tete", "Zambezia Province", "Cabo Delgado Province", "Maputo Province", "Nampula", "Maputo City", "Manica", "Niassa Province", "Kavango East", "Zambezi Region", "Khomas Region", "Oshikoto Region", "Erongo Region", "Hardap Region", "Otjozondjupa Region", "Oshana Region", "Karas Region", "Omaheke Region", "Ohangwena Region", "South Province", "Dosso Region", "Tahoua Region", "Zinder Region", "Tillaberi Region", "Maradi Region", "Niamey", "Diffa", "Agadez", "Kebbi", "Niger State", "Kaduna State", "Adamawa", "Bayelsa State", "Taraba State", "Kano State", "Delta", "Nasarawa State", "Akwa Ibom State", "Edo State", "Abia State", "Cross River State", "Anambra", "Sokoto", "Zamfara State", "Benue State", "Lagos", "Oyo State", "Ogun State", "Yobe State", "Rivers State", "Gombe State", "Kwara State", "Plateau State", "Osun State", "Ondo State", "Imo State", "Kogi State", "Ekiti State", "Enugu State", "Borno State", "Katsina State", "FCT", "Jigawa State", "Bauchi", "Ebonyi State", "Managua Department", "Madriz Department", "Chinandega Department", "North Caribbean Coast", "Carazo Department", "Rivas Department", "Matagalpa Department", "South Caribbean Coast", "Nueva Segovia Department", "Granada Department", "Leon Department", "Masaya Department", "Chontales Department", "Jinotega Department", "Esteli Department", "Boaco Department", "Overijssel", "South Holland", "Gelderland", "Utrecht", "Flevoland", "North Holland", "Groningen", "Limburg", "North Brabant", "Zeeland", "Friesland", "Drenthe", "Finnmark", "Trondelag", "Troms", "Vestfold", "Rogaland", "Telemark", "Ostfold", "Oslo", "Vestland", "More og Romsdal", "Nordland", "Akershus", "Innlandet", "Agder", "Buskerud", "Gandaki Pradesh", "Lumbini Province", "Sudurpashchim Pradesh", "Madhesh", "Bagmati Province", "Koshi", "Karnali Pradesh", "Yaren District", "Wellington Region", "Manawatu-Wanganui", "Canterbury", "Waikato Region", "Nelson Region", "Tasman District", "Auckland", "Taranaki Region", "Hawke's Bay Region", "Southland", "Otago", "Gisborne", "Bay of Plenty", "Northland", "Marlborough", "Southeastern Governorate", "Al Batinah North", "Ad Dakhiliyah", "Dhofar", "Muscat", "Musandam Governorate", "Ad Dhahirah", "Northeastern Governorate", "Al Batinah South", "Al Buraimi", "Panama Oeste Province", "Panama", "Veraguas Province", "Colon", "Cocle", "Chiriqui Province", "Bocas del Toro Province", "Loreto", "La Libertad", "San Martin Department", "Tumbes", "Huanuco Department", "Piura", "Lambayeque", "Ucayali", "Cajamarca Department", "Ancash", "Cuzco Department", "Junin", "Madre de Dios", "Tacna", "Lima region", "Ica", "Puno", "Moquegua Department", "Arequipa", "Lima Province", "Ayacucho", "Huancavelica", "Pasco", "Callao", "Apurimac Department", "Iles du Vent", "East Sepik Province", "National Capital", "Oro Province", "Western Highlands Province", "Southern Highlands Province", "Madang Province", "Morobe Province", "East New Britain Province", "West New Britain Province", "Eastern Highlands Province", "Bougainville", "Eastern Visayas", "Central Luzon", "Zamboanga Peninsula", "Autonomous Region in Muslim Mindanao", "Bicol Region", "Ilocos", "Western Visayas", "Calabarzon", "Mimaropa", "Caraga", "National Capital Region", "Northern Mindanao", "Soccsksargen", "Cagayan Valley", "Central Visayas", "Davao Region", "Cordillera", "Sindh", "Azad Kashmir", "Balochistan", "Khyber Pakhtunkhwa", "Gilgit-Baltistan", "Islamabad", "Mazovia", "Lublin", "Podlasie", "Lesser Poland", "Lodz Voivodeship", "Subcarpathia", "Warmia-Masuria", "Swietokrzyskie", "Silesia", "Greater Poland", "Lower Silesia", "Lubusz", "Pomerania", "Kujawsko-Pomorskie", "West Pomerania", "Opole Voivodeship", "Saint-Pierre", "Aguadilla", "Arecibo", "Barceloneta", "Bayamon", "Caguas", "Toa Baja", "Carolina", "Catano", "Cayey", "Fajardo", "Guayama", "Guaynabo", "Humacao", "Manati", "Mayagueez", "Ponce", "Trujillo Alto", "Vega Baja", "Yauco", "Gaza Strip", "West Bank", "Lisbon", "Santarem", "Faro", "Setubal", "Madeira", "Portalegre", "Leiria", "Evora", "Castelo Branco", "Beja", "Viseu", "Vila Real", "Porto", "Aveiro", "Viana do Castelo", "Guarda", "Coimbra", "Braga", "Braganca", "Azores", "Melekeok", "Concepcion", "Guaira", "Presidente Hayes", "Central Department", "Misiones Department", "Alto Parana Department", "Neembucu Department", "Amambay Department", "Boqueron Department", "Itapua", "Caaguazu Department", "Caazapa", "Cordillera Department", "Asuncion", "Baladiyat ad Dawhah", "Umm Salal", "Al-Shahaniya", "Baladiyat ar Rayyan", "Al Daayen", "Al Wakrah", "Al Khor", "Reunion", "Teleorman County", "Brasov County", "Salaj County", "Hunedoara County", "Ilfov", "Maramures", "Suceava", "Vaslui County", "Ialomita County", "Cluj County", "Tulcea County", "Mures County", "Covasna County", "Neamt County", "Gorj County", "Dambovita County", "Timis County", "Galati County", "Olt", "Sibiu County", "Alba County", "Satu Mare County", "Bihor County", "Valcea County", "Buzau County", "Caras-Severin County", "Prahova", "Arges", "Calarasi County", "Harghita County", "Constanta County", "Bacau County", "Iasi County", "Giurgiu County", "Vrancea", "Dolj", "Mehedinti County", "Botosani County", "Bucharest", "Braila County", "Bistrita-Nasaud County", "Arad County", "Vojvodina", "Central Serbia", "Tver Oblast", "St.-Petersburg", "Ryazan Oblast", "Moscow", "Rostov", "Moscow Oblast", "Chelyabinsk", "Bryansk Oblast", "Volgograd Oblast", "Samara Oblast", "Tambov Oblast", "Stavropol Kray", "Kursk Oblast", "Kaliningrad Oblast", "Tatarstan Republic", "Karachayevo-Cherkesiya Republic", "Nizhny Novgorod Oblast", "Penza Oblast", "Murmansk", "Vladimir Oblast", "Mariy-El Republic", "Krasnodar Krai", "Saratov Oblast", "Komi", "Lipetsk Oblast", "Tula Oblast", "Orenburg Oblast", "Smolensk Oblast", "Yaroslavl Oblast", "Kirov Oblast", "Bashkortostan Republic", "Arkhangelskaya", "Adygeya Republic", "Leningradskaya Oblast'", "Udmurtiya Republic", "Voronezh Oblast", "Vologda Oblast", "Kostroma Oblast", "North Ossetia-Alania", "Ivanovo Oblast", "Perm Krai", "Pskov Oblast", "Belgorod Oblast", "Novgorod Oblast", "Chechnya", "Ulyanovsk", "Kabardino-Balkariya Republic", "Ingushetiya Republic", "Kaluga Oblast", "Karelia", "Chuvash Republic", "Sverdlovsk Oblast", "Mordoviya Republic", "Oryol oblast", "Nenets", "Dagestan", "Astrakhan Oblast", "Kalmykiya Republic", "Tyumen Oblast", "Altai Krai", "Kuzbass", "Krasnoyarsk Krai", "Khanty-Mansia", "Tomsk Oblast", "Novosibirsk Oblast", "Irkutsk Oblast", "Yamalo-Nenets", "Omsk Oblast", "Kurgan Oblast", "Khakasiya Republic", "Altai", "Republic of Tyva", "Amur Oblast", "Sakha", "Khabarovsk", "Primorye", "Buryatiya Republic", "Zabaykalskiy (Transbaikal) Kray", "Jewish Autonomous Oblast", "Kamchatka", "Sakhalin Oblast", "Magadan Oblast", "Chukotka", "Kigali", "Medina Region", "Tabuk Region", "Northern Borders Region", "Mecca Region", "Al Jawf Region", "Al-Qassim Region", "Riyadh Region", "Jazan Region", "'Asir Region", "Najran Region", "Ha'il Region", "Al Bahah Region", "Honiara", "Guadalcanal Province", "La Riviere Anglaise", "Northern State", "Central Darfur", "Al Jazirah", "Sennar", "North Kordofan", "Khartoum", "Southern Darfur", "White Nile", "River Nile", "Northern Darfur", "Al Qadarif", "Kassala", "Southern Kordofan", "West Kordofan", "Blue Nile", "Western Darfur", "Eastern Darfur", "Vaesterbotten", "Norrbotten", "Skane", "Gotland", "Kronoberg", "Vaestra Goetaland", "Kalmar", "Vaestmanland", "Stockholm", "Joenkoeping", "Halland", "Uppsala", "Vaesternorrland", "Gaevleborg", "Jaemtland", "OErebro", "Soedermanland", "OEstergoetland", "Dalarna", "Vaermland", "Blekinge", "Saint Helena", "Municipality of Trbovlje", "Urban Municipality of Velenje", "Urban Municipality of Ptuj", "Urban Municipality of Novo Mesto", "Urban Municipality of Maribor", "Ljubljana", "Urban Municipality of Kranj", "Urban Municipality of Koper", "Urban Municipality of Celje", "Svalbard", "Presov Region", "Kosice Region", "Banska Bystrica Region", "Zilina Region", "Bratislava Region", "Trnava Region", "Trencin Region", "Nitra Region", "Western Area", "North West", "San Marino", "Ziguinchor", "Kolda", "Diourbel Region", "Thies", "Matam", "Tambacounda", "Sedhiou", "Dakar", "Saint-Louis", "Fatick", "Kaolack", "Louga", "Kaffrine", "Kedougou", "Lower Shabeelle", "Woqooyi Galbeed", "Awdal", "Bari", "Banaadir", "Gedo", "Lower Juba", "Middle Juba", "Middle Shabele", "Nugaal", "Mudug", "Bay", "Sanaag", "Galguduud", "Hiiraan", "Togdheer", "Sool", "Paramaribo District", "Wanica District", "Central Equatoria", "Western Equatoria", "Northern Bahr al Ghazal", "Western Bahr al Ghazal", "Eastern Equatoria", "Warrap", "Lakes", "Upper Nile", "Unity", "Jonglei", "Sao Tome Island", "Usulutan", "San Salvador Department", "Sonsonate Department", "Cabanas", "San Vicente Department", "Santa Ana Department", "San Miguel Department", "Cuscatlan", "Morazan", "La Libertad Department", "La Union", "Chalatenango Department", "Ahuachapan", "Rif-dimashq", "Hama", "Tartus", "Aleppo", "Homs", "Daraa", "Deir ez-Zor", "Idlib", "Damascus Governorate", "Latakia", "Al-Hasakah", "Raqqa", "Suwayda", "Quneitra", "Hhohho Region", "Manzini Region", "Wadi Fira", "Sila", "Ennedi-Ouest", "Salamat", "Ouadai", "Moyen-Chari", "Mayo-Kebbi Ouest", "Batha", "N'Djamena", "Barh el Gazel", "Logone Occidental", "Guera", "Mandoul", "Hadjer-Lamis", "Kanem", "Chari-Baguirmi", "Tandjile", "Mayo-Kebbi Est", "Logone Oriental", "Borkou", "Lac", "Ennedi-Est", "Kerguelen", "Maritime", "Centrale", "Kara", "Savanes", "Phuket", "Prachuap Khiri Khan", "Phetchaburi", "Trang", "Nakhon Si Thammarat", "Lampang", "Uthai Thani", "Kanchanaburi", "Tak", "Surat Thani", "Sukhothai", "Chiang Mai", "Ratchaburi", "Ranong province", "Phayao", "Lamphun", "Chiang Rai", "Nakhon Sawan", "Chumphon", "Krabi", "Kamphaeng Phet", "Kalasin", "Udon Thani", "Songkhla", "Bangkok", "Nakhon Ratchasima", "Samut Prakan", "Nong Bua Lamphu", "Yasothon", "Pattani", "Yala", "Ang Thong", "Phetchabun", "Ubon Ratchathani", "Sakon Nakhon", "Loei", "Phra Nakhon Si Ayutthaya", "Sa Kaeo", "Uttaradit", "Trat", "Phichit", "Chanthaburi", "Nong Khai", "Narathiwat", "Surin", "Suphan Buri", "Si Sa Ket", "Chon Buri", "Sing Buri", "Prachin Buri", "Bueng Kan", "Satun", "Saraburi", "Samut Songkhram", "Samut Sakhon", "Nakhon Pathom", "Roi Et", "Rayong", "Buriram", "Chaiyaphum", "Phrae", "Phitsanulok", "Phatthalung", "Chachoengsao", "Pathum Thani", "Nonthaburi", "Nan", "Nakhon Phanom", "Nakhon Nayok", "Mukdahan", "Maha Sarakham", "Lopburi", "Khon Kaen", "Chai Nat", "Amnat Charoen", "Khatlon Province", "Sughd", "Republican Subordination", "Gorno-Badakhshan", "Dushanbe", "Cova Lima", "Liquica", "Bobonaro", "Dili Municipality", "Baucau", "Ermera", "Aileu", "Lautem", "Balkan", "Ahal", "Ashgabat", "Dasoguz", "Mary", "Lebap", "Sousse Governorate", "Zaghouan Governorate", "Manouba", "Gafsa", "Tunis Governorate", "Bizerte Governorate", "Tozeur Governorate", "Tataouine", "Kasserine Governorate", "Nabeul Governorate", "Kef Governorate", "Beja Governorate", "Gabes Governorate", "Monastir Governorate", "Jendouba Governorate", "Ariana Governorate", "Siliana Governorate", "Sidi Bouzid Governorate", "Sfax Governorate", "Ben Arous Governorate", "Mahdia Governorate", "Kebili Governorate", "Medenine Governorate", "Kairouan", "Tongatapu", "Hakkari", "Yozgat", "Adana", "Mardin", "Hatay", "Aydin", "Mugla", "Isparta", "Kayseri", "Sanliurfa", "Mus", "Van", "Erzincan", "Usak", "Izmir Province", "Nevsehir Province", "Manisa", "Tunceli", "Kuetahya", "Bitlis", "Mersin", "Balikesir", "Bingoel", "Sivas", "Sirnak", "Diyarbakir Province", "Siirt", "Konya", "Antalya", "Ankara", "Denizli", "Afyonkarahisar Province", "Kahramanmaras", "Agri", "Erzurum", "Osmaniye", "Aksaray", "Gaziantep", "Nigde Province", "Kirsehir", "Malatya", "Batman", "Elazig", "Kirikkale", "Kilis", "Karaman", "Adiyaman Province", "Igdir", "Canakkale", "Eskisehir", "Burdur", "Bilecik", "Zonguldak Province", "Tokat Province", "Istanbul", "Trabzon", "Bursa Province", "Kocaeli", "Yalova", "Samsun", "Edirne", "Ordu", "Kastamonu", "Giresun", "Tekirdag", "Amasya", "Corum", "Sinop", "Kars Province", "Sakarya", "Karabuek Province", "Rize Province", "Kirklareli", "Guemueshane Province", "Duzce", "Artvin", "Bolu", "Cankiri", "Bayburt Province", "Bartin", "Ardahan", "Tunapuna/Piarco", "Tobago", "Sangre Grande Regional Corporation", "San Fernando", "Mayaro", "Port of Spain", "Point Fortin", "San Juan/Laventille", "Diego Martin Regional Corporation", "Chaguanas", "Borough of Arima", "Funafuti", "Taiwan", "Taipei", "Takao", "Fukien", "Zanzibar Urban/West", "Pemba North", "Songwe", "Pwani", "Geita", "Kigoma", "Mbeya", "Katavi", "Kilimanjaro", "Mwanza", "Arusha", "Tabora", "Shinyanga", "Mara", "Tanga", "Rukwa", "Simiyu", "Zanzibar Central/South", "Singida", "Kagera", "Njombe", "Morogoro", "Manyara", "Dodoma", "Pemba South", "Ruvuma", "Dar es Salaam Region", "Iringa", "Lindi", "Mtwara", "Zanzibar North", "Sumy", "Donetsk", "Cherkasy", "Lviv", "Kirovohrad", "Zhytomyr Oblast", "Vinnytsia", "Dnipropetrovsk", "Rivne Oblast", "Zaporizhzhia", "Odesa", "Luhansk", "Crimea", "Kyiv Oblast", "Zakarpattia", "Kyiv City", "Mykolaiv", "Khmelnytskyi", "Kharkiv", "Volyn", "Kherson", "Ternopil", "Sevastopol City", "Chernihiv Oblast", "Poltava", "Ivano-Frankivsk", "Chernivtsi", "Eastern Region", "Western Region", "Virginia", "Alabama", "Kentucky", "Tennessee", "Arkansas", "District of Columbia", "Delaware", "Florida", "Georgia", "Illinois", "Indiana", "Kansas", "Louisiana", "Maryland", "Missouri", "Mississippi", "North Carolina", "New Jersey", "Ohio", "Oklahoma", "Pennsylvania", "South Carolina", "Texas", "West Virginia", "Massachusetts", "Connecticut", "Michigan", "Iowa", "Maine", "Minnesota", "North Dakota", "Nebraska", "New Hampshire", "New York", "Rhode Island", "South Dakota", "Vermont", "Wisconsin", "California", "Arizona", "Colorado", "New Mexico", "Nevada", "Utah", "Alaska", "Idaho", "Oregon", "Washington", "Wyoming", "Hawaii", "Rio Negro Department", "Flores Department", "Treinta y Tres Department", "Tacuarembo Department", "Canelones", "San Jose Department", "Maldonado", "Salto Department", "Rocha Department", "Rivera Department", "Paysandu Department", "Montevideo Department", "Lavalleja", "Soriano", "Cerro Largo", "Durazno Department", "Colonia", "Artigas", "Karakalpakstan", "Jizzakh Region", "Samarqand Region", "Surxondaryo Region", "Qashqadaryo", "Bukhara", "Tashkent Region", "Tashkent", "Fergana", "Sirdaryo Region", "Navoiy Region", "Namangan", "Xorazm Region", "Andijan Region", "Nueva Esparta", "Anzoategui", "Barinas", "Guarico", "Yaracuy", "Aragua", "Portuguesa", "Trujillo", "Carabobo", "Tachira", "Delta Amacuro", "Merida", "Falcon", "Cojedes", "Zulia", "Monagas", "Miranda", "Lara", "Vargas", "Sucre", "Apure", "Distrito Federal", "Saint Thomas Island", "Saint Croix Island", "Nghe An Province", "Hanoi", "Lao Cai", "Dong Nai", "Ho Chi Minh City (HCMC)", "An Giang", "Ca Mau", "Can Tho City", "Phu Tho", "Vinh Long", "Bac Ninh", "Quang Ninh", "Dak Lak", "Tuyen Quang", "Khanh Hoa", "Ha Tinh Province", "Cao Bang Province", "Tay Ninh", "Dong Thap", "Lang Son Province", "Thanh Hoa Province", "Thai Nguyen", "Hung Yen Province", "Da Nang City", "Son La Province", "Gia Lai", "Quang Tri", "Quang Ngai", "Ninh Binh", "Thua Thien Hue Province", "Lam Dong", "GJien Bien Province", "Hai Phong", "Lai Chau Province", "Shefa", "Uvea", "Tuamasaga", "Mitrovica", "Gjilan", "Ferizaj", "Prizren", "Pristina", "Pec", "Gjakova", "Abyan Governorate", "Al Hudaydah", "Ibb Governorate", "Ta'izz", "Sanaa Governorate", "Amanat Alasimah", "Sa'dah", "Ma'rib", "Lahij", "Hajjah", "Muhafazat Hadramaout", "Dhamar", "Shabwah", "Omran", "Al Jawf", "Al Bayda", "Aden", "Mamoudzou", "Dzaoudzi", "Koungou", "Gauteng", "Free State", "Mpumalanga", "Eastern Cape", "KwaZulu-Natal", "Northern Cape", "Limpopo", "Western Cape", "Luapula Province", "Muchinga", "North-Western", "Copperbelt", "Lusaka Province", "Masvingo Province", "Matabeleland North", "Midlands Province", "Mashonaland East Province", "Manicaland", "Mashonaland West", "Mashonaland Central", "Harare", "Matabeleland South Province", "Bulawayo"], countries: ["Andorra", "United Arab Emirates", "Afghanistan", "Antigua and Barbuda", "Anguilla", "Albania", "Armenia", "Angola", "Argentina", "American Samoa", "Austria", "Australia", "Aruba", "Aland Islands", "Azerbaijan", "Bosnia and Herzegovina", "Barbados", "Bangladesh", "Belgium", "Burkina Faso", "Bulgaria", "Bahrain", "Burundi", "Benin", "Saint Barthelemy", "Bermuda", "Brunei", "Bolivia", "Bonaire, Saint Eustatius and Saba ", "Brazil", "Bahamas", "Bhutan", "Botswana", "Belarus", "Belize", "Canada", "Cocos Islands", "Democratic Republic of the Congo", "Central African Republic", "Republic of the Congo", "Switzerland", "Ivory Coast", "Cook Islands", "Chile", "Cameroon", "China", "Colombia", "Costa Rica", "Cuba", "Cabo Verde", "Curacao", "Christmas Island", "Cyprus", "Czechia", "Germany", "Djibouti", "Denmark", "Dominica", "Dominican Republic", "Algeria", "Ecuador", "Estonia", "Egypt", "Western Sahara", "Eritrea", "Spain", "Ethiopia", "Finland", "Fiji", "Falkland Islands", "Micronesia", "Faroe Islands", "France", "Gabon", "United Kingdom", "Grenada", "Georgia", "French Guiana", "Guernsey", "Ghana", "Gibraltar", "Greenland", "Gambia", "Guinea", "Guadeloupe", "Equatorial Guinea", "Greece", "South Georgia and the South Sandwich Islands", "Guatemala", "Guam", "Guinea-Bissau", "Guyana", "Hong Kong", "Honduras", "Croatia", "Haiti", "Hungary", "Indonesia", "Ireland", "Israel", "Isle of Man", "India", "Iraq", "Iran", "Iceland", "Italy", "Jersey", "Jamaica", "Jordan", "Japan", "Kenya", "Kyrgyzstan", "Cambodia", "Kiribati", "Comoros", "Saint Kitts and Nevis", "North Korea", "South Korea", "Kuwait", "Cayman Islands", "Kazakhstan", "Laos", "Lebanon", "Saint Lucia", "Liechtenstein", "Sri Lanka", "Liberia", "Lesotho", "Lithuania", "Luxembourg", "Latvia", "Libya", "Morocco", "Monaco", "Moldova", "Montenegro", "Saint Martin", "Madagascar", "Marshall Islands", "North Macedonia", "Mali", "Myanmar", "Mongolia", "Macao", "Northern Mariana Islands", "Martinique", "Mauritania", "Montserrat", "Malta", "Mauritius", "Maldives", "Malawi", "Mexico", "Malaysia", "Mozambique", "Namibia", "New Caledonia", "Niger", "Norfolk Island", "Nigeria", "Nicaragua", "The Netherlands", "Norway", "Nepal", "Nauru", "Niue", "New Zealand", "Oman", "Panama", "Peru", "French Polynesia", "Papua New Guinea", "Philippines", "Pakistan", "Poland", "Saint Pierre and Miquelon", "Pitcairn", "Puerto Rico", "Palestinian Territory", "Portugal", "Palau", "Paraguay", "Qatar", "Reunion", "Romania", "Serbia", "Russia", "Rwanda", "Saudi Arabia", "Solomon Islands", "Seychelles", "Sudan", "Sweden", "Singapore", "Saint Helena", "Slovenia", "Svalbard and Jan Mayen", "Slovakia", "Sierra Leone", "San Marino", "Senegal", "Somalia", "Suriname", "South Sudan", "Sao Tome and Principe", "El Salvador", "Sint Maarten", "Syria", "Eswatini", "Turks and Caicos Islands", "Chad", "French Southern Territories", "Togo", "Thailand", "Tajikistan", "Timor Leste", "Turkmenistan", "Tunisia", "Tonga", "Turkey", "Trinidad and Tobago", "Tuvalu", "Taiwan", "Tanzania", "Ukraine", "Uganda", "United States", "Uruguay", "Uzbekistan", "Vatican", "Saint Vincent and the Grenadines", "Venezuela", "British Virgin Islands", "U.S. Virgin Islands", "Vietnam", "Vanuatu", "Wallis and Futuna", "Samoa", "Kosovo", "Yemen", "Mayotte", "South Africa", "Zambia", "Zimbabwe"], shards: ["0", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"], also: { a: [["\u2018Ajl\u016Bn", "'Ajlun", 1138, 108, 3233, 3575, 164, 125557], ["'\u0100kra", "'Akra", 1052, 102, 3673, 4388, 158, 105370], ["\u2018Amr\u0101n", "'Amran", 2683, 239, 1566, 4394, 351, 90792], ["\u2018Alemaya", "'Alemaya", 738, 66, 939, 4201, 117, 63700], ["'\u0100rdamat\u0101", "'Ardamata", 2099, 191, 1348, 2249, 290, 55637], ["'Al\u012B \u0100b\u0101d-e Kat\u016Bl", "'Ali Abad-e Katul", 1074, 103, 3691, 5487, 159, 52838], ["\u2018Ayn al \u2018Arab", "'Ayn al 'Arab", 2204, 207, 3689, 3835, 306, 5e4], ["\u2018Afr\u012Bn", "`Afrin", 2204, 207, 3651, 3687, 306, 48693], ["\u2019A\xEFn Azel", "'Ain Azel", 635, 59, 3582, 551, 108, 37970], ["\u2019A\xEFn el Turk", "'Ain el Turk", 631, 59, 3574, -77, 108, 36326], ["\u2019A\xEFn Deheb", "'Ain Deheb", 620, 59, 3484, 155, 108, 36146], ["\u2018Afak", "'Afak", 1065, 102, 3206, 4525, 158, 35536], ["\u2019A\xEFn Merane", "'Ain Merane", 621, 59, 3616, 97, 108, 34413], ["\u2019A\xEFn el Melh", "'Ain el Melh", 634, 59, 3484, 416, 108, 32880], ["\u2019A\xEFn el Bell", "'Ain el Bell", 646, 59, 3434, 322, 108, 31916], ["\u2019A\xEFn Benian", "'Ain Benian", 609, 59, 3680, 292, 108, 31102], ["\u2019A\xEFn Abid", "'Ain Abid", 607, 59, 3623, 694, 108, 29486], ["\u2019A\xEFn el Hammam", "'Ain el Hammam", 613, 59, 3656, 431, 108, 28029], ["\u2018Anah", "'Anah", 1056, 102, 3437, 4198, 158, 27e3], ["\u2018\u0100m\u016Bd\u0101", "'Amuda", 2211, 207, 3710, 4093, 306, 26821], ["\u2018A\u0163\u0101r\u016Bt", "'Atarut", 1897, 178, 3187, 3522, 254, 25595], ["\u2018Ara-\u2018Ar\u2018ara", "`Ara-`Ar`ara", 1008, 99, 3250, 3509, 155, 24904], ["\u2018Alem T\u2019\u0113na", "'Alem T'ena", 738, 66, 830, 3895, 117, 23700], ["\u2018Alem Ketema", "'Alem Ketema", 742, 66, 1008, 3903, 117, 23500], ["\u2018\u0100l\u012B Shahr", "'Ali Shahr", 1079, 103, 2893, 5107, 159, 23178], ["\u2018Aqrah", "'Aqrah", 1052, 102, 3676, 4389, 158, 23e3], ["\u2018Anat al Qad\u012Bmah", "'Anat al Qadimah", 1056, 102, 3447, 4194, 158, 19719], ["\u2018Al\u012B al Gharb\u012B", "'Ali al Gharbi", 1058, 102, 3246, 4669, 158, 19711], ["\u2018Anbar\u0101b\u0101d", "'Anbarabad", 1083, 103, 2848, 5785, 159, 18185], ["\u2018Abas\u0101n al Kab\u012Brah", "'Abasan al Kabirah", 1896, 178, 3132, 3434, 253, 18163], ["\u2018Ar\u2018ara BaNegev", "'Ar'ara BaNegev", 894, 99, 3116, 3502, 155, 17640], ["\u2018Anjarah", "`Anjarah", 1138, 108, 3231, 3575, 164, 17634], ["\u2019A\xEFn el Berd", "'Ain el Berd", 632, 59, 3536, -51, 108, 16548]], d: [["\u0110\u1ED1ng \u0110a", "GJong GJa", 2627, 234, 2101, 10583, 312, 371606], ["\u0110i\u1EC7n B\xE0n", "GJien Ban", 2649, 234, 1589, 10825, 153, 226564], ["Donostia / San Sebasti\xE1n", "San Sebastian", 727, 65, 4331, -197, 114, 185357], ["\u0110\u1ED3ng Xo\xE0i", "GJong Xoai", 2629, 234, 1153, 10688, 153, 168e3], ["\u0110\u01B0c Tr\u1ECDng", "GJuc Trong", 2656, 234, 1174, 10837, 153, 161232], ["\u0110\u1EE9c Ph\u1ED5", "GJuc Pho", 2653, 234, 1481, 10896, 153, 155743], ["\u0110\u1ED3ng H\u1EDBi", "GJong Hoi", 2652, 234, 1747, 10662, 312, 133672], ["\u0110\u1ED1 S\u01A1n", "GJo Son", 2658, 234, 2071, 10679, 153, 51417], ["\u0110an Ph\u01B0\u1EE3ng", "GJan Phuong", 2627, 234, 2109, 10566, 312, 39917], ["\u0110\xF4ng Ph\xFA", "GJong Phu", 2649, 234, 1567, 10822, 153, 34122], ["\u0110akovo", "GJakovo", 930, 94, 4531, 1841, 146, 16875], ["\u0110\u1EA1i L\u1ED9c", "GJai Loc", 2649, 234, 1588, 10812, 153, 16215], ["\u0110inh V\u0103n", "GJinh Van", 2656, 234, 1179, 10824, 153, 16036]], e: [["\u02BBEwa Gentry-West Loch", "'Ewa Gentry-West Loch", 2569, 226, 2135, -15803, 338, 35828], ["\u2018Ewa Gentry", "'Ewa Gentry", 2569, 226, 2134, -15803, 338, 22690], ["\u02BBEwa Beach-Iroquois Point", "'Ewa Beach-Iroquois Point", 2569, 226, 2132, -15799, 338, 21088], ["\u2018Eyn-e Do", "'Eyn-e Do", 1078, 103, 3135, 4860, 159, 17653], ["\u2018Ewa Beach", "'Ewa Beach", 2569, 226, 2132, -15801, 338, 16415]], h: [["Hondarribia", "Fuenterrabia", 727, 65, 4337, -180, 114, 16458]], i: [["\u2018Ibr\u012B", "'Ibri", 1789, 167, 2323, 5652, 241, 163473], ["\u2018Izbat \u2018Al\u012B as Sayyid", "'Izbat 'Ali as Sayyid", 698, 62, 3116, 3015, 111, 53079], ["\u2018Irb\u012Bn", "`Irbin", 2201, 207, 3354, 3637, 306, 42474], ["\u2018Irqah", "'Irqah", 2075, 188, 2468, 4661, 287, 42179], ["\u2018Izbat al Burj", "`Izbat al Burj", 689, 62, 3151, 3184, 111, 37953], ["\u2018Izr\u0101", "`Izra", 1135, 108, 3116, 3569, 164, 22756], ["\u2018Inak", "'Inak", 1357, 188, 2652, 5003, 287, 20038]], s: [["'s-Hertogenbosch", 0, 1741, 161, 5170, 530, 235, 160783], ["'s-Gravenzande", 0, 1734, 161, 5200, 417, 235, 19190]], u: [["\u2018Uy\u016Bn al Jiw\u0101\u2019", "'Uyun al Jiwa'", 2074, 188, 2650, 4363, 287, 15619]] } };
 
 // src/mcp/places.ts
-import { z as z11 } from "zod";
+import { z as z13 } from "zod";
 
 // public/data/cities/0.json
 var __default = [["6th of October City", 0, 706, 62, 2982, 3105, 111, 368650], ["\u2018Ibr\u012B", "'Ibri", 1789, 167, 2323, 5652, 241, 163473], ["'s-Hertogenbosch", 0, 1741, 161, 5170, 530, 235, 160783], ["\u2018Ajl\u016Bn", "'Ajlun", 1138, 108, 3233, 3575, 164, 125557], ["'\u0100kra", "'Akra", 1052, 102, 3673, 4388, 158, 105370], ["\u2018Amr\u0101n", "'Amran", 2683, 239, 1566, 4394, 351, 90792], ["\u2018Alemaya", "'Alemaya", 738, 66, 939, 4201, 117, 63700], ["'\u0100rdamat\u0101", "'Ardamata", 2099, 191, 1348, 2249, 290, 55637], ["\u2018Izbat \u2018Al\u012B as Sayyid", "'Izbat 'Ali as Sayyid", 698, 62, 3116, 3015, 111, 53079], ["'Al\u012B \u0100b\u0101d-e Kat\u016Bl", "'Ali Abad-e Katul", 1074, 103, 3691, 5487, 159, 52838], ["\u2018Ayn al \u2018Arab", "'Ayn al 'Arab", 2204, 207, 3689, 3835, 306, 5e4], ["\u2018Afr\u012Bn", "`Afrin", 2204, 207, 3651, 3687, 306, 48693], ["\u2018Irb\u012Bn", "`Irbin", 2201, 207, 3354, 3637, 306, 42474], ["\u2018Irqah", "'Irqah", 2075, 188, 2468, 4661, 287, 42179], ["\u2019A\xEFn Azel", "'Ain Azel", 635, 59, 3582, 551, 108, 37970], ["\u2018Izbat al Burj", "`Izbat al Burj", 689, 62, 3151, 3184, 111, 37953], ["\u2019A\xEFn el Turk", "'Ain el Turk", 631, 59, 3574, -77, 108, 36326], ["\u2019A\xEFn Deheb", "'Ain Deheb", 620, 59, 3484, 155, 108, 36146], ["\u02BBEwa Gentry-West Loch", "'Ewa Gentry-West Loch", 2569, 226, 2135, -15803, 338, 35828], ["\u2018Afak", "'Afak", 1065, 102, 3206, 4525, 158, 35536], ["\u2019A\xEFn Merane", "'Ain Merane", 621, 59, 3616, 97, 108, 34413], ["\u2019A\xEFn el Melh", "'Ain el Melh", 634, 59, 3484, 416, 108, 32880], ["\u2019A\xEFn el Bell", "'Ain el Bell", 646, 59, 3434, 322, 108, 31916], ["\u2019A\xEFn Benian", "'Ain Benian", 609, 59, 3680, 292, 108, 31102], ["\u2019A\xEFn Abid", "'Ain Abid", 607, 59, 3623, 694, 108, 29486], ["\u2019A\xEFn el Hammam", "'Ain el Hammam", 613, 59, 3656, 431, 108, 28029], ["\u2018Anah", "'Anah", 1056, 102, 3437, 4198, 158, 27e3], ["\u2018\u0100m\u016Bd\u0101", "'Amuda", 2211, 207, 3710, 4093, 306, 26821], ["\u2018A\u0163\u0101r\u016Bt", "'Atarut", 1897, 178, 3187, 3522, 254, 25595], ["\u2018Ara-\u2018Ar\u2018ara", "`Ara-`Ar`ara", 1008, 99, 3250, 3509, 155, 24904], ["\u2018Alem T\u2019\u0113na", "'Alem T'ena", 738, 66, 830, 3895, 117, 23700], ["\u2018Alem Ketema", "'Alem Ketema", 742, 66, 1008, 3903, 117, 23500], ["\u2018\u0100l\u012B Shahr", "'Ali Shahr", 1079, 103, 2893, 5107, 159, 23178], ["\u2018Aqrah", "'Aqrah", 1052, 102, 3676, 4389, 158, 23e3], ["\u2018Izr\u0101", "`Izra", 1135, 108, 3116, 3569, 164, 22756], ["\u2018Ewa Gentry", "'Ewa Gentry", 2569, 226, 2134, -15803, 338, 22690], ["\u02BBEwa Beach-Iroquois Point", "'Ewa Beach-Iroquois Point", 2569, 226, 2132, -15799, 338, 21088], ["\u2018Inak", "'Inak", 1357, 188, 2652, 5003, 287, 20038], ["\u2018Anat al Qad\u012Bmah", "'Anat al Qadimah", 1056, 102, 3447, 4194, 158, 19719], ["\u2018Al\u012B al Gharb\u012B", "'Ali al Gharbi", 1058, 102, 3246, 4669, 158, 19711], ["'s-Gravenzande", 0, 1734, 161, 5200, 417, 235, 19190], ["\u2018Anbar\u0101b\u0101d", "'Anbarabad", 1083, 103, 2848, 5785, 159, 18185], ["\u2018Abas\u0101n al Kab\u012Brah", "'Abasan al Kabirah", 1896, 178, 3132, 3434, 253, 18163], ["\u2018Eyn-e Do", "'Eyn-e Do", 1078, 103, 3135, 4860, 159, 17653], ["\u2018Ar\u2018ara BaNegev", "'Ar'ara BaNegev", 894, 99, 3116, 3502, 155, 17640], ["\u2018Anjarah", "`Anjarah", 1138, 108, 3231, 3575, 164, 17634], ["\u2019A\xEFn el Berd", "'Ain el Berd", 632, 59, 3536, -51, 108, 16548], ["\u2018Ewa Beach", "'Ewa Beach", 2569, 226, 2132, -15801, 338, 16415], ["\u2018Uy\u016Bn al Jiw\u0101\u2019", "'Uyun al Jiwa'", 2074, 188, 2650, 4363, 287, 15619]];
@@ -35539,413 +35941,15 @@ var PLACE_SHARDS = Object.freeze({
   y: rows(y_default),
   z: rows(z_default)
 });
-var PLACES_INPUT = z11.strictObject({
-  query: z11.string().max(PLACE_QUERY_CHARS).describe("A place name or its start, as GeoNames writes it or in its ASCII spelling (Z\xFCrich, Zurich or Zuerich), in any letter case, with or without accents and apostrophes; two characters or more. Places whose names start with it come first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population."),
-  limit: z11.number().int().min(1).max(PLACES_MAX).optional().describe(`How many places, 1 to ${PLACES_MAX}; ${PLACES_DEFAULT} when omitted, as the site's search lists.`)
+var PLACES_INPUT = z13.strictObject({
+  query: z13.string().max(PLACE_QUERY_CHARS).describe("A place name or its start, as GeoNames writes it or in its ASCII spelling (Z\xFCrich, Zurich or Zuerich), in any letter case, with or without accents and apostrophes; two characters or more. Places whose names start with it come first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population."),
+  limit: z13.number().int().min(1).max(PLACES_MAX).optional().describe(`How many places, 1 to ${PLACES_MAX}; ${PLACES_DEFAULT} when omitted, as the site's search lists.`)
 });
 
-// src/ai-tools/features/birthplace.ts
-var DATE3 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
-var LIMIT = 5;
-var RANK_LIMIT = 40;
-var STREET = /(?:^\d+\b|\b(?:street|avenue|boulevard|lane|drive|court|highway|crescent|terrace|alley)\b|\bst\.)/iu;
-var COUNTRY_ALIAS = {
-  uk: "united kingdom",
-  britain: "united kingdom",
-  "great britain": "united kingdom",
-  england: "united kingdom",
-  scotland: "united kingdom",
-  wales: "united kingdom",
-  us: "united states",
-  usa: "united states",
-  america: "united states",
-  uae: "united arab emirates"
-};
-var birthplaceInput = z12.strictObject({
-  place: z12.string().trim().min(2).max(80).describe("A town or city name, such as London or Almaty. Not a street address. Nothing is stored."),
-  country: z12.string().trim().min(2).max(60).optional().describe("Optional country when several places share the name, such as United Kingdom or Kazakhstan."),
-  date: z12.string().regex(DATE3).optional().describe("Optional date, such as 1990-05-03 (years 1800 to 2199), for the UTC offset in force that day. Without it, the offset is for today.")
-});
-var placeRow = z12.object({
-  name: z12.string(),
-  region: z12.string(),
-  country: z12.string(),
-  latitude: z12.number(),
-  longitude: z12.number(),
-  timeZone: z12.string(),
-  /** The UTC offset at noon on the date, such as +01:00. */
-  offset: z12.string(),
-  offsetMinutes: z12.number().int()
-});
-var birthplaceData = z12.object({
-  place: z12.string(),
-  country: z12.string().nullable(),
-  date: z12.string(),
-  places: z12.array(placeRow).max(LIMIT),
-  message: z12.string().nullable(),
-  source: z12.object({
-    name: z12.literal("GeoNames cities15000"),
-    licence: z12.literal("CC BY 4.0"),
-    note: z12.string()
-  })
-});
-var cityIndex = cities_default;
-function countryFold(hint2) {
-  const folded = fold2(hint2.trim());
-  return COUNTRY_ALIAS[folded] ?? folded;
+// src/ai-tools/features/place-table.ts
+function loadPlaceTable() {
+  return { index: cities_default, shards: PLACE_SHARDS };
 }
-function countryMatches(country, hint2) {
-  const wanted = countryFold(hint2);
-  const name = fold2(country);
-  return name === wanted || name.includes(wanted) || wanted.includes(name);
-}
-function offsetText2(minutes) {
-  const rounded = Math.round(minutes);
-  const sign2 = rounded < 0 ? "-" : "+";
-  const abs = Math.abs(rounded);
-  return `${sign2}${String(Math.floor(abs / 60)).padStart(2, "0")}:${String(abs % 60).padStart(2, "0")}`;
-}
-function todayUtc(now) {
-  return now.toISOString().slice(0, 10);
-}
-async function findBirthplace(args, now, clock2) {
-  if (STREET.test(args.place)) throw new RangeError("Give a town or city name, not a street address.");
-  const date3 = args.date ?? todayUtc(now);
-  if (Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) || (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) !== date3) {
-    throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
-  }
-  const year = Number(date3.slice(0, 4));
-  if (year < 1800 || year > 2199) throw new RangeError("date must be a real date from 1800 to 2199, such as 1990-05-03.");
-  const query = foldedQuery(args.place);
-  const key = query ? shardKey(query) : "0";
-  const ranked = query ? rankCities(cityIndex, queryRows(cityIndex, PLACE_SHARDS[key] ?? [], key), query, RANK_LIMIT) : [];
-  const matched = args.country ? ranked.filter((city) => countryMatches(city.country, args.country)) : ranked;
-  const chosen = matched.slice(0, LIMIT);
-  const places = [];
-  for (const city of chosen) {
-    await clock2.prepareLocalTime(date3, city.tz);
-    const resolved = clock2.resolveLocalToUtc(date3, "12:00", city.tz);
-    places.push({
-      name: city.name,
-      region: city.admin1,
-      country: city.country,
-      latitude: roundCoordinate(city.lat),
-      longitude: roundCoordinate(city.lon),
-      timeZone: city.tz,
-      offset: offsetText2(resolved.offsetMinutes),
-      offsetMinutes: Math.round(resolved.offsetMinutes)
-    });
-  }
-  const message = places.length ? null : args.country ? "No town or city in that country matches. Try the name on its own, or another spelling. The index lists places of 15,000 people or more." : "No town or city matches. Try another spelling. The index lists places of 15,000 people or more.";
-  const data = {
-    place: args.place,
-    country: args.country ?? null,
-    date: date3,
-    places,
-    message,
-    source: {
-      name: "GeoNames cities15000",
-      licence: "CC BY 4.0",
-      note: "Resolved from the place index shipped with Zodiacs. The name is not sent anywhere, and nothing is stored. Pass the latitude, longitude and time zone to a chart tool."
-    }
-  };
-  return {
-    data,
-    links: [{ title: "Birth chart on Zodiacs", url: "https://zodiacs.org/birth-chart/" }]
-  };
-}
-
-// src/ai-tools/contracts.ts
-var AI_VERSION = "0.6.0";
-var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
-var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
-var OCCASION_TOOL_NAMES = ["get_occasion_sky", "get_life_milestones", "get_compatibility", "find_chart_twins", "get_famous_chart", "get_birthday", "get_sky_calendar"];
-var ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES];
-var COVERAGE_TOOL_NAMES = ["get_natal_chart", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "explain_astrology"];
-var PLACE_TOOL_NAMES = ["find_birthplace"];
-var EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES, ...PLACE_TOOL_NAMES];
-var MAX_EVENT_DAYS = BUDGETS["events.windowDays"];
-var ORIGIN = "https://zodiacs.org";
-var WIDGET_URI = "ui://zodiacs/sky-events-v4.html";
-var LEGACY_WIDGET_URIS = ["ui://zodiacs/sky-events-v3.html", "ui://zodiacs/sky-events-v2.html", "ui://zodiacs/sky-events-v1.html"];
-var STUDIO_URI = "ui://zodiacs/chart-studio-v6.html";
-var LEGACY_STUDIO_URIS = ["ui://zodiacs/chart-studio-v5.html", "ui://zodiacs/chart-studio-v4.html", "ui://zodiacs/chart-studio-v3.html", "ui://zodiacs/chart-studio-v2.html", "ui://zodiacs/chart-studio-v1.html"];
-var OCCASIONS_URI = "ui://zodiacs/occasions-v8.html";
-var LEGACY_OCCASIONS_URIS = ["ui://zodiacs/occasions-v7.html", "ui://zodiacs/occasions-v6.html", "ui://zodiacs/occasions-v5.html", "ui://zodiacs/occasions-v4.html", "ui://zodiacs/occasions-v3.html", "ui://zodiacs/occasions-v2.html", "ui://zodiacs/occasions-v1.html"];
-var READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true };
-var TOOL_TITLES = {
-  get_capabilities: "What Zodiacs can do",
-  get_sky: "Sky right now",
-  get_upcoming_events: "Sky calendar",
-  check_sky_fact: "Check a sky fact",
-  get_horoscope: "Horoscopes",
-  open_chart_studio: "Chart Studio",
-  get_occasion_sky: "The sky on a day",
-  get_life_milestones: "Life milestones",
-  get_compatibility: "Compare two charts",
-  find_chart_twins: "Chart twins",
-  get_famous_chart: "A famous birth chart",
-  get_birthday: "Your birthday",
-  get_sky_calendar: "Sky calendar for your calendar app",
-  get_natal_chart: "Birth chart readout",
-  get_horoscope_period: "Monthly, yearly and weekly horoscopes",
-  get_chinese_zodiac: "Chinese zodiac",
-  get_personal_transits: "Your transits",
-  explain_astrology: "Astrology explained",
-  find_birthplace: "Find a birthplace"
-};
-var instant = z13.string().min(20).max(29).describe("A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\u20132199).");
-var ZONE_PATTERN8 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
-var zone4 = z13.string().min(1).max(64).regex(ZONE_PATTERN8).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
-var date = z13.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
-var wallClock = z13.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
-var INPUT_SCHEMAS = {
-  get_capabilities: z13.strictObject({}),
-  open_chart_studio: z13.strictObject({}),
-  get_sky: z13.strictObject({ instant: instant.optional(), zone: zone4.optional(), bodies: z13.array(z13.enum(POSITION_BODIES)).min(1).max(12).optional() }),
-  get_upcoming_events: z13.strictObject({ from: instant.optional(), to: instant.optional(), zone: zone4.optional(), bodies: z13.array(z13.enum(EVENT_BODIES)).min(1).max(10).optional(), kinds: z13.array(z13.enum(EVENT_KINDS)).min(1).max(3).optional() }).superRefine((args, context) => {
-    if ((!args.from || !args.to) && Object.keys(args).length !== 0) context.addIssue({ code: "custom", message: "Supply both from and to, or an empty object for the next seven days in UTC." });
-  }),
-  check_sky_fact: z13.strictObject({ kind: z13.enum(["sign", "retrograde", "ingress", "phase"]), body: z13.enum(EVENT_BODIES).optional(), sign: z13.enum(SIGN_SLUGS2).optional(), phase: z13.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone4.optional() }),
-  get_occasion_sky: z13.strictObject({
-    occasion: z13.enum(OCCASION_KINDS).describe("What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering."),
-    date: date.optional().describe("The day, such as 2027-06-12 (years 1800\u20132199). Needed unless searchFrom and searchTo are given."),
-    searchFrom: date.optional().describe("To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo."),
-    searchTo: date.optional().describe("The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back."),
-    time: wallClock.optional().describe("The local clock time, such as 19:00, if the person gives one. Needs zone."),
-    zone: zone4.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
-    latitude: z13.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
-    longitude: z13.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
-    place: z13.string().min(1).max(80).optional().describe("Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored."),
-    names: z13.string().min(1).max(60).optional().describe("Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.")
-  }).superRefine((args, context) => {
-    if (args.latitude === void 0 !== (args.longitude === void 0)) context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
-    if ((args.time !== void 0 || args.latitude !== void 0) && !args.zone) context.addIssue({ code: "custom", message: "A time or a place needs its time zone." });
-    if (args.searchFrom === void 0 !== (args.searchTo === void 0)) context.addIssue({ code: "custom", message: "Give searchFrom and searchTo together." });
-    if (args.date === void 0 && args.searchFrom === void 0) context.addIssue({ code: "custom", message: "Give a date, or a window to search." });
-  }),
-  get_life_milestones: z13.strictObject({
-    birthDate: date.describe("The birth date, such as 1997-03-15."),
-    time: wallClock.optional().describe("The birth time on the local clock, if known. Needs zone."),
-    zone: zone4.optional().describe("The birthplace's time zone, such as Europe/London. Needed with a time."),
-    longitude: z13.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time.")
-  }).superRefine((args, context) => {
-    if (args.time !== void 0 && !args.zone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
-  }),
-  get_compatibility: compatibilityInput,
-  find_chart_twins: chartTwinsInput,
-  get_famous_chart: famousChartInput,
-  get_birthday: birthdayInput,
-  get_sky_calendar: skyCalendarInput,
-  get_natal_chart: natalChartInput,
-  get_horoscope_period: horoscopePeriodInput,
-  get_chinese_zodiac: chineseZodiacInput,
-  get_personal_transits: personalTransitsInput,
-  explain_astrology: explainInput,
-  find_birthplace: birthplaceInput,
-  get_horoscope: z13.strictObject({
-    sign: z13.enum(HOROSCOPE_SIGNS).optional().describe("Sun sign. Leave it out to let the person choose; never guess it."),
-    period: z13.enum(HOROSCOPE_PERIODS).optional().describe("day (the default) or week."),
-    focus: z13.enum(HOROSCOPE_FOCUSES).optional().describe("For a daily reading: general (the default), love or career."),
-    date: date.optional().describe("A date such as 2026-10-08. Leave it out for the person's today."),
-    zone: zone4.optional(),
-    birthDate: date.optional().describe("Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored."),
-    birthTime: z13.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe("Optional birth time on the local clock; needs birthZone. Not stored."),
-    birthZone: zone4.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored.")
-  }).refine((args) => args.birthDate !== void 0 || args.birthTime === void 0 && args.birthZone === void 0, { message: "A birth time or birthplace zone needs the birth date." })
-};
-var link3 = z13.object({ title: z13.string(), url: z13.url() });
-function inlined(schema) {
-  if (Array.isArray(schema)) return schema.map(inlined);
-  if (!schema || typeof schema !== "object") return schema;
-  const node = schema;
-  if (typeof node.$ref === "string") {
-    const component = COMPUTE_SCHEMAS[node.$ref.replace("#/components/schemas/", "")];
-    if (!component) throw new Error(`No compute API component for ${node.$ref}`);
-    return inlined(component);
-  }
-  return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
-}
-function computeValue(component) {
-  if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
-  return z13.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(COMPUTE_SCHEMAS[component]));
-}
-var calculationOf = (result) => z13.object({
-  schema: z13.string(),
-  result,
-  receipt: computeValue("ComputeReceipt"),
-  backend: computeValue("Backend"),
-  cite: z13.object({ url: z13.url(), receipt: z13.string(), engine: z13.string(), version: z13.string() })
-});
-var statements2 = z13.record(z13.string(), z13.string());
-var limits = z13.object({
-  from: z13.string(),
-  to: z13.string(),
-  eventWindowDays: z13.number().int(),
-  eventKinds: z13.array(z13.enum(EVENT_KINDS)),
-  samples: z13.number().int(),
-  factSamples: z13.number().int()
-});
-var localTime = z13.object({ utc: z13.string(), zone: z13.string(), display: z13.string() });
-var body = z13.object({ body: z13.string(), lon: z13.number(), lat: z13.number(), speed: z13.number(), retrograde: z13.boolean(), sign: z13.string(), degree: z13.number() });
-var positionResult = z13.object({ instants: z13.array(z13.object({ instant: z13.string(), bodies: z13.array(body), deltaT: computeValue("DeltaT"), timeScale: computeValue("TimeScale"), flags: z13.array(z13.string()) })) });
-var event = z13.object({ kind: z13.enum(EVENT_KINDS), at: z13.string(), localAt: z13.string(), body: z13.string().optional(), sign: z13.string(), type: z13.string().optional(), retrograde: z13.boolean().optional(), lon: z13.number().optional(), degree: z13.number().optional() });
-var personal = z13.object({ timeKnown: z13.boolean(), items: z13.array(z13.object({ title: z13.string(), line: z13.string(), when: z13.string() })), note: z13.string() });
-var horoscope = z13.object({
-  status: z13.enum(["available", "unavailable", "choose-sign"]),
-  sign: z13.enum(HOROSCOPE_SIGNS).optional(),
-  signName: z13.string().optional(),
-  period: z13.enum(HOROSCOPE_PERIODS),
-  focus: z13.enum(HOROSCOPE_FOCUSES),
-  date: z13.string(),
-  dateLabel: z13.string(),
-  zone: z13.string(),
-  zoneLabel: z13.string(),
-  zoneSource: z13.enum(["request", "assistant", "default"]),
-  reading: z13.object({ title: z13.string(), paragraphs: z13.array(z13.object({ heading: z13.string().optional(), text: z13.string() })) }).optional(),
-  why: z13.object({ note: z13.string(), facts: z13.array(z13.object({ text: z13.string(), when: z13.string() })), houses: z13.array(z13.string()) }).optional(),
-  available: z13.array(z13.object({ date: z13.string(), label: z13.string() })).optional(),
-  message: z13.string().optional(),
-  personal: personal.optional(),
-  /** The share link for the reading shown, when there is one. */
-  shareUrl: z13.url().nullable().optional(),
-  disclosure: z13.string()
-});
-var clockTime2 = z13.object({ utc: z13.string(), local: z13.string() });
-var occasionNote = "Astrology\u2019s reading of the day, for insight and fun, not a guarantee of how it will go.";
-var occasionSky = z13.object({
-  occasion: z13.enum(OCCASION_KINDS),
-  date: z13.string(),
-  time: z13.string().nullable(),
-  zone: z13.string().nullable(),
-  place: z13.string().nullable(),
-  names: z13.string().nullable(),
-  card: z13.object({ title: z13.string(), interpretation: z13.string(), closing: z13.string() }),
-  instant: clockTime2,
-  instantIs: z13.enum(["given-time", "local-noon", "utc-noon"]),
-  sky: z13.object({
-    bodies: z13.array(z13.object({ body: z13.string(), sign: z13.string(), degree: z13.number(), retrograde: z13.boolean() })),
-    moon: z13.object({ phase: z13.string(), illuminationPercent: z13.number(), waxing: z13.boolean() }),
-    retrograde: z13.array(z13.string())
-  }),
-  moonSignChange: z13.object({ from: z13.string(), to: z13.string() }).nullable(),
-  evening: z13.object({
-    sunrise: clockTime2.nullable(),
-    sunset: clockTime2.nullable(),
-    goldenHour: z13.object({ start: clockTime2, end: clockTime2 }).nullable(),
-    civilDusk: clockTime2.nullable(),
-    moonrise: clockTime2.nullable(),
-    moonset: clockTime2.nullable(),
-    moonHighest: z13.object({ at: clockTime2, altitude: z13.number() }).nullable(),
-    planetsAfterDusk: z13.array(z13.string()),
-    flags: z13.array(z13.string())
-  }).nullable(),
-  rating: z13.object({ score: z13.number().int().min(0).max(100), verdict: z13.string(), reasons: z13.array(z13.string()) }),
-  /** With a search window: the three best-rated days in it, best first; the card is for date, else the best day. */
-  bestDays: z13.object({
-    from: z13.string(),
-    to: z13.string(),
-    days: z13.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
-    best: z13.array(z13.object({ date: z13.string(), score: z13.number().int().min(0).max(100), verdict: z13.string(), reasons: z13.array(z13.string()) })).max(3)
-  }).nullable(),
-  cardUrl: z13.url().nullable(),
-  shareUrl: z13.url().nullable(),
-  note: z13.literal(occasionNote)
-});
-var milestone = z13.object({
-  kind: z13.enum(["jupiter-return", "saturn-return", "uranus-opposition"]),
-  name: z13.string(),
-  index: z13.number(),
-  age: z13.number(),
-  first: z13.string(),
-  last: z13.string(),
-  passes: z13.array(z13.object({ at: z13.string(), retrograde: z13.boolean() }))
-});
-var lifeMilestones = z13.object({
-  birthDate: z13.string(),
-  timeKnown: z13.boolean(),
-  asOf: z13.string(),
-  milestones: z13.array(milestone),
-  next: milestone.nullable(),
-  numbers: z13.object({ fullMoons: z13.number(), mercuryRetrogrades: z13.number(), jupiterReturns: z13.number() }),
-  cardUrl: z13.url().nullable(),
-  shareUrl: z13.url().nullable(),
-  note: z13.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
-});
-var OCCASION_NOTE = occasionNote;
-var dataSchemas = {
-  open_chart_studio: z13.object({ title: z13.literal("Chart Studio"), calculation: z13.literal("browser-local"), initialChart: z13.literal("birth-details"), sharing: z13.literal("user-reviewed-selection-only") }),
-  get_capabilities: z13.object({ name: z13.literal("Zodiacs"), version: z13.string(), engine: computeValue("Backend"), tools: z13.array(z13.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z13.string(), limitations: z13.array(z13.string()) }),
-  get_sky: z13.object({ mode: z13.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z13.object({ name: z13.string(), angle: z13.number(), illumination: z13.number() }), interpretation: z13.literal("Astronomical calculations; no personal prediction is supplied.") }),
-  get_upcoming_events: z13.object({ from: z13.string(), to: z13.string(), zone: z13.string(), events: z13.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z13.literal("tested-not-proven") }),
-  check_sky_fact: z13.object({ answer: z13.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z13.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
-  get_horoscope: horoscope,
-  get_occasion_sky: occasionSky,
-  get_life_milestones: lifeMilestones,
-  get_compatibility: compatibilityResult,
-  find_chart_twins: chartTwinsData,
-  get_famous_chart: famousChartData,
-  get_birthday: birthdayData,
-  get_sky_calendar: skyCalendarData,
-  get_natal_chart: natalChartData,
-  get_horoscope_period: horoscopePeriodData,
-  get_chinese_zodiac: chineseZodiacData,
-  get_personal_transits: personalTransitsData,
-  explain_astrology: explainData,
-  find_birthplace: birthplaceData
-};
-var ERROR_SCHEMA = z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(false), tool: z13.enum(ALL_AI_TOOL_NAMES), error: z13.object({ code: z13.string(), message: z13.string(), retryAfterSeconds: z13.number().optional() }) });
-var COVERAGE_ERROR_SCHEMA = z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(false), tool: z13.enum(COVERAGE_TOOL_NAMES), error: z13.object({ code: z13.string(), message: z13.string(), retryAfterSeconds: z13.number().optional() }) });
-var PLACE_ERROR_SCHEMA = z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(false), tool: z13.enum(PLACE_TOOL_NAMES), error: z13.object({ code: z13.string(), message: z13.string(), retryAfterSeconds: z13.number().optional() }) });
-function outputSchema(tool, data) {
-  const error = COVERAGE_TOOL_NAMES.includes(tool) ? COVERAGE_ERROR_SCHEMA : PLACE_TOOL_NAMES.includes(tool) ? PLACE_ERROR_SCHEMA : ERROR_SCHEMA;
-  return z13.union([
-    z13.object({ schema: z13.literal(AI_RESULT_SCHEMA), ok: z13.literal(true), tool: z13.literal(tool), data, links: z13.array(link3) }),
-    error
-  ]);
-}
-var OUTPUT_SCHEMAS = {
-  open_chart_studio: outputSchema("open_chart_studio", dataSchemas.open_chart_studio),
-  get_capabilities: outputSchema("get_capabilities", dataSchemas.get_capabilities),
-  get_sky: outputSchema("get_sky", dataSchemas.get_sky),
-  get_upcoming_events: outputSchema("get_upcoming_events", dataSchemas.get_upcoming_events),
-  check_sky_fact: outputSchema("check_sky_fact", dataSchemas.check_sky_fact),
-  get_horoscope: outputSchema("get_horoscope", dataSchemas.get_horoscope),
-  get_occasion_sky: outputSchema("get_occasion_sky", dataSchemas.get_occasion_sky),
-  get_life_milestones: outputSchema("get_life_milestones", dataSchemas.get_life_milestones),
-  get_compatibility: outputSchema("get_compatibility", dataSchemas.get_compatibility),
-  find_chart_twins: outputSchema("find_chart_twins", dataSchemas.find_chart_twins),
-  get_famous_chart: outputSchema("get_famous_chart", dataSchemas.get_famous_chart),
-  get_birthday: outputSchema("get_birthday", dataSchemas.get_birthday),
-  get_sky_calendar: outputSchema("get_sky_calendar", dataSchemas.get_sky_calendar),
-  get_natal_chart: outputSchema("get_natal_chart", dataSchemas.get_natal_chart),
-  get_horoscope_period: outputSchema("get_horoscope_period", dataSchemas.get_horoscope_period),
-  get_chinese_zodiac: outputSchema("get_chinese_zodiac", dataSchemas.get_chinese_zodiac),
-  get_personal_transits: outputSchema("get_personal_transits", dataSchemas.get_personal_transits),
-  explain_astrology: outputSchema("explain_astrology", dataSchemas.explain_astrology),
-  find_birthplace: outputSchema("find_birthplace", dataSchemas.find_birthplace)
-};
-var TOOL_DESCRIPTIONS = {
-  open_chart_studio: "Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do not ask for birth details first. The chart is calculated inside the panel; you see only the parts the person chooses to share.",
-  get_capabilities: "Lists what Zodiacs can do, its limits and how it handles privacy. Use it when the person asks what Zodiacs can do, or when you need those details before choosing another tool. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes, so do not call it to check before turning those requests down. No sign-in or birth details needed.",
-  get_sky: "Shows where the Sun, Moon and planets are right now, or at a moment the person names, with the Moon's phase. Pass the person's time zone if you know it so times read on their clock. Astronomy only; it makes no personal prediction.",
-  get_upcoming_events: "Shows what changes in the sky over the coming days or weeks: planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days. Supply from and to, and the person's time zone. With no arguments it opens the calendar for the next seven days. It does not list eclipses or every aspect.",
-  check_sky_fact: "Checks a claim such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?' and answers yes, no, or that it depends on the time zone when the answer changes during that day. Use instant or date for sign and retrograde checks, date for ingress and Moon-phase checks. Astronomy only; it cannot check predictions. API documentation: https://zodiacs.org/developers/compute/ .",
-  get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Do not call this tool for stock picks, investment advice, financial forecasts, health predictions or guaranteed outcomes, even when the request mentions a horoscope. Decline those requests without a tool call; do not offer astrology-themed investment suggestions. Use it for a horoscope or reflective reading. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written and keep its dates. If the person gives their birth date (and time and birthplace zone if known), pass them too: the result adds a personal forecast for their week from their own chart. Lead with those personal lines, with their dates. If you can schedule tasks for the person, offer once, briefly, to send them their horoscope every morning; Zodiacs itself sends no notifications. If they want to share the reading, give them the returned shareUrl exactly.",
-  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, the day a baby arrived, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It also rates the date from 0 to 100 with a verdict and the astrological reasons (Venus, the Moon's phase and sign, retrograde planets); share the rating and its reasons plainly. When asked for the best days for an occasion, give the window as searchFrom and searchTo (up to 92 days, such as a whole month); it rates every day in it and returns the three best-rated days with their reasons, and the card for the best one unless a date is also given. When asked which of a few named dates is best, call it for each date and compare the ratings. It never guarantees how the day will go. For the printable card, copy the returned cardUrl exactly, including every field after #; do not reconstruct it from the conversation. If cardUrl is null, use the returned page link. If they want to share the rating, give them the returned shareUrl exactly.",
-  get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it shows the milestone the card leads with, never the birth date.",
-  get_compatibility: `Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member, or with a famous person. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. To compare someone with a famous person Zodiacs publishes, give that side as { famous: "<name>" } instead: it uses their published chart for noon on their birth date, without a Moon or rising sign, and links to their page. If Zodiacs has no chart for that name it says so (found: false); never make one up. It returns a compatibility score out of 100 with scores for attraction, communication and long-term stability, a verdict and a headline: lead with the score and verdict in plain words, then the strongest and hardest contacts. Present it as astrology's reading, never a guarantee of how the relationship will turn out. If they want to share the score, give them the returned shareUrl exactly.`,
-  find_chart_twins: "Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart. If they want to share it, give them the returned shareUrl exactly; it carries their signs, never the birth date.",
-  get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up. If they want to share the chart, give them the returned shareUrl exactly.",
-  get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it carries the month and day, never the year.",
-  get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. If they want to share the calendar, give them the returned shareUrl exactly; it shows the next event.",
-  get_natal_chart: "Reads one person's birth chart: the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets (the tightest by orb), and the balance of elements and modes, each with what astrology traditionally reads into it. It needs the birth date; add the birth time, the birthplace's time zone and its latitude and longitude when the person gives them, and never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used; tell the person. For an interactive chart the person fills in themselves, use open_chart_studio instead. chartUrl opens the birth chart page and does not carry the birth details.",
-  get_horoscope_period: "Shows a Sun-sign horoscope for a month, a year, or a love or career week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027. A week is only for focus love or career: it adds that focus's daily readings in the week and keeps the sky events that bear on it. For a general week, and for today's or tomorrow's horoscope, use get_horoscope. When a reading is not published it says so and still gives the sky; never write a reading yourself in its place. Do not call it for stock picks, investment advice, health predictions or guaranteed outcomes. Never guess the sign.",
-  get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own.",
-  get_personal_transits: "Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Give the birth date, and the time, birthplace time zone and coordinates if known; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. Present the lines as astrology's reading, never a guarantee, and do not turn them into health or money predictions.",
-  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own reference text, with links to the zodiacs.org pages about it: a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'.",
-  find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place."
-};
 
 // src/ai-tools/server.ts
 import { McpServer } from "@modelcontextprotocol/server";
@@ -37423,7 +37427,9 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         break;
       }
       case "find_birthplace": {
-        const result2 = await feature(() => findBirthplace(INPUT_SCHEMAS.find_birthplace.parse(input), dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2()));
+        if (!dependencies.placeTable) return failure(tool, "unavailable", "Place lookup is not offered here.");
+        const table = await dependencies.placeTable();
+        const result2 = await feature(() => findBirthplace(INPUT_SCHEMAS.find_birthplace.parse(input), dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2(), table));
         if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
         ({ data, links } = result2);
         break;
@@ -38106,7 +38112,7 @@ function respondWithoutLifetimeBoundary(run2) {
   }
 }
 function build() {
-  const server = createAiServer({});
+  const server = createAiServer({ placeTable: async () => loadPlaceTable() });
   server.registerTool("get_local_chart_capabilities", { description: `Local natal and comparison conventions, bounds and privacy. ${PRIVACY.assistant}`, inputSchema: CAPABILITIES_INPUT, annotations: READ_ONLY }, () => respond(() => {
     const outcome = describeLocalChartCapabilities();
     return outcome.ok ? { ok: true, value: { ...outcome.value, adapter: { name: "zodiacs-developer", version: AI_VERSION, releaseStatus: "unpublished-candidate", transport: "stdio" } } } : outcome;

@@ -12,9 +12,7 @@
  */
 import { z } from 'zod';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
-import { fold, foldedQuery, queryRows, rankCities, shardKey } from '../../lib/geo/rank';
-import index from '../../../public/data/cities/index.json';
-import { PLACE_SHARDS } from '../../mcp/places';
+import { fold, foldedQuery, queryRows, rankCities, shardKey, type CityIndex, type Row } from '../../lib/geo/rank';
 import { roundCoordinate } from '../plain-text';
 
 const DATE = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
@@ -71,7 +69,11 @@ export type BirthplaceData = z.infer<typeof birthplaceData>;
 
 export type BirthplaceClock = Pick<LocalTimeModule, 'prepareLocalTime' | 'resolveLocalToUtc'>;
 
-const cityIndex = index as unknown as Parameters<typeof queryRows>[0];
+/** The place index, supplied by the host so the shared runtime does not inline it. */
+export interface PlaceTable {
+  index: CityIndex;
+  shards: Readonly<Record<string, readonly Row[]>>;
+}
 
 function countryFold(hint: string): string {
   const folded = fold(hint.trim());
@@ -99,6 +101,7 @@ export async function findBirthplace(
   args: BirthplaceInput,
   now: Date,
   clock: BirthplaceClock,
+  table: PlaceTable,
 ): Promise<{ data: BirthplaceData; links: { title: string; url: string }[] }> {
   if (STREET.test(args.place)) throw new RangeError('Give a town or city name, not a street address.');
   const date = args.date ?? todayUtc(now);
@@ -109,7 +112,7 @@ export async function findBirthplace(
   if (year < 1800 || year > 2199) throw new RangeError('date must be a real date from 1800 to 2199, such as 1990-05-03.');
   const query = foldedQuery(args.place);
   const key = query ? shardKey(query) : '0';
-  const ranked = query ? rankCities(cityIndex, queryRows(cityIndex, PLACE_SHARDS[key] ?? [], key), query, RANK_LIMIT) : [];
+  const ranked = query ? rankCities(table.index, queryRows(table.index, table.shards[key] ?? [], key), query, RANK_LIMIT) : [];
   const matched = args.country ? ranked.filter((city) => countryMatches(city.country, args.country!)) : ranked;
   const chosen = matched.slice(0, LIMIT);
   const places = [];

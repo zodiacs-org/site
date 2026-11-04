@@ -6,6 +6,7 @@ import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
+import { loadPlaceTable } from './features/place-table';
 
 /**
  * Tool results must not contain an en dash (U+2013) or an em dash (U+2014).
@@ -21,6 +22,7 @@ const sources = {
   horoscopeWindow: async () => committedWindow as HoroscopeWindow,
   horoscopeMonths: async () => committedMonths,
   horoscopeProgram: async () => committedProgram as unknown as HoroscopeProgram,
+  placeTable: async () => loadPlaceTable(),
 };
 
 describe('MCP tool output has no en or em dashes', () => {
