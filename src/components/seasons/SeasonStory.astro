@@ -1,0 +1,211 @@
+---
+/**
+ * The season's story card: a 1080 x 1920 image made on the visitor's device
+ * (src/lib/story-card.ts), with the season's dates in their time zone and,
+ * if they pick one, a sign's line for the season. Nothing is requested to
+ * make it beyond the sign discs, all twelve of which are fetched together.
+ * The preview box and the action row keep their size in every state.
+ */
+import SignIcon from '../SignIcon.astro';
+import { SIGNS } from '../../lib/signs';
+import type { SeasonWindow } from '../../lib/seasons/clock';
+import { SEASON_READING_CONFIDENCE, seasonAsk, seasonCopy, seasonUi } from '../../lib/seasons/copy';
+
+interface Props {
+  slug: string;
+  windows: SeasonWindow[];
+}
+
+const { slug, windows } = Astro.props;
+const ui = seasonUi();
+const copy = seasonCopy(slug);
+const lines = Object.fromEntries(SIGNS.map((sign) => [sign.slug, seasonAsk(slug, sign.slug).text]));
+const strings = {
+  make: ui.cardMake,
+  preparing: ui.cardPreparing,
+  error: ui.cardError,
+};
+---
+<section
+  class="season-story"
+  aria-labelledby="season-story-heading"
+  data-season-story
+  data-season={slug}
+  data-theme={copy.theme}
+  data-windows={JSON.stringify(windows)}
+  data-lines={JSON.stringify(lines)}
+  data-confidence={SEASON_READING_CONFIDENCE}
+  data-strings={JSON.stringify(strings)}
+>
+  <div class="season-story__preview" aria-hidden="true">
+    <span class="season-story__placeholder" data-story-placeholder><SignIcon sign={slug} size={96} loading="lazy" /></span>
+    <img data-story-preview alt="" width="180" height="320" hidden />
+  </div>
+  <div class="season-story__body">
+    <h2 id="season-story-heading" class="season-story__title">{ui.cardHeading}</h2>
+    <p class="season-story__lede">{ui.cardLede}</p>
+    <label class="season-story__field">
+      <span>{ui.cardSign}</span>
+      <select data-story-reader>
+        <option value="">{ui.cardNoSign}</option>
+        {SIGNS.map((sign) => <option value={sign.slug}>{sign.name}</option>)}
+      </select>
+    </label>
+    <div class="season-story__actions">
+      <button class="btn btn--primary" type="button" data-story-make>
+        <span data-story-make-label>{ui.cardMake}</span><span class="orb" aria-hidden="true">+</span>
+      </button>
+      <button class="btn btn--primary" type="button" data-story-share hidden>
+        <span>{ui.cardShare}</span><span class="orb" aria-hidden="true">↗</span>
+      </button>
+      <button class="btn btn--ghost" type="button" data-story-download hidden>
+        <span>{ui.cardDownload}</span><span class="orb" aria-hidden="true">↓</span>
+      </button>
+    </div>
+    <p class="season-story__note" data-story-status aria-live="polite">{ui.cardPrivacy}</p>
+  </div>
+</section>
+
+<script>
+  import type { SeasonWindow } from '../../lib/seasons/clock';
+  import { seasonFocus } from '../../lib/seasons/clock';
+  import { downloadPreparedChartCard, savePngBlob, type PreparedChartCard } from '../../lib/share-card-save';
+
+  function start(root: HTMLElement): void {
+    const read = <T,>(key: string, fallback: T): T => {
+      try { return JSON.parse(root.dataset[key] ?? '') as T; } catch { return fallback; }
+    };
+    const season = root.dataset.season ?? '';
+    const theme = root.dataset.theme ?? '';
+    const confidence = Number(root.dataset.confidence ?? '40');
+    const windows = read<SeasonWindow[]>('windows', []);
+    const lines = read<Record<string, string>>('lines', {});
+    const strings = read<{ make: string; preparing: string; error: string }>('strings', { make: '', preparing: '', error: '' });
+    const reader = root.querySelector<HTMLSelectElement>('[data-story-reader]');
+    const make = root.querySelector<HTMLButtonElement>('[data-story-make]');
+    const makeLabel = root.querySelector<HTMLElement>('[data-story-make-label]');
+    const share = root.querySelector<HTMLButtonElement>('[data-story-share]');
+    const download = root.querySelector<HTMLButtonElement>('[data-story-download]');
+    const preview = root.querySelector<HTMLImageElement>('[data-story-preview]');
+    const status = root.querySelector<HTMLElement>('[data-story-status]');
+    const placeholder = root.querySelector<HTMLElement>('[data-story-placeholder]');
+    if (!reader || !make || !share || !download || !preview || !status) return;
+    const privacy = status.textContent ?? '';
+    let card: PreparedChartCard | null = null;
+    let url: string | null = null;
+
+    const reset = () => {
+      card = null;
+      make.hidden = false;
+      share.hidden = true;
+      download.hidden = true;
+      status.textContent = privacy;
+    };
+
+    reader.addEventListener('change', reset);
+
+    make.addEventListener('click', async () => {
+      const focus = seasonFocus(windows, new Date());
+      if (!focus) return;
+      make.disabled = true;
+      if (makeLabel) makeLabel.textContent = strings.preparing;
+      try {
+        const { prepareSeasonStoryCard } = await import('../../lib/story-card');
+        const chosen = reader.value;
+        card = await prepareSeasonStoryCard({
+          slug: season,
+          start: focus.window.start,
+          end: focus.window.end,
+          theme,
+          reader: chosen && lines[chosen] ? { slug: chosen, line: lines[chosen], confidence } : null,
+        });
+        if (url) URL.revokeObjectURL(url);
+        url = URL.createObjectURL(card.blob);
+        preview.src = url;
+        preview.hidden = false;
+        if (placeholder) placeholder.hidden = true;
+        let canShare = false;
+        try {
+          canShare = Boolean(navigator.canShare?.({ files: [new File([card.blob], card.filename, { type: 'image/png' })] }));
+        } catch { canShare = false; }
+        make.hidden = true;
+        share.hidden = !canShare;
+        download.hidden = false;
+        download.classList.toggle('btn--primary', !canShare);
+        download.classList.toggle('btn--ghost', canShare);
+        (canShare ? share : download).focus();
+      } catch (error) {
+        console.error(error);
+        status.textContent = strings.error;
+      } finally {
+        make.disabled = false;
+        if (makeLabel) makeLabel.textContent = strings.make;
+      }
+    });
+
+    // The card is ready before this tap, so the share sheet opens within it.
+    share.addEventListener('click', () => {
+      if (!card) return;
+      void savePngBlob(card.blob, card.filename).catch((error) => {
+        console.error(error);
+        status.textContent = strings.error;
+      });
+    });
+
+    download.addEventListener('click', () => {
+      if (card) downloadPreparedChartCard(card);
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-season-story]').forEach(start);
+</script>
+
+<style>
+  .season-story {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: clamp(18px, 4vw, 36px);
+    align-items: start;
+    padding: clamp(20px, 4vw, 32px);
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+  }
+  .season-story__preview {
+    width: 180px;
+    height: 320px;
+    overflow: hidden;
+    border: 1px solid var(--hair-2);
+    border-radius: 14px;
+    background: var(--void-0);
+  }
+  .season-story__placeholder { display: grid; place-items: center; height: 100%; opacity: 0.7; }
+  .season-story__placeholder[hidden] { display: none; }
+  .season-story__preview img { display: block; width: 180px; height: 320px; }
+  .season-story__body { display: grid; gap: 14px; align-content: start; }
+  .season-story__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .season-story__lede, .season-story__note { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; }
+  .season-story__note { min-height: 1.6em; color: var(--faint); }
+  .season-story__field { display: grid; gap: 6px; max-width: 320px; color: var(--muted); font-size: var(--text-sm); }
+  .season-story__field select {
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-md);
+    background: var(--void-0);
+    color: var(--text);
+    font: inherit;
+  }
+  .season-story__actions { display: flex; flex-wrap: wrap; gap: 8px; min-height: 48px; }
+  .season-story__actions [hidden] { display: none; }
+  @media (max-width: 560px) {
+    .season-story { grid-template-columns: 1fr; }
+    .season-story__preview { margin-inline: auto; }
+  }
+</style>

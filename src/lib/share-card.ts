@@ -38,8 +38,13 @@ import {
   withShareBrandIcon,
 } from './share-card-brand';
 import { ringFront } from './ring-front';
+import { downloadPreparedChartCard, savePngBlob, type CardOutcome, type PreparedChartCard } from './share-card-save';
 
-export type CardOutcome = 'shared' | 'downloaded' | 'cancelled';
+// The save and download steps live in share-card-save.ts so lighter cards
+// (the story cards) can share them without loading this renderer.
+export { downloadPreparedChartCard, savePngBlob };
+export type { CardOutcome, PreparedChartCard };
+
 export type ChartCardVariant = 'full' | 'big-three' | 'communication' | 'signature' | 'approach' | 'sheet';
 export type PrimaryShareCardVariant = Extract<ChartCardVariant, 'signature' | 'big-three' | 'full'>;
 
@@ -1633,10 +1638,6 @@ export async function saveChartCard(
   return savePreparedChartCard(await prepareChartCard(chart, options));
 }
 
-export interface PreparedChartCard {
-  blob: Blob;
-  filename: string;
-}
 
 /**
  * What a solar return image shows of the return: no more of the birth than a
@@ -1836,36 +1837,4 @@ export async function prepareChartCard(
 
 export function savePreparedChartCard(prepared: PreparedChartCard): Promise<CardOutcome> {
   return savePngBlob(prepared.blob, prepared.filename);
-}
-
-/** Explicit download: no native share sheet and no async work before the click. */
-export function downloadPreparedChartCard(prepared: PreparedChartCard): 'downloaded' {
-  const url = URL.createObjectURL(prepared.blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = prepared.filename;
-  try {
-    document.body.appendChild(a);
-    a.click();
-  } finally {
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
-  }
-  return 'downloaded';
-}
-
-export async function savePngBlob(blob: Blob, filename: string): Promise<CardOutcome> {
-  const file = new File([blob], filename, { type: 'image/png' });
-
-  try {
-    if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ files: [file] });
-      return 'shared';
-    }
-  } catch (err) {
-    if ((err as DOMException)?.name === 'AbortError') return 'cancelled';
-    // Capability checks and rejected share sheets both retain the download path.
-  }
-
-  return downloadPreparedChartCard({ blob, filename: file.name });
 }

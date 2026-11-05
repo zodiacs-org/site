@@ -53,6 +53,8 @@ const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const THESIS_LASTMOD = '2026-09-05';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
+// The sign-season pages and their hub were published together.
+const SEASON_PAGES_LASTMOD = '2026-11-05';
 // The numerology calculator; the tools hub and methodology page changed with
 // it. Each Life Path page dates itself from its own `updated` field, the same
 // date its Article markup carries.
@@ -707,6 +709,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       { loc: '/games/history/', priority: 0.6, lastmod: DESIGN_SWEEP_LASTMOD },
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
+    { loc: '/seasons/', priority: 0.75, lastmod: SEASON_PAGES_LASTMOD },
+    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: SEASON_PAGES_LASTMOD })),
     // Spanish and Portuguese daily surfaces render the same edition from the
     // same facts; they date with the edition like /today/ does.
     ...(['es', 'pt'] as const).flatMap((locale) => [

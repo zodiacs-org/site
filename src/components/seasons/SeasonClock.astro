@@ -1,0 +1,245 @@
+---
+/**
+ * When a sign's season starts and ends, and a live countdown. The page is
+ * built with the times in UTC; on the visitor's device a small script picks
+ * the season under way or next (the build may be days old), writes both
+ * instants in the visitor's own time zone and runs the countdown. Every
+ * line sits in a box of fixed height, so nothing moves when the script
+ * fills it in. Without JavaScript the UTC times stay and the countdown is
+ * left out.
+ */
+import { seasonFocus, type SeasonWindow } from '../../lib/seasons/clock';
+import type { SeasonUi } from '../../lib/seasons/copy';
+
+interface Props {
+  windows: SeasonWindow[];
+  hue: string;
+  ui: SeasonUi;
+  /** The moment the page is built for; the script moves it on to the visitor's now. */
+  now: Date;
+}
+
+const { windows, hue, ui, now } = Astro.props;
+const focus = seasonFocus(windows, now);
+const utcDate = (iso: string) => new Intl.DateTimeFormat('en-US', {
+  weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+}).format(new Date(iso));
+const utcTime = (iso: string) => `${new Intl.DateTimeFormat('en-GB', {
+  hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC',
+}).format(new Date(iso))} UTC`;
+const units = [
+  { key: 'days', label: ui.days },
+  { key: 'hours', label: ui.hours },
+  { key: 'minutes', label: ui.minutes },
+  { key: 'seconds', label: ui.seconds },
+] as const;
+const labels = { startsIn: ui.startsIn, endsIn: ui.endsIn };
+---
+{focus ? (
+  <div
+    class="season-clock"
+    style={`--sign:${hue}`}
+    data-season-clock
+    data-windows={JSON.stringify(windows)}
+    data-labels={JSON.stringify(labels)}
+  >
+    <div class="season-clock__count" data-count>
+      <p class="season-clock__label" data-count-label>{focus.phase === 'upcoming' ? ui.startsIn : ui.endsIn}</p>
+      <div class="season-clock__units" role="timer" aria-live="off">
+        {units.map((unit) => (
+          <span class="season-clock__unit">
+            <b data-unit={unit.key}>{unit.key === 'days' ? '0' : '00'}</b>
+            <span>{unit.label}</span>
+          </span>
+        ))}
+      </div>
+      <div class="season-clock__bar" aria-hidden="true"><span data-bar></span></div>
+    </div>
+    <dl class="season-clock__times">
+      <div>
+        <dt>{ui.enters}</dt>
+        <dd>
+          <time datetime={focus.window.start} data-when="start">
+            <span class="season-clock__date" data-date>{utcDate(focus.window.start)}</span>
+            <span class="season-clock__time" data-time>{utcTime(focus.window.start)}</span>
+          </time>
+        </dd>
+      </div>
+      <div>
+        <dt>{ui.leaves}</dt>
+        <dd>
+          <time datetime={focus.window.end} data-when="end">
+            <span class="season-clock__date" data-date>{utcDate(focus.window.end)}</span>
+            <span class="season-clock__time" data-time>{utcTime(focus.window.end)}</span>
+          </time>
+        </dd>
+      </div>
+    </dl>
+    <p class="season-clock__note">{ui.localNote}</p>
+    <noscript><style>.season-clock__count { display: none; }</style></noscript>
+  </div>
+) : (
+  <p class="season-clock__none">{ui.noWindow}</p>
+)}
+
+<script>
+  import { countdownParts, countdownTarget, seasonFocus, seasonProgress, type SeasonWindow } from '../../lib/seasons/clock';
+
+  const pad = (value: number) => String(value).padStart(2, '0');
+  const dateFormat = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  const timeFormat = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+
+  function start(root: HTMLElement): void {
+    let windows: SeasonWindow[];
+    let labels: { startsIn: string; endsIn: string };
+    try {
+      windows = JSON.parse(root.dataset.windows ?? '[]');
+      labels = JSON.parse(root.dataset.labels ?? '{}');
+    } catch {
+      return;
+    }
+    const label = root.querySelector<HTMLElement>('[data-count-label]');
+    const bar = root.querySelector<HTMLElement>('[data-bar]');
+    const unit = (key: string) => root.querySelector<HTMLElement>(`[data-unit="${key}"]`);
+    const cells = { days: unit('days'), hours: unit('hours'), minutes: unit('minutes'), seconds: unit('seconds') };
+    let shown = '';
+
+    const writeTimes = (window: SeasonWindow) => {
+      for (const [when, iso] of [['start', window.start], ['end', window.end]] as const) {
+        const time = root.querySelector<HTMLTimeElement>(`[data-when="${when}"]`);
+        if (!time) continue;
+        const at = new Date(iso);
+        time.dateTime = iso;
+        const date = time.querySelector<HTMLElement>('[data-date]');
+        const clock = time.querySelector<HTMLElement>('[data-time]');
+        if (date) date.textContent = dateFormat.format(at);
+        if (clock) clock.textContent = timeFormat.format(at);
+      }
+    };
+
+    const tick = () => {
+      const now = new Date();
+      const focus = seasonFocus(windows, now);
+      if (!focus) {
+        root.dataset.state = 'over';
+        return;
+      }
+      if (focus.window.start !== shown) {
+        shown = focus.window.start;
+        writeTimes(focus.window);
+      }
+      root.dataset.state = focus.phase;
+      if (label) label.textContent = focus.phase === 'upcoming' ? labels.startsIn : labels.endsIn;
+      const parts = countdownParts(countdownTarget(focus).getTime() - now.getTime());
+      if (cells.days) cells.days.textContent = String(parts.days);
+      if (cells.hours) cells.hours.textContent = pad(parts.hours);
+      if (cells.minutes) cells.minutes.textContent = pad(parts.minutes);
+      if (cells.seconds) cells.seconds.textContent = pad(parts.seconds);
+      if (bar) bar.style.transform = `scaleX(${focus.phase === 'under-way' ? seasonProgress(focus.window, now) : 0})`;
+      root.dataset.ready = '';
+    };
+
+    tick();
+    const timer = window.setInterval(tick, 1000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+    window.addEventListener('pagehide', () => window.clearInterval(timer), { once: true });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-season-clock]').forEach(start);
+</script>
+
+<style>
+  .season-clock {
+    display: grid;
+    gap: 22px;
+    padding: clamp(20px, 4vw, 32px);
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+  }
+  .season-clock__count { display: grid; gap: 10px; visibility: hidden; }
+  .season-clock[data-ready] .season-clock__count { visibility: visible; }
+  .season-clock__label {
+    margin: 0;
+    height: 1.5em;
+    color: var(--muted);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-lg);
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .season-clock__units {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(8px, 2vw, 16px);
+  }
+  .season-clock__unit {
+    display: grid;
+    gap: 2px;
+    padding: 12px 0 10px;
+    border-top: 1px solid color-mix(in srgb, var(--sign) 55%, var(--hair-2));
+  }
+  .season-clock__unit b {
+    display: block;
+    height: 1.1em;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: clamp(1.75rem, 1.2rem + 2.6vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .season-clock__unit span { color: var(--faint); font-size: 13px; line-height: 1.4; height: 1.4em; }
+  .season-clock__bar {
+    height: 3px;
+    border-radius: 3px;
+    background: var(--hair-1);
+    overflow: hidden;
+  }
+  .season-clock__bar span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--sign);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .season-clock__times {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+  }
+  .season-clock__times dt { margin: 0 0 6px; color: var(--muted); font-size: var(--text-sm); }
+  .season-clock__times dd { margin: 0; }
+  .season-clock__times time { display: grid; gap: 4px; }
+  .season-clock__date,
+  .season-clock__time {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .season-clock__date {
+    height: 1.3em;
+    color: var(--text);
+    font-family: var(--font-serif);
+    font-size: var(--text-lg);
+    line-height: 1.3;
+  }
+  .season-clock__time {
+    height: 1.5em;
+    color: var(--sign);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .season-clock__note { margin: 0; color: var(--faint); font-size: 13px; line-height: 1.5; }
+  .season-clock__none { margin: 0; color: var(--muted); }
+  @media (max-width: 560px) {
+    .season-clock__times { grid-template-columns: minmax(0, 1fr); }
+    .season-clock__date { font-size: 1.15rem; }
+  }
+</style>

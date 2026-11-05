@@ -1,0 +1,268 @@
+---
+/**
+ * One sign's season: when the Sun enters and leaves the sign (the ingress
+ * table, to the minute), a countdown on the visitor's clock, what the season
+ * is about, what it asks of each of the twelve signs, a story card, and every
+ * published date. Copy lives in src/lib/seasons/ so other locales can follow.
+ */
+import Base from '../../layouts/Base.astro';
+import ArtFrame from '../../components/ArtFrame.astro';
+import SignIcon from '../../components/SignIcon.astro';
+import Faq from '../../components/Faq.astro';
+import AskGuideAbout from '../../components/AskGuideAbout.astro';
+import SeasonClock from '../../components/seasons/SeasonClock.astro';
+import SeasonStory from '../../components/seasons/SeasonStory.astro';
+import { SIGNS, signBySlug } from '../../lib/signs';
+import { seasonLengthDays } from '../../lib/seasons/clock';
+import { seasonWindowsFor, signSeasonFocus } from '../../lib/seasons/windows';
+import { SEASON_READING_CONFIDENCE, seasonAsk, seasonCopy, seasonUi } from '../../lib/seasons/copy';
+import { readingConfidenceText } from '../../ai-tools/reading-confidence';
+
+export function getStaticPaths() {
+  return SIGNS.map((sign) => ({ params: { sign: sign.slug } }));
+}
+
+const { sign: slug } = Astro.params as { sign: string };
+const sign = signBySlug(slug);
+const ui = seasonUi();
+const copy = seasonCopy(slug);
+const windows = seasonWindowsFor(slug);
+const buildNow = new Date();
+const focus = signSeasonFocus(slug, buildNow);
+const path = `/seasons/${slug}/`;
+const index = SIGNS.indexOf(sign);
+const previous = SIGNS[(index + 11) % 12];
+const next = SIGNS[(index + 1) % 12];
+
+const utcStamp = (iso: string) => {
+  const at = new Date(iso);
+  const date = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(at);
+  const time = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC' }).format(at);
+  return `${date}, ${time} UTC`;
+};
+const shortDate = (iso: string) => new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso));
+const utcTime = (iso: string) => new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC' }).format(new Date(iso));
+
+const confidence = readingConfidenceText(SEASON_READING_CONFIDENCE);
+// The season's own sign first, then round the zodiac.
+const readers = SIGNS.map((_, offset) => SIGNS[(index + offset) % 12]).map((reader) => ({
+  reader,
+  ...seasonAsk(slug, reader.slug),
+}));
+
+const title = ui.title(sign.name);
+const description = focus
+  ? `${title} ${focus.phase === 'under-way' ? 'is under way' : 'starts'}: the Sun enters ${sign.name} on ${utcStamp(focus.window.start)} and leaves on ${utcStamp(focus.window.end)}. What the season asks of all twelve signs.`
+  : `${title}: when the Sun enters and leaves ${sign.name}, and what the season asks of all twelve signs.`;
+
+const faq = [
+  ...(focus ? [{
+    q: `When does ${sign.name} season ${focus.phase === 'under-way' ? 'end' : 'start'}?`,
+    a: `The Sun enters ${sign.name} on ${utcStamp(focus.window.start)} and leaves on ${utcStamp(focus.window.end)}, about ${seasonLengthDays(focus.window)} days later. The page shows both moments in your own time zone.`,
+  }] : []),
+  {
+    q: `Why do the ${sign.name} dates change from year to year?`,
+    a: `The usual ${sign.name} dates are an average. The calendar year is not a whole number of days long, so the moment the Sun crosses into ${sign.name} drifts by some hours each year and can land on a neighbouring date, depending on your time zone as well.`,
+  },
+  {
+    q: `What if I was born on the first or last day of ${sign.name} season?`,
+    a: 'Your Sun sign depends on the exact moment of your birth, not on the average dates. A birth chart with your birth time settles it.',
+  },
+  {
+    q: `What does “${confidence}” mean?`,
+    a: `It says how specific a reading is. A line written for a Sun sign alone, with no date or birth time, carries ${SEASON_READING_CONFIDENCE}%. It is not the chance that something happens.`,
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: title,
+    url: `https://zodiacs.org${path}`,
+    description,
+  },
+  ...windows.filter((window) => Date.parse(window.end) > buildNow.getTime()).slice(0, 2).map((window) => ({
+    '@type': 'Event',
+    '@id': `https://zodiacs.org${path}#season-${window.start.slice(0, 4)}`,
+    name: `${title} ${window.start.slice(0, 4)}`,
+    description: `The Sun is in ${sign.name} from ${window.start} to ${window.end}.`,
+    startDate: window.start,
+    endDate: window.end,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+    location: { '@type': 'VirtualLocation', url: `https://zodiacs.org${path}` },
+    url: `https://zodiacs.org${path}`,
+  })),
+  {
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+const sources = [
+  { label: 'Astronomy Engine', href: 'https://github.com/cosinekitty/astronomy' },
+];
+---
+<Base
+  title={`${title} ${focus ? focus.window.start.slice(0, 4) + ': ' : ''}Dates, Countdown and What It Asks | Zodiacs.org`}
+  description={description}
+  path={path}
+  image={`/assets/og/v8/sign/${slug}.jpg`}
+  imageAlt={`${sign.name}, Zodiacs.org`}
+  jsonLd={jsonLd}
+  sources={sources}
+>
+  <section class="kwrap season-hero" style={`--sign:${sign.hue}`}>
+    <div class="season-hero__copy">
+      <p class="kicker">{ui.kicker(sign.name)}</p>
+      <h1 class="display season-hero__title">{title}</h1>
+      <p class="season-hero__lede">{copy.theme}</p>
+      <p class="season-hero__facts">
+        <span>{sign.modality.charAt(0).toUpperCase() + sign.modality.slice(1)} {sign.element}</span>
+        <span>Ruled by {sign.ruler}</span>
+        {focus && <span>About {seasonLengthDays(focus.window)} days</span>}
+      </p>
+    </div>
+    <div class="season-hero__art">
+      <ArtFrame sign={slug} eager fetchPriority="high" sizes="(min-width: 900px) 520px, calc(100vw - 48px)" focus="50% 42%" spot="50% 48%" avif />
+    </div>
+  </section>
+
+  <section class="kwrap season-sec">
+    <SeasonClock windows={windows} hue={sign.hue} ui={ui} now={buildNow} />
+  </section>
+
+  <section class="kwrap kwrap--narrow season-sec" aria-labelledby="season-about">
+    <h2 id="season-about" class="h-2 season-h2">{ui.aboutHeading}</h2>
+    <div class="season-prose">
+      {copy.about.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+    <p class="season-muted season-guide">{ui.guideLead}</p>
+    <AskGuideAbout prompt={copy.guidePrompt} label={ui.guideLabel} />
+  </section>
+
+  <section class="kwrap season-sec" aria-labelledby="season-asks">
+    <div class="season-head">
+      <h2 id="season-asks" class="h-2 season-h2">{ui.asksHeading}</h2>
+      <p>{ui.asksLede}</p>
+    </div>
+    <ul class="season-asks">
+      {readers.map(({ reader, text, house, houseName }) => (
+        <li class:list={['tile', 'season-ask', { 'season-ask--own': house === 1 }]} style={`--sign:${reader.hue}`} id={`for-${reader.slug}`}>
+          <div class="season-ask__head">
+            <SignIcon sign={reader.slug} size={40} />
+            <div>
+              <h3 class="season-ask__name">{reader.name}</h3>
+              <p class="season-ask__house">{house === 1 ? ui.ownSeason : ui.houseLine(houseName)}</p>
+            </div>
+          </div>
+          <p class="season-ask__text">{text}</p>
+          <p class="season-ask__foot">
+            <span class="season-ask__confidence">{confidence}</span>
+            <a href={`/horoscopes/${reader.slug}/`}>{ui.readHoroscope}</a>
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="kwrap season-sec" style={`--sign:${sign.hue}`}>
+    <SeasonStory slug={slug} windows={windows} />
+  </section>
+
+  <section class="kwrap kwrap--narrow season-sec" aria-labelledby="season-dates">
+    <h2 id="season-dates" class="h-2 season-h2">{ui.datesHeading}</h2>
+    <p class="season-muted">{ui.datesLede}</p>
+    <div class="season-table-wrap">
+      <table class="season-table">
+        <thead>
+          <tr><th scope="col">{ui.datesSeason}</th><th scope="col">{ui.datesEnters}</th><th scope="col">{ui.datesLeaves}</th><th scope="col">{ui.datesDays}</th></tr>
+        </thead>
+        <tbody>
+          {windows.map((window) => (
+            <tr class:list={{ 'is-past': Date.parse(window.end) <= buildNow.getTime() }}>
+              <th scope="row">{window.start.slice(0, 4)}</th>
+              <td><span>{shortDate(window.start)}</span> <span class="mono">{utcTime(window.start)}</span></td>
+              <td><span>{shortDate(window.end)}</span> <span class="mono">{utcTime(window.end)}</span></td>
+              <td class="mono">{seasonLengthDays(window)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="kwrap kwrap--narrow season-sec" aria-labelledby="season-more">
+    <h2 id="season-more" class="h-2 season-h2">{ui.moreHeading}</h2>
+    <ul class="season-links">
+      <li><a class="textlink" href={`/${slug}/`}>{ui.signGuide(sign.name)} <span class="arr" aria-hidden="true">→</span></a></li>
+      <li><a class="textlink" href={`/horoscopes/${slug}/`}>{ui.horoscope(sign.name)} <span class="arr" aria-hidden="true">→</span></a></li>
+      <li><a class="textlink" href={`/seasons/${previous.slug}/`}>{ui.title(previous.name)} <span class="arr" aria-hidden="true">→</span></a></li>
+      <li><a class="textlink" href={`/seasons/${next.slug}/`}>{ui.title(next.name)} <span class="arr" aria-hidden="true">→</span></a></li>
+      <li><a class="textlink" href="/seasons/">{ui.allSeasons} <span class="arr" aria-hidden="true">→</span></a></li>
+      <li><a class="textlink" href="/birth-chart/">{ui.birthChart} <span class="arr" aria-hidden="true">→</span></a></li>
+    </ul>
+  </section>
+
+  <section class="kwrap kwrap--narrow season-sec">
+    <Faq items={faq} heading={ui.faqHeading} />
+  </section>
+</Base>
+
+<style>
+  .season-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+    gap: clamp(24px, 5vw, 64px);
+    align-items: center;
+    padding-block: clamp(28px, 6vw, 64px) clamp(20px, 4vw, 36px);
+  }
+  .season-hero__title {
+    margin: 6px 0 16px;
+    font-size: clamp(2.5rem, 1.4rem + 4.2vw, 4.5rem);
+    font-weight: 500;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+  .season-hero__lede { margin: 0; max-width: 46ch; color: var(--text-2); font-size: var(--text-lg); line-height: 1.5; text-wrap: pretty; }
+  .season-hero__facts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 18px 0 0; color: var(--muted); font-size: var(--text-sm); }
+  .season-hero__facts span:first-child { color: var(--sign); }
+  .season-sec { padding-block: clamp(20px, 4vw, 36px); }
+  .season-h2 { margin: 0 0 14px; font-family: var(--font-serif); font-weight: 500; }
+  .season-head { max-width: 62ch; margin-bottom: 20px; }
+  .season-head p, .season-muted { margin: 0; color: var(--muted); line-height: 1.6; }
+  .season-prose p { margin: 0 0 14px; color: var(--text-2); font-size: var(--text-lg); line-height: 1.6; max-width: 62ch; }
+  .season-asks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .season-ask { display: grid; gap: 12px; align-content: start; padding: 18px; }
+  .season-ask--own { border-color: color-mix(in srgb, var(--sign) 55%, var(--hair-2)); }
+  .season-ask__head { display: flex; align-items: center; gap: 12px; }
+  .season-ask__name { margin: 0; font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 500; line-height: 1.2; }
+  .season-ask__house { margin: 0; color: var(--sign); font-size: 13px; }
+  .season-ask__text { margin: 0; color: var(--text-2); line-height: 1.6; }
+  .season-ask__foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; margin: 0; font-size: 13px; }
+  .season-ask__confidence { color: var(--faint); font-family: var(--font-mono); font-size: 12px; }
+  .season-ask__foot a { color: var(--muted); }
+  .season-ask__foot a:hover { color: var(--text); }
+  .season-table-wrap { margin-top: 18px; overflow-x: auto; }
+  .season-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  .season-table th, .season-table td { padding: 10px 8px; border-bottom: 1px solid var(--hair-1); text-align: left; white-space: nowrap; }
+  .season-table thead th { color: var(--muted); font-weight: 500; }
+  .season-table tbody th { font-family: var(--font-serif); font-weight: 500; }
+  .season-table .mono { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .season-table tr.is-past { opacity: 0.55; }
+  .season-links { display: grid; gap: 10px; margin: 0 0 20px; padding: 0; list-style: none; }
+  .season-guide { margin-top: 8px; }
+  @media (max-width: 860px) {
+    .season-hero { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .season-table th, .season-table td { padding: 8px 6px; }
+    .season-table td .mono { display: block; }
+  }
+</style>

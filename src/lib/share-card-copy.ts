@@ -34,6 +34,12 @@ export const SHARE_CARD_EN = {
   compatibilitySaved: 'Compatibility card saved.',
   compatibilityError: "Couldn't draw this card in your browser.",
   compatibilityNoTimeNote: 'For a chart without a birth time, the image uses the sky at 12:00 UTC on that date and leaves out the Moon, so its contacts can differ from this page.',
+  storyTitle: 'My big three',
+  storyAction: 'Make a story card',
+  storyShare: 'Share story',
+  storyDownload: 'Download',
+  storyNote: 'A 1080 by 1920 image for stories. It shows your signs and nothing else.',
+  risingNeedsTime: 'Rising needs a birth time',
 } as const;
 
 export const SHARE_CARD_COPY = {
@@ -72,6 +78,12 @@ export const SHARE_CARD_COPY = {
     compatibilitySaved: 'Tarjeta de compatibilidad guardada.',
     compatibilityError: 'No se pudo crear esta tarjeta en tu navegador.',
     compatibilityNoTimeNote: 'Para una carta sin hora de nacimiento, la tarjeta usa el cielo de las 12:00 UTC de esa fecha y deja fuera la Luna, así que sus contactos pueden diferir de esta página.',
+    storyTitle: 'Mis tres grandes',
+    storyAction: 'Crear imagen para historias',
+    storyShare: 'Compartir historia',
+    storyDownload: 'Descargar',
+    storyNote: 'Una imagen de 1080 por 1920 para historias. Solo muestra tus signos.',
+    risingNeedsTime: 'El ascendente necesita la hora de nacimiento',
   },
   pt: {
     bigThreeTitle: 'Seus três signos',
@@ -107,6 +119,12 @@ export const SHARE_CARD_COPY = {
     compatibilitySaved: 'Cartão de compatibilidade salvo.',
     compatibilityError: 'Não foi possível criar este cartão no seu navegador.',
     compatibilityNoTimeNote: 'Para um mapa sem hora de nascimento, a imagem usa o céu das 12:00 UTC dessa data e deixa de fora a Lua, então os contatos podem diferir desta página.',
+    storyTitle: 'Meus três signos',
+    storyAction: 'Criar imagem para stories',
+    storyShare: 'Compartilhar story',
+    storyDownload: 'Baixar',
+    storyNote: 'Uma imagem de 1080 por 1920 para stories. Mostra só os seus signos.',
+    risingNeedsTime: 'O ascendente precisa do horário de nascimento',
   },
   fr: {
     bigThreeTitle: 'Tes trois signes',
@@ -142,6 +160,12 @@ export const SHARE_CARD_COPY = {
     compatibilitySaved: 'Carte de compatibilité enregistrée.',
     compatibilityError: 'Impossible de créer cette carte dans ton navigateur.',
     compatibilityNoTimeNote: 'Pour un thème sans heure de naissance, l’image utilise le ciel de 12:00 UTC à cette date et laisse de côté la Lune : ses contacts peuvent donc différer de cette page.',
+    storyTitle: 'Mes trois signes',
+    storyAction: 'Créer une image pour les stories',
+    storyShare: 'Partager la story',
+    storyDownload: 'Télécharger',
+    storyNote: 'Une image de 1080 sur 1920 pour les stories. Elle ne montre que tes signes.',
+    risingNeedsTime: 'L’ascendant demande une heure de naissance',
   },
   it: {
     bigThreeTitle: 'I tuoi tre segni',
@@ -177,6 +201,12 @@ export const SHARE_CARD_COPY = {
     compatibilitySaved: 'Immagine di compatibilità salvata.',
     compatibilityError: 'Non è stato possibile creare questa immagine nel tuo browser.',
     compatibilityNoTimeNote: 'Per un tema senza ora di nascita, l’immagine usa il cielo delle 12:00 UTC di quella data e lascia fuori la Luna, quindi i suoi contatti possono differire da questa pagina.',
+    storyTitle: 'I miei tre segni',
+    storyAction: 'Crea un’immagine per le storie',
+    storyShare: 'Condividi la storia',
+    storyDownload: 'Scarica',
+    storyNote: 'Un’immagine 1080 per 1920 per le storie. Mostra solo i tuoi segni.',
+    risingNeedsTime: 'L’ascendente richiede l’ora di nascita',
   },
   ru: {
     bigThreeTitle: 'Ваша большая тройка',
@@ -212,6 +242,12 @@ export const SHARE_CARD_COPY = {
     compatibilitySaved: 'Карточка совместимости сохранена.',
     compatibilityError: 'Не удалось нарисовать эту карточку в вашем браузере.',
     compatibilityNoTimeNote: 'Для карты без времени рождения изображение использует небо на 12:00 UTC в эту дату и не показывает Луну, поэтому его аспекты могут отличаться от этой страницы.',
+    storyTitle: 'Моя большая тройка',
+    storyAction: 'Сделать картинку для сторис',
+    storyShare: 'Поделиться в сторис',
+    storyDownload: 'Скачать',
+    storyNote: 'Изображение 1080 на 1920 для сторис. На нём только ваши знаки.',
+    risingNeedsTime: 'Для асцендента нужно время рождения',
   },
 } as const satisfies Record<Locale, Record<keyof typeof SHARE_CARD_EN, string>>;
 
