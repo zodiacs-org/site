@@ -621,3 +621,20 @@ so does OQ10's Q5.
   (0 errors), the ledger listings (0 and 0), the developer demo's check and
   594 AI, Chiron, sky events, conventions, claims, sitemap and bundle-rule
   tests passed before the gate.
+- **D-18** (5 November, the independent review again, of `658aabdb`). Its
+  verdict named the one blocker it knew: the Phase 1 captures (C8), which the
+  next commit carries. Its condition: Build & Check, which stops at its test
+  step while the captures are stale, has 33 later steps that have not run in
+  CI on this branch (visual regression, Lighthouse and the birth-time window
+  drives among them), and they must pass on the head that carries the captures
+  before the merge. Its notes, acted on: `CLAUDE.md` now describes the Chart
+  Studio pin; this record states that the branch's history holds archives it
+  made under names main's releases later took (Developer 0.3.21 at `620403bc`,
+  0.3.22 at `92d27904` and `af535a33`, 0.3.23 at `36f126b1`, 0.3.27 at
+  `3e370c9b`), whose bytes differ from main's, while the head keeps main's
+  bytes for each and `integrations/packages/manifest.json` gives each
+  archive's SHA-256; and three dated evidence tools
+  (`docs/platform/evidence/engine-beyond-swiss/corpora/tools/angle-clock.ts`,
+  and `site-engine-rc15/tools/clock-difference.mjs` and
+  `model-clock-margins.mjs`) import the deleted module, so they run only on a
+  tree from before this adoption, D-7 leaving dated tools as they are.
