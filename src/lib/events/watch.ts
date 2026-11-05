@@ -51,12 +51,13 @@ const signName = (slug: string | undefined) => (slug ? signBySlug(slug).name : '
  * eclipse is seen only from a track on the ground, so it cannot be described
  * from the peak instant alone. Keyed by the eclipse's UTC peak day.
  */
+/** Checked against NASA, ESA and IGN path summaries on 2026-11-05. */
 export const SOLAR_ECLIPSE_VISIBILITY: Readonly<Record<string, string>> = Object.freeze({
   '2026-02-17': 'The ring of the annular phase is seen only over Antarctica. Southern Africa and the far south of South America see the Sun partly covered.',
   '2026-08-12': 'Totality crosses Greenland, western Iceland and northern Spain. Most of Europe, North Africa and the far northeast of North America see a partial eclipse.',
-  '2027-02-06': 'The ring of the annular phase crosses Chile, Argentina and the South Atlantic, then reaches West Africa from Côte d’Ivoire to Nigeria near sunset. Most of South America and western and central Africa see a partial eclipse.',
+  '2027-02-06': 'The ring of the annular phase crosses Chile, Argentina and Uruguay, then the South Atlantic to the coast of West Africa. Most of South America and much of Africa see a partial eclipse.',
   '2027-08-02': 'Totality crosses southern Spain, Gibraltar, Morocco, Algeria, Tunisia, Libya, Egypt, Saudi Arabia, Yemen and Somalia, and lasts over six minutes near Luxor. Europe, Africa, the Middle East and South Asia see a partial eclipse.',
-  '2028-01-26': 'The ring of the annular phase crosses Ecuador, Peru, Brazil, Suriname and French Guiana, then ends at sunset over Portugal and Spain. Much of South America, western Europe and West Africa see a partial eclipse.',
+  '2028-01-26': 'The ring of the annular phase crosses the Galápagos, Ecuador, Peru, northern Brazil, Suriname and French Guiana, then ends near sunset over Portugal and Spain. Much of South America, western Europe and West Africa see a partial eclipse.',
   '2028-07-22': 'Totality crosses Australia, including Sydney, and the south of New Zealand. Southeast Asia, Australia and New Zealand see a partial eclipse.',
 });
 
