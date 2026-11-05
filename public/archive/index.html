@@ -1089,7 +1089,6 @@
     var defaultLocale = "en";
     var privateSessionKey = 'zodiacs.guide.private-session.v1';
     var openPendingKey = 'zodiacs.guide.open-pending.v1';
-    var openPromptKey = 'zodiacs.guide.open-prompt.v1';
     function safeSessionGet(key) {
       try { return sessionStorage.getItem(key); } catch (error) { return null; }
     }
@@ -1104,28 +1103,12 @@
       }
       return false;
     }
-    function pendingOpener() {
-      var prompt = safeSessionGet(openPromptKey);
-      try { sessionStorage.removeItem(openPromptKey); } catch (error) {}
-      if (!prompt) return null;
-      var openers = document.querySelectorAll('[data-assistant-open][data-assistant-prompt]');
-      for (var i = 0; i < openers.length; i += 1) {
-        if (openers[i].getAttribute('data-assistant-prompt') === prompt) return openers[i];
-      }
-      var holder = document.createElement('span');
-      holder.hidden = true;
-      holder.setAttribute('data-assistant-prompt', prompt.slice(0, 280));
-      document.body.appendChild(holder);
-      return holder;
-    }
-    function beginPrivateTransition(from) {
+    function beginPrivateTransition() {
       if (!document.documentElement.hasAttribute('data-guide-analytics-boundary')) return false;
       if (safeSessionGet(privateSessionKey) === '1') return false;
       try {
         sessionStorage.setItem(privateSessionKey, '1');
         sessionStorage.setItem(openPendingKey, '1');
-        var prompt = from && from.getAttribute('data-assistant-prompt');
-        if (prompt) sessionStorage.setItem(openPromptKey, prompt);
         location.reload();
       } catch (error) {
         location.assign('/ask/#guide');
@@ -1150,7 +1133,7 @@
     }
     function mountGuide() {
       loadGuide().then(function (mod) {
-        if (consumePendingOpen()) return mod.openAssistant(defaultLocale, pendingOpener());
+        if (consumePendingOpen()) return mod.openAssistant(defaultLocale, null);
         return mod.bootstrapGuide(defaultLocale).then(stopIntentListener);
       }).catch(function () {});
     }
@@ -1171,7 +1154,7 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       stopScheduledMount();
-      if (beginPrivateTransition(target)) return;
+      if (beginPrivateTransition()) return;
       loadGuide().then(function (mod) {
         return mod.openAssistant(
           target.getAttribute('data-assistant-locale') || defaultLocale,
