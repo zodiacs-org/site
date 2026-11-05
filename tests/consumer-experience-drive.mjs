@@ -101,11 +101,12 @@ async function guide(page, engine) {
     return p && getComputedStyle(p).transform === 'none';
   });
   const box = await panel.boundingBox();
-  check(`${engine}: Guide remains compact and inset`, box.x >= 8 && box.width <= 374
-    && box.y > 200 && box.height >= 844 * .5 && box.height <= 844 * .7, JSON.stringify(box));
+  // Phones get Guide as a full-screen sheet (owner-chosen 2026-11-05).
+  check(`${engine}: Guide is a full-screen sheet on a phone`, box.x === 0 && box.y === 0
+    && box.width === 390 && Math.abs(box.height - 844) <= 2, JSON.stringify(box));
   check(`${engine}: touch opening does not focus the composer`, await panel.evaluate(p =>
     document.activeElement === p && !document.activeElement.matches('input,textarea')));
-  await shot(page, `${engine}-compact-guide`);
+  await shot(page, `${engine}-guide-sheet`);
   await page.locator('.zassistant__input').fill('What is my rising sign?');
   // Approximate the space a soft keyboard leaves; this is not an OS keyboard.
   await page.setViewportSize({ width: 390, height: 480 });
