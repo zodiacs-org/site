@@ -1921,6 +1921,13 @@ async function runTurn(pending: PendingTurn): Promise<void> {
     if (!completed.message.content.trim() || (answer && answer !== completed.message.content)) {
       throw new AssistantFailure('invalid_response', false, true);
     }
+    // Keep the answer before the on-screen reveal, so leaving the page
+    // mid-reveal never loses it.
+    const state = getSession();
+    state.messages = [...state.messages, pending.userMessage, completed.message].slice(-MAX_MESSAGES);
+    state.nextSequence = completed.message.sequence + 1;
+    state.revision = completed.conversationRevision;
+    saveSession();
     await reveal.finish(completed.message.content);
     if (!requestIsCurrent()) return;
     pending.assistantArticle.classList.remove('is-waiting');
@@ -1928,11 +1935,6 @@ async function runTurn(pending: PendingTurn): Promise<void> {
     appendSourcesRow(pending.assistantBody, completed.message.content);
     showFollowUps(completed.message.content);
     pending.assistantArticle.removeAttribute('aria-busy');
-    const state = getSession();
-    state.messages = [...state.messages, pending.userMessage, completed.message].slice(-MAX_MESSAGES);
-    state.nextSequence = completed.message.sequence + 1;
-    state.revision = completed.conversationRevision;
-    saveSession();
     setStatus(currentCopy().complete);
     track('guide_reply');
   } catch (error) {

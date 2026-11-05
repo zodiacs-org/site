@@ -316,6 +316,8 @@ await withPreview({ port: 4404 }, async (baseURL) => {
     const firstGuideMessage = page.locator('.zassistant__message--assistant')
       .filter({ hasText: 'practical answer' });
     await firstGuideMessage.waitFor();
+    // Answers are revealed at reading pace; follow-ups appear once it is whole.
+    await page.locator('.zassistant__followups').waitFor();
     check('Guide messages carry the same decorative identity avatar',
       await firstGuideMessage.locator('.zassistant__message-avatar[src="/assets/guide-avatar.webp"]')
         .count() === 1);
