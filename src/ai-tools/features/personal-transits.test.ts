@@ -97,7 +97,7 @@ describe('get_personal_transits', () => {
     const scan = (lon: number, body: 'Mercury' | 'Venus', pad: number) => {
       const natal = { bodies: [{ body: 'Jupiter' as const, lon }], angles: null };
       const expanded = scanTransitContacts(natal, new Date(from.getTime() - pad * day), new Date(to.getTime() + pad * day), { transitBodies: [body], natalPoints: ['Jupiter'] });
-      const numbered = numberTransitPasses(expanded);
+      const numbered = numberTransitPasses(expanded, natal);
       return numbered.filter((contact) => contact.exactUtc >= from.toISOString() && contact.exactUtc <= to.toISOString());
     };
     // 12° Scorpio sits inside the October to November 2026 Mercury retrograde.
@@ -111,6 +111,14 @@ describe('get_personal_transits', () => {
     expect(venus.length).toBeGreaterThan(0);
     expect(venus.every((contact) => contact.passCount === 3)).toBe(true);
     expect(venus.some((contact) => contact.pass === 3)).toBe(true);
+  });
+
+  it('keeps the two sides of a sextile or trine apart, so two single passes are not one loop', () => {
+    // Venus sextiles 0° Aries from 300° on 1 Feb 2021 and from 60° on 9 May 2021, both moving direct.
+    const natal = { bodies: [{ body: 'Jupiter' as const, lon: 0 }], angles: null };
+    const contacts = scanTransitContacts(natal, new Date('2021-01-01T00:00:00Z'), new Date('2021-06-30T00:00:00Z'), { transitBodies: ['Venus'], natalPoints: ['Jupiter'], aspects: ['sextile'] });
+    expect(contacts.map((contact) => contact.exactUtc.slice(0, 10))).toEqual(['2021-02-01', '2021-05-09']);
+    expect(numberTransitPasses(contacts, natal).map(({ pass, passCount }) => `${pass} of ${passCount}`)).toEqual(['1 of 1', '1 of 1']);
   });
 
   it('labels each contact with a reading confidence from the birth details', async () => {

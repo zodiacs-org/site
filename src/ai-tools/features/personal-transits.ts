@@ -28,8 +28,8 @@ import { z } from 'zod';
 import eclipseTable from '../../data/eclipses.json';
 import ingressTable from '../../data/ingresses.json';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
-import { computeChart } from '../../lib/engine/full.js';
-import { scanTransitContacts, type NatalPoint, type TransitBody } from '../../lib/engine/transit-scan';
+import { bodyLongitude, computeChart } from '../../lib/engine/full.js';
+import { natalTransitPoints, scanTransitContacts, type NatalPoint, type TransitBody } from '../../lib/engine/transit-scan';
 import { DEFAULT_TRANSIT_BODIES, SLOW_TRANSIT_BODIES, TRANSIT_BODY_ORDER } from '../../lib/engine/transit-scan-shared';
 import { yearScan } from '../../lib/engine/year-scan';
 import { wholeSignHouseFromAsc } from '../../lib/daily';
@@ -163,14 +163,18 @@ export function transitLoopPadDays(planets: readonly string[]): number {
 
 /**
  * Number each contact inside its retrograde loop, not only inside the dates
- * that were scanned. Passes of one body, point and aspect stay in one loop
- * while the gap between them is within that body's loop, and the next loop
- * starts again at pass 1.
+ * that were scanned. Passes of one body, point, aspect and side stay in one
+ * loop while the gap between them is within that body's loop, and the next
+ * loop starts again at pass 1.
  */
-export function numberTransitPasses<T extends Pick<TransitContact, 'transitBody' | 'natalPoint' | 'aspect' | 'exactUtc'>>(contacts: readonly T[]): (T & { pass: number; passCount: number; firstPassUtc: string; lastPassUtc: string })[] {
+export function numberTransitPasses<T extends Pick<TransitContact, 'transitBody' | 'natalPoint' | 'aspect' | 'exactUtc'>>(contacts: readonly T[], natal: NatalTransitChart): (T & { pass: number; passCount: number; firstPassUtc: string; lastPassUtc: string })[] {
+  const natalLon = new Map(natalTransitPoints(natal).map((point) => [point.name, point.lon]));
+  // A sextile, square or trine has two sides (60° and 300° from the natal point, say).
+  // Each side is its own degree, so its passes never join the other side's loop.
+  const sideOf = (contact: T) => Math.round((((bodyLongitude(contact.transitBody, new Date(contact.exactUtc)) - natalLon.get(contact.natalPoint)!) % 360) + 360) % 360 / 30) % 12;
   const groups = new Map<string, T[]>();
   for (const contact of contacts) {
-    const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
+    const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}|${sideOf(contact)}`;
     const list = groups.get(key);
     if (list) list.push(contact);
     else groups.set(key, [contact]);
@@ -278,7 +282,7 @@ export async function getPersonalTransits(args: PersonalTransitsInput, now: Date
     const expandedTo = new Date(Math.min(SPAN_END, toUtc.getTime() + pad * DAY));
     const fromIso = fromUtc.toISOString();
     const toIso = toUtc.toISOString();
-    const found = numberTransitPasses(scanTransitLoops(natal, fromUtc, toUtc, expandedFrom, expandedTo, planets, points))
+    const found = numberTransitPasses(scanTransitLoops(natal, fromUtc, toUtc, expandedFrom, expandedTo, planets, points), natal)
       .filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso)
       .sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
     if (found.length > TRANSITS_LIMIT) limits.push(`${found.length} contacts were found; the first ${TRANSITS_LIMIT} are listed. Ask for a shorter window for the rest.`);

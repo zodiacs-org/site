@@ -5,7 +5,7 @@
 import { Transform } from "node:stream";
 import { StdioServerTransport, serveStdio } from "@modelcontextprotocol/server/stdio";
 
-// node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
 var NAMESPACE = /^[A-Za-z][A-Za-z0-9-]*$/u;
 var VALUE = /^[^\s\p{Cc}\p{Cf}\p{Cs}]+$/u;
 function conventionId(namespace, value) {
@@ -42,7 +42,7 @@ function natalConventionIds(envelope) {
   return [...ids].sort();
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
 var julianLeap = (year) => year % 4 === 0;
 var gregorianLeap = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 function parseCalendarDate(value, calendar) {
@@ -91,7 +91,7 @@ function julianToGregorian(value) {
   return date3 ? format(civilDateOf(julianDayNumber(date3, "julian"), "gregorian")) : null;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
 var ISO_INSTANT = /^(\d{4}|[+-]\d{6})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2})))?$/;
 function validIsoInput(input) {
   const match = ISO_INSTANT.exec(input);
@@ -123,7 +123,7 @@ function dateFrom(input, label) {
   return date3;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
   version: "2026-09-24",
@@ -404,7 +404,7 @@ function deltaT(ut) {
   return seconds(2e3 + ut / 365.25);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
 var REFERENCE_SPAN = /* @__PURE__ */ Object.freeze({
   from: "1800-01-01T00:00:00.000Z",
   to: "2200-01-01T00:00:00.000Z"
@@ -613,7 +613,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-YJ7WZ7NS.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-YJ7WZ7NS.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -807,7 +807,7 @@ function degreeInSign(lon) {
 var ENGINE_VERSION = "1.1.0-rc.1";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
-// node_modules/@zodiacs/engine/dist/receipt.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/receipt.js
 function parseReceiptJson(json, limits2) {
   if (typeof json !== "string") return { ok: false, code: "invalid_json" };
   if (!Number.isSafeInteger(limits2.depth) || limits2.depth < 0 || !Number.isSafeInteger(limits2.nodes) || limits2.nodes < 1)
@@ -1910,7 +1910,7 @@ function bounded(value) {
 // src/mcp/tools.ts
 import { z as z2 } from "zod";
 
-// node_modules/@zodiacs/engine/dist/chunk-VDVUUMY2.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-VDVUUMY2.js
 var DEG = Math.PI / 180;
 var RAD = 180 / Math.PI;
 var HOUSE_SYSTEMS3 = /* @__PURE__ */ Object.freeze([
@@ -2225,7 +2225,7 @@ function houseOf(longitude2, cusps) {
   return 12;
 }
 
-// node_modules/astronomy-engine/esm/astronomy.js
+// ../../repos/site-875/node_modules/astronomy-engine/esm/astronomy.js
 /**
     @preserve
 
@@ -4132,7 +4132,7 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// node_modules/@zodiacs/engine/dist/chunk-W2TMLFJ3.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-W2TMLFJ3.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
 var DEG2 = Math.PI / 180;
 var RAD2 = 180 / Math.PI;
@@ -4470,7 +4470,7 @@ function chartAt(input) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
 var DAY3 = 864e5;
 var REFINE_STEPS = 24;
 var EDGE_PROBE_MAX_MS = 6e4;
@@ -4703,7 +4703,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
 var HOUSE_SYSTEM_NAMES = [
   "whole",
   "placidus",
@@ -4784,7 +4784,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-FRYARIYL.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-FRYARIYL.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -8609,7 +8609,7 @@ var OCCASION_KINDS = [
   "gathering"
 ];
 
-// node_modules/@zodiacs/engine/dist/chunk-DGR3SZ7M.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/chunk-DGR3SZ7M.js
 var DEG6 = Math.PI / 180;
 var ARCSEC4 = DEG6 / 3600;
 function toEquator(m, angle) {
@@ -8651,7 +8651,7 @@ function turn2(m, x, y, z16) {
   return [m[0] * x + m[1] * y + m[2] * z16, m[3] * x + m[4] * y + m[5] * z16, m[6] * x + m[7] * y + m[8] * z16];
 }
 
-// node_modules/@zodiacs/engine/dist/sky.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/sky.js
 function firstMillisecond(reached, estimate) {
   const start = Math.round(estimate);
   let lo = start - 4;
@@ -26431,7 +26431,7 @@ var birthdays_default = {
   }
 };
 
-// node_modules/@zodiacs/engine/dist/techniques.js
+// ../../repos/site-875/node_modules/@zodiacs/engine/dist/techniques.js
 var DAY_MS4 = 864e5;
 var MAX_DATE_MS = 864e13;
 function finiteDegrees(value, label) {
@@ -33473,10 +33473,12 @@ var SPAN_END = Date.parse("2200-01-01T00:00:00.000Z");
 function transitLoopPadDays(planets) {
   return planets.reduce((pad2, planet) => Math.max(pad2, LOOP_PAD_DAYS[planet] ?? 0), 0);
 }
-function numberTransitPasses(contacts) {
+function numberTransitPasses(contacts, natal) {
+  const natalLon = new Map(natalTransitPoints(natal).map((point) => [point.name, point.lon]));
+  const sideOf = (contact) => Math.round(((bodyLongitude2(contact.transitBody, new Date(contact.exactUtc)) - natalLon.get(contact.natalPoint)) % 360 + 360) % 360 / 30) % 12;
   const groups = /* @__PURE__ */ new Map();
   for (const contact of contacts) {
-    const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}`;
+    const key = `${contact.transitBody}|${contact.natalPoint}|${contact.aspect}|${sideOf(contact)}`;
     const list3 = groups.get(key);
     if (list3) list3.push(contact);
     else groups.set(key, [contact]);
@@ -33568,7 +33570,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
     const expandedTo = new Date(Math.min(SPAN_END, toUtc2.getTime() + pad2 * DAY12));
     const fromIso = fromUtc2.toISOString();
     const toIso = toUtc2.toISOString();
-    const found = numberTransitPasses(scanTransitLoops(natal2, fromUtc2, toUtc2, expandedFrom, expandedTo, planets, points)).filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
+    const found = numberTransitPasses(scanTransitLoops(natal2, fromUtc2, toUtc2, expandedFrom, expandedTo, planets, points), natal2).filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
     if (found.length > TRANSITS_LIMIT) limits2.push(`${found.length} contacts were found; the first ${TRANSITS_LIMIT} are listed. Ask for a shorter window for the rest.`);
     const contacts = found.slice(0, TRANSITS_LIMIT).map((contact) => {
       const label = readingConfidenceLabel(detail, true);
