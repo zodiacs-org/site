@@ -5,105 +5,102 @@
 
  RUN  v3.2.7 <checkout>
 
- ✓ src/ai-tools/accounts/accounts.test.ts (19 tests) 706ms
-   ✓ what can be saved > works each kind out again with the tool that made it, as bounded plain text  431ms
- ✓ src/ai-tools/studio/week.test.ts (14 tests) 2303ms
-   ✓ Your week: the next seven days for a chart > finds the same exact passes as the site transit scanner  368ms
-   ✓ Your week: the next seven days for a chart > matches a ten-minute sweep of the ephemeris: every contact within orb, and only then  1387ms
- ✓ src/ai-tools/schema-types.test.ts (3 tests) 2109ms
-   ✓ what the tools return > validates against the schemas they advertise, as a client checks it  2050ms
- ✓ src/ai-tools/http.test.ts (21 tests) 1886ms
-   ✓ stateless MCP HTTP boundary > works with the official SDK client: list, call, widget read and close  717ms
-   ✓ stateless MCP HTTP boundary > lists and runs the occasion tools only with ZODIACS_OCCASIONS_ENABLED=1  498ms
- ✓ src/ai-tools/lifetime.test.ts (3 tests) 1424ms
-   ✓ clears actual HTTP bundle state after success and failure  425ms
-   ✓ clears actual stdio bundle state after success and failure  550ms
-   ✓ clears actual Sky Watch bundle state after success and failure  448ms
- ✓ src/ai-tools/features/chinese-zodiac.test.ts (10 tests) 659ms
-   ✓ the Lunar New Year table > is what the generator makes, so it can be rebuilt and checked  595ms
- ✓ src/ai-tools/sky-events.test.ts (7 tests) 3749ms
-   ✓ the sky events switch off > leaves every scenario's initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them  739ms
-   ✓ the sky events switch on > answers with results that validate against the output schemas tools/list advertises, as a client checks them  2593ms
- ✓ src/ai-tools/output-dashes.test.ts (2 tests) 1110ms
-   ✓ MCP tool output has no en or em dashes > keeps dashes out of forecast, chart, people and place answers  1106ms
- ✓ src/ai-tools/usage.test.ts (21 tests) 2156ms
-   ✓ counting hosted tool calls > counts the occasion tools only while their switch offers them  396ms
-   ✓ counting hosted tool calls > replies before a slow database answers, then gives up within the timeout without an error  1507ms
- ✓ src/ai-tools/features/horoscope-period.test.ts (17 tests) 1883ms
-   ✓ get_horoscope_period > serves the September 2026 reading with no dashes, and a month sky without the Moon changing sign  378ms
-   ✓ get_horoscope_period > takes the sign in any capitalisation, and still refuses a sign it does not know  301ms
-   ✓ get_horoscope_period > says it assumed UTC only when no zone was given or shared  311ms
- ✓ src/ai-tools/features/chiron.test.ts (16 tests) 1228ms
-   ✓ search_sky_events' Chiron > comes with the other planets unless planets leaves it out, and keeps to 1800 to 2199  875ms
- ✓ src/ai-tools/bundle-languages.test.ts (2 tests) 1140ms
-   ✓ answers the sky calendar in every language and keeps a Cyrillic name from the HTTP bundle  437ms
-   ✓ answers the sky calendar in every language and keeps a Cyrillic name from the stdio bundle  702ms
- ✓ src/ai-tools/studio/local-time.test.ts (15 tests) 170ms
- ✓ src/ai-tools/release-050.test.ts (11 tests) 399ms
- ✓ src/ai-tools/features/sky-events.test.ts (21 tests) 6793ms
-   ✓ search_sky_events > lists every kind but void-of-course periods unless they are named, and a planet's stations and sign changes when only planets are given  517ms
-   ✓ search_sky_events > gives each void-of-course period exactly as the site's calendar computes it, through the module the page reads  1907ms
-   ✓ search_sky_events > links an event to its own published page, or to the page that lists its kind  1015ms
-   ✓ search_sky_events > keeps to two years, and to 31 days for void-of-course periods, and names the field it refuses  909ms
-   ✓ search_sky_events > cuts the list at the limit and says how many there are  1097ms
-   ✓ search_sky_events > states calculated facts: no reading, no confidence label, no dashes, and points to the two neighbouring tools  689ms
- ✓ src/ai-tools/occasions.test.ts (5 tests) 1265ms
-   ✓ occasion tools behind ZODIACS_OCCASIONS_ENABLED > lists life milestones, the next one and the sky numbers  884ms
- ✓ src/ai-tools/ref.test.ts (5 tests) 1030ms
-   ✓ ?ref= on zodiacs.org links from the tools > tags the links and the card address of a result, and nothing without a ref  900ms
- ✓ src/ai-tools/features/explain.test.ts (19 tests) 563ms
-   ✓ explain_astrology > explains a Sun-sign pair from its compatibility page, with no confidence label, and says to leave romance out for anyone under 18  411ms
- ✓ src/ai-tools/accounts/flag-off.test.ts (1 test) 1346ms
-   ✓ the account switch off > leaves initialize, tools/list, resources/list and every account route byte-for-byte as the 0.5.0 server answers them  1343ms
- ✓ src/ai-tools/studio/model.test.ts (18 tests) 1420ms
-   ✓ the Sun without a birth time > names two signs on a date when the Sun changes sign in some time zone, and one otherwise  1181ms
- ✓ src/ai-tools/answer-links.test.ts (5 tests) 504ms
- ✓ src/ai-tools/tools.test.ts (26 tests) 366ms
- ✓ src/ai-tools/features/personal-week.test.ts (4 tests) 291ms
- ✓ src/ai-tools/features/birthday.test.ts (13 tests) 270ms
- ✓ src/ai-tools/accounts/http.test.ts (8 tests) 778ms
-   ✓ accounts on: mixed authentication on the hosted MCP > names the saved page as the one exception to storing no birth details, and only while saving is on  474ms
- ✓ src/ai-tools/features/natal-chart.test.ts (14 tests) 286ms
- ✓ src/ai-tools/features/compatibility.test.ts (14 tests) 186ms
- ✓ src/ai-tools/version.test.ts (4 tests) 159ms
- ✓ src/ai-tools/studio/heading.test.ts (6 tests) 174ms
- ✓ src/ai-tools/share-links.test.ts (27 tests) 9959ms
-   ✓ a life milestone share link > accepts every milestone the tool gives, back to a birth date in 1800  8793ms
-   ✓ a life milestone share link > gives a centenarian’s next milestone a share link  484ms
-   ✓ the tools’ share links > give chart twins’ signs, a famous chart’s slug and the milestone shown, never a birth date  615ms
- ✓ src/ai-tools/studio/inspect.test.ts (7 tests) 238ms
- ✓ src/ai-tools/features/birthplace.test.ts (6 tests) 135ms
+ ✓ src/ai-tools/lifetime.test.ts (3 tests) 1765ms
+   ✓ clears actual HTTP bundle state after success and failure  480ms
+   ✓ clears actual stdio bundle state after success and failure  458ms
+   ✓ clears actual Sky Watch bundle state after success and failure  826ms
+ ✓ src/ai-tools/features/horoscope-period.test.ts (17 tests) 1840ms
+   ✓ get_horoscope_period > serves the September 2026 reading with no dashes, and a month sky without the Moon changing sign  463ms
+   ✓ get_horoscope_period > takes the sign in any capitalisation, and still refuses a sign it does not know  323ms
+ ✓ src/ai-tools/schema-types.test.ts (3 tests) 2229ms
+   ✓ what the tools return > validates against the schemas they advertise, as a client checks it  2194ms
+ ✓ src/ai-tools/http.test.ts (21 tests) 2073ms
+   ✓ stateless MCP HTTP boundary > works with the official SDK client: list, call, widget read and close  878ms
+   ✓ stateless MCP HTTP boundary > lists and runs the occasion tools only with ZODIACS_OCCASIONS_ENABLED=1  462ms
+ ✓ src/ai-tools/usage.test.ts (21 tests) 2245ms
+   ✓ counting hosted tool calls > counts the occasion tools only while their switch offers them  470ms
+   ✓ counting hosted tool calls > replies before a slow database answers, then gives up within the timeout without an error  1508ms
+ ✓ src/ai-tools/occasions.test.ts (5 tests) 1063ms
+   ✓ occasion tools behind ZODIACS_OCCASIONS_ENABLED > lists life milestones, the next one and the sky numbers  713ms
+ ✓ src/ai-tools/sky-events.test.ts (7 tests) 4011ms
+   ✓ the sky events switch off > leaves every scenario's initialize, tools/list, resources/list, get_capabilities and account routes byte for byte as main answers them  952ms
+   ✓ the sky events switch on > answers with results that validate against the output schemas tools/list advertises, as a client checks them  2584ms
+ ✓ src/ai-tools/output-dashes.test.ts (2 tests) 1408ms
+   ✓ MCP tool output has no en or em dashes > keeps dashes out of forecast, chart, people and place answers  1405ms
+ ✓ src/ai-tools/studio/week.test.ts (14 tests) 2459ms
+   ✓ Your week: the next seven days for a chart > finds the same exact passes as the site transit scanner  640ms
+   ✓ Your week: the next seven days for a chart > matches a ten-minute sweep of the ephemeris: every contact within orb, and only then  1256ms
+ ✓ src/ai-tools/features/chiron.test.ts (16 tests) 1117ms
+   ✓ search_sky_events' Chiron > comes with the other planets unless planets leaves it out, and keeps to 1800 to 2199  704ms
+ ✓ src/ai-tools/bundle-languages.test.ts (2 tests) 969ms
+   ✓ answers the sky calendar in every language and keeps a Cyrillic name from the HTTP bundle  405ms
+   ✓ answers the sky calendar in every language and keeps a Cyrillic name from the stdio bundle  563ms
+ ✓ src/ai-tools/features/chinese-zodiac.test.ts (10 tests) 698ms
+   ✓ the Lunar New Year table > is what the generator makes, so it can be rebuilt and checked  660ms
+ ✓ src/ai-tools/features/sky-events.test.ts (21 tests) 6815ms
+   ✓ search_sky_events > lists every kind but void-of-course periods unless they are named, and a planet's stations and sign changes when only planets are given  723ms
+   ✓ search_sky_events > gives each void-of-course period exactly as the site's calendar computes it, through the module the page reads  1903ms
+   ✓ search_sky_events > links an event to its own published page, or to the page that lists its kind  980ms
+   ✓ search_sky_events > keeps to two years, and to 31 days for void-of-course periods, and names the field it refuses  999ms
+   ✓ search_sky_events > cuts the list at the limit and says how many there are  957ms
+   ✓ search_sky_events > states calculated facts: no reading, no confidence label, no dashes, and points to the two neighbouring tools  640ms
+ ✓ src/ai-tools/ref.test.ts (5 tests) 1110ms
+   ✓ ?ref= on zodiacs.org links from the tools > tags the links and the card address of a result, and nothing without a ref  907ms
+ ✓ src/ai-tools/accounts/flag-off.test.ts (1 test) 941ms
+   ✓ the account switch off > leaves initialize, tools/list, resources/list and every account route byte-for-byte as the 0.5.0 server answers them  938ms
+ ✓ src/ai-tools/studio/model.test.ts (18 tests) 1012ms
+   ✓ the Sun without a birth time > names two signs on a date when the Sun changes sign in some time zone, and one otherwise  876ms
+ ✓ src/ai-tools/answer-links.test.ts (5 tests) 556ms
+ ✓ src/ai-tools/release-050.test.ts (11 tests) 328ms
+ ✓ src/ai-tools/accounts/accounts.test.ts (19 tests) 989ms
+   ✓ what can be saved > works each kind out again with the tool that made it, as bounded plain text  602ms
+ ✓ src/ai-tools/studio/inspect.test.ts (7 tests) 155ms
+ ✓ src/ai-tools/features/natal-chart.test.ts (14 tests) 232ms
+ ✓ src/ai-tools/accounts/http.test.ts (8 tests) 372ms
+ ✓ src/ai-tools/features/explain.test.ts (19 tests) 354ms
+ ✓ src/ai-tools/features/birthday.test.ts (13 tests) 405ms
+ ✓ src/ai-tools/features/personal-week.test.ts (4 tests) 323ms
+ ✓ src/ai-tools/studio/explore.test.ts (16 tests) 230ms
+ ✓ src/ai-tools/share-links.test.ts (27 tests) 9557ms
+   ✓ a life milestone share link > accepts every milestone the tool gives, back to a birth date in 1800  8277ms
+   ✓ a life milestone share link > gives a centenarian’s next milestone a share link  731ms
+   ✓ the tools’ share links > give chart twins’ signs, a famous chart’s slug and the milestone shown, never a birth date  463ms
+ ✓ src/ai-tools/features/birthplace.test.ts (6 tests) 130ms
+ ✓ src/ai-tools/tools.test.ts (26 tests) 354ms
+ ✓ src/ai-tools/features/people.test.ts (11 tests) 188ms
  ✓ src/ai-tools/watch/watch.test.ts (37 tests) 257ms
- ✓ src/ai-tools/features/people.test.ts (11 tests) 274ms
- ✓ src/ai-tools/watch/callback.test.ts (3 tests) 11ms
- ✓ src/ai-tools/watch/oauth.test.ts (3 tests) 32ms
- ✓ src/ai-tools/studio/explore.test.ts (16 tests) 149ms
- ✓ src/ai-tools/quota.test.ts (4 tests) 12ms
- ✓ src/ai-tools/studio/bridge.test.ts (4 tests) 15ms
- ✓ src/ai-tools/release-060.test.ts (11 tests) 10795ms
-   ✓ the five 0.6.0 tools > answer through the hosted server with structured content and the same JSON as text  1141ms
-   ✓ every link the 0.6.0 tools return > opens a page the site builds  9161ms
- ✓ src/ai-tools/features/personal-transits.test.ts (13 tests) 17034ms
-   ✓ get_personal_transits > lists the next 30 days of exact contacts by default, soonest first, with the site’s transit sentences  1347ms
-   ✓ get_personal_transits > leaves out the Moon and the angles without a birth time, and says so  827ms
-   ✓ get_personal_transits > keeps long windows to the slow planets, up to 366 days  1832ms
-   ✓ get_personal_transits > gives the year ahead: the solar return, Jupiter and Saturn, sign changes in natal houses and eclipses  627ms
-   ✓ get_personal_transits > never words a contact as a health or money prediction  6390ms
-   ✓ get_personal_transits > refuses a window that starts before the birth date, and a year ahead before the birth  400ms
-   ✓ get_personal_transits > gives a fuller year ahead without a birth time: the slow planets on the personal planets too  587ms
-   ✓ get_personal_transits > labels each contact with a reading confidence from the birth details  691ms
-   ✓ get_personal_transits > says which clock the dates are on, and assumes UTC only when no zone was given or shared  1186ms
-   ✓ get_personal_transits > leaves romantic wording out when the birth date is under 18, and never reads the sixth house as health  2412ms
-   ✓ get_personal_transits > gives the natal Sun sign for the panel, and none when an untimed birth day changed it  691ms
+ ✓ src/ai-tools/features/compatibility.test.ts (14 tests) 198ms
+ ✓ src/ai-tools/studio/heading.test.ts (6 tests) 240ms
+ ✓ src/ai-tools/studio/local-time.test.ts (15 tests) 306ms
+ ✓ src/ai-tools/watch/callback.test.ts (3 tests) 12ms
+ ✓ src/ai-tools/watch/oauth.test.ts (3 tests) 21ms
+ ✓ src/ai-tools/quota.test.ts (4 tests) 13ms
+ ✓ src/ai-tools/studio/bridge.test.ts (4 tests) 10ms
+ ✓ src/ai-tools/version.test.ts (4 tests) 294ms
+ ✓ src/ai-tools/release-060.test.ts (11 tests) 11358ms
+   ✓ the five 0.6.0 tools > answer through the hosted server with structured content and the same JSON as text  1381ms
+   ✓ every link the 0.6.0 tools return > opens a page the site builds  9378ms
+ ✓ src/ai-tools/features/personal-transits.test.ts (13 tests) 17182ms
+   ✓ get_personal_transits > lists the next 30 days of exact contacts by default, soonest first, with the site’s transit sentences  1505ms
+   ✓ get_personal_transits > leaves out the Moon and the angles without a birth time, and says so  855ms
+   ✓ get_personal_transits > keeps long windows to the slow planets, up to 366 days  1704ms
+   ✓ get_personal_transits > gives the year ahead: the solar return, Jupiter and Saturn, sign changes in natal houses and eclipses  822ms
+   ✓ get_personal_transits > never words a contact as a health or money prediction  6403ms
+   ✓ get_personal_transits > refuses a window that starts before the birth date, and a year ahead before the birth  468ms
+   ✓ get_personal_transits > gives a fuller year ahead without a birth time: the slow planets on the personal planets too  625ms
+   ✓ get_personal_transits > labels each contact with a reading confidence from the birth details  680ms
+   ✓ get_personal_transits > says which clock the dates are on, and assumes UTC only when no zone was given or shared  1200ms
+   ✓ get_personal_transits > leaves romantic wording out when the birth date is under 18, and never reads the sixth house as health  2252ms
+   ✓ get_personal_transits > gives the natal Sun sign for the panel, and none when an untimed birth day changed it  617ms
 
  Test Files  41 passed (41)
       Tests  466 passed (466)
-   Start at  13:46:10
-   Duration  18.45s (transform 3.56s, setup 0ms, collect 28.89s, tests 75.26s, environment 6ms, prepare 3.77s)
+   Start at  15:39:44
+   Duration  18.84s (transform 3.64s, setup 0ms, collect 32.18s, tests 75.82s, environment 4ms, prepare 3.78s)
 
 Developer bundle: manifest, three skills, eight MCP tools, synthetic record comparison and privacy recovery passed.
 
-> zodiacs-developer-plugin@0.3.27 test
+> zodiacs-developer-plugin@0.3.28 test
 > node examples/verify.mjs
 
 Published-engine recipes: version, offset equivalence, unknown time, Moon phase and calendar passed.

@@ -59,14 +59,14 @@ Verified the readings panel (325047 bytes, owned public art)
 Verified the readings panel with the lunar nodes (329344 bytes, owned public art)
 Verified panel fingerprints (6 current URIs)
 Verified the account consent page (232985 bytes)
-Verified api/_ai/runtime.mjs (4452216 bytes)
-Verified plugins/zodiacs-developer/mcp/server.mjs (6448138 bytes)
-Verified integrations/generated/sky-watch.mjs (4455936 bytes)
+Verified api/_ai/runtime.mjs (4452224 bytes)
+Verified plugins/zodiacs-developer/mcp/server.mjs (6448146 bytes)
+Verified integrations/generated/sky-watch.mjs (4455944 bytes)
 Verified plugins/zodiacs-developer/plugin.json
 Verified plugins/zodiacs-developer/mcp.json
 Verified plugins/zodiacs-sky/.codex-plugin/plugin.json
 Verified plugins/zodiacs-sky/.mcp.json
 Verified plugins/zodiacs-sky/.claude-plugin/plugin.json
 AI package contracts: manifests, submission cases, versions, routes, canonical links and engine notices verified.
-Verified zodiacs-sky-0.6.3.zip (98085 bytes)
-Verified zodiacs-developer-0.3.27.zip (6569935 bytes)
+Verified zodiacs-sky-0.6.4.zip (98467 bytes)
+Verified zodiacs-developer-0.3.28.zip (6570325 bytes)

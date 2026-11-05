@@ -40,6 +40,7 @@ is filled by the commit that makes its runs.
 | `tools/verify-production.mjs` | every production check of [PRODUCTION-CHECKS.md](PRODUCTION-CHECKS.md), committed before any production run | the site checks |
 | [d16-time-basis.json](d16-time-basis.json), [d16-time-basis-control.json](d16-time-basis-control.json), `tools/compare-time-basis-d16.mjs` | D-16: the deleted module's time basis against `@zodiacs/engine/time`, for main's Chiron, and its control | the record of D-16 |
 | [d16-sitemap/](d16-sitemap/) | D-16: Sitemap Dates' comparison of the merge of main `1e89d772`, made here as CI makes it | the record of D-16 |
+| [d17-sitemap/](d17-sitemap/) | D-17: the same comparison of the merge of main `bff5672f` | the record of D-17 |
 
 Still to come, each by the commit that makes it: the Phase 1 captures and
 production. The local gate's logs are in [validation/](validation/), and the
@@ -98,8 +99,9 @@ on Node 24.21.0, as for 1.1.0-rc.1). Nothing here is recorded `accepted`.
   passes. This commit moved Chart Studio's panel to `chart-studio-v7.html`,
   v6 staying a legacy address, because the panel embeds the engine; D-12
   takes the move back. Main's #881 then made its own 0.3.21, #882 its own
-  0.3.22, and #883, #886, #885 and #888 their own 0.3.23 to 0.3.26, so after
-  the merges (D-13, D-16) this branch's plugin is 0.3.27.
+  0.3.22, #883, #886, #885 and #888 their own 0.3.23 to 0.3.26, and #889 its
+  own 0.3.27, so after the merges (D-13, D-16, D-17) this branch's plugin is
+  0.3.28.
 - **Accuracy refresh** ([accuracy-refresh/](accuracy-refresh/)). Both Swiss
   statistics runs, on 1.1.0-rc.2: every statistic equals 1.1.0-rc.1's, and
   only the engine version and the digest of the per-instant dump differ.
@@ -391,24 +393,42 @@ a free-space check before each, Node 22.22.2 on macOS arm64. Its logs are in
   D-9's recorded arm64 last bits, the wing drift is empty, the three MCP
   drives' rewritten records were restored from git, and the tree was clean at
   the end.
+- **Sixth attempt**, on the merge of main `bff5672f` (`88ecad61`, D-17): 40 of
+  42 steps exit 0. The full suite (8,280 passed, 13 skipped, 3 failed, in 643
+  files) failed the Phase 1 capture test and two tests at their 5-second limit
+  while other applications loaded this Mac: one in
+  `scripts/games-sql-readiness.test.mjs`, and one in
+  `scripts/sitemap-rendered-changes.test.mjs`, whose temporary repository
+  could then not be removed (`ENOTEMPTY`); just after, the two files passed 29
+  of 29 alone in 4.9 seconds. The first-use drive failed only its Firefox
+  launch, its other 44 checks passing. Both builds pass their budgets
+  (`/birth-chart/` 66.0 KB by default and 69.1 KB with production's flags, of
+  71 KB; the engine chunk within its 33,380.4 bytes), the independent
+  references differ from the committed ones only by D-9's recorded arm64 last
+  bits, the wing drift is empty, the three MCP drives' rewritten records were
+  restored from git, and the tree was clean at the end.
 
 ## The private search
 
 [history-check.txt](history-check.txt), counts only, both of the owner's
 pattern sets, over the branch's 19 commits and its tree, before the first
-push. Every matching line the branch adds is birth data main already
-carries, re-emitted by regenerated bundles and their archive copies: the
-bundles' 23 matches each sit in the same 200 characters on either side as on
-main, and of the archives' 83 matching lines, 81 are their base source's
-lines apart from versions and digests and the other 2 hold 4 matches with
-the same 200 characters on either side. The tree's 18 lines more than main's
-are the two new archives' copies of their bundles. Run again over the 22
-commits after the merge of main `1e89d772` (D-16), it found the same: the
-bundles' 23 matches keep their context, of the archives' 133 matching lines
-131 are their base source's apart from versions and digests and the other 2
-hold 4 matches with the same 200 characters on either side, and the tree's 18
-lines more than main's (610 against 592) are again the two new archives'
-copies.
+push. Every matching line the branch adds is birth data main already carries,
+re-emitted by regenerated bundles and their archive copies: the bundles' 23
+matches each sit in the same 200 characters on either side as on main, and of
+the archives' 83 matching lines, 81 are their base source's lines apart from
+versions and digests and the other 2 hold 4 matches with the same 200
+characters on either side. The tree's 18 lines more than main's are the two
+new archives' copies of their bundles. Run again over the 22 commits after the
+merge of main `1e89d772` (D-16), it found the same: the bundles' 23 matches
+keep their context, of the archives' 133 matching lines 131 are their base
+source's apart from versions and digests and the other 2 hold 4 matches with
+the same 200 characters on either side, and the tree's 18 lines more than
+main's (610 against 592) are again the two new archives' copies. Run again
+over the 25 commits after the merge of main `bff5672f` (D-17), it found the
+same once more: of the archives' 156 matching lines 154 are their base
+source's apart from versions and digests and the other 2 hold the same 4
+matches with their context, and the tree's 18 lines more than main's (621
+against 603) are the two new archives' copies.
 
 ## Decisions taken without asking, under the owner's delegation
 
@@ -504,7 +524,7 @@ so does OQ10's Q5.
   that 1.1.0-rc.2 writes (the site's, the compute API's, adapter rc.26's and
   the developer plugin's own tools'); the plugin's README and its 0.3.22
   release note say so (0.3.23's after the merge of #882, 0.3.27's after
-  D-16).
+  D-16 and 0.3.28's after D-17).
 - **D-13** (4 November, the merge of main `f45734dc`). #881 put the hosted
   server on 0.6.1 (the readings panel, the under-18 rule, the narrower
   links) and made a Developer 0.3.21 from it, while this branch had made its
@@ -541,7 +561,8 @@ so does OQ10's Q5.
   the plan takes them again from this pull request's Browser Evidence run
   (C8). Its notes, acted on: the Chart Studio pin's `SOURCE_SHA256` and the
   Chart Inspector note (D-12); the plugin's README still named 0.3.21, so it
-  named 0.3.22 (0.3.23 since #882, 0.3.27 since D-16), and the 0.3.22 archive,
+  named 0.3.22 (0.3.23 since #882, 0.3.27 since D-16, 0.3.28 since D-17), and
+  the 0.3.22 archive,
   never pushed, was packed again before main's 0.3.22 replaced it; and
   `src/islands/chart3d/EclipticView.tsx` called the engine's declination
   function, which also finds every pair's aspects, on each frame of a turning
@@ -584,3 +605,19 @@ so does OQ10's Q5.
   check` (0 errors), the ledger listings (0 and 0) and 575 AI, Chiron, sky
   events, conventions, claims and sitemap tests passed before the gate. The
   Phase 1 captures are taken again from this head's Browser Evidence run.
+- **D-17** (5 November, the merge of main `bff5672f`). Main's #889 (Zodiacs
+  0.6.4, which makes the privacy sentence about links exact) made a Developer
+  0.3.27 of its own ten minutes before this branch's push of its 0.3.27, so
+  this branch's plugin is 0.3.28, 0.3.27's source with this branch's local
+  chart tools, and its release note and README say so; main's 0.3.27 and Sky
+  0.6.4 keep their bytes. The generated server, sky watch and plugin manifests
+  and the flag-off fixture were rebuilt from the merged source, the fixture
+  differing from main's only in the engine's version, in six places; Chart
+  Studio's source fingerprint did not move. #889 dates `/privacy/` 2026-11-05
+  and main's Trophy Hall commit changes only its champions data, so neither
+  touches a page this branch dates: Sitemap Dates' comparison, made here as
+  for D-16 against main `bff5672f`, found all 36 changed pages re-dated and
+  none without a change (`d17-sitemap/`). `npm run ai:check`, `npm run check`
+  (0 errors), the ledger listings (0 and 0), the developer demo's check and
+  594 AI, Chiron, sky events, conventions, claims, sitemap and bundle-rule
+  tests passed before the gate.
