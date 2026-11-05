@@ -59,6 +59,124 @@
           "points": 0
         }
       ]
+    },
+    {
+      "seasonId": "virgo-2026",
+      "seasonName": "Virgo",
+      "year": 2026,
+      "endedAtUtc": 1790121600000,
+      "champion": "aries",
+      "runnerUp": "capricorn",
+      "marginPoints": 0,
+      "finalStandings": [
+        {
+          "sign": "aries",
+          "points": 100
+        },
+        {
+          "sign": "capricorn",
+          "points": 100
+        },
+        {
+          "sign": "taurus",
+          "points": 0
+        },
+        {
+          "sign": "gemini",
+          "points": 0
+        },
+        {
+          "sign": "cancer",
+          "points": 0
+        },
+        {
+          "sign": "leo",
+          "points": 0
+        },
+        {
+          "sign": "virgo",
+          "points": 0
+        },
+        {
+          "sign": "libra",
+          "points": 0
+        },
+        {
+          "sign": "scorpio",
+          "points": 0
+        },
+        {
+          "sign": "sagittarius",
+          "points": 0
+        },
+        {
+          "sign": "aquarius",
+          "points": 0
+        },
+        {
+          "sign": "pisces",
+          "points": 0
+        }
+      ]
+    },
+    {
+      "seasonId": "libra-2026",
+      "seasonName": "Libra",
+      "year": 2026,
+      "endedAtUtc": 1792713600000,
+      "champion": "gemini",
+      "runnerUp": "aries",
+      "marginPoints": 125,
+      "finalStandings": [
+        {
+          "sign": "gemini",
+          "points": 125
+        },
+        {
+          "sign": "aries",
+          "points": 0
+        },
+        {
+          "sign": "taurus",
+          "points": 0
+        },
+        {
+          "sign": "cancer",
+          "points": 0
+        },
+        {
+          "sign": "leo",
+          "points": 0
+        },
+        {
+          "sign": "virgo",
+          "points": 0
+        },
+        {
+          "sign": "libra",
+          "points": 0
+        },
+        {
+          "sign": "scorpio",
+          "points": 0
+        },
+        {
+          "sign": "sagittarius",
+          "points": 0
+        },
+        {
+          "sign": "capricorn",
+          "points": 0
+        },
+        {
+          "sign": "aquarius",
+          "points": 0
+        },
+        {
+          "sign": "pisces",
+          "points": 0
+        }
+      ]
     }
   ]
 }
