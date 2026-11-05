@@ -532,13 +532,17 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
         var sign = null;
         try { sign = localStorage.getItem('zodiacs.my-sign.v1'); } catch (e) { return; }
         if (!sign || !/^[a-z]+$/.test(sign)) return;
-        var tile = document.querySelector('.home-today__grid a[href="/horoscopes/' + sign + '/"]');
+        var path = ['', 'horoscopes', sign, ''].join('/');
+        var tile = null;
+        document.querySelectorAll('.home-today__grid a').forEach(function (link) {
+          if (link.getAttribute('href') === path) tile = link;
+        });
         if (!tile) return;
         tile.classList.add('is-mine');
         var note = tile.querySelector('small');
         if (note) note.textContent = 'Your sign';
         var hero = document.querySelector('.hero__ghost');
-        if (hero) hero.setAttribute('href', '/horoscopes/' + sign + '/');
+        if (hero) hero.setAttribute('href', path);
       })();
     </script>
     <p class="home-today__note">
