@@ -1,0 +1,96 @@
+---
+/**
+ * Your 2027 sky: the calendar year read against one chart (the island), with
+ * the sky everyone shares rendered here at build time from the committed
+ * eclipse, retrograde and ingress tables. English first; the words live in
+ * src/lib/year-sky/copy.ts so another language can add its own route.
+ */
+import Base from '../../layouts/Base.astro';
+import YearSky from '../../islands/YearSky';
+import PlanetGlyph from '../../components/PlanetGlyph';
+import { localizePath, type CatalogLocale } from '../../lib/i18n';
+import { yearSkyWords } from '../../lib/year-sky/copy';
+import { EDITION_PATH, EDITION_YEAR, QUARTERS, quarterOf, yearWindow } from '../../lib/year-sky/edition';
+import { generalSky, SLOW_PLANETS, type IngressWindowRecord } from '../../lib/year-sky/general';
+import type { EclipseRecord } from '../../lib/upcoming';
+import eclipsesData from '../../data/eclipses.json';
+import skyData from '../../data/sky.json';
+import ingressesData from '../../data/ingresses.json';
+import '../../styles/calculator.css';
+import '../../styles/sharing-tools.css';
+import '../../styles/return-visits.css';
+import '../../styles/year-sky.css';
+
+const locale: CatalogLocale = 'en';
+const w = yearSkyWords(locale);
+const year = EDITION_YEAR;
+const { from, to } = yearWindow(year);
+const eclipses = (eclipsesData as { eclipses: EclipseRecord[] }).eclipses;
+const ingresses = (ingressesData as { windows: IngressWindowRecord[] }).windows;
+const sky = generalSky({ eclipses, retrogrades: skyData.retrogrades, ingresses }, locale, year);
+// Only what the island needs: the year's eclipses and the slow planets' signs.
+const yearEclipses = eclipses.filter((e) => Date.parse(e.peak) >= from.getTime() && Date.parse(e.peak) < to.getTime());
+const slowWindows = ingresses.filter((window) => (SLOW_PLANETS as readonly string[]).includes(window.planet)
+  && Date.parse(window.to) >= from.getTime() && Date.parse(window.from) < to.getTime());
+const quarters = QUARTERS.map((quarter) => sky.moments.filter((moment) => quarterOf(moment.at) === quarter));
+const path = localizePath(locale, EDITION_PATH);
+const jsonLd = [{
+  '@type': 'WebApplication',
+  name: w.heroTitle,
+  url: `https://zodiacs.org${path}`,
+  description: w.pageDescription,
+  applicationCategory: 'LifestyleApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+}];
+---
+<Base privateSurface clientUi locale={locale} path={path} title={`${w.pageTitle} | Zodiacs.org`} description={w.pageDescription} jsonLd={jsonLd} glass>
+  <section class="section--tight container ys-page">
+    <header class="tool-hero">
+      <h1 class="display">{w.heroTitle}</h1>
+      <p>{w.heroLede}</p>
+    </header>
+
+    <div id="your-chart" class="ys-anchor">
+      <YearSky client:load locale={locale} year={year} eclipses={yearEclipses} ingresses={slowWindows} retrogrades={sky.retrogrades} general={sky.moments} />
+      <noscript><p>Reading the year for your chart needs JavaScript. The shared sky below works without it.</p></noscript>
+    </div>
+
+    <section id="shared-sky" class="ys-shared" aria-labelledby="shared-sky-title">
+      <h2 id="shared-sky-title" class="display">{w.generalTitle}</h2>
+      <p class="ys-shared__lede">{w.generalLede}</p>
+
+      <div class="ys-quarter">
+        <h3>{w.backgroundTitle}</h3>
+        <ul class="ys-background">
+          {sky.background.map((line) => <li><PlanetGlyph body={line.planet} size={16} class="ys-glyph" /> {line.line}</li>)}
+        </ul>
+      </div>
+
+      {quarters.map((moments, quarter) => (
+        <div class="ys-quarter">
+          <h3>{w.quarterNames[quarter]}</h3>
+          <ul class="ys-moments">
+            {moments.map((moment) => (
+              <li class="ys-moment" data-kind={moment.kind}>
+                <p class="ys-moment__when"><time datetime={moment.at}>{moment.underWay ? w.underWay : w.day(moment.at, year)}</time></p>
+                <h4 class="ys-moment__title"><PlanetGlyph body={moment.body} size={18} class="ys-glyph" /> {moment.title}</h4>
+                <p class="ys-moment__line">{moment.line}</p>
+                <p class="ys-moment__detail">{moment.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      <p class="ys-invite">{w.generalInvite} <a href="#your-chart">{w.generalInviteLink} ↑</a></p>
+    </section>
+
+    <nav class="return-discovery" aria-label={w.moreTitle}>
+      <h2>{w.moreTitle}</h2>
+      <ul>{w.moreLinks.map((link) => (
+        <li><a href={localizePath(locale, link.path)}><span class="return-discovery__name"><span>{link.label}</span></span><span class="return-discovery__arrow" aria-hidden="true">→</span></a></li>
+      ))}</ul>
+    </nav>
+  </section>
+</Base>

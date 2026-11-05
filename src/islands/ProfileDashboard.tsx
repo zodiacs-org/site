@@ -338,6 +338,8 @@ export default function ProfileDashboard({ locale: rawLocale = 'en' }: Props) {
               </ul>
             </EvidenceDisclosure>
           )}
+          {/* The calendar-year edition is English only for now. */}
+          {locale === 'en' && <a class="pfd__more" href="/your-2027-sky/">Read your whole 2027 sky →</a>}
         </div>
       </div>
     </section>

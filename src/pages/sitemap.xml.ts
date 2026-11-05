@@ -562,6 +562,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
   // hosted search_sky_events names. The day of the daily edition it was built with.
   ['/developers/conventions/', '2026-11-04'] as const,
+  // Your 2027 sky, the calendar-year edition read for a saved chart (first published 5 November 2026).
+  ['/your-2027-sky/', '2026-11-05'] as const,
   // The time atlas dataset and the developer index's card for it, last so this date wins.
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
   // The Moon journal, first published, and the moon phase page's line linking to it. The day of the daily
@@ -636,6 +638,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/transits/', priority: 0.85 },
     { loc: '/eclipses/', priority: 0.85 },
     { loc: '/full-moon-calendar/', priority: 0.85 },
+    { loc: '/your-2027-sky/', priority: 0.8 },
     { loc: '/full-moon-calendar/2027/', priority: 0.7 },
     { loc: '/eclipses/2027/', priority: 0.7 },
     { loc: '/mercury-retrograde/2027/', priority: 0.7 },
