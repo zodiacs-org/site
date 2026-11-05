@@ -1,7 +1,7 @@
 /**
  * Share links for two results of the Zodiacs app: a compatibility score and
  * a date's rating. The link's query string carries only what its preview
- * image shows: Sun and Moon signs (the card names the two people by them), the scores
+ * image shows: first names or "Person A/B", Sun and Moon signs, the scores
  * and a verdict key, and for a date the occasion, the day and a place name,
  * and for either the reading's confidence (src/ai-tools/reading-confidence.ts),
  * one of the values that rule gives. It never carries a birth date, a time or
