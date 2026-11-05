@@ -232,6 +232,13 @@
       "capturedSha256": "aae796ad5865238cfe0fc98b30ec4c19bfc183ad7b6ba22f6ba88f3a03cbf1e4",
       "committedSha256": "b8ab701fa021001305e1f1686b3da1f2ada753d838c038da7173288b706e72b5",
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "production/production-control.log",
+      "tool": "node tools/verify-production.mjs --control --local-dist dist, on deployment dpl_5fb9s2dqYGZBsfn6Sz2fGH1V8EUP (main bff5672f), with the pull request head 46bc7db0 standing for the merge commit, whose tree it is, 2026-11-05",
+      "capturedSha256": "d58ae571d2e39f3c4f45af8c2a9863890afd3055ffba6f5f61085b5ff20d3b21",
+      "committedSha256": "d58ae571d2e39f3c4f45af8c2a9863890afd3055ffba6f5f61085b5ff20d3b21",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
     }
   ]
 }
