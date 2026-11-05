@@ -20,7 +20,8 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * docs/platform/zodiacs-ai/evidence/0.6.0/; every one of its thirteen entries must come back byte for byte.
  * 0.6.1 changes the reported version and gives the five coverage tools the inline readings panel; the thirteen
  * entries, their _meta included, still come back byte for byte. 0.6.2 changes only the reported version and the
- * listing text in the package, and 0.6.3 only the reported version and the listing's category.
+ * listing text in the package, and 0.6.3 only the reported version and the listing's category. 0.6.4 changes the
+ * reported version and the one privacy sentence on what links carry, which no tool definition holds.
  */
 const root = new URL('../../', import.meta.url);
 const LIVE = JSON.parse(readFileSync(new URL('docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', root), 'utf8'));
@@ -78,11 +79,11 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     }
   });
 
-  it('reports 0.6.3 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
+  it('reports 0.6.4 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.3' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.4' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.3');
+    expect(capabilities.data.version).toBe('0.6.4');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });
@@ -105,7 +106,7 @@ describe('get_capabilities names every tool offered', () => {
     expect(result.data.coverage.aspects).toContain('get_personal_transits');
     expect(result.data.coverage.tools.split(', ')).toHaveLength(19);
     expect(result.data.privacy).toContain('https://zodiacs.org/privacy/');
-    expect(result.data.privacy).toContain('Zodiacs never stores or logs birth details. Links never carry a birth year, time, place or names; a birthday link carries only the month and day.');
+    expect(result.data.privacy).toContain('Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day.');
     expect(result.data.privacy).toContain('Ask before using someone else\'s birth details.');
     expect(result.data.privacy).not.toMatch(/never share|or share/u);
     expect(text).toContain('Which tool: today, tomorrow or this week\'s general Sun-sign horoscope, get_horoscope;');
