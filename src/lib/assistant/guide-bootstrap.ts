@@ -6,6 +6,7 @@
 import './guide-bootstrap.css';
 import {
   GUIDE_OPEN_PENDING_KEY,
+  GUIDE_OPEN_PROMPT_KEY,
   GUIDE_PRIVATE_SESSION_KEY,
 } from './guide-loader.mjs';
 
@@ -59,12 +60,14 @@ function safeSessionGet(key: string): string | null {
  * private drawer mounts. The reload is consumed by the tiny inline loader,
  * which reopens Guide after Base has skipped the provider for this tab.
  */
-function beginPrivateTransition(): boolean {
+function beginPrivateTransition(from?: HTMLElement | null): boolean {
   if (!document.documentElement.hasAttribute('data-guide-analytics-boundary')) return false;
   if (safeSessionGet(GUIDE_PRIVATE_SESSION_KEY) === '1') return false;
   try {
     sessionStorage.setItem(GUIDE_PRIVATE_SESSION_KEY, '1');
     sessionStorage.setItem(GUIDE_OPEN_PENDING_KEY, '1');
+    const prompt = from?.dataset?.assistantPrompt;
+    if (prompt) sessionStorage.setItem(GUIDE_OPEN_PROMPT_KEY, prompt);
     location.reload();
   } catch {
     location.assign('/ask/#guide');
@@ -186,7 +189,7 @@ export async function openAssistant(
   requestedLocale?: string,
   from?: HTMLElement | null,
 ): Promise<void> {
-  if (beginPrivateTransition()) return;
+  if (beginPrivateTransition(from)) return;
   await bootstrapGuide(requestedLocale);
   const restoreTarget = from?.isConnected ? from : launcher;
   const drawer = await loadDrawer();

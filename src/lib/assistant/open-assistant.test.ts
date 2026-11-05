@@ -777,7 +777,15 @@ describe('assistant profile-access privacy fence', () => {
     expect(loader).toContain("export const GUIDE_PRIVATE_SESSION_KEY = 'zodiacs.guide.private-session.v1';");
     expect(loader).toContain("sessionStorage.setItem(privateSessionKey, '1');");
     expect(loader).toContain('location.reload();');
-    expect(shell).toContain('if (beginPrivateTransition()) return;');
+    expect(shell).toContain('if (beginPrivateTransition(from)) return;');
+    // A quick-prompt chip's question survives the private reload, and is
+    // reused only when a chip with exactly that question is on the new page.
+    expect(loader).toContain("export const GUIDE_OPEN_PROMPT_KEY = 'zodiacs.guide.open-prompt.v1';");
+    expect(loader).toContain('if (beginPrivateTransition(target)) return;');
+    expect(loader).toContain('if (prompt) sessionStorage.setItem(openPromptKey, prompt);');
+    expect(loader).toContain("document.querySelectorAll('[data-assistant-open][data-assistant-prompt]')");
+    expect(loader).toContain('return mod.openAssistant(defaultLocale, pendingOpener());');
+    expect(shell).toContain('if (prompt) sessionStorage.setItem(GUIDE_OPEN_PROMPT_KEY, prompt);');
     expect(guide).toContain('privateSurface');
     for (const path of [
       'public/archive/index.html',

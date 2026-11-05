@@ -9,6 +9,12 @@ export const GUIDE_LOADER_MARKER = 'zodiacs-guide-loader-v1';
 export const GUIDE_SHELL_URL = '/assets/assistant-ui.js?v=icon-guide-5';
 export const GUIDE_PRIVATE_SESSION_KEY = 'zodiacs.guide.private-session.v1';
 export const GUIDE_OPEN_PENDING_KEY = 'zodiacs.guide.open-pending.v1';
+/**
+ * The site-written question on a quick-prompt chip, kept across the private
+ * reload so the reopened drawer can still offer it as a draft. It is only used
+ * when a chip with exactly that question exists on the reloaded page.
+ */
+export const GUIDE_OPEN_PROMPT_KEY = 'zodiacs.guide.open-prompt.v1';
 
 export function guideLoaderSource(locale = 'en') {
   const serializedLocale = JSON.stringify(String(locale));
@@ -19,6 +25,7 @@ export function guideLoaderSource(locale = 'en') {
     var defaultLocale = ${serializedLocale};
     var privateSessionKey = '${GUIDE_PRIVATE_SESSION_KEY}';
     var openPendingKey = '${GUIDE_OPEN_PENDING_KEY}';
+    var openPromptKey = '${GUIDE_OPEN_PROMPT_KEY}';
     function safeSessionGet(key) {
       try { return sessionStorage.getItem(key); } catch (error) { return null; }
     }
@@ -33,12 +40,24 @@ export function guideLoaderSource(locale = 'en') {
       }
       return false;
     }
-    function beginPrivateTransition() {
+    function pendingOpener() {
+      var prompt = safeSessionGet(openPromptKey);
+      try { sessionStorage.removeItem(openPromptKey); } catch (error) {}
+      if (!prompt) return null;
+      var openers = document.querySelectorAll('[data-assistant-open][data-assistant-prompt]');
+      for (var i = 0; i < openers.length; i += 1) {
+        if (openers[i].getAttribute('data-assistant-prompt') === prompt) return openers[i];
+      }
+      return null;
+    }
+    function beginPrivateTransition(from) {
       if (!document.documentElement.hasAttribute('data-guide-analytics-boundary')) return false;
       if (safeSessionGet(privateSessionKey) === '1') return false;
       try {
         sessionStorage.setItem(privateSessionKey, '1');
         sessionStorage.setItem(openPendingKey, '1');
+        var prompt = from && from.getAttribute('data-assistant-prompt');
+        if (prompt) sessionStorage.setItem(openPromptKey, prompt);
         location.reload();
       } catch (error) {
         location.assign('/ask/#guide');
@@ -63,7 +82,7 @@ export function guideLoaderSource(locale = 'en') {
     }
     function mountGuide() {
       loadGuide().then(function (mod) {
-        if (consumePendingOpen()) return mod.openAssistant(defaultLocale, null);
+        if (consumePendingOpen()) return mod.openAssistant(defaultLocale, pendingOpener());
         return mod.bootstrapGuide(defaultLocale).then(stopIntentListener);
       }).catch(function () {});
     }
@@ -84,7 +103,7 @@ export function guideLoaderSource(locale = 'en') {
       event.preventDefault();
       event.stopImmediatePropagation();
       stopScheduledMount();
-      if (beginPrivateTransition()) return;
+      if (beginPrivateTransition(target)) return;
       loadGuide().then(function (mod) {
         return mod.openAssistant(
           target.getAttribute('data-assistant-locale') || defaultLocale,

@@ -1166,6 +1166,7 @@
     var defaultLocale = "en";
     var privateSessionKey = 'zodiacs.guide.private-session.v1';
     var openPendingKey = 'zodiacs.guide.open-pending.v1';
+    var openPromptKey = 'zodiacs.guide.open-prompt.v1';
     function safeSessionGet(key) {
       try { return sessionStorage.getItem(key); } catch (error) { return null; }
     }
@@ -1180,12 +1181,24 @@
       }
       return false;
     }
-    function beginPrivateTransition() {
+    function pendingOpener() {
+      var prompt = safeSessionGet(openPromptKey);
+      try { sessionStorage.removeItem(openPromptKey); } catch (error) {}
+      if (!prompt) return null;
+      var openers = document.querySelectorAll('[data-assistant-open][data-assistant-prompt]');
+      for (var i = 0; i < openers.length; i += 1) {
+        if (openers[i].getAttribute('data-assistant-prompt') === prompt) return openers[i];
+      }
+      return null;
+    }
+    function beginPrivateTransition(from) {
       if (!document.documentElement.hasAttribute('data-guide-analytics-boundary')) return false;
       if (safeSessionGet(privateSessionKey) === '1') return false;
       try {
         sessionStorage.setItem(privateSessionKey, '1');
         sessionStorage.setItem(openPendingKey, '1');
+        var prompt = from && from.getAttribute('data-assistant-prompt');
+        if (prompt) sessionStorage.setItem(openPromptKey, prompt);
         location.reload();
       } catch (error) {
         location.assign('/ask/#guide');
@@ -1210,7 +1223,7 @@
     }
     function mountGuide() {
       loadGuide().then(function (mod) {
-        if (consumePendingOpen()) return mod.openAssistant(defaultLocale, null);
+        if (consumePendingOpen()) return mod.openAssistant(defaultLocale, pendingOpener());
         return mod.bootstrapGuide(defaultLocale).then(stopIntentListener);
       }).catch(function () {});
     }
@@ -1231,7 +1244,7 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       stopScheduledMount();
-      if (beginPrivateTransition()) return;
+      if (beginPrivateTransition(target)) return;
       loadGuide().then(function (mod) {
         return mod.openAssistant(
           target.getAttribute('data-assistant-locale') || defaultLocale,
