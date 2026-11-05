@@ -165,3 +165,39 @@ export function waitLinks(locale: Locale): { daily: string; chart: string; priva
     default: return { daily: '/horoscopes/', chart: '/birth-chart/', privacy: '/privacy/' };
   }
 }
+
+const MY_SIGN_PHRASE: Record<Locale, { pattern: RegExp; replace: (name: string) => string }> = {
+  en: { pattern: /for my sign/u, replace: (name) => `for ${name}` },
+  es: { pattern: /para mi signo/u, replace: (name) => `para ${name}` },
+  pt: { pattern: /para o meu signo/u, replace: (name) => `para ${name}` },
+  fr: { pattern: /pour mon signe/u, replace: (name) => `pour le signe ${name}` },
+  it: { pattern: /per il mio segno/u, replace: (name) => `per il segno ${name}` },
+};
+
+/** True when a suggested question asks about "my sign". */
+export function asksAboutMySign(locale: Locale, prompt: string): boolean {
+  return (MY_SIGN_PHRASE[locale] ?? MY_SIGN_PHRASE.en).pattern.test(prompt);
+}
+
+/** "What does this mean for my sign?" becomes "What does this mean for Leo?". */
+export function withMySign(locale: Locale, prompt: string, sign: string | null): string {
+  if (!sign) return prompt;
+  const phrase = MY_SIGN_PHRASE[locale] ?? MY_SIGN_PHRASE.en;
+  return prompt.replace(phrase.pattern, phrase.replace(signName(sign, locale)));
+}
+
+export const MY_SIGN_COPY: Record<Locale, {
+  pick: string;
+  yours: (name: string) => string;
+  change: string;
+  helpful: string;
+  up: string;
+  down: string;
+  thanks: string;
+}> = {
+  en: { pick: 'Which sign? Guide will remember it on this device.', yours: (name) => `Your sign: ${name}`, change: 'Change', helpful: 'Was this helpful?', up: 'Helpful', down: 'Not helpful', thanks: 'Thanks for telling us.' },
+  es: { pick: '¿Qué signo? Guide lo recordará en este dispositivo.', yours: (name) => `Tu signo: ${name}`, change: 'Cambiar', helpful: '¿Te ayudó?', up: 'Útil', down: 'No es útil', thanks: 'Gracias por decírnoslo.' },
+  pt: { pick: 'Qual signo? O Guide vai lembrar neste dispositivo.', yours: (name) => `Seu signo: ${name}`, change: 'Mudar', helpful: 'Isso ajudou?', up: 'Útil', down: 'Não ajudou', thanks: 'Obrigado por nos dizer.' },
+  fr: { pick: 'Quel signe ? Guide s’en souviendra sur cet appareil.', yours: (name) => `Ton signe : ${name}`, change: 'Changer', helpful: 'Cette réponse t’a aidé ?', up: 'Utile', down: 'Pas utile', thanks: 'Merci de nous l’avoir dit.' },
+  it: { pick: 'Quale segno? Guide lo ricorderà su questo dispositivo.', yours: (name) => `Il tuo segno: ${name}`, change: 'Cambia', helpful: 'Ti è stato utile?', up: 'Utile', down: 'Non utile', thanks: 'Grazie per avercelo detto.' },
+};

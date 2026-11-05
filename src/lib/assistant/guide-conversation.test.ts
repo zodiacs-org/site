@@ -69,3 +69,22 @@ describe('Guide conversation copy', () => {
     expect(waitLinks('es').daily).toBe('/es/horoscopes/');
   });
 });
+
+describe('remembered sign in Guide questions', () => {
+  it('names the sign instead of "my sign", and leaves other questions alone', async () => {
+    const { withMySign, asksAboutMySign, MY_SIGN_COPY } = await import('./guide-conversation');
+    expect(withMySign('en', 'What does this mean for my sign?', 'leo')).toBe('What does this mean for Leo?');
+    expect(withMySign('en', 'What does this mean for my sign?', null)).toBe('What does this mean for my sign?');
+    expect(withMySign('en', 'Should I read my Sun or my rising sign?', 'leo')).toBe('Should I read my Sun or my rising sign?');
+    for (const locale of LOCALES) {
+      const follow = followUpsFor(locale, 'text').find((prompt) => asksAboutMySign(locale, prompt));
+      expect(follow, locale).toBeTruthy();
+      expect(withMySign(locale, follow!, 'virgo'), locale).not.toBe(follow);
+      expect(asksAboutMySign(locale, pageStarters(locale, 'horoscopes')[0]), locale).toBe(true);
+      for (const value of Object.values(MY_SIGN_COPY[locale])) {
+        const text = typeof value === 'function' ? value('Leo') : value;
+        expect(text, locale).not.toMatch(DASHES);
+      }
+    }
+  });
+});

@@ -14,9 +14,12 @@ import {
   ACCOUNT_V2_STORAGE_PREFIX,
   isAccountV2Id,
 } from '../account-v2/storage-identity';
-import { degreeInSign, signForLongitude } from '../signs';
+import { degreeInSign, signForLongitude, signName } from '../signs';
 import type { BodyPosition } from '../engine/types';
-import { followUpsFor, pageStarters, skyGreeting, waitLinks } from './guide-conversation';
+import {
+  MY_SIGN_COPY, asksAboutMySign, followUpsFor, pageStarters, skyGreeting, waitLinks, withMySign,
+} from './guide-conversation';
+import { SIGN_SLUGS, readMySign, rememberMySign, type SignSlug } from '../my-sign';
 
 export type AssistantLocale = Locale;
 
@@ -1278,6 +1281,18 @@ function renderTranscript(): void {
     greeting.append(greetingText);
     welcome.append(greeting);
     void fillSkyGreeting(greetingText);
+    const mine = readMySign();
+    if (mine) {
+      const line = document.createElement('p');
+      line.className = 'zassistant__mysign';
+      line.append(document.createTextNode(`${MY_SIGN_COPY[locale].yours(signName(mine, locale))} · `));
+      const change = document.createElement('button');
+      change.type = 'button';
+      change.textContent = MY_SIGN_COPY[locale].change;
+      change.addEventListener('click', () => showSignPicker(null));
+      line.append(change);
+      welcome.append(line);
+    }
     const starters = document.createElement('div');
     starters.className = 'zassistant__starters';
     for (const prompt of pageStarters(locale, approvedPageId(location.pathname))) {
@@ -1316,9 +1331,75 @@ function questionChip(prompt: string, className: string): HTMLButtonElement {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = className;
-  button.textContent = prompt;
-  button.addEventListener('click', () => void askSuggested(prompt));
+  button.dataset.prompt = prompt;
+  button.textContent = withMySign(locale, prompt, readMySign());
+  button.addEventListener('click', () => {
+    const mine = readMySign();
+    // A "my sign" question with no sign remembered asks which sign first.
+    if (!mine && asksAboutMySign(locale, prompt)) { showSignPicker(prompt); return; }
+    void askSuggested(withMySign(locale, prompt, mine));
+  });
   return button;
+}
+
+/** Twelve sign buttons. Picking one remembers it on this device only. */
+function showSignPicker(pendingPrompt: string | null): void {
+  transcript?.querySelectorAll('.zassistant__signpick').forEach((node) => node.remove());
+  if (!transcript) return;
+  const picker = document.createElement('div');
+  picker.className = 'zassistant__signpick';
+  const text = document.createElement('p');
+  text.textContent = MY_SIGN_COPY[locale].pick;
+  const grid = document.createElement('div');
+  grid.className = 'zassistant__signpick-grid';
+  for (const slug of SIGN_SLUGS) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = signName(slug, locale);
+    button.addEventListener('click', () => chooseMySign(slug, pendingPrompt, picker));
+    grid.append(button);
+  }
+  picker.append(text, grid);
+  transcript.append(picker);
+  scrollTranscript();
+  (grid.firstElementChild as HTMLElement | null)?.focus({ preventScroll: true });
+}
+
+function chooseMySign(slug: SignSlug, pendingPrompt: string | null, picker: HTMLElement): void {
+  rememberMySign(slug);
+  picker.remove();
+  if (getSession().messages.length === 0) renderTranscript();
+  else {
+    transcript?.querySelectorAll<HTMLElement>('[data-prompt]').forEach((chip) => {
+      chip.textContent = withMySign(locale, chip.dataset.prompt ?? '', slug);
+    });
+  }
+  if (pendingPrompt) void askSuggested(withMySign(locale, pendingPrompt, slug));
+  else textarea?.focus({ preventScroll: true });
+}
+
+/** Thumbs up or down under a fresh answer. Only the vote is sent. */
+function appendFeedback(article: HTMLElement): void {
+  const copy = MY_SIGN_COPY[locale];
+  const row = document.createElement('div');
+  row.className = 'zassistant__feedback';
+  const label = document.createElement('span');
+  label.textContent = copy.helpful;
+  row.append(label);
+  for (const [vote, symbol, name] of [['up', '👍', copy.up], ['down', '👎', copy.down]] as const) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = symbol;
+    button.setAttribute('aria-label', name);
+    button.title = name;
+    button.addEventListener('click', () => {
+      void fetch(`/v1/guide/feedback/${vote}`, { method: 'POST', keepalive: true, credentials: 'same-origin' })
+        .catch(() => {});
+      row.replaceChildren(document.createTextNode(copy.thanks));
+    }, { once: true });
+    row.append(button);
+  }
+  article.append(row);
 }
 
 async function askSuggested(prompt: string): Promise<void> {
@@ -1933,6 +2014,7 @@ async function runTurn(pending: PendingTurn): Promise<void> {
     pending.assistantArticle.classList.remove('is-waiting');
     renderAssistantText(pending.assistantBody, completed.message.content);
     appendSourcesRow(pending.assistantBody, completed.message.content);
+    appendFeedback(pending.assistantArticle);
     showFollowUps(completed.message.content);
     pending.assistantArticle.removeAttribute('aria-busy');
     setStatus(currentCopy().complete);

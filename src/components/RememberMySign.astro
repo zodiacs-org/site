@@ -1,0 +1,65 @@
+---
+/**
+ * "Make Leo my sign": remembers the visitor's Sun sign on this device only
+ * (localStorage `zodiacs.my-sign.v1`, see src/lib/my-sign.ts). The homepage
+ * then highlights that sign and Guide uses its name. The line keeps its
+ * height before and after the script runs, so nothing moves.
+ */
+interface Props {
+  sign: string;
+  name: string;
+}
+
+const { sign, name } = Astro.props;
+---
+<p class="mysign" data-mysign={sign} data-mysign-name={name} style="visibility:hidden">
+  <button type="button" class="mysign__set">Make {name} my sign</button>
+  <span class="mysign__is">{name} is your sign. <button type="button" class="mysign__forget">Forget</button></span>
+</p>
+<script is:inline>
+  (function () {
+    var KEY = 'zodiacs.my-sign.v1';
+    var line = document.currentScript && document.currentScript.previousElementSibling;
+    if (!line || !line.hasAttribute('data-mysign')) return;
+    var sign = line.getAttribute('data-mysign');
+    function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+    function write(value) {
+      try { if (value) localStorage.setItem(KEY, value); else localStorage.removeItem(KEY); } catch (e) { return false; }
+      try { window.dispatchEvent(new CustomEvent('zodiacs:my-sign', { detail: value })); } catch (e) {}
+      return true;
+    }
+    function paint() { line.toggleAttribute('data-mine', read() === sign); }
+    try { localStorage.getItem(KEY); } catch (e) { return; }
+    paint();
+    line.style.visibility = '';
+    line.querySelector('.mysign__set').addEventListener('click', function () { if (write(sign)) paint(); });
+    line.querySelector('.mysign__forget').addEventListener('click', function () { if (write(null)) paint(); });
+  })();
+</script>
+
+<style>
+  .mysign {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    margin: var(--space-3, 12px) 0 0;
+    font-size: var(--text-sm);
+    color: var(--muted);
+  }
+  .mysign button {
+    min-height: 40px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--text-2);
+    font: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--hair-2);
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .mysign button:hover { color: var(--text); }
+  .mysign__is { display: none; }
+  .mysign[data-mine] .mysign__set { display: none; }
+  .mysign[data-mine] .mysign__is { display: inline; }
+</style>

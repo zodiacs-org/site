@@ -29,6 +29,34 @@ let opener: HTMLElement | null = null;
 let entries: SearchEntry[] | null = null;
 let results: SearchEntry[] = [];
 let active = -1;
+let askButton: HTMLButtonElement | null = null;
+
+const QUESTION_START = /^(?:what|whats|what's|how|why|when|where|which|who|is|are|am|does|do|did|can|could|should|will|would|tell|explain)\b/i;
+
+/** A search that reads like a question, or finds nothing, is offered to Guide. */
+export function offerGuide(query: string, resultCount: number): boolean {
+  const trimmed = query.trim();
+  if (trimmed.length < 3) return false;
+  return resultCount === 0 || trimmed.endsWith('?') || (QUESTION_START.test(trimmed) && trimmed.split(/\s+/).length >= 3);
+}
+
+/**
+ * Hands the visitor's own words to Guide as an editable draft, through the
+ * same opener the rest of the site uses. Nothing is sent until they send it.
+ */
+function askGuide(query: string) {
+  const question = query.trim().slice(0, 280);
+  if (!question) return;
+  track('search_ask_guide');
+  close();
+  const opener = document.createElement('a');
+  opener.href = '/ask/';
+  opener.hidden = true;
+  opener.setAttribute('data-assistant-open', '');
+  opener.setAttribute('data-assistant-prompt', question);
+  document.body.appendChild(opener);
+  opener.click();
+}
 
 const track = (name: string, props: Record<string, string> = {}) => {
   (window as unknown as {
@@ -93,6 +121,10 @@ function render(query: string) {
       ? `Nothing matches “${trimmed}”.`
       : `${results.length} result${results.length === 1 ? '' : 's'}`;
   status.hidden = results.length > 0 && trimmed.length >= 2;
+  if (askButton) {
+    askButton.hidden = !offerGuide(query, results.length);
+    askButton.textContent = `Ask Guide: “${trimmed.slice(0, 80)}${trimmed.length > 80 ? '…' : ''}”`;
+  }
   input.setAttribute('aria-expanded', String(results.length > 0));
   input.setAttribute('aria-activedescendant', active >= 0 ? `zsearch-opt-${active}` : '');
 }
@@ -152,9 +184,10 @@ function build() {
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(active - 1); }
     else if (e.key === 'Enter' && active >= 0 && results[active]) { e.preventDefault(); go(results[active]); }
+    else if (e.key === 'Enter' && !results.length && askButton && !askButton.hidden) { e.preventDefault(); askGuide(input!.value); }
     else if (e.key === 'Tab') {
       e.preventDefault();
-      closeButton?.focus();
+      (askButton && !askButton.hidden ? askButton : closeButton)?.focus();
     }
   });
 
@@ -192,7 +225,16 @@ function build() {
   foot.textContent = window.matchMedia('(pointer: coarse)').matches ? 'Search tools, signs or astrology terms' : '↑↓ move · ↵ open · esc close';
   if (window.matchMedia('(pointer: coarse)').matches) esc.hidden = true;
 
-  panel.append(head, list, status, foot);
+  askButton = document.createElement('button');
+  askButton.type = 'button';
+  askButton.className = 'zsearch__ask';
+  askButton.hidden = true;
+  askButton.addEventListener('click', () => askGuide(input?.value ?? ''));
+  askButton.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') { e.preventDefault(); closeButton?.focus(); }
+  });
+
+  panel.append(head, list, status, askButton, foot);
   root.appendChild(panel);
   document.body.appendChild(root);
 

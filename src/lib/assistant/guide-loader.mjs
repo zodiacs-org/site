@@ -10,9 +10,10 @@ export const GUIDE_SHELL_URL = '/assets/assistant-ui.js?v=icon-guide-5';
 export const GUIDE_PRIVATE_SESSION_KEY = 'zodiacs.guide.private-session.v1';
 export const GUIDE_OPEN_PENDING_KEY = 'zodiacs.guide.open-pending.v1';
 /**
- * The site-written question on a quick-prompt chip, kept across the private
- * reload so the reopened drawer can still offer it as a draft. It is only used
- * when a chip with exactly that question exists on the reloaded page.
+ * The question an opener carried (a quick-prompt chip's site-written
+ * question, or what the visitor typed into site search), kept in this tab's
+ * sessionStorage across the private reload so the reopened drawer can still
+ * offer it as an editable draft. Nothing is sent until the visitor sends it.
  */
 export const GUIDE_OPEN_PROMPT_KEY = 'zodiacs.guide.open-prompt.v1';
 
@@ -48,7 +49,11 @@ export function guideLoaderSource(locale = 'en') {
       for (var i = 0; i < openers.length; i += 1) {
         if (openers[i].getAttribute('data-assistant-prompt') === prompt) return openers[i];
       }
-      return null;
+      var holder = document.createElement('span');
+      holder.hidden = true;
+      holder.setAttribute('data-assistant-prompt', prompt.slice(0, 280));
+      document.body.appendChild(holder);
+      return holder;
     }
     function beginPrivateTransition(from) {
       if (!document.documentElement.hasAttribute('data-guide-analytics-boundary')) return false;

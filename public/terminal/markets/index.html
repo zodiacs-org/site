@@ -539,7 +539,11 @@
       for (var i = 0; i < openers.length; i += 1) {
         if (openers[i].getAttribute('data-assistant-prompt') === prompt) return openers[i];
       }
-      return null;
+      var holder = document.createElement('span');
+      holder.hidden = true;
+      holder.setAttribute('data-assistant-prompt', prompt.slice(0, 280));
+      document.body.appendChild(holder);
+      return holder;
     }
     function beginPrivateTransition(from) {
       if (!document.documentElement.hasAttribute('data-guide-analytics-boundary')) return false;
