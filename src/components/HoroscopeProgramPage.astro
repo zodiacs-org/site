@@ -6,8 +6,6 @@ import AskGuideLine from './AskGuideLine.astro';
 import GuideQuickPrompts from './GuideQuickPrompts.astro';
 import EmailCapture from './EmailCapture.astro';
 import ShareRow from './ShareRow.astro';
-import RememberMySign from '../islands/RememberMySign';
-import '../styles/my-sign.css';
 import SignIcon from './SignIcon.astro';
 import UpcomingEventLinks from './events/UpcomingEventLinks.astro';
 import EditionText from './EditionText.astro';
@@ -571,10 +569,6 @@ const ctaLede = edgeMoon && moonHouse
           label="Send this reading"
           variant="pills"
         />
-
-        <!-- With the reading's own actions, not in the hero or the controls: those are laid out around their
-             contents, so a line arriving there as the page streams in would move what is already drawn. -->
-        <RememberMySign client:idle sign={sign.slug} name={sign.name} />
 
         <AskGuideLine lead="Questions about this reading?" />
         <GuideQuickPrompts prompts={QUICK_PROMPTS[surface]} />

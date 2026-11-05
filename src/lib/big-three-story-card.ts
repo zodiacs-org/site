@@ -11,6 +11,7 @@
  * the front when the chart settles it (ring-front.ts).
  */
 import type { CatalogLocale as Locale } from './i18n';
+import { storyCardText } from './story-card-copy';
 import { t } from './i18n';
 import { signBySlug } from './signs';
 import { shareCardText } from './share-card-copy';
@@ -113,7 +114,7 @@ async function drawBigThreeStory(
   ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = STORY_INK_2;
   ctx.font = `italic 400 44px ${STORY_SERIF}`;
-  ctx.fillText(shareCardText(locale, 'storyTitle'), STORY_W / 2, 330);
+  ctx.fillText(storyCardText(locale, 'storyTitle'), STORY_W / 2, 330);
 
   const discSize = 236;
   const rowHeight = 380;

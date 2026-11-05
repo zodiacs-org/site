@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { storyCardText } from '../lib/story-card-copy';
 import type { Chart } from '../lib/engine/types';
 import { t, type CatalogLocale as Locale } from '../lib/i18n';
 import { encodeSharedPositionsLink, type PositionsShareInput } from '../lib/share-positions';
@@ -428,14 +429,14 @@ export default function ChartShareDialog({
           <section class="calc-share-dialog__story" aria-labelledby="chart-share-story-title" data-share-story={story.state}>
             <div class="calc-share-dialog__story-preview">
               {story.url
-                ? <img src={story.url} width={90} height={160} alt={shareCardText(locale, 'storyTitle')} data-share-story-preview />
+                ? <img src={story.url} width={90} height={160} alt={storyCardText(locale, 'storyTitle')} data-share-story-preview />
                 : <span class="calc-share-dialog__story-blank" aria-hidden="true" />}
             </div>
             <div class="calc-share-dialog__story-copy">
-              <h3 id="chart-share-story-title">{shareCardText(locale, 'storyAction')}</h3>
+              <h3 id="chart-share-story-title">{storyCardText(locale, 'storyAction')}</h3>
               <p class="calc-share-dialog__note">
-                {shareCardText(locale, 'storyNote')}
-                {!chart.angles && <> {shareCardText(locale, 'risingNeedsTime')}.</>}
+                {storyCardText(locale, 'storyNote')}
+                {!chart.angles && <> {storyCardText(locale, 'risingNeedsTime')}.</>}
               </p>
               <div class="calc-share-dialog__story-actions">
                 {!story.card ? (
@@ -446,7 +447,7 @@ export default function ChartShareDialog({
                     disabled={story.state === 'preparing'}
                     data-share-story-make
                   >
-                    <span>{story.state === 'preparing' ? shareText(locale, 'preparingImage') : shareCardText(locale, 'storyAction')}</span><span class="orb">+</span>
+                    <span>{story.state === 'preparing' ? shareText(locale, 'preparingImage') : storyCardText(locale, 'storyAction')}</span><span class="orb">+</span>
                   </button>
                 ) : (
                   <>
@@ -458,7 +459,7 @@ export default function ChartShareDialog({
                         disabled={story.state === 'busy'}
                         data-share-story-share
                       >
-                        <span>{shareCardText(locale, 'storyShare')}</span><span class="orb">↗</span>
+                        <span>{storyCardText(locale, 'storyShare')}</span><span class="orb">↗</span>
                       </button>
                     )}
                     <button
@@ -467,7 +468,7 @@ export default function ChartShareDialog({
                       onClick={downloadStory}
                       data-share-story-download
                     >
-                      <span>{shareCardText(locale, 'storyDownload')}</span><span class="orb">{story.state === 'saved' ? '✓' : '↓'}</span>
+                      <span>{storyCardText(locale, 'storyDownload')}</span><span class="orb">{story.state === 'saved' ? '✓' : '↓'}</span>
                     </button>
                   </>
                 )}

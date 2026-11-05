@@ -15,8 +15,7 @@ import SeasonStory from '../../components/seasons/SeasonStory.astro';
 import { SIGNS, signBySlug } from '../../lib/signs';
 import { seasonLengthDays } from '../../lib/seasons/clock';
 import { seasonWindowsFor, signSeasonFocus } from '../../lib/seasons/windows';
-import { SEASON_READING_CONFIDENCE, seasonAsk, seasonCopy, seasonUi } from '../../lib/seasons/copy';
-import { readingConfidenceText } from '../../ai-tools/reading-confidence';
+import { SEASON_READING_CONFIDENCE, readingConfidenceText, seasonAsk, seasonCopy, seasonUi } from '../../lib/seasons/copy';
 
 export function getStaticPaths() {
   return SIGNS.map((sign) => ({ params: { sign: sign.slug } }));

@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
+import { STORY_CARD_COPY } from './story-card-copy';
 import { describe, expect, it } from 'vitest';
 import { BIG_THREE_STORY_FILENAME, seasonStoryContent, seasonStoryFilename, wrapStoryText } from './story-card';
 import { bigThreeStoryRows } from './big-three-story-card';
-import { SHARE_CARD_COPY } from './share-card-copy';
 import { SIGNS } from './signs';
 
 const DASHES = /[‒–—―]/u;
@@ -104,9 +104,9 @@ describe('big three story rows', () => {
   });
 
   it('carries no dashes in the story copy, in any locale', () => {
-    for (const [locale, copy] of Object.entries(SHARE_CARD_COPY)) {
-      for (const key of ['storyTitle', 'storyAction', 'storyShare', 'storyDownload', 'storyNote', 'risingNeedsTime'] as const) {
-        expect(copy[key], `${locale} ${key}`).not.toMatch(DASHES);
+    for (const [locale, copy] of Object.entries(STORY_CARD_COPY)) {
+      for (const [key, text] of Object.entries(copy)) {
+        expect(text, `${locale} ${key}`).not.toMatch(DASHES);
       }
     }
   });

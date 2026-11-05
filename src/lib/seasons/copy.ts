@@ -4,7 +4,10 @@
  * pages read through these functions.
  */
 import { SIGNS } from '../signs';
-import { readingConfidence } from '../../ai-tools/reading-confidence';
+import { readingConfidence, readingConfidenceText } from '../../ai-tools/reading-confidence';
+
+/** Re-exported so the season pages print the label without importing src/ai-tools/ themselves. */
+export { readingConfidenceText };
 import {
   SEASON_COPY_EN,
   SEASON_HOUSE_ORDINALS_EN,

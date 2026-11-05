@@ -85,7 +85,7 @@ export const SEASON_HOUSE_ORDINALS_EN = [
 
 export const SEASON_UI_EN: SeasonUi = {
   hubTitle: 'Sign seasons',
-  hubLede: 'The Sun spends about a month in each sign. Each season has its own pace, and each asks something different of every sign. Here is when each one starts and ends, to the minute.',
+  hubLede: 'The Sun spends about a month in each sign. Each season has its own pace, and each asks something different of every sign. Here is when each one starts and ends.',
   hubNow: 'Now',
   hubNext: 'Next',
   kicker: (sign) => `The Sun in ${sign}`,
