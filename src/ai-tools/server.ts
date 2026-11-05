@@ -1,10 +1,11 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, type AiToolName } from './contracts';
-import { SAVED_PAGE_EXCEPTION, executeAiTool, offeredTools, type AiCallContext, type AiDependencies } from './tools';
+import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
+import { SAVED_PAGE_EXCEPTION, executeAiTool, offeredTools, skyEventsOn, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
 import { READINGS_HTML } from '../../integrations/generated/readings.mjs';
+import { READINGS_SKY_EVENTS_HTML } from '../../integrations/generated/readings-sky-events.mjs';
 import { WIDGET_HTML } from '../../integrations/generated/sky-calendar.mjs';
 import { registerSkyWatch, type SkyWatch } from './watch/service';
 import type { Principal } from './watch/contracts';
@@ -37,7 +38,7 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
 };
 
 /** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
-const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace']);
+const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events']);
 
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
@@ -84,27 +85,36 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation.' },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: STUDIO_HTML, _meta: panelMeta('fullscreen') }] }));
   const tools = offeredTools(dependencies);
+  // With the sky events switch on, the natal chart and the explainer register their wider forms; off, every definition is the published one.
+  const skyEvents = skyEventsOn(dependencies);
+  // With it on, the natal chart's panel is the one that lists the lunar nodes; the other readings keep theirs.
+  const panelFor = (tool: AiToolName) => (skyEvents && tool === 'get_natal_chart' ? { uri: READINGS_SKY_EVENTS_URI, icon: 'readings' } : PANELS[tool]);
+  const readingsPanel = (uri: string) => uri === READINGS_URI || uri === READINGS_SKY_EVENTS_URI;
   if (tools.includes('get_horoscope')) for (const { uri, name } of versions('horoscopes', [HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS])) server.registerResource(name, uri, {
     title: 'Zodiacs horoscopes', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it." },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: HOROSCOPES_HTML, _meta: panelMeta('inline', true) }] }));
   // The coverage tools' panel: inline only, with no launcher of its own, and no earlier URI still served.
-  if (tools.some((tool) => PANELS[tool]?.uri === READINGS_URI)) server.registerResource('readings', READINGS_URI, {
+  if (tools.some((tool) => panelFor(tool)?.uri === READINGS_URI)) server.registerResource('readings', READINGS_URI, {
     title: 'Zodiacs readings', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A birth chart, a monthly, yearly or weekly horoscope, the Chinese zodiac, personal transits, or a short explainer. Inline only.' },
   }, () => ({ contents: [{ uri: READINGS_URI, mimeType: 'text/html;profile=mcp-app', text: READINGS_HTML, _meta: panelMeta('inline', true) }] }));
+  if (tools.some((tool) => panelFor(tool)?.uri === READINGS_SKY_EVENTS_URI)) server.registerResource('readings-sky-events', READINGS_SKY_EVENTS_URI, {
+    title: 'Zodiacs readings', mimeType: 'text/html;profile=mcp-app',
+    _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A birth chart with its lunar nodes, a monthly, yearly or weekly horoscope, the Chinese zodiac, personal transits, or a short explainer. Inline only.' },
+  }, () => ({ contents: [{ uri: READINGS_SKY_EVENTS_URI, mimeType: 'text/html;profile=mcp-app', text: READINGS_SKY_EVENTS_HTML, _meta: panelMeta('inline', true) }] }));
   if (tools.some((tool) => PANELS[tool]?.uri === OCCASIONS_URI)) for (const { uri, name } of versions('occasions', [OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS])) server.registerResource(name, uri, {
     title: 'Zodiacs occasions', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: artResourceDomains }, prefersBorder: true }, 'openai/widgetDescription': 'A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar.' },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: OCCASIONS_HTML, _meta: panelMeta('inline', true) }] }));
   for (const tool of tools) {
-    const panel = PANELS[tool];
+    const panel = panelFor(tool);
     server.registerTool(tool, {
-      title: TOOL_TITLES[tool], description: TOOL_DESCRIPTIONS[tool],
+      title: TOOL_TITLES[tool], description: descriptionFor(tool, skyEvents),
       ...(panel ? { icons: [{ src: `https://zodiacs.org/assets/ai/${panel.icon}.svg`, mimeType: 'image/svg+xml', sizes: ['20x20'] }] } : {}),
-      inputSchema: INPUT_SCHEMAS[tool], outputSchema: OUTPUT_SCHEMAS[tool],
+      inputSchema: inputSchemaFor(tool, skyEvents), outputSchema: outputSchemaFor(tool, skyEvents),
       annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: !CLOCK_DEPENDENT.has(tool) },
-      _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: panel.uri === READINGS_URI ? [{ type: 'thread' }] : [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
+      _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: readingsPanel(panel.uri) ? [{ type: 'thread' }] : [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
       const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
       const result = await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);

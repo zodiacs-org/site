@@ -895,7 +895,7 @@
         },
         "pageUrl": "https://zodiacs.org/compatibility/scorpio-pisces/",
         "cardUrl": null,
-        "shareUrl": "https://zodiacs.org/share/compatibility/?as=pisces&bs=scorpio&score=73&attraction=78&communication=72&stability=68&v=strong",
+        "shareUrl": "https://zodiacs.org/share/compatibility/?as=pisces&bs=scorpio&score=73&attraction=78&communication=72&stability=68&v=strong&c=75",
         "notes": [
           "Reading confidence 75%"
         ],
@@ -913,6 +913,10 @@
         {
           "title": "How we calculate",
           "url": "https://zodiacs.org/methodology/"
+        },
+        {
+          "title": "Invite your partner to compare charts on Zodiacs",
+          "url": "https://zodiacs.org/share/invite/?s=pisces&p=scorpio"
         }
       ]
     }

@@ -33,10 +33,28 @@ and 0.3.20 keep their bytes. Zodiacs 0.6.2 packages the listing text chosen on
 that lead with the tools needing no personal details. The server reports 0.6.2
 and its tools are unchanged; Developer 0.3.22 is rebuilt from that source with
 unchanged local tools. 0.6.1 and 0.3.21 keep their bytes. Developer 0.3.23 is
-0.3.22's source with its local chart tools on MCP adapter 0.1.0-rc.26 and
-engine 1.1.0-rc.2; 0.3.22 keeps its bytes.
+rebuilt from the 0.6.2 source that adds `search_sky_events`, the natal chart's
+lunar nodes and Placidus houses behind `ZODIACS_SKY_EVENTS_ENABLED`, which its
+local server does not set; its local tools are unchanged, Zodiacs stays 0.6.2,
+and 0.3.22 keeps its bytes. Developer 0.3.24 is rebuilt from the 0.6.2 source
+that adds Chiron, from NASA JPL Horizons positions for 1800 to 2199, to the
+natal chart, `search_sky_events` and `explain_astrology` behind the same switch;
+its local tools are unchanged, Zodiacs stays 0.6.2, and 0.3.23 keeps its bytes.
+Developer 0.3.25 is rebuilt from the 0.6.2 source whose answers link back to
+zodiacs.org (the sky calendar, the daily horoscope email and an invitation to
+compare charts) and whose compatibility and date share links carry the reading
+confidence; the share links for the big three, the Chinese zodiac's animal and a
+month's or year's horoscope, and the readings panel with the lunar nodes and
+Chiron, sit behind the same switch. Its local tools are unchanged, Zodiacs stays
+0.6.2, and 0.3.24 keeps its bytes. Zodiacs 0.6.3 changes only the listing's
+category, from Education & Research to Entertainment, which the owner chose
+after OpenAI's portal could not confirm the earlier one. The server reports
+0.6.3 and its tools are unchanged; Developer 0.3.26 is rebuilt from that source
+with unchanged local tools. 0.6.2 and 0.3.25 keep their bytes. Developer 0.3.27
+is 0.3.26's source with its local chart tools on MCP adapter 0.1.0-rc.26 and
+engine 1.1.0-rc.2; 0.3.26 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.23**;
+Current candidates are **Zodiacs 0.6.3** and **Zodiacs Developer 0.3.27**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

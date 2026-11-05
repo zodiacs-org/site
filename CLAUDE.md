@@ -171,6 +171,12 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `integrations/generated/horoscopes.mjs` ← `scripts/build-horoscope-panel.mjs`
   through `npm run ai:build`; the get_horoscope panel (sources
   `src/ai-tools/horoscope/`). It carries no reading data.
+- `integrations/generated/readings-sky-events.mjs` ← `scripts/build-readings-panel.mjs`
+  through `npm run ai:build`; the readings panel offered only with
+  `ZODIACS_SKY_EVENTS_ENABLED=1` (`READINGS_SKY_EVENTS_URI`, for get_natal_chart),
+  built from the same app with `src/ai-tools/readings-panel/views-sky-events.tsx`
+  in place of `./views`, so `integrations/generated/readings.mjs` keeps its bytes.
+  Its birth chart lists the lunar nodes, each body with its glyph.
 - `integrations/generated/occasions.mjs` ← `scripts/build-occasions-panel.mjs`
   through `npm run ai:build`; the occasion tools' panel (sources
   `src/ai-tools/occasions-panel/`), offered only with `ZODIACS_OCCASIONS_ENABLED=1`.
@@ -221,7 +227,10 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   current chat panels use the larger published art files directly. Sources are the sign panels, the
   cards' own pieces `public/assets/card-art/<name>-720.webp` and the daylight
   twins `public/assets/card-art/<key>-light-720.webp`, which `--masters <dir>`
-  writes from 1536px source PNGs. libvips output, so not in the drift job;
+  writes from 1536px source PNGs, and, for the Chinese zodiac share card,
+  `share/chinese-<animal>-1600.jpg` from the animals' 1920px pieces in
+  `public/assets/art/chinese-zodiac/` (`--chinese-zodiac` writes only those).
+  libvips output, so not in the drift job;
   rerun it when a source changes, then `npm run ai:build`)
 - `public/assets/og/registry/v4/` (twelve lot cards, `hub.png` and the
   manifest) ← `npm run data:og -- --only-registry` (Chromium draws each

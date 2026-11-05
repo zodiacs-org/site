@@ -358,14 +358,15 @@ const DEVELOPER_GUIDES_ROUTES = [
 // the index's date wins over theirs.
 const TIME_ATLAS_LASTMOD = '2026-11-01';
 const TIME_ATLAS_ROUTES = ['/developers/time-atlas/', '/developers/'] as const;
-// Engine 1.1.0-rc.2 adopted 2026-11-04, the day of the daily edition it was built with: the pages the
+// Engine 1.1.0-rc.2 adopted 2026-11-05, the day of the daily edition it was built with: the pages the
 // Sitemap Dates comparison found changed (the engine's version, its time and lite entries, the conventions
-// registry's time-band namespace, MCP adapter 0.1.0-rc.26, the playground's engine and answers, the guides).
-const ENGINE_110_RC2_LASTMOD = '2026-11-04';
+// registry's time-band namespace, MCP adapter 0.1.0-rc.26, the playground's engine and answers, the demo's
+// receipts, the guides).
+const ENGINE_110_RC2_LASTMOD = '2026-11-05';
 const ENGINE_110_RC2_ROUTES = [
   '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
-  '/developers/conventions/', '/developers/engine/', '/developers/mcp/', '/developers/playground/',
-  '/developers/support/', ...DEVELOPER_GUIDES_ROUTES,
+  '/developers/conventions/', '/developers/demo/', '/developers/engine/', '/developers/mcp/',
+  '/developers/playground/', '/developers/support/', ...DEVELOPER_GUIDES_ROUTES,
 ];
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
@@ -566,7 +567,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The privacy page's assistant section: what the app's links carry (never a birth year, time, place or names,
   // and a birthday link only the month and day). The day of the daily edition it was built with.
   ['/privacy/', '2026-11-04'] as const,
-  // The time atlas dataset and the developer index's card for it.
+  // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
+  // hosted search_sky_events names. The day of the daily edition it was built with.
+  ['/developers/conventions/', '2026-11-04'] as const,
+  // The time atlas dataset and the developer index's card for it, after the entries above so this date wins.
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
   // Engine 1.1.0-rc.2's pages, last so this date wins.
   ...ENGINE_110_RC2_ROUTES.map((loc) => [loc, ENGINE_110_RC2_LASTMOD] as const),

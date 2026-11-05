@@ -348,9 +348,12 @@ if (
   fail(`engine math isolation: expected ${allowedMathImporters.join(', ')}; found ${engineMathImporters.join(', ') || 'none'}`);
 }
 // @zodiacs/engine/time (since 1.1.0-rc.2) carries the engine's time basis,
-// nutation and frame of date for the two server-side importers only, so that
-// no browser island pulls the entry's frame chunks by accident.
+// nutation and frame of date for the three server-side importers only (the
+// calendar function's ephemeris, the compute API, and the hosted tools'
+// Chiron, which no website source imports), so that no browser island pulls
+// the entry's frame chunks by accident.
 const allowedTimeImporters = [
+  'src/ai-tools/features/chiron.ts',
   'src/lib/compute-api/endpoints.ts',
   'src/lib/engine/server-ephemeris.ts',
 ];

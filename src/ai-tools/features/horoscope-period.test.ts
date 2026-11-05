@@ -15,8 +15,8 @@ const dependencies = {
   horoscopeMonths: async () => committedMonths,
   horoscopeProgram: async () => committedProgram as unknown as HoroscopeProgram,
 };
-async function period(args: Record<string, unknown>): Promise<HoroscopePeriodData> {
-  const result = await executeAiTool('get_horoscope_period', args, dependencies);
+async function period(args: Record<string, unknown>, deps: typeof dependencies = dependencies): Promise<HoroscopePeriodData> {
+  const result = await executeAiTool('get_horoscope_period', args, deps);
   if (!result.ok || result.tool !== 'get_horoscope_period') throw new Error(JSON.stringify(result));
   return result.data;
 }
@@ -136,17 +136,29 @@ describe('get_horoscope_period', () => {
   });
 
   it("gives the week's reading, and for love that week's love readings and the sky that bears on love", async () => {
-    const week = await period({ sign: 'leo', period: 'week', focus: 'love' });
-    expect(week).toMatchObject({ from: '2026-11-02', to: '2026-11-08', label: 'Week of 2 November 2026', pageUrl: 'https://zodiacs.org/horoscopes/leo/love/' });
-    expect(week.reading!.title).toBe('Leo · Week of 2 November 2026');
+    // The committed window moves forward a day with every daily sky commit, so this reads the week of its
+    // first edition rather than a fixed date that the window leaves behind.
+    const editions = (committedWindow as HoroscopeWindow).editions;
+    const first = editions[0].anchorDate;
+    const monday = new Date(`${first}T00:00:00Z`);
+    monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
+    const sunday = new Date(monday);
+    sunday.setUTCDate(monday.getUTCDate() + 6);
+    const from = monday.toISOString().slice(0, 10);
+    const to = sunday.toISOString().slice(0, 10);
+    const label = `Week of ${monday.getUTCDate()} ${monday.toLocaleString('en-GB', { month: 'long', timeZone: 'UTC' })} ${monday.getUTCFullYear()}`;
+    const atFirst = { ...dependencies, now: () => new Date(`${first}T05:00:00Z`) };
+    const week = await period({ sign: 'leo', period: 'week', focus: 'love' }, atFirst);
+    expect(week).toMatchObject({ from, to, label, pageUrl: 'https://zodiacs.org/horoscopes/leo/love/' });
+    expect(week.reading!.title).toBe(`Leo · ${label}`);
     const loveDates = week.focusReadings.map((reading) => reading.date);
-    expect(loveDates[0]).toBe('2026-11-03');
+    expect(loveDates[0]).toBe(first);
     expect(loveDates.every((date) => date >= week.from && date <= week.to)).toBe(true);
     expect([...loveDates].sort()).toEqual(loveDates);
     expect(week.sky.every((event) => ['Venus', 'Mars'].includes(event.planet) || [5, 7, 8].includes(event.house))).toBe(true);
     expect(week.message).toContain('love readings by the day');
     expect(week.message).toContain('If the person is under 18, do not frame this as romance or attraction.');
-    const career = await period({ sign: 'leo', period: 'week', focus: 'career' });
+    const career = await period({ sign: 'leo', period: 'week', focus: 'career' }, atFirst);
     expect(career.focusReadings[0].title).toContain('Career');
     expect(career.message).not.toContain('under 18');
   });

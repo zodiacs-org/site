@@ -48,17 +48,23 @@ describe('computeCompatibility', () => {
     expect(data.signPair?.slug).toBe('aries-leo');
     expect(data.pageUrl).toBe('https://zodiacs.org/compatibility/aries-leo/');
     expect(data.cardUrl).toBeNull();
-    // The share link carries Person A/B's Sun signs and the scores only.
+    // The share link carries Person A/B's Sun signs, the scores and the reading's confidence only.
     const share = new URL(data.shareUrl!);
     expect(`${share.origin}${share.pathname}`).toBe('https://zodiacs.org/share/compatibility/');
+    const label = data.notes.at(-1)!;
     expect(Object.fromEntries(share.searchParams)).toEqual({
       as: 'leo', bs: 'aries', score: String(data.score.overall), attraction: String(data.score.areas.attraction),
       communication: String(data.score.areas.communication), stability: String(data.score.areas.stability), v: expect.stringMatching(/^[a-z]+$/u),
+      c: /^Reading confidence (\d+)%$/u.exec(label)![1],
     });
+    // Two dates alone: 55, or 60 with a contact under a degree.
+    expect(['55', '60']).toContain(share.searchParams.get('c'));
     expect(links).toEqual([
       { title: 'Compatibility on Zodiacs', url: 'https://zodiacs.org/compatibility/' },
       { title: 'Resolve a town or city (find_birthplace)', url: 'https://zodiacs.org/birth-chart/' },
       { title: 'How we calculate', url: 'https://zodiacs.org/methodology/' },
+      // The other person can read the pair from their own chart: the invitation carries the two Sun signs only.
+      { title: 'Invite your partner to compare charts on Zodiacs', url: 'https://zodiacs.org/share/invite/?s=leo&p=aries' },
     ]);
     expect(stringsOf(data)).not.toMatch(FORBIDDEN);
   });
@@ -80,7 +86,9 @@ describe('computeCompatibility', () => {
     expect(data.score.headline).toContain('Reading confidence');
     expect(data.pageUrl).toBe('https://example.test/compatibility/scorpio-aquarius/');
     // Sun signs and scores go in the share link. Names, birth dates, times, zones and places stay out.
-    expect(data.shareUrl).toMatch(/^https:\/\/example\.test\/share\/compatibility\/\?as=aquarius&bs=scorpio&score=\d+&attraction=\d+&communication=\d+&stability=\d+&v=[a-z]+$/u);
+    expect(data.shareUrl).toMatch(/^https:\/\/example\.test\/share\/compatibility\/\?as=aquarius&bs=scorpio&score=\d+&attraction=\d+&communication=\d+&stability=\d+&v=[a-z]+&c=7[05]$/u);
+    // Both timed and placed: 70, or 75 with a contact under a degree, as the note says.
+    expect(data.notes).toEqual([`Reading confidence ${new URL(data.shareUrl!).searchParams.get('c')}%`]);
     expect(data.shareUrl).not.toMatch(/Ana|Ben|1991|1989|Madrid|Europe|America|40\.|74/u);
     expect(data.cardUrl).toBeNull();
 
@@ -149,6 +157,8 @@ describe('computeCompatibility with a famous person', () => {
     expect(data.notes).toContain(famousNote({ name: 'Frida Kahlo', birthplace: 'Coyoacán' }));
     expect(data.cardUrl).toBeNull();
     expect(links[0]).toEqual({ title: "Frida Kahlo's chart on Zodiacs", url: 'https://zodiacs.org/people/frida-kahlo/' });
+    // A famous chart is not someone to invite.
+    expect(links.some((link) => link.url.includes('/share/invite/'))).toBe(false);
     expect(stringsOf(data)).not.toMatch(FORBIDDEN);
   });
 
@@ -213,6 +223,8 @@ describe('get_compatibility when either birth date is under 18', () => {
     expect(await pair({ birthDate: '2010-06-01', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 }, { famous: 'Frida Kahlo' })).toMatchObject({ ok: false, error: { message: MINOR_COMPATIBILITY_REFUSAL } });
     const adults = await pair({ birthDate: '1990-04-10' }, { birthDate: '2008-11-04' });
     expect(adults.ok).toBe(true);
+    // Two adults get the invitation, which carries their Sun signs and no birth detail; a refusal has no links at all.
+    if (adults.ok) expect(adults.links.find((link) => link.url.startsWith('https://zodiacs.org/share/invite/'))?.url).toBe('https://zodiacs.org/share/invite/?s=aries&p=scorpio');
     if (adults.ok && adults.tool === 'get_compatibility' && !('found' in adults.data)) expect(adults.data.shareUrl).toMatch(/^https:\/\/zodiacs\.org\/share\//u);
   });
 

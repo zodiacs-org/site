@@ -32,7 +32,8 @@ function check(changes = {}) {
     'src/lib/engine/houses.ts': 'import { H } from "@zodiacs/engine/internal/math";',
     'src/lib/engine/types.ts': 'import { T } from "@zodiacs/engine/internal/math";',
     // The allowed importers of @zodiacs/engine/time and @zodiacs/engine/lite, and an api/ the
-    // lite check walks (since engine 1.1.0-rc.2).
+    // lite check walks (since engine 1.1.0-rc.2; the hosted tools' Chiron since the merge of main's #886).
+    'src/ai-tools/features/chiron.ts': 'import { timeBasis } from "@zodiacs/engine/time";',
     'src/lib/compute-api/endpoints.ts': 'import { timeBasis } from "@zodiacs/engine/time";',
     'src/lib/composite.ts': 'import { compositeMidpoints } from "@zodiacs/engine/lite";',
     'src/lib/declination.ts': 'import { findDeclinationAspects } from "@zodiacs/engine/lite";',

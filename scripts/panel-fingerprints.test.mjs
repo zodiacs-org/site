@@ -4,6 +4,7 @@ import { STUDIO_HTML } from '../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
 import { READINGS_HTML } from '../integrations/generated/readings.mjs';
+import { READINGS_SKY_EVENTS_HTML } from '../integrations/generated/readings-sky-events.mjs';
 import { WIDGET_HTML } from '../integrations/generated/sky-calendar.mjs';
 import { assertPanelFingerprints, nextPanelFingerprints, panelFingerprintEntries } from './panel-fingerprints.mjs';
 
@@ -14,6 +15,7 @@ const entries = await panelFingerprintEntries({
   horoscopes: HOROSCOPES_HTML,
   occasions: OCCASIONS_HTML,
   readings: READINGS_HTML,
+  'readings-sky-events': READINGS_SKY_EVENTS_HTML,
 });
 
 it('keeps each current panel URI tied to its HTML', () => {
@@ -45,4 +47,14 @@ it('rejects changed HTML at the same panel URI', () => {
     : entry);
   expect(() => assertPanelFingerprints(changed, recorded))
     .toThrow('Panel occasions changed: give it a new URI in contracts.ts');
+});
+
+it('gives the panel offered while the sky events switch is on its own URI, so the published readings panel keeps its bytes', () => {
+  const readings = entries.find((entry) => entry.name === 'readings');
+  const skyEvents = entries.find((entry) => entry.name === 'readings-sky-events');
+  expect(skyEvents?.uri).toBe('ui://zodiacs/readings-v4.html');
+  expect(recorded['ui://zodiacs/readings-v3.html']).toBe(readings?.sha256);
+  expect(skyEvents?.sha256).not.toBe(readings?.sha256);
+  expect(READINGS_SKY_EVENTS_HTML).toContain('The lunar nodes');
+  expect(READINGS_HTML).not.toContain('The lunar nodes');
 });

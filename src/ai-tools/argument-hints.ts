@@ -36,8 +36,9 @@ function sentence(issue: z.core.$ZodIssue, schema: any): string {
   return `${name} is not in the accepted form.${iso ? ISO_HINT : description ? ` ${description}` : ''}`;
 }
 
-export function argumentRefusal(tool: string, args: unknown) {
-  const schema = (INPUT_SCHEMAS as Record<string, z.ZodType>)[tool];
+/** `inputSchema` is the tool's schema in effect when it is not the published one (the sky events switch's wider forms). */
+export function argumentRefusal(tool: string, args: unknown, inputSchema?: z.ZodType) {
+  const schema = inputSchema ?? (INPUT_SCHEMAS as Record<string, z.ZodType>)[tool];
   if (!schema) return undefined;
   const parsed = schema.safeParse(args ?? {});
   if (parsed.success) return undefined;

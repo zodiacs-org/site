@@ -1,0 +1,130 @@
+{
+ "what": "NASA JPL Horizons API responses, kept byte for byte",
+ "api": "https://ssd.jpl.nasa.gov/api/horizons.api",
+ "responses": {
+  "moon-from-2028-12-15": {
+   "file": "moon-from-2028-12-15.txt",
+   "query": {
+    "format": "text",
+    "OBJ_DATA": "NO",
+    "MAKE_EPHEM": "YES",
+    "COMMAND": "301",
+    "START_TIME": "JD 2462121.0",
+    "STOP_TIME": "JD 2462158.0",
+    "EPHEM_TYPE": "OBSERVER",
+    "CENTER": "500@399",
+    "STEP_SIZE": "1 h",
+    "TIME_TYPE": "TT",
+    "QUANTITIES": "31",
+    "ANG_FORMAT": "DEG",
+    "EXTRA_PREC": "YES",
+    "CAL_FORMAT": "JD",
+    "APPARENT": "AIRLESS",
+    "CSV_FORMAT": "NO"
+   },
+   "retrievedUtc": "2026-11-04T13:36:04Z",
+   "bytes": 46179,
+   "sha256": "1f1d6d5a368212b9908159eccc4e91f71a75cdb180ff50d093145e34a7c2c62c",
+   "source": {
+    "apiVersion": "1.2",
+    "target": "Moon (301)",
+    "targetSource": "DE441",
+    "centerSource": "DE441",
+    "eopFile": "eop.261103.p270130"
+   }
+  },
+  "sun-from-2025-12-31": {
+   "file": "sun-from-2025-12-31.txt",
+   "query": {
+    "format": "text",
+    "OBJ_DATA": "NO",
+    "MAKE_EPHEM": "YES",
+    "COMMAND": "10",
+    "START_TIME": "JD 2461040.0",
+    "STOP_TIME": "JD 2461083.0",
+    "EPHEM_TYPE": "OBSERVER",
+    "CENTER": "500@399",
+    "STEP_SIZE": "1 h",
+    "TIME_TYPE": "TT",
+    "QUANTITIES": "31",
+    "ANG_FORMAT": "DEG",
+    "EXTRA_PREC": "YES",
+    "CAL_FORMAT": "JD",
+    "APPARENT": "AIRLESS",
+    "CSV_FORMAT": "NO"
+   },
+   "retrievedUtc": "2026-11-04T13:35:58Z",
+   "bytes": 52801,
+   "sha256": "2707440f582bdf54e3ddc95e583878c45d40f6c3ca0e119d144e1686a4edc3b0",
+   "source": {
+    "apiVersion": "1.2",
+    "target": "Sun (10)",
+    "targetSource": "DE441",
+    "centerSource": "DE441",
+    "eopFile": "eop.261103.p270130"
+   }
+  },
+  "sun-from-2026-03-01": {
+   "file": "sun-from-2026-03-01.txt",
+   "query": {
+    "format": "text",
+    "OBJ_DATA": "NO",
+    "MAKE_EPHEM": "YES",
+    "COMMAND": "10",
+    "START_TIME": "JD 2461099.0",
+    "STOP_TIME": "JD 2461142.0",
+    "EPHEM_TYPE": "OBSERVER",
+    "CENTER": "500@399",
+    "STEP_SIZE": "1 h",
+    "TIME_TYPE": "TT",
+    "QUANTITIES": "31",
+    "ANG_FORMAT": "DEG",
+    "EXTRA_PREC": "YES",
+    "CAL_FORMAT": "JD",
+    "APPARENT": "AIRLESS",
+    "CSV_FORMAT": "NO"
+   },
+   "retrievedUtc": "2026-11-04T13:36:01Z",
+   "bytes": 52801,
+   "sha256": "423621eae4370fa8cc2d1fd35aef119fccf13b3a16cbe5ffe0ecf0612060afa7",
+   "source": {
+    "apiVersion": "1.2",
+    "target": "Sun (10)",
+    "targetSource": "DE441",
+    "centerSource": "DE441",
+    "eopFile": "eop.261103.p270130"
+   }
+  },
+  "sun-from-2028-12-15": {
+   "file": "sun-from-2028-12-15.txt",
+   "query": {
+    "format": "text",
+    "OBJ_DATA": "NO",
+    "MAKE_EPHEM": "YES",
+    "COMMAND": "10",
+    "START_TIME": "JD 2462121.0",
+    "STOP_TIME": "JD 2462158.0",
+    "EPHEM_TYPE": "OBSERVER",
+    "CENTER": "500@399",
+    "STEP_SIZE": "1 h",
+    "TIME_TYPE": "TT",
+    "QUANTITIES": "31",
+    "ANG_FORMAT": "DEG",
+    "EXTRA_PREC": "YES",
+    "CAL_FORMAT": "JD",
+    "APPARENT": "AIRLESS",
+    "CSV_FORMAT": "NO"
+   },
+   "retrievedUtc": "2026-11-04T13:36:02Z",
+   "bytes": 46177,
+   "sha256": "3a60e2759f97f90f7c3fbdaf68b76d5c65ad22f6d15d51dc8ba60b84569ae81b",
+   "source": {
+    "apiVersion": "1.2",
+    "target": "Sun (10)",
+    "targetSource": "DE441",
+    "centerSource": "DE441",
+    "eopFile": "eop.261103.p270130"
+   }
+  }
+ }
+}

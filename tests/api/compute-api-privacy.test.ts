@@ -516,6 +516,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/natal-chart.ts', 'src/ai-tools/features/personal-transits.ts', 'src/ai-tools/features/horoscope-period.ts',
       // find_birthplace resolves a place's clock with the same local-time operations.
       'src/ai-tools/features/birthplace.ts',
+      // search_sky_events (ZODIACS_SKY_EVENTS_ENABLED=1) finds stations and new and full Moons with the same event searches, server-side.
+      'src/ai-tools/features/sky-events.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the

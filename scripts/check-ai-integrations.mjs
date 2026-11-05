@@ -77,7 +77,10 @@ const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_
   'get_natal_chart', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'explain_astrology', 'find_birthplace'];
 assert.deepEqual(Object.keys(submission.tools), names);
 assert.equal(submission.schema_version, 1); assert.ok(submission.app_info.subtitle.length <= 30);
-assert.equal(submission.app_info.category, 'EDUCATION');
+// 0.6.3: the portal could not confirm Education & Research for the 0.6.2 draft, so the owner chose
+// Entertainment from its list. The package and the submission copy carry the same category.
+assert.equal(skyInterface.category, 'Entertainment', 'Sky package category');
+assert.equal(submission.app_info.category, 'ENTERTAINMENT');
 assert.equal(submission.test_cases.length, 5); assert.equal(submission.negative_test_cases.length, 3);
 for (const name of names) {
   assert.deepEqual(submission.tools[name].annotations, { readOnlyHint: true, openWorldHint: false, destructiveHint: false });

@@ -11,19 +11,35 @@
  * rising sign, no houses, and a sign only where the whole birth day keeps
  * the body in it; otherwise it lists the
  * signs the body was in that day. Pure: no network, storage or logging.
+ *
+ * With ZODIACS_SKY_EVENTS_ENABLED=1 (options.skyEvents) it also takes a house
+ * system, whole-sign (the default) or Placidus, which falls back to whole sign
+ * where the engine cannot draw it (from about 66.6 degrees latitude, the
+ * polar-fallback flag), and gives the North and South Nodes: the engine's true
+ * node, which it states, with the site's node wording (natal-context.ts). It
+ * gives Chiron too, which the engine does not have: its position from NASA JPL
+ * Horizons through chiron.ts, with its sign, degree, retrograde flag, house and
+ * aspects to the planets, under the chart's own orbs. From 1800 to 2199 only;
+ * outside those years Chiron is left out with a plain note. It gives a share
+ * link to the big three's card too (src/ai-tools/share-links.ts): the Sun
+ * sign, the Moon sign when the day settles it and the rising sign when it is
+ * known, never the birth date, time or place.
  */
 import { z } from 'zod';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
+import { matchAspect } from '../../lib/engine/aspects';
 import { computeChart } from '../../lib/engine/full.js';
 import { houseOf } from '../../lib/engine/houses';
-import type { BodyName, Chart } from '../../lib/engine/types';
+import type { AspectType, BodyName, Chart } from '../../lib/engine/types';
 import { bigThree } from '../../lib/interpretations';
 import { chartWeather, natalAspectLine, planetInHouseLine } from '../../lib/natal';
-import { placementContext } from '../../lib/natal-context';
+import { NATAL_BODY_THEME, placementContext } from '../../lib/natal-context';
 import { roundCoordinate } from '../plain-text';
 import { SIGNS, formatLongitude, signIndexForLongitude, type Element, type Modality } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { MINOR_NOTE, isUnder18, softenHealth, softenMinor } from './reading-guards';
+import { CHIRON_ABOUT, CHIRON_MEANING, CHIRON_OUTSIDE, chironAspectLine, chironAt, chironHouseLine, chironSignLine, chironSignsBetween } from './chiron';
+import { bigThreeShareUrl } from '../share-links';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -37,18 +53,29 @@ export const NATAL_NOTE = 'Astrology’s reading of a birth chart: tendencies to
 const PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
 type Planet = typeof PLANETS[number];
 
-export const natalChartInput = z.strictObject({
+const natalChartFields = {
   birthDate: z.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe('The birth date, such as 1990-05-03 (years 1800 to 2199).'),
   time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('The birth time on the local clock, such as 08:30, only if the person knows it. Never guess it. Needs zone.'),
   zone: z.string().min(1).max(64).regex(ZONE_PATTERN).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign and the houses. Give it with longitude and zone. Nothing is stored."),
   longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
   place: z.string().trim().min(1).max(80).regex(PLAIN_TEXT).optional().describe('Optional birthplace name, such as Madrid, Spain. Display only: it is not used in the calculation and is not stored.'),
-}).superRefine((args, context) => {
+};
+function natalChartRules(args: { time?: string; zone?: string; latitude?: number; longitude?: number }, context: z.RefinementCtx) {
   if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
   if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });
-});
+}
+export const natalChartInput = z.strictObject(natalChartFields).superRefine(natalChartRules);
 export type NatalChartInput = z.infer<typeof natalChartInput>;
+/** The house systems get_natal_chart draws with ZODIACS_SKY_EVENTS_ENABLED=1: whole-sign by default, or Placidus. */
+export const NATAL_HOUSE_SYSTEMS = ['whole-sign', 'placidus'] as const;
+export type NatalHouseSystem = typeof NATAL_HOUSE_SYSTEMS[number];
+/** With ZODIACS_SKY_EVENTS_ENABLED=1: the same fields, and the house system to draw. */
+export const natalChartInputWithHouses = z.strictObject({
+  ...natalChartFields,
+  houseSystem: z.enum(NATAL_HOUSE_SYSTEMS).optional().describe('Optional: whole-sign (the default) or placidus. Houses need the birth time and place. Placidus cannot be drawn from about 66.6 degrees latitude north or south; there the chart uses whole-sign houses and houseNote says so.'),
+}).superRefine(natalChartRules);
+export type NatalChartInputWithHouses = z.infer<typeof natalChartInputWithHouses>;
 
 const signSlug = z.enum(SIGNS.map((sign) => sign.slug) as [string, ...string[]]);
 const tally = <T extends string>(keys: readonly [T, ...T[]]) => z.object(Object.fromEntries(keys.map((key) => [key, z.number().int().min(0)])) as Record<T, z.ZodNumber>);
@@ -116,6 +143,58 @@ export const natalChartData = z.object({
 });
 export type NatalChartData = z.infer<typeof natalChartData>;
 
+/** Which lunar node the chart gives: the engine's true (osculating) node, moonNodes:instantaneous-geocentric-moon-orbit-plane in the conventions registry. */
+export const NATAL_NODE = 'true' as const;
+export const NATAL_NODE_ABOUT = 'These are the true nodes: where the Moon\'s orbit crossed the ecliptic at the moment of birth. Some astrologers use the mean node, an averaged position that can differ from it by up to about two degrees, so a node near the edge of a sign can fall in the next sign under the other convention. The South Node is always exactly opposite the North Node.' as const;
+const nodeEntry = z.object({
+  sign: signSlug.nullable(),
+  /** Without a birth time, the signs the node could be in that day; with one, just its sign. */
+  possibleSigns: z.array(signSlug),
+  /** Degree and minute in the sign, such as 8°07′ Aquarius; null when the sign is unknown. */
+  position: z.string().nullable(),
+  house: z.number().int().min(1).max(12).nullable(),
+  /** What astrology reads into the node, in the site's words. */
+  meaning: z.string(),
+  signLine: z.string().nullable(),
+  houseLine: z.string().nullable(),
+});
+const ASPECT_TYPES = ['conjunction', 'sextile', 'square', 'trine', 'opposition'] as const satisfies readonly AspectType[];
+/** Chiron, from NASA JPL Horizons positions (chiron.ts); null outside 1800 to 2199, and unknown says why. */
+const chironEntry = z.object({
+  /** Where its position comes from and the years it covers. */
+  about: z.literal(CHIRON_ABOUT),
+  sign: signSlug.nullable(),
+  /** Without a birth time, the signs Chiron could be in that day; with one, just its sign. */
+  possibleSigns: z.array(signSlug),
+  /** Degree and minute in the sign, such as 23°31′ Aries; null when the sign is unknown. */
+  position: z.string().nullable(),
+  retrograde: z.boolean(),
+  /** With the birth time and place, the house it falls in, in the chart's house system; null otherwise. */
+  house: z.number().int().min(1).max(12).nullable(),
+  /** What astrology reads into Chiron, in plain words. */
+  meaning: z.string(),
+  signLine: z.string().nullable(),
+  houseLine: z.string().nullable(),
+  /** Its aspects to the planets under the chart's own orbs, closest first; none to the Moon without a birth time. */
+  aspects: z.array(z.object({ body: z.enum(PLANETS), type: z.enum(ASPECT_TYPES), orb: z.number().min(0), line: z.string() })).max(PLANETS.length),
+});
+/** With ZODIACS_SKY_EVENTS_ENABLED=1: the readout with the house system used, a note when Placidus could not be, the lunar nodes, Chiron and the big three's share link. */
+export const natalChartDataWithNodes = natalChartData.extend({
+  houseSystem: z.enum(NATAL_HOUSE_SYSTEMS).nullable(),
+  /** Why the chart has no Placidus houses when they were asked for, in a plain sentence; null otherwise. */
+  houseNote: z.string().nullable(),
+  nodes: z.object({ node: z.literal(NATAL_NODE), about: z.literal(NATAL_NODE_ABOUT), north: nodeEntry, south: nodeEntry }),
+  chiron: chironEntry.nullable(),
+  /** The big three's card: the Sun sign, the Moon sign when settled, the rising sign when known; never the birth date. Null when the Sun changed sign that day. */
+  shareUrl: z.url().nullable(),
+});
+export type NatalChartDataWithNodes = z.infer<typeof natalChartDataWithNodes>;
+
+export interface NatalChartOptions {
+  /** ZODIACS_SKY_EVENTS_ENABLED=1: take houseSystem, and add houseNote, the nodes and Chiron. */
+  skyEvents?: boolean;
+}
+
 /** The resolver methods this module calls; api/_compute/local-time.mjs supplies them. */
 export type NatalClock = Pick<LocalTimeModule, 'prepareLocalTime' | 'resolveLocalToUtc'>;
 
@@ -166,7 +245,7 @@ const signName = (slug: string) => SIGNS.find((sign) => sign.slug === slug)!.nam
 const placementUrl = (origin: string, body: string, slug: string) => `${origin}/learn/placements/${body.toLowerCase()}-in-${slug}/`;
 
 /** `today` is the caller's date (YYYY-MM-DD), for the under-18 rule. */
-export async function getNatalChart(args: NatalChartInput, clock: NatalClock, origin = DEFAULT_ORIGIN, today = new Date().toISOString().slice(0, 10)): Promise<{ data: NatalChartData; links: { title: string; url: string }[] }> {
+export async function getNatalChart(args: NatalChartInput | NatalChartInputWithHouses, clock: NatalClock, origin = DEFAULT_ORIGIN, today = new Date().toISOString().slice(0, 10), options: NatalChartOptions = {}): Promise<{ data: NatalChartData | NatalChartDataWithNodes; links: { title: string; url: string }[] }> {
   const date = parseCivilDate(args.birthDate);
   if (!date || date.year < NATAL_MIN_YEAR || date.year > NATAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}.`);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -177,16 +256,21 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
   const resolved = args.zone ? await resolveLocal(args.birthDate, args.time ?? '12:00', args.zone, longitude, clock) : null;
   const utc = resolved ? resolved.utc : new Date(`${args.birthDate}T12:00:00Z`);
   const timeNote = resolved && args.time !== undefined ? birthTimeNote(args.birthDate, args.time, args.zone!, resolved) : undefined;
-  const chart = computeChart({ utc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
+  // Placidus only with the sky events switch, and only when asked for; the engine falls back to whole sign near the poles.
+  const placidus = !!options.skyEvents && 'houseSystem' in args && args.houseSystem === 'placidus';
+  const chart = computeChart({ utc, ...(placed ? { latitude, longitude } : {}), houseSystem: placidus ? 'placidus' : 'whole', timeKnown });
   const angles = timeKnown && placed ? chart.angles : null;
 
   // Without a birth time, the signs each body passed through on the birth day: the local day with a zone,
   // else every zone's version of that date (UTC-12 to UTC+14).
-  let possible: (body: Planet) => string[] = (body) => [slugAt(signIndexForLongitude(lonOf(chart, body)))!];
+  let possible: (body: Planet | NodeBody) => string[] = (body) => [slugAt(signIndexForLongitude(lonOf(chart, body)))!];
+  // The first and last moments the birth day could be, without a birth time; Chiron reads them too.
+  let dayEnds: Date[] = [];
   if (!timeKnown) {
     const [first, last] = args.zone
       ? [await localInstant(args.birthDate, '00:00', args.zone, longitude, clock), await localInstant(args.birthDate, '23:59', args.zone, longitude, clock)]
       : [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR)];
+    dayEnds = [first, last];
     const ends = [first, last].map((at) => computeChart({ utc: at, houseSystem: 'whole', timeKnown: false }));
     possible = (body) => {
       const indices = new Set(ends.map((end) => signIndexForLongitude(lonOf(end, body))));
@@ -200,7 +284,7 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
     };
   }
   // A sign is stated only when the whole birth day keeps the body in it: with a birth time, always.
-  const settled = (body: Planet) => (timeKnown || possible(body).length === 1 ? possible(body)[0] : null);
+  const settled = (body: Planet | NodeBody) => (timeKnown || possible(body).length === 1 ? possible(body)[0] : null);
   const houseFor = (lon: number) => (angles && chart.houses ? houseOf(lon, chart.houses.cusps) : null);
 
   const planets = PLANETS.map((body) => {
@@ -265,6 +349,53 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
     const entry = big(kind, slug, options, url);
     return { ...entry, meaning: entry.meaning ? guard(entry.meaning) : null };
   };
+  // The nodes, with the sky events switch: their signs and houses as the planets', in the site's node wording.
+  const node = (body: NodeBody) => {
+    const row = chart.bodies.find((entry) => entry.body === body)!;
+    const sign = settled(body);
+    const house = sign ? houseFor(row.lon) : null;
+    const context = sign ? placementContext(body, sign, house, row.speed) : null;
+    return {
+      sign, possibleSigns: possible(body), position: sign ? formatLongitude(row.lon) : null, house,
+      meaning: guard(NATAL_BODY_THEME[body].what),
+      signLine: context ? guard(context.how) : null,
+      houseLine: context && house ? guard(context.where) : null,
+    };
+  };
+  const nodes = options.skyEvents ? { node: NATAL_NODE, about: NATAL_NODE_ABOUT, north: node('North Node'), south: node('South Node') } : null;
+  if (nodes && !nodes.north.sign) unknown.push(`The lunar nodes changed sign that day, the North Node from ${nodes.north.possibleSigns.map(signName).join(' to ')}; the birth time settles it.`);
+  // Chiron, with the sky events switch: from the Horizons table at the chart's instant, and at the day's ends
+  // without a birth time. Any of them outside 1800 to 2199 leaves Chiron out.
+  const chironReading = () => {
+    const here = chironAt(utc);
+    const ends = dayEnds.map(chironAt);
+    if (!here || ends.some((end) => !end)) {
+      unknown.push(CHIRON_OUTSIDE);
+      return null;
+    }
+    const possibleSigns = ends.length ? chironSignsBetween(ends[0]!.lon, ends[1]!.lon) : [SIGNS[signIndexForLongitude(here.lon)].slug];
+    const sign = timeKnown || possibleSigns.length === 1 ? possibleSigns[0] : null;
+    if (!sign) unknown.push(`Chiron changed sign that day, from ${possibleSigns.map(signName).join(' to ')}; the birth time settles it.`);
+    const house = sign ? houseFor(here.lon) : null;
+    const aspects = PLANETS.filter((body) => aspectBodies.has(body)).flatMap((body) => {
+      const match = matchAspect('Chiron', here.lon, body, lonOf(chart, body));
+      return match ? [{ body, type: match.def.type, orb: match.orb }] : [];
+    }).sort((a, b) => a.orb - b.orb || PLANETS.indexOf(a.body) - PLANETS.indexOf(b.body))
+      .map((aspect) => ({ body: aspect.body, type: aspect.type, orb: Math.round(aspect.orb * 10) / 10, line: guard(chironAspectLine(aspect.type, aspect.body)) }));
+    return {
+      about: CHIRON_ABOUT,
+      sign, possibleSigns, position: sign ? formatLongitude(here.lon) : null, retrograde: here.retrograde, house,
+      meaning: guard(CHIRON_MEANING),
+      signLine: sign ? guard(chironSignLine(sign)) : null,
+      houseLine: house ? guard(chironHouseLine(house)) : null,
+      aspects,
+    };
+  };
+  const chiron = options.skyEvents ? chironReading() : null;
+  const houseNote = !placidus ? null
+    : !angles ? 'Placidus houses need the birth time and place, so the chart has no houses.'
+      : chart.flags.includes('polar-fallback') ? `Placidus houses cannot be drawn at ${Math.abs(latitude!).toFixed(2)} degrees ${latitude! >= 0 ? 'north' : 'south'}: from about 66.6 degrees latitude some degrees of the zodiac never rise or set, so the chart uses whole-sign houses instead.`
+        : null;
   if (under18) unknown.push(MINOR_NOTE);
   const data: NatalChartData = {
     birthDate: args.birthDate,
@@ -288,14 +419,24 @@ export async function getNatalChart(args: NatalChartInput, clock: NatalClock, or
     under18,
     note: NATAL_NOTE,
   };
+  const withNodes: NatalChartDataWithNodes | null = nodes ? {
+    ...data,
+    houseSystem: angles ? (chart.houses?.system === 'placidus' ? 'placidus' : 'whole-sign') : null,
+    houseNote,
+    nodes,
+    chiron,
+    shareUrl: bigThreeShareUrl(origin, { sun: sun.sign, moon: moon.sign, rising: risingSlug }),
+  } : null;
   const links = [
     { title: 'Open the birth chart page on Zodiacs', url: chartUrl },
     { title: 'Resolve a town or city (find_birthplace)', url: `${origin}/birth-chart/` },
     ...(sun.sign ? [{ title: `${signName(sun.sign)} on Zodiacs`, url: `${origin}/${sun.sign}/` }] : []),
     { title: 'How to read a birth chart', url: `${origin}/learn/how-to-read-a-birth-chart/` },
   ];
-  return { data, links };
+  return { data: withNodes ?? data, links };
 }
+
+type NodeBody = 'North Node' | 'South Node';
 
 function lonOf(chart: Chart, body: string): number {
   return chart.bodies.find((row) => row.body === body)!.lon;
