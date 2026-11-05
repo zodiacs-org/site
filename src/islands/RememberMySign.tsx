@@ -26,7 +26,9 @@ export default function RememberMySign({ sign, name }: { sign: string; name: str
   }, [sign]);
 
   return (
-    <p class="mysign">
+    // Sized inline as well as in my-sign.css, so the line holds its height from the first paint, whatever order
+    // the stylesheets arrive in.
+    <p class="mysign" style={{ display: 'flex', alignItems: 'center', minHeight: '40px', margin: '12px 0 0' }}>
       {ready && (mine ? (
         <span>
           {`${name} is your sign. `}
