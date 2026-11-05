@@ -115,3 +115,10 @@ with main at bff5672f: the branch's 25 commits, five of them merges of main
 The same finding as the first run: every matching line the branch adds is
 birth data main already carries, re-emitted by regenerated bundles, their
 archive copies and, once, a test log.
+
+Sixth run, after the commit that records the fifth (bee71fba), over
+origin/main..bee71fba, both sets: the same counts, 294 lines in the commits
+and 621 in the tree. Read against its parent, bee71fba adds no data-pattern
+line and 1 name-pattern line: a test's title in a full-suite log, whose
+matched text main's own test and source files carry (classified in memory,
+counts only). The commit after it changes only this description.
