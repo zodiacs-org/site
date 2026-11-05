@@ -200,6 +200,8 @@ describe('stateless MCP HTTP boundary', () => {
     try {
       enabled = undefined; expect((await post(rpc('tools/list'))).status).toBe(503);
       enabled = '1'; verdict = 'unavailable'; expect((await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).status).toBe(503);
+      // A setup message fails closed too: the address rule still counts it.
+      expect((await post(rpc('tools/list'))).status).toBe(503);
       verdict = 'limited'; const response = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} })); expect(response.status).toBe(429); expect(response.headers.get('retry-after')).toBe('60');
     } finally { enabled = '1'; verdict = 'allowed'; }
   });

@@ -26,8 +26,10 @@ Shared provider egress and duplicate model calls can exhaust them sooner.
 
 ## What is counted (from 5 November 2026)
 
-Every request is still counted against the per-address `zodiacs-compute-api`
-rule, before any authentication, exactly as before. It bounds what one address
+Every request that reaches the limits is still counted against the per-address
+`zodiacs-compute-api` rule, before any authentication, exactly as before. Browser
+preflight requests and requests already refused for their host, origin or query
+are not, as before. It bounds what one address
 can pull, including the panel resources (the Chart Studio panel is about 1 MB).
 
 The service-wide request budget now counts only a `tools/call` (whatever the
