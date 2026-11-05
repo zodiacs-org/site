@@ -444,7 +444,6 @@ const ctaLede = edgeMoon && moonHouse
           <span>{capitalize(sign.modality)}</span>
           <span class="hz-hero__ruler">Ruled by {sign.ruler}</span>
         </p>
-        <RememberMySign client:idle sign={sign.slug} name={sign.name} />
       </div>
       <span class="hz-hero__credit" aria-hidden="true">{sign.name}, from the Zodiacs sign art</span>
     </header>
@@ -572,6 +571,10 @@ const ctaLede = edgeMoon && moonHouse
           label="Send this reading"
           variant="pills"
         />
+
+        <!-- With the reading's own actions, not in the hero or the controls: those are laid out around their
+             contents, so a line arriving there as the page streams in would move what is already drawn. -->
+        <RememberMySign client:idle sign={sign.slug} name={sign.name} />
 
         <AskGuideLine lead="Questions about this reading?" />
         <GuideQuickPrompts prompts={QUICK_PROMPTS[surface]} />
