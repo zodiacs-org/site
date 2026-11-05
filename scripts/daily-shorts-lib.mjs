@@ -23,7 +23,7 @@ export const SHORTS_CONFIDENCE = 40;
 export const shortsConfidenceLabel = (value = SHORTS_CONFIDENCE) => `Sun-sign reading. Reading confidence ${value}%`;
 
 /** The address each video and caption gives. */
-export const shortsLink = (slug) => `zodiacs.org/${slug}/`;
+export const shortsLink = (slug) => `zodiacs.org/horoscopes/${slug}/`;
 
 /**
  * The reading block's text budget: at most `maxLines` lines of at most

@@ -90,7 +90,7 @@ describe('the daily short videos', () => {
         expect(hasDash(caption), sign.slug).toBe(false);
         expect(caption).toContain(sign.name);
         expect(caption).toContain(sign.sentences[0].text);
-        expect(caption).toContain(`zodiacs.org/${sign.slug}/`);
+        expect(caption).toContain(`zodiacs.org/horoscopes/${sign.slug}/`);
         expect(caption).toContain('Reading confidence 40%');
         expect(caption).toMatch(/#horoscope/u);
         expect(caption).not.toMatch(/\b(token|crypto|market|invest|buy|price|guarantee)\w*/iu);
