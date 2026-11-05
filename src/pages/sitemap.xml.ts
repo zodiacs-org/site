@@ -562,6 +562,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/conventions/', '2026-11-04'] as const,
   // The time atlas dataset and the developer index's card for it, last so this date wins.
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
+  // The Moon journal, first published, and the moon phase page's line linking to it. The day of the daily
+  // edition they were built with.
+  ['/moon-journal/', '2026-11-05'] as const,
+  ['/moon-phase/', '2026-11-05'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -619,6 +623,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/moon-sign/', priority: 0.9 },
     { loc: '/rising-sign/', priority: 0.9 },
     { loc: '/moon-phase/', priority: 0.85 },
+    { loc: '/moon-journal/', priority: 0.75 },
     { loc: '/saturn-return/', priority: 0.85 },
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },

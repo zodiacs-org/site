@@ -1,0 +1,177 @@
+/* ────────────────────────────────────────────────────────────────────
+   Moon journal. Cosmic Void vocabulary: void surfaces, hairlines, serif
+   display, mono only for numbers. Every box the island fills after it
+   reads the device's clock and storage is sized up front (zero CLS).
+   ──────────────────────────────────────────────────────────────────── */
+
+.mj-hero { max-width: 62ch; margin-bottom: clamp(26px, 5vw, 40px); }
+.mj-hero h1 {
+  margin: 0 0 16px;
+  font-size: var(--text-2xl);
+  line-height: 1.04;
+  text-wrap: balance;
+}
+.mj-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); line-height: 1.6; text-wrap: pretty; }
+
+.mj { display: grid; gap: clamp(22px, 4vw, 34px); }
+.mj-h {
+  margin: 0 0 12px;
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+/* ── The Moon now ─────────────────────────────────────────────────── */
+.mj-now__core { margin: 0; padding: clamp(18px, 3.5vw, 26px); }
+.mj-now__grid { display: grid; gap: 18px; }
+@media (min-width: 760px) { .mj-now__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: center; } }
+.mj-now__phase { display: flex; align-items: center; gap: 16px; min-height: 72px; }
+.mj-disc { flex: 0 0 auto; display: block; }
+.mj-now__name {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1.25;
+  block-size: 1.25em;
+  white-space: nowrap;
+  color: var(--text);
+}
+.mj-now__meta {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  block-size: 1.5em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.mj-now__next { display: grid; gap: 10px; margin: 0; }
+.mj-now__next div { display: grid; gap: 2px; }
+.mj-now__next dt { margin: 0; color: var(--muted); font-size: var(--text-xs); line-height: 1.4; }
+.mj-now__next dd {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  min-block-size: 3em;
+  max-block-size: 3em;
+  overflow: hidden;
+}
+@media (min-width: 520px) { .mj-now__next dd { min-block-size: 1.5em; max-block-size: 1.5em; white-space: nowrap; text-overflow: ellipsis; } }
+
+/* ── This cycle's question, beside last cycle's note ─────────────── */
+.mj-prompt { display: grid; gap: 18px; }
+@media (min-width: 900px) { .mj-prompt { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: start; } }
+.mj-prompt__for {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  min-block-size: 3em;
+}
+@media (min-width: 520px) { .mj-prompt__for { min-block-size: 1.5em; } }
+.mj-prompt__q {
+  margin: 8px 0 18px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--text-lg);
+  line-height: 1.4;
+  color: var(--text);
+  min-block-size: 5.6em;
+  text-wrap: pretty;
+}
+@media (min-width: 640px) { .mj-prompt__q { min-block-size: 2.8em; } }
+.mj-label { display: block; margin: 0 0 6px; color: var(--text-2); font-size: var(--text-sm); font-weight: 550; }
+.mj-textarea {
+  display: block;
+  inline-size: 100%;
+  box-sizing: border-box;
+  min-block-size: 10em;
+  padding: 12px 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-sm);
+  background: var(--void-1);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-base);
+  line-height: 1.6;
+  resize: vertical;
+}
+.mj-textarea:focus-visible { outline: 2px solid var(--ink-1); outline-offset: 2px; border-color: var(--hair-3); }
+.mj-textarea:disabled { opacity: 0.7; }
+.mj-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
+.mj-status {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  min-block-size: 4.8em;
+}
+@media (min-width: 640px) { .mj-status { min-block-size: 3.2em; } }
+
+.mj-last {
+  padding: 16px 18px;
+  border: 1px solid var(--hair-1);
+  border-left: 2px solid var(--sign-cancer, var(--hair-3));
+  border-radius: var(--r-md);
+  background: var(--void-1);
+  block-size: 15rem;
+  overflow: auto;
+}
+.mj-last__head { margin: 0 0 8px; font-size: var(--text-sm); font-weight: 600; color: var(--text); }
+.mj-last__meta { margin: 0; color: var(--muted); font-size: var(--text-xs); }
+.mj-last__q { margin: 6px 0 0; color: var(--text-2); font-family: var(--font-serif); font-style: italic; line-height: 1.45; }
+.mj-last__text { margin: 10px 0 0; color: var(--text); line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.mj-last__empty { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; }
+
+.mj-horizon { margin: 0; color: var(--muted); font-size: var(--text-sm); }
+
+/* ── Past entries ─────────────────────────────────────────────────── */
+.mj-past__empty { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; max-width: 62ch; }
+.mj-entries { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.mj-entry {
+  padding: 14px 16px;
+  border: 1px solid var(--hair-1);
+  border-radius: var(--r-md);
+  background: var(--void-1);
+}
+.mj-entry__title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; font-weight: 550; color: var(--text); }
+.mj-entry__date { color: var(--muted); font-size: var(--text-sm); font-weight: 400; }
+.mj-entry__q { margin: 6px 0 0; color: var(--text-2); font-family: var(--font-serif); font-style: italic; line-height: 1.45; }
+.mj-entry__text { margin: 10px 0 0; color: var(--text); line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.mj-entry .mj-textarea { margin-top: 10px; }
+
+.mj-link {
+  appearance: none;
+  min-height: 44px;
+  padding: 6px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  font-size: var(--text-sm);
+  text-decoration: underline;
+  text-decoration-color: var(--hair-2);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.mj-link:hover { color: var(--text); }
+.mj-link:focus-visible { outline: 2px solid var(--ink-1); outline-offset: 2px; border-radius: var(--r-sm); }
+.mj-link:disabled { opacity: 0.5; cursor: not-allowed; }
+.mj-link--quiet { color: var(--muted); }
+
+.mj-confirm {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-sm);
+  background: var(--void-2);
+}
+.mj-confirm p { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.6; }
+
+/* ── Download or delete ───────────────────────────────────────────── */
+.mj-tools { padding-top: 6px; border-top: 1px solid var(--hair-1); }
+.mj-tools .mj-h { margin-top: 18px; }
+.mj-tools__note { margin: 10px 0 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; max-width: 62ch; }
+.mj-noscript { margin: 18px 0 0; color: var(--muted); }
