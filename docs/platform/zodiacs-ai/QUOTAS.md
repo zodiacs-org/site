@@ -26,22 +26,28 @@ Shared provider egress and duplicate model calls can exhaust them sooner.
 
 ## What is counted (from 5 November 2026)
 
-Only a `tools/call`, the health check (`GET /mcp?__zodiacs_ai=health`) and the
-account pages are counted against the per-address `zodiacs-compute-api` rule and
-the service-wide request budget. Connecting (`initialize`,
-`notifications/initialized`, `ping`), listing tools, listing resources and
-reading panel resources are not counted. A tool call is counted against the
-per-address rule first, then the service-wide budget, as every request was
-before. The expensive event and date-fact computations keep their own
-per-address rule and event budget, unchanged.
+Every request is still counted against the per-address `zodiacs-compute-api`
+rule, before any authentication, exactly as before. It bounds what one address
+can pull, including the panel resources (the Chart Studio panel is about 1 MB).
+
+The service-wide request budget now counts only a `tools/call` (whatever the
+JSON type of its `method`) and the health check (`GET /mcp?__zodiacs_ai=health`).
+Connecting (`initialize`, `notifications/initialized`, `ping`), listing tools,
+listing resources and reading panel resources are left out of it. The account
+pages meet the per-address rule only, as before. A tool call meets the
+per-address rule first, then the budget. The expensive event and date-fact
+computations keep their own per-address rule and event budget, unchanged.
 
 Why: on 5 November a Claude directory test opened three chats at once. Each
 chat connects, lists the tools and loads panels before it asks anything, and
-Claude retries refused requests. Together they used up the 40 a minute shared by
-Anthropic's addresses, and every request was refused with 429 until the window
-reset. Only two Claude tool calls had run that day. Counting tool calls alone
-leaves the ceilings at 40 a minute and makes them mean 40 questions answered,
-not 40 messages exchanged. Raising the ceilings is a separate cost decision.
+Claude retries refused requests. Their requests were refused with 429 until the
+window reset, and only two Claude tool calls ran that day. The service-wide
+budget is shared by every user of every assistant, so setup traffic should not
+use it up. If shared provider addresses still meet the per-address rule, its
+threshold is the owner's Vercel Firewall setting (OWNER-SETUP-RUNBOOK.md). An
+independent review kept that rule on every request because, without it, one
+address could pull the 1 MB panel without limit.
+
 
 Only four possible rows exist. They contain scope, budget kind, count and expiry;
 no caller identifiers, IPs, arguments, outputs or operation histories are stored.

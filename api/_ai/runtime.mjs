@@ -43187,13 +43187,6 @@ function createAiNodeHandler(options = {}) {
       const rateLimit = options.rateLimit ?? computeApiRateLimit;
       let verdict;
       const refuse = (kind) => send(res, kind === "limited" ? 429 : 503, kind === "limited" ? "rate-limited" : "rate-limit-unavailable", kind === "limited" ? 60 : 300);
-      const countAddress = async () => {
-        try {
-          return await rateLimit(req, COMPUTE_RATE_LIMIT_ID);
-        } catch {
-          return "unavailable";
-        }
-      };
       const countRequest = async () => {
         try {
           return await atomicQuota("request");
@@ -43201,10 +43194,12 @@ function createAiNodeHandler(options = {}) {
           return "unavailable";
         }
       };
-      if (method === "GET") {
-        verdict = await countAddress();
-        if (verdict !== "allowed") return refuse(verdict);
+      try {
+        verdict = await rateLimit(req, COMPUTE_RATE_LIMIT_ID);
+      } catch {
+        verdict = "unavailable";
       }
+      if (verdict !== "allowed") return refuse(verdict);
       if (accountRoute) return serveAccountRoute(res, query[AI_ROUTE_PARAM], options, env);
       let watch;
       try {
@@ -43274,9 +43269,7 @@ function createAiNodeHandler(options = {}) {
       }
       if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
       const message = body2;
-      if (message.method === "tools/call") {
-        verdict = await countAddress();
-        if (verdict !== "allowed") return refuse(verdict);
+      if (String(message.method) === "tools/call") {
         verdict = await countRequest();
         if (verdict !== "allowed") return refuse(verdict);
       }

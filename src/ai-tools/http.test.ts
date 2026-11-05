@@ -10,14 +10,14 @@ import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/comp
 let server: Server, base: string;
 let enabled: string | undefined = '1'; let verdict: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 let allowedHost: string; const counted: string[] = [];
-let atomicRequest: 'allowed' | 'limited' | 'unavailable' = 'allowed';
+let atomicRequest: 'allowed' | 'limited' | 'unavailable' | 'throw' = 'allowed';
 let atomicEvent: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 const atomicCounted: string[] = [];
 let occasionsSwitch: string | undefined;
 let coverageSwitch: string | undefined;
 const env = { get ZODIACS_MCP_ENABLED() { return enabled; }, get ZODIACS_OCCASIONS_ENABLED() { return occasionsSwitch; }, get ZODIACS_COVERAGE_ENABLED() { return coverageSwitch; } };
 beforeAll(async () => {
-  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); return kind === 'request' ? atomicRequest : atomicEvent; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
+  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); if (kind === 'request' && atomicRequest === 'throw') throw new Error('budget unreachable'); return (kind === 'request' ? atomicRequest : atomicEvent) as 'allowed' | 'limited' | 'unavailable'; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${(server.address() as { port: number }).port}/mcp`;
   allowedHost = new URL(base).host;
@@ -44,31 +44,47 @@ describe('stateless MCP HTTP boundary', () => {
       }
     } finally { atomicRequest = 'allowed'; }
   });
-  it('counts only tool calls: connecting, listing tools and reading panels use no budget', async () => {
+  it('keeps connecting, listing tools and reading panels out of the service-wide budget, but not the address rule', async () => {
+    const H = { 'MCP-Protocol-Version': '2025-06-18' };
     try {
-      verdict = 'limited'; atomicRequest = 'limited'; counted.length = 0; atomicCounted.length = 0;
+      atomicRequest = 'limited'; counted.length = 0; atomicCounted.length = 0;
       const init = await post(rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'budget-test', version: '1' } }));
       expect(init.status).toBe(200);
       expect((await readMessage(init)).result.serverInfo.name).toBe('zodiacs');
-      expect((await post({ jsonrpc: '2.0', method: 'notifications/initialized' }, { 'MCP-Protocol-Version': '2025-06-18' })).status).toBeLessThan(300);
-      const list = await post(rpc('tools/list'), { 'MCP-Protocol-Version': '2025-06-18' });
+      expect((await post({ jsonrpc: '2.0', method: 'notifications/initialized' }, H)).status).toBeLessThan(300);
+      const list = await post(rpc('tools/list'), H);
       expect(list.status).toBe(200);
       expect((await readMessage(list)).result.tools.length).toBeGreaterThan(0);
-      const resources = await post(rpc('resources/list'), { 'MCP-Protocol-Version': '2025-06-18' });
+      const resources = await post(rpc('resources/list'), H);
       expect(resources.status).toBe(200);
       const uri = (await readMessage(resources)).result.resources[0].uri;
-      expect((await post(rpc('resources/read', { uri }), { 'MCP-Protocol-Version': '2025-06-18' })).status).toBe(200);
-      expect(counted).toEqual([]);
+      expect((await post(rpc('resources/read', { uri }), H)).status).toBe(200);
+      // Every request still meets the per-address rule; none of them used the service-wide budget.
+      expect(counted).toEqual(Array(5).fill(COMPUTE_RATE_LIMIT_ID));
       expect(atomicCounted).toEqual([]);
-      // A tool call is counted, first against the per-address rule.
-      const call = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }), { 'MCP-Protocol-Version': '2025-06-18' });
+      // A tool call is counted against both, the address rule first.
+      counted.length = 0;
+      const call = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }), H);
       expect(call.status).toBe(429);
-      expect(counted).toEqual([COMPUTE_RATE_LIMIT_ID]);
-      verdict = 'allowed'; counted.length = 0;
-      expect((await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }), { 'MCP-Protocol-Version': '2025-06-18' })).status).toBe(429);
+      expect(call.headers.get('retry-after')).toBe('60');
       expect(counted).toEqual([COMPUTE_RATE_LIMIT_ID]);
       expect(atomicCounted).toEqual(['request']);
+      // A method sent as a non-string still meets the budget.
+      atomicCounted.length = 0;
+      expect((await post({ jsonrpc: '2.0', id: 2, method: ['tools/call'], params: { name: 'get_capabilities', arguments: {} } }, H)).status).toBe(429);
+      expect(atomicCounted).toEqual(['request']);
+      // The address rule still refuses setup messages once that address is limited.
+      atomicRequest = 'allowed'; verdict = 'limited';
+      expect((await post(rpc('tools/list'), H)).status).toBe(429);
     } finally { verdict = 'allowed'; atomicRequest = 'allowed'; }
+  });
+  it('fails closed when the budget cannot count a tool call', async () => {
+    try {
+      atomicRequest = 'throw';
+      const response = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }), { 'MCP-Protocol-Version': '2025-06-18' });
+      expect(response.status).toBe(503);
+      expect(response.headers.get('retry-after')).toBe('300');
+    } finally { atomicRequest = 'allowed'; }
   });
   it('still counts the health check against both limits', async () => {
     try {

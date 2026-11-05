@@ -146,15 +146,16 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     if (env[AI_SWITCH_ENV] !== '1') return send(res, 503, 'disabled', 3600);
     const atomicQuota = options.atomicQuota ?? (kind => reserveAiQuota(kind, env));
     const rateLimit = options.rateLimit ?? computeApiRateLimit;
-    // A tool call is what costs, so the per-address rule and the service-wide request budget count tool calls, the
-    // health check and the account pages. Connecting, listing tools and reading panel resources are not counted: an
-    // assistant opening a few chats at once sends many of those, and counting them used up the minute's budget
-    // before anyone had asked a question (5 November 2026).
+    // Every request is counted against the per-address rule, before any authentication, as it always was: it bounds
+    // what one address can pull, panels included. The service-wide request budget counts only tool calls and the
+    // health check. Connecting, listing tools and reading panel resources are left out of it: assistants sharing
+    // provider addresses send many of those when chats open, and counting them used up the minute's budget before
+    // anyone had asked a question (5 November 2026).
     let verdict: RateLimitVerdict;
     const refuse = (kind: RateLimitVerdict) => send(res, kind === 'limited' ? 429 : 503, kind === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', kind === 'limited' ? 60 : 300);
-    const countAddress = async (): Promise<RateLimitVerdict> => { try { return await rateLimit(req, COMPUTE_RATE_LIMIT_ID); } catch { return 'unavailable'; } };
     const countRequest = async (): Promise<RateLimitVerdict> => { try { return await atomicQuota('request'); } catch { return 'unavailable'; } };
-    if (method === 'GET') { verdict = await countAddress(); if (verdict !== 'allowed') return refuse(verdict); }
+    try { verdict = await rateLimit(req, COMPUTE_RATE_LIMIT_ID); } catch { verdict = 'unavailable'; }
+    if (verdict !== 'allowed') return refuse(verdict);
     if (accountRoute) return serveAccountRoute(res, query[AI_ROUTE_PARAM], options, env);
     let watch: { service: SkyWatch; owner: import('./watch/contracts').Principal } | undefined;
     try {
@@ -207,10 +208,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     }
     if (!body || typeof body !== 'object' || Array.isArray(body)) return send(res, 400, 'invalid-json-rpc');
     const message = body as Record<string, unknown>;
-    if (message.method === 'tools/call') {
-      verdict = await countAddress(); if (verdict !== 'allowed') return refuse(verdict);
-      verdict = await countRequest(); if (verdict !== 'allowed') return refuse(verdict);
-    }
+    // Compared as the method allowlist below compares it, so no spelling of a tool call escapes the budget.
+    if (String(message.method) === 'tools/call') { verdict = await countRequest(); if (verdict !== 'allowed') return refuse(verdict); }
     // The sky events switch is read as the coverage and occasion switches are, and counts only with both of them on.
     const skyEvents = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[SKY_EVENTS_SWITCH_ENV] === '1';
     let calledTool: CountedToolName | undefined;
