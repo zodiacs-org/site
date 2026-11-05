@@ -78,3 +78,11 @@ with main at 1e89d772: the branch's 22 commits, four of them merges of main
 The same finding as the first run: every matching line the branch adds is
 birth data main already carries, re-emitted by regenerated bundles and their
 archive copies.
+
+Fourth run, after the commit that records the third (4b9768cd), over
+origin/main..4b9768cd, both sets: the same counts, 247 lines in the commits
+and 610 in the tree. Read against its parent, 4b9768cd adds no data-pattern
+line and 1 name-pattern line: a test's title in the fifth attempt's
+full-suite log, whose matched text main's own test and source files carry
+(classified in memory, counts only). The commit after it changes only this
+description.
