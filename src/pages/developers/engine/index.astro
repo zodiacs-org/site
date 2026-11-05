@@ -33,6 +33,8 @@ const api = [
   ['chartDeclinations(chart)', 'Right ascension and declination of each body, parallels and contraparallels, and each body\'s signed margin to the out-of-bounds limit, in arcseconds.'],
   ['@zodiacs/engine/timing', 'Hellenistic timing, a separate import: annual profections, firdaria, zodiacal releasing and solar arc directions. This site uses none of it.'],
   ['@zodiacs/engine/vedic', 'The sidereal zodiac, a separate import: ayanamsas, sidereal charts, nakshatras, vargas, KP sub-lords and the Vimshottari, Yogini and Ashtottari dashas. This site uses none of it.'],
+  ['@zodiacs/engine/time', 'The engine\'s own time basis, a separate import: the UT1 and TT of an instant with the ΔT and time scale a chart records, the nutation and frame of date that turn its positions, and first-order time bands. This site\'s server ephemeris and compute API take their time basis from it.'],
+  ['@zodiacs/engine/lite', 'Declinations and parallels, sect, composite midpoints and essential dignities, a separate import that loads no ephemeris. This site\'s three-dimensional view, relationship page and chart take theirs from it.'],
 ];
 
 const software = 'https://zodiacs.org/developers/engine/#software';

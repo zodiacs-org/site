@@ -13,11 +13,12 @@
  * 0.1.1-rc.16 the engine turns astronomy-engine's apparent vectors to the
  * ecliptic of date itself, with astronomy-engine's precession and its own
  * IAU 2000B nutation, where astronomy-engine's rotation keeps 5 of that
- * series' 77 terms. The package exports neither, so `time-basis.mjs` carries
- * its compiled time basis, nutation and frame, bundled by
- * scripts/build-time-basis.mjs. Each sample is then taken as the engine takes
- * it: astronomy-engine's time at the basis's UT1, with the basis's ΔT held for
- * that call, and its vector turned by the engine's frame.
+ * series' 77 terms. Since 1.1.0-rc.2 the package exports that time basis,
+ * nutation and frame as `@zodiacs/engine/time`, which this module imports
+ * (until then the site carried a bundled copy of them). Each sample is then
+ * taken as the engine takes it: astronomy-engine's time at the basis's UT1,
+ * with the basis's ΔT held for that call, and its vector turned by the
+ * engine's frame.
  */
 import { createRequire } from 'node:module';
 import type * as AstronomyEngine from 'astronomy-engine';
@@ -30,7 +31,7 @@ import {
   meanEcliptic,
   timeBasis,
   type TimeBasis,
-} from './time-basis.mjs';
+} from '@zodiacs/engine/time';
 import type { BodyName } from './types';
 
 const require = createRequire(import.meta.url);

@@ -1,0 +1,151 @@
+{
+ "main": "bff5672feb2b56434698d4e4331914ddc3f16c24",
+ "rows": [
+  {
+   "file": "career-1280.png",
+   "before": "1280x5670",
+   "after": "1280x5670",
+   "pixels": 7257600,
+   "differing": 14268,
+   "atMostTwoLevels": 904,
+   "largestLevelDifference": 218
+  },
+  {
+   "file": "career-360.png",
+   "before": "360x8522",
+   "after": "360x8522",
+   "pixels": 3067920,
+   "differing": 10450,
+   "atMostTwoLevels": 566,
+   "largestLevelDifference": 204
+  },
+  {
+   "file": "daily-1280.png",
+   "before": "1280x5873",
+   "after": "1280x5873",
+   "pixels": 7517440,
+   "differing": 173998,
+   "atMostTwoLevels": 3381,
+   "largestLevelDifference": 238
+  },
+  {
+   "file": "daily-360.png",
+   "before": "360x9014",
+   "after": "360x8857"
+  },
+  {
+   "file": "horoscopes-hub-1280.png",
+   "before": "1280x3168",
+   "after": "1280x3168",
+   "pixels": 4055040,
+   "differing": 751,
+   "atMostTwoLevels": 17,
+   "largestLevelDifference": 162
+  },
+  {
+   "file": "horoscopes-hub-360.png",
+   "before": "360x6289",
+   "after": "360x6289",
+   "pixels": 2264040,
+   "differing": 704,
+   "atMostTwoLevels": 18,
+   "largestLevelDifference": 162
+  },
+  {
+   "file": "love-1280.png",
+   "before": "1280x5705",
+   "after": "1280x5705",
+   "pixels": 7302400,
+   "differing": 14887,
+   "atMostTwoLevels": 1047,
+   "largestLevelDifference": 206
+  },
+  {
+   "file": "love-360.png",
+   "before": "360x8505",
+   "after": "360x8505",
+   "pixels": 3061800,
+   "differing": 10896,
+   "atMostTwoLevels": 634,
+   "largestLevelDifference": 205
+  },
+  {
+   "file": "monthly-1280.png",
+   "before": "1280x6155",
+   "after": "1280x6155",
+   "pixels": 7878400,
+   "differing": 12073,
+   "atMostTwoLevels": 719,
+   "largestLevelDifference": 234
+  },
+  {
+   "file": "monthly-360.png",
+   "before": "360x9434",
+   "after": "360x9434",
+   "pixels": 3396240,
+   "differing": 8612,
+   "atMostTwoLevels": 501,
+   "largestLevelDifference": 204
+  },
+  {
+   "file": "today-1280.png",
+   "before": "1280x7756",
+   "after": "1280x7829"
+  },
+  {
+   "file": "today-360.png",
+   "before": "360x11378",
+   "after": "360x11401"
+  },
+  {
+   "file": "tomorrow-1280.png",
+   "before": "1280x5908",
+   "after": "1280x5873"
+  },
+  {
+   "file": "tomorrow-360.png",
+   "before": "360x8675",
+   "after": "360x8675",
+   "pixels": 3123000,
+   "differing": 36311,
+   "atMostTwoLevels": 859,
+   "largestLevelDifference": 223
+  },
+  {
+   "file": "weekly-1280.png",
+   "before": "1280x6395",
+   "after": "1280x6395",
+   "pixels": 8185600,
+   "differing": 17136,
+   "atMostTwoLevels": 1010,
+   "largestLevelDifference": 206
+  },
+  {
+   "file": "weekly-360.png",
+   "before": "360x9611",
+   "after": "360x9611",
+   "pixels": 3459960,
+   "differing": 13260,
+   "atMostTwoLevels": 666,
+   "largestLevelDifference": 205
+  },
+  {
+   "file": "yearly-1280.png",
+   "before": "1280x10907",
+   "after": "1280x10907",
+   "pixels": 13960960,
+   "differing": 12077,
+   "atMostTwoLevels": 706,
+   "largestLevelDifference": 234
+  },
+  {
+   "file": "yearly-360.png",
+   "before": "360x16837",
+   "after": "360x16837",
+   "pixels": 6061320,
+   "differing": 8615,
+   "atMostTwoLevels": 505,
+   "largestLevelDifference": 204
+  }
+ ]
+}

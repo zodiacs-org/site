@@ -162,16 +162,19 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `now` receipt year — refresh yearly with sky.json)
 - `src/data/transits-YYYY-MM.json` ← `node scripts/build-transits.mjs`
   (monthly cron: transits-monthly.yml)
-- `src/lib/engine/time-basis.mjs` ← `node scripts/build-time-basis.mjs`
-  (the engine package's own compiled time basis, for the calendar
-  function's server adapter and its tools, until the package exports one;
-  `--check` runs in CI)
 - `api/_assistant/context.ts` ← `vite-node --script
   scripts/build-assistant-context.mjs` (committed assistant site guide)
 - `plugins/zodiacs-sky/.codex-plugin/plugin.json` and `plugins/zodiacs-sky/.mcp.json` ← `scripts/build-ai-integrations.mjs` from the portable Sky manifest.
 - `integrations/generated/chart-studio.mjs` ← `scripts/build-chart-studio.mjs`
   through `npm run ai:build`; standalone browser bundle with inline fonts/icons.
   Its sources are `src/ai-tools/studio/`; never edit the generated HTML string.
+  While the panel is pinned to its published address (`PUBLISHED` in the
+  script, `ui://zodiacs/chart-studio-v6.html`), `ai:build` keeps the bytes that
+  address was published with, and it and `ai:check` fail when the panel's
+  build differs from `SOURCE_SHA256`: a change to the studio's sources, a
+  shared module it imports, its fonts or icons, or the engine. End the pin
+  with a new address, or record the new build in `SOURCE_SHA256` if the
+  change may wait.
 - `integrations/generated/horoscopes.mjs` ← `scripts/build-horoscope-panel.mjs`
   through `npm run ai:build`; the get_horoscope panel (sources
   `src/ai-tools/horoscope/`). It carries no reading data.

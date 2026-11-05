@@ -35,7 +35,6 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import {
   altitudeOf,
   declinationCircle,
-  declinationOf,
   eclipseProximity,
   eclipticToVec,
   horizonCircle,
@@ -50,7 +49,7 @@ import {
   type Projected,
 } from '../../lib/wheel/ecliptic3d';
 import { meanObliquity } from '../../lib/engine/houses';
-import { findDeclinationAspects, type DeclinationAspect } from '../../lib/declination';
+import { declinationRows, findDeclinationAspects, type DeclinationAspect } from '../../lib/declination';
 import { sectOf } from '../../lib/sect';
 import type { HouseSystem } from '../../lib/engine/types';
 import type { EntityRef } from '../../lib/scene/types';
@@ -388,44 +387,64 @@ export default function EclipticView({
     [shown],
   );
 
-  const marks = useMemo(() => shown
-    .filter((b) => GLYPH[b.body])
-    .map((b) => {
+  /**
+   * Each drawn body's declination and bounds flag, as the engine gives them
+   * (lite entry). They follow the chart, not the view, so turning the sphere
+   * does not compute them again.
+   */
+  const declinations = useMemo(() => declinationRows(
+    shown.filter((b) => GLYPH[b.body]).map(({ body, lon, lat }) => ({ body, lon, lat })),
+    obliquity,
+  ), [shown, obliquity]);
+
+  const marks = useMemo(() => {
+    const drawn = shown.filter((b) => GLYPH[b.body]);
+    const rows = declinations;
+    return drawn.map((b, index) => {
       const fanned = drawLon.get(b.body) ?? b.lon;
       const lonAt = b.lon + (fanned - b.lon) * (1 - solidity);
-      const dec = declinationOf(b.lon, b.lat, obliquity);
+      const { dec, outOfBounds } = rows[index];
       return {
         ...b,
         partner: false,
         lonAt,
         dec,
-        outOfBounds: Math.abs(dec) > obliquity,
+        outOfBounds,
         up: frame ? altitudeOf(b.lon, b.lat, frame.zenith) > 0 : true,
         p: at(lonAt, b.lat, R_BODY),
         foot: at(lonAt, 0, R_BODY),
         hub: at(lonAt, b.lat, R_HUB + (R_BODY - R_HUB) * solidity),
       };
     })
-    .sort((a, z) => a.p.depth - z.p.depth), [shown, drawLon, solidity, obliquity, frame, spin, tilt, anchor]);
+      .sort((a, z) => a.p.depth - z.p.depth);
+  }, [shown, declinations, drawLon, solidity, frame, spin, tilt, anchor]);
+
+  /** The second chart's declinations, likewise computed once per chart. */
+  const partnerDeclinations = useMemo(() => declinationRows(
+    (partner?.bodies ?? []).filter((b) => GLYPH[b.body]).map(({ body, lon, lat }) => ({ body, lon, lat })),
+    obliquity,
+  ), [partner, obliquity]);
 
   /** The second chart's bodies, dashed, at their own true positions. */
-  const partnerMarks = useMemo(() => (partner?.bodies ?? [])
-    .filter((b) => GLYPH[b.body])
-    .map((b) => {
-      const dec = declinationOf(b.lon, b.lat, obliquity);
+  const partnerMarks = useMemo(() => {
+    const drawn = (partner?.bodies ?? []).filter((b) => GLYPH[b.body]);
+    const rows = partnerDeclinations;
+    return drawn.map((b, index) => {
+      const { dec, outOfBounds } = rows[index];
       return {
         ...b,
         partner: true,
         lonAt: b.lon,
         dec,
-        outOfBounds: Math.abs(dec) > obliquity,
+        outOfBounds,
         up: true,
         p: at(b.lon, b.lat, R_BODY),
         foot: at(b.lon, 0, R_BODY),
         hub: at(b.lon, b.lat, R_BODY),
       };
     })
-    .sort((a, z) => a.p.depth - z.p.depth), [partner, obliquity, spin, tilt, anchor]);
+      .sort((a, z) => a.p.depth - z.p.depth);
+  }, [partner, partnerDeclinations, spin, tilt, anchor]);
 
   /** A longitude-only side has every latitude at exactly zero. */
   const flatSide = duo && partnerMarks.length > 0 && (

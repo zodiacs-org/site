@@ -194,6 +194,581 @@ var COMPUTE_RECEIPT_SCHEMA = "zodiacs.compute-receipt.v1";
 // src/lib/compute-api/handler.ts
 import { checkRateLimit } from "@vercel/firewall";
 
+// node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
+var SIGNS = /* @__PURE__ */ Object.freeze([
+  /* @__PURE__ */ Object.freeze({
+    slug: "aries",
+    name: "Aries",
+    element: "fire",
+    modality: "cardinal",
+    polarity: "day",
+    naturalHouse: 1
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "taurus",
+    name: "Taurus",
+    element: "earth",
+    modality: "fixed",
+    polarity: "night",
+    naturalHouse: 2
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "gemini",
+    name: "Gemini",
+    element: "air",
+    modality: "mutable",
+    polarity: "day",
+    naturalHouse: 3
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "cancer",
+    name: "Cancer",
+    element: "water",
+    modality: "cardinal",
+    polarity: "night",
+    naturalHouse: 4
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "leo",
+    name: "Leo",
+    element: "fire",
+    modality: "fixed",
+    polarity: "day",
+    naturalHouse: 5
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "virgo",
+    name: "Virgo",
+    element: "earth",
+    modality: "mutable",
+    polarity: "night",
+    naturalHouse: 6
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "libra",
+    name: "Libra",
+    element: "air",
+    modality: "cardinal",
+    polarity: "day",
+    naturalHouse: 7
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "scorpio",
+    name: "Scorpio",
+    element: "water",
+    modality: "fixed",
+    polarity: "night",
+    naturalHouse: 8
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "sagittarius",
+    name: "Sagittarius",
+    element: "fire",
+    modality: "mutable",
+    polarity: "day",
+    naturalHouse: 9
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "capricorn",
+    name: "Capricorn",
+    element: "earth",
+    modality: "cardinal",
+    polarity: "night",
+    naturalHouse: 10
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "aquarius",
+    name: "Aquarius",
+    element: "air",
+    modality: "fixed",
+    polarity: "day",
+    naturalHouse: 11
+  }),
+  /* @__PURE__ */ Object.freeze({
+    slug: "pisces",
+    name: "Pisces",
+    element: "water",
+    modality: "mutable",
+    polarity: "night",
+    naturalHouse: 12
+  })
+]);
+var SIGN_SLUGS2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ SIGNS.map((sign2) => sign2.slug));
+function normalizeLongitude(lon) {
+  if (!Number.isFinite(lon)) throw new RangeError("Longitude must be finite.");
+  return (lon % 360 + 360) % 360;
+}
+function signIndexForLongitude(lon) {
+  return Math.floor(normalizeLongitude(lon) / 30);
+}
+function signForLongitude(lon) {
+  const sign2 = SIGNS[signIndexForLongitude(lon)];
+  if (!sign2) throw new RangeError("Could not resolve zodiac sign.");
+  return sign2;
+}
+function degreeInSign(lon) {
+  return normalizeLongitude(lon) % 30;
+}
+
+// node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
+var DEG = Math.PI / 180;
+var RAD = 180 / Math.PI;
+var HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze([
+  "whole",
+  "placidus",
+  "porphyry",
+  "equal",
+  "equal-mc",
+  "vehlow",
+  "koch",
+  "regiomontanus",
+  "campanus",
+  "topocentric",
+  "alcabitius",
+  "morinus",
+  "meridian"
+]);
+var POLAR_UNDEFINED_HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze(["placidus", "koch"]);
+var POLAR_FALLBACK = "whole";
+function isPolarUndefinedHouseSystem(system) {
+  return POLAR_UNDEFINED_HOUSE_SYSTEMS.includes(system);
+}
+function meanObliquity(julianCenturies) {
+  const t = julianCenturies;
+  const arcseconds = 84381.406 - 46.836769 * t - 1831e-7 * t * t + 20034e-7 * t ** 3 - 576e-9 * t ** 4 - 434e-10 * t ** 5;
+  return arcseconds / 3600;
+}
+function eclipticLongitudeOfRightAscension(ra, obliquity) {
+  return normalizeLongitude(
+    Math.atan2(Math.sin(ra * DEG), Math.cos(ra * DEG) * Math.cos(obliquity * DEG)) * RAD
+  );
+}
+function declinationOfLongitude(lon, obliquity) {
+  return Math.asin(Math.sin(obliquity * DEG) * Math.sin(lon * DEG)) * RAD;
+}
+function obliqueLongitude(ascension, pole, obliquity) {
+  const a = ascension * DEG;
+  const e = obliquity * DEG;
+  return normalizeLongitude(
+    Math.atan2(Math.sin(a), Math.cos(a) * Math.cos(e) - Math.tan(pole * DEG) * Math.sin(e)) * RAD
+  );
+}
+function quadrantCusps(asc, mc, cusp11, cusp12, cusp2, cusp3) {
+  return [
+    asc,
+    cusp2,
+    cusp3,
+    mc + 180,
+    cusp11 + 180,
+    cusp12 + 180,
+    asc + 180,
+    cusp2 + 180,
+    cusp3 + 180,
+    mc,
+    cusp11,
+    cusp12
+  ].map(normalizeLongitude);
+}
+function ramcOf(input) {
+  return normalizeLongitude(input.gastHours * 15 + input.longitude);
+}
+function computeAngles(input) {
+  const ramc = ramcOf(input);
+  const mc = eclipticLongitudeOfRightAscension(ramc, input.obliquity);
+  const ra = ramc * DEG;
+  const eps = input.obliquity * DEG;
+  const phi = input.latitude * DEG;
+  let asc = normalizeLongitude(
+    Math.atan2(Math.cos(ra), -(Math.sin(ra) * Math.cos(eps) + Math.tan(phi) * Math.sin(eps))) * RAD
+  );
+  if (normalizeLongitude(asc - mc) >= 180) asc = normalizeLongitude(asc + 180);
+  return {
+    asc,
+    mc,
+    dsc: normalizeLongitude(asc + 180),
+    ic: normalizeLongitude(mc + 180)
+  };
+}
+function wholeSignCusps(ascendant) {
+  const first2 = Math.floor(normalizeLongitude(ascendant) / 30) * 30;
+  return Array.from({ length: 12 }, (_, index) => normalizeLongitude(first2 + index * 30));
+}
+function placidusCusps(input, angles) {
+  if (Math.abs(input.latitude) >= 90 - input.obliquity) return null;
+  const ramc = ramcOf(input);
+  const phi = input.latitude * DEG;
+  function iterate(offset, multiplier) {
+    let ra = ramc + offset;
+    let converged = false;
+    for (let index = 0; index < 64; index += 1) {
+      const lon = eclipticLongitudeOfRightAscension(normalizeLongitude(ra), input.obliquity);
+      const declination = declinationOfLongitude(lon, input.obliquity);
+      const argument = Math.tan(phi) * Math.tan(declination * DEG);
+      if (Math.abs(argument) >= 1) break;
+      const ascensionalDifference = Math.asin(argument) * RAD;
+      const next = ramc + offset + multiplier * ascensionalDifference;
+      if (Math.abs(normalizeLongitude(next - ra + 180) - 180) < 1e-9) {
+        ra = next;
+        converged = true;
+        break;
+      }
+      ra = next;
+    }
+    return eclipticLongitudeOfRightAscension(
+      normalizeLongitude(converged ? ra : bracketed(offset, multiplier)),
+      input.obliquity
+    );
+  }
+  function bracketed(offset, multiplier) {
+    const centre = ramc + offset;
+    let low = centre - 90 * multiplier - 1;
+    let high = centre + 90 * multiplier + 1;
+    for (let index = 0; index < 128; index += 1) {
+      const middle = (low + high) / 2;
+      if (!(middle > low && middle < high)) break;
+      const lon = eclipticLongitudeOfRightAscension(normalizeLongitude(middle), input.obliquity);
+      const declination = declinationOfLongitude(lon, input.obliquity);
+      const argument = Math.min(1, Math.max(-1, Math.tan(phi) * Math.tan(declination * DEG)));
+      if (centre + multiplier * Math.asin(argument) * RAD > middle) low = middle;
+      else high = middle;
+    }
+    return (low + high) / 2;
+  }
+  const cusp11 = iterate(30, 1 / 3);
+  const cusp12 = iterate(60, 2 / 3);
+  const cusp2 = iterate(120, 2 / 3);
+  const cusp3 = iterate(150, 1 / 3);
+  return [
+    angles.asc,
+    cusp2,
+    cusp3,
+    angles.ic,
+    normalizeLongitude(cusp11 + 180),
+    normalizeLongitude(cusp12 + 180),
+    angles.dsc,
+    normalizeLongitude(cusp2 + 180),
+    normalizeLongitude(cusp3 + 180),
+    angles.mc,
+    cusp11,
+    cusp12
+  ];
+}
+function porphyryCusps(angles) {
+  const upper = normalizeLongitude(angles.asc - angles.mc);
+  const lower2 = normalizeLongitude(angles.ic - angles.asc);
+  const cusp11 = normalizeLongitude(angles.mc + upper / 3);
+  const cusp12 = normalizeLongitude(angles.mc + 2 * upper / 3);
+  const cusp2 = normalizeLongitude(angles.asc + lower2 / 3);
+  const cusp3 = normalizeLongitude(angles.asc + 2 * lower2 / 3);
+  return [
+    angles.asc,
+    cusp2,
+    cusp3,
+    angles.ic,
+    normalizeLongitude(cusp11 + 180),
+    normalizeLongitude(cusp12 + 180),
+    angles.dsc,
+    normalizeLongitude(cusp2 + 180),
+    normalizeLongitude(cusp3 + 180),
+    angles.mc,
+    cusp11,
+    cusp12
+  ];
+}
+function equalCusps(angles) {
+  return Array.from({ length: 12 }, (_, index) => normalizeLongitude(angles.asc + index * 30));
+}
+function equalMcCusps(angles) {
+  return Array.from({ length: 12 }, (_, index) => normalizeLongitude(angles.mc + (index - 9) * 30));
+}
+function vehlowCusps(angles) {
+  return Array.from({ length: 12 }, (_, index) => normalizeLongitude(angles.asc - 15 + index * 30));
+}
+function kochCusps(input, angles) {
+  if (Math.abs(input.latitude) >= 90 - input.obliquity) return null;
+  const ramc = ramcOf(input);
+  const argument = Math.tan(input.latitude * DEG) * Math.tan(declinationOfLongitude(angles.mc, input.obliquity) * DEG);
+  const third = (90 + Math.asin(argument) * RAD) / 3;
+  const at = (offset) => obliqueLongitude(ramc + 90 + offset, input.latitude, input.obliquity);
+  return quadrantCusps(angles.asc, angles.mc, at(-2 * third), at(-third), at(third), at(2 * third));
+}
+function circleCusps(input, angles, circles) {
+  const ramc = ramcOf(input);
+  const [c11, c12, c2, c3] = circles.map(
+    ([ascension, pole]) => obliqueLongitude(ramc + ascension, pole, input.obliquity)
+  );
+  const asc = obliqueLongitude(ramc + 90, input.latitude, input.obliquity);
+  const cusps = quadrantCusps(asc, angles.mc, c11, c12, c2, c3);
+  const turned = normalizeLongitude(asc - angles.mc) >= 180;
+  return turned ? cusps.map((cusp) => normalizeLongitude(cusp + 180)) : cusps;
+}
+function regiomontanusCusps(input, angles) {
+  const tangent = Math.tan(input.latitude * DEG);
+  const near = Math.atan(tangent * 0.5) * RAD;
+  const far = Math.atan(tangent * Math.cos(30 * DEG)) * RAD;
+  return circleCusps(input, angles, [
+    [30, near],
+    [60, far],
+    [120, far],
+    [150, near]
+  ]);
+}
+function campanusCusps(input, angles) {
+  const sine = Math.sin(input.latitude * DEG);
+  const cosine = Math.cos(input.latitude * DEG);
+  const near = Math.asin(sine / 2) * RAD;
+  const far = Math.asin(Math.sqrt(3) / 2 * sine) * RAD;
+  const wide = Math.atan(Math.sqrt(3) / cosine) * RAD;
+  const narrow = Math.atan(1 / (Math.sqrt(3) * cosine)) * RAD;
+  return circleCusps(input, angles, [
+    [90 - wide, near],
+    [90 - narrow, far],
+    [90 + narrow, far],
+    [90 + wide, near]
+  ]);
+}
+function topocentricCusps(input, angles) {
+  const tangent = Math.tan(input.latitude * DEG);
+  const near = Math.atan(tangent / 3) * RAD;
+  const far = Math.atan(tangent * 2 / 3) * RAD;
+  return circleCusps(input, angles, [
+    [30, near],
+    [60, far],
+    [120, far],
+    [150, near]
+  ]);
+}
+function alcabitiusCusps(input, angles) {
+  const ramc = ramcOf(input);
+  const declination = declinationOfLongitude(angles.asc, input.obliquity);
+  const argument = -Math.tan(input.latitude * DEG) * Math.tan(declination * DEG);
+  const day = Math.acos(Math.min(1, Math.max(-1, argument))) * RAD;
+  const night = 180 - day;
+  const at = (ascension) => obliqueLongitude(ramc + ascension, 0, input.obliquity);
+  return quadrantCusps(
+    angles.asc,
+    angles.mc,
+    at(day / 3),
+    at(2 * day / 3),
+    at(180 - 2 * night / 3),
+    at(180 - night / 3)
+  );
+}
+function equatorialCusps(input, project) {
+  const ramc = ramcOf(input);
+  return Array.from({ length: 12 }, (_, index) => project(ramc + 90 + index * 30));
+}
+function meridianCusps(input) {
+  return equatorialCusps(input, (ascension) => obliqueLongitude(ascension, 0, input.obliquity));
+}
+function morinusCusps(input) {
+  const e = input.obliquity * DEG;
+  return equatorialCusps(
+    input,
+    (ascension) => normalizeLongitude(
+      Math.atan2(Math.sin(ascension * DEG) * Math.cos(e), Math.cos(ascension * DEG)) * RAD
+    )
+  );
+}
+function computeHouses(system, input, angles) {
+  const as = (cusps) => ({
+    houses: { system, cusps },
+    fellBack: false,
+    fallbackSystem: null
+  });
+  const polar = (cusps) => cusps ? as(cusps) : {
+    houses: { system: POLAR_FALLBACK, cusps: wholeSignCusps(angles.asc) },
+    fellBack: true,
+    fallbackSystem: POLAR_FALLBACK
+  };
+  switch (system) {
+    case "placidus":
+      return polar(placidusCusps(input, angles));
+    case "koch":
+      return polar(kochCusps(input, angles));
+    case "porphyry":
+      return as(porphyryCusps(angles));
+    case "equal":
+      return as(equalCusps(angles));
+    case "equal-mc":
+      return as(equalMcCusps(angles));
+    case "vehlow":
+      return as(vehlowCusps(angles));
+    case "regiomontanus":
+      return as(regiomontanusCusps(input, angles));
+    case "campanus":
+      return as(campanusCusps(input, angles));
+    case "topocentric":
+      return as(topocentricCusps(input, angles));
+    case "alcabitius":
+      return as(alcabitiusCusps(input, angles));
+    case "morinus":
+      return as(morinusCusps(input));
+    case "meridian":
+      return as(meridianCusps(input));
+    case "whole":
+      return as(wholeSignCusps(angles.asc));
+    default:
+      throw new RangeError(`Unknown house system ${String(system)}.`);
+  }
+}
+function houseOf(longitude2, cusps) {
+  if (cusps.length !== 12) throw new RangeError("House cusps must contain 12 longitudes.");
+  for (let index = 0; index < 12; index += 1) {
+    const start = cusps[index];
+    const end = cusps[(index + 1) % 12];
+    if (start === void 0 || end === void 0) continue;
+    const span2 = normalizeLongitude(end - start);
+    const offset = normalizeLongitude(longitude2 - start);
+    if (offset < span2 || span2 === 0) return index + 1;
+  }
+  return 12;
+}
+
+// node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
+var DEG2 = Math.PI / 180;
+var ARCSEC = DEG2 / 3600;
+var ARGUMENTS = [
+  485868.249036,
+  17179159232178e-4,
+  128710479305e-5,
+  1295965810481e-4,
+  335779.526232,
+  17395272628478e-4,
+  107226070369e-5,
+  1602961601209e-3,
+  450160.398036,
+  -69628905431e-4
+];
+var MULTIPLIERS = "2222322404224242222423222234043222222423324242140422403124241224232223122231244432423024232224222444204040224242424324041242342222224222322312243244042204232203212231244324222324440242223424224432142422243324034240402243424232140322203112424220332242234033122202424524242124231424222321144412422214440222333424422231323233222324221240332224122322243412464132332040332443024441222433404";
+var COEFFICIENT_TEXT = "-172064161,-174666,33386,92052331,9086,15377,-13170906,-1675,-13696,5730336,-3015,-4587,-2276413,-234,2796,978459,-485,1374,2074554,207,-698,-897492,470,-291,1475877,-3633,11817,73871,-184,-1924,-516821,1226,-524,224386,-677,-174,711159,73,-872,-6750,0,358,-387298,-367,380,200728,18,318,-301461,-36,816,129025,-63,367,215829,-494,111,-95929,299,132,128227,137,181,-68982,-9,39,123457,11,19,-53311,32,-4,156994,10,-168,-1235,0,82,63110,63,27,-33228,0,-9,-57976,-63,-189,31429,0,-75,-59641,-11,149,25543,-11,66,-51613,-42,129,26366,0,78,45893,50,31,-24236,-10,20,63384,11,-150,-1220,0,29,-38571,-1,158,16452,-11,68,32481,0,0,-13870,0,0,-47722,0,-18,477,0,-25,-31046,-1,131,13238,-11,59,28593,0,-1,-12338,10,-3,20441,21,10,-10758,0,-3,29243,0,-74,-609,0,13,25887,0,-66,-550,0,11,-14053,-25,79,8551,-2,-45,15164,10,11,-8001,0,-1,-15794,72,-16,6850,-42,-5,21783,0,13,-167,0,13,-12873,-10,-37,6953,0,-14,-12654,11,63,6415,0,26,-10204,0,25,5222,0,15,16707,-85,-10,168,-1,10,-7691,0,44,3268,0,19,-11024,0,-14,104,0,2,7566,-21,-11,-3250,0,-5,-6637,-11,25,3353,0,14,-7141,21,8,3070,0,4,-6302,-11,2,3272,0,4,5800,10,2,-3045,0,-1,6443,0,-7,-2768,0,-4,-5774,-11,-15,3041,0,-5,-5350,0,21,2695,0,12,-4752,-11,-3,2719,0,-3,-4940,-11,-21,2720,0,-9,7350,0,-8,-51,0,4,4065,0,6,-2206,0,1,6579,0,-24,-199,0,2,3579,0,5,-1900,0,1,4725,0,-6,-41,0,3,-3075,0,-2,1313,0,-1,-2904,0,15,1233,0,7,4348,0,-10,-81,0,2,-2878,0,8,1232,0,4,-4230,0,5,-20,0,-2,-2819,0,7,1207,0,3,-4056,0,5,40,0,-2,-2647,0,11,1129,0,5,-2294,0,-10,1266,0,-4,2481,0,-7,-1062,0,-3,2179,0,-2,-1129,0,-2,3276,0,1,-9,0,0,-3389,0,5,35,0,-2,3339,0,-13,-107,0,1,-1987,0,-6,1073,0,-2,-1981,0,0,854,0,0,4026,0,-353,-553,0,-139,1660,0,-5,-710,0,-2,-1521,0,9,647,0,4,1314,0,0,-700,0,0,-1283,0,0,672,0,0,-1331,0,8,663,0,4,1383,0,-2,-594,0,-2,1405,0,4,-610,0,2,1290,0,0,-556,0,0";
+var coefficientValues;
+function coefficients() {
+  return coefficientValues ??= COEFFICIENT_TEXT.split(",").map(Number);
+}
+var OFFSETS = [-135e-6, 388e-6];
+var NUTATION_TERMS = 77;
+function nutation(t, terms2 = NUTATION_TERMS) {
+  const c = coefficients();
+  const re = [];
+  const im = [];
+  let om = 0;
+  for (let j = 0; j < 5; j += 1) {
+    const f = (ARGUMENTS[2 * j] + t * ARGUMENTS[2 * j + 1]) % 1296e3 * ARCSEC;
+    const cos = Math.cos(f);
+    const sin = Math.sin(f);
+    const o = 7 * j;
+    re[o + 1] = cos;
+    im[o + 1] = -sin;
+    re[o + 2] = 1;
+    im[o + 2] = 0;
+    for (let k = o + 3; k < o + 7; k += 1) {
+      re[k] = re[k - 1] * cos - im[k - 1] * sin;
+      im[k] = re[k - 1] * sin + im[k - 1] * cos;
+    }
+    re[o] = re[o + 4];
+    im[o] = -im[o + 4];
+    om = f;
+  }
+  let dp = 0;
+  let de = 0;
+  for (let i = terms2 - 1; i >= 0; i -= 1) {
+    let cos = 1;
+    let sin = 0;
+    for (let j = 0; j < 5; j += 1) {
+      const k2 = 7 * j + MULTIPLIERS.charCodeAt(5 * i + j) - 48;
+      const next = cos * re[k2] - sin * im[k2];
+      sin = cos * im[k2] + sin * re[k2];
+      cos = next;
+    }
+    const k = 6 * i;
+    dp += (c[k] + c[k + 1] * t) * sin + c[k + 2] * cos;
+    de += (c[k + 3] + c[k + 4] * t) * cos + c[k + 5] * sin;
+  }
+  return { dpsi: dp * 1e-7 + OFFSETS[0], deps: de * 1e-7 + OFFSETS[1], om };
+}
+function tilt(tt) {
+  const t = tt / 36525;
+  const { dpsi, deps, om } = nutation(t);
+  const mobl = meanObliquity(t);
+  return {
+    dpsi,
+    deps,
+    mobl,
+    tobl: mobl + deps / 3600,
+    ee: dpsi * Math.cos(mobl * DEG2) + 264096e-8 * Math.sin(om) + 6352e-8 * Math.sin(2 * om)
+  };
+}
+var DEG22 = Math.PI / 180;
+var ASEC2RAD = DEG22 / 3600;
+var RAD2 = 180 / Math.PI;
+var last;
+function eclipticFrame(tt) {
+  if (last !== void 0 && last.tt === tt) return last;
+  const t = tt / 36525;
+  let eps0 = 84381.406;
+  let psia = ((((-951e-10 * t + 132851e-9) * t - 114045e-8) * t - 1.0790069) * t + 5038.481507) * t;
+  let omegaa = ((((3337e-10 * t - 467e-9) * t - 772503e-8) * t + 0.0512623) * t - 0.025754) * t + eps0;
+  let chia = ((((-56e-9 * t + 170663e-9) * t - 121197e-8) * t - 2.3814292) * t + 10.556403) * t;
+  eps0 *= ASEC2RAD;
+  psia *= ASEC2RAD;
+  omegaa *= ASEC2RAD;
+  chia *= ASEC2RAD;
+  const sa = Math.sin(eps0);
+  const ca = Math.cos(eps0);
+  const sb = Math.sin(-psia);
+  const cb = Math.cos(-psia);
+  const sc = Math.sin(-omegaa);
+  const cc = Math.cos(-omegaa);
+  const sd = Math.sin(chia);
+  const cd = Math.cos(chia);
+  const xx = cd * cb - sb * sd * cc;
+  const yx = cd * sb * ca + sd * cc * cb * ca - sa * sd * sc;
+  const zx = cd * sb * sa + sd * cc * cb * sa + ca * sd * sc;
+  const xy = -sd * cb - sb * cd * cc;
+  const yy = -sd * sb * ca + cd * cc * cb * ca - sa * cd * sc;
+  const zy = -sd * sb * sa + cd * cc * cb * sa + ca * cd * sc;
+  const xz = sb * sc;
+  const yz = -sc * cb * ca - sa * cc;
+  const zz = -sc * cb * sa + cc * ca;
+  const at = tilt(tt);
+  const e = at.mobl * DEG22;
+  const ce = Math.cos(e);
+  const se = Math.sin(e);
+  last = {
+    tt,
+    rows: [
+      xx,
+      yx,
+      zx,
+      ce * xy + se * xz,
+      ce * yy + se * yz,
+      ce * zy + se * zz,
+      ce * xz - se * xy,
+      ce * yz - se * yy,
+      ce * zz - se * zy
+    ],
+    tilt: at
+  };
+  return last;
+}
+function meanEcliptic(frame, x, y, z15) {
+  const m = frame.rows;
+  return [
+    m[0] * x + m[1] * y + m[2] * z15,
+    m[3] * x + m[4] * y + m[5] * z15,
+    m[6] * x + m[7] * y + m[8] * z15
+  ];
+}
+function eclipticOfDate(x, y, z15, tt) {
+  const frame = eclipticFrame(tt);
+  const [ex, ey, ez] = meanEcliptic(frame, x, y, z15);
+  return {
+    lon: normalizeLongitude(Math.atan2(ey, ex) * RAD2 + frame.tilt.dpsi / 3600),
+    lat: Math.asin(ez / Math.hypot(ex, ey, ez)) * RAD2
+  };
+}
+
 // node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
@@ -684,7 +1259,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-YJ7WZ7NS.js
+// node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -762,437 +1337,8 @@ function findAspects(bodies) {
   }
   return aspects2.sort((a, b) => a.orb - b.orb);
 }
-var SIGNS = /* @__PURE__ */ Object.freeze([
-  /* @__PURE__ */ Object.freeze({
-    slug: "aries",
-    name: "Aries",
-    element: "fire",
-    modality: "cardinal",
-    polarity: "day",
-    naturalHouse: 1
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "taurus",
-    name: "Taurus",
-    element: "earth",
-    modality: "fixed",
-    polarity: "night",
-    naturalHouse: 2
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "gemini",
-    name: "Gemini",
-    element: "air",
-    modality: "mutable",
-    polarity: "day",
-    naturalHouse: 3
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "cancer",
-    name: "Cancer",
-    element: "water",
-    modality: "cardinal",
-    polarity: "night",
-    naturalHouse: 4
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "leo",
-    name: "Leo",
-    element: "fire",
-    modality: "fixed",
-    polarity: "day",
-    naturalHouse: 5
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "virgo",
-    name: "Virgo",
-    element: "earth",
-    modality: "mutable",
-    polarity: "night",
-    naturalHouse: 6
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "libra",
-    name: "Libra",
-    element: "air",
-    modality: "cardinal",
-    polarity: "day",
-    naturalHouse: 7
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "scorpio",
-    name: "Scorpio",
-    element: "water",
-    modality: "fixed",
-    polarity: "night",
-    naturalHouse: 8
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "sagittarius",
-    name: "Sagittarius",
-    element: "fire",
-    modality: "mutable",
-    polarity: "day",
-    naturalHouse: 9
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "capricorn",
-    name: "Capricorn",
-    element: "earth",
-    modality: "cardinal",
-    polarity: "night",
-    naturalHouse: 10
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "aquarius",
-    name: "Aquarius",
-    element: "air",
-    modality: "fixed",
-    polarity: "day",
-    naturalHouse: 11
-  }),
-  /* @__PURE__ */ Object.freeze({
-    slug: "pisces",
-    name: "Pisces",
-    element: "water",
-    modality: "mutable",
-    polarity: "night",
-    naturalHouse: 12
-  })
-]);
-var SIGN_SLUGS2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ SIGNS.map((sign2) => sign2.slug));
-function normalizeLongitude(lon) {
-  if (!Number.isFinite(lon)) throw new RangeError("Longitude must be finite.");
-  return (lon % 360 + 360) % 360;
-}
-function signIndexForLongitude(lon) {
-  return Math.floor(normalizeLongitude(lon) / 30);
-}
-function signForLongitude(lon) {
-  const sign2 = SIGNS[signIndexForLongitude(lon)];
-  if (!sign2) throw new RangeError("Could not resolve zodiac sign.");
-  return sign2;
-}
-function degreeInSign(lon) {
-  return normalizeLongitude(lon) % 30;
-}
-var ENGINE_VERSION = "1.1.0-rc.1";
+var ENGINE_VERSION = "1.1.0-rc.2";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
-
-// node_modules/@zodiacs/engine/dist/chunk-VDVUUMY2.js
-var DEG = Math.PI / 180;
-var RAD = 180 / Math.PI;
-var HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze([
-  "whole",
-  "placidus",
-  "porphyry",
-  "equal",
-  "equal-mc",
-  "vehlow",
-  "koch",
-  "regiomontanus",
-  "campanus",
-  "topocentric",
-  "alcabitius",
-  "morinus",
-  "meridian"
-]);
-var POLAR_UNDEFINED_HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze(["placidus", "koch"]);
-var POLAR_FALLBACK = "whole";
-function isPolarUndefinedHouseSystem(system) {
-  return POLAR_UNDEFINED_HOUSE_SYSTEMS.includes(system);
-}
-function meanObliquity(julianCenturies) {
-  const t = julianCenturies;
-  const arcseconds = 84381.406 - 46.836769 * t - 1831e-7 * t * t + 20034e-7 * t ** 3 - 576e-9 * t ** 4 - 434e-10 * t ** 5;
-  return arcseconds / 3600;
-}
-function eclipticLongitudeOfRightAscension(ra, obliquity) {
-  return normalizeLongitude(
-    Math.atan2(Math.sin(ra * DEG), Math.cos(ra * DEG) * Math.cos(obliquity * DEG)) * RAD
-  );
-}
-function declinationOfLongitude(lon, obliquity) {
-  return Math.asin(Math.sin(obliquity * DEG) * Math.sin(lon * DEG)) * RAD;
-}
-function obliqueLongitude(ascension, pole, obliquity) {
-  const a = ascension * DEG;
-  const e = obliquity * DEG;
-  return normalizeLongitude(
-    Math.atan2(Math.sin(a), Math.cos(a) * Math.cos(e) - Math.tan(pole * DEG) * Math.sin(e)) * RAD
-  );
-}
-function quadrantCusps(asc, mc, cusp11, cusp12, cusp2, cusp3) {
-  return [
-    asc,
-    cusp2,
-    cusp3,
-    mc + 180,
-    cusp11 + 180,
-    cusp12 + 180,
-    asc + 180,
-    cusp2 + 180,
-    cusp3 + 180,
-    mc,
-    cusp11,
-    cusp12
-  ].map(normalizeLongitude);
-}
-function ramcOf(input) {
-  return normalizeLongitude(input.gastHours * 15 + input.longitude);
-}
-function computeAngles(input) {
-  const ramc = ramcOf(input);
-  const mc = eclipticLongitudeOfRightAscension(ramc, input.obliquity);
-  const ra = ramc * DEG;
-  const eps = input.obliquity * DEG;
-  const phi = input.latitude * DEG;
-  let asc = normalizeLongitude(
-    Math.atan2(Math.cos(ra), -(Math.sin(ra) * Math.cos(eps) + Math.tan(phi) * Math.sin(eps))) * RAD
-  );
-  if (normalizeLongitude(asc - mc) >= 180) asc = normalizeLongitude(asc + 180);
-  return {
-    asc,
-    mc,
-    dsc: normalizeLongitude(asc + 180),
-    ic: normalizeLongitude(mc + 180)
-  };
-}
-function wholeSignCusps(ascendant) {
-  const first2 = Math.floor(normalizeLongitude(ascendant) / 30) * 30;
-  return Array.from({ length: 12 }, (_, index) => normalizeLongitude(first2 + index * 30));
-}
-function placidusCusps(input, angles) {
-  if (Math.abs(input.latitude) >= 90 - input.obliquity) return null;
-  const ramc = ramcOf(input);
-  const phi = input.latitude * DEG;
-  function iterate(offset, multiplier) {
-    let ra = ramc + offset;
-    let converged = false;
-    for (let index = 0; index < 64; index += 1) {
-      const lon = eclipticLongitudeOfRightAscension(normalizeLongitude(ra), input.obliquity);
-      const declination = declinationOfLongitude(lon, input.obliquity);
-      const argument = Math.tan(phi) * Math.tan(declination * DEG);
-      if (Math.abs(argument) >= 1) break;
-      const ascensionalDifference = Math.asin(argument) * RAD;
-      const next = ramc + offset + multiplier * ascensionalDifference;
-      if (Math.abs(normalizeLongitude(next - ra + 180) - 180) < 1e-9) {
-        ra = next;
-        converged = true;
-        break;
-      }
-      ra = next;
-    }
-    return eclipticLongitudeOfRightAscension(
-      normalizeLongitude(converged ? ra : bracketed(offset, multiplier)),
-      input.obliquity
-    );
-  }
-  function bracketed(offset, multiplier) {
-    const centre = ramc + offset;
-    let low = centre - 90 * multiplier - 1;
-    let high = centre + 90 * multiplier + 1;
-    for (let index = 0; index < 128; index += 1) {
-      const middle = (low + high) / 2;
-      if (!(middle > low && middle < high)) break;
-      const lon = eclipticLongitudeOfRightAscension(normalizeLongitude(middle), input.obliquity);
-      const declination = declinationOfLongitude(lon, input.obliquity);
-      const argument = Math.min(1, Math.max(-1, Math.tan(phi) * Math.tan(declination * DEG)));
-      if (centre + multiplier * Math.asin(argument) * RAD > middle) low = middle;
-      else high = middle;
-    }
-    return (low + high) / 2;
-  }
-  const cusp11 = iterate(30, 1 / 3);
-  const cusp12 = iterate(60, 2 / 3);
-  const cusp2 = iterate(120, 2 / 3);
-  const cusp3 = iterate(150, 1 / 3);
-  return [
-    angles.asc,
-    cusp2,
-    cusp3,
-    angles.ic,
-    normalizeLongitude(cusp11 + 180),
-    normalizeLongitude(cusp12 + 180),
-    angles.dsc,
-    normalizeLongitude(cusp2 + 180),
-    normalizeLongitude(cusp3 + 180),
-    angles.mc,
-    cusp11,
-    cusp12
-  ];
-}
-function porphyryCusps(angles) {
-  const upper = normalizeLongitude(angles.asc - angles.mc);
-  const lower2 = normalizeLongitude(angles.ic - angles.asc);
-  const cusp11 = normalizeLongitude(angles.mc + upper / 3);
-  const cusp12 = normalizeLongitude(angles.mc + 2 * upper / 3);
-  const cusp2 = normalizeLongitude(angles.asc + lower2 / 3);
-  const cusp3 = normalizeLongitude(angles.asc + 2 * lower2 / 3);
-  return [
-    angles.asc,
-    cusp2,
-    cusp3,
-    angles.ic,
-    normalizeLongitude(cusp11 + 180),
-    normalizeLongitude(cusp12 + 180),
-    angles.dsc,
-    normalizeLongitude(cusp2 + 180),
-    normalizeLongitude(cusp3 + 180),
-    angles.mc,
-    cusp11,
-    cusp12
-  ];
-}
-function equalCusps(angles) {
-  return Array.from({ length: 12 }, (_, index) => normalizeLongitude(angles.asc + index * 30));
-}
-function equalMcCusps(angles) {
-  return Array.from({ length: 12 }, (_, index) => normalizeLongitude(angles.mc + (index - 9) * 30));
-}
-function vehlowCusps(angles) {
-  return Array.from({ length: 12 }, (_, index) => normalizeLongitude(angles.asc - 15 + index * 30));
-}
-function kochCusps(input, angles) {
-  if (Math.abs(input.latitude) >= 90 - input.obliquity) return null;
-  const ramc = ramcOf(input);
-  const argument = Math.tan(input.latitude * DEG) * Math.tan(declinationOfLongitude(angles.mc, input.obliquity) * DEG);
-  const third = (90 + Math.asin(argument) * RAD) / 3;
-  const at = (offset) => obliqueLongitude(ramc + 90 + offset, input.latitude, input.obliquity);
-  return quadrantCusps(angles.asc, angles.mc, at(-2 * third), at(-third), at(third), at(2 * third));
-}
-function circleCusps(input, angles, circles) {
-  const ramc = ramcOf(input);
-  const [c11, c12, c2, c3] = circles.map(
-    ([ascension, pole]) => obliqueLongitude(ramc + ascension, pole, input.obliquity)
-  );
-  const asc = obliqueLongitude(ramc + 90, input.latitude, input.obliquity);
-  const cusps = quadrantCusps(asc, angles.mc, c11, c12, c2, c3);
-  const turned = normalizeLongitude(asc - angles.mc) >= 180;
-  return turned ? cusps.map((cusp) => normalizeLongitude(cusp + 180)) : cusps;
-}
-function regiomontanusCusps(input, angles) {
-  const tangent = Math.tan(input.latitude * DEG);
-  const near = Math.atan(tangent * 0.5) * RAD;
-  const far = Math.atan(tangent * Math.cos(30 * DEG)) * RAD;
-  return circleCusps(input, angles, [
-    [30, near],
-    [60, far],
-    [120, far],
-    [150, near]
-  ]);
-}
-function campanusCusps(input, angles) {
-  const sine = Math.sin(input.latitude * DEG);
-  const cosine = Math.cos(input.latitude * DEG);
-  const near = Math.asin(sine / 2) * RAD;
-  const far = Math.asin(Math.sqrt(3) / 2 * sine) * RAD;
-  const wide = Math.atan(Math.sqrt(3) / cosine) * RAD;
-  const narrow = Math.atan(1 / (Math.sqrt(3) * cosine)) * RAD;
-  return circleCusps(input, angles, [
-    [90 - wide, near],
-    [90 - narrow, far],
-    [90 + narrow, far],
-    [90 + wide, near]
-  ]);
-}
-function topocentricCusps(input, angles) {
-  const tangent = Math.tan(input.latitude * DEG);
-  const near = Math.atan(tangent / 3) * RAD;
-  const far = Math.atan(tangent * 2 / 3) * RAD;
-  return circleCusps(input, angles, [
-    [30, near],
-    [60, far],
-    [120, far],
-    [150, near]
-  ]);
-}
-function alcabitiusCusps(input, angles) {
-  const ramc = ramcOf(input);
-  const declination = declinationOfLongitude(angles.asc, input.obliquity);
-  const argument = -Math.tan(input.latitude * DEG) * Math.tan(declination * DEG);
-  const day = Math.acos(Math.min(1, Math.max(-1, argument))) * RAD;
-  const night = 180 - day;
-  const at = (ascension) => obliqueLongitude(ramc + ascension, 0, input.obliquity);
-  return quadrantCusps(
-    angles.asc,
-    angles.mc,
-    at(day / 3),
-    at(2 * day / 3),
-    at(180 - 2 * night / 3),
-    at(180 - night / 3)
-  );
-}
-function equatorialCusps(input, project) {
-  const ramc = ramcOf(input);
-  return Array.from({ length: 12 }, (_, index) => project(ramc + 90 + index * 30));
-}
-function meridianCusps(input) {
-  return equatorialCusps(input, (ascension) => obliqueLongitude(ascension, 0, input.obliquity));
-}
-function morinusCusps(input) {
-  const e = input.obliquity * DEG;
-  return equatorialCusps(
-    input,
-    (ascension) => normalizeLongitude(
-      Math.atan2(Math.sin(ascension * DEG) * Math.cos(e), Math.cos(ascension * DEG)) * RAD
-    )
-  );
-}
-function computeHouses(system, input, angles) {
-  const as = (cusps) => ({
-    houses: { system, cusps },
-    fellBack: false,
-    fallbackSystem: null
-  });
-  const polar = (cusps) => cusps ? as(cusps) : {
-    houses: { system: POLAR_FALLBACK, cusps: wholeSignCusps(angles.asc) },
-    fellBack: true,
-    fallbackSystem: POLAR_FALLBACK
-  };
-  switch (system) {
-    case "placidus":
-      return polar(placidusCusps(input, angles));
-    case "koch":
-      return polar(kochCusps(input, angles));
-    case "porphyry":
-      return as(porphyryCusps(angles));
-    case "equal":
-      return as(equalCusps(angles));
-    case "equal-mc":
-      return as(equalMcCusps(angles));
-    case "vehlow":
-      return as(vehlowCusps(angles));
-    case "regiomontanus":
-      return as(regiomontanusCusps(input, angles));
-    case "campanus":
-      return as(campanusCusps(input, angles));
-    case "topocentric":
-      return as(topocentricCusps(input, angles));
-    case "alcabitius":
-      return as(alcabitiusCusps(input, angles));
-    case "morinus":
-      return as(morinusCusps(input));
-    case "meridian":
-      return as(meridianCusps(input));
-    case "whole":
-      return as(wholeSignCusps(angles.asc));
-    default:
-      throw new RangeError(`Unknown house system ${String(system)}.`);
-  }
-}
-function houseOf(longitude2, cusps) {
-  if (cusps.length !== 12) throw new RangeError("House cusps must contain 12 longitudes.");
-  for (let index = 0; index < 12; index += 1) {
-    const start = cusps[index];
-    const end = cusps[(index + 1) % 12];
-    if (start === void 0 || end === void 0) continue;
-    const span2 = normalizeLongitude(end - start);
-    const offset = normalizeLongitude(longitude2 - start);
-    if (offset < span2 || span2 === 0) return index + 1;
-  }
-  return 12;
-}
 
 // node_modules/astronomy-engine/esm/astronomy.js
 /**
@@ -1235,7 +1381,7 @@ var DAYS_PER_TROPICAL_YEAR = 365.24217;
 var J2000 = /* @__PURE__ */ new Date("2000-01-01T12:00:00Z");
 var PI2 = 2 * Math.PI;
 var ARC = 3600 * (180 / Math.PI);
-var ASEC2RAD = 484813681109536e-20;
+var ASEC2RAD2 = 484813681109536e-20;
 var ASEC180 = 180 * 60 * 60;
 var ASEC360 = 2 * ASEC180;
 var AU_PER_PARSEC = ASEC180 / Math.PI;
@@ -2452,10 +2598,10 @@ function precession_rot(time, dir) {
   let psia = ((((-951e-10 * t + 132851e-9) * t - 114045e-8) * t - 1.0790069) * t + 5038.481507) * t;
   let omegaa = ((((3337e-10 * t - 467e-9) * t - 772503e-8) * t + 0.0512623) * t - 0.025754) * t + eps0;
   let chia = ((((-56e-9 * t + 170663e-9) * t - 121197e-8) * t - 2.3814292) * t + 10.556403) * t;
-  eps0 *= ASEC2RAD;
-  psia *= ASEC2RAD;
-  omegaa *= ASEC2RAD;
-  chia *= ASEC2RAD;
+  eps0 *= ASEC2RAD2;
+  psia *= ASEC2RAD2;
+  omegaa *= ASEC2RAD2;
+  chia *= ASEC2RAD2;
   const sa = Math.sin(eps0);
   const ca = Math.cos(eps0);
   const sb = Math.sin(-psia);
@@ -3101,157 +3247,15 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// node_modules/@zodiacs/engine/dist/chunk-W2TMLFJ3.js
+// node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
-var DEG2 = Math.PI / 180;
-var RAD2 = 180 / Math.PI;
-var RA_POLE_TOLERANCE = 32 * Number.EPSILON;
-var DEG22 = Math.PI / 180;
-var ARCSEC = DEG22 / 3600;
-var ARGUMENTS = [
-  485868.249036,
-  17179159232178e-4,
-  128710479305e-5,
-  1295965810481e-4,
-  335779.526232,
-  17395272628478e-4,
-  107226070369e-5,
-  1602961601209e-3,
-  450160.398036,
-  -69628905431e-4
-];
-var MULTIPLIERS = "2222322404224242222423222234043222222423324242140422403124241224232223122231244432423024232224222444204040224242424324041242342222224222322312243244042204232203212231244324222324440242223424224432142422243324034240402243424232140322203112424220332242234033122202424524242124231424222321144412422214440222333424422231323233222324221240332224122322243412464132332040332443024441222433404";
-var COEFFICIENT_TEXT = "-172064161,-174666,33386,92052331,9086,15377,-13170906,-1675,-13696,5730336,-3015,-4587,-2276413,-234,2796,978459,-485,1374,2074554,207,-698,-897492,470,-291,1475877,-3633,11817,73871,-184,-1924,-516821,1226,-524,224386,-677,-174,711159,73,-872,-6750,0,358,-387298,-367,380,200728,18,318,-301461,-36,816,129025,-63,367,215829,-494,111,-95929,299,132,128227,137,181,-68982,-9,39,123457,11,19,-53311,32,-4,156994,10,-168,-1235,0,82,63110,63,27,-33228,0,-9,-57976,-63,-189,31429,0,-75,-59641,-11,149,25543,-11,66,-51613,-42,129,26366,0,78,45893,50,31,-24236,-10,20,63384,11,-150,-1220,0,29,-38571,-1,158,16452,-11,68,32481,0,0,-13870,0,0,-47722,0,-18,477,0,-25,-31046,-1,131,13238,-11,59,28593,0,-1,-12338,10,-3,20441,21,10,-10758,0,-3,29243,0,-74,-609,0,13,25887,0,-66,-550,0,11,-14053,-25,79,8551,-2,-45,15164,10,11,-8001,0,-1,-15794,72,-16,6850,-42,-5,21783,0,13,-167,0,13,-12873,-10,-37,6953,0,-14,-12654,11,63,6415,0,26,-10204,0,25,5222,0,15,16707,-85,-10,168,-1,10,-7691,0,44,3268,0,19,-11024,0,-14,104,0,2,7566,-21,-11,-3250,0,-5,-6637,-11,25,3353,0,14,-7141,21,8,3070,0,4,-6302,-11,2,3272,0,4,5800,10,2,-3045,0,-1,6443,0,-7,-2768,0,-4,-5774,-11,-15,3041,0,-5,-5350,0,21,2695,0,12,-4752,-11,-3,2719,0,-3,-4940,-11,-21,2720,0,-9,7350,0,-8,-51,0,4,4065,0,6,-2206,0,1,6579,0,-24,-199,0,2,3579,0,5,-1900,0,1,4725,0,-6,-41,0,3,-3075,0,-2,1313,0,-1,-2904,0,15,1233,0,7,4348,0,-10,-81,0,2,-2878,0,8,1232,0,4,-4230,0,5,-20,0,-2,-2819,0,7,1207,0,3,-4056,0,5,40,0,-2,-2647,0,11,1129,0,5,-2294,0,-10,1266,0,-4,2481,0,-7,-1062,0,-3,2179,0,-2,-1129,0,-2,3276,0,1,-9,0,0,-3389,0,5,35,0,-2,3339,0,-13,-107,0,1,-1987,0,-6,1073,0,-2,-1981,0,0,854,0,0,4026,0,-353,-553,0,-139,1660,0,-5,-710,0,-2,-1521,0,9,647,0,4,1314,0,0,-700,0,0,-1283,0,0,672,0,0,-1331,0,8,663,0,4,1383,0,-2,-594,0,-2,1405,0,4,-610,0,2,1290,0,0,-556,0,0";
-var coefficientValues;
-function coefficients() {
-  return coefficientValues ??= COEFFICIENT_TEXT.split(",").map(Number);
-}
-var OFFSETS = [-135e-6, 388e-6];
-var NUTATION_TERMS = 77;
-function nutation(t, terms2 = NUTATION_TERMS) {
-  const c = coefficients();
-  const re = [];
-  const im = [];
-  let om = 0;
-  for (let j = 0; j < 5; j += 1) {
-    const f = (ARGUMENTS[2 * j] + t * ARGUMENTS[2 * j + 1]) % 1296e3 * ARCSEC;
-    const cos = Math.cos(f);
-    const sin = Math.sin(f);
-    const o = 7 * j;
-    re[o + 1] = cos;
-    im[o + 1] = -sin;
-    re[o + 2] = 1;
-    im[o + 2] = 0;
-    for (let k = o + 3; k < o + 7; k += 1) {
-      re[k] = re[k - 1] * cos - im[k - 1] * sin;
-      im[k] = re[k - 1] * sin + im[k - 1] * cos;
-    }
-    re[o] = re[o + 4];
-    im[o] = -im[o + 4];
-    om = f;
-  }
-  let dp = 0;
-  let de = 0;
-  for (let i = terms2 - 1; i >= 0; i -= 1) {
-    let cos = 1;
-    let sin = 0;
-    for (let j = 0; j < 5; j += 1) {
-      const k2 = 7 * j + MULTIPLIERS.charCodeAt(5 * i + j) - 48;
-      const next = cos * re[k2] - sin * im[k2];
-      sin = cos * im[k2] + sin * re[k2];
-      cos = next;
-    }
-    const k = 6 * i;
-    dp += (c[k] + c[k + 1] * t) * sin + c[k + 2] * cos;
-    de += (c[k + 3] + c[k + 4] * t) * cos + c[k + 5] * sin;
-  }
-  return { dpsi: dp * 1e-7 + OFFSETS[0], deps: de * 1e-7 + OFFSETS[1], om };
-}
-function tilt(tt) {
-  const t = tt / 36525;
-  const { dpsi, deps, om } = nutation(t);
-  const mobl = meanObliquity(t);
-  return {
-    dpsi,
-    deps,
-    mobl,
-    tobl: mobl + deps / 3600,
-    ee: dpsi * Math.cos(mobl * DEG22) + 264096e-8 * Math.sin(om) + 6352e-8 * Math.sin(2 * om)
-  };
-}
 var DEG3 = Math.PI / 180;
-var ASEC2RAD2 = DEG3 / 3600;
-var RAD22 = 180 / Math.PI;
-var last;
-function eclipticFrame(tt) {
-  if (last !== void 0 && last.tt === tt) return last;
-  const t = tt / 36525;
-  let eps0 = 84381.406;
-  let psia = ((((-951e-10 * t + 132851e-9) * t - 114045e-8) * t - 1.0790069) * t + 5038.481507) * t;
-  let omegaa = ((((3337e-10 * t - 467e-9) * t - 772503e-8) * t + 0.0512623) * t - 0.025754) * t + eps0;
-  let chia = ((((-56e-9 * t + 170663e-9) * t - 121197e-8) * t - 2.3814292) * t + 10.556403) * t;
-  eps0 *= ASEC2RAD2;
-  psia *= ASEC2RAD2;
-  omegaa *= ASEC2RAD2;
-  chia *= ASEC2RAD2;
-  const sa = Math.sin(eps0);
-  const ca = Math.cos(eps0);
-  const sb = Math.sin(-psia);
-  const cb = Math.cos(-psia);
-  const sc = Math.sin(-omegaa);
-  const cc = Math.cos(-omegaa);
-  const sd = Math.sin(chia);
-  const cd = Math.cos(chia);
-  const xx = cd * cb - sb * sd * cc;
-  const yx = cd * sb * ca + sd * cc * cb * ca - sa * sd * sc;
-  const zx = cd * sb * sa + sd * cc * cb * sa + ca * sd * sc;
-  const xy = -sd * cb - sb * cd * cc;
-  const yy = -sd * sb * ca + cd * cc * cb * ca - sa * cd * sc;
-  const zy = -sd * sb * sa + cd * cc * cb * sa + ca * cd * sc;
-  const xz = sb * sc;
-  const yz = -sc * cb * ca - sa * cc;
-  const zz = -sc * cb * sa + cc * ca;
-  const at = tilt(tt);
-  const e = at.mobl * DEG3;
-  const ce = Math.cos(e);
-  const se = Math.sin(e);
-  last = {
-    tt,
-    rows: [
-      xx,
-      yx,
-      zx,
-      ce * xy + se * xz,
-      ce * yy + se * yz,
-      ce * zy + se * zz,
-      ce * xz - se * xy,
-      ce * yz - se * yy,
-      ce * zz - se * zy
-    ],
-    tilt: at
-  };
-  return last;
-}
-function meanEcliptic(frame, x, y, z15) {
-  const m = frame.rows;
-  return [
-    m[0] * x + m[1] * y + m[2] * z15,
-    m[3] * x + m[4] * y + m[5] * z15,
-    m[6] * x + m[7] * y + m[8] * z15
-  ];
-}
-function eclipticOfDate(x, y, z15, tt) {
-  const frame = eclipticFrame(tt);
-  const [ex, ey, ez] = meanEcliptic(frame, x, y, z15);
-  return {
-    lon: normalizeLongitude(Math.atan2(ey, ex) * RAD22 + frame.tilt.dpsi / 3600),
-    lat: Math.asin(ez / Math.hypot(ex, ey, ez)) * RAD22
-  };
-}
-var DEG4 = Math.PI / 180;
 var RAD3 = 180 / Math.PI;
+var RA_POLE_TOLERANCE = 32 * Number.EPSILON;
+var DEG23 = Math.PI / 180;
+var RAD22 = 180 / Math.PI;
 var ARCSEC2 = 1 / 3600;
-var RAD4 = 180 / Math.PI;
+var RAD32 = 180 / Math.PI;
 var DAY2 = 864e5;
 var UTC_CLOCK = { scale: "utc", pin: void 0 };
 function timeOf(basis) {
@@ -3261,8 +3265,8 @@ function timeOf(basis) {
       "The instant is outside the ephemeris span: its Terrestrial Time, and that of each speed sample, must lie between 0001-04-30T12:00 and 3998-09-03T12:00 TT, the years astronomy-engine tabulates (EPHEMERIS_SPAN)."
     );
   }
-  const seconds3 = basis.deltaT.seconds;
-  SetDeltaTFunction(() => seconds3);
+  const seconds2 = basis.deltaT.seconds;
+  SetDeltaTFunction(() => seconds2);
   return MakeTime(basis.ut1Days);
 }
 function sample(ms, stepDays) {
@@ -3326,7 +3330,7 @@ function trueNodeLongitude(time) {
     state.z * state.vx - state.x * state.vz,
     state.x * state.vy - state.y * state.vx
   );
-  return normalizeLongitude(Math.atan2(x, -y) * RAD4 + frame.tilt.dpsi / 3600);
+  return normalizeLongitude(Math.atan2(x, -y) * RAD32 + frame.tilt.dpsi / 3600);
 }
 function longitudeAt(body2, ms, clock2) {
   return longitudeOn(body2, basisAt(ms, clock2));
@@ -3785,7 +3789,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-FRYARIYL.js
+// node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -4301,7 +4305,7 @@ var IERS_SEGMENTS = ["observed", "predicted", "fallback"];
 function validateDeltaT(value, instant2, timeBasis22) {
   const deltaT2 = record(value);
   fields(deltaT2, DELTA_T_RECORD);
-  const seconds3 = number(deltaT2.seconds, -1e10, 1e10);
+  const seconds2 = number(deltaT2.seconds, -1e10, 1e10);
   if (deltaT2.model === "pinned") {
     if (deltaT2.sigma !== null || deltaT2.table !== null || deltaT2.tableDigest !== null || deltaT2.segment !== "pinned")
       fail("inconsistent_result");
@@ -4317,7 +4321,7 @@ function validateDeltaT(value, instant2, timeBasis22) {
   const segment = choice(deltaT2.segment, iers ? IERS_SEGMENTS : DELTA_T_SEGMENTS);
   if (!timeBasis22 && deltaT2.tableDigest === DELTA_T_TABLE.digest) {
     const expected = deltaTAt((Date.parse(instant2) - J2000_MS2) / 864e5);
-    if (deltaT2.table !== expected.table || segment !== expected.segment || Math.abs(seconds3 - expected.seconds) > 1e-9 || Math.abs(deltaT2.sigma - expected.sigma) > 1e-9)
+    if (deltaT2.table !== expected.table || segment !== expected.segment || Math.abs(seconds2 - expected.seconds) > 1e-9 || Math.abs(deltaT2.sigma - expected.sigma) > 1e-9)
       fail("inconsistent_result");
   }
   return deltaT2;
@@ -4555,10 +4559,10 @@ function validateLocalRecord(local, receipt, date3, offset, shift2) {
   if (has2("localMeanTime") && local.localMeanTime !== null) {
     const mean = record(local.localMeanTime);
     fields(mean, ["longitude", "zoneOffsetMinutes"]);
-    const seconds3 = Math.round(number(mean.longitude, -180, 180) * 240);
+    const seconds2 = Math.round(number(mean.longitude, -180, 180) * 240);
     offsetMinutes(mean.zoneOffsetMinutes);
     const read = lmt ? offset : gap ? before2 : null;
-    if (read === null ? !(gap && !has2("transition")) : (Math.round(read * 60) - seconds3) % 86400 !== 0)
+    if (read === null ? !(gap && !has2("transition")) : (Math.round(read * 60) - seconds2) % 86400 !== 0)
       fail("invalid_context");
   }
 }
@@ -4813,466 +4817,15 @@ function createNatalEnvelope(chart, context = {}) {
   });
 }
 
-// src/lib/engine/time-basis.mjs
-var DELTA_T_MODEL2 = "zodiacs-deltat/1";
-var DELTA_T_TABLE2 = /* @__PURE__ */ Object.freeze({
-  version: "2026-09-24",
-  digest: "6371988c510a1c6c",
-  from: 1941,
-  observedTo: 61307,
-  predictedTo: 61680,
-  knots: /* @__PURE__ */ Object.freeze([
-    2482,
-    48,
-    47,
-    50,
-    49,
-    51,
-    50,
-    48,
-    45,
-    45,
-    42,
-    40,
-    39,
-    36,
-    35,
-    28,
-    33,
-    49,
-    50,
-    48,
-    43,
-    42,
-    47,
-    56,
-    71,
-    80,
-    89,
-    87,
-    90,
-    98,
-    99,
-    106,
-    114,
-    111,
-    100,
-    98,
-    106,
-    101,
-    106,
-    95,
-    84,
-    79,
-    79,
-    83,
-    55,
-    53,
-    45,
-    50,
-    48,
-    56,
-    71,
-    74,
-    81,
-    86,
-    81,
-    84,
-    66,
-    68,
-    50,
-    36,
-    26,
-    21,
-    17,
-    10,
-    12,
-    16,
-    30,
-    31,
-    32,
-    29,
-    25,
-    28,
-    31,
-    37,
-    36,
-    46,
-    49,
-    38,
-    25,
-    14,
-    0,
-    -7,
-    -9,
-    -2,
-    -4,
-    -3,
-    9,
-    10,
-    7,
-    1,
-    -5
-  ])
-});
-var SX2 = [-720, 400, 1e3, 1500, 1600, 1650, 1720, 1800, 1810, 1820, 1830, 1840];
-var SY2 = [
-  2055059,
-  660440,
-  146765,
-  29264,
-  8938,
-  4374,
-  1073,
-  1871,
-  1526,
-  1668,
-  1076,
-  767,
-  932,
-  1038,
-  904,
-  826,
-  237,
-  -113,
-  -321,
-  -439,
-  -388,
-  -502,
-  -198,
-  492,
-  1114,
-  1748,
-  2162,
-  2379,
-  2442,
-  2416,
-  2443,
-  2705
-];
-var SIG2 = [
-  640,
-  83,
-  900,
-  230,
-  1240,
-  120,
-  1400,
-  15,
-  1420,
-  7.5,
-  1440,
-  4.2,
-  1500,
-  5.6,
-  1560,
-  27,
-  1670,
-  15,
-  1710,
-  3.3,
-  1720,
-  3.3,
-  1760,
-  1.5,
-  1800,
-  1.5,
-  1810,
-  0.55,
-  1820,
-  0.55,
-  1840,
-  0.46,
-  1956,
-  0.46
-];
-var X2;
-var Y2;
-var M2;
-var KX2;
-var KV2;
-var OBS2;
-var PRED2;
-var SLOPE2;
-var yearOfMjd2 = (mjd) => 2e3 + (mjd - 51544.5) / 365.25;
-var longTerm2 = (y) => {
-  const t = (y - 1825) / 100;
-  return 36.525 * (0.89 * t * t + 30 / Math.PI * Math.cos(Math.PI * t / 7.5));
-};
-var longTermRate2 = (y) => {
-  const t = (y - 1825) / 100;
-  return 0.36525 * (1.78 * t - 4 * Math.sin(Math.PI * t / 7.5));
-};
-function init2() {
-  const x = SX2.slice();
-  for (let year = 1850; year <= 1945; year += 5) x.push(year);
-  const y = SY2.map((v) => v / 100);
-  const n = x.length - 1;
-  const m = [0.018915];
-  const c = [0];
-  const r = [0.018915];
-  for (let i = 1; i < n; i++) {
-    const a = x[i] - x[i - 1];
-    const b = x[i + 1] - x[i];
-    const p = 2 * (a + b) - a * c[i - 1];
-    c[i] = b / p;
-    r[i] = (6 * ((y[i + 1] - y[i]) / b - (y[i] - y[i - 1]) / a) - a * r[i - 1]) / p;
+// node_modules/@zodiacs/engine/dist/time.js
+function timeBasis2(ms, scale, pin) {
+  if (typeof ms !== "number" || !(Math.abs(ms) <= 864e13)) throw new RangeError("ms must be an instant within the range of a Date.");
+  if (scale !== void 0 && !TIME_SCALE_NAMES.includes(scale)) throw new RangeError('scale must be "utc", "ut1" or "tt".');
+  if (pin !== void 0 && (typeof pin !== "number" || !(Math.abs(pin) <= 1e10))) {
+    throw new RangeError("pin must be a finite number of seconds, at most 1e10 in size.");
   }
-  m[n] = -0.09856;
-  for (let i = n - 1; i > 0; i--) m[i] = r[i] - c[i] * m[i + 1];
-  const T = DELTA_T_TABLE2;
-  const obs = yearOfMjd2(T.observedTo);
-  const pred = yearOfMjd2(T.predictedTo);
-  const kv = [];
-  let total = 0;
-  for (const step of T.knots) kv.push((total += step) / 100);
-  const years = kv.length - 5;
-  const kx = [];
-  for (let i = 0; i < years; i++) kx.push(T.from + i);
-  for (let k = 0; k < 5; k++) kx.push(obs + k * (pred - obs) / 4);
-  X2 = x;
-  Y2 = y;
-  M2 = m;
-  KX2 = kx;
-  KV2 = kv;
-  OBS2 = obs;
-  PRED2 = pred;
-  SLOPE2 = (kv[years + 4] - kv[years]) / (pred - obs);
+  return timeBasis(ms, scale, pin);
 }
-function seconds2(t) {
-  const x = X2;
-  const y = Y2;
-  const m = M2;
-  const kx = KX2;
-  const kv = KV2;
-  if (t < -720) return y[0] + longTerm2(t) - longTerm2(-720);
-  if (t < 1941) {
-    let i = x.length - 2;
-    while (t < x[i]) i--;
-    const h = x[i + 1] - x[i];
-    const a = x[i + 1] - t;
-    const b = t - x[i];
-    return (m[i] * a ** 3 + m[i + 1] * b ** 3) / (6 * h) + (y[i] / h - m[i] * h / 6) * a + (y[i + 1] / h - m[i + 1] * h / 6) * b;
-  }
-  const n = kx.length - 1;
-  if (t <= kx[n]) {
-    const i = t < OBS2 ? Math.floor(t - 1941) : n - 4 + Math.min(3, Math.floor(4 * (t - OBS2) / (PRED2 - OBS2)));
-    return kv[i] + (t - kx[i]) * (kv[i + 1] - kv[i]) / (kx[i + 1] - kx[i]);
-  }
-  const g = t - PRED2;
-  return kv[n] + SLOPE2 * 15 * (1 - Math.exp(-g / 15)) + longTerm2(t) - longTerm2(PRED2) - longTermRate2(PRED2) * g;
-}
-function sigma2(t) {
-  const h = t - OBS2;
-  if (h > 0) return h <= 1 ? 0.03 + 0.09 * h ** 0.75 : h <= 10 ? 0.12 * h ** 1.5 : 0.61 * h - 2.3052668;
-  if (t >= 1956) return 0.03;
-  const c = (t - 1825) / 100;
-  let v = t < 1620 ? 0.6 * c * c : 0;
-  if (t >= 640) {
-    let i = 0;
-    while (t >= SIG2[i + 2]) i += 2;
-    v = Math.max(v, SIG2[i + 1] + (t - SIG2[i]) * (SIG2[i + 3] - SIG2[i + 1]) / (SIG2[i + 2] - SIG2[i]));
-  }
-  return v;
-}
-function deltaTAt2(ut) {
-  if (!Number.isFinite(ut)) throw new RangeError("deltaTAt takes a finite UT: days since 2000-01-01T12:00 on UT1.");
-  const t = 2e3 + ut / 365.25;
-  if (!X2) init2();
-  return {
-    seconds: seconds2(t),
-    sigma: sigma2(t),
-    model: DELTA_T_MODEL2,
-    table: DELTA_T_TABLE2.version,
-    tableDigest: DELTA_T_TABLE2.digest,
-    segment: t < -720 ? "long-term" : t < 1956 ? "reconstructed" : t <= OBS2 ? "observed" : t <= PRED2 ? "predicted" : "extrapolated"
-  };
-}
-var FROM2 = Date.UTC(1800, 0, 1);
-var TO2 = Date.UTC(2200, 0, 1);
-var LEAP_SECOND_LIST2 = /* @__PURE__ */ Object.freeze({
-  source: "IERS leap-seconds.list, retrieved 2026-09-29",
-  sha256: "db5a895f16853b03bfc865e8d68f9fc8710ef1740e3400c701cd46a5bbbc3433",
-  /** The list's last update. */
-  updated: "2026-07-06",
-  /** The list's expiry: after it the last value is carried, not known. */
-  expires: "2027-06-28",
-  changes: /* @__PURE__ */ Object.freeze(/* @__PURE__ */ [[41317, 10], [41499, 11], [41683, 12], [42048, 13], [42413, 14], [42778, 15], [43144, 16], [43509, 17], [43874, 18], [44239, 19], [44786, 20], [45151, 21], [45516, 22], [46247, 23], [47161, 24], [47892, 25], [48257, 26], [48804, 27], [49169, 28], [49534, 29], [50083, 30], [50630, 31], [51179, 32], [53736, 33], [54832, 34], [56109, 35], [57204, 36], [57754, 37]].map((change) => Object.freeze(change)))
-});
-var UT1_DATA2 = /* @__PURE__ */ Object.freeze({
-  version: "2026-09-24",
-  source: "IERS finals2000A.all (Bulletin A), Last-Modified 2026-09-24T17:37:44Z",
-  sha256: "cc80680ec05c91b65e7d02c6068fe0d44dd0998dc880551975092d2d14aa8e18",
-  /** 1972's source. */
-  earlySource: "IERS EOP 20 C04 (eopc04.1962-now), Last-Modified 2026-09-28T13:21:06Z",
-  earlySha256: "e16cfbba34574b8bad3cf81e2e56a84c2b4bbfd3c822cf9ebdd860bf97d711dc",
-  digest: "064d98b4a531053a",
-  from: 41317,
-  finalsFrom: 41684,
-  observedTo: 61307,
-  to: 61680,
-  step: 3,
-  head: -10045,
-  first: -10048,
-  slope: -9,
-  radix: 9,
-  packed: "DJ9UAUID[CT7iAMAB^B_6_JM[B^B_@MJTS9U:UACRKT0U9V@LTB^8M9UK:SC^8UAURB^9^HUJDS:M1V8LRUSJTKUJDJDTATBMIKK:^9LIMK1T9_8TJMSJTBhBDAMSBL1UAKS:^9T@_K:T:UBLBMSCT:^BLAL[CC8a9CJ;TAT@_JCK:]KL9VITK;SKKAUKBSB^BSQUKKL8_BTJLSSU9UKLIL]BL@NASS:]CC8LSKKAV:LBCTCSBMATJCT;JJMBKK2SSTALKTK9]S^JL[URJTKLB;SKT8U:CB2KCSJLKTT9TKTIMBTSBTCLB;JLK9U:KJCKK]AUB^SB]TUALKMBATCTB;AST8TKLICRUKI]S^BCBDKJKKUBBK;LAKRVC9TB^BKSLSJLCUSKKTTBKKMAJRDLASRMBATBUJCJLSCCCMAKJLTBKB^RSRTTBCAVJCJCUBLBMSKL9^KCJMSJKA_BKILSKC@UKDBCTJTATTBSKTJLAUSSK9^KKILSKSBUBSSC]SU9MCCRK^BSJTSKJBTCC@T]CK9UBUACTKL9LKKS:]KU8UJCJ9^LKILKCSB^KLALLDSJ^KTQKSK]AUJLIBT:U7VATT9UB^@MBLKBLCLJCKB[I^J^ICSDKAMBUK:SK^BDJVJBTB_9;ALJA]J^JCRML8TI_B:SK^9LAUJ:JDUADAMRKL1_9LJUSBTB^K;JMTBU9UB;B;TAU8VBBK9hAT?_KJ^:UIUAL]CLA_IKRD[JL8_JDQDSKM@VRL[CUAUI_JJ[B^ALIDSCL/_AMI<KJ_/VJDK:^9L@WATT1]AV7LSDK9gIVA<SK^7aA^RDTLK@_BDQCT9^8M@UJ9^A_HNAL[AhBVACS;T0UA_J;RMT/UAUR;SB_H_KMK9TB^AMIMS8gBUHLJ;[9UAVA<S;T@_AVIB[L^8UHVIJ]1hAM@VK9^9_AMALU8_9W@LRMSBM/_A;R;]@UHVRCSBV0MHVS:T8i@UQWB8U/a@USC]8V/bAC[:_@_IVRT]:^9LH_RCT1UAL@EJBU/hIMIDT9h9VAK[CT9U?aJCS0hAV@NABT9_BLID^:^9VALHMT:T7aALR:]Ag@LJTSA^BMAERDT1V1LGMIKh8V@V8<SCU7aIVAB]LTAMJL[C]BM8DIEK1TAV7MRLS@_A_AB]D^0M8URK[C]AV0MS1]BV8MIL[BUBh@LKMU8^9V@UJ;L8M/^[:[K^JCIMRCS:^BDIURJT9_ALJLL9L0UKCRBhBUAMRLT;SKLJUJJ[B_8THNSBSBMADHL]J]A^RLBDSI^:MB;ICgA^ALKCT8^BTIMTB]BUJUIMSLK9TJTJB^BL?_BKRBUBM@MKDKATCDALSLK9V9LHCUCL0MJLS2KSUAMKMBB^LKADJTS:U9KQCRLTALJ^IJ^KL@^CKJBSL]JKJUKA]BTBDKCSBLJ^BB]UKBLCMRKSLU@TI^J:KCKILJMKBK;LAKJUSJL;NAKSLL9KA^RB]KTITJUKASS_JLJLTJU:UBBJMTASJUIKJCTBKJMJCL:TKKBKTBL:TSLILKIT9LJSSC]KTBLKKJDTLLBUKAS9^KKJKTCJ9UBLAC^AT9_LBS:UBM8MBKIJ^KSIUKKS:TSLIDTCSAVKTSLTCL9TRTJCTJKAMITRBM:KJCLCSA_JUJCKKTIKSLJCTKT8TKKS:TKMADJMKAUKVACJTT9TBTIDJUJBLAMI:TKL9MJLS:STUADAT]:T:TILSK]A]BTS;KCUATJ_RKSCTRU9TS9SCUILILT0TA^RMJDRJUJUJKKK^AU8LJBT:gJLAUSBT1^BMKEK:KA_JDJLSASBUJKZDL8U7_JLK1_9UHVIJ]C_BC@MSBSAhJMAC]CT@VJCJChCU@TJLS:hAV6VIS]1^BLIC[KT@hJTJ:]B^AUAT[DSBTAMJLJ2^9U@VRLT0^JVJ<SC]BU8UIC[C]@VATR;KCL?aBKS:UAa8<ATZBV8i@DR<T8_?VAC[Lg?_ANJK[KgI^RVJ9]Ah8MAMS1U0UADK;S9M@iACZMT@^@aBBS2]8UBVRB^1^@MIUSJi0hJDIUf:M'_A<IL^8M.b@LS2THa7NJCTBU8VAES9S9_9LPM]BU&iBDQCU1TIaJMRB^8V@VK:[:^AM?MS;J0a9LQESCM'_9MJ;SJT@VAMS;]:L@MRCK9hBTPNKDSJ_9UAL];]8_AUI;RCT7_JLR;TBU7EIWJA^BM@MILT1UAW7MJ;L7iAUIBfC_@_AVJ:T;^8MH_K9TA_6VIMS8^9_IDILTA^B_ICSCgBKA_JA[C^8V@MRB]CV8MANJB_9a9CJC]A^8_ACS:^8UH_JCT:]AUAUJC]9hAT@MT8]Ai:DI<KAU9VJKRDUBUA_RLRKUAU7NJBT1^BKHDSCT8_IV@MSKU0VASSCSKSANADJ:[KU@UKKS9VBTJL]DSB]RTRDKJ]8VALA2[K^HVALSBTKTILJLL1]KU@LTDJAL:LB;SS]JLR^S:TDLJMATS:L:TIM@UJAU:M@DSDJBKBUK;KLL9D9LBKT;T8SKDS:KCUAKSL]:MCTRCKMT9KJUJCJDKATATSJL:]BKRURKLBV8KKUK9TB^IKQMLCC9MBKJJgKTA_SKK;MATBLSKSBMBCADKCC9LKBSCUALJLCCJK^BCBLRKSB^KAJK^KRCUBLB:]UCJUJCJCUCC@UKCB9UJL8MKCBA_BTC:SKT:DBBSDKLS9UITIK]KLAMKK[BUBLIUTTTALLLJBSKT@^JLIKSKT@MCKJB^B]JLKMBAUBUAKKCTATBUACSLC@^SUJJUB_IUCDBJTBUATJTSATBTRDBB]BLA_JA]DU@UCTS9RCUBKKKSJTCLJCBLTA^JUJDKMLAKA_BBSC]JKIVIJSCTJCKDJI^CUILRLSRSBVACJLU9L8^SB]B_9TJEKJU:TR^JMSBSAhBCILTBT8a@LB;T9TJMJK]9^:M?MJK]:]IU@MTCK/iKDHL]CTI_TDK2^BTALIMJB_9KADSCS0^BMA<SCSI_I^S;KKL7V9MR:]CL@UBDJB_:L@UST]AaAUICKCTAV8^B3JJ^?_AUJ9gCTAM@^T1TB_@UJEK0^9_ADJC]AMI^J:TD^AV9UR;RLU7UA_IBS:^ILIEB8h1UQL[ML8U8aADK;SIU7aAB];U8M@_RB[BiAUIVSAgB_?V@M[J]@aHTS2U0]HiIK]BgAU@MRLSBU8V7U]CK7qAMJC]BU8_ATZD^CU@WACR;]JU7_ILJ9^BL@ERLSA^IVIDRC]A_IVHLSB^8VALJ;T:M@MJTT1UBV@NJLS8_1UQEJCS@V9MAC]9]@VAUJ:]K^ADIVR:SJhHUJ<J9^A_@LSK^8^AVIDTDL/V8aI;K9^@V8LK1f9_A<IMT0_8iAEAMT0^8hQLS3T9L@^JMSCUIVAUSA^Ba8EAMSBL0_ILIDTA_/K",
-  /** Largest difference, s, between the table and any daily IERS value it was built from. */
-  bound: 79e-5,
-  /** C04's largest formal error in 1972, µs. */
-  earlyError: 1900,
-  firstYear: 1973,
-  /** Largest observed formal error of each year of finals2000A from firstYear, µs. */
-  observedErrors: [1313, 1515, 994, 1136, 1466, 1434, 1313, 736, 900, 1042, 661, 244, 271, 135, 119, 115, 198, 56, 52, 47, 34, 23, 33, 31, 20, 22, 28, 37, 20, 21, 11, 16, 11, 11, 12, 12, 15, 14, 21, 17, 19, 20, 14, 20, 28, 21, 14, 19, 12, 16, 21, 19, 19, 27],
-  /** The prediction's formal error every 10 days after observedTo, and on its last day, µs. */
-  predictedErrors: [108, 934, 2308, 3408, 4391, 5301, 6160, 6979, 7766, 8526, 9264, 9982, 10683, 11369, 12041, 12701, 13349, 13986, 14614, 15233, 15844, 16447, 17042, 17630, 18212, 18788, 19358, 19922, 20481, 21035, 21584, 22128, 22668, 23203, 23735, 24262, 24786, 25306, 25410]
-});
-var UT1_FROM_MS2 = 63072e6;
-var UT1_FINALS_FROM_MS2 = 947808e5;
-var UT1_OBSERVED_TO_MS2 = 1790208e6;
-var UT1_TO_MS2 = 18224352e5;
-var UT1_GRID_BEFORE2 = 122;
-var LEAP_SECONDS_EXPIRE_MS2 = 18141408e5;
-var DELTA_T_IERS_MODEL2 = "iers-utc/1";
-var DAY4 = 864e5;
-var J2000_MS3 = Date.UTC(2e3, 0, 1, 12);
-var MJD_UNIX2 = 40587;
-var LEAP_SECONDS_FROM2 = Date.UTC(1972, 0, 1);
-var UT1_FALLBACK_BAND2 = 0.9;
-var ALPHABET2 = "#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~";
-var knots2;
-function decode2() {
-  const { packed, radix, first: first2, slope } = UT1_DATA2;
-  const count = UT1_GRID_BEFORE2 + Math.ceil((UT1_DATA2.to - UT1_DATA2.finalsFrom) / UT1_DATA2.step) + 1;
-  const values = new Float64Array(count);
-  values[0] = first2;
-  let step = slope;
-  const limit = (radix - 1) / 2;
-  for (let index = 1; index < count; index += 1) {
-    values[index] = values[index - 1] + step;
-    const pair = index - 1;
-    if (index + 1 < count) {
-      const code = ALPHABET2.indexOf(packed[pair >> 1]);
-      step += (pair & 1 ? code % radix : Math.floor(code / radix)) - limit;
-    }
-  }
-  return values;
-}
-function taiMinusUtcAt2(utcMs) {
-  const mjd = Math.floor(utcMs / DAY4) + MJD_UNIX2;
-  const changes = LEAP_SECOND_LIST2.changes;
-  let value = changes[0][1];
-  for (const [from, dtai] of changes) if (mjd >= from) value = dtai;
-  return value;
-}
-function taiMinusUtcAtTai2(taiMs) {
-  const changes = LEAP_SECOND_LIST2.changes;
-  let value = changes[0][1];
-  for (const [from, dtai] of changes) if (taiMs >= (from - MJD_UNIX2) * DAY4 + dtai * 1e3) value = dtai;
-  return value;
-}
-function ut1MinusTai2(utcMs) {
-  knots2 ??= decode2();
-  const days = (utcMs - UT1_FINALS_FROM_MS2) / DAY4;
-  const gridFrom = -UT1_GRID_BEFORE2 * UT1_DATA2.step;
-  if (days < gridFrom) {
-    const fraction2 = (utcMs - UT1_FROM_MS2) / DAY4 / (gridFrom - (UT1_DATA2.from - UT1_DATA2.finalsFrom));
-    return (UT1_DATA2.head + fraction2 * (knots2[0] - UT1_DATA2.head)) / 1e3;
-  }
-  const last2 = knots2.length - 1;
-  const k = Math.min(last2 - 1, UT1_GRID_BEFORE2 + Math.floor(days / UT1_DATA2.step));
-  const start = (k - UT1_GRID_BEFORE2) * UT1_DATA2.step;
-  const end = k + 1 === last2 ? UT1_DATA2.to - UT1_DATA2.finalsFrom : start + UT1_DATA2.step;
-  const fraction = (days - start) / (end - start);
-  return (knots2[k] + fraction * (knots2[k + 1] - knots2[k])) / 1e3;
-}
-function ut1Sigma2(utcMs) {
-  if (utcMs < UT1_FINALS_FROM_MS2) return UT1_DATA2.earlyError / 1e6 + UT1_DATA2.bound;
-  if (utcMs <= UT1_OBSERVED_TO_MS2) {
-    const year = new Date(utcMs).getUTCFullYear() - UT1_DATA2.firstYear;
-    const errors2 = UT1_DATA2.observedErrors;
-    return errors2[Math.max(0, Math.min(errors2.length - 1, year))] / 1e6 + UT1_DATA2.bound;
-  }
-  const days = (utcMs - UT1_OBSERVED_TO_MS2) / DAY4 - 1;
-  const errors = UT1_DATA2.predictedErrors;
-  const k = Math.max(0, Math.min(errors.length - 2, Math.floor(days / 10)));
-  const span2 = k + 1 === errors.length - 1 ? UT1_DATA2.to - UT1_DATA2.observedTo - 1 - 10 * k : 10;
-  const fraction = Math.max(0, Math.min(1, (days - 10 * k) / span2));
-  return (errors[k] + fraction * (errors[k + 1] - errors[k])) / 1e6 + UT1_DATA2.bound;
-}
-var fallback2 = () => ({ seconds: 0, sigma: UT1_FALLBACK_BAND2, source: "fallback" });
-function tableUt1MinusUtc2(utcMs, taiMinusUtc) {
-  return {
-    seconds: ut1MinusTai2(utcMs) + taiMinusUtc,
-    sigma: ut1Sigma2(utcMs),
-    source: utcMs <= UT1_OBSERVED_TO_MS2 ? "observed" : "predicted"
-  };
-}
-function ut1MinusUtcAt2(utcMs) {
-  if (utcMs < UT1_FROM_MS2 || utcMs > UT1_TO_MS2) return fallback2();
-  return tableUt1MinusUtc2(utcMs, taiMinusUtcAt2(utcMs));
-}
-var modelDeltaT2 = (ut1Ms) => deltaTAt2((ut1Ms - J2000_MS3) / DAY4);
-function timeBasis2(ms, scale = "utc", pin) {
-  const record2 = (utcMs2, ut1Ms2, deltaT2, basis, ut1MinusUtc, leapSeconds) => {
-    const ut1Days = (ut1Ms2 - J2000_MS3) / DAY4;
-    return {
-      utcMs: utcMs2,
-      ut1Days,
-      ttDays: ut1Days + deltaT2.seconds / 86400,
-      deltaT: deltaT2,
-      timeScale: { input: scale, basis, ut1MinusUtc, leapSeconds }
-    };
-  };
-  if (pin !== void 0) {
-    const deltaT2 = { seconds: pin, sigma: null, model: "pinned", table: null, tableDigest: null, segment: "pinned" };
-    if (scale === "tt") return record2(ms - pin * 1e3, ms - pin * 1e3, deltaT2, "pinned", null, null);
-    const ut1MinusUtc = scale === "utc" && ms >= LEAP_SECONDS_FROM2 ? ut1MinusUtcAt2(ms) : null;
-    return record2(ms, ms + (ut1MinusUtc?.seconds ?? 0) * 1e3, deltaT2, "pinned", ut1MinusUtc, null);
-  }
-  const utc = scale === "tt" ? ms - modelDeltaT2(ms).seconds * 1e3 : ms;
-  if (utc < LEAP_SECONDS_FROM2 || utc > UT1_TO_MS2) {
-    let ut1Ms2 = ms;
-    if (scale === "tt") for (let round = 0; round < 4; round += 1) ut1Ms2 = ms - modelDeltaT2(ut1Ms2).seconds * 1e3;
-    return record2(ut1Ms2, ut1Ms2, modelDeltaT2(ut1Ms2), "delta-t", utc > UT1_TO_MS2 && scale !== "ut1" ? fallback2() : null, null);
-  }
-  let taiMs;
-  let taiMinusUtc;
-  let utcMs = ms;
-  if (scale === "utc") {
-    taiMinusUtc = taiMinusUtcAt2(ms);
-    taiMs = ms + taiMinusUtc * 1e3;
-  } else {
-    taiMs = scale === "tt" ? ms - 32184 : ms - ut1MinusTai2(ms) * 1e3;
-    taiMinusUtc = taiMinusUtcAtTai2(taiMs);
-    utcMs = taiMs - taiMinusUtc * 1e3;
-  }
-  const ut1 = tableUt1MinusUtc2(utcMs, taiMinusUtc);
-  const ut1Ms = scale === "ut1" ? ms : utcMs + ut1.seconds * 1e3;
-  return record2(
-    utcMs,
-    ut1Ms,
-    {
-      seconds: (taiMs + 32184 - ut1Ms) / 1e3,
-      sigma: ut1.sigma,
-      model: DELTA_T_IERS_MODEL2,
-      table: UT1_DATA2.version,
-      tableDigest: UT1_DATA2.digest,
-      segment: ut1.source
-    },
-    "iers",
-    scale === "ut1" ? { ...ut1, seconds: (ut1Ms - utcMs) / 1e3 } : ut1,
-    { taiMinusUtc, listed: utcMs < LEAP_SECONDS_EXPIRE_MS2 }
-  );
-}
-var MODEL_KNOTS_FROM2 = (1941 - 2e3) * 365.25;
-var DEG5 = Math.PI / 180;
-var RAD5 = 180 / Math.PI;
-var DEG23 = Math.PI / 180;
-var ARCSEC3 = DEG23 / 3600;
-var DEG32 = Math.PI / 180;
-var ASEC2RAD3 = DEG32 / 3600;
-var RAD23 = 180 / Math.PI;
 
 // src/lib/time/calendar-choice.ts
 var CALENDAR_CHOICE_BEFORE = "1924-01-01";
@@ -6170,7 +5723,7 @@ var VALIDATION_MESSAGES = TEXT;
 // src/lib/compute-api/endpoints.ts
 var HOUR_MS = 36e5;
 var DAY_MS2 = 864e5;
-var J2000_MS4 = Date.UTC(2e3, 0, 1, 12);
+var J2000_MS3 = Date.UTC(2e3, 0, 1, 12);
 function basisOf(instant2) {
   return timeBasis2(instant2.getTime());
 }
@@ -7377,9 +6930,9 @@ var OCCASION_KINDS = [
   "gathering"
 ];
 
-// node_modules/@zodiacs/engine/dist/chunk-DGR3SZ7M.js
-var DEG6 = Math.PI / 180;
-var ARCSEC4 = DEG6 / 3600;
+// node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
+var DEG4 = Math.PI / 180;
+var ARCSEC3 = DEG4 / 3600;
 function toEquator(m, angle) {
   const c = Math.cos(angle);
   const s = Math.sin(angle);
@@ -7413,7 +6966,7 @@ function toTrueEquinox(m, dpsi) {
 function equatorRows(tt, kind) {
   const frame = eclipticFrame(tt);
   const { mobl, tobl, dpsi } = frame.tilt;
-  return kind === "mean" ? toEquator(frame.rows, mobl * DEG6) : toEquator(toTrueEquinox(frame.rows, dpsi * ARCSEC4), tobl * DEG6);
+  return kind === "mean" ? toEquator(frame.rows, mobl * DEG4) : toEquator(toTrueEquinox(frame.rows, dpsi * ARCSEC3), tobl * DEG4);
 }
 function turn2(m, x, y, z15) {
   return [m[0] * x + m[1] * y + m[2] * z15, m[3] * x + m[4] * y + m[5] * z15, m[6] * x + m[7] * y + m[8] * z15];
@@ -7441,7 +6994,7 @@ function firstMillisecond(reached, estimate) {
   }
   return hi;
 }
-var RAD6 = Math.PI / 180;
+var RAD4 = Math.PI / 180;
 var DAY_MS4 = 864e5;
 var STEP_DAYS = 1 / 24;
 var STANDARD_REFRACTION_ARCMIN = 34;
@@ -7520,8 +7073,8 @@ function stateAt2(body2, site, conventions, ms) {
   return onChartClock(ms, "utc", void 0, (time) => {
     const g = GeoVector(BODIES2[body2], time, true);
     const [vx, vy, vz] = turn2(equatorRows(time.tt, "true"), g.x, g.y, g.z);
-    const theta = (gastHours(time) * 15 + site.longitude) * RAD6;
-    const phi = site.latitude * RAD6;
+    const theta = (gastHours(time) * 15 + site.longitude) * RAD4;
+    const phi = site.latitude * RAD4;
     const sinPhi = Math.sin(phi);
     const cosPhi = Math.cos(phi);
     const n = WGS84_A / Math.sqrt(1 - E2 * sinPhi * sinPhi);
@@ -7535,11 +7088,11 @@ function stateAt2(body2, site, conventions, ms) {
     const radial = x * cosT + y * sinT;
     const north = -radial * sinPhi + z15 * cosPhi;
     const up = radial * cosPhi + z15 * sinPhi;
-    const altitude = Math.atan2(up, Math.hypot(east, north)) / RAD6;
-    const azimuth = (Math.atan2(east, north) / RAD6 % 360 + 360) % 360;
-    const hourAngle = ((theta - Math.atan2(y, x)) / RAD6 % 360 + 360) % 360;
+    const altitude = Math.atan2(up, Math.hypot(east, north)) / RAD4;
+    const azimuth = (Math.atan2(east, north) / RAD4 % 360 + 360) % 360;
+    const hourAngle = ((theta - Math.atan2(y, x)) / RAD4 % 360 + 360) % 360;
     const radius = body2 === "Sun" || body2 === "Moon" ? SKY_RADII_KM[body2] : 0;
-    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z15) * KM_PER_AU2)) / RAD6;
+    const semiDiameter = Math.asin(radius / (Math.hypot(x, y, z15) * KM_PER_AU2)) / RAD4;
     const limb = conventions.limb === "upper" ? 1 : conventions.limb === "lower" ? -1 : 0;
     const horizon = -conventions.refractionArcmin / 60 - limb * semiDiameter;
     return { above: altitude - horizon, altitude, azimuth, hourAngle };
@@ -7667,23 +7220,23 @@ function skyEventsOn(body2, observer, date3, options) {
 }
 
 // src/lib/occasions/sun-altitude.ts
-var RAD7 = Math.PI / 180;
+var RAD5 = Math.PI / 180;
 var J20002 = 2451545;
-var DAY5 = 864e5;
+var DAY4 = 864e5;
 function julianDay(at) {
-  return at.getTime() / DAY5 + 24405875e-1;
+  return at.getTime() / DAY4 + 24405875e-1;
 }
 function sunEquatorial(at) {
   const t = (julianDay(at) - J20002) / 36525;
   const meanLongitude = 280.46646 + 36000.76983 * t + 3032e-7 * t * t;
-  const meanAnomaly = (357.52911 + 35999.05029 * t - 1537e-7 * t * t) * RAD7;
+  const meanAnomaly = (357.52911 + 35999.05029 * t - 1537e-7 * t * t) * RAD5;
   const centre = (1.914602 - 4817e-6 * t - 14e-6 * t * t) * Math.sin(meanAnomaly) + (0.019993 - 101e-6 * t) * Math.sin(2 * meanAnomaly) + 289e-6 * Math.sin(3 * meanAnomaly);
-  const node = (125.04 - 1934.136 * t) * RAD7;
-  const longitude2 = (meanLongitude + centre - 569e-5 - 478e-5 * Math.sin(node)) * RAD7;
-  const obliquity = (23.439291 - 0.0130042 * t + 256e-5 * Math.cos(node)) * RAD7;
+  const node = (125.04 - 1934.136 * t) * RAD5;
+  const longitude2 = (meanLongitude + centre - 569e-5 - 478e-5 * Math.sin(node)) * RAD5;
+  const obliquity = (23.439291 - 0.0130042 * t + 256e-5 * Math.cos(node)) * RAD5;
   return {
-    rightAscension: Math.atan2(Math.cos(obliquity) * Math.sin(longitude2), Math.cos(longitude2)) / RAD7,
-    declination: Math.asin(Math.sin(obliquity) * Math.sin(longitude2)) / RAD7
+    rightAscension: Math.atan2(Math.cos(obliquity) * Math.sin(longitude2), Math.cos(longitude2)) / RAD5,
+    declination: Math.asin(Math.sin(obliquity) * Math.sin(longitude2)) / RAD5
   };
 }
 function siderealTime(at) {
@@ -7693,10 +7246,10 @@ function siderealTime(at) {
 }
 function sunAltitude(at, latitude, longitude2) {
   const { rightAscension, declination } = sunEquatorial(at);
-  const hourAngle = (siderealTime(at) + longitude2 - rightAscension) * RAD7;
-  const phi = latitude * RAD7;
-  const delta2 = declination * RAD7;
-  return Math.asin(Math.sin(phi) * Math.sin(delta2) + Math.cos(phi) * Math.cos(delta2) * Math.cos(hourAngle)) / RAD7;
+  const hourAngle = (siderealTime(at) + longitude2 - rightAscension) * RAD5;
+  const phi = latitude * RAD5;
+  const delta2 = declination * RAD5;
+  return Math.asin(Math.sin(phi) * Math.sin(delta2) + Math.cos(phi) * Math.cos(delta2) * Math.cos(hourAngle)) / RAD5;
 }
 function sunDescendsThrough(altitude, from, to, latitude, longitude2) {
   let lo = from.getTime();
@@ -7819,7 +7372,7 @@ function sunMoonLine(sunSign, moonSign) {
 }
 
 // src/lib/engine/lite.ts
-var DEG7 = Math.PI / 180;
+var DEG5 = Math.PI / 180;
 var MOON_PHASE_NEW_ILLUMINATION = 0.03;
 var MOON_PHASE_QUARTER_DEGREES = 12;
 function moonPhaseNameFromAngle(a) {
@@ -7983,9 +7536,9 @@ function weighOccasionDate(occasion, sky) {
 var BEST_DAYS_MAX_WINDOW = 92;
 var BEST_DAYS_COUNT = 3;
 var BEST_DAY_REASONS = 3;
-var DAY6 = 864e5;
-var dayNumber = (date3) => Date.parse(`${date3}T00:00:00Z`) / DAY6;
-var dateOf = (day) => new Date(day * DAY6).toISOString().slice(0, 10);
+var DAY5 = 864e5;
+var dayNumber = (date3) => Date.parse(`${date3}T00:00:00Z`) / DAY5;
+var dateOf = (day) => new Date(day * DAY5).toISOString().slice(0, 10);
 function bestDaysWindow(from, to) {
   if (!validOccasionDate(from) || !validOccasionDate(to)) {
     throw new RangeError(`The search window must run between real dates from ${OCCASION_MIN_YEAR} to ${OCCASION_MAX_YEAR}.`);
@@ -17694,7 +17247,7 @@ var chartTwinsData = z.object({
   /** The share link: the Sun sign, and the Moon sign when settled; null when no one shares them. */
   shareUrl: z.url().nullable()
 });
-var DAY7 = 864e5;
+var DAY6 = 864e5;
 async function findChartTwins(args, localTime2, origin = DEFAULT_ORIGIN) {
   const input = chartTwinsInput.parse(args);
   if (!validOccasionDate(input.birthDate)) throw new RangeError("The birth date must be a real date from 1800 to 2199.");
@@ -17709,7 +17262,7 @@ async function findChartTwins(args, localTime2, origin = DEFAULT_ORIGIN) {
     flags = resolved.flags;
   } else {
     const [year, month, day] = input.birthDate.split("-").map(Number);
-    utc = new Date(Date.UTC(year, month - 1, day) + DAY7 / 2);
+    utc = new Date(Date.UTC(year, month - 1, day) + DAY6 / 2);
   }
   const chart = computeChart3({
     utc,
@@ -18006,14 +17559,14 @@ function famousChart(famous) {
     bodies: famous.placements.filter((row) => row.body !== "Moon").map((row) => ({ body: row.body, lon: longitude2(row.sign, row.degree) }))
   };
 }
-async function personChart(person, fallback3, clock2) {
+async function personChart(person, fallback2, clock2) {
   if (person.famous !== void 0) {
     const famous = findFamous(person.famous);
-    if (!famous) throw new RangeError(`${fallback3}: ${NOT_FOUND_NOTE}`);
+    if (!famous) throw new RangeError(`${fallback2}: ${NOT_FOUND_NOTE}`);
     return famousChart(famous);
   }
-  if (person.birthDate === void 0) throw new RangeError(`${fallback3}: give a birth date, or a famous person.`);
-  checkPerson({ ...person, birthDate: person.birthDate }, fallback3);
+  if (person.birthDate === void 0) throw new RangeError(`${fallback2}: give a birth date, or a famous person.`);
+  checkPerson({ ...person, birthDate: person.birthDate }, fallback2);
   const timeKnown = person.time !== void 0;
   const latitude = person.latitude === void 0 ? void 0 : roundCoordinate(person.latitude);
   const longitude2 = person.longitude === void 0 ? void 0 : roundCoordinate(person.longitude);
@@ -18032,7 +17585,7 @@ async function personChart(person, fallback3, clock2) {
     person,
     famous: null,
     birthDate: person.birthDate,
-    label: person.name ?? fallback3,
+    label: person.name ?? fallback2,
     timeKnown,
     placed,
     chart,
@@ -25384,10 +24937,8 @@ function readOptions(value, allowed, label) {
 }
 
 // node_modules/@zodiacs/engine/dist/techniques.js
-var DAY_MS5 = 864e5;
-var MAX_DATE_MS = 864e13;
-function oneOf2(value, allowed, fallback3, label) {
-  if (value === void 0) return fallback3;
+function oneOf2(value, allowed, fallback2, label) {
+  if (value === void 0) return fallback2;
   if (typeof value === "string" && allowed.includes(value)) return value;
   throw new RangeError(`${label} must be one of ${allowed.map((name) => `"${name}"`).join(", ")}.`);
 }
@@ -25395,6 +24946,8 @@ function finiteDegrees(value, label) {
   if (typeof value !== "number" || !Number.isFinite(value)) throw new RangeError(`${label} must be a finite number of degrees.`);
   return value;
 }
+var DAY_MS5 = 864e5;
+var MAX_DATE_MS = 864e13;
 function dateAt2(milliseconds, label) {
   if (!(Math.abs(milliseconds) <= MAX_DATE_MS)) throw new RangeError(`${label} falls outside the range of a JavaScript Date.`);
   return new Date(milliseconds);
@@ -25433,7 +24986,7 @@ function mostRecentSolarReturnInstant(natalSunLongitude, at) {
   if (last2 === void 0) throw new RangeError("No previous solar return found in the scan window.");
   return new Date(last2.at.getTime());
 }
-var DEG8 = Math.PI / 180;
+var DEG6 = Math.PI / 180;
 var VOID_BODIES = /* @__PURE__ */ Object.freeze({
   modern: /* @__PURE__ */ Object.freeze(["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]),
   traditional: /* @__PURE__ */ Object.freeze(["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"])
@@ -27317,7 +26870,7 @@ function skyCalendarEvents(locale) {
 
 // src/ai-tools/features/birthday.ts
 var HOUR2 = 36e5;
-var DAY8 = 24 * HOUR2;
+var DAY7 = 24 * HOUR2;
 var DEFAULT_ORIGIN2 = "https://zodiacs.org";
 var ZONE_PATTERN3 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var MIN_YEAR = 1800;
@@ -27451,7 +27004,7 @@ async function birthInstant2(birthDate, time, timeZone, longitude2, localTime2) 
   const [year, month, day] = birthDate.split("-").map(Number);
   const utc = /* @__PURE__ */ new Date(0);
   utc.setUTCFullYear(year, month - 1, day);
-  return new Date(utc.getTime() + DAY8 / 2);
+  return new Date(utc.getTime() + DAY7 / 2);
 }
 async function getBirthday(input, localTime2, now, origin = DEFAULT_ORIGIN2) {
   const args = birthdayInput.parse(input);
@@ -27563,7 +27116,7 @@ async function getBirthday(input, localTime2, now, origin = DEFAULT_ORIGIN2) {
       const [first2, last2] = timeZone ? await Promise.all([
         birthInstant2(args.birthDate, "00:00", timeZone, args.longitude ?? null, localTime2),
         birthInstant2(args.birthDate, "23:59", timeZone, args.longitude ?? null, localTime2)
-      ]) : [new Date(birthUtc.getTime() - DAY8 / 2 - 14 * HOUR2), new Date(birthUtc.getTime() + DAY8 / 2 + 12 * HOUR2)];
+      ]) : [new Date(birthUtc.getTime() - DAY7 / 2 - 14 * HOUR2), new Date(birthUtc.getTime() + DAY7 / 2 + 12 * HOUR2)];
       const earliest = solarReturnInstant2(bodyLongitude2("Sun", first2), nearDate);
       const latest = solarReturnInstant2(bodyLongitude2("Sun", last2), nearDate);
       range = { earliest: clock(earliest, timeZone), latest: clock(latest, timeZone) };
@@ -28185,7 +27738,7 @@ var chiron_default = {
 
 // src/ai-tools/features/chiron.ts
 var J20003 = 2451545;
-var DAY9 = 864e5;
+var DAY8 = 864e5;
 var BEFORE = chiron_default.points / 2 - 1;
 var AFTER = chiron_default.points / 2;
 var CHIRON_SPAN = { from: Date.parse(chiron_default.span.from), to: Date.parse(chiron_default.span.to) };
@@ -28246,7 +27799,7 @@ function bisect(lo, hi, inside) {
   }
   return hi;
 }
-var SAMPLE = 4 * DAY9;
+var SAMPLE = 4 * DAY8;
 function chironEvents(from, to) {
   const clipped = from.getTime() < CHIRON_SPAN.from || to.getTime() > CHIRON_SPAN.to;
   const lo = Math.max(from.getTime(), CHIRON_SPAN.from);
@@ -31491,7 +31044,7 @@ var HOUSE_THEME = {
 };
 
 // src/ai-tools/features/horoscope-period.ts
-var DAY10 = 864e5;
+var DAY9 = 864e5;
 var ZONE_PATTERN5 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var ORDINAL4 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -31550,7 +31103,7 @@ var horoscopePeriodDataWithShare = horoscopePeriodData.extend({
   shareUrl: z5.url().nullable()
 });
 var cap3 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
-var addDays = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY10).toISOString().slice(0, 10);
+var addDays = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY9).toISOString().slice(0, 10);
 var monthLabel = (month) => `${MONTHS[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
 var shortDay = (date3) => `${Number(date3.slice(8, 10))} ${MONTHS[Number(date3.slice(5, 7)) - 1]} ${date3.slice(0, 4)}`;
 function dayOn(iso3, timeZone) {
@@ -32096,7 +31649,7 @@ function getChineseZodiac(args, today, zone7, origin = DEFAULT_ORIGIN4, zoneAssu
 import { z as z7 } from "zod";
 
 // src/lib/engine/returns.ts
-var DAY11 = 864e5;
+var DAY10 = 864e5;
 function findLongitudeCrossings2(body2, targetLon, from, to, stepDays = 5) {
   if (!(to.getTime() > from.getTime())) return [];
   return findLongitudeCrossingsWith(bodyLongitude2, body2, targetLon, from, to, stepDays);
@@ -32105,7 +31658,7 @@ function groupIntoSeasons2(crossings, gapDays = 400) {
   const seasons = [];
   for (const c of crossings) {
     const cur = seasons[seasons.length - 1];
-    if (cur && c.at.getTime() - cur.last.getTime() <= gapDays * DAY11) {
+    if (cur && c.at.getTime() - cur.last.getTime() <= gapDays * DAY10) {
       cur.crossings.push(c);
       cur.last = c.at;
     } else {
@@ -32118,8 +31671,8 @@ function saturnReturns(birthUtc) {
   const natalLon = bodyLongitude2("Saturn", birthUtc);
   const speed = longitudeSpeed2("Saturn", birthUtc);
   const window = clipToReferenceSpan(
-    new Date(birthUtc.getTime() + 26 * 365.25 * DAY11),
-    new Date(birthUtc.getTime() + 92 * 365.25 * DAY11)
+    new Date(birthUtc.getTime() + 26 * 365.25 * DAY10),
+    new Date(birthUtc.getTime() + 92 * 365.25 * DAY10)
   );
   const crossings = window ? findLongitudeCrossings2("Saturn", natalLon, window.from, window.to) : [];
   return {
@@ -32176,7 +31729,7 @@ var NATAL_POINT_ORDER = [
 ];
 
 // src/lib/engine/transit-scan-core.ts
-var DAY12 = 864e5;
+var DAY11 = 864e5;
 var MINUTE = 6e4;
 var BOUNDARY_EPSILON_MS = 100;
 var ASPECT_TARGET_OFFSETS = {
@@ -32295,7 +31848,7 @@ function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
 }
 function stationBreakpoints(ephemeris, body2, from, to, stepDays) {
   const stations = [];
-  const stepMs = stepDays * DAY12;
+  const stepMs = stepDays * DAY11;
   const toMs = to.getTime();
   let previousMs = from.getTime();
   let previousSpeed = ephemeris.longitudeSpeed(body2, from);
@@ -32654,7 +32207,7 @@ function assembleYearAhead(parts) {
 }
 
 // src/ai-tools/features/personal-transits.ts
-var DAY13 = 864e5;
+var DAY12 = 864e5;
 var HOUR4 = 36e5;
 var ZONE_PATTERN7 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE2 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
@@ -32782,7 +32335,7 @@ function numberTransitPasses(contacts) {
   }
   const numbered = /* @__PURE__ */ new Map();
   for (const list3 of groups.values()) {
-    const gap = (LOOP_GAP_DAYS[list3[0].transitBody] ?? 0) * DAY13;
+    const gap = (LOOP_GAP_DAYS[list3[0].transitBody] ?? 0) * DAY12;
     const sorted = [...list3].sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
     let cluster = [];
     const flush = () => {
@@ -32864,21 +32417,21 @@ async function getPersonalTransits(args, now, clock2, origin) {
   const mode = args.mode ?? "window";
   if (mode === "window") {
     const fromDate = args.from ?? today;
-    const toDate2 = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + (TRANSITS_DEFAULT_DAYS - 1) * DAY13).toISOString().slice(0, 10);
+    const toDate2 = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + (TRANSITS_DEFAULT_DAYS - 1) * DAY12).toISOString().slice(0, 10);
     if (!parseCivilDate(fromDate) || !parseCivilDate(toDate2)) throw new RangeError("from and to must be real dates, such as 2026-11-01.");
-    const days = Math.round((Date.parse(`${toDate2}T00:00:00Z`) - Date.parse(`${fromDate}T00:00:00Z`)) / DAY13);
+    const days = Math.round((Date.parse(`${toDate2}T00:00:00Z`) - Date.parse(`${fromDate}T00:00:00Z`)) / DAY12);
     if (days < 0) throw new RangeError("to must be on or after from.");
     if (days > TRANSITS_MAX_DAYS) throw new RangeError(`The window is at most ${TRANSITS_MAX_DAYS} days; to is ${days} days after from.`);
     if (fromDate < args.birthDate) throw new RangeError(BEFORE_BIRTH);
     const fromUtc2 = await startOfDay(fromDate, shownZone, clock2);
-    const nextDay = new Date(Date.parse(`${toDate2}T00:00:00Z`) + DAY13).toISOString().slice(0, 10);
+    const nextDay = new Date(Date.parse(`${toDate2}T00:00:00Z`) + DAY12).toISOString().slice(0, 10);
     const toUtc2 = await startOfDay(nextDay, shownZone, clock2);
     const planets = days <= TRANSITS_PERSONAL_DAYS ? [...DEFAULT_TRANSIT_BODIES] : [...SLOW_TRANSIT_BODIES];
     if (days > TRANSITS_PERSONAL_DAYS) limits2.push(`Windows longer than ${TRANSITS_PERSONAL_DAYS} days list only Jupiter, Saturn, Uranus, Neptune and Pluto; ask for a shorter window for the Sun, Mercury, Venus and Mars.`);
     const natal2 = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles };
     const pad2 = transitLoopPadDays(planets);
-    const expandedFrom = new Date(Math.max(SPAN_START, fromUtc2.getTime() - pad2 * DAY13));
-    const expandedTo = new Date(Math.min(SPAN_END, toUtc2.getTime() + pad2 * DAY13));
+    const expandedFrom = new Date(Math.max(SPAN_START, fromUtc2.getTime() - pad2 * DAY12));
+    const expandedTo = new Date(Math.min(SPAN_END, toUtc2.getTime() + pad2 * DAY12));
     const fromIso = fromUtc2.toISOString();
     const toIso = toUtc2.toISOString();
     const found = numberTransitPasses(scanTransitLoops(natal2, fromUtc2, toUtc2, expandedFrom, expandedTo, planets, points)).filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
@@ -32912,7 +32465,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
   }
   if (today < args.birthDate) throw new RangeError(YEAR_BEFORE_BIRTH);
   const fromUtc = await startOfDay(today, shownZone, clock2);
-  const toUtc = new Date(fromUtc.getTime() + 365 * DAY13);
+  const toUtc = new Date(fromUtc.getTime() + 365 * DAY12);
   const scan = yearScan({ sunLon: lon("Sun"), moonLon: timeKnown ? lon("Moon") : null, ascLon: angles ? angles.asc : null, birthUtc }, fromUtc, toUtc);
   const sunSign = SIGNS2[signIndexForLongitude2(lon("Sun"))].slug;
   const risingSign = angles ? SIGNS2[signIndexForLongitude2(angles.asc)].slug : null;
@@ -39741,7 +39294,7 @@ function siteVoidOfCourseWindows(from, to) {
 }
 
 // src/ai-tools/features/sky-events.ts
-var DAY14 = 864e5;
+var DAY13 = 864e5;
 var ZONE_PATTERN8 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE4 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var SKY_EVENT_KINDS = ["solar-eclipse", "lunar-eclipse", "station", "ingress", "new-moon", "full-moon", "void-of-course"];
@@ -39814,8 +39367,8 @@ var skyEventsData = z10.object({
 var cap9 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 var signName5 = (slug) => SIGNS2.find((sign2) => sign2.slug === slug).name;
 var isRealDate = (date3) => !Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) && (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) === date3;
-var addDays2 = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY14).toISOString().slice(0, 10);
-var daysBetween = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY14);
+var addDays2 = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY13).toISOString().slice(0, 10);
+var daysBetween = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY13);
 var yearsLater = (date3, years) => {
   const [year, month, day] = date3.split("-").map(Number);
   return new Date(Date.UTC(year + years, month - 1, day)).toISOString().slice(0, 10);
@@ -39843,7 +39396,7 @@ function published(origin, id) {
 function retrogradeWindowOf(planet, at, direction) {
   return RETROGRADES.find((window) => {
     const edge = direction === "retrograde" ? window.from : window.to;
-    return window.planet === planet && edge !== null && !(direction === "retrograde" && edge === SKY_FROM) && Math.abs(Date.parse(edge) - at.getTime()) <= 2 * DAY14;
+    return window.planet === planet && edge !== null && !(direction === "retrograde" && edge === SKY_FROM) && Math.abs(Date.parse(edge) - at.getTime()) <= 2 * DAY13;
   });
 }
 function pageFor(origin, event2) {
@@ -40023,7 +39576,7 @@ async function searchSkyEvents(args, clock2, options) {
     }
   }
   if (voids) {
-    const periods = siteVoidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY14));
+    const periods = siteVoidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY13));
     for (const period of periods) {
       if (period.from.getTime() >= end.getTime() || period.to.getTime() <= start.getTime()) continue;
       raw.push({ kind: "void-of-course", at: period.from, until: period.to, sign: period.sign, nextSign: period.nextSign, extra: { lastAspect: period.lastAspect ? { body: period.lastAspect.body, aspect: period.lastAspect.aspect } : null } });
@@ -40753,7 +40306,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       }
       return hash;
     }
-    function decode3(entry) {
+    function decode2(entry) {
       const times = [];
       let previous = 0;
       if (entry.t) {
@@ -40803,7 +40356,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       }
       const ready = pending.then((zones) => {
         const entry = Object.prototype.hasOwnProperty.call(zones, key) ? zones[key] : void 0;
-        histories.set(key, entry ? decode3(entry) : null);
+        histories.set(key, entry ? decode2(entry) : null);
       });
       void ready.catch(() => {
       });
@@ -40875,7 +40428,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const sign2 = match[1] === "-" ? -1 : 1;
       return sign2 * (Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0) + Number(match[4] ?? 0) / 60);
     }
-    var DAY19 = 864e5;
+    var DAY18 = 864e5;
     var PROBE = 36 * 36e5;
     var MAX_DEPARTURE_SECONDS = 180 * 60;
     var FIXED_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
@@ -40904,8 +40457,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       if (first2) {
         return second ? { chosen: first2, kind: "fold", at: firstChange(clockAt, first2.utcMs, second.utcMs) } : { chosen: first2, kind: null, at: null };
       }
-      let lo = wallMs - PROBE - DAY19;
-      let hi = wallMs + PROBE + DAY19;
+      let lo = wallMs - PROBE - DAY18;
+      let hi = wallMs + PROBE + DAY18;
       while (hi - lo > 1) {
         const mid = Math.floor((lo + hi) / 2);
         if (mid + clockAt(mid) * 1e3 > wallMs) hi = mid;
@@ -40973,7 +40526,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       wall.setUTCFullYear(civil.year, civil.month - 1, civil.day);
       const wallMs = wall.setUTCHours(Number(hhmm[1]), Number(hhmm[2]));
       const loaded = FIXED_ZONE.test(timeZone) ? null : loadedHistory(timeZone);
-      if (loaded === void 0 && wallMs < DAY19) throw new ZoneHistoryNotLoadedError();
+      if (loaded === void 0 && wallMs < DAY18) throw new ZoneHistoryNotLoadedError();
       const history = loaded ?? null;
       const zoneAt2 = zoneClock(timeZone, history);
       const place2 = longitude2 !== void 0 && history ? birthplaceClock(history, wallMs, longitude2, zoneAt2) : null;
@@ -41121,8 +40674,8 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
 }
 
 // src/lib/occasions/milestones.ts
-var DAY15 = 864e5;
-var YEAR2 = 365.25 * DAY15;
+var DAY14 = 864e5;
+var YEAR2 = 365.25 * DAY14;
 var SYNODIC_MONTH = 29.530588;
 var MERCURY_STEP_DAYS = 4;
 function ageAt(birth, at) {
@@ -41150,7 +40703,7 @@ function fullMoonsBetween(from, to) {
   if (!(to.getTime() > from.getTime())) return 0;
   const start = moonPhase(from).angle;
   const end = moonPhase(to).angle;
-  const days = (to.getTime() - from.getTime()) / DAY15;
+  const days = (to.getTime() - from.getTime()) / DAY14;
   const remainder = ((end - start) % 360 + 360) % 360;
   const turns = Math.round((days * 360 / SYNODIC_MONTH - remainder) / 360);
   const gained = turns * 360 + remainder;
@@ -41160,7 +40713,7 @@ function fullMoonsBetween(from, to) {
 function mercuryRetrogradesBetween(from, to) {
   let count = 0;
   let previous = longitudeSpeed2("Mercury", from);
-  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY15; ; t += MERCURY_STEP_DAYS * DAY15) {
+  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY14; ; t += MERCURY_STEP_DAYS * DAY14) {
     const at = Math.min(t, to.getTime());
     const speed = longitudeSpeed2("Mercury", new Date(at));
     if (previous >= 0 && speed < 0) count += 1;
@@ -41218,7 +40771,7 @@ var MILESTONE_WORDS = {
 };
 
 // src/lib/occasions/milestone-card.ts
-var DAY16 = 864e5;
+var DAY15 = 864e5;
 async function milestoneCard(input, asOf, clock2) {
   if (!validOccasionDate(input.birthDate)) throw new RangeError("The birth date must be a real date from 1800 to 2199.");
   if (input.time !== null && !/^([01]\d|2[0-3]):[0-5]\d$/u.test(input.time)) throw new RangeError("The time must be HH:MM.");
@@ -41230,7 +40783,7 @@ async function milestoneCard(input, asOf, clock2) {
     birth = (input.birthplace ? resolveLocalToUtc(input.birthDate, input.time, input.timeZone, { longitude: input.birthplace.lon }) : resolveLocalToUtc(input.birthDate, input.time, input.timeZone)).utc;
   } else {
     const [year, month, day] = input.birthDate.split("-").map(Number);
-    birth = new Date(Date.UTC(year, month - 1, day) + DAY16 / 2);
+    birth = new Date(Date.UTC(year, month - 1, day) + DAY15 / 2);
   }
   if (birth.getTime() > asOf.getTime()) throw new RangeError("The birth date is in the future.");
   return { ...lifeMilestones2(birth, asOf), timeKnown: input.time !== null };
@@ -41240,7 +40793,7 @@ async function milestoneCard(input, asOf, clock2) {
 var WEEK_DAYS = 7;
 var WEEK_ORB = 3;
 var WEEK_LIMIT = 5;
-var DAY17 = 864e5;
+var DAY16 = 864e5;
 var SAMPLE_MS = 6 * 36e5;
 var UNTIMED_LEFT_OUT = ["Moon", "ASC", "MC"];
 function remember(ephemeris) {
@@ -41271,7 +40824,7 @@ function scanYourWeek(request2, ephemeris, limit = WEEK_LIMIT) {
   const fromMs = Date.parse(request2.fromUtc);
   if (!Number.isFinite(fromMs)) throw new RangeError("The week needs a valid start.");
   if (typeof request2.timeKnown !== "boolean") throw new RangeError("Confirm whether the birth time is known.");
-  const toMs = fromMs + WEEK_DAYS * DAY17;
+  const toMs = fromMs + WEEK_DAYS * DAY16;
   const from = new Date(fromMs), to = new Date(toMs);
   const natal = request2.timeKnown ? request2.natal : { bodies: request2.natal.bodies, angles: null };
   const points = natalTransitPoints(natal).filter((point) => request2.timeKnown || !UNTIMED_LEFT_OUT.includes(point.name));
@@ -42154,8 +41707,8 @@ function signingKey(secret) {
   if (key.length < 24 || key.length > 64 || (encoded2.includes("=") ? canonical !== encoded2 : canonical.replace(/=+$/, "") !== encoded2)) throw new Error("invalid-signing-key");
   return key;
 }
-function signature(secret, id, seconds3, body2) {
-  return `v1,${createHmac("sha256", signingKey(secret)).update(`${id}.${seconds3}.${body2}`).digest("base64")}`;
+function signature(secret, id, seconds2, body2) {
+  return `v1,${createHmac("sha256", signingKey(secret)).update(`${id}.${seconds2}.${body2}`).digest("base64")}`;
 }
 function destinationVault(encodedKey) {
   const key = Buffer.from(encodedKey, "base64");
@@ -42233,12 +41786,12 @@ var callbackPost = async (raw, headers, body2) => {
   });
 };
 function signedHeaders(secret, id, subscription, body2, now, previous) {
-  const seconds3 = Math.floor(now / 1e3);
+  const seconds2 = Math.floor(now / 1e3);
   return {
     "Content-Type": "application/json",
     "webhook-id": id,
-    "webhook-timestamp": String(seconds3),
-    "webhook-signature": [signature(secret, id, seconds3, body2), ...previous ? [signature(previous, id, seconds3, body2)] : []].join(" "),
+    "webhook-timestamp": String(seconds2),
+    "webhook-signature": [signature(secret, id, seconds2, body2), ...previous ? [signature(previous, id, seconds2, body2)] : []].join(" "),
     "X-MCP-Subscription-Id": subscription
   };
 }
@@ -42259,7 +41812,7 @@ async function verifyCallback(url, secret, id, post, now) {
 // src/ai-tools/watch/contracts.ts
 import { z as z12 } from "zod";
 var WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
-var DAY18 = 864e5;
+var DAY17 = 864e5;
 var BODIES4 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
 var zone5 = z12.string().max(80).default("UTC").refine((value) => {
@@ -42343,7 +41896,7 @@ function supabaseOAuthResource(options) {
   const issuer = `${url}/auth/v1`;
   const client = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-    global: { fetch: (input, init3) => fetch(input, { ...init3, redirect: "error", signal: AbortSignal.timeout(5e3) }) }
+    global: { fetch: (input, init2) => fetch(input, { ...init2, redirect: "error", signal: AbortSignal.timeout(5e3) }) }
   });
   return {
     resource,
@@ -42435,7 +41988,7 @@ var SkyWatch = class {
       expected_revision: previous?.revision ?? 0,
       rotated: previousValue !== null && previousValue.secret !== secret,
       verified: needsVerification,
-      ttl_ms: Math.min(params.ttlMs ?? DAY18, 7 * DAY18)
+      ttl_ms: Math.min(params.ttlMs ?? DAY17, 7 * DAY17)
     });
     if (!result) throw new ProtocolError(-32e3, "Subscription changed or access expired. Retry the request.");
     return { id, refreshBefore: result.expires_at, cursor: null, truncated: false };
@@ -43403,9 +42956,9 @@ async function calculateWindow(from, to) {
 async function fillWatchLedger(rpc, now = Date.now(), calculate = calculateWindow) {
   let filled = 0;
   for (; filled < 3; filled++) {
-    const from = await rpc("window", { version: WATCH_VERSION, start: new Date(Math.floor(now / DAY18) * DAY18).toISOString() });
-    if (Date.parse(from) >= Math.floor(now / DAY18) * DAY18 + 2 * DAY18) break;
-    const to = new Date(Date.parse(from) + DAY18).toISOString();
+    const from = await rpc("window", { version: WATCH_VERSION, start: new Date(Math.floor(now / DAY17) * DAY17).toISOString() });
+    if (Date.parse(from) >= Math.floor(now / DAY17) * DAY17 + 2 * DAY17) break;
+    const to = new Date(Date.parse(from) + DAY17).toISOString();
     const events = await calculate(from, to);
     await rpc("ingest", { version: WATCH_VERSION, from, to, events });
   }
