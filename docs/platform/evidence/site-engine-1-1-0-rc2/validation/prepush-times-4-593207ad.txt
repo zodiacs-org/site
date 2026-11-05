@@ -1,0 +1,6 @@
+fourth attempt, on the merge of main 1e89d772 (D-16), citing rc2a-b5c5b46d-prepush-times.txt (third: 40 of 42, only the accepted two failing: the Phase 1 capture test and the first-use drive's Firefox launch); D-14 accepts the Firefox launch only
+head 593207ad base 1e89d772 node v22.22.2 npm 10.9.7 Darwin arm64 label prepush
+2026-11-05T05:56:50Z
+v22.22.2
+HEAD 593207ad8e3e8a38552b36cf746b523d13e7ebd4 origin/main 1e89d772c29e182ffe0bcbaecaab0738ee8de78f
+stopped by hand at 2026-11-05T05:57:32Z during step 1 (build): the developer plugin's README still named 0.3.23; the gate runs again on the amended head

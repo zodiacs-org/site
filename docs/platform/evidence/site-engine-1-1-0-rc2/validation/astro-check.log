@@ -6,22 +6,17 @@
 > zodiacs-org@1.0.0 check:consumer-boundary
 > node scripts/check-consumer-boundary.mjs
 
-consumer-boundary: clear · 2276 source files checked
+consumer-boundary: clear · 2281 source files checked
 
 > zodiacs-org@1.0.0 footer:check
 > node scripts/sync-site-footer-css.mjs --check && node scripts/check-site-footer-standard.mjs
 
 site-footer.css: public copy matches the canonical source
 site-footer-standard: canonical footer sources and surfaces verified
-21:50:37 [content] Syncing content
-21:50:37 [content] Synced content
-21:50:37 [types] Generated 569ms
-21:50:37 [check] Getting diagnostics for Astro files in <checkout>...
-src/ai-tools/http.ts:4:340 - warning ts(6133): 'AiToolName' is declared but its value is never read.
-
-4 import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName, type CoverageToolName, type PlaceToolName } from './contracts';
-                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~
-
+13:44:59 [content] Syncing content
+13:44:59 [content] Synced content
+13:44:59 [types] Generated 780ms
+13:44:59 [check] Getting diagnostics for Astro files in <checkout>...
 src/ai-tools/accounts/save.ts:195:5 - warning ts(7027): Unreachable code detected.
 
 195     return { failure: 'Zodiacs cannot save that kind of result.' };
@@ -236,9 +231,9 @@ src/registry/selected-token-chart.mjs:320:3 - warning ts(6133): 'last' is declar
 320   last,
       ~~~~
 
-src/server/result-preview.ts:235:10 - warning ts(80006): This may be converted to an async function.
+src/server/result-preview.ts:313:10 - warning ts(80006): This may be converted to an async function.
 
-235 function readJson<T>(url: URL): Promise<T> {
+313 function readJson<T>(url: URL): Promise<T> {
              ~~~~~~~~
 
 src/shelf/card.mjs:27:10 - warning ts(80006): This may be converted to an async function.
@@ -255,7 +250,7 @@ src/trade/entry.mjs:20:38 - warning ts(6133): 'env' is declared but its value is
 20 export function registryTradeEnabled(env = {}) {
                                         ~~~
 
-Result (1612 files):
+Result (1621 files):
 - 0 errors
 - 0 warnings
-- 49 hints
+- 48 hints

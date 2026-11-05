@@ -38,6 +38,8 @@ is filled by the commit that makes its runs.
 | [entry-graphs.txt](entry-graphs.txt), `tools/compare-entry-graphs.mjs` | each public entry's code, 1.1.0-rc.1 against 1.1.0-rc.2 | the site checks |
 | [mcp-pin.txt](mcp-pin.txt), [regenerated-outputs-check.txt](regenerated-outputs-check.txt) | the MCP adapter's pin to the adoption commit, and the regenerated outputs checked against the base | the site checks |
 | `tools/verify-production.mjs` | every production check of [PRODUCTION-CHECKS.md](PRODUCTION-CHECKS.md), committed before any production run | the site checks |
+| [d16-time-basis.json](d16-time-basis.json), [d16-time-basis-control.json](d16-time-basis-control.json), `tools/compare-time-basis-d16.mjs` | D-16: the deleted module's time basis against `@zodiacs/engine/time`, for main's Chiron, and its control | the record of D-16 |
+| [d16-sitemap/](d16-sitemap/) | D-16: Sitemap Dates' comparison of the merge of main `1e89d772`, made here as CI makes it | the record of D-16 |
 
 Still to come, each by the commit that makes it: the Phase 1 captures and
 production. The local gate's logs are in [validation/](validation/), and the
@@ -95,8 +97,9 @@ on Node 24.21.0, as for 1.1.0-rc.1). Nothing here is recorded `accepted`.
 - **Developer plugin 0.3.21** (0.3.20 went to #877). `npm run ai:check`
   passes. This commit moved Chart Studio's panel to `chart-studio-v7.html`,
   v6 staying a legacy address, because the panel embeds the engine; D-12
-  takes the move back. Main's #881 then made its own 0.3.21, and #882 its
-  own 0.3.22, so after the merges (D-13) this branch's plugin is 0.3.23.
+  takes the move back. Main's #881 then made its own 0.3.21, #882 its own
+  0.3.22, and #883, #886, #885 and #888 their own 0.3.23 to 0.3.26, so after
+  the merges (D-13, D-16) this branch's plugin is 0.3.27.
 - **Accuracy refresh** ([accuracy-refresh/](accuracy-refresh/)). Both Swiss
   statistics runs, on 1.1.0-rc.2: every statistic equals 1.1.0-rc.1's, and
   only the engine version and the digest of the per-instant dump differ.
@@ -113,15 +116,17 @@ on Node 24.21.0, as for 1.1.0-rc.1). Nothing here is recorded `accepted`.
   and the ledger's tests pass, R1 to R10. The comment of
   `src/lib/engine/returns.ts` now gives the |f″|h²/8 rule with rc.2's
   figures.
-- **Sitemap dates and sizes.** Built as Sitemap Dates builds (the full
-  `npm run build` with production's flags under the edition's frozen noon),
-  the head changed 35 pages without a new date: the developer index, eight
-  developer pages, the guides index and its 25 guides. They take
-  2026-11-04, the edition's date (`src/pages/sitemap.xml.ts`), and built
-  again with them, the comparison finds all 35 re-dated and none re-dated
-  without a change. That build's routes are within budget: `/birth-chart/`
-  70,731 bytes of 72,704 (70,152 on the base), and the engine chunk's
-  closure 33,361 bytes of its 33,380.4 (33,267 on the base).
+- **Sitemap dates and sizes.** Built as Sitemap Dates builds (the full `npm
+  run build` with production's flags under the edition's frozen noon), the
+  head changed 35 pages without a new date: the developer index, eight
+  developer pages, the guides index and its 25 guides. They take 2026-11-04,
+  the edition's date (`src/pages/sitemap.xml.ts`), and built again with them,
+  the comparison finds all 35 re-dated and none re-dated without a change.
+  That build's routes are within budget: `/birth-chart/` 70,731 bytes of
+  72,704 (70,152 on the base), and the engine chunk's closure 33,361 bytes of
+  its 33,380.4 (33,267 on the base). Since the merge of main's edition of
+  2026-11-05 the pages take that date, with the developer demo, 36 pages in
+  all (D-16).
 
 ## Sentences lexicon 2 does not select (D-1)
 
@@ -359,6 +364,33 @@ a free-space check before each, Node 22.22.2 on macOS arm64. Its logs are in
   recorded arm64 last bits, the wing drift is empty, the three MCP drives'
   rewritten records were restored from git, and the tree was clean at the
   end.
+- **Fourth attempt**, on the merge of main `1e89d772` (D-16): started on
+  `593207ad` and stopped by hand during its build, when the developer plugin's
+  README was found still naming 0.3.23, then run on `3deaa3fa` (a detached
+  start there was stopped during its build and the run started again). 40 of
+  42 steps exit 0. The full suite failed three files: the Phase 1 capture
+  test; `scripts/report-bundles.test.mjs`, 8 tests, whose fixture lacked the
+  time entry's new allowed importer; and
+  `scripts/games-sql-readiness.test.mjs`, whose two tests ran 6.2 and 5.7
+  seconds against their 5-second limit and passed 4 of 4 alone in 3.4 seconds.
+  The first-use drive failed only its Firefox launch.
+- **Fifth attempt**, on `3e370c9b` (the fixture names Chiron): 40 of 42 steps
+  exit 0. The full suite (8,276 passed, 13 skipped, 6 failed, in 643 files)
+  failed the Phase 1 capture test and five tests in four other files
+  (`scripts/analytics-referrer-privacy.test.mjs`,
+  `scripts/games-sql-readiness.test.mjs`,
+  `src/ai-tools/features/personal-transits.test.ts` and
+  `src/lib/account-v2/cutover.test.ts`), each at its 5-second limit, with
+  vitest's own worker messages timing out, while other applications kept this
+  Mac's load average near 10 on its 10 cores; run alone just after, the four
+  files passed 26 of 26 in 10.6 seconds. `report-bundles.test.mjs` passed. The
+  first-use drive failed only its Firefox launch, its other 44 checks passing.
+  Both builds pass their budgets (`/birth-chart/` 66.0 KB by default and 69.1
+  KB with production's flags, of 71 KB; the engine chunk within its 33,380.4
+  bytes), the independent references differ from the committed ones only by
+  D-9's recorded arm64 last bits, the wing drift is empty, the three MCP
+  drives' rewritten records were restored from git, and the tree was clean at
+  the end.
 
 ## The private search
 
@@ -370,7 +402,13 @@ bundles' 23 matches each sit in the same 200 characters on either side as on
 main, and of the archives' 83 matching lines, 81 are their base source's
 lines apart from versions and digests and the other 2 hold 4 matches with
 the same 200 characters on either side. The tree's 18 lines more than main's
-are the two new archives' copies of their bundles.
+are the two new archives' copies of their bundles. Run again over the 22
+commits after the merge of main `1e89d772` (D-16), it found the same: the
+bundles' 23 matches keep their context, of the archives' 133 matching lines
+131 are their base source's apart from versions and digests and the other 2
+hold 4 matches with the same 200 characters on either side, and the tree's 18
+lines more than main's (610 against 592) are again the two new archives'
+copies.
 
 ## Decisions taken without asking, under the owner's delegation
 
@@ -465,7 +503,8 @@ so does OQ10's Q5.
   panel's Chart Inspector runs 1.1.0-rc.1, so it does not reproduce records
   that 1.1.0-rc.2 writes (the site's, the compute API's, adapter rc.26's and
   the developer plugin's own tools'); the plugin's README and its 0.3.22
-  release note say so (0.3.23's, after the merge of #882).
+  release note say so (0.3.23's after the merge of #882, 0.3.27's after
+  D-16).
 - **D-13** (4 November, the merge of main `f45734dc`). #881 put the hosted
   server on 0.6.1 (the readings panel, the under-18 rule, the narrower
   links) and made a Developer 0.3.21 from it, while this branch had made its
@@ -496,20 +535,52 @@ so does OQ10's Q5.
   a departure for the owner to ratify; the drive's Chromium half stays a
   check that stops the push. The gate runs again on the merged head as a
   second attempt citing the first (`rc2a-e7068c9d-prepush-times.txt`).
-- **D-15** (4 November, the independent review of `02d550fc`, which
-  AGENTS.md asks for before a merge). Its verdict named one blocker: the
-  Phase 1 captures are stale, so CI's suite fails on this branch while main
-  passes; the plan takes them again from this pull request's Browser
-  Evidence run (C8). Its notes, acted on: the Chart Studio pin's
-  `SOURCE_SHA256` and the Chart Inspector note (D-12); the plugin's README
-  still named 0.3.21, so it named 0.3.22 (0.3.23 since #882), and the
-  0.3.22 archive, never pushed, was packed again before main's 0.3.22
-  replaced it; and `src/islands/chart3d/EclipticView.tsx`
-  called the engine's declination function, which also finds every pair's
-  aspects, on each frame of a turning sphere, so the declinations are now
-  computed once per chart. Left as they are: the engine chunk's 19 bytes of
-  headroom, within its budget, and the ledger notes' "not yet merged", which
-  the record pull request updates. The gate's second attempt was stopped
-  during its 37th step to make these changes, every step before it passing
-  but the two accepted failures; the third attempt runs on the head that
-  carries them.
+- **D-15** (4 November, the independent review of `02d550fc`, which AGENTS.md
+  asks for before a merge). Its verdict named one blocker: the Phase 1
+  captures are stale, so CI's suite fails on this branch while main passes;
+  the plan takes them again from this pull request's Browser Evidence run
+  (C8). Its notes, acted on: the Chart Studio pin's `SOURCE_SHA256` and the
+  Chart Inspector note (D-12); the plugin's README still named 0.3.21, so it
+  named 0.3.22 (0.3.23 since #882, 0.3.27 since D-16), and the 0.3.22 archive,
+  never pushed, was packed again before main's 0.3.22 replaced it; and
+  `src/islands/chart3d/EclipticView.tsx` called the engine's declination
+  function, which also finds every pair's aspects, on each frame of a turning
+  sphere, so the declinations are now computed once per chart. Left as they
+  are: the engine chunk's 19 bytes of headroom, within its budget, and the
+  ledger notes' "not yet merged", which the record pull request updates. The
+  gate's second attempt was stopped during its 37th step to make these
+  changes, every step before it passing but the two accepted failures; the
+  third attempt runs on the head that carries them.
+- **D-16** (5 November, the merge of main `1e89d772`). Main's #883 (a sky
+  events search, the lunar nodes and Placidus houses behind
+  `ZODIACS_SKY_EVENTS_ENABLED`), #886 (Chiron from NASA JPL Horizons behind
+  the same switch), #885 (share cards, glyphs and links back to zodiacs.org)
+  and #888 (Zodiacs 0.6.3, the listing's category) made Developers 0.3.23 to
+  0.3.26 of their own, so this branch's plugin is 0.3.27, 0.3.26's source
+  with this branch's local chart tools, and its release note and README say
+  so; main's four archives and Sky 0.6.3 keep their bytes. Main's Chiron tool, its
+  measuring tool and the sky events references test imported
+  `src/lib/engine/time-basis.mjs`, which this branch deletes. They now take
+  `timeBasis` from `@zodiacs/engine/time`: on 2,012,592 calls, every 7 hours
+  and 13 seconds from 1799 to 2201 on each of the four scales, the entry
+  gave the same record as the deleted module from main's tree, and the
+  Chiron record's method paragraph says so. `scripts/report-bundles.mjs`,
+  which holds the importers of `@zodiacs/engine/time` to a list, failed the
+  merge's first build on that import; Chiron joins the list, as the hosted
+  tools' server-side importer that no website source imports, and the
+  rule's test fixture and the claim `product.site-engine-entries` name it. The claims ledger was merged
+  claim by claim and sentence by sentence: no claim changed on both sides,
+  and two overstated claims stay open. Main's daily edition is now
+  2026-11-05, so engine 1.1.0-rc.2's pages take that date. Sitemap Dates'
+  comparison, made here as CI makes it (main built in the B3.c clone, both
+  under the edition's frozen noon with production's flags), found one more
+  page changed without a new date, `/developers/demo/`, whose receipts now
+  name 1.1.0-rc.2 and which main dated 2026-11-04; it joins rc.2's pages,
+  and the comparison then found all 36 changed pages re-dated and none
+  without a change. The generated server, sky watch and plugin manifests and
+  the flag-off fixture were rebuilt from the merged source, the fixture
+  differing from main's only in the engine's version, in six places; Chart
+  Studio's source fingerprint did not move. `npm run ai:check`, `npm run
+  check` (0 errors), the ledger listings (0 and 0) and 575 AI, Chiron, sky
+  events, conventions, claims and sitemap tests passed before the gate. The
+  Phase 1 captures are taken again from this head's Browser Evidence run.
