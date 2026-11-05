@@ -582,6 +582,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // edition they were built with.
   ['/moon-journal/', '2026-11-05'] as const,
   ['/moon-phase/', '2026-11-05'] as const,
+  // "Ask Guide about this" beside the retrograde and eclipse explainers, and the tools hub's card for
+  // Your 2027 sky.
+  ['/eclipses/', '2026-11-05'] as const,
+  ['/mercury-retrograde/', '2026-11-05'] as const,
+  ['/retrogrades/', '2026-11-05'] as const,
+  ['/tools/', '2026-11-05'] as const,
   // The time atlas dataset and the developer index's card for it, after the entries above so this date wins.
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
   // Engine 1.1.0-rc.2's pages, last so this date wins.

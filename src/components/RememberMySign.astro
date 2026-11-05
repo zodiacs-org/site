@@ -3,7 +3,9 @@
  * "Make Leo my sign": remembers the visitor's Sun sign on this device only
  * (localStorage `zodiacs.my-sign.v1`, see src/lib/my-sign.ts). The homepage
  * then highlights that sign and Guide uses its name. The line keeps its
- * height before and after the script runs, so nothing moves.
+ * height before and after the script runs, so nothing moves. Its words are
+ * written by the script: they are a personal control, not the page's content,
+ * so they never count as a change to the page's text (sitemap dates).
  */
 interface Props {
   sign: string;
@@ -12,32 +14,43 @@ interface Props {
 
 const { sign, name } = Astro.props;
 ---
-<p class="mysign" data-mysign={sign} data-mysign-name={name} style="visibility:hidden">
-  <button type="button" class="mysign__set">Make {name} my sign</button>
-  <span class="mysign__is">{name} is your sign. <button type="button" class="mysign__forget">Forget</button></span>
-</p>
+<p class="mysign" data-mysign={sign} data-mysign-name={name} style="visibility:hidden"></p>
 <script is:inline>
   (function () {
     var KEY = 'zodiacs.my-sign.v1';
     var line = document.currentScript && document.currentScript.previousElementSibling;
     if (!line || !line.hasAttribute('data-mysign')) return;
     var sign = line.getAttribute('data-mysign');
+    var name = line.getAttribute('data-mysign-name') || sign;
     function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
     function write(value) {
       try { if (value) localStorage.setItem(KEY, value); else localStorage.removeItem(KEY); } catch (e) { return false; }
       try { window.dispatchEvent(new CustomEvent('zodiacs:my-sign', { detail: value })); } catch (e) {}
       return true;
     }
-    function paint() { line.toggleAttribute('data-mine', read() === sign); }
+    function button(className, text) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = className;
+      b.textContent = text;
+      return b;
+    }
     try { localStorage.getItem(KEY); } catch (e) { return; }
+    var set = button('mysign__set', 'Make ' + name + ' my sign');
+    var is = document.createElement('span');
+    is.className = 'mysign__is';
+    var forget = button('mysign__forget', 'Forget');
+    is.append(name + ' is your sign. ', forget);
+    line.append(set, is);
+    function paint() { line.toggleAttribute('data-mine', read() === sign); }
     paint();
     line.style.visibility = '';
-    line.querySelector('.mysign__set').addEventListener('click', function () { if (write(sign)) paint(); });
-    line.querySelector('.mysign__forget').addEventListener('click', function () { if (write(null)) paint(); });
+    set.addEventListener('click', function () { if (write(sign)) paint(); });
+    forget.addEventListener('click', function () { if (write(null)) paint(); });
   })();
 </script>
 
-<style>
+<style is:global>
   .mysign {
     display: flex;
     align-items: center;
