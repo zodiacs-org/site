@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
   "name": "@zodiacs/engine",
-  "version": "1.1.0-rc.1",
+  "version": "1.1.0-rc.2",
   "releaseStatus": "vendored-candidate",
   "releaseLabel": "Vendored candidate",
-  "artifactPath": "vendor/zodiacs-engine-1.1.0-rc.1.tgz",
-  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/6ec3464c22581beca1b151b5bcd70fc040ca4adb/artifacts/zodiacs-engine-1.1.0-rc.1.tgz",
-  "sha256": "52352d3f8fde4a262483e4a5a6217e02d814aa53269b49c0333325e6c0d6a7b6",
+  "artifactPath": "vendor/zodiacs-engine-1.1.0-rc.2.tgz",
+  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/59c6ea9d9a4e7845a2880aa8303fcaadbd645170/artifacts/zodiacs-engine-1.1.0-rc.2.tgz",
+  "sha256": "c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c",
   "sourceRepository": "https://github.com/zodiacs-org/engine",
-  "sourceCommit": "c41706266caf4dde7e03aaa18c08acd569d19a7e",
+  "sourceCommit": "806f76b43c0ee652016fe1b522c02d6f6e9c7ae5",
   "sourcePackagePath": "",
   "evidenceRepository": "https://github.com/zodiacs-org/site",
-  "evidenceCommit": "18273949dc71d25e9e739180bb9a592239710e33",
+  "evidenceCommit": "66effec53f34c349265665be0a00511d58b435e7",
   "evidencePaths": {
-    "ledger": "docs/platform/evidence/site-engine-1-1-0-rc1/ARTIFACT-IDENTITY.md",
-    "node22": "docs/platform/evidence/site-engine-1-1-0-rc1/node22-parity.json",
-    "node24": "docs/platform/evidence/site-engine-1-1-0-rc1/node24-parity.json",
-    "publicConsumer": "docs/platform/evidence/site-engine-1-1-0-rc1/public-consumer.log"
+    "ledger": "docs/platform/evidence/site-engine-1-1-0-rc2/ARTIFACT-IDENTITY.md",
+    "node22": "docs/platform/evidence/site-engine-1-1-0-rc2/node22-parity.json",
+    "node24": "docs/platform/evidence/site-engine-1-1-0-rc2/node24-parity.json",
+    "publicConsumer": "docs/platform/evidence/site-engine-1-1-0-rc2/public-consumer.log"
   },
   "artifactRepository": "https://github.com/zodiacs-org/engine",
-  "artifactCommit": "6ec3464c22581beca1b151b5bcd70fc040ca4adb",
-  "artifactRepositoryPath": "artifacts/zodiacs-engine-1.1.0-rc.1.tgz",
+  "artifactCommit": "59c6ea9d9a4e7845a2880aa8303fcaadbd645170",
+  "artifactRepositoryPath": "artifacts/zodiacs-engine-1.1.0-rc.2.tgz",
   "registryVersion": "1.0.0",
-  "registryObservedOn": "2026-10-27"
+  "registryObservedOn": "2026-11-04"
 }

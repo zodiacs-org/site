@@ -1,0 +1,16 @@
+# Lite B6 on the adoption head (the adoption plan's J-7), 2026-11-04, macOS arm64, Node 22.22.2, head 64096451fa134714cb41525410116b2d9a4e6f7b.
+
+## Check 16 of the People pilot's validator, retargeted to @zodiacs/engine/lite's dignitiesFor
+# command: node scripts/validate-people-pilot.mjs
+PASS dignity table matches the engine's dignitiesFor (@zodiacs/engine/lite): 1 passed
+Phase 5C conservative release pilot validation PASSED: 12109/12109 checks.
+# (the validator's two lines above are quoted with its dashes written as colons)
+# exit code: 0
+
+## Control: check 16 on a scratch copy of the pilot table's text with Mercury's exaltation changed (the frozen file is never edited)
+# command: node b6-control.mjs <checkout> (programme notes, adoption/tools/b6-control.mjs, sha256 2177c876e0dca6dad5f2c2a43231dbc3ffde39e78b0a3e78245f1fbe831cb888)
+engine @zodiacs/engine 1.1.0-rc.2, ./lite ./dist/lite.js
+compute-astro.mjs sha256 before 82646cda1cb3c558f4ccc7965d6bf724241cba31ba6c3166c1ab3a786db86480, after 82646cda1cb3c558f4ccc7965d6bf724241cba31ba6c3166c1ab3a786db86480 (unchanged)
+the table's text as it is: 0 differences (check 16 passes)
+scratch copy, Mercury's exaltation written "Mercury: { domicile: ['gemini', 'virgo'], exaltation: ['gemini'],": 2 differences: Mercury gemini: pilot ["domicile","exaltation"], engine ["domicile"]; Mercury virgo: pilot ["domicile"], engine ["domicile","exaltation"] (check 16 fails)
+# exit code: 0 (0: the check passes on the text as it is and fails on the changed copy, the file unchanged)

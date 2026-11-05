@@ -9,7 +9,7 @@
  * TT = UT1 + ΔT of its model (zodiacs-deltat/1). It then makes
  * astronomy-engine's time at that UT1 with the basis's ΔT held for the call.
  * This does the same with the engine's own time basis
- * (src/lib/engine/time-basis.mjs), so each reference is evaluated at the TT
+ * (@zodiacs/engine/time), so each reference is evaluated at the TT
  * and UT1 the engine uses, and a comparison measures positions and angles
  * rather than the clock; the clock is checked against the IERS separately
  * (docs/platform/evidence/deltat-2026-09-25/).
@@ -33,7 +33,7 @@ import '../../../../scripts/lib/deltat-install.mjs';
 import { MakeTime, SetDeltaTFunction } from 'astronomy-engine';
 import { deltaT, deltaTAt } from '@zodiacs/engine/deltat';
 import { ENGINE_VERSION } from '@zodiacs/engine';
-import { timeBasis } from '../../../../src/lib/engine/time-basis.mjs';
+import { timeBasis } from '@zodiacs/engine/time';
 import { bodyLongitude } from '../../../../src/lib/engine/full';
 import { solarReturnChart } from '../../../../src/lib/engine/solar-return';
 import { lunarReturnChart } from '../../../../src/lib/engine/lunar-return';

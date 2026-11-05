@@ -9,9 +9,9 @@ exported functions, parameter and return types, and
 the release's own documentation comments. The **engine** module is the root
 `@zodiacs/engine` import. Other module names are import subpaths, for example
 `@zodiacs/engine/calc`. This reference includes `/crossings` and `/deltat`,
-which are public standalone imports as well as root re-exports, and
+which are public standalone imports as well as root re-exports,
 `/conventions`, a standalone import new in 1.1.0-rc.1 that the root does not
-re-export.
+re-export, and `/time` and `/lite`, standalone imports new in 1.1.0-rc.2.
 `/internal` and `/internal/math` are site compatibility entries outside the
 public API promise, may change without notice, and are deliberately excluded.
 

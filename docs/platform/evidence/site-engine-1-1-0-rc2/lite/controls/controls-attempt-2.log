@@ -1,0 +1,41 @@
+
+ RUN  v3.2.7 <checkout>
+
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > covers every cause 1ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > ecliptic-clamp (0): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > sun-bound-exemption (1): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > bound-boundary (2): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > orb-boundary (3): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > type-tie (4): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > order-tie (5): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > declination-formula (6): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > declination-formula (7): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > declination-formula (8): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > declination-formula (9): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > separation-exact (10): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > declination-validation (11): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > declination-validation (12): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > sect-validation (13): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > sect-convention (14): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > composite-validation (15): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > site-prototype-lookup (16): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > dignity-validation (17): inside gives the cause, just outside stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: each cause, just inside and just outside its predicate (control 2) > a difference no cause covers stays unexplained 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: the referee and its control > gives the package's pair at declinations exactly 1 degree apart, and its strict form does not 6ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: the referee and its control > orders by the exact orb and keeps pair order on a tie 0ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 1: the base's luminary orb 1.5 written 1.4999 gives unexplained differences in D2-A 2541ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 3: an adapter whose altitude test is written > 0 fails S2-B 446ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 4: an adapter that lets RangeError escape fails DG-N 439ms
+stdout | docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 5: a base declinationOf without the ecliptic latitude gives unexplained differences in D2-R, D2-P and D2-T
+control 5: unexplained differences by section {"D2-R":32094,"D2-P":2662,"D2-T":28}; entries listed 5000, omitted from the lists 29784
+
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 5: a base declinationOf without the ecliptic latitude gives unexplained differences in D2-R, D2-P and D2-T 2029ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 6: an adapter with the Moon as the sect light by day fails S2-A 1478ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 6: a lite build that counts the Sun exactly on the ascendant as day under the ecliptic convention fails S2-E 1555ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 7: an adapter whose composite midpoint takes the longer arc fails C2-M, C2-R and C2-P 1231ms
+ ✓ docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.test.mjs > compare-lite: controls 1 and 3 to 8 (COMPARE_LITE_BASE) > control 8: a package with Mercury exalted in Gemini fails DG-X 456ms
+
+ Test Files  1 passed (1)
+      Tests  30 passed (30)
+   Start at  19:40:51
+   Duration  10.53s (transform 68ms, setup 0ms, collect 62ms, tests 10.19s, environment 0ms, prepare 71ms)

@@ -241,23 +241,6 @@ export function equatorialToEcliptic(
 }
 
 /**
- * Declination — the angle north or south of the celestial equator, which is
- * a different measurement from ecliptic latitude and the one that decides
- * whether a body is out of bounds.
- */
-export function declinationOf(
-  lonDeg: number,
-  latDeg: number,
-  obliquityDeg = OBLIQUITY,
-): number {
-  const l = lonDeg * RAD;
-  const b = latDeg * RAD;
-  const e = obliquityDeg * RAD;
-  const sinDec = Math.sin(b) * Math.cos(e) + Math.cos(b) * Math.sin(e) * Math.sin(l);
-  return Math.asin(Math.max(-1, Math.min(1, sinDec))) / RAD;
-}
-
-/**
  * The point directly overhead at a given local sidereal time and
  * geographic latitude: right ascension equal to the meridian's, declination
  * equal to the observer's latitude. Everything about the horizon follows
