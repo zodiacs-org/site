@@ -18,14 +18,15 @@
  * as UTC, with TT from the IERS leap seconds and UT1 from IERS UT1 − UTC, and
  * any other instant as UT1 with that ΔT. The UT and TT written are the ones
  * the engine computes the bodies at, from its own time basis
- * (src/lib/engine/time-basis.mjs), made into astronomy-engine's time as the
+ * (@zodiacs/engine/time since 1.1.0-rc.2; before it, the site's bundled copy,
+ * src/lib/engine/time-basis.mjs), made into astronomy-engine's time as the
  * engine makes it; before rc.15 they were MakeTime's for the instant.
  */
 import { ENGINE_VERSION } from '@zodiacs/engine';
 import { deltaT } from '@zodiacs/engine/deltat';
 import { computeBodies } from '@zodiacs/engine/internal';
 import { MakeTime, SetDeltaTFunction } from 'astronomy-engine';
-import { timeBasis } from '../../../../../src/lib/engine/time-basis.mjs';
+import { timeBasis } from '@zodiacs/engine/time';
 
 SetDeltaTFunction(deltaT);
 

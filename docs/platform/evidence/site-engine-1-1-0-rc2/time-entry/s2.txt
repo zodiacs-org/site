@@ -1,0 +1,72 @@
+# F-53 S2 on the adoption head (the adoption plan's J-8), 2026-11-04, macOS arm64, Node 22.22.2, head 64096451fa134714cb41525410116b2d9a4e6f7b.
+# The time-entry preregistration's S2 (engine docs/evidence/1.1.0-rc.2-20261102/time-entry/PREREGISTRATION.md section 8), with the
+# adoption plan's decisions D-6 (the packaged functions) and D-7 (immutable archives out of the search; the new archives member by member).
+# The rest of S2, the full list of checks before every push, is the local gate (../validation/); report-bundles on both builds is lite B1
+# (../lite/b1-bundles.txt); the claims ledger's --unlisted and --orphans are in the gate. Outputs beside this file: s2-search-base.txt
+# (the control's lines), s2-archives.json, s2-functions.json and s2-vercel-build.log (the CLI's output, its TypeScript diagnostics included).
+
+## 1. The search for the generated module (Phase C's), on the head's tree
+# command: git grep -n -E 'time-basis\.(mjs|d\.mts)|build-time-basis' HEAD -- src scripts tests api plugins examples integrations/generated docs/engine-validation
+# exit code: 1 (1: nothing found); lines: 0
+
+## Its control: the same search on the base 0bf69bd56aaec8fbfd99bd4b45877064dc1234df
+# command: git grep -n -E 'time-basis\.(mjs|d\.mts)|build-time-basis' 0bf69bd56aaec8fbfd99bd4b45877064dc1234df -- src scripts tests api plugins examples integrations/generated docs/engine-validation (written to s2-search-base.txt)
+# exit code: 0 (0: found); lines: 34; identical to Phase C's run of the same search: yes
+# lines by file:
+#   1 api/_ai/runtime.mjs
+#   1 api/_compute/compute.mjs
+#   1 docs/engine-validation/independent-references/README.md
+#   2 docs/engine-validation/independent-references/tools/engine-clock.ts
+#   1 examples/mcp-server/candidate.json
+#   1 examples/mcp-server/server.mjs
+#   1 integrations/generated/sky-watch.mjs
+#   1 plugins/zodiacs-developer/mcp/server.mjs
+#   1 scripts/angles-grid.test.mjs
+#   1 scripts/build-compute-handler.mjs
+#   11 scripts/build-time-basis.mjs
+#   1 scripts/lib/deltat-install.mjs
+#   1 scripts/mcp-independent-consumer.mjs
+#   2 src/lib/compute-api/endpoints.ts
+#   1 src/lib/engine/independent-references-clock.test.ts
+#   3 src/lib/engine/server-ephemeris.ts
+#   1 src/lib/engine/time-basis.d.mts
+#   1 src/lib/engine/time-basis.mjs
+#   1 src/lib/share-positions.test.ts
+#   1 tests/api/compute-api-private-state.test.ts
+
+## 2. The new archives member by member (D-7), and the base's newest two as the scan's control
+# command: python3 -I s2-archives.py integrations/packages/zodiacs-developer-0.3.21.zip public/examples/zodiacs-mcp-server-0.1.0-rc.26.tgz integrations/packages/zodiacs-developer-0.3.20.zip public/examples/zodiacs-mcp-server-0.1.0-rc.25.tgz (programme notes, adoption/tools/s2-archives.py, sha256 477262e9ede907094952f86548125b664fe352982c506d77a78fd568936928fc), written to s2-archives.json
+#   integrations/packages/zodiacs-developer-0.3.21.zip: 20 members, 0 naming the module (0 lines)
+#   public/examples/zodiacs-mcp-server-0.1.0-rc.26.tgz: 7 members, 0 naming the module (0 lines)
+#   integrations/packages/zodiacs-developer-0.3.20.zip: 20 members, 1 naming the module (1 lines): mcp/server.mjs (1)
+#   public/examples/zodiacs-mcp-server-0.1.0-rc.25.tgz: 7 members, 2 naming the module (2 lines): package/candidate.json (1), package/server.mjs (1)
+# exit code: 0
+
+## 3. The compute bundle's private-state test
+# command: npx vitest run tests/api/compute-api-private-state.test.ts
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+# exit code: 0
+
+## 4. The packaged functions: a functions-only vercel build (D-6)
+# .vercel/project.json, written by hand (no pull, no login, no link): {"projectId":"prj_nRTO3q3aNYLfaM3dotAowOc028fO","orgId":"team_Ue0ac8HT1b3TAzaDDZBTFhQt","settings":{"createdAt":0,"framework":null,"devCommand":null,"installCommand":"","buildCommand":"","outputDirectory":null,"rootDirectory":null,"directoryListing":false,"nodeVersion":"22.x"}}
+# .vercel/.env.preview.local: empty. .vercel/functions-only.vercel.json: vercel.json with installCommand "", buildCommand "" and framework null
+# environment: only PATH (Node 22.22.2 and system binaries), a disposable empty HOME, TMPDIR, LANG and VERCEL_TELEMETRY_DISABLED=1; no other Vercel or npm variable inherited
+# before: package-lock.json sha256 318fce6eb1fe6333fea1f4943d631050082286b3d86ef11afbc7015317dadffb; node_modules/.package-lock.json sha256 7583aa48bab0afb7232575085e9096e583ed2bbe9d3f7e56c764707c2c34aca4
+# command: npx --yes vercel@62.0.0 build --local-config .vercel/functions-only.vercel.json
+#   Vercel CLI 62.0.0 (Node.js 22.22.2)
+#   WARNING! Build not running on Vercel. System environment variables will not be available.
+#   Installing dependencies...
+#   up to date in 992ms
+#   Build Completed in .vercel/output [12s]
+# exit code: 0; TypeScript diagnostics printed (not a typecheck): 57
+# 12 functions packaged: api/account.func, api/assistant.func, api/aura-holdings.func, api/calendar/transits.func, api/compatibility.func, api/email/admin-bootstrap.func, api/email/chart-preference.func, api/email/subscribe.func, api/guide.func, api/push/subscribe.func, api/unsubscribe.func, api/wallet-birth.func
+#   api/calendar/transits.func: handler api/calendar/transits.js, nodejs22.x, 33 files, 1047968 bytes; engine entries dist/time.js (11 engine files); files naming the module: 0
+#   api/compatibility.func: handler api/compatibility.js, nodejs22.x, 587 files, 19378799 bytes; engine entries dist/time.js (9 engine files); files naming the module: 0
+#   the packaged compute bundle equals api/_compute/compute.mjs in the checkout: true (b53ebdbb9671416e90ebaf3d563cdbad5c038c09d3149b462e881874d249f165)
+# each entry imported in a fresh process: env -i PATH=<Node 22.22.2 and system> HOME=<empty> node --no-experimental-detect-module --input-type=module -e 'await import(<entry>)'
+#   api/calendar/transits.func/api/calendar/transits.js: exit 0; exports: TRANSIT_CALENDAR_RATE_LIMIT_ID, buildTransitCalendar, default, handleTransitCalendar
+#   api/compatibility.func/api/compatibility.js: exit 0; exports: COMPATIBILITY_INVITE_ACTIONS, compatibilityInviteHandlerForAction, default
+#   api/compatibility.func/api/_compute/handler.js: exit 0; exports: default
+# after: .vercel removed; package-lock.json sha256 318fce6eb1fe6333fea1f4943d631050082286b3d86ef11afbc7015317dadffb; node_modules/.package-lock.json sha256 7583aa48bab0afb7232575085e9096e583ed2bbe9d3f7e56c764707c2c34aca4
+# the installed engine equals the vendored archive

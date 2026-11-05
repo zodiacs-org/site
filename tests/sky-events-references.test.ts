@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { MakeTime, NextGlobalSolarEclipse, NextLunarEclipse, SearchGlobalSolarEclipse, SearchLunarEclipse } from 'astronomy-engine';
 import { calc } from '@zodiacs/engine/calc';
 import { executeAiTool } from '../src/ai-tools/tools';
-import { timeBasis } from '../src/lib/engine/time-basis.mjs';
+import { timeBasis } from '@zodiacs/engine/time';
 import { SIGNS } from '../src/lib/signs';
 import eightCases from '../src/lib/engine/fixtures/independent-eight-cases.json';
 import nodePolar from '../src/lib/engine/fixtures/independent-node-polar.json';
@@ -18,7 +18,7 @@ import type { NatalChartDataWithNodes } from '../src/ai-tools/features/natal-cha
  * - Eclipses: NASA Goddard's Five Millennium Canon catalogs (F. Espenak and J. Meeus), the 2025 to 2030 rows,
  *   in docs/engine-validation/sky-events-references/nasa-eclipses-2025-2030.json with each page's address,
  *   retrieval date and SHA-256 (fetch.py beside it). The canon gives greatest eclipse in TD (TT); the tool's
- *   UTC instant is carried to TT on the engine's own clock (src/lib/engine/time-basis.mjs), so the comparison
+ *   UTC instant is carried to TT on the engine's own clock (@zodiacs/engine/time), so the comparison
  *   measures geometry, not the canon's predicted Delta T. Gate: 30 seconds, and the same type.
  * - New and full Moons, and the Sun's sign changes: NASA JPL Horizons (DE441), apparent ecliptic longitude of date,
  *   hourly on a TT clock. The Moon for 2025-12-30 to 2026-02-11 and 2026-02-27 to 2026-04-11 is the independent

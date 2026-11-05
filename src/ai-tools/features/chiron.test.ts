@@ -6,7 +6,7 @@ import { CHIRON_STATION_NOTE } from './sky-events';
 import { EXPLAIN_TOPICS, explainAstrology, matchTopic } from './explain';
 import { executeAiTool } from '../tools';
 import { ASPECTS } from '../../lib/engine/aspects';
-import { timeBasis } from '../../lib/engine/time-basis.mjs';
+import { timeBasis } from '@zodiacs/engine/time';
 import { buildChironTable } from '../../../scripts/build-chiron.mjs';
 import table from '../../data/chiron.json';
 import dense from '../../../docs/engine-validation/chiron/dense-check.json';

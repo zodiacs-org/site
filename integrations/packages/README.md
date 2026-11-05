@@ -61,9 +61,11 @@ says. The About, the earlier release notes, the README, the skill, the server
 instructions and get_capabilities carry the new sentence; the server reports
 0.6.4 and its 19 tool definitions are unchanged. Developer 0.3.27, not yet
 released, is rebuilt from that source with unchanged local tools. 0.6.3 and
-0.3.26 keep their bytes.
+0.3.26 keep their bytes. Developer 0.3.28 is 0.3.27's source with its local
+chart tools on MCP adapter 0.1.0-rc.26 and engine 1.1.0-rc.2; 0.3.27 keeps its
+bytes.
 
-Current candidates are **Zodiacs 0.6.4** and **Zodiacs Developer 0.3.27**;
+Current candidates are **Zodiacs 0.6.4** and **Zodiacs Developer 0.3.28**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

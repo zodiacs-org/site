@@ -1,0 +1,47 @@
+{
+  "packagedFunctions": 12,
+  "functions": [
+    "api/account.func",
+    "api/assistant.func",
+    "api/aura-holdings.func",
+    "api/calendar/transits.func",
+    "api/compatibility.func",
+    "api/email/admin-bootstrap.func",
+    "api/email/chart-preference.func",
+    "api/email/subscribe.func",
+    "api/guide.func",
+    "api/push/subscribe.func",
+    "api/unsubscribe.func",
+    "api/wallet-birth.func"
+  ],
+  "calendar": {
+    "function": "api/calendar/transits.func",
+    "handler": "api/calendar/transits.js",
+    "runtime": "nodejs22.x",
+    "launcherType": "Nodejs",
+    "files": 33,
+    "bytes": 1047968,
+    "engineEntries": [
+      "dist/time.js"
+    ],
+    "engineFiles": 11,
+    "filesNamingTheModule": []
+  },
+  "compute": {
+    "function": "api/compatibility.func",
+    "handler": "api/compatibility.js",
+    "runtime": "nodejs22.x",
+    "launcherType": "Nodejs",
+    "files": 587,
+    "bytes": 19378799,
+    "engineEntries": [
+      "dist/time.js"
+    ],
+    "engineFiles": 9,
+    "filesNamingTheModule": []
+  },
+  "computeBundle": {
+    "site": "b53ebdbb9671416e90ebaf3d563cdbad5c038c09d3149b462e881874d249f165",
+    "packaged": "b53ebdbb9671416e90ebaf3d563cdbad5c038c09d3149b462e881874d249f165"
+  }
+}

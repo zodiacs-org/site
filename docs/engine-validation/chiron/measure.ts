@@ -18,7 +18,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chironAtJdTT, chironEvents } from '../../../src/ai-tools/features/chiron';
 import table from '../../../src/data/chiron.json';
-import { timeBasis } from '../../../src/lib/engine/time-basis.mjs';
+import { timeBasis } from '@zodiacs/engine/time';
 
 const SPAN = [2378496.5, 2524593.5];
 const directory = process.argv[2];

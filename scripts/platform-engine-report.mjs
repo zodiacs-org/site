@@ -16,9 +16,10 @@ const policyBytes = read('swiss-node-polar-policy.json');
 const fixture = JSON.parse(fixtureBytes);
 const policy = JSON.parse(policyBytes);
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
-// The rc.17, 1.0.0-rc.2, 1.0.0 and 1.1.0-rc.1 reference rebuilds change only the engine version the fixture records
+// The rc.17, 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 reference rebuilds change only the engine version the fixture records
+// (1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time)
 // (rc.16 also changed the Horizons manifest identity). This pin had stayed at rc.17's digest through the 1.0.0-rc.2 adoption.
-assert.equal(digest(fixtureBytes), '0fa9f398419f3004806bbba08283920ddc3382a0218d6a2fc23a66d3e2120d80');
+assert.equal(digest(fixtureBytes), '52190b00b3b6769e73822bf0ca4d1fbc0e4652b451efe90e640dcc5f3d653651');
 assert.equal(digest(policyBytes), '7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
 const distance = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
 const nodes = fixture.trueNode.map((reference) => {

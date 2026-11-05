@@ -1,0 +1,329 @@
+{
+  "schema": "zodiacs-site-lite-parity/v1",
+  "generatedAt": "2026-11-04T11:04:54.042Z",
+  "node": "v22.22.2",
+  "tz": "2025c",
+  "icu": "78.2",
+  "esbuild": "0.28.1",
+  "astronomyEngine": "2.1.19",
+  "tool": {
+    "path": "docs/platform/evidence/site-engine-1-1-0-rc2/lite/tools/compare-lite.mjs",
+    "sha256": "72546938bbb51d7ae4aa2e581b636554e0ca9ad1a4eb65cd492b9be7f2f0c8d3"
+  },
+  "preregistration": {
+    "path": "docs/platform/evidence/site-engine-1-1-0-rc2/lite/PREREGISTRATION.md",
+    "sha256": "9019d67cc9a39b0039d0b9a6f89346f7685034a4e5bdd22393052ff2b05a115f"
+  },
+  "base": {
+    "commit": "0bf69bd56aaec8fbfd99bd4b45877064dc1234df",
+    "files": {
+      "src/islands/chart3d/turning.ts": "d584bd1dc629d81c88d13f3dddc5f916f0bbb6d343773bec1f71a3ac63a19abc",
+      "src/islands/synastry/relationshipData.ts": "d3623c7137f1a590841f33a6fe9ea00e4487ca99da133e565a85966d62995890",
+      "src/lib/composite.ts": "1860ab8de9fca12bc9575c7bbc2c662eb14cb088376f53f03680ee8c37305cd3",
+      "src/lib/declination.ts": "b27c40b1835c4dd694a20e609d3ebca4689aad03d20db46bb884e2b6953b7080",
+      "src/lib/dignities.ts": "7e8593064ff20e0229a7701186fc834002988ced88bc58e2701f1ca4081ca5ac",
+      "src/lib/engine/aspects.ts": "0faaa80258494bee18bb5247291a8ecbe0abc9554775c5f0c43b8d0f00c2660f",
+      "src/lib/engine/chart-adapter.ts": "f10a7c1d167175ea600d064a8d69dfdaaf3fd067ad401cbb7e12f2d9e78707b6",
+      "src/lib/engine/full.ts": "70b60088bcf25faafd01e3028471a457384eade8b4a169715b9a6e37a245d23b",
+      "src/lib/engine/houses.ts": "8f49988014855a877c4e2638e9175831036a76093f6ee40fe450d454ec1f9daf",
+      "src/lib/sect.ts": "95b0a3875a2ad4df2e788031941869fc40cecc4a291e1708369e452ef07f0bd5",
+      "src/lib/share-positions-noon.ts": "6a006703f49b4d4c53859de4b8d63f5c5ab5aab3ba3c91c3f2c2e9508dc6ef65",
+      "src/lib/wheel/ecliptic3d.ts": "baf0f81effe4490105f01dbf6f09bb52149f32e03f0fc198d0d1c582080aa366"
+    }
+  },
+  "head": {
+    "commit": "2617db5a7226dd36e31337a41527e4eac1b70b61",
+    "files": {
+      "src/islands/synastry/relationshipData.ts": "d3623c7137f1a590841f33a6fe9ea00e4487ca99da133e565a85966d62995890",
+      "src/lib/composite.ts": "3a60b061641e4d49da9b80f49d6680c672743c090accebf3d9bb706d4178ab87",
+      "src/lib/declination.ts": "7454c99d5bb84df2d29c216ba0a1bc47fadeaae9e0e049ac7f62e6d34bafda94",
+      "src/lib/dignities.ts": "fda5cedd2fcefa61e5c9c1c83d8f930d808b39df5231c426ce099f67b7313848",
+      "src/lib/engine/aspects.ts": "0faaa80258494bee18bb5247291a8ecbe0abc9554775c5f0c43b8d0f00c2660f",
+      "src/lib/sect.ts": "a1fc39be7055f1d9a8af987ed8defbf6184886da9bf6119beb7b8f1a77caf6c7",
+      "src/lib/wheel/ecliptic3d.ts": "737ef476fa17a920fa6abf7e953ad32ff071d62f41c6f889ee0a1577eb0a1668"
+    }
+  },
+  "package": {
+    "name": "@zodiacs/engine",
+    "version": "1.1.0-rc.2",
+    "lite": {
+      "dist/lite.js": "ad6a95d783385fced9dc9926901142cd7c416e81954d709ec66af03205f4c260",
+      "dist/lite-declinations.js": "526bf115637d8b1a04d932c3daa71ccd8b14b2d9f54969702c5573e66c30f5f2",
+      "dist/lite-sect.js": "3ca350c74cc9b6b0cb192008f67c03360e331ac65b73e6cf00aa3b8c3eae4d78",
+      "dist/lite-composite.js": "5dc1ae2039ddb71233e79af206a6eb508dc2014137e02b1075a312692b19dcc1",
+      "dist/lite-dignities.js": "feb63f3680b625f3fcf9d21d8bfe8595b0c183a1b71b32e8dc91185fc3bac7a2",
+      "dist/lite.d.ts": "eb473aa587039b6f414862f3ee888d961e8febad19fc397508c48f1522f20bbb"
+    }
+  },
+  "seed": {
+    "text": "site-engine-1-1-0-rc2-lite",
+    "rule": "mulberry32 seeded by the 32-bit FNV-1a of \"site-engine-1-1-0-rc2-lite:<section>\"; the shared 3,000 charts use the section name \"charts\""
+  },
+  "thresholds": {
+    "degrees": 1e-12,
+    "sunBoundLatitude": 0.001,
+    "formulaDeclinationLimit": 60,
+    "arbiterMinimumAltitude": 0.01
+  },
+  "causes": {
+    "ecliptic-clamp": "A row with latitude exactly 0 is out of bounds on S only, its declination's size exceeding the obliquity by at most 1e-12: the package clamps a point on the ecliptic to plus or minus the obliquity.",
+    "sun-bound-exemption": "A row labelled Sun, out of bounds on S and not on A or P, with latitude of size at most 0.001: convention C3.",
+    "bound-boundary": "A row's out-of-bounds flag differs and its declination's size is within 1e-12 of the obliquity (on both sides): the package compares its own double, the site its asin value.",
+    "orb-boundary": "A pair is in one result only, and where it is present its orb is within 1e-12 of its maximum orb: the package decides the inclusive test exactly on the declination doubles, the site on the float difference.",
+    "type-tie": "A pair's type differs and one of its declinations (on either side) is within 1e-12 of 0: on the equator the two distances are equal.",
+    "order-tie": "The same pairs in another order, every pair that moves having an orb within 1e-12 of the pair it changes place with (on both sides): an exact sort against a float sort, both stable.",
+    "declination-formula": "A declination, orb, decA or decB differs by at most 1e-12, every declination involved being at most 60 degrees in size, with (for a pair) the case's pair set, types and order equal: asin of a sine against atan2 of the rotated vector.",
+    "separation-exact": "separation differs by at most 1e-12: the package reduces the difference exactly modulo 360 and rounds once.",
+    "declination-validation": "An input S takes and the package refuses with RangeError: a label that is not a trimmed string of 1 to 80 characters without control characters, a body named twice, more than 256 bodies, a number that is not finite or is out of range, an obliquity outside [0, 90].",
+    "sect-validation": "An input S takes and the package refuses: an altitude that is not finite or is outside [-90, 90], a longitude that is not finite, an unknown convention or key.",
+    "sect-convention": "Recorded sections only: the two conventions name different sects (convention C1).",
+    "composite-validation": "A name that is not one of the twelve bodies, or a body twice, or (C2-X) a longitude that is not finite: S takes it, the package throws RangeError.",
+    "site-prototype-lookup": "A name Object.prototype carries (toString, constructor, valueOf, hasOwnProperty, __proto__): S's hasClassicalDignities answers true and its dignityFor throws TypeError; A answers false and null, and P throws RangeError: a site defect the adoption removes.",
+    "dignity-validation": "A name outside the twelve bodies, or a sign that is not a lowercase slug: S answers null, [] or false where P throws RangeError."
+  },
+  "causeOrder": [
+    "ecliptic-clamp",
+    "sun-bound-exemption",
+    "bound-boundary",
+    "orb-boundary",
+    "type-tie",
+    "order-tie",
+    "declination-formula",
+    "separation-exact",
+    "declination-validation",
+    "sect-validation",
+    "sect-convention",
+    "composite-validation",
+    "site-prototype-lookup",
+    "dignity-validation"
+  ],
+  "mapping": {
+    "declinations": "S's aspects are its findDeclinationAspects; A's are the adapter's, in the site's shape; P's are findDeclinationAspects with maximumOrb left out. S's rows are the view's: declinationOf(lon, lat, obliquity) and Math.abs(dec) > obliquity (EclipticView lines 396, 402, 415 and 421); A's are declinationRows(bodies, obliquity).",
+    "sect": "S's and A's sectOf({ sunAltitude, sunLon, mercuryLon }); P's sectReading({ convention: \"altitude\", sunAltitude, sunLon, mercuryLon }) with convention left out and its frozen lists read as lists. S2-E compares P's sectReading({ convention: \"ecliptic\", ascendant, sunLon, mercuryLon }).sect with the root's sectOf(ascendant, sunLon).",
+    "composite": "compositeMidpoints then compositeAspects of its points, field by field in order; C2-P compares buildCompositeTabData's data and compositeDataKey, S's at the base and A's at the head, on the base's pictureBodies.",
+    "dignities": "dignityFor, dignitiesFor (as a list) and hasClassicalDignities for each name and sign, as one case; a refusal is compared by its class and message."
+  },
+  "run": {
+    "sections": [
+      "D2-A"
+    ],
+    "plan": {
+      "control": "1, on its constructed case alone (2026-11-04)",
+      "sections": [
+        "D2-A"
+      ],
+      "constructedD2A": [
+        {
+          "label": "control 1 only: a luminary pair at orb 1.49995 (obliquity 0, declinations 10 and 8.50005)",
+          "bodies": [
+            {
+              "body": "Sun",
+              "lon": 10,
+              "lat": 10
+            },
+            {
+              "body": "Moon",
+              "lon": 200,
+              "lat": 8.50005
+            }
+          ],
+          "obliquity": 0
+        }
+      ],
+      "sharedCharts": false,
+      "siteMutations": [
+        {
+          "file": "src/lib/declination.ts",
+          "from": "export const DECLINATION_ORB_LUMINARY = 1.5;",
+          "to": "export const DECLINATION_ORB_LUMINARY = 1.4999;"
+        }
+      ]
+    }
+  },
+  "sections": {
+    "D2-A": {
+      "unit": "declinations",
+      "description": "findDeclinationAspects on the 3,000 charts' ten bodies at C2's obliquity (the base's meanObliquity(julianCenturies(utcMs)))",
+      "comparisons": {
+        "S-A": {
+          "description": "S against A",
+          "rule": "no difference but by orb-boundary, type-tie, order-tie, declination-formula, separation-exact",
+          "allowed": [
+            "orb-boundary",
+            "type-tie",
+            "order-tie",
+            "declination-formula",
+            "separation-exact"
+          ],
+          "cases": 1,
+          "values": 2,
+          "agree": 0,
+          "differ": 1,
+          "causes": {
+            "unexplained": 1
+          },
+          "maxAbsoluteDifference": {},
+          "examples": {
+            "unexplained": [
+              {
+                "section": "D2-A",
+                "comparison": "S-A",
+                "label": {
+                  "constructed": "control 1 only: a luminary pair at orb 1.49995 (obliquity 0, declinations 10 and 8.50005)"
+                },
+                "cause": "unexplained",
+                "difference": {
+                  "kind": "pair-presence",
+                  "present": "x",
+                  "a": "Sun",
+                  "b": "Moon",
+                  "pair": {
+                    "a": "Sun",
+                    "b": "Moon",
+                    "type": "parallel",
+                    "orb": 1.4999500000000001,
+                    "decA": 10,
+                    "decB": 8.50005,
+                    "separation": 170
+                  },
+                  "maxOrb": 1.5
+                }
+              }
+            ]
+          },
+          "pass": false
+        },
+        "S-P": {
+          "description": "S against P, recorded with the same causes",
+          "rule": "recorded",
+          "allowed": null,
+          "cases": 1,
+          "values": 2,
+          "agree": 0,
+          "differ": 1,
+          "causes": {
+            "unexplained": 1
+          },
+          "maxAbsoluteDifference": {},
+          "examples": {
+            "unexplained": [
+              {
+                "section": "D2-A",
+                "comparison": "S-P",
+                "label": {
+                  "constructed": "control 1 only: a luminary pair at orb 1.49995 (obliquity 0, declinations 10 and 8.50005)"
+                },
+                "cause": "unexplained",
+                "difference": {
+                  "kind": "pair-presence",
+                  "present": "x",
+                  "a": "Sun",
+                  "b": "Moon",
+                  "pair": {
+                    "a": "Sun",
+                    "b": "Moon",
+                    "type": "parallel",
+                    "orb": 1.4999500000000001,
+                    "decA": 10,
+                    "decB": 8.50005,
+                    "separation": 170
+                  },
+                  "maxOrb": 1.5
+                }
+              }
+            ]
+          },
+          "pass": null
+        }
+      }
+    }
+  },
+  "referee": {
+    "description": "For every pair P gives in D2-A and D2-T, the type, the inclusion under the maximum orb and the order, from P's own declination doubles in BigInt; a disagreement fails the record.",
+    "cases": 1,
+    "pairs": 1,
+    "agree": 1,
+    "disagreements": []
+  },
+  "units": {
+    "declinations": {
+      "sections": [
+        "D2-A"
+      ],
+      "cases": 2,
+      "values": 4,
+      "agree": 0,
+      "differ": 2,
+      "causes": {
+        "unexplained": 2
+      },
+      "failedComparisons": [
+        "D2-A S-A"
+      ]
+    }
+  },
+  "differences": [],
+  "unexplained": [
+    {
+      "section": "D2-A",
+      "comparison": "S-A",
+      "label": {
+        "constructed": "control 1 only: a luminary pair at orb 1.49995 (obliquity 0, declinations 10 and 8.50005)"
+      },
+      "cause": "unexplained",
+      "difference": {
+        "kind": "pair-presence",
+        "present": "x",
+        "a": "Sun",
+        "b": "Moon",
+        "pair": {
+          "a": "Sun",
+          "b": "Moon",
+          "type": "parallel",
+          "orb": 1.4999500000000001,
+          "decA": 10,
+          "decB": 8.50005,
+          "separation": 170
+        },
+        "maxOrb": 1.5
+      }
+    },
+    {
+      "section": "D2-A",
+      "comparison": "S-P",
+      "label": {
+        "constructed": "control 1 only: a luminary pair at orb 1.49995 (obliquity 0, declinations 10 and 8.50005)"
+      },
+      "cause": "unexplained",
+      "difference": {
+        "kind": "pair-presence",
+        "present": "x",
+        "a": "Sun",
+        "b": "Moon",
+        "pair": {
+          "a": "Sun",
+          "b": "Moon",
+          "type": "parallel",
+          "orb": 1.4999500000000001,
+          "decA": 10,
+          "decB": 8.50005,
+          "separation": 170
+        },
+        "maxOrb": 1.5
+      }
+    }
+  ],
+  "listOmitted": 0,
+  "verdict": {
+    "unexplained": 2,
+    "failedComparisons": [
+      "D2-A S-A"
+    ],
+    "refereeDisagreements": 0,
+    "ownerQuestion": null,
+    "pass": false,
+    "units": {
+      "declinations": false
+    }
+  }
+}

@@ -9,13 +9,13 @@
  * value from 1800 to 2199, the longitude is within 2.6 arcseconds and the daily motion within 1.1 arcseconds a
  * day; sign changes fall within minutes of Horizons' and stations within two hours, since Chiron barely moves
  * around them (docs/engine-validation/chiron/README.md). An instant is put on Terrestrial Time with the
- * engine's own clock (time-basis.mjs), as the charts are.
+ * engine's own clock (@zodiacs/engine/time), as the charts are.
  *
  * Only instants from 1800-01-01T00:00Z up to 2200-01-01T00:00Z have a Chiron: outside them it is left out, never
  * extrapolated. Pure: no network, storage or logging.
  */
 import table from '../../data/chiron.json';
-import { timeBasis } from '../../lib/engine/time-basis.mjs';
+import { timeBasis } from '@zodiacs/engine/time';
 import { NATAL_HOUSE_THEME } from '../../lib/natal';
 import { NATAL_BODY_THEME } from '../../lib/natal-context';
 import { signTagline } from '../../lib/sign-display';

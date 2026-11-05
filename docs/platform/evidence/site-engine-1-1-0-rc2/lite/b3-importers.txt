@@ -1,0 +1,22 @@
+# Lite B3 on the adoption head (the adoption plan's J-4), 2026-11-04, macOS arm64, Node 22.22.2, head 92702bb9b732d88224847df3e27cb0925bfb70df.
+# B3 itself, report-bundles' importer list for @zodiacs/engine/lite under src/ and api/ (the four adapters only), passes on both builds (b1-bundles.txt).
+
+# B3 control: a temporary fifth importer of @zodiacs/engine/lite under src/ (src/lib/lite-fifth-importer-control.ts), removed afterwards:
+#   import { sectReading } from '@zodiacs/engine/lite';
+#
+#   export const fifthImporter = sectReading;
+# command: node scripts/report-bundles.mjs --fail (on the clean rebuild of J-3)
+report-bundles: 1 failures
+  - engine lite isolation: expected src/lib/composite.ts, src/lib/declination.ts, src/lib/dignities.ts, src/lib/sect.ts; found src/lib/composite.ts, src/lib/declination.ts, src/lib/dignities.ts, src/lib/lite-fifth-importer-control.ts, src/lib/sect.ts
+# exit code: 1
+# removed src/lib/lite-fifth-importer-control.ts; git status of src/: ''
+
+# command: node scripts/report-bundles.mjs --fail (the control removed)
+engine isolation: package boundary clear; homepage markers clear
+report-bundles: budgets pass
+# exit code: 0
+
+# command: npx vitest run scripts/engine-entry-imports.test.mjs (no importer of ./calc or ./vedic)
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+# exit code: 0

@@ -1,0 +1,36 @@
+# D-12: Chart Studio's published panel is pinned (scripts/build-chart-studio.mjs, PUBLISHED). 2026-11-04T14:04Z, working tree on 52ed7473450333d64c4276f0df373af1605c2076 with D-12's changes, macOS arm64, Node v22.22.2.
+# panel integrations/generated/chart-studio.mjs sha256 53cf24cf64a81021831494c1b83ffad048a1167fe7cfac79a3d0a1bd72d6871a; its HTML's sha256 must equal panel-fingerprints.json's chart-studio-v6.html entry, 9fef51b4c35b7b9dd9a8b78a654fa222812b5805c5351406ea81d1fb3087d899
+
+## 1. As committed: passes
+# command: node scripts/build-ai-integrations.mjs --check
+Kept Chart Studio's published panel (1001895 bytes, ui://zodiacs/chart-studio-v6.html); the source builds (1005353 bytes) but is not published
+Verified panel fingerprints (4 current URIs)
+# exit code: 0
+
+## 2. Control: one character added to the published panel's title in integrations/generated/chart-studio.mjs: fails
+# command: node scripts/build-ai-integrations.mjs --check
+if (typeof html !== 'string' || createHash('sha256').update(html).digest('hex') !== recorded) throw new Error(`Chart Studio's published panel no longer matches ${PUBLISHED}'s recorded fingerprint`);
+Error: Chart Studio's published panel no longer matches ui://zodiacs/chart-studio-v6.html's recorded fingerprint
+# exit code: 1
+# restored: sha256 53cf24cf64a81021831494c1b83ffad048a1167fe7cfac79a3d0a1bd72d6871a (expected 53cf24cf64a81021831494c1b83ffad048a1167fe7cfac79a3d0a1bd72d6871a)
+
+## 3. Control: STUDIO_URI set to chart-studio-v7.html in src/ai-tools/contracts.ts: fails
+# command: node scripts/build-ai-integrations.mjs --check
+if (contracts.match(/\bexport const STUDIO_URI = '([^']+)'/u)?.[1] !== PUBLISHED) throw new Error(`Chart Studio is pinned to ${PUBLISHED}, so STUDIO_URI must stay that address`);
+Error: Chart Studio is pinned to ui://zodiacs/chart-studio-v6.html, so STUDIO_URI must stay that address
+# exit code: 1
+# restored: sha256 86064cf04363f8272ce02fa9c0f88d3110eb270b3ad37f1f8fcbe43071b14085 (expected 86064cf04363f8272ce02fa9c0f88d3110eb270b3ad37f1f8fcbe43071b14085)
+
+# Added after the independent review, 2026-11-04T14:43Z, working tree on 02d550fc99fc1f73ccac76b00250e766e0bbdb98 with the review's fixes: the pin also records SOURCE_SHA256, the panel this source builds while pinned, so a source change that the pin would not publish fails.
+
+## 4. As changed: passes
+# command: node scripts/build-ai-integrations.mjs --check
+Kept Chart Studio's published panel (1001895 bytes, ui://zodiacs/chart-studio-v6.html); the source builds (1005353 bytes) but is not published
+Verified panel fingerprints (5 current URIs)
+# exit code: 0
+
+## 5. Control: one word added to a label in src/ai-tools/studio/app.tsx: fails
+# command: node scripts/build-ai-integrations.mjs --check
+Error: Chart Studio's source now builds a different panel (4909640b206dd4d0941adcea2961fef97a1a95c23ef4334b4f9febfe23aaf814), which the pin would not publish: end the pin with a new address, or record the build in SOURCE_SHA256 if the change may wait
+# exit code: 1
+# restored: sha256 0c5de7c15be75b1bb4fb6ca9e1f5055974305b08e74201de0498c1f2dec34bdc (expected 0c5de7c15be75b1bb4fb6ca9e1f5055974305b08e74201de0498c1f2dec34bdc)

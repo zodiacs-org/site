@@ -52,7 +52,9 @@ then each change, as whole numbers. It computes nothing else.
   Lagrange polynomial through the four rows on each side of it, and its daily
   motion from that polynomial's derivative. Chiron is retrograde when that
   motion is negative. An instant is put on TT with the engine's own clock
-  (`src/lib/engine/time-basis.mjs`), as the charts are.
+  (`@zodiacs/engine/time`), as the charts are. Until the site adopted engine
+  1.1.0-rc.2 that clock was the site's copy of it, `src/lib/engine/time-basis.mjs`,
+  which gives the same records from 1799 to 2201.
 - **Events.** `chironEvents` samples the daily motion every four days, narrows
   each change of sign to a second for a station, and in each stretch between
   stations, where the longitude only rises or only falls, narrows each multiple
