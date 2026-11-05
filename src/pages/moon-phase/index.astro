@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import MoonPhaseTool from '../../islands/MoonPhaseTool';
 import sky from '../../data/sky.json';
@@ -124,6 +125,7 @@ const jsonLd = [
         the whole thing, <a href="/birth-chart/">run your birth chart</a>:
         every planet, the houses, and the aspects between them.
       </p>
+      <AskGuideAbout prompt="What does the Moon phase I was born under say about me?" />
     </div>
   </section>
 

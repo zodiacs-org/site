@@ -276,23 +276,21 @@ await withPreview({ port: 4404 }, async (baseURL) => {
       return panel && getComputedStyle(panel).transform === 'none';
     });
     const mobileBox = await dialog.boundingBox();
-    check('mobile Guide is an inset compact sheet that leaves the page visible', Boolean(mobileBox)
-      && mobileBox.x >= 8 && mobileBox.x + mobileBox.width <= 382
-      && mobileBox.y > 200 && mobileBox.height >= 844 * 0.5 && mobileBox.height <= 844 * 0.7
-      && Math.abs((mobileBox.y + mobileBox.height) - 834) <= 2, JSON.stringify(mobileBox));
-    const expand = page.getByRole('button', { name: 'Expand Guide', exact: true });
-    await expand.tap();
-    const expandedBox = await dialog.boundingBox();
-    check('mobile visitors can expand Guide while retaining a visible page margin', Boolean(expandedBox)
-      && expandedBox.height > mobileBox.height
-      && expandedBox.height >= 844 * 0.8 && expandedBox.height <= 844 * 0.9
-      && await page.locator('.zassistant__expand').getAttribute('aria-pressed') === 'true',
-      JSON.stringify(expandedBox));
-    await page.locator('.zassistant__expand').tap();
-    const compactBox = await dialog.boundingBox();
-    check('Guide can return to its compact height', Boolean(compactBox)
-      && Math.abs(compactBox.height - mobileBox.height) <= 2
-      && await expand.getAttribute('aria-pressed') === 'false');
+    check('mobile Guide is a full-screen sheet', Boolean(mobileBox)
+      && mobileBox.x === 0 && mobileBox.y === 0
+      && mobileBox.width === 390 && Math.abs(mobileBox.height - 844) <= 2, JSON.stringify(mobileBox));
+    check('phones offer no Expand and fold Clear into the More menu',
+      await page.locator('.zassistant__expand').isHidden()
+      && await page.locator('.zassistant__clear').isHidden()
+      && await page.locator('.zassistant__menu').isHidden());
+    await page.getByRole('button', { name: 'More', exact: true }).tap();
+    check('the More menu offers Clear',
+      await page.locator('.zassistant__menu').isVisible()
+      && await page.getByRole('button', { name: "Clear today's conversation", exact: true }).isVisible());
+    await page.getByRole('button', { name: 'More', exact: true }).tap();
+    check('the More menu closes again', await page.locator('.zassistant__menu').isHidden());
+    check('the welcome offers three questions for this page',
+      await page.locator('.zassistant__starter').count() === 3);
     check('fixed current-page source ignores private query data',
       (await page.locator('.zassistant__source-chip').textContent() ?? '').includes('Guide')
       && !(await page.locator('.zassistant__source-chip').textContent() ?? '').includes('must-not-leak'));
@@ -314,7 +312,7 @@ await withPreview({ port: 4404 }, async (baseURL) => {
     check('first send pauses for accurate Anthropic disclosure', requests.length === 0
       && (await cloud.textContent() ?? '').includes('Anthropic')
       && (await cloud.textContent() ?? '').includes('30 days'));
-    await page.getByRole('button', { name: 'Continue with Guide' }).click();
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
     const firstGuideMessage = page.locator('.zassistant__message--assistant')
       .filter({ hasText: 'practical answer' });
     await firstGuideMessage.waitFor();
@@ -360,7 +358,7 @@ await withPreview({ port: 4404 }, async (baseURL) => {
     const changedScopeConsent = page.locator('.zassistant__consent');
     await changedScopeConsent.waitFor({ state: 'visible' });
     check('a replaced page source renews the visible-scope cloud consent', requests.length === 1);
-    await page.getByRole('button', { name: 'Continue with Guide' }).click();
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await page.locator('.zassistant__message--assistant').filter({ hasText: 'practical answer' }).nth(1).waitFor();
     const second = requests[1];
     check('one daily conversation continues across the site', second.conversationId === conversationId);

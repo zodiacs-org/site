@@ -1,6 +1,7 @@
 ---
 import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 import Base from '../../layouts/Base.astro';
+import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
@@ -244,6 +245,7 @@ const jsonLd = [
         <a href="/birth-chart/">birth chart</a> marks every planet that was
         moving backward when you arrived, with an ℞.
       </p>
+      <AskGuideAbout prompt="Which planets are retrograde right now, and what does that mean for me?" />
     </div>
   </section>
 
