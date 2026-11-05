@@ -6,9 +6,9 @@
  * published text (sitemap dates, the dated-edition checks).
  */
 import { useEffect, useState } from 'preact/hooks';
-import { MY_SIGN_EVENT, readMySign, rememberMySign, type SignSlug } from '../lib/my-sign';
+import { MY_SIGN_EVENT, isSignSlug, readMySign, rememberMySign } from '../lib/my-sign';
 
-export default function RememberMySign({ sign, name }: { sign: SignSlug; name: string }) {
+export default function RememberMySign({ sign, name }: { sign: string; name: string }) {
   const [ready, setReady] = useState(false);
   const [mine, setMine] = useState(false);
 
@@ -33,7 +33,7 @@ export default function RememberMySign({ sign, name }: { sign: SignSlug; name: s
           <button type="button" onClick={() => rememberMySign(null) && setMine(false)}>Forget</button>
         </span>
       ) : (
-        <button type="button" onClick={() => rememberMySign(sign) && setMine(true)}>{`Make ${name} my sign`}</button>
+        <button type="button" onClick={() => isSignSlug(sign) && rememberMySign(sign) && setMine(true)}>{`Make ${name} my sign`}</button>
       ))}
     </p>
   );
