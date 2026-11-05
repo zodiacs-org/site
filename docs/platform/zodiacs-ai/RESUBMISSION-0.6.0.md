@@ -5,6 +5,22 @@ been uploaded, rescanned, attested or submitted. Each portal step needs
 Dias's separate yes, and Dias confirms every attestation. The Claude side is
 in `claude-directory/RESYNC-0.6.0.md`.
 
+## 0.6.3 update, 5 November 2026
+
+Prepared on branch `feat/listing-category-0-6-3`; nothing uploaded. The
+portal's check of the uploaded 0.6.2 draft gave a non-blocking metadata
+finding: it could not confirm the selected category, and asked that the
+listing explain the plugin's main purpose clearly. The owner chose
+Entertainment from the portal's list, so upload
+`integrations/packages/zodiacs-sky-0.6.3.zip` (98,085 bytes, SHA-256
+`e49ec23124f8adc9414df61a11c074bbfdd4933751092ecb0197076f309faee8`) instead
+of the 0.6.2 ZIP and check that the listing shows Entertainment.
+`chatgpt-app-submission.json` carries the same category (`ENTERTAINMENT`).
+The About, subtitle, starter prompts, capabilities and review cases are the
+0.6.2 text, unchanged. The server reports 0.6.3; the 19 tools, their
+definitions and the panels are unchanged, and the 0.6.2 and 0.6.1 updates
+below still apply.
+
 ## 0.6.2 update, 4 November 2026
 
 Prepared on branch `feat/listing-text-0-6-2`; nothing uploaded. Dias chose to

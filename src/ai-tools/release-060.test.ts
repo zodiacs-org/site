@@ -20,7 +20,7 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * docs/platform/zodiacs-ai/evidence/0.6.0/; every one of its thirteen entries must come back byte for byte.
  * 0.6.1 changes the reported version and gives the five coverage tools the inline readings panel; the thirteen
  * entries, their _meta included, still come back byte for byte. 0.6.2 changes only the reported version and the
- * listing text in the package.
+ * listing text in the package, and 0.6.3 only the reported version and the listing's category.
  */
 const root = new URL('../../', import.meta.url);
 const LIVE = JSON.parse(readFileSync(new URL('docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', root), 'utf8'));
@@ -78,11 +78,11 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     }
   });
 
-  it('reports 0.6.2 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
+  it('reports 0.6.3 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.2' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.3' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.2');
+    expect(capabilities.data.version).toBe('0.6.3');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });

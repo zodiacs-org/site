@@ -46,9 +46,13 @@ compare charts) and whose compatibility and date share links carry the reading
 confidence; the share links for the big three, the Chinese zodiac's animal and a
 month's or year's horoscope, and the readings panel with the lunar nodes and
 Chiron, sit behind the same switch. Its local tools are unchanged, Zodiacs stays
-0.6.2, and 0.3.24 keeps its bytes.
+0.6.2, and 0.3.24 keeps its bytes. Zodiacs 0.6.3 changes only the listing's
+category, from Education & Research to Entertainment, which the owner chose
+after OpenAI's portal could not confirm the earlier one. The server reports
+0.6.3 and its tools are unchanged; Developer 0.3.26 is rebuilt from that source
+with unchanged local tools. 0.6.2 and 0.3.25 keep their bytes.
 
-Current candidates are **Zodiacs 0.6.2** and **Zodiacs Developer 0.3.25**;
+Current candidates are **Zodiacs 0.6.3** and **Zodiacs Developer 0.3.26**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
