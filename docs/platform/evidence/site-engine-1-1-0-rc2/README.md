@@ -41,10 +41,13 @@ is filled by the commit that makes its runs.
 | [d16-time-basis.json](d16-time-basis.json), [d16-time-basis-control.json](d16-time-basis-control.json), `tools/compare-time-basis-d16.mjs` | D-16: the deleted module's time basis against `@zodiacs/engine/time`, for main's Chiron, and its control | the record of D-16 |
 | [d16-sitemap/](d16-sitemap/) | D-16: Sitemap Dates' comparison of the merge of main `1e89d772`, made here as CI makes it | the record of D-16 |
 | [d17-sitemap/](d17-sitemap/) | D-17: the same comparison of the merge of main `bff5672f` | the record of D-17 |
+| [browser-evidence-provenance.json](browser-evidence-provenance.json), [phase1-captures-against-main.json](phase1-captures-against-main.json), `tools/compare-phase1-captures.mjs` | the Phase 1 captures' run record, and each capture against main's | the Phase 1 captures (C8) |
 
-Still to come, each by the commit that makes it: the Phase 1 captures and
-production. The local gate's logs are in [validation/](validation/), and the
-private search's counts in [history-check.txt](history-check.txt).
+Still to come, after the merge: production
+([PRODUCTION-CHECKS.md](PRODUCTION-CHECKS.md)). The local gate's logs are in
+[validation/](validation/), the private search's counts in
+[history-check.txt](history-check.txt), and the Phase 1 captures' provenance
+under Phase 1 captures below.
 
 ## The adoption
 
@@ -429,6 +432,42 @@ same once more: of the archives' 156 matching lines 154 are their base
 source's apart from versions and digests and the other 2 hold the same 4
 matches with their context, and the tree's 18 lines more than main's (621
 against 603) are the two new archives' copies.
+
+## Phase 1 captures
+
+The Phase 1 capture digest covers the lockfile, `src/lib`, `src/islands`,
+`src/components`, `src/styles`, the horoscope content and pages, the fonts
+and the icons (`tests/visual/phase1-evidence-contract.mjs`), which this
+branch and each merge of main change. So CI's Browser Evidence took the 18
+captures again on this pull request's last head, and they are committed with
+their provenance (C8).
+
+- **Committed captures.** Browser Evidence run 42007541697 took them on
+  `658aabdb`, the merge of main `bff5672f` with its records, with Chromium
+  149.0.7827.55 at 2026-11-05T10:13:10Z, for the daily edition of
+  2026-11-05, bound to template source digest `7779ac0a…`, which the source
+  at this head gives. Every step passed: the build, the captures and their
+  receipt, the visual comparison with the committed 390 and 1440 pixel
+  baselines, Lighthouse and the explorer drive
+  ([browser-evidence-provenance.json](browser-evidence-provenance.json) is
+  the run's own record). The committed files are the artifact's, byte for
+  byte, and each matches the manifest and that record. The plan named a
+  candidates run for them; the compare run already takes and uploads the
+  Phase 1 captures, as 1.1.0-rc.1's committed captures came from a compare
+  run, so no candidates run was asked for.
+- **Against main's.** Main's committed captures are of the edition of
+  2026-11-04, so all 18 differ
+  ([phase1-captures-against-main.json](phase1-captures-against-main.json),
+  `tools/compare-phase1-captures.mjs`): the edition's horoscopes and sky
+  change four pages' heights (`today` at both widths, `daily` at 360 pixels
+  and `tomorrow` at 1280) and 0.02 to 2.3 percent of the other pages' pixels.
+- **The suite.** With these captures, after `npm run build`, the full suite
+  passes 8,283 tests in 642 files, with 13 existing skips
+  ([validation/full-suite-captures.log](validation/full-suite-captures.log)).
+  A first run, before the build, read the production-flags build the gate
+  leaves behind, which lacks the postbuild steps, and failed 5 tests of the
+  built pages
+  ([validation/full-suite-captures-attempt-1.log](validation/full-suite-captures-attempt-1.log)).
 
 ## Decisions taken without asking, under the owner's delegation
 

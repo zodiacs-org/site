@@ -204,6 +204,20 @@
       "capturedSha256": "a95c2f490ea4e2bad4059b579fc3aa0852c4c8a4329bcd874aa695e93d7f2ba2",
       "committedSha256": "a95c2f490ea4e2bad4059b579fc3aa0852c4c8a4329bcd874aa695e93d7f2ba2",
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite-captures.log",
+      "tool": "npm test after npm run build, with the Phase 1 captures of run 42007541697 in place (658aabdb with CLAUDE.md's pin note, 0d89edd3)",
+      "capturedSha256": "89c342afa7890f626677ce9ec0ce294cc91dc0c87e0e8607d628bc12ff9242b0",
+      "committedSha256": "1f8a1e4b3ccde53eb78b20d68fd9663ab3d660237255d2c3e1959119f8144a10",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite-captures-attempt-1.log",
+      "tool": "npm test with the Phase 1 captures in place, before npm run build (on the production-flags build the gate leaves behind), first attempt",
+      "capturedSha256": "d4b8bae54fd7bb75eb8578960be7f1d9d121df6d5acfdc6ad235d69a9cf33385",
+      "committedSha256": "82a7d4f69fc77d88c026a6a394472dda2f686701f454f192d420cc7c57586bdd",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
     }
   ]
 }
