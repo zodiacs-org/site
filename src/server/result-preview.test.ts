@@ -20,6 +20,8 @@ import {
   handleSkyCalendarImageRequest,
   handleSkyCalendarLinkRequest,
   handleChartTwinsImageRequest,
+  horoscopeCard,
+  horoscopeStory,
   handleChartTwinsLinkRequest,
   handleChartTwinsStoryRequest,
   handleFamousChartImageRequest,
@@ -105,20 +107,20 @@ function nodeResponse() {
 }
 
 describe('share card models', () => {
-  it('show Person A and Person B, signs in their hues, the score, the verdict and the three areas, never a name', () => {
+  it('name the two people by their Sun signs, in their hues, the score, the verdict and the three areas, never a name', () => {
     const model = compatibilityCardModel(parseCompatibilityShare(new URLSearchParams(COMPAT))!);
     expect(model).toMatchObject({
-      first: 'Person A', second: 'Person B', score: 78, verdict: 'A strong match',
+      first: 'Leo', second: 'Libra', score: 78, verdict: 'A strong match',
       people: [{ slug: 'leo', label: 'Leo Sun', hue: '#E0A9B4' }, { slug: 'libra', label: 'Libra Sun', hue: '#D3A9DE' }],
       ring: ['#E0A9B4', '#D3A9DE'],
       areas: [{ label: 'Attraction', value: 82 }, { label: 'Communication', value: 71 }, { label: 'Stability', value: 80 }],
-      title: 'Person A and Person B: 78/100',
+      title: 'Leo and Libra: 78/100',
     });
     // Handed an older link's names, the card is the same.
     expect(compatibilityCardModel(parseCompatibilityShare(new URLSearchParams(COMPAT_NAMED))!)).toEqual(model);
   });
 
-  it('call unnamed people Person A and Person B, and draw an unknown sign in the neutral tone', () => {
+  it('call the two people Person A and Person B when a sign is not known, and draw an unknown sign in the neutral tone', () => {
     const model = compatibilityCardModel(parseCompatibilityShare(new URLSearchParams('bs=pisces&score=41&attraction=55&communication=38&stability=30&v=challenging'))!);
     expect([model.first, model.second]).toEqual(['Person A', 'Person B']);
     expect(model.people[0]).toEqual({ slug: null, label: 'Sun sign on the cusp', hue: NEUTRAL_HUE });
@@ -212,6 +214,13 @@ describe('confidence labels on the cards that show a forecast or a score', () =>
   it('print a Sun-sign horoscope\'s 40% whenever the card quotes a published reading, and nothing once it is gone', () => {
     expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&d=${TODAY}`))!, WINDOW)!.confidence).toBe('Reading confidence 40%');
     expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams('s=leo&d=2026-09-01'))!, WINDOW)!.confidence).toBeNull();
+  });
+
+  it('say on a horoscope image and story that the 40% is a Sun-sign reading\'s', () => {
+    const model = horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&d=${TODAY}`))!, WINDOW)!;
+    for (const card of [horoscopeCard(model, new Map(), []), horoscopeStory(model, new Map(), [])]) {
+      expect(JSON.stringify(card)).toContain('Sun-sign reading. Reading confidence 40%');
+    }
   });
 });
 
@@ -323,7 +332,7 @@ describe('share link pages', () => {
     expect(html).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(html).toContain(`<img class="card" src="${image}"`);
     expect(html).toContain('<a class="cta" href="/compatibility/?ref=chatgpt">Check your own compatibility</a>');
-    expect(html).toContain('<title>Person A and Person B: 78/100 on Zodiacs</title>');
+    expect(html).toContain('<title>Leo and Libra: 78/100 on Zodiacs</title>');
     expect(html).not.toMatch(/ref=chatgpt[^"]*"[^>]*og:image|image\?[^"]*ref=/u);
     // The same result as a 1080×1920 picture, to save and post as a story.
     expect(html).toContain(`<p class="story"><a href="/api/og/compatibility-story?${COMPAT.replaceAll('&', '&amp;')}" download="zodiacs-compatibility-story.jpg">Save the picture for your story</a></p>`);

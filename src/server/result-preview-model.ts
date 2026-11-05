@@ -86,12 +86,14 @@ function previewSign(slug: ShareSign | null, body: 'Sun' | 'Moon', unknown: stri
 }
 
 /**
- * The two people are Person A and Person B. An older link's first names (a and b, which the assistant tools stopped
- * writing in 0.6.1) are never drawn: a share link never carries a name.
+ * The two people are named by the Sun signs the link already carries ("Taurus and Leo"); when either sign is not
+ * known (a cusp birth date without a time), they are Person A and Person B. An older link's first names (a and b,
+ * which the assistant tools stopped writing in 0.6.1) are never drawn: a share link never carries a name.
  */
 export function compatibilityCardModel(share: CompatibilityShare): CompatibilityCardModel {
-  const first = 'Person A';
-  const second = 'Person B';
+  const bySign = share.aSun !== null && share.bSun !== null;
+  const first = bySign ? signName(share.aSun!) : 'Person A';
+  const second = bySign ? signName(share.bSun!) : 'Person B';
   const people: [PreviewSign, PreviewSign] = [
     previewSign(share.aSun, 'Sun', 'Sun sign on the cusp'),
     previewSign(share.bSun, 'Sun', 'Sun sign on the cusp'),

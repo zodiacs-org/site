@@ -41735,7 +41735,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const cardUrl = occasionCardUrl({ ...args, latitude: hasPlace ? roundCoordinate(args.latitude) : void 0, longitude: hasPlace ? roundCoordinate(args.longitude) : void 0, date: date3, ...zone7 ? { zone: zone7 } : {} });
         const detail = readingDetail({ hasDate: true, hasTime: args.time !== void 0, hasPlace });
         const label = readingConfidenceLabel(detail);
-        const withLabel = (rating2) => ({ ...rating2, verdict: `${rating2.verdict}. ${label}.`, reasons: [...rating2.reasons, label, "For the sky at a chosen moment, use get_sky."] });
+        const withLabel = (rating2) => ({ ...rating2, verdict: `${rating2.verdict}. ${label}.`, reasons: [...rating2.reasons, label] });
         const rating = withLabel(rateOccasionDate(args.occasion, card.sky));
         if (best) best = { ...best, best: best.best.map((day) => withLabel(day)) };
         const signOf = (body2) => card.sky.bodies.find((row) => row.body === body2)?.sign ?? null;

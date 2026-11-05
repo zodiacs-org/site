@@ -52,6 +52,9 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(result.data.cardUrl).toContain('lat=43.77');
     // A time and a place: the reading confidence is 70, as the rating's own label says.
     expect(result.data.rating.verdict).toContain('Reading confidence 70%');
+    // The reasons are for people: the pointer to get_sky stays in the answer's links, not among them.
+    expect(result.data.rating.reasons.some((reason) => /get_sky/u.test(reason))).toBe(false);
+    expect(result.data.rating.reasons.at(-1)).toBe('Reading confidence 70%');
     expect(result.data.shareUrl).toBe(`https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&sun=gemini&moon=libra&score=${result.data.rating.score}&v=${{ 'An excellent day for it': 'excellent', 'A good day for it': 'good', 'A fair day, with a few cautions': 'fair', 'A challenging day for it': 'challenging' }[verdict]}&c=70`);
     expect(result.data.shareUrl).not.toContain('Ana');
     expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(result).success).toBe(true);

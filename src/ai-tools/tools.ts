@@ -475,7 +475,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const cardUrl = occasionCardUrl({ ...args, latitude: hasPlace ? roundCoordinate(args.latitude!) : undefined, longitude: hasPlace ? roundCoordinate(args.longitude!) : undefined, date, ...(zone ? { zone } : {}) });
         const detail = readingDetail({ hasDate: true, hasTime: args.time !== undefined, hasPlace });
         const label = readingConfidenceLabel(detail);
-        const withLabel = <T extends { verdict: string; reasons: string[] }>(rating: T): T => ({ ...rating, verdict: `${rating.verdict}. ${label}.`, reasons: [...rating.reasons, label, 'For the sky at a chosen moment, use get_sky.'] });
+        const withLabel = <T extends { verdict: string; reasons: string[] }>(rating: T): T => ({ ...rating, verdict: `${rating.verdict}. ${label}.`, reasons: [...rating.reasons, label] });
         const rating = withLabel(rateOccasionDate(args.occasion, card.sky));
         if (best) best = { ...best, best: best.best.map((day) => withLabel(day)) };
         const signOf = (body: string) => card.sky.bodies.find((row) => row.body === body)?.sign ?? null;

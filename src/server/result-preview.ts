@@ -567,9 +567,12 @@ export function skyCalendarCard(model: SkyCalendarCardModel, art: string[]) {
   return frame(art, words({ discs: [], kicker: 'Sky calendar', hue: HUES.scorpio, title: [titleBlock('The sky in your calendar')], line: model.line }));
 }
 
+/** A Sun-sign reading's label on a horoscope image says what it was read from: "Sun-sign reading. Reading confidence 40%". */
+const signReading = (label: string | null) => (label ? `Sun-sign reading. ${label}` : null);
+
 /** A horoscope: the sign's panel, the day, week, month or year, the sign, the reading's own line for it and its confidence. */
 export function horoscopeCard(model: HoroscopeCardModel, images: Map<ShareSign, string>, art: string[]) {
-  return frame(art, words({ discs: discRow([model.sign], images), kicker: model.kicker, hue: model.hue, title: [titleBlock(model.signName)], line: model.line, confidence: model.confidence }), model.sign.slug);
+  return frame(art, words({ discs: discRow([model.sign], images), kicker: model.kicker, hue: model.hue, title: [titleBlock(model.signName)], line: model.line, confidence: signReading(model.confidence) }), model.sign.slug);
 }
 
 /** A quote behind a rule in the card's hue, as the sky calendar's story sets its event. */
@@ -1032,7 +1035,7 @@ function storyRing(score: number, hues: [string, string], size: number, stroke: 
       h('div', { style: { display: 'flex', fontSize: labelSize, color: MUTED, marginTop: `${Math.round(numberSize * 0.06)}px` } }, 'out of 100')));
 }
 
-/** Compatibility (A, the score as a trophy): both panels, the discs, the ring, the verdict and Person A and Person B. */
+/** Compatibility (A, the score as a trophy): both panels, the discs, the ring, the verdict and the two Sun signs (or Person A and Person B). */
 export function compatibilityStory(model: CompatibilityCardModel, images: Map<ShareSign, string>, art: string[]) {
   const nameSize = storyFit([`${model.first} and ${model.second}`], 96, 56);
   const areas = model.areas.map((area, index) => `${index === 0 ? area.label : area.label.toLowerCase()} ${area.value}`).join(', ');
@@ -1095,7 +1098,7 @@ export function horoscopeStory(model: HoroscopeCardModel, images: Map<ShareSign,
     storyKicker(model.kicker, model.hue),
     storyTitle(model.signName, storyFit([model.signName], 124, 72)),
     storyLine(model.line),
-    ...storyConfidence(model.confidence),
+    ...storyConfidence(signReading(model.confidence)),
     storyAction('Read your own horoscope', 'zodiacs.org/horoscopes'),
   ]), model.sign.slug);
 }

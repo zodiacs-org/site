@@ -50,9 +50,10 @@ Chiron, sit behind the same switch. Its local tools are unchanged, Zodiacs stays
 category, from Education & Research to Entertainment, which the owner chose
 after OpenAI's portal could not confirm the earlier one. The server reports
 0.6.3 and its tools are unchanged; Developer 0.3.26 is rebuilt from that source
-with unchanged local tools. 0.6.2 and 0.3.25 keep their bytes.
+with unchanged local tools. 0.6.2 and 0.3.25 keep their bytes. Developer 0.3.27 is rebuilt after the server stopped listing
+its pointer to get_sky among a date's reasons; 0.6.3 and 0.3.26 keep their bytes.
 
-Current candidates are **Zodiacs 0.6.3** and **Zodiacs Developer 0.3.26**;
+Current candidates are **Zodiacs 0.6.3** and **Zodiacs Developer 0.3.27**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
