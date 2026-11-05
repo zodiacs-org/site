@@ -1,0 +1,9 @@
+{
+  "deploymentId": "dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw",
+  "aliasUpdatedAt": "2026-11-05T11:58:26.238Z",
+  "readyState": "READY",
+  "target": "production",
+  "githubCommitSha": "3fac42304ba6ac44a0b0fae99ecabd08cb848bc7",
+  "readAt": "2026-11-05T12:02:50Z",
+  "read": "Vercel connector get_alias (zodiacs.org), just after the run at the merge: the same deployment and updatedAt"
+}
