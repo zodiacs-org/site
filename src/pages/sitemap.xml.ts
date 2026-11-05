@@ -364,6 +364,9 @@ const TIME_ATLAS_ROUTES = ['/developers/time-atlas/', '/developers/'] as const;
 // Sitemap Dates comparison found changed (the engine's version, its time and lite entries, the conventions
 // registry's time-band namespace, MCP adapter 0.1.0-rc.26, the playground's engine and answers, the demo's
 // receipts, the guides).
+// Every event page gained its countdown, what to look for in the sky and Guide questions. Dated here, not
+// in events-publication.json, which the published developer plugin bundles byte for byte.
+const EVENT_WATCH_LASTMOD = '2026-11-05';
 const ENGINE_110_RC2_LASTMOD = '2026-11-05';
 const ENGINE_110_RC2_ROUTES = [
   '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
@@ -737,7 +740,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
-      lastmod: event.lastModified,
+      lastmod: event.lastModified > EVENT_WATCH_LASTMOD ? event.lastModified : EVENT_WATCH_LASTMOD,
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
     // /terminal/research/ above, is listed.

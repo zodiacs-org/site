@@ -5,7 +5,7 @@ import { EVENT_READING_REVISION, REVISED_EVENT_READINGS } from '../src/lib/event
 export const EVENTS_PUBLICATION_SCHEMA = 'zodiacs.events-publication.v1' as const;
 export const EVENTS_PUBLICATION_FROM = '2026-01-01T00:00:00.000Z';
 export const EVENTS_PUBLICATION_TO = '2028-01-01T00:00:00.000Z';
-export const EVENTS_PUBLICATION_LASTMOD = '2026-11-05';
+export const EVENTS_PUBLICATION_LASTMOD = '2026-10-16';
 
 /** A page's date: the later of the publication's revision and its reading's own revision. */
 export function eventLastModified(id: string): string {
