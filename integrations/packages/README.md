@@ -50,11 +50,22 @@ Chiron, sit behind the same switch. Its local tools are unchanged, Zodiacs stays
 category, from Education & Research to Entertainment, which the owner chose
 after OpenAI's portal could not confirm the earlier one. The server reports
 0.6.3 and its tools are unchanged; Developer 0.3.26 is rebuilt from that source
-with unchanged local tools. 0.6.2 and 0.3.25 keep their bytes. Developer 0.3.27
-is 0.3.26's source with its local chart tools on MCP adapter 0.1.0-rc.26 and
-engine 1.1.0-rc.2; 0.3.26 keeps its bytes.
+with unchanged local tools. 0.6.2 and 0.3.25 keep their bytes. Developer 0.3.27 is rebuilt after the server stopped listing
+its pointer to get_sky among a date's reasons; 0.6.3 and 0.3.26 keep their bytes.
+Zodiacs 0.6.4 makes one privacy sentence exact: links never carry a birth year,
+a birth time, a birthplace or the names you give, and a birthday link carries
+only the month and day. The earlier wording read as if no link carried any time
+or place, but a card link for a wedding or another day carries that day's time,
+time zone and coordinates rounded to two decimals, as the privacy page already
+says. The About, the earlier release notes, the README, the skill, the server
+instructions and get_capabilities carry the new sentence; the server reports
+0.6.4 and its 19 tool definitions are unchanged. Developer 0.3.27, not yet
+released, is rebuilt from that source with unchanged local tools. 0.6.3 and
+0.3.26 keep their bytes. Developer 0.3.28 is 0.3.27's source with its local
+chart tools on MCP adapter 0.1.0-rc.26 and engine 1.1.0-rc.2; 0.3.27 keeps its
+bytes.
 
-Current candidates are **Zodiacs 0.6.3** and **Zodiacs Developer 0.3.27**;
+Current candidates are **Zodiacs 0.6.4** and **Zodiacs Developer 0.3.28**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

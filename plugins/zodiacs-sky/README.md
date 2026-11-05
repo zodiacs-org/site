@@ -46,8 +46,8 @@ The `find_birthplace` tool is offered with them: it turns a town or city name
 into coordinates and a time zone from the GeoNames list bundled with Zodiacs.
 
 Zodiacs never stores or logs birth details. Links never carry a birth year,
-time, place or names; a birthday link carries only the month and day. Ask
-before using someone else's birth details.
+a birth time, a birthplace or the names you give; a birthday link carries
+only the month and day. Ask before using someone else's birth details.
 
 No account is needed. Horoscopes come from
 `src/data/horoscope-window.json`, which the daily publication rebuilds each

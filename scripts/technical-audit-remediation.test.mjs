@@ -169,9 +169,9 @@ describe('technical audit remediation contracts', () => {
     // So did the elections endpoint's sentence on the privacy page, on 5 October,
     // and the hosted MCP server's request-log retention, on 9 October, and the
     // ?ref= on links from the Zodiacs app with its 0.5.0 tools' wording, on 14 October,
-    // and what the app's links carry, on 4 November.
-    expect(privacy).toContain("const modifiedAt = '2026-11-04T00:00:00.000Z'");
-    expect(sitemap).toContain("['/privacy/', '2026-11-04'] as const,");
+    // and what the app's links carry, on 4 November, worded exactly on 5 November.
+    expect(privacy).toContain("const modifiedAt = '2026-11-05T00:00:00.000Z'");
+    expect(sitemap).toContain("['/privacy/', '2026-11-05'] as const,");
     expect(sitemap).toContain("const ASSISTANT_REF_LASTMOD = '2026-10-14'");
     expect(sitemap).toContain("const MCP_HOST_LOGS_LASTMOD = '2026-10-09'");
     expect(sitemap).toContain("...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const)");

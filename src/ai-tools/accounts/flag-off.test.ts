@@ -23,6 +23,8 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * resources/list. The released and occasions scenarios' tools/list and resources/list stay byte for byte.
  * 0.6.2 changes only the reported version, in every scenario.
  * 0.6.3 changes only the reported version, in every scenario.
+ * 0.6.4 changes the reported version in every scenario, and the one sentence on what links carry wherever the server
+ * instructions or the get_capabilities text hold it. Every tools/list and resources/list answer stays byte for byte.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

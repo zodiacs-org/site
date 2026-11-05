@@ -5,6 +5,28 @@ been uploaded, rescanned, attested or submitted. Each portal step needs
 Dias's separate yes, and Dias confirms every attestation. The Claude side is
 in `claude-directory/RESYNC-0.6.0.md`.
 
+## 0.6.4 update, 5 November 2026
+
+Prepared on branch `feat/share-card-polish` (PR #889); nothing uploaded. A
+tester read the privacy sentence as saying that no link carries any time or
+place, but a card link for a wedding or another day carries that day's time,
+time zone and coordinates rounded to two decimals, as the privacy page already
+says; a birthday, a baby's arrival or a coming of age gets no card link. The
+owner approved exact wording, so the About, the earlier release notes, the
+server instructions and get_capabilities now say: Links never carry a birth
+year, a birth time, a birthplace or the names you give; a birthday link
+carries only the month and day. Upload
+`integrations/packages/zodiacs-sky-0.6.4.zip` (98,467 bytes, SHA-256
+`5dca9b9421a75ebe8b0bfd7db53df0fbc4d9fec69308819d90f15ac7c67f844f`) instead
+of the 0.6.3 ZIP. `chatgpt-app-submission.json` carries the same About. The
+category stays Entertainment, and the subtitle, starter prompts, capabilities
+and review cases are unchanged. The server reports 0.6.4 and no longer lists
+its pointer to get_sky among a date's reasons; a compatibility share card
+names the pair by their Sun signs, and a horoscope's says "Sun-sign reading.
+Reading confidence 40%". The 19 tools, their definitions and the panels are
+unchanged, and the 0.6.3, 0.6.2 and 0.6.1 updates below still apply, with
+this sentence in place of the one quoted in the 0.6.1 update.
+
 ## 0.6.3 update, 5 November 2026
 
 Prepared on branch `feat/listing-category-0-6-3`; nothing uploaded. The
