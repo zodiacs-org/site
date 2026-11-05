@@ -410,6 +410,15 @@ a free-space check before each, Node 22.22.2 on macOS arm64. Its logs are in
   references differ from the committed ones only by D-9's recorded arm64 last
   bits, the wing drift is empty, the three MCP drives' rewritten records were
   restored from git, and the tree was clean at the end.
+- **Seventh attempt**, on the captures' head `46bc7db0`, the head merged as
+  `3fac4230`: 41 of 42 steps exit 0. The full suite passes 8,283 tests in 642
+  files, with 13 skips and none failing, the Phase 1 capture test included.
+  The first-use drive fails only its Firefox launch, its other 44 checks
+  passing. Both builds pass their budgets (`/birth-chart/` 66.0 KB by default
+  and 69.1 KB with production's flags, of 71 KB), the independent references
+  differ only by D-9's recorded arm64 last bits, the wing drift is empty, and
+  the tree was clean at the end. The production-flags build it leaves is the
+  local build D2 compares production with.
 
 ## The private search
 
@@ -671,9 +680,15 @@ so does OQ10's Q5.
   made under names main's releases later took (Developer 0.3.21 at `620403bc`,
   0.3.22 at `92d27904` and `af535a33`, 0.3.23 at `36f126b1`, 0.3.27 at
   `3e370c9b`), whose bytes differ from main's, while the head keeps main's
-  bytes for each and `integrations/packages/manifest.json` gives each
-  archive's SHA-256; and three dated evidence tools
+  bytes for each; `integrations/packages/manifest.json` gives the SHA-256 of
+  the current candidates' archives only, and main's manifests at their
+  releases give the others' (0.3.21 `666ec5af…`, 0.3.22 `30e52643…`, 0.3.23
+  `e0f23b13…`, 0.3.27 `d97fe83a…`; this clause as first written said the
+  current manifest gave each, which the review's third round found wrong); and
+  three dated evidence tools
   (`docs/platform/evidence/engine-beyond-swiss/corpora/tools/angle-clock.ts`,
   and `site-engine-rc15/tools/clock-difference.mjs` and
   `model-clock-margins.mjs`) import the deleted module, so they run only on a
-  tree from before this adoption, D-7 leaving dated tools as they are.
+  tree from before this adoption, D-7 leaving dated tools as they are. The
+  review's third round, of `46bc7db0`, said merge once Build & Check finished
+  green, which it did, and found only that clause.
