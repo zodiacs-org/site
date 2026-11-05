@@ -6,7 +6,8 @@ import AskGuideLine from './AskGuideLine.astro';
 import GuideQuickPrompts from './GuideQuickPrompts.astro';
 import EmailCapture from './EmailCapture.astro';
 import ShareRow from './ShareRow.astro';
-import RememberMySign from './RememberMySign.astro';
+import RememberMySign from '../islands/RememberMySign';
+import '../styles/my-sign.css';
 import SignIcon from './SignIcon.astro';
 import UpcomingEventLinks from './events/UpcomingEventLinks.astro';
 import EditionText from './EditionText.astro';
@@ -443,7 +444,7 @@ const ctaLede = edgeMoon && moonHouse
           <span>{capitalize(sign.modality)}</span>
           <span class="hz-hero__ruler">Ruled by {sign.ruler}</span>
         </p>
-        <RememberMySign sign={sign.slug} name={sign.name} />
+        <RememberMySign client:idle sign={sign.slug} name={sign.name} />
       </div>
       <span class="hz-hero__credit" aria-hidden="true">{sign.name}, from the Zodiacs sign art</span>
     </header>
