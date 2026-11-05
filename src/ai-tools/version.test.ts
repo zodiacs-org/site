@@ -39,8 +39,8 @@ async function rpc(method: string, params: unknown) {
 }
 
 describe('published release version', () => {
-  it('keeps the portable and directory manifests on release 0.6.3', () => {
-    expect(skyManifest.version).toBe('0.6.3');
+  it('keeps the portable and directory manifests on release 0.6.4', () => {
+    expect(skyManifest.version).toBe('0.6.4');
     expect(directoryManifest.version).toBe(skyManifest.version);
   });
 

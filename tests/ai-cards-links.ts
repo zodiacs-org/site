@@ -109,7 +109,8 @@ try {
   const pairShare = await context.newPage();
   await pairShare.goto(local(pair.data.shareUrl));
   await pairShare.locator('img.card').waitFor();
-  assert.match(await pairShare.locator('h1').innerText(), /Person A and Person B/u);
+  const pairSigns = [pair.data.a.sun, pair.data.b.sun];
+  assert.match(await pairShare.locator('h1').innerText(), pairSigns.every(Boolean) ? new RegExp(`^${pairSigns.join(' and ')}`, 'iu') : /Person A and Person B/u);
   assert.ok(await pairShare.locator('img.card').evaluate((img) => (img as HTMLImageElement).naturalWidth === 1200));
   if (out) await pairShare.screenshot({ path: resolve(out, 'share-page-compatibility-390.png'), fullPage: true });
   checked.push('Share the reading: /share/compatibility/ opens with its preview image');

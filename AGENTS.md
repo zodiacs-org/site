@@ -41,7 +41,8 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
   tips, sports picks, market timing, election forecasts, health predictions
   or guarantees.
 - Never store or log users' birth details. Links never carry a birth year,
-  time, place or names; a birthday link carries only the month and day.
+  a birth time, a birthplace or the names you give; a birthday link carries
+  only the month and day.
 - The 13 published MCP tool definitions stay byte-identical
   (`src/ai-tools/release-060.test.ts`).
 - The site is dark only. Do not add a light theme or a theme switch.
