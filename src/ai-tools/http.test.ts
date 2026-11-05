@@ -36,13 +36,45 @@ describe('stateless MCP HTTP boundary', () => {
     try {
       for (const [budget, status, retry] of [['limited', 429, '60'], ['unavailable', 503, '300']] as const) {
         atomicRequest = budget; atomicCounted.length = 0;
-        const response = await post(rpc('tools/list'));
+        const response = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }));
         expect(response.status).toBe(status);
         expect(response.headers.get('retry-after')).toBe(retry);
         expect(response.headers.get('cache-control')).toBe('no-store');
         expect(atomicCounted).toEqual(['request']);
       }
     } finally { atomicRequest = 'allowed'; }
+  });
+  it('counts only tool calls: connecting, listing tools and reading panels use no budget', async () => {
+    try {
+      verdict = 'limited'; atomicRequest = 'limited'; counted.length = 0; atomicCounted.length = 0;
+      const init = await post(rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'budget-test', version: '1' } }));
+      expect(init.status).toBe(200);
+      expect((await readMessage(init)).result.serverInfo.name).toBe('zodiacs');
+      expect((await post({ jsonrpc: '2.0', method: 'notifications/initialized' }, { 'MCP-Protocol-Version': '2025-06-18' })).status).toBeLessThan(300);
+      const list = await post(rpc('tools/list'), { 'MCP-Protocol-Version': '2025-06-18' });
+      expect(list.status).toBe(200);
+      expect((await readMessage(list)).result.tools.length).toBeGreaterThan(0);
+      const resources = await post(rpc('resources/list'), { 'MCP-Protocol-Version': '2025-06-18' });
+      expect(resources.status).toBe(200);
+      const uri = (await readMessage(resources)).result.resources[0].uri;
+      expect((await post(rpc('resources/read', { uri }), { 'MCP-Protocol-Version': '2025-06-18' })).status).toBe(200);
+      expect(counted).toEqual([]);
+      expect(atomicCounted).toEqual([]);
+      // A tool call is counted, first against the per-address rule.
+      const call = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }), { 'MCP-Protocol-Version': '2025-06-18' });
+      expect(call.status).toBe(429);
+      expect(counted).toEqual([COMPUTE_RATE_LIMIT_ID]);
+      verdict = 'allowed'; counted.length = 0;
+      expect((await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }), { 'MCP-Protocol-Version': '2025-06-18' })).status).toBe(429);
+      expect(counted).toEqual([COMPUTE_RATE_LIMIT_ID]);
+      expect(atomicCounted).toEqual(['request']);
+    } finally { verdict = 'allowed'; atomicRequest = 'allowed'; }
+  });
+  it('still counts the health check against both limits', async () => {
+    try {
+      verdict = 'limited'; expect((await fetch(`${base}?__zodiacs_ai=health`)).status).toBe(429);
+      verdict = 'allowed'; atomicRequest = 'limited'; expect((await fetch(`${base}?__zodiacs_ai=health`)).status).toBe(429);
+    } finally { verdict = 'allowed'; atomicRequest = 'allowed'; }
   });
   it('reserves a global event slot for a date fact and refuses before returning computation', async () => {
     try {
@@ -151,8 +183,8 @@ describe('stateless MCP HTTP boundary', () => {
   it('defaults off and fails closed if the production limiter cannot count', async () => {
     try {
       enabled = undefined; expect((await post(rpc('tools/list'))).status).toBe(503);
-      enabled = '1'; verdict = 'unavailable'; expect((await post(rpc('tools/list'))).status).toBe(503);
-      verdict = 'limited'; const response = await post(rpc('tools/list')); expect(response.status).toBe(429); expect(response.headers.get('retry-after')).toBe('60');
+      enabled = '1'; verdict = 'unavailable'; expect((await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} }))).status).toBe(503);
+      verdict = 'limited'; const response = await post(rpc('tools/call', { name: 'get_capabilities', arguments: {} })); expect(response.status).toBe(429); expect(response.headers.get('retry-after')).toBe('60');
     } finally { enabled = '1'; verdict = 'allowed'; }
   });
   it('allows only the exact configured staging hostname and rejects invalid host configuration', async () => {
