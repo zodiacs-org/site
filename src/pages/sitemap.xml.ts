@@ -768,7 +768,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
-      lastmod: event.lastModified > EVENT_WATCH_LASTMOD ? event.lastModified : EVENT_WATCH_LASTMOD,
+      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVERGREEN_LASTMOD.get(event.path) ?? '']
+        .reduce((latest, date) => (date > latest ? date : latest)),
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
     // /terminal/research/ above, is listed.
