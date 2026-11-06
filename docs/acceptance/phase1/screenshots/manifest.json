@@ -6,11 +6,11 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-06T16:21:05.264Z",
+  "capturedAt": "2026-11-06T17:39:07.310Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-11-06",
   "publicationCanonicalSha256": "3db2e125dbdafd5a7bcb19b7e922906cc588164e955a158e0548f52969edd139",
-  "templateSourceSha256": "f7f0f3538bac38ee33973aebf78343b9544ca7f9bb788bbc6ad3d67ffe137bec",
+  "templateSourceSha256": "a40ef6f142eb9243f161cd101ffa78f904d765fe59b0f6cb75e8bc06fe856c23",
   "renderPayloadSha256": {
     "daily": "ec73276221cbc3c2a178b2c43810825c70571a8ddc74c13e965bb2f747f8e73f",
     "dailyPublication": "adb73629d188b2daf7ef1cc638f4b0311ad8038a79aa0de5714834eef12429bd",
@@ -19,8 +19,8 @@
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-06T16:20:28.005Z",
-    "templateSourceSha256": "f7f0f3538bac38ee33973aebf78343b9544ca7f9bb788bbc6ad3d67ffe137bec",
+    "builtAt": "2026-11-06T17:38:26.323Z",
+    "templateSourceSha256": "a40ef6f142eb9243f161cd101ffa78f904d765fe59b0f6cb75e8bc06fe856c23",
     "dailyDate": "2026-11-06",
     "publicationCanonicalSha256": "3db2e125dbdafd5a7bcb19b7e922906cc588164e955a158e0548f52969edd139",
     "renderPayloadSha256": {
