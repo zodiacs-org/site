@@ -672,6 +672,15 @@ describe('push claim PostgREST adapter and CLI', () => {
       [41, 43],
     );
     expect(String(fetchImpl.mock.calls[1][0])).toContain('subscription_id=in.(41,43)');
+    // Sky Alerts read only browsers that chose them; the Moon journal's
+    // reminders read only browsers that chose those.
+    expect(String(fetchImpl.mock.calls[0][0])).toContain('&sky_alerts=is.true&');
+    expect(String(fetchImpl.mock.calls[0][0])).not.toContain('lunation_reminders');
+    await readSubscriptions(fetchImpl, 'https://project.supabase.co', 'service-key', 50, [], 'lunation');
+    expect(String(fetchImpl.mock.calls[2][0])).toContain('&lunation_reminders=is.true&');
+    expect(String(fetchImpl.mock.calls[2][0])).not.toContain('sky_alerts');
+    await expect(readSubscriptions(fetchImpl, 'https://project.supabase.co', 'service-key', 50, [], 'other'))
+      .rejects.toThrow(/Unknown push topic/u);
   });
 
   it('hard-gates real delivery to the enabled schedule or an exact test list', () => {

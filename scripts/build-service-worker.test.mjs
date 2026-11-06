@@ -269,6 +269,23 @@ describe('offline service worker posture', () => {
       .toEqual(publication.timeline.map((event) => event.path));
   });
 
+  it('shows a Moon journal reminder that opens the journal', async () => {
+    const worker = runWorker(await builtWorker(true));
+    const handler = worker.handlers.get('push');
+
+    await dispatchPush(handler, {
+      title: 'New Moon in Scorpio today',
+      body: 'Exact at 07:02 UTC. Your journal question is waiting.',
+      url: '/moon-journal/',
+    });
+    await dispatchPush(handler, { title: 'Title', body: 'Body', url: '/moon-journal/entries?id=1' });
+
+    expect(worker.showNotification).toHaveBeenCalledTimes(1);
+    const [title, options] = worker.showNotification.mock.calls[0];
+    expect(title).toBe('New Moon in Scorpio today');
+    expect(options.data.url).toBe('/moon-journal/');
+  });
+
   it('opens validated event destinations and fails closed on invalid click data', async () => {
     const worker = runWorker(await builtWorker(true));
     const handler = worker.handlers.get('notificationclick');

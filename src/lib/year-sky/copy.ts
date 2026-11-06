@@ -1,7 +1,9 @@
 /**
- * The words of "Your 2027 sky", one object per language. English is the only
- * edition so far; another language adds its own object here (and its route),
- * and every reader falls back to English until it does. Engine-free.
+ * The words of "Your 2027 sky", one object per language. English lives here;
+ * Spanish, Portuguese, French and Italian live in copy-{es,pt,fr,it}.ts and
+ * register themselves with defineYearSkyWords when imported, so a page (and
+ * its island) carries only the language it shows. Every reader falls back to
+ * English for a language that has not registered. Engine-free.
  *
  * House rules for this copy: plain, warm and dry, in the register of
  * src/lib/interpretations.ts; no em or en dashes; no health, money, betting
@@ -22,6 +24,8 @@ export interface YearSkyWords {
   pageDescription: string;
   heroTitle: string;
   heroLede: string;
+  /** Shown without JavaScript, under the chooser. */
+  noscript: string;
   chooserTitle: string;
   chooserSaved: string;
   savedLede: (name: string | null) => string;
@@ -234,6 +238,7 @@ const en: YearSkyWords = {
   pageDescription: 'The eclipses, slow planets, retrogrades and returns of 2027 that touch your own birth chart, month by month, with a share card and a calendar file made on your device.',
   heroTitle: 'Your 2027 sky',
   heroLede: 'The big moments of 2027 that touch your own chart: eclipses, the slow planets, Venus and Mars over your Sun, your solar return, and the retrogrades that land on your placements. Everything is worked out in this browser.',
+  noscript: 'Reading the year for your chart needs JavaScript. The shared sky below works without it.',
   chooserTitle: 'Read it for your chart',
   chooserSaved: 'Saved chart',
   savedLede: (name) => (name ? `From your saved chart, ${name}.` : 'Pick one of your saved charts.'),
@@ -387,10 +392,17 @@ const en: YearSkyWords = {
 
 const WORDS: Partial<Record<CatalogLocale, YearSkyWords>> = { en };
 
-/** The edition's words; English until a language has its own. */
+/** Called once by each language's copy module (copy-es.ts and the rest). */
+export function defineYearSkyWords(locale: CatalogLocale, words: YearSkyWords): YearSkyWords {
+  WORDS[locale] = words;
+  return words;
+}
+
+/** The edition's words; English until a language's module has registered. */
 export function yearSkyWords(locale: CatalogLocale = 'en'): YearSkyWords {
   return WORDS[locale] ?? en;
 }
 
-/** Locales with their own words (and so their own route, once one is added). */
-export const YEAR_SKY_LOCALES = Object.keys(WORDS) as CatalogLocale[];
+/** Locales with their own words and route: English and the four translations. */
+export const YEAR_SKY_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly CatalogLocale[];
+export type YearSkyLocale = typeof YEAR_SKY_LOCALES[number];

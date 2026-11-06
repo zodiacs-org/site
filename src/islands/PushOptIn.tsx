@@ -3,8 +3,10 @@ import type { ReleasedLocale as Locale } from '../lib/i18n';
 import { claimA2hsHint } from '../lib/a2hs';
 import {
   claimPushPrompt,
+  fetchTopicStatus,
   isIosDevice,
   isStandaloneDisplay,
+  leavePushTopic,
   readPushPreference,
   setPushPreference,
   vapidKeyBytes,
@@ -38,6 +40,20 @@ async function currentSubscription(): Promise<PushSubscription | null> {
   return registration?.pushManager.getSubscription() ?? null;
 }
 
+/**
+ * A browser subscription can exist for the Moon journal's reminders alone,
+ * so its presence is not proof that Sky Alerts are on. Ask the server; an
+ * answer without topics, or no answer, keeps the old reading (on), so a
+ * failed check never offers a second enrollment to an existing subscriber.
+ */
+async function skyAlertsActive(subscription: PushSubscription): Promise<boolean> {
+  try {
+    return (await fetchTopicStatus(subscription.endpoint))?.sky ?? true;
+  } catch {
+    return true;
+  }
+}
+
 export default function PushOptIn({ locale = 'en', context = 'chart-save' }: Props) {
   const copy = PUSH_COPY[locale];
   const [view, setView] = useState<View>('hidden');
@@ -52,7 +68,10 @@ export default function PushOptIn({ locale = 'en', context = 'chart-save' }: Pro
       setProfileStatusKnown(false);
       setProfileOperationError(false);
     }
-    void currentSubscription().then((subscription) => {
+    void currentSubscription().then(async (browserSubscription) => {
+      const subscription = browserSubscription && await skyAlertsActive(browserSubscription)
+        ? browserSubscription
+        : null;
       if (!live) return;
       if (context === 'profile') setProfileStatusKnown(true);
       if (subscription) {
@@ -156,7 +175,8 @@ export default function PushOptIn({ locale = 'en', context = 'chart-save' }: Pro
       // offers the appropriate retry action.
       setProfileOperationError(true);
       try {
-        const subscription = await currentSubscription();
+        const browserSubscription = await currentSubscription();
+        const subscription = browserSubscription && await skyAlertsActive(browserSubscription);
         setProfileStatusKnown(true);
         if (subscription) {
           setPushPreference(localStorage, 'subscribed');
@@ -179,16 +199,11 @@ export default function PushOptIn({ locale = 'en', context = 'chart-save' }: Pro
     try {
       const subscription = await currentSubscription();
       if (subscription) {
-        // Delete the server record first so a provider failure never strands
-        // an endpoint that the browser can no longer identify for retry.
-        const response = await fetch('/api/push/subscribe', {
-          method: 'DELETE',
-          credentials: 'same-origin',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ endpoint: subscription.endpoint }),
-        });
-        if (!response.ok) throw new Error(`unsubscribe endpoint ${response.status}`);
-        if (!await subscription.unsubscribe()) throw new Error('browser unsubscribe failed');
+        // Clear the server record first so a provider failure never strands
+        // an endpoint that the browser can no longer identify for retry. The
+        // browser subscription goes only when no other stream still uses it.
+        const shared = await leavePushTopic(subscription.endpoint, 'sky');
+        if (!shared && !await subscription.unsubscribe()) throw new Error('browser unsubscribe failed');
       }
       setPushPreference(localStorage, 'dismissed');
       setView(context === 'profile' ? 'offer' : 'hidden');

@@ -275,11 +275,12 @@ where endpoint_hash = encode(
 );
 delete from public.push_subscriptions
 where endpoint = 'https://push.test/concurrency-guard';
-insert into public.push_subscriptions (endpoint, p256dh, auth, lang) values (
+insert into public.push_subscriptions (endpoint, p256dh, auth, lang, sky_alerts) values (
   'https://push.test/concurrency-guard',
   'public_concurrency_guard',
   'auth_concurrency_guard',
-  'en'
+  'en',
+  true
 );
 
 select dblink_connect(

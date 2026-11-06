@@ -1,7 +1,8 @@
 /**
- * Every word the Moon journal prints, keyed by locale so another language can
- * be added as one more entry without touching the island. English is the only
- * released locale; the other entries are to be written, not machine filled.
+ * Every word the Moon journal prints, keyed by locale. English lives here;
+ * Spanish, Portuguese, French and Italian live in copy-{es,pt,fr,it}.ts and
+ * register themselves with defineMoonJournalCopy when imported, so each page
+ * and its island carry only their own language.
  *
  * Voice: plain, warm, dry and specific. The prompts are questions, never
  * predictions, and each one is written for the sign the lunation falls in.
@@ -9,10 +10,15 @@
  */
 import type { SignSlug } from './types';
 
-export type MoonJournalLocale = 'en';
+export const MOON_JOURNAL_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const;
+export type MoonJournalLocale = typeof MOON_JOURNAL_LOCALES[number];
 export type LunationPhase = 'new' | 'full';
 
 export interface MoonJournalCopy {
+  /** BCP 47 tag for dates. */
+  dateLocale: string;
+  /** The page's address, for the calendar file's links. */
+  pageUrl: string;
   /** The prompt for each phase, in each sign the Moon can be in. */
   prompts: Record<LunationPhase, Record<SignSlug, string>>;
   phaseName: Record<LunationPhase, string>;
@@ -27,6 +33,8 @@ export interface MoonJournalCopy {
     moonIn: (sign: string) => string;
     nextNew: string;
     nextFull: string;
+    /** The next new or full Moon: its date, then its sign. */
+    nextIn: (date: string, sign: string) => string;
     promptHeading: string;
     promptFor: (title: string, date: string) => string;
     lastCycleHeading: (phase: string) => string;
@@ -65,6 +73,8 @@ export interface MoonJournalCopy {
 }
 
 const EN: MoonJournalCopy = {
+  dateLocale: 'en-US',
+  pageUrl: 'https://zodiacs.org/moon-journal/',
   prompts: {
     new: {
       aries: 'What are you starting, and what is the first small move you can make this week?',
@@ -105,6 +115,7 @@ const EN: MoonJournalCopy = {
     moonIn: (sign) => `Moon in ${sign}`,
     nextNew: 'Next new Moon',
     nextFull: 'Next full Moon',
+    nextIn: (date, sign) => `${date}, in ${sign}`,
     promptHeading: 'This cycle’s question',
     promptFor: (title, date) => `For the ${title}, ${date}`,
     lastCycleHeading: (phase) => `What you wrote at the last ${phase}`,
@@ -142,4 +153,44 @@ const EN: MoonJournalCopy = {
   },
 };
 
-export const MOON_JOURNAL_COPY: Readonly<Record<MoonJournalLocale, MoonJournalCopy>> = Object.freeze({ en: EN });
+/**
+ * The opt-in reminder's words. English only, like the reminder itself: the
+ * translated journals do not offer it, so their copy carries none of this.
+ */
+export const MOON_JOURNAL_REMINDER_COPY = Object.freeze({
+  ui: {
+    remindHeading: 'Reminders',
+    remindBody: 'A notification on the day of each new and full Moon, with a link back to this page. Never more than one a day, counting sky alerts.',
+    remindPrivacy: 'Turning them on stores this browser’s push subscription with us, and nothing you write here.',
+    remindAccept: 'Remind me at each new and full Moon',
+    remindBusy: 'Turning on…',
+    remindOn: 'Reminders are on for this browser.',
+    remindOff: 'Turn off reminders',
+    remindDenied: 'Notifications are blocked in this browser, so reminders can’t reach you. Your browser’s site settings can change that whenever you like.',
+    remindError: 'Reminders are unavailable right now. Try again later.',
+    remindUnsupported: 'This browser can’t receive notifications from the site, so reminders are not available here.',
+    remindIos: 'On iPhone and iPad, reminders work only after you add Zodiacs to your Home Screen. Open the journal from there to turn them on.',
+  },
+  /** The notification sent on a lunation day: 'New Moon in Scorpio today'. */
+  reminder: {
+    title: (lunationTitle: string) => `${lunationTitle} today`,
+    body: (utcTime: string) => `Exact at ${utcTime} UTC. Your journal question is waiting.`,
+  },
+});
+export type MoonJournalReminderUi = typeof MOON_JOURNAL_REMINDER_COPY.ui;
+
+/** English, frozen; the registry below adds the other languages as their modules load. */
+export const MOON_JOURNAL_COPY: Readonly<{ en: MoonJournalCopy }> = Object.freeze({ en: EN });
+
+const REGISTRY: Partial<Record<MoonJournalLocale, MoonJournalCopy>> = { en: EN };
+
+/** Called once by each language's copy module (copy-es.ts and the rest). */
+export function defineMoonJournalCopy(locale: MoonJournalLocale, copy: MoonJournalCopy): MoonJournalCopy {
+  REGISTRY[locale] = copy;
+  return copy;
+}
+
+/** A language's words; English until that language's module has registered. */
+export function moonJournalCopy(locale: MoonJournalLocale = 'en'): MoonJournalCopy {
+  return REGISTRY[locale] ?? EN;
+}

@@ -1,15 +1,8 @@
 {
   "version": 1,
-  "id": "chinese-zodiac-mandarin-editions-2026-10-26",
-  "baseCommit": "922924ee00a3574cd1a2d58dbe62702715630a41",
+  "id": "new-pages-translations-2026-11-06",
+  "baseCommit": "980023c8760bdfb0a5e48b902ae6111c33ed07b6",
   "protectedPaths": [
-    "src/lib/i18n/core.ts",
-    "src/lib/i18n/english-only.ts",
-    "src/lib/i18n/index.test.ts",
-    "src/lib/i18n/index.ts",
-    "src/lib/i18n/section-signs.ts",
-    "src/lib/i18n/ui/server.ts",
-    "src/lib/i18n/ui/zh-hans.ts",
-    "src/lib/i18n/ui/zh-hant.ts"
+    "src/lib/i18n/index.ts"
   ]
 }

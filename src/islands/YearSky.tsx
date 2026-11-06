@@ -49,6 +49,8 @@ interface Props {
   retrogrades: SkyRetrograde[];
   /** The shared sky's moments, for the calendar file. */
   general: YearMoment[];
+  /** This page's own path, for the calendar file's links (the server localizes it). */
+  pagePath?: string;
 }
 
 interface Result {
@@ -72,7 +74,7 @@ function savedNatal(chart: SavedChart): YearSkyNatal {
   };
 }
 
-export default function YearSky({ locale = 'en', year, eclipses, ingresses, retrogrades, general }: Props) {
+export default function YearSky({ locale = 'en', year, eclipses, ingresses, retrogrades, general, pagePath = EDITION_PATH }: Props) {
   const w = yearSkyWords(locale);
   const engine = useEngine();
   const { profile } = useProfile();
@@ -167,7 +169,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
         locale,
         timeZone: readerTimeZone(),
         generatedAt: new Date(),
-        pageUrl: `https://zodiacs.org${localizePath(locale, EDITION_PATH)}`,
+        pageUrl: `https://zodiacs.org${pagePath}`,
       });
       const front = ringFront(natal.bodies, natal.timeKnown);
       setResult({ personal, calendar, front });

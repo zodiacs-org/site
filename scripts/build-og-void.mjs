@@ -31,6 +31,7 @@
  *   npm run data:og -- --only-terminal-card # Terminal's v7 card
  *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
  *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese
+ *   npm run data:og -- --only-year-sky-card # Your 2027 sky's card (year-sky/v1, JPEG)
  *   npm run data:og -- --review-people-identities # reviewed identity cards, artifacts only
  *
  * Deterministic and offline: fonts and disc art are inlined as data:
@@ -581,6 +582,37 @@ function fitArtNames() {
       line.style.fontSize = `${size}px`;
     }
   }
+}
+
+/**
+ * Your 2027 sky's card (OG_EN.yearSky): the page opens on its headline and
+ * lede with no art, so the card is the headline in the display serif and a
+ * plain line on the left, and on the right the year's wheel, the twelve
+ * pastel sign discs (the 400px tier, drawn at YEAR_SKY_DISC) on a hairline
+ * orbit, Aries at the top. The footer carries the brand's own lockup.
+ */
+const YEAR_SKY_WHEEL = 432;
+const YEAR_SKY_DISC = 78;
+function yearSkyCard(copy = OG_EN.yearSky) {
+  const r = (YEAR_SKY_WHEEL - YEAR_SKY_DISC) / 2;
+  const c = YEAR_SKY_WHEEL / 2;
+  const discs = SIGNS.map((s, i) => {
+    const a = (i / 12) * 2 * Math.PI - Math.PI / 2;
+    const x = c + r * Math.cos(a) - YEAR_SKY_DISC / 2;
+    const y = c + r * Math.sin(a) - YEAR_SKY_DISC / 2;
+    return `<img src="${ART.icons[s.slug]}" width="${YEAR_SKY_DISC}" height="${YEAR_SKY_DISC}" alt=""
+      style="position: absolute; left: ${x.toFixed(1)}px; top: ${y.toFixed(1)}px; width: ${YEAR_SKY_DISC}px; height: ${YEAR_SKY_DISC}px; display: block;" />`;
+  }).join('');
+  const orbit = (inset, alpha) => `<div style="position: absolute; inset: ${inset}px; border-radius: 50%; border: 1px solid rgba(198, 204, 218, ${alpha});"></div>`;
+  const body = `
+  <div style="position: absolute; left: 88px; top: 0; bottom: 96px; width: 560px; display: flex; flex-direction: column; justify-content: center; z-index: 2;">
+    <div class="display" style="font-size: 112px; line-height: 0.98; letter-spacing: -0.01em;">${escapeHtml(copy.title)}</div>
+    <div style="margin-top: 28px; font-size: 29px; line-height: 1.38; letter-spacing: -0.01em; color: ${INK2}; max-width: 22ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>
+  <div style="position: absolute; right: 88px; top: ${Math.round((534 - YEAR_SKY_WHEEL) / 2) + 4}px; width: ${YEAR_SKY_WHEEL}px; height: ${YEAR_SKY_WHEEL}px;">
+    ${orbit(YEAR_SKY_DISC / 2, 0.16)}${orbit(YEAR_SKY_DISC + 44, 0.08)}${discs}
+  </div>`;
+  return shell(body, `zodiacs.org${copy.path}`);
 }
 
 const LOTS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -1255,6 +1287,22 @@ if (process.argv.includes('--only-localized-art-cards')) {
   if (written > LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES) throw new Error(`localized art cards: ${written} bytes, over the ${LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES}-byte budget`);
   await browser.close();
   console.log(`Done: ${cards.length} localized art cards, ${(written / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
+// Your 2027 sky's card (2026-11-06), a JPEG under the art cards' budget. Its
+// own folder, so the v8 family stays exactly as published.
+if (process.argv.includes('--only-year-sky-card')) {
+  console.log('Rendering the Your 2027 sky card…');
+  for (const s of SIGNS) ART.icons[s.slug] = await b64(`public/assets/zodiac-icons/400/${s.slug}.webp`, 'image/webp');
+  const raw = await capture(yearSkyCard());
+  await browser.close();
+  const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+  if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${OG_EN.yearSky.image}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const output = resolve(root, `public${OG_EN.yearSky.image}`);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, bytes);
+  console.log(`Done: ${OG_EN.yearSky.image}, ${(bytes.length / 1024).toFixed(0)}KB.`);
   process.exit(0);
 }
 

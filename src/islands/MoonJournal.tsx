@@ -1,8 +1,10 @@
 /**
  * The Moon journal: a private notebook tied to the new and full Moons, kept
- * only in this browser. No account, no request, no analytics event: the
- * notes are read from and written to localStorage on this device, and leave it
- * only as a file the visitor downloads.
+ * only in this browser. No account, no request with a note, no analytics
+ * event: the notes are read from and written to localStorage on this device,
+ * and leave it only as a file the visitor downloads. The one request the page
+ * can make is the opt-in reminder (MoonJournalReminder, in builds with push
+ * on), which sends the browser's push subscription and nothing written here.
  *
  * The page renders from its build time first, with every box sized, and the
  * island then moves to the device's own clock and reads saved notes; the
@@ -10,14 +12,15 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { moonIllumination, moonLongitude, moonPhaseAngle, moonPhaseName } from '../lib/engine/lite';
-import { MOON_JOURNAL_COPY, type MoonJournalLocale } from '../lib/moon-journal/copy';
+import { moonJournalCopy, type MoonJournalLocale } from '../lib/moon-journal/copy';
 import { cycleAt, journalMarkdown, lunationCalendar, lunationKey, promptFor } from '../lib/moon-journal/cycle';
 import {
-  MAX_ENTRY_LENGTH, browserStorage, deleteEverything, probeStorage, readEntries, removeEntry,
+  MAX_ENTRY_LENGTH, MOON_JOURNAL_KEY, browserStorage, deleteEverything, probeStorage, readEntries, removeEntry,
   upsertEntry, writeEntries, type JournalStorage, type StorageState,
 } from '../lib/moon-journal/store';
 import { SIGN_SLUGS, type JournalEntry, type Lunation, type SignSlug } from '../lib/moon-journal/types';
 import { downloadCalendarFile } from '../lib/ical-download';
+import MoonJournalReminder, { JOURNAL_REMINDERS_ENABLED } from './MoonJournalReminder';
 
 interface Props {
   lunations: Lunation[];
@@ -25,6 +28,8 @@ interface Props {
   /** Build time, so the first render matches the server's. */
   builtAt: string;
   locale?: MoonJournalLocale;
+  /** Moon phase names in the page's language, by the engine's English name; English when left out. */
+  phaseNames?: Record<string, string>;
 }
 
 function Disc({ angle }: { angle: number }) {
@@ -65,13 +70,16 @@ function localDayStamp(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-export default function MoonJournal({ lunations, signNames, builtAt, locale = 'en' }: Props) {
-  const copy = MOON_JOURNAL_COPY[locale];
+export default function MoonJournal({ lunations, signNames, builtAt, locale = 'en', phaseNames }: Props) {
+  const copy = moonJournalCopy(locale);
   const ui = copy.ui;
   const [nowMs, setNowMs] = useState(() => Date.parse(builtAt));
   const [onDevice, setOnDevice] = useState(false);
   const [storageState, setStorageState] = useState<StorageState>('ok');
   const storageRef = useRef<JournalStorage | null>(null);
+  // True after a write failed, until one succeeds: the list on screen is then
+  // ahead of the stored copy.
+  const unsaved = useRef(false);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [draft, setDraft] = useState('');
   const [status, setStatus] = useState('');
@@ -92,7 +100,17 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
     setEntries(readEntries(storageRef.current));
     setOnDevice(true);
     const timer = window.setInterval(() => setNowMs(Date.now()), 60_000);
-    return () => window.clearInterval(timer);
+    // Notes saved in another tab of this site show up here too.
+    const onStorage = (event: StorageEvent) => {
+      // A list still holding an unsaved change is kept until it is written.
+      if (unsaved.current) return;
+      if (event.key === null || event.key === MOON_JOURNAL_KEY) setEntries(readEntries(storageRef.current));
+    };
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('storage', onStorage);
+    };
   }, []);
 
   const cycle = useMemo(() => cycleAt(lunations, nowMs), [lunations, nowMs]);
@@ -105,10 +123,16 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
 
   // Load the saved note for this cycle into the editor once notes are read.
   const loadedFor = useRef<string | null>(null);
+  const loadedText = useRef('');
   useEffect(() => {
     if (!onDevice || !currentId || loadedFor.current === currentId) return;
     loadedFor.current = currentId;
-    setDraft(currentEntry?.text ?? '');
+    const saved = currentEntry?.text ?? '';
+    // A new or full Moon can pass while the page is open. Text the visitor is
+    // still writing is kept rather than replaced; only an untouched editor
+    // (empty, or the note that was loaded into it) moves to the new cycle.
+    setDraft((typed) => (typed.trim() === '' || typed === loadedText.current ? saved : typed));
+    loadedText.current = saved;
   }, [onDevice, currentId, currentEntry]);
 
   const now = new Date(nowMs);
@@ -116,20 +140,30 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
   const illum = Math.round(moonIllumination(now) * 100);
   const moonSign = signNames[signOfLongitude(moonLongitude(now))];
   const zone = onDevice ? undefined : 'UTC';
-  const dayFormat = (iso: string) => new Intl.DateTimeFormat('en-US', {
+  const dayFormat = (iso: string) => new Intl.DateTimeFormat(copy.dateLocale, {
     month: 'long', day: 'numeric', year: 'numeric', ...(zone ? { timeZone: zone } : {}),
   }).format(new Date(iso));
-  const dayTimeFormat = (iso: string) => new Intl.DateTimeFormat('en-US', {
+  const dayTimeFormat = (iso: string) => new Intl.DateTimeFormat(copy.dateLocale, {
     weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
     ...(zone ? { timeZone: zone, timeZoneName: 'short' } : {}),
   }).format(new Date(iso));
   const phaseLabel = (type: 'new' | 'full') => copy.phaseInline[type];
   const signName = (slug: string) => signNames[slug] ?? slug;
 
-  const persist = (next: JournalEntry[]): boolean => {
+  /**
+   * Applies a change to the notes as they are stored right now (another tab
+   * may have saved since this page read them), so a stale page never writes
+   * an old list over newer notes.
+   */
+  const persist = (change: (list: JournalEntry[]) => JournalEntry[]): boolean => {
+    // After a write that failed, the list on screen holds changes the stored
+    // copy lacks; build on it, so freeing space never drops the unsaved note.
+    const base = storageState === 'ok' && !unsaved.current ? readEntries(storageRef.current) : entries;
+    const next = change(base);
     setEntries(next);
     if (storageState !== 'ok') return false;
     const result = writeEntries(storageRef.current, next);
+    unsaved.current = !result.ok;
     if (!result.ok) {
       setStatus(result.reason === 'full' ? ui.storageFull : ui.storageBlocked);
       return false;
@@ -139,7 +173,7 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
 
   const saveCurrent = () => {
     if (!current || !currentId) return;
-    const next = upsertEntry(entries, {
+    const kept = persist((list) => upsertEntry(list, {
       id: currentId,
       phase: current.type,
       sign: current.sign,
@@ -147,21 +181,32 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
       prompt: currentEntry?.prompt ?? promptFor(current, locale),
       text: draft,
       savedAt: new Date().toISOString(),
-    });
-    const kept = persist(next);
-    if (kept) setStatus(ui.saved);
+    }));
+    if (kept) {
+      loadedText.current = draft;
+      setStatus(ui.saved);
+    }
     else if (storageState !== 'ok') setStatus(ui.savedNotKept);
   };
 
   const saveEdit = (entry: JournalEntry) => {
-    const next = upsertEntry(entries, { ...entry, text: editText, savedAt: new Date().toISOString() });
-    persist(next);
+    const kept = persist((list) => upsertEntry(list, { ...entry, text: editText, savedAt: new Date().toISOString() }));
+    if (storageState !== 'ok') {
+      setEditId(null);
+      setToolStatus(ui.savedNotKept);
+      return;
+    }
+    if (!kept) {
+      // Storage refused the write (full): keep the editor open with the text.
+      setToolStatus(ui.storageFull);
+      return;
+    }
     setEditId(null);
-    setToolStatus(storageState === 'ok' ? ui.saved : ui.savedNotKept);
+    setToolStatus(ui.saved);
   };
 
   const deleteOne = (id: string) => {
-    persist(removeEntry(entries, id));
+    persist((list) => removeEntry(list, id));
     setConfirmId(null);
     if (id === currentId) setDraft('');
   };
@@ -178,7 +223,7 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
   const downloadJournal = () => {
     const today = new Date();
     const text = journalMarkdown(entries, {
-      downloadedOn: new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(today),
+      downloadedOn: new Intl.DateTimeFormat(copy.dateLocale, { month: 'long', day: 'numeric', year: 'numeric' }).format(today),
       formatDay: dayFormat,
       signName,
       locale,
@@ -204,18 +249,18 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
             <div class="mj-now__phase">
               <Disc angle={angle} />
               <div>
-                <p class="mj-now__name" data-mj-phase>{moonPhaseName(now)}</p>
+                <p class="mj-now__name" data-mj-phase>{phaseNames?.[moonPhaseName(now)] ?? moonPhaseName(now)}</p>
                 <p class="mj-now__meta">{ui.illuminated(illum)} · {ui.moonIn(moonSign ?? '')}</p>
               </div>
             </div>
             <dl class="mj-now__next">
               <div>
                 <dt>{ui.nextNew}</dt>
-                <dd data-mj-next-new>{cycle.nextNew ? `${dayTimeFormat(cycle.nextNew.at)}, in ${signName(cycle.nextNew.sign)}` : ''}</dd>
+                <dd data-mj-next-new>{cycle.nextNew ? ui.nextIn(dayTimeFormat(cycle.nextNew.at), signName(cycle.nextNew.sign)) : ''}</dd>
               </div>
               <div>
                 <dt>{ui.nextFull}</dt>
-                <dd data-mj-next-full>{cycle.nextFull ? `${dayTimeFormat(cycle.nextFull.at)}, in ${signName(cycle.nextFull.sign)}` : ''}</dd>
+                <dd data-mj-next-full>{cycle.nextFull ? ui.nextIn(dayTimeFormat(cycle.nextFull.at), signName(cycle.nextFull.sign)) : ''}</dd>
               </div>
             </dl>
           </div>
@@ -320,6 +365,8 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
           </ol>
         )}
       </section>
+
+      {JOURNAL_REMINDERS_ENABLED && locale === 'en' && <MoonJournalReminder />}
 
       <section class="mj-tools" aria-labelledby="mj-tools-head">
         <h2 id="mj-tools-head" class="mj-h">{ui.toolsHeading}</h2>

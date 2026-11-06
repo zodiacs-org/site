@@ -1,7 +1,9 @@
 /**
- * The sign-season copy by locale. English is the only locale so far; another
- * locale adds its SeasonCopy table and SeasonUi beside English here, and the
- * pages read through these functions.
+ * The sign-season copy by locale: English (copy-en.ts) and the Spanish,
+ * Portuguese, French and Italian translations (copy-{es,pt,fr,it}.ts), each
+ * a SeasonCopy table, a SeasonUi and the house ordinals. The pages read
+ * through these functions. Everything here renders at build time; the
+ * pages' scripts get plain strings, so no table reaches the browser.
  */
 import { SIGNS } from '../signs';
 import { readingConfidence, readingConfidenceText } from '../../ai-tools/reading-confidence';
@@ -13,18 +15,26 @@ import {
   SEASON_HOUSE_ORDINALS_EN,
   SEASON_UI_EN,
   type SeasonCopy,
+  type SeasonFacts,
   type SeasonUi,
 } from './copy-en';
+import { SEASON_COPY_ES, SEASON_HOUSE_ORDINALS_ES, SEASON_UI_ES } from './copy-es';
+import { SEASON_COPY_PT, SEASON_HOUSE_ORDINALS_PT, SEASON_UI_PT } from './copy-pt';
+import { SEASON_COPY_FR, SEASON_HOUSE_ORDINALS_FR, SEASON_UI_FR } from './copy-fr';
+import { SEASON_COPY_IT, SEASON_HOUSE_ORDINALS_IT, SEASON_UI_IT } from './copy-it';
 import { solarHouse } from './windows';
 
-export type SeasonLocale = 'en';
-export type { SeasonCopy, SeasonUi };
+export const SEASON_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const;
+export type SeasonLocale = typeof SEASON_LOCALES[number];
+export type { SeasonCopy, SeasonFacts, SeasonUi };
 
 const COPY: Record<SeasonLocale, { seasons: Readonly<Record<string, SeasonCopy>>; ui: SeasonUi; ordinals: readonly string[] }> = {
   en: { seasons: SEASON_COPY_EN, ui: SEASON_UI_EN, ordinals: SEASON_HOUSE_ORDINALS_EN },
+  es: { seasons: SEASON_COPY_ES, ui: SEASON_UI_ES, ordinals: SEASON_HOUSE_ORDINALS_ES },
+  pt: { seasons: SEASON_COPY_PT, ui: SEASON_UI_PT, ordinals: SEASON_HOUSE_ORDINALS_PT },
+  fr: { seasons: SEASON_COPY_FR, ui: SEASON_UI_FR, ordinals: SEASON_HOUSE_ORDINALS_FR },
+  it: { seasons: SEASON_COPY_IT, ui: SEASON_UI_IT, ordinals: SEASON_HOUSE_ORDINALS_IT },
 };
-
-export const SEASON_LOCALES: readonly SeasonLocale[] = ['en'];
 
 /**
  * A season line names a Sun sign and no date, so it carries the reading

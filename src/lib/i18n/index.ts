@@ -173,8 +173,9 @@ function isLocalizedBirthdayPath(path: string): boolean {
 }
 
 /**
- * Rising-sign profiles, the four sky-calendar hubs and the 78 compatibility
- * pairs are translated for es, pt, fr and it (the same set as
+ * Rising-sign profiles, the four sky-calendar hubs, the 78 compatibility
+ * pairs, Your 2027 sky, the Moon journal and the sign-season hub with its
+ * twelve season pages are translated for es, pt, fr and it (the same set as
  * PROGRAMMATIC_ROUTE_LOCALES); Russian links to the English pages.
  *
  * Answered on the server only: every link to these pages is server-rendered,
@@ -191,7 +192,9 @@ function isTranslatedFamilyPath(path: string): boolean {
     const first = SIGN_SLUGS.indexOf(pair[1]);
     return first >= 0 && first <= SIGN_SLUGS.indexOf(pair[2]);
   }
-  return /^\/(?:full-moon-calendar|eclipses|mercury-retrograde|retrogrades)\/$/.test(path);
+  const season = /^\/seasons\/([a-z]+)\/$/.exec(path)?.[1];
+  if (season) return SIGN_SLUGS.includes(season);
+  return /^\/(?:full-moon-calendar|eclipses|mercury-retrograde|retrogrades|your-2027-sky|moon-journal|seasons)\/$/.test(path);
 }
 
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {

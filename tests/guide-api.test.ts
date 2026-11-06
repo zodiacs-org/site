@@ -1281,24 +1281,129 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
 });
 
 describe('Guide answer feedback', () => {
+  // A real signed Guide session cookie, as a browser holds after its first answer.
+  async function sessionCookie() {
+    const { guideAnonymousPrincipal } = await import('../src/lib/guide-server/security');
+    const issued = guideAnonymousPrincipal(request(), ENV.ASSISTANT_SALT);
+    return String(issued?.setCookie ?? '').split(';')[0];
+  }
+
+  function countingFetch(status = 204) {
+    return vi.fn(async (_url: string | URL | Request, _init?: RequestInit) => new Response(null, { status }));
+  }
+
   it.each([['feedback-up', 'up'], ['feedback-down', 'down']] as const)(
     'records only the %s vote, with no body, identity or content',
     async (action, vote) => {
       const reportFeedback = vi.fn();
       const authorizeTurn = vi.fn();
-      const handler = createGuideHandler({ env: ENV, reportFeedback, authorizeTurn: authorizeTurn as any });
+      const fetcher = countingFetch();
+      const pending: Promise<unknown>[] = [];
+      const handler = createGuideHandler({
+        env: ENV, reportFeedback, authorizeTurn: authorizeTurn as any, fetcher: fetcher as any,
+        waitUntil: (promise) => { pending.push(promise); },
+      });
       const response = new MockResponse();
-      await handler(request('', { query: { action } }), response);
+      const cookie = await sessionCookie();
+      const req = request('', { query: { action } });
+      req.headers.cookie = cookie;
+      await handler(req, response);
       expect(response.statusCode).toBe(204);
       expect(response.text).toBe('');
       expect(reportFeedback).toHaveBeenCalledExactlyOnceWith({ event: 'guide_feedback_v1', vote });
       expect(authorizeTurn).not.toHaveBeenCalled();
+      expect(await Promise.all(pending)).toEqual([true]);
     },
   );
 
-  it('refuses a vote from another origin and any other action', async () => {
+  it('answers a vote without a Guide session the same way but records nothing', async () => {
     const reportFeedback = vi.fn();
-    const handler = createGuideHandler({ env: ENV, reportFeedback });
+    const fetcher = countingFetch();
+    const waitUntil = vi.fn();
+    const handler = createGuideHandler({ env: ENV, reportFeedback, fetcher: fetcher as any, waitUntil });
+    const response = new MockResponse();
+    await handler(request('', { query: { action: 'feedback-up' } }), response);
+    expect(response.statusCode).toBe(204);
+    expect(response.headers.has('set-cookie')).toBe(false);
+    expect(reportFeedback).not.toHaveBeenCalled();
+    expect(waitUntil).not.toHaveBeenCalled();
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it('adds the vote to the daily count in Supabase, sending the vote and nothing else', async () => {
+    const fetcher = countingFetch();
+    const pending: Promise<unknown>[] = [];
+    const info = vi.spyOn(console, 'info').mockImplementation(() => {});
+    try {
+      const handler = createGuideHandler({ env: ENV, fetcher: fetcher as any, waitUntil: (promise) => { pending.push(promise); } });
+      const response = new MockResponse();
+      await handler(request('', {
+        query: { action: 'feedback-down' },
+        headers: {
+          origin: 'https://zodiacs.org', host: 'zodiacs.org', 'x-forwarded-host': 'zodiacs.org', 'x-forwarded-proto': 'https',
+          'sec-fetch-site': 'same-origin', cookie: `${await sessionCookie()}; private=1`, 'x-forwarded-for': '203.0.113.9',
+        },
+      }), response);
+      expect(response.statusCode).toBe(204);
+      await Promise.all(pending);
+      expect(fetcher).toHaveBeenCalledTimes(1);
+      const [url, init] = fetcher.mock.calls[0]!;
+      expect(url).toBe('https://example.supabase.co/rest/v1/rpc/guide_feedback_count_v1');
+      expect(init?.method).toBe('POST');
+      expect(JSON.parse(String(init?.body))).toEqual({ feedback_vote: 'down' });
+      expect(init?.headers).toEqual({
+        apikey: ENV.SUPABASE_SERVICE_ROLE_KEY,
+        authorization: `Bearer ${ENV.SUPABASE_SERVICE_ROLE_KEY}`,
+        'cache-control': 'no-store',
+        'content-type': 'application/json',
+      });
+      // The log line stays, and carries only the vote: no key, address, cookie or header.
+      expect(info.mock.calls).toEqual([[JSON.stringify({ event: 'guide_feedback_v1', vote: 'down' })]]);
+    } finally {
+      info.mockRestore();
+    }
+  });
+
+  it('still answers 204, quietly, when the count fails, cannot be kept or is not configured', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      const cases: [Record<string, unknown>, any][] = [
+        [ENV, countingFetch(500)],
+        [ENV, vi.fn(async () => { throw new TypeError('network down'); })],
+        [{ ...ENV, SUPABASE_SERVICE_ROLE_KEY: undefined }, countingFetch()],
+        [{ ...ENV, PUBLIC_SUPABASE_URL: 'http://insecure.example' }, countingFetch()],
+      ];
+      for (const [env, fetcher] of cases) {
+        const pending: Promise<unknown>[] = [];
+        const handler = createGuideHandler({ env, fetcher, reportFeedback: vi.fn(), waitUntil: (promise) => { pending.push(promise); } });
+        const response = new MockResponse();
+        const voted = request('', { query: { action: 'feedback-up' } });
+        voted.headers.cookie = await sessionCookie();
+        await handler(voted, response);
+        expect(response.statusCode).toBe(204);
+        expect(await Promise.all(pending)).toEqual([false]);
+      }
+      // A waitUntil with no request context to hold does not fail the vote either.
+      const fetcher = countingFetch();
+      const handler = createGuideHandler({ env: ENV, fetcher: fetcher as any, reportFeedback: vi.fn(), waitUntil: () => { throw new Error('no context'); } });
+      const response = new MockResponse();
+      const voted = request('', { query: { action: 'feedback-up' } });
+      voted.headers.cookie = await sessionCookie();
+      await handler(voted, response);
+      expect(response.statusCode).toBe(204);
+      expect(warn).not.toHaveBeenCalled();
+      expect(error).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+      error.mockRestore();
+    }
+  });
+
+  it('refuses a vote from another origin, any other action, and while Guide is switched off', async () => {
+    const reportFeedback = vi.fn();
+    const fetcher = countingFetch();
+    const handler = createGuideHandler({ env: ENV, reportFeedback, fetcher: fetcher as any, waitUntil: vi.fn() });
     const crossSite = new MockResponse();
     await handler(request('', {
       query: { action: 'feedback-up' },
@@ -1308,6 +1413,13 @@ describe('Guide answer feedback', () => {
     const other = new MockResponse();
     await handler(request('', { query: { action: 'feedback-sideways' } }), other);
     expect(other.statusCode).toBe(404);
+    const off = new MockResponse();
+    const stopped = createGuideHandler({ env: { ...ENV, GUIDE_KILL_SWITCH: '1' }, reportFeedback });
+    const req = request('', { query: { action: 'feedback-down' } });
+    req.headers.cookie = await sessionCookie();
+    await stopped(req, off);
+    expect(off.statusCode).toBe(503);
     expect(reportFeedback).not.toHaveBeenCalled();
+    expect(fetcher).not.toHaveBeenCalled();
   });
 });

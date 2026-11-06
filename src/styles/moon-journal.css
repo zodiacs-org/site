@@ -175,3 +175,11 @@
 .mj-tools .mj-h { margin-top: 18px; }
 .mj-tools__note { margin: 10px 0 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; max-width: 62ch; }
 .mj-noscript { margin: 18px 0 0; color: var(--muted); }
+
+/* ── Reminders (only in builds with push on) ──────────────────────── */
+.mj-remind { padding-top: 6px; border-top: 1px solid var(--hair-1); }
+.mj-remind .mj-h { margin-top: 18px; }
+.mj-remind__note { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.6; max-width: 62ch; }
+.mj-remind__row { min-block-size: 44px; }
+.mj-remind__blocked { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; max-width: 62ch; }
+.mj-remind .mj-status { min-block-size: 3.2em; }

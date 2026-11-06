@@ -209,6 +209,8 @@ function staticDescription(route, source, { ingresses, latestHoroscopeMonth }) {
   // The hub's own description names the season under way; the guide keeps its dateless half, so it never goes stale.
   // Your 2027 sky prints its description from its copy module (src/lib/year-sky/copy.ts, pageDescription).
   if (route === '/your-2027-sky/') return 'The eclipses, slow planets, retrogrades and returns of 2027 that touch your own birth chart, month by month, with a share card and a calendar file made on your device.';
+  // The Moon journal prints its description from src/lib/moon-journal/page-copy.ts (EN.description).
+  if (route === '/moon-journal/') return 'A private notebook for the new and full Moons, with a question for each one by sign. Kept only on your device, with no account.';
   if (route === '/seasons/') return 'When each of the twelve sign seasons starts and ends, and what each one asks of every sign.';
 
   const named = source.match(/const description\s*=\s*(['"])([\s\S]*?)\1\s*;/)?.[2];

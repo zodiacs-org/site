@@ -10,6 +10,7 @@ import ToolEmblem from '../../components/ToolEmblem.astro';
 import SynastryCalculator from '../../islands/SynastryCalculator';
 import { SIGNS } from '../../lib/signs';
 import { pairSlug } from '../../lib/compat';
+import { COMPAT_MY_SIGN_SCRIPT } from '../../lib/compat-my-sign';
 import '../../styles/calculator.css';
 
 const faq = [
@@ -110,18 +111,18 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
       <summary>
         <span>
           <strong>Browse all 78 sun-sign pairings</strong>
-          <small>Plain-language guides, without a score</small>
+          <small data-compat-library-note>Plain-language guides, without a score</small>
         </span>
         <span class="compat-library__toggle" aria-hidden="true">+</span>
       </summary>
-      <div class="compat-index">
+      <div class="compat-index" data-compat-index>
         {SIGNS.map((a, index) => (
-          <div class="compat-row" style={`--sign:${a.hue}`}>
+          <div class="compat-row" style={`--sign:${a.hue}`} data-sign={a.slug} data-name={a.name}>
             <a class="compat-row__sign" href={`/${a.slug}/`}>
               <SignIcon sign={a.slug} size={34} class="compat-row__icon" />
-              <span>{a.name}</span>
+              <span data-sign-name>{a.name}</span>
             </a>
-            <div class="compat-row__pairs">
+            <div class="compat-row__pairs" data-pairs>
               {SIGNS.slice(index).map((b) => (
                 <a class="compat-row__pair" href={`/compatibility/${pairSlug(a.slug, b.slug)}/`}>
                   {b.name}
@@ -132,6 +133,8 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
         ))}
       </div>
     </details>
+    {/* A Sun sign remembered on this device leads the library, before paint. */}
+    <script is:inline set:html={COMPAT_MY_SIGN_SCRIPT} />
   </section>
 
   <section class="section--tight container container--narrow">

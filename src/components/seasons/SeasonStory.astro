@@ -9,21 +9,33 @@
 import SignIcon from '../SignIcon.astro';
 import { SIGNS } from '../../lib/signs';
 import type { SeasonWindow } from '../../lib/seasons/clock';
-import { SEASON_READING_CONFIDENCE, seasonAsk, seasonCopy, seasonUi } from '../../lib/seasons/copy';
+import { signName } from '../../lib/signs';
+import { SEASON_READING_CONFIDENCE, seasonAsk, seasonCopy, seasonUi, type SeasonLocale } from '../../lib/seasons/copy';
+import type { SeasonStoryWords } from '../../lib/story-card';
 
 interface Props {
   slug: string;
   windows: SeasonWindow[];
+  locale?: SeasonLocale;
 }
 
-const { slug, windows } = Astro.props;
-const ui = seasonUi();
-const copy = seasonCopy(slug);
-const lines = Object.fromEntries(SIGNS.map((sign) => [sign.slug, seasonAsk(slug, sign.slug).text]));
+const { slug, windows, locale = 'en' } = Astro.props;
+const ui = seasonUi(locale);
+const copy = seasonCopy(slug, locale);
+const lines = Object.fromEntries(SIGNS.map((sign) => [sign.slug, seasonAsk(slug, sign.slug, locale).text]));
 const strings = {
   make: ui.cardMake,
   preparing: ui.cardPreparing,
   error: ui.cardError,
+};
+// English keeps the card's own words; another language hands its words over.
+const words: SeasonStoryWords | null = locale === 'en' ? null : {
+  dateLocale: ui.dateLocale,
+  title: ui.title(signName(slug, locale)),
+  kicker: ui.kicker(signName(slug, locale)),
+  range: ui.range('{from}', '{to}'),
+  forSign: Object.fromEntries(SIGNS.map((sign) => [sign.slug, ui.forSign(signName(sign, locale))])),
+  confidence: ui.confidence(Number.NaN).replace('NaN', '{value}'),
 };
 ---
 <section
@@ -36,6 +48,7 @@ const strings = {
   data-lines={JSON.stringify(lines)}
   data-confidence={SEASON_READING_CONFIDENCE}
   data-strings={JSON.stringify(strings)}
+  data-words={words ? JSON.stringify(words) : undefined}
 >
   <div class="season-story__preview" aria-hidden="true">
     <span class="season-story__placeholder" data-story-placeholder><SignIcon sign={slug} size={96} loading="lazy" /></span>
@@ -48,7 +61,7 @@ const strings = {
       <span>{ui.cardSign}</span>
       <select data-story-reader>
         <option value="">{ui.cardNoSign}</option>
-        {SIGNS.map((sign) => <option value={sign.slug}>{sign.name}</option>)}
+        {SIGNS.map((sign) => <option value={sign.slug}>{signName(sign, locale)}</option>)}
       </select>
     </label>
     <div class="season-story__actions">
@@ -70,6 +83,7 @@ const strings = {
   import type { SeasonWindow } from '../../lib/seasons/clock';
   import { seasonFocus } from '../../lib/seasons/clock';
   import { downloadPreparedChartCard, savePngBlob, type PreparedChartCard } from '../../lib/share-card-save';
+  import type { SeasonStoryWords } from '../../lib/story-card';
 
   function start(root: HTMLElement): void {
     const read = <T,>(key: string, fallback: T): T => {
@@ -81,6 +95,7 @@ const strings = {
     const windows = read<SeasonWindow[]>('windows', []);
     const lines = read<Record<string, string>>('lines', {});
     const strings = read<{ make: string; preparing: string; error: string }>('strings', { make: '', preparing: '', error: '' });
+    const words = root.dataset.words ? read<SeasonStoryWords | undefined>('words', undefined) : undefined;
     const reader = root.querySelector<HTMLSelectElement>('[data-story-reader]');
     const make = root.querySelector<HTMLButtonElement>('[data-story-make]');
     const makeLabel = root.querySelector<HTMLElement>('[data-story-make-label]');
@@ -93,8 +108,10 @@ const strings = {
     const privacy = status.textContent ?? '';
     let card: PreparedChartCard | null = null;
     let url: string | null = null;
+    let generation = 0;
 
     const reset = () => {
+      generation += 1;
       card = null;
       make.hidden = false;
       share.hidden = true;
@@ -109,6 +126,7 @@ const strings = {
       if (!focus) return;
       make.disabled = true;
       if (makeLabel) makeLabel.textContent = strings.preparing;
+      const mine = ++generation;
       try {
         const { prepareSeasonStoryCard } = await import('../../lib/story-card');
         const chosen = reader.value;
@@ -118,7 +136,9 @@ const strings = {
           end: focus.window.end,
           theme,
           reader: chosen && lines[chosen] ? { slug: chosen, line: lines[chosen], confidence } : null,
+          words,
         });
+        if (mine !== generation) { card = null; return; }
         if (url) URL.revokeObjectURL(url);
         url = URL.createObjectURL(card.blob);
         preview.src = url;

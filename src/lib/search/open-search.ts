@@ -6,6 +6,7 @@
  * page. English v1 — the index is EN-only by design (D9 froze ES).
  */
 import { searchIndex, type SearchEntry } from './score';
+import { GUIDE_OPEN_PROMPT_KEY } from '../assistant/guide-loader.mjs';
 
 const KIND_LABEL: Record<string, string> = {
   tool: 'Tool',
@@ -49,6 +50,13 @@ function askGuide(query: string) {
   if (!question) return;
   track('search_ask_guide');
   close();
+  if (!document.querySelector('script[data-guide-loader], [data-guide-launcher]')) {
+    // A page without Guide (the Moon journal, for one): carry the question in
+    // this tab's sessionStorage to the Guide home, whose loader drafts it.
+    try { sessionStorage.setItem(GUIDE_OPEN_PROMPT_KEY, question); } catch { /* the page still opens */ }
+    location.assign('/ask/#guide');
+    return;
+  }
   const opener = document.createElement('a');
   opener.href = '/ask/';
   opener.hidden = true;
