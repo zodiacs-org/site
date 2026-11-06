@@ -6,11 +6,11 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-11-06T17:39:07.310Z",
+  "capturedAt": "2026-11-06T18:33:07.126Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-11-06",
   "publicationCanonicalSha256": "3db2e125dbdafd5a7bcb19b7e922906cc588164e955a158e0548f52969edd139",
-  "templateSourceSha256": "a40ef6f142eb9243f161cd101ffa78f904d765fe59b0f6cb75e8bc06fe856c23",
+  "templateSourceSha256": "7c56f8281509eacc65e22a8e667fe84c7f6ffbfb863c3e9359fb586b756e375e",
   "renderPayloadSha256": {
     "daily": "ec73276221cbc3c2a178b2c43810825c70571a8ddc74c13e965bb2f747f8e73f",
     "dailyPublication": "adb73629d188b2daf7ef1cc638f4b0311ad8038a79aa0de5714834eef12429bd",
@@ -19,8 +19,8 @@
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-11-06T17:38:26.323Z",
-    "templateSourceSha256": "a40ef6f142eb9243f161cd101ffa78f904d765fe59b0f6cb75e8bc06fe856c23",
+    "builtAt": "2026-11-06T18:32:26.241Z",
+    "templateSourceSha256": "7c56f8281509eacc65e22a8e667fe84c7f6ffbfb863c3e9359fb586b756e375e",
     "dailyDate": "2026-11-06",
     "publicationCanonicalSha256": "3db2e125dbdafd5a7bcb19b7e922906cc588164e955a158e0548f52969edd139",
     "renderPayloadSha256": {
@@ -42,7 +42,7 @@
         "file": "today-360.png",
         "width": 360,
         "height": 11464,
-        "sha256": "997d3dc41123cfada52414ad60ae34f9dc8aa2800de853ab418aa6f53b389ae1"
+        "sha256": "7e1393be3d02d77d42f4b78a812fffff407186053fc1253b4e75907474fad41c"
       },
       "layout": {
         "clientWidth": 360,
@@ -66,7 +66,7 @@
         "file": "today-1280.png",
         "width": 1280,
         "height": 7849,
-        "sha256": "22f639ccf713f66fddf2f126d49c23b4c1c45a633bab87f0a02beb097485bf7d"
+        "sha256": "56e92e731e11b41612d5756930647aa261850bcd1bafbee0bd2b2b3b337488ec"
       },
       "layout": {
         "clientWidth": 1280,
@@ -234,7 +234,7 @@
         "file": "weekly-360.png",
         "width": 360,
         "height": 9591,
-        "sha256": "c396c0a6f0eea4e1baf7b388808a6ec74f71e788a882d3da8cfb80eb5eee9fd4"
+        "sha256": "2cb4a3aee53a26aab40cdae98d02ed5db313b5f89245503a2fe48e2034e314b9"
       },
       "layout": {
         "clientWidth": 360,
@@ -258,7 +258,7 @@
         "file": "weekly-1280.png",
         "width": 1280,
         "height": 6395,
-        "sha256": "c2ab0b7169041fb49dd0d74f9a7610710a9d5b350ca3b52881c86184a860c662"
+        "sha256": "4b469c8a52a4a8e2d010036beedaaf1b4cdccdce8314a5f5b17f627d832147d1"
       },
       "layout": {
         "clientWidth": 1280,
@@ -281,13 +281,13 @@
       "screenshot": {
         "file": "monthly-360.png",
         "width": 360,
-        "height": 9434,
-        "sha256": "a6882ebbbbd2744e3020438b74d1a39dc5d664f9b31bf381afff2aec565b394f"
+        "height": 9453,
+        "sha256": "7a04363a82bb9b9778a2faf9f0f6ea8f5b819353a9001942ec952060a4dd1bac"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
-        "scrollHeight": 9434,
+        "scrollHeight": 9453,
         "contentLength": 6181,
         "overlay": false,
         "guideLauncher": true
@@ -306,7 +306,7 @@
         "file": "monthly-1280.png",
         "width": 1280,
         "height": 6155,
-        "sha256": "72c9c536462100b4a913f7d59f8956fed7b3e759e808bbe08fa108fb62edfcbf"
+        "sha256": "9f7b77724aacdab42f33417a85d7a8d0b72c39b5b48c0996a8afc3c9f2c8de2a"
       },
       "layout": {
         "clientWidth": 1280,
@@ -426,7 +426,7 @@
         "file": "yearly-360.png",
         "width": 360,
         "height": 16837,
-        "sha256": "a74eca3df65512bc0f2ff3209e7743f97ad73194c8873e2327098e4bcb38a6a4"
+        "sha256": "2dad9fb500494510e18c54ecb986df927cae2524d7cb5f45659f34964ecb0b56"
       },
       "layout": {
         "clientWidth": 360,
@@ -450,7 +450,7 @@
         "file": "yearly-1280.png",
         "width": 1280,
         "height": 10907,
-        "sha256": "9424e9c15c9de04db4443cbf6750f288fd53807806eaaeaf7451f4fe08756fba"
+        "sha256": "e4568a246a6996c528e26d92b6af48c0db7119d89cde0f4648ab876cdf6d9cdf"
       },
       "layout": {
         "clientWidth": 1280,
