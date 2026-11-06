@@ -33,7 +33,7 @@ describe('daily publication operations', () => {
   });
 
   it('publishes through a pull request when the protected branch refuses a direct push', async () => {
-    const [daily, snapshot, transits, seasonClose, weeklyRecap, pulse, publisher] = await Promise.all([
+    const [daily, snapshot, transits, seasonClose, weeklyRecap, pulse, publisher, signPages] = await Promise.all([
       read('.github/workflows/daily-horoscopes.yml'),
       read('.github/workflows/registry-market-snapshot.yml'),
       read('.github/workflows/transits-monthly.yml'),
@@ -41,6 +41,7 @@ describe('daily publication operations', () => {
       read('.github/workflows/race-weekly-recap.yml'),
       read('.github/workflows/pulse-refresh.yml'),
       read('scripts/publish-through-pr.sh'),
+      read('scripts/build-sign-pages.mjs'),
     ]);
 
     // The direct push stays the first attempt (the fast path if a bypass
@@ -67,7 +68,36 @@ describe('daily publication operations', () => {
       expect(workflow, name).toContain('bash scripts/publish-through-pr.sh "$DEFAULT_BRANCH" "$VERIFIED_BASE_SHA"');
       expect(workflow, name).not.toMatch(/git push origin HEAD:\$\{\{/);
       expect(workflow, name).not.toMatch(/^\s*git push\s*$/m);
+      expect(workflow, name).toContain('ref: ${{ github.event.repository.default_branch }}');
+      expect(workflow, name).toMatch(/^concurrency:\n  group: .+\n  cancel-in-progress: false$/m);
+      expect(workflow, name).toMatch(/^    timeout-minutes: \d+$/m);
     }
+
+    // The Registry catalogue pages bake pulse.json and the market snapshot,
+    // and Site Check's legacy-wing drift gate rebuilds them, so a workflow
+    // that publishes either must regenerate the pages (which import sharp,
+    // hence npm ci) and commit them together with the data. Every publisher
+    // of those pages shares one queue, so none verifies against a base that
+    // another is about to move.
+    expect(signPages).toContain("readFile(resolve(root, 'public/assets/pulse.json')");
+    for (const [name, workflow] of Object.entries({ daily, snapshot, pulse })) {
+      const install = workflow.indexOf('run: npm ci');
+      const pages = workflow.indexOf('node scripts/build-sign-pages.mjs');
+      expect(install, name).toBeGreaterThan(-1);
+      expect(pages, name).toBeGreaterThan(install);
+      expect(workflow, name).toContain('group: daily-publication-');
+    }
+    for (const [name, workflow] of Object.entries({ snapshot, pulse })) {
+      expect(workflow.indexOf('node scripts/build-sign-pages.mjs'), name).toBeLessThan(
+        workflow.indexOf('git add $FILES'),
+      );
+      expect(workflow, name).toMatch(/FILES="[^"\n]* public\/registry"/);
+    }
+    expect(pulse.indexOf('run: node scripts/build-pulse.mjs')).toBeLessThan(
+      pulse.indexOf('run: node scripts/build-sign-pages.mjs'),
+    );
+    expect(pulse).toContain('FILES="public/assets/pulse.json public/registry"');
+    expect(pulse).toContain('group: daily-publication-${{ github.event.repository.default_branch }}');
 
     // A Trophy Hall engraving still waiting in its pull request means main is
     // behind; opening a second one could engrave the same season twice.
