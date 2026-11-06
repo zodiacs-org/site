@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'node:fs/promises';
-import { dirname, relative, resolve } from 'node:path';
+import { basename, dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
@@ -20,14 +20,14 @@ async function yamlFiles(directory, pattern, options = {}) {
     if (error.code === 'ENOENT') return [];
     throw error;
   });
-  return files.filter((file) => pattern.test(file)).sort().map((file) => resolve(directory, file));
+  return files.filter((file) => pattern.test(basename(file))).sort().map((file) => resolve(directory, file));
 }
 
 describe('GitHub Actions supply chain', () => {
   it('pins every external action to an immutable commit SHA', async () => {
     const files = [
       ...await yamlFiles(workflowsDirectory, /\.ya?ml$/u),
-      ...await yamlFiles(actionsDirectory, /(?:^|\/)action\.ya?ml$/u, { recursive: true }),
+      ...await yamlFiles(actionsDirectory, /^action\.ya?ml$/u, { recursive: true }),
     ];
     const violations = [];
     let externalActionCount = 0;
