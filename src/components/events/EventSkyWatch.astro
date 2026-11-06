@@ -1,0 +1,46 @@
+---
+/**
+ * What an event is in plain astronomy, what can be seen of it in the real
+ * sky, roughly where an eclipse can be seen, and a row of questions that open
+ * Guide with a draft. Static text from src/lib/events/watch.ts.
+ */
+import GuideQuickPrompts from '../GuideQuickPrompts.astro';
+import type { WatchPlan } from '../../lib/events/watch';
+
+interface Props {
+  plan: WatchPlan;
+  hue?: string;
+}
+
+const { plan, hue } = Astro.props;
+---
+<section
+  class="event-section event-sky reveal"
+  aria-labelledby="sky-head"
+  data-event-sky
+  style={hue ? `--sign:${hue}` : undefined}
+>
+  <h2 id="sky-head">In the real sky</h2>
+  <div class="event-sky__body prose">
+    {plan.astronomy.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+  <h3 class="event-sky__sub">What to look for</h3>
+  <ul class="event-sky__look">
+    {plan.lookFor.map((line) => <li>{line}</li>)}
+  </ul>
+  {plan.visibility && (
+    <>
+      <h3 class="event-sky__sub">Where it can be seen</h3>
+      <p class="event-sky__where" data-event-visibility>{plan.visibility}</p>
+    </>
+  )}
+</section>
+
+<section class="event-section event-ask reveal" aria-labelledby="ask-head" data-event-ask>
+  <h2 id="ask-head">Ask Guide about it</h2>
+  <p class="event-ask__lead">
+    Each question opens Guide with the words already typed. Nothing is sent
+    until you choose to send it.
+  </p>
+  <GuideQuickPrompts prompts={plan.questions} label="Questions for Guide about this event" />
+</section>

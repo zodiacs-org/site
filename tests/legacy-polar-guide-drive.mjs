@@ -35,7 +35,7 @@ export async function driveLegacyPolarGuide({ browser, baseURL, check, outDir, i
     await page.locator('.zassistant__panel').waitFor({ state: 'visible' });
     await page.locator('.zassistant__input').fill('What is an ascendant?');
     await page.locator('.zassistant__input').press('Enter');
-    await page.getByRole('button', { name: 'Continue with Guide' }).click();
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await page.locator('.zassistant__message--assistant').filter({ hasText: 'practical answer' }).waitFor();
     check('legacy polar Guide: ordinary consent sends no saved chart',
       requests.length === 1 && requests[0].ephemeralContext.baseContext.ownerChart.state === 'unavailable');

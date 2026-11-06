@@ -1,0 +1,22 @@
+/* "Make Leo my sign" (src/islands/RememberMySign.tsx). A fixed-height line, so nothing moves when it fills in. */
+.mysign {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  margin: 0 0 8px;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.mysign button {
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-2);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--hair-2);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.mysign button:hover { color: var(--text); }

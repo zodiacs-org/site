@@ -53,6 +53,8 @@ const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const THESIS_LASTMOD = '2026-09-05';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
+// The sign-season pages and their hub were published together.
+const SEASON_PAGES_LASTMOD = '2026-11-05';
 // The numerology calculator; the tools hub and methodology page changed with
 // it. Each Life Path page dates itself from its own `updated` field, the same
 // date its Article markup carries.
@@ -362,6 +364,9 @@ const TIME_ATLAS_ROUTES = ['/developers/time-atlas/', '/developers/'] as const;
 // Sitemap Dates comparison found changed (the engine's version, its time and lite entries, the conventions
 // registry's time-band namespace, MCP adapter 0.1.0-rc.26, the playground's engine and answers, the demo's
 // receipts, the guides).
+// Every event page gained its countdown, what to look for in the sky and Guide questions. Dated here, not
+// in events-publication.json, which the published developer plugin bundles byte for byte.
+const EVENT_WATCH_LASTMOD = '2026-11-05';
 const ENGINE_110_RC2_LASTMOD = '2026-11-05';
 const ENGINE_110_RC2_ROUTES = [
   '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
@@ -571,6 +576,18 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
   // hosted search_sky_events names. The day of the daily edition it was built with.
   ['/developers/conventions/', '2026-11-04'] as const,
+  // Your 2027 sky, the calendar-year edition read for a saved chart (first published 5 November 2026).
+  ['/your-2027-sky/', '2026-11-05'] as const,
+  // The Moon journal, first published, and the moon phase page's line linking to it. The day of the daily
+  // edition they were built with.
+  ['/moon-journal/', '2026-11-05'] as const,
+  ['/moon-phase/', '2026-11-05'] as const,
+  // "Ask Guide about this" beside the retrograde and eclipse explainers, and the tools hub's card for
+  // Your 2027 sky.
+  ['/eclipses/', '2026-11-05'] as const,
+  ['/mercury-retrograde/', '2026-11-05'] as const,
+  ['/retrogrades/', '2026-11-05'] as const,
+  ['/tools/', '2026-11-05'] as const,
   // The time atlas dataset and the developer index's card for it, after the entries above so this date wins.
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
   // Engine 1.1.0-rc.2's pages, last so this date wins.
@@ -632,6 +649,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/moon-sign/', priority: 0.9 },
     { loc: '/rising-sign/', priority: 0.9 },
     { loc: '/moon-phase/', priority: 0.85 },
+    { loc: '/moon-journal/', priority: 0.75 },
     { loc: '/saturn-return/', priority: 0.85 },
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
@@ -642,6 +660,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/transits/', priority: 0.85 },
     { loc: '/eclipses/', priority: 0.85 },
     { loc: '/full-moon-calendar/', priority: 0.85 },
+    { loc: '/your-2027-sky/', priority: 0.8 },
     { loc: '/full-moon-calendar/2027/', priority: 0.7 },
     { loc: '/eclipses/2027/', priority: 0.7 },
     { loc: '/mercury-retrograde/2027/', priority: 0.7 },
@@ -715,6 +734,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       { loc: '/games/history/', priority: 0.6, lastmod: DESIGN_SWEEP_LASTMOD },
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
+    { loc: '/seasons/', priority: 0.75, lastmod: SEASON_PAGES_LASTMOD },
+    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: SEASON_PAGES_LASTMOD })),
     // Spanish and Portuguese daily surfaces render the same edition from the
     // same facts; they date with the edition like /today/ does.
     ...(['es', 'pt'] as const).flatMap((locale) => [
@@ -725,7 +746,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
-      lastmod: event.lastModified,
+      lastmod: event.lastModified > EVENT_WATCH_LASTMOD ? event.lastModified : EVENT_WATCH_LASTMOD,
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
     // /terminal/research/ above, is listed.

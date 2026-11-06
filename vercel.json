@@ -394,6 +394,14 @@
       "destination": "/api/guide?action=turn"
     },
     {
+      "source": "/v1/guide/feedback/up",
+      "destination": "/api/guide?action=feedback-up"
+    },
+    {
+      "source": "/v1/guide/feedback/down",
+      "destination": "/api/guide?action=feedback-down"
+    },
+    {
       "source": "/api/account/:action",
       "destination": "/api/account?action=:action"
     },

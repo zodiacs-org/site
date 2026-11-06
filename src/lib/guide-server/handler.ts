@@ -86,6 +86,7 @@ interface GuideHandlerDependencies {
   fetcher: typeof fetch;
   uuid: () => string;
   reportProviderDiagnostic: (diagnostic: GuideProviderDiagnosticV1) => void;
+  reportFeedback: (feedback: { event: 'guide_feedback_v1'; vote: GuideFeedbackVote }) => void;
 }
 
 const DEFAULT_DEPENDENCIES: GuideHandlerDependencies = {
@@ -99,6 +100,10 @@ const DEFAULT_DEPENDENCIES: GuideHandlerDependencies = {
     // This fixed-shape object contains no request, response, identity, model,
     // prompt, output, header, stack, or provider identifier.
     console.warn(JSON.stringify(diagnostic));
+  },
+  reportFeedback: (feedback) => {
+    // Only the vote. Count them in the Vercel logs by searching guide_feedback_v1.
+    console.info(JSON.stringify(feedback));
   },
 };
 
@@ -155,6 +160,23 @@ function setPrivateHeaders(res: any, contentType: string): void {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   res.setHeader('Vary', 'Authorization, Cookie, Origin');
+}
+
+/**
+ * Thumbs up or down on a Guide answer. The vote is the whole message: the
+ * request has no body, and the log line holds only the vote, so no question,
+ * answer, identity or session ever reaches it.
+ */
+export type GuideFeedbackVote = 'up' | 'down';
+
+function feedbackVote(req: any): GuideFeedbackVote | null {
+  const query = req.query;
+  if (!query || typeof query !== 'object' || Array.isArray(query)) return null;
+  const keys = Object.keys(query);
+  if (keys.length !== 1 || keys[0] !== 'action') return null;
+  if (query.action === 'feedback-up') return 'up';
+  if (query.action === 'feedback-down') return 'down';
+  return null;
 }
 
 function sendJson(res: any, status: number, body: unknown): void {
@@ -610,6 +632,18 @@ export function createGuideHandler(overrides: Partial<GuideHandlerDependencies> 
     if (req.method !== 'POST') {
       res.setHeader('Allow', 'POST');
       sendJson(res, 405, { error: 'method_not_allowed' });
+      return;
+    }
+    const vote = feedbackVote(req);
+    if (vote) {
+      if (!isExactAccountOrigin(req, dependencies.env)) {
+        sendJson(res, 403, { error: 'forbidden' });
+        return;
+      }
+      dependencies.reportFeedback({ event: 'guide_feedback_v1', vote });
+      res.statusCode = 204;
+      setPrivateHeaders(res, 'text/plain; charset=utf-8');
+      res.end();
       return;
     }
     if (action(req) !== GUIDE_ACTION) {

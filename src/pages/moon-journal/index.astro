@@ -1,0 +1,104 @@
+---
+/**
+ * The Moon journal: a private notebook tied to the new and full Moons.
+ *
+ * The lunation instants come from the committed sky data; each one's sign is
+ * read here, at build time in Node, from the full engine. The browser gets
+ * a plain list and the dependency-free lite engine for tonight's phase, so it
+ * never loads astronomy-engine.
+ *
+ * privateSurface and noAssistant: a note typed here stays in this browser,
+ * so the page opts out of third-party scripts and of Guide, which can send
+ * typed text. Nothing on this page makes a request with what is written.
+ */
+import Base from '../../layouts/Base.astro';
+import MoonJournal from '../../islands/MoonJournal';
+import sky from '../../data/sky.json';
+import { bodyLongitude } from '../../lib/engine/full';
+import { SIGNS, signForLongitude } from '../../lib/signs';
+import type { Lunation, SignSlug } from '../../lib/moon-journal/types';
+import '../../styles/moon-journal.css';
+
+const builtAt = new Date();
+// Two months back so the current cycle and the last one are always present.
+const from = builtAt.getTime() - 62 * 86_400_000;
+const lunations: Lunation[] = (sky.moons as { type: 'new' | 'full'; at: string }[])
+  .filter((moon) => Date.parse(moon.at) >= from)
+  .map((moon) => ({
+    type: moon.type,
+    at: moon.at,
+    sign: signForLongitude(bodyLongitude('Moon', new Date(moon.at))).slug as SignSlug,
+  }));
+const signNames = Object.fromEntries(SIGNS.map((sign) => [sign.slug, sign.name]));
+
+const title = 'Moon Journal: Notes for Each New and Full Moon | Zodiacs.org';
+const description = 'A private notebook for the new and full Moons, with a question for each one by sign. Kept only on your device, with no account.';
+const jsonLd = [
+  {
+    '@type': 'WebApplication',
+    name: 'Moon Journal',
+    url: 'https://zodiacs.org/moon-journal/',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+];
+---
+<Base
+  title={title}
+  description={description}
+  path="/moon-journal/"
+  image="/assets/og/v2/tool/moon-phase.png"
+  imageAlt="Moon journal, Zodiacs.org"
+  jsonLd={jsonLd}
+  privateSurface
+  noAssistant
+  clientUi
+>
+  <section class="section--tight container">
+    <div class="mj-hero">
+      <h1 class="display">A Moon journal that stays on your device.</h1>
+      <p>
+        At each new Moon, a question about what you are starting. At each full
+        Moon, a question about what has come to light. The question changes
+        with the sign the Moon is in, and last cycle’s note sits beside it so
+        you can see what moved.
+      </p>
+    </div>
+
+    <MoonJournal client:load lunations={lunations} signNames={signNames} builtAt={builtAt.toISOString()} />
+    <noscript>
+      <p class="mj-noscript">
+        The journal needs JavaScript to read the Moon for your device and to
+        keep your notes in this browser. Enable it and reload to start writing.
+      </p>
+    </noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose">
+      <h2>Where your notes are kept</h2>
+      <p>
+        Only in this browser, on this device. There is no account and no copy
+        on our side: what you write is never sent to Zodiacs.org or anyone
+        else, and this page does not load Guide or any outside script. Clearing
+        this site’s data in your browser deletes the journal, and a private
+        window forgets it when it closes.
+      </p>
+      <p>
+        To keep a copy or move it to another device, use “Download my
+        journal”. It saves a plain text file in Markdown that any notes app
+        can open. “Delete everything” removes every entry from this browser.
+      </p>
+      <h2>Where the dates come from</h2>
+      <p>
+        The new and full Moons are the exact instants from the site’s sky
+        data, shown in your own time zone. The sign is where the Moon stands
+        at that instant. Tonight’s phase is worked out on your device. Every
+        date is also on the <a href="/full-moon-calendar/">full moon calendar</a> and
+        the <a href="/moon-phase/">moon phase</a> page, and each new and full
+        Moon has its own page in <a href="/events/">sky events</a>.
+      </p>
+    </div>
+  </section>
+</Base>

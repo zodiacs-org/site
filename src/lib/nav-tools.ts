@@ -206,6 +206,10 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 19, title: 'Chart of the day', promise: 'A figure in the news, with sourced data.', group: 'sky' },
   },
   {
+    href: '/your-2027-sky/',
+    hub: { order: 22.5, title: 'Your 2027 sky', promise: 'Next year’s eclipses and slow planets, read for your chart.', group: 'year' },
+  },
+  {
     href: '/your-sky-wrapped/',
     hub: { order: 23, title: 'Your sky, wrapped', promise: 'Your year in the sky, as a card to share.', group: 'year' },
   },

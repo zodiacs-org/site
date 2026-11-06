@@ -206,6 +206,10 @@ function staticDescription(route, source, { ingresses, latestHoroscopeMonth }) {
     return `Dated daily horoscopes for every sign, with the exact UTC edition date printed on the page and links to tomorrow, weekly, ${monthLabel(latestHoroscopeMonth)} monthly, love, career, and year-ahead readings.`;
   }
   if (route === '/learn/zodiac-dates/') return zodiacDatesDescription(ingresses);
+  // The hub's own description names the season under way; the guide keeps its dateless half, so it never goes stale.
+  // Your 2027 sky prints its description from its copy module (src/lib/year-sky/copy.ts, pageDescription).
+  if (route === '/your-2027-sky/') return 'The eclipses, slow planets, retrogrades and returns of 2027 that touch your own birth chart, month by month, with a share card and a calendar file made on your device.';
+  if (route === '/seasons/') return 'When each of the twelve sign seasons starts and ends, and what each one asks of every sign.';
 
   const named = source.match(/const description\s*=\s*(['"])([\s\S]*?)\1\s*;/)?.[2];
   if (named) return clean(named);

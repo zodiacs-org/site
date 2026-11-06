@@ -14,8 +14,12 @@ import {
   ACCOUNT_V2_STORAGE_PREFIX,
   isAccountV2Id,
 } from '../account-v2/storage-identity';
-import { degreeInSign, signForLongitude } from '../signs';
+import { degreeInSign, signForLongitude, signName } from '../signs';
 import type { BodyPosition } from '../engine/types';
+import {
+  MY_SIGN_COPY, asksAboutMySign, followUpsFor, pageStarters, skyGreeting, waitLinks, withMySign,
+} from './guide-conversation';
+import { SIGN_SLUGS, readMySign, rememberMySign, type SignSlug } from '../my-sign';
 
 export type AssistantLocale = Locale;
 
@@ -148,6 +152,16 @@ interface Copy {
   cloudBody: string;
   cloudConfirm: string;
   cloudCancel: string;
+  /** One plain line shown first; the full cloudBody sits behind cloudDetails. */
+  cloudSummary: string;
+  cloudDetails: string;
+  /** Shown under a failed answer, with two places to go while Guide is down. */
+  waitHelp: string;
+  waitHoroscope: string;
+  waitChart: string;
+  privacyLink: string;
+  more: string;
+  followUp: string;
   /** consentBody for a chart without a birth time. */
   sources: string;
   contextUpdated: string;
@@ -168,10 +182,15 @@ const COPY: Record<AssistantLocale, Copy> = {
     disabled: 'Guide is resting right now. The rest of Zodiacs.org still works.',
     rateLimited: 'Guide is busy or has reached a fair-use limit. Wait a minute; if it continues, come back tomorrow.',
     user: 'You', assistant: 'Guide',
-    privacy: 'Guide can be wrong. This web conversation stays in this browser session and is not synced to an account; submitted content and generated draft replies are processed by Anthropic.',
+    privacy: "Guide can be wrong.",
     cloudTitle: 'Before Guide answers',
-    cloudBody: "Guide sends the questions you type, recent Guide messages, and enabled public page or sky context to our cloud service. It does not automatically attach your saved birth chart or personal chart placements. Avoid entering private birth details in Guide. Guide sends your question, recent Guide messages, and the visible sources above to Anthropic for an input safety check and to generate a draft reply. It then sends that generated draft reply back to Anthropic for a second safety check before showing it. This web Guide conversation stays only in this browser session, is not synced to your account, and is not stored as text by Zodiacs.org. Under Anthropic's standard API policy, submitted inputs and generated outputs are deleted within 30 days, except when longer retention is required by law or to enforce its usage policy. Continue for this Guide day?",
-    cloudConfirm: 'Continue with Guide', cloudCancel: 'Not now',
+    cloudBody: "Guide sends the questions you type, recent Guide messages, and enabled public page or sky context to our cloud service. It does not automatically attach your saved birth chart or personal chart placements. Avoid entering private birth details in Guide. Guide sends your question, recent Guide messages, and the visible sources above to Anthropic for an input safety check and to generate a draft reply. It then sends that generated draft reply back to Anthropic for a second safety check before showing it. This web Guide conversation stays only in this browser session, is not synced to your account, and is not stored as text by Zodiacs.org. Under Anthropic's standard API policy, submitted inputs and generated outputs are deleted within 30 days, except when longer retention is required by law or to enforce its usage policy.",
+    cloudConfirm: "Continue", cloudCancel: "Not now",
+    cloudSummary: "Your questions go to Anthropic, the AI company that writes and safety-checks Guide's answers. Zodiacs.org doesn't save them, and the conversation stays in this tab. Leave out private birth details.",
+    cloudDetails: "Details",
+    waitHelp: "Your question is back in the box, so you can send it again later. While you wait:",
+    waitHoroscope: "Today's horoscopes", waitChart: "Your birth chart",
+    privacyLink: "Privacy", more: "More", followUp: "Ask next",
     sources: 'From this site:',
     contextUpdated: 'Source removed. Earlier messages remain visible, but Guide will not use them in future answers.',
   },
@@ -188,10 +207,15 @@ const COPY: Record<AssistantLocale, Copy> = {
     unavailable: 'Guide no está disponible temporalmente. Inténtalo de nuevo más tarde.',
     disabled: 'Guide está descansando ahora. El resto de Zodiacs.org sigue funcionando.',
     rateLimited: 'Guide está ocupado o alcanzó un límite de uso justo. Espera un minuto; si continúa, vuelve mañana.', user: 'Tú', assistant: 'Guide',
-    privacy: 'Guide puede equivocarse. Esta conversación web permanece en esta sesión del navegador y no se sincroniza con una cuenta; Anthropic procesa el contenido enviado y los borradores de respuesta generados.',
+    privacy: "Guide puede equivocarse.",
     cloudTitle: 'Antes de que Guide responda',
-    cloudBody: "Guide envía las preguntas que escribes, los mensajes recientes de Guide y el contexto público activado de la página o del cielo a nuestro servicio en la nube. No adjunta automáticamente tu carta natal guardada ni tus posiciones personales. Evita introducir datos de nacimiento privados en Guide. Guide envía tu pregunta, los mensajes recientes y las fuentes visibles a Anthropic para una revisión de seguridad de la entrada y para generar un borrador de respuesta. Después envía ese borrador de respuesta generado de nuevo a Anthropic para una segunda revisión de seguridad antes de mostrártelo. Esta conversación web permanece solo en esta sesión del navegador, no se sincroniza con tu cuenta y Zodiacs.org no almacena su texto. Según la política estándar de la API de Anthropic, las entradas enviadas y las respuestas generadas se eliminan en un plazo de 30 días, salvo que la ley o la aplicación de su política de uso exijan conservarlas más tiempo. ¿Continuar durante este día de Guide?",
-    cloudConfirm: 'Continuar con Guide', cloudCancel: 'Ahora no',
+    cloudBody: "Guide envía las preguntas que escribes, los mensajes recientes de Guide y el contexto público activado de la página o del cielo a nuestro servicio en la nube. No adjunta automáticamente tu carta natal guardada ni tus posiciones personales. Evita introducir datos de nacimiento privados en Guide. Guide envía tu pregunta, los mensajes recientes y las fuentes visibles a Anthropic para una revisión de seguridad de la entrada y para generar un borrador de respuesta. Después envía ese borrador de respuesta generado de nuevo a Anthropic para una segunda revisión de seguridad antes de mostrártelo. Esta conversación web permanece solo en esta sesión del navegador, no se sincroniza con tu cuenta y Zodiacs.org no almacena su texto. Según la política estándar de la API de Anthropic, las entradas enviadas y las respuestas generadas se eliminan en un plazo de 30 días, salvo que la ley o la aplicación de su política de uso exijan conservarlas más tiempo.",
+    cloudConfirm: "Continuar", cloudCancel: "Ahora no",
+    cloudSummary: "Tus preguntas van a Anthropic, la empresa de IA que redacta y revisa las respuestas de Guide. Zodiacs.org no las guarda, y la conversación se queda en esta pestaña. No escribas datos de nacimiento privados.",
+    cloudDetails: "Detalles",
+    waitHelp: "Tu pregunta sigue en el cuadro, así que puedes enviarla más tarde. Mientras tanto:",
+    waitHoroscope: "Horóscopos de hoy", waitChart: "Tu carta natal",
+    privacyLink: "Privacidad", more: "Más", followUp: "Pregunta después",
     sources: 'De este sitio:',
     contextUpdated: 'Fuente eliminada. Los mensajes anteriores siguen visibles, pero Guide no los usará en respuestas futuras.',
   },
@@ -208,10 +232,15 @@ const COPY: Record<AssistantLocale, Copy> = {
     unavailable: 'O Guide está temporariamente indisponível. Tente novamente mais tarde.',
     disabled: 'O Guide está descansando agora. O restante do Zodiacs.org continua funcionando.',
     rateLimited: 'O Guide está ocupado ou atingiu um limite de uso justo. Espere um minuto; se continuar, volte amanhã.', user: 'Você', assistant: 'Guide',
-    privacy: 'O Guide pode errar. Esta conversa na web fica nesta sessão do navegador e não é sincronizada com uma conta; o conteúdo enviado e os rascunhos de resposta gerados são processados pela Anthropic.',
+    privacy: "O Guide pode errar.",
     cloudTitle: 'Antes de o Guide responder',
-    cloudBody: "O Guide envia as perguntas que você digita, as mensagens recentes do Guide e o contexto público ativado da página ou do céu ao nosso serviço na nuvem. Ele não anexa automaticamente seu mapa natal salvo nem suas posições pessoais. Evite inserir dados de nascimento privados no Guide. O Guide envia sua pergunta, as mensagens recentes e as fontes visíveis à Anthropic para uma verificação de segurança da entrada e para gerar um rascunho de resposta. Depois, envia esse rascunho de resposta gerado de volta à Anthropic para uma segunda verificação de segurança antes de mostrá-lo. Esta conversa do Guide na web fica apenas nesta sessão do navegador, não é sincronizada com sua conta e não é armazenada como texto pelo Zodiacs.org. Pela política padrão da API da Anthropic, as entradas enviadas e as respostas geradas são excluídas em até 30 dias, exceto quando a lei ou a aplicação da política de uso exigir retenção por mais tempo. Continuar neste dia do Guide?",
-    cloudConfirm: 'Continuar com o Guide', cloudCancel: 'Agora não',
+    cloudBody: "O Guide envia as perguntas que você digita, as mensagens recentes do Guide e o contexto público ativado da página ou do céu ao nosso serviço na nuvem. Ele não anexa automaticamente seu mapa natal salvo nem suas posições pessoais. Evite inserir dados de nascimento privados no Guide. O Guide envia sua pergunta, as mensagens recentes e as fontes visíveis à Anthropic para uma verificação de segurança da entrada e para gerar um rascunho de resposta. Depois, envia esse rascunho de resposta gerado de volta à Anthropic para uma segunda verificação de segurança antes de mostrá-lo. Esta conversa do Guide na web fica apenas nesta sessão do navegador, não é sincronizada com sua conta e não é armazenada como texto pelo Zodiacs.org. Pela política padrão da API da Anthropic, as entradas enviadas e as respostas geradas são excluídas em até 30 dias, exceto quando a lei ou a aplicação da política de uso exigir retenção por mais tempo.",
+    cloudConfirm: "Continuar", cloudCancel: "Agora não",
+    cloudSummary: "Suas perguntas vão para a Anthropic, a empresa de IA que escreve e verifica as respostas do Guide. O Zodiacs.org não as guarda, e a conversa fica nesta aba. Não escreva dados de nascimento privados.",
+    cloudDetails: "Detalhes",
+    waitHelp: "Sua pergunta voltou para a caixa, então você pode enviá-la mais tarde. Enquanto isso:",
+    waitHoroscope: "Horóscopos de hoje", waitChart: "Seu mapa astral",
+    privacyLink: "Privacidade", more: "Mais", followUp: "Pergunte em seguida",
     sources: 'Deste site:',
     contextUpdated: 'Fonte removida. As mensagens anteriores continuam visíveis, mas o Guide não as usará nas próximas respostas.',
   },
@@ -228,10 +257,15 @@ const COPY: Record<AssistantLocale, Copy> = {
     unavailable: 'Guide est temporairement indisponible. Réessaie plus tard.',
     disabled: 'Guide se repose pour le moment. Le reste de Zodiacs.org fonctionne toujours.',
     rateLimited: 'Guide est occupé ou a atteint une limite d’utilisation équitable. Attends une minute ; si cela continue, reviens demain.', user: 'Toi', assistant: 'Guide',
-    privacy: 'Guide peut se tromper. Cette conversation web reste dans cette session du navigateur et n’est pas synchronisée avec un compte ; Anthropic traite le contenu envoyé et les brouillons de réponse générés.',
+    privacy: "Guide peut se tromper.",
     cloudTitle: 'Avant la réponse de Guide',
-    cloudBody: "Guide envoie les questions que vous saisissez, les messages récents de Guide et le contexte public activé de la page ou du ciel à notre service cloud. Il ne joint pas automatiquement votre thème natal enregistré ni vos positions personnelles. Évitez de saisir des données de naissance privées dans Guide. Guide envoie ta question, les messages récents et les sources visibles à Anthropic pour un contrôle de sécurité de l’entrée et pour produire un brouillon de réponse. Guide renvoie ensuite ce brouillon de réponse généré à Anthropic pour un second contrôle de sécurité avant de te l’afficher. Cette conversation Guide web reste uniquement dans cette session du navigateur, n’est pas synchronisée avec ton compte et n’est pas stockée sous forme de texte par Zodiacs.org. Selon la politique standard de l’API d’Anthropic, les contenus envoyés et les réponses générées sont supprimés sous 30 jours, sauf si la loi ou l’application de sa politique d’utilisation exige une conservation plus longue. Continuer pour cette journée Guide ?",
-    cloudConfirm: 'Continuer avec Guide', cloudCancel: 'Pas maintenant',
+    cloudBody: "Guide envoie les questions que vous saisissez, les messages récents de Guide et le contexte public activé de la page ou du ciel à notre service cloud. Il ne joint pas automatiquement votre thème natal enregistré ni vos positions personnelles. Évitez de saisir des données de naissance privées dans Guide. Guide envoie ta question, les messages récents et les sources visibles à Anthropic pour un contrôle de sécurité de l’entrée et pour produire un brouillon de réponse. Guide renvoie ensuite ce brouillon de réponse généré à Anthropic pour un second contrôle de sécurité avant de te l’afficher. Cette conversation Guide web reste uniquement dans cette session du navigateur, n’est pas synchronisée avec ton compte et n’est pas stockée sous forme de texte par Zodiacs.org. Selon la politique standard de l’API d’Anthropic, les contenus envoyés et les réponses générées sont supprimés sous 30 jours, sauf si la loi ou l’application de sa politique d’utilisation exige une conservation plus longue.",
+    cloudConfirm: "Continuer", cloudCancel: "Pas maintenant",
+    cloudSummary: "Tes questions sont envoyées à Anthropic, l’entreprise d’IA qui rédige et vérifie les réponses de Guide. Zodiacs.org ne les garde pas, et la conversation reste dans cet onglet. N’écris pas de données de naissance privées.",
+    cloudDetails: "Détails",
+    waitHelp: "Ta question est toujours dans la zone de saisie, tu pourras la renvoyer plus tard. En attendant :",
+    waitHoroscope: "Le ciel du jour", waitChart: "Ton thème natal",
+    privacyLink: "Confidentialité", more: "Plus", followUp: "Ensuite",
     sources: 'Depuis ce site :',
     contextUpdated: 'Source retirée. Les anciens messages restent visibles, mais Guide ne les utilisera plus dans ses réponses.',
   },
@@ -248,10 +282,15 @@ const COPY: Record<AssistantLocale, Copy> = {
     unavailable: 'Guide non è disponibile temporaneamente. Riprova più tardi.',
     disabled: 'Guide sta riposando. Il resto di Zodiacs.org continua a funzionare.',
     rateLimited: 'Guide è occupato o ha raggiunto un limite di utilizzo equo. Aspetta un minuto; se continua, torna domani.', user: 'Tu', assistant: 'Guide',
-    privacy: 'Guide può sbagliare. Questa conversazione web resta nella sessione del browser e non viene sincronizzata con un account; Anthropic elabora i contenuti inviati e le bozze di risposta generate.',
+    privacy: "Guide può sbagliare.",
     cloudTitle: 'Prima che Guide risponda',
-    cloudBody: "Guide invia le domande che scrivi, i messaggi recenti di Guide e il contesto pubblico attivato della pagina o del cielo al nostro servizio cloud. Non allega automaticamente il tema natale salvato o le tue posizioni personali. Evita di inserire dati di nascita privati in Guide. Guide invia la tua domanda, i messaggi recenti e le fonti visibili a Anthropic per un controllo di sicurezza dell’input e per generare una bozza di risposta. Poi invia di nuovo a Anthropic la bozza di risposta generata per un secondo controllo di sicurezza prima di mostrartela. Questa conversazione web con Guide resta soltanto in questa sessione del browser, non viene sincronizzata con il tuo account e non viene archiviata come testo da Zodiacs.org. Secondo la politica standard dell’API di Anthropic, i contenuti inviati e le risposte generate vengono eliminati entro 30 giorni, salvo quando la legge o l’applicazione della sua politica d’uso richiedono una conservazione più lunga. Continuare per questa giornata Guide?",
-    cloudConfirm: 'Continua con Guide', cloudCancel: 'Non ora',
+    cloudBody: "Guide invia le domande che scrivi, i messaggi recenti di Guide e il contesto pubblico attivato della pagina o del cielo al nostro servizio cloud. Non allega automaticamente il tema natale salvato o le tue posizioni personali. Evita di inserire dati di nascita privati in Guide. Guide invia la tua domanda, i messaggi recenti e le fonti visibili a Anthropic per un controllo di sicurezza dell’input e per generare una bozza di risposta. Poi invia di nuovo a Anthropic la bozza di risposta generata per un secondo controllo di sicurezza prima di mostrartela. Questa conversazione web con Guide resta soltanto in questa sessione del browser, non viene sincronizzata con il tuo account e non viene archiviata come testo da Zodiacs.org. Secondo la politica standard dell’API di Anthropic, i contenuti inviati e le risposte generate vengono eliminati entro 30 giorni, salvo quando la legge o l’applicazione della sua politica d’uso richiedono una conservazione più lunga.",
+    cloudConfirm: "Continua", cloudCancel: "Non ora",
+    cloudSummary: "Le tue domande vanno ad Anthropic, l’azienda di IA che scrive e controlla le risposte di Guide. Zodiacs.org non le conserva, e la conversazione resta in questa scheda. Non scrivere dati di nascita privati.",
+    cloudDetails: "Dettagli",
+    waitHelp: "La tua domanda è ancora nella casella, così puoi inviarla più tardi. Nel frattempo:",
+    waitHoroscope: "Il cielo di oggi", waitChart: "Il tuo tema natale",
+    privacyLink: "Privacy", more: "Altro", followUp: "Chiedi ancora",
     sources: 'Da questo sito:',
     contextUpdated: 'Fonte rimossa. I messaggi precedenti restano visibili, ma Guide non li userà nelle risposte future.',
   },
@@ -302,6 +341,9 @@ let chartButton: HTMLButtonElement | null = null;
 let skyButton: HTMLButtonElement | null = null;
 let newlineHint: HTMLSpanElement | null = null;
 let privacy: HTMLParagraphElement | null = null;
+let moreButton: HTMLButtonElement | null = null;
+let moreMenu: HTMLDivElement | null = null;
+let menuClearButton: HTMLButtonElement | null = null;
 let launcher: HTMLButtonElement | null = null;
 let opener: HTMLElement | null = null;
 let activeRequest: AbortController | null = null;
@@ -1231,29 +1273,262 @@ function renderTranscript(): void {
   if (getSession().messages.length === 0 && transcript) {
     const welcome = document.createElement('div');
     welcome.className = 'zassistant__welcome';
-    for (const [label, prompt] of GUIDE_STARTERS[locale]) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.textContent = `${label} ↗`;
-      button.addEventListener('click', () => {
-        if (!textarea) return;
-        if (!textarea.value.trim()) textarea.value = prompt;
-        syncTextareaHeight();
-        syncSendState();
-        textarea.focus({ preventScroll: true });
-      });
-      welcome.append(button);
+    const greeting = document.createElement('p');
+    greeting.className = 'zassistant__greeting';
+    greeting.append(createGuideAvatar('zassistant__message-avatar', 20));
+    const greetingText = document.createElement('span');
+    greetingText.textContent = currentCopy().intro;
+    greeting.append(greetingText);
+    welcome.append(greeting);
+    void fillSkyGreeting(greetingText);
+    const mine = readMySign();
+    if (mine) {
+      const line = document.createElement('p');
+      line.className = 'zassistant__mysign';
+      line.append(document.createTextNode(`${MY_SIGN_COPY[locale].yours(signName(mine, locale))} · `));
+      const change = document.createElement('button');
+      change.type = 'button';
+      change.textContent = MY_SIGN_COPY[locale].change;
+      change.addEventListener('click', () => showSignPicker(null));
+      line.append(change);
+      welcome.append(line);
     }
+    const starters = document.createElement('div');
+    starters.className = 'zassistant__starters';
+    for (const prompt of pageStarters(locale, approvedPageId(location.pathname))) {
+      starters.append(questionChip(prompt, 'zassistant__starter'));
+    }
+    welcome.append(starters);
     transcript.append(welcome);
   }
-  for (const message of getSession().messages) {
+  const messages = getSession().messages;
+  for (const message of messages) {
     const bubble = appendMessage(message.author, message.content);
     if (message.author === 'guide') {
       renderAssistantText(bubble.body, message.content);
       appendSourcesRow(bubble.body, message.content);
     }
   }
-  if (intro) intro.hidden = getSession().messages.length > 0;
+  const last = messages[messages.length - 1];
+  if (last?.author === 'guide') showFollowUps(last.content);
+  // The greeting inside the welcome replaces the separate intro line.
+  if (intro) intro.hidden = true;
+}
+
+/** The sky right now, computed on this device. Display only: nothing is sent. */
+async function fillSkyGreeting(target: HTMLElement): Promise<void> {
+  try {
+    const { computeBodies } = await import('../engine/full');
+    const line = skyGreeting(locale, computeBodies(new Date()));
+    if (line && target.isConnected) target.textContent = line;
+  } catch {
+    // The plain intro already in place is the fallback.
+  }
+}
+
+/** A suggested question. Tapping it asks it, through the same consent step. */
+function questionChip(prompt: string, className: string): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = className;
+  button.dataset.prompt = prompt;
+  button.textContent = withMySign(locale, prompt, readMySign());
+  button.addEventListener('click', () => {
+    const mine = readMySign();
+    // A "my sign" question with no sign remembered asks which sign first.
+    if (!mine && asksAboutMySign(locale, prompt)) { showSignPicker(prompt); return; }
+    void askSuggested(withMySign(locale, prompt, mine));
+  });
+  return button;
+}
+
+/** Twelve sign buttons. Picking one remembers it on this device only. */
+function showSignPicker(pendingPrompt: string | null): void {
+  transcript?.querySelectorAll('.zassistant__signpick').forEach((node) => node.remove());
+  if (!transcript) return;
+  const picker = document.createElement('div');
+  picker.className = 'zassistant__signpick';
+  const text = document.createElement('p');
+  text.textContent = MY_SIGN_COPY[locale].pick;
+  const grid = document.createElement('div');
+  grid.className = 'zassistant__signpick-grid';
+  for (const slug of SIGN_SLUGS) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = signName(slug, locale);
+    button.addEventListener('click', () => chooseMySign(slug, pendingPrompt, picker));
+    grid.append(button);
+  }
+  picker.append(text, grid);
+  transcript.append(picker);
+  scrollTranscript();
+  (grid.firstElementChild as HTMLElement | null)?.focus({ preventScroll: true });
+}
+
+function chooseMySign(slug: SignSlug, pendingPrompt: string | null, picker: HTMLElement): void {
+  rememberMySign(slug);
+  picker.remove();
+  if (getSession().messages.length === 0) renderTranscript();
+  else {
+    transcript?.querySelectorAll<HTMLElement>('[data-prompt]').forEach((chip) => {
+      chip.textContent = withMySign(locale, chip.dataset.prompt ?? '', slug);
+    });
+  }
+  if (pendingPrompt) void askSuggested(withMySign(locale, pendingPrompt, slug));
+  else textarea?.focus({ preventScroll: true });
+}
+
+/** Thumbs up or down under a fresh answer. Only the vote is sent. */
+function appendFeedback(article: HTMLElement): void {
+  const copy = MY_SIGN_COPY[locale];
+  const row = document.createElement('div');
+  row.className = 'zassistant__feedback';
+  const label = document.createElement('span');
+  label.textContent = copy.helpful;
+  row.append(label);
+  for (const [vote, symbol, name] of [['up', '👍', copy.up], ['down', '👎', copy.down]] as const) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = symbol;
+    button.setAttribute('aria-label', name);
+    button.title = name;
+    button.addEventListener('click', () => {
+      void fetch(`/v1/guide/feedback/${vote}`, { method: 'POST', keepalive: true, credentials: 'same-origin' })
+        .catch(() => {});
+      row.replaceChildren(document.createTextNode(copy.thanks));
+    }, { once: true });
+    row.append(button);
+  }
+  article.append(row);
+}
+
+async function askSuggested(prompt: string): Promise<void> {
+  if (!textarea || activeRequest || interactionPending) return;
+  const draft = textarea.value;
+  textarea.value = prompt;
+  syncTextareaHeight();
+  syncSendState();
+  await submitQuestion();
+  // A question the visitor was already writing comes back once the
+  // suggestion has gone out; an unsent suggestion stays editable.
+  if (draft.trim() && !textarea.value.trim()) {
+    textarea.value = draft;
+    syncTextareaHeight();
+    syncSendState();
+  }
+}
+
+function clearFollowUps(): void {
+  transcript?.querySelectorAll('.zassistant__followups').forEach((row) => row.remove());
+}
+
+function showFollowUps(answer: string): void {
+  clearFollowUps();
+  if (!transcript) return;
+  const row = document.createElement('div');
+  row.className = 'zassistant__followups';
+  row.setAttribute('aria-label', currentCopy().followUp);
+  for (const prompt of followUpsFor(locale, answer)) row.append(questionChip(prompt, 'zassistant__followup'));
+  transcript.append(row);
+  scrollTranscript();
+}
+
+function clearWaitHelp(): void {
+  transcript?.querySelectorAll('.zassistant__wait').forEach((note) => note.remove());
+}
+
+/** While Guide can't answer: the question goes back in the box, plus two places to go. */
+function showWaitHelp(question: string): void {
+  clearWaitHelp();
+  if (textarea && !textarea.value.trim()) {
+    textarea.value = question;
+    syncTextareaHeight();
+    syncSendState();
+  }
+  if (!transcript) return;
+  const copy = currentCopy();
+  const links = waitLinks(locale);
+  const note = document.createElement('div');
+  note.className = 'zassistant__wait';
+  const text = document.createElement('p');
+  text.textContent = copy.waitHelp;
+  const row = document.createElement('div');
+  row.className = 'zassistant__wait-links';
+  for (const [href, label] of [[links.daily, copy.waitHoroscope], [links.chart, copy.waitChart]] as const) {
+    const anchor = document.createElement('a');
+    anchor.href = href;
+    anchor.textContent = `${label} →`;
+    row.append(anchor);
+  }
+  note.append(text, row);
+  transcript.append(note);
+  scrollTranscript();
+}
+
+const REDUCED_MOTION = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+
+/**
+ * Paints an answer at reading pace. The safety check releases a reply in one
+ * burst, so the text is revealed word by word on screen; the stored answer is
+ * always the complete text the server sent.
+ */
+function createReveal(body: HTMLElement): {
+  update(text: string): void;
+  finish(text: string): Promise<void>;
+  cancel(): void;
+} {
+  let target = '';
+  let shown = 0;
+  let frame = 0;
+  let done: (() => void) | null = null;
+  const paint = () => {
+    frame = 0;
+    if (shown < target.length) {
+      const step = Math.max(3, Math.ceil(target.length / 90));
+      let next = Math.min(target.length, shown + step);
+      const space = target.indexOf(' ', next);
+      next = space === -1 ? target.length : Math.min(space, next + 12);
+      shown = next;
+      renderAssistantText(body, target.slice(0, shown));
+      scrollTranscript();
+    }
+    if (shown < target.length) frame = requestAnimationFrame(paint);
+    else if (done) { const resolve = done; done = null; resolve(); }
+  };
+  return {
+    update(text) {
+      target = text;
+      body.closest('.zassistant__message')?.classList.remove('is-waiting');
+      if (REDUCED_MOTION()) { shown = target.length; renderAssistantText(body, target); scrollTranscript(); return; }
+      if (!frame) frame = requestAnimationFrame(paint);
+    },
+    finish(text) {
+      target = text;
+      if (REDUCED_MOTION() || shown >= target.length) {
+        if (frame) cancelAnimationFrame(frame);
+        frame = 0;
+        shown = target.length;
+        return Promise.resolve();
+      }
+      return new Promise<void>((resolve) => {
+        done = resolve;
+        if (!frame) frame = requestAnimationFrame(paint);
+      });
+    },
+    cancel() {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      if (done) { const resolve = done; done = null; resolve(); }
+    },
+  };
+}
+
+function typingIndicator(): HTMLElement {
+  const dots = document.createElement('span');
+  dots.className = 'zassistant__typing';
+  dots.setAttribute('aria-hidden', 'true');
+  dots.append(document.createElement('i'), document.createElement('i'), document.createElement('i'));
+  return dots;
 }
 
 function setStatus(message = ''): void { if (status) status.textContent = message; }
@@ -1505,6 +1780,7 @@ function consentCard(
   confirmText: string,
   cancelText: string,
   previewText?: string,
+  summary?: { text: string; detailsLabel: string },
 ): { card: HTMLElement; promise: Promise<boolean>; dismiss: () => void } {
   const card = document.createElement('section');
   card.className = 'zassistant__consent';
@@ -1512,7 +1788,20 @@ function consentCard(
   heading.textContent = headingText;
   const body = document.createElement('p');
   body.textContent = bodyText;
-  card.append(heading, body);
+  if (summary) {
+    // One plain line first; the complete disclosure stays one tap away.
+    const lead = document.createElement('p');
+    lead.className = 'zassistant__consent-lead';
+    lead.textContent = summary.text;
+    const details = document.createElement('details');
+    details.className = 'zassistant__consent-details';
+    const toggle = document.createElement('summary');
+    toggle.textContent = summary.detailsLabel;
+    details.append(toggle, body);
+    card.append(heading, lead, details);
+  } else {
+    card.append(heading, body);
+  }
   if (previewText) {
     const preview = document.createElement('pre');
     preview.className = 'zassistant__consent-preview';
@@ -1552,7 +1841,10 @@ async function requestCloudConsent(): Promise<boolean> {
   const state = getSession();
   if (state.cloudConsentGranted && state.consentPolicyVersion === CONSENT_POLICY_VERSION) return true;
   const copy = currentCopy();
-  const card = consentCard(copy.cloudTitle, copy.cloudBody, copy.cloudConfirm, copy.cloudCancel);
+  const card = consentCard(
+    copy.cloudTitle, copy.cloudBody, copy.cloudConfirm, copy.cloudCancel, undefined,
+    { text: copy.cloudSummary, detailsLabel: copy.cloudDetails },
+  );
   dismissPendingCloudConsent = card.dismiss;
   const granted = await card.promise;
   if (dismissPendingCloudConsent === card.dismiss) dismissPendingCloudConsent = null;
@@ -1682,10 +1974,14 @@ async function runTurn(pending: PendingTurn): Promise<void> {
   setBusy(true);
   pending.assistantArticle.setAttribute('aria-busy', 'true');
   if (!pending.assistantArticle.isConnected) transcript?.append(pending.assistantArticle);
-  pending.assistantBody.textContent = '';
+  pending.assistantBody.replaceChildren(typingIndicator());
   pending.assistantArticle.classList.remove('is-partial', 'is-error');
+  pending.assistantArticle.classList.add('is-waiting');
+  clearFollowUps();
+  clearWaitHelp();
   setStatus(currentCopy().thinking);
   let answer = '';
+  const reveal = createReveal(pending.assistantBody);
   const requestIsCurrent = () => currentProfileAccessGeneration(expectedGeneration) && activeRequest === request;
   const authorityTimer = pending.chartAuthority ? window.setInterval(() => {
     if (!sameSelfChartAuthority(pending.chartAuthority, readSelectedSelfChart())) onProfileDataChange();
@@ -1700,31 +1996,43 @@ async function runTurn(pending: PendingTurn): Promise<void> {
     const completed = await consumeGuideStream(response, pending, (delta) => {
       if (!requestIsCurrent()) return;
       answer += delta;
-      renderAssistantText(pending.assistantBody, answer);
-      scrollTranscript();
+      reveal.update(answer);
     });
     if (!requestIsCurrent()) return;
     if (!completed.message.content.trim() || (answer && answer !== completed.message.content)) {
       throw new AssistantFailure('invalid_response', false, true);
     }
-    renderAssistantText(pending.assistantBody, completed.message.content);
-    appendSourcesRow(pending.assistantBody, completed.message.content);
-    pending.assistantArticle.removeAttribute('aria-busy');
+    // Keep the answer before the on-screen reveal, so leaving the page
+    // mid-reveal never loses it.
     const state = getSession();
     state.messages = [...state.messages, pending.userMessage, completed.message].slice(-MAX_MESSAGES);
     state.nextSequence = completed.message.sequence + 1;
     state.revision = completed.conversationRevision;
     saveSession();
+    await reveal.finish(completed.message.content);
+    if (!requestIsCurrent()) return;
+    pending.assistantArticle.classList.remove('is-waiting');
+    renderAssistantText(pending.assistantBody, completed.message.content);
+    appendSourcesRow(pending.assistantBody, completed.message.content);
+    appendFeedback(pending.assistantArticle);
+    showFollowUps(completed.message.content);
+    pending.assistantArticle.removeAttribute('aria-busy');
     setStatus(currentCopy().complete);
     track('guide_reply');
   } catch (error) {
     if (!requestIsCurrent()) return;
     pending.assistantArticle.removeAttribute('aria-busy');
+    pending.assistantArticle.classList.remove('is-waiting');
+    reveal.cancel();
     const aborted = error instanceof DOMException && error.name === 'AbortError';
     const guideFailure = error instanceof AssistantFailure ? error : new AssistantFailure('temporarily_unavailable');
     if (!answer) pending.assistantArticle.remove();
-    else pending.assistantArticle.classList.add('is-partial');
+    else {
+      renderAssistantText(pending.assistantBody, answer);
+      pending.assistantArticle.classList.add('is-partial');
+    }
     setStatus(aborted ? currentCopy().stopped : friendlyFailure(guideFailure.code));
+    if (!aborted && !answer) showWaitHelp(pending.question);
     if (!aborted && guideFailure.retryable && !guideFailure.accepted && !answer) {
       pendingRetry = pending;
       if (retryButton) retryButton.hidden = false;
@@ -1816,16 +2124,6 @@ const PANEL_COPY = {
   it: { hide: 'Nascondi', expand: 'Espandi Guide', compact: 'Riduci Guide' },
 };
 
-// Suggestions only fill an editable draft. They never attach a chart or page,
-// start a request, or overwrite a question already being written.
-const GUIDE_STARTERS = {
-  en: [['Understand a birth chart', 'How should I start reading a birth chart?'], ['Find the right tool', 'Which astrology tool should I start with?']],
-  es: [['Entender una carta natal', '¿Cómo empiezo a leer una carta natal?'], ['Elegir una herramienta', '¿Con qué herramienta de astrología debería empezar?']],
-  pt: [['Entender um mapa astral', 'Como começo a ler um mapa astral?'], ['Escolher uma ferramenta', 'Com qual ferramenta de astrologia devo começar?']],
-  fr: [['Comprendre un thème natal', 'Comment commencer à lire un thème natal ?'], ['Choisir un outil', 'Par quel outil d’astrologie commencer ?']],
-  it: [['Capire un tema natale', 'Come inizio a leggere un tema natale?'], ['Scegliere uno strumento', 'Da quale strumento di astrologia dovrei iniziare?']],
-};
-
 function syncGuideViewport(): void {
   if (!root || root.hidden) return;
   const viewport = window.visualViewport;
@@ -1842,6 +2140,13 @@ function applyPanelCopy(): void {
   expandButton?.setAttribute('aria-label', expanded ? copy.compact : copy.expand);
   expandButton?.setAttribute('aria-pressed', String(expanded));
   if (expandButton) { expandButton.textContent = locale === 'en' ? (expanded ? 'Smaller' : 'Expand') : (expanded ? '↙' : '↗'); expandButton.title = expanded ? copy.compact : copy.expand; }
+}
+
+function toggleMoreMenu(open?: boolean): void {
+  if (!moreMenu || !moreButton) return;
+  const next = open ?? moreMenu.hidden;
+  moreMenu.hidden = !next;
+  moreButton.setAttribute('aria-expanded', String(next));
 }
 
 function clearConversation(): void {
@@ -1877,7 +2182,14 @@ function applyCopy(): void {
   if (stopButton) stopButton.textContent = copy.stop;
   if (retryButton) retryButton.textContent = copy.retry;
   if (newlineHint) newlineHint.textContent = copy.newline;
-  if (privacy) privacy.textContent = copy.privacy;
+  if (privacy) {
+    const link = document.createElement('a');
+    link.href = waitLinks(locale).privacy;
+    link.textContent = copy.privacyLink;
+    privacy.replaceChildren(document.createTextNode(`${copy.privacy} · `), link);
+  }
+  if (moreButton) { moreButton.setAttribute('aria-label', copy.more); moreButton.title = copy.more; }
+  if (menuClearButton) menuClearButton.textContent = copy.clear;
   syncSourceControls();
 }
 
@@ -1967,7 +2279,23 @@ function build(): void {
     root?.toggleAttribute('data-expanded');
     applyPanelCopy();
   });
-  headerActions.append(clearButton, expandButton, closeButton);
+  // Phones fold Clear into one small menu; the sheet is already full screen,
+  // so Expand is not offered there (see assistant.css).
+  moreButton = document.createElement('button');
+  moreButton.type = 'button';
+  moreButton.className = 'zassistant__more';
+  moreButton.textContent = '⋯';
+  moreButton.setAttribute('aria-haspopup', 'true');
+  moreButton.setAttribute('aria-expanded', 'false');
+  moreMenu = document.createElement('div');
+  moreMenu.className = 'zassistant__menu';
+  moreMenu.hidden = true;
+  menuClearButton = document.createElement('button');
+  menuClearButton.type = 'button';
+  menuClearButton.addEventListener('click', () => { toggleMoreMenu(false); clearConversation(); });
+  moreMenu.append(menuClearButton);
+  moreButton.addEventListener('click', () => toggleMoreMenu());
+  headerActions.append(clearButton, expandButton, moreButton, closeButton, moreMenu);
   header.append(headerIdentity, headerActions);
   intro = document.createElement('p');
   intro.className = 'zassistant__intro';
@@ -2069,7 +2397,9 @@ function build(): void {
   }
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && root && !root.hidden) {
-      event.preventDefault(); event.stopPropagation(); closeAssistant();
+      event.preventDefault(); event.stopPropagation();
+      if (moreMenu && !moreMenu.hidden) { toggleMoreMenu(false); moreButton?.focus(); return; }
+      closeAssistant();
     }
   }, true);
   window.addEventListener('zodiacs:profile', onProfileDataChange);
