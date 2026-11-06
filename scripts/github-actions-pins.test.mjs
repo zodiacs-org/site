@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'node:fs/promises';
-import { basename, dirname, relative, resolve } from 'node:path';
+import { basename, dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
@@ -48,5 +48,16 @@ describe('GitHub Actions supply chain', () => {
 
     expect(externalActionCount).toBeGreaterThan(0);
     expect(violations, 'mutable external action references').toEqual([]);
+  });
+
+  // Dependabot reads .github/workflows by default, but a composite action's
+  // pins only when its directory is listed.
+  it('lists every composite action directory for Dependabot', async () => {
+    const dependabot = await readFile(resolve(root, '.github', 'dependabot.yml'), 'utf8');
+    const listed = new Set([...dependabot.matchAll(/^\s*-\s*(\/\S*)\s*$/gmu)].map((match) => match[1]));
+    const unlisted = (await yamlFiles(actionsDirectory, /^action\.ya?ml$/u, { recursive: true }))
+      .map((file) => `/${relative(root, dirname(file)).split(sep).join('/')}`)
+      .filter((directory) => !listed.has(directory));
+    expect(unlisted, 'composite action directories missing from dependabot.yml').toEqual([]);
   });
 });

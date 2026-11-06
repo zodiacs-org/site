@@ -7,9 +7,10 @@ description: >-
   The install then picks the same versions as before, takes those files
   instead of downloading them, and downloads only what is missing or newer.
   The cache only saves time: give the calling step continue-on-error and a
-  time limit of 4 minutes, and apt downloads as before when the cache is
-  slow or empty. The package-list refresh in here ends at most 155 seconds
-  after the action starts, well inside that limit, so it is never cut off.
+  time limit (4 minutes in this repository), and apt downloads as before
+  when the cache is slow or empty. If the limit stops this action while it
+  refreshes apt's package lists, it ends the refresh first, so apt's list
+  lock is free again before the install starts.
 
 inputs:
   name:
@@ -52,11 +53,14 @@ runs:
     # apt matches files in its download cache by name and size alone, so it
     # is handed just the files whose SHA256 its signed package lists
     # contain. The list refresh gets what is left of 150 seconds since this
-    # action started, and none when under 10 seconds are left: a refresh
-    # cut off by the caller's time limit would keep running and hold apt's
-    # list lock, and the install's own refresh would then fail on it. If
-    # the refresh fails or is skipped, the check uses the lists already on
-    # the runner, which apt verified too: fewer files may match, and apt
+    # action started, and none when under 10 seconds are left. It runs in
+    # the background so that a stop from the caller's time limit reaches
+    # the trap at once: a refresh left running would hold apt's list lock,
+    # and the install's own refresh would fail on it, so the trap ends it
+    # (sudo passes the signal to timeout, which passes it to apt and kills
+    # what is left 5 seconds later) and waits for it before the step ends.
+    # If the refresh fails or is skipped, the check uses the lists already
+    # on the runner, which apt verified too: fewer files may match, and apt
     # downloads the rest as before.
     - name: Hand apt the files its package lists vouch for
       shell: bash
@@ -70,7 +74,10 @@ runs:
         if (( ${#cached[@]} )); then
           left=$(( STARTED + 150 - $(date +%s) ))
           if (( left >= 10 )); then
-            sudo timeout -k 5 "$left" apt-get update -qq || true
+            trap 'sudo kill -TERM $! 2> /dev/null; wait; exit 1' INT TERM
+            sudo timeout -k 5 "$left" apt-get update -qq &
+            wait $! || true
+            trap - INT TERM
           else
             echo "No time left to refresh the package lists"
           fi
