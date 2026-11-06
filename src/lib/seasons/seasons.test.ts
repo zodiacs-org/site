@@ -6,6 +6,7 @@ import { SEASON_READING_CONFIDENCE, seasonAsk, seasonCopy } from './copy';
 import { currentSunSeason, seasonWindowsFor, signSeasonFocus, solarHouse, sunSeasons } from './windows';
 import { readingConfidenceText } from '../../ai-tools/reading-confidence';
 import ingressTable from '../../data/ingresses.json';
+import sunTable from '../../data/sun-ingresses.json';
 
 const DASHES = /[‒–—―]/u;
 const BANNED = /\b(properly|shows its work|like a human|no mush|not vibes|guarantee[ds]?|money|invest\w*|health\w*|bet|betting|lottery|stocks?|crypto|token)\b/iu;
@@ -100,17 +101,36 @@ describe('season windows', () => {
     }
   });
 
-  // The table's Sun horizon is refreshed yearly (build-ingresses.mjs), so a
-  // year short of it every sign must still have its current or next season.
-  it('has a current or next season for every sign up to a year before the table ends', () => {
-    const horizon = ingressTable.horizons.find((entry) => entry.planets.includes('Sun'))!;
-    const until = Date.parse(`${horizon.to}T00:00:00Z`) - 365 * 86_400_000;
-    expect(until).toBeGreaterThan(Date.UTC(2027, 11, 31));
+  // The season pages read their own Sun table (build-sun-ingresses.mjs),
+  // which holds every season that begins from 2026 through 2040, so every
+  // sign has its current or next season on every day up to the end of 2039.
+  it('has a current or next season for every sign through 2039', () => {
+    expect(sunTable.horizon).toEqual({ from: '2026-01-01', to: '2041-02-01' });
+    const until = Date.UTC(2039, 11, 31, 23, 59);
     for (let at = Date.UTC(2026, 1, 1); at <= until; at += 86_400_000 * 5) {
       for (const sign of SIGNS) expect(signSeasonFocus(sign.slug, new Date(at)), `${sign.slug} ${new Date(at).toISOString()}`).not.toBeNull();
     }
+    for (const sign of SIGNS) {
+      expect(signSeasonFocus(sign.slug, new Date(until)), sign.slug).not.toBeNull();
+      expect(seasonWindowsFor(sign.slug).some((window) => window.start.startsWith('2040-')), sign.slug).toBe(true);
+    }
+    expect(sunSeasons().at(-1)!.sign).toBe('capricorn');
+    expect(sunSeasons().at(-1)!.end.slice(0, 7)).toBe('2041-01');
     expect(currentSunSeason(new Date('2026-11-05T00:00:00Z'))?.sign).toBe('scorpio');
     expect(currentSunSeason(new Date('2026-11-22T07:24:00Z'))?.sign).toBe('sagittarius');
+    expect(currentSunSeason(new Date('2035-07-01T00:00:00Z'))?.sign).toBe('cancer');
+  });
+
+  // Same calculation as build-ingresses.mjs, so the years both tables hold
+  // agree to the millisecond. ingresses.json itself stays as it is: the AI
+  // runtime bundles it byte for byte.
+  it('agrees exactly with the Sun windows in ingresses.json where both run', () => {
+    const shared = (ingressTable.windows as { planet: string; sign: string; from: string; to: string }[])
+      .filter((row) => row.planet === 'Sun');
+    expect(shared.length).toBeGreaterThan(30);
+    for (const row of shared) {
+      expect(sunTable.windows, row.from).toContainEqual({ sign: row.sign, from: row.from, to: row.to });
+    }
   });
 });
 

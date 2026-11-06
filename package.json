@@ -69,6 +69,7 @@
     "data:og": "node --experimental-strip-types scripts/build-og-void.mjs",
     "data:og:verify": "node scripts/verify-og-cards.mjs",
     "data:ingresses": "node scripts/build-ingresses.mjs",
+    "data:sun-ingresses": "node scripts/build-sun-ingresses.mjs",
     "data:aura-moon-ingresses": "node scripts/build-aura-moon-ingresses.mjs",
     "data:eclipses": "node scripts/build-eclipses.mjs",
     "data:birthdays": "node scripts/build-birthdays.mjs",
