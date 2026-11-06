@@ -13,7 +13,7 @@ import { moonIllumination, moonLongitude, moonPhaseAngle, moonPhaseName } from '
 import { MOON_JOURNAL_COPY, type MoonJournalLocale } from '../lib/moon-journal/copy';
 import { cycleAt, journalMarkdown, lunationCalendar, lunationKey, promptFor } from '../lib/moon-journal/cycle';
 import {
-  MAX_ENTRY_LENGTH, browserStorage, deleteEverything, probeStorage, readEntries, removeEntry,
+  MAX_ENTRY_LENGTH, MOON_JOURNAL_KEY, browserStorage, deleteEverything, probeStorage, readEntries, removeEntry,
   upsertEntry, writeEntries, type JournalStorage, type StorageState,
 } from '../lib/moon-journal/store';
 import { SIGN_SLUGS, type JournalEntry, type Lunation, type SignSlug } from '../lib/moon-journal/types';
@@ -92,7 +92,15 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
     setEntries(readEntries(storageRef.current));
     setOnDevice(true);
     const timer = window.setInterval(() => setNowMs(Date.now()), 60_000);
-    return () => window.clearInterval(timer);
+    // Notes saved in another tab of this site show up here too.
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === null || event.key === MOON_JOURNAL_KEY) setEntries(readEntries(storageRef.current));
+    };
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('storage', onStorage);
+    };
   }, []);
 
   const cycle = useMemo(() => cycleAt(lunations, nowMs), [lunations, nowMs]);
@@ -105,10 +113,16 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
 
   // Load the saved note for this cycle into the editor once notes are read.
   const loadedFor = useRef<string | null>(null);
+  const loadedText = useRef('');
   useEffect(() => {
     if (!onDevice || !currentId || loadedFor.current === currentId) return;
     loadedFor.current = currentId;
-    setDraft(currentEntry?.text ?? '');
+    const saved = currentEntry?.text ?? '';
+    // A new or full Moon can pass while the page is open. Text the visitor is
+    // still writing is kept rather than replaced; only an untouched editor
+    // (empty, or the note that was loaded into it) moves to the new cycle.
+    setDraft((typed) => (typed.trim() === '' || typed === loadedText.current ? saved : typed));
+    loadedText.current = saved;
   }, [onDevice, currentId, currentEntry]);
 
   const now = new Date(nowMs);
@@ -126,7 +140,14 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
   const phaseLabel = (type: 'new' | 'full') => copy.phaseInline[type];
   const signName = (slug: string) => signNames[slug] ?? slug;
 
-  const persist = (next: JournalEntry[]): boolean => {
+  /**
+   * Applies a change to the notes as they are stored right now (another tab
+   * may have saved since this page read them), so a stale page never writes
+   * an old list over newer notes.
+   */
+  const persist = (change: (list: JournalEntry[]) => JournalEntry[]): boolean => {
+    const base = storageState === 'ok' ? readEntries(storageRef.current) : entries;
+    const next = change(base);
     setEntries(next);
     if (storageState !== 'ok') return false;
     const result = writeEntries(storageRef.current, next);
@@ -139,7 +160,7 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
 
   const saveCurrent = () => {
     if (!current || !currentId) return;
-    const next = upsertEntry(entries, {
+    const kept = persist((list) => upsertEntry(list, {
       id: currentId,
       phase: current.type,
       sign: current.sign,
@@ -147,21 +168,32 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
       prompt: currentEntry?.prompt ?? promptFor(current, locale),
       text: draft,
       savedAt: new Date().toISOString(),
-    });
-    const kept = persist(next);
-    if (kept) setStatus(ui.saved);
+    }));
+    if (kept) {
+      loadedText.current = draft;
+      setStatus(ui.saved);
+    }
     else if (storageState !== 'ok') setStatus(ui.savedNotKept);
   };
 
   const saveEdit = (entry: JournalEntry) => {
-    const next = upsertEntry(entries, { ...entry, text: editText, savedAt: new Date().toISOString() });
-    persist(next);
+    const kept = persist((list) => upsertEntry(list, { ...entry, text: editText, savedAt: new Date().toISOString() }));
+    if (storageState !== 'ok') {
+      setEditId(null);
+      setToolStatus(ui.savedNotKept);
+      return;
+    }
+    if (!kept) {
+      // Storage refused the write (full): keep the editor open with the text.
+      setToolStatus(ui.storageFull);
+      return;
+    }
     setEditId(null);
-    setToolStatus(storageState === 'ok' ? ui.saved : ui.savedNotKept);
+    setToolStatus(ui.saved);
   };
 
   const deleteOne = (id: string) => {
-    persist(removeEntry(entries, id));
+    persist((list) => removeEntry(list, id));
     setConfirmId(null);
     if (id === currentId) setDraft('');
   };

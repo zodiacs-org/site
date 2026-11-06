@@ -93,8 +93,10 @@ const strings = {
     const privacy = status.textContent ?? '';
     let card: PreparedChartCard | null = null;
     let url: string | null = null;
+    let generation = 0;
 
     const reset = () => {
+      generation += 1;
       card = null;
       make.hidden = false;
       share.hidden = true;
@@ -109,6 +111,7 @@ const strings = {
       if (!focus) return;
       make.disabled = true;
       if (makeLabel) makeLabel.textContent = strings.preparing;
+      const mine = ++generation;
       try {
         const { prepareSeasonStoryCard } = await import('../../lib/story-card');
         const chosen = reader.value;
@@ -119,6 +122,7 @@ const strings = {
           theme,
           reader: chosen && lines[chosen] ? { slug: chosen, line: lines[chosen], confidence } : null,
         });
+        if (mine !== generation) { card = null; return; }
         if (url) URL.revokeObjectURL(url);
         url = URL.createObjectURL(card.blob);
         preview.src = url;

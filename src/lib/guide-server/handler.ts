@@ -636,11 +636,21 @@ export function createGuideHandler(overrides: Partial<GuideHandlerDependencies> 
     }
     const vote = feedbackVote(req);
     if (vote) {
+      if (dependencies.env.GUIDE_KILL_SWITCH === '1') {
+        sendJson(res, 503, { error: 'disabled' });
+        return;
+      }
       if (!isExactAccountOrigin(req, dependencies.env)) {
         sendJson(res, 403, { error: 'forbidden' });
         return;
       }
-      dependencies.reportFeedback({ event: 'guide_feedback_v1', vote });
+      // Only a browser that already holds Guide's signed session cookie (it
+      // has had an answer) is counted, so a bare script cannot stuff the
+      // tally. Others get the same empty 204 and nothing is recorded.
+      const principal = guideAnonymousPrincipal(req, guideSecret(dependencies.env));
+      if (principal && principal.setCookie === null) {
+        dependencies.reportFeedback({ event: 'guide_feedback_v1', vote });
+      }
       res.statusCode = 204;
       setPrivateHeaders(res, 'text/plain; charset=utf-8');
       res.end();

@@ -1281,6 +1281,13 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
 });
 
 describe('Guide answer feedback', () => {
+  // A real signed Guide session cookie, as a browser holds after its first answer.
+  async function sessionCookie() {
+    const { guideAnonymousPrincipal } = await import('../src/lib/guide-server/security');
+    const issued = guideAnonymousPrincipal(request(), ENV.ASSISTANT_SALT);
+    return String(issued?.setCookie ?? '').split(';')[0];
+  }
+
   it.each([['feedback-up', 'up'], ['feedback-down', 'down']] as const)(
     'records only the %s vote, with no body, identity or content',
     async (action, vote) => {
@@ -1288,7 +1295,10 @@ describe('Guide answer feedback', () => {
       const authorizeTurn = vi.fn();
       const handler = createGuideHandler({ env: ENV, reportFeedback, authorizeTurn: authorizeTurn as any });
       const response = new MockResponse();
-      await handler(request('', { query: { action } }), response);
+      const cookie = await sessionCookie();
+      const req = request('', { query: { action } });
+      req.headers.cookie = cookie;
+      await handler(req, response);
       expect(response.statusCode).toBe(204);
       expect(response.text).toBe('');
       expect(reportFeedback).toHaveBeenCalledExactlyOnceWith({ event: 'guide_feedback_v1', vote });
@@ -1296,7 +1306,17 @@ describe('Guide answer feedback', () => {
     },
   );
 
-  it('refuses a vote from another origin and any other action', async () => {
+  it('answers a vote without a Guide session the same way but records nothing', async () => {
+    const reportFeedback = vi.fn();
+    const handler = createGuideHandler({ env: ENV, reportFeedback });
+    const response = new MockResponse();
+    await handler(request('', { query: { action: 'feedback-up' } }), response);
+    expect(response.statusCode).toBe(204);
+    expect(response.headers.has('set-cookie')).toBe(false);
+    expect(reportFeedback).not.toHaveBeenCalled();
+  });
+
+  it('refuses a vote from another origin, any other action, and while Guide is switched off', async () => {
     const reportFeedback = vi.fn();
     const handler = createGuideHandler({ env: ENV, reportFeedback });
     const crossSite = new MockResponse();
@@ -1308,6 +1328,12 @@ describe('Guide answer feedback', () => {
     const other = new MockResponse();
     await handler(request('', { query: { action: 'feedback-sideways' } }), other);
     expect(other.statusCode).toBe(404);
+    const off = new MockResponse();
+    const stopped = createGuideHandler({ env: { ...ENV, GUIDE_KILL_SWITCH: '1' }, reportFeedback });
+    const req = request('', { query: { action: 'feedback-down' } });
+    req.headers.cookie = await sessionCookie();
+    await stopped(req, off);
+    expect(off.statusCode).toBe(503);
     expect(reportFeedback).not.toHaveBeenCalled();
   });
 });
