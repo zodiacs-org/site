@@ -939,8 +939,98 @@ jobs:
       - name: Build, dist checks and route budgets (production flags on)
         run: npm run build
 
+      # --with-deps has apt install about 180 Ubuntu packages that the runner
+      # image lacks (mostly WebKit's media and font libraries, 114 MB of .deb
+      # files). The Azure Ubuntu mirror usually serves them in about 12
+      # seconds, but in late October and early November it stalled on several
+      # runs for 20 minutes or more, past the job's time limit. So the .deb
+      # files of the installed versions are kept in the Actions cache and
+      # handed to apt before the same install command runs. Each file is first
+      # checked against the SHA256 in the package lists apt has just
+      # downloaded and verified. apt then picks the same versions as before,
+      # uses a cached file whose name and size match, and downloads anything
+      # missing or newer, so the packages installed, and what the drives below
+      # test, stay the same. The mirror is still needed for the package lists
+      # (1 to 15 seconds during those stalls) and, once, for files the cache
+      # lacks.
+      - name: Name the browser package cache for this runner OS
+        id: browser-debs-name
+        run: echo "prefix=profile-browser-debs-$ImageOS-" >> "$GITHUB_OUTPUT"
+
+      # The cache only saves time, so it never fails the job: when it is slow
+      # or unavailable, apt downloads the packages as it did before.
+      - name: Restore profile test browser packages
+        id: browser-debs
+        continue-on-error: true
+        timeout-minutes: 3
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
+        with:
+          path: ~/profile-browser-debs
+          # Entries are named after their contents, so this key never matches
+          # exactly and the newest entry for this OS is restored.
+          key: ${{ steps.browser-debs-name.outputs.prefix }}newest
+          restore-keys: ${{ steps.browser-debs-name.outputs.prefix }}
+
       - name: Install profile test browsers
-        run: npx playwright-core install --with-deps chromium webkit
+        run: |
+          shopt -s nullglob
+          cached=(~/profile-browser-debs/*.deb)
+          : > "$RUNNER_TEMP/verified-debs"
+          if (( ${#cached[@]} )); then
+            # apt matches cached files only by name and size, so it is handed
+            # just the files whose SHA256 its signed package lists contain.
+            # If this refresh fails, fewer files match; the install's own
+            # refresh below then decides, as before.
+            sudo apt-get update -qq || true
+            apt-get indextargets --format '$(FILENAME)' 'Created-By: Packages' \
+              | xargs -r /usr/lib/apt/apt-helper cat-file \
+              | awk '$1 == "SHA256:" { print $2 }' > "$RUNNER_TEMP/listed-sha256"
+            sha256sum "${cached[@]}" \
+              | awk 'NR == FNR { listed[$1]; next } $1 in listed { print $2 }' "$RUNNER_TEMP/listed-sha256" - \
+              > "$RUNNER_TEMP/verified-debs"
+            xargs -r -d '\n' -a "$RUNNER_TEMP/verified-debs" sudo cp -t /var/cache/apt/archives/
+          fi
+          echo "Giving apt $(wc -l < "$RUNNER_TEMP/verified-debs") of ${#cached[@]} cached packages"
+          npx playwright-core install --with-deps chromium webkit
+
+      # Keeps the .deb file of each installed version, named as apt names it,
+      # and names the set after a digest of those file names. A new entry is
+      # saved only when the set differs from the one restored (a new runner
+      # image, an Ubuntu update or a Playwright upgrade), straight after the
+      # install, so a drive that fails later still leaves it for the next run.
+      - name: Collect profile test browser packages
+        id: browser-debs-set
+        continue-on-error: true
+        env:
+          PREFIX: ${{ steps.browser-debs-name.outputs.prefix }}
+          RESTORED: ${{ steps.browser-debs.outputs.cache-matched-key }}
+        run: |
+          set -o pipefail
+          export LC_ALL=C
+          cd /var/cache/apt/archives
+          dpkg-query -W -f '${Package}_${Version}_${Architecture}.deb\n' | sed 's/:/%3a/g' | sort -u > "$RUNNER_TEMP/installed-debs"
+          find . -maxdepth 1 -name '*.deb' -printf '%f\n' | sort | comm -12 - "$RUNNER_TEMP/installed-debs" > "$RUNNER_TEMP/kept-debs"
+          key="$PREFIX$(sha256sum < "$RUNNER_TEMP/kept-debs" | cut -c1-16)"
+          echo "$(wc -l < "$RUNNER_TEMP/kept-debs") packages as $key, restored ${RESTORED:-nothing}"
+          if [ "$key" != "$RESTORED" ]; then
+            rm -rf ~/profile-browser-debs
+            mkdir ~/profile-browser-debs
+            xargs -r -d '\n' -a "$RUNNER_TEMP/kept-debs" cp -t ~/profile-browser-debs/
+            du -sh ~/profile-browser-debs
+          fi
+          # Named only once every file is in place.
+          if [ -s "$RUNNER_TEMP/kept-debs" ]; then echo "key=$key" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Save profile test browser packages
+        if: steps.browser-debs-set.outcome == 'success' && steps.browser-debs-set.outputs.key != '' && steps.browser-debs-set.outputs.key != steps.browser-debs.outputs.cache-matched-key
+        continue-on-error: true
+        timeout-minutes: 5
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/profile-browser-debs
+          key: ${{ steps.browser-debs-set.outputs.key }}
 
       - name: Free sharing and sourced matches in Chromium and WebKit
         timeout-minutes: 8
