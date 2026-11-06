@@ -379,13 +379,15 @@ const ctaLede = edgeMoon && moonHouse
     fetchpriority="high"
   />
   <script slot="head" is:inline>
-    /* Up to 1020px wide the rail sits under the reading, well below the
-       first screen, and its sky and event lines are the only mono text the
-       page lays out on arrival. There the rail starts in the platform mono
-       (the .hz-rail rule in the styles below), so the 40 KB mono face is not
-       fetched beside the hero image. A beat after load the face is fetched
-       and handed to the rail while the rail is off screen, so text a reader
-       can see never changes face. Without script, nothing is deferred. */
+    /* On a phone the rail sits under the reading, well below the first
+       screen, and its sky and event lines are the only mono text the page
+       lays out on arrival. Their face is the optional JetBrains Mono alias,
+       which a browser draws only if it is ready at first use. There the rail
+       starts in that alias's own fallback list (the .hz-rail rule in the
+       styles below), so laying it out no longer fetches 40 KB beside the hero
+       image. A beat after load the rail gets the alias back while it is off
+       screen, so each browser applies the same optional rule as before, only
+       later. Without script, nothing changes. */
     (function () {
       var root = document.documentElement;
       root.setAttribute('data-mono-deferred', '');
@@ -393,27 +395,24 @@ const ctaLede = edgeMoon && moonHouse
         var rail = document.querySelector('.hz-rail');
         if (!rail) return;
         var observer;
-        function giveFace() {
+        function handBack() {
           if (observer) observer.disconnect();
           document.removeEventListener('visibilitychange', whileHidden);
           rail.setAttribute('data-mono-face', '');
         }
         // While the tab is hidden, nothing can be seen to change.
         function whileHidden() {
-          if (document.visibilityState === 'hidden') giveFace();
+          if (document.visibilityState === 'hidden') handBack();
         }
-        var stack = getComputedStyle(root).getPropertyValue('--font-mono').trim();
-        if (!document.fonts || !stack || !('IntersectionObserver' in window)) {
-          giveFace();
+        if (!('IntersectionObserver' in window)) {
+          handBack();
           return;
         }
-        document.fonts.load('1em ' + stack).then(function () {
-          observer = new IntersectionObserver(function (entries) {
-            if (!entries[entries.length - 1].isIntersecting) giveFace();
-          });
-          observer.observe(rail);
-          document.addEventListener('visibilitychange', whileHidden);
-        }).catch(function () {});
+        observer = new IntersectionObserver(function (entries) {
+          if (!entries[entries.length - 1].isIntersecting) handBack();
+        });
+        observer.observe(rail);
+        document.addEventListener('visibilitychange', whileHidden);
       }
       if (document.readyState === 'complete') window.setTimeout(start, 400);
       else window.addEventListener('load', function () { window.setTimeout(start, 400); }, { once: true });
@@ -1313,10 +1312,6 @@ const ctaLede = edgeMoon && moonHouse
   @media (max-width: 1020px) {
     .hz-reading { grid-template-columns: minmax(0, 1fr); }
     .hz-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
-    /* Under the reading, the rail waits for its mono face (see the head script). */
-    :global(:root[data-mono-deferred]) .hz-rail:not([data-mono-face]) {
-      --font-mono: ui-monospace, Menlo, Consolas, monospace;
-    }
     .hz-cta { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'wheel' 'body'; row-gap: 28px; }
     .hz-cta__wheel { width: 100%; max-width: 520px; margin-inline: auto; }
     .hz-more { grid-template-columns: minmax(0, 1fr); }
@@ -1354,6 +1349,12 @@ const ctaLede = edgeMoon && moonHouse
     .hz-note__part + .hz-note__part .hz-note__h { margin-top: 30px; padding-top: 18px; }
     .hz-note__foot { margin-top: 32px; }
     .hz-rail { grid-template-columns: minmax(0, 1fr); }
+    /* Until the head script hands the mono alias back, the rail uses the
+       alias's own fallback list: the stable mono stack in tokens.css without
+       its first family. */
+    :global(:root[data-mono-deferred]) .hz-rail:not([data-mono-face]) {
+      --font-mono: ui-monospace, Menlo, Consolas, monospace;
+    }
     .hz-cta { padding: 22px 18px 26px; border-radius: 24px; }
     .hz-cta .btn-row { flex-direction: column; align-items: stretch; }
     .hz-cta .btn { width: 100%; }
