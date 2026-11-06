@@ -6,6 +6,9 @@
  * Part 2 §H); the twelve sign lines are §F. Drafts carry standings facts
  * only — never a price, balance, address, or market word — and NOTHING here
  * posts anywhere. The caller writes drafts for a person to review.
+ *
+ * §H has no wording for signs level on points. The level lines (levelSentence
+ * and the "level at the top" subject) are new copy, kept in this file.
  */
 
 export const SIGN_NAMES = Object.freeze({
@@ -79,9 +82,33 @@ function dayWord(daysLeft) {
   return daysLeft === 1 ? 'day' : 'days';
 }
 
+const signList = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
+
+/**
+ * The rows on the same points as `sign`, in standings order. Equal points
+ * rank in zodiac order (zeroFilledStandings in src/lib/games/server.ts), so
+ * the order inside the group is only the tiebreak.
+ */
+export function levelWith(standings, sign) {
+  const row = standings.find((entry) => entry.sign === sign);
+  return row ? standings.filter((entry) => entry.points === row.points) : [];
+}
+
+/** "Aries and Capricorn are level on 100 points." for two or more rows. */
+function levelSentence(level) {
+  const who = level.length === Object.keys(SIGN_NAMES).length
+    ? 'All twelve signs'
+    : signList.format(level.map((row) => name(row.sign)));
+  return `${who} are level on ${points(level[0].points)}.`;
+}
+
 /**
  * Adjacent pair with the smallest gap where both signs have scored — a
  * rivalry needs two teams on the board. Null while fewer than two score.
+ *
+ * A level pair counts. A gap of 0 is the closest a rivalry gets, and
+ * skipping it would name a wider pair as the closest. The drafts word it as
+ * level (levelSentence), never as "0 points behind".
  */
 export function closestRivalry(standings) {
   let best = null;
@@ -115,9 +142,28 @@ export function biggestMover(standings, previous) {
   return best;
 }
 
-/** §H subject: "Week [N]: [Leader] holds on / [Mover] makes a move". */
-export function recapSubject({ isoWeek, leader, previousLeader, mover }) {
-  if (previousLeader && leader !== previousLeader) {
+/**
+ * The sign leading alone on points, or null when nobody leads: an empty
+ * board, or one level at the top, where the first sign is first only on the
+ * tiebreak.
+ */
+function soleLeader(standings) {
+  const [first, second] = standings;
+  if (!first || first.points === 0 || second?.points === first.points) return null;
+  return first.sign;
+}
+
+/**
+ * §H subject: "Week [N]: [Leader] holds on / [Mover] makes a move". With the
+ * top level on points nobody leads, so nobody holds on or takes the lead.
+ * previousLeader is last week's sole leader, null when nobody led then (an
+ * empty board or a level top), and undefined without a comparable week.
+ */
+export function recapSubject({ isoWeek, leader, previousLeader, mover, levelTop = false }) {
+  if (levelTop) {
+    return `Week ${isoWeek}: level at the top`;
+  }
+  if (previousLeader !== undefined && leader !== previousLeader) {
     return `Week ${isoWeek}: ${name(leader)} takes the lead`;
   }
   if (mover && mover.climbed >= 2) {
@@ -148,15 +194,21 @@ export function buildRecap(payload, previous = null) {
 
   const leader = standings[0];
   const open = standings.every((row) => row.points === 0);
+  const topLevel = open ? [] : levelWith(standings, leader.sign);
+  const levelTop = topLevel.length > 1;
   const rivalry = closestRivalry(standings);
+  const rivalryLevel = rivalry?.gap === 0 ? levelWith(standings, rivalry.ahead) : null;
   const mover = biggestMover(standings, comparable);
   const subject = open
     ? `Week ${isoWeek}: the board is open`
     : recapSubject({
       isoWeek,
       leader: leader.sign,
-      previousLeader: comparable?.standings?.[0]?.sign ?? null,
+      previousLeader: Array.isArray(comparable?.standings)
+        ? soleLeader(comparable.standings)
+        : undefined,
       mover,
+      levelTop,
     });
 
   // Top three, but never padded with unscored signs on a young board.
@@ -165,9 +217,11 @@ export function buildRecap(payload, previous = null) {
     .map((row, index) => `${index + 1}. ${name(row.sign)} — ${points(row.points)}`);
   const waiting = scored.length < 3 ? ' The rest of the board is waiting.' : '';
   const standingsLine = open ? OPEN_BOARD_LINE : `${topThree.join(' · ')}.${waiting}`;
-  const rivalryLine = rivalry
-    ? `${name(rivalry.behind)} is ${points(rivalry.gap)} behind ${name(rivalry.ahead)}.`
-    : 'No rivalry yet — the first joins will start one.';
+  const rivalryLine = rivalryLevel
+    ? levelSentence(rivalryLevel)
+    : rivalry
+      ? `${name(rivalry.behind)} is ${points(rivalry.gap)} behind ${name(rivalry.ahead)}.`
+      : 'No rivalry yet — the first joins will start one.';
   const moverLine = mover
     ? `${name(mover.sign)} climbed ${mover.climbed} ${mover.climbed === 1 ? 'place' : 'places'} to ${mover.rank}${['st', 'nd', 'rd'][mover.rank - 1] ?? 'th'}.`
     : comparable
@@ -207,10 +261,15 @@ export function buildRecap(payload, previous = null) {
 
   const shortLead = open
     ? OPEN_BOARD_LINE
-    : `${name(leader.sign)} leads with ${points(leader.points)}.`;
-  const shortRivalry = rivalry
-    ? ` ${name(rivalry.behind)} is ${rivalry.gap.toLocaleString('en')} behind.`
-    : '';
+    : levelTop
+      ? levelSentence(topLevel)
+      : `${name(leader.sign)} leads with ${points(leader.points)}.`;
+  // A level top is the closest rivalry too, and the lead already says it.
+  const shortRivalry = !rivalry || (levelTop && rivalry.ahead === leader.sign)
+    ? ''
+    : rivalryLevel
+      ? ` ${levelSentence(rivalryLevel)}`
+      : ` ${name(rivalry.behind)} is ${rivalry.gap.toLocaleString('en')} behind.`;
   const x = [
     `Week ${isoWeek} · The Zodiac Games`,
     `${shortLead}${shortRivalry}`,
