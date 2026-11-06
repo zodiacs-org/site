@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "new-pages-translations-2026-11-06",
-  "baseCommit": "b5ccbc064f4fc2fb69395635ddf986382a13c046",
+  "baseCommit": "e9fa8843fa6332f2075dc47ee4b4ddd76cc34016",
   "protectedPaths": [
     "src/lib/i18n/index.ts"
   ]
