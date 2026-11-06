@@ -173,6 +173,26 @@ try {
 } catch {
   failures.push(`${ASTROFOLIO_SHARE_CARD_PATH}: missing`);
 }
+// Your 2027 sky's own card (npm run data:og -- --only-year-sky-card): a JPEG
+// under the art cards' budget, in its own folder beside the v8 family.
+try {
+  const yearSkyCard = OG_EN.yearSky.image;
+  if (!/^\/assets\/og\/year-sky\/v\d+\/\d{4}\.jpg$/u.test(yearSkyCard)) {
+    failures.push(`Your 2027 sky image: expected a year-sky JPEG, received ${yearSkyCard}`);
+  }
+  const bytes = await readFile(resolve(root, `public${yearSkyCard}`));
+  const metadata = await sharp(bytes).metadata();
+  if (metadata.format !== 'jpeg' || metadata.width !== 1200 || metadata.height !== 630) {
+    failures.push(`${yearSkyCard}: expected 1200x630 JPEG, received ${metadata.width ?? '?'}x${metadata.height ?? '?'} ${metadata.format ?? 'unknown'}`);
+  }
+  if (bytes.length > ART_CARD_MAX_BYTES) failures.push(`${yearSkyCard}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const hash = createHash('sha256').update(bytes).digest('hex');
+  const duplicate = hashes.get(hash);
+  if (duplicate) failures.push(`${yearSkyCard}: byte-identical to ${duplicate}`);
+  else hashes.set(hash, yearSkyCard);
+} catch {
+  failures.push(`${OG_EN.yearSky.image}: missing`);
+}
 if (OG_EN.terminal.image !== expectedTerminalPath) {
   failures.push(`Terminal image: expected ${expectedTerminalPath}, received ${OG_EN.terminal.image}`);
 }

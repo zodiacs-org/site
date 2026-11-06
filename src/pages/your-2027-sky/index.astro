@@ -16,6 +16,7 @@ import type { EclipseRecord } from '../../lib/upcoming';
 import eclipsesData from '../../data/eclipses.json';
 import skyData from '../../data/sky.json';
 import ingressesData from '../../data/ingresses.json';
+import { OG_EN } from '../../strings/seo.en.mjs';
 import '../../styles/calculator.css';
 import '../../styles/sharing-tools.css';
 import '../../styles/return-visits.css';
@@ -44,7 +45,7 @@ const jsonLd = [{
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
 }];
 ---
-<Base privateSurface clientUi locale={locale} path={path} title={`${w.pageTitle} | Zodiacs.org`} description={w.pageDescription} jsonLd={jsonLd} glass>
+<Base privateSurface clientUi locale={locale} path={path} title={`${w.pageTitle} | Zodiacs.org`} description={w.pageDescription} image={OG_EN.yearSky.image} imageAlt={OG_EN.yearSky.alt} jsonLd={jsonLd} glass>
   <section class="section--tight container ys-page">
     <header class="tool-hero">
       <h1 class="display">{w.heroTitle}</h1>

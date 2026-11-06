@@ -66,6 +66,16 @@ export const OG_EN = Object.freeze({
     image: '/assets/og/astrofolio/v6/faces.jpg',
     alt: 'Astrofolio: the collection of twelve official Zodiac tokens.',
   },
+  // Your 2027 sky's own card (npm run data:og -- --only-year-sky-card): the
+  // page's headline and a line, with the twelve sign discs as the year's wheel.
+  // A new design takes a new folder; this one stays published once shared.
+  yearSky: {
+    path: '/your-2027-sky/',
+    image: '/assets/og/year-sky/v1/2027.jpg',
+    title: 'Your 2027 sky',
+    line: 'The year’s eclipses, returns and slow planets, read for your own chart.',
+    alt: 'Your 2027 sky: the year’s eclipses, returns and slow planets, read for your own chart, beside a ring of the twelve sign discs.',
+  },
   terminal: {
     path: '/terminal/',
     image: '/assets/og/v7/terminal.png',
