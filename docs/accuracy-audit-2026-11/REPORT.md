@@ -35,8 +35,12 @@ What remains is precision, not wrong facts:
    horoscope text, sign date ranges and blue moons.
 2. **NASA references.**
    - **JPL Horizons** (DE441), giving the apparent geocentric ecliptic longitude
-     of date. It was queried fresh, and every raw response is in `raw/` with
-     its query URL, retrieval time and SHA-256.
+     of date. It was queried fresh, and `raw/MANIFEST.json` records every query URL,
+     its retrieval time and the SHA-256 of the response.
+     `scripts/accuracy-audit/horizons_fetch.py` downloads the responses
+     again from NASA. The raw text is not committed, because the repository's
+     Swiss output guard treats some of its numbers as removed values. It
+     flagged 5 tokens, which matched by coincidence: dates and digits.
    - **NASA's Five Millennium Canon** (Espenak and Meeus) for eclipses, as
      captured in
      `docs/engine-validation/sky-events-references/nasa-eclipses-2025-2030.json`.

@@ -1,0 +1,3 @@
+# Raw NASA JPL Horizons responses are fetched by scripts/accuracy-audit/horizons_fetch.py.
+# MANIFEST.json keeps each query URL, retrieval time and SHA-256.
+*.txt
