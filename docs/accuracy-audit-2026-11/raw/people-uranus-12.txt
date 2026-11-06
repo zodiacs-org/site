@@ -1,0 +1,160 @@
+API VERSION: 1.2
+API SOURCE: NASA/JPL Horizons API
+
+
+
+*******************************************************************************
+Ephemeris / API_USER Fri Nov  6 06:55:44 2026 Pasadena, USA      / Horizons    
+*******************************************************************************
+Target body name: Uranus Barycenter (7)           {source: DE441}
+Center body name: Earth (399)                     {source: DE441}
+Center-site name: GEOCENTRIC
+*******************************************************************************
+Start time      : A.D. 1895-Sep-03 16:37:39.0000 UT      
+Stop  time      : A.D. 1899-Aug-27 06:26:54.0004 UT      
+Step-size       : 0 steps
+*******************************************************************************
+Target pole/equ : undefined
+Target radii    : undefined                                                    
+Center geodetic : 0.0, 0.0, -6378.137             {E-lon(deg),Lat(deg),Alt(km)}
+Center cylindric: 0.0, 0.0, 0.0                   {E-lon(deg),Dxy(km),Dz(km)}
+Center pole/equ : ITRF93                          {East-longitude positive}
+Center radii    : 6378.137, 6378.137, 6356.752 km {Equator_a, b, pole_c}       
+Target primary  : Sun
+Vis. interferer : MOON (R_eq= 1737.400) km        {source: DE441}
+Rel. light bend : Sun                             {source: DE441}
+Rel. lght bnd GM: 1.3271E+11 km^3/s^2                                          
+Atmos refraction: NO (AIRLESS)
+RA format       : DEG
+Time format     : JD  
+Calendar mode   : Mixed Julian/Gregorian
+EOP file        : eop.261105.p270201                                           
+EOP coverage    : DATA-BASED 1962-JAN-20 TO 2026-NOV-05. PREDICTS-> 2027-JAN-31
+Units conversion: 1 au= 149597870.700 km, c= 299792.458 km/s, 1 day= 86400.0 s 
+Table cut-offs 1: Elevation (-90.0deg=NO ),Airmass (>38.000=NO), Daylight (NO )
+Table cut-offs 2: Solar elongation (  0.0,180.0=NO ),Local Hour Angle( 0.0=NO )
+Table cut-offs 3: RA/DEC angular rate (     0.0=NO )                           
+*******************************************************************************
+Date_________JDUT        ObsEcLon    ObsEcLat
+*********************************************
+$$SOE
+2413440.192812500     226.5622601   0.3097832
+2413440.692812500     226.5792288   0.3095865
+2413441.192812500     226.5963792   0.3093905
+2413470.750000000     227.9029918   0.2990651
+2413471.250000000     227.9293262   0.2989164
+2413471.750000000     227.9557788   0.2987686
+2413536.020833330     231.8020862   0.2879421
+2413536.520833330     231.8310974   0.2879216
+2413537.020833330     231.8600246   0.2879021
+2413922.794652780     237.2789886   0.2326768
+2413923.294652780     237.3042559   0.2326688
+2413923.794652780     237.3293950   0.2326615
+2413947.276967590     238.3346948   0.2329600
+2413947.776967590     238.3518895   0.2329769
+2413948.276967590     238.3688927   0.2329943
+2414129.750000000     235.0231632   0.2140487
+2414130.250000000     235.0191259   0.2138779
+2414130.750000000     235.0152993   0.2137067
+2414179.493506940     235.6618943   0.1972898
+2414179.993506940     235.6785571   0.1971341
+2414180.493506940     235.6954053   0.1969787
+2414236.708333330     238.5091248   0.1828388
+2414237.208333330     238.5395265   0.1827474
+2414237.708333330     238.5699709   0.1826565
+2414323.430682870     243.0526902   0.1756061
+2414323.930682870     243.0672826   0.1756012
+2414324.430682870     243.0816709   0.1755965
+2414353.169050930     243.5460541   0.1755394
+2414353.669050930     243.5476118   0.1755370
+2414354.169050930     243.5489423   0.1755344
+2414388.708333330     243.1226222   0.1747432
+2414389.208333330     243.1096382   0.1747177
+2414389.708333330     243.0964902   0.1746919
+2414433.708333330     241.4853944   0.1698508
+2414434.208333330     241.4646126   0.1697636
+2414434.708333330     241.4438383   0.1696758
+2414487.708333330     239.7003554   0.1571145
+2414488.208333330     239.6915403   0.1569717
+2414488.708333330     239.6829154   0.1568287
+2414558.708333330     240.5190000   0.1369367
+2414559.208333330     240.5389404   0.1368097
+2414559.708333330     240.5590429   0.1366831
+2414668.165520830     246.5728047   0.1189370
+2414668.665520830     246.5961970   0.1188982
+2414669.165520830     246.6194346   0.1188596
+2414688.176643520     247.3801078   0.1175204
+2414688.676643520     247.3966024   0.1174897
+2414689.176643520     247.4129071   0.1174593
+2414773.708333330     247.1419195   0.1113058
+2414774.208333330     247.1246280   0.1112475
+2414774.708333330     247.1072191   0.1111888
+2414816.125000000     245.4585578   0.1046790
+2414816.625000000     245.4387118   0.1045813
+2414817.125000000     245.4189259   0.1044832
+2414879.500000000     243.9926811   0.0902863
+2414880.000000000     243.9928504   0.0901656
+2414880.500000000     243.9932381   0.0900451
+2414892.768680560     244.0700041   0.0870985
+2414893.268680560     244.0758658   0.0869783
+2414893.768680560     244.0819439   0.0868581
+$$EOE
+*******************************************************************************
+Column meaning:
+ 
+TIME
+
+  Times PRIOR to 1962 are UT1, a mean-solar time closely related to the
+prior but now-deprecated GMT. Times AFTER 1962 are in UTC, the current
+civil or "wall-clock" time-scale. UTC is kept within 0.9 seconds of UT1
+using integer leap-seconds for 1972 and later years.
+
+  Conversion from the internal Barycentric Dynamical Time (TDB) of solar
+system dynamics to the non-uniform civil UT time-scale requested for output
+has not been determined for UTC times after the next July or January 1st.
+Therefore, the last known leap-second is used as a constant over future
+intervals.
+
+  Time tags refer to the UT time-scale conversion from TDB on Earth
+regardless of observer location within the solar system, although clock
+rates may differ due to the local gravity field and no analog to "UT"
+may be defined for that location.
+
+  Any 'b' symbol in the 1st-column denotes a B.C. date. First-column blank
+(" ") denotes an A.D. date.
+ 
+CALENDAR SYSTEM
+
+  Mixed calendar mode was active such that calendar dates after AD 1582-Oct-15
+(if any) are in the modern Gregorian system. Dates prior to 1582-Oct-5 (if any)
+are in the Julian calendar system, which is automatically extended for dates
+prior to its adoption on 45-Jan-1 BC.  The Julian calendar is useful for
+matching historical dates. The Gregorian calendar more accurately corresponds
+to the Earth's orbital motion and seasons. A "Gregorian-only" calendar mode is
+available if such physical events are the primary interest.
+
+  NOTE: "n.a." in output means quantity "not available" at the print-time.
+ 
+ 'ObsEcLon    ObsEcLat' =
+   Observer-centered IAU76/80 ecliptic-of-date longitude and latitude of the
+target centers' apparent position, with light-time, gravitational deflection of
+light, and stellar aberrations.  Units: DEGREES
+
+Computations by ...
+
+    Solar System Dynamics Group, Horizons On-Line Ephemeris System
+    4800 Oak Grove Drive, Jet Propulsion Laboratory
+    Pasadena, CA  91109   USA
+
+    General site: https://ssd.jpl.nasa.gov/
+    Mailing list: https://ssd.jpl.nasa.gov/email_list.html
+    System news : https://ssd.jpl.nasa.gov/horizons/news.html
+    User Guide  : https://ssd.jpl.nasa.gov/horizons/manual.html
+    Connect     : browser        https://ssd.jpl.nasa.gov/horizons/app.html#/x
+                  API            https://ssd-api.jpl.nasa.gov/doc/horizons.html
+                  command-line   telnet ssd.jpl.nasa.gov 6775
+                  e-mail/batch   https://ssd.jpl.nasa.gov/ftp/ssd/horizons_batch.txt
+                  scripts        https://ssd.jpl.nasa.gov/ftp/ssd/SCRIPTS
+    Inquiries   : Jon.D.Giorgini@jpl.nasa.gov
+
+*******************************************************************************
