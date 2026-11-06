@@ -58,3 +58,61 @@ export function vapidKeyBytes(value: string): ArrayBuffer {
   const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
+
+/**
+ * The streams one browser push subscription can carry: Sky Alerts and the
+ * Moon journal's new and full Moon reminders. The server keeps one row per
+ * browser endpoint with a flag for each, so turning one off never silences
+ * the other, and the browser's subscription is dropped only when neither is
+ * left.
+ */
+export type PushTopic = 'sky' | 'lunation';
+export interface PushTopicStatus {
+  sky: boolean;
+  lunation: boolean;
+}
+
+export const PUSH_API_PATH = '/api/push/subscribe';
+
+/** The `topics` object of a status answer, or null when the answer has none. */
+export function parseTopicStatus(value: unknown): PushTopicStatus | null {
+  const topics = (value as { topics?: unknown } | null)?.topics;
+  if (!topics || typeof topics !== 'object') return null;
+  const { sky, lunation } = topics as Record<string, unknown>;
+  if (typeof sky !== 'boolean' || typeof lunation !== 'boolean') return null;
+  return { sky, lunation };
+}
+
+export type PushFetch = (input: string, init: RequestInit) => Promise<Pick<Response, 'ok' | 'status' | 'json'>>;
+
+/**
+ * Ask the site which streams this browser's endpoint carries. Sends only the
+ * endpoint. Null when the server answers without topics (a deployment from
+ * before topics), which callers read as the old single stream.
+ */
+export async function fetchTopicStatus(endpoint: string, fetchImpl: PushFetch = fetch): Promise<PushTopicStatus | null> {
+  const response = await fetchImpl(PUSH_API_PATH, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'status', endpoint }),
+  });
+  if (!response.ok) throw new Error(`push status ${response.status}`);
+  return parseTopicStatus(await response.json().catch(() => null));
+}
+
+/**
+ * Turn one stream off on the server. Resolves to true when the browser's
+ * subscription still carries the other stream and must be kept.
+ */
+export async function leavePushTopic(endpoint: string, topic: PushTopic, fetchImpl: PushFetch = fetch): Promise<boolean> {
+  const response = await fetchImpl(PUSH_API_PATH, {
+    method: 'DELETE',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ endpoint, topic }),
+  });
+  if (!response.ok) throw new Error(`unsubscribe endpoint ${response.status}`);
+  const body = await response.json().catch(() => null) as { remaining?: unknown } | null;
+  return body?.remaining === true;
+}

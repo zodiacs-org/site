@@ -156,6 +156,13 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `src/lib/time/zone-case.test.ts` fails until the list matches them)
 - `src/data/ingresses.json` ← `node scripts/build-ingresses.mjs` (refresh
   yearly with sky.json)
+- `src/data/sun-ingresses.json` ← `node scripts/build-sun-ingresses.mjs`
+  (the Sun's sign entries for the season pages, every season that begins
+  from 2026 through 2040, by the same calculation as ingresses.json, whose
+  Sun windows it matches to the millisecond; ingresses.json is bundled byte
+  for byte into the AI runtime and the published developer plugin, so the
+  seasons do not extend it. No timestamp, so `--check` catches drift; the
+  site-check drift gate runs it)
 - `src/data/eclipses.json` ← `node scripts/build-eclipses.mjs` (refresh
   yearly with sky.json)
 - `src/data/birthdays.json` ← `node scripts/build-birthdays.mjs` (the
@@ -274,6 +281,9 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `og-art-cards.test.ts` holds both. Not in the drift job; `verify-og-cards`
   checks them, under their own 12 MiB ceiling. Each locale's homepage card is
   also that locale's fallback
+- `public/assets/og/year-sky/v1/2027.jpg` ← `npm run data:og -- --only-year-sky-card`
+  (the share card for /your-2027-sky/; words in `OG_EN.yearSky`. Not in the
+  drift job (Chromium output); `verify-og-cards` checks it)
 - `public/assets/og/astrofolio/v6/faces.jpg` ← `node
   scripts/build-astrofolio-share-card.mjs` (Astrofolio's one evergreen share
   card, owner-chosen 2026-09-24: Chromium paints the twelve sign frames of

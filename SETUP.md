@@ -256,6 +256,12 @@ The production schema must include the RLS-protected `push_subscriptions` and
 enabling push. Delivery claims are the database authority for the advertised
 rolling caps; an in-memory or workflow-only counter is not sufficient.
 
+The topics migration (`20261106090000_push_subscription_topics.sql`) adds a
+flag per stream to `push_subscriptions` (`sky_alerts`, backfilled true, and
+`lunation_reminders` for the Moon journal's new and full Moon reminders). The
+subscribe API writes those columns, so apply it before deploying the code that
+sends them with push switched on.
+
 ### Phase 4 compatibility invitations
 
 Phase 4 uses three independent controls:
@@ -604,7 +610,7 @@ All schedules are UTC.
 | `.github/workflows/weekly-digest.yml` | Monday 06:00, 06:15, 07:00, 10:00, 18:00; Tuesday recovery at 05:00/05:15, 06:00/06:15, 07:00/07:15, 10:00/10:15, 17:00/17:15 | Fixture smoke always. Scheduled delivery/recovery requires `DIGEST_ENABLED=true`; an explicit manual `dry_run=false` dispatch is the separately controlled limit-one canary path and does not use that schedule gate. | Off by default; live credentials exist only in the default-branch-restricted `weekly-digest-production` environment. |
 | `.github/workflows/pulse-refresh.yml` | Monday 06:17 | Refreshes Wikipedia/Trends pulse data and commits changes. | Existing, best effort. |
 | `.github/workflows/distribution-refresh.yml` | Monday 06:31 | Refreshes Registry ownership distribution and commits changes. | Existing Registry operation. |
-| `.github/workflows/push-daily.yml` | Daily 07:00 | Verifies the committed events publication and dry-runs the July 18 event plus the July 22 quiet day; when enabled, applies the global priority/cap schedule, sends at most one source-backed event alert, and otherwise sends nothing. | Off by default; real delivery requires GitHub `PUSH_ENABLED=true`. |
+| `.github/workflows/push-daily.yml` | Daily 07:00 | Verifies the committed events publication and dry-runs the July 18 event plus the July 22 quiet day; when enabled, applies the global priority/cap schedule, sends at most one source-backed event alert, and otherwise sends nothing. Then, on a new or full Moon UTC day only, sends the Moon journal reminder to browsers that opted in on `/moon-journal/`, under the same per-endpoint caps. | Off by default; real delivery requires GitHub `PUSH_ENABLED=true`. |
 | `.github/workflows/transits-monthly.yml` | Monthly on day 25 at 05:41 | Computes next month's facts, verifies deterministic regeneration, commits, and opens the twelve-sign editorial issue. | Always on; Phase 1 may automate prose but must preserve fact verification. |
 | `.github/workflows/site-check.yml` | Push/PR/manual | Full build, type, fact, browser, schema, bundle, visual, Lighthouse, widget, drift, disposable PostgreSQL 17 concurrency, and flags-on push-browser gates. | Required before merge. |
 

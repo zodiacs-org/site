@@ -302,17 +302,28 @@ export function authorizeRealDelivery(env = process.env) {
   return subscriptionIds;
 }
 
+/** The column that marks a subscription as opted in to each stream. */
+export const PUSH_TOPIC_COLUMNS = Object.freeze({
+  sky: 'sky_alerts',
+  lunation: 'lunation_reminders',
+});
+
 export async function readSubscriptions(
   fetchImpl,
   url,
   serviceKey,
   limit,
   subscriptionIds = [],
+  topic = 'sky',
 ) {
+  const column = PUSH_TOPIC_COLUMNS[topic];
+  if (!column) throw new Error(`Unknown push topic: ${topic}`);
   const filter = subscriptionIds.length > 0
     ? `&subscription_id=in.(${subscriptionIds.join(',')})`
     : '';
-  const endpoint = `${url.replace(/\/+$/, '')}/rest/v1/push_subscriptions?select=subscription_id,endpoint,p256dh,auth,lang,updated_at&order=created_at.asc&limit=${limit}${filter}`;
+  // Only browsers that chose this stream: a Moon journal reminder never
+  // reaches a Sky Alerts subscriber who did not ask for it, and the reverse.
+  const endpoint = `${url.replace(/\/+$/, '')}/rest/v1/push_subscriptions?select=subscription_id,endpoint,p256dh,auth,lang,updated_at&${column}=is.true&order=created_at.asc&limit=${limit}${filter}`;
   const response = await fetchImpl(endpoint, { headers: serviceHeaders(serviceKey, 'return=representation') });
   if (!response.ok) throw new Error(`Could not read push subscriptions (${response.status}).`);
   const rows = await response.json();
@@ -341,6 +352,105 @@ function emptyReport(event = null) {
 function deliveryTtlSeconds(now) {
   const dayStart = Date.parse(`${utcDay(now)}T00:00:00.000Z`);
   return Math.max(0, Math.floor((dayStart + DAY_MS - now.getTime()) / 1_000));
+}
+
+/**
+ * Deliver one rendered payload to a listed batch of subscriptions, each
+ * through the durable per-endpoint claim (one notification a UTC day, two a
+ * rolling week, never the same event twice) before Web Push. Shared by Sky
+ * Alerts and the Moon journal's lunation reminders, so both streams count
+ * against the same caps. Dry runs log the payload and touch no store.
+ */
+export async function deliverToSubscriptions({
+  subscriptions,
+  eventId,
+  payload,
+  now,
+  dryRun,
+  claims,
+  sendNotification,
+  report,
+  log = console.log,
+  label,
+}) {
+  for (const row of subscriptions) {
+    report.considered += 1;
+    if (dryRun) {
+      report.dryRun += 1;
+      log(`${label}: dry-run en event=${eventId} ${payload}`);
+      continue;
+    }
+
+    let claim;
+    try {
+      claim = await claims.claim(row.subscription_id, eventId, row.updated_at);
+    } catch (error) {
+      report.failed += 1;
+      log(`${label}: claim failed ${error instanceof Error ? error.message : 'unknown'}`);
+      continue;
+    }
+    if (claim.outcome !== 'reserved') {
+      if (claim.outcome === 'capped_24h' || claim.outcome === 'capped_7d') report.capped += 1;
+      else if (claim.outcome === 'duplicate') report.duplicate += 1;
+      else if (claim.outcome === 'stale') report.stale += 1;
+      else report.missing += 1;
+      continue;
+    }
+    report.reserved += 1;
+
+    let response;
+    let acceptedStatus;
+    try {
+      response = await sendNotification({
+        endpoint: row.endpoint,
+        keys: { p256dh: row.p256dh, auth: row.auth },
+      }, payload, { TTL: deliveryTtlSeconds(now), urgency: 'normal' });
+      const resolvedStatus = Number(response?.statusCode ?? response?.status);
+      if (!Number.isInteger(resolvedStatus) || resolvedStatus < 200 || resolvedStatus > 299) {
+        throw Object.assign(new Error(`Web Push returned ${resolvedStatus || 'an invalid status'}.`), {
+          statusCode: Number.isInteger(resolvedStatus) ? resolvedStatus : undefined,
+        });
+      }
+      acceptedStatus = resolvedStatus;
+    } catch (error) {
+      const status = Number(error?.statusCode ?? error?.status);
+      const expired = status === 404 || status === 410;
+      let receiptFailed = false;
+      try {
+        const completion = await claims.complete(
+          row.subscription_id,
+          eventId,
+          claim.claimToken,
+          expired ? 'expired' : 'failed',
+          Number.isFinite(status) && status > 0 ? status : null,
+        );
+        if (expired && completion.outcome === 'expired') report.pruned += 1;
+      } catch (completionError) {
+        receiptFailed = true;
+        log(`${label}: receipt failed ${completionError instanceof Error ? completionError.message : 'unknown'}`);
+      }
+      if (!expired || receiptFailed) report.failed += 1;
+      if (!expired) log(`${label}: delivery failed ${status || 'unknown'}`);
+      continue;
+    }
+
+    try {
+      await claims.complete(
+        row.subscription_id,
+        eventId,
+        claim.claimToken,
+        'sent',
+        acceptedStatus,
+      );
+      report.sent += 1;
+    } catch (completionError) {
+      // The provider may already have accepted the alert. Leave the durable
+      // reservation in place so a retry cannot break the promised caps.
+      report.failed += 1;
+      log(`${label}: receipt failed ${completionError instanceof Error ? completionError.message : 'unknown'}`);
+    }
+  }
+  return report;
 }
 
 /**
@@ -389,83 +499,18 @@ export async function sendDailyPush({
   } else {
     report.schedule = 'dry_run';
   }
-  for (const row of subscriptions) {
-    report.considered += 1;
-    if (dryRun) {
-      report.dryRun += 1;
-      log(`sky-alert: dry-run en event=${event.id} ${payload}`);
-      continue;
-    }
-
-    let claim;
-    try {
-      claim = await claims.claim(row.subscription_id, event.id, row.updated_at);
-    } catch (error) {
-      report.failed += 1;
-      log(`sky-alert: claim failed ${error instanceof Error ? error.message : 'unknown'}`);
-      continue;
-    }
-    if (claim.outcome !== 'reserved') {
-      if (claim.outcome === 'capped_24h' || claim.outcome === 'capped_7d') report.capped += 1;
-      else if (claim.outcome === 'duplicate') report.duplicate += 1;
-      else if (claim.outcome === 'stale') report.stale += 1;
-      else report.missing += 1;
-      continue;
-    }
-    report.reserved += 1;
-
-    let response;
-    let acceptedStatus;
-    try {
-      response = await sendNotification({
-        endpoint: row.endpoint,
-        keys: { p256dh: row.p256dh, auth: row.auth },
-      }, payload, { TTL: deliveryTtlSeconds(now), urgency: 'normal' });
-      const resolvedStatus = Number(response?.statusCode ?? response?.status);
-      if (!Number.isInteger(resolvedStatus) || resolvedStatus < 200 || resolvedStatus > 299) {
-        throw Object.assign(new Error(`Web Push returned ${resolvedStatus || 'an invalid status'}.`), {
-          statusCode: Number.isInteger(resolvedStatus) ? resolvedStatus : undefined,
-        });
-      }
-      acceptedStatus = resolvedStatus;
-    } catch (error) {
-      const status = Number(error?.statusCode ?? error?.status);
-      const expired = status === 404 || status === 410;
-      let receiptFailed = false;
-      try {
-        const completion = await claims.complete(
-          row.subscription_id,
-          event.id,
-          claim.claimToken,
-          expired ? 'expired' : 'failed',
-          Number.isFinite(status) && status > 0 ? status : null,
-        );
-        if (expired && completion.outcome === 'expired') report.pruned += 1;
-      } catch (completionError) {
-        receiptFailed = true;
-        log(`sky-alert: receipt failed ${completionError instanceof Error ? completionError.message : 'unknown'}`);
-      }
-      if (!expired || receiptFailed) report.failed += 1;
-      if (!expired) log(`sky-alert: delivery failed ${status || 'unknown'}`);
-      continue;
-    }
-
-    try {
-      await claims.complete(
-        row.subscription_id,
-        event.id,
-        claim.claimToken,
-        'sent',
-        acceptedStatus,
-      );
-      report.sent += 1;
-    } catch (completionError) {
-      // The provider may already have accepted the alert. Leave the durable
-      // reservation in place so a retry cannot break the promised caps.
-      report.failed += 1;
-      log(`sky-alert: receipt failed ${completionError instanceof Error ? completionError.message : 'unknown'}`);
-    }
-  }
+  await deliverToSubscriptions({
+    subscriptions,
+    eventId: event.id,
+    payload,
+    now,
+    dryRun,
+    claims,
+    sendNotification,
+    report,
+    log,
+    label: 'sky-alert',
+  });
   return report;
 }
 

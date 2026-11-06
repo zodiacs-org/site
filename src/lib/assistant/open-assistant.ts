@@ -1395,7 +1395,12 @@ function appendFeedback(article: HTMLElement): void {
     button.addEventListener('click', () => {
       void fetch(`/v1/guide/feedback/${vote}`, { method: 'POST', keepalive: true, credentials: 'same-origin' })
         .catch(() => {});
-      row.replaceChildren(document.createTextNode(copy.thanks));
+      const thanks = document.createElement('span');
+      thanks.setAttribute('role', 'status');
+      thanks.textContent = copy.thanks;
+      row.tabIndex = -1;
+      row.replaceChildren(thanks);
+      row.focus({ preventScroll: true });
     }, { once: true });
     row.append(button);
   }
@@ -1409,9 +1414,11 @@ async function askSuggested(prompt: string): Promise<void> {
   syncTextareaHeight();
   syncSendState();
   await submitQuestion();
-  // A question the visitor was already writing comes back once the
-  // suggestion has gone out; an unsent suggestion stays editable.
-  if (draft.trim() && !textarea.value.trim()) {
+  // A question the visitor was already writing always comes back: once the
+  // suggestion has gone out, and also when it did not (consent declined, or
+  // Guide could not answer and put the suggestion back in the box).
+  const leftover = textarea.value.trim();
+  if (draft.trim() && (!leftover || leftover === prompt.trim())) {
     textarea.value = draft;
     syncTextareaHeight();
     syncSendState();
@@ -1611,7 +1618,13 @@ async function failure(response: Response): Promise<AssistantFailure> {
   }
 }
 
-function abortRequest(): void { activeRequest?.abort(); }
+let activeReveal: { cancel(): void } | null = null;
+
+function abortRequest(): void {
+  activeRequest?.abort();
+  // Stop and Clear also end an answer still being revealed on screen.
+  activeReveal?.cancel();
+}
 
 let dismissPendingConsent: (() => void) | null = null;
 let dismissPendingCloudConsent: (() => void) | null = null;
@@ -1982,6 +1995,7 @@ async function runTurn(pending: PendingTurn): Promise<void> {
   setStatus(currentCopy().thinking);
   let answer = '';
   const reveal = createReveal(pending.assistantBody);
+  activeReveal = reveal;
   const requestIsCurrent = () => currentProfileAccessGeneration(expectedGeneration) && activeRequest === request;
   const authorityTimer = pending.chartAuthority ? window.setInterval(() => {
     if (!sameSelfChartAuthority(pending.chartAuthority, readSelectedSelfChart())) onProfileDataChange();
@@ -2010,7 +2024,9 @@ async function runTurn(pending: PendingTurn): Promise<void> {
     state.revision = completed.conversationRevision;
     saveSession();
     await reveal.finish(completed.message.content);
-    if (!requestIsCurrent()) return;
+    if (activeReveal === reveal) activeReveal = null;
+    // Cleared while it was being revealed: the conversation it belonged to is gone.
+    if (!requestIsCurrent() || !pending.assistantArticle.isConnected) return;
     pending.assistantArticle.classList.remove('is-waiting');
     renderAssistantText(pending.assistantBody, completed.message.content);
     appendSourcesRow(pending.assistantBody, completed.message.content);
@@ -2112,7 +2128,10 @@ function closeAssistant(): void {
   root.hidden = true;
   document.documentElement.style.overflow = previousOverflow;
   launcher?.removeAttribute('aria-expanded');
-  opener?.focus();
+  // A hidden opener (a search question, or a question carried across the
+  // private reload) cannot take focus; the launcher does instead.
+  const back = opener && opener.isConnected && !opener.hidden && opener.getClientRects().length > 0 ? opener : launcher;
+  back?.focus();
   opener = null;
 }
 
@@ -2458,6 +2477,8 @@ export async function openAssistant(requestedLocale?: string, from?: HTMLElement
  */
 function prefillFromOpener(from?: HTMLElement | null): void {
   const prompt = from?.dataset?.assistantPrompt?.trim();
+  // A hidden holder made only to carry a question is not needed afterwards.
+  if (from?.hidden) from.remove();
   if (!prompt || !textarea || textarea.value.trim()) return;
   textarea.value = prompt.slice(0, 280);
   syncTextareaHeight();

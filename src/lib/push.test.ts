@@ -2,7 +2,10 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   PUSH_PREFERENCE_KEY,
   claimPushPrompt,
+  fetchTopicStatus,
   isIosDevice,
+  leavePushTopic,
+  parseTopicStatus,
   isStandaloneDisplay,
   readPushPreference,
   setPushPreference,
@@ -48,5 +51,35 @@ describe('push prompt preference', () => {
     vi.stubGlobal('atob', (value: string) => Buffer.from(value, 'base64').toString('binary'));
     expect([...new Uint8Array(vapidKeyBytes('AQID-_8'))]).toEqual([1, 2, 3, 251, 255]);
     vi.unstubAllGlobals();
+  });
+});
+
+describe('push topics', () => {
+  const endpoint = 'https://fcm.googleapis.com/fcm/send/example';
+  const answer = (body: unknown, ok = true) => vi.fn(async () => ({ ok, status: ok ? 200 : 503, json: async () => body }));
+
+  it('reads a status answer, and treats one without topics as unknown', async () => {
+    expect(parseTopicStatus({ ok: true, topics: { sky: false, lunation: true } })).toEqual({ sky: false, lunation: true });
+    expect(parseTopicStatus({ ok: true })).toBeNull();
+    expect(parseTopicStatus({ topics: { sky: 'yes', lunation: true } })).toBeNull();
+
+    const fetchImpl = answer({ ok: true, topics: { sky: true, lunation: false } });
+    await expect(fetchTopicStatus(endpoint, fetchImpl)).resolves.toEqual({ sky: true, lunation: false });
+    const [path, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
+    expect(path).toBe('/api/push/subscribe');
+    // Only the endpoint goes: no keys, no language, nothing else.
+    expect(JSON.parse(String(init.body))).toEqual({ action: 'status', endpoint });
+    await expect(fetchTopicStatus(endpoint, answer({}, false))).rejects.toThrow(/503/u);
+  });
+
+  it('keeps the browser subscription only when the server says another stream uses it', async () => {
+    const shared = answer({ ok: true, remaining: true });
+    await expect(leavePushTopic(endpoint, 'lunation', shared)).resolves.toBe(true);
+    const [, init] = shared.mock.calls[0] as unknown as [string, RequestInit];
+    expect(init.method).toBe('DELETE');
+    expect(JSON.parse(String(init.body))).toEqual({ endpoint, topic: 'lunation' });
+    await expect(leavePushTopic(endpoint, 'sky', answer({ ok: true, remaining: false }))).resolves.toBe(false);
+    await expect(leavePushTopic(endpoint, 'sky', answer({ ok: true }))).resolves.toBe(false);
+    await expect(leavePushTopic(endpoint, 'sky', answer({}, false))).rejects.toThrow(/503/u);
   });
 });

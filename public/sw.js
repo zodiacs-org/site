@@ -29,6 +29,8 @@ const SKY_ALERT_PATH_PREFIXES = [
   '/full-moon/',
   '/mars-retrograde/',
   '/mercury-retrograde/',
+  // The Moon journal's opt-in new and full Moon reminders open the journal.
+  '/moon-journal/',
   '/new-moon/',
   '/retrogrades/',
   '/venus-retrograde/',

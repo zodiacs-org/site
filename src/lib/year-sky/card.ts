@@ -48,7 +48,6 @@ const SERIF = '"EB Garamond", Georgia, serif';
 const SANS = '"Instrument Sans", system-ui, sans-serif';
 
 const hueOf = (slug: string | null) => SIGNS.find((sign) => sign.slug === slug)?.hue ?? INK_1;
-const nameOf = (slug: string) => SIGNS.find((sign) => sign.slug === slug)?.name ?? slug;
 
 interface Layout {
   width: number;
@@ -83,6 +82,7 @@ function fit(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, star
 
 async function paint(input: YearCardInput, format: YearCardFormat, locale: CatalogLocale): Promise<PreparedYearCard> {
   const w = yearSkyWords(locale);
+  const nameOf = (slug: string) => (SIGNS.some((sign) => sign.slug === slug) ? w.signName(slug) : slug);
   const L = LAYOUTS[format];
   const canvas = document.createElement('canvas');
   canvas.width = L.width;

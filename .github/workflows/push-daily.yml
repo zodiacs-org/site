@@ -43,12 +43,15 @@ jobs:
           cache: npm
 
       - name: Install
+        id: install
         run: npm ci
 
       - name: Smoke event and quiet-day dry runs
         run: |
           npm run push:daily -- --dry-run --fixture --date 2026-07-18 --limit 1
           npm run push:daily -- --dry-run --fixture --date 2026-07-22 --limit 1
+          npm run push:lunation -- --dry-run --fixture --date 2026-11-09 --limit 1
+          npm run push:lunation -- --dry-run --fixture --date 2026-11-10 --limit 1
 
       - name: Require the verified events publication
         run: npm run data:events:verify
@@ -78,3 +81,26 @@ jobs:
             ARGS+=(--dry-run)
           fi
           npm run push:daily -- "${ARGS[@]}"
+
+      # Moon journal reminders ride the same gates, subscriptions and per-endpoint
+      # caps. They send only on the UTC day of a new or full Moon, to browsers
+      # that opted in on /moon-journal/, and run after Sky Alerts even when that
+      # step found nothing to send or failed for some rows.
+      - name: Run Moon journal reminders
+        if: ${{ !cancelled() && steps.install.outcome == 'success' && (github.event_name != 'schedule' || vars.PUSH_ENABLED == 'true') }}
+        env:
+          PUSH_ENABLED: ${{ vars.PUSH_ENABLED }}
+          PUSH_TEST_SUBSCRIPTION_IDS: ${{ vars.PUSH_TEST_SUBSCRIPTION_IDS }}
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT || 'mailto:hello@zodiacs.org' }}
+          PUSH_DRY_RUN: ${{ inputs.dry_run }}
+          PUSH_LIMIT: ${{ inputs.limit }}
+        run: |
+          ARGS=(--limit "${PUSH_LIMIT:-500}")
+          if [ "${PUSH_DRY_RUN:-false}" = "true" ]; then
+            ARGS+=(--dry-run)
+          fi
+          npm run push:lunation -- "${ARGS[@]}"

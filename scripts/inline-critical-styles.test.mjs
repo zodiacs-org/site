@@ -413,3 +413,136 @@ describe('deferred font loader', () => {
     expect(h.changes).toEqual(['CSS fallback']);
   });
 });
+
+describe('late mono face on horoscope pages', () => {
+  const monoFace = "@font-face{font-family:JetBrains Mono Phase1;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:optional}";
+  const otherFaces = [
+    "@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:swap}",
+    "@font-face{font-family:EB Garamond Phase1;src:url(/fonts/eb-garamond-latin-400-italic.woff2) format('woff2');font-weight:400;font-style:italic;font-display:optional}",
+  ];
+  const marked = '<html data-inline-critical-css><head>'
+    + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+    + '<link rel="stylesheet" href="/_astro/route.hash.css">'
+    + '</head><body></body></html>';
+
+  async function transform(baseCss = `${otherFaces[0]}${monoFace}${otherFaces[1]}:root{--ink:#fff}`) {
+    const root = await fixture({ 'Base.hash.css': baseCss, 'route.hash.css': '.hz-hero{height:524px}' });
+    return inlineCriticalStyles(marked, root, { lateFace: true });
+  }
+
+  it('moves only the Phase 1 mono face behind a wide-screen media query, with a no-JS copy', async () => {
+    const { html, stylesheets } = await transform();
+
+    expect(stylesheets).toBe(2);
+    const base = html.match(/<style data-zdx-critical="Base\.hash\.css">([^<]*)<\/style>/)[1];
+    expect(base).toBe(`${otherFaces[0]}${otherFaces[1]}:root{--ink:#fff}`);
+    expect(html).toContain(`<style media="(min-width: 761px)" data-zdx-late-face>${monoFace}</style>`);
+    expect(html).toContain(`<noscript><style>${monoFace}</style></noscript>`);
+    expect(html.indexOf('data-zdx-critical="route.hash.css"')).toBeLessThan(html.indexOf('data-zdx-late-face>'));
+    expect(html.indexOf('data-zdx-late-face>')).toBeLessThan(html.indexOf('data-zdx-late-face-loader'));
+    expect(html.indexOf('data-zdx-late-face-loader')).toBeLessThan(html.indexOf('</head>'));
+    expect(html).not.toContain('data-zdx-deferred-style');
+  });
+
+  it('fails closed when the build loses the mono face', async () => {
+    await expect(transform(`${otherFaces.join('')}:root{--ink:#fff}`)).rejects.toThrow(
+      'expected one late JetBrains Mono Phase1 face, found 0',
+    );
+  });
+
+  async function harness({ wide = false, reachedTop = null, supported = true, readyState = 'loading' } = {}) {
+    const { html } = await transform();
+    const code = html.match(/<script data-zdx-late-face-loader>(.*?)<\/script>/s)[1];
+    const events = new Map();
+    const timers = [];
+    const loads = [];
+    const added = [];
+    const elements = [
+      { family: 'Instrument Sans Phase1, sans-serif', box: { top: 120, height: 20 } },
+      { family: '"JetBrains Mono Phase1", ui-monospace', box: { top: 0, height: 0 } },
+      ...(reachedTop === null ? [] : [{ family: '"JetBrains Mono Phase1", ui-monospace', box: { top: reachedTop, height: 18 } }]),
+    ].map(({ family, box }) => ({ family, getBoundingClientRect: () => box }));
+    const declarations = {
+      'font-family': '"JetBrains Mono Phase1"',
+      src: 'url("/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations")',
+      'font-weight': '300 600',
+      'font-style': 'normal',
+      'font-display': 'optional',
+    };
+    const style = {
+      media: '(min-width: 761px)',
+      sheet: { cssRules: [{ style: { getPropertyValue: (name) => declarations[name] } }] },
+    };
+    class TestFontFace {
+      constructor(family, source, descriptors) {
+        Object.assign(this, { family, source, descriptors });
+      }
+      load() {
+        return new Promise((resolve, reject) => loads.push({ face: this, resolve: () => resolve(this), reject }));
+      }
+    }
+    const window = {
+      FontFace: supported ? TestFontFace : undefined,
+      innerHeight: 823,
+      matchMedia: () => ({ matches: wide }),
+      addEventListener: (type, fn) => events.set(type, fn),
+    };
+    runInNewContext(code, {
+      FontFace: TestFontFace,
+      window,
+      getComputedStyle: (element) => ({ fontFamily: element.family }),
+      document: {
+        readyState,
+        fonts: { add: (face) => added.push(face) },
+        querySelector: () => style,
+        body: { getElementsByTagName: () => elements },
+      },
+      setTimeout: (fn, delay) => { timers.push({ fn, delay }); return timers.length; },
+    });
+    return { events, timers, loads, added };
+  }
+
+  const flush = () => new Promise((done) => setImmediate(done));
+
+  it('leaves wide screens to the media-matched face', async () => {
+    const h = await harness({ wide: true });
+    expect(h.events.size).toBe(0);
+    expect(h.timers).toHaveLength(0);
+  });
+
+  it('keeps the CSS-only path when the FontFace API is unavailable', async () => {
+    const h = await harness({ supported: false });
+    expect(h.events.size).toBe(0);
+  });
+
+  it('loads the same file after load on phones and registers it while its text is off screen', async () => {
+    const h = await harness({ reachedTop: 1836 });
+    expect(h.loads).toHaveLength(0);
+    h.events.get('load')();
+    expect(h.timers[0].delay).toBe(200);
+    h.timers[0].fn();
+    expect(h.loads).toHaveLength(1);
+    expect(h.loads[0].face.family).toBe('JetBrains Mono Phase1');
+    expect(h.loads[0].face.source).toContain('/fonts/jetbrains-mono-latin-wght-normal.woff2');
+    expect(h.loads[0].face.descriptors).toEqual({ weight: '300 600', style: 'normal', display: 'optional' });
+    h.loads[0].resolve();
+    await flush();
+    expect(h.added).toEqual([h.loads[0].face]);
+  });
+
+  it.each([400, 900, -2000])('never swaps the face in once its text has reached the screen (top %i)', async (top) => {
+    const h = await harness({ reachedTop: top, readyState: 'complete' });
+    h.timers[0].fn();
+    h.loads[0].resolve();
+    await flush();
+    expect(h.added).toHaveLength(0);
+  });
+
+  it('adds nothing when the download fails', async () => {
+    const h = await harness({ readyState: 'complete' });
+    h.timers[0].fn();
+    h.loads[0].reject(new Error('network failure'));
+    await flush();
+    expect(h.added).toHaveLength(0);
+  });
+});

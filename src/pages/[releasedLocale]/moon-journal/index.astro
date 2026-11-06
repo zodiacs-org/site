@@ -1,0 +1,11 @@
+---
+/** The Moon journal in Spanish, Portuguese, French and Italian: /es/moon-journal/ and the rest. */
+import MoonJournalPage from '../../../components/moon-journal/MoonJournalPage.astro';
+import type { MoonJournalLocale } from '../../../lib/moon-journal/copy';
+
+export function getStaticPaths() {
+  return (['es', 'pt', 'fr', 'it'] as const).map((releasedLocale) => ({ params: { releasedLocale } }));
+}
+const locale = Astro.params.releasedLocale as Exclude<MoonJournalLocale, 'en'>;
+---
+<MoonJournalPage locale={locale} />

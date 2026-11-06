@@ -1,0 +1,129 @@
+---
+/**
+ * The Moon journal: a private notebook tied to the new and full Moons. One
+ * template for English (/moon-journal/) and the translations
+ * (/es/moon-journal/ and the rest); the journal's words live in
+ * src/lib/moon-journal/copy*.ts and the page's prose in page-copy.ts.
+ *
+ * The lunation instants come from the committed sky data; each one's sign is
+ * read here, at build time in Node, from the full engine. The browser gets
+ * a plain list and the dependency-free lite engine for tonight's phase, so it
+ * never loads astronomy-engine. Each translated page hydrates its own island
+ * (MoonJournalEs and the rest), which carries only its own language.
+ *
+ * privateSurface and noAssistant: a note typed here stays in this browser,
+ * so the page opts out of third-party scripts and of Guide, which can send
+ * typed text. Nothing on this page makes a request with what is written.
+ *
+ * The opt-in reminder (English, in builds with PUBLIC_WEB_PUSH_ENABLED=1
+ * only) is not a third-party script: it registers the site's own worker and
+ * posts the browser's push subscription to the site's own
+ * /api/push/subscribe, the request every push control on the site makes.
+ * privateSurface only drops outside scripts (analytics), so both flags stay.
+ */
+import Base from '../../layouts/Base.astro';
+import MoonJournal from '../../islands/MoonJournal';
+import MoonJournalEs from '../../islands/MoonJournalEs';
+import MoonJournalPt from '../../islands/MoonJournalPt';
+import MoonJournalFr from '../../islands/MoonJournalFr';
+import MoonJournalIt from '../../islands/MoonJournalIt';
+import sky from '../../data/sky.json';
+import { bodyLongitude } from '../../lib/engine/full';
+import { englishOnlyCue, localizePath, renderableLocalesForPath } from '../../lib/i18n';
+import { moonPhaseLabel } from '../../lib/i18n/astrology';
+import { SIGNS, signForLongitude, signName } from '../../lib/signs';
+import type { MoonJournalLocale } from '../../lib/moon-journal/copy';
+import { MOON_JOURNAL_LINKS, MOON_JOURNAL_PAGE_COPY } from '../../lib/moon-journal/page-copy';
+import type { Lunation, SignSlug } from '../../lib/moon-journal/types';
+import '../../styles/moon-journal.css';
+
+interface Props { locale?: MoonJournalLocale }
+const { locale = 'en' } = Astro.props;
+const page = MOON_JOURNAL_PAGE_COPY[locale];
+const builtAt = new Date();
+// Two months back so the current cycle and the last one are always present.
+const from = builtAt.getTime() - 62 * 86_400_000;
+const lunations: Lunation[] = (sky.moons as { type: 'new' | 'full'; at: string }[])
+  .filter((moon) => Date.parse(moon.at) >= from)
+  .map((moon) => ({
+    type: moon.type,
+    at: moon.at,
+    sign: signForLongitude(bodyLongitude('Moon', new Date(moon.at))).slug as SignSlug,
+  }));
+const signNames = Object.fromEntries(SIGNS.map((sign) => [sign.slug, signName(sign, locale)]));
+const PHASES = ['New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous', 'Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent'];
+const phaseNames = locale === 'en' ? undefined : Object.fromEntries(PHASES.map((phase) => [phase, moonPhaseLabel(locale, phase)]));
+const island = { lunations, signNames, builtAt: builtAt.toISOString(), locale, ...(phaseNames ? { phaseNames } : {}) };
+const path = localizePath(locale, '/moon-journal/');
+const cue = englishOnlyCue(locale);
+const link = (target: string) => ({
+  href: localizePath(locale, target),
+  english: locale !== 'en' && !renderableLocalesForPath(target)?.includes(locale),
+});
+
+const jsonLd = [
+  {
+    '@type': 'WebApplication',
+    name: page.appName,
+    url: `https://zodiacs.org${path}`,
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    ...(locale === 'en' ? {} : { inLanguage: locale === 'pt' ? 'pt-BR' : locale }),
+  },
+];
+const remindersEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
+---
+<Base
+  title={`${page.title} | Zodiacs.org`}
+  description={page.description}
+  path={path}
+  locale={locale}
+  image="/assets/og/v2/tool/moon-phase.png"
+  imageAlt={page.imageAlt}
+  jsonLd={jsonLd}
+  privateSurface
+  noAssistant
+  clientUi
+>
+  <section class="section--tight container">
+    <div class="mj-hero">
+      <h1 class="display">{page.heading}</h1>
+      <p>{page.lede}</p>
+    </div>
+
+    {locale === 'en' && <MoonJournal client:load {...island} />}
+    {locale === 'es' && <MoonJournalEs client:load {...island} />}
+    {locale === 'pt' && <MoonJournalPt client:load {...island} />}
+    {locale === 'fr' && <MoonJournalFr client:load {...island} />}
+    {locale === 'it' && <MoonJournalIt client:load {...island} />}
+    <noscript>
+      <p class="mj-noscript">{page.noscript}</p>
+    </noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose">
+      <h2>{page.keptHeading}</h2>
+      {page.kept.map((paragraph, index) => (
+        <>
+          <p>{paragraph}</p>
+          {index === 0 && remindersEnabled && locale === 'en' && (
+            <p>
+              If you turn on reminders, we keep this browser’s push subscription, a
+              push-service address and its delivery keys, marked for Moon
+              reminders. It holds nothing you write. Turning reminders off removes
+              that mark, and the subscription too unless sky alerts use it.
+            </p>
+          )}
+        </>
+      ))}
+      <h2>{page.datesHeading}</h2>
+      <p>{page.dates.map((part) => {
+        if (typeof part === 'string') return part;
+        const target = link(MOON_JOURNAL_LINKS[part.link]);
+        return <a href={target.href} hreflang={target.english ? 'en' : undefined} title={target.english ? cue?.aria : undefined}>{part.text}{target.english ? cue?.suffix : ''}</a>;
+      })}</p>
+    </div>
+  </section>
+</Base>

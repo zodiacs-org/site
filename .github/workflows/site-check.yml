@@ -366,6 +366,9 @@ jobs:
       - name: Verify natal aspect example drift
         run: node scripts/build-natal-aspect-examples.mjs --check
 
+      - name: Verify Sun ingress table drift
+        run: node scripts/build-sun-ingresses.mjs --check
+
       # Committed wing HTML must match what the builders produce from
       # sources (build-app resolves the pinned local @babel/standalone,
       # so this job runs fully offline).

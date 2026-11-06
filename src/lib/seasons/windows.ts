@@ -1,24 +1,23 @@
 /**
- * The Sun's seasons from the committed ingress table (src/data/ingresses.json,
- * `npm run data:ingresses`): every closed window the Sun spends in a sign,
- * to a fraction of a second. The table's Sun horizon runs from 2026 into
- * mid 2029 and is refreshed yearly with sky.json, so every sign always has
- * its current or next season published.
+ * The Sun's seasons from the committed Sun ingress table
+ * (src/data/sun-ingresses.json, `node scripts/build-sun-ingresses.mjs`):
+ * every closed window the Sun spends in a sign, to a fraction of a second,
+ * every season that begins from 2026 through 2040. The season pages read this table
+ * rather than ingresses.json, whose Sun horizon ends in mid 2029 and which
+ * the AI runtime bundles byte for byte.
  */
-import ingressTable from '../../data/ingresses.json';
+import sunTable from '../../data/sun-ingresses.json';
 import { SIGNS } from '../signs';
 import { seasonFocus, type SeasonFocus, type SeasonWindow } from './clock';
 
 interface IngressWindow {
-  planet: string;
   sign: string;
   from: string;
   to: string;
 }
 
 const SUN_WINDOWS: readonly SeasonWindow[] = Object.freeze(
-  (ingressTable.windows as IngressWindow[])
-    .filter((row) => row.planet === 'Sun')
+  (sunTable.windows as IngressWindow[])
     .map((row) => Object.freeze({ sign: row.sign, start: row.from, end: row.to }))
     .sort((a, b) => Date.parse(a.start) - Date.parse(b.start)),
 );

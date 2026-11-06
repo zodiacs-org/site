@@ -21,7 +21,7 @@ interface Props {
 
 const { windows, hue, ui, now } = Astro.props;
 const focus = seasonFocus(windows, now);
-const utcDate = (iso: string) => new Intl.DateTimeFormat('en-US', {
+const utcDate = (iso: string) => new Intl.DateTimeFormat(ui.dateLocale, {
   weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
 }).format(new Date(iso));
 const utcTime = (iso: string) => `${new Intl.DateTimeFormat('en-GB', {
@@ -42,6 +42,7 @@ const labels = { startsIn: ui.startsIn, endsIn: ui.endsIn };
     data-season-clock
     data-windows={JSON.stringify(windows)}
     data-labels={JSON.stringify(labels)}
+    data-date-locale={ui.dateLocale}
   >
     <div class="season-clock__count" data-count>
       <p class="season-clock__label" data-count-label>{focus.phase === 'upcoming' ? ui.startsIn : ui.endsIn}</p>
@@ -86,10 +87,12 @@ const labels = { startsIn: ui.startsIn, endsIn: ui.endsIn };
   import { countdownParts, countdownTarget, seasonFocus, seasonProgress, type SeasonWindow } from '../../lib/seasons/clock';
 
   const pad = (value: number) => String(value).padStart(2, '0');
-  const dateFormat = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-  const timeFormat = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
 
   function start(root: HTMLElement): void {
+    // The page's language for the dates; the visitor's own zone and clock.
+    const dateLocale = root.dataset.dateLocale || 'en-US';
+    const dateFormat = new Intl.DateTimeFormat(dateLocale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const timeFormat = new Intl.DateTimeFormat(dateLocale, { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
     let windows: SeasonWindow[];
     let labels: { startsIn: string; endsIn: string };
     try {
