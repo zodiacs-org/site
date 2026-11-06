@@ -343,6 +343,10 @@ const DESIGN_SWEEP_ROUTES = [
   '/pt/taurus/',
   '/pt/virgo/',
 ] as const;
+// November 6: a Trophy Hall season that ended level on points says it was won
+// on the zodiac-order tiebreak (Virgo 2026: Aries and Capricorn on 100 each),
+// not "won by 0 points".
+const TROPHY_HALL_TIE_LASTMOD = '2026-11-06';
 // The compute API playground (P3.8): the page, and the developer index and compute API page that link to it.
 const PLAYGROUND_LASTMOD = '2026-10-16';
 const PLAYGROUND_ROUTES = ['/developers/playground/', '/developers/', '/developers/compute/'] as const;
@@ -743,7 +747,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
       { loc: '/race/', priority: 0.8, lastmod: DESIGN_SWEEP_LASTMOD },
-      { loc: '/games/history/', priority: 0.6, lastmod: DESIGN_SWEEP_LASTMOD },
+      { loc: '/games/history/', priority: 0.6, lastmod: TROPHY_HALL_TIE_LASTMOD },
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
     { loc: '/seasons/', priority: 0.75, lastmod: SEASON_PAGES_LASTMOD },

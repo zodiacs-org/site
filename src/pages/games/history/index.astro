@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import { championSeasons, championSign } from '../../../lib/games/champions';
 import { seasonInstanceAt, daysLeftInSeason } from '../../../lib/games/season';
+import { hallResult } from '../_season-result';
 
 const gamesEnabled = (import.meta.env.PUBLIC_ZODIAC_GAMES_ENABLED
   ?? process.env.PUBLIC_ZODIAC_GAMES_ENABLED) === '1';
@@ -64,7 +65,7 @@ const description =
               <div class="hall-entry__body">
                 <p class="hall-entry__line">
                   {entry.seasonName} {entry.year} · <strong>{sign.name}</strong>
-                  {' '}· won by {entry.marginPoints.toLocaleString('en')} {entry.marginPoints === 1 ? 'point' : 'points'}
+                  {' '}· {hallResult(entry)}
                 </p>
                 <details class="hall-entry__standings">
                   <summary>final standings →</summary>
