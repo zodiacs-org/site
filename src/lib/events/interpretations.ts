@@ -493,7 +493,7 @@ function aspectInterpretation(facts: EventFacts): EventInterpretation {
 
   const lead = variant(facts.id, 7, [
     `${first} ${aspect} ${second} on ${date}, linking ${firstGuide.terrain} with ${secondGuide.terrain}. The aspect ${aspectGuide.dynamic}; what you do with that relationship matters more than treating the date as a forecast.`,
-    `Two slower stories meet exactly on ${date}: ${first} forms a ${aspect} to ${second}. In astrology this ${aspectGuide.dynamic}, bringing ${firstGuide.terrain} into direct conversation with ${secondGuide.terrain}.`,
+    `Two slower stories meet exactly on ${date}: ${first} forms ${/^[aeiou]/i.test(aspect) ? 'an' : 'a'} ${aspect} to ${second}. In astrology this ${aspectGuide.dynamic}, bringing ${firstGuide.terrain} into direct conversation with ${secondGuide.terrain}.`,
     `The ${date} ${aspect} between ${first} and ${second} frames a conversation between ${firstGuide.terrain} and ${secondGuide.terrain}. Its value is symbolic and strategic: it shows a relationship to work with, not an outcome already chosen.`,
   ]);
 

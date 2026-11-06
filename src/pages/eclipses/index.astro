@@ -64,13 +64,17 @@ const nextSolar = eclipses.find((e) => !e.past && e.type === 'solar');
 const nextLunar = eclipses.find((e) => !e.past && e.type === 'lunar');
 const upcomingEvents = eclipses.filter((e) => e.at >= buildNow && e.at <= eventHorizon);
 
+/** "a" or "an" before an eclipse kind: an annular eclipse, a total one. */
+const article = (word: string) => (/^[aeiou]/i.test(word) ? 'an' : 'a');
+const capArticle = (word: string) => (article(word) === 'an' ? 'An' : 'A');
+
 const fmtDay = (d: Date) =>
   formatDate('en', d, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const fmtTime = (d: Date) =>
   formatTime('en', d, { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
 
 const status = next
-  ? `The next eclipse is a ${next.label.toLowerCase()} eclipse on ${fmtDay(next.at)}, in ${next.sign.name}.`
+  ? `The next eclipse is ${article(next.label)} ${next.label.toLowerCase()} eclipse on ${fmtDay(next.at)}, in ${next.sign.name}.`
   : 'Later eclipse dates are not available yet.';
 
 const asOf = formatShortDate('en', buildNow);
@@ -79,13 +83,13 @@ const faq = [
   {
     q: 'When is the next solar eclipse?',
     a: nextSolar
-      ? `A ${nextSolar.kind} solar eclipse peaks on ${fmtDay(nextSolar.at)}, with the Sun in ${nextSolar.sign.name}. Solar eclipses are only visible from a limited track. For the August 12, 2026 total eclipse, totality crosses Greenland, western Iceland, and northern Spain.`
+      ? `${capArticle(nextSolar.kind)} ${nextSolar.kind} solar eclipse peaks on ${fmtDay(nextSolar.at)}, with the Sun in ${nextSolar.sign.name}. Solar eclipses are only visible from a limited track. For the August 12, 2026 total eclipse, totality crosses Greenland, western Iceland, and northern Spain.`
       : 'Later solar eclipse dates are not available yet.',
   },
   {
     q: 'When is the next lunar eclipse?',
     a: nextLunar
-      ? `A ${nextLunar.kind} lunar eclipse peaks on ${fmtDay(nextLunar.at)}, with the Moon in ${nextLunar.sign.name}. Unlike solar eclipses, a lunar eclipse is visible from the entire night side of Earth at once.`
+      ? `${capArticle(nextLunar.kind)} ${nextLunar.kind} lunar eclipse peaks on ${fmtDay(nextLunar.at)}, with the Moon in ${nextLunar.sign.name}. Unlike solar eclipses, a lunar eclipse is visible from the entire night side of Earth at once.`
       : 'Later lunar eclipse dates are not available yet.',
   },
   {
