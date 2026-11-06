@@ -55,6 +55,8 @@ const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 // The sign-season pages and their hub were published together.
 const SEASON_PAGES_LASTMOD = '2026-11-05';
+// The sign season pages' year tables run through 2040 from 2026-11-06.
+const SEASON_SIGN_PAGES_LASTMOD = '2026-11-06';
 // The Spanish, Portuguese, French and Italian editions of Your 2027 sky, the Moon journal, the sign-season hub
 // and its twelve season pages, published together, and the translated tools hubs that list them. Their English
 // pages only gained hreflang alternates, which the rendered-content dates leave out.
@@ -592,7 +594,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // hosted search_sky_events names. The day of the daily edition it was built with.
   ['/developers/conventions/', '2026-11-04'] as const,
   // Your 2027 sky, the calendar-year edition read for a saved chart (first published 5 November 2026).
-  ['/your-2027-sky/', '2026-11-05'] as const,
+  ['/your-2027-sky/', '2026-11-06'] as const,
   // The Moon journal, first published, and the moon phase page's line linking to it. The day of the daily
   // edition they were built with.
   ['/moon-journal/', '2026-11-05'] as const,
@@ -751,7 +753,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
     { loc: '/seasons/', priority: 0.75, lastmod: SEASON_PAGES_LASTMOD },
-    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: SEASON_PAGES_LASTMOD })),
+    ...SIGNS.map((sign) => ({ loc: `/seasons/${sign.slug}/`, priority: 0.7, lastmod: SEASON_SIGN_PAGES_LASTMOD })),
     // Spanish and Portuguese daily surfaces render the same edition from the
     // same facts; they date with the edition like /today/ does.
     ...(['es', 'pt'] as const).flatMap((locale) => [
