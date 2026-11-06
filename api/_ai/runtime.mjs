@@ -42739,12 +42739,20 @@ function createAiNodeHandler(options = {}) {
       const atomicQuota = options.atomicQuota ?? ((kind) => reserveAiQuota(kind, env));
       const rateLimit = options.rateLimit ?? computeApiRateLimit;
       let verdict;
+      const refuse = (kind) => send(res, kind === "limited" ? 429 : 503, kind === "limited" ? "rate-limited" : "rate-limit-unavailable", kind === "limited" ? 60 : 300);
+      const countRequest = async () => {
+        try {
+          return await atomicQuota("request");
+        } catch {
+          return "unavailable";
+        }
+      };
       try {
         verdict = await rateLimit(req, COMPUTE_RATE_LIMIT_ID);
       } catch {
         verdict = "unavailable";
       }
-      if (verdict !== "allowed") return send(res, verdict === "limited" ? 429 : 503, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", verdict === "limited" ? 60 : 300);
+      if (verdict !== "allowed") return refuse(verdict);
       if (accountRoute) return serveAccountRoute(res, query[AI_ROUTE_PARAM], options, env);
       let watch;
       try {
@@ -42786,13 +42794,9 @@ function createAiNodeHandler(options = {}) {
           account = { service, principal };
         }
       }
-      try {
-        verdict = await atomicQuota("request");
-      } catch {
-        verdict = "unavailable";
-      }
-      if (verdict !== "allowed") return send(res, verdict === "limited" ? 429 : 503, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", verdict === "limited" ? 60 : 300);
       if (method === "GET") {
+        verdict = await countRequest();
+        if (verdict !== "allowed") return refuse(verdict);
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.statusCode = 200;
         res.end(JSON.stringify({ service: "zodiacs-mcp", version: AI_VERSION, transport: "stateless-streamable-http", ready: true }));
@@ -42818,6 +42822,10 @@ function createAiNodeHandler(options = {}) {
       }
       if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
       const message = body2;
+      if (String(message.method) === "tools/call") {
+        verdict = await countRequest();
+        if (verdict !== "allowed") return refuse(verdict);
+      }
       const skyEvents2 = env[OCCASIONS_SWITCH_ENV] === "1" && env[COVERAGE_SWITCH_ENV] === "1" && env[SKY_EVENTS_SWITCH_ENV] === "1";
       let calledTool;
       if (message.method === "tools/call" && message.params && typeof message.params === "object") {
