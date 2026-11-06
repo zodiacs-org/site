@@ -508,10 +508,11 @@ recorded.
   neither ephemeris marker, but 2 of its 43 files differ from the local build:
   the chunk itself and `account-save-loader`. The CI production-flags
   environment that D2 names leaves `PUBLIC_ACCOUNT_SAVES_ENABLED` unset, where
-  production sets it to 1 (production's loader loads `AccountSaveAction`; the
-  CI build's returns null), and it carries stand-ins for the two Supabase
-  settings. With chunk hashes and those two settings written out, the CI
-  environment's build matches 41 of the 43 files, and the same build with
+  production evidently sets it to 1 (inferred from the chunks it serves:
+  production's loader loads `AccountSaveAction`, and the CI build's returns
+  null), and it carries stand-ins for the two Supabase settings. With chunk
+  hashes and those two settings written out, the CI environment's build
+  matches 41 of the 43 files, and the same build with
   `PUBLIC_ACCOUNT_SAVES_ENABLED=1` matches 43 of 43
   (`d2-normalised-ci-environment.json`,
   `d2-normalised-with-account-saves.json`, `tools/compare-d2-normalized.mjs`,
@@ -519,8 +520,10 @@ recorded.
   for that closure; the owner approved the gap (below).
 - **Live check at the merge** (`live-check-at-merge.txt`): the hosted MCP
   server reports 0.6.4, and its `tools/list` of 19 tools is byte-identical to
-  the list taken just before the merge; ten pages answer 200; Vercel showed no
-  runtime errors after the deployment.
+  the list taken just before the merge; ten pages answer 200, checked a second
+  time after the script's own page loop failed on a variable name; and Vercel
+  found no runtime errors from the alias's move to 12:10Z
+  (`runtime-errors-after-merge.txt`).
 - **Main's Site Check on the merge** (run 42022457285): 20 of its 21 jobs
   passed; "Build with production's feature flags" was cancelled after 30
   minutes while installing its profile test browsers, before any of its checks
@@ -531,9 +534,10 @@ recorded.
 
 DECISIONS-2026-10-05 §4 keeps a reading or a departure the programme chose for
 its own units from being accepted under a general delegation, so OQ5, D-14 and
-the D2 gap waited for the owner. On 6 November at about 14:22 ICT, after both
-production runs had shown the adoption live, the owner was asked, in one
-question:
+the D2 gap waited for the owner. On 6 November at about 14:22 ICT, after the
+run at the merge had shown the adoption live, the owner was asked, in one
+question (the next deployment's run followed at 14:25 ICT, with the same 18 of
+19):
 
 > The engine 1.1.0-rc.2 work is merged and live on zodiacs.org. Five of its
 > units can count as accepted (the ledger goes from 46.0% to 48.2%) only with
@@ -544,6 +548,10 @@ question:
 > production check can't match because the test build uses stand-in database
 > settings instead of production's. An independent reviewer found no problems,
 > and every other planned check passed. Do you approve?
+
+The question's "An independent reviewer found no problems" is shorter than the
+record: the review's rounds found one blocker, the stale Phase 1 captures, and
+notes, all acted on before the merge, and its last round found no blocker.
 
 The options offered were "Approve all" (the rules and both gaps approved, the
 five units recorded accepted, P1.M3c failed either way), "Approve rules only"
@@ -565,8 +573,10 @@ The owner answered **"Yes, it stands"**.
   thresholds, R6, L9 and L11; P1.M3c's R-M3c; the varga section 3 reading and
   G-V1 to G-V5, with G-V4 as amended; F-53's R1 to R6; F-89's R-F89. Also
   D-14, the first-use drive's Firefox launch, and D2's gap on the
-  ChartCalculator closure, as above. Both answers came after the formal runs
-  and both production runs, so they apply to those recorded results.
+  ChartCalculator closure, as above. The first answer came after the formal
+  runs and the run at the merge, and before the next deployment's run, which
+  found the same; the confirmation came after both production runs. Both apply
+  to those recorded results.
 - **What it changes.** P2.E.declinations, P2.E.sect, P2.E.composite,
   P2.E.dignities and P2.B.vargas are recorded `accepted`, release deployed
   (`docs/platform/programme/acceptance-ledger.json`): 87.95 of 182.45 weighted

@@ -253,6 +253,13 @@
       "capturedSha256": "9fa112610eec0bf276cef610d36a247159e3acf4f3680276f3efd836ecec3b98",
       "committedSha256": "9fa112610eec0bf276cef610d36a247159e3acf4f3680276f3efd836ecec3b98",
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "production/live-check-at-merge.txt",
+      "tool": "notes' live-check.sh after the merge (the hosted MCP server's initialize and tools/list against the capture taken before the merge, then the pages), whose page loop failed first on the script's own error (a zsh loop variable named path), and the page checks run again by hand, 2026-11-05",
+      "capturedSha256": "79a27f4453eb8fa5ac3dd133101e3a117b35f669af818e6afead2b5c8860e0d7",
+      "committedSha256": "244b8f293e44f88f3f40013f6cf347ced3e1429c3aa32c01167dbab4c6d80d4a",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
     }
   ]
 }
