@@ -54,7 +54,12 @@ describe('GitHub Actions supply chain', () => {
   // pins only when its directory is listed.
   it('lists every composite action directory for Dependabot', async () => {
     const dependabot = await readFile(resolve(root, '.github', 'dependabot.yml'), 'utf8');
-    const listed = new Set([...dependabot.matchAll(/^\s*-\s*(\/\S*)\s*$/gmu)].map((match) => match[1]));
+    // Only the github-actions entry counts: from its line to the next entry.
+    const actionsEntry = dependabot
+      .split(/^\s*-\s*package-ecosystem:/mu)
+      .find((entry) => /^\s*["']?github-actions["']?\s*(?:#.*)?$/u.test(entry.split('\n')[0])) ?? '';
+    const listed = new Set([...actionsEntry.matchAll(/^\s*-\s*["']?(\/[^\s"'#]*)["']?\s*(?:#.*)?$/gmu)]
+      .map((match) => match[1]));
     const unlisted = (await yamlFiles(actionsDirectory, /^action\.ya?ml$/u, { recursive: true }))
       .map((file) => `/${relative(root, dirname(file)).split(sep).join('/')}`)
       .filter((directory) => !listed.has(directory));
