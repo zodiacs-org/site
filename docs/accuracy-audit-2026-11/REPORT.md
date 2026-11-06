@@ -18,11 +18,14 @@ What remains is precision, not wrong facts:
 
 1. **Rounding (fixed here).** Whole degrees were rounded, so 9°55′ printed as
    10°. Astrologers truncate it to 9°. Six places on the site did this.
-2. **Slow planets (left as recommendations).** The engine is a few arcseconds
-   off, which is invisible for the Moon. Neptune moves so slowly that the
-   same error becomes about three hours. The yearly horoscopes say Neptune
-   enters Aries at 14:30 UTC; NASA gives 17:35. Times like that should show
-   the date only, or come from a JPL ephemeris.
+2. **Slow planets (fixed here, apart from the Learn placement pages).** The
+   engine is a few arcseconds off, which is invisible for the Moon. Neptune
+   moves so slowly that the same error becomes about three hours: the yearly
+   horoscopes said Neptune enters Aries at 14:30 UTC, where NASA gives 17:35.
+   The pages now print the planets' ingress, station and aspect times from
+   NASA JPL Horizons (DE441), and say 17:35. The placement pages under
+   /learn/ still print 16 window dates a day off; they are protected and
+   wait for the owner's allowance.
 3. **Stored precision.** The birthday pages store degrees to 0.01°, so some
    minutes of arc print one off. Some people pages round twice.
 
@@ -66,221 +69,327 @@ Rerun it with `python3 scripts/accuracy-audit/run_all.py` after a build, then
 ## Counts
 
 <!-- generated:counts:start -->
-| Layer | Category | Checked | Match | Mismatch |
-| --- | --- | ---: | ---: | ---: |
-| Published data files (src/data) | aspect | 797 | 392 | 405 |
-| Published data files (src/data) | birthday-cusp | 2639 | 2639 | 0 |
-| Published data files (src/data) | birthday-now | 732 | 732 | 0 |
-| Published data files (src/data) | birthday-sign | 337 | 337 | 0 |
-| Published data files (src/data) | birthday-span | 366 | 366 | 0 |
-| Published data files (src/data) | completeness | 1140 | 1140 | 0 |
-| Published data files (src/data) | degree-display | 6 | 0 | 6 |
-| Published data files (src/data) | eclipse-duration | 4 | 2 | 2 |
-| Published data files (src/data) | eclipse-instant | 24 | 24 | 0 |
-| Published data files (src/data) | eclipse-note | 1 | 1 | 0 |
-| Published data files (src/data) | eclipse-sign | 24 | 24 | 0 |
-| Published data files (src/data) | eclipse-type | 24 | 24 | 0 |
-| Published data files (src/data) | ingress | 712 | 379 | 333 |
-| Published data files (src/data) | lunation | 248 | 246 | 2 |
-| Published data files (src/data) | moon-ingress | 481 | 481 | 0 |
-| Published data files (src/data) | moon-phase | 1 | 1 | 0 |
-| Published data files (src/data) | position | 10 | 10 | 0 |
-| Published data files (src/data) | shadow | 90 | 90 | 0 |
-| Published data files (src/data) | station | 182 | 182 | 0 |
-| **Published data files (src/data)** | **all** | **7818** | **7070** | **748** |
-| Built pages (what the site says) | aspect | 81 | 21 | 60 |
-| Built pages (what the site says) | birthday-sign | 1547 | 1547 | 0 |
-| Built pages (what the site says) | blue-moon | 74 | 74 | 0 |
-| Built pages (what the site says) | degree-display | 9 | 9 | 0 |
-| Built pages (what the site says) | direction | 94 | 94 | 0 |
-| Built pages (what the site says) | duration | 41 | 41 | 0 |
-| Built pages (what the site says) | eclipse | 95 | 95 | 0 |
-| Built pages (what the site says) | eclipse-type | 24 | 24 | 0 |
-| Built pages (what the site says) | ingress | 1324 | 1249 | 75 |
-| Built pages (what the site says) | ingress-date | 24 | 24 | 0 |
-| Built pages (what the site says) | lunation | 324 | 324 | 0 |
-| Built pages (what the site says) | margin | 313 | 303 | 10 |
-| Built pages (what the site says) | moon-ingress | 41 | 41 | 0 |
-| Built pages (what the site says) | moon-sign | 415 | 415 | 0 |
-| Built pages (what the site says) | position | 1754 | 1568 | 186 |
-| Built pages (what the site says) | prose-aspect | 14 | 14 | 0 |
-| Built pages (what the site says) | prose-degree | 4 | 4 | 0 |
-| Built pages (what the site says) | prose-ingress | 137 | 136 | 1 |
-| Built pages (what the site says) | prose-ingress-month | 4 | 4 | 0 |
-| Built pages (what the site says) | prose-lunation | 171 | 171 | 0 |
-| Built pages (what the site says) | prose-station | 671 | 671 | 0 |
-| Built pages (what the site says) | render | 84 | 84 | 0 |
-| Built pages (what the site says) | shadow | 42 | 42 | 0 |
-| Built pages (what the site says) | sign-range | 12 | 12 | 0 |
-| Built pages (what the site says) | station | 281 | 281 | 0 |
-| Built pages (what the site says) | station-date | 198 | 198 | 0 |
-| Built pages (what the site says) | void | 41 | 41 | 0 |
-| Built pages (what the site says) | window-date | 634 | 618 | 16 |
-| **Built pages (what the site says)** | **all** | **8453** | **8105** | **348** |
-| People charts (src/data/people.json and /people/ pages) | natal-day-sign | 5511 | 5511 | 0 |
-| People charts (src/data/people.json and /people/ pages) | natal-direction | 3947 | 3947 | 0 |
-| People charts (src/data/people.json and /people/ pages) | natal-page-day | 1503 | 1503 | 0 |
-| People charts (src/data/people.json and /people/ pages) | natal-page-degree | 2397 | 2368 | 29 |
-| People charts (src/data/people.json and /people/ pages) | natal-position | 5010 | 4856 | 154 |
-| **People charts (src/data/people.json and /people/ pages)** | **all** | **18368** | **18185** | **183** |
+
+**Published data files (src/data)**: 9366 claims checked, 8618 match, 748 mismatch.
+
+| Category | Checked | Match | Mismatch |
+| --- | ---: | ---: | ---: |
+| aspect | 797 | 392 | 405 |
+| birthday-cusp | 2639 | 2639 | 0 |
+| birthday-now | 732 | 732 | 0 |
+| birthday-sign | 337 | 337 | 0 |
+| birthday-span | 366 | 366 | 0 |
+| completeness | 1140 | 1140 | 0 |
+| degree-display | 6 | 0 | 6 |
+| eclipse-duration | 4 | 2 | 2 |
+| eclipse-instant | 24 | 24 | 0 |
+| eclipse-note | 1 | 1 | 0 |
+| eclipse-sign | 24 | 24 | 0 |
+| eclipse-type | 24 | 24 | 0 |
+| ingress | 712 | 379 | 333 |
+| lunation | 248 | 246 | 2 |
+| moon-ingress | 481 | 481 | 0 |
+| moon-phase | 1 | 1 | 0 |
+| position | 10 | 10 | 0 |
+| printed-aspect | 797 | 797 | 0 |
+| printed-ingress | 661 | 661 | 0 |
+| printed-station | 90 | 90 | 0 |
+| shadow | 90 | 90 | 0 |
+| station | 182 | 182 | 0 |
+
+**Built pages (what the site says)**: 8870 claims checked, 8657 match, 213 mismatch.
+
+| Category | Checked | Match | Mismatch |
+| --- | ---: | ---: | ---: |
+| aspect | 81 | 81 | 0 |
+| birthday-sign | 1547 | 1547 | 0 |
+| blue-moon | 74 | 74 | 0 |
+| degree-display | 9 | 9 | 0 |
+| direction | 94 | 94 | 0 |
+| duration | 180 | 180 | 0 |
+| eclipse | 95 | 95 | 0 |
+| eclipse-type | 24 | 24 | 0 |
+| ingress | 1602 | 1602 | 0 |
+| ingress-date | 24 | 24 | 0 |
+| lunation | 324 | 324 | 0 |
+| margin | 313 | 303 | 10 |
+| moon-ingress | 41 | 41 | 0 |
+| moon-sign | 415 | 415 | 0 |
+| position | 1754 | 1568 | 186 |
+| prose-aspect | 14 | 14 | 0 |
+| prose-degree | 4 | 4 | 0 |
+| prose-ingress | 137 | 136 | 1 |
+| prose-ingress-month | 4 | 4 | 0 |
+| prose-lunation | 171 | 171 | 0 |
+| prose-station | 671 | 671 | 0 |
+| render | 84 | 84 | 0 |
+| shadow | 42 | 42 | 0 |
+| sign-range | 12 | 12 | 0 |
+| station | 281 | 281 | 0 |
+| station-date | 198 | 198 | 0 |
+| void | 41 | 41 | 0 |
+| window-date | 634 | 618 | 16 |
+
+**People charts (src/data/people.json and /people/ pages)**: 18368 claims checked, 18185 match, 183 mismatch.
+
+| Category | Checked | Match | Mismatch |
+| --- | ---: | ---: | ---: |
+| natal-day-sign | 5511 | 5511 | 0 |
+| natal-direction | 3947 | 3947 | 0 |
+| natal-page-day | 1503 | 1503 | 0 |
+| natal-page-degree | 2397 | 2368 | 29 |
+| natal-position | 5010 | 4856 | 154 |
+
+**Mismatches by likely cause**
+
+| Layer | Cause | Count |
+| --- | --- | ---: |
+| Published data files | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly | 738 |
+| Published data files | Minute-boundary tie: NASA's value lies within 10″ of a minute line and the engine (a few arcseconds off) lands on the other side | 6 |
+| Published data files | Whole degree rounded instead of truncated (fixed in this branch) | 2 |
+| Published data files | Different umbral shadow enlargement from NASA's canon (Chauvenet 1/50) | 2 |
+| Built pages | birthdays.json stores longitudes to 0.01° (36″), then the page prints arcminutes | 132 |
+| Built pages | Minute-boundary tie: NASA's value lies within 10″ of a minute line and the engine (a few arcseconds off) lands on the other side | 53 |
+| Built pages | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly | 17 |
+| Built pages | "At least" margin rounded up and measured at noon UTC only | 10 |
+| Built pages | Eclipse peak instant differs from NASA's greatest eclipse by tens of seconds, enough to move the Moon one arcminute | 1 |
+| People charts | Engine outer-planet series drift for births before 1900 (Neptune and Pluto 0.006° to 0.018°) | 153 |
+| People charts | Double rounding: stored to 0.01°, then printed to 0.1° | 29 |
+| People charts | Minute-boundary tie: NASA's value lies within 10″ of a minute line and the engine (a few arcseconds off) lands on the other side | 1 |
 <!-- generated:counts:end -->
 
 ## Page mismatches
 
 <!-- generated:pages:start -->
-| pages | statement | our_value | nasa_value | difference | cause | cause_text |
-| --- | --- | --- | --- | --- | --- | --- |
-| /transits/ | "New moon at 17° Scorpio" (2026-11-09) | 17° Scorpio | 16°53′ Scorpio (astrologers write 16°) | +1° | rounded | Whole degree rounded instead of truncated (fixed in this branch) |
-| /transits/ | "Venus stations direct at 23° Libra" (2026-11-14) | 23° Libra | 22°51′ Libra (astrologers write 22°) | +1° | rounded | Whole degree rounded instead of truncated (fixed in this branch) |
-| /your-2027-sky/ | Annular solar eclipse 2027-02-06 "at 18° Aquarius" | 18° Aquarius | 17°37′ Aquarius (astrologers write 17°) | +1° | rounded | Whole degree rounded instead of truncated (fixed in this branch) |
-| /your-2027-sky/ | Penumbral lunar eclipse 2027-02-20 "at 2° Virgo" | 2° Virgo | 1°59′ Virgo (astrologers write 1°) | +1° | rounded | Whole degree rounded instead of truncated (fixed in this branch) |
-| /your-2027-sky/ | Penumbral lunar eclipse 2027-07-18 "at 26° Capricorn" | 26° Capricorn | 25°57′ Capricorn (astrologers write 25°) | +1° | rounded | Whole degree rounded instead of truncated (fixed in this branch) |
-| /your-2027-sky/ | Total solar eclipse 2027-08-02 "at 10° Leo" | 10° Leo | 9°55′ Leo (astrologers write 9°) | +1° | rounded | Whole degree rounded instead of truncated (fixed in this branch) |
-| /events/jupiter-opposition-neptune-2028-09-28/ | Jupiter opposition Neptune exact 2028-09-28T19:29:36.928Z | 2028-09-28 19:29 UTC | 2028-09-28T19:15:56.031Z | +821 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-opposition-neptune-2028-09-28/ | Jupiter opposition Neptune at 19:29 UTC on 2028-09-28 | 2028-09-28 19:29 UTC | 2028-09-28T19:15:56.031Z | +784 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-opposition-saturn-2030-04-24/ | Jupiter opposition Saturn exact 2030-04-24T01:53:15.482Z | 2030-04-24 01:53 UTC | 2030-04-24T01:56:26.859Z | -191 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-opposition-saturn-2030-11-20/ | Jupiter opposition Saturn exact 2030-11-20T01:08:11.527Z | 2030-11-20 01:08 UTC | 2030-11-20T01:05:39.940Z | +152 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-sextile-pluto-2030-12-08/ | Jupiter sextile Pluto exact 2030-12-08T06:37:34.970Z | 2030-12-08 06:37 UTC | 2030-12-08T06:42:26.618Z | -292 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-sextile-pluto-2030-12-08/ | Jupiter sextile Pluto at 06:37 UTC on 2030-12-08 | 2030-12-08 06:37 UTC | 2030-12-08T06:42:26.618Z | -327 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-square-uranus-2027-09-10/ | Jupiter square Uranus exact 2027-09-10T16:36:59.814Z | 2027-09-10 16:37 UTC | 2027-09-10T16:40:55.496Z | -236 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-square-uranus-2027-09-10/ | Jupiter square Uranus at 16:36 UTC on 2027-09-10 | 2027-09-10 16:36 UTC | 2027-09-10T16:40:55.496Z | -295 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-neptune-2026-07-20/ | Jupiter trine Neptune exact 2026-07-20T07:47:59.076Z | 2026-07-20 07:47 UTC | 2026-07-20T07:23:26.820Z | +1472 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-neptune-2026-07-20/ | Jupiter trine Neptune at 07:47 UTC on 2026-07-20 | 2026-07-20 07:47 UTC | 2026-07-20T07:23:26.820Z | +1413 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-neptune-2030-12-10/ | Jupiter trine Neptune exact 2030-12-10T08:13:31.669Z | 2030-12-10 08:13 UTC | 2030-12-10T08:02:06.415Z | +685 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-neptune-2030-12-10/ | Jupiter trine Neptune at 08:13 UTC on 2030-12-10 | 2030-12-10 08:13 UTC | 2030-12-10T08:02:06.415Z | +654 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-pluto-2028-09-24/ | Jupiter trine Pluto exact 2028-09-24T07:39:35.545Z | 2028-09-24 07:39 UTC | 2028-09-24T07:45:29.618Z | -354 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-pluto-2028-09-24/ | Jupiter trine Pluto at 07:39 UTC on 2028-09-24 | 2028-09-24 07:39 UTC | 2028-09-24T07:45:29.618Z | -390 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-saturn-2026-08-31/ | Jupiter trine Saturn exact 2026-08-31T22:05:22.447Z | 2026-08-31 22:05 UTC | 2026-08-31T22:17:14.617Z | -712 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-saturn-2026-08-31/ | Jupiter trine Saturn at 22:05 UTC on 2026-08-31 | 2026-08-31 22:05 UTC | 2026-08-31T22:17:14.617Z | -735 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-saturn-2027-04-03/ | Jupiter trine Saturn exact 2027-04-03T13:23:03.398Z | 2027-04-03 13:23 UTC | 2027-04-03T12:58:56.438Z | +1447 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-saturn-2027-04-03/ | Jupiter trine Saturn at 13:23 UTC on 2027-04-03 | 2027-04-03 13:23 UTC | 2027-04-03T12:58:56.438Z | +1444 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-saturn-2027-07-11/ | Jupiter trine Saturn exact 2027-07-11T22:45:55.067Z | 2027-07-11 22:45 UTC | 2027-07-11T23:16:10.979Z | -1816 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/jupiter-trine-saturn-2027-07-11/ | Jupiter trine Saturn at 22:45 UTC on 2027-07-11 | 2027-07-11 22:45 UTC | 2027-07-11T23:16:10.979Z | -1871 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2026-07-24/ | Neptune sextile Pluto exact 2026-07-24T23:09:38.401Z | 2026-07-24 23:09 UTC | 2026-07-25T05:28:07.402Z | -22709 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2026-07-24/ | Neptune sextile Pluto at 23:09 UTC on 2026-07-24 | 2026-07-24 23:09 UTC | 2026-07-25T05:28:07.402Z | -22747 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2026-09-16/ | Neptune sextile Pluto exact 2026-09-16T08:31:19.127Z | 2026-09-16 08:31 UTC | 2026-09-16T02:07:22.401Z | +23037 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2026-09-16/ | Neptune sextile Pluto at 08:31 UTC on 2026-09-16 | 2026-09-16 08:31 UTC | 2026-09-16T02:07:22.401Z | +23018 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2027-06-28/ | Neptune sextile Pluto exact 2027-06-28T20:34:28.560Z | 2027-06-28 20:34 UTC | 2027-06-28T23:56:24.829Z | -12116 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2027-06-28/ | Neptune sextile Pluto at 20:34 UTC on 2027-06-28 | 2027-06-28 20:34 UTC | 2027-06-28T23:56:24.829Z | -12145 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2027-10-16/ | Neptune sextile Pluto exact 2027-10-16T18:03:57.633Z | 2027-10-16 18:03 UTC | 2027-10-16T14:39:54.414Z | +12243 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2027-10-16/ | Neptune sextile Pluto at 18:03 UTC on 2027-10-16 | 2027-10-16 18:03 UTC | 2027-10-16T14:39:54.414Z | +12186 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2028-06-09/ | Neptune sextile Pluto exact 2028-06-09T01:49:36.552Z | 2028-06-09 01:49 UTC | 2028-06-09T04:25:35.656Z | -9359 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2028-06-09/ | Neptune sextile Pluto at 01:49 UTC on 2028-06-09 | 2028-06-09 01:49 UTC | 2028-06-09T04:25:35.656Z | -9396 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2028-11-08/ | Neptune sextile Pluto exact 2028-11-08T04:21:11.666Z | 2028-11-08 04:21 UTC | 2028-11-08T01:44:39.476Z | +9392 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2028-11-08/ | Neptune sextile Pluto at 04:21 UTC on 2028-11-08 | 2028-11-08 04:21 UTC | 2028-11-08T01:44:39.476Z | +9381 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2029-05-22/ | Neptune sextile Pluto exact 2029-05-22T17:03:33.380Z | 2029-05-22 17:03 UTC | 2029-05-22T19:15:37.795Z | -7924 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2029-05-22/ | Neptune sextile Pluto at 17:03 UTC on 2029-05-22 | 2029-05-22 17:03 UTC | 2029-05-22T19:15:37.795Z | -7958 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2029-11-30/ | Neptune sextile Pluto exact 2029-11-30T23:26:53.231Z | 2029-11-30 23:26 UTC | 2029-11-30T21:09:14.239Z | +8259 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2029-11-30/ | Neptune sextile Pluto at 23:26 UTC on 2029-11-30 | 2029-11-30 23:26 UTC | 2029-11-30T21:09:14.239Z | +8206 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2030-05-04/ | Neptune sextile Pluto exact 2030-05-04T13:21:05.980Z | 2030-05-04 13:21 UTC | 2030-05-04T15:27:54.571Z | -7609 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2030-05-04/ | Neptune sextile Pluto at 13:21 UTC on 2030-05-04 | 2030-05-04 13:21 UTC | 2030-05-04T15:27:54.571Z | -7615 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2030-12-26/ | Neptune sextile Pluto exact 2030-12-26T17:10:11.607Z | 2030-12-26 17:10 UTC | 2030-12-26T14:35:55.094Z | +9257 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/neptune-sextile-pluto-2030-12-26/ | Neptune sextile Pluto at 17:10 UTC on 2030-12-26 | 2030-12-26 17:10 UTC | 2030-12-26T14:35:55.094Z | +9245 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-conjunction-neptune-2026-02-20/ | Saturn conjunction Neptune exact 2026-02-20T18:29:22.728Z | 2026-02-20 18:29 UTC | 2026-02-20T16:53:59.100Z | +5724 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-conjunction-neptune-2026-02-20/ | Saturn conjunction Neptune at 18:29 UTC on 2026-02-20 | 2026-02-20 18:29 UTC | 2026-02-20T16:53:59.100Z | +5701 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-sextile-pluto-2026-03-28/ | Saturn sextile Pluto exact 2026-03-28T22:34:36.112Z | 2026-03-28 22:34 UTC | 2026-03-28T22:11:07.597Z | +1409 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-sextile-pluto-2026-03-28/ | Saturn sextile Pluto at 22:34 UTC on 2026-03-28 | 2026-03-28 22:34 UTC | 2026-03-28T22:11:07.597Z | +1372 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-sextile-uranus-2026-01-20/ | Saturn sextile Uranus exact 2026-01-20T05:44:16.218Z | 2026-01-20 05:44 UTC | 2026-01-20T05:18:45.540Z | +1531 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-sextile-uranus-2026-01-20/ | Saturn sextile Uranus at 05:44 UTC on 2026-01-20 | 2026-01-20 05:44 UTC | 2026-01-20T05:18:45.540Z | +1514 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-square-pluto-2028-06-24/ | Saturn square Pluto exact 2028-06-24T03:18:58.402Z | 2028-06-24 03:18 UTC | 2028-06-24T02:59:44.752Z | +1154 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-square-pluto-2028-06-24/ | Saturn square Pluto at 03:18 UTC on 2028-06-24 | 2028-06-24 03:18 UTC | 2028-06-24T02:59:44.752Z | +1095 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-square-pluto-2028-11-15/ | Saturn square Pluto exact 2028-11-15T12:29:27.342Z | 2028-11-15 12:29 UTC | 2028-11-15T12:56:54.569Z | -1647 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-square-pluto-2028-11-15/ | Saturn square Pluto at 12:29 UTC on 2028-11-15 | 2028-11-15 12:29 UTC | 2028-11-15T12:56:54.569Z | -1675 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-square-pluto-2029-03-29/ | Saturn square Pluto exact 2029-03-29T23:21:02.958Z | 2029-03-29 23:21 UTC | 2029-03-29T23:09:02.458Z | +720 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/saturn-square-pluto-2029-03-29/ | Saturn square Pluto at 23:21 UTC on 2029-03-29 | 2029-03-29 23:21 UTC | 2029-03-29T23:09:02.458Z | +718 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/uranus-sextile-neptune-2026-07-15/ | Uranus sextile Neptune exact 2026-07-15T22:23:00.761Z | 2026-07-15 22:23 UTC | 2026-07-15T20:35:42.302Z | +6438 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/uranus-sextile-neptune-2026-07-15/ | Uranus sextile Neptune at 22:23 UTC on 2026-07-15 | 2026-07-15 22:23 UTC | 2026-07-15T20:35:42.302Z | +6438 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/uranus-sextile-neptune-2027-01-15/ | Uranus sextile Neptune exact 2027-01-15T07:21:23.862Z | 2027-01-15 07:21 UTC | 2027-01-15T09:26:29.007Z | -7505 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/uranus-sextile-neptune-2027-01-15/ | Uranus sextile Neptune at 07:21 UTC on 2027-01-15 | 2027-01-15 07:21 UTC | 2027-01-15T09:26:29.007Z | -7529 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/uranus-sextile-neptune-2027-06-06/ | Uranus sextile Neptune exact 2027-06-06T12:03:37.528Z | 2027-06-06 12:03 UTC | 2027-06-06T10:12:08.747Z | +6689 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/uranus-sextile-neptune-2027-06-06/ | Uranus sextile Neptune at 12:03 UTC on 2027-06-06 | 2027-06-06 12:03 UTC | 2027-06-06T10:12:08.747Z | +6651 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/uranus-trine-pluto-2028-05-10/ | Uranus trine Pluto exact 2028-05-10T02:50:40.437Z | 2028-05-10 02:50 UTC | 2028-05-10T03:03:59.133Z | -799 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /events/uranus-trine-pluto-2028-05-10/ | Uranus trine Pluto at 02:50 UTC on 2028-05-10 | 2028-05-10 02:50 UTC | 2028-05-10T03:03:59.133Z | -839 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /horoscopes/aquarius/2026/ /horoscopes/aries/2026/ /horoscopes/cancer/2026/ /horoscopes/capricorn/2026/ /horoscopes/gemini/2026/ /horoscopes/leo/2026/ /horoscopes/libra/2026/ /horoscopes/pisces/2026/ /horoscopes/sagittarius/2026/ /horoscopes/scorpio/2026/ /horoscopes/taurus/2026/ /horoscopes/virgo/2026/ | Neptune enters Aries on January 26, 2026 at 14:30 UTC | 2026-01-26 14:30 UTC | 2026-01-26T17:35:23.115Z | -11123 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /horoscopes/aquarius/2026/ /horoscopes/aries/2026/ /horoscopes/cancer/2026/ /horoscopes/capricorn/2026/ /horoscopes/gemini/2026/ /horoscopes/leo/2026/ /horoscopes/libra/2026/ /horoscopes/pisces/2026/ /horoscopes/sagittarius/2026/ /horoscopes/scorpio/2026/ /horoscopes/taurus/2026/ /horoscopes/virgo/2026/ | Jupiter enters Leo on June 30, 2026 at 05:56 UTC | 2026-06-30 05:56 UTC | 2026-06-30T05:52:26.992Z | +213 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /horoscopes/aquarius/2026/ /horoscopes/aries/2026/ /horoscopes/cancer/2026/ /horoscopes/capricorn/2026/ /horoscopes/gemini/2026/ /horoscopes/leo/2026/ /horoscopes/libra/2026/ /horoscopes/pisces/2026/ /horoscopes/sagittarius/2026/ /horoscopes/scorpio/2026/ /horoscopes/taurus/2026/ /horoscopes/virgo/2026/ | Uranus enters Gemini on April 26, 2026 at 01:01 UTC | 2026-04-26 01:01 UTC | 2026-04-26T00:51:53.009Z | +547 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /horoscopes/aquarius/2026/ /horoscopes/aries/2026/ /horoscopes/cancer/2026/ /horoscopes/capricorn/2026/ /horoscopes/gemini/2026/ /horoscopes/leo/2026/ /horoscopes/libra/2026/ /horoscopes/pisces/2026/ /horoscopes/sagittarius/2026/ /horoscopes/scorpio/2026/ /horoscopes/taurus/2026/ /horoscopes/virgo/2026/ | Neptune in Aries / Enters Aries Jan 26, 14:30 UTC. | 2026-01-26 14:30 UTC | 2026-01-26T17:35:23.115Z | -11123 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /horoscopes/aquarius/2026/ /horoscopes/aries/2026/ /horoscopes/cancer/2026/ /horoscopes/capricorn/2026/ /horoscopes/gemini/2026/ /horoscopes/leo/2026/ /horoscopes/libra/2026/ /horoscopes/pisces/2026/ /horoscopes/sagittarius/2026/ /horoscopes/scorpio/2026/ /horoscopes/taurus/2026/ /horoscopes/virgo/2026/ | Uranus in Gemini / Enters Gemini Apr 26, 01:01 UTC. | 2026-04-26 01:01 UTC | 2026-04-26T00:51:53.009Z | +547 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /horoscopes/aquarius/2027/ /horoscopes/aries/2027/ /horoscopes/cancer/2027/ /horoscopes/capricorn/2027/ /horoscopes/gemini/2027/ /horoscopes/leo/2027/ /horoscopes/libra/2027/ /horoscopes/pisces/2027/ /horoscopes/sagittarius/2027/ /horoscopes/scorpio/2027/ /horoscopes/taurus/2027/ /horoscopes/virgo/2027/ | Jupiter enters Virgo on July 26, 2027 at 04:45 UTC | 2027-07-26 04:45 UTC | 2027-07-26T04:49:15.703Z | -256 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /horoscopes/capricorn/2026/ /horoscopes/leo/2026/ | Saturn enters Aries on February 14, 2026 at 00:39 UTC | 2026-02-14 00:39 UTC | 2026-02-14T00:11:49.424Z | +1631 s | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /learn/placements/jupiter-in-scorpio/ | Jupiter leaves Scorpio 2041-03-20 (placement window) | 2041-03-20 | 2041-03-21T00:01:20.840Z | +1 day | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /learn/placements/neptune-in-aquarius/ | Neptune enters Aquarius 1998-11-27 (placement window) | 1998-11-27 | 1998-11-28T01:20:09.628Z | +1 day | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /learn/placements/neptune-in-aries/ | Neptune leaves Aries 2038-05-21 (placement window) | 2038-05-21 | 2038-05-22T00:13:01.067Z | +1 day | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /learn/placements/neptune-in-cancer/ | Neptune enters Cancer 1914-12-15 (placement window) | 1914-12-15 | 1914-12-14T20:38:56.892Z | -1 day | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /learn/placements/neptune-in-capricorn/ | Neptune leaves Capricorn 1984-06-22 (placement window) | 1984-06-22 | 1984-06-23T01:09:31.060Z | +1 day | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /learn/placements/neptune-in-capricorn/ | Neptune leaves Capricorn 1998-11-27 (placement window) | 1998-11-27 | 1998-11-28T01:20:09.628Z | +1 day | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-| /learn/placements/neptune-in-libra/ | Neptune enters Libra 1956-03-11 (placement window) | 1956-03-11 | 1956-03-12T01:57:14.684Z | +1 day | engine-slow | Engine position error (Venus up to 20″ near inferior conjunction, Saturn about 6″, Neptune about 10″) stretched in time because the body moves slowly |
-
-204 more rows in `results/mismatches-pages.csv`.
+| Page | Statement as published | Our value | NASA value | Difference | Likely cause |
+| --- | --- | --- | --- | --- | --- |
+| /learn/placements/jupiter-in-scorpio/ | Jupiter leaves Scorpio 2041-03-20 (placement window) | 2041-03-20 | 2041-03-21T00:01:20.840Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-aquarius/ | Neptune enters Aquarius 1998-11-27 (placement window) | 1998-11-27 | 1998-11-28T01:20:09.628Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-aries/ | Neptune leaves Aries 2038-05-21 (placement window) | 2038-05-21 | 2038-05-22T00:13:01.067Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-cancer/ | Neptune enters Cancer 1914-12-15 (placement window) | 1914-12-15 | 1914-12-14T20:38:56.892Z | -1 day | `engine-slow` |
+| /learn/placements/neptune-in-capricorn/ | Neptune leaves Capricorn 1984-06-22 (placement window) | 1984-06-22 | 1984-06-23T01:09:31.060Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-capricorn/ | Neptune leaves Capricorn 1998-11-27 (placement window) | 1998-11-27 | 1998-11-28T01:20:09.628Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-libra/ | Neptune enters Libra 1956-03-11 (placement window) | 1956-03-11 | 1956-03-12T01:57:14.684Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-sagittarius/ | Neptune leaves Sagittarius 1970-05-02 (placement window) | 1970-05-02 | 1970-05-03T01:32:27.352Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-sagittarius/ | Neptune enters Sagittarius 1984-06-22 (placement window) | 1984-06-22 | 1984-06-23T01:09:31.060Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-scorpio/ | Neptune enters Scorpio 1970-05-02 (placement window) | 1970-05-02 | 1970-05-03T01:32:27.352Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-taurus/ | Neptune enters Taurus 2038-05-21 (placement window) | 2038-05-21 | 2038-05-22T00:13:01.067Z | +1 day | `engine-slow` |
+| /learn/placements/neptune-in-taurus/ | Neptune enters Taurus on May 21, 2038 [long-range ingress] | 2038-05-21 | 2038-05-22T00:13:01.067Z | +1 day | `engine-slow` |
+| /learn/placements/pluto-in-aries/ | Pluto enters Aries 2066-06-18 (placement window) | 2066-06-18 | 2066-06-17T15:18:50.357Z | -1 day | `engine-slow` |
+| /learn/placements/pluto-in-pisces/ | Pluto leaves Pisces 2066-06-18 (placement window) | 2066-06-18 | 2066-06-17T15:18:50.357Z | -1 day | `engine-slow` |
+| /learn/placements/pluto-in-taurus/ | Pluto enters Taurus 2096-04-23 (placement window) | 2096-04-23 | 2096-04-22T23:13:18.057Z | -1 day | `engine-slow` |
+| /learn/placements/uranus-in-aquarius/ | Uranus leaves Aquarius 1995-06-08 (placement window) | 1995-06-08 | 1995-06-09T01:40:47.350Z | +1 day | `engine-slow` |
+| /learn/placements/uranus-in-capricorn/ | Uranus enters Capricorn 1995-06-08 (placement window) | 1995-06-08 | 1995-06-09T01:40:47.350Z | +1 day | `engine-slow` |
+| /eclipses/2030-12-09/ | lunar eclipse position 17°48′ Gemini | Gemini 17°48′ | Gemini 17°47′ | +17.3 arcsec | `eclipse-lon` |
+| /birthday/april-18/ | Sun 28°28′ Aries at noon UTC 2026-04-18 | Aries 28°28′ | Aries 28°27′ | +0.6 arcsec | `tie` |
+| /birthday/april-23/ | Sun 3°21′ Taurus at noon UTC 2026-04-23 | Taurus 3°21′ | Taurus 3°20′ | +4.3 arcsec | `tie` |
+| /birthday/april-25/ | Sun 5°18′ Taurus at noon UTC 2026-04-25 | Taurus 5°18′ | Taurus 5°17′ | +9.1 arcsec | `tie` |
+| /birthday/april-28/ | Sun 8°13′ Taurus at noon UTC 2026-04-28 | Taurus 8°13′ | Taurus 8°12′ | +2.6 arcsec | `tie` |
+| /birthday/august-11/ | Sun 18°51′ Leo at noon UTC 2026-08-11 | Leo 18°51′ | Leo 18°50′ | +6.1 arcsec | `tie` |
+| /birthday/august-16/ | Sun 23°38′ Leo at noon UTC 2026-08-16 | Leo 23°38′ | Leo 23°39′ | -65.6 arcsec | `tie` |
+| /birthday/august-20/ | Sun 27°30′ Leo at noon UTC 2026-08-20 | Leo 27°30′ | Leo 27°29′ | +1.5 arcsec | `tie` |
+| /birthday/december-10/ | Sun 18°25′ Sagittarius at noon UTC 2026-12-10 | Sagittarius 18°25′ | Sagittarius 18°26′ | -63.9 arcsec | `tie` |
+| /birthday/december-13/ | Sun 21°28′ Sagittarius at noon UTC 2026-12-13 | Sagittarius 21°28′ | Sagittarius 21°29′ | -65.3 arcsec | `tie` |
+| /birthday/december-25/ | Sun 3°42′ Capricorn at noon UTC 2026-12-25 | Capricorn 3°42′ | Capricorn 3°41′ | +7.6 arcsec | `tie` |
+| /birthday/december-26/ | Sun 4°43′ Capricorn at noon UTC 2026-12-26 | Capricorn 4°43′ | Capricorn 4°42′ | +1.0 arcsec | `tie` |
+| /birthday/december-8/ | Sun 16°23′ Sagittarius at noon UTC 2026-12-08 | Sagittarius 16°23′ | Sagittarius 16°24′ | -67.0 arcsec | `tie` |
+| /birthday/february-24/ | Sun 5°52′ Pisces at noon UTC 2026-02-24 | Pisces 5°52′ | Pisces 5°53′ | -61.5 arcsec | `tie` |
+| /birthday/january-10/ | Sun 20°15′ Capricorn at noon UTC 2026-01-10 | Capricorn 20°15′ | Capricorn 20°14′ | +7.9 arcsec | `tie` |
+| /birthday/january-3/ | Sun 13°07′ Capricorn at noon UTC 2026-01-03 | Capricorn 13°07′ | Capricorn 13°06′ | +3.4 arcsec | `tie` |
+| /birthday/january-4/ | Sun 14°07′ Capricorn at noon UTC 2026-01-04 | Capricorn 14°07′ | Capricorn 14°08′ | -64.4 arcsec | `tie` |
+| /birthday/july-19/ | Sun 26°51′ Cancer at noon UTC 2026-07-19 | Cancer 26°51′ | Cancer 26°50′ | +3.8 arcsec | `tie` |
+| /birthday/june-19/ | Sun 28°13′ Gemini at noon UTC 2026-06-19 | Gemini 28°13′ | Gemini 28°14′ | -61.0 arcsec | `tie` |
+| /birthday/june-27/ | Sun 5°52′ Cancer at noon UTC 2026-06-27 | Cancer 5°52′ | Cancer 5°51′ | +2.1 arcsec | `tie` |
+| /birthday/june-5/ | Sun 14°51′ Gemini at noon UTC 2026-06-05 | Gemini 14°51′ | Gemini 14°50′ | +6.5 arcsec | `tie` |
+| /birthday/march-12/ | Sun 21°55′ Pisces at noon UTC 2026-03-12 | Pisces 21°55′ | Pisces 21°54′ | +3.2 arcsec | `tie` |
+| /birthday/march-17/ | Sun 26°53′ Pisces at noon UTC 2026-03-17 | Pisces 26°53′ | Pisces 26°54′ | -62.6 arcsec | `tie` |
+| /birthday/march-23/ | Sun 2°52′ Aries at noon UTC 2026-03-23 | Aries 2°52′ | Aries 2°51′ | +6.1 arcsec | `tie` |
+| /birthday/march-25/ | Sun 4°51′ Aries at noon UTC 2026-03-25 | Aries 4°51′ | Aries 4°50′ | +6.3 arcsec | `tie` |
+| /birthday/march-4/ | Sun 13°55′ Pisces at noon UTC 2026-03-04 | Pisces 13°55′ | Pisces 13°54′ | +3.7 arcsec | `tie` |
+| /birthday/may-2/ | Sun 12°06′ Taurus at noon UTC 2026-05-02 | Taurus 12°06′ | Taurus 12°05′ | +1.1 arcsec | `tie` |
+| /birthday/november-15/ | Sun 23°07′ Scorpio at noon UTC 2026-11-15 | Scorpio 23°07′ | Scorpio 23°08′ | -62.9 arcsec | `tie` |
+| /birthday/november-19/ | Sun 27°10′ Scorpio at noon UTC 2026-11-19 | Scorpio 27°10′ | Scorpio 27°09′ | +1.5 arcsec | `tie` |
+| /birthday/november-21/ | Sun 29°10′ Scorpio at noon UTC 2026-11-21 | Scorpio 29°10′ | Scorpio 29°11′ | -63.8 arcsec | `tie` |
+| /birthday/november-27/ | Sun 5°15′ Sagittarius at noon UTC 2026-11-27 | Sagittarius 5°15′ | Sagittarius 5°14′ | +7.5 arcsec | `tie` |
+| /birthday/november-9/ | Sun 17°06′ Scorpio at noon UTC 2026-11-09 | Scorpio 17°06′ | Scorpio 17°05′ | +8.6 arcsec | `tie` |
+| /birthday/october-15/ | Sun 22°08′ Libra at noon UTC 2026-10-15 | Libra 22°08′ | Libra 22°09′ | -68.8 arcsec | `tie` |
+| /birthday/october-23/ | Sun 0°06′ Scorpio at noon UTC 2026-10-23 | Scorpio 0°06′ | Scorpio 0°05′ | +6.6 arcsec | `tie` |
+| /birthday/september-14/ | Sun 21°42′ Virgo at noon UTC 2026-09-14 | Virgo 21°42′ | Virgo 21°41′ | +4.4 arcsec | `tie` |
+| /birthday/september-18/ | Sun 25°36′ Virgo at noon UTC 2026-09-18 | Virgo 25°36′ | Virgo 25°35′ | +2.1 arcsec | `tie` |
+| /birthday/september-20/ | Sun 27°32′ Virgo at noon UTC 2026-09-20 | Virgo 27°32′ | Virgo 27°33′ | -69.0 arcsec | `tie` |
+| /birthday/september-28/ | Sun 5°22′ Libra at noon UTC 2026-09-28 | Libra 5°22′ | Libra 5°23′ | -62.6 arcsec | `tie` |
+| /birthday/september-29/ | Sun 6°22′ Libra at noon UTC 2026-09-29 | Libra 6°22′ | Libra 6°21′ | +4.3 arcsec | `tie` |
+| /birthday/september-30/ | Sun 7°21′ Libra at noon UTC 2026-09-30 | Libra 7°21′ | Libra 7°20′ | +9.0 arcsec | `tie` |
+| /birthday/september-9/ | Sun 16°49′ Virgo at noon UTC 2026-09-09 | Virgo 16°49′ | Virgo 16°50′ | -61.5 arcsec | `tie` |
+| /eclipses/2027-02-20/ | lunar eclipse position 1°58′ Virgo | Virgo 1°58′ | Virgo 1°59′ | -61.2 arcsec | `tie` |
+| /eclipses/2029-12-05/ | solar eclipse position 13°46′ Sagittarius | Sagittarius 13°46′ | Sagittarius 13°45′ | +5.5 arcsec | `tie` |
+| /full-moon-calendar/ | full moon 2029-02-28 at 10°23′ Virgo | Virgo 10°23′ | Virgo 10°24′ | -60.0 arcsec | `tie` |
+| /full-moon/2029-02-28/ | full moon at 10°23′ Virgo | Virgo 10°23′ | Virgo 10°24′ | -60.0 arcsec | `tie` |
+| /horoscopes/cancer/tomorrow/ (+2 more) | Saturn in Aries 8°53′ (sky behind the reading, noon UTC 2026-11-07) | Aries 8°53′ | Aries 8°54′ | -66.4 arcsec | `tie` |
+| /mercury-retrograde/ (+1 more) | Mercury direct station at 16°19′ Cancer | Cancer 16°19′ | Cancer 16°18′ | +0.5 arcsec | `tie` |
+| /new-moon/2026-06-15/ | new moon at 24°02′ Gemini | Gemini 24°02′ | Gemini 24°03′ | -60.8 arcsec | `tie` |
+| /retrogrades/ | Jupiter retrograde station at 27°37′ Scorpio | Scorpio 27°37′ | Scorpio 27°38′ | -60.1 arcsec | `tie` |
+| /retrogrades/ | Neptune direct station at 8°20′ Aries | Aries 8°20′ | Aries 8°19′ | +4.8 arcsec | `tie` |
+| /retrogrades/ | Neptune retrograde station at 13°23′ Aries | Aries 13°23′ | Aries 13°22′ | +1.2 arcsec | `tie` |
+| /birthday/april-1/ | lowest noon-UTC Sun degree 1940 to 2030 on April 1: 10°52′ Aries | 10°52′ Aries | 10°53′ Aries | -65 arcsec | `store-2dp` |
+| /birthday/april-17/ | highest noon-UTC Sun degree 1940 to 2030 on April 17: 28°00′ Aries | 28°00′ Aries | 27°59′ Aries | +6 arcsec | `store-2dp` |
+| /birthday/april-19/ | highest noon-UTC Sun degree 1940 to 2030 on April 19: 29°56′ Aries | 29°56′ Aries | 29°57′ Aries | -70 arcsec | `store-2dp` |
+| /birthday/april-25/ | lowest noon-UTC Sun degree 1940 to 2030 on April 25: 4°23′ Taurus | 4°23′ Taurus | 4°24′ Taurus | -75 arcsec | `store-2dp` |
+| /birthday/april-30/ | lowest noon-UTC Sun degree 1940 to 2030 on April 30: 9°16′ Taurus | 9°16′ Taurus | 9°15′ Taurus | +3 arcsec | `store-2dp` |
+| /birthday/april-7/ | lowest noon-UTC Sun degree 1940 to 2030 on April 7: 16°48′ Aries | 16°48′ Aries | 16°47′ Aries | +12 arcsec | `store-2dp` |
+| /birthday/august-12/ | lowest noon-UTC Sun degree 1940 to 2030 on August 12: 18°53′ Leo | 18°53′ Leo | 18°54′ Leo | -75 arcsec | `store-2dp` |
+| /birthday/august-12/ | highest noon-UTC Sun degree 1940 to 2030 on August 12: 20°18′ Leo | 20°18′ Leo | 20°17′ Leo | +2 arcsec | `store-2dp` |
+| /birthday/august-15/ | lowest noon-UTC Sun degree 1940 to 2030 on August 15: 21°46′ Leo | 21°46′ Leo | 21°47′ Leo | -63 arcsec | `store-2dp` |
+| /birthday/august-16/ | lowest noon-UTC Sun degree 1940 to 2030 on August 16: 22°45′ Leo | 22°45′ Leo | 22°44′ Leo | +18 arcsec | `store-2dp` |
+| /birthday/august-18/ | highest noon-UTC Sun degree 1940 to 2030 on August 18: 26°04′ Leo | 26°04′ Leo | 26°03′ Leo | +1 arcsec | `store-2dp` |
+| /birthday/august-24/ | highest noon-UTC Sun degree 1940 to 2030 on August 24: 1°51′ Virgo | 1°51′ Virgo | 1°50′ Virgo | +9 arcsec | `store-2dp` |
+| /birthday/august-27/ | Sun 4°15′ Virgo at noon UTC 2026-08-27 | Virgo 4°15′ | Virgo 4°14′ | +14.1 arcsec | `store-2dp` |
+| /birthday/august-4/ | lowest noon-UTC Sun degree 1940 to 2030 on August 4: 11°13′ Leo | 11°13′ Leo | 11°14′ Leo | -65 arcsec | `store-2dp` |
+| /birthday/august-5/ | Sun 13°06′ Leo at noon UTC 2026-08-05 | Leo 13°06′ | Leo 13°05′ | +16.9 arcsec | `store-2dp` |
+| /birthday/august-6/ | lowest noon-UTC Sun degree 1940 to 2030 on August 6: 13°08′ Leo | 13°08′ Leo | 13°09′ Leo | -62 arcsec | `store-2dp` |
+| /birthday/august-6/ | highest noon-UTC Sun degree 1940 to 2030 on August 6: 14°33′ Leo | 14°33′ Leo | 14°32′ Leo | +11 arcsec | `store-2dp` |
+| /birthday/december-17/ | Sun 25°32′ Sagittarius at noon UTC 2026-12-17 | Sagittarius 25°32′ | Sagittarius 25°33′ | -74.8 arcsec | `store-2dp` |
+| /birthday/december-21/ | lowest noon-UTC Sun degree 1940 to 2030 on December 21: 28°45′ Sagittarius | 28°45′ Sagittarius | 28°44′ Sagittarius | +5 arcsec | `store-2dp` |
+| /birthday/december-26/ | highest noon-UTC Sun degree 1940 to 2030 on December 26: 5°15′ Capricorn | 5°15′ Capricorn | 5°14′ Capricorn | +4 arcsec | `store-2dp` |
+| /birthday/december-29/ | lowest noon-UTC Sun degree 1940 to 2030 on December 29: 6°53′ Capricorn | 6°53′ Capricorn | 6°54′ Capricorn | -68 arcsec | `store-2dp` |
+| /birthday/december-29/ | highest noon-UTC Sun degree 1940 to 2030 on December 29: 8°17′ Capricorn | 8°17′ Capricorn | 8°18′ Capricorn | -79 arcsec | `store-2dp` |
+| /birthday/december-4/ | lowest noon-UTC Sun degree 1940 to 2030 on December 4: 11°28′ Sagittarius | 11°28′ Sagittarius | 11°27′ Sagittarius | +1 arcsec | `store-2dp` |
+| /birthday/december-6/ | lowest noon-UTC Sun degree 1940 to 2030 on December 6: 13°30′ Sagittarius | 13°30′ Sagittarius | 13°29′ Sagittarius | +13 arcsec | `store-2dp` |
+| /birthday/february-12/ | lowest noon-UTC Sun degree 1940 to 2030 on February 12: 22°37′ Aquarius | 22°37′ Aquarius | 22°38′ Aquarius | -63 arcsec | `store-2dp` |
+| /birthday/february-15/ | lowest noon-UTC Sun degree 1940 to 2030 on February 15: 25°40′ Aquarius | 25°40′ Aquarius | 25°39′ Aquarius | +0 arcsec | `store-2dp` |
+| /birthday/february-18/ | lowest noon-UTC Sun degree 1940 to 2030 on February 18: 28°42′ Aquarius | 28°42′ Aquarius | 28°41′ Aquarius | +18 arcsec | `store-2dp` |
+| /birthday/february-19/ | Sun 0°51′ Pisces at noon UTC 2026-02-19 | Pisces 0°51′ | Pisces 0°50′ | +13.0 arcsec | `store-2dp` |
+| /birthday/february-22/ | highest noon-UTC Sun degree 1940 to 2030 on February 22: 4°08′ Pisces | 4°08′ Pisces | 4°09′ Pisces | -68 arcsec | `store-2dp` |
+| /birthday/february-26/ | lowest noon-UTC Sun degree 1940 to 2030 on February 26: 6°45′ Pisces | 6°45′ Pisces | 6°44′ Pisces | +5 arcsec | `store-2dp` |
+| /birthday/february-28/ | Sun 9°53′ Pisces at noon UTC 2026-02-28 | Pisces 9°53′ | Pisces 9°54′ | -74.7 arcsec | `store-2dp` |
+| /birthday/february-28/ | highest noon-UTC Sun degree 1940 to 2030 on February 28: 10°10′ Pisces | 10°10′ Pisces | 10°11′ Pisces | -62 arcsec | `store-2dp` |
+| /birthday/february-3/ | lowest noon-UTC Sun degree 1940 to 2030 on February 3: 13°31′ Aquarius | 13°31′ Aquarius | 13°30′ Aquarius | +5 arcsec | `store-2dp` |
+| /birthday/february-6/ | highest noon-UTC Sun degree 1940 to 2030 on February 6: 17°58′ Aquarius | 17°58′ Aquarius | 17°59′ Aquarius | -63 arcsec | `store-2dp` |
+| /birthday/february-7/ | highest noon-UTC Sun degree 1940 to 2030 on February 7: 19°00′ Aquarius | 19°00′ Aquarius | 18°59′ Aquarius | +9 arcsec | `store-2dp` |
+| /birthday/february-9/ | lowest noon-UTC Sun degree 1940 to 2030 on February 9: 19°36′ Aquarius | 19°36′ Aquarius | 19°35′ Aquarius | +8 arcsec | `store-2dp` |
+| /birthday/january-11/ | highest noon-UTC Sun degree 1940 to 2030 on January 11: 21°32′ Capricorn | 21°32′ Capricorn | 21°33′ Capricorn | -68 arcsec | `store-2dp` |
+| /birthday/january-13/ | Sun 23°17′ Capricorn at noon UTC 2026-01-13 | Capricorn 23°17′ | Capricorn 23°18′ | -76.5 arcsec | `store-2dp` |
+| /birthday/january-15/ | lowest noon-UTC Sun degree 1940 to 2030 on January 15: 24°12′ Capricorn | 24°12′ Capricorn | 24°11′ Capricorn | +1 arcsec | `store-2dp` |
+| /birthday/january-17/ | highest noon-UTC Sun degree 1940 to 2030 on January 17: 27°40′ Capricorn | 27°40′ Capricorn | 27°39′ Capricorn | +3 arcsec | `store-2dp` |
+| /birthday/january-18/ | highest noon-UTC Sun degree 1940 to 2030 on January 18: 28°40′ Capricorn | 28°40′ Capricorn | 28°41′ Capricorn | -63 arcsec | `store-2dp` |
+| /birthday/january-2/ | Sun 12°06′ Capricorn at noon UTC 2026-01-02 | Capricorn 12°06′ | Capricorn 12°05′ | +11.3 arcsec | `store-2dp` |
+| /birthday/january-2/ | lowest noon-UTC Sun degree 1940 to 2030 on January 2: 10°57′ Capricorn | 10°57′ Capricorn | 10°56′ Capricorn | +8 arcsec | `store-2dp` |
+| /birthday/january-30/ | highest noon-UTC Sun degree 1940 to 2030 on January 30: 10°52′ Aquarius | 10°52′ Aquarius | 10°53′ Aquarius | -66 arcsec | `store-2dp` |
+| /birthday/january-31/ | highest noon-UTC Sun degree 1940 to 2030 on January 31: 11°53′ Aquarius | 11°53′ Aquarius | 11°54′ Aquarius | -60 arcsec | `store-2dp` |
+| /birthday/january-5/ | Sun 15°08′ Capricorn at noon UTC 2026-01-05 | Capricorn 15°08′ | Capricorn 15°09′ | -72.3 arcsec | `store-2dp` |
+| /birthday/january-8/ | lowest noon-UTC Sun degree 1940 to 2030 on January 8: 17°04′ Capricorn | 17°04′ Capricorn | 17°03′ Capricorn | +6 arcsec | `store-2dp` |
+| /birthday/january-9/ | lowest noon-UTC Sun degree 1940 to 2030 on January 9: 18°04′ Capricorn | 18°04′ Capricorn | 18°05′ Capricorn | -64 arcsec | `store-2dp` |
+| /birthday/july-12/ | lowest noon-UTC Sun degree 1940 to 2030 on July 12: 19°16′ Cancer | 19°16′ Cancer | 19°15′ Cancer | +5 arcsec | `store-2dp` |
+| /birthday/july-18/ | highest noon-UTC Sun degree 1940 to 2030 on July 18: 26°22′ Cancer | 26°22′ Cancer | 26°23′ Cancer | -60 arcsec | `store-2dp` |
+| /birthday/july-21/ | lowest noon-UTC Sun degree 1940 to 2030 on July 21: 27°51′ Cancer | 27°51′ Cancer | 27°50′ Cancer | +3 arcsec | `store-2dp` |
+| /birthday/july-21/ | highest noon-UTC Sun degree 1940 to 2030 on July 21: 29°15′ Cancer | 29°15′ Cancer | 29°14′ Cancer | +8 arcsec | `store-2dp` |
+| /birthday/july-22/ | highest noon-UTC Sun degree 1940 to 2030 on July 22: 0°11′ Leo | 0°11′ Leo | 0°12′ Leo | -71 arcsec | `store-2dp` |
+| /birthday/july-30/ | highest noon-UTC Sun degree 1940 to 2030 on July 30: 7°51′ Leo | 7°51′ Leo | 7°50′ Leo | +5 arcsec | `store-2dp` |
+| /birthday/july-4/ | highest noon-UTC Sun degree 1940 to 2030 on July 4: 13°01′ Cancer | 13°01′ Cancer | 13°02′ Cancer | -63 arcsec | `store-2dp` |
+| /birthday/july-7/ | lowest noon-UTC Sun degree 1940 to 2030 on July 7: 14°30′ Cancer | 14°30′ Cancer | 14°29′ Cancer | +9 arcsec | `store-2dp` |
+| /birthday/july-8/ | lowest noon-UTC Sun degree 1940 to 2030 on July 8: 15°26′ Cancer | 15°26′ Cancer | 15°27′ Cancer | -64 arcsec | `store-2dp` |
+| /birthday/july-8/ | highest noon-UTC Sun degree 1940 to 2030 on July 8: 16°51′ Cancer | 16°51′ Cancer | 16°50′ Cancer | +13 arcsec | `store-2dp` |
+| /birthday/july-9/ | lowest noon-UTC Sun degree 1940 to 2030 on July 9: 16°23′ Cancer | 16°23′ Cancer | 16°24′ Cancer | -77 arcsec | `store-2dp` |
+| /birthday/july-9/ | highest noon-UTC Sun degree 1940 to 2030 on July 9: 17°48′ Cancer | 17°48′ Cancer | 17°47′ Cancer | +2 arcsec | `store-2dp` |
+| /birthday/june-10/ | lowest noon-UTC Sun degree 1940 to 2030 on June 10: 18°43′ Gemini | 18°43′ Gemini | 18°44′ Gemini | -63 arcsec | `store-2dp` |
+| /birthday/june-11/ | highest noon-UTC Sun degree 1940 to 2030 on June 11: 21°04′ Gemini | 21°04′ Gemini | 21°05′ Gemini | -66 arcsec | `store-2dp` |
+| /birthday/june-13/ | highest noon-UTC Sun degree 1940 to 2030 on June 13: 23°00′ Gemini | 23°00′ Gemini | 22°59′ Gemini | +15 arcsec | `store-2dp` |
+| /birthday/june-14/ | highest noon-UTC Sun degree 1940 to 2030 on June 14: 23°56′ Gemini | 23°56′ Gemini | 23°57′ Gemini | -64 arcsec | `store-2dp` |
+| /birthday/june-16/ | lowest noon-UTC Sun degree 1940 to 2030 on June 16: 24°28′ Gemini | 24°28′ Gemini | 24°27′ Gemini | +4 arcsec | `store-2dp` |
+| /birthday/june-17/ | highest noon-UTC Sun degree 1940 to 2030 on June 17: 26°49′ Gemini | 26°49′ Gemini | 26°48′ Gemini | +2 arcsec | `store-2dp` |
+| /birthday/june-22/ | Sun 1°06′ Cancer at noon UTC 2026-06-22 | Cancer 1°06′ | Cancer 1°05′ | +10.5 arcsec | `store-2dp` |
+| /birthday/june-24/ | lowest noon-UTC Sun degree 1940 to 2030 on June 24: 2°06′ Cancer | 2°06′ Cancer | 2°05′ Cancer | +6 arcsec | `store-2dp` |
+| /birthday/june-24/ | highest noon-UTC Sun degree 1940 to 2030 on June 24: 3°30′ Cancer | 3°30′ Cancer | 3°29′ Cancer | +6 arcsec | `store-2dp` |
+| /birthday/june-25/ | highest noon-UTC Sun degree 1940 to 2030 on June 25: 4°26′ Cancer | 4°26′ Cancer | 4°27′ Cancer | -69 arcsec | `store-2dp` |
+| /birthday/june-3/ | lowest noon-UTC Sun degree 1940 to 2030 on June 3: 12°01′ Gemini | 12°01′ Gemini | 12°02′ Gemini | -64 arcsec | `store-2dp` |
+| /birthday/june-3/ | highest noon-UTC Sun degree 1940 to 2030 on June 3: 13°25′ Gemini | 13°25′ Gemini | 13°26′ Gemini | -62 arcsec | `store-2dp` |
+| /birthday/june-5/ | lowest noon-UTC Sun degree 1940 to 2030 on June 5: 13°56′ Gemini | 13°56′ Gemini | 13°57′ Gemini | -61 arcsec | `store-2dp` |
+| /birthday/june-5/ | highest noon-UTC Sun degree 1940 to 2030 on June 5: 15°21′ Gemini | 15°21′ Gemini | 15°20′ Gemini | +6 arcsec | `store-2dp` |
+| /birthday/march-16/ | Sun 25°53′ Pisces at noon UTC 2026-03-16 | Pisces 25°53′ | Pisces 25°54′ | -77.1 arcsec | `store-2dp` |
+| /birthday/march-2/ | highest noon-UTC Sun degree 1940 to 2030 on March 2: 12°25′ Pisces | 12°25′ Pisces | 12°26′ Pisces | -65 arcsec | `store-2dp` |
+| /birthday/march-20/ | highest noon-UTC Sun degree 1940 to 2030 on March 20: 0°23′ Aries | 0°23′ Aries | 0°24′ Aries | -68 arcsec | `store-2dp` |
+| /birthday/march-21/ | lowest noon-UTC Sun degree 1940 to 2030 on March 21: 0°00′ Aries | 0°00′ Aries | 29°59′ Pisces | sign | `store-2dp` |
+| /birthday/march-26/ | lowest noon-UTC Sun degree 1940 to 2030 on March 26: 4°56′ Aries | 4°56′ Aries | 4°57′ Aries | -74 arcsec | `store-2dp` |
+| /birthday/march-28/ | highest noon-UTC Sun degree 1940 to 2030 on March 28: 8°19′ Aries | 8°19′ Aries | 8°20′ Aries | -64 arcsec | `store-2dp` |
+| /birthday/march-30/ | Sun 9°48′ Aries at noon UTC 2026-03-30 | Aries 9°48′ | Aries 9°47′ | +18.1 arcsec | `store-2dp` |
+| /birthday/march-31/ | highest noon-UTC Sun degree 1940 to 2030 on March 31: 11°18′ Aries | 11°18′ Aries | 11°17′ Aries | +2 arcsec | `store-2dp` |
+| /birthday/may-10/ | Sun 19°51′ Taurus at noon UTC 2026-05-10 | Taurus 19°51′ | Taurus 19°50′ | +15.2 arcsec | `store-2dp` |
+| /birthday/may-13/ | highest noon-UTC Sun degree 1940 to 2030 on May 13: 23°15′ Taurus | 23°15′ Taurus | 23°14′ Taurus | +7 arcsec | `store-2dp` |
+| /birthday/may-19/ | lowest noon-UTC Sun degree 1940 to 2030 on May 19: 27°37′ Taurus | 27°37′ Taurus | 27°38′ Taurus | -61 arcsec | `store-2dp` |
+| /birthday/may-20/ | lowest noon-UTC Sun degree 1940 to 2030 on May 20: 28°36′ Taurus | 28°36′ Taurus | 28°35′ Taurus | +16 arcsec | `store-2dp` |
+| /birthday/may-25/ | lowest noon-UTC Sun degree 1940 to 2030 on May 25: 3°23′ Gemini | 3°23′ Gemini | 3°24′ Gemini | -64 arcsec | `store-2dp` |
+| /birthday/may-4/ | highest noon-UTC Sun degree 1940 to 2030 on May 4: 14°33′ Taurus | 14°33′ Taurus | 14°32′ Taurus | +8 arcsec | `store-2dp` |
+| /birthday/may-5/ | lowest noon-UTC Sun degree 1940 to 2030 on May 5: 14°07′ Taurus | 14°07′ Taurus | 14°06′ Taurus | +1 arcsec | `store-2dp` |
+| /birthday/may-5/ | highest noon-UTC Sun degree 1940 to 2030 on May 5: 15°31′ Taurus | 15°31′ Taurus | 15°30′ Taurus | +1 arcsec | `store-2dp` |
+| /birthday/may-6/ | highest noon-UTC Sun degree 1940 to 2030 on May 6: 16°28′ Taurus | 16°28′ Taurus | 16°29′ Taurus | -64 arcsec | `store-2dp` |
+| /birthday/may-7/ | highest noon-UTC Sun degree 1940 to 2030 on May 7: 17°26′ Taurus | 17°26′ Taurus | 17°27′ Taurus | -67 arcsec | `store-2dp` |
+| /birthday/november-1/ | highest noon-UTC Sun degree 1940 to 2030 on November 1: 9°36′ Scorpio | 9°36′ Scorpio | 9°35′ Scorpio | +13 arcsec | `store-2dp` |
+| /birthday/november-15/ | lowest noon-UTC Sun degree 1940 to 2030 on November 15: 22°15′ Scorpio | 22°15′ Scorpio | 22°14′ Scorpio | +5 arcsec | `store-2dp` |
+| /birthday/november-15/ | highest noon-UTC Sun degree 1940 to 2030 on November 15: 23°38′ Scorpio | 23°38′ Scorpio | 23°39′ Scorpio | -76 arcsec | `store-2dp` |
+| /birthday/november-2/ | highest noon-UTC Sun degree 1940 to 2030 on November 2: 10°36′ Scorpio | 10°36′ Scorpio | 10°35′ Scorpio | +10 arcsec | `store-2dp` |
+| /birthday/november-20/ | highest noon-UTC Sun degree 1940 to 2030 on November 20: 28°42′ Scorpio | 28°42′ Scorpio | 28°41′ Scorpio | +3 arcsec | `store-2dp` |
+| /birthday/november-21/ | lowest noon-UTC Sun degree 1940 to 2030 on November 21: 28°17′ Scorpio | 28°17′ Scorpio | 28°18′ Scorpio | -62 arcsec | `store-2dp` |
+| /birthday/november-29/ | highest noon-UTC Sun degree 1940 to 2030 on November 29: 7°47′ Sagittarius | 7°47′ Sagittarius | 7°48′ Sagittarius | -64 arcsec | `store-2dp` |
+| /birthday/november-3/ | lowest noon-UTC Sun degree 1940 to 2030 on November 3: 10°12′ Scorpio | 10°12′ Scorpio | 10°11′ Scorpio | +16 arcsec | `store-2dp` |
+| /birthday/november-3/ | highest noon-UTC Sun degree 1940 to 2030 on November 3: 11°36′ Scorpio | 11°36′ Scorpio | 11°35′ Scorpio | +6 arcsec | `store-2dp` |
+| /birthday/november-4/ | lowest noon-UTC Sun degree 1940 to 2030 on November 4: 11°12′ Scorpio | 11°12′ Scorpio | 11°11′ Scorpio | +8 arcsec | `store-2dp` |
+| /birthday/november-4/ | highest noon-UTC Sun degree 1940 to 2030 on November 4: 12°36′ Scorpio | 12°36′ Scorpio | 12°35′ Scorpio | +0 arcsec | `store-2dp` |
+| /birthday/november-9/ | highest noon-UTC Sun degree 1940 to 2030 on November 9: 17°37′ Scorpio | 17°37′ Scorpio | 17°36′ Scorpio | +1 arcsec | `store-2dp` |
+| /birthday/october-11/ | highest noon-UTC Sun degree 1940 to 2030 on October 11: 18°42′ Libra | 18°42′ Libra | 18°41′ Libra | +3 arcsec | `store-2dp` |
+| /birthday/october-16/ | lowest noon-UTC Sun degree 1940 to 2030 on October 16: 22°15′ Libra | 22°15′ Libra | 22°14′ Libra | +4 arcsec | `store-2dp` |
+| /birthday/october-16/ | highest noon-UTC Sun degree 1940 to 2030 on October 16: 23°38′ Libra | 23°38′ Libra | 23°39′ Libra | -71 arcsec | `store-2dp` |
+| /birthday/october-18/ | lowest noon-UTC Sun degree 1940 to 2030 on October 18: 24°13′ Libra | 24°13′ Libra | 24°14′ Libra | -60 arcsec | `store-2dp` |
+| /birthday/october-25/ | lowest noon-UTC Sun degree 1940 to 2030 on October 25: 1°12′ Scorpio | 1°12′ Scorpio | 1°11′ Scorpio | +4 arcsec | `store-2dp` |
+| /birthday/october-26/ | lowest noon-UTC Sun degree 1940 to 2030 on October 26: 2°12′ Scorpio | 2°12′ Scorpio | 2°11′ Scorpio | +14 arcsec | `store-2dp` |
+| /birthday/october-28/ | highest noon-UTC Sun degree 1940 to 2030 on October 28: 5°36′ Scorpio | 5°36′ Scorpio | 5°35′ Scorpio | +3 arcsec | `store-2dp` |
+| /birthday/october-29/ | highest noon-UTC Sun degree 1940 to 2030 on October 29: 6°36′ Scorpio | 6°36′ Scorpio | 6°35′ Scorpio | +8 arcsec | `store-2dp` |
+| /birthday/october-3/ | lowest noon-UTC Sun degree 1940 to 2030 on October 3: 9°23′ Libra | 9°23′ Libra | 9°24′ Libra | -76 arcsec | `store-2dp` |
+| /birthday/october-30/ | highest noon-UTC Sun degree 1940 to 2030 on October 30: 7°36′ Scorpio | 7°36′ Scorpio | 7°35′ Scorpio | +11 arcsec | `store-2dp` |
+| /birthday/october-31/ | highest noon-UTC Sun degree 1940 to 2030 on October 31: 8°36′ Scorpio | 8°36′ Scorpio | 8°35′ Scorpio | +13 arcsec | `store-2dp` |
+| /birthday/october-7/ | lowest noon-UTC Sun degree 1940 to 2030 on October 7: 13°21′ Libra | 13°21′ Libra | 13°20′ Libra | +9 arcsec | `store-2dp` |
+| /birthday/october-7/ | highest noon-UTC Sun degree 1940 to 2030 on October 7: 14°45′ Libra | 14°45′ Libra | 14°44′ Libra | +9 arcsec | `store-2dp` |
+| /birthday/october-8/ | lowest noon-UTC Sun degree 1940 to 2030 on October 8: 14°19′ Libra | 14°19′ Libra | 14°20′ Libra | -64 arcsec | `store-2dp` |
+| /birthday/october-8/ | highest noon-UTC Sun degree 1940 to 2030 on October 8: 15°43′ Libra | 15°43′ Libra | 15°44′ Libra | -64 arcsec | `store-2dp` |
+| /birthday/september-10/ | highest noon-UTC Sun degree 1940 to 2030 on September 10: 18°17′ Virgo | 18°17′ Virgo | 18°18′ Virgo | -71 arcsec | `store-2dp` |
+| /birthday/september-12/ | highest noon-UTC Sun degree 1940 to 2030 on September 12: 20°15′ Virgo | 20°15′ Virgo | 20°14′ Virgo | +5 arcsec | `store-2dp` |
+| /birthday/september-14/ | highest noon-UTC Sun degree 1940 to 2030 on September 14: 22°12′ Virgo | 22°12′ Virgo | 22°11′ Virgo | +13 arcsec | `store-2dp` |
+| /birthday/september-16/ | lowest noon-UTC Sun degree 1940 to 2030 on September 16: 22°45′ Virgo | 22°45′ Virgo | 22°44′ Virgo | +17 arcsec | `store-2dp` |
+| /birthday/september-18/ | lowest noon-UTC Sun degree 1940 to 2030 on September 18: 24°42′ Virgo | 24°42′ Virgo | 24°41′ Virgo | +14 arcsec | `store-2dp` |
+| /birthday/september-18/ | highest noon-UTC Sun degree 1940 to 2030 on September 18: 26°06′ Virgo | 26°06′ Virgo | 26°05′ Virgo | +4 arcsec | `store-2dp` |
+| /birthday/september-20/ | highest noon-UTC Sun degree 1940 to 2030 on September 20: 28°02′ Virgo | 28°02′ Virgo | 28°03′ Virgo | -72 arcsec | `store-2dp` |
+| /birthday/september-23/ | lowest noon-UTC Sun degree 1940 to 2030 on September 23: 29°34′ Virgo | 29°34′ Virgo | 29°35′ Virgo | -62 arcsec | `store-2dp` |
+| /birthday/september-25/ | highest noon-UTC Sun degree 1940 to 2030 on September 25: 2°57′ Libra | 2°57′ Libra | 2°56′ Libra | +5 arcsec | `store-2dp` |
+| /birthday/september-27/ | Sun 4°23′ Libra at noon UTC 2026-09-27 | Libra 4°23′ | Libra 4°24′ | -71.8 arcsec | `store-2dp` |
+| /birthday/september-5/ | lowest noon-UTC Sun degree 1940 to 2030 on September 5: 12°02′ Virgo | 12°02′ Virgo | 12°03′ Virgo | -66 arcsec | `store-2dp` |
+| /birthday/september-5/ | highest noon-UTC Sun degree 1940 to 2030 on September 5: 13°27′ Virgo | 13°27′ Virgo | 13°26′ Virgo | +1 arcsec | `store-2dp` |
+| /birthday/september-9/ | lowest noon-UTC Sun degree 1940 to 2030 on September 9: 15°55′ Virgo | 15°55′ Virgo | 15°56′ Virgo | -63 arcsec | `store-2dp` |
+| /birthday/february-26/ | Sun at least 6.8° inside Pisces on February 26 (1940 to 2030) | 6.8° | noon-UTC minimum 6.749°, whole-day minimum 6.246° |  | `margin` |
+| /birthday/january-11/ | Sun at least 8.5° inside Capricorn on January 11 (1940 to 2030) | 8.5° | noon-UTC minimum 8.448°, whole-day minimum 7.938° |  | `margin` |
+| /birthday/january-2/ | Sun at least 11° inside Capricorn on January 2 (1940 to 2030) | 11° | noon-UTC minimum 10.948°, whole-day minimum 10.438° |  | `margin` |
+| /birthday/july-10/ | Sun at least 11.3° inside Cancer on July 10 (1940 to 2030) | 11.3° | noon-UTC minimum 11.247°, whole-day minimum 10.771° |  | `margin` |
+| /birthday/june-14/ | Sun at least 6.1° inside Gemini on June 14 (1940 to 2030) | 6.1° | noon-UTC minimum 6.049°, whole-day minimum 5.571° |  | `margin` |
+| /birthday/may-7/ | Sun at least 12.6° inside Taurus on May 7 (1940 to 2030) | 12.6° | noon-UTC minimum 12.548°, whole-day minimum 12.065° |  | `margin` |
+| /birthday/november-15/ | Sun at least 6.4° inside Scorpio on November 15 (1940 to 2030) | 6.4° | noon-UTC minimum 6.346°, whole-day minimum 5.842° |  | `margin` |
+| /birthday/october-16/ | Sun at least 6.4° inside Libra on October 16 (1940 to 2030) | 6.4° | noon-UTC minimum 6.347°, whole-day minimum 5.851° |  | `margin` |
+| /birthday/october-7/ | Sun at least 13.4° inside Libra on October 7 (1940 to 2030) | 13.4° | noon-UTC minimum 13.348°, whole-day minimum 12.854° |  | `margin` |
+| /birthday/september-20/ | Sun at least 2° inside Virgo on September 20 (1940 to 2030) | 2° | noon-UTC minimum 1.947°, whole-day minimum 1.458° |  | `margin` |
 <!-- generated:pages:end -->
 
 ## Data mismatches
 
 <!-- generated:data:start -->
-| source | category | statement | our_value | nasa_value | difference | cause | note |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| src/data/transits-2026-01.json | ingress | Neptune enters aries 2026-01-26T14:31:41.082Z | 2026-01-26T14:31:41.082Z | 2026-01-26T17:35:23.115Z aries | -11022.0 s | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Mercury square Neptune 2026-01-01T13:36:47.289Z at 29.5° sagittarius | 2026-01-01T13:36:47.289Z | 2026-01-01T13:33:10.001Z, Mercury at 29.51° sagittarius | +217 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Venus opposition Jupiter 2026-01-09T17:33:32.364Z at 20.2° capricorn | 2026-01-09T17:33:32.364Z | 2026-01-09T17:34:54.570Z, Venus at 20.19° capricorn | -82 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Sun opposition Jupiter 2026-01-10T08:40:57.970Z at 20.1° capricorn | 2026-01-10T08:40:57.970Z | 2026-01-10T08:42:09.455Z, Sun at 20.11° capricorn | -71 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Mars opposition Jupiter 2026-01-10T14:23:30.698Z at 20.1° capricorn | 2026-01-10T14:23:30.698Z | 2026-01-10T14:25:07.488Z, Mars at 20.08° capricorn | -97 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Venus sextile Saturn 2026-01-15T06:15:25.570Z at 27.1° capricorn | 2026-01-15T06:15:25.570Z | 2026-01-15T06:18:37.271Z, Venus at 27.15° capricorn | -192 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Venus sextile Neptune 2026-01-17T08:36:48.223Z at 29.8° capricorn | 2026-01-17T08:36:48.223Z | 2026-01-17T08:33:34.591Z, Venus at 29.78° capricorn | +194 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Sun sextile Saturn 2026-01-17T10:37:52.136Z at 27.3° capricorn | 2026-01-17T10:37:52.136Z | 2026-01-17T10:41:25.572Z, Sun at 27.32° capricorn | -213 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Mercury sextile Saturn 2026-01-19T04:07:47.961Z at 27.5° capricorn | 2026-01-19T04:07:47.961Z | 2026-01-19T04:09:15.423Z, Mercury at 27.47° capricorn | -87 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Sun sextile Neptune 2026-01-19T21:59:14.048Z at 29.8° capricorn | 2026-01-19T21:59:14.048Z | 2026-01-19T21:54:49.074Z, Sun at 29.84° capricorn | +265 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Venus conjunction Pluto 2026-01-20T04:03:18.852Z at 3.3° aquarius | 2026-01-20T04:03:18.852Z | 2026-01-20T04:04:20.540Z, Venus at 3.32° aquarius | -62 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Saturn sextile Uranus 2026-01-20T05:44:16.218Z at 27.6° pisces | 2026-01-20T05:44:16.218Z | 2026-01-20T05:18:45.540Z, Saturn at 27.56° pisces | +1531 s (tolerance 440 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Mars trine Uranus 2026-01-20T05:55:17.457Z at 27.6° capricorn | 2026-01-20T05:55:17.457Z | 2026-01-20T05:56:25.180Z, Mars at 27.56° capricorn | -68 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Mars sextile Saturn 2026-01-20T05:56:51.061Z at 27.6° capricorn | 2026-01-20T05:56:51.061Z | 2026-01-20T06:01:45.284Z, Mars at 27.56° capricorn | -294 s (tolerance 62 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Mercury sextile Neptune 2026-01-20T14:37:32.388Z at 29.9° capricorn | 2026-01-20T14:37:32.388Z | 2026-01-20T14:34:21.560Z, Mercury at 29.85° capricorn | +191 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-01.json | aspect | Mars sextile Neptune 2026-01-23T06:45:19.526Z at 29.9° capricorn | 2026-01-23T06:45:19.526Z | 2026-01-23T06:39:30.830Z, Mars at 29.91° capricorn | +349 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-02.json | ingress | Saturn enters aries 2026-02-14T00:39:45.096Z | 2026-02-14T00:39:45.096Z | 2026-02-14T00:11:49.424Z aries | +1675.7 s | engine-slow |  |
-| src/data/transits-2026-02.json | aspect | Saturn conjunction Neptune 2026-02-20T18:29:22.728Z at 0.8° aries | 2026-02-20T18:29:22.728Z | 2026-02-20T16:53:59.100Z, Saturn at 0.75° aries | +5724 s (tolerance 536 s) | engine-slow |  |
-| src/data/transits-2026-02.json | aspect | Venus trine Jupiter 2026-02-22T20:00:35.979Z at 15.5° pisces | 2026-02-22T20:00:35.979Z | 2026-02-22T20:01:51.313Z, Venus at 15.52° pisces | -75 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Venus sextile Uranus 2026-03-04T16:39:40.489Z at 27.8° pisces | 2026-03-04T16:39:40.489Z | 2026-03-04T16:40:44.822Z, Venus at 27.82° pisces | -64 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Sun trine Jupiter 2026-03-05T17:12:45.031Z at 15.1° pisces | 2026-03-05T17:12:45.031Z | 2026-03-05T17:13:51.896Z, Sun at 15.14° pisces | -67 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Venus conjunction Neptune 2026-03-07T11:30:33.727Z at 1.3° aries | 2026-03-07T11:30:33.727Z | 2026-03-07T11:27:25.308Z, Venus at 1.28° aries | +188 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Venus conjunction Saturn 2026-03-08T13:36:09.881Z at 2.6° aries | 2026-03-08T13:36:09.881Z | 2026-03-08T13:39:38.725Z, Venus at 2.64° aries | -209 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Mercury trine Jupiter 2026-03-09T05:26:04.947Z at 15.1° pisces | 2026-03-09T05:26:04.947Z | 2026-03-09T05:23:26.435Z, Mercury at 15.09° pisces | +159 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Venus sextile Pluto 2026-03-10T06:50:57.026Z at 4.8° aries | 2026-03-10T06:50:57.026Z | 2026-03-10T06:52:05.375Z, Venus at 4.77° aries | -68 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Venus square Jupiter 2026-03-18T16:07:21.924Z at 15.2° aries | 2026-03-18T16:07:21.924Z | 2026-03-18T16:08:54.500Z, Venus at 15.18° aries | -93 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Mars trine Jupiter 2026-03-22T00:00:01.729Z at 15.3° pisces | 2026-03-22T00:00:01.729Z | 2026-03-22T00:01:02.458Z, Mars at 15.28° pisces | -61 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Sun conjunction Neptune 2026-03-22T11:23:13.312Z at 1.8° aries | 2026-03-22T11:23:13.312Z | 2026-03-22T11:18:36.661Z, Sun at 1.84° aries | +277 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Sun conjunction Saturn 2026-03-25T08:51:31.772Z at 4.7° aries | 2026-03-25T08:51:31.772Z | 2026-03-25T08:55:13.848Z, Sun at 4.72° aries | -222 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-03.json | aspect | Saturn sextile Pluto 2026-03-28T22:34:36.112Z at 5.2° aries | 2026-03-28T22:34:36.112Z | 2026-03-28T22:11:07.597Z, Saturn at 5.16° aries | +1409 s (tolerance 403 s) | engine-slow |  |
-| src/data/transits-2026-04.json | ingress | Uranus enters gemini 2026-04-26T01:00:44.564Z | 2026-04-26T01:00:44.564Z | 2026-04-26T00:51:53.009Z gemini | +531.6 s | engine-slow |  |
-| src/data/transits-2026-04.json | aspect | Venus square Pluto 2026-04-03T22:36:48.031Z at 5.3° taurus | 2026-04-03T22:36:48.031Z | 2026-04-03T22:38:01.133Z, Venus at 5.26° taurus | -73 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-04.json | aspect | Mars conjunction Neptune 2026-04-13T05:36:50.448Z at 2.7° aries | 2026-04-13T05:36:50.448Z | 2026-04-13T05:30:16.326Z, Mars at 2.65° aries | +394 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-04.json | aspect | Venus sextile Jupiter 2026-04-13T08:19:24.412Z at 16.8° taurus | 2026-04-13T08:19:24.412Z | 2026-04-13T08:20:55.435Z, Venus at 16.80° taurus | -91 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-04.json | aspect | Mercury conjunction Neptune 2026-04-17T02:04:57.096Z at 2.8° aries | 2026-04-17T02:04:57.096Z | 2026-04-17T02:01:27.626Z, Mercury at 2.79° aries | +209 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-04.json | aspect | Mars conjunction Saturn 2026-04-19T22:39:37.276Z at 7.9° aries | 2026-04-19T22:39:37.276Z | 2026-04-19T22:43:57.820Z, Mars at 7.86° aries | -261 s (tolerance 66 s) | engine-slow |  |
-| src/data/transits-2026-04.json | aspect | Mercury conjunction Saturn 2026-04-20T11:20:24.068Z at 7.9° aries | 2026-04-20T11:20:24.068Z | 2026-04-20T11:22:09.639Z, Mercury at 7.93° aries | -106 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-04.json | aspect | Venus sextile Neptune 2026-04-26T17:46:12.563Z at 3.1° gemini | 2026-04-26T17:46:12.563Z | 2026-04-26T17:42:51.602Z, Venus at 3.12° gemini | +201 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-05.json | aspect | Venus sextile Saturn 2026-05-01T18:41:51.968Z at 9.2° gemini | 2026-05-01T18:41:51.968Z | 2026-05-01T18:45:16.895Z, Venus at 9.23° gemini | -205 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-05.json | aspect | Mercury sextile Neptune 2026-05-19T04:07:18.958Z at 3.8° gemini | 2026-05-19T04:07:18.958Z | 2026-05-19T04:05:02.348Z, Mercury at 3.78° gemini | +137 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-05.json | aspect | Venus square Neptune 2026-05-22T06:35:44.556Z at 3.9° cancer | 2026-05-22T06:35:44.556Z | 2026-05-22T06:31:51.361Z, Venus at 3.85° cancer | +233 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-05.json | aspect | Mercury sextile Saturn 2026-05-22T18:01:24.045Z at 11.4° gemini | 2026-05-22T18:01:24.045Z | 2026-05-22T18:02:32.409Z, Mercury at 11.42° gemini | -68 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-05.json | aspect | Sun sextile Neptune 2026-05-25T02:27:49.838Z at 3.9° gemini | 2026-05-25T02:27:49.838Z | 2026-05-25T02:22:19.401Z, Sun at 3.92° gemini | +330 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-05.json | aspect | Venus square Saturn 2026-05-29T02:59:33.219Z at 12.0° cancer | 2026-05-29T02:59:33.219Z | 2026-05-29T03:02:37.818Z, Venus at 12.00° cancer | -185 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-06.json | ingress | Jupiter enters leo 2026-06-30T05:56:23.952Z | 2026-06-30T05:56:23.952Z | 2026-06-30T05:52:26.992Z leo | +237.0 s | engine-slow |  |
-| src/data/transits-2026-06.json | lunation | new moon 2026-06-15T02:54:11.458Z at 24°02′ gemini | 2026-06-15T02:54:11.458Z 24°02′ Gemini | 2026-06-15T02:54:10.108Z 24°03′ Gemini | +1.3 s, -1.6 arcsec | tie |  |
-| src/data/transits-2026-06.json | aspect | Sun sextile Saturn 2026-06-02T22:45:43.201Z at 12.4° gemini | 2026-06-02T22:45:43.201Z | 2026-06-02T22:48:45.451Z, Sun at 12.41° gemini | -182 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-06.json | aspect | Mercury square Neptune 2026-06-04T00:21:49.130Z at 4.1° cancer | 2026-06-04T00:21:49.130Z | 2026-06-04T00:18:23.619Z, Mercury at 4.12° cancer | +206 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-06.json | aspect | Mercury square Saturn 2026-06-10T05:37:08.246Z at 13.0° cancer | 2026-06-10T05:37:08.246Z | 2026-06-10T05:38:42.130Z, Mercury at 12.97° cancer | -94 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-06.json | aspect | Venus trine Neptune 2026-06-17T03:45:22.740Z at 4.3° leo | 2026-06-17T03:45:22.740Z | 2026-06-17T03:41:00.810Z, Venus at 4.31° leo | +262 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-06.json | aspect | Venus trine Saturn 2026-06-25T11:58:48.807Z at 13.9° leo | 2026-06-25T11:58:48.807Z | 2026-06-25T12:01:45.047Z, Venus at 13.93° leo | -176 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-06.json | aspect | Sun square Neptune 2026-06-25T22:43:55.591Z at 4.4° cancer | 2026-06-25T22:43:55.591Z | 2026-06-25T22:38:24.481Z, Sun at 4.38° cancer | +331 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-07.json | degree-display | Mercury direct station shown as 16°19′ Cancer | 16°19′ Cancer | 16°18′ Cancer | +3.1 arcsec | tie | truncated minute differs |
-| src/data/transits-2026-07.json | aspect | Mars sextile Neptune 2026-07-05T00:51:36.083Z at 4.4° gemini | 2026-07-05T00:51:36.083Z | 2026-07-05T00:44:25.421Z, Mars at 4.42° gemini | +431 s (tolerance 61 s) | engine-slow |  |
-| src/data/transits-2026-07.json | aspect | Sun square Saturn 2026-07-06T10:43:49.658Z at 14.4° cancer | 2026-07-06T10:43:49.658Z | 2026-07-06T10:47:02.634Z, Sun at 14.40° cancer | -193 s (tolerance 60 s) | engine-slow |  |
-| src/data/transits-2026-07.json | aspect | Uranus sextile Neptune 2026-07-15T22:23:00.761Z at 4.4° gemini | 2026-07-15T22:23:00.761Z | 2026-07-15T20:35:42.302Z, Uranus at 4.40° gemini | +6438 s (tolerance 914 s) | engine-slow |  |
-| src/data/transits-2026-07.json | aspect | Mars sextile Saturn 2026-07-19T18:05:58.510Z at 14.7° gemini | 2026-07-19T18:05:58.510Z | 2026-07-19T18:10:54.764Z, Mars at 14.71° gemini | -296 s (tolerance 64 s) | engine-slow |  |
-| src/data/transits-2026-07.json | aspect | Jupiter trine Neptune 2026-07-20T07:47:59.076Z at 4.4° leo | 2026-07-20T07:47:59.076Z | 2026-07-20T07:23:26.820Z, Jupiter at 4.37° leo | +1472 s (tolerance 190 s) | engine-slow |  |
-| src/data/transits-2026-07.json | aspect | Neptune sextile Pluto 2026-07-24T23:09:38.401Z at 4.3° aries | 2026-07-24T23:09:38.401Z | 2026-07-25T05:28:07.402Z, Neptune at 4.33° aries | -22709 s (tolerance 1800 s) | engine-slow |  |
-| src/data/transits-2026-07.json | aspect | Sun trine Neptune 2026-07-27T07:41:58.999Z at 4.3° leo | 2026-07-27T07:41:58.999Z | 2026-07-27T07:36:37.102Z, Sun at 4.31° leo | +322 s (tolerance 60 s) | engine-slow |  |
-
-871 more rows in `results/mismatches-data.csv`.
+| Source | Category | Count | Likely cause | Example: statement, our value, NASA value, difference |
+| --- | --- | ---: | --- | --- |
+| src/data/transits-YYYY-MM.json | aspect | 405 | `engine-slow` | Mercury square Neptune 2026-01-01T13:36:47.289Z at 29.5° sagittarius; 2026-01-01T13:36:47.289Z; 2026-01-01T13:33:10.001Z, Mercury at 29.51° sagittarius; +217 s (tolerance 60 s) |
+| src/data/ingresses.json | ingress | 305 | `engine-slow` | Neptune sign window from 1901-07-19T23:29:00.641Z (cancer); 1901-07-19T23:29:00.641Z; 1901-07-19T23:57:02.838Z cancer; -1682.2 s |
+| src/data/people.json | natal-position | 153 | `engine-old` | Neptune Leo 26.54° at 1928-05-30T11:00:00.000Z (noon civil time); 146.54°; 146.5329°; +0.0071° |
+| src/data/people.json | natal-page-degree | 29 | `double-round` | Mars 28.3° Leo; Leo 28.3°; Leo 28.245°; +0.055° |
+| src/data/transits-YYYY-MM.json | ingress | 28 | `engine-slow` | Neptune enters aries 2026-01-26T14:31:41.082Z; 2026-01-26T14:31:41.082Z; 2026-01-26T17:35:23.115Z aries; -11022.0 s |
+| src/data/transits-YYYY-MM.json | degree-display | 4 | `tie` | Mercury direct station shown as 16°19′ Cancer; 16°19′ Cancer; 16°18′ Cancer; +3.1 arcsec |
+| src/data/transits-YYYY-MM.json | lunation | 2 | `tie` | new moon 2026-06-15T02:54:11.458Z at 24°02′ gemini; 2026-06-15T02:54:11.458Z 24°02′ Gemini; 2026-06-15T02:54:10.108Z 24°03′ Gemini; +1.3 s, -1.6 arcsec |
+| src/data/eclipses.json | degree-display | 2 | `rounded` | lunar eclipse 2027-02-20 degree field 2.0; 2.0 -> 2° when truncated; 1°59′ Virgo (truncates to 1°);  |
+| src/data/eclipses.json | eclipse-duration | 2 | `shadow-model` | total lunar eclipse 2029-06-26: totality about 103 minutes; 103 min; 101.9 min (NASA canon, total phase); +1.1 min |
+| src/data/people.json | natal-position | 1 | `tie` | Venus Gemini 0.00° at 1928-05-30T11:00:00.000Z (noon civil time); 60.00°; 59.9999°; +0.0001° |
 <!-- generated:data:end -->
 
 ## Fixed in this change
@@ -296,6 +405,34 @@ Rerun it with `python3 scripts/accuracy-audit/run_all.py` after a build, then
   The four lunations from July 2028 that sit past 29.5° can no longer print
   "30°".
 - "an annular" and "an opposition" are now written correctly.
+- The planets' event times come from NASA. `python3
+  scripts/build-nasa-event-instants.py` solves every sign ingress (retrograde
+  re-entries included) and station of Mercury to Pluto from November 2025 to
+  May 2031, every ingress of Jupiter to Pluto over the long horizons of
+  `ingresses.json` (back to 1900 and on to 2100), and each of the 797 exact
+  aspects in the monthly catalogs, on the same Horizons tables as this
+  audit. It writes `src/data/nasa-event-instants.json`: each NASA instant to
+  the second, the engine instants it replaces, and each query's URL,
+  retrieval time and SHA-256. The pages read it through
+  `src/lib/nasa-instants.ts`: the event pages, the yearly, monthly, weekly
+  and daily horoscopes, /today/ (English and translated), the transit lists,
+  Your 2027 sky and the 2027 Mercury retrograde calendar. The data files
+  keep the engine's instants, because the AI tools bundle them byte for
+  byte, and each event page keeps the address and publication receipt it
+  was published under.
+
+  On the pages, ingress mismatches went from 75 to 0 and aspect mismatches
+  from 60 to 0. The yearly horoscopes now say Neptune enters Aries at 17:35
+  UTC, Uranus enters Gemini at 00:51, Jupiter enters Leo at 05:52 and Saturn
+  enters Aries at 00:11; /today/ says Venus enters Scorpio at 08:12; the
+  Neptune and Pluto sextile of July 2026 now reads July 25, 05:28 UTC. The
+  largest corrections were 9.6 hours for an ingress (Pluto), 6.4 hours for an
+  aspect (Neptune and Pluto) and 6 minutes for a station.
+
+  Every time a data file carries, as a page now prints it, agrees with NASA
+  within a second (the `printed-*` rows above): 661 ingresses, 90 stations
+  and 797 aspects. The data files' own instants still differ (748
+  mismatches, unchanged) because they stay as the engine wrote them.
 
 ## Recommended, not fixed
 
@@ -303,9 +440,17 @@ Rerun it with `python3 scripts/accuracy-audit/run_all.py` after a build, then
    protected (`src/lib/i18n/astrology.test.ts`) and needs the owner's
    allowance. Until then, the es, fr, it and pt /transits/ pages can print
    "30°" in July 2028.
-2. **Slow-planet times.** Show slow-planet ingress and aspect times to the
-   date only, or compute them from a JPL ephemeris. The Neptune ingress
-   printed in the 24 yearly horoscopes is about 3 hours off.
+2. **Slow-planet times (fixed, see above).** The pages print NASA's
+   instants. Two places still print the engine's: the Learn placement pages,
+   whose 16 window dates sit a day from NASA's and which are protected
+   (`src/pages/learn/`, `src/content/learn/`: the owner's allowance would
+   let `refineIngressWindows` run there, and correct "May 21, 2038" in
+   neptune-in-taurus and "June 18, 2066" in pluto-in-pisces to May 22 and
+   June 17), and the sky calendar feed (`/sky-calendar.ics`), whose station
+   times, within 6 minutes of NASA's, come from a module the AI tools bundle.
+   The Sun's ingresses keep the engine's instants, at most 43.6 s from
+   NASA's. Rerun the generator when a data file gains an event, and fetch
+   the Horizons tables again before 2031-05.
 3. **Birthday degrees.** Store them to four decimals and floor the "at least"
    margin. This bundles into the AI tools, so it ships as a new developer
    plugin version.
@@ -346,8 +491,9 @@ Two gaps remain:
   measurement.
 
 **What they would criticise:**
-- Times are printed to the minute for slow planets the engine cannot place
-  that finely: Neptune is three hours off.
+- Until this change, times were printed to the minute for slow planets the
+  engine cannot place that finely: Neptune was three hours off. The pages now
+  take those times from NASA, apart from the Learn placement windows.
 - Rounding remained in places.
 - Two degree notations are mixed without explanation.
 - 2027's five eclipses include one no one can see.

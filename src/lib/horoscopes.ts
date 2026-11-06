@@ -9,6 +9,7 @@ import type { CatalogLocale as Locale } from './i18n';
 import { aspectLabel, planetLabel } from './i18n/astrology';
 import { formatDate } from './i18n/dates';
 import { currentHoroscopeMonth, utcMonth } from './horoscope-month.mjs';
+import { refineTransitMonth } from './nasa-instants';
 
 export interface TransitEvent {
   at: string;
@@ -33,9 +34,10 @@ const transitFiles = import.meta.glob<{ default: TransitFile }>(
   { eager: true },
 );
 
+/** A committed month, with planet ingress, station and aspect times from NASA. */
 export function transitsFor(month: string): TransitFile | null {
   for (const mod of Object.values(transitFiles)) {
-    if (mod.default.month === month) return mod.default;
+    if (mod.default.month === month) return refineTransitMonth(mod.default);
   }
   return null;
 }

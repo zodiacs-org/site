@@ -45,10 +45,10 @@ type RegistryResearchPublication = {
 const registryResearchPublication = registryResearchPublicationData as unknown as RegistryResearchPublication;
 const birthdayFacts = birthdayFactsData as unknown as { days: Record<string, { cusp?: unknown }> };
 const researchLastmod = terminalResearchLastmod(registryResearchPublication);
-// Both yearly pages last changed when the 2026 reading was published and
-// joined each horoscope page's "More for" list.
-const YEARLY_HOROSCOPE_LASTMOD = '2026-11-02';
-const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-02';
+// Both yearly pages last changed when their planet ingress, station and
+// aspect times were taken from NASA JPL Horizons (src/lib/nasa-instants.ts).
+const YEARLY_HOROSCOPE_LASTMOD = '2026-11-06';
+const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const THESIS_LASTMOD = '2026-09-05';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
@@ -384,6 +384,9 @@ const TIME_ATLAS_ROUTES = ['/developers/time-atlas/', '/developers/'] as const;
 // Every event page gained its countdown, what to look for in the sky and Guide questions. Dated here, not
 // in events-publication.json, which the published developer plugin bundles byte for byte.
 const EVENT_WATCH_LASTMOD = '2026-11-05';
+// Every event page says where its times come from, and the planets' ingress, station and aspect times are
+// NASA JPL's (src/lib/nasa-instants.ts). Dated here for the same reason as EVENT_WATCH_LASTMOD.
+const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
 const ENGINE_110_RC2_LASTMOD = '2026-11-05';
 const ENGINE_110_RC2_ROUTES = [
   '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
@@ -615,6 +618,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/transits/', '2026-11-06'] as const,
   ...(['es', 'pt', 'fr', 'it', 'ru'] as const).map((locale) => [`/${locale}/transits/`, '2026-11-06'] as const),
   ['/events/jupiter-opposition-pluto-2026-07-20/', '2026-11-06'] as const,
+  // The events hub's timeline and its note on timing, with the planets' times from NASA JPL Horizons.
+  ['/events/', '2026-11-06'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -769,7 +774,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
-      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVERGREEN_LASTMOD.get(event.path) ?? '']
+      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVERGREEN_LASTMOD.get(event.path) ?? '']
         .reduce((latest, date) => (date > latest ? date : latest)),
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,

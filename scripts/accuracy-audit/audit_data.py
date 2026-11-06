@@ -459,6 +459,61 @@ def audit_daily(claims):
                '%+.3f' % (d['moon']['illumination'] - k), abs(d['moon']['illumination'] - k) < 0.01)
 
 
+def audit_printed_times(claims):
+    """The times the pages print: each data-file instant through src/data/nasa-event-instants.json.
+
+    The data files keep the engine's instants (the AI tools bundle them), and
+    src/lib/nasa-instants.ts swaps in NASA's for the pages. This checks that
+    swap against the Horizons truth: every ingress, station and aspect a data
+    file carries, as a page prints it. Sun ingresses keep the engine's instant.
+    """
+    table = load('nasa-event-instants.json')
+    ing = {(r['body'], at): r['nasa'] for r in table['ingresses'] for at in r['engine']}
+    sta = {(r['body'], at): r['nasa'] for r in table['stations'] for at in r['engine']}
+    asp = {(r['a'], r['b'], r['type'], at): r['nasa'] for r in table['aspects'] for at in r['engine']}
+    src = 'src/data/nasa-event-instants.json'
+
+    def ingress(body, sign, at, where):
+        printed = at if body == 'Sun' else ing.get((body, at))
+        if printed is None:
+            claims.add('printed-ingress', src, '%s enters %s %s (%s)' % (body, sign, at, where), at, 'no NASA row', '', False)
+            return
+        ev = C.nearest(C.events()['ingresses'][body], C.jd(printed))
+        d = C.secs(C.jd(printed), ev['jd'])
+        claims.add('printed-ingress', src, '%s enters %s, printed %s (%s)' % (body, sign, printed, where), printed,
+                   '%s %s' % (ev['at'], ev['sign']), '%+.1f s' % d, abs(d) <= C.TOL_INSTANT_S and ev['sign'] == sign)
+
+    for path in sorted(glob.glob(os.path.join(DATA, 'transits-*.json'))):
+        t = json.load(open(path))
+        where = os.path.basename(path)
+        for x in t['ingresses']:
+            ingress(x['planet'], x['sign'], x['at'], where)
+        for x in t['stations']:
+            printed = sta.get((x['planet'], x['at']))
+            if printed is None:
+                claims.add('printed-station', src, '%s stations %s %s (%s)' % (x['planet'], x['type'], x['at'], where), x['at'], 'no NASA row', '', False)
+                continue
+            ev = C.nearest(C.events()['stations'][x['planet']], C.jd(printed), lambda e: e['type'] == x['type'])
+            d = C.secs(C.jd(printed), ev['jd'])
+            claims.add('printed-station', src, '%s stations %s, printed %s (%s)' % (x['planet'], x['type'], printed, where), printed, ev['at'],
+                       '%+.1f s' % d, abs(d) <= C.TOL_INSTANT_S)
+        for x in t['aspects']:
+            printed = asp.get((x['a'], x['b'], x['type'], x['at']))
+            if printed is None:
+                claims.add('printed-aspect', src, '%s %s %s %s (%s)' % (x['a'], x['type'], x['b'], x['at'], where), x['at'], 'no NASA row', '', False)
+                continue
+            tx = aspect_exact(x['a'], x['b'], ASPECT_ANGLE[x['type']], C.jd(printed))
+            d = C.secs(C.jd(printed), tx)
+            claims.add('printed-aspect', src, '%s %s %s, printed %s (%s)' % (x['a'], x['type'], x['b'], printed, where), printed, C.iso(tx),
+                       '%+.1f s' % d, abs(d) <= C.TOL_INSTANT_S)
+    ingresses = load('ingresses.json')
+    horizon = {p: (h['from'], h['to']) for h in ingresses['horizons'] for p in h['planets']}
+    for w in ingresses['windows']:
+        lo, hi = horizon[w['planet']]
+        if lo < w['from'][:10] < hi and w['planet'] != 'Sun':
+            ingress(w['planet'], w['sign'], w['from'], 'ingresses.json')
+
+
 def main():
     claims = C.Claims()
     audit_sky(claims)
@@ -468,6 +523,7 @@ def main():
     audit_moon_ingresses(claims)
     audit_birthdays(claims)
     audit_daily(claims)
+    audit_printed_times(claims)
     path = claims.save('data.json')
     import collections
     tot = collections.Counter((r['category'], r['ok']) for r in claims.rows)

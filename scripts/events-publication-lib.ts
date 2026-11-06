@@ -18,8 +18,13 @@ type Catalog = {
   pages: CatalogEvent[];
 };
 
+/**
+ * The instant that names the page. A page that prints NASA's instant
+ * (src/lib/nasa-instants.ts) keeps the committed catalog instant and title
+ * here, so the receipt and the addresses it approves stay as published.
+ */
 const anchorIso = (event: CatalogEvent): string => (
-  event.facts.at ?? event.facts.start ?? ''
+  event.facts.committed?.anchor ?? event.facts.at ?? event.facts.start ?? ''
 );
 
 const insidePublicationWindow = (event: CatalogEvent): boolean => {
@@ -35,7 +40,7 @@ const compareEvent = (left: CatalogEvent, right: CatalogEvent): number => (
 const publicDescriptor = (event: CatalogEvent) => ({
   id: event.facts.id,
   path: event.facts.path,
-  title: event.facts.title,
+  title: event.facts.committed?.title ?? event.facts.title,
   anchor: anchorIso(event),
   family: event.facts.family,
   subtype: event.facts.subtype,

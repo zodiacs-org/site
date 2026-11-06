@@ -6,6 +6,7 @@ import type {
   HoroscopeSurface,
 } from './horoscope-program';
 import { signBySlug } from './signs';
+import { exactInstant } from './nasa-instants';
 
 export type HoroscopePageSurface = 'today' | 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | 'year' | 'year2026';
 
@@ -140,8 +141,33 @@ function periodLabel(reading: HoroscopeReading, surface: Exclude<HoroscopePageSu
   return dateLabel(reading.period.from);
 }
 
+const RECEIPT_WHEN = / on [A-Z][a-z]+ \d{1,2}, \d{4} at \d{2}:\d{2} UTC$/u;
+
+/**
+ * A dated planet event with NASA's instant (src/lib/nasa-instants.ts) in
+ * place of the engine's, in its `at` and in the time its label prints. The
+ * receipt keeps its id, which names the committed instant.
+ */
+function withNasaInstant(receipt: HoroscopeEvidenceReceipt): HoroscopeEvidenceReceipt {
+  if (receipt.kind !== 'sky-event') return receipt;
+  let at = receipt.at;
+  if ((receipt.eventKind === 'ingress' || receipt.eventKind === 'station') && receipt.body) {
+    at = exactInstant({ kind: receipt.eventKind, body: receipt.body, at: receipt.at });
+  } else if (receipt.eventKind === 'aspect' && receipt.a && receipt.b && receipt.eventType) {
+    at = exactInstant({ kind: 'aspect', a: receipt.a, b: receipt.b, type: receipt.eventType, at: receipt.at });
+  }
+  if (at === receipt.at) return receipt;
+  if (!RECEIPT_WHEN.test(receipt.label)) {
+    throw new Error(`Horoscope receipt ${receipt.id} does not end with its UTC date and time: ${receipt.label}`);
+  }
+  const date = new Intl.DateTimeFormat('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+  }).format(new Date(at));
+  return { ...receipt, at, label: receipt.label.replace(RECEIPT_WHEN, ` on ${date} at ${utcClock(at)} UTC`) };
+}
+
 function evidenceMap(program: HoroscopeProgram): Map<string, HoroscopeEvidenceReceipt> {
-  return new Map(program.evidence.map((receipt) => [receipt.id, receipt]));
+  return new Map(program.evidence.map((receipt) => [receipt.id, withNasaInstant(receipt)]));
 }
 
 function receiptLine(

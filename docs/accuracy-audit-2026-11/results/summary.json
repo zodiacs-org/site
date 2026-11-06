@@ -87,6 +87,21 @@
     "match": 10,
     "mismatch": 0
    },
+   "printed-aspect": {
+    "checked": 797,
+    "match": 797,
+    "mismatch": 0
+   },
+   "printed-ingress": {
+    "checked": 661,
+    "match": 661,
+    "mismatch": 0
+   },
+   "printed-station": {
+    "checked": 90,
+    "match": 90,
+    "mismatch": 0
+   },
    "shadow": {
     "checked": 90,
     "match": 90,
@@ -98,8 +113,8 @@
     "mismatch": 0
    }
   },
-  "checked": 7818,
-  "match": 7070,
+  "checked": 9366,
+  "match": 8618,
   "mismatch": 748
  },
  "pages.json": {
@@ -107,8 +122,8 @@
   "categories": {
    "aspect": {
     "checked": 81,
-    "match": 21,
-    "mismatch": 60
+    "match": 81,
+    "mismatch": 0
    },
    "birthday-sign": {
     "checked": 1547,
@@ -122,8 +137,8 @@
    },
    "degree-display": {
     "checked": 9,
-    "match": 3,
-    "mismatch": 6
+    "match": 9,
+    "mismatch": 0
    },
    "direction": {
     "checked": 94,
@@ -131,8 +146,8 @@
     "mismatch": 0
    },
    "duration": {
-    "checked": 41,
-    "match": 41,
+    "checked": 180,
+    "match": 180,
     "mismatch": 0
    },
    "eclipse": {
@@ -146,9 +161,9 @@
     "mismatch": 0
    },
    "ingress": {
-    "checked": 1324,
-    "match": 1249,
-    "mismatch": 75
+    "checked": 1602,
+    "match": 1602,
+    "mismatch": 0
    },
    "ingress-date": {
     "checked": 24,
@@ -246,9 +261,9 @@
     "mismatch": 16
    }
   },
-  "checked": 8453,
-  "match": 8099,
-  "mismatch": 354
+  "checked": 8870,
+  "match": 8657,
+  "mismatch": 213
  },
  "people.json": {
   "title": "People charts (src/data/people.json and /people/ pages)",
@@ -289,9 +304,8 @@
   "data.json/shadow-model": 2,
   "data.json/tie": 6,
   "pages.json/eclipse-lon": 1,
-  "pages.json/engine-slow": 152,
+  "pages.json/engine-slow": 17,
   "pages.json/margin": 10,
-  "pages.json/rounded": 6,
   "pages.json/store-2dp": 132,
   "pages.json/tie": 53,
   "people.json/double-round": 29,

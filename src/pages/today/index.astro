@@ -25,6 +25,7 @@ import { NATAL_BODY_THEME } from '../../lib/natal-context';
 import { TOOLS_HUB } from '../../lib/nav-tools';
 import { ART, artSrc, artSrcset } from '../../lib/art';
 import { signBySlug } from '../../lib/signs';
+import { refinePublishedAnchors, refineRetrogradeWindows, refineTransitMonth } from '../../lib/nasa-instants';
 import { signDateRange, signTagline } from '../../lib/sign-display';
 import {
   aspectsToday,
@@ -62,9 +63,11 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
 
 // ── The edition's sky. Every value below comes from committed data for the
 // edition date: the noon-UTC snapshot, the lunation and retrograde tables,
-// the monthly transit catalogs, the eclipse table and the event pages. ──
+// the monthly transit catalogs, the eclipse table and the event pages, with
+// the planets' ingress, station and aspect times from NASA JPL Horizons
+// (src/lib/nasa-instants.ts). ──
 const catalogs = Object.values(import.meta.glob<{ default: TransitCatalog }>('../../data/transits-*.json', { eager: true }))
-  .map((module) => module.default);
+  .map((module) => refineTransitMonth(module.default));
 const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 const listWords = (items: string[]) => (items.length <= 1
   ? items.join('')
@@ -114,9 +117,9 @@ function moonPath(fraction: number, growing: boolean, r = 20): string {
 const todayMoonPath = moonPath(daily.moon.illumination, waxing);
 
 // The planets, the dates ahead and the retrogrades.
-const coming = comingUp(daily, catalogs, eclipseData.eclipses, eventsData.pages);
+const coming = comingUp(daily, catalogs, eclipseData.eclipses, refinePublishedAnchors(eventsData.pages));
 const eclipseAhead = nextEclipse(daily, eclipseData.eclipses);
-const timeline = retrogradeTimeline(daily, skyData.retrogrades);
+const timeline = retrogradeTimeline(daily, refineRetrogradeWindows(skyData.retrogrades));
 const allAspects = aspectsToday(daily);
 const aspectCards = allAspects.slice(0, 4);
 const wheelAspects = allAspects.map((aspect) => ({ a: aspect.a, b: aspect.b, type: aspect.type }));

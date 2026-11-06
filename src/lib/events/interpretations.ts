@@ -12,6 +12,7 @@
 import sky from '../../data/sky.json';
 import eclipsesData from '../../data/eclipses.json';
 import ingressesData from '../../data/ingresses.json';
+import { nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
 import { bodyLongitude } from '../engine/full';
 import type { BodyName } from '../engine/types';
 import { degreeInSign, signForLongitude } from '../signs';
@@ -635,8 +636,8 @@ function editorialFactsById(): Map<string, EventFacts> {
       subtype: 'cycle',
       path: retrogradePath(window.planet, window.from),
       title: id,
-      start: window.from,
-      end: window.to,
+      start: nasaStationAt(window.planet, window.from) ?? window.from,
+      end: window.to === null ? null : nasaStationAt(window.planet, window.to) ?? window.to,
       clamped: window.from === sky.from,
       bodies: [window.planet],
       signs,
@@ -666,7 +667,7 @@ function editorialFactsById(): Map<string, EventFacts> {
         subtype: retrograde ? 'retrograde-re-entry' : 'ingress',
         path: ingressPath(planet, window.sign, window.from),
         title: id,
-        at: window.from,
+        at: nasaIngressAt(planet, window.from) ?? window.from,
         bodies: [planet],
         signs: [window.sign],
         fromSign: occupancy[index - 1]?.sign,
@@ -685,7 +686,7 @@ function editorialFactsById(): Map<string, EventFacts> {
         subtype: item.type,
         path: aspectPath(item.a, item.type, item.b, item.at),
         title: id,
-        at: item.at,
+        at: nasaAspectAt(item.a, item.b, item.type, item.at) ?? item.at,
         bodies: [item.a, item.b],
         signs: [item.aSign, item.bSign],
         degree: item.aDegree,

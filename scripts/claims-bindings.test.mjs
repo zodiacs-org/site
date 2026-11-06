@@ -28,7 +28,8 @@ describe('event times against Swiss Ephemeris', () => {
     const published = eventsCatalog().events
       .map(({ facts }) => facts)
       .filter((facts) => facts.family !== 'retrograde' && facts.at)
-      .map((facts) => `${facts.id} ${facts.at}`)
+      // The engine catalog's own instants: a page that prints NASA's keeps it in `committed`.
+      .map((facts) => `${facts.id} ${facts.committed?.anchor ?? facts.at}`)
       .sort();
     const measured = evidence.deltas.map((row) => `${row.id} ${row.published}`).sort();
     // A regenerated catalog needs docs/platform/evidence/events-vs-swiss-*/tools run again.
@@ -49,7 +50,6 @@ describe('event times against Swiss Ephemeris', () => {
     expect(evidence.summary.station.maxAbsSeconds).toBeLessThan(7 * MINUTE);
     const byPlanet = evidence.summary.stationMaxAbsSecondsByPlanet;
     for (const planet of ['Mercury', 'Venus', 'Mars']) expect(byPlanet[planet]).toBeLessThan(10 * MINUTE);
-    expect(read('src/pages/events/index.astro')).toContain('a station can be off by up to about seven minutes');
     expect(read('src/components/events/EventFactsBand.astro'))
       .toContain('so these station times can be off by a few minutes.');
     expect(read('src/pages/mercury-retrograde/index.astro')).toContain('compute to within a few minutes');
@@ -64,7 +64,21 @@ describe('event times against Swiss Ephemeris', () => {
     const band = read('src/components/events/EventFactsBand.astro');
     expect(band).toContain('this time can be off by up to about half an hour.');
     expect(band).toContain('so slowly that this time can be off by several hours.');
-    expect(read('src/pages/events/index.astro')).toContain('Uranus, Neptune or Pluto by several hours');
+  });
+
+  it('print the planets\' station, sign change and alignment times from NASA JPL, as the events pages say', () => {
+    // src/lib/nasa-instants.test.ts holds the table to every committed event the pages print.
+    const catalog = eventsCatalog();
+    for (const event of catalog.events) {
+      const { facts } = event;
+      if (!['ingress', 'aspect', 'station', 'retrograde'].includes(facts.family)) continue;
+      if (facts.family === 'retrograde' && facts.clamped && !facts.end) continue;
+      expect(facts.committed, facts.id).toBeDefined();
+      expect(facts.provenance.derived?.some((line) => line.includes('NASA JPL Horizons (DE441)')), facts.id).toBe(true);
+    }
+    expect(read('src/pages/events/index.astro')).toContain("sign changes and alignments take their times from NASA JPL's DE441");
+    expect(read('src/components/events/EventFactsBand.astro')).toContain("NASA JPL's, from its DE441 ephemeris.");
+    expect(read('src/components/events/EventEvidence.astro')).toContain("stations and aspects come from NASA\n    JPL's DE441 ephemeris");
   });
 });
 
