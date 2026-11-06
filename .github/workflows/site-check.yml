@@ -939,8 +939,61 @@ jobs:
       - name: Build, dist checks and route budgets (production flags on)
         run: npm run build
 
+      # --with-deps has apt install about 180 Ubuntu packages that the runner
+      # image lacks (mostly WebKit's media and font libraries, 114 MB of .deb
+      # files). The Azure Ubuntu mirror usually serves them in about 12
+      # seconds, but on 6 of about 170 runs between 27 October and 5 November
+      # it stalled and the download ran into the job's time limit. So the .deb
+      # files are kept in the Actions cache, one entry per runner image; the
+      # first run on a new image starts from the previous image's files. apt
+      # still refreshes its package lists (1 to 15 seconds on those six runs),
+      # checks each cached file against them and downloads only what is
+      # missing or newer, so the packages installed, and what the drives below
+      # test, stay the same.
+      - name: Name the browser package cache for this runner image
+        id: browser-debs-key
+        run: |
+          echo "prefix=profile-browser-debs-$ImageOS-" >> "$GITHUB_OUTPUT"
+          echo "key=profile-browser-debs-$ImageOS-$ImageVersion" >> "$GITHUB_OUTPUT"
+
+      - name: Restore profile test browser packages
+        id: browser-debs
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        env:
+          # A stuck cache download gives up after 2 minutes, not the default
+          # 10, and apt then downloads the packages as before.
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
+        with:
+          path: ~/profile-browser-debs
+          key: ${{ steps.browser-debs-key.outputs.key }}
+          restore-keys: ${{ steps.browser-debs-key.outputs.prefix }}
+
       - name: Install profile test browsers
-        run: npx playwright-core install --with-deps chromium webkit
+        run: |
+          shopt -s nullglob
+          cached=(~/profile-browser-debs/*.deb)
+          echo "Giving apt ${#cached[@]} cached packages"
+          if (( ${#cached[@]} )); then sudo cp "${cached[@]}" /var/cache/apt/archives/; fi
+          npx playwright-core install --with-deps chromium webkit
+
+      # Saved straight after the install, so a drive that fails later still
+      # leaves the packages for the next run. autoclean drops files the
+      # refreshed package lists no longer offer.
+      - name: Collect profile test browser packages
+        if: steps.browser-debs.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get autoclean -qq
+          rm -rf ~/profile-browser-debs
+          mkdir -p ~/profile-browser-debs
+          find /var/cache/apt/archives -maxdepth 1 -name '*.deb' -exec cp -t ~/profile-browser-debs/ {} +
+          du -sh ~/profile-browser-debs
+
+      - name: Save profile test browser packages
+        if: steps.browser-debs.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/profile-browser-debs
+          key: ${{ steps.browser-debs.outputs.cache-primary-key }}
 
       - name: Free sharing and sourced matches in Chromium and WebKit
         timeout-minutes: 8
