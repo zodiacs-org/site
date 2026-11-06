@@ -61,7 +61,7 @@ interface TransitEventLabels {
 }
 
 const TRANSIT_EVENT_LABELS = {
-  // English whole degrees are truncated, as astrologers write them: 22°51′ is
+  // Whole degrees are truncated in every language, as astrologers write them: 22°51′ is
   // 22°, never 23°, and 29°50′ can never print as 30°.
   en: {
     ingress: (event) =>
@@ -77,9 +77,9 @@ const TRANSIT_EVENT_LABELS = {
     ingress: (event) =>
       `${planetLabel('es', event.planet)} entra en ${sn(event.sign, 'es')}${event.retrograde ? ', retrógrado' : ''}`,
     lunation: (event) =>
-      `${event.type === 'new' ? 'Luna nueva' : 'Luna llena'} a ${Math.round(event.degree)}° de ${sn(event.sign, 'es')}`,
+      `${event.type === 'new' ? 'Luna nueva' : 'Luna llena'} a ${Math.floor(event.degree)}° de ${sn(event.sign, 'es')}`,
     station: (event) =>
-      `${planetLabel('es', event.planet)} estaciona ${event.type === 'retrograde' ? 'retrógrado' : 'directo'} a ${Math.round(event.degree)}° de ${sn(event.sign, 'es')}`,
+      `${planetLabel('es', event.planet)} estaciona ${event.type === 'retrograde' ? 'retrógrado' : 'directo'} a ${Math.floor(event.degree)}° de ${sn(event.sign, 'es')}`,
     aspect: (event) =>
       `${planetLabel('es', event.a)} en ${aspectLabel('es', event.type)} con ${planetLabel('es', event.b)} (${sn(event.aSign, 'es')}-${sn(event.bSign, 'es')})`,
   },
@@ -87,9 +87,9 @@ const TRANSIT_EVENT_LABELS = {
     ingress: (event) =>
       `${planetLabel('pt', event.planet)} entra em ${sn(event.sign, 'pt')}${event.retrograde ? ', retrógrado' : ''}`,
     lunation: (event) =>
-      `${event.type === 'new' ? 'Lua nova' : 'Lua cheia'} a ${Math.round(event.degree)}° de ${sn(event.sign, 'pt')}`,
+      `${event.type === 'new' ? 'Lua nova' : 'Lua cheia'} a ${Math.floor(event.degree)}° de ${sn(event.sign, 'pt')}`,
     station: (event) =>
-      `${planetLabel('pt', event.planet)} estaciona ${event.type === 'retrograde' ? 'retrógrado' : 'direto'} a ${Math.round(event.degree)}° de ${sn(event.sign, 'pt')}`,
+      `${planetLabel('pt', event.planet)} estaciona ${event.type === 'retrograde' ? 'retrógrado' : 'direto'} a ${Math.floor(event.degree)}° de ${sn(event.sign, 'pt')}`,
     aspect: (event) =>
       `${planetLabel('pt', event.a)} em ${aspectLabel('pt', event.type)} com ${planetLabel('pt', event.b)} (${sn(event.aSign, 'pt')}-${sn(event.bSign, 'pt')})`,
   },
@@ -97,9 +97,9 @@ const TRANSIT_EVENT_LABELS = {
     ingress: (event) =>
       `${planetLabel('fr', event.planet)} entre en ${sn(event.sign, 'fr')}${event.retrograde ? ', rétrograde' : ''}`,
     lunation: (event) =>
-      `${event.type === 'new' ? 'Nouvelle Lune' : 'Pleine Lune'} à ${Math.round(event.degree)}° en ${sn(event.sign, 'fr')}`,
+      `${event.type === 'new' ? 'Nouvelle Lune' : 'Pleine Lune'} à ${Math.floor(event.degree)}° en ${sn(event.sign, 'fr')}`,
     station: (event) =>
-      `${planetLabel('fr', event.planet)} ${event.type === 'retrograde' ? 'devient rétrograde' : 'redevient direct'} à ${Math.round(event.degree)}° en ${sn(event.sign, 'fr')}`,
+      `${planetLabel('fr', event.planet)} ${event.type === 'retrograde' ? 'devient rétrograde' : 'redevient direct'} à ${Math.floor(event.degree)}° en ${sn(event.sign, 'fr')}`,
     aspect: (event) =>
       `${planetLabel('fr', event.a)} en ${aspectLabel('fr', event.type)} avec ${planetLabel('fr', event.b)} (${sn(event.aSign, 'fr')}-${sn(event.bSign, 'fr')})`,
   },
@@ -107,9 +107,9 @@ const TRANSIT_EVENT_LABELS = {
     ingress: (event) =>
       `${planetLabel('it', event.planet)} entra in ${sn(event.sign, 'it')}${event.retrograde ? ', retrogrado' : ''}`,
     lunation: (event) =>
-      `${event.type === 'new' ? 'Luna nuova' : 'Luna piena'} a ${Math.round(event.degree)}° in ${sn(event.sign, 'it')}`,
+      `${event.type === 'new' ? 'Luna nuova' : 'Luna piena'} a ${Math.floor(event.degree)}° in ${sn(event.sign, 'it')}`,
     station: (event) =>
-      `${planetLabel('it', event.planet)} staziona in moto ${event.type === 'retrograde' ? 'retrogrado' : 'diretto'} a ${Math.round(event.degree)}° in ${sn(event.sign, 'it')}`,
+      `${planetLabel('it', event.planet)} staziona in moto ${event.type === 'retrograde' ? 'retrogrado' : 'diretto'} a ${Math.floor(event.degree)}° in ${sn(event.sign, 'it')}`,
     aspect: (event) =>
       `${planetLabel('it', event.a)} in ${aspectLabel('it', event.type)} con ${planetLabel('it', event.b)} (${sn(event.aSign, 'it')}-${sn(event.bSign, 'it')})`,
   },
@@ -117,9 +117,9 @@ const TRANSIT_EVENT_LABELS = {
     ingress: (event) =>
       `${planetLabel('ru', event.planet)} входит в ${signPrepositional(event.sign)}${event.retrograde ? ', ретроградно' : ''}`,
     lunation: (event) =>
-      `${event.type === 'new' ? 'Новолуние' : 'Полнолуние'} · ${Math.round(event.degree)}° · ${sn(event.sign, 'ru')}`,
+      `${event.type === 'new' ? 'Новолуние' : 'Полнолуние'} · ${Math.floor(event.degree)}° · ${sn(event.sign, 'ru')}`,
     station: (event) =>
-      `${planetLabel('ru', event.planet)}: стационар, далее ${event.type === 'retrograde' ? 'ретроградное' : 'директное'} движение · ${Math.round(event.degree)}° · ${sn(event.sign, 'ru')}`,
+      `${planetLabel('ru', event.planet)}: стационар, далее ${event.type === 'retrograde' ? 'ретроградное' : 'директное'} движение · ${Math.floor(event.degree)}° · ${sn(event.sign, 'ru')}`,
     aspect: (event) =>
       `${planetLabel('ru', event.a)} и ${planetLabel('ru', event.b)}: ${aspectLabel('ru', event.type)} (${sn(event.aSign, 'ru')}-${sn(event.bSign, 'ru')})`,
   },

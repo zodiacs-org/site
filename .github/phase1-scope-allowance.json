@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "id": "new-pages-translations-2026-11-06",
-  "baseCommit": "980023c8760bdfb0a5e48b902ae6111c33ed07b6",
+  "id": "localized-degree-truncation-2026-11-06",
+  "baseCommit": "8db5f09f140aab83d4dc3c5f5dd93c1e18375139",
   "protectedPaths": [
-    "src/lib/i18n/index.ts"
+    "src/lib/i18n/astrology.test.ts"
   ]
 }

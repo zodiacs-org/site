@@ -613,6 +613,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The November 2026 accuracy audit: whole degrees truncate, and "an annular" and "an opposition" read right.
   ['/eclipses/', '2026-11-06'] as const,
   ['/transits/', '2026-11-06'] as const,
+  ...(['es', 'pt', 'fr', 'it', 'ru'] as const).map((locale) => [`/${locale}/transits/`, '2026-11-06'] as const),
   ['/events/jupiter-opposition-pluto-2026-07-20/', '2026-11-06'] as const,
 ]);
 
