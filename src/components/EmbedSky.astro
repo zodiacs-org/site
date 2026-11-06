@@ -23,7 +23,7 @@ const theme = Astro.props.theme ?? 'dark';
 const positions = daily.bodies.map((b) => ({
   body: widgetPlanetName(b.body),
   sign: b.sign,
-  label: `${b.degree.toFixed(0)}° ${widgetSignName(signBySlug(b.sign)?.slug ?? b.sign)}`,
+  label: `${Math.floor(b.degree)}° ${widgetSignName(signBySlug(b.sign)?.slug ?? b.sign)}`,
   rx: b.retrograde,
 }));
 const retro = daily.bodies.filter((b) => b.retrograde).map((b) => widgetPlanetName(b.body)).join(', ');

@@ -9,7 +9,7 @@ import type { TransitContact } from '../engine/transit-scan-core';
 import type { EclipseRecord } from '../upcoming';
 import { readingConfidence, readingDetail, type ReadingDetail } from '../../ai-tools/reading-confidence';
 import { settledSignIndex, signIndexOf } from '../profile/settled-signs';
-import { SIGNS } from '../signs';
+import { SIGNS, degreeInSign } from '../signs';
 import { yearSkyWords, type YearAspect } from './copy';
 import { EDITION_YEAR, inYear, yearWindow } from './edition';
 import { SLOW_PLANETS, signAt, type IngressWindowRecord } from './general';
@@ -229,7 +229,8 @@ export function personalYear(
       if (orb <= ECLIPSE_ORB && (!best || orb < best.orb)) best = { body: point.body, orb, contact: conj <= opp ? 'conjunction' : 'opposition' };
     }
     if (!best) continue;
-    const degree = `${e.degree.toFixed(0)}°`;
+    // Whole degrees are truncated, as astrologers write them: 17°37′ is 17°, never 18°.
+    const degree = `${Math.floor(degreeInSign(e.lon))}°`;
     moments.push({
       id: `eclipse-hit-${e.peak}`,
       kind: 'eclipse-hit',

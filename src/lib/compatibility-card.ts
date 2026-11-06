@@ -108,15 +108,16 @@ function placementRows(person: CompatibilityCardPerson, locale: Locale) {
 }
 
 /**
- * One person's Big Three as the picture prints it. The rising sign's degree
- * is only whole, as the two-chart link keeps it: rounded to the nearest
- * degree, beside the link's whole degree, it would halve the range the link
- * leaves for the ascendant.
+ * One person's Big Three as the picture prints it, each to its whole degree
+ * truncated, as astrologers write degrees (12°36′ is 12°, never 13°). For the
+ * rising sign this is also what the two-chart link keeps: rounded to the
+ * nearest degree, beside the link's whole degree, it would halve the range
+ * the link leaves for the ascendant.
  */
 export function compatibilityPlacementLine(person: CompatibilityCardPerson, locale: Locale = 'en'): string {
   return placementRows(person, locale)
     .map((row) => (row.sign
-      ? `${row.sign} ${row.key === 'rising' ? Math.floor(row.degree!) : row.degree!.toFixed(0)}°`
+      ? `${row.sign} ${Math.floor(row.degree!)}°`
       : '—'))
     .join('  ·  ');
 }

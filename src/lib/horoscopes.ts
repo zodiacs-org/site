@@ -61,13 +61,15 @@ interface TransitEventLabels {
 }
 
 const TRANSIT_EVENT_LABELS = {
+  // English whole degrees are truncated, as astrologers write them: 22°51′ is
+  // 22°, never 23°, and 29°50′ can never print as 30°.
   en: {
     ingress: (event) =>
       `${event.planet} enters ${sn(event.sign)}${event.retrograde ? ', retrograde' : ''}`,
     lunation: (event) =>
-      `${event.type === 'new' ? 'New moon' : 'Full moon'} at ${Math.round(event.degree)}° ${sn(event.sign)}`,
+      `${event.type === 'new' ? 'New moon' : 'Full moon'} at ${Math.floor(event.degree)}° ${sn(event.sign)}`,
     station: (event) =>
-      `${event.planet} stations ${event.type} at ${Math.round(event.degree)}° ${sn(event.sign)}`,
+      `${event.planet} stations ${event.type} at ${Math.floor(event.degree)}° ${sn(event.sign)}`,
     aspect: (event) =>
       `${event.a} ${event.type} ${event.b} (${sn(event.aSign)}-${sn(event.bSign)})`,
   },

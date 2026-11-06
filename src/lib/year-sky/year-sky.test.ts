@@ -80,7 +80,7 @@ describe('the 2027 sky everyone shares', () => {
     expect(eclipses.map((m) => m.title)).toEqual([
       'Annular solar eclipse', 'Penumbral lunar eclipse', 'Penumbral lunar eclipse', 'Total solar eclipse', 'Penumbral lunar eclipse',
     ]);
-    expect(eclipses[3].line).toContain('9° Leo');
+    expect(eclipses[3].line).toContain('9° Leo'); // 9°55′ Leo: whole degrees truncate
   });
 
   it('lists every retrograde that touches 2027, with the three Mercury retrogrades in their signs', () => {
