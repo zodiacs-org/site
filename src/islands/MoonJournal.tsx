@@ -77,6 +77,9 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
   const [onDevice, setOnDevice] = useState(false);
   const [storageState, setStorageState] = useState<StorageState>('ok');
   const storageRef = useRef<JournalStorage | null>(null);
+  // True after a write failed, until one succeeds: the list on screen is then
+  // ahead of the stored copy.
+  const unsaved = useRef(false);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [draft, setDraft] = useState('');
   const [status, setStatus] = useState('');
@@ -99,6 +102,8 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
     const timer = window.setInterval(() => setNowMs(Date.now()), 60_000);
     // Notes saved in another tab of this site show up here too.
     const onStorage = (event: StorageEvent) => {
+      // A list still holding an unsaved change is kept until it is written.
+      if (unsaved.current) return;
       if (event.key === null || event.key === MOON_JOURNAL_KEY) setEntries(readEntries(storageRef.current));
     };
     window.addEventListener('storage', onStorage);
@@ -151,11 +156,14 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
    * an old list over newer notes.
    */
   const persist = (change: (list: JournalEntry[]) => JournalEntry[]): boolean => {
-    const base = storageState === 'ok' ? readEntries(storageRef.current) : entries;
+    // After a write that failed, the list on screen holds changes the stored
+    // copy lacks; build on it, so freeing space never drops the unsaved note.
+    const base = storageState === 'ok' && !unsaved.current ? readEntries(storageRef.current) : entries;
     const next = change(base);
     setEntries(next);
     if (storageState !== 'ok') return false;
     const result = writeEntries(storageRef.current, next);
+    unsaved.current = !result.ok;
     if (!result.ok) {
       setStatus(result.reason === 'full' ? ui.storageFull : ui.storageBlocked);
       return false;
