@@ -9,7 +9,7 @@
   },
   "clock": "Each instant is evaluated at the engine's own UT1 and TT for it, as the engine makes astronomy-engine's time (tools/engine-clock.ts): from 1972-01-01 to 2027-10-02 the instant is read as UTC, with TT = UTC + (TAI - UTC) + 32.184 s from the IERS leap seconds and UT1 = UTC + (UT1 - UTC) (basis iers-utc/1, table 064d98b4a531053a); at any other instant UT1 is the instant and TT = UT1 + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c). A comparison therefore measures positions and angles, not the clock; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
   "engineClock": {
-    "engineVersion": "1.1.0-rc.1",
+    "engineVersion": "1.1.0-rc.2",
     "deltaTModel": "zodiacs-deltat/1",
     "deltaTTable": "2026-09-24",
     "deltaTTableDigest": "6371988c510a1c6c",
@@ -22,7 +22,7 @@
     "sources": {
       "docs/engine-validation/independent-references/cases.json": "eecfa25c5408b4c11baf5f2f73df93ba333850f7ba00c3ae0a1f0cab8d60520e",
       "docs/engine-validation/independent-references/tools/build.py": "de1138a4cad5da3644a9674605a9b0857e2fa5e1c08df3426bec2916776cc4f8",
-      "docs/engine-validation/independent-references/tools/engine-clock.ts": "37d5ccc0e744a88220c98249ae28207a760fbabcecd0b3f3c610ef2b2a97b408",
+      "docs/engine-validation/independent-references/tools/engine-clock.ts": "52c4bb296c5a5178a26afb8cd240d2b6d25c80f9ca8d0b9110f761c57c588fdf",
       "docs/engine-validation/independent-references/tools/geometry.py": "c7ec362ff44a7ffa7d88229695f6b9d9b5af74b8289b268888ed5b5342f7147c",
       "docs/engine-validation/independent-references/tools/horizons.py": "c734a652b01c8f78efe1ed696d0f1ffb28737e24debe47f9b3e60b1ec0478a85",
       "docs/engine-validation/independent-references/tools/series.py": "dfc0d9e14b417e534ca327ef92402fc0b0b4c42418154e9ee02be14682d35490"

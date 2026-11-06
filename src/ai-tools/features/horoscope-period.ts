@@ -18,6 +18,10 @@
  * a dozen or more a month, so the slower events stay readable. The sky comes from the compute API's event search
  * (months and weeks) and the committed ingress and eclipse tables (years);
  * nothing is invented when a reading is not published, and the answer says so.
+ *
+ * With ZODIACS_SKY_EVENTS_ENABLED=1 (options.skyEvents) a published month's or
+ * year's reading also comes with a share link to its card
+ * (src/ai-tools/share-links.ts), which carries the sign and the period only.
  */
 import { z } from 'zod';
 import eclipseTable from '../../data/eclipses.json';
@@ -28,7 +32,10 @@ import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { HOUSE_THEME, solarHouse } from '../../lib/daily';
 import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
 import { HOROSCOPE_DISCLOSURE, HOROSCOPE_FOCUSES, HOROSCOPE_SIGNS, resolveHoroscope, type HoroscopeFocus } from '../horoscope/reading';
+import { readingConfidence, readingConfidenceLabel } from '../reading-confidence';
+import { horoscopePeriodShareUrl } from '../share-links';
 import type { HoroscopeWindow } from '../horoscope/window';
+import { softenHealth } from './reading-guards';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -68,6 +75,8 @@ export const horoscopePeriodData = z.object({
   to: z.string(),
   label: z.string(),
   zone: z.string(),
+  /** request: the call named a zone. assistant: the host shared one. default: UTC was assumed, and message says so. */
+  zoneSource: z.enum(['request', 'assistant', 'default']),
   /** The published reading for the period; null when none is published, and message says why. */
   reading: z.object({ title: z.string(), paragraphs: z.array(paragraph), published: z.string().nullable() }).nullable(),
   /** For a week with love or career: that focus's daily readings published for days in the week. */
@@ -86,9 +95,23 @@ export const horoscopePeriodData = z.object({
   /** What else is published: monthly readings by month and yearly readings by year. */
   available: z.object({ months: z.array(z.string()), years: z.array(z.number().int()) }),
   pageUrl: z.url(),
+  /** How specific the reading is: a Sun-sign period is sign only. */
+  confidence: z.number().int().min(40).max(95),
+  confidenceLabel: z.string(),
   disclosure: z.string(),
 });
 export type HoroscopePeriodData = z.infer<typeof horoscopePeriodData>;
+/** With ZODIACS_SKY_EVENTS_ENABLED=1: the same answer, and the share link for a published month's or year's reading. */
+export const horoscopePeriodDataWithShare = horoscopePeriodData.extend({
+  /** The card of the month's or year's published reading, by its sign and period alone; null for a week or with no reading. */
+  shareUrl: z.url().nullable(),
+});
+export type HoroscopePeriodDataWithShare = z.infer<typeof horoscopePeriodDataWithShare>;
+
+export interface HoroscopePeriodOptions {
+  /** ZODIACS_SKY_EVENTS_ENABLED=1: add shareUrl. */
+  skyEvents?: boolean;
+}
 
 export interface HoroscopePeriodSources {
   window: () => Promise<HoroscopeWindow>;
@@ -122,10 +145,12 @@ export async function getHoroscopePeriod(
   args: HoroscopePeriodInput,
   today: string,
   zone: string,
+  zoneSource: HoroscopePeriodData['zoneSource'],
   clock: Pick<LocalTimeModule, 'prepareLocalTime' | 'resolveLocalToUtc'>,
   sources: HoroscopePeriodSources,
   origin: string,
-): Promise<{ data: HoroscopePeriodData; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
+  options: HoroscopePeriodOptions = {},
+): Promise<{ data: HoroscopePeriodData | HoroscopePeriodDataWithShare; links: { title: string; url: string }[] } | { refused: 'rate-limited' | 'rate-limit-unavailable' }> {
   const focus = args.focus ?? 'general';
   const date = args.date ?? today;
   if (Number.isNaN(Date.parse(`${date}T00:00:00Z`)) || new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date) throw new RangeError('date must be a real date, such as 2026-12-01.');
@@ -171,6 +196,10 @@ export async function getHoroscopePeriod(
       reading = { title: yearly.title, paragraphs: yearly.passages.map((passage) => (passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })), published: null };
       pageUrl = `${origin}/horoscopes/${sign}/${label}/`;
     } else notes.push(`Zodiacs publishes the yearly reading for ${years.join(' and ')}; there is none for ${label}.`);
+  } else if (focus === 'general') {
+    // The general week is get_horoscope's reading. This tool keeps a week for love and career.
+    notes.push('For this week\'s general horoscope, use get_horoscope. This tool keeps a week for love and career.');
+    pageUrl = `${origin}/horoscopes/${sign}/`;
   } else {
     const window = await sources.window();
     const weekly = resolveHoroscope(window, { sign, period: 'week', focus: 'general', date }, zone, 'request', today);
@@ -179,16 +208,14 @@ export async function getHoroscopePeriod(
       reading = { title: `${signName} · ${label}`, paragraphs: weekly.reading.paragraphs, published: null };
       pageUrl = `${origin}/horoscopes/${sign}/weekly/`;
     } else notes.push(`The weekly reading for ${label} isn't kept here; Zodiacs keeps the current week's.`);
-    if (focus !== 'general') {
-      for (const edition of window.editions.filter((candidate) => candidate.anchorDate >= from && candidate.anchorDate <= to)) {
-        const daily = resolveHoroscope(window, { sign, period: 'day', focus, date: edition.anchorDate }, zone, 'request', today);
-        if (daily.status === 'available' && daily.reading) focusReadings.push({ date: edition.anchorDate, title: daily.reading.title, paragraphs: daily.reading.paragraphs });
-      }
-      notes.push(focusReadings.length
-        ? `Zodiacs writes ${focus} readings by the day; these are the ones published for days in this week.`
-        : `Zodiacs writes ${focus} readings by the day, and none is kept for days in this week.`);
-      pageUrl = `${origin}/horoscopes/${sign}/${focus}/`;
+    for (const edition of window.editions.filter((candidate) => candidate.anchorDate >= from && candidate.anchorDate <= to)) {
+      const daily = resolveHoroscope(window, { sign, period: 'day', focus, date: edition.anchorDate }, zone, 'request', today);
+      if (daily.status === 'available' && daily.reading) focusReadings.push({ date: edition.anchorDate, title: daily.reading.title, paragraphs: daily.reading.paragraphs });
     }
+    notes.push(focusReadings.length
+      ? `Zodiacs writes ${focus} readings by the day; these are the ones published for days in this week.`
+      : `Zodiacs writes ${focus} readings by the day, and none is kept for days in this week.`);
+    pageUrl = `${origin}/horoscopes/${sign}/${focus}/`;
   }
 
   // The sky: the compute API's event search for a month or week, the committed tables for a year.
@@ -219,7 +246,8 @@ export async function getHoroscopePeriod(
   let sky = [...raw, ...eclipses].sort((a, b) => a.at.localeCompare(b.at)).map((event) => {
     const house = solarHouse(event.sign, sign);
     const day = dayOn(event.at, zone);
-    return { date: day, utc: event.at, kind: event.kind, planet: event.planet, sign: event.sign, house, line: skyLine(event.kind, event.planet, event.type, event.sign, house, day) };
+    // The sixth house reads as daily work and upkeep, never as a health forecast.
+    return { date: day, utc: event.at, kind: event.kind, planet: event.planet, sign: event.sign, house, line: softenHealth(skyLine(event.kind, event.planet, event.type, event.sign, house, day)) };
   });
   if (focus !== 'general') {
     const rule = FOCUS_RULE[focus];
@@ -227,15 +255,29 @@ export async function getHoroscopePeriod(
     notes.push(`For ${focus}, the sky keeps ${rule.words}.`);
   }
   if (args.period !== 'week' && focus !== 'general' && reading) notes.push(`The ${args.period === 'month' ? 'monthly' : 'yearly'} reading itself is written for the whole sign, not only ${focus}.`);
+  if (focus === 'love') notes.push('If the person is under 18, do not frame this as romance or attraction.');
+  // Said only when no zone was given or shared: the dates are then UTC's.
+  if (zoneSource === 'default') notes.push('Dates assume UTC because no time zone was given.');
 
   const data: HoroscopePeriodData = {
     status: reading || focusReadings.length ? 'available' : 'sky-only',
-    sign, signName, period: args.period, focus, from, to, label, zone,
+    sign, signName, period: args.period, focus, from, to, label, zone, zoneSource,
     reading, focusReadings, sky,
     message: notes.length ? notes.join(' ') : null,
     available: { months: servedMonths, years },
     pageUrl,
-    disclosure: HOROSCOPE_DISCLOSURE,
+    confidence: readingConfidence('sign'),
+    confidenceLabel: readingConfidenceLabel('sign'),
+    disclosure: `${HOROSCOPE_DISCLOSURE} ${readingConfidenceLabel('sign')}.`,
   };
-  return { data, links: [{ title: `${signName} horoscopes on Zodiacs`, url: pageUrl }, { title: 'Transits this month', url: `${origin}/transits/` }] };
+  const links = [
+    { title: `${signName} horoscopes on Zodiacs`, url: pageUrl },
+    { title: 'Transits this month', url: `${origin}/transits/` },
+    // The daily email's sign-up, on the sign's own horoscope page.
+    { title: `The ${signName} horoscope by email each morning`, url: `${origin}/horoscopes/${sign}/#daily-email` },
+  ];
+  if (!options.skyEvents) return { data, links };
+  // A week's love or career readings are daily ones; only a published month or year has a card of its own.
+  const shareUrl = reading && args.period !== 'week' ? horoscopePeriodShareUrl(origin, { sign, period: args.period, date: from }) : null;
+  return { data: { ...data, shareUrl }, links };
 }

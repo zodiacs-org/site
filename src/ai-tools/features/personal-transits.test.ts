@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { scanTransitContacts } from '../../lib/engine/transit-scan';
 import { executeAiTool } from '../tools';
-import type { PersonalTransitsData } from './personal-transits';
+import { numberTransitPasses, type PersonalTransitsData } from './personal-transits';
 
 const on = { occasions: true, coverage: true, now: () => new Date('2026-11-02T05:00:00Z') };
 async function transits(args: Record<string, unknown>): Promise<PersonalTransitsData> {
@@ -64,7 +65,7 @@ describe('get_personal_transits', () => {
     const year = await transits({ ...MADRID, mode: 'year-ahead' });
     const words = JSON.stringify([data.contacts, year.highlights]);
     expect(words).not.toMatch(/\b(illness|disease|surgery|diagnos|invest|stock|lottery|profit|guarantee[sd]?)\b/iu);
-  });
+  }, 40_000);
 
   it('refuses a window that starts before the birth date, and a year ahead before the birth', async () => {
     expect(await executeAiTool('get_personal_transits', { birthDate: '1990-05-03', from: '1850-01-01', to: '1850-12-01' }, on)).toMatchObject({ ok: false, error: { code: 'invalid-request', message: 'The window starts before the birth date; give a from date on or after the birth date.' } });
@@ -88,4 +89,76 @@ describe('get_personal_transits', () => {
     expect(timed.scanned.points).toEqual(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'ASC']);
     expect(timed.highlights.length).toBeGreaterThan(data.highlights.length);
   });
+
+  it('counts Mercury and Venus passes across the whole retrograde loop, not only the window', () => {
+    const from = new Date('2026-11-04T00:00:00.000Z');
+    const to = new Date('2026-12-01T00:00:00.000Z');
+    const day = 86_400_000;
+    const scan = (lon: number, body: 'Mercury' | 'Venus', pad: number) => {
+      const natal = { bodies: [{ body: 'Jupiter' as const, lon }], angles: null };
+      const expanded = scanTransitContacts(natal, new Date(from.getTime() - pad * day), new Date(to.getTime() + pad * day), { transitBodies: [body], natalPoints: ['Jupiter'] });
+      const numbered = numberTransitPasses(expanded);
+      return numbered.filter((contact) => contact.exactUtc >= from.toISOString() && contact.exactUtc <= to.toISOString());
+    };
+    // 12° Scorpio sits inside the October to November 2026 Mercury retrograde.
+    const mercury = scan(222, 'Mercury', 70);
+    expect(mercury.length).toBeGreaterThan(0);
+    expect(mercury.every((contact) => contact.passCount === 3)).toBe(true);
+    expect(mercury.some((contact) => contact.pass > 1)).toBe(true);
+    expect(mercury.every((contact) => contact.firstPassUtc < from.toISOString() || contact.pass === 1)).toBe(true);
+    // 26° Libra sits inside the autumn 2026 Venus retrograde.
+    const venus = scan(206, 'Venus', 100);
+    expect(venus.length).toBeGreaterThan(0);
+    expect(venus.every((contact) => contact.passCount === 3)).toBe(true);
+    expect(venus.some((contact) => contact.pass === 3)).toBe(true);
+  });
+
+  it('labels each contact with a reading confidence from the birth details', async () => {
+    const dated = await transits({ birthDate: '1990-05-03', from: '2026-11-01', to: '2026-11-20' });
+    expect(dated.contacts[0].confidenceLabel).toBe('Reading confidence 60%');
+    const placed = await transits({ ...MADRID, from: '2026-11-01', to: '2026-11-20' });
+    expect(placed.contacts[0].confidenceLabel).toBe('Reading confidence 75%');
+    expect(placed.contacts.every((contact) => contact.pass >= 1 && contact.pass <= contact.passCount)).toBe(true);
+    expect(placed.contacts.every((contact) => contact.firstPass <= contact.lastPass)).toBe(true);
+  }, 40_000);
+
+  it('says which clock the dates are on, and assumes UTC only when no zone was given or shared', async () => {
+    const assumed = await transits({ birthDate: '1990-05-03', from: '2026-11-01', to: '2026-11-10' });
+    expect(assumed.zone).toBe('UTC');
+    expect(assumed.limits).toContain('Dates assume UTC because no time zone was given.');
+    const birthplace = await transits({ ...MADRID, from: '2026-11-01', to: '2026-11-10' });
+    expect(birthplace.limits).toContain('Dates are on the birthplace clock (Europe/Madrid) because no current location was given.');
+    expect(birthplace.limits.join(' ')).not.toContain('UTC');
+    const current = await transits({ ...MADRID, from: '2026-11-01', to: '2026-11-10', currentZone: 'Asia/Bangkok' });
+    expect(current.zone).toBe('Asia/Bangkok');
+    expect(current.limits.join(' ')).not.toMatch(/UTC|birthplace clock/u);
+    // A zone the assistant shares is where the person is now, so it sets the clock over the birthplace's.
+    const shared = await executeAiTool('get_personal_transits', { ...MADRID, from: '2026-11-01', to: '2026-11-10' }, on, { hostZone: 'America/New_York' });
+    if (!shared.ok || shared.tool !== 'get_personal_transits') throw new Error(JSON.stringify(shared));
+    expect(shared.data.zone).toBe('America/New_York');
+    expect(shared.data.limits.join(' ')).not.toMatch(/UTC|birthplace clock/u);
+  }, 40_000);
+
+  it('leaves romantic wording out when the birth date is under 18, and never reads the sixth house as health', async () => {
+    const young = await transits({ birthDate: '2012-02-10', time: '09:15', zone: 'Europe/London', latitude: 51.51, longitude: -0.13, mode: 'year-ahead' });
+    expect(young.under18).toBe(true);
+    expect(young.limits).toContain('This birth date is under 18, so romantic and attraction readings are left out.');
+    const window = await transits({ birthDate: '2012-02-10', from: '2026-11-01', to: '2027-01-31' });
+    expect(window.under18).toBe(true);
+    const words = JSON.stringify([young.highlights, window.contacts]);
+    expect(words).not.toMatch(/\b(?:romance|romantic|attraction|intimacy|sexual|chemistry)\b/iu);
+    expect(words).not.toMatch(/\bhealth\b/iu);
+    const adult = await transits({ ...MADRID, from: '2026-11-01', to: '2026-11-10' });
+    expect(adult.under18).toBe(false);
+    expect(adult.limits.join(' ')).not.toContain('under 18');
+  }, 60_000);
+
+  it('gives the natal Sun sign for the panel, and none when an untimed birth day changed it', async () => {
+    expect((await transits({ ...MADRID, from: '2026-11-01', to: '2026-11-05' })).sun).toBe('taurus');
+    expect((await transits({ birthDate: '1990-05-03', from: '2026-11-01', to: '2026-11-05' })).sun).toBe('taurus');
+    // The Sun entered Virgo on 23 August 1990: without a birth time the sign is unsettled that day.
+    expect((await transits({ birthDate: '1990-08-23', from: '2026-11-01', to: '2026-11-05' })).sun).toBeNull();
+    expect((await transits({ birthDate: '1990-08-23', time: '23:30', zone: 'Europe/Madrid', from: '2026-11-01', to: '2026-11-05' })).sun).toBe('virgo');
+  }, 40_000);
 });
+

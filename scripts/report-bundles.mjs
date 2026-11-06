@@ -288,6 +288,8 @@ const sourceFiles = await walk(resolve(repo, 'src'), (path) =>
 const directVendorImporters = [];
 const engineInternalImporters = [];
 const engineMathImporters = [];
+const engineTimeImporters = [];
+const engineLiteImporters = [];
 const windowRuntimeImporters = [];
 const sourceRuntimeImports = new Map();
 for (const path of sourceFiles) {
@@ -299,6 +301,8 @@ for (const path of sourceFiles) {
   if (hasVendorImport) directVendorImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal')) engineInternalImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal/math')) engineMathImporters.push(relativePath);
+  if (specifiers.includes('@zodiacs/engine/time')) engineTimeImporters.push(relativePath);
+  if (specifiers.includes('@zodiacs/engine/lite')) engineLiteImporters.push(relativePath);
   if(runtimeWindowImport(source,relativePath))windowRuntimeImporters.push(relativePath);
   sourceRuntimeImports.set(relativePath,runtimeLocalImports(source,relativePath));
 }
@@ -342,6 +346,45 @@ if (
   || engineMathImporters.some((path, index) => path !== allowedMathImporters[index])
 ) {
   fail(`engine math isolation: expected ${allowedMathImporters.join(', ')}; found ${engineMathImporters.join(', ') || 'none'}`);
+}
+// @zodiacs/engine/time (since 1.1.0-rc.2) carries the engine's time basis,
+// nutation and frame of date for the three server-side importers only (the
+// calendar function's ephemeris, the compute API, and the hosted tools'
+// Chiron, which no website source imports), so that no browser island pulls
+// the entry's frame chunks by accident.
+const allowedTimeImporters = [
+  'src/ai-tools/features/chiron.ts',
+  'src/lib/compute-api/endpoints.ts',
+  'src/lib/engine/server-ephemeris.ts',
+];
+engineTimeImporters.sort();
+if (
+  engineTimeImporters.length !== allowedTimeImporters.length
+  || engineTimeImporters.some((path, index) => path !== allowedTimeImporters[index])
+) {
+  fail(`engine time isolation: expected ${allowedTimeImporters.join(', ')}; found ${engineTimeImporters.join(', ') || 'none'}`);
+}
+// @zodiacs/engine/lite (since 1.1.0-rc.2) gives declinations, sect, composite
+// and dignities without the ephemeris, through the four adapters only, under
+// src/ and api/ (P2.E; lite preregistration B3).
+for (const path of await walk(resolve(repo, 'api'), (file) =>
+  ['.js', '.mjs', '.ts'].includes(extname(file)) && !/\.(?:test|spec)\.[^.]+$/.test(file))) {
+  if (staticImportSpecifiers(await readFile(path, 'utf8')).includes('@zodiacs/engine/lite')) {
+    engineLiteImporters.push(relative(repo, path).split(sep).join('/'));
+  }
+}
+const allowedLiteImporters = [
+  'src/lib/composite.ts',
+  'src/lib/declination.ts',
+  'src/lib/dignities.ts',
+  'src/lib/sect.ts',
+];
+engineLiteImporters.sort();
+if (
+  engineLiteImporters.length !== allowedLiteImporters.length
+  || engineLiteImporters.some((path, index) => path !== allowedLiteImporters[index])
+) {
+  fail(`engine lite isolation: expected ${allowedLiteImporters.join(', ')}; found ${engineLiteImporters.join(', ') || 'none'}`);
 }
 
 const homepage = routeRows.find(({ route }) => route === '/');
@@ -397,6 +440,19 @@ if(birthWindowWorkerGzip>budgets['chunk-max']*1024)fail('birth-window worker sta
 if(hasBirthWindowWorker&&!engineMarkers.every(marker=>[...birthWindowWorkerClosure].some(path=>chunks.get(path).source.includes(marker))))fail('birth-window worker engine marker fingerprint missing');
 if (homepageMarkerChunks.length) {
   fail(`homepage engine isolation: engine marker found in ${homepageMarkerChunks.join(', ')}`);
+}
+// The lazy views that take declinations, sect, composite and dignities from
+// @zodiacs/engine/lite load no ephemeris until they ask for it: their static
+// closures hold neither engine marker (lite preregistration B2).
+for (const view of ['EclipticView', 'RelationshipWheel', 'ChartCalculator']) {
+  const viewChunks = chunkRows.filter(({ path }) => new RegExp(`/_astro/${view}\\.[^/]+\\.js$`).test(path));
+  if (viewChunks.length !== 1) {
+    fail(`lite view isolation: expected one ${view} chunk, found ${viewChunks.length}`);
+    continue;
+  }
+  const marked = [...routeClosure([viewChunks[0].path], `${view} closure`)]
+    .filter((path) => engineMarkers.some((marker) => chunks.get(path).source.includes(marker)));
+  if (marked.length) fail(`lite view isolation: engine marker found in the ${view} closure: ${marked.join(', ')}`);
 }
 if (serverOnlyMarkerChunks.length) {
   fail(`browser engine isolation: server-only import marker found in ${serverOnlyMarkerChunks.join(', ')}`);

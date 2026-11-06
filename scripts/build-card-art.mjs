@@ -22,7 +22,12 @@
  *     panels' 1200px originals in public/assets/sign-art/ and the pieces'
  *     largest masters. They are dark cards, so they take the dark twins only,
  *     with the cards' dimming of the dark art (saturate .92, brightness .86)
- *     baked in, so the renderer draws them as they are.
+ *     baked in, so the renderer draws them as they are;
+ *   public/assets/card-art/share/chinese-<animal>-1600.jpg, the twelve
+ *     Chinese zodiac animals of public/assets/art/chinese-zodiac/ for the
+ *     Chinese zodiac share card, from their 1920px pieces at 1600x900 (they
+ *     keep their 16:9; the renderer draws each around where its animal
+ *     stands), with the same dimming. `--chinese-zodiac` writes only these.
  *
  * Run by hand after changing a source: node scripts/build-card-art.mjs.
  * A new piece starts as a 1536x1024 PNG named <key>-source.png (dark) or
@@ -43,6 +48,7 @@ const root = new URL('../', import.meta.url);
 export const CARD_ART_SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 export const CARD_ART_PIECES = ['wedding-hero', 'sky-calendar-hero', 'milestones-hero', 'twins-hero'];
 export const CARD_ART_HIRES_PIECES = ['sky-calendar-hero', 'milestones-hero', 'twins-hero'];
+export const CHINESE_ZODIAC_ART = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig'];
 const HIRES_CROP_Y = { 'sky-calendar-hero': 764, 'milestones-hero': 891, 'twins-hero': 772 };
 /** One AVIF quality for the retained small panel variants, both twins. */
 const PANEL_QUALITY = 36;
@@ -70,6 +76,24 @@ function saturate(s) {
   ];
 }
 
+/** The share renderer's copy of one piece: resized, with the cards' dimming of the dark art, as a JPEG. */
+function shareJpeg(path, resize) {
+  return sharp(new URL(path, root).pathname).resize(resize).recomb(saturate(0.92)).linear(0.86, 0)
+    .jpeg({ quality: 74, mozjpeg: true }).toBuffer();
+}
+
+/** The Chinese zodiac animals for the share card, at 1600x900. */
+export async function buildChineseZodiacShareArt() {
+  await mkdir(new URL('public/assets/card-art/share/', root), { recursive: true });
+  let total = 0;
+  for (const animal of CHINESE_ZODIAC_ART) {
+    const bytes = await shareJpeg(`public/assets/art/chinese-zodiac/${animal}-1920.webp`, { width: 1600, height: 900 });
+    await writeFile(new URL(`public/assets/card-art/share/chinese-${animal}-1600.jpg`, root), bytes);
+    total += bytes.length;
+  }
+  console.log(`Built the Chinese zodiac share art for ${CHINESE_ZODIAC_ART.length} animals (${Math.round(total / 1024)} KB)`);
+}
+
 export async function buildCardArt() {
   await mkdir(new URL('public/assets/card-art/panel/', root), { recursive: true });
   await mkdir(new URL('public/assets/card-art/share/', root), { recursive: true });
@@ -83,12 +107,12 @@ export async function buildCardArt() {
     }
   }
   for (const [key, path, width] of SHARE_ART) {
-    const share = await sharp(new URL(path, root).pathname).resize({ width }).recomb(saturate(0.92)).linear(0.86, 0)
-      .jpeg({ quality: 74, mozjpeg: true }).toBuffer();
+    const share = await shareJpeg(path, { width });
     await writeFile(new URL(`public/assets/card-art/share/${key}-${width}.jpg`, root), share);
     total += share.length;
   }
   console.log(`Built card art for ${sources.length} pieces and their daylight twins (${Math.round(total / 1024)} KB)`);
+  await buildChineseZodiacShareArt();
 }
 
 /** The 720px masters, from 1536x1024 sources named <key>-source.png or <key>-light-source.png. */
@@ -123,5 +147,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const hiresAt = process.argv.indexOf('--hires-masters');
   if (hiresAt > 0) await buildCardArtHiresMasters(process.argv[hiresAt + 1]);
   else if (at > 0) await buildCardArtMasters(process.argv[at + 1]);
+  else if (process.argv.includes('--chinese-zodiac')) await buildChineseZodiacShareArt();
   else await buildCardArt();
 }

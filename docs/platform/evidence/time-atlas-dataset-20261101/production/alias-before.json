@@ -1,0 +1,8 @@
+{
+  "deploymentId": "dpl_7oWVdoEKjmaUWqGw9AVJPYH45dFT",
+  "aliasUpdatedAt": "2026-11-04T00:14:34.966Z",
+  "readyState": "READY",
+  "target": "production",
+  "githubCommitSha": "e632fe4cdbb02116d219bb68b280799d2a47b9f6",
+  "recordedAt": "2026-11-04T03:57:46Z"
+}

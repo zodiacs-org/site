@@ -26,15 +26,17 @@ import { pairFacts, pairSlug } from '../../lib/compat';
 import { contactLine } from '../../lib/contact-line';
 import { scoreCompatibility } from '../../lib/compat-score';
 import { compatibilityShareUrl } from '../../lib/share-results';
-import { compatibilityHandoffPath } from '../../lib/chart-handoff';
+import { inviteShareUrl } from '../share-links';
+import { coarserDetail, readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
+import { roundCoordinate } from '../plain-text';
 import { computeChart } from '../../lib/engine/full.js';
 import { isGenerationalContact, summarizePair, type MinimalBody } from '../../lib/engine/synastry';
 import type { Chart } from '../../lib/engine/types';
 import { settledSignIndex } from '../../lib/profile/settled-signs';
-import type { ShareChartInput } from '../../lib/share';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { NOT_FOUND_NOTE, searchPeople, type IndexPerson } from './people';
+import { isUnder18 } from './reading-guards';
 
 export const COMPATIBILITY_MIN_YEAR = 1800;
 export const COMPATIBILITY_MAX_YEAR = 2199;
@@ -140,7 +142,7 @@ export const compatibilityData = z.object({
   modalities: z.object({ a: modalityTally, b: modalityTally }),
   pageUrl: z.string().nullable(),
   cardUrl: z.string().nullable(),
-  /** A link to share the score: first names or Person A/B, Sun signs and the scores, no birth details. */
+  /** A link to share the score: first names or Person A/B, Sun signs, the scores and the reading's confidence, no birth details. */
   shareUrl: z.string().nullable(),
   notes: z.array(z.string()),
   note: z.literal(COMPATIBILITY_NOTE),
@@ -247,11 +249,14 @@ async function personChart(person: CompatibilityPerson, fallback: string, clock:
   if (person.birthDate === undefined) throw new RangeError(`${fallback}: give a birth date, or a famous person.`);
   checkPerson({ ...person, birthDate: person.birthDate }, fallback);
   const timeKnown = person.time !== undefined;
-  const placed = person.latitude !== undefined && person.longitude !== undefined;
-  const utc = await birthInstant({ ...person, birthDate: person.birthDate }, clock);
+  const latitude = person.latitude === undefined ? undefined : roundCoordinate(person.latitude);
+  const longitude = person.longitude === undefined ? undefined : roundCoordinate(person.longitude);
+  const placed = latitude !== undefined && longitude !== undefined;
+  const rounded = { ...person, ...(latitude !== undefined && longitude !== undefined ? { latitude, longitude } : {}) };
+  const utc = await birthInstant({ ...rounded, birthDate: person.birthDate }, clock);
   const chart = computeChart({
     utc,
-    ...(placed ? { latitude: person.latitude, longitude: person.longitude } : {}),
+    ...(placed ? { latitude, longitude } : {}),
     houseSystem: 'whole',
     timeKnown,
   });
@@ -271,22 +276,6 @@ async function personChart(person: CompatibilityPerson, fallback: string, clock:
     bodies: chart.bodies
       .filter((row) => timeKnown || row.body !== 'Moon')
       .map((row) => ({ body: row.body, lon: row.lon })),
-  };
-}
-
-function shareInput(side: PersonChart): ShareChartInput | null {
-  const { person } = side;
-  if (!person.zone || person.latitude === undefined || person.longitude === undefined || person.birthDate === undefined) return null;
-  return {
-    date: person.birthDate,
-    time: person.time ?? null,
-    timeKnown: side.timeKnown,
-    lat: person.latitude,
-    lon: person.longitude,
-    tz: person.zone,
-    ...(person.name ? { name: person.name } : {}),
-    ...(person.place ? { place: person.place } : {}),
-    houseSystem: 'whole',
   };
 }
 
@@ -355,17 +344,29 @@ export function compatibilityMissing(args: CompatibilityInput, origin = 'https:/
 }
 
 /**
+ * Compatibility readings are for two adults. When either birth date is under 18 on the reading date the tool
+ * refuses with this sentence (code invalid-request): no score, verdict or share link. The published panel draws an
+ * Attraction tile for every result and its definition is frozen, so no reading is the only safe answer.
+ */
+export const MINOR_COMPATIBILITY_REFUSAL = 'Compatibility readings are for two adults. For anyone under 18, ask explain_astrology about the two Sun signs for a friendship reading.';
+
+/**
  * Compare two birth charts. Throws RangeError with a plain message for a
  * date, time or zone the calculation cannot take, or a famous name the
- * directory does not have (check compatibilityMissing first).
+ * directory does not have (check compatibilityMissing first), and with
+ * MINOR_COMPATIBILITY_REFUSAL when either birth date is under 18 on `today`.
  */
 export async function computeCompatibility(
   args: CompatibilityInput,
   localTime: CompatibilityClock,
   origin = 'https://zodiacs.org',
+  today = new Date(),
 ): Promise<{ data: CompatibilityData; links: CompatibilityLink[] }> {
   const a = await personChart(args.a, 'Person A', localTime);
   const b = await personChart(args.b, 'Person B', localTime);
+  // Either birth date under 18, including one child with an adult: no reading at all.
+  const todayDate = today.toISOString().slice(0, 10);
+  if (isUnder18(a.birthDate, todayDate) || isUnder18(b.birthDate, todayDate)) throw new RangeError(MINOR_COMPATIBILITY_REFUSAL);
   const summary = summarizePair(a.bodies, b.bodies, COMPATIBILITY_TOP_CONTACTS);
 
   const sunA = slugAt(a.sunIndex);
@@ -383,16 +384,17 @@ export async function computeCompatibility(
     };
   }
 
-  const shareA = shareInput(a);
-  const shareB = shareInput(b);
-  const cardUrl = shareA && shareB
-    ? `${origin}${compatibilityHandoffPath(shareB, { kind: 'input', input: shareA })}`
-    : null;
-
   const elementOf = (index: number | null) => (index === null ? null : SIGNS[index].element);
   const elA = elementOf(a.sunIndex);
   const elB = elementOf(b.sunIndex);
   const score = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
+  const detail = coarserDetail(
+    readingDetail({ hasDate: true, hasTime: a.timeKnown, hasPlace: a.placed }),
+    readingDetail({ hasDate: true, hasTime: b.timeKnown, hasPlace: b.placed }),
+  );
+  const tight = summary.top.some((contact) => contact.orb < 1);
+  const label = readingConfidenceLabel(detail, tight);
+  score.headline = `${score.headline} ${label}.`;
 
   const data: CompatibilityData = {
     a: personRow(a, origin),
@@ -416,13 +418,14 @@ export async function computeCompatibility(
     elements: { a: { ...summary.elements.a }, b: { ...summary.elements.b } },
     modalities: { a: { ...summary.modalities.a }, b: { ...summary.modalities.b } },
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
-    cardUrl,
+    cardUrl: null,
     shareUrl: compatibilityShareUrl(origin, {
-      a: { name: a.famous?.name ?? a.person.name ?? null, sun: sunA },
-      b: { name: b.famous?.name ?? b.person.name ?? null, sun: sunB },
+      a: { name: null, sun: sunA },
+      b: { name: null, sun: sunB },
       score,
+      confidence: readingConfidence(detail, tight),
     }),
-    notes: notesFor(a, b),
+    notes: [...notesFor(a, b), label],
     note: COMPATIBILITY_NOTE,
   };
 
@@ -431,7 +434,11 @@ export async function computeCompatibility(
     links: [
       ...[a, b].filter((side) => side.famous).map((side) => ({ title: `${side.famous!.name}'s chart on Zodiacs`, url: `${origin}/people/${side.famous!.slug}/` })),
       { title: 'Compatibility on Zodiacs', url: `${origin}/compatibility/` },
+      { title: 'Resolve a town or city (find_birthplace)', url: `${origin}/birth-chart/` },
       { title: 'How we calculate', url: `${origin}/methodology/` },
+      // Two adults (there is no reading otherwise), neither a famous chart: the other person can read the pair from
+      // their own chart through the private invite. The link carries the two Sun signs at most, never a birth detail.
+      ...(a.famous || b.famous ? [] : [{ title: 'Invite your partner to compare charts on Zodiacs', url: inviteShareUrl(origin, { sun: sunA, partner: sunB }) }]),
     ],
   };
 }

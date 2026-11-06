@@ -162,19 +162,28 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `now` receipt year — refresh yearly with sky.json)
 - `src/data/transits-YYYY-MM.json` ← `node scripts/build-transits.mjs`
   (monthly cron: transits-monthly.yml)
-- `src/lib/engine/time-basis.mjs` ← `node scripts/build-time-basis.mjs`
-  (the engine package's own compiled time basis, for the calendar
-  function's server adapter and its tools, until the package exports one;
-  `--check` runs in CI)
 - `api/_assistant/context.ts` ← `vite-node --script
   scripts/build-assistant-context.mjs` (committed assistant site guide)
 - `plugins/zodiacs-sky/.codex-plugin/plugin.json` and `plugins/zodiacs-sky/.mcp.json` ← `scripts/build-ai-integrations.mjs` from the portable Sky manifest.
 - `integrations/generated/chart-studio.mjs` ← `scripts/build-chart-studio.mjs`
   through `npm run ai:build`; standalone browser bundle with inline fonts/icons.
   Its sources are `src/ai-tools/studio/`; never edit the generated HTML string.
+  While the panel is pinned to its published address (`PUBLISHED` in the
+  script, `ui://zodiacs/chart-studio-v6.html`), `ai:build` keeps the bytes that
+  address was published with, and it and `ai:check` fail when the panel's
+  build differs from `SOURCE_SHA256`: a change to the studio's sources, a
+  shared module it imports, its fonts or icons, or the engine. End the pin
+  with a new address, or record the new build in `SOURCE_SHA256` if the
+  change may wait.
 - `integrations/generated/horoscopes.mjs` ← `scripts/build-horoscope-panel.mjs`
   through `npm run ai:build`; the get_horoscope panel (sources
   `src/ai-tools/horoscope/`). It carries no reading data.
+- `integrations/generated/readings-sky-events.mjs` ← `scripts/build-readings-panel.mjs`
+  through `npm run ai:build`; the readings panel offered only with
+  `ZODIACS_SKY_EVENTS_ENABLED=1` (`READINGS_SKY_EVENTS_URI`, for get_natal_chart),
+  built from the same app with `src/ai-tools/readings-panel/views-sky-events.tsx`
+  in place of `./views`, so `integrations/generated/readings.mjs` keeps its bytes.
+  Its birth chart lists the lunar nodes, each body with its glyph.
 - `integrations/generated/occasions.mjs` ← `scripts/build-occasions-panel.mjs`
   through `npm run ai:build`; the occasion tools' panel (sources
   `src/ai-tools/occasions-panel/`), offered only with `ZODIACS_OCCASIONS_ENABLED=1`.
@@ -225,7 +234,10 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   current chat panels use the larger published art files directly. Sources are the sign panels, the
   cards' own pieces `public/assets/card-art/<name>-720.webp` and the daylight
   twins `public/assets/card-art/<key>-light-720.webp`, which `--masters <dir>`
-  writes from 1536px source PNGs. libvips output, so not in the drift job;
+  writes from 1536px source PNGs, and, for the Chinese zodiac share card,
+  `share/chinese-<animal>-1600.jpg` from the animals' 1920px pieces in
+  `public/assets/art/chinese-zodiac/` (`--chinese-zodiac` writes only those).
+  libvips output, so not in the drift job;
   rerun it when a source changes, then `npm run ai:build`)
 - `public/assets/og/registry/v4/` (twelve lot cards, `hub.png` and the
   manifest) ← `npm run data:og -- --only-registry` (Chromium draws each

@@ -82,7 +82,7 @@ until actual host testing; neither artifact is evidence of host acceptance.
 
 Listing preparation:
 - Display name: Zodiacs; subtitle: Sky, horoscopes and charts.
-- Category: Education & Research. Support: https://zodiacs.org/developers/support/.
+- Category: Entertainment (Education & Research until 0.6.3). Support: https://zodiacs.org/developers/support/.
 - Privacy: https://zodiacs.org/privacy/. Terms and legal/operator details must
   be reviewed against the published site before submission.
 - The existing 512px Zodiacs icon is included in both packages; portable schema,

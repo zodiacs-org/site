@@ -5,6 +5,78 @@ been uploaded, rescanned, attested or submitted. Each portal step needs
 Dias's separate yes, and Dias confirms every attestation. The Claude side is
 in `claude-directory/RESYNC-0.6.0.md`.
 
+## 0.6.4 update, 5 November 2026
+
+Prepared on branch `feat/share-card-polish` (PR #889); nothing uploaded. A
+tester read the privacy sentence as saying that no link carries any time or
+place, but a card link for a wedding or another day carries that day's time,
+time zone and coordinates rounded to two decimals, as the privacy page already
+says; a birthday, a baby's arrival or a coming of age gets no card link. The
+owner approved exact wording, so the About, the earlier release notes, the
+server instructions and get_capabilities now say: Links never carry a birth
+year, a birth time, a birthplace or the names you give; a birthday link
+carries only the month and day. Upload
+`integrations/packages/zodiacs-sky-0.6.4.zip` (98,467 bytes, SHA-256
+`5dca9b9421a75ebe8b0bfd7db53df0fbc4d9fec69308819d90f15ac7c67f844f`) instead
+of the 0.6.3 ZIP. `chatgpt-app-submission.json` carries the same About. The
+category stays Entertainment, and the subtitle, starter prompts, capabilities
+and review cases are unchanged. The server reports 0.6.4 and no longer lists
+its pointer to get_sky among a date's reasons; a compatibility share card
+names the pair by their Sun signs, and a horoscope's says "Sun-sign reading.
+Reading confidence 40%". The 19 tools, their definitions and the panels are
+unchanged, and the 0.6.3, 0.6.2 and 0.6.1 updates below still apply, with
+this sentence in place of the one quoted in the 0.6.1 update.
+
+## 0.6.3 update, 5 November 2026
+
+Prepared on branch `feat/listing-category-0-6-3`; nothing uploaded. The
+portal's check of the uploaded 0.6.2 draft gave a non-blocking metadata
+finding: it could not confirm the selected category, and asked that the
+listing explain the plugin's main purpose clearly. The owner chose
+Entertainment from the portal's list, so upload
+`integrations/packages/zodiacs-sky-0.6.3.zip` (98,085 bytes, SHA-256
+`e49ec23124f8adc9414df61a11c074bbfdd4933751092ecb0197076f309faee8`) instead
+of the 0.6.2 ZIP and check that the listing shows Entertainment.
+`chatgpt-app-submission.json` carries the same category (`ENTERTAINMENT`).
+The About, subtitle, starter prompts, capabilities and review cases are the
+0.6.2 text, unchanged. The server reports 0.6.3; the 19 tools, their
+definitions and the panels are unchanged, and the 0.6.2 and 0.6.1 updates
+below still apply.
+
+## 0.6.2 update, 4 November 2026
+
+Prepared on branch `feat/listing-text-0-6-2`; nothing uploaded. Dias chose to
+package the new listing text (option B of the 4 November listing draft), so
+upload `integrations/packages/zodiacs-sky-0.6.2.zip` (97,995 bytes, SHA-256
+`3670ee6670e491a98fdcdc20e494836fe8b0add91b944601fa55d07cc5b885d0`) instead of
+the 0.6.1 ZIP. It carries a new About, the subtitle "Sky, horoscopes & birth
+charts", three starter prompts that need no personal details, the
+capabilities with the town and time zone lookup, and five review cases, none
+with anyone's own birth details: the comparison case scores two famous charts
+Zodiacs publishes, and `find_chart_twins` moves from the cases to the reviewer
+prompts. `chatgpt-app-submission.json` carries the same About and
+cases and adds `find_birthplace`'s justifications. The server reports 0.6.2;
+the 19 tools, their definitions and the panels are unchanged, and the rest
+of the 0.6.1 update below still applies.
+
+## 0.6.1 update, 4 November 2026
+
+Prepared on branch `feat/readings-panel-0-6-1`; nothing uploaded. Upload
+`integrations/packages/zodiacs-sky-0.6.1.zip` (96,537 bytes, SHA-256
+`b52ffc5710100a09ca4b9ab299ca391f91b1f49e7d03f8b76240566b7554956a`) in place
+of the 0.6.0 ZIP in step 3 below, and expect 19 tools wherever the steps say
+18: the thirteen in review, byte for byte, then the five 0.6.0 tools and
+`find_birthplace`. The five 0.6.0 tools now open the inline readings panel
+`ui://zodiacs/readings-v3.html`, with no sidebar launch, so a short recording
+of it is worth adding if the portal asks for one. Forecasts carry a label such
+as "Reading confidence 55%" (how specific the details were, never the odds
+that something happens), readings for anyone under 18 leave out romance and
+attraction, get_compatibility refuses a pair with someone under 18 and points
+to a friendship reading of the two Sun signs, and the server says: Zodiacs
+never stores or logs birth details. Links never carry a birth year, time,
+place or names; a birthday link carries only the month and day. The About and
+the test cases are unchanged.
+
 ## Where things stand
 
 - **0.5.1 is in review.** The latest portal record (`PORTAL_REVIEW.md`, 28

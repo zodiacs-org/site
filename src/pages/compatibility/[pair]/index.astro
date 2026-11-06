@@ -2,6 +2,7 @@
 import PairComparisonSymbol from '../../../components/PairComparisonSymbol.astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
+import { SAVED_RESULT_FORWARD } from '../../../lib/profile/saved-result-link';
 import SignIcon from '../../../components/SignIcon.astro';
 import ArtFrame from '../../../components/ArtFrame.astro';
 import AskGuideLine from '../../../components/AskGuideLine.astro';
@@ -110,6 +111,8 @@ const jsonLd = [
   type="article"
   jsonLd={jsonLd}
 >
+  {/* A comparison saved from an assistant links to its sign pair by its digest (#saved=…): it opens on the profile's saved list. */}
+  <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
   <link slot="head" rel="preload" href="/fonts/eb-garamond-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
   <article class="ph" style={`--a:${a.hue};--b:${b.hue}`}>
     <header class="ph-hero">

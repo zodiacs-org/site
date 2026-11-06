@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { refFrom } from './server';
+import { hostZoneFrom, refFrom } from './server';
 import { executeAiTool, refUrl } from './tools';
 
 const on = { now: () => new Date('2026-10-11T12:00:00Z'), occasions: true };
@@ -18,11 +18,23 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     expect(refFrom(undefined)).toBe('assistant');
   });
 
+  it('reads a time zone only from ChatGPT\'s user location, and none otherwise', () => {
+    expect(hostZoneFrom({ 'openai/userLocation': { timezone: 'Asia/Bangkok' } })).toBe('Asia/Bangkok');
+    expect(hostZoneFrom({ 'openai/userLocation': { timeZone: 'Europe/Rome' } })).toBe('Europe/Rome');
+    expect(hostZoneFrom({ 'openai/userLocation': { timezone: '' } })).toBeUndefined();
+    expect(hostZoneFrom({ 'openai/userLocation': { timezone: 'x'.repeat(65) } })).toBeUndefined();
+    // Claude's tool calls carry no documented location; an absent hint leaves the tools on UTC, which they then say.
+    expect(hostZoneFrom({ 'anthropic/userLocation': { timezone: 'Europe/Paris' } })).toBeUndefined();
+    expect(hostZoneFrom({ 'claude/userLocation': { timeZone: 'America/New_York' } })).toBeUndefined();
+    expect(hostZoneFrom({})).toBeUndefined();
+    expect(hostZoneFrom(undefined)).toBeUndefined();
+  });
+
   it('tags the links and the card address of a result, and nothing without a ref', async () => {
     const tagged = await executeAiTool('get_life_milestones', { birthDate: '1997-03-15' }, on, { ref: 'chatgpt' });
     expect(tagged.ok).toBe(true);
     if (tagged.ok && tagged.tool === 'get_life_milestones') {
-      expect(tagged.data.cardUrl).toBe('https://zodiacs.org/occasions/milestones/?ref=chatgpt#b=1997-03-15');
+      expect(tagged.data.cardUrl).toBe('https://zodiacs.org/occasions/milestones/?ref=chatgpt');
       for (const link of tagged.links) expect(link.url).toMatch(/\?ref=chatgpt$/u);
     }
     const calendar = await executeAiTool('get_sky_calendar', {}, on, { ref: 'chatgpt' });
@@ -43,7 +55,7 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     expect([...url.searchParams]).toEqual([['ref', 'chatgpt']]);
     expect(Object.fromEntries(new URLSearchParams(url.hash.slice(1)))).toEqual({
       o: 'wedding', d: '2027-06-12', t: '17:00', tz: 'Europe/Rome',
-      lat: '43.7696', lon: '11.2558', place: 'Florence, Italy',
+      lat: '43.77', lon: '11.26',
     });
 
     const noPlace = await executeAiTool('get_occasion_sky', {

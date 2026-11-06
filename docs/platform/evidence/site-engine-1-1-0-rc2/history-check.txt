@@ -1,0 +1,124 @@
+Private birth-data search, 2026-11-04 (counts only)
+
+Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
+(SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), run
+from this checkout with Node 22.22.2, with the programme's private-scan
+classifiers for merges, bundles and archives (merge-aware-added.mjs,
+tree-delta-categories.mjs, classify-bundle-context.mjs, classify-archives.mjs,
+classify-archive-context.mjs).
+Patterns: the owner's two private pattern sets, kept outside every repository
+with the raw outputs. No pattern, matched line, label or path is recorded here.
+The owner's excluded engine file does not exist in this repository; the
+tool's exclusion is stated in its output all the same.
+
+Each pattern set gives the same counts.
+
+First run, before the first push, over origin/main..b5c5b46d with main at
+f95e57e3: the branch's 19 commits, three of them merges of main (e7068c9d of
+a2eed287, 92d27904 of f45734dc, 36f126b1 of f95e57e3). It reads every added
+line, every added or changed binary with gzip contents read, added paths and
+messages, and the head's tree.
+
+- The commits add 167 birth-data lines. The head's tree holds 566, against
+  548 in main's tree as merged (f95e57e3). The 18 more are all in the two new
+  archives' copies of their bundles, developer plugin 0.3.23's ZIP and MCP
+  adapter 0.1.0-rc.26's archive (5 places in each); no place in main's tree
+  gains or loses a line.
+- Read against each parent: the adoption commit 620403bc adds 9 data-pattern
+  and 19 name-pattern lines and D-12's rebuild e22eeb73 adds 4 and 8, all in
+  regenerated bundles and archives. Each merge of main, read against main,
+  adds the branch's lines again (9 and 19 at e7068c9d, 5 and 11 at 92d27904
+  and at 36f126b1), and read against the branch only main's own (0 and 3,
+  0 and 8). Every other commit adds none.
+- Bundles: the 13 matching lines the range leaves in regenerated bundles hold
+  23 matches, each with the same 200 characters on either side in main's
+  file; the bundles hold 21 matches on main and 21 on the head.
+- Archives: 83 matching lines in the 11 archive places the range adds (7 ZIP,
+  4 tgz). 81 are their base source's lines apart from version strings and
+  digests. The other 2 hold 4 matches, each with the same 200 characters on
+  either side in the base source: lines that changed elsewhere. The archive
+  members hold 24 matches, as their base sources do.
+
+Every matching line the branch adds is birth data main already carries,
+re-emitted by regenerated bundles and their archive copies. The tree's lines
+predate this adoption and stay as the earlier records classified them; no
+blanket privacy clearance of the tree is claimed.
+
+Second run, after the commit that first recorded this search (add301ac),
+over origin/main..add301ac, both sets: the same counts, 167 lines in the
+commits and 566 in the tree; read against its parent, add301ac adds no
+matching line. The commit after it changes only this description, and adds
+no matching line either.
+
+Third run, after the merge of main 1e89d772 (D-16), over origin/main..3e370c9b
+with main at 1e89d772: the branch's 22 commits, four of them merges of main
+(the fourth, 3e370c9b, of 1e89d772), before the push that carries them.
+
+- The commits add 247 birth-data lines: the first run's 167, and 80 in the
+  merge 3e370c9b, which, read against the branch, brings main's regenerated
+  bundles and new archives and adds this branch's 0.3.27 ZIP (55 of the 80
+  are in archives). The head's tree holds 610, against 592 in main's tree as
+  merged (1e89d772). The 18 more are again all in the two new archives' copies
+  of their bundles, developer plugin 0.3.27's ZIP and MCP adapter
+  0.1.0-rc.26's archive (5 places in each); no place in main's tree gains or
+  loses a line.
+- Read against each parent: every earlier commit as in the first run; the
+  merge 3e370c9b, read against main, adds the branch's lines again (5
+  data-pattern and 11 name-pattern lines), and read against the branch only
+  main's own (0 and 1).
+- Bundles: the 13 matching lines the range leaves in regenerated bundles hold
+  23 matches, each with the same 200 characters on either side in main's
+  file; the bundles hold 21 matches on main and 21 on the head.
+- Archives: 133 matching lines in the 17 archive places the range adds (12
+  ZIP, 5 tgz). 131 are their base source's lines apart from version strings
+  and digests. The other 2 hold 4 matches, each with the same 200 characters
+  on either side in the base source. The archive members hold 24 matches, as
+  their base sources do.
+
+The same finding as the first run: every matching line the branch adds is
+birth data main already carries, re-emitted by regenerated bundles and their
+archive copies.
+
+Fourth run, after the commit that records the third (4b9768cd), over
+origin/main..4b9768cd, both sets: the same counts, 247 lines in the commits
+and 610 in the tree. Read against its parent, 4b9768cd adds no data-pattern
+line and 1 name-pattern line: a test's title in the fifth attempt's
+full-suite log, whose matched text main's own test and source files carry
+(classified in memory, counts only). The commit after it changes only this
+description.
+
+Fifth run, after the merge of main bff5672f (D-17), over origin/main..88ecad61
+with main at bff5672f: the branch's 25 commits, five of them merges of main
+(the fifth, 88ecad61, of bff5672f), before the push that carries them.
+
+- The commits add 294 birth-data lines: the third run's 247, and 47 in the
+  merge 88ecad61, which, read against the branch, brings main's regenerated
+  bundles and new archives and adds this branch's 0.3.28 ZIP (22 of the 47
+  are in archives), as each earlier merge did. The head's tree holds 621,
+  against 603 in main's tree as merged (bff5672f). The 18 more are again all
+  in the two new archives' copies of their bundles, developer plugin 0.3.28's
+  ZIP and MCP adapter 0.1.0-rc.26's archive (5 places in each); no place in
+  main's tree gains or loses a line.
+- Read against each parent: every earlier commit as in the third and fourth
+  runs; the merge 88ecad61, read against main, adds the branch's lines again
+  (5 data-pattern and 12 name-pattern lines, the twelfth being the test title
+  the fourth run found), and read against the branch none.
+- Bundles: the 13 matching lines the range leaves in regenerated bundles hold
+  23 matches, each with the same 200 characters on either side in main's
+  file; the bundles hold 21 matches on main and 21 on the head.
+- Archives: 156 matching lines in the 20 archive places the range adds (14
+  ZIP, 6 tgz). 154 are their base source's lines apart from version strings
+  and digests. The other 2 hold 4 matches, each with the same 200 characters
+  on either side in the base source. The archive members hold 24 matches, as
+  their base sources do.
+
+The same finding as the first run: every matching line the branch adds is
+birth data main already carries, re-emitted by regenerated bundles, their
+archive copies and, once, a test log.
+
+Sixth run, after the commit that records the fifth (bee71fba), over
+origin/main..bee71fba, both sets: the same counts, 294 lines in the commits
+and 621 in the tree. Read against its parent, bee71fba adds no data-pattern
+line and 1 name-pattern line: a test's title in a full-suite log, whose
+matched text main's own test and source files carry (classified in memory,
+counts only). The commit after it changes only this description.

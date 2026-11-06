@@ -1,0 +1,223 @@
+{
+  "schema": "zodiacs.log-normalization.v1",
+  "what": "Records whose committed bytes differ from what the tool wrote, why, and both digests. The captured bytes stay outside Git.",
+  "files": [
+    {
+      "path": "lite/controls/controls-attempt-1.log",
+      "tool": "npx vitest run --reporter=verbose lite/tools/compare-lite.test.mjs with COMPARE_LITE_BASE, 2026-11-04, first attempt (83f168d8)",
+      "capturedSha256": "bca084339cb09ce6bcf809cc92611e0f85c7799bd436727607ca2e537824f621",
+      "committedSha256": "5ac84be5edcf10064d4bf80ddd9a750e9d55f2f1bcc2f644efa7585fbe080ac7",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "lite/controls/controls-attempt-2.log",
+      "tool": "the same, second attempt (92702bb9)",
+      "capturedSha256": "6d8abe428de9afcd1b63a5233645b647cd536a7fa79c0d512d8e5d455d6ae52c",
+      "committedSha256": "f560457858fc61660d7059bf478e89b25b9d3748ddc218eeaac03aa57ac94053",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/prepush-times-1-e7068c9d.txt",
+      "tool": "prepush.sh times file, first attempt (e7068c9d), 2026-11-04",
+      "capturedSha256": "2d878da940cc0372cf335b2ccfea362818f925f68424425935307120e71ecf78",
+      "committedSha256": "0886d930b689365fce42d84bcccb682bcc1a97141b48487ea52f0709db6997f6",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/prepush-times-2-02d550fc.txt",
+      "tool": "prepush.sh times file, second attempt (02d550fc), stopped by hand, 2026-11-04",
+      "capturedSha256": "1f45771e443ef677b6a3f6b37e57c992c51f4d1841111d486c196852a67f98e7",
+      "committedSha256": "b9895735ea5588df60de88708aa807d010055c0d86d52e53e0281c381b062b7b",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/prepush-times-3-b5c5b46d.txt",
+      "tool": "prepush.sh times file, third attempt (b5c5b46d), 2026-11-04",
+      "capturedSha256": "7ff91030aa9f2cf9a5b5bdaaf706aa0712f53e623d368985b720eb6872fdc373",
+      "committedSha256": "03f14135a82883e995483e0367ad16d62e6ccf1714be3538b2473d326ba93d6a",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/build.log",
+      "tool": "npm run build, sixth attempt (88ecad61)",
+      "capturedSha256": "87923516d278a7bfae1303af13f2e2fb56b8047311c9f0aae9bda8dc239a7a37",
+      "committedSha256": "9f3772a15c9a6bb21b51585e1a380f4736b8481836cf1029b74a1622ade230c6",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite.log",
+      "tool": "npm test, sixth attempt (88ecad61)",
+      "capturedSha256": "7c84d3ba3b8dd0c35eba792139559cfecc07f01ad5a4d13efbe34e632b90910c",
+      "committedSha256": "c9f7d118e9f1583743e880679917b6db10e90016731927547e9ea8c0a3a711e3",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/astro-check.log",
+      "tool": "npm run check, sixth attempt (88ecad61)",
+      "capturedSha256": "56f130dc51443e9bc618aa1a73d7e2ecfdea8de93e1d419a94d644086a92179b",
+      "committedSha256": "9e36e937e5706fd0b66fc35162e75bc629f72a8565f3c7399c60f1e4ac59c8f7",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/astro-check-attempt-1.log",
+      "tool": "npm run check, first attempt (e7068c9d)",
+      "capturedSha256": "d1f9d417644e60b42aec0edb5cef274e5c65b79ebc9e12f89e9708239a83b0db",
+      "committedSha256": "99a327b9682d2dede8e9201f1bdd84196c8328d7c19d582b8a699bb2b1336644",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/ai-check.log",
+      "tool": "npm run ai:check, sixth attempt (88ecad61)",
+      "capturedSha256": "5949bb419be6e681c1bb2a53a1c0d17f8d2afaf35a5b7e2974b1711b0cb89c8e",
+      "committedSha256": "5949bb419be6e681c1bb2a53a1c0d17f8d2afaf35a5b7e2974b1711b0cb89c8e",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/ai-test.log",
+      "tool": "npm run ai:test, sixth attempt (88ecad61)",
+      "capturedSha256": "62e804147335016b0ad0423c9da25472df5c80c342fe82057c223798a87e8a27",
+      "committedSha256": "c5260644db0c833305de1417d9aa0814c115be182ce290c94597129db5845ba8",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/developer-first-use-drive.log",
+      "tool": "node tests/developer-first-use-drive.mjs, sixth attempt (88ecad61)",
+      "capturedSha256": "c185650701438750c9b61336f50a0997e10f3ebc2eaba924abe5ce614f1b6ec6",
+      "committedSha256": "7566ac65593d3827acc3fb24e834426842f1ad140dd8d60f7158e5aaff09fb65",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/developer-first-use-drive-attempt-1.log",
+      "tool": "node tests/developer-first-use-drive.mjs, first attempt (e7068c9d)",
+      "capturedSha256": "46b6f7fb9748e6b94eb5052d0816df54b3e6762ff6956e59afe397336887d6e8",
+      "committedSha256": "12c5020824dc0783bda6a24e7f219656d48ba821c473329fefe6d5d9c2a81c10",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/production-flags-report-bundles.log",
+      "tool": "node scripts/report-bundles.mjs --fail after the production-flags build, sixth attempt (88ecad61)",
+      "capturedSha256": "7e4f92fe200c3cbf56dd939f2a57c28941280faefc5727a28dce90171e886f21",
+      "committedSha256": "7e4f92fe200c3cbf56dd939f2a57c28941280faefc5727a28dce90171e886f21",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/independent-references-diff.log",
+      "tool": "refs-arm64-check.mjs after the independent references build, sixth attempt (88ecad61)",
+      "capturedSha256": "5ea0d0ec5c6fad3f71c73a83e05b1eb701cf209ea58a12efce2238787701aad3",
+      "committedSha256": "5ea0d0ec5c6fad3f71c73a83e05b1eb701cf209ea58a12efce2238787701aad3",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite-attempt-4.log",
+      "tool": "npm test, fourth attempt (3deaa3fa)",
+      "capturedSha256": "278e4f00f93229172ef423e97049fccb66d682912e4b385176e094afc412010a",
+      "committedSha256": "297fc45645f429ba6dce715ef4c129225d090df79dba26da555981f403e67e29",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite-attempt-5-timeouts-alone.log",
+      "tool": "npx vitest run of the four files the fifth attempt timed out in, alone, just after it (3e370c9b)",
+      "capturedSha256": "6ddd9253635c42e9ff6b229091901c9aaa2678179ff59091c8b839b37aae7d8b",
+      "committedSha256": "8c13c5df2be3ab2024de7a828295bd411d712eae08b049ce2d1efffed1b41737",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/prepush-times-4-593207ad.txt",
+      "tool": "prepush.sh times file, fourth attempt (593207ad), stopped by hand during its build, 2026-11-05",
+      "capturedSha256": "a1287602c01553e9369bc8468a997a3431662cc4c9a6d9ed2aea78b45b72c84c",
+      "committedSha256": "a1287602c01553e9369bc8468a997a3431662cc4c9a6d9ed2aea78b45b72c84c",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/prepush-times-4-3deaa3fa.txt",
+      "tool": "prepush.sh times file, fourth attempt (3deaa3fa), 2026-11-05",
+      "capturedSha256": "e52db5fb17bb996fc5575b4fc47b3cc33311bbc991371a678b1504fe579875b5",
+      "committedSha256": "7c3e409be243e90cb0a7cf639975f8815d6da427ded6fbda0f46cd382ee00950",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/prepush-times-5-3e370c9b.txt",
+      "tool": "prepush.sh times file, fifth attempt (3e370c9b), 2026-11-05",
+      "capturedSha256": "bf250f9bfd21174c24f5536363900884a1f2d9bbee0d419b5deffa7581b34f62",
+      "committedSha256": "b6c18a4de4d3ebf31e631b16d724e343ccd8ab78efc56c30d8e6e35a9ef06e18",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "d16-sitemap/times.txt",
+      "tool": "phase-d16-sitemap.sh and phase-d16-sitemap-head.sh times file (main 1e89d772 in another clone; the merge as a2bd96f6, 4f18311f and 593207ad), 2026-11-05",
+      "capturedSha256": "ff95bfed6b76cc7c633bc57d922949e34fde06c30c185ac8fbd5a5fbb0187aa3",
+      "committedSha256": "ff95bfed6b76cc7c633bc57d922949e34fde06c30c185ac8fbd5a5fbb0187aa3",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "d16-sitemap/compare-4f18311f.log",
+      "tool": "node scripts/sitemap-rendered-changes.mjs compare --today 2026-11-05, main 1e89d772 against the merge as 4f18311f",
+      "capturedSha256": "1536fd1910b5d95cb7a231761383e8c9cc8d67410d99fae76fed8fdd6d1bef77",
+      "committedSha256": "1536fd1910b5d95cb7a231761383e8c9cc8d67410d99fae76fed8fdd6d1bef77",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "d16-sitemap/compare-593207ad.log",
+      "tool": "node scripts/sitemap-rendered-changes.mjs compare --today 2026-11-05, main 1e89d772 against the merge as 593207ad",
+      "capturedSha256": "a95c2f490ea4e2bad4059b579fc3aa0852c4c8a4329bcd874aa695e93d7f2ba2",
+      "committedSha256": "a95c2f490ea4e2bad4059b579fc3aa0852c4c8a4329bcd874aa695e93d7f2ba2",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "d16-sitemap/build-a2bd96f6.log",
+      "tool": "npm run build with production's flags under the edition's frozen noon (Sitemap Dates' build), the merge as a2bd96f6; it failed report-bundles' time-entry rule",
+      "capturedSha256": "5c7230cdd0bae1668ce38d6ae0418d1e45b4f553b6a2fbfe06e5a8feeab9a0ce",
+      "committedSha256": "18110cc5222d3c429a77114aeb0535cc72f37eaed49d34f0b0ccf05396b1bf44",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite-attempt-5.log",
+      "tool": "npm test, fifth attempt (3e370c9b)",
+      "capturedSha256": "e9fc768f258ee7e8c6a957af4a154ed9172215a2dcea66e95b77c5162e100181",
+      "committedSha256": "0fdae4b35a72cd4ca3b4f6de7582328bc4b3bc8da888a106ee0888f10da05813",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite-attempt-6-timeouts-alone.log",
+      "tool": "npx vitest run of the two files the sixth attempt timed out in, alone, just after it (88ecad61)",
+      "capturedSha256": "3e82d75bb8b0dc27fc7f020771c1e5c6f8ca5ce427cfc0ceb5d9836abd245f38",
+      "committedSha256": "003d2f81bb8d5e3e9373eebd16f840f3be4d3bcfa8052e9a921a0dcbd907bee2",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/prepush-times-6-88ecad61.txt",
+      "tool": "prepush.sh times file, sixth attempt (88ecad61), 2026-11-05",
+      "capturedSha256": "42bb587af61095b53f43c7e8f41b5783117a95f9fe04c00fa655532fc12a1fe4",
+      "committedSha256": "9d354ce7a57a44616373d31a75354a64c7c4b7c7d13019c2b7266202a5c0fd60",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "d17-sitemap/times.txt",
+      "tool": "phase-d17-sitemap.sh times file (main bff5672f in another clone; the merge as 88ecad61), 2026-11-05",
+      "capturedSha256": "e4e6869b0b96235a23a82ac8177d15fadbdc352e281abc14167361cd4e0a9664",
+      "committedSha256": "e4e6869b0b96235a23a82ac8177d15fadbdc352e281abc14167361cd4e0a9664",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "d17-sitemap/compare-88ecad61.log",
+      "tool": "node scripts/sitemap-rendered-changes.mjs compare --today 2026-11-05, main bff5672f against the merge as 88ecad61",
+      "capturedSha256": "a95c2f490ea4e2bad4059b579fc3aa0852c4c8a4329bcd874aa695e93d7f2ba2",
+      "committedSha256": "a95c2f490ea4e2bad4059b579fc3aa0852c4c8a4329bcd874aa695e93d7f2ba2",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite-captures.log",
+      "tool": "npm test after npm run build, with the Phase 1 captures of run 42007541697 in place (658aabdb with CLAUDE.md's pin note, 0d89edd3)",
+      "capturedSha256": "89c342afa7890f626677ce9ec0ce294cc91dc0c87e0e8607d628bc12ff9242b0",
+      "committedSha256": "1f8a1e4b3ccde53eb78b20d68fd9663ab3d660237255d2c3e1959119f8144a10",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "validation/full-suite-captures-attempt-1.log",
+      "tool": "npm test with the Phase 1 captures in place, before npm run build (on the production-flags build the gate leaves behind), first attempt",
+      "capturedSha256": "d4b8bae54fd7bb75eb8578960be7f1d9d121df6d5acfdc6ad235d69a9cf33385",
+      "committedSha256": "82a7d4f69fc77d88c026a6a394472dda2f686701f454f192d420cc7c57586bdd",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    }
+  ]
+}

@@ -15,8 +15,8 @@ const dependencies = {
   horoscopeMonths: async () => committedMonths,
   horoscopeProgram: async () => committedProgram as unknown as HoroscopeProgram,
 };
-async function period(args: Record<string, unknown>): Promise<HoroscopePeriodData> {
-  const result = await executeAiTool('get_horoscope_period', args, dependencies);
+async function period(args: Record<string, unknown>, deps: typeof dependencies = dependencies): Promise<HoroscopePeriodData> {
+  const result = await executeAiTool('get_horoscope_period', args, deps);
   if (!result.ok || result.tool !== 'get_horoscope_period') throw new Error(JSON.stringify(result));
   return result.data;
 }
@@ -68,7 +68,9 @@ describe('get_horoscope_period', () => {
   it('never says Zodiacs has no reading for a month it does not serve', async () => {
     const data = await period({ sign: 'leo', period: 'month', date: '2026-03-10' });
     expect(data.status).toBe('sky-only');
-    expect(data.message).toBe('The March 2026 reading for Leo is outside the range this tool serves: Zodiacs serves the monthly readings from July 2026 to November 2026 only. The Leo horoscope pages on Zodiacs are linked.');
+    // No zone was given or shared, so the dates are UTC's and the answer says so.
+    expect(data.message).toBe('The March 2026 reading for Leo is outside the range this tool serves: Zodiacs serves the monthly readings from July 2026 to November 2026 only. The Leo horoscope pages on Zodiacs are linked. Dates assume UTC because no time zone was given.');
+    expect(data.zoneSource).toBe('default');
     expect(data.message).not.toMatch(/no published/u);
     expect(data.pageUrl).toBe('https://zodiacs.org/horoscopes/leo/');
   });
@@ -134,23 +136,59 @@ describe('get_horoscope_period', () => {
   });
 
   it("gives the week's reading, and for love that week's love readings and the sky that bears on love", async () => {
-    const week = await period({ sign: 'leo', period: 'week', focus: 'love' });
-    expect(week).toMatchObject({ from: '2026-11-02', to: '2026-11-08', label: 'Week of 2 November 2026', pageUrl: 'https://zodiacs.org/horoscopes/leo/love/' });
-    expect(week.reading!.title).toBe('Leo · Week of 2 November 2026');
+    // The committed window moves forward a day with every daily sky commit, so this reads the week of its
+    // first edition rather than a fixed date that the window leaves behind.
+    const editions = (committedWindow as HoroscopeWindow).editions;
+    const first = editions[0].anchorDate;
+    const monday = new Date(`${first}T00:00:00Z`);
+    monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
+    const sunday = new Date(monday);
+    sunday.setUTCDate(monday.getUTCDate() + 6);
+    const from = monday.toISOString().slice(0, 10);
+    const to = sunday.toISOString().slice(0, 10);
+    const label = `Week of ${monday.getUTCDate()} ${monday.toLocaleString('en-GB', { month: 'long', timeZone: 'UTC' })} ${monday.getUTCFullYear()}`;
+    const atFirst = { ...dependencies, now: () => new Date(`${first}T05:00:00Z`) };
+    const week = await period({ sign: 'leo', period: 'week', focus: 'love' }, atFirst);
+    expect(week).toMatchObject({ from, to, label, pageUrl: 'https://zodiacs.org/horoscopes/leo/love/' });
+    expect(week.reading!.title).toBe(`Leo · ${label}`);
     const loveDates = week.focusReadings.map((reading) => reading.date);
-    expect(loveDates).toContain('2026-11-02');
-    expect(loveDates.every((date) => date >= '2026-11-02' && date <= '2026-11-08')).toBe(true);
+    expect(loveDates[0]).toBe(first);
+    expect(loveDates.every((date) => date >= week.from && date <= week.to)).toBe(true);
     expect([...loveDates].sort()).toEqual(loveDates);
     expect(week.sky.every((event) => ['Venus', 'Mars'].includes(event.planet) || [5, 7, 8].includes(event.house))).toBe(true);
     expect(week.message).toContain('love readings by the day');
-    const career = await period({ sign: 'leo', period: 'week', focus: 'career' });
+    expect(week.message).toContain('If the person is under 18, do not frame this as romance or attraction.');
+    const career = await period({ sign: 'leo', period: 'week', focus: 'career' }, atFirst);
     expect(career.focusReadings[0].title).toContain('Career');
+    expect(career.message).not.toContain('under 18');
+  });
+
+  it('says it assumed UTC only when no zone was given or shared', async () => {
+    const given = await period({ sign: 'leo', period: 'month', zone: 'Asia/Bangkok' });
+    expect(given.zoneSource).toBe('request');
+    expect(given.message ?? '').not.toMatch(/UTC/u);
+    const shared = await executeAiTool('get_horoscope_period', { sign: 'leo', period: 'month' }, dependencies, { hostZone: 'America/New_York' });
+    if (!shared.ok || shared.tool !== 'get_horoscope_period') throw new Error(JSON.stringify(shared));
+    expect(shared.data.zoneSource).toBe('assistant');
+    expect(shared.data.zone).toBe('America/New_York');
+    expect(shared.data.message ?? '').not.toMatch(/UTC/u);
+    const assumed = await period({ sign: 'leo', period: 'month' });
+    expect(assumed.zoneSource).toBe('default');
+    expect(assumed.message).toContain('Dates assume UTC because no time zone was given.');
+  });
+
+  it('never reads the sixth house as health', async () => {
+    for (const sign of ['aries', 'leo', 'pisces']) {
+      const data = await period({ sign, period: 'year', date: '2027-06-01', zone: 'Europe/London' });
+      expect(data.sky.map((event) => event.line).join(' '), sign).not.toMatch(/\bhealth\b/iu);
+    }
   });
 
   it('never writes a reading of its own, and refuses a sign it does not know', async () => {
     const away = await period({ sign: 'pisces', period: 'week', date: '2027-04-07' });
     expect(away.reading).toBeNull();
-    expect(away.message).toContain("isn't kept here");
+    expect(away.message).toContain('use get_horoscope');
+    expect(away.confidenceLabel).toBe('Reading confidence 40%');
     expect(await executeAiTool('get_horoscope_period', { sign: 'ophiuchus', period: 'month' }, dependencies)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
     expect(await executeAiTool('get_horoscope_period', { period: 'month' }, dependencies)).toMatchObject({ ok: false, error: { message: 'sign is required.' } });
   });

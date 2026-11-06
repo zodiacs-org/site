@@ -22,12 +22,14 @@ describe('get_natal_chart', () => {
     expect(data.planets[0]).toMatchObject({ body: 'Sun', sign: 'taurus', house: 12, pageUrl: 'https://zodiacs.org/learn/placements/sun-in-taurus/' });
     expect(data.aspects.length).toBeGreaterThan(0);
     expect(data.aspects.length).toBeLessThanOrEqual(8);
+    expect(data.aspects.map((aspect) => aspect.orb)).toEqual([...data.aspects.map((aspect) => aspect.orb)].sort((a, b) => a - b));
     expect(data.aspects.every((aspect) => aspect.line.includes(aspect.a) || aspect.line.length > 20)).toBe(true);
     const { elements, modalities } = data.balance;
     expect(elements.fire + elements.earth + elements.air + elements.water).toBe(10);
     expect(modalities.cardinal + modalities.fixed + modalities.mutable).toBe(10);
     expect(data.unknown).toEqual([]);
-    expect(data.chartUrl).toMatch(/^https:\/\/zodiacs\.org\/birth-chart\/#c=/u);
+    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/');
+    expect(data.chartUrl).not.toContain('1990');
     expect(data.sun.meaning).toBeTruthy();
     expect(data.rising.pageUrl).toBe('https://zodiacs.org/rising-sign/gemini/');
   });
@@ -43,7 +45,7 @@ describe('get_natal_chart', () => {
     expect(data.aspects.some((aspect) => aspect.a === 'Moon' || aspect.b === 'Moon')).toBe(false);
     expect(data.unknown.join(' ')).toContain('rising sign and the houses are unknown');
     expect(data.unknown.join(' ')).toContain('Leo or Virgo');
-    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/#date=1990-05-03&time=unknown');
+    expect(data.chartUrl).toBe('https://zodiacs.org/birth-chart/');
   });
 
   it('states a Moon sign without a time only when the whole birth day keeps it there', async () => {
@@ -83,7 +85,7 @@ describe('get_natal_chart', () => {
     const result = await executeAiTool('get_natal_chart', { ...MADRID, zone: 'europe/madrid' }, on, { ref: 'assistant' });
     if (!result.ok || result.tool !== 'get_natal_chart') throw new Error('refused');
     expect(result.data.zone).toBe('Europe/Madrid');
-    expect(result.data.chartUrl).toMatch(/^https:\/\/zodiacs\.org\/birth-chart\/\?ref=assistant#c=/u);
+    expect(result.data.chartUrl).toBe('https://zodiacs.org/birth-chart/?ref=assistant');
   });
 
   it('says when a birth time fell in a daylight saving gap, and how far it moved', async () => {
@@ -125,5 +127,23 @@ describe('get_natal_chart', () => {
     expect((await chart(MADRID)).timeNote).toBeUndefined();
     expect((await chart({ birthDate: '2026-03-08', zone: 'America/New_York' })).timeNote).toBeUndefined();
     expect('timeNote' in (await chart({ birthDate: '1990-05-03' }))).toBe(false);
+  });
+
+  it('leaves romantic wording out when the birth date is under 18, and never reads the sixth house as health', async () => {
+    const young = await chart({ birthDate: '2015-06-01', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 });
+    expect(young.under18).toBe(true);
+    expect(young.unknown).toContain('This birth date is under 18, so romantic and attraction readings are left out.');
+    expect(JSON.stringify({ planets: young.planets, sun: young.sun, moon: young.moon, rising: young.rising, aspects: young.aspects, balance: young.balance })).not.toMatch(/\b(?:romance|romantic|attraction|intimacy|sexual|chemistry)\b/iu);
+    const adult = await chart(MADRID);
+    expect(adult.under18).toBe(false);
+    expect(adult.unknown.join(' ')).not.toContain('under 18');
+    for (const data of [young, adult]) expect(JSON.stringify(data.planets.map((row) => row.houseLine))).not.toMatch(/\bhealth\b/iu);
+  });
+
+  it('keeps the birth details out of every link it returns', async () => {
+    const result = await executeAiTool('get_natal_chart', MADRID, on);
+    if (!result.ok || result.tool !== 'get_natal_chart') throw new Error(JSON.stringify(result));
+    const urls = [...JSON.stringify(result).matchAll(/https:\/\/[^"\\]+/gu)].map((match) => match[0]);
+    for (const url of urls) expect(url, url).not.toMatch(/1990-05-03|08:30|40\.4|-3\.7|Madrid|#c=/u);
   });
 });

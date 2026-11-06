@@ -17,6 +17,14 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * 0.5.1 changed only the reported version in it, and so did 0.6.0 in the released and occasions scenarios.
  * 0.6.0 added the coverage scenario (ZODIACS_COVERAGE_ENABLED=1 with the occasion tools), whose tools/list is the
  * thirteen entries byte for byte and then the five 0.6.0 tools (src/ai-tools/release-060.test.ts).
+ * find_birthplace is offered with those coverage tools, so that scenario's tools/list ends with it.
+ * 0.6.1 changes the reported version, the server instructions and the get_capabilities text in every scenario, and
+ * gives the five coverage tools the readings panel (readings-v3) in the coverage scenario's tools/list and
+ * resources/list. The released and occasions scenarios' tools/list and resources/list stay byte for byte.
+ * 0.6.2 changes only the reported version, in every scenario.
+ * 0.6.3 changes only the reported version, in every scenario.
+ * 0.6.4 changes the reported version in every scenario, and the one sentence on what links carry wherever the server
+ * instructions or the get_capabilities text hold it. Every tools/list and resources/list answer stays byte for byte.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

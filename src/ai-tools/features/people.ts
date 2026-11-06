@@ -132,9 +132,9 @@ export async function findChartTwins(args: ChartTwinsArgs, localTime: LocalTimeM
     const [year, month, day] = input.birthDate.split('-').map(Number);
     utc = new Date(Date.UTC(year, month - 1, day) + DAY / 2);
   }
+  // Latitude is not used: twins compare Sun and Moon signs only. Longitude still settles local mean time.
   const chart = computeChart({
     utc,
-    ...(input.latitude !== undefined && input.longitude !== undefined ? { latitude: input.latitude, longitude: input.longitude } : {}),
     houseSystem: 'whole',
     timeKnown,
     ...(flags ? { flags } : {}),

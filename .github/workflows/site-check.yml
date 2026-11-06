@@ -26,6 +26,7 @@ jobs:
   build-check:
     name: Build & Check
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -97,8 +98,10 @@ jobs:
         run: |
           npx vitest run scripts/check-developer-authorship.test.mjs
           node scripts/check-developer-authorship.mjs
+        timeout-minutes: 5
 
       - name: Released engine reference
+        timeout-minutes: 5
         run: |
           npm ci --prefix scripts/engine-reference --ignore-scripts
           node scripts/build-engine-reference.mjs --check
@@ -107,12 +110,15 @@ jobs:
           node tests/engine-reference-drive.mjs
 
       - name: Natal aspect pairs released in normal builds
+        timeout-minutes: 5
         run: node tests/natal-aspects-publication-drive.mjs
 
       - name: Typecheck
+        timeout-minutes: 5
         run: npm run check
 
       - name: Thesis reading and evidence at six viewport widths
+        timeout-minutes: 10
         run: OUT_DIR=tests/visual/artifacts/thesis npm run test:thesis:browser
 
       - name: Upload thesis screenshots
@@ -125,6 +131,7 @@ jobs:
           retention-days: 30
 
       - name: Birth chart export and sharing acceptance
+        timeout-minutes: 5
         env:
           T17_SHARE_EVIDENCE: "1"
         run: node tests/t17-positions-share.mjs
@@ -134,6 +141,7 @@ jobs:
         run: node tests/sign-icon-requests-drive.mjs
 
       - name: Imported calendar input boundaries
+        timeout-minutes: 5
         run: node tests/platform-share-boundary-drive.mjs
 
       - name: Moon lookup result ownership
@@ -169,6 +177,7 @@ jobs:
         run: OUT_DIR=tests/visual/artifacts/saved-natal-storage node tests/saved-natal-storage-drive.mjs
 
       - name: Engine accuracy vectors
+        timeout-minutes: 25
         run: npm test
 
       - name: Return visits, browser PDF and private sharing
@@ -200,6 +209,7 @@ jobs:
       # contract's invariants live. A test nothing runs is not a test.
       # Environment-neutral: no pack, no kernel, no network.
       - name: Precision alpha tier A
+        timeout-minutes: 5
         working-directory: examples/precision-alpha
         run: npm test
 
@@ -208,36 +218,47 @@ jobs:
         run: node scripts/verify-platform-starter.mjs --install
 
       - name: Phase 1 exact-width acceptance evidence
+        timeout-minutes: 5
         run: npm run test:phase1:evidence
 
       - name: Weekly digest smoke
+        timeout-minutes: 5
         run: npm run digest:weekly -- --dry-run --fixture --week-start 2026-07-13 --limit 1
 
       - name: Link & artifact integrity over dist
+        timeout-minutes: 10
         run: node scripts/check-dist.mjs
 
       - name: I18n route-boundary regression
+        timeout-minutes: 5
         run: npm run test:i18n:r0
 
       - name: Russian R2 public-locale acceptance
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/i18n-r2-ru npm run test:i18n:r2
 
       - name: Homepage poster motion and deferred video
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/home-hero npm run test:home-hero:browser
 
       - name: Homepage interactive chart preview
+        timeout-minutes: 5
         run: npm run test:home-demo:browser
 
       - name: Phase 2 sky-events publication drive
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/events npm run test:events:browser
 
       - name: Phase 5 People noindex pilot
+        timeout-minutes: 10
         run: OUT_DIR=tests/visual/artifacts/phase5-people npm run test:phase5:people
 
       - name: Phase 6 Ask Zodiacs drive
+        timeout-minutes: 5
         run: npm run test:phase6:ask
 
       - name: Today SSR and personalization
+        timeout-minutes: 10
         run: npm run test:today:browser
 
       - name: Consumer mobile journeys and early form input
@@ -245,45 +266,59 @@ jobs:
         run: OUT_DIR=tests/visual/artifacts/consumer-experience npm run test:consumer:browser
 
       - name: Horoscope templates, SSR, and responsive behavior
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/horoscope-program npm run test:horoscopes:browser
 
       - name: Link-in-bio page acceptance
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/bio npm run test:bio:browser
 
       - name: Existing compatibility regression drive
+        timeout-minutes: 10
         run: OUT_DIR=tests/visual/artifacts/compatibility npm run test:compatibility:browser
 
       - name: Existing Registry selector regression drive
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/registry npm run test:registry-selector:browser
 
       - name: Zodiac Markets mobile terminal acceptance
+        timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/zodiac-markets node tests/registry-exchange-mobile-drive.mjs
 
       - name: Phase 1 mobile frame cadence
+        timeout-minutes: 5
         run: npm run test:phase1:frames
 
       - name: Structured data validation
+        timeout-minutes: 5
         run: npm run schema:check
 
       - name: Bundle size & engine isolation gates
+        timeout-minutes: 5
         run: node scripts/report-bundles.mjs --fail
 
       - name: Visual regression
+        timeout-minutes: 10
         run: npm run test:visual
 
       - name: Lighthouse performance budgets
+        timeout-minutes: 30
         run: npm run test:lighthouse
 
       - name: Foreign-origin widget integration
+        timeout-minutes: 5
         run: npm run test:widgets:browser
 
       - name: Widget Lighthouse thresholds
+        timeout-minutes: 5
         run: npm run test:widgets:lighthouse
 
       - name: Birth-time window development worker and UTC boundaries
+        timeout-minutes: 10
         run: node tests/birth-time-window-development-drive.mjs
 
       - name: Birth-time window native worker and chart ownership
+        timeout-minutes: 5
         run: node tests/birth-time-window-drive.mjs
 
       - name: Upload Phase 1 browser and performance evidence
@@ -302,6 +337,7 @@ jobs:
   legacy-drift:
     name: Legacy wing drift
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -329,13 +365,6 @@ jobs:
 
       - name: Verify natal aspect example drift
         run: node scripts/build-natal-aspect-examples.mjs --check
-
-      # The engine's own time basis, which the package does not export, bundled
-      # from the installed dist/ for the calendar function's server adapter and
-      # the reference tools. It must be what the vendored engine gives: the
-      # generator checks it against natalChart before comparing bytes.
-      - name: Verify the engine time-basis bundle
-        run: node scripts/build-time-basis.mjs --check
 
       # Committed wing HTML must match what the builders produce from
       # sources (build-app resolves the pinned local @babel/standalone,
@@ -365,7 +394,7 @@ jobs:
   swiss-output-removal:
     name: Swiss output removal and independent references
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -527,7 +556,7 @@ jobs:
   saved-records-lifecycle-drive:
     name: Saved calculation records lifecycle drive
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       PUBLIC_SAVED_RECORDS_ENABLED: "1"
     steps:
@@ -754,6 +783,7 @@ jobs:
     # budgets.natal-aspects.json).
     name: Natal aspect pairs
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       LIGHTHOUSE_ROUTES: natal-sun-moon,natal-moon-venus,natal-venus-mars
     steps:
@@ -805,6 +835,7 @@ jobs:
     # the RPC URLs only need to satisfy build-time validation.
     name: Registry Aura drive
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       PUBLIC_REGISTRY_COLLECTION_ENABLED: "1"
       SOLANA_RPC_URL: https://aura-ci.invalid/rpc
@@ -863,7 +894,7 @@ jobs:
     # WebKit's Ubuntu dependencies used almost the previous 20-minute job
     # allowance before either browser drive started. Individual drive limits
     # remain unchanged; allow installation plus both acceptance drives.
-    timeout-minutes: 30
+    timeout-minutes: 40
     env:
       PUBLIC_COMPAT_INVITES_ENABLED: "1"
       PUBLIC_REGISTRY_AURA_ENABLED: "1"

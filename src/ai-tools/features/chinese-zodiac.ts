@@ -9,12 +9,19 @@
  * calendar's traditional ones: the three-animal harmony (三合), the
  * six-harmony partner (六合) and the opposite animal (六冲). Pure: no network,
  * storage or logging.
+ *
+ * With ZODIACS_SKY_EVENTS_ENABLED=1 (options.skyEvents) the answer also has a
+ * share link to its card (src/ai-tools/share-links.ts): the animal alone,
+ * never a date or a year, whatever the answer was for. A year asked about
+ * could be the person's birth year, and a year's element with its animal
+ * would name it in the sixty-year cycle.
  */
 import { z } from 'zod';
 import lunarNewYear from '../../data/lunar-new-year.json';
 import { CHINESE_ZODIAC_ANIMALS, chineseAnimalForCycleYear, type ChineseZodiacAnimal } from '../../data/chinese-zodiac';
 import { stemBranchYear } from '../../data/chinese-zodiac-zh';
 import { parseCivilDate } from '../../lib/time/civil-date';
+import { chineseZodiacShareUrl } from '../share-links';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 const DATES = lunarNewYear.dates as Record<string, string>;
@@ -84,10 +91,23 @@ export const chineseZodiacData = z.object({
   current: animalYear,
   today: z.string(),
   zone: z.string(),
+  /** Set only when the current year was worked out in UTC because no time zone was given or shared. */
+  zoneNote: z.string().nullable(),
   guideUrl: z.url(),
   note: z.literal(CHINESE_ZODIAC_NOTE),
 });
 export type ChineseZodiacData = z.infer<typeof chineseZodiacData>;
+/** With ZODIACS_SKY_EVENTS_ENABLED=1: the same answer, and the share link to its card. */
+export const chineseZodiacDataWithShare = chineseZodiacData.extend({
+  /** The card: the animal alone, with its own element and the yin or yang of its years; never a date or a year. */
+  shareUrl: z.url().nullable(),
+});
+export type ChineseZodiacDataWithShare = z.infer<typeof chineseZodiacDataWithShare>;
+
+export interface ChineseZodiacOptions {
+  /** ZODIACS_SKY_EVENTS_ENABLED=1: add shareUrl. */
+  skyEvents?: boolean;
+}
 
 /** The traditional element of a Chinese year from its Heavenly Stem: two years each, wood first, from 1984 (甲子). */
 export function chineseElement(year: number): { element: ChineseElement; yinYang: 'yin' | 'yang' } {
@@ -149,7 +169,7 @@ function pairings(animal: ChineseZodiacAnimal, origin: string) {
 }
 
 /** The answer for one call. `today` is the person's own date (YYYY-MM-DD) in `zone`. */
-export function getChineseZodiac(args: ChineseZodiacInput, today: string, zone: string, origin = DEFAULT_ORIGIN): { data: ChineseZodiacData; links: { title: string; url: string }[] } {
+export function getChineseZodiac(args: ChineseZodiacInput, today: string, zone: string, origin = DEFAULT_ORIGIN, zoneAssumed = false, options: ChineseZodiacOptions = {}): { data: ChineseZodiacData | ChineseZodiacDataWithShare; links: { title: string; url: string }[] } {
   const currentYear = chineseYearOf(today);
   let personYear: number | null = null;
   let boundary: ChineseZodiacData['boundary'] = null;
@@ -193,6 +213,7 @@ export function getChineseZodiac(args: ChineseZodiacInput, today: string, zone: 
     current: yearFacts(currentYear, origin),
     today,
     zone,
+    zoneNote: zoneAssumed ? 'The current year assumes UTC because no time zone was given.' : null,
     guideUrl: `${origin}/learn/chinese-zodiac/`,
     note: CHINESE_ZODIAC_NOTE,
   };
@@ -201,5 +222,7 @@ export function getChineseZodiac(args: ChineseZodiacInput, today: string, zone: 
     ...(person?.animal.slug !== data.current.animal.slug ? [{ title: `The ${data.current.animal.name}, this year's animal`, url: data.current.animal.pageUrl }] : []),
     { title: 'The Chinese zodiac on Zodiacs', url: data.guideUrl },
   ];
-  return { data, links };
+  if (!options.skyEvents) return { data, links };
+  const shown = data.person ?? data.current;
+  return { data: { ...data, shareUrl: chineseZodiacShareUrl(origin, { animal: shown.animal.slug }) }, links };
 }

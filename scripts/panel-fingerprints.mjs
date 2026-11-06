@@ -9,6 +9,9 @@ const PANELS = [
   ['chart-studio', 'src/ai-tools/contracts.ts', 'STUDIO_URI'],
   ['horoscopes', 'src/ai-tools/horoscope/reading.ts', 'HOROSCOPE_URI'],
   ['occasions', 'src/ai-tools/contracts.ts', 'OCCASIONS_URI'],
+  ['readings', 'src/ai-tools/contracts.ts', 'READINGS_URI'],
+  // The readings panel offered while ZODIACS_SKY_EVENTS_ENABLED=1, whose birth chart lists the lunar nodes and Chiron.
+  ['readings-sky-events', 'src/ai-tools/contracts.ts', 'READINGS_SKY_EVENTS_URI'],
 ];
 
 async function currentUri(path, symbol) {

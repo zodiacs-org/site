@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-11-01 P4.5 validated, not accepted: the partition evaluation's fourth preregistered attempt passes its own rule on development data, versions 2 and 3 failed, and acceptance waits for the owner's decisions",
+  "asOf": "2026-11-04 B3.c validated, not accepted: zodiacs.org serves the time atlas 0.1.0 as a dataset under CC BY 4.0 with its diff viewer (#862 merged as 2f2a5669), and acceptance waits for the owner on the reading of \"released\" and the first-use drive's unrun Firefox half",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -511,7 +511,8 @@
       "dependsOn": [],
       "status": "not-started",
       "release": "none",
-      "evidence": []
+      "evidence": [],
+      "notes": "Update 2026-11-04: engine 1.1.0-rc.2 (zodiacs-org/engine#82, merged as 883371f5) carries the time bands (engine docs/evidence/1.1.0-rc.2-20261102/time-bands/). Version 1 of this unit failed its check C1b in the engine's formal run (the recorded sigma against its sources: 19 problems, all at two seams), so it is to be recorded failed once production serves rc.2, and C8's version 2 moves into the unit's version 2 in a later candidate (the site adoption plan's decisions D-1 and D-4). The site's adoption (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged) vendors rc.2 and registers time-band:first-order; time-bands C9 is read in production for the record only."
     },
     {
       "id": "P1.M3d",
@@ -1329,7 +1330,7 @@
         "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/vedic vargaOf: the sixteen Parashari vargas and the cyclic D2 and D3 exact on their 3,480 boundaries (10,440 points) of src/vedic/fixtures/boundaries.json, whose values come from the texts by exact rational arithmetic without the engine (engine docs/evidence/vedic-2026-09-28/README.md, \"Boundary fixtures\"); src/vedic/boundaries.test.ts passes on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log); variants named, and the Kashinatha hora and the Jagannatha and Somanatha drekkanas refused by name",
         "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
       ],
-      "notes": "the time-sensitivity output the unit names (the minutes of birth time before each varga sign changes, brief §3 Phase 2 B) is not implemented"
+      "notes": "the time-sensitivity output the unit names (the minutes of birth time before each varga sign changes, brief §3 Phase 2 B) is not implemented Update 2026-11-04: engine 1.1.0-rc.2 (zodiacs-org/engine#82, merged as 883371f5) adds vargaSensitivity to @zodiacs/engine/vedic, the time-sensitivity output the note above found missing (engine docs/evidence/1.1.0-rc.2-20261102/varga-sensitivity/). The site's adoption (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged) vendors rc.2, and its engine reference documents the function (functions/vedic.vargaSensitivity.html). Status unchanged until production checks it (PRODUCTION-CHECKS.md, V1); the varga section 3 reading and G-V4's amended reading await the owner's ratification (OQ5)."
     },
     {
       "id": "P2.B.panchang",
@@ -1496,7 +1497,7 @@
       "evidence": [
         "engine rc.11"
       ],
-      "notes": "site still computes parallels with its own code on a fixed obliquity; rc.15 exports the package's parallels only from the root entry's shared chunk, which loads astronomy-engine: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports them"
+      "notes": "site still computes parallels with its own code on a fixed obliquity; rc.15 exports the package's parallels only from the root entry's shared chunk, which loads astronomy-engine: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports them Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes findDeclinationAspects, declinationOf and each body's row from @zodiacs/engine/lite, which loads no ephemeris, through src/lib/declination.ts, and removes the site's own declinationOf from src/lib/wheel/ecliptic3d.ts; EclipticView takes both charts' declinations and bounds from it. Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 9,548 cases, 89 agree, 9,459 differ, every difference by a cause its section allows (values: declination-formula 73,126 and separation-exact 11,768, each within 1e-12 degrees; sun-bound-exemption 6; orb-boundary 2; declination-validation 24, recorded), none unexplained, and the referee agrees with every pair; B1 to B6 pass with their controls. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5). Correction to this unit's first note: the site took the mean obliquity of date whenever it had an instant, not a fixed obliquity (lite preregistration section 9)."
     },
     {
       "id": "P2.E.aspect-patterns",
@@ -1531,7 +1532,8 @@
       "dependsOn": [],
       "status": "not-started",
       "release": "none",
-      "evidence": []
+      "evidence": [],
+      "notes": "Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes compositeMidpoints and compositeAspects from @zodiacs/engine/lite through src/lib/composite.ts, whose own arithmetic is removed; the RelationshipWheel closure holds no ephemeris (B2). Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 2,310 cases, 2,300 agree, 10 differ, all recorded refusals (composite-validation 10), none unexplained; C2-M, C2-R and C2-P without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5)."
     },
     {
       "id": "P2.E.dignities",
@@ -1544,7 +1546,8 @@
       "dependsOn": [],
       "status": "not-started",
       "release": "none",
-      "evidence": []
+      "evidence": [],
+      "notes": "Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes dignityFor, dignitiesFor and hasClassicalDignities from @zodiacs/engine/lite through src/lib/dignities.ts, whose table is removed (neutral answers where the engine refuses a name or a sign); check 16 of the People pilot's validator compares the pilot's frozen table with the engine's dignitiesFor (OQ11). Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 312 cases, 295 agree, 17 differ: site-prototype-lookup 10 (names Object.prototype carries, a site defect the adapter removes) and dignity-validation 7 (recorded), none unexplained; DG-X without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5)."
     },
     {
       "id": "P2.E.sect",
@@ -1560,7 +1563,7 @@
       "evidence": [
         "engine rc.10 sectOf"
       ],
-      "notes": "site does not import it; rc.15 exports sectOf only from the root entry's shared chunk, which loads astronomy-engine, and decides sect by the Sun's ecliptic arc where the site uses its altitude: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports it"
+      "notes": "site does not import it; rc.15 exports sectOf only from the root entry's shared chunk, which loads astronomy-engine, and decides sect by the Sun's ecliptic arc where the site uses its altitude: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports it Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes sect from @zodiacs/engine/lite's sectReading under its altitude convention (OQ4) through src/lib/sect.ts, whose own rule is removed; the caller, the altitude and the 3D page's copy are unchanged. Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 24,072 cases, 23,868 agree, 204 differ, all in recorded sections (sect-convention 188, where S2-P sets the altitude rule against the ecliptic rule, with no owner question raised; sect-validation 16), none unexplained; S2-A, S2-B and S2-E without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5)."
     },
     {
       "id": "P2.E.moon-sign-candidates",
@@ -2697,10 +2700,21 @@
       "dependsOn": [
         "B3.a"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "decided 2026-09-28: the atlas is CC BY 4.0 (docs/platform/programme/DECISIONS-2026-09-28.md §7)"
+      "status": "validated",
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/862",
+        "https://github.com/zodiacs-org/site/actions/runs/41769911262: main's Site Check on the merge, 20 of its 21 jobs passed; Build & Check failed on src/ai-tools/features/horoscope-period.test.ts, a test outside this unit that fails the same way at e632fe4c, before the merge (the daily edition of 4 November rewrote the horoscope window it reads)",
+        "docs/platform/evidence/time-atlas-dataset-20261101/production/production-at-merge.json: zodiacs.org at dpl_5L1BPzRrw9QY9DmaJUnf7KzzoiVz, built from 2f2a5669, 24 of 24 checks (the same check before that deployment: 0 of 24, control-before.json; README.md expected with its last byte changed: 23 of 24, control-one-byte.json; the engine's bytes read at c4e70330: 23 of 24, control-engine-c4e70330.json; the first difference row removed from the served page: 23 of 24, control-row-removed.json; each control fails exactly its check): /developers/time-atlas/ holds the viewer (the tzdb 2025c base, the 23 comparisons, every period, each of the 108 differences with its one explanation, the sources, the rules and their versions, the files), the licence and attribution text, the correction route and its Dataset markup, with no excerpt and no en or em dash; the 17 atlas files answer with their media types and the bytes the merge holds and the engine repository holds at 7307665b; files.json is the merge's; the developer hub, the sitemap and both llms files give the page",
+        "tests/time-atlas-dataset.test.ts: publishes exactly the seventeen atlas files and their index, none missing, none extra and no link; keeps the bytes the engine repository's atlas had at 7307665b, file by file; lists each file in files.json with its size, SHA-256, git blob and source, and the commit and tree it came from; reads the comparison as TZDB-DIFFERENCES.md states it; matches each difference to exactly one of the 11 explanations on its place, zone, rule and both offsets; shows nothing with an en or em dash, and leaves out the excerpts; holds the page's checks over the built site to the files, and fails each planted fault",
+        "docs/platform/evidence/time-atlas-dataset-20261101/PREREGISTRATION.md",
+        "docs/platform/evidence/time-atlas-dataset-20261101/README.md"
+      ],
+      "blockedBy": {
+        "owner": true,
+        "action": "the owner's acceptance of the preregistration's reading of \"released\" (atlas 0.1.0 served by zodiacs.org production under /developers/time-atlas/0.1.0/, cited by its index files.json, in files that never change, release deployed, with no tag, GitHub release or DOI) and of the first-use drive's unrun Firefox half as a departure from the site gates, or, for that half, a run of it where Playwright's Firefox starts (docs/platform/evidence/time-atlas-dataset-20261101/README.md, \"Production\"; docs/platform/programme/DECISIONS-2026-10-05.md §4)"
+      },
+      "notes": "Validated 2026-11-04, not accepted. #862 was merged on the owner's approval as 2f2a5669, a merge commit, and zodiacs.org serves the Zodiacs.org historical time atlas 0.1.0 as a dataset under CC BY 4.0: the 17 files of atlas/ in the engine repository at 7307665b (atlas tree 8e1bc174), byte for byte, and their index files.json under /developers/time-atlas/0.1.0/, with /developers/time-atlas/, a server-rendered viewer of the atlas against tzdb 2025c with backzone (23 comparisons, 287 periods, the 108 differences each with one of 11 explanations, 37 sources, 59 rules with their versions and changes). The owner's reply to the merge request, given in chat on 2026-11-04: \"i have no idea what those things are that are still with me and you can go ahead and merge and continue. Resolve it yourself.\" The preregistration accepts its reading of \"released\" with an approval given with no other answer and records any other answer as given; this reply also hands the open questions back to the programme, and DECISIONS-2026-10-05 §4 keeps the programme from accepting its own unit's reading or departure under a delegation. #862's body, in a first paragraph added before the merge, read the approval as accepting the reading and kept the Firefox departure unaccepted; this record leaves both with the owner. The departure: the first-use drive's Firefox half is unrun, since Playwright's Firefox 151.0 (build 1532) does not start headless on the Mac the gates ran on (macOS 27.0.1), while its Chromium half passed 44 of 44 and no CI workflow runs the drive. Main's Site Check on the merge failed in one of its 21 jobs, on src/ai-tools/features/horoscope-period.test.ts, a test outside this unit that fails the same way at e632fe4c, before the merge, so the production record's fourth condition, a passing Site Check on the merge, is not met either. Earlier: decided 2026-09-28, the atlas is CC BY 4.0 (docs/platform/programme/DECISIONS-2026-09-28.md §7)."
     },
     {
       "id": "B4.a",

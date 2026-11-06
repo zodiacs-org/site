@@ -1,0 +1,57 @@
+{
+ "check": "S1b",
+ "tool": "adapter-parity.mjs",
+ "adapter": {
+  "path": "src/lib/engine/server-ephemeris.ts",
+  "sha256": "6514e95845c4977300d788fb2725ab1af555dabe3693fcfb679b8be536d885a0"
+ },
+ "module": {
+  "path": "src/lib/engine/time-basis.mjs",
+  "sha256": "5857c888df07dd5a1695273797632ea8736f37a26aad2fe908b3d857d2333f40"
+ },
+ "package": "1.1.0-rc.2",
+ "esbuild": "0.28.1",
+ "compared": [
+  "module",
+  "package"
+ ],
+ "bundles": {
+  "module": {
+   "inputs": {
+    "module/server-ephemeris.ts": "6514e95845c4977300d788fb2725ab1af555dabe3693fcfb679b8be536d885a0",
+    "module/time-basis.mjs": "5857c888df07dd5a1695273797632ea8736f37a26aad2fe908b3d857d2333f40"
+   },
+   "external": [
+    "@zodiacs/engine/deltat",
+    "node:module"
+   ],
+   "sha256": "c2bdc315127e1ecbfdaa44809ece78519dd79dae92eabeb7c74d11eadf919d0d"
+  },
+  "package": {
+   "inputs": {
+    "package/server-ephemeris.ts": "0f54ee5f2167dbfd075a077516aeae3616b84c9aff5112e1275ee08291bbebf0"
+   },
+   "external": [
+    "@zodiacs/engine/deltat",
+    "@zodiacs/engine/time",
+    "node:module"
+   ],
+   "sha256": "5544fdd34657c0eac37a83a4bcfbc45f99733f34776a9a25eb9a5f7dc111545c"
+  }
+ },
+ "control": false,
+ "controlBehaved": null,
+ "counts": {
+  "instants": 14765,
+  "bodyLongitude": 177180,
+  "longitudeSpeed": 177180,
+  "errors": 0
+ },
+ "differences": {
+  "values": 0,
+  "instantsWithDifferences": 0
+ },
+ "examples": [],
+ "node": "v22.22.2",
+ "pass": true
+}

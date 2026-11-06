@@ -4,11 +4,11 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { oauthClaimsValid } from '../auth/oauth';
 import { configuredWatchOAuth } from '../watch/oauth';
-import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME } from '../contracts';
+import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, SKY_EVENTS_TOOL_NAMES } from '../contracts';
 import { COUNTED_TOOL_NAMES } from '../usage';
 import { ACCOUNT_PERMISSION, ACCOUNT_SCOPES, MAX_SAVED_RECORD_BYTES, SAVE_TOOL_NAME, saveInput } from './contracts';
 import { accountsResourceOrigin, configuredAccounts, invalidTokenChallenge, signInChallenge } from './service';
-import { buildSavedRecord, recordDigest, recordProblem, saveToZodiacs, type SavedRecord } from './save';
+import { buildSavedRecord, recordDigest, recordProblem, saveToZodiacs, savedOccasionPath, type SavedRecord } from './save';
 import { allowedRedirect, consentKind } from './consent';
 import { CONSENT_HTML, CONSENT_SCRIPT_HASH, CONSENT_STYLE_HASH } from '../../../integrations/generated/accounts-consent.mjs';
 
@@ -144,8 +144,9 @@ describe('what can be saved', () => {
     const chart = await buildSavedRecord(saveInput.parse(cases[0]), { now });
     if ('failure' in chart) throw new Error(chart.failure);
     expect(chart.data).toMatchObject({ sun: 'taurus', zone: 'Europe/Madrid', time: '08:30', birthDate: '1990-05-03' });
-    // A chart with its place reopens on the birth chart page; a famous chart on the person's page.
-    expect(chart.href).toMatch(/^\/birth-chart\/#c=1\.[A-Za-z0-9_-]+$/u);
+    // A chart links to the birth chart page with the result's digest, never its birth details; a famous chart to the person's page.
+    expect(chart.href).toMatch(/^\/birth-chart\/#saved=[0-9a-f]{16}$/u);
+    expect(JSON.stringify([chart.href, chart.links])).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid|#c=/u);
     const famous = await buildSavedRecord(saveInput.parse(cases[1]), { now });
     if ('failure' in famous) throw new Error(famous.failure);
     expect(famous.href).toBe('/people/frida-kahlo/');
@@ -158,11 +159,39 @@ describe('what can be saved', () => {
     const occasion = await buildSavedRecord(saveInput.parse(cases[3]), { now });
     if ('failure' in occasion) throw new Error(occasion.failure);
     expect((occasion.data as { bestDays: { best: unknown[] } }).bestDays.best).toHaveLength(3);
-    expect(occasion.href).toMatch(/^\/occasions\/#o=wedding&d=2027-06-\d\d/u);
+    expect(occasion.href).toMatch(/^\/occasions\/#o=wedding&d=2027-06-\d\d&tz=Europe%2FRome&lat=43\.77&lon=11\.25$/u);
+    // A saved occasion link follows the tool's own rule: no names and no place name.
+    expect(occasion.href).not.toMatch(/Ana|Luis|Florence|&n=|place=/u);
+    expect(JSON.stringify(occasion.links)).not.toMatch(/Ana|Luis|Florence/u);
     const pairOnly = await buildSavedRecord(saveInput.parse(cases[2]), { now });
     if ('failure' in pairOnly) throw new Error(pairOnly.failure);
     // A famous side has no birth place, so the comparison links to its sign pair with the result's digest.
     expect(pairOnly.href).toMatch(/^\/compatibility\/[a-z]+-[a-z]+\/#saved=[0-9a-f]{16}$/u);
+  });
+
+  it('keeps a birthday, a baby or a coming of age to the page address: no date, time, place or name in the link', async () => {
+    const hrefs = new Set<string>();
+    for (const occasion of ['birthday', 'baby', 'coming-of-age']) {
+      for (const date of ['2012-03-14', '2015-09-30']) {
+        const args = { kind: 'occasion', occasion: { occasion, date, time: '08:15', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278, place: 'London', names: 'Mia' } };
+        const record = await buildSavedRecord(saveInput.parse(args), { now });
+        if ('failure' in record) throw new Error(record.failure);
+        expect(recordProblem(record)).toBeNull();
+        // The page address, with the saved result's digest after the # so two such saves stay two rows.
+        expect(record.href).toMatch(/^\/occasions\/#saved=[0-9a-f]{16}$/u);
+        expect(record.links).toEqual([{ title: 'Occasion cards on Zodiacs', url: 'https://zodiacs.org/occasions/' }]);
+        const linked = JSON.stringify([record.href, record.links, (record.data as { cardUrl: unknown }).cardUrl]);
+        for (const detail of [date, date.slice(5), '08:15', '08%3A15', '51.5', '-0.1', 'London', 'Mia']) expect(linked, detail).not.toContain(detail);
+        hrefs.add(record.href);
+      }
+    }
+    expect(hrefs.size).toBe(6);
+    // Any other occasion keeps the day, time, zone and two-decimal coordinates, never the names or the place.
+    expect(savedOccasionPath({ latitude: 43.7696, longitude: 11.2558 }, { occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome' }))
+      .toBe('/occasions/#o=wedding&d=2027-06-12&t=17%3A00&tz=Europe%2FRome&lat=43.77&lon=11.26');
+    expect(savedOccasionPath({}, { occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome' })).toBe('/occasions/#o=wedding&d=2027-06-12');
+    expect(savedOccasionPath({}, { occasion: 'anniversary', date: '2027-06-12', time: null, zone: null })).toBe('/occasions/#o=anniversary&d=2027-06-12');
+    expect(savedOccasionPath({ latitude: 1, longitude: 2 }, { occasion: 'birthday', date: '2012-03-14', time: '08:15', zone: 'UTC' })).toBeNull();
   });
 
   it('refuses what the tool itself would refuse, and a famous name it does not have', async () => {
@@ -246,7 +275,7 @@ describe('the consent page', () => {
 
 describe('usage counting for the save tool', () => {
   it('adds only save_to_zodiacs to the counted names, in a later migration than the 0.5.0 widening', () => {
-    expect(COUNTED_TOOL_NAMES).toEqual([...EVERY_AI_TOOL_NAME, SAVE_TOOL_NAME]);
+    expect(COUNTED_TOOL_NAMES).toEqual([...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, SAVE_TOOL_NAME]);
     const migrations = readdirSync(`${root}supabase/migrations`);
     const widened = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_occasion_tools.sql'));
     const save = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_save_tool.sql'));
@@ -260,7 +289,21 @@ describe('usage counting for the save tool', () => {
     const added = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_060_tools.sql'));
     expect(added).toHaveLength(1);
     expect(added[0] > save[0]).toBe(true);
-    const latest = [...readFileSync(`${root}supabase/migrations/${added[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
+    const at060 = [...readFileSync(`${root}supabase/migrations/${added[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
+    expect(at060).toHaveLength(2);
+    for (const list of at060) expect(list).toEqual([...EVERY_AI_TOOL_NAME.filter((name) => name !== 'find_birthplace'), SAVE_TOOL_NAME]);
+    const birthplace = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_birthplace.sql'));
+    expect(birthplace).toHaveLength(1);
+    expect(birthplace[0] > added[0]).toBe(true);
+    const atBirthplace = [...readFileSync(`${root}supabase/migrations/${birthplace[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
+    expect(atBirthplace).toHaveLength(2);
+    for (const list of atBirthplace) expect(list).toEqual(COUNTED_TOOL_NAMES.filter((name) => name !== 'search_sky_events'));
+    // search_sky_events joins in a later migration still, which lists every counted name.
+    const skyEvents = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_sky_events.sql'));
+    expect(skyEvents).toHaveLength(1);
+    expect(skyEvents[0] > birthplace[0]).toBe(true);
+    expect(migrations.filter(name => name.includes('_zodiacs_mcp_usage_')).sort().at(-1)).toBe(skyEvents[0]);
+    const latest = [...readFileSync(`${root}supabase/migrations/${skyEvents[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
     expect(latest).toHaveLength(2);
     for (const list of latest) expect(list).toEqual([...COUNTED_TOOL_NAMES]);
   });

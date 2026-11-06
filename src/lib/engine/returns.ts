@@ -28,11 +28,15 @@ export interface ReturnSeason {
 /**
  * Every instant in (from, to] when `body` sits exactly on `targetLon`.
  * Coarse scan at `stepDays`, then 24-iteration bisection per crossing.
- * A 5-day grid by itself cannot see a pair of passes closer together than
- * one step: for Saturn that is any station within 0.0103° (37″) of the
- * natal degree, for Jupiter 0.0205°. The shared solver re-examines every
- * sampled turn within reach of the target, so such grazing pairs are kept
- * (@zodiacs/engine/crossings, the one solver the site and the package run):
+ * A 5-day grid by itself can miss both passes of a pair that fall inside one
+ * step: a station that takes the body less than |f″|h²/8 past the natal
+ * degree, with f″ the second derivative of its longitude and h the step. At
+ * the stations of 2019 to 2024 that is up to 0.0056° (about 20″) for Saturn
+ * and 0.011° (about 40″) for Jupiter (engine 1.1.0-rc.2,
+ * docs/evidence/1.1.0-rc.2-20261102/f89/blind-band.json). The shared solver
+ * re-examines every sampled turn within reach of the target, so such grazing
+ * pairs are kept (@zodiacs/engine/crossings, the one solver the site and the
+ * package run):
  * 4,941 of 4,941 station-graze cases 2020–2030 matched a fine-step reference
  * (docs/platform/evidence/phase1-events/). That is a tested property of the
  * corpus, not a proof of completeness.

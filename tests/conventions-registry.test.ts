@@ -9,6 +9,7 @@ import { CONVENTIONS_REGISTRY, conventionAddress, conventionId, natalConventionI
 import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, type NatalEnvelope, type NatalReceipt, type NatalReference } from '@zodiacs/engine/receipt';
 import { CALC_AYANAMSAS, CALC_BODIES, CALC_FRAMES, calc, chart, events, houses } from '@zodiacs/engine/calc';
 import { AYANAMSAS } from '@zodiacs/engine/vedic';
+import { executeAiTool } from '../src/ai-tools/tools';
 
 type Source = { title: string; url?: string };
 type Entry = { id: string; value: string; title: string; definition: string; sources: Source[]; status: string; writtenBy?: string };
@@ -30,7 +31,7 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
 }
 
 // The engine versions that wrote each natal conventions set, newest first (src/receipt.ts).
-const SET_RANGES = ['1.1.0-rc.1', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
+const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
 
 /** The ids a natal receipt names: each field's namespace and value, as the registry's usedIn lists them. */
 function natalReceiptIds(receipt: Record<string, unknown>): string[] {
@@ -156,7 +157,7 @@ describe('the conventions registry', () => {
     expect(dashedStrings(planted)).toHaveLength(2);
   });
 
-  it('holds every value of every natal conventions set, current where 1.1.0-rc.1 writes it and superseded where only earlier versions did', () => {
+  it('holds every value of every natal conventions set, current where 1.1.0-rc.2 writes it and superseded where only earlier versions did', () => {
     expect(SET_RANGES).toHaveLength(NATAL_RECEIPT_CONVENTION_SETS.length);
     const seen = new Set<string>();
     NATAL_RECEIPT_CONVENTION_SETS.forEach((set, index) => {
@@ -259,12 +260,19 @@ describe('the conventions registry', () => {
     }
   });
 
-  it('holds every id that natal, calc and compute API receipts name', () => {
+  it('holds every id that natal, calc and compute API receipts name', async () => {
     const named = new Set<string>();
     for (const envelope of natalEnvelopes()) for (const id of natalEnvelopeIds(fields(envelope))) named.add(id);
     for (const receipt of calcReceipts()) for (const id of calcReceiptIds(receipt)) named.add(id);
     for (const cases of Object.values(examples.success as Record<string, Record<string, { receipt: Record<string, unknown> }>>)) {
       for (const response of Object.values(cases)) for (const id of computeReceiptIds(response.receipt)) named.add(id);
+    }
+    // The hosted MCP's search_sky_events names the void-of-course rule its periods follow (ZODIACS_SKY_EVENTS_ENABLED=1).
+    const voids = await executeAiTool('search_sky_events', { kinds: ['void-of-course'], from: '2026-11-01', to: '2026-11-07' }, { occasions: true, coverage: true, skyEvents: true });
+    if (!voids.ok || voids.tool !== 'search_sky_events') throw new Error(JSON.stringify(voids));
+    for (const { id, url } of voids.data.conventions) {
+      named.add(id);
+      expect(url, id).toBe(conventionAddress(id));
     }
     expect([...named].filter((id) => !ids.has(id))).toEqual([]);
     // And the other way: no receipt writes a value of these namespaces that the samples miss, so each of their ids must be
