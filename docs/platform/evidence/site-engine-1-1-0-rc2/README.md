@@ -550,8 +550,10 @@ question (the next deployment's run followed at 14:25 ICT, with the same 18 of
 > and every other planned check passed. Do you approve?
 
 The question's "An independent reviewer found no problems" is shorter than the
-record: the review's rounds found one blocker, the stale Phase 1 captures, and
-notes, all acted on before the merge, and its last round found no blocker.
+record: the review's rounds found one blocker, the stale Phase 1 captures,
+fixed before the merge, and notes, each acted on or answered (D-15, D-18), the
+last of them corrected in this record; its last round before the merge found
+no blocker.
 
 The options offered were "Approve all" (the rules and both gaps approved, the
 five units recorded accepted, P1.M3c failed either way), "Approve rules only"
@@ -574,9 +576,10 @@ The owner answered **"Yes, it stands"**.
   G-V1 to G-V5, with G-V4 as amended; F-53's R1 to R6; F-89's R-F89. Also
   D-14, the first-use drive's Firefox launch, and D2's gap on the
   ChartCalculator closure, as above. The first answer came after the formal
-  runs and the run at the merge, and before the next deployment's run, which
-  found the same; the confirmation came after both production runs. Both apply
-  to those recorded results.
+  runs and the run at the merge and, by the asker's account (nothing else
+  timestamps it), before the next deployment's run, which found the same; the
+  confirmation came after both production runs. Both apply to those recorded
+  results.
 - **What it changes.** P2.E.declinations, P2.E.sect, P2.E.composite,
   P2.E.dignities and P2.B.vargas are recorded `accepted`, release deployed
   (`docs/platform/programme/acceptance-ledger.json`): 87.95 of 182.45 weighted
