@@ -33,12 +33,13 @@ describe('daily publication operations', () => {
   });
 
   it('publishes through a pull request when the protected branch refuses a direct push', async () => {
-    const [daily, snapshot, transits, seasonClose, weeklyRecap, publisher] = await Promise.all([
+    const [daily, snapshot, transits, seasonClose, weeklyRecap, pulse, publisher] = await Promise.all([
       read('.github/workflows/daily-horoscopes.yml'),
       read('.github/workflows/registry-market-snapshot.yml'),
       read('.github/workflows/transits-monthly.yml'),
       read('.github/workflows/race-season-close.yml'),
       read('.github/workflows/race-weekly-recap.yml'),
+      read('.github/workflows/pulse-refresh.yml'),
       read('scripts/publish-through-pr.sh'),
     ]);
 
@@ -47,18 +48,25 @@ describe('daily publication operations', () => {
     // request" — hands the same verified commit to the shared publisher,
     // which opens and squash-merges a pull request with the workflow token.
     // The Race workflows pushed straight to main with no fallback and failed
-    // every run from 2026-08-31 (recap) and 2026-09-23 (season close).
-    for (const [name, workflow] of Object.entries({ daily, snapshot, transits, seasonClose, weeklyRecap })) {
+    // every run from 2026-08-31 (recap) and 2026-09-23 (season close); Pulse
+    // Refresh's bare `git push` failed every Monday from 2026-08-31.
+    for (const [name, workflow] of Object.entries({ daily, snapshot, transits, seasonClose, weeklyRecap, pulse })) {
       expect(workflow, name).toContain('pull-requests: write');
       expect(workflow, name).toContain('actions: write');
       expect(workflow, name).toContain('GH_TOKEN: ${{ github.token }}');
       expect(workflow, name).toContain('if grep -q "GH006" "$RUNNER_TEMP/publish-push.err"; then');
       expect(workflow, name).toContain('bash scripts/publish-through-pr.sh');
     }
-    for (const [name, workflow] of Object.entries({ seasonClose, weeklyRecap })) {
+    for (const [name, workflow] of Object.entries({ seasonClose, weeklyRecap, pulse })) {
+      expect(workflow, name).toContain('DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}');
       expect(workflow, name).toContain('VERIFIED_BASE_SHA=$(git rev-parse HEAD)');
+      expect(workflow.indexOf('VERIFIED_BASE_SHA=$(git rev-parse HEAD)'), name).toBeLessThan(
+        workflow.indexOf('git commit -m'),
+      );
+      expect(workflow, name).toContain('git push origin "HEAD:$DEFAULT_BRANCH" 2>"$RUNNER_TEMP/publish-push.err"');
       expect(workflow, name).toContain('bash scripts/publish-through-pr.sh "$DEFAULT_BRANCH" "$VERIFIED_BASE_SHA"');
       expect(workflow, name).not.toMatch(/git push origin HEAD:\$\{\{/);
+      expect(workflow, name).not.toMatch(/^\s*git push\s*$/m);
     }
 
     // A Trophy Hall engraving still waiting in its pull request means main is
