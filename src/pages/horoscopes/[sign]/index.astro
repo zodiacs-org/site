@@ -30,6 +30,6 @@ const labels = {
 };
 ---
 <HoroscopeProgramPage signSlug={sign.slug} surface="today" reading={reading}>
-  <RememberMySign slot="enhancement" client:idle sign={sign.slug} name={sign.name} />
+  <RememberMySign slot="enhancement" client:painted sign={sign.slug} name={sign.name} />
   <DailyForYou slot="enhancement" client:visible sign={sign.slug} labels={labels} />
 </HoroscopeProgramPage>
