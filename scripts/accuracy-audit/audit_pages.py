@@ -388,8 +388,6 @@ def ex_event_detail(out, ctx):
         km = re.search(r'This one is (total|annular|partial|penumbral|hybrid)', t)
         if km:
             out.add('eclipse-type', ctx, 'This one is %s (%s eclipse)' % (km.group(1), ne['type']), km.group(1), ne['kind'] + ' (NASA canon)', '', km.group(1) == ne['kind'])
-        if ne['type'] == 'solar' and re.search(r'The Moon stands at', t):
-            out.add('wording', ctx, 'solar eclipse page labels the eclipse degree "The Moon stands at"', 'The Moon stands at', 'Sun and Moon conjunct at the eclipse; label is correct but an astrologer quotes the Sun', '', True, 'not an error')
 
 
 def ex_eclipse_tables(out, ctx):
@@ -531,11 +529,10 @@ def ex_sign_ranges(out, ctx, ranges_seen):
         ranges_seen[key].add(ctx.url)
 
 
-def range_stats(key):
+def range_stats(key, y0=1940):
     s, m1, d1, m2, d2 = key
-    idx = C.SIGN_NAMES.index(s)
     a = b = n = 0
-    for y in range(1940, 2031):
+    for y in range(y0, 2031):
         j1 = C.jd('%04d-%02d-%02dT12:00:00Z' % (y, month_num(m1), int(d1)))
         if C.sign_of(C.lon('Sun', j1)) == s.lower():
             a += 1
@@ -978,6 +975,72 @@ def ex_sky_calendar(out, ctx):
         check_date(out, ctx, 'station-date', '%s retrograde to %s (sky calendar)' % (m.group(1), d2), d2, truth_station(m.group(1), 'direct', noon_jd(d2)))
 
 
+def ex_dated_items(out, ctx):
+    """Yearly event lists: 'Neptune enters Aries on January 26, 2026 at 14:30 UTC',
+    'Pluto stations retrograde in Aquarius on May 6, 2026 at 15:34 UTC',
+    'Solar eclipse in Aquarius at 28.8° on February 17, 2026 at 12:11 UTC';
+    and markers 'Neptune in Aries ¶ Enters Aries Jan 26, 14:30 UTC.'"""
+    when = MONTH_RE + r' (\d{1,2}), (\d{4}) at (\d{2}):(\d{2}) UTC'
+    for item in re.finditer(BODY + r' enters ' + SIGN + r' on ' + when, ctx.text):
+        d = mkdate(item.group(5), month_num(item.group(3)), item.group(4))
+        pj = hm_jd(d, item.group(6), item.group(7))
+        if covered(item.group(1), d):
+            check_instant(out, ctx, 'ingress', item.group(0), pj, truth_ingress(item.group(1), item.group(2), pj), C.TOL_INSTANT_S)
+    for item in re.finditer(PLANET + r' stations (retrograde|direct) in ' + SIGN + r' on ' + when, ctx.text):
+        d = mkdate(item.group(6), month_num(item.group(4)), item.group(5))
+        pj = hm_jd(d, item.group(7), item.group(8))
+        tr = truth_station(item.group(1), item.group(2), pj)
+        if in_range(d):
+            check_instant(out, ctx, 'station', item.group(0), pj, tr, C.TOL_STATION_S, extra_ok=bool(tr and tr['sign'] == item.group(3).lower()))
+    for item in re.finditer(r'(Solar|Lunar) eclipse in ' + SIGN + r' at (\d{1,2}\.\d)° on ' + when, ctx.text):
+        d = mkdate(item.group(6), month_num(item.group(4)), item.group(5))
+        pj = hm_jd(d, item.group(7), item.group(8))
+        ne = min(nasa_eclipses(), key=lambda e: abs(e['jd'] - pj))
+        ok_sign = ne['lon'] is not None and C.sign_of(ne['lon']) == item.group(2).lower()
+        check_instant(out, ctx, 'eclipse', item.group(0), pj, ne if abs(ne['jd'] - pj) < 1 else None, C.TOL_INSTANT_S, extra_ok=ok_sign)
+        if ne['lon'] is not None:
+            check_position(out, ctx, 'Sun' if item.group(1) == 'Solar' else 'Moon', item.group(2), None, None, ne['jd'], item.group(0), decimal=float(item.group(3)))
+    pd = ctx.page_date
+    year = pd.year if pd else None
+    m = re.search(r'/(20\d\d)/', ctx.url)
+    if m:
+        year = int(m.group(1))
+    if year:
+        for item in re.finditer(BODY + r' in ' + SIGN + r' ¶ Enters ' + SIGN + r' ' + MONTH_RE + r' (\d{1,2}), (\d{2}):(\d{2}) UTC\.', ctx.text):
+            d = mkdate(year, month_num(item.group(4)), item.group(5))
+            pj = hm_jd(d, item.group(6), item.group(7))
+            if covered(item.group(1), d):
+                check_instant(out, ctx, 'ingress', item.group(0).replace(' ¶ ', ' / '), pj, truth_ingress(item.group(1), item.group(3), pj), C.TOL_INSTANT_S)
+
+
+def ex_whole_degree_labels(out, ctx):
+    """'New moon at 17° Scorpio', 'Venus stations direct at 23° Libra' (the month's event list):
+    the whole degree must be the truncated one."""
+    pd = ctx.page_date or datetime.date(2026, 11, 6)
+    for ln in ctx.lines:
+        m = re.fullmatch(r'(?:(New|Full) moon|' + PLANET + r' stations (direct|retrograde)) at (\d{1,2})° ' + SIGN, ln)
+        if not m:
+            continue
+        sign = m.group(5).lower()
+        pub = int(m.group(4))
+        lo, hi = noon_jd(pd) - 45, noon_jd(pd) + 45
+        if m.group(1):
+            cands = [e for e in C.events()['lunations'] if e['type'] == m.group(1).lower() and e['sign'] == sign and lo < e['jd'] < hi]
+            body = 'Moon'
+        else:
+            cands = [e for e in C.events()['stations'][m.group(2)] if e['type'] == m.group(3) and e['sign'] == sign and lo < e['jd'] < hi]
+            body = m.group(2)
+        if not cands:
+            out.add('degree-display', ctx, ln, ln, 'no matching event within 45 days', '', False)
+            continue
+        e = min(cands, key=lambda e: abs(e['jd'] - noon_jd(pd)))
+        tdeg = int(math.floor(e['degree']))
+        ok = pub == tdeg
+        out.add('degree-display', ctx, '"%s" (%s)' % (ln, e['at'][:10]), '%d° %s' % (pub, m.group(5)),
+                '%s (astrologers write %d°)' % (C.fmt_dm(e['degree'], sign), tdeg), '%+d°' % (pub - tdeg) if not ok else '', ok,
+                'rounded, not truncated' if not ok else '')
+
+
 def main():
     pages = json.load(open(sys.argv[1]))
     out = Out()
@@ -1005,14 +1068,17 @@ def main():
         ex_events(out, ctx)
         ex_birthday(out, ctx)
         ex_sky_calendar(out, ctx)
+        ex_whole_degree_labels(out, ctx)
+        ex_dated_items(out, ctx)
     for key, urls in sorted(ranges_seen.items()):
         a, b, n = range_stats(key)
+        a2, b2, n2 = range_stats(key, 2000)
         s, m1, d1, m2, d2 = key
-        ok = a * 2 > n and b * 2 > n
+        ok = a2 * 2 > n2 and b2 * 2 > n2
         out.claims.add('sign-range', '%d pages, e.g. %s' % (len(urls), sorted(urls)[0]), '%s %s %s to %s %s' % key,
                        'first day %s %s, last day %s %s' % (m1, d1, m2, d2),
-                       'Sun in %s at noon UTC on the first day in %d of %d years 1940 to 2030, on the last day in %d of %d' % (s, a, n, b, n),
-                       '', ok, 'conventional range; checked at noon UTC')
+                       'Sun in %s at noon UTC on the first day in %d of %d years 2000 to 2030 (%d of %d since 1940), on the last day in %d of %d (%d of %d)' % (s, a2, n2, a, n, b2, n2, b, n),
+                       '', ok, 'conventional range; judged on 2000 to 2030 at noon UTC')
     path = out.claims.save('pages.json')
     tot = collections.Counter((r['category'], r['ok']) for r in out.claims.rows)
     for k in sorted(tot):

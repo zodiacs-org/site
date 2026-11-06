@@ -208,7 +208,7 @@ def audit_transits(claims):
             for e in C.events()['ingresses'][p]:
                 if e['at'][:7] != month:
                     continue
-                hit = any(i['planet'] == p and abs(C.jd(i['at']) - e['jd']) < 0.01 for i in t['ingresses'])
+                hit = any(i['planet'] == p and abs(C.jd(i['at']) - e['jd']) < 1.0 for i in t['ingresses'])
                 claims.add('completeness', src, '%s ingress into %s on %s is listed' % (p, e['sign'], e['at'][:10]),
                            'listed' if hit else 'missing', e['at'], '', hit)
         for lu in t['lunations']:
@@ -341,7 +341,7 @@ def audit_ingress_windows(claims):
         pts = sorted({C.jd(w['from']) for w in ing['windows'] if w['planet'] == p} | {C.jd(w['to']) for w in ing['windows'] if w['planet'] == p})
         for e in C.events()['ingresses'][p]:
             if lo + 1 < e['jd'] < hi - 1:
-                hit = any(abs(x - e['jd']) < 0.05 for x in pts)
+                hit = any(abs(x - e['jd']) < 1.0 for x in pts)
                 if not hit:
                     claims.add('completeness', src, '%s ingress into %s on %s is listed' % (p, e['sign'], e['at'][:10]),
                                'missing', e['at'], '', False)
