@@ -318,6 +318,7 @@ const monthDay = (iso: string) => ({
             <div class="today-light__head"><SignIcon sign={sun.sign} size={46} /><h3 class="h-3">Sun in {sunSign.name}</h3></div>
             <p>{signTagline(sunSign)} {sunNote}</p>
             <p class="kfacts"><span>{signDateRange(sunSign)}</span><span>{cap(sunSign.modality)} {sunSign.element}</span><span class="today-hide-m">Ruled by {sunSign.ruler}</span></p>
+            <a class="textlink today-light__season" href={`/seasons/${sun.sign}/`}>{sunSign.name} season, sign by sign <span class="arr" aria-hidden="true">→</span></a>
           </div>
         </article>
         <article class="today-light" style={`--sign:${moonSign.hue}`}>
@@ -771,6 +772,7 @@ const monthDay = (iso: string) => ({
   .today-light__head { display: flex; align-items: center; gap: 14px; }
   .today-light p { max-width: 56ch; margin: 0; color: var(--text-2); line-height: 1.62; }
   .today-light p.kfacts { margin-top: 2px; color: var(--faint); }
+  .today-light__season { justify-self: start; font-size: var(--text-sm); }
   .today-cycle {
     position: relative;
     display: grid;

@@ -120,6 +120,33 @@ function fillTracked(context: CanvasRenderingContext2D, text: string, x: number,
 }
 
 /**
+ * The lockup's full width at `fontSize`, from the ring's left edge to the
+ * last letter, so a card can centre it (pass `centre - width / 2 + width` as
+ * `wordmarkX`). Measured with the same runs drawShareBrandLockup paints.
+ */
+export function shareBrandLockupWidth(context: CanvasRenderingContext2D, fontSize: number): number {
+  const size = fontSize * SHARE_CARD_BRAND_TYPE_SCALE;
+  const tracking = size * LOCKUP.tracking;
+  const dotSpace = size * LOCKUP.dotSpace;
+  const runs = [
+    { text: LOCKUP_WORDS.name, weight: 400, before: 0 },
+    { text: LOCKUP_WORDS.dot, weight: 400, before: dotSpace },
+    { text: LOCKUP_WORDS.tld, weight: 500, before: dotSpace },
+  ];
+  context.save();
+  try {
+    if (spacesLetters(context)) context.letterSpacing = "0px";
+    const words = runs.reduce((sum, run) => {
+      context.font = `${run.weight} ${size}px ${LOCKUP_SERIF}`;
+      return sum + run.before + context.measureText(run.text).width + tracking * [...run.text].length;
+    }, 0) - tracking;
+    return size * LOCKUP.ringWidth + size * LOCKUP.gap + words;
+  } finally {
+    context.restore();
+  }
+}
+
+/**
  * Paints the lockup: the tilted ring, then ZODIACS · ORG in EB Garamond
  * capitals at 0.2em tracking, the dot muted and centred, ORG at 500 a step
  * dimmer. It ends at `layout.wordmarkX` (the last letter, not its tracking)

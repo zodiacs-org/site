@@ -42,6 +42,7 @@ export type ToolIconName =
   | 'solar-return'
   | 'lunar-return'
   | 'sky-wrapped'
+  | 'year-sky'
   | 'eclipses'
   | 'retrogrades'
   | 'full-moon-calendar'
@@ -178,6 +179,11 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
     hue: 'sagittarius',
     body: '<rect x="4.2" y="8.6" width="15.6" height="3.6" rx="1"/><path d="M5.6 12.2v7.6h12.8v-7.6"/><path d="M12 8.6v11.2"/><path d="M12 8.6c-1-2.9-4.6-3.9-4.6-1.6 0 1.3 2.4 1.6 4.6 1.6 2.2 0 4.6-.3 4.6-1.6 0-2.3-3.6-1.3-4.6 1.6Z"/>',
   },
+  // The year as an orbit: four season marks and the planet on its way round.
+  'year-sky': {
+    hue: 'aquarius',
+    body: '<circle cx="12" cy="12" r="8.3"/><path d="M12 3.7v2.4M20.3 12h-2.4M12 20.3v-2.4M3.7 12h2.4"/><circle cx="17.9" cy="6.1" r="1.6" style="fill:currentColor"/><circle cx="12" cy="12" r="1.2" style="fill:currentColor"/>',
+  },
   // The Moon passing over the Sun.
   eclipses: {
     hue: 'scorpio',
@@ -242,6 +248,7 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/solar-return/': 'solar-return',
   '/lunar-return/': 'lunar-return',
   '/your-sky-wrapped/': 'sky-wrapped',
+  '/your-2027-sky/': 'year-sky',
   '/eclipses/': 'eclipses',
   '/retrogrades/': 'retrogrades',
   '/full-moon-calendar/': 'full-moon-calendar',

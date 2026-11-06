@@ -79,12 +79,12 @@ describe('assistant site context', () => {
       // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
-      consumerRoutes: 714,
+      consumerRoutes: 717,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 75,
+      staticPages: 78,
       tools: 28,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');

@@ -1279,3 +1279,35 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     expect(JSON.parse(savedResponse.text)).toMatchObject({ code: 'consent_required' });
   });
 });
+
+describe('Guide answer feedback', () => {
+  it.each([['feedback-up', 'up'], ['feedback-down', 'down']] as const)(
+    'records only the %s vote, with no body, identity or content',
+    async (action, vote) => {
+      const reportFeedback = vi.fn();
+      const authorizeTurn = vi.fn();
+      const handler = createGuideHandler({ env: ENV, reportFeedback, authorizeTurn: authorizeTurn as any });
+      const response = new MockResponse();
+      await handler(request('', { query: { action } }), response);
+      expect(response.statusCode).toBe(204);
+      expect(response.text).toBe('');
+      expect(reportFeedback).toHaveBeenCalledExactlyOnceWith({ event: 'guide_feedback_v1', vote });
+      expect(authorizeTurn).not.toHaveBeenCalled();
+    },
+  );
+
+  it('refuses a vote from another origin and any other action', async () => {
+    const reportFeedback = vi.fn();
+    const handler = createGuideHandler({ env: ENV, reportFeedback });
+    const crossSite = new MockResponse();
+    await handler(request('', {
+      query: { action: 'feedback-up' },
+      headers: { origin: 'https://evil.example', host: 'zodiacs.org', 'sec-fetch-site': 'cross-site' },
+    }), crossSite);
+    expect(crossSite.statusCode).toBe(403);
+    const other = new MockResponse();
+    await handler(request('', { query: { action: 'feedback-sideways' } }), other);
+    expect(other.statusCode).toBe(404);
+    expect(reportFeedback).not.toHaveBeenCalled();
+  });
+});

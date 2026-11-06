@@ -21,6 +21,7 @@ const CLIENT_GENERATORS = [
   "games/share-card.ts",
   "sharing/group-card.ts",
   "return-visits/wrapped-card.ts",
+  "story-card.ts",
 ] as const;
 
 function libSource(path: string): string {

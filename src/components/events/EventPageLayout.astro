@@ -16,6 +16,9 @@ import EventEvidence from './EventEvidence.astro';
 import EventFactsBand from './EventFactsBand.astro';
 import EventRelated from './EventRelated.astro';
 import EventSignNotes from './EventSignNotes.astro';
+import EventCountdown from './EventCountdown.astro';
+import EventSkyWatch from './EventSkyWatch.astro';
+import { EVENT_READING_CONFIDENCE, watchPlan } from '../../lib/events/watch';
 import { eventsCatalog } from '../../lib/events/catalog';
 import { publishedEventById } from '../../lib/events/publication';
 import {
@@ -38,6 +41,8 @@ const resolve = (id: string) => catalog.byId.get(id);
 const signName = (slug: string) => signBySlug(slug).name;
 const primarySign = facts.signs[0];
 const hue = primarySign ? signBySlug(primarySign).hue : undefined;
+
+const plan = watchPlan(facts);
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
@@ -117,6 +122,7 @@ const followLinks: { href: string; label: string }[] = [
   ...(facts.family === 'lunation' ? [
     { href: '/full-moon-calendar/', label: 'Every full moon, dated' },
     { href: '/moon-phase/', label: 'Tonight\'s moon phase' },
+    { href: '/moon-journal/', label: 'Keep a Moon journal' },
   ] : []),
   ...(facts.family === 'eclipse' ? [
     { href: '/eclipses/', label: 'Every eclipse through 2028' },
@@ -228,9 +234,16 @@ const sources = [
       <EventFactsBand facts={facts} />
     </div>
 
+    {plan && plan.moments.length > 0 && <EventCountdown moments={plan.moments} hue={hue} />}
+
     {interpretation?.body && (
       <section class="event-section prose reveal" data-event-reading>
         {interpretation.body.map((paragraph) => <p>{paragraph}</p>)}
+        <p class="event-confidence" data-reading-confidence>
+          <strong>{EVENT_READING_CONFIDENCE}</strong>. This reading uses the sky
+          alone{interpretation.signNotes ? ', and a Sun sign for the notes below' : ''}.
+          Your own chart, with a birth time and place, makes a reading more specific.
+        </p>
       </section>
     )}
 
@@ -252,6 +265,8 @@ const sources = [
         <EventSignNotes notes={interpretation.signNotes} subject={signNoteSubject} />
       </div>
     )}
+
+    {plan && <EventSkyWatch plan={plan} hue={hue} />}
 
     <aside class="next-action shell tinted reveal" style={hue ? `--sign:${hue}` : undefined}>
       <div class="next-action__core core tinted">

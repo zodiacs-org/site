@@ -10,8 +10,9 @@ import EmailCapture from '../../components/EmailCapture.astro';
 import programData from '../../data/horoscope-program.json';
 import { horoscopeHubTeaser, pageReadingFromProgram } from '../../lib/horoscope-page-data';
 import type { HoroscopeProgram } from '../../lib/horoscope-program';
-import { SIGNS } from '../../lib/signs';
+import { SIGNS, signBySlug } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
+import { currentSunSeason } from '../../lib/seasons/windows';
 
 const program = programData as HoroscopeProgram;
 const dateLabel = new Intl.DateTimeFormat('en-US', {
@@ -20,6 +21,10 @@ const dateLabel = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   timeZone: 'UTC',
 }).format(new Date(`${program.anchorDate}T12:00:00.000Z`));
+
+// The season under way at noon UTC on the edition date.
+const seasonWindow = currentSunSeason(new Date(`${program.anchorDate}T12:00:00.000Z`));
+const seasonNow = seasonWindow ? signBySlug(seasonWindow.sign) : null;
 
 const cards = SIGNS.map((sign) => {
   const reading = pageReadingFromProgram(program, sign.slug, 'today');
@@ -100,6 +105,7 @@ const jsonLd = [
 
     <p class="horo-note">
       For a reading alongside your own birth chart, <a href="/today/">open Today</a>. New here? <a href="/birth-chart/">Get your free birth chart</a>.
+      {seasonNow && <>{" "}It is {seasonNow.name} season: <a href={`/seasons/${seasonNow.slug}/`}>see what it asks of each sign</a>.</>}
     </p>
 
     <div class="horo-ask">

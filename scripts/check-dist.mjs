@@ -1346,7 +1346,10 @@ const sitemapPolicy = {
   // +1 for /apps/, the English assistant showcase.
   // +12 for the English-only 2026 yearly horoscope pages.
   // +1 for /developers/time-atlas/, the time atlas dataset and its comparison with tzdb 2025c.
-  total: 1465 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +13 for the English sign-season hub and its twelve season pages.
+  // +1 for /moon-journal/, the device-only Moon journal.
+  // +1 for /your-2027-sky/, the 2027 personal sky edition.
+  total: 1480 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)

@@ -524,6 +524,27 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
         </li>
       ))}
     </ul>
+    <script is:inline>
+      // A sign remembered on this device ("Make Leo my sign" on its horoscope
+      // page) is marked in place and the hero's horoscope button goes straight
+      // to it. Class and href changes only, before paint, so nothing moves.
+      (function () {
+        var sign = null;
+        try { sign = localStorage.getItem('zodiacs.my-sign.v1'); } catch (e) { return; }
+        if (!sign || !/^[a-z]+$/.test(sign)) return;
+        var path = ['', 'horoscopes', sign, ''].join('/');
+        var tile = null;
+        document.querySelectorAll('.home-today__grid a').forEach(function (link) {
+          if (link.getAttribute('href') === path) tile = link;
+        });
+        if (!tile) return;
+        tile.classList.add('is-mine');
+        var note = tile.querySelector('small');
+        if (note) note.textContent = 'Your sign';
+        var hero = document.querySelector('.hero__ghost');
+        if (hero) hero.setAttribute('href', path);
+      })();
+    </script>
     <p class="home-today__note">
       <span>Readings are published fresh each day and are meant for reflection.</span>
       <span class="tbs__stamp">{editionStamp}</span>
@@ -1065,6 +1086,8 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
   .home-today__grid small { margin-top: -6px; font-size: 11.5px; color: var(--faint); white-space: nowrap; }
   .home-today__grid a.is-now { border-color: var(--hair-3); background: color-mix(in oklab, var(--sign) 7%, transparent); }
   .home-today__grid a.is-now small { color: var(--sign); }
+  .home-today__grid a.is-mine { border-color: color-mix(in oklab, var(--sign) 55%, var(--hair-3)); background: color-mix(in oklab, var(--sign) 10%, transparent); }
+  .home-today__grid a.is-mine small { color: var(--sign); }
   @media (hover: hover) and (pointer: fine) {
     .home-today__grid a:hover {
       border-color: color-mix(in oklab, var(--sign) 42%, transparent);

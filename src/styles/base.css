@@ -680,6 +680,23 @@ body:has(:focus-visible) .reveal { animation: none; }
   font-size: var(--text-sm);
 }
 .zsearch__status[hidden] { display: none; }
+.zsearch__ask {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 4px 12px 12px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: 12px;
+  background: var(--void-2, transparent);
+  color: var(--text-2);
+  font: inherit;
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+}
+.zsearch__ask:hover, .zsearch__ask:focus-visible { border-color: var(--hair-3); color: var(--text); }
+.zsearch__ask[hidden] { display: none; }
 .zsearch__foot {
   margin: 0;
   padding: 10px 16px;

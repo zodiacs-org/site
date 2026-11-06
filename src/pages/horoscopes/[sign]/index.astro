@@ -1,5 +1,7 @@
 ---
 import HoroscopeProgramPage from '../../../components/HoroscopeProgramPage.astro';
+import RememberMySign from '../../../islands/RememberMySign';
+import '../../../styles/my-sign.css';
 import DailyForYou from '../../../islands/DailyForYou';
 import programData from '../../../data/horoscope-program.json';
 import { pageReadingFromProgram } from '../../../lib/horoscope-page-data';
@@ -28,5 +30,6 @@ const labels = {
 };
 ---
 <HoroscopeProgramPage signSlug={sign.slug} surface="today" reading={reading}>
+  <RememberMySign slot="enhancement" client:idle sign={sign.slug} name={sign.name} />
   <DailyForYou slot="enhancement" client:visible sign={sign.slug} labels={labels} />
 </HoroscopeProgramPage>

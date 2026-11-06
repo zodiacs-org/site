@@ -215,7 +215,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
      inline loader reacts only to a deliberate Guide CTA click. `noAssistant`
      omits it. -->
 {!Astro.props.noAssistant && (
-  <script is:inline data-guide-loader={GUIDE_LOADER_MARKER} set:html={guideLoaderSource(sectionLocale ? 'en' : locale)} />
+  <script is:inline data-guide-loader={GUIDE_LOADER_MARKER} set:html={guideLoaderSource(sectionLocale ? 'en' : locale, { carryPrompt: true })} />
 )}
 
 <script is:inline>

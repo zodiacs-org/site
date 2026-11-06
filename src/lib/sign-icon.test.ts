@@ -80,6 +80,7 @@ const LISTED: Record<string, string> = {
   'src/lib/sign-icon.ts': 'signIcon itself',
   'src/islands/BigThreeQuick.tsx': 'asks for all twelve discs itself (requestAllDiscs) before it sets its result',
   'src/lib/share-card.ts': 'card discs come from allDiscs, all twelve in zodiac order',
+  'src/lib/story-card.ts': 'story discs come from allStoryDiscs, all twelve fetched together in zodiac order',
   'src/lib/compatibility-card.ts': 'loads all twelve discs in zodiac order',
   'src/lib/lunar-return-card.ts': 'embeds all twelve discs in zodiac order',
   'src/lib/return-visits/chart-pdf.tsx': 'fetches and embeds all twelve discs in zodiac order, regardless of the client chart',

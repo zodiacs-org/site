@@ -754,6 +754,37 @@
 }
 .calc-share-dialog__cards { display: grid; gap: 8px; }
 .calc-share-dialog__card { justify-content: space-between; width: 100%; }
+/* The big three story card: a 9:16 thumbnail beside its actions. The
+   thumbnail's box is fixed, so the preview arriving moves nothing. */
+.calc-share-dialog__story {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding-top: 17px;
+  border-top: 1px solid var(--hair-1);
+}
+.calc-share-dialog__story-preview {
+  width: 90px;
+  height: 160px;
+  overflow: hidden;
+  border: 1px solid var(--hair-2);
+  border-radius: 10px;
+  background: var(--void-1);
+}
+.calc-share-dialog__story-preview img { display: block; width: 90px; height: 160px; }
+.calc-share-dialog__story-blank { display: block; width: 100%; height: 100%; }
+.calc-share-dialog__story-copy { display: grid; gap: 8px; }
+.calc-share-dialog__story-copy h3 {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.15;
+}
+.calc-share-dialog__story-copy .calc-share-dialog__note { margin: 0; }
+.calc-share-dialog__story-actions { display: grid; gap: 8px; }
 .calc__share-options-link {
   display: block;
   margin: 10px auto 0;

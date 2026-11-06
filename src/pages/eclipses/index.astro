@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AskGuideAbout from '../../components/AskGuideAbout.astro';
 import '../../styles/rx-table.css';
 import eclipseData from '../../data/eclipses.json';
 import { signBySlug } from '../../lib/signs';
@@ -243,6 +244,7 @@ const jsonLd = [
         headlines. The <a href="/horoscopes/">monthly horoscopes</a> date
         each one as it arrives.
       </p>
+      <AskGuideAbout prompt="What does the next eclipse mean in astrology, and how do I read it against my chart?" />
     </div>
   </section>
 

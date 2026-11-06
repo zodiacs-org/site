@@ -777,7 +777,24 @@ describe('assistant profile-access privacy fence', () => {
     expect(loader).toContain("export const GUIDE_PRIVATE_SESSION_KEY = 'zodiacs.guide.private-session.v1';");
     expect(loader).toContain("sessionStorage.setItem(privateSessionKey, '1');");
     expect(loader).toContain('location.reload();');
-    expect(shell).toContain('if (beginPrivateTransition()) return;');
+    expect(shell).toContain('if (beginPrivateTransition(from)) return;');
+    // A quick-prompt chip's question survives the private reload, and is
+    // reused only when a chip with exactly that question is on the new page.
+    expect(loader).toContain("export const GUIDE_OPEN_PROMPT_KEY = 'zodiacs.guide.open-prompt.v1';");
+    // Astro pages carry the question; the frozen wing pages keep the earlier
+    // loader byte for byte (the Phase 1 scope guard protects them).
+    const carrying = guideLoaderSource('en', { carryPrompt: true });
+    expect(carrying).toContain('if (beginPrivateTransition(target)) return;');
+    expect(carrying).toContain('if (prompt) sessionStorage.setItem(openPromptKey, prompt);');
+    expect(carrying).toContain("document.querySelectorAll('[data-assistant-open][data-assistant-prompt]')");
+    expect(carrying).toContain('return mod.openAssistant(defaultLocale, pendingOpener());');
+    const frozen = guideLoaderSource('en');
+    expect(frozen).not.toContain('openPromptKey');
+    expect(frozen).toContain('if (beginPrivateTransition()) return;');
+    expect(frozen).toContain('return mod.openAssistant(defaultLocale, null);');
+    const footer = await readFile(new URL('../../components/SiteFooter.astro', import.meta.url), 'utf8');
+    expect(footer).toContain("guideLoaderSource(sectionLocale ? 'en' : locale, { carryPrompt: true })");
+    expect(shell).toContain('if (prompt) sessionStorage.setItem(GUIDE_OPEN_PROMPT_KEY, prompt);');
     expect(guide).toContain('privateSurface');
     for (const path of [
       'public/archive/index.html',

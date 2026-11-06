@@ -78,3 +78,14 @@ describe('searchIndex', () => {
     expect(searchIndex(entries, 'SATURN', 2)).toHaveLength(2);
   });
 });
+
+describe('search hands questions to Guide', () => {
+  it('offers Guide for questions and for searches that find nothing', async () => {
+    const { offerGuide } = await import('./open-search');
+    expect(offerGuide('is mercury retrograde today', 3)).toBe(true);
+    expect(offerGuide('venus in leo?', 5)).toBe(true);
+    expect(offerGuide('qwertyuiop', 0)).toBe(true);
+    expect(offerGuide('moon sign', 4)).toBe(false);
+    expect(offerGuide('is', 0)).toBe(false);
+  });
+});

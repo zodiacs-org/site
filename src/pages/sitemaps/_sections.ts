@@ -52,6 +52,7 @@ const FIRST_SEGMENT_SECTIONS: ReadonlyMap<string, SitemapSection> = new Map<stri
   ['venus-retrograde', 'sky-events'],
   ['mars-retrograde', 'sky-events'],
   ['full-moon-calendar', 'sky-events'],
+  ['seasons', 'sky-events'],
   ['people', 'people'],
   ['terminal', 'terminal'],
   ['numerology', 'numerology'],

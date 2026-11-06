@@ -49,7 +49,9 @@ export async function runEventTransitChecks({ browser, baseURL, check, outDir = 
         check(`event ${width}: ${event.id} has a plain exact-UTC handoff and substantive reading without JavaScript`,
           href.pathname === '/transits/' && href.searchParams.get('at') === event.anchor
           && [...href.searchParams.keys()].join(',') === 'at'
-          && await staticPage.locator('[data-event-reading] p').count() === 2
+          // Two paragraphs of reading, plus the Reading confidence label every forecast carries.
+          && await staticPage.locator('[data-event-reading] p:not([data-reading-confidence])').count() === 2
+          && await staticPage.locator('[data-event-reading] [data-reading-confidence]').count() === 1
           && await staticPage.locator('.event-reflect li').count() === 2 && await fit(staticPage));
         const articles = await staticPage.locator('script[type="application/ld+json"]').evaluateAll((scripts) => scripts
           .flatMap((script) => { const data = JSON.parse(script.textContent); return data['@graph'] ?? [data]; })
