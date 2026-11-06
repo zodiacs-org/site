@@ -1,0 +1,71 @@
+name: Hand apt the cached browser packages
+description: >-
+  Run before `npx playwright-core install --with-deps`. Restores the newest
+  Actions cache entry of Ubuntu .deb files that browser-debs/save keeps for
+  this runner OS, and copies into apt's download cache only the files whose
+  SHA256 appears in the package lists apt has just downloaded and verified.
+  The install then picks the same versions as before, takes those files
+  instead of downloading them, and downloads only what is missing or newer.
+  The cache only saves time: give the calling step continue-on-error and a
+  time limit, and apt downloads as before when the cache is slow or empty.
+
+inputs:
+  name:
+    description: >-
+      Cache name: files are restored to ~/<name> from the newest entry whose
+      key starts with <name>-<ImageOS>-.
+    required: true
+
+outputs:
+  matched-key:
+    description: Key of the restored entry, empty when nothing was restored.
+    value: ${{ steps.restore.outputs.cache-matched-key }}
+
+runs:
+  using: composite
+  steps:
+    - name: Name the cache for this runner OS
+      id: prefix
+      shell: bash
+      env:
+        NAME: ${{ inputs.name }}
+      run: |
+        [[ $NAME =~ ^[a-z0-9][a-z0-9-]*$ ]] || { echo "::error::Invalid cache name '$NAME'"; exit 1; }
+        echo "prefix=$NAME-$ImageOS-" >> "$GITHUB_OUTPUT"
+
+    # Entries are named after their contents, so this key never matches
+    # exactly and the newest entry for this OS is restored. A stuck
+    # download gives up after 2 minutes.
+    - name: Restore the cached packages
+      id: restore
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      env:
+        SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
+      with:
+        path: ~/${{ inputs.name }}
+        key: ${{ steps.prefix.outputs.prefix }}newest
+        restore-keys: ${{ steps.prefix.outputs.prefix }}
+
+    # apt matches files in its download cache by name and size alone, so it
+    # is handed just the files whose SHA256 its signed package lists
+    # contain. If this refresh fails, fewer files match; the install's own
+    # refresh then decides, as before.
+    - name: Hand apt the files its package lists vouch for
+      shell: bash
+      env:
+        NAME: ${{ inputs.name }}
+      run: |
+        shopt -s nullglob
+        cached=("$HOME/$NAME"/*.deb)
+        : > "$RUNNER_TEMP/verified-debs"
+        if (( ${#cached[@]} )); then
+          sudo apt-get update -qq || true
+          apt-get indextargets --format '$(FILENAME)' 'Created-By: Packages' \
+            | xargs -r /usr/lib/apt/apt-helper cat-file \
+            | awk '$1 == "SHA256:" { print $2 }' > "$RUNNER_TEMP/listed-sha256"
+          sha256sum "${cached[@]}" \
+            | awk 'NR == FNR { listed[$1]; next } $1 in listed { print $2 }' "$RUNNER_TEMP/listed-sha256" - \
+            > "$RUNNER_TEMP/verified-debs"
+          xargs -r -d '\n' -a "$RUNNER_TEMP/verified-debs" sudo cp -t /var/cache/apt/archives/
+        fi
+        echo "Giving apt $(wc -l < "$RUNNER_TEMP/verified-debs") of ${#cached[@]} cached packages"
