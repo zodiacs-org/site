@@ -49,6 +49,22 @@ jobs:
         id: install
         run: npm ci
 
+      # --with-deps has apt download Chromium's fonts (21 MB) from the Azure
+      # Ubuntu mirror, which stalled on this download for up to 14 minutes in
+      # October and November. Site Check keeps the packages its profile
+      # drives need for Chromium and WebKit in the Actions cache, so they are
+      # handed to apt first, each checked against apt's signed package lists.
+      # apt still picks the same versions, so the browser is unchanged. When
+      # the cache is slow or empty, apt downloads them as before. A pull
+      # request branched before the action existed checks out without it.
+      - name: Restore cached browser packages
+        if: hashFiles('.github/actions/browser-debs/restore/action.yml') != ''
+        continue-on-error: true
+        timeout-minutes: 4
+        uses: ./.github/actions/browser-debs/restore
+        with:
+          name: profile-browser-debs
+
       - name: Install pinned Chromium
         id: browser
         run: |
