@@ -165,6 +165,14 @@ run_phase6_sql_file \
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_060_tools.sql"
 
+# Guide's daily answer-vote counts. A reviewed SQL Editor replay of the
+# migration must be harmless before the test runs.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261106015900_guide_feedback_daily.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/guide_feedback_daily.sql"
+
 # Save to my Zodiacs account: OAuth clients, the Auth projection, the token
 # hook, saved items and their RPC. A reviewed SQL Editor replay must be harmless.
 run_phase6_sql_file \

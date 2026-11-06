@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { randomUUID } from 'node:crypto';
+import { waitUntil } from '@vercel/functions';
 import {
   GUIDE_LIMITS,
   GUIDE_SCHEMAS,
@@ -29,6 +30,7 @@ import { guideSafetyCompletion } from './safety.js';
 import { streamSafeGuideAnthropicResponse } from './anthropic.js';
 import { classifyGuideCurrentTurnSafety } from './local-safety.js';
 import { GuideQuotaController, GuideQuotaError, type GuideQuotaLease } from './quota.js';
+import { countGuideFeedback } from './feedback.js';
 import {
   guideAnonymousPrincipal,
   guideOperationHash,
@@ -87,6 +89,8 @@ interface GuideHandlerDependencies {
   uuid: () => string;
   reportProviderDiagnostic: (diagnostic: GuideProviderDiagnosticV1) => void;
   reportFeedback: (feedback: { event: 'guide_feedback_v1'; vote: GuideFeedbackVote }) => void;
+  /** Keeps the daily vote count running after the 204 has been sent. */
+  waitUntil: (promise: Promise<unknown>) => void;
 }
 
 const DEFAULT_DEPENDENCIES: GuideHandlerDependencies = {
@@ -102,9 +106,11 @@ const DEFAULT_DEPENDENCIES: GuideHandlerDependencies = {
     console.warn(JSON.stringify(diagnostic));
   },
   reportFeedback: (feedback) => {
-    // Only the vote. Count them in the Vercel logs by searching guide_feedback_v1.
+    // Only the vote. The daily totals are kept in Supabase
+    // (guide_feedback_daily; scripts/guide-feedback-report.mjs prints them).
     console.info(JSON.stringify(feedback));
   },
+  waitUntil,
 };
 
 function sanitizedProviderDiagnostic(value: unknown): GuideProviderDiagnosticV1 | null {
@@ -650,6 +656,13 @@ export function createGuideHandler(overrides: Partial<GuideHandlerDependencies> 
       const principal = guideAnonymousPrincipal(req, guideSecret(dependencies.env));
       if (principal && principal.setCookie === null) {
         dependencies.reportFeedback({ event: 'guide_feedback_v1', vote });
+        // Fire and forget: the count sends only the vote, never fails the 204
+        // and logs nothing.
+        try {
+          dependencies.waitUntil(countGuideFeedback(dependencies.fetcher, dependencies.env, vote));
+        } catch {
+          // No request context to wait on; the count still runs.
+        }
       }
       res.statusCode = 204;
       setPrivateHeaders(res, 'text/plain; charset=utf-8');

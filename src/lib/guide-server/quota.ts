@@ -79,14 +79,15 @@ export function parseGuideQuotaResult(value: unknown): GuideQuotaResult | null {
     : { status, visitor, global };
 }
 
-async function bumpQuota(
-  fetcher: typeof fetch,
+/**
+ * The service-role RPC endpoint for a Guide function, or null when the
+ * Supabase URL or service key is missing or malformed. Shared by the quota
+ * reservation and the daily feedback count.
+ */
+export function guideServiceRpc(
   env: Environment,
-  visitorHash: string,
-  operationHash: string,
-  globalLimit: number,
-  signal: AbortSignal,
-): Promise<GuideQuotaResult | null> {
+  name: string,
+): { url: string; headers: Record<string, string> } | null {
   const supabaseUrl = env.PUBLIC_SUPABASE_URL;
   const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
   if (typeof supabaseUrl !== 'string' || !/^https:\/\/[A-Za-z0-9.-]+$/u.test(supabaseUrl)
@@ -97,13 +98,26 @@ async function bumpQuota(
     'content-type': 'application/json',
   };
   if (!serviceKey.startsWith('sb_secret_')) headers.authorization = `Bearer ${serviceKey}`;
+  return { url: `${supabaseUrl.replace(/\/+$/u, '')}/rest/v1/rpc/${name}`, headers };
+}
+
+async function bumpQuota(
+  fetcher: typeof fetch,
+  env: Environment,
+  visitorHash: string,
+  operationHash: string,
+  globalLimit: number,
+  signal: AbortSignal,
+): Promise<GuideQuotaResult | null> {
+  const rpc = guideServiceRpc(env, 'guide_quota_reserve_v1');
+  if (!rpc) return null;
   const timeout = AbortSignal.timeout(GUIDE_QUOTA_TIMEOUT_MS);
   try {
     const response = await fetcher(
-      `${supabaseUrl.replace(/\/+$/u, '')}/rest/v1/rpc/guide_quota_reserve_v1`,
+      rpc.url,
       {
         method: 'POST',
-        headers,
+        headers: rpc.headers,
         body: JSON.stringify({
           visitor_hash: visitorHash,
           operation_hash: operationHash,
