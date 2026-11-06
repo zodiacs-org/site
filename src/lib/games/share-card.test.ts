@@ -5,6 +5,7 @@ import {
   raceShareAccessibleDescription,
   raceShareSnapshot,
 } from './share-card';
+import { zeroFilledStandings } from './server';
 import { ordinalLabel } from './share-copy';
 import { SIGNS, SIGN_SLUGS } from '../signs';
 
@@ -98,6 +99,84 @@ describe('raceShareSnapshot', () => {
     })).toThrow();
     expect(() => raceShareSnapshot({ ...WEEK_INPUT, sign: 'leo', isoWeek: 0 })).toThrow();
     expect(() => raceShareSnapshot({ ...WEEK_INPUT, sign: 'leo', daysLeft: 99 })).toThrow();
+  });
+});
+
+/** A board as the standings API serves it: all twelve, points then zodiac order. */
+function liveBoard(points: Record<string, number>) {
+  return zeroFilledStandings(Object.entries(points).map(([sign, value]) => ({ sign, points: value })))
+    .map(({ sign, points: value }) => ({ sign, points: value }));
+}
+
+describe('raceShareSnapshot when signs are level on points', () => {
+  // Virgo 2026 ended Aries 100, Capricorn 100. Aries is first on the board
+  // only because equal points rank in zodiac order.
+  const virgoFinal = liveBoard({ aries: 100, capricorn: 100 });
+  const level = (sign: string, standings: { sign: string; points: number }[]) =>
+    raceShareSnapshot({ ...WEEK_INPUT, sign, standings });
+
+  it('says a sign level with the leader is level, not 0 points behind', () => {
+    const snapshot = level('capricorn', virgoFinal);
+    expect(snapshot.variant).toBe('rivalry');
+    expect(snapshot.standingLine).toBe('Level with Aries on 100 points');
+    expect(snapshot.contextLine).toBe('7 days left in Virgo Season');
+    const capricorn = SIGNS.find((sign) => sign.slug === 'capricorn')!;
+    expect(raceShareAccessibleDescription(snapshot)).toBe(
+      `${capricorn.glyph} Capricorn · Level with Aries on 100 points. 7 days left in Virgo Season. zodiacs.org/race.`,
+    );
+  });
+
+  it('does not call the sign first on the tiebreak 1st this week', () => {
+    const snapshot = level('aries', virgoFinal);
+    expect(snapshot.variant).toBe('rivalry');
+    expect(snapshot.standingLine).toBe('Level with Capricorn on 100 points');
+    expect(snapshot.contextLine).toBe('7 days left in Virgo Season');
+  });
+
+  it('keeps the gap below a tie at the top, and a lower tie behind a clear leader', () => {
+    expect(level('leo', virgoFinal).standingLine).toBe('100 points behind Aries');
+    const lowerTie = liveBoard({ scorpio: 350, leo: 225, aries: 225 });
+    expect(level('scorpio', lowerTie).standingLine).toBe('1st this week');
+    expect(level('aries', lowerTie).standingLine).toBe('125 points behind Scorpio');
+    expect(level('leo', lowerTie).standingLine).toBe('125 points behind Scorpio');
+  });
+
+  it('names one or two rivals and counts three or more, so the line fits the card', () => {
+    const threeWay = liveBoard({ aries: 100, leo: 100, capricorn: 100, pisces: 75 });
+    expect(level('capricorn', threeWay).standingLine).toBe('Level with Aries and Leo on 100 points');
+    expect(level('aries', threeWay).standingLine).toBe('Level with Leo and Capricorn on 100 points');
+    expect(level('pisces', threeWay).standingLine).toBe('25 points behind Aries');
+    const fourWay = liveBoard({ taurus: 25, gemini: 25, cancer: 25, scorpio: 25 });
+    expect(level('scorpio', fourWay).standingLine).toBe('Level with 3 other signs on 25 points');
+    expect(level('taurus', liveBoard({ taurus: 1, virgo: 1 })).standingLine)
+      .toBe('Level with Virgo on 1 point');
+  });
+
+  it('says all signs start level while nobody has scored, for every sign', () => {
+    const open = liveBoard({});
+    for (const row of open) {
+      const snapshot = level(row.sign, open);
+      expect(snapshot.variant).toBe('rivalry');
+      expect(snapshot.standingLine).toBe('All signs start level');
+      expect(snapshot.contextLine).toBe('7 days left in Virgo Season');
+    }
+  });
+
+  it('never prints a zero gap, and the new lines carry no em or en dash', () => {
+    const boards = [
+      virgoFinal,
+      liveBoard({}),
+      liveBoard({ aries: 100, leo: 100, capricorn: 100, pisces: 75 }),
+      liveBoard({ scorpio: 350, leo: 225, aries: 225 }),
+      liveBoard(Object.fromEntries(SIGN_SLUGS.map((slug) => [slug, 25]))),
+    ];
+    for (const standings of boards) {
+      for (const row of standings) {
+        const line = level(row.sign, standings).standingLine;
+        expect(line, `${row.sign}: ${line}`).not.toMatch(/^0 points behind/);
+        expect(line).not.toMatch(/[–—]/);
+      }
+    }
   });
 });
 

@@ -6,6 +6,9 @@
  * void ground, EB Garamond display, JetBrains Mono data, the sign's pastel
  * hue as the only chroma. The card carries standings facts only — never an
  * address, balance, price, or anything ownable.
+ *
+ * §G has no line for a sign level on points with the top of the board; the
+ * level lines (levelStandingLine) are new copy, kept in this one place.
  */
 import { signBySlug, type Sign } from "../signs.js";
 import {
@@ -37,7 +40,10 @@ export interface ChampionShareCardInput {
 export interface RaceShareSnapshot {
   variant: "weekly" | "rivalry" | "champion";
   sign: Pick<Sign, "slug" | "name" | "glyph" | "hue">;
-  /** e.g. "1st this week" or "842 points behind Scorpio". */
+  /**
+   * e.g. "1st this week", "842 points behind Scorpio" or
+   * "Level with Aries on 100 points".
+   */
   standingLine: string;
   /** e.g. "Week 34 · The Zodiac Games" or "6 days left in Leo Season". */
   contextLine: string;
@@ -93,10 +99,34 @@ function boundedCount(value: unknown, field: string, max: number): number {
   return value;
 }
 
+function pointsLabel(count: number): string {
+  return `${count.toLocaleString("en")} ${count === 1 ? "point" : "points"}`;
+}
+
+/**
+ * The standing line for a sign level on points with the top of the board.
+ * One or two rivals are named; three or more become a count, because three
+ * names can run wider than the card (measured at 500 40px EB Garamond). A
+ * top of 0 means nobody has scored yet, which the board itself words as
+ * "All signs start level".
+ */
+function levelStandingLine(top: number, rivals: readonly Sign[]): string {
+  if (top === 0) return "All signs start level";
+  const who = rivals.length > 2
+    ? `${rivals.length} other signs`
+    : rivals.map((rival) => rival.name).join(" and ");
+  return `Level with ${who} on ${pointsLabel(top)}`;
+}
+
 /**
  * Reduces live standings to the painted model. Rank 1 gets the weekly
  * leader card; every other rank gets the rivalry variant against the
  * current leader — the exact §G copy shapes.
+ *
+ * A sign level on points with the top of the board is neither "1st" nor
+ * "0 points behind": equal points rank in zodiac order (zeroFilledStandings
+ * in server.ts), so its place inside the tie is only the tiebreak. Its card
+ * says who it is level with instead, on the rivalry variant's countdown.
  */
 export function raceShareSnapshot(input: RaceShareCardInput): RaceShareSnapshot {
   if (!input || typeof input !== "object") {
@@ -122,6 +152,22 @@ export function raceShareSnapshot(input: RaceShareCardInput): RaceShareSnapshot 
   if (rank === -1) {
     throw new TypeError("standings must include the card's sign.");
   }
+  const countdown = `${daysLeft} ${daysLeft === 1 ? "day" : "days"} left in ${seasonName} Season`;
+
+  const top = board[0]!.points;
+  const rivals = board
+    .filter((row) => row.points === top && row.sign !== sign.slug)
+    .map((row) => signBySlug(row.sign));
+  if (board[rank]!.points === top && (top === 0 || rivals.length > 0)) {
+    return {
+      variant: "rivalry",
+      sign,
+      standingLine: levelStandingLine(top, rivals),
+      contextLine: countdown,
+      footerLine: RACE_URL,
+      strip: cardStrip(sign.slug),
+    };
+  }
 
   if (rank === 0) {
     return {
@@ -140,7 +186,7 @@ export function raceShareSnapshot(input: RaceShareCardInput): RaceShareSnapshot 
     variant: "rivalry",
     sign,
     standingLine: `${gap.toLocaleString("en")} points behind ${leader.name}`,
-    contextLine: `${daysLeft} ${daysLeft === 1 ? "day" : "days"} left in ${seasonName} Season`,
+    contextLine: countdown,
     footerLine: RACE_URL,
     strip: cardStrip(sign.slug),
   };
