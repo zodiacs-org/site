@@ -981,7 +981,9 @@ jobs:
           if (( ${#cached[@]} )); then
             # apt matches cached files only by name and size, so it is handed
             # just the files whose SHA256 its signed package lists contain.
-            sudo apt-get update -qq
+            # If this refresh fails, fewer files match; the install's own
+            # refresh below then decides, as before.
+            sudo apt-get update -qq || true
             apt-get indextargets --format '$(FILENAME)' 'Created-By: Packages' \
               | xargs -r /usr/lib/apt/apt-helper cat-file \
               | awk '$1 == "SHA256:" { print $2 }' > "$RUNNER_TEMP/listed-sha256"
