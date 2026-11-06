@@ -72,15 +72,28 @@ describe('State of the Race drafts', () => {
         daysLeft: 1,
         isoWeek: 53,
       }),
-      // The longest level line: eleven signs named at the top.
+      // Level lines: eleven signs named at the top, all twelve level, and
+      // the longest draft, a leader with the other eleven level below it.
       payload({
         standings: ORDER.map((sign, index) => ({ sign, points: index < 11 ? 1_000_000 : 0 })),
         daysLeft: 1,
         isoWeek: 53,
       }),
       payload({ standings: ORDER.map((sign) => ({ sign, points: 1_000_000 })), isoWeek: 53 }),
+      payload({
+        standings: ORDER.map((sign, index) => ({ sign, points: index === 0 ? 9_999_999 : 9_999_975 })),
+        daysLeft: 1,
+        isoWeek: 53,
+      }),
     ]) {
       expect([...buildRecap(shape).x].length).toBeLessThanOrEqual(280);
+    }
+  });
+
+  it('keeps the short rivalry on an untied board', () => {
+    const recap = buildRecap(payload());
+    for (const draft of [recap.x, recap.instagram, recap.tiktok]) {
+      expect(draft).toContain('\nScorpio leads with 350 points. Leo is 125 behind.\n');
     }
   });
 
@@ -221,6 +234,19 @@ describe('State of the Race drafts', () => {
       expect(buildRecap(virgoFinal(), week37({ aries: 100, capricorn: 75 })).subject)
         .toBe('Week 38: level at the top');
       expect(buildRecap(virgoFinal()).subject).toBe('Week 38: level at the top');
+
+      // Nobody led a level or an empty week, so a sole leader now takes the
+      // lead rather than holding on to a lead it only had on the tiebreak.
+      const aheadNow = payload({
+        seasonId: 'virgo-2026', seasonSign: 'virgo', seasonName: 'Virgo', isoWeek: 38,
+        standings: board({ aries: 125, capricorn: 100 }),
+      });
+      expect(buildRecap(aheadNow, week37({ aries: 100, capricorn: 100 })).subject)
+        .toBe('Week 38: Aries takes the lead');
+      expect(buildRecap(aheadNow, week37({})).subject).toBe('Week 38: Aries takes the lead');
+      expect(buildRecap(aheadNow, week37({ aries: 100, capricorn: 75 })).subject)
+        .toBe('Week 38: Aries holds on');
+      expect(buildRecap(aheadNow).subject).toBe('Week 38: Aries holds on');
     });
 
     it('names every sign in a level group, and keeps the leader above a lower tie', () => {
@@ -245,7 +271,7 @@ describe('State of the Race drafts', () => {
       ]) {
         const lines = drafts(recap).split('\n').filter((line) => line.includes('level'));
         expect(lines.length).toBeGreaterThan(0);
-        for (const line of lines) expect(line).not.toMatch(/[–—]/);
+        for (const line of lines) expect(line).not.toMatch(/[\u2013\u2014]/);
       }
     });
   });

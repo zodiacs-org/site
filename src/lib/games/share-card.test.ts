@@ -174,7 +174,7 @@ describe('raceShareSnapshot when signs are level on points', () => {
       for (const row of standings) {
         const line = level(row.sign, standings).standingLine;
         expect(line, `${row.sign}: ${line}`).not.toMatch(/^0 points behind/);
-        expect(line).not.toMatch(/[–—]/);
+        expect(line).not.toMatch(/[\u2013\u2014]/);
       }
     }
   });

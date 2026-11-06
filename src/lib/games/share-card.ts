@@ -361,7 +361,9 @@ export async function drawRaceShareCard(snapshot: RaceShareSnapshot): Promise<Bl
   context.font = snapshot.variant === "champion"
     ? `400 46px ${SERIF}`
     : `500 40px ${SERIF}`;
-  context.fillText(snapshot.standingLine, W / 2, 866);
+  // Never wider than the footer rule: a long level line in a fallback font
+  // is narrowed to fit rather than cut off at the card's edge.
+  context.fillText(snapshot.standingLine, W / 2, 866, W - 132);
 
   context.fillStyle = MUTED;
   context.font = `500 25px ${MONO}`;

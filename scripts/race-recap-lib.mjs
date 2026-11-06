@@ -143,14 +143,27 @@ export function biggestMover(standings, previous) {
 }
 
 /**
+ * The sign leading alone on points, or null when nobody leads: an empty
+ * board, or one level at the top, where the first sign is first only on the
+ * tiebreak.
+ */
+function soleLeader(standings) {
+  const [first, second] = standings;
+  if (!first || first.points === 0 || second?.points === first.points) return null;
+  return first.sign;
+}
+
+/**
  * §H subject: "Week [N]: [Leader] holds on / [Mover] makes a move". With the
  * top level on points nobody leads, so nobody holds on or takes the lead.
+ * previousLeader is last week's sole leader, null when nobody led then (an
+ * empty board or a level top), and undefined without a comparable week.
  */
 export function recapSubject({ isoWeek, leader, previousLeader, mover, levelTop = false }) {
   if (levelTop) {
     return `Week ${isoWeek}: level at the top`;
   }
-  if (previousLeader && leader !== previousLeader) {
+  if (previousLeader !== undefined && leader !== previousLeader) {
     return `Week ${isoWeek}: ${name(leader)} takes the lead`;
   }
   if (mover && mover.climbed >= 2) {
@@ -191,7 +204,9 @@ export function buildRecap(payload, previous = null) {
     : recapSubject({
       isoWeek,
       leader: leader.sign,
-      previousLeader: comparable?.standings?.[0]?.sign ?? null,
+      previousLeader: Array.isArray(comparable?.standings)
+        ? soleLeader(comparable.standings)
+        : undefined,
       mover,
       levelTop,
     });
