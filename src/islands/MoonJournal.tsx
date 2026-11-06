@@ -12,7 +12,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { moonIllumination, moonLongitude, moonPhaseAngle, moonPhaseName } from '../lib/engine/lite';
-import { MOON_JOURNAL_COPY, type MoonJournalLocale } from '../lib/moon-journal/copy';
+import { moonJournalCopy, type MoonJournalLocale } from '../lib/moon-journal/copy';
 import { cycleAt, journalMarkdown, lunationCalendar, lunationKey, promptFor } from '../lib/moon-journal/cycle';
 import {
   MAX_ENTRY_LENGTH, MOON_JOURNAL_KEY, browserStorage, deleteEverything, probeStorage, readEntries, removeEntry,
@@ -28,6 +28,8 @@ interface Props {
   /** Build time, so the first render matches the server's. */
   builtAt: string;
   locale?: MoonJournalLocale;
+  /** Moon phase names in the page's language, by the engine's English name; English when left out. */
+  phaseNames?: Record<string, string>;
 }
 
 function Disc({ angle }: { angle: number }) {
@@ -68,8 +70,8 @@ function localDayStamp(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-export default function MoonJournal({ lunations, signNames, builtAt, locale = 'en' }: Props) {
-  const copy = MOON_JOURNAL_COPY[locale];
+export default function MoonJournal({ lunations, signNames, builtAt, locale = 'en', phaseNames }: Props) {
+  const copy = moonJournalCopy(locale);
   const ui = copy.ui;
   const [nowMs, setNowMs] = useState(() => Date.parse(builtAt));
   const [onDevice, setOnDevice] = useState(false);
@@ -133,10 +135,10 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
   const illum = Math.round(moonIllumination(now) * 100);
   const moonSign = signNames[signOfLongitude(moonLongitude(now))];
   const zone = onDevice ? undefined : 'UTC';
-  const dayFormat = (iso: string) => new Intl.DateTimeFormat('en-US', {
+  const dayFormat = (iso: string) => new Intl.DateTimeFormat(copy.dateLocale, {
     month: 'long', day: 'numeric', year: 'numeric', ...(zone ? { timeZone: zone } : {}),
   }).format(new Date(iso));
-  const dayTimeFormat = (iso: string) => new Intl.DateTimeFormat('en-US', {
+  const dayTimeFormat = (iso: string) => new Intl.DateTimeFormat(copy.dateLocale, {
     weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
     ...(zone ? { timeZone: zone, timeZoneName: 'short' } : {}),
   }).format(new Date(iso));
@@ -213,7 +215,7 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
   const downloadJournal = () => {
     const today = new Date();
     const text = journalMarkdown(entries, {
-      downloadedOn: new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(today),
+      downloadedOn: new Intl.DateTimeFormat(copy.dateLocale, { month: 'long', day: 'numeric', year: 'numeric' }).format(today),
       formatDay: dayFormat,
       signName,
       locale,
@@ -239,18 +241,18 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
             <div class="mj-now__phase">
               <Disc angle={angle} />
               <div>
-                <p class="mj-now__name" data-mj-phase>{moonPhaseName(now)}</p>
+                <p class="mj-now__name" data-mj-phase>{phaseNames?.[moonPhaseName(now)] ?? moonPhaseName(now)}</p>
                 <p class="mj-now__meta">{ui.illuminated(illum)} · {ui.moonIn(moonSign ?? '')}</p>
               </div>
             </div>
             <dl class="mj-now__next">
               <div>
                 <dt>{ui.nextNew}</dt>
-                <dd data-mj-next-new>{cycle.nextNew ? `${dayTimeFormat(cycle.nextNew.at)}, in ${signName(cycle.nextNew.sign)}` : ''}</dd>
+                <dd data-mj-next-new>{cycle.nextNew ? ui.nextIn(dayTimeFormat(cycle.nextNew.at), signName(cycle.nextNew.sign)) : ''}</dd>
               </div>
               <div>
                 <dt>{ui.nextFull}</dt>
-                <dd data-mj-next-full>{cycle.nextFull ? `${dayTimeFormat(cycle.nextFull.at)}, in ${signName(cycle.nextFull.sign)}` : ''}</dd>
+                <dd data-mj-next-full>{cycle.nextFull ? ui.nextIn(dayTimeFormat(cycle.nextFull.at), signName(cycle.nextFull.sign)) : ''}</dd>
               </div>
             </dl>
           </div>
@@ -356,7 +358,7 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
         )}
       </section>
 
-      {JOURNAL_REMINDERS_ENABLED && <MoonJournalReminder ui={ui} />}
+      {JOURNAL_REMINDERS_ENABLED && locale === 'en' && <MoonJournalReminder />}
 
       <section class="mj-tools" aria-labelledby="mj-tools-head">
         <h2 id="mj-tools-head" class="mj-h">{ui.toolsHeading}</h2>

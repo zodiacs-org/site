@@ -22,7 +22,7 @@ import {
   leavePushTopic,
   vapidKeyBytes,
 } from '../lib/push';
-import type { MoonJournalCopy } from '../lib/moon-journal/copy';
+import { MOON_JOURNAL_REMINDER_COPY, type MoonJournalReminderUi } from '../lib/moon-journal/copy';
 
 type View = 'checking' | 'off' | 'busy' | 'on' | 'leaving' | 'denied' | 'error' | 'unsupported' | 'ios';
 
@@ -38,7 +38,7 @@ async function currentSubscription(): Promise<PushSubscription | null> {
   return registration?.pushManager.getSubscription() ?? null;
 }
 
-export default function MoonJournalReminder({ ui }: { ui: MoonJournalCopy['ui'] }) {
+export default function MoonJournalReminder({ ui = MOON_JOURNAL_REMINDER_COPY.ui }: { ui?: MoonJournalReminderUi }) {
   const [view, setView] = useState<View>('checking');
   const [failed, setFailed] = useState(false);
 

@@ -3,21 +3,25 @@
  * A small "Ask Guide about this" button placed beside a section. With
  * JavaScript, Guide opens in place with `prompt` drafted in the composer
  * (never sent until the visitor sends it); without it, the link lands on the
- * Guide home at /ask/. English pages only, like the Guide home.
+ * Guide home at /ask/, which is English only. A translated page passes its
+ * locale (and a label and prompt in its language) so Guide answers in it.
  */
+import type { CatalogLocale } from '../lib/i18n';
+
 interface Props {
   /** The site-written question to draft. No dashes, no personal details. */
   prompt: string;
   label?: string;
+  locale?: CatalogLocale;
 }
 
-const { prompt, label = 'Ask Guide about this' } = Astro.props;
+const { prompt, label = 'Ask Guide about this', locale = 'en' } = Astro.props;
 ---
 <a
   class="ask-about"
   href="/ask/"
   data-assistant-open
-  data-assistant-locale="en"
+  data-assistant-locale={locale}
   data-assistant-prompt={prompt}
 >
   <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">

@@ -1349,7 +1349,9 @@ const sitemapPolicy = {
   // +13 for the English sign-season hub and its twelve season pages.
   // +1 for /moon-journal/, the device-only Moon journal.
   // +1 for /your-2027-sky/, the 2027 personal sky edition.
-  total: 1480 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
+  //     and the twelve /seasons/{sign}/ pages (15 per locale).
+  total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)

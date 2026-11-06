@@ -1,0 +1,124 @@
+---
+/**
+ * The sign-season hub: the season under way, the next one, and all twelve in
+ * the order the Sun will reach them. Dates are the ingress table's, in UTC;
+ * each season's own page shows them in the visitor's time zone. One
+ * template for English (/seasons/) and the translations (/es/seasons/ and
+ * the rest); the words live in src/lib/seasons/copy*.ts.
+ */
+import Base from '../../layouts/Base.astro';
+import SignIcon from '../SignIcon.astro';
+import { localizePath } from '../../lib/i18n';
+import { signArtCard } from '../../lib/og-art-cards.mjs';
+import { SIGNS, signName } from '../../lib/signs';
+import { seasonFocus } from '../../lib/seasons/clock';
+import { currentSunSeason, seasonWindowsFor, sunSeasons } from '../../lib/seasons/windows';
+import { seasonCopy, seasonUi, type SeasonLocale } from '../../lib/seasons/copy';
+import { seasonDate } from '../../lib/seasons/dates';
+
+interface Props { locale?: SeasonLocale }
+const { locale = 'en' } = Astro.props;
+const ui = seasonUi(locale);
+const buildNow = new Date();
+const current = currentSunSeason(buildNow);
+const upcoming = sunSeasons().find((window) => Date.parse(window.start) > buildNow.getTime()) ?? null;
+const currentIndex = current ? SIGNS.findIndex((sign) => sign.slug === current.sign) : 0;
+const day = (iso: string, year = false) => seasonDate(locale, iso, {
+  month: 'long', day: 'numeric', ...(year ? { year: 'numeric' } : {}), timeZone: 'UTC',
+});
+const order = SIGNS.map((_, offset) => SIGNS[(currentIndex + offset) % 12]).map((sign) => {
+  const focus = seasonFocus(seasonWindowsFor(sign.slug), buildNow);
+  return { sign, name: signName(sign, locale), focus, theme: seasonCopy(sign.slug, locale).theme };
+});
+const featured = [current, upcoming].filter((window): window is NonNullable<typeof window> => Boolean(window));
+const description = ui.hubDescription(current ? ui.title(signName(current.sign, locale)) : null, current ? day(current.end, true) : '');
+const path = localizePath(locale, '/seasons/');
+const image = current ? (locale === 'en' ? `/assets/og/v8/sign/${current.sign}.jpg` : signArtCard(current.sign, locale)) : undefined;
+---
+<Base
+  title={`${ui.hubMetaTitle} | Zodiacs.org`}
+  description={description}
+  path={path}
+  locale={locale}
+  image={image}
+  imageAlt={ui.hubImageAlt}
+  jsonLd={[{ '@type': 'CollectionPage', name: ui.hubTitle, url: `https://zodiacs.org${path}`, description, ...(locale === 'en' ? {} : { inLanguage: locale === 'pt' ? 'pt-BR' : locale }) }]}
+>
+  <section class="kwrap seasons-hero">
+    <h1 class="display">{ui.hubTitle}</h1>
+    <p>{ui.hubLede}</p>
+  </section>
+
+  <section class="kwrap seasons-sec" aria-label={ui.hubFeatureLabel}>
+    <div class="seasons-feature">
+      {featured.map((window, index) => {
+        const sign = SIGNS.find((entry) => entry.slug === window.sign)!;
+        return (
+          <a class="seasons-feature__card" href={localizePath(locale, `/seasons/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+            <SignIcon sign={sign.slug} size={72} loading="eager" />
+            <span class="seasons-feature__tag">{index === 0 && current ? ui.hubNow : ui.hubNext}</span>
+            <span class="seasons-feature__name">{ui.title(signName(sign, locale))}</span>
+            <span class="seasons-feature__dates">{ui.range(day(window.start), day(window.end, true))}</span>
+            <span class="seasons-feature__theme">{seasonCopy(sign.slug, locale).theme}</span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="kwrap seasons-sec" aria-labelledby="seasons-all">
+    <h2 id="seasons-all" class="h-2 seasons-h2">{ui.hubAllHeading}</h2>
+    <ul class="seasons-list">
+      {order.map(({ sign, name, focus, theme }) => (
+        <li>
+          <a class="tile seasons-item" href={localizePath(locale, `/seasons/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+            <SignIcon sign={sign.slug} size={40} />
+            <span class="seasons-item__name">{ui.title(name)}</span>
+            {focus && <span class="seasons-item__dates">{ui.range(day(focus.window.start), day(focus.window.end, true))}</span>}
+            <span class="seasons-item__theme">{theme}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="seasons-note">{ui.hubNote}</p>
+  </section>
+</Base>
+
+<style>
+  .seasons-hero { padding-block: clamp(28px, 6vw, 56px) 8px; }
+  .seasons-hero h1 { margin: 0 0 14px; font-size: var(--text-2xl); font-weight: 500; line-height: 1.04; }
+  .seasons-hero p { margin: 0; max-width: 60ch; color: var(--muted); font-size: var(--text-lg); line-height: 1.5; }
+  .seasons-sec { padding-block: clamp(18px, 4vw, 32px); }
+  .seasons-h2 { margin: 0 0 18px; font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; }
+  .seasons-feature { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+  .seasons-feature__card {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding: clamp(20px, 4vw, 28px);
+    border: 1px solid color-mix(in srgb, var(--sign) 45%, var(--hair-2));
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--dur-1) var(--ease);
+  }
+  .seasons-feature__card:hover { border-color: var(--sign); }
+  .seasons-feature__tag { color: var(--sign); font-family: var(--font-serif); font-style: italic; font-size: var(--text-lg); }
+  .seasons-feature__name { font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; line-height: 1.1; }
+  .seasons-feature__dates { color: var(--text-2); font-size: var(--text-sm); }
+  .seasons-feature__theme { color: var(--muted); line-height: 1.55; }
+  .seasons-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .seasons-item { display: grid; gap: 6px; height: 100%; padding: 16px; color: inherit; text-decoration: none; }
+  .seasons-item__name { font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 500; }
+  .seasons-item__dates { color: var(--sign); font-size: 13px; }
+  .seasons-item__theme { color: var(--muted); font-size: var(--text-sm); line-height: 1.55; }
+  .seasons-note { margin: 18px 0 0; color: var(--faint); font-size: 13px; }
+</style>

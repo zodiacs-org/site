@@ -27,7 +27,53 @@ export interface SeasonCopy {
   guidePrompt: string;
 }
 
+import type { Element, Modality } from '../signs';
+
+/** What a season page's head and FAQ are written from. */
+export interface SeasonFacts {
+  /** The season's title, ui.title(sign). */
+  title: string;
+  /** The sign's name in the page's language. */
+  sign: string;
+  /** Whether the season shown is under way or next; null when no dates are published. */
+  phase: 'under-way' | 'upcoming' | null;
+  /** When the Sun enters and leaves, written as a UTC date and time. */
+  start: string;
+  end: string;
+  days: number;
+  /** The reading-confidence label and its value. */
+  confidence: string;
+  value: number;
+}
+
 export interface SeasonUi {
+  /** BCP 47 tag the pages write dates in. */
+  dateLocale: string;
+  hubMetaTitle: string;
+  /** The hub's description: with the season under way and its last day, or without. */
+  hubDescription: (title: string | null, until: string) => string;
+  hubFeatureLabel: string;
+  hubAllHeading: string;
+  hubNote: string;
+  hubImageAlt: string;
+  /** A date range: "November 22 to December 21, 2026". */
+  range: (from: string, to: string) => string;
+  /** The season page's document title, before " | Zodiacs.org". */
+  metaTitle: (title: string, year: string | null) => string;
+  description: (facts: SeasonFacts) => string;
+  faq: (facts: SeasonFacts) => { q: string; a: string }[];
+  /** "Mutable fire". */
+  quality: (modality: Modality, element: Element) => string;
+  /** "Ruled by Jupiter"; the ruler is the English planet key. */
+  ruledBy: (ruler: string) => string;
+  aboutDays: (days: number) => string;
+  imageAlt: (sign: string) => string;
+  eventName: (title: string, year: string) => string;
+  eventDescription: (sign: string, start: string, end: string) => string;
+  /** The heading over one sign's line on the story card. */
+  forSign: (sign: string) => string;
+  /** "Reading confidence NN%", in the page's language. */
+  confidence: (value: number) => string;
   hubTitle: string;
   hubLede: string;
   hubNow: string;
@@ -84,6 +130,46 @@ export const SEASON_HOUSE_ORDINALS_EN = [
 ] as const;
 
 export const SEASON_UI_EN: SeasonUi = {
+  dateLocale: 'en-US',
+  hubMetaTitle: 'Sign Seasons: When Each Zodiac Season Starts and Ends',
+  hubDescription: (title, until) => (title
+    ? `It is ${title} until ${until}. When each of the twelve sign seasons starts and ends, and what each one asks of every sign.`
+    : 'When each of the twelve sign seasons starts and ends, and what each one asks of every sign.'),
+  hubFeatureLabel: 'Now and next',
+  hubAllHeading: 'All twelve, in the order the Sun reaches them',
+  hubNote: 'Dates are in UTC. Each season’s page gives the exact times in your own time zone, with a countdown.',
+  hubImageAlt: 'Sign seasons, Zodiacs.org',
+  range: (from, to) => `${from} to ${to}`,
+  metaTitle: (title, year) => `${title} ${year ? `${year}: ` : ''}Dates, Countdown and What It Asks`,
+  description: ({ title, sign, phase, start, end }) => (phase
+    ? `${title} ${phase === 'under-way' ? 'is under way' : 'starts'}: the Sun enters ${sign} on ${start} and leaves on ${end}. What the season asks of all twelve signs.`
+    : `${title}: when the Sun enters and leaves ${sign}, and what the season asks of all twelve signs.`),
+  faq: ({ sign, phase, start, end, days, confidence, value }) => [
+    ...(phase ? [{
+      q: `When does ${sign} season ${phase === 'under-way' ? 'end' : 'start'}?`,
+      a: `The Sun enters ${sign} on ${start} and leaves on ${end}, about ${days} days later. The page shows both moments in your own time zone.`,
+    }] : []),
+    {
+      q: `Why do the ${sign} dates change from year to year?`,
+      a: `The usual ${sign} dates are an average. The calendar year is not a whole number of days long, so the moment the Sun crosses into ${sign} drifts by some hours each year and can land on a neighbouring date, depending on your time zone as well.`,
+    },
+    {
+      q: `What if I was born on the first or last day of ${sign} season?`,
+      a: 'Your Sun sign depends on the exact moment of your birth, not on the average dates. A birth chart with your birth time settles it.',
+    },
+    {
+      q: `What does “${confidence}” mean?`,
+      a: `It says how specific a reading is. A line written for a Sun sign alone, with no date or birth time, carries ${value}%. It is not the chance that something happens.`,
+    },
+  ],
+  quality: (modality, element) => `${modality.charAt(0).toUpperCase() + modality.slice(1)} ${element}`,
+  ruledBy: (ruler) => `Ruled by ${ruler}`,
+  aboutDays: (days) => `About ${days} days`,
+  imageAlt: (sign) => `${sign}, Zodiacs.org`,
+  eventName: (title, year) => `${title} ${year}`,
+  eventDescription: (sign, start, end) => `The Sun is in ${sign} from ${start} to ${end}.`,
+  forSign: (sign) => `For ${sign}`,
+  confidence: (value) => `Reading confidence ${value}%`,
   hubTitle: 'Sign seasons',
   hubLede: 'The Sun spends about a month in each sign. Each season has its own pace, and each asks something different of every sign. Here is when each one starts and ends.',
   hubNow: 'Now',

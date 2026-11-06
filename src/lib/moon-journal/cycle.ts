@@ -5,7 +5,7 @@
  * ephemeris runs here: the instants are already exact.
  */
 import { serializeSkyEvents, type SkyCalendarEvent } from '../ical';
-import { MOON_JOURNAL_COPY, type MoonJournalCopy, type MoonJournalLocale } from './copy';
+import { moonJournalCopy, type MoonJournalCopy, type MoonJournalLocale } from './copy';
 import type { JournalEntry, Lunation } from './types';
 
 /** 'new-2026-11-09': a lunation's id, by phase and UTC day. */
@@ -44,7 +44,7 @@ export function cycleAt(lunations: readonly Lunation[], nowMs: number): CycleSta
 
 /** The question for a lunation, in a locale's words. */
 export function promptFor(lunation: Pick<Lunation, 'type' | 'sign'>, locale: MoonJournalLocale = 'en'): string {
-  return MOON_JOURNAL_COPY[locale].prompts[lunation.type][lunation.sign];
+  return moonJournalCopy(locale).prompts[lunation.type][lunation.sign];
 }
 
 /** The next `perPhase` new Moons and `perPhase` full Moons after now, in time order. */
@@ -67,7 +67,7 @@ export function lunationCalendar(
   signName: (slug: string) => string,
   locale: MoonJournalLocale = 'en',
 ): string | null {
-  const copy: MoonJournalCopy = MOON_JOURNAL_COPY[locale];
+  const copy: MoonJournalCopy = moonJournalCopy(locale);
   const upcoming = upcomingLunations(lunations, nowMs);
   if (upcoming.length === 0) return null;
   const events: SkyCalendarEvent[] = upcoming.map((lunation) => ({
@@ -75,7 +75,7 @@ export function lunationCalendar(
     start: lunation.at,
     summary: copy.lunationTitle(lunation.type, signName(lunation.sign)),
     description: copy.ui.calendarDescription(promptFor(lunation, locale)),
-    url: 'https://zodiacs.org/moon-journal/',
+    url: copy.pageUrl,
   }));
   return serializeSkyEvents(events, { generatedAt: new Date(nowMs), calendarName: copy.ui.calendarName });
 }
@@ -90,7 +90,7 @@ export function journalMarkdown(
     locale?: MoonJournalLocale;
   },
 ): string {
-  const copy = MOON_JOURNAL_COPY[options.locale ?? 'en'];
+  const copy = moonJournalCopy(options.locale ?? 'en');
   const lines = [`# ${copy.ui.exportTitle}`, '', copy.ui.exportIntro(options.downloadedOn), ''];
   for (const entry of [...entries].sort((a, b) => b.at.localeCompare(a.at))) {
     lines.push(

@@ -321,7 +321,7 @@ export function personalYear(
         kind: 'ingress-personal',
         body: planet,
         at: start,
-        title: planet,
+        title: w.planet(planet),
         line: w.backgroundHouseLine(planet, w.signName(sign), houseOf(sign)!, until),
         detail: '',
         confidence: confidence(false),

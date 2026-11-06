@@ -8,7 +8,7 @@
  * The scheduled sender (scripts/send-lunation-reminders.ts) runs once a day
  * with the Sky Alerts job and sends only when the day holds a lunation.
  */
-import { MOON_JOURNAL_COPY, type MoonJournalLocale } from './copy';
+import { MOON_JOURNAL_REMINDER_COPY, moonJournalCopy, type MoonJournalLocale } from './copy';
 import { lunationKey } from './cycle';
 import type { Lunation, SignSlug } from './types';
 
@@ -60,10 +60,11 @@ export function buildLunationReminder(
   signName: (slug: SignSlug) => string,
   locale: MoonJournalLocale = 'en',
 ): LunationReminder {
-  const copy = MOON_JOURNAL_COPY[locale];
+  const copy = moonJournalCopy(locale);
+  const words = MOON_JOURNAL_REMINDER_COPY.reminder;
   const time = new Date(lunation.at).toISOString().slice(11, 16);
-  const title = copy.reminder.title(copy.lunationTitle(lunation.type, signName(lunation.sign)));
-  const body = copy.reminder.body(time);
+  const title = words.title(copy.lunationTitle(lunation.type, signName(lunation.sign)));
+  const body = words.body(time);
   if (!title || title.length > REMINDER_TITLE_MAX || !body || body.length > REMINDER_BODY_MAX
     || /[\u0000-\u001f\u007f]/u.test(title + body)) {
     throw new Error('Lunation reminder does not fit a notification.');

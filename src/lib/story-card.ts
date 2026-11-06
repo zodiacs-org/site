@@ -281,6 +281,27 @@ export interface SeasonStoryInput {
   reader?: { slug: string; line: string; confidence: number } | null;
   /** The zone the dates are written in; the visitor's own by default. */
   timeZone?: string;
+  /** The card's words in another language; English when left out. */
+  words?: SeasonStoryWords;
+}
+
+/**
+ * A translated season page's words for its card, as plain strings so the
+ * page can hand them to its script: the sign names are already in them.
+ */
+export interface SeasonStoryWords {
+  /** BCP 47 tag the dates are written in. */
+  dateLocale: string;
+  /** "Temporada de Sagitario". */
+  title: string;
+  /** "El Sol en Sagitario", above the disc. */
+  kicker: string;
+  /** The date range, with {from} and {to}. */
+  range: string;
+  /** The heading over each sign's line, by sign slug: "Para Aries". */
+  forSign: Record<string, string>;
+  /** The reading-confidence label, with {value}. */
+  confidence: string;
 }
 
 /**
@@ -295,34 +316,39 @@ export function seasonStoryContent(input: SeasonStoryInput): {
   reader: { heading: string; line: string; confidence: string; hue: string } | null;
   hue: string;
   filename: string;
+  kicker: string;
 } {
   const sign = signBySlug(input.slug);
+  const words = input.words;
   const start = new Date(input.start);
   const end = new Date(input.end);
-  const day = (date: Date, withYear: boolean) => new Intl.DateTimeFormat('en-US', {
+  const day = (date: Date, withYear: boolean) => new Intl.DateTimeFormat(words?.dateLocale ?? 'en-US', {
     month: 'long',
     day: 'numeric',
     ...(withYear ? { year: 'numeric' } : {}),
     ...(input.timeZone ? { timeZone: input.timeZone } : {}),
   }).format(date);
-  const year = (date: Date) => new Intl.DateTimeFormat('en-US', {
+  const year = (date: Date) => new Intl.DateTimeFormat(words?.dateLocale ?? 'en-US', {
     year: 'numeric',
     ...(input.timeZone ? { timeZone: input.timeZone } : {}),
   }).format(date);
   const sameYear = year(start) === year(end);
   const reader = input.reader ? signBySlug(input.reader.slug) : null;
+  const from = day(start, !sameYear);
+  const to = day(end, true);
   return {
-    title: `${sign.name} season`,
-    dates: `${day(start, !sameYear)} to ${day(end, true)}`,
+    title: words?.title ?? `${sign.name} season`,
+    dates: words ? words.range.replace('{from}', from).replace('{to}', to) : `${from} to ${to}`,
     theme: input.theme,
     reader: reader && input.reader ? {
-      heading: `For ${reader.name}`,
+      heading: words?.forSign[reader.slug] ?? `For ${reader.name}`,
       line: input.reader.line,
-      confidence: `Reading confidence ${input.reader.confidence}%`,
+      confidence: words ? words.confidence.replace('{value}', String(input.reader.confidence)) : `Reading confidence ${input.reader.confidence}%`,
       hue: reader.hue,
     } : null,
     hue: sign.hue,
     filename: seasonStoryFilename(sign.slug),
+    kicker: words?.kicker ?? `The Sun in ${sign.name}`,
   };
 }
 
@@ -342,7 +368,7 @@ export async function prepareSeasonStoryCard(input: SeasonStoryInput): Promise<P
   ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = STORY_INK_2;
   ctx.font = `italic 400 40px ${STORY_SERIF}`;
-  ctx.fillText(`The Sun in ${sign.name}`, STORY_W / 2, content.reader ? 318 : 420);
+  ctx.fillText(content.kicker, STORY_W / 2, content.reader ? 318 : 420);
 
   const discSize = content.reader ? 340 : 420;
   const discTop = content.reader ? 368 : 470;

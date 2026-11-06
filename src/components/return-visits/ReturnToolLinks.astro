@@ -1,9 +1,24 @@
 ---
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
 import { returnText as s } from '../../lib/return-visits/copy';
+import { yearSkyWords } from '../../lib/year-sky/copy';
+import '../../lib/year-sky/copy-es';
+import '../../lib/year-sky/copy-pt';
+import '../../lib/year-sky/copy-fr';
+import '../../lib/year-sky/copy-it';
+import { seasonUi } from '../../lib/seasons/copy';
+import { MOON_JOURNAL_PAGE_COPY } from '../../lib/moon-journal/page-copy';
+import type { ToolIconName } from '../../lib/tool-icons';
 interface Props { locale?: CatalogLocale; current?: string; icons?: boolean }
 const { locale = 'en', current = '', icons = false } = Astro.props;
 const links = [{ path: '/sky-calendar/', key: 'calendarTitle' }, { path: '/saturn-return/', key: 'saturn' }, { path: '/astrologer-kit/', key: 'kitTitle' }, { path: '/your-sky-wrapped/', key: 'wrappedTitle' }, { path: '/chart-of-the-day/', key: 'dayTitle' }] as const;
+// The translated tools hubs (the icon rows) also list the pages translated
+// for es, pt, fr and it after the return-visit tools, in their own words.
+const translated: { path: string; label: string; icon: ToolIconName }[] = icons && (locale === 'es' || locale === 'pt' || locale === 'fr' || locale === 'it') ? [
+  { path: '/your-2027-sky/', label: yearSkyWords(locale).heroTitle, icon: 'year-sky' },
+  { path: '/seasons/', label: seasonUi(locale).hubTitle, icon: 'horoscopes' },
+  { path: '/moon-journal/', label: MOON_JOURNAL_PAGE_COPY[locale].appName, icon: 'moon-phase' },
+] : [];
 import { t } from '../../lib/i18n';
 import { toolIconForPath } from '../../lib/tool-icons';
 import ToolIcon from '../ToolIcon.astro';
@@ -17,7 +32,9 @@ import '../../styles/return-visits.css';
     <ul class="tools-list">{links.filter((link) => link.path !== current).map((link) => {
       const icon = toolIconForPath(link.path);
       return <li><a class="tools-row" href={localizePath(locale, link.path)}>{icon && <ToolIcon name={icon} size={52} />}<span class="tools-row__name">{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)}</span></a></li>;
-    })}</ul>
+    })}{translated.map((link) => (
+      <li><a class="tools-row" href={localizePath(locale, link.path)}><ToolIcon name={link.icon} size={52} /><span class="tools-row__name">{link.label}</span></a></li>
+    ))}</ul>
   </nav>
 ) : (
   <nav class="return-discovery" aria-label={s(locale, 'discovery')}>

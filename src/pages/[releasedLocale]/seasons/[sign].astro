@@ -1,0 +1,14 @@
+---
+/** One sign's season in Spanish, Portuguese, French and Italian: /es/seasons/aries/ and the rest. */
+import SeasonPage from '../../../components/seasons/SeasonPage.astro';
+import type { SeasonLocale } from '../../../lib/seasons/copy';
+import { SIGNS } from '../../../lib/signs';
+
+export function getStaticPaths() {
+  return (['es', 'pt', 'fr', 'it'] as const).flatMap((releasedLocale) => SIGNS.map((sign) => ({
+    params: { releasedLocale, sign: sign.slug },
+  })));
+}
+const { releasedLocale, sign } = Astro.params as { releasedLocale: Exclude<SeasonLocale, 'en'>; sign: string };
+---
+<SeasonPage slug={sign} locale={releasedLocale} />

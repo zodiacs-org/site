@@ -55,6 +55,17 @@ const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 // The sign-season pages and their hub were published together.
 const SEASON_PAGES_LASTMOD = '2026-11-05';
+// The Spanish, Portuguese, French and Italian editions of Your 2027 sky, the Moon journal, the sign-season hub
+// and its twelve season pages, published together, and the translated tools hubs that list them. Their English
+// pages only gained hreflang alternates, which the rendered-content dates leave out.
+const TRANSLATED_NEW_PAGES_LASTMOD = '2026-11-06';
+const TRANSLATED_NEW_PAGES_ROUTES = (['es', 'pt', 'fr', 'it'] as const).flatMap((locale) => [
+  `/${locale}/your-2027-sky/`,
+  `/${locale}/moon-journal/`,
+  `/${locale}/seasons/`,
+  ...SIGNS.map((sign) => `/${locale}/seasons/${sign.slug}/`),
+  `/${locale}/tools/`,
+]);
 // The numerology calculator; the tools hub and methodology page changed with
 // it. Each Life Path page dates itself from its own `updated` field, the same
 // date its Article markup carries.
@@ -588,6 +599,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/mercury-retrograde/', '2026-11-05'] as const,
   ['/retrogrades/', '2026-11-05'] as const,
   ['/tools/', '2026-11-05'] as const,
+  ...TRANSLATED_NEW_PAGES_ROUTES.map((loc) => [loc, TRANSLATED_NEW_PAGES_LASTMOD] as const),
   // The time atlas dataset and the developer index's card for it, after the entries above so this date wins.
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
   // Engine 1.1.0-rc.2's pages, last so this date wins.
