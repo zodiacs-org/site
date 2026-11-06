@@ -378,6 +378,47 @@ const ctaLede = edgeMoon && moonHouse
     imagesizes={heroArtSizes}
     fetchpriority="high"
   />
+  <script slot="head" is:inline>
+    /* Up to 1020px wide the rail sits under the reading, well below the
+       first screen, and its sky and event lines are the only mono text the
+       page lays out on arrival. There the rail starts in the platform mono
+       (the .hz-rail rule in the styles below), so the 40 KB mono face is not
+       fetched beside the hero image. A beat after load the face is fetched
+       and handed to the rail while the rail is off screen, so text a reader
+       can see never changes face. Without script, nothing is deferred. */
+    (function () {
+      var root = document.documentElement;
+      root.setAttribute('data-mono-deferred', '');
+      function start() {
+        var rail = document.querySelector('.hz-rail');
+        if (!rail) return;
+        var observer;
+        function giveFace() {
+          if (observer) observer.disconnect();
+          document.removeEventListener('visibilitychange', whileHidden);
+          rail.setAttribute('data-mono-face', '');
+        }
+        // While the tab is hidden, nothing can be seen to change.
+        function whileHidden() {
+          if (document.visibilityState === 'hidden') giveFace();
+        }
+        var stack = getComputedStyle(root).getPropertyValue('--font-mono').trim();
+        if (!document.fonts || !stack || !('IntersectionObserver' in window)) {
+          giveFace();
+          return;
+        }
+        document.fonts.load('1em ' + stack).then(function () {
+          observer = new IntersectionObserver(function (entries) {
+            if (!entries[entries.length - 1].isIntersecting) giveFace();
+          });
+          observer.observe(rail);
+          document.addEventListener('visibilitychange', whileHidden);
+        }).catch(function () {});
+      }
+      if (document.readyState === 'complete') window.setTimeout(start, 400);
+      else window.addEventListener('load', function () { window.setTimeout(start, 400); }, { once: true });
+    })();
+  </script>
   {surface === 'today' && (
     <script slot="head" is:inline define:vars={{ dailyEnhancementSign: sign.slug }}>
       /* Route-local first-paint hint for DailyForYou. Only the current sign is
@@ -1272,6 +1313,10 @@ const ctaLede = edgeMoon && moonHouse
   @media (max-width: 1020px) {
     .hz-reading { grid-template-columns: minmax(0, 1fr); }
     .hz-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    /* Under the reading, the rail waits for its mono face (see the head script). */
+    :global(:root[data-mono-deferred]) .hz-rail:not([data-mono-face]) {
+      --font-mono: ui-monospace, Menlo, Consolas, monospace;
+    }
     .hz-cta { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'wheel' 'body'; row-gap: 28px; }
     .hz-cta__wheel { width: 100%; max-width: 520px; margin-inline: auto; }
     .hz-more { grid-template-columns: minmax(0, 1fr); }
