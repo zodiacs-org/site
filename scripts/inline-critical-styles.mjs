@@ -68,6 +68,14 @@ const signs = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
+const horoscopePaths = [
+  ...signs.map((sign) => `horoscopes/${sign}/index.html`),
+  // Every horoscope period opens on the same sign-art hero, which is its
+  // mobile LCP. Keep every period on the same delivery path as Daily.
+  ...signs.flatMap((sign) => ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2026', '2027'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
+];
+// Horoscope pages register their mono face late on phones (lateMonoFace).
+const horoscopePathSet = new Set(horoscopePaths);
 // The 390 compatibility pair pages (78 pairings in five locales) open on two
 // sign paintings, their mobile LCP. Three of their four stylesheets are
 // inlined and the faces only text far down the page uses move to after load
@@ -104,10 +112,7 @@ const targetPaths = [
   // the two stylesheet round trips put a cold mobile LCP over the budget.
   ...signs.map((sign) => `${sign}/index.html`),
   'today/index.html',
-  ...signs.map((sign) => `horoscopes/${sign}/index.html`),
-  // Every horoscope period opens on the same sign-art hero, which is its
-  // mobile LCP. Keep every period on the same delivery path as Daily.
-  ...signs.flatMap((sign) => ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2026', '2027'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
+  ...horoscopePaths,
   'ru/index.html',
   'ru/birth-chart/index.html',
   ...pairPaths,
@@ -311,6 +316,74 @@ function takeBelowFoldFaces(css) {
   return { css: output, faces };
 }
 
+/**
+ * The horoscope pages' mono face (its degrees, times and "noon UTC") on
+ * phones. Below 761px the first mono text sits at least about 1,550px down
+ * the page, yet the first layout fetched the 40 KB face beside the hero art,
+ * and Lighthouse's simulated phone counted it on the path to the hero's LCP
+ * (2.33 s locally against 1.96 s without it). The face moves into a style
+ * block that applies only from 761px, where mono text can sit in the first
+ * screen (the sidebar, from 1021px), so tablets and desktops render exactly
+ * as before. On phones the loader below fetches the same file after load and
+ * registers it only while no text that uses it has reached the screen: the
+ * face is font-display: optional, and a face that misses first paint must
+ * never swap in under the reader. No-JS readers keep the face in noscript.
+ */
+const lateMonoFace = {
+  family: 'JetBrains Mono Phase1',
+  style: 'normal',
+  source: '/fonts/jetbrains-mono-latin-wght-normal.woff2',
+};
+const lateFaceMedia = '(min-width: 761px)';
+// Text that starts within this distance below the screen counts as reached.
+const lateFaceMarginPx = 160;
+const lateFaceLoader = `<script data-zdx-late-face-loader>
+    (function () {
+      var style = document.querySelector('style[data-zdx-late-face]');
+      var rule = style && style.sheet && style.sheet.cssRules[0];
+      if (!rule || !window.FontFace || !document.fonts || window.matchMedia(style.media).matches) return;
+      var face = rule.style;
+      var family = face.getPropertyValue('font-family').replace(/["']/g, '').trim();
+      var reached = function () {
+        var elements = document.body.getElementsByTagName('*');
+        var limit = window.innerHeight + ${lateFaceMarginPx};
+        for (var index = 0; index < elements.length; index += 1) {
+          if (getComputedStyle(elements[index]).fontFamily.indexOf(family) === -1) continue;
+          var box = elements[index].getBoundingClientRect();
+          if (box.height && box.top < limit) return true;
+        }
+        return false;
+      };
+      var register = function () {
+        new FontFace(family, face.getPropertyValue('src'), {
+          weight: face.getPropertyValue('font-weight'),
+          style: face.getPropertyValue('font-style'),
+          display: face.getPropertyValue('font-display'),
+        }).load().then(function (loaded) {
+          if (!reached()) document.fonts.add(loaded);
+        }, function () {});
+      };
+      var schedule = function () { setTimeout(register, 200); };
+      if (document.readyState === 'complete') schedule();
+      else window.addEventListener('load', schedule, { once: true });
+    })();
+  </script>`;
+
+function takeLateFace(css) {
+  let face = null;
+  const output = css.replace(/@font-face\s*\{[^{}]*\}/gi, (candidate) => {
+    const family = declarationValue(candidate, 'font-family');
+    const style = declarationValue(candidate, 'font-style') || 'normal';
+    if (family !== lateMonoFace.family || style !== lateMonoFace.style || !candidate.includes(lateMonoFace.source)) {
+      return candidate;
+    }
+    if (face) throw new Error('inline-critical-styles: the late face is declared twice');
+    face = candidate;
+    return '';
+  });
+  return { css: output, face };
+}
+
 function fontFaceDefinitions(faces) {
   const supported = new Set(['font-family', 'src', 'font-weight', 'font-style', 'font-display']);
   return JSON.stringify(faces.map((face) => {
@@ -334,7 +407,13 @@ function fontFaceDefinitions(faces) {
 export async function inlineCriticalStyles(
   html,
   root = distRoot,
-  { deferNonBase = false, subsetHomepageFonts = false, deferFaces = false, keepLinked = null } = {},
+  {
+    deferNonBase = false,
+    subsetHomepageFonts = false,
+    deferFaces = false,
+    keepLinked = null,
+    lateFace = false,
+  } = {},
 ) {
   if (!hasHtmlAttribute(html, marker)) return { html, stylesheets: 0, bytes: 0 };
 
@@ -404,6 +483,7 @@ export async function inlineCriticalStyles(
   let stabilizedChromeFaces = 0;
   let subsetHomepageFaces = 0;
   const deferredFaces = [];
+  const lateFaces = [];
   for (const tag of selectedTags) {
     const href = attribute(tag, 'href');
     const cssPath = resolve(root, `.${href}`);
@@ -417,8 +497,15 @@ export async function inlineCriticalStyles(
     const faceResult = deferFaces
       ? takeBelowFoldFaces(subsetResult.css)
       : { css: subsetResult.css, faces: [] };
-    const css = faceResult.css;
+    const lateResult = lateFace
+      ? takeLateFace(faceResult.css)
+      : { css: faceResult.css, face: null };
+    const css = lateResult.css;
     deferredFaces.push(...faceResult.faces);
+    if (lateResult.face) {
+      if (lateFaces.length > 0) throw new Error('inline-critical-styles: the late face is declared twice');
+      lateFaces.push(lateResult.face);
+    }
     stabilizedChromeFaces += stableResult.changes;
     subsetHomepageFaces += subsetResult.changes;
     assertSafeCss(css, href);
@@ -443,6 +530,21 @@ export async function inlineCriticalStyles(
   if (deferFaces && deferredFaces.length !== belowFoldFaces.length) {
     throw new Error(
       `inline-critical-styles: expected ${belowFoldFaces.length} below-fold faces, found ${deferredFaces.length}`,
+    );
+  }
+
+  if (lateFace && lateFaces.length !== 1) {
+    throw new Error(`inline-critical-styles: expected one late ${lateMonoFace.family} face, found ${lateFaces.length}`);
+  }
+  if (lateFaces.length > 0) {
+    const [face] = lateFaces;
+    assertSafeCss(face, 'late face');
+    if (!output.includes('</head>')) {
+      throw new Error('inline-critical-styles: cannot install the late face without </head>');
+    }
+    output = output.replace(
+      '</head>',
+      `<style media="${lateFaceMedia}" data-zdx-late-face>${face}</style><noscript><style>${face}</style></noscript>${lateFaceLoader}</head>`,
     );
   }
 
@@ -507,6 +609,8 @@ async function main() {
       const deferredCount = source.match(deferredStylePattern)?.length ?? 0;
       const loaderCount = source.match(/data-zdx-deferred-style-loader/g)?.length ?? 0;
       const fontDefinitionsCount = source.match(/<script type="application\/json" data-zdx-font-faces>/g)?.length ?? 0;
+      const lateFaceCount = source.match(/<style media="[^"]*" data-zdx-late-face>/g)?.length ?? 0;
+      const lateLoaderCount = source.match(/data-zdx-late-face-loader/g)?.length ?? 0;
       const {
         inlineCount: expectedInlineCount,
         deferredCount: expectedDeferredCount,
@@ -520,6 +624,8 @@ async function main() {
         || externalCount !== expectedExternalCount
         || loaderCount !== expectedLoaderCount
         || fontDefinitionsCount !== (pairPathSet.has(relativePath) ? 1 : 0)
+        || lateFaceCount !== (horoscopePathSet.has(relativePath) ? 1 : 0)
+        || lateLoaderCount !== lateFaceCount
       ) {
         throw new Error(
           `inline-critical-styles: ${relativePath} has an unexpected inline/external stylesheet shape`,
@@ -539,6 +645,7 @@ async function main() {
       subsetHomepageFonts: relativePath === 'index.html',
       deferFaces: pairPathSet.has(relativePath),
       keepLinked: pairPathSet.has(relativePath) ? pairKeptStylesheet : null,
+      lateFace: horoscopePathSet.has(relativePath),
     });
     await writeFile(path, result.html);
     pages += 1;
