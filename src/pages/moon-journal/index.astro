@@ -10,6 +10,12 @@
  * privateSurface and noAssistant: a note typed here stays in this browser,
  * so the page opts out of third-party scripts and of Guide, which can send
  * typed text. Nothing on this page makes a request with what is written.
+ *
+ * The opt-in reminder (builds with PUBLIC_WEB_PUSH_ENABLED=1 only) is not a
+ * third-party script: it registers the site's own worker and posts the
+ * browser's push subscription to the site's own /api/push/subscribe, the
+ * request every push control on the site makes. privateSurface only drops
+ * outside scripts (analytics), so both flags stay as they are.
  */
 import Base from '../../layouts/Base.astro';
 import MoonJournal from '../../islands/MoonJournal';
@@ -18,6 +24,8 @@ import { bodyLongitude } from '../../lib/engine/full';
 import { SIGNS, signForLongitude } from '../../lib/signs';
 import type { Lunation, SignSlug } from '../../lib/moon-journal/types';
 import '../../styles/moon-journal.css';
+
+const remindersEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
 
 const builtAt = new Date();
 // Two months back so the current cycle and the last one are always present.
@@ -85,6 +93,14 @@ const jsonLd = [
         this site’s data in your browser deletes the journal, and a private
         window forgets it when it closes.
       </p>
+      {remindersEnabled && (
+        <p>
+          If you turn on reminders, we keep this browser’s push subscription, a
+          push-service address and its delivery keys, marked for Moon
+          reminders. It holds nothing you write. Turning reminders off removes
+          that mark, and the subscription too unless sky alerts use it.
+        </p>
+      )}
       <p>
         To keep a copy or move it to another device, use “Download my
         journal”. It saves a plain text file in Markdown that any notes app

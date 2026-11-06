@@ -8,6 +8,10 @@
  *
  * The worker, PushManager, permission prompt, and API are all intercepted.
  * This drive never creates a real browser subscription or sends a push.
+ *
+ * It also drives the Moon journal's reminder control, which shares the same
+ * browser subscription under its own topic, and checks that Sky Alerts and
+ * the journal reminder never switch each other off.
  */
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
@@ -50,6 +54,9 @@ async function openFixture(browser, baseURL, {
   deleteStatus = 200,
   unsubscribeResult = true,
   apiRequests = [],
+  statusRequests = [],
+  statusTopics = null,
+  deleteRemaining = undefined,
 } = {}) {
   const context = await browser.newContext({
     viewport: { width: 375, height: 812 },
@@ -65,14 +72,29 @@ async function openFixture(browser, baseURL, {
 
   await context.route('**/api/push/subscribe', async (route) => {
     const request = route.request();
+    const body = request.postDataJSON();
+    // Status reads carry only the endpoint; they are recorded apart so the
+    // enrollment and revocation counts below stay exact. Without
+    // statusTopics the answer has no topics, as a server from before them.
+    if (request.method() === 'POST' && body?.action === 'status') {
+      statusRequests.push(body);
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(statusTopics ? { ok: true, topics: statusTopics } : { ok: true }),
+      });
+      return;
+    }
     apiRequests.push({
       method: request.method(),
-      body: request.postDataJSON(),
+      body,
     });
     await route.fulfill({
       status: request.method() === 'DELETE' ? deleteStatus : postStatus,
       contentType: 'application/json',
-      body: JSON.stringify({ ok: true }),
+      body: JSON.stringify(request.method() === 'DELETE' && deleteRemaining !== undefined
+        ? { ok: true, remaining: deleteRemaining }
+        : { ok: true }),
     });
   });
 
@@ -192,6 +214,7 @@ async function openFixture(browser, baseURL, {
   const page = await context.newPage();
   await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
   if (path === '/today/') await page.waitForSelector('[data-today-state="chart"]');
+  if (path === '/moon-journal/') await page.waitForSelector('[data-moon-journal][data-ready="true"]');
   return { context, page };
 }
 
@@ -520,6 +543,151 @@ await withPreview({ port: Number(process.env.PUSH_DRIVE_PORT ?? 4399) }, async (
         && apiRequests[1].body?.endpoint === 'https://push.fixture.test/subscription/sky-alerts',
       JSON.stringify(apiRequests));
     await success.context.close();
+
+    // A browser subscribed only for Moon journal reminders is not a Sky
+    // Alerts subscriber: Profile says Off and offers them.
+    const journalOnlyStatus = [];
+    const journalOnlyProfile = await openFixture(browser, baseURL, {
+      permission: 'granted',
+      preSubscribed: true,
+      path: '/profile/',
+      statusTopics: { sky: false, lunation: true },
+      statusRequests: journalOnlyStatus,
+    });
+    await journalOnlyProfile.page.waitForSelector('[data-push-optin][data-push-context="profile"]');
+    await journalOnlyProfile.page.getByText(
+      'Sky alerts · Off. The dates that matter, by notification.',
+      { exact: true },
+    ).waitFor();
+    check('Profile reads Sky Alerts from the server, not from a subscription the journal made',
+      await journalOnlyProfile.page.getByRole('button', { name: 'Turn on sky alerts' }).isVisible()
+        && journalOnlyStatus.length === 1
+        && journalOnlyStatus[0].endpoint === 'https://push.fixture.test/subscription/sky-alerts'
+        && Object.keys(journalOnlyStatus[0]).sort().join(',') === 'action,endpoint',
+      JSON.stringify(journalOnlyStatus));
+    await journalOnlyProfile.context.close();
+
+    // Turning Sky Alerts off keeps a browser subscription the journal uses.
+    const sharedSkyRequests = [];
+    const sharedSky = await openFixture(browser, baseURL, {
+      permission: 'granted',
+      preSubscribed: true,
+      path: '/profile/',
+      statusTopics: { sky: true, lunation: true },
+      deleteRemaining: true,
+      apiRequests: sharedSkyRequests,
+    });
+    await sharedSky.page.waitForSelector('[data-push-optin][data-push-context="profile"]');
+    await sharedSky.page.getByRole('button', { name: 'Turn off' }).click();
+    await sharedSky.page.getByText(
+      'Sky alerts · Off. The dates that matter, by notification.',
+      { exact: true },
+    ).waitFor();
+    const sharedSkyCalls = await sharedSky.page.evaluate(() => window.__pushDrive);
+    check('turning Sky Alerts off leaves the Moon journal reminder its subscription',
+      sharedSkyCalls.unsubscribeCalls === 0
+        && sharedSkyRequests.length === 1
+        && sharedSkyRequests[0].method === 'DELETE'
+        && sharedSkyRequests[0].body?.topic === 'sky',
+      JSON.stringify({ sharedSkyCalls, sharedSkyRequests }));
+    await sharedSky.context.close();
+
+    // The Moon journal: opt in, then one tap to turn off.
+    const journalRequests = [];
+    const journal = await openFixture(browser, baseURL, {
+      permissionResult: 'granted',
+      path: '/moon-journal/',
+      apiRequests: journalRequests,
+    });
+    await journal.page.waitForSelector('[data-mj-remind="off"]');
+    const journalBefore = await journal.page.evaluate(() => window.__pushDrive);
+    check('journal shows the reminder offer without asking for permission on load',
+      await journal.page.getByRole('button', { name: 'Remind me at each new and full Moon' }).isEnabled()
+        && journalBefore.permissionCalls === 0
+        && journalBefore.subscribeCalls === 0
+        && journalRequests.length === 0,
+      JSON.stringify(journalBefore));
+    await journal.page.locator('[data-mj-draft]').fill('A private line that must stay on this device.');
+    await journal.page.locator('[data-mj-save]').click();
+    await journal.page.locator('[data-mj-remind]').scrollIntoViewIfNeeded();
+    if (process.env.PUSH_DRIVE_SHOTS) {
+      await journal.page.screenshot({ path: `${process.env.PUSH_DRIVE_SHOTS}/journal-reminder-offer.png` });
+    }
+    await journal.page.getByRole('button', { name: 'Remind me at each new and full Moon' }).click();
+    await journal.page.waitForSelector('[data-mj-remind="on"]');
+    const journalOn = await journal.page.evaluate(() => window.__pushDrive);
+    check('journal reminder enrollment posts only the mocked endpoint, keys and topic',
+      journalOn.permissionCalls === 1
+        && journalOn.subscribeCalls === 1
+        && journalRequests.length === 1
+        && journalRequests[0].method === 'POST'
+        && journalRequests[0].body?.endpoint === 'https://push.fixture.test/subscription/sky-alerts'
+        && journalRequests[0].body?.keys?.p256dh === 'fixture-p256dh'
+        && journalRequests[0].body?.topic === 'lunation'
+        && journalRequests[0].body?.lang === 'en'
+        && Object.keys(journalRequests[0].body).sort().join(',') === 'endpoint,expirationTime,keys,lang,topic'
+        && !JSON.stringify(journalRequests).includes('private line'),
+      JSON.stringify(journalRequests));
+    check('journal confirms reminders are on and offers one-tap turn off',
+      await journal.page.getByText('Reminders are on for this browser.', { exact: true }).isVisible()
+        && await journal.page.getByRole('button', { name: 'Turn off reminders' }).isVisible());
+    if (process.env.PUSH_DRIVE_SHOTS) {
+      await journal.page.screenshot({ path: `${process.env.PUSH_DRIVE_SHOTS}/journal-reminder-on.png` });
+    }
+    await journal.page.getByRole('button', { name: 'Turn off reminders' }).click();
+    await journal.page.waitForSelector('[data-mj-remind="off"]');
+    const journalOff = await journal.page.evaluate(() => window.__pushDrive);
+    check('one tap turns journal reminders off on the server and in the browser',
+      journalOff.unsubscribeCalls === 1
+        && journalRequests.length === 2
+        && journalRequests[1].method === 'DELETE'
+        && journalRequests[1].body?.endpoint === 'https://push.fixture.test/subscription/sky-alerts'
+        && journalRequests[1].body?.topic === 'lunation',
+      JSON.stringify({ journalOff, journalRequests }));
+    await journal.context.close();
+
+    // A browser that already has Sky Alerts: the journal reads its own flag,
+    // and turning reminders off keeps the subscription Sky Alerts use.
+    const sharedJournalRequests = [];
+    const sharedJournal = await openFixture(browser, baseURL, {
+      permission: 'granted',
+      preSubscribed: true,
+      path: '/moon-journal/',
+      statusTopics: { sky: true, lunation: true },
+      deleteRemaining: true,
+      apiRequests: sharedJournalRequests,
+    });
+    await sharedJournal.page.waitForSelector('[data-mj-remind="on"]');
+    await sharedJournal.page.getByRole('button', { name: 'Turn off reminders' }).click();
+    await sharedJournal.page.waitForSelector('[data-mj-remind="off"]');
+    const sharedJournalCalls = await sharedJournal.page.evaluate(() => window.__pushDrive);
+    check('turning journal reminders off leaves Sky Alerts their subscription',
+      sharedJournalCalls.unsubscribeCalls === 0
+        && sharedJournalCalls.permissionCalls === 0
+        && sharedJournalRequests.length === 1
+        && sharedJournalRequests[0].body?.topic === 'lunation',
+      JSON.stringify({ sharedJournalCalls, sharedJournalRequests }));
+    await sharedJournal.context.close();
+
+    const failedLeaveRequests = [];
+    const failedLeave = await openFixture(browser, baseURL, {
+      permission: 'granted',
+      preSubscribed: true,
+      path: '/moon-journal/',
+      statusTopics: { sky: false, lunation: true },
+      deleteStatus: 503,
+      apiRequests: failedLeaveRequests,
+    });
+    await failedLeave.page.waitForSelector('[data-mj-remind="on"]');
+    await failedLeave.page.getByRole('button', { name: 'Turn off reminders' }).click();
+    await failedLeave.page.getByText('Reminders are unavailable right now.', { exact: false }).waitFor();
+    const failedLeaveCalls = await failedLeave.page.evaluate(() => window.__pushDrive);
+    check('journal never reports Off when the server keeps the reminder',
+      await failedLeave.page.locator('[data-mj-remind="on"]').count() === 1
+        && await failedLeave.page.getByRole('button', { name: 'Turn off reminders' }).isEnabled()
+        && failedLeaveCalls.unsubscribeCalls === 0,
+      JSON.stringify(failedLeaveCalls));
+    await failedLeave.context.close();
   } finally {
     await browser.close();
   }

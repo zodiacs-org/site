@@ -61,6 +61,22 @@ export interface MoonJournalCopy {
     exportPrompt: string;
     calendarName: string;
     calendarDescription: (prompt: string) => string;
+    remindHeading: string;
+    remindBody: string;
+    remindPrivacy: string;
+    remindAccept: string;
+    remindBusy: string;
+    remindOn: string;
+    remindOff: string;
+    remindDenied: string;
+    remindError: string;
+    remindUnsupported: string;
+    remindIos: string;
+  };
+  /** The notification sent on a lunation day: 'New Moon in Scorpio today'. */
+  reminder: {
+    title: (lunationTitle: string) => string;
+    body: (utcTime: string) => string;
   };
 }
 
@@ -139,6 +155,21 @@ const EN: MoonJournalCopy = {
     exportPrompt: 'Question',
     calendarName: 'New and full Moons, Zodiacs.org',
     calendarDescription: (prompt) => `Journal question: ${prompt} Write it at zodiacs.org/moon-journal/, where it stays on your device.`,
+    remindHeading: 'Reminders',
+    remindBody: 'A notification on the day of each new and full Moon, with a link back to this page. Never more than one a day, counting sky alerts.',
+    remindPrivacy: 'Turning them on stores this browser’s push subscription with us, and nothing you write here.',
+    remindAccept: 'Remind me at each new and full Moon',
+    remindBusy: 'Turning on…',
+    remindOn: 'Reminders are on for this browser.',
+    remindOff: 'Turn off reminders',
+    remindDenied: 'Notifications are blocked in this browser, so reminders can’t reach you. Your browser’s site settings can change that whenever you like.',
+    remindError: 'Reminders are unavailable right now. Try again later.',
+    remindUnsupported: 'This browser can’t receive notifications from the site, so reminders are not available here.',
+    remindIos: 'On iPhone and iPad, reminders work only after you add Zodiacs to your Home Screen. Open the journal from there to turn them on.',
+  },
+  reminder: {
+    title: (lunationTitle) => `${lunationTitle} today`,
+    body: (utcTime) => `Exact at ${utcTime} UTC. Your journal question is waiting.`,
   },
 };
 

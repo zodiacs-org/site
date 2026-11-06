@@ -1,8 +1,10 @@
 /**
  * The Moon journal: a private notebook tied to the new and full Moons, kept
- * only in this browser. No account, no request, no analytics event: the
- * notes are read from and written to localStorage on this device, and leave it
- * only as a file the visitor downloads.
+ * only in this browser. No account, no request with a note, no analytics
+ * event: the notes are read from and written to localStorage on this device,
+ * and leave it only as a file the visitor downloads. The one request the page
+ * can make is the opt-in reminder (MoonJournalReminder, in builds with push
+ * on), which sends the browser's push subscription and nothing written here.
  *
  * The page renders from its build time first, with every box sized, and the
  * island then moves to the device's own clock and reads saved notes; the
@@ -18,6 +20,7 @@ import {
 } from '../lib/moon-journal/store';
 import { SIGN_SLUGS, type JournalEntry, type Lunation, type SignSlug } from '../lib/moon-journal/types';
 import { downloadCalendarFile } from '../lib/ical-download';
+import MoonJournalReminder, { JOURNAL_REMINDERS_ENABLED } from './MoonJournalReminder';
 
 interface Props {
   lunations: Lunation[];
@@ -352,6 +355,8 @@ export default function MoonJournal({ lunations, signNames, builtAt, locale = 'e
           </ol>
         )}
       </section>
+
+      {JOURNAL_REMINDERS_ENABLED && <MoonJournalReminder ui={ui} />}
 
       <section class="mj-tools" aria-labelledby="mj-tools-head">
         <h2 id="mj-tools-head" class="mj-h">{ui.toolsHeading}</h2>
