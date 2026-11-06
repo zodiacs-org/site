@@ -610,6 +610,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...TIME_ATLAS_ROUTES.map((loc) => [loc, TIME_ATLAS_LASTMOD] as const),
   // Engine 1.1.0-rc.2's pages, last so this date wins.
   ...ENGINE_110_RC2_ROUTES.map((loc) => [loc, ENGINE_110_RC2_LASTMOD] as const),
+  // The November 2026 accuracy audit: whole degrees truncate, and "an annular" and "an opposition" read right.
+  ['/eclipses/', '2026-11-06'] as const,
+  ['/transits/', '2026-11-06'] as const,
+  ['/events/jupiter-opposition-pluto-2026-07-20/', '2026-11-06'] as const,
 ]);
 
 function getLastmod(loc: string): string {
