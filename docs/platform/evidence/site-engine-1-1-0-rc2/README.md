@@ -42,12 +42,13 @@ is filled by the commit that makes its runs.
 | [d16-sitemap/](d16-sitemap/) | D-16: Sitemap Dates' comparison of the merge of main `1e89d772`, made here as CI makes it | the record of D-16 |
 | [d17-sitemap/](d17-sitemap/) | D-17: the same comparison of the merge of main `bff5672f` | the record of D-17 |
 | [browser-evidence-provenance.json](browser-evidence-provenance.json), [phase1-captures-against-main.json](phase1-captures-against-main.json), `tools/compare-phase1-captures.mjs` | the Phase 1 captures' run record, and each capture against main's | the Phase 1 captures (C8) |
+| [production/](production/), `tools/compare-d2-normalized.mjs` | the production checks' controls, the runs at the merge and on the next deployment, their alias reads, the live check, and D2's ChartCalculator closure compared with chunk hashes and the Supabase settings written out | the record pull request |
 
-Still to come, after the merge: production
-([PRODUCTION-CHECKS.md](PRODUCTION-CHECKS.md)). The local gate's logs are in
-[validation/](validation/), the private search's counts in
-[history-check.txt](history-check.txt), and the Phase 1 captures' provenance
-under Phase 1 captures below.
+Nothing is still to come for this adoption: production's runs and the
+owner's ratification are recorded under Production and The owner's
+ratification below. The local gate's logs are in [validation/](validation/),
+the private search's counts in [history-check.txt](history-check.txt), and the
+Phase 1 captures' provenance under Phase 1 captures.
 
 ## The adoption
 
@@ -477,6 +478,105 @@ their provenance (C8).
   leaves behind, which lacks the postbuild steps, and failed 5 tests of the
   built pages
   ([validation/full-suite-captures-attempt-1.log](validation/full-suite-captures-attempt-1.log)).
+
+## Production
+
+Every check of [PRODUCTION-CHECKS.md](PRODUCTION-CHECKS.md), made by
+`tools/verify-production.mjs`, with the zodiacs.org alias read through the
+Vercel connector just before and just after each run
+([production/](production/)); only the five fields the tool reads are
+recorded.
+
+- **Controls, before the merge** (`production-control.json`, 5 November): on
+  `dpl_5fb9s2dqYGZBsfn6Sz2fGH1V8EUP`, which served main `bff5672f`, with the
+  pull request's head `46bc7db0` standing for the merge commit, whose tree it
+  is, and the seventh gate attempt's production-flags build as the local
+  build. Every check with a control failed (18), and R10, which has none,
+  passed; 152 requests, two of them the compute API's documented example. The
+  alias named the same deployment before and after.
+- **At the merge** (`production-at-merge.json`): #884 merged at 18:52 ICT as
+  `3fac4230`, authored by Zodiacs, and the alias moved to
+  `dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw`, built from it, at 2026-11-05T11:58:26Z.
+  18 of 19 checks pass: R1 to R11, S3b, D1, D3, C9, V1, and D2 for the
+  EclipticView and RelationshipWheel closures, each equal to the local
+  production-flags build of the merge byte for byte. D2 fails for the
+  ChartCalculator closure, below.
+- **The next deployment** (`production-later.json`, 6 November):
+  `dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5`, built from main `adb627ed`, which
+  contains the merge: the same 18 of 19 and the same D2 failure.
+- **D2's ChartCalculator closure.** It holds the dignities' refusal text and
+  neither ephemeris marker, but 2 of its 43 files differ from the local build:
+  the chunk itself and `account-save-loader`. The CI production-flags
+  environment that D2 names leaves `PUBLIC_ACCOUNT_SAVES_ENABLED` unset, where
+  production sets it to 1 (production's loader loads `AccountSaveAction`; the
+  CI build's returns null), and it carries stand-ins for the two Supabase
+  settings. With chunk hashes and those two settings written out, the CI
+  environment's build matches 41 of the 43 files, and the same build with
+  `PUBLIC_ACCOUNT_SAVES_ENABLED=1` matches 43 of 43
+  (`d2-normalised-ci-environment.json`,
+  `d2-normalised-with-account-saves.json`, `tools/compare-d2-normalized.mjs`,
+  which neither prints nor writes either setting). D2 stays recorded as failed
+  for that closure; the owner approved the gap (below).
+- **Live check at the merge** (`live-check-at-merge.txt`): the hosted MCP
+  server reports 0.6.4, and its `tools/list` of 19 tools is byte-identical to
+  the list taken just before the merge; ten pages answer 200; Vercel showed no
+  runtime errors after the deployment.
+- **Main's Site Check on the merge** (run 42022457285): 20 of its 21 jobs
+  passed; "Build with production's feature flags" was cancelled after 30
+  minutes while installing its profile test browsers, before any of its checks
+  ran. The next run on main, on `54514a43`, which contains the merge (run
+  42053479957), passed all 21.
+
+## The owner's ratification (6 November)
+
+DECISIONS-2026-10-05 §4 keeps a reading or a departure the programme chose for
+its own units from being accepted under a general delegation, so OQ5, D-14 and
+the D2 gap waited for the owner. On 6 November at about 14:22 ICT, after both
+production runs had shown the adoption live, the owner was asked, in one
+question:
+
+> The engine 1.1.0-rc.2 work is merged and live on zodiacs.org. Five of its
+> units can count as accepted (the ledger goes from 46.0% to 48.2%) only with
+> your approval of two things. First, the measuring rules the programme picked
+> after its trial runs (OQ5): for example, how close the site's numbers must
+> be to the engine's, and which small differences are allowed. Second, two
+> known test gaps: Firefox can't run on this Mac, and one byte-for-byte
+> production check can't match because the test build uses stand-in database
+> settings instead of production's. An independent reviewer found no problems,
+> and every other planned check passed. Do you approve?
+
+The options offered were "Approve all" (the rules and both gaps approved, the
+five units recorded accepted, P1.M3c failed either way), "Approve rules only"
+(the units validated until each gap is closed another way) and "Not now". The
+owner answered **"Approve all"**. Checking D2 afterwards showed that its cause
+as described was incomplete, so the owner was asked again:
+
+> A correction to what you just approved: the byte-for-byte production check
+> can't match because the test build differs from production in two settings,
+> not one. It has the 'save to profile' (account saves) feature switched off
+> where production has it on, and it uses stand-in database settings. With
+> that switch turned on, all 43 checked files match production apart from the
+> database settings. The engine code itself is identical either way. Does your
+> approval of this gap still stand?
+
+The owner answered **"Yes, it stands"**.
+
+- **What it ratifies.** OQ5 as a whole: lite R3, R4's causes and 1e-12
+  thresholds, R6, L9 and L11; P1.M3c's R-M3c; the varga section 3 reading and
+  G-V1 to G-V5, with G-V4 as amended; F-53's R1 to R6; F-89's R-F89. Also
+  D-14, the first-use drive's Firefox launch, and D2's gap on the
+  ChartCalculator closure, as above. Both answers came after the formal runs
+  and both production runs, so they apply to those recorded results.
+- **What it changes.** P2.E.declinations, P2.E.sect, P2.E.composite,
+  P2.E.dignities and P2.B.vargas are recorded `accepted`, release deployed
+  (`docs/platform/programme/acceptance-ledger.json`): 87.95 of 182.45 weighted
+  units, 48.205 per cent, from 83.95. P1.M3c is recorded `failed` (version 1,
+  C1b), which ratification does not change; its version 2 is due in a later
+  candidate. F-53 is recorded fixed, deployed and ratified.
+- **What it leaves open.** OQ10's Q5 (step 1.14h) and B3.c's own open items
+  are not covered. The CI production-flags environment, which site-check.yml
+  and sitemap-dates.yml share, does not set `PUBLIC_ACCOUNT_SAVES_ENABLED` as
+  production does; that is a separate change, not made here.
 
 ## Decisions taken without asking, under the owner's delegation
 

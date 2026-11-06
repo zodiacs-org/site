@@ -246,6 +246,13 @@
       "capturedSha256": "9fa112610eec0bf276cef610d36a247159e3acf4f3680276f3efd836ecec3b98",
       "committedSha256": "9fa112610eec0bf276cef610d36a247159e3acf4f3680276f3efd836ecec3b98",
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
+    },
+    {
+      "path": "production/production-later.log",
+      "tool": "node tools/verify-production.mjs --local-dist dist, on deployment dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5 (main adb627ed, which contains the merge 3fac4230), with the merge checked out, 2026-11-06",
+      "capturedSha256": "9fa112610eec0bf276cef610d36a247159e3acf4f3680276f3efd836ecec3b98",
+      "committedSha256": "9fa112610eec0bf276cef610d36a247159e3acf4f3680276f3efd836ecec3b98",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace and blank lines at the end removed"
     }
   ]
 }

@@ -1184,3 +1184,42 @@ adoption changes neither its status nor the fixed denominator.
 - **Disposition.** Open, for the owner: whether the relation should hold
   for version 4, which would take the same enclosures in the search's
   cells, or be restated.
+
+### F-53 1.1.0-rc.2 update (2026-11-06)
+
+- **Fixed in 1.1.0-rc.2, deployed and ratified.** `@zodiacs/engine/time`, new
+  in 1.1.0-rc.2, exports the engine's own time basis. The site's adoption
+  (zodiacs-org/site#884, merged as `3fac4230`) takes the server ephemeris's
+  and the compute API's time basis from it and deletes
+  `src/lib/engine/time-basis.mjs`, its generator and its CI step; main's
+  Chiron tool, added meanwhile, takes it from the entry too (D-16: the same
+  record as the deleted module at 2,012,592 calls from 1799 to 2201).
+  Production served it from `dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw`, built from the
+  merge, and then from `dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5`: S3b passed on both,
+  and S3a was not run (the calendar route answers 410). Time-entry S1, T4 and
+  S1b found the entry giving what the bundled module gave, value for value.
+  The owner ratified its readings (R1 to R6, OQ5) on 2026-11-06
+  (`docs/platform/evidence/site-engine-1-1-0-rc2/README.md`, The owner's
+  ratification).
+
+### F-89 1.1.0-rc.2 update (2026-11-06)
+
+- **Corrected and served.** Engine 1.1.0-rc.2 carries the nine corrected
+  statements, and the site's engine reference serves them since site#884
+  (`3fac4230`).
+- **The claims ledger.** Item 1's Swiss claim is retired for the ERFA figures
+  of the Vertex and the East Point (OQ9 (c)). Items 2, 6 and 7 leave the
+  ledger, as their corrected sentences carry no trigger word. Items 3, 4, 5,
+  8 and 9 are supported on rc.2's text. The ratchet of open overstated claims
+  is 2: `eng.conformance-sources` and `eng.rc1-footer`, each with the step its
+  resolution names.
+- **Ratified.** The owner ratified R-F89 (OQ5) on 2026-11-06. P1.14 stays
+  partial (OQ10 Q2).
+
+### F-52 1.1.0-rc.2 update (2026-11-06)
+
+- **The fix plan may now name `@zodiacs/engine/time`.** The generators that
+  call astronomy-engine directly can take the engine's time basis from the
+  package's own entry, as the server ephemeris and the compute API now do,
+  instead of the bundled module the plan named, which the adoption deleted;
+  nothing else in the plan changes.
