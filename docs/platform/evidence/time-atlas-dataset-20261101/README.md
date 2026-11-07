@@ -401,8 +401,8 @@ that half alone would not move B3.c to `accepted`, as the paragraph said it
 could. The production evidence below stands either way.
 
 The owner accepted both on 6 November, and on 7 November main's next passing
-Site Check in place of one on the merge ("The owner's acceptance (6 and 7
-November)", below).
+Site Check in place of one on the merge, so B3.c is now recorded `accepted`
+("The owner's acceptance (6 and 7 November)", below).
 
 ### The merge and its deployment
 
@@ -505,7 +505,7 @@ was made. The production record's fourth condition, main's Site Check
 passing on the merge, is therefore not met, for a reason outside this
 unit. B3.c is recorded `validated` either way (above). On 7 November the
 owner accepted main's next passing Site Check, run 41806876561 on
-`0bf69bd5`, in its place (below).
+`0bf69bd5`, in its place, and B3.c is now recorded `accepted` (below).
 
 ### C1 after the merge
 
@@ -543,8 +543,16 @@ on the merge, which run 41769911262 did not meet (above). Main's next
 passing Site Check was
 [run 41806876561](https://github.com/zodiacs-org/site/actions/runs/41806876561)
 on `0bf69bd5` (#877, which changed the failing test), created at 09:21:58Z
-on 4 November, 21 of 21 jobs on its first attempt. The same test had failed
-main's run 41744586321 on `e632fe4c`, before the merge. Of the 54 files #862
+on 4 November, 21 of 21 jobs on its first attempt; run 41802095374 on
+`43b88e7d`, between the two, failed on the same test (and, in its Phase 3
+push drive, on the `/today/` sky ticker's known micro-CLS). The same test had
+failed main's run 41744586321 on `e632fe4c`, before the merge. The merge's
+run never reached this unit's own checks: its Build & Check stopped at that
+test, its step 13, and skipped its 49 later steps, the build, the typecheck
+and the link and artifact check over dist among them. In run 41806876561
+all 67 of those steps passed, `tests/time-atlas-dataset.test.ts` (14 tests)
+and `src/lib/time-atlas/index.test.ts` (4 tests) among them, and check-dist
+passed over 5,276 HTML files. Of the 54 files #862
 changed, only `docs/claims/ledger.json` and `src/pages/sitemap.xml.ts`,
 which other pull requests change too, changed between `2f2a5669` and
 `0bf69bd5`; no atlas file, page or test of this unit did. On 7 November at
@@ -559,14 +567,16 @@ about 15:22 ICT the owner was asked, in one question:
 > in place of a pass on the merge?
 
 The options offered were "Yes, accept it" (B3.c recorded accepted, with
-this departure stated) and "No, keep validated" (B3.c stays validated, the
-record stating the unmet condition). The owner answered **"Yes, accept
+this departure stated, the ledger going from 48.2% to 49.3%) and "No, keep
+validated" (B3.c stays validated, the record stating the unmet condition,
+the figure staying at 48.2%). The owner answered **"Yes, accept
 it"**.
 
-- **What it accepts.** The preregistration's reading of "released": atlas
-  0.1.0 served by zodiacs.org production under
-  `/developers/time-atlas/0.1.0/`, cited by its index `files.json`, in files
-  that never change, with no tag, GitHub release or DOI. The first-use
+- **What it accepts.** The preregistration's reading of "released", as the
+  question put it: published permanently on zodiacs.org at
+  `/developers/time-atlas/0.1.0/` in files that never change, without a
+  separate GitHub release, tag or DOI (the reading in full is
+  PREREGISTRATION.md's "What "released" means here"). The first-use
   drive's unrun Firefox half as a departure from the site gates ("Open for
   the owner"). Run 41806876561 on `0bf69bd5` in place of a passing Site
   Check on the merge.
@@ -729,4 +739,4 @@ outside the repository.
   The independent review read the branch at `d0e413a8`; the commits after it
   answer six of its seven problems, and the fourth, the first-use drive's
   Firefox half, could not be run here and is the owner's to accept (see
-  "Open for the owner").
+  "Open for the owner"). The owner accepted it on 6 November.
