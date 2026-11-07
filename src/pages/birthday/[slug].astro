@@ -21,7 +21,7 @@ import {
   decanSpan, decanOrdinal, cuspSummary, cuspYearReading,
   type BirthdayEntry,
 } from '../../lib/birthdays';
-import { boundaryMargin, preciseBirthdayEntry } from '../../lib/birthday-degrees';
+import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged, boundaryMargin, preciseBirthdayEntry } from '../../lib/birthday-degrees';
 import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
@@ -179,6 +179,7 @@ const pageModifiedAt = latestModifiedAt(
   entry.data.updated,
   ...(cusp ? [BIRTHDAY_CUSP_OG_MODIFIED_AT] : []),
   ...(birthdayPeople.length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
+  ...(birthdayDegreesChanged(entry.id) ? [BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT] : []),
 );
 
 const jsonLd = [

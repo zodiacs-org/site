@@ -20,7 +20,7 @@ import {
   type BirthdayEntry,
 } from '../../lib/birthdays';
 import birthdays from '../../data/birthdays.json';
-import { preciseBirthdayEntry } from '../../lib/birthday-degrees';
+import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged, preciseBirthdayEntry } from '../../lib/birthday-degrees';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_HERO_SIZES, signArtSrc, signArtSrcset } from '../../lib/sign-art';
@@ -130,7 +130,10 @@ const jsonLd = [
     description,
     url: `https://zodiacs.org${path}`,
     datePublished: entry.data.published.toISOString(),
-    dateModified: entry.data.updated.toISOString(),
+    // The page prints its degrees from birthdays-precise.json since 7 November 2026.
+    dateModified: birthdayDegreesChanged(slug) && BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT > entry.data.updated.toISOString()
+      ? BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT
+      : entry.data.updated.toISOString(),
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org${path}` },
