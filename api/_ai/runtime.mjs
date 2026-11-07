@@ -41065,7 +41065,7 @@ function birthDatesIn(tool, args, now, hostZone) {
   else if (tool !== "get_occasion_sky") dates = [fieldOf(args, "birthDate")];
   else if (fieldOf(args, "occasion") !== "birthday") dates = [];
   else {
-    const today = cardToday(now, [fieldOf(args, "zone"), hostZone]);
+    const today = cardToday(now, [fieldOf(args, "zone"), fieldOf(args, "place") === void 0 ? hostZone : void 0]);
     const [date3, from, to] = [fieldOf(args, "date"), fieldOf(args, "searchFrom"), fieldOf(args, "searchTo")];
     const windowDay = typeof from === "string" && typeof to === "string" && from <= today ? to < today ? to : today : void 0;
     dates = [date3, windowDay].filter((day) => typeof day === "string" && day <= today);

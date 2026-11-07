@@ -224,7 +224,8 @@ function cardToday(now: Date, zones: readonly unknown[]): string {
  * The birth dates a call carries: its birthDate, both people's in a comparison, and the days a birthday card can be
  * for once they have come, since a birthday on such a day can be a birth date: the card's date, and the latest day of
  * a best-day window that has begun, because the card then goes to a day in it. Whether a day has come is read on the
- * card's own clock, else the assistant's, else the clock furthest ahead, so a birthday still to come is a day being planned.
+ * card's own clock, else the assistant's when the card names no place, else the clock furthest ahead, so a birthday
+ * still to come is a day being planned.
  * A Chinese zodiac year alone, a birthday's month and day, and the dates of every other tool are not birth dates.
  * Read only to decide on the refusal below, never echoed, stored or logged.
  */
@@ -234,7 +235,8 @@ export function birthDatesIn(tool: AiToolName, args: unknown, now: Date, hostZon
   else if (tool !== 'get_occasion_sky') dates = [fieldOf(args, 'birthDate')];
   else if (fieldOf(args, 'occasion') !== 'birthday') dates = [];
   else {
-    const today = cardToday(now, [fieldOf(args, 'zone'), hostZone]);
+    // A place named without a zone may lie far from the person, so their shared zone is not the card's clock then.
+    const today = cardToday(now, [fieldOf(args, 'zone'), fieldOf(args, 'place') === undefined ? hostZone : undefined]);
     const [date, from, to] = [fieldOf(args, 'date'), fieldOf(args, 'searchFrom'), fieldOf(args, 'searchTo')];
     const windowDay = typeof from === 'string' && typeof to === 'string' && from <= today ? (to < today ? to : today) : undefined;
     dates = [date, windowDay].filter((day) => typeof day === 'string' && day <= today);

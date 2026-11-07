@@ -18,7 +18,8 @@ than 13 years before today, or one still to come, and a birthday card, or a
 birthday's best-day search, that reaches a day in those 13 years, with a fixed
 refusal (`UNDER_13_REFUSAL` in `src/ai-tools/contracts.ts`) and before
 anything is worked out. Whether a birthday has come is read on the card's own
-clock. Saving to an account refuses the same, and the server instructions and
+time zone, else on the one the assistant shares when the card names no place,
+else on the clock furthest ahead of UTC. Saving to an account refuses the same, and the server instructions and
 `get_capabilities` each gain one sentence saying so. No tool definition changes, so the reviewers' copy needs no new
 sync; the listing's reviewer instructions dropped the baby card step on
 8 November ([LISTING.md](LISTING.md)).

@@ -114,6 +114,10 @@ describe('a birth date under 13', () => {
     // The card's own zone comes first; an unknown one falls through to the assistant's.
     expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', zone: 'Pacific/Auckland' }, midUtc, 'America/New_York')).not.toBeNull();
     expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', zone: 'Nowhere/Atlantis' }, midUtc, 'America/New_York')).toBeNull();
+    // A place named without a zone may be far from the person: their shared zone is not its clock.
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', place: 'Auckland', names: 'Mia' }, midUtc, 'America/Los_Angeles')).not.toBeNull();
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', place: 'Auckland', zone: 'Pacific/Auckland' }, midUtc, 'America/Los_Angeles')).not.toBeNull();
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', place: 'Los Angeles', zone: 'America/Los_Angeles' }, midUtc)).toBeNull();
   });
 });
 
@@ -190,6 +194,21 @@ describe('saving to an account refuses a child\'s birth date', () => {
     for (const args of cases) {
       expect(await buildSavedRecord(saveInput.parse(args), { now: () => NOW }), args.kind).toEqual({ failure: UNDER_13_REFUSAL });
     }
+  });
+
+  it('reads the zone the assistant shares when saving, as the tool does', async () => {
+    const principal = { user: '00000000-0000-4000-8000-000000000001', session: 'session', client: 'client' };
+    const midUtc = new Date('2026-11-08T15:00:00Z');
+    const stored: unknown[] = [];
+    const store = async (_principal: unknown, record: unknown) => { stored.push(record); return { id: '00000000-0000-4000-8000-000000000002', saved_at: '2026-11-08T15:00:00Z', created: true }; };
+    // Tomorrow's party in New York is still to come there: it saves.
+    const party = await saveToZodiacs({ kind: 'occasion', occasion: { occasion: 'birthday', date: '2026-11-09' } }, principal, store, { now: () => midUtc, hostZone: 'America/New_York' });
+    expect(party, JSON.stringify(party)).toMatchObject({ ok: true });
+    expect(stored).toHaveLength(1);
+    // A day that has come, in a one-day window, is refused and nothing more is stored.
+    const child = await saveToZodiacs({ kind: 'occasion', occasion: { occasion: 'birthday', searchFrom: '2026-11-08', searchTo: '2026-11-08', names: 'Mia' } }, principal, store, { now: () => midUtc, hostZone: 'America/New_York' });
+    expect(child).toMatchObject({ ok: false, error: { code: 'invalid-request', message: UNDER_13_REFUSAL } });
+    expect(stored).toHaveLength(1);
   });
 
   it('through the save tool, which stores nothing', async () => {
