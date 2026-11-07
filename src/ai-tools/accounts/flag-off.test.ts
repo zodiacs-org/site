@@ -28,6 +28,9 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * 0.6.5 changes the reported version in every scenario, and takes a baby's arrival and a coming of age out of
  * get_occasion_sky wherever tools/list holds it (src/ai-tools/published-tools.ts). Nothing else changes.
  * 0.6.6 changes only the reported version, in every scenario.
+ * On 8 November 2026, still 0.6.6, the occasions and coverage scenarios' server instructions gain one sentence: Zodiacs
+ * is not directed at children under 13, and its tools refuse a birth date less than 13 years ago
+ * (src/ai-tools/under-13.test.ts). The released scenario, every tools/list and every resources/list keep their bytes.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

@@ -26,7 +26,8 @@ import { explainAstrology } from './features/explain';
 import { searchSkyEvents } from './features/sky-events';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
-import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, inputSchemaFor, type AiToolName, type CoverageToolName, type PlaceToolName, type SkyEventsToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, UNDER_13_REFUSAL, inputSchemaFor, type AiToolName, type CoverageToolName, type PlaceToolName, type SkyEventsToolName } from './contracts';
+import { isUnder13 } from './features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
@@ -203,6 +204,34 @@ const optionalClock = (utc: string | null, zone: string | null) => (utc ? clockT
 
 /** A birthday, a baby's arrival, or a coming of age: the date can be a birth date, so it stays out of every link. */
 export const BIRTH_OCCASIONS: ReadonlySet<string> = new Set(['birthday', 'baby', 'coming-of-age']);
+
+const CIVIL_DATE = /^\d{4}-\d{2}-\d{2}$/u;
+const fieldOf = (value: unknown, key: string): unknown => (value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>)[key] : undefined);
+
+/**
+ * The birth dates a call carries: its birthDate, both people's in a comparison, and a birthday card's day when that
+ * day is today or earlier, because it can then be a birth date; a birthday still to come is a day being planned. A
+ * Chinese zodiac year alone, a birthday's month and day, and the dates of every other tool are not birth dates.
+ * Read only to decide on the refusal below, never echoed, stored or logged.
+ */
+export function birthDatesIn(tool: AiToolName, args: unknown, today: string): string[] {
+  const dates = tool === 'get_compatibility'
+    ? [fieldOf(fieldOf(args, 'a'), 'birthDate'), fieldOf(fieldOf(args, 'b'), 'birthDate')]
+    : tool === 'get_occasion_sky'
+      ? (fieldOf(args, 'occasion') === 'birthday' && typeof fieldOf(args, 'date') === 'string' && (fieldOf(args, 'date') as string) <= today ? [fieldOf(args, 'date')] : [])
+      : [fieldOf(args, 'birthDate')];
+  return dates.filter((date): date is string => typeof date === 'string' && CIVIL_DATE.test(date));
+}
+
+/**
+ * The hosted tools' refusal of a child's birth date, before anything is worked out: Zodiacs is not directed at
+ * children under 13, so a call that carries a birth date less than 13 years before today (UTC), or one still to come,
+ * gets one fixed sentence and no card, chart or reading. Null for every other call.
+ */
+export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date) {
+  const today = now.toISOString().slice(0, 10);
+  return birthDatesIn(tool, args, today).some((date) => isUnder13(date, today)) ? failure(tool, 'invalid-request', UNDER_13_REFUSAL) : null;
+}
 
 /**
  * The card page with its details after the #, as the site's own Copy link makes it. The page reads a

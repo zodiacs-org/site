@@ -5,7 +5,7 @@ import { ComputeApiError } from '../../lib/compute-api/errors';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { SIGNS } from '../../lib/signs';
 import { AI_RESULT_SCHEMA, ORIGIN } from '../contracts';
-import { BIRTH_OCCASIONS, executeAiTool, refUrl } from '../tools';
+import { BIRTH_OCCASIONS, childBirthDateRefusal, executeAiTool, refUrl } from '../tools';
 import { roundCoordinate } from '../plain-text';
 import { compatibilityMissing, computePersonChart, type CompatibilityData } from '../features/compatibility';
 import { guardPersonalWeek, personalWeek } from '../features/personal-week';
@@ -126,6 +126,10 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
   const now = dependencies.now?.() ?? new Date();
   const tools = { occasions: true, localTime: localTime(), now: () => now };
   const label = input.label;
+  // A child's birth date is refused here as the tools refuse it: each kind's details are those of the tool that made it.
+  const madeBy = { chart: 'get_natal_chart', comparison: 'get_compatibility', occasion: 'get_occasion_sky', week: 'get_horoscope' } as const;
+  const child = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now);
+  if (child) return { failure: child.error.message };
   try {
     switch (input.kind) {
       case 'chart': {
