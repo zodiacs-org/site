@@ -1,3 +1,27 @@
+The time atlas dataset accepted, 2026-11-07 (Asia/Bangkok): B3.c
+accepted on your answers.
+
+**Overall delivery: 49%** (49.301% to three decimals): 89.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 2.0 from engine
+1.1.0-rc.2's entry below: B3.c (2) moves from validated to accepted, and
+Frontier bets (first slices) from 32 of 41 to 34 of 41.
+
+- **Your answers.** On 6 November you approved, in one question, the
+  reading of "released" (the atlas 0.1.0 served permanently by zodiacs.org
+  under `/developers/time-atlas/0.1.0/`, with no tag, GitHub release or
+  DOI) and the first-use drive's Firefox half as a departure. On 7 November
+  you accepted main's Site Check on `0bf69bd5` (run 41806876561, 21 of 21
+  jobs) in place of one on the merge, which failed on a horoscope test
+  outside the atlas; no atlas file, page or test changed between the two.
+- **Nothing served changes.** This record changes only the ledger, its
+  table, this file and the evidence README.
+- **Still yours.** OQ10's Q5 (step 1.14h).
+- **Follow-ups.** As in the entry below: CI's production-flags
+  environment, P1.M3c's version 2 and Chart Studio's panel on rc.2.
+
+The record is
+[the evidence README](../evidence/time-atlas-dataset-20261101/README.md#the-owners-acceptance-6-and-7-november).
+
 Engine 1.1.0-rc.2 in production, 2026-11-06 (Asia/Bangkok): five units
 accepted on your ratification; P1.M3c failed.
 
