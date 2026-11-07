@@ -842,8 +842,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
         { loc: `${root}monthly/`, priority: 0.72, lastmod: laterDate(monthlyLastmod, HOROSCOPE_TEMPLATE_LASTMOD) },
         { loc: `${root}love/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
         { loc: `${root}career/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
-        { loc: `${root}2026/`, priority: 0.66, lastmod: YEARLY_2026_HOROSCOPE_LASTMOD },
-        { loc: `${root}2027/`, priority: 0.68, lastmod: YEARLY_HOROSCOPE_LASTMOD },
+        { loc: `${root}2026/`, priority: 0.66, lastmod: laterDate(YEARLY_2026_HOROSCOPE_LASTMOD, HOROSCOPE_TEMPLATE_LASTMOD) },
+        { loc: `${root}2027/`, priority: 0.68, lastmod: laterDate(YEARLY_HOROSCOPE_LASTMOD, HOROSCOPE_TEMPLATE_LASTMOD) },
       ];
     }),
     ...pairs.map((p) => ({

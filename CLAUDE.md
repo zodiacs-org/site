@@ -166,7 +166,15 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `src/data/eclipses.json` ← `node scripts/build-eclipses.mjs` (refresh
   yearly with sky.json)
 - `src/data/birthdays.json` ← `node scripts/build-birthdays.mjs` (the
-  `now` receipt year — refresh yearly with sky.json)
+  `now` receipt year — refresh yearly with sky.json). The same run writes
+  `src/data/birthdays-precise.json`, the noon-UTC degrees to four decimals
+  that the birthday pages print from; birthdays.json is bundled byte for
+  byte into the AI tools, so it keeps its two decimals
+- `src/data/people-degrees.json` ← `node scripts/build-people-degrees.mjs`
+  (each published person's placements recomputed to the full degree, checked
+  against every stored value; the People pages print it rounded once, through
+  `src/lib/people-degrees.ts`. people.json and the released copy are
+  untouched; `--check` for drift)
 - `src/data/transits-YYYY-MM.json` ← `node scripts/build-transits.mjs`
   (monthly cron: transits-monthly.yml)
 - `api/_assistant/context.ts` ← `vite-node --script
