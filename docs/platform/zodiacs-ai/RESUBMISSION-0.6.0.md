@@ -12,8 +12,8 @@ sign glyphs in coloured circles on the dark background
 (`plugins/zodiacs-sky/assets/icon-v3.png`, 512 × 512). 0.6.6 changes only
 that picture and the version the server reports; the tools, the About and
 the review cases are unchanged, and the 0.6.5 explanation below still
-applies. Upload `integrations/packages/zodiacs-sky-0.6.6.zip` (243,252 bytes,
-SHA-256 `c50396c150081f659823f90cde520bd694ac1e0e24703deeef15ab0b53507048`)
+applies. Upload `integrations/packages/zodiacs-sky-0.6.6.zip` (220,473 bytes,
+SHA-256 `40e96ef3ba5911cf34e5e35c407367edd9a4797800a93e41d47ab6fa11966b7e`)
 in place of the 0.6.5 draft.
 
 ## 0.6.5 update, 7 November 2026

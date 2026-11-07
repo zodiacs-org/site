@@ -6,8 +6,8 @@
       "name": "zodiacs-sky",
       "version": "0.6.6",
       "file": "zodiacs-sky-0.6.6.zip",
-      "bytes": 243252,
-      "sha256": "c50396c150081f659823f90cde520bd694ac1e0e24703deeef15ab0b53507048",
+      "bytes": 220473,
+      "sha256": "40e96ef3ba5911cf34e5e35c407367edd9a4797800a93e41d47ab6fa11966b7e",
       "members": [
         {
           "path": ".claude-plugin/plugin.json",
@@ -46,8 +46,8 @@
         },
         {
           "path": "assets/icon-v3.png",
-          "bytes": 144329,
-          "sha256": "284bcfb77e8b7727fb9c62d2f6ec0e3df90d4ffa9ce82d23bf2a554ff95a3392"
+          "bytes": 121550,
+          "sha256": "a42a272a0ad3aa3a485fa24e3e2fe9ea7637b291a3c164c84a271b220de82628"
         },
         {
           "path": "assets/icon.png",
