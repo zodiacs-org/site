@@ -624,6 +624,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/transits/', '2026-11-06'] as const,
   ...(['es', 'pt', 'fr', 'it', 'ru'] as const).map((locale) => [`/${locale}/transits/`, '2026-11-06'] as const),
   ['/events/jupiter-opposition-pluto-2026-07-20/', '2026-11-06'] as const,
+  // Your 2027 sky's eclipse lines read the full longitude, so 1°59′ Virgo prints 1°, not 2° (every language).
+  ...(['', '/es', '/pt', '/fr', '/it'] as const).map((prefix) => [`${prefix}/your-2027-sky/`, '2026-11-07'] as const),
   // The events hub's timeline and its note on timing, with the planets' times from NASA JPL Horizons.
   ['/events/', '2026-11-06'] as const,
 ]);
