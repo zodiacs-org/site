@@ -74,9 +74,9 @@ unchanged. 0.6.4 and 0.3.28 keep their bytes. Zodiacs 0.6.6 changes only the
 plugin's picture, now the twelve sign glyphs in coloured circles
 (`assets/icon-v3.png`), and the version the server reports; Developer 0.3.30
 is rebuilt from that source with unchanged tools. 0.6.5 and 0.3.29 keep their
-bytes. On 8 November 2026 the hosted server, still 0.6.6, refuses a birth date
-less than 13 years ago, and a birthday card for a day in those years, because
-Zodiacs is not directed at children under 13; no tool definition changes and
+bytes. With PR #915 (8 November 2026) the hosted server, still 0.6.6, refuses
+a birth date less than 13 years ago, and a birthday card for a day in those
+years, because Zodiacs is not directed at children under 13; no tool definition changes and
 the Zodiacs 0.6.6 ZIP keeps its bytes. Developer 0.3.31 is rebuilt from that
 source with unchanged tools, and 0.3.30 keeps its bytes.
 

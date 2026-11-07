@@ -121,15 +121,16 @@ export function savedOccasionPath(
 export async function buildSavedRecord(input: SaveInput, dependencies: SaveDependencies = {}): Promise<SavedRecord | { failure: string }> {
   // The link carries the result's digest after the # where the page cannot carry its details.
   const linked = (record: Omit<SavedRecord, 'href'>, href: (saved: string) => string): SavedRecord => ({ ...record, href: href(recordDigest(record).slice(0, 16)) });
-  let owned: ReturnType<typeof createLocalTimeModule> | undefined;
-  const localTime = () => dependencies.localTime ?? (owned ??= createLocalTimeModule());
   const now = dependencies.now?.() ?? new Date();
-  const tools = { occasions: true, localTime: localTime(), now: () => now };
-  const label = input.label;
-  // A child's birth date is refused here as the tools refuse it: each kind's details are those of the tool that made it.
+  // A child's birth date is refused here as the tools refuse it, before anything is set up: each kind's details are
+  // those of the tool that made it.
   const madeBy = { chart: 'get_natal_chart', comparison: 'get_compatibility', occasion: 'get_occasion_sky', week: 'get_horoscope' } as const;
   const child = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now);
   if (child) return { failure: child.error.message };
+  let owned: ReturnType<typeof createLocalTimeModule> | undefined;
+  const localTime = () => dependencies.localTime ?? (owned ??= createLocalTimeModule());
+  const tools = { occasions: true, localTime: localTime(), now: () => now };
+  const label = input.label;
   try {
     switch (input.kind) {
       case 'chart': {

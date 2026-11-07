@@ -37,11 +37,12 @@ export const ASSISTANT_OCCASION_KINDS = ['wedding', 'anniversary', 'met', 'birth
 export const WITHDRAWN_OCCASIONS: readonly string[] = ['baby', 'newborn', 'infant', 'birth', 'babyshower', 'comingofage', 'quinceanera', 'barmitzvah', 'batmitzvah'];
 export const WITHDRAWN_OCCASION_REFUSAL = "This tool makes no card for a baby's arrival or a coming of age. Do not send a child's name, birth date or place under another occasion.";
 /**
- * The hosted server's one answer to a call that carries a child's birth date: a birth date less than 13 years
+ * The hosted server's fixed answer to a call that carries a child's birth date: a birth date less than 13 years
  * before today, or still to come, or a birthday card for a day in those 13 years, which can be a birth date. An
  * assistant can call a baby's arrival a birthday, so the withdrawn occasions alone do not keep a child's details out.
+ * The last sentence gives an adult's request a way forward.
  */
-export const UNDER_13_REFUSAL = "Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. Do not send a child's name, birth date or place to any Zodiacs tool.";
+export const UNDER_13_REFUSAL = "Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. Do not send a child's name, birth date or place to any Zodiacs tool. For someone 13 or older, use their own birth date, or a birthday still to come.";
 export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'] as const;
 /**
  * The 0.5 tools: the thirteen the directories reviewed. Their tools/list entries, including this list as the

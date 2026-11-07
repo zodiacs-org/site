@@ -2,9 +2,9 @@
 
 Prepared 2 November 2026 on branch `feat/mcp-consumer-coverage` for 0.6.0, and
 brought up to date on 4 November 2026 for 0.6.1 (branch
-`feat/readings-panel-0-6-1`). Nothing has been synced, uploaded or sent. Every
-step below that touches production, the portal or email needs Dias's separate
-yes.
+`feat/readings-panel-0-6-1`). Nothing had then been synced, uploaded or sent;
+the dated sections below, newest first, record what has been since. Every
+step that touches production, the portal or email needs Dias's separate yes.
 
 ## Children under 13, 8 November 2026
 
@@ -12,13 +12,14 @@ Asked in Claude on 7 November for a card with the sky on the day a baby was
 born a week earlier, the assistant called `get_occasion_sky` with the birthday
 occasion, sending the baby's date, time and place, then `get_natal_chart`, and
 both answered. 0.6.5's refusal answers only a withdrawn occasion asked for by
-name. Zodiacs is not directed at children under 13, so the hosted server,
-still 0.6.6, now refuses any call that carries a birth date less than 13 years
-before today, or one still to come, and a birthday card for a day in those 13
-years, with one fixed sentence (`UNDER_13_REFUSAL` in
-`src/ai-tools/contracts.ts`) and before anything is worked out. Saving to an
-account refuses them too, and the server instructions gain one sentence
-saying so. No tool definition changes, so the reviewers' copy needs no new
+name. Zodiacs is not directed at children under 13, so with PR #915 the
+hosted server, still 0.6.6, refuses any call that carries a birth date less
+than 13 years before today, or one still to come, and a birthday card, or a
+birthday's best-day search, that reaches a day in those 13 years, with a fixed
+refusal (`UNDER_13_REFUSAL` in `src/ai-tools/contracts.ts`) and before
+anything is worked out. Whether a birthday has come is read on the card's own
+clock. Saving to an account refuses the same, and the server instructions and
+`get_capabilities` each gain one sentence saying so. No tool definition changes, so the reviewers' copy needs no new
 sync; the listing's reviewer instructions dropped the baby card step on
 8 November ([LISTING.md](LISTING.md)).
 
@@ -26,11 +27,11 @@ sync; the listing's reviewer instructions dropped the baby card step on
 
 0.6.6 changes only the plugin's picture, now the twelve sign glyphs in
 coloured circles, and the version the server reports. No tool changes, so no
-note to the review is needed. The directory's custom icon is still the
-tilted ring at `https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v2.png`,
-which stays published. Moving it to
-`https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v3.png` is a directory
-profile change and waits for Dias's yes.
+note to the review is needed. The directory's custom icon was the tilted
+ring at `https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v2.png`, which
+stays published. With Dias's yes it moved to
+`https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v3.png` on 7 November
+([LISTING.md](LISTING.md)).
 
 ## 0.6.5 update, 7 November 2026
 
