@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-sky",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Check what's happening in the sky, read daily to yearly horoscopes for your sign, explore your own birth chart and transits, compare two charts, find your Chinese zodiac animal and see the sky on the days that matter.",
   "author": {
     "name": "Zodiacs LLC",
@@ -45,8 +45,8 @@
     "supportURL": "https://zodiacs.org/about/",
     "privacyPolicyURL": "https://zodiacs.org/privacy/",
     "termsOfServiceURL": "https://zodiacs.org/terms/",
-    "composerIcon": "./assets/icon-v2.png",
-    "logo": "./assets/icon-v2.png",
+    "composerIcon": "./assets/icon-v3.png",
+    "logo": "./assets/icon-v3.png",
     "defaultPrompt": [
       "Is Mercury retrograde right now?",
       "Show my horoscope for today",
@@ -112,7 +112,7 @@
         "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4"
       },
       "publication": {
-        "release_notes": "0.6.5: The sky on a day no longer offers a baby's arrival or a coming of age as an occasion. 0.6.4: Says exactly what links leave out: a birth year, a birth time, a birthplace and the names you give. 0.6.3: The listing's category is now Entertainment. 0.6.2: The About, starter prompts and test cases now lead with the tools that need no personal details. 0.6.1: The five tools from 0.6.0 open an inline readings panel, with no sidebar launch, and find_birthplace turns a town or city name into coordinates and a time zone for the chart tools. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day. Forecasts carry a reading-confidence label, readings for anyone under 18 leave out romance and attraction, and compatibility is for two adults. The thirteen published tools are unchanged. 0.6.0: Adds five read-only tools with no sign-in: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac with the Lunar New Year boundary, dated personal transits and the year ahead, and explainers of astrology basics. The thirteen existing tools are unchanged. The About now names the compatibility score and the date rating out of 100 and the new features."
+        "release_notes": "0.6.6: The plugin's picture is now the twelve sign glyphs in coloured circles. 0.6.5: The sky on a day no longer offers a baby's arrival or a coming of age as an occasion. 0.6.4: Says exactly what links leave out: a birth year, a birth time, a birthplace and the names you give. 0.6.3: The listing's category is now Entertainment. 0.6.2: The About, starter prompts and test cases now lead with the tools that need no personal details. 0.6.1: The five tools from 0.6.0 open an inline readings panel, with no sidebar launch, and find_birthplace turns a town or city name into coordinates and a time zone for the chart tools. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day. Forecasts carry a reading-confidence label, readings for anyone under 18 leave out romance and attraction, and compatibility is for two adults. The thirteen published tools are unchanged. 0.6.0: Adds five read-only tools with no sign-in: a birth chart readout, monthly, yearly and weekly horoscopes from the published readings, the Chinese zodiac with the Lunar New Year boundary, dated personal transits and the year ahead, and explainers of astrology basics. The thirteen existing tools are unchanged. The About now names the compatibility score and the date rating out of 100 and the new features."
       },
       "onboardingSkill": "./skills/explore-the-sky/SKILL.md"
     }
