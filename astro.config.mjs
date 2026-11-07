@@ -17,6 +17,20 @@ function interactionDirective() {
   };
 }
 
+function paintedDirective() {
+  return {
+    name: 'zodiacs-painted-directive',
+    hooks: {
+      'astro:config:setup': ({ addClientDirective }) => {
+        addClientDirective({
+          name: 'painted',
+          entrypoint: './src/client-directives/painted.ts',
+        });
+      },
+    },
+  };
+}
+
 
 // Production enables the window implementation only in its worker build.
 // Vite uses the top-level serve plugins for development workers; development
@@ -55,7 +69,7 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [interactionDirective(), natalAspectRoutes(), preact(), mdx()],
+  integrations: [interactionDirective(), paintedDirective(), natalAspectRoutes(), preact(), mdx()],
   build: {
     format: 'directory',
     inlineStylesheets: 'auto',

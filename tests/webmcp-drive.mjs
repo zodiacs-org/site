@@ -258,6 +258,10 @@ async function chartPageAgainstTool(newPage, baseURL) {
   const page = await newPage();
   await page.goto(`${baseURL}/birth-chart/#c=${link}`, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => document.querySelectorAll('.three-card__deg').length === 3, null, { timeout: 30_000 });
+  // The page registers its tools a beat after load (Base.astro).
+  await page.waitForFunction(() => (
+    navigator.modelContextTesting?.listTools().some((tool) => tool.name === 'zodiacs.birth_chart')
+  ));
   const shown = await page.$$eval('.three-card__deg', (cells) => cells.map((cell) => cell.textContent.trim()));
   const answer = await page.evaluate(async (call) => {
     const decoded = JSON.parse(await navigator.modelContextTesting.executeTool('zodiacs.birth_chart', JSON.stringify(call)));
@@ -390,7 +394,9 @@ async function drive(baseURL) {
     for (const path of ['/es/', '/fr/horoscopes/', '/terminal/', '/registry/', '/thesis/', '/sdk/', '/archive/']) {
       const excludedPage = await context.newPage();
       await excludedPage.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
-      await excludedPage.waitForTimeout(100);
+      // Pages register their tools 400 ms after load (Base.astro); networkidle
+      // follows load, so this waits past that point.
+      await excludedPage.waitForTimeout(600);
       exclusions[path] = await excludedPage.evaluate(() => ({
         tools: navigator.modelContextTesting?.listTools().map((tool) => tool.name) ?? [],
         requestedAsset: performance.getEntriesByType('resource')
