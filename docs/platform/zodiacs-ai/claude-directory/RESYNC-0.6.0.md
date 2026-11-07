@@ -21,10 +21,9 @@ unchanged, so a short note goes to the same thread, once Dias says yes:
 > A short update on the Zodiacs connector at https://zodiacs.org/mcp (slug
 > zodiacs, ticket #145701231). Version 0.6.5 changes one tool,
 > get_occasion_sky ("The sky on a day"): it no longer offers the baby's
-> arrival and coming-of-age occasions, to keep children's details out of
-> it. Its description, its occasion field and the occasion enum in its input
-> and output schemas change, and a request for a removed occasion is
-> refused. The other 18 tools are unchanged, and the connector stays
+> arrival and coming-of-age occasions. Its description, its occasion field
+> and the occasion enum in its input and output schemas change, and a request
+> for a removed occasion is refused. The other 18 tools are unchanged, and the connector stays
 > read-only with no sign-in.
 
 ## What 0.6.1 changes

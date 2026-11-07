@@ -69,8 +69,8 @@ names, a place and coordinates, could collect identifying or locating details
 about a child under 13. Its description, its occasion field and the occasion
 enum in its input and output schemas change; the other 18 tool definitions
 are unchanged, and the server reports 0.6.5. Developer 0.3.29 is rebuilt from
-that source with unchanged local chart tools. 0.6.4 and 0.3.28 keep their
-bytes.
+that source; its local server does not offer that tool, and its tools are
+unchanged. 0.6.4 and 0.3.28 keep their bytes.
 
 Current candidates are **Zodiacs 0.6.5** and **Zodiacs Developer 0.3.29**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are

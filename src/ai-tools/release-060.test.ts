@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createServer, type Server } from 'node:http';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
-import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
+import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES, WITHDRAWN_OCCASION_REFUSAL } from './contracts';
 import { executeAiTool } from './tools';
-import { as065, PUBLISHED_TOOLS } from './published-tools';
+import { as065, LIVE_TOOLS, PUBLISHED_TOOLS } from './published-tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
 import { SIGNS } from '../lib/signs';
@@ -29,7 +29,6 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * occasion enum in its input and output schemas. Every other byte of the thirteen comes back as published.
  */
 const root = new URL('../../', import.meta.url);
-const LIVE = JSON.parse(readFileSync(new URL('docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', root), 'utf8'));
 const PUBLISHED = PUBLISHED_TOOLS;
 const window = async () => committedWindow as HoroscopeWindow;
 const months = async () => committedMonths;
@@ -86,7 +85,7 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
   });
 
   it('changes only get_occasion_sky, in exactly four places, to take out a baby\'s arrival and a coming of age', () => {
-    const changes = (LIVE.result.tools as Record<string, unknown>[]).flatMap(tool => as065(tool).changed);
+    const changes = LIVE_TOOLS.flatMap(tool => as065(tool).changed);
     expect([...changes].sort()).toEqual([
       'get_occasion_sky.description',
       'get_occasion_sky.inputSchema.properties.occasion.description',
@@ -94,6 +93,18 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
       'get_occasion_sky.outputSchema.anyOf[0].properties.data.properties.occasion.enum',
     ].sort());
     expect(JSON.stringify(PUBLISHED)).not.toMatch(/baby|coming-of-age/u);
+  });
+
+  it('answers a withdrawn occasion with its fixed sentence, echoing none of the request', async () => {
+    for (const occasion of ['baby', 'coming-of-age']) {
+      const answer = (await rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion, date: '2026-05-03', names: 'Mia', place: 'London', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278 } })).result;
+      expect(answer.isError, occasion).toBe(true);
+      expect(answer.structuredContent.error, occasion).toMatchObject({ code: 'invalid-arguments', message: WITHDRAWN_OCCASION_REFUSAL });
+      expect(JSON.stringify(answer), occasion).not.toMatch(/Mia|London|2026-05-03|51\.5/u);
+    }
+    // Any other occasion it does not take still gets the list of those it does.
+    const other = (await rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion: 'party', date: '2026-05-03' } })).result;
+    expect(other.structuredContent.error.message).toBe('occasion must be one of: wedding, anniversary, met, birthday, pet, home, job, graduation, retirement, gathering.');
   });
 
   it('reports 0.6.5 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {

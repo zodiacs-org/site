@@ -18,11 +18,14 @@ reading the tool definition; adult birth details were not the concern.
 0.6.5 takes `baby` and `coming-of-age` out of `get_occasion_sky`: its
 description, its occasion field and the occasion enum in its input and output
 schemas. Coming of age goes too, because its ceremonies, such as a
-quinceañera, usually concern a teenager. A request for either is refused as an
-invalid request, and the account save, which takes the tool's arguments,
-refuses them the same way. The other ten occasions, the other 18 tools and the
-panels are unchanged, and the site's own occasion picker keeps all twelve. The
-server reports 0.6.5. Upload `integrations/packages/zodiacs-sky-0.6.5.zip`
+quinceañera, usually concern a teenager. Asked for either, the hosted server
+refuses with a fixed sentence that tells the assistant not to send a child's
+name, birth date or place under another occasion, and the account save, which
+takes the tool's arguments, refuses them the same way. get_capabilities and the
+privacy page, which listed all three, now say that a birthday gets no card or
+share link. The other ten occasions, the other 18 tools and the panels are
+unchanged, and the site's own occasion picker keeps all twelve. The server
+reports 0.6.5. Upload `integrations/packages/zodiacs-sky-0.6.5.zip`
 (98,653 bytes, SHA-256
 `142b5c1ef02bac7460e427bd646da3b39597b70f135232fe7c55c8738fe3ecc1`) instead
 of the 0.6.4 ZIP. The About, category, subtitle, starter prompts,
@@ -35,12 +38,15 @@ Explanation of changes for the resubmission, once Dias approves it:
 > arrived"), and we removed the coming-of-age occasion too, because it
 > usually concerns a teenager. Its occasions are now a wedding, an
 > anniversary, the day two people met, a birthday, a pet, a new home, a new
-> job, a graduation, a retirement and a gathering, and a request for a
-> removed occasion is refused. Names and a place name stay optional: they are
-> only printed on the card, never stored and never put in a link. Coordinates
-> are only used to work out the evening sky and are not stored. No other tool
-> changed. Our privacy page says Zodiacs is not directed at children under
-> 13: https://zodiacs.org/privacy/
+> job, a graduation, a retirement and a gathering. Asked for a removed
+> occasion, the tool refuses and tells the assistant not to send a child's
+> name, birth date or place under another occasion. Names and a place name
+> stay optional: the tool prints them on the card and returns them to the
+> assistant, and never puts them in a link. Coordinates are optional too:
+> they work out the evening sky, and for any occasion but a birthday the
+> card's link keeps them rounded to two decimals. The tool stores none of
+> these details. No other tool changed. Our privacy page says Zodiacs is not
+> directed at children under 13: https://zodiacs.org/privacy/
 
 ## 0.6.4 update, 5 November 2026
 

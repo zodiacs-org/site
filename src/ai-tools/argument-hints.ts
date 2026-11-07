@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import { AI_RESULT_SCHEMA, INPUT_SCHEMAS } from './contracts';
+import { AI_RESULT_SCHEMA, INPUT_SCHEMAS, WITHDRAWN_OCCASION_REFUSAL, WITHDRAWN_OCCASIONS } from './contracts';
 
 /**
  * Builds a structured refusal for tool arguments that fail the input schema, naming
@@ -23,7 +23,11 @@ function fieldAt(schema: any, path: readonly PropertyKey[]): { name: string; fie
   return names.length ? { name: names.join(''), field: current } : undefined;
 }
 
-function sentence(issue: z.core.$ZodIssue, schema: any): string {
+/** The request's value at an issue's path, read only to choose a fixed sentence and never echoed. */
+const valueAt = (args: unknown, path: readonly PropertyKey[]): unknown =>
+  path.reduce<unknown>((value, key) => (value && typeof value === 'object' ? (value as Record<PropertyKey, unknown>)[key] : undefined), args);
+
+function sentence(issue: z.core.$ZodIssue, schema: any, args: unknown): string {
   if (issue.code === 'custom') return issue.message;
   if (issue.code === 'unrecognized_keys') return 'The arguments include a field this tool does not accept; call tools/list for its fields.';
   const located = fieldAt(schema, issue.path);
@@ -31,6 +35,8 @@ function sentence(issue: z.core.$ZodIssue, schema: any): string {
   const { name, field } = located;
   const inner = unwrap(field); const description: string | undefined = field?.description ?? inner?.description;
   if (issue.code === 'invalid_type' && (issue as any).input === undefined) return `${name} is required.`;
+  // A withdrawn occasion gets its own sentence, so the assistant does not carry a child's day over to another occasion.
+  if (issue.code === 'invalid_value' && issue.path.at(-1) === 'occasion' && WITHDRAWN_OCCASIONS.includes(valueAt(args, issue.path) as string)) return WITHDRAWN_OCCASION_REFUSAL;
   if (issue.code === 'invalid_value' && Array.isArray((issue as any).values)) return `${name} must be one of: ${(issue as any).values.join(', ')}.`;
   const iso = /ISO 8601 time with Z or an offset/.test(description ?? '');
   return `${name} is not in the accepted form.${iso ? ISO_HINT : description ? ` ${description}` : ''}`;
@@ -42,6 +48,6 @@ export function argumentRefusal(tool: string, args: unknown, inputSchema?: z.Zod
   if (!schema) return undefined;
   const parsed = schema.safeParse(args ?? {});
   if (parsed.success) return undefined;
-  const message = [...new Set(parsed.error.issues.slice(0, 4).map(issue => sentence(issue, schema)))].join(' ');
+  const message = [...new Set(parsed.error.issues.slice(0, 4).map(issue => sentence(issue, schema, args)))].join(' ');
   return { schema: AI_RESULT_SCHEMA, ok: false as const, tool, error: { code: 'invalid-arguments', message } };
 }

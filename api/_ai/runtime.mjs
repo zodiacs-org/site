@@ -31818,7 +31818,7 @@ function selectedAspects(options) {
 }
 function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
   const referenceLon = ephemeris.bodyLongitude(body2, new Date((fromMs + toMs) / 2));
-  const valueAt = (time) => {
+  const valueAt2 = (time) => {
     const lon = ephemeris.bodyLongitude(body2, new Date(time));
     return referenceLon + signedAngularDelta(referenceLon, lon);
   };
@@ -31828,17 +31828,17 @@ function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
     const third = (hi - lo) / 3;
     const left = lo + third;
     const right = hi - third;
-    const leftValue = valueAt(left);
-    const rightValue = valueAt(right);
+    const leftValue = valueAt2(left);
+    const rightValue = valueAt2(right);
     if (maximize ? leftValue < rightValue : leftValue > rightValue) lo = left;
     else hi = right;
   }
   const center = Math.round((lo + hi) / 2);
   let bestMs = center;
-  let bestValue = valueAt(center);
+  let bestValue = valueAt2(center);
   for (let offset = -3; offset <= 3; offset += 1) {
     const candidateMs = center + offset;
-    const candidateValue = valueAt(candidateMs);
+    const candidateValue = valueAt2(candidateMs);
     if (maximize ? candidateValue > bestValue : candidateValue < bestValue) {
       bestMs = candidateMs;
       bestValue = candidateValue;
@@ -39638,6 +39638,8 @@ var AI_VERSION = "0.6.5";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
 var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
 var ASSISTANT_OCCASION_KINDS = ["wedding", "anniversary", "met", "birthday", "pet", "home", "job", "graduation", "retirement", "gathering"];
+var WITHDRAWN_OCCASIONS = ["baby", "coming-of-age"];
+var WITHDRAWN_OCCASION_REFUSAL = "Zodiacs makes no occasion card for a baby's arrival or a coming of age. Do not send a child's name, birth date or place under another occasion; for a child, ask explain_astrology about their Sun sign.";
 var OCCASION_TOOL_NAMES = ["get_occasion_sky", "get_life_milestones", "get_compatibility", "find_chart_twins", "get_famous_chart", "get_birthday", "get_sky_calendar"];
 var ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES];
 var COVERAGE_TOOL_NAMES = ["get_natal_chart", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "explain_astrology"];
@@ -41123,7 +41125,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS, conventions: statements3.conventions, coverage: { ...statements3.coverage, tools: offered.join(", "), eclipses: skyEvents2 ? "search_sky_events lists the eclipses from 2026 to 2030; get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : dependencies.coverage ? "get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : "get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.", aspects: dependencies.coverage ? "get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects." : "get_upcoming_events does not search aspects.", ...skyEventsCoverage }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", eclipseLine, dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
         if (dependencies.occasions) {
           const capabilities = data;
-          capabilities.privacy += " The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday, a baby's arrival or a coming of age gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details.";
+          capabilities.privacy += " The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details.";
           capabilities.limitations.push("The occasion tools give the sky on a date, rate it from 0 to 100 by astrology's traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology's life milestones; they do not guarantee how a day will go.");
           capabilities.limitations.push("Compatibility scores two charts by astrology's reading of their contacts; it does not guarantee how a relationship will go. Compatibility readings are for two adults: when either birth date is under 18 it gives no reading, and points to a friendship reading of the two Sun signs instead. Famous charts, alone or compared with someone's own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.");
           if (!dependencies.coverage) capabilities.limitations.push("Which tool: what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; one birthday, get_birthday; lifetime returns, get_life_milestones.");
@@ -42550,7 +42552,8 @@ function fieldAt(schema, path) {
   }
   return names.length ? { name: names.join(""), field: current } : void 0;
 }
-function sentence(issue, schema) {
+var valueAt = (args, path) => path.reduce((value, key) => value && typeof value === "object" ? value[key] : void 0, args);
+function sentence(issue, schema, args) {
   if (issue.code === "custom") return issue.message;
   if (issue.code === "unrecognized_keys") return "The arguments include a field this tool does not accept; call tools/list for its fields.";
   const located = fieldAt(schema, issue.path);
@@ -42559,6 +42562,7 @@ function sentence(issue, schema) {
   const inner = unwrap(field);
   const description = field?.description ?? inner?.description;
   if (issue.code === "invalid_type" && issue.input === void 0) return `${name} is required.`;
+  if (issue.code === "invalid_value" && issue.path.at(-1) === "occasion" && WITHDRAWN_OCCASIONS.includes(valueAt(args, issue.path))) return WITHDRAWN_OCCASION_REFUSAL;
   if (issue.code === "invalid_value" && Array.isArray(issue.values)) return `${name} must be one of: ${issue.values.join(", ")}.`;
   const iso3 = /ISO 8601 time with Z or an offset/.test(description ?? "");
   return `${name} is not in the accepted form.${iso3 ? ISO_HINT : description ? ` ${description}` : ""}`;
@@ -42568,7 +42572,7 @@ function argumentRefusal(tool, args, inputSchema) {
   if (!schema) return void 0;
   const parsed = schema.safeParse(args ?? {});
   if (parsed.success) return void 0;
-  const message = [...new Set(parsed.error.issues.slice(0, 4).map((issue) => sentence(issue, schema)))].join(" ");
+  const message = [...new Set(parsed.error.issues.slice(0, 4).map((issue) => sentence(issue, schema, args)))].join(" ");
   return { schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code: "invalid-arguments", message } };
 }
 

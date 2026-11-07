@@ -51,12 +51,13 @@ describe('public legal identity', () => {
     // 0.5.0 tools switch on, and on 4 November, when its assistant paragraphs
     // said what the app's links carry, and on 5 November, when they said it
     // exactly: a birth year, a birth time, a birthplace or the names you give,
-    // and on 6 November, when it named Gemini alongside ChatGPT and Claude.
+    // and on 6 November, when it named Gemini alongside ChatGPT and Claude,
+    // and on 7 November, when a birthday became the one occasion it lists with no card link.
     expect(about).toContain("dateModified: '2026-10-16T00:00:00.000Z'");
     expect(terms).toContain("const updated = '3 October 2026'");
     expect(terms).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");
     expect(privacy).toContain('AI integration candidates');
-    expect(privacy).toContain("const updated = '6 November 2026'");
-    expect(privacy).toContain("const modifiedAt = '2026-11-06T00:00:00.000Z'");
+    expect(privacy).toContain("const updated = '7 November 2026'");
+    expect(privacy).toContain("const modifiedAt = '2026-11-07T00:00:00.000Z'");
   });
 });
