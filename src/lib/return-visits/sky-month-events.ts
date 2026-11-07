@@ -1,12 +1,13 @@
 /** Build-time only: the feed's events in the shape the month view draws. */
 import type { CatalogLocale } from '../i18n/core';
 import sky from '../../data/sky.json';
-import { skyCalendarEvents } from './sky-calendar';
+import { siteSkyCalendarEvents } from '../sky-calendar-feed';
 import { localizePath } from '../i18n';
 import type { SkyMonthEvent, SkyMonthKind } from './sky-month';
 
 export function skyMonthEvents(locale: CatalogLocale): SkyMonthEvent[] {
-  return skyCalendarEvents(locale).map((event) => {
+  // The site's feed events: NASA's station instants, as /sky-calendar.ics carries them.
+  return siteSkyCalendarEvents(locale).map((event) => {
     const id = event.id;
     const kind: SkyMonthKind = id.startsWith('new-moon') ? 'new'
       : id.startsWith('full-moon') ? 'full'

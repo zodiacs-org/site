@@ -231,9 +231,9 @@ export const YEAR_SKY_WORDS_PT: YearSkyWords = defineYearSkyWords('pt', {
   pointName,
 
   eclipseTitle: (type, kind) => `Eclipse ${type === 'solar' ? 'solar' : 'lunar'} ${kindOf(kind)}`,
-  eclipseLine: (type, kind, degree, sign) => type === 'solar'
+  eclipseLine: (type, kind, degree, sign, unseen) => type === 'solar'
     ? `Uma Lua nova com peso extra a ${degree} de ${sign}. Os astrólogos leem os eclipses solares como começos que chegam antes do previsto.${kind === 'total' ? ' Este é total: a Lua cobre o Sol inteiro ao longo da sua faixa.' : ''}`
-    : `Uma Lua cheia com peso extra a ${degree} de ${sign}. Os eclipses lunares são lidos como finais e faxinas.${kind === 'penumbral' ? ' Este é penumbral, fraco a olho nu.' : ''}`,
+    : `Uma Lua cheia com peso extra a ${degree} de ${sign}. Os eclipses lunares são lidos como finais e faxinas.${unseen ? ` Este é penumbral e tão leve que nenhum olho nem câmera o verá: a NASA lhe dá uma magnitude de ${String(unseen).replace('.', ',')}.` : kind === 'penumbral' ? ' Este é penumbral, fraco a olho nu.' : ''}`,
   retrogradeTitle: retrograde,
   retrogradeLine: (planet) => RETROGRADE_LINE[planet] ?? `${P(planet)} parece andar para trás por um tempo.`,
   retrogradeDetail: (range, sign, shadow) => `${cap(range)}${sign ? `, em ${sign}` : ''}.${shadow ? ` A sombra vai ${shadow}.` : ''}`,

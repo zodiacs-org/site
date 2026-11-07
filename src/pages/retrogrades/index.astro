@@ -35,6 +35,11 @@ const RHYTHM: Record<string, string> = {
 
 const fmt = (d: Date) => formatShortDate('en', d);
 
+// The years the committed table covers (sky.json runs to the start of its
+// last year plus one), so the copy names the span the table lists.
+const firstYear = new Date(sky.from).getUTCFullYear();
+const lastYear = new Date(Date.parse(sky.to) - 1).getUTCFullYear();
+
 const windows = (sky.retrogrades as { planet: BodyName; from: string; to: string | null }[]).map((r) => {
   const from = new Date(r.from);
   const to = r.to ? new Date(r.to) : null;
@@ -77,7 +82,7 @@ const status = retroToday.length
 const faq = [
   {
     q: 'Which planets are retrograde right now?',
-    a: `${status} The tables above list every window for 2026 and 2027, station to station, refined to the hour.`,
+    a: `${status} The tables above list every window from ${firstYear} through ${lastYear}, station to station, refined to the hour.`,
   },
   {
     q: 'Can the Sun or Moon be retrograde?',
@@ -118,7 +123,7 @@ const eventNodes = upcomingWindows.map((window) => {
 const dataset = {
   '@type': 'Dataset',
   '@id': 'https://zodiacs.org/retrogrades/#dataset',
-  name: 'Planetary retrograde windows, 2026 to 2027',
+  name: `Planetary retrograde windows, ${firstYear} to ${lastYear}`,
   description: 'Computed retrograde and direct station instants and tropical zodiac positions for Mercury through Pluto.',
   url: 'https://zodiacs.org/retrogrades/',
   creator: { '@id': 'https://zodiacs.org/#org' },
@@ -133,10 +138,10 @@ const dataset = {
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Retrograde planets 2026 to 2027, dated',
+    name: `Retrograde planets ${firstYear} to ${lastYear}, dated`,
     url: 'https://zodiacs.org/retrogrades/',
     description:
-      'Every planetary retrograde for 2026 and 2027, Mercury through Pluto, with station dates and positions, computed from real motion.',
+      `Every planetary retrograde from ${firstYear} through ${lastYear}, Mercury through Pluto, with station dates and positions, computed from real motion.`,
   },
   {
     '@type': 'FAQPage',
@@ -151,8 +156,8 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Retrograde Planets 2026 & 2027: Every Window, Dated | Zodiacs.org"
-  description="Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026 to 2027, station dates and positions for each window."
+  title="Retrograde Planets 2026 to 2030: Every Window, Dated | Zodiacs.org"
+  description="Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026 to 2030, station dates and positions for each window."
   path="/retrogrades/"
   image="/assets/og/v2/tool/retrogrades.png"
   imageAlt="Retrograde planets, Zodiacs.org"
@@ -161,7 +166,7 @@ const jsonLd = [
 >
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
-      <h1 class="display">See every retrograde through 2027.</h1>
+      <h1 class="display">See every retrograde through {lastYear}.</h1>
       <p>See which planets are retrograde now and when each turns next.</p>
     </div>
 
@@ -176,7 +181,7 @@ const jsonLd = [
     </div>
     <details class="calendar-method"><summary>How this calendar works</summary>
       <p>
-        All eight <a href="/learn/glossary/#planet">planets</a> that do it, 2026 through 2027, each window
+        All eight <a href="/learn/glossary/#planet">planets</a> that do it, {firstYear} through {lastYear}, each window
         computed <a href="/learn/glossary/#station">station to station</a> from real motion, with the <a href="/learn/glossary/#degree">degree</a>{' '}
         where each turnaround happens.
       </p>

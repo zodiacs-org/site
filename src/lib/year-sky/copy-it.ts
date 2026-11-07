@@ -235,9 +235,9 @@ export const YEAR_SKY_WORDS_IT: YearSkyWords = defineYearSkyWords('it', {
   pointName,
 
   eclipseTitle: (type, kind) => `Eclissi ${type === 'solar' ? 'solare' : 'lunare'} ${kindOf(kind)}`,
-  eclipseLine: (type, kind, degree, sign) => type === 'solar'
+  eclipseLine: (type, kind, degree, sign, unseen) => type === 'solar'
     ? `Una Luna nuova con un peso in più, a ${degree} in ${sign}. Gli astrologi leggono le eclissi solari come inizi che arrivano prima del previsto.${kind === 'total' ? ' Questa è totale: la Luna copre tutto il Sole lungo la sua fascia.' : ''}`
-    : `Una Luna piena con un peso in più, a ${degree} in ${sign}. Le eclissi lunari si leggono come finali e grandi pulizie.${kind === 'penumbral' ? ' Questa è penombrale, debole a occhio nudo.' : ''}`,
+    : `Una Luna piena con un peso in più, a ${degree} in ${sign}. Le eclissi lunari si leggono come finali e grandi pulizie.${unseen ? ` Questa è penombrale e così lieve che nessun occhio né fotocamera la vedrà: la NASA le dà una magnitudine di ${String(unseen).replace('.', ',')}.` : kind === 'penumbral' ? ' Questa è penombrale, debole a occhio nudo.' : ''}`,
   retrogradeTitle: retrograde,
   retrogradeLine: (planet) => RETROGRADE_LINE[planet] ?? `${P(planet)} sembra muoversi all’indietro per un po’.`,
   retrogradeDetail: (range, sign, shadow) => `${cap(range)}${sign ? `, in ${sign}` : ''}.${shadow ? ` L’ombra va ${shadow}.` : ''}`,

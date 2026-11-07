@@ -12,6 +12,7 @@
 import { readingConfidenceLabel } from '../../ai-tools/reading-confidence';
 import { formatDate } from '../i18n/dates';
 import { signBySlug } from '../signs';
+import { isInvisiblePenumbral, penumbralMagnitude } from '../nasa-lunar-eclipses';
 import type { CountdownMoment } from './countdown';
 import type { EventFacts } from './types';
 
@@ -196,7 +197,12 @@ function eclipsePlan(facts: EventFacts): WatchPlan {
     total: `During totality${facts.totalMinutes ? `, about ${facts.totalMinutes} minutes,` : ''} the Moon turns a dull red or copper, lit only by sunlight bent through Earth’s atmosphere.`,
     partial: 'Part of the Moon goes dark, as if something had bitten into it: that is the edge of Earth’s shadow.',
     penumbral: 'Only Earth’s faint outer shadow touches the Moon. Most people will not notice any change; at best one side looks slightly dusky near the peak.',
+
   };
+  const unseen = kind === 'penumbral' && isInvisiblePenumbral(facts.at!, 'penumbral');
+  if (unseen) {
+    looking.penumbral = `The Moon only grazes the edge of Earth’s faint outer shadow: NASA gives a penumbral magnitude of ${penumbralMagnitude(facts.at!)}. That is so slight that no eye or camera will see it; the full Moon looks as it does on any other night.`;
+  }
   return {
     moments: [{ label: 'Eclipse peak', at: facts.at! }],
     astronomy: [
@@ -204,9 +210,11 @@ function eclipsePlan(facts: EventFacts): WatchPlan {
     ],
     lookFor: [
       looking[kind] ?? looking.partial,
-      'It is safe to watch with bare eyes. Binoculars help, and so does a spot away from street lights.',
+      ...(unseen ? [] : ['It is safe to watch with bare eyes. Binoculars help, and so does a spot away from street lights.']),
     ],
-    visibility: regions.length > 0
+    visibility: unseen
+      ? 'No one will see it. The Moon is up for half the world at the peak, but the shading is too slight to show.'
+      : regions.length > 0
       ? `Anyone with the Moon above the horizon at the peak can see it. Roughly, that is ${joinList(regions)}; places at the edges see it with the Moon low, near moonrise or moonset.`
       : 'Anyone with the Moon above the horizon at the peak can see it.',
     questions: [

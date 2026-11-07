@@ -80,12 +80,12 @@ interface Copy {
 
 const COPY: Record<Locale, Copy> = {
   es: {
-    title: 'Planetas retrógrados 2026 y 2027 | Zodiacs.org',
-    description: 'Qué planetas están retrógrados ahora y cuándo son los próximos periodos: de Mercurio a Plutón en 2026 y 2027, con fechas y posiciones de cada estación.',
+    title: 'Planetas retrógrados 2026 a 2030 | Zodiacs.org',
+    description: 'Qué planetas están retrógrados ahora y cuándo son los próximos periodos: de Mercurio a Plutón de 2026 a 2030, con fechas y posiciones de cada estación.',
     imageAlt: 'Planetas retrógrados | Zodiacs.org',
-    schemaName: 'Planetas retrógrados 2026 y 2027, con fechas',
-    schemaDescription: 'Todos los periodos retrógrados de 2026 y 2027, de Mercurio a Plutón, con fechas y posiciones de las estaciones, calculados a partir del movimiento real.',
-    datasetName: 'Periodos retrógrados de los planetas, 2026 y 2027',
+    schemaName: 'Planetas retrógrados 2026 a 2030, con fechas',
+    schemaDescription: 'Todos los periodos retrógrados de 2026 a 2030, de Mercurio a Plutón, con fechas y posiciones de las estaciones, calculados a partir del movimiento real.',
+    datasetName: 'Periodos retrógrados de los planetas, 2026 a 2030',
     datasetDescription: 'Instantes calculados de las estaciones retrógradas y directas y posiciones en el zodiaco tropical, de Mercurio a Plutón.',
     variableMeasured: ['planeta', 'instante de la estación retrógrada', 'instante de la estación directa', 'longitud de la estación'],
     eventName: (planet) => `${planet} retrógrado`,
@@ -94,7 +94,7 @@ const COPY: Record<Locale, Copy> = {
     eventOpen: (planet, from, rx) =>
       `${planet} aparece en movimiento retrógrado desde ${from}. La fecha de término aún no está disponible; posición de la estación retrógrada: ${rx}.`,
     notYet: 'aún no disponible',
-    heroTitle: 'Revisa todos los periodos retrógrados hasta 2027.',
+    heroTitle: 'Revisa todos los periodos retrógrados hasta 2030.',
     heroLede: 'Mira qué planetas están retrógrados ahora y cuándo cambia de dirección cada uno.',
     asOf: (date) => `Al ${date}`,
     and: 'y',
@@ -103,7 +103,7 @@ const COPY: Record<Locale, Copy> = {
     sunMoon: 'El Sol y la Luna nunca se vuelven retrógrados',
     mercuryNote: (links) => ['Los periodos de Mercurio tienen ', { text: 'su propia página', href: links.mercury }],
     methodSummary: 'Cómo funciona este calendario',
-    methodText: 'Los ocho planetas que se vuelven retrógrados, de 2026 a 2027: cada periodo se calcula de estación a estación a partir del movimiento real, con el grado donde ocurre cada cambio de dirección.',
+    methodText: 'Los ocho planetas que se vuelven retrógrados, de 2026 a 2030: cada periodo se calcula de estación a estación a partir del movimiento real, con el grado donde ocurre cada cambio de dirección.',
     rhythm: {
       Mercury: 'tres o cuatro veces al año, unas tres semanas cada vez',
       Venus: 'cada 19 meses, unas seis semanas: el menos frecuente',
@@ -141,7 +141,7 @@ const COPY: Record<Locale, Copy> = {
     faq: (status) => [
       {
         q: '¿Qué planetas están retrógrados ahora mismo?',
-        a: `${status} Las tablas de arriba muestran todos los periodos de 2026 y 2027, de estación a estación, con precisión de una hora.`,
+        a: `${status} Las tablas de arriba muestran todos los periodos de 2026 a 2030, de estación a estación, con precisión de una hora.`,
       },
       {
         q: '¿El Sol o la Luna pueden estar retrógrados?',
@@ -162,12 +162,12 @@ const COPY: Record<Locale, Copy> = {
     ],
   },
   pt: {
-    title: 'Planetas retrógrados 2026 e 2027 | Zodiacs.org',
-    description: 'Quais planetas estão retrógrados agora e quando vêm os próximos períodos: de Mercúrio a Plutão em 2026 e 2027, com datas e posições de cada estação.',
+    title: 'Planetas retrógrados 2026 a 2030 | Zodiacs.org',
+    description: 'Quais planetas estão retrógrados agora e quando vêm os próximos períodos: de Mercúrio a Plutão de 2026 a 2030, com datas e posições de cada estação.',
     imageAlt: 'Planetas retrógrados | Zodiacs.org',
-    schemaName: 'Planetas retrógrados 2026 e 2027, com datas',
-    schemaDescription: 'Todos os períodos retrógrados de 2026 e 2027, de Mercúrio a Plutão, com datas e posições das estações, calculados a partir do movimento real.',
-    datasetName: 'Períodos retrógrados dos planetas, 2026 e 2027',
+    schemaName: 'Planetas retrógrados 2026 a 2030, com datas',
+    schemaDescription: 'Todos os períodos retrógrados de 2026 a 2030, de Mercúrio a Plutão, com datas e posições das estações, calculados a partir do movimento real.',
+    datasetName: 'Períodos retrógrados dos planetas, 2026 a 2030',
     datasetDescription: 'Instantes calculados das estações retrógradas e diretas e posições no zodíaco tropical, de Mercúrio a Plutão.',
     variableMeasured: ['planeta', 'instante da estação retrógrada', 'instante da estação direta', 'longitude da estação'],
     eventName: (planet) => `${planet} retrógrado`,
@@ -176,7 +176,7 @@ const COPY: Record<Locale, Copy> = {
     eventOpen: (planet, from, rx) =>
       `${planet} aparece em movimento retrógrado a partir de ${from}. A data de término ainda não está disponível; posição da estação retrógrada: ${rx}.`,
     notYet: 'ainda não disponível',
-    heroTitle: 'Veja todos os períodos retrógrados até 2027.',
+    heroTitle: 'Veja todos os períodos retrógrados até 2030.',
     heroLede: 'Confira quais planetas estão retrógrados agora e quando cada um muda de direção.',
     asOf: (date) => `Em ${date}`,
     and: 'e',
@@ -185,7 +185,7 @@ const COPY: Record<Locale, Copy> = {
     sunMoon: 'O Sol e a Lua nunca ficam retrógrados',
     mercuryNote: (links) => ['Os períodos de Mercúrio têm ', { text: 'uma página própria', href: links.mercury }],
     methodSummary: 'Como este calendário funciona',
-    methodText: 'Todos os oito planetas que ficam retrógrados, de 2026 a 2027: cada período é calculado de estação a estação a partir do movimento real, com o grau em que cada mudança de direção acontece.',
+    methodText: 'Todos os oito planetas que ficam retrógrados, de 2026 a 2030: cada período é calculado de estação a estação a partir do movimento real, com o grau em que cada mudança de direção acontece.',
     rhythm: {
       Mercury: 'três ou quatro vezes por ano, cerca de três semanas cada vez',
       Venus: 'a cada 19 meses, cerca de seis semanas: o mais raro',
@@ -223,7 +223,7 @@ const COPY: Record<Locale, Copy> = {
     faq: (status) => [
       {
         q: 'Quais planetas estão retrógrados agora?',
-        a: `${status} As tabelas acima listam todos os períodos de 2026 e 2027, de estação a estação, com precisão de uma hora.`,
+        a: `${status} As tabelas acima listam todos os períodos de 2026 a 2030, de estação a estação, com precisão de uma hora.`,
       },
       {
         q: 'O Sol ou a Lua podem ficar retrógrados?',
@@ -244,12 +244,12 @@ const COPY: Record<Locale, Copy> = {
     ],
   },
   fr: {
-    title: 'Planètes rétrogrades 2026 et 2027 | Zodiacs.org',
-    description: 'Quelles planètes sont rétrogrades maintenant et quand viennent les prochaines périodes\u202F: de Mercure à Pluton, 2026 et 2027, dates et positions des stations.',
+    title: 'Planètes rétrogrades 2026 à 2030 | Zodiacs.org',
+    description: 'Quelles planètes sont rétrogrades maintenant et quand viennent les prochaines périodes\u202F: de Mercure à Pluton, de 2026 à 2030, dates et positions des stations.',
     imageAlt: 'Planètes rétrogrades | Zodiacs.org',
-    schemaName: 'Planètes rétrogrades 2026 et 2027, avec les dates',
-    schemaDescription: 'Toutes les périodes rétrogrades de 2026 et 2027, de Mercure à Pluton, avec les dates et les positions des stations, calculées d’après le mouvement réel.',
-    datasetName: 'Périodes rétrogrades des planètes, 2026 et 2027',
+    schemaName: 'Planètes rétrogrades 2026 à 2030, avec les dates',
+    schemaDescription: 'Toutes les périodes rétrogrades de 2026 à 2030, de Mercure à Pluton, avec les dates et les positions des stations, calculées d’après le mouvement réel.',
+    datasetName: 'Périodes rétrogrades des planètes, 2026 à 2030',
     datasetDescription: 'Instants calculés des stations rétrogrades et directes et positions dans le zodiaque tropical, de Mercure à Pluton.',
     variableMeasured: ['planète', 'instant de la station rétrograde', 'instant de la station directe', 'longitude de la station'],
     eventName: (planet) => `${planet} rétrograde`,
@@ -258,7 +258,7 @@ const COPY: Record<Locale, Copy> = {
     eventOpen: (planet, from, rx) =>
       `${planet} apparaît en mouvement rétrograde à partir de ${from}. La date de fin n’est pas encore disponible\u202F; position de la station rétrograde\u202F: ${rx}.`,
     notYet: 'pas encore disponible',
-    heroTitle: 'Consulte toutes les périodes rétrogrades jusqu’en 2027.',
+    heroTitle: 'Consulte toutes les périodes rétrogrades jusqu’en 2030.',
     heroLede: 'Vois quelles planètes sont rétrogrades en ce moment et quand chacune change de sens.',
     asOf: (date) => `Au ${date}`,
     and: 'et',
@@ -267,7 +267,7 @@ const COPY: Record<Locale, Copy> = {
     sunMoon: 'Le Soleil et la Lune ne sont jamais rétrogrades',
     mercuryNote: (links) => ['Les périodes de Mercure ont ', { text: 'leur propre page', href: links.mercury }],
     methodSummary: 'Comment fonctionne ce calendrier',
-    methodText: 'Les huit planètes qui connaissent des périodes rétrogrades, de 2026 à 2027\u202F: chaque période est calculée de station à station d’après le mouvement réel, avec le degré où se produit chaque changement de sens.',
+    methodText: 'Les huit planètes qui connaissent des périodes rétrogrades, de 2026 à 2030\u202F: chaque période est calculée de station à station d’après le mouvement réel, avec le degré où se produit chaque changement de sens.',
     rhythm: {
       Mercury: 'trois ou quatre fois par an, environ trois semaines à chaque fois',
       Venus: 'tous les 19 mois, environ six semaines\u202F: la plus rare',
@@ -305,7 +305,7 @@ const COPY: Record<Locale, Copy> = {
     faq: (status) => [
       {
         q: 'Quelles planètes sont rétrogrades en ce moment\u202F?',
-        a: `${status} Les tableaux ci-dessus recensent toutes les périodes de 2026 et 2027, de station à station, à l’heure près.`,
+        a: `${status} Les tableaux ci-dessus recensent toutes les périodes de 2026 à 2030, de station à station, à l’heure près.`,
       },
       {
         q: 'Le Soleil ou la Lune peuvent-ils être rétrogrades\u202F?',
@@ -326,12 +326,12 @@ const COPY: Record<Locale, Copy> = {
     ],
   },
   it: {
-    title: 'Pianeti retrogradi 2026 e 2027 | Zodiacs.org',
-    description: 'Quali pianeti sono retrogradi adesso e quando arrivano i prossimi periodi: da Mercurio a Plutone nel 2026 e 2027, con date e posizioni di ogni stazione.',
+    title: 'Pianeti retrogradi dal 2026 al 2030 | Zodiacs.org',
+    description: 'Quali pianeti sono retrogradi adesso e quando arrivano i prossimi periodi: da Mercurio a Plutone dal 2026 al 2030, con date e posizioni di ogni stazione.',
     imageAlt: 'Pianeti retrogradi | Zodiacs.org',
-    schemaName: 'Pianeti retrogradi 2026 e 2027, con le date',
-    schemaDescription: 'Tutti i periodi retrogradi del 2026 e del 2027, da Mercurio a Plutone, con date e posizioni delle stazioni, calcolati sul moto reale.',
-    datasetName: 'Periodi retrogradi dei pianeti, 2026 e 2027',
+    schemaName: 'Pianeti retrogradi dal 2026 al 2030, con le date',
+    schemaDescription: 'Tutti i periodi retrogradi dal 2026 al 2030, da Mercurio a Plutone, con date e posizioni delle stazioni, calcolati sul moto reale.',
+    datasetName: 'Periodi retrogradi dei pianeti, dal 2026 al 2030',
     datasetDescription: 'Istanti calcolati delle stazioni retrograde e dirette e posizioni nello zodiaco tropicale, da Mercurio a Plutone.',
     variableMeasured: ['pianeta', 'istante della stazione retrograda', 'istante della stazione diretta', 'longitudine della stazione'],
     // Venere is feminine in Italian; the other seven are masculine.
@@ -341,7 +341,7 @@ const COPY: Record<Locale, Copy> = {
     eventOpen: (planet, from, rx) =>
       `${planet} appare in moto retrogrado da ${from}. La data di fine non è ancora disponibile; posizione della stazione retrograda: ${rx}.`,
     notYet: 'non ancora disponibile',
-    heroTitle: 'Consulta tutti i periodi retrogradi fino al 2027.',
+    heroTitle: 'Consulta tutti i periodi retrogradi fino al 2030.',
     heroLede: 'Guarda quali pianeti sono retrogradi adesso e quando ciascuno cambia direzione.',
     asOf: (date) => `Al ${date}`,
     and: 'e',
@@ -350,7 +350,7 @@ const COPY: Record<Locale, Copy> = {
     sunMoon: 'Il Sole e la Luna non sono mai retrogradi',
     mercuryNote: (links) => ['I periodi di Mercurio hanno ', { text: 'una pagina tutta loro', href: links.mercury }],
     methodSummary: 'Come funziona questo calendario',
-    methodText: 'Tutti e otto i pianeti che hanno periodi retrogradi, dal 2026 al 2027: ogni periodo è calcolato da stazione a stazione sul moto reale, con il grado in cui avviene ogni cambio di direzione.',
+    methodText: 'Tutti e otto i pianeti che hanno periodi retrogradi, dal 2026 al 2030: ogni periodo è calcolato da stazione a stazione sul moto reale, con il grado in cui avviene ogni cambio di direzione.',
     rhythm: {
       Mercury: 'tre o quattro volte l’anno, circa tre settimane ogni volta',
       Venus: 'ogni 19 mesi, circa sei settimane: il più raro',
@@ -388,7 +388,7 @@ const COPY: Record<Locale, Copy> = {
     faq: (status) => [
       {
         q: 'Quali pianeti sono retrogradi adesso?',
-        a: `${status} Le tabelle qui sopra elencano tutti i periodi del 2026 e del 2027, da stazione a stazione, con la precisione dell’ora.`,
+        a: `${status} Le tabelle qui sopra elencano tutti i periodi dal 2026 al 2030, da stazione a stazione, con la precisione dell’ora.`,
       },
       {
         q: 'Il Sole o la Luna possono essere retrogradi?',

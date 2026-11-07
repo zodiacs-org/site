@@ -5,6 +5,7 @@ import eclipseData from '../../../data/eclipses.json';
 import { signBySlug } from '../../../lib/signs';
 import { formatDate, formatTime } from '../../../lib/i18n/dates';
 import { publishedEventById } from '../../../lib/events/publication';
+import { isInvisiblePenumbral, lunarTotalityMinutes, penumbralMagnitude } from '../../../lib/nasa-lunar-eclipses';
 
 // The 2027 eclipses, from the same committed data the hub renders — receipts,
 // no client ephemeris. A year page so a search for the year lands on the
@@ -42,9 +43,11 @@ const eclipses = (eclipseData.eclipses as EclipseEntry[])
           : 'partial only';
     } else {
       detail = e.kind === 'total'
-        ? `totality lasts about ${e.totalMinutes} minutes`
+        ? `totality lasts about ${lunarTotalityMinutes(e.peak, e.totalMinutes)} minutes`
         : e.kind === 'partial'
           ? `${pct}% of the Moon in shadow at maximum`
+          : isInvisiblePenumbral(e.peak, e.kind)
+          ? 'penumbral, so slight that no eye or camera will see it'
           : 'penumbral, a subtle shading, easy to miss';
     }
     return {
@@ -64,6 +67,7 @@ if (eclipses.length === 0) throw new Error(`No ${YEAR} eclipses in eclipses.json
 const solar = eclipses.filter((e) => e.type === 'solar');
 const lunar = eclipses.filter((e) => e.type === 'lunar');
 const total = eclipses.filter((e) => e.kind === 'total');
+const unseen = lunar.filter((e) => isInvisiblePenumbral(e.peak, e.kind));
 
 const fmtDay = (d: Date) =>
   formatDate('en', d, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
@@ -84,7 +88,7 @@ const faq = [
   },
   {
     q: 'Can I see these from where I live?',
-    a: 'A lunar eclipse is visible from the whole night side of Earth at its peak time; a solar eclipse only along a narrow track, so most people see a partial or nothing. The linked eclipse pages describe the track for each one.',
+    a: `A lunar eclipse is visible from the whole night side of Earth at its peak time; a solar eclipse only along a narrow track, so most people see a partial or nothing. The linked eclipse pages describe the track for each one.${unseen.map((e) => ` The penumbral eclipse on ${fmtMonthDay(e.at)} is the exception: NASA gives it a penumbral magnitude of ${penumbralMagnitude(e.peak)}, so slight that no eye or camera will see it.`).join('')}`,
   },
 ];
 

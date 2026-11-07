@@ -422,6 +422,40 @@ def ex_eclipse_tables(out, ctx):
                 'rounded, not truncated' if not ok else '')
 
 
+def ex_eclipse_durations(out, ctx):
+    """Totality lengths and the unseen-penumbral note, held to NASA's lunar canon."""
+    import nasa_lunar_catalog as NL
+    canon = NL.rows()
+    t = ctx.text
+    rows = []
+    # list rows: 'Tue, February 17, 2026 ¶ 12:11 ¶ Total lunar ¶ Virgo ¶ ...' up to the next row
+    starts = list(re.finditer(r'\w{3}, ' + MONTH_RE + r' (\d{1,2}), (\d{4}) ¶ \d{2}:\d{2} ¶ (Total|Partial|Penumbral) lunar', t))
+    for i, m in enumerate(starts):
+        end = starts[i + 1].start() if i + 1 < len(starts) else min(len(t), m.end() + 400)
+        rows.append((mkdate(m.group(3), month_num(m.group(1)), m.group(2)), m.group(4).lower(), t[m.end():end]))
+    em = re.match(r'/eclipses/(\d{4})-(\d{2})-(\d{2})/$', ctx.url)
+    if em and 'lunar eclipse' in t.lower():
+        rows.append((datetime.date(int(em.group(1)), int(em.group(2)), int(em.group(3))), None, t))
+    for d, kind, seg in rows:
+        if d is None:
+            continue
+        row = canon.get(d.isoformat()) or canon.get((d - datetime.timedelta(days=1)).isoformat()) or canon.get((d + datetime.timedelta(days=1)).isoformat())
+        if not row:
+            continue
+        tot = row['fields'][5]
+        mm = re.search(r'[Tt]otality lasts(?: about)? ¶? ?(\d+) minutes', seg)
+        if mm and tot != '-':
+            pub = int(mm.group(1))
+            out.add('eclipse-duration', ctx, 'total lunar eclipse %s: totality about %d minutes' % (d, pub), '%d min' % pub,
+                    '%s min (NASA canon, total phase)' % tot, '%+.1f min' % (pub - float(tot)), abs(pub - float(tot)) <= 0.5,
+                    'rounded to the minute from the canon')
+        pen = float(row['fields'][1])
+        if row['type'].startswith('N') and pen < 0.1 and (kind in (None, 'penumbral')):
+            said = 'no eye or camera will see it' in seg
+            out.add('eclipse-note', ctx, 'penumbral lunar eclipse %s said to be unseen' % d, 'says so' if said else 'silent',
+                    'NASA penumbral magnitude %.4f' % pen, '', said)
+
+
 def ex_station_windows(out, ctx):
     """Retrograde windows: 'Feb 26, 2026 to Mar 20, 2026 ¶ 22°33′ Pisces ¶ 8°29′ Pisces' under a planet heading."""
     L = ctx.lines
@@ -1054,6 +1088,7 @@ def main():
         ex_marker_lines(out, ctx)
         ex_event_detail(out, ctx)
         ex_eclipse_tables(out, ctx)
+        ex_eclipse_durations(out, ctx)
         ex_station_windows(out, ctx)
         ex_seasons(out, ctx)
         ex_zodiac_dates(out, ctx)

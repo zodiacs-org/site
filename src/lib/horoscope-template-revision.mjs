@@ -7,7 +7,7 @@
  * on the later of its own reading date and this one; the sitemap and
  * scripts/check-dist.mjs both read it from here.
  */
-export const HOROSCOPE_TEMPLATE_LASTMOD = '2026-11-06';
+export const HOROSCOPE_TEMPLATE_LASTMOD = '2026-11-07';
 
 /** The later of two YYYY-MM-DD dates. */
 export function laterDate(left, right) {

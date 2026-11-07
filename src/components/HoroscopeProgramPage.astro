@@ -347,7 +347,12 @@ const wheelCaption = `The sky at noon UTC on ${editionLabel}, set on the ${sign.
     ? ` In colour: ${listWords(focusNames)}, the ${focusNames.length === 1 ? 'planet' : 'planets'} this reading draws on.`
     : ''
 }`;
-const edgeMoon = daily.bodies.find((body) => body.body === 'Moon');
+// The Moon this reading stands on: its own receipt when it names one (the
+// tomorrow reading's is the next day's noon sky), today's sky only on today.
+const readingMoon = reading.sky?.find((planet) => planet.body === 'Moon' && planet.sign);
+const edgeMoon = readingMoon
+  ? { sign: readingMoon.sign as string }
+  : surface === 'today' ? daily.bodies.find((body) => body.body === 'Moon') : undefined;
 const moonHouse = edgeMoon ? ((SIGNS.findIndex((entry) => entry.slug === edgeMoon.sign) - signIndex + 12) % 12) + 1 : null;
 const ctaLede = edgeMoon && moonHouse
   ? `This reading counts the wheel from ${sign.name}, so the Moon in ${capitalize(edgeMoon.sign)} falls in the part linked with ${HOUSE_THEME[moonHouse]}. Your birth chart counts from your own rising sign, so the same Moon may touch a different part of your life.`

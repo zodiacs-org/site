@@ -27,6 +27,8 @@ import {
 import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
 import birthdayFactsData from '../data/birthdays.json';
+import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged } from '../lib/birthday-degrees';
+import { PEOPLE_DEGREES_MODIFIED_AT, peopleDegreesChanged } from '../lib/people-degrees';
 import daily from '../data/daily.json';
 import developerGuides from '../data/developer-guides.json';
 import horoscopeProgram from '../data/horoscope-program.json';
@@ -393,6 +395,14 @@ const NASA_WINDOW_PLACEMENTS = [
 // Every event page says where its times come from, and the planets' ingress, station and aspect times are
 // NASA JPL's (src/lib/nasa-instants.ts). Dated here for the same reason as EVENT_WATCH_LASTMOD.
 const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
+const ACCURACY_AUDIT_REST_LASTMOD = '2026-11-07';
+const ACCURACY_AUDIT_REST_ROUTES = [
+  '/', '/events/', '/moon-phase/', '/tools/',
+  ...['', '/es', '/pt', '/fr', '/it'].flatMap((prefix) => [
+    `${prefix}/eclipses/`, `${prefix}/full-moon-calendar/`, `${prefix}/mercury-retrograde/`, `${prefix}/retrogrades/`,
+  ]),
+  '/eclipses/2027/',
+];
 const ENGINE_110_RC2_LASTMOD = '2026-11-05';
 const ENGINE_110_RC2_ROUTES = [
   '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
@@ -629,6 +639,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...(['', '/es', '/pt', '/fr', '/it'] as const).map((prefix) => [`${prefix}/your-2027-sky/`, '2026-11-07'] as const),
   // The events hub's timeline and its note on timing, with the planets' times from NASA JPL Horizons.
   ['/events/', '2026-11-06'] as const,
+  // The rest of the November 2026 accuracy audit: totality as NASA's canon gives it, the 18 July 2027
+  // penumbral eclipse said to be unseen, and the eclipse, full moon and retrograde tables named for the
+  // years they hold (to 2030). Every eclipse page links "Every eclipse through 2030".
+  ...ACCURACY_AUDIT_REST_ROUTES.map((loc) => [loc, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  ...eventsPublication.pages
+    .filter((event) => event.family === 'eclipse')
+    .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -802,6 +819,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       lastmod: lastmodDate(latestModifiedAt(
         PEOPLE_TEMPLATE_MODIFIED_AT,
         person.reviewedAtUtc,
+        // The page began rounding its degrees once (src/lib/people-degrees.ts).
+        ...(peopleDegreesChanged(person) ? [PEOPLE_DEGREES_MODIFIED_AT] : []),
       )),
     })),
     ...guides.map((g) => ({
@@ -823,8 +842,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
         { loc: `${root}monthly/`, priority: 0.72, lastmod: laterDate(monthlyLastmod, HOROSCOPE_TEMPLATE_LASTMOD) },
         { loc: `${root}love/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
         { loc: `${root}career/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
-        { loc: `${root}2026/`, priority: 0.66, lastmod: YEARLY_2026_HOROSCOPE_LASTMOD },
-        { loc: `${root}2027/`, priority: 0.68, lastmod: YEARLY_HOROSCOPE_LASTMOD },
+        { loc: `${root}2026/`, priority: 0.66, lastmod: laterDate(YEARLY_2026_HOROSCOPE_LASTMOD, HOROSCOPE_TEMPLATE_LASTMOD) },
+        { loc: `${root}2027/`, priority: 0.68, lastmod: laterDate(YEARLY_HOROSCOPE_LASTMOD, HOROSCOPE_TEMPLATE_LASTMOD) },
       ];
     }),
     ...pairs.map((p) => ({
@@ -860,6 +879,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
         b.data.updated,
         ...(birthdayFacts.days[b.id]?.cusp ? [BIRTHDAY_CUSP_OG_MODIFIED_AT] : []),
         ...(peopleForBirthday(`/birthday/${b.id}/`).length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
+        // The page began printing its degrees from birthdays-precise.json.
+        ...(birthdayDegreesChanged(b.id) ? [BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT] : []),
       )),
     })),
     ...almanac.map((entry) => ({

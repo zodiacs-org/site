@@ -20,6 +20,7 @@ import {
   type BirthdayEntry,
 } from '../../lib/birthdays';
 import birthdays from '../../data/birthdays.json';
+import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged, preciseBirthdayEntry } from '../../lib/birthday-degrees';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_HERO_SIZES, signArtSrc, signArtSrcset } from '../../lib/sign-art';
@@ -57,8 +58,9 @@ const text = (key: Parameters<typeof birthdayText>[1], values: Record<string, st
   birthdayText(locale, key, values)
 );
 
-const data = (birthdays.days as Record<string, BirthdayEntry>)[slug];
-if (!data) throw new Error(`No computed data for ${slug} — rerun scripts/build-birthdays.mjs`);
+const rounded = (birthdays.days as Record<string, BirthdayEntry>)[slug];
+if (!rounded) throw new Error(`No computed data for ${slug} — rerun scripts/build-birthdays.mjs`);
+const data = preciseBirthdayEntry(slug, rounded);
 const [yearFrom, yearTo] = birthdays.yearRange as [number, number];
 const sign = data.sign ? signBySlug(data.sign) : null;
 const cusp = data.cusp ? cuspSummary(data.cusp) : null;
@@ -128,7 +130,10 @@ const jsonLd = [
     description,
     url: `https://zodiacs.org${path}`,
     datePublished: entry.data.published.toISOString(),
-    dateModified: entry.data.updated.toISOString(),
+    // The page prints its degrees from birthdays-precise.json since 7 November 2026.
+    dateModified: birthdayDegreesChanged(slug) && BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT > entry.data.updated.toISOString()
+      ? BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT
+      : entry.data.updated.toISOString(),
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org${path}` },

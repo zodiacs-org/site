@@ -274,11 +274,11 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   },
   {
     href: '/full-moon-calendar/',
-    hub: { order: 26, title: 'Full moon calendar', promise: 'Every full moon through 2027, with its sign.', group: 'year' },
+    hub: { order: 26, title: 'Full moon calendar', promise: 'Every full moon through 2030, with its sign.', group: 'year' },
   },
   {
     href: '/eclipses/',
-    hub: { order: 24, title: 'Eclipses', promise: 'Solar and lunar eclipses through 2028.', group: 'year' },
+    hub: { order: 24, title: 'Eclipses', promise: 'Solar and lunar eclipses through 2030.', group: 'year' },
   },
   {
     href: '/retrogrades/', label: 'retrogrades', footerOrder: 9, footerUsesLocalizedPath: true,

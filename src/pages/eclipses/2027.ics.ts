@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import eclipseData from '../../data/eclipses.json';
 import { signBySlug } from '../../lib/signs';
 import { serializeSkyEvents, type SkyCalendarEvent } from '../../lib/ical';
+import { isInvisiblePenumbral, penumbralMagnitude } from '../../lib/nasa-lunar-eclipses';
 
 export const prerender = true;
 
@@ -24,7 +25,11 @@ const events: SkyCalendarEvent[] = (eclipseData.eclipses as EclipseEntry[])
       id: `eclipse-${day}-${eclipse.type}`,
       start: eclipse.peak,
       summary: `${kind} ${eclipse.type} eclipse in ${sign.name}`,
-      description: `${kind} ${eclipse.type} eclipse, peak at ${eclipse.peak.slice(11, 16)} UTC on ${day}, in ${sign.name}. Computed by Zodiacs.org.`,
+      description: `${kind} ${eclipse.type} eclipse, peak at ${eclipse.peak.slice(11, 16)} UTC on ${day}, in ${sign.name}.${
+        eclipse.type === 'lunar' && isInvisiblePenumbral(eclipse.peak, eclipse.kind)
+          ? ` So slight that no eye or camera will see it: NASA gives a penumbral magnitude of ${penumbralMagnitude(eclipse.peak)}.`
+          : ''
+      } Computed by Zodiacs.org.`,
       url: `https://zodiacs.org/eclipses/${YEAR}/#eclipse-${day}-${eclipse.type}`,
     };
   });

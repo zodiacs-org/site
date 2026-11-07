@@ -23,6 +23,7 @@ import {
 } from './format';
 import type { EventFacts, EventInterpretation } from './types';
 import { REVISED_EVENT_READINGS } from './revised-readings';
+import { lunarTotalityMinutes } from '../nasa-lunar-eclipses';
 
 const INTERPRETATIONS: Record<string, EventInterpretation> = {
   'full-moon-2026-07-29': {
@@ -613,7 +614,8 @@ function editorialFactsById(): Map<string, EventFacts> {
       longitude: eclipse.lon,
       eclipseKind: eclipse.kind,
       obscuration: eclipse.obscuration,
-      totalMinutes: eclipse.totalMinutes,
+      // NASA's canon length of totality, rounded to the minute (src/lib/nasa-lunar-eclipses.ts).
+      totalMinutes: eclipse.type === 'lunar' ? lunarTotalityMinutes(eclipse.peak, eclipse.totalMinutes) : eclipse.totalMinutes,
       provenance: { source: 'eclipses.json', generatedAt: eclipsesData.generatedAt },
     });
   }

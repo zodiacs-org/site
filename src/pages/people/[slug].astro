@@ -9,6 +9,7 @@ import Wheel from '../../lib/wheel/Wheel';
 import { PEOPLE, type PersonRecord } from '../../lib/people';
 import { latestModifiedAt, PEOPLE_TEMPLATE_MODIFIED_AT } from '../../lib/seo-lastmod';
 import { signBySlug } from '../../lib/signs';
+import { correctedPeopleText, PEOPLE_DEGREES_MODIFIED_AT, peopleDegreesChanged, sunTenths } from '../../lib/people-degrees';
 
 export function getStaticPaths() {
   return PEOPLE.map((person) => ({
@@ -60,8 +61,8 @@ const profileQualityNote = publishedTimeRecord
   : adoptedDate ? 'Adopted birth date; date uncertain. Birth time unknown.'
     : 'Birth date sourced. Birth time unknown.';
 const metaDescription = publishedTimeRecord
-  ? `${person.displayName}'s date-sourced chart: Sun at ${person.sunSign.degree.toFixed(1)}° ${person.sunSign.name}. This frozen Wikidata profile omits angles and houses; a separate published-time record is disclosed.`
-  : person.copy.metaDescription;
+  ? `${person.displayName}'s date-sourced chart: Sun at ${sunTenths(person)}° ${person.sunSign.name}. This frozen Wikidata profile omits angles and houses; a separate published-time record is disclosed.`
+  : correctedPeopleText(person, person.copy.metaDescription);
 const moonStatement = person.moon.uncertain
   ? `${publishedTimeRecord ? 'Within this date-only profile, the Moon sign is left open.' : 'Moon sign undetermined.'} The Moon crossed from ${signBySlug(person.moon.signAtCivilDayStart).name} into ${signBySlug(person.moon.signAtCivilDayEnd).name} during that civil day.`
   : `The Moon remained in ${person.moon.signName} throughout that civil day.`;
@@ -86,7 +87,7 @@ const displayBlocks = person.copy.blocks.map((block) => (
         ...block,
         text: `The Moon crossed from Taurus into Gemini during that civil day. This profile leaves it open because its frozen Wikidata source contains a date but no time. A separate Astro-Databank record publishes 8:30 a.m. and is disclosed below; the calculator sample uses that record, while this page keeps its independently reproducible date-only computation instead of silently merging sources.`,
       }
-    : block
+    : { ...block, text: correctedPeopleText(person, block.text, block.key) }
 ));
 const pageUrl = `https://zodiacs.org/people/${person.slug}/`;
 // The share cards whose Sun degree moved in the reference-instant migration of
@@ -115,7 +116,11 @@ const identityCardRevision = REFERENCE_INSTANT_CARDS.includes(person.slug)
   ? '?v=identity-2026-09-05'
   : '';
 const image = `/assets/og/v2/people/${person.slug}.png${identityCardRevision}`;
-const pageModifiedAt = latestModifiedAt(person.reviewedAtUtc, PEOPLE_TEMPLATE_MODIFIED_AT);
+const pageModifiedAt = latestModifiedAt(
+  person.reviewedAtUtc,
+  PEOPLE_TEMPLATE_MODIFIED_AT,
+  ...(peopleDegreesChanged(person) ? [PEOPLE_DEGREES_MODIFIED_AT] : []),
+);
 
 const jsonLd = [
   {
@@ -215,7 +220,7 @@ const jsonLd = [
         </div>
         <p class="person-identity__description">{person.shortDescription}</p>
         <p class="person-identity__meta">
-          {person.sunSign.name} {person.sunSign.degree.toFixed(1)}° · {adoptedDate ? 'adopted date' : 'born'} {longDate}<br />
+          {person.sunSign.name} {sunTenths(person)}° · {adoptedDate ? 'adopted date' : 'born'} {longDate}<br />
           {profileSourceNote}
         </p>
         {person.sourceReview && (
@@ -238,7 +243,7 @@ const jsonLd = [
       </header>
 
       <div class="person-reading">
-        <p class="person-lede">{person.copy.lede}</p>
+        <p class="person-lede">{correctedPeopleText(person, person.copy.lede)}</p>
         <CheckOurMath utc={person.computation.utcInstant} basis="reference" />
 
         <div class="person-wheel">

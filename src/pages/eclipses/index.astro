@@ -6,12 +6,17 @@ import eclipseData from '../../data/eclipses.json';
 import { signBySlug } from '../../lib/signs';
 import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
 import { publishedEventById } from '../../lib/events/publication';
+import { isInvisiblePenumbral, lunarTotalityMinutes } from '../../lib/nasa-lunar-eclipses';
 
-// Every eclipse 2026–2028 from the committed data — receipts, no
+// Every eclipse in the committed data (2026 to 2030), receipts, no
 // client ephemeris.
 const buildNow = new Date();
 const eventHorizon = new Date(buildNow);
 eventHorizon.setUTCFullYear(eventHorizon.getUTCFullYear() + 1);
+
+// The years eclipses.json covers, so the copy names the span the table lists.
+const firstYear = new Date(eclipseData.from).getUTCFullYear();
+const lastYear = new Date(Date.parse(eclipseData.to) - 1).getUTCFullYear();
 
 const sources = [
   { label: 'NASA Eclipse Catalog', href: 'https://eclipse.gsfc.nasa.gov/eclipse.html' },
@@ -42,10 +47,12 @@ const eclipses = (eclipseData.eclipses as EclipseEntry[]).map((e) => {
         : 'partial only';
   } else {
     detail = e.kind === 'total'
-      ? `totality lasts about ${e.totalMinutes} minutes`
+      ? `totality lasts about ${lunarTotalityMinutes(e.peak, e.totalMinutes)} minutes`
       : e.kind === 'partial'
         ? `${pct}% of the Moon in shadow at maximum`
-        : 'penumbral, a subtle shading, easy to miss';
+        : isInvisiblePenumbral(e.peak, e.kind)
+          ? 'penumbral, so slight that no eye or camera will see it'
+          : 'penumbral, a subtle shading, easy to miss';
   }
   return {
     ...e,
@@ -122,8 +129,8 @@ const eventNodes = upcomingEvents.map((e) => {
 const dataset = {
   '@type': 'Dataset',
   '@id': 'https://zodiacs.org/eclipses/#dataset',
-  name: 'Solar and lunar eclipse dates, 2026 to 2028',
-  description: 'Computed peak instants, eclipse types, and tropical zodiac positions for every solar and lunar eclipse from 2026 through 2028.',
+  name: `Solar and lunar eclipse dates, ${firstYear} to ${lastYear}`,
+  description: `Computed peak instants, eclipse types, and tropical zodiac positions for every solar and lunar eclipse from ${firstYear} through ${lastYear}.`,
   url: 'https://zodiacs.org/eclipses/',
   creator: { '@id': 'https://zodiacs.org/#org' },
   publisher: { '@id': 'https://zodiacs.org/#org' },
@@ -137,10 +144,10 @@ const dataset = {
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Eclipse dates 2026 to 2028',
+    name: `Eclipse dates ${firstYear} to ${lastYear}`,
     url: 'https://zodiacs.org/eclipses/',
     description:
-      'Every solar and lunar eclipse from 2026 through 2028: exact peak times, type, and zodiac sign, computed from the real geometry.',
+      `Every solar and lunar eclipse from ${firstYear} through ${lastYear}: exact peak times, type, and zodiac sign, computed from the real geometry.`,
   },
   {
     '@type': 'FAQPage',
@@ -155,8 +162,8 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Eclipse Dates 2026 to 2028: Solar & Lunar, Exact | Zodiacs.org"
-  description="Every solar and lunar eclipse through 2028 with exact peak times and zodiac signs, including the August 12, 2026 total solar eclipse over Iceland and Spain."
+  title="Eclipse Dates 2026 to 2030: Solar & Lunar, Exact | Zodiacs.org"
+  description="Every solar and lunar eclipse through 2030 with exact peak times and zodiac signs, including the August 12, 2026 total solar eclipse over Iceland and Spain."
   path="/eclipses/"
   image="/assets/og/v2/tool/eclipses.png"
   imageAlt="Eclipse dates, Zodiacs.org"
@@ -165,7 +172,7 @@ const jsonLd = [
 >
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
-      <h1 class="display">Find every eclipse through 2028.</h1>
+      <h1 class="display">Find every eclipse through {lastYear}.</h1>
       <p>Find the next solar or lunar eclipse, its peak time in UTC and its Zodiac sign.</p>
     </div>
 
@@ -181,7 +188,7 @@ const jsonLd = [
     </div>
     <details class="calendar-method"><summary>How this calendar works</summary>
       <p>
-        Every <a href="/learn/glossary/#eclipse">solar and lunar eclipse</a> through 2028, computed from the
+        Every <a href="/learn/glossary/#eclipse">solar and lunar eclipse</a> through {lastYear}, computed from the
         real geometry: peak instants in universal time, with the <a href="/learn/glossary/#zodiac-sign">sign</a>{' '}
         each one lands in.
       </p>
@@ -190,7 +197,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">
-      <h2>The eclipses, 2026 to 2028</h2>
+      <h2>The eclipses, {firstYear} to {lastYear}</h2>
       <p>Peak times in universal time. Solar eclipses are visible along a limited track; lunar eclipses from the whole night side of Earth.</p>
     </div>
     <div class="table-wrap reveal">

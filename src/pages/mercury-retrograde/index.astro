@@ -8,6 +8,11 @@ import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
 
+// The years the committed table covers (sky.json runs to the start of its
+// last year plus one), so the copy names the span the table lists.
+const firstYear = new Date(sky.from).getUTCFullYear();
+const lastYear = new Date(Date.parse(sky.to) - 1).getUTCFullYear();
+
 // All computed at build time from the committed sky data — the page
 // ships as receipts, no client ephemeris.
 const buildNow = new Date();
@@ -55,7 +60,7 @@ const asOf = formatShortDate('en', buildNow);
 const faq = [
   {
     q: 'When is the next Mercury retrograde?',
-    a: `${status} The full table above lists every window through ${windows.at(-1)?.to?.getUTCFullYear() ?? '2027'}, computed from Mercury's actual motion and refined to the hour.`,
+    a: `${status} The full table above lists every window through ${windows.at(-1)?.to?.getUTCFullYear() ?? lastYear}, computed from Mercury's actual motion and refined to the hour.`,
   },
   {
     q: 'What is Mercury retrograde, actually?',
@@ -96,8 +101,8 @@ const eventNodes = upcomingWindows.map((window) => {
 const dataset = {
   '@type': 'Dataset',
   '@id': 'https://zodiacs.org/mercury-retrograde/#dataset',
-  name: 'Mercury retrograde windows, 2026 to 2027',
-  description: 'Computed Mercury retrograde and direct station instants and tropical zodiac positions for 2026 and 2027.',
+  name: `Mercury retrograde windows, ${firstYear} to ${lastYear}`,
+  description: `Computed Mercury retrograde and direct station instants and tropical zodiac positions for ${firstYear} through ${lastYear}.`,
   url: 'https://zodiacs.org/mercury-retrograde/',
   creator: { '@id': 'https://zodiacs.org/#org' },
   publisher: { '@id': 'https://zodiacs.org/#org' },
@@ -111,9 +116,9 @@ const dataset = {
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Mercury retrograde dates, 2026 to 2027',
+    name: `Mercury retrograde dates, ${firstYear} to ${lastYear}`,
     url: 'https://zodiacs.org/mercury-retrograde/',
-    description: 'Exact Mercury retrograde dates for 2026 and 2027, computed from the planet’s real motion, with station positions.',
+    description: `Exact Mercury retrograde dates for ${firstYear} through ${lastYear}, computed from the planet’s real motion, with station positions.`,
   },
   {
     '@type': 'FAQPage',
@@ -128,8 +133,8 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Mercury Retrograde Dates 2026 & 2027: Exact, Computed | Zodiacs.org"
-  description="Every Mercury retrograde through 2027, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you."
+  title="Mercury Retrograde Dates 2026 to 2030: Exact, Computed | Zodiacs.org"
+  description="Every Mercury retrograde through 2030, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you."
   path="/mercury-retrograde/"
   image="/assets/og/v2/tool/mercury-retrograde.png"
   imageAlt="Mercury retrograde dates, Zodiacs.org"
@@ -141,7 +146,7 @@ const jsonLd = [
       <h1 class="display">See when Mercury turns retrograde.</h1>
       <p>
         Every window below is computed from <a href="/learn/glossary/#mercury">Mercury</a>’s actual motion,
-        <a href="/learn/glossary/#station">station to station</a>, refined to the hour, through the end of 2027.
+        <a href="/learn/glossary/#station">station to station</a>, refined to the hour, through the end of {lastYear}.
       </p>
     </div>
 
@@ -160,7 +165,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">
-      <h2>The windows, 2026 to 2027</h2>
+      <h2>The windows, {firstYear} to {lastYear}</h2>
       <p>Dates in universal time. The position shown is where Mercury stands still each time, the stations.</p>
     </div>
     <div class="table-wrap reveal">
