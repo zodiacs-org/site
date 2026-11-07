@@ -400,6 +400,10 @@ the Firefox half, a run of it where Playwright's Firefox starts. So a run of
 that half alone would not move B3.c to `accepted`, as the paragraph said it
 could. The production evidence below stands either way.
 
+The owner accepted both on 6 November, and on 7 November main's next passing
+Site Check in place of one on the merge, so B3.c is now recorded `accepted`
+("The owner's acceptance (6 and 7 November)", below).
+
 ### The merge and its deployment
 
 - Vercel built `dpl_5L1BPzRrw9QY9DmaJUnf7KzzoiVz` from the merge for
@@ -499,7 +503,9 @@ the merge itself. The result comes from committed data, not from timing,
 so it is no flake, and a rerun of the same commit would fail again; none
 was made. The production record's fourth condition, main's Site Check
 passing on the merge, is therefore not met, for a reason outside this
-unit. B3.c is recorded `validated` either way (above).
+unit. B3.c is recorded `validated` either way (above). On 7 November the
+owner accepted main's next passing Site Check, run 41806876561 on
+`0bf69bd5`, in its place, and B3.c is now recorded `accepted` (below).
 
 ### C1 after the merge
 
@@ -508,6 +514,82 @@ first, `572ea3d3`, adds only PREREGISTRATION.md, with author and commit
 dates of 2026-11-01T07:30:14+07:00; the earliest date of the other 19,
 author or commit, is 07:39:06+07:00 the same day. The merge kept the record
 first in main's history.
+
+### The owner's acceptance (6 and 7 November)
+
+DECISIONS-2026-10-05 §4 keeps the programme from accepting its own unit's
+reading or departure under a delegation, so B3.c waited for the owner
+(above). On 6 November at about 16:25 ICT the owner was asked, in the
+session, in one question:
+
+> One more item that only you can settle: B3.c, the time atlas dataset. It has
+> been live on zodiacs.org since 4 November, with its comparison viewer, under
+> CC BY 4.0. To count it as accepted (the ledger would go from 48.2% to 49.3%
+> once #900 merges), it needs two approvals. First, that 'released' means
+> published permanently on zodiacs.org at /developers/time-atlas/0.1.0/ in
+> files that never change, without a separate GitHub release, tag or DOI.
+> Second, the same Firefox gap you approved for rc.2: its first-use check could
+> not run Firefox on this Mac, though the Chromium half passed. Do you approve
+> both?
+
+The options offered, each with the description shown under it, were
+"Approve both" ("B3.c is recorded accepted in the next record PR, after
+#900."), "Add a GitHub release" ("'Released' should also mean a GitHub
+release (and tag) of the dataset. I would prepare it, and B3.c stays
+validated until it exists.") and "Not now" ("B3.c stays validated, with your
+approval as the open item."). The owner answered **"Approve both"**.
+
+Preparing this record showed a third open item that the question had not
+named: the production record's fourth condition, main's Site Check passing
+on the merge, which run 41769911262 did not meet (above). Main's next
+passing Site Check was
+[run 41806876561](https://github.com/zodiacs-org/site/actions/runs/41806876561)
+on `0bf69bd5` (#877, which changed the failing test), created at 09:21:58Z
+on 4 November, 21 of 21 jobs on its first attempt; run 41802095374 on
+`43b88e7d`, between the two, failed on the same test (and, in its Phase 3
+push drive, on the `/today/` sky ticker's known micro-CLS). The same test had
+failed main's run 41744586321 on `e632fe4c`, before the merge. The merge's
+run never reached this unit's own checks: its Build & Check stopped at that
+test, its step 13, and skipped 49 of its 54 later steps, the build, the
+typecheck and the link and artifact check over dist among them (the other
+five upload evidence and close the job). In run 41806876561 all 67 of its
+Build & Check steps passed, `tests/time-atlas-dataset.test.ts` (14 tests)
+and `src/lib/time-atlas/index.test.ts` (4 tests) among them, and check-dist
+passed over 5,276 HTML files. Of the 54 files #862
+changed, only `docs/claims/ledger.json` and `src/pages/sitemap.xml.ts`,
+which other pull requests change too, changed between `2f2a5669` and
+`0bf69bd5`; no atlas file, page or test of this unit did. On 7 November at
+about 15:22 ICT the owner was asked, in one question:
+
+> A correction on B3.c (the time atlas): besides the two things you
+> approved, its record has one more unmet condition. The site's automatic
+> check failed on the B3.c merge itself, on a horoscope test that has
+> nothing to do with the atlas. That test was already failing before the
+> merge and was fixed on main about 5.5 hours later. The check passed on
+> that fix, with every atlas file unchanged. Do you accept that later pass
+> in place of a pass on the merge?
+
+The options offered, each with the description shown under it, were "Yes,
+accept it" ("B3.c is recorded accepted, with this departure stated (the
+ledger goes from 48.2% to 49.3%).") and "No, keep validated" ("B3.c stays
+validated. The record states the unmet condition, and the figure stays at
+48.2%."). The owner answered **"Yes, accept it"**.
+
+- **What it accepts.** The preregistration's reading of "released", as the
+  question put it: published permanently on zodiacs.org at
+  `/developers/time-atlas/0.1.0/` in files that never change, without a
+  separate GitHub release, tag or DOI (the reading in full is
+  PREREGISTRATION.md's "What "released" means here"). The first-use
+  drive's unrun Firefox half as a departure from the site gates ("Open for
+  the owner"). Run 41806876561 on `0bf69bd5` in place of a passing Site
+  Check on the merge.
+- **What it changes.** B3.c is recorded `accepted`, release `deployed`,
+  with no `blockedBy` (`docs/platform/programme/acceptance-ledger.json`):
+  89.95 of 182.45 weighted units, 49.301 per cent, from 87.95, and Frontier
+  bets (first slices) from 32 of 41 to 34 of 41. The weight blocked on the
+  owner or outside action goes from 5 (2.740%) to 3 (1.644%).
+- **What it leaves open.** Nothing of B3.c. No tag, GitHub release, DOI or
+  deposit was made ("Not done").
 
 ## Overlaps
 
@@ -584,6 +666,9 @@ first in main's history.
   run here. It goes in the pull request's body as a departure from the site
   gates, for the owner to accept.
 
+The owner accepted this departure on 6 November ("The owner's acceptance (6
+and 7 November)", in "Production").
+
 ## The independent review
 
 The review read the branch at `d0e413a8` and reported seven problems. Six
@@ -657,4 +742,4 @@ outside the repository.
   The independent review read the branch at `d0e413a8`; the commits after it
   answer six of its seven problems, and the fourth, the first-use drive's
   Firefox half, could not be run here and is the owner's to accept (see
-  "Open for the owner").
+  "Open for the owner"). The owner accepted it on 6 November.
