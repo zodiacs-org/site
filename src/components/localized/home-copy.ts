@@ -92,7 +92,7 @@ export const HOME_COPY: Record<HomeLocale, HomeCopy> = {
       title: 'Empieza con tu carta',
       lede: 'Encuentra tu carta natal, signo lunar, ascendente, compatibilidad y lo que está pasando en el cielo ahora.',
       together: 'Juntos:',
-      extra: { path: '/eclipses/', label: 'Eclipses hasta 2028' },
+      extra: { path: '/eclipses/', label: 'Eclipses hasta 2030' },
       items: [
         { title: 'Carta natal', promise: 'Tu Sol, Luna, ascendente, planetas, casas y lo que significan.' },
         { title: 'Signo lunar', promise: 'Cómo sientes, qué te calma y qué necesitas para sentirte en casa.' },
@@ -171,7 +171,7 @@ export const HOME_COPY: Record<HomeLocale, HomeCopy> = {
       title: 'Comece pelo seu mapa',
       lede: 'Descubra seu mapa astral, signo lunar, ascendente, compatibilidade e o que está acontecendo no céu agora.',
       together: 'Juntos:',
-      extra: { path: '/eclipses/', label: 'Eclipses até 2028' },
+      extra: { path: '/eclipses/', label: 'Eclipses até 2030' },
       items: [
         { title: 'Mapa astral', promise: 'Seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o significado de cada um.' },
         { title: 'Signo lunar', promise: 'Como você vive as emoções, o que traz calma e do que precisa para se sentir em casa.' },
@@ -250,7 +250,7 @@ export const HOME_COPY: Record<HomeLocale, HomeCopy> = {
       title: 'Commence par ton thème',
       lede: 'Découvre ton thème astral, ton signe lunaire, ton ascendant, tes compatibilités et ce qui se passe dans le ciel maintenant.',
       together: 'À plusieurs :',
-      extra: { path: '/eclipses/', label: 'Éclipses jusqu’en 2028' },
+      extra: { path: '/eclipses/', label: 'Éclipses jusqu’en 2030' },
       items: [
         { title: 'Thème astral', promise: 'Ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.' },
         { title: 'Signe lunaire', promise: 'Ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin pour te sentir chez toi.' },
@@ -329,7 +329,7 @@ export const HOME_COPY: Record<HomeLocale, HomeCopy> = {
       title: 'Inizia dal tuo tema',
       lede: 'Scopri il tuo tema natale, il segno lunare, l’ascendente, le compatibilità e ciò che accade nel cielo adesso.',
       together: 'Insieme:',
-      extra: { path: '/eclipses/', label: 'Eclissi fino al 2028' },
+      extra: { path: '/eclipses/', label: 'Eclissi fino al 2030' },
       items: [
         { title: 'Tema natale', promise: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.' },
         { title: 'Segno lunare', promise: 'Come vivi le emozioni, che cosa ti calma e ciò di cui hai bisogno per sentirti a casa.' },

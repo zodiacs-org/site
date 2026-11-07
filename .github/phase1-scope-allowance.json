@@ -1,12 +1,17 @@
 {
   "version": 1,
-  "id": "accuracy-audit-protected-fixes-2026-11-07",
-  "baseCommit": "c1b389ee8ee1d89e364b1444a467871cdcfb59aa",
+  "id": "coverage-wording-2030-2026-11-07",
+  "baseCommit": "859cbb53931ef32d6f348045b0a01a3878f1698d",
   "protectedPaths": [
-    "src/content/learn/placements/neptune-in-taurus.mdx",
-    "src/content/learn/placements/pluto-in-aries.mdx",
-    "src/content/learn/placements/pluto-in-pisces.mdx",
-    "src/lib/i18n/astrology.test.ts",
-    "src/pages/learn/placements/[slug].astro"
+    "src/content/learn/planets/mercury.mdx",
+    "src/pages/es/tools/index.astro",
+    "src/pages/fr/tools/index.astro",
+    "src/pages/it/tools/index.astro",
+    "src/pages/learn/placements/[slug].astro",
+    "src/pages/pt/tools/index.astro",
+    "src/strings/additions.es.mjs",
+    "src/strings/additions.fr.mjs",
+    "src/strings/additions.it.mjs",
+    "src/strings/additions.pt.mjs"
   ]
 }
