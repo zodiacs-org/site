@@ -167,8 +167,11 @@ await withPreview({ port: 4393 }, async (baseURL) => {
     }
 
     async function settle(page) {
-      // client:idle islands hydrate after load; give them their idle turn.
-      await page.waitForFunction(() => document.querySelectorAll('astro-island[client="idle"][ssr]').length === 0);
+      // client:idle and client:painted islands hydrate after load or after
+      // the first paint; give them their idle turn.
+      await page.waitForFunction(() => document.querySelectorAll(
+        'astro-island[client="idle"][ssr], astro-island[client="painted"][ssr]',
+      ).length === 0);
       await page.evaluate(() => new Promise((resolve) => {
         requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(resolve, 250)));
       }));

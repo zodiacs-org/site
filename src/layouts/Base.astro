@@ -303,12 +303,24 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         (function () {
           var context = document.modelContext || Reflect.get(navigator, 'modelContext');
           if (!context || typeof context.registerTool !== 'function') return;
-          // The bundle registers Search and the calculator tools; bypass the previous immutable URL.
-          import('/assets/webmcp-register.js?v=calculators-1')
-            .then(function (module) {
-              return module.registerWebMcpPage(context, { path: location.pathname, search: webMcpSearch });
-            })
-            .catch(function () {});
+          // The tools are for assistants, not for the first screen. Fetched
+          // at once, the bundle shared the hero's connections in every browser
+          // that has WebMCP, so it registers a beat after load, clear of the
+          // page's first paint, or after 4 s if a stalled request holds load.
+          var registered = false;
+          function register() {
+            if (registered) return;
+            registered = true;
+            // The bundle registers Search and the calculator tools; bypass the previous immutable URL.
+            import('/assets/webmcp-register.js?v=calculators-1')
+              .then(function (module) {
+                return module.registerWebMcpPage(context, { path: location.pathname, search: webMcpSearch });
+              })
+              .catch(function () {});
+          }
+          if (document.readyState === 'complete') window.setTimeout(register, 400);
+          else window.addEventListener('load', function () { window.setTimeout(register, 400); }, { once: true });
+          window.setTimeout(register, 4000);
         })();
       </script>
     )}
