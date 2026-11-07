@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-11-04 B3.c validated, not accepted: zodiacs.org serves the time atlas 0.1.0 as a dataset under CC BY 4.0 with its diff viewer (#862 merged as 2f2a5669), and acceptance waits for the owner on the reading of \"released\" and the first-use drive's unrun Firefox half",
+  "asOf": "2026-11-06 engine 1.1.0-rc.2 in production (site#884 merged as 3fac4230) and ratified by the owner: P2.E.declinations, P2.E.sect, P2.E.composite, P2.E.dignities and P2.B.vargas accepted; P1.M3c failed (version 1)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -442,7 +442,7 @@
         "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.14",
         "independent re-verification 2026-09-28 (A4), reproduced by running code: 80 claims, tests 33/33; 5 of 11 planted sentences caught"
       ],
-      "notes": "developer docs and trigger-free claims escape the extractor (F-23); the claim product.engine-package, which said npm view returns 404 after the engine was published on 2026-09-30, is restated on the registry read of that day (F-57, fixed in the checkpoint 7 PR) Update 2026-10-13: site #730 closes F-23: the ledger reads every developer doc the site serves or its archives ship (the engine references, the SDK pages, the READMEs, notices, manifests, skills, scripts and pages the adapter, starter and plugin archives carry), with front matter, inline scripts and social cards; still partial because claims that use no trigger word escape the extractor."
+      "notes": "developer docs and trigger-free claims escape the extractor (F-23); the claim product.engine-package, which said npm view returns 404 after the engine was published on 2026-09-30, is restated on the registry read of that day (F-57, fixed in the checkpoint 7 PR) Update 2026-10-13: site #730 closes F-23: the ledger reads every developer doc the site serves or its archives ship (the engine references, the SDK pages, the READMEs, notices, manifests, skills, scripts and pages the adapter, starter and plugin archives carry), with front matter, inline scripts and social cards; still partial because claims that use no trigger word escape the extractor. Update 2026-11-06: engine 1.1.0-rc.2 carries F-89's nine corrected statements, which the site's engine reference serves since site#884 (3fac4230); status unchanged (OQ10 Q2)."
     },
     {
       "id": "P1.15",
@@ -509,10 +509,13 @@
       "weight": 0.75,
       "gate": "per-body longitude uncertainty and event-time bands derived from σ(ΔT)",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "Update 2026-11-04: engine 1.1.0-rc.2 (zodiacs-org/engine#82, merged as 883371f5) carries the time bands (engine docs/evidence/1.1.0-rc.2-20261102/time-bands/). Version 1 of this unit failed its check C1b in the engine's formal run (the recorded sigma against its sources: 19 problems, all at two seams), so it is to be recorded failed once production serves rc.2, and C8's version 2 moves into the unit's version 2 in a later candidate (the site adoption plan's decisions D-1 and D-4). The site's adoption (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged) vendors rc.2 and registers time-band:first-order; time-bands C9 is read in production for the record only."
+      "status": "failed",
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/884",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/production/production-at-merge.json and production-later.json: production checks on dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw (the merge 3fac4230) and dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5 (main adb627ed), 18 of 19 each; D2 failed only for the ChartCalculator closure, its gap ratified"
+      ],
+      "notes": "Update 2026-11-04: engine 1.1.0-rc.2 (zodiacs-org/engine#82, merged as 883371f5) carries the time bands (engine docs/evidence/1.1.0-rc.2-20261102/time-bands/). Version 1 of this unit failed its check C1b in the engine's formal run (the recorded sigma against its sources: 19 problems, all at two seams), so it is to be recorded failed once production serves rc.2, and C8's version 2 moves into the unit's version 2 in a later candidate (the site adoption plan's decisions D-1 and D-4). The site's adoption (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged) vendors rc.2 and registers time-band:first-order; time-bands C9 is read in production for the record only. Update 2026-11-06: recorded failed (version 1), release deployed: production serves 1.1.0-rc.2 with the time bands (site#884, merged as 3fac4230); C1b's 19 problems stand, C8 is void, and version 2 (C8's version 2 and C1b's fix) is due in a later candidate. Time-bands C9, read for the record, found time-band:first-order in production. The owner's ratification of R-M3c (2026-11-06) leaves the failed check failed."
     },
     {
       "id": "P1.M3d",
@@ -1324,13 +1327,16 @@
       "weight": 2,
       "gate": "exact on boundary fixtures",
       "dependsOn": [],
-      "status": "partial",
+      "status": "accepted",
       "release": "deployed",
       "evidence": [
         "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/vedic vargaOf: the sixteen Parashari vargas and the cyclic D2 and D3 exact on their 3,480 boundaries (10,440 points) of src/vedic/fixtures/boundaries.json, whose values come from the texts by exact rational arithmetic without the engine (engine docs/evidence/vedic-2026-09-28/README.md, \"Boundary fixtures\"); src/vedic/boundaries.test.ts passes on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log); variants named, and the Kashinatha hora and the Jagannatha and Somanatha drekkanas refused by name",
-        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)",
+        "https://github.com/zodiacs-org/site/pull/884",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/production/production-at-merge.json and production-later.json: production checks on dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw (the merge 3fac4230) and dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5 (main adb627ed), 18 of 19 each; D2 failed only for the ChartCalculator closure, its gap ratified",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/README.md, The owner's ratification (6 November): OQ5 and the D-14 and D2 departures ratified"
       ],
-      "notes": "the time-sensitivity output the unit names (the minutes of birth time before each varga sign changes, brief §3 Phase 2 B) is not implemented Update 2026-11-04: engine 1.1.0-rc.2 (zodiacs-org/engine#82, merged as 883371f5) adds vargaSensitivity to @zodiacs/engine/vedic, the time-sensitivity output the note above found missing (engine docs/evidence/1.1.0-rc.2-20261102/varga-sensitivity/). The site's adoption (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged) vendors rc.2, and its engine reference documents the function (functions/vedic.vargaSensitivity.html). Status unchanged until production checks it (PRODUCTION-CHECKS.md, V1); the varga section 3 reading and G-V4's amended reading await the owner's ratification (OQ5)."
+      "notes": "the time-sensitivity output the unit names (the minutes of birth time before each varga sign changes, brief §3 Phase 2 B) is not implemented Update 2026-11-04: engine 1.1.0-rc.2 (zodiacs-org/engine#82, merged as 883371f5) adds vargaSensitivity to @zodiacs/engine/vedic, the time-sensitivity output the note above found missing (engine docs/evidence/1.1.0-rc.2-20261102/varga-sensitivity/). The site's adoption (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged) vendors rc.2, and its engine reference documents the function (functions/vedic.vargaSensitivity.html). Status unchanged until production checks it (PRODUCTION-CHECKS.md, V1); the varga section 3 reading and G-V4's amended reading await the owner's ratification (OQ5). Update 2026-11-06: accepted. site#884 merged as 3fac4230 and production serves it (dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw, then dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5): the engine reference serves vedic.vargaSensitivity (V1) and the engine chunk names 1.1.0-rc.2 (D3); the owner ratified OQ5 and the D-14 and D2 departures on 2026-11-06 (\"Approve all\", and \"Yes, it stands\" to the corrected cause of D2's gap)."
     },
     {
       "id": "P2.B.panchang",
@@ -1492,12 +1498,15 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "merged",
-      "release": "merged",
+      "status": "accepted",
+      "release": "deployed",
       "evidence": [
-        "engine rc.11"
+        "engine rc.11",
+        "https://github.com/zodiacs-org/site/pull/884",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/production/production-at-merge.json and production-later.json: production checks on dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw (the merge 3fac4230) and dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5 (main adb627ed), 18 of 19 each; D2 failed only for the ChartCalculator closure, its gap ratified",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/README.md, The owner's ratification (6 November): OQ5 and the D-14 and D2 departures ratified"
       ],
-      "notes": "site still computes parallels with its own code on a fixed obliquity; rc.15 exports the package's parallels only from the root entry's shared chunk, which loads astronomy-engine: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports them Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes findDeclinationAspects, declinationOf and each body's row from @zodiacs/engine/lite, which loads no ephemeris, through src/lib/declination.ts, and removes the site's own declinationOf from src/lib/wheel/ecliptic3d.ts; EclipticView takes both charts' declinations and bounds from it. Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 9,548 cases, 89 agree, 9,459 differ, every difference by a cause its section allows (values: declination-formula 73,126 and separation-exact 11,768, each within 1e-12 degrees; sun-bound-exemption 6; orb-boundary 2; declination-validation 24, recorded), none unexplained, and the referee agrees with every pair; B1 to B6 pass with their controls. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5). Correction to this unit's first note: the site took the mean obliquity of date whenever it had an instant, not a fixed obliquity (lite preregistration section 9)."
+      "notes": "site still computes parallels with its own code on a fixed obliquity; rc.15 exports the package's parallels only from the root entry's shared chunk, which loads astronomy-engine: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports them Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes findDeclinationAspects, declinationOf and each body's row from @zodiacs/engine/lite, which loads no ephemeris, through src/lib/declination.ts, and removes the site's own declinationOf from src/lib/wheel/ecliptic3d.ts; EclipticView takes both charts' declinations and bounds from it. Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 9,548 cases, 89 agree, 9,459 differ, every difference by a cause its section allows (values: declination-formula 73,126 and separation-exact 11,768, each within 1e-12 degrees; sun-bound-exemption 6; orb-boundary 2; declination-validation 24, recorded), none unexplained, and the referee agrees with every pair; B1 to B6 pass with their controls. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5). Correction to this unit's first note: the site took the mean obliquity of date whenever it had an instant, not a fixed obliquity (lite preregistration section 9). Update 2026-11-06: accepted. site#884 merged as 3fac4230 and production serves it (dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw, then dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5): the EclipticView closure holds the lite declinations' refusal text, no ephemeris marker, and equals the local build of the merge byte for byte (D2); the owner ratified OQ5 and the D-14 and D2 departures on 2026-11-06 (\"Approve all\", and \"Yes, it stands\" to the corrected cause of D2's gap)."
     },
     {
       "id": "P2.E.aspect-patterns",
@@ -1530,10 +1539,14 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes compositeMidpoints and compositeAspects from @zodiacs/engine/lite through src/lib/composite.ts, whose own arithmetic is removed; the RelationshipWheel closure holds no ephemeris (B2). Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 2,310 cases, 2,300 agree, 10 differ, all recorded refusals (composite-validation 10), none unexplained; C2-M, C2-R and C2-P without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5)."
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/884",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/production/production-at-merge.json and production-later.json: production checks on dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw (the merge 3fac4230) and dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5 (main adb627ed), 18 of 19 each; D2 failed only for the ChartCalculator closure, its gap ratified",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/README.md, The owner's ratification (6 November): OQ5 and the D-14 and D2 departures ratified"
+      ],
+      "notes": "Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes compositeMidpoints and compositeAspects from @zodiacs/engine/lite through src/lib/composite.ts, whose own arithmetic is removed; the RelationshipWheel closure holds no ephemeris (B2). Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 2,310 cases, 2,300 agree, 10 differ, all recorded refusals (composite-validation 10), none unexplained; C2-M, C2-R and C2-P without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5). Update 2026-11-06: accepted. site#884 merged as 3fac4230 and production serves it (dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw, then dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5): the RelationshipWheel closure holds the lite composite's refusal text, no ephemeris marker, and equals the local build of the merge byte for byte (D2); the owner ratified OQ5 and the D-14 and D2 departures on 2026-11-06 (\"Approve all\", and \"Yes, it stands\" to the corrected cause of D2's gap)."
     },
     {
       "id": "P2.E.dignities",
@@ -1544,10 +1557,14 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes dignityFor, dignitiesFor and hasClassicalDignities from @zodiacs/engine/lite through src/lib/dignities.ts, whose table is removed (neutral answers where the engine refuses a name or a sign); check 16 of the People pilot's validator compares the pilot's frozen table with the engine's dignitiesFor (OQ11). Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 312 cases, 295 agree, 17 differ: site-prototype-lookup 10 (names Object.prototype carries, a site defect the adapter removes) and dignity-validation 7 (recorded), none unexplained; DG-X without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5)."
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/884",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/production/production-at-merge.json and production-later.json: production checks on dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw (the merge 3fac4230) and dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5 (main adb627ed), 18 of 19 each; D2 failed only for the ChartCalculator closure, its gap ratified",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/README.md, The owner's ratification (6 November): OQ5 and the D-14 and D2 departures ratified"
+      ],
+      "notes": "Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes dignityFor, dignitiesFor and hasClassicalDignities from @zodiacs/engine/lite through src/lib/dignities.ts, whose table is removed (neutral answers where the engine refuses a name or a sign); check 16 of the People pilot's validator compares the pilot's frozen table with the engine's dignitiesFor (OQ11). Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 312 cases, 295 agree, 17 differ: site-prototype-lookup 10 (names Object.prototype carries, a site defect the adapter removes) and dignity-validation 7 (recorded), none unexplained; DG-X without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5). Update 2026-11-06: accepted. site#884 merged as 3fac4230 and production serves it (dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw, then dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5): the ChartCalculator closure holds the lite dignities' refusal text and no ephemeris marker; it is not byte-equal to the CI production-flags build, which leaves PUBLIC_ACCOUNT_SAVES_ENABLED unset and has Supabase stand-ins, and matches 43 of 43 files with that switch on and the two settings written out (the D2 gap); the owner ratified OQ5 and the D-14 and D2 departures on 2026-11-06 (\"Approve all\", and \"Yes, it stands\" to the corrected cause of D2's gap)."
     },
     {
       "id": "P2.E.sect",
@@ -1558,12 +1575,15 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "merged",
-      "release": "merged",
+      "status": "accepted",
+      "release": "deployed",
       "evidence": [
-        "engine rc.10 sectOf"
+        "engine rc.10 sectOf",
+        "https://github.com/zodiacs-org/site/pull/884",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/production/production-at-merge.json and production-later.json: production checks on dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw (the merge 3fac4230) and dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5 (main adb627ed), 18 of 19 each; D2 failed only for the ChartCalculator closure, its gap ratified",
+        "docs/platform/evidence/site-engine-1-1-0-rc2/README.md, The owner's ratification (6 November): OQ5 and the D-14 and D2 departures ratified"
       ],
-      "notes": "site does not import it; rc.15 exports sectOf only from the root entry's shared chunk, which loads astronomy-engine, and decides sect by the Sun's ecliptic arc where the site uses its altitude: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports it Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes sect from @zodiacs/engine/lite's sectReading under its altitude convention (OQ4) through src/lib/sect.ts, whose own rule is removed; the caller, the altitude and the 3D page's copy are unchanged. Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 24,072 cases, 23,868 agree, 204 differ, all in recorded sections (sect-convention 188, where S2-P sets the altitude rule against the ecliptic rule, with no owner question raised; sect-validation 16), none unexplained; S2-A, S2-B and S2-E without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5)."
+      "notes": "site does not import it; rc.15 exports sectOf only from the root entry's shared chunk, which loads astronomy-engine, and decides sect by the Sun's ecliptic arc where the site uses its altitude: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports it Update 2026-11-04: the site's adoption of @zodiacs/engine 1.1.0-rc.2 (branch rc2/adopt-engine-1.1.0-rc.2, not yet merged; docs/platform/evidence/site-engine-1-1-0-rc2/lite/) takes sect from @zodiacs/engine/lite's sectReading under its altitude convention (OQ4) through src/lib/sect.ts, whose own rule is removed; the caller, the altitude and the 3D page's copy are unchanged. Lite parity, its one formal run on 83f168d8 against base 0bf69bd5, passed (lite/parity.json): 24,072 cases, 23,868 agree, 204 differ, all in recorded sections (sect-convention 188, where S2-P sets the altitude rule against the ecliptic rule, with no owner question raised; sect-validation 16), none unexplained; S2-A, S2-B and S2-E without a difference. Source 806f76b43c0ee652016fe1b522c02d6f6e9c7ae5, archive c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c. Status unchanged until production checks it (PRODUCTION-CHECKS.md); the lite readings (R3, R4's causes and 1e-12 thresholds, R6) await the owner's ratification (OQ5). Update 2026-11-06: accepted. site#884 merged as 3fac4230 and production serves it (dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw, then dpl_6bfNibFx6kHcK9hQCXmL6eKBgTY5): the EclipticView closure holds the lite sect's refusal text, no ephemeris marker, and equals the local build of the merge byte for byte (D2); the owner ratified OQ5 and the D-14 and D2 departures on 2026-11-06 (\"Approve all\", and \"Yes, it stands\" to the corrected cause of D2's gap)."
     },
     {
       "id": "P2.E.moon-sign-candidates",

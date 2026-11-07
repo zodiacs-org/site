@@ -1,0 +1,29 @@
+serverInfo {'name': 'zodiacs', 'version': '0.6.4'} | tools 19 | tools sha256 0c07e27104a2818133efdc259b71591fa43ff85eaf5cfa06c55bcba78cb60545 | equal to before: True
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /birth-chart/
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /compatibility/
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /today/
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /horoscopes/aries/
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /developers/
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /developers/engine/
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /developers/demo/
+<home>/Developer/zodiacs-programme-20261011/notes/rc2-2026-11-01/adoption/live-check.sh:23: command not found: curl
+ /developers/conventions/
+200 /
+200 /birth-chart/
+200 /compatibility/
+200 /today/
+200 /horoscopes/aries/
+200 /developers/
+200 /developers/engine/
+200 /developers/demo/
+200 /developers/conventions/
+200 /developers/engine/reference/functions/vedic.vargaSensitivity.html

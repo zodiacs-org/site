@@ -1,0 +1,344 @@
+{
+  "schema": "zodiacs.engine-1-1-0-rc2-production.v1",
+  "checkedAt": "2026-11-05T12:00:07.558Z",
+  "run": "production: every check must pass",
+  "base": "https://zodiacs.org",
+  "merge": "3fac42304ba6ac44a0b0fae99ecabd08cb848bc7",
+  "deployment": {
+    "deploymentId": "dpl_3BszcsPtLfnyVWjuFpFiQHoJGJAw",
+    "aliasUpdatedAt": "2026-11-05T11:58:26.238Z",
+    "readyState": "READY",
+    "target": "production",
+    "githubCommitSha": "3fac42304ba6ac44a0b0fae99ecabd08cb848bc7"
+  },
+  "candidate": {
+    "version": "1.1.0-rc.2",
+    "sha256": "c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c",
+    "sourceCommit": "806f76b43c0ee652016fe1b522c02d6f6e9c7ae5"
+  },
+  "mcp": {
+    "version": "0.1.0-rc.26",
+    "sha256": "48b7a36c775df1b4793a250612f082956d1723e7c20f537d6a83451bfb0ffccc"
+  },
+  "localDist": "given",
+  "chunksFound": {
+    "ChartCalculator": "/_astro/ChartCalculator.CYghgyqu.js",
+    "EclipticView": "/_astro/EclipticView.DPD4WoF6.js",
+    "RelationshipWheel": "/_astro/RelationshipWheel.cug3EpP9.js",
+    "full": "/_astro/full.AUZx8EGL.js",
+    "followed": 138
+  },
+  "requests": 153,
+  "checks": [
+    {
+      "containsMerge": true,
+      "builtFromMerge": true,
+      "id": "R1",
+      "name": "the zodiacs.org alias names a READY production deployment built from the merge commit or a commit that contains it",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "containsMerge": true,
+      "builtFromMerge": true,
+      "id": "D1",
+      "name": "lite D1: the alias, as R1",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "3c7d8e3d3d49f0ad80924c1d38c869f37eafddb215bcf6529efd9c9a4db33396",
+      "missing": [],
+      "id": "R2",
+      "name": "/developers/engine/ names engine 1.1.0-rc.2 as a candidate npm does not carry",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "6d0387e887140b15ebaddd010bf5383f2db230e0f020bc6a66c03b13539d64fc",
+      "missing": [],
+      "id": "R3",
+      "name": "/developers/support/ names engine 1.1.0-rc.2 as a candidate npm does not carry",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "d6a8ba271b988e53c99304cead163329a492e0b8387c42d0572da4b83e9fe8a1",
+      "missing": [],
+      "id": "R4",
+      "name": "/developers/mcp/ names engine 1.1.0-rc.2 as a candidate npm does not carry",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "2ad69ec5c86a00ce0d36d435f836d5155f61c9a0a63feecf4f31b00ac4a29f91",
+      "missing": [],
+      "id": "R5",
+      "name": "/llms.txt names engine 1.1.0-rc.2 as a candidate npm does not carry",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "9e1f339fb5a175393619d5e0864e2c8950e84749b5e66bccf09b162e7c97c314",
+      "missing": [],
+      "id": "R6",
+      "name": "/llms-full.txt names engine 1.1.0-rc.2 as a candidate npm does not carry",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "version": "1.1.0-rc.2",
+      "sha256": "b13460bfbaa31941876d50176ac86a23704e090be640dfd9ef9063051c92745d",
+      "id": "R7",
+      "name": "TypeDoc provenance names 1.1.0-rc.2 and its archive",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "version": "0.1.0-rc.26",
+      "id": "R8",
+      "name": "MCP manifest is the merge's",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "bytes": 905475,
+      "sha256": "48b7a36c775df1b4793a250612f082956d1723e7c20f537d6a83451bfb0ffccc",
+      "id": "R9",
+      "name": "MCP archive 0.1.0-rc.26 has the manifest's digest",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "id": "R10",
+      "name": "the documented positions example is the one sent",
+      "hasControl": false,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "backend": "1.1.0-rc.2",
+      "receiptEngine": "1.1.0-rc.2",
+      "conventionIds": 22,
+      "id": "R11",
+      "name": "compute API answers on engine 1.1.0-rc.2, with the receipt's convention ids",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "backend": "1.1.0-rc.2",
+      "recordsEqualTimeBasis": true,
+      "controlRequest": {
+        "instants": [
+          "2026-09-29T12:00:00.001Z",
+          "2026-12-31T00:00:00.001-05:00"
+        ],
+        "status": 200,
+        "recordsDifferFromTimeBasisAtTheOriginalInstants": true
+      },
+      "records": [
+        {
+          "instant": "2026-09-29T12:00:00.000Z",
+          "deltaT": {
+            "seconds": 69.20533325195312,
+            "sigma": 0.0012697,
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a",
+            "segment": "predicted"
+          },
+          "timeScale": {
+            "input": "utc",
+            "basis": "iers",
+            "ut1MinusUtc": {
+              "seconds": -0.02133333333333809,
+              "sigma": 0.0012697,
+              "source": "predicted"
+            },
+            "leapSeconds": {
+              "taiMinusUtc": 37,
+              "listed": true
+            }
+          }
+        },
+        {
+          "instant": "2026-12-31T05:00:00.000Z",
+          "deltaT": {
+            "seconds": 69.30520825195312,
+            "sigma": 0.009847975000000002,
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a",
+            "segment": "predicted"
+          },
+          "timeScale": {
+            "input": "utc",
+            "basis": "iers",
+            "ut1MinusUtc": {
+              "seconds": -0.12120833333332826,
+              "sigma": 0.009847975000000002,
+              "source": "predicted"
+            },
+            "leapSeconds": {
+              "taiMinusUtc": 37,
+              "listed": true
+            }
+          }
+        }
+      ],
+      "expected": [
+        {
+          "deltaT": {
+            "seconds": 69.20533325195312,
+            "sigma": 0.0012697,
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a",
+            "segment": "predicted"
+          },
+          "timeScale": {
+            "input": "utc",
+            "basis": "iers",
+            "ut1MinusUtc": {
+              "seconds": -0.02133333333333809,
+              "sigma": 0.0012697,
+              "source": "predicted"
+            },
+            "leapSeconds": {
+              "taiMinusUtc": 37,
+              "listed": true
+            }
+          }
+        },
+        {
+          "deltaT": {
+            "seconds": 69.30520825195312,
+            "sigma": 0.009847975000000002,
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a",
+            "segment": "predicted"
+          },
+          "timeScale": {
+            "input": "utc",
+            "basis": "iers",
+            "ut1MinusUtc": {
+              "seconds": -0.12120833333332826,
+              "sigma": 0.009847975000000002,
+              "source": "predicted"
+            },
+            "leapSeconds": {
+              "taiMinusUtc": 37,
+              "listed": true
+            }
+          }
+        }
+      ],
+      "id": "S3b",
+      "name": "compute API time records equal timeBasis from the vendored @zodiacs/engine/time on 1.1.0-rc.2, and the request 1 ms later differs",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "view": "EclipticView",
+      "chunk": "/_astro/EclipticView.DPD4WoF6.js",
+      "files": 11,
+      "bytes": 89896,
+      "missing": [],
+      "local": {
+        "chunk": "/_astro/EclipticView.DPD4WoF6.js",
+        "files": 11
+      },
+      "equalToLocal": true,
+      "markers": [],
+      "texts": {
+        "declination bodies must be a standard array.": true,
+        "sunAltitude must be from -90 to 90 degrees.": true
+      },
+      "id": "D2",
+      "name": "lite D2: the EclipticView closure equals the local build of the merge byte for byte, holds neither ephemeris marker and holds its lite texts",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "view": "RelationshipWheel",
+      "chunk": "/_astro/RelationshipWheel.cug3EpP9.js",
+      "files": 31,
+      "bytes": 183228,
+      "missing": [],
+      "local": {
+        "chunk": "/_astro/RelationshipWheel.cug3EpP9.js",
+        "files": 31
+      },
+      "equalToLocal": true,
+      "markers": [],
+      "texts": {
+        " must be an array of { body, lon }.": true
+      },
+      "id": "D2",
+      "name": "lite D2: the RelationshipWheel closure equals the local build of the merge byte for byte, holds neither ephemeris marker and holds its lite texts",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "view": "ChartCalculator",
+      "chunk": "/_astro/ChartCalculator.CYghgyqu.js",
+      "files": 43,
+      "bytes": 172926,
+      "missing": [],
+      "local": {
+        "chunk": "/_astro/ChartCalculator.CeQOgj19.js",
+        "files": 43
+      },
+      "equalToLocal": false,
+      "markers": [],
+      "texts": {
+        "sign must be a lowercase zodiac sign name.": true
+      },
+      "id": "D2",
+      "name": "lite D2: the ChartCalculator closure equals the local build of the merge byte for byte, holds neither ephemeris marker and holds its lite texts",
+      "hasControl": true,
+      "ok": false
+    },
+    {
+      "chunk": "/_astro/full.AUZx8EGL.js",
+      "files": 8,
+      "missing": [],
+      "names": {
+        "1.1.0-rc.2": true,
+        "1.1.0-rc.1": false
+      },
+      "id": "D3",
+      "name": "lite D3: the engine chunk names 1.1.0-rc.2",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "f271e89f357c7573f64ac4dcc36ae849ef0f05456d36013337b89711f5cc05bc",
+      "id": "C9",
+      "name": "time-bands C9: /developers/conventions/registry.json names time-band:first-order (for the record)",
+      "hasControl": true,
+      "ok": true
+    },
+    {
+      "status": 200,
+      "engineChunkNamesVersion": true,
+      "id": "V1",
+      "name": "the varga check: the reference serves functions/vedic.vargaSensitivity.html, and the engine chunk names the version (D3)",
+      "hasControl": true,
+      "ok": true
+    }
+  ],
+  "passed": 18,
+  "failed": 1
+}

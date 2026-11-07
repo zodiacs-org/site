@@ -1,3 +1,41 @@
+Engine 1.1.0-rc.2 in production, 2026-11-06 (Asia/Bangkok): five units
+accepted on your ratification; P1.M3c failed.
+
+**Overall delivery: 48%** (48.205% to three decimals): 87.95 of 182.45
+weighted units accepted; blocked 3% (5), or 2.740%. Up 4.0 from B3.c's
+entry below: P2.E.declinations, P2.E.sect, P2.E.composite and
+P2.E.dignities (0.5 each) and P2.B.vargas (2) are accepted, and P1.M3c
+(0.75) moves from not-started to failed, which does not count. Phase 2 E,
+the techniques moved into the package, is complete.
+
+- **Adopted and live.** #884 merged on your delegation as `3fac4230` on 5
+  November at 18:52, after green CI, an independent review in three rounds
+  and the Phase 1 captures; zodiacs.org has served it since 18:58. The site
+  takes the engine's own time basis from `@zodiacs/engine/time` and its
+  declinations, sect, composite and dignities from `@zodiacs/engine/lite`,
+  and serves engine 1.1.0-rc.2's reference with the varga sensitivity and
+  F-89's nine corrections. The hosted MCP server's 19 tools are byte for
+  byte what they were.
+- **Production.** The checks named before any run pass 18 of 19 on the
+  merge's deployment and on the next one; their controls failed on the
+  deployment before the merge. The one failure, D2 on the birth chart
+  calculator's closure, is a configuration gap: the CI build it is compared
+  with has the account saves switch off and stand-in database settings, and
+  with that switch on all 43 files match apart from those settings.
+- **Your answers.** On 6 November you approved, in one question, the
+  measuring rules chosen after the trial runs (OQ5) and the two test gaps
+  (Firefox on this Mac, and D2's), and confirmed it after the D2 cause was
+  corrected. That is what makes the five units accepted.
+- **Still yours.** B3.c's two acts, as in its entry below, and OQ10's Q5
+  (step 1.14h).
+- **Follow-ups.** CI's production-flags environment, which Sitemap Dates
+  shares, does not set `PUBLIC_ACCOUNT_SAVES_ENABLED` as production does.
+  P1.M3c's version 2 and Chart Studio's panel on rc.2 wait for later
+  candidates.
+
+The record is
+[the evidence README](../evidence/site-engine-1-1-0-rc2/README.md#production).
+
 The time atlas dataset in production, 2026-11-04 (Asia/Bangkok): B3.c
 validated, not accepted.
 

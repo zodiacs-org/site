@@ -1,0 +1,12 @@
+{
+ "view": "ChartCalculator",
+ "files": {
+  "production": 43,
+  "local": 43
+ },
+ "equalByteForByte": 41,
+ "equalWhenNormalised": 43,
+ "onlyInProduction": [],
+ "onlyInLocal": [],
+ "differingWhenNormalised": []
+}
