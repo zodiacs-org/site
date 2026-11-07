@@ -211,9 +211,12 @@ const fieldOf = (value: unknown, key: string): unknown => (value && typeof value
 /** The furthest any clock runs ahead of UTC (UTC+14), so no place has reached a later date. */
 const LATEST_CLOCK_MS = 14 * 3_600_000;
 
-/** Today's date where a card's day is kept: in its time zone when the call gives one, else the latest date anywhere. */
-function cardToday(now: Date, zone: unknown): string {
-  if (typeof zone === 'string') { try { return dateInZone(now, zone); } catch { /* an unknown zone is refused later; use the latest date */ } }
+/**
+ * Today's date where a card's day is kept: in the time zone the call gives, else the one the assistant shares
+ * (ChatGPT's user location), else the latest date anywhere. An unknown zone falls through to the next.
+ */
+function cardToday(now: Date, zones: readonly unknown[]): string {
+  for (const zone of zones) if (typeof zone === 'string') { try { return dateInZone(now, zone); } catch { /* try the next */ } }
   return new Date(now.getTime() + LATEST_CLOCK_MS).toISOString().slice(0, 10);
 }
 
@@ -221,17 +224,17 @@ function cardToday(now: Date, zone: unknown): string {
  * The birth dates a call carries: its birthDate, both people's in a comparison, and the days a birthday card can be
  * for once they have come, since a birthday on such a day can be a birth date: the card's date, and the latest day of
  * a best-day window that has begun, because the card then goes to a day in it. Whether a day has come is read on the
- * card's own clock, or the clock furthest ahead without one, so a birthday still to come is only a day being planned.
+ * card's own clock, else the assistant's, else the clock furthest ahead, so a birthday still to come is a day being planned.
  * A Chinese zodiac year alone, a birthday's month and day, and the dates of every other tool are not birth dates.
  * Read only to decide on the refusal below, never echoed, stored or logged.
  */
-export function birthDatesIn(tool: AiToolName, args: unknown, now: Date): string[] {
+export function birthDatesIn(tool: AiToolName, args: unknown, now: Date, hostZone?: string): string[] {
   let dates: unknown[];
   if (tool === 'get_compatibility') dates = [fieldOf(fieldOf(args, 'a'), 'birthDate'), fieldOf(fieldOf(args, 'b'), 'birthDate')];
   else if (tool !== 'get_occasion_sky') dates = [fieldOf(args, 'birthDate')];
   else if (fieldOf(args, 'occasion') !== 'birthday') dates = [];
   else {
-    const today = cardToday(now, fieldOf(args, 'zone'));
+    const today = cardToday(now, [fieldOf(args, 'zone'), hostZone]);
     const [date, from, to] = [fieldOf(args, 'date'), fieldOf(args, 'searchFrom'), fieldOf(args, 'searchTo')];
     const windowDay = typeof from === 'string' && typeof to === 'string' && from <= today ? (to < today ? to : today) : undefined;
     dates = [date, windowDay].filter((day) => typeof day === 'string' && day <= today);
@@ -244,9 +247,9 @@ export function birthDatesIn(tool: AiToolName, args: unknown, now: Date): string
  * children under 13, so a call that carries a birth date less than 13 years before today, or one still to come, gets
  * the fixed refusal and no card, chart or reading. Null for every other call.
  */
-export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date) {
+export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
   const today = now.toISOString().slice(0, 10);
-  return birthDatesIn(tool, args, now).some((date) => isUnder13(date, today)) ? failure(tool, 'invalid-request', UNDER_13_REFUSAL) : null;
+  return birthDatesIn(tool, args, now, hostZone).some((date) => isUnder13(date, today)) ? failure(tool, 'invalid-request', UNDER_13_REFUSAL) : null;
 }
 
 /**

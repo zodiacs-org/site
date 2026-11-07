@@ -123,7 +123,7 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
       const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
       // A child's birth date gets the fixed refusal before anything is worked out.
-      const result = childBirthDateRefusal(tool, args, dependencies.now?.() ?? new Date())
+      const result = childBirthDateRefusal(tool, args, dependencies.now?.() ?? new Date(), context.hostZone)
         ?? await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
       return {
         isError: !result.ok, content: [{ type: 'text' as const, text: JSON.stringify(result) }], structuredContent: result,
@@ -150,7 +150,8 @@ function registerSaveTool(server: McpServer, dependencies: AiDependencies, accou
       return { isError: true, content: [{ type: 'text' as const, text: JSON.stringify(refusal) }], structuredContent: refusal,
         _meta: { 'mcp/www_authenticate': [signInChallenge(account.service.oauth)] } };
     }
-    const result = await saveToZodiacs(args, account.principal, account.service.save, { ...(dependencies.localTime ? { localTime: dependencies.localTime } : {}), ...(dependencies.now ? { now: dependencies.now } : {}) }, refFrom(ctx?.mcpReq?._meta));
+    const hostZone = hostZoneFrom(ctx?.mcpReq?._meta);
+    const result = await saveToZodiacs(args, account.principal, account.service.save, { ...(dependencies.localTime ? { localTime: dependencies.localTime } : {}), ...(dependencies.now ? { now: dependencies.now } : {}), ...(hostZone ? { hostZone } : {}) }, refFrom(ctx?.mcpReq?._meta));
     return { isError: !result.ok, content: [{ type: 'text' as const, text: JSON.stringify(result) }], structuredContent: result };
   });
 }

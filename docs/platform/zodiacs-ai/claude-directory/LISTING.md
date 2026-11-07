@@ -334,6 +334,10 @@ owner confirms each one.
 
 ## Test & launch
 
+The text below is the original submission's. The thirteen-prompt text pasted
+on 6 November replaced it, and its step 11 was removed on 8 November (see the
+top of this file).
+
 Paste into the reviewer instructions:
 
 > No account or credentials are needed. Add `https://zodiacs.org/mcp` as a custom connector (Customize → Connectors), then try:

@@ -18647,7 +18647,9 @@ function isUnderAge(birthDate, today, years) {
   return birthDate > `${String(Number(today.slice(0, 4)) - years).padStart(4, "0")}${today.slice(4)}`;
 }
 function isUnder18(birthDate, today) {
-  return isUnderAge(birthDate, today, 18);
+  const [year, month, day] = today.split("-").map(Number);
+  const cutoff = new Date(Date.UTC(year - 18, month - 1, day));
+  return birthDate > cutoff.toISOString().slice(0, 10);
 }
 function isUnder13(birthDate, today) {
   return isUnderAge(birthDate, today, 13);
@@ -40890,7 +40892,7 @@ var AI_VERSION = "0.6.6";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
 var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
 var ASSISTANT_OCCASION_KINDS = ["wedding", "anniversary", "met", "birthday", "pet", "home", "job", "graduation", "retirement", "gathering"];
-var UNDER_13_REFUSAL = "Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. Do not send a child's name, birth date or place to any Zodiacs tool. For someone 13 or older, use their own birth date, or a birthday still to come.";
+var UNDER_13_REFUSAL = "Zodiacs is not directed at children under 13, so it makes no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years. For someone 13 or older, give their own birth date, or a birthday still to come with the time zone where it falls. Do not send a child's name, birth date or place to any Zodiacs tool.";
 var OCCASION_TOOL_NAMES = ["get_occasion_sky", "get_life_milestones", "get_compatibility", "find_chart_twins", "get_famous_chart", "get_birthday", "get_sky_calendar"];
 var ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES];
 var COVERAGE_TOOL_NAMES = ["get_natal_chart", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "explain_astrology"];
@@ -42409,8 +42411,8 @@ var BIRTH_OCCASIONS = /* @__PURE__ */ new Set(["birthday", "baby", "coming-of-ag
 var CIVIL_DATE = /^\d{4}-\d{2}-\d{2}$/u;
 var fieldOf = (value, key) => value && typeof value === "object" && !Array.isArray(value) ? value[key] : void 0;
 var LATEST_CLOCK_MS = 14 * 36e5;
-function cardToday(now, zone7) {
-  if (typeof zone7 === "string") {
+function cardToday(now, zones) {
+  for (const zone7 of zones) if (typeof zone7 === "string") {
     try {
       return dateInZone(now, zone7);
     } catch {
@@ -42418,22 +42420,22 @@ function cardToday(now, zone7) {
   }
   return new Date(now.getTime() + LATEST_CLOCK_MS).toISOString().slice(0, 10);
 }
-function birthDatesIn(tool, args, now) {
+function birthDatesIn(tool, args, now, hostZone) {
   let dates;
   if (tool === "get_compatibility") dates = [fieldOf(fieldOf(args, "a"), "birthDate"), fieldOf(fieldOf(args, "b"), "birthDate")];
   else if (tool !== "get_occasion_sky") dates = [fieldOf(args, "birthDate")];
   else if (fieldOf(args, "occasion") !== "birthday") dates = [];
   else {
-    const today = cardToday(now, fieldOf(args, "zone"));
+    const today = cardToday(now, [fieldOf(args, "zone"), hostZone]);
     const [date3, from, to] = [fieldOf(args, "date"), fieldOf(args, "searchFrom"), fieldOf(args, "searchTo")];
     const windowDay = typeof from === "string" && typeof to === "string" && from <= today ? to < today ? to : today : void 0;
     dates = [date3, windowDay].filter((day) => typeof day === "string" && day <= today);
   }
   return dates.filter((date3) => typeof date3 === "string" && CIVIL_DATE.test(date3));
 }
-function childBirthDateRefusal(tool, args, now) {
+function childBirthDateRefusal(tool, args, now, hostZone) {
   const today = now.toISOString().slice(0, 10);
-  return birthDatesIn(tool, args, now).some((date3) => isUnder13(date3, today)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
+  return birthDatesIn(tool, args, now, hostZone).some((date3) => isUnder13(date3, today)) ? failure(tool, "invalid-request", UNDER_13_REFUSAL) : null;
 }
 function occasionCardUrl(args) {
   if (BIRTH_OCCASIONS.has(args.occasion)) return null;
@@ -43300,7 +43302,7 @@ async function buildSavedRecord(input, dependencies = {}) {
   const linked = (record2, href) => ({ ...record2, href: href(recordDigest(record2).slice(0, 16)) });
   const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
   const madeBy = { chart: "get_natal_chart", comparison: "get_compatibility", occasion: "get_occasion_sky", week: "get_horoscope" };
-  const child2 = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now);
+  const child2 = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now, dependencies.hostZone);
   if (child2) return { failure: child2.error.message };
   let owned;
   const localTime2 = () => dependencies.localTime ?? (owned ??= createLocalTimeModule());
@@ -43539,7 +43541,7 @@ function createAiServer(dependencies, watch, account) {
       _meta: { ...!watch ? { securitySchemes: [{ type: "noauth" }] } : watch.service.oauth ? { securitySchemes: [{ type: "oauth2", scopes: WATCH_SCOPES }] } : {}, ...panel ? { ui: { resourceUri: panel.uri, visibility: ["model", "app"] }, "openai/outputTemplate": panel.uri, "openai/ui": { entrypoints: readingsPanel(panel.uri) ? [{ type: "thread" }] : [{ type: "global" }, { type: "thread" }] }, ...tool === "get_horoscope" ? { "openai/widgetAccessible": true } : {} } : {} }
     }, async (args, ctx) => {
       const context = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
-      const result = childBirthDateRefusal(tool, args, dependencies.now?.() ?? /* @__PURE__ */ new Date()) ?? await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
+      const result = childBirthDateRefusal(tool, args, dependencies.now?.() ?? /* @__PURE__ */ new Date(), context.hostZone) ?? await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
       return {
         isError: !result.ok,
         content: [{ type: "text", text: JSON.stringify(result) }],
@@ -43571,7 +43573,8 @@ function registerSaveTool(server, dependencies, account) {
         _meta: { "mcp/www_authenticate": [signInChallenge(account.service.oauth)] }
       };
     }
-    const result = await saveToZodiacs(args, account.principal, account.service.save, { ...dependencies.localTime ? { localTime: dependencies.localTime } : {}, ...dependencies.now ? { now: dependencies.now } : {} }, refFrom(ctx?.mcpReq?._meta));
+    const hostZone = hostZoneFrom(ctx?.mcpReq?._meta);
+    const result = await saveToZodiacs(args, account.principal, account.service.save, { ...dependencies.localTime ? { localTime: dependencies.localTime } : {}, ...dependencies.now ? { now: dependencies.now } : {}, ...hostZone ? { hostZone } : {} }, refFrom(ctx?.mcpReq?._meta));
     return { isError: !result.ok, content: [{ type: "text", text: JSON.stringify(result) }], structuredContent: result };
   });
 }

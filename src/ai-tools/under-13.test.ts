@@ -67,10 +67,10 @@ describe('a birth date under 13', () => {
     // On 29 February, someone born on 1 March 13 years before is still 12, and someone born on 28 February is 13.
     expect(isUnder13('2015-03-01', '2028-02-29')).toBe(true);
     expect(isUnder13('2015-02-28', '2028-02-29')).toBe(false);
-    // The under-18 rule reads the same way.
+    // The under-18 rule is kept exactly as it was, including its 29 February rollover to 1 March.
     expect(isUnder18('2008-11-08', '2026-11-08')).toBe(false);
     expect(isUnder18('2008-11-09', '2026-11-08')).toBe(true);
-    expect(isUnder18('2010-03-01', '2028-02-29')).toBe(true);
+    expect(isUnder18('2010-03-01', '2028-02-29')).toBe(false);
   });
 
   it('is read from each birthDate, both people in a comparison, and the days a birthday card can be for', () => {
@@ -96,7 +96,7 @@ describe('a birth date under 13', () => {
     expect(childBirthDateRefusal('get_sky', {}, NOW)).toBeNull();
   });
 
-  it('reads whether a birthday has come on the card\'s own clock, or the clock furthest ahead without one', () => {
+  it('reads whether a birthday has come on the card\'s own clock, else the assistant\'s, else the clock furthest ahead', () => {
     // 16:00 UTC on 8 November is already 9 November in Auckland: a baby born there today is not a birthday to come.
     const lateUtc = new Date('2026-11-08T16:00:00Z');
     expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', zone: 'Pacific/Auckland', names: 'Mia' }, lateUtc)).not.toBeNull();
@@ -104,7 +104,16 @@ describe('a birth date under 13', () => {
     // 04:00 UTC on 8 November is still 7 November in Los Angeles: a party there on the 8th is still to come.
     const earlyUtc = new Date('2026-11-08T04:00:00Z');
     expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-08', zone: 'America/Los_Angeles' }, earlyUtc)).toBeNull();
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-08' }, earlyUtc, 'America/Los_Angeles')).toBeNull();
     expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-08' }, earlyUtc)).not.toBeNull();
+    // 15:00 UTC on 8 November is 10:00 in New York: tomorrow's party there is still to come once the clock is known.
+    const midUtc = new Date('2026-11-08T15:00:00Z');
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09' }, midUtc, 'America/New_York')).toBeNull();
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', searchFrom: '2026-11-09', searchTo: '2026-11-30' }, midUtc, 'America/New_York')).toBeNull();
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09' }, midUtc)).not.toBeNull();
+    // The card's own zone comes first; an unknown one falls through to the assistant's.
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', zone: 'Pacific/Auckland' }, midUtc, 'America/New_York')).not.toBeNull();
+    expect(childBirthDateRefusal('get_occasion_sky', { occasion: 'birthday', date: '2026-11-09', zone: 'Nowhere/Atlantis' }, midUtc, 'America/New_York')).toBeNull();
   });
 });
 
@@ -147,6 +156,11 @@ describe('the hosted server refuses a child\'s birth date', () => {
     await ok('get_birthday', { date: '05-03' });
     await ok('get_chinese_zodiac', { year: 2020 });
     await ok('get_horoscope', { sign: 'scorpio' });
+    // At 03:00 UTC it is still 7 November in New York: with the zone ChatGPT shares, a birthday on the 8th is to come.
+    const newYork = { 'openai/userLocation': { timezone: 'America/New_York' } };
+    const shared = (await rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion: 'birthday', date: '2026-11-08' }, _meta: newYork })).result;
+    expect(shared.isError, JSON.stringify(shared.structuredContent?.error)).toBe(false);
+    refused((await rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion: 'birthday', date: '2026-11-08' } })).result, 'get_occasion_sky');
     // From 13 to 17, compatibility keeps its own refusal and its pointer to a friendship reading.
     const teen = (await rpc('tools/call', { name: 'get_compatibility', arguments: { a: { birthDate: '1990-05-03' }, b: { birthDate: '2012-02-02' } } })).result;
     expect(teen.structuredContent.error).toEqual({ code: 'invalid-request', message: MINOR_COMPATIBILITY_REFUSAL });

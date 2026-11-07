@@ -15,9 +15,14 @@ export function isUnderAge(birthDate: string, today: string, years: number): boo
   return birthDate > `${String(Number(today.slice(0, 4)) - years).padStart(4, '0')}${today.slice(4)}`;
 }
 
-/** A birth date is under 18 on `today` (both YYYY-MM-DD) when the 18th birthday has not arrived. */
+/**
+ * A birth date is under 18 on `today` (both YYYY-MM-DD) when the 18th birthday has not arrived. Kept exactly as it
+ * was before the under-13 rule: its cutoff is a Date, so on 29 February it rolls over to 1 March.
+ */
 export function isUnder18(birthDate: string, today: string): boolean {
-  return isUnderAge(birthDate, today, 18);
+  const [year, month, day] = today.split('-').map(Number);
+  const cutoff = new Date(Date.UTC(year - 18, month - 1, day));
+  return birthDate > cutoff.toISOString().slice(0, 10);
 }
 
 /**
