@@ -11,9 +11,16 @@
  * records which ("a", "b", or the "HH:MM" UTC ingress time that day).
  * Feb 29 is computed from leap years only. The template renders these
  * receipts; prose lives in src/content/birthdays/.
+ *
+ * It also writes src/data/birthdays-precise.json: the same three noon-UTC
+ * longitudes (lonMin, lonMax, now.lon) to four decimals, which the website's
+ * birthday pages print to the arcminute. birthdays.json keeps its 0.01°
+ * values because the AI tools and the published developer plugin bundle it
+ * byte for byte; the precise file is read by the site only. Neither file is
+ * rewritten when only the date would change.
  */
 import './lib/deltat-install.mjs';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import {
@@ -22,6 +29,7 @@ import {
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'src/data/birthdays.json');
+const outPrecise = resolve(root, 'src/data/birthdays-precise.json');
 await mkdir(dirname(out), { recursive: true });
 
 const YEAR_FROM = 1940;
@@ -132,6 +140,8 @@ console.log(`  ${cuspDates.size} cusp dates found`);
 // ---- pass 2: per-date facts -------------------------------------------------
 console.log('computing per-date facts…');
 const days = {};
+const precise = {};
+const round4 = (v) => Math.round(v * 10_000) / 10_000;
 for (let m = 1; m <= 12; m++) {
   for (let d = 1; d <= DAYS_IN_MONTH[m - 1]; d++) {
     const slug = `${MONTHS[m - 1]}-${d}`;
@@ -163,9 +173,11 @@ for (let m = 1; m <= 12; m++) {
       ? [...years].reverse().find((y) => y <= NOW_YEAR + 2)
       : NOW_YEAR;
     const nowNoon = utc(nowYear, m, d, 12);
+    const nowLon = lonAt('Sun', nowNoon);
+    precise[slug] = { lonMin: round4(lonMin), lonMax: round4(lonMax), nowLon: round4(nowLon) };
     entry.now = {
       year: nowYear,
-      lon: Math.round(lonAt('Sun', nowNoon) * 100) / 100,
+      lon: Math.round(nowLon * 100) / 100,
       moonSign: SIGN_SLUGS[Math.floor(lonAt('Moon', nowNoon) / 30) % 12],
     };
 
@@ -217,11 +229,41 @@ if (problems.length) {
   process.exit(1);
 }
 
+for (const [slug, p] of Object.entries(precise)) {
+  const e = days[slug];
+  // The precise values must round to the published ones.
+  for (const [a, b] of [[p.lonMin, e.lonMin], [p.lonMax, e.lonMax], [p.nowLon, e.now.lon]]) {
+    if (Math.abs(a - b) > 0.0051) problems.push(`${slug}: precise ${a} does not round to ${b}`);
+  }
+}
+if (problems.length) {
+  console.error('✗ validation failed:');
+  for (const p of problems) console.error('  -', p);
+  process.exit(1);
+}
+
+// Keep the previous date when the facts are unchanged, so a rerun is a no-op.
+let generated = new Date().toISOString().slice(0, 10);
+try {
+  const previous = JSON.parse(await readFile(out, 'utf8'));
+  if (JSON.stringify(previous.days) === JSON.stringify(days)
+    && previous.nowYear === NOW_YEAR
+    && JSON.stringify(previous.yearRange) === JSON.stringify([YEAR_FROM, YEAR_TO])) {
+    generated = previous.generated;
+  }
+} catch { /* first run */ }
+
 const payload = {
-  generated: new Date().toISOString().slice(0, 10),
+  generated,
   yearRange: [YEAR_FROM, YEAR_TO],
   nowYear: NOW_YEAR,
   days,
 };
 await writeFile(out, `${JSON.stringify(payload, null, 1)}\n`);
+await writeFile(outPrecise, `${JSON.stringify({
+  note: 'Noon-UTC Sun longitudes to four decimals for the website birthday pages; birthdays.json holds the same values to 0.01 for the AI tools.',
+  yearRange: [YEAR_FROM, YEAR_TO],
+  nowYear: NOW_YEAR,
+  days: precise,
+}, null, 1)}\n`);
 console.log(`✓ src/data/birthdays.json — ${count} dates, ${cuspCount} with per-year cusp tables`);

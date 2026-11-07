@@ -8,11 +8,16 @@ import { formatLongitude, signForLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
 import { publishedEventById } from '../../lib/events/publication';
 
-// Every full moon 2026–2027 from the committed sky data, with the
+// Every full moon in the committed sky data (2026 to 2030), with the
 // Moon's sign computed at each instant — receipts, no client ephemeris.
 const buildNow = new Date();
 const eventHorizon = new Date(buildNow);
 eventHorizon.setUTCFullYear(eventHorizon.getUTCFullYear() + 1);
+
+// The years the committed table covers (sky.json runs to the start of its
+// last year plus one), so the copy names the span the table lists.
+const firstYear = new Date(sky.from).getUTCFullYear();
+const lastYear = new Date(Date.parse(sky.to) - 1).getUTCFullYear();
 
 const sources = [
   { label: 'Astronomy Engine', href: 'https://github.com/cosinekitty/astronomy' },
@@ -103,8 +108,8 @@ const eventNodes = upcomingEvents.map((full) => {
 const dataset = {
   '@type': 'Dataset',
   '@id': 'https://zodiacs.org/full-moon-calendar/#dataset',
-  name: 'Full moon calendar, 2026 to 2027',
-  description: 'Exact universal-time instants, tropical zodiac positions, and traditional names for every full moon in 2026 and 2027.',
+  name: `Full moon calendar, ${firstYear} to ${lastYear}`,
+  description: `Exact universal-time instants, tropical zodiac positions, and traditional names for every full moon from ${firstYear} through ${lastYear}.`,
   url: 'https://zodiacs.org/full-moon-calendar/',
   creator: { '@id': 'https://zodiacs.org/#org' },
   publisher: { '@id': 'https://zodiacs.org/#org' },
@@ -118,10 +123,10 @@ const dataset = {
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Full moon calendar 2026 & 2027',
+    name: `Full moon calendar ${firstYear} to ${lastYear}`,
     url: 'https://zodiacs.org/full-moon-calendar/',
     description:
-      'Every full moon in 2026 and 2027 with exact universal time, zodiac sign and degree, and its traditional name, computed from the Moon’s real motion.',
+      `Every full moon from ${firstYear} through ${lastYear} with exact universal time, zodiac sign and degree, and its traditional name, computed from the Moon’s real motion.`,
   },
   {
     '@type': 'FAQPage',
@@ -136,8 +141,8 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Full Moon Calendar 2026 & 2027: Dates, Signs, Names | Zodiacs.org"
-  description="Every full moon in 2026 and 2027: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name, Wolf to Cold, blue moon included."
+  title="Full Moon Calendar 2026 to 2030: Dates, Signs, Names | Zodiacs.org"
+  description="Every full moon from 2026 through 2030: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name, Wolf to Cold, blue moon included."
   path="/full-moon-calendar/"
   image="/assets/og/v2/tool/full-moon-calendar.png"
   imageAlt="Full moon calendar, Zodiacs.org"
@@ -146,10 +151,10 @@ const jsonLd = [
 >
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
-      <h1 class="display">Find every full moon through 2027.</h1>
+      <h1 class="display">Find every full moon through {lastYear}.</h1>
       <p>
         Each row below is the exact instant the <a href="/learn/glossary/#moon">Moon</a> stands opposite the{' '}
-        <a href="/learn/glossary/#sun">Sun</a>, timed to within a minute through the end of 2027, with the{' '}
+        <a href="/learn/glossary/#sun">Sun</a>, timed to within a minute through the end of {lastYear}, with the{' '}
         <a href="/learn/glossary/#zodiac-sign">sign</a> it happens in and the name the almanacs gave it.
       </p>
     </div>

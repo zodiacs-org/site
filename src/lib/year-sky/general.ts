@@ -10,6 +10,7 @@ import { degreeInSign } from '../signs';
 import { yearSkyWords } from './copy';
 import { EDITION_YEAR, inYear, yearWindow } from './edition';
 import type { YearMoment } from './types';
+import { isInvisiblePenumbral, penumbralMagnitude } from '../nasa-lunar-eclipses';
 
 export interface SkyRetrograde {
   planet: string;
@@ -77,7 +78,10 @@ export function generalSky(input: GeneralSkyInput, locale: CatalogLocale = 'en',
       body: e.type === 'solar' ? 'Sun' : 'Moon',
       at: e.peak,
       title: w.eclipseTitle(e.type, e.kind),
-      line: w.eclipseLine(e.type, e.kind, `${Math.floor(degreeInSign(e.lon))}°`, w.signName(e.sign)),
+      line: w.eclipseLine(
+        e.type, e.kind, `${Math.floor(degreeInSign(e.lon))}°`, w.signName(e.sign),
+        e.type === 'lunar' && isInvisiblePenumbral(e.peak, e.kind) ? penumbralMagnitude(e.peak) ?? undefined : undefined,
+      ),
       detail: w.day(e.peak, year),
       confidence: null,
       weight: e.kind === 'penumbral' ? 2 : 3,

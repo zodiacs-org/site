@@ -96,7 +96,8 @@ export interface YearSkyWords {
 
   // ── The sky everyone shares ──────────────────────────────────────────
   eclipseTitle: (type: 'solar' | 'lunar', kind: string) => string;
-  eclipseLine: (type: 'solar' | 'lunar', kind: string, degree: string, sign: string) => string;
+  /** unseen: NASA's penumbral magnitude of an eclipse too slight to be seen (src/lib/nasa-lunar-eclipses.ts). */
+  eclipseLine: (type: 'solar' | 'lunar', kind: string, degree: string, sign: string, unseen?: number) => string;
   retrogradeTitle: (planet: string) => string;
   retrogradeLine: (planet: string) => string;
   retrogradeDetail: (range: string, sign: string, shadow: string | null) => string;
@@ -315,9 +316,9 @@ const en: YearSkyWords = {
   pointName,
 
   eclipseTitle: (type, kind) => `${cap(kind)} ${type} eclipse`,
-  eclipseLine: (type, kind, degree, sign) => type === 'solar'
+  eclipseLine: (type, kind, degree, sign, unseen) => type === 'solar'
     ? `A new Moon with extra weight at ${degree} ${sign}. Astrologers read solar eclipses as beginnings that arrive sooner than planned.${kind === 'total' ? ' This one is total: the Moon covers the whole Sun along its path.' : ''}`
-    : `A full Moon with extra weight at ${degree} ${sign}. Lunar eclipses are read as endings and clear-outs.${kind === 'penumbral' ? ' This one is penumbral, faint to the eye.' : ''}`,
+    : `A full Moon with extra weight at ${degree} ${sign}. Lunar eclipses are read as endings and clear-outs.${unseen ? ` This one is penumbral and so slight that no eye or camera will see it: NASA gives it a penumbral magnitude of ${unseen}.` : kind === 'penumbral' ? ' This one is penumbral, faint to the eye.' : ''}`,
   retrogradeTitle: (planet) => `${planet} retrograde`,
   retrogradeLine: (planet) => RETROGRADE_LINE_EN[planet] ?? `${planet} appears to move backwards for a while.`,
   retrogradeDetail: (range, sign, shadow) => `${range}${sign ? `, in ${sign}` : ''}.${shadow ? ` The shadow runs ${shadow}.` : ''}`,

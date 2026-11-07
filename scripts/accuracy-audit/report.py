@@ -48,6 +48,9 @@ def cause_of(r):
     if 'minute-boundary tie' in note:
         return 'tie'
     if cat == 'position' and src.startswith('/birthday/'):
+        past = re.search(r'NASA value (-?[\d.]+) arcsec past', note)
+        if past and min(float(past.group(1)), 60 - float(past.group(1))) <= 10:
+            return 'tie'
         return 'store-2dp'
     if cat == 'natal-page-degree':
         return 'double-round'

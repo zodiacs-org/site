@@ -33,9 +33,9 @@
     "mismatch": 0
    },
    "degree-display": {
-    "checked": 6,
+    "checked": 7,
     "match": 0,
-    "mismatch": 6
+    "mismatch": 7
    },
    "eclipse-duration": {
     "checked": 4,
@@ -113,9 +113,9 @@
     "mismatch": 0
    }
   },
-  "checked": 9366,
+  "checked": 9367,
   "match": 8618,
-  "mismatch": 748
+  "mismatch": 749
  },
  "pages.json": {
   "title": "Built pages (what the site says)",
@@ -155,6 +155,16 @@
     "match": 95,
     "mismatch": 0
    },
+   "eclipse-duration": {
+    "checked": 8,
+    "match": 8,
+    "mismatch": 0
+   },
+   "eclipse-note": {
+    "checked": 3,
+    "match": 3,
+    "mismatch": 0
+   },
    "eclipse-type": {
     "checked": 24,
     "match": 24,
@@ -176,9 +186,9 @@
     "mismatch": 0
    },
    "margin": {
-    "checked": 313,
-    "match": 303,
-    "mismatch": 10
+    "checked": 311,
+    "match": 311,
+    "mismatch": 0
    },
    "moon-ingress": {
     "checked": 41,
@@ -186,14 +196,14 @@
     "mismatch": 0
    },
    "moon-sign": {
-    "checked": 415,
+    "checked": 427,
     "match": 415,
-    "mismatch": 0
+    "mismatch": 12
    },
    "position": {
     "checked": 1754,
-    "match": 1568,
-    "mismatch": 186
+    "match": 1724,
+    "mismatch": 30
    },
    "prose-aspect": {
     "checked": 14,
@@ -207,8 +217,8 @@
    },
    "prose-ingress": {
     "checked": 137,
-    "match": 136,
-    "mismatch": 1
+    "match": 137,
+    "mismatch": 0
    },
    "prose-ingress-month": {
     "checked": 4,
@@ -257,13 +267,13 @@
    },
    "window-date": {
     "checked": 634,
-    "match": 618,
-    "mismatch": 16
+    "match": 634,
+    "mismatch": 0
    }
   },
-  "checked": 8870,
-  "match": 8657,
-  "mismatch": 213
+  "checked": 8891,
+  "match": 8849,
+  "mismatch": 42
  },
  "people.json": {
   "title": "People charts (src/data/people.json and /people/ pages)",
@@ -285,8 +295,8 @@
    },
    "natal-page-degree": {
     "checked": 2397,
-    "match": 2368,
-    "mismatch": 29
+    "match": 2397,
+    "mismatch": 0
    },
    "natal-position": {
     "checked": 5010,
@@ -295,20 +305,17 @@
    }
   },
   "checked": 18368,
-  "match": 18185,
-  "mismatch": 183
+  "match": 18214,
+  "mismatch": 154
  },
  "byCause": {
   "data.json/engine-slow": 738,
   "data.json/rounded": 2,
   "data.json/shadow-model": 2,
-  "data.json/tie": 6,
+  "data.json/tie": 7,
   "pages.json/eclipse-lon": 1,
-  "pages.json/engine-slow": 17,
-  "pages.json/margin": 10,
-  "pages.json/store-2dp": 132,
-  "pages.json/tie": 53,
-  "people.json/double-round": 29,
+  "pages.json/other": 12,
+  "pages.json/tie": 29,
   "people.json/engine-old": 153,
   "people.json/tie": 1
  }

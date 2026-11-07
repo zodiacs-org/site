@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { CATALOG_LOCALES, type CatalogLocale } from '../../lib/i18n/core';
-import { skyCalendarResponse } from '../../lib/return-visits/sky-calendar';
+import { siteSkyCalendarResponse } from '../../lib/sky-calendar-feed';
 export const prerender = true;
 export function getStaticPaths() { return CATALOG_LOCALES.filter((locale) => locale !== 'en').map((locale) => ({ params: { returnLocale: locale } })); }
-export const GET: APIRoute = ({ params }) => skyCalendarResponse(params.returnLocale as CatalogLocale);
+export const GET: APIRoute = ({ params }) => siteSkyCalendarResponse(params.returnLocale as CatalogLocale);

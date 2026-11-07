@@ -222,9 +222,9 @@ export const YEAR_SKY_WORDS_FR: YearSkyWords = defineYearSkyWords('fr', {
   pointName,
 
   eclipseTitle: (type, kind) => `Éclipse ${type === 'solar' ? 'solaire' : 'lunaire'} ${kindOf(kind)}`,
-  eclipseLine: (type, kind, degree, sign) => type === 'solar'
+  eclipseLine: (type, kind, degree, sign, unseen) => type === 'solar'
     ? `Une nouvelle Lune au poids particulier, à ${degree} en ${sign}. Les astrologues lisent les éclipses solaires comme des débuts qui arrivent plus tôt que prévu.${kind === 'total' ? ' Celle-ci est totale : la Lune couvre tout le Soleil le long de sa bande.' : ''}`
-    : `Une pleine Lune au poids particulier, à ${degree} en ${sign}. Les éclipses lunaires se lisent comme des fins et des grands rangements.${kind === 'penumbral' ? ' Celle-ci est pénombrale, à peine visible à l’œil nu.' : ''}`,
+    : `Une pleine Lune au poids particulier, à ${degree} en ${sign}. Les éclipses lunaires se lisent comme des fins et des grands rangements.${unseen ? ` Celle-ci est pénombrale et si faible qu’aucun œil ni aucun appareil photo ne la verra : la NASA lui donne une magnitude de ${String(unseen).replace('.', ',')}.` : kind === 'penumbral' ? ' Celle-ci est pénombrale, à peine visible à l’œil nu.' : ''}`,
   retrogradeTitle: (planet) => `${P(planet)} rétrograde`,
   retrogradeLine: (planet) => RETROGRADE_LINE[planet] ?? `${P(planet)} semble reculer pendant un temps.`,
   retrogradeDetail: (range, sign, shadow) => `${cap(range)}${sign ? `, en ${sign}` : ''}.${shadow ? ` L’ombre va ${shadow}.` : ''}`,

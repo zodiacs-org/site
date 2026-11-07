@@ -18,9 +18,10 @@ import { HERO_CROP_SIZE, heroCropAlt, heroCropSrc, heroCropSrcset } from '../../
 import { birthdayGrowthLine, birthdayPull, parseBirthdayBody } from '../../lib/birthday-reading';
 import {
   birthdaySlug, birthdayLabel, prevDate, nextDate, MONTH_NAMES,
-  decanSpan, decanOrdinal, cuspSummary, cuspYearReading, boundaryDistance,
+  decanSpan, decanOrdinal, cuspSummary, cuspYearReading,
   type BirthdayEntry,
 } from '../../lib/birthdays';
+import { boundaryMargin, preciseBirthdayEntry } from '../../lib/birthday-degrees';
 import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
@@ -52,8 +53,9 @@ const slug = entry.id;
 const label = birthdayLabel(month, day);
 const { Content, headings } = await render(entry);
 
-const data = (birthdays.days as Record<string, BirthdayEntry>)[slug];
-if (!data) throw new Error(`No computed data for ${slug} — rerun scripts/build-birthdays.mjs`);
+const rounded = (birthdays.days as Record<string, BirthdayEntry>)[slug];
+if (!rounded) throw new Error(`No computed data for ${slug} — rerun scripts/build-birthdays.mjs`);
+const data = preciseBirthdayEntry(slug, rounded);
 const [yearFrom, yearTo] = birthdays.yearRange as [number, number];
 
 // ── Computed facts ─────────────────────────────────────────────────────
@@ -65,7 +67,7 @@ const spanLabel = `${formatLongitude(data.lonMin)} to ${formatLongitude(data.lon
 const moonSign = signBySlug(data.now.moonSign);
 
 // Nearest-boundary honesty for non-cusp dates.
-const dist = sign ? boundaryDistance(data) : 0;
+const dist = sign ? boundaryMargin(data) : 0;
 const inLo = ((data.lonMin % 360) + 360) % 360 % 30;
 const nearPrev = sign ? inLo <= 30 - (((data.lonMax % 360) + 360) % 360 % 30) : false;
 

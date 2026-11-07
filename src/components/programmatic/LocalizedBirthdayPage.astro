@@ -20,6 +20,7 @@ import {
   type BirthdayEntry,
 } from '../../lib/birthdays';
 import birthdays from '../../data/birthdays.json';
+import { preciseBirthdayEntry } from '../../lib/birthday-degrees';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_HERO_SIZES, signArtSrc, signArtSrcset } from '../../lib/sign-art';
@@ -57,8 +58,9 @@ const text = (key: Parameters<typeof birthdayText>[1], values: Record<string, st
   birthdayText(locale, key, values)
 );
 
-const data = (birthdays.days as Record<string, BirthdayEntry>)[slug];
-if (!data) throw new Error(`No computed data for ${slug} — rerun scripts/build-birthdays.mjs`);
+const rounded = (birthdays.days as Record<string, BirthdayEntry>)[slug];
+if (!rounded) throw new Error(`No computed data for ${slug} — rerun scripts/build-birthdays.mjs`);
+const data = preciseBirthdayEntry(slug, rounded);
 const [yearFrom, yearTo] = birthdays.yearRange as [number, number];
 const sign = data.sign ? signBySlug(data.sign) : null;
 const cusp = data.cusp ? cuspSummary(data.cusp) : null;

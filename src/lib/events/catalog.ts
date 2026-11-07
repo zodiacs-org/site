@@ -26,6 +26,7 @@ import { NASA_INSTANT_SOURCE, nasaAspectAt, nasaIngressAt, nasaStationAt } from 
 import type { CatalogEvent, EventFacts, EventLink } from './types';
 import { FIXTURE_EVENTS } from './fixtures';
 import { interpretationFor } from './interpretations';
+import { lunarTotalityMinutes } from '../nasa-lunar-eclipses';
 
 /** Planets whose ingresses and mutual aspects carry a standalone page. */
 export const SLOW_BODIES = ['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
@@ -145,7 +146,8 @@ function eclipseFacts(): EventFacts[] {
       longitude: eclipse.lon,
       eclipseKind: eclipse.kind,
       obscuration: eclipse.obscuration,
-      totalMinutes: eclipse.totalMinutes,
+      // NASA's canon length of totality, rounded to the minute (src/lib/nasa-lunar-eclipses.ts).
+      totalMinutes: eclipse.type === 'lunar' ? lunarTotalityMinutes(eclipse.peak, eclipse.totalMinutes) : eclipse.totalMinutes,
       provenance: { source: 'eclipses.json' as const, generatedAt: eclipsesData.generatedAt },
     };
     return {

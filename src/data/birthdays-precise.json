@@ -1,0 +1,1840 @@
+{
+ "note": "Noon-UTC Sun longitudes to four decimals for the website birthday pages; birthdays.json holds the same values to 0.01 for the AI tools.",
+ "yearRange": [
+  1940,
+  2030
+ ],
+ "nowYear": 2026,
+ "days": {
+  "january-1": {
+   "lonMin": 279.929,
+   "lonMax": 281.3614,
+   "nowLon": 281.0781
+  },
+  "january-2": {
+   "lonMin": 280.9482,
+   "lonMax": 282.3803,
+   "nowLon": 282.0969
+  },
+  "january-3": {
+   "lonMin": 281.9676,
+   "lonMax": 283.3992,
+   "nowLon": 283.1158
+  },
+  "january-4": {
+   "lonMin": 282.987,
+   "lonMax": 284.4182,
+   "nowLon": 284.1347
+  },
+  "january-5": {
+   "lonMin": 284.0065,
+   "lonMax": 285.4371,
+   "nowLon": 285.1535
+  },
+  "january-6": {
+   "lonMin": 285.0261,
+   "lonMax": 286.4562,
+   "nowLon": 286.1724
+  },
+  "january-7": {
+   "lonMin": 286.0457,
+   "lonMax": 287.4753,
+   "nowLon": 287.1913
+  },
+  "january-8": {
+   "lonMin": 287.0653,
+   "lonMax": 288.4944,
+   "nowLon": 288.2101
+  },
+  "january-9": {
+   "lonMin": 288.0849,
+   "lonMax": 289.5136,
+   "nowLon": 289.229
+  },
+  "january-10": {
+   "lonMin": 289.1044,
+   "lonMax": 290.5328,
+   "nowLon": 290.2479
+  },
+  "january-11": {
+   "lonMin": 290.1239,
+   "lonMax": 291.5519,
+   "nowLon": 291.2668
+  },
+  "january-12": {
+   "lonMin": 291.1432,
+   "lonMax": 292.5711,
+   "nowLon": 292.2858
+  },
+  "january-13": {
+   "lonMin": 292.1623,
+   "lonMax": 293.5902,
+   "nowLon": 293.3047
+  },
+  "january-14": {
+   "lonMin": 293.1813,
+   "lonMax": 294.6093,
+   "nowLon": 294.3236
+  },
+  "january-15": {
+   "lonMin": 294.2001,
+   "lonMax": 295.6282,
+   "nowLon": 295.3424
+  },
+  "january-16": {
+   "lonMin": 295.2187,
+   "lonMax": 296.647,
+   "nowLon": 296.3612
+  },
+  "january-17": {
+   "lonMin": 296.2371,
+   "lonMax": 297.6656,
+   "nowLon": 297.3799
+  },
+  "january-18": {
+   "lonMin": 297.2552,
+   "lonMax": 298.684,
+   "nowLon": 298.3985
+  },
+  "january-19": {
+   "lonMin": 298.2732,
+   "lonMax": 299.7022,
+   "nowLon": 299.4169
+  },
+  "january-20": {
+   "lonMin": 299.2909,
+   "lonMax": 300.7202,
+   "nowLon": 300.4351
+  },
+  "january-21": {
+   "lonMin": 300.3084,
+   "lonMax": 301.7379,
+   "nowLon": 301.453
+  },
+  "january-22": {
+   "lonMin": 301.3257,
+   "lonMax": 302.7553,
+   "nowLon": 302.4708
+  },
+  "january-23": {
+   "lonMin": 302.3427,
+   "lonMax": 303.7725,
+   "nowLon": 303.4882
+  },
+  "january-24": {
+   "lonMin": 303.3595,
+   "lonMax": 304.7894,
+   "nowLon": 304.5054
+  },
+  "january-25": {
+   "lonMin": 304.376,
+   "lonMax": 305.806,
+   "nowLon": 305.5223
+  },
+  "january-26": {
+   "lonMin": 305.3923,
+   "lonMax": 306.8224,
+   "nowLon": 306.5389
+  },
+  "january-27": {
+   "lonMin": 306.4085,
+   "lonMax": 307.8384,
+   "nowLon": 307.5553
+  },
+  "january-28": {
+   "lonMin": 307.4244,
+   "lonMax": 308.8542,
+   "nowLon": 308.5713
+  },
+  "january-29": {
+   "lonMin": 308.4401,
+   "lonMax": 309.8697,
+   "nowLon": 309.587
+  },
+  "january-30": {
+   "lonMin": 309.4556,
+   "lonMax": 310.8849,
+   "nowLon": 310.6023
+  },
+  "january-31": {
+   "lonMin": 310.4709,
+   "lonMax": 311.8998,
+   "nowLon": 311.6174
+  },
+  "february-1": {
+   "lonMin": 311.486,
+   "lonMax": 312.9144,
+   "nowLon": 312.6321
+  },
+  "february-2": {
+   "lonMin": 312.501,
+   "lonMax": 313.9288,
+   "nowLon": 313.6466
+  },
+  "february-3": {
+   "lonMin": 313.5157,
+   "lonMax": 314.943,
+   "nowLon": 314.6607
+  },
+  "february-4": {
+   "lonMin": 314.5302,
+   "lonMax": 315.9569,
+   "nowLon": 315.6745
+  },
+  "february-5": {
+   "lonMin": 315.5444,
+   "lonMax": 316.9706,
+   "nowLon": 316.6881
+  },
+  "february-6": {
+   "lonMin": 316.5584,
+   "lonMax": 317.984,
+   "nowLon": 317.7013
+  },
+  "february-7": {
+   "lonMin": 317.572,
+   "lonMax": 318.9972,
+   "nowLon": 318.7143
+  },
+  "february-8": {
+   "lonMin": 318.5853,
+   "lonMax": 320.0102,
+   "nowLon": 319.7271
+  },
+  "february-9": {
+   "lonMin": 319.5983,
+   "lonMax": 321.0229,
+   "nowLon": 320.7395
+  },
+  "february-10": {
+   "lonMin": 320.6108,
+   "lonMax": 322.0353,
+   "nowLon": 321.7518
+  },
+  "february-11": {
+   "lonMin": 321.623,
+   "lonMax": 323.0473,
+   "nowLon": 322.7637
+  },
+  "february-12": {
+   "lonMin": 322.6347,
+   "lonMax": 324.059,
+   "nowLon": 323.7753
+  },
+  "february-13": {
+   "lonMin": 323.6459,
+   "lonMax": 325.0703,
+   "nowLon": 324.7867
+  },
+  "february-14": {
+   "lonMin": 324.6568,
+   "lonMax": 326.0813,
+   "nowLon": 325.7977
+  },
+  "february-15": {
+   "lonMin": 325.6671,
+   "lonMax": 327.0918,
+   "nowLon": 326.8083
+  },
+  "february-16": {
+   "lonMin": 326.677,
+   "lonMax": 328.1018,
+   "nowLon": 327.8185
+  },
+  "february-17": {
+   "lonMin": 327.6864,
+   "lonMax": 329.1114,
+   "nowLon": 328.8284
+  },
+  "february-18": {
+   "lonMin": 328.6953,
+   "lonMax": 330.1205,
+   "nowLon": 329.8377
+  },
+  "february-19": {
+   "lonMin": 329.7037,
+   "lonMax": 331.1292,
+   "nowLon": 330.8467
+  },
+  "february-20": {
+   "lonMin": 330.7116,
+   "lonMax": 332.1373,
+   "nowLon": 331.8551
+  },
+  "february-21": {
+   "lonMin": 331.719,
+   "lonMax": 333.145,
+   "nowLon": 332.8631
+  },
+  "february-22": {
+   "lonMin": 332.726,
+   "lonMax": 334.1521,
+   "nowLon": 333.8705
+  },
+  "february-23": {
+   "lonMin": 333.7324,
+   "lonMax": 335.1587,
+   "nowLon": 334.8775
+  },
+  "february-24": {
+   "lonMin": 334.7384,
+   "lonMax": 336.1647,
+   "nowLon": 335.8839
+  },
+  "february-25": {
+   "lonMin": 335.7439,
+   "lonMax": 337.1702,
+   "nowLon": 336.8898
+  },
+  "february-26": {
+   "lonMin": 336.7491,
+   "lonMax": 338.1752,
+   "nowLon": 337.8952
+  },
+  "february-27": {
+   "lonMin": 337.7537,
+   "lonMax": 339.1797,
+   "nowLon": 338.9
+  },
+  "february-28": {
+   "lonMin": 338.758,
+   "lonMax": 340.1837,
+   "nowLon": 339.9042
+  },
+  "february-29": {
+   "lonMin": 339.7619,
+   "lonMax": 340.4275,
+   "nowLon": 340.4275
+  },
+  "march-1": {
+   "lonMin": 340.0297,
+   "lonMax": 341.4315,
+   "nowLon": 340.9079
+  },
+  "march-2": {
+   "lonMin": 341.0332,
+   "lonMax": 342.4349,
+   "nowLon": 341.9111
+  },
+  "march-3": {
+   "lonMin": 342.0363,
+   "lonMax": 343.4378,
+   "nowLon": 342.9137
+  },
+  "march-4": {
+   "lonMin": 343.039,
+   "lonMax": 344.4402,
+   "nowLon": 343.9158
+  },
+  "march-5": {
+   "lonMin": 344.0412,
+   "lonMax": 345.4419,
+   "nowLon": 344.9174
+  },
+  "march-6": {
+   "lonMin": 345.0428,
+   "lonMax": 346.443,
+   "nowLon": 345.9186
+  },
+  "march-7": {
+   "lonMin": 346.044,
+   "lonMax": 347.4436,
+   "nowLon": 346.9192
+  },
+  "march-8": {
+   "lonMin": 347.0445,
+   "lonMax": 348.4436,
+   "nowLon": 347.9195
+  },
+  "march-9": {
+   "lonMin": 348.0446,
+   "lonMax": 349.4429,
+   "nowLon": 348.9192
+  },
+  "march-10": {
+   "lonMin": 349.0441,
+   "lonMax": 350.4418,
+   "nowLon": 349.9186
+  },
+  "march-11": {
+   "lonMin": 350.043,
+   "lonMax": 351.44,
+   "nowLon": 350.9175
+  },
+  "march-12": {
+   "lonMin": 351.0413,
+   "lonMax": 352.4378,
+   "nowLon": 351.9159
+  },
+  "march-13": {
+   "lonMin": 352.039,
+   "lonMax": 353.435,
+   "nowLon": 352.9139
+  },
+  "march-14": {
+   "lonMin": 353.036,
+   "lonMax": 354.4317,
+   "nowLon": 353.9115
+  },
+  "march-15": {
+   "lonMin": 354.0325,
+   "lonMax": 355.428,
+   "nowLon": 354.9085
+  },
+  "march-16": {
+   "lonMin": 355.0283,
+   "lonMax": 356.4238,
+   "nowLon": 355.905
+  },
+  "march-17": {
+   "lonMin": 356.0235,
+   "lonMax": 357.4191,
+   "nowLon": 356.901
+  },
+  "march-18": {
+   "lonMin": 357.0181,
+   "lonMax": 358.414,
+   "nowLon": 357.8964
+  },
+  "march-19": {
+   "lonMin": 358.012,
+   "lonMax": 359.4084,
+   "nowLon": 358.8913
+  },
+  "march-20": {
+   "lonMin": 359.0054,
+   "lonMax": 360.4023,
+   "nowLon": 359.8856
+  },
+  "march-21": {
+   "lonMin": -0.0018,
+   "lonMax": 1.3957,
+   "nowLon": 0.8794
+  },
+  "march-22": {
+   "lonMin": 0.9904,
+   "lonMax": 2.3886,
+   "nowLon": 1.8725
+  },
+  "march-23": {
+   "lonMin": 1.9821,
+   "lonMax": 3.3809,
+   "nowLon": 2.8651
+  },
+  "march-24": {
+   "lonMin": 2.9732,
+   "lonMax": 4.3728,
+   "nowLon": 3.857
+  },
+  "march-25": {
+   "lonMin": 3.9639,
+   "lonMax": 5.3641,
+   "nowLon": 4.8483
+  },
+  "march-26": {
+   "lonMin": 4.954,
+   "lonMax": 6.3548,
+   "nowLon": 5.8389
+  },
+  "march-27": {
+   "lonMin": 5.9437,
+   "lonMax": 7.3449,
+   "nowLon": 6.8289
+  },
+  "march-28": {
+   "lonMin": 6.9329,
+   "lonMax": 8.3345,
+   "nowLon": 7.8183
+  },
+  "march-29": {
+   "lonMin": 7.9216,
+   "lonMax": 9.3235,
+   "nowLon": 8.8069
+  },
+  "march-30": {
+   "lonMin": 8.9099,
+   "lonMax": 10.3118,
+   "nowLon": 9.795
+  },
+  "march-31": {
+   "lonMin": 9.8976,
+   "lonMax": 11.2996,
+   "nowLon": 10.7824
+  },
+  "april-1": {
+   "lonMin": 10.8848,
+   "lonMax": 12.2867,
+   "nowLon": 11.7693
+  },
+  "april-2": {
+   "lonMin": 11.8715,
+   "lonMax": 13.2731,
+   "nowLon": 12.7555
+  },
+  "april-3": {
+   "lonMin": 12.8576,
+   "lonMax": 14.2589,
+   "nowLon": 13.7412
+  },
+  "april-4": {
+   "lonMin": 13.8432,
+   "lonMax": 15.244,
+   "nowLon": 14.7264
+  },
+  "april-5": {
+   "lonMin": 14.8283,
+   "lonMax": 16.2285,
+   "nowLon": 15.711
+  },
+  "april-6": {
+   "lonMin": 15.8127,
+   "lonMax": 17.2123,
+   "nowLon": 16.6952
+  },
+  "april-7": {
+   "lonMin": 16.7967,
+   "lonMax": 18.1956,
+   "nowLon": 17.6788
+  },
+  "april-8": {
+   "lonMin": 17.78,
+   "lonMax": 19.1782,
+   "nowLon": 18.662
+  },
+  "april-9": {
+   "lonMin": 18.7627,
+   "lonMax": 20.1602,
+   "nowLon": 19.6447
+  },
+  "april-10": {
+   "lonMin": 19.7448,
+   "lonMax": 21.1417,
+   "nowLon": 20.6269
+  },
+  "april-11": {
+   "lonMin": 20.7263,
+   "lonMax": 22.1227,
+   "nowLon": 21.6086
+  },
+  "april-12": {
+   "lonMin": 21.7071,
+   "lonMax": 23.1031,
+   "nowLon": 22.5898
+  },
+  "april-13": {
+   "lonMin": 22.6873,
+   "lonMax": 24.0831,
+   "nowLon": 23.5706
+  },
+  "april-14": {
+   "lonMin": 23.6669,
+   "lonMax": 25.0625,
+   "nowLon": 24.5508
+  },
+  "april-15": {
+   "lonMin": 24.6458,
+   "lonMax": 26.0415,
+   "nowLon": 25.5305
+  },
+  "april-16": {
+   "lonMin": 25.6241,
+   "lonMax": 27.02,
+   "nowLon": 26.5097
+  },
+  "april-17": {
+   "lonMin": 26.6018,
+   "lonMax": 27.9981,
+   "nowLon": 27.4883
+  },
+  "april-18": {
+   "lonMin": 27.5789,
+   "lonMax": 28.9757,
+   "nowLon": 28.4665
+  },
+  "april-19": {
+   "lonMin": 28.5554,
+   "lonMax": 29.9528,
+   "nowLon": 29.444
+  },
+  "april-20": {
+   "lonMin": 29.5314,
+   "lonMax": 30.9294,
+   "nowLon": 30.4211
+  },
+  "april-21": {
+   "lonMin": 30.5069,
+   "lonMax": 31.9055,
+   "nowLon": 31.3975
+  },
+  "april-22": {
+   "lonMin": 31.4819,
+   "lonMax": 32.8812,
+   "nowLon": 32.3733
+  },
+  "april-23": {
+   "lonMin": 32.4565,
+   "lonMax": 33.8563,
+   "nowLon": 33.3486
+  },
+  "april-24": {
+   "lonMin": 33.4306,
+   "lonMax": 34.831,
+   "nowLon": 34.3232
+  },
+  "april-25": {
+   "lonMin": 34.4042,
+   "lonMax": 35.8051,
+   "nowLon": 35.2972
+  },
+  "april-26": {
+   "lonMin": 35.3774,
+   "lonMax": 36.7788,
+   "nowLon": 36.2706
+  },
+  "april-27": {
+   "lonMin": 36.3501,
+   "lonMax": 37.7519,
+   "nowLon": 37.2435
+  },
+  "april-28": {
+   "lonMin": 37.3224,
+   "lonMax": 38.7244,
+   "nowLon": 38.2157
+  },
+  "april-29": {
+   "lonMin": 38.2943,
+   "lonMax": 39.6964,
+   "nowLon": 39.1874
+  },
+  "april-30": {
+   "lonMin": 39.2658,
+   "lonMax": 40.6678,
+   "nowLon": 40.1585
+  },
+  "may-1": {
+   "lonMin": 40.2368,
+   "lonMax": 41.6386,
+   "nowLon": 41.1292
+  },
+  "may-2": {
+   "lonMin": 41.2073,
+   "lonMax": 42.6089,
+   "nowLon": 42.0994
+  },
+  "may-3": {
+   "lonMin": 42.1775,
+   "lonMax": 43.5785,
+   "nowLon": 43.0691
+  },
+  "may-4": {
+   "lonMin": 43.1472,
+   "lonMax": 44.5476,
+   "nowLon": 44.0383
+  },
+  "may-5": {
+   "lonMin": 44.1164,
+   "lonMax": 45.5162,
+   "nowLon": 45.0072
+  },
+  "may-6": {
+   "lonMin": 45.0852,
+   "lonMax": 46.4842,
+   "nowLon": 45.9756
+  },
+  "may-7": {
+   "lonMin": 46.0534,
+   "lonMax": 47.4518,
+   "nowLon": 46.9437
+  },
+  "may-8": {
+   "lonMin": 47.0212,
+   "lonMax": 48.4188,
+   "nowLon": 47.9113
+  },
+  "may-9": {
+   "lonMin": 47.9885,
+   "lonMax": 49.3854,
+   "nowLon": 48.8786
+  },
+  "may-10": {
+   "lonMin": 48.9552,
+   "lonMax": 50.3516,
+   "nowLon": 49.8454
+  },
+  "may-11": {
+   "lonMin": 49.9215,
+   "lonMax": 51.3174,
+   "nowLon": 50.812
+  },
+  "may-12": {
+   "lonMin": 50.8872,
+   "lonMax": 52.2828,
+   "nowLon": 51.7781
+  },
+  "may-13": {
+   "lonMin": 51.8523,
+   "lonMax": 53.2478,
+   "nowLon": 52.7439
+  },
+  "may-14": {
+   "lonMin": 52.817,
+   "lonMax": 54.2125,
+   "nowLon": 53.7093
+  },
+  "may-15": {
+   "lonMin": 53.7812,
+   "lonMax": 55.1768,
+   "nowLon": 54.6743
+  },
+  "may-16": {
+   "lonMin": 54.7449,
+   "lonMax": 56.1408,
+   "nowLon": 55.639
+  },
+  "may-17": {
+   "lonMin": 55.7082,
+   "lonMax": 57.1044,
+   "nowLon": 56.6033
+  },
+  "may-18": {
+   "lonMin": 56.671,
+   "lonMax": 58.0677,
+   "nowLon": 57.5671
+  },
+  "may-19": {
+   "lonMin": 57.6335,
+   "lonMax": 59.0307,
+   "nowLon": 58.5306
+  },
+  "may-20": {
+   "lonMin": 58.5956,
+   "lonMax": 59.9933,
+   "nowLon": 59.4936
+  },
+  "may-21": {
+   "lonMin": 59.5573,
+   "lonMax": 60.9557,
+   "nowLon": 60.4562
+  },
+  "may-22": {
+   "lonMin": 60.5188,
+   "lonMax": 61.9177,
+   "nowLon": 61.4183
+  },
+  "may-23": {
+   "lonMin": 61.4799,
+   "lonMax": 62.8795,
+   "nowLon": 62.38
+  },
+  "may-24": {
+   "lonMin": 62.4407,
+   "lonMax": 63.8408,
+   "nowLon": 63.3412
+  },
+  "may-25": {
+   "lonMin": 63.4012,
+   "lonMax": 64.8019,
+   "nowLon": 64.302
+  },
+  "may-26": {
+   "lonMin": 64.3614,
+   "lonMax": 65.7625,
+   "nowLon": 65.2623
+  },
+  "may-27": {
+   "lonMin": 65.3214,
+   "lonMax": 66.7228,
+   "nowLon": 66.2223
+  },
+  "may-28": {
+   "lonMin": 66.2811,
+   "lonMax": 67.6827,
+   "nowLon": 67.1819
+  },
+  "may-29": {
+   "lonMin": 67.2406,
+   "lonMax": 68.6422,
+   "nowLon": 68.1411
+  },
+  "may-30": {
+   "lonMin": 68.1999,
+   "lonMax": 69.6013,
+   "nowLon": 69.1
+  },
+  "may-31": {
+   "lonMin": 69.1589,
+   "lonMax": 70.56,
+   "nowLon": 70.0586
+  },
+  "june-1": {
+   "lonMin": 70.1177,
+   "lonMax": 71.5183,
+   "nowLon": 71.0169
+  },
+  "june-2": {
+   "lonMin": 71.0762,
+   "lonMax": 72.4763,
+   "nowLon": 71.9749
+  },
+  "june-3": {
+   "lonMin": 72.0345,
+   "lonMax": 73.4339,
+   "nowLon": 72.9327
+  },
+  "june-4": {
+   "lonMin": 72.9925,
+   "lonMax": 74.3911,
+   "nowLon": 73.8903
+  },
+  "june-5": {
+   "lonMin": 73.9502,
+   "lonMax": 75.3481,
+   "nowLon": 74.8476
+  },
+  "june-6": {
+   "lonMin": 74.9076,
+   "lonMax": 76.3048,
+   "nowLon": 75.8048
+  },
+  "june-7": {
+   "lonMin": 75.8647,
+   "lonMax": 77.2613,
+   "nowLon": 76.7617
+  },
+  "june-8": {
+   "lonMin": 76.8215,
+   "lonMax": 78.2175,
+   "nowLon": 77.7185
+  },
+  "june-9": {
+   "lonMin": 77.778,
+   "lonMax": 79.1735,
+   "nowLon": 78.6752
+  },
+  "june-10": {
+   "lonMin": 78.7342,
+   "lonMax": 80.1293,
+   "nowLon": 79.6317
+  },
+  "june-11": {
+   "lonMin": 79.6901,
+   "lonMax": 81.085,
+   "nowLon": 80.588
+  },
+  "june-12": {
+   "lonMin": 80.6457,
+   "lonMax": 82.0404,
+   "nowLon": 81.5443
+  },
+  "june-13": {
+   "lonMin": 81.601,
+   "lonMax": 82.9958,
+   "nowLon": 82.5003
+  },
+  "june-14": {
+   "lonMin": 82.5561,
+   "lonMax": 83.951,
+   "nowLon": 83.4562
+  },
+  "june-15": {
+   "lonMin": 83.5109,
+   "lonMax": 84.9061,
+   "nowLon": 84.412
+  },
+  "june-16": {
+   "lonMin": 84.4656,
+   "lonMax": 85.8611,
+   "nowLon": 85.3676
+  },
+  "june-17": {
+   "lonMin": 85.4201,
+   "lonMax": 86.8161,
+   "nowLon": 86.323
+  },
+  "june-18": {
+   "lonMin": 86.3744,
+   "lonMax": 87.771,
+   "nowLon": 87.2781
+  },
+  "june-19": {
+   "lonMin": 87.3286,
+   "lonMax": 88.7258,
+   "nowLon": 88.2331
+  },
+  "june-20": {
+   "lonMin": 88.2827,
+   "lonMax": 89.6805,
+   "nowLon": 89.1878
+  },
+  "june-21": {
+   "lonMin": 89.2366,
+   "lonMax": 90.6351,
+   "nowLon": 90.1423
+  },
+  "june-22": {
+   "lonMin": 90.1905,
+   "lonMax": 91.5896,
+   "nowLon": 91.0967
+  },
+  "june-23": {
+   "lonMin": 91.1444,
+   "lonMax": 92.5441,
+   "nowLon": 92.0508
+  },
+  "june-24": {
+   "lonMin": 92.0982,
+   "lonMax": 93.4984,
+   "nowLon": 93.0047
+  },
+  "june-25": {
+   "lonMin": 93.052,
+   "lonMax": 94.4525,
+   "nowLon": 93.9585
+  },
+  "june-26": {
+   "lonMin": 94.0058,
+   "lonMax": 95.4065,
+   "nowLon": 94.9122
+  },
+  "june-27": {
+   "lonMin": 94.9596,
+   "lonMax": 96.3604,
+   "nowLon": 95.8657
+  },
+  "june-28": {
+   "lonMin": 95.9134,
+   "lonMax": 97.3141,
+   "nowLon": 96.8191
+  },
+  "june-29": {
+   "lonMin": 96.8672,
+   "lonMax": 98.2677,
+   "nowLon": 97.7724
+  },
+  "june-30": {
+   "lonMin": 97.8211,
+   "lonMax": 99.2212,
+   "nowLon": 98.7257
+  },
+  "july-1": {
+   "lonMin": 98.7749,
+   "lonMax": 100.1745,
+   "nowLon": 99.679
+  },
+  "july-2": {
+   "lonMin": 99.7288,
+   "lonMax": 101.1277,
+   "nowLon": 100.6322
+  },
+  "july-3": {
+   "lonMin": 100.6826,
+   "lonMax": 102.0809,
+   "nowLon": 101.5854
+  },
+  "july-4": {
+   "lonMin": 101.6364,
+   "lonMax": 103.034,
+   "nowLon": 102.5387
+  },
+  "july-5": {
+   "lonMin": 102.5902,
+   "lonMax": 103.9871,
+   "nowLon": 103.492
+  },
+  "july-6": {
+   "lonMin": 103.5439,
+   "lonMax": 104.9402,
+   "nowLon": 104.4454
+  },
+  "july-7": {
+   "lonMin": 104.4975,
+   "lonMax": 105.8933,
+   "nowLon": 105.3989
+  },
+  "july-8": {
+   "lonMin": 105.4511,
+   "lonMax": 106.8463,
+   "nowLon": 106.3525
+  },
+  "july-9": {
+   "lonMin": 106.4046,
+   "lonMax": 107.7995,
+   "nowLon": 107.3062
+  },
+  "july-10": {
+   "lonMin": 107.3581,
+   "lonMax": 108.7527,
+   "nowLon": 108.26
+  },
+  "july-11": {
+   "lonMin": 108.3116,
+   "lonMax": 109.706,
+   "nowLon": 109.2139
+  },
+  "july-12": {
+   "lonMin": 109.2651,
+   "lonMax": 110.6594,
+   "nowLon": 110.168
+  },
+  "july-13": {
+   "lonMin": 110.2186,
+   "lonMax": 111.6129,
+   "nowLon": 111.1221
+  },
+  "july-14": {
+   "lonMin": 111.1721,
+   "lonMax": 112.5666,
+   "nowLon": 112.0764
+  },
+  "july-15": {
+   "lonMin": 112.1257,
+   "lonMax": 113.5205,
+   "nowLon": 113.0307
+  },
+  "july-16": {
+   "lonMin": 113.0793,
+   "lonMax": 114.4746,
+   "nowLon": 113.9851
+  },
+  "july-17": {
+   "lonMin": 114.033,
+   "lonMax": 115.4289,
+   "nowLon": 114.9395
+  },
+  "july-18": {
+   "lonMin": 114.9868,
+   "lonMax": 116.3833,
+   "nowLon": 115.894
+  },
+  "july-19": {
+   "lonMin": 115.9408,
+   "lonMax": 117.338,
+   "nowLon": 116.8486
+  },
+  "july-20": {
+   "lonMin": 116.8948,
+   "lonMax": 118.2928,
+   "nowLon": 117.8032
+  },
+  "july-21": {
+   "lonMin": 117.8491,
+   "lonMax": 119.2478,
+   "nowLon": 118.7578
+  },
+  "july-22": {
+   "lonMin": 118.8036,
+   "lonMax": 120.2029,
+   "nowLon": 119.7125
+  },
+  "july-23": {
+   "lonMin": 119.7583,
+   "lonMax": 121.1581,
+   "nowLon": 120.6674
+  },
+  "july-24": {
+   "lonMin": 120.7132,
+   "lonMax": 122.1135,
+   "nowLon": 121.6223
+  },
+  "july-25": {
+   "lonMin": 121.6684,
+   "lonMax": 123.069,
+   "nowLon": 122.5773
+  },
+  "july-26": {
+   "lonMin": 122.6239,
+   "lonMax": 124.0246,
+   "nowLon": 123.5324
+  },
+  "july-27": {
+   "lonMin": 123.5796,
+   "lonMax": 124.9804,
+   "nowLon": 124.4877
+  },
+  "july-28": {
+   "lonMin": 124.5357,
+   "lonMax": 125.9363,
+   "nowLon": 125.4431
+  },
+  "july-29": {
+   "lonMin": 125.492,
+   "lonMax": 126.8923,
+   "nowLon": 126.3987
+  },
+  "july-30": {
+   "lonMin": 126.4485,
+   "lonMax": 127.8484,
+   "nowLon": 127.3545
+  },
+  "july-31": {
+   "lonMin": 127.4053,
+   "lonMax": 128.8048,
+   "nowLon": 128.3106
+  },
+  "august-1": {
+   "lonMin": 128.3624,
+   "lonMax": 129.7613,
+   "nowLon": 129.2668
+  },
+  "august-2": {
+   "lonMin": 129.3196,
+   "lonMax": 130.7179,
+   "nowLon": 130.2234
+  },
+  "august-3": {
+   "lonMin": 130.2771,
+   "lonMax": 131.6748,
+   "nowLon": 131.1803
+  },
+  "august-4": {
+   "lonMin": 131.2348,
+   "lonMax": 132.6319,
+   "nowLon": 132.1375
+  },
+  "august-5": {
+   "lonMin": 132.1927,
+   "lonMax": 133.5892,
+   "nowLon": 133.095
+  },
+  "august-6": {
+   "lonMin": 133.1508,
+   "lonMax": 134.5468,
+   "nowLon": 134.0529
+  },
+  "august-7": {
+   "lonMin": 134.1091,
+   "lonMax": 135.5047,
+   "nowLon": 135.0112
+  },
+  "august-8": {
+   "lonMin": 135.0676,
+   "lonMax": 136.4629,
+   "nowLon": 135.9698
+  },
+  "august-9": {
+   "lonMin": 136.0264,
+   "lonMax": 137.4214,
+   "nowLon": 136.9289
+  },
+  "august-10": {
+   "lonMin": 136.9854,
+   "lonMax": 138.3803,
+   "nowLon": 137.8882
+  },
+  "august-11": {
+   "lonMin": 137.9446,
+   "lonMax": 139.3396,
+   "nowLon": 138.8479
+  },
+  "august-12": {
+   "lonMin": 138.9042,
+   "lonMax": 140.2992,
+   "nowLon": 139.808
+  },
+  "august-13": {
+   "lonMin": 139.8639,
+   "lonMax": 141.2594,
+   "nowLon": 140.7683
+  },
+  "august-14": {
+   "lonMin": 140.824,
+   "lonMax": 142.2199,
+   "nowLon": 141.729
+  },
+  "august-15": {
+   "lonMin": 141.7843,
+   "lonMax": 143.1809,
+   "nowLon": 142.6899
+  },
+  "august-16": {
+   "lonMin": 142.745,
+   "lonMax": 144.1422,
+   "nowLon": 143.6512
+  },
+  "august-17": {
+   "lonMin": 143.7061,
+   "lonMax": 145.104,
+   "nowLon": 144.6128
+  },
+  "august-18": {
+   "lonMin": 144.6675,
+   "lonMax": 146.0662,
+   "nowLon": 145.5747
+  },
+  "august-19": {
+   "lonMin": 145.6293,
+   "lonMax": 147.0288,
+   "nowLon": 146.5368
+  },
+  "august-20": {
+   "lonMin": 146.5916,
+   "lonMax": 147.9918,
+   "nowLon": 147.4993
+  },
+  "august-21": {
+   "lonMin": 147.5543,
+   "lonMax": 148.9552,
+   "nowLon": 148.4621
+  },
+  "august-22": {
+   "lonMin": 148.5175,
+   "lonMax": 149.9189,
+   "nowLon": 149.4252
+  },
+  "august-23": {
+   "lonMin": 149.4812,
+   "lonMax": 150.8829,
+   "nowLon": 150.3886
+  },
+  "august-24": {
+   "lonMin": 150.4453,
+   "lonMax": 151.8474,
+   "nowLon": 151.3524
+  },
+  "august-25": {
+   "lonMin": 151.41,
+   "lonMax": 152.8122,
+   "nowLon": 152.3165
+  },
+  "august-26": {
+   "lonMin": 152.3752,
+   "lonMax": 153.7773,
+   "nowLon": 153.2809
+  },
+  "august-27": {
+   "lonMin": 153.3408,
+   "lonMax": 154.7428,
+   "nowLon": 154.2458
+  },
+  "august-28": {
+   "lonMin": 154.3069,
+   "lonMax": 155.7087,
+   "nowLon": 155.211
+  },
+  "august-29": {
+   "lonMin": 155.2735,
+   "lonMax": 156.6749,
+   "nowLon": 156.1767
+  },
+  "august-30": {
+   "lonMin": 156.2405,
+   "lonMax": 157.6415,
+   "nowLon": 157.1428
+  },
+  "august-31": {
+   "lonMin": 157.208,
+   "lonMax": 158.6085,
+   "nowLon": 158.1095
+  },
+  "september-1": {
+   "lonMin": 158.1759,
+   "lonMax": 159.5759,
+   "nowLon": 159.0766
+  },
+  "september-2": {
+   "lonMin": 159.1442,
+   "lonMax": 160.5436,
+   "nowLon": 160.0443
+  },
+  "september-3": {
+   "lonMin": 160.113,
+   "lonMax": 161.5118,
+   "nowLon": 161.0125
+  },
+  "september-4": {
+   "lonMin": 161.0821,
+   "lonMax": 162.4804,
+   "nowLon": 161.9812
+  },
+  "september-5": {
+   "lonMin": 162.0517,
+   "lonMax": 163.4495,
+   "nowLon": 162.9506
+  },
+  "september-6": {
+   "lonMin": 163.0217,
+   "lonMax": 164.4191,
+   "nowLon": 163.9204
+  },
+  "september-7": {
+   "lonMin": 163.9922,
+   "lonMax": 165.3893,
+   "nowLon": 164.8909
+  },
+  "september-8": {
+   "lonMin": 164.963,
+   "lonMax": 166.36,
+   "nowLon": 165.8618
+  },
+  "september-9": {
+   "lonMin": 165.9342,
+   "lonMax": 167.3312,
+   "nowLon": 166.8333
+  },
+  "september-10": {
+   "lonMin": 166.9059,
+   "lonMax": 168.3031,
+   "nowLon": 167.8053
+  },
+  "september-11": {
+   "lonMin": 167.878,
+   "lonMax": 169.2755,
+   "nowLon": 168.7778
+  },
+  "september-12": {
+   "lonMin": 168.8505,
+   "lonMax": 170.2485,
+   "nowLon": 169.7508
+  },
+  "september-13": {
+   "lonMin": 169.8235,
+   "lonMax": 171.2221,
+   "nowLon": 170.7243
+  },
+  "september-14": {
+   "lonMin": 170.797,
+   "lonMax": 172.1963,
+   "nowLon": 171.6983
+  },
+  "september-15": {
+   "lonMin": 171.771,
+   "lonMax": 173.1711,
+   "nowLon": 172.6728
+  },
+  "september-16": {
+   "lonMin": 172.7456,
+   "lonMax": 174.1464,
+   "nowLon": 173.6478
+  },
+  "september-17": {
+   "lonMin": 173.7207,
+   "lonMax": 175.1223,
+   "nowLon": 174.6232
+  },
+  "september-18": {
+   "lonMin": 174.6964,
+   "lonMax": 176.0988,
+   "nowLon": 175.599
+  },
+  "september-19": {
+   "lonMin": 175.6727,
+   "lonMax": 177.0757,
+   "nowLon": 176.5754
+  },
+  "september-20": {
+   "lonMin": 176.6496,
+   "lonMax": 178.0532,
+   "nowLon": 177.5521
+  },
+  "september-21": {
+   "lonMin": 177.6272,
+   "lonMax": 179.0313,
+   "nowLon": 178.5294
+  },
+  "september-22": {
+   "lonMin": 178.6054,
+   "lonMax": 180.0098,
+   "nowLon": 179.5071
+  },
+  "september-23": {
+   "lonMin": 179.5842,
+   "lonMax": 180.9889,
+   "nowLon": 180.4852
+  },
+  "september-24": {
+   "lonMin": 180.5636,
+   "lonMax": 181.9684,
+   "nowLon": 181.4638
+  },
+  "september-25": {
+   "lonMin": 181.5436,
+   "lonMax": 182.9484,
+   "nowLon": 182.443
+  },
+  "september-26": {
+   "lonMin": 182.5242,
+   "lonMax": 183.9289,
+   "nowLon": 183.4227
+  },
+  "september-27": {
+   "lonMin": 183.5054,
+   "lonMax": 184.9099,
+   "nowLon": 184.4029
+  },
+  "september-28": {
+   "lonMin": 184.4872,
+   "lonMax": 185.8913,
+   "nowLon": 185.3837
+  },
+  "september-29": {
+   "lonMin": 185.4696,
+   "lonMax": 186.8732,
+   "nowLon": 186.3651
+  },
+  "september-30": {
+   "lonMin": 186.4525,
+   "lonMax": 187.8556,
+   "nowLon": 187.3471
+  },
+  "october-1": {
+   "lonMin": 187.436,
+   "lonMax": 188.8385,
+   "nowLon": 188.3298
+  },
+  "october-2": {
+   "lonMin": 188.42,
+   "lonMax": 189.8219,
+   "nowLon": 189.3131
+  },
+  "october-3": {
+   "lonMin": 189.4045,
+   "lonMax": 190.8058,
+   "nowLon": 190.297
+  },
+  "october-4": {
+   "lonMin": 190.3896,
+   "lonMax": 191.7903,
+   "nowLon": 191.2816
+  },
+  "october-5": {
+   "lonMin": 191.3751,
+   "lonMax": 192.7754,
+   "nowLon": 192.2668
+  },
+  "october-6": {
+   "lonMin": 192.3612,
+   "lonMax": 193.7611,
+   "nowLon": 193.2527
+  },
+  "october-7": {
+   "lonMin": 193.3477,
+   "lonMax": 194.7475,
+   "nowLon": 194.2391
+  },
+  "october-8": {
+   "lonMin": 194.3347,
+   "lonMax": 195.7344,
+   "nowLon": 195.2262
+  },
+  "october-9": {
+   "lonMin": 195.3222,
+   "lonMax": 196.7221,
+   "nowLon": 196.2139
+  },
+  "october-10": {
+   "lonMin": 196.3101,
+   "lonMax": 197.7103,
+   "nowLon": 197.2022
+  },
+  "october-11": {
+   "lonMin": 197.2986,
+   "lonMax": 198.6992,
+   "nowLon": 198.191
+  },
+  "october-12": {
+   "lonMin": 198.2876,
+   "lonMax": 199.6887,
+   "nowLon": 199.1805
+  },
+  "october-13": {
+   "lonMin": 199.2771,
+   "lonMax": 200.6789,
+   "nowLon": 200.1704
+  },
+  "october-14": {
+   "lonMin": 200.2672,
+   "lonMax": 201.6697,
+   "nowLon": 201.161
+  },
+  "october-15": {
+   "lonMin": 201.2579,
+   "lonMax": 202.6611,
+   "nowLon": 202.152
+  },
+  "october-16": {
+   "lonMin": 202.2492,
+   "lonMax": 203.6531,
+   "nowLon": 203.1436
+  },
+  "october-17": {
+   "lonMin": 203.2411,
+   "lonMax": 204.6457,
+   "nowLon": 204.1356
+  },
+  "october-18": {
+   "lonMin": 204.2336,
+   "lonMax": 205.6389,
+   "nowLon": 205.1281
+  },
+  "october-19": {
+   "lonMin": 205.2268,
+   "lonMax": 206.6327,
+   "nowLon": 206.1211
+  },
+  "october-20": {
+   "lonMin": 206.2206,
+   "lonMax": 207.627,
+   "nowLon": 207.1146
+  },
+  "october-21": {
+   "lonMin": 207.215,
+   "lonMax": 208.6218,
+   "nowLon": 208.1085
+  },
+  "october-22": {
+   "lonMin": 208.21,
+   "lonMax": 209.6172,
+   "nowLon": 209.1029
+  },
+  "october-23": {
+   "lonMin": 209.2057,
+   "lonMax": 210.613,
+   "nowLon": 210.0978
+  },
+  "october-24": {
+   "lonMin": 210.2019,
+   "lonMax": 211.6094,
+   "nowLon": 211.0932
+  },
+  "october-25": {
+   "lonMin": 211.1988,
+   "lonMax": 212.6062,
+   "nowLon": 212.0891
+  },
+  "october-26": {
+   "lonMin": 212.1963,
+   "lonMax": 213.6034,
+   "nowLon": 213.0856
+  },
+  "october-27": {
+   "lonMin": 213.1943,
+   "lonMax": 214.6011,
+   "nowLon": 214.0827
+  },
+  "october-28": {
+   "lonMin": 214.193,
+   "lonMax": 215.5993,
+   "nowLon": 215.0803
+  },
+  "october-29": {
+   "lonMin": 215.1921,
+   "lonMax": 216.5979,
+   "nowLon": 216.0785
+  },
+  "october-30": {
+   "lonMin": 216.1919,
+   "lonMax": 217.5969,
+   "nowLon": 217.0773
+  },
+  "october-31": {
+   "lonMin": 217.1921,
+   "lonMax": 218.5965,
+   "nowLon": 218.0767
+  },
+  "november-1": {
+   "lonMin": 218.1928,
+   "lonMax": 219.5965,
+   "nowLon": 219.0767
+  },
+  "november-2": {
+   "lonMin": 219.194,
+   "lonMax": 220.5971,
+   "nowLon": 220.0773
+  },
+  "november-3": {
+   "lonMin": 220.1956,
+   "lonMax": 221.5982,
+   "nowLon": 221.0784
+  },
+  "november-4": {
+   "lonMin": 221.1977,
+   "lonMax": 222.5998,
+   "nowLon": 222.0802
+  },
+  "november-5": {
+   "lonMin": 222.2001,
+   "lonMax": 223.602,
+   "nowLon": 223.0825
+  },
+  "november-6": {
+   "lonMin": 223.203,
+   "lonMax": 224.6048,
+   "nowLon": 224.0854
+  },
+  "november-7": {
+   "lonMin": 224.2063,
+   "lonMax": 225.6081,
+   "nowLon": 225.0888
+  },
+  "november-8": {
+   "lonMin": 225.21,
+   "lonMax": 226.612,
+   "nowLon": 226.0928
+  },
+  "november-9": {
+   "lonMin": 226.2142,
+   "lonMax": 227.6164,
+   "nowLon": 227.0973
+  },
+  "november-10": {
+   "lonMin": 227.2187,
+   "lonMax": 228.6214,
+   "nowLon": 228.1023
+  },
+  "november-11": {
+   "lonMin": 228.2238,
+   "lonMax": 229.6269,
+   "nowLon": 229.1078
+  },
+  "november-12": {
+   "lonMin": 229.2293,
+   "lonMax": 230.6329,
+   "nowLon": 230.1137
+  },
+  "november-13": {
+   "lonMin": 230.2352,
+   "lonMax": 231.6395,
+   "nowLon": 231.1201
+  },
+  "november-14": {
+   "lonMin": 231.2417,
+   "lonMax": 232.6466,
+   "nowLon": 232.1268
+  },
+  "november-15": {
+   "lonMin": 232.2486,
+   "lonMax": 233.6542,
+   "nowLon": 233.134
+  },
+  "november-16": {
+   "lonMin": 233.2561,
+   "lonMax": 234.6623,
+   "nowLon": 234.1415
+  },
+  "november-17": {
+   "lonMin": 234.264,
+   "lonMax": 235.6708,
+   "nowLon": 235.1493
+  },
+  "november-18": {
+   "lonMin": 235.2724,
+   "lonMax": 236.6798,
+   "nowLon": 236.1575
+  },
+  "november-19": {
+   "lonMin": 236.2814,
+   "lonMax": 237.6892,
+   "nowLon": 237.1661
+  },
+  "november-20": {
+   "lonMin": 237.2908,
+   "lonMax": 238.6989,
+   "nowLon": 238.175
+  },
+  "november-21": {
+   "lonMin": 238.3007,
+   "lonMax": 239.709,
+   "nowLon": 239.1842
+  },
+  "november-22": {
+   "lonMin": 239.3111,
+   "lonMax": 240.7195,
+   "nowLon": 240.1938
+  },
+  "november-23": {
+   "lonMin": 240.3219,
+   "lonMax": 241.7302,
+   "nowLon": 241.2039
+  },
+  "november-24": {
+   "lonMin": 241.3332,
+   "lonMax": 242.7413,
+   "nowLon": 242.2143
+  },
+  "november-25": {
+   "lonMin": 242.345,
+   "lonMax": 243.7526,
+   "nowLon": 243.2251
+  },
+  "november-26": {
+   "lonMin": 243.3572,
+   "lonMax": 244.7643,
+   "nowLon": 244.2363
+  },
+  "november-27": {
+   "lonMin": 244.3697,
+   "lonMax": 245.7762,
+   "nowLon": 245.2479
+  },
+  "november-28": {
+   "lonMin": 245.3827,
+   "lonMax": 246.7884,
+   "nowLon": 246.2599
+  },
+  "november-29": {
+   "lonMin": 246.3959,
+   "lonMax": 247.8009,
+   "nowLon": 247.2723
+  },
+  "november-30": {
+   "lonMin": 247.4095,
+   "lonMax": 248.8138,
+   "nowLon": 248.2851
+  },
+  "december-1": {
+   "lonMin": 248.4234,
+   "lonMax": 249.827,
+   "nowLon": 249.2984
+  },
+  "december-2": {
+   "lonMin": 249.4375,
+   "lonMax": 250.8405,
+   "nowLon": 250.312
+  },
+  "december-3": {
+   "lonMin": 250.4519,
+   "lonMax": 251.8543,
+   "nowLon": 251.326
+  },
+  "december-4": {
+   "lonMin": 251.4664,
+   "lonMax": 252.8685,
+   "nowLon": 252.3405
+  },
+  "december-5": {
+   "lonMin": 252.4812,
+   "lonMax": 253.883,
+   "nowLon": 253.3553
+  },
+  "december-6": {
+   "lonMin": 253.4962,
+   "lonMax": 254.8979,
+   "nowLon": 254.3704
+  },
+  "december-7": {
+   "lonMin": 254.5114,
+   "lonMax": 255.913,
+   "nowLon": 255.386
+  },
+  "december-8": {
+   "lonMin": 255.5269,
+   "lonMax": 256.9286,
+   "nowLon": 256.4018
+  },
+  "december-9": {
+   "lonMin": 256.5425,
+   "lonMax": 257.9444,
+   "nowLon": 257.4179
+  },
+  "december-10": {
+   "lonMin": 257.5584,
+   "lonMax": 258.9606,
+   "nowLon": 258.4343
+  },
+  "december-11": {
+   "lonMin": 258.5745,
+   "lonMax": 259.9771,
+   "nowLon": 259.451
+  },
+  "december-12": {
+   "lonMin": 259.5908,
+   "lonMax": 260.9939,
+   "nowLon": 260.4678
+  },
+  "december-13": {
+   "lonMin": 260.6074,
+   "lonMax": 262.0111,
+   "nowLon": 261.4848
+  },
+  "december-14": {
+   "lonMin": 261.6242,
+   "lonMax": 263.0285,
+   "nowLon": 262.5019
+  },
+  "december-15": {
+   "lonMin": 262.6412,
+   "lonMax": 264.0461,
+   "nowLon": 263.5192
+  },
+  "december-16": {
+   "lonMin": 263.6585,
+   "lonMax": 265.064,
+   "nowLon": 264.5366
+  },
+  "december-17": {
+   "lonMin": 264.676,
+   "lonMax": 266.082,
+   "nowLon": 265.554
+  },
+  "december-18": {
+   "lonMin": 265.6938,
+   "lonMax": 267.1003,
+   "nowLon": 266.5716
+  },
+  "december-19": {
+   "lonMin": 266.7118,
+   "lonMax": 268.1186,
+   "nowLon": 267.5893
+  },
+  "december-20": {
+   "lonMin": 267.73,
+   "lonMax": 269.137,
+   "nowLon": 268.6072
+  },
+  "december-21": {
+   "lonMin": 268.7485,
+   "lonMax": 270.1555,
+   "nowLon": 269.6251
+  },
+  "december-22": {
+   "lonMin": 269.7672,
+   "lonMax": 271.1741,
+   "nowLon": 270.6431
+  },
+  "december-23": {
+   "lonMin": 270.7861,
+   "lonMax": 272.1927,
+   "nowLon": 271.6613
+  },
+  "december-24": {
+   "lonMin": 271.8052,
+   "lonMax": 273.2113,
+   "nowLon": 272.6795
+  },
+  "december-25": {
+   "lonMin": 272.8244,
+   "lonMax": 274.23,
+   "nowLon": 273.6979
+  },
+  "december-26": {
+   "lonMin": 273.8438,
+   "lonMax": 275.2487,
+   "nowLon": 274.7164
+  },
+  "december-27": {
+   "lonMin": 274.8633,
+   "lonMax": 276.2674,
+   "nowLon": 275.735
+  },
+  "december-28": {
+   "lonMin": 275.8828,
+   "lonMax": 277.2862,
+   "nowLon": 276.7537
+  },
+  "december-29": {
+   "lonMin": 276.9023,
+   "lonMax": 278.3049,
+   "nowLon": 277.7726
+  },
+  "december-30": {
+   "lonMin": 277.9218,
+   "lonMax": 279.3237,
+   "nowLon": 278.7916
+  },
+  "december-31": {
+   "lonMin": 278.9414,
+   "lonMax": 280.3426,
+   "nowLon": 279.8107
+  }
+ }
+}

@@ -40,7 +40,10 @@ describe('event times against Swiss Ephemeris', () => {
     expect(evidence.summary.lunation.maxAbsSeconds).toBeLessThan(MINUTE);
     expect(evidence.summary.eclipse.maxAbsSeconds).toBeLessThan(MINUTE);
     expect(read('src/pages/full-moon-calendar/index.astro')).toContain('to within a minute, in universal time');
-    expect(read('src/pages/full-moon-calendar/index.astro')).toContain('timed to within a minute through the end of 2027');
+    // The Swiss comparison above covers 2026 and 2027; the November 2026 NASA audit
+    // (docs/accuracy-audit-2026-11/) times every lunation the table holds, to 2030.
+    expect(read('src/pages/full-moon-calendar/index.astro')).toContain('timed to within a minute through the end of {lastYear}');
+    expect(read('src/pages/full-moon-calendar/index.astro')).toContain('const lastYear = new Date(Date.parse(sky.to) - 1).getUTCFullYear();');
     expect(read('src/pages/events/index.astro')).toContain('and eclipses are timed to within a minute');
   });
 
