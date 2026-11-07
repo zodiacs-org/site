@@ -571,6 +571,13 @@ export async function main(argv = process.argv.slice(2)) {
   }
   const outcomes = await collectRpcOutcomes(assets, {
     url: process.env.SOLANA_RPC_URL ?? DEFAULT_SOLANA_RPC_URL,
+    // Public endpoints cap the heavier calls per method; the pacing is
+    // tunable per run without changing the committed defaults.
+    delayMs: process.env.SOLANA_RPC_DELAY_MS ? Number(process.env.SOLANA_RPC_DELAY_MS) : undefined,
+    retries: process.env.SOLANA_RPC_RETRIES ? Number(process.env.SOLANA_RPC_RETRIES) : undefined,
+    retryDelayMs: process.env.SOLANA_RPC_RETRY_DELAY_MS
+      ? Number(process.env.SOLANA_RPC_RETRY_DELAY_MS)
+      : undefined,
   });
   const { disclosure, report } = hydrateDisclosure(
     reviewedResult.disclosure,
