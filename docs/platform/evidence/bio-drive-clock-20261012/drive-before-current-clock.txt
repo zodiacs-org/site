@@ -1,0 +1,86 @@
+PASS  desktop: route renders without page errors
+PASS  desktop: daily edition metadata and visible date agree · 2026-10-12/2026-10-12
+PASS  desktop: no horizontal overflow · 1440/1440
+PASS  desktop: canonical nav and footer remain present
+PASS  desktop: focused navigation spacing remains present · 76px
+PASS  desktop: shared site navigation remains visible
+PASS  desktop: share action stays visible
+PASS  desktop: share action remains unobstructed in the page content
+PASS  desktop: Guide does not overlap the link hub
+PASS  desktop: card stays inside viewport
+PASS  desktop: primary CTA arrives in the opening scan · 328px
+PASS  desktop: rendered compact footer stays subordinate · 310px
+PASS  desktop: compact footer does not leave an orphan Guide description
+PASS  primary links are exact · ["/birth-chart/","/astrofolio/"]
+PASS  horoscope heading is plain and stable · Choose your sign
+PASS  desktop gives the twelve signs a four-column field · 4
+PASS  all twelve signs appear once in canonical order · [{"href":"/horoscopes/aries/","label":"Aries daily horoscope"},{"href":"/horoscopes/taurus/","label":"Taurus daily horoscope"},{"href":"/horoscopes/gemini/","label":"Gemini daily horoscope"},{"href":"/horoscopes/cancer/","label":"Cancer daily horoscope"},{"href":"/horoscopes/leo/","label":"Leo daily horoscope"},{"href":"/horoscopes/virgo/","label":"Virgo daily horoscope"},{"href":"/horoscopes/libra/","label":"Libra daily horoscope"},{"href":"/horoscopes/scorpio/","label":"Scorpio daily horoscope"},{"href":"/horoscopes/sagittarius/","label":"Sagittarius daily horoscope"},{"href":"/horoscopes/capricorn/","label":"Capricorn daily horoscope"},{"href":"/horoscopes/aquarius/","label":"Aquarius daily horoscope"},{"href":"/horoscopes/pisces/","label":"Pisces daily horoscope"}]
+PASS  page is self-canonical and noindex, follow · {"title":"Zodiacs.org Links — Birth Chart, Horoscopes & Astrofolio","editionDate":"2026-10-12","displayedEditionDate":"2026-10-12","canonical":"https://zodiacs.org/bio/","robots":"noindex, follow, max-image-preview:large","width":1440,"viewport":1440,"navCount":1,"fullFooterCount":1,"mainPaddingTop":"76px","navLinksVisible":true,"shareVisible":true,"shareHitTarget":true,"guideVisible":false,"primaryTop":328,"signColumns":4,"card":{"left":240,"right":1200,"width":960,"border":"1px","background":"rgb(15, 18, 26)","shadow":"rgba(0, 0, 0, 0.34) 0px 30px 100px 0px"}}
+PASS  document title stays focused on the link hub · Zodiacs.org Links — Birth Chart, Horoscopes & Astrofolio
+PASS  native share receives only the canonical bio URL and bounded copy · {"payloads":[{"title":"Zodiacs.org","text":"Free birth charts and daily horoscopes from Zodiacs.org.","url":"https://zodiacs.org/bio/"}],"label":"Shared","status":"Shared"}
+PASS  clipboard share copies the canonical bio URL and announces success · {"copies":["https://zodiacs.org/bio/"],"label":"Copied","status":"Copied"}
+PASS  noindex bio page stays out of the sitemap
+PASS  noindex bio page stays out of site search
+PASS  primary CTA emits only its bounded destination · [{"name":"bio_click","properties":{"destination":"birth_chart"}}]
+PASS  keyboard focus enters the page
+PASS  tablet: route renders without page errors
+PASS  tablet: daily edition metadata and visible date agree · 2026-10-12/2026-10-12
+PASS  tablet: no horizontal overflow · 1024/1024
+PASS  tablet: canonical nav and footer remain present
+PASS  tablet: focused navigation spacing remains present · 76px
+PASS  tablet: shared site navigation remains visible
+PASS  tablet: share action stays visible
+PASS  tablet: share action remains unobstructed in the page content
+PASS  tablet: Guide does not overlap the link hub
+PASS  tablet: card stays inside viewport
+PASS  tablet: primary CTA arrives in the opening scan · 316px
+PASS  tablet: rendered compact footer stays subordinate · 310px
+PASS  tablet: compact footer does not leave an orphan Guide description
+PASS  mobile: route renders without page errors
+PASS  mobile: daily edition metadata and visible date agree · 2026-10-12/2026-10-12
+PASS  mobile: no horizontal overflow · 390/390
+PASS  mobile: canonical nav and footer remain present
+PASS  mobile: focused navigation spacing remains present · 76px
+PASS  mobile: shared site navigation remains visible
+PASS  mobile: share action stays visible
+PASS  mobile: share action remains unobstructed in the page content
+PASS  mobile: Guide does not overlap the link hub
+PASS  mobile: card stays inside viewport
+PASS  mobile: primary CTA arrives in the opening scan · 286px
+PASS  mobile: small-screen composition drops the outer bezel · {"left":18,"right":372,"width":354,"border":"0px","background":"rgba(0, 0, 0, 0)","shadow":"none"}
+PASS  mobile: all signs stay in a three-column grid · 3
+PASS  mobile: rendered compact footer stays subordinate · 433px
+PASS  mobile: compact footer does not leave an orphan Guide description
+PASS  annotation: route renders without page errors
+PASS  annotation: daily edition metadata and visible date agree · 2026-10-12/2026-10-12
+PASS  annotation: no horizontal overflow · 412/412
+PASS  annotation: canonical nav and footer remain present
+PASS  annotation: focused navigation spacing remains present · 76px
+PASS  annotation: shared site navigation remains visible
+PASS  annotation: share action stays visible
+PASS  annotation: share action remains unobstructed in the page content
+PASS  annotation: Guide does not overlap the link hub
+PASS  annotation: card stays inside viewport
+PASS  annotation: primary CTA arrives in the opening scan · 291px
+PASS  annotation: small-screen composition drops the outer bezel · {"left":18,"right":394,"width":376,"border":"0px","background":"rgba(0, 0, 0, 0)","shadow":"none"}
+PASS  annotation: all signs stay in a three-column grid · 3
+PASS  annotation: rendered compact footer stays subordinate · 433px
+PASS  annotation: compact footer does not leave an orphan Guide description
+PASS  narrow: route renders without page errors
+PASS  narrow: daily edition metadata and visible date agree · 2026-10-12/2026-10-12
+PASS  narrow: no horizontal overflow · 320/320
+PASS  narrow: canonical nav and footer remain present
+PASS  narrow: focused navigation spacing remains present · 76px
+PASS  narrow: shared site navigation remains visible
+PASS  narrow: share action stays visible
+PASS  narrow: share action remains unobstructed in the page content
+PASS  narrow: Guide does not overlap the link hub
+PASS  narrow: card stays inside viewport
+PASS  narrow: primary CTA arrives in the opening scan · 291px
+PASS  narrow: small-screen composition drops the outer bezel · {"left":14,"right":306,"width":292,"border":"0px","background":"rgba(0, 0, 0, 0)","shadow":"none"}
+PASS  narrow: all signs stay in a three-column grid · 3
+PASS  narrow: rendered compact footer stays subordinate · 457px
+PASS  narrow: compact footer does not leave an orphan Guide description
+PASS  reduced motion removes bio transitions and animation · {"transition":"0s","animation":"none"}
+
+ALL PASS

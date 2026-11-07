@@ -10,6 +10,15 @@ const expectedSigns = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
+const VIEWPORTS = [
+  { name: 'desktop', width: 1440, height: 900 },
+  { name: 'tablet', width: 1024, height: 900 },
+  { name: 'mobile', width: 390, height: 844 },
+  { name: 'annotation', width: 412, height: 915 },
+  { name: 'narrow', width: 320, height: 780 },
+];
+
+const CURRENT_HEADING = 'Your chart and today’s sky';
 const failures = [];
 
 function check(name, ok, detail = '') {
@@ -17,29 +26,63 @@ function check(name, ok, detail = '') {
   if (!ok) failures.push(name);
 }
 
+// The heading reads "today’s sky" only while the page's own clock is on the
+// edition's UTC day. From 00:00 UTC until the next edition deploys it names
+// the edition's date instead, and takes more lines. The drive sets the page
+// clock rather than reading the real one: the edition's day for the page's
+// acceptance, and 00:17 UTC on the next day for the dated pass. The edition is
+// the one the target serves, which for ZODIACS_TEST_BASE_URL need not be this
+// checkout's.
+async function editionClocks(base) {
+  const response = await fetch(`${base}/bio/`);
+  const html = await response.text();
+  const date = /<html\b[^>]*\sdata-edition-date="(\d{4}-\d{2}-\d{2})"/u.exec(html)?.[1];
+  if (!response.ok || !date) throw new Error(`${base}/bio/ serves no edition date (HTTP ${response.status})`);
+  const label = new Intl.DateTimeFormat('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+  }).format(new Date(`${date}T00:00:00Z`));
+  return {
+    editionDay: Date.parse(`${date}T12:00:00Z`),
+    datedWindow: Date.parse(`${date}T00:17:00Z`) + 24 * 60 * 60 * 1000,
+    datedHeading: `Your chart and the ${label} edition’s sky`,
+  };
+}
+
+async function pinClock(page, at) {
+  await page.addInitScript((instant) => {
+    const NativeDate = Date;
+    function FixedDate(...args) {
+      if (!new.target) return new NativeDate(instant).toString();
+      return Reflect.construct(NativeDate, args.length ? args : [instant], new.target);
+    }
+    Object.setPrototypeOf(FixedDate, NativeDate);
+    FixedDate.prototype = NativeDate.prototype;
+    FixedDate.now = () => instant;
+    globalThis.Date = FixedDate;
+  }, at);
+}
+
 await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (BASE) => {
   if (OUT) await mkdir(OUT, { recursive: true });
+  const { editionDay, datedWindow, datedHeading } = await editionClocks(BASE);
   const browser = await chromium.launch({ executablePath: CHROMIUM, args: STABLE_CHROMIUM_ARGS });
 
   try {
-    for (const viewport of [
-    { name: 'desktop', width: 1440, height: 900 },
-    { name: 'tablet', width: 1024, height: 900 },
-    { name: 'mobile', width: 390, height: 844 },
-    { name: 'annotation', width: 412, height: 915 },
-    { name: 'narrow', width: 320, height: 780 },
-  ]) {
+    for (const viewport of VIEWPORTS) {
     const page = await browser.newPage({
       viewport: { width: viewport.width, height: viewport.height },
       hasTouch: viewport.width <= 600,
     });
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
+    await pinClock(page, editionDay);
     await page.goto(`${BASE}/bio/`, { waitUntil: 'networkidle' });
 
     const evidence = await page.evaluate(() => ({
       title: document.title,
       editionDate: document.documentElement.getAttribute('data-edition-date'),
+      editionState: document.documentElement.getAttribute('data-edition-state'),
+      heading: document.querySelector('#bio-title')?.textContent,
       displayedEditionDate: document.querySelector('.bio-signs time')?.getAttribute('datetime'),
       canonical: document.querySelector('link[rel="canonical"]')?.href,
       robots: document.querySelector('meta[name="robots"]')?.content,
@@ -84,6 +127,9 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     check(`${viewport.name}: daily edition metadata and visible date agree`,
       Boolean(evidence.editionDate) && evidence.editionDate === evidence.displayedEditionDate,
       `${evidence.editionDate}/${evidence.displayedEditionDate}`);
+    check(`${viewport.name}: the edition's day shows the current heading`,
+      evidence.editionState === 'current' && evidence.heading === CURRENT_HEADING,
+      `${evidence.editionState} · ${evidence.heading}`);
     check(`${viewport.name}: no horizontal overflow`, evidence.width <= evidence.viewport, `${evidence.width}/${evidence.viewport}`);
     check(`${viewport.name}: canonical nav and footer remain present`, evidence.navCount === 1 && evidence.fullFooterCount === 1);
     check(`${viewport.name}: focused navigation spacing remains present`, evidence.mainPaddingTop === '76px', evidence.mainPaddingTop);
@@ -210,7 +256,49 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     await page.close();
   }
 
+    // The opening-scan ceiling above is the edition day's composition. How
+    // many lines the dated heading adds depends on the date and the device's
+    // fonts: one in Georgia, two in Times New Roman for most dates
+    // (docs/platform/evidence/bio-drive-clock-20261012/). So the dated pass
+    // holds the CTA to the first screen.
+    for (const viewport of VIEWPORTS) {
+      const page = await browser.newPage({
+        viewport: { width: viewport.width, height: viewport.height },
+        hasTouch: viewport.width <= 600,
+      });
+      const errors = [];
+      page.on('pageerror', (error) => errors.push(error.message));
+      await pinClock(page, datedWindow);
+      await page.goto(`${BASE}/bio/`, { waitUntil: 'networkidle' });
+
+      const dated = await page.evaluate(() => {
+        const primary = document.querySelector('.bio-link')?.getBoundingClientRect();
+        return {
+          editionState: document.documentElement.getAttribute('data-edition-state'),
+          heading: document.querySelector('#bio-title')?.textContent,
+          width: document.documentElement.scrollWidth,
+          viewport: innerWidth,
+          viewportHeight: innerHeight,
+          primaryTop: Math.round(primary?.top ?? 9999),
+          primaryBottom: Math.round(primary?.bottom ?? 9999),
+        };
+      });
+
+      check(`${viewport.name} (dated): route renders without page errors`, errors.length === 0, errors.join(' | '));
+      check(`${viewport.name} (dated): the heading names the edition's date instead of today`,
+        dated.editionState === 'dated' && dated.heading === datedHeading,
+        `${dated.editionState} · ${dated.heading}`);
+      check(`${viewport.name} (dated): no horizontal overflow`, dated.width <= dated.viewport, `${dated.width}/${dated.viewport}`);
+      check(`${viewport.name} (dated): primary CTA stays in the first screen`,
+        dated.primaryBottom <= dated.viewportHeight,
+        `${dated.primaryTop}–${dated.primaryBottom}px of ${dated.viewportHeight}px`);
+
+      if (OUT) await page.screenshot({ path: `${OUT}/bio-${viewport.name}-dated.png`, fullPage: true });
+      await page.close();
+    }
+
     const reduced = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    await pinClock(reduced, editionDay);
     await reduced.goto(`${BASE}/bio/`, { waitUntil: 'networkidle' });
     const motion = await reduced.locator('.bio-link').first().evaluate((node) => ({
       transition: getComputedStyle(node).transitionDuration,
