@@ -96,7 +96,7 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
   });
 
   it('answers a withdrawn occasion with its fixed sentence, echoing none of the request', async () => {
-    for (const occasion of ['baby', 'coming-of-age']) {
+    for (const occasion of ['baby', 'coming-of-age', 'Baby', 'coming of age', 'newborn', 'Quinceañera']) {
       const answer = (await rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion, date: '2026-05-03', names: 'Mia', place: 'London', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278 } })).result;
       expect(answer.isError, occasion).toBe(true);
       expect(answer.structuredContent.error, occasion).toMatchObject({ code: 'invalid-arguments', message: WITHDRAWN_OCCASION_REFUSAL });

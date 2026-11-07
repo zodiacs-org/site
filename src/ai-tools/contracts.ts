@@ -30,9 +30,12 @@ export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_event
  * 13 (docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md). The site's own occasion picker keeps all twelve.
  */
 export const ASSISTANT_OCCASION_KINDS = ['wedding', 'anniversary', 'met', 'birthday', 'pet', 'home', 'job', 'graduation', 'retirement', 'gathering'] as const satisfies readonly OccasionKind[];
-/** The two occasions 0.6.5 withdrew. Asked for one, the hosted server answers this fixed sentence, not the list of the others. */
-export const WITHDRAWN_OCCASIONS: readonly string[] = ['baby', 'coming-of-age'] satisfies readonly OccasionKind[];
-export const WITHDRAWN_OCCASION_REFUSAL = "Zodiacs makes no occasion card for a baby's arrival or a coming of age. Do not send a child's name, birth date or place under another occasion; for a child, ask explain_astrology about their Sun sign.";
+/**
+ * The occasions 0.6.5 withdrew, and words an assistant may try for them, compared lower-cased without accents,
+ * spaces or punctuation. Asked for one, the hosted server answers this fixed sentence, not the list of the others.
+ */
+export const WITHDRAWN_OCCASIONS: readonly string[] = ['baby', 'newborn', 'infant', 'birth', 'babyshower', 'comingofage', 'quinceanera', 'barmitzvah', 'batmitzvah'];
+export const WITHDRAWN_OCCASION_REFUSAL = "This tool makes no card for a baby's arrival or a coming of age. Do not send a child's name, birth date or place under another occasion.";
 export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'] as const;
 /**
  * The 0.5 tools: the thirteen the directories reviewed. Their tools/list entries, including this list as the

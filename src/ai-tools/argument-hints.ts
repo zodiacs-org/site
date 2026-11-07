@@ -26,6 +26,7 @@ function fieldAt(schema: any, path: readonly PropertyKey[]): { name: string; fie
 /** The request's value at an issue's path, read only to choose a fixed sentence and never echoed. */
 const valueAt = (args: unknown, path: readonly PropertyKey[]): unknown =>
   path.reduce<unknown>((value, key) => (value && typeof value === 'object' ? (value as Record<PropertyKey, unknown>)[key] : undefined), args);
+const folded = (value: unknown) => (typeof value === 'string' ? value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z]/gu, '') : '');
 
 function sentence(issue: z.core.$ZodIssue, schema: any, args: unknown): string {
   if (issue.code === 'custom') return issue.message;
@@ -36,7 +37,7 @@ function sentence(issue: z.core.$ZodIssue, schema: any, args: unknown): string {
   const inner = unwrap(field); const description: string | undefined = field?.description ?? inner?.description;
   if (issue.code === 'invalid_type' && (issue as any).input === undefined) return `${name} is required.`;
   // A withdrawn occasion gets its own sentence, so the assistant does not carry a child's day over to another occasion.
-  if (issue.code === 'invalid_value' && issue.path.at(-1) === 'occasion' && WITHDRAWN_OCCASIONS.includes(valueAt(args, issue.path) as string)) return WITHDRAWN_OCCASION_REFUSAL;
+  if (issue.code === 'invalid_value' && issue.path.at(-1) === 'occasion' && WITHDRAWN_OCCASIONS.includes(folded(valueAt(args, issue.path)))) return WITHDRAWN_OCCASION_REFUSAL;
   if (issue.code === 'invalid_value' && Array.isArray((issue as any).values)) return `${name} must be one of: ${(issue as any).values.join(', ')}.`;
   const iso = /ISO 8601 time with Z or an offset/.test(description ?? '');
   return `${name} is not in the accepted form.${iso ? ISO_HINT : description ? ` ${description}` : ''}`;

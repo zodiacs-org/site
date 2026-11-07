@@ -35180,13 +35180,13 @@ function matchTopic(query, options = {}) {
   const angle = matchAngleSign(query);
   if (angle) return topics.find((topic) => topic.key === angle.angle);
   if (DIGNITY.test(clean(query))) return topics.find((topic) => topic.key === "rulership");
-  const folded = fold(query);
-  if (!folded) return null;
+  const folded2 = fold(query);
+  if (!folded2) return null;
   const names = topics.flatMap((topic) => [topic.key.replace(/-/gu, " "), fold(topic.title), ...topic.aliases.map(fold)].filter(Boolean).map((name) => ({ name, topic })));
-  const exact = names.find((entry) => entry.name === folded);
+  const exact = names.find((entry) => entry.name === folded2);
   if (exact) return exact.topic;
   const wholeQueryOnly = (name) => WHOLE_QUERY_ONLY.has(name) || !!options.skyEvents && WHOLE_QUERY_ONLY_SKY_EVENTS.has(name);
-  const contained = names.filter((entry) => !wholeQueryOnly(entry.name) && ` ${folded} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
+  const contained = names.filter((entry) => !wholeQueryOnly(entry.name) && ` ${folded2} `.includes(` ${entry.name} `)).sort((a, b) => b.name.length - a.name.length);
   return contained[0]?.topic ?? null;
 }
 function risingParts(sign2) {
@@ -35499,8 +35499,8 @@ var birthplaceData = z9.object({
   })
 });
 function countryFold(hint) {
-  const folded = fold2(hint.trim());
-  return COUNTRY_ALIAS[folded] ?? folded;
+  const folded2 = fold2(hint.trim());
+  return COUNTRY_ALIAS[folded2] ?? folded2;
 }
 function countryMatches(country, hint) {
   const words = (text2) => ` ${text2.replace(/[^a-z0-9]+/gu, " ").trim()} `;
@@ -39638,8 +39638,8 @@ var AI_VERSION = "0.6.5";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
 var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
 var ASSISTANT_OCCASION_KINDS = ["wedding", "anniversary", "met", "birthday", "pet", "home", "job", "graduation", "retirement", "gathering"];
-var WITHDRAWN_OCCASIONS = ["baby", "coming-of-age"];
-var WITHDRAWN_OCCASION_REFUSAL = "Zodiacs makes no occasion card for a baby's arrival or a coming of age. Do not send a child's name, birth date or place under another occasion; for a child, ask explain_astrology about their Sun sign.";
+var WITHDRAWN_OCCASIONS = ["baby", "newborn", "infant", "birth", "babyshower", "comingofage", "quinceanera", "barmitzvah", "batmitzvah"];
+var WITHDRAWN_OCCASION_REFUSAL = "This tool makes no card for a baby's arrival or a coming of age. Do not send a child's name, birth date or place under another occasion.";
 var OCCASION_TOOL_NAMES = ["get_occasion_sky", "get_life_milestones", "get_compatibility", "find_chart_twins", "get_famous_chart", "get_birthday", "get_sky_calendar"];
 var ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES];
 var COVERAGE_TOOL_NAMES = ["get_natal_chart", "get_horoscope_period", "get_chinese_zodiac", "get_personal_transits", "explain_astrology"];
@@ -42553,6 +42553,7 @@ function fieldAt(schema, path) {
   return names.length ? { name: names.join(""), field: current } : void 0;
 }
 var valueAt = (args, path) => path.reduce((value, key) => value && typeof value === "object" ? value[key] : void 0, args);
+var folded = (value) => typeof value === "string" ? value.normalize("NFD").replace(new RegExp("\\p{M}", "gu"), "").toLowerCase().replace(/[^a-z]/gu, "") : "";
 function sentence(issue, schema, args) {
   if (issue.code === "custom") return issue.message;
   if (issue.code === "unrecognized_keys") return "The arguments include a field this tool does not accept; call tools/list for its fields.";
@@ -42562,7 +42563,7 @@ function sentence(issue, schema, args) {
   const inner = unwrap(field);
   const description = field?.description ?? inner?.description;
   if (issue.code === "invalid_type" && issue.input === void 0) return `${name} is required.`;
-  if (issue.code === "invalid_value" && issue.path.at(-1) === "occasion" && WITHDRAWN_OCCASIONS.includes(valueAt(args, issue.path))) return WITHDRAWN_OCCASION_REFUSAL;
+  if (issue.code === "invalid_value" && issue.path.at(-1) === "occasion" && WITHDRAWN_OCCASIONS.includes(folded(valueAt(args, issue.path)))) return WITHDRAWN_OCCASION_REFUSAL;
   if (issue.code === "invalid_value" && Array.isArray(issue.values)) return `${name} must be one of: ${issue.values.join(", ")}.`;
   const iso3 = /ISO 8601 time with Z or an offset/.test(description ?? "");
   return `${name} is not in the accepted form.${iso3 ? ISO_HINT : description ? ` ${description}` : ""}`;
