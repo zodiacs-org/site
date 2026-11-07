@@ -532,10 +532,12 @@ session, in one question:
 > not run Firefox on this Mac, though the Chromium half passed. Do you approve
 > both?
 
-The options offered were "Approve both" (B3.c recorded accepted in the next
-record pull request, after site#900), "Add a GitHub release" ("released"
-should also mean a GitHub release and tag; B3.c stays validated until it
-exists) and "Not now". The owner answered **"Approve both"**.
+The options offered, each with the description shown under it, were
+"Approve both" ("B3.c is recorded accepted in the next record PR, after
+#900."), "Add a GitHub release" ("'Released' should also mean a GitHub
+release (and tag) of the dataset. I would prepare it, and B3.c stays
+validated until it exists.") and "Not now" ("B3.c stays validated, with your
+approval as the open item."). The owner answered **"Approve both"**.
 
 Preparing this record showed a third open item that the question had not
 named: the production record's fourth condition, main's Site Check passing
@@ -548,9 +550,10 @@ on 4 November, 21 of 21 jobs on its first attempt; run 41802095374 on
 push drive, on the `/today/` sky ticker's known micro-CLS). The same test had
 failed main's run 41744586321 on `e632fe4c`, before the merge. The merge's
 run never reached this unit's own checks: its Build & Check stopped at that
-test, its step 13, and skipped its 49 later steps, the build, the typecheck
-and the link and artifact check over dist among them. In run 41806876561
-all 67 of those steps passed, `tests/time-atlas-dataset.test.ts` (14 tests)
+test, its step 13, and skipped 49 of its 54 later steps, the build, the
+typecheck and the link and artifact check over dist among them (the other
+five upload evidence and close the job). In run 41806876561 all 67 of its
+Build & Check steps passed, `tests/time-atlas-dataset.test.ts` (14 tests)
 and `src/lib/time-atlas/index.test.ts` (4 tests) among them, and check-dist
 passed over 5,276 HTML files. Of the 54 files #862
 changed, only `docs/claims/ledger.json` and `src/pages/sitemap.xml.ts`,
@@ -566,11 +569,11 @@ about 15:22 ICT the owner was asked, in one question:
 > that fix, with every atlas file unchanged. Do you accept that later pass
 > in place of a pass on the merge?
 
-The options offered were "Yes, accept it" (B3.c recorded accepted, with
-this departure stated, the ledger going from 48.2% to 49.3%) and "No, keep
-validated" (B3.c stays validated, the record stating the unmet condition,
-the figure staying at 48.2%). The owner answered **"Yes, accept
-it"**.
+The options offered, each with the description shown under it, were "Yes,
+accept it" ("B3.c is recorded accepted, with this departure stated (the
+ledger goes from 48.2% to 49.3%).") and "No, keep validated" ("B3.c stays
+validated. The record states the unmet condition, and the figure stays at
+48.2%."). The owner answered **"Yes, accept it"**.
 
 - **What it accepts.** The preregistration's reading of "released", as the
   question put it: published permanently on zodiacs.org at
