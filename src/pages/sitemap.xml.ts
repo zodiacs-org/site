@@ -384,6 +384,12 @@ const TIME_ATLAS_ROUTES = ['/developers/time-atlas/', '/developers/'] as const;
 // Every event page gained its countdown, what to look for in the sky and Guide questions. Dated here, not
 // in events-publication.json, which the published developer plugin bundles byte for byte.
 const EVENT_WATCH_LASTMOD = '2026-11-05';
+const NASA_WINDOW_PLACEMENTS_LASTMOD = '2026-11-07';
+const NASA_WINDOW_PLACEMENTS = [
+  'jupiter-in-scorpio', 'neptune-in-aquarius', 'neptune-in-aries', 'neptune-in-cancer', 'neptune-in-capricorn',
+  'neptune-in-libra', 'neptune-in-sagittarius', 'neptune-in-scorpio', 'neptune-in-taurus', 'pluto-in-aries',
+  'pluto-in-pisces', 'pluto-in-taurus', 'uranus-in-aquarius', 'uranus-in-capricorn',
+];
 // Every event page says where its times come from, and the planets' ingress, station and aspect times are
 // NASA JPL's (src/lib/nasa-instants.ts). Dated here for the same reason as EVENT_WATCH_LASTMOD.
 const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
@@ -876,6 +882,12 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       }];
     });
   });
+  // The placement pages whose sign windows now print NASA JPL Horizons' dates
+  // (src/lib/nasa-instants.ts), one day off before on at least one edge.
+  for (const slug of NASA_WINDOW_PLACEMENTS) {
+    const url = urls.find(({ loc }) => loc === `/learn/placements/${slug}/`);
+    if (url) url.lastmod = laterDate(url.lastmod, NASA_WINDOW_PLACEMENTS_LASTMOD);
+  }
   // The comparison badges became SVG on the English pairs only. Apply the
   // template date after making localized copies, which keep their own dates.
   for (const pair of pairs) {

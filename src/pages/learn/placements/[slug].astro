@@ -7,6 +7,7 @@ import AstroTerm from '../../../components/AstroTerm.astro';
 import { SIGNS, signBySlug } from '../../../lib/signs';
 import { dignityFor, DIGNITY_GLOSS, hasClassicalDignities } from '../../../lib/dignities';
 import ingresses from '../../../data/ingresses.json';
+import { refineIngressWindows } from '../../../lib/nasa-instants';
 import { formatShortDate } from '../../../lib/i18n/dates';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
 
@@ -79,7 +80,8 @@ const fmt = (iso: string) => formatShortDate('en', iso);
 // The ingress table holds closed windows only (the generator drops
 // horizon-clamped edges), so from/to are always real boundaries.
 type Win = { planet: string; sign: string; from: string; to: string };
-const wins = (ingresses.windows as Win[]).filter((w) => w.planet === planet && w.sign === sign.slug);
+// Window edges print NASA JPL Horizons' instants (src/lib/nasa-instants.ts).
+const wins = refineIngressWindows(ingresses.windows as Win[]).filter((w) => w.planet === planet && w.sign === sign.slug);
 const current = wins.find((w) => new Date(w.from) <= buildNow && new Date(w.to) >= buildNow);
 const upcoming = wins.filter((w) => new Date(w.from) > buildNow).slice(0, 3);
 const past = wins.filter((w) => new Date(w.to) < buildNow);
