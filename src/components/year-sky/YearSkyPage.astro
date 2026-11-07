@@ -26,6 +26,7 @@ import type { EclipseRecord } from '../../lib/upcoming';
 import eclipsesData from '../../data/eclipses.json';
 import skyData from '../../data/sky.json';
 import ingressesData from '../../data/ingresses.json';
+import { refineIngressWindows, refineRetrogradeWindows } from '../../lib/nasa-instants';
 import { OG_EN } from '../../strings/seo.en.mjs';
 import '../../styles/calculator.css';
 import '../../styles/sharing-tools.css';
@@ -38,8 +39,9 @@ const w = yearSkyWords(locale);
 const year = EDITION_YEAR;
 const { from, to } = yearWindow(year);
 const eclipses = (eclipsesData as { eclipses: EclipseRecord[] }).eclipses;
-const ingresses = (ingressesData as { windows: IngressWindowRecord[] }).windows;
-const sky = generalSky({ eclipses, retrogrades: skyData.retrogrades, ingresses }, locale, year);
+// Planet ingress and station times from NASA (src/lib/nasa-instants.ts).
+const ingresses = refineIngressWindows((ingressesData as { windows: IngressWindowRecord[] }).windows);
+const sky = generalSky({ eclipses, retrogrades: refineRetrogradeWindows(skyData.retrogrades), ingresses }, locale, year);
 // Only what the island needs: the year's eclipses and the slow planets' signs.
 const yearEclipses = eclipses.filter((e) => Date.parse(e.peak) >= from.getTime() && Date.parse(e.peak) < to.getTime());
 const slowWindows = ingresses.filter((window) => (SLOW_PLANETS as readonly string[]).includes(window.planet)

@@ -6,6 +6,7 @@
  */
 import type { CatalogLocale } from '../i18n/core';
 import type { EclipseRecord } from '../upcoming';
+import { degreeInSign } from '../signs';
 import { yearSkyWords } from './copy';
 import { EDITION_YEAR, inYear, yearWindow } from './edition';
 import type { YearMoment } from './types';
@@ -76,7 +77,7 @@ export function generalSky(input: GeneralSkyInput, locale: CatalogLocale = 'en',
       body: e.type === 'solar' ? 'Sun' : 'Moon',
       at: e.peak,
       title: w.eclipseTitle(e.type, e.kind),
-      line: w.eclipseLine(e.type, e.kind, `${Math.floor(e.degree)}°`, w.signName(e.sign)),
+      line: w.eclipseLine(e.type, e.kind, `${Math.floor(degreeInSign(e.lon))}°`, w.signName(e.sign)),
       detail: w.day(e.peak, year),
       confidence: null,
       weight: e.kind === 'penumbral' ? 2 : 3,

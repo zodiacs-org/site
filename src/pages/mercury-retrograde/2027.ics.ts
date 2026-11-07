@@ -3,6 +3,7 @@ import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude } from '../../lib/signs';
 import { serializeSkyEvents, type SkyCalendarEvent } from '../../lib/ical';
+import { nasaStationAt } from '../../lib/nasa-instants';
 
 export const prerender = true;
 
@@ -17,10 +18,11 @@ const events: SkyCalendarEvent[] = (sky.retrogrades as { planet: string; from: s
     const day = window.from.slice(0, 10);
     return {
       id: `mercury-retrograde-${day}`,
-      start: from,
-      end: to,
+      // The stations' times are NASA's (src/lib/nasa-instants.ts); the positions are the engine's.
+      start: new Date(nasaStationAt('Mercury', window.from) ?? window.from),
+      end: new Date(nasaStationAt('Mercury', window.to!) ?? window.to!),
       summary: 'Mercury retrograde',
-      description: `Mercury stations retrograde at ${formatLongitude(bodyLongitude('Mercury', from))} on ${day} and direct at ${formatLongitude(bodyLongitude('Mercury', to))} on ${window.to!.slice(0, 10)} (universal time). Computed by Zodiacs.org.`,
+      description: `Mercury stations retrograde at ${formatLongitude(bodyLongitude('Mercury', from))} on ${day} and direct at ${formatLongitude(bodyLongitude('Mercury', to))} on ${window.to!.slice(0, 10)} (universal time). Station times from NASA JPL Horizons (DE441); positions computed by Zodiacs.org.`,
       url: `https://zodiacs.org/mercury-retrograde/${YEAR}/#mercury-retrograde-${day}`,
     };
   });

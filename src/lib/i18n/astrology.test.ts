@@ -74,7 +74,7 @@ describe('astrology localization', () => {
 
     expect(july).toContain('Neptuno estaciona retrógrado');
     expect(july).toContain('Mercurio estaciona directo');
-    expect(july).toContain('Luna nueva a 22° de Cáncer');
+    expect(july).toContain('Luna nueva a 21° de Cáncer');
     expect(july).toContain('Neptuno estaciona retrógrado a 4° de Aries');
     expect(august).toContain('Mercurio en conjunción con Júpiter');
     expect(`${july} ${august}`).not.toMatch(
@@ -88,7 +88,7 @@ describe('astrology localization', () => {
 
     expect(july).toContain('Netuno estaciona retrógrado');
     expect(july).toContain('Mercúrio estaciona direto');
-    expect(july).toContain('Lua nova a 22° de Câncer');
+    expect(july).toContain('Lua nova a 21° de Câncer');
     expect(august).toContain('Mercúrio em conjunção com Júpiter');
     expect(`${july} ${august}`).not.toMatch(
       /\b(?:Sun|Moon|Mercury|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto|retrograde|direct|conjunction|sextile|square|trine|opposition)\b/,
@@ -101,7 +101,7 @@ describe('astrology localization', () => {
 
     expect(july).toContain('Neptune devient rétrograde');
     expect(july).toContain('Mercure redevient direct');
-    expect(july).toContain('Nouvelle Lune à 22° en Cancer');
+    expect(july).toContain('Nouvelle Lune à 21° en Cancer');
     expect(august).toContain('Mercure en conjonction avec Jupiter');
     expect(`${july} ${august}`).not.toMatch(
       /\b(?:Sun|Moon|Mercury|Venus|Saturn|Pluto|retrograde|conjunction|square|trine|Aries|Taurus|Gemini|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)\b/,
@@ -114,7 +114,7 @@ describe('astrology localization', () => {
 
     expect(july).toContain('Nettuno staziona in moto retrogrado');
     expect(july).toContain('Mercurio staziona in moto diretto');
-    expect(july).toContain('Luna nuova a 22° in Cancro');
+    expect(july).toContain('Luna nuova a 21° in Cancro');
     expect(august).toContain('Mercurio in congiunzione con Giove');
     expect(`${july} ${august}`).not.toMatch(
       /\b(?:Sun|Moon|Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto|retrograde|direct|conjunction|sextile|square|trine|opposition|Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)\b/,

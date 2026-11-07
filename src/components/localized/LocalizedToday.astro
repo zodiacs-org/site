@@ -43,6 +43,7 @@ import { SIGNS, elementLabel, modalityLabel, signBySlug, signEssence, signName }
 import { signDateRange } from '../../lib/sign-display';
 import { ART, artSrc, artSrcset } from '../../lib/art';
 import { toolIconForPath } from '../../lib/tool-icons';
+import { refinePublishedAnchors, refineRetrogradeWindows, refineTransitMonth } from '../../lib/nasa-instants';
 import {
   aspectsToday,
   comingUp,
@@ -495,7 +496,7 @@ const planet = (body: string) => planetLabel(locale, body);
 
 // ── The edition's sky ──
 const catalogs = Object.values(import.meta.glob<{ default: TransitCatalog }>('../../data/transits-*.json', { eager: true }))
-  .map((module) => module.default);
+  .map((module) => refineTransitMonth(module.default));
 const snapshotAt = daily.snapshotAt ?? `${daily.date}T12:00:00.000Z`;
 const bodyOf = (name: string) => daily.bodies.find((body) => body.body === name)!;
 const sun = bodyOf('Sun');
@@ -554,7 +555,7 @@ const subject = (body: string) => cap(locale === 'es'
   : (body === 'Sun' ? 'o Sol' : body === 'Moon' ? 'a Lua' : planet(body)));
 const eclipseKind = (kind: string) => c.eclipseKind[kind] ?? kind;
 const eclipseType = (type: string) => c.eclipseType[type] ?? type;
-const coming = comingUp(daily, catalogs, eclipseData.eclipses, eventsData.pages).map((event) => {
+const coming = comingUp(daily, catalogs, eclipseData.eclipses, refinePublishedAnchors(eventsData.pages)).map((event) => {
   const clock = `${utcClock(event.at)} UTC`;
   if (event.kind === 'eclipse') {
     const record = eclipseData.eclipses.find((eclipse) => eclipse.peak === event.at);
@@ -604,7 +605,7 @@ const coming = comingUp(daily, catalogs, eclipseData.eclipses, eventsData.pages)
 const eclipseAhead = nextEclipse(daily, eclipseData.eclipses);
 
 // Retrogrades on one time axis.
-const timeline = retrogradeTimeline(daily, skyData.retrogrades);
+const timeline = retrogradeTimeline(daily, refineRetrogradeWindows(skyData.retrogrades));
 const edition = new Date(`${daily.date}T00:00:00.000Z`);
 // retrogradeTimeline opens its window three months before the edition's month.
 const monthLabels = timeline.months.map((month, index) => ({

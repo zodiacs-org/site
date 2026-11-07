@@ -1,8 +1,12 @@
 {
   "version": 1,
-  "id": "new-pages-translations-2026-11-06",
-  "baseCommit": "980023c8760bdfb0a5e48b902ae6111c33ed07b6",
+  "id": "accuracy-audit-protected-fixes-2026-11-07",
+  "baseCommit": "c1b389ee8ee1d89e364b1444a467871cdcfb59aa",
   "protectedPaths": [
-    "src/lib/i18n/index.ts"
+    "src/content/learn/placements/neptune-in-taurus.mdx",
+    "src/content/learn/placements/pluto-in-aries.mdx",
+    "src/content/learn/placements/pluto-in-pisces.mdx",
+    "src/lib/i18n/astrology.test.ts",
+    "src/pages/learn/placements/[slug].astro"
   ]
 }

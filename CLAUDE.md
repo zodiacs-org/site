@@ -357,6 +357,20 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   birth-time spans; `--check` for drift, CI runs it). The pages themselves
   are held behind `src/data/natal-aspects-publication.json` and
   `PUBLIC_NATAL_ASPECTS_PREVIEW=1`; see `docs/natal-aspects/RELEASE.md`
+- `src/data/nasa-event-instants.json` ← `python3
+  scripts/build-nasa-event-instants.py` (the planets' sign ingresses,
+  stations and the monthly catalogs' exact aspects solved on NASA JPL
+  Horizons, DE441, to the second, each row with the engine instants it
+  replaces, and the query URLs, retrieval times and SHA-256 of the responses;
+  Mercury to Pluto 2025-11 to 2031-05, Jupiter to Pluto over ingresses.json's
+  long horizons. It fetches the Horizons tables through
+  `scripts/accuracy-audit/horizons_fetch.py`, which keeps the raw responses
+  out of git; `--check` needs them on disk, so CI runs the offline
+  `src/lib/nasa-instants.test.ts` instead. The pages print these times through
+  `src/lib/nasa-instants.ts`; the data files, the event pages' ids and
+  publication receipt, and the AI tools keep the engine's instants. Rerun it
+  whenever a monthly catalog, ingresses.json, sky.json or the horoscope
+  program gains an event, and fetch the responses again past 2031-05)
 
 `public/sw.js` is a PWA worker — the owner approved superseding the old
 push-only rule (2026-07-15, WS4 merge decision). Strict invariants: HTML

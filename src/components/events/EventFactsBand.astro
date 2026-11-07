@@ -27,14 +27,19 @@ interface Row {
 const rows: Row[] = [];
 const signName = (slug: string) => signBySlug(slug).name;
 
-// How far the time shown can be from Swiss Ephemeris's, for the events whose
-// slow motion makes a few arcseconds of position into minutes or hours
+// Where the time shown comes from. Planet ingress, station and aspect times
+// are NASA JPL's (src/lib/nasa-instants.ts) when the event keeps its
+// committed instant in `committed`. Otherwise, how far the engine's time can
+// be from Swiss Ephemeris's, for the events whose slow motion makes a few
+// arcseconds of position into minutes or hours
 // (docs/platform/evidence/events-vs-swiss-2026-09-23/). Moons and eclipses
 // are within a minute and carry no note.
 const OUTER = ['Uranus', 'Neptune', 'Pluto'];
 const outer = facts.bodies.some((body) => OUTER.includes(body));
 let note: string | undefined;
-if (facts.family === 'retrograde') {
+if (facts.committed && (facts.family === 'retrograde' || facts.family === 'ingress' || facts.family === 'aspect')) {
+  note = `${facts.family === 'retrograde' ? 'The station times are' : 'This time is'} NASA JPL's, from its DE441 ephemeris.`;
+} else if (facts.family === 'retrograde') {
   note = 'A planet at a station is barely moving, so these station times can be off by a few minutes.';
 } else if (facts.family === 'ingress' || facts.family === 'aspect') {
   const moving = facts.family === 'ingress' ? `${facts.bodies[0]} moves` : 'The two planets draw level';

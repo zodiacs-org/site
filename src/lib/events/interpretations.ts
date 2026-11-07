@@ -12,6 +12,7 @@
 import sky from '../../data/sky.json';
 import eclipsesData from '../../data/eclipses.json';
 import ingressesData from '../../data/ingresses.json';
+import { nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
 import { bodyLongitude } from '../engine/full';
 import type { BodyName } from '../engine/types';
 import { degreeInSign, signForLongitude } from '../signs';
@@ -493,7 +494,7 @@ function aspectInterpretation(facts: EventFacts): EventInterpretation {
 
   const lead = variant(facts.id, 7, [
     `${first} ${aspect} ${second} on ${date}, linking ${firstGuide.terrain} with ${secondGuide.terrain}. The aspect ${aspectGuide.dynamic}; what you do with that relationship matters more than treating the date as a forecast.`,
-    `Two slower stories meet exactly on ${date}: ${first} forms a ${aspect} to ${second}. In astrology this ${aspectGuide.dynamic}, bringing ${firstGuide.terrain} into direct conversation with ${secondGuide.terrain}.`,
+    `Two slower stories meet exactly on ${date}: ${first} forms ${/^[aeiou]/i.test(aspect) ? 'an' : 'a'} ${aspect} to ${second}. In astrology this ${aspectGuide.dynamic}, bringing ${firstGuide.terrain} into direct conversation with ${secondGuide.terrain}.`,
     `The ${date} ${aspect} between ${first} and ${second} frames a conversation between ${firstGuide.terrain} and ${secondGuide.terrain}. Its value is symbolic and strategic: it shows a relationship to work with, not an outcome already chosen.`,
   ]);
 
@@ -635,8 +636,8 @@ function editorialFactsById(): Map<string, EventFacts> {
       subtype: 'cycle',
       path: retrogradePath(window.planet, window.from),
       title: id,
-      start: window.from,
-      end: window.to,
+      start: nasaStationAt(window.planet, window.from) ?? window.from,
+      end: window.to === null ? null : nasaStationAt(window.planet, window.to) ?? window.to,
       clamped: window.from === sky.from,
       bodies: [window.planet],
       signs,
@@ -666,7 +667,7 @@ function editorialFactsById(): Map<string, EventFacts> {
         subtype: retrograde ? 'retrograde-re-entry' : 'ingress',
         path: ingressPath(planet, window.sign, window.from),
         title: id,
-        at: window.from,
+        at: nasaIngressAt(planet, window.from) ?? window.from,
         bodies: [planet],
         signs: [window.sign],
         fromSign: occupancy[index - 1]?.sign,
@@ -685,7 +686,7 @@ function editorialFactsById(): Map<string, EventFacts> {
         subtype: item.type,
         path: aspectPath(item.a, item.type, item.b, item.at),
         title: id,
-        at: item.at,
+        at: nasaAspectAt(item.a, item.b, item.type, item.at) ?? item.at,
         bodies: [item.a, item.b],
         signs: [item.aSign, item.bSign],
         degree: item.aDegree,

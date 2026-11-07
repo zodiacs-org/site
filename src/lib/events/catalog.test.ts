@@ -6,6 +6,7 @@ import { eventsCatalog, RETRO_PAGE_PLANETS, SLOW_BODIES } from './catalog';
 import { eventClock, metaDescription, metaTitle, moonNameForDate } from './format';
 import { INTERPRETED_IDS, interpretationFor } from './interpretations';
 import { publishedEventPages } from './publication';
+import { nasaStationAt } from '../nasa-instants';
 
 const catalog = eventsCatalog();
 const byId = catalog.byId;
@@ -263,8 +264,12 @@ describe('events catalog — derivation agreement', () => {
         const id = `${station.planet.toLowerCase()}-stations-${station.type}-${station.at.slice(0, 10)}`;
         const event = byId.get(id);
         expect(event, id).toBeDefined();
-        expect(Math.abs(new Date(event!.facts.at!).getTime() - new Date(station.at).getTime()), id)
+        // The page is named by the committed station (sky.json and the month
+        // agree to the second) and prints NASA's instant for it.
+        const committed = event!.facts.committed?.anchor ?? event!.facts.at!;
+        expect(Math.abs(new Date(committed).getTime() - new Date(station.at).getTime()), id)
           .toBeLessThan(2_000);
+        expect(event!.facts.at, id).toBe(nasaStationAt(station.planet, committed));
       }
       for (const aspect of source.aspects) {
         if (!slowBodies.has(aspect.a) || !slowBodies.has(aspect.b) || aspect.orb !== 0) continue;

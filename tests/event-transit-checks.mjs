@@ -4,10 +4,17 @@ import { mkdir, readFile } from 'node:fs/promises';
 const publication = JSON.parse(await readFile(new URL('../src/data/events-publication.json', import.meta.url), 'utf8'));
 const demo = JSON.parse(await readFile(new URL('../src/data/demo-chart-frida.json', import.meta.url), 'utf8'));
 const ids = ['neptune-sextile-pluto-2026-09-16', 'new-moon-2026-09-11', 'venus-retrograde-2026-10-03', 'jupiter-enters-leo-2026-06-30', 'eclipse-2026-08-28'];
+// The pages print, and hand to /transits/, NASA's instant for a planet event
+// (src/lib/nasa-instants.ts); the publication keeps the engine's anchor.
+const nasa = JSON.parse(await readFile(new URL('../src/data/nasa-event-instants.json', import.meta.url), 'utf8'));
+const iso = (value) => new Date(value).toISOString();
+const nasaFor = (anchor) => [...nasa.ingresses, ...nasa.stations, ...nasa.aspects]
+  .find((row) => row.engine.some((at) => iso(at) === iso(anchor)));
 const events = ids.map((id) => {
   const event = publication.pages.find((page) => page.id === id);
   if (!event) throw new Error(`Missing event fixture: ${id}`);
-  return event;
+  const row = nasaFor(event.anchor);
+  return { ...event, anchor: row ? iso(row.nasa) : event.anchor };
 });
 const profile = {
   version: 1, settings: { houseSystem: 'whole' },
