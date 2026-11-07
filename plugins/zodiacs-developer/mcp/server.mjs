@@ -40882,7 +40882,7 @@ async function searchSkyEvents(args, clock2, options) {
 }
 
 // src/ai-tools/contracts.ts
-var AI_VERSION = "0.6.5";
+var AI_VERSION = "0.6.6";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
 var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
 var ASSISTANT_OCCASION_KINDS = ["wedding", "anniversary", "met", "birthday", "pet", "home", "job", "graduation", "retirement", "gathering"];

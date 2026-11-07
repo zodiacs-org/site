@@ -6,6 +6,16 @@ brought up to date on 4 November 2026 for 0.6.1 (branch
 step below that touches production, the portal or email needs Dias's separate
 yes.
 
+## 0.6.6 update, 7 November 2026
+
+0.6.6 changes only the plugin's picture, now the twelve sign glyphs in
+coloured circles, and the version the server reports. No tool changes, so no
+note to the review is needed. The directory's custom icon is still the
+tilted ring at `https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v2.png`,
+which stays published. Moving it to
+`https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v3.png` is a directory
+profile change and waits for Dias's yes.
+
 ## 0.6.5 update, 7 November 2026
 
 0.6.5 changes one of the thirteen reviewed tools. `get_occasion_sky` no

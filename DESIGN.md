@@ -76,11 +76,13 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
   Terminal's v7 card (2026-10-19) replace the v3, v2, v5 and v6 files on the
   pages, and those stay published for links already shared. The homepage,
   the sign guides and the horoscopes moved to the art cards below.
-- Plugin profile pictures use the tilted ring on the dark background, chosen
-  by the owner on 27 October 2026. This exception applies to the Zodiacs
-  plugin, while the website favicon, install icons and bio emblem keep their
-  existing flat ring. The plugin avatar is generated from the shared ring by
-  `scripts/build-plugin-avatar.mjs`, with a fresh versioned public address.
+- The Zodiacs plugin's profile picture is the twelve sign glyphs in coloured
+  circles on the dark background, chosen by the owner on 7 November 2026 in
+  place of the tilted ring of 27 October. It applies to the plugin only; the
+  website favicon, install icons and bio emblem keep their existing flat
+  ring. The 512 × 512 picture is `plugins/zodiacs-sky/assets/icon-v3.png`,
+  and `scripts/build-plugin-avatar.mjs` copies it to a fresh versioned public
+  address, `/assets/ai/brand/zodiacs-avatar-v3.png`.
 - In motion: the end card for short videos (`npm run data:end-card`), two
   seconds at 1080 × 1920 in which the ring spins, slows to the brand's own
   front and settles beside the words, a little above the middle of the

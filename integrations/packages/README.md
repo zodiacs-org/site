@@ -70,9 +70,13 @@ about a child under 13. Its description, its occasion field and the occasion
 enum in its input and output schemas change; the other 18 tool definitions
 are unchanged, and the server reports 0.6.5. Developer 0.3.29 is rebuilt from
 that source; its local server does not offer that tool, and its tools are
-unchanged. 0.6.4 and 0.3.28 keep their bytes.
+unchanged. 0.6.4 and 0.3.28 keep their bytes. Zodiacs 0.6.6 changes only the
+plugin's picture, now the twelve sign glyphs in coloured circles
+(`assets/icon-v3.png`), and the version the server reports; Developer 0.3.30
+is rebuilt from that source with unchanged tools. 0.6.5 and 0.3.29 keep their
+bytes.
 
-Current candidates are **Zodiacs 0.6.5** and **Zodiacs Developer 0.3.29**;
+Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.30**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

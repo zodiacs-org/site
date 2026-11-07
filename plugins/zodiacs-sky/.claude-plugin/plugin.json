@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-sky",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Check what's happening in the sky, read daily to yearly horoscopes for your sign, explore your own birth chart and transits, compare two charts, find your Chinese zodiac animal and see the sky on the days that matter.",
   "author": {
     "name": "Zodiacs LLC",
@@ -19,7 +19,7 @@
   ],
   "displayName": "Zodiacs",
   "mcpServers": "./.mcp.json",
-  "icon": "./assets/icon-v2.png",
+  "icon": "./assets/icon-v3.png",
   "documentationUrl": "https://zodiacs.org/",
   "supportUrl": "https://zodiacs.org/about/",
   "privacyPolicyUrl": "https://zodiacs.org/privacy/",

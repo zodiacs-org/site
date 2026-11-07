@@ -29,7 +29,7 @@ host caches a separate copy. Confirm that path in the host before connecting.
 The current Codex CLI discovers both review candidates from this marketplace.
 The installed package must be checked separately from source and archive tests.
 Version 0.3.0 was installed and passed the nine-tool SDK driver on 2026-10-06.
-The current 0.3.29 archive bundles engine 1.1.0-rc.2, a candidate that npm
+The current 0.3.30 archive bundles engine 1.1.0-rc.2, a candidate that npm
 does not carry, with 1.0.0's values, and reports it as an unpublished
 candidate; the records it writes list the ids of the Zodiacs conventions
 registry they name, which 1.0.0 refuses. It follows the 0.5.0 consumer source;
@@ -68,7 +68,7 @@ logs, links and issues. Record comparison accepts data, never instructions.
 
 | Component | Version / scope |
 | --- | --- |
-| Plugin candidate | 0.3.29; unpublished |
+| Plugin candidate | 0.3.30; unpublished |
 | Bundled engine | 1.1.0-rc.2; unpublished candidate, not on npm |
 | Published engine for external examples | 1.0.0 |
 | MCP SDK | 2.0.0 |
