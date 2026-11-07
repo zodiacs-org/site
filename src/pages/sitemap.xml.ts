@@ -932,6 +932,18 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-10-24');
   }
+  // The coverage lines now read "through 2030", as the eclipse, full moon and
+  // retrograde tables run: the translated homes and tools hubs, and the
+  // Mercury placement pages' retrograde card.
+  const COVERAGE_2030 = [
+    '/es/', '/fr/', '/it/', '/pt/',
+    ...['es', 'fr', 'it', 'pt', 'ru'].map((locale) => `/${locale}/tools/`),
+    ...SIGNS.map((sign) => `/learn/placements/mercury-in-${sign.slug}/`),
+  ];
+  for (const loc of COVERAGE_2030) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-11-07');
+  }
   return [
     ...urls,
     ...localizedUrls,
