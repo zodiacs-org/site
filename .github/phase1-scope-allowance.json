@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "coverage-wording-2030-2026-11-07",
-  "baseCommit": "859cbb53931ef32d6f348045b0a01a3878f1698d",
+  "baseCommit": "0ca97d725a85fa1dc5dbd0daf690fbb910d5a30c",
   "protectedPaths": [
     "src/content/learn/planets/mercury.mdx",
     "src/pages/es/tools/index.astro",
