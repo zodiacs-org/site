@@ -6,6 +6,26 @@ brought up to date on 4 November 2026 for 0.6.1 (branch
 step below that touches production, the portal or email needs Dias's separate
 yes.
 
+## 0.6.5 update, 7 November 2026
+
+0.6.5 changes one of the thirteen reviewed tools. `get_occasion_sky` no
+longer offers the `baby` and `coming-of-age` occasions, after OpenAI's
+review found that the baby occasion, with names, a place and coordinates,
+could collect details about a child under 13
+(`../RESUBMISSION-0.6.0.md`). Its description, its occasion field and the
+occasion enum in its input and output schemas change; the other 18 tool
+definitions are unchanged, and the server reports 0.6.5. The 6 November reply to
+mcp-review@anthropic.com (ticket #145701231) said the thirteen were
+unchanged, so a short note goes to the same thread, once Dias says yes:
+
+> A short update on the Zodiacs connector at https://zodiacs.org/mcp (slug
+> zodiacs, ticket #145701231). Version 0.6.5 changes one tool,
+> get_occasion_sky ("The sky on a day"): it no longer offers the baby's
+> arrival and coming-of-age occasions. Its description, its occasion field and
+> the occasion enum in its input and output schemas change, and a request for
+> a removed occasion is refused. The other 18 tool definitions are unchanged,
+> and the connector stays read-only with no sign-in.
+
 ## What 0.6.1 changes
 
 - **Version.** The hosted server reports 0.6.1 in `initialize` and in

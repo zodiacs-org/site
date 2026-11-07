@@ -1,9 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createServer, type Server } from 'node:http';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
-import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES } from './contracts';
+import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES, WITHDRAWN_OCCASION_REFUSAL } from './contracts';
 import { executeAiTool } from './tools';
+import { as065, LIVE_TOOLS, PUBLISHED_TOOLS } from './published-tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
 import { SIGNS } from '../lib/signs';
@@ -21,10 +22,14 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * 0.6.1 changes the reported version and gives the five coverage tools the inline readings panel; the thirteen
  * entries, their _meta included, still come back byte for byte. 0.6.2 changes only the reported version and the
  * listing text in the package, and 0.6.3 only the reported version and the listing's category. 0.6.4 changes the
- * reported version and the one privacy sentence on what links carry, which no tool definition holds.
+ * reported version and the one privacy sentence on what links carry, which no tool definition holds. 0.6.5 changes
+ * the reported version and takes a baby's arrival and a coming of age out of get_occasion_sky, after OpenAI's review
+ * found that the baby occasion, with names, a place and coordinates, could collect details about a child under 13.
+ * That touches four places, all in get_occasion_sky: its description, its occasion field's description and the
+ * occasion enum in its input and output schemas. Every other byte of the thirteen comes back as published.
  */
 const root = new URL('../../', import.meta.url);
-const LIVE = JSON.parse(readFileSync(new URL('docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', root), 'utf8'));
+const PUBLISHED = PUBLISHED_TOOLS;
 const window = async () => committedWindow as HoroscopeWindow;
 const months = async () => committedMonths;
 const program = async () => committedProgram as unknown as HoroscopeProgram;
@@ -54,7 +59,7 @@ async function rpc(method: string, params: unknown) {
 
 describe('0.6.0 keeps the thirteen published tools as they are', () => {
   it('lists the thirteen live definitions byte for byte, then the five new tools', async () => {
-    const live = LIVE.result.tools as { name: string }[];
+    const live = PUBLISHED as { name: string }[];
     const tools = (await rpc('tools/list', {})).result.tools as Record<string, unknown>[];
     expect(live.map(tool => tool.name)).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(tools.map(tool => tool.name)).toEqual([...EVERY_AI_TOOL_NAME]);
@@ -69,7 +74,7 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
   });
 
   it('keeps the thirteen published names, descriptions and input schemas byte for byte', async () => {
-    const live = LIVE.result.tools as { name: string; description: string; inputSchema: unknown }[];
+    const live = PUBLISHED as { name: string; description: string; inputSchema: unknown }[];
     const tools = (await rpc('tools/list', {})).result.tools as { name: string; description: string; inputSchema: unknown }[];
     expect(live).toHaveLength(13);
     for (const [index, published] of live.entries()) {
@@ -79,11 +84,34 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     }
   });
 
-  it('reports 0.6.4 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
+  it('changes only get_occasion_sky, in exactly four places, to take out a baby\'s arrival and a coming of age', () => {
+    const changes = LIVE_TOOLS.flatMap(tool => as065(tool).changed);
+    expect([...changes].sort()).toEqual([
+      'get_occasion_sky.description',
+      'get_occasion_sky.inputSchema.properties.occasion.description',
+      'get_occasion_sky.inputSchema.properties.occasion.enum',
+      'get_occasion_sky.outputSchema.anyOf[0].properties.data.properties.occasion.enum',
+    ].sort());
+    expect(JSON.stringify(PUBLISHED)).not.toMatch(/baby|coming-of-age/u);
+  });
+
+  it('answers a withdrawn occasion with its fixed sentence, echoing none of the request', async () => {
+    for (const occasion of ['baby', 'coming-of-age', 'Baby', 'coming of age', 'newborn', 'Quinceañera']) {
+      const answer = (await rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion, date: '2026-05-03', names: 'Mia', place: 'London', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278 } })).result;
+      expect(answer.isError, occasion).toBe(true);
+      expect(answer.structuredContent.error, occasion).toMatchObject({ code: 'invalid-arguments', message: WITHDRAWN_OCCASION_REFUSAL });
+      expect(JSON.stringify(answer), occasion).not.toMatch(/Mia|London|2026-05-03|51\.5/u);
+    }
+    // Any other occasion it does not take still gets the list of those it does.
+    const other = (await rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion: 'party', date: '2026-05-03' } })).result;
+    expect(other.structuredContent.error.message).toBe('occasion must be one of: wedding, anniversary, met, birthday, pet, home, job, graduation, retirement, gathering.');
+  });
+
+  it('reports 0.6.5 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.4' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.5' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.4');
+    expect(capabilities.data.version).toBe('0.6.5');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });

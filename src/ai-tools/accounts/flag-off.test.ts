@@ -25,6 +25,8 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * 0.6.3 changes only the reported version, in every scenario.
  * 0.6.4 changes the reported version in every scenario, and the one sentence on what links carry wherever the server
  * instructions or the get_capabilities text hold it. Every tools/list and resources/list answer stays byte for byte.
+ * 0.6.5 changes the reported version in every scenario, and takes a baby's arrival and a coming of age out of
+ * get_occasion_sky wherever tools/list holds it (src/ai-tools/published-tools.ts). Nothing else changes.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

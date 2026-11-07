@@ -44,7 +44,10 @@ shared task board. `CLAUDE.md` imports this file, so the rules live here once.
   a birth time, a birthplace or the names you give; a birthday link carries
   only the month and day.
 - The 13 published MCP tool definitions stay byte-identical
-  (`src/ai-tools/release-060.test.ts`).
+  (`src/ai-tools/release-060.test.ts`). The one exception: 0.6.5 takes the
+  `baby` and `coming-of-age` occasions out of `get_occasion_sky`, approved by
+  Dias on 7 November 2026 after OpenAI's review
+  (`src/ai-tools/published-tools.ts`).
 - The site is dark only. Do not add a light theme or a theme switch.
 - No token, market or crypto language on consumer surfaces. The approved
   exception is the Collect band and the other sanctioned wing links described

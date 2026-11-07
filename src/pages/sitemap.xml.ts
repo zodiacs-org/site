@@ -597,8 +597,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/demo/', '2026-11-04'] as const,
   // The privacy page's assistant section: what the app's links carry (never a birth year, a birth time, a birthplace
   // or the names you give, and a birthday link only the month and day), worded exactly on 5 November, and the
-  // assistants it names, with Gemini added on 6 November. The day of the daily edition it was built with.
-  ['/privacy/', '2026-11-06'] as const,
+  // assistants it names, with Gemini added on 6 November, and the occasions it lists with no card link, a birthday
+  // alone from 7 November. The day of the daily edition it was built with.
+  ['/privacy/', '2026-11-07'] as const,
   // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
   // hosted search_sky_events names. The day of the daily edition it was built with.
   ['/developers/conventions/', '2026-11-04'] as const,
