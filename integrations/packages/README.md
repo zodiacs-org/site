@@ -63,9 +63,16 @@ instructions and get_capabilities carry the new sentence; the server reports
 released, is rebuilt from that source with unchanged local tools. 0.6.3 and
 0.3.26 keep their bytes. Developer 0.3.28 is 0.3.27's source with its local
 chart tools on MCP adapter 0.1.0-rc.26 and engine 1.1.0-rc.2; 0.3.27 keeps its
+bytes. Zodiacs 0.6.5 takes a baby's arrival and a coming of age out of
+`get_occasion_sky`, after OpenAI's review found that the baby occasion, with
+names, a place and coordinates, could collect identifying or locating details
+about a child under 13. Its description, its occasion field and the occasion
+enum in its input and output schemas change; the other 18 tool definitions
+are unchanged, and the server reports 0.6.5. Developer 0.3.29 is rebuilt from
+that source with unchanged local chart tools. 0.6.4 and 0.3.28 keep their
 bytes.
 
-Current candidates are **Zodiacs 0.6.4** and **Zodiacs Developer 0.3.28**;
+Current candidates are **Zodiacs 0.6.5** and **Zodiacs Developer 0.3.29**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

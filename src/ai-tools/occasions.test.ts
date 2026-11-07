@@ -61,7 +61,7 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
   });
 
   it('reads a date alone at noon UTC, and refuses a time without its zone', async () => {
-    const result = await executeAiTool('get_occasion_sky', { occasion: 'baby', date: '2026-10-23' }, on);
+    const result = await executeAiTool('get_occasion_sky', { occasion: 'home', date: '2026-10-23' }, on);
     if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
     expect(result.data.instantIs).toBe('utc-noon');
     expect(result.data.evening).toBeNull();
@@ -77,8 +77,19 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(half.ok).toBe(false);
   });
 
-  it('keeps a birth date out of every link: a birthday, a baby or a coming of age has no card or share link, and the answer links the page', async () => {
-    for (const occasion of ['baby', 'birthday', 'coming-of-age']) {
+  it('takes no baby’s arrival and no coming of age, with or without names and a place', async () => {
+    // OpenAI's review: with names, a place and coordinates, the baby occasion could collect details about a child under 13.
+    for (const occasion of ['baby', 'coming-of-age']) {
+      for (const extra of [{}, { names: 'Mia', place: 'London', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278 }]) {
+        const result = await executeAiTool('get_occasion_sky', { occasion, date: '2026-05-03', ...extra }, on);
+        expect(result, occasion).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+        expect(JSON.stringify(result), occasion).not.toMatch(/Mia|London|2026-05-03/u);
+      }
+    }
+  });
+
+  it('keeps a birth date out of every link: a birthday has no card or share link, and the answer links the page', async () => {
+    for (const occasion of ['birthday']) {
       const result = await executeAiTool('get_occasion_sky', { occasion, date: '2026-05-03', time: '08:15', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278, place: 'London' }, on);
       if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
       // The published description says to use a returned page link when cardUrl is null.

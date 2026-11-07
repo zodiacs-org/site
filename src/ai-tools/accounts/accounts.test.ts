@@ -169,9 +169,16 @@ describe('what can be saved', () => {
     expect(pairOnly.href).toMatch(/^\/compatibility\/[a-z]+-[a-z]+\/#saved=[0-9a-f]{16}$/u);
   });
 
-  it('keeps a birthday, a baby or a coming of age to the page address: no date, time, place or name in the link', async () => {
+  it('takes no baby’s arrival and no coming of age to save, as get_occasion_sky takes none', () => {
+    for (const occasion of ['baby', 'coming-of-age']) {
+      expect(saveInput.safeParse({ kind: 'occasion', occasion: { occasion, date: '2015-09-30' } }).success, occasion).toBe(false);
+      expect(saveInput.safeParse({ kind: 'occasion', occasion: { occasion, date: '2015-09-30', place: 'London', names: 'Mia' } }).success, occasion).toBe(false);
+    }
+  });
+
+  it('keeps a birthday to the page address: no date, time, place or name in the link', async () => {
     const hrefs = new Set<string>();
-    for (const occasion of ['birthday', 'baby', 'coming-of-age']) {
+    for (const occasion of ['birthday']) {
       for (const date of ['2012-03-14', '2015-09-30']) {
         const args = { kind: 'occasion', occasion: { occasion, date, time: '08:15', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278, place: 'London', names: 'Mia' } };
         const record = await buildSavedRecord(saveInput.parse(args), { now });
@@ -185,7 +192,7 @@ describe('what can be saved', () => {
         hrefs.add(record.href);
       }
     }
-    expect(hrefs.size).toBe(6);
+    expect(hrefs.size).toBe(2);
     // Any other occasion keeps the day, time, zone and two-decimal coordinates, never the names or the place.
     expect(savedOccasionPath({ latitude: 43.7696, longitude: 11.2558 }, { occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome' }))
       .toBe('/occasions/#o=wedding&d=2027-06-12&t=17%3A00&tz=Europe%2FRome&lat=43.77&lon=11.26');

@@ -11,6 +11,7 @@ import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
+import { PUBLISHED_TOOLS } from './published-tools';
 
 /**
  * ZODIACS_SKY_EVENTS_ENABLED stays off in production while the directories review the nineteen tools. Off (unset,
@@ -22,7 +23,8 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * lunar nodes; the thirteen published definitions keep their bytes either way.
  */
 const FIXTURE = JSON.parse(readFileSync(new URL('./accounts/flag-off.fixture.json', import.meta.url), 'utf8')) as Record<string, Record<string, { text: string }>>;
-const LIVE = JSON.parse(readFileSync(new URL('../../docs/platform/zodiacs-ai/evidence/0.6.0/tools-list.live-2026-11-01.json', import.meta.url), 'utf8')).result.tools as Record<string, unknown>[];
+// The thirteen as the live server published them on 1 November 2026, with 0.6.5's two occasions taken out.
+const LIVE = PUBLISHED_TOOLS;
 const servers: Server[] = [];
 afterAll(async () => { await Promise.all(servers.map((server) => new Promise<void>((resolve) => server.close(() => resolve())))); });
 

@@ -86,6 +86,11 @@ Occasions and their framing:
 | `remembrance` | The sky the night they were born | Quiet wording, no "celebrate", built last, copy shown to the owner first. |
 | `gathering` | Tonight's sky | Eclipse, meteor-shower or full-moon evenings, linked from upcoming events. |
 
+Since 0.6.5 (7 November 2026) the assistant tool `get_occasion_sky` takes
+neither `baby` nor `coming-of-age`: OpenAI's review found that the baby
+occasion, with names, a place and coordinates, could collect identifying or
+locating details about a child under 13. The site's own picker keeps both.
+
 **Due-date windows** state facts, not odds: "Between 14 October and 11
 November the Sun is in Libra until 23 October, then Scorpio." No "most
 likely" sign and no sex assumptions.

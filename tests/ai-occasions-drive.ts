@@ -23,7 +23,7 @@ async function result(tool: AiToolName, args: Record<string, unknown>) {
   return answer;
 }
 const wedding = await result('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', time: '19:00', zone: 'Europe/Rome', latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy', names: 'Ana & Luis' });
-const baby = await result('get_occasion_sky', { occasion: 'baby', date: '2026-10-23' });
+const birthdayOccasion = await result('get_occasion_sky', { occasion: 'birthday', date: '2026-10-23' });
 const milestones = await result('get_life_milestones', { birthDate: '1997-03-15' });
 
 /** A card's first screen is the moment and one action; the rest is behind "More from this reading". Open it, as a reader would. */
@@ -129,18 +129,18 @@ try {
 
   // A date alone: noon UTC, said so, no evening, and the Moon's change of sign.
   const plain = await open();
-  await show(plain, baby);
-  await plain.getByRole('heading', { name: (baby as any).data.card.title }).waitFor();
+  await show(plain, birthdayOccasion);
+  await plain.getByRole('heading', { name: (birthdayOccasion as any).data.card.title }).waitFor();
   await unfold(plain);
-  const babyText = await plain.locator('article').innerText();
-  assert.match(babyText, /A new baby/);
-  assert.match(babyText, /Friday, 23 October 2026\nNo time or place given, so the sky is read at noon UTC\./);
-  assert.match(babyText, /Pisces to Aries Moon/);
-  assert.match(babyText, /The Moon changes sign that day\. Add the time to pin it down\./);
-  assert.doesNotMatch(babyText, /Golden hour|Sunset/);
-  // A baby's arrival can be a birth date: no card link and no share link, so the card offers neither.
-  assert.equal((baby as any).data.cardUrl, null);
-  assert.equal((baby as any).data.shareUrl, null);
+  const occasionText = await plain.locator('article').innerText();
+  assert.match(occasionText, /Birthday/);
+  assert.match(occasionText, /Friday, 23 October 2026\nNo time or place given, so the sky is read at noon UTC\./);
+  assert.match(occasionText, /Pisces to Aries Moon/);
+  assert.match(occasionText, /The Moon changes sign that day\. Add the time to pin it down\./);
+  assert.doesNotMatch(occasionText, /Golden hour|Sunset/);
+  // A birthday can be a birth date: no card link and no share link, so the card offers neither.
+  assert.equal((birthdayOccasion as any).data.cardUrl, null);
+  assert.equal((birthdayOccasion as any).data.shareUrl, null);
   assert.equal(await plain.getByRole('link', { name: /printable card|Share/u }).count(), 0);
 
   // A place name with no zone or coordinates is shown, and the line does not claim there was no place.

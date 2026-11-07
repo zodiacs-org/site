@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { BUDGETS, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
 import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
-import { OCCASION_KINDS } from '../lib/occasions/kinds';
+import type { OccasionKind } from '../lib/occasions/kinds';
 import { BEST_DAYS_MAX_WINDOW } from '../lib/occasions/best-dates';
 import { compatibilityInput, compatibilityResult } from './features/compatibility';
 import { chartTwinsData, chartTwinsInput, famousChartData, famousChartInput } from './features/people';
@@ -15,7 +15,7 @@ import { explainData, explainInput, explainInputWithSkyEvents } from './features
 import { birthplaceData, birthplaceInput } from './features/birthplace';
 import { skyEventsData, skyEventsInput } from './features/sky-events';
 
-export const AI_VERSION = '0.6.4';
+export const AI_VERSION = '0.6.5';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 /** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;
@@ -23,10 +23,18 @@ export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_event
  * The 0.5.0 tools: the occasion tools, compatibility, famous people, birthdays and the calendar feed.
  * Offered only where ZODIACS_OCCASIONS_ENABLED=1 (docs/platform/zodiacs-ai/OCCASIONS.md).
  */
+/**
+ * The occasions get_occasion_sky takes: every card occasion but a baby's arrival and a coming of age, which centre
+ * on a child's or a teenager's birth date. 0.6.5 takes those two out after OpenAI's review found that the baby
+ * occasion, with names, a place and coordinates, could collect identifying or locating details about a child under
+ * 13 (docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md). The site's own occasion picker keeps all twelve.
+ */
+export const ASSISTANT_OCCASION_KINDS = ['wedding', 'anniversary', 'met', 'birthday', 'pet', 'home', 'job', 'graduation', 'retirement', 'gathering'] as const satisfies readonly OccasionKind[];
 export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'] as const;
 /**
  * The 0.5 tools: the thirteen the directories reviewed. Their tools/list entries, including this list as the
- * error branch's and get_capabilities' tool enum, stay byte for byte as published (src/ai-tools/release-060.test.ts).
+ * error branch's and get_capabilities' tool enum, stay byte for byte as published, apart from the two occasions
+ * 0.6.5 takes out of get_occasion_sky (src/ai-tools/release-060.test.ts).
  */
 export const ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES] as const;
 /**
@@ -135,7 +143,7 @@ export const INPUT_SCHEMAS = {
   }),
   check_sky_fact: z.strictObject({ kind: z.enum(['sign', 'retrograde', 'ingress', 'phase']), body: z.enum(EVENT_BODIES).optional(), sign: z.enum(SIGN_SLUGS).optional(), phase: z.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone.optional() }),
   get_occasion_sky: z.strictObject({
-    occasion: z.enum(OCCASION_KINDS).describe('What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering.'),
+    occasion: z.enum(ASSISTANT_OCCASION_KINDS).describe('What the day is: wedding, anniversary, met (the day they met), birthday, pet, home, job, graduation, retirement or gathering.'),
     date: date.optional().describe('The day, such as 2027-06-12 (years 1800–2199). Needed unless searchFrom and searchTo are given.'),
     searchFrom: date.optional().describe('To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo.'),
     searchTo: date.optional().describe('The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back.'),
@@ -248,7 +256,7 @@ const horoscope = z.object({
 const clockTime = z.object({ utc: z.string(), local: z.string() });
 const occasionNote = 'Astrology’s reading of the day, for insight and fun, not a guarantee of how it will go.';
 const occasionSky = z.object({
-  occasion: z.enum(OCCASION_KINDS), date: z.string(), time: z.string().nullable(), zone: z.string().nullable(),
+  occasion: z.enum(ASSISTANT_OCCASION_KINDS), date: z.string(), time: z.string().nullable(), zone: z.string().nullable(),
   place: z.string().nullable(), names: z.string().nullable(),
   card: z.object({ title: z.string(), interpretation: z.string(), closing: z.string() }),
   instant: clockTime, instantIs: z.enum(['given-time', 'local-noon', 'utc-noon']),
@@ -358,7 +366,7 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   get_upcoming_events: "Shows what changes in the sky over the coming days or weeks: planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days. Supply from and to, and the person's time zone. With no arguments it opens the calendar for the next seven days. It does not list eclipses or every aspect.",
   check_sky_fact: "Checks a claim such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?' and answers yes, no, or that it depends on the time zone when the answer changes during that day. Use instant or date for sign and retrograde checks, date for ingress and Moon-phase checks. Astronomy only; it cannot check predictions. API documentation: https://zodiacs.org/developers/compute/ .",
   get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Do not call this tool for stock picks, investment advice, financial forecasts, health predictions or guaranteed outcomes, even when the request mentions a horoscope. Decline those requests without a tool call; do not offer astrology-themed investment suggestions. Use it for a horoscope or reflective reading. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written and keep its dates. If the person gives their birth date (and time and birthplace zone if known), pass them too: the result adds a personal forecast for their week from their own chart. Lead with those personal lines, with their dates. If you can schedule tasks for the person, offer once, briefly, to send them their horoscope every morning; Zodiacs itself sends no notifications. If they want to share the reading, give them the returned shareUrl exactly.",
-  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, the day a baby arrived, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It also rates the date from 0 to 100 with a verdict and the astrological reasons (Venus, the Moon's phase and sign, retrograde planets); share the rating and its reasons plainly. When asked for the best days for an occasion, give the window as searchFrom and searchTo (up to 92 days, such as a whole month); it rates every day in it and returns the three best-rated days with their reasons, and the card for the best one unless a date is also given. When asked which of a few named dates is best, call it for each date and compare the ratings. It never guarantees how the day will go. For the printable card, copy the returned cardUrl exactly, including every field after #; do not reconstruct it from the conversation. If cardUrl is null, use the returned page link. If they want to share the rating, give them the returned shareUrl exactly.",
+  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It also rates the date from 0 to 100 with a verdict and the astrological reasons (Venus, the Moon's phase and sign, retrograde planets); share the rating and its reasons plainly. When asked for the best days for an occasion, give the window as searchFrom and searchTo (up to 92 days, such as a whole month); it rates every day in it and returns the three best-rated days with their reasons, and the card for the best one unless a date is also given. When asked which of a few named dates is best, call it for each date and compare the ratings. It never guarantees how the day will go. For the printable card, copy the returned cardUrl exactly, including every field after #; do not reconstruct it from the conversation. If cardUrl is null, use the returned page link. If they want to share the rating, give them the returned shareUrl exactly.",
   get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction. If they want to share it, give them the returned shareUrl exactly; it shows the milestone the card leads with, never the birth date.",
   get_compatibility: "Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member, or with a famous person. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. To compare someone with a famous person Zodiacs publishes, give that side as { famous: \"<name>\" } instead: it uses their published chart for noon on their birth date, without a Moon or rising sign, and links to their page. If Zodiacs has no chart for that name it says so (found: false); never make one up. It returns a compatibility score out of 100 with scores for attraction, communication and long-term stability, a verdict and a headline: lead with the score and verdict in plain words, then the strongest and hardest contacts. Present it as astrology's reading, never a guarantee of how the relationship will turn out. If they want to share the score, give them the returned shareUrl exactly.",
   find_chart_twins: "Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart. If they want to share it, give them the returned shareUrl exactly; it carries their signs, never the birth date.",
