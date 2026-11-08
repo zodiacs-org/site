@@ -1,0 +1,224 @@
+diff --git a/src/pages/big-three/index.astro b/src/pages/big-three/index.astro
+index 0e14dfff..62dc1c77 100644
+--- a/src/pages/big-three/index.astro
++++ b/src/pages/big-three/index.astro
+@@ -11,6 +11,10 @@ import '../../styles/calculator.css';
+ // computed in the browser by the same engine as the full calculator. The
+ // full chart is one tap further, carrying the details in a URL fragment.
+ const faq = [
++  {
++    q: 'Is there a big three calculator for sun, moon and rising?',
++    a: 'Yes, this one, free with no signup. Enter a birth date, time and place to get your Sun, Moon and rising signs with their exact degrees. Without a birth time you still get the Sun and usually the Moon; the rising sign needs the time.',
++  },
+   {
+     q: 'What are the Big Three?',
+     a: 'Your Sun, Moon, and Rising signs: the sign the Sun occupied at your birth, the sign the Moon occupied, and the sign rising on the eastern horizon at that moment from that place. The Sun is the shorthand most people know; the Moon and Rising are what make a chart feel like a specific person.',
+@@ -46,7 +50,7 @@ const jsonLd = [
+ ---
+ <Base privateSurface
+   clientUi
+-  title="Big Three Calculator: Sun, Moon, and Rising in Seconds | Zodiacs.org"
++  title="Big Three Calculator: Sun, Moon and Rising Signs | Zodiacs.org"
+   description="Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser."
+   path="/big-three/"
+   image="/assets/og/v2/tool/big-three.png"
+@@ -57,7 +61,7 @@ const jsonLd = [
+     <div class="tool-hero">
+       <h1 class="display">{sharingText('en', 'bigTitle')}</h1>
+       <p>
+-        Three fields, three placements. The <a href="/learn/glossary/#sun">Sun</a> is who you are, the{' '}
++        A big three calculator for your Sun, Moon and rising signs: three fields, three placements. The <a href="/learn/glossary/#sun">Sun</a> is who you are, the{' '}
+         <a href="/learn/glossary/#moon">Moon</a> is how you feel, and the Rising sign is how people first read you.
+         Each comes with its exact degree, computed here in your browser.
+       </p>
+diff --git a/src/pages/birth-chart/index.astro b/src/pages/birth-chart/index.astro
+index 9d563213..b6d9f801 100644
+--- a/src/pages/birth-chart/index.astro
++++ b/src/pages/birth-chart/index.astro
+@@ -31,6 +31,18 @@ import '../../styles/post-chart-daily.css';
+ const postChartDailyEnabled = hasDailyChartEmailProvider(process.env);
+ 
+ const faq = [
++  {
++    q: 'Is there a free birth chart calculator with no signup?',
++    a: "Yes. This one needs no account and no email. Enter your birth date, time and place and you get every planet's sign and degree, your rising sign, all twelve houses and the aspects, calculated in your browser.",
++  },
++  {
++    q: 'Where can I get a free birth chart with houses?',
++    a: 'Here, free: with a birth time, the chart shows all twelve houses in Whole sign or Placidus, which planets fall in each, and what each house covers. Without a time the houses cannot be placed, so the chart leaves them out rather than guess.',
++  },
++  {
++    q: 'What makes a birth chart calculator private?',
++    a: 'Where the chart is worked out and what is kept. This private birth chart calculator does the work in your browser, keeps saved charts on your device, and sends birth details nowhere unless you choose account sync, a share link or the assistant.',
++  },
+   {
+     q: 'What is a birth chart?',
+     a: 'A birth chart, or natal chart, is a map of where every planet sat, seen from Earth, at the moment and place you were born. It records your Sun, Moon and rising signs, plus Mercury through Pluto across twelve houses.',
+@@ -129,8 +141,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
+   clientUi
+   glass
+   inlineCriticalCss
+-  title="Free Birth Chart Calculator: Sun, Moon & Rising | Zodiacs.org"
+-  description="Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean, computed privately, in your browser."
++  title="Free Birth Chart Calculator, No Signup: Houses Included | Zodiacs.org"
++  description="Free birth chart calculator with no signup: Sun, Moon, rising sign, every planet and all twelve houses, calculated privately in your browser."
+   path="/birth-chart/"
+   image="/assets/og/v2/tool/birth-chart.png"
+   imageAlt="Free birth chart calculator, Zodiacs.org"
+@@ -569,8 +581,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
+     <div class="kwrap bc-grid">
+       <div class="bc-head">
+         <nav class="bc-crumbs" aria-label="Breadcrumb"><a href="/tools/">Tools</a><span aria-hidden="true">/</span><span aria-current="page">Birth chart</span></nav>
+-        <h1 class="bc-title">Get your free birth chart.</h1>
+-        <p class="bc-lede">Your Sun, Moon and rising sign, every planet and house, and what each one means.</p>
++        <h1 class="bc-title">Free birth chart calculator, no signup</h1>
++        <p class="bc-lede">Enter your birth date, time and place to get your full birth chart free, with no account and no email: every planet&rsquo;s sign and degree, your rising sign, all twelve houses and what each one means. It is calculated in your browser, so your details stay on your device.</p>
+       </div>
+ 
+       <div class="bc-main" id="bc-form">
+@@ -768,7 +780,7 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
+   <section class="bc-trust">
+     <div class="kwrap bc-trust__grid">
+       <div class="bc-trust__head">
+-        <h2 class="h-3">Private by design.</h2>
++        <h2 class="h-3">A private birth chart calculator</h2>
+         <p>No account, no signup, and no chart service on our servers.</p>
+         <a class="textlink" href="/methodology/">How charts are calculated <span class="arr" aria-hidden="true">→</span></a>
+       </div>
+diff --git a/src/pages/compatibility/index.astro b/src/pages/compatibility/index.astro
+index 052c5651..baca5e19 100644
+--- a/src/pages/compatibility/index.astro
++++ b/src/pages/compatibility/index.astro
+@@ -14,6 +14,10 @@ import { COMPAT_MY_SIGN_SCRIPT } from '../../lib/compat-my-sign';
+ import '../../styles/calculator.css';
+ 
+ const faq = [
++  {
++    q: 'Where can I find a zodiac compatibility checker?',
++    a: "Here, free and with no account. Compare two Sun signs through the 78 sign pair readings, or enter two sets of birth details to compare full birth charts: how one person's planets aspect the other's, and what that means in astrology.",
++  },
+   {
+     q: 'How does astrological compatibility work?',
+     a: 'Astrologers compare two birth charts by measuring the angles between one person’s planets and the other’s, a practice called synastry. Trines and sextiles between charts read as ease; squares and oppositions read as productive friction. Sun-sign compatibility is the one-line summary of a much longer comparison.',
+@@ -52,7 +56,7 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
+ ---
+ <Base privateSurface
+   clientUi
+-  title="Compatibility Calculator: Compare Two Birth Charts | Zodiacs.org"
++  title="Zodiac Compatibility Checker: Compare Two Birth Charts | Zodiacs.org"
+   description="Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings."
+   path="/compatibility/"
+   image="/assets/og/v2/tool/compatibility.png"
+@@ -64,9 +68,9 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
+   <script slot="head" is:inline set:html={SAVED_RESULT_FORWARD} />
+   <section class="section--tight container container--narrow" id="calculator">
+     <div class="compat-hero">
+-      <h1 class="display">Check your astrology compatibility.</h1>
++      <h1 class="display">Zodiac compatibility checker</h1>
+       <p>
+-        Compare two <AstroTerm term="birth-chart" label="birth charts" surface="compatibility" />{' '}to explore where a relationship flows and where it catches. You don’t need their birth details: send a link and they add their own.
++        Compare two <AstroTerm term="birth-chart" label="birth charts" surface="compatibility" />{' '}free, with no account, to see where a relationship flows and where it catches, or read any of the 78 sign pairings below. You don’t need their birth details: send a link and they add their own.
+       </p>
+     </div>
+ 
+diff --git a/src/pages/moon-sign/index.astro b/src/pages/moon-sign/index.astro
+index 6b7f08f4..4b579d5c 100644
+--- a/src/pages/moon-sign/index.astro
++++ b/src/pages/moon-sign/index.astro
+@@ -7,6 +7,10 @@ import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
+ import '../../styles/calculator.css';
+ 
+ const faq = [
++  {
++    q: 'Is there a free moon sign calculator?',
++    a: 'Yes, this one is free with no signup. Enter your birth date, and your birth time if you know it, to see the sign the Moon was in when you were born and its degree. The Moon changes sign every two to three days, so the date is usually enough.',
++  },
+   {
+     q: 'What is a moon sign?',
+     a: 'Your moon sign is the zodiac sign the Moon occupied at your birth. Where your sun sign describes your core identity, the moon sign describes your emotional life: how you feel, what soothes you, and what you need to feel safe. Many people recognize themselves more in their moon than their sun.',
+@@ -46,7 +50,7 @@ const jsonLd = [
+ ---
+ <Base
+   clientUi
+-  title="Moon Sign Calculator: What Is My Moon Sign? | Zodiacs.org"
++  title="Free Moon Sign Calculator: What Is My Moon Sign? | Zodiacs.org"
+   description="Find your moon sign free, in seconds: how you feel, what soothes you, and what you need to feel safe. No signup."
+   path="/moon-sign/"
+   image="/assets/og/v2/tool/moon-sign.png"
+@@ -55,10 +59,11 @@ const jsonLd = [
+ >
+   <section class="section--tight container">
+     <div class="tool-hero">
+-      <h1 class="display">Find your moon sign.</h1>
++      <h1 class="display">Free moon sign calculator</h1>
+       <p>
+-        The <a href="/learn/glossary/#moon">Moon</a> rules how you feel: your inner weather, your comforts, the
+-        way you settle yourself. Here is how to find yours.
++        Enter your birth date to find the sign the <a href="/learn/glossary/#moon">Moon</a> was in when you were born, free
++        and with no signup. The Moon changes sign every two to three days, so the date is usually enough; on a day it
++        changed sign, your birth time settles it. In astrology the Moon rules how you feel and how you settle yourself.
+       </p>
+     </div>
+ 
+diff --git a/src/pages/rising-sign/index.astro b/src/pages/rising-sign/index.astro
+index 639ad874..3488bfc6 100644
+--- a/src/pages/rising-sign/index.astro
++++ b/src/pages/rising-sign/index.astro
+@@ -22,6 +22,10 @@ import {
+ import '../../styles/calculator.css';
+ 
+ const faq = [
++  {
++    q: 'Is there a rising sign calculator without birth time?',
++    a: 'No calculator can give a rising sign without a birth time, because it changes about every two hours. You can still narrow it: the day strip on this page shows how all twelve signs rise across one day, so knowing you were born in the morning leaves two or three signs.',
++  },
+   {
+     q: 'What is a rising sign?',
+     a: 'Your rising sign, also called the ascendant, is the zodiac sign that was coming up over the eastern horizon at the moment you were born. In astrology it describes first impressions: how strangers read you before they know your Sun sign. It also sets the layout of your chart’s twelve houses.',
+@@ -178,8 +182,9 @@ const gap = later.minutes - example.minutes;
+     <div class="rs-why">
+       <div>
+         <span class="kicker">Why we ask for the time</span>
+-        <h2 class="h-2">The rising sign changes about every two hours.</h2>
++        <h2 class="h-2">Rising sign calculator without birth time</h2>
+         <div class="rs-prose">
++          <p>No calculator can give your rising sign without a birth time, because it changes about every two hours. You can still narrow it down: the day strip below shows how all twelve signs rise across one day, so knowing roughly when you were born leaves two or three signs to read.</p>
+           <p>The Earth turns once a day, so the eastern horizon passes through all twelve signs of the <a href="/learn/glossary/#zodiac">zodiac</a> every 24 hours. Your <a href="/learn/glossary/#rising-sign">rising sign</a> is whichever one was crossing it at the moment you were born.</p>
+           <p>The signs don’t take equal time. Depending on the sign and how far from the equator you were born, one can rise in just over an hour and another in two and a half. That is why we ask for your exact time, and why we never guess it.</p>
+         </div>
+diff --git a/src/pages/transits/index.astro b/src/pages/transits/index.astro
+index f558909f..02f98392 100644
+--- a/src/pages/transits/index.astro
++++ b/src/pages/transits/index.astro
+@@ -15,6 +15,10 @@ const events = month ? eventList(month) : [];
+ const label = month ? monthLabel(month) : null;
+ 
+ const faq = [
++  {
++    q: 'Where can I get a free transit chart calculator?',
++    a: 'Here, free and with no signup. Enter your birth details or pick a saved chart, and the page shows which planets are aspecting your birth chart today, then lets you move the date up to a year forward or back.',
++  },
+   {
+     q: 'What is a transit?',
+     a: 'The planets kept moving after you were born. A transit is the current position of a planet measured against a position in your birth chart. Transiting Saturn square your natal Moon means Saturn, today, stands ninety degrees from where your Moon was at birth. Transits are the main tool astrologers use to time things.',
+@@ -53,7 +57,7 @@ const jsonLd = [
+ ---
+ <Base
+   clientUi
+-  title="Transit Tracker: The Sky Moving Over Your Birth Chart | Zodiacs.org"
++  title="Free Transit Chart Calculator: Transits to Your Chart | Zodiacs.org"
+   description="See what is active in your birth chart today, then move the date up to a year forward or back to watch each transit build and release."
+   path="/transits/"
+   image="/assets/og/v2/tool/transits.png"
+@@ -63,9 +67,9 @@ const jsonLd = [
+ >
+   <section class="section--tight container container--narrow">
+     <div class="tool-hero reveal">
+-      <h1 class="display">What is active in your chart?</h1>
++      <h1 class="display">Free transit chart calculator</h1>
+       <p>
+-        Start with today&rsquo;s strongest themes, then move the date up to a year
++        See which planets are aspecting your birth chart today, free and with no signup. Start with today&rsquo;s strongest themes, then move the date up to a year
+         forward or back to watch each <AstroTerm term="transit" label="transit" surface="transits-page" /> build, peak, and release.
+         Pick a saved chart or enter your birth details.
+       </p>

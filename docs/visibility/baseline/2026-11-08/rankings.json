@@ -1,0 +1,1785 @@
+{
+  "collected_at": "2026-11-08",
+  "source_note": "WebSearch tool (US), not Google. One standard-mode query per phrase, exact phrase unquoted. Results are the tool's ordered link list, truncated to the first 10. The index is heavily polluted by keyword-stuffed spam on hijacked subdomains (e.g. live.museum.manchester.ac.uk, presentationbuilder.internationaltrucks.com, lbas.lboro.ac.uk). Rankings here are not Google SERPs. No zodiacs.org URL appeared for any phrase, including the brand queries. WebFetch could not reach outside hosts in this session (getaddrinfo ENOTFOUND), so outreach pages were not opened: titles, dates and competitor lists come only from search titles and snippets, and zodiacs_listed is null (not verified). Task C archive and RDAP lookups are unavailable for the same reason.",
+  "rankings": [
+    {
+      "phrase": "free birth chart with houses",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://live.museum.manchester.ac.uk/library/free-natal-chart-with-houses.html",
+          "title": "Free Natal Chart With Houses"
+        },
+        {
+          "pos": 2,
+          "url": "https://get.cloudshark.org/pages/free-natal-chart-with-houses.html",
+          "title": "Free Natal Chart With Houses"
+        },
+        {
+          "pos": 3,
+          "url": "https://presentationbuilder.internationaltrucks.com/natal-chart-calculator-houses",
+          "title": "natal chart calculator with houses"
+        },
+        {
+          "pos": 4,
+          "url": "https://cafeastrology.com/free-natal-chart-report-koch-houses.html",
+          "title": "Free Natal Chart Report – Koch Houses"
+        },
+        {
+          "pos": 5,
+          "url": "https://bbbr.couplestherapyinc.com/favorites/free-vedic-birth-chart-with-interpretation-unlock-the-secrets-of-your-destiny.html",
+          "title": "Free Vedic Birth Chart With Interpretation"
+        },
+        {
+          "pos": 6,
+          "url": "https://presentationbuilder.internationaltrucks.com/birth-chart-houses-calculator",
+          "title": "birth chart with houses calculator"
+        },
+        {
+          "pos": 7,
+          "url": "https://edge-eu-west-2.betteruptime.com/en/house-chart-calculator.html",
+          "title": "House Chart Calculator"
+        },
+        {
+          "pos": 8,
+          "url": "https://siegfriedt-survey.umb.edu/pti/cafe-astrology-natal-chart",
+          "title": "cafe astrology natal chart"
+        },
+        {
+          "pos": 9,
+          "url": "https://sallykirkman.com/?p=44571",
+          "title": "Free Birth Chart Calculator by Sally Kirkman"
+        },
+        {
+          "pos": 10,
+          "url": "https://sallykirkman.com/birth-chart-calculator/",
+          "title": "Free Birth Chart Calculator by Sally Kirkman"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "what is my rising sign",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://presentationbuilder.internationaltrucks.com/rising-sign",
+          "title": "what is my rising sign"
+        },
+        {
+          "pos": 2,
+          "url": "https://heartbeatapi.appbase.io/what-is-my-rising-sign",
+          "title": "What is My Rising Sign?"
+        },
+        {
+          "pos": 3,
+          "url": "https://www.today.com/life/astrology/what-is-my-rising-sign-rcna138567",
+          "title": "what is my rising sign rcna138567"
+        },
+        {
+          "pos": 4,
+          "url": "https://presentationbuilder.internationaltrucks.com/sign-rising",
+          "title": "what is my sign and rising"
+        },
+        {
+          "pos": 5,
+          "url": "https://homologaead.univille.br/what-is-my-rising-sign-understanding-your-ascendant-in-astrology.html",
+          "title": "What is My Rising Sign? Understanding Your Ascendant in Astrology"
+        },
+        {
+          "pos": 6,
+          "url": "https://www.farmersalmanac.com/?p=440110",
+          "title": "What Is My Rising Sign? Ascendant Dates and Meaning"
+        },
+        {
+          "pos": 7,
+          "url": "https://app.d-tech.rubyshore.com/tiktoknews4/what-is-myrising-sign.html",
+          "title": "Unlocking The Mystery: What Is My Rising Sign?"
+        },
+        {
+          "pos": 8,
+          "url": "https://discourse.sluggerotoole.com/this-trend/what-is-my-rising-sign-discover-the-key-to-your-astrological-identity.html",
+          "title": "What Is My Rising Sign? Discover The Key To Your Astrological Identity"
+        },
+        {
+          "pos": 9,
+          "url": "https://arquivo.ipam.org.br/yjgjmx/what-is-my-rising-sign",
+          "title": "How To Know My Rising Sign Your rising sign will reveal it"
+        },
+        {
+          "pos": 10,
+          "url": "https://convos.confex.com/jamila2/whats-my-rising.html",
+          "title": "What's My Rising Sign? Unveiling The Mysteries Of Your Astrological Identity"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "what is my moon sign",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://presentationbuilder.internationaltrucks.com/moon-sign-calculator",
+          "title": "what is my moon sign calculator"
+        },
+        {
+          "pos": 2,
+          "url": "https://cafeastrology.com/whats-my-moon-sign.html",
+          "title": "What's My Moon Sign?"
+        },
+        {
+          "pos": 3,
+          "url": "https://sites.google.com/view/moonsigncalculator",
+          "title": "Moon Sign Calculator"
+        },
+        {
+          "pos": 4,
+          "url": "https://voip.puri.sm/?p=1235547",
+          "title": "How to Calculate My Moon Sign"
+        },
+        {
+          "pos": 5,
+          "url": "https://sites.google.com/view/pachangam/blog/free-moon-sign-calculator",
+          "title": "free moon sign calculator"
+        },
+        {
+          "pos": 6,
+          "url": "https://omenme.pages.dev/moon-sign-calculator",
+          "title": "What Is My Moon Sign?"
+        },
+        {
+          "pos": 7,
+          "url": "https://convos.confex.com/jamila2/calculate-moon-sign-and-rising.html",
+          "title": "Calculate Moon Sign And Rising: A Comprehensive Guide"
+        },
+        {
+          "pos": 8,
+          "url": "https://lunarliving.org/moon/moonsigncalculator.html",
+          "title": "Moon Sign Astrology"
+        },
+        {
+          "pos": 9,
+          "url": "https://astrostyle.com/moon-calculator/",
+          "title": "moon calculator"
+        },
+        {
+          "pos": 10,
+          "url": "https://natalecho.com/tools/moon-sign-calculator",
+          "title": "Moon Sign Calculator"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "birth chart calculator",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://myminifunnel.featurebase.app/help/articles/5926280-birth-chart-calculator-funnel",
+          "title": "Birth Chart Calculator Funnel"
+        },
+        {
+          "pos": 2,
+          "url": "https://ipsnews.net/business/2026/03/24/birth-chart-calculator-map-your-cosmic-blueprint/?amp=1",
+          "title": "birth chart calculator map your cosmic blueprint"
+        },
+        {
+          "pos": 3,
+          "url": "https://chart.masterseanchan.com/",
+          "title": "Free Birth Chart Calculator — Natal Chart & Astrology Reading"
+        },
+        {
+          "pos": 4,
+          "url": "https://ipsnews.net/business/?p=243501",
+          "title": "Birth Chart Calculator: Map Your Cosmic Blueprint"
+        },
+        {
+          "pos": 5,
+          "url": "https://lohacemosvisible.zeiss.es/?p=7288",
+          "title": "Birth Chart Calculator: Unveiling the Secrets of Your Cosmic Blueprint"
+        },
+        {
+          "pos": 6,
+          "url": "https://crunchmilk.pages.dev/birth-chart-calculator/",
+          "title": "Birth Chart Calculator"
+        },
+        {
+          "pos": 7,
+          "url": "https://live.museum.manchester.ac.uk/library/birth-chart-calculator-astrology.html",
+          "title": "Birth Chart Calculator Astrology"
+        },
+        {
+          "pos": 8,
+          "url": "https://sallykirkman.com/birth-chart-calculator/",
+          "title": "Free Birth Chart Calculator by Sally Kirkman"
+        },
+        {
+          "pos": 9,
+          "url": "https://iris.londoncouncils.gov.uk/viewer/zodiac-birthday-chart.html",
+          "title": "Zodiac Birthday Chart"
+        },
+        {
+          "pos": 10,
+          "url": "https://onestop.cnmi.gov/repository/6pnDSH/GjD6fm/birth-astrology-chart-calculator.pdf",
+          "title": "birth astrology chart calculator"
+        }
+      ],
+      "zodiacs_pos": null,
+      "note": "Full result set had 29 URLs; no zodiacs.org."
+    },
+    {
+      "phrase": "big three calculator sun moon rising",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://presentationbuilder.internationaltrucks.com/sun-moon-rising-sign-calculator-2",
+          "title": "sun moon rising sign calculator"
+        },
+        {
+          "pos": 2,
+          "url": "https://presentationbuilder.internationaltrucks.com/sun-moon-rising-signs-calculator",
+          "title": "sun moon and rising signs calculator"
+        },
+        {
+          "pos": 3,
+          "url": "https://presentationbuilder.internationaltrucks.com/sun-moon-rising-sign-calculator",
+          "title": "sun moon and rising sign calculator"
+        },
+        {
+          "pos": 4,
+          "url": "https://miniwebtool.com/sun-moon-rising-sign-calculator/",
+          "title": "sun moon rising sign calculator"
+        },
+        {
+          "pos": 5,
+          "url": "https://presentationbuilder.internationaltrucks.com/sun-moon-rising-signs-calculator-2",
+          "title": "sun moon rising signs calculator"
+        },
+        {
+          "pos": 6,
+          "url": "https://klaviyobos18.klaviyo.com/?p=101614",
+          "title": "The Big 3 Astrology Calculator: Unraveling Your Astrological Essence"
+        },
+        {
+          "pos": 7,
+          "url": "https://presentationbuilder.internationaltrucks.com/sun-moon-rising-calculator-free",
+          "title": "sun moon rising calculator free"
+        },
+        {
+          "pos": 8,
+          "url": "https://presentationbuilder.internationaltrucks.com/sun-moon-rising-calculator-2",
+          "title": "sun moon and rising calculator"
+        },
+        {
+          "pos": 9,
+          "url": "https://presentationbuilder.internationaltrucks.com/moon-sun-rising-sign-calculator",
+          "title": "moon sun and rising sign calculator"
+        },
+        {
+          "pos": 10,
+          "url": "https://presentationbuilder.internationaltrucks.com/sun-rising-moon-sign-calculator",
+          "title": "sun rising and moon sign calculator"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "astrology compatibility calculator",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://lohacemosvisible.zeiss.es/?p=6874",
+          "title": "Astrology Compatibility Calculator: Unveiling the Secrets of the Stars"
+        },
+        {
+          "pos": 2,
+          "url": "https://voip.puri.sm/?p=1240380",
+          "title": "Astrology Sign Compatibility Calculator Unlock the Secrets of Harmonious Relationships"
+        },
+        {
+          "pos": 3,
+          "url": "https://db2.clearout.io/-23199332/kcontemplateb/rcorrespondt/adistributed/astrology+compatibility+calculator.pdf",
+          "title": "db2.clearout.io"
+        },
+        {
+          "pos": 4,
+          "url": "https://desafio.sebraemg.com.br/?p=3494",
+          "title": "Sun and Moon Sign Calculator: Exploring Astrological Compatibility"
+        },
+        {
+          "pos": 5,
+          "url": "https://cvs.pantherdb.org/?p=1236570",
+          "title": "Astrology Sign Compatibility Calculator Unlock the Secrets of Harmonious Relationships"
+        },
+        {
+          "pos": 6,
+          "url": "https://lohacemosvisible.zeiss.es/?p=5236",
+          "title": "Sun and Moon Sign Calculator: Exploring Astrological Compatibility"
+        },
+        {
+          "pos": 7,
+          "url": "https://cvs.pantherdb.org/?p=1233819",
+          "title": "Astrology Signs Compatibility Calculator – Unlock the Secrets of Cosmic Connections"
+        },
+        {
+          "pos": 8,
+          "url": "https://stripe.jhu.edu/news/cosmic-connections-linda-blacks-compatibility-calculator-unveils-your-astrological-harmony",
+          "title": "Cosmic Connections: Linda Black's Compatibility Calculator Unveils Your Astrological Harmony - Jhu Innovations"
+        },
+        {
+          "pos": 9,
+          "url": "https://voip.puri.sm/?p=1263684",
+          "title": "Star Sign Compatibility Calculator"
+        },
+        {
+          "pos": 10,
+          "url": "https://api.copychief.com/?p=45884",
+          "title": "api.copychief.com"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "mercury retrograde 2027 dates",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://days.to/when-is/mercury-retrograde/2027",
+          "title": "When is Mercury Retrograde February 2027?"
+        },
+        {
+          "pos": 2,
+          "url": "https://www.jessicaadams.com/2026/07/13/blog/mercury-retrograde-2027/",
+          "title": "Picture of JESSICA ADAMS"
+        },
+        {
+          "pos": 3,
+          "url": "https://vedicmarga.com/transit/mercury/retrograde/2027/",
+          "title": "Mercury Retrograde in 2027"
+        },
+        {
+          "pos": 4,
+          "url": "https://cafeastrology.com/events/mercury-turns-retrograde-in-pisces-2027/",
+          "title": "Cafe Astrology .com"
+        },
+        {
+          "pos": 5,
+          "url": "https://cafeastrology.com/events/retrograde-mercury-enters-gemini-2027/",
+          "title": "Cafe Astrology .com"
+        },
+        {
+          "pos": 6,
+          "url": "https://cafeastrology.com/events/mercury-turns-retrograde-in-cancer-2027/",
+          "title": "Cafe Astrology .com"
+        },
+        {
+          "pos": 7,
+          "url": "https://vedicmarga.com/transit/mercury/2027/",
+          "title": "Mercury Transit in 2027 - Transit Dates and Timeline"
+        },
+        {
+          "pos": 8,
+          "url": "https://cafeastrology.com/events/retrograde-mercury-enters-aquarius-2027/",
+          "title": "Cafe Astrology .com"
+        },
+        {
+          "pos": 9,
+          "url": "https://natalecho.com/learn/astrology/mercury-retrograde-2027-dates-signs-shadow-periods",
+          "title": "Mercury Retrograde 2027: Dates, Signs and Shadow Periods"
+        },
+        {
+          "pos": 10,
+          "url": "https://miniwebtool.com/es/calendario-de-mercurio-retrogrado/?year=2027",
+          "title": "calendario de mercurio retrogrado"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "saturn return calculator",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://desafio.sebraemg.com.br/?p=2464",
+          "title": "Saturn Return Calculator: Exploring Your Saturn Return Journey"
+        },
+        {
+          "pos": 2,
+          "url": "https://eregistrasi.bpkad.inhilkab.go.id/?p=20322",
+          "title": "Saturn Return Calculator: Exploring Your Saturn Return Journey"
+        },
+        {
+          "pos": 3,
+          "url": "https://api.copychief.com/?p=45452",
+          "title": "saturn returns calculator"
+        },
+        {
+          "pos": 4,
+          "url": "https://lohacemosvisible.zeiss.es/?p=7219",
+          "title": "Saturn Return Calculator for Profound Insight into Growth and Transformation"
+        },
+        {
+          "pos": 5,
+          "url": "https://lohacemosvisible.zeiss.es/?p=3691",
+          "title": "Saturn Return Calculator: Exploring Your Saturn Return Journey"
+        },
+        {
+          "pos": 6,
+          "url": "https://miniwebtool.com/saturn-return-calculator/",
+          "title": "saturn return calculator"
+        },
+        {
+          "pos": 7,
+          "url": "https://klaviyobos18.klaviyo.com/?p=101434",
+          "title": "Saturn Return Calculator for Profound Insight into Growth and Transformation"
+        },
+        {
+          "pos": 8,
+          "url": "https://tools.highaltitudescience.com/post/stop-wasting-timethis-saturn-return-calculator-changes-everything",
+          "title": "Stop Wasting Time—This Saturn Return Calculator Changes Everything - High Altitude Science"
+        },
+        {
+          "pos": 9,
+          "url": "https://support.celigo.com/people-news-006/saturn-return-calculator.html",
+          "title": "Saturn Return Calculator: Discover Your Personal Astrological Review"
+        },
+        {
+          "pos": 10,
+          "url": "https://astrostyle.com/cosmic-calculators/saturn-return/",
+          "title": "Saturn Return Calculator: When Is My Saturn Return? | AstroStyle"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "solar return chart calculator",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://iris.londoncouncils.gov.uk/viewer/solar-return-chart-calculator.html",
+          "title": "Solar Return Chart Calculator"
+        },
+        {
+          "pos": 2,
+          "url": "https://paste.koha-community.org/en/solar-return-chart-calculator.html",
+          "title": "Solar Return Chart Calculator"
+        },
+        {
+          "pos": 3,
+          "url": "https://bonniesorsby.com/solar-return-chart-calculator/",
+          "title": "Solar Return Chart Calculator"
+        },
+        {
+          "pos": 4,
+          "url": "https://cvs.pantherdb.org/?p=1250573",
+          "title": "Solar Return Chart Calculator Unlock Your Cosmic Blueprint"
+        },
+        {
+          "pos": 5,
+          "url": "https://voip.puri.sm/?p=1261546",
+          "title": "Solar Return Chart Calculator Unlock Your Cosmic Blueprint"
+        },
+        {
+          "pos": 6,
+          "url": "https://dspace.hcmus.edu.vn/kamala/solar-return-chart-your-guide-to-annual-astrological-insights.html",
+          "title": "solar return chart your guide to annual astrological insights"
+        },
+        {
+          "pos": 7,
+          "url": "https://edge-eu-west-2.betteruptime.com/en/calculate-solar-return-chart.html",
+          "title": "Calculate Solar Return Chart"
+        },
+        {
+          "pos": 8,
+          "url": "https://live.museum.manchester.ac.uk/library/calculate-solar-return-chart.html",
+          "title": "Calculate Solar Return Chart"
+        },
+        {
+          "pos": 9,
+          "url": "https://cvs.pantherdb.org/tag/aspect-patterns/",
+          "title": "Solar Return Chart Calculator Unlock Your Cosmic Blueprint"
+        },
+        {
+          "pos": 10,
+          "url": "https://lbas.lboro.ac.uk/viewer/calculate-solar-return-chart.html",
+          "title": "Calculate Solar Return Chart"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "what planets are retrograde now",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://starwalk.space/news/what-is-retrograde-motion",
+          "title": "What Planet Is Retrograde Right Now (November 2026)? Retrograde Motion Explained"
+        },
+        {
+          "pos": 2,
+          "url": "https://jessicadavidson.co.uk/2025/12/29/the-astrology-of-2026/",
+          "title": "the astrology of 2026"
+        },
+        {
+          "pos": 3,
+          "url": "https://www.russh.com/every-retrograde-in-2026/",
+          "title": "every retrograde in 2026"
+        },
+        {
+          "pos": 4,
+          "url": "https://www.russh.com/?p=294478",
+          "title": "www.russh.com"
+        },
+        {
+          "pos": 5,
+          "url": "https://astrology-horoscopehub.pages.dev/retrogrades/calendar",
+          "title": "2026 Retrograde Calendar"
+        },
+        {
+          "pos": 6,
+          "url": "https://www.zodiac-astrology-horoscopes.com/articles/november-1st-2026-what-planets-are-retrograde-right-now/",
+          "title": "November 1st 2026 What Planets Are Retrograde Right Now?"
+        },
+        {
+          "pos": 7,
+          "url": "https://authorityastrology.com/retrograde/2026/11",
+          "title": "November 2026"
+        },
+        {
+          "pos": 8,
+          "url": "https://joysauce.com/astrology-with-alice-the-final-fire-initiation/",
+          "title": "astrology with alice the final fire initiation"
+        },
+        {
+          "pos": 9,
+          "url": "https://www.zodiac-astrology-horoscopes.com/articles/november-2026-retrograde-planets/",
+          "title": "November 2026 Retrograde Planets"
+        },
+        {
+          "pos": 10,
+          "url": "https://www.nssgclub.com/en/astro/43909/retrograde-planets-2026-meaning-mercury-how-to-survive-zodiac-signs",
+          "title": "retrograde planets 2026 meaning mercury how to survive zodiac signs"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "void of course moon today",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://www.artforum.com/columns/sunrise-ariana-reiness-january-column-11-237388/",
+          "title": "Alerts & Newsletters"
+        },
+        {
+          "pos": 2,
+          "url": "https://inspiritualserviceastrology.substack.com/p/aspecting-the-cosmos-extended-lunar",
+          "title": "Aspecting the Cosmos: Lunar Void-of-Course"
+        },
+        {
+          "pos": 3,
+          "url": "https://theastrologypodcast.com/?p=10613",
+          "title": "Ep. 292 Transcript: Defining the Void of Course Moon"
+        },
+        {
+          "pos": 4,
+          "url": "https://theastrologypodcast.com/transcripts/tap-ep-292-transcript-defining-the-void-of-course-moon/",
+          "title": "TAP Ep. 292 Transcript: Defining the Void of Course Moon"
+        },
+        {
+          "pos": 5,
+          "url": "https://www.beliefnet.com/columnists/astrologicalmusings/?p=1419",
+          "title": "www.beliefnet.com"
+        },
+        {
+          "pos": 6,
+          "url": "https://www.augurine.com/tools/void-of-course-moon",
+          "title": "Is the Moon void of course right now?"
+        },
+        {
+          "pos": 7,
+          "url": "https://www.beliefnet.com/columnists/astrologicalmusings/?p=1435",
+          "title": "www.beliefnet.com"
+        },
+        {
+          "pos": 8,
+          "url": "https://www.astro-charts.com/tools/moon-phases/",
+          "title": "moon phases"
+        },
+        {
+          "pos": 9,
+          "url": "https://www.astrologyzone.com/?p=353253",
+          "title": "MOONLIGHT PHASES"
+        },
+        {
+          "pos": 10,
+          "url": "https://course.rjuuc.edu.np/read/void-course-of-the-moon.html",
+          "title": "Void Course Of The Moon"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "life path number calculator",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://www.101planners.com/numerology/life-path-number-calculator/",
+          "title": "Life Path Number Calculator"
+        },
+        {
+          "pos": 2,
+          "url": "https://datenumerology.onrender.com/life-path-number-calculator",
+          "title": "Life Path Number Free Calculator"
+        },
+        {
+          "pos": 3,
+          "url": "https://lohacemosvisible.zeiss.es/?p=12679",
+          "title": "Unveiling Your Life's Journey: A Comprehensive Guide to Life Path Number Calculator"
+        },
+        {
+          "pos": 4,
+          "url": "https://heartbeatapi.appbase.io/?p=54748",
+          "title": "Life Path Calculator Number: Unraveling Your Destiny"
+        },
+        {
+          "pos": 5,
+          "url": "https://presentationbuilder.internationaltrucks.com/numerology-life-path-number-calculator",
+          "title": "numerology life path number calculator"
+        },
+        {
+          "pos": 6,
+          "url": "https://lohacemosvisible.zeiss.es/?p=1738",
+          "title": "Life Path Calculator Number: Unraveling Your Destiny"
+        },
+        {
+          "pos": 7,
+          "url": "https://grandavehousing.calpoly.edu/blog/calculate-your-life-path-number-1764799239",
+          "title": "Calculate Your Life Path Number"
+        },
+        {
+          "pos": 8,
+          "url": "https://surveys.laser.red/?p=9942",
+          "title": "How to Calculate Your Life Path Number"
+        },
+        {
+          "pos": 9,
+          "url": "https://signup.repreve.com/?p=50556",
+          "title": "Master Your Destiny: A Comprehensive Guide to Life Path Number Calculators"
+        },
+        {
+          "pos": 10,
+          "url": "https://bigbluebutton14.unisepe.com.br/?p=30449",
+          "title": "Master Your Destiny: A Comprehensive Guide to Life Path Number Calculators"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "what sign will my baby be",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://www.pampers.ca/en-ca/toddler/birthdays-and-holidays/article/baby-horoscope-by-date-of-birth",
+          "title": "Baby Horoscope by Date of Birth: Understand Your Baby's Zodiac Sign"
+        },
+        {
+          "pos": 2,
+          "url": "https://www.pampers.ca/toddler/birthdays-and-holidays/article/baby-horoscope-by-date-of-birth",
+          "title": "baby horoscope by date of birth"
+        },
+        {
+          "pos": 3,
+          "url": "https://babyyumyum.com/?p=57283",
+          "title": "Baby Zodiac Calculator – Discover Your Baby's Star Sign"
+        },
+        {
+          "pos": 4,
+          "url": "https://en.mamasandpapas.com.sa/blog/article/baby-astrological-signs-personality",
+          "title": "baby astrological signs personality"
+        },
+        {
+          "pos": 5,
+          "url": "https://lillydoo.com/blogs/la-vie-de-bebe/astral-theme-and-characteristics-of-the-zodiac-signs",
+          "title": "astral theme and characteristics of the zodiac signs"
+        },
+        {
+          "pos": 6,
+          "url": "https://www.todaysparent.com/baby-horoscopes/babyscopes-aquarius/",
+          "title": "babyscopes aquarius"
+        },
+        {
+          "pos": 7,
+          "url": "https://tv.fpabramo.org.br/?p=33705",
+          "title": "Birthday Zodiac Sign Chart: Unlocking the Secrets of Your Birth Month"
+        },
+        {
+          "pos": 8,
+          "url": "https://www.pampers.com/en-us/baby/parenting-life/article/baby-horoscope-by-date-of-birth",
+          "title": "baby horoscope by date of birth"
+        },
+        {
+          "pos": 9,
+          "url": "https://forum.nuaire.co.uk/viralvibes2/zodiac-signs-with-dates.html",
+          "title": "12 Zodiac Signs Explained Simply List, Dates, Meanings & More"
+        },
+        {
+          "pos": 10,
+          "url": "https://www.pampers.com/baby/parenting-life/article/baby-horoscope-by-date-of-birth",
+          "title": "Hands drawing on a zodiac birth chart"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "how to read a birth chart",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://mindisthemaster.com/?p=19902",
+          "title": "How to Read a Birth Chart"
+        },
+        {
+          "pos": 2,
+          "url": "https://offer.thisoldhouse.com/how-to-read-a-birth-b597.html",
+          "title": "How To Read A Birth Chart"
+        },
+        {
+          "pos": 3,
+          "url": "https://usa.inquirer.net/74653/how-to-read-a-birth-chart-in-these-easy-steps",
+          "title": "How to read a birth chart in these easy steps"
+        },
+        {
+          "pos": 4,
+          "url": "https://piano-icosahedron-h4el.squarespace.com/blog/how-to-read-a-birth-chart-beginner",
+          "title": "How to Read a Birth Chart"
+        },
+        {
+          "pos": 5,
+          "url": "https://my.homepage.net/news/how-to-read-a-birth-chart",
+          "title": "How to Read a Birth Chart - HomePage Media"
+        },
+        {
+          "pos": 6,
+          "url": "https://theseleneproject.pages.dev/blog/how-to-read-birth-chart",
+          "title": "how to read birth chart"
+        },
+        {
+          "pos": 7,
+          "url": "https://ssarin2.infprojects.fhsu.edu/Final%20Project%20/basics.html",
+          "title": "Astrology Basics"
+        },
+        {
+          "pos": 8,
+          "url": "https://wellandgood.com/?p=1220541",
+          "title": "How to Read Your Astrological Birth Chart"
+        },
+        {
+          "pos": 9,
+          "url": "https://wellandgood.com/?p=477644",
+          "title": "How to Read a Natal Chart—a Comprehensive Guide to Planets, Houses, and Zodiac Signs"
+        },
+        {
+          "pos": 10,
+          "url": "https://linvec.imexhs.com/academic-papers/352021/d7abb6/how-to-read-your-birth-chart.pdf",
+          "title": "how to read your birth chart"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "birth chart without birth time",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://theastrologypodcast.com/2020/09/08/how-to-read-a-natal-chart-with-no-birth-time",
+          "title": "how to read a natal chart with no birth time"
+        },
+        {
+          "pos": 2,
+          "url": "https://theastrologypodcast.com/?p=7565",
+          "title": "How to Read a Natal Chart With No Birth Time"
+        },
+        {
+          "pos": 3,
+          "url": "https://theastrologypodcast.com/?p=10608",
+          "title": "Ep. 270 Transcript: How to Read a Natal Chart With No Birth Time"
+        },
+        {
+          "pos": 4,
+          "url": "https://astromedha.in/insights/vedic/what-can-be-read-without-a-birth-time",
+          "title": "what can be read without a birth time"
+        },
+        {
+          "pos": 5,
+          "url": "https://theastrologypodcast.com/transcripts/tap-ep-270-transcript-how-to-read-a-natal-chart-with-no-birth-time/",
+          "title": "TAP Ep. 270 Transcript: How to Read a Natal Chart With No Birth Time"
+        },
+        {
+          "pos": 6,
+          "url": "https://lbas.lboro.ac.uk/chart/natal-chart-no-birth-time.html",
+          "title": "Natal Chart No Birth Time"
+        },
+        {
+          "pos": 7,
+          "url": "https://saju-wheat.vercel.app/en/articles/natal-without-time",
+          "title": "natal without time"
+        },
+        {
+          "pos": 8,
+          "url": "https://www.augurine.com/learn/astrology-without-birth-time",
+          "title": "astrology without birth time"
+        },
+        {
+          "pos": 9,
+          "url": "https://brapodd.se/podd/the-astrology-podcast/how-to-read-a-natal-chart-with-no-birth-time",
+          "title": "The Astrology Podcast"
+        },
+        {
+          "pos": 10,
+          "url": "https://live.museum.manchester.ac.uk/library/natal-chart-no-birth-time.html",
+          "title": "Natal Chart No Birth Time"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "what are the houses in astrology",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://www.russh.com/what-are-houses-in-astrology/",
+          "title": "what are houses in astrology"
+        },
+        {
+          "pos": 2,
+          "url": "https://www.dictionary.com/articles/what-do-the-houses-mean-in-astrology",
+          "title": "what do the houses mean in astrology"
+        },
+        {
+          "pos": 3,
+          "url": "https://community.realventures.com/socialissues/houses-astro.html",
+          "title": "Houses In Astrology: Understanding Their Significance And Influence"
+        },
+        {
+          "pos": 4,
+          "url": "https://thenightsky.com/blog/what-are-the-astrology-houses",
+          "title": "What are the Astrology Houses?"
+        },
+        {
+          "pos": 5,
+          "url": "https://www.dictionary.com/e/?p=212622",
+          "title": "What Do the 12 Houses Mean in Astrology?"
+        },
+        {
+          "pos": 6,
+          "url": "https://starsignstyle.com/?p=29828",
+          "title": "Understanding The Horoscope Chart: Your Guide To The Houses In Astrology"
+        },
+        {
+          "pos": 7,
+          "url": "https://www.glam.com/985878/what-are-houses-in-astrology",
+          "title": "What Are Houses In Astrology?"
+        },
+        {
+          "pos": 8,
+          "url": "https://quantumselfdiscovery.substack.com/p/astrological-houses",
+          "title": "astrological houses"
+        },
+        {
+          "pos": 9,
+          "url": "https://www.wikipedia.com/wiki/Midheaven",
+          "title": "House (astrology)"
+        },
+        {
+          "pos": 10,
+          "url": "https://www.russh.com/?p=169225",
+          "title": "www.russh.com"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "zodiac sign dates",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://www.yahoo.com/now/12-zodiac-sign-dates-035947931.html",
+          "title": "What Are the 12 Zodiac Sign Dates?"
+        },
+        {
+          "pos": 2,
+          "url": "https://action-monitor.mocc.cuhk.edu.hk/news/zodiac-signs-with-dates",
+          "title": "zodiac signs with dates"
+        },
+        {
+          "pos": 3,
+          "url": "https://promo.msedp.com/journal-celeb/understanding-the-zodiac-signs-and-their-dates-a-comprehensive-guide.html",
+          "title": "understanding the zodiac signs and their dates a comprehensive guide"
+        },
+        {
+          "pos": 4,
+          "url": "https://en.wikipedia.org/wiki/Astrological_sign",
+          "title": "Astrological sign"
+        },
+        {
+          "pos": 5,
+          "url": "https://video.pw.org/personal-space/understanding-zodiac-signs-dates-traits-and-compatibility.html",
+          "title": "understanding zodiac signs dates traits and compatibility"
+        },
+        {
+          "pos": 6,
+          "url": "https://careers.prodigaltech.com/connectingfeelings/zodiac-months-and-dates.html",
+          "title": "12 Zodiac Sign Dates Quick Reference Guide Zodiac signs dates"
+        },
+        {
+          "pos": 7,
+          "url": "https://astrostyle.com/zodiac-sign-dates/",
+          "title": "Zodiac Sign Dates: What Are The Dates for Every Star Sign?"
+        },
+        {
+          "pos": 8,
+          "url": "https://siegfriedt-survey.umb.edu/pti/zodiac-signs-in-order-by-month-a-comprehensive-guide",
+          "title": "zodiac signs in order by month a comprehensive guide"
+        },
+        {
+          "pos": 9,
+          "url": "https://astrostyle.com/astrology/zodiac-sign-dates/",
+          "title": "Zodiac Sign Dates: What Are The Dates for Every Star Sign?"
+        },
+        {
+          "pos": 10,
+          "url": "https://careers.prodigaltech.com/connectingfeelings/what-are-the-12-zodiac-signs-dates.html",
+          "title": "12 Zodiac Sign Dates Quick Reference Guide"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "transit chart calculator",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://paste.koha-community.org/en/transit-chart-calculator.html",
+          "title": "Transit Chart Calculator"
+        },
+        {
+          "pos": 2,
+          "url": "https://voip.puri.sm/?p=1229074",
+          "title": "An Astro Seek Transit Chart Calculator for Accurate Transit Predictions"
+        },
+        {
+          "pos": 3,
+          "url": "https://paste.koha-community.org/en/transit-chart.html",
+          "title": "Transit Chart"
+        },
+        {
+          "pos": 4,
+          "url": "https://voip.puri.sm/category/astrology-and-astrology-tools/",
+          "title": "An Astro Seek Transit Chart Calculator for Accurate Transit Predictions"
+        },
+        {
+          "pos": 5,
+          "url": "https://linuxnf-openinfra.nurulfikri.ac.id/astrology-transit-charts-free-online-calculator-20427.html",
+          "title": "Introduction to Astrology Transit Charts Free Online Calculator"
+        },
+        {
+          "pos": 6,
+          "url": "https://edge-eu-west-2.betteruptime.com/en/transits-chart.html",
+          "title": "Transits Chart"
+        },
+        {
+          "pos": 7,
+          "url": "https://cvs.pantherdb.org/?p=1229068",
+          "title": "An Astro Seek Transit Chart Calculator for Accurate Transit Predictions"
+        },
+        {
+          "pos": 8,
+          "url": "https://cvs.pantherdb.org/category/astrology-and-astrology-tools/",
+          "title": "An Astro Seek Transit Chart Calculator for Accurate Transit Predictions"
+        },
+        {
+          "pos": 9,
+          "url": "https://lbas.lboro.ac.uk/viewer/transits-chart.html",
+          "title": "Transits Chart"
+        },
+        {
+          "pos": 10,
+          "url": "https://www.augurine.com/tools/transit-chart-calculator",
+          "title": "Last updated June 24, 2026"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "moon phase on my birthday",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://www.spaceweatherlive.com/en/moon-phases-calendar/2026/11.html",
+          "title": "Moon Phases Calendar"
+        },
+        {
+          "pos": 2,
+          "url": "https://cdn.almanac.com/astronomy/moon/calendar/NE/Ord/2026-11",
+          "title": "cdn.almanac.com"
+        },
+        {
+          "pos": 3,
+          "url": "https://cdn.almanac.com/astronomy/moon/calendar/NV/Ely/2026-11",
+          "title": "cdn.almanac.com"
+        },
+        {
+          "pos": 4,
+          "url": "https://cdn.almanac.com/astronomy/moon/calendar/ND/Ray/2026-11",
+          "title": "cdn.almanac.com"
+        },
+        {
+          "pos": 5,
+          "url": "https://cdn.almanac.com/astronomy/moon/calendar/MT/Ulm/2026-11",
+          "title": "cdn.almanac.com"
+        },
+        {
+          "pos": 6,
+          "url": "https://www.almanac.com/astronomy/moon/calendar/ID/1979-09",
+          "title": "www.almanac.com"
+        },
+        {
+          "pos": 7,
+          "url": "https://www.almanac.com/astronomy/moon/calendar/NE/1987-10",
+          "title": "www.almanac.com"
+        },
+        {
+          "pos": 8,
+          "url": "https://calendar-12.com/moon_calendar/2026/november",
+          "title": "Moon Phases November 2026"
+        },
+        {
+          "pos": 9,
+          "url": "https://www.almanac.com/astronomy/moon/calendar/ID/1980-11",
+          "title": "www.almanac.com"
+        },
+        {
+          "pos": 10,
+          "url": "https://www.almanac.com/astronomy/moon/calendar/ID/1980-03",
+          "title": "www.almanac.com"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "daily horoscope all signs",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://www.jpost.com/tags/horoscope?page=8",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 2,
+          "url": "https://www.jpost.com/tags/horoscope?page=7",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 3,
+          "url": "https://www.jpost.com/tags/horoscope?page=4",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 4,
+          "url": "https://www.jpost.com/tags/horoscope?page=6",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 5,
+          "url": "https://www.jpost.com/Tags/horoscope?page=4",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 6,
+          "url": "https://www.jpost.com/tags/horoscope?page=5",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 7,
+          "url": "https://www.jpost.com/Tags/horoscope?page=3",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 8,
+          "url": "https://www.jpost.com/tags/horoscope?page=3",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 9,
+          "url": "https://www.jpost.com/tags/horoscope?page=2",
+          "title": "www.jpost.com"
+        },
+        {
+          "pos": 10,
+          "url": "https://www.jpost.com/tags/zodiac-signs?page=8",
+          "title": "Zodiac Signs"
+        }
+      ],
+      "zodiacs_pos": null
+    },
+    {
+      "phrase": "zodiacs.org",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://www.encyclopedia.com/science-and-technology/astronomy-and-space-exploration/astronomy-general/zodiac",
+          "title": "www.encyclopedia.com"
+        },
+        {
+          "pos": 2,
+          "url": "https://unanything.fandom.com/wiki/Zodiacs_Group",
+          "title": "UnAnything Wiki"
+        },
+        {
+          "pos": 3,
+          "url": "https://meetup.com/topics/zodiac-signs",
+          "title": "zodiac signs"
+        },
+        {
+          "pos": 4,
+          "url": "https://www.encyclopedia.com/arts/culture-magazines/zodiac",
+          "title": "www.encyclopedia.com"
+        },
+        {
+          "pos": 5,
+          "url": "https://wiki.riteme.site/wiki/Zodiac",
+          "title": "Jump to content"
+        },
+        {
+          "pos": 6,
+          "url": "https://sites.google.com/view/aya-zodiac-constellations/home",
+          "title": "sites.google.com"
+        },
+        {
+          "pos": 7,
+          "url": "https://www.dictionary.com/browse/zodiacs",
+          "title": "www.dictionary.com"
+        },
+        {
+          "pos": 8,
+          "url": "https://ja.wiktionary.org/wiki/zodiac",
+          "title": "ja.wiktionary.org"
+        },
+        {
+          "pos": 9,
+          "url": "https://live.museum.manchester.ac.uk/zodiac/the-zodiac-foundation.html",
+          "title": "The Zodiac Foundation"
+        },
+        {
+          "pos": 10,
+          "url": "https://msoid.icmbio.gov.br/zodiac/this-is-the-zodiac.html",
+          "title": "This Is The Zodiac"
+        }
+      ],
+      "zodiacs_pos": null,
+      "note": "No zodiacs.org URL returned in the full result set (11 results). 11th result was whoxy.com/keyword/zodiac. The tool's summary misread a whois listing for zodiac.org (not zodiacs.org)."
+    },
+    {
+      "phrase": "zodiacs astrology",
+      "results": [
+        {
+          "pos": 1,
+          "url": "https://sandbox.dss.ucdavis.edu/what-are-zodiacs",
+          "title": "what are zodiacs"
+        },
+        {
+          "pos": 2,
+          "url": "https://medium.com/@SunSignSherpa/how-many-zodiacs-are-there-a-deep-dive-into-the-12-astrological-signs-and-beyond-c18548a5a24f",
+          "title": "How Many Zodiacs Are There?"
+        },
+        {
+          "pos": 3,
+          "url": "https://www.dictionary.com/e/horoscope-meaning/",
+          "title": "Zodiac Signs: Learn the Names, Symbols, and More"
+        },
+        {
+          "pos": 4,
+          "url": "https://face.meei.harvard.edu/list-of-zodiacs",
+          "title": "list of zodiacs"
+        },
+        {
+          "pos": 5,
+          "url": "https://next-cms.climatetrace.org/list-of-zodiacs",
+          "title": "list of zodiacs"
+        },
+        {
+          "pos": 6,
+          "url": "https://www.encyclopedia.com/science-and-technology/astronomy-and-space-exploration/astronomy-general/zodiac",
+          "title": "www.encyclopedia.com"
+        },
+        {
+          "pos": 7,
+          "url": "https://arcspace.substack.com/p/astrology-basics",
+          "title": "Astrology Basics"
+        },
+        {
+          "pos": 8,
+          "url": "https://www.dictionary.com/browse/Zodiac",
+          "title": "www.dictionary.com"
+        },
+        {
+          "pos": 9,
+          "url": "https://www.encyclopedia.com/arts/culture-magazines/zodiac",
+          "title": "www.encyclopedia.com"
+        },
+        {
+          "pos": 10,
+          "url": "https://shecodes.io/challenge_submissions/845088/embed",
+          "title": "In astrology, the signs of the zodiac are the 12 constellations"
+        }
+      ],
+      "zodiacs_pos": null
+    }
+  ],
+  "outreach": [
+    {
+      "rank": 1,
+      "url": "https://www.aol.com/lifestyle/best-free-birth-chart-generators-181000813.html",
+      "title": "The Best Free Birth Chart Generators on the Internet",
+      "publisher": "AOL (syndicating Cosmopolitan, per search summary)",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [
+        "Astrodienst (Astro.com) - best overall",
+        "Cafe Astrology"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 2,
+      "url": "https://www.mindbodygreen.com/articles/best-astrology-apps",
+      "title": "Best astrology apps",
+      "publisher": "mindbodygreen",
+      "type": "listicle",
+      "date": "2026 per search summary (unverified)",
+      "competitors_listed": [
+        "TimePassages (top overall pick per summary)"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 3,
+      "url": "https://www.yahoo.com/lifestyle/10-best-horoscope-apps-people-210000685.html",
+      "title": "14 Of The Best Horoscope Apps For People That Are Obsessed With The Stars",
+      "publisher": "Yahoo Lifestyle",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 4,
+      "url": "https://www.bustle.com/life/best-astrology-apps",
+      "title": "best astrology apps",
+      "publisher": "Bustle",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 5,
+      "url": "https://www.wmagazine.com/story/best-astrology-apps",
+      "title": "best astrology apps",
+      "publisher": "W Magazine",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [
+        "Co-Star",
+        "The Pattern"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 6,
+      "url": "https://glam.com/1010728/the-best-astrology-apps-for-your-daily-dose-of-cosmic-energy",
+      "title": "The Best Astrology Apps For Your Daily Dose Of Cosmic Energy",
+      "publisher": "Glam (cites Refinery29)",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [
+        "Astrology Zone",
+        "TimePassages",
+        "The Pattern"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 7,
+      "url": "https://dailydot.com/?p=524768",
+      "title": "(Daily Dot free birth chart / astrology sites roundup; title not returned)",
+      "publisher": "The Daily Dot",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [
+        "AstroLabe"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 8,
+      "url": "https://www.lovetoknow.com/life/astrology/astrological-charts-free",
+      "title": "(LoveToKnow free astrological charts; title not returned)",
+      "publisher": "LoveToKnow",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [
+        "Astro-Seek"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 9,
+      "url": "https://amp.cbc.ca/life/a-good-witch-guides-you-to-the-best-free-astrology-websites-1.3939565",
+      "title": "A good witch guides you to the best, free astrology websites",
+      "publisher": "CBC Life",
+      "type": "listicle",
+      "date": "older (article id 1.3939565; date not shown)",
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 10,
+      "url": "https://www.yogajournal.com/lifestyle/astrology/best-astrology-app/?scope=anon",
+      "title": "best astrology app",
+      "publisher": "Yoga Journal",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 11,
+      "url": "https://yourtango.com/node/336228",
+      "title": "11 Best Astrology Apps In 2023, According To Astrologers, Astrologists, And The Internet",
+      "publisher": "YourTango",
+      "type": "listicle",
+      "date": "2023 (from title)",
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 12,
+      "url": "https://jpost.com/health-and-wellness/supplements/best-astrology-sites-821331",
+      "title": "Best Astrology Sites in 2024: 10 Top Platforms Reviewed",
+      "publisher": "Jerusalem Post (sponsored-style)",
+      "type": "listicle",
+      "date": "2024 (from title)",
+      "competitors_listed": [
+        "Kasamba (best overall per summary)"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 13,
+      "url": "https://alternativeto.net/software/co-star",
+      "title": "Co-Star Alternatives: Astrology Apps like Co-Star",
+      "publisher": "AlternativeTo",
+      "type": "directory",
+      "date": null,
+      "competitors_listed": [
+        "AstroZodia",
+        "FateTell",
+        "Astromatrix Horoscopes",
+        "TETRAOM",
+        "Lunary"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": "AlternativeTo lets users suggest/add apps (platform feature; page not fetched to confirm)",
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 14,
+      "url": "https://www.producthunt.com/products/co-star-astrology/alternatives",
+      "title": "Co-Star alternatives",
+      "publisher": "Product Hunt",
+      "type": "directory",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": "Product Hunt product submission/launch (platform feature; not verified from page)",
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 15,
+      "url": "https://www.producthunt.com/products/astro-seek/launches",
+      "title": "Astro Seek",
+      "publisher": "Product Hunt",
+      "type": "directory",
+      "date": "launch Feb 3, 2026 (per search summary)",
+      "competitors_listed": [
+        "Astro-Seek"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": "Product Hunt launch (platform feature; not verified from page)",
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 16,
+      "url": "https://gummysearch.com/tools/best-products/astrology-apps/",
+      "title": "Astrology Apps reviews from Reddit",
+      "publisher": "GummySearch",
+      "type": "review",
+      "date": null,
+      "competitors_listed": [
+        "Co-Star",
+        "The Pattern",
+        "CHANI",
+        "Sanctuary",
+        "Astro Gold"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 17,
+      "url": "https://nyc1.lr.ggtyler.dev/r/astrologyreadings/comments/76iskx/consider_reading_the_faqwiki_before_posting",
+      "title": "r/astrologyreadings FAQ/wiki thread (via Libreddit mirror)",
+      "publisher": "Reddit r/astrologyreadings (mirror)",
+      "type": "forum-resource",
+      "date": "Oct 15 2017",
+      "competitors_listed": [
+        "Astro.com",
+        "Astro-Seek"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": "subreddit wiki is mod-maintained; do not post",
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 18,
+      "url": "https://lr.eu.psf.lt/r/AstrologyChartShare",
+      "title": "r/AstrologyChartShare (FAQ recommends Astro.com, Astro-Seek)",
+      "publisher": "Reddit r/AstrologyChartShare (mirror)",
+      "type": "forum-resource",
+      "date": null,
+      "competitors_listed": [
+        "Astro.com",
+        "Astro-Seek"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": "subreddit FAQ is mod-maintained; do not post",
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 19,
+      "url": "https://www.selfgazer.com/blog/best-birth-chart-apps-2026",
+      "title": "Best birth chart apps 2026",
+      "publisher": "Selfgazer",
+      "type": "listicle",
+      "date": "2026 (from URL)",
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 20,
+      "url": "https://www.selfgazer.com/blog/astroseek-vs-other-birth-chart-calculators",
+      "title": "Astroseek vs Other Birth Chart Calculators: What Makes It Different",
+      "publisher": "Selfgazer",
+      "type": "review",
+      "date": null,
+      "competitors_listed": [
+        "Astro-Seek"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 21,
+      "url": "https://app.routines.club/blogs/cosmic/top-10-astrology-apps",
+      "title": "Best Astrology Apps (2026): 10 Ranked and Reviewed",
+      "publisher": "Routines",
+      "type": "listicle",
+      "date": "2026 (from title)",
+      "competitors_listed": [
+        "The Pattern",
+        "CHANI",
+        "Sanctuary",
+        "Personology",
+        "Co-Star"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 22,
+      "url": "https://app.routines.club/blogs/cosmic/co-star-alternatives",
+      "title": "Best Co-Star Alternatives (2026): 5 Apps Ranked by What They Fix",
+      "publisher": "Routines",
+      "type": "listicle",
+      "date": "2026 (from title)",
+      "competitors_listed": [
+        "Personology"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 23,
+      "url": "https://unstar.app/vi/blog/co-star-sanctuary-pattern-nebula-stellium-astrology-apps-ranked-2026",
+      "title": "Co-Star, Sanctuary, Pattern, Nebula, Stellium astrology apps ranked 2026",
+      "publisher": "Unstar (competitor app blog)",
+      "type": "review",
+      "date": "May 2026 (per search summary)",
+      "competitors_listed": [
+        "Co-Star",
+        "Sanctuary",
+        "The Pattern",
+        "Nebula",
+        "Stellium"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 24,
+      "url": "https://www.ilounge.com/articles/astroline-today-review-is-this-free-birth-chart-calculator-worth-using",
+      "title": "Astroline Today review: is this free birth chart calculator worth using",
+      "publisher": "iLounge",
+      "type": "review",
+      "date": null,
+      "competitors_listed": [
+        "Astroline"
+      ],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 25,
+      "url": "https://emma.ca/zodiac-signs/best-astrology-app",
+      "title": "Best astrology app",
+      "publisher": "Emma (emma.ca)",
+      "type": "listicle",
+      "date": "2025 (per search summary)",
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 26,
+      "url": "https://www.russh.com/best-astrology-apps/",
+      "title": "best astrology apps",
+      "publisher": "RUSSH",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 27,
+      "url": "https://citynomads.com/best-astrology-apps-to-help-you-navigate-the-stars-for-a-bit-of-guidance/",
+      "title": "Best Astrology Apps to Help You Navigate the Stars For A Bit of Guidance",
+      "publisher": "City Nomads",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 28,
+      "url": "https://www.womensweekly.com.sg/your-life/astrology-apps-daily-readings-birth-chart-readings-horoscope",
+      "title": "5 Astrology Apps For Daily Readings, Birth Chart Interpretations & More",
+      "publisher": "Women's Weekly Singapore",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 29,
+      "url": "https://technicalustad.com/best-horoscope-sites/",
+      "title": "best horoscope sites",
+      "publisher": "Technical Ustad",
+      "type": "listicle",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 30,
+      "url": "https://astrologyranking.pages.dev/best-astrology-sites-for-beginners",
+      "title": "Best astrology sites for beginners (10 official picks)",
+      "publisher": "astrologyranking.pages.dev",
+      "type": "listicle",
+      "date": "updated April 24, 2026 (from title)",
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 31,
+      "url": "https://thalira.com/blogs/quantum-codex/best-astrology-resources-2026",
+      "title": "Best Astrology Resources, Apps, and Tools for 2026",
+      "publisher": "Thalira",
+      "type": "listicle",
+      "date": "2026 (from title)",
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 32,
+      "url": "https://officechai.com/learn/ai-tools-for-astrology/",
+      "title": "16 Best AI Tools For Astrology (With Examples) [2026]",
+      "publisher": "OfficeChai",
+      "type": "listicle",
+      "date": "2026 (from title)",
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 33,
+      "url": "https://dev.to/_eacec4a37b29a7b1d4ba00/7-free-ai-astrology-tools-that-actually-work-in-2026-2o9b",
+      "title": "7 free AI astrology tools that actually work in 2026",
+      "publisher": "DEV Community (user post)",
+      "type": "listicle",
+      "date": "2026 (from title)",
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 34,
+      "url": "https://cafeastrology.com/astrologyresources.html",
+      "title": "Astrologers' Resources",
+      "publisher": "Cafe Astrology (competitor)",
+      "type": "directory",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": null,
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    },
+    {
+      "rank": 35,
+      "url": "https://codingwithandres.github.io/astro-kb/natal-charts/tools",
+      "title": "Tools & Resources",
+      "publisher": "astro-kb (GitHub Pages)",
+      "type": "directory",
+      "date": null,
+      "competitors_listed": [],
+      "zodiacs_listed": null,
+      "submission_route": "GitHub Pages site; repo may accept issues/PRs (not verified)",
+      "evidence": "not fetched (WebFetch host blocked in this session); from search snippet only"
+    }
+  ],
+  "domains": [
+    {
+      "domain": "whatismyrisingsign.com",
+      "wayback_cdx": "unavailable: not attempted after WebFetch failed with getaddrinfo ENOTFOUND on 6 hosts (aol.com, mindbodygreen.com, bustle.com, dailydot.com, lovetoknow.com, alternativeto.net); the session's network allowlist blocks outside hosts, so web.archive.org would need to be allowed",
+      "wayback_2024": "unavailable: same reason",
+      "rdap": "unavailable: same reason (rdap.org / rdap.verisign.com not reachable without allowlist change)",
+      "prior_content_type": "unknown",
+      "first_capture": null,
+      "last_capture": null,
+      "registration_status": "unknown",
+      "registrar": null,
+      "created": null,
+      "live_site_search": "WebSearch for the bare domain returned no result on the domain itself (no indexed pages seen); closest result was a shapes.inc 'what is my rising sign quiz' FAQ (https://shapes.inc/whatismyrisings/faq), unrelated to the domain"
+    },
+    {
+      "domain": "risingsigncalculator.com",
+      "wayback_cdx": "unavailable: not attempted after WebFetch failed with getaddrinfo ENOTFOUND on 6 hosts (aol.com, mindbodygreen.com, bustle.com, dailydot.com, lovetoknow.com, alternativeto.net); the session's network allowlist blocks outside hosts, so web.archive.org would need to be allowed",
+      "wayback_2024": "unavailable: same reason",
+      "rdap": "unavailable: same reason (rdap.org / rdap.verisign.com not reachable without allowlist change)",
+      "prior_content_type": "unknown",
+      "first_capture": null,
+      "last_capture": null,
+      "registration_status": "unknown",
+      "registrar": null,
+      "created": null,
+      "live_site_search": "WebSearch for the bare domain returned no result on the domain itself (no indexed pages seen)"
+    },
+    {
+      "domain": "freebirthchartwithhouses.com",
+      "wayback_cdx": "unavailable: not attempted after WebFetch failed with getaddrinfo ENOTFOUND on 6 hosts (aol.com, mindbodygreen.com, bustle.com, dailydot.com, lovetoknow.com, alternativeto.net); the session's network allowlist blocks outside hosts, so web.archive.org would need to be allowed",
+      "wayback_2024": "unavailable: same reason",
+      "rdap": "unavailable: same reason (rdap.org / rdap.verisign.com not reachable without allowlist change)",
+      "prior_content_type": "unknown",
+      "first_capture": null,
+      "last_capture": null,
+      "registration_status": "unknown",
+      "registrar": null,
+      "created": null,
+      "live_site_search": "WebSearch for the bare domain returned no result on the domain itself (no indexed pages seen)"
+    },
+    {
+      "domain": "birthchartwithhouses.com",
+      "wayback_cdx": "unavailable: not attempted after WebFetch failed with getaddrinfo ENOTFOUND on 6 hosts (aol.com, mindbodygreen.com, bustle.com, dailydot.com, lovetoknow.com, alternativeto.net); the session's network allowlist blocks outside hosts, so web.archive.org would need to be allowed",
+      "wayback_2024": "unavailable: same reason",
+      "rdap": "unavailable: same reason (rdap.org / rdap.verisign.com not reachable without allowlist change)",
+      "prior_content_type": "unknown",
+      "first_capture": null,
+      "last_capture": null,
+      "registration_status": "unknown",
+      "registrar": null,
+      "created": null,
+      "live_site_search": "WebSearch for the bare domain returned no result on the domain itself (no indexed pages seen)"
+    },
+    {
+      "domain": "whatismymoonsign.com",
+      "wayback_cdx": "unavailable: not attempted after WebFetch failed with getaddrinfo ENOTFOUND on 6 hosts (aol.com, mindbodygreen.com, bustle.com, dailydot.com, lovetoknow.com, alternativeto.net); the session's network allowlist blocks outside hosts, so web.archive.org would need to be allowed",
+      "wayback_2024": "unavailable: same reason",
+      "rdap": "unavailable: same reason (rdap.org / rdap.verisign.com not reachable without allowlist change)",
+      "prior_content_type": "unknown",
+      "first_capture": null,
+      "last_capture": null,
+      "registration_status": "unknown",
+      "registrar": null,
+      "created": null,
+      "live_site_search": "WebSearch for the bare domain returned no result on the domain itself (no indexed pages seen)"
+    }
+  ]
+}

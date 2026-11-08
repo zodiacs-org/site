@@ -1,0 +1,297 @@
+locale,kp_language,kp_locations,family,subfamily,query,target_url,coverage,monthly_volume,volume_source,competition,notes
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo ariete oggi,/horoscopes/aries/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo ariete domani,/horoscopes/aries/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale ariete,/horoscopes/aries/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese ariete,/horoscopes/aries/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo ariete 2027,/horoscopes/aries/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo toro oggi,/horoscopes/taurus/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo toro domani,/horoscopes/taurus/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale toro,/horoscopes/taurus/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese toro,/horoscopes/taurus/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo toro 2027,/horoscopes/taurus/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo gemelli oggi,/horoscopes/gemini/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo gemelli domani,/horoscopes/gemini/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale gemelli,/horoscopes/gemini/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese gemelli,/horoscopes/gemini/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo gemelli 2027,/horoscopes/gemini/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo cancro oggi,/horoscopes/cancer/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo cancro domani,/horoscopes/cancer/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale cancro,/horoscopes/cancer/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese cancro,/horoscopes/cancer/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo cancro 2027,/horoscopes/cancer/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo leone oggi,/horoscopes/leo/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo leone domani,/horoscopes/leo/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale leone,/horoscopes/leo/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese leone,/horoscopes/leo/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo leone 2027,/horoscopes/leo/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo vergine oggi,/horoscopes/virgo/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo vergine domani,/horoscopes/virgo/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale vergine,/horoscopes/virgo/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese vergine,/horoscopes/virgo/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo vergine 2027,/horoscopes/virgo/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo bilancia oggi,/horoscopes/libra/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo bilancia domani,/horoscopes/libra/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale bilancia,/horoscopes/libra/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese bilancia,/horoscopes/libra/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo bilancia 2027,/horoscopes/libra/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo scorpione oggi,/horoscopes/scorpio/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo scorpione domani,/horoscopes/scorpio/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale scorpione,/horoscopes/scorpio/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese scorpione,/horoscopes/scorpio/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo scorpione 2027,/horoscopes/scorpio/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo sagittario oggi,/horoscopes/sagittarius/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo sagittario domani,/horoscopes/sagittarius/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale sagittario,/horoscopes/sagittarius/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese sagittario,/horoscopes/sagittarius/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo sagittario 2027,/horoscopes/sagittarius/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo capricorno oggi,/horoscopes/capricorn/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo capricorno domani,/horoscopes/capricorn/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale capricorno,/horoscopes/capricorn/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese capricorno,/horoscopes/capricorn/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo capricorno 2027,/horoscopes/capricorn/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo acquario oggi,/horoscopes/aquarius/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo acquario domani,/horoscopes/aquarius/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale acquario,/horoscopes/aquarius/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese acquario,/horoscopes/aquarius/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo acquario 2027,/horoscopes/aquarius/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,today,oroscopo pesci oggi,/horoscopes/pisces/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,tomorrow,oroscopo pesci domani,/horoscopes/pisces/tomorrow/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,weekly,oroscopo settimanale pesci,/horoscopes/pisces/weekly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,monthly,oroscopo del mese pesci,/horoscopes/pisces/monthly/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,horoscope,yearly,oroscopo pesci 2027,/horoscopes/pisces/2027/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità ariete ariete,/it/compatibility/aries-aries/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete toro,/it/compatibility/aries-taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete gemelli,/it/compatibility/aries-gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete cancro,/it/compatibility/aries-cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete leone,/it/compatibility/aries-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete vergine,/it/compatibility/aries-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete bilancia,/it/compatibility/aries-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete scorpione,/it/compatibility/aries-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete sagittario,/it/compatibility/aries-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete capricorno,/it/compatibility/aries-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete acquario,/it/compatibility/aries-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità ariete pesci,/it/compatibility/aries-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro ariete,/it/compatibility/aries-taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità toro toro,/it/compatibility/taurus-taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro gemelli,/it/compatibility/taurus-gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro cancro,/it/compatibility/taurus-cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro leone,/it/compatibility/taurus-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro vergine,/it/compatibility/taurus-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro bilancia,/it/compatibility/taurus-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro scorpione,/it/compatibility/taurus-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro sagittario,/it/compatibility/taurus-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro capricorno,/it/compatibility/taurus-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro acquario,/it/compatibility/taurus-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità toro pesci,/it/compatibility/taurus-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli ariete,/it/compatibility/aries-gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli toro,/it/compatibility/taurus-gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità gemelli gemelli,/it/compatibility/gemini-gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli cancro,/it/compatibility/gemini-cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli leone,/it/compatibility/gemini-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli vergine,/it/compatibility/gemini-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli bilancia,/it/compatibility/gemini-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli scorpione,/it/compatibility/gemini-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli sagittario,/it/compatibility/gemini-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli capricorno,/it/compatibility/gemini-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli acquario,/it/compatibility/gemini-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità gemelli pesci,/it/compatibility/gemini-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro ariete,/it/compatibility/aries-cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro toro,/it/compatibility/taurus-cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro gemelli,/it/compatibility/gemini-cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità cancro cancro,/it/compatibility/cancer-cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro leone,/it/compatibility/cancer-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro vergine,/it/compatibility/cancer-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro bilancia,/it/compatibility/cancer-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro scorpione,/it/compatibility/cancer-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro sagittario,/it/compatibility/cancer-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro capricorno,/it/compatibility/cancer-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro acquario,/it/compatibility/cancer-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità cancro pesci,/it/compatibility/cancer-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone ariete,/it/compatibility/aries-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone toro,/it/compatibility/taurus-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone gemelli,/it/compatibility/gemini-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone cancro,/it/compatibility/cancer-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità leone leone,/it/compatibility/leo-leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone vergine,/it/compatibility/leo-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone bilancia,/it/compatibility/leo-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone scorpione,/it/compatibility/leo-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone sagittario,/it/compatibility/leo-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone capricorno,/it/compatibility/leo-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone acquario,/it/compatibility/leo-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità leone pesci,/it/compatibility/leo-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine ariete,/it/compatibility/aries-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine toro,/it/compatibility/taurus-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine gemelli,/it/compatibility/gemini-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine cancro,/it/compatibility/cancer-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine leone,/it/compatibility/leo-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità vergine vergine,/it/compatibility/virgo-virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine bilancia,/it/compatibility/virgo-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine scorpione,/it/compatibility/virgo-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine sagittario,/it/compatibility/virgo-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine capricorno,/it/compatibility/virgo-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine acquario,/it/compatibility/virgo-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità vergine pesci,/it/compatibility/virgo-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia ariete,/it/compatibility/aries-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia toro,/it/compatibility/taurus-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia gemelli,/it/compatibility/gemini-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia cancro,/it/compatibility/cancer-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia leone,/it/compatibility/leo-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia vergine,/it/compatibility/virgo-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità bilancia bilancia,/it/compatibility/libra-libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia scorpione,/it/compatibility/libra-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia sagittario,/it/compatibility/libra-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia capricorno,/it/compatibility/libra-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia acquario,/it/compatibility/libra-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità bilancia pesci,/it/compatibility/libra-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione ariete,/it/compatibility/aries-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione toro,/it/compatibility/taurus-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione gemelli,/it/compatibility/gemini-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione cancro,/it/compatibility/cancer-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione leone,/it/compatibility/leo-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione vergine,/it/compatibility/virgo-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione bilancia,/it/compatibility/libra-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità scorpione scorpione,/it/compatibility/scorpio-scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione sagittario,/it/compatibility/scorpio-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione capricorno,/it/compatibility/scorpio-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione acquario,/it/compatibility/scorpio-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità scorpione pesci,/it/compatibility/scorpio-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario ariete,/it/compatibility/aries-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario toro,/it/compatibility/taurus-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario gemelli,/it/compatibility/gemini-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario cancro,/it/compatibility/cancer-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario leone,/it/compatibility/leo-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario vergine,/it/compatibility/virgo-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario bilancia,/it/compatibility/libra-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario scorpione,/it/compatibility/scorpio-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità sagittario sagittario,/it/compatibility/sagittarius-sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario capricorno,/it/compatibility/sagittarius-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario acquario,/it/compatibility/sagittarius-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità sagittario pesci,/it/compatibility/sagittarius-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno ariete,/it/compatibility/aries-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno toro,/it/compatibility/taurus-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno gemelli,/it/compatibility/gemini-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno cancro,/it/compatibility/cancer-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno leone,/it/compatibility/leo-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno vergine,/it/compatibility/virgo-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno bilancia,/it/compatibility/libra-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno scorpione,/it/compatibility/scorpio-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno sagittario,/it/compatibility/sagittarius-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità capricorno capricorno,/it/compatibility/capricorn-capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno acquario,/it/compatibility/capricorn-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità capricorno pesci,/it/compatibility/capricorn-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario ariete,/it/compatibility/aries-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario toro,/it/compatibility/taurus-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario gemelli,/it/compatibility/gemini-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario cancro,/it/compatibility/cancer-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario leone,/it/compatibility/leo-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario vergine,/it/compatibility/virgo-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario bilancia,/it/compatibility/libra-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario scorpione,/it/compatibility/scorpio-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario sagittario,/it/compatibility/sagittarius-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario capricorno,/it/compatibility/capricorn-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità acquario acquario,/it/compatibility/aquarius-aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità acquario pesci,/it/compatibility/aquarius-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci ariete,/it/compatibility/aries-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci toro,/it/compatibility/taurus-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci gemelli,/it/compatibility/gemini-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci cancro,/it/compatibility/cancer-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci leone,/it/compatibility/leo-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci vergine,/it/compatibility/virgo-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci bilancia,/it/compatibility/libra-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci scorpione,/it/compatibility/scorpio-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci sagittario,/it/compatibility/sagittarius-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci capricorno,/it/compatibility/capricorn-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,pair,affinità pesci acquario,/it/compatibility/aquarius-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,compatibility,same-sign pair,affinità pesci pesci,/it/compatibility/pisces-pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,calculator,tema natale,/it/birth-chart/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,calculator,tema natale gratis,/it/birth-chart/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,calculator,carta natale,/it/birth-chart/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,calculator,calcolo tema natale,/it/birth-chart/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,how-to-read,come leggere il tema natale,/learn/how-to-read-a-birth-chart/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,birth-chart,rising-sign,calcolo ascendente,/it/rising-sign/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,rising-sign,ascendente,/it/rising-sign/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,moon-sign,segno lunare,/it/moon-sign/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,moon-sign,calcolo luna natale,/it/moon-sign/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,birth-chart,big-three,sole luna ascendente,/it/big-three/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,sky-events,moon-phase,fase lunare oggi,/it/moon-phase/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,sky-events,moon-phase,luna oggi,/it/moon-phase/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,sky-events,full-moon,luna piena novembre 2026,/full-moon/2026-11-24/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,sky-events,new-moon,luna nuova novembre 2026,/new-moon/2026-11-09/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,sky-events,mercury-retrograde,mercurio retrogrado 2027,/it/mercury-retrograde/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,sky-events,mercury-retrograde,mercurio retrogrado oggi,/it/mercury-retrograde/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,sky-events,retrogrades,pianeti retrogradi oggi,/it/retrogrades/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,sky-events,eclipses,eclissi 2027,/it/eclipses/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,sky-events,eclipses,eclissi solare 2027,/it/eclipses/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,sky-events,mars-retrograde,marte retrogrado 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,signs,meaning,ariete caratteristiche,/it/aries/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno ariete,/it/aries/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo ariete,/it/aries/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna ariete,/it/aries/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,ariete date segno,/it/aries/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,ariete carattere,/it/aries/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,toro caratteristiche,/it/taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno toro,/it/taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo toro,/it/taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna toro,/it/taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,toro date segno,/it/taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,toro carattere,/it/taurus/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,gemelli caratteristiche,/it/gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno gemelli,/it/gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo gemelli,/it/gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna gemelli,/it/gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,gemelli date segno,/it/gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,gemelli carattere,/it/gemini/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,cancro caratteristiche,/it/cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno cancro,/it/cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo cancro,/it/cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna cancro,/it/cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,cancro date segno,/it/cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,cancro carattere,/it/cancer/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,leone caratteristiche,/it/leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno leone,/it/leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo leone,/it/leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna leone,/it/leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,leone date segno,/it/leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,leone carattere,/it/leo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,vergine caratteristiche,/it/virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno vergine,/it/virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo vergine,/it/virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna vergine,/it/virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,vergine date segno,/it/virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,vergine carattere,/it/virgo/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,bilancia caratteristiche,/it/libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno bilancia,/it/libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo bilancia,/it/libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna bilancia,/it/libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,bilancia date segno,/it/libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,bilancia carattere,/it/libra/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,scorpione caratteristiche,/it/scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno scorpione,/it/scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo scorpione,/it/scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna scorpione,/it/scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,scorpione date segno,/it/scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,scorpione carattere,/it/scorpio/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,sagittario caratteristiche,/it/sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno sagittario,/it/sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo sagittario,/it/sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna sagittario,/it/sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,sagittario date segno,/it/sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,sagittario carattere,/it/sagittarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,capricorno caratteristiche,/it/capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno capricorno,/it/capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo capricorno,/it/capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna capricorno,/it/capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,capricorno date segno,/it/capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,capricorno carattere,/it/capricorn/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,acquario caratteristiche,/it/aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno acquario,/it/aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo acquario,/it/aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna acquario,/it/aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,acquario date segno,/it/aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,acquario carattere,/it/aquarius/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,pesci caratteristiche,/it/pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,segno pesci,/it/pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,uomo pesci,/it/pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,donna pesci,/it/pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,pesci date segno,/it/pisces/,full,TBD,TBD,TBD,
+it,Italian,Italy; Switzerland,signs,meaning,pesci carattere,/it/pisces/,full,TBD,TBD,TBD,

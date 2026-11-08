@@ -1,0 +1,105 @@
+#!/usr/bin/env node
+// Fill the keyword tables with real volumes and rank family x locale cells by
+// winnable traffic.
+//
+//   node scripts/visibility/families.mjs --volumes <keyword-planner-export> --locale es
+//   node scripts/visibility/families.mjs --rank
+//
+// --volumes reads a Google Keyword Planner export ("Download keyword ideas" or
+// "Search volume and forecasts", CSV or the default UTF-16 tab-separated file)
+// and writes "Avg. monthly searches" and "Competition" into
+// docs/visibility/keywords/<locale>.csv for the matching queries. Nothing is
+// estimated: queries Keyword Planner did not return stay TBD.
+//
+// --rank writes docs/visibility/RANKING.md from whatever volumes are filled,
+// the coverage column, and docs/visibility/competition.json (a 0 to 1 score
+// per family and locale from looking at who ranks today; TBD until filled).
+//
+// winnable = monthly volume x (1 - competition) x readiness
+//   readiness: 1 when a page in that language answers the query (we need to
+//   rank it), 0.6 when only the English page exists (a localized page must be
+//   built first), 0.3 when nothing answers it.
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import path from 'node:path';
+import { parseCsv, VIS_DIR } from './lib.mjs';
+
+const argv = process.argv.slice(2);
+const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? (argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : true) : undefined; };
+const KW = path.join(VIS_DIR, 'keywords');
+const fold = (s) => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
+const cell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
+
+function readTable(file) {
+  const rows = parseCsv(readFileSync(file, 'utf8'));
+  return { head: rows[0], rows: rows.slice(1) };
+}
+function writeTable(file, { head, rows }) {
+  writeFileSync(file, [head, ...rows].map((r) => r.map(cell).join(',')).join('\n') + '\n');
+}
+
+export function readKeywordPlanner(file) {
+  const buf = readFileSync(file);
+  let text = buf[0] === 0xff && buf[1] === 0xfe ? buf.toString('utf16le').slice(1) : buf.toString('utf8').replace(/^﻿/, '');
+  const lines = text.split(/\r?\n/);
+  const at = lines.findIndex((l) => /^"?Keyword"?[\t,]/.test(l) && /Avg\. monthly searches/i.test(l));
+  if (at < 0) throw new Error('No "Keyword ... Avg. monthly searches" header found');
+  const sep = lines[at].includes('\t') ? '\t' : ',';
+  const parse = sep === '\t' ? (l) => l.split('\t').map((c) => c.replace(/^"|"$/g, '')) : (l) => parseCsv(l + '\n')[0] || [];
+  const head = parse(lines[at]);
+  const k = head.findIndex((h) => /^Keyword$/i.test(h)), v = head.findIndex((h) => /Avg\. monthly searches/i.test(h)), c = head.findIndex((h) => /^Competition$/i.test(h));
+  const map = new Map();
+  for (const l of lines.slice(at + 1)) {
+    if (!l.trim()) continue;
+    const r = parse(l);
+    if (r[k]) map.set(fold(r[k]), { volume: String(r[v]).replace(/[^\d]/g, '') || '0', competition: c >= 0 ? r[c] : 'TBD' });
+  }
+  return map;
+}
+
+if (opt('volumes')) {
+  const locale = opt('locale');
+  if (!locale) throw new Error('Pass --locale');
+  const file = path.join(KW, `${locale}.csv`);
+  const t = readTable(file);
+  const kp = readKeywordPlanner(path.resolve(opt('volumes')));
+  const stamp = `Keyword Planner ${new Date().toISOString().slice(0, 10)}`;
+  let n = 0;
+  for (const r of t.rows) {
+    const hit = kp.get(fold(r[5]));
+    if (hit) { r[8] = hit.volume; r[9] = stamp; r[10] = hit.competition || 'TBD'; n++; }
+  }
+  writeTable(file, t);
+  console.log(`${n} of ${t.rows.length} ${locale} queries filled from ${path.basename(opt('volumes'))}. Run build-keywords.mjs to refresh all-locales.csv.`);
+}
+
+if (opt('rank')) {
+  const compFile = path.join(VIS_DIR, 'competition.json');
+  const comp = existsSync(compFile) ? JSON.parse(readFileSync(compFile, 'utf8')) : {};
+  const READY = { full: 1, partial: 0.6, none: 0.3 };
+  const cells = [];
+  for (const f of readdirSync(KW).filter((f) => f.endsWith('.csv') && f !== 'all-locales.csv')) {
+    const { rows } = readTable(path.join(KW, f));
+    const by = new Map();
+    for (const r of rows) {
+      const key = `${r[3]}:${r[0]}`;
+      const c = by.get(key) || { family: r[3], locale: r[0], queries: 0, known: 0, volume: 0, ready: 0, full: 0 };
+      c.queries++;
+      if (r[7] === 'full') c.full++;
+      if (/^\d+$/.test(r[8])) { c.known++; c.volume += +r[8]; c.ready += +r[8] * (READY[r[7]] ?? 0.3); }
+      by.set(key, c);
+    }
+    cells.push(...by.values());
+  }
+  for (const c of cells) {
+    const k = comp[`${c.family}:${c.locale}`];
+    c.competition = typeof k === 'number' ? k : null;
+    c.winnable = c.known && c.competition != null ? Math.round(c.ready * (1 - c.competition)) : null;
+  }
+  cells.sort((a, b) => (b.winnable ?? -1) - (a.winnable ?? -1) || b.volume - a.volume);
+  const lines = ['# Family x locale ranking', '', 'Generated by `node scripts/visibility/families.mjs --rank`. TBD means the volume or competition input is not filled yet; nothing is estimated.', '',
+    '| Family | Locale | Queries | Volume known for | Monthly volume | Covered in language | Competition | Winnable |', '|---|---|---|---|---|---|---|---|'];
+  for (const c of cells) lines.push(`| ${c.family} | ${c.locale} | ${c.queries} | ${c.known} | ${c.known ? c.volume : 'TBD'} | ${c.full}/${c.queries} | ${c.competition ?? 'TBD'} | ${c.winnable ?? 'TBD'} |`);
+  writeFileSync(path.join(VIS_DIR, 'RANKING.md'), lines.join('\n') + '\n');
+  console.log(`Wrote docs/visibility/RANKING.md (${cells.length} cells)`);
+}
+if (!opt('volumes') && !opt('rank')) console.log('Pass --volumes <file> --locale <locale>, or --rank');

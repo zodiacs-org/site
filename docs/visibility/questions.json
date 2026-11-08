@@ -1,0 +1,388 @@
+{
+  "version": 2,
+  "created": "2026-11-08",
+  "note": "Fifty astrology questions as people ask them. t01 to t15 are the fifteen priority phrases chosen on 2026-11-08 from the baseline gathered outside the sandbox (docs/visibility/PHRASES.md); the other 35 are from the program's first list. placement 'title' means the phrase owns the page title, H1 and opening answer; 'section' means it gets an exact-phrase H2, a 40 to 60 word answer and a matching FAQ entry on the page that already serves that intent, because a separate page per wording would be a doorway page. target null: no page answers it yet (the proposed /compare/ guide needs Dias's yes). The external 2026-11-08 AI baseline used its own 50 questions; align this file with that list before the week 4 re-run so the comparison is like for like.",
+  "questions": [
+    {
+      "id": "t01",
+      "question": "Is there a free birth chart calculator with no signup?",
+      "phrase": "free birth chart calculator no signup",
+      "intent": "tool",
+      "target": "/birth-chart/",
+      "priority": true,
+      "placement": "title"
+    },
+    {
+      "id": "t02",
+      "question": "What is a good private birth chart calculator?",
+      "phrase": "private birth chart calculator",
+      "intent": "tool",
+      "target": "/birth-chart/",
+      "priority": true,
+      "placement": "section"
+    },
+    {
+      "id": "t03",
+      "question": "Is there an astrology website that does not save my data?",
+      "phrase": "astrology website that does not save my data",
+      "intent": "brand",
+      "target": "/privacy/",
+      "priority": true,
+      "placement": "section"
+    },
+    {
+      "id": "t04",
+      "question": "Where can I get a free birth chart with houses?",
+      "phrase": "free birth chart with houses",
+      "intent": "tool",
+      "target": "/birth-chart/",
+      "priority": true,
+      "placement": "section"
+    },
+    {
+      "id": "t05",
+      "question": "What is the best birth chart website?",
+      "phrase": "best birth chart website",
+      "intent": "brand",
+      "target": null,
+      "priority": true,
+      "placement": "title"
+    },
+    {
+      "id": "t06",
+      "question": "What is the best free astrology website?",
+      "phrase": "best free astrology website",
+      "intent": "brand",
+      "target": null,
+      "priority": true,
+      "placement": "section"
+    },
+    {
+      "id": "t07",
+      "question": "What is the most accurate birth chart calculator?",
+      "phrase": "most accurate birth chart calculator",
+      "intent": "tool",
+      "target": "/methodology/",
+      "priority": true,
+      "placement": "section"
+    },
+    {
+      "id": "t08",
+      "question": "How accurate are online birth chart calculators?",
+      "phrase": "how accurate are online birth chart calculators",
+      "intent": "learn",
+      "target": "/methodology/",
+      "priority": true,
+      "placement": "title"
+    },
+    {
+      "id": "t09",
+      "question": "Is there a free moon sign calculator?",
+      "phrase": "free moon sign calculator",
+      "intent": "tool",
+      "target": "/moon-sign/",
+      "priority": true,
+      "placement": "title"
+    },
+    {
+      "id": "t10",
+      "question": "Is there a rising sign calculator without birth time?",
+      "phrase": "rising sign calculator without birth time",
+      "intent": "tool",
+      "target": "/rising-sign/",
+      "priority": true,
+      "placement": "section"
+    },
+    {
+      "id": "t11",
+      "question": "Where can I find a zodiac compatibility checker?",
+      "phrase": "zodiac compatibility checker",
+      "intent": "tool",
+      "target": "/compatibility/",
+      "priority": true,
+      "placement": "title"
+    },
+    {
+      "id": "t12",
+      "question": "Is there a big three calculator for sun, moon and rising?",
+      "phrase": "big three calculator sun moon rising",
+      "intent": "tool",
+      "target": "/big-three/",
+      "priority": true,
+      "placement": "title"
+    },
+    {
+      "id": "t13",
+      "question": "Where can I get a free transit chart calculator?",
+      "phrase": "free transit chart calculator",
+      "intent": "tool",
+      "target": "/transits/",
+      "priority": true,
+      "placement": "title"
+    },
+    {
+      "id": "t14",
+      "question": "Is there an astrology app without a subscription?",
+      "phrase": "astrology app without subscription",
+      "intent": "brand",
+      "target": "/tools/",
+      "priority": true,
+      "placement": "section"
+    },
+    {
+      "id": "t15",
+      "question": "What is the best astrology site for compatibility?",
+      "phrase": "best astrology site for compatibility",
+      "intent": "brand",
+      "target": null,
+      "priority": true,
+      "placement": "section"
+    },
+    {
+      "id": "q02",
+      "question": "What is my rising sign?",
+      "phrase": "what is my rising sign",
+      "intent": "tool",
+      "target": "/rising-sign/"
+    },
+    {
+      "id": "q03",
+      "question": "What is my moon sign?",
+      "phrase": "what is my moon sign",
+      "intent": "tool",
+      "target": "/moon-sign/"
+    },
+    {
+      "id": "q04",
+      "question": "What is the best free birth chart calculator?",
+      "phrase": "birth chart calculator",
+      "intent": "tool",
+      "target": "/birth-chart/"
+    },
+    {
+      "id": "q06",
+      "question": "What is my big three in astrology?",
+      "phrase": "what is my big three",
+      "intent": "tool",
+      "target": "/big-three/"
+    },
+    {
+      "id": "q08",
+      "question": "When is Mercury retrograde in 2027?",
+      "phrase": "mercury retrograde 2027",
+      "intent": "dates",
+      "target": "/mercury-retrograde/"
+    },
+    {
+      "id": "q10",
+      "question": "What planets are retrograde right now?",
+      "phrase": "what planets are retrograde now",
+      "intent": "dates",
+      "target": "/retrogrades/"
+    },
+    {
+      "id": "q11",
+      "question": "When is my Saturn return?",
+      "phrase": "saturn return calculator",
+      "intent": "tool",
+      "target": "/saturn-return/"
+    },
+    {
+      "id": "q12",
+      "question": "How do I calculate my solar return chart?",
+      "phrase": "solar return chart calculator",
+      "intent": "tool",
+      "target": "/solar-return/"
+    },
+    {
+      "id": "q13",
+      "question": "When is the Moon void of course today?",
+      "phrase": "void of course moon today",
+      "intent": "dates",
+      "target": "/void-of-course-moon/"
+    },
+    {
+      "id": "q14",
+      "question": "What is the moon phase today?",
+      "phrase": "moon phase today",
+      "intent": "dates",
+      "target": "/moon-phase/"
+    },
+    {
+      "id": "q15",
+      "question": "What was the moon phase on my birthday?",
+      "phrase": "moon phase on my birthday",
+      "intent": "tool",
+      "target": "/moon-phase/"
+    },
+    {
+      "id": "q16",
+      "question": "How do I calculate my life path number?",
+      "phrase": "life path number calculator",
+      "intent": "tool",
+      "target": "/numerology/"
+    },
+    {
+      "id": "q17",
+      "question": "What zodiac sign will my baby be?",
+      "phrase": "what sign will my baby be",
+      "intent": "tool",
+      "target": "/baby-zodiac/"
+    },
+    {
+      "id": "q18",
+      "question": "How do I read my birth chart?",
+      "phrase": "how to read a birth chart",
+      "intent": "learn",
+      "target": "/learn/how-to-read-a-birth-chart/"
+    },
+    {
+      "id": "q19",
+      "question": "Can I get a birth chart without my birth time?",
+      "phrase": "birth chart without birth time",
+      "intent": "learn",
+      "target": null
+    },
+    {
+      "id": "q20",
+      "question": "What do the 12 houses mean in astrology?",
+      "phrase": "12 houses in astrology",
+      "intent": "learn",
+      "target": "/learn/houses/"
+    },
+    {
+      "id": "q21",
+      "question": "What are the zodiac sign dates?",
+      "phrase": "zodiac sign dates",
+      "intent": "learn",
+      "target": "/learn/zodiac-dates/"
+    },
+    {
+      "id": "q22",
+      "question": "What is a transit chart and how do I see mine?",
+      "phrase": "transit chart calculator",
+      "intent": "tool",
+      "target": "/transits/"
+    },
+    {
+      "id": "q23",
+      "question": "Where can I read a free daily horoscope for every sign?",
+      "phrase": "daily horoscope",
+      "intent": "editorial",
+      "target": "/horoscopes/"
+    },
+    {
+      "id": "q24",
+      "question": "What does my rising sign mean?",
+      "phrase": "rising sign meaning",
+      "intent": "learn",
+      "target": "/rising-sign/"
+    },
+    {
+      "id": "q28",
+      "question": "What house system should I use for my birth chart?",
+      "phrase": "which house system",
+      "intent": "learn",
+      "target": "/learn/houses/"
+    },
+    {
+      "id": "q30",
+      "question": "What is my Venus sign?",
+      "phrase": "what is my venus sign",
+      "intent": "tool",
+      "target": null
+    },
+    {
+      "id": "q31",
+      "question": "What is my Mars sign?",
+      "phrase": "what is my mars sign",
+      "intent": "tool",
+      "target": null
+    },
+    {
+      "id": "q32",
+      "question": "What is a cusp sign and am I on the cusp?",
+      "phrase": "am i on the cusp",
+      "intent": "tool",
+      "target": "/birthday/"
+    },
+    {
+      "id": "q34",
+      "question": "When is the next full moon?",
+      "phrase": "next full moon",
+      "intent": "dates",
+      "target": "/full-moon-calendar/"
+    },
+    {
+      "id": "q35",
+      "question": "When are the eclipses in 2027?",
+      "phrase": "eclipses 2027",
+      "intent": "dates",
+      "target": "/eclipses/"
+    },
+    {
+      "id": "q38",
+      "question": "What is my Chinese zodiac sign?",
+      "phrase": "what is my chinese zodiac sign",
+      "intent": "tool",
+      "target": "/learn/chinese-zodiac/"
+    },
+    {
+      "id": "q39",
+      "question": "What is a lunar return?",
+      "phrase": "lunar return calculator",
+      "intent": "tool",
+      "target": "/lunar-return/"
+    },
+    {
+      "id": "q41",
+      "question": "Which famous people share my birth chart?",
+      "phrase": "celebrities with my birth chart",
+      "intent": "tool",
+      "target": "/chart-twins/"
+    },
+    {
+      "id": "q43",
+      "question": "What is the best astrology app?",
+      "phrase": "best astrology app",
+      "intent": "brand",
+      "target": "/"
+    },
+    {
+      "id": "q45",
+      "question": "What is Zodiacs.org?",
+      "phrase": "zodiacs.org",
+      "intent": "brand",
+      "target": "/"
+    },
+    {
+      "id": "q47",
+      "question": "What is the Part of Fortune in my chart?",
+      "phrase": "part of fortune calculator",
+      "intent": "tool",
+      "target": null
+    },
+    {
+      "id": "q48",
+      "question": "What is my north node?",
+      "phrase": "north node calculator",
+      "intent": "tool",
+      "target": null
+    },
+    {
+      "id": "q49",
+      "question": "What is my descendant sign?",
+      "phrase": "descendant sign calculator",
+      "intent": "tool",
+      "target": null
+    },
+    {
+      "id": "q50",
+      "question": "What is my midheaven sign?",
+      "phrase": "midheaven calculator",
+      "intent": "tool",
+      "target": null
+    }
+  ],
+  "updated": "2026-11-08"
+}

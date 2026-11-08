@@ -1,0 +1,1273 @@
+{
+  "label": "2026-11-08",
+  "source": "local build (dist)",
+  "generated": "2026-11-08T06:59:46.060Z",
+  "pages": [
+    {
+      "path": "/birth-chart/",
+      "status": "built",
+      "title": "Free Birth Chart Calculator: Sun, Moon & Rising | Zodiacs.org",
+      "description": "Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean, computed privately, in your browser.",
+      "canonical": "https://zodiacs.org/birth-chart/",
+      "robots": "max-image-preview:large",
+      "h1": "Get your free birth chart.",
+      "opening": "Your Sun, Moon and rising sign, every planet and house, and what each one means.",
+      "h2": [
+        "Your chart, explained as you read it",
+        "No birth time? You still get a chart.",
+        "Private by design.",
+        "After your chart",
+        "Questions, answered",
+        "Your chart takes about twenty seconds."
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "t01",
+          "phrase": "free birth chart calculator no signup",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "title"
+        },
+        {
+          "id": "t02",
+          "phrase": "private birth chart calculator",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "section"
+        },
+        {
+          "id": "t04",
+          "phrase": "free birth chart with houses",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "section"
+        },
+        {
+          "id": "q04",
+          "phrase": "birth chart calculator",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/privacy/",
+      "status": "built",
+      "title": "Privacy — How Your Data Is Handled | Zodiacs.org",
+      "description": "How Zodiacs.org handles birth charts, browser storage, accounts, share links, Guide, analytics, public wallet lookups, and market-data requests.",
+      "canonical": "https://zodiacs.org/privacy/",
+      "robots": "max-image-preview:large",
+      "h1": "Your birth details leave your device only when you send them.",
+      "opening": "Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; they leave your device only if you sign in to sync saved charts, share a link that carries them, or type them into an assistant message. Aura sends one public wallet address—not your birth or chart data—to a blockchain-data provider for a read-only lookup. Accounts and remembered",
+      "h2": [
+        "AI integration candidates",
+        "Who operates this site",
+        "What happens when you use a calculator",
+        "Guide",
+        "Charts you save",
+        "Share links and invitations",
+        "Your page: your name and chart cards",
+        "Living Chart moments",
+        "The Cabinet of Twelve and public wallet addresses",
+        "Public Astrofolio, Terminal, and Registry data sources",
+        "Aura browser storage and sharing",
+        "Optional account (sync across devices)",
+        "Email",
+        "Daily brief, calendar, and notifications",
+        "Public People pages",
+        "The Race",
+        "Backups",
+        "The compute API",
+        "Hosting, logs, and analytics",
+        "Cookies",
+        "Children",
+        "Your choices",
+        "Changes",
+        "Contact"
+      ],
+      "jsonLdTypes": [
+        "BreadcrumbList",
+        "ImageObject",
+        "ListItem",
+        "Organization",
+        "WebPage"
+      ],
+      "inboundPages": 1942,
+      "phrases": [
+        {
+          "id": "t03",
+          "phrase": "astrology website that does not save my data",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "section"
+        }
+      ]
+    },
+    {
+      "path": "/methodology/",
+      "status": "built",
+      "title": "How We Compute Your Chart: Methodology & Privacy | Zodiacs.org",
+      "description": "How zodiacs.org computes a chart: ephemeris and house methods, historical timezone handling, NASA JPL accuracy tests, uncertainty rules, and local-first privacy.",
+      "canonical": "https://zodiacs.org/methodology/",
+      "robots": "max-image-preview:large",
+      "h1": "How we calculate your chart.",
+      "opening": "Here is what a chart on zodiacs.org claims, how each part is calculated, and where its precision has honest limits.",
+      "h2": [
+        "The ephemeris",
+        "Agreement with Swiss Ephemeris",
+        "Angles and houses",
+        "Natal aspects and orbs",
+        "Progressions, returns, and composites",
+        "Time zones",
+        "Birthplace search",
+        "Numerology",
+        "Privacy",
+        "Honest limits",
+        "Daily publication system"
+      ],
+      "jsonLdTypes": [
+        "Article",
+        "BreadcrumbList",
+        "ImageObject",
+        "ListItem",
+        "Organization",
+        "WebPage"
+      ],
+      "inboundPages": 1925,
+      "phrases": [
+        {
+          "id": "t07",
+          "phrase": "most accurate birth chart calculator",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "section"
+        },
+        {
+          "id": "t08",
+          "phrase": "how accurate are online birth chart calculators",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "title"
+        }
+      ]
+    },
+    {
+      "path": "/moon-sign/",
+      "status": "built",
+      "title": "Moon Sign Calculator: What Is My Moon Sign? | Zodiacs.org",
+      "description": "Find your moon sign free, in seconds: how you feel, what soothes you, and what you need to feel safe. No signup.",
+      "canonical": "https://zodiacs.org/moon-sign/",
+      "robots": "max-image-preview:large",
+      "h1": "Find your moon sign.",
+      "opening": "The Moon rules how you feel: your inner weather, your comforts, the way you settle yourself. Here is how to find yours.",
+      "h2": [
+        "What your moon sign describes",
+        "The twelve moons, read closely",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "t09",
+          "phrase": "free moon sign calculator",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "title"
+        },
+        {
+          "id": "q03",
+          "phrase": "what is my moon sign",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/rising-sign/",
+      "status": "built",
+      "title": "Rising Sign Calculator: What Is My Rising Sign? | Zodiacs.org",
+      "description": "Find your rising sign free with your birth time and place: how people first read you, plus the planet that rules your chart.",
+      "canonical": "https://zodiacs.org/rising-sign/",
+      "robots": "max-image-preview:large",
+      "h1": "Find your rising sign.",
+      "opening": "The sign that was coming up on the eastern horizon the moment you were born. It describes how people first meet you, and it sets the shape of your whole chart.",
+      "h2": [
+        "Libra rising",
+        "The rising sign changes about every two hours.",
+        "What your rising sign shows",
+        "The twelve risings",
+        "Your rising sign is one of three.",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "t10",
+          "phrase": "rising sign calculator without birth time",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "section"
+        },
+        {
+          "id": "q02",
+          "phrase": "what is my rising sign",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        },
+        {
+          "id": "q24",
+          "phrase": "rising sign meaning",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/compatibility/",
+      "status": "built",
+      "title": "Compatibility Calculator: Compare Two Birth Charts | Zodiacs.org",
+      "description": "Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings.",
+      "canonical": "https://zodiacs.org/compatibility/",
+      "robots": "max-image-preview:large",
+      "h1": "Check your astrology compatibility.",
+      "opening": "Compare two birth charts In plain English Birth chart (natal chart) A snapshot of where the planets appeared at the moment you were born. Learn more about Birth chart (natal chart) → to explore where a relationship flows and where it catches. You don’t need their birth details: send a link and they add their own.",
+      "h2": [
+        "Start with sun signs",
+        "Compatibility questions",
+        "Share and explore together"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "t11",
+          "phrase": "zodiac compatibility checker",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "title"
+        }
+      ]
+    },
+    {
+      "path": "/big-three/",
+      "status": "built",
+      "title": "Big Three Calculator: Sun, Moon, and Rising in Seconds | Zodiacs.org",
+      "description": "Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser.",
+      "canonical": "https://zodiacs.org/big-three/",
+      "robots": "max-image-preview:large",
+      "h1": "Your Sun, Moon, and rising",
+      "opening": "Three fields, three placements. The Sun is who you are, the Moon is how you feel, and the Rising sign is how people first read you. Each comes with its exact degree, computed here in your browser.",
+      "h2": [
+        "Share and explore together",
+        "After the three",
+        "Questions"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "t12",
+          "phrase": "big three calculator sun moon rising",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "title"
+        },
+        {
+          "id": "q06",
+          "phrase": "what is my big three",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/transits/",
+      "status": "built",
+      "title": "Transit Tracker: The Sky Moving Over Your Birth Chart | Zodiacs.org",
+      "description": "See what is active in your birth chart today, then move the date up to a year forward or back to watch each transit build and release.",
+      "canonical": "https://zodiacs.org/transits/",
+      "robots": "max-image-preview:large",
+      "h1": "What is active in your chart?",
+      "opening": "Start with today&rsquo;s strongest themes, then move the date up to a year forward or back to watch each transit In plain English Transit A current moving planet compared with a fixed point in a birth chart. Learn more about Transit → build, peak, and release. Pick a saved chart or enter your birth details.",
+      "h2": [
+        "The sky in November 2026",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication",
+        "WebPage"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "t13",
+          "phrase": "free transit chart calculator",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "title"
+        },
+        {
+          "id": "q22",
+          "phrase": "transit chart calculator",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/tools/",
+      "status": "built",
+      "title": "Free Astrology Tools & Calculators | Zodiacs.org",
+      "description": "Free astrology tools, no signup: birth chart, compatibility, moon sign, rising sign, transits, returns, eclipses, and more.",
+      "canonical": "https://zodiacs.org/tools/",
+      "robots": "max-image-preview:large",
+      "h1": "Free astrology tools",
+      "opening": "Twenty-nine tools, sorted by what you want to know. New here? Start with your birth chart.",
+      "h2": [
+        "Your birth chart",
+        "About you",
+        "You and someone else",
+        "The sky now",
+        "Through the year",
+        "Keep the conversation going.",
+        "Not sure which tool?",
+        "Private by default"
+      ],
+      "jsonLdTypes": [
+        "BreadcrumbList",
+        "CollectionPage",
+        "ImageObject",
+        "ItemList",
+        "ListItem",
+        "Organization"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "t14",
+          "phrase": "astrology app without subscription",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": "section"
+        }
+      ]
+    },
+    {
+      "path": "/mercury-retrograde/",
+      "status": "built",
+      "title": "Mercury Retrograde Dates 2026 to 2030: Exact, Computed | Zodiacs.org",
+      "description": "Every Mercury retrograde through 2030, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you.",
+      "canonical": "https://zodiacs.org/mercury-retrograde/",
+      "robots": "max-image-preview:large",
+      "h1": "See when Mercury turns retrograde.",
+      "opening": "Every window below is computed from Mercury ’s actual motion, station to station , refined to the hour, through the end of 2030.",
+      "h2": [
+        "The windows, 2026 to 2030",
+        "What is actually happening up there",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "CreativeWork",
+        "Dataset",
+        "Event",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication",
+        "WebPage"
+      ],
+      "inboundPages": 37,
+      "phrases": [
+        {
+          "id": "q08",
+          "phrase": "mercury retrograde 2027",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/retrogrades/",
+      "status": "built",
+      "title": "Retrograde Planets 2026 to 2030: Every Window, Dated | Zodiacs.org",
+      "description": "Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026 to 2030, station dates and positions for each window.",
+      "canonical": "https://zodiacs.org/retrogrades/",
+      "robots": "max-image-preview:large",
+      "h1": "See every retrograde through 2030.",
+      "opening": "See which planets are retrograde now and when each turns next.",
+      "h2": [
+        "Mercury retrograde now",
+        "Venus retrograde now",
+        "Mars",
+        "Jupiter",
+        "Saturn retrograde now",
+        "Uranus retrograde now",
+        "Neptune retrograde now",
+        "Pluto",
+        "How to read this calmly",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "CreativeWork",
+        "Dataset",
+        "Event",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication",
+        "WebPage"
+      ],
+      "inboundPages": 1958,
+      "phrases": [
+        {
+          "id": "q10",
+          "phrase": "what planets are retrograde now",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/saturn-return/",
+      "status": "built",
+      "title": "Saturn Return Calculator: When Is Yours? | Zodiacs.org",
+      "description": "Find your exact Saturn return dates free: every crossing, retrograde passes included, computed from Saturn's real motion on your device. Just needs your birth date.",
+      "canonical": "https://zodiacs.org/saturn-return/",
+      "robots": "max-image-preview:large",
+      "h1": "Find your Saturn return.",
+      "opening": "Around age 29, Saturn finishes its first lap of your chart and comes home. This calculator finds the exact dates, every pass and retrograde loop included, from your birth date alone.",
+      "h2": [
+        "What the return actually is",
+        "Questions, answered",
+        "Keep exploring"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "q11",
+          "phrase": "saturn return calculator",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/solar-return/",
+      "status": "built",
+      "title": "Solar Return Calculator: Your Birthday Chart for Any Year",
+      "description": "See the themes shaping your personal year with a solar return chart for any year and location. Free and private by default.",
+      "canonical": "https://zodiacs.org/solar-return/",
+      "robots": "max-image-preview:large",
+      "h1": "Your solar return",
+      "opening": "See the themes shaping your personal year: where to grow, what needs steadier attention, and which part of life is asking to lead. Choose a year and location to cast the chart.",
+      "h2": [
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 3,
+      "phrases": [
+        {
+          "id": "q12",
+          "phrase": "solar return chart calculator",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/void-of-course-moon/",
+      "status": "built",
+      "title": "Void-of-Course Moon Calendar: Exact Times This Month and Next | Zodiacs.org",
+      "description": "Void-of-course Moon times for this month and the next two, to the minute: when each void begins, the last aspect that starts it, and the sign the Moon enters. Shown in your time zone.",
+      "canonical": "https://zodiacs.org/void-of-course-moon/",
+      "robots": "max-image-preview:large",
+      "h1": "When the Moon is void of course.",
+      "opening": "See the Moon’s next pause and every void-of-course window over the next three months. Times adjust to your time zone.",
+      "h2": [
+        "November 2026",
+        "December 2026",
+        "January 2027",
+        "What void of course means",
+        "How this calendar is computed",
+        "Reading the table",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 3,
+      "phrases": [
+        {
+          "id": "q13",
+          "phrase": "void of course moon today",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/moon-phase/",
+      "status": "built",
+      "title": "Moon Phase Today & On Your Birthday | Zodiacs.org",
+      "description": "See tonight's moon phase or look up any date you care about: phase, illumination, and moon sign, free.",
+      "canonical": "https://zodiacs.org/moon-phase/",
+      "robots": "max-image-preview:large",
+      "h1": "The moon, tonight and any night.",
+      "opening": "Tonight’s phase , illumination, and sign. Below it, a lookup for the moon you were born under, or any date that matters to you.",
+      "h2": [
+        "Upcoming lunations",
+        "Reading a birthday moon",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "q14",
+          "phrase": "moon phase today",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        },
+        {
+          "id": "q15",
+          "phrase": "moon phase on my birthday",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/numerology/",
+      "status": "built",
+      "title": "Numerology Calculator — Life Path, Expression, Soul Urge | Zodiacs.org",
+      "description": "Free numerology calculator: Life Path, Birthday, Expression, Soul Urge, Personality, Maturity, and Personal Year from your name and birth date, computed in your browser.",
+      "canonical": "https://zodiacs.org/numerology/",
+      "robots": "max-image-preview:large",
+      "h1": "Find your Life Path number.",
+      "opening": "Discover your Life Path from your birth date, or add your name to explore more numbers. Nothing you type leaves the browser.",
+      "h2": [
+        "The core numbers",
+        "How the numbers are computed",
+        "What numerology is and is not",
+        "The twelve life paths",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 14,
+      "phrases": [
+        {
+          "id": "q16",
+          "phrase": "life path number calculator",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/baby-zodiac/",
+      "status": "built",
+      "title": "Baby Zodiac Calculator: What Sign Will My Baby Be? | Zodiacs.org",
+      "description": "Enter a due date: the near-certain sun sign (cusp caveats computed, not guessed), the week's possible moon signs, and what has to wait for the birth minute. Free.",
+      "canonical": "https://zodiacs.org/baby-zodiac/",
+      "robots": "max-image-preview:large",
+      "h1": "What sign will the baby be?",
+      "opening": "Enter the due date and get the honest version: the sun sign is near certain, the moon sign is a shortlist the birth day picks from, and the rising sign has to wait for the clock. Computed on your device.",
+      "h2": [
+        "What a due date can and cannot tell you",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication",
+        "WebPage"
+      ],
+      "inboundPages": 8,
+      "phrases": [
+        {
+          "id": "q17",
+          "phrase": "what sign will my baby be",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/learn/how-to-read-a-birth-chart/",
+      "status": "built",
+      "title": "How to Read a Birth Chart, Step by Step | Zodiacs.org",
+      "description": "A four-step method for reading any natal chart: the big three, planets room by room, the aspects doing the most work, and the whole-chart weather.",
+      "canonical": "https://zodiacs.org/learn/how-to-read-a-birth-chart/",
+      "robots": "max-image-preview:large",
+      "h1": "How to read a birth chart.",
+      "opening": "A birth chart is a snapshot of the sky from where and when you were born: ten planets placed around a twelve-sign wheel, divided into twelve houses , connected by a handful of geometric angles. Every symbol on it is doing a specific job, which means it can be read in a specific order, and the order is the whole trick. Read it top-down and the chart is a story; read it at random and it's a pile of ",
+      "h2": [
+        "Step 1: Start with the big three",
+        "Step 2: Planets, room by room",
+        "Step 3: The aspects doing the most work",
+        "Step 4: The chart's weather",
+        "Do it with a real chart",
+        "Common questions"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "Article",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Organization",
+        "Question",
+        "WebPage"
+      ],
+      "inboundPages": 7,
+      "phrases": [
+        {
+          "id": "q18",
+          "phrase": "how to read a birth chart",
+          "inTitle": true,
+          "inH1": true,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/learn/houses/",
+      "status": "built",
+      "title": "The 12 Houses in Astrology: What Each One Means | Zodiacs.org",
+      "description": "The twelve houses of a birth chart explained plainly: money, home, work, partnership, career, and the rest of life's floor plan, house by house.",
+      "canonical": "https://zodiacs.org/learn/houses/",
+      "robots": "max-image-preview:large",
+      "h1": "The twelve houses",
+      "opening": "Houses divide a birth chart into twelve areas of life. In quadrant systems such as Placidus, the first-house cusp is the exact ascendant degree. In whole-sign houses , the ascendant’s entire sign is the first house and the angle sits somewhere inside it. That house concerns self and approach; the sequence then moves through money, siblings, home, creativity, work, partnership, shared resources, be",
+      "h2": [],
+      "jsonLdTypes": [
+        "BreadcrumbList",
+        "CollectionPage",
+        "ImageObject",
+        "ItemList",
+        "ListItem",
+        "Organization"
+      ],
+      "inboundPages": 4712,
+      "phrases": [
+        {
+          "id": "q20",
+          "phrase": "12 houses in astrology",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        },
+        {
+          "id": "q28",
+          "phrase": "which house system",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/learn/zodiac-dates/",
+      "status": "built",
+      "title": "Zodiac Dates 2026 to 2027 | Exact Sun Ingress Times | Zodiacs.org",
+      "description": "The twelve tropical zodiac signs in one table: exact longitude ranges, correspondences, hemisphere seasons, and year-exact Sun ingress instants for 2026 and 2027.",
+      "canonical": "https://zodiacs.org/learn/zodiac-dates/",
+      "robots": "max-image-preview:large",
+      "h1": "The living correspondence chart.",
+      "opening": "Zodiac dates, 2026 to 2027",
+      "h2": [
+        "The twelve signs, in one table",
+        "What the exact dates mean"
+      ],
+      "jsonLdTypes": [
+        "Article",
+        "BreadcrumbList",
+        "CreativeWork",
+        "DataDownload",
+        "Dataset",
+        "ImageObject",
+        "ListItem",
+        "Organization",
+        "WebPage"
+      ],
+      "inboundPages": 4712,
+      "phrases": [
+        {
+          "id": "q21",
+          "phrase": "zodiac sign dates",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/horoscopes/",
+      "status": "built",
+      "title": "Daily Horoscopes | November 8, 2026, All 12 Signs | Zodiacs.org",
+      "description": "Daily horoscopes for all twelve signs on November 8, 2026, with a clear theme and one useful move for each sign.",
+      "canonical": "https://zodiacs.org/horoscopes/",
+      "robots": "max-image-preview:large",
+      "h1": "Daily horoscopes",
+      "opening": "Daily edition · November 8, 2026",
+      "h2": [
+        "A look at today’s readings"
+      ],
+      "jsonLdTypes": [
+        "BreadcrumbList",
+        "CollectionPage",
+        "ImageObject",
+        "ItemList",
+        "ListItem",
+        "Organization"
+      ],
+      "inboundPages": 3355,
+      "phrases": [
+        {
+          "id": "q23",
+          "phrase": "daily horoscope",
+          "inTitle": true,
+          "inH1": true,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/birthday/",
+      "status": "built",
+      "title": "Birthday Astrology by Date: Signs, Traits & Cusp Answers",
+      "description": "Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters.",
+      "canonical": "https://zodiacs.org/birthday/",
+      "robots": "max-image-preview:large",
+      "h1": "Your birthday, read closely.",
+      "opening": "Choose a date for a distinct reading of character, love, work, and growth. You’ll also get the Sun sign and decan ; if the birthday falls on a sign boundary , the page checks the birth year too.",
+      "h2": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "jsonLdTypes": [
+        "BreadcrumbList",
+        "CollectionPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Thing",
+        "WebApplication"
+      ],
+      "inboundPages": 4693,
+      "phrases": [
+        {
+          "id": "q32",
+          "phrase": "am i on the cusp",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/full-moon-calendar/",
+      "status": "built",
+      "title": "Full Moon Calendar 2026 to 2030: Dates, Signs, Names | Zodiacs.org",
+      "description": "Every full moon from 2026 through 2030: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name, Wolf to Cold, blue moon included.",
+      "canonical": "https://zodiacs.org/full-moon-calendar/",
+      "robots": "max-image-preview:large",
+      "h1": "Find every full moon through 2030.",
+      "opening": "Each row below is the exact instant the Moon stands opposite the Sun , timed to within a minute through the end of 2030, with the sign it happens in and the name the almanacs gave it.",
+      "h2": [
+        "Full moons of 2026",
+        "Full moons of 2027",
+        "Full moons of 2028",
+        "Full moons of 2029",
+        "Full moons of 2030",
+        "What a full moon is",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "CreativeWork",
+        "Dataset",
+        "Event",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication",
+        "WebPage"
+      ],
+      "inboundPages": 162,
+      "phrases": [
+        {
+          "id": "q34",
+          "phrase": "next full moon",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/eclipses/",
+      "status": "built",
+      "title": "Eclipse Dates 2026 to 2030: Solar & Lunar, Exact | Zodiacs.org",
+      "description": "Every solar and lunar eclipse through 2030 with exact peak times and zodiac signs, including the August 12, 2026 total solar eclipse over Iceland and Spain.",
+      "canonical": "https://zodiacs.org/eclipses/",
+      "robots": "max-image-preview:large",
+      "h1": "Find every eclipse through 2030.",
+      "opening": "Find the next solar or lunar eclipse, its peak time in UTC and its Zodiac sign.",
+      "h2": [
+        "The eclipses, 2026 to 2030",
+        "What an eclipse is",
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "CreativeWork",
+        "Dataset",
+        "Event",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication",
+        "WebPage"
+      ],
+      "inboundPages": 35,
+      "phrases": [
+        {
+          "id": "q35",
+          "phrase": "eclipses 2027",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/learn/chinese-zodiac/",
+      "status": "built",
+      "title": "Chinese Zodiac: The Twelve Animal Years | Zodiacs.org",
+      "description": "A careful introduction to the Chinese zodiac: its animal sequence, year tables, historical frame, and the boundary that does not fall on January 1.",
+      "canonical": "https://zodiacs.org/learn/chinese-zodiac/",
+      "robots": "max-image-preview:large",
+      "h1": "The twelve-year animal cycle.",
+      "opening": "A careful introduction to the Chinese zodiac: its animal sequence, year tables, historical frame, and the boundary that does not fall on January 1.",
+      "h2": [
+        "A separate system from Western tropical astrology",
+        "What the cycle records",
+        "The year starts at Lunar New Year",
+        "The twelve animals, in order",
+        "Recent and upcoming cycle years"
+      ],
+      "jsonLdTypes": [
+        "Article",
+        "BreadcrumbList",
+        "ImageObject",
+        "ListItem",
+        "Organization",
+        "WebPage"
+      ],
+      "inboundPages": 20,
+      "phrases": [
+        {
+          "id": "q38",
+          "phrase": "what is my chinese zodiac sign",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/lunar-return/",
+      "status": "built",
+      "title": "Lunar Return Calculator — Your Next Moon Return",
+      "description": "Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar.",
+      "canonical": "https://zodiacs.org/lunar-return/",
+      "robots": "max-image-preview:large",
+      "h1": "Your lunar return",
+      "opening": "Find the next time the Moon returns to its place in your birth chart. Explore a fresh set of prompts for everyday care, connection, and attention.",
+      "h2": [
+        "Questions, answered"
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "BreadcrumbList",
+        "FAQPage",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "Question",
+        "WebApplication"
+      ],
+      "inboundPages": 1,
+      "phrases": [
+        {
+          "id": "q39",
+          "phrase": "lunar return calculator",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/chart-twins/",
+      "status": "built",
+      "title": "Find your chart twins | Zodiacs.org",
+      "description": "Compare your signs with the sourced people directory. A shared sign is a conversation starter, not proof of a similar personality.",
+      "canonical": "https://zodiacs.org/chart-twins/",
+      "robots": "max-image-preview:large",
+      "h1": "Find your chart twins",
+      "opening": "Compare your signs with the sourced people directory. A shared sign is a conversation starter, not proof of a similar personality.",
+      "h2": [
+        "Share and explore together"
+      ],
+      "jsonLdTypes": [
+        "BreadcrumbList",
+        "ImageObject",
+        "ListItem",
+        "Offer",
+        "Organization",
+        "WebApplication"
+      ],
+      "inboundPages": 1940,
+      "phrases": [
+        {
+          "id": "q41",
+          "phrase": "celebrities with my birth chart",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "path": "/",
+      "status": "built",
+      "title": "Zodiacs.org | Free Birth Charts, Sign Guides & Astrology Tools",
+      "description": "Free birth charts calculated in your browser, plus moon signs, compatibility, horoscopes, and sign guides with clear explanations.",
+      "canonical": "https://zodiacs.org/",
+      "robots": "max-image-preview:large",
+      "h1": "Explore the stars behind your story.",
+      "opening": "Free birth charts, moon signs, compatibility, and horoscopes: accurate, private, and easy to understand.",
+      "h2": [
+        "The sky today, by sign",
+        "See how a birth chart becomes a story.",
+        "Start with your chart",
+        "The twelve signs",
+        "Learn your signs. Save what matters.",
+        "Common questions",
+        "Start with your birth chart."
+      ],
+      "jsonLdTypes": [
+        "Answer",
+        "FAQPage",
+        "ImageObject",
+        "Organization",
+        "Question",
+        "WebSite"
+      ],
+      "inboundPages": 4782,
+      "phrases": [
+        {
+          "id": "q43",
+          "phrase": "best astrology app",
+          "inTitle": false,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        },
+        {
+          "id": "q45",
+          "phrase": "zodiacs.org",
+          "inTitle": true,
+          "inH1": false,
+          "inOpening": false,
+          "inH2": false,
+          "placement": null
+        }
+      ]
+    }
+  ],
+  "unanswered": [
+    {
+      "id": "t05",
+      "phrase": "best birth chart website"
+    },
+    {
+      "id": "t06",
+      "phrase": "best free astrology website"
+    },
+    {
+      "id": "t15",
+      "phrase": "best astrology site for compatibility"
+    },
+    {
+      "id": "q19",
+      "phrase": "birth chart without birth time"
+    },
+    {
+      "id": "q30",
+      "phrase": "what is my venus sign"
+    },
+    {
+      "id": "q31",
+      "phrase": "what is my mars sign"
+    },
+    {
+      "id": "q47",
+      "phrase": "part of fortune calculator"
+    },
+    {
+      "id": "q48",
+      "phrase": "north node calculator"
+    },
+    {
+      "id": "q49",
+      "phrase": "descendant sign calculator"
+    },
+    {
+      "id": "q50",
+      "phrase": "midheaven calculator"
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+locale,kp_language,kp_locations,family,subfamily,query,target_url,coverage,monthly_volume,volume_source,competition,notes
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope bélier aujourd'hui,/horoscopes/aries/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope bélier demain,/horoscopes/aries/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope bélier semaine,/horoscopes/aries/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope bélier mois,/horoscopes/aries/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope bélier 2027,/horoscopes/aries/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope taureau aujourd'hui,/horoscopes/taurus/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope taureau demain,/horoscopes/taurus/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope taureau semaine,/horoscopes/taurus/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope taureau mois,/horoscopes/taurus/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope taureau 2027,/horoscopes/taurus/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope gémeaux aujourd'hui,/horoscopes/gemini/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope gémeaux demain,/horoscopes/gemini/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope gémeaux semaine,/horoscopes/gemini/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope gémeaux mois,/horoscopes/gemini/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope gémeaux 2027,/horoscopes/gemini/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope cancer aujourd'hui,/horoscopes/cancer/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope cancer demain,/horoscopes/cancer/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope cancer semaine,/horoscopes/cancer/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope cancer mois,/horoscopes/cancer/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope cancer 2027,/horoscopes/cancer/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope lion aujourd'hui,/horoscopes/leo/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope lion demain,/horoscopes/leo/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope lion semaine,/horoscopes/leo/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope lion mois,/horoscopes/leo/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope lion 2027,/horoscopes/leo/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope vierge aujourd'hui,/horoscopes/virgo/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope vierge demain,/horoscopes/virgo/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope vierge semaine,/horoscopes/virgo/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope vierge mois,/horoscopes/virgo/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope vierge 2027,/horoscopes/virgo/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope balance aujourd'hui,/horoscopes/libra/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope balance demain,/horoscopes/libra/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope balance semaine,/horoscopes/libra/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope balance mois,/horoscopes/libra/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope balance 2027,/horoscopes/libra/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope scorpion aujourd'hui,/horoscopes/scorpio/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope scorpion demain,/horoscopes/scorpio/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope scorpion semaine,/horoscopes/scorpio/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope scorpion mois,/horoscopes/scorpio/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope scorpion 2027,/horoscopes/scorpio/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope sagittaire aujourd'hui,/horoscopes/sagittarius/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope sagittaire demain,/horoscopes/sagittarius/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope sagittaire semaine,/horoscopes/sagittarius/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope sagittaire mois,/horoscopes/sagittarius/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope sagittaire 2027,/horoscopes/sagittarius/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope capricorne aujourd'hui,/horoscopes/capricorn/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope capricorne demain,/horoscopes/capricorn/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope capricorne semaine,/horoscopes/capricorn/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope capricorne mois,/horoscopes/capricorn/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope capricorne 2027,/horoscopes/capricorn/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope verseau aujourd'hui,/horoscopes/aquarius/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope verseau demain,/horoscopes/aquarius/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope verseau semaine,/horoscopes/aquarius/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope verseau mois,/horoscopes/aquarius/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope verseau 2027,/horoscopes/aquarius/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,today,horoscope poissons aujourd'hui,/horoscopes/pisces/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,tomorrow,horoscope poissons demain,/horoscopes/pisces/tomorrow/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,weekly,horoscope poissons semaine,/horoscopes/pisces/weekly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,monthly,horoscope poissons mois,/horoscopes/pisces/monthly/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),horoscope,yearly,horoscope poissons 2027,/horoscopes/pisces/2027/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité bélier bélier,/fr/compatibility/aries-aries/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier taureau,/fr/compatibility/aries-taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier gémeaux,/fr/compatibility/aries-gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier cancer,/fr/compatibility/aries-cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier lion,/fr/compatibility/aries-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier vierge,/fr/compatibility/aries-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier balance,/fr/compatibility/aries-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier scorpion,/fr/compatibility/aries-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier sagittaire,/fr/compatibility/aries-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier capricorne,/fr/compatibility/aries-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier verseau,/fr/compatibility/aries-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité bélier poissons,/fr/compatibility/aries-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau bélier,/fr/compatibility/aries-taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité taureau taureau,/fr/compatibility/taurus-taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau gémeaux,/fr/compatibility/taurus-gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau cancer,/fr/compatibility/taurus-cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau lion,/fr/compatibility/taurus-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau vierge,/fr/compatibility/taurus-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau balance,/fr/compatibility/taurus-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau scorpion,/fr/compatibility/taurus-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau sagittaire,/fr/compatibility/taurus-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau capricorne,/fr/compatibility/taurus-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau verseau,/fr/compatibility/taurus-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité taureau poissons,/fr/compatibility/taurus-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux bélier,/fr/compatibility/aries-gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux taureau,/fr/compatibility/taurus-gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité gémeaux gémeaux,/fr/compatibility/gemini-gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux cancer,/fr/compatibility/gemini-cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux lion,/fr/compatibility/gemini-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux vierge,/fr/compatibility/gemini-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux balance,/fr/compatibility/gemini-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux scorpion,/fr/compatibility/gemini-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux sagittaire,/fr/compatibility/gemini-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux capricorne,/fr/compatibility/gemini-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux verseau,/fr/compatibility/gemini-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité gémeaux poissons,/fr/compatibility/gemini-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer bélier,/fr/compatibility/aries-cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer taureau,/fr/compatibility/taurus-cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer gémeaux,/fr/compatibility/gemini-cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité cancer cancer,/fr/compatibility/cancer-cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer lion,/fr/compatibility/cancer-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer vierge,/fr/compatibility/cancer-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer balance,/fr/compatibility/cancer-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer scorpion,/fr/compatibility/cancer-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer sagittaire,/fr/compatibility/cancer-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer capricorne,/fr/compatibility/cancer-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer verseau,/fr/compatibility/cancer-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité cancer poissons,/fr/compatibility/cancer-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion bélier,/fr/compatibility/aries-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion taureau,/fr/compatibility/taurus-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion gémeaux,/fr/compatibility/gemini-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion cancer,/fr/compatibility/cancer-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité lion lion,/fr/compatibility/leo-leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion vierge,/fr/compatibility/leo-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion balance,/fr/compatibility/leo-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion scorpion,/fr/compatibility/leo-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion sagittaire,/fr/compatibility/leo-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion capricorne,/fr/compatibility/leo-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion verseau,/fr/compatibility/leo-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité lion poissons,/fr/compatibility/leo-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge bélier,/fr/compatibility/aries-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge taureau,/fr/compatibility/taurus-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge gémeaux,/fr/compatibility/gemini-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge cancer,/fr/compatibility/cancer-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge lion,/fr/compatibility/leo-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité vierge vierge,/fr/compatibility/virgo-virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge balance,/fr/compatibility/virgo-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge scorpion,/fr/compatibility/virgo-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge sagittaire,/fr/compatibility/virgo-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge capricorne,/fr/compatibility/virgo-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge verseau,/fr/compatibility/virgo-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité vierge poissons,/fr/compatibility/virgo-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance bélier,/fr/compatibility/aries-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance taureau,/fr/compatibility/taurus-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance gémeaux,/fr/compatibility/gemini-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance cancer,/fr/compatibility/cancer-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance lion,/fr/compatibility/leo-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance vierge,/fr/compatibility/virgo-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité balance balance,/fr/compatibility/libra-libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance scorpion,/fr/compatibility/libra-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance sagittaire,/fr/compatibility/libra-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance capricorne,/fr/compatibility/libra-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance verseau,/fr/compatibility/libra-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité balance poissons,/fr/compatibility/libra-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion bélier,/fr/compatibility/aries-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion taureau,/fr/compatibility/taurus-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion gémeaux,/fr/compatibility/gemini-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion cancer,/fr/compatibility/cancer-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion lion,/fr/compatibility/leo-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion vierge,/fr/compatibility/virgo-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion balance,/fr/compatibility/libra-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité scorpion scorpion,/fr/compatibility/scorpio-scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion sagittaire,/fr/compatibility/scorpio-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion capricorne,/fr/compatibility/scorpio-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion verseau,/fr/compatibility/scorpio-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité scorpion poissons,/fr/compatibility/scorpio-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire bélier,/fr/compatibility/aries-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire taureau,/fr/compatibility/taurus-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire gémeaux,/fr/compatibility/gemini-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire cancer,/fr/compatibility/cancer-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire lion,/fr/compatibility/leo-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire vierge,/fr/compatibility/virgo-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire balance,/fr/compatibility/libra-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire scorpion,/fr/compatibility/scorpio-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité sagittaire sagittaire,/fr/compatibility/sagittarius-sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire capricorne,/fr/compatibility/sagittarius-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire verseau,/fr/compatibility/sagittarius-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité sagittaire poissons,/fr/compatibility/sagittarius-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne bélier,/fr/compatibility/aries-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne taureau,/fr/compatibility/taurus-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne gémeaux,/fr/compatibility/gemini-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne cancer,/fr/compatibility/cancer-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne lion,/fr/compatibility/leo-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne vierge,/fr/compatibility/virgo-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne balance,/fr/compatibility/libra-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne scorpion,/fr/compatibility/scorpio-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne sagittaire,/fr/compatibility/sagittarius-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité capricorne capricorne,/fr/compatibility/capricorn-capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne verseau,/fr/compatibility/capricorn-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité capricorne poissons,/fr/compatibility/capricorn-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau bélier,/fr/compatibility/aries-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau taureau,/fr/compatibility/taurus-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau gémeaux,/fr/compatibility/gemini-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau cancer,/fr/compatibility/cancer-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau lion,/fr/compatibility/leo-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau vierge,/fr/compatibility/virgo-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau balance,/fr/compatibility/libra-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau scorpion,/fr/compatibility/scorpio-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau sagittaire,/fr/compatibility/sagittarius-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau capricorne,/fr/compatibility/capricorn-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité verseau verseau,/fr/compatibility/aquarius-aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité verseau poissons,/fr/compatibility/aquarius-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons bélier,/fr/compatibility/aries-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons taureau,/fr/compatibility/taurus-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons gémeaux,/fr/compatibility/gemini-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons cancer,/fr/compatibility/cancer-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons lion,/fr/compatibility/leo-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons vierge,/fr/compatibility/virgo-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons balance,/fr/compatibility/libra-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons scorpion,/fr/compatibility/scorpio-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons sagittaire,/fr/compatibility/sagittarius-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons capricorne,/fr/compatibility/capricorn-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,pair,compatibilité poissons verseau,/fr/compatibility/aquarius-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),compatibility,same-sign pair,compatibilité poissons poissons,/fr/compatibility/pisces-pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,calculator,thème astral,/fr/birth-chart/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,calculator,thème astral gratuit,/fr/birth-chart/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,calculator,carte du ciel,/fr/birth-chart/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,calculator,calcul thème astral,/fr/birth-chart/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,calculator,thème natal,/fr/birth-chart/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,how-to-read,lire son thème astral,/learn/how-to-read-a-birth-chart/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,rising-sign,calcul ascendant,/fr/rising-sign/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,rising-sign,calculer son ascendant,/fr/rising-sign/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,moon-sign,signe lunaire,/fr/moon-sign/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),birth-chart,big-three,soleil lune ascendant,/fr/big-three/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,moon-phase,phase de la lune aujourd'hui,/fr/moon-phase/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,moon-phase,lune aujourd'hui,/fr/moon-phase/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,full-moon,pleine lune novembre 2026,/full-moon/2026-11-24/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,new-moon,nouvelle lune novembre 2026,/new-moon/2026-11-09/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,mercury-retrograde,mercure rétrograde 2027,/fr/mercury-retrograde/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,mercury-retrograde,mercure rétrograde en ce moment,/fr/mercury-retrograde/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,retrogrades,planètes rétrogrades en ce moment,/fr/retrogrades/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,eclipses,éclipse 2027,/fr/eclipses/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,eclipses,éclipse solaire 2027,/fr/eclipses/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,mars-retrograde,mars rétrograde 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,bélier caractère,/fr/aries/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe bélier,/fr/aries/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme bélier,/fr/aries/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme bélier,/fr/aries/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,bélier dates,/fr/aries/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,bélier personnalité,/fr/aries/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,taureau caractère,/fr/taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe taureau,/fr/taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme taureau,/fr/taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme taureau,/fr/taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,taureau dates,/fr/taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,taureau personnalité,/fr/taurus/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,gémeaux caractère,/fr/gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe gémeaux,/fr/gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme gémeaux,/fr/gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme gémeaux,/fr/gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,gémeaux dates,/fr/gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,gémeaux personnalité,/fr/gemini/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,cancer caractère,/fr/cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe cancer,/fr/cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme cancer,/fr/cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme cancer,/fr/cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,cancer dates,/fr/cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,cancer personnalité,/fr/cancer/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,lion caractère,/fr/leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe lion,/fr/leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme lion,/fr/leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme lion,/fr/leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,lion dates,/fr/leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,lion personnalité,/fr/leo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,vierge caractère,/fr/virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe vierge,/fr/virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme vierge,/fr/virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme vierge,/fr/virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,vierge dates,/fr/virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,vierge personnalité,/fr/virgo/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,balance caractère,/fr/libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe balance,/fr/libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme balance,/fr/libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme balance,/fr/libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,balance dates,/fr/libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,balance personnalité,/fr/libra/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,scorpion caractère,/fr/scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe scorpion,/fr/scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme scorpion,/fr/scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme scorpion,/fr/scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,scorpion dates,/fr/scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,scorpion personnalité,/fr/scorpio/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,sagittaire caractère,/fr/sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe sagittaire,/fr/sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme sagittaire,/fr/sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme sagittaire,/fr/sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,sagittaire dates,/fr/sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,sagittaire personnalité,/fr/sagittarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,capricorne caractère,/fr/capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe capricorne,/fr/capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme capricorne,/fr/capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme capricorne,/fr/capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,capricorne dates,/fr/capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,capricorne personnalité,/fr/capricorn/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,verseau caractère,/fr/aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe verseau,/fr/aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme verseau,/fr/aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme verseau,/fr/aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,verseau dates,/fr/aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,verseau personnalité,/fr/aquarius/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,poissons caractère,/fr/pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe poissons,/fr/pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme poissons,/fr/pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,femme poissons,/fr/pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,poissons dates,/fr/pisces/,full,TBD,TBD,TBD,
+fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,poissons personnalité,/fr/pisces/,full,TBD,TBD,TBD,
