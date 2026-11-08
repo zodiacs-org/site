@@ -1,0 +1,54 @@
+name: Zodiacs Sky Card
+description: Puts today's sky and your sign's horoscope from zodiacs.org in your GitHub README, updated every day.
+author: Zodiacs
+branding:
+  icon: moon
+  color: purple
+inputs:
+  sign:
+    description: Your Sun sign, such as scorpio.
+    required: true
+  timezone:
+    description: The time zone for "today", such as Asia/Bangkok.
+    required: false
+    default: UTC
+  readme:
+    description: The file the card goes in.
+    required: false
+    default: README.md
+  commit:
+    description: Commit and push the change. Set to false to only write the file.
+    required: false
+    default: "true"
+  commit-message:
+    description: The commit message.
+    required: false
+    default: Update today's sky
+runs:
+  using: composite
+  steps:
+    - name: Write today's sky card
+      shell: bash
+      env:
+        SKY_SIGN: ${{ inputs.sign }}
+        SKY_TIMEZONE: ${{ inputs.timezone }}
+        SKY_README: ${{ inputs.readme }}
+      run: node "${{ github.action_path }}/sky-card.mjs"
+    - name: Commit the card
+      if: ${{ inputs.commit == 'true' }}
+      shell: bash
+      env:
+        SKY_README: ${{ inputs.readme }}
+        SKY_MESSAGE: ${{ inputs.commit-message }}
+        ACTOR: ${{ github.actor }}
+        ACTOR_ID: ${{ github.actor_id }}
+      run: |
+        git config user.name "$ACTOR"
+        git config user.email "${ACTOR_ID}+${ACTOR}@users.noreply.github.com"
+        git add -- "$SKY_README"
+        if git diff --cached --quiet; then
+          echo "Nothing to commit today."
+        else
+          git commit -m "$SKY_MESSAGE"
+          git push
+        fi

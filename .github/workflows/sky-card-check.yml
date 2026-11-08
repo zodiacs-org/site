@@ -1,0 +1,33 @@
+name: Sky card check
+
+# Runs the Zodiacs Sky Card action (integrations/github-sky-card/) on a GitHub
+# runner against the live zodiacs.org/mcp, writing into the example README
+# without committing, so a change to the action is tried where it will run.
+on:
+  pull_request:
+    paths:
+      - integrations/github-sky-card/**
+      - .github/workflows/sky-card-check.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  card:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./integrations/github-sky-card
+        with:
+          sign: scorpio
+          timezone: Asia/Bangkok
+          readme: integrations/github-sky-card/example/README.md
+          commit: "false"
+      - name: Check the card was written
+        run: |
+          cat integrations/github-sky-card/example/README.md
+          grep -q "Today's sky" integrations/github-sky-card/example/README.md
+          grep -q "Reading confidence" integrations/github-sky-card/example/README.md
+          grep -q "utm_source=github-sky-card" integrations/github-sky-card/example/README.md
