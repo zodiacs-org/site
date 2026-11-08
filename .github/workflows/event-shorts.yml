@@ -1,0 +1,76 @@
+name: Event Shorts
+
+# Builds short videos of the sky's coming events (one per published event
+# page: new and full Moons, eclipses, retrogrades, sign changes and exact
+# aspects) and their captions, and keeps them as a downloadable workflow
+# artifact for posting by hand. Run by hand only: there is no schedule, and
+# nothing here posts to any social network or uses any account. Posting is a
+# separate decision for the owner.
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: 'First day (YYYY-MM-DD). Empty means now.'
+        required: false
+        default: ''
+      days:
+        description: 'How many days of events from that day.'
+        required: false
+        default: '31'
+      only:
+        description: 'Event page ids instead, comma separated (for example eclipse-2027-07-18). Empty means every event in the span.'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: event-shorts
+  cancel-in-progress: false
+
+jobs:
+  shorts:
+    name: Build the event short videos
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium and ffmpeg
+        run: |
+          npx playwright-core install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Build the videos and captions
+        env:
+          SHORTS_FROM: ${{ inputs.from }}
+          SHORTS_DAYS: ${{ inputs.days }}
+          SHORTS_ONLY: ${{ inputs.only }}
+        run: |
+          args=()
+          if [ -n "$SHORTS_FROM" ]; then args+=(--from "$SHORTS_FROM"); fi
+          if [ -n "$SHORTS_DAYS" ]; then args+=(--days "$SHORTS_DAYS"); fi
+          if [ -n "$SHORTS_ONLY" ]; then args+=(--only "$SHORTS_ONLY"); fi
+          npm run data:event-shorts -- "${args[@]}"
+
+      - name: Upload the videos and captions
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: event-shorts-${{ github.run_number }}
+          path: dist-shorts/
+          if-no-files-found: error
+          retention-days: 14

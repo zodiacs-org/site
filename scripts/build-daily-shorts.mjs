@@ -301,32 +301,37 @@ function encoder({ file, body, endCard }) {
   return { write, end: () => { child.stdin.end(); return done; } };
 }
 
-async function renderSign({ browser, sign, day, fonts, out, endCard }) {
-  const { starts, body } = shortsTimeline(sign.sentences);
+/**
+ * One short video: the frames drawn by the page above, encoded with the end
+ * card after them, a cover still, and the caption file. The daily horoscope
+ * videos and the sky event videos (scripts/build-event-shorts.ts) share it.
+ */
+export async function renderShort({ browser, fonts, out, endCard, short }) {
+  const { starts, body } = shortsTimeline(short.sentences);
   const page = await browser.newPage({ viewport: { width: SHORTS.width, height: SHORTS.height }, deviceScaleFactor: 1 });
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   try {
     await page.setContent(pageHtml({ fonts }), { waitUntil: 'load' });
     const data = {
-      name: sign.name,
-      hue: sign.hue,
-      kicker: `Daily horoscope for ${longDate(day)}`,
-      address: shortsLink(sign.slug),
-      confidence: shortsConfidenceLabel(),
-      sentences: sign.sentences,
+      name: short.name,
+      hue: short.hue,
+      kicker: short.kicker,
+      address: short.address,
+      confidence: short.footer,
+      sentences: short.sentences,
       starts,
       body,
       text: SHORTS_TEXT,
       lockup: LOCKUP,
       words: LOCKUP_WORDS,
       ring: TILTED_RING_DOTS,
-      artUrl: await dataUrl(`public/assets/sign-art/${sign.slug}-1200.webp`, 'image/webp'),
-      discUrl: await dataUrl(`public/assets/zodiac-icons/400/${sign.slug}.webp`, 'image/webp'),
+      artUrl: await dataUrl(`public/assets/sign-art/${short.art}-1200.webp`, 'image/webp'),
+      discUrl: await dataUrl(`public/assets/zodiac-icons/400/${short.art}.webp`, 'image/webp'),
     };
     const layout = await page.evaluate((d) => window.setup(d), data);
-    if (errors.length) throw new Error(`${sign.name}: ${errors.join('; ')}`);
-    const file = join(out, `${sign.slug}.mp4`);
+    if (errors.length) throw new Error(`${short.stem}: ${errors.join('; ')}`);
+    const file = join(out, `${short.stem}.mp4`);
     const video = encoder({ file, body, endCard });
     const frames = Math.round(body * SHORTS.fps);
     const coverAt = Math.max(0, Math.round((body - 1.2) * SHORTS.fps));
@@ -338,20 +343,18 @@ async function renderSign({ browser, sign, day, fonts, out, endCard }) {
       await page.evaluate((t) => window.draw(t), index / SHORTS.fps);
       const { data: base64 } = await cdp.send('Page.captureScreenshot', { format: 'png', optimizeForSpeed: true });
       const png = Buffer.from(base64, 'base64');
-      if (index === coverAt) await writeFile(join(out, `${sign.slug}-cover.png`), png);
+      if (index === coverAt) await writeFile(join(out, `${short.stem}-cover.png`), png);
       await video.write(png);
     }
     await video.end();
-    if (errors.length) throw new Error(`${sign.name}: ${errors.join('; ')}`);
-    const caption = shortsCaption({ slug: sign.slug, name: sign.name, day, sentences: sign.sentences });
-    await writeFile(join(out, `${sign.slug}.txt`), caption);
+    if (errors.length) throw new Error(`${short.stem}: ${errors.join('; ')}`);
+    await writeFile(join(out, `${short.stem}.txt`), short.caption);
     return {
-      sign: sign.slug,
-      video: `${sign.slug}.mp4`,
-      caption: `${sign.slug}.txt`,
-      cover: `${sign.slug}-cover.png`,
+      video: `${short.stem}.mp4`,
+      caption: `${short.stem}.txt`,
+      cover: `${short.stem}-cover.png`,
       seconds: Number((body + END_CARD.seconds).toFixed(2)),
-      sentences: sign.sentences.map((sentence) => sentence.text),
+      sentences: short.sentences.map((sentence) => sentence.text),
       layout,
     };
   } finally {
@@ -359,10 +362,50 @@ async function renderSign({ browser, sign, day, fonts, out, endCard }) {
   }
 }
 
-export async function buildDailyShorts({ date, only, outRoot = SHORTS.outDir, concurrency = 3 } = {}) {
+function renderSign({ browser, sign, day, fonts, out, endCard }) {
+  const short = {
+    stem: sign.slug,
+    art: sign.slug,
+    name: sign.name,
+    hue: sign.hue,
+    kicker: `Daily horoscope for ${longDate(day)}`,
+    address: shortsLink(sign.slug),
+    footer: shortsConfidenceLabel(),
+    sentences: sign.sentences,
+    caption: shortsCaption({ slug: sign.slug, name: sign.name, day, sentences: sign.sentences }),
+  };
+  return renderShort({ browser, fonts, out, endCard, short }).then((result) => ({ sign: sign.slug, ...result }));
+}
+
+/** The fonts the frames are drawn in, as data URLs. */
+export async function shortsFonts() {
+  return {
+    serif400: await dataUrl('public/fonts/eb-garamond-latin-400-normal.woff2', 'font/woff2'),
+    serif500: await dataUrl('public/fonts/eb-garamond-latin-500-normal.woff2', 'font/woff2'),
+    serif400i: await dataUrl('public/fonts/eb-garamond-latin-400-italic.woff2', 'font/woff2'),
+    sans: await dataUrl('public/fonts/instrument-sans-latin-wght-normal.woff2', 'font/woff2'),
+    mono: await dataUrl('public/fonts/jetbrains-mono-latin-wght-normal.woff2', 'font/woff2'),
+  };
+}
+
+/** The end card's path, once the end card and ffmpeg are known to be there. */
+export async function shortsEndCard() {
   const endCard = resolve(root, SHORTS.endCard);
   if (!existsSync(endCard)) throw new Error(`The end card is missing (${SHORTS.endCard}); run npm run data:end-card`);
   await run('ffmpeg', ['-version']).catch(() => { throw new Error('ffmpeg is not installed; the videos need the system ffmpeg'); });
+  return endCard;
+}
+
+/** Chromium, from the environment or the preinstalled build. */
+export async function shortsBrowser() {
+  const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'playwright-core');
+  const executablePath = process.env.CHROMIUM_PATH
+    ?? ['/opt/pw-browsers/chromium', '/opt/pw-browsers/chromium-1243/chrome-linux64/chrome'].find((path) => existsSync(path));
+  return chromium.launch({ executablePath });
+}
+
+export async function buildDailyShorts({ date, only, outRoot = SHORTS.outDir, concurrency = 3 } = {}) {
+  const endCard = await shortsEndCard();
   const program = JSON.parse(await readFile(resolve(root, 'src/data/horoscope-program.json'), 'utf8'));
   const horoscopeWindow = JSON.parse(await readFile(resolve(root, 'src/data/horoscope-window.json'), 'utf8'));
   const readings = todayReadings({ program, window: horoscopeWindow, day: date });
@@ -371,17 +414,8 @@ export async function buildDailyShorts({ date, only, outRoot = SHORTS.outDir, co
   const signs = readings.signs.filter((sign) => !wanted || wanted.has(sign.slug));
   const out = resolve(root, outRoot, readings.day);
   await mkdir(out, { recursive: true });
-  const fonts = {
-    serif400: await dataUrl('public/fonts/eb-garamond-latin-400-normal.woff2', 'font/woff2'),
-    serif500: await dataUrl('public/fonts/eb-garamond-latin-500-normal.woff2', 'font/woff2'),
-    serif400i: await dataUrl('public/fonts/eb-garamond-latin-400-italic.woff2', 'font/woff2'),
-    sans: await dataUrl('public/fonts/instrument-sans-latin-wght-normal.woff2', 'font/woff2'),
-    mono: await dataUrl('public/fonts/jetbrains-mono-latin-wght-normal.woff2', 'font/woff2'),
-  };
-  const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'playwright-core');
-  const executablePath = process.env.CHROMIUM_PATH
-    ?? ['/opt/pw-browsers/chromium', '/opt/pw-browsers/chromium-1243/chrome-linux64/chrome'].find((path) => existsSync(path));
-  const browser = await chromium.launch({ executablePath });
+  const fonts = await shortsFonts();
+  const browser = await shortsBrowser();
   const results = [];
   try {
     const queue = [...signs];
