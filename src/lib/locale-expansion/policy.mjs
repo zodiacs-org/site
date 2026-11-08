@@ -1,0 +1,138 @@
+import publication from '../../data/locale-expansion-publication.json' with { type: 'json' };
+
+// One rule for the Astro pages, the route integration, the sitemap and the
+// postbuild checks, in the manner of scripts/natal-aspects-policy.mjs.
+// Pages pass nothing (the module reads the shell environment once); plain
+// Node callers may pass their own record and environment.
+//
+// A family is published in a locale only when its entry is released and
+// names a reviewer and a review date. Held families are not built at all.
+// PUBLIC_LOCALE_EXPANSION_PREVIEW=1, set in the shell (never a .env file),
+// builds held families as noindex pages outside the sitemaps and hreflang,
+// for review on a preview deploy. The flag cannot publish anything.
+
+export const LOCALE_EXPANSION_PREVIEW_FLAG = 'PUBLIC_LOCALE_EXPANSION_PREVIEW';
+
+const SIGNS = 'aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces';
+
+export const HOROSCOPE_PERIODS = ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2026', '2027'];
+
+/** English canonical path patterns, one per family. The first match wins. */
+export const EXPANSION_FAMILIES = [
+  ['horoscope-daily', new RegExp(`^/horoscopes/(?:(?:${SIGNS})/)?$`)],
+  ['today', /^\/today\/$/],
+  ...HOROSCOPE_PERIODS.map((period) => [`horoscope-${period}`, new RegExp(`^/horoscopes/(?:${SIGNS})/${period}/$`)]),
+  ['full-moon', /^\/full-moon\/\d{4}-\d{2}-\d{2}\/$/],
+  ['new-moon', /^\/new-moon\/\d{4}-\d{2}-\d{2}\/$/],
+  ['zodiac-dates', /^\/learn\/zodiac-dates\/$/],
+];
+
+export const EXPANSION_FAMILY_IDS = EXPANSION_FAMILIES.map(([id]) => id);
+
+export function familyForPath(canonicalPath) {
+  return EXPANSION_FAMILIES.find(([, pattern]) => pattern.test(canonicalPath))?.[0];
+}
+
+function entryPublished(entry) {
+  return Boolean(entry && entry.released === true && entry.reviewer && entry.reviewedAt);
+}
+
+function readEnv() {
+  return typeof process !== 'undefined' && process.env ? process.env : {};
+}
+
+/** Every (locale, family) the record names, with its state. */
+export function expansionState(record = publication, env = readEnv()) {
+  // "1" previews every held family; a comma list ("es,pt") previews those locales only.
+  const flag = String(env?.[LOCALE_EXPANSION_PREVIEW_FLAG] ?? '').trim();
+  const previewLocales = flag === '1' ? null : new Set(flag.split(',').map((value) => value.trim()).filter(Boolean));
+  const preview = flag === '1' || Boolean(previewLocales?.size);
+  const previews = (locale) => flag === '1' || Boolean(previewLocales?.has(locale));
+  const rows = [];
+  for (const [locale, families] of Object.entries(record.entries ?? {})) {
+    for (const [family, entry] of Object.entries(families)) {
+      if (!EXPANSION_FAMILY_IDS.includes(family)) {
+        throw new Error(`locale-expansion: unknown family "${family}" for ${locale}`);
+      }
+      if (entry.released === true && !entryPublished(entry)) {
+        throw new Error(`locale-expansion: ${locale}.${family} is released without a reviewer and review date`);
+      }
+      const published = entryPublished(entry);
+      rows.push({ locale, family, published, enabled: published || previews(locale) });
+    }
+  }
+  return { preview, rows };
+}
+
+const STATE = expansionState();
+
+export const localeExpansionPreview = STATE.preview;
+
+/** Locales whose copy of this family is published (indexable, in sitemaps and hreflang). */
+export function publishedExpansionLocales(family, state = STATE) {
+  return state.rows.filter((row) => row.family === family && row.published).map((row) => row.locale);
+}
+
+/** Locales whose copy of this family is built: published, or held under the preview flag. */
+export function enabledExpansionLocales(family, state = STATE) {
+  return state.rows.filter((row) => row.family === family && row.enabled).map((row) => row.locale);
+}
+
+export function isExpansionPublished(locale, family, state = STATE) {
+  return state.rows.some((row) => row.locale === locale && row.family === family && row.published);
+}
+
+export function isExpansionEnabled(locale, family, state = STATE) {
+  return state.rows.some((row) => row.locale === locale && row.family === family && row.enabled);
+}
+
+/** Extra discovery locales for an English canonical path, beyond the base route policy. */
+export function publishedLocalesForPath(canonicalPath, state = STATE) {
+  const family = familyForPath(canonicalPath);
+  return family ? publishedExpansionLocales(family, state) : [];
+}
+
+/** Extra renderable locales for an English canonical path (published or previewed). */
+export function enabledLocalesForPath(canonicalPath, state = STATE) {
+  const family = familyForPath(canonicalPath);
+  return family ? enabledExpansionLocales(family, state) : [];
+}
+
+/** True when this localized copy is built only for review: it must be noindex. */
+export function isHeldPreview(locale, canonicalPath, state = STATE) {
+  const family = familyForPath(canonicalPath);
+  if (!family) return false;
+  return isExpansionEnabled(locale, family, state) && !isExpansionPublished(locale, family, state);
+}
+
+export const LOCALE_EXPANSION_UPDATED = publication.updated;
+
+// ── Routes ──
+// The pages live outside src/pages (the Phase 1 freeze covers the locale
+// trees) and are injected only while at least one locale has the family
+// built; each entrypoint's getStaticPaths lists exactly the enabled locales.
+const ENTRY = './src/locale-pages';
+export const EXPANSION_ROUTES = [
+  { families: ['horoscope-daily'], pattern: '/[xlocale]/horoscopes/', entrypoint: `${ENTRY}/horoscope-hub.astro` },
+  { families: ['horoscope-daily'], pattern: '/[xlocale]/horoscopes/[sign]/', entrypoint: `${ENTRY}/horoscope-daily.astro` },
+  { families: HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`), pattern: '/[xlocale]/horoscopes/[sign]/[period]/', entrypoint: `${ENTRY}/horoscope-period.astro` },
+  { families: ['today'], pattern: '/[xlocale]/today/', entrypoint: `${ENTRY}/today.astro` },
+  { families: ['full-moon'], pattern: '/[xlocale]/full-moon/[date]/', entrypoint: `${ENTRY}/full-moon.astro` },
+  { families: ['new-moon'], pattern: '/[xlocale]/new-moon/[date]/', entrypoint: `${ENTRY}/new-moon.astro` },
+  { families: ['zodiac-dates'], pattern: '/[xlocale]/learn/zodiac-dates/', entrypoint: `${ENTRY}/zodiac-dates.astro` },
+];
+
+export function localeExpansionRoutes(state = STATE) {
+  return {
+    name: 'locale-expansion-publication',
+    hooks: {
+      'astro:config:setup': ({ injectRoute }) => {
+        for (const route of EXPANSION_ROUTES) {
+          if (route.families.some((family) => enabledExpansionLocales(family, state).length)) {
+            injectRoute({ pattern: route.pattern, entrypoint: route.entrypoint });
+          }
+        }
+      },
+    },
+  };
+}

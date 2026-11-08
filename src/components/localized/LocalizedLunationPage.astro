@@ -1,0 +1,157 @@
+---
+/**
+ * One full or new Moon in es, pt, fr, it or ru, from the same catalog record
+ * as the English page (/full-moon/{date}/). Built only when the publication
+ * record releases the family in this locale, or as a noindex preview.
+ */
+import Base from '../../layouts/Base.astro';
+import SignIcon from '../SignIcon.astro';
+import { localizePath, type Locale } from '../../lib/i18n';
+import { SIGNS, signBySlug, signName } from '../../lib/signs';
+import { solarHouse } from '../../lib/daily';
+import { degreeMinutes } from '../../lib/today-sky';
+import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { readingConfidence } from '../../ai-tools/reading-confidence';
+import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
+import { dayMonthYear, utcClock } from '../../lib/locale-expansion/horoscope/format';
+import { lunationCopy } from '../../lib/locale-expansion/lunation/modules';
+import { lunations } from '../../lib/locale-expansion/lunation/catalog';
+import type { ExpansionLocale } from '../../lib/locale-expansion/horoscope/types';
+import type { LunationKind } from '../../lib/locale-expansion/lunation/types';
+
+interface Props { locale: ExpansionLocale; kind: LunationKind; date: string }
+const { locale, kind, date } = Astro.props;
+const c = lunationCopy(locale);
+const all = lunations(kind);
+const index = all.findIndex((entry) => entry.date === date);
+if (index < 0) throw new Error(`No ${kind} Moon on ${date}`);
+const { facts, lastModified } = all[index];
+const segment = kind === 'full' ? 'full-moon' : 'new-moon';
+const englishPath = `/${segment}/${date}/`;
+const path = `/${locale}${englishPath}`;
+const canonicalUrl = `https://zodiacs.org${path}`;
+const local = (target: string) => localizePath(locale as Locale, target);
+const held = isHeldPreview(locale, englishPath);
+const sign = signBySlug(facts.sign);
+const neighbours = [
+  index > 0 ? { label: c.previous, entry: all[index - 1] } : null,
+  index < all.length - 1 ? { label: c.next, entry: all[index + 1] } : null,
+].filter(Boolean).map((item) => {
+  const english = `/${segment}/${item!.entry.date}/`;
+  const href = local(english);
+  return { label: item!.label, href, english: href === english, text: `${c.kindLabel(kind)} · ${dayMonthYear(locale, item!.entry.facts.at)}` };
+});
+const links = [
+  { href: local('/full-moon-calendar/'), label: c.calendarLink },
+  { href: local('/moon-phase/'), label: c.moonPhaseLink },
+  { href: local('/horoscopes/'), label: c.horoscopesLink },
+].map((link) => ({ ...link, english: !link.href.startsWith(`/${locale}/`) }));
+const notes = SIGNS.map((entry) => ({ slug: entry.slug, text: c.signNote(entry.slug, solarHouse(facts.sign, entry.slug), facts) }));
+const faq = c.faq(facts);
+const title = c.title(facts);
+const description = c.description(facts);
+const published = `${lastModified ?? date}T00:00:00.000Z`;
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    url: canonicalUrl,
+    datePublished: published,
+    dateModified: published,
+    author: EDITOR_AUTHOR,
+    publisher: { '@id': 'https://zodiacs.org/#org' },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+    inLanguage: locale,
+    about: { '@type': 'Thing', name: c.h1(facts) },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${local('/')}` },
+      { '@type': 'ListItem', position: 2, name: c.crumbsRoot, item: `https://zodiacs.org${local('/full-moon-calendar/')}` },
+      { '@type': 'ListItem', position: 3, name: c.h1(facts), item: canonicalUrl },
+    ],
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+---
+<Base
+  stableTypography
+  title={`${title} | Zodiacs.org`}
+  description={description}
+  path={path}
+  locale={locale as Locale}
+  type="article"
+  jsonLd={jsonLd}
+  noindex={held}
+>
+  <article class="lun" style={`--sign:${sign.hue}`}>
+    <header class="kwrap lun-hero">
+      <nav class="lun-crumbs" aria-label={c.crumbsRoot}>
+        <a href={local('/full-moon-calendar/')} hreflang={local('/full-moon-calendar/').startsWith(`/${locale}/`) ? undefined : 'en'}>{c.crumbsRoot}</a>
+        <span aria-hidden="true">/</span><span aria-current="page">{c.h1(facts)}</span>
+      </nav>
+      <span class="kicker">{dayMonthYear(locale, facts.at)}</span>
+      <h1 class="display"><SignIcon sign={facts.sign} size={36} /> {c.h1(facts)}</h1>
+      <p class="lun-lead">{c.lead(facts)}</p>
+      {facts.eclipse && <p class="lun-eclipse">{c.eclipseNote(facts)}</p>}
+      <dl class="lun-facts">
+        <div class="tile"><dt>{c.factLabels.exact}</dt><dd>{dayMonthYear(locale, facts.at)}, {utcClock(facts.at)}</dd></div>
+        <div class="tile"><dt>{c.factLabels.position}</dt><dd>{degreeMinutes(facts.degree)} {signName(sign, locale)}</dd></div>
+        <div class="tile"><dt>{c.factLabels.phase}</dt><dd>{c.kindLabel(kind)}</dd></div>
+      </dl>
+    </header>
+
+    <section class="kwrap lun-meaning">
+      {c.meaning(facts).map((paragraph) => <p>{paragraph}</p>)}
+      <p class="lun-confidence" data-reading-confidence><strong>{c.confidence(readingConfidence('sign'))}</strong>. {c.confidenceNote}</p>
+    </section>
+
+    <section class="kwrap lun-signs" aria-labelledby="lun-signs-heading">
+      <div class="section-head"><h2 id="lun-signs-heading" class="h-2">{c.signNotesHeading}</h2><p>{c.signNotesIntro}</p></div>
+      <ul>
+        {notes.map((note) => <li><SignIcon sign={note.slug} size={20} /> <span>{note.text}</span></li>)}
+      </ul>
+    </section>
+
+    <section class="kwrap lun-more">
+      <nav class="lun-neighbours">
+        {neighbours.map((item) => <a class="tile" href={item.href} hreflang={item.english ? 'en' : undefined}><small>{item.label}</small><span>{item.text}</span></a>)}
+      </nav>
+      <ul class="lun-links">
+        {links.map((link) => <li><a href={link.href} hreflang={link.english ? 'en' : undefined}>{link.label}</a></li>)}
+      </ul>
+      <p class="lun-method">{c.method}</p>
+    </section>
+
+    <section class="kwrap lun-faq" aria-labelledby="lun-faq-heading">
+      <h2 id="lun-faq-heading" class="h-2">{c.faqHeading}</h2>
+      {faq.map(({ q, a }) => <details><summary>{q}</summary><p>{a}</p></details>)}
+    </section>
+  </article>
+</Base>
+
+<style>
+  .lun { padding: 24px 0 64px; }
+  .lun-crumbs { display: flex; gap: 8px; font-size: 14px; color: var(--ink-2, #b9bfcc); margin-bottom: 12px; }
+  .lun-crumbs a { color: inherit; }
+  .lun-hero h1 { display: flex; align-items: center; gap: 12px; margin: 8px 0 16px; }
+  .lun-lead, .lun-meaning p { max-width: 68ch; line-height: 1.65; }
+  .lun-eclipse { max-width: 68ch; color: var(--sign); }
+  .lun-facts { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin: 24px 0; }
+  .lun-facts div { padding: 14px; }
+  .lun-facts dt { font-size: 13px; color: var(--ink-2, #b9bfcc); }
+  .lun-facts dd { margin: 4px 0 0; font-family: var(--font-mono); }
+  .lun-confidence, .lun-method { font-size: 14px; color: var(--ink-2, #b9bfcc); }
+  .lun-signs, .lun-more, .lun-faq { margin-top: 48px; }
+  .lun-signs ul { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .lun-signs li { display: flex; gap: 10px; align-items: flex-start; }
+  .lun-neighbours { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .lun-neighbours a { display: grid; gap: 4px; padding: 14px; color: inherit; text-decoration: none; }
+  .lun-links { display: flex; flex-wrap: wrap; gap: 16px; padding: 0; list-style: none; margin: 24px 0; }
+  .lun-faq details { border-top: 1px solid rgba(255,255,255,.1); padding: 12px 0; }
+</style>

@@ -1,0 +1,11 @@
+---
+import LocalizedZodiacDates from '../components/localized/LocalizedZodiacDates.astro';
+import { enabledExpansionLocales } from '../lib/locale-expansion/policy.mjs';
+import type { ExpansionLocale } from '../lib/locale-expansion/horoscope/types';
+
+export function getStaticPaths() {
+  return enabledExpansionLocales('zodiac-dates').map((xlocale) => ({ params: { xlocale } }));
+}
+const { xlocale } = Astro.params as { xlocale: ExpansionLocale };
+---
+<LocalizedZodiacDates locale={xlocale} />

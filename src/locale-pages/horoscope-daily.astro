@@ -1,0 +1,12 @@
+---
+import LocalizedHoroscope from '../components/localized/LocalizedHoroscope.astro';
+import { SIGN_SLUGS } from '../lib/signs';
+import { enabledExpansionLocales } from '../lib/locale-expansion/policy.mjs';
+
+export function getStaticPaths() {
+  return enabledExpansionLocales('horoscope-daily')
+    .flatMap((xlocale) => SIGN_SLUGS.map((sign) => ({ params: { xlocale, sign } })));
+}
+const { xlocale, sign } = Astro.params as { xlocale: 'fr' | 'it'; sign: string };
+---
+<LocalizedHoroscope locale={xlocale} signSlug={sign} />

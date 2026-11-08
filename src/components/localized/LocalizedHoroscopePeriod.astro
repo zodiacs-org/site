@@ -1,0 +1,248 @@
+---
+/**
+ * One sign's horoscope for a longer period (tomorrow, week, month, love,
+ * work, 2026, 2027) in es, pt, fr, it or ru. The copy is written per
+ * language from the computed facts (src/lib/locale-expansion/horoscope/);
+ * the receipts are the English program's, passage for passage.
+ *
+ * Built only when src/data/locale-expansion-publication.json releases the
+ * family in this locale, or under PUBLIC_LOCALE_EXPANSION_PREVIEW=1, where
+ * the page is noindex and outside the sitemaps.
+ */
+import Base from '../../layouts/Base.astro';
+import ArtFrame from '../ArtFrame.astro';
+import SignIcon from '../SignIcon.astro';
+import { localizePath } from '../../lib/i18n';
+import type { Locale } from '../../lib/i18n';
+import { SIGNS, signBySlug, signName } from '../../lib/signs';
+import { signArtCard } from '../../lib/og-art-cards.mjs';
+import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { pageReadingFromProgram } from '../../lib/horoscope-page-data';
+import { readingConfidence } from '../../ai-tools/reading-confidence';
+import type { HoroscopeSign } from '../../lib/horoscope-program-types';
+import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
+import { localizedMonthlyReading, localizedPeriodReading, program } from '../../lib/locale-expansion/horoscope/engine';
+import { expansionMonth, monthDates } from '../../lib/locale-expansion/horoscope/month';
+import { horoscopeModule } from '../../lib/locale-expansion/horoscope/modules';
+import { dayMonthYear } from '../../lib/locale-expansion/horoscope/format';
+import type { ExpansionLocale, Fact, PeriodSurface } from '../../lib/locale-expansion/horoscope/types';
+
+export type PeriodSlug = 'tomorrow' | 'weekly' | 'monthly' | 'love' | 'career' | '2026' | '2027';
+
+interface Props {
+  locale: ExpansionLocale;
+  signSlug: HoroscopeSign;
+  period: PeriodSlug;
+}
+
+const { locale, signSlug, period } = Astro.props;
+const mod = horoscopeModule(locale);
+const c = mod.chrome;
+const sign = signBySlug(signSlug);
+const name = signName(sign, locale);
+const local = (path: string) => localizePath(locale as Locale, path);
+
+const SURFACE: Record<Exclude<PeriodSlug, 'monthly'>, PeriodSurface> = {
+  tomorrow: 'tomorrow', weekly: 'weekly', love: 'love', career: 'career', '2026': 'yearly-2026', '2027': 'yearly-2027',
+};
+const ENGLISH_SURFACE = { tomorrow: 'tomorrow', weekly: 'weekly', love: 'love', career: 'career', '2026': 'year2026', '2027': 'year' } as const;
+
+let passages: Array<{ heading?: string; text: string }>;
+let facts: Fact[];
+let chromeCtx: { surface: PeriodSurface | 'monthly'; from: string; through: string; month?: string };
+let datePublished: string;
+let dateModified: string;
+if (period === 'monthly') {
+  const { month, transits } = expansionMonth();
+  const reading = localizedMonthlyReading(mod, signSlug, transits);
+  passages = reading.passages;
+  facts = reading.facts;
+  chromeCtx = { surface: 'monthly', from: `${month}-01`, through: `${month}-28`, month };
+  const dates = monthDates(month, signSlug);
+  datePublished = `${dates.published}T00:00:00.000Z`;
+  dateModified = `${dates.updated}T00:00:00.000Z`;
+} else {
+  const surface = SURFACE[period];
+  const reading = localizedPeriodReading(mod, signSlug, surface);
+  passages = reading.passages;
+  facts = reading.facts;
+  chromeCtx = { surface, from: reading.from, through: reading.through };
+  const english = pageReadingFromProgram(program, signSlug, ENGLISH_SURFACE[period]);
+  datePublished = english.datePublished;
+  dateModified = english.dateModified;
+}
+
+const englishPath = `/horoscopes/${sign.slug}/${period}/`;
+const path = `/${locale}/horoscopes/${sign.slug}/${period}/`;
+const canonicalUrl = `https://zodiacs.org${path}`;
+const held = isHeldPreview(locale, englishPath);
+const title = c.title(name, chromeCtx);
+const description = c.description(name, chromeCtx);
+const image = signArtCard(sign.slug, locale === 'ru' ? 'en' : locale);
+const confidence = readingConfidence('sign');
+const heroArtSizes = '(min-width: 761px) 74vw, calc(100vw - 16px)';
+
+// The switch: every period, in this language when built here, otherwise English with hreflang.
+const PERIODS = ['today', 'tomorrow', 'weekly', 'monthly', 'love', 'career', 'yearly-2026', 'yearly-2027'] as const;
+const periodPath = (key: (typeof PERIODS)[number]) => {
+  const slug = key === 'today' ? '' : key === 'yearly-2026' ? '2026/' : key === 'yearly-2027' ? '2027/' : `${key}/`;
+  return `/horoscopes/${sign.slug}/${slug}`;
+};
+const currentKey = period === '2026' ? 'yearly-2026' : period === '2027' ? 'yearly-2027' : period;
+const switchLinks = PERIODS.map((key) => {
+  const english = periodPath(key);
+  const href = local(english);
+  return { key, label: c.periodLabel[key], href, english: href === english, current: key === currentKey };
+});
+const otherSigns = SIGNS.map((entry) => {
+  const english = `/horoscopes/${entry.slug}/${period}/`;
+  const href = local(english);
+  return { slug: entry.slug, name: signName(entry, locale), href, english: href === english, current: entry.slug === sign.slug };
+});
+const more = [
+  { href: local(`/${sign.slug}/`), label: c.signGuide(name) },
+  { href: local('/compatibility/'), label: c.pairs(name) },
+  { href: local('/birth-chart/'), label: c.calculator },
+].map((link) => ({ ...link, english: !link.href.startsWith(`/${locale}/`) }));
+
+const faq = c.faq(name, chromeCtx.surface);
+const FAQ_HEADING: Record<ExpansionLocale, string> = {
+  es: 'Preguntas frecuentes', pt: 'Perguntas frequentes', fr: 'Questions fréquentes', it: 'Domande frequenti', ru: 'Частые вопросы',
+};
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    url: canonicalUrl,
+    datePublished,
+    dateModified,
+    author: EDITOR_AUTHOR,
+    publisher: { '@id': 'https://zodiacs.org/#org' },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+    inLanguage: locale,
+    image: `https://zodiacs.org${image}`,
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${local('/')}` },
+      { '@type': 'ListItem', position: 2, name: c.crumbs, item: `https://zodiacs.org${local('/horoscopes/')}` },
+      { '@type': 'ListItem', position: 3, name, item: `https://zodiacs.org${local(`/horoscopes/${sign.slug}/`)}` },
+      { '@type': 'ListItem', position: 4, name: c.periodLabel[currentKey], item: canonicalUrl },
+    ],
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+const kicker = chromeCtx.surface === 'monthly' || chromeCtx.surface.startsWith('yearly')
+  ? c.periodLabel[currentKey]
+  : chromeCtx.from === chromeCtx.through
+    ? dayMonthYear(locale, chromeCtx.from)
+    : `${dayMonthYear(locale, chromeCtx.from)} · ${dayMonthYear(locale, chromeCtx.through)}`;
+---
+<Base
+  stableTypography
+  title={`${title} | Zodiacs.org`}
+  description={description}
+  path={path}
+  locale={locale as Locale}
+  image={image}
+  imageAlt={c.h1(name, chromeCtx)}
+  type="article"
+  jsonLd={jsonLd}
+  noindex={held}
+>
+  <article class="hzp" style={`--sign:${sign.hue};--hue:${sign.hue}`}>
+    <header class="hzp-hero">
+      <ArtFrame sign={sign.slug} locale={locale === 'ru' ? 'en' : locale} class="hzp-hero__art" sizes={heroArtSizes} focus="50% 60%" spot="55% 56%" eager />
+      <nav class="hzp-crumbs" aria-label={c.crumbs}>
+        <a href={local('/horoscopes/')}>{c.crumbs}</a><span aria-hidden="true">/</span>
+        <a href={local(`/horoscopes/${sign.slug}/`)}>{name}</a><span aria-hidden="true">/</span>
+        <span aria-current="page">{c.periodLabel[currentKey]}</span>
+      </nav>
+      <div class="hzp-hero__body">
+        <span class="kicker">{kicker}</span>
+        <h1 class="display hzp-hero__title">{c.h1(name, chromeCtx)}</h1>
+        <p class="hzp-hero__cap">{description}</p>
+      </div>
+    </header>
+
+    <div class="kwrap">
+      <nav class="seg hzp-seg" aria-label={c.switchAria}>
+        {switchLinks.map((link) => link.english
+          ? <a href={link.href} hreflang="en">{link.label}</a>
+          : <a href={link.href} aria-current={link.current ? 'page' : undefined}>{link.label}</a>)}
+      </nav>
+    </div>
+
+    <section class="kwrap hzp-reading" aria-label={c.h1(name, chromeCtx)}>
+      {passages.map((passage) => (
+        <div class="hzp-passage">
+          {passage.heading && <h2 class="h-3">{passage.heading}</h2>}
+          <p>{passage.text}</p>
+        </div>
+      ))}
+      <p class="hzp-confidence" data-reading-confidence><strong>{c.confidence(confidence)}</strong>. {c.confidenceNote}</p>
+    </section>
+
+    <section class="kwrap hzp-sky" aria-labelledby="hzp-sky-heading">
+      <div class="section-head"><h2 id="hzp-sky-heading" class="h-2">{c.skyHeading}</h2><p>{c.skyIntro}</p></div>
+      <ul class="hzp-sky__list">
+        {facts.map((fact) => <li>{c.skyRow(fact)}</li>)}
+      </ul>
+      <p class="hzp-method">{c.method}</p>
+    </section>
+
+    <section class="kwrap hzp-more" aria-labelledby="hzp-more-heading">
+      <div class="section-head"><h2 id="hzp-more-heading" class="h-2">{c.moreHeading}</h2></div>
+      <ul class="hzp-more__list">
+        {more.map((link) => <li><a class="tile" href={link.href} hreflang={link.english ? 'en' : undefined}>{link.label}</a></li>)}
+      </ul>
+      <h3 class="h-3">{c.otherSigns}</h3>
+      <nav class="hzp-signs" aria-label={c.otherSigns}>
+        {otherSigns.map((entry) => (
+          <a href={entry.href} hreflang={entry.english ? 'en' : undefined} aria-current={entry.current ? 'page' : undefined}>
+            <SignIcon sign={entry.slug} size={20} /><span>{entry.name}</span>
+          </a>
+        ))}
+      </nav>
+    </section>
+
+    <section class="kwrap hzp-faq" aria-labelledby="hzp-faq-heading">
+      <h2 id="hzp-faq-heading" class="h-2">{FAQ_HEADING[locale]}</h2>
+      {faq.map(({ q, a }) => (
+        <details><summary>{q}</summary><p>{a}</p></details>
+      ))}
+    </section>
+  </article>
+</Base>
+
+<style>
+  .hzp { padding-bottom: 64px; }
+  .hzp-hero { position: relative; display: grid; gap: 16px; margin: 0 auto 24px; max-width: 1180px; padding: 0 16px; }
+  .hzp-crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; color: var(--ink-2, #b9bfcc); }
+  .hzp-crumbs a { color: inherit; }
+  .hzp-hero__title { margin: 8px 0 12px; }
+  .hzp-hero__cap { max-width: 62ch; color: var(--ink-2, #b9bfcc); }
+  .hzp-seg { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 32px; }
+  .hzp-seg a { padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); color: inherit; text-decoration: none; font-size: 14px; }
+  .hzp-seg a[aria-current="page"] { border-color: var(--sign); color: var(--sign); }
+  .hzp-reading { max-width: 72ch; }
+  .hzp-passage { margin-bottom: 20px; }
+  .hzp-passage h2 { margin: 28px 0 8px; font-family: var(--font-serif); }
+  .hzp-passage p { line-height: 1.65; }
+  .hzp-confidence { margin-top: 24px; font-size: 14px; color: var(--ink-2, #b9bfcc); }
+  .hzp-sky, .hzp-more, .hzp-faq { margin-top: 48px; }
+  .hzp-sky__list { list-style: none; padding: 0; display: grid; gap: 8px; font-family: var(--font-mono); font-size: 14px; }
+  .hzp-method { font-size: 14px; color: var(--ink-2, #b9bfcc); }
+  .hzp-more__list { list-style: none; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .hzp-more__list a { display: block; padding: 16px; color: inherit; text-decoration: none; }
+  .hzp-signs { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hzp-signs a { display: inline-flex; align-items: center; gap: 6px; color: inherit; text-decoration: none; font-size: 14px; }
+  .hzp-signs a[aria-current="page"] { color: var(--sign); }
+  .hzp-faq details { border-top: 1px solid rgba(255,255,255,.1); padding: 12px 0; }
+  .hzp-faq summary { cursor: pointer; }
+</style>

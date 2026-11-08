@@ -1,4 +1,5 @@
 import { SIGN_SLUGS } from '../signs';
+import { enabledLocalesForPath, publishedLocalesForPath } from '../locale-expansion/policy.mjs';
 import {
   DEFAULT_LOCALE,
   LOCALES,
@@ -197,8 +198,28 @@ function isTranslatedFamilyPath(path: string): boolean {
   return /^\/(?:full-moon-calendar|eclipses|mercury-retrograde|retrogrades|your-2027-sky|moon-journal|seasons)\/$/.test(path);
 }
 
+/**
+ * The 2026-11 locale expansion (src/data/locale-expansion-publication.json)
+ * adds locales family by family once each is released; held families add
+ * nothing. Server only, like the translated families above.
+ */
+function withExpansion(
+  canonical: string,
+  base: readonly Locale[] | undefined,
+  extra: (path: string) => readonly string[],
+): readonly Locale[] | undefined {
+  if (!import.meta.env.SSR) return base;
+  const added = extra(canonical).filter((locale) => !base?.includes(locale as Locale)) as Locale[];
+  if (!added.length) return base;
+  return [...(base ?? [DEFAULT_LOCALE]), ...added];
+}
+
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
+  return withExpansion(canonical, baseAvailableLocalesForPath(canonical), publishedLocalesForPath);
+}
+
+function baseAvailableLocalesForPath(canonical: string): readonly Locale[] | undefined {
   if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
     ?? (isLocalizedChineseZodiacPath(canonical) ? chineseZodiacLocales() : undefined)
@@ -209,6 +230,10 @@ export function availableLocalesForPath(path: string): readonly Locale[] | undef
 /** Internal rendering availability; never use this for discovery metadata. */
 export function renderableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
+  return withExpansion(canonical, baseRenderableLocalesForPath(canonical), enabledLocalesForPath);
+}
+
+function baseRenderableLocalesForPath(canonical: string): readonly Locale[] | undefined {
   if (CORE_LOCALIZED_PATHS.includes(canonical) || /^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) {
     return [...CORE_ROUTE_LOCALES, ...STAGED_CORE_ROUTE_LOCALES];
   }

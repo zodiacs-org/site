@@ -1,0 +1,131 @@
+---
+/**
+ * The zodiac dates table in es, pt, fr, it or ru: the same rows as
+ * /learn/zodiac-dates/ (src/lib/zodiac-dates.ts), with the words in the
+ * page's language. Built only when released, or as a noindex preview.
+ */
+import Base from '../../layouts/Base.astro';
+import SignIcon from '../SignIcon.astro';
+import '../../styles/rx-table.css';
+import { localizePath, type Locale } from '../../lib/i18n';
+import { elementLabel, modalityLabel, signDates, signName } from '../../lib/signs';
+import { planetLabel } from '../../lib/i18n/astrology';
+import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { INGRESS_YEARS, ZODIAC_DATE_ROWS, ingressIsoMinute } from '../../lib/zodiac-dates';
+import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
+import { dayMonth, utcClock } from '../../lib/locale-expansion/horoscope/format';
+import { zodiacDatesCopy } from '../../lib/locale-expansion/zodiac-dates/modules';
+import type { ExpansionLocale } from '../../lib/locale-expansion/horoscope/types';
+
+interface Props { locale: ExpansionLocale }
+const { locale } = Astro.props;
+const c = zodiacDatesCopy(locale);
+const [currentYear, nextYear] = INGRESS_YEARS;
+const path = `/${locale}/learn/zodiac-dates/`;
+const url = `https://zodiacs.org${path}`;
+const local = (target: string) => localizePath(locale as Locale, target);
+const PAGE_DATE = '2026-11-08';
+const title = c.title(currentYear, nextYear);
+const description = c.description(currentYear, nextYear);
+const faq = c.faq(currentYear);
+const linkTo = (target: string) => {
+  const href = local(target);
+  return { href, english: !href.startsWith(`/${locale}/`) };
+};
+const calculator = linkTo('/birth-chart/');
+const method = linkTo('/methodology/');
+const jsonLd = [
+  {
+    '@type': 'Article', headline: title, description, url, datePublished: PAGE_DATE, dateModified: PAGE_DATE,
+    author: EDITOR_AUTHOR, publisher: { '@id': 'https://zodiacs.org/#org' },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url }, inLanguage: locale,
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${local('/')}` },
+      { '@type': 'ListItem', position: 2, name: c.h1, item: url },
+    ],
+  },
+  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+];
+const when = (iso: string) => `${dayMonth(locale, iso)}, ${utcClock(iso)}`;
+---
+<Base
+  title={`${title} | Zodiacs.org`}
+  description={description}
+  path={path}
+  locale={locale as Locale}
+  type="article"
+  jsonLd={jsonLd}
+  noindex={isHeldPreview(locale, '/learn/zodiac-dates/')}
+>
+  <article class="zd container">
+    <header class="zd-hero">
+      <h1 class="display">{c.h1}</h1>
+      <p class="zd-lede">{c.lede(currentYear, nextYear)}</p>
+    </header>
+    <section aria-labelledby="zd-table">
+      <div class="section-head"><h2 id="zd-table">{c.tableHeading}</h2></div>
+      <div class="zd-scroll">
+        <table class="rx-table">
+          <caption>{c.tableCaption(currentYear, nextYear)}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{c.columns.sign}</th>
+              <th scope="col">{c.columns.dates}</th>
+              <th scope="col">{c.columns.longitude}</th>
+              <th scope="col">{c.columns.element}</th>
+              <th scope="col">{c.columns.modality}</th>
+              <th scope="col">{c.columns.ruler}</th>
+              <th scope="col">{c.columns.seasons}</th>
+              <th scope="col">{c.columns.ingress(currentYear)}</th>
+              <th scope="col">{c.columns.ingress(nextYear)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ZODIAC_DATE_ROWS.map((row) => (
+              <tr id={row.sign.slug} style={`--sign:${row.sign.hue}`}>
+                <th scope="row" data-label={c.columns.sign}>
+                  <a href={local(`/${row.sign.slug}/`)}><SignIcon sign={row.sign.slug} size={22} /> {signName(row.sign, locale)}</a>
+                </th>
+                <td data-label={c.columns.dates}>{signDates(row.sign, locale)}</td>
+                <td class="mono" data-label={c.columns.longitude}>{row.longitudeRange}</td>
+                <td data-label={c.columns.element}>{elementLabel(row.sign.element, locale)}</td>
+                <td data-label={c.columns.modality}>{modalityLabel(row.sign.modality, locale)}</td>
+                <td data-label={c.columns.ruler}>{planetLabel(locale, row.modernRuler)}</td>
+                <td data-label={c.columns.seasons}>{c.north}: {c.season[row.northernSeason]} · {c.south}: {c.season[row.southernSeason]}</td>
+                <td class="mono" data-label={c.columns.ingress(currentYear)}><time datetime={ingressIsoMinute(row.ingressUtc[currentYear])}>{when(row.ingressUtc[currentYear])}</time></td>
+                <td class="mono" data-label={c.columns.ingress(nextYear)}><time datetime={ingressIsoMinute(row.ingressUtc[nextYear])}>{when(row.ingressUtc[nextYear])}</time></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="zd-links">
+        <a href="/learn/zodiac-dates/zodiac-dates.csv" hreflang="en" download>{c.csvLink}</a>
+      </p>
+    </section>
+    <section class="zd-prose prose">
+      <h2>{c.explainerHeading}</h2>
+      {c.explainer.map((paragraph) => <p>{paragraph}</p>)}
+      <p>
+        <a href={calculator.href} hreflang={calculator.english ? 'en' : undefined}>{c.calculatorLink}</a> ·
+        <a href={method.href} hreflang={method.english ? 'en' : undefined}>{c.methodLink}</a>
+      </p>
+    </section>
+    <section class="zd-faq">
+      <h2 class="h-2">{c.faqHeading}</h2>
+      {faq.map(({ q, a }) => <details><summary>{q}</summary><p>{a}</p></details>)}
+    </section>
+  </article>
+</Base>
+
+<style>
+  .zd { padding: 24px 16px 64px; }
+  .zd-lede { max-width: 66ch; }
+  .zd-scroll { overflow-x: auto; }
+  .zd-links, .zd-prose, .zd-faq { margin-top: 32px; }
+  .zd-prose p { max-width: 68ch; }
+  .zd-faq details { border-top: 1px solid rgba(255,255,255,.1); padding: 12px 0; }
+</style>

@@ -1,0 +1,13 @@
+---
+import LocalizedLunationPage from '../components/localized/LocalizedLunationPage.astro';
+import { enabledExpansionLocales } from '../lib/locale-expansion/policy.mjs';
+import { lunations } from '../lib/locale-expansion/lunation/catalog';
+import type { ExpansionLocale } from '../lib/locale-expansion/horoscope/types';
+
+export function getStaticPaths() {
+  const dates = lunations('full').map((entry) => entry.date);
+  return enabledExpansionLocales('full-moon').flatMap((xlocale) => dates.map((date) => ({ params: { xlocale, date } })));
+}
+const { xlocale, date } = Astro.params as { xlocale: ExpansionLocale; date: string };
+---
+<LocalizedLunationPage locale={xlocale} kind="full" date={date} />

@@ -13,6 +13,7 @@
  * with hreflang="en" and the English-only cue.
  */
 import Base from '../../layouts/Base.astro';
+import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import ArtFrame from '../ArtFrame.astro';
 import AskGuideLine from '../AskGuideLine.astro';
 import DailyLocaleReading from '../DailyLocaleReading.astro';
@@ -33,18 +34,19 @@ import { localizePath, t } from '../../lib/i18n';
 import { signArtSrc, signArtSrcset } from '../../lib/sign-art';
 import { SIGNS, elementLabel, modalityLabel, signBySlug, signName } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
-import { localizedHoroscopeArtCard } from '../../lib/og-art-cards.mjs';
+import { localizedHoroscopeArtCard, signArtCard as localizedSignArtCard } from '../../lib/og-art-cards.mjs';
 import { degreeMinutes } from '../../lib/today-sky';
-import { LOCALIZED_HOROSCOPE_COPY } from './horoscope-copy';
+import { COPY_FOR_HOROSCOPE } from './today-copy-registry';
+import { named as namedBody } from './today-copy';
 
-type Locale = 'es' | 'pt';
+type Locale = 'es' | 'pt' | 'fr' | 'it';
 interface Props {
   locale: Locale;
   signSlug: string;
 }
 
 const { locale, signSlug } = Astro.props;
-const c = LOCALIZED_HOROSCOPE_COPY[locale];
+const c = COPY_FOR_HOROSCOPE[locale];
 const cue = englishOnlyCue(locale);
 const local = (path: string) => localizePath(locale, path);
 const daily = dailyData as Daily;
@@ -53,12 +55,10 @@ const name = signName(sign, locale);
 const reading = dailyReadingForLocale(sign.slug, daily, locale);
 const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 const planet = (body: string) => planetLabel(locale, body);
-const named = (body: string) => (body === 'Sun'
-  ? (locale === 'es' ? 'el Sol' : 'o Sol')
-  : body === 'Moon' ? (locale === 'es' ? 'la Luna' : 'a Lua') : planet(body));
+const named = (body: string) => namedBody(locale, body);
 const listWords = (items: string[]) => (items.length <= 1
   ? items.join('')
-  : `${items.slice(0, -1).join(', ')} ${locale === 'es' ? 'y' : 'e'} ${items.at(-1)}`);
+  : `${items.slice(0, -1).join(', ')} ${({ es: 'y', pt: 'e', fr: 'et', it: 'e' } as const)[locale]} ${items.at(-1)}`);
 
 const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
@@ -107,15 +107,24 @@ const focusCss = [
 const moon = daily.bodies.find((body) => body.body === 'Moon');
 const moonHouse = moon ? ((SIGNS.findIndex((entry) => entry.slug === moon.sign) - signIndex + 12) % 12) + 1 : null;
 const faq = c.faq(name);
+// Week and month in this language once those editions are built here; otherwise the English pages, with the cue.
+const periodLinks = [
+  { label: c.week, english: `/horoscopes/${sign.slug}/weekly/` },
+  { label: c.month, english: `/horoscopes/${sign.slug}/monthly/` },
+].map((link) => {
+  const href = local(link.english);
+  return { label: link.label, href, english: href === link.english };
+});
 ---
 <Base
+  noindex={isHeldPreview(locale, `/horoscopes/${sign.slug}/`)}
   stableTypography
   title={c.title(name, titleDate)}
   description={c.description(name, dateLabel, c.notes(reading.lines.length))}
   path={path}
   locale={locale}
   editionDate={daily.date}
-  image={localizedHoroscopeArtCard(sign.slug, locale)}
+  image={locale === 'es' || locale === 'pt' ? localizedHoroscopeArtCard(sign.slug, locale) : localizedSignArtCard(sign.slug, locale)}
   imageAlt={c.imageAlt(name)}
 >
   <link
@@ -152,10 +161,11 @@ const faq = c.faq(name);
       <div class="hzl-periods">
         <nav class="seg hzl-seg" aria-label={c.periodsAria(name)}>
           <a href={path} aria-current="page"><span data-edition-current-only>{c.todayWord}</span><span data-edition-dated-only>{editionShort}</span></a>
-          <a href={`/horoscopes/${sign.slug}/weekly/`} hreflang="en" title={cue?.aria} aria-label={`${c.week}. ${cue?.aria}`}>{c.week}</a>
-          <a href={`/horoscopes/${sign.slug}/monthly/`} hreflang="en" title={cue?.aria} aria-label={`${c.month}. ${cue?.aria}`}>{c.month}</a>
+          {periodLinks.map((link) => link.english
+            ? <a href={link.href} hreflang="en" title={cue?.aria} aria-label={`${link.label}. ${cue?.aria}`}>{link.label}</a>
+            : <a href={link.href}>{link.label}</a>)}
         </nav>
-        <span class="hzl-periods__note">{c.periodsNote}</span>
+        {periodLinks.some((link) => link.english) && <span class="hzl-periods__note">{c.periodsNote}</span>}
       </div>
       <nav class="hzl-signrail" aria-label={c.railLabel}>
         <span class="hzl-signrail__label">{c.railLabel}</span>
