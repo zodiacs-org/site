@@ -67,7 +67,8 @@ proportion. No ephemeris is used to excuse either disagreement.
   recorded agreed with the first reading. Where the author printed the working,
   they redid the author's own arithmetic; two candidates failed it (F2-12,
   F3-17). 30 candidates have a computed T; the others are excluded on a rule
-  that needs none, or on a reading that leaves T unbounded.
+  that needs none, by a term that alone exceeds the cap, or on readings that
+  leave T unbounded.
 - **Exclusions.** 111 candidates are excluded, each with its rule and reason:
   58 by the cap (T over 600 s solar, 900 s lunar step, 1,500 s lunar
   whole-chain, mostly births printed to the hour or radicals used to the
@@ -84,7 +85,7 @@ proportion. No ephemeris is used to excuse either disagreement.
   in results.json) was pushed at 14:12:28 ICT on 8 November 2026, after the
   privacy search (G1) and the full pre-push list (G2). The first run followed at
   14:12:39 ICT, on 09550244: the freeze with main merged in for the day's
-  edition, which changed no engine or package file.
+  edition, which changed no engine, vendored archive or root package file.
 - **The re-read.** Two fresh readers read every scored fixture again from
   04:00 to 04:25 ICT on 8 November: after the first freeze commit (425bee77,
   never pushed), before the final freeze and before the run, so they could see
@@ -99,8 +100,7 @@ case. Each was made before the freeze and before any engine or ephemeris
 computed a return for any candidate. They are D1 to D18 in holdout.json.
 
 Three are **departures** from the preregistration's text, disclosed here.
-The first two are in holdout.json; the third concerns the re-read, after the
-freeze:
+The first two are in holdout.json; the third is the re-read's timing:
 
 - **D11 (W6, S6).** An individual's upload of a work still in copyright to
   archive.org's community collections is not counted as a public scan. This
@@ -116,7 +116,26 @@ freeze:
   again after the run. It was read again before the run, which is stricter on
   blindness and changed nothing.
 
-None was adopted after a result was seen. The owner ratified all three on 8 November 2026, so the unit is recorded accepted rather than validated.
+None was adopted after a result was seen. The programme holds a departure as
+validated until the owner ratifies it, so the owner was asked.
+
+### The owner's ratification, 8 November 2026
+
+The owner was shown this summary with the question:
+
+> The returns test passed (11 of 13 agree), and the review confirms the run
+> reproduces. By precedent, 'accepted' needs your ratification of three
+> pre-run departures: D11 drops 31 community-upload records, D17 read 41
+> exclusions once, and the blind re-read ran before the run. Nothing is
+> merged.
+
+The question was "Do you ratify the returns unit's three disclosed
+departures, so it is recorded accepted?", with the answers "Yes, ratify" and
+"No, keep validated". It was shown again, unchanged, after the gates on the
+run commit passed, with the summary "The returns unit's status still waits on
+your yes or no to ratifying its three pre-run departures (D11, D17 and the
+early blind re-read)." The owner answered "Yes, ratify" on 8 November 2026,
+before 15:28 ICT, so the unit is recorded accepted rather than validated.
 
 ## The privacy search (G1)
 
