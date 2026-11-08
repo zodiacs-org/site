@@ -11,11 +11,12 @@ import { eventArticleDateFailures } from './event-article-dates.mjs';
 import {
   DEVELOPER_PAGES, SKY_DATA_FOLDERS, developerExpectations, developerStructuredDataErrors, servesUrlIn, skyDataFiles,
 } from './developer-structured-data-checks.mjs';
+import { readEventsPublication } from './lib/events-publications.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(repo, 'dist');
 const SITE_ORIGIN = 'https://zodiacs.org';
-const eventPublication = JSON.parse(await readFile(resolve(repo, 'src/data/events-publication.json'), 'utf8'));
+const eventPublication = await readEventsPublication(repo);
 const publishedEvents = new Map(eventPublication.pages.map((event) => [event.path, event]));
 const SIGN_SLUGS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',

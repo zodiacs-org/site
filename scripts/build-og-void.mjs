@@ -32,6 +32,7 @@
  *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
  *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese
  *   npm run data:og -- --only-year-sky-card # Your 2027 sky's card (year-sky/v1, JPEG)
+ *   npm run data:og -- --only-events      # the events hub card, and a card for each published event page that has none
  *   npm run data:og -- --review-people-identities # reviewed identity cards, artifacts only
  *
  * Deterministic and offline: fonts and disc art are inlined as data:
@@ -49,6 +50,7 @@ import { tiltedRingSvg } from '../src/lib/brand-lockup.mjs';
 import {
   fileSha256, peopleIdentityReviewOptions, peopleFactReviewOptions, productionOgHashes, reviewedPeople, reviewedFactPeople,
 } from './people-identity-og-review.mjs';
+import { readEventsPublication } from './lib/events-publications.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 // Parse before any output directory or browser is created. Review mode never
@@ -116,9 +118,21 @@ const {
   RU_OG_ROUTE_CARDS,
   RU_OG_ROUTES,
 } = await import(pathToFileURL(resolve(root, 'src/strings/seo.ru.mjs')).href);
-const EVENTS_PUBLICATION = JSON.parse(
-  await readFile(resolve(root, 'src/data/events-publication.json'), 'utf8'),
-);
+const EVENTS_PUBLICATION = await readEventsPublication(root);
+// The planets' ingress, station and aspect times as the event pages print
+// them: NASA JPL Horizons' (src/lib/nasa-instants.ts), keyed by the engine
+// instant a page's anchor keeps.
+const NASA_EVENTS = JSON.parse(await readFile(resolve(root, 'src/data/nasa-event-instants.json'), 'utf8'));
+const NASA_BY_ENGINE = new Map();
+for (const row of NASA_EVENTS.ingresses) for (const at of row.engine) NASA_BY_ENGINE.set(`ingress|${row.body}|${at}`, row.nasa);
+for (const row of NASA_EVENTS.stations) for (const at of row.engine) NASA_BY_ENGINE.set(`retrograde|${row.body}|${at}`, row.nasa);
+for (const row of NASA_EVENTS.aspects) for (const at of row.engine) NASA_BY_ENGINE.set(`aspect|${row.a}|${row.b}|${row.type}|${at}`, row.nasa);
+/** The instant an event page prints: NASA's for a planet's ingress, station or aspect, else the anchor. */
+function printedInstant(event) {
+  const [a, b] = event.bodies ?? [];
+  const key = event.family === 'aspect' ? `aspect|${a}|${b}|${event.subtype}|${event.anchor}` : `${event.family}|${a}|${event.anchor}`;
+  return NASA_BY_ENGINE.get(key) ?? event.anchor;
+}
 const peopleSource = await readFile(resolve(root, 'src/data/people.json'), 'utf8');
 const PEOPLE_PILOT = JSON.parse(peopleSource).people;
 const identityReviewPeople = peopleFactReview ? reviewedFactPeople(PEOPLE_PILOT)
@@ -862,7 +876,7 @@ function eventHubCard() {
     <div class="left" style="max-width: 720px;">
       <span class="kicker">The sky, dated</span>
       <div class="display" style="font-size: 84px;">Sky events</div>
-      <div class="sub" style="font-size: 25px; color: ${MUTED}; max-width: 690px;">Full moons, eclipses, retrogrades, sign changes, and rare alignments through 2027.</div>
+      <div class="sub" style="font-size: 25px; color: ${MUTED}; max-width: 690px;">Full moons, eclipses, retrogrades, sign changes, and rare alignments through 2030.</div>
     </div>
     ${wheelMark(250, 22)}
   </div>`;
@@ -872,14 +886,14 @@ function eventHubCard() {
 function eventCard(event) {
   const family = EVENT_FAMILY[event.family] ?? { label: 'Sky event', glyph: '✦' };
   const sign = SIGNS.find((candidate) => candidate.slug === event.signs?.[0]);
-  const instant = new Date(event.anchor);
+  const instant = new Date(printedInstant(event));
   const date = new Intl.DateTimeFormat('en-US', {
     month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
   }).format(instant);
   const clock = instant.toLocaleTimeString('en-US', {
     hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC',
   });
-  const cardTitle = event.title.replace(/(?:,|\s+[—–])\s+.*\b20(?:26|27)\s*$/, '');
+  const cardTitle = event.title.replace(/(?:,|\s+[—–])\s+.*\b20(?:2[6-9]|30)\s*$/, '');
   const title = escapeHtml(cardTitle);
   const size = cardTitle.length > 62 ? 52 : cardTitle.length > 46 ? 58 : cardTitle.length > 32 ? 66 : 74;
   const accent = sign
@@ -1417,6 +1431,24 @@ const PLANET_GLYPHS = {
   jupiter: '♃', saturn: '♄', uranus: '♅', neptune: '♆', pluto: '♇',
 };
 
+// The events hub card, the cards of published event pages that have none
+// yet, and the cards whose printed minute moves to NASA's. The other cards
+// already published keep their bytes.
+if (process.argv.includes('--only-events')) {
+  console.log('Rendering the events hub card and the missing or retimed event cards…');
+  await shoot(eventHubCard(), 'events/index.png');
+  const minute = (iso) => new Date(iso).toISOString().slice(0, 16);
+  for (const event of EVENTS_PUBLICATION.pages) {
+    const exists = existsSync(resolve(OUT, `events/${event.id}.png`));
+    if (exists && minute(printedInstant(event)) === minute(event.anchor)) continue;
+    await shoot(eventCard(event), `events/${event.id}.png`);
+  }
+  await writeEnglishManifest();
+  console.log(`Done: ${count} card(s), ${(total / 1024).toFixed(0)}KB.`);
+  await browser.close();
+  process.exit(0);
+}
+
 if (onlyInvite) {
   console.log('Rendering the private compatibility-invitation card…');
   await shoot(compatibilityInviteCard(), 'tool/compatibility-invite.png');
@@ -1580,7 +1612,7 @@ await browser.close();
 
 const mb = total / 1024 / 1024;
 console.log(`Done — ${count} cards, ${mb.toFixed(2)}MB → public/assets/og/v2/`);
-if (mb > 25) {
-  console.error('ABORT: generated v2 card set exceeds the 25MB budget — tighten the palette and rerun.');
+if (mb > 28) {
+  console.error('ABORT: generated v2 card set exceeds the 28MB budget — tighten the palette and rerun.');
   process.exit(1);
 }

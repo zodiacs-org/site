@@ -44,6 +44,7 @@ import {
   expectedHreflangsForPath,
   hreflangRouteFamily,
 } from './i18n-hreflang-policy.mjs';
+import { readEventsPublication } from './lib/events-publications.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -86,9 +87,7 @@ const PHASE1_HOROSCOPE_PATHS = ZODIAC_SIGN_SLUGS.flatMap((sign) => [
   `/horoscopes/${sign}/2027/`,
 ]);
 const PHASE1_READER_PATHS = new Set(['/today/', '/horoscopes/', ...PHASE1_HOROSCOPE_PATHS]);
-const eventsPublication = JSON.parse(
-  await readFile(resolve(repo, 'src/data/events-publication.json'), 'utf8'),
-);
+const eventsPublication = await readEventsPublication(repo);
 const publishedEventPaths = new Set([
   ...(eventsPublication.hub?.indexEligible ? [eventsPublication.hub.path] : []),
   ...(eventsPublication.pages ?? []).map((event) => event.path),
