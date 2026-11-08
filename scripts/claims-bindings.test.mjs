@@ -231,7 +231,7 @@ describe('how event times are checked, on the methodology page', () => {
     const report = read('docs/accuracy-audit-2026-11/REPORT.md');
     const counts = /\*\*Built pages \(what the site says\)\*\*: (\d+) claims checked, (\d+) match/u.exec(report);
     const format = (n) => Number(n).toLocaleString('en-US');
-    expect(page()).toContain(`we checked ${format(counts[1])} statements on the built pages against NASA, from sign dates to eclipse times, and ${format(counts[2])} agreed`);
+    expect(page()).toContain(`we checked ${format(counts[1])} statements on the built English pages against NASA, from sign dates to eclipse times, and ${format(counts[2])} agreed`);
   });
 });
 

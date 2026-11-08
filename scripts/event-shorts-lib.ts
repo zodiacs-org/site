@@ -98,7 +98,7 @@ export function eventKicker(page: EventPage): string {
 export function eventTimeSentence(page: EventPage): string {
   const clock = eventClock(page.anchor);
   switch (page.family) {
-    case 'eclipse': return `Greatest eclipse at ${clock}.`;
+    case 'eclipse': return `Peak at ${clock}.`;
     case 'retrograde': return `${page.bodies?.[0]} stations retrograde at ${clock}.`;
     default: return `Exact at ${clock}.`;
   }
@@ -175,8 +175,10 @@ export function eventShorts({ from = new Date().toISOString(), days = 31, only }
     const start = Date.parse(from);
     if (Number.isNaN(start)) throw new Error(`Not a date: ${from}`);
     const end = start + days * 86_400_000;
-    pages = refinePublishedAnchors(PAGES).filter((page) => {
-      const at = Date.parse(page.anchor);
+    // Filter on the printed (NASA) time, and hand eventShort the page as published.
+    const printed = refinePublishedAnchors(PAGES);
+    pages = PAGES.filter((_, index) => {
+      const at = Date.parse(printed[index].anchor);
       return at >= start && at < end;
     });
   }

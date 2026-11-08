@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import publication from '../src/data/events-publication.json';
+import { eventClock } from '../src/lib/events/format';
+import { eventsCatalog } from '../src/lib/events/catalog';
 import { nasaStationAt } from '../src/lib/nasa-instants';
 import { SHORTS_TEXT, hasDash } from './daily-shorts-lib.mjs';
 import { EVENT_SHORTS_FOOTER, INVISIBLE_NOTE, eventShort, eventShorts } from './event-shorts-lib';
@@ -44,6 +46,15 @@ describe('the sky event short videos', () => {
     const short = byId('mars-retrograde-2027-01-10');
     expect(short.at).toBe(nasa);
     expect(short.sentences.at(-1)!.text).toBe(`Mars stations retrograde at ${nasa.slice(11, 16)} UTC.`);
+  });
+
+  it('gives every event the time its page prints', () => {
+    const catalog = eventsCatalog();
+    for (const short of all) {
+      const facts = catalog.byId.get(short.id)!.facts;
+      const printed = facts.family === 'retrograde' ? facts.start! : facts.at!;
+      expect(short.sentences.at(-1)!.text, short.id).toContain(eventClock(printed));
+    }
   });
 
   it('says the 18 July 2027 eclipse cannot be seen, and no other', () => {
