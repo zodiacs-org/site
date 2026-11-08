@@ -81,8 +81,9 @@ no astrology template is in the marketplace. The tested Bot was renamed
 Zodiacs Astrologer and shared with Share, then Create a copy. It built the
 template without the conversation or any birth details, and published it.
 
-- Public link: https://x.ai/bot/e0DWoivlUkNRrhEcvBX8G, titled "Zodiacs
-  Astrologer by Dias".
+- Public link: https://x.ai/bot/e0DWoivlUkNRrhEcvBX8G, first titled
+  "Zodiacs Astrologer by Dias", and "Zodiacs Astrologer by zodiacs.org" since
+  Dias asked for that name (see below).
 - Description, written by the Bot from its rules: "Read birth charts,
   horoscopes, personal transits and the sky with Zodiacs. Every calculation
   comes from Zodiacs, with clear interpretations and links to explore
@@ -93,7 +94,11 @@ template without the conversation or any birth details, and published it.
   check, A day that matters, and Zodiacs getting started, which the Bot added
   to tell a new owner how to connect the server. There are no routines, no
   birth details and no conversation.
-- The page shows the account's first name after "by". "By Zodiacs" would need
-  the Grok account's display name changed, which is Dias's call.
+- The page shows the account's first name after "by". At Dias's request
+  ("it should be zodiacs.org", then "Yes, change it"), the account's first
+  name was changed from Dias to zodiacs.org in grok.com's dashboard (Settings,
+  Profile, Edit) after he signed in. The page then read "by zodiacs.org"
+  without the template being updated. The same account name greets him in
+  Grok and Grok Bot.
 - Turned off with Share, then Delete Template. Changes go out with Share,
   then Update template.
