@@ -8,7 +8,7 @@
  */
 import type { ExpansionLocale } from './horoscope/types';
 
-export const DASHES = /[‒-―]/u;
+export const DASHES = /[\u2012-\u2015]/u;
 
 export const BANNED: Record<ExpansionLocale, RegExp> = {
   es: /\b(invers\w*|apuesta\w*|lotería|garantí\w*|cripto\w*|tokens?|mercad\w*|bolsa de valores|diagnóstic\w*|enfermedad\w*|curar\w*)\b/iu,
