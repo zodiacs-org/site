@@ -1,8 +1,0 @@
----
-// Generated shape: one thin entry per locale and route (see ../paths.ts).
-import LocalizedHoroscope from '../../components/localized/LocalizedHoroscope.astro';
-import { dailyPaths } from '../paths';
-export function getStaticPaths() { return dailyPaths('ru'); }
-const { sign } = Astro.params as { sign: string };
----
-<LocalizedHoroscope locale="ru" signSlug={sign} />

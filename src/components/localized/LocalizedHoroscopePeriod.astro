@@ -173,7 +173,7 @@ const kicker = chromeCtx.surface === 'monthly' || chromeCtx.surface.startsWith('
     </header>
 
     <div class="kwrap">
-      <nav class="seg hzp-seg" aria-label={c.switchAria}>
+      <nav class="hzp-seg" aria-label={c.switchAria}>
         {switchLinks.map((link) => link.english
           ? <a href={link.href} hreflang="en">{link.label}</a>
           : <a href={link.href} aria-current={link.current ? 'page' : undefined}>{link.label}</a>)}
@@ -236,7 +236,8 @@ const kicker = chromeCtx.surface === 'monthly' || chromeCtx.surface.startsWith('
   .hzp-hero__cap { max-width: 62ch; color: var(--ink-2, #b9bfcc); }
   .hzp-seg { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 32px; }
   .hzp-seg a { padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); color: inherit; text-decoration: none; font-size: 14px; }
-  .hzp-seg a[aria-current="page"] { border-color: var(--sign); color: var(--sign); }
+  .hzp-seg a:hover { border-color: rgba(255,255,255,.3); }
+  .hzp-seg a[aria-current="page"] { border-color: var(--sign); color: var(--sign); background: rgba(255,255,255,.04); }
   .hzp-reading { max-width: 72ch; }
   .hzp-passage { margin-bottom: 20px; }
   .hzp-passage h2 { margin: 28px 0 8px; font-family: var(--font-serif); }
