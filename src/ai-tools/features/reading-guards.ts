@@ -6,11 +6,31 @@
  * ../reading-confidence.ts. Pure. Nothing here is stored or logged.
  */
 
-/** A birth date is under 18 on `today` (both YYYY-MM-DD) when the 18th birthday has not arrived. */
+/**
+ * A birth date is under `years` on `today` (both YYYY-MM-DD) when that birthday has not arrived; a date after today
+ * is too. The cutoff is today's month and day `years` earlier, compared as text, so on 29 February it stays
+ * 29 February instead of rolling over to 1 March: someone born on 1 March is not yet a year older that day.
+ */
+export function isUnderAge(birthDate: string, today: string, years: number): boolean {
+  return birthDate > `${String(Number(today.slice(0, 4)) - years).padStart(4, '0')}${today.slice(4)}`;
+}
+
+/**
+ * A birth date is under 18 on `today` (both YYYY-MM-DD) when the 18th birthday has not arrived. Kept exactly as it
+ * was before the under-13 rule: its cutoff is a Date, so on 29 February it rolls over to 1 March.
+ */
 export function isUnder18(birthDate: string, today: string): boolean {
   const [year, month, day] = today.split('-').map(Number);
   const cutoff = new Date(Date.UTC(year - 18, month - 1, day));
   return birthDate > cutoff.toISOString().slice(0, 10);
+}
+
+/**
+ * A birth date is under 13 on `today` (both YYYY-MM-DD) when the 13th birthday has not arrived, or the date has not
+ * come yet. Zodiacs is not directed at children under 13, so the hosted tools refuse such a date (../tools.ts).
+ */
+export function isUnder13(birthDate: string, today: string): boolean {
+  return isUnderAge(birthDate, today, 13);
 }
 
 /** The sixth-house themes, without a health reading, so a line does not become medical advice. */

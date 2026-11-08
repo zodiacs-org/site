@@ -1,9 +1,22 @@
 # Zodiacs 0.6.0 for the OpenAI portal
 
-Prepared 2 November 2026 on branch `feat/mcp-consumer-coverage`. Nothing has
-been uploaded, rescanned, attested or submitted. Each portal step needs
-Dias's separate yes, and Dias confirms every attestation. The Claude side is
+Prepared 2 November 2026 on branch `feat/mcp-consumer-coverage`, when nothing
+had been uploaded, rescanned, attested or submitted; the dated sections below,
+newest first, record what has been since. Each portal step needs Dias's
+separate yes, and Dias confirms every attestation. The Claude side is
 in `claude-directory/RESYNC-0.6.0.md`.
+
+## Children under 13, 8 November 2026
+
+Dias submitted 0.6.6 on 7 November and it is in review. On 8 November, PR
+#915 made the hosted server, still 0.6.6, refuse any call that carries a
+birth date less than 13 years before today, or one still to come, and a
+birthday card for a day in those 13 years, because an assistant that was asked
+for a card for a baby had called the baby's arrival a birthday
+(`claude-directory/RESYNC-0.6.0.md`). No
+tool definition, About, starter prompt or review case changes, and the 0.6.6
+ZIP keeps its bytes, so nothing is uploaded or resubmitted. If the review asks
+about children's details again, this is the answer to give.
 
 ## 0.6.6 update, 7 November 2026
 

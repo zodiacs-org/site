@@ -26,7 +26,8 @@ import { explainAstrology } from './features/explain';
 import { searchSkyEvents } from './features/sky-events';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
-import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, inputSchemaFor, type AiToolName, type CoverageToolName, type PlaceToolName, type SkyEventsToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, UNDER_13_REFUSAL, inputSchemaFor, type AiToolName, type CoverageToolName, type PlaceToolName, type SkyEventsToolName } from './contracts';
+import { isUnder13 } from './features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
@@ -204,6 +205,55 @@ const optionalClock = (utc: string | null, zone: string | null) => (utc ? clockT
 /** A birthday, a baby's arrival, or a coming of age: the date can be a birth date, so it stays out of every link. */
 export const BIRTH_OCCASIONS: ReadonlySet<string> = new Set(['birthday', 'baby', 'coming-of-age']);
 
+const CIVIL_DATE = /^\d{4}-\d{2}-\d{2}$/u;
+const fieldOf = (value: unknown, key: string): unknown => (value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>)[key] : undefined);
+
+/** The furthest any clock runs ahead of UTC (UTC+14), so no place has reached a later date. */
+const LATEST_CLOCK_MS = 14 * 3_600_000;
+
+/**
+ * Today's date where a card's day is kept: in the time zone the call gives, else the one the assistant shares
+ * (ChatGPT's user location), else the latest date anywhere. An unknown zone falls through to the next.
+ */
+function cardToday(now: Date, zones: readonly unknown[]): string {
+  for (const zone of zones) if (typeof zone === 'string') { try { return dateInZone(now, zone); } catch { /* try the next */ } }
+  return new Date(now.getTime() + LATEST_CLOCK_MS).toISOString().slice(0, 10);
+}
+
+/**
+ * The birth dates a call carries: its birthDate, both people's in a comparison, and the days a birthday card can be
+ * for once they have come, since a birthday on such a day can be a birth date: the card's date, and the latest day of
+ * a best-day window that has begun, because the card then goes to a day in it. Whether a day has come is read on the
+ * card's own clock, else the assistant's when the card names no place, else the clock furthest ahead, so a birthday
+ * still to come is a day being planned.
+ * A Chinese zodiac year alone, a birthday's month and day, and the dates of every other tool are not birth dates.
+ * Read only to decide on the refusal below, never echoed, stored or logged.
+ */
+export function birthDatesIn(tool: AiToolName, args: unknown, now: Date, hostZone?: string): string[] {
+  let dates: unknown[];
+  if (tool === 'get_compatibility') dates = [fieldOf(fieldOf(args, 'a'), 'birthDate'), fieldOf(fieldOf(args, 'b'), 'birthDate')];
+  else if (tool !== 'get_occasion_sky') dates = [fieldOf(args, 'birthDate')];
+  else if (fieldOf(args, 'occasion') !== 'birthday') dates = [];
+  else {
+    // A place named without a zone may lie far from the person, so their shared zone is not the card's clock then.
+    const today = cardToday(now, [fieldOf(args, 'zone'), fieldOf(args, 'place') === undefined ? hostZone : undefined]);
+    const [date, from, to] = [fieldOf(args, 'date'), fieldOf(args, 'searchFrom'), fieldOf(args, 'searchTo')];
+    const windowDay = typeof from === 'string' && typeof to === 'string' && from <= today ? (to < today ? to : today) : undefined;
+    dates = [date, windowDay].filter((day) => typeof day === 'string' && day <= today);
+  }
+  return dates.filter((date): date is string => typeof date === 'string' && CIVIL_DATE.test(date));
+}
+
+/**
+ * The hosted tools' refusal of a child's birth date, before anything is worked out: Zodiacs is not directed at
+ * children under 13, so a call that carries a birth date less than 13 years before today, or one still to come, gets
+ * the fixed refusal and no card, chart or reading. Null for every other call.
+ */
+export function childBirthDateRefusal(tool: AiToolName, args: unknown, now: Date, hostZone?: string) {
+  const today = now.toISOString().slice(0, 10);
+  return birthDatesIn(tool, args, now, hostZone).some((date) => isUnder13(date, today)) ? failure(tool, 'invalid-request', UNDER_13_REFUSAL) : null;
+}
+
 /**
  * The card page with its details after the #, as the site's own Copy link makes it. The page reads a
  * zone only with the place's coordinates, so a zone without them gets no link rather than one that
@@ -317,9 +367,9 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => (ALL_AI_TOOL_NAMES as readonly string[]).includes(name)), limits: LIMITS, conventions: statements.conventions, coverage: { ...statements.coverage, tools: offered.join(', '), eclipses: skyEvents ? 'search_sky_events lists the eclipses from 2026 to 2030; get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations.' : dependencies.coverage ? 'get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations.' : 'get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.', aspects: dependencies.coverage ? 'get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects.' : 'get_upcoming_events does not search aspects.', ...skyEventsCoverage }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', eclipseLine, dependencies.occasions ? 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person’s own chart.' : 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
         if (dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
-          capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details.';
+          capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details. Zodiacs is not directed at children under 13: its tools make no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years.';
           capabilities.limitations.push('The occasion tools give the sky on a date, rate it from 0 to 100 by astrology\'s traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology\'s life milestones; they do not guarantee how a day will go.');
-          capabilities.limitations.push('Compatibility scores two charts by astrology\'s reading of their contacts; it does not guarantee how a relationship will go. Compatibility readings are for two adults: when either birth date is under 18 it gives no reading, and points to a friendship reading of the two Sun signs instead. Famous charts, alone or compared with someone\'s own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
+          capabilities.limitations.push('Compatibility scores two charts by astrology\'s reading of their contacts; it does not guarantee how a relationship will go. Compatibility readings are for two adults: when either birth date is under 18 it gives no reading, and from 13 to 17 it points to a friendship reading of the two Sun signs instead. Famous charts, alone or compared with someone\'s own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
           if (!dependencies.coverage) capabilities.limitations.push('Which tool: what changes in the sky over a window, get_upcoming_events; subscribing in a calendar app, get_sky_calendar; one birthday, get_birthday; lifetime returns, get_life_milestones.');
         }
         if (dependencies.occasions && dependencies.coverage) {

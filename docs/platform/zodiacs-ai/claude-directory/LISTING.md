@@ -1,5 +1,25 @@
 # Claude directory listing
 
+## Icon and reviewer texts, 7 and 8 November 2026
+
+- **7 November, with Dias's yes:** the custom icon URL is now
+  `https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v3.png`, 0.6.6's
+  picture. Saving also re-read the server, so the copy of the tools reviewers
+  see moved to 7 November: 19 tools, with 0.6.5's `get_occasion_sky`. A short
+  note on 0.6.5 went to the review thread (ticket #145701231) the same day.
+- **8 November, with Dias's yes:** the reviewer instructions pasted on
+  6 November, thirteen numbered prompts, lost step 11, a card for a baby born
+  a week earlier, and the additional notes now name
+  0.6.6 and 0.6.5's change to `get_occasion_sky`, no longer list a baby's
+  arrival or a coming of age among the occasions without links, and drop the
+  sentence about a 16 October snapshot. Asked in Claude on 7 November, that
+  step's prompt made a birthday card for the baby and read the baby's chart;
+  with PR #915 the hosted server refuses both
+  ([RESYNC-0.6.0.md](RESYNC-0.6.0.md)).
+  Saving re-read the server again: 19 tools, the copy dated 8 November, with a
+  portal note that some items were left out to fit its size limits. The
+  listing is still in review.
+
 ## Product rule and 0.6.1 prepared, 4 November 2026
 
 Dias replaced the "no predictions" rule for astrology readings on 4 November
@@ -313,6 +333,10 @@ owner confirms each one.
 - Sponsored content: no.
 
 ## Test & launch
+
+The text below is the original submission's. The thirteen-prompt text pasted
+on 6 November replaced it, and its step 11 was removed on 8 November (see the
+top of this file).
 
 Paste into the reviewer instructions:
 
