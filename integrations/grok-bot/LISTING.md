@@ -15,7 +15,7 @@ it read "by Zodiacs" before publishing.
 Used for the template card and the marketplace entry (236 characters):
 
 ```text
-Reads your birth chart, transits and horoscope from Zodiacs' live sky calculations, and links every reading to its page on zodiacs.org. Uses your birth details only for that answer, keeps none, and reads no charts for children under 13.
+Reads your birth chart, transits and horoscope from Zodiacs' live sky calculations, and links every reading to its page on zodiacs.org. Uses your birth details only for that answer, saves none, and reads no charts for children under 13.
 ```
 
 ## Longer description
@@ -28,7 +28,7 @@ Zodiacs Astrologer reads the sky with the same calculations as zodiacs.org. Ask 
 
 Forecasts are stated plainly, each with a Reading confidence label that says how specific your details were, never the odds that something happens. It makes no predictions about health, money, gambling or elections, and promises no outcomes.
 
-Your birth details are used for that one answer and saved nowhere: not in memory, not in a file, not on the Zodiacs server. Compatibility readings are for two adults, and Zodiacs reads no charts for children under 13.
+Your birth details are used for that one answer. The bot never saves them to its memory or a file, and the Zodiacs server keeps none of them; they stay only in your own chat. Compatibility readings are for two adults, and Zodiacs reads no charts for children under 13.
 ```
 
 ## Starter prompts
