@@ -55,7 +55,7 @@ describe('Zodiacs Sky Card', () => {
 
   it('keeps the copy rules in the card, the README and the action', () => {
     for (const [name, text] of [['card', renderCard(SKY)], ['README', readFileSync(new URL('./README.md', import.meta.url), 'utf8')], ['action', readFileSync(new URL('./action.yml', import.meta.url), 'utf8')]] as const) {
-      expect(text, name).not.toMatch(/[–—]/u);
+      expect(text, name).not.toMatch(/[\u2013\u2014]/u);
       expect(text, name).not.toMatch(/\b(?:crypto\w*|tokens?|coins?|bitcoin|blockchain|nfts?|web3|markets?|trading)\b/iu);
     }
   });
