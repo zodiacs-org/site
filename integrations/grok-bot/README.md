@@ -55,8 +55,11 @@ rating by astrologers either.
    **Publish** and **Copy link**. Publishing makes a public link that anyone
    can open. Done on 8 November: https://x.ai/bot/e0DWoivlUkNRrhEcvBX8G.
 4. **The marketplace** (x.ai/bot/marketplace) is chosen by the Grok Bot
-   team. Its path for suggesting a template is still to be found. That step
-   is a submission, so it also waits for your yes.
+   team, with no submission form; public templates are also found by any
+   Grok Bot that searches for one. With Dias's yes, on 8 November
+   admin@zodiacs.org asked xAI product support (support@x.ai, the address on
+   x.ai/contact) to consider the template for the Personal category, and to
+   point to the right channel if there is another one.
 
 ## Checked
 
