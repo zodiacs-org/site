@@ -10,7 +10,7 @@ import '../../styles/events.css';
 import EventMark from '../../components/events/EventMark.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import { eventsCatalog } from '../../lib/events/catalog';
-import { eventsPublication } from '../../lib/events/publication';
+import { eventsPublication } from '../../lib/events/site-publication';
 import { FAMILY_LABEL, eventDay, timelineLine } from '../../lib/events/format';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
 import { signBySlug } from '../../lib/signs';
@@ -121,7 +121,7 @@ const types = [
 const jsonLd = [
   {
     '@type': 'CollectionPage',
-    name: 'Sky events, astrology calendar 2026 to 2027',
+    name: 'Sky events, astrology calendar 2026 to 2030',
     url: 'https://zodiacs.org/events/',
     description: 'Upcoming astrology events with exact universal-time instants: lunations, eclipses, retrogrades, stations, ingresses, and exact aspects.',
   },
@@ -154,8 +154,8 @@ const sources = [
 ---
 <Base
   stableTypography
-  title="Astrology Events 2026 & 2027: Full Moons, Eclipses, Retrogrades, Dated | Zodiacs.org"
-  description="Every notable sky event of 2026 and 2027, with its time in universal time: full and new moons, eclipses, retrogrades and their stations, slow-planet sign changes, and rare exact alignments, with what each one means."
+  title="Astrology Events 2026 to 2030: Full Moons, Eclipses, Retrogrades, Dated | Zodiacs.org"
+  description="Every notable sky event from 2026 through 2030, with its time in universal time: full and new moons, eclipses, retrogrades and their stations, slow-planet sign changes, and rare exact alignments, with what each one means."
   path="/events/"
   image={eventsPublication.hub.card}
   imageAlt="Sky events, Zodiacs.org"
@@ -175,7 +175,7 @@ const sources = [
       <h1 class="display">Sky events</h1>
       <p>
         Every date the sky does something worth knowing about, through the
-        end of 2027: <a href="/learn/glossary/#full-moon">full moons</a> and new moons,{' '}
+        end of 2030: <a href="/learn/glossary/#full-moon">full moons</a> and new moons,{' '}
         <a href="/learn/glossary/#eclipse">eclipses</a>, <a href="/learn/glossary/#retrograde">retrogrades</a>,
         slow planets changing signs, and the rare exact
         <a href="/learn/glossary/#aspect"> alignments</a> between them. The

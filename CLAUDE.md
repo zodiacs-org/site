@@ -156,6 +156,15 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `src/lib/time/zone-case.test.ts` fails until the list matches them)
 - `src/data/ingresses.json` ← `node scripts/build-ingresses.mjs` (refresh
   yearly with sky.json)
+- `src/data/events-publication.json` and `src/data/events-publication-2028-2030.json`
+  ← `npm run data:events:build` (the event pages the site publishes, with
+  their readings; `data:events:verify` for drift). The first, 2026 to 2027,
+  is bundled byte for byte into the AI tools and the published developer
+  plugin, so it keeps its window; the second holds the 2028 to 2030 pages,
+  published 2026-11-08. Site pages and scripts read both, joined, through
+  `src/lib/events/site-publication.ts` (Node: `scripts/lib/events-publications.mjs`);
+  the AI tools read `src/lib/events/publication.ts`. New event cards:
+  `npm run data:og -- --only-events`
 - `src/data/sun-ingresses.json` ← `node scripts/build-sun-ingresses.mjs`
   (the Sun's sign entries for the season pages, every season that begins
   from 2026 through 2040, by the same calculation as ingresses.json, whose
@@ -240,7 +249,7 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   cards at `public/assets/og/*.png` are frozen and unreferenced — leave
   the files alone, don't regenerate or re-reference them. The People, event
   and Russian families keep 16-colour palettes with the lockup ring laid back
-  in its own colours (`compactCard`), which is what holds the 25MB bundle and
+  in its own colours (`compactCard`), which is what holds the 28MB bundle and
   the Russian family's ceiling; after a run, restore the pinned
   `og/v2/registry.png` and `og/v2/registry/` from git)
 - `public/assets/card-art/panel/` and `public/assets/card-art/share/` ←

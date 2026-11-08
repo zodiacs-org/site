@@ -10,7 +10,7 @@ import {
   type Daily,
 } from '../daily';
 import type { DailyPublication } from '../daily-publication';
-import type { PublishedEventDescriptor } from '../events/publication';
+import type { PublishedEventDescriptor } from '../events/site-publication';
 import type { HoroscopeProgram } from '../horoscope-program';
 import type { SavedChart } from '../profile/schema';
 import { SIGN_SLUGS, signForLongitude } from '../signs';

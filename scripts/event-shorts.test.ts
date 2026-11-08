@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import publication from '../src/data/events-publication.json';
+import { publishedEventPages } from '../src/lib/events/site-publication';
 import { eventClock } from '../src/lib/events/format';
 import { eventsCatalog } from '../src/lib/events/catalog';
 import { nasaStationAt } from '../src/lib/nasa-instants';
 import { SHORTS_TEXT, hasDash } from './daily-shorts-lib.mjs';
 import { EVENT_SHORTS_FOOTER, INVISIBLE_NOTE, eventShort, eventShorts } from './event-shorts-lib';
 
-const pages = publication.pages as Parameters<typeof eventShort>[0][];
+const pages = publishedEventPages as Parameters<typeof eventShort>[0][];
 const all = pages.map(eventShort);
 const byId = (id: string) => {
   const short = all.find((entry) => entry.id === id);
