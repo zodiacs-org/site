@@ -259,7 +259,7 @@ Veja do que a casa precisa e reserve tempo para isso antes de aceitar outro comp
 
 ## Lua cheia em Gêmeos: 24 de novembro de 2026
 
-A Lua cheia de 24 de novembro de 2026 fica exata às 14:53 UTC, com a Lua a 2°20′ de Gêmeos e o Sol bem à frente dela, no signo oposto. É o ponto mais iluminado do ciclo: o que começou na Lua nova anterior agora aparece com clareza.
+A Lua cheia de 24 de novembro de 2026 fica exata às 14:53 UTC, com a Lua a 2°20′ de Gêmeos e o Sol exatamente do outro lado do céu. É o ponto mais iluminado do ciclo: o que começou na Lua nova anterior agora aparece com clareza.
 
 Em Gêmeos, a Lua cheia põe em foco as palavras, a curiosidade e os laços mais próximos. É um bom momento para ver resultados, terminar o que ficou pela metade e dizer em voz alta o que você já sabe.
 
@@ -272,8 +272,8 @@ Não é preciso tomar grandes decisões no mesmo dia: a Lua cheia esclarece, e a
 - Gêmeos: casa 1, a sua imagem, os seus começos e a impressão que você causa.
 - Câncer: casa 12, o descanso, o recolhimento e o que se move por dentro.
 
-- **A que horas é a lua cheia de 24 de novembro de 2026?** Ela fica exata às 14:53 UTC. No horário de Brasília, que fica três horas atrás do UTC e não tem horário de verão desde 2019, são 11:53. Em Portugal continental, que segue o UTC no inverno e soma uma hora no verão, são 14:53.
-- **Em que signo está a lua cheia?** Em Gêmeos, a 2°20′.
+- **A que horas é a Lua cheia de 24 de novembro de 2026?** Ela fica exata às 14:53 UTC. No horário de Brasília, que fica três horas atrás do UTC e não tem horário de verão desde 2019, o relógio marca 11:53. Em Portugal continental, que segue o UTC no inverno e soma uma hora no verão, marca 14:53.
+- **Em que signo está a Lua cheia?** Em Gêmeos, a 2°20′.
 - **Preciso do meu mapa astral para ler?** Não. As notas por signo usam só o signo solar. Com o seu mapa astral, você vê em que casa ela cai exatamente para você.
 
 - [ ] OK as is    - [ ] Needs changes (notes below)
@@ -293,8 +293,8 @@ Escreva uma única intenção e volte a ela na Lua cheia seguinte, umas duas sem
 - Gêmeos: casa 6, o trabalho do dia a dia, os hábitos e as suas rotinas.
 - Câncer: casa 5, o prazer, o romance e o que você cria por gosto.
 
-- **A que horas é a lua nova de 9 de novembro de 2026?** Ela fica exata às 07:02 UTC. No horário de Brasília, que fica três horas atrás do UTC e não tem horário de verão desde 2019, são 04:02. Em Portugal continental, que segue o UTC no inverno e soma uma hora no verão, são 07:02.
-- **Em que signo está a lua nova?** Em Escorpião, a 16°53′.
+- **A que horas é a Lua nova de 9 de novembro de 2026?** Ela fica exata às 07:02 UTC. No horário de Brasília, que fica três horas atrás do UTC e não tem horário de verão desde 2019, o relógio marca 04:02. Em Portugal continental, que segue o UTC no inverno e soma uma hora no verão, marca 07:02.
+- **Em que signo está a Lua nova?** Em Escorpião, a 16°53′.
 - **Preciso do meu mapa astral para ler?** Não. As notas por signo usam só o signo solar. Com o seu mapa astral, você vê em que casa ela cai exatamente para você.
 
 - [ ] OK as is    - [ ] Needs changes (notes below)

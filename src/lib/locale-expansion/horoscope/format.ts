@@ -4,13 +4,16 @@ const INTL: Record<ExpansionLocale, string> = { es: 'es-ES', pt: 'pt-BR', fr: 'f
 
 const noon = (day: string) => new Date(day.length === 10 ? `${day}T12:00:00Z` : day);
 
+/** French writes the first of the month as an ordinal: "1er novembre". */
+const firstOrdinal = (locale: ExpansionLocale, text: string) => (locale === 'fr' ? text.replace(/^1 /u, '1er ') : text);
+
 /** "9 de noviembre", "9 novembre"; always the UTC calendar day. */
 export function dayMonth(locale: ExpansionLocale, at: string): string {
-  return new Intl.DateTimeFormat(INTL[locale], { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(noon(at));
+  return firstOrdinal(locale, new Intl.DateTimeFormat(INTL[locale], { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(noon(at)));
 }
 
 export function dayMonthYear(locale: ExpansionLocale, at: string): string {
-  return new Intl.DateTimeFormat(INTL[locale], { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(noon(at));
+  return firstOrdinal(locale, new Intl.DateTimeFormat(INTL[locale], { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(noon(at)));
 }
 
 export function weekday(locale: ExpansionLocale, at: string): string {

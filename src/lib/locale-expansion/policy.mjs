@@ -113,13 +113,13 @@ export const LOCALE_EXPANSION_UPDATED = publication.updated;
 // built; each entrypoint's getStaticPaths lists exactly the enabled locales.
 const ENTRY = './src/locale-pages';
 export const EXPANSION_ROUTES = [
-  { families: ['horoscope-daily'], pattern: '/[xlocale]/horoscopes/', entrypoint: `${ENTRY}/horoscope-hub.astro` },
-  { families: ['horoscope-daily'], pattern: '/[xlocale]/horoscopes/[sign]/', entrypoint: `${ENTRY}/horoscope-daily.astro` },
-  { families: HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`), pattern: '/[xlocale]/horoscopes/[sign]/[period]/', entrypoint: `${ENTRY}/horoscope-period.astro` },
-  { families: ['today'], pattern: '/[xlocale]/today/', entrypoint: `${ENTRY}/today.astro` },
-  { families: ['full-moon'], pattern: '/[xlocale]/full-moon/[date]/', entrypoint: `${ENTRY}/full-moon.astro` },
-  { families: ['new-moon'], pattern: '/[xlocale]/new-moon/[date]/', entrypoint: `${ENTRY}/new-moon.astro` },
-  { families: ['zodiac-dates'], pattern: '/[xlocale]/learn/zodiac-dates/', entrypoint: `${ENTRY}/zodiac-dates.astro` },
+  { families: ['horoscope-daily'], pattern: '/horoscopes/', file: 'horoscope-hub' },
+  { families: ['horoscope-daily'], pattern: '/horoscopes/[sign]/', file: 'horoscope-daily' },
+  { families: HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`), pattern: '/horoscopes/[sign]/[period]/', file: 'horoscope-period' },
+  { families: ['today'], pattern: '/today/', file: 'today' },
+  { families: ['full-moon'], pattern: '/full-moon/[date]/', file: 'full-moon' },
+  { families: ['new-moon'], pattern: '/new-moon/[date]/', file: 'new-moon' },
+  { families: ['zodiac-dates'], pattern: '/learn/zodiac-dates/', file: 'zodiac-dates' },
 ];
 
 export function localeExpansionRoutes(state = STATE) {
@@ -127,9 +127,11 @@ export function localeExpansionRoutes(state = STATE) {
     name: 'locale-expansion-publication',
     hooks: {
       'astro:config:setup': ({ injectRoute }) => {
+        // A static locale prefix per route, so it outranks /{locale}/[...slug].
         for (const route of EXPANSION_ROUTES) {
-          if (route.families.some((family) => enabledExpansionLocales(family, state).length)) {
-            injectRoute({ pattern: route.pattern, entrypoint: route.entrypoint });
+          const locales = [...new Set(route.families.flatMap((family) => enabledExpansionLocales(family, state)))];
+          for (const locale of locales) {
+            injectRoute({ pattern: `/${locale}${route.pattern}`, entrypoint: `${ENTRY}/${locale}/${route.file}.astro` });
           }
         }
       },

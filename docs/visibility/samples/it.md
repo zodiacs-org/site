@@ -257,6 +257,60 @@ Chiediti che cosa ti serve in casa e riservagli del tempo prima di accettare alt
 
 - [ ] OK as is    - [ ] Needs changes (notes below)
 
+## Luna piena in Gemelli: 24 novembre 2026
+
+La Luna piena del 24 novembre 2026 è esatta alle 14:53 UTC, con la Luna a 2°20′ dei Gemelli e il Sole proprio di fronte. È il punto più luminoso del ciclo: quello che è partito con la Luna nuova precedente ora si vede con chiarezza.
+
+In Gemelli la Luna piena mette a fuoco le parole, la curiosità e i legami di tutti i giorni. È un buon momento per raccogliere i risultati, chiudere qualcosa rimasto a metà e dire ad alta voce quello che sai già.
+
+Non serve prendere grandi decisioni proprio quel giorno: la Luna piena porta chiarezza, e la settimana dopo serve ad aggiustare le cose con calma.
+
+**Come tocca ogni segno**
+
+- Ariete: casa 3, i messaggi, le commissioni e le persone che hai vicino.
+- Toro: casa 2, il denaro, ciò che possiedi e ciò che ti dà sicurezza.
+- Gemelli: casa 1, la tua immagine, i nuovi inizi e il modo in cui ti presenti.
+- Cancro: casa 12, il riposo, il ritiro e ciò che si muove dentro di te.
+
+- **A che ora è la Luna piena del 24 novembre 2026?** È esatta alle 14:53 UTC UTC, cioè alle 15:53 in Italia: con l’ora solare l’Italia è a UTC+1. In generale l’Italia segue UTC+1 d’inverno e UTC+2 d’estate.
+- **In quale segno cade la Luna piena?** In Gemelli, a 2°20′.
+- **Mi serve il tema natale per leggerla?** No. Le note per segno usano solo il segno solare. Con il tuo tema natale puoi vedere in quale casa cade esattamente per te.
+
+- [ ] OK as is    - [ ] Needs changes (notes below)
+
+## Luna nuova in Scorpione: 9 novembre 2026
+
+La Luna nuova del 9 novembre 2026 è esatta alle 07:02 UTC, con il Sole e la Luna insieme a 16°53′ dello Scorpione. Comincia un ciclo di circa quattro settimane: per tradizione è il momento di fissare un’intenzione piccola e concreta.
+
+In Scorpione la Luna nuova apre un ciclo che riguarda la fiducia, ciò che si condivide e ciò che cambia in profondità. Funziona meglio un primo passo piccolo che una lunga lista di buoni propositi.
+
+Scrivi una sola intenzione e riprendila alla Luna piena successiva, circa due settimane dopo.
+
+**Come tocca ogni segno**
+
+- Ariete: casa 8, il denaro in comune, i debiti e la fiducia più intima.
+- Toro: casa 7, la coppia e gli accordi alla pari.
+- Gemelli: casa 6, le incombenze di ogni giorno, le abitudini e le routine.
+- Cancro: casa 5, il piacere, l’amore e ciò che crei per il gusto di farlo.
+
+- **A che ora è la Luna nuova del 9 novembre 2026?** È esatta alle 07:02 UTC UTC, cioè alle 08:02 in Italia: con l’ora solare l’Italia è a UTC+1. In generale l’Italia segue UTC+1 d’inverno e UTC+2 d’estate.
+- **In quale segno cade la Luna nuova?** In Scorpione, a 16°53′.
+- **Mi serve il tema natale per leggerla?** No. Le note per segno usano solo il segno solare. Con il tuo tema natale puoi vedere in quale casa cade esattamente per te.
+
+- [ ] OK as is    - [ ] Needs changes (notes below)
+
+## Date dei segni zodiacali 2026 e 2027
+
+Le date che si leggono di solito per ogni segno sono approssimative: il Sole cambia segno in un momento diverso ogni anno. Qui trovi il minuto esatto, in UTC, di ogni ingresso nel 2026 e nel 2027.
+
+Lo zodiaco tropicale parte dall’Ariete, a 0 gradi di longitudine eclittica, e divide il cerchio in dodici segni uguali di 30 gradi ciascuno. Questi confini restano fermi; a cambiare sono il giorno e l’ora in cui il Sole li attraversa, perché un anno non dura un numero esatto di giorni.
+
+Per questo due persone nate nello stesso giorno del calendario, ma in anni diversi, possono avere segni solari diversi se sono nate a ridosso del cambio. Quella che di solito si chiama cuspide non è un segno a metà: il Sole è sempre in un segno o nell’altro.
+
+Se il tuo compleanno cade vicino a una di queste date, controlla il tuo segno con data, ora e luogo di nascita. L’ora locale dipende dal fuso orario in vigore quel giorno, ora legale compresa, e il calcolo del tema natale ne tiene conto.
+
+- [ ] OK as is    - [ ] Needs changes (notes below)
+
 ## Reviewer notes
 
 Reviewer name and date:

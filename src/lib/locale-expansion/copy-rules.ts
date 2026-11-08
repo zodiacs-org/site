@@ -20,13 +20,16 @@ export const BANNED: Record<ExpansionLocale, RegExp> = {
 
 /** Common English words that should never survive in localized prose. */
 export const ENGLISH_LEFTOVER = /(?:^|[\s(])(?:the|and|your|with|this|that|horoscope|week|month|today|tomorrow)(?=[\s,.;:)!?]|$)/u;
+/** "horoscope" is also the French word. */
+const ENGLISH_LEFTOVER_FR = /(?:^|[\s(])(?:the|and|your|with|this|that|week|month|today|tomorrow)(?=[\s,.;:)!?]|$)/u;
 
 export function copyProblems(locale: ExpansionLocale, text: string): string[] {
   const problems: string[] = [];
   if (DASHES.test(text)) problems.push('dash');
   if (/undefined|NaN|\[object Object\]|\$\{/u.test(text)) problems.push('template leak');
   if (BANNED[locale].test(text)) problems.push(`banned word: ${text.match(BANNED[locale])?.[0]}`);
-  if (ENGLISH_LEFTOVER.test(text)) problems.push(`English leftover: ${text.match(ENGLISH_LEFTOVER)?.[0].trim()}`);
+  const leftover = locale === 'fr' ? ENGLISH_LEFTOVER_FR : ENGLISH_LEFTOVER;
+  if (leftover.test(text)) problems.push(`English leftover: ${text.match(leftover)?.[0].trim()}`);
   if (/\s{2,}|\s[,.;:]/u.test(text.replace(/ | /gu, ' ').replace(/ [;:?!]/gu, ''))) problems.push('spacing');
   return problems;
 }

@@ -64,6 +64,8 @@ describe('locale expansion publication record', () => {
     expect(injected).toEqual([]);
     const all: unknown[] = [];
     localeExpansionRoutes(expansionState(publication, { PUBLIC_LOCALE_EXPANSION_PREVIEW: '1' })).hooks['astro:config:setup']({ injectRoute: (route: unknown) => all.push(route) });
-    expect(all).toHaveLength(EXPANSION_ROUTES.length);
+    // es and pt already publish the daily family, so they get 4 routes; fr and it get all 7.
+    expect(all).toHaveLength(4 + 4 + EXPANSION_ROUTES.length * 2);
+    expect(all).toContainEqual({ pattern: '/it/horoscopes/[sign]/', entrypoint: './src/locale-pages/it/horoscope-daily.astro' });
   });
 });
