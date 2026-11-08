@@ -62,4 +62,4 @@ rating by astrologers either.
 
 - 8 November 2026: `live-check.mjs` passed all 17 checks against the live
   server, 0.6.6 (`docs/platform/zodiacs-ai/grok-bot/LIVE-TEST.md`).
-- The test inside Grok Bot is recorded in the same file.
+- The same day, inside Grok Bot, a private test Bot took the setup message, connected https://zodiacs.org/mcp (19 tools), read a made-up adult's chart with its zodiacs.org link, refused a made-up baby, and kept no birth details (same file).

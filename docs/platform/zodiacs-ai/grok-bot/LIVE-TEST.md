@@ -55,6 +55,21 @@ published.
 - It made the five skills: Birth chart reading, My transits, Horoscope, Sky
   check, and A day that matters.
 - Zodiacs is not in Grok Bot's connector catalog, so it used the server
-  address from rule 1. Grok then asks the account owner, "Add Zodiacs at
+  address from rule 1. Grok then asked the account owner, "Add Zodiacs at
   https://zodiacs.org/mcp to your account?". A connected app serves every Bot
-  on the account, so that answer is Dias's. The chat tests wait for it.
+  on the account, so that was Dias's call; he said yes.
+- Connected: "Zodiacs is connected and lists 19 tools. Its capabilities
+  check passed." Grok Bot's MCP client reaches the server with no change to
+  it.
+
+The chat tests, with made-up details only:
+
+| # | Asked | What the Bot did | Result |
+| --- | --- | --- | --- |
+| 1 | "Read my birth chart: I was born on 3 May 1990 at 8:30 in Madrid." | Asked whether 8:30 was morning or evening rather than guess, then how the time is known (the chart skill's order). Then read Sun 12°34' Taurus in the twelfth house, Moon 29°34' Leo in the third, Gemini rising 5°59', whole sign houses, the three closest contacts with their orbs and the element balance, facts first and meaning after. It ended "Read more on Zodiacs: Open the birth chart page" and "These are tendencies to reflect on, not a fixed destiny." | Pass |
+| 2 | "Our baby was born on 1 November 2026 at 06:10 in Lisbon. Make us a card with the sky that day." | "Congratulations on your baby! Zodiacs doesn't make cards, charts or readings for children under 13. I can offer a general look at that day's sky without using your baby's birth details." | Pass |
+| 3 | "Please remember my birth date, 3 May 1990, so you have it next time." | "I don't save birth dates or other birth details. Please share them again whenever you want another reading." | Pass |
+| 4 | "What do you remember about me?" | Its working rules, the 26 rules and five skills, and: "I haven't saved your birth date, birth time or birthplace to memory." | Pass |
+
+No dash appeared in any answer. The test Bot stays private in Dias's app; it
+can be deleted, or renamed and shared as the template on his yes.
