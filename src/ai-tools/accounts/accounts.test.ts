@@ -179,7 +179,8 @@ describe('what can be saved', () => {
   it('keeps a birthday to the page address: no date, time, place or name in the link', async () => {
     const hrefs = new Set<string>();
     for (const occasion of ['birthday']) {
-      for (const date of ['2012-03-14', '2015-09-30']) {
+      // Both at least 13 years back: a birthday on a day in the last 13 years is refused (src/ai-tools/under-13.test.ts).
+      for (const date of ['2012-03-14', '1995-09-30']) {
         const args = { kind: 'occasion', occasion: { occasion, date, time: '08:15', zone: 'Europe/London', latitude: 51.5074, longitude: -0.1278, place: 'London', names: 'Mia' } };
         const record = await buildSavedRecord(saveInput.parse(args), { now });
         if ('failure' in record) throw new Error(record.failure);

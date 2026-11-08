@@ -5,7 +5,7 @@ import { ComputeApiError } from '../../lib/compute-api/errors';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { SIGNS } from '../../lib/signs';
 import { AI_RESULT_SCHEMA, ORIGIN } from '../contracts';
-import { BIRTH_OCCASIONS, executeAiTool, refUrl } from '../tools';
+import { BIRTH_OCCASIONS, childBirthDateRefusal, executeAiTool, refUrl } from '../tools';
 import { roundCoordinate } from '../plain-text';
 import { compatibilityMissing, computePersonChart, type CompatibilityData } from '../features/compatibility';
 import { guardPersonalWeek, personalWeek } from '../features/personal-week';
@@ -45,7 +45,8 @@ export interface AccountPrincipal { user: string; session: string; client: strin
 export interface StoredSave { id: string; saved_at: string; created: boolean }
 export type SaveStore = (principal: AccountPrincipal, record: SavedRecord) => Promise<StoredSave | 'full' | null>;
 
-export interface SaveDependencies { localTime?: LocalTimeModule; now?: () => Date }
+/** hostZone is the time zone the assistant shares with the call, if any, for the under-13 rule's birthday check. */
+export interface SaveDependencies { localTime?: LocalTimeModule; now?: () => Date; hostZone?: string }
 
 const signName = (slug: string | null | undefined) => (slug ? SIGNS.find((sign) => sign.slug === slug)?.name ?? null : null);
 const OCCASION_NAMES: Record<string, string> = {
@@ -121,9 +122,14 @@ export function savedOccasionPath(
 export async function buildSavedRecord(input: SaveInput, dependencies: SaveDependencies = {}): Promise<SavedRecord | { failure: string }> {
   // The link carries the result's digest after the # where the page cannot carry its details.
   const linked = (record: Omit<SavedRecord, 'href'>, href: (saved: string) => string): SavedRecord => ({ ...record, href: href(recordDigest(record).slice(0, 16)) });
+  const now = dependencies.now?.() ?? new Date();
+  // A child's birth date is refused here as the tools refuse it, before anything is set up: each kind's details are
+  // those of the tool that made it.
+  const madeBy = { chart: 'get_natal_chart', comparison: 'get_compatibility', occasion: 'get_occasion_sky', week: 'get_horoscope' } as const;
+  const child = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now, dependencies.hostZone);
+  if (child) return { failure: child.error.message };
   let owned: ReturnType<typeof createLocalTimeModule> | undefined;
   const localTime = () => dependencies.localTime ?? (owned ??= createLocalTimeModule());
-  const now = dependencies.now?.() ?? new Date();
   const tools = { occasions: true, localTime: localTime(), now: () => now };
   const label = input.label;
   try {
