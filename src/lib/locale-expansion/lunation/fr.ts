@@ -16,8 +16,8 @@ const sign = (slug: string) => signName(signBySlug(slug), L);
 const kindName = (facts: LunationFacts) => (facts.kind === 'full' ? 'Pleine Lune' : 'Nouvelle Lune');
 /** "24 novembre 2026", avec "1er" pour le premier du mois. */
 const when = (f: LunationFacts) => dayMonthYear(L, f.at).replace(/^1 /, '1er ');
-/** "14 h 53", l’heure comme on l’écrit en français. */
-const hm = (hour: string, minute: string) => `${Number(hour)} h ${minute}`;
+/** "14:53", comme les autres pages françaises du site (horoscopes, year-sky). */
+const hm = (hour: string, minute: string) => `${hour}:${minute}`;
 const clock = (f: LunationFacts) => `${hm(f.at.slice(11, 13), f.at.slice(14, 16))} UTC`;
 /** "2°19′ des Gémeaux", "14°05′ de la Vierge". */
 const degree = (f: LunationFacts) => `${degreeMinutes(f.degree)} ${of(f.sign)}`;
@@ -71,7 +71,7 @@ export const fr: LunationCopy = {
       'Inutile de prendre de grandes décisions le jour même : la Pleine Lune éclaire, et la semaine qui suit sert à ajuster sans hâte.',
     ]
     : [
-      `En ${sign(f.sign)}, la Nouvelle Lune ouvre un cycle pour ${SIGN_TOPIC[f.sign]}. Un premier petit pas lui réussit mieux qu’une longue liste de bonnes résolutions.`,
+      `En ${sign(f.sign)}, la Nouvelle Lune ouvre un cycle pour ${SIGN_TOPIC[f.sign]}. Mieux vaut un premier petit pas qu’une longue liste de bonnes résolutions.`,
       'Note une seule intention et reviens-y à la Pleine Lune suivante, environ deux semaines plus tard.',
     ]),
   signNotesHeading: 'Comment elle touche chaque signe',

@@ -343,7 +343,7 @@ function eventMeaning(fact: EventFact): string {
         ? pick([
           `C’est le moment de revoir ${theme} avant de t’engager dans du neuf.`,
           `Reprends ${theme} sans te presser.`,
-          `Repasse sur ${theme} et corrige ce qui doit l’être.`,
+          `Repasse sur ${theme}, puis corrige ce qui doit l’être.`,
         ], day)
         : pick([
           `Ce qui était à l’arrêt du côté ${deTheme(h)} se remet en mouvement.`,
