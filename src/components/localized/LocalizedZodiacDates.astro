@@ -55,7 +55,7 @@ const when = (iso: string) => `${dayMonth(locale, iso)}, ${utcClock(iso)}`;
   title={`${title} | Zodiacs.org`}
   description={description}
   path={path}
-  locale={locale as Locale}
+  locale={locale}
   type="article"
   jsonLd={jsonLd}
   noindex={isHeldPreview(locale, '/learn/zodiac-dates/')}
