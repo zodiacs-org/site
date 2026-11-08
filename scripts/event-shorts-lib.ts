@@ -4,7 +4,7 @@
  * video shows, and the caption the owner pastes when posting by hand.
  *
  * Every event is one of the site's published event pages
- * (src/data/events-publication.json), and the first line is that page's own
+ * (src/lib/events/site-publication.ts: 2026 to 2030), and the first line is that page's own
  * summary, copied as published. The time is the one the page prints: NASA
  * JPL Horizons' for a planet's station, sign change or aspect
  * (src/lib/nasa-instants.ts), and the committed instant for a new or full
@@ -13,7 +13,7 @@
  * (src/lib/sky-calendar-feed.ts). Nothing here writes a forecast, and no line
  * carries an em or en dash.
  */
-import publication from '../src/data/events-publication.json';
+import { publishedEventPages } from '../src/lib/events/site-publication';
 import eclipsesData from '../src/data/eclipses.json';
 import { eventClock, eventDay } from '../src/lib/events/format';
 import { refinePublishedAnchors } from '../src/lib/nasa-instants';
@@ -53,7 +53,7 @@ export const EVENT_SHORTS_FOOTER = 'Times in UTC, checked against NASA';
 /** The note the calendar feed gives a lunar eclipse no one will see. */
 export const INVISIBLE_NOTE = 'So slight that no eye or camera will see it.';
 
-const PAGES = publication.pages as EventPage[];
+const PAGES = publishedEventPages as EventPage[];
 
 const signOf = (slug: string) => {
   const sign = SHORTS_SIGNS.find((entry) => entry.slug === slug);
