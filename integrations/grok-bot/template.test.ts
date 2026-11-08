@@ -25,7 +25,7 @@ describe('Zodiacs Astrologer for Grok Bot', () => {
 
   it('uses no em or en dashes and no crypto, token or market language', () => {
     for (const [name, text] of [['setup', SETUP], ['one line', ONE_LINE], ['long', LONG], ['starters', STARTERS.join('\n')]] as const) {
-      expect(text, name).not.toMatch(/[–—]/u);
+      expect(text, name).not.toMatch(/[\u2013\u2014]/u);
       expect(text, name).not.toMatch(/\b(?:crypto\w*|tokens?|coins?|bitcoin|blockchain|nfts?|web3|markets?|trading)\b/iu);
     }
   });
