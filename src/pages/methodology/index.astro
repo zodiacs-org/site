@@ -9,7 +9,7 @@ const jsonLd = [
     headline: 'How zodiacs.org computes your chart',
     url: 'https://zodiacs.org/methodology/',
     datePublished: '2026-07-05T10:36:57Z',
-    dateModified: '2026-10-16T00:00:00Z',
+    dateModified: '2026-11-08T00:00:00Z',
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://zodiacs.org/methodology/' },
@@ -206,6 +206,33 @@ const jsonLd = [
         shorter-arc midpoint of each pair of matching planets across two charts;
         composite houses require a location convention we won't fake, so composite
         charts are shown without houses.
+      </p>
+
+      <h2 id="event-times">How we check event times</h2>
+      <p>
+        The dates and times printed for sky events are held to NASA, not
+        only to our own engine. The times of the planets' sign changes,
+        stations and exact aspects from November 2025 to May 2031 are read
+        from <strong>NASA JPL Horizons</strong> (the DE441 ephemeris), solved
+        to the second. For a slow planet this matters: Neptune moves so little
+        in a day that a position a few arcseconds off moves its sign change by
+        hours. By NASA, Neptune entered Aries at 17:35 UTC on January 26, 2026,
+        about three hours later than the engine alone puts it.
+      </p>
+      <p>
+        New and full Moons and the Moon's sign changes keep the engine's
+        times, because every one of them falls within a minute of NASA's.
+        The Sun's sign changes agree within 44 seconds. Eclipses are checked
+        against NASA's <em>Five Millennium Canon</em> of eclipses by Fred
+        Espenak and Jean Meeus.
+      </p>
+      <p>
+        In November 2026 we checked 8,891 statements on the built English
+        pages against NASA, from sign dates to eclipse times, and 8,849
+        agreed. Most of the rest were degrees one arcminute apart, where
+        NASA's value sits within arcseconds of a minute line. The check also found a wrong Moon
+        sign in tomorrow's horoscopes, which is fixed. Whole degrees are
+        truncated, the way astrologers count them: 9°55′ is 9°, not 10°.
       </p>
 
       <h2>Time zones</h2>

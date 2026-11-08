@@ -206,6 +206,35 @@ describe('the NASA JPL Horizons figure', () => {
   });
 });
 
+describe('how event times are checked, on the methodology page', () => {
+  const page = () => read('src/pages/methodology/index.astro').replace(/\s+/g, ' ');
+
+  it('gives the Neptune example from the NASA table and the engine instant it replaced', () => {
+    const table = JSON.parse(read('src/data/nasa-event-instants.json'));
+    const row = table.ingresses.find((entry) => entry.body === 'Neptune' && entry.sign === 'aries'
+      && entry.nasa.startsWith('2026-01-26'));
+    expect(row.nasa.slice(11, 16)).toBe('17:35');
+    const hours = (Date.parse(row.nasa) - Math.max(...row.engine.map(Date.parse))) / 3_600_000;
+    expect(Math.round(hours)).toBe(3);
+    expect(page()).toContain('Neptune entered Aries at 17:35 UTC on January 26, 2026, about three hours later');
+    expect(table.coverage.Neptune.stations).toBe('2025-11-06 to 2031-05-27');
+    expect(page()).toContain('exact aspects from November 2025 to May 2031');
+  });
+
+  it('bounds the Sun\'s sign changes by the table\'s measured maximum', () => {
+    const table = JSON.parse(read('src/data/nasa-event-instants.json'));
+    expect(table.withinOneMinute.sunIngresses.maxSeconds).toBeLessThanOrEqual(44);
+    expect(page()).toContain('The Sun\'s sign changes agree within 44 seconds.');
+  });
+
+  it('states the built-page counts of the November 2026 audit', () => {
+    const report = read('docs/accuracy-audit-2026-11/REPORT.md');
+    const counts = /\*\*Built pages \(what the site says\)\*\*: (\d+) claims checked, (\d+) match/u.exec(report);
+    const format = (n) => Number(n).toLocaleString('en-US');
+    expect(page()).toContain(`we checked ${format(counts[1])} statements on the built English pages against NASA, from sign dates to eclipse times, and ${format(counts[2])} agreed`);
+  });
+});
+
 describe('ΔT on the developer engine page', () => {
   it('states the measured 2026-09-22 values of the formula rc.8 replaced', () => {
     const deltaT = JSON.parse(read('docs/platform/evidence/deltat-2026-09-23/values.json'));

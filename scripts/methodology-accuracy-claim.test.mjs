@@ -120,6 +120,9 @@ const ARCMINUTE_SENTENCES = [
   + ' not a measurement of this site, and what we measured is in the next section.',
   'The other 20 measurements are the far-future cases, and none of them reaches one arcminute:'
   + ' the largest is 24.8 arcseconds, Pluto at 2190, where the two ephemerides differ.',
+  // The November 2026 audit against NASA (claim acc.event-audit-2026-11): a
+  // count of disagreements, not an accuracy figure for the site.
+  'Most of the rest were degrees one arcminute apart, where NASA\'s value sits within arcseconds of a minute line.',
 ];
 
 describe('the accuracy claim on /methodology/', () => {

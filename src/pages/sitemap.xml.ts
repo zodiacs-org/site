@@ -944,6 +944,13 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-07');
   }
+  // The methodology page says how event times are checked against NASA, and
+  // the events hub links to it.
+  for (const url of urls) {
+    if (url.loc === '/methodology/' || url.loc === '/events/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-08');
+    }
+  }
   return [
     ...urls,
     ...localizedUrls,
