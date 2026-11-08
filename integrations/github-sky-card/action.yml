@@ -1,5 +1,5 @@
 name: Zodiacs Sky Card
-description: Puts today's sky and your sign's horoscope from zodiacs.org in your GitHub README, updated every day.
+description: Puts the Moon, Mercury and a horoscope for your sign from zodiacs.org in your GitHub README, updated every day
 author: Zodiacs
 branding:
   icon: moon
