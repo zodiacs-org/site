@@ -69,6 +69,18 @@ connector and its brand assets, that submitting does not guarantee approval
 or promotion, and that we agree to the Muse Connector Terms. Then Submit for
 review.
 
+## Submitted, 8 November 2026
+
+Dias signed in at platform.muse.ai with admin@zodiacs.org, typed the contact
+name, uploaded the icon (his 1000 by 1000 picture, made 512 by 512 PNG) and
+gave the three confirmations. Claude filled in every other field with the
+answers above. Meta's confirmation reads "Thank you for your submission!
+We'll review Zodiacs and get in touch." Submission
+e66255d1-73af-4901-aee1-9f0398b4fcee, managed at
+https://platform.muse.ai/submissions/e66255d1-73af-4901-aee1-9f0398b4fcee.
+The form had no authentication checkboxes on this date, so the access
+requirements say no account, sign-in or key is needed.
+
 ## Before and after review
 
 - Meta tests end to end. If its calls are refused with "origin-not-allowed",
