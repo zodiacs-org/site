@@ -11,7 +11,7 @@ import { SIGNS, signBySlug, signName } from '../../lib/signs';
 import { solarHouse } from '../../lib/daily';
 import { degreeMinutes } from '../../lib/today-sky';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
-import { readingConfidence } from '../../ai-tools/reading-confidence';
+import { SUN_SIGN_READING_CONFIDENCE } from '../../lib/locale-expansion/confidence';
 import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import { dayMonthYear, utcClock } from '../../lib/locale-expansion/horoscope/format';
 import { lunationCopy } from '../../lib/locale-expansion/lunation/modules';
@@ -108,7 +108,7 @@ const jsonLd = [
 
     <section class="kwrap lun-meaning">
       {c.meaning(facts).map((paragraph) => <p>{paragraph}</p>)}
-      <p class="lun-confidence" data-reading-confidence><strong>{c.confidence(readingConfidence('sign'))}</strong>. {c.confidenceNote}</p>
+      <p class="lun-confidence" data-reading-confidence><strong>{c.confidence(SUN_SIGN_READING_CONFIDENCE)}</strong>. {c.confidenceNote}</p>
     </section>
 
     <section class="kwrap lun-signs" aria-labelledby="lun-signs-heading">

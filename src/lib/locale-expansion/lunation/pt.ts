@@ -85,7 +85,7 @@ export const pt: LunationCopy = {
   horoscopesLink: 'Horóscopos',
   confidence: (value) => `Confiança da leitura ${value}%`,
   confidenceNote: 'O número diz o quanto são específicos os dados da leitura (aqui, só o signo solar), e não a chance de algo acontecer.',
-  method: 'O momento exato e a posição são calculados pelo motor astronômico do site e conferidos com as efemérides da NASA. Os horários estão em UTC.',
+  method: 'O momento exato e a posição são calculados pelo motor astronômico do site. Os horários estão em UTC.',
   faqHeading: 'Perguntas frequentes',
   faq: (f) => [
     {

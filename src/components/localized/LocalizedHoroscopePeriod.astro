@@ -18,7 +18,7 @@ import { SIGNS, signBySlug, signName } from '../../lib/signs';
 import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { pageReadingFromProgram } from '../../lib/horoscope-page-data';
-import { readingConfidence } from '../../ai-tools/reading-confidence';
+import { SUN_SIGN_READING_CONFIDENCE } from '../../lib/locale-expansion/confidence';
 import type { HoroscopeSign } from '../../lib/horoscope-program-types';
 import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import { localizedMonthlyReading, localizedPeriodReading, program } from '../../lib/locale-expansion/horoscope/engine';
@@ -79,7 +79,7 @@ const held = isHeldPreview(locale, englishPath);
 const title = c.title(name, chromeCtx);
 const description = c.description(name, chromeCtx);
 const image = signArtCard(sign.slug, locale === 'ru' ? 'en' : locale);
-const confidence = readingConfidence('sign');
+const confidence = SUN_SIGN_READING_CONFIDENCE;
 const heroArtSizes = '(min-width: 761px) 440px, calc(100vw - 32px)';
 
 // The switch: every period, in this language when built here, otherwise English with hreflang.

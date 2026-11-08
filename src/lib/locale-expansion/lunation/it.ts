@@ -91,7 +91,7 @@ export const it: LunationCopy = {
   horoscopesLink: 'Oroscopi',
   confidence: (value) => `Affidabilità della lettura ${value}%`,
   confidenceNote: 'Il numero dice quanto sono specifici i dati della lettura (qui, solo il segno solare), non la probabilità che qualcosa accada.',
-  method: 'Il momento esatto e la posizione sono calcolati con il motore astronomico del sito e confrontati con le effemeridi della NASA. Gli orari sono in UTC.',
+  method: 'Il momento esatto e la posizione sono calcolati con il motore astronomico del sito. Gli orari sono in UTC.',
   faqHeading: 'Domande frequenti',
   faq: (f) => {
     const local = italianTime(f.at);
