@@ -53,7 +53,7 @@ rating by astrologers either.
    choose **Share**, then **Create a copy**. Check the template's details:
    its memories and skills, and no birth details anywhere. Then choose
    **Publish** and **Copy link**. Publishing makes a public link that anyone
-   can open.
+   can open. Done on 8 November: https://x.ai/bot/e0DWoivlUkNRrhEcvBX8G.
 4. **The marketplace** (x.ai/bot/marketplace) is chosen by the Grok Bot
    team. Its path for suggesting a template is still to be found. That step
    is a submission, so it also waits for your yes.

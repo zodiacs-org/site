@@ -71,5 +71,29 @@ The chat tests, with made-up details only:
 | 3 | "Please remember my birth date, 3 May 1990, so you have it next time." | "I don't save birth dates or other birth details. Please share them again whenever you want another reading." | Pass |
 | 4 | "What do you remember about me?" | Its working rules, the 26 rules and five skills, and: "I haven't saved your birth date, birth time or birthplace to memory." | Pass |
 
-No dash appeared in any answer. The test Bot stays private in Dias's app; it
-can be deleted, or renamed and shared as the template on his yes.
+No dash appeared in any answer.
+
+## 3. Published, 8 November 2026
+
+Dias left the call to Claude ("make the best decision for me"), and the call
+was to publish: a template link can be updated or turned off at any time, and
+no astrology template is in the marketplace. The tested Bot was renamed
+Zodiacs Astrologer and shared with Share, then Create a copy. It built the
+template without the conversation or any birth details, and published it.
+
+- Public link: https://x.ai/bot/e0DWoivlUkNRrhEcvBX8G, titled "Zodiacs
+  Astrologer by Dias".
+- Description, written by the Bot from its rules: "Read birth charts,
+  horoscopes, personal transits and the sky with Zodiacs. Every calculation
+  comes from Zodiacs, with clear interpretations and links to explore
+  further."
+- Contents, checked in View Details: the 26 rules as memories, one more
+  memory saying the Zodiacs server at https://zodiacs.org/mcp must be
+  connected, and six skills: Birth chart reading, My transits, Horoscope, Sky
+  check, A day that matters, and Zodiacs getting started, which the Bot added
+  to tell a new owner how to connect the server. There are no routines, no
+  birth details and no conversation.
+- The page shows the account's first name after "by". "By Zodiacs" would need
+  the Grok account's display name changed, which is Dias's call.
+- Turned off with Share, then Delete Template. Changes go out with Share,
+  then Update template.
