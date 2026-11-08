@@ -120,14 +120,16 @@ def engine_records():
             stations.append({'body': r['planet'], 'type': 'retrograde', 'at': r['from'], 'source': 'sky.json'})
         if r['to']:
             stations.append({'body': r['planet'], 'type': 'direct', 'at': r['to'], 'source': 'sky.json'})
-    pub = load('events-publication.json')
-    for p in pub['pages']:
-        if p['family'] == 'ingress':
-            ingresses.append({'body': p['bodies'][0], 'sign': p['signs'][0], 'at': p['anchor'], 'source': 'events-publication.json'})
-        elif p['family'] == 'aspect':
-            aspect_type = p['id'].split('-')[1]
-            aspects.append({'a': p['bodies'][0], 'b': p['bodies'][1], 'type': aspect_type, 'at': p['anchor'],
-                            'aSign': p['signs'][0], 'source': 'events-publication.json'})
+    # Both receipts the site publishes (src/lib/events/merge-publications.mjs):
+    # 2026 to 2027, which the AI tools bundle, and 2028 to 2030.
+    for receipt in ('events-publication.json', 'events-publication-2028-2030.json'):
+        for p in load(receipt)['pages']:
+            if p['family'] == 'ingress':
+                ingresses.append({'body': p['bodies'][0], 'sign': p['signs'][0], 'at': p['anchor'], 'source': receipt})
+            elif p['family'] == 'aspect':
+                aspect_type = p['id'].split('-')[1]
+                aspects.append({'a': p['bodies'][0], 'b': p['bodies'][1], 'type': aspect_type, 'at': p['anchor'],
+                                'aSign': p['signs'][0], 'source': receipt})
     program = load('horoscope-program.json')
     for e in program['evidence']:
         if e.get('kind') != 'sky-event':

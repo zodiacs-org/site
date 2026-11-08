@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { readEventsPublication } from './lib/events-publications.mjs';
 import {
   authorizeRealDelivery,
   buildEventAlert,
@@ -101,10 +102,8 @@ const PUBLICATION = {
     }),
   ],
 };
-const COMMITTED_PUBLICATION = JSON.parse(readFileSync(
-  new URL('../src/data/events-publication.json', import.meta.url),
-  'utf8',
-));
+// Both receipts, joined as the sender reads them (readEventsPublication).
+const COMMITTED_PUBLICATION = await readEventsPublication(new URL('..', import.meta.url).pathname);
 
 const subscription = (overrides = {}) => ({
   subscription_id: 41,
@@ -333,7 +332,7 @@ describe('sky-alert event selection and copy', () => {
     const rendered = COMMITTED_PUBLICATION.timeline
       .filter(eligibleEvent)
       .map((published) => ({ published, alert: buildEventAlert(published) }));
-    expect(rendered).toHaveLength(109);
+    expect(rendered).toHaveLength(271);
     for (const { published, alert } of rendered) {
       expect(alert.title.length).toBeGreaterThan(0);
       expect(alert.title.length).toBeLessThanOrEqual(32);
@@ -345,7 +344,7 @@ describe('sky-alert event selection and copy', () => {
       expect(alert.url.startsWith('//')).toBe(false);
       expect(JSON.stringify(alert).length).toBeLessThan(4_096);
     }
-    expect(Math.max(...rendered.map(({ alert }) => alert.title.length))).toBe(30);
+    expect(Math.max(...rendered.map(({ alert }) => alert.title.length))).toBe(32);
     expect(Math.max(...rendered.map(({ alert }) => alert.body.length))).toBe(113);
   });
 
@@ -411,6 +410,26 @@ describe('sky-alert event selection and copy', () => {
       expect(count).toBeLessThanOrEqual(2);
     }
     expect(stream.skipped.filter(({ outcome }) => outcome === 'held_7d')).toHaveLength(4);
+  });
+
+  it('keeps the stream through 2030 below three alerts in every seven UTC dates as well', () => {
+    const stream = simulateEditorialSchedule(
+      COMMITTED_PUBLICATION,
+      '2026-01-03',
+      '2030-12-31',
+    );
+    expect(stream.selected.at(-1).utcDate.startsWith('2030-')).toBe(true);
+    expect(stream.selected).toHaveLength(206);
+    expect(stream.skipped).toHaveLength(28);
+    for (const receipt of stream.selected) {
+      const end = Date.parse(`${receipt.utcDate}T00:00:00.000Z`);
+      const count = stream.selected.filter(({ utcDate }) => {
+        const candidate = Date.parse(`${utcDate}T00:00:00.000Z`);
+        return candidate >= end - (6 * 86_400_000) && candidate <= end;
+      }).length;
+      expect(count).toBeLessThanOrEqual(2);
+    }
+    expect(stream.skipped.filter(({ outcome }) => outcome === 'held_7d')).toHaveLength(12);
   });
 
   it('pins the corrected seeded July stream without inventing a production receipt', () => {
