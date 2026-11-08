@@ -9,7 +9,9 @@ This folder holds the search, the frozen holdout and the first run.
 1.1.0-rc.2 (Node 22.22.2): 6 of 8 solar, from 4 authors and 4 works, and 5 of 5
 lunar. The pass rule asks for at least 5 agreeing solar fixtures, at least 1
 agreeing lunar fixture, at least 2 authors and 2 works among the agreeing solar
-ones, and at least two thirds of all scored fixtures (9 of 13).
+ones, and at least two thirds of all scored fixtures (9 of 13). The unit is recorded
+accepted, release deployed: production serves engine 1.1.0-rc.2, the candidate
+the site vendors.
 
 ## The scored fixtures
 
@@ -38,46 +40,57 @@ derives the natal longitude itself (`solarReturn(birth, R)`,
 `lunarReturn(birth, R minus 3 days)`). Each term of every `T` is in
 [holdout.json](holdout.json) and [results.json](results.json).
 
-The two disagreements, F2-22 and F2-23, come from the one passage of the
-series that prints no working: their natal and return figures give the Sun to
-the whole degree. Under the preregistration's tolerance a radical counts only
-when a working or a statement shows the author used it (D3), so these carry no
-allowance for it. Every printed working of the same series rounds the natal Sun
-and the intermediate figures to the arc-minute, which alone can move a return
-by up to 756 s.
+A note written after the run, which changes nothing in the verdict: the two
+disagreements, F2-22 and F2-23, come from the one passage of the series that
+prints no working, and its figures give the Sun to the whole degree. Under the
+preregistration's tolerance a radical counts only when a working or a statement
+shows the author used it (D3), so these fixtures carry no allowance for it. The
+series' printed workings round the natal Sun to the arc-minute, which can move
+a return by up to 756 s, and round the noon positions and the motion before the
+proportion. No ephemeris is used to excuse either disagreement.
 
 ## How the holdout was made
 
 - **Preregistration first.** PREREGISTRATION.md (46a4005d), then
-  `ineligible.json` and `search-plan.json` (ad05a5c9), pushed at 00:12:49 ICT on
+  `ineligible.json` and `search-plan.json` (ad05a5c9), pushed at 00:12:48 ICT on
   8 November 2026, before the search started.
 - **The search.** Five searchers, one per family (almanacs; English-language
   periodicals; English-language books; other languages; lunar returns and
-  returns after 1960), read 396 sources ([search-log.json](search-log.json))
-  and recorded 135 candidates: 124 passages, 11 of them found by two
-  searchers. The scored counts met the minimums, so no second pass ran.
+  returns after 1960), read 380 sources ([search-log.json](search-log.json),
+  whose 483 entries also list their catalogue searches) and recorded 135
+  records: 124 candidates, 11 of them found by two searchers. The scored counts
+  met the minimums, so no second pass ran.
 - **Two blind readings (S3) and the authors' arithmetic (S8).** Ten second
-  readers read the pages again from the scans, given only the citation, the
-  scan address and the leaves. Every field they recorded agreed with the first
-  reading. Where the author printed the working, they redid the author's own
-  arithmetic; two candidates failed it (F2-12, F3-17).
+  readers read 83 candidates again from the scans, given only the citation, the
+  scan address and the leaves; the other 41, excluded on facts no reading of
+  the page changes, were read once (D17). Every field the second readers
+  recorded agreed with the first reading. Where the author printed the working,
+  they redid the author's own arithmetic; two candidates failed it (F2-12,
+  F3-17). 30 candidates have a computed T; the others are excluded on a rule
+  that needs none, or on a reading that leaves T unbounded.
 - **Exclusions.** 111 candidates are excluded, each with its rule and reason:
   58 by the cap (T over 600 s solar, 900 s lunar step, 1,500 s lunar
   whole-chain, mostly births printed to the hour or radicals used to the
   arc-minute), 31 by W6 (D11, below), 6 by W5, 6 by W7, 5 by W2, 2 by W1,
-  2 by S8 and 1 by H3.
+  2 by S8 and 1 by H3. H1 to H3 decide which candidates are eligible before H4
+  and H5 apply, so H3's exclusion of F3-07 leaves Vijaya-Raghavulu's book
+  exactly five scored fixtures.
 - **An independent review before the freeze.** It recomputed every reading
   and T, and found three blockers, all fixed before the freeze: a clause of D3
   that went beyond the tolerance's text, birth data in the search log, and D11
   recorded as a reading instead of a departure.
 - **The freeze.** The frozen holdout (f7e5ed14, holdout.json SHA-256
   `2595133ee86374a9b7a74ac48454c11eed84a565cb1c424b308408aa32970143`, recorded
-  in results.json) was pushed at 14:12:29 ICT on 8 November 2026, after the
+  in results.json) was pushed at 14:12:28 ICT on 8 November 2026, after the
   privacy search (G1) and the full pre-push list (G2). The first run followed at
-  14:12:39 ICT.
-- **The re-read.** Two fresh readers read every scored fixture again before
-  the first run, so they could see no D, T or verdict. Every field agreed:
-  [corrections.json](corrections.json) holds no correction.
+  14:12:39 ICT, on 09550244: the freeze with main merged in for the day's
+  edition, which changed no engine or package file.
+- **The re-read.** Two fresh readers read every scored fixture again from
+  04:00 to 04:25 ICT on 8 November: after the first freeze commit (425bee77,
+  never pushed), before the final freeze and before the run, so they could see
+  no D, T or verdict. Every field agreed: [corrections.json](corrections.json)
+  holds no correction. The 13 scored fixtures' fields are the same in every
+  version of the freeze.
 
 ## Decisions and departures
 
@@ -85,7 +98,9 @@ The search needed readings of the rules where their text did not settle a
 case. Each was made before the freeze and before any engine or ephemeris
 computed a return for any candidate. They are D1 to D18 in holdout.json.
 
-Two are **departures** from the preregistration's text, disclosed here:
+Three are **departures** from the preregistration's text, disclosed here.
+The first two are in holdout.json; the third concerns the re-read, after the
+freeze:
 
 - **D11 (W6, S6).** An individual's upload of a work still in copyright to
   archive.org's community collections is not counted as a public scan. This
@@ -96,11 +111,12 @@ Two are **departures** from the preregistration's text, disclosed here:
   which would more likely agree with the engine than not.
 - **D17 (S3).** Candidates excluded on facts no reading of the page changes
   (births before 1800, post-1900 births of unnamed natives, community uploads)
-  were read once, not twice.
+  were read once, not twice: 41 of the 124.
+- **The re-read's timing.** The preregistration has every scored fixture read
+  again after the run. It was read again before the run, which is stricter on
+  blindness and changed nothing.
 
-Neither was adopted after a result was seen, so neither is an amendment under
-the programme README's rule. The owner may overrule either; a changed rule
-would be a new, preregistered version of the unit.
+None was adopted after a result was seen. The owner ratified all three on 8 November 2026, so the unit is recorded accepted rather than validated.
 
 ## The privacy search (G1)
 
@@ -137,8 +153,8 @@ replaced, has SHA-256
 
 - F3-13 and F3-14 use Buckingham Palace's longitude as printed, 0° 36' W.
   Both readers read that print. It is near 0° 08' W in fact, so the local mean
-  time reading moves R by 144 s where the true longitude would give 36 s, and
-  only widens b.
+  time reading moves R by 144 s where the true longitude would give about 34 s,
+  and only widens b.
 - The George V and Edward VII birth latitudes are the printed geocentric
   values. The engine's return instants come from apparent geocentric
   longitudes, so only the return chart's houses would change.
@@ -147,6 +163,9 @@ replaced, has SHA-256
 - Lindanger's Part II (January 1947) works an unnamed "Example 1" with the same
   birth data as F2-21. D3 reads a printed working per passage, and Part II's
   passage does not name the native, so nothing carries to F2-21 from it.
+- The full pre-push list passed on every pushed commit except
+  `developer-first-use-drive`, whose Firefox half failed the same way on
+  ad05a5c9, before the search.
 
 ## Files
 

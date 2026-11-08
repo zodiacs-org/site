@@ -128,12 +128,17 @@ describe('C3: the runs reproduce', () => {
     const fx = scored.find((f: any) => f.id === row.id);
     const away = row.D >= 0 ? -1 : 1;
     const moved = { ...fx, return: { utc: new Date(Date.parse(fx.return.utc) + away * (row.T + 1) * 1000).toISOString() } };
-    expect(score(moved).agrees).toBe(false);
+    const result = score(moved);
+    expect(result.agrees).toBe(false);
+    expect(result.E).toBe(row.E);
+    expect(Math.abs(result.D)).toBeGreaterThan(result.T);
   });
   it('control: a whole-chain fixture with its birth moved by one day disagrees', () => {
     const fx = scored.find((f: any) => f.form === 'whole-chain');
     const moved = { ...fx, birth: { ...fx.birth, utc: new Date(Date.parse(fx.birth.utc) + DAY_MS).toISOString() } };
-    expect(score(moved).agrees).toBe(false);
+    const result = score(moved);
+    expect(result.agrees).toBe(false);
+    expect(Math.abs(result.D)).toBeGreaterThan(result.T);
   });
 });
 

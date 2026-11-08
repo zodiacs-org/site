@@ -1,6 +1,6 @@
 {
  "purpose": "The re-read of every scored fixture that PREREGISTRATION.md ('Scoring', 'No adjudication after the run') asks for, by readers who had seen no D, T or verdict. An error found would be recorded here with the verdict it would give; if the corrections changed the verdict in either direction, the unit would be recorded validated until the owner ruled.",
- "timing": "Two fresh readers (X1, X2) re-read the pages from the scans after the freeze commit and before the first run, so that no reader could have seen a D, T or verdict. The preregistration places this re-read after the run; reading before it is stricter on blindness, and nothing here depends on a result.",
+ "timing": "Two fresh readers (X1, X2) re-read the pages from the scans from 04:00 to 04:25 ICT on 8 November 2026: after the first freeze commit (425bee77, never pushed) and before the final freeze (f7e5ed14) and the first run, so that no reader could have seen a D, T or verdict. The 13 scored fixtures' fields are the same in every version of the freeze. The preregistration places this re-read after the run; reading before it is a departure, disclosed in the README, and stricter on blindness.",
  "readers": [
   {
    "reader": "X1",

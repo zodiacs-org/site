@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-11-08 P2.A.timing.returns accepted on its preregistered worked-example test (site#921)",
+  "asOf": "2026-11-08 P2.A.timing.returns accepted on its preregistered worked-example test and the owner's ratification of its three departures (site#921)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1048,14 +1048,15 @@
       "evidence": [
         "https://github.com/zodiacs-org/site/pull/921",
         "docs/platform/evidence/returns-worked-examples-20261107/README.md",
-        "docs/platform/evidence/returns-worked-examples-20261107/PREREGISTRATION.md (46a4005d, pushed 2026-11-08 00:12:49 ICT, before the search)",
-        "holdout frozen in f7e5ed14 (holdout.json SHA-256 2595133ee86374a9b7a74ac48454c11eed84a565cb1c424b308408aa32970143), pushed 2026-11-08 14:12:29 ICT, before the first run",
+        "docs/platform/evidence/returns-worked-examples-20261107/PREREGISTRATION.md (46a4005d, pushed 2026-11-08 00:12:48 ICT, before the search)",
+        "holdout frozen in f7e5ed14 (holdout.json SHA-256 2595133ee86374a9b7a74ac48454c11eed84a565cb1c424b308408aa32970143), pushed 2026-11-08 14:12:28 ICT, before the first run",
         "docs/platform/evidence/returns-worked-examples-20261107/results.json: engine 1.1.0-rc.2 on Node 22.22.2, pass, 11 of 13 scored fixtures agree (solar 6 of 8 from 4 authors and 4 works, lunar 5 of 5); corrections.json: no correction",
+        "the owner's ratification of the three departures, 2026-11-08: \"Yes, ratify\" (docs/platform/evidence/returns-worked-examples-20261107/README.md, 'Decisions and departures')",
         "release: production serves engine 1.1.0-rc.2, the candidate the site vendors (site#884 merged as 3fac4230 on 2026-11-05, recorded in site#900); site parity: the site takes its solar and lunar returns from @zodiacs/engine/techniques (src/lib/engine/solar-return.ts, lunar-return.ts)",
         "docs/platform/evidence/rc16-units-2026-10-04/README.md",
         "site parity on rc.16: R-SI, R-SY, R-SM and R-LI 400/400, R-SC and R-LC 160/160, R-E 50 of 60 different by design (returns-span) (site-engine-rc16/techniques-parity.json)"
       ],
-      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package has solar and lunar returns (@zodiacs/engine/techniques) and planetary returns (@zodiacs/engine/timing); the site imports the first two (P2.E.returns). This unit's gate is not re-judged here. Checkpoint 15 (2026-10-05): judged partial. Site parity is met; there are no fixtures from a cited worked example of a solar or lunar return: USNO's season times and Horizons positions are reference values, not worked examples (as checkpoint 14 judged planetary returns). Update 2026-11-08 (site#921): the gate is met by the preregistered worked-example test (docs/platform/evidence/returns-worked-examples-20261107): 396 sources searched, 124 candidates read twice blind, 13 scored after the preregistered exclusions, frozen and pushed before the first run; 11 agree, the pass rule holds. Two departures from the preregistration were made before the run and are disclosed there (D11: community uploads of in-copyright works are not public scans; D17: candidates excluded on facts alone were read once); the owner may overrule them, which would make a new, preregistered version."
+      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package has solar and lunar returns (@zodiacs/engine/techniques) and planetary returns (@zodiacs/engine/timing); the site imports the first two (P2.E.returns). This unit's gate is not re-judged here. Checkpoint 15 (2026-10-05): judged partial. Site parity is met; there are no fixtures from a cited worked example of a solar or lunar return: USNO's season times and Horizons positions are reference values, not worked examples (as checkpoint 14 judged planetary returns). Update 2026-11-08 (site#921): the gate is met by the preregistered worked-example test (docs/platform/evidence/returns-worked-examples-20261107): 380 sources searched; 124 candidates, 83 of them read twice blind and 41 excluded on facts alone read once (D17); 13 scored after the preregistered exclusions, frozen and pushed before the first run; 11 agree, the pass rule holds. Three departures from the preregistration were made before the run and are disclosed there (D11: community uploads of in-copyright works are not public scans; D17: candidates excluded on facts alone were read once; the blind re-read of the scored fixtures ran before the run, not after it). The owner ratified all three on 2026-11-08 (\"Yes, ratify\"), so the unit is accepted, not validated."
     },
     {
       "id": "P2.A.timing.solar-arc",
