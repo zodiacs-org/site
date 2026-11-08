@@ -80,7 +80,7 @@ const title = c.title(name, chromeCtx);
 const description = c.description(name, chromeCtx);
 const image = signArtCard(sign.slug, locale === 'ru' ? 'en' : locale);
 const confidence = readingConfidence('sign');
-const heroArtSizes = '(min-width: 761px) 74vw, calc(100vw - 16px)';
+const heroArtSizes = '(min-width: 761px) 440px, calc(100vw - 32px)';
 
 // The switch: every period, in this language when built here, otherwise English with hreflang.
 const PERIODS = ['today', 'tomorrow', 'weekly', 'monthly', 'love', 'career', 'yearly-2026', 'yearly-2027'] as const;
@@ -158,6 +158,7 @@ const kicker = chromeCtx.surface === 'monthly' || chromeCtx.surface.startsWith('
   <article class="hzp" style={`--sign:${sign.hue};--hue:${sign.hue}`}>
     <header class="hzp-hero">
       <ArtFrame sign={sign.slug} locale={locale === 'ru' ? 'en' : locale} class="hzp-hero__art" sizes={heroArtSizes} focus="50% 60%" spot="55% 56%" eager />
+      <div class="hzp-hero__text">
       <nav class="hzp-crumbs" aria-label={c.crumbs}>
         <a href={local('/horoscopes/')}>{c.crumbs}</a><span aria-hidden="true">/</span>
         <a href={local(`/horoscopes/${sign.slug}/`)}>{name}</a><span aria-hidden="true">/</span>
@@ -167,6 +168,7 @@ const kicker = chromeCtx.surface === 'monthly' || chromeCtx.surface.startsWith('
         <span class="kicker">{kicker}</span>
         <h1 class="display hzp-hero__title">{c.h1(name, chromeCtx)}</h1>
         <p class="hzp-hero__cap">{description}</p>
+      </div>
       </div>
     </header>
 
@@ -222,7 +224,12 @@ const kicker = chromeCtx.surface === 'monthly' || chromeCtx.surface.startsWith('
 
 <style>
   .hzp { padding-bottom: 64px; }
-  .hzp-hero { position: relative; display: grid; gap: 16px; margin: 0 auto 24px; max-width: 1180px; padding: 0 16px; }
+  .hzp-hero { display: grid; gap: 20px; margin: 0 auto 24px; max-width: 1180px; padding: 0 16px; align-items: center; }
+  .hzp-hero__art { max-height: 240px; overflow: hidden; }
+  @media (min-width: 761px) {
+    .hzp-hero { grid-template-columns: minmax(0, 1fr) 440px; gap: 40px; }
+    .hzp-hero__art { order: 2; max-height: none; }
+  }
   .hzp-crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; color: var(--ink-2, #b9bfcc); }
   .hzp-crumbs a { color: inherit; }
   .hzp-hero__title { margin: 8px 0 12px; }

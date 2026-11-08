@@ -95,11 +95,13 @@ export const it: LunationCopy = {
   faqHeading: 'Domande frequenti',
   faq: (f) => {
     const local = italianTime(f.at);
-    const season = local.offset === 2 ? 'con l’ora legale l’Italia è a UTC+2' : 'con l’ora solare l’Italia è a UTC+1';
+    const rule = local.offset === 2
+      ? 'dove in quel periodo vale l’ora legale (UTC+2); d’inverno, con l’ora solare, lo scarto scende a un’ora (UTC+1)'
+      : 'dove in quel periodo vale l’ora solare (UTC+1); d’estate, con l’ora legale, lo scarto sale a due ore (UTC+2)';
     return [
       {
         q: `A che ora è la ${kindName(f)} ${prep('di', theDate(f))}?`,
-        a: `È esatta alle ${utcClock(f.at)} UTC, cioè alle ${local.clock} in Italia${local.nextDay ? ' del giorno dopo' : ''}: ${season}. In generale l’Italia segue UTC+1 d’inverno e UTC+2 d’estate.`,
+        a: `È esatta alle ${utcClock(f.at)}, cioè alle ${local.clock}${local.nextDay ? ' del giorno dopo' : ''} in Italia, ${rule}.`,
       },
       {
         q: `In quale segno cade la ${kindName(f)}?`,

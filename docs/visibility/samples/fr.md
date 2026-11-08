@@ -257,6 +257,48 @@ Regarde ce dont tu as besoin chez toi et réserve-lui du temps avant d’accepte
 
 - [ ] OK as is    - [ ] Needs changes (notes below)
 
+## Pleine Lune en Gémeaux : 24 novembre 2026
+
+La Pleine Lune du 24 novembre 2026 est exacte à 14 h 53 UTC, avec la Lune à 2°20′ des Gémeaux et le Soleil juste en face. C’est le moment le plus lumineux du cycle : ce qui a commencé à la Nouvelle Lune précédente se voit maintenant clairement.
+
+En Gémeaux, la Pleine Lune met en lumière les mots, la curiosité et les liens proches. C’est le bon moment pour constater des résultats, finir ce qui traînait et dire tout haut ce que tu sais déjà.
+
+Inutile de prendre de grandes décisions le jour même : la Pleine Lune éclaire, et la semaine qui suit sert à ajuster sans hâte.
+
+**Comment elle touche chaque signe**
+
+- Bélier : maison 3, les échanges, les démarches et ton entourage proche.
+- Taureau : maison 2, l’argent, ce que tu possèdes et ce qui te rassure.
+- Gémeaux : maison 1, ton image, tes débuts et ta façon de te présenter.
+- Cancer : maison 12, le repos, le retrait et ce qui travaille en silence.
+
+- **À quelle heure a lieu la Pleine Lune du 24 novembre 2026 ?** Elle est exacte à 14 h 53 UTC. En France et en Belgique, qui avancent d’une heure sur l’UTC en hiver et de deux en été, il est alors 15 h 53. Au Québec, qui retarde de cinq heures sur l’UTC en hiver et de quatre en été, il est 9 h 53.
+- **Dans quel signe se trouve la Pleine Lune ?** En Gémeaux, à 2°20′.
+- **Ai-je besoin de mon thème astral pour la lire ?** Non. Les notes par signe n’utilisent que le signe solaire. Avec ton thème astral, tu vois dans quelle maison elle tombe exactement pour toi.
+
+- [ ] OK as is    - [ ] Needs changes (notes below)
+
+## Nouvelle Lune en Scorpion : 9 novembre 2026
+
+La Nouvelle Lune du 9 novembre 2026 est exacte à 7 h 02 UTC, avec le Soleil et la Lune réunis à 16°53′ du Scorpion. Elle ouvre un cycle d’environ quatre semaines, le moment classique pour poser une intention modeste et concrète.
+
+En Scorpion, la Nouvelle Lune ouvre un cycle pour la confiance, ce qui se partage et ce qui se transforme. Un premier petit pas lui réussit mieux qu’une longue liste de bonnes résolutions.
+
+Note une seule intention et reviens-y à la Pleine Lune suivante, environ deux semaines plus tard.
+
+**Comment elle touche chaque signe**
+
+- Bélier : maison 8, les ressources partagées, les dettes et la confiance intime.
+- Taureau : maison 7, le couple et les accords d’égal à égal.
+- Gémeaux : maison 6, le travail quotidien, les habitudes et l’organisation.
+- Cancer : maison 5, le plaisir, les amours et ce que tu crées par goût.
+
+- **À quelle heure a lieu la Nouvelle Lune du 9 novembre 2026 ?** Elle est exacte à 7 h 02 UTC. En France et en Belgique, qui avancent d’une heure sur l’UTC en hiver et de deux en été, il est alors 8 h 02. Au Québec, qui retarde de cinq heures sur l’UTC en hiver et de quatre en été, il est 2 h 02.
+- **Dans quel signe se trouve la Nouvelle Lune ?** En Scorpion, à 16°53′.
+- **Ai-je besoin de mon thème astral pour la lire ?** Non. Les notes par signe n’utilisent que le signe solaire. Avec ton thème astral, tu vois dans quelle maison elle tombe exactement pour toi.
+
+- [ ] OK as is    - [ ] Needs changes (notes below)
+
 ## Reviewer notes
 
 Reviewer name and date:

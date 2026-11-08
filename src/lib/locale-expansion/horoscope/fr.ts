@@ -40,13 +40,13 @@ const slugOf = (key: string) => (ARTICLE[key] ? key : SLUG_BY_NAME.get(key));
 /** Élision devant une voyelle ou un h : "d’Aries", "de Leo". */
 const deName = (name: string) => (/^[aeiouyhâàéèêîôûAEIOUYHÂÀÉÈÊÎÔÛ]/u.test(name) ? `d’${name}` : `de ${name}`);
 /** "le Bélier", "la Vierge", "les Gémeaux", à partir du slug ou du nom ; un nom inconnu reste tel quel. */
-const the = (key: string) => {
+export const the = (key: string) => {
   const slug = slugOf(key);
   return slug ? `${ARTICLE[slug]} ${sign(slug)}` : key;
 };
 const The = (key: string) => cap(the(key));
 /** "du Bélier", "de la Vierge", "des Gémeaux" ; "de Leo" pour un nom inconnu. */
-const of = (key: string) => {
+export const of = (key: string) => {
   const slug = slugOf(key);
   return slug ? `${({ le: 'du', la: 'de la', les: 'des' } as const)[ARTICLE[slug]]} ${sign(slug)}` : deName(key);
 };

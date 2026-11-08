@@ -302,12 +302,16 @@ function eventClause(fact: EventFact): string {
   }
 }
 
+/** L'ordine dei corpi, per variare la frase quando due eventi cadono in date vicine. */
+const BODY_ORDER = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+
 /** Che cosa vuol dire l'evento nella casa in cui cade; la variante dipende dal giorno, così il testo non si ripete. */
 function eventMeaning(fact: EventFact): string {
   const h = fact.houses[0];
   if (!h) return '';
   const theme = THEME[h];
-  const day = Number(fact.at.slice(8, 10)) + Number(fact.at.slice(5, 7));
+  const body = BODY_ORDER.indexOf(fact.body ?? fact.a ?? '');
+  const day = Number(fact.at.slice(8, 10)) + Number(fact.at.slice(5, 7)) + Math.max(body, 0);
   switch (fact.eventKind) {
     case 'ingress':
       return pick([
