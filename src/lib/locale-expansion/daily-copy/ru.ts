@@ -216,7 +216,7 @@ const today: TodayCopy = {
       return `${named('ru', event.a)} и ${named('ru', event.b)} образуют ${EXACT[event.type] ?? 'точный аспект'}`;
     }
     if (event.kind === 'ingress' && event.planet && event.sign) return `${named('ru', event.planet)} входит в знак ${signGen(event.sign)}`;
-    if (event.kind === 'lunation' && event.sign) return `${event.type === 'new' ? 'новолуние' : 'полнолуние'} ${inSign(event.sign)} становится точным`;
+    if (event.kind === 'lunation' && event.sign) return `${event.type === 'new' ? 'новолуние' : 'полнолуние'} ${inSign(event.sign)} наступает`;
     return null;
   },
   rxTitle: 'Ретроградные планеты: обзор',

@@ -128,33 +128,33 @@ const inHouse = (house: number) => `в вашем ${ORD_PREP[house]} доме`;
 
 /** Что каждый солнечный дом выносит на стол, в именительном падеже. */
 export const THEME: Record<number, string> = {
-  1: 'ваш образ, ваши начинания и то, как вы себя подаёте',
+  1: 'ваш образ и начинания',
   2: 'ценности, самооценка и чувство устойчивости',
   3: 'общение, повседневные дела и ближний круг',
   4: 'семья, домашние дела и личная жизнь',
   5: 'радость, романтика и творчество',
   6: 'повседневная работа, привычки и распорядок дня',
-  7: 'партнёрство и договорённости на равных',
+  7: 'партнёрство, брак и договоры',
   8: 'общие ресурсы, обязательства и глубокое доверие',
   9: 'поездки, учёба и убеждения',
-  10: 'карьера, репутация и то, как вас видят со стороны',
+  10: 'карьера, репутация и положение в обществе',
   11: 'друзья, сообщества и планы на будущее',
-  12: 'отдых, уединение и то, что зреет незаметно',
+  12: 'отдых, уединение и скрытые дела',
 };
 /** Те же темы в родительном падеже: «для …», «в сфере …», «темы …». */
 export const THEME_GEN: Record<number, string> = {
-  1: 'вашего образа, ваших начинаний и того, как вы себя подаёте',
+  1: 'вашего образа и начинаний',
   2: 'ценностей, самооценки и чувства устойчивости',
   3: 'общения, повседневных дел и ближнего круга',
   4: 'семьи, домашних дел и личной жизни',
   5: 'радости, романтики и творчества',
   6: 'повседневной работы, привычек и распорядка дня',
-  7: 'партнёрства и договорённостей на равных',
+  7: 'партнёрства, брака и договоров',
   8: 'общих ресурсов, обязательств и глубокого доверия',
   9: 'поездок, учёбы и убеждений',
-  10: 'карьеры, репутации и того, как вас видят со стороны',
+  10: 'карьеры, репутации и положения в обществе',
   11: 'друзей, сообществ и планов на будущее',
-  12: 'отдыха, уединения и того, что зреет незаметно',
+  12: 'отдыха, уединения и скрытых дел',
 };
 
 /** Тема с придаточным («того, что зреет незаметно») закрывается запятой, если фраза продолжается. */
@@ -168,7 +168,7 @@ const SHORT: Record<number, string> = {
   4: 'семья и личная жизнь',
   5: 'радость и творчество',
   6: 'работа и распорядок',
-  7: 'партнёрство и договорённости',
+  7: 'партнёрство и договоры',
   8: 'общие ресурсы и доверие',
   9: 'учёба и горизонты',
   10: 'карьера и репутация',
@@ -196,7 +196,7 @@ const ADVICE: Record<number, string> = {
   1: 'Скажите, что хотите начать, прежде чем откликаться на чужие предложения.',
   2: 'Спросите себя, что для вас сейчас действительно важно, и берегите это.',
   3: 'Ответьте на сообщение, которое давно ждёт, и запишите, о чём договорились.',
-  4: 'Посмотрите, что нужно вам дома, и найдите на это время, прежде чем соглашаться на что-то ещё.',
+  4: 'Посмотрите, что вам нужно дома, и найдите на это время, прежде чем соглашаться на что-то ещё.',
   5: 'Выделите время на занятие для удовольствия, не думая о результате.',
   6: 'Пересмотрите список дел на день и уберите задачу, которая не ваша.',
   7: 'Говорите с партнёром прямо и спрашивайте, а не додумывайте.',
@@ -266,7 +266,7 @@ const WORK: Record<number, string> = {
   7: 'Ведите переговоры ясно: с партнёрами, клиентами и коллегами.',
   8: 'Посмотрите на общие ресурсы, обязательства и то, что зависит от других.',
   9: 'Обучение, публикация или выход к новой аудитории приносят плоды со временем.',
-  10: 'Репутация складывается из того, что вы сдаёте: сначала закончите самое заметное.',
+  10: 'Репутация складывается из законченной работы: сначала доведите до конца самое заметное.',
   11: 'Контакты и командная работа открывают двери.',
   12: 'Продвигайте то, что пока не видно, и не ждите аплодисментов слишком рано.',
 };
@@ -293,7 +293,11 @@ const fresh = (used: Set<string>, ...options: string[]) => {
   used.add(line);
   return line;
 };
-const adviceFor = (used: Set<string>, h: number) => fresh(used, ADVICE[h], REFINE[h], EXTRA[h]);
+/** Второй вариант первого шага, где он нужен, чтобы тот же совет не звучал дважды. */
+const ADVICE_ALT: Record<number, string> = {
+  4: 'Подумайте, чего вам не хватает дома, и выделите на это время до новых обязательств.',
+};
+const adviceFor = (used: Set<string>, h: number) => fresh(used, ...[ADVICE[h], ADVICE_ALT[h], REFINE[h], EXTRA[h]].filter((line): line is string => Boolean(line)));
 
 /** Что лучше всего удаётся каждому знаку, одной фразой. */
 const KEY: Record<string, string> = {
@@ -381,8 +385,12 @@ const ECLIPSE_LINES: Array<(gen: string) => string> = [
   (gen) => `В этот день наступает поворот в сфере ${gen}: дайте решениям созреть несколько дней.`,
   (gen) => `Для ${closed(gen)} закрывается или открывается этап: сначала понаблюдайте, потом действуйте.`,
   (gen) => `Что-то меняется в сфере ${gen}, и решать сразу не нужно.`,
+  (gen) => `В сфере ${closed(gen)} обозначается перемена: не торопите выводы.`,
+  (gen) => `Для ${closed(gen)} это заметная веха: отметьте её и вернитесь к ней через неделю.`,
+  (gen) => `Затмение подсвечивает темы ${gen}: смотрите, что уходит, а что остаётся.`,
+  (gen) => `Для ${closed(gen)} начинается новый отрезок: дайте ему немного времени.`,
 ];
-const ECLIPSE_TAILS = ['ничего не решать окончательно', 'дайте решениям созреть', 'сначала понаблюдайте', 'решать сразу не нужно'];
+const ECLIPSE_TAILS = ['ничего не решать окончательно', 'дайте решениям созреть', 'сначала понаблюдайте', 'решать сразу не нужно', 'не торопите выводы', 'вернитесь к ней через неделю', 'что уходит, а что остаётся', 'дайте ему немного времени'];
 
 const SLOW_YEARS = new Set(['Saturn', 'Uranus', 'Neptune', 'Pluto']);
 
@@ -430,81 +438,131 @@ function eventTitle(fact: EventFact): string {
   }
 }
 
-/** Что событие значит в доме, где оно происходит; вариант зависит от дня, чтобы не повторяться. */
-function eventMeaning(fact: EventFact, shift = 0): string {
+/** Варианты смысла события в доме, где оно происходит; страница берёт первый, которого на ней ещё нет. */
+function meaningVariants(fact: EventFact): string[] {
   const h = fact.houses[0];
-  if (!h) return '';
+  if (!h) return [];
   const nom = THEME[h];
   const gen = THEME_GEN[h];
-  const day = Number(fact.at.slice(8, 10)) + Number(fact.at.slice(5, 7)) + shift;
   switch (fact.eventKind) {
     case 'ingress':
       if (fact.body === 'Jupiter') {
-        return pick([
-          `Примерно на год в центре внимания: ${nom}.`,
+        return [
+          `Примерно на год в центре внимания окажутся ${nom}.`,
           `Начинается год, важный для ${gen}.`,
-        ], day);
+          `Около года рост и новые возможности будут связаны с темами ${gen}.`,
+          `На ближайший год темы ${closed(gen)} получают больше простора.`,
+        ];
       }
       if (fact.body && SLOW_YEARS.has(fact.body)) {
-        return pick([
+        return [
           `Начинается долгий период для ${gen}.`,
           `Несколько лет внимание будет часто возвращаться к темам ${gen}.`,
           `Открывается длинная глава для ${gen}.`,
-        ], day);
+          `На годы вперёд темы ${closed(gen)} будут постепенно меняться.`,
+          `Это медленный переход, и темы ${closed(gen)} будут перестраиваться не сразу.`,
+        ];
       }
       // Солнце и быстрые планеты задерживаются в знаке на недели, а не на годы.
-      return pick([
-        `Ближайшие недели в центре внимания: ${nom}.`,
+      return [
+        `В ближайшие недели в центре внимания окажутся ${nom}.`,
         `На несколько недель фокус смещается в сферу ${gen}.`,
         `Несколько недель ваши дни больше связаны с темами ${gen}.`,
-      ], day);
+        `До следующей смены знака темы ${closed(gen)} просят больше времени.`,
+        `Ближайший месяц удобно посвятить темам ${gen}.`,
+      ];
     case 'station':
       return fact.eventType === 'retrograde'
-        ? pick([
+        ? [
           `Время пересмотреть темы ${gen}, прежде чем браться за новое.`,
           `Не спеша вернитесь ко всему, что касается ${gen}.`,
           `Перепроверьте всё, что связано с темами ${gen}, и исправьте то, что нужно.`,
-        ], day)
-        : pick([
+          `В сфере ${closed(gen)} полезно доделать начатое, а не открывать новое.`,
+          `Темы ${closed(gen)} просят второго взгляда и неспешных поправок.`,
+          `Пока планета движется назад, вернитесь к старым вопросам в сфере ${gen}.`,
+        ]
+        : [
           `То, что стояло на месте в сфере ${gen}, снова приходит в движение.`,
           `К темам ${closed(gen)} возвращается импульс.`,
           `К отложенным решениям в сфере ${closed(gen)} можно вернуться.`,
-        ], day);
+          `В сфере ${closed(gen)} снова можно двигаться вперёд.`,
+          `Темы ${closed(gen)} понемногу набирают ход.`,
+          `Задержки в сфере ${closed(gen)} постепенно уходят.`,
+        ];
     case 'lunation':
       return fact.eventType === 'full'
-        ? pick([
+        ? [
           `То, что зрело в сфере ${gen}, приходит к итогу.`,
           `В темах ${closed(gen)} намечается итог.`,
-        ], day)
-        : pick([
-          `Хорошая точка старта для ${gen}.`,
+          `Для ${closed(gen)} это момент ясности: видно, что получилось.`,
+          `В сфере ${closed(gen)} что-то подходит к завершению.`,
+        ]
+        : [
+          `Хорошее время начать что-то новое в сфере ${gen}.`,
           `Начинается новый цикл для ${gen}.`,
-        ], day);
-    case 'eclipse':
-      return pick(ECLIPSE_LINES, day)(gen);
+          `Для ${closed(gen)} это удобный момент поставить небольшую цель.`,
+          `В сфере ${closed(gen)} можно сделать первый шаг.`,
+        ];
+    case 'eclipse': {
+      // Варианты затмения расставлены от дня события, чтобы соседние затмения не начинали с одного.
+      const day = Number(fact.at.slice(8, 10)) + Number(fact.at.slice(5, 7));
+      return ECLIPSE_LINES.map((_, k) => ECLIPSE_LINES[(day + k) % ECLIPSE_LINES.length](gen));
+    }
     case 'aspect': {
       const [h1, h2] = fact.houses;
       const type = fact.eventType ?? 'conjunction';
       return h2 && h2 !== h1
-        ? `Здесь встречаются две сферы: с одной стороны ${THEME[h1]}, с другой ${THEME[h2]}. ${ASPECT_MEANING[type]}`
-        : `Всё происходит в сфере ${THEME_GEN[h1]}. ${ASPECT_SAME[type]}`;
+        ? [
+          `С одной стороны, это ${THEME[h1]}. С другой стороны, ${THEME[h2]}.`,
+          `Аспект связывает две сферы. Первая: ${THEME[h1]}. Вторая: ${THEME[h2]}.`,
+          `Здесь затронуты темы ${THEME_GEN[h1]}. Им отвечают темы ${THEME_GEN[h2]}.`,
+        ]
+        : [
+          `Всё происходит в сфере ${THEME_GEN[h1]}.`,
+          `Аспект целиком приходится на сферу ${THEME_GEN[h1]}.`,
+        ];
     }
   }
 }
 
-/** Смысл события в варианте, которого ещё нет на странице; иначе ничего, датированного факта достаточно. */
+/** Что аспект значит сам по себе, после фразы о сферах. */
+function aspectTail(fact: EventFact): string {
+  if (fact.eventKind !== 'aspect') return '';
+  const [h1, h2] = fact.houses;
+  const type = fact.eventType ?? 'conjunction';
+  return ` ${(h2 && h2 !== h1 ? ASPECT_MEANING : ASPECT_SAME)[type] ?? ''}`.trimEnd();
+}
+
+/** Вариант по умолчанию; сдвиг зависит от дня, чтобы соседние события звучали по-разному. */
+function eventMeaning(fact: EventFact, shift = 0): string {
+  const variants = meaningVariants(fact);
+  if (!variants.length) return '';
+  return `${pick(variants, Number(fact.at.slice(8, 10)) + Number(fact.at.slice(5, 7)) + shift)}${aspectTail(fact)}`;
+}
+
+const sentencesOf = (line: string) => line.split(/(?<=\.)\s+/u).filter((sentence) => sentence.length > 25);
+
+/** Смысл события в варианте, которого ещё нет на странице; у каждого события он есть всегда. */
 function freshMeaning(fact: EventFact, used: Set<string> | undefined, shift = 0): string {
   if (!used) return eventMeaning(fact, shift);
-  for (let k = 0; k < 4; k += 1) {
-    const line = eventMeaning(fact, shift + k);
-    // У затмения не должна повторяться концовка фразы.
-    const key = fact.eventKind === 'eclipse' ? `eclipse:${ECLIPSE_TAILS.find((tail) => line.includes(tail))}` : line;
-    if (!used.has(key)) {
-      used.add(key);
-      return line;
+  const variants = meaningVariants(fact);
+  if (!variants.length) return '';
+  const start = Number(fact.at.slice(8, 10)) + Number(fact.at.slice(5, 7)) + shift;
+  // У затмения не должна повторяться и концовка фразы.
+  const keyOf = (line: string) => (fact.eventKind === 'eclipse' ? `eclipse:${ECLIPSE_TAILS.find((tail) => line.includes(tail))}` : line);
+  for (let k = 0; k < variants.length; k += 1) {
+    const line = pick(variants, start + k);
+    // Ни одна фраза варианта не должна уже стоять на странице.
+    if (!used.has(keyOf(line)) && !sentencesOf(line).some((sentence) => used.has(`s:${sentence}`))) {
+      used.add(keyOf(line));
+      for (const sentence of sentencesOf(line)) used.add(`s:${sentence}`);
+      return `${line}${aspectTail(fact)}`;
     }
   }
-  return '';
+  // Все варианты уже прозвучали: смысл не пропадает, а связывается с уже сказанным.
+  const fallback = `Эта дата продолжает то, что уже сказано выше о темах ${closed(THEME_GEN[fact.houses[0]])}.`;
+  used.add(fallback);
+  return `${fallback}${aspectTail(fact)}`;
 }
 
 const timed = (fact: EventFact) => fact.eventKind === 'lunation' || fact.eventKind === 'eclipse' || fact.eventKind === 'aspect';
@@ -547,8 +605,8 @@ function tomorrow(ctx: PeriodContext): LocalizedPassage[] {
       // Все факты абзаца уже названы: связываем сферы, а не повторяем их.
       const houses = [...new Set(facts.map(houseOf).filter(Boolean))];
       sentences.push(houses.length > 1
-        ? `К концу дня полезно соединить две сферы: с одной стороны ${THEME[houses[0]]}, с другой ${THEME[houses[1]]}.`
-        : `В центре дня по-прежнему: ${THEME[h]}.`);
+        ? `К концу дня полезно соединить две сферы. С одной стороны, это ${THEME[houses[0]]}. С другой стороны, ${THEME[houses[1]]}.`
+        : `В центре дня по-прежнему остаются ${THEME[h]}.`);
     }
     if (index === 0) {
       return { text: `${sentences.join(' ')} На первый план выходят ${THEME[h]}. ${advice} ${KEY[s]}` };
@@ -579,14 +637,14 @@ function weekly(ctx: PeriodContext): LocalizedPassage[] {
       const mid = rest.length > 1 ? rest[0] : undefined;
       const midText = mid ? ` Ближе ${towardDay(mid.at)} Луна переходит ${intoSign(mid.sign)} и выводит на первый план темы ${THEME_GEN[mid.house]}.` : '';
       return {
-        text: `Неделя ${range(ctx.from, ctx.through)} начинается с Луны ${inSign(start.sign)}, и в центре внимания ${THEME[start.house]}.${midText} К концу недели Луна приходит в сферу ${THEME_GEN[end.house]}. ${KEY[s]}`,
+        text: `Неделя ${range(ctx.from, ctx.through)} начинается с Луны ${inSign(start.sign)}, и в центре внимания оказываются ${THEME[start.house]}.${midText} К концу недели Луна приходит в сферу ${THEME_GEN[end.house]}. ${KEY[s]}`,
       };
     }
     const h = firstHouse(facts);
     const event = facts.find((fact): fact is EventFact => fact.kind === 'event');
     if (event) return { text: factSentence(event, false, used) };
     const advice = adviceFor(used, h);
-    if (index === 1) return { text: `В первые дни недели главное: ${THEME[h]}. ${advice}` };
+    if (index === 1) return { text: `В первые дни недели на первый план выходят ${THEME[h]}. ${advice}` };
     if (index === last) return { text: `Неделя завершается в сфере ${THEME_GEN[h]}. ${advice} ${pick(CLOSE_WEEK, idx(s))}` };
     return { text: `В середине недели внимание переходит к темам ${THEME_GEN[h]}. ${advice}` };
   });
@@ -624,7 +682,7 @@ function career(ctx: PeriodContext): LocalizedPassage[] {
     const h = firstHouse(facts);
     const sentences = facts.map((fact) => factSentence(fact, false, used)).join(' ');
     if (index === 0) return { text: `${sentences} ${fresh(used, WORK[h], WORK2[h])} ${KIND_WORK[s]}` };
-    return { text: `${sentences} Второй участок, который требует внимания: ${THEME[h]}. ${fresh(used, WORK2[h], WORK[h])} ${pick(WORK_CLOSE, idx(s))}` };
+    return { text: `${sentences} Ещё одна сфера, которая требует внимания: ${THEME[h]}. ${fresh(used, WORK2[h], WORK[h])} ${pick(WORK_CLOSE, idx(s))}` };
   });
 }
 
@@ -658,8 +716,8 @@ const THEMED_HEADINGS = [
 
 const THEMED_LEADS = [
   'В отношениях важно то, что видно: просьба, пересмотренная договорённость, время, которое вы бережёте для двоих.',
-  'В делах и обязательствах трезво оценивайте силы, сроки и то, что вы сдаёте, а не только желание.',
-  'Дома и в отдыхе берегите главное: сон, пространство и время без обязательств.',
+  'В делах и обязательствах трезво оценивайте силы, сроки и реальный объём работы, а не только желание.',
+  'Дома и в свободное время берегите главное: сон, пространство и время без обязательств.',
   'В личном плане рост имеет смысл, только если он меняет конкретное решение.',
 ];
 
@@ -687,7 +745,7 @@ function yearly(ctx: PeriodContext, year: string): LocalizedPassage[] {
       headings.add(short);
       const lead = pick([
         `В этом квартале всё вращается вокруг тем ${THEME_GEN[h]}.`,
-        `В эти месяцы в центре внимания: ${THEME[h]}.`,
+        `В эти месяцы в центре внимания окажутся ${THEME[h]}.`,
         `Этот квартал делает акцент на темах ${THEME_GEN[h]}.`,
       ], index, idx(s));
       return {
@@ -746,7 +804,7 @@ function monthlyRaw(ctx: MonthlyContext): LocalizedPassage[] {
   const lead = lunations[0];
   const used = new Set<string>();
   const passages: LocalizedPassage[] = [{
-    text: `${cap(monthYear(ctx.month))} для ${signGen(s)}. Как и в любом месячном гороскопе, ваш солнечный знак здесь считается первым домом. ${lead ? `В ${MONTH_PREP[Number(ctx.month.slice(5, 7))]} главные темы: ${THEME[lead.houses[0]]}.` : ''} ${KEY[s]}`,
+    text: `${cap(monthYear(ctx.month))} для ${signGen(s)}. Как и в любом месячном гороскопе, ваш солнечный знак здесь считается первым домом. ${lead ? `В ${MONTH_PREP[Number(ctx.month.slice(5, 7))]} на первый план выходят ${THEME[lead.houses[0]]}.` : ''} ${KEY[s]}`,
   }];
   if (lunations.length) passages.push({ heading: 'Новолуние и полнолуние', text: lunations.map((fact) => factSentence(fact, false, used)).join(' ') });
   if (stations.length) passages.push({ heading: 'Планеты меняют направление', text: stations.map((fact) => factSentence(fact, false, used)).join(' ') });
@@ -809,7 +867,7 @@ export const ru: HoroscopeLocaleModule = {
         case 'yearly-2027': return `${name}: гороскоп на 2027 год`;
       }
     },
-    description: (name, ctx) => tidy(`${headline(name, ctx)}. Написан по рассчитанному небу: положения планет, фазы Луны и точные даты. Дома отсчитываются от вашего солнечного знака.`),
+    description: (name, ctx) => tidy(`${headline(name, ctx)}. Составлен по точному расчёту неба: положения планет, фазы Луны и точные даты. Дома отсчитываются от вашего солнечного знака.`),
     periodLabel: {
       today: 'Сегодня', tomorrow: 'Завтра', weekly: 'Неделя', monthly: 'Месяц', love: 'Любовь', career: 'Работа', 'yearly-2026': '2026', 'yearly-2027': '2027',
     },
