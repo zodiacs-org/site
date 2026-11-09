@@ -132,7 +132,7 @@ describe('what the tools return', () => {
       const result = JSON.parse(JSON.stringify(await executeAiTool(tool, input, dependencies)));
       if (result.ok) answered.add(tool);
       else refused.push(`${tool} ${JSON.stringify(input)}: ${result.error.code} ${result.error.message}`);
-      const validate = validators.get(tool)!;
+      const validate = validators.get(tool as typeof EVERY_TOOL_WITH_SKY_EVENTS[number])!;
       if (!validate(result)) invalid.push(`${tool} ${JSON.stringify(input)}: ${ajv.errorsText(validate.errors).slice(0, 300)}`);
       // The server checks the same result with the tool's own schema before it answers.
       if (!OUTPUT_SCHEMAS[tool].safeParse(result).success) invalid.push(`${tool} ${JSON.stringify(input)}: refused by its own schema`);
