@@ -1,0 +1,65 @@
+{
+ "check": "C3, PREREGISTRATION.md: rule (viii) on the unchanged research runtime, run once in S2",
+ "runtime": "examples/precision-alpha (unchanged), Reducer with CORRECTED, over de440.bsp through tools/spk-backend.mjs",
+ "kernelSha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+ "oracle": {
+  "file": "oracles/erfa-places.json",
+  "sha256": "7d56d6ea938cd90df04a5b902f3ff3fddd5d3535efc886d2dac1fd9dc58831cd"
+ },
+ "node": "v22.22.2",
+ "gateArcsec": 0.000001,
+ "byBody": {
+  "Sun": {
+   "rows": 200,
+   "maxArcsec": 4.186233363621381e-7,
+   "over": 0
+  },
+  "Moon": {
+   "rows": 200,
+   "maxArcsec": 0.0000076214403149611655,
+   "over": 93
+  },
+  "Mercury": {
+   "rows": 200,
+   "maxArcsec": 4.433642646821249e-7,
+   "over": 0
+  },
+  "Venus": {
+   "rows": 200,
+   "maxArcsec": 4.2671286288382556e-7,
+   "over": 0
+  },
+  "Mars": {
+   "rows": 200,
+   "maxArcsec": 4.233499857080906e-7,
+   "over": 0
+  },
+  "Jupiter": {
+   "rows": 200,
+   "maxArcsec": 4.186059674685181e-7,
+   "over": 0
+  },
+  "Saturn": {
+   "rows": 200,
+   "maxArcsec": 4.178790965432877e-7,
+   "over": 0
+  },
+  "Uranus": {
+   "rows": 200,
+   "maxArcsec": 4.178751387191875e-7,
+   "over": 0
+  },
+  "Neptune": {
+   "rows": 200,
+   "maxArcsec": 4.164251894152437e-7,
+   "over": 0
+  },
+  "Pluto": {
+   "rows": 200,
+   "maxArcsec": 4.1824845914570984e-7,
+   "over": 0
+  }
+ },
+ "expectation": "the gate fails for the Moon",
+ "outcome": "as expected: the gate fails for the Moon"
+}

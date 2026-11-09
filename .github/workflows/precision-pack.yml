@@ -1,0 +1,78 @@
+name: Precision pack
+
+# P4.1 (docs/platform/evidence/de440-hosted-20261109/PREREGISTRATION.md, S2):
+# compiles the DE440 pack on Linux with the research runtime's compiler 2.0.0
+# and seal tool, unchanged, from de440.bsp fetched from NAIF and checked by its
+# digest, and checks the sealed pack's digest against the one the
+# preregistration pins. The kernel is cached by its digest; neither the kernel
+# nor the pack is ever uploaded as an artifact (the repository is public and
+# no DE440-derived pack is distributed, DECISIONS-2026-09-28 §11). A failed
+# download from NAIF is an instrument failure: re-run the job.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: precision-pack-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  KERNEL_URL: https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440.bsp
+  KERNEL_SHA256: a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5
+  PACK_SHA256: 51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7
+
+jobs:
+  linux-pack:
+    name: DE440 pack on Linux
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22.22.2
+
+      - name: Restore the kernel
+        id: kernel-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/kernels/de440.bsp
+          key: de440-bsp-a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5
+
+      - name: Fetch the kernel from NAIF
+        if: steps.kernel-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/kernels"
+          curl -sS --fail --retry 4 --retry-delay 15 -o "$RUNNER_TEMP/kernels/de440.bsp" "$KERNEL_URL"
+
+      - name: Check the kernel's digest
+        run: echo "$KERNEL_SHA256  $RUNNER_TEMP/kernels/de440.bsp" | sha256sum -c -
+
+      - name: Save the kernel
+        if: steps.kernel-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/kernels/de440.bsp
+          key: de440-bsp-a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5
+
+      - name: Compile and seal the pack (compiler 2.0.0, unchanged)
+        working-directory: examples/precision-alpha
+        run: |
+          node --version
+          node tools/compiler/compile.mjs --kernel="$RUNNER_TEMP/kernels/de440.bsp" --fromYear=1790 --toYear=2210 --out="$RUNNER_TEMP/de440-1790-2210.zeph"
+          node tools/seal.mjs "$RUNNER_TEMP/de440-1790-2210.zeph" "$RUNNER_TEMP/de440-1790-2210.v2.zeph"
+
+      - name: Check the pack's digest
+        run: |
+          sha256sum "$RUNNER_TEMP/de440-1790-2210.zeph" "$RUNNER_TEMP/de440-1790-2210.v2.zeph"
+          echo "$PACK_SHA256  $RUNNER_TEMP/de440-1790-2210.v2.zeph" | sha256sum -c -

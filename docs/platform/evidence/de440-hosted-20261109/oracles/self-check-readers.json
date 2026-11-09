@@ -1,0 +1,13 @@
+{
+ "reader": "docs/platform/evidence/precision-2026-09-20/numerics/src/spk2.mjs",
+ "readerSha256": "d623e128b629730d1b5695a3b9ae9641d88b4764d0e865f737a899ccee2d057a",
+ "node": "v22.22.2",
+ "states": 2400,
+ "worstRelativePosition": 2.024060614702999e-16,
+ "worstRelativeVelocity": 2.1238102264052364e-16,
+ "limits": {
+  "position": 1e-14,
+  "velocity": 1e-12
+ },
+ "pass": true
+}
