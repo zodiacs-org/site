@@ -6,7 +6,7 @@
  * The answer is computed by the site's own code (src/lib/good-days/find.ts, the module the /good-days/ page runs in
  * the browser) and pre-written sentences: no language model is called. It gives astrology's traditional reading of
  * each day plainly, money, career and legal themes included, and never a price or market call, medical timing or a
- * legal outcome; the procedure goal is for procedures that are not medical. A birth date, if the person
+ * legal outcome; there is no procedure goal, and a medical one gets NO_MEDICAL_TIMING. A birth date, if the person
  * gives one, adds their own chart for this one call; it is never stored, logged, returned or put in a link. A birth
  * date under 13 is refused before anything is worked out (tools.ts, childBirthDateRefusal, and the finder itself), and
  * a relationship or wedding reading is refused for one under 18. Pure: no network, storage or logging.
@@ -22,7 +22,7 @@ const DATE = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 const zone = z.string().min(1).max(64).regex(ZONE_PATTERN);
 
 export const goodDaysInput = z.strictObject({
-  goal: z.enum(GOOD_DAY_GOALS).describe('What the day is for: launch (launching something new), contract (signing a contract), move (moving home), relationship (starting a relationship), travel (setting out on a journey), job (starting a new job), procedure (a planned procedure that is not medical; Zodiacs gives no medical timing) or wedding.'),
+  goal: z.enum(GOOD_DAY_GOALS).describe('What the day is for: launch (launching something new), contract (signing a contract), move (moving home), relationship (starting a relationship), travel (setting out on a journey), job (starting a new job) or wedding. Zodiacs gives no timing for surgery, medical procedures or treatment.'),
   from: z.string().regex(DATE).optional().describe("The first day to search, such as 2027-03-01, on the person's clock. Leave it out for today."),
   to: z.string().regex(DATE).optional().describe(`The last day to search, at most ${GOOD_DAYS_MAX_DAYS} days in all (about twelve months), from ${GOOD_DAYS_FIRST} to ${GOOD_DAYS_LAST}. Leave it out for ${GOOD_DAYS_DEFAULT_DAYS} days from from.`),
   zone: zone.optional().describe("The person's time zone, such as Europe/London, so days and times are on their clock. Without it, UTC."),

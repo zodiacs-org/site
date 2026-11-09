@@ -34,7 +34,6 @@ const CARD_TITLE: Readonly<Record<GoodDayGoal, string>> = {
   relationship: 'Good days to start something new together',
   travel: 'Good days to travel',
   job: 'Good days to start a new job',
-  procedure: 'Good days for a planned procedure',
   wedding: 'Good days for a wedding',
 };
 

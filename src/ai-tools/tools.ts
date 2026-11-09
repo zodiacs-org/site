@@ -25,6 +25,7 @@ import { getPersonalTransits } from './features/personal-transits';
 import { explainAstrology } from './features/explain';
 import { searchSkyEvents } from './features/sky-events';
 import { getGoodDays } from './features/good-days';
+import { NO_MEDICAL_TIMING, isMedicalGoal } from '../lib/good-days/goals';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, GOOD_DAYS_TOOL_NAMES, UNDER_13_REFUSAL, inputSchemaFor, type AiToolName, type CoverageToolName, type GoodDaysToolName, type PlaceToolName, type SkyEventsToolName } from './contracts';
@@ -186,6 +187,8 @@ export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | Sk
   const parsed = schema.safeParse(input ?? {});
   if (parsed.success) return null;
   const record = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
+  // A goal asking for medical timing gets its own sentence, so it is not carried over to another goal.
+  if (tool === 'find_good_days' && isMedicalGoal(record.goal)) return failure(tool, 'invalid-request', NO_MEDICAL_TIMING);
   const sentences = parsed.error.issues.map((issue: z.core.$ZodIssue) => {
     const field = issue.path.map((part) => (typeof part === 'number' ? `[${part}]` : String(part))).join('.').replace(/\.\[/gu, '[');
     if (issue.code === 'unrecognized_keys') return 'Leave out fields this tool does not take.';
@@ -402,7 +405,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         if (goodDaysOn(dependencies)) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' The good day finder takes a goal and dates, and, only if the person asks for their own chart to count, a birth date with an optional time and birthplace time zone, for that call only; it saves none of it and returns only the natal Sun sign.';
-          capabilities.limitations.push('find_good_days (also listed in tools/list) ranks the days in a window of up to twelve months for a launch, a contract, a move, a relationship, travel, a new job, a planned procedure that is not medical, or a wedding, by traditional electional astrology, and names the days to avoid. It gives no medical timing, no price calls and no legal outcomes, and it schedules nothing.');
+          capabilities.limitations.push('find_good_days (also listed in tools/list) ranks the days in a window of up to twelve months for a launch, a contract, a move, a relationship, travel, a new job or a wedding, by traditional electional astrology, and names the days to avoid. It gives no medical timing, no price calls and no legal outcomes, and it schedules nothing.');
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };

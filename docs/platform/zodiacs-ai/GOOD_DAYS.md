@@ -11,8 +11,8 @@ astrology and returns the best days, ranked, each with a score, a one-line
 reason, every reason found and a reading-confidence label, plus the days to
 avoid with a reason each and the retrograde periods and eclipses in the window.
 
-Goals: `launch`, `contract`, `move`, `relationship`, `travel`, `job`,
-`procedure` (planned procedures that are not medical) and `wedding`. Each goal's rules are one
+Goals: `launch`, `contract`, `move`, `relationship`, `travel`, `job` and
+`wedding`. Each goal's rules are one
 table in `src/lib/good-days/goals.ts`.
 
 What a day is read from (`src/lib/good-days/find.ts`):
@@ -74,9 +74,28 @@ No language model is called. Every sentence is pre-written in those two files.
   window to sign contracts"), with no mandatory "for reflection" note. It
   never makes a price, stock or crypto call or a buy or sell signal, never
   diagnoses or times anything medical, never predicts a death and never says
-  who will win or lose a legal matter. Because medical timing is ruled out,
-  the `procedure` goal is for planned procedures that are not medical, and
-  its care line and the tool description say Zodiacs gives no medical timing.
+  who will win or lose a legal matter. There is no procedure goal: medical
+  timing is ruled out, and a goal that asks for it (`procedure`, `surgery`,
+  `medical procedure` and the like, `MEDICAL_GOAL_WORDS`) gets the fixed
+  `NO_MEDICAL_TIMING` sentence rather than the list of goals.
+
+## Decisions (9 November 2026, delegated by the owner)
+
+- **Procedure goal: dropped.** Medical timing is ruled out, and a "not
+  medical" goal would still be the nearest match for a medical request, as the
+  baby occasion was for a child's birthday; a medical goal now gets a fixed
+  sentence instead.
+- **Share image: its own card**, `public/assets/og/good-days/v1/card.jpg`
+  (`npm run data:og -- --only-good-days-card`), drawn like the v8 art cards
+  (the lockup, the display serif, the pastel discs, the art cards' byte
+  budget) in its own folder, as Your 2027 sky's card is, so the published v8
+  family keeps its bytes; `verify-og-cards` checks it.
+- **Browser drive: in CI**, as a step of `site-check.yml` after the events
+  drive, so zero CLS and the page's privacy rules are held on every PR.
+- **Dates past 2030: not yet.** The window stays inside the eclipse table
+  (2026 to 2030) and says so; the bound follows the table, so it moves forward
+  when the table is refreshed with sky.json, and nothing is read from years
+  the eclipse data does not cover.
 
 ## Release steps (owner)
 
@@ -86,3 +105,9 @@ No language model is called. Every sentence is pre-written in those two files.
    fails quietly; replies are never affected).
 3. Set `ZODIACS_GOOD_DAYS_ENABLED=1` on preview first, then production, when
    the next plugin version is ready for review.
+
+Recommended order: merge this PR with the switch off; apply the migration
+(additive, logged in #879); switch preview on and check `tools/list`, one call
+per goal and the under-13 refusal against the preview `/mcp`; then switch
+production on in the same change that submits the next plugin version, so the
+directories review the tool as it goes live. Both stay off in this PR.

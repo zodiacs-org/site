@@ -9,11 +9,11 @@
  * money, career, wellbeing and legal themes are read as the tradition reads
  * them. It never makes a price or market call, gives a buy or sell signal,
  * times or diagnoses anything medical, predicts a death, or says who will win
- * or lose a legal matter. The procedure goal is for planned procedures that
- * are not medical; medical timing is the clinician's.
+ * or lose a legal matter. There is no procedure goal: medical timing is the
+ * clinician's, and a goal that asks for it gets NO_MEDICAL_TIMING.
  */
 
-export const GOOD_DAY_GOALS = ['launch', 'contract', 'move', 'relationship', 'travel', 'job', 'procedure', 'wedding'] as const;
+export const GOOD_DAY_GOALS = ['launch', 'contract', 'move', 'relationship', 'travel', 'job', 'wedding'] as const;
 export type GoodDayGoal = (typeof GOOD_DAY_GOALS)[number];
 
 /** The planets whose retrograde periods and station days a goal is read against. */
@@ -46,8 +46,15 @@ export interface GoalRule {
 
 /** Said with every answer: how the days were read. */
 export const GOOD_DAYS_NOTE = 'Days read by the traditional rules of electional astrology: the Moon, the void-of-course Moon, retrogrades, eclipses and the Moon\'s aspects that day.';
-/** The procedure goal's refusal of medical timing, which Zodiacs does not give. */
-export const NO_MEDICAL_TIMING = 'Zodiacs gives no timing for medical procedures or treatment: that date is for you and your clinician. The procedure goal is for planned procedures that are not medical.';
+/** The answer to a goal that asks for medical timing, which Zodiacs does not give. */
+export const NO_MEDICAL_TIMING = 'Zodiacs gives no timing for surgery, medical procedures or treatment: that date is for you and your clinician. It finds good days to launch, sign a contract, move, start a relationship, travel, start a job or marry.';
+/**
+ * Goals an assistant may send for medical timing, compared lower-cased without accents, spaces or punctuation.
+ * They get NO_MEDICAL_TIMING rather than the list of goals, so the request is not carried over to another goal.
+ */
+export const MEDICAL_GOAL_WORDS: readonly string[] = ['procedure', 'medical', 'medicalprocedure', 'surgery', 'operation', 'treatment', 'dental', 'dentist', 'doctor', 'hospital', 'birth', 'csection', 'ivf', 'vaccine', 'vaccination', 'cosmetic', 'cosmeticsurgery', 'therapy', 'health'];
+export const isMedicalGoal = (value: unknown): boolean => typeof value === 'string'
+  && MEDICAL_GOAL_WORDS.includes(value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z]/gu, ''));
 
 export const GOAL_RULES: Readonly<Record<GoodDayGoal, GoalRule>> = {
   launch: {
@@ -121,18 +128,6 @@ export const GOAL_RULES: Readonly<Record<GoodDayGoal, GoalRule>> = {
     moonWhy: 'tradition reads as steady and willing to work',
     fullMoon: 0,
     care: 'Tradition reads these as strong days to start work and build a reputation, and a good window to settle pay and terms. The start date you agree with the employer comes first.',
-  },
-  procedure: {
-    label: 'A planned procedure (not medical)',
-    forWhat: 'for a planned procedure',
-    phase: 'waning',
-    moonGood: ['taurus', 'cancer', 'virgo'],
-    moonPoor: ['scorpio', 'capricorn'],
-    retrograde: { Mars: -12, Mercury: -4 },
-    helpers: ['Venus', 'Jupiter'],
-    moonWhy: 'tradition reads as calm',
-    fullMoon: -8,
-    care: 'Tradition prefers a waning Moon for work that takes something away, such as clearing, cutting back or ending an arrangement. Zodiacs gives no timing for medical procedures or treatment: that date is for you and your clinician.',
   },
   wedding: {
     label: 'Wedding',

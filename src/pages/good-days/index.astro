@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import GoodDayFinder from '../../islands/GoodDayFinder.tsx';
+import { OG_EN } from '../../strings/seo.en.mjs';
 import '../../styles/calculator.css';
 import '../../styles/good-days.css';
 
@@ -15,7 +16,7 @@ const faq = [
   },
   {
     q: 'Can it time a medical procedure?',
-    a: 'No. Zodiacs gives no timing for medical procedures or treatment: that date is for you and your clinician. The procedure goal is for planned procedures that are not medical, such as clearing a space or ending an arrangement. For every other goal the days are astrology’s traditional reading, and no day guarantees how things go.',
+    a: 'No. Zodiacs gives no timing for medical procedures or treatment: that date is for you and your clinician. For the goals it does read, the days are astrology’s traditional reading, and no day guarantees how things go.',
   },
   {
     q: 'What does adding my birth date change?',
@@ -45,6 +46,8 @@ const jsonLd = [
   title="Good Day Finder: Best Days by Electional Astrology | Zodiacs.org"
   description="Find the best days in the next twelve months for a launch, a contract, a move, travel, a new job or a wedding, by traditional electional astrology, with the days to avoid. Free."
   path="/good-days/"
+  image={OG_EN.goodDays.image}
+  imageAlt={OG_EN.goodDays.alt}
   jsonLd={jsonLd}
 >
   {/* A shared link (#g=…&f=…&t=…) opens on its results: the slot is reserved before first paint so they arrive without moving anything. */}

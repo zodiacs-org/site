@@ -249,6 +249,10 @@ jobs:
         timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/events npm run test:events:browser
 
+      - name: Good day finder drive (zero CLS, privacy, share link)
+        timeout-minutes: 5
+        run: npm run test:good-days:browser
+
       - name: Phase 5 People noindex pilot
         timeout-minutes: 10
         run: OUT_DIR=tests/visual/artifacts/phase5-people npm run test:phase5:people

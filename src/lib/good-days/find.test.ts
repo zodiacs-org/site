@@ -2,7 +2,8 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import sky from '../../data/sky.json';
 import { siteVoidOfCourseWindows } from '../../data/void-of-course';
-import { GOAL_RULES, GOOD_DAYS_NOTE, GOOD_DAY_GOALS } from './goals';
+import { moonPhase } from '@zodiacs/engine';
+import { GOAL_RULES, GOOD_DAYS_NOTE, GOOD_DAY_GOALS, isMedicalGoal } from './goals';
 import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, UNDER_13_SENTENCE, UNDER_18_PARTNERSHIP_SENTENCE, findGoodDays, goodDaysWindow, phaseBand, voidPeriods } from './find';
 
 const clock = createLocalTimeModule();
@@ -70,13 +71,12 @@ describe('known answers', () => {
     expect(phaseBand(270)).toBe('waning');
   });
 
-  it('reads the full Moon of 20 January 2027 (committed sky data) as full, which a procedure is kept away from', async () => {
+  it('reads the full Moon of January 2027 (committed sky data) as full, and the days either side as waxing and waning', () => {
     const full = (sky.moons as { type: string; at: string }[]).find((moon) => moon.type === 'full' && moon.at.startsWith('2027-01'))!;
-    const date = full.at.slice(0, 10);
-    const result = await findGoodDays({ goal: 'procedure', from: '2027-01-05', to: '2027-02-05', zone: 'UTC', today: TODAY }, clock);
-    for (const day of result.best) expect(day.date).not.toBe(date);
-    // A waning Moon is the phase tradition prefers for a procedure, so the best days are after the full Moon.
-    expect(result.best.filter((day) => day.date > date).length).toBeGreaterThan(result.best.length / 2);
+    const at = Date.parse(full.at);
+    expect(phaseBand(moonPhase(new Date(at)).angle)).toBe('full');
+    expect(phaseBand(moonPhase(new Date(at - 3 * DAY)).angle)).toBe('waxing');
+    expect(phaseBand(moonPhase(new Date(at + 3 * DAY)).angle)).toBe('waning');
   });
 });
 
@@ -111,8 +111,9 @@ describe('the answer', () => {
       expect(text, goal).not.toMatch(/\b(?:buy|sell|stock|stocks|shares|crypto|token|price target|surgery|diagnos\w*|death|die|dies|you will (?:win|lose))\b/iu);
       expect(text, goal).not.toContain('for reflection');
     }
-    expect(GOAL_RULES.procedure.label).toBe('A planned procedure (not medical)');
-    expect(GOAL_RULES.procedure.care).toContain('Zodiacs gives no timing for medical procedures or treatment');
+    expect(GOOD_DAY_GOALS).not.toContain('procedure');
+    for (const word of ['procedure', 'Surgery', 'medical procedure', 'C-section', 'dentist']) expect(isMedicalGoal(word), word).toBe(true);
+    for (const word of ['wedding', 'launch', 'travel']) expect(isMedicalGoal(word), word).toBe(false);
     expect(GOAL_RULES.contract.care).toContain('good windows to sign contracts');
     expect(GOAL_RULES.job.care).toContain('pay and terms');
   });

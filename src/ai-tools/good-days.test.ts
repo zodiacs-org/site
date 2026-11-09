@@ -6,7 +6,7 @@ import addFormats from 'ajv-formats';
 import { createAiNodeHandler } from './http';
 import { EVERY_AI_TOOL_NAME, EVERY_TOOL_WITH_SKY_EVENTS, GOOD_DAYS_SWITCH_ENV, OUTPUT_SCHEMAS, UNDER_13_REFUSAL } from './contracts';
 import { GOOD_DAYS_INSTRUCTION } from './server';
-import { GOOD_DAYS_NOTE } from '../lib/good-days/goals';
+import { GOOD_DAYS_NOTE, NO_MEDICAL_TIMING } from '../lib/good-days/goals';
 import { UNDER_18_PARTNERSHIP_SENTENCE } from '../lib/good-days/find';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
@@ -98,7 +98,7 @@ describe('the good days switch on', () => {
     expect(added.title).toBe('Find good days');
     expect(added.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: false });
     expect(String(added.description)).not.toMatch(/[–—]/u);
-    expect(String(added.description)).toContain('make no price call, buy or sell signal, or prediction of who wins a legal matter');
+    expect(String(added.description)).toContain('Make no price call, buy or sell signal, or prediction of who wins a legal matter');
 
     const both = await serve({ ...ON, ZODIACS_SKY_EVENTS_ENABLED: '1' });
     const names = (message((await post(both, rpc('tools/list'))).text).result.tools as { name: string }[]).map((tool) => tool.name);
@@ -138,15 +138,17 @@ describe('the good days switch on', () => {
     expect(counted).toEqual(['find_good_days|claude']);
   });
 
-  it('gives no medical timing: the procedure goal is for procedures that are not medical', async () => {
+  it('gives no medical timing: a medical goal gets its own sentence, not the list of goals', async () => {
     const host = await serve(ON);
-    const { structuredContent } = await call(host, 'find_good_days', { goal: 'procedure', from: '2027-05-01', to: '2027-06-30', zone: 'America/Chicago' });
-    expect(structuredContent.data.goalLabel).toBe('A planned procedure (not medical)');
-    expect(structuredContent.data.care).toContain('Zodiacs gives no timing for medical procedures or treatment: that date is for you and your clinician.');
-    const text = JSON.stringify(structuredContent);
-    expect(text).not.toMatch(/\b(?:surgery|diagnos\w*|prescri\w*|death|die|dies|dying)\b/iu);
-    const tools = message((await post(host, rpc('tools/list'))).text).result.tools as { name: string; description: string }[];
-    expect(tools.find((tool) => tool.name === 'find_good_days')!.description).toContain('Do not use it to time surgery, treatment or any medical procedure');
+    for (const goal of ['procedure', 'surgery', 'Medical procedure', 'C-section']) {
+      const result = await call(host, 'find_good_days', { goal, from: '2027-05-01', to: '2027-06-30' });
+      expect(result.isError, goal).toBe(true);
+      expect(result.structuredContent.error.message, goal).toBe(NO_MEDICAL_TIMING);
+    }
+    const tools = message((await post(host, rpc('tools/list'))).text).result.tools as { name: string; description: string; inputSchema: { properties: { goal: { enum: string[] } } } }[];
+    const tool = tools.find((entry) => entry.name === 'find_good_days')!;
+    expect(tool.inputSchema.properties.goal.enum).toEqual(['launch', 'contract', 'move', 'relationship', 'travel', 'job', 'wedding']);
+    expect(tool.description).toContain('It gives no timing for surgery, medical procedures or treatment');
   });
 });
 
@@ -200,7 +202,7 @@ describe('privacy', () => {
     expect(time.isError).toBe(true);
     expect(time.structuredContent.error.message).toBe('A birth time needs its birthplace time zone (birthZone).');
     const goal = await call(host, 'find_good_days', { goal: 'lottery' });
-    expect(goal.structuredContent.error.message).toBe('goal must be one of: launch, contract, move, relationship, travel, job, procedure, wedding.');
+    expect(goal.structuredContent.error.message).toBe('goal must be one of: launch, contract, move, relationship, travel, job, wedding.');
     const long = await call(host, 'find_good_days', { goal: 'travel', from: '2027-01-01', to: '2028-06-01' });
     expect(long.structuredContent.error.message).toBe('The window is at most 366 days, about twelve months. Search a longer span in parts.');
   });

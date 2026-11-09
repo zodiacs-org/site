@@ -40898,8 +40898,11 @@ async function searchSkyEvents(args, clock2, options) {
 import { z as z13 } from "zod";
 
 // src/lib/good-days/goals.ts
-var GOOD_DAY_GOALS = ["launch", "contract", "move", "relationship", "travel", "job", "procedure", "wedding"];
+var GOOD_DAY_GOALS = ["launch", "contract", "move", "relationship", "travel", "job", "wedding"];
 var GOOD_DAYS_NOTE = "Days read by the traditional rules of electional astrology: the Moon, the void-of-course Moon, retrogrades, eclipses and the Moon's aspects that day.";
+var NO_MEDICAL_TIMING = "Zodiacs gives no timing for surgery, medical procedures or treatment: that date is for you and your clinician. It finds good days to launch, sign a contract, move, start a relationship, travel, start a job or marry.";
+var MEDICAL_GOAL_WORDS = ["procedure", "medical", "medicalprocedure", "surgery", "operation", "treatment", "dental", "dentist", "doctor", "hospital", "birth", "csection", "ivf", "vaccine", "vaccination", "cosmetic", "cosmeticsurgery", "therapy", "health"];
+var isMedicalGoal = (value) => typeof value === "string" && MEDICAL_GOAL_WORDS.includes(value.normalize("NFD").replace(new RegExp("\\p{M}", "gu"), "").toLowerCase().replace(/[^a-z]/gu, ""));
 var GOAL_RULES = {
   launch: {
     label: "Launch something new",
@@ -40972,18 +40975,6 @@ var GOAL_RULES = {
     moonWhy: "tradition reads as steady and willing to work",
     fullMoon: 0,
     care: "Tradition reads these as strong days to start work and build a reputation, and a good window to settle pay and terms. The start date you agree with the employer comes first."
-  },
-  procedure: {
-    label: "A planned procedure (not medical)",
-    forWhat: "for a planned procedure",
-    phase: "waning",
-    moonGood: ["taurus", "cancer", "virgo"],
-    moonPoor: ["scorpio", "capricorn"],
-    retrograde: { Mars: -12, Mercury: -4 },
-    helpers: ["Venus", "Jupiter"],
-    moonWhy: "tradition reads as calm",
-    fullMoon: -8,
-    care: "Tradition prefers a waning Moon for work that takes something away, such as clearing, cutting back or ending an arrangement. Zodiacs gives no timing for medical procedures or treatment: that date is for you and your clinician."
   },
   wedding: {
     label: "Wedding",
@@ -41407,7 +41398,7 @@ var ZONE_PATTERN9 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE5 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var zone4 = z13.string().min(1).max(64).regex(ZONE_PATTERN9);
 var goodDaysInput = z13.strictObject({
-  goal: z13.enum(GOOD_DAY_GOALS).describe("What the day is for: launch (launching something new), contract (signing a contract), move (moving home), relationship (starting a relationship), travel (setting out on a journey), job (starting a new job), procedure (a planned procedure that is not medical; Zodiacs gives no medical timing) or wedding."),
+  goal: z13.enum(GOOD_DAY_GOALS).describe("What the day is for: launch (launching something new), contract (signing a contract), move (moving home), relationship (starting a relationship), travel (setting out on a journey), job (starting a new job) or wedding. Zodiacs gives no timing for surgery, medical procedures or treatment."),
   from: z13.string().regex(DATE5).optional().describe("The first day to search, such as 2027-03-01, on the person's clock. Leave it out for today."),
   to: z13.string().regex(DATE5).optional().describe(`The last day to search, at most ${GOOD_DAYS_MAX_DAYS} days in all (about twelve months), from ${GOOD_DAYS_FIRST} to ${GOOD_DAYS_LAST}. Leave it out for ${GOOD_DAYS_DEFAULT_DAYS} days from from.`),
   zone: zone4.optional().describe("The person's time zone, such as Europe/London, so days and times are on their clock. Without it, UTC."),
@@ -41819,7 +41810,7 @@ var TOOL_DESCRIPTIONS = {
   explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.",
   find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place.",
   search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets and Chiron turning retrograde or direct (stations), planets and Chiron changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, when Chiron changes sign, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets (or Chiron) for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, with the same times: from the Moon's last major aspect to the Sun or a planet through Pluto in a sign until it enters the next sign. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts: share them as facts, and keep what they mean in astrology separate.",
-  find_good_days: "Finds the best days for a goal in a window of up to twelve months, by the traditional rules of electional astrology, and the days to avoid. Goals: launch, contract (signing a contract), move (moving home), relationship (starting a relationship), travel, job (starting a new job), procedure (a planned procedure that is not medical) and wedding. Each day is read from the Moon's phase and sign, the void-of-course Moon, Mercury, Venus and Mars retrograde and their station days, eclipses (2026 to 2030) and the Moon's supportive or difficult aspects that day. Give the goal, from and to as dates (at most 366 days in all) and the person's time zone. If the person asks for their own chart to count, add their birth date, and the birth time and birthplace time zone only if they give them; these are used for this answer only and never stored. Never send a child's birth date: it refuses one under 13, and gives no relationship or wedding reading from one under 18. It returns ranked days, each with a score, a one-line reason and a reading-confidence label, the days to avoid with a reason each, and the retrograde periods and eclipses in the window. Share them plainly as astrology's traditional reading, money, career and legal themes included. Do not use it to time surgery, treatment or any medical procedure, and make no price call, buy or sell signal, or prediction of who wins a legal matter. It guarantees nothing and does not schedule or book anything."
+  find_good_days: "Finds the best days for a goal in a window of up to twelve months, by the traditional rules of electional astrology, and the days to avoid. Goals: launch, contract (signing a contract), move (moving home), relationship (starting a relationship), travel, job (starting a new job) and wedding. Each day is read from the Moon's phase and sign, the void-of-course Moon, Mercury, Venus and Mars retrograde and their station days, eclipses (2026 to 2030) and the Moon's supportive or difficult aspects that day. Give the goal, from and to as dates (at most 366 days in all) and the person's time zone. If the person asks for their own chart to count, add their birth date, and the birth time and birthplace time zone only if they give them; these are used for this answer only and never stored. Never send a child's birth date: it refuses one under 13, and gives no relationship or wedding reading from one under 18. It returns ranked days, each with a score, a one-line reason and a reading-confidence label, the days to avoid with a reason each, and the retrograde periods and eclipses in the window. Share them plainly as astrology's traditional reading, money, career and legal themes included. It gives no timing for surgery, medical procedures or treatment, and a goal that asks for one gets that answer; do not call it for those. Make no price call, buy or sell signal, or prediction of who wins a legal matter. It guarantees nothing and does not schedule or book anything."
 };
 var SKY_EVENTS_INPUT_SCHEMAS = {
   get_natal_chart: natalChartInputWithHouses,
@@ -43023,6 +43014,7 @@ function coverageInputRefusal(tool, input, schema = INPUT_SCHEMAS[tool]) {
   const parsed = schema.safeParse(input ?? {});
   if (parsed.success) return null;
   const record2 = input && typeof input === "object" ? input : {};
+  if (tool === "find_good_days" && isMedicalGoal(record2.goal)) return failure(tool, "invalid-request", NO_MEDICAL_TIMING);
   const sentences = parsed.error.issues.map((issue) => {
     const field = issue.path.map((part) => typeof part === "number" ? `[${part}]` : String(part)).join(".").replace(/\.\[/gu, "[");
     if (issue.code === "unrecognized_keys") return "Leave out fields this tool does not take.";
@@ -43182,7 +43174,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         if (goodDaysOn(dependencies)) {
           const capabilities = data;
           capabilities.privacy += " The good day finder takes a goal and dates, and, only if the person asks for their own chart to count, a birth date with an optional time and birthplace time zone, for that call only; it saves none of it and returns only the natal Sun sign.";
-          capabilities.limitations.push("find_good_days (also listed in tools/list) ranks the days in a window of up to twelve months for a launch, a contract, a move, a relationship, travel, a new job, a planned procedure that is not medical, or a wedding, by traditional electional astrology, and names the days to avoid. It gives no medical timing, no price calls and no legal outcomes, and it schedules nothing.");
+          capabilities.limitations.push("find_good_days (also listed in tools/list) ranks the days in a window of up to twelve months for a launch, a contract, a move, a relationship, travel, a new job or a wedding, by traditional electional astrology, and names the days to avoid. It gives no medical timing, no price calls and no legal outcomes, and it schedules nothing.");
         }
         if (dependencies.accounts && dependencies.occasions) {
           const capabilities = data;
