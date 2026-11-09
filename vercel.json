@@ -398,6 +398,10 @@
       "destination": "/api/email/subscribe?__zodiacs_email_route=unsubscribe"
     },
     {
+      "source": "/api/email/birthday-reminder",
+      "destination": "/api/email/subscribe?__zodiacs_email_route=birthday-reminder"
+    },
+    {
       "source": "/v1/guide/turn",
       "destination": "/api/guide?action=turn"
     },

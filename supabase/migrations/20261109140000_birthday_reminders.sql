@@ -1,0 +1,91 @@
+-- Birthday reminders: one email a year, on the birthday, for people who ask
+-- for it after scoring their year (src/lib/birthday-reminder/). Kept, with
+-- consent: the email address and the birthday's month and day. Never a birth
+-- year, time, place or name. Double opt-in: a request is pending until its
+-- confirmation link is followed, and a pending request older than 48 hours is
+-- deleted. Unsubscribing deletes the row. Only the service role can reach it.
+-- Additive: a new schema, table and functions; nothing existing changes.
+-- UTC filename; not applied to any database until the owner approves it.
+create schema if not exists zodiacs_reminders_private;
+revoke all on schema zodiacs_reminders_private from public, anon, authenticated;
+
+create table if not exists zodiacs_reminders_private.birthday_reminders (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique check (char_length(email) between 3 and 254 and email = lower(email)),
+  month smallint not null check (month between 1 and 12),
+  day smallint not null check (day between 1 and 31),
+  confirm_hash text check (confirm_hash is null or confirm_hash ~ '^[0-9a-f]{64}$'),
+  requested_at timestamptz not null default pg_catalog.now(),
+  confirmed_at timestamptz,
+  last_sent_on date
+);
+alter table zodiacs_reminders_private.birthday_reminders enable row level security;
+revoke all on zodiacs_reminders_private.birthday_reminders from public, anon, authenticated;
+
+-- A new or repeated request: the reminder waits for confirmation again, with the new month and day.
+create or replace function public.birthday_reminder_request(p_email text, p_month int, p_day int, p_confirm_hash text)
+returns text language plpgsql security definer set search_path = '' as $$
+declare previous timestamptz;
+begin
+  select requested_at into previous from zodiacs_reminders_private.birthday_reminders where email = p_email;
+  if previous is not null and previous > pg_catalog.now() - interval '60 seconds' then return 'capped'; end if;
+  insert into zodiacs_reminders_private.birthday_reminders as r (email, month, day, confirm_hash, requested_at, confirmed_at)
+    values (p_email, p_month, p_day, p_confirm_hash, pg_catalog.now(), null)
+  on conflict (email) do update set month = excluded.month, day = excluded.day, confirm_hash = excluded.confirm_hash,
+    requested_at = excluded.requested_at, confirmed_at = null;
+  return 'requested';
+end;
+$$;
+
+create or replace function public.birthday_reminder_confirm(p_confirm_hash text)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare found_id uuid;
+begin
+  update zodiacs_reminders_private.birthday_reminders set confirmed_at = pg_catalog.now(), confirm_hash = null
+    where confirm_hash = p_confirm_hash and requested_at > pg_catalog.now() - interval '48 hours'
+    returning id into found_id;
+  return found_id is not null;
+end;
+$$;
+
+create or replace function public.birthday_reminder_delete(p_id uuid)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare found_id uuid;
+begin
+  delete from zodiacs_reminders_private.birthday_reminders where id = p_id returning id into found_id;
+  return found_id is not null;
+end;
+$$;
+
+create or replace function public.birthday_reminders_due(p_days jsonb)
+returns table (id uuid, email text) language plpgsql security definer set search_path = '' as $$
+begin
+  delete from zodiacs_reminders_private.birthday_reminders r
+    where r.confirmed_at is null and r.requested_at < pg_catalog.now() - interval '48 hours';
+  return query select r.id, r.email from zodiacs_reminders_private.birthday_reminders r
+    join pg_catalog.jsonb_to_recordset(p_days) as d(month int, day int) on r.month = d.month and r.day = d.day
+    where r.confirmed_at is not null
+      and (r.last_sent_on is null or r.last_sent_on < pg_catalog.date_trunc('year', pg_catalog.now() at time zone 'UTC')::date);
+end;
+$$;
+
+create or replace function public.birthday_reminder_sent(p_id uuid)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare found_id uuid;
+begin
+  update zodiacs_reminders_private.birthday_reminders set last_sent_on = (pg_catalog.now() at time zone 'UTC')::date
+    where id = p_id returning id into found_id;
+  return found_id is not null;
+end;
+$$;
+
+revoke all on function public.birthday_reminder_request(text, int, int, text) from public, anon, authenticated;
+revoke all on function public.birthday_reminder_confirm(text) from public, anon, authenticated;
+revoke all on function public.birthday_reminder_delete(uuid) from public, anon, authenticated;
+revoke all on function public.birthday_reminders_due(jsonb) from public, anon, authenticated;
+revoke all on function public.birthday_reminder_sent(uuid) from public, anon, authenticated;
+grant execute on function public.birthday_reminder_request(text, int, int, text) to service_role;
+grant execute on function public.birthday_reminder_confirm(text) to service_role;
+grant execute on function public.birthday_reminder_delete(uuid) to service_role;
+grant execute on function public.birthday_reminders_due(jsonb) to service_role;
+grant execute on function public.birthday_reminder_sent(uuid) to service_role;

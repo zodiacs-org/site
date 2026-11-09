@@ -9,6 +9,7 @@ import { hasStandaloneWeeklyEmailCapture } from '../../src/lib/email/config.js';
 import { dailyEmailPage } from '../../src/lib/email/daily-page.js';
 import confirmHandler from './_confirm.js';
 import unsubscribeHandler from './_unsubscribe.js';
+import birthdayReminderHandler from './_birthday-reminder.js';
 
 function sendJson(res: any, status: number, body: Record<string, string | boolean>): void {
   res.statusCode = status;
@@ -182,10 +183,10 @@ export async function handleEmailSubscribe(req: any, res: any): Promise<void> {
   }
 }
 
-export function emailLifecycleRoute(req: any): 'subscribe' | 'confirm' | 'unsubscribe' | 'invalid' {
+export function emailLifecycleRoute(req: any): 'subscribe' | 'confirm' | 'unsubscribe' | 'birthday-reminder' | 'invalid' {
   const route = req?.query?.__zodiacs_email_route;
   if (route === undefined) return 'subscribe';
-  if (route === 'confirm' || route === 'unsubscribe') return route;
+  if (route === 'confirm' || route === 'unsubscribe' || route === 'birthday-reminder') return route;
   return 'invalid';
 }
 
@@ -197,6 +198,11 @@ export default async function handler(req: any, res: any): Promise<void> {
   }
   if (route === 'unsubscribe') {
     await unsubscribeHandler(req, res);
+    return;
+  }
+  if (route === 'birthday-reminder') {
+    // Off, and answering 404, unless BIRTHDAY_REMINDER_ENABLED=1 (src/lib/birthday-reminder/config.ts).
+    await birthdayReminderHandler(req, res);
     return;
   }
   if (route === 'invalid') {

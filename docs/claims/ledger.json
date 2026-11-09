@@ -1966,6 +1966,7 @@
     {"path":"src/lib/assistant/open-assistant.ts","text":"Under Anthropic's standard API policy, submitted inputs and generated outputs are deleted within 30 days, except when longer retention is required by law or to enforce its usage policy.","exempt":"third-party","source":"https://privacy.claude.com/en/articles/7996866-how-long-do-you-store-my-organization-s-data"},
     {"path":"src/lib/assistant/open-assistant.ts","text":"Your questions go to Anthropic, the AI company that writes and safety-checks Guide's answers.","claim":"priv.guide"},
     {"path":"src/lib/auth/oauth.ts","text":"Sign-in could not be finished in this browser.","exempt":"not-a-claim"},
+    {"path":"src/lib/birthday-reminder/store.ts","text":"Supabase URL must use HTTPS.","exempt":"input-validation"},
     {"path":"src/lib/compare/diff.ts","text":"From engine 0.1.1-rc.15 an instant can be given on UTC, UT1 or TT, and the same digits on another scale","claim":"acc.compare-delta-t"},
     {"path":"src/lib/compare/diff.ts","text":"TAI − UTC (leap seconds), seconds","exempt":"definitional"},
     {"path":"src/lib/compare/diff.ts","text":"The two charts were computed with different values of ΔT (TT − UT1), which moves the positions.","claim":"acc.compare-delta-t"},

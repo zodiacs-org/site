@@ -53,6 +53,7 @@ describe('GitHub Actions trust boundaries', () => {
   it('scopes every Actions secret reference to its exact protected environment', async () => {
     const expected = new Map([
       ['account-deletion-receipt-cleanup.yml', 'account-cleanup-production'],
+      ['birthday-reminders.yml', 'birthday-reminders-production'],
       ['compat-invite-sweep.yml', 'compatibility-invite-production'],
       ['daily-email.yml', 'daily-email-production'],
       ['db-backup.yml', 'database-backup-production'],

@@ -13,6 +13,8 @@ const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
+// The birthday reminder is named only while the site offers it (src/lib/birthday-reminder/).
+const birthdayReminderOffered = (import.meta.env.PUBLIC_BIRTHDAY_REMINDER_ENABLED ?? process.env.PUBLIC_BIRTHDAY_REMINDER_ENABLED) === '1';
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
 const walletChartEnabled = configuredWalletChains({
   ...process.env,
@@ -459,6 +461,16 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
           provider, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
           Every email includes a one-click unsubscribe link, and you can turn it
           off from your profile at any time.
+        </p>
+      )}
+      {birthdayReminderOffered && (
+        <p>
+          After scoring your year you can ask for one email a year, on your
+          birthday. If you do, and confirm it from the email we send, we keep
+          your email address and your birthday's month and day, nothing else,
+          and send through <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
+          An unconfirmed request is deleted after 48 hours, and the link in
+          every birthday email deletes both.
         </p>
       )}
       <p>
