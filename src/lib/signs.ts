@@ -55,6 +55,12 @@ export function signPrepositional(sign: Sign | string): string {
   return russianRuntime().signs.prepositional[resolved.slug];
 }
 
+/** "в Овне", "во Льве": the preposition Russian puts before a sign, with its prepositional case. */
+export function signInRu(sign: Sign | string): string {
+  const name = signPrepositional(sign);
+  return `${/^Льв/u.test(name) ? 'во' : 'в'} ${name}`;
+}
+
 const SIGN_NAME_ES: Record<string, string> = {
   aries: 'Aries',
   taurus: 'Tauro',

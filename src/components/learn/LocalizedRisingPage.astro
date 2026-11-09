@@ -10,7 +10,7 @@ import Base from '../../layouts/Base.astro';
 import Faq from '../Faq.astro';
 import SignIcon from '../SignIcon.astro';
 import ChartCalculator from '../../islands/ChartCalculator.tsx';
-import { SIGNS, signBySlug, signName, signPrepositional, formatLongitude, elementLabel, modalityLabel, type Sign } from '../../lib/signs';
+import { SIGNS, signBySlug, signName, signPrepositional, signInRu, formatLongitude, elementLabel, modalityLabel, type Sign } from '../../lib/signs';
 import { bodyLongitude } from '../../lib/engine/full';
 import type { BodyName } from '../../lib/engine/types';
 import { formatShortDate } from '../../lib/i18n/dates';
@@ -54,7 +54,7 @@ interface Chrome {
 }
 
 /** Russian takes "во" before Льве and "в" before every other sign. */
-const ruIn = (sign: Sign) => `${sign.slug === 'leo' ? 'во' : 'в'} ${signPrepositional(sign)}`;
+const ruIn = (sign: Sign) => signInRu(sign);
 
 const CHROME: Record<RisingLocale, Chrome> = {
   es: {

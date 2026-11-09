@@ -33,7 +33,7 @@ import {
   type TransitCatalog,
 } from '../../lib/today-sky';
 
-export type TodayLocale = 'es' | 'pt' | 'fr' | 'it';
+export type TodayLocale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
 type Locale = TodayLocale;
 
 
@@ -149,6 +149,7 @@ const ARTICLED: Record<Locale, { Sun: string; Moon: string }> = {
   pt: { Sun: 'o Sol', Moon: 'a Lua' },
   fr: { Sun: 'le Soleil', Moon: 'la Lune' },
   it: { Sun: 'il Sole', Moon: 'la Luna' },
+  ru: { Sun: 'Солнце', Moon: 'Луна' },
 };
 export const named = (locale: Locale, body: string) => {
   if (body === 'Sun' || body === 'Moon') return ARTICLED[locale][body];

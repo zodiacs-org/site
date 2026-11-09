@@ -4,7 +4,7 @@
  * then labeled from its source — the wall clock never decides what displays.
  * Future ephemeris files must not become the current editorial month.
  */
-import { signBySlug, signName, signPrepositional } from './signs';
+import { signBySlug, signName, signPrepositional, signInRu } from './signs';
 import type { CatalogLocale as Locale } from './i18n';
 import { aspectLabel, planetLabel } from './i18n/astrology';
 import { formatDate } from './i18n/dates';
@@ -117,7 +117,7 @@ const TRANSIT_EVENT_LABELS = {
   },
   ru: {
     ingress: (event) =>
-      `${planetLabel('ru', event.planet)} входит в ${signPrepositional(event.sign)}${event.retrograde ? ', ретроградно' : ''}`,
+      `${planetLabel('ru', event.planet)} входит ${signInRu(event.sign)}${event.retrograde ? ', ретроградно' : ''}`,
     lunation: (event) =>
       `${event.type === 'new' ? 'Новолуние' : 'Полнолуние'} · ${Math.floor(event.degree)}° · ${sn(event.sign, 'ru')}`,
     station: (event) =>

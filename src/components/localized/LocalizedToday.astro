@@ -34,7 +34,7 @@ import eclipseData from '../../data/eclipses.json';
 import { eventsPublication as eventsData } from '../../lib/events/site-publication';
 import type { Daily, DailyEvent } from '../../lib/daily';
 import { ASPECT_GLYPH, PLANET_GLYPH } from '../../lib/glyphs/paths';
-import { dailyReadingForLocale } from '../../lib/i18n/daily-reading';
+import { dailyReadingFor } from '../../lib/locale-expansion/daily-reading';
 import { formatDate, intlLocale } from '../../lib/i18n/dates';
 import { aspectLabel, moonPhaseLabel, planetLabel } from '../../lib/i18n/astrology';
 import { englishOnlyCue } from '../../lib/i18n/english-only';
@@ -61,7 +61,7 @@ import {
 import { COPY_FOR_TODAY, TODAY, named, cap, type Part, type TodayCopy as Copy, type TodayLocale as Locale } from './today-copy-registry';
 interface Props { locale: Locale }
 const COPY = COPY_FOR_TODAY;
-const AND: Record<Locale, string> = { es: 'y', pt: 'e', fr: 'et', it: 'e' };
+const AND: Record<Locale, string> = { es: 'y', pt: 'e', fr: 'et', it: 'e', ru: 'и' };
 
 const { locale } = Astro.props;
 const c = COPY[locale];
@@ -139,7 +139,7 @@ function moonPath(fraction: number, growing: boolean, r = 20): string {
 const todayMoonPath = moonPath(daily.moon.illumination, waxing);
 
 // The twelve sign notes, exactly as the localized reading renders them.
-const readings = SIGNS.map((entry) => ({ sign: entry, reading: dailyReadingForLocale(entry.slug, daily, locale) }));
+const readings = SIGNS.map((entry) => ({ sign: entry, reading: dailyReadingFor(entry.slug, daily, locale) }));
 
 // The dates ahead, worded from the catalogs' own fields.
 const allIngresses = catalogs.flatMap((catalog) => catalog.ingresses);
@@ -585,9 +585,9 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
       <div class="kcard kcard--raised tdl-ask">
         <div>
           <h3 class="h-4">{c.askTitle}</h3>
-          <AskGuideLine lead={c.askLead} locale={locale} />
+          {locale !== 'ru' && <AskGuideLine lead={c.askLead} locale={locale} />}
         </div>
-        <GuideQuickPrompts prompts={c.prompts} locale={locale} label={c.askLabel} />
+        {locale !== 'ru' && <GuideQuickPrompts prompts={c.prompts} locale={locale} label={c.askLabel} />}
       </div>
     </section>
 

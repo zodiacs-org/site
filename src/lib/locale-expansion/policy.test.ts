@@ -64,7 +64,10 @@ describe('locale expansion publication record', () => {
     expect(familyForPath('/new-moon/2026-12-09/')).toBe('new-moon');
     expect(familyForPath('/learn/zodiac-dates/')).toBe('zodiac-dates');
     expect(familyForPath('/full-moon-calendar/')).toBeUndefined();
-    expect(familyForPath('/compatibility/aries-leo/')).toBeUndefined();
+    expect(familyForPath('/compatibility/aries-leo/')).toBe('compatibility-pair');
+    expect(familyForPath('/rising-sign/leo/')).toBe('rising-profile');
+    expect(familyForPath('/leo/')).toBe('sign-guide');
+    expect(familyForPath('/compatibility/')).toBeUndefined();
   });
 
   it('injects no route while every family is held', () => {
@@ -73,8 +76,9 @@ describe('locale expansion publication record', () => {
     expect(injected).toEqual([]);
     const all: unknown[] = [];
     localeExpansionRoutes(expansionState(publication, { PUBLIC_LOCALE_EXPANSION_PREVIEW: '1' })).hooks['astro:config:setup']({ injectRoute: (route: unknown) => all.push(route) });
-    // es and pt already publish the daily family, so they get 4 routes; fr and it get all 7.
-    expect(all).toHaveLength(4 + 4 + EXPANSION_ROUTES.length * 2);
+    // es and pt already publish the daily family and have no rising or pair entries: 4 routes each.
+    // fr and it get the 7 period, daily, Moon and dates routes; ru gets all 9.
+    expect(all).toHaveLength(4 + 4 + 7 + 7 + EXPANSION_ROUTES.length);
     expect(all).toContainEqual({ pattern: '/it/horoscopes/[sign]/', entrypoint: './src/locale-pages/it/horoscope-daily.astro' });
   });
 });
