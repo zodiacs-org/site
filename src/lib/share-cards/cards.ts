@@ -36,15 +36,19 @@ export const signPagePath = (locale: CardLocale, sign: string) => `${prefix(loca
 export const pairCardPath = (locale: CardLocale, pair: string) => `/cards/${locale}/pair/${pair}.jpg`;
 export const bigThreeCardPath = (locale: CardLocale, sign: string) => `/cards/${locale}/big-three/${sign}.jpg`;
 
+// Literal addresses only, as src/server/result-preview.ts does, so the share-code audit can see every load.
+const FONT_FILES = {
+  noto: new URL('../../../node_modules/@vercel/og/dist/noto-sans-v27-latin-regular.ttf', import.meta.url),
+  serif: new URL('../../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-500-normal.woff', import.meta.url),
+  serifExt: new URL('../../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-ext-500-normal.woff', import.meta.url),
+  serifRegular: new URL('../../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff', import.meta.url),
+  italic: new URL('../../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-italic.woff', import.meta.url),
+};
 let fontsPromise: Promise<Array<{ name: string; data: ArrayBuffer; weight: 400 | 500; style: 'normal' | 'italic' }>> | null = null;
 function fonts() {
-  const read = (path: string) => readFile(new URL(`../../../node_modules/${path}`, import.meta.url)).then((bytes) => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
+  const read = (url: URL) => readFile(url).then((bytes) => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
   fontsPromise ??= Promise.all([
-    read('@vercel/og/dist/noto-sans-v27-latin-regular.ttf'),
-    read('@fontsource/eb-garamond/files/eb-garamond-latin-500-normal.woff'),
-    read('@fontsource/eb-garamond/files/eb-garamond-latin-ext-500-normal.woff'),
-    read('@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff'),
-    read('@fontsource/eb-garamond/files/eb-garamond-latin-400-italic.woff'),
+    read(FONT_FILES.noto), read(FONT_FILES.serif), read(FONT_FILES.serifExt), read(FONT_FILES.serifRegular), read(FONT_FILES.italic),
   ]).then(([noto, serif, serifExt, serifRegular, italic]) => [
     { name: 'Noto', data: noto, weight: 400 as const, style: 'normal' as const },
     { name: 'EB Garamond', data: serif, weight: 500 as const, style: 'normal' as const },
@@ -55,10 +59,25 @@ function fonts() {
   return fontsPromise;
 }
 
+const DISC_FILES: Record<string, URL> = {
+  aries: new URL('../../../public/assets/sdk/zodiac-icons/circle/aries.png', import.meta.url),
+  taurus: new URL('../../../public/assets/sdk/zodiac-icons/circle/taurus.png', import.meta.url),
+  gemini: new URL('../../../public/assets/sdk/zodiac-icons/circle/gemini.png', import.meta.url),
+  cancer: new URL('../../../public/assets/sdk/zodiac-icons/circle/cancer.png', import.meta.url),
+  leo: new URL('../../../public/assets/sdk/zodiac-icons/circle/leo.png', import.meta.url),
+  virgo: new URL('../../../public/assets/sdk/zodiac-icons/circle/virgo.png', import.meta.url),
+  libra: new URL('../../../public/assets/sdk/zodiac-icons/circle/libra.png', import.meta.url),
+  scorpio: new URL('../../../public/assets/sdk/zodiac-icons/circle/scorpio.png', import.meta.url),
+  sagittarius: new URL('../../../public/assets/sdk/zodiac-icons/circle/sagittarius.png', import.meta.url),
+  capricorn: new URL('../../../public/assets/sdk/zodiac-icons/circle/capricorn.png', import.meta.url),
+  aquarius: new URL('../../../public/assets/sdk/zodiac-icons/circle/aquarius.png', import.meta.url),
+  pisces: new URL('../../../public/assets/sdk/zodiac-icons/circle/pisces.png', import.meta.url),
+};
+
 const discs = new Map<string, Promise<string>>();
 function disc(sign: string) {
   if (!discs.has(sign)) {
-    discs.set(sign, readFile(new URL(`../../../public/assets/sdk/zodiac-icons/circle/${sign}.png`, import.meta.url))
+    discs.set(sign, readFile(DISC_FILES[sign])
       .then((bytes) => `data:image/png;base64,${bytes.toString('base64')}`));
   }
   return discs.get(sign)!;
