@@ -2,6 +2,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
+import { publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(repo, 'dist');
@@ -26,10 +27,15 @@ const core = [
 ];
 const signPaths = new Set(signs.map((sign) => `/${sign}/`));
 const indexedRoutes = core.filter((path) => !signPaths.has(path)).map((path) => `/ru${path}`);
-const noindexSignRoutes = new Set(signs.map((sign) => `/ru/${sign}/`));
+// The Russian sign guides stay noindex until the locale expansion record
+// releases them (src/data/locale-expansion-publication.json, family sign-guide).
+const noindexSignRoutes = new Set(signs
+  .filter((sign) => !publishedLocalesForPath(`/${sign}/`).includes('ru'))
+  .map((sign) => `/ru/${sign}/`));
 const notFoundRoute = '/ru/404/';
 const withheldDailyRoute = approvedDailyDays.length ? null : '/ru/chart-of-the-day/';
-const expectedRoutes = [...indexedRoutes, ...noindexSignRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
+const releasedSignRoutes = signs.map((sign) => `/ru/${sign}/`).filter((route) => !noindexSignRoutes.has(route));
+const expectedRoutes = [...indexedRoutes, ...releasedSignRoutes, ...noindexSignRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
 const expectedFiles = new Map(expectedRoutes.map((route) => [
   route,
   resolve(dist, route.replace(/^\//, ''), 'index.html'),

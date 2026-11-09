@@ -18,6 +18,9 @@ import { elementMedallionSrc, elementMedallionSrcset } from '../../lib/art';
 import { localizedPairFacts, type PairLocale } from '../../lib/compat-i18n';
 import { planetLabel } from '../../lib/i18n/astrology';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { localizePath } from '../../lib/i18n';
+import { englishOnlyCue } from '../../lib/i18n/english-only';
+import { isHeldPreview } from '../../lib/locale-expansion/policy.mjs';
 import '../../styles/calculator.css';
 import '../../styles/pair-page.css';
 
@@ -131,10 +134,42 @@ const CHROME: Record<PairLocale, Chrome> = {
     moreAria: 'Altre coppie',
     withOthers: (s) => `${s} con gli altri segni`,
   },
+  ru: {
+    kicker: 'Совместимость',
+    and: 'и',
+    pairName: (x, y) => `${x} и ${y}`,
+    imageAlt: (x, y) => `Совместимость: ${x} и ${y} | Zodiacs.org`,
+    about: (s) => `${s} (астрология)`,
+    basisTitle: 'Почему эта пара читается именно так',
+    basisNote: 'Стихии, модальности, полярность и базовый рисунок каждого знака',
+    basisAria: 'Астрология, на которой держится это сочетание',
+    elements: 'Стихии',
+    modes: 'Модальности',
+    polarity: 'Полярность',
+    faqHeading: 'Вопросы об этой паре',
+    toolHeading: 'Сравните две натальные карты',
+    toolLede: 'Солнечные знаки дают только краткую сводку. Если у вас есть данные рождения обоих людей, калькулятор прочитает все аспекты между их картами.',
+    prefill: (x, y) => `Открыть калькулятор с уже выбранными знаками ${x} и ${y}`,
+    noscript: 'Этому калькулятору совместимости нужен JavaScript. Включите JavaScript и перезагрузите страницу, чтобы сравнить две натальные карты в своём браузере.',
+    moreAria: 'Другие пары',
+    withOthers: (s) => `${s} с другими знаками`,
+  },
 };
 const c = CHROME[locale];
 const prefix = `/${locale}`;
-const pagePath = `${prefix}/compatibility/${facts.slug}/`;
+const englishPath = `/compatibility/${facts.slug}/`;
+const pagePath = `${prefix}${englishPath}`;
+// Russian is still rolling out: a Russian page that is not built yet falls
+// back to the English one, marked with hreflang="en" and the English-only cue.
+// The released locales keep their direct links.
+const englishOnly = locale === 'ru' ? englishOnlyCue(locale) : undefined;
+const link = (english: string) => {
+  const href = locale === 'ru' ? localizePath(locale, english) : `${prefix}${english}`;
+  const fallback = locale === 'ru' && href === english;
+  return { href, hreflang: fallback ? 'en' : undefined, title: fallback ? englishOnly?.aria : undefined, suffix: fallback ? (englishOnly?.suffix ?? '') : '', badge: fallback ? englishOnly?.badge : undefined };
+};
+const hubLink = link('/compatibility/');
+const noindex = locale === 'ru' ? isHeldPreview('ru', englishPath) : undefined;
 const pageUrl = `https://zodiacs.org${pagePath}`;
 const inLanguage = locale === 'pt' ? 'pt-BR' : locale;
 const name = (slug: string) => signName(slug, locale);
@@ -144,7 +179,7 @@ const lower = (value: string) => value.charAt(0).toLocaleLowerCase(locale) + val
 const pairOf = (x: string, y: string) => `${x} ${c.and} ${lower(y)}`;
 const otherPairs = (sign: Sign) => SIGNS.map((other) => {
   const slug = pairSlug(sign.slug, other.slug);
-  return { other, slug, now: slug === facts.slug };
+  return { other, slug, now: slug === facts.slug, link: link(`/compatibility/${slug}/`) };
 });
 const signFacts = (sign: Sign) => `${signDateRange(sign, locale)} · ${elementLabel(sign.element, locale)} · ${modalityLabel(sign.modality, locale)} · ${planetLabel(locale, sign.ruler)}`;
 
@@ -192,6 +227,7 @@ const jsonLd = [
   description={entry.data.description}
   path={pagePath}
   locale={locale}
+  noindex={noindex}
   image={`/assets/og/v2/pair/${facts.slug}.png`}
   imageAlt={c.imageAlt(nameA, nameB)}
   type="article"
@@ -210,7 +246,7 @@ const jsonLd = [
         {people.map((sign) => <SignIcon sign={sign.slug} size={84} loading="eager" fetchPriority="low" class="ph-hero__disc" />)}
       </div>
       <div class="ph-hero__body">
-        <span class="kicker"><a href={`${prefix}/compatibility/`}>{c.kicker}</a></span>
+        <span class="kicker"><a href={hubLink.href} hreflang={hubLink.hreflang} title={hubLink.title}>{c.kicker}{hubLink.suffix}</a></span>
         <h1 class="h-hero">{nameA} <em>{c.and}</em> {nameB}</h1>
         <p class="ph-hero__cap">{entry.data.description}</p>
         <div class="btn-row">
@@ -248,12 +284,15 @@ const jsonLd = [
             <h2 class="h-3">{c.basisTitle}</h2>
             <p class="ph-basis__sub">{c.basisNote}</p>
             <div class:list={['ph-basis__signs', same && 'ph-basis__signs--one']}>
-              {people.map((sign) => (
-                <a href={`${prefix}/${sign.slug}/`}>
-                  <SignIcon sign={sign.slug} size={40} />
-                  <span><b>{name(sign.slug)}</b><small>{signFacts(sign)}</small></span>
-                </a>
-              ))}
+              {people.map((sign) => {
+                const guide = link(`/${sign.slug}/`);
+                return (
+                  <a href={guide.href} hreflang={guide.hreflang} title={guide.title}>
+                    <SignIcon sign={sign.slug} size={40} />
+                    <span><b>{name(sign.slug)}{guide.suffix}</b><small>{signFacts(sign)}</small></span>
+                  </a>
+                );
+              })}
             </div>
             <dl>
               <div><dt>{c.elements}</dt><dd class="ph-basis__v">{facts.element.label}<span class="ph-el" aria-hidden="true">{people.map((sign) => <img src={elementMedallionSrc(sign.element)} srcset={elementMedallionSrcset(sign.element)} sizes="64px" width="128" height="128" alt="" loading="lazy" decoding="async" />)}</span></dd><dd class="ph-basis__m">{facts.element.note}</dd></div>
@@ -308,12 +347,12 @@ const jsonLd = [
               <h3><SignIcon sign={sign.slug} size={26} />{c.withOthers(name(sign.slug))}</h3>
             </div>
             <ul class="ph-pairs" role="list">
-              {otherPairs(sign).map(({ other, slug, now }) => (
+              {otherPairs(sign).map(({ other, now, link: pair }) => (
                 <li>
-                  <a href={`${prefix}/compatibility/${slug}/`} class:list={[now && 'is-now']} aria-current={now ? 'page' : undefined} style={`--now:${(now && !same ? (sign.slug === a.slug ? b : a) : sign).hue}`}>
+                  <a href={pair.href} hreflang={pair.hreflang} title={pair.title} class:list={[now && 'is-now']} aria-current={now ? 'page' : undefined} style={`--now:${(now && !same ? (sign.slug === a.slug ? b : a) : sign).hue}`}>
                     <SignIcon sign={other.slug} size={38} />
                     <b>{name(other.slug)}</b>
-                    <small>{elementLabel(other.element, locale)}</small>
+                    <small>{elementLabel(other.element, locale)}{pair.badge && <> · <abbr title={pair.title}>{pair.badge}</abbr></>}</small>
                   </a>
                 </li>
               ))}

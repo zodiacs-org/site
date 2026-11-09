@@ -74,6 +74,9 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
   '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
   '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
+  // Russian pages of the locale expansion, once released.
+  ...[...EXPANSION_FAMILY_IDS].flatMap((family) => expansionFamilyPaths(family)
+    .filter((path) => publishedLocalesForPath(path).includes('ru')).map((path) => `/ru${path}`)),
 ]);
 const LOCALIZED_404_PATHS = new Set([
   '/404.html', '/es/404/', '/pt/404/', '/fr/404/', '/it/404/', '/ru/404/',

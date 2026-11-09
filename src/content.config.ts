@@ -216,7 +216,7 @@ const learnLocalized = defineCollection({
   schema: z.object({
     kind: z.literal('rising'),
     sign: signEnum,
-    locale: z.enum(['es', 'pt', 'fr', 'it']),
+    locale: z.enum(['es', 'pt', 'fr', 'it', 'ru']),
     title: z.string().max(60),
     description: z.string().max(155),
     faq: faqSchema.min(3),
@@ -243,7 +243,7 @@ const pairsLocalized = defineCollection({
         ([a, b]) => SIGN_SLUGS.indexOf(a) <= SIGN_SLUGS.indexOf(b),
         { message: 'Pair signs must be in zodiac order (aries first, pisces last).' },
       ),
-    locale: z.enum(['es', 'pt', 'fr', 'it']),
+    locale: z.enum(['es', 'pt', 'fr', 'it', 'ru']),
     title: z.string().max(60),
     description: z.string().max(155),
     published: z.coerce.date(),
