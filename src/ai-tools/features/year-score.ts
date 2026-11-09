@@ -21,8 +21,9 @@ import { scanTransitContacts } from '../../lib/engine/transit-scan';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { scoreYear, type NatalPoints, type SlowPlanet, type YearScore } from '../../lib/year-score/core';
-import { YEAR_PEOPLE, findYearPerson, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
+import { YEAR_PEOPLE, findYearPerson, yearPageStart, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
 import { dayName, yearReading } from '../../lib/year-score/reading';
+import { figureYearScoreShareUrl, yearScoreShareUrl } from '../../lib/year-score/share';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { roundCoordinate } from '../plain-text';
 import { MINOR_NOTE, isUnder18, softenMinor } from './reading-guards';
@@ -42,7 +43,7 @@ export const yearScoreInput = z.strictObject({
   zone: zone.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
   longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude, for birth times before standard time. Nothing is stored."),
-  from: z.string().regex(DATE).optional().describe('The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC).'),
+  from: z.string().regex(DATE).optional().describe('The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC), or for a directory figure the first day of this month, as its page shows.'),
 }).superRefine((args, context) => {
   if ((args.person === undefined) === (args.birthDate === undefined)) context.addIssue({ code: 'custom', message: 'Give either person or birthDate, not both.' });
   if (args.person !== undefined && (args.time !== undefined || args.zone !== undefined || args.latitude !== undefined || args.longitude !== undefined)) context.addIssue({ code: 'custom', message: 'With person, leave out the birth details.' });
@@ -96,6 +97,8 @@ export const yearScoreData = z.object({
   limits: z.array(z.string()),
   under18: z.boolean(),
   pageUrl: z.url(),
+  /** The share page with its picture: the Sun sign and score only for a person's own score, the slug for a figure. Null when the Sun sign is not settled. */
+  shareUrl: z.url().nullable(),
 });
 export type YearScoreData = z.infer<typeof yearScoreData>;
 
@@ -156,7 +159,8 @@ const EMPTY = { subject: null, from: null, to: null, score: null, label: null, s
 export async function getYearScore(args: YearScoreInput, now: Date, clock: YearScoreClock, origin: string): Promise<{ data: YearScoreData; links: { title: string; url: string }[] }> {
   const pageUrl = `${origin}/year-score/`;
   const links = [{ title: 'Year Ahead Score on Zodiacs', url: pageUrl }, { title: 'Your transits on Zodiacs', url: `${origin}/transits/` }];
-  const start = args.from ?? today(now);
+  // A figure is scored from the first day of the month by default, as its page and share card are, so all three agree.
+  const start = args.from ?? (args.person !== undefined ? yearPageStart(now) : today(now));
   if (!parseCivilDate(start) || start < YEAR_SCORE_START_MIN || start > YEAR_SCORE_START_MAX) throw new RangeError(`from must be a real date from ${YEAR_SCORE_START_MIN} to ${YEAR_SCORE_START_MAX}.`);
   const startDate = new Date(`${start}T00:00:00Z`);
   const limits: string[] = [];
@@ -170,7 +174,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
     figure = findYearPerson(args.person);
     if (!figure) {
       return {
-        data: { status: 'not-in-directory', ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person’s own consent, their birth date gives a score instead.`], under18: false, pageUrl },
+        data: { status: 'not-in-directory', ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person’s own consent, their birth date gives a score instead.`], under18: false, pageUrl, shareUrl: null },
         links,
       };
     }
@@ -232,6 +236,8 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
       under18,
       // A directory figure's own page; a person's own details have no page, so the calculator.
       pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
+      // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
+      shareUrl: figure ? (start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null) : yearScoreShareUrl(origin, { sun: settledSun(birthDate, timeKnown, sunLon), score: year.score }),
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links,
   };

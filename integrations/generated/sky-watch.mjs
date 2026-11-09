@@ -194,7 +194,7 @@ var COMPUTE_RECEIPT_SCHEMA = "zodiacs.compute-receipt.v1";
 // src/lib/compute-api/handler.ts
 import { checkRateLimit } from "@vercel/firewall";
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
+// node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
 var SIGNS = /* @__PURE__ */ Object.freeze([
   /* @__PURE__ */ Object.freeze({
     slug: "aries",
@@ -310,7 +310,7 @@ function degreeInSign(lon) {
   return normalizeLongitude(lon) % 30;
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
+// node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
 var DEG = Math.PI / 180;
 var RAD = 180 / Math.PI;
 var HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze([
@@ -625,7 +625,7 @@ function houseOf(longitude2, cusps) {
   return 12;
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
+// node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
 var DEG2 = Math.PI / 180;
 var ARCSEC = DEG2 / 3600;
 var ARGUMENTS = [
@@ -769,7 +769,7 @@ function eclipticOfDate(x, y, z17, tt) {
   };
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
+// node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
   version: "2026-09-24",
@@ -1050,7 +1050,7 @@ function deltaT(ut) {
   return seconds(2e3 + ut / 365.25);
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
+// node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
 var REFERENCE_SPAN = /* @__PURE__ */ Object.freeze({
   from: "1800-01-01T00:00:00.000Z",
   to: "2200-01-01T00:00:00.000Z"
@@ -1259,7 +1259,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
+// node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -1340,7 +1340,7 @@ function findAspects(bodies) {
 var ENGINE_VERSION = "1.1.0-rc.2";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
-// ../../../../../../home/user/site/node_modules/astronomy-engine/esm/astronomy.js
+// node_modules/astronomy-engine/esm/astronomy.js
 /**
     @preserve
 
@@ -3247,7 +3247,7 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
+// node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
 var DEG3 = Math.PI / 180;
 var RAD3 = 180 / Math.PI;
@@ -3443,7 +3443,7 @@ function chartAt(input) {
   };
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
+// node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
 var ISO_INSTANT = /^(\d{4}|[+-]\d{6})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2})))?$/;
 function validIsoInput(input) {
   const match = ISO_INSTANT.exec(input);
@@ -3475,7 +3475,7 @@ function dateFrom(input, label) {
   return date3;
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
+// node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
 var DAY3 = 864e5;
 var REFINE_STEPS = 24;
 var EDGE_PROBE_MAX_MS = 6e4;
@@ -3708,7 +3708,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
+// node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
 var HOUSE_SYSTEM_NAMES2 = [
   "whole",
   "placidus",
@@ -3789,7 +3789,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
+// node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -3877,7 +3877,7 @@ function moonPhase(date3) {
   };
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
+// node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
 var NAMESPACE = /^[A-Za-z][A-Za-z0-9-]*$/u;
 var VALUE = /^[^\s\p{Cc}\p{Cf}\p{Cs}]+$/u;
 function conventionId(namespace, value) {
@@ -3914,7 +3914,7 @@ function natalConventionIds(envelope) {
   return [...ids].sort();
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
+// node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
 var julianLeap = (year) => year % 4 === 0;
 var gregorianLeap = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 function parseCalendarDate(value, calendar) {
@@ -3963,7 +3963,7 @@ function julianToGregorian(value) {
   return date3 ? format(civilDateOf(julianDayNumber(date3, "julian"), "gregorian")) : null;
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/receipt.js
+// node_modules/@zodiacs/engine/dist/receipt.js
 var SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 var DIGITS = /^\d+$/;
 function isVersion(value) {
@@ -4817,7 +4817,7 @@ function createNatalEnvelope(chart, context = {}) {
   });
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/time.js
+// node_modules/@zodiacs/engine/dist/time.js
 function timeBasis2(ms, scale, pin) {
   if (typeof ms !== "number" || !(Math.abs(ms) <= 864e13)) throw new RangeError("ms must be an instant within the range of a Date.");
   if (scale !== void 0 && !TIME_SCALE_NAMES.includes(scale)) throw new RangeError('scale must be "utc", "ut1" or "tt".');
@@ -5240,7 +5240,7 @@ function timeResolutionFacts(module) {
   };
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/conventions.js
+// node_modules/@zodiacs/engine/dist/conventions.js
 var CONVENTIONS_REGISTRY = "https://zodiacs.org/developers/conventions/";
 function parseConventionId(id) {
   const colon = typeof id === "string" ? id.indexOf(":") : -1;
@@ -6914,7 +6914,7 @@ var COMPUTE_TAG = Object.freeze({
   description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. The function writes nothing from a request or its result to a log, a file or a database, and responses are not cached; the host's request logs keep each request's web address and IP address. The endpoints answer only while their per-address rate limit is in place, and 503 otherwise. A body with a repeated key is read as JSON.parse reads it: the last value wins. Documentation: ${COMPUTE_DOCS_URL}`
 });
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
+// node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
 var DEG4 = Math.PI / 180;
 var ARCSEC3 = DEG4 / 3600;
 function toEquator(m, angle) {
@@ -6956,7 +6956,7 @@ function turn2(m, x, y, z17) {
   return [m[0] * x + m[1] * y + m[2] * z17, m[3] * x + m[4] * y + m[5] * z17, m[6] * x + m[7] * y + m[8] * z17];
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/sky.js
+// node_modules/@zodiacs/engine/dist/sky.js
 function firstMillisecond(reached, estimate) {
   const start = Math.round(estimate);
   let lo = start - 4;
@@ -24918,7 +24918,7 @@ var birthdays_default = {
   }
 };
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
+// node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
 function readOptions(value, allowed, label) {
   const out = /* @__PURE__ */ Object.create(null);
   if (value === void 0) return out;
@@ -24942,7 +24942,7 @@ function readOptions(value, allowed, label) {
   return out;
 }
 
-// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/techniques.js
+// node_modules/@zodiacs/engine/dist/techniques.js
 function oneOf2(value, allowed, fallback2, label) {
   if (value === void 0) return fallback2;
   if (typeof value === "string" && allowed.includes(value)) return value;
@@ -40438,6 +40438,9 @@ function findYearPerson(query) {
   return BY_KEY.get(personKey(query));
 }
 var yearPersonPath = (slug) => `/year/${slug}/`;
+function yearPageStart(now) {
+  return `${now.toISOString().slice(0, 7)}-01`;
+}
 
 // src/lib/year-score/reading.ts
 function scoreTier(score2) {
@@ -40498,6 +40501,24 @@ function yearReading(year, guard = (text2) => text2) {
   };
 }
 
+// src/lib/year-score/share.ts
+var YEAR_SCORE_SHARE_PATH = "/share/year-score/";
+var YEAR_SCORE_SHARE_KEYS = Object.freeze(["s", "v", "p", "ref"]);
+var SLUG_RE2 = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+var isSign3 = (value) => typeof value === "string" && SHARE_SIGNS.includes(value);
+function yearScoreQuery(share, withRef2 = false) {
+  const params = share.kind === "self" ? new URLSearchParams({ s: share.sun, v: share.score.toFixed(1) }) : new URLSearchParams({ p: share.slug });
+  if (withRef2 && share.ref) params.set("ref", share.ref);
+  return params.toString();
+}
+function yearScoreShareUrl(origin, you) {
+  if (!isSign3(you.sun) || !Number.isFinite(you.score) || you.score < 0 || you.score > 10) return null;
+  return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "self", sun: you.sun, score: Math.round(you.score * 10) / 10, ref: null })}`;
+}
+function figureYearScoreShareUrl(origin, slug) {
+  return SLUG_RE2.test(slug) && slug.length <= 64 ? `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "figure", slug, ref: null })}` : null;
+}
+
 // src/ai-tools/features/year-score.ts
 var DAY15 = 864e5;
 var ZONE_PATTERN9 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -40512,7 +40533,7 @@ var yearScoreInput = z12.strictObject({
   zone: zone4.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z12.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
   longitude: z12.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude, for birth times before standard time. Nothing is stored."),
-  from: z12.string().regex(DATE5).optional().describe("The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC).")
+  from: z12.string().regex(DATE5).optional().describe("The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC), or for a directory figure the first day of this month, as its page shows.")
 }).superRefine((args, context) => {
   if (args.person === void 0 === (args.birthDate === void 0)) context.addIssue({ code: "custom", message: "Give either person or birthDate, not both." });
   if (args.person !== void 0 && (args.time !== void 0 || args.zone !== void 0 || args.latitude !== void 0 || args.longitude !== void 0)) context.addIssue({ code: "custom", message: "With person, leave out the birth details." });
@@ -40565,7 +40586,9 @@ var yearScoreData = z12.object({
   sources: z12.array(z12.object({ title: z12.string(), url: z12.url() })),
   limits: z12.array(z12.string()),
   under18: z12.boolean(),
-  pageUrl: z12.url()
+  pageUrl: z12.url(),
+  /** The share page with its picture: the Sun sign and score only for a person's own score, the slug for a figure. Null when the Sun sign is not settled. */
+  shareUrl: z12.url().nullable()
 });
 function natalPointsAt(utc, timeKnown) {
   const chart = computeChart3({ utc, houseSystem: "whole", timeKnown });
@@ -40611,7 +40634,7 @@ var EMPTY = { subject: null, from: null, to: null, score: null, label: null, sum
 async function getYearScore(args, now, clock2, origin) {
   const pageUrl = `${origin}/year-score/`;
   const links = [{ title: "Year Ahead Score on Zodiacs", url: pageUrl }, { title: "Your transits on Zodiacs", url: `${origin}/transits/` }];
-  const start = args.from ?? today(now);
+  const start = args.from ?? (args.person !== void 0 ? yearPageStart(now) : today(now));
   if (!parseCivilDate(start) || start < YEAR_SCORE_START_MIN || start > YEAR_SCORE_START_MAX) throw new RangeError(`from must be a real date from ${YEAR_SCORE_START_MIN} to ${YEAR_SCORE_START_MAX}.`);
   const startDate = /* @__PURE__ */ new Date(`${start}T00:00:00Z`);
   const limits2 = [];
@@ -40625,7 +40648,7 @@ async function getYearScore(args, now, clock2, origin) {
     figure = findYearPerson(args.person);
     if (!figure) {
       return {
-        data: { status: "not-in-directory", ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person\u2019s own consent, their birth date gives a score instead.`], under18: false, pageUrl },
+        data: { status: "not-in-directory", ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person\u2019s own consent, their birth date gives a score instead.`], under18: false, pageUrl, shareUrl: null },
         links
       };
     }
@@ -40691,7 +40714,9 @@ async function getYearScore(args, now, clock2, origin) {
       limits: limits2,
       under18,
       // A directory figure's own page; a person's own details have no page, so the calculator.
-      pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl
+      pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
+      // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
+      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null : yearScoreShareUrl(origin, { sun: settledSun(birthDate, timeKnown, sunLon), score: year.score })
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links
   };

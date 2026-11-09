@@ -9,6 +9,8 @@ import Base from '../../layouts/Base.astro';
 import { YEAR_PEOPLE } from '../../lib/year-score/people';
 import { yearPage } from '../../lib/year-score/page-data';
 import { dayName, shortMonth } from '../../lib/year-score/reading';
+import ShareRow from '../../components/ShareRow.astro';
+import { figureYearScoreShareUrl } from '../../lib/year-score/share';
 
 export function getStaticPaths() {
   return YEAR_PEOPLE.map((person) => ({ params: { slug: person.slug }, props: { slug: person.slug } }));
@@ -93,6 +95,8 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
     </div>
 
     <p class="ypp__cta"><a class="btn btn--primary" href="/year-score/"><span>Score your own year</span><span class="orb">↗</span></a></p>
+    {/* The share link opens the card page, whose picture the server draws from the directory (src/server/result-preview.ts). */}
+    <ShareRow text={`${person.name}'s Year Ahead Score: ${reading.score.toFixed(1)}/10`} url={figureYearScoreShareUrl('https://zodiacs.org', person.slug)!} label="Share this score:" />
   </section>
 </Base>
 
