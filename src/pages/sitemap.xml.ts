@@ -650,6 +650,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
   // The transits page's link to the Year Ahead Score (2026-11-09), last so this date wins.
   ['/transits/', '2026-11-09'] as const,
+  // The tools hub's Year Ahead Score and Birthday report cards, and the birthday hub's link to the report.
+  ['/tools/', '2026-11-09'] as const,
+  ['/birthday/', '2026-11-09'] as const,
 ]);
 
 function getLastmod(loc: string): string {
