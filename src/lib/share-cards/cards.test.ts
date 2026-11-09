@@ -49,7 +49,7 @@ describe('shareable cards', () => {
   });
 
   it('render as 1200 by 630 JPEGs within the budget', async () => {
-    for (const bytes of [await pairCard('es', 'cancer-capricorn'), await bigThreeCard('it', 'leo')]) {
+    for (const bytes of [new Uint8Array(await pairCard('es', 'cancer-capricorn')), new Uint8Array(await bigThreeCard('it', 'leo'))]) {
       expect([...bytes.slice(0, 3)]).toEqual([0xff, 0xd8, 0xff]);
       expect(bytes.length).toBeLessThan(150_000);
       const view = Buffer.from(bytes);

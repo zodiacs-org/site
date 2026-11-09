@@ -6,7 +6,7 @@
  * nothing a person types, no birth date, time or place, ever reaches them.
  */
 import { readFile } from 'node:fs/promises';
-import { h } from 'preact';
+import { h, type VNode } from 'preact';
 import { encode as encodeJpeg } from 'jpeg-js';
 import { PNG } from 'pngjs';
 import { lockupImage } from '../../server/brand-lockup-image';
@@ -83,18 +83,19 @@ function disc(sign: string) {
   return discs.get(sign)!;
 }
 
-async function render(element: ReturnType<typeof h>): Promise<Uint8Array> {
+async function render(element: VNode<any>): Promise<ArrayBuffer> {
   const { ImageResponse } = await import('@vercel/og');
   const response = new ImageResponse(element as never, { ...CARD_SIZE, fonts: await fonts() });
   const { width, height, data } = PNG.sync.read(Buffer.from(await response.arrayBuffer()));
-  return new Uint8Array(encodeJpeg({ width, height, data }, JPEG_QUALITY).data);
+  const jpeg = encodeJpeg({ width, height, data }, JPEG_QUALITY).data;
+  return jpeg.buffer.slice(jpeg.byteOffset, jpeg.byteOffset + jpeg.byteLength) as ArrayBuffer;
 }
 
 const INK = { bg: '#060709', text: '#EEF1F7', muted: '#A9B0C2', faint: '#6F778C' };
 const serif = { fontFamily: 'EB Garamond, EB Garamond Ext', fontWeight: 500 };
 const sans = { fontFamily: 'Noto' };
 
-function frame(hue: string, body: ReturnType<typeof h>, address: string) {
+function frame(hue: string, body: VNode<any>, address: string): VNode<any> {
   return h('div', {
     style: {
       width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
@@ -107,7 +108,7 @@ function frame(hue: string, body: ReturnType<typeof h>, address: string) {
     lockupImage(30)));
 }
 
-export async function pairCard(locale: CardLocale, pair: string): Promise<Uint8Array> {
+export async function pairCard(locale: CardLocale, pair: string): Promise<ArrayBuffer> {
   const [slugA, slugB] = pair.split('-');
   const facts = locale === 'en' ? pairFacts(slugA, slugB) : localizedPairFacts(locale as PairLocale, slugA, slugB);
   const a = signBySlug(facts.a.slug);
@@ -115,7 +116,7 @@ export async function pairCard(locale: CardLocale, pair: string): Promise<Uint8A
   const copy = SHARE_CARD_COPY[locale];
   const [discA, discB] = await Promise.all([disc(a.slug), disc(b.slug)]);
   const names = facts.same ? signName(a, locale) : `${signName(a, locale)} & ${signName(b, locale)}`;
-  const body = h('div', { style: { display: 'flex', alignItems: 'center' } },
+  const body: VNode<any> = h('div', { style: { display: 'flex', alignItems: 'center' } },
     h('div', { style: { display: 'flex', marginRight: 48 } },
       h('img', { src: discA, width: 180, height: 180 }),
       facts.same ? null : h('img', { src: discB, width: 180, height: 180, style: { marginLeft: -36 } })),
@@ -127,14 +128,14 @@ export async function pairCard(locale: CardLocale, pair: string): Promise<Uint8A
   return render(frame(a.hue, body, pairPagePath(locale, facts.slug)));
 }
 
-export async function bigThreeCard(locale: CardLocale, sign: string): Promise<Uint8Array> {
+export async function bigThreeCard(locale: CardLocale, sign: string): Promise<ArrayBuffer> {
   const s = signBySlug(sign);
   const copy = SHARE_CARD_COPY[locale];
   const lines = bigThreeLines(locale)[s.slug as keyof BigThreeLines];
   const row = (label: string, text: string) => h('div', { style: { display: 'flex', flexDirection: 'column', marginTop: 14 } },
     h('div', { style: { ...sans, fontSize: 20, color: s.hue, letterSpacing: 1 } }, label),
     h('div', { style: { ...sans, fontSize: 25, color: INK.text, marginTop: 2 } }, text));
-  const body = h('div', { style: { display: 'flex', alignItems: 'flex-start' } },
+  const body: VNode<any> = h('div', { style: { display: 'flex', alignItems: 'flex-start' } },
     h('img', { src: await disc(s.slug), width: 180, height: 180, style: { marginRight: 44 } }),
     h('div', { style: { display: 'flex', flexDirection: 'column', flex: 1 } },
       h('div', { style: { ...serif, fontStyle: 'italic', fontWeight: 400, fontSize: 30, color: INK.muted } }, copy.bigThreeTitle),
