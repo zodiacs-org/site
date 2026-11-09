@@ -1,0 +1,109 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-daily-market-brief-2026-11-09",
+  "slug": "daily-market-brief-2026-11-09",
+  "kind": "daily-market-brief",
+  "templateId": "daily-market-brief.v1",
+  "issuedAt": "2026-11-09T12:00:00.000Z",
+  "visibleAt": "2026-11-09T12:00:00.000Z",
+  "title": "New Moon in Scorpio · daily market brief",
+  "summary": "New Moon in Scorpio leads the disclosed symbolic index; Scorpio market measures are recorded separately.",
+  "url": "/terminal/research/daily-market-brief-2026-11-09/",
+  "signs": [
+    "scorpio"
+  ],
+  "topics": [
+    "markets",
+    "daily-sky",
+    "lunation"
+  ],
+  "symbolicScore": {
+    "sign": "scorpio",
+    "attention": 34,
+    "tone": 7,
+    "eventIntensity": 7,
+    "calculation": "22 attention / 8 tone / 8 event intensity × 0.9267 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "New Moon in Scorpio is the highest-weighted named factor for Scorpio in the 2026-11-09 UTC edition. The disclosed score is attention 34/100, tone 7, and symbolic event intensity 7/100.",
+      "evidence": [
+        "src/data/transits-2026-11.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. This is a traditional symbolic reading, not a price direction or probability.",
+      "evidence": [
+        "src/data/transits-2026-11.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-11-09T00:07:32.928Z, Scorpio was indexed at $0.00005689, with unavailable over 24 hours, $56.9K market cap, $56.9K FDV, $12.32K indexed liquidity, $0.11 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-11-09:2026-11-09T00:07:32.928Z",
+    "observedAt": "2026-11-09T00:07:32.928Z",
+    "provider": "DexScreener",
+    "sign": "scorpio",
+    "priceUsd": 0.00005689,
+    "change24hPct": null,
+    "marketCapUsd": 56900,
+    "fdvUsd": 56900,
+    "liquidityUsd": 12318.09,
+    "volume24hUsd": 0.11,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/3d2kyumgj2yotnc6skx4hnoeswp4n8zqzsq9kfh81yta"
+  },
+  "evidence": {
+    "dailyFacts": "src/data/daily.json#2026-11-09",
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-11-09",
+    "marketSnapshotId": "registry-market:2026-11-09:2026-11-09T00:07:32.928Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-11"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "4f28dd70bfe60957aa3c7e0c2be5edb24767f4af6b6119297d1c7957844322cb",
+  "publishedAt": "2026-11-09T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-11-09T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "4f28dd70bfe60957aa3c7e0c2be5edb24767f4af6b6119297d1c7957844322cb"
+  },
+  "status": "approved"
+}
