@@ -444,6 +444,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
+  // The personal day: one day's transits to your own chart, first published 2026-11-09.
+  ['/your-day/', '2026-11-09'] as const,
   // The occasion cards, first published 2026-10-11.
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -710,6 +712,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
     { loc: '/mercury-retrograde/', priority: 0.85 },
     { loc: '/transits/', priority: 0.85 },
+    { loc: '/your-day/', priority: 0.8 },
     { loc: '/eclipses/', priority: 0.85 },
     { loc: '/full-moon-calendar/', priority: 0.85 },
     { loc: '/your-2027-sky/', priority: 0.8 },

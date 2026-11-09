@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import YourDay from '../../islands/YourDay';
+import '../../styles/calculator.css';
+
+const faq = [
+  { q: 'What is a transit?', a: 'A transit is a planet in today’s sky making an aspect to a point in your birth chart: sitting on it (a conjunction), facing it (an opposition), or at a square, trine or sextile to it. Astrologers read the moving planet as what arrives and your natal point as the part of life it touches.' },
+  { q: 'How are the contacts ranked?', a: 'Each contact gets a score from three weights and its tightness. Slow planets count most because their contacts last; the Sun, Moon, rising degree and Midheaven count most in your chart; a conjunction counts most and a sextile least. A contact that is exact during the day gets a bonus, so a fast Moon contact can still rise to the top. The tightness is measured at the middle of your day.' },
+  { q: 'What do applying and separating mean?', a: 'Applying means the moving planet is still closing on the exact aspect; separating means the exact moment has passed and it is moving away. When the exact moment falls inside the day, the page gives its time on your clock instead.' },
+  { q: 'Why does the birth time matter?', a: 'The Moon moves about a degree every two hours and the rising degree a degree every four minutes. Without a birth time the natal Moon, the rising degree and the Midheaven are left out, and the chart is cast for midday of the birth date, so the remaining contacts can shift by a few hours.' },
+  { q: 'Whose clock are the times on?', a: 'The day and its times are read on this device’s clock: the time zone your browser reports. If you are travelling, the times move with you. The birth time is read on the birthplace’s clock, as it was recorded.' },
+  { q: 'What does the reading confidence mean?', a: 'It says how specific your details were: a birth date alone, or a date with a birth time and place, and five points more when the contact is under a degree from exact. It is not the chance that something happens.' },
+];
+const jsonLd = [
+  { '@type': 'WebApplication', name: 'Your Day', url: 'https://zodiacs.org/your-day/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
+  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+];
+---
+<Base
+  clientUi
+  title="Your Day: Today's Transits to Your Own Chart"
+  description="Today's planets measured against your own birth chart, ranked by strength, with exact times on your clock and what each contact traditionally means. Worked out in your browser."
+  path="/your-day/"
+  image="/assets/og/v2/tool/transits.png"
+  imageAlt="Transits on Zodiacs"
+  jsonLd={jsonLd}
+>
+  <section class="section--tight container">
+    <div class="tool-hero">
+      <h1 class="display">Your day</h1>
+      <p>Today’s Moon, Sun and planets measured against your own birth chart: which contacts are strongest, when each one is exact on your clock, and what astrology traditionally reads in it.</p>
+    </div>
+    <YourDay client:load />
+    <noscript><p>This page needs JavaScript. Enable it and reload to read your day in your browser.</p></noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head"><h2>Questions, answered</h2></div>
+    <div class="faq">
+      {faq.map(({ q, a }) => <details class="faq__item"><summary>{q}</summary><p>{a}</p></details>)}
+    </div>
+    <p class="yd-related">For the weeks and months ahead, the <a href="/transits/">transit tracker</a> lists every contact by date. For the sky itself, see <a href="/today/">today’s sky</a>, and for a reading by Sun sign, the <a href="/horoscopes/">daily horoscopes</a>.</p>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 66ch; margin-bottom: clamp(28px, 5vw, 44px); }
+  .tool-hero h1 { margin: 0 0 16px; font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 500; line-height: 1.04; text-wrap: balance; }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+  .faq { display: grid; gap: 8px; }
+  .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); min-height: 44px; display: flex; align-items: center; }
+  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  .yd-related { margin: 24px 0 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  .yd-related a { color: var(--text); }
+  :global(.yd__clock) { min-height: 1.5em; }
+  :global(.yd__result) { display: grid; gap: 16px; margin-top: clamp(24px, 4vw, 36px); min-height: 60vh; align-content: start; scroll-margin-top: 88px; }
+  :global(.yd__head) { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; }
+  :global(.yd__step) { min-height: 44px; min-width: 44px; padding: 8px 12px; gap: 6px; }
+  :global(.yd__date) { margin: 0; text-align: center; font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-2); }
+  :global(.yd__theme) { margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; line-height: 1.18; text-wrap: balance; color: var(--text); }
+  :global(.yd__moon), :global(.yd__contact) { padding: 18px 18px 16px; border-radius: var(--r-md); }
+  :global(.yd__moon:hover), :global(.yd__contact:hover) { transform: none; }
+  :global(.yd__moon) { display: grid; gap: 6px; }
+  :global(.yd__moon p) { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.6; }
+  :global(.yd__moon .kicker) { color: var(--hue); }
+  :global(.yd__moon .yd__moon-sign) { color: var(--text); font-family: var(--font-serif); font-size: var(--text-lg); }
+  :global(.yd__mono) { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); }
+  :global(.yd__contacts) { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  :global(.yd__contact) { display: grid; gap: 8px; }
+  :global(.yd__contact-head) { display: flex; align-items: center; gap: 10px; }
+  :global(.yd__contact h3) { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-lg); line-height: 1.2; color: var(--text); }
+  :global(.yd__swatch) { width: 10px; height: 10px; border-radius: 50%; background: var(--hue); flex: none; }
+  :global(.yd__when) { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--hue); }
+  :global(.yd__when span) { color: var(--muted); }
+  :global(.yd__line) { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.6; }
+  :global(.yd__confidence) { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); }
+  :global(.yd__none), :global(.yd__pending) { margin: 0; color: var(--text-2); }
+  :global(.yd__limits) { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--muted); font-size: var(--text-sm); line-height: 1.55; }
+  :global(.yd__share) { display: grid; gap: 10px; padding-top: 8px; border-top: 1px solid var(--hair-1); }
+  :global(.yd__share .kicker), :global(.yd__share p) { margin: 0; }
+  :global(.yd__share-actions) { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  :global(.yd__share-actions .calc__actions) { margin: 0; }
+  @media (min-width: 760px) {
+    :global(.yd__contacts) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 420px) {
+    :global(.yd__step-word) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  }
+</style>

@@ -33,6 +33,7 @@ export type ToolIconName =
   | 'chart-twins'
   | 'baby-zodiac'
   | 'today'
+  | 'your-day'
   | 'moon-phase'
   | 'horoscopes'
   | 'transits'
@@ -131,6 +132,11 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
   today: {
     hue: 'leo',
     body: '<circle cx="12" cy="12" r="3.9"/><path d="M12 3.3v2.4M12 18.3v2.4M3.3 12h2.4M18.3 12h2.4M5.85 5.85l1.7 1.7M16.45 16.45l1.7 1.7M5.85 18.15l1.7-1.7M16.45 7.55l1.7-1.7"/>',
+  },
+  // A clock face whose twelve is the Sun's circled dot: one day, read on your own clock.
+  'your-day': {
+    hue: 'leo',
+    body: '<circle cx="12" cy="12" r="8.3"/><circle cx="12" cy="7.2" r="1.6"/><path d="M12 12v2.9l2.2 1.6M16.8 12h1.4M5.8 12h1.4M12 17.6v1.1"/>',
   },
   // A full disc with its terminator.
   'moon-phase': {
@@ -239,6 +245,7 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/chart-twins/': 'chart-twins',
   '/baby-zodiac/': 'baby-zodiac',
   '/today/': 'today',
+  '/your-day/': 'your-day',
   '/moon-phase/': 'moon-phase',
   '/horoscopes/': 'horoscopes',
   '/transits/': 'transits',

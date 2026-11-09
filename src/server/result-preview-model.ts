@@ -21,6 +21,10 @@ import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
 import { readingConfidence, readingConfidenceText } from '../ai-tools/reading-confidence.js';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac.js';
+import { BODY_SIGN, pointName } from '../lib/personal-day/score.js';
+import type { YourDayShare } from '../lib/personal-day/share.js';
+import { transitLine } from '../lib/transits.js';
+import { softenMinor } from '../ai-tools/features/reading-guards.js';
 import {
   SKY_PLANETS,
   type BigThreeShare,
@@ -644,4 +648,38 @@ export function inviteCardModel(share: InviteShare): InviteCardModel {
   const signs = [share.sun, share.partner].filter((slug): slug is ShareSign => slug !== null).map(sunOf);
   const names = signs.length === 2 ? `${signName(signs[0].slug!)} and ${signName(signs[1].slug!)}` : `${signName(signs[0].slug!)} Sun`;
   return { signs, line: `${names}. Two birth charts, read together.`, hue: signs[0].hue, front: share.sun };
+}
+
+// ── The personal day (src/lib/personal-day/share.ts) ──
+
+export interface YourDayCardModel {
+  /** The sign the moving planet rules: its hue and its art on the card. */
+  sign: ShareSign;
+  hue: string;
+  /** "My day, 9 November 2026" */
+  kicker: string;
+  /** "Mars square my Sun" */
+  title: string;
+  /** "My day, 9 November 2026: Mars square my Sun", for the page. */
+  heading: string;
+  /** The site's transit sentence for the contact. */
+  line: string;
+  /** "Reading confidence 75%" */
+  confidence: string;
+}
+
+/**
+ * A day's strongest contact, as the person shares it: the day, the moving planet, the aspect and the natal point,
+ * with the site's transit sentence (src/lib/transits.ts). A shared card cannot know who made it, so its sentence
+ * leaves out romantic and attraction wording, as a reading for someone under 18 does.
+ */
+export function yourDayCardModel(share: YourDayShare): YourDayCardModel {
+  const sign = BODY_SIGN[share.planet];
+  const kicker = `My day, ${fullDate(share.date)}`;
+  const title = `${share.planet} ${share.aspect} my ${pointName(share.point)}`;
+  return {
+    sign, hue: HUES[sign], kicker, title, heading: `${kicker}: ${title}`,
+    line: softenMinor(transitLine(share.planet, share.aspect, pointName(share.point))),
+    confidence: readingConfidenceText(share.confidence),
+  };
 }

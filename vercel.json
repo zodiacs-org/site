@@ -378,6 +378,18 @@
       "destination": "/api/compatibility?__zodiacs_share=invite-story"
     },
     {
+      "source": "/share/your-day/",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-link"
+    },
+    {
+      "source": "/api/og/your-day-image",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-image"
+    },
+    {
+      "source": "/api/og/your-day-story",
+      "destination": "/api/compatibility?__zodiacs_share=your-day-story"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },

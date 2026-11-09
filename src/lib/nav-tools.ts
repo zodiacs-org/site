@@ -223,6 +223,10 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 14, title: 'Today', promise: 'Today’s sky, read against your saved chart.', group: 'sky' },
   },
   {
+    href: '/your-day/',
+    hub: { order: 14.5, title: 'Your day', promise: 'Today’s transits to your own chart, ranked, with exact times.', group: 'sky' },
+  },
+  {
     href: '/compatibility/', label: 'compatibility', sublabel: NAV_SUBLABELS.compatibility,
     navOrder: 2, footerOrder: 3, footerUsesLocalizedPath: true,
     hub: { order: 8, title: 'Compatibility', promise: 'Where two charts click, clash and grow.', group: 'together' },
@@ -345,6 +349,7 @@ export const ALL_TOOLS_LABEL = {
 export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[] = [
   { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы', 'zh-hans': '群组星盘', 'zh-hant': '群組星盤' } },
   { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы', 'zh-hans': '星盘双胞胎', 'zh-hant': '星盤雙胞胎' } },
+  { href: '/your-day/', label: { en: 'Your day', es: 'Tu día', pt: 'Seu dia', fr: 'Ta journée', it: 'La tua giornata', ru: 'Ваш день', 'zh-hans': '你的今天', 'zh-hant': '你的今天' } },
   { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка', 'zh-hans': '日月升卡片', 'zh-hant': '日月升卡片' } },
   { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга', 'zh-hans': '邀请朋友', 'zh-hant': '邀請朋友' } },
   { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба', 'zh-hans': '天象日历', 'zh-hant': '天象日曆' } },

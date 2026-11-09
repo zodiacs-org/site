@@ -148,7 +148,7 @@ const retrogradeSummary = [
 const windowEndLabel = shortDate(new Date(Date.parse(timeline.to) - 86_400_000).toISOString(), true);
 const periodYear = (iso: string) => iso.slice(0, 4) !== publication.date.slice(0, 4);
 
-const goFurther = ['/transits/', '/moon-phase/', '/sky-calendar/', '/eclipses/']
+const goFurther = ['/your-day/', '/transits/', '/moon-phase/', '/sky-calendar/']
   .map((href) => TOOLS_HUB.find((tool) => tool.href === href))
   .filter((tool): tool is (typeof TOOLS_HUB)[number] => Boolean(tool));
 const monthDay = (iso: string) => ({

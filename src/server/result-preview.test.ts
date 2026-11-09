@@ -40,6 +40,9 @@ import {
   handleInviteLinkRequest,
   handleInviteStoryRequest,
   RESULT_SHARE_ROUTES,
+  handleYourDayImageRequest,
+  handleYourDayLinkRequest,
+  handleYourDayStoryRequest,
 } from './result-preview';
 import {
   bigThreeCardModel,
@@ -494,7 +497,22 @@ describe('share link pages', () => {
     expect(invite).toContain('<a class="cta" href="/compatibility/invite/?ref=chatgpt">Make an invite link</a>');
     expect(invite).toContain('<a class="more" href="/compatibility/?ref=chatgpt">Compare two charts now</a>');
     expect(invite).toContain('Taurus and Scorpio. Two birth charts, read together.');
-    for (const page of [big, untimed, chinese, animal, invite]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
+    const day = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/?day=2026-11-09&p=mars&a=square&n=sun&c=75&ref=chatgpt'))).text();
+    expect(day).toContain('<h1>My day, 9 November 2026: Mars square my Sun</h1>');
+    expect(day).toContain('content="https://zodiacs.org/api/og/your-day-image?day=2026-11-09&amp;p=mars&amp;a=square&amp;n=sun&amp;c=75"');
+    expect(day).toContain('href="/api/og/your-day-story?day=2026-11-09&amp;p=mars&amp;a=square&amp;n=sun&amp;c=75" download="zodiacs-your-day-2026-11-09-story.jpg"');
+    expect(day).toContain('<a class="cta" href="/your-day/?ref=chatgpt">Read your day</a>');
+    expect(day).toContain('Mars pushes against your sense of self');
+    expect(day).toContain('Reading confidence 75%');
+    // A Venus card leaves out the way of loving: a shared card cannot know whether its maker is under 18.
+    const venus = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/?day=2026-11-09&p=venus&a=trine&n=venus&c=70'))).text();
+    expect(venus).toContain('your way of caring');
+    expect(venus).not.toMatch(/way of loving|romance|attraction/u);
+    // A link that carries anything else opens the plain page.
+    const plainDay = await (await handleYourDayLinkRequest(new Request('https://zodiacs.org/share/your-day/?day=2026-11-09&p=mars&a=square&n=sun&c=75&t=08:30'))).text();
+    expect(plainDay).toContain('<h1>Read your day</h1>');
+    expect(plainDay).not.toContain('08:30');
+    for (const page of [big, untimed, chinese, animal, invite, day, venus, plainDay]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
     // A bare address or a query that is not a share opens the plain page, with the site's own card.
     expect(await (await handleBigThreeLinkRequest(new Request('https://zodiacs.org/share/big-three/?s=leo&d=1990-08-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/big-three.png"');
     expect(await (await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=horse&y=2025'))).text()).toContain('<h1>The Chinese zodiac</h1>');
@@ -554,6 +572,7 @@ describe('the deployed entry', () => {
       ['/share/big-three/', 'big-three-link'], ['/api/og/big-three-image', 'big-three-image'], ['/api/og/big-three-story', 'big-three-story'],
       ['/share/chinese-zodiac/', 'chinese-zodiac-link'], ['/api/og/chinese-zodiac-image', 'chinese-zodiac-image'], ['/api/og/chinese-zodiac-story', 'chinese-zodiac-story'],
       ['/share/invite/', 'invite-link'], ['/api/og/invite-image', 'invite-image'], ['/api/og/invite-story', 'invite-story'],
+      ['/share/your-day/', 'your-day-link'], ['/api/og/your-day-image', 'your-day-image'], ['/api/og/your-day-story', 'your-day-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
     // Every route the function answers is reached by one rewrite, and every share rewrite names a route it answers.
     const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
@@ -625,6 +644,8 @@ describe('share preview images', () => {
     ['Chinese zodiac from an older link with its year', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&y=2026'))],
     ['invitation', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?s=taurus&p=scorpio'))],
     ['invitation with one sign', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?p=gemini'))],
+    ['personal day', () => handleYourDayImageRequest(new Request('https://zodiacs.org/api/og/your-day-image?day=2026-11-09&p=mars&a=square&n=sun&c=75'))],
+    ['personal day on the rising degree', () => handleYourDayImageRequest(new Request('https://zodiacs.org/api/og/your-day-image?day=2026-11-12&p=neptune&a=opposition&n=asc&c=70'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -669,6 +690,9 @@ describe('share preview images', () => {
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image'],
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image?s=taurus&n=Ana'],
       [handleCompatibilityImageRequest, `https://zodiacs.org/api/og/compatibility-image?${COMPAT}&c=99`],
+      [handleYourDayImageRequest, 'https://zodiacs.org/api/og/your-day-image?day=2026-11-09&p=mars&a=square&n=sun&c=99'],
+      [handleYourDayImageRequest, 'https://zodiacs.org/api/og/your-day-image?day=2026-11-09&p=mars&a=square&n=sun&c=75&b=1990-05-03'],
+      [handleYourDayImageRequest, 'https://zodiacs.org/api/og/your-day-image?day=2026-11-09&p=chiron&a=square&n=sun&c=75'],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });
@@ -694,6 +718,7 @@ describe('story pictures', () => {
     ['big three with the Moon undetermined', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=sagittarius'))],
     ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger'))],
     ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
+    ['personal day', () => handleYourDayStoryRequest(new Request('https://zodiacs.org/api/og/your-day-story?day=2026-11-09&p=venus&a=conjunction&n=mc&c=75'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');
@@ -720,5 +745,6 @@ describe('story pictures', () => {
     expect((await handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=leo&d=1990-08-01'))).status).toBe(400);
     expect((await handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=cat'))).status).toBe(400);
     expect((await handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio&n=Luis'))).status).toBe(400);
+    expect((await handleYourDayStoryRequest(new Request('https://zodiacs.org/api/og/your-day-story?day=2026-11-09&p=mars&a=square&n=sun&c=75&lat=40.42'))).status).toBe(400);
   });
 });
