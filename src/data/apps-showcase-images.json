@@ -1,14 +1,5 @@
 {
-  "demoPoster": {
-    "file": "demo-poster.webp",
-    "width": 648,
-    "height": 960,
-    "bytes": 39438,
-    "sha256": "369d58b4219d2d07d6bf5fe3cff9c3e2a3afff2c71e483f310b8330a4937ecb1",
-    "source": "/assets/ai/review/zodiacs-sky-0.5.1.mp4",
-    "atSeconds": 6
-  },
-  "capturedAt": "2026-10-28T10:27:42.950Z",
+  "capturedAt": "2026-11-09T08:53:37.189Z",
   "syntheticExamples": true,
   "source": "https://zodiacs.org/mcp",
   "images": [
@@ -16,47 +7,88 @@
       "name": "comparison",
       "file": "comparison.webp",
       "width": 750,
-      "height": 1942,
-      "bytes": 133998,
-      "sha256": "cef2f95981a402ff751beb178c80593710509eeb82fd8ae3a803176a4204b525",
-      "source": "/assets/ai/review/zodiacs-comparison-card-0.5.1.png",
-      "sourceSha256": "92a48a4d3b5798e02f96e3c625f3a9cb2da047a0733d3f4d37d7ee7ed2afd8b9"
+      "height": 1984,
+      "bytes": 135972,
+      "sha256": "9879306b86e65e3beeb94ce5225e7a42d0a8d41a819a49c805ffbfe785f67697",
+      "resourceUri": "ui://zodiacs/occasions-v8.html",
+      "htmlSha256": "697936e02db78acbccd2ccdf8697cc13c9624f8b253ca16e81908313c9f0c531",
+      "synthetic": true,
+      "noBrowserErrors": true,
+      "noOverflow": true,
+      "preview": {
+        "file": "comparison-preview.webp",
+        "width": 1074,
+        "height": 1343,
+        "bytes": 91984,
+        "sha256": "2ea2b2ef639e90188bf51789e0c3166072885b9775ccf9c7e798a7012a5ad7b6"
+      },
+      "hero": {
+        "file": "comparison-hero.webp",
+        "width": 908,
+        "height": 907,
+        "bytes": 67140,
+        "sha256": "e95e4ac455ba7763ed1e574e2b90375d91930db60b0b96402b4b610f8f818cd3"
+      }
     },
     {
       "name": "wedding",
       "file": "wedding.webp",
       "width": 750,
-      "height": 2084,
-      "bytes": 148392,
-      "sha256": "d03259a3114a89f6a732a9c0c61a0abcd6ff1f370cab0f6b4f394df0947ed2f6",
-      "source": "/assets/ai/review/zodiacs-wedding-card-0.5.1.png",
-      "sourceSha256": "5de0ba03b61e09616b6010d56b8aeb5824e0d1565ba908b6e3d829aacfd82c7e"
+      "height": 2030,
+      "bytes": 153666,
+      "sha256": "0f69d9259844cd2e2a503568510af538449f7d9af54ccaf0a1f6b49b4b56fe7d",
+      "resourceUri": "ui://zodiacs/occasions-v8.html",
+      "htmlSha256": "697936e02db78acbccd2ccdf8697cc13c9624f8b253ca16e81908313c9f0c531",
+      "synthetic": true,
+      "noBrowserErrors": true,
+      "noOverflow": true,
+      "preview": {
+        "file": "wedding-preview.webp",
+        "width": 1144,
+        "height": 1431,
+        "bytes": 111978,
+        "sha256": "11e2c9d80d5414330aeab92905d0473d5954344e09b4cac5e275259342b307d1"
+      }
     },
     {
       "name": "chart",
       "file": "chart.webp",
       "width": 1600,
       "height": 2683,
-      "bytes": 186714,
-      "sha256": "76dbc6c7df23c3612c91a83d1bfb53ed4166b94e028f17fb5547138cf1978447",
+      "bytes": 186748,
+      "sha256": "c17612d2006f67446516f64a6597334d6f6d05b9480d9679952c47b5ae103310",
       "resourceUri": "ui://zodiacs/chart-studio-v6.html",
       "htmlSha256": "9fef51b4c35b7b9dd9a8b78a654fa222812b5805c5351406ea81d1fb3087d899",
       "synthetic": true,
       "noBrowserErrors": true,
-      "noOverflow": true
+      "noOverflow": true,
+      "preview": {
+        "file": "chart-preview.webp",
+        "width": 1200,
+        "height": 1501,
+        "bytes": 81586,
+        "sha256": "3a2ba6af05fa1a0cdbd23c89752f7ee27373e2f52226e07f26e5b6b4a2ddc7a5"
+      }
     },
     {
       "name": "horoscope",
       "file": "horoscope.webp",
       "width": 750,
-      "height": 2886,
-      "bytes": 188270,
-      "sha256": "e3fab7cee39b59faeecc25717f047b4bb6524c99ee509c145e376c0b48626883",
+      "height": 2942,
+      "bytes": 188644,
+      "sha256": "1c39a076e483b2daee5fb1afe62c2a9c19d1833384f86cd89149cf12f3b7f38c",
       "resourceUri": "ui://zodiacs/horoscopes-v6.html",
       "htmlSha256": "567dc7beec110af087b75107f611c513cdf73b8a910226b83c8d3bab95743458",
       "synthetic": true,
       "noBrowserErrors": true,
-      "noOverflow": true
+      "noOverflow": true,
+      "preview": {
+        "file": "horoscope-preview.webp",
+        "width": 1096,
+        "height": 1369,
+        "bytes": 77816,
+        "sha256": "7a09be52765f8700c5a3ca8a7a2d48dcc5d3b4f8ce62b6e2b2b73e18e97c3676"
+      }
     }
   ]
 }

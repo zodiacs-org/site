@@ -593,8 +593,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
-  // The assistant showcase and its entry links, first published with this change.
-  ['/apps/', '2026-10-28'] as const,
+  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with.
+  ['/apps/', '2026-11-09'] as const,
+  // The showcase's entry links, first published with the showcase.
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
   // The developer index that links to the demo. The day of the daily edition it was
@@ -646,6 +647,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...eventsPublication.pages
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  // The transits page's link to the Year Ahead Score (2026-11-09), last so this date wins.
+  ['/transits/', '2026-11-09'] as const,
 ]);
 
 function getLastmod(loc: string): string {
