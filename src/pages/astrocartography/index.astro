@@ -1,0 +1,76 @@
+---
+import Base from '../../layouts/Base.astro';
+import AstrocartographyMap from '../../islands/AstrocartographyMap';
+import '../../styles/calculator.css';
+
+const faq = [
+  { q: 'What is astrocartography?', a: 'A map of the moment you were born. For each planet it draws the places on Earth where that planet was rising, setting, overhead or underfoot at that instant. Astrologers read a place near one of your lines as carrying that planet\'s character for you: Venus for love and ease, Jupiter for growth and opportunity, Saturn for hard work and staying power.' },
+  { q: 'What do the four kinds of line mean?', a: 'A rising (Ascendant) line colours how you come across and how you feel in yourself there. A setting (Descendant) line colours the people you meet and partner with. An overhead (Midheaven) line colours work, reputation and public life. An underfoot (IC) line colours home, family and private life.' },
+  { q: 'How close to a line does a place need to be?', a: 'Astrocartographers mostly work within about 300 km of a line, roughly three degrees, and treat its pull as fading by about 800 km. The map lists the distance from each place you check to its nearest lines.' },
+  { q: 'Why does it need my birth time?', a: 'The Earth turns a degree every four minutes, so the lines move about 110 km at the equator for every four minutes of birth time. A time that is fifteen minutes out moves every line by about 400 km. Without a birth time the lines cannot be placed.' },
+  { q: 'How is it calculated?', a: 'Each planet\'s position comes from the same engine as the birth chart, turned into right ascension and declination. A planet is overhead where the local sidereal time equals its right ascension, and on the horizon where its hour angle meets the latitude\'s rising arc. The lines use the true horizon, without refraction, as astrocartography maps conventionally do.' },
+];
+const jsonLd = [
+  { '@type': 'WebApplication', name: 'Astrocartography Map', url: 'https://zodiacs.org/astrocartography/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
+  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+];
+---
+<Base
+  clientUi
+  title="Astrocartography Map: Your Planetary Lines Around the World"
+  description="See where each planet was rising, setting, overhead or underfoot when you were born, and which lines run closest to the places you care about. Calculated in your browser."
+  path="/astrocartography/"
+  noindex
+  jsonLd={jsonLd}
+>
+  <section class="section--tight container">
+    <div class="tool-hero">
+      <h1 class="display">Your astrocartography map</h1>
+      <p>Where on Earth each planet was rising, setting, overhead or underfoot at the moment you were born, and which of those lines run closest to the places you live, love or are thinking of moving to.</p>
+    </div>
+    <AstrocartographyMap client:load />
+    <noscript><p>This map needs JavaScript. Enable it and reload to draw the map in your browser.</p></noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head"><h2>Questions, answered</h2></div>
+    <div class="faq">
+      {faq.map(({ q, a }) => <details class="faq__item"><summary>{q}</summary><p>{a}</p></details>)}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 66ch; margin-bottom: clamp(28px, 5vw, 44px); }
+  .tool-hero h1 { margin: 0 0 16px; font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 500; line-height: 1.04; text-wrap: balance; }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+  .faq { display: grid; gap: 8px; }
+  .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  :global(.acg__result) { display: grid; gap: 20px; margin-top: clamp(24px, 4vw, 36px); }
+  :global(.acg__legend) { display: flex; flex-wrap: wrap; gap: 6px; }
+  :global(.acg__chip) { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--hair-1); border-radius: 999px; background: var(--void-1); color: var(--text-2); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+  :global(.acg__chip[aria-pressed='false']) { opacity: 0.45; }
+  :global(.acg__swatch) { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--hue); flex: none; }
+  :global(.acg__figure) { margin: 0; }
+  :global(.acg__map) { display: block; width: 100%; height: auto; border: 1px solid var(--hair-1); border-radius: var(--r-md); }
+  :global(.acg__sea) { fill: var(--void-1); }
+  :global(.acg__land circle) { fill: var(--hair-2, rgba(255, 255, 255, 0.22)); }
+  :global(.acg__grid line) { stroke: var(--hair-1); stroke-width: 0.5; }
+  :global(.acg__lines line), :global(.acg__lines path) { fill: none; stroke-width: 1.4; }
+  :global(.acg__label) { font-family: var(--font-mono); font-size: 9px; }
+  :global(.acg__place) { fill: var(--text); stroke: var(--void-0, #000); stroke-width: 1; }
+  :global(.acg__key) { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; color: var(--muted); font-size: var(--text-xs, 0.8rem); }
+  :global(.acg__key span) { display: inline-flex; align-items: center; gap: 6px; }
+  :global(.acg__key line) { stroke: var(--text-2); stroke-width: 1.4; }
+  :global(.acg__places) { display: grid; gap: 14px; }
+  :global(.acg__place-card h3) { margin: 0 0 10px; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-lg); }
+  :global(.acg__place-card h3 span) { display: block; color: var(--muted); font-family: var(--font-sans); font-size: var(--text-sm); }
+  :global(.acg__place-card ul) { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 12px; }
+  :global(.acg__place-card p) { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.6; }
+  :global(.acg__line-head) { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; color: var(--text) !important; font-weight: 550; }
+  :global(.acg__dist) { color: var(--muted); font-family: var(--font-mono); font-weight: 400; font-size: var(--text-xs, 0.8rem); }
+  :global(.acg__angles) { display: grid; gap: 6px; color: var(--text-2); font-size: var(--text-sm); }
+  :global(.acg__angles p) { margin: 0; }
+</style>

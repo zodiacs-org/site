@@ -369,6 +369,9 @@ jobs:
       - name: Verify Sun ingress table drift
         run: node scripts/build-sun-ingresses.mjs --check
 
+      - name: Verify astrocartography land dots drift
+        run: node scripts/build-astrocartography-land.mjs --check
+
       # Committed wing HTML must match what the builders produce from
       # sources (build-app resolves the pinned local @babel/standalone,
       # so this job runs fully offline).

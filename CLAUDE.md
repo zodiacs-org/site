@@ -147,6 +147,9 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   across platforms, so they are not in the drift job;
   `scripts/build-sign-art-avif.test.mjs` checks the set)
 - `public/data/cities/` ← `node scripts/build-cities.mjs` (GeoNames, CC-BY)
+- `src/data/astrocartography-land.json` ← `node scripts/build-astrocartography-land.mjs`
+  (the 2-degree land dots the /astrocartography/ map draws, from the cities above;
+  `--check` for drift, which the site-check drift gate runs)
 - `src/data/sky.json` ← `node scripts/build-sky.mjs`
 - `src/data/tz-names.json` (the zone names of the tzdb release that
   `@zodiacs/engine/geo` ships, names only, for spelling a name as tzdb does in

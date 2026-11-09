@@ -8,8 +8,9 @@
  * server.ts and http.ts read this list and need no change of their own.
  */
 import type { PersonalToolDefinition } from './shared';
+import { astrocartographyTool } from './astrocartography';
 
-export const PERSONAL_TOOLS = [] as const satisfies readonly PersonalToolDefinition[];
+export const PERSONAL_TOOLS = [astrocartographyTool] as const satisfies readonly PersonalToolDefinition[];
 
 export type PersonalToolName = typeof PERSONAL_TOOLS[number]['name'];
 /** The same list, read as definitions (an empty registry's element type is never). */
