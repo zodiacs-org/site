@@ -1,0 +1,112 @@
+---
+import Base from '../../layouts/Base.astro';
+import YearScoreCalculator from '../../islands/YearScoreCalculator';
+import { ASPECT_ORB, PLANET_WEIGHT, POINT_WEIGHT } from '../../lib/year-score/core';
+import '../../styles/calculator.css';
+
+const faq = [
+  {
+    q: 'What does the score measure?',
+    a: 'How the five slow planets, Jupiter, Saturn, Uranus, Neptune and Pluto, meet your birth chart over the next twelve months. Each day the calculator checks every major aspect they make to your Sun, Moon (with a birth time), Mercury, Venus and Mars. Supportive contacts add, pressing ones subtract, and the closer a contact is to exact, the more it counts.',
+  },
+  {
+    q: 'What is an ordinary score?',
+    a: 'Five. The scale is set so that a typical year lands near the middle and about nineteen years in twenty fall between 1 and 9. A score above 6.5 means more of the slow-planet weather helps than presses; below 4.5, more presses than helps.',
+  },
+  {
+    q: 'Is a low score bad news?',
+    a: 'No. A low score means the slow planets press on the chart: astrology reads that as a demanding year that rewards patience, steady work, careful spending and proper rest. It reads themes the way the tradition does; it never names a diagnosis, a price or a single event.',
+  },
+  {
+    q: 'Why do I need only a birth date?',
+    a: 'The slow planets move a fraction of a degree a day, and so do your Sun, Mercury, Venus and Mars across one birth day, so a date alone places them well. Only the Moon needs a birth time and place; without them it is left out.',
+  },
+];
+
+const weights = Object.entries(PLANET_WEIGHT).map(([planet, weight]) => `${planet} ${weight}`).join(', ');
+const points = Object.entries(POINT_WEIGHT).map(([point, weight]) => `${point} ${weight}`).join(', ');
+const jsonLd = [
+  { '@type': 'WebApplication', name: 'Year Ahead Score', url: 'https://zodiacs.org/year-score/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
+  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+];
+---
+<Base
+  privateSurface
+  clientUi
+  title="Year Ahead Score: Your Next Twelve Months | Zodiacs.org"
+  description="A free 0 to 10 score for your next twelve months from the slow planets' transits to your birth chart, with your best and hardest months. Calculated on your device."
+  path="/year-score/"
+  jsonLd={jsonLd}
+>
+  <section class="section--tight container">
+    <div class="tool-hero">
+      <h1 class="display">Your year ahead, as one number.</h1>
+      <p>
+        A score from 0 to 10 for the next twelve months, read from how Jupiter, Saturn, Uranus, Neptune and Pluto
+        meet your <a href="/birth-chart/">birth chart</a>, with your best and hardest months and the
+        <a href="/transits/">transits</a> behind them.
+      </p>
+    </div>
+    <YearScoreCalculator client:load />
+    <noscript><p>The Year Ahead Score needs JavaScript. Enable it and reload to calculate your score from your birth date.</p></noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose">
+      <h2>How the score is worked out</h2>
+      <p>
+        For each of the 365 days ahead, the calculator measures the angle between each slow planet and each of your
+        natal points. A conjunction, trine, square or opposition counts within {ASPECT_ORB.square} degrees of exact,
+        a sextile within {ASPECT_ORB.sextile}; the weight falls off evenly toward the edge of the orb.
+      </p>
+      <p>
+        Planets weigh {weights}. Natal points weigh {points}. Jupiter's contacts lean supportive, even its squares;
+        Saturn's conjunctions, squares and oppositions press hardest; Uranus, Neptune and Pluto press in hard aspect and
+        help a little in soft aspect. The year's average balance runs through a fixed curve to give the score, and the
+        same curve, a little wider, gives each month's.
+      </p>
+      <p>
+        The weights were set from the tradition before any person was scored, and the curve from four thousand
+        synthetic birth dates, not from anyone's year.
+      </p>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head"><h2>Questions, answered</h2></div>
+    <div class="faq">
+      {faq.map(({ q, a }) => (
+        <details class="faq__item"><summary>{q}</summary><p>{a}</p></details>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
+  .tool-hero h1 { margin: 0 0 16px; font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 500; letter-spacing: -0.005em; line-height: 1.04; text-wrap: balance; }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+  .faq { display: grid; gap: 8px; }
+  .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  :global(.ys__more) { background: none; border: 0; padding: 0; color: var(--text-2); text-decoration: underline; cursor: pointer; font: inherit; justify-self: start; }
+  :global(.ys) { display: grid; gap: 20px; }
+  :global(.ys__score-core) { display: grid; gap: 6px; }
+  :global(.ys__heading) { margin: 0; font-family: var(--font-serif); font-weight: 500; line-height: 1; }
+  :global(.ys__number) { font-size: clamp(56px, 12vw, 96px); }
+  :global(.ys__outof) { font-size: var(--text-xl); color: var(--muted); margin-left: 4px; }
+  :global(.ys__tier) { margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); }
+  :global(.ys__summary) { margin: 0; color: var(--text-2); }
+  :global(.ys__meta) { margin: 4px 0 0; color: var(--muted); font-family: var(--font-mono); font-size: var(--text-xs); }
+  :global(.ys__months) { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px; align-items: end; height: 140px; }
+  :global(.ys__month) { display: grid; grid-template-rows: 1fr auto; height: 100%; align-items: end; text-align: center; }
+  :global(.ys__bar) { display: block; height: var(--h); background: var(--sign, var(--text-2)); opacity: 0.75; border-radius: 3px 3px 0 0; }
+  :global(.ys__month-label) { font-family: var(--font-mono); font-size: 10px; color: var(--muted); padding-top: 4px; }
+  :global(.ys__picks) { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  :global(.ys__picks h3), :global(.ys__drivers h3) { margin: 0 0 6px; font-family: var(--font-serif); font-weight: 500; }
+  :global(.ys__picks p) { margin: 0; color: var(--text-2); }
+  :global(.ys__drivers ul) { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  :global(.ys__drivers p) { margin: 4px 0 0; color: var(--text-2); }
+  :global(.ys__tone), :global(.ys__when) { color: var(--muted); font-size: var(--text-sm); }
+</style>

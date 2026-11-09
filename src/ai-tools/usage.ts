@@ -1,14 +1,14 @@
-import { EVERY_AI_TOOL_NAME, SKY_EVENTS_TOOL_NAMES, type AiToolName } from './contracts';
+import { EVERY_AI_TOOL_NAME, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_TOOL_NAMES, type AiToolName } from './contracts';
 import { SAVE_TOOL_NAME, type SaveToolName } from './accounts/contracts';
 import { serviceRpc } from './quota';
 
 export const USAGE_HOSTS = ['chatgpt', 'claude', 'other'] as const;
 export type UsageHost = typeof USAGE_HOSTS[number];
 /**
- * Every name the counter accepts: the hosted tools, search_sky_events while the sky events switch is on, and the
- * account save tool while accounts are on. The latest usage migration lists exactly these.
+ * Every name the counter accepts: the hosted tools, search_sky_events while the sky events switch is on,
+ * get_year_score while the Year Ahead Score switch is on, and the account save tool while accounts are on. The latest usage migration lists exactly these.
  */
-export const COUNTED_TOOL_NAMES = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, SAVE_TOOL_NAME] as const;
+export const COUNTED_TOOL_NAMES = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, ...YEAR_SCORE_TOOL_NAMES, SAVE_TOOL_NAME] as const;
 export type CountedToolName = AiToolName | SaveToolName;
 type Environment = Readonly<Record<string, string | undefined>>;
 
