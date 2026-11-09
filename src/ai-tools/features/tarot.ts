@@ -10,9 +10,9 @@
  */
 import { z } from 'zod';
 import { drawTarot, type DrawnCard } from '../../lib/tarot/draw';
+import { readCard } from '../../lib/tarot/reading';
 import { SPREADS, SPREAD_IDS } from '../../lib/tarot/spreads';
 import { SUITS } from '../../lib/tarot/deck';
-import { TAROT_MEANINGS } from '../../lib/tarot/meanings';
 
 export const tarotInput = z.strictObject({
   spread: z.enum(SPREAD_IDS).optional()
@@ -56,14 +56,7 @@ export function tarotAnswer(spread: TarotData['spread'], reversals: boolean, dra
   const data: TarotData = {
     spread, spreadName: layout.name, spreadDescription: layout.description, reversals,
     separateFromAstrology: TAROT_SEPARATE,
-    cards: drawn.map(({ position, card, orientation }) => {
-      const meaning = TAROT_MEANINGS[card.id];
-      return {
-        position: { key: position.key, name: position.name, prompt: position.prompt },
-        card: { id: card.id, name: card.name, arcana: card.arcana, suit: card.suit, number: card.number },
-        orientation, keywords: [...meaning.keywords], meaning: orientation === 'upright' ? meaning.upright : meaning.reversed, question: meaning.question,
-      };
-    }),
+    cards: drawn.map(readCard),
     method: TAROT_METHOD,
     note: TAROT_NOTE,
   };

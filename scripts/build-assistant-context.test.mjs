@@ -53,6 +53,7 @@ describe('assistant site context', () => {
       '/rising-sign/',
       '/saturn-return/',
       '/solar-return/',
+      '/tarot/',
       '/transits/',
       '/void-of-course-moon/',
       '/widgets/',
@@ -79,13 +80,14 @@ describe('assistant site context', () => {
       // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
-      consumerRoutes: 717,
+      // The tarot draw adds one English tool, one static page and one consumer route.
+      consumerRoutes: 718,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 78,
-      tools: 28,
+      staticPages: 79,
+      tools: 29,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');

@@ -94,8 +94,8 @@ const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 // through the share control), so the count per pair page is derived from the
 // page's own links instead of being fixed.
 const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-z0-9_-]+\.css$/u];
-// 115 entry pages carry 228 inlined stylesheets; feature flags do not change it.
-const entryInlinedStylesheets = 228;
+// 116 entry pages carry 230 inlined stylesheets (the tarot draw added one page and two); feature flags do not change it.
+const entryInlinedStylesheets = 230;
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
   // on the render path. The complete route bundle still loads after first
@@ -108,6 +108,8 @@ const targetPaths = [
   // The numerology hero sat a few hundredths over the LCP budget in CI with
   // calculator.css on the render path and an eagerly hydrated island.
   'numerology/index.html',
+  // The tarot draw has the numerology page's hero, calculator.css and island, so it inlines the same way.
+  'tarot/index.html',
   // Sign-guide icons need their existing geometry before the first paint;
   // the two stylesheet round trips put a cold mobile LCP over the budget.
   ...signs.map((sign) => `${sign}/index.html`),
@@ -665,13 +667,13 @@ async function main() {
   // the calculator's, at least Base, the pair styles and the wheel.
   if (
     pages + alreadyInlined !== targetPaths.length
-    || targetPaths.length !== 115 + pairPathSet.size
+    || targetPaths.length !== 116 + pairPathSet.size
     || stylesheets !== entryInlinedStylesheets
     || pairStylesheets !== expectedPairStylesheets
     || pairStylesheets < pairPathSet.size * 3
   ) {
     throw new Error(
-      `inline-critical-styles: expected ${115 + pairPathSet.size} pages, ${entryInlinedStylesheets} entry and ${expectedPairStylesheets} (min ${pairPathSet.size * 3}) pair stylesheets inlined, found ${pages + alreadyInlined} / ${stylesheets} / ${pairStylesheets}`,
+      `inline-critical-styles: expected ${116 + pairPathSet.size} pages, ${entryInlinedStylesheets} entry and ${expectedPairStylesheets} (min ${pairPathSet.size * 3}) pair stylesheets inlined, found ${pages + alreadyInlined} / ${stylesheets} / ${pairStylesheets}`,
     );
   }
   stylesheets += pairStylesheets;

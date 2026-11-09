@@ -5,6 +5,7 @@ import { TAROT_DECK, SUIT_THEMES, type Suit } from '../../lib/tarot/deck';
 import { TAROT_MEANINGS } from '../../lib/tarot/meanings';
 import { SUIT_HUES, SUIT_PATHS, type SuitKey } from '../../lib/tarot/suit-icons';
 import '../../styles/calculator.css';
+import '../../styles/tarot.css';
 
 const GROUPS: SuitKey[] = ['major', 'wands', 'cups', 'swords', 'pentacles'];
 const cardsIn = (group: SuitKey) => TAROT_DECK.filter((card) => (group === 'major' ? card.arcana === 'major' : card.suit === (group as Suit)));
@@ -151,23 +152,4 @@ const jsonLd = [
   }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 12px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
-</style>
-
-<style is:global>
-  .tarot__spreads { border: 0; padding: 0; margin: 0 0 14px; display: grid; gap: 8px; }
-  .tarot__choice { display: flex; align-items: center; gap: 10px; color: var(--text); font-size: var(--text-sm); cursor: pointer; }
-  .tarot__choice input { accent-color: var(--sign-pisces); }
-  .tarot__reversals { margin-bottom: 18px; }
-  .tarot__cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
-  .tarot__card { display: grid; gap: 6px; align-content: start; padding: 18px; border-radius: var(--r-md); }
-  .tarot__position { color: var(--muted); }
-  .tarot__title { display: flex; align-items: center; gap: 10px; }
-  .tarot__icon { color: var(--sign); flex: none; }
-  .tarot__icon--reversed { transform: rotate(180deg); }
-  .tarot__name { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-lg); }
-  .tarot__orientation { color: var(--muted); font-size: 12px; }
-  .tarot__prompt { margin: 4px 0 0; color: var(--muted); font-size: var(--text-sm); font-style: italic; }
-  .tarot__meaning { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
-  .tarot__question { margin: 0; color: var(--text); font-size: var(--text-sm); }
-  .tarot__note { margin: 16px 0 0; color: var(--muted); font-size: var(--text-sm); }
 </style>

@@ -4,17 +4,16 @@
  * icons only; no card art.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { drawTarot, type DrawnCard } from '../lib/tarot/draw';
 import { SPREADS, SPREAD_IDS, type SpreadId } from '../lib/tarot/spreads';
-import { TAROT_MEANINGS } from '../lib/tarot/meanings';
-import { SuitIcon, SUIT_HUES } from '../lib/tarot/suit-icons';
+import { drawTarotReading, type TarotCardReading } from '../lib/tarot/reading';
+import TarotCard from '../components/TarotCard';
 
 const GENERIC_MESSAGE = 'The cards could not be drawn in this browser. Try reloading the page.';
 
 export default function TarotDraw() {
   const [spread, setSpread] = useState<SpreadId>('three-card');
   const [reversals, setReversals] = useState(true);
-  const [drawn, setDrawn] = useState<DrawnCard[] | null>(null);
+  const [drawn, setDrawn] = useState<TarotCardReading[] | null>(null);
   const [error, setError] = useState('');
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [focusNext, setFocusNext] = useState(false);
@@ -23,7 +22,7 @@ export default function TarotDraw() {
     event.preventDefault();
     try {
       setError('');
-      setDrawn(drawTarot(spread, reversals));
+      setDrawn(drawTarotReading(spread, reversals));
       setFocusNext(true);
     } catch {
       setDrawn(null);
@@ -66,23 +65,7 @@ export default function TarotDraw() {
         <div class="calc__result">
           <h2 class="sr-only" tabIndex={-1} ref={headingRef}>Your cards</h2>
           <ol class={`tarot__cards tarot__cards--${spread}`}>
-            {drawn.map(({ position, card, orientation }) => {
-              const meaning = TAROT_MEANINGS[card.id];
-              const suit = card.suit ?? 'major';
-              return (
-                <li key={card.id} class="tile tarot__card" style={`--sign:${SUIT_HUES[suit]}`}>
-                  <span class="mono--label tarot__position">{position.name}</span>
-                  <div class="tarot__title">
-                    <SuitIcon suit={suit} reversed={orientation === 'reversed'} />
-                    <h3 class="tarot__name">{card.name}</h3>
-                  </div>
-                  <span class="tarot__orientation">{orientation === 'reversed' ? 'Reversed' : 'Upright'} · {meaning.keywords.join(' · ')}</span>
-                  <p class="tarot__prompt">{position.prompt}</p>
-                  <p class="tarot__meaning">{orientation === 'reversed' ? meaning.reversed : meaning.upright}</p>
-                  <p class="tarot__question"><em>{meaning.question}</em></p>
-                </li>
-              );
-            })}
+            {drawn.map((reading) => <TarotCard key={reading.card.id} reading={reading} />)}
           </ol>
           <p class="tarot__note">Draw again whenever you like; each draw is a new shuffle.</p>
         </div>

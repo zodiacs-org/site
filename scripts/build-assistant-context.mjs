@@ -55,6 +55,7 @@ export const TOOL_ROUTES = Object.freeze([
   '/rising-sign/',
   '/saturn-return/',
   '/solar-return/',
+  '/tarot/',
   '/transits/',
   '/void-of-course-moon/',
   '/widgets/',
