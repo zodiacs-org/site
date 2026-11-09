@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import eventsPublication from '../src/data/events-publication.json';
+// Both receipts, joined as sitemap.xml reads them.
+import { eventsPublication } from '../src/lib/events/site-publication';
 import { BIRTHDAY_PATHS, CHINESE_ZODIAC_PATHS } from '../src/lib/programmatic-paths';
 import {
   SITEMAP_SECTIONS,

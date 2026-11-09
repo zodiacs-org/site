@@ -92,10 +92,12 @@ const MERCURY_RX = '/mercury-retrograde/2026-06-29/';
 const VENUS_RX = '/venus-retrograde/2026-10-03/';
 const INGRESS = '/events/saturn-enters-aries-2026-02-14/';
 const ASPECT = '/events/jupiter-trine-saturn-2026-08-31/';
+// A page from the 2028 to 2030 receipt (src/data/events-publication-2028-2030.json).
+const LATER_ECLIPSE = '/eclipses/2030-06-01/';
 const PREVIEW_INDEX = '/events/preview/';
 const FIXTURE_RICH = '/events/preview/sample-aspect/';
 const FIXTURE_MINIMAL = '/events/preview/sample-full-moon/';
-const EVENT_PAGES = [FULL_MOON, NEW_MOON, ECLIPSE, MERCURY_RX, VENUS_RX, INGRESS, ASPECT];
+const EVENT_PAGES = [FULL_MOON, NEW_MOON, ECLIPSE, MERCURY_RX, VENUS_RX, INGRESS, ASPECT, LATER_ECLIPSE];
 
 await withPreview({ port: 4412 }, async (BASE) => {
   const browser = await chromium.launch({

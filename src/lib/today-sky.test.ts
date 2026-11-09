@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import dailyData from '../data/daily.json';
 import skyData from '../data/sky.json';
 import eclipseData from '../data/eclipses.json';
-import eventsData from '../data/events-publication.json';
+// Both receipts, joined as /today/ reads them (src/pages/today/index.astro).
+import { eventsPublication as eventsData } from './events/site-publication';
 import type { Daily } from './daily';
 import { HOUSE_THEME } from './daily';
 import {
@@ -97,7 +98,7 @@ describe('Sky today facts', () => {
         .sort((a, b) => a.anchor.localeCompare(b.anchor))
         .map((page) => page.path);
     };
-    for (let time = Date.parse('2026-01-01T12:00:00.000Z'); time < Date.parse('2027-12-01T00:00:00.000Z'); time += 5 * 86_400_000) {
+    for (let time = Date.parse('2026-01-01T12:00:00.000Z'); time < Date.parse('2030-12-01T00:00:00.000Z'); time += 5 * 86_400_000) {
       const day = new Date(time).toISOString().slice(0, 10);
       const snapshot = `${day}T12:00:00.000Z`;
       const edition = { ...daily, date: day, snapshotAt: snapshot };

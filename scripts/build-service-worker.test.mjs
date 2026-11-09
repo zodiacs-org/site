@@ -5,6 +5,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { runInNewContext } from 'node:vm';
 import { buildServiceWorker, serviceWorkerAssets } from './build-service-worker.mjs';
+import { readEventsPublication } from './lib/events-publications.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 
@@ -251,8 +252,8 @@ describe('offline service worker posture', () => {
     expect(worker.showNotification).toHaveBeenCalledTimes(1);
   });
 
-  it('accepts every destination in the committed events publication', async () => {
-    const publication = JSON.parse(await readFile(resolve(ROOT, 'src/data/events-publication.json'), 'utf8'));
+  it('accepts every destination in the committed events publication, both receipts', async () => {
+    const publication = await readEventsPublication(ROOT);
     const worker = runWorker(await builtWorker(true));
     const handler = worker.handlers.get('push');
 

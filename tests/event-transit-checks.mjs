@@ -1,9 +1,13 @@
 /** Actual article-to-transit behavior at the gated mobile and desktop widths. */
 import { mkdir, readFile } from 'node:fs/promises';
+import { readEventsPublication } from '../scripts/lib/events-publications.mjs';
 
-const publication = JSON.parse(await readFile(new URL('../src/data/events-publication.json', import.meta.url), 'utf8'));
+// Both receipts, joined as the site publishes them: 2026 to 2027 and 2028 to 2030.
+const publication = await readEventsPublication(new URL('..', import.meta.url).pathname);
 const demo = JSON.parse(await readFile(new URL('../src/data/demo-chart-frida.json', import.meta.url), 'utf8'));
-const ids = ['neptune-sextile-pluto-2026-09-16', 'new-moon-2026-09-11', 'venus-retrograde-2026-10-03', 'jupiter-enters-leo-2026-06-30', 'eclipse-2026-08-28'];
+const ids = ['neptune-sextile-pluto-2026-09-16', 'new-moon-2026-09-11', 'venus-retrograde-2026-10-03', 'jupiter-enters-leo-2026-06-30', 'eclipse-2026-08-28',
+  // One page from the 2028 to 2030 receipt.
+  'saturn-square-pluto-2028-06-24'];
 // The pages print, and hand to /transits/, NASA's instant for a planet event
 // (src/lib/nasa-instants.ts); the publication keeps the engine's anchor.
 const nasa = JSON.parse(await readFile(new URL('../src/data/nasa-event-instants.json', import.meta.url), 'utf8'));
