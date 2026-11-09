@@ -163,6 +163,10 @@ describe('the words', () => {
 });
 
 describe('the Year Ahead directory', () => {
+  it('scores a figure’s page from the first day of the month, so the page and a draft post agree all month', async () => {
+    const { yearPageStart } = await import('./people');
+    expect(yearPageStart(new Date('2026-11-09T23:59:00Z'))).toBe('2026-11-01');
+  });
   const REVIEW = '2026-11-09';
   it('lists only adults, each with a cited source and a unique slug', () => {
     const slugs = new Set<string>();
