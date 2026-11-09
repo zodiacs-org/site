@@ -94,7 +94,11 @@ interface Topic {
 }
 
 /** Which topic list to answer from: ZODIACS_SKY_EVENTS_ENABLED=1 adds the event and house topics. */
-export interface ExplainOptions { skyEvents?: boolean }
+/** numerology: get_numerology is offered (ZODIACS_NUMEROLOGY_ENABLED=1), so a numerology topic points to it. */
+export interface ExplainOptions { skyEvents?: boolean; numerology?: boolean }
+
+/** With get_numerology offered: numerology is still not astrology, so this tool does not explain it, but the other tool answers. */
+export const NUMEROLOGY_POINTER = 'Numerology is a separate tradition from astrology, and this tool explains astrology only. For numerology numbers and their meanings from a birth date and a name, use get_numerology, and say that it is numerology, not astrology.';
 
 const GLOSSARY_BY_SLUG = new Map(GLOSSARY.map((term) => [term.slug, term] as const));
 const term = (slug: string): GlossaryTerm => {
@@ -631,11 +635,14 @@ export function explainAstrology(args: ExplainInput, origin = DEFAULT_ORIGIN, op
   if (!topic) {
     const data: ExplainData = {
       found: false, query: args.topic, topic: null, title: null, paragraphs: [], terms: [], pages: [], related: [], topics: [...keys],
-      message: outside
+      message: outside === 'numerology' && options.numerology
+        ? NUMEROLOGY_POINTER
+        : outside
         ? `Zodiacs explains Western tropical astrology and the Chinese zodiac; it does not cover ${outside}. Say so plainly rather than explaining it from Zodiacs.`
         : 'Zodiacs has no explainer for that topic. Choose one of the listed topics, or answer without Zodiacs.',
       note: EXPLAIN_NOTE,
     };
+    if (outside === 'numerology' && options.numerology) return { data, links: [{ title: 'Numerology calculator on Zodiacs', url: `${origin}/numerology/` }] };
     return { data, links: [{ title: 'Learn astrology on Zodiacs', url: `${origin}/learn/` }, { title: 'Glossary', url: `${origin}/learn/glossary/` }] };
   }
   const terms = topic.glossary.map(term);

@@ -218,7 +218,7 @@ export const PERSONAL_YEAR_MEANINGS: Readonly<Record<SingleDigit, string>> = Obj
   5: 'A year for change. Travel, new people, and a restlessness the tradition says is worth following, within reason. Freedom is the theme; discipline is the counterweight.',
   6: 'A year for responsibility. Family, home, and the people who depend on you take the foreground. The tradition pairs the care given in this year with care returned in later ones.',
   7: 'A year for the inward turn. Study, rest, and questions that need quiet to answer. Less is happening on the surface than underneath.',
-  8: 'A year for results. Ambition, authority, and what the last seven years of effort add up to. Decisions carry weight; so do their consequences.',
+  8: 'A year for results. Ambition, authority, money, and what the last seven years of effort add up to; the tradition reads it as a strong year for earnings and promotion. Decisions carry weight; so do their consequences.',
   9: 'A year for completion. Endings, clearing out, and finishing what the cycle started. The tradition says to let go now so the 1 year that follows starts clear.',
 });
 

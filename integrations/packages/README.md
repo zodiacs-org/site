@@ -80,7 +80,13 @@ years, because Zodiacs is not directed at children under 13; no tool definition 
 the Zodiacs 0.6.6 ZIP keeps its bytes. Developer 0.3.31 is rebuilt from that
 source with unchanged tools, and 0.3.30 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.31**;
+The numerology change (9 November 2026) adds get_numerology to the hosted
+server's source behind ZODIACS_NUMEROLOGY_ENABLED=1, which is off; with it off
+no tool definition changes and the Zodiacs 0.6.6 ZIP keeps its bytes.
+Developer 0.3.32 is rebuilt from that source with unchanged tools, and 0.3.31
+keeps its bytes.
+
+Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.32**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

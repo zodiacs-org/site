@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
-import { EVERY_TOOL_WITH_SKY_EVENTS, INPUT_SCHEMAS, OUTPUT_SCHEMAS, SKY_EVENTS_INPUT_SCHEMAS, SKY_EVENTS_OUTPUT_SCHEMAS, type AiToolName } from './contracts';
+import { EVERY_SWITCHED_TOOL, INPUT_SCHEMAS, OUTPUT_SCHEMAS, SKY_EVENTS_INPUT_SCHEMAS, SKY_EVENTS_OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { SAVE_OUTPUT_SCHEMA, SAVE_TOOL_NAME, saveInput } from './accounts/contracts';
 import { executeAiTool } from './tools';
 import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
@@ -16,7 +16,7 @@ type Converts = { '~standard': { jsonSchema: Record<'input' | 'output', (options
 const advertised = (schema: unknown, io: 'input' | 'output') => (schema as Converts)['~standard'].jsonSchema[io]({ target: 'draft-2020-12' });
 
 const TOOLS: Array<[string, unknown, unknown]> = [
-  ...EVERY_TOOL_WITH_SKY_EVENTS.map((tool): [string, unknown, unknown] => [tool, INPUT_SCHEMAS[tool], OUTPUT_SCHEMAS[tool]]),
+  ...EVERY_SWITCHED_TOOL.map((tool): [string, unknown, unknown] => [tool, INPUT_SCHEMAS[tool], OUTPUT_SCHEMAS[tool]]),
   // The wider natal chart and explainer the sky events switch offers.
   ...(Object.keys(SKY_EVENTS_INPUT_SCHEMAS) as AiToolName[]).map((tool): [string, unknown, unknown] => [`${tool} with sky events`, SKY_EVENTS_INPUT_SCHEMAS[tool], SKY_EVENTS_OUTPUT_SCHEMAS[tool] ?? OUTPUT_SCHEMAS[tool]]),
   [SAVE_TOOL_NAME, saveInput, SAVE_OUTPUT_SCHEMA],
@@ -123,7 +123,7 @@ describe('what the tools return', () => {
   it('validates against the schemas they advertise, as a client checks it', async () => {
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);
-    const validators = new Map(EVERY_TOOL_WITH_SKY_EVENTS.map((tool) => [tool, ajv.compile(advertised(OUTPUT_SCHEMAS[tool], 'output'))]));
+    const validators = new Map(EVERY_SWITCHED_TOOL.map((tool) => [tool, ajv.compile(advertised(OUTPUT_SCHEMAS[tool], 'output'))]));
     const dependencies = { occasions: true, horoscopeWindow: async () => committedWindow as HoroscopeWindow, allowEvents: async () => 'allowed' as const };
     const invalid: string[] = [];
     const refused: string[] = [];

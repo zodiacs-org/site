@@ -9,6 +9,7 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
+import { POSITION_READINGS, type ReadingPosition } from '../data/numerology-readings';
 import {
   formatChain,
   lifePathExample,
@@ -71,6 +72,11 @@ function firstSentence(text: string): string {
 
 function meaningFor(value: number): NumberMeaning | null {
   return value === 0 ? null : (NUMBER_MEANINGS[value as CoreNumber] ?? null);
+}
+
+/** The position's own reading (src/data/numerology-readings.ts), the same words get_numerology returns; none for a 0. */
+function positionReading(position: ReadingPosition, value: number): string | undefined {
+  return value === 0 ? undefined : POSITION_READINGS[position][value as CoreNumber];
 }
 
 function hueFor(value: number): string {
@@ -377,9 +383,9 @@ export default function NumerologyCalculator({ currentLifePath }: Props) {
             <NumberCard position="birthday" value={profile.date.birthday.value} chain={chainIfLonger(profile.date.birthday)} />
             {profile.name && (
               <>
-                <NumberCard position="expression" value={profile.name.expression.value} chain={chainIfLonger(profile.name.expression)} />
-                <NumberCard position="soulUrge" value={profile.name.soulUrge.value} chain={chainIfLonger(profile.name.soulUrge)} />
-                <NumberCard position="personality" value={profile.name.personality.value} chain={chainIfLonger(profile.name.personality)} />
+                <NumberCard position="expression" value={profile.name.expression.value} chain={chainIfLonger(profile.name.expression)} summary={positionReading('expression', profile.name.expression.value)} />
+                <NumberCard position="soulUrge" value={profile.name.soulUrge.value} chain={chainIfLonger(profile.name.soulUrge)} summary={positionReading('soulUrge', profile.name.soulUrge.value)} />
+                <NumberCard position="personality" value={profile.name.personality.value} chain={chainIfLonger(profile.name.personality)} summary={positionReading('personality', profile.name.personality.value)} />
               </>
             )}
             {profile.maturity && (
