@@ -283,7 +283,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     } catch { if (!res.headersSent) send(res, 500, 'protocol-failed'); else res.end(); }
     finally {
       // The reply has ended: count the call once, including an error result.
-      if (calledTool) countAfterReply(options, env, calledTool, req.headers?.['user-agent']);
+      // A personal tool is never counted: not even its name reaches the usage counter.
+      if (calledTool && !(PERSONAL_TOOL_NAMES as readonly string[]).includes(calledTool)) countAfterReply(options, env, calledTool, req.headers?.['user-agent']);
       await sdk.close().catch(() => {});
     }
     } finally {
