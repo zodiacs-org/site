@@ -4412,32 +4412,32 @@ function validateResult(value, instantaneousApplying, instant3, scale) {
     const mc = angles.mc;
     const opposite = cusps.slice(0, 6).every((cusp, index) => angularClose(cusps[index + 6], cusp + 180));
     const thirtyFrom = (start) => cusps.every((cusp, index) => angularClose(cusp, start + index * 30));
-    let consistent;
+    let consistent2;
     switch (system) {
       case "whole":
-        consistent = thirtyFrom(Math.floor(asc / 30) * 30);
+        consistent2 = thirtyFrom(Math.floor(asc / 30) * 30);
         break;
       case "equal":
-        consistent = thirtyFrom(asc);
+        consistent2 = thirtyFrom(asc);
         break;
       // The 10th cusp is the midheaven, so the 1st is 90° past it.
       case "equal-mc":
-        consistent = thirtyFrom(mc + 90);
+        consistent2 = thirtyFrom(mc + 90);
         break;
       case "vehlow":
-        consistent = thirtyFrom(asc - 15);
+        consistent2 = thirtyFrom(asc - 15);
         break;
       // Neither angle is a Morinus cusp; the meridian system keeps the midheaven.
       case "morinus":
-        consistent = opposite;
+        consistent2 = opposite;
         break;
       case "meridian":
-        consistent = opposite && angularClose(cusps[9], mc);
+        consistent2 = opposite && angularClose(cusps[9], mc);
         break;
       default:
-        consistent = opposite && angularClose(cusps[0], asc) && (angularClose(cusps[9], mc) || TURNING_WITH_ASCENDANT.includes(system) && angularClose(cusps[9], mc + 180));
+        consistent2 = opposite && angularClose(cusps[0], asc) && (angularClose(cusps[9], mc) || TURNING_WITH_ASCENDANT.includes(system) && angularClose(cusps[9], mc + 180));
     }
-    if (!consistent) fail("inconsistent_result");
+    if (!consistent2) fail("inconsistent_result");
     if (system === "porphyry") {
       const upper = wrap(angles.asc - angles.mc);
       const lower2 = 180 - upper;
@@ -27112,11 +27112,11 @@ async function getBirthday(input, localTime2, now, origin = DEFAULT_ORIGIN2) {
   if (args.birthDate && birthUtc && birthYear !== null && sunAtBirth) {
     const year = args.year ?? Math.max(now.getUTCFullYear(), birthYear + 1);
     if (year <= birthYear) throw new RangeError("The solar return year must be after the birth year.");
-    const natalLon2 = bodyLongitude2("Sun", birthUtc);
+    const natalLon = bodyLongitude2("Sun", birthUtc);
     const nearDate = /* @__PURE__ */ new Date(0);
     nearDate.setUTCFullYear(year, month - 1, day);
     nearDate.setUTCHours(12, 0, 0, 0);
-    const instant3 = solarReturnInstant2(natalLon2, nearDate);
+    const instant3 = solarReturnInstant2(natalLon, nearDate);
     let range = null;
     let note;
     if (timeKnown) {
@@ -31677,15 +31677,15 @@ function groupIntoSeasons2(crossings, gapDays = 400) {
   return seasons;
 }
 function saturnReturns(birthUtc) {
-  const natalLon2 = bodyLongitude2("Saturn", birthUtc);
+  const natalLon = bodyLongitude2("Saturn", birthUtc);
   const speed = longitudeSpeed2("Saturn", birthUtc);
   const window = clipToReferenceSpan(
     new Date(birthUtc.getTime() + 26 * 365.25 * DAY10),
     new Date(birthUtc.getTime() + 92 * 365.25 * DAY10)
   );
-  const crossings = window ? findLongitudeCrossings2("Saturn", natalLon2, window.from, window.to) : [];
+  const crossings = window ? findLongitudeCrossings2("Saturn", natalLon, window.from, window.to) : [];
   return {
-    natalLon: natalLon2,
+    natalLon,
     natalRetrograde: speed < 0,
     seasons: groupIntoSeasons2(crossings),
     rangeClipped: !window || window.clipped,
@@ -31804,8 +31804,8 @@ function natalTransitPoints(chart) {
   }
   return points;
 }
-function aspectTargetLongitudes(natalLon2, aspect) {
-  const lon = normalizeLongitude3(natalLon2);
+function aspectTargetLongitudes(natalLon, aspect) {
+  const lon = normalizeLongitude3(natalLon);
   return ASPECT_TARGET_OFFSETS[aspect].map((offset) => normalizeLongitude3(lon + offset));
 }
 function selectedTransitBodies(options) {
@@ -39645,6 +39645,197 @@ async function searchSkyEvents(args, clock2, options) {
 // src/ai-tools/personal/retrograde-for-me.ts
 import { z as z12 } from "zod";
 
+// src/lib/retrograde-for-you/reading.ts
+var RETROGRADE_PLANETS = ["Mercury", "Venus", "Mars"];
+var RETROGRADE_LINE = {
+  Mercury: "Mercury retrograde is traditionally a time to review, revise and reconnect rather than launch: check the details, back up what matters, reread contracts before signing them, and leave room for delays in travel and messages.",
+  Venus: "Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a good window to review finances and old ties, and a poor one for big purchases or a sudden change of look.",
+  Mars: "Mars retrograde traditionally slows drive and ambition: plans stall, tempers run shorter and old disputes come back. It asks you to rework a strategy rather than force it, and to take rest seriously when energy dips."
+};
+var RETROGRADE_ASK = {
+  Mercury: "review plans, recheck the paperwork and reopen conversations that were left unfinished",
+  Venus: "look again at what you value there and what you spend on it, and to mend rather than replace",
+  Mars: "rework plans rather than push them, and to pace your effort"
+};
+var CONTACT_LINE = "traditionally the most felt part of a retrograde, since the planet crosses that degree three times (before the turn, while retrograde and again after it)";
+var POINT_NAMES = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+var ORDINAL7 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
+var round2 = (value) => Math.round(value * 100) / 100;
+var minute = (at) => new Date(Math.round(at.getTime() / 6e4) * 6e4);
+var norm = (value) => (value % 360 + 360) % 360;
+function dateOn(at, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(at);
+  const part = (type) => parts.find((entry) => entry.type === type).value;
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+function dayLabel3(at, timeZone) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short", year: "numeric" }).formatToParts(new Date(at)).map((part) => [part.type, part.value]));
+  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+}
+function formatPosition(lon) {
+  const index = signIndexForLongitude2(lon);
+  const minutes = Math.floor((norm(lon) - index * 30) * 60);
+  return `${Math.floor(minutes / 60)}\xB0${String(minutes % 60).padStart(2, "0")}' ${SIGNS2[index].name}`;
+}
+function instantOn(at, timeZone) {
+  const rounded = minute(at);
+  return { utc: rounded.toISOString(), date: dateOn(rounded, timeZone), label: dayLabel3(rounded, timeZone) };
+}
+function stationOn(at, lon, timeZone) {
+  const index = signIndexForLongitude2(lon);
+  return { ...instantOn(at, timeZone), sign: SIGNS2[index].slug, degree: Math.min(29.99, round2(norm(lon) - index * 30)), position: formatPosition(lon) };
+}
+function loopSigns(loop) {
+  const first2 = signIndexForLongitude2(loop.stationDirect.lon);
+  const last2 = signIndexForLongitude2(loop.stationRetrograde.lon);
+  const out = [first2];
+  for (let index = first2; index !== last2; ) {
+    index = (index + 1) % 12;
+    out.push(index);
+  }
+  return out;
+}
+function inLoop(loop, lon) {
+  return norm(lon - loop.stationDirect.lon) <= norm(loop.stationRetrograde.lon - loop.stationDirect.lon);
+}
+function natalBasis(input) {
+  const lonOf2 = (name) => input.bodies.find((row) => row.body === name).lon;
+  const limits2 = [];
+  let countedFrom = null;
+  let baseSign = null;
+  if (input.angles) {
+    countedFrom = "rising sign";
+    baseSign = SIGNS2[signIndexForLongitude2(input.angles.asc)].slug;
+  } else if (input.sunHeld) {
+    countedFrom = "Sun sign";
+    baseSign = SIGNS2[signIndexForLongitude2(lonOf2("Sun"))].slug;
+    limits2.push(input.timeKnown ? "No birthplace coordinates were given, so there is no rising sign: the houses are counted from your Sun sign, a rougher guide than your own houses." : "No birth time was given, so there is no rising sign: the houses are counted from your Sun sign, a rougher guide than your own houses.");
+  } else limits2.push("No birth time was given and the Sun changed sign on the birth day, so there are no houses. A birth time settles it.");
+  const points = POINT_NAMES.filter((name) => name !== "Moon" || input.timeKnown).map((name) => ({ name, lon: lonOf2(name) }));
+  if (input.angles) points.push({ name: "Ascendant", lon: input.angles.asc }, { name: "Midheaven", lon: input.angles.mc });
+  if (!input.timeKnown) limits2.push("Without a birth time the natal Moon is left out of the points each loop passes over.");
+  return {
+    countedFrom,
+    baseSign,
+    points,
+    detail: readingDetail({ hasDate: true, hasTime: input.timeKnown, hasPlace: input.placed }),
+    minor: isUnder18(input.birthDate, input.today),
+    limits: limits2
+  };
+}
+function retrogradePeriod(planet, loops, now, zone7, basis) {
+  const soften = (text2) => basis.minor ? softenMinor(text2) : text2;
+  const { current: loop, previous, retrogradeNow } = loops;
+  const confidence = readingConfidence(basis.detail);
+  const confidenceLabel = readingConfidenceLabel(basis.detail);
+  const retro = stationOn(loop.stationRetrograde.at, loop.stationRetrograde.lon, zone7);
+  const direct = stationOn(loop.stationDirect.at, loop.stationDirect.lon, zone7);
+  const preShadowStart = loop.preShadowStart ? instantOn(loop.preShadowStart, zone7) : null;
+  const postShadowEnd = loop.postShadowEnd ? instantOn(loop.postShadowEnd, zone7) : null;
+  const status = retrogradeNow ? "retrograde" : previous?.postShadowEnd && previous.postShadowEnd.getTime() > now.getTime() ? "post-shadow" : loop.preShadowStart && loop.preShadowStart.getTime() <= now.getTime() ? "pre-shadow" : "direct";
+  const signs = loopSigns(loop).map((index) => SIGNS2[index].slug);
+  const houses = basis.baseSign ? signs.map((sign2) => {
+    const house = wholeSignHouseFromAsc(sign2, basis.baseSign);
+    const theme = NATAL_HOUSE_THEME[house];
+    const where = basis.countedFrom === "rising sign" ? `your ${ORDINAL7[house]} house` : `the ${ORDINAL7[house]} house counted from your Sun sign`;
+    return { house, sign: sign2, theme: soften(theme), line: soften(`In ${signBySlug(sign2).name} it falls in ${where}, which covers ${theme}. There it traditionally asks you to ${RETROGRADE_ASK[planet]}.`) };
+  }) : [];
+  const contacts = basis.points.filter((point) => inLoop(loop, point.lon)).map((point) => ({
+    point: point.name,
+    sign: SIGNS2[signIndexForLongitude2(point.lon)].slug,
+    position: formatPosition(point.lon),
+    line: `The loop passes over your natal ${point.name} at ${formatPosition(point.lon)}: ${CONTACT_LINE}.`
+  }));
+  const opening = retrogradeNow ? `${planet} is retrograde now. It turned retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.` : `${planet} is not retrograde now. It next turns retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.`;
+  const shadowLine = status === "post-shadow" ? ` It turned direct on ${instantOn(previous.stationDirect.at, zone7).label} and is in the post-shadow of that loop until ${instantOn(previous.postShadowEnd, zone7).label}, going back over the degrees it covered while retrograde.` : status === "pre-shadow" && preShadowStart ? ` It is already in the pre-shadow, which began on ${preShadowStart.label}, crossing the degrees the retrograde will revisit.` : preShadowStart && !retrogradeNow ? ` Its pre-shadow begins on ${preShadowStart.label}.` : "";
+  const after = postShadowEnd ? ` The post-shadow runs until ${postShadowEnd.label}, when it is back at the degree where it turned retrograde.` : "";
+  const reading = soften([
+    `${opening}${shadowLine}${after}`,
+    RETROGRADE_LINE[planet],
+    ...houses.map((entry) => entry.line),
+    ...contacts.map((entry) => entry.line),
+    `${confidenceLabel}.`
+  ].join(" "));
+  return {
+    period: {
+      planet,
+      retrogradeNow,
+      status,
+      stationRetrograde: retro,
+      stationDirect: direct,
+      preShadowStart,
+      postShadowEnd,
+      signs,
+      housesCountedFrom: basis.countedFrom,
+      houses,
+      contacts,
+      reading,
+      confidence,
+      confidenceLabel
+    },
+    opening: soften(opening)
+  };
+}
+function retrogradeReading(input) {
+  const periods = [];
+  const unavailable = [];
+  const openings = [];
+  for (const planet of RETROGRADE_PLANETS.filter((entry) => input.planets.includes(entry))) {
+    const loops = input.loopsFor(planet);
+    if (!loops) {
+      unavailable.push(planet);
+      continue;
+    }
+    const { period: period2, opening } = retrogradePeriod(planet, loops, input.now, input.zone, input.basis);
+    periods.push(period2);
+    openings.push(opening);
+  }
+  const limits2 = [...input.leadingLimits ?? [], ...input.basis.limits];
+  if (input.basis.minor) limits2.push(MINOR_NOTE);
+  const summary = `${openings.join(" ")} ${readingConfidenceLabel(input.basis.detail)}.`;
+  return { periods, unavailable, summary, limits: limits2 };
+}
+function stationHouse(period2) {
+  return period2.houses.find((entry) => entry.sign === period2.stationRetrograde.sign)?.house ?? null;
+}
+
+// src/lib/retrograde-for-you/share.ts
+var RETROGRADE_FOR_YOU_PAGE_PATH = "/retrogrades/for-you/";
+var RETROGRADE_FOR_YOU_SHARE_PATH = "/share/retrograde-for-you/";
+var RETROGRADE_FOR_YOU_SHARE_KEYS = Object.freeze(["p", "s", "h", "b", "c", "ref"]);
+var SHARE_RETROGRADE_PLANETS = ["mercury", "venus", "mars"];
+var [DATE_CONFIDENCE, TIMED_CONFIDENCE] = DAY_CONFIDENCES;
+function consistent(share) {
+  if (share.house === null !== (share.basis === null)) return false;
+  if (!DAY_CONFIDENCES.includes(share.confidence)) return false;
+  return share.basis === "rising" ? share.confidence === TIMED_CONFIDENCE : share.confidence === DATE_CONFIDENCE;
+}
+function retrogradeForYouQuery(share, withRef2 = false) {
+  const params = new URLSearchParams({ p: share.planet, s: share.date });
+  if (share.house !== null && share.basis !== null) {
+    params.set("h", String(share.house));
+    params.set("b", share.basis);
+  }
+  params.set("c", String(share.confidence));
+  if (withRef2 && share.ref) params.set("ref", share.ref);
+  return params.toString();
+}
+function publishedRetrogradeDate(planet, stationUtc, windows2) {
+  const at = Date.parse(stationUtc);
+  const match = windows2.find((entry) => entry.planet === planet && Math.abs(Date.parse(entry.from) - at) < 864e5);
+  return match ? new Date(match.from).toISOString().slice(0, 10) : null;
+}
+function retrogradeForYouShareQuery(source, windows2) {
+  const planet = source.planet.toLowerCase();
+  if (!SHARE_RETROGRADE_PLANETS.includes(planet)) return null;
+  const date3 = publishedRetrogradeDate(source.planet, source.stationRetrogradeUtc, windows2);
+  if (!date3) return null;
+  const basis = source.house === null || source.countedFrom === null ? null : source.countedFrom === "rising sign" ? "rising" : "sun";
+  const share = { planet, date: date3, house: basis ? source.house : null, basis, confidence: source.confidence, ref: null };
+  return consistent(share) ? retrogradeForYouQuery(share) : null;
+}
+var retrogradeForYouShareUrl = (origin, query) => `${origin}${RETROGRADE_FOR_YOU_SHARE_PATH}?${query}`;
+
 // src/ai-tools/personal/shared.ts
 import { z as z11 } from "zod";
 var PERSONAL_MIN_YEAR = 1800;
@@ -39667,14 +39858,10 @@ function refineBirth(args, context) {
 function definePersonalTool(definition) {
   return definition;
 }
-function dateOn(at, timeZone) {
+function dateOn2(at, timeZone) {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(at);
   const part = (type) => parts.find((entry) => entry.type === type).value;
   return `${part("year")}-${part("month")}-${part("day")}`;
-}
-function dayLabel3(at, timeZone) {
-  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short", year: "numeric" }).formatToParts(new Date(at)).map((part) => [part.type, part.value]));
-  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
 }
 async function castNatal(args, clock2) {
   const birth = parseCivilDate(args.birthDate);
@@ -39712,26 +39899,12 @@ async function currentClock(currentZone, birthZone, context) {
   if (birthZone) return { zone: birthZone, note: `Today is read on the birthplace clock (${birthZone}) because no current location was given.` };
   return { zone: "UTC", note: "Today is read in UTC because no time zone was given." };
 }
-var ORDINAL7 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 
 // src/ai-tools/personal/retrograde-for-me.ts
-var RETROGRADE_PLANETS = ["Mercury", "Venus", "Mars"];
 var DAY14 = 864e5;
 var LOOK_BACK_DAYS = 250;
 var LOOK_AHEAD_DAYS = 860;
 var SHADOW_SEARCH_DAYS = 150;
-var RETROGRADE_LINE = {
-  Mercury: "Mercury retrograde is traditionally a time to review, revise and reconnect rather than launch: check the details, back up what matters, reread contracts before signing them, and leave room for delays in travel and messages.",
-  Venus: "Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful. It is read as a good window to review finances and old ties, and a poor one for big purchases or a sudden change of look.",
-  Mars: "Mars retrograde traditionally slows drive and ambition: plans stall, tempers run shorter and old disputes come back. It asks you to rework a strategy rather than force it, and to take rest seriously when energy dips."
-};
-var RETROGRADE_ASK = {
-  Mercury: "review plans, recheck the paperwork and reopen conversations that were left unfinished",
-  Venus: "look again at what you value there and what you spend on it, and to mend rather than replace",
-  Mars: "rework plans rather than push them, and to pace your effort"
-};
-var CONTACT_LINE = "traditionally the most felt part of a retrograde, since the planet crosses that degree three times (before the turn, while retrograde and again after it)";
-var POINT_NAMES = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var retrogradeForMeInput = z12.strictObject({
   ...birthFields,
   latitude: birthFields.latitude.describe("Optional. The birthplace's latitude; with a birth time it places the retrogrades in the natal houses. Give it with longitude and zone. Nothing is stored."),
@@ -39785,7 +39958,9 @@ var period = z12.object({
   /** One plain paragraph: when, where, and what it traditionally asks for. */
   reading: z12.string(),
   confidence: z12.number().int().min(40).max(95),
-  confidenceLabel: z12.string()
+  confidenceLabel: z12.string(),
+  /** A link to this retrograde's share card: the planet, the window's start date, the house and its basis and the confidence. Null when the window is past the site's published sky data. */
+  shareUrl: z12.url().nullable()
 });
 var retrogradeForMeData = z12.object({
   birthDate: z12.string(),
@@ -39799,22 +39974,6 @@ var retrogradeForMeData = z12.object({
   limits: z12.array(z12.string()),
   pageUrl: z12.url()
 });
-var round2 = (value) => Math.round(value * 100) / 100;
-var minute = (at) => new Date(Math.round(at.getTime() / 6e4) * 6e4);
-var norm = (value) => (value % 360 + 360) % 360;
-function formatPosition(lon) {
-  const index = signIndexForLongitude2(lon);
-  const minutes = Math.floor((norm(lon) - index * 30) * 60);
-  return `${Math.floor(minutes / 60)}\xB0${String(minutes % 60).padStart(2, "0")}' ${SIGNS2[index].name}`;
-}
-function instantOn(at, timeZone) {
-  const rounded = minute(at);
-  return { utc: rounded.toISOString(), date: dateOn(rounded, timeZone), label: dayLabel3(rounded, timeZone) };
-}
-function stationOn(at, lon, timeZone) {
-  const index = signIndexForLongitude2(lon);
-  return { ...instantOn(at, timeZone), sign: SIGNS2[index].slug, degree: Math.min(29.99, round2(norm(lon) - index * 30)), position: formatPosition(lon) };
-}
 function shadows(planet, retro, direct) {
   const pre = findLongitudeCrossings(planet, direct.lon, new Date(retro.at.getTime() - SHADOW_SEARCH_DAYS * DAY14), retro.at).filter((crossing) => !crossing.retrograde).at(-1)?.at ?? null;
   const post = findLongitudeCrossings(planet, retro.lon, direct.at, new Date(direct.at.getTime() + SHADOW_SEARCH_DAYS * DAY14)).find((crossing) => !crossing.retrograde)?.at ?? null;
@@ -39839,118 +39998,59 @@ function retrogradeLoops(planet, now, rowsAt = positionsMemo()) {
   const previous = !retrogradeNow && position2 > 0 ? fill(loops[position2 - 1]) : null;
   return { current: fill(loops[position2]), previous, retrogradeNow };
 }
-function loopSigns(loop) {
-  const first2 = signIndexForLongitude2(loop.stationDirect.lon);
-  const last2 = signIndexForLongitude2(loop.stationRetrograde.lon);
-  const out = [first2];
-  for (let index = first2; index !== last2; ) {
-    index = (index + 1) % 12;
-    out.push(index);
-  }
-  return out;
-}
-function inLoop(loop, lon) {
-  return norm(lon - loop.stationDirect.lon) <= norm(loop.stationRetrograde.lon - loop.stationDirect.lon);
-}
-var natalLon = (chart, name) => chart.bodies.find((row) => row.body === name).lon;
 async function retrogradeForMe(args, context) {
   const natal = await castNatal(args, context.localTime);
   const clock2 = await currentClock(args.currentZone, args.zone, context);
   const now = context.now;
-  const today = dateOn(now, clock2.zone);
-  const minor = isUnder18(args.birthDate, today);
-  const soften = (text2) => minor ? softenMinor(text2) : text2;
   const planets = RETROGRADE_PLANETS.filter((planet) => !args.planets || args.planets.includes(planet));
-  const limits2 = [];
-  if (clock2.note) limits2.push(clock2.note);
-  let countedFrom = null;
-  let baseSign = null;
-  if (natal.angles) {
-    countedFrom = "rising sign";
-    baseSign = SIGNS2[signIndexForLongitude2(natal.angles.asc)].slug;
-  } else {
-    const sunIndex = signIndexForLongitude2(natalLon(natal.chart, "Sun"));
-    let held = true;
-    if (!natal.timeKnown) {
-      const ends = await birthDayEnds(args, context.localTime);
-      held = ends.every((end) => signIndexForLongitude2(rowOf(positions(end), "Sun").lon) === sunIndex);
-    }
-    if (held) {
-      countedFrom = "Sun sign";
-      baseSign = SIGNS2[sunIndex].slug;
-      limits2.push(natal.timeKnown ? "No birthplace coordinates were given, so there is no rising sign: the houses are counted from your Sun sign, a rougher guide than your own houses." : "No birth time was given, so there is no rising sign: the houses are counted from your Sun sign, a rougher guide than your own houses.");
-    } else limits2.push("No birth time was given and the Sun changed sign on the birth day, so there are no houses. A birth time settles it.");
+  let sunHeld = true;
+  if (!natal.angles && !natal.timeKnown) {
+    const sunIndex = signIndexForLongitude2(natal.chart.bodies.find((row) => row.body === "Sun").lon);
+    const ends = await birthDayEnds(args, context.localTime);
+    sunHeld = ends.every((end) => signIndexForLongitude2(rowOf(positions(end), "Sun").lon) === sunIndex);
   }
-  const points = POINT_NAMES.filter((name) => name !== "Moon" || natal.timeKnown).map((name) => ({ name, lon: natalLon(natal.chart, name) }));
-  if (natal.angles) points.push({ name: "Ascendant", lon: natal.angles.asc }, { name: "Midheaven", lon: natal.angles.mc });
-  if (!natal.timeKnown) limits2.push("Without a birth time the natal Moon is left out of the points each loop passes over.");
-  const confidence = readingConfidence(natal.detail);
-  const confidenceLabel = readingConfidenceLabel(natal.detail);
-  const rowsAt = positionsMemo();
-  const openings = [];
-  const periods = planets.map((planet) => {
-    const { current: loop, previous, retrogradeNow } = retrogradeLoops(planet, now, rowsAt);
-    const retro = stationOn(loop.stationRetrograde.at, loop.stationRetrograde.lon, clock2.zone);
-    const direct = stationOn(loop.stationDirect.at, loop.stationDirect.lon, clock2.zone);
-    const preShadowStart = loop.preShadowStart ? instantOn(loop.preShadowStart, clock2.zone) : null;
-    const postShadowEnd = loop.postShadowEnd ? instantOn(loop.postShadowEnd, clock2.zone) : null;
-    const status = retrogradeNow ? "retrograde" : previous?.postShadowEnd && previous.postShadowEnd.getTime() > now.getTime() ? "post-shadow" : loop.preShadowStart && loop.preShadowStart.getTime() <= now.getTime() ? "pre-shadow" : "direct";
-    const signs = loopSigns(loop).map((index) => SIGNS2[index].slug);
-    const houses = baseSign ? signs.map((sign2) => {
-      const house = wholeSignHouseFromAsc(sign2, baseSign);
-      const theme = NATAL_HOUSE_THEME[house];
-      const where = countedFrom === "rising sign" ? `your ${ORDINAL7[house]} house` : `the ${ORDINAL7[house]} house counted from your Sun sign`;
-      return { house, sign: sign2, theme, line: soften(`In ${signBySlug(sign2).name} it falls in ${where}, which covers ${theme}. There it traditionally asks you to ${RETROGRADE_ASK[planet]}.`) };
-    }) : [];
-    const contacts = points.filter((point) => inLoop(loop, point.lon)).map((point) => ({
-      point: point.name,
-      sign: SIGNS2[signIndexForLongitude2(point.lon)].slug,
-      position: formatPosition(point.lon),
-      line: `The loop passes over your natal ${point.name} at ${formatPosition(point.lon)}: ${CONTACT_LINE}.`
-    }));
-    const opening = retrogradeNow ? `${planet} is retrograde now. It turned retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.` : `${planet} is not retrograde now. It next turns retrograde on ${retro.label} at ${retro.position} and turns direct on ${direct.label} at ${direct.position}.`;
-    openings.push(soften(opening));
-    const shadowLine = status === "post-shadow" ? ` It turned direct on ${instantOn(previous.stationDirect.at, clock2.zone).label} and is in the post-shadow of that loop until ${instantOn(previous.postShadowEnd, clock2.zone).label}, going back over the degrees it covered while retrograde.` : status === "pre-shadow" && preShadowStart ? ` It is already in the pre-shadow, which began on ${preShadowStart.label}, crossing the degrees the retrograde will revisit.` : preShadowStart && !retrogradeNow ? ` Its pre-shadow begins on ${preShadowStart.label}.` : "";
-    const after = postShadowEnd ? ` The post-shadow runs until ${postShadowEnd.label}, when it is back at the degree where it turned retrograde.` : "";
-    const reading = soften([
-      `${opening}${shadowLine}${after}`,
-      RETROGRADE_LINE[planet],
-      ...houses.map((entry) => entry.line),
-      ...contacts.map((entry) => entry.line),
-      `${confidenceLabel}.`
-    ].join(" "));
-    return {
-      planet,
-      retrogradeNow,
-      status,
-      stationRetrograde: retro,
-      stationDirect: direct,
-      preShadowStart,
-      postShadowEnd,
-      signs,
-      housesCountedFrom: countedFrom,
-      houses,
-      contacts,
-      reading,
-      confidence,
-      confidenceLabel
-    };
+  const basis = natalBasis({
+    timeKnown: natal.timeKnown,
+    placed: natal.placed,
+    angles: natal.angles,
+    bodies: natal.chart.bodies,
+    sunHeld,
+    birthDate: args.birthDate,
+    today: dateOn2(now, clock2.zone)
   });
-  if (minor) limits2.push(MINOR_NOTE);
-  const summary = `${openings.join(" ")} ${confidenceLabel}.`;
+  const rowsAt = positionsMemo();
+  const reading = retrogradeReading({
+    planets,
+    now,
+    zone: clock2.zone,
+    basis,
+    loopsFor: (planet) => retrogradeLoops(planet, now, rowsAt),
+    leadingLimits: clock2.note ? [clock2.note] : []
+  });
+  const periods = reading.periods.map((period2) => {
+    const query = retrogradeForYouShareQuery({
+      planet: period2.planet,
+      stationRetrogradeUtc: period2.stationRetrograde.utc,
+      house: stationHouse(period2),
+      countedFrom: period2.housesCountedFrom,
+      confidence: period2.confidence
+    }, sky_default.retrogrades);
+    return { ...period2, shareUrl: query ? retrogradeForYouShareUrl(context.origin, query) : null };
+  });
   return {
     data: {
       birthDate: args.birthDate,
       timeKnown: natal.timeKnown,
       placed: natal.placed,
-      now: minute(now).toISOString(),
+      now: new Date(Math.round(now.getTime() / 6e4) * 6e4).toISOString(),
       timeZone: clock2.zone,
       periods,
-      summary,
-      limits: limits2,
-      pageUrl: `${context.origin}/retrogrades/`
+      summary: reading.summary,
+      limits: reading.limits,
+      pageUrl: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}`
     },
     links: [
+      { title: "Retrogrades in your chart on Zodiacs", url: `${context.origin}${RETROGRADE_FOR_YOU_PAGE_PATH}` },
       { title: "Retrogrades on Zodiacs", url: `${context.origin}/retrogrades/` },
       ...planets.map((planet) => ({ title: `${planet} retrograde`, url: `${context.origin}/${planet.toLowerCase()}-retrograde/` })),
       { title: "Your birth chart on Zodiacs", url: `${context.origin}/birth-chart/` }
