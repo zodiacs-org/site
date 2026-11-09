@@ -10,6 +10,8 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
 import { POSITION_READINGS, type ReadingPosition } from '../data/numerology-readings';
+import StoryCardShare from '../components/StoryCardShare';
+import { numerologyStoryContent, prepareNumerologyStoryCard } from '../lib/numerology/story-card';
 import {
   formatChain,
   lifePathExample,
@@ -413,6 +415,22 @@ export default function NumerologyCalculator({ currentLifePath }: Props) {
               ))}
             </div>
           )}
+
+          {(() => {
+            const story = numerologyStoryContent(lifePath.value as CoreNumber);
+            // The card and its link carry the Life Path number alone: never the name or the birth date.
+            return (
+              <StoryCardShare
+                cardKey={story.number}
+                prepare={() => prepareNumerologyStoryCard(lifePath.value as CoreNumber)}
+                pageUrl={story.pageUrl}
+                shareText={story.shareText}
+                heading="Share your Life Path"
+                lede={`A card of Life Path ${story.number} and what the tradition reads into it, with a link to its page. It shows no name or birth date.`}
+                placeholder={<span class="display num__number num__number--lead">{story.number}</span>}
+              />
+            );
+          })()}
 
           <EvidenceDisclosure label="How we compute" variant="panel" className="num__how">
             <div class="num__how-block">
