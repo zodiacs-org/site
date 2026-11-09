@@ -85,7 +85,7 @@ const ORDINAL = ['', 'primeira', 'segunda', 'terceira', 'quarta', 'quinta', 'sex
 /** O que cada casa solar põe em jogo, item por item, cada um com o seu artigo. */
 export const THEME_ITEMS: Record<number, string[]> = {
   1: ['a sua imagem', 'os seus começos', 'a impressão que você causa'],
-  2: ['o dinheiro', 'os bens', 'o que dá estabilidade a você'],
+  2: ['os seus recursos', 'o que você valoriza', 'o que dá estabilidade a você'],
   3: ['as conversas', 'as mensagens', 'o seu ambiente próximo'],
   4: ['o lar', 'a família', 'a sua vida privada'],
   5: ['o prazer', 'o romance', 'o que você cria por gosto'],
@@ -107,13 +107,13 @@ export function theme(house: number, prep?: keyof typeof CONTRACT): string {
 /** Títulos curtos para os subtítulos do ano. */
 const SHORT: Record<number, string> = {
   1: 'Imagem e começos',
-  2: 'Dinheiro e prioridades',
+  2: 'Valores e estabilidade',
   3: 'Conversas e entorno',
   4: 'Lar e família',
   5: 'Prazer e criatividade',
   6: 'Rotina e trabalho diário',
   7: 'Relacionamentos e acordos',
-  8: 'O que é dividido e a intimidade',
+  8: 'Finanças compartilhadas e intimidade',
   9: 'Estudos e horizontes',
   10: 'Carreira e reputação',
   11: 'Amizades e projetos',
@@ -123,7 +123,7 @@ const SHORT: Record<number, string> = {
 /** Um primeiro passo concreto por casa. */
 const ADVICE: Record<number, string> = {
   1: 'Diga o que você quer começar antes de reagir ao que os outros propõem.',
-  2: 'Ponha no papel o que custa, o que você tem e o que espera receber.',
+  2: 'Anote o que de fato importa para você e o que dá firmeza ao seu dia a dia.',
   3: 'Responda à mensagem pendente e deixe por escrito o que foi combinado.',
   4: 'Veja do que a casa precisa e reserve tempo para isso antes de aceitar outro compromisso.',
   5: 'Separe um tempo para algo que você faz só por gosto, sem pensar no resultado.',
@@ -139,7 +139,7 @@ const ADVICE: Record<number, string> = {
 /** Um segundo olhar sobre a mesma casa, para não repetir o conselho. */
 const REFINE: Record<number, string> = {
   1: 'Uma mudança pequena no jeito de se apresentar diz mais que um grande anúncio.',
-  2: 'Antes de gastar, veja se a compra ainda faz sentido daqui a uma semana.',
+  2: 'Pense no que você valoriza de verdade e deixe isso guiar a próxima escolha.',
   3: 'Releia o que você envia: uma palavra fora do lugar pode custar uma tarde.',
   4: 'Conserte uma coisa concreta em casa em vez de planejar uma reforma inteira.',
   5: 'Deixe a diversão ser diversão; nem tudo precisa virar projeto.',
@@ -171,7 +171,7 @@ const LOVE: Record<number, string> = {
 /** O lado profissional de cada casa. */
 const WORK: Record<number, string> = {
   1: 'Tome a iniciativa numa tarefa que leve o seu nome.',
-  2: 'Revise o quanto você cobra, o que entra e o orçamento, com números concretos.',
+  2: 'Deixe claro o valor do que você entrega e os recursos de que precisa para trabalhar bem.',
   3: 'E-mails, ligações e burocracias pedem ordem e resposta rápida.',
   4: 'Arrume o lugar de onde você trabalha para que ele não roube a sua energia.',
   5: 'Um projeto criativo ou uma proposta sua merece a sua melhor hora.',
@@ -184,13 +184,67 @@ const WORK: Record<number, string> = {
   12: 'Trabalhe no que ainda não aparece e não espere aplauso antes da hora.',
 };
 
+/** Uma terceira linha por casa, para que nenhum conselho se repita na mesma página. */
+const THIRD: Record<number, string> = {
+  1: 'Escolha uma coisa para começar hoje e deixe as outras para depois.',
+  2: 'Repare no que traz estabilidade ao seu dia e proteja isso primeiro.',
+  3: 'Uma ligação curta resolve o que dez mensagens deixam no ar.',
+  4: 'Um canto arrumado da casa já muda o humor do dia.',
+  5: 'Volte a um passatempo que ficou de lado, nem que seja por meia hora.',
+  6: 'Comece pela tarefa mais chata; o resto do dia fica mais leve.',
+  7: 'Antes de cobrar algo da outra pessoa, diga com clareza o que você espera.',
+  8: 'Combine com antecedência o que é de cada um, antes que vire mal-entendido.',
+  9: 'Separe um tempo para aprender algo fora da sua rotina de sempre.',
+  10: 'Mostre o resultado, não o esforço: é isso que fica na memória de quem vê.',
+  11: 'Um grupo vale pelo que vocês fazem juntos, não pelo tamanho.',
+  12: 'Deixe uma parte do dia sem agenda e veja o que aparece.',
+};
+
+/** Uma segunda linha de trabalho por casa, para a segunda passagem do horóscopo profissional. */
+const WORK2: Record<number, string> = {
+  1: 'Apresente a sua proposta com o seu nome e um prazo.',
+  2: 'Deixe claro o valor do que você faz antes de aceitar mais trabalho.',
+  3: 'Responda ao que está pendente e confirme por escrito o que foi decidido.',
+  4: 'Proteja o tempo de casa: trabalho levado para lá rende menos do que parece.',
+  5: 'Reserve a melhor hora do dia para a parte criativa do trabalho.',
+  6: 'Revise um processo que toma tempo demais e corte uma etapa.',
+  7: 'Antes de fechar um acordo, confirme quem faz o quê e até quando.',
+  8: 'Veja o que depende de recursos de outras pessoas e combine prazos claros.',
+  9: 'Um curso, uma leitura técnica ou uma conversa com alguém de outra área amplia o horizonte.',
+  10: 'Entregue primeiro o que mais gente vai ver; o resto pode esperar um pouco.',
+  11: 'Um contato antigo pode abrir uma porta nova; escreva para ele.',
+  12: 'Organize os bastidores: o que ninguém vê sustenta o que todos veem.',
+};
+
+/** O que uma página já disse, para não repetir uma linha. */
+class Page {
+  private used = new Set<string>();
+  /** A primeira linha ainda não usada; vazia quando todas já foram. */
+  take(lines: string[]): string {
+    const line = lines.find((candidate) => candidate && !this.used.has(candidate)) ?? '';
+    if (line) this.used.add(line);
+    return line;
+  }
+  /** Como take, mas volta à primeira variante quando todas já foram usadas. */
+  vary(lines: string[]): string {
+    return this.take(lines) || lines[0] || '';
+  }
+  advice(house: number): string {
+    return this.take([ADVICE[house], REFINE[house], THIRD[house]]);
+  }
+  mark(line: string): string {
+    this.used.add(line);
+    return line;
+  }
+}
+
 /** Como cada signo funciona melhor, numa frase. */
 const KEY: Record<string, string> = {
   aries: 'Para Áries, um primeiro passo bem dado rende mais que uma corrida desordenada.',
   taurus: 'Touro se sai melhor no próprio ritmo, sem abrir mão do que de fato traz segurança.',
   gemini: 'Para Gêmeos, a clareza vem de escolher uma conversa e levá-la até o fim.',
   cancer: 'Para Câncer, cuidar não significa carregar tudo sozinho: o que você precisa também conta.',
-  leo: 'A presença de Leão pesa mais quando o conteúdo fica pronto antes do palco.',
+  leo: 'Leão brilha mais quando o conteúdo está pronto antes de subir ao palco.',
   virgo: 'Para Virgem, basta melhorar uma coisa e fazê-la bem; não é preciso corrigir tudo.',
   libra: 'Para Libra, o equilíbrio chega quando você diz o que prefere em vez de adivinhar o que os outros querem.',
   scorpio: 'A força de Escorpião está em saber o que guardar e o que soltar, sem drama.',
@@ -264,10 +318,13 @@ const ASPECT_SAME_HOUSE: Record<string, string> = {
 
 const SLOW = new Set(['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']);
 
+/** Vênus é feminino: "Vênus retrógrada"; os outros planetas, "retrógrado". */
+const retro = (body: string) => (body === 'Venus' ? 'retrógrada' : 'retrógrado');
+
 /** "a Lua passa por Escorpião, na sua décima segunda casa" */
 function positionClause(fact: PositionFact): string {
   const where = `na sua ${ORDINAL[fact.house]} casa`;
-  if (fact.retrograde) return `${subject(fact.body)} segue retrógrado em ${sign(fact.sign)}, ${where}`;
+  if (fact.retrograde) return `${subject(fact.body)} segue ${retro(fact.body)} em ${sign(fact.sign)}, ${where}`;
   if (fact.body === 'Moon') return `a Lua passa por ${sign(fact.sign)}, ${where}`;
   return `${subject(fact.body)} está em ${sign(fact.sign)}, ${where}`;
 }
@@ -280,7 +337,7 @@ function eventClause(fact: EventFact): string {
       return `${subject(fact.body!)} entra em ${where}`;
     case 'station':
       return fact.eventType === 'retrograde'
-        ? `${subject(fact.body!)} fica retrógrado em ${where}`
+        ? `${subject(fact.body!)} fica ${retro(fact.body!)} em ${where}`
         : `${subject(fact.body!)} retoma o movimento direto em ${where}`;
     case 'lunation':
       return fact.eventType === 'full' ? `acontece a Lua cheia em ${where}` : `acontece a Lua nova em ${where}`;
@@ -290,10 +347,8 @@ function eventClause(fact: EventFact): string {
       const a = subject(fact.a!);
       const b = subject(fact.b!);
       const type = fact.eventType ?? 'conjunction';
-      if (type === 'conjunction') return `${a} se une ${contract('a', b)}`;
       if (type === 'opposition') return `${a} faz oposição ${contract('a', b)}`;
-      const article = type === 'square' ? 'uma' : 'um';
-      return `${a} faz ${article} ${aspectLabel(L, type)} com ${b}`;
+      return `${a} faz ${aspectLabel(L, type)} com ${b}`;
     }
   }
 }
@@ -306,63 +361,67 @@ function eventNoun(fact: EventFact): string {
   return cap(eventClause(fact));
 }
 
-/** O que o evento significa na casa onde cai; a variante depende do dia, para o texto não se repetir. */
-function eventMeaning(fact: EventFact): string {
+/** O que o evento significa na casa onde cai: as variantes, a partir da do dia, para o texto não se repetir. */
+function meaningVariants(fact: EventFact): string[] {
   const h = fact.houses[0];
-  if (!h) return '';
+  if (!h) return [];
   const day = Number(fact.at.slice(8, 10)) + Number(fact.at.slice(5, 7));
+  const rotate = (lines: string[]) => lines.map((_, i) => lines[(i + day) % lines.length]);
   switch (fact.eventKind) {
     case 'ingress':
       return SLOW.has(fact.body ?? '')
-        ? pick([
+        ? rotate([
           `Começa uma fase longa para ${theme(h)}.`,
           `Abre-se um capítulo de anos para ${theme(h)}.`,
           `Daqui em diante, vale rever o jeito de lidar com ${theme(h)}.`,
-        ], day)
-        : pick([
+        ])
+        : rotate([
           `Nas próximas semanas, o foco vai para ${theme(h)}.`,
           `Por algumas semanas, a atenção se volta para ${theme(h)}.`,
           `O assunto das próximas semanas passa a ser ${theme(h)}.`,
-        ], day);
+        ]);
     case 'station':
       return fact.eventType === 'retrograde'
-        ? pick([
+        ? rotate([
           `Hora de revisar ${theme(h)} antes de assumir qualquer compromisso novo.`,
           `É tempo de rever ${theme(h)}, sem pressa.`,
           `Vale olhar de novo para ${theme(h)} e corrigir o que for preciso.`,
-        ], day)
-        : pick([
+        ])
+        : rotate([
           `O que estava parado ${theme(h, 'em')} volta a andar.`,
           `O impulso volta para ${theme(h)}.`,
           `As decisões adiadas sobre ${theme(h)} podem avançar.`,
-        ], day);
+        ]);
     case 'lunation':
       return fact.eventType === 'full'
-        ? pick([
+        ? rotate([
           `Algo que vinha amadurecendo ${theme(h, 'em')} chega ao ponto.`,
           `O que você vem cultivando ${theme(h, 'em')} fica à vista.`,
-        ], day)
-        : pick([
+        ])
+        : rotate([
           `É um bom começo para ${theme(h)}.`,
           `Bom momento para plantar algo novo ${theme(h, 'em')}.`,
-        ], day);
+        ]);
     case 'eclipse':
-      return `Marca uma virada ${theme(h, 'em')}; melhor não forçar decisões nesse mesmo dia.`;
+      return rotate([
+        `Marca uma virada ${theme(h, 'em')}; melhor não forçar decisões nesse mesmo dia.`,
+        `Traz uma mudança de rumo ${theme(h, 'em')}; dê alguns dias antes de decidir.`,
+      ]);
     case 'aspect': {
       const [h1, h2] = fact.houses;
       const type = fact.eventType ?? 'conjunction';
       return h2 && h2 !== h1
-        ? `De um lado, ${theme(h1)}; do outro, ${theme(h2)}. ${ASPECT_MEANING[type]}`
-        : `Os dois atuam ${theme(h1, 'em')}. ${ASPECT_SAME_HOUSE[type]}`;
+        ? [`De um lado, ${theme(h1)}; do outro, ${theme(h2)}. ${ASPECT_MEANING[type]}`]
+        : [`Os dois atuam ${theme(h1, 'em')}. ${ASPECT_SAME_HOUSE[type]}`];
     }
   }
 }
 
-function factSentence(fact: Fact, lead = ''): string {
+function factSentence(fact: Fact, page: Page, lead = ''): string {
   if (fact.kind === 'position') return `${cap(`${lead}${positionClause(fact)}`)}.`;
   const timed = fact.eventKind === 'lunation' || fact.eventKind === 'eclipse' || fact.eventKind === 'aspect';
   const at = `No dia ${date(fact.at)}${timed ? `, ${clock(fact.at)},` : ','}`;
-  return `${at} ${eventClause(fact)}. ${eventMeaning(fact)}`.trim();
+  return `${at} ${eventClause(fact)}. ${page.vary(meaningVariants(fact))}`.trim();
 }
 
 const firstHouse = (facts: Fact[]) => facts.find((fact) => fact.kind === 'position')?.house
@@ -378,19 +437,34 @@ const CLOSE_TOMORROW = [
   'Escolha uma única coisa para terminar até a hora do almoço.',
 ];
 
+/** "Com a Lua em Sagitário e Mercúrio retrógrado em Escorpião, ..." */
+function recap(facts: Fact[]): string {
+  const positions = facts.filter((fact): fact is PositionFact => fact.kind === 'position');
+  const nouns = positions.map((fact) => `${subject(fact.body)}${fact.retrograde ? ` ${retro(fact.body)}` : ''} em ${sign(fact.sign)}`);
+  const joined = nouns.length > 1 ? `${nouns.slice(0, -1).join(', ')} e ${nouns.at(-1)}` : nouns[0] ?? '';
+  const houses = [...new Set(positions.map((fact) => fact.house))];
+  if (!joined) return '';
+  return houses.length > 1
+    ? `Com ${joined}, o dia termina entre dois assuntos: de um lado, ${theme(houses[0])}; do outro, ${theme(houses[1])}.`
+    : `Com ${joined}, o dia termina ${theme(houses[0], 'em')}.`;
+}
+
 function tomorrow(ctx: PeriodContext): LocalizedPassage[] {
   const s = ctx.sign;
-  const used = new Set<number>();
+  const page = new Page();
+  page.mark(KEY[s]);
   return ctx.passages.map(({ facts, index }) => {
     const h = firstHouse(facts);
-    const advice = used.has(h) ? REFINE[h] : ADVICE[h];
-    used.add(h);
     let led = false;
-    const sentences = facts.map((fact) => {
+    const written = facts.map((fact) => {
       const lead = index === 0 && !led && fact.kind === 'position' ? 'amanhã ' : '';
       if (lead) led = true;
-      return factSentence(fact, lead);
+      return factSentence(fact, page, lead);
     });
+    // Uma frase de posição que a página já disse vira um resumo, em vez de se repetir.
+    const fresh = written.filter((sentence) => page.take([sentence.replace(/^Amanhã a/, 'A')]));
+    const sentences = fresh.length ? fresh : [recap(facts)];
+    const advice = page.advice(h);
     if (index === 0) {
       return { text: `${sentences.join(' ')} Isso traz para o primeiro plano ${theme(h)}. ${advice} ${KEY[s]}` };
     }
@@ -403,14 +477,14 @@ function tomorrow(ctx: PeriodContext): LocalizedPassage[] {
 
 const CLOSE_WEEK = [
   'Na revisão de domingo, fique com uma coisa que funcionou e outra que você mudaria.',
-  'Antes de a próxima semana começar, decida o que você não vai repetir.',
+  'Antes que a próxima semana comece, decida o que você não vai repetir.',
   'Feche a semana com algo terminado, mesmo que seja pequeno.',
   'Guarde o domingo para arrumar a semana seguinte com calma.',
 ];
 
 function weekly(ctx: PeriodContext): LocalizedPassage[] {
   const s = ctx.sign;
-  const used = new Set<number>();
+  const page = new Page();
   const last = ctx.passages.length - 1;
   return ctx.passages.map(({ facts, index }) => {
     const moons = facts.filter((fact): fact is PositionFact => fact.kind === 'position');
@@ -420,14 +494,13 @@ function weekly(ctx: PeriodContext): LocalizedPassage[] {
       const mid = rest.length > 1 ? rest[0] : undefined;
       const midText = mid ? `; por volta de ${weekday(L, mid.at)}, passa para ${theme(mid.house)}` : '';
       return {
-        text: `A semana ${range(ctx.from, ctx.through)} começa com a Lua em ${sign(start.sign)}, no terreno ${theme(start.house, 'de')}${midText}; no fim da semana, chega ${theme(end.house, 'a')}. ${KEY[s]}`,
+        text: `A semana ${range(ctx.from, ctx.through)} começa com a Lua em ${sign(start.sign)}, no terreno ${theme(start.house, 'de')}${midText}; no fim da semana, chega ${theme(end.house, 'a')}. ${page.mark(KEY[s])}`,
       };
     }
     const h = firstHouse(facts);
-    const advice = used.has(h) ? REFINE[h] : ADVICE[h];
-    used.add(h);
     const event = facts.find((fact): fact is EventFact => fact.kind === 'event');
-    if (event) return { text: factSentence(event) };
+    if (event) return { text: factSentence(event, page) };
+    const advice = page.advice(h);
     if (index === 1) return { text: `Os primeiros dias pedem atenção ${theme(h, 'a')}. ${advice}` };
     if (index === last) return { text: `A semana fecha com ${theme(h)}. ${advice} ${pick(CLOSE_WEEK, idx(s))}` };
     return { text: `No meio da semana, o foco passa para ${theme(h)}. ${advice}` };
@@ -444,21 +517,24 @@ const LOVE_CLOSE = [
 
 function love(ctx: PeriodContext): LocalizedPassage[] {
   const s = ctx.sign;
+  const page = new Page();
   return ctx.passages.map(({ facts, index }) => {
     const h = firstHouse(facts);
-    const sentences = facts.map((fact) => factSentence(fact)).join(' ');
-    if (index === 0) return { text: `${sentences} ${LOVE[h]} ${KIND_LOVE[s]}` };
-    return { text: `${sentences} O clima afetivo se volta para ${theme(h)}. ${pick(LOVE_CLOSE, idx(s), h)}` };
+    const sentences = facts.map((fact) => factSentence(fact, page)).join(' ');
+    if (index === 0) return { text: `${sentences} ${page.mark(LOVE[h])} ${KIND_LOVE[s]}` };
+    const close = page.take([LOVE[h], pick(LOVE_CLOSE, idx(s), h), pick(LOVE_CLOSE, idx(s), h + 1)]);
+    return { text: `${sentences} O clima afetivo se volta para ${theme(h)}. ${close}` };
   });
 }
 
 function career(ctx: PeriodContext): LocalizedPassage[] {
   const s = ctx.sign;
+  const page = new Page();
   return ctx.passages.map(({ facts, index }) => {
     const h = firstHouse(facts);
-    const sentences = facts.map((fact) => factSentence(fact)).join(' ');
-    if (index === 0) return { text: `${sentences} ${WORK[h]} ${KIND_WORK[s]}` };
-    return { text: `${sentences} O trabalho também olha para ${theme(h)}. ${REFINE[h]}` };
+    const sentences = facts.map((fact) => factSentence(fact, page)).join(' ');
+    if (index === 0) return { text: `${sentences} ${page.mark(WORK[h])} ${KIND_WORK[s]}` };
+    return { text: `${sentences} O trabalho também olha para ${theme(h)}. ${page.take([WORK2[h], WORK[h]])}` };
   });
 }
 
@@ -466,19 +542,21 @@ function career(ctx: PeriodContext): LocalizedPassage[] {
 
 const QUARTERS: Array<[number, number]> = [[1, 3], [4, 6], [7, 9], [10, 12]];
 
-function dominantHouse(facts: Fact[]): number {
+/** As casas do trecho, da mais citada para a menos citada. */
+function rankedHouses(facts: Fact[]): number[] {
   const counts = new Map<number, number>();
   for (const fact of facts) {
     const houses = fact.kind === 'position' ? [fact.house] : fact.houses;
     for (const house of houses) counts.set(house, (counts.get(house) ?? 0) + 1);
   }
-  return [...counts.entries()].sort((left, right) => right[1] - left[1] || left[0] - right[0])[0]?.[0] ?? 1;
+  return [...counts.entries()].sort((left, right) => right[1] - left[1] || left[0] - right[0]).map(([house]) => house);
 }
 
-function datedList(facts: Fact[]): string {
+function datedList(facts: Fact[], page: Page): string {
   return facts
     .filter((fact): fact is EventFact => fact.kind === 'event')
-    .map((fact) => `Em ${date(fact.at)}, ${eventClause(fact)}. ${eventMeaning(fact)}`)
+    // Um evento já explicado na página aparece só com a data, sem repetir o comentário.
+    .map((fact) => `Em ${date(fact.at)}, ${eventClause(fact)}. ${page.take(meaningVariants(fact))}`)
     .join(' ');
 }
 
@@ -499,30 +577,37 @@ const THEMED_LEADS = [
 function yearly(ctx: PeriodContext, year: string): LocalizedPassage[] {
   const s = ctx.sign;
   const name = sign(s);
+  const page = new Page();
+  let previous = 0;
   return ctx.passages.map(({ facts, index }) => {
     const events = facts.filter((fact): fact is EventFact => fact.kind === 'event');
     if (index === 0) {
       const first = events[0];
-      const firstText = first ? ` A primeira data para marcar é ${date(first.at)}: ${eventClause(first)}. ${eventMeaning(first)}` : '';
+      const firstText = first ? ` A primeira data para marcar é ${date(first.at)}: ${eventClause(first)}. ${page.vary(meaningVariants(first))}` : '';
       return { heading: `${name} em ${year}`, text: `${YEAR[s]}${firstText}` };
     }
     if (index >= 1 && index <= 4) {
       const [from, to] = QUARTERS[index - 1];
-      const h = dominantHouse(facts);
-      const lead = pick([
+      const ranked = rankedHouses(facts);
+      // Dois trimestres seguidos nunca dividem o mesmo título: se a casa principal repete, vale a seguinte.
+      const h = (ranked[0] === previous ? ranked.find((house) => house !== previous) : ranked[0]) ?? (previous % 12) + 1;
+      previous = h;
+      const leads = [
         `Este trimestre gira em torno ${theme(h, 'de')}.`,
         `O foco destes meses está ${theme(h, 'em')}.`,
         `Aqui o peso cai sobre ${theme(h)}.`,
-      ], index, idx(s));
+      ];
+      const start = (index + idx(s)) % leads.length;
+      const lead = page.vary([...leads.slice(start), ...leads.slice(0, start)]);
       return {
         heading: `De ${monthName(L, from)} a ${monthName(L, to)}: ${SHORT[h].charAt(0).toLowerCase()}${SHORT[h].slice(1)}`,
-        text: `${lead} ${datedList(facts)} ${REFINE[h]}`.trim(),
+        text: `${lead} ${datedList(facts, page)} ${page.take([REFINE[h], THIRD[h], ADVICE[h]])}`.trim(),
       };
     }
     if (index >= 5 && index <= 8) {
       const k = index - 5;
       const extra = k === 0 ? KIND_LOVE[s] : k === 1 ? KIND_WORK[s] : k === 3 ? KEY[s] : '';
-      return { heading: THEMED_HEADINGS[k], text: `${THEMED_LEADS[k]} ${extra} ${datedList(facts)}`.trim() };
+      return { heading: THEMED_HEADINGS[k], text: `${THEMED_LEADS[k]} ${extra} ${datedList(facts, page)}`.trim() };
     }
     const dates = events.map((fact) => `${date(fact.at)} (${eventClause(fact)})`);
     const joined = dates.length > 1 ? `${dates.slice(0, -1).join(', ')} e ${dates.at(-1)}` : dates.join('');
@@ -552,7 +637,7 @@ function period(ctx: PeriodContext): LocalizedPassage[] {
 
 const CLOSE_MONTH = [
   'No fim do mês, fique com uma coisa que funcionou e outra que você mudaria.',
-  'Antes de o mês virar, decida o que você não vai levar para o próximo.',
+  'Antes que o mês termine, decida o que você não vai levar para o próximo.',
   'Feche o mês com algo terminado, mesmo que seja pequeno.',
 ];
 
@@ -564,13 +649,14 @@ function monthlyRaw(ctx: MonthlyContext): LocalizedPassage[] {
   const ingresses = ctx.events.filter((fact) => fact.eventKind === 'ingress');
   const aspects = ctx.events.filter((fact) => fact.eventKind === 'aspect').slice(0, 4);
   const lead = lunations[0];
+  const page = new Page();
   const passages: LocalizedPassage[] = [{
-    text: `Em ${label}, lendo o seu signo solar como a primeira casa, como fazem os horóscopos mensais, ${lead ? `o mês gira em torno ${theme(lead.houses[0], 'de')}` : 'as datas abaixo mostram onde cai cada movimento do céu'}. ${KEY[s]}`,
+    text: `Nos horóscopos mensais, o seu signo solar vale como casa 1; ${lead ? `por essa conta, ${label} gira em torno ${theme(lead.houses[0], 'de')}` : `as datas abaixo mostram onde cai cada movimento do céu em ${label}`}. ${KEY[s]}`,
   }];
-  if (lunations.length) passages.push({ heading: 'Luas do mês', text: lunations.map((fact) => factSentence(fact)).join(' ') });
-  if (stations.length) passages.push({ heading: 'Planetas que mudam de direção', text: stations.map((fact) => factSentence(fact)).join(' ') });
-  if (ingresses.length) passages.push({ heading: 'Mudanças de signo', text: ingresses.map((fact) => factSentence(fact)).join(' ') });
-  if (aspects.length) passages.push({ heading: 'Aspectos exatos', text: aspects.map((fact) => factSentence(fact)).join(' ') });
+  if (lunations.length) passages.push({ heading: 'Fases da Lua', text: lunations.map((fact) => factSentence(fact, page)).join(' ') });
+  if (stations.length) passages.push({ heading: 'Planetas que mudam de direção', text: stations.map((fact) => factSentence(fact, page)).join(' ') });
+  if (ingresses.length) passages.push({ heading: 'Mudanças de signo', text: ingresses.map((fact) => factSentence(fact, page)).join(' ') });
+  if (aspects.length) passages.push({ heading: 'Aspectos exatos', text: aspects.map((fact) => factSentence(fact, page)).join(' ') });
   const close = lead ? ADVICE[lead.houses[0]] : REFINE[1];
   passages.push({ heading: 'Para fechar o mês', text: `${close} ${pick(CLOSE_MONTH, idx(s))}` });
   return passages;
@@ -623,7 +709,7 @@ export const pt: HoroscopeLocaleModule = {
         case 'yearly-2027': return `Horóscopo de ${name} 2027`;
       }
     },
-    description: (name, ctx) => tidy(`${describe(name, ctx)}, escrito a partir do céu calculado: posições, luas e datas exatas, contadas a partir do seu signo solar.`),
+    description: (name, ctx) => tidy(`${describe(name, ctx)}, escrito com base no céu calculado: posições, fases da Lua e datas exatas, com as casas contadas a partir do seu signo solar.`),
     periodLabel: {
       today: 'Hoje', tomorrow: 'Amanhã', weekly: 'Semana', monthly: 'Mês', love: 'Amor', career: 'Trabalho', 'yearly-2026': '2026', 'yearly-2027': '2027',
     },
@@ -632,7 +718,7 @@ export const pt: HoroscopeLocaleModule = {
     skyHeading: 'O céu por trás desta leitura',
     skyIntro: 'Cada frase se apoia nestes dados, calculados para o meio-dia UTC ou para o minuto exato do evento.',
     skyRow: (fact) => (fact.kind === 'position'
-      ? `${cap(planet(fact.body))}${fact.retrograde ? ' retrógrado' : ''} em ${sign(fact.sign)}, casa ${fact.house} · ${dateYear(fact.at)}`
+      ? `${cap(planet(fact.body))}${fact.retrograde ? ` ${retro(fact.body)}` : ''} em ${sign(fact.sign)}, casa ${fact.house} · ${dateYear(fact.at)}`
       : `${eventNoun(fact)} · ${dateYear(fact.at)}, ${utc(fact.at)}`),
     moreHeading: 'Mais para o seu signo',
     signGuide: (name) => `Guia de ${name}`,

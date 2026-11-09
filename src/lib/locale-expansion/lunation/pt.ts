@@ -54,12 +54,12 @@ export const pt: LunationCopy = {
   locale: L,
   title: (f) => `${kindName(f)} em ${sign(f.sign)}: ${when(f)}`,
   h1: (f) => `${kindName(f)} em ${sign(f.sign)}`,
-  description: (f) => `A ${kindName(f)} de ${when(f)} fica exata ${clock(f)}, a ${degree(f)}. O que ela significa e como toca cada signo.`,
+  description: (f) => `A ${kindName(f)} de ${when(f)} é exata ${clock(f)}, a ${degree(f)}. O que ela significa e o que traz para cada signo.`,
   kindLabel: (kind) => (kind === 'full' ? 'Lua cheia' : 'Lua nova'),
   crumbsRoot: 'Calendário de luas cheias',
   lead: (f) => (f.kind === 'full'
-    ? `A Lua cheia de ${when(f)} fica exata ${clock(f)}, com a Lua a ${degree(f)} e o Sol exatamente do outro lado do céu. É o ponto mais iluminado do ciclo: o que começou na Lua nova anterior agora aparece com clareza.`
-    : `A Lua nova de ${when(f)} fica exata ${clock(f)}, com o Sol e a Lua juntos a ${degree(f)}. É o começo de um ciclo de cerca de quatro semanas, o momento clássico para definir uma intenção pequena e concreta.`),
+    ? `A Lua cheia de ${when(f)} é exata ${clock(f)}, com a Lua a ${degree(f)} e o Sol exatamente do outro lado do céu. É o ponto mais iluminado do ciclo: o que começou na Lua nova anterior agora aparece com clareza.`
+    : `A Lua nova de ${when(f)} é exata ${clock(f)}, com o Sol e a Lua juntos a ${degree(f)}. É o começo de um ciclo de cerca de quatro semanas, o momento clássico para definir uma intenção pequena e concreta.`),
   eclipseNote: (f) => (f.eclipse
     ? f.eclipse.type === 'solar'
       ? 'Esta Lua nova coincide com um eclipse solar, por isso costuma ser lida como um começo mais marcado do que o normal.'
@@ -75,7 +75,7 @@ export const pt: LunationCopy = {
       `Em ${sign(f.sign)}, a Lua nova abre um ciclo para ${SIGN_TOPIC[f.sign]}. Funciona melhor com um primeiro passo pequeno do que com uma lista longa de metas.`,
       'Escreva uma única intenção e volte a ela na Lua cheia seguinte, umas duas semanas depois.',
     ]),
-  signNotesHeading: 'Como ela toca cada signo',
+  signNotesHeading: 'O que ela traz para cada signo',
   signNotesIntro: 'Contada a partir do seu signo solar (casas solares de signo inteiro), esta Lua cai numa área diferente para cada signo.',
   signNote: (sunSign, house) => `${sign(sunSign)}: casa ${house}, ${theme(house)}.`,
   previous: 'Anterior',
@@ -90,7 +90,7 @@ export const pt: LunationCopy = {
   faq: (f) => [
     {
       q: `A que horas é a ${kindName(f)} de ${when(f)}?`,
-      a: `Ela fica exata ${clock(f)}. No horário de Brasília, que fica três horas atrás do UTC e não tem horário de verão desde 2019, o relógio marca ${localTime(f, 'America/Sao_Paulo')}. Em Portugal continental, que segue o UTC no inverno e soma uma hora no verão, marca ${localTime(f, 'Europe/Lisbon')}.`,
+      a: `Ela é exata ${clock(f)}. No horário de Brasília (três horas a menos que o UTC, sem horário de verão desde 2019), o relógio marca ${localTime(f, 'America/Sao_Paulo')}. Em Portugal continental (UTC no inverno, uma hora a mais no verão), marca ${localTime(f, 'Europe/Lisbon')}.`,
     },
     {
       q: `Em que signo está a ${kindName(f)}?`,

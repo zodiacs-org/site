@@ -20,7 +20,7 @@ export const pt: ZodiacDatesCopy = {
   explainerHeading: 'O que as datas exatas querem dizer',
   explainer: [
     'O zodíaco tropical começa em Áries, no grau 0 de longitude eclíptica, e divide o círculo em doze signos iguais de 30 graus. Esses limites não mudam; o que muda é a data e a hora em que o Sol passa por eles, porque o ano não tem um número exato de dias.',
-    'Por isso, duas pessoas nascidas no mesmo dia do calendário, em anos diferentes, podem ter signos solares diferentes se nasceram perto da mudança. O que muita gente chama de "cúspide" não é um signo misturado: o Sol está sempre num signo ou no outro.',
+    'Por isso, duas pessoas nascidas no mesmo dia do calendário, em anos diferentes, podem ter signos solares diferentes se nasceram perto da mudança. O que muita gente chama de “cúspide” não é um signo misturado: o Sol está sempre num signo ou no outro.',
     'As estações aparecem para os dois hemisférios. No Brasil, que fica no hemisfério sul, a entrada do Sol em Áries marca o começo do outono, e a entrada em Libra, o da primavera; em Portugal, é o contrário.',
     'Se você nasceu perto de uma dessas datas, confira o seu signo com a data, a hora e o local de nascimento. A hora local depende do fuso horário daquele dia, e o cálculo do mapa astral leva isso em conta.',
   ],
