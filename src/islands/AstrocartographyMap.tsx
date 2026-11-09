@@ -1,4 +1,4 @@
-import { useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import PlaceSearch from './PlaceSearch';
 import type { City } from '../lib/geo/search';
@@ -6,6 +6,7 @@ import type { AcgResult } from './astrocartography/compute';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, strengthOf, type AcgAngle, type AcgBody, type GeoPoint, type LineDistance } from '../lib/astrocartography/lines';
 import { ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, LINE_MEANING } from '../lib/astrocartography/meanings';
 import { loadModule } from '../lib/module-load';
+import { astrocartographyShareUrl } from '../lib/astrocartography/share';
 import CalculationReload, { calculationError } from './CalculationReload';
 
 /** Each planet drawn in the hue of the sign it rules, the only colour the site uses. */
@@ -34,6 +35,13 @@ function paths(points: readonly GeoPoint[]): string[] {
   return out;
 }
 
+export const UNDER_13 = 'Zodiacs is not directed at children under 13, so it does not draw a map for a birth date less than 13 years ago.';
+/** A birth date less than 13 years before today on this device's clock, or still to come. */
+export function under13(birthDate: string, now = new Date()): boolean {
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  return birthDate > `${String(now.getFullYear() - 13).padStart(4, '0')}${today.slice(4)}`;
+}
+
 export default function AstrocartographyMap() {
   const [date, setDate] = useState('');
   const [calendar, setCalendar] = useState<CalendarChoice>('gregorian');
@@ -47,10 +55,19 @@ export default function AstrocartographyMap() {
   const [error, setError] = useState('');
   const revision = useRef(0);
   const nearest = useRef<((place: GeoPoint, result: AcgResult) => LineDistance[]) | null>(null);
+  const frame = useRef<HTMLDivElement>(null);
+  // On a phone the map is wider than the screen and pans inside its frame; it opens on the birthplace's longitude.
+  useEffect(() => {
+    const el = frame.current;
+    if (!el || !result || !city || el.scrollWidth <= el.clientWidth) return;
+    el.scrollLeft = Math.max(0, ((city.lon + 180) / 360) * el.scrollWidth - el.clientWidth / 2);
+  }, [result]);
 
   async function draw(event: Event) {
     event.preventDefault();
     if (!date || !time || !city) return;
+    // Zodiacs is not directed at children under 13: such a birth date draws nothing.
+    if (under13(date)) { setResult(null); setPlaces([]); setError(UNDER_13); return; }
     const request = ++revision.current;
     setBusy(true); setError(''); setResult(null); setPlaces([]);
     try {
@@ -61,10 +78,10 @@ export default function AstrocartographyMap() {
         if ('error' in entry) { setError(entry.error); return; }
         birthDate = entry.date;
       }
-      await compute.prepareLocalTime(birthDate, city.tz);
+      const drawn = await compute.computeAstrocartography({ birthDate, birthTime: time, place: city });
       if (request !== revision.current) return;
       nearest.current = compute.nearestLines;
-      setResult(compute.computeAstrocartography({ birthDate, birthTime: time, tz: city.tz, longitude: city.lon }));
+      setResult(drawn);
     } catch (cause) {
       if (request === revision.current) setError(calculationError(cause, 'en', 'The map could not be drawn. Check the details and try again.'));
     } finally { if (request === revision.current) setBusy(false); }
@@ -112,7 +129,8 @@ export default function AstrocartographyMap() {
             ))}
           </div>
           <figure class="acg__figure">
-            <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="World map with your planetary lines" class="acg__map">
+            <div class="acg__frame" ref={frame} tabIndex={0} aria-label="World map, scrolls sideways on small screens">
+            <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label="World map with your planetary lines" class="acg__map">
               <rect width={W} height={H} class="acg__sea" />
               <g class="acg__land">
                 {result.land.cells.map(([lat, lon]) => <circle key={`${lat}-${lon}`} cx={x(lon * result.land.cellDegrees - 180 + result.land.cellDegrees / 2)} cy={y(lat * result.land.cellDegrees - 90 + result.land.cellDegrees / 2)} r="1.3" />)}
@@ -132,6 +150,7 @@ export default function AstrocartographyMap() {
               ))}
               {places.map(({ city: place }) => <circle key={`${place.name}${place.lat}`} cx={x(place.lon)} cy={y(place.lat)} r="3.5" class="acg__place" />)}
             </svg>
+            </div>
             <figcaption class="acg__key">
               <span><svg width="24" height="6" aria-hidden="true"><line x1="0" x2="24" y1="3" y2="3" /></svg>Overhead (MC) and rising (ASC)</span>
               <span><svg width="24" height="6" aria-hidden="true"><line x1="0" x2="24" y1="3" y2="3" stroke-dasharray="6 4" /></svg>Underfoot (IC)</span>
@@ -143,7 +162,7 @@ export default function AstrocartographyMap() {
           <div class="acg__places">
             <div class="field">
               <label class="field__label" for="acg-check">Check a town or city</label>
-              <PlaceSearch id="acg-check" selected={adding} onSelect={addPlace} locale="en" />
+              <PlaceSearch key={`check-${places.length}`} id="acg-check" selected={adding} onSelect={addPlace} locale="en" />
               <p class="field__help">Up to {MAX_PLACES} places. Lines within about {STRONG_KM} km are read as strong; by about {NOTICEABLE_KM} km they fade.</p>
             </div>
             {places.map(({ city: place, lines }) => (
@@ -154,6 +173,8 @@ export default function AstrocartographyMap() {
                     <li key={`${row.body}${row.angle}`}>
                       <p class="acg__line-head"><span class="acg__swatch" style={{ '--hue': HUE[row.body] }} aria-hidden="true" />{row.body} {ANGLE_LABEL[row.angle]} <span class="acg__dist">{Math.round(row.km).toLocaleString('en-GB')} km{row.side ? ` ${row.side}` : ''}, {strengthOf(row.km)}</span></p>
                       <p>{LINE_MEANING[row.body][row.angle]}</p>
+                      {/* The share link names the line alone: never the birth details or this place. */}
+                      <a class="acg__share" href={astrocartographyShareUrl('', { planet: row.body, angle: row.angle })} target="_blank" rel="noopener">Share this line<span aria-hidden="true"> ↗</span></a>
                     </li>
                   ))}
                 </ul>

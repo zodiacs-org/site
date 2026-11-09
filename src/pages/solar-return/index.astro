@@ -39,6 +39,7 @@ const jsonLd = [
     <div class="faq">
       {faq.map(({ q, a }) => <details class="faq__item"><summary>{q}</summary><p>{a}</p></details>)}
     </div>
+    <p class="related">Curious where on Earth each of your planets was rising, setting or overhead when you were born? <a href="/astrocartography/">Draw your astrocartography map</a>.</p>
   </section>
 </Base>
 
@@ -49,5 +50,6 @@ const jsonLd = [
   .faq { display: grid; gap: 8px; }
   .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .related { margin: 20px 0 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
 </style>

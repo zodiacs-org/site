@@ -62,6 +62,9 @@ import {
   skyEvents,
 } from './result-preview-model.js';
 import { HUES } from './chart-preview-model.js';
+import { ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, ASTROCARTOGRAPHY_SHARE_KEYS, ASTROCARTOGRAPHY_SHARE_PATH, ASTROCARTOGRAPHY_SHARE_STORY_PATH, astrocartographyQuery, parseAstrocartographyShare, type AstrocartographyShare } from '../lib/astrocartography/share.js';
+import { ANGLE_AREA, ANGLE_LABEL, ANGLE_NAME, LINE_MEANING } from '../lib/astrocartography/meanings.js';
+import type { AcgBody } from '../lib/astrocartography/lines.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
   BIG_THREE_SHARE_KEYS,
@@ -156,6 +159,7 @@ export const RESULT_SHARE_ROUTES = [
   'milestone-link', 'milestone-image', 'milestone-story',
   'big-three-link', 'big-three-image', 'big-three-story', 'chinese-zodiac-link', 'chinese-zodiac-image', 'chinese-zodiac-story',
   'invite-link', 'invite-image', 'invite-story',
+  'astrocartography-link', 'astrocartography-image', 'astrocartography-story',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -1778,6 +1782,110 @@ export async function handleInviteLinkRequest(request: Request): Promise<Respons
   }));
 }
 
+// ── Astrocartography ─────────────────────────────────────────────────
+
+/** The sign each planet rules, whose panel, disc and hue its line's card wears. */
+const RULED_SIGN: Readonly<Record<AcgBody, ShareSign>> = {
+  Sun: 'leo', Moon: 'cancer', Mercury: 'gemini', Venus: 'taurus', Mars: 'aries',
+  Jupiter: 'sagittarius', Saturn: 'capricorn', Uranus: 'aquarius', Neptune: 'pisces', Pluto: 'scorpio',
+};
+
+export interface AstrocartographyCardModel {
+  sign: PreviewSign;
+  hue: string;
+  /** "My Jupiter Midheaven line". */
+  title: string;
+  /** "Jupiter overhead: work, reputation and your public life." */
+  detail: string;
+  line: string;
+}
+
+/** One line of a map, by its planet and angle alone: the card never names a birth detail or a place. */
+export function astrocartographyCardModel(share: AstrocartographyShare): AstrocartographyCardModel {
+  const slug = RULED_SIGN[share.planet];
+  return {
+    sign: { slug, label: share.planet, hue: HUES[slug] },
+    hue: HUES[slug],
+    title: `My ${share.planet} ${ANGLE_LABEL[share.angle]}`,
+    detail: `${share.planet} ${ANGLE_NAME[share.angle]}: ${ANGLE_AREA[share.angle]}.`,
+    line: LINE_MEANING[share.planet][share.angle],
+  };
+}
+
+/** A map line: the panel of the sign its planet rules, its disc, the line's name and what it is traditionally read as. */
+export function astrocartographyCard(model: AstrocartographyCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return frame(art, words({
+    discs: discRow([model.sign], images),
+    kicker: 'Astrocartography',
+    hue: model.hue,
+    title: [titleBlock(model.title), italicLine(model.detail, 30, 10)],
+    line: model.line,
+  }));
+}
+
+export function astrocartographyStory(model: AstrocartographyCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return storyFrame(art, storyColumn([
+    ...storyDiscs([model.sign], images),
+    storyKicker('Astrocartography', model.hue),
+    storyTitle(model.title, storyFit([model.title], 112, 64)),
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 46, lineHeight: 1.2, color: INK_SOFT, marginTop: '22px', textAlign: 'center' } }, model.detail),
+    storyLine(model.line),
+    storyAction('Draw your own map', 'zodiacs.org/astrocartography'),
+  ]));
+}
+
+export async function handleAstrocartographyImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseAstrocartographyShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = astrocartographyCardModel(share);
+  return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => astrocartographyCard(model, images, art));
+}
+
+export async function handleAstrocartographyStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseAstrocartographyShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = astrocartographyCardModel(share);
+  return storyFor([model.sign], artOfSigns([model.sign]), (images, art) => astrocartographyStory(model, images, art));
+}
+
+const ASTROCARTOGRAPHY_ABOUT = 'An astrocartography map shows where on Earth each planet was rising, setting, overhead or underfoot at the moment of birth. Zodiacs draws it in your browser from your birth date, time and place; nothing is uploaded.';
+
+function defaultAstrocartographyPage(origin: string): SharePage {
+  return {
+    title: 'Astrocartography on Zodiacs',
+    description: 'Your planetary lines around the world.',
+    heading: 'Your astrocartography map',
+    imageUrl: `${origin}/assets/og/v2/share.png`,
+    imageType: 'image/png',
+    imageAlt: 'Astrocartography on Zodiacs',
+    explanation: ASTROCARTOGRAPHY_ABOUT,
+    action: { label: 'Draw your map', href: '/astrocartography/' },
+    note: SHARE_NOTE,
+  };
+}
+
+export async function handleAstrocartographyLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseAstrocartographyShare(url.searchParams);
+  if (!share) return htmlResponse(sharePageHtml(defaultAstrocartographyPage(url.origin)));
+  const model = astrocartographyCardModel(share);
+  return htmlResponse(sharePageHtml({
+    title: `${model.title}: astrocartography on Zodiacs`,
+    description: `${model.detail} ${model.line}`,
+    heading: model.title,
+    imageUrl: `${url.origin}${ASTROCARTOGRAPHY_SHARE_IMAGE_PATH}?${astrocartographyQuery(share)}`,
+    story: { href: `${ASTROCARTOGRAPHY_SHARE_STORY_PATH}?${astrocartographyQuery(share)}`, filename: `zodiacs-astrocartography-${share.planet.toLowerCase()}-${share.angle.toLowerCase()}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `${model.title}. ${model.line}`,
+    explanation: `${model.detail} ${model.line} ${ASTROCARTOGRAPHY_ABOUT}`,
+    action: { label: 'Draw your own map', href: withRef('/astrocartography/', share.ref) },
+    note: SHARE_NOTE,
+  }));
+}
+
 // ── The deployed function's entry ────────────────────────────────────
 
 const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response> }>> = {
@@ -1814,6 +1922,9 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-link': { path: INVITE_SHARE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteLinkRequest },
   'invite-image': { path: INVITE_SHARE_IMAGE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteImageRequest },
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
+  'astrocartography-link': { path: ASTROCARTOGRAPHY_SHARE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyLinkRequest },
+  'astrocartography-image': { path: ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyImageRequest },
+  'astrocartography-story': { path: ASTROCARTOGRAPHY_SHARE_STORY_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyStoryRequest },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);

@@ -10,12 +10,10 @@
 import { computeChart } from '../../lib/engine/full';
 import { meanObliquity } from '../../lib/engine/houses';
 import { ACG_BODIES, eclipticToEquatorial, lineDistances, mapLines, ramcFromMc, type BodyLines, type EquatorialBody, type GeoPoint, type LineDistance } from '../../lib/astrocartography/lines';
-import { resolveLocalToUtc } from '../../lib/time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from '../../lib/time/localToUtc';
 import land from '../../data/astrocartography-land.json';
 
-export { prepareLocalTime } from '../../lib/time/localToUtc';
-
-export interface AcgInput { birthDate: string; birthTime: string; tz: string; longitude: number }
+export interface AcgInput { birthDate: string; birthTime: string; place: { tz: string; lon: number } }
 export interface AcgResult {
   utc: Date;
   gast: number;
@@ -24,8 +22,9 @@ export interface AcgResult {
   land: { cellDegrees: number; cells: [number, number][] };
 }
 
-export function computeAstrocartography(input: AcgInput): AcgResult {
-  const utc = resolveLocalToUtc(input.birthDate, input.birthTime, input.tz, { longitude: input.longitude }).utc;
+export async function computeAstrocartography(input: AcgInput): Promise<AcgResult> {
+  await prepareLocalTime(input.birthDate, input.place.tz);
+  const utc = resolveLocalToUtc(input.birthDate, input.birthTime, input.place.tz, { longitude: input.place.lon }).utc;
   const chart = computeChart({ utc, latitude: 0, longitude: 0, houseSystem: 'whole', timeKnown: true });
   const centuries = (utc.getTime() / 86_400_000 + 2440587.5 - 2451545) / 36525;
   const obliquity = meanObliquity(centuries);

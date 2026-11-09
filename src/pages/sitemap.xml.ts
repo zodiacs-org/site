@@ -190,6 +190,7 @@ const PT_FIRST_DAY_ROUTES = ['/pt/eclipses/', '/pt/full-moon-calendar/', '/pt/me
 // turned into back-links and datelines, tool discs added to the tools hubs, and
 // em and en dashes in the copy rewritten as commas, periods and range words.
 const DESIGN_SWEEP_LASTMOD = '2026-10-16';
+const ASTROCARTOGRAPHY_LASTMOD = '2026-11-09';
 const DESIGN_SWEEP_ROUTES = [
   '/',
   '/about/',
@@ -528,6 +529,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/numerology/', '/tools/', '/methodology/'].map((loc) => [loc, NUMEROLOGY_LASTMOD] as const),
   ...LIFE_PATH_PAGES.map((page) => [`/numerology/life-path/${page.number}/`, page.updated] as const),
   ['/void-of-course-moon/', VOID_OF_COURSE_LASTMOD] as const,
+  // The astrocartography map (2026-11-09), and the pages that link to it: the tools hub, the solar return's relocation answer and the rising sign's.
+  ...['/astrocartography/', '/tools/', '/solar-return/', '/rising-sign/'].map((loc) => [loc, ASTROCARTOGRAPHY_LASTMOD] as const),
   // The ephemeris section now carries a measured comparison against Swiss
   // Ephemeris in place of the upstream library's own arcminute target. Last,
   // so it wins over the numerology cycle's date for the same page.
@@ -697,6 +700,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, priority: 0.7 })) : []),
     ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
     ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
+    { loc: '/astrocartography/', priority: 0.8 },
     { loc: '/compatibility/', priority: 0.9 },
     { loc: '/moon-sign/', priority: 0.9 },
     { loc: '/rising-sign/', priority: 0.9 },

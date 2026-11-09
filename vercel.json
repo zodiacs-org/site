@@ -378,6 +378,18 @@
       "destination": "/api/compatibility?__zodiacs_share=invite-story"
     },
     {
+      "source": "/share/astrocartography/",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-link"
+    },
+    {
+      "source": "/api/og/astrocartography-image",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-image"
+    },
+    {
+      "source": "/api/og/astrocartography-story",
+      "destination": "/api/compatibility?__zodiacs_share=astrocartography-story"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },

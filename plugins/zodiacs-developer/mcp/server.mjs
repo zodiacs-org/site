@@ -42303,6 +42303,20 @@ function lineSentence(body3, angle2) {
   return `${body3} ${ANGLE_LABEL[angle2]} (${body3} ${ANGLE_NAME[angle2]}), for ${ANGLE_AREA[angle2]}. ${LINE_MEANING[body3][angle2]}`;
 }
 
+// src/lib/astrocartography/share.ts
+var ASTROCARTOGRAPHY_SHARE_PATH = "/share/astrocartography/";
+var ASTROCARTOGRAPHY_SHARE_KEYS = Object.freeze(["p", "a", "ref"]);
+var PLANET_SLUG = (planet) => planet.toLowerCase();
+var ANGLE_SLUG = (angle2) => angle2.toLowerCase();
+function astrocartographyQuery(share, withRef2 = false) {
+  const params = new URLSearchParams({ p: PLANET_SLUG(share.planet), a: ANGLE_SLUG(share.angle) });
+  if (withRef2 && share.ref) params.set("ref", share.ref);
+  return params.toString();
+}
+function astrocartographyShareUrl(origin, line) {
+  return `${origin}${ASTROCARTOGRAPHY_SHARE_PATH}?${astrocartographyQuery({ ...line, ref: null })}`;
+}
+
 // src/ai-tools/personal/shared.ts
 import { z as z13 } from "zod";
 var PERSONAL_MIN_YEAR = 1800;
@@ -42372,7 +42386,9 @@ var nearLine = z14.object({
   /** Which way the line lies along the place's own latitude, when the line reaches it. */
   side: z14.enum(["east", "west"]).nullable(),
   strength: z14.enum(["strong", "noticeable", "faint"]),
-  line: z14.string()
+  line: z14.string(),
+  /** A share card of this line alone: the planet and the angle, never the birth details or the place. */
+  shareUrl: z14.url()
 });
 var astrocartographyData = z14.object({
   birthDate: z14.string(),
@@ -42472,7 +42488,8 @@ async function getAstrocartography(args, context) {
         distanceMiles: Math.round(row.km / KM_PER_MILE),
         side: row.side,
         strength: strengthOf(row.km),
-        line: `${guard(lineSentence(row.body, row.angle))} ${confidenceLabel}.`
+        line: `${guard(lineSentence(row.body, row.angle))} ${confidenceLabel}.`,
+        shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle })
       }));
       const strong = closest.filter((row) => row.strength === "strong");
       const top = closest[0];
@@ -42506,7 +42523,7 @@ var astrocartographyTool = definePersonalTool({
   name: "get_astrocartography",
   title: "Your map lines",
   summary: "astrocartography lines, and the lines nearest named towns and cities",
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
   clockDependent: false,

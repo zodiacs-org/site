@@ -20,7 +20,6 @@ const jsonLd = [
   title="Astrocartography Map: Your Planetary Lines Around the World"
   description="See where each planet was rising, setting, overhead or underfoot when you were born, and which lines run closest to the places you care about. Calculated in your browser."
   path="/astrocartography/"
-  noindex
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
@@ -48,13 +47,16 @@ const jsonLd = [
   .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
-  :global(.acg__result) { display: grid; gap: 20px; margin-top: clamp(24px, 4vw, 36px); }
+  :global(.acg__result) { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: clamp(24px, 4vw, 36px); }
+  :global(.acg__result > *) { min-width: 0; }
   :global(.acg__legend) { display: flex; flex-wrap: wrap; gap: 6px; }
   :global(.acg__chip) { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--hair-1); border-radius: 999px; background: var(--void-1); color: var(--text-2); font: inherit; font-size: var(--text-sm); cursor: pointer; }
   :global(.acg__chip[aria-pressed='false']) { opacity: 0.45; }
   :global(.acg__swatch) { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--hue); flex: none; }
   :global(.acg__figure) { margin: 0; }
-  :global(.acg__map) { display: block; width: 100%; height: auto; border: 1px solid var(--hair-1); border-radius: var(--r-md); }
+  :global(.acg__frame) { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; border: 1px solid var(--hair-1); border-radius: var(--r-md); aspect-ratio: auto; }
+  :global(.acg__map) { display: block; width: 100%; height: auto; min-width: 720px; aspect-ratio: 2 / 1; }
+  @media (min-width: 760px) { :global(.acg__map) { min-width: 0; } }
   :global(.acg__sea) { fill: var(--void-1); }
   :global(.acg__land circle) { fill: var(--hair-2, rgba(255, 255, 255, 0.22)); }
   :global(.acg__grid line) { stroke: var(--hair-1); stroke-width: 0.5; }
@@ -65,12 +67,14 @@ const jsonLd = [
   :global(.acg__key span) { display: inline-flex; align-items: center; gap: 6px; }
   :global(.acg__key line) { stroke: var(--text-2); stroke-width: 1.4; }
   :global(.acg__places) { display: grid; gap: 14px; }
+  :global(.acg__place-card) { padding: 18px clamp(16px, 4vw, 24px); border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
   :global(.acg__place-card h3) { margin: 0 0 10px; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-lg); }
   :global(.acg__place-card h3 span) { display: block; color: var(--muted); font-family: var(--font-sans); font-size: var(--text-sm); }
   :global(.acg__place-card ul) { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 12px; }
   :global(.acg__place-card p) { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.6; }
   :global(.acg__line-head) { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; color: var(--text) !important; font-weight: 550; }
   :global(.acg__dist) { color: var(--muted); font-family: var(--font-mono); font-weight: 400; font-size: var(--text-xs, 0.8rem); }
+  :global(.acg__share) { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); font-size: var(--text-sm); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--hair-2, rgba(255, 255, 255, 0.3)); }
   :global(.acg__angles) { display: grid; gap: 6px; color: var(--text-2); font-size: var(--text-sm); }
   :global(.acg__angles p) { margin: 0; }
 </style>

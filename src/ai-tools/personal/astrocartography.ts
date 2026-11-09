@@ -16,6 +16,7 @@ import { z } from 'zod';
 import { calc, houses, type CalcBody } from '@zodiacs/engine/calc';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
 import { ANGLE_LABEL, ANGLE_NAME, LINE_MEANING, lineSentence } from '../../lib/astrocartography/meanings';
+import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
 import { findBirthplace } from '../features/birthplace';
 import { roundCoordinate } from '../plain-text';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
@@ -50,6 +51,8 @@ const nearLine = z.object({
   side: z.enum(['east', 'west']).nullable(),
   strength: z.enum(['strong', 'noticeable', 'faint']),
   line: z.string(),
+  /** A share card of this line alone: the planet and the angle, never the birth details or the place. */
+  shareUrl: z.url(),
 });
 export const astrocartographyData = z.object({
   birthDate: z.string(),
@@ -152,6 +155,7 @@ export async function getAstrocartography(args: AstrocartographyInput, context: 
         planet: row.body, angle: row.angle, title: `${row.body} ${ANGLE_LABEL[row.angle]}`,
         distanceKm: Math.round(row.km), distanceMiles: Math.round(row.km / KM_PER_MILE), side: row.side, strength: strengthOf(row.km),
         line: `${guard(lineSentence(row.body, row.angle))} ${confidenceLabel}.`,
+        shareUrl: astrocartographyShareUrl(context.origin, { planet: row.body, angle: row.angle }),
       }));
       const strong = closest.filter((row) => row.strength === 'strong');
       const top = closest[0];
@@ -182,7 +186,7 @@ export const astrocartographyTool = definePersonalTool({
   name: 'get_astrocartography',
   title: 'Your map lines',
   summary: 'astrocartography lines, and the lines nearest named towns and cities',
-  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser.",
+  description: "Gives the person's astrocartography: the lines on the world map where each planet, Sun to Pluto, was rising, setting, overhead or underfoot at the moment of birth, and, for up to five towns or cities they name, the closest lines with their distance and what each is traditionally read as for that place (love, work, home and how they feel there). Use it for astrocartography, astro map, relocation lines, where I should live or travel, or what a city means for me, once the person has given a birth date, time and time zone. A birth time is required, because the lines move about 1 degree of longitude for every 4 minutes; never guess one. When they name the birthplace as a town or city, use find_birthplace first for its time zone. Name the cities to check in cities. Share the readings plainly as astrology's reading, with the reading-confidence label; for a full map, give the returned page link, where the map is drawn in their own browser. Each line near a place has a shareUrl to a card of that line alone (no birth details or place); give it exactly as returned.",
   input: astrocartographyInput,
   data: astrocartographyData,
   clockDependent: false,

@@ -295,6 +295,9 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   {
     href: '/horoscopes/',
     hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
+  },  {
+    href: '/astrocartography/',
+    hub: { order: 6.5, title: 'Astrocartography', promise: 'Where each planet sat on an angle when you were born.', group: 'you' },
   },
 ];
 
@@ -350,6 +353,7 @@ export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[
   { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба', 'zh-hans': '天象日历', 'zh-hant': '天象日曆' } },
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },
   { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года', 'zh-hans': '你的年度星空', 'zh-hant': '你的年度星空' } },
+  { href: '/astrocartography/', label: { en: 'Astrocartography map', es: 'Mapa de astrocartografía', pt: 'Mapa de astrocartografia', fr: 'Carte d’astrocartographie', it: 'Mappa di astrocartografia', ru: 'Астрокартография', 'zh-hans': '占星地图', 'zh-hant': '占星地圖' } },
   { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
 ];
 

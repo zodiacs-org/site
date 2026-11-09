@@ -49,7 +49,8 @@ export type ToolIconName =
   | 'sky-calendar'
   | 'sky-events'
   | 'guide'
-  | 'privacy';
+  | 'privacy'
+  | 'astrocartography';
 
 export interface ToolIconDrawing {
   /** The sign whose pastel hue paints the disc. */
@@ -62,6 +63,11 @@ export interface ToolIconDrawing {
 const RETURN_ARROW = '<path d="M20.3 12a8.3 8.3 0 1 1-2.43-5.87L20.3 8.5"/><path d="M20.3 4.4v4.1h-4.1"/>';
 
 export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
+  // A globe with its equator, one meridian, and a planet's rising line curving across it.
+  astrocartography: {
+    hue: 'sagittarius',
+    body: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5a4.2 8.5 0 0 1 0 17"/><path d="M5.4 6.6c3.4 1.2 5.6 5.4 13.2 10.8"/>',
+  },
   // A chart wheel: the circle, the inner ring and the six house spokes.
   'birth-chart': {
     hue: 'aries',
@@ -225,6 +231,7 @@ export const TOOL_ICON_NAMES = Object.keys(TOOL_ICONS) as ToolIconName[];
 
 /** Each tool route (English path) and the icon it wears wherever it is listed. */
 export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
+  '/astrocartography/': 'astrocartography',
   '/birth-chart/': 'birth-chart',
   '/moon-sign/': 'moon-sign',
   '/rising-sign/': 'rising-sign',
