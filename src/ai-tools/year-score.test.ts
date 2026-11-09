@@ -89,6 +89,7 @@ describe('the Year Ahead Score switch on', () => {
     expect(data.confidenceLabel).toBe('Reading confidence 55%');
     expect(data.drivers.length).toBeGreaterThan(0);
     expect(data.sources[0].url).toMatch(/^https:\/\//u);
+    expect(data.pageUrl).toBe('https://zodiacs.org/year/jensen-huang/?ref=assistant');
     expect(counted).toEqual(['get_year_score']);
   });
 

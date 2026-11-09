@@ -194,7 +194,7 @@ var COMPUTE_RECEIPT_SCHEMA = "zodiacs.compute-receipt.v1";
 // src/lib/compute-api/handler.ts
 import { checkRateLimit } from "@vercel/firewall";
 
-// node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
 var SIGNS = /* @__PURE__ */ Object.freeze([
   /* @__PURE__ */ Object.freeze({
     slug: "aries",
@@ -310,7 +310,7 @@ function degreeInSign(lon) {
   return normalizeLongitude(lon) % 30;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
 var DEG = Math.PI / 180;
 var RAD = 180 / Math.PI;
 var HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze([
@@ -625,7 +625,7 @@ function houseOf(longitude2, cusps) {
   return 12;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
 var DEG2 = Math.PI / 180;
 var ARCSEC = DEG2 / 3600;
 var ARGUMENTS = [
@@ -769,7 +769,7 @@ function eclipticOfDate(x, y, z17, tt) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
   version: "2026-09-24",
@@ -1050,7 +1050,7 @@ function deltaT(ut) {
   return seconds(2e3 + ut / 365.25);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
 var REFERENCE_SPAN = /* @__PURE__ */ Object.freeze({
   from: "1800-01-01T00:00:00.000Z",
   to: "2200-01-01T00:00:00.000Z"
@@ -1259,7 +1259,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -1340,7 +1340,7 @@ function findAspects(bodies) {
 var ENGINE_VERSION = "1.1.0-rc.2";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
-// node_modules/astronomy-engine/esm/astronomy.js
+// ../../../../../../home/user/site/node_modules/astronomy-engine/esm/astronomy.js
 /**
     @preserve
 
@@ -3247,7 +3247,7 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
 var DEG3 = Math.PI / 180;
 var RAD3 = 180 / Math.PI;
@@ -3443,7 +3443,7 @@ function chartAt(input) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
 var ISO_INSTANT = /^(\d{4}|[+-]\d{6})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2})))?$/;
 function validIsoInput(input) {
   const match = ISO_INSTANT.exec(input);
@@ -3475,7 +3475,7 @@ function dateFrom(input, label) {
   return date3;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
 var DAY3 = 864e5;
 var REFINE_STEPS = 24;
 var EDGE_PROBE_MAX_MS = 6e4;
@@ -3708,7 +3708,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
 var HOUSE_SYSTEM_NAMES2 = [
   "whole",
   "placidus",
@@ -3789,7 +3789,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -3877,7 +3877,7 @@ function moonPhase(date3) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
 var NAMESPACE = /^[A-Za-z][A-Za-z0-9-]*$/u;
 var VALUE = /^[^\s\p{Cc}\p{Cf}\p{Cs}]+$/u;
 function conventionId(namespace, value) {
@@ -3914,7 +3914,7 @@ function natalConventionIds(envelope) {
   return [...ids].sort();
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
 var julianLeap = (year) => year % 4 === 0;
 var gregorianLeap = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 function parseCalendarDate(value, calendar) {
@@ -3963,7 +3963,7 @@ function julianToGregorian(value) {
   return date3 ? format(civilDateOf(julianDayNumber(date3, "julian"), "gregorian")) : null;
 }
 
-// node_modules/@zodiacs/engine/dist/receipt.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/receipt.js
 var SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 var DIGITS = /^\d+$/;
 function isVersion(value) {
@@ -4817,7 +4817,7 @@ function createNatalEnvelope(chart, context = {}) {
   });
 }
 
-// node_modules/@zodiacs/engine/dist/time.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/time.js
 function timeBasis2(ms, scale, pin) {
   if (typeof ms !== "number" || !(Math.abs(ms) <= 864e13)) throw new RangeError("ms must be an instant within the range of a Date.");
   if (scale !== void 0 && !TIME_SCALE_NAMES.includes(scale)) throw new RangeError('scale must be "utc", "ut1" or "tt".');
@@ -5240,7 +5240,7 @@ function timeResolutionFacts(module) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/conventions.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/conventions.js
 var CONVENTIONS_REGISTRY = "https://zodiacs.org/developers/conventions/";
 function parseConventionId(id) {
   const colon = typeof id === "string" ? id.indexOf(":") : -1;
@@ -6914,7 +6914,7 @@ var COMPUTE_TAG = Object.freeze({
   description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. The function writes nothing from a request or its result to a log, a file or a database, and responses are not cached; the host's request logs keep each request's web address and IP address. The endpoints answer only while their per-address rate limit is in place, and 503 otherwise. A body with a repeated key is read as JSON.parse reads it: the last value wins. Documentation: ${COMPUTE_DOCS_URL}`
 });
 
-// node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
 var DEG4 = Math.PI / 180;
 var ARCSEC3 = DEG4 / 3600;
 function toEquator(m, angle) {
@@ -6956,7 +6956,7 @@ function turn2(m, x, y, z17) {
   return [m[0] * x + m[1] * y + m[2] * z17, m[3] * x + m[4] * y + m[5] * z17, m[6] * x + m[7] * y + m[8] * z17];
 }
 
-// node_modules/@zodiacs/engine/dist/sky.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/sky.js
 function firstMillisecond(reached, estimate) {
   const start = Math.round(estimate);
   let lo = start - 4;
@@ -24918,7 +24918,7 @@ var birthdays_default = {
   }
 };
 
-// node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
 function readOptions(value, allowed, label) {
   const out = /* @__PURE__ */ Object.create(null);
   if (value === void 0) return out;
@@ -24942,7 +24942,7 @@ function readOptions(value, allowed, label) {
   return out;
 }
 
-// node_modules/@zodiacs/engine/dist/techniques.js
+// ../../../../../../home/user/site/node_modules/@zodiacs/engine/dist/techniques.js
 function oneOf2(value, allowed, fallback2, label) {
   if (value === void 0) return fallback2;
   if (typeof value === "string" && allowed.includes(value)) return value;
@@ -39807,6 +39807,9 @@ var year_people_default = {
     {
       slug: "michael-saylor",
       name: "Michael Saylor",
+      aliases: [
+        "saylor"
+      ],
       description: "Business executive, co-founder and executive chairman of Strategy",
       category: "founder",
       birthDate: "1965-02-04",
@@ -39825,6 +39828,7 @@ var year_people_default = {
     {
       slug: "jensen-huang",
       name: "Jensen Huang",
+      aliases: [],
       description: "Engineer, co-founder and chief executive of NVIDIA",
       category: "ceo",
       birthDate: "1963-02-17",
@@ -39847,6 +39851,9 @@ var year_people_default = {
     {
       slug: "elon-musk",
       name: "Elon Musk",
+      aliases: [
+        "elonmusk"
+      ],
       description: "Entrepreneur, chief executive of Tesla and SpaceX",
       category: "founder",
       birthDate: "1971-06-28",
@@ -39865,6 +39872,531 @@ var year_people_default = {
       ],
       alternateBirthDates: [],
       note: "Birth times published for him disagree and none comes from a birth record, so this uses a noon chart."
+    },
+    {
+      slug: "jeff-bezos",
+      name: "Jeff Bezos",
+      aliases: [],
+      description: "Entrepreneur, founder and executive chairman of Amazon",
+      category: "founder",
+      birthDate: "1964-01-12",
+      birthTime: null,
+      zone: "America/Denver",
+      birthplace: "Albuquerque, New Mexico, United States",
+      sources: [
+        {
+          title: "Wikipedia: Jeff Bezos",
+          url: "https://en.wikipedia.org/wiki/Jeff_Bezos"
+        },
+        {
+          title: "Britannica: Jeff Bezos",
+          url: "https://www.britannica.com/money/Jeff-Bezos"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "bill-gates",
+      name: "Bill Gates",
+      aliases: [
+        "BillGates"
+      ],
+      description: "Co-founder of Microsoft and chair of the Gates Foundation",
+      category: "founder",
+      birthDate: "1955-10-28",
+      birthTime: null,
+      zone: "America/Los_Angeles",
+      birthplace: "Seattle, Washington, United States",
+      sources: [
+        {
+          title: "Britannica: Bill Gates",
+          url: "https://www.britannica.com/money/Bill-Gates"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "mark-zuckerberg",
+      name: "Mark Zuckerberg",
+      aliases: [],
+      description: "Co-founder and chief executive of Meta",
+      category: "founder",
+      birthDate: "1984-05-14",
+      birthTime: null,
+      zone: "America/New_York",
+      birthplace: "White Plains, New York, United States",
+      sources: [
+        {
+          title: "Britannica: Mark Zuckerberg",
+          url: "https://www.britannica.com/facts/Mark-Zuckerberg"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "tim-cook",
+      name: "Tim Cook",
+      aliases: [],
+      description: "Chief executive of Apple",
+      category: "ceo",
+      birthDate: "1960-11-01",
+      birthTime: null,
+      zone: "America/Chicago",
+      birthplace: "Mobile, Alabama, United States",
+      sources: [
+        {
+          title: "Encyclopedia of Alabama: Tim Cook",
+          url: "https://encyclopediaofalabama.org/article/tim-cook/"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "satya-nadella",
+      name: "Satya Nadella",
+      aliases: [],
+      description: "Chairman and chief executive of Microsoft",
+      category: "ceo",
+      birthDate: "1967-08-19",
+      birthTime: null,
+      zone: "Asia/Kolkata",
+      birthplace: "Hyderabad, India",
+      sources: [
+        {
+          title: "Wikipedia: Satya Nadella",
+          url: "https://en.wikipedia.org/wiki/Satya_Nadella"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "sundar-pichai",
+      name: "Sundar Pichai",
+      aliases: [],
+      description: "Chief executive of Alphabet and Google",
+      category: "ceo",
+      birthDate: "1972-06-10",
+      birthTime: null,
+      zone: "Asia/Kolkata",
+      birthplace: "Tamil Nadu, India",
+      sources: [
+        {
+          title: "Wikipedia: Sundar Pichai",
+          url: "https://en.wikipedia.org/wiki/Sundar_Pichai"
+        },
+        {
+          title: "Britannica: Sundar Pichai",
+          url: "https://www.britannica.com/money/Sundar-Pichai"
+        }
+      ],
+      alternateBirthDates: [],
+      note: "Sources disagree on the birthplace (Madurai or Chennai); both are on India's clock, so the chart is the same."
+    },
+    {
+      slug: "sam-altman",
+      name: "Sam Altman",
+      aliases: [
+        "sama"
+      ],
+      description: "Entrepreneur, chief executive of OpenAI",
+      category: "ceo",
+      birthDate: "1985-04-22",
+      birthTime: null,
+      zone: "America/Chicago",
+      birthplace: "Chicago, Illinois, United States",
+      sources: [
+        {
+          title: "Wikipedia: Sam Altman",
+          url: "https://en.wikipedia.org/wiki/Sam_Altman"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "warren-buffett",
+      name: "Warren Buffett",
+      aliases: [],
+      description: "Chairman of Berkshire Hathaway",
+      category: "investor",
+      birthDate: "1930-08-30",
+      birthTime: null,
+      zone: "America/Chicago",
+      birthplace: "Omaha, Nebraska, United States",
+      sources: [
+        {
+          title: "Britannica: Warren Buffett",
+          url: "https://www.britannica.com/print/article/766234"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "larry-ellison",
+      name: "Larry Ellison",
+      aliases: [],
+      description: "Co-founder and chief technology officer of Oracle",
+      category: "founder",
+      birthDate: "1944-08-17",
+      birthTime: null,
+      zone: "America/New_York",
+      birthplace: "New York City, United States",
+      sources: [
+        {
+          title: "Wikipedia: Larry Ellison",
+          url: "https://en.wikipedia.org/wiki/Larry_Ellison"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "jack-dorsey",
+      name: "Jack Dorsey",
+      aliases: [],
+      description: "Co-founder of Twitter and Block",
+      category: "founder",
+      birthDate: "1976-11-19",
+      birthTime: null,
+      zone: "America/Chicago",
+      birthplace: "St. Louis, Missouri, United States",
+      sources: [
+        {
+          title: "Biography: Jack Dorsey",
+          url: "https://www.biography.com/business-figure/jack-dorsey"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "lisa-su",
+      name: "Lisa Su",
+      aliases: [],
+      description: "Engineer, chair and chief executive of AMD",
+      category: "ceo",
+      birthDate: "1969-11-07",
+      birthTime: null,
+      zone: "Asia/Taipei",
+      birthplace: "Tainan, Taiwan",
+      sources: [
+        {
+          title: "Wikipedia: Lisa Su",
+          url: "https://en.wikipedia.org/wiki/Lisa_Su"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "masayoshi-son",
+      name: "Masayoshi Son",
+      aliases: [],
+      description: "Founder and chief executive of SoftBank Group",
+      category: "founder",
+      birthDate: "1957-08-11",
+      birthTime: null,
+      zone: "Asia/Tokyo",
+      birthplace: "Tosu, Saga, Japan",
+      sources: [
+        {
+          title: "Wikipedia: Masayoshi Son",
+          url: "https://en.wikipedia.org/wiki/Masayoshi_Son"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "vitalik-buterin",
+      name: "Vitalik Buterin",
+      aliases: [
+        "VitalikButerin"
+      ],
+      description: "Programmer, co-founder of Ethereum",
+      category: "founder",
+      birthDate: "1994-01-31",
+      birthTime: null,
+      zone: "Europe/Moscow",
+      birthplace: "Kolomna, Russia",
+      sources: [
+        {
+          title: "Wikipedia: Vitalik Buterin",
+          url: "https://en.wikipedia.org/wiki/Vitalik_Buterin"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "oprah-winfrey",
+      name: "Oprah Winfrey",
+      aliases: [],
+      description: "Television host, producer and author",
+      category: "entertainer",
+      birthDate: "1954-01-29",
+      birthTime: null,
+      zone: "America/Chicago",
+      birthplace: "Kosciusko, Mississippi, United States",
+      sources: [
+        {
+          title: "Britannica: Oprah Winfrey",
+          url: "https://explore.britannica.com/explore/100women/profiles/oprah-winfrey"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "taylor-swift",
+      name: "Taylor Swift",
+      aliases: [
+        "taylorswift13"
+      ],
+      description: "Singer and songwriter",
+      category: "entertainer",
+      birthDate: "1989-12-13",
+      birthTime: null,
+      zone: "America/New_York",
+      birthplace: "West Reading, Pennsylvania, United States",
+      sources: [
+        {
+          title: "Britannica: Taylor Swift",
+          url: "https://www.britannica.com/biography/Taylor-Swift"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "beyonce",
+      name: "Beyonc\xE9",
+      aliases: [
+        "Beyonce"
+      ],
+      description: "Singer, songwriter and performer",
+      category: "entertainer",
+      birthDate: "1981-09-04",
+      birthTime: null,
+      zone: "America/Chicago",
+      birthplace: "Houston, Texas, United States",
+      sources: [
+        {
+          title: "Britannica: Beyonc\xE9",
+          url: "https://explore.britannica.com/explore/100women/profiles/beyonce"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "rihanna",
+      name: "Rihanna",
+      aliases: [],
+      description: "Singer and entrepreneur",
+      category: "entertainer",
+      birthDate: "1988-02-20",
+      birthTime: null,
+      zone: "America/Barbados",
+      birthplace: "Saint Michael, Barbados",
+      sources: [
+        {
+          title: "Biography: Rihanna",
+          url: "https://www.biography.com/musicians/rihanna"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "kim-kardashian",
+      name: "Kim Kardashian",
+      aliases: [
+        "KimKardashian"
+      ],
+      description: "Media personality and entrepreneur",
+      category: "entertainer",
+      birthDate: "1980-10-21",
+      birthTime: null,
+      zone: "America/Los_Angeles",
+      birthplace: "Los Angeles, California, United States",
+      sources: [
+        {
+          title: "Wikipedia: Kim Kardashian",
+          url: "https://en.wikipedia.org/wiki/Kim_Kardashian"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "cristiano-ronaldo",
+      name: "Cristiano Ronaldo",
+      aliases: [
+        "Cristiano",
+        "CR7"
+      ],
+      description: "Footballer",
+      category: "athlete",
+      birthDate: "1985-02-05",
+      birthTime: null,
+      zone: "Atlantic/Madeira",
+      birthplace: "Funchal, Madeira, Portugal",
+      sources: [
+        {
+          title: "Britannica: Cristiano Ronaldo",
+          url: "https://www.britannica.com/biography/Cristiano-Ronaldo"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "lionel-messi",
+      name: "Lionel Messi",
+      aliases: [
+        "Leo Messi"
+      ],
+      description: "Footballer",
+      category: "athlete",
+      birthDate: "1987-06-24",
+      birthTime: null,
+      zone: "America/Argentina/Cordoba",
+      birthplace: "Rosario, Argentina",
+      sources: [
+        {
+          title: "Britannica: Lionel Messi",
+          url: "https://www.britannica.com/biography/Lionel-Messi"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "serena-williams",
+      name: "Serena Williams",
+      aliases: [],
+      description: "Tennis player",
+      category: "athlete",
+      birthDate: "1981-09-26",
+      birthTime: null,
+      zone: "America/Detroit",
+      birthplace: "Saginaw, Michigan, United States",
+      sources: [
+        {
+          title: "Britannica: Serena Williams",
+          url: "https://www.britannica.com/summary/Serena-Williams"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "lebron-james",
+      name: "LeBron James",
+      aliases: [
+        "KingJames"
+      ],
+      description: "Basketball player",
+      category: "athlete",
+      birthDate: "1984-12-30",
+      birthTime: null,
+      zone: "America/New_York",
+      birthplace: "Akron, Ohio, United States",
+      sources: [
+        {
+          title: "Britannica: LeBron James",
+          url: "https://www.britannica.com/biography/LeBron-James"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "roger-federer",
+      name: "Roger Federer",
+      aliases: [],
+      description: "Tennis player",
+      category: "athlete",
+      birthDate: "1981-08-08",
+      birthTime: null,
+      zone: "Europe/Zurich",
+      birthplace: "Basel, Switzerland",
+      sources: [
+        {
+          title: "Britannica: Roger Federer",
+          url: "https://www.britannica.com/biography/Roger-Federer"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "novak-djokovic",
+      name: "Novak Djokovic",
+      aliases: [],
+      description: "Tennis player",
+      category: "athlete",
+      birthDate: "1987-05-22",
+      birthTime: null,
+      zone: "Europe/Belgrade",
+      birthplace: "Belgrade, Serbia",
+      sources: [
+        {
+          title: "Britannica: Novak Djokovic",
+          url: "https://www.britannica.com/biography/Novak-Djokovic"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "usain-bolt",
+      name: "Usain Bolt",
+      aliases: [],
+      description: "Sprinter",
+      category: "athlete",
+      birthDate: "1986-08-21",
+      birthTime: null,
+      zone: "America/Jamaica",
+      birthplace: "Sherwood Content, Jamaica",
+      sources: [
+        {
+          title: "Britannica: Usain Bolt",
+          url: "https://www.britannica.com/biography/Usain-Bolt"
+        },
+        {
+          title: "Olympedia: Usain Bolt",
+          url: "https://www.olympedia.org/place_names/23368"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
+    },
+    {
+      slug: "shohei-ohtani",
+      name: "Shohei Ohtani",
+      aliases: [],
+      description: "Baseball player",
+      category: "athlete",
+      birthDate: "1994-07-05",
+      birthTime: null,
+      zone: "Asia/Tokyo",
+      birthplace: "Oshu, Iwate, Japan",
+      sources: [
+        {
+          title: "Wikipedia: Shohei Ohtani",
+          url: "https://en.wikipedia.org/wiki/Shohei_Ohtani"
+        }
+      ],
+      alternateBirthDates: [],
+      note: null
     }
   ]
 };
@@ -39876,6 +40408,8 @@ var YEAR_PERSON_CATEGORIES = ["founder", "ceo", "investor", "athlete", "entertai
 var person = z11.strictObject({
   slug: z11.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/u),
   name: z11.string().min(1),
+  /** Other names and X handles people use for them (without @), for matching trending names. */
+  aliases: z11.array(z11.string().min(2).max(40)),
   description: z11.string().min(1),
   category: z11.enum(YEAR_PERSON_CATEGORIES),
   birthDate: day,
@@ -39898,10 +40432,12 @@ var BY_KEY = /* @__PURE__ */ new Map();
 for (const entry of YEAR_PEOPLE) {
   BY_KEY.set(personKey(entry.slug), entry);
   BY_KEY.set(personKey(entry.name), entry);
+  for (const alias of entry.aliases) BY_KEY.set(personKey(alias), entry);
 }
 function findYearPerson(query) {
   return BY_KEY.get(personKey(query));
 }
+var yearPersonPath = (slug) => `/year/${slug}/`;
 
 // src/lib/year-score/reading.ts
 function scoreTier(score2) {
@@ -40154,9 +40690,10 @@ async function getYearScore(args, now, clock2, origin) {
       sources: figure?.sources ?? [],
       limits: limits2,
       under18,
-      pageUrl
+      // A directory figure's own page; a person's own details have no page, so the calculator.
+      pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl
     },
-    links
+    links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links
   };
 }
 

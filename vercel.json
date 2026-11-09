@@ -557,6 +557,15 @@
       ]
     },
     {
+      "source": "/year/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
       "source": "/people/rigoberta-menchu/",
       "headers": [
         {

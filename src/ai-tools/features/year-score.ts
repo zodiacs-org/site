@@ -21,7 +21,7 @@ import { scanTransitContacts } from '../../lib/engine/transit-scan';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { scoreYear, type NatalPoints, type SlowPlanet, type YearScore } from '../../lib/year-score/core';
-import { YEAR_PEOPLE, findYearPerson, type YearPerson } from '../../lib/year-score/people';
+import { YEAR_PEOPLE, findYearPerson, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
 import { dayName, yearReading } from '../../lib/year-score/reading';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { roundCoordinate } from '../plain-text';
@@ -230,8 +230,9 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
       sources: figure?.sources ?? [],
       limits,
       under18,
-      pageUrl,
+      // A directory figure's own page; a person's own details have no page, so the calculator.
+      pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
     },
-    links,
+    links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links,
   };
 }
