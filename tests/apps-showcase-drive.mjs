@@ -16,7 +16,8 @@ try{
   await page.evaluate(()=>document.fonts.ready);
   assert.equal(await page.locator('.apps-page h1').count(),1);
   assert.equal(await page.locator('.apps-examples article').count(),4);
-  assert.equal(await page.locator('.apps-availability dd').allTextContents().then(v=>v.every(x=>x.includes('in review'))),true);
+  assert.deepEqual(await page.locator('.apps-availability dd').allTextContents(),['Directory listing in review','Directory listing in review','Template available']);
+  assert.equal(await page.locator('.apps-connect a[href="https://x.ai/bot/e0DWoivlUkNRrhEcvBX8G"][target="_blank"]').count(),1,'Grok template link');
   assert.equal(await page.locator('.apps-connect a[href*="chatgpt.com"]').count(),0,'No private/unapproved installation link');
   assert.equal(media.length,0,'Video stays unloaded until played');
   for(const img of await page.locator('.apps-page img').all()){
