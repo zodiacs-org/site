@@ -104,6 +104,54 @@ const L = {
     chart: ['الخريطة الفلكية', 'خريطة الميلاد', 'خريطة فلكية مجانية', 'حساب الخريطة الفلكية', 'قراءة الخريطة الفلكية', 'حساب الطالع', 'برج الطالع', 'برج القمر', 'حساب برج القمر', 'الشمس والقمر والطالع'],
     sky: [['moon-phase', 'طور القمر اليوم'], ['moon-phase', 'القمر اليوم'], ['full-moon', 'البدر نوفمبر 2026'], ['new-moon', 'المحاق نوفمبر 2026'], ['mercury-retrograde', 'تراجع عطارد 2027'], ['mercury-retrograde', 'تراجع عطارد الآن'], ['retrogrades', 'الكواكب المتراجعة الآن'], ['eclipses', 'كسوف 2027'], ['eclipses', 'خسوف 2027'], ['mars-retrograde', 'تراجع المريخ 2027']],
   },
+  // Candidates for the next locale (Part 5 of the 2026-11 locale expansion):
+  // nothing is published in these languages; the volumes decide which one
+  // is built first. Written the way people search in each language.
+  de: {
+    prefix: '/de', lang: 'German', loc: 'Germany; Austria; Switzerland',
+    signs: ['widder', 'stier', 'zwillinge', 'krebs', 'löwe', 'jungfrau', 'waage', 'skorpion', 'schütze', 'steinbock', 'wassermann', 'fische'],
+    horoscope: { today: (s) => `horoskop ${s} heute`, tomorrow: (s) => `horoskop ${s} morgen`, weekly: (s) => `wochenhoroskop ${s}`, monthly: (s) => `monatshoroskop ${s}`, yearly: (s) => `jahreshoroskop ${s} 2027` },
+    pair: (a, b) => `passen ${a} und ${b} zusammen`,
+    signQ: [(s) => `${s} eigenschaften`, (s) => `sternzeichen ${s}`, (s) => `${s} mann`, (s) => `${s} frau`, (s) => `sternzeichen ${s} datum`, (s) => `${s} charakter`],
+    chart: ['geburtshoroskop', 'geburtshoroskop kostenlos', 'radix berechnen', 'horoskop berechnen', 'geburtshoroskop deuten', 'aszendent berechnen', 'aszendent', 'mondzeichen berechnen', 'mondzeichen', 'sonne mond aszendent'],
+    sky: [['moon-phase', 'mondphase heute'], ['moon-phase', 'mond heute'], ['full-moon', 'vollmond november 2026'], ['new-moon', 'neumond november 2026'], ['mercury-retrograde', 'merkur rückläufig 2027'], ['mercury-retrograde', 'ist merkur rückläufig'], ['retrogrades', 'rückläufige planeten aktuell'], ['eclipses', 'finsternis 2027'], ['eclipses', 'sonnenfinsternis 2027'], ['mars-retrograde', 'mars rückläufig 2027']],
+  },
+  pl: {
+    prefix: '/pl', lang: 'Polish', loc: 'Poland',
+    signs: ['baran', 'byk', 'bliźnięta', 'rak', 'lew', 'panna', 'waga', 'skorpion', 'strzelec', 'koziorożec', 'wodnik', 'ryby'],
+    horoscope: { today: (s) => `horoskop ${s} dzisiaj`, tomorrow: (s) => `horoskop ${s} jutro`, weekly: (s) => `horoskop tygodniowy ${s}`, monthly: (s) => `horoskop miesięczny ${s}`, yearly: (s) => `horoskop ${s} 2027` },
+    pair: (a, b) => `${a} i ${b} dopasowanie`,
+    signQ: [(s) => `${s} cechy`, (s) => `znak zodiaku ${s}`, (s) => `${s} mężczyzna`, (s) => `${s} kobieta`, (s) => `${s} znak zodiaku daty`, (s) => `${s} charakter`],
+    chart: ['horoskop urodzeniowy', 'kosmogram', 'kosmogram online', 'horoskop urodzeniowy za darmo', 'jak czytać horoskop urodzeniowy', 'ascendent kalkulator', 'jak obliczyć ascendent', 'znak księżyca', 'znak księżyca kalkulator', 'słońce księżyc ascendent'],
+    sky: [['moon-phase', 'faza księżyca dzisiaj'], ['moon-phase', 'księżyc dzisiaj'], ['full-moon', 'pełnia listopad 2026'], ['new-moon', 'nów listopad 2026'], ['mercury-retrograde', 'merkury retrogradacja 2027'], ['mercury-retrograde', 'retrogradacja merkurego teraz'], ['retrogrades', 'planety w retrogradacji'], ['eclipses', 'zaćmienie 2027'], ['eclipses', 'zaćmienie słońca 2027'], ['mars-retrograde', 'mars retrogradacja 2027']],
+  },
+  tr: {
+    prefix: '/tr', lang: 'Turkish', loc: 'Turkey',
+    signs: ['koç', 'boğa', 'ikizler', 'yengeç', 'aslan', 'başak', 'terazi', 'akrep', 'yay', 'oğlak', 'kova', 'balık'],
+    horoscope: { today: (s) => `${s} burcu günlük`, tomorrow: (s) => `${s} burcu yarın`, weekly: (s) => `${s} burcu haftalık`, monthly: (s) => `${s} burcu aylık`, yearly: (s) => `${s} burcu 2027` },
+    pair: (a, b) => `${a} ${b} uyumu`,
+    signQ: [(s) => `${s} burcu özellikleri`, (s) => `${s} burcu`, (s) => `${s} erkeği`, (s) => `${s} kadını`, (s) => `${s} burcu tarihleri`, (s) => `${s} burcu karakteri`],
+    chart: ['doğum haritası', 'doğum haritası hesaplama', 'ücretsiz doğum haritası', 'natal harita', 'doğum haritası nasıl okunur', 'yükselen burç hesaplama', 'yükselen burç', 'ay burcu hesaplama', 'ay burcu', 'güneş ay yükselen'],
+    sky: [['moon-phase', 'ay evresi bugün'], ['moon-phase', 'bugün ay hangi evrede'], ['full-moon', 'dolunay kasım 2026'], ['new-moon', 'yeni ay kasım 2026'], ['mercury-retrograde', 'merkür retrosu 2027'], ['mercury-retrograde', 'merkür retrosu ne zaman'], ['retrogrades', 'retro gezegenler'], ['eclipses', 'ay tutulması 2027'], ['eclipses', 'güneş tutulması 2027'], ['mars-retrograde', 'mars retrosu 2027']],
+  },
+  ja: {
+    prefix: '/ja', lang: 'Japanese', loc: 'Japan',
+    signs: ['おひつじ座', 'おうし座', 'ふたご座', 'かに座', 'しし座', 'おとめ座', 'てんびん座', 'さそり座', 'いて座', 'やぎ座', 'みずがめ座', 'うお座'],
+    horoscope: { today: (s) => `${s} 今日の運勢`, tomorrow: (s) => `${s} 明日の運勢`, weekly: (s) => `${s} 今週の運勢`, monthly: (s) => `${s} 今月の運勢`, yearly: (s) => `${s} 2027年 運勢` },
+    pair: (a, b) => `${a} ${b} 相性`,
+    signQ: [(s) => `${s} 性格`, (s) => `${s} 特徴`, (s) => `${s} 男性`, (s) => `${s} 女性`, (s) => `${s} 期間`, (s) => `${s} どんな人`],
+    chart: ['ホロスコープ 無料', 'ネイタルチャート', '出生図', 'ホロスコープ 作成', 'ホロスコープ 読み方', 'アセンダント 調べ方', 'アセンダント', '月星座 調べ方', '月星座', '太陽星座 月星座 アセンダント'],
+    sky: [['moon-phase', '今日の月齢'], ['moon-phase', '今日の月'], ['full-moon', '満月 2026年11月'], ['new-moon', '新月 2026年11月'], ['mercury-retrograde', '水星逆行 2027'], ['mercury-retrograde', '水星逆行 いつ'], ['retrogrades', '逆行中の惑星'], ['eclipses', '日食 2027'], ['eclipses', '月食 2027'], ['mars-retrograde', '火星逆行 2027']],
+  },
+  hi: {
+    prefix: '/hi', lang: 'Hindi', loc: 'India',
+    signs: ['मेष', 'वृषभ', 'मिथुन', 'कर्क', 'सिंह', 'कन्या', 'तुला', 'वृश्चिक', 'धनु', 'मकर', 'कुंभ', 'मीन'],
+    horoscope: { today: (s) => `${s} राशिफल आज`, tomorrow: (s) => `${s} राशिफल कल`, weekly: (s) => `${s} साप्ताहिक राशिफल`, monthly: (s) => `${s} मासिक राशिफल`, yearly: (s) => `${s} राशिफल 2027` },
+    pair: (a, b) => `${a} और ${b} राशि मिलान`,
+    signQ: [(s) => `${s} राशि के लोग कैसे होते हैं`, (s) => `${s} राशि`, (s) => `${s} राशि पुरुष`, (s) => `${s} राशि महिला`, (s) => `${s} राशि तारीख`, (s) => `${s} राशि स्वभाव`],
+    chart: ['जन्म कुंडली', 'जन्म कुंडली ऑनलाइन', 'फ्री कुंडली', 'जन्म पत्रिका', 'कुंडली कैसे देखें', 'लग्न कैसे पता करें', 'लग्न राशि', 'चंद्र राशि कैसे पता करें', 'चंद्र राशि', 'सूर्य चंद्र लग्न'],
+    sky: [['moon-phase', 'आज चंद्रमा की कला'], ['moon-phase', 'आज का चंद्रमा'], ['full-moon', 'पूर्णिमा नवंबर 2026'], ['new-moon', 'अमावस्या नवंबर 2026'], ['mercury-retrograde', 'बुध वक्री 2027'], ['mercury-retrograde', 'बुध वक्री कब है'], ['retrogrades', 'वक्री ग्रह'], ['eclipses', 'ग्रहण 2027'], ['eclipses', 'सूर्य ग्रहण 2027'], ['mars-retrograde', 'मंगल वक्री 2027']],
+  },
 };
 
 // What the site publishes per locale (from coverage.md); used for target_url and coverage.
@@ -117,8 +165,26 @@ const PUBLISHED = {
   'zh-hans': { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
   'zh-hant': { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
   ar: { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
+  de: { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
+  pl: { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
+  tr: { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
+  ja: { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
+  hi: { horoscope: [], compat: false, signs: false, chart: false, sky: [] },
 };
-const NOTE = { ar: 'native review needed before use; no Arabic pages published', 'zh-hans': 'native review needed before use; only the Chinese zodiac guide is published in Chinese', 'zh-hant': 'native review needed before use; only the Chinese zodiac guide is published in Chinese' };
+
+// Built but held by the locale expansion (src/data/locale-expansion-publication.json,
+// PRs for parts 1 and 2): the page exists in the language and waits for its
+// release batch. Coverage "held" names the localized URL it will have.
+const HELD = {
+  es: { horoscope: ['tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'] },
+  pt: { horoscope: ['tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'] },
+  fr: { horoscope: ['today', 'tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'] },
+  it: { horoscope: ['today', 'tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'] },
+  ru: { horoscope: ['today', 'tomorrow', 'weekly', 'monthly', 'yearly'], sky: ['full-moon', 'new-moon'], compat: true, signs: true },
+};
+const HELD_NOTE = 'built in this language and held until its release batch';
+const CANDIDATE_NOTE = 'candidate locale: nothing published in this language; native review of the query wording needed before use';
+const NOTE = { de: CANDIDATE_NOTE, pl: CANDIDATE_NOTE, tr: CANDIDATE_NOTE, ja: `${CANDIDATE_NOTE}; no spaces in Japanese queries except where people type them`, hi: `${CANDIDATE_NOTE}; much Hindi astrology search is sidereal (Vedic) while the site is tropical`, ar: 'native review needed before use; no Arabic pages published', 'zh-hans': 'native review needed before use; only the Chinese zodiac guide is published in Chinese', 'zh-hant': 'native review needed before use; only the Chinese zodiac guide is published in Chinese' };
 
 const csvCell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
 const HEAD = ['locale', 'kp_language', 'kp_locations', 'family', 'subfamily', 'query', 'target_url', 'coverage', 'monthly_volume', 'volume_source', 'competition', 'notes'];
@@ -134,18 +200,21 @@ function chartTarget(q) {
 }
 
 export function rowsFor(locale) {
-  const c = L[locale], pub = PUBLISHED[locale], p = c.prefix, rows = [];
+  const c = L[locale], pub = PUBLISHED[locale], held = HELD[locale] ?? {}, p = c.prefix, rows = [];
   const add = (family, sub, query, url, coverage, note = '') => rows.push([locale, c.lang, c.loc, family, sub, query, url || '', coverage, 'TBD', 'TBD', 'TBD', [note, NOTE[locale]].filter(Boolean).join('; ')]);
   const enHoroPath = { today: '', tomorrow: 'tomorrow/', weekly: 'weekly/', monthly: 'monthly/', yearly: '2027/' };
   SLUGS.forEach((slug, i) => {
     for (const [period, fn] of Object.entries(c.horoscope)) {
       const has = pub.horoscope.includes(period);
-      const url = has ? `${p}/horoscopes/${slug}/${locale === 'en' ? enHoroPath[period] : ''}` : `/horoscopes/${slug}/${enHoroPath[period]}`;
-      add('horoscope', period, fn(c.signs[i]), url, has ? 'full' : 'partial', has ? '' : 'English page only');
+      const isHeld = !has && (held.horoscope ?? []).includes(period);
+      const url = has ? `${p}/horoscopes/${slug}/${locale === 'en' ? enHoroPath[period] : ''}`
+        : isHeld ? `${p}/horoscopes/${slug}/${enHoroPath[period]}` : `/horoscopes/${slug}/${enHoroPath[period]}`;
+      add('horoscope', period, fn(c.signs[i]), url, has ? 'full' : isHeld ? 'held' : 'partial', has ? '' : isHeld ? HELD_NOTE : 'English page only');
     }
   });
   SLUGS.forEach((a, i) => SLUGS.forEach((b, j) => {
-    add('compatibility', i === j ? 'same-sign pair' : 'pair', c.pair(c.signs[i], c.signs[j]), pub.compat ? `${p}/compatibility/${pairSlug(a, b)}/` : `/compatibility/${pairSlug(a, b)}/`, pub.compat ? 'full' : 'partial', pub.compat ? '' : 'English page only');
+    const status = pub.compat ? 'full' : held.compat ? 'held' : 'partial';
+    add('compatibility', i === j ? 'same-sign pair' : 'pair', c.pair(c.signs[i], c.signs[j]), status === 'partial' ? `/compatibility/${pairSlug(a, b)}/` : `${p}/compatibility/${pairSlug(a, b)}/`, status, status === 'full' ? '' : status === 'held' ? HELD_NOTE : 'English page only');
   }));
   c.chart.forEach((q) => {
     const [sub, route] = chartTarget(q);
@@ -156,9 +225,11 @@ export function rowsFor(locale) {
   const skyUrl = { 'moon-phase': '/moon-phase/', 'full-moon': '/full-moon/2026-11-24/', 'new-moon': '/new-moon/2026-11-09/', 'mercury-retrograde': '/mercury-retrograde/', retrogrades: '/retrogrades/', eclipses: '/eclipses/', 'mars-retrograde': '/mars-retrograde/' };
   c.sky.forEach(([sub, q]) => {
     const has = pub.sky.includes(sub);
-    add('sky-events', sub, q, has ? `${p}${skyUrl[sub]}` : skyUrl[sub], has ? 'full' : 'partial', has ? '' : 'English page only');
+    const isHeld = !has && (held.sky ?? []).includes(sub);
+    add('sky-events', sub, q, has || isHeld ? `${p}${skyUrl[sub]}` : skyUrl[sub], has ? 'full' : isHeld ? 'held' : 'partial', has ? '' : isHeld ? HELD_NOTE : 'English page only');
   });
-  SLUGS.forEach((slug, i) => c.signQ.forEach((fn) => add('signs', 'meaning', fn(c.signs[i]), pub.signs ? `${p}/${slug}/` : `/${slug}/`, pub.signs ? 'full' : 'partial', pub.signs ? '' : 'English page only')));
+  const signStatus = pub.signs ? 'full' : held.signs ? 'held' : 'partial';
+  SLUGS.forEach((slug, i) => c.signQ.forEach((fn) => add('signs', 'meaning', fn(c.signs[i]), signStatus === 'partial' ? `/${slug}/` : `${p}/${slug}/`, signStatus, signStatus === 'full' ? '' : signStatus === 'held' ? HELD_NOTE : 'English page only')));
   return rows;
 }
 

@@ -1,64 +1,64 @@
 locale,kp_language,kp_locations,family,subfamily,query,target_url,coverage,monthly_volume,volume_source,competition,notes
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo aries hoy,/es/horoscopes/aries/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo aries mañana,/horoscopes/aries/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal aries,/horoscopes/aries/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual aries,/horoscopes/aries/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo aries 2027,/horoscopes/aries/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo aries mañana,/es/horoscopes/aries/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal aries,/es/horoscopes/aries/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual aries,/es/horoscopes/aries/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo aries 2027,/es/horoscopes/aries/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo tauro hoy,/es/horoscopes/taurus/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo tauro mañana,/horoscopes/taurus/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal tauro,/horoscopes/taurus/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual tauro,/horoscopes/taurus/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo tauro 2027,/horoscopes/taurus/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo tauro mañana,/es/horoscopes/taurus/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal tauro,/es/horoscopes/taurus/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual tauro,/es/horoscopes/taurus/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo tauro 2027,/es/horoscopes/taurus/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo géminis hoy,/es/horoscopes/gemini/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo géminis mañana,/horoscopes/gemini/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal géminis,/horoscopes/gemini/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual géminis,/horoscopes/gemini/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo géminis 2027,/horoscopes/gemini/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo géminis mañana,/es/horoscopes/gemini/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal géminis,/es/horoscopes/gemini/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual géminis,/es/horoscopes/gemini/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo géminis 2027,/es/horoscopes/gemini/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo cáncer hoy,/es/horoscopes/cancer/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo cáncer mañana,/horoscopes/cancer/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal cáncer,/horoscopes/cancer/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual cáncer,/horoscopes/cancer/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo cáncer 2027,/horoscopes/cancer/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo cáncer mañana,/es/horoscopes/cancer/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal cáncer,/es/horoscopes/cancer/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual cáncer,/es/horoscopes/cancer/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo cáncer 2027,/es/horoscopes/cancer/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo leo hoy,/es/horoscopes/leo/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo leo mañana,/horoscopes/leo/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal leo,/horoscopes/leo/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual leo,/horoscopes/leo/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo leo 2027,/horoscopes/leo/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo leo mañana,/es/horoscopes/leo/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal leo,/es/horoscopes/leo/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual leo,/es/horoscopes/leo/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo leo 2027,/es/horoscopes/leo/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo virgo hoy,/es/horoscopes/virgo/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo virgo mañana,/horoscopes/virgo/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal virgo,/horoscopes/virgo/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual virgo,/horoscopes/virgo/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo virgo 2027,/horoscopes/virgo/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo virgo mañana,/es/horoscopes/virgo/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal virgo,/es/horoscopes/virgo/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual virgo,/es/horoscopes/virgo/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo virgo 2027,/es/horoscopes/virgo/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo libra hoy,/es/horoscopes/libra/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo libra mañana,/horoscopes/libra/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal libra,/horoscopes/libra/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual libra,/horoscopes/libra/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo libra 2027,/horoscopes/libra/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo libra mañana,/es/horoscopes/libra/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal libra,/es/horoscopes/libra/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual libra,/es/horoscopes/libra/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo libra 2027,/es/horoscopes/libra/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo escorpio hoy,/es/horoscopes/scorpio/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo escorpio mañana,/horoscopes/scorpio/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal escorpio,/horoscopes/scorpio/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual escorpio,/horoscopes/scorpio/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo escorpio 2027,/horoscopes/scorpio/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo escorpio mañana,/es/horoscopes/scorpio/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal escorpio,/es/horoscopes/scorpio/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual escorpio,/es/horoscopes/scorpio/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo escorpio 2027,/es/horoscopes/scorpio/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo sagitario hoy,/es/horoscopes/sagittarius/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo sagitario mañana,/horoscopes/sagittarius/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal sagitario,/horoscopes/sagittarius/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual sagitario,/horoscopes/sagittarius/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo sagitario 2027,/horoscopes/sagittarius/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo sagitario mañana,/es/horoscopes/sagittarius/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal sagitario,/es/horoscopes/sagittarius/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual sagitario,/es/horoscopes/sagittarius/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo sagitario 2027,/es/horoscopes/sagittarius/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo capricornio hoy,/es/horoscopes/capricorn/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo capricornio mañana,/horoscopes/capricorn/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal capricornio,/horoscopes/capricorn/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual capricornio,/horoscopes/capricorn/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo capricornio 2027,/horoscopes/capricorn/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo capricornio mañana,/es/horoscopes/capricorn/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal capricornio,/es/horoscopes/capricorn/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual capricornio,/es/horoscopes/capricorn/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo capricornio 2027,/es/horoscopes/capricorn/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo acuario hoy,/es/horoscopes/aquarius/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo acuario mañana,/horoscopes/aquarius/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal acuario,/horoscopes/aquarius/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual acuario,/horoscopes/aquarius/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo acuario 2027,/horoscopes/aquarius/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo acuario mañana,/es/horoscopes/aquarius/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal acuario,/es/horoscopes/aquarius/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual acuario,/es/horoscopes/aquarius/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo acuario 2027,/es/horoscopes/aquarius/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,today,horóscopo piscis hoy,/es/horoscopes/pisces/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo piscis mañana,/horoscopes/pisces/tomorrow/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal piscis,/horoscopes/pisces/weekly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual piscis,/horoscopes/pisces/monthly/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo piscis 2027,/horoscopes/pisces/2027/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,tomorrow,horóscopo piscis mañana,/es/horoscopes/pisces/tomorrow/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,weekly,horóscopo semanal piscis,/es/horoscopes/pisces/weekly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,monthly,horóscopo mensual piscis,/es/horoscopes/pisces/monthly/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,horoscope,yearly,horóscopo piscis 2027,/es/horoscopes/pisces/2027/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,compatibility,same-sign pair,compatibilidad aries y aries,/es/compatibility/aries-aries/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,compatibility,pair,compatibilidad aries y tauro,/es/compatibility/aries-taurus/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,compatibility,pair,compatibilidad aries y géminis,/es/compatibility/aries-gemini/,full,TBD,TBD,TBD,
@@ -215,8 +215,8 @@ es,Spanish,Spain; Mexico; Argentina; Colombia; United States,birth-chart,moon-si
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,birth-chart,big-three,sol luna y ascendente,/es/big-three/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,moon-phase,fase lunar hoy,/es/moon-phase/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,moon-phase,luna hoy,/es/moon-phase/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,full-moon,luna llena noviembre 2026,/full-moon/2026-11-24/,partial,TBD,TBD,TBD,English page only
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,new-moon,luna nueva noviembre 2026,/new-moon/2026-11-09/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,full-moon,luna llena noviembre 2026,/es/full-moon/2026-11-24/,held,TBD,TBD,TBD,built in this language and held until its release batch
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,new-moon,luna nueva noviembre 2026,/es/new-moon/2026-11-09/,held,TBD,TBD,TBD,built in this language and held until its release batch
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,mercury-retrograde,mercurio retrógrado 2027,/es/mercury-retrograde/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,mercury-retrograde,mercurio retrógrado hoy,/es/mercury-retrograde/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,retrogrades,planetas retrógrados ahora,/es/retrogrades/,full,TBD,TBD,TBD,

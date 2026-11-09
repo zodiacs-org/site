@@ -61,11 +61,26 @@ Quality notes:
 ## 2. Keyword tables
 
 `node scripts/visibility/build-keywords.mjs` writes one CSV per locale in
-[keywords/](keywords/), plus `all-locales.csv`: 296 queries per locale, 2,664
+[keywords/](keywords/), plus `all-locales.csv`: 296 queries per locale, 4,144
 in all, written the way people search in each language (for example
 "horóscopo escorpio hoy", "affinità leone scorpione", "thème astral gratuit",
 "гороскоп лев на сегодня"), each with the target URL and whether a page in
 that language answers it.
+
+The files cover the site's nine locales and, since 2026-11-09, the five
+candidates for the next locale: German, Polish, Turkish, Japanese and Hindi
+(`de.csv`, `pl.csv`, `tr.csv`, `ja.csv`, `hi.csv`). Their volumes decide
+which candidate is built first (`docs/i18n/NEW-LOCALE-RUNBOOK.md`). Nothing
+is published in those languages, so every candidate row is `partial` and
+targets the English page. The query wording needs a native speaker's check
+before use. For Hindi, much astrology search is sidereal (Vedic) while the
+site is tropical.
+
+Coverage `held` marks a page the locale expansion has built in that
+language and holds until its release batch: the Spanish and Portuguese
+periods, the French and Italian horoscopes, the full and new Moon pages in
+all four, and the Russian horoscopes, pairs and sign guides. The target URL
+is the localized address the page will have.
 
 | Family | Queries per locale |
 |---|---|

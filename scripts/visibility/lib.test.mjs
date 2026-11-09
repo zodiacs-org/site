@@ -63,7 +63,7 @@ describe('keyword tables', () => {
     const { execFileSync } = await import('node:child_process');
     execFileSync(process.execPath, [new URL('./build-keywords.mjs', import.meta.url).pathname, '--check']);
     const rows = parseCsv(readFileSync(new URL('../../docs/visibility/keywords/all-locales.csv', import.meta.url), 'utf8')).slice(1);
-    expect(rows.length).toBe(9 * 296);
+    expect(rows.length).toBe(14 * 296); // nine site locales and the five candidates (de, pl, tr, ja, hi)
     for (const r of rows) {
       expect(r[8] === 'TBD' || /^\d+$/.test(r[8])).toBe(true);
       expect(copyProblems(r[5])).toEqual([]);
