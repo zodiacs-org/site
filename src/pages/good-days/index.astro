@@ -1,0 +1,86 @@
+---
+import Base from '../../layouts/Base.astro';
+import GoodDayFinder from '../../islands/GoodDayFinder.tsx';
+import '../../styles/calculator.css';
+import '../../styles/good-days.css';
+
+const faq = [
+  {
+    q: 'How are the days chosen?',
+    a: 'Each day in the window is read by the traditional rules of electional astrology for the goal you pick: the Moon’s phase and sign, whether the Moon is void of course, whether Mercury, Venus or Mars is retrograde or standing still, how close the day is to an eclipse, and the Moon’s contacts with the planets that day. The best days come first, spread through the window, each with its main reasons.',
+  },
+  {
+    q: 'What does void of course mean here?',
+    a: 'The Moon is void of course from its last major aspect in a sign until it enters the next sign. Tradition says new beginnings started then drift. The times follow the same rule as our void-of-course Moon calendar.',
+  },
+  {
+    q: 'Can it time a medical procedure?',
+    a: 'No. Zodiacs gives no timing for medical procedures or treatment: that date is for you and your clinician. The procedure goal is for planned procedures that are not medical, such as clearing a space or ending an arrangement. For every other goal the days are astrology’s traditional reading, and no day guarantees how things go.',
+  },
+  {
+    q: 'What does adding my birth date change?',
+    a: 'It adds two readings from your own chart: whether the Moon that day sits in harmony with your Sun sign, and the days Venus, Mars, Jupiter or Saturn make an exact contact with your Sun or Venus. Your birth date is used on your device for that search only. It is not saved, sent anywhere or put in the address bar. Zodiacs is for people 13 and over.',
+  },
+  {
+    q: 'Which years does it cover?',
+    a: 'From 2026 to 2030, the years our eclipse table covers, up to twelve months at a time.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: 'Good day finder: the best days for a launch, a move, a contract or a wedding',
+    url: 'https://zodiacs.org/good-days/',
+    description: 'Find the best days in the next twelve months to launch, sign a contract, move, travel, start a new job, start a relationship or marry, by traditional electional astrology, with the days to avoid.',
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+---
+<Base
+  clientUi
+  title="Good Day Finder: Best Days by Electional Astrology | Zodiacs.org"
+  description="Find the best days in the next twelve months for a launch, a contract, a move, travel, a new job or a wedding, by traditional electional astrology, with the days to avoid. Free."
+  path="/good-days/"
+  jsonLd={jsonLd}
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero reveal">
+      <h1 class="display">Good day finder</h1>
+      <p>
+        Pick what the day is for and a window of up to twelve months. Each day is read by the old rules of electional
+        astrology, and the best days come back with a plain reason each, along with the days tradition would avoid.
+      </p>
+    </div>
+    <GoodDayFinder client:load />
+    <noscript>
+      <p>The days are worked out in your browser and need JavaScript. Enable it and reload.</p>
+    </noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal">
+      <h2>Related</h2>
+    </div>
+    <div class="prose reveal">
+      <ul>
+        <li><a href="/void-of-course-moon/">The void-of-course Moon calendar</a>, with the times for the next three months.</li>
+        <li><a href="/retrogrades/">Retrogrades</a>: when each planet turns back and forward again.</li>
+        <li><a href="/eclipses/">Eclipses</a> from 2026 to 2030.</li>
+        <li><a href="/occasions/">The sky on your day</a>: a card of the sky on a date you have already chosen.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal">
+      <h2>Questions</h2>
+    </div>
+    <div class="prose reveal">
+      {faq.map(({ q, a }) => (<><h3>{q}</h3><p>{a}</p></>))}
+    </div>
+  </section>
+</Base>

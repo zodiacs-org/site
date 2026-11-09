@@ -14,6 +14,7 @@ import { personalTransitsData, personalTransitsInput } from './features/personal
 import { explainData, explainInput, explainInputWithSkyEvents } from './features/explain';
 import { birthplaceData, birthplaceInput } from './features/birthplace';
 import { skyEventsData, skyEventsInput } from './features/sky-events';
+import { goodDaysData, goodDaysInput } from './features/good-days';
 
 export const AI_VERSION = '0.6.6';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
@@ -75,14 +76,26 @@ export const EVERY_AI_TOOL_NAME = [...ALL_AI_TOOL_NAMES, ...COVERAGE_TOOL_NAMES,
 export const SKY_EVENTS_TOOL_NAMES = ['search_sky_events'] as const;
 /** Every tool the hosted server can offer, in tools/list order, with the sky events switch on. */
 export const EVERY_TOOL_WITH_SKY_EVENTS = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES] as const;
-export type AiToolName = typeof EVERY_TOOL_WITH_SKY_EVENTS[number];
+/**
+ * find_good_days: the best days in a window of up to a year for a goal, by traditional electional astrology, with
+ * the days to avoid. Offered only where ZODIACS_GOOD_DAYS_ENABLED=1 joins the occasion and coverage switches, last in
+ * tools/list (after search_sky_events when that switch is on too), so with the switch off every other entry keeps its
+ * place and bytes (src/ai-tools/good-days.test.ts).
+ */
+export const GOOD_DAYS_TOOL_NAMES = ['find_good_days'] as const;
+/** Every tool the hosted server can offer, in tools/list order, with every switch on. */
+export const EVERY_TOOL_WITH_GOOD_DAYS = [...EVERY_TOOL_WITH_SKY_EVENTS, ...GOOD_DAYS_TOOL_NAMES] as const;
+export type AiToolName = typeof EVERY_TOOL_WITH_GOOD_DAYS[number];
 export type CoverageToolName = typeof COVERAGE_TOOL_NAMES[number];
 export type PlaceToolName = typeof PLACE_TOOL_NAMES[number];
 export type SkyEventsToolName = typeof SKY_EVENTS_TOOL_NAMES[number];
+export type GoodDaysToolName = typeof GOOD_DAYS_TOOL_NAMES[number];
 export const OCCASIONS_SWITCH_ENV = 'ZODIACS_OCCASIONS_ENABLED';
 export const COVERAGE_SWITCH_ENV = 'ZODIACS_COVERAGE_ENABLED';
 /** Off unless exactly '1', and only with the coverage switch: search_sky_events, the natal chart's houseSystem and nodes, and explain_astrology's event and house topics. */
 export const SKY_EVENTS_SWITCH_ENV = 'ZODIACS_SKY_EVENTS_ENABLED';
+/** Off unless exactly '1', and only with the occasion and coverage switches: find_good_days. */
+export const GOOD_DAYS_SWITCH_ENV = 'ZODIACS_GOOD_DAYS_ENABLED';
 /** The compute API's own events bound. */
 export const MAX_EVENT_DAYS = BUDGETS['events.windowDays'];
 export const MAX_HTTP_BYTES = 16_384;
@@ -137,6 +150,7 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   explain_astrology: 'Astrology explained',
   find_birthplace: 'Find a birthplace',
   search_sky_events: 'Search sky events',
+  find_good_days: 'Find good days',
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).');
@@ -192,6 +206,7 @@ export const INPUT_SCHEMAS = {
   explain_astrology: explainInput,
   find_birthplace: birthplaceInput,
   search_sky_events: skyEventsInput,
+  find_good_days: goodDaysInput,
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
@@ -331,6 +346,7 @@ const dataSchemas = {
   explain_astrology: explainData,
   find_birthplace: birthplaceData,
   search_sky_events: skyEventsData,
+  find_good_days: goodDaysData,
 };
 
 export const ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(ALL_AI_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
@@ -340,11 +356,14 @@ export const COVERAGE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHE
 export const PLACE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(PLACE_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 /** search_sky_events names only itself, as find_birthplace does. */
 export const SKY_EVENTS_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(SKY_EVENTS_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** find_good_days names only itself, as search_sky_events does. */
+export const GOOD_DAYS_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(GOOD_DAYS_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: S) {
   const error = (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool)
     ? COVERAGE_ERROR_SCHEMA
     : (PLACE_TOOL_NAMES as readonly string[]).includes(tool) ? PLACE_ERROR_SCHEMA
-      : (SKY_EVENTS_TOOL_NAMES as readonly string[]).includes(tool) ? SKY_EVENTS_ERROR_SCHEMA : ERROR_SCHEMA;
+      : (SKY_EVENTS_TOOL_NAMES as readonly string[]).includes(tool) ? SKY_EVENTS_ERROR_SCHEMA
+        : (GOOD_DAYS_TOOL_NAMES as readonly string[]).includes(tool) ? GOOD_DAYS_ERROR_SCHEMA : ERROR_SCHEMA;
   return z.union([
     z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(true), tool: z.literal(tool), data, links: z.array(link) }),
     error,
@@ -369,6 +388,7 @@ export const OUTPUT_SCHEMAS = {
   explain_astrology: outputSchema('explain_astrology', dataSchemas.explain_astrology),
   find_birthplace: outputSchema('find_birthplace', dataSchemas.find_birthplace),
   search_sky_events: outputSchema('search_sky_events', dataSchemas.search_sky_events),
+  find_good_days: outputSchema('find_good_days', dataSchemas.find_good_days),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
@@ -393,6 +413,7 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading to give anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain; do not present an explainer of your own as Zodiacs'. If either person is under 18, give the friendship reading and do not frame the pair as romance or attraction.",
   find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. Never guess a birth time from a place.",
   search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets and Chiron turning retrograde or direct (stations), planets and Chiron changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, when Chiron changes sign, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets (or Chiron) for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, with the same times: from the Moon's last major aspect to the Sun or a planet through Pluto in a sign until it enters the next sign. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts: share them as facts, and keep what they mean in astrology separate.",
+  find_good_days: "Finds the best days for a goal in a window of up to twelve months, by the traditional rules of electional astrology, and the days to avoid. Goals: launch, contract (signing a contract), move (moving home), relationship (starting a relationship), travel, job (starting a new job), procedure (a planned procedure that is not medical) and wedding. Each day is read from the Moon's phase and sign, the void-of-course Moon, Mercury, Venus and Mars retrograde and their station days, eclipses (2026 to 2030) and the Moon's supportive or difficult aspects that day. Give the goal, from and to as dates (at most 366 days in all) and the person's time zone. If the person asks for their own chart to count, add their birth date, and the birth time and birthplace time zone only if they give them; these are used for this answer only and never stored. Never send a child's birth date: it refuses one under 13, and gives no relationship or wedding reading from one under 18. It returns ranked days, each with a score, a one-line reason and a reading-confidence label, the days to avoid with a reason each, and the retrograde periods and eclipses in the window. Share them plainly as astrology's traditional reading, money, career and legal themes included. Do not use it to time surgery, treatment or any medical procedure, and make no price call, buy or sell signal, or prediction of who wins a legal matter. It guarantees nothing and does not schedule or book anything.",
 };
 
 /**

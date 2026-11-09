@@ -448,6 +448,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
   ['/occasions/baby-shower/', '2026-10-11'] as const,
+  // The good day finder, first published 2026-11-09.
+  ['/good-days/', '2026-11-09'] as const,
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -740,6 +742,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/occasions/', priority: 0.7 },
     { loc: '/occasions/milestones/', priority: 0.6 },
     { loc: '/occasions/baby-shower/', priority: 0.6 },
+    { loc: '/good-days/', priority: 0.7 },
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },

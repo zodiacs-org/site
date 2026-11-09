@@ -1,0 +1,21 @@
+/* The good day finder's results. Cosmic Void: void surfaces, no chroma beyond
+   the shared tokens, EB Garamond display, Instrument Sans body, JetBrains
+   Mono for scores. Equal items sit on the light .tile. */
+.good-days__check { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.good-days__check input { width: 18px; height: 18px; accent-color: var(--ink-1); }
+.good-days__result { margin-top: var(--s-6, 24px); outline: none; }
+.good-days__title { margin: 0 0 8px; font: 500 clamp(28px, 5vw, 40px)/1.12 var(--font-serif); color: var(--ink-0); }
+.good-days__sub { margin: 0 0 18px; color: var(--ink-2); }
+.good-days__list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.good-days__day { padding: 16px 18px; }
+.good-days__date { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; margin: 0 0 6px; color: var(--ink-0); }
+.good-days__date strong { font: 500 21px/1.25 var(--font-serif); }
+.good-days__score { font-family: var(--font-mono); color: var(--ink-1); }
+.good-days__verdict { margin: 0; color: var(--ink-1); }
+.good-days__why { margin-top: 8px; color: var(--ink-2); }
+.good-days__why summary { cursor: pointer; color: var(--ink-1); }
+.good-days__why ul { margin: 8px 0 0; padding-left: 20px; }
+.good-days__head { margin: 28px 0 10px; font: 500 24px/1.2 var(--font-serif); color: var(--ink-0); }
+.good-days__avoid { margin: 0; padding-left: 20px; color: var(--ink-1); }
+.good-days__avoid li + li { margin-top: 6px; }
+.good-days__care { margin: 22px 0 6px; font: italic 19px/1.5 var(--font-serif); color: var(--ink-1); }

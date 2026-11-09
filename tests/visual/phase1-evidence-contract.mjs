@@ -64,6 +64,8 @@ export const PHASE1_TEMPLATE_SOURCE_EXCLUDED_DIRECTORIES = Object.freeze([
   'src/components/people',
   // Occasion cards (/occasions/) are imported by no Phase 1 reader template.
   'src/lib/occasions',
+  // Neither is the good day finder (/good-days/).
+  'src/lib/good-days',
 ]);
 
 export const PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS = Object.freeze([
@@ -73,6 +75,8 @@ export const PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS = Object.freeze([
   'src/islands/LifeMilestones.tsx',
   'src/islands/OccasionSky.tsx',
   'src/styles/occasions.css',
+  'src/islands/GoodDayFinder.tsx',
+  'src/styles/good-days.css',
 ]);
 
 export function sha256(value) {
