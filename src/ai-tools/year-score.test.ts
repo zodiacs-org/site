@@ -133,11 +133,10 @@ describe('getYearScore', () => {
     expect(data).toMatchObject({ status: 'not-in-directory', score: null, subject: null, drivers: [] });
   });
 
-  it('gives the other score when sources disagree on a figure’s birth date', async () => {
-    const { data } = await getYearScore({ person: 'Changpeng Zhao', from: '2026-07-17' }, NOW, clock, 'https://zodiacs.org');
-    expect(data.alternates).toHaveLength(1);
-    expect(data.alternates[0].birthDate).toBe('1977-09-10');
-    expect(data.limits.join(' ')).toContain('Public sources disagree on the birth date');
+  it('holds back a figure whose published birth dates disagree, answering with no score', async () => {
+    // Changpeng Zhao's sources give 5 February and 10 September 1977; he stays out until a primary source settles it.
+    const { data } = await getYearScore({ person: 'Changpeng Zhao' }, NOW, clock, 'https://zodiacs.org');
+    expect(data).toMatchObject({ status: 'not-in-directory', score: null });
   });
 
   it('refuses a start before the birth date', async () => {

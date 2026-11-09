@@ -41050,7 +41050,7 @@ import { z as z13 } from "zod";
 var year_people_default = {
   schema: "zodiacs.year-people.v1",
   reviewedAt: "2026-11-09",
-  policy: "Adults only (18 or older on the review date, checked by src/lib/year-score/people.test.ts); public figures known for their work; a public birth date with at least one cited source; birth time only when a published record gives it, otherwise a noon chart and the Moon left out. Living people follow the protected living-person controls: their year pages are noindex, nofollow and outside the sitemap, search and directory. Corrections and removals: people@zodiacs.org.",
+  policy: "Adults only (18 or older on the review date, checked by src/lib/year-score/people.test.ts); public figures known for their work; a public birth date with at least one cited source; birth time only when a published record gives it, otherwise a noon chart and the Moon left out. Living people follow the protected living-person controls: their year pages are noindex, nofollow and outside the sitemap, search and directory. Corrections and removals: people@zodiacs.org. A figure whose public sources disagree on the birth date is held back until a primary source settles it.",
   people: [
     {
       slug: "michael-saylor",
@@ -41062,28 +41062,13 @@ var year_people_default = {
       zone: "America/Chicago",
       birthplace: "Lincoln, Nebraska, United States",
       sources: [
-        { title: "Wikipedia: Michael J. Saylor", url: "https://en.wikipedia.org/wiki/Michael_J._Saylor" }
+        {
+          title: "Wikipedia: Michael J. Saylor",
+          url: "https://en.wikipedia.org/wiki/Michael_J._Saylor"
+        }
       ],
       alternateBirthDates: [],
       note: null
-    },
-    {
-      slug: "changpeng-zhao",
-      name: "Changpeng Zhao",
-      description: "Entrepreneur, founder and former chief executive of Binance",
-      category: "founder",
-      birthDate: "1977-02-05",
-      birthTime: null,
-      zone: "Asia/Shanghai",
-      birthplace: "Jiangsu, China",
-      sources: [
-        { title: "DBpedia: Changpeng Zhao", url: "https://dbpedia.org/page/Changpeng_Zhao" },
-        { title: "Wikipedia: Changpeng Zhao (gives the year 1977 only)", url: "https://en.wikipedia.org/wiki/Changpeng_Zhao" }
-      ],
-      alternateBirthDates: [
-        { date: "1977-09-10", sources: [{ title: "Celebrity Net Worth: Changpeng Zhao", url: "https://www.celebritynetworth.com/richest-businessmen/richest-billionaires/changpeng-zhao-net-worth/" }] }
-      ],
-      note: "Public sources disagree on the birth date. Wikipedia gives only the year 1977; this page uses 5 February 1977 and shows the score for 10 September 1977 beside it."
     },
     {
       slug: "jensen-huang",
@@ -41095,8 +41080,14 @@ var year_people_default = {
       zone: "Asia/Taipei",
       birthplace: "Taiwan",
       sources: [
-        { title: "Wikipedia: Jensen Huang", url: "https://en.wikipedia.org/wiki/Jensen_Huang" },
-        { title: "Britannica: Jensen Huang", url: "https://www.britannica.com/biography/Jensen-Huang" }
+        {
+          title: "Wikipedia: Jensen Huang",
+          url: "https://en.wikipedia.org/wiki/Jensen_Huang"
+        },
+        {
+          title: "Britannica: Jensen Huang",
+          url: "https://www.britannica.com/biography/Jensen-Huang"
+        }
       ],
       alternateBirthDates: [],
       note: null
@@ -41111,8 +41102,14 @@ var year_people_default = {
       zone: "Africa/Johannesburg",
       birthplace: "Pretoria, South Africa",
       sources: [
-        { title: "Wikipedia: Elon Musk", url: "https://en.wikipedia.org/wiki/Elon_Musk" },
-        { title: "Britannica: Elon Musk", url: "https://www.britannica.com/money/Elon-Musk" }
+        {
+          title: "Wikipedia: Elon Musk",
+          url: "https://en.wikipedia.org/wiki/Elon_Musk"
+        },
+        {
+          title: "Britannica: Elon Musk",
+          url: "https://www.britannica.com/money/Elon-Musk"
+        }
       ],
       alternateBirthDates: [],
       note: "Birth times published for him disagree and none comes from a birth record, so this uses a noon chart."
