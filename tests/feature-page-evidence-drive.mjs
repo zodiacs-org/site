@@ -94,11 +94,12 @@ for (const [label, viewport] of [['mobile', { width: 390, height: 844 }], ['desk
   // Read the shifts before any screenshot: capturing a tall element re-lays out the page.
   const shifts = await page.evaluate(() => window.__shifts);
   // Viewport screenshots, not one tall capture, so the sticky header is not stitched into the middle.
-  await page.locator('.calc__result').evaluate((node) => node.scrollIntoView({ block: 'start' }));
-  await page.evaluate(() => window.scrollBy(0, -80));
+  await page.mouse.move(2, 2);
+  await page.locator('.calc__result').evaluate((node) => node.scrollIntoView({ block: 'start', behavior: 'instant' }));
+  await page.evaluate(() => window.scrollBy({ top: -80, behavior: 'instant' }));
   await page.waitForTimeout(300);
   await page.screenshot({ path: join(out, `${label}-result.png`) });
-  await share.evaluate((node) => node.scrollIntoView({ block: 'center' }));
+  await share.evaluate((node) => node.scrollIntoView({ block: 'center', behavior: 'instant' }));
   await page.waitForTimeout(300);
   await page.screenshot({ path: join(out, `${label}-share.png`) });
   // The card image itself, as the person would share it.
