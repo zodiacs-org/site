@@ -123,7 +123,7 @@ describe('what the tools return', () => {
   it('validates against the schemas they advertise, as a client checks it', async () => {
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     addFormats(ajv);
-    const validators = new Map(EVERY_TOOL_WITH_SKY_EVENTS.map((tool) => [tool, ajv.compile(advertised(OUTPUT_SCHEMAS[tool], 'output'))]));
+    const validators = new Map<string, ReturnType<typeof ajv.compile>>(EVERY_TOOL_WITH_SKY_EVENTS.map((tool) => [tool, ajv.compile(advertised(OUTPUT_SCHEMAS[tool], 'output'))]));
     const dependencies = { occasions: true, horoscopeWindow: async () => committedWindow as HoroscopeWindow, allowEvents: async () => 'allowed' as const };
     const invalid: string[] = [];
     const refused: string[] = [];
