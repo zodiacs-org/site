@@ -960,6 +960,14 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
+  // The translated pair pages now take their titles from the words people
+  // search with in each language (docs/visibility/FAMILIES.md, F2a).
+  for (const pair of pairs) {
+    for (const locale of ['es', 'fr', 'it', 'pt']) {
+      const url = localizedUrls.find((u) => u.loc === `/${locale}/compatibility/${pair.id}/`);
+      if (url) url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
+  }
   return [
     ...urls,
     ...localizedUrls,
