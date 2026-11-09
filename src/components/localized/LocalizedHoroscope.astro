@@ -115,6 +115,12 @@ const periodLinks = [
   const href = local(link.english);
   return { label: link.label, href, english: href === link.english };
 });
+
+// A link that resolves to the English page (its localized copy is not built
+// here yet) says so: hreflang="en" and the locale's English-only cue.
+const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.startsWith('/')
+  ? {}
+  : { hreflang: 'en', title: englishOnlyCue(locale)?.aria });
 ---
 <Base
   noindex={isHeldPreview(locale, `/horoscopes/${sign.slug}/`)}
@@ -141,7 +147,7 @@ const periodLinks = [
     <header class="hzl-hero">
       <ArtFrame sign={sign.slug} locale={locale} class="hzl-hero__art" sizes={heroArtSizes} focus="50% 60%" spot="55% 56%" eager />
       <nav class="hzl-crumbs" aria-label={c.crumbsAria}>
-        <a href={local('/horoscopes/')}>{c.crumbs}</a><span aria-hidden="true">/</span><span aria-current="page">{name}</span>
+        <a href={local('/horoscopes/')} {...englishAttrs(local('/horoscopes/'))}>{c.crumbs}</a><span aria-hidden="true">/</span><span aria-current="page">{name}</span>
       </nav>
       <div class="hzl-hero__body">
         <span class="kicker hzl-hero__kicker">{weekdayLabel}</span>
@@ -208,7 +214,7 @@ const periodLinks = [
 
         <p class="hzl-note__foot">
           {c.foot(name)}{' '}
-          <a href={local('/methodology/')}>{c.methodLink}</a>
+          <a href={local('/methodology/')} {...englishAttrs(local('/methodology/'))}>{c.methodLink}</a>
         </p>
 
         <ShareRow
@@ -247,7 +253,7 @@ const periodLinks = [
             ))}
           </ul>
           {alsoSun && <p class="hzl-sky__also">{alsoSun}</p>}
-          <a class="textlink hzl-sky__link" href={local('/today/')}>{c.fullSky} <span class="arr" aria-hidden="true">→</span></a>
+          <a class="textlink hzl-sky__link" href={local('/today/')} {...englishAttrs(local('/today/'))}>{c.fullSky} <span class="arr" aria-hidden="true">→</span></a>
         </section>
 
         <EmailCapture placement="horoscopes" locale={locale} sign={sign.slug} />
@@ -301,10 +307,10 @@ const periodLinks = [
             {c.ticks.map((tick) => <li>{tick}</li>)}
           </ul>
           <div class="btn-row">
-            <a class="btn btn--primary btn--lg" href={local('/birth-chart/')}>{t(locale, 'getBirthChart')} <span class="orb" aria-hidden="true">↗</span></a>
+            <a class="btn btn--primary btn--lg" href={local('/birth-chart/')} {...englishAttrs(local('/birth-chart/'))}>{t(locale, 'getBirthChart')} <span class="orb" aria-hidden="true">↗</span></a>
             <span class="reassure">{c.reassure[0]}<br />{c.reassure[1]}</span>
           </div>
-          <p class="hzl-cta__saved">{c.saved}<a href={local('/transits/')}>{c.savedLink}</a></p>
+          <p class="hzl-cta__saved">{c.saved}<a href={local('/transits/')} {...englishAttrs(local('/transits/'))}>{c.savedLink}</a></p>
         </div>
       </div>
     </section>
@@ -326,7 +332,7 @@ const periodLinks = [
             <p>{c.moreRisingText(name)}</p>
             <span class="hzl-go" aria-hidden="true">→</span>
           </a>
-          <a href={local('/horoscopes/')}>
+          <a href={local('/horoscopes/')} {...englishAttrs(local('/horoscopes/'))}>
             <div><b>{c.moreAll}</b><small>{dateLabel}</small></div>
             <p>{c.moreAllText}</p>
             <span class="hzl-go" aria-hidden="true">→</span>
@@ -350,7 +356,7 @@ const periodLinks = [
           <h2 id="signs-heading" class="h-2">{c.signsTitle}</h2>
           <p>{c.signsLede}</p>
         </div>
-        <a class="textlink only-desktop" href={local('/horoscopes/')}>{c.allHoroscopes} <span class="arr">→</span></a>
+        <a class="textlink only-desktop" href={local('/horoscopes/')} {...englishAttrs(local('/horoscopes/'))}>{c.allHoroscopes} <span class="arr">→</span></a>
       </div>
       <nav class="hzl-signs" aria-label={c.signsAria}>
         <ul class="signgrid">
@@ -374,7 +380,7 @@ const periodLinks = [
     <section class="kwrap hzl-section qa hzl-faq" aria-labelledby="faq-heading">
       <div>
         <h2 id="faq-heading" class="h-2">{c.faqTitle(name)}</h2>
-        <p>{c.faqMore}<a href={local('/methodology/')}>{c.methodLink.toLowerCase()}</a>.</p>
+        <p>{c.faqMore}<a href={local('/methodology/')} {...englishAttrs(local('/methodology/'))}>{c.methodLink.toLowerCase()}</a>.</p>
       </div>
       <div class="kfaq">
         {faq.map(({ q, a }, index) => (

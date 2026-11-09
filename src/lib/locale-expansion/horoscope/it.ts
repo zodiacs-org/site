@@ -85,57 +85,57 @@ const ORDINAL = ['', 'prima', 'seconda', 'terza', 'quarta', 'quinta', 'sesta', '
 /** I temi di ogni casa solare, con l'articolo. */
 export const THEME: Record<number, string> = {
   1: 'la tua immagine, i nuovi inizi e il modo in cui ti presenti',
-  2: 'il denaro, ciò che possiedi e ciò che ti dà sicurezza',
+  2: 'i tuoi valori, ciò che possiedi e ciò che ti dà stabilità',
   3: 'i messaggi, le commissioni e le persone che hai vicino',
   4: 'la casa, la famiglia e la tua vita privata',
   5: 'il piacere, l’amore e ciò che crei per il gusto di farlo',
   6: 'le incombenze di ogni giorno, le abitudini e le routine',
-  7: 'la coppia e gli accordi alla pari',
+  7: 'la coppia, i soci e gli accordi a due',
   8: 'il denaro in comune, i debiti e la fiducia più intima',
   9: 'i viaggi, lo studio e le tue convinzioni',
   10: 'la carriera, la reputazione e ciò che gli altri vedono di te',
   11: 'le amicizie, i gruppi e i progetti per il futuro',
-  12: 'il riposo, il ritiro e ciò che si muove dentro di te',
+  12: 'il riposo, i momenti di solitudine e ciò che si muove dentro di te',
 };
 
 /** Lo stesso tema in breve, con l'articolo, per le frasi che ne nominano due. */
 const FOCUS: Record<number, string> = {
   1: 'la tua immagine',
-  2: 'il denaro',
+  2: 'i tuoi valori',
   3: 'i messaggi e le commissioni',
   4: 'la casa e la famiglia',
   5: 'il piacere e la creatività',
   6: 'le routine quotidiane',
-  7: 'la coppia e gli accordi',
+  7: 'la coppia e gli accordi a due',
   8: 'le risorse in comune',
   9: 'lo studio e i viaggi',
   10: 'la carriera',
   11: 'le amicizie e i gruppi',
-  12: 'il riposo',
+  12: 'il riposo e la vita interiore',
 };
 
 /** Titoli brevi per i capitoli dell'anno. */
 const SHORT: Record<number, string> = {
   1: 'Immagine e nuovi inizi',
-  2: 'Denaro e priorità',
+  2: 'Valori e stabilità',
   3: 'Messaggi e ambiente vicino',
   4: 'Casa e famiglia',
   5: 'Piacere e creatività',
   6: 'Routine e lavoro quotidiano',
-  7: 'Coppia e accordi',
+  7: 'Coppia e accordi a due',
   8: 'Ciò che si condivide',
   9: 'Studio e orizzonti',
   10: 'Carriera e reputazione',
   11: 'Amicizie e progetti',
-  12: 'Riposo e ritiro',
+  12: 'Riposo e vita interiore',
 };
 
 /** Un primo passo concreto per ogni casa. */
 const ADVICE: Record<number, string> = {
   1: 'Di’ che cosa vuoi avviare prima di reagire a quello che propongono gli altri.',
-  2: 'Metti in cifre quello che spendi, quello che hai e quello che aspetti di ricevere.',
+  2: 'Chiediti che cosa ti fa sentire davvero al sicuro e dagli il primo posto nella giornata.',
   3: 'Rispondi al messaggio rimasto in sospeso e metti per iscritto quello che si è deciso.',
-  4: 'Chiediti che cosa ti serve in casa e riservagli del tempo prima di accettare altri impegni.',
+  4: 'Chiediti di che cosa hai bisogno a casa e trova il tempo per occupartene.',
   5: 'Ritagliati un’ora per qualcosa che fai solo per piacere, senza pensare al risultato.',
   6: 'Riordina la lista della giornata e togli un compito che non spetta a te.',
   7: 'Parla chiaro con l’altra persona e fai domande invece di dare le cose per scontate.',
@@ -149,13 +149,13 @@ const ADVICE: Record<number, string> = {
 /** Un secondo sguardo sulla stessa casa, per non ripetere il consiglio. */
 const REFINE: Record<number, string> = {
   1: 'Un piccolo cambiamento nel modo in cui ti presenti dice più di un grande annuncio.',
-  2: 'Prima di comprare, chiediti se l’acquisto avrà ancora senso fra una settimana.',
+  2: 'Guarda che cosa conta davvero per te in questo momento e lascia andare ciò che tieni solo per abitudine.',
   3: 'Rileggi quello che mandi: una parola fuori posto può costarti un pomeriggio.',
   4: 'Sistema una cosa precisa in casa invece di progettare di rifare tutto.',
   5: 'Lascia che il gioco resti un gioco: non tutto deve diventare un progetto.',
   6: 'Guarda un’abitudine diventata automatica e decidi se vale la pena tenerla.',
   7: 'Un accordo è equo quando tutti e due sanno che cosa spetta a ciascuno.',
-  8: 'Una conversazione scomoda su soldi o fiducia risparmia parecchi sospetti.',
+  8: 'Una conversazione scomoda su soldi o fiducia ti risparmia parecchi sospetti.',
   9: 'Un’idea nuova vale di più quando la metti alla prova in qualcosa di pratico.',
   10: 'Scegli un obiettivo visibile e misura i progressi con i fatti, non con le impressioni.',
   11: 'Guarda quali gruppi ti danno davvero qualcosa e quali frequenti per abitudine.',
@@ -165,7 +165,7 @@ const REFINE: Record<number, string> = {
 /** Il lato affettivo di ogni casa. */
 const LOVE: Record<number, string> = {
   1: 'Mostrati come sei: in questo momento conta la spontaneità più della messa in scena.',
-  2: 'L’affetto si vede nelle cose concrete: un pensiero, un aiuto, del tempo dedicato.',
+  2: 'L’affetto si vede nella costanza: un pensiero, un aiuto, del tempo dedicato.',
   3: 'Una conversazione semplice vale più di qualsiasi grande gesto.',
   4: 'La calma in casa è la base: prenditi cura dello spazio che condividete.',
   5: 'C’è voglia di divertirsi: proponi un programma che vi faccia ridere.',
@@ -181,17 +181,33 @@ const LOVE: Record<number, string> = {
 /** Il lato professionale di ogni casa. */
 const WORK: Record<number, string> = {
   1: 'Prendi l’iniziativa su un compito che porti il tuo nome.',
-  2: 'Rivedi entrate, tariffe o preventivi con numeri precisi.',
+  2: 'Chiarisci il valore di ciò che porti e le condizioni che ti danno stabilità.',
   3: 'Email, telefonate e pratiche chiedono ordine e risposte rapide.',
   4: 'Sistema il posto da cui lavori, così non ti porta via energia.',
   5: 'Un progetto creativo o una proposta tua merita l’ora migliore della giornata.',
   6: 'Metti ordine in procedure e scadenze: la costanza rende più dello sforzo occasionale.',
   7: 'Tratta con chiarezza: soci, clienti e accordi messi per iscritto.',
   8: 'Controlla debiti, risorse comuni e ciò che dipende da altri.',
-  9: 'Formarti, pubblicare o rivolgerti a un pubblico nuovo dà frutti sul lungo periodo.',
+  9: 'Formarti, pubblicare o rivolgerti a un pubblico nuovo dà i suoi frutti nel lungo periodo.',
   10: 'La tua reputazione passa da ciò che consegni: chiudi per primo il lavoro più in vista.',
   11: 'I contatti e il lavoro di squadra aprono porte.',
   12: 'Lavora su ciò che ancora non si vede e non cercare applausi prima del tempo.',
+};
+
+/** Una seconda riga di lavoro per la stessa casa, così la pagina del lavoro non ripete un consiglio. */
+const WORK_MORE: Record<number, string> = {
+  1: 'Presenta il tuo lavoro con parole tue, senza aspettare che lo faccia qualcun altro.',
+  2: 'Lavora su ciò che ti dà stabilità nel tempo, prima che su ciò che dà soddisfazione subito.',
+  3: 'Una risposta chiara a un collega oggi evita tre chiarimenti domani.',
+  4: 'Se lavori da casa, separa con un gesto preciso l’inizio e la fine della giornata.',
+  5: 'Lascia spazio a un’idea tua, anche piccola, dentro un compito di routine.',
+  6: 'Stima i tempi con onestà: un piano realistico regge meglio di uno ambizioso.',
+  7: 'Con soci e clienti, ripeti a voce alta che cosa avete deciso prima di chiudere.',
+  8: 'Chiarisci chi fa che cosa nei progetti che dipendono da più persone.',
+  9: 'Dedica un’ora a imparare qualcosa che ti servirà nel prossimo incarico.',
+  10: 'Fai sapere a chi di dovere a che punto sei, senza aspettare la scadenza.',
+  11: 'Un messaggio a un ex collega o a un contatto può riaprire una porta utile.',
+  12: 'Chiudi una pratica arretrata prima di aprirne una nuova.',
 };
 
 /** Come lavora meglio ogni segno, in una frase. */
@@ -200,7 +216,7 @@ const KEY: Record<string, string> = {
   taurus: 'Il Toro avanza meglio al proprio passo, senza cedere ciò che gli dà una sicurezza vera.',
   gemini: 'Per i Gemelli la chiarezza sta nello scegliere una conversazione e portarla fino in fondo.',
   cancer: 'Per il Cancro prendersi cura degli altri non vuol dire caricarsi di tutto: contano anche i propri bisogni.',
-  leo: 'Per il Leone la presenza conta di più quando la sostanza è pronta prima dello spettacolo.',
+  leo: 'Il Leone fa più effetto quando dietro la scena la sostanza è già pronta.',
   virgo: 'Alla Vergine basta migliorare bene una cosa sola, senza correggere tutto il resto.',
   libra: 'Per la Bilancia l’equilibrio arriva quando dice che cosa preferisce, invece di indovinare che cosa vogliono gli altri.',
   scorpio: 'La forza dello Scorpione sta nel sapere che cosa tenere e che cosa lasciar andare, senza drammi.',
@@ -216,7 +232,7 @@ const YEAR: Record<string, string> = {
   taurus: 'Quest’anno ti chiede di capire che cosa ti dà sicurezza davvero e di lasciare ciò che è solo abitudine.',
   gemini: 'Quest’anno ruota intorno alle scelte: meno fronti aperti e più conversazioni che portano da qualche parte.',
   cancer: 'Quest’anno parla di prenderti cura degli altri senza consumarti, e di una casa che sia un rifugio e non un obbligo.',
-  leo: 'Quest’anno separa l’essere visto dall’essere conosciuto, e dà valore a ciò che avrebbe senso anche senza applausi.',
+  leo: 'Quest’anno ti chiede di distinguere tra essere visto ed essere conosciuto, e di dare valore a ciò che avrebbe senso anche senza applausi.',
   virgo: 'Quest’anno chiede ordine senza perfezionismo: migliorare ciò che conta e lasciar correre il resto.',
   libra: 'Quest’anno mette alla prova i tuoi accordi: quali sono equi e quali tieni in piedi solo per evitare uno scontro.',
   scorpio: 'Quest’anno parla di fiducia: a chi la dai, che cosa condividi e che cosa scegli di tenere per te.',
@@ -231,7 +247,7 @@ const KIND_LOVE: Record<string, string> = {
   taurus: 'In amore il Toro dà più peso alla costanza che alle promesse.',
   gemini: 'In amore i Gemelli cercano dialogo e sorpresa in parti uguali.',
   cancer: 'In amore il Cancro si apre quando si sente al sicuro.',
-  leo: 'In amore il Leone dà il meglio quando l’ammirazione va in tutte e due le direzioni.',
+  leo: 'In amore il Leone dà il meglio quando l’ammirazione è reciproca.',
   virgo: 'In amore la Vergine dimostra l’affetto con gesti piccoli e precisi.',
   libra: 'In amore la Bilancia cerca reciprocità, non soltanto armonia.',
   scorpio: 'In amore lo Scorpione ha bisogno di verità prima che di intensità.',
@@ -258,7 +274,7 @@ const KIND_WORK: Record<string, string> = {
 
 /** Il tono di un aspetto, valido per una casa sola o per due. */
 const ASPECT_TONE: Record<string, string> = {
-  conjunction: 'Le due spinte si sommano: quello che fai da una parte si sente anche dall’altra.',
+  conjunction: 'Le due spinte si sommano: quello che fai in un ambito si sente anche nell’altro.',
   sextile: 'È un’occasione tranquilla: coglila con un passo piccolo e concreto.',
   square: 'C’è attrito: aggiusta una cosa prima di forzarne un’altra.',
   trine: 'Le cose scorrono: buon momento per avanzare senza strappi.',
@@ -285,8 +301,8 @@ function eventClause(fact: EventFact): string {
       return `${subject(fact.body!)} entra in ${where}`;
     case 'station':
       return fact.eventType === 'retrograde'
-        ? `${subject(fact.body!)} si ferma e comincia il moto retrogrado in ${where}`
-        : `${subject(fact.body!)} riprende il moto diretto in ${where}`;
+        ? `${subject(fact.body!)} diventa ${retro(fact.body!)} in ${where}`
+        : `${subject(fact.body!)} torna ${fact.body === 'Venus' ? 'diretta' : 'diretto'} in ${where}`;
     case 'lunation':
       return fact.eventType === 'full' ? `arriva la Luna piena in ${where}` : `arriva la Luna nuova in ${where}`;
     case 'eclipse':
@@ -302,6 +318,9 @@ function eventClause(fact: EventFact): string {
   }
 }
 
+/** I corpi veloci: un loro ingresso dura settimane, non anni. */
+const FAST = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars'];
+
 /** L'ordine dei corpi, per variare la frase quando due eventi cadono in date vicine. */
 const BODY_ORDER = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
 
@@ -314,35 +333,50 @@ function eventMeaning(fact: EventFact): string {
   const day = Number(fact.at.slice(8, 10)) + Number(fact.at.slice(5, 7)) + Math.max(body, 0);
   switch (fact.eventKind) {
     case 'ingress':
-      return pick([
-        `Si apre una fase lunga per ${theme}.`,
-        `Comincia un capitolo nuovo che riguarda ${theme}.`,
-        `Da quel giorno cambia il passo ${prepList('su', FOCUS[h])}.`,
-      ], day);
+      return FAST.includes(fact.body ?? '')
+        ? pick([
+          `Per le prossime settimane l’attenzione va ${prepList('a', THEME[h])}.`,
+          `Fino al prossimo cambio di segno, in primo piano ci sono ${theme}.`,
+          `Nel mese che segue conviene guardare ${prepList('a', FOCUS[h])}.`,
+        ], day)
+        : pick([
+          `Si apre una fase lunga per ${theme}.`,
+          `Comincia un capitolo nuovo che riguarda ${theme}.`,
+          `Da quel giorno cambia ritmo tutto ciò che riguarda ${theme}.`,
+        ], day);
     case 'station':
       return fact.eventType === 'retrograde'
         ? pick([
           `È il momento di rivedere ${theme}, prima di impegnarti in qualcosa di nuovo.`,
           `Conviene riprendere in mano con calma ${theme}.`,
-          `Torna utile rimettere mano ${prepList('a', FOCUS[h])} e correggere quello che serve.`,
+          `Rallenta il passo per ${theme}: meglio verificare che accelerare.`,
+          `Torna utile fare il punto ${prepList('su', FOCUS[h])} e correggere quello che serve.`,
         ], day)
         : pick([
           `Quello che era rimasto in sospeso torna a muoversi, a cominciare ${prepList('da', FOCUS[h])}.`,
           `Riprende slancio tutto ciò che riguarda ${theme}.`,
+          `Si sblocca qualcosa che riguarda ${FOCUS[h]}.`,
           `Le decisioni rimandate ${prepList('su', FOCUS[h])} possono andare avanti.`,
         ], day);
     case 'lunation':
       return fact.eventType === 'full'
-        ? `Arriva al punto qualcosa che maturava da tempo, e riguarda ${theme}.`
+        ? `Giunge a maturazione qualcosa che cresceva da tempo, e riguarda ${theme}.`
         : `È un buon inizio per ${theme}.`;
     case 'eclipse':
-      return `Segna una svolta per ${theme}; meglio non forzare decisioni proprio quel giorno.`;
+      return pick([
+        `Segna una svolta per ${theme}; meglio non forzare decisioni proprio quel giorno.`,
+        `Per tradizione un’eclissi accelera i cambiamenti, e questa tocca ${theme}.`,
+        `È un passaggio deciso per ${theme}: lascia passare qualche giorno prima di scegliere.`,
+      ], day);
     case 'aspect': {
       const [h1, h2] = fact.houses;
-      const tone = ASPECT_TONE[fact.eventType ?? 'conjunction'];
-      return h2 && h2 !== h1
-        ? `Mette in relazione due ambiti: da una parte ${FOCUS[h1]}, dall’altra ${FOCUS[h2]}. ${tone}`
-        : `Tutto si gioca in un solo ambito: ${theme}. ${tone}`;
+      const type = fact.eventType ?? 'conjunction';
+      if (!h2 || h2 === h1) {
+        return type === 'conjunction'
+          ? `Le due spinte si sommano nello stesso ambito: ${theme}.`
+          : `L’aspetto cade tutto in un ambito: ${theme}. ${ASPECT_TONE[type]}`;
+      }
+      return `Mette in relazione due ambiti: da una parte ${FOCUS[h1]}, dall’altra ${FOCUS[h2]}. ${ASPECT_TONE[type]}`;
     }
   }
 }
@@ -368,15 +402,38 @@ const CLOSE_TOMORROW = [
   'Comincia da ciò che dipende solo da te.',
 ];
 
+/** Le frasi di domani: ogni posizione si dice una volta sola, e "domani" apre solo la prima. */
+function tomorrowSentences(facts: Fact[], stated: Set<string>): string[] {
+  const key = (fact: Fact) => (fact.kind === 'position' ? `${fact.body}:${fact.at}` : `${fact.eventKind}:${fact.at}`);
+  const fresh = facts.filter((fact) => !stated.has(key(fact)));
+  const repeated = facts.filter((fact) => fact.kind === 'position' && stated.has(key(fact))) as PositionFact[];
+  const out: string[] = [];
+  let lead = true;
+  for (const fact of fresh) {
+    if (fact.kind === 'position') {
+      out.push(`${cap(`${lead ? 'domani ' : ''}${positionClause(fact)}`)}.`);
+      lead = false;
+    } else {
+      out.push(factSentence(fact, 'dated'));
+    }
+    stated.add(key(fact));
+  }
+  const houses = [...new Set(repeated.map((fact) => fact.house))];
+  if (houses.length > 1) out.unshift(`Le posizioni di domani vanno lette insieme: da una parte ${FOCUS[houses[0]]}, dall’altra ${FOCUS[houses[1]]}.`);
+  else if (houses.length === 1) out.unshift(`Domani resta in primo piano un tema: ${THEME[houses[0]]}.`);
+  return out;
+}
+
 function tomorrow(ctx: PeriodContext): LocalizedPassage[] {
   const s = ctx.sign;
   const used = new Map<number, number>();
+  const stated = new Set<string>();
   return ctx.passages.map(({ facts, index }) => {
     const h = firstHouse(facts);
     const seen = used.get(h) ?? 0;
     const advice = seen === 0 ? ADVICE[h] : seen === 1 ? REFINE[h] : '';
     used.set(h, seen + 1);
-    const sentences = facts.map((fact) => factSentence(fact, fact.kind === 'position' ? 'tomorrow' : 'dated'));
+    const sentences = tomorrowSentences(facts, stated);
     if (index === 0) {
       return { text: `${sentences.join(' ')} In primo piano ci sono ${THEME[h]}. ${advice} ${KEY[s]}` };
     }
@@ -416,7 +473,7 @@ function weekly(ctx: PeriodContext): LocalizedPassage[] {
     if (event) return { text: factSentence(event, 'dated') };
     if (index === 1) return { text: `Nei primi giorni contano soprattutto ${THEME[h]}. ${advice}` };
     if (index === last) return { text: `La settimana si chiude con un tema in primo piano: ${THEME[h]}. ${advice} ${pick(CLOSE_WEEK, idx(s))}` };
-    return { text: `A metà settimana l’attenzione si sposta: ${THEME[h]}. ${advice}` };
+    return { text: `A metà settimana l’attenzione si sposta ${prepList('su', THEME[h])}. ${advice}` };
   });
 }
 
@@ -439,11 +496,13 @@ function love(ctx: PeriodContext): LocalizedPassage[] {
 
 function career(ctx: PeriodContext): LocalizedPassage[] {
   const s = ctx.sign;
+  const firstWork = firstHouse(ctx.passages[0]?.facts ?? []);
   return ctx.passages.map(({ facts, index }) => {
     const h = firstHouse(facts);
     const sentences = facts.map((fact) => factSentence(fact, 'dated')).join(' ');
     if (index === 0) return { text: `${sentences} ${WORK[h]} ${KIND_WORK[s]}` };
-    return { text: `${sentences} Anche il lavoro passa da qui: ${THEME[h]}. ${REFINE[h]}` };
+    const line = h === firstWork ? WORK_MORE[h] : WORK[h];
+    return { text: `${sentences} Anche il lavoro risente ${prepList('di', THEME[h])}. ${line}` };
   });
 }
 
@@ -451,13 +510,14 @@ function career(ctx: PeriodContext): LocalizedPassage[] {
 
 const QUARTERS: Array<[number, number]> = [[1, 3], [4, 6], [7, 9], [10, 12]];
 
-function dominantHouse(facts: Fact[]): number {
+/** Le case di un gruppo di fatti, dalla più presente alla meno presente. */
+function rankedHouses(facts: Fact[]): number[] {
   const counts = new Map<number, number>();
   for (const fact of facts) {
     const houses = fact.kind === 'position' ? [fact.house] : fact.houses;
     for (const house of houses) counts.set(house, (counts.get(house) ?? 0) + 1);
   }
-  return [...counts.entries()].sort((left, right) => right[1] - left[1] || left[0] - right[0])[0]?.[0] ?? 1;
+  return [...counts.entries()].sort((left, right) => right[1] - left[1] || left[0] - right[0]).map(([house]) => house);
 }
 
 function datedList(facts: Fact[]): string {
@@ -467,53 +527,69 @@ function datedList(facts: Fact[]): string {
     .join(' ');
 }
 
+/** "il 6 maggio (Plutone diventa retrogrado in Acquario) e il 28 agosto (...)" */
+function dateRoll(events: EventFact[]): string {
+  const dates = events.map((fact) => `${theDay(fact.at)} (${eventClause(fact).replace(/^(c’è|arriva) /, '')})`);
+  return dates.length > 1 ? `${dates.slice(0, -1).join(', ')} e ${dates.at(-1)}` : dates.join('');
+}
+
 const THEMED_HEADINGS = [
   'Amore, amicizie e accordi chiari',
-  'Lavoro, denaro e un’autorevolezza che regge',
+  'Lavoro, valori e un’autorevolezza che regge',
   'Casa, riposo e il carico privato',
   'La tua strada',
 ];
 
 const THEMED_LEADS = [
-  'Negli affetti conta ciò che si vede: una richiesta, un accordo cambiato, un tempo difeso.',
-  'Nel lavoro e nel denaro misura le forze, le scadenze e ciò che consegni, non solo la voglia di fare.',
+  'Negli affetti conta ciò che si vede: una richiesta, un accordo cambiato, del tempo tenuto da parte per voi.',
+  'Nel lavoro misura le forze, le scadenze e ciò che consegni, non solo la voglia di fare.',
   'In casa e nel riposo difendi l’essenziale: sonno, spazio e tempo senza obblighi.',
   'Sul piano personale la crescita serve quando cambia una decisione concreta.',
 ];
 
+/** Le case che ogni capitolo tematico ascolta: amore, lavoro, casa, strada personale. */
+const THEMED_HOUSES = [[5, 7, 11], [2, 6, 10], [4, 8, 12], [1, 3, 9]];
+
 function yearly(ctx: PeriodContext, year: string): LocalizedPassage[] {
   const s = ctx.sign;
   const name = withArticle(sign(s));
+  const usedHouses = new Set<number>();
   return ctx.passages.map(({ facts, index }) => {
     const events = facts.filter((fact): fact is EventFact => fact.kind === 'event');
     if (index === 0) {
       const first = events[0];
-      const firstText = first ? ` La prima data da segnare è ${theDay(first.at)}: ${eventClause(first)}. ${eventMeaning(first)}` : '';
+      const firstText = first ? ` La prima data da segnare è ${theDay(first.at)}, quando ${eventClause(first)}.` : '';
       return { heading: `Il ${year} ${prep('di', name)}`, text: `${YEAR[s]}${firstText}` };
     }
     if (index >= 1 && index <= 4) {
       const [from, to] = QUARTERS[index - 1];
-      const h = dominantHouse(facts);
+      const ranked = rankedHouses(facts);
+      const fresh = ranked.find((house) => !usedHouses.has(house));
+      const h = fresh ?? ranked[0] ?? 1;
+      if (fresh) usedHouses.add(fresh);
       const lead = pick([
         `Questo trimestre ruota intorno ${prepList('a', THEME[h])}.`,
-        `In questi mesi l’attenzione va soprattutto ${prepList('a', FOCUS[h])}.`,
-        `Qui il peso cade ${prepList('su', FOCUS[h])}.`,
+        `Nel trimestre l’attenzione va soprattutto ${prepList('a', FOCUS[h])}.`,
+        `In questi mesi l’accento cade ${prepList('su', FOCUS[h])}.`,
       ], index, idx(s));
+      const short = SHORT[h].toLowerCase();
       return {
-        heading: `Da ${monthName(L, from)} a ${monthName(L, to)}: ${SHORT[h].toLowerCase()}`,
-        text: `${lead} ${datedList(facts)} ${REFINE[h]}`.trim(),
+        heading: `Da ${monthName(L, from)} a ${monthName(L, to)}: ${fresh ? short : `ancora ${short}`}`,
+        text: `${lead} ${datedList(facts)} ${fresh ? REFINE[h] : ''}`,
       };
     }
     if (index >= 5 && index <= 8) {
       const k = index - 5;
       const extra = k === 0 ? KIND_LOVE[s] : k === 1 ? KIND_WORK[s] : k === 3 ? KEY[s] : '';
-      return { heading: THEMED_HEADINGS[k], text: `${THEMED_LEADS[k]} ${extra} ${datedList(facts)}` };
+      const onTopic = events.filter((fact) => fact.houses.some((house) => THEMED_HOUSES[k].includes(house)));
+      const roll = onTopic.length
+        ? ` ${onTopic.length === 1 ? 'La data da tenere d’occhio è' : 'Le date da tenere d’occhio sono'} ${dateRoll(onTopic)}.`
+        : '';
+      return { heading: THEMED_HEADINGS[k], text: `${THEMED_LEADS[k]} ${extra}${roll}` };
     }
-    const dates = events.map((fact) => `${theDay(fact.at)} (${eventClause(fact)})`);
-    const joined = dates.length > 1 ? `${dates.slice(0, -1).join(', ')} e ${dates.at(-1)}` : dates.join('');
     return {
-      heading: dates.length === 3 ? 'Tre date per fare il punto sull’anno' : 'Le date per fare il punto sull’anno',
-      text: `Segnati queste date per vedere come sta andando l’anno: ${joined}. A ognuna, annota che cosa è cambiato e che cosa vuoi tenere.`,
+      heading: events.length === 3 ? 'Tre date per fare il punto sull’anno' : 'Le date per fare il punto sull’anno',
+      text: `Segnati queste date per vedere come sta andando l’anno: ${dateRoll(events)}. A ognuna, annota che cosa è cambiato e che cosa vuoi tenere.`,
     };
   });
 }
@@ -551,7 +627,7 @@ function monthlyRaw(ctx: MonthlyContext): LocalizedPassage[] {
   const aspects = ctx.events.filter((fact) => fact.eventKind === 'aspect').slice(0, 4);
   const lead = lunations[0];
   const passages: LocalizedPassage[] = [{
-    text: `${cap(label)} per ${withArticle(sign(s))}, con il tuo segno solare letto come prima casa, come fanno gli oroscopi mensili. ${lead ? `Il mese ruota intorno ${prepList('a', THEME[lead.houses[0]])}.` : ''} ${KEY[s]}`,
+    text: `${cap(label)} per ${withArticle(sign(s))}, con le case contate dal tuo segno solare, che fa da prima casa, come negli oroscopi mensili. ${lead ? `Il mese ruota intorno ${prepList('a', THEME[lead.houses[0]])}.` : ''} ${KEY[s]}`,
   }];
   if (lunations.length) passages.push({ heading: 'Le lune del mese', text: lunations.map((fact) => factSentence(fact, 'dated')).join(' ') });
   if (stations.length) passages.push({ heading: 'Pianeti che cambiano passo', text: stations.map((fact) => factSentence(fact, 'dated')).join(' ') });
@@ -617,7 +693,7 @@ export const it: HoroscopeLocaleModule = {
         case 'yearly-2027': return `Oroscopo 2027 per ${who}`;
       }
     },
-    description: (name, ctx) => tidy(`L’oroscopo ${periodPhrase(ctx)} per ${withArticle(name)}, scritto a partire dal cielo calcolato: posizioni, lune e date esatte, contate dal tuo segno solare.`),
+    description: (name, ctx) => tidy(`L’oroscopo ${periodPhrase(ctx)} per ${withArticle(name)}, scritto a partire dal cielo calcolato: posizioni, fasi lunari e date esatte, con le case contate dal tuo segno solare.`),
     periodLabel: {
       today: 'Oggi', tomorrow: 'Domani', weekly: 'Settimana', monthly: 'Mese', love: 'Amore', career: 'Lavoro', 'yearly-2026': '2026', 'yearly-2027': '2027',
     },

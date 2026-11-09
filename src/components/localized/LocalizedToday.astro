@@ -231,6 +231,12 @@ const aspectTypes = new Set(allAspects.map((aspect) => aspect.type));
 const runningName = (body: string) => named(locale, body);
 
 const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon: toolIconForPath(tool.href) ?? 'transits' }));
+
+// A link that resolves to the English page (its localized copy is not built
+// here yet) says so: hreflang="en" and the locale's English-only cue.
+const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.startsWith('/')
+  ? {}
+  : { hreflang: 'en', title: englishOnlyCue(locale)?.aria });
 ---
 <Base
   noindex={isHeldPreview(locale, '/today/')}
@@ -260,7 +266,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
           )}
         </p>
         <div class="btn-row tdl-hero__actions">
-          <a class="btn btn--primary btn--lg" href={local('/transits/')}>{c.cta} <span class="orb" aria-hidden="true">↗</span></a>
+          <a class="btn btn--primary btn--lg" href={local('/transits/')} {...englishAttrs(local('/transits/'))}>{c.cta} <span class="orb" aria-hidden="true">↗</span></a>
           <a class="btn btn--glass btn--lg" href="#signs"><span>{c.yourSign}<span data-edition-current-only> {c.todayWord}</span></span></a>
         </div>
         <p class="reassure tdl-hero__note">{c.reassure}</p>
@@ -305,7 +311,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
           <h2 id="tdl-lights-heading" class="h-2">{c.lightsTitle}</h2>
           <p>{c.lightsLede}</p>
         </div>
-        <a class="textlink only-desktop" href={local('/moon-phase/')}>{c.moonLink} <span class="arr" aria-hidden="true">→</span></a>
+        <a class="textlink only-desktop" href={local('/moon-phase/')} {...englishAttrs(local('/moon-phase/'))}>{c.moonLink} <span class="arr" aria-hidden="true">→</span></a>
       </div>
       <div class="tdl-lights">
         <article class="tdl-light" style={`--sign:${sunSign.hue}`}>
@@ -360,7 +366,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
           <h2 id="tdl-signs-heading" class="h-2">{t(locale, 'todayBySignTitle')}</h2>
           <p>{c.signsLede}</p>
         </div>
-        <a class="textlink only-desktop" href={local('/horoscopes/')}>{c.allHoroscopes} <span class="arr" aria-hidden="true">→</span></a>
+        <a class="textlink only-desktop" href={local('/horoscopes/')} {...englishAttrs(local('/horoscopes/'))}>{c.allHoroscopes} <span class="arr" aria-hidden="true">→</span></a>
       </div>
       <nav class="tdl-picker" aria-label={c.signsAria}>
         {SIGNS.map((entry) => (
@@ -392,7 +398,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
           <p>{c.personalBody}</p>
         </div>
         <div class="tdl-personal__actions">
-          <a class="btn btn--primary" href={local('/birth-chart/')}>{t(locale, 'getBirthChart')} <span class="orb" aria-hidden="true">↗</span></a>
+          <a class="btn btn--primary" href={local('/birth-chart/')} {...englishAttrs(local('/birth-chart/'))}>{t(locale, 'getBirthChart')} <span class="orb" aria-hidden="true">↗</span></a>
           <a class="textlink" href="/today/" hreflang="en" title={cue?.aria}>{c.personalCompare}{cue?.suffix} <span class="arr" aria-hidden="true">↗</span></a>
         </div>
       </div>
@@ -461,7 +467,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
         </ol>
         <div class="tdl-events__foot">
           {eclipseAhead && <span>{c.nextEclipse(c.eclipseShort(eclipseType(eclipseAhead.type), eclipseKind(eclipseAhead.kind)), shortDate(eclipseAhead.peak, true))}</span>}
-          <a class="textlink" href={local('/sky-calendar/')}>{c.calendarLink} <span class="arr" aria-hidden="true">→</span></a>
+          <a class="textlink" href={local('/sky-calendar/')} {...englishAttrs(local('/sky-calendar/'))}>{c.calendarLink} <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
@@ -475,7 +481,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
             ? <><span data-edition-current-only>{c.todayWord}</span><span data-edition-dated-only>{c.onDate(dateLabel)}</span></>
             : part))}</p>
         </div>
-        <a class="textlink only-desktop" href={local('/retrogrades/')}>{c.rxLink} <span class="arr" aria-hidden="true">→</span></a>
+        <a class="textlink only-desktop" href={local('/retrogrades/')} {...englishAttrs(local('/retrogrades/'))}>{c.rxLink} <span class="arr" aria-hidden="true">→</span></a>
       </div>
       <div class="tdl-rt" role="table" aria-label={c.rxTableAria(rangeWords(locale, shortDate(timeline.from, true), windowEndLabel))} style={`--tdl-at:${timeline.todayAt}%`}>
         <div class="tdl-rt__row tdl-rt__head" role="row">
@@ -564,7 +570,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
           <h2 id="tdl-further-heading" class="h-2">{c.furtherTitle}</h2>
           <p>{c.furtherLede}</p>
         </div>
-        <a class="textlink only-desktop" href={local('/tools/')}>{c.allTools} <span class="arr" aria-hidden="true">→</span></a>
+        <a class="textlink only-desktop" href={local('/tools/')} {...englishAttrs(local('/tools/'))}>{c.allTools} <span class="arr" aria-hidden="true">→</span></a>
       </div>
       <div class="grid-4 tdl-tools">
         {goFurther.map((tool) => (
@@ -600,7 +606,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
           <p>{c.provenanceBefore}<time datetime={daily.date}>{daily.date}</time>{c.provenanceAfter}</p>
         </EvidenceDisclosure>
         <p class="tdl-method__links">
-          <a class="textlink" href={local('/methodology/')}>{c.methodLink} <span class="arr" aria-hidden="true">→</span></a>
+          <a class="textlink" href={local('/methodology/')} {...englishAttrs(local('/methodology/'))}>{c.methodLink} <span class="arr" aria-hidden="true">→</span></a>
           <a class="textlink" href="/methodology/#daily-publication" hreflang="en" title={cue?.aria}>{c.publicationLink}{cue?.suffix} <span class="arr" aria-hidden="true">→</span></a>
           <a class="textlink" href="/corrections/" hreflang="en" title={cue?.aria}>{c.correctionsLink}{cue?.suffix} <span class="arr" aria-hidden="true">→</span></a>
         </p>

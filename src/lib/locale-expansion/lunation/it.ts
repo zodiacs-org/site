@@ -58,7 +58,7 @@ export const it: LunationCopy = {
   locale: L,
   title: (f) => `${kindName(f)} in ${sign(f.sign)}: ${when(f)}`,
   h1: (f) => `${kindName(f)} in ${sign(f.sign)}`,
-  description: (f) => `La ${kindName(f)} ${prep('di', theDate(f))} è esatta alle ${utcClock(f.at)}, a ${degreeMinutes(f.degree)} ${ofSign(f.sign)}. Che cosa significa e come tocca ogni segno.`,
+  description: (f) => `La ${kindName(f)} ${prep('di', theDate(f))} è esatta alle ${utcClock(f.at)}, a ${degreeMinutes(f.degree)} ${ofSign(f.sign)}. Che cosa significa e che cosa cambia per ogni segno.`,
   kindLabel: (kind) => (kind === 'full' ? 'Luna piena' : 'Luna nuova'),
   crumbsRoot: 'Calendario lunare',
   lead: (f) => (f.kind === 'full'
@@ -81,7 +81,7 @@ export const it: LunationCopy = {
       `In ${sign(f.sign)} la Luna nuova apre un ciclo che riguarda ${SIGN_TOPIC[f.sign]}. Funziona meglio un primo passo piccolo che una lunga lista di buoni propositi.`,
       'Scrivi una sola intenzione e riprendila alla Luna piena successiva, circa due settimane dopo.',
     ]),
-  signNotesHeading: 'Come tocca ogni segno',
+  signNotesHeading: 'Che cosa cambia per ogni segno',
   signNotesIntro: 'Contata dal tuo segno solare (case solari a segno intero), questa Luna cade in un’area diversa per ogni segno.',
   signNote: (sunSign, house) => `${sign(sunSign)}: casa ${house}, ${THEME[house]}.`,
   previous: 'Precedente',

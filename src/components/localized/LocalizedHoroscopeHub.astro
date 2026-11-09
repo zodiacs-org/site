@@ -41,6 +41,12 @@ const cards = SIGNS.map((sign) => {
   const reading = dailyReadingForLocale(sign.slug, daily, locale);
   return { sign, teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
 });
+
+// A link that resolves to the English page (its localized copy is not built
+// here yet) says so: hreflang="en" and the locale's English-only cue.
+const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.startsWith('/')
+  ? {}
+  : { hreflang: 'en', title: englishOnlyCue(locale)?.aria });
 ---
 <Base
   noindex={isHeldPreview(locale, '/horoscopes/')}
@@ -90,7 +96,7 @@ const cards = SIGNS.map((sign) => {
     <EmailCapture placement="horoscopes" locale={locale} />
 
     <p class="hhl-note">
-      {c.notePersonal}<a href={local('/birth-chart/')}>{c.noteChart}</a>.{c.noteSky}<a href={local('/today/')}>{c.noteSkyLink}</a>{c.noteLonger}<a href="/horoscopes/" hreflang="en" title={cue?.aria}>{c.noteEnglish}</a>.
+      {c.notePersonal}<a href={local('/birth-chart/')} {...englishAttrs(local('/birth-chart/'))}>{c.noteChart}</a>.{c.noteSky}<a href={local('/today/')} {...englishAttrs(local('/today/'))}>{c.noteSkyLink}</a>{c.noteLonger}<a href="/horoscopes/" hreflang="en" title={cue?.aria}>{c.noteEnglish}</a>.
     </p>
 
     <div class="hhl-ask">
@@ -102,7 +108,7 @@ const cards = SIGNS.map((sign) => {
 
     <details class="hhl-method">
       <summary>{c.methodSummary}</summary>
-      <p>{c.methodBefore(dateLabel)}<a href={local('/methodology/')}>{c.methodLink}</a>.</p>
+      <p>{c.methodBefore(dateLabel)}<a href={local('/methodology/')} {...englishAttrs(local('/methodology/'))}>{c.methodLink}</a>.</p>
     </details>
   </section>
 </Base>
