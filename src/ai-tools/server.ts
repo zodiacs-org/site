@@ -13,6 +13,7 @@ import { WATCH_SCOPES } from './watch/oauth';
 import { ACCOUNT_SCOPES, SAVE_DESCRIPTION, SAVE_OUTPUT_SCHEMA, SAVE_TITLE, SAVE_TOOL_NAME, saveInput } from './accounts/contracts';
 import { saveToZodiacs, type AccountPrincipal } from './accounts/save';
 import { signInChallenge, type AccountsService } from './accounts/service';
+import { PERSONAL_TOOL_NAMES, personalTool } from './personal/registry';
 
 /**
  * What every assistant reads first. With saving switched on, the privacy sentences name the one exception, the
@@ -43,7 +44,7 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
 };
 
 /** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
-const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events']);
+const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set<AiToolName>(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', ...PERSONAL_TOOL_NAMES.filter((tool) => personalTool(tool).clockDependent)]);
 
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
