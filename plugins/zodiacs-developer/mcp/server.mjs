@@ -4828,49 +4828,6 @@ function windowEnd(value, end) {
 function searchLongitudeCrossings(body2, targetLongitude, from, to, options) {
   return searchLongitudeCrossingsWith(bodyLongitude, body2, targetLongitude, windowEnd(from, "start"), windowEnd(to, "end"), options);
 }
-function isChart(value) {
-  if (!value || typeof value !== "object") return false;
-  const candidate = value;
-  return Array.isArray(candidate.bodies) && Array.isArray(candidate.aspects) && candidate.input?.utc instanceof Date;
-}
-function resolvedChart(source) {
-  if (!isChart(source)) {
-    const chart = natalChart(source);
-    return { chart, utc: chart.input.utc };
-  }
-  const sourceInput = source.input;
-  const { input, flags: inputFlags } = validateBirth(sourceInput);
-  const resultFlags = snapshotFlags(source.flags);
-  const expected = timeFlags(inputFlags?.values ?? []);
-  const hasHouses = input.timeKnown && input.latitude !== void 0;
-  const houses = source.houses;
-  const angles = source.angles;
-  const actualHouseSystem = houses?.system;
-  if ((hasHouses ? !angles || typeof angles !== "object" || Array.isArray(angles) || !houses || typeof houses !== "object" || Array.isArray(houses) : angles !== null || houses !== null) || houses !== null && actualHouseSystem !== input.houseSystem && !(isPolarUndefinedHouseSystem(input.houseSystem) && actualHouseSystem === POLAR_FALLBACK)) {
-    throw new RangeError("chart flags must agree with its input and supplied house result.");
-  }
-  if (!input.timeKnown) expected.push("no-time");
-  if (isPolarUndefinedHouseSystem(input.houseSystem) && actualHouseSystem === POLAR_FALLBACK) {
-    expected.push("polar-fallback");
-  }
-  if (outsideReferenceSpan(input.utc)) expected.push("outside-reference-span");
-  assertDerivedFlags(inputFlags?.values ?? [], expected);
-  if (resultFlags.values.length !== expected.length || !expected.every((flag) => resultFlags.values.includes(flag))) {
-    throw new RangeError("chart flags must agree with its input and supplied house result.");
-  }
-  const canonicalInputFlags = input.flags ?? [];
-  const inputChanged = inputFlags !== void 0 && (inputFlags.hasDuplicates || inputFlags.values.length !== canonicalInputFlags.length);
-  const resultChanged = resultFlags.hasDuplicates || !expected.every((flag, index) => flag === resultFlags.values[index]);
-  if (!inputChanged && !resultChanged) return { chart: source, utc: input.utc };
-  return {
-    chart: {
-      ...source,
-      input: inputChanged ? input : sourceInput,
-      flags: expected
-    },
-    utc: input.utc
-  };
-}
 var BIRTH_FIELDS = [
   "utc",
   "timeScale",
@@ -41298,58 +41255,8 @@ function siderealLongitude(tropicalLongitude, ayanamsa2) {
     utc: utcInstantOf(ayanamsa2)
   });
 }
-function wholeSignCusps2(ascendant) {
-  const first2 = Math.floor(ticksOf(ascendant) / SIGN_TICKS);
-  return Array.from({ length: 12 }, (_, k) => (first2 + k) % 12 * 30);
-}
-function siderealChartOf(chart, definition) {
-  const input = chart.input;
-  const value = ayanamsa(definition, input.utc, {
-    ...input.deltaT === void 0 ? {} : { deltaT: input.deltaT },
-    ...input.timeScale === void 0 ? {} : { timeScale: input.timeScale }
-  });
-  const of = (lon) => siderealLongitude(lon, value);
-  const bodies = chart.bodies.map((row) => {
-    const sidereal = of(row.lon);
-    SIDEREAL.delete(sidereal);
-    return make({ ...sidereal, body: row.body });
-  });
-  const ascendant = chart.angles ? of(chart.angles.asc) : null;
-  const houseSystem = chart.houses ? chart.houses.system : null;
-  let cusps = null;
-  if (chart.houses && houseSystem === "whole" && ascendant) {
-    cusps = wholeSignCusps2(ascendant.lon).map(
-      (lon) => make({
-        frame: "sidereal",
-        lon,
-        ayanamsa: value.ayanamsa,
-        trueAyanamsa: value.true,
-        tropical: wrap360(lon + value.true),
-        utc: utcInstantOf(value)
-      })
-    );
-  } else if (chart.houses) {
-    cusps = chart.houses.cusps.map(of);
-  }
-  const flags = [...chart.flags];
-  for (const flag of value.flags) if (!flags.includes(flag)) flags.push(flag);
-  return Object.freeze({
-    ayanamsa: value.ayanamsa,
-    ayanamsaValue: value,
-    bodies: Object.freeze(bodies),
-    ascendant,
-    midheaven: chart.angles ? of(chart.angles.mc) : null,
-    houseSystem,
-    cusps: cusps && Object.freeze(cusps),
-    flags: Object.freeze(flags)
-  });
-}
 
 // node_modules/@zodiacs/engine/dist/vedic.js
-function siderealChart(natal, ayanamsa2) {
-  const definition = definitionOf(ayanamsa2);
-  return siderealChartOf(resolvedChart(natal).chart, definition);
-}
 var VIMSHOTTARI_LORDS = Object.freeze([
   "Ketu",
   "Venus",
@@ -41597,6 +41504,214 @@ var ABHIJIT_START = 20 * NAKSHATRA_TICKS + 3 * (NAKSHATRA_TICKS / 4);
 var ABHIJIT_END = 21 * NAKSHATRA_TICKS + NAKSHATRA_TICKS / 15;
 var ASHTOTTARI_LORDS = Object.keys(ASHTOTTARI_YEARS);
 
+// src/lib/engine/vedic.ts
+function siderealMoment(utc, tropical, name) {
+  const value = ayanamsa(name, utc);
+  const point = (lon) => ({ lon: siderealLongitude(lon, value).lon, tropical: lon });
+  const moon = siderealLongitude(tropical.moon, value);
+  const position2 = nakshatraOf(moon);
+  return {
+    ayanamsa: value.true,
+    sun: point(tropical.sun),
+    moon: { lon: moon.lon, tropical: tropical.moon },
+    rising: tropical.asc === null ? null : point(tropical.asc),
+    nakshatra: { index: position2.index, pada: position2.pada, lord: position2.lord }
+  };
+}
+
+// src/lib/vedic-signs/wording.ts
+var VEDIC_AYANAMSAS = ["lahiri", "raman", "krishnamurti", "fagan-bradley", "yukteswar", "true-chitra"];
+var AYANAMSA_NAME = {
+  lahiri: "Lahiri (Chitrapaksha)",
+  raman: "Raman",
+  krishnamurti: "Krishnamurti (KP)",
+  "fagan-bradley": "Fagan and Bradley",
+  yukteswar: "Sri Yukteswar",
+  "true-chitra": "True Chitra"
+};
+var NAKSHATRA_NAMES = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
+function nakshatraSigns(index) {
+  const start = index * 40 / 3;
+  const first2 = Math.floor(start / 30);
+  const last2 = Math.floor((index + 1) * 40 / 3 / 30 - 1e-9);
+  return first2 === last2 ? [first2] : [first2, last2];
+}
+var RASHIS = ["Mesha", "Vrishabha", "Mithuna", "Karka", "Simha", "Kanya", "Tula", "Vrishchika", "Dhanu", "Makara", "Kumbha", "Meena"];
+var RASHI_LINE = [
+  "Mesha, ruled by Mars: quick to start, direct, and at its best with a clear goal in front of it.",
+  "Vrishabha, ruled by Venus: steady, loyal and fond of comfort, building slowly and keeping what it builds.",
+  "Mithuna, ruled by Mercury: curious and talkative, happiest learning, trading ideas and staying in motion.",
+  "Karka, ruled by the Moon: caring and protective, with strong ties to home, family and memory.",
+  "Simha, ruled by the Sun: warm, proud and generous, drawn to lead and to be seen doing it.",
+  "Kanya, ruled by Mercury: careful and practical, good with detail, service and getting things right.",
+  "Tula, ruled by Venus: fair minded and sociable, weighing both sides and seeking balance with others.",
+  "Vrishchika, ruled by Mars: intense and private, loyal to the end, drawn to what lies beneath the surface.",
+  "Dhanu, ruled by Jupiter: hopeful and principled, drawn to teaching, travel and the larger picture.",
+  "Makara, ruled by Saturn: patient and ambitious, ready to work for results that last.",
+  "Kumbha, ruled by Saturn: independent and thoughtful, with a mind for groups, causes and new ideas.",
+  "Meena, ruled by Jupiter: gentle and imaginative, with deep feeling and a pull toward the spiritual."
+];
+var NAKSHATRA_LORE = {
+  Ashwini: { deity: "the Ashvins, the divine physicians", symbol: "a horse's head", line: "Quick, fresh and eager to begin; traditionally linked with healing and with help that arrives fast." },
+  Bharani: { deity: "Yama, keeper of dharma", symbol: "a yoni", line: "Strong willed and able to carry a great deal; read as the star of restraint, endurance and big life changes." },
+  Krittika: { deity: "Agni, the fire", symbol: "a flame or a blade", line: "Sharp, honest and purifying; it cuts to what matters and does not tolerate pretence." },
+  Rohini: { deity: "Brahma, the creator", symbol: "an ox cart", line: "Warm, charming and fond of beauty; read as a star of growth, plenty and steady comfort." },
+  Mrigashira: { deity: "Soma, the Moon", symbol: "a deer's head", line: "Gentle and searching; always looking for the next thing to learn, see or find." },
+  Ardra: { deity: "Rudra, the storm", symbol: "a teardrop", line: "Intense and searching; read as the storm that clears the air, bringing hard effort and then renewal." },
+  Punarvasu: { deity: "Aditi, mother of the gods", symbol: "a quiver of arrows", line: "Hopeful and forgiving; the star of return, coming home and starting again after a setback." },
+  Pushya: { deity: "Brihaspati, teacher of the gods", symbol: "a cow's udder", line: "Nourishing and dependable; traditionally one of the most favourable stars, read as care, support and good counsel." },
+  Ashlesha: { deity: "the Nagas, the serpents", symbol: "a coiled serpent", line: "Perceptive and persuasive; it reads people and situations closely and holds on to what it values." },
+  Magha: { deity: "the Pitris, the ancestors", symbol: "a throne", line: "Dignified and loyal to its roots; read as rank, tradition and respect for those who came before." },
+  "Purva Phalguni": { deity: "Bhaga, giver of good fortune", symbol: "the front legs of a bed", line: "Warm and pleasure loving; read as rest, creativity, affection and enjoying what has been earned." },
+  "Uttara Phalguni": { deity: "Aryaman, god of agreements", symbol: "the back legs of a bed", line: "Generous and reliable; read as friendship, partnership and keeping one's word." },
+  Hasta: { deity: "Savitar, the sun at work", symbol: "a hand", line: "Skilful and resourceful; good with the hands, with craft and with turning plans into things." },
+  Chitra: { deity: "Tvashtar, the divine craftsman", symbol: "a bright jewel", line: "Creative and stylish; read as design, making and an eye for how things fit together." },
+  Swati: { deity: "Vayu, the wind", symbol: "a young shoot bending in the wind", line: "Independent and adaptable; it bends without breaking and does best with room to move. Traditionally a good star for trade and earnings." },
+  Vishakha: { deity: "Indra and Agni", symbol: "a triumphal arch", line: "Determined and goal minded; it fixes on an aim and keeps going until it gets there." },
+  Anuradha: { deity: "Mitra, god of friendship", symbol: "a lotus", line: "Devoted and sociable; read as loyal friendship and success through working with others." },
+  Jyeshtha: { deity: "Indra, chief of the gods", symbol: "a round earring", line: "Protective and responsible; the star of the eldest, read as seniority, courage and looking after others." },
+  Mula: { deity: "Nirriti", symbol: "a bunch of tied roots", line: "Searching and thorough; it goes to the root of things, clearing away the old to find what is true." },
+  "Purva Ashadha": { deity: "Apas, the waters", symbol: "a winnowing fan", line: "Confident and persuasive; read as the star of conviction, renewal and early victories." },
+  "Uttara Ashadha": { deity: "the Vishvadevas, the universal gods", symbol: "an elephant's tusk", line: "Principled and steady; read as lasting success that comes from doing the right thing patiently." },
+  Shravana: { deity: "Vishnu, the preserver", symbol: "an ear", line: "Attentive and learned; the star of listening, study and passing knowledge on." },
+  Dhanishta: { deity: "the eight Vasus", symbol: "a drum", line: "Lively and rhythmic; read as music, wealth and a talent for working in step with a group." },
+  Shatabhisha: { deity: "Varuna, lord of the waters", symbol: "an empty circle", line: "Independent and private; traditionally the star of healers and researchers, with a need for time alone." },
+  "Purva Bhadrapada": { deity: "Aja Ekapada, the one footed goat", symbol: "a sword", line: "Earnest and idealistic; read as strong conviction and a willingness to give a great deal to a cause." },
+  "Uttara Bhadrapada": { deity: "Ahir Budhnya, serpent of the deep", symbol: "the back legs of a bed", line: "Calm, wise and patient; read as depth, self control and quiet strength." },
+  Revati: { deity: "Pushan, the guide of travellers", symbol: "a fish", line: "Kind and protective; the last star, read as safe journeys, nourishment and seeing things through." }
+};
+var VEDIC_NOTE = "Vedic astrology counts the signs from the stars, so its signs sit about 24 degrees behind the Western ones: many people find their Vedic Sun sign is the sign before their Western one.";
+var ORDINALS = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth", "twenty first", "twenty second", "twenty third", "twenty fourth", "twenty fifth", "twenty sixth", "twenty seventh"];
+var nakshatraOrdinal = (n) => ORDINALS[n];
+
+// src/lib/vedic-signs/reading.ts
+var round2 = (value) => Math.round(value * 100) / 100;
+var label = (index) => `${SIGNS2[index].name} (${RASHIS[index]})`;
+function signOf(point, line) {
+  const index = signIndexForLongitude2(point.lon);
+  return { sign: SIGNS2[index].slug, rashi: RASHIS[index], degree: Math.min(29.99, round2(point.lon - index * 30)), tropicalSign: SIGNS2[signIndexForLongitude2(point.tropical)].slug, line };
+}
+var sunLine = (index) => `Your Vedic Sun is in ${RASHIS[index]}, ${SIGNS2[index].name} in the sidereal zodiac. In Jyotish the Sun is the soul and the sense of self: ${RASHI_LINE[index]}`;
+var moonLine = (index) => `Your Moon sign (rashi) is ${RASHIS[index]}, ${SIGNS2[index].name}. Vedic astrology reads the Moon sign first, as the mind and the emotional nature: ${RASHI_LINE[index]}`;
+var risingLine = (index) => `Your lagna (rising sign) is ${RASHIS[index]}, ${SIGNS2[index].name}. The lagna is the body and the path through life, and it sets the first house: ${RASHI_LINE[index]}`;
+function nakshatraReading(position2) {
+  const name = NAKSHATRA_NAMES[position2.index];
+  const lore = NAKSHATRA_LORE[name];
+  return {
+    name,
+    number: position2.index + 1,
+    pada: position2.pada,
+    lord: position2.lord,
+    deity: lore.deity,
+    symbol: lore.symbol,
+    line: `Your Moon was in ${name}, the ${nakshatraOrdinal(position2.index + 1)} nakshatra, ruled by ${position2.lord}, with ${lore.deity} as its deity and ${lore.symbol} as its symbol. ${lore.line}`
+  };
+}
+function vedicReading(input) {
+  const { at, ends } = input;
+  const settled = (pick) => {
+    if (!ends) return { held: true, candidates: [] };
+    const indices = [...new Set(ends.map((end) => signIndexForLongitude2(pick(end))))];
+    return { held: indices.length === 1, candidates: indices.length === 1 ? [] : indices.map(label) };
+  };
+  const sunHold = settled((moment2) => moment2.sun.lon);
+  const moonHold = settled((moment2) => moment2.moon.lon);
+  const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude2(at.sun.lon))) : null;
+  const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude2(at.moon.lon))) : null;
+  const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude2(at.rising.lon))) : null;
+  const nakshatraNames = ends ? [...new Set(ends.map((end) => NAKSHATRA_NAMES[end.nakshatra.index]))] : [];
+  const nakshatraHeld = !ends || nakshatraNames.length === 1;
+  const moonNakshatra = nakshatraHeld ? nakshatraReading(at.nakshatra) : null;
+  const limits2 = [];
+  if (!input.timeKnown) {
+    limits2.push("No birth time was given, so there is no rising sign (lagna), and the Moon sign and nakshatra are given only where the whole birth day keeps them.");
+    if (!moonHold.held) limits2.push(`The Moon changed sign that day: it was in ${moonHold.candidates.join(" or ")}. A birth time settles it.`);
+    if (!nakshatraHeld) limits2.push(`The Moon changed nakshatra that day: it was in ${nakshatraNames.join(" or ")}. A birth time settles it.`);
+    if (!sunHold.held) limits2.push(`The Sun changed sign that day: it was in ${sunHold.candidates.join(" or ")}. A birth time settles it.`);
+  } else if (!input.placed) limits2.push("No birthplace coordinates were given, so there is no rising sign (lagna).");
+  const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line) => !!line);
+  const confidence = readingConfidence(input.timeKnown && input.placed ? "timed-place" : "date");
+  const confidenceLabel = readingConfidenceText(confidence);
+  return {
+    timeKnown: input.timeKnown,
+    placed: input.placed,
+    ayanamsa: { name: input.ayanamsa, label: AYANAMSA_NAME[input.ayanamsa], degrees: Math.round(at.ayanamsa * 1e4) / 1e4 },
+    sun,
+    sunCandidates: sunHold.candidates,
+    moon,
+    moonCandidates: moonHold.candidates,
+    rising,
+    moonNakshatra,
+    nakshatraCandidates: nakshatraHeld ? [] : nakshatraNames,
+    summary: `${parts.join(" ")} ${confidenceLabel}.`.trim(),
+    confidence,
+    confidenceLabel,
+    limits: limits2,
+    note: VEDIC_NOTE
+  };
+}
+
+// src/lib/vedic-signs/compute.ts
+function momentAt(utc, place2, timeKnown, ayanamsa2) {
+  const chart = computeChart2({ utc, ...place2 ?? {}, houseSystem: "whole", timeKnown });
+  const lon = (name) => chart.bodies.find((row) => row.body === name).lon;
+  return siderealMoment(utc, { sun: lon("Sun"), moon: lon("Moon"), asc: timeKnown && place2 && chart.angles ? chart.angles.asc : null }, ayanamsa2);
+}
+function computeVedicSigns(input) {
+  const place2 = input.latitude !== void 0 && input.longitude !== void 0 ? { latitude: input.latitude, longitude: input.longitude } : null;
+  const at = momentAt(input.birthUtc, place2, input.timeKnown, input.ayanamsa);
+  const ends = input.timeKnown ? null : (input.dayEnds ?? []).map((end) => momentAt(end, null, false, input.ayanamsa));
+  return vedicReading({ timeKnown: input.timeKnown, placed: place2 !== null, ayanamsa: input.ayanamsa, at, ends: ends && ends.length ? ends : null });
+}
+
+// src/lib/vedic-signs/share.ts
+var VEDIC_SIGNS_SHARE_PATH = "/share/vedic-signs/";
+var VEDIC_SIGNS_SHARE_KEYS = Object.freeze(["s", "m", "r", "n", "a", "ref"]);
+var isSign3 = (value) => !!value && SHARE_SIGNS.includes(value);
+var isAyanamsa = (value) => !!value && VEDIC_AYANAMSAS.includes(value);
+var NAKSHATRA_RE = /^(?:[1-9]|1[0-9]|2[0-7])$/u;
+var fits = (nakshatra2, moon) => nakshatraSigns(nakshatra2 - 1).includes(SHARE_SIGNS.indexOf(moon));
+function vedicSignsQuery(share, withRef2 = false) {
+  const params = new URLSearchParams({ s: share.sun });
+  if (share.moon) params.set("m", share.moon);
+  if (share.moon && share.nakshatra && share.rising) params.set("r", share.rising);
+  if (share.nakshatra) params.set("n", String(share.nakshatra));
+  params.set("a", share.ayanamsa);
+  if (withRef2 && share.ref) params.set("ref", share.ref);
+  return params.toString();
+}
+function vedicSignsShareQuery(reading) {
+  const sun = reading.sun?.sign;
+  if (!isSign3(sun) || !isAyanamsa(reading.ayanamsa.name)) return null;
+  const moon = isSign3(reading.moon?.sign) ? reading.moon.sign : null;
+  const nakshatra2 = reading.moonNakshatra && Number.isInteger(reading.moonNakshatra.number) && reading.moonNakshatra.number >= 1 && reading.moonNakshatra.number <= 27 ? reading.moonNakshatra.number : null;
+  const rising = isSign3(reading.rising?.sign) ? reading.rising.sign : null;
+  const share = { sun, moon, rising, nakshatra: nakshatra2, ayanamsa: reading.ayanamsa.name, ref: null };
+  const query = vedicSignsQuery(share);
+  return parseVedicSignsShare(new URLSearchParams(query)) ? query : vedicSignsQuery({ ...share, rising: null, nakshatra: null });
+}
+function vedicSignsShareUrl(origin, reading) {
+  const query = vedicSignsShareQuery(reading);
+  return query === null ? null : `${origin}${VEDIC_SIGNS_SHARE_PATH}?${query}`;
+}
+function parseVedicSignsShare(params) {
+  const fields2 = /* @__PURE__ */ new Map();
+  for (const [key, value] of params) {
+    if (!VEDIC_SIGNS_SHARE_KEYS.includes(key) || fields2.has(key)) return null;
+    fields2.set(key, value);
+  }
+  const [sun, moon, rising, number2, ayanamsa2, refText] = ["s", "m", "r", "n", "a", "ref"].map((key) => fields2.get(key));
+  const ref3 = refText === void 0 ? null : refText === "chatgpt" || refText === "assistant" ? refText : void 0;
+  if (!isSign3(sun) || !isAyanamsa(ayanamsa2) || ref3 === void 0) return null;
+  if (moon !== void 0 && !isSign3(moon) || rising !== void 0 && !isSign3(rising)) return null;
+  if (number2 !== void 0 && !NAKSHATRA_RE.test(number2)) return null;
+  const nakshatra2 = number2 === void 0 ? null : Number(number2);
+  if (rising !== void 0 && (moon === void 0 || nakshatra2 === null)) return null;
+  if (moon !== void 0 && nakshatra2 !== null && !fits(nakshatra2, moon)) return null;
+  if (moon === void 0 && nakshatra2 !== null && nakshatraSigns(nakshatra2 - 1).length === 1) return null;
+  return { sun, moon: moon ?? null, rising: rising ?? null, nakshatra: nakshatra2, ayanamsa: ayanamsa2, ref: ref3 };
+}
+
 // src/ai-tools/personal/shared.ts
 import { z as z13 } from "zod";
 var PERSONAL_MIN_YEAR = 1800;
@@ -41646,59 +41761,6 @@ async function birthDayEnds(args, clock2) {
 }
 
 // src/ai-tools/personal/vedic-signs.ts
-var VEDIC_AYANAMSAS = ["lahiri", "raman", "krishnamurti", "fagan-bradley", "yukteswar", "true-chitra"];
-var AYANAMSA_NAME = {
-  lahiri: "Lahiri (Chitrapaksha)",
-  raman: "Raman",
-  krishnamurti: "Krishnamurti (KP)",
-  "fagan-bradley": "Fagan and Bradley",
-  yukteswar: "Sri Yukteswar",
-  "true-chitra": "True Chitra"
-};
-var RASHIS = ["Mesha", "Vrishabha", "Mithuna", "Karka", "Simha", "Kanya", "Tula", "Vrishchika", "Dhanu", "Makara", "Kumbha", "Meena"];
-var RASHI_LINE = [
-  "Mesha, ruled by Mars: quick to start, direct, and at its best with a clear goal in front of it.",
-  "Vrishabha, ruled by Venus: steady, loyal and fond of comfort, building slowly and keeping what it builds.",
-  "Mithuna, ruled by Mercury: curious and talkative, happiest learning, trading ideas and staying in motion.",
-  "Karka, ruled by the Moon: caring and protective, with strong ties to home, family and memory.",
-  "Simha, ruled by the Sun: warm, proud and generous, drawn to lead and to be seen doing it.",
-  "Kanya, ruled by Mercury: careful and practical, good with detail, service and getting things right.",
-  "Tula, ruled by Venus: fair minded and sociable, weighing both sides and seeking balance with others.",
-  "Vrishchika, ruled by Mars: intense and private, loyal to the end, drawn to what lies beneath the surface.",
-  "Dhanu, ruled by Jupiter: hopeful and principled, drawn to teaching, travel and the larger picture.",
-  "Makara, ruled by Saturn: patient and ambitious, ready to work for results that last.",
-  "Kumbha, ruled by Saturn: independent and thoughtful, with a mind for groups, causes and new ideas.",
-  "Meena, ruled by Jupiter: gentle and imaginative, with deep feeling and a pull toward the spiritual."
-];
-var NAKSHATRA_LORE = {
-  Ashwini: { deity: "the Ashvins, the divine physicians", symbol: "a horse's head", line: "Quick, fresh and eager to begin; traditionally linked with healing and with help that arrives fast." },
-  Bharani: { deity: "Yama, keeper of dharma", symbol: "a yoni", line: "Strong willed and able to carry a great deal; read as the star of restraint, endurance and big life changes." },
-  Krittika: { deity: "Agni, the fire", symbol: "a flame or a blade", line: "Sharp, honest and purifying; it cuts to what matters and does not tolerate pretence." },
-  Rohini: { deity: "Brahma, the creator", symbol: "an ox cart", line: "Warm, charming and fond of beauty; read as a star of growth, plenty and steady comfort." },
-  Mrigashira: { deity: "Soma, the Moon", symbol: "a deer's head", line: "Gentle and searching; always looking for the next thing to learn, see or find." },
-  Ardra: { deity: "Rudra, the storm", symbol: "a teardrop", line: "Intense and searching; read as the storm that clears the air, bringing hard effort and then renewal." },
-  Punarvasu: { deity: "Aditi, mother of the gods", symbol: "a quiver of arrows", line: "Hopeful and forgiving; the star of return, coming home and starting again after a setback." },
-  Pushya: { deity: "Brihaspati, teacher of the gods", symbol: "a cow's udder", line: "Nourishing and dependable; traditionally one of the most favourable stars, read as care, support and good counsel." },
-  Ashlesha: { deity: "the Nagas, the serpents", symbol: "a coiled serpent", line: "Perceptive and persuasive; it reads people and situations closely and holds on to what it values." },
-  Magha: { deity: "the Pitris, the ancestors", symbol: "a throne", line: "Dignified and loyal to its roots; read as rank, tradition and respect for those who came before." },
-  "Purva Phalguni": { deity: "Bhaga, giver of good fortune", symbol: "the front legs of a bed", line: "Warm and pleasure loving; read as rest, creativity, affection and enjoying what has been earned." },
-  "Uttara Phalguni": { deity: "Aryaman, god of agreements", symbol: "the back legs of a bed", line: "Generous and reliable; read as friendship, partnership and keeping one's word." },
-  Hasta: { deity: "Savitar, the sun at work", symbol: "a hand", line: "Skilful and resourceful; good with the hands, with craft and with turning plans into things." },
-  Chitra: { deity: "Tvashtar, the divine craftsman", symbol: "a bright jewel", line: "Creative and stylish; read as design, making and an eye for how things fit together." },
-  Swati: { deity: "Vayu, the wind", symbol: "a young shoot bending in the wind", line: "Independent and adaptable; it bends without breaking and does best with room to move. Traditionally a good star for trade and earnings." },
-  Vishakha: { deity: "Indra and Agni", symbol: "a triumphal arch", line: "Determined and goal minded; it fixes on an aim and keeps going until it gets there." },
-  Anuradha: { deity: "Mitra, god of friendship", symbol: "a lotus", line: "Devoted and sociable; read as loyal friendship and success through working with others." },
-  Jyeshtha: { deity: "Indra, chief of the gods", symbol: "a round earring", line: "Protective and responsible; the star of the eldest, read as seniority, courage and looking after others." },
-  Mula: { deity: "Nirriti", symbol: "a bunch of tied roots", line: "Searching and thorough; it goes to the root of things, clearing away the old to find what is true." },
-  "Purva Ashadha": { deity: "Apas, the waters", symbol: "a winnowing fan", line: "Confident and persuasive; read as the star of conviction, renewal and early victories." },
-  "Uttara Ashadha": { deity: "the Vishvadevas, the universal gods", symbol: "an elephant's tusk", line: "Principled and steady; read as lasting success that comes from doing the right thing patiently." },
-  Shravana: { deity: "Vishnu, the preserver", symbol: "an ear", line: "Attentive and learned; the star of listening, study and passing knowledge on." },
-  Dhanishta: { deity: "the eight Vasus", symbol: "a drum", line: "Lively and rhythmic; read as music, wealth and a talent for working in step with a group." },
-  Shatabhisha: { deity: "Varuna, lord of the waters", symbol: "an empty circle", line: "Independent and private; traditionally the star of healers and researchers, with a need for time alone." },
-  "Purva Bhadrapada": { deity: "Aja Ekapada, the one footed goat", symbol: "a sword", line: "Earnest and idealistic; read as strong conviction and a willingness to give a great deal to a cause." },
-  "Uttara Bhadrapada": { deity: "Ahir Budhnya, serpent of the deep", symbol: "the back legs of a bed", line: "Calm, wise and patient; read as depth, self control and quiet strength." },
-  Revati: { deity: "Pushan, the guide of travellers", symbol: "a fish", line: "Kind and protective; the last star, read as safe journeys, nourishment and seeing things through." }
-};
 var vedicSignsInput = z14.strictObject({
   ...birthFields,
   latitude: birthFields.latitude.describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign (lagna). Give it with longitude and zone. Nothing is stored."),
@@ -41744,89 +41806,31 @@ var vedicSignsData = z14.object({
   confidenceLabel: z14.string(),
   limits: z14.array(z14.string()),
   note: z14.string(),
-  pageUrl: z14.url()
+  pageUrl: z14.url(),
+  /** The share card: the sidereal signs, the nakshatra's number and the ayanamsa, never a birth detail. Null when the Sun changed sign on an untimed birth day. */
+  shareUrl: z14.url().nullable()
 });
-var VEDIC_NOTE = "Vedic astrology counts the signs from the stars, so its signs sit about 24 degrees behind the Western ones: many people find their Vedic Sun sign is the sign before their Western one.";
-var round2 = (value) => Math.round(value * 100) / 100;
-function signOf(lon, tropical, line) {
-  const index = signIndexForLongitude2(lon);
-  return { sign: SIGNS2[index].slug, rashi: RASHIS[index], degree: Math.min(29.99, round2(lon - index * 30)), tropicalSign: SIGNS2[signIndexForLongitude2(tropical)].slug, line };
-}
-var label = (index) => `${SIGNS2[index].name} (${RASHIS[index]})`;
-function chartAt2(utc, args, timeKnown, ayanamsa2) {
-  return siderealChart({ utc, ...args.latitude !== void 0 && args.longitude !== void 0 ? { latitude: args.latitude, longitude: args.longitude } : {}, houseSystem: "whole", timeKnown }, ayanamsa2);
-}
 async function vedicSigns(args, clock2, origin) {
   const ayanamsa2 = args.ayanamsa ?? "lahiri";
   const natal = await castNatal(args, clock2);
-  const chart = chartAt2(natal.birthUtc, { latitude: natal.latitude, longitude: natal.longitude }, natal.timeKnown, ayanamsa2);
-  const body2 = (from, name) => from.bodies.find((row) => row.body === name);
-  const limits2 = [];
-  const ends = natal.timeKnown ? null : (await birthDayEnds(args, clock2)).map((at) => chartAt2(at, {}, false, ayanamsa2));
-  const settled = (name) => {
-    if (!ends) return { held: true, candidates: [] };
-    const indices = [...new Set(ends.map((end) => signIndexForLongitude2(body2(end, name).lon)))];
-    return { held: indices.length === 1, candidates: indices.length === 1 ? [] : indices.map(label) };
-  };
-  const sunHold = settled("Sun");
-  const moonHold = settled("Moon");
-  const sunRow = body2(chart, "Sun");
-  const moonRow = body2(chart, "Moon");
-  const sun = sunHold.held ? signOf(sunRow.lon, sunRow.tropical, `Your Vedic Sun is in ${RASHIS[signIndexForLongitude2(sunRow.lon)]}, ${SIGNS2[signIndexForLongitude2(sunRow.lon)].name} in the sidereal zodiac. In Jyotish the Sun is the soul and the sense of self: ${RASHI_LINE[signIndexForLongitude2(sunRow.lon)]}`) : null;
-  const moonIndex = signIndexForLongitude2(moonRow.lon);
-  const moon = moonHold.held ? signOf(moonRow.lon, moonRow.tropical, `Your Moon sign (rashi) is ${RASHIS[moonIndex]}, ${SIGNS2[moonIndex].name}. Vedic astrology reads the Moon sign first, as the mind and the emotional nature: ${RASHI_LINE[moonIndex]}`) : null;
-  let rising = null;
-  if (natal.angles && chart.ascendant && chart.ascendant.tropical !== null) {
-    const index = signIndexForLongitude2(chart.ascendant.lon);
-    rising = signOf(chart.ascendant.lon, chart.ascendant.tropical, `Your lagna (rising sign) is ${RASHIS[index]}, ${SIGNS2[index].name}. The lagna is the body and the path through life, and it sets the first house: ${RASHI_LINE[index]}`);
-  }
-  const nakshatraNames = ends ? [...new Set(ends.map((end) => nakshatraOf(body2(end, "Moon")).name))] : [];
-  const nakshatraHeld = !ends || nakshatraNames.length === 1;
-  let moonNakshatra = null;
-  if (nakshatraHeld) {
-    const position2 = nakshatraOf(moonRow);
-    const lore = NAKSHATRA_LORE[position2.name];
-    moonNakshatra = { name: position2.name, number: position2.index + 1, pada: position2.pada, lord: position2.lord, deity: lore.deity, symbol: lore.symbol, line: `Your Moon was in ${position2.name}, the ${ordinal2(position2.index + 1)} nakshatra, ruled by ${position2.lord}, with ${lore.deity} as its deity and ${lore.symbol} as its symbol. ${lore.line}` };
-  }
-  if (!natal.timeKnown) {
-    limits2.push("No birth time was given, so there is no rising sign (lagna), and the Moon sign and nakshatra are given only where the whole birth day keeps them.");
-    if (!moonHold.held) limits2.push(`The Moon changed sign that day: it was in ${moonHold.candidates.join(" or ")}. A birth time settles it.`);
-    if (!nakshatraHeld) limits2.push(`The Moon changed nakshatra that day: it was in ${nakshatraNames.join(" or ")}. A birth time settles it.`);
-    if (!sunHold.held) limits2.push(`The Sun changed sign that day: it was in ${sunHold.candidates.join(" or ")}. A birth time settles it.`);
-  } else if (!natal.placed) limits2.push("No birthplace coordinates were given, so there is no rising sign (lagna).");
-  const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line) => !!line);
-  const confidence = readingConfidence(natal.detail);
-  const confidenceLabel = readingConfidenceLabel(natal.detail);
-  const summary = `${parts.join(" ")} ${confidenceLabel}.`.trim();
+  const reading = computeVedicSigns({
+    birthUtc: natal.birthUtc,
+    timeKnown: natal.timeKnown,
+    latitude: natal.latitude,
+    longitude: natal.longitude,
+    ayanamsa: ayanamsa2,
+    dayEnds: natal.timeKnown ? void 0 : await birthDayEnds(args, clock2)
+  });
   return {
-    data: {
-      birthDate: args.birthDate,
-      timeKnown: natal.timeKnown,
-      placed: natal.placed,
-      ayanamsa: { name: ayanamsa2, label: AYANAMSA_NAME[ayanamsa2], degrees: Math.round(chart.ayanamsaValue.true * 1e4) / 1e4 },
-      sun,
-      sunCandidates: sunHold.candidates,
-      moon,
-      moonCandidates: moonHold.candidates,
-      rising,
-      moonNakshatra,
-      nakshatraCandidates: nakshatraHeld ? [] : nakshatraNames,
-      summary,
-      confidence,
-      confidenceLabel,
-      limits: limits2,
-      note: VEDIC_NOTE,
-      pageUrl: `${origin}/birth-chart/`
-    },
+    data: { birthDate: args.birthDate, ...reading, pageUrl: `${origin}/vedic-signs/`, shareUrl: vedicSignsShareUrl(origin, reading) },
     links: [
+      { title: "Your Vedic signs on Zodiacs", url: `${origin}/vedic-signs/` },
       { title: "Your birth chart on Zodiacs (Western zodiac)", url: `${origin}/birth-chart/` },
       { title: "Resolve a town or city (find_birthplace)", url: `${origin}/birth-chart/` },
       { title: "How we calculate", url: `${origin}/methodology/` }
     ]
   };
 }
-var ORDINALS = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth", "twenty-first", "twenty-second", "twenty-third", "twenty-fourth", "twenty-fifth", "twenty-sixth", "twenty-seventh"];
-var ordinal2 = (n) => ORDINALS[n].replace("-", " ");
 var vedicSignsTool = definePersonalTool({
   name: "get_vedic_signs",
   title: "Vedic signs",
