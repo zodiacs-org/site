@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile, access } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { chromium } from 'playwright-core';
 import sharp from 'sharp';
@@ -11,8 +12,9 @@ import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
 const args=process.argv.slice(2);
-assert.ok(args.includes('--out'),'Use --out <new folder>');
-const out=resolve(args[args.indexOf('--out')+1]);
+const outArgument=args.includes('--out')?args[args.indexOf('--out')+1]:undefined;
+assert.ok(outArgument&&!outArgument.startsWith('--'),'Use --out <new folder>');
+const out=resolve(outArgument);
 const source='https://zodiacs.org/mcp';
 try{await access(out);throw Error('Output already exists. Use a fresh folder.');}catch(error){if(error.code!=='ENOENT')throw error;}
 await mkdir(out,{recursive:true});
@@ -25,11 +27,16 @@ const EXAMPLES={
  wedding:{tool:'get_occasion_sky',heading:'Lucía and Mateo',arguments:{occasion:'wedding',date:'2027-06-12',time:'17:00',zone:'Europe/Rome',latitude:43.7696,longitude:11.2558,place:'Florence, Italy',names:'Lucía and Mateo'}},
  horoscope:{tool:'get_horoscope',heading:'Leo',arguments:{sign:'leo',zone:'Asia/Bangkok'}},
 };
-const rpc=async(method,params)=>{
+const rpc=async(method,params,attempt=1)=>{
  const response=await fetch(source,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-06-18'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
+ if(response.status===429&&attempt<3){
+  await new Promise(done=>setTimeout(done,Math.min(Number(response.headers.get('retry-after'))||30,60)*1000));
+  return rpc(method,params,attempt+1);
+ }
  assert.equal(response.status,200,method+' answered');
- const text=await response.text(),line=text.split('\n').find(row=>row.startsWith('data: '));
- const body=JSON.parse(line?line.slice(6):text);
+ const text=await response.text(),events=text.split('\n').filter(row=>row.startsWith('data: ')).map(row=>JSON.parse(row.slice(6)));
+ const body=(events.length?events:[JSON.parse(text)]).find(message=>'result' in message||'error' in message);
+ assert.ok(body,method+' returned a response');
  assert.equal(body.error,undefined,method+' succeeded');
  return body.result;
 };
@@ -67,7 +74,7 @@ try{
 }finally{await browser.close();}
 // The poster is the movie's wedding card, which carries no Person A and Person B labels.
 const POSTER_AT=30;
-const posterPng=execFileSync('ffmpeg',['-v','error','-ss',String(POSTER_AT),'-i',new URL('../../public/assets/ai/review/zodiacs-sky-0.5.1.mp4',import.meta.url).pathname,'-frames:v','1','-vf','scale=648:-1','-f','image2pipe','-vcodec','png','pipe:1'],{maxBuffer:10_000_000});
+const posterPng=execFileSync('ffmpeg',['-v','error','-ss',String(POSTER_AT),'-i',fileURLToPath(new URL('../../public/assets/ai/review/zodiacs-sky-0.5.1.mp4',import.meta.url)),'-frames:v','1','-vf','scale=648:-1','-f','image2pipe','-vcodec','png','pipe:1'],{maxBuffer:10_000_000});
 const poster=await sharp(posterPng).webp({quality:88}).toBuffer();
 await writeFile(out+'/demo-poster.webp',poster);
 const posterMeta=await sharp(poster).metadata();
