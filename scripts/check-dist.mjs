@@ -1320,6 +1320,7 @@ const sitemapPolicy = {
   // +1 for the English-only lunar-return calculator.
   // +1 for /fomo/, the Astrofolio-on-Fomo landing page (wing register, indexable).
   // +13 for the numerology calculator and the twelve English-only Life Path pages.
+  // +1 for the English-only tarot draw.
   // +1 for the void-of-course Moon calendar.
   // +2 for the platform support contract and runnable developer examples.
   // +1 for /developers/compare/, the browser-local chart-difference tool.
@@ -1350,7 +1351,7 @@ const sitemapPolicy = {
   // +1 for /your-2027-sky/, the 2027 personal sky edition.
   // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
-  total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  total: 1541 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)

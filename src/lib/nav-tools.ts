@@ -293,6 +293,11 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 6, title: 'Numerology', promise: 'Life Path and more, with every step shown.', group: 'you' },
   },
   {
+    // Tarot is a separate practice from astrology; the promise says so.
+    href: '/tarot/',
+    hub: { order: 6.5, title: 'Tarot', promise: 'A card or a full spread, apart from astrology.', group: 'you' },
+  },
+  {
     href: '/horoscopes/',
     hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
   },

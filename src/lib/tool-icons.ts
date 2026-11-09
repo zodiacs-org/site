@@ -25,6 +25,7 @@ export type ToolIconName =
   | 'big-three'
   | 'birthday'
   | 'numerology'
+  | 'tarot'
   | 'chart-pdf'
   | 'compatibility'
   | 'someone-else'
@@ -91,6 +92,11 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
   numerology: {
     hue: 'scorpio',
     body: '<rect x="4.2" y="4.2" width="15.6" height="15.6" rx="3.4"/><path d="M9 8.6h6.2l-3.6 7.6"/><path d="M10.4 12.4h3.6"/>',
+  },
+  // Two cards, one tipped behind the other, with a small star on the front card.
+  tarot: {
+    hue: 'libra',
+    body: '<path d="M5.2 7.4 10 5.6l4.6 12.3-4.8 1.8Z"/><rect x="9.6" y="4.2" width="9.2" height="14.6" rx="1.4"/><path d="m14.2 8.9.8 1.7 1.8.2-1.3 1.3.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.3 1.8-.2Z"/>',
   },
   // A page with a folded corner and a chart circle.
   'chart-pdf': {
@@ -231,6 +237,7 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/big-three/': 'big-three',
   '/birthday/': 'birthday',
   '/numerology/': 'numerology',
+  '/tarot/': 'tarot',
   '/astrologer-kit/': 'chart-pdf',
   '/compatibility/': 'compatibility',
   '/birth-chart/someone-else/': 'someone-else',

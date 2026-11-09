@@ -3,7 +3,8 @@
  * Serves the hosted MCP runtime (api/_ai/runtime.mjs, the bundle production runs) on 127.0.0.1 with production's
  * switches: the server on and the occasion tools on, accounts off. ZODIACS_COVERAGE_ENABLED=1 in the shell also
  * offers the 0.6.0 tools, as production will once the owner switches them on, and ZODIACS_SKY_EVENTS_ENABLED=1 with it
- * adds search_sky_events, the natal chart's nodes and house systems, and Chiron. Rate limits, quotas and usage counting are
+ * adds search_sky_events, the natal chart's nodes and house systems, and Chiron; ZODIACS_TAROT_ENABLED=1 with it adds
+ * draw_tarot. Rate limits, quotas and usage counting are
  * stand-ins that allow every call. For reviewing a change before it is deployed:
  *
  *   node scripts/serve-hosted-mcp.mjs 4521   # then review http://127.0.0.1:4521/mcp
@@ -18,7 +19,7 @@ const horoscopeWindow = JSON.parse(await readFile(new URL('../src/data/horoscope
 const horoscopeMonths = JSON.parse(await readFile(new URL('../src/data/horoscope-months.json', import.meta.url), 'utf8'));
 const horoscopeProgram = JSON.parse(await readFile(new URL('../src/data/horoscope-program.json', import.meta.url), 'utf8'));
 const handle = createAiNodeHandler({
-  env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ...(process.env.ZODIACS_COVERAGE_ENABLED === '1' ? { ZODIACS_COVERAGE_ENABLED: '1' } : {}), ...(process.env.ZODIACS_SKY_EVENTS_ENABLED === '1' ? { ZODIACS_SKY_EVENTS_ENABLED: '1' } : {}) },
+  env: { ZODIACS_MCP_ENABLED: '1', ZODIACS_OCCASIONS_ENABLED: '1', ...(process.env.ZODIACS_COVERAGE_ENABLED === '1' ? { ZODIACS_COVERAGE_ENABLED: '1' } : {}), ...(process.env.ZODIACS_SKY_EVENTS_ENABLED === '1' ? { ZODIACS_SKY_EVENTS_ENABLED: '1' } : {}), ...(process.env.ZODIACS_TAROT_ENABLED === '1' ? { ZODIACS_TAROT_ENABLED: '1' } : {}) },
   allowedHosts: [host],
   rateLimit: async () => 'allowed',
   atomicQuota: async () => 'allowed',

@@ -72,6 +72,8 @@ const TRANSLATED_NEW_PAGES_ROUTES = (['es', 'pt', 'fr', 'it'] as const).flatMap(
 // it. Each Life Path page dates itself from its own `updated` field, the same
 // date its Article markup carries.
 const NUMEROLOGY_LASTMOD = '2026-09-07';
+// The tarot draw, and the tools hub that lists it.
+const TAROT_LASTMOD = '2026-11-09';
 // The void-of-course Moon calendar shipped in the same review cycle.
 const VOID_OF_COURSE_LASTMOD = '2026-09-07';
 // Phase 1 of the engine brief and the claims ledger's corrections (step 1.14)
@@ -645,6 +647,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...eventsPublication.pages
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  // The tarot draw, first published, and the tools hub's card for it. Last, so this date wins.
+  ...['/tarot/', '/tools/'].map((loc) => [loc, TAROT_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -707,6 +711,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
     { loc: '/numerology/', priority: 0.85 },
+    { loc: '/tarot/', priority: 0.8 },
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
     { loc: '/mercury-retrograde/', priority: 0.85 },

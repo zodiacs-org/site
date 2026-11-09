@@ -1,0 +1,173 @@
+---
+import Base from '../../layouts/Base.astro';
+import TarotDraw from '../../islands/TarotDraw';
+import { TAROT_DECK, SUIT_THEMES, type Suit } from '../../lib/tarot/deck';
+import { TAROT_MEANINGS } from '../../lib/tarot/meanings';
+import { SUIT_HUES, SUIT_PATHS, type SuitKey } from '../../lib/tarot/suit-icons';
+import '../../styles/calculator.css';
+
+const GROUPS: SuitKey[] = ['major', 'wands', 'cups', 'swords', 'pentacles'];
+const cardsIn = (group: SuitKey) => TAROT_DECK.filter((card) => (group === 'major' ? card.arcana === 'major' : card.suit === (group as Suit)));
+const icon = (group: SuitKey) => `<svg class="tarot__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SUIT_PATHS[group]}</svg>`;
+
+const faq = [
+  {
+    q: 'Is tarot part of astrology?',
+    a: 'No. Tarot is a separate practice, built on a deck of 78 cards rather than the positions of the planets. Some readers use both, but nothing on this page reads the sky, and the cards are not linked to your birth chart or your sign.',
+  },
+  {
+    q: 'How are the cards drawn?',
+    a: 'Your browser shuffles the full 78-card deck with its built-in secure random number generator, then deals the cards the spread needs, so no card can come up twice in one draw. Each card has the same chance in every position. With reversed cards allowed, each card is upright or reversed with even odds. Nothing about you goes into the draw, and nothing is sent or saved.',
+  },
+  {
+    q: 'What does a reversed card mean?',
+    a: 'A card that comes up upside down is read as the same theme from another angle: held back, overdone, turned inward, or not yet ready. It is not simply the opposite of the upright meaning. You can switch reversed cards off if you prefer to read every card upright.',
+  },
+  {
+    q: 'What can a tarot reading speak to?',
+    a: 'Love, work, money, wellbeing, and agreements, as the tradition reads each card: the Ace of Pentacles as a good opening for income, the Four of Swords as a call to rest, Justice as a time for fair agreements. Zodiacs does not give price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or say whether a legal case will be won or lost. For those, talk to someone qualified.',
+  },
+  {
+    q: 'Where do the meanings come from?',
+    a: 'Zodiacs wrote them. They follow the themes the tarot tradition gives each card, in plain words of our own, and are not copied from any book or website.',
+  },
+];
+const jsonLd = [
+  {
+    '@type': 'WebApplication',
+    name: 'Tarot Card Draw',
+    url: 'https://zodiacs.org/tarot/',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+---
+<Base
+  clientUi
+  inlineCriticalCss
+  title="Tarot Card Draw: One Card, Three Cards and the Celtic Cross | Zodiacs.org"
+  description="Free tarot draw: one card, three cards for past, present and future, or the Celtic Cross, upright or reversed, with Zodiacs' own meaning for all 78 cards. Shuffled in your browser."
+  path="/tarot/"
+  jsonLd={jsonLd}
+>
+  <section class="section--tight container">
+    <div class="tool-hero">
+      <em class="kicker">Tarot</em>
+      <h1 class="display">Draw a tarot card.</h1>
+      <p>
+        One card, three, or the Celtic Cross, with our own reading of each. Tarot is a separate practice from astrology. The cards are shuffled in your browser, and nothing is saved.
+      </p>
+    </div>
+    <TarotDraw client:interaction />
+    <noscript>
+      <p>The tarot draw needs JavaScript to shuffle the deck. Every card's meaning is listed below.</p>
+    </noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose">
+      <h2>Tarot and astrology</h2>
+      <p>
+        Tarot is a deck of 78 cards: 22 named cards called the Major Arcana, and four suits of fourteen, much like playing cards with four court cards in place of three. It has its own history and its own conventions, and it is separate from astrology. Nothing on this page uses the sky, your sign, or your birth details.
+      </p>
+      <h2>How the draw works</h2>
+      <p>
+        The deck is shuffled in your browser with its secure random number generator. Each random choice is checked so that no card is favoured: numbers that would tip the odds toward the first cards in the deck are thrown away and drawn again. The cards for your spread are dealt from the top, so none repeats, and with reversed cards allowed each one is turned upside down with even odds. Draw again and you get a new, independent shuffle.
+      </p>
+      <h2>What tarot is and is not</h2>
+      <p>
+        Each card comes with the place it lands in the spread, a short reading in the tradition's terms, and a question to think about. The readings cover the ground tarot always has: love and friendship, work and money, rest and wellbeing, agreements and fairness. They do not give price or investment calls, diagnoses, predictions of death, or verdicts on legal cases.
+      </p>
+      <h2>The 78 cards</h2>
+      <p>Every card's upright and reversed reading, in the words the draw uses.</p>
+    </div>
+    {GROUPS.map((group) => (
+      <section class="tarot-index" aria-labelledby={`tarot-${group}`} style={`--sign:${SUIT_HUES[group]}`}>
+        <h3 class="tarot-index__head" id={`tarot-${group}`}>
+          <Fragment set:html={icon(group)} />
+          <span>{SUIT_THEMES[group].name}</span>
+        </h3>
+        <p class="tarot-index__theme">{SUIT_THEMES[group].theme}</p>
+        <div class="tarot-index__cards">
+          {cardsIn(group).map((card) => {
+            const meaning = TAROT_MEANINGS[card.id];
+            return (
+              <details class="faq__item" id={card.id}>
+                <summary>{card.name} <span class="tarot-index__keywords">{meaning.keywords.join(' · ')}</span></summary>
+                <p><strong>Upright.</strong> {meaning.upright}</p>
+                <p><strong>Reversed.</strong> {meaning.reversed}</p>
+                <p><em>{meaning.question}</em></p>
+              </details>
+            );
+          })}
+        </div>
+      </section>
+    ))}
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head"><h2>Questions, answered</h2></div>
+    <div class="faq">
+      {faq.map(({ q, a }) => (
+        <details class="faq__item">
+          <summary>{q}</summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
+  .tool-hero .kicker { margin-bottom: 10px; }
+  .tool-hero h1 {
+    margin: 0 0 16px;
+    font-family: var(--font-serif);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+  .tarot-index { margin-top: 28px; }
+  .tarot-index__head { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-xl); }
+  .tarot-index__head :global(.tarot__icon) { color: var(--sign); }
+  .tarot-index__theme { margin: 0 0 12px; color: var(--muted); font-size: var(--text-sm); }
+  .tarot-index__cards { display: grid; gap: 8px; }
+  .tarot-index__keywords { margin-left: 8px; color: var(--muted); font-weight: 400; font-size: 12px; }
+  .faq { display: grid; gap: 8px; }
+  .faq__item {
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-md);
+    background: var(--void-1);
+    padding: 4px 18px;
+  }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .faq__item p { margin: 2px 0 12px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+</style>
+
+<style is:global>
+  .tarot__spreads { border: 0; padding: 0; margin: 0 0 14px; display: grid; gap: 8px; }
+  .tarot__choice { display: flex; align-items: center; gap: 10px; color: var(--text); font-size: var(--text-sm); cursor: pointer; }
+  .tarot__choice input { accent-color: var(--sign-pisces); }
+  .tarot__reversals { margin-bottom: 18px; }
+  .tarot__cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+  .tarot__card { display: grid; gap: 6px; align-content: start; padding: 18px; border-radius: var(--r-md); }
+  .tarot__position { color: var(--muted); }
+  .tarot__title { display: flex; align-items: center; gap: 10px; }
+  .tarot__icon { color: var(--sign); flex: none; }
+  .tarot__icon--reversed { transform: rotate(180deg); }
+  .tarot__name { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-lg); }
+  .tarot__orientation { color: var(--muted); font-size: 12px; }
+  .tarot__prompt { margin: 4px 0 0; color: var(--muted); font-size: var(--text-sm); font-style: italic; }
+  .tarot__meaning { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  .tarot__question { margin: 0; color: var(--text); font-size: var(--text-sm); }
+  .tarot__note { margin: 16px 0 0; color: var(--muted); font-size: var(--text-sm); }
+</style>
