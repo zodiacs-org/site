@@ -38,6 +38,7 @@ import {
   type ChartSceneModel, type EntityRef,
 } from '../lib/scene/types';
 import { formatLongitude, signBySlug, signForLongitude, signName, signPrepositional } from '../lib/signs';
+import { signInRu } from '../lib/sign-ru';
 import { signIcon } from '../lib/sign-icon';
 import { bigThree } from '../lib/interpretations';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
@@ -1674,12 +1675,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const autoNames = autoNameLocales.flatMap((candidate) => {
     if (!sunSign) return [''];
     if (candidate === 'ru') {
-      // Russian names read «Солнце в Раке»; charts saved under the earlier
-      // «Рак Солнце» form stay recognizable. Both exceed the share-link cap
+      // Russian names read «Солнце в Раке» («во Льве»); charts saved under the
+      // earlier «Рак Солнце» and «в Льве» forms stay recognizable. Both exceed the share-link cap
       // for most signs, so their capped spellings count as automatic too.
       const forms = [
         `${signName(sunSign, 'ru')} ${russianCopy!.chart.autoNameSun} · ${computedInput?.date ?? date}`,
         `${russianCopy!.chart.autoNameSunTemplate.replace('{sign}', signPrepositional(sunSign))} · ${computedInput?.date ?? date}`,
+        `${russianCopy!.chart.autoNameSunTemplate.replace('в {sign}', signInRu(sunSign))} · ${computedInput?.date ?? date}`,
       ];
       return [...new Set(forms.flatMap(form => [form, form.slice(0, NAME_MAX).trim()]))];
     }
@@ -1689,7 +1691,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const referenceName = `${t(locale, 'referenceChartName')} · ${computedInput?.date ?? date}`;
   autoNames.push(...autoNameLocales.map(candidate => `${AUTO_NAME_REFERENCE[candidate]} · ${computedInput?.date ?? date}`));
   const autoName = computedInput?.timeKnown === false ? referenceName : sunSign
-    ? `${locale === 'ru' ? russianCopy!.chart.autoNameSunTemplate.replace('{sign}', signPrepositional(sunSign)) : `${signName(sunSign, locale)} ${AUTO_NAME_SUN[locale]}`} · ${computedInput?.date ?? date}`
+    ? `${locale === 'ru' ? russianCopy!.chart.autoNameSunTemplate.replace('в {sign}', signInRu(sunSign)) : `${signName(sunSign, locale)} ${AUTO_NAME_SUN[locale]}`} · ${computedInput?.date ?? date}`
     : '';
   const isAutoName = (name: string | null) => name !== null && autoNames.includes(name);
   const personName = linkName && !isAutoName(linkName)
@@ -2297,7 +2299,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             const ruler = chart.bodies.find((b) => b.body === rulerName);
             return ruler ? (
               <p class="calc__phase mono">
-                {t(locale, 'chartRuler')}{locale === 'fr' ? '\u202f:' : ':'} {planetLabel(locale, rulerName)} <PlanetGlyph body={rulerName} size={13} class="calc__pg" /> {t(locale, 'readIn')} {locale === 'ru' ? signPrepositional(signForLongitude(ruler.lon)) : signName(signForLongitude(ruler.lon), locale)} {locale === 'ru' ? '—' : '-'} {t(locale, 'planetSteering')}
+                {t(locale, 'chartRuler')}{locale === 'fr' ? '\u202f:' : ':'} {planetLabel(locale, rulerName)} <PlanetGlyph body={rulerName} size={13} class="calc__pg" /> {locale === 'ru' ? `${t(locale, 'readIn').replace(/(^| )в$/u, '')} ${signInRu(signForLongitude(ruler.lon))}`.trimStart() : `${t(locale, 'readIn')} ${signName(signForLongitude(ruler.lon), locale)}`} {locale === 'ru' ? '—' : '-'} {t(locale, 'planetSteering')}
               </p>
             ) : null;
           })()}

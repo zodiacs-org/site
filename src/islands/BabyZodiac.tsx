@@ -10,6 +10,7 @@ import { CheckOurMath } from './ChartTrust';
 import { rangeWords } from '../lib/range-words';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { signForLongitude, signName, signPrepositional, type Sign } from '../lib/signs';
+import { signInRu } from '../lib/sign-ru';
 import { birthdaySlug } from '../lib/birthdays';
 import { localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
 import { intlLocale } from '../lib/i18n/dates';
@@ -200,7 +201,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
                   <span class="baby-receipt">
                     {s.toISO !== s.fromISO ? rangeWords(locale, fmtDay(s.fromISO, locale), fmtDay(s.toISO, locale)) : fmtDay(s.fromISO, locale)}
                   </span>
-                  <span>{t(locale, 'moonIn')} {locale === 'ru' ? signPrepositional(s.sign) : signName(s.sign, locale)}</span>
+                  <span>{locale === 'ru' ? `${t(locale, 'moonIn').replace(/(^| )в$/u, '')} ${signInRu(s.sign)}`.trimStart() : `${t(locale, 'moonIn')} ${signName(s.sign, locale)}`}</span>
                 </li>
               ))}
             </ul>
