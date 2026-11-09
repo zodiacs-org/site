@@ -1,0 +1,113 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-market-check-2026-11-09",
+  "slug": "market-check-2026-11-09",
+  "kind": "market-check",
+  "templateId": "market-check.v1",
+  "issuedAt": "2026-11-09T00:07:32.928Z",
+  "visibleAt": "2026-11-09T00:07:32.928Z",
+  "title": "Scorpio market check · 2026-11-09",
+  "summary": "Scorpio price, market cap, liquidity, volume, and collection medians at one archived observation.",
+  "url": "/terminal/research/market-check-2026-11-09/",
+  "signs": [
+    "scorpio"
+  ],
+  "topics": [
+    "markets",
+    "market-check"
+  ],
+  "symbolicScore": {
+    "sign": "scorpio",
+    "attention": 34,
+    "tone": 7,
+    "eventIntensity": 7,
+    "calculation": "22 attention / 8 tone / 8 event intensity × 0.9267 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Scorpio is the highest-ranked attention entry in the separately published 2026-11-09 daily outlook.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. The symbolic score was fixed before this market comparison.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-11-09T00:07:32.928Z, Scorpio was indexed at $0.00005689, with unavailable over 24 hours, $56.9K market cap, $56.9K FDV, $12.32K indexed liquidity, $0.11 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score. Scorpio market cap was 1× the collection median and indexed liquidity was 0.995× the collection median.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-11-09:2026-11-09T00:07:32.928Z",
+    "observedAt": "2026-11-09T00:07:32.928Z",
+    "provider": "DexScreener",
+    "sign": "scorpio",
+    "priceUsd": 0.00005689,
+    "change24hPct": null,
+    "marketCapUsd": 56900,
+    "fdvUsd": 56900,
+    "liquidityUsd": 12318.09,
+    "volume24hUsd": 0.11,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/3d2kyumgj2yotnc6skx4hnoeswp4n8zqzsq9kfh81yta",
+    "collectionMedian": {
+      "marketCapUsd": 56900,
+      "liquidityUsd": 12380.87
+    },
+    "vsCollectionMedian": {
+      "marketCap": 1,
+      "liquidity": 0.995
+    }
+  },
+  "evidence": {
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-11-09",
+    "marketSnapshotId": "registry-market:2026-11-09:2026-11-09T00:07:32.928Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-11"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "fa525014d73b8c14f48048af96b48dc3935d1a1e6c68b11a2530c909fd765b75",
+  "publishedAt": "2026-11-09T00:07:32.928Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-11-09T00:07:32.928Z",
+    "reviewer": null,
+    "artifactSha256": "fa525014d73b8c14f48048af96b48dc3935d1a1e6c68b11a2530c909fd765b75"
+  },
+  "status": "approved"
+}
