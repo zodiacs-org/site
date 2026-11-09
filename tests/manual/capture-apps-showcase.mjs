@@ -42,10 +42,13 @@ const rpc=async(method,params,attempt=1)=>{
 // padded with the card's own background to a fixed shape and faded where the card continues.
 const regionsOf=name=>{
  const doc=element=>{const box=element.getBoundingClientRect();return{left:box.left+scrollX,top:box.top+scrollY,right:box.right+scrollX,bottom:box.bottom+scrollY};};
- const width=document.documentElement.clientWidth,top=bottom=>({x:0,y:0,w:width,h:bottom});
+ // Portrait previews hug the card and run 72px past the last kept line, so the page's
+ // "View full card" button sits on the faded part, never on the score or tabs.
+ const card=document.querySelector('article.card'),edge=card?doc(card):{left:0,right:document.documentElement.clientWidth};
+ const top=bottom=>({x:edge.left-6,y:0,w:edge.right-edge.left+12,h:bottom});
  if(name==='chart'){const area=doc(document.querySelector('section.chart-area'));return{preview:{x:area.left-16,y:area.top-16,w:area.right-area.left+32,h:area.bottom-area.top+32}};}
- if(name==='horoscope'){const career=[...document.querySelectorAll('button')].find(button=>button.textContent.trim()==='Career');return{preview:top(doc(career).bottom+24)};}
- const regions={preview:top(doc(document.querySelector('.hero-row')).bottom+24)};
+ if(name==='horoscope'){const career=[...document.querySelectorAll('button')].find(button=>button.textContent.trim()==='Career');return{preview:top(doc(career).bottom+96)};}
+ const regions={preview:top(doc(document.querySelector('.hero-row')).bottom+96)};
  if(name==='comparison')regions.hero=top(doc(document.querySelector('header.keepsake')).bottom+20);
  return regions;
 };
@@ -57,7 +60,7 @@ const makePreview=async(png,region,shape,fade)=>{
  const data=await sharp(png).extract({left:2,top:2,width:1,height:1}).raw().toBuffer();
  const [r,g,b]=data,background={r,g,b,alpha:1};
  const padX=width/height<shape?Math.round((height*shape-width)/2):0,padY=width/height<shape?0:Math.round((width/shape-height)/2);
- const W=width+2*padX,H=height+2*padY,fadeHeight=Math.round(H*0.16);
+ const W=width+2*padX,H=height+2*padY,fadeHeight=Math.round(H*0.14);
  const framed=await sharp(png).extract({left,top,width,height}).extend({left:padX,right:padX,top:padY,bottom:padY,background}).png().toBuffer();
  const veil=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${fadeHeight}"><defs><linearGradient id="v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(${r},${g},${b})" stop-opacity="0"/><stop offset="1" stop-color="rgb(${r},${g},${b})" stop-opacity="1"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#v)"/></svg>`;
  const faded=fade?await sharp(framed).composite([{input:Buffer.from(veil),top:H-fadeHeight,left:0}]).png().toBuffer():framed;
