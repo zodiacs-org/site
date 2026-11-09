@@ -386,8 +386,8 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
             </header>
             <DailyLocaleReading locale={locale} reading={reading} headingId={`${entry.slug}-title`} />
             <p class="tdl-sign__links">
-              <a href={local(`/horoscopes/${entry.slug}/`)}>{c.horoscopeLink(sign(entry.slug))}</a>
-              <a href={local(`/${entry.slug}/`)}>{c.guideLink(sign(entry.slug))}</a>
+              <a href={local(`/horoscopes/${entry.slug}/`)} {...englishAttrs(local(`/horoscopes/${entry.slug}/`))}>{c.horoscopeLink(sign(entry.slug))}</a>
+              <a href={local(`/${entry.slug}/`)} {...englishAttrs(local(`/${entry.slug}/`))}>{c.guideLink(sign(entry.slug))}</a>
             </p>
           </article>
         ))}

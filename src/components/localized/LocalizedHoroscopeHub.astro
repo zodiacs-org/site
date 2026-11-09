@@ -70,7 +70,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
     <p class="hhl-jump-label">{c.jumpLabel}</p>
     <nav class="hhl-picker" aria-label={c.pickerAria}>
       {cards.map(({ sign }) => (
-        <a href={local(`/horoscopes/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+        <a href={local(`/horoscopes/${sign.slug}/`)} {...englishAttrs(local(`/horoscopes/${sign.slug}/`))} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={24} webpOnly fetchPriority="low" />
           <span>{signName(sign, locale)}</span>
         </a>
@@ -80,7 +80,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
     <h2 class="display hhl-preview-title">{t(locale, 'todayBySignTitle')}</h2>
     <div class="hhl-grid">
       {cards.map(({ sign, teaser }) => (
-        <a class="tile hhl-card" href={local(`/horoscopes/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+        <a class="tile hhl-card" href={local(`/horoscopes/${sign.slug}/`)} {...englishAttrs(local(`/horoscopes/${sign.slug}/`))} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={48} />
           <span class="hhl-card__name">{signName(sign, locale)}</span>
           <span class="hhl-card__dates">{signDateRange(sign, locale)}</span>

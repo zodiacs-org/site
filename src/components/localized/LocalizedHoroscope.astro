@@ -177,7 +177,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
         <span class="hzl-signrail__label">{c.railLabel}</span>
         {SIGNS.map((other) => (
           <a
-            href={local(`/horoscopes/${other.slug}/`)}
+            href={local(`/horoscopes/${other.slug}/`)} {...englishAttrs(local(`/horoscopes/${other.slug}/`))}
             aria-current={other.slug === sign.slug ? 'page' : undefined}
             style={`--other-sign:${other.hue}`}
           >
@@ -327,7 +327,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
             <p>{c.moreLongerText(name)}</p>
             <span class="hzl-go" aria-hidden="true">↗</span>
           </a>
-          <a href={local(`/rising-sign/${sign.slug}/`)}>
+          <a href={local(`/rising-sign/${sign.slug}/`)} {...englishAttrs(local(`/rising-sign/${sign.slug}/`))}>
             <div><b>{c.moreRising(name)}</b><small>{c.moreRisingNote}</small></div>
             <p>{c.moreRisingText(name)}</p>
             <span class="hzl-go" aria-hidden="true">→</span>
@@ -339,7 +339,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
           </a>
         </nav>
       </div>
-      <a class="hzl-guide" href={local(`/${sign.slug}/`)}>
+      <a class="hzl-guide" href={local(`/${sign.slug}/`)} {...englishAttrs(local(`/${sign.slug}/`))}>
         <ArtFrame sign={sign.slug} locale={locale} alt="" fade focus="34% 40%" spot="40% 42%" sizes="(min-width: 1021px) 420px, calc(100vw - 40px)" class="hzl-guide__art" />
         <span class="hzl-guide__cap">
           <span class="kicker">{c.guideKicker}</span>
@@ -363,7 +363,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
           {SIGNS.map((other) => (
             <li>
               <a
-                href={local(`/horoscopes/${other.slug}/`)}
+                href={local(`/horoscopes/${other.slug}/`)} {...englishAttrs(local(`/horoscopes/${other.slug}/`))}
                 aria-current={other.slug === sign.slug ? 'page' : undefined}
                 style={`--sign:${other.hue}`}
               >
