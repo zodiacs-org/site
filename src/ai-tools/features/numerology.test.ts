@@ -135,3 +135,17 @@ describe('the numerology copy', () => {
     expect(data.note).toContain('The arithmetic is exact and repeatable.');
   });
 });
+
+describe('the reusable reading (src/lib/numerology/reading.ts)', () => {
+  it('is what the tool returns, without the tool\'s own fields', async () => {
+    const { numerologyReading } = await import('../../lib/numerology/reading');
+    const reading = numerologyReading({ birthDate: '1990-11-29', name: 'John Smith', year: 2026 });
+    const { data } = run({ birthDate: '1990-11-29', name: 'John Smith', year: 2026 });
+    const { method, note, personalYear: { yearFrom, ...personalYear }, ...rest } = data;
+    expect(yearFrom).toBe('request');
+    expect({ ...rest, personalYear }).toEqual(reading);
+    expect([method.length > 0, note.length > 0]).toEqual([true, true]);
+    expect(reading.expression?.number).toBe(8);
+    expect(numerologyReading({ birthDate: '1990-11-29', year: 2026 }).expression).toBeNull();
+  });
+});

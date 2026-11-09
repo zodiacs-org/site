@@ -606,8 +606,8 @@ function pieceOf({ timeScale, deltaT: deltaT2, utcMs, ut1Days }) {
   if (input === "tt") return "";
   const model = deltaT2.model === DELTA_T_MODEL ? ut1Days < MODEL_KNOTS_FROM ? "spline" : "knots" : deltaT2.model;
   if (input === "ut1") return `${basis} ${model}`;
-  const reading2 = ut1MinusUtc === null ? "as-ut1" : ut1MinusUtc.source === "fallback" ? "fallback" : taiMinusUtcAt(utcMs);
-  return `${basis} ${model} ${reading2}`;
+  const reading = ut1MinusUtc === null ? "as-ut1" : ut1MinusUtc.source === "fallback" ? "fallback" : taiMinusUtcAt(utcMs);
+  return `${basis} ${model} ${reading}`;
 }
 function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
@@ -28322,15 +28322,15 @@ async function getBirthday(input, localTime2, now, origin = DEFAULT_ORIGIN2) {
   } else if (entry.cusp) {
     const summary = cuspSummary(entry.cusp);
     const splitTimes = summary.splitYears.map((s) => s.at).sort();
-    let reading2 = null;
+    let reading = null;
     if (birthYear !== null) {
       const row = cuspYearReading(entry.cusp, birthYear);
       if (row?.kind === "whole") {
-        reading2 = { year: birthYear, kind: "whole", sign: row.sign.slug, text: `In ${birthYear} the Sun was in ${row.sign.name} for the whole of ${pageLabel}.` };
+        reading = { year: birthYear, kind: "whole", sign: row.sign.slug, text: `In ${birthYear} the Sun was in ${row.sign.name} for the whole of ${pageLabel}.` };
         sign2 = row.sign;
         signFrom = "birth-year";
       } else if (row?.kind === "split") {
-        reading2 = {
+        reading = {
           year: birthYear,
           kind: "split",
           before: row.before.slug,
@@ -28350,7 +28350,7 @@ async function getBirthday(input, localTime2, now, origin = DEFAULT_ORIGIN2) {
       splitYears: summary.split,
       ingressUtcRange: splitTimes.length > 0 ? [splitTimes[0], splitTimes[splitTimes.length - 1]] : null,
       summary: `${summary.a.name} or ${summary.b.name}: this date sits on the boundary. In ${summary.wholeA} of the years from ${YEAR_FROM} to ${YEAR_TO} the whole day belonged to ${summary.a.name}; in ${summary.wholeB} it belonged to ${summary.b.name}; in ${summary.split} the Sun crossed over during the day${splitTimes.length > 0 ? `, between ${splitTimes[0]} and ${splitTimes[splitTimes.length - 1]} universal time` : ""}.`,
-      reading: reading2
+      reading
     };
   }
   let solarReturn = null;
@@ -28523,8 +28523,8 @@ function houseText(receipt) {
   const placed = receipt.label.split(" maps to ")[0];
   return `${placed}: your ${ordinal(receipt.house ?? 0)} solar house`;
 }
-function why(window, reading2, zone7) {
-  const ids = new Set(reading2.passages.flatMap((passage) => passage.evidenceRefs));
+function why(window, reading, zone7) {
+  const ids = new Set(reading.passages.flatMap((passage) => passage.evidenceRefs));
   for (const id of [...ids]) {
     const fact = window.evidence[id]?.sourceFactId;
     if (fact) ids.add(fact);
@@ -28547,26 +28547,26 @@ function resolveHoroscope(window, request, zone7, zoneSource, localDate, origin)
   const named = { ...base, sign: sign2, signName: cap(sign2) };
   const dates = window.editions.map((edition) => edition.anchorDate);
   const available = dates.map((value) => ({ date: value, label: dayLabel(value) }));
-  let reading2;
+  let reading;
   if (request.period === "week") {
     const edition = window.editions.find((candidate) => candidate.anchorDate === date3) ?? window.editions.find((candidate) => {
       const week = candidate.signs[sign2].weekly.period;
       return week.from <= date3 && date3 <= week.through;
     });
-    reading2 = edition?.signs[sign2].weekly;
+    reading = edition?.signs[sign2].weekly;
   } else {
-    reading2 = window.editions.find((candidate) => candidate.anchorDate === date3)?.signs[sign2][focus === "general" ? "today" : focus];
+    reading = window.editions.find((candidate) => candidate.anchorDate === date3)?.signs[sign2][focus === "general" ? "today" : focus];
   }
   const noShare = origin === void 0 ? {} : { shareUrl: null };
-  if (!reading2) {
+  if (!reading) {
     const message = date3 > dates[dates.length - 1] ? `The reading for ${dayLabel(date3)} isn't published yet. Each day's reading appears the day before.` : `The reading for ${dayLabel(date3)} is no longer kept here. Recent readings are on zodiacs.org.`;
     return { ...named, status: "unavailable", available, message, ...noShare };
   }
-  if (reading2.status !== "publishable") {
+  if (reading.status !== "publishable") {
     const kind = focus === "general" ? "" : `${focus} `;
     return { ...named, status: "unavailable", available, message: `There's no ${kind}reading for ${cap(sign2)} on ${dayLabel(date3)}.`, ...noShare };
   }
-  const label = request.period === "week" ? weekLabel(reading2.period.from, reading2.period.through) : dayLabel(date3);
+  const label = request.period === "week" ? weekLabel(reading.period.from, reading.period.through) : dayLabel(date3);
   const suffix = request.period === "day" && focus !== "general" ? ` \xB7 ${cap(focus)}` : "";
   return {
     ...named,
@@ -28574,16 +28574,16 @@ function resolveHoroscope(window, request, zone7, zoneSource, localDate, origin)
     dateLabel: label,
     reading: {
       title: `${cap(sign2)} \xB7 ${label}${suffix}`,
-      paragraphs: reading2.passages.map((passage) => passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })
+      paragraphs: reading.passages.map((passage) => passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })
     },
-    why: why(window, reading2, zone7),
+    why: why(window, reading, zone7),
     ...origin === void 0 ? {} : {
-      shareUrl: horoscopeShareUrl(origin, { sign: sign2, date: request.period === "week" ? reading2.period.from : date3, week: request.period === "week", focus })
+      shareUrl: horoscopeShareUrl(origin, { sign: sign2, date: request.period === "week" ? reading.period.from : date3, week: request.period === "week", focus })
     }
   };
 }
-function panelReading(window, reading2, shareUrl) {
-  const ids = new Set(reading2.passages.flatMap((passage) => passage.evidenceRefs));
+function panelReading(window, reading, shareUrl) {
+  const ids = new Set(reading.passages.flatMap((passage) => passage.evidenceRefs));
   for (const id of [...ids]) {
     const fact = window.evidence[id]?.sourceFactId;
     if (fact) ids.add(fact);
@@ -28595,13 +28595,13 @@ function panelReading(window, reading2, shareUrl) {
     if (!facts.some((known) => known.text === fact.text && known.at === fact.at)) facts.push(fact);
   }
   return {
-    status: reading2.status === "publishable" ? "available" : "unavailable",
-    paragraphs: reading2.status === "publishable" ? reading2.passages.map((passage) => passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text }) : [],
-    facts: reading2.status === "publishable" ? facts : [],
-    houses: reading2.status === "publishable" ? [...new Set(receipts.filter((item) => item.kind === "solar-house").map(houseText))] : [],
-    from: reading2.period.from,
-    through: reading2.period.through,
-    shareUrl: reading2.status === "publishable" ? shareUrl : null
+    status: reading.status === "publishable" ? "available" : "unavailable",
+    paragraphs: reading.status === "publishable" ? reading.passages.map((passage) => passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text }) : [],
+    facts: reading.status === "publishable" ? facts : [],
+    houses: reading.status === "publishable" ? [...new Set(receipts.filter((item) => item.kind === "solar-house").map(houseText))] : [],
+    from: reading.period.from,
+    through: reading.period.through,
+    shareUrl: reading.status === "publishable" ? shareUrl : null
   };
 }
 function horoscopePanel(window, sign2, requested, share) {
@@ -32404,7 +32404,7 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
   }
   const fromUtc = await start(from);
   const toUtc = await start(addDays(to, 1));
-  let reading2 = null;
+  let reading = null;
   const focusReadings = [];
   const notes = [];
   let pageUrl = `${origin}/horoscopes/${sign2}/`;
@@ -32412,13 +32412,13 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
     const month = from.slice(0, 7);
     const entry = servedMonths.includes(month) ? months.months[month][sign2] : void 0;
     if (entry) {
-      reading2 = { title: `${signName7} \xB7 ${label}`, paragraphs: entry.paragraphs.map((text2) => ({ text: text2 })), published: entry.published };
+      reading = { title: `${signName7} \xB7 ${label}`, paragraphs: entry.paragraphs.map((text2) => ({ text: text2 })), published: entry.published };
       if (month === servedMonths.at(-1)) pageUrl = `${origin}/horoscopes/${sign2}/monthly/`;
     } else notes.push(month > today.slice(0, 7) ? `The ${label} reading for ${signName7} isn't published yet; monthly readings appear on the first of the month.` : `The ${label} reading for ${signName7} is outside the range this tool serves${servedMonths.length ? `: Zodiacs serves the monthly readings from ${monthLabel(servedMonths[0])} to ${monthLabel(servedMonths.at(-1))} only` : ""}. The ${signName7} horoscope pages on Zodiacs are linked.`);
   } else if (args.period === "year") {
     const yearly = program.signs.find((entry) => entry.sign === sign2)?.readings[`yearly-${label}`];
     if (yearly && yearly.status === "publishable") {
-      reading2 = { title: yearly.title, paragraphs: yearly.passages.map((passage) => passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text }), published: null };
+      reading = { title: yearly.title, paragraphs: yearly.passages.map((passage) => passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text }), published: null };
       pageUrl = `${origin}/horoscopes/${sign2}/${label}/`;
     } else notes.push(`Zodiacs publishes the yearly reading for ${years.join(" and ")}; there is none for ${label}.`);
   } else if (focus === "general") {
@@ -32428,7 +32428,7 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
     const window = await sources.window();
     const weekly = resolveHoroscope(window, { sign: sign2, period: "week", focus: "general", date: date3 }, zone7, "request", today);
     if (weekly.status === "available" && weekly.reading) {
-      reading2 = { title: `${signName7} \xB7 ${label}`, paragraphs: weekly.reading.paragraphs, published: null };
+      reading = { title: `${signName7} \xB7 ${label}`, paragraphs: weekly.reading.paragraphs, published: null };
       pageUrl = `${origin}/horoscopes/${sign2}/weekly/`;
     } else notes.push(`The weekly reading for ${label} isn't kept here; Zodiacs keeps the current week's.`);
     for (const edition of window.editions.filter((candidate) => candidate.anchorDate >= from && candidate.anchorDate <= to)) {
@@ -32470,11 +32470,11 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
     sky = sky.filter((event2) => rule.planets.includes(event2.planet) || rule.houses.includes(event2.house));
     notes.push(`For ${focus}, the sky keeps ${rule.words}.`);
   }
-  if (args.period !== "week" && focus !== "general" && reading2) notes.push(`The ${args.period === "month" ? "monthly" : "yearly"} reading itself is written for the whole sign, not only ${focus}.`);
+  if (args.period !== "week" && focus !== "general" && reading) notes.push(`The ${args.period === "month" ? "monthly" : "yearly"} reading itself is written for the whole sign, not only ${focus}.`);
   if (focus === "love") notes.push("If the person is under 18, do not frame this as romance or attraction.");
   if (zoneSource === "default") notes.push("Dates assume UTC because no time zone was given.");
   const data = {
-    status: reading2 || focusReadings.length ? "available" : "sky-only",
+    status: reading || focusReadings.length ? "available" : "sky-only",
     sign: sign2,
     signName: signName7,
     period: args.period,
@@ -32484,7 +32484,7 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
     label,
     zone: zone7,
     zoneSource,
-    reading: reading2,
+    reading,
     focusReadings,
     sky,
     message: notes.length ? notes.join(" ") : null,
@@ -32501,7 +32501,7 @@ async function getHoroscopePeriod(args, today, zone7, zoneSource, clock2, source
     { title: `The ${signName7} horoscope by email each morning`, url: `${origin}/horoscopes/${sign2}/#daily-email` }
   ];
   if (!options.skyEvents) return { data, links };
-  const shareUrl = reading2 && args.period !== "week" ? horoscopePeriodShareUrl(origin, { sign: sign2, period: args.period, date: from }) : null;
+  const shareUrl = reading && args.period !== "week" ? horoscopePeriodShareUrl(origin, { sign: sign2, period: args.period, date: from }) : null;
   return { data: { ...data, shareUrl }, links };
 }
 
@@ -41367,67 +41367,9 @@ var POSITION_READINGS = Object.freeze({
   })
 });
 
-// src/ai-tools/features/numerology.ts
-var ZONE_PATTERN9 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
-var NUMEROLOGY_MIN_YEAR = 1800;
-var NUMEROLOGY_MAX_YEAR = 2199;
-var numerologyInput = z13.strictObject({
-  birthDate: z13.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1990-05-03. Gives the Life Path and the Personal Year."),
-  name: z13.string().min(1).max(120).optional().describe("Optional: the full name at birth, such as it appears on a birth certificate, for the Expression, Soul Urge and Personality numbers. Only if the person gives it for this reading. Latin letters; accents are folded. Used for this answer only: it is not returned, put in a link or stored."),
-  year: z13.number().int().min(NUMEROLOGY_MIN_YEAR).max(NUMEROLOGY_MAX_YEAR).optional().describe("Optional: the calendar year for the Personal Year, such as 2027. Without it, the current year where the person is."),
-  zone: z13.string().min(1).max(64).regex(ZONE_PATTERN9).optional().describe("Optional: the person's time zone, such as Europe/Paris, so the current year is their own. Without it, the assistant's time zone or UTC.")
-});
-var NUMBER_VALUES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
-var numberReading = z13.object({
-  /** 1 to 9, or a master number 11, 22 or 33 kept unreduced. 0 only for a name with no letters of that kind (no vowels). */
-  number: z13.literal(NUMBER_VALUES),
-  /** The reduction in slash notation, such as 16/7 or 29/11; the number alone when no reduction was needed. */
-  chain: z13.string(),
-  master: z13.boolean(),
-  /** The number's short name, such as The builder. */
-  title: z13.string(),
-  keywords: z13.array(z13.string()),
-  /** What the tradition associates with the number in any position. */
-  meaning: z13.string(),
-  /** What it reads as in this position. */
-  reading: z13.string()
-});
-var POSITION_NAMES = ["lifePath", "birthday", "expression", "soulUrge", "personality"];
-var numerologyData = z13.object({
-  system: z13.literal("pythagorean"),
-  /** Numerology is not astrology; say so when sharing the answer. */
-  separateFromAstrology: z13.string(),
-  /** From the birth date: month, day and year each reduced, then added and reduced, masters kept. */
-  lifePath: numberReading,
-  /** From every letter of the name; null when no name was given. */
-  expression: numberReading.nullable(),
-  /** From the vowels of the name; null when no name was given. */
-  soulUrge: numberReading.nullable(),
-  /** From the consonants of the name; null when no name was given. */
-  personality: numberReading.nullable(),
-  personalYear: z13.object({
-    year: z13.number().int(),
-    /** Always reduced to one digit, as the site's calculator does; the chain shows an 11 or 22 on the way. */
-    number: z13.number().int().min(1).max(9),
-    chain: z13.string(),
-    /** Whether the year was the one asked for, or the current year where the person is (or UTC). */
-    yearFrom: z13.enum(["request", "zone", "assistant", "utc"]),
-    reading: z13.string()
-  }),
-  /** A 13, 14, 16 or 19 in the reduction of the Life Path, Birthday, Expression, Soul Urge or Personality. */
-  karmicDebts: z13.array(z13.object({ number: z13.literal([13, 14, 16, 19]), carriedBy: z13.array(z13.enum(POSITION_NAMES)), reading: z13.string() })),
-  method: z13.string(),
-  note: z13.string()
-});
+// src/lib/numerology/reading.ts
 var NUMEROLOGY_SEPARATE = "Numerology is a separate tradition from astrology. It works from the letters of a name and the digits of a date, with no planets, signs or sky in it.";
-var NUMEROLOGY_METHOD = "Pythagorean letter values (A to I are 1 to 9, J to R are 1 to 9, S to Z are 1 to 8). The birth month, day and year are each reduced, then added and reduced again; each part of the name is reduced on its own before the parts are added. 11, 22 and 33 are kept as master numbers in the core numbers. Y is a vowel unless it follows A, E, I, O or U, or opens a name before one. The Personal Year adds the birth month and day to the calendar year and reduces to one digit. The same rules as the calculator at zodiacs.org/numerology/.";
-var NUMEROLOGY_NOTE = "The arithmetic is exact and repeatable. The meanings are the ones the numerology tradition gives each number, in Zodiacs' own words.";
-var REFUSALS = {
-  "invalid-date": "birthDate must be a real calendar date, such as 1990-05-03.",
-  "empty-name": "name must contain at least one letter. Leave it out for the birth date numbers alone.",
-  "unsupported-letters": "name can be read only in the Latin alphabet, A to Z (accents are fine). Leave it out for the birth date numbers alone, or give the name as it is written in Latin letters."
-};
-function reading(position2, reduction) {
+function numberReading(position2, reduction) {
   const value = reduction.value;
   if (value === 0) {
     return { number: 0, chain: "0", master: false, title: "No value", keywords: [], meaning: "No letters of this kind are in the name, so the number has no value.", reading: "The tradition reads an empty position as one the name leaves open, not as a lack." };
@@ -41451,38 +41393,103 @@ function personalYear(birthDate, year) {
   while (chain[chain.length - 1] > 9) chain.push(digitSum2(chain[chain.length - 1]));
   return { number: chain[chain.length - 1], chain: chain.join("/") };
 }
-function getNumerology(args, context) {
-  let date3;
-  let name = null;
-  try {
-    date3 = dateNumbers(args.birthDate);
-    if (args.name !== void 0) name = nameNumbers(args.name);
-  } catch (error) {
-    if (error instanceof NumerologyInputError) throw new RangeError(REFUSALS[error.code]);
-    throw error;
-  }
-  const year = args.year ?? context.currentYear;
-  const cycle = personalYear(args.birthDate, year);
+function numerologyReading({ birthDate, name, year }) {
+  const date3 = dateNumbers(birthDate);
+  const names = name !== void 0 ? nameNumbers(name) : null;
+  const cycle = personalYear(date3.iso, year);
   const carriers = /* @__PURE__ */ new Map();
   const positions2 = [
     ["lifePath", date3.lifePath],
     ["birthday", date3.birthday],
-    ["expression", name?.expression],
-    ["soulUrge", name?.soulUrge],
-    ["personality", name?.personality]
+    ["expression", names?.expression],
+    ["soulUrge", names?.soulUrge],
+    ["personality", names?.personality]
   ];
   for (const [position2, reduction] of positions2) {
     if (reduction?.karmicDebt) carriers.set(reduction.karmicDebt, [...carriers.get(reduction.karmicDebt) ?? [], position2]);
   }
-  const data = {
+  return {
     system: "pythagorean",
     separateFromAstrology: NUMEROLOGY_SEPARATE,
-    lifePath: reading("lifePath", date3.lifePath),
-    expression: name ? reading("expression", name.expression) : null,
-    soulUrge: name ? reading("soulUrge", name.soulUrge) : null,
-    personality: name ? reading("personality", name.personality) : null,
-    personalYear: { year, number: cycle.number, chain: cycle.chain, yearFrom: args.year !== void 0 ? "request" : context.currentYearFrom, reading: PERSONAL_YEAR_MEANINGS[cycle.number] },
-    karmicDebts: [...carriers.entries()].sort(([a], [b]) => a - b).map(([number2, carriedBy]) => ({ number: number2, carriedBy, reading: KARMIC_DEBT_MEANINGS[number2] })),
+    lifePath: numberReading("lifePath", date3.lifePath),
+    expression: names ? numberReading("expression", names.expression) : null,
+    soulUrge: names ? numberReading("soulUrge", names.soulUrge) : null,
+    personality: names ? numberReading("personality", names.personality) : null,
+    personalYear: { year, number: cycle.number, chain: cycle.chain, reading: PERSONAL_YEAR_MEANINGS[cycle.number] },
+    karmicDebts: [...carriers.entries()].sort(([a], [b]) => a - b).map(([number2, carriedBy]) => ({ number: number2, carriedBy, reading: KARMIC_DEBT_MEANINGS[number2] }))
+  };
+}
+
+// src/ai-tools/features/numerology.ts
+var ZONE_PATTERN9 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
+var NUMEROLOGY_MIN_YEAR = 1800;
+var NUMEROLOGY_MAX_YEAR = 2199;
+var numerologyInput = z13.strictObject({
+  birthDate: z13.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).describe("The birth date, such as 1990-05-03. Gives the Life Path and the Personal Year."),
+  name: z13.string().min(1).max(120).optional().describe("Optional: the full name at birth, such as it appears on a birth certificate, for the Expression, Soul Urge and Personality numbers. Only if the person gives it for this reading. Latin letters; accents are folded. Used for this answer only: it is not returned, put in a link or stored."),
+  year: z13.number().int().min(NUMEROLOGY_MIN_YEAR).max(NUMEROLOGY_MAX_YEAR).optional().describe("Optional: the calendar year for the Personal Year, such as 2027. Without it, the current year where the person is."),
+  zone: z13.string().min(1).max(64).regex(ZONE_PATTERN9).optional().describe("Optional: the person's time zone, such as Europe/Paris, so the current year is their own. Without it, the assistant's time zone or UTC.")
+});
+var NUMBER_VALUES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
+var numberReading2 = z13.object({
+  /** 1 to 9, or a master number 11, 22 or 33 kept unreduced. 0 only for a name with no letters of that kind (no vowels). */
+  number: z13.literal(NUMBER_VALUES),
+  /** The reduction in slash notation, such as 16/7 or 29/11; the number alone when no reduction was needed. */
+  chain: z13.string(),
+  master: z13.boolean(),
+  /** The number's short name, such as The builder. */
+  title: z13.string(),
+  keywords: z13.array(z13.string()),
+  /** What the tradition associates with the number in any position. */
+  meaning: z13.string(),
+  /** What it reads as in this position. */
+  reading: z13.string()
+});
+var POSITION_NAMES = ["lifePath", "birthday", "expression", "soulUrge", "personality"];
+var numerologyData = z13.object({
+  system: z13.literal("pythagorean"),
+  /** Numerology is not astrology; say so when sharing the answer. */
+  separateFromAstrology: z13.string(),
+  /** From the birth date: month, day and year each reduced, then added and reduced, masters kept. */
+  lifePath: numberReading2,
+  /** From every letter of the name; null when no name was given. */
+  expression: numberReading2.nullable(),
+  /** From the vowels of the name; null when no name was given. */
+  soulUrge: numberReading2.nullable(),
+  /** From the consonants of the name; null when no name was given. */
+  personality: numberReading2.nullable(),
+  personalYear: z13.object({
+    year: z13.number().int(),
+    /** Always reduced to one digit, as the site's calculator does; the chain shows an 11 or 22 on the way. */
+    number: z13.number().int().min(1).max(9),
+    chain: z13.string(),
+    /** Whether the year was the one asked for, or the current year where the person is (or UTC). */
+    yearFrom: z13.enum(["request", "zone", "assistant", "utc"]),
+    reading: z13.string()
+  }),
+  /** A 13, 14, 16 or 19 in the reduction of the Life Path, Birthday, Expression, Soul Urge or Personality. */
+  karmicDebts: z13.array(z13.object({ number: z13.literal([13, 14, 16, 19]), carriedBy: z13.array(z13.enum(POSITION_NAMES)), reading: z13.string() })),
+  method: z13.string(),
+  note: z13.string()
+});
+var NUMEROLOGY_METHOD = "Pythagorean letter values (A to I are 1 to 9, J to R are 1 to 9, S to Z are 1 to 8). The birth month, day and year are each reduced, then added and reduced again; each part of the name is reduced on its own before the parts are added. 11, 22 and 33 are kept as master numbers in the core numbers. Y is a vowel unless it follows A, E, I, O or U, or opens a name before one. The Personal Year adds the birth month and day to the calendar year and reduces to one digit. The same rules as the calculator at zodiacs.org/numerology/.";
+var NUMEROLOGY_NOTE = "The arithmetic is exact and repeatable. The meanings are the ones the numerology tradition gives each number, in Zodiacs' own words.";
+var REFUSALS = {
+  "invalid-date": "birthDate must be a real calendar date, such as 1990-05-03.",
+  "empty-name": "name must contain at least one letter. Leave it out for the birth date numbers alone.",
+  "unsupported-letters": "name can be read only in the Latin alphabet, A to Z (accents are fine). Leave it out for the birth date numbers alone, or give the name as it is written in Latin letters."
+};
+function getNumerology(args, context) {
+  let reading;
+  try {
+    reading = numerologyReading({ birthDate: args.birthDate, ...args.name !== void 0 ? { name: args.name } : {}, year: args.year ?? context.currentYear });
+  } catch (error) {
+    if (error instanceof NumerologyInputError) throw new RangeError(REFUSALS[error.code]);
+    throw error;
+  }
+  const data = {
+    ...reading,
+    personalYear: { ...reading.personalYear, yearFrom: args.year !== void 0 ? "request" : context.currentYearFrom },
     method: NUMEROLOGY_METHOD,
     note: NUMEROLOGY_NOTE
   };
@@ -42434,7 +42441,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const readings = [];
       for (const offset of new Set(samples.map(clockAt))) {
         const utcMs2 = wallMs - offset * 1e3;
-        if (clockAt(utcMs2) === offset && !readings.some((reading2) => reading2.utcMs === utcMs2)) {
+        if (clockAt(utcMs2) === offset && !readings.some((reading) => reading.utcMs === utcMs2)) {
           readings.push({ utcMs: utcMs2, offset });
         }
       }
@@ -42518,13 +42525,13 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const samples = [wallMs - PROBE, wallMs, wallMs + PROBE, ...place2 ? [place2.endMs - 1, place2.endMs, place2.legalFrom] : []];
       const clockAt = place2 ? place2.clockAt : zoneAt2;
       const zoneReading = readClock(wallMs, zoneAt2, samples);
-      const reading2 = place2 ? readClock(wallMs, clockAt, samples) : zoneReading;
-      const { chosen, kind } = reading2;
+      const reading = place2 ? readClock(wallMs, clockAt, samples) : zoneReading;
+      const { chosen, kind } = reading;
       const inEra = !!place2 && chosen.utcMs < place2.endMs;
       const count = history && chosen.utcMs < 0 ? typeIndexAt(history, chosen.utcMs) : -1;
       const type = count < 0 ? -1 : history.types[count];
       const shipped = inEra || type >= 0 && history.offsets[type] !== null;
-      let applied = reading2.at;
+      let applied = reading.at;
       if (applied === null && shipped) {
         const recorded = count > 0 ? history.times[count - 1] : null;
         const marks = place2 ? [...place2.lineEnds, place2.endMs, place2.legalFrom].filter((at) => at <= chosen.utcMs) : [];
@@ -42547,7 +42554,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const lmt = inEra || !place2 && history?.zoneEraEnd != null && chosen.utcMs < history.zoneEraEnd;
       const flags = kind ? [kind === "gap" ? "dst-gap" : "dst-fold"] : [];
       if (lmt) flags.push("lmt");
-      const localMeanTime = longitude2 !== void 0 && place2 && (inEra || kind === "gap" && reading2.at === place2.endMs) ? { longitude: longitude2, zoneOffsetMinutes: zoneReading.chosen.offset / 60 } : null;
+      const localMeanTime = longitude2 !== void 0 && place2 && (inEra || kind === "gap" && reading.at === place2.endMs) ? { longitude: longitude2, zoneOffsetMinutes: zoneReading.chosen.offset / 60 } : null;
       const zone7 = shipped ? {
         source: "tzdb",
         tzdbVersion: TZDB.version,

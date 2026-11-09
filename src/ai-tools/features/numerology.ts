@@ -9,9 +9,10 @@
  * date less than 13 years ago before this runs (childBirthDateRefusal in ../tools.ts).
  */
 import { z } from 'zod';
-import { NumerologyInputError, dateNumbers, nameNumbers, reduceFully, type Reduction } from '../../lib/numerology';
-import { KARMIC_DEBT_MEANINGS, NUMBER_MEANINGS, PERSONAL_YEAR_MEANINGS, type CoreNumber, type KarmicDebt, type SingleDigit } from '../../data/numerology-meanings';
-import { POSITION_READINGS, type ReadingPosition } from '../../data/numerology-readings';
+import { NumerologyInputError } from '../../lib/numerology';
+import { NUMEROLOGY_SEPARATE, numerologyReading } from '../../lib/numerology/reading';
+
+export { NUMEROLOGY_SEPARATE };
 
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 export const NUMEROLOGY_MIN_YEAR = 1800;
@@ -74,7 +75,6 @@ export const numerologyData = z.object({
 });
 export type NumerologyData = z.infer<typeof numerologyData>;
 
-export const NUMEROLOGY_SEPARATE = 'Numerology is a separate tradition from astrology. It works from the letters of a name and the digits of a date, with no planets, signs or sky in it.';
 export const NUMEROLOGY_METHOD = 'Pythagorean letter values (A to I are 1 to 9, J to R are 1 to 9, S to Z are 1 to 8). The birth month, day and year are each reduced, then added and reduced again; each part of the name is reduced on its own before the parts are added. 11, 22 and 33 are kept as master numbers in the core numbers. Y is a vowel unless it follows A, E, I, O or U, or opens a name before one. The Personal Year adds the birth month and day to the calendar year and reduces to one digit. The same rules as the calculator at zodiacs.org/numerology/.';
 export const NUMEROLOGY_NOTE = 'The arithmetic is exact and repeatable. The meanings are the ones the numerology tradition gives each number, in Zodiacs\' own words.';
 /** Fixed refusals: the engine's own message can name the letter it could not read, which is part of the name. */
@@ -84,29 +84,6 @@ const REFUSALS: Record<NumerologyInputError['code'], string> = {
   'unsupported-letters': 'name can be read only in the Latin alphabet, A to Z (accents are fine). Leave it out for the birth date numbers alone, or give the name as it is written in Latin letters.',
 };
 
-function reading(position: ReadingPosition, reduction: Reduction): z.infer<typeof numberReading> {
-  const value = reduction.value as number;
-  if (value === 0) {
-    return { number: 0, chain: '0', master: false, title: 'No value', keywords: [], meaning: 'No letters of this kind are in the name, so the number has no value.', reading: 'The tradition reads an empty position as one the name leaves open, not as a lack.' };
-  }
-  const meaning = NUMBER_MEANINGS[value as CoreNumber];
-  return {
-    number: value as CoreNumber, chain: reduction.chain.join('/'), master: value === 11 || value === 22 || value === 33,
-    title: meaning.name, keywords: [...meaning.keywords], meaning: meaning.summary, reading: POSITION_READINGS[position][value as CoreNumber],
-  };
-}
-
-const digitSum = (n: number) => String(n).split('').reduce((sum, digit) => sum + Number(digit), 0);
-
-/** The Personal Year as the calculator works it, with the chain from the unreduced sum (personalCycles in src/lib/numerology). */
-function personalYear(birthDate: string, year: number) {
-  const [, month, day] = birthDate.split('-').map(Number);
-  const total = reduceFully(month) + reduceFully(day) + reduceFully(digitSum(year));
-  const chain = [total];
-  while (chain[chain.length - 1] > 9) chain.push(digitSum(chain[chain.length - 1]));
-  return { number: chain[chain.length - 1] as SingleDigit, chain: chain.join('/') };
-}
-
 export interface NumerologyContext {
   /** The current year where the person is, and where that came from, used when the call names no year. */
   currentYear: number;
@@ -114,35 +91,18 @@ export interface NumerologyContext {
   origin: string;
 }
 
-/** Throws RangeError with a fixed, field-named sentence for details the engine cannot read. */
+/** The tool's answer: the shared reading (src/lib/numerology/reading.ts) with where its year came from, the method and links. Throws RangeError with a fixed, field-named sentence for details the engine cannot read. */
 export function getNumerology(args: NumerologyInput, context: NumerologyContext): { data: NumerologyData; links: { title: string; url: string }[] } {
-  let date: ReturnType<typeof dateNumbers>;
-  let name: ReturnType<typeof nameNumbers> | null = null;
+  let reading: ReturnType<typeof numerologyReading>;
   try {
-    date = dateNumbers(args.birthDate);
-    if (args.name !== undefined) name = nameNumbers(args.name);
+    reading = numerologyReading({ birthDate: args.birthDate, ...(args.name !== undefined ? { name: args.name } : {}), year: args.year ?? context.currentYear });
   } catch (error) {
     if (error instanceof NumerologyInputError) throw new RangeError(REFUSALS[error.code]);
     throw error;
   }
-  const year = args.year ?? context.currentYear;
-  const cycle = personalYear(args.birthDate, year);
-  const carriers = new Map<KarmicDebt, (typeof POSITION_NAMES)[number][]>();
-  const positions: [(typeof POSITION_NAMES)[number], Reduction | undefined][] = [
-    ['lifePath', date.lifePath], ['birthday', date.birthday], ['expression', name?.expression], ['soulUrge', name?.soulUrge], ['personality', name?.personality],
-  ];
-  for (const [position, reduction] of positions) {
-    if (reduction?.karmicDebt) carriers.set(reduction.karmicDebt, [...(carriers.get(reduction.karmicDebt) ?? []), position]);
-  }
   const data: NumerologyData = {
-    system: 'pythagorean',
-    separateFromAstrology: NUMEROLOGY_SEPARATE,
-    lifePath: reading('lifePath', date.lifePath),
-    expression: name ? reading('expression', name.expression) : null,
-    soulUrge: name ? reading('soulUrge', name.soulUrge) : null,
-    personality: name ? reading('personality', name.personality) : null,
-    personalYear: { year, number: cycle.number, chain: cycle.chain, yearFrom: args.year !== undefined ? 'request' : context.currentYearFrom, reading: PERSONAL_YEAR_MEANINGS[cycle.number] },
-    karmicDebts: [...carriers.entries()].sort(([a], [b]) => a - b).map(([number, carriedBy]) => ({ number, carriedBy, reading: KARMIC_DEBT_MEANINGS[number] })),
+    ...reading,
+    personalYear: { ...reading.personalYear, yearFrom: args.year !== undefined ? 'request' : context.currentYearFrom },
     method: NUMEROLOGY_METHOD,
     note: NUMEROLOGY_NOTE,
   };
