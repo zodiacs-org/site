@@ -70,8 +70,8 @@ const SCENES = [
   },
   {
     name: 'chart', html: STUDIO_HTML, uri: 'ui://zodiacs/chart-studio-v6.html', heading: 'Chart Studio',
-    prompt: 'Open Chart Studio so I can explore my birth chart.',
-    tool: null, before: { click: 'See an example chart (not yours)', scrollTo: '.wheel-wrap' },
+    prompt: 'Open Chart Studio and show me the example chart.',
+    tool: null, before: { click: 'See an example chart (not yours)', scrollTo: 'section.chart-area' },
     steps: [['hold', 0.8], ['scrollTo', 'select:has(option:has-text("Venus"))', 0.8], ['choose', 'Venus', 0.8], ['hold', 1.4]],
   },
 ];
@@ -106,6 +106,11 @@ const addOverlay = (css) => {
     + '<div id="zt-end"><h1>A little sky in your<br><em>conversation.</em></h1><p>Birth charts, two charts compared and the sky on a day that matters.</p><div class="zt-url">zodiacs.org</div></div>');
 };
 
+const settle = async (limit) => {
+  for (const image of document.images) image.loading = 'eager';
+  const loaded = Promise.all([document.fonts.ready, ...[...document.images].map((image) => image.decode().catch(() => {}))]);
+  await Promise.race([loaded, new Promise((_, fail) => setTimeout(() => fail(new Error(`fonts or pictures did not load in ${limit / 1000} s`)), limit))]);
+};
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS, headless: true });
 let frame = 0;
@@ -160,12 +165,12 @@ try {
     if (result) await page.evaluate((value) => { window.openai = { toolOutput: value.structuredContent, toolResponseMetadata: value._meta, theme: 'dark' }; window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: window.openai } })); }, result);
     if (scene.tool) await page.getByRole('heading', { name: scene.heading, exact: true }).first().waitFor();
     else await page.getByRole('button', { name: 'See an example chart (not yours)', exact: true }).waitFor();
-    // Lazy pictures below the fold would never load in a still page, so load them all now.
-    await page.evaluate(async () => { for (const image of document.images) image.loading = 'eager'; await document.fonts.ready; await Promise.all([...document.images].map((image) => image.decode().catch(() => {}))); });
+    // Lazy pictures below the fold would never load in a still page, so load them all now (20 s at most).
+    await page.evaluate(settle, 20_000);
     if (scene.before) {
       await page.getByRole('button', { name: scene.before.click, exact: true }).click();
       await page.locator(scene.before.scrollTo).first().waitFor();
-      await page.evaluate(async () => { for (const image of document.images) image.loading = 'eager'; await document.fonts.ready; });
+      await page.evaluate(settle, 20_000);
       const top = await page.locator(scene.before.scrollTo).first().evaluate((element, offset) => element.getBoundingClientRect().top + scrollY - offset, TOP + 10);
       await page.evaluate((y) => scrollTo(0, y), top);
     }
@@ -208,6 +213,10 @@ try {
   for (let i = 1; i <= 10; i += 1) { await page.evaluate((o) => { document.getElementById('zt-end').style.opacity = String(o); }, ease(i / 10)); await shoot(); }
   await hold(1.6);
   await context.close();
+} catch (error) {
+  // A failed run leaves no frames behind unless they were asked for.
+  if (!args.includes('--keep-frames')) await rm(`${out}/frames`, { recursive: true, force: true });
+  throw error;
 } finally {
   await browser.close();
 }

@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-11-09T08:34:47.841Z",
+  "recordedAt": "2026-11-09T08:59:59.803Z",
   "syntheticExamples": true,
   "source": "https://zodiacs.org/mcp",
   "file": "tour.mp4",
@@ -8,14 +8,14 @@
   "fps": 30,
   "frames": 599,
   "seconds": 19.967,
-  "bytes": 2937250,
-  "sha256": "a8ea23473835d0cb8ae42205dbbd4ee66926a5753bc0fd759e60e5040ca6efa7",
+  "bytes": 2950668,
+  "sha256": "66969abf34aa7544fb9cdeba919daf7144efa95e47749c5e0575cd0621f23cca",
   "poster": {
     "file": "demo-poster.webp",
     "width": 648,
     "height": 810,
-    "bytes": 41720,
-    "sha256": "34fa3bd88a90831292047105f10e11e2fc03159922f0aafbe00eb13f7f5f26f7",
+    "bytes": 41664,
+    "sha256": "dcbaed68882fedcb6aa3c977261c63e0d560f03a1855136b3e3d91b5c55873b6",
     "frame": 39
   },
   "scenes": [

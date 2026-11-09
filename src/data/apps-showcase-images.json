@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-09T08:41:09.078Z",
+  "capturedAt": "2026-11-09T08:53:37.189Z",
   "syntheticExamples": true,
   "source": "https://zodiacs.org/mcp",
   "images": [
@@ -17,17 +17,17 @@
       "noOverflow": true,
       "preview": {
         "file": "comparison-preview.webp",
-        "width": 1024,
-        "height": 1279,
-        "bytes": 88950,
-        "sha256": "19a1a08804277fa6c6bb3ff3c18ac30882d35eae32faf89277f2867e382a3b41"
+        "width": 1074,
+        "height": 1343,
+        "bytes": 91984,
+        "sha256": "2ea2b2ef639e90188bf51789e0c3166072885b9775ccf9c7e798a7012a5ad7b6"
       },
       "hero": {
         "file": "comparison-hero.webp",
         "width": 908,
         "height": 907,
-        "bytes": 67380,
-        "sha256": "63a5df78c6965dc1e834177a8e05928fd3ee35da768c12c16687181bcd0a75b8"
+        "bytes": 67140,
+        "sha256": "e95e4ac455ba7763ed1e574e2b90375d91930db60b0b96402b4b610f8f818cd3"
       }
     },
     {
@@ -35,8 +35,8 @@
       "file": "wedding.webp",
       "width": 750,
       "height": 2030,
-      "bytes": 153686,
-      "sha256": "6574ac1081927eaf6578ae2faf4256a109cb9db5e2b3bc1b3203dc736cb8313a",
+      "bytes": 153666,
+      "sha256": "0f69d9259844cd2e2a503568510af538449f7d9af54ccaf0a1f6b49b4b56fe7d",
       "resourceUri": "ui://zodiacs/occasions-v8.html",
       "htmlSha256": "697936e02db78acbccd2ccdf8697cc13c9624f8b253ca16e81908313c9f0c531",
       "synthetic": true,
@@ -44,10 +44,10 @@
       "noOverflow": true,
       "preview": {
         "file": "wedding-preview.webp",
-        "width": 1094,
-        "height": 1367,
-        "bytes": 108044,
-        "sha256": "c5cd8bd39b144f72404bb03d7be6333ff50923d8512f53789bf552e2b3df752b"
+        "width": 1144,
+        "height": 1431,
+        "bytes": 111978,
+        "sha256": "11e2c9d80d5414330aeab92905d0473d5954344e09b4cac5e275259342b307d1"
       }
     },
     {
@@ -84,10 +84,10 @@
       "noOverflow": true,
       "preview": {
         "file": "horoscope-preview.webp",
-        "width": 1044,
-        "height": 1305,
-        "bytes": 73900,
-        "sha256": "23382c5c4b85e294ba51f4537de37f56d4badd9d7d5f12476a7706e4e5d72034"
+        "width": 1096,
+        "height": 1369,
+        "bytes": 77816,
+        "sha256": "7a09be52765f8700c5a3ca8a7a2d48dcc5d3b4f8ce62b6e2b2b73e18e97c3676"
       }
     }
   ]
