@@ -43,7 +43,7 @@ the route integration, the sitemap, hreflang and the postbuild checks:
   x-default, and the localized pages link to each other.
 
 To release, flip one entry (12 pages for a horoscope period, 13 for the daily
-family, 1 for today or zodiac dates, about 25 for a Moon family), keeping the
+family, 1 for today or zodiac dates, 62 for a whole Moon family, so Moon pages go out a few dates at a time through `paths`), keeping the
 rolling 7-day count within 10 unless Dias raises it. `check-dist` and the
 hreflang policy count released families automatically.
 

@@ -1,6 +1,6 @@
 /** The full and new Moons the English pages publish, as plain facts for the localized pages. */
 import { eventsCatalog } from '../../events/catalog';
-import { publishedEventById } from '../../events/publication';
+import { publishedEventById } from '../../events/site-publication';
 import type { LunationFacts, LunationKind } from './types';
 
 export interface LunationEntry {
@@ -12,7 +12,7 @@ export interface LunationEntry {
 export function lunations(kind: LunationKind): LunationEntry[] {
   const catalog = eventsCatalog();
   return catalog.pages
-    // Only the dates the English edition publishes (events-publication.json), so every localized page has its English twin.
+    // Only the dates the English edition publishes (events-publication.json joined with events-publication-2028-2030.json), so every localized page has its English twin.
     .filter((event) => event.facts.family === 'lunation' && event.facts.subtype === kind && event.facts.at && publishedEventById.has(event.facts.id))
     .map((event) => {
       const eclipseLink = event.relations.eclipse && catalog.byId.get(event.relations.eclipse.id);

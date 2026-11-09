@@ -52,9 +52,11 @@ batching. The other two decisions are in the PR description and in
 | 6 | full Moon 2027-01-22 es, pt; monthly es (libra to pisces, 6 signs); monthly pt (aries, taurus) | 10 |
 
 From week 7 the order above continues at 10 a week, with 2 slots a week for
-the next Moon page. The whole set is 568 pages: 135 each in Spanish and
-Portuguese, 149 each in French and Italian. At this pace that is about 57
-weeks. Raising the cap is Dias's decision, not the agent's; see the
+the next Moon page. The whole set is 864 pages: 209 each in Spanish and
+Portuguese, 223 each in French and Italian. Each locale's Moon families
+follow every full and new Moon the English publishes, 62 of each from 2026
+to 2030. At this pace that is about 87 weeks, and the Moon pages for dates
+in 2028 to 2030 come due in date order, so they never wait at the back. Raising the cap is Dias's decision, not the agent's; see the
 recommendation in the PR.
 
 ## Gate for each batch

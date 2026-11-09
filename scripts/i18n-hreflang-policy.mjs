@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { EVENT_PUBLICATION_FILES, mergeEventPublications } from '../src/lib/events/merge-publications.mjs';
 import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, familyForPath, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 const approvedDailyDays = JSON.parse(readFileSync(new URL('../src/data/chart-of-the-day.json', import.meta.url), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
 // Each approved edition, plus the chart-of-the-day index once any edition exists, in six languages.
@@ -9,7 +10,10 @@ const dailyBlocks = (approvedDailyDays.length + (approvedDailyDays.length ? 1 : 
  */
 const HREFLANG_OF = { en: 'en', es: 'es', pt: 'pt-BR', fr: 'fr', it: 'it', ru: 'ru' };
 const SIGNS_FOR_EXPANSION = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
-const publishedEventPaths = JSON.parse(readFileSync(new URL('../src/data/events-publication.json', import.meta.url), 'utf8')).pages.map((page) => page.path);
+// Both event receipts, joined as the site reads them (src/lib/events/site-publication.ts).
+const publishedEventPaths = mergeEventPublications(EVENT_PUBLICATION_FILES
+  .map((file) => JSON.parse(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))))
+  .pages.map((page) => page.path);
 /** Base locales of a family before the expansion: the daily editions already publish es and pt. */
 const EXPANSION_BASE = { 'horoscope-daily': ['en', 'es', 'pt'], today: ['en', 'es', 'pt'] };
 /** English paths per expansion family (src/lib/locale-expansion/policy.mjs). */
