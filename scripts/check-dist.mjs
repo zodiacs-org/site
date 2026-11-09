@@ -34,7 +34,7 @@ import {
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
-import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, publishedExpansionLocales } from '../src/lib/locale-expansion/policy.mjs';
+import { EXPANSION_FAMILY_IDS, HOROSCOPE_PERIODS, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
 import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
 import {
@@ -1316,13 +1316,20 @@ const developerGuidePaths = new Set([
 ]);
 // The 2026-11 locale expansion (src/data/locale-expansion-publication.json):
 // every localized path of a released family. Held families add nothing.
-const expansionPublishedPaths = new Set(EXPANSION_FAMILY_IDS.flatMap((family) => publishedExpansionLocales(family)
-  .flatMap((locale) => expansionFamilyPaths(family).map((path) => `/${locale}${path}`))));
-const SIGN_ALT = 'aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces';
-const releasedPeriods = HOROSCOPE_PERIODS.filter((period) => publishedExpansionLocales(`horoscope-${period}`).length);
-const heldPeriods = HOROSCOPE_PERIODS.filter((period) => !releasedPeriods.includes(period));
-const releasedLunations = ['full-moon', 'new-moon'].filter((kind) => publishedExpansionLocales(kind).length);
-const countPublished = (families) => families.reduce((sum, family) => sum + expansionFamilyPaths(family).length * (1 + publishedExpansionLocales(family).length), 0);
+const expansionPublishedPaths = new Set(EXPANSION_FAMILY_IDS.flatMap((family) => expansionFamilyPaths(family)
+  .flatMap((path) => publishedLocalesForPath(path).map((locale) => `/${locale}${path}`))));
+const LOCALE_PREFIX = /^\/(?:es|pt|fr|it|ru)(?=\/)/u;
+/** English paths of these families with at least one released locale. */
+const releasedEnglish = (families) => new Set(families.flatMap((family) => expansionFamilyPaths(family)
+  .filter((path) => publishedLocalesForPath(path).length)));
+const countPublished = (families) => families.reduce((sum, family) => sum + expansionFamilyPaths(family)
+  .reduce((pages, path) => pages + (publishedLocalesForPath(path).length ? 1 + publishedLocalesForPath(path).length : 0), 0), 0);
+const PERIOD_FAMILIES = HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`);
+const releasedPeriodPaths = releasedEnglish(PERIOD_FAMILIES);
+const releasedLunationPaths = releasedEnglish(['full-moon', 'new-moon']);
+const EXTENDED_HOROSCOPE = /^\/horoscopes\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/(?:tomorrow|weekly|monthly|love|career|2026|2027)\/$/u;
+/** A family matcher over sets of paths, for the indexed-family counts below. */
+const matcher = (test) => ({ test });
 
 const sitemapPolicy = {
   // 944 reflects Packet F's removal of 1,464 localized birthday previews,
@@ -1394,34 +1401,33 @@ const indexedFamilies = [
   { label: 'disclosures', pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?disclosure\/$/, expected: sitemapPolicy.disclosures, localized: true },
   {
     label: 'English-only extended horoscope pages',
-    pattern: new RegExp(`^/horoscopes/(?:${SIGN_ALT})/(?:${heldPeriods.join('|') || '(?!)'})/$`),
-    expected: heldPeriods.length * 12,
+    pattern: matcher((loc) => EXTENDED_HOROSCOPE.test(loc) && !releasedPeriodPaths.has(loc)),
+    expected: 84 - releasedPeriodPaths.size,
     localized: false,
   },
   {
     label: 'localized extended horoscope pages',
-    pattern: new RegExp(`^/(?:(?:es|pt|fr|it|ru)/)?horoscopes/(?:${SIGN_ALT})/(?:${releasedPeriods.join('|') || '(?!)'})/$`),
-    expected: countPublished(releasedPeriods.map((period) => `horoscope-${period}`)),
+    pattern: matcher((loc) => releasedPeriodPaths.has(loc.replace(LOCALE_PREFIX, ''))),
+    expected: countPublished(PERIOD_FAMILIES),
     localized: true,
   },
   {
     label: 'published daily editions',
     pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?(?:today|horoscopes(?:\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces))?)\/$/,
     expected: sitemapPolicy.dailyReadingPages
-      + publishedExpansionLocales('horoscope-daily').length * 13
-      + publishedExpansionLocales('today').length,
+      + [...expansionPublishedPaths].filter((path) => /^\/(?:fr|it|ru)\/(?:today|horoscopes(?:\/[a-z]+)?)\/$/u.test(path)).length,
     localized: true,
   },
   {
     label: 'localized full and new Moon pages',
-    pattern: new RegExp(`^/(?:(?:es|pt|fr|it|ru)/)?(?:${releasedLunations.join('|') || '(?!)'})/\\d{4}-\\d{2}-\\d{2}/$`),
-    expected: countPublished(releasedLunations),
+    pattern: matcher((loc) => releasedLunationPaths.has(loc.replace(LOCALE_PREFIX, ''))),
+    expected: countPublished(['full-moon', 'new-moon']),
     localized: true,
   },
   {
     label: 'Phase 2 event pages',
-    pattern: new RegExp(`^(?:/events/(?:[a-z0-9-]+/)?|/(?:${['full-moon', 'new-moon'].filter((kind) => !releasedLunations.includes(kind)).concat(['eclipses', '(?:mercury|venus|mars)-retrograde']).join('|')})/\\d{4}-\\d{2}-\\d{2}/)$`),
-    expected: sitemapPolicy.eventPages - [...publishedEventPaths].filter((path) => releasedLunations.some((kind) => path.startsWith(`/${kind}/`))).length,
+    pattern: matcher((loc) => /^(?:\/events\/(?:[a-z0-9-]+\/)?|\/(?:full-moon|new-moon|eclipses|(?:mercury|venus|mars)-retrograde)\/\d{4}-\d{2}-\d{2}\/)$/u.test(loc) && !releasedLunationPaths.has(loc)),
+    expected: sitemapPolicy.eventPages - releasedLunationPaths.size,
     localized: false,
   },
   {

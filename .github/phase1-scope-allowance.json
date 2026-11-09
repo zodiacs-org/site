@@ -1,17 +1,8 @@
 {
   "version": 1,
-  "id": "coverage-wording-2030-2026-11-07",
-  "baseCommit": "0ca97d725a85fa1dc5dbd0daf690fbb910d5a30c",
+  "id": "locale-expansion-hook-2026-11-09",
+  "baseCommit": "5e9e166a74af8d6a87883d39bbebfa8e7b554cee",
   "protectedPaths": [
-    "src/content/learn/planets/mercury.mdx",
-    "src/pages/es/tools/index.astro",
-    "src/pages/fr/tools/index.astro",
-    "src/pages/it/tools/index.astro",
-    "src/pages/learn/placements/[slug].astro",
-    "src/pages/pt/tools/index.astro",
-    "src/strings/additions.es.mjs",
-    "src/strings/additions.fr.mjs",
-    "src/strings/additions.it.mjs",
-    "src/strings/additions.pt.mjs"
+    "src/lib/i18n/index.ts"
   ]
 }

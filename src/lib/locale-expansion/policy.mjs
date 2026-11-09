@@ -58,7 +58,13 @@ export function expansionState(record = publication, env = readEnv()) {
         throw new Error(`locale-expansion: ${locale}.${family} is released without a reviewer and review date`);
       }
       const published = entryPublished(entry);
-      rows.push({ locale, family, published, enabled: published || previews(locale) });
+      // An optional list of English paths releases part of a family, so a
+      // 12-page family can go out in batches under the weekly cap.
+      if (entry.paths !== undefined && (!Array.isArray(entry.paths) || entry.paths.some((path) => familyForPath(path) !== family))) {
+        throw new Error(`locale-expansion: ${locale}.${family} lists paths outside its family`);
+      }
+      const paths = Array.isArray(entry.paths) ? new Set(entry.paths) : null;
+      rows.push({ locale, family, published, paths, preview: previews(locale), enabled: published || previews(locale) });
     }
   }
   return { preview, rows };
@@ -86,23 +92,31 @@ export function isExpansionEnabled(locale, family, state = STATE) {
   return state.rows.some((row) => row.locale === locale && row.family === family && row.enabled);
 }
 
+const publishedFor = (row, path) => row.published && (!row.paths || row.paths.has(path));
+const enabledFor = (row, path) => row.preview || publishedFor(row, path);
+
 /** Extra discovery locales for an English canonical path, beyond the base route policy. */
 export function publishedLocalesForPath(canonicalPath, state = STATE) {
   const family = familyForPath(canonicalPath);
-  return family ? publishedExpansionLocales(family, state) : [];
+  if (!family) return [];
+  return state.rows.filter((row) => row.family === family && publishedFor(row, canonicalPath)).map((row) => row.locale);
 }
 
 /** Extra renderable locales for an English canonical path (published or previewed). */
 export function enabledLocalesForPath(canonicalPath, state = STATE) {
   const family = familyForPath(canonicalPath);
-  return family ? enabledExpansionLocales(family, state) : [];
+  if (!family) return [];
+  return state.rows.filter((row) => row.family === family && enabledFor(row, canonicalPath)).map((row) => row.locale);
+}
+
+/** Whether this locale's copy of an English path is built. */
+export function isPathEnabled(locale, canonicalPath, state = STATE) {
+  return enabledLocalesForPath(canonicalPath, state).includes(locale);
 }
 
 /** True when this localized copy is built only for review: it must be noindex. */
 export function isHeldPreview(locale, canonicalPath, state = STATE) {
-  const family = familyForPath(canonicalPath);
-  if (!family) return false;
-  return isExpansionEnabled(locale, family, state) && !isExpansionPublished(locale, family, state);
+  return isPathEnabled(locale, canonicalPath, state) && !publishedLocalesForPath(canonicalPath, state).includes(locale);
 }
 
 export const LOCALE_EXPANSION_UPDATED = publication.updated;
@@ -129,7 +143,9 @@ export function localeExpansionRoutes(state = STATE) {
       'astro:config:setup': ({ injectRoute }) => {
         // A static locale prefix per route, so it outranks /{locale}/[...slug].
         for (const route of EXPANSION_ROUTES) {
-          const locales = [...new Set(route.families.flatMap((family) => enabledExpansionLocales(family, state)))];
+          const locales = [...new Set(route.families.flatMap((family) => enabledExpansionLocales(family, state)))]
+            // A route with no parameters is one page: inject it only when that page itself is built.
+            .filter((locale) => route.pattern.includes('[') || isPathEnabled(locale, route.pattern, state));
           for (const locale of locales) {
             injectRoute({ pattern: `/${locale}${route.pattern}`, entrypoint: `${ENTRY}/${locale}/${route.file}.astro` });
           }

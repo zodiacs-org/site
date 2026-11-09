@@ -46,6 +46,15 @@ describe('locale expansion publication record', () => {
     expect(enabledLocalesForPath('/horoscopes/leo/weekly/', onlyEs)).toEqual(['es']);
   });
 
+  it('releases part of a family when the entry lists its paths', () => {
+    const state = expansionState(record({ released: true, reviewer: 'R', reviewedAt: '2026-11-20', paths: ['/horoscopes/leo/weekly/'] }), {});
+    expect(publishedLocalesForPath('/horoscopes/leo/weekly/', state)).toEqual(['es']);
+    expect(publishedLocalesForPath('/horoscopes/virgo/weekly/', state)).toEqual([]);
+    expect(enabledLocalesForPath('/horoscopes/virgo/weekly/', state)).toEqual([]);
+    expect(isHeldPreview('es', '/horoscopes/leo/weekly/', state)).toBe(false);
+    expect(() => expansionState(record({ released: true, reviewer: 'R', reviewedAt: '2026-11-20', paths: ['/today/'] }), {})).toThrow(/outside its family/);
+  });
+
   it('maps every expansion path to one family and leaves other paths alone', () => {
     expect(familyForPath('/horoscopes/')).toBe('horoscope-daily');
     expect(familyForPath('/horoscopes/pisces/')).toBe('horoscope-daily');
