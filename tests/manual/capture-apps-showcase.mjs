@@ -65,10 +65,12 @@ try{
   await context.close();
  }
 }finally{await browser.close();}
-const posterPng=execFileSync('ffmpeg',['-v','error','-ss','6','-i',new URL('../../public/assets/ai/review/zodiacs-sky-0.5.1.mp4',import.meta.url).pathname,'-frames:v','1','-vf','scale=648:-1','-f','image2pipe','-vcodec','png','pipe:1'],{maxBuffer:10_000_000});
+// The poster is the movie's wedding card, which carries no Person A and Person B labels.
+const POSTER_AT=30;
+const posterPng=execFileSync('ffmpeg',['-v','error','-ss',String(POSTER_AT),'-i',new URL('../../public/assets/ai/review/zodiacs-sky-0.5.1.mp4',import.meta.url).pathname,'-frames:v','1','-vf','scale=648:-1','-f','image2pipe','-vcodec','png','pipe:1'],{maxBuffer:10_000_000});
 const poster=await sharp(posterPng).webp({quality:88}).toBuffer();
 await writeFile(out+'/demo-poster.webp',poster);
 const posterMeta=await sharp(poster).metadata();
-const demoPoster={file:'demo-poster.webp',width:posterMeta.width,height:posterMeta.height,bytes:poster.length,sha256:hash(poster),source:'/assets/ai/review/zodiacs-sky-0.5.1.mp4',atSeconds:6};
+const demoPoster={file:'demo-poster.webp',width:posterMeta.width,height:posterMeta.height,bytes:poster.length,sha256:hash(poster),source:'/assets/ai/review/zodiacs-sky-0.5.1.mp4',atSeconds:POSTER_AT};
 await writeFile(out+'/captures.json',JSON.stringify({demoPoster,capturedAt:new Date().toISOString(),syntheticExamples:true,source,images},null,2)+'\n');
 console.log(JSON.stringify(images.map(({name,width,height,bytes})=>({name,width,height,bytes}))));

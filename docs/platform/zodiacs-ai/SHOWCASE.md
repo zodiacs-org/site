@@ -26,7 +26,8 @@ The page links each image's complete version and supplies real text and
 copyable prompts beside the cropped previews. No screenshot is presented as
 an interactive control. The existing 41-second 1080 by 1600 movie stays
 unchanged and still shows the 0.5.1 cards, with controls, no autoplay, no initial video download and a written
-description. The audio track is silent. The poster is a frame from that movie.
+description. The audio track is silent. The poster is the movie's wedding card at 30
+seconds, so the page does not open on the older Person A and Person B labels.
 All image dimensions are reserved before loading.
 
 `src/data/apps-showcase-images.json` is produced by the capture utility. To
