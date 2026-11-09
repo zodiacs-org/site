@@ -41690,7 +41690,7 @@ function yearPageStart(now) {
   return `${now.toISOString().slice(0, 7)}-01`;
 }
 
-// src/lib/year-score/reading.ts
+// src/lib/year-score/tier.ts
 function scoreTier(score2) {
   if (score2 >= 8) return { key: "open", label: "A wide open year", summary: "The slow planets mostly help. Tradition reads a year like this as strong for career growth and earnings, and a good window to start things and sign agreements." };
   if (score2 >= 6.5) return { key: "supportive", label: "A supportive year", summary: "More of the slow-planet weather helps than presses. A good year to build on what already works, at work and with money alike." };
@@ -41698,6 +41698,8 @@ function scoreTier(score2) {
   if (score2 >= 3) return { key: "pressure", label: "A year of steady pressure", summary: "The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, careful spending and taking rest seriously." };
   return { key: "heavy-pressure", label: "A year of heavy pressure", summary: "The slow planets press hard on the chart. Tradition reads this as a demanding year: keep commitments clear, look after your energy and let patient work do the building." };
 }
+
+// src/lib/year-score/reading.ts
 var MONTHS5 = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 function monthName(month) {

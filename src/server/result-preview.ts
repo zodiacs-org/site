@@ -63,7 +63,7 @@ import {
 } from './result-preview-model.js';
 import { HUES } from './chart-preview-model.js';
 import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PATH, parseYearScoreShare, yearScoreQuery, type YearScoreShare } from '../lib/year-score/share.js';
-import { scoreTier } from '../lib/year-score/reading.js';
+import { scoreTier } from '../lib/year-score/tier.js';
 import { figureYearScore } from './year-score-figure.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,

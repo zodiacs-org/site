@@ -9,7 +9,7 @@
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { scoreYear, type SlowPlanet } from '../lib/year-score/core.js';
 import { findYearPerson, yearPageStart, type YearPerson } from '../lib/year-score/people.js';
-import { yearReading } from '../lib/year-score/reading.js';
+import { scoreTier } from '../lib/year-score/tier.js';
 import { signIndexForLongitude, SIGNS } from '../lib/signs.js';
 
 export interface FigureYearScore {
@@ -38,5 +38,5 @@ export async function figureYearScore(slug: string, now: Date): Promise<FigureYe
     (body: SlowPlanet, date: Date) => bodyLongitude(body, date),
     new Date(`${from}T00:00:00Z`),
   );
-  return { person, sun: SIGNS[signIndexForLongitude(at('Sun'))].slug, score: year.score, label: yearReading(year).tier.label, from };
+  return { person, sun: SIGNS[signIndexForLongitude(at('Sun'))].slug, score: year.score, label: scoreTier(year.score).label, from };
 }
