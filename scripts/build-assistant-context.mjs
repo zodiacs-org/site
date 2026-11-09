@@ -97,6 +97,8 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/astrofolio/',
   '/auth/',
   '/bio/',
+  // "Astrology claims, tested" is noindex until the owner approves publishing it.
+  '/claims-tested/',
   '/developers/precision-preview/',
   '/disclosure/',
   '/feeds/market-research',

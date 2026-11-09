@@ -76,6 +76,17 @@ export const OG_EN = Object.freeze({
     line: 'The year’s eclipses, returns and slow planets, read for your own chart.',
     alt: 'Your 2027 sky: the year’s eclipses, returns and slow planets, read for your own chart, beside a ring of the twelve sign discs.',
   },
+  // "Astrology claims, tested" (npm run data:og -- --only-claims-tested-card):
+  // the headline, a line, and the verdict words as the page prints them. Its
+  // own folder; a new design takes a new folder.
+  claimsTested: {
+    path: '/claims-tested/',
+    image: '/assets/og/claims-tested/v1/card.jpg',
+    title: 'Astrology claims, tested',
+    line: 'What each test found, results at chance included.',
+    rows: ['Passed', 'Passed after a correction', 'At chance'],
+    alt: 'Astrology claims, tested: what each test found, results at chance included, beside three verdicts: passed, passed after a correction, at chance.',
+  },
   terminal: {
     path: '/terminal/',
     image: '/assets/og/v7/terminal.png',

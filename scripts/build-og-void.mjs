@@ -32,6 +32,7 @@
  *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
  *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese
  *   npm run data:og -- --only-year-sky-card # Your 2027 sky's card (year-sky/v1, JPEG)
+ *   npm run data:og -- --only-claims-tested-card # Astrology claims, tested (claims-tested/v1, JPEG)
  *   npm run data:og -- --only-events      # the events hub card, and a card for each published event page that has none
  *   npm run data:og -- --review-people-identities # reviewed identity cards, artifacts only
  *
@@ -626,6 +627,27 @@ function yearSkyCard(copy = OG_EN.yearSky) {
   <div style="position: absolute; right: 88px; top: ${Math.round((534 - YEAR_SKY_WHEEL) / 2) + 4}px; width: ${YEAR_SKY_WHEEL}px; height: ${YEAR_SKY_WHEEL}px;">
     ${orbit(YEAR_SKY_DISC / 2, 0.16)}${orbit(YEAR_SKY_DISC + 44, 0.08)}${discs}
   </div>`;
+  return shell(body, `zodiacs.org${copy.path}`);
+}
+
+/**
+ * "Astrology claims, tested" (OG_EN.claimsTested): the headline and a line on
+ * the left, and on the right the verdict words as the page prints them, each
+ * in a hairline pill, as a short ledger. No chroma: the page has none either.
+ * The footer carries the brand's own lockup.
+ */
+function claimsTestedCard(copy = OG_EN.claimsTested) {
+  const rows = copy.rows.map((row, index) => `
+    <div style="display: flex; align-items: center; gap: 18px; padding: 18px 0; border-top: 1px solid rgba(198, 204, 218, 0.12);${index === copy.rows.length - 1 ? ' border-bottom: 1px solid rgba(198, 204, 218, 0.12);' : ''}">
+      <span style="font: 500 20px/1 'JetBrains Mono', monospace; color: ${INK2}; width: 36px;">${String(index + 1).padStart(2, '0')}</span>
+      <span style="padding: 8px 18px; border: 1px solid rgba(198, 204, 218, 0.32); border-radius: 999px; font-size: 26px; color: #EEF1F7;">${escapeHtml(row)}</span>
+    </div>`).join('');
+  const body = `
+  <div style="position: absolute; left: 88px; top: 0; bottom: 96px; width: 540px; display: flex; flex-direction: column; justify-content: center; z-index: 2;">
+    <div class="display" style="font-size: 92px; line-height: 1; letter-spacing: -0.01em;">${escapeHtml(copy.title)}</div>
+    <div style="margin-top: 28px; font-size: 29px; line-height: 1.38; letter-spacing: -0.01em; color: ${INK2}; max-width: 22ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+  </div>
+  <div style="position: absolute; right: 88px; top: 0; bottom: 96px; width: 420px; display: flex; flex-direction: column; justify-content: center;">${rows}</div>`;
   return shell(body, `zodiacs.org${copy.path}`);
 }
 
@@ -1317,6 +1339,21 @@ if (process.argv.includes('--only-year-sky-card')) {
   await mkdir(dirname(output), { recursive: true });
   await writeFile(output, bytes);
   console.log(`Done: ${OG_EN.yearSky.image}, ${(bytes.length / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
+// "Astrology claims, tested" (2026-11-09), built like Your 2027 sky's card: a
+// JPEG under the art cards' budget, in its own folder.
+if (process.argv.includes('--only-claims-tested-card')) {
+  console.log('Rendering the claims tested card…');
+  const raw = await capture(claimsTestedCard());
+  await browser.close();
+  const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+  if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${OG_EN.claimsTested.image}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const output = resolve(root, `public${OG_EN.claimsTested.image}`);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, bytes);
+  console.log(`Done: ${OG_EN.claimsTested.image}, ${(bytes.length / 1024).toFixed(0)}KB.`);
   process.exit(0);
 }
 

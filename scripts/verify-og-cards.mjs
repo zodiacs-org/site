@@ -192,6 +192,23 @@ try {
 } catch {
   failures.push(`${OG_EN.yearSky.image}: missing`);
 }
+// "Astrology claims, tested" (npm run data:og -- --only-claims-tested-card), checked like Your 2027 sky's card.
+try {
+  const card = OG_EN.claimsTested.image;
+  if (!/^\/assets\/og\/claims-tested\/v\d+\/card\.jpg$/u.test(card)) failures.push(`Claims tested image: expected a claims-tested JPEG, received ${card}`);
+  const bytes = await readFile(resolve(root, `public${card}`));
+  const metadata = await sharp(bytes).metadata();
+  if (metadata.format !== 'jpeg' || metadata.width !== 1200 || metadata.height !== 630) {
+    failures.push(`${card}: expected 1200x630 JPEG, received ${metadata.width ?? '?'}x${metadata.height ?? '?'} ${metadata.format ?? 'unknown'}`);
+  }
+  if (bytes.length > ART_CARD_MAX_BYTES) failures.push(`${card}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const hash = createHash('sha256').update(bytes).digest('hex');
+  const duplicate = hashes.get(hash);
+  if (duplicate) failures.push(`${card}: byte-identical to ${duplicate}`);
+  else hashes.set(hash, card);
+} catch {
+  failures.push(`${OG_EN.claimsTested.image}: missing`);
+}
 if (OG_EN.terminal.image !== expectedTerminalPath) {
   failures.push(`Terminal image: expected ${expectedTerminalPath}, received ${OG_EN.terminal.image}`);
 }

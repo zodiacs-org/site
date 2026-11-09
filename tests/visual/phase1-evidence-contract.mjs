@@ -73,6 +73,10 @@ export const PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS = Object.freeze([
   'src/islands/LifeMilestones.tsx',
   'src/islands/OccasionSky.tsx',
   'src/styles/occasions.css',
+  // "Astrology claims, tested" (/claims-tested/) is imported by no Phase 1 reader template.
+  'src/lib/claims-tested.ts',
+  'src/lib/claims-tested.test.ts',
+  'src/styles/claims-tested.css',
 ]);
 
 export function sha256(value) {
