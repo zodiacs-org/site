@@ -24,6 +24,7 @@ const routes = [
   { name: 'lunar-return', path: '/lunar-return/' },
   { name: 'numerology', path: '/numerology/' },
   { name: 'life-path-7', path: '/numerology/life-path/7/' },
+  { name: 'tarot', path: '/tarot/' },
   { name: 'void-of-course-moon', path: '/void-of-course-moon/' },
   { name: 'aries', path: '/aries/' },
   { name: 'thesis', path: '/thesis/' },

@@ -7,6 +7,9 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { SPREADS, SPREAD_IDS, type SpreadId } from '../lib/tarot/spreads';
 import { drawTarotReading, type TarotCardReading } from '../lib/tarot/reading';
 import TarotCard from '../components/TarotCard';
+import StoryCardShare from '../components/StoryCardShare';
+import { SuitIcon } from '../lib/tarot/suit-icons';
+import { prepareTarotStoryCard, tarotStoryContent } from '../lib/tarot/story-card';
 
 const GENERIC_MESSAGE = 'The cards could not be drawn in this browser. Try reloading the page.';
 
@@ -68,6 +71,21 @@ export default function TarotDraw() {
             {drawn.map((reading) => <TarotCard key={reading.card.id} reading={reading} />)}
           </ol>
           <p class="tarot__note">Draw again whenever you like; each draw is a new shuffle.</p>
+          {(() => {
+            const story = tarotStoryContent(spread, drawn);
+            // The card and its link carry the cards drawn and the tarot page: the draw takes nothing personal.
+            return (
+              <StoryCardShare
+                cardKey={drawn.map((reading) => `${reading.card.id}:${reading.orientation}`).join()}
+                prepare={() => prepareTarotStoryCard(spread, drawn)}
+                pageUrl={story.pageUrl}
+                shareText={story.shareText}
+                heading="Share this draw"
+                lede={drawn.length === 1 ? 'A card of the card you drew and its reading, with a link to it on Zodiacs.' : 'A card of the cards you drew, in their places, with a link to the tarot page.'}
+                placeholder={<SuitIcon suit={drawn[0].card.suit ?? 'major'} size={64} />}
+              />
+            );
+          })()}
         </div>
       )}
     </div>

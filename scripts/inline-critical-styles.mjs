@@ -94,8 +94,8 @@ const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 // through the share control), so the count per pair page is derived from the
 // page's own links instead of being fixed.
 const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-z0-9_-]+\.css$/u];
-// 116 entry pages carry 230 inlined stylesheets (the tarot draw added one page and two); feature flags do not change it.
-const entryInlinedStylesheets = 230;
+// 116 entry pages carry 231 inlined stylesheets (the tarot draw added one page and three, its share card one of them); feature flags do not change it.
+const entryInlinedStylesheets = 231;
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
   // on the render path. The complete route bundle still loads after first
