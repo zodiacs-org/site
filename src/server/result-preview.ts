@@ -65,6 +65,8 @@ import { HUES } from './chart-preview-model.js';
 import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PATH, parseYearScoreShare, yearScoreQuery, type YearScoreShare } from '../lib/year-score/share.js';
 import { scoreTier } from '../lib/year-score/tier.js';
 import { figureYearScore } from './year-score-figure.js';
+import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
+import { MAJOR_ARCANA } from '../lib/tarot/year-card.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
   BIG_THREE_SHARE_KEYS,
@@ -160,6 +162,7 @@ export const RESULT_SHARE_ROUTES = [
   'big-three-link', 'big-three-image', 'big-three-story', 'chinese-zodiac-link', 'chinese-zodiac-image', 'chinese-zodiac-story',
   'invite-link', 'invite-image', 'invite-story',
   'year-score-link', 'year-score-image',
+  'birthday-report-link', 'birthday-report-image',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -633,6 +636,19 @@ export function yearScoreCard(model: YearScoreCardModel, images: Map<ShareSign, 
   }), model.name ? null : model.sign.slug);
 }
 
+/** A Birthday report card: the Sun sign, the year's score, the Personal Year and the tarot year card. No birth detail. */
+export function birthdayReportCard(share: BirthdayReportShare, images: Map<ShareSign, string>, art: string[]) {
+  const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
+  const card = MAJOR_ARCANA[share.card];
+  return frame(art, words({
+    discs: discRow([sign], images),
+    kicker: 'My birthday report',
+    hue: sign.hue,
+    title: [titleBlock(`${card.name} · Personal Year ${share.personalYear}`)],
+    line: [h('span', null, `Year Ahead Score ${share.score.toFixed(1)}/10.`), h('span', null, `\u00a0${sign.label}.`)],
+  }), share.sun);
+}
+
 /** A famous chart (A, the name as a trophy): the Sun sign's panel and disc, the name, the Sun's degree, and who they were. */
 export function famousChartCard(model: FamousChartCardModel, images: Map<ShareSign, string>, art: string[]) {
   return frame(art, words({
@@ -885,6 +901,14 @@ export async function handleYearScoreImageRequest(request: Request): Promise<Res
   if (model === undefined) return errorResponse(503);
   if (!model) return errorResponse(400);
   return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => yearScoreCard(model, images, art));
+}
+
+export async function handleBirthdayReportImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseBirthdayReportShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
+  return imageFor([sign], artOfSigns([sign]), (images, art) => birthdayReportCard(share, images, art));
 }
 
 export async function handleMilestoneImageRequest(request: Request): Promise<Response> {
@@ -1737,6 +1761,37 @@ export async function handleYearScoreLinkRequest(request: Request): Promise<Resp
   }));
 }
 
+export async function handleBirthdayReportLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseBirthdayReportShare(url.searchParams);
+  const action = { label: 'Make your own birthday report', href: withRef('/birthday-report/', share?.ref ?? null) };
+  if (!share) {
+    return htmlResponse(sharePageHtml({
+      title: 'Birthday report on Zodiacs', description: 'Your solar return, Year Ahead Score, Personal Year and tarot year card, on one page.',
+      heading: 'Your birthday report', imageUrl: `${url.origin}/assets/og/v2/share.png`, imageType: 'image/png', imageAlt: 'Zodiacs',
+      explanation: 'Zodiacs puts your solar return, your Year Ahead Score, your numerology Personal Year and your tarot year card on one page for your birthday.',
+      action, note: BIRTHDAY_REPORT_SHARE_NOTE,
+    }));
+  }
+  const card = MAJOR_ARCANA[share.card];
+  const sun = `${capitalSign(share.sun)} Sun`;
+  return htmlResponse(sharePageHtml({
+    title: `My birthday report: ${card.name}, Personal Year ${share.personalYear}`,
+    description: `Year Ahead Score ${share.score.toFixed(1)}/10. ${sun}.`,
+    heading: `My birthday year: ${card.name}`,
+    imageUrl: `${url.origin}${BIRTHDAY_REPORT_SHARE_IMAGE_PATH}?${birthdayReportQuery(share)}`,
+    imageType: 'image/jpeg',
+    imageAlt: `A birthday report: ${card.name}, Personal Year ${share.personalYear}, Year Ahead Score ${share.score.toFixed(1)} out of 10, ${sun}.`,
+    explanation: `${card.year} ${scoreTier(share.score).label}, by the slow planets.`,
+    action,
+    note: BIRTHDAY_REPORT_SHARE_NOTE,
+  }));
+}
+
+/** Astrology, numerology and tarot are separate traditions; the page says so instead of a reflection line. */
+export const BIRTHDAY_REPORT_SHARE_NOTE = 'Astrology, numerology and tarot are separate traditions; Zodiacs reads each on its own terms.';
+
 export async function handleMilestoneLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
@@ -1908,6 +1963,8 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
   'year-score-link': { path: YEAR_SCORE_SHARE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreLinkRequest },
   'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest },
+  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest },
+  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
