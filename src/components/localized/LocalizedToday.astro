@@ -574,7 +574,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
       </div>
       <div class="grid-4 tdl-tools">
         {goFurther.map((tool) => (
-          <a class="kcard tdl-tool" href={tool.href}>
+          <a class="kcard tdl-tool" href={tool.href} {...englishAttrs(tool.href)}>
             <ToolIcon name={tool.icon} size={48} />
             <h3 class="h-4">{tool.title}</h3>
             <p>{tool.promise}</p>

@@ -4,7 +4,8 @@
  * then labeled from its source — the wall clock never decides what displays.
  * Future ephemeris files must not become the current editorial month.
  */
-import { signBySlug, signName, signPrepositional, signInRu } from './signs';
+import { signBySlug, signName, signPrepositional } from './signs';
+import { signInRu } from './sign-ru';
 import type { CatalogLocale as Locale } from './i18n';
 import { aspectLabel, planetLabel } from './i18n/astrology';
 import { formatDate } from './i18n/dates';
