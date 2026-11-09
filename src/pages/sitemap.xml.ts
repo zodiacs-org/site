@@ -647,6 +647,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...eventsPublication.pages
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  // The good day finder's links: its card on the tools hub, and the lines on the occasions and void-of-course
+  // pages that point to it. The day of the daily edition they were built with; last so this date wins.
+  ...['/occasions/', '/tools/', '/void-of-course-moon/'].map((loc) => [loc, '2026-11-09'] as const),
 ]);
 
 function getLastmod(loc: string): string {
