@@ -6,6 +6,7 @@
 import programJson from '../../../data/horoscope-program.json';
 import eclipsesJson from '../../../data/eclipses.json';
 import { solarHouse } from '../../daily';
+import { exactInstant } from '../../nasa-instants';
 import type {
   HoroscopeEvidenceReceipt,
   HoroscopeProgram,
@@ -70,13 +71,17 @@ export function factsFromRefs(ids: string[]): Fact[] {
           kind: 'event', eventKind: 'aspect', eventType: ref.eventType, a: ref.a, b: ref.b,
           aSign: aRef?.sign, bSign: bRef?.sign,
           houses: [aHouse, bHouse].filter((house): house is number => Boolean(house)),
-          at: ref.at,
+          // NASA's instant, as the English pages print it (horoscope-page-data.ts withNasaInstant).
+          at: ref.eventType ? exactInstant({ kind: 'aspect', a: ref.a, b: ref.b, type: ref.eventType, at: ref.at }) : ref.at,
         });
       } else {
         const house = houseFor(refs, ref.id);
+        const at = (kind === 'ingress' || kind === 'station') && ref.body
+          ? exactInstant({ kind, body: ref.body, at: ref.at })
+          : ref.at;
         facts.push({
           kind: 'event', eventKind: kind, eventType: ref.eventType, body: ref.body, sign: ref.sign,
-          houses: house ? [house] : [], at: ref.at, degree: ref.degree,
+          houses: house ? [house] : [], at, degree: ref.degree,
         });
       }
     }

@@ -124,3 +124,18 @@ describe('zodiac dates copy', () => {
     });
   }
 });
+
+describe('event times', () => {
+  it('print NASA instants, so a week and its month give an event the same time', () => {
+    const mod = HOROSCOPE_MODULES.es!;
+    const monthEvents = localizedMonthlyReading(mod, 'leo', month.transits).facts;
+    for (const sign of SIGN_SLUGS) {
+      for (const fact of localizedPeriodReading(mod, sign as HoroscopeSign, 'weekly').facts) {
+        if (fact.kind !== 'event' || fact.eventKind !== 'aspect') continue;
+        const same = monthEvents.find((event) => event.eventKind === 'aspect' && event.a === fact.a && event.b === fact.b && event.eventType === fact.eventType
+          && Math.abs(Date.parse(event.at) - Date.parse(fact.at)) < 86_400_000);
+        if (same) expect(fact.at, `${sign} ${fact.a} ${fact.b}`).toBe(same.at);
+      }
+    }
+  });
+});
