@@ -75,7 +75,9 @@ const imageType = /\.webp(?:[?#]|$)/i.test(imageUrl)
 const alternates = noindex
   ? null
   : alternatePaths(path);
-const alternateEntries = noindex ? [] : alternatePathEntries(path);
+// Alternates belong to the canonical URL, so a page served at another path (/c/ share links)
+// declares the same set as the page it points to.
+const alternateEntries = noindex ? [] : alternatePathEntries(canonicalPath);
 const defaultAlternate = alternates?.[DEFAULT_LOCALE];
 const ogLocale = LOCALE_META[locale].ogLocale;
 const ogLocaleAlternates = alternateEntries
