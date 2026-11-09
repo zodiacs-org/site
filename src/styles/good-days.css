@@ -1,7 +1,9 @@
 /* The good day finder's results. Cosmic Void: void surfaces, no chroma beyond
    the shared tokens, EB Garamond display, Instrument Sans body, JetBrains
    Mono for scores. Equal items sit on the light .tile. */
-.good-days__check { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.good-days__check { justify-content: flex-start; gap: 10px; cursor: pointer; }
+.good-days__check .field__optional { margin-left: 2px; }
+.good-days__personal { grid-column: 1 / -1; }
 .good-days__check input { width: 18px; height: 18px; accent-color: var(--ink-1); }
 .good-days__result { margin-top: var(--s-6, 24px); outline: none; }
 .good-days__title { margin: 0 0 8px; font: 500 clamp(28px, 5vw, 40px)/1.12 var(--font-serif); color: var(--ink-0); }
@@ -19,3 +21,44 @@
 .good-days__avoid { margin: 0; padding-left: 20px; color: var(--ink-1); }
 .good-days__avoid li + li { margin-top: 6px; }
 .good-days__care { margin: 22px 0 6px; font: italic 19px/1.5 var(--font-serif); color: var(--ink-1); }
+
+/* Mobile first: the two dates stack, then sit side by side. */
+.good-days__dates { display: grid; gap: 0 16px; align-content: start; }
+.good-days__dates .field__help { grid-column: 1 / -1; margin-top: 8px; }
+@media (min-width: 560px) { .good-days__dates { grid-template-columns: 1fr 1fr; } }
+
+/* The results slot. Empty, it takes no room. From the click (or, for a shared
+   link, from first paint) it holds a full screen, so the days arriving never
+   move anything that is on screen. */
+.good-days__slot { min-height: 0; }
+.good-days__slot[data-reserved],
+html.gd-shared .good-days__slot { min-height: 100svh; }
+.good-days__busy { margin: var(--s-6, 24px) 0 0; color: var(--ink-2); }
+.good-days__rank {
+  display: inline-grid; place-items: center; width: 26px; height: 26px; margin-right: 10px;
+  border: 1px solid var(--hair-2); border-radius: 50%;
+  font: 500 13px/1 var(--font-mono); color: var(--ink-1);
+}
+.good-days__date strong { flex: 1; }
+
+/* The share card. */
+.good-days-card {
+  margin: 0; padding: clamp(24px, 6vw, 44px);
+  background: var(--void-1); border: 1px solid var(--hair-1); border-radius: var(--r-xl, 24px);
+  color: var(--ink-1);
+}
+.good-days-card__kicker { margin: 0 0 6px; }
+.good-days-card__title { margin: 0 0 18px; font: 500 clamp(28px, 6vw, 42px)/1.1 var(--font-serif); color: var(--ink-0); letter-spacing: -0.01em; }
+.good-days-card__days { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--hair-1); }
+.good-days-card__days li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--hair-1); color: var(--ink-0); }
+.good-days-card__score { font-family: var(--font-mono); color: var(--ink-1); }
+.good-days-card__note { margin: 18px 0 0; font: italic 18px/1.5 var(--font-serif); }
+.good-days-card__foot { margin: 22px 0 0; color: var(--ink-3); font-size: var(--text-sm, 14px); }
+.good-days__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.good-days__link { margin: 8px 0 0; overflow-wrap: anywhere; color: var(--ink-2); font-size: var(--text-sm, 14px); }
+
+@media print {
+  body * { visibility: hidden; }
+  .good-days-card, .good-days-card * { visibility: visible; }
+  .good-days-card { position: absolute; inset: 0 auto auto 0; width: 100%; }
+}

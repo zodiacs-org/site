@@ -48,6 +48,7 @@ export type ToolIconName =
   | 'full-moon-calendar'
   | 'sky-calendar'
   | 'sky-events'
+  | 'good-days'
   | 'guide'
   | 'privacy';
 
@@ -204,6 +205,11 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
     hue: 'taurus',
     body: '<rect x="4.2" y="5.6" width="15.6" height="14.4" rx="2.2"/><path d="M4.2 9.6h15.6M8.6 3.6v3.6M15.4 3.6v3.6"/><path d="M12 11.9C12.32 13.99 12.81 14.48 14.9 14.8C12.81 15.12 12.32 15.61 12 17.7C11.68 15.61 11.19 15.12 9.1 14.8C11.19 14.48 11.68 13.99 12 11.9Z"/>',
   },
+  // A calendar page with a tick: a day chosen.
+  'good-days': {
+    hue: 'sagittarius',
+    body: '<rect x="4.2" y="5.6" width="15.6" height="14.4" rx="2.2"/><path d="M4.2 9.6h15.6M8.6 3.6v3.6M15.4 3.6v3.6"/><path d="m8.7 14.7 2.2 2.2 4.4-4.4"/>',
+  },
   // A shooting star.
   'sky-events': {
     hue: 'aquarius',
@@ -254,6 +260,7 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/full-moon-calendar/': 'full-moon-calendar',
   '/sky-calendar/': 'sky-calendar',
   '/events/': 'sky-events',
+  '/good-days/': 'good-days',
   '/ask/': 'guide',
   '/privacy/': 'privacy',
 };

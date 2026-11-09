@@ -47,6 +47,8 @@ const jsonLd = [
   path="/good-days/"
   jsonLd={jsonLd}
 >
+  {/* A shared link (#g=…&f=…&t=…) opens on its results: the slot is reserved before first paint so they arrive without moving anything. */}
+  <script slot="head" is:inline>if (/^#g=[a-z]+&f=\d{4}-\d{2}-\d{2}&t=\d{4}-\d{2}-\d{2}$/.test(location.hash)) document.documentElement.classList.add('gd-shared');</script>
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
       <h1 class="display">Good day finder</h1>
@@ -71,6 +73,7 @@ const jsonLd = [
         <li><a href="/retrogrades/">Retrogrades</a>: when each planet turns back and forward again.</li>
         <li><a href="/eclipses/">Eclipses</a> from 2026 to 2030.</li>
         <li><a href="/occasions/">The sky on your day</a>: a card of the sky on a date you have already chosen.</li>
+        <li><a href="/tools/">Every Zodiacs tool</a>.</li>
       </ul>
     </div>
   </section>

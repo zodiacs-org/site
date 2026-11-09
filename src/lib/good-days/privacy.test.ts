@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { goodDaysLink, readGoodDaysLink } from '../../islands/GoodDayFinder';
 
 /**
  * The good day finder takes an optional birth date. On the site it is used on the device for one search and kept
@@ -39,5 +40,27 @@ describe('the good day finder keeps birth details to the one request', () => {
   it('keeps consumer copy free of en and em dashes', () => {
     for (const [name, text] of Object.entries(SOURCES)) expect(text, name).not.toMatch(/[–—]/u);
     expect(read('../../pages/good-days/index.astro')).not.toMatch(/[–—]/u);
+  });
+});
+
+describe('the share link', () => {
+  it('carries the goal and the two dates after the #, and nothing else', () => {
+    const link = goodDaysLink('https://zodiacs.org', 'wedding', '2027-05-01', '2027-09-30');
+    expect(link).toBe('https://zodiacs.org/good-days/#g=wedding&f=2027-05-01&t=2027-09-30');
+    expect(readGoodDaysLink(new URL(link).hash)).toEqual({ goal: 'wedding', from: '2027-05-01', to: '2027-09-30' });
+  });
+
+  it('takes only those three keys from a link, and nothing from a malformed one', () => {
+    expect(readGoodDaysLink('#g=move&f=2027-01-01&t=2027-02-01&b=1990-05-03&n=Ana')).toEqual({ goal: 'move', from: '2027-01-01', to: '2027-02-01' });
+    expect(readGoodDaysLink('#g=lottery&f=2027-01-01&t=2027-02-01')).toBeNull();
+    expect(readGoodDaysLink('#g=move&f=1990-05-03&t=2027-02-01')).toBeNull();
+    expect(readGoodDaysLink('')).toBeNull();
+  });
+
+  it('builds the share card from the result alone: no birth date, time or name field reaches it', () => {
+    const island = code(SOURCES.island);
+    const card = island.slice(island.indexOf('<figure class="good-days-card"'), island.indexOf('</figure>'));
+    expect(card).not.toMatch(/birth|personal/iu);
+    expect(island).toContain('void run({ ...shared, birth: null }, false);');
   });
 });

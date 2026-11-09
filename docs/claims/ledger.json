@@ -1853,6 +1853,7 @@
     {"path":"src/islands/DeveloperPlayground.tsx","text":"Run in this browser","exempt":"not-a-claim"},
     {"path":"src/islands/DeveloperPlayground.tsx","text":"Run in this browser loads the API's calculations into this page, about 155 KB compressed, and sends nothing.","claim":"product.compute-playground"},
     {"path":"src/islands/DeveloperPlayground.tsx","text":"The engine did not load in this browser.","exempt":"not-a-claim"},
+    {"path":"src/islands/GoodDayFinder.tsx","text":"Days and times are on your device’s clock.","claim":"priv.on-device"},
     {"path":"src/islands/GoodDayFinder.tsx","text":"Used for this search only, on your device.","claim":"priv.on-device"},
     {"path":"src/islands/GoodDayFinder.tsx","text":"Worked out on your device.","claim":"priv.on-device"},
     {"path":"src/islands/LearningPath.tsx","text":"Practice a placement, a house and an aspect with a chart saved on this device.","claim":"priv.local-storage"},

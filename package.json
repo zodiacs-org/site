@@ -114,6 +114,7 @@
     "test:phase1:frames": "node tests/phase1-frame-drive.mjs",
     "test:phase1:scope": "node scripts/phase1-scope-guard.mjs",
     "test:events:browser": "node tests/events-drive.mjs",
+    "test:good-days:browser": "node tests/good-days-drive.mjs",
     "test:phase3:post-chart": "node tests/post-chart-daily.mjs",
     "test:phase3:delivery-sql": "bash scripts/test-phase3-delivery-sql.sh",
     "test:phase4:invites-sql": "bash scripts/test-phase4-compat-invites-sql.sh",
