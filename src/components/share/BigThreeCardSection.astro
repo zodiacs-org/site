@@ -1,0 +1,21 @@
+---
+import CardShare from './CardShare.astro';
+import { CARD_SHARE_LABELS } from '../../lib/share-cards/labels';
+import { bigThreeCardPath, signPagePath, type CardLocale } from '../../lib/share-cards/cards';
+import { SIGNS, signName } from '../../lib/signs';
+
+interface Props { locale: CardLocale }
+const { locale } = Astro.props;
+const l = CARD_SHARE_LABELS[locale];
+---
+<section class="section--tight container" aria-labelledby="big-three-cards-title">
+  <div class="section-head"><h2 class="h-2" id="big-three-cards-title">{l.bigThreeHeading}</h2><p>{l.bigThreeLede}</p></div>
+  <div class="b3cards">
+    {SIGNS.map((sign) => (
+      <CardShare compact locale={locale} card={bigThreeCardPath(locale, sign.slug)} page={signPagePath(locale, sign.slug)} title={signName(sign, locale)} />
+    ))}
+  </div>
+</section>
+<style>
+  .b3cards { display: flex; flex-wrap: wrap; gap: 8px; }
+</style>
