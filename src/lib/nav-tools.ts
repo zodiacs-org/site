@@ -182,6 +182,10 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 4, title: 'Big three card', promise: 'Sun, Moon and Rising, as a card to share.', group: 'you' },
   },
   {
+    href: '/vedic-signs/',
+    hub: { order: 4.5, title: 'Vedic signs', promise: 'Sun, Moon, rising and nakshatra in the sidereal zodiac.', group: 'you' },
+  },
+  {
     href: '/group-charts/',
     hub: { order: 11, title: 'Group charts', promise: 'How three to eight people fit together.', group: 'together' },
   },
@@ -346,6 +350,7 @@ export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[
   { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы', 'zh-hans': '群组星盘', 'zh-hant': '群組星盤' } },
   { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы', 'zh-hans': '星盘双胞胎', 'zh-hant': '星盤雙胞胎' } },
   { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка', 'zh-hans': '日月升卡片', 'zh-hant': '日月升卡片' } },
+  { href: '/vedic-signs/', label: { en: 'Vedic signs', es: 'Signos védicos', pt: 'Signos védicos', fr: 'Signes védiques', it: 'Segni vedici', ru: 'Ведические знаки', 'zh-hans': '吠陀星座', 'zh-hant': '吠陀星座' } },
   { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга', 'zh-hans': '邀请朋友', 'zh-hant': '邀請朋友' } },
   { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба', 'zh-hans': '天象日历', 'zh-hant': '天象日曆' } },
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },

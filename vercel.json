@@ -354,6 +354,18 @@
       "destination": "/api/compatibility?__zodiacs_share=big-three-story"
     },
     {
+      "source": "/share/vedic-signs/",
+      "destination": "/api/compatibility?__zodiacs_share=vedic-signs-link"
+    },
+    {
+      "source": "/api/og/vedic-signs-image",
+      "destination": "/api/compatibility?__zodiacs_share=vedic-signs-image"
+    },
+    {
+      "source": "/api/og/vedic-signs-story",
+      "destination": "/api/compatibility?__zodiacs_share=vedic-signs-story"
+    },
+    {
       "source": "/share/chinese-zodiac/",
       "destination": "/api/compatibility?__zodiacs_share=chinese-zodiac-link"
     },

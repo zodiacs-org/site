@@ -11,10 +11,10 @@ function routeExists(path: string): boolean {
 }
 
 describe('tool icon set', () => {
-  it('has thirty-one distinct drawings, each on one of the twelve sign hues', () => {
-    expect(TOOL_ICON_NAMES).toHaveLength(31);
+  it('has thirty-two distinct drawings, each on one of the twelve sign hues', () => {
+    expect(TOOL_ICON_NAMES).toHaveLength(32);
     const bodies = new Set(TOOL_ICON_NAMES.map((name) => TOOL_ICONS[name].body));
-    expect(bodies.size).toBe(31);
+    expect(bodies.size).toBe(32);
     for (const name of TOOL_ICON_NAMES) expect(SIGN_HUES).toContain(TOOL_ICONS[name].hue);
   });
 
@@ -42,6 +42,7 @@ describe('tool icon set', () => {
     expect(TOOL_ICONS['solar-return'].hue).toBe('leo');
     expect(TOOL_ICONS['saturn-return'].hue).toBe('capricorn');
     expect(TOOL_ICONS.compatibility.hue).toBe('libra');
+    expect(TOOL_ICONS['vedic-signs'].hue).toBe('pisces');
   });
 
   it('maps every listed route to a page that exists, and every icon to one route', () => {

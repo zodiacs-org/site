@@ -23,6 +23,7 @@ export type ToolIconName =
   | 'moon-sign'
   | 'rising-sign'
   | 'big-three'
+  | 'vedic-signs'
   | 'birthday'
   | 'numerology'
   | 'chart-pdf'
@@ -81,6 +82,13 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
   'big-three': {
     hue: 'leo',
     body: '<circle cx="12" cy="6.4" r="2.7"/><circle cx="6.4" cy="16.6" r="2.7"/><circle cx="17.6" cy="16.6" r="2.7"/><path d="M10.7 8.8 7.7 14.2M13.3 8.8l3 5.4M9.1 16.6h5.8"/>',
+  },
+  // A crescent holding a star: the Moon in its nakshatra. Pisces, the sign the
+  // equinox has slid back through and where the two zodiacs part, and a hue
+  // apart from the Cancer the Western Moon tools wear.
+  'vedic-signs': {
+    hue: 'pisces',
+    body: '<path d="M13.2 4.2a8 8 0 1 0 6.3 12.4 6.4 6.4 0 0 1-6.3-12.4Z"/><path d="M17.2 7.6C17.48 9.42 17.9 9.84 19.7 10.1C17.9 10.36 17.48 10.78 17.2 12.6C16.92 10.78 16.5 10.36 14.7 10.1C16.5 9.84 16.92 9.42 17.2 7.6Z"/>',
   },
   // A cake with one candle.
   birthday: {
@@ -229,6 +237,7 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/moon-sign/': 'moon-sign',
   '/rising-sign/': 'rising-sign',
   '/big-three/': 'big-three',
+  '/vedic-signs/': 'vedic-signs',
   '/birthday/': 'birthday',
   '/numerology/': 'numerology',
   '/astrologer-kit/': 'chart-pdf',

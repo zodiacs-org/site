@@ -19,6 +19,8 @@ describe('get_vedic_signs against known answers', () => {
     expect(data.moon).toMatchObject({ sign: 'libra', rashi: 'Tula', tropicalSign: 'scorpio' });
     expect(data.moonNakshatra).toMatchObject({ name: 'Swati', number: 15, pada: 4, lord: 'Rahu' });
     expect(data.rising).not.toBeNull();
+    expect(data.pageUrl).toBe('https://zodiacs.org/vedic-signs/');
+    expect(data.shareUrl).toBe(`https://zodiacs.org/share/vedic-signs/?s=sagittarius&m=libra&r=${data.rising!.sign}&n=15&a=lahiri`);
   });
 
   it('puts the sidereal Sun into Makara around Makar Sankranti (14 to 15 January) and into Mesha around Mesha Sankranti (14 April)', async () => {
@@ -56,6 +58,8 @@ describe('get_vedic_signs without a birth time', () => {
     expect(data.moonCandidates).toEqual(['Libra (Tula)', 'Scorpio (Vrishchika)']);
     expect(data.limits.join(' ')).toContain('A birth time settles it');
     expect(data.confidenceLabel).toBe('Reading confidence 55%');
+    // The share link leaves out the Moon sign the day did not settle, and has no rising sign.
+    expect(data.shareUrl).not.toMatch(/[?&](?:m|r)=/u);
   });
 
   it('gives the Sun sign alone when the day keeps it, with no place given', async () => {

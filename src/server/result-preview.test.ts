@@ -39,10 +39,14 @@ import {
   handleInviteImageRequest,
   handleInviteLinkRequest,
   handleInviteStoryRequest,
+  handleVedicSignsImageRequest,
+  handleVedicSignsLinkRequest,
+  handleVedicSignsStoryRequest,
   RESULT_SHARE_ROUTES,
 } from './result-preview';
 import {
   bigThreeCardModel,
+  vedicSignsCardModel,
   chineseZodiacCardModel,
   inviteCardModel,
   type PublishedMonths,
@@ -62,6 +66,7 @@ import {
   skyEvents,
 } from './result-preview-model';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
+import { parseVedicSignsShare } from '../lib/vedic-signs/share';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
 import { CHINESE_ZODIAC_NOTE } from '../ai-tools/features/chinese-zodiac';
@@ -251,6 +256,34 @@ describe('month and year horoscope share models', () => {
       for (const month of Object.keys(MONTHS.months)) expect(model(`s=${sign}&m=${month}`)?.confidence, `${sign} ${month}`).toBe('Reading confidence 40%');
       for (const y of ['2026', '2027']) expect(model(`s=${sign}&y=${y}`)?.confidence, `${sign} ${y}`).toBe('Reading confidence 40%');
     }
+  });
+});
+
+describe('the Vedic signs share', () => {
+  it('lists the sidereal signs with their Western names and the nakshatra, and says what is undetermined', () => {
+    const timed = vedicSignsCardModel(parseVedicSignsShare(new URLSearchParams('s=sagittarius&m=libra&r=leo&n=15&a=lahiri'))!);
+    expect(timed).toMatchObject({
+      rows: [{ slug: 'sagittarius', text: 'Dhanu Sun', western: 'Sagittarius' }, { slug: 'libra', text: 'Tula Moon', western: 'Libra' }, { slug: 'leo', text: 'Simha rising', western: 'Leo' }],
+      title: 'Dhanu Sun, Tula Moon, Simha rising', nakshatra: 'Moon in Swati, nakshatra 15 of 27',
+      about: 'Vedic signs in the sidereal zodiac, read with the Lahiri (Chitrapaksha) ayanamsa. Moon in Swati, nakshatra 15 of 27.',
+    });
+    const untimed = vedicSignsCardModel(parseVedicSignsShare(new URLSearchParams('s=aries&a=raman'))!);
+    expect(untimed.rows).toEqual([{ slug: 'aries', text: 'Mesha Sun', western: 'Aries' }, { slug: null, text: 'Moon sign undetermined', western: null }]);
+    expect(untimed.nakshatra).toBe('Moon nakshatra undetermined');
+    expect(untimed.about).toContain('needs the birth time');
+  });
+
+  it('gets its own page, preview, story and a way back to the page', async () => {
+    const page = await (await handleVedicSignsLinkRequest(new Request('https://zodiacs.org/share/vedic-signs/?s=sagittarius&m=libra&r=leo&n=15&a=lahiri&ref=chatgpt'))).text();
+    expect(page).toContain('<h1>Dhanu Sun, Tula Moon, Simha rising</h1>');
+    expect(page).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/vedic-signs-image?s=sagittarius&amp;m=libra&amp;r=leo&amp;n=15&amp;a=lahiri">');
+    expect(page).toContain('<a class="cta" href="/vedic-signs/?ref=chatgpt">Find your Vedic signs</a>');
+    expect(page).toContain('href="/api/og/vedic-signs-story?s=sagittarius&amp;m=libra&amp;r=leo&amp;n=15&amp;a=lahiri" download="zodiacs-vedic-signs-sagittarius-story.jpg"');
+    expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
+    const plain = await (await handleVedicSignsLinkRequest(new Request('https://zodiacs.org/share/vedic-signs/?s=leo&a=lahiri&d=1990-08-01'))).text();
+    expect(plain).toContain('<h1>Your Vedic signs</h1>');
+    expect(plain).toContain('<a class="cta" href="/vedic-signs/">Find your Vedic signs</a>');
+    expect(plain).not.toContain('1990');
   });
 });
 
@@ -554,6 +587,7 @@ describe('the deployed entry', () => {
       ['/share/big-three/', 'big-three-link'], ['/api/og/big-three-image', 'big-three-image'], ['/api/og/big-three-story', 'big-three-story'],
       ['/share/chinese-zodiac/', 'chinese-zodiac-link'], ['/api/og/chinese-zodiac-image', 'chinese-zodiac-image'], ['/api/og/chinese-zodiac-story', 'chinese-zodiac-story'],
       ['/share/invite/', 'invite-link'], ['/api/og/invite-image', 'invite-image'], ['/api/og/invite-story', 'invite-story'],
+      ['/share/vedic-signs/', 'vedic-signs-link'], ['/api/og/vedic-signs-image', 'vedic-signs-image'], ['/api/og/vedic-signs-story', 'vedic-signs-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
     // Every route the function answers is reached by one rewrite, and every share rewrite names a route it answers.
     const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
@@ -625,6 +659,8 @@ describe('share preview images', () => {
     ['Chinese zodiac from an older link with its year', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&y=2026'))],
     ['invitation', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?s=taurus&p=scorpio'))],
     ['invitation with one sign', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?p=gemini'))],
+    ['Vedic signs', () => handleVedicSignsImageRequest(new Request('https://zodiacs.org/api/og/vedic-signs-image?s=sagittarius&m=libra&r=leo&n=15&a=lahiri'))],
+    ['Vedic signs with the Moon undetermined', () => handleVedicSignsImageRequest(new Request('https://zodiacs.org/api/og/vedic-signs-image?s=aries&n=3&a=raman'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -669,6 +705,8 @@ describe('share preview images', () => {
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image'],
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image?s=taurus&n=Ana'],
       [handleCompatibilityImageRequest, `https://zodiacs.org/api/og/compatibility-image?${COMPAT}&c=99`],
+      [handleVedicSignsImageRequest, 'https://zodiacs.org/api/og/vedic-signs-image?s=leo&m=aries&n=10&a=lahiri'],
+      [handleVedicSignsImageRequest, 'https://zodiacs.org/api/og/vedic-signs-image?s=leo&a=lahiri&lat=28.61'],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });
@@ -694,6 +732,7 @@ describe('story pictures', () => {
     ['big three with the Moon undetermined', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=sagittarius'))],
     ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger'))],
     ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
+    ['Vedic signs', () => handleVedicSignsStoryRequest(new Request('https://zodiacs.org/api/og/vedic-signs-story?s=sagittarius&m=libra&r=leo&n=15&a=lahiri'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');
@@ -720,5 +759,6 @@ describe('story pictures', () => {
     expect((await handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=leo&d=1990-08-01'))).status).toBe(400);
     expect((await handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=cat'))).status).toBe(400);
     expect((await handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio&n=Luis'))).status).toBe(400);
+    expect((await handleVedicSignsStoryRequest(new Request('https://zodiacs.org/api/og/vedic-signs-story?s=leo&a=lahiri&d=1990-08-01'))).status).toBe(400);
   });
 });

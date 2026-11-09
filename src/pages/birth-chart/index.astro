@@ -44,6 +44,11 @@ const faq = [
     a: 'Planet positions come from an astronomical engine tested against NASA JPL reference data to within a few hundredths of a degree. Historical clock changes come from the IANA time zone records. Astrology itself is an interpretive practice, not a scientific prediction.',
   },
   {
+    q: 'Is this the Western or the Vedic zodiac?',
+    a: 'The Western (tropical) zodiac, which starts Aries at the spring equinox. Vedic astrology counts the signs from the stars instead, so its signs usually sit one sign earlier.',
+    link: { href: '/vedic-signs/', label: 'Find your Vedic signs' },
+  },
+  {
     q: 'Whole sign or Placidus houses: which should I pick?',
     a: 'Whole sign is the oldest system and the easiest to read: each house is one full sign. Placidus is the most common modern choice and uses your exact time and place, so house sizes vary. Try both: your planets stay put, only the house lines move.',
     id: 'houses',
@@ -835,10 +840,10 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
         <p>Still curious? <a class="bc-inline" href="/learn/glossary/">Browse the glossary</a>.</p>
       </div>
       <div class="kfaq">
-        {faq.map(({ q, a, id }, index) => (
+        {faq.map(({ q, a, id, link }, index) => (
           <details id={id} open={index === 0}>
             <summary>{q}</summary>
-            <p>{a}</p>
+            <p>{a}{link && <> <a class="bc-inline" href={link.href}>{link.label}</a>.</>}</p>
           </details>
         ))}
       </div>

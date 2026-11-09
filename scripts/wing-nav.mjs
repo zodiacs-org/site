@@ -53,6 +53,7 @@ export const NAV_MORE = [
   { href: '/group-charts/', label: 'Group charts' },
   { href: '/chart-twins/', label: 'Chart twins' },
   { href: '/big-three/', label: 'Big three card' },
+  { href: '/vedic-signs/', label: 'Vedic signs' },
   { href: '/compatibility/invite/', label: 'Invite a friend' },
   { href: '/sky-calendar/', label: 'Sky calendar' },
   { href: '/chart-of-the-day/', label: 'Chart of the day' },
