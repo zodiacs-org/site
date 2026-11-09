@@ -520,6 +520,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/sky-events.ts',
       // The personal tools (ZODIACS_PERSONAL_TOOLS_ENABLED=1) resolve a birth's local time with the same operations, server-side.
       'src/ai-tools/personal/shared.ts',
+      // get_retrograde_for_me finds Mercury's, Venus's and Mars's stations with search_sky_events' station search.
+      'src/ai-tools/personal/retrograde-for-me.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the
