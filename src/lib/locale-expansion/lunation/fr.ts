@@ -33,6 +33,25 @@ function localTime(f: LunationFacts, timeZone: string): string {
   return `${time}, le ${dayMonthYear(L, local).replace(/^1 /, '1er ').replace(/ \d{4}$/, '')}`;
 }
 
+/** Le décalage en vigueur à cette date, en heures sur le temps universel (Intl, donc heure d’été comprise). */
+function offsetHours(f: LunationFacts, timeZone: string): number {
+  const name = new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'shortOffset' })
+    .formatToParts(new Date(f.at)).find((part) => part.type === 'timeZoneName')?.value ?? 'GMT';
+  const match = name.match(/GMT([+-]\d+)/);
+  return match ? Number(match[1]) : 0;
+}
+const HOURS = ['zéro', 'une', 'deux', 'trois', 'quatre', 'cinq', 'six'];
+/** "une heure d’avance sur le temps universel (heure d’hiver)" */
+function offsetWords(f: LunationFacts, timeZone: string, winter: number): string {
+  const hours = offsetHours(f, timeZone);
+  const n = Math.abs(hours);
+  const amount = `${HOURS[n] ?? n} heure${n > 1 ? 's' : ''}`;
+  const season = hours === winter ? 'heure d’hiver' : 'heure d’été';
+  return hours >= 0
+    ? `${amount} d’avance sur le temps universel (${season})`
+    : `${amount} de retard sur le temps universel (${season})`;
+}
+
 /** Ce que chaque signe met en jeu quand la Lune l’éclaire ou l’assombrit. */
 const SIGN_TOPIC: Record<string, string> = {
   aries: 'l’élan, le courage et l’impatience',
@@ -89,7 +108,7 @@ export const fr: LunationCopy = {
   faq: (f) => [
     {
       q: `À quelle heure a lieu la ${kindName(f)} du ${when(f)} ?`,
-      a: `Elle est exacte à ${clock(f)}. En France et en Belgique, qui avancent d’une heure sur l’UTC en hiver et de deux en été, il est alors ${localTime(f, 'Europe/Paris')}. Au Québec, qui retarde de cinq heures sur l’UTC en hiver et de quatre en été, il est ${localTime(f, 'America/Toronto')}.`,
+      a: `Elle est exacte à ${clock(f)}. En France et en Belgique, qui ont à cette date ${offsetWords(f, 'Europe/Paris', 1)}, il est alors ${localTime(f, 'Europe/Paris')}. Au Québec, qui a ${offsetWords(f, 'America/Toronto', -5)}, il est ${localTime(f, 'America/Toronto')}.`,
     },
     {
       q: `Dans quel signe se trouve la ${kindName(f)} ?`,

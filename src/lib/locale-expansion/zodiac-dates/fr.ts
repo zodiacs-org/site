@@ -24,7 +24,7 @@ export const fr: ZodiacDatesCopy = {
   explainerHeading: 'Ce que disent les dates exactes',
   explainer: [
     'Le zodiaque tropical commence au Bélier, à 0° de longitude écliptique, et partage le cercle en douze signes égaux de 30°. Ces limites ne bougent pas. Ce qui change, c’est la date et l’heure auxquelles le Soleil les franchit, parce qu’une année ne compte pas un nombre entier de jours.',
-    'Deux personnes nées le même jour du calendrier, à des années différentes, peuvent donc avoir des signes solaires différents si elles sont nées près du changement. Ce qu’on appelle une « cuspide » n’est pas un signe mixte : le Soleil est toujours dans un signe ou dans l’autre.',
+    'Deux personnes nées le même jour, mais pas la même année, peuvent donc avoir des signes solaires différents si elles sont nées près du changement. Ce qu’on appelle une « cuspide » n’est pas un signe mixte : le Soleil est toujours dans un signe ou dans l’autre.',
     'Si ta naissance tombe près de l’une de ces dates, vérifie ton signe avec ta date, ton heure et ton lieu de naissance. L’heure locale dépend du fuseau horaire en vigueur ce jour-là, et le calcul du thème astral en tient compte.',
   ],
   calculatorLink: 'Calcule ton thème astral',
