@@ -9,25 +9,34 @@ import sharp from 'sharp';
 import { findChromium, STABLE_CHROMIUM_ARGS } from '../visual/browser.mjs';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
+import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
 const args=process.argv.slice(2);
-const option=name=>args[args.indexOf('--'+name)+1];
-assert.ok(args.includes('--out')&&args.includes('--preflight'),'Use --out <new folder> --preflight <live preflight folder>');
-const out=resolve(option('out')), preflight=resolve(option('preflight'));
+assert.ok(args.includes('--out'),'Use --out <new folder>');
+const out=resolve(args[args.indexOf('--out')+1]);
+const source='https://zodiacs.org/mcp';
 try{await access(out);throw Error('Output already exists. Use a fresh folder.');}catch(error){if(error.code!=='ENOENT')throw error;}
 await mkdir(out,{recursive:true});
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const images=[];
-for(const [name,file] of [['comparison','zodiacs-comparison-card-0.5.1.png'],['wedding','zodiacs-wedding-card-0.5.1.png']]){
- const source=await readFile(new URL('../../public/assets/ai/review/'+file,import.meta.url));
- const bytes=await sharp(source).webp({quality:92,effort:6}).toBuffer();
- await writeFile(out+'/'+name+'.webp',bytes);
- const {width,height}=await sharp(bytes).metadata();images.push({name,file:name+'.webp',width,height,bytes:bytes.length,sha256:hash(bytes),source:'/assets/ai/review/'+file,sourceSha256:hash(source)});
-}
-const report=JSON.parse(await readFile(preflight+'/preflight.json','utf8'));
+// Every example is synthetic. The comparison and wedding examples carry made-up first names,
+// so the cards show names the way people ask for them instead of Person A and Person B.
+const EXAMPLES={
+ comparison:{tool:'get_compatibility',heading:'Lucía and Mateo',arguments:{a:{name:'Lucía',birthDate:'1990-05-03',time:'08:30',zone:'Europe/Madrid',latitude:40.4168,longitude:-3.7038,place:'Madrid, Spain'},b:{name:'Mateo',birthDate:'1992-08-10'}}},
+ wedding:{tool:'get_occasion_sky',heading:'Lucía and Mateo',arguments:{occasion:'wedding',date:'2027-06-12',time:'17:00',zone:'Europe/Rome',latitude:43.7696,longitude:11.2558,place:'Florence, Italy',names:'Lucía and Mateo'}},
+ horoscope:{tool:'get_horoscope',heading:'Leo',arguments:{sign:'leo',zone:'Asia/Bangkok'}},
+};
+const rpc=async(method,params)=>{
+ const response=await fetch(source,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-06-18'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
+ assert.equal(response.status,200,method+' answered');
+ const text=await response.text(),line=text.split('\n').find(row=>row.startsWith('data: '));
+ const body=JSON.parse(line?line.slice(6):text);
+ assert.equal(body.error,undefined,method+' succeeded');
+ return body.result;
+};
 const browser=await chromium.launch({executablePath:await findChromium(),args:STABLE_CHROMIUM_ARGS,headless:true});
 try{
- for(const [name,html,uri] of [['chart',STUDIO_HTML,'ui://zodiacs/chart-studio-v6.html'],['horoscope',HOROSCOPES_HTML,'ui://zodiacs/horoscopes-v6.html']]){
-  assert.equal(hash(html),report.resources.find(r=>r.uri===uri)?.sha256,name+' local HTML equals live resource');
+ for(const [name,html,uri] of [['comparison',OCCASIONS_HTML,'ui://zodiacs/occasions-v8.html'],['wedding',OCCASIONS_HTML,'ui://zodiacs/occasions-v8.html'],['chart',STUDIO_HTML,'ui://zodiacs/chart-studio-v6.html'],['horoscope',HOROSCOPES_HTML,'ui://zodiacs/horoscopes-v6.html']]){
+  assert.equal(hash(html),hash((await rpc('resources/read',{uri})).contents[0].text),name+' local HTML equals live resource');
   const width=name==='chart'?1000:375;
   const context=await browser.newContext({viewport:{width,height:900},deviceScaleFactor:2,colorScheme:'dark',reducedMotion:'reduce',timezoneId:'Asia/Bangkok'});
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -41,9 +50,10 @@ try{
    await page.getByRole('heading',{name:'Chart Studio',exact:true}).waitFor();
    await page.locator('.wheel-wrap svg').waitFor();
   }else{
-   const result=JSON.parse(await readFile(preflight+'/get_horoscope.json','utf8'));
+   const example=EXAMPLES[name],result=await rpc('tools/call',{name:example.tool,arguments:example.arguments});
+   assert.equal(result.structuredContent?.ok,true,name+' returned a card');
    await page.evaluate(result=>{window.openai={toolOutput:result.structuredContent,toolResponseMetadata:result._meta,theme:'dark'};window.dispatchEvent(new CustomEvent('openai:set_globals',{detail:{globals:window.openai}}));},result);
-   await page.getByRole('heading',{name:'Leo',exact:true}).waitFor();
+   await page.getByRole('heading',{name:example.heading,exact:true}).first().waitFor();
   }
   await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.images].filter(i=>i.getClientRects().length).map(i=>i.decode()));});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,name+' no overflow');
@@ -60,5 +70,5 @@ const poster=await sharp(posterPng).webp({quality:88}).toBuffer();
 await writeFile(out+'/demo-poster.webp',poster);
 const posterMeta=await sharp(poster).metadata();
 const demoPoster={file:'demo-poster.webp',width:posterMeta.width,height:posterMeta.height,bytes:poster.length,sha256:hash(poster),source:'/assets/ai/review/zodiacs-sky-0.5.1.mp4',atSeconds:6};
-await writeFile(out+'/captures.json',JSON.stringify({demoPoster,capturedAt:new Date().toISOString(),syntheticExamples:true,source:'https://zodiacs.org/mcp',images},null,2)+'\n');
+await writeFile(out+'/captures.json',JSON.stringify({demoPoster,capturedAt:new Date().toISOString(),syntheticExamples:true,source,images},null,2)+'\n');
 console.log(JSON.stringify(images.map(({name,width,height,bytes})=>({name,width,height,bytes}))));

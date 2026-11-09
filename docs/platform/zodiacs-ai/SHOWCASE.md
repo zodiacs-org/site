@@ -12,28 +12,34 @@ plugin's installation documentation stays at `/developers/ai/`.
 
 ## Images and movie
 
-`public/assets/ai/showcase/20261028/` is a new immutable asset family. The
-comparison and wedding WebP files are compressed derivatives of the exact
-reviewed 0.5.1 PNGs. Chart Studio and horoscope are captures of their current
-live-resource HTML, checked byte for byte against the local generated panels,
-using the labelled example chart and a synthetic Leo request. The horoscope is
-a dated example, not a claim that its pictured reading is always today's.
+`public/assets/ai/showcase/20261109/` is the immutable asset family the page
+uses. All four images are captures of their current live-resource HTML,
+checked byte for byte against the local generated panels: the labelled example
+chart, a synthetic Leo request, and the comparison and wedding examples with
+the made-up first names Lucía and Mateo, so the cards show names the way
+people ask for them instead of Person A and Person B. The horoscope is a dated
+example, not a claim that its pictured reading is always today's. The earlier
+`20261028/` family, whose comparison and wedding images came from the reviewed
+0.5.1 PNGs, stays published and unchanged.
 
 The page links each image's complete version and supplies real text and
 copyable prompts beside the cropped previews. No screenshot is presented as
 an interactive control. The existing 41-second 1080 by 1600 movie stays
-unchanged, with controls, no autoplay, no initial video download and a written
+unchanged and still shows the 0.5.1 cards, with controls, no autoplay, no initial video download and a written
 description. The audio track is silent. The poster is a frame from that movie.
 All image dimensions are reserved before loading.
 
 `src/data/apps-showcase-images.json` is produced by the capture utility. To
-make a new unpublished family after an intentional panel change, first run
-the direct MCP preflight, then capture into a new local folder:
+make a new unpublished family after an intentional panel change, capture into
+a new local folder. The utility asks https://zodiacs.org/mcp for the live
+panels and the synthetic examples itself, and stops unless each local
+generated panel equals its live resource:
 
 ```sh
-node tests/muse-connector-preflight.mjs --out /tmp/zodiacs-preflight
-node tests/manual/capture-apps-showcase.mjs --out /tmp/zodiacs-new-showcase --preflight /tmp/zodiacs-preflight
+node tests/manual/capture-apps-showcase.mjs --out /tmp/zodiacs-new-showcase
 ```
+
+It no longer reads the Muse preflight, which still targets the 0.5.1 server.
 
 The utility refuses an existing output folder. Copy its new files and manifest
 into fresh versioned paths only after reviewing them. Never replace the

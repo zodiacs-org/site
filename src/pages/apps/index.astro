@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import captures from '../../data/apps-showcase-images.json';
-const assetRoot = '/assets/ai/showcase/20261028/';
+const assetRoot = '/assets/ai/showcase/20261109/';
 const image = (name: string) => {
   const result = captures.images.find((entry) => entry.name === name);
   if (!result) throw new Error(`Missing showcase image: ${name}`);
@@ -9,8 +9,8 @@ const image = (name: string) => {
 };
 const examples = [
   { id: 'chart', title: 'Your chart, ready to explore.', category: 'Birth charts', description: 'See the planets, signs and houses in an interactive chart. Choose a detail to bring into the conversation.', prompt: 'Open Zodiacs Chart Studio so I can explore my birth chart.', alt: 'Chart Studio displaying its labelled example birth chart, with the chart wheel and an inspector.', image: image('chart'), shape: 'wide' },
-  { id: 'comparison', title: 'Two charts. A conversation starter.', category: 'Compatibility', description: 'Compare two charts and explore their connections, with a reading to discuss together.', prompt: "Use Zodiacs to compare our charts. I was born 3 May 1990 at 8:30 in Madrid. My partner was born 10 August 1992, time unknown.", alt: 'A Zodiacs comparison card for two synthetic birth dates, with Taurus and Leo artwork and the calculated reading.', image: image('comparison'), shape: 'portrait' },
-  { id: 'wedding', title: 'The sky on a day that matters.', category: 'Occasions', description: 'Make a card for a wedding, anniversary or another date you want to remember.', prompt: "Use Zodiacs to make a wedding card for 12 June 2027 at 17:00 in Florence, Italy. Tell us what the sky means in astrology.", alt: 'A Zodiacs wedding card for a synthetic example in Florence on 12 June 2027, with wedding artwork and the reading.', image: image('wedding'), shape: 'portrait' },
+  { id: 'comparison', title: 'Two charts. A conversation starter.', category: 'Compatibility', description: 'Compare two charts and explore their connections, with a reading to discuss together.', prompt: "Use Zodiacs to compare our charts, with our first names on the card. I’m Lucía, born 3 May 1990 at 8:30 in Madrid. Mateo was born 10 August 1992, time unknown.", alt: 'A Zodiacs comparison card for Lucía and Mateo, a synthetic example, with Taurus and Leo artwork and the calculated reading.', image: image('comparison'), shape: 'portrait' },
+  { id: 'wedding', title: 'The sky on a day that matters.', category: 'Occasions', description: 'Make a card for a wedding, anniversary or another date you want to remember.', prompt: "Use Zodiacs to make a wedding card with our names, Lucía and Mateo, for 12 June 2027 at 17:00 in Florence, Italy. Tell us what the sky means in astrology.", alt: 'A Zodiacs wedding card for Lucía and Mateo, a synthetic example in Florence on 12 June 2027, with wedding artwork and the reading.', image: image('wedding'), shape: 'portrait' },
   { id: 'horoscope', title: 'A moment for your sign.', category: 'Horoscopes', description: 'Read your sign’s daily horoscope, change the focus and explore the sky behind the words.', prompt: "Use Zodiacs to show today’s horoscope for Leo in Bangkok.", alt: 'A dated Leo horoscope card with the sign artwork, day and focus controls, and its published reading.', image: image('horoscope'), shape: 'portrait' },
 ];
 const title = 'Zodiacs in ChatGPT and Claude | Zodiacs.org';
@@ -45,7 +45,7 @@ const description = 'Explore Zodiacs birth charts, compatibility, occasion cards
     </section>
 
     <section class="apps-examples kwrap ksection" id="examples" aria-labelledby="examples-title">
-      <div class="apps-section-head"><div><p class="kicker">A few things you can ask</p><h2 id="examples-title">Start with something<br />you’re curious about.</h2></div><p>These are captures of the real Zodiacs panels. Birth details are synthetic, and the horoscope is a dated example. Your answer uses the details and date you ask for.</p></div>
+      <div class="apps-section-head"><div><p class="kicker">A few things you can ask</p><h2 id="examples-title">Start with something<br />you’re curious about.</h2></div><p>These are captures of the real Zodiacs panels. Names and birth details are synthetic, and the horoscope is a dated example. Your answer uses the details and date you ask for.</p></div>
       <div class="apps-examples__grid">
         {examples.map((example) => (
           <article class:list={['apps-example', `apps-example--${example.shape}`]} aria-labelledby={`${example.id}-title`}>
