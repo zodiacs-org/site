@@ -261,6 +261,14 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 21, title: 'Solar return', promise: 'The chart of your personal new year.', group: 'year' },
   },
   {
+    href: '/year-score/',
+    hub: { order: 21.3, title: 'Year Ahead Score', promise: 'Your next twelve months as one number, with the best months.', group: 'year' },
+  },
+  {
+    href: '/birthday-report/',
+    hub: { order: 21.6, title: 'Birthday report', promise: 'Solar return, year score, numerology and a tarot card.', group: 'year' },
+  },
+  {
     href: '/lunar-return/',
     hub: { order: 22, title: 'Lunar return', promise: 'Your monthly Moon return, and its chart.', group: 'year' },
   },

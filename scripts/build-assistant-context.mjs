@@ -104,6 +104,8 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/people/',
   '/registry/',
   '/terminal/',
+  // The Year Ahead directory of living public figures: noindex and nofollow, as the protected People pages are.
+  '/year/',
 ]);
 
 function compareText(left, right) {

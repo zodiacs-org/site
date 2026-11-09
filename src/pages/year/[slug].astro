@@ -94,7 +94,10 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
       <p>Corrections or removal requests: <a href="mailto:people@zodiacs.org">people@zodiacs.org</a>.</p>
     </div>
 
-    <p class="ypp__cta"><a class="btn btn--primary" href="/year-score/"><span>Score your own year</span><span class="orb">↗</span></a></p>
+    <p class="ypp__cta">
+      <a class="btn btn--primary" href="/year-score/"><span>Score your own year</span><span class="orb">↗</span></a>
+      <a class="btn btn--ghost" href="/year/" rel="nofollow"><span>All Year Ahead scores</span><span class="orb">→</span></a>
+    </p>
     {/* The share link opens the card page, whose picture the server draws from the directory (src/server/result-preview.ts). */}
     <ShareRow text={`${person.name}'s Year Ahead Score: ${reading.score.toFixed(1)}/10`} url={figureYearScoreShareUrl('https://zodiacs.org', person.slug)!} label="Share this score:" />
   </section>
@@ -114,6 +117,7 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
   .ypp__months li { display: grid; grid-template-rows: 1fr auto; height: 100%; align-items: end; text-align: center; }
   .ypp__bar { display: block; height: var(--h); background: var(--sign); opacity: 0.75; border-radius: 3px 3px 0 0; }
   .ypp__month { font-family: var(--font-mono); font-size: 10px; color: var(--muted); padding-top: 4px; }
+  .ypp__cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
   .ypp__picks { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
   .ypp h2 { margin: 0 0 6px; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-lg); }
   .ypp__picks p, .ypp__drivers p, .ypp__facts p { margin: 4px 0 0; color: var(--text-2); }

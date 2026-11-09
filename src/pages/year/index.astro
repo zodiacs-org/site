@@ -1,0 +1,77 @@
+---
+/**
+ * The Year Ahead directory: every public figure the Year Ahead Score is read
+ * for (src/data/year-people.json), with this month's score. Living people
+ * follow the protected living-person controls, so the page and its links are
+ * noindex and nofollow, outside the sitemap, search and the People directory.
+ */
+import Base from '../../layouts/Base.astro';
+import SignIcon from '../../components/SignIcon.astro';
+import { YEAR_PERSON_CATEGORIES } from '../../lib/year-score/people';
+import { allYearPages } from '../../lib/year-score/page-data';
+import { dayName } from '../../lib/year-score/reading';
+
+const pages = await allYearPages();
+const GROUP: Record<(typeof YEAR_PERSON_CATEGORIES)[number], string> = {
+  founder: 'Founders', ceo: 'Chief executives', investor: 'Investors', athlete: 'Athletes',
+  entertainer: 'Entertainers', creator: 'Creators', author: 'Authors', 'public-figure': 'Public figures',
+};
+const groups = YEAR_PERSON_CATEGORIES
+  .map((category) => ({ title: GROUP[category], pages: pages.filter((page) => page.person.category === category).sort((a, b) => a.person.name.localeCompare(b.person.name)) }))
+  .filter((group) => group.pages.length > 0);
+const from = pages[0]?.from;
+---
+<Base
+  title="Year Ahead Scores for Well-Known People | Zodiacs.org"
+  description="The Year Ahead Score for founders, chief executives, athletes and entertainers, from their public birth dates."
+  path="/year/"
+  image="/assets/og/v2/tool/year-score.png"
+  imageAlt="Your year ahead, scored: Zodiacs.org"
+  noindex
+  nofollow
+>
+  <section class="section--tight container yd">
+    <div class="tool-hero">
+      <h1 class="display">The year ahead, for well-known people.</h1>
+      <p>
+        Each score reads the twelve months from {from ? dayName(from) : 'the start of this month'} from a public birth date.
+        No birth time is published for any of them, so every chart is cast for noon.
+        <a href="/year-score/">Score your own year</a>.
+      </p>
+    </div>
+    {groups.map((group) => (
+      <section class="yd__group" aria-labelledby={`yd-${group.title}`}>
+        <h2 id={`yd-${group.title}`}>{group.title}</h2>
+        <ul class="yd__list">
+          {group.pages.map((page) => (
+            <li>
+              <a class="tile yd__card" href={`/year/${page.person.slug}/`} rel="nofollow" style={`--sign:${page.sun.hue}`}>
+                <SignIcon sign={page.sun.slug} size={28} />
+                <span class="yd__name">{page.person.name}</span>
+                <span class="yd__score">{page.reading.score.toFixed(1)}<span>/10</span></span>
+                <span class="yd__tier">{page.reading.tier.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+    <p class="yd__note">Corrections or removal requests: <a href="mailto:people@zodiacs.org">people@zodiacs.org</a>.</p>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(24px, 4vw, 40px); }
+  .tool-hero h1 { margin: 0 0 16px; font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 500; line-height: 1.04; text-wrap: balance; }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+  .yd__group { margin-top: 28px; }
+  .yd__group h2 { margin: 0 0 12px; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-xl); }
+  .yd__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
+  .yd__card { display: grid; grid-template-columns: 28px 1fr auto; grid-template-rows: auto auto; column-gap: 10px; align-items: center; text-decoration: none; color: var(--text); min-height: 72px; }
+  .yd__card :global(svg), .yd__card :global(img) { grid-row: span 2; }
+  .yd__name { font-weight: 550; }
+  .yd__score { grid-row: span 2; font-family: var(--font-serif); font-size: var(--text-xl); }
+  .yd__score span { font-size: var(--text-sm); color: var(--muted); }
+  .yd__tier { color: var(--muted); font-size: var(--text-sm); }
+  .yd__note { margin-top: 28px; color: var(--muted); font-size: var(--text-sm); }
+</style>

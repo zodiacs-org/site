@@ -36,6 +36,8 @@ const jsonLd = [
   title="Year Ahead Score: Your Next Twelve Months | Zodiacs.org"
   description="A free 0 to 10 score for your next twelve months from the slow planets' transits to your birth chart, with your best and hardest months. Calculated on your device."
   path="/year-score/"
+  image="/assets/og/v2/tool/year-score.png"
+  imageAlt="Your year ahead, scored: Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
@@ -50,6 +52,16 @@ const jsonLd = [
     </div>
     <YearScoreCalculator client:load />
     <noscript><p>The Year Ahead Score needs JavaScript. Enable it and reload to calculate your score from your birth date.</p></noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose">
+      <h2>Well-known people’s years</h2>
+      <p>
+        The same score, read for founders, chief executives, athletes and entertainers from their public birth dates:
+        <a href="/year/" rel="nofollow">see the Year Ahead directory</a>.
+      </p>
+    </div>
   </section>
 
   <section class="section--tight container container--narrow">
