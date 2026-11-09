@@ -1,3 +1,37 @@
+Solar and lunar returns accepted, 2026-11-08 (Asia/Bangkok):
+P2.A.timing.returns passes its preregistered worked-example test, and you
+ratified its three departures.
+
+**Overall delivery: 50%** (50.123% to three decimals): 91.45 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 1.5 from B3.c's entry
+below: P2.A.timing.returns (1.5) moves from partial to accepted, and Phase 2 A
+Western from 12.1 of 29.6 to 13.6 of 29.6.
+
+- **The test.** Five searchers read 380 sources for printed worked examples
+  of solar and lunar returns. Ten readers read 83 of the 124 candidates again,
+  blind, from the scans (the 41 excluded on facts alone were read once), and
+  the holdout was frozen in `f7e5ed14`, 30 candidates with a computed
+  tolerance, and pushed before the engine ran. Of the 13 the rules leave scored,
+  11 agree with engine 1.1.0-rc.2: 6 of 8 solar, from 4 authors and 4 works,
+  and 5 of 5 lunar. The pass rule needs 5, 1, 2 and 2, and two thirds.
+- **Departures.** Three were made before the run and are disclosed: community
+  uploads of in-copyright works are not counted as public scans (D11, 31
+  records out); candidates excluded on facts alone were read once (D17); and
+  the blind re-read of the scored fixtures ran before the run, not after it.
+  You ratified all three on 8 November.
+- **Your answers.** On 8 November you approved withholding the community-upload
+  records' readings, then their authors and titles, after your private search
+  matched the first freeze commit; you allowed the one name match left; and
+  you ratified the three departures.
+- **Nothing served changes.** This record adds evidence, a test, the ledger,
+  its table and this file (site#921).
+- **Still yours.** OQ10's Q5 (step 1.14h).
+- **Follow-ups.** Planetary returns (P2.A.timing.planetary-returns) could get
+  their own preregistration; P4.1, the DE440 hosted backend; P1.M3c's version 2.
+
+The record is
+[the evidence README](../evidence/returns-worked-examples-20261107/README.md).
+
 The time atlas dataset accepted, 2026-11-07 (Asia/Bangkok): B3.c
 accepted on your answers.
 

@@ -17,6 +17,7 @@ import { mkdir, readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
+import { readEventsPublication } from '../scripts/lib/events-publications.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const CHROMIUM = await findChromium();
@@ -24,10 +25,8 @@ if (OUT) await mkdir(OUT, { recursive: true });
 
 const results = [];
 const check = (name, ok, detail = '') => results.push({ name, ok, detail });
-const eventsPublication = JSON.parse(await readFile(
-  new URL('../src/data/events-publication.json', import.meta.url),
-  'utf8',
-));
+// Both receipts, joined as the site publishes them: 2026 to 2027 and 2028 to 2030.
+const eventsPublication = await readEventsPublication(new URL('..', import.meta.url).pathname);
 const dailyFacts = JSON.parse(await readFile(new URL('../src/data/daily.json', import.meta.url), 'utf8'));
 const dailyPublication = JSON.parse(await readFile(
   new URL('../src/data/daily-publication.json', import.meta.url),

@@ -5,7 +5,7 @@ import { solarHouse } from '../daily';
 import { eventsCatalog, RETRO_PAGE_PLANETS, SLOW_BODIES } from './catalog';
 import { eventClock, metaDescription, metaTitle, moonNameForDate } from './format';
 import { INTERPRETED_IDS, interpretationFor } from './interpretations';
-import { publishedEventPages } from './publication';
+import { publishedEventPages } from './site-publication';
 import { nasaStationAt } from '../nasa-instants';
 
 const catalog = eventsCatalog();
@@ -97,10 +97,10 @@ describe('events catalog — construction', () => {
     expect(catalog.pages.some((page) => page.facts.id === mercuryCycle.facts.id)).toBe(true);
   });
 
-  it('indexes exactly the committed 2026–2027 publication receipt', () => {
+  it('indexes exactly the committed 2026 to 2030 publication receipts', () => {
     const publishedIds = new Set(publishedEventPages.map((event) => event.id));
     const eligible = catalog.pages.filter((event) => event.indexEligible);
-    expect(eligible).toHaveLength(92);
+    expect(eligible).toHaveLength(219);
     expect(new Set(eligible.map((event) => event.facts.id))).toEqual(publishedIds);
     for (const event of eligible) {
       expect(event.interpretation, event.facts.id).toBeDefined();

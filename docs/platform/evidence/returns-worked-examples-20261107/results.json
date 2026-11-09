@@ -1,0 +1,374 @@
+{
+ "engine": "1.1.0-rc.2",
+ "node": "v22.22.2",
+ "holdoutSha256": "2595133ee86374a9b7a74ac48454c11eed84a565cb1c424b308408aa32970143",
+ "fixtures": [
+  {
+   "id": "F2-02",
+   "body": "Moon",
+   "form": "whole-chain",
+   "author": "(Miss) Loumel Skaife",
+   "work": "Astrology (quarterly of the Astrological Lodge of London), Vol. 16 No. 4",
+   "E": "1939-09-26T15:52:07.122Z",
+   "D": 127.122,
+   "T": 1099.758,
+   "terms": {
+    "r": 30,
+    "i": 39.3,
+    "b": 0,
+    "c": 947.1,
+    "t": 52.5,
+    "d": 30.858
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F2-03",
+   "body": "Moon",
+   "form": "whole-chain",
+   "author": "(Miss) Loumel Skaife",
+   "work": "Astrology (quarterly of the Astrological Lodge of London), Vol. 16 No. 4",
+   "E": "1940-09-15T14:00:37.299Z",
+   "D": 97.299,
+   "T": 1100.084,
+   "terms": {
+    "r": 30,
+    "i": 39.3,
+    "b": 0,
+    "c": 947.1,
+    "t": 52.5,
+    "d": 31.184
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F2-21",
+   "body": "Sun",
+   "form": "whole-chain",
+   "author": "Alfa Lindanger",
+   "work": "American Astrology (serial)",
+   "E": "1933-01-31T10:47:40.622Z",
+   "D": -19.378,
+   "T": 183.253,
+   "terms": {
+    "r": 30,
+    "i": 30.3,
+    "b": 0,
+    "c": 16.08,
+    "t": 75.6,
+    "d": 31.273
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F2-22",
+   "body": "Sun",
+   "form": "whole-chain",
+   "author": "Alfa Lindanger",
+   "work": "American Astrology (serial)",
+   "E": "1932-09-06T20:40:38.141Z",
+   "D": 458.141,
+   "T": 179.722,
+   "terms": {
+    "r": 30,
+    "i": 30.3,
+    "b": 0,
+    "c": 16.08,
+    "t": 75.6,
+    "d": 27.742
+   },
+   "agrees": false,
+   "error": null
+  },
+  {
+   "id": "F2-23",
+   "body": "Sun",
+   "form": "whole-chain",
+   "author": "Alfa Lindanger",
+   "work": "American Astrology (serial)",
+   "E": "1932-05-09T21:19:31.059Z",
+   "D": 811.059,
+   "T": 179.946,
+   "terms": {
+    "r": 30,
+    "i": 30.3,
+    "b": 0,
+    "c": 16.08,
+    "t": 75.6,
+    "d": 27.966
+   },
+   "agrees": false,
+   "error": null
+  },
+  {
+   "id": "F3-02",
+   "body": "Sun",
+   "form": "whole-chain",
+   "author": "M. Vijaya-Raghavulu",
+   "work": "Vijaya-Raghavulu, Text-Book on Directional Calculations (Madras, 1933)",
+   "E": "1909-06-03T16:48:41.390Z",
+   "D": 52.39,
+   "T": 129.695,
+   "terms": {
+    "r": 0.5,
+    "i": 31.56,
+    "b": 0,
+    "c": 16.08,
+    "t": 75.6,
+    "d": 5.955
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F3-03",
+   "body": "Sun",
+   "form": "whole-chain",
+   "author": "M. Vijaya-Raghavulu",
+   "work": "Vijaya-Raghavulu, Text-Book on Directional Calculations (Madras, 1933)",
+   "E": "1910-06-03T22:33:28.671Z",
+   "D": 10.671,
+   "T": 131.062,
+   "terms": {
+    "r": 0.5,
+    "i": 31.56,
+    "b": 0,
+    "c": 16.08,
+    "t": 75.6,
+    "d": 7.322
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F3-04",
+   "body": "Moon",
+   "form": "whole-chain",
+   "author": "M. Vijaya-Raghavulu",
+   "work": "Vijaya-Raghavulu, Text-Book on Directional Calculations (Madras, 1933)",
+   "E": "1893-06-21T04:49:21.249Z",
+   "D": -36.751,
+   "T": 779.973,
+   "terms": {
+    "r": 0.5,
+    "i": 39.405,
+    "b": 0,
+    "c": 642.1,
+    "t": 84,
+    "d": 13.968
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F3-05",
+   "body": "Moon",
+   "form": "whole-chain",
+   "author": "M. Vijaya-Raghavulu",
+   "work": "Vijaya-Raghavulu, Text-Book on Directional Calculations (Madras, 1933)",
+   "E": "1910-04-21T19:50:13.705Z",
+   "D": 21.705,
+   "T": 773.165,
+   "terms": {
+    "r": 0.5,
+    "i": 39.405,
+    "b": 0,
+    "c": 642.1,
+    "t": 84,
+    "d": 7.16
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F3-06",
+   "body": "Moon",
+   "form": "whole-chain",
+   "author": "M. Vijaya-Raghavulu",
+   "work": "Vijaya-Raghavulu, Text-Book on Directional Calculations (Madras, 1933)",
+   "E": "1910-10-02T16:30:53.725Z",
+   "D": 9.725,
+   "T": 773.782,
+   "terms": {
+    "r": 0.5,
+    "i": 39.405,
+    "b": 0,
+    "c": 642.1,
+    "t": 84,
+    "d": 7.777
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F3-13",
+   "body": "Sun",
+   "form": "whole-chain",
+   "author": "Alfred J. Pearce",
+   "work": "Pearce, The Text-Book of Astrology, 2nd ed. (1911)",
+   "E": "1909-11-09T22:43:28.933Z",
+   "D": 88.933,
+   "T": 378.152,
+   "terms": {
+    "r": 30,
+    "i": 42.9,
+    "b": 144,
+    "c": 16.08,
+    "t": 138.6,
+    "d": 6.572
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F3-14",
+   "body": "Sun",
+   "form": "whole-chain",
+   "author": "Alfred J. Pearce",
+   "work": "Pearce, The Text-Book of Astrology, 2nd ed. (1911)",
+   "E": "1905-11-09T23:21:06.872Z",
+   "D": 54.872,
+   "T": 347.281,
+   "terms": {
+    "r": 3,
+    "i": 42.9,
+    "b": 144,
+    "c": 16.08,
+    "t": 138.6,
+    "d": 2.701
+   },
+   "agrees": true,
+   "error": null
+  },
+  {
+   "id": "F3-18",
+   "body": "Sun",
+   "form": "whole-chain",
+   "author": "Bh. Satyanarayana Rao",
+   "work": "Satyanarayana Rao, A Text Book of Scientific Astrology (1936)",
+   "E": "1934-04-01T20:06:34.109Z",
+   "D": 94.109,
+   "T": 196.288,
+   "terms": {
+    "r": 30,
+    "i": 42.9,
+    "b": 0,
+    "c": 16.08,
+    "t": 75.6,
+    "d": 31.708
+   },
+   "agrees": true,
+   "error": null
+  }
+ ],
+ "verdict": {
+  "outcome": "pass",
+  "counts": {
+   "scored": 13,
+   "agreeing": 11,
+   "solarScored": 8,
+   "lunarScored": 5,
+   "solarAgreeing": 6,
+   "lunarAgreeing": 5,
+   "solarAuthorsScored": 4,
+   "solarWorksScored": 4,
+   "solarAuthorsAgreeing": 4,
+   "solarWorksAgreeing": 4
+  }
+ },
+ "development": [
+  {
+   "id": "sr-leo-1936-queen-mary-1910",
+   "body": "Sun",
+   "form": "whole-chain",
+   "E": "1910-05-27T09:39:02.971Z",
+   "D": -1.029,
+   "toleranceSec1Nov": 30,
+   "error": null,
+   "development": true
+  },
+  {
+   "id": "sr-leo-1936-besant-1907",
+   "body": "Sun",
+   "form": "whole-chain",
+   "E": "1907-10-02T06:20:15.044Z",
+   "D": 3.044,
+   "toleranceSec1Nov": 40,
+   "error": null,
+   "development": true
+  },
+  {
+   "id": "sr-green-1905-george-v-1893",
+   "body": "Sun",
+   "form": "whole-chain",
+   "E": "1893-06-02T19:54:12.901Z",
+   "D": 12.901,
+   "toleranceSec1Nov": 64,
+   "error": null,
+   "development": true
+  },
+  {
+   "id": "sr-green-1903-edward-vii-1900-step",
+   "body": "Sun",
+   "form": "step",
+   "E": "1900-11-09T18:10:47.950Z",
+   "D": 20.95,
+   "toleranceSec1Nov": 60,
+   "error": null,
+   "development": true
+  },
+  {
+   "id": "sr-raphael-1905-edward-vii-1906",
+   "body": "Sun",
+   "form": "whole-chain",
+   "E": "1906-11-10T05:17:59.682Z",
+   "D": 59.682,
+   "toleranceSec1Nov": 100,
+   "error": null,
+   "development": true
+  },
+  {
+   "id": "sr-astrolabus-1908-ah-1908",
+   "body": "Sun",
+   "form": "whole-chain",
+   "E": "1908-05-30T16:44:03.338Z",
+   "D": 3.338,
+   "toleranceSec1Nov": 60,
+   "error": null,
+   "development": true
+  },
+  {
+   "id": "lr-green-1904-victoria-1901-step",
+   "body": "Moon",
+   "form": "step",
+   "E": "1901-01-02T01:59:21.894Z",
+   "D": 21.894,
+   "toleranceSec1Nov": 130,
+   "error": null,
+   "development": true
+  },
+  {
+   "id": "sr-lilly-1647-merchant-1646",
+   "body": "Sun",
+   "form": "whole-chain",
+   "E": "1646-09-29T20:57:15.393Z",
+   "D": -752.463,
+   "toleranceSec1Nov": 2217,
+   "error": null,
+   "development": true
+  },
+  {
+   "id": "sr-gadbury-1662-villiers-1648",
+   "body": "Sun",
+   "form": "whole-chain",
+   "E": "1648-04-11T17:23:18.582Z",
+   "D": -108.151,
+   "toleranceSec1Nov": 800,
+   "error": null,
+   "development": true
+  }
+ ]
+}

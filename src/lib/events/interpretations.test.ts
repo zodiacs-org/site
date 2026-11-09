@@ -8,7 +8,7 @@ import {
 const catalog = eventsCatalog();
 const editorialPages = catalog.pages.filter((event) => {
   const anchor = event.facts.at ?? event.facts.start ?? '';
-  return anchor.startsWith('2026-') || anchor.startsWith('2027-');
+  return anchor >= '2026-01-01' && anchor < '2031-01-01';
 });
 const generatedPages = editorialPages.filter(
   (event) => !BESPOKE_INTERPRETED_IDS.includes(event.facts.id),
@@ -35,9 +35,9 @@ const allPassages = () => editorialPages.flatMap((event) => {
   ];
 });
 
-describe('events editorial — 2026–2027 coverage', () => {
+describe('events editorial — 2026 to 2030 coverage', () => {
   it('covers the complete standalone page set and no later event year', () => {
-    expect(editorialPages).toHaveLength(92);
+    expect(editorialPages).toHaveLength(219);
     expect(Object.fromEntries(
       [...new Set(editorialPages.map((event) => event.facts.family))]
         .sort()
@@ -46,11 +46,11 @@ describe('events editorial — 2026–2027 coverage', () => {
           editorialPages.filter((event) => event.facts.family === family).length,
         ]),
     )).toEqual({
-      aspect: 20,
-      eclipse: 9,
-      ingress: 5,
-      lunation: 50,
-      retrograde: 8,
+      aspect: 40,
+      eclipse: 24,
+      ingress: 10,
+      lunation: 124,
+      retrograde: 21,
     });
 
     for (const event of editorialPages) {
@@ -60,7 +60,7 @@ describe('events editorial — 2026–2027 coverage', () => {
 
     for (const event of catalog.pages.filter((page) => {
       const anchor = page.facts.at ?? page.facts.start ?? '';
-      return anchor >= '2028-01-01';
+      return anchor >= '2031-01-01';
     })) {
       expect(event.interpretation, event.facts.id).toBeUndefined();
       expect(INTERPRETED_IDS).not.toContain(event.facts.id);

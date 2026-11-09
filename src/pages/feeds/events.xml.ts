@@ -1,6 +1,6 @@
 /** RSS 2.0 calendar of the approved public sky-event window. */
 import type { APIRoute } from 'astro';
-import { eventsPublication } from '../../lib/events/publication';
+import { eventsPublication } from '../../lib/events/site-publication';
 
 const SITE = 'https://zodiacs.org';
 const esc = (value: string) => value

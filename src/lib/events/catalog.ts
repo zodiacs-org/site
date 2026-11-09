@@ -21,7 +21,7 @@ import {
   ingressId, ingressPath, isoDay, lunationId, lunationPath,
   moonNameForDate, retrogradeId, retrogradePath, stationId,
 } from './format';
-import { publishedEventById } from './publication';
+import { publishedEventById } from './site-publication';
 import { NASA_INSTANT_SOURCE, nasaAspectAt, nasaIngressAt, nasaStationAt } from '../nasa-instants';
 import type { CatalogEvent, EventFacts, EventLink } from './types';
 import { FIXTURE_EVENTS } from './fixtures';

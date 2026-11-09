@@ -12,30 +12,50 @@ plugin's installation documentation stays at `/developers/ai/`.
 
 ## Images and movie
 
-`public/assets/ai/showcase/20261028/` is a new immutable asset family. The
-comparison and wedding WebP files are compressed derivatives of the exact
-reviewed 0.5.1 PNGs. Chart Studio and horoscope are captures of their current
-live-resource HTML, checked byte for byte against the local generated panels,
-using the labelled example chart and a synthetic Leo request. The horoscope is
-a dated example, not a claim that its pictured reading is always today's.
+`public/assets/ai/showcase/20261109/` is the immutable asset family the page
+uses. All four images are captures of their current live-resource HTML,
+checked byte for byte against the local generated panels: the labelled example
+chart, a synthetic Leo request, and the comparison and wedding examples with
+the made-up first names Lucía and Mateo, so the cards show names the way
+people ask for them instead of Person A and Person B. The horoscope is a dated
+example, not a claim that its pictured reading is always today's. The earlier
+`20261028/` family, whose comparison and wedding images came from the reviewed
+0.5.1 PNGs, stays published and unchanged.
 
-The page links each image's complete version and supplies real text and
-copyable prompts beside the cropped previews. No screenshot is presented as
-an interactive control. The existing 41-second 1080 by 1600 movie stays
-unchanged, with controls, no autoplay, no initial video download and a written
-description. The audio track is silent. The poster is a frame from that movie.
-All image dimensions are reserved before loading.
+The page shows a preview of each card and links its complete version. A
+preview is a crop of the same capture: the artwork, sign discs, names and
+score (Chart Studio: the whole wheel), padded with the card's own background
+to a 4:5 shape (the hero: 1:1) and faded where the card continues. The
+picture frames take the preview's shape, so nothing inside a preview is cut
+off at any width. Real text and copyable prompts sit beside each preview. No
+screenshot is presented as an interactive control. All image dimensions are
+reserved before loading.
 
-`src/data/apps-showcase-images.json` is produced by the capture utility. To
-make a new unpublished family after an intentional panel change, first run
-the direct MCP preflight, then capture into a new local folder:
+The tour, `tour.mp4` in the same family, is a 20-second, 1080 by 1350, silent
+movie of the same live cards and synthetic examples. Each scene types the
+question, brings in the real card, then scrolls, opens details or switches
+tabs inside it; the question, a footer that says the cards are real with
+example details, and the closing words are drawn over the card's own page. It
+does not imitate ChatGPT or Claude. The page plays it with controls, no
+autoplay, no initial video download and a written description. Its poster is
+the first card fully in. The 41-second 0.5.1 recording stays published at
+`/assets/ai/review/zodiacs-sky-0.5.1.mp4` but is no longer on the page.
+
+`src/data/apps-showcase-images.json` is produced by the capture utility and
+`src/data/apps-showcase-tour.json` by the tour recorder. To make a new
+unpublished family after an intentional panel change, run both into new local
+folders. Each asks https://zodiacs.org/mcp for the live panels and the
+synthetic examples itself, and stops unless each local generated panel equals
+its live resource:
 
 ```sh
-node tests/muse-connector-preflight.mjs --out /tmp/zodiacs-preflight
-node tests/manual/capture-apps-showcase.mjs --out /tmp/zodiacs-new-showcase --preflight /tmp/zodiacs-preflight
+node tests/manual/capture-apps-showcase.mjs --out /tmp/zodiacs-new-showcase
+node tests/manual/record-apps-tour.mjs --out /tmp/zodiacs-new-tour
 ```
 
-The utility refuses an existing output folder. Copy its new files and manifest
+Neither reads the Muse preflight, which still targets the 0.5.1 server.
+
+Both refuse an existing output folder. Copy their new files and manifests
 into fresh versioned paths only after reviewing them. Never replace the
 published 0.5.0/0.5.1 review assets, video, icons or plugin ZIPs.
 

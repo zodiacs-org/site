@@ -2,8 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import webPush from 'web-push';
+import { readEventsPublication } from './lib/events-publications.mjs';
 
-const EVENTS_PATH = new URL('../src/data/events-publication.json', import.meta.url);
 const EVENTS_SCHEMA = 'zodiacs.events-publication.v1';
 const LIVE_EVENT_ORIGIN = 'https://zodiacs.org';
 const DAY_MS = 86_400_000;
@@ -690,7 +690,7 @@ export function createPushScheduleStore(fetchImpl, url, serviceKey) {
 
 async function main() {
   const options = parseOptions(process.argv.slice(2));
-  const publication = JSON.parse(await readFile(EVENTS_PATH, 'utf8'));
+  const publication = await readEventsPublication(new URL('..', import.meta.url).pathname);
   const event = selectEventForDay(publication, options.date);
   if (!event) {
     console.log(`sky-alert: no published event on ${utcDay(options.date)}; nothing sent`);

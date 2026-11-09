@@ -7,10 +7,29 @@ export const EVENTS_PUBLICATION_FROM = '2026-01-01T00:00:00.000Z';
 export const EVENTS_PUBLICATION_TO = '2028-01-01T00:00:00.000Z';
 export const EVENTS_PUBLICATION_LASTMOD = '2026-10-16';
 
+/**
+ * The 2028 to 2030 pages, published 2026-11-08 in a receipt of their own
+ * (src/data/events-publication-2028-2030.json). The first receipt stays as
+ * it is because the AI tools bundle it byte for byte; the site reads both
+ * through src/lib/events/site-publication.ts.
+ */
+export const EVENTS_EXTENSION_FROM = EVENTS_PUBLICATION_TO;
+export const EVENTS_EXTENSION_TO = '2031-01-01T00:00:00.000Z';
+export const EVENTS_EXTENSION_LASTMOD = '2026-11-08';
+
+export interface PublicationWindow { from: string; to: string; lastModified: string }
+
+export const EVENTS_PUBLICATION_WINDOW: PublicationWindow = {
+  from: EVENTS_PUBLICATION_FROM, to: EVENTS_PUBLICATION_TO, lastModified: EVENTS_PUBLICATION_LASTMOD,
+};
+export const EVENTS_EXTENSION_WINDOW: PublicationWindow = {
+  from: EVENTS_EXTENSION_FROM, to: EVENTS_EXTENSION_TO, lastModified: EVENTS_EXTENSION_LASTMOD,
+};
+
 /** A page's date: the later of the publication's revision and its reading's own revision. */
-export function eventLastModified(id: string): string {
-  return Object.hasOwn(REVISED_EVENT_READINGS, id) && EVENT_READING_REVISION > EVENTS_PUBLICATION_LASTMOD
-    ? EVENT_READING_REVISION : EVENTS_PUBLICATION_LASTMOD;
+export function eventLastModified(id: string, published = EVENTS_PUBLICATION_LASTMOD): string {
+  return Object.hasOwn(REVISED_EVENT_READINGS, id) && EVENT_READING_REVISION > published
+    ? EVENT_READING_REVISION : published;
 }
 
 type Catalog = {
@@ -27,9 +46,9 @@ const anchorIso = (event: CatalogEvent): string => (
   event.facts.committed?.anchor ?? event.facts.at ?? event.facts.start ?? ''
 );
 
-const insidePublicationWindow = (event: CatalogEvent): boolean => {
+const insideWindow = (window: PublicationWindow) => (event: CatalogEvent): boolean => {
   const anchor = anchorIso(event);
-  return anchor >= EVENTS_PUBLICATION_FROM && anchor < EVENTS_PUBLICATION_TO;
+  return anchor >= window.from && anchor < window.to;
 };
 
 const compareEvent = (left: CatalogEvent, right: CatalogEvent): number => (
@@ -37,7 +56,7 @@ const compareEvent = (left: CatalogEvent, right: CatalogEvent): number => (
   || left.facts.id.localeCompare(right.facts.id)
 );
 
-const publicDescriptor = (event: CatalogEvent) => ({
+const publicDescriptor = (event: CatalogEvent, published = EVENTS_PUBLICATION_LASTMOD) => ({
   id: event.facts.id,
   path: event.facts.path,
   title: event.facts.committed?.title ?? event.facts.title,
@@ -47,7 +66,7 @@ const publicDescriptor = (event: CatalogEvent) => ({
   bodies: event.facts.bodies,
   signs: event.facts.signs,
   summary: timelineLine(event.facts),
-  lastModified: eventLastModified(event.facts.id),
+  lastModified: eventLastModified(event.facts.id, published),
 });
 
 /**
@@ -58,7 +77,9 @@ const publicDescriptor = (event: CatalogEvent) => ({
  * this committed receipt to decide eligibility, so generation cannot depend
  * on catalog eligibility without creating a circular launch gate.
  */
-export function buildEventsPublication(catalog: Catalog) {
+export function buildEventsPublication(catalog: Catalog, window: PublicationWindow = EVENTS_PUBLICATION_WINDOW) {
+  const insidePublicationWindow = insideWindow(window);
+  const describe = (event: CatalogEvent) => publicDescriptor(event, window.lastModified);
   const windowPages = catalog.pages
     .filter(insidePublicationWindow)
     .sort(compareEvent);
@@ -93,10 +114,10 @@ export function buildEventsPublication(catalog: Catalog) {
     schema: EVENTS_PUBLICATION_SCHEMA,
     locale: 'en',
     window: {
-      from: EVENTS_PUBLICATION_FROM,
-      to: EVENTS_PUBLICATION_TO,
+      from: window.from,
+      to: window.to,
     },
-    lastModified: EVENTS_PUBLICATION_LASTMOD,
+    lastModified: window.lastModified,
     hub: {
       path: '/events/',
       title: 'Sky events',
@@ -104,9 +125,9 @@ export function buildEventsPublication(catalog: Catalog) {
       indexEligible: true,
     },
     pages: windowPages.map((event) => ({
-      ...publicDescriptor(event),
+      ...describe(event),
       card: `/assets/og/v2/events/${event.facts.id}.png`,
     })),
-    timeline: timeline.map(publicDescriptor),
+    timeline: timeline.map(describe),
   };
 }

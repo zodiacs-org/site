@@ -13,7 +13,7 @@ import {
   futurePublishedEvents,
   singlePublishedEventSign,
   type PublishedEventDescriptor,
-} from '../src/lib/events/publication';
+} from '../src/lib/events/site-publication';
 import type { HoroscopeProgram } from '../src/lib/horoscope-program';
 import { resolveSavedChart, type SavedChartEngineLoader } from '../src/lib/profile/resolve';
 import type { SavedChart } from '../src/lib/profile/schema';

@@ -281,12 +281,11 @@ Rerun it with `python3 scripts/accuracy-audit/run_all.py` after a build, then
   pages read them from the data), as do the home page, the tools hub, the
   moon phase page and the eclipse event pages' links.
 
-## Recommended, not fixed
+## Recommended, and what has since been fixed
 
-1. **Localized transit labels.** Truncate these as well. Their test is
-   protected (`src/lib/i18n/astrology.test.ts`) and needs the owner's
-   allowance. Until then, the es, fr, it and pt /transits/ pages can print
-   "30°" in July 2028.
+1. **Localized transit labels (fixed in zodiacs-org/site#908).** The es, fr,
+   it and pt /transits/ pages truncate their degrees too, with the owner's
+   allowance for the protected test (`src/lib/i18n/astrology.test.ts`).
 2. **Slow-planet times (fixed).** The pages, the Learn placement windows
    and the sky calendar feed print NASA's instants. The Sun's ingresses keep
    the engine's, at most 43.6 s from NASA's. Rerun the generator when a data
@@ -300,14 +299,13 @@ Rerun it with `python3 scripts/accuracy-audit/run_all.py` after a build, then
 5. **Eclipse durations in the data (fixed on the pages).** `eclipses.json`
    and the AI tools keep the engine's totality (103 and 55 minutes for June
    and December 2029).
-6. **Coverage wording left.** The localized tools hubs (`src/pages/{es,fr,it,pt}/tools/`,
-   protected) say full moons "through 2027" and eclipses "through 2028";
-   the placement pages' Mercury card (`src/pages/learn/`, protected) says
-   "through 2027"; the share card subtitles (`og.tools.*.sub`) are drawn into
-   published images.
-7. **Tomorrow's Moon sign.** The 8 November 2026 tomorrow readings say the
-   Moon is in Libra; at noon UTC it is at 6°59′ Scorpio (12 pages). The text
-   is the same before this change.
+6. **Coverage wording (fixed in zodiacs-org/site#914).** The localized tools
+   hubs, the placement pages' Mercury card and the share card subtitles now
+   say the tables run through 2030.
+7. **Tomorrow's Moon sign (fixed in zodiacs-org/site#913).** The 8 November
+   2026 tomorrow readings said the Moon was in Libra; at noon UTC it was at
+   6°59′ Scorpio (12 pages). The horoscope pages now name the Moon sign of the
+   sky behind each reading (`src/components/HoroscopeProgramPage.astro`).
 
 ## Conventions
 

@@ -30,6 +30,7 @@ import {
   LOCALIZED_ART_CARDS,
   LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES,
 } from '../src/lib/og-art-cards.mjs';
+import { readEventsPublication } from './lib/events-publications.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'public/assets/og/v2');
@@ -48,9 +49,7 @@ const legacyRegistryCardSha256 = 'f7b9e9e801e390f2ef3671755d1f3754a7e45bb9db0266
 // homepage and the site's fallback moved to the v8 art card on 2026-10-19.
 const homepageCard = 'share-pastel-wheel-20261019.png';
 const russianOut = resolve(out, 'ru');
-const eventsPublication = JSON.parse(
-  await readFile(resolve(root, 'src/data/events-publication.json'), 'utf8'),
-);
+const eventsPublication = await readEventsPublication(root);
 const peoplePilot = JSON.parse(
   await readFile(resolve(root, 'src/data/people.json'), 'utf8'),
 ).people;
@@ -348,8 +347,10 @@ const bundleBytes = await directoryBytes(out);
 const bundleMb = bundleBytes / 1024 / 1024;
 /* Ceiling raised 15 → 25MB for the Phase 5 completion: 500 People cards
    (~7.6MB) join the set. Documented in PLAN.md; no runtime cost — these
-   are request-time social assets, never page-bundle bytes. */
-if (bundleMb > 25) failures.push(`v2 asset bundle: ${bundleMb.toFixed(2)}MB exceeds the 25MB budget`);
+   are request-time social assets, never page-bundle bytes. Raised again to
+   28MB on 2026-11-08, when the 127 event pages of 2028 to 2030 (~2.4MB, on
+   the 16-colour palette) were published. */
+if (bundleMb > 28) failures.push(`v2 asset bundle: ${bundleMb.toFixed(2)}MB exceeds the 28MB budget`);
 
 if (failures.length) {
   console.error(`verify-og-cards: ${failures.length} failure(s)`);

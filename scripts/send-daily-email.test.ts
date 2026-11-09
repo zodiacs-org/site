@@ -21,7 +21,7 @@ import type { DailyPublication } from '../src/lib/daily-publication';
 import legacyPolar from '../src/lib/engine/fixtures/legacy-polar-saved.json';
 import * as engine from '../src/lib/engine/full';
 import { ENGINE_VERSION } from '../src/lib/engine/types';
-import { futurePublishedEvents } from '../src/lib/events/publication';
+import { futurePublishedEvents } from '../src/lib/events/site-publication';
 import type { HoroscopeProgram } from '../src/lib/horoscope-program';
 import type { SavedChart } from '../src/lib/profile/schema';
 import { signForLongitude } from '../src/lib/signs';

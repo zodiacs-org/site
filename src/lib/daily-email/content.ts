@@ -13,7 +13,7 @@ import {
 import {
   singlePublishedEventSign,
   type PublishedEventDescriptor,
-} from '../events/publication';
+} from '../events/site-publication';
 import type { HoroscopeProgram, HoroscopeReading } from '../horoscope-program';
 import type { SavedChart } from '../profile/schema';
 import { signBySlug, signForLongitude } from '../signs';

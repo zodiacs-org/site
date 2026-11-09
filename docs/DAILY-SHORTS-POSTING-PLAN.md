@@ -58,14 +58,37 @@ zodiacs.org from that platform (Vercel Analytics, by referrer). Keep the
 numbers in a simple table. After four weeks, keep what works and drop what
 doesn't.
 
+## Sky event videos
+
+The **Event Shorts** workflow (`.github/workflows/event-shorts.yml`, run by
+hand) builds one video for each of the site's published event pages in a span:
+new and full Moons, eclipses, retrogrades, slow planets changing sign, and
+exact aspects. Each shows the event's sign art, its name, its UTC day, the
+page's own summary and the time the page prints (NASA's, for the planets),
+and links the page. The same command runs locally:
+
+```bash
+npm run data:event-shorts -- --from 2027-07-01 --days 31
+```
+
+Good ones to start with:
+
+- **The eclipse no one will see** (18 July 2027, `--only eclipse-2027-07-18`):
+  a penumbral eclipse so slight that no eye or camera will catch it. The
+  video says so. A strange fact makes a good hook.
+- **Each full Moon**, posted the morning before, with its traditional name
+  (the Beaver Moon, the Cold Moon).
+- **Mercury and Mars retrograde**, posted a day or two before the station.
+
+Post one event video for every two or three horoscope videos. The event
+videos are for everyone, not one sign, so they reach a wider audience.
+
 ## Ideas for later
 
 - **Season openers:** a longer video on the day the Sun changes sign, made
   from the season pages.
 - **"Your 2027 sky" in December:** a short series on the year's eclipses,
   pointing to the new page and its share card.
-- **Moon phase days:** a short on each full and new Moon, linking the Moon
-  journal.
 - **Comments into Guide:** answer common questions in comments with a link to
   Guide.
 

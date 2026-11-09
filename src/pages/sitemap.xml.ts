@@ -32,14 +32,12 @@ import { PEOPLE_DEGREES_MODIFIED_AT, peopleDegreesChanged } from '../lib/people-
 import daily from '../data/daily.json';
 import developerGuides from '../data/developer-guides.json';
 import horoscopeProgram from '../data/horoscope-program.json';
-import eventsPublicationData from '../data/events-publication.json';
 import registryResearchPublicationData from '../data/registry-research/publication.json';
-import type { EventsPublication } from '../lib/events/publication';
+import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
 
 const SITE = 'https://zodiacs.org';
-const eventsPublication = eventsPublicationData as EventsPublication;
 type RegistryResearchPublication = {
   generatedAt: string;
   items: Array<{ url: string; status: 'published' | 'scheduled'; visibleAt: string; publishedAt: string }>;
@@ -595,8 +593,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
-  // The assistant showcase and its entry links, first published with this change.
-  ['/apps/', '2026-10-28'] as const,
+  // The assistant showcase, which lists the Grok template from the day of the daily edition it was built with.
+  ['/apps/', '2026-11-09'] as const,
+  // The showcase's entry links, first published with the showcase.
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
   // The developer index that links to the demo. The day of the daily edition it was
@@ -943,6 +942,23 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const loc of COVERAGE_2030) {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-07');
+  }
+  // The methodology page says how event times are checked against NASA, and
+  // the events hub links to it.
+  for (const url of urls) {
+    if (url.loc === '/methodology/' || url.loc === '/events/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-08');
+    }
+  }
+  // The event pages of 2028 to 2030 were published on 2026-11-08 (their own
+  // dates come from events-publication-2028-2030.json), and the eclipse and
+  // full moon calendars, in English and translated, now link them.
+  const EVENTS_2030 = ['', '/es', '/fr', '/it', '/pt'].flatMap((prefix) => [
+    `${prefix}/eclipses/`, `${prefix}/full-moon-calendar/`,
+  ]);
+  for (const loc of EVENTS_2030) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
   return [
     ...urls,

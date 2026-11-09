@@ -30,7 +30,7 @@ import Wheel from '../../lib/wheel/Wheel';
 import dailyData from '../../data/daily.json';
 import skyData from '../../data/sky.json';
 import eclipseData from '../../data/eclipses.json';
-import eventsData from '../../data/events-publication.json';
+import { eventsPublication as eventsData } from '../../lib/events/site-publication';
 import type { Daily, DailyEvent } from '../../lib/daily';
 import { ASPECT_GLYPH, PLANET_GLYPH } from '../../lib/glyphs/paths';
 import { dailyReadingForLocale } from '../../lib/i18n/daily-reading';

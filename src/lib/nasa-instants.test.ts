@@ -45,7 +45,9 @@ const months = readdirSync(DATA)
   .map((name) => read<TransitMonth>(name));
 const ingressData = read<{ horizons: { planets: string[]; from: string; to: string }[]; windows: { planet: string; sign: string; from: string; to: string }[] }>('ingresses.json');
 const sky = read<{ from: string; retrogrades: { planet: string; from: string; to: string | null }[] }>('sky.json');
-const publication = read<{ pages: { id: string; family: string; anchor: string; bodies: string[]; subtype: string; signs: string[] }[] }>('events-publication.json');
+type Receipt = { pages: { id: string; family: string; anchor: string; bodies: string[]; subtype: string; signs: string[] }[] };
+// Both receipts: 2026 to 2027 (bundled by the AI tools) and 2028 to 2030.
+const publication = { pages: [...read<Receipt>('events-publication.json').pages, ...read<Receipt>('events-publication-2028-2030.json').pages] };
 const program = read<{ evidence: { kind: string; eventKind?: string; eventType?: string; body?: string; a?: string; b?: string; at: string }[] }>('horoscope-program.json');
 
 describe('the NASA event table', () => {
@@ -165,6 +167,7 @@ describe('every planet event the pages print has its NASA instant', () => {
 
   it('in the event pages\' publication receipt', () => {
     for (const page of publication.pages) {
+      if (page.family === 'retrograde') expect(nasaStationAt(page.bodies[0], page.anchor), page.id).toBeDefined();
       if (page.family === 'ingress') expect(nasaIngressAt(page.bodies[0], page.anchor), page.id).toBeDefined();
       if (page.family === 'aspect') expect(nasaAspectAt(page.bodies[0], page.bodies[1], page.subtype, page.anchor), page.id).toBeDefined();
     }

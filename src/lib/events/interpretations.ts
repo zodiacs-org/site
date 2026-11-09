@@ -512,9 +512,12 @@ function aspectInterpretation(facts: EventFacts): EventInterpretation {
   };
 }
 
+/** The years whose standalone events carry an editorial reading: 2026 to 2030, as the sky data runs. */
+const EDITORIAL_YEARS = new Set(['2026', '2027', '2028', '2029', '2030']);
+
 function generatedInterpretation(facts: EventFacts): EventInterpretation | undefined {
   const year = anchorIso(facts).slice(0, 4);
-  if (year !== '2026' && year !== '2027') return undefined;
+  if (!EDITORIAL_YEARS.has(year)) return undefined;
   switch (facts.family) {
     case 'lunation': return lunationInterpretation(facts);
     case 'eclipse': return eclipseInterpretation(facts);
@@ -553,8 +556,7 @@ const RETRO_PAGE_PLANETS = new Set(['Mercury', 'Venus', 'Mars']);
 function editorialFactsById(): Map<string, EventFacts> {
   const facts = new Map<string, EventFacts>();
   const keep = (item: EventFacts) => {
-    const year = anchorIso(item).slice(0, 4);
-    if (year === '2026' || year === '2027') facts.set(item.id, item);
+    if (EDITORIAL_YEARS.has(anchorIso(item).slice(0, 4))) facts.set(item.id, item);
   };
   const sourceFor = (month: string) => `transits-${month}.json` as const;
 
@@ -718,7 +720,7 @@ export function interpretationFor(idOrFacts: string | EventFacts): EventInterpre
 /** The seven original hand-authored readings, kept as editorial anchors. */
 export const BESPOKE_INTERPRETED_IDS = Object.freeze(Object.keys(INTERPRETATIONS));
 
-/** Every standalone 2026–2027 event with an editorial reading. */
+/** Every standalone 2026 to 2030 event with an editorial reading. */
 export const INTERPRETED_IDS = Object.freeze([...new Set([
   ...BESPOKE_INTERPRETED_IDS,
   ...EDITORIAL_FACTS.keys(),
