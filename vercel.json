@@ -378,6 +378,18 @@
       "destination": "/api/compatibility?__zodiacs_share=invite-story"
     },
     {
+      "source": "/share/retrograde-for-you/",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-link"
+    },
+    {
+      "source": "/api/og/retrograde-for-you-image",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-image"
+    },
+    {
+      "source": "/api/og/retrograde-for-you-story",
+      "destination": "/api/compatibility?__zodiacs_share=retrograde-for-you-story"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },

@@ -57,6 +57,7 @@ export const NAV_MORE = [
   { href: '/sky-calendar/', label: 'Sky calendar' },
   { href: '/chart-of-the-day/', label: 'Chart of the day' },
   { href: '/your-sky-wrapped/', label: 'Your sky, wrapped' },
+  { href: '/retrogrades/for-you/', label: 'Retrogrades for you' },
   { href: '/astrologer-kit/', label: 'Chart PDF' },
 ];
 export const NAV_MORE_LABEL = 'More to explore';

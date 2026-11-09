@@ -39,6 +39,9 @@ import {
   handleInviteImageRequest,
   handleInviteLinkRequest,
   handleInviteStoryRequest,
+  handleRetrogradeForYouImageRequest,
+  handleRetrogradeForYouLinkRequest,
+  handleRetrogradeForYouStoryRequest,
   RESULT_SHARE_ROUTES,
 } from './result-preview';
 import {
@@ -58,9 +61,14 @@ import {
   longDate,
   NEUTRAL_HUE,
   occasionCardModel,
+  RETROGRADE_CARD_HOUSE_THEME,
+  retrogradeForYouCardModel,
   skyCalendarCardModel,
   skyEvents,
 } from './result-preview-model';
+import { parseRetrogradeForYouShare } from '../lib/retrograde-for-you/share';
+import { NATAL_HOUSE_THEME } from '../lib/natal';
+import { softenMinor } from '../ai-tools/features/reading-guards';
 import { parseBigThreeShare, parseBirthdayShare, parseChartTwinsShare, parseChineseZodiacShare, parseFamousChartShare, parseHoroscopeShare, parseInviteShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 import { NATAL_NOTE } from '../ai-tools/features/natal-chart';
@@ -554,6 +562,7 @@ describe('the deployed entry', () => {
       ['/share/big-three/', 'big-three-link'], ['/api/og/big-three-image', 'big-three-image'], ['/api/og/big-three-story', 'big-three-story'],
       ['/share/chinese-zodiac/', 'chinese-zodiac-link'], ['/api/og/chinese-zodiac-image', 'chinese-zodiac-image'], ['/api/og/chinese-zodiac-story', 'chinese-zodiac-story'],
       ['/share/invite/', 'invite-link'], ['/api/og/invite-image', 'invite-image'], ['/api/og/invite-story', 'invite-story'],
+      ['/share/retrograde-for-you/', 'retrograde-for-you-link'], ['/api/og/retrograde-for-you-image', 'retrograde-for-you-image'], ['/api/og/retrograde-for-you-story', 'retrograde-for-you-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
     // Every route the function answers is reached by one rewrite, and every share rewrite names a route it answers.
     const shareRewrites = (vercel.rewrites as { source: string; destination: string }[]).filter((rewrite) => rewrite.destination.includes('__zodiacs_share='));
@@ -625,6 +634,8 @@ describe('share preview images', () => {
     ['Chinese zodiac from an older link with its year', () => handleChineseZodiacImageRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-image?a=horse&y=2026'))],
     ['invitation', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?s=taurus&p=scorpio'))],
     ['invitation with one sign', () => handleInviteImageRequest(new Request('https://zodiacs.org/api/og/invite-image?p=gemini'))],
+    ['retrograde in my chart', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&h=7&b=rising&c=70'))],
+    ['retrograde with no house', () => handleRetrogradeForYouImageRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-image?p=mars&s=2027-01-10&c=55'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -669,6 +680,8 @@ describe('share preview images', () => {
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image'],
       [handleInviteImageRequest, 'https://zodiacs.org/api/og/invite-image?s=taurus&n=Ana'],
       [handleCompatibilityImageRequest, `https://zodiacs.org/api/og/compatibility-image?${COMPAT}&c=99`],
+      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-25&h=7&b=rising&c=70'],
+      [handleRetrogradeForYouImageRequest, 'https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&s=2026-10-24&h=7&b=rising&c=70&d=1990-05-03'],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });
@@ -694,6 +707,7 @@ describe('story pictures', () => {
     ['big three with the Moon undetermined', () => handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=sagittarius'))],
     ['Chinese zodiac', () => handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=tiger'))],
     ['invitation', () => handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio'))],
+    ['retrograde in my chart', () => handleRetrogradeForYouStoryRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-story?p=venus&s=2026-10-03&h=5&b=sun&c=55'))],
   ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The story renderer must not fetch assets or fonts.');
@@ -720,5 +734,39 @@ describe('story pictures', () => {
     expect((await handleBigThreeStoryRequest(new Request('https://zodiacs.org/api/og/big-three-story?s=leo&d=1990-08-01'))).status).toBe(400);
     expect((await handleChineseZodiacStoryRequest(new Request('https://zodiacs.org/api/og/chinese-zodiac-story?a=cat'))).status).toBe(400);
     expect((await handleInviteStoryRequest(new Request('https://zodiacs.org/api/og/invite-story?s=taurus&p=scorpio&n=Luis'))).status).toBe(400);
+    expect((await handleRetrogradeForYouStoryRequest(new Request('https://zodiacs.org/api/og/retrograde-for-you-story?p=venus&s=2026-10-03&h=5&b=sun&c=70'))).status).toBe(400);
+  });
+});
+
+describe('a retrograde in one person’s chart', () => {
+  const events = skyEvents({ moons: [], retrogrades: json<{ retrogrades: { planet: string; from: string; to: string }[] }>('../data/sky.json').retrogrades, eclipses: [] });
+
+  it('draws the planet, its house and the published window, and nothing about the birth', () => {
+    const model = retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mercury&s=2026-10-24&h=7&b=rising&c=70'))!, events)!;
+    expect(model).toMatchObject({
+      title: 'Mercury retrograde in my seventh house',
+      span: 'Sat 24 Oct 2026 to Fri 13 Nov 2026',
+      line: 'The seventh house covers partnership, the people you meet as equals.',
+      confidence: 'Reading confidence 70%',
+    });
+    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=venus&s=2026-10-03&h=5&b=sun&c=55'))!, events)!.line)
+      .toBe('The fifth house covers pleasure, play, children, and what you make for its own sake. Counted from the Sun sign.');
+    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2027-01-10&c=55'))!, events)!.title).toBe('Mars retrograde in my chart');
+    expect(retrogradeForYouCardModel(parseRetrogradeForYouShare(new URLSearchParams('p=mars&s=2026-10-24&c=55'))!, events)).toBeNull();
+  });
+
+  it('keeps the birth chart’s house themes, with romance read as play', () => {
+    for (let house = 1; house <= 12; house += 1) expect(RETROGRADE_CARD_HOUSE_THEME[house]).toBe(softenMinor(NATAL_HOUSE_THEME[house]));
+  });
+
+  it('opens a page whose action leads back to the retrogrades page', async () => {
+    const page = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&h=7&b=rising&c=70&ref=chatgpt'))).text();
+    expect(page).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/retrograde-for-you-image?p=mercury&amp;s=2026-10-24&amp;h=7&amp;b=rising&amp;c=70">');
+    expect(page).toContain('<a class="cta" href="/retrogrades/for-you/?ref=chatgpt">See your retrogrades</a>');
+    expect(page).toContain('Mercury retrograde in my seventh house');
+    expect(page).not.toMatch(/[\u2013\u2014]/u);
+    const plain = await (await handleRetrogradeForYouLinkRequest(new Request('https://zodiacs.org/share/retrograde-for-you/?p=mercury&s=2026-10-24&c=55&d=1990-05-03'))).text();
+    expect(plain).toContain('content="https://zodiacs.org/assets/og/v2/tool/retrogrades.png"');
+    expect(plain).toContain('<a class="cta" href="/retrogrades/for-you/">See your retrogrades</a>');
   });
 });

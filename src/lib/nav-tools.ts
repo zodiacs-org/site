@@ -285,6 +285,10 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 25, title: 'Retrogrades', promise: 'Each planet’s retrograde dates at a glance.', group: 'year' },
   },
   {
+    href: '/retrogrades/for-you/',
+    hub: { order: 25.5, title: 'Retrogrades for you', promise: 'Mercury, Venus and Mars retrogrades in your own houses.', group: 'year' },
+  },
+  {
     href: '/birthday/', label: 'birthday', sublabel: NAV_SUBLABELS.birthday, navOrder: 8,
     hub: { order: 5, title: 'Birthday sign', promise: 'Your Sun sign, even near a sign change.', group: 'you' },
   },
@@ -350,6 +354,7 @@ export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[
   { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба', 'zh-hans': '天象日历', 'zh-hant': '天象日曆' } },
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },
   { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года', 'zh-hans': '你的年度星空', 'zh-hant': '你的年度星空' } },
+  { href: '/retrogrades/for-you/', label: { en: 'Retrogrades for you', es: 'Tus retrógrados', pt: 'Seus retrógrados', fr: 'Tes rétrogrades', it: 'I tuoi retrogradi', ru: 'Ваши ретрограды', 'zh-hans': '你的逆行', 'zh-hant': '你的逆行' } },
   { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
 ];
 

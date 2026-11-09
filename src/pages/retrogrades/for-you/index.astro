@@ -1,0 +1,111 @@
+---
+import Base from '../../../layouts/Base.astro';
+import RetrogradeForYou from '../../../islands/RetrogradeForYou';
+import '../../../styles/calculator.css';
+
+const faq = [
+  { q: 'What does a retrograde mean for me personally?', a: 'Astrologers read a retrograde through the part of your chart it passes through. The sign the planet loops back over falls in one of your twelve houses, and that house names the area of life where the review, the delays or the second look are expected to show up. A natal planet inside the loop’s degrees is crossed three times, which is traditionally when a retrograde is felt most.' },
+  { q: 'What are the pre-shadow and post-shadow?', a: 'Before a planet turns retrograde it first moves forward over the degrees it is about to revisit: that is the pre-shadow. After it turns direct it moves forward over them again until it is back at the degree where it turned retrograde: that is the post-shadow. Many astrologers treat the shadows as the loop’s run-in and run-out.' },
+  { q: 'Why does the birth time matter?', a: 'With a birth time and place the houses are counted from your rising sign, the way the site counts them in your birth chart. Without a birth time they are counted from your Sun sign, a rougher guide, and the Moon is left out of the natal points because it moves about 13 degrees a day.' },
+  { q: 'Which house system does this use?', a: 'Whole-sign houses: each sign is one house, starting with the sign rising at birth. A retrograde that spans two signs touches two houses, and the page lists both.' },
+  { q: 'How are the dates worked out?', a: 'The retrograde windows and their shadows are the same ones the retrogrades page lists, computed from the planets’ real motion through 2030. Your birth chart and each station’s degree are calculated on this device with the same engine as the birth chart. Dates are shown on this device’s clock.' },
+];
+const jsonLd = [
+  { '@type': 'WebApplication', name: 'Retrogrades in your chart', url: 'https://zodiacs.org/retrogrades/for-you/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
+  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+];
+const related = [
+  { href: '/retrogrades/', title: 'Every retrograde through 2030', text: 'All eight planets, station to station, with the degree of each turn.' },
+  { href: '/mercury-retrograde/', title: 'Mercury retrograde', text: 'Each Mercury window with its stations and what the tradition makes of it.' },
+  { href: '/sky-calendar/', title: 'Sky calendar', text: 'Retrograde windows, new and full Moons and eclipses in your calendar app.' },
+  { href: '/birth-chart/', title: 'Your birth chart', text: 'Your houses and every planet, with what each one covers.' },
+];
+---
+<Base
+  clientUi
+  title="Retrogrades in Your Chart: Mercury, Venus and Mars for You"
+  description="Whether Mercury, Venus or Mars is retrograde now or when it next turns, with the stations, the shadows, the house each retrograde falls in for you and the natal points it crosses. Calculated in your browser."
+  path="/retrogrades/for-you/"
+  image="/assets/og/v2/tool/retrogrades.png"
+  imageAlt="Retrogrades in your chart, Zodiacs.org"
+  jsonLd={jsonLd}
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero">
+      <h1 class="display">Retrogrades in your chart</h1>
+      <p>Whether Mercury, Venus or Mars is retrograde now or when each next turns, the shadow on either side, the house each one falls in for you and the natal points it loops over.</p>
+    </div>
+    <RetrogradeForYou client:load />
+    <noscript><p>This page needs JavaScript. Enable it and reload to work out your retrogrades in your browser.</p></noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head"><h2>More on retrogrades</h2></div>
+    <ul class="related">
+      {related.map(({ href, title, text }) => (
+        <li><a class="tile related__item" href={href}><span class="related__title">{title}</span><span class="related__text">{text}</span></a></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head"><h2>Questions, answered</h2></div>
+    <div class="faq">
+      {faq.map(({ q, a }) => <details class="faq__item"><summary>{q}</summary><p>{a}</p></details>)}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
+  .tool-hero h1 { margin: 0 0 16px; font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 500; line-height: 1.04; text-wrap: balance; }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+  .faq { display: grid; gap: 8px; }
+  .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  .related { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .related__item { display: grid; gap: 4px; padding: 16px 18px; min-height: 44px; color: var(--text); }
+  .related__title { font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 500; }
+  .related__text { color: var(--muted); font-size: var(--text-sm); line-height: 1.5; }
+
+  :global(.rfy__planets) { border: 0; margin: 0; padding: 0; min-width: 0; }
+  :global(.rfy__chips) { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  :global(.rfy__chip) { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--hair-2); border-radius: 999px; background: var(--void-1); color: var(--text); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+  :global(.rfy__chip[aria-pressed='false']) { color: var(--faint); border-color: var(--hair-1); }
+  :global(.rfy__chip[aria-pressed='false'] .rfy__swatch) { background: transparent; }
+  :global(.rfy__swatch) { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--hue); background: var(--hue); flex: none; }
+
+  :global(.rfy__result) { display: grid; gap: 16px; margin-top: clamp(24px, 4vw, 36px); }
+  :global(.rfy__result:empty) { display: none; }
+  :global(.rfy__clock) { margin: 0; color: var(--muted); font-size: var(--text-sm); }
+  :global(.rfy__cards) { display: grid; gap: 16px; }
+  :global(.rfy__card) { padding: clamp(18px, 4vw, 26px); display: grid; gap: 14px; }
+  :global(.rfy__head) { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; }
+  :global(.rfy__head h3) { margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; }
+  :global(.rfy__status) { font-size: 13px; color: var(--text); border: 1px solid var(--hue); border-radius: 999px; padding: 3px 10px; }
+  :global(.rfy__status[data-status='direct']) { border-color: var(--hair-2); color: var(--muted); }
+  :global(.rfy__when) { margin: 0; color: var(--text-2); }
+  :global(.rfy__timeline) { display: block; width: 100%; height: 28px; overflow: visible; }
+  :global(.rfy__shadow) { fill: var(--hue); opacity: 0.28; }
+  :global(.rfy__retro) { fill: var(--hue); }
+  :global(.rfy__now) { stroke: var(--text); stroke-width: 2; }
+  :global(.rfy__ticks) { display: flex; justify-content: space-between; gap: 12px; margin-top: -8px; color: var(--faint); font-size: 12px; min-height: 1.4em; }
+  :global(.rfy__ticks span:last-child) { text-align: right; }
+  :global(.rfy__facts) { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px 18px; margin: 0; }
+  :global(.rfy__facts dt) { color: var(--muted); font-size: 13px; }
+  :global(.rfy__facts dd) { margin: 2px 0 0; display: grid; gap: 2px; }
+  :global(.rfy__deg) { font-family: var(--font-mono); font-size: 13px; color: var(--text-2); }
+  :global(.rfy__block h4) { margin: 0 0 8px; font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: var(--text-lg); color: var(--muted); }
+  :global(.rfy__houses), :global(.rfy__contacts) { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.6; }
+  :global(.rfy__houses li) { display: grid; grid-template-columns: 32px 1fr; gap: 10px; align-items: start; }
+  :global(.rfy__house-n) { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--hue); font-family: var(--font-mono); font-size: 13px; color: var(--text); }
+  :global(.rfy__contacts li strong), :global(.rfy__houses li strong) { color: var(--text); font-weight: 550; }
+  :global(.rfy__reading) { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.7; }
+  :global(.rfy__confidence) { margin: 0; font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+  :global(.rfy__more) { margin: 0; font-size: var(--text-sm); }
+  :global(.rfy__more a) { color: var(--text); }
+  :global(.rfy__share) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+  :global(.rfy__share-link) { display: inline-flex; align-items: center; min-height: 44px; color: var(--text-2); font-size: var(--text-sm); }
+  :global(.rfy__share-note) { flex-basis: 100%; color: var(--muted); font-size: 13px; }
+</style>
