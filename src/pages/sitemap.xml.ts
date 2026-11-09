@@ -962,6 +962,12 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
+  // The tools hub's card for Your day, and the transits page's line linking to it (2026-11-09).
+  for (const url of urls) {
+    if (url.loc === '/tools/' || url.loc === '/transits/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
+  }
   return [
     ...urls,
     ...localizedUrls,
