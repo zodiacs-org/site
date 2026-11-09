@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-11-07 B3.c accepted on the owner's acceptance of its three open acts (the reading of \"released\" and the first-use drive's Firefox half on 2026-11-06, main's Site Check on 0bf69bd5 for the merge on 2026-11-07)",
+  "asOf": "2026-11-08 P2.A.timing.returns accepted on its preregistered worked-example test and the owner's ratification of its three departures (site#921)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1043,13 +1043,20 @@
       "weight": 1.5,
       "gate": "fixtures from cited worked examples; site parity",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
+      "status": "accepted",
+      "release": "deployed",
       "evidence": [
+        "https://github.com/zodiacs-org/site/pull/921",
+        "docs/platform/evidence/returns-worked-examples-20261107/README.md",
+        "docs/platform/evidence/returns-worked-examples-20261107/PREREGISTRATION.md (46a4005d, pushed 2026-11-08 00:12:48 ICT, before the search)",
+        "holdout frozen in f7e5ed14 (holdout.json SHA-256 2595133ee86374a9b7a74ac48454c11eed84a565cb1c424b308408aa32970143), pushed 2026-11-08 14:12:28 ICT, before the first run",
+        "docs/platform/evidence/returns-worked-examples-20261107/results.json: engine 1.1.0-rc.2 on Node 22.22.2, pass, 11 of 13 scored fixtures agree (solar 6 of 8 from 4 authors and 4 works, lunar 5 of 5); corrections.json: no correction",
+        "the owner's ratification of the three departures, 2026-11-08: \"Yes, ratify\" (docs/platform/evidence/returns-worked-examples-20261107/README.md, 'The owner's ratification, 8 November 2026')",
+        "release: production serves engine 1.1.0-rc.2, the candidate the site vendors (site#884 merged as 3fac4230 on 2026-11-05, recorded in site#900); site parity: the site takes its solar and lunar returns from @zodiacs/engine/techniques (src/lib/engine/solar-return.ts, lunar-return.ts)",
         "docs/platform/evidence/rc16-units-2026-10-04/README.md",
         "site parity on rc.16: R-SI, R-SY, R-SM and R-LI 400/400, R-SC and R-LC 160/160, R-E 50 of 60 different by design (returns-span) (site-engine-rc16/techniques-parity.json)"
       ],
-      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package has solar and lunar returns (@zodiacs/engine/techniques) and planetary returns (@zodiacs/engine/timing); the site imports the first two (P2.E.returns). This unit's gate is not re-judged here. Checkpoint 15 (2026-10-05): judged partial. Site parity is met; there are no fixtures from a cited worked example of a solar or lunar return: USNO's season times and Horizons positions are reference values, not worked examples (as checkpoint 14 judged planetary returns)."
+      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package has solar and lunar returns (@zodiacs/engine/techniques) and planetary returns (@zodiacs/engine/timing); the site imports the first two (P2.E.returns). This unit's gate is not re-judged here. Checkpoint 15 (2026-10-05): judged partial. Site parity is met; there are no fixtures from a cited worked example of a solar or lunar return: USNO's season times and Horizons positions are reference values, not worked examples (as checkpoint 14 judged planetary returns). Update 2026-11-08 (site#921): the gate is met by the preregistered worked-example test (docs/platform/evidence/returns-worked-examples-20261107): 380 sources searched; 124 candidates, 83 of them read twice blind and 41 excluded on facts alone read once (D17); 13 scored after the preregistered exclusions, frozen and pushed before the first run; 11 agree, the pass rule holds. Three departures from the preregistration were made before the run and are disclosed there (D11: community uploads of in-copyright works are not public scans; D17: candidates excluded on facts alone were read once; the blind re-read of the scored fixtures ran before the run, not after it). The owner was asked \"Do you ratify the returns unit's three disclosed departures, so it is recorded accepted?\" (answers \"Yes, ratify\" and \"No, keep validated\"), shown with a summary naming each departure (D11 drops 31 community-upload records, D17 read 41 exclusions once, the blind re-read ran before the run), and answered \"Yes, ratify\" on 2026-11-08, before 15:28 ICT; so the unit is accepted, not validated."
     },
     {
       "id": "P2.A.timing.solar-arc",

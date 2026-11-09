@@ -1,0 +1,20 @@
+{
+ "purpose": "Planetary-return candidates of the returns preregistration (PREREGISTRATION.md, 'Planetary returns'): those meeting W1, W2 and W4 to W7, recorded with the holdout and not run here. A later preregistration, written before any run, may score them for P2.A.timing.planetary-returns.",
+ "fixtures": [],
+ "foundButNotRecorded": [
+  {
+   "id": "P04.2 (second reader R1)",
+   "source": "The Occult Review, Vol. XLII No. 4 (October 1925), p. 213",
+   "native": "Captain G. H. Salmon",
+   "body": "Mars",
+   "reason": "Does not meet W2: no clock time is printed (Mars over its natal place on the day of his death)."
+  },
+  {
+   "id": "F5-46",
+   "source": "a community upload of a work in copyright (author and title withheld, D11)",
+   "native": "withheld (D11)",
+   "body": "Mercury",
+   "reason": "Does not meet W6 as holdout.json's departure D11 reads it: the only scan is an individual's upload of a work in copyright to an archive.org community collection; its details are withheld."
+  }
+ ]
+}

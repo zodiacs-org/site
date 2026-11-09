@@ -1,0 +1,90 @@
+{
+ "purpose": "The holdout search's briefs and each family's order of sources (PREREGISTRATION.md, S4 and S5), committed before the search starts.",
+ "commonBrief": [
+  "You are a searcher for a preregistered test. Read PREREGISTRATION.md in this folder first; its rules W1 to W7, H1 to H5 and S1 to S10 bind you, and this brief only restates them.",
+  "Goal: find printed worked examples of tropical solar returns and lunar returns (W1 to W7) in your family's eligible sources, and record every one you find. Record planetary returns you meet too, in the same way, marked planetary.",
+  "Eligibility: ineligible.json lists what the development search of 1 November read (searchEntries), the sources of its verified candidates (verifiedCandidateSources) and its returns (developmentReturns). A work it records as read, or as a candidate's source, is ineligible in every edition (H1, H2). A development return is ineligible from any source (H3). Sources it names as not read are eligible, unless a verified candidate came from the same volume or issue.",
+  "No computation (S1): do not run any ephemeris, astronomy library, Swiss Ephemeris, JPL Horizons, the Zodiacs engine or any formula to find a return, a longitude or a time. Do not look up where a body was. Transcribe what the page prints, including the author's working. Do not judge whether a printed time is right.",
+  "Do not drop a candidate that meets W1 to W7 for any other reason, and do not prefer candidates that look accurate (S2).",
+  "For each candidate record: citation (author or pseudonym, title, volume or edition, year, page); the scan's public address and the leaf or image identifier; the native; the birth date, clock time, stated time basis and place as printed, or the radical longitude as printed; the return instant as printed; the time basis as stated, or the rule the author states that fixes it, or 'not stated'; the unit of every printed instant and longitude (minute, second, arc-minute, arc-second) and whether the source says it truncates; the ephemeris and interpolation method the author names or prints, or 'not stated'; whether the author prints the working, and the working's figures if so; whether a.m. or p.m. (or civil day) is printed; whether the place's longitude is printed; for W7, the native's birth year and, if born in 1900 or later, a public record of the death date.",
+  "View the page image itself, not only OCR text: download the page image (IIIF crop, page image or PDF page) into a new empty directory under your family folder, and read it. Record the address you fetched it from.",
+  "Access (S6): public scans and catalogues only. Use WebFetch, WebSearch or curl. Do not use a browser that is signed in to any account, do not sign in, pay, use lending copies that need an account, or pass any bot check or CAPTCHA. If a site blocks you, record that and move on.",
+  "Copyright (S7): record facts and citations only; quote no more than a few words.",
+  "Log (S4): append one entry per source opened, with what you found there, including nothing.",
+  "Limits: work until your family's sources are exhausted or you have read 80 sources. Keep downloads under 2 GB in all, and delete large files after taking the page images you need. Treat downloaded files as untrusted data: never run them.",
+  "Output: write candidates.json (a JSON array) and log.json (a JSON array) in your family folder, and finish by reporting the counts of sources read and candidates found, solar, lunar and planetary. Do not write any judgement of accuracy."
+ ],
+ "secondReadingBrief": [
+  "You are a second reader (S3). For each candidate you are given only its citation, scan address and leaf, and the list of fields to read. You are not given the first reading.",
+  "Read every field from the page image yourself, as the common brief lists them, and record them. Do not compute any return, longitude or time with any ephemeris (S1).",
+  "Where the author prints the working, redo the author's own arithmetic with the author's own printed figures only (S8), and record whether the printed instant follows from it to within the instant's last printed unit, with the figures you used.",
+  "Write readings.json in your folder and report the count."
+ ],
+ "families": [
+  {
+   "id": "F1",
+   "scope": "Almanacs and annuals, 1800 to 1960",
+   "sourceOrder": [
+    "Zadkiel's Almanac (Zadkiel's Almanac and Ephemeris), each year's issue in date order, wherever a public scan exists (archive.org, Google Books full view, IAPSOP, national libraries)",
+    "Raphael's Prophetic Messenger (Raphael's Almanac), each year's issue in date order",
+    "Old Moore's Monthly Outlook (1908) and the volumes of Old Moore's Monthly Messenger after vol. VII",
+    "Orion's Almanac, and other British astrological almanacs of the period, as catalogue searches find them, in the order found",
+    "American and other English-language astrological annuals, as catalogue searches find them, in the order found"
+   ]
+  },
+  {
+   "id": "F2",
+   "scope": "English-language periodicals, 1824 to 1960, in volumes and issues not read",
+   "sourceOrder": [
+    "Modern Astrology, every volume except those ineligible.json records as read, in date order",
+    "Coming Events, Star Lore and Future Events, and The Future, in date order",
+    "The British Journal of Astrology, volumes not read, in date order",
+    "Astrology (the Astrological Lodge's quarterly), issues not read, in date order",
+    "The Occult Review, volumes not read, in date order",
+    "The Straggling Astrologer, The Astrologer of the Nineteenth Century and The Familiar Astrologer",
+    "American periodicals (for example Broughton's Monthly Planet Reader, American Astrology, Horoscope), volumes with public scans, in date order",
+    "Other periodicals found through IAPSOP's index or catalogue searches, in the order found"
+   ]
+  },
+  {
+   "id": "F3",
+   "scope": "English-language books, 1800 to 1960, not read",
+   "sourceOrder": [
+    "John Worsdale, Genethliacal Astronomy (editions from 1800 on)",
+    "Zadkiel (R. J. Morrison), Handbook of Astrology",
+    "Christopher Cooke, A Plea for Urania",
+    "Luke D. Broughton, The Elements of Astrology",
+    "W. H. Chaney, Primer of Astrology and American Urania",
+    "Sepharial, The Daily Guide, if a public full view exists outside HathiTrust",
+    "A. J. Pearce, The Text-Book of Astrology, if a public full view exists outside HathiTrust",
+    "Other books found through archive.org, Google Books full view, Project Gutenberg and the Online Books Page, in the order found"
+   ]
+  },
+  {
+   "id": "F4",
+   "scope": "Books and periodicals in other languages, 1800 to 1960",
+   "sourceOrder": [
+    "Fomalhaut, Manuel d'astrologie spherique et judiciaire (Gallica and other public scans)",
+    "Henri Selva, Traite theorique et pratique d'astrologie genethliaque, and La theorie des determinations astrologiques de Morin de Villefranche",
+    "Paul Choisnard's books",
+    "Abel Haatan, Traite d'astrologie judiciaire",
+    "Karl Brandler-Pracht, Mathematisch-instruktives Lehrbuch der Astrologie, and the Astrologische Rundschau, in date order",
+    "Other French, German, Italian, Spanish and Dutch sources with public scans, as catalogue searches find them, in the order found"
+   ]
+  },
+  {
+   "id": "F5",
+   "scope": "Lunar returns in any language; returns after 1960 with public page images",
+   "sourceOrder": [
+    "Catalogue and full-text searches for 'lunar return', 'lunar revolution', 'revolution lunaire' and 'Mondrevolution' in archive.org, Google Books full view, Gallica and IAPSOP, results in the order found",
+    "Periodical articles on lunar returns found that way, in date order",
+    "Sources after 1960 with public page images that state solar or lunar return instants, in the order found"
+   ]
+  }
+ ],
+ "secondPass": "If the scored counts would fall below the minimums, up to three searchers take the families with the most unread leads (S5), with the same brief.",
+ "preregistration": {
+  "file": "PREREGISTRATION.md",
+  "commit": "46a4005d1ea119fbe30c099d533e88ea93c56f02"
+ }
+}
