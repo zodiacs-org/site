@@ -121,13 +121,13 @@ export default function AstrocartographyMap() {
                 {[-60, -30, 0, 30, 60].map((lat) => <line key={`lat${lat}`} x1="0" x2={W} y1={y(lat)} y2={y(lat)} />)}
                 {[-120, -60, 0, 60, 120].map((lon) => <line key={`lon${lon}`} y1="0" y2={H} x1={x(lon)} x2={x(lon)} />)}
               </g>
-              {result.lines.filter((line) => shown.has(line.body)).map((line) => (
+              {result.lines.filter((line) => shown.has(line.body)).map((line, index) => (
                 <g key={line.body} stroke={HUE[line.body]} class="acg__lines">
                   <line x1={x(line.mc)} x2={x(line.mc)} y1={y(85)} y2={y(-85)} />
                   <line x1={x(line.ic)} x2={x(line.ic)} y1={y(85)} y2={y(-85)} stroke-dasharray={DASH.IC} />
                   {paths(line.asc).map((d) => <path key={`a${d.slice(0, 12)}`} d={d} />)}
                   {paths(line.dsc).map((d) => <path key={`d${d.slice(0, 12)}`} d={d} stroke-dasharray={DASH.DSC} />)}
-                  <text x={x(line.mc) + 3} y={y(80)} fill={HUE[line.body]} class="acg__label">{line.body}</text>
+                  <text x={x(line.mc) + 3} y={y(82 - (index % 3) * 5)} fill={HUE[line.body]} class="acg__label">{line.body}</text>
                 </g>
               ))}
               {places.map(({ city: place }) => <circle key={`${place.name}${place.lat}`} cx={x(place.lon)} cy={y(place.lat)} r="3.5" class="acg__place" />)}
