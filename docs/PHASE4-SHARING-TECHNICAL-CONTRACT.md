@@ -742,3 +742,13 @@ Production keeps the reader, server, and public-authorization controls aligned.
 The exact canary owner remains the rollback boundary, and the hourly cleanup
 path remains mandatory. Phase 5 may proceed only as its own bounded phase; no
 Phase 5 behavior is authorized by this contract.
+
+## Amendment, 2026-11-09: invite signups (behind switches)
+
+With `INVITE_SIGNUP_ENABLED=1` and `PUBLIC_INVITE_SIGNUP_ENABLED=1`, an invite
+completes only when its recipient confirms an opt-in daily-email signup, both
+sides' consent is recorded by policy version, and the recipient confirms their
+own details and age before anything is worked out (under 13 refused). Section
+3.2 step 6 and section 7's completion route then apply to a confirmed signup
+instead of the shown result. The design, its decisions and the switch-on
+steps are in `docs/INVITE-SIGNUPS.md`. Off, this contract is unchanged.

@@ -95,5 +95,11 @@ run_phase4_sql_file \
   "${phase4_repo_root}/supabase/tests/phase4_compat_invites.sql"
 run_phase4_sql_file \
   "${phase4_repo_root}/supabase/tests/phase4_compat_invites_concurrency.sql"
+# Invite signups (INVITE_SIGNUP_ENABLED=1): hashes only, completion on a
+# confirmed signup, consent for both sides; the migration is replay-safe too.
+run_phase4_sql_file \
+  "${phase4_repo_root}/supabase/migrations/20261109120000_compat_invite_signups.sql"
+run_phase4_sql_file \
+  "${phase4_repo_root}/supabase/tests/compat_invite_signups.sql"
 
 echo "PostgreSQL 17 Phase 4 compatibility-invite SQL tests passed."

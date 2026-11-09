@@ -9,6 +9,7 @@ import exchangeHandler from '../src/lib/invite/routes/invite-exchange.js';
 import hideHandler from '../src/lib/invite/routes/invite-hide.js';
 import revokeHandler from '../src/lib/invite/routes/invite-revoke.js';
 import sessionHandler from '../src/lib/invite/routes/invite-session.js';
+import signupHandler from '../src/lib/invite/routes/invite-signup.js';
 import sweepHandler from '../src/lib/invite/routes/invite-sweep.js';
 import invitesHandler from '../src/lib/invite/routes/invites.js';
 
@@ -19,6 +20,7 @@ export const COMPATIBILITY_INVITE_ACTIONS = [
   'invite-exchange',
   'invite-session',
   'invite-complete',
+  'invite-signup',
   'invite-revoke',
   'invite-hide',
   'invite-sweep',
@@ -31,6 +33,7 @@ const HANDLERS: Readonly<Record<CompatibilityInviteAction, InviteHandler>> = Obj
   'invite-exchange': exchangeHandler,
   'invite-session': sessionHandler,
   'invite-complete': completeHandler,
+  'invite-signup': signupHandler,
   'invite-revoke': revokeHandler,
   'invite-hide': hideHandler,
   'invite-sweep': sweepHandler,
