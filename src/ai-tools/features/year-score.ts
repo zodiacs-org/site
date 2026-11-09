@@ -52,6 +52,23 @@ export const yearScoreInput = z.strictObject({
 });
 export type YearScoreInput = z.infer<typeof yearScoreInput>;
 
+/**
+ * The MCP's own form while ZODIACS_YEAR_SCORE_PEOPLE_ENABLED is off (the default): the person's own birth details
+ * only, with no person field, so an assistant cannot ask for a public figure's year until the owner approves it.
+ * The site's pages and the scripts keep public-figure scoring (getYearScore takes both).
+ */
+export const yearScoreSelfInput = z.strictObject({
+  birthDate: z.string().regex(DATE).describe('The person’s own birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link.'),
+  time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('The birth time on the local clock, only if known. Never guess it. Needs zone. Without it the Moon is left out.'),
+  zone: zone.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
+  latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
+  longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude, for birth times before standard time. Nothing is stored."),
+  from: z.string().regex(DATE).optional().describe('The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC).'),
+}).superRefine((args, context) => {
+  if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
+  if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });
+});
+
 const planet = z.enum(['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']);
 const point = z.enum(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars']);
 const aspect = z.enum(['conjunction', 'sextile', 'square', 'trine', 'opposition']);

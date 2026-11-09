@@ -9,6 +9,8 @@ import { SR_COPY } from './copy';
 import { solarReturnExportModel } from './export-model';
 import SolarReturnActions from './SolarReturnActions';
 import EvidenceDisclosure from '../EvidenceDisclosure';
+import { solarReturnThemes } from '../../lib/solar-return/themes';
+import { solarReturnShareUrl } from '../../lib/solar-return/share';
 
 export interface SolarReturnResultProps { result: SolarReturnResultData; Wheel: ComponentType<WheelProps> }
 
@@ -21,6 +23,20 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
   const sun = chart.bodies.find((body) => body.body === 'Sun')!;
   const planetsOnly = model.reading[0]?.kind === 'planets-only';
   const headingRef = useRef<HTMLHeadingElement>(null);
+  // The year's main themes, from the same reading as the get_solar_return tool (src/lib/solar-return/themes.ts).
+  // The rising sign and the Sun's house are already in the opening, so the list adds the rest.
+  const themes = useMemo(() => solarReturnThemes({
+    bodies: chart.bodies, aspects: chart.aspects,
+    asc: wheel.angles?.asc ?? null, cusps: wheel.houses?.cusps ?? null, timeKnown: !result.noTime,
+  }).filter((theme) => theme.kind !== 'rising' && theme.kind !== 'sun-house' && !(planetsOnly && theme.kind === 'aspect')), [chart, wheel, result.noTime, planetsOnly]);
+  // The share link carries the Sun sign, the year and the rising and Jupiter signs only, never a birth detail.
+  const shareUrl = useMemo(() => {
+    const jupiter = chart.bodies.find((body) => body.body === 'Jupiter');
+    return jupiter ? solarReturnShareUrl(location.origin, {
+      sun: signForLongitude(sun.lon).slug, year: result.returnYear,
+      rising: wheel.angles ? signForLongitude(wheel.angles.asc).slug : null, jupiter: signForLongitude(jupiter.lon).slug,
+    }) : null;
+  }, [chart, sun.lon, result.returnYear, wheel.angles]);
 
   useEffect(() => {
     (window as typeof window & {
@@ -59,9 +75,26 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
         </div>
       </section>
 
+      {themes.length > 0 && (
+        <section class="sr-themes" aria-labelledby="solar-return-themes-title">
+          <h2 id="solar-return-themes-title">The year’s main themes</h2>
+          <ul class="sr-themes__list">
+            {themes.map((theme) => (
+              <li key={theme.kind} class="tile sr-themes__item" data-sr-theme={theme.kind}>
+                <h3>{theme.title}</h3>
+                <p>{theme.line}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <SolarReturnActions model={shared} />
 
       <div class="calc__actions">
+        {shareUrl && <a class="btn btn--primary" href={shareUrl} data-sr-share-link>Share your solar return ↗</a>}
+        <a class="btn btn--ghost" href="/year-score/">Score the year ahead →</a>
+        <a class="btn btn--ghost" href="/birthday-report/">Your birthday report →</a>
         <a class="btn btn--ghost" href="/birth-chart/">Open your full birth chart →</a>
         <a class="btn btn--ghost" href="/transits/">See today’s transits →</a>
       </div>
