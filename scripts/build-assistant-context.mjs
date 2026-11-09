@@ -101,6 +101,8 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/disclosure/',
   '/feeds/market-research',
   '/fomo/',
+  // The good day finder's "How did your day go?" page opens from a reminder link; it is noindex and never a first stop.
+  '/good-days/how-did-it-go/',
   '/people/',
   '/registry/',
   '/terminal/',

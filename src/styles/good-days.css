@@ -62,3 +62,38 @@ html.gd-shared .good-days__slot { min-height: 100svh; }
   .good-days-card, .good-days-card * { visibility: visible; }
   .good-days-card { position: absolute; inset: 0 auto auto 0; width: 100%; }
 }
+
+/* "How did your day go?": one card, holding a screen of height from first
+   paint so its states swap in place. */
+.outcome { min-height: min(100svh, 760px); outline: none; }
+.outcome__core { display: grid; gap: 14px; padding: clamp(22px, 5vw, 40px); }
+.outcome__title { margin: 0; font-size: clamp(34px, 7vw, 52px); }
+.outcome__day { margin: 0; min-height: 2.9em; color: var(--ink-1); font: 500 clamp(20px, 4.5vw, 24px)/1.35 var(--font-serif); }
+.outcome__body { display: grid; gap: 16px; }
+.outcome__body p { margin: 0; color: var(--ink-1); }
+.outcome__ratings { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; }
+@media (min-width: 640px) { .outcome__ratings { grid-template-columns: repeat(5, 1fr); } .outcome__ratings legend { grid-column: 1 / -1; } }
+.outcome__rating {
+  display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px;
+  border: 1px solid var(--hair-2); border-radius: var(--r-md, 12px); cursor: pointer; color: var(--ink-0);
+}
+.outcome__rating.is-chosen { border-color: var(--ink-1); background: var(--void-3); }
+.outcome__rating input { accent-color: var(--ink-1); }
+.outcome__note { min-height: 96px; resize: vertical; font-family: var(--font-sans); line-height: 1.5; }
+.outcome__thanks { font: italic 22px/1.4 var(--font-serif); }
+.outcome__others { margin: 0; padding-left: 20px; }
+
+/* The finder's "pick this day" panel and the due-reminder toast. The toast is
+   fixed, so it never moves the page. */
+.good-days__pick { margin-top: 10px; display: grid; gap: 10px; }
+.good-days__pick-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.good-days__toast {
+  position: fixed; left: 16px; right: 16px; bottom: 88px; z-index: 40; max-width: 460px; margin: 0 auto;
+  padding: 16px 18px; display: grid; gap: 10px;
+  background: var(--void-2); border: 1px solid var(--hair-2); border-radius: var(--r-lg, 18px); color: var(--ink-0);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+}
+.good-days__toast p { margin: 0; }
+.good-days__toast-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media (min-width: 720px) { .good-days__toast { bottom: 24px; } }

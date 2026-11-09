@@ -2,6 +2,9 @@
 import Base from '../../layouts/Base.astro';
 import GoodDayFinder from '../../islands/GoodDayFinder.tsx';
 import { OG_EN } from '../../strings/seo.en.mjs';
+
+// The "How did your day go?" follow-up, off unless PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1 at build time.
+const outcomesEnabled = (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
 import '../../styles/calculator.css';
 import '../../styles/good-days.css';
 
@@ -60,7 +63,7 @@ const jsonLd = [
         astrology, and the best days come back with a plain reason each, along with the days tradition would avoid.
       </p>
     </div>
-    <GoodDayFinder client:load />
+    <GoodDayFinder client:load outcomes={outcomesEnabled} />
     <noscript>
       <p>The days are worked out in your browser and need JavaScript. Enable it and reload.</p>
     </noscript>

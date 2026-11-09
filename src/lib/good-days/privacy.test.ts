@@ -64,3 +64,25 @@ describe('the share link', () => {
     expect(island).toContain('void run({ ...shared, birth: null }, false);');
   });
 });
+
+describe('the outcome follow-up', () => {
+  const outcome = code(read('../../islands/GoodDayOutcome.tsx'));
+  const memory = code(read('./outcome-memory.ts'));
+
+  it('sends one request, to the outcome endpoint, with exactly the answer\'s fields', () => {
+    expect(outcome.match(/\bfetch\(/gu)).toHaveLength(1);
+    expect(outcome).toContain('fetch(OUTCOMES_API_PATH,');
+    expect(outcome).toContain("credentials: 'omit'");
+    expect(outcome).toContain('JSON.stringify({ goal: pick.goal, day: pick.day, score: pick.score, personal: pick.personal, rating, ...(note.trim() ? { note: note.trim() } : {}) })');
+    for (const pattern of [/localStorage/u, /sessionStorage/u, /document\.cookie/u, /history\.(?:push|replace)State/u, /sendBeacon/u, /console\./u, /plausible|gtag|posthog|analytics/iu, /birthDate|birth_date|birthTime/u]) {
+      expect(outcome, String(pattern)).not.toMatch(pattern);
+    }
+  });
+
+  it('keeps the device reminder in one module, which writes only the pick\'s four fields', () => {
+    expect(memory).toContain('const kept: Stored = { goal: pick.goal, day: pick.day, score: pick.score, personal: pick.personal };');
+    expect(memory).not.toMatch(/\bfetch\(|sendBeacon|console\.|birth/iu);
+    // The finder island reaches storage only through it.
+    expect(code(SOURCES.island)).not.toMatch(/localStorage|sessionStorage/u);
+  });
+});

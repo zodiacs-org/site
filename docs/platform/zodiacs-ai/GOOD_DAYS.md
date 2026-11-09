@@ -97,6 +97,38 @@ No language model is called. Every sentence is pre-written in those two files.
   when the table is refreshed with sky.json, and nothing is read from years
   the eclipse data does not cover.
 
+## Outcome follow-up ("How did your day go?")
+
+Off unless `PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1` (the pages, at build time)
+and `ZODIACS_GOOD_DAYS_OUTCOMES_ENABLED=1` (the endpoint). Both are unset.
+
+- On `/good-days/`, each best day gets "Pick this day": add it to a calendar
+  (an `.ics` made on the device, with the day and, a week later, the follow-up
+  link) or "Remind me on this device" (local storage: goal, day, score and
+  whether a birth date ranked it, nothing else). A due reminder shows as a
+  fixed toast, so it moves nothing.
+- `/good-days/how-did-it-go/#g=…&d=…&s=…&p=…` (noindex, no analytics) asks
+  for a rating from 1 to 5 and an optional note, and sends it once to
+  `POST /api/good-days/outcome`, rewritten into `api/compatibility.ts` so no
+  function is added.
+- The endpoint checks the origin, a Firewall rule
+  (`zodiacs-good-days-outcomes`, 6 per address per minute; refused until it is
+  published), a 2 KB strict body and the day (it must have come, within 120
+  days), scrubs the note (dates, email and web addresses and phone numbers out;
+  a note that mentions a child dropped whole) and stores through
+  `good_days_outcome_record_v1` (migration `20261109150000`, unapplied). The
+  row keeps no name, birth detail, IP, user agent, account, time of day or
+  caller identifier, and nothing is logged.
+- The finder's rules version (`good-days-1`) is stored with each answer, so a
+  later test compares answers against the rules that scored the day.
+
+Recommended order for the owner: apply the migration and publish the Firewall
+rule; set both switches on preview and run `npm run test:good-days:browser`
+with `PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1`; then switch production on, and
+update the privacy page's date, which then shows the follow-up section. No
+email is sent: a follow-up email would need an address and consent we do not
+collect, so it is left for a later decision.
+
 ## Release steps (owner)
 
 1. Review this draft PR and the copy in `goals.ts`.

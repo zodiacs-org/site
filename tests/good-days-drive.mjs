@@ -105,6 +105,57 @@ await withPreview({ port: 4371 }, async (base) => {
         await context.close();
       }
     }
+    // The outcome follow-up, as built: off (the CI build), nothing of it shows; on, the whole flow.
+    const outcomesOn = process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED === '1';
+    if (!outcomesOn) {
+      const { context, tab } = await page(browser, VIEWPORTS[0]);
+      await tab.goto(`${base}/good-days/#g=move&f=2027-04-01&t=2027-05-31`, { waitUntil: 'networkidle' });
+      await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
+      check('outcomes off: no pick buttons on the finder', (await tab.locator('.good-days__pick-button').count()) === 0);
+      await tab.goto(`${base}/good-days/how-did-it-go/#g=move&d=2027-04-19&s=80&p=0`);
+      check('outcomes off: the follow-up page says it is not open, and runs no form', (await tab.textContent('.outcome__day'))?.includes('not open yet') === true && (await tab.locator('form').count()) === 0);
+      await context.close();
+    } else {
+      for (const viewport of VIEWPORTS) {
+        const { context, tab, requests, errors } = await page(browser, viewport);
+        // Pick a day on 1 April 2027, and come back on 3 June.
+        await tab.clock.setFixedTime(new Date('2027-04-01T09:00:00Z'));
+        await tab.goto(`${base}/good-days/#g=move&f=2027-04-01&t=2027-05-31`, { waitUntil: 'networkidle' });
+        await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
+        await tab.locator('.good-days__pick-button').first().click();
+        await tab.getByRole('button', { name: 'Remind me on this device' }).click();
+        const stored = await tab.evaluate(() => localStorage.getItem('zodiacs.goodDays.followUps.v1'));
+        const kept = JSON.parse(stored ?? '[]');
+        check(`${viewport.name}: the device keeps only the goal, the day, the score and the flag`, kept.length === 1 && Object.keys(kept[0]).sort().join() === 'day,goal,personal,score', stored ?? '');
+        if (SCREENSHOTS) await tab.locator('.good-days__pick').first().screenshot({ path: `${evidence}/${viewport.name}-pick-day.png` });
+        await tab.clock.setFixedTime(new Date('2027-06-03T09:00:00Z'));
+        await tab.goto(`${base}/good-days/`, { waitUntil: 'networkidle' });
+        await tab.waitForSelector('.good-days__toast');
+        await settle(tab);
+        const toastCls = await cls(tab);
+        check(`${viewport.name}: the reminder toast appears with zero CLS`, toastCls.cls === 0, JSON.stringify(toastCls));
+        if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}-reminder-toast.png` });
+        const posted = [];
+        await tab.route('**/api/good-days/outcome', async (route) => { posted.push(route.request().postDataJSON()); await route.fulfill({ status: 201, contentType: 'application/json', body: '{"ok":true,"noteKept":true}' }); });
+        await tab.click('.good-days__toast a');
+        await tab.waitForSelector('.outcome__ratings');
+        await settle(tab);
+        const followCls = await cls(tab);
+        check(`${viewport.name}: the follow-up opens with zero CLS`, followCls.cls === 0, JSON.stringify(followCls));
+        await tab.locator('.outcome__rating').nth(1).click();
+        await tab.fill('#outcome-note', 'Smooth move, the van was early.');
+        if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}-how-did-it-go.png`, fullPage: false });
+        await tab.click('.outcome__body button[type="submit"]');
+        await tab.waitForSelector('.outcome__thanks');
+        check(`${viewport.name}: the answer sends exactly its fields`, posted.length === 1 && Object.keys(posted[0]).sort().join() === 'day,goal,note,personal,rating,score' && posted[0].rating === 4, JSON.stringify(posted));
+        check(`${viewport.name}: nothing but the answer leaves the page`, !requests.some((line) => /plausible|vitals|insights/u.test(line)), requests.filter((line) => /plausible|vitals|insights/u.test(line)).join('\n'));
+        if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}-thanks.png` });
+        const after = await tab.evaluate(() => localStorage.getItem('zodiacs.goodDays.followUps.v1'));
+        check(`${viewport.name}: an answered pick is not asked again`, JSON.parse(after ?? '[]')[0]?.done === true, after ?? '');
+        check(`${viewport.name}: follow-up has no page errors`, errors.length === 0, errors.join('\n'));
+        await context.close();
+      }
+    }
     // Where it is linked from.
     const { context, tab } = await page(browser, VIEWPORTS[1]);
     for (const path of ['/tools/', '/occasions/', '/void-of-course-moon/']) {

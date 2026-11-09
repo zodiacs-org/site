@@ -76,6 +76,7 @@ export const PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS = Object.freeze([
   'src/islands/OccasionSky.tsx',
   'src/styles/occasions.css',
   'src/islands/GoodDayFinder.tsx',
+  'src/islands/GoodDayOutcome.tsx',
   'src/styles/good-days.css',
 ]);
 

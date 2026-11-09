@@ -382,6 +382,10 @@
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },
     {
+      "source": "/api/good-days/outcome",
+      "destination": "/api/compatibility?__zodiacs_good_days=outcome"
+    },
+    {
       "source": "/api/email/confirm",
       "destination": "/api/email/subscribe?__zodiacs_email_route=confirm"
     },

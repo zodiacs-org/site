@@ -21,6 +21,9 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { GOAL_RULES, GOOD_DAY_GOALS, type GoodDayGoal } from '../lib/good-days/goals';
 import type { GoodDaysResult } from '../lib/good-days/find';
+import { followUpLink, type PickedDay } from '../lib/good-days/outcomes';
+import { deviceStorage, duePicks, finishPick, rememberPick } from '../lib/good-days/outcome-memory';
+import { pickCalendar } from '../lib/good-days/calendar';
 
 const loadFinder = () => Promise.all([import('../lib/good-days/find'), import('../lib/occasions/site-clock')]);
 /** The label the site's forecasts carry for a dated reading (src/ai-tools/reading-confidence.ts). */
@@ -69,7 +72,8 @@ export function readGoodDaysLink(hash: string): { goal: GoodDayGoal; from: strin
   return { goal, from: fields.f, to: fields.t };
 }
 
-export default function GoodDayFinder() {
+/** outcomes: the "How did your day go?" follow-up (PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1); off, no pick buttons and no reminder. */
+export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean }) {
   const [zone] = useState(browserZone);
   const [today] = useState(() => localToday(browserZone()));
   const [goal, setGoal] = useState<GoodDayGoal>('launch');
@@ -82,6 +86,9 @@ export default function GoodDayFinder() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<GoodDaysResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const [picked, setPicked] = useState<string | null>(null);
+  const [kept, setKept] = useState<string | null>(null);
+  const [due, setDue] = useState<PickedDay | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   async function run(input: { goal: GoodDayGoal; from: string; to: string; birth: string | null }, focus: boolean) {
@@ -101,6 +108,27 @@ export default function GoodDayFinder() {
     } finally {
       setBusy(false);
     }
+  }
+
+  // A reminder the person asked this device to keep: shown as a fixed toast, so it moves nothing on the page.
+  useEffect(() => {
+    if (!outcomes) return;
+    setDue(duePicks(deviceStorage(), today)[0] ?? null);
+  }, []);
+
+  const pickOf = (day: { date: string; score: number }): PickedDay | null => (result ? { goal: result.goal, day: day.date, score: day.score, personal: !!result.personal } : null);
+  function saveCalendar(pick: PickedDay) {
+    const stamp = `${new Date().toISOString().replace(/[-:]/gu, '').slice(0, 15)}Z`;
+    const file = new Blob([pickCalendar(window.location.origin, pick, stamp)], { type: 'text/calendar;charset=utf-8' });
+    const anchor = document.createElement('a');
+    anchor.href = URL.createObjectURL(file);
+    anchor.download = `good-day-${pick.day}.ics`;
+    anchor.click();
+    setTimeout(() => URL.revokeObjectURL(anchor.href), 1000);
+    setKept(`calendar:${pick.day}`);
+  }
+  function keepOnDevice(pick: PickedDay) {
+    setKept(rememberPick(deviceStorage(), pick) ? `device:${pick.day}` : `refused:${pick.day}`);
   }
 
   useEffect(() => {
@@ -199,6 +227,20 @@ export default function GoodDayFinder() {
                   {day.voidOfCourse.length > 0 && (
                     <p class="field__help">Moon void of course: {day.voidOfCourse.map((span) => `${span.from} to ${span.to}`).join('; ')}.</p>
                   )}
+                  {outcomes && (picked === day.date ? (
+                    <div class="good-days__pick">
+                      <p class="field__help">We will ask how it went a week after. Choose how to be reminded; neither keeps your birth date.</p>
+                      <div class="good-days__pick-actions">
+                        <button type="button" class="btn btn--sm" onClick={() => saveCalendar(pickOf(day)!)}>Add to my calendar</button>
+                        <button type="button" class="btn btn--sm" onClick={() => keepOnDevice(pickOf(day)!)}>Remind me on this device</button>
+                      </div>
+                      {kept === `calendar:${day.date}` && <p class="field__help">The calendar file has the day and, a week later, the link to tell us how it went.</p>}
+                      {kept === `device:${day.date}` && <p class="field__help">This browser will ask when you come back a week after the day. It keeps the goal, the day and its score, nothing else.</p>}
+                      {kept === `refused:${day.date}` && <p class="field__help">This browser does not keep site data. Add it to your calendar instead.</p>}
+                    </div>
+                  ) : (
+                    <button type="button" class="btn btn--sm good-days__pick-button" onClick={() => setPicked(day.date)}>Pick this day</button>
+                  ))}
                   <details class="good-days__why">
                     <summary>Every reason</summary>
                     <ul>{day.factors.map((line) => <li key={line}>{line}</li>)}</ul>
@@ -248,6 +290,15 @@ export default function GoodDayFinder() {
           </div>
         )}
       </div>
+      {outcomes && due && (
+        <div class="good-days__toast" role="status">
+          <p><strong>How did your day go?</strong> {GOAL_RULES[due.goal].label}, {shortDay(due.day)}.</p>
+          <div class="good-days__toast-actions">
+            <a class="btn btn--sm btn--primary" href={followUpLink('', due)}>Tell us</a>
+            <button type="button" class="btn btn--sm" onClick={() => { finishPick(deviceStorage(), due); setDue(null); }}>Not now</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
