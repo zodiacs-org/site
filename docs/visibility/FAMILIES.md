@@ -186,7 +186,33 @@ One template per family, shared by every locale. Each page:
 | F4 | Sign guides in all released locales: live season dates and Moon element, links to horoscopes and pairs | 0 |
 | F5 | Calculators: titles and openings in each language's search form | 0 |
 
-F2, F4 and F5 add no pages and can start as soon as Dias says yes. F1 and F3
+F2, F4 and F5 add no pages and can start as soon as Dias says yes.
+
+### Status, 2026-11-09
+
+Dias delegated the start decision; F2 was chosen (decision recorded on the PR).
+
+- **F2a, in this PR:** the 312 localized pair pages now carry titles in each
+  language's search form: "Compatibilidad Leo y Escorpio en el amor",
+  "Leão e Escorpião combinam? Compatibilidade no amor", "Compatibilité Lion et
+  Scorpion en amour", "Affinità Leone e Scorpione in amore". The article
+  headline in JSON-LD keeps the article's own title. One shared component
+  (`src/components/compat/LocalizedPairPage.astro`); Phase 1 visual evidence
+  recaptured.
+- **F2b, parked, needs Dias:** the hub titles ("Compatibilidad de signos",
+  "Compatibilidade de signos", "Compatibilité amoureuse des signes", "Affinità
+  di coppia tra segni"), a row on each localized sign guide linking all twelve
+  of its pairs (today 3 of 12), and removal of a stale French and Italian line
+  saying the pair guides are in English (they are not any more). These files
+  are in the frozen locale page trees, so the scope guard needs a one-time
+  allowance that only the owner should add. The edits are in
+  [parked/2026-11-09-f2-locale-tree-edits.patch](parked/2026-11-09-f2-locale-tree-edits.patch);
+  `git apply` it and add the allowance to ship.
+- **Live picker at the top of pair pages:** not done. The hero already links to
+  the comparison tool and the pair switcher; moving the tool above the fold
+  changes the first-paint path that `pair-page-delivery.test.mjs` guards, so
+  it needs its own visual pass.
+- F3 to F5 wait for Dias as listed above. F1 and F3
 need a decision on the pace cap and on native review.
 
 ## Still needed from outside the sandbox
