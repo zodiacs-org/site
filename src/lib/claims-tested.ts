@@ -9,7 +9,8 @@
  * anything) and "calculation" (is the sky we compute right).
  *
  * An entry is added only for a test whose result is already in this
- * repository or one of its pull requests, with that evidence as its source.
+ * repository, with that evidence as its source: a file on main or a page on
+ * zodiacs.org, never a pull request.
  * The astro-markets lab's results stay out until the owner releases them.
  */
 import { z } from 'zod';
@@ -27,7 +28,8 @@ export const CLAIM_VERDICTS = {
 export type ClaimVerdict = keyof typeof CLAIM_VERDICTS;
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/u;
-const SOURCE = /^https:\/\/(?:github\.com\/zodiacs-org\/site\/(?:pull\/\d+|blob\/main\/[\w./-]+)|zodiacs\.org\/[\w/-]*)$/u;
+// A file on main or a page on zodiacs.org, never a pull request: a pull request can change or close.
+const SOURCE = /^https:\/\/(?:github\.com\/zodiacs-org\/site\/blob\/main\/[\w./-]+|zodiacs\.org\/[\w/-]*)$/u;
 
 export const claimEntry = z.strictObject({
   id: z.string().regex(/^[a-z0-9-]+$/u),
@@ -64,6 +66,37 @@ export function claimsTestedEntries(input: unknown = data): { updated: string; p
     prediction: parsed.entries.filter((entry) => entry.kind === 'prediction').sort(order),
     calculation: parsed.entries.filter((entry) => entry.kind === 'calculation').sort(order),
   };
+}
+
+export type ClaimTally = { n: number; held: number; not: number; other: number };
+
+/**
+ * One kind's tally for the page: held up (passed, passed after a correction),
+ * at chance or did not hold (at-chance, failed), and mixed or still running
+ * (mixed, pending). The three always add up to n.
+ */
+export function claimTally(entries: readonly ClaimEntry[]): ClaimTally {
+  const tally: ClaimTally = { n: entries.length, held: 0, not: 0, other: 0 };
+  for (const { verdict } of entries) {
+    if (verdict === 'passed' || verdict === 'passed-after-correction') tally.held += 1;
+    else if (verdict === 'at-chance' || verdict === 'failed') tally.not += 1;
+    else tally.other += 1;
+  }
+  return tally;
+}
+
+/**
+ * The page's summary line for one kind, e.g. "Calculation checks: 2. Held up: 2."
+ * A clause whose count is 0 is left out, except "Held up"; a kind with no
+ * entries reads "none yet".
+ */
+export function tallyLine(kind: (typeof CLAIM_KINDS)[number], tally: ClaimTally): string {
+  const label = kind === 'prediction' ? 'Prediction tests' : 'Calculation checks';
+  const not = kind === 'prediction' ? 'At chance or did not hold' : 'Did not hold';
+  const clauses = [`${label}: ${tally.n === 0 ? 'none yet' : tally.n}.`, `Held up: ${tally.held}.`];
+  if (tally.not) clauses.push(`${not}: ${tally.not}.`);
+  if (tally.other) clauses.push(`Mixed or still running: ${tally.other}.`);
+  return clauses.join(' ');
 }
 
 /** The page is off unless PUBLIC_CLAIMS_TESTED_ENABLED is exactly '1'; it stays noindex until the owner approves publishing. */

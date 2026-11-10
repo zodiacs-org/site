@@ -632,16 +632,21 @@ function yearSkyCard(copy = OG_EN.yearSky) {
 
 /**
  * "Astrology claims, tested" (OG_EN.claimsTested): the headline and a line on
- * the left, and on the right the verdict words as the page prints them, each
- * in a hairline pill, as a short ledger. No chroma: the page has none either.
- * The footer carries the brand's own lockup.
+ * the left, and on the right one row per kind of test as a short ledger: the
+ * kind's question, then its own count in a hairline pill. The two kinds are
+ * never added together. No chroma: the page has none either. The footer
+ * carries the brand's own lockup.
  */
 function claimsTestedCard(copy = OG_EN.claimsTested) {
-  const rows = copy.rows.map((row, index) => `
-    <div style="display: flex; align-items: center; gap: 18px; padding: 18px 0; border-top: 1px solid rgba(198, 204, 218, 0.12);${index === copy.rows.length - 1 ? ' border-bottom: 1px solid rgba(198, 204, 218, 0.12);' : ''}">
-      <span style="font: 500 20px/1 'JetBrains Mono', monospace; color: ${INK2}; width: 36px;">${String(index + 1).padStart(2, '0')}</span>
-      <span style="padding: 8px 18px; border: 1px solid rgba(198, 204, 218, 0.32); border-radius: 999px; font-size: 26px; color: #EEF1F7;">${escapeHtml(row)}</span>
-    </div>`).join('');
+  const rows = copy.rows.map((row, index) => {
+    const split = row.indexOf('? ');
+    const [question, answer] = split < 0 ? ['', row] : [row.slice(0, split + 1), row.slice(split + 2)];
+    return `
+    <div style="padding: 22px 0; border-top: 1px solid rgba(198, 204, 218, 0.12);${index === copy.rows.length - 1 ? ' border-bottom: 1px solid rgba(198, 204, 218, 0.12);' : ''}">
+      ${question ? `<div style="font-size: 25px; line-height: 1.3; color: ${INK2}; margin-bottom: 12px;">${escapeHtml(question)}</div>` : ''}
+      <span style="display: inline-block; padding: 8px 18px; border: 1px solid rgba(198, 204, 218, 0.32); border-radius: 999px; font-size: 26px; color: #EEF1F7;">${escapeHtml(answer)}</span>
+    </div>`;
+  }).join('');
   const body = `
   <div style="position: absolute; left: 88px; top: 0; bottom: 96px; width: 540px; display: flex; flex-direction: column; justify-content: center; z-index: 2;">
     <div class="display" style="font-size: 92px; line-height: 1; letter-spacing: -0.01em;">${escapeHtml(copy.title)}</div>

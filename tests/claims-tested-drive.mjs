@@ -2,8 +2,8 @@
  * "Astrology claims, tested" in Chromium, against the built site (npm run build first):
  * - always noindex, and out of the sitemap;
  * - with PUBLIC_CLAIMS_TESTED_ENABLED unset (the CI build): a stub that says it is not published;
- * - with it set to 1: every entry, the result at chance included, zero CLS on load at 360px and 1280px, no
- *   horizontal scroll and no page errors.
+ * - with it set to 1: every entry, the two tallies apart (prediction tests, calculation checks), the empty
+ *   prediction section's paragraph, zero CLS on load at 360px and 1280px, no horizontal scroll and no page errors.
  * With --screenshots it writes the PR evidence to docs/claims-tested/evidence/.
  */
 import { mkdir, readFile } from 'node:fs/promises';
@@ -16,7 +16,10 @@ const SCREENSHOTS = process.argv.includes('--screenshots');
 const ON = process.env.PUBLIC_CLAIMS_TESTED_ENABLED === '1';
 const evidence = resolve(projectRoot, 'docs/claims-tested/evidence');
 if (SCREENSHOTS) await mkdir(evidence, { recursive: true });
-const entries = JSON.parse(await readFile(resolve(projectRoot, 'src/data/claims-tested.json'), 'utf8')).entries;
+const { entries, updated } = JSON.parse(await readFile(resolve(projectRoot, 'src/data/claims-tested.json'), 'utf8'));
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const SUMMARY = ['Prediction tests: none yet. Held up: 0.', 'Calculation checks: 2. Held up: 2.', `Updated: ${Number(updated.slice(8, 10))} ${MONTHS[Number(updated.slice(5, 7)) - 1]} ${updated.slice(0, 4)}`];
+const EMPTY = 'No prediction test we can stand behind yet. A first trial on four people and three checkable months was too small to report as a result. A fair test needs dozens of people with recorded birth times, scored blind.';
 const failures = [];
 const check = (name, ok, detail = '') => {
   console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${ok ? '' : `: ${detail}`}`);
@@ -49,7 +52,9 @@ await withPreview({ port: 4372 }, async (base) => {
         check(`${viewport.name}: off, it says it is not published and lists nothing`, (await tab.textContent('.tool-hero p'))?.includes('not published yet') === true && (await tab.locator('.claims-entry').count()) === 0);
       } else {
         check(`${viewport.name}: every entry is listed`, (await tab.locator('.claims-entry').count()) === entries.length);
-        check(`${viewport.name}: the result at chance is on the page`, (await tab.locator('[data-verdict="at-chance"]').count()) > 0);
+        const summary = (await tab.locator('.claims-summary li').allTextContents()).map((line) => line.trim());
+        check(`${viewport.name}: two tallies, prediction and calculation, and the date`, JSON.stringify(summary) === JSON.stringify(SUMMARY), JSON.stringify(summary));
+        check(`${viewport.name}: the empty prediction section says so`, (await tab.locator('#prediction .claims-empty').textContent())?.trim() === EMPTY && (await tab.locator('#prediction .claims-entry').count()) === 0);
         check(`${viewport.name}: zero CLS on load`, (await tab.evaluate(() => window.__cls)) === 0, String(await tab.evaluate(() => window.__cls)));
         check(`${viewport.name}: no horizontal scroll`, !(await tab.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)));
         if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}.png`, fullPage: true });

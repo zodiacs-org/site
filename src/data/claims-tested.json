@@ -1,20 +1,7 @@
 {
   "schema": "zodiacs.claims-tested.v1",
-  "updated": "2026-11-09",
+  "updated": "2026-11-10",
   "entries": [
-    {
-      "id": "year-ahead-score-backtest",
-      "kind": "prediction",
-      "claim": "A person's Year Ahead Score picks out their best and hardest months.",
-      "verdict": "at-chance",
-      "result": "1 of 3 flagged months that could be checked matched the dated news. That is chance level, on a sample far too small to judge.",
-      "sample": "4 public figures, scored from published birth dates as noon charts; 3 flagged months fell inside the window",
-      "method": "Each person was scored as of 17 July 2026. The months the score flagged as best and hardest were compared with dated news from 17 July to 9 November 2026.",
-      "whatWeDid": "We did not tune the weights to fit these cases: fitting four anecdotes would prove nothing. A fair test needs dozens of people with recorded birth times, scored blind. The Year Ahead Score is not public.",
-      "preregistered": false,
-      "tested": "2026-11-09",
-      "source": { "label": "Draft pull request 933 and its backtest report", "url": "https://github.com/zodiacs-org/site/pull/933" }
-    },
     {
       "id": "returns-worked-examples",
       "kind": "calculation",
@@ -26,7 +13,7 @@
       "whatWeDid": "The two disagreements come from one 1947 article whose printed figures give the natal Sun only to the degree. We kept them in the count.",
       "preregistered": true,
       "tested": "2026-11-08",
-      "source": { "label": "The preregistration, the holdout and the run (pull request 921)", "url": "https://github.com/zodiacs-org/site/pull/921" }
+      "source": { "label": "The preregistration, the holdout and the run", "url": "https://github.com/zodiacs-org/site/blob/main/docs/platform/evidence/returns-worked-examples-20261107/README.md" }
     },
     {
       "id": "nasa-event-times",

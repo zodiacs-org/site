@@ -77,15 +77,17 @@ export const OG_EN = Object.freeze({
     alt: 'Your 2027 sky: the year’s eclipses, returns and slow planets, read for your own chart, beside a ring of the twelve sign discs.',
   },
   // "Astrology claims, tested" (npm run data:og -- --only-claims-tested-card):
-  // the headline, a line, and the verdict words as the page prints them. Its
-  // own folder; a new design takes a new folder.
+  // the headline, a line, and one row per kind of test, prediction and
+  // calculation, each with its own count, never added together. Its own
+  // folder; a new design takes a new folder (v1 was never published).
   claimsTested: {
     path: '/claims-tested/',
     image: '/assets/og/claims-tested/v1/card.jpg',
     title: 'Astrology claims, tested',
-    line: 'What each test found, results at chance included.',
-    rows: ['Passed', 'Passed after a correction', 'At chance'],
-    alt: 'Astrology claims, tested: what each test found, results at chance included, beside three verdicts: passed, passed after a correction, at chance.',
+    line: 'What each test found, whatever it showed.',
+    // Kept as literals; src/lib/claims-tested.test.ts fails when the counts disagree with src/data/claims-tested.json.
+    rows: ['Does the reading predict? No test to report yet', 'Is the sky right? 2 checks passed'],
+    alt: 'Astrology claims, tested: what each test found, whatever it showed. Does the reading predict? No test to report yet. Is the sky right? 2 checks passed.',
   },
   terminal: {
     path: '/terminal/',

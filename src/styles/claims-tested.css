@@ -2,14 +2,11 @@
    claims, Instrument Sans body, JetBrains Mono for counts. The verdict is a
    plain word, not a coloured dot. Mobile first. */
 .claims-page .tool-hero { margin-bottom: clamp(24px, 4vw, 36px); }
-.claims-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; }
-@media (min-width: 720px) { .claims-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.claims-summary div { padding: 14px 16px; border: 1px solid var(--hair-1); border-radius: var(--r-md, 12px); background: var(--void-1); }
-.claims-summary dt { color: var(--ink-2); font-size: var(--text-sm, 14px); }
-.claims-summary dd { margin: 6px 0 0; color: var(--ink-0); font: 500 22px/1.2 var(--font-mono); }
-.claims-summary dd.claims-summary__date { font-size: 18px; }
+.claims-summary { display: grid; gap: 8px; margin: 0; padding: 14px 16px; list-style: none; border: 1px solid var(--hair-1); border-radius: var(--r-md, 12px); background: var(--void-1); }
+.claims-summary li { color: var(--ink-0); font: 400 15px/1.45 var(--font-mono); }
 .claims-rule { margin: 18px 0 0; color: var(--ink-1); max-width: 62ch; }
 .claims-lede { margin: 0 0 18px; color: var(--ink-1); max-width: 62ch; }
+.claims-empty { margin: 0; padding: clamp(18px, 4vw, 28px); border: 1px solid var(--hair-1); border-radius: var(--r-md, 12px); color: var(--ink-1); max-width: 62ch; }
 .claims-list { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
 .claims-entry { padding: clamp(18px, 4vw, 28px); scroll-margin-top: 96px; }
 .claims-entry__verdict {
