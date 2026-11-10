@@ -212,7 +212,22 @@ Dias delegated the start decision; F2 was chosen (decision recorded on the PR).
   the comparison tool and the pair switcher; moving the tool above the fold
   changes the first-paint path that `pair-page-delivery.test.mjs` guards, so
   it needs its own visual pass.
-- F3 to F5 wait for Dias as listed above. F1 and F3
+- F3 to F5 wait for Dias as listed above.
+
+### Decisions, 2026-11-10 (delegated by Dias)
+
+- **Decided: pace.** The Growth OS cap stays: at most 10 net-new indexable
+  pages per 7 days. F1 (72 pages) ships in weekly batches over about 7 weeks,
+  F3 (96 pages) after it. Reason: the cap is the site's own guard against thin
+  pages, and new pages here are model-written in languages without native review yet.
+- **Recommended, needs Dias's yes:** paid native review of the first batch in
+  each language before it merges; the F2b allowance; the F1 allowance and the
+  workflow change for tomorrow's facts ([F1-SPEC.md](F1-SPEC.md)); leaving the
+  23 `/ru/` pages as they are and keeping Russian out of this program until
+  Dias decides its status.
+- **Next step:** F1, specified in [F1-SPEC.md](F1-SPEC.md). It cannot be built
+  here without the freeze allowance and a production workflow change, both
+  Dias's to grant. F1 and F3
 need a decision on the pace cap and on native review.
 
 ## Still needed from outside the sandbox
