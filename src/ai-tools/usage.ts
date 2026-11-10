@@ -7,7 +7,7 @@ export type UsageHost = typeof USAGE_HOSTS[number];
 /**
  * Every name the counter accepts: the hosted tools, search_sky_events while the sky events switch is on,
  * draw_tarot while the tarot switch is on, and the account save tool while accounts are on. The latest usage
- * migration lists exactly these.
+ * migration lists these and the other November 2026 tools.
  */
 export const COUNTED_TOOL_NAMES = [...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, ...TAROT_TOOL_NAMES, SAVE_TOOL_NAME] as const;
 export type CountedToolName = AiToolName | SaveToolName;
