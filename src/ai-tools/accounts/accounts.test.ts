@@ -4,7 +4,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { oauthClaimsValid } from '../auth/oauth';
 import { configuredWatchOAuth } from '../watch/oauth';
-import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, SKY_EVENTS_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, YEAR_SCORE_TOOL_NAMES } from '../contracts';
+import { ALL_AI_TOOL_NAMES, EVERY_AI_TOOL_NAME, SKY_EVENTS_TOOL_NAMES } from '../contracts';
 import { COUNTED_TOOL_NAMES } from '../usage';
 import { ACCOUNT_PERMISSION, ACCOUNT_SCOPES, MAX_SAVED_RECORD_BYTES, SAVE_TOOL_NAME, saveInput } from './contracts';
 import { accountsResourceOrigin, configuredAccounts, invalidTokenChallenge, signInChallenge } from './service';
@@ -281,9 +281,13 @@ describe('the consent page', () => {
   });
 });
 
+/** The tools the November 2026 migration adds. A branch may hold any subset of them. */
+const NOVEMBER_TOOLS: readonly string[] = ['get_numerology', 'draw_tarot', 'find_good_days', 'get_year_score', 'get_solar_return'];
+const beforeNovember = (names: readonly string[]) => names.filter((name) => !NOVEMBER_TOOLS.includes(name));
+
 describe('usage counting for the save tool', () => {
   it('adds only save_to_zodiacs to the counted names, in a later migration than the 0.5.0 widening', () => {
-    expect(COUNTED_TOOL_NAMES).toEqual([...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES, SAVE_TOOL_NAME]);
+    expect(beforeNovember(COUNTED_TOOL_NAMES)).toEqual([...EVERY_AI_TOOL_NAME, ...SKY_EVENTS_TOOL_NAMES, SAVE_TOOL_NAME]);
     const migrations = readdirSync(`${root}supabase/migrations`);
     const widened = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_occasion_tools.sql'));
     const save = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_save_tool.sql'));
@@ -305,27 +309,25 @@ describe('usage counting for the save tool', () => {
     expect(birthplace[0] > added[0]).toBe(true);
     const atBirthplace = [...readFileSync(`${root}supabase/migrations/${birthplace[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
     expect(atBirthplace).toHaveLength(2);
-    for (const list of atBirthplace) expect(list).toEqual(COUNTED_TOOL_NAMES.filter((name) => name !== 'search_sky_events' && name !== 'get_year_score' && name !== 'get_solar_return'));
+    for (const list of atBirthplace) expect(list).toEqual(beforeNovember(COUNTED_TOOL_NAMES).filter((name) => name !== 'search_sky_events'));
     // search_sky_events joins in a later migration still, which lists every counted name.
     const skyEvents = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_sky_events.sql'));
     expect(skyEvents).toHaveLength(1);
     expect(skyEvents[0] > birthplace[0]).toBe(true);
     const atSkyEvents = [...readFileSync(`${root}supabase/migrations/${skyEvents[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
     expect(atSkyEvents).toHaveLength(2);
-    for (const list of atSkyEvents) expect(list).toEqual(COUNTED_TOOL_NAMES.filter((name) => name !== 'get_year_score' && name !== 'get_solar_return'));
-    // get_year_score joins in a later migration still, which lists every counted name.
-    const yearScore = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_year_score.sql'));
-    expect(yearScore).toHaveLength(1);
-    expect(yearScore[0] > skyEvents[0]).toBe(true);
-    const atYearScore = [...readFileSync(`${root}supabase/migrations/${yearScore[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
-    for (const list of atYearScore) expect(list).toEqual(COUNTED_TOOL_NAMES.filter((name) => name !== 'get_solar_return'));
-    // get_solar_return joins in a later migration still, which lists every counted name.
-    const solarReturn = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_solar_return.sql'));
-    expect(solarReturn).toHaveLength(1);
-    expect(solarReturn[0] > yearScore[0]).toBe(true);
-    expect(migrations.filter(name => name.includes('_zodiacs_mcp_usage_')).sort().at(-1)).toBe(solarReturn[0]);
-    const latest = [...readFileSync(`${root}supabase/migrations/${solarReturn[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
+    for (const list of atSkyEvents) expect(list).toEqual(beforeNovember(COUNTED_TOOL_NAMES));
+    // The November 2026 tools join in one later migration, the same file on every branch that adds one of them.
+    const november = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_november_tools.sql'));
+    expect(november).toHaveLength(1);
+    expect(november[0] > skyEvents[0]).toBe(true);
+    expect(migrations.filter(name => name.includes('_zodiacs_mcp_usage_')).sort().at(-1)).toBe(november[0]);
+    const latest = [...readFileSync(`${root}supabase/migrations/${november[0]}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1))).filter(list => list.includes('get_sky'));
     expect(latest).toHaveLength(2);
-    for (const list of latest) expect(list).toEqual([...COUNTED_TOOL_NAMES]);
+    const base = beforeNovember(COUNTED_TOOL_NAMES);
+    for (const list of latest) {
+      expect(list).toEqual([...base.slice(0, -1), ...NOVEMBER_TOOLS, SAVE_TOOL_NAME]);
+      for (const name of COUNTED_TOOL_NAMES) expect(list).toContain(name);
+    }
   });
 });
