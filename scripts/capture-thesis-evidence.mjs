@@ -141,7 +141,7 @@ async function main() {
       if (signatures.ok) {
         for (const entry of signatures.result) {
           if (entry.err || !entry.blockTime) continue;
-          const tx = await rpc('getTransaction', [entry.signature, { encoding: 'json', maxSupportedTransactionVersion: 0, commitment: 'finalized' }]);
+          const tx = await rpc('getTransaction', [entry.signature, { encoding: 'json', maxSupportedTransactionVersion: 1, commitment: 'finalized' }]);
           const logs = tx.ok ? tx.result?.meta?.logMessages ?? [] : [];
           const swap = logs.some((line) => /Instruction: Swap/i.test(line));
           inspected.push({ signature: entry.signature, blockTime: entry.blockTime, swap, swapLogs: logs.filter((l) => /Instruction:/i.test(l)).slice(0, 6), error: tx.ok ? undefined : tx.error });
@@ -158,6 +158,7 @@ async function main() {
   const dex = { capturedAt: new Date().toISOString(), signs: {} };
   for (const sign of signs) {
     dex.signs[sign] = await getJson(`https://api.dexscreener.com/latest/dex/tokens/${mints[sign]}`);
+    dex.signs[sign].pool = await getJson(`https://api.dexscreener.com/latest/dex/pairs/solana/${pools[sign]}`);
     await sleep(400);
   }
   await save('dexscreener.json', dex);
