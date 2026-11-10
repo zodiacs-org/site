@@ -913,10 +913,17 @@ export async function handleFamousChartImageRequest(request: Request): Promise<R
   return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => famousChartCard(model, images, art));
 }
 
+/**
+ * A directory figure's share (p=) follows the people pages' switch, which needs the score's switch on too
+ * (src/lib/launch-flags.ts). This file runs as plain Node, so it reads process.env at run time.
+ */
+const yearPeopleShareOn = () => process.env.PUBLIC_YEAR_PEOPLE_ENABLED === '1' && process.env.PUBLIC_YEAR_SCORE_ENABLED === '1';
+
 export async function handleYearScoreImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const share = parseYearScoreShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
+  if (share.kind === 'figure' && !yearPeopleShareOn()) return errorResponse(404);
   const model = await yearScoreCardModel(share).catch(() => undefined);
   if (model === undefined) return errorResponse(503);
   if (!model) return errorResponse(400);
@@ -1768,6 +1775,7 @@ export async function handleYearScoreLinkRequest(request: Request): Promise<Resp
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
   const share = parseYearScoreShare(url.searchParams);
+  if (share?.kind === 'figure' && !yearPeopleShareOn()) return errorResponse(404);
   const model = share ? await yearScoreCardModel(share).catch(() => undefined) : null;
   if (share && model === null) return errorResponse(404);
   if (!share || !model) return htmlResponse(sharePageHtml(defaultYearScorePage(url.origin)));
@@ -1985,7 +1993,7 @@ export async function handleInviteLinkRequest(request: Request): Promise<Respons
 
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response> }>> = {
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -2019,12 +2027,12 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-link': { path: INVITE_SHARE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteLinkRequest },
   'invite-image': { path: INVITE_SHARE_IMAGE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteImageRequest },
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
-  'year-score-link': { path: YEAR_SCORE_SHARE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreLinkRequest },
-  'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest },
-  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest },
-  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest },
-  'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest },
-  'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest },
+  'year-score-link': { path: YEAR_SCORE_SHARE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreLinkRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
+  'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
+  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
+  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
+  'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
+  'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
@@ -2032,6 +2040,11 @@ export const isResultShareRoute = (value: unknown): value is ResultShareRoute =>
 /** The Node entry: only the route key and the route's own keys, each a single string. */
 export async function handleResultShareNodeRequest(req: any, res: any, route: ResultShareRoute): Promise<void> {
   const target = ROUTES[route];
+  // A tool behind a switch that is off has no share page or picture: the same 404 as an unknown route.
+  if (target.flag && process.env[target.flag] !== '1') {
+    await writeNodeResponse(res, errorResponse(404));
+    return;
+  }
   const query = req.query && typeof req.query === 'object' ? req.query : {};
   let params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {

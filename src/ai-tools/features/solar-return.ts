@@ -75,7 +75,8 @@ function clockLabel(at: Date, timeZone: string): string {
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
 }
 
-export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: SolarReturnClock, origin: string): Promise<{ data: SolarReturnData; links: { title: string; url: string }[] }> {
+/** `birthdayReportPage`: the site's /birthday-report/ is switched on (PUBLIC_BIRTHDAY_REPORT_ENABLED=1); only then does the answer link to it. */
+export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: SolarReturnClock, origin: string, birthdayReportPage = false): Promise<{ data: SolarReturnData; links: { title: string; url: string }[] }> {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError('birthDate must be a real date from 1800 to 2199.');
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -135,7 +136,7 @@ export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: S
     },
     links: [
       { title: 'Solar return chart on Zodiacs', url: pageUrl },
-      { title: 'Your birthday report on Zodiacs', url: `${origin}/birthday-report/` },
+      ...(birthdayReportPage ? [{ title: 'Your birthday report on Zodiacs', url: `${origin}/birthday-report/` }] : []),
     ],
   };
 }

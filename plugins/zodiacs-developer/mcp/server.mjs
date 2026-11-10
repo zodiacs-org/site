@@ -42204,7 +42204,7 @@ function clockLabel(at, timeZone) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(at).map((part) => [part.type, part.value]));
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
 }
-async function getSolarReturn(args, now, clock2, origin) {
+async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = false) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
   if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
@@ -42273,7 +42273,7 @@ async function getSolarReturn(args, now, clock2, origin) {
     },
     links: [
       { title: "Solar return chart on Zodiacs", url: pageUrl },
-      { title: "Your birthday report on Zodiacs", url: `${origin}/birthday-report/` }
+      ...birthdayReportPage ? [{ title: "Your birthday report on Zodiacs", url: `${origin}/birthday-report/` }] : []
     ]
   };
 }
@@ -44357,7 +44357,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           } catch {
           }
         }
-        const result2 = await feature(() => getSolarReturn({ ...args, ...zone9 ? { zone: zone9 } : {}, ...currentZone ? { currentZone } : {} }, dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2(), ORIGIN));
+        const result2 = await feature(() => getSolarReturn({ ...args, ...zone9 ? { zone: zone9 } : {}, ...currentZone ? { currentZone } : {} }, dependencies.now?.() ?? /* @__PURE__ */ new Date(), localTime2(), ORIGIN, !!dependencies.birthdayReportPage));
         if ("failure" in result2) return failure(tool, "invalid-request", result2.failure);
         ({ data, links } = result2);
         break;

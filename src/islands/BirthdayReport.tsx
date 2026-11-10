@@ -24,7 +24,8 @@ function clock(iso: string, zone: string | null): string {
   return new Intl.DateTimeFormat('en-GB', { timeZone: zone ?? 'UTC', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', ...(zone ? {} : { timeZoneName: 'short' }) }).format(new Date(iso));
 }
 
-export default function BirthdayReport() {
+/** `yearScoreLink`: the page passes whether /year-score/ is switched on (src/lib/launch-flags.ts); the island runs in the browser. */
+export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLink?: boolean } = {}) {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [city, setCity] = useState<City | null>(null);
@@ -116,7 +117,7 @@ export default function BirthdayReport() {
             <p class="br__big">{data.year.score.toFixed(1)}/10 <span class="br__tier">{scoreTier(data.year.score).label}</span></p>
             <p>{scoreTier(data.year.score).summary}</p>
             {data.year.best && data.year.hardest && <p>Strongest month: {monthName(data.year.best.month)}. Most pressure: {monthName(data.year.hardest.month)}. From {dayName(data.year.from)}.</p>}
-            <p><a href="/year-score/">See the months and the transits behind it</a></p>
+            {yearScoreLink && <p><a href="/year-score/">See the months and the transits behind it</a></p>}
           </section>
 
           <section class="tile br__part">

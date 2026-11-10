@@ -11,8 +11,11 @@ import { yearPage } from '../../lib/year-score/page-data';
 import { dayName, shortMonth } from '../../lib/year-score/reading';
 import ShareRow from '../../components/ShareRow.astro';
 import { figureYearScoreShareUrl } from '../../lib/year-score/share';
+import { launchFlagOn } from '../../lib/launch-flags';
 
 export function getStaticPaths() {
+  // The people pages are built only while PUBLIC_YEAR_PEOPLE_ENABLED (and the score's own switch) is on.
+  if (!launchFlagOn('PUBLIC_YEAR_PEOPLE_ENABLED')) return [];
   return YEAR_PEOPLE.map((person) => ({ params: { slug: person.slug }, props: { slug: person.slug } }));
 }
 
