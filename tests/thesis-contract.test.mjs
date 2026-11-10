@@ -189,7 +189,7 @@ describe('thesis publication metadata contract', () => {
       { datetime: '2026-08-01', label: 'Published 1 Aug 2026' },
       { datetime: '2026-09-05', label: 'Updated 5 Sep 2026' },
     ]);
-    expect(textOf(hero)).toContain('Evidence checked 31 Jul 2026');
+    expect(textOf(hero)).toContain('Evidence checked 10 Nov 2026');
   });
 
   it('publishes valid Article JSON-LD with matching canonical dates', () => {
