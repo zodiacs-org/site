@@ -125,9 +125,13 @@ and `ZODIACS_GOOD_DAYS_OUTCOMES_ENABLED=1` (the endpoint). Both are unset.
 Recommended order for the owner: apply the migration and publish the Firewall
 rule; set both switches on preview and run `npm run test:good-days:browser`
 with `PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1`; then switch production on, and
-update the privacy page's date, which then shows the follow-up section. No
-email is sent: a follow-up email would need an address and consent we do not
-collect, so it is left for a later decision.
+update the privacy page's date, which then shows the follow-up section.
+
+Decided 10 November (delegated by the owner): no email follow-ups. The
+calendar and device reminders reach people without collecting an address;
+email would need an opt-in and consent flow of its own. Developer 0.3.32
+stays as rebuilt in place on this unreleased branch; any further change to
+its source takes 0.3.33.
 
 ## Release steps (owner)
 
