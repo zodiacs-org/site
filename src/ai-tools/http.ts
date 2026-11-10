@@ -244,7 +244,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
-    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
+    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(env.PUBLIC_BIRTHDAY_REPORT_ENABLED === '1' ? { birthdayReportPage: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
       try {
         const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;

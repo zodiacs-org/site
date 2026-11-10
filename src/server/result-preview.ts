@@ -2031,8 +2031,8 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
   'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
   'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
-  'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest },
-  'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest },
+  'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
+  'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);

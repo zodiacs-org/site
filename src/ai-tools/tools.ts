@@ -60,6 +60,8 @@ export interface AiDependencies {
   yearScorePeople?: boolean;
   /** get_solar_return (ZODIACS_SOLAR_RETURN_ENABLED=1), in effect only with the coverage and occasion tools (solarReturnOn). */
   solarReturn?: boolean;
+  /** The site's /birthday-report/ page is live (PUBLIC_BIRTHDAY_REPORT_ENABLED=1), so get_solar_return may link to it. */
+  birthdayReportPage?: boolean;
   /** The published monthly horoscopes (src/data/horoscope-months.json); get_horoscope_period needs it with the program and the window. */
   horoscopeMonths?: () => Promise<HoroscopeMonths>;
   /** The committed horoscope program (src/data/horoscope-program.json), for the yearly readings. */
@@ -756,7 +758,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         let currentZone = args.currentZone ? await zoneAt(args.currentZone, '/currentZone', resolveZone) : undefined;
         // A zone the assistant shares is where the person is now, so it sets the clock the return is told on.
         if (!currentZone && context.hostZone) { try { currentZone = await zoneAt(context.hostZone, '/currentZone', resolveZone); } catch { /* the answer says which clock it used */ } }
-        const result = await feature(() => getSolarReturn({ ...args, ...(zone ? { zone } : {}), ...(currentZone ? { currentZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), ORIGIN));
+        const result = await feature(() => getSolarReturn({ ...args, ...(zone ? { zone } : {}), ...(currentZone ? { currentZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), ORIGIN, !!dependencies.birthdayReportPage));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;

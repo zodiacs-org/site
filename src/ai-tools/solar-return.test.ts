@@ -92,6 +92,13 @@ describe('getSolarReturn', () => {
     expect(data.themes.map((theme) => theme.line).join(' ')).not.toMatch(banned);
     expect(data.confidenceLabel).toBe('Reading confidence 70%');
   });
+  it('links to the birthday report only while the site has it switched on', async () => {
+    const args = { birthDate: '1990-05-03' };
+    const off = await getSolarReturn(args, NOW, clock, 'https://zodiacs.org');
+    expect(off.links.map((link) => link.url)).not.toContain('https://zodiacs.org/birthday-report/');
+    const on = await getSolarReturn(args, NOW, clock, 'https://zodiacs.org', true);
+    expect(on.links.map((link) => link.url)).toContain('https://zodiacs.org/birthday-report/');
+  });
   it('leaves out the Moon, rising sign and houses without a birth time, and says so', async () => {
     const { data } = await getSolarReturn({ birthDate: '1990-05-03' }, NOW, clock, 'https://zodiacs.org');
     expect(data.rising).toBeNull();

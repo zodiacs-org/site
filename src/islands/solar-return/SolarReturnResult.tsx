@@ -12,9 +12,18 @@ import EvidenceDisclosure from '../EvidenceDisclosure';
 import { solarReturnThemes } from '../../lib/solar-return/themes';
 import { solarReturnShareUrl } from '../../lib/solar-return/share';
 
-export interface SolarReturnResultProps { result: SolarReturnResultData; Wheel: ComponentType<WheelProps> }
+export interface SolarReturnResultProps {
+  result: SolarReturnResultData;
+  Wheel: ComponentType<WheelProps>;
+  /** The themes block and share link, behind PUBLIC_SOLAR_RETURN_SHARE_ENABLED (src/lib/launch-flags.ts). */
+  themes?: boolean;
+  /** The button to /year-score/, behind PUBLIC_YEAR_SCORE_ENABLED. */
+  yearScoreLink?: boolean;
+  /** The button to /birthday-report/, behind PUBLIC_BIRTHDAY_REPORT_ENABLED. */
+  birthdayReportLink?: boolean;
+}
 
-export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
+export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yearScoreLink = false, birthdayReportLink = false }: SolarReturnResultProps) {
   const { chart } = result;
   const model = useMemo(() => solarReturnExportModel(result), [result]);
   // Images and calendar files start from the natal Sun at the whole minute.
@@ -75,7 +84,7 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
         </div>
       </section>
 
-      {themes.length > 0 && (
+      {themesOn && themes.length > 0 && (
         <section class="sr-themes" aria-labelledby="solar-return-themes-title">
           <h2 id="solar-return-themes-title">The year’s main themes</h2>
           <ul class="sr-themes__list">
@@ -92,9 +101,9 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
       <SolarReturnActions model={shared} />
 
       <div class="calc__actions">
-        {shareUrl && <a class="btn btn--primary" href={shareUrl} data-sr-share-link>Share your solar return ↗</a>}
-        <a class="btn btn--ghost" href="/year-score/">Score the year ahead →</a>
-        <a class="btn btn--ghost" href="/birthday-report/">Your birthday report →</a>
+        {themesOn && shareUrl && <a class="btn btn--primary" href={shareUrl} data-sr-share-link>Share your solar return ↗</a>}
+        {yearScoreLink && <a class="btn btn--ghost" href="/year-score/">Score the year ahead →</a>}
+        {birthdayReportLink && <a class="btn btn--ghost" href="/birthday-report/">Your birthday report →</a>}
         <a class="btn btn--ghost" href="/birth-chart/">Open your full birth chart →</a>
         <a class="btn btn--ghost" href="/transits/">See today’s transits →</a>
       </div>

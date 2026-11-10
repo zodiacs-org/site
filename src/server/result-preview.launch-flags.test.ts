@@ -10,6 +10,8 @@ const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]
   { route: 'year-score-image', flag: 'PUBLIC_YEAR_SCORE_ENABLED', query: { s: 'taurus', v: '6.4' } },
   { route: 'birthday-report-link', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', py: '7', t: '17' } },
   { route: 'birthday-report-image', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', py: '7', t: '17' } },
+  { route: 'solar-return-link', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
+  { route: 'solar-return-image', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
 ];
 
 function nodeResponse() {
