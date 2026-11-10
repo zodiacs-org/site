@@ -11,7 +11,8 @@ the release's own documentation comments. The **engine** module is the root
 `@zodiacs/engine/calc`. This reference includes `/crossings` and `/deltat`,
 which are public standalone imports as well as root re-exports,
 `/conventions`, a standalone import new in 1.1.0-rc.1 that the root does not
-re-export, and `/time` and `/lite`, standalone imports new in 1.1.0-rc.2.
+re-export, `/time` and `/lite`, standalone imports new in 1.1.0-rc.2, and
+`/de440`, a standalone import new in 1.1.0-rc.3.
 `/internal` and `/internal/math` are site compatibility entries outside the
 public API promise, may change without notice, and are deliberately excluded.
 

@@ -1,9 +1,40 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-1.1.0-rc.2.tgz` is the exact archive consumed by this
+`zodiacs-engine-1.1.0-rc.3.tgz` is the exact archive consumed by this
 revision. It is a **vendored candidate, not on npm**. The registry read of
-2026-11-04 records `1.0.0` under `latest` and `0.1.1-rc.16` under `next`,
-and answers that 1.1.0-rc.2 is not in the registry
+2026-11-10 records `1.0.0` under `latest` and `0.1.1-rc.16` under `next`,
+and answers that 1.1.0-rc.3 is not in the registry
+(`docs/platform/evidence/site-engine-1-1-0-rc3/npm-view.txt`).
+
+- Artifact SHA-256: `3272dcd30264a153c6a89412bb6bc2ba3b6f72b7e9284f95e29b44d73bdff590`
+- Packed size: 331,979 bytes; 94 files; 1,142,818 unpacked bytes.
+- Source commit: `cc910b3775e279222e23af0b395bb6f2b51a3c3a`
+- Carrier commit: `d2794d2def08480510b59753b59b5b9763411647`, merged into engine
+  `main` by `bc0b5a769ad2cfb17e1f853b94d94eb271fdd56d` (engine PR #84)
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/d2794d2def08480510b59753b59b5b9763411647/artifacts/zodiacs-engine-1.1.0-rc.3.tgz)
+- Licence: **MIT AND CC-BY-4.0**. Keep the archive's LICENSE, LICENSING.md
+  and NOTICE. Both licences apply to the distributed package.
+- [Adoption record](../docs/platform/evidence/de440-hosted-20261109/README.md)
+  (P4.1) and the [compute bundle's private-state review](../docs/platform/evidence/site-engine-1-1-0-rc3/PRIVATE-STATE.md);
+  the engine's record of the candidate is its `docs/evidence/de440-20261110/`.
+
+The archive and its SHA-256 receipt are byte-for-byte copies of the
+carrier's git objects (blob ids `0c3ed7a3…` and `fc4e3cb3…`), written from
+the engine repository's local objects, not downloaded. 1.1.0-rc.3 adds one
+entry point, `@zodiacs/engine/de440`, which opens a sealed pack of
+Chebyshev series refitted from NAIF's `de440.bsp` and reduces it to apparent
+places, and `withEphemeris` in the root, which runs the engine's calls with
+such a source in place of astronomy-engine. The compute API's `de440`
+backend uses both, from the pack the deployment builds; everything else on
+the site computes with astronomy-engine as 1.1.0-rc.2 did, with the same
+values. A chart from a DE440 source carries a seventh conventions set,
+appended last, which earlier engines refuse.
+
+# Previous candidate: 1.1.0-rc.2
+
+`zodiacs-engine-1.1.0-rc.2.tgz` and its checksum remain unchanged. It was a
+**vendored candidate, not on npm**; the registry read of 2026-11-04 recorded
+`1.0.0` under `latest` and `0.1.1-rc.16` under `next`
 (`docs/platform/evidence/site-engine-1-1-0-rc2/npm-view.txt`).
 
 - Artifact SHA-256: `c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c`

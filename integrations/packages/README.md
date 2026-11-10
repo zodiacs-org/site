@@ -78,9 +78,14 @@ bytes. With PR #915 (8 November 2026) the hosted server, still 0.6.6, refuses
 a birth date less than 13 years ago, and a birthday card for a day in those
 years, because Zodiacs is not directed at children under 13; no tool definition changes and
 the Zodiacs 0.6.6 ZIP keeps its bytes. Developer 0.3.31 is rebuilt from that
-source with unchanged tools, and 0.3.30 keeps its bytes.
+source with unchanged tools, and 0.3.30 keeps its bytes. Developer 0.3.32 has
+its local chart tools on MCP adapter 0.1.0-rc.27 and engine 1.1.0-rc.3, which
+compute with astronomy-engine as 1.1.0-rc.2 does; its conventions resource
+also lists the engine's set for a chart from a DE440 pack, which its tools
+never write. The hosted server's tool definitions are unchanged, the Zodiacs
+0.6.6 ZIP keeps its bytes, and 0.3.31 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.31**;
+Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.32**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

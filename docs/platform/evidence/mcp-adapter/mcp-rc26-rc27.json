@@ -1,0 +1,44 @@
+{
+ "schemaVersion": 1,
+ "what": "Two builds of the local MCP adapter driven with the same tool list, resource reads and tool calls, compared after versions and sha256: digests are written out",
+ "node": "v22.22.2",
+ "old": {
+  "file": "server-rc26.mjs",
+  "sha256": "4158443273acbad72551e835d068a3954962b2ce4e57bef015bda763754a9474"
+ },
+ "new": {
+  "file": "server-rc27.mjs",
+  "sha256": "d9baa35d8490048220fac91a53b35ada5281b90f3ad3b78be279dbd72c0c3505"
+ },
+ "tools": [],
+ "resources": [
+  {
+   "path": "$.1.0.contents.0.text",
+   "onlyOld": [
+    " \"note\": \"A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions, and from <version> lists the ids of the Zodiacs conventions registry that it names in receipt.conventionIds. A record is read only under a set the engine version it names may carry: a set before rc.16's under the versions that wrote it, and rc.16's and the current one under <version> and later.\","
+   ],
+   "onlyNew": [
+    " \"note\": \"A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions, and from <version> lists the ids of the Zodiacs conventions registry that it names in receipt.conventionIds. A record is read only under a set the engine version it names may carry: a set before rc.16's under the versions that wrote it, rc.16's and the current one under <version> and later, and the DE440 set, which a chart from a DE440 pack carries with the pack's SHA-256 as its ephemeris version, under <version> and later.\",",
+    "  \"positionFrame\": {",
+    "   \"covers\": \"For a chart from a DE440 pack: how positions are carried from the ICRF to the true ecliptic and equinox of date, by which precession and nutation, and how TDB is formed.\",",
+    "    \"to\": null,",
+    "    \"ephemeris\": \"jpl-de440\"",
+    "    \"planetPositions\": \"apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto\",",
+    "    \"moonPosition\": \"ephemeris-geocentric-moon;light-time;solar-deflection;relativistic-aberration\",",
+    "    \"conventionIds\": \"zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt\",",
+    "    \"positionFrame\": \"icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term\""
+   ]
+  }
+ ],
+ "calls": 278,
+ "refusals": 10,
+ "byTool": {
+  "get_capabilities": 1,
+  "calculate_natal_chart": 160,
+  "compare_calculation_records": 23,
+  "get_positions": 23,
+  "find_events": 14,
+  "check_sky_fact": 57
+ },
+ "differing": []
+}

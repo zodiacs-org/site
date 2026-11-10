@@ -426,26 +426,38 @@ describe('the conventions vocabulary', () => {
     expect(vocabulary.keys.timeScale.recordedFrom).toBe('0.1.1-rc.15');
     expect(vocabulary.keys.nutation.recordedFrom).toBe('0.1.1-rc.16');
     expect(vocabulary.keys.conventionIds.recordedFrom).toBe('1.1.0-rc.1');
+    // The DE440 set, placed last, carries the planets' key too, but astronomy-engine's sets carried it first.
+    expect(vocabulary.keys.planetPositions.recordedFrom).toBe('0.1.1-rc.3');
+    expect(vocabulary.keys.positionFrame.recordedFrom).toBe('1.1.0-rc.3');
   });
 
-  it('names the versions that wrote each set, newest first and without a gap', () => {
-    // A release's place in the engine's history: the 0.1.1 candidates by number, then 1.0.0 and the release after
-    // it, 1.1.0-rc.1 (the engine's artifacts/archives.json). The releases between rc.17 and 1.0.0 wrote rc.16's set.
+  it('names the versions that wrote each set, newest first and without a gap, and the DE440 set last', () => {
+    // A release's place in the engine's history: the 0.1.1 candidates by number, then 1.0.0 and the releases after
+    // it, 1.1.0-rc.1 to rc.3 (the engine's artifacts/archives.json). The releases between rc.17 and 1.0.0 wrote
+    // rc.16's set.
     const place = (version: string) => {
       const rc = /^0\.1\.1-rc\.(\d+)$/.exec(version);
       if (rc) return Number(rc[1]);
-      expect(['1.0.0', '1.1.0-rc.1'], version).toContain(version);
-      return version === '1.0.0' ? 1000 : 1001;
+      expect(['1.0.0', '1.1.0-rc.1', '1.1.0-rc.3'], version).toContain(version);
+      return version === '1.0.0' ? 1000 : version === '1.1.0-rc.1' ? 1001 : 1003;
     };
     expect(vocabulary.sets.map((set) => set.current)).toEqual(vocabulary.sets.map((_set, index) => index === 0));
-    expect(SET_WRITERS[0].to).toBeNull();
-    for (let index = 1; index < SET_WRITERS.length; index += 1) {
-      const { from, to } = SET_WRITERS[index];
+    // Last, the set the engine writes from 1.1.0-rc.3 for a chart from a DE440 pack, and still writes.
+    const de440 = SET_WRITERS.at(-1)!;
+    expect(de440).toEqual({ from: '1.1.0-rc.3', to: null, ephemeris: 'jpl-de440' });
+    expect(NATAL_RECEIPT_CONVENTION_SETS.at(-1)).toHaveProperty('positionFrame');
+    expect(place(de440.from)).toBeGreaterThan(place(SET_WRITERS[0].from));
+    // Before it, astronomy-engine's sets, the current one first.
+    const lineage = SET_WRITERS.slice(0, -1);
+    expect(lineage.some((writer) => 'ephemeris' in writer)).toBe(false);
+    expect(lineage[0].to).toBeNull();
+    for (let index = 1; index < lineage.length; index += 1) {
+      const { from, to } = lineage[index];
       expect(place(from)).toBeLessThanOrEqual(place(to!));
       // Each older set ends with the release before the one the next set begins with.
-      expect(place(to!) + 1, `${to}, then ${SET_WRITERS[index - 1].from}`).toBe(place(SET_WRITERS[index - 1].from));
+      expect(place(to!) + 1, `${to}, then ${lineage[index - 1].from}`).toBe(place(lineage[index - 1].from));
     }
-    expect(SET_WRITERS.at(-1)!.from).toBe('0.1.1-rc.3');
+    expect(lineage.at(-1)!.from).toBe('0.1.1-rc.3');
   });
 
   it('says what every chart flag reports', () => {

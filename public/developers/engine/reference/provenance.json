@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "version": "1.1.0-rc.2",
-  "sourceCommit": "806f76b43c0ee652016fe1b522c02d6f6e9c7ae5",
-  "sha256": "c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c",
+  "version": "1.1.0-rc.3",
+  "sourceCommit": "cc910b3775e279222e23af0b395bb6f2b51a3c3a",
+  "sha256": "3272dcd30264a153c6a89412bb6bc2ba3b6f72b7e9284f95e29b44d73bdff590",
   "license": "MIT AND CC-BY-4.0",
   "sourceRepository": "https://github.com/zodiacs-org/engine",
-  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/59c6ea9d9a4e7845a2880aa8303fcaadbd645170/artifacts/zodiacs-engine-1.1.0-rc.2.tgz",
+  "artifactUrl": "https://raw.githubusercontent.com/zodiacs-org/engine/d2794d2def08480510b59753b59b5b9763411647/artifacts/zodiacs-engine-1.1.0-rc.3.tgz",
   "generator": {
     "typedoc": "0.28.20",
     "typescript": "5.9.3"
@@ -98,6 +98,7 @@
         "PointName",
         "PointPosition",
         "Polarity",
+        "PositionSource",
         "RA_POLE_TOLERANCE",
         "REFERENCE_SPAN",
         "ResolvedAspectRule",
@@ -111,6 +112,7 @@
         "SaturnReturnSource",
         "Sect",
         "SignDefinition",
+        "SourceBody",
         "SynastryResult",
         "TimeScale",
         "TimeScaleName",
@@ -182,7 +184,8 @@
         "transits",
         "vehlowCusps",
         "vertexOf",
-        "wholeSignCusps"
+        "wholeSignCusps",
+        "withEphemeris"
       ]
     },
     "./calc": {
@@ -556,6 +559,20 @@
         "timeBasis"
       ]
     },
+    "./de440": {
+      "declaration": "./dist/de440.d.ts",
+      "exports": [
+        "BARYCENTRE_NOT_CENTRE",
+        "DE440_EPHEMERIS_NAME",
+        "De440Error",
+        "De440ErrorCode",
+        "De440OpenOptions",
+        "De440Source",
+        "REDUCED_BODIES",
+        "ReducedBody",
+        "openDe440Pack"
+      ]
+    },
     "./timing": {
       "declaration": "./dist/timing.d.ts",
       "exports": [
@@ -730,8 +747,8 @@
   },
   "notices": {
     "release/LICENSE.txt": "9a8ab25f278db9d59a00ee82d1a82d63ee4891a9c417c53b4e2b9942aaab10df",
-    "release/LICENSING.txt": "38399534d93270c62637ae7bdd8489766f3d58ea86033edfe68c8c30e80f94e5",
-    "release/NOTICE.txt": "e1d384bd46e0068bf510a2b0ef61e264bf522737d2323fa1c72098898d260f0c",
-    "release/README.txt": "31cfc113f9da439790dcfdb8eeea0f6606de5a6d8eb2bb01527f3562f27115c9"
+    "release/LICENSING.txt": "de3030836b83c7bff3ec4633e2112ddd4a16b97046d4333970fe34e3f224fb2c",
+    "release/NOTICE.txt": "255e7ecaca435a5d743b42d5b2264d9e10889885bb3fd83c654499691a6412ff",
+    "release/README.txt": "81a8659074e79774df95251d68300b828ce31d1075631eb2b550bcdf5a222707"
   }
 }

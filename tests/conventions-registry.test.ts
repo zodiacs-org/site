@@ -4,7 +4,8 @@ import summary from '../src/data/conformance/summary.json';
 import source from '../src/data/conformance/source.json';
 import examples from '../src/lib/compute-api/examples.json';
 import { GET as registryJson } from '../src/pages/developers/conventions/registry.json';
-import { ENGINE_VERSION, HOUSE_SYSTEMS, natalChart, type ChartFlag, type DeltaT, type DeltaTSegment, type TimeScale, type TimeScaleName } from '@zodiacs/engine';
+import { ENGINE_VERSION, HOUSE_SYSTEMS, natalChart, withEphemeris, type ChartFlag, type DeltaT, type DeltaTSegment, type TimeScale, type TimeScaleName } from '@zodiacs/engine';
+import { DE440_PACK_SHA256 } from '../src/lib/compute-api/backend';
 import { CONVENTIONS_REGISTRY, conventionAddress, conventionId, natalConventionIds, parseConventionId } from '@zodiacs/engine/conventions';
 import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, type NatalEnvelope, type NatalReceipt, type NatalReference } from '@zodiacs/engine/receipt';
 import { CALC_AYANAMSAS, CALC_BODIES, CALC_FRAMES, calc, chart, events, houses } from '@zodiacs/engine/calc';
@@ -30,8 +31,22 @@ function dashedStrings(value: unknown, path = 'registry'): string[] {
   return Object.entries(value).flatMap(([key, item]) => [...dashedStrings(key, `${path} key`), ...dashedStrings(item, `${path}.${key}`)]);
 }
 
-// The engine versions that wrote each natal conventions set, newest first (src/receipt.ts).
-const SET_RANGES = ['1.1.0-rc.1 to rc.2', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
+// The engine versions that wrote each natal conventions set, newest first (src/receipt.ts),
+// for the sets of astronomy-engine; the DE440 set, appended last in 1.1.0-rc.3, apart.
+const SET_RANGES = ['1.1.0-rc.1 to rc.3', '0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
+const DE440_SET = NATAL_RECEIPT_CONVENTION_SETS[NATAL_RECEIPT_CONVENTION_SETS.length - 1];
+const ASTRONOMY_ENGINE_SETS = NATAL_RECEIPT_CONVENTION_SETS.slice(0, -1);
+const DE440_WRITTEN = '1.1.0-rc.3, with a DE440 source';
+
+/**
+ * A natal receipt of a chart computed with the hosted backend's DE440 pack, for the ids it names. The
+ * receipt takes the chart's ephemeris as the chart gives it, so a stand-in source that names the pinned pack
+ * gives the same ids as the pack itself; its positions are not the point here.
+ */
+function de440Envelope(): NatalEnvelope {
+  const pinned = { ephemeris: { name: 'jpl-de440', version: DE440_PACK_SHA256 }, place: () => ({ lon: 10, lat: 0 }), trueNode: () => 20 };
+  return createNatalEnvelope(withEphemeris(pinned, () => natalChart({ utc: '2000-01-01T12:00:00Z', latitude: 51.5, longitude: 0 })));
+}
 
 /** The ids a natal receipt names: each field's namespace and value, as the registry's usedIn lists them. */
 function natalReceiptIds(receipt: Record<string, unknown>): string[] {
@@ -157,10 +172,11 @@ describe('the conventions registry', () => {
     expect(dashedStrings(planted)).toHaveLength(2);
   });
 
-  it('holds every value of every natal conventions set, current where 1.1.0-rc.2 writes it and superseded where only earlier versions did', () => {
-    expect(SET_RANGES).toHaveLength(NATAL_RECEIPT_CONVENTION_SETS.length);
+  it('holds every value of every natal conventions set, current where 1.1.0-rc.3 writes it and superseded where only earlier versions did', () => {
+    expect(SET_RANGES).toHaveLength(ASTRONOMY_ENGINE_SETS.length);
+    expect(DE440_SET.planetPositions).toContain('barycentres-mars-to-pluto');
     const seen = new Set<string>();
-    NATAL_RECEIPT_CONVENTION_SETS.forEach((set, index) => {
+    ASTRONOMY_ENGINE_SETS.forEach((set, index) => {
       for (const [key, value] of Object.entries(set)) {
         const id = `${key}:${value}`;
         seen.add(id);
@@ -169,10 +185,19 @@ describe('the conventions registry', () => {
         expect(entry!.writtenBy, id).toContain(SET_RANGES[index]);
       }
     });
+    // The DE440 set: its own values are written only with a DE440 source; the rest are the current set's.
+    const currentIds = new Set(Object.entries(NATAL_RECEIPT_CONVENTION_SETS[0]).map(([key, value]) => `${key}:${value}`));
+    for (const [key, value] of Object.entries(DE440_SET)) {
+      const id = `${key}:${value}`;
+      seen.add(id);
+      const entry = entries.find((candidate) => candidate.id === id);
+      expect(entry, id).toBeDefined();
+      if (!currentIds.has(id)) expect(entry!.writtenBy, id).toBe(DE440_WRITTEN);
+      currentIds.add(id);
+    }
     for (const id of seen) {
       const entry = entries.find((candidate) => candidate.id === id)!;
-      const current = Object.entries(NATAL_RECEIPT_CONVENTION_SETS[0]).some(([key, value]) => `${key}:${value}` === id);
-      expect(entry.status, id).toBe(current ? 'current' : 'superseded');
+      expect(entry.status, id).toBe(currentIds.has(id) ? 'current' : 'superseded');
     }
     // The natal receipt's own namespaces hold nothing else.
     for (const namespace of group('Natal receipt conventions')) {
@@ -182,7 +207,11 @@ describe('the conventions registry', () => {
 
   it('holds exactly the convention ids calc receipts write, beside the natal sets\' values', () => {
     const written = new Set(calcReceipts().flatMap((receipt) => receipt.conventions));
-    const natalIds = new Set(NATAL_RECEIPT_CONVENTION_SETS.flatMap((set) => Object.entries(set).map(([key, value]) => `${key}:${value}`)));
+    const natalIds = new Set([
+      ...NATAL_RECEIPT_CONVENTION_SETS.flatMap((set) => Object.entries(set).map(([key, value]) => `${key}:${value}`)),
+      // A DE440 natal receipt's ephemeris, which no calc receipt writes (calc refuses inside withEphemeris).
+      ...natalEnvelopeIds(fields(de440Envelope())).filter((id) => id.startsWith('ephemeris:')),
+    ]);
     for (const id of written) expect(ids.has(id), id).toBe(true);
     const calculation = new Set(group('Calculation conventions'));
     const registered = entries.filter((entry) => calculation.has(entry.namespace)).map((entry) => entry.id);
@@ -262,7 +291,7 @@ describe('the conventions registry', () => {
 
   it('holds every id that natal, calc and compute API receipts name', async () => {
     const named = new Set<string>();
-    for (const envelope of natalEnvelopes()) for (const id of natalEnvelopeIds(fields(envelope))) named.add(id);
+    for (const envelope of [...natalEnvelopes(), de440Envelope()]) for (const id of natalEnvelopeIds(fields(envelope))) named.add(id);
     for (const receipt of calcReceipts()) for (const id of calcReceiptIds(receipt)) named.add(id);
     for (const cases of Object.values(examples.success as Record<string, Record<string, { receipt: Record<string, unknown> }>>)) {
       for (const response of Object.values(cases)) for (const id of computeReceiptIds(response.receipt)) named.add(id);

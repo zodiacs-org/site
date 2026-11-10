@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.26",
+  "version": "0.1.0-rc.27",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -17,6 +17,7 @@
     "src/lib/compute-api/endpoints.ts",
     "src/lib/compute-api/validate.ts",
     "src/lib/compute-api/receipt.ts",
+    "src/lib/compute-api/backend.ts",
     "src/lib/compute-api/constants.ts",
     "src/lib/compute-api/errors.ts",
     "src/lib/compute-api/local-time.ts",
@@ -43,14 +44,14 @@
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
-    "note": "Engine 1.1.0-rc.2 and the site comparison are inlined into server.mjs. The engine is an unpublished candidate: npm serves 1.0.0 under the latest tag, which computes the same values, and the bundle is built from the candidate's archive, whose SHA-256 is below. The adapter is an unpublished candidate. Bundling keeps one copy of the comparison rules.",
+    "note": "Engine 1.1.0-rc.3 and the site comparison are inlined into server.mjs. The engine is an unpublished candidate: npm serves 1.0.0 under the latest tag, which computes the same values, and the bundle is built from the candidate's archive, whose SHA-256 is below. The adapter is an unpublished candidate. Bundling keeps one copy of the comparison rules.",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "1.1.0-rc.2",
+      "version": "1.1.0-rc.3",
       "releaseStatus": "unpublished-candidate",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "c5aef0e3f20a19cf7ffabc99112cf592045199d6803814cf4ef6ea013615351c"
+      "artifactSha256": "3272dcd30264a153c6a89412bb6bc2ba3b6f72b7e9284f95e29b44d73bdff590"
     },
     "ephemeris": {
       "name": "astronomy-engine",
@@ -114,6 +115,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.25",
-  "changedSince": "0.1.0-rc.26 bundles engine 1.1.0-rc.2, an unpublished candidate, in place of 1.1.0-rc.1. The engine's time basis, which server.mjs inlines for get_positions, find_events, check_sky_fact and resolve_birth_time, now comes from the engine's own @zodiacs/engine/time entry in place of the site's bundled copy of it, which the site deleted; the two give the same values (the site's F-53 parity checks). Records and receipts name the new engine version; the tools, their arguments and their results are otherwise rc.25's. The archive's NOTICE carries the engine's 1.1.0-rc.2 notice. Older archives remain unchanged. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.26",
+  "changedSince": "0.1.0-rc.27 bundles engine 1.1.0-rc.3, an unpublished candidate, in place of 1.1.0-rc.2. The engine computes with astronomy-engine as before: 1.1.0-rc.3 adds a DE440 entry, which this adapter does not bundle, and a way to run the engine with another ephemeris source, which this adapter does not use. The site's compute code that server.mjs inlines now names its ephemeris through src/lib/compute-api/backend.ts, always astronomy-engine here. zodiacs://conventions lists the engine's seventh conventions set, the one a chart from a DE440 pack carries (from 1.1.0-rc.3, placed last so that no earlier set's index moved), with its writer and a sentence on its new key, positionFrame; this server never writes it. Records and receipts name the new engine version; the tools, their arguments and their results are otherwise rc.26's. The archive's NOTICE carries the engine's 1.1.0-rc.3 notice. Older archives remain unchanged. The adapter itself is still not on npm."
 }

@@ -1,6 +1,6 @@
 {
   "generatedBy": "scripts/build-compute-examples.mjs",
-  "engine": "@zodiacs/engine 1.1.0-rc.2",
+  "engine": "@zodiacs/engine 1.1.0-rc.3",
   "success": {
     "chart": {
       "utc": {
@@ -311,7 +311,7 @@
               "version": "2.1.19"
             },
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2"
+            "version": "1.1.0-rc.3"
           },
           "houses": {
             "absenceReason": null,
@@ -331,7 +331,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -339,9 +339,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#chart",
-          "receipt": "sha256:beb02be24b72201709b12b4f54b46492f4a9142ebe7732899258d6837b6097ce",
+          "receipt": "sha256:d2407694ecaaaf6350d228098a03db7d5d0d27c2239a3ce34fabb5ff6d056760",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       },
       "local": {
@@ -686,7 +686,7 @@
               "version": "2.1.19"
             },
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2"
+            "version": "1.1.0-rc.3"
           },
           "houses": {
             "absenceReason": null,
@@ -722,7 +722,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -730,9 +730,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#chart",
-          "receipt": "sha256:1fc1f685222c36d470a147054adadb5bbe4891408096d3e5671361ba99e2ce75",
+          "receipt": "sha256:da93881b169b808f7db93cafc838e76605101772d3181a9d68b4eef4e3b69b54",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       }
     },
@@ -856,7 +856,7 @@
           "endpoint": "positions",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -927,7 +927,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -935,9 +935,149 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#positions",
-          "receipt": "sha256:31d7cca3a97e031910d69219958c9c9b84a7380b70a298f4fd3ecb46e1587a26",
+          "receipt": "sha256:42f5f0072d6e7a4723589ffb5a667a029b96a7fee838318a81b1967d6a041fd2",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
+        }
+      },
+      "backend": {
+        "schema": "zodiacs.compute-api.positions.v1",
+        "result": {
+          "instants": [
+            {
+              "instant": "2026-09-29T12:00:00.000Z",
+              "bodies": [
+                {
+                  "body": "Sun",
+                  "lon": 186.3650989852253,
+                  "lat": 0.000040745528335972984,
+                  "speed": 0.981717214017408,
+                  "retrograde": false,
+                  "sign": "libra",
+                  "degree": 6.365098985225359
+                },
+                {
+                  "body": "Moon",
+                  "lon": 42.542105382281534,
+                  "lat": 4.950806474193532,
+                  "speed": 14.176528919762177,
+                  "retrograde": false,
+                  "sign": "taurus",
+                  "degree": 12.542105382281534
+                }
+              ],
+              "deltaT": {
+                "seconds": 69.20533325195312,
+                "sigma": 0.0012697,
+                "model": "iers-utc/1",
+                "table": "2026-09-24",
+                "tableDigest": "064d98b4a531053a",
+                "segment": "predicted"
+              },
+              "timeScale": {
+                "input": "utc",
+                "basis": "iers",
+                "ut1MinusUtc": {
+                  "seconds": -0.02133333333333809,
+                  "sigma": 0.0012697,
+                  "source": "predicted"
+                },
+                "leapSeconds": {
+                  "taiMinusUtc": 37,
+                  "listed": true
+                }
+              },
+              "flags": []
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "positions",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "1.1.0-rc.3",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ],
+          "conventionIds": [
+            "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "angles:gast-and-true-obliquity",
+            "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "assessment:finite-reference-cases-only",
+            "broadDateRange:not-certified",
+            "calendar:proleptic-gregorian",
+            "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+            "deltaT:tt-minus-ut1;value-in-result",
+            "deltat-model:iers-utc/1",
+            "deltat-model:zodiacs-deltat/1",
+            "endpoint:positions",
+            "ephemeris:astronomy-engine@2.1.19",
+            "inputSyntax:not-an-astronomical-accuracy-guarantee",
+            "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit:degrees-[0,360)",
+            "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac:tropical"
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "1.1.0-rc.3",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/compute/#positions",
+          "receipt": "sha256:42f5f0072d6e7a4723589ffb5a667a029b96a7fee838318a81b1967d6a041fd2",
+          "engine": "@zodiacs/engine",
+          "version": "1.1.0-rc.3"
         }
       }
     },
@@ -1054,7 +1194,7 @@
               "version": "2.1.19"
             },
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2"
+            "version": "1.1.0-rc.3"
           },
           "houses": {
             "absenceReason": null,
@@ -1074,7 +1214,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1082,9 +1222,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#houses",
-          "receipt": "sha256:e71b3551ad5de50f18de94018249c1aab2541d0f5b64688aeb00cdebd79c7aec",
+          "receipt": "sha256:e2d0559316a5ffb3116b85bb29639d70ff3bac8c76ca971fde1a139e00ab45a9",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       }
     },
@@ -1150,7 +1290,7 @@
           "endpoint": "events",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1237,7 +1377,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1245,9 +1385,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:3a6d5cf7b2838ac56164ea2fd88a708f5775fa07a9632bb576fda95fde09a134",
+          "receipt": "sha256:62840f516c737cd8b6c693f05f948568dcc34c9f77b5f999adf0aaa6f957f97e",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       }
     },
@@ -1291,7 +1431,7 @@
           "endpoint": "time",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1378,7 +1518,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1386,9 +1526,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:eb2ef910ed5e8243389c324f3df40f2ce11dda69e179722a62e80515edece527",
+          "receipt": "sha256:3033633da75198c01df6e3d5f350f0be3138b33f2e2cff699b0c120e25ea08fb",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       },
       "gap": {
@@ -1437,7 +1577,7 @@
           "endpoint": "time",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1524,7 +1664,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1532,9 +1672,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:eb2ef910ed5e8243389c324f3df40f2ce11dda69e179722a62e80515edece527",
+          "receipt": "sha256:3033633da75198c01df6e3d5f350f0be3138b33f2e2cff699b0c120e25ea08fb",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       },
       "julian": {
@@ -1582,7 +1722,7 @@
           "endpoint": "time",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1669,7 +1809,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1677,9 +1817,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:eb2ef910ed5e8243389c324f3df40f2ce11dda69e179722a62e80515edece527",
+          "receipt": "sha256:3033633da75198c01df6e3d5f350f0be3138b33f2e2cff699b0c120e25ea08fb",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       },
       "atlas": {
@@ -1759,7 +1899,7 @@
           "endpoint": "time",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1846,7 +1986,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1854,9 +1994,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:eb2ef910ed5e8243389c324f3df40f2ce11dda69e179722a62e80515edece527",
+          "receipt": "sha256:3033633da75198c01df6e3d5f350f0be3138b33f2e2cff699b0c120e25ea08fb",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       }
     },
@@ -1929,7 +2069,7 @@
           "endpoint": "elections",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -2026,7 +2166,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -2034,9 +2174,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#elections",
-          "receipt": "sha256:b87c2bca290c0d84d0001e9c1dea4806f955fc2b62ab9c22310acc229b5f6dcc",
+          "receipt": "sha256:aff757f1da7740678b8eda022203fdfa5f6bee56f4e4863cc33f2c3076a47a94",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       }
     },
@@ -2105,7 +2245,7 @@
           "endpoint": "sky-fact",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -2208,7 +2348,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -2216,9 +2356,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:c0c375e4702379d6ec449df3b369884aeda76acf88ecee9478cf6e13a3e767e4",
+          "receipt": "sha256:c2d1fe54dd5cee1b557a0b21193725fab4c8e89859c2890c16493c46cc266771",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       },
       "phase": {
@@ -2255,7 +2395,7 @@
           "endpoint": "sky-fact",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -2342,7 +2482,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -2350,9 +2490,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:09db150a09f035ebb157d0acbf36e81f8401f6902b264b9837ffe700cdc4b2c4",
+          "receipt": "sha256:228ee8087feaffe4d222e9287a2348c2364aa8cdba27af5ccf92bfe01d705e1b",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       },
       "sign": {
@@ -2407,7 +2547,7 @@
           "endpoint": "sky-fact",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -2478,7 +2618,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -2486,9 +2626,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:22f4dfdd68be7c73f85e2c9945397a17f9f914561be79818c9cf29c0bbd7d49d",
+          "receipt": "sha256:5d8b3c9cbde99f98229c35a9d2e2b6b78919af4d0055145cd4d56c8d51f9365b",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       },
       "aspect": {
@@ -2597,7 +2737,7 @@
           "endpoint": "sky-fact",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -2700,7 +2840,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -2708,9 +2848,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:eaffbd3c9f64f72ac6e2586aab493d54f41bbf180e5bbbf15aeb13693d930e6c",
+          "receipt": "sha256:d32a94311cba35900aebe610aef30bd63f6f71c2e24b28ad5c4afd1ed5d37d45",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       }
     }
@@ -2829,6 +2969,16 @@
           "code": "disabled",
           "message": "The compute API is switched off. Try again later.",
           "retryAfterSeconds": 3600
+        }
+      }
+    },
+    "backend-unavailable": {
+      "status": 503,
+      "headers": {},
+      "response": {
+        "error": {
+          "code": "backend-unavailable",
+          "message": "The de440 backend is not available here: this runtime has no DE440 pack. Ask for astronomy-engine, or leave out backend."
         }
       }
     },

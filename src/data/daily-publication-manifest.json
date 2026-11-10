@@ -19,7 +19,7 @@
     "eventsSourceCanonicalSha256": "92f58512534138c26a868e471823e0adc058dbe5bbb0b767edd4b0dbebdb7557",
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "1.1.0-rc.2"
+      "version": "1.1.0-rc.3"
     }
   },
   "publication": {
@@ -31,7 +31,7 @@
   "generation": {
     "mode": "deterministic-template",
     "generatorId": "zodiacs.daily-renderer.v1.2",
-    "generatorSha256": "e6ef525c3c6ae2abd327d49d54154126fbf48ff286fc2bc1b35ee591629be226",
+    "generatorSha256": "40db887c6698f70c579c133a56ebb59834b0442d031fa61c4d322af849cdba1b",
     "model": null,
     "freeformModelOutput": false
   },

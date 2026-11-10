@@ -85,6 +85,22 @@ const object = (required: string[], properties: Record<string, unknown>, descrip
 const place = object(['lon', 'sign', 'degree'], { lon: num, sign, degree: num }, 'A longitude, with its sign and the degree within it.');
 const allowedOrb = { type: 'number', minimum: 0, description: 'The widest orb at which the aspect holds between these two bodies, in degrees: the wider one when the Sun or the Moon is one of them.' };
 
+/**
+ * The backend as the compute API documented it before P4.1 added DE440: astronomy-engine only. The hosted AI tools
+ * and the developer plugin answer only from astronomy-engine (they call the calculations without a backend, and
+ * never read a request's), and their published output schemas carry this one byte for byte
+ * (src/ai-tools/release-060.test.ts), so src/ai-tools/contracts.ts writes `Backend` out from it.
+ */
+export const ASTRONOMY_ENGINE_BACKEND_SCHEMA: Schema = Object.freeze({
+  type: 'object',
+  required: ['name', 'version', 'ephemeris'],
+  properties: {
+    name: { const: '@zodiacs/engine' },
+    version: str,
+    ephemeris: { type: 'object', required: ['name', 'version'], properties: { name: { const: 'astronomy-engine' }, version: str } },
+  },
+});
+
 export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   Instant: {
     type: 'string',
