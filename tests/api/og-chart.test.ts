@@ -176,11 +176,20 @@ describe('chart preview functions', () => {
     ))).status).toBe(405);
   });
 
+  it('sends an older link\'s full positions code to the default share picture, never drawing it', async () => {
+    imageResponseMock.element.mockClear();
+    for (const query of [`p=${token}`, `p=${encodeURIComponent(token)}`, `p=${token}&p=${token}`, `p=${token}&free=text`, 'p=bad']) {
+      const response = await imageHandler(new Request(`https://zodiacs.org/api/og/chart-image?${query}`));
+      expect(response.status, query).toBe(303);
+      expect(response.headers.get('location'), query).toBe('https://zodiacs.org/assets/og/v2/share.png');
+      expect(response.headers.get('cache-control'), query).toBe('no-store, max-age=0');
+    }
+    expect(imageResponseMock.element).not.toHaveBeenCalled();
+  });
+
   it('keeps the image renderer on a narrow positions-only request surface', async () => {
     for (const request of [
       new Request('https://zodiacs.org/api/og/chart-image'),
-      new Request(`https://zodiacs.org/api/og/chart-image?p=${token}&p=${token}`),
-      new Request(`https://zodiacs.org/api/og/chart-image?p=${token}&free=text`),
       new Request(`https://zodiacs.org/api/og/chart-image?p=${token}`, { method: 'POST' }),
       new Request(`https://zodiacs.org/api/og/chart-image?${PREVIEW_QUERY}&free=text`),
       new Request('https://zodiacs.org/api/og/chart-image?sun=0&moon=29&rising=359'),
@@ -195,7 +204,7 @@ describe('chart preview functions', () => {
   it('emits a 1200×630 PNG response without cache or indexing', async () => {
     imageResponseMock.element.mockClear();
     imageResponseMock.options.mockClear();
-    const response = await imageHandler(new Request(`https://zodiacs.org/api/og/chart-image?p=${token}`));
+    const response = await imageHandler(new Request(`https://zodiacs.org/api/og/chart-image?${PREVIEW_QUERY}`));
     const bytes = new Uint8Array(await response.arrayBuffer());
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toBe('image/png');
@@ -252,9 +261,9 @@ describe('chart preview functions', () => {
     };
     await handleChartPreviewNodeRequest({
       method: 'GET',
-      url: `/api/og/chart-image?p=${encodeURIComponent(token)}`,
+      url: `/api/og/chart-image?${PREVIEW_QUERY}`,
       headers: { host: 'zodiacs.org' },
-      query: { [CHART_PREVIEW_ROUTE_KEY]: 'image', p: token },
+      query: { [CHART_PREVIEW_ROUTE_KEY]: 'image', sun: '0', moon: '29', rising: '359', houses: 'whole' },
     }, response, 'image');
 
     expect(response.statusCode).toBe(200);
@@ -327,7 +336,7 @@ describe('chart preview functions', () => {
 
   it('returns a generic 503 before committing a streaming renderer failure', async () => {
     imageResponseMock.renderFailure = new Error('render failed');
-    const response = await imageHandler(new Request(`https://zodiacs.org/api/og/chart-image?p=${token}`));
+    const response = await imageHandler(new Request(`https://zodiacs.org/api/og/chart-image?${PREVIEW_QUERY}`));
 
     expect(response.status).toBe(503);
     expect(response.headers.get('content-type')).toContain('text/plain');

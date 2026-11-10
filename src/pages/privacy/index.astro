@@ -59,7 +59,7 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
     <h1 class="method-title display">Your birth details leave your device only when you send them.</h1>
 
     <div class="prose">
-      <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; they leave your device only if you sign in to sync saved charts{accountSaves ? ' or save a reading to your profile' : ''}, share a link that carries them, or type them into an assistant message. Aura sends one public wallet address—not your birth or chart data—to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'} remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
+      <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; they leave your device only if you share a link that carries them or type them into an assistant message. Chart sync is paused: signing in sends no saved chart to your account. Aura sends one public wallet address (not your birth or chart data) to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'} remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
 
       <h2 id="ai-integrations">AI integration candidates</h2>
       {assistantAccountsEnabled ? (
@@ -93,8 +93,8 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         enter a birth date, time, and place, that information is used by code
         running in your browser to calculate the chart. It is not transmitted to
         our servers, logged, or stored by us as part of that calculation. It
-        leaves the device only if you later sign in to sync a saved chart, share
-        a link that carries it, or put it in an assistant message. This is a
+        leaves the device only if you share a link that carries it or put it in
+        an assistant message. This is a
         deliberate design choice, described in
         full on our <a href="/methodology/">methodology page</a>.
       </p>
@@ -117,11 +117,14 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
 
       <h2>Charts you save</h2>
       <p>
-        When you save a chart, it is stored in your browser's local storage —
-        on your device, under your control. It is not sent anywhere unless you
-        sign in to an account (below) or share it.
-        Clearing your browser's site data removes saved charts. Unless you sign
-        in, we cannot see them and cannot recover them for you.
+        When you save a chart, it is stored in your browser's local storage,
+        on your device and under your control. It is not sent anywhere unless
+        you share it. Chart sync is paused: signing in to an account does not
+        send your saved charts, and nothing new is sent to your account. Charts
+        you synced before the pause stay in your account until you remove them,
+        and you can still remove them from your profile. Clearing your browser's
+        site data removes saved charts, and we cannot see or recover charts that
+        were only saved in your browser.
       </p>
 
       <h2>Share links and invitations</h2>
@@ -298,7 +301,7 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         people or services have saved or reposted.
       </p>
 
-      <h2>Optional account (sync across devices)</h2>
+      <h2>Optional account</h2>
       {accountSyncV2Enabled ? (
         <>
           <p>
@@ -371,9 +374,10 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       ) : (
         <>
           <p>
-            You can create a free account to keep your saved charts on more than one
-            device. This is entirely optional and the tools work fully without it.
-            If you create one:
+            You can create a free account. This is entirely optional and the
+            tools work fully without it. Chart sync is paused for now, so an
+            account does not carry new saved charts to your other devices. If you
+            create one:
           </p>
           <ul>
             <li>
@@ -392,12 +396,14 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
               </li>
             )}
             <li>
-              We store your email address and every chart saved in your browser
-              while you are signed in, including those saved before you signed
-              in, with their birth details, with our database
-              provider, <a href="https://supabase.com/" rel="noopener noreferrer">Supabase</a>,
-              so they can appear on your other devices. Access is restricted to your
-              own account.
+              We store your email address with our database
+              provider, <a href="https://supabase.com/" rel="noopener noreferrer">Supabase</a>.
+              Chart sync is paused: signing in sends no saved chart, and no birth
+              details are sent to your account. Charts you synced before the
+              pause, with their birth details, stay in your account until you
+              remove them; signing in brings them to that browser, and removing
+              one on any signed-in device removes it from the account. Access is
+              restricted to your own account.
             </li>
             <li>
               We also store your house-system setting and a record of each chart
@@ -408,10 +414,14 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
               <li>
                 If you choose Save to your profile under a compatibility reading
                 or an occasion card, its title and link are stored with your
-                account so it opens on your other devices. The link carries what
-                the page needs to open again: the birth dates, times and places of
-                a reading, or the names, date and place on a card. You can remove
-                each one from your profile.
+                account so it opens on your other devices. Neither carries a
+                birth detail or a name. A reading is saved as the page for its two
+                Sun signs. A card for a wedding or another day is saved with that
+                day, and its time, time zone and coordinates rounded to two
+                decimals when you gave them. A card for a birthday, a new baby or
+                a coming of age is saved as the occasions page only, with no date.
+                Pages saved before this rule may still carry the details they were
+                saved with; you can remove each one from your profile.
               </li>
             )}
             {accountSaves && (
@@ -440,8 +450,11 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
           the assistant can save the charts, comparisons, occasion cards and
           weekly forecasts you ask it to keep. Each one is listed under Saved to
           your profile with a title, a link to its page, a one-line summary
-          and what Zodiacs worked out, including the birth dates and first names
-          in it. The link carries no birth date, time, place or name. Only you can read them; you can remove each one or download
+          and what Zodiacs worked out: the signs, scores and ratings, and the day
+          of an occasion that is not a birthday. Nothing saved carries a birth
+          date, birth time, time zone, birthplace or name, except the published
+          name of a famous person. Items saved before this rule may still carry
+          the birth dates and first names they were saved with. Only you can read them; you can remove each one or download
           them all from your profile, and they are deleted with your account.
           The connection is an authorization you give through Supabase Auth: the
           assistant receives a sign-in token that includes your account email,

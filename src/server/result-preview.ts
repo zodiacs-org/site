@@ -15,18 +15,28 @@
  * made before the assistant tools stopped writing names (0.6.1) still opens, but
  * its names and place are dropped as soon as it is read (readCompatibilityShare,
  * readOccasionShare): no page, picture or link drawn from it carries them.
+ *
+ * Retired keys are also cleared from the address (retiredLinkRedirect): a link
+ * that carries names (a, b, n), a place (p), a milestone's pass days (f, l) or
+ * a Chinese zodiac year (y) is answered with a 303 to the same address without
+ * them. A birthday's date link goes to the birthday page with the month and day
+ * only; a baby's arrival or a coming of age goes to the occasion page, and their
+ * pictures to the default share picture.
  */
 import { readFile } from 'node:fs/promises';
 import { encode as encodeJpeg } from 'jpeg-js';
 import { PNG } from 'pngjs';
 import { h, type VNode } from 'preact';
 import {
+  DEFAULT_SHARE_IMAGE_PATH,
   exactArrayBuffer,
   htmlEscape,
   PRIVACY_HEADERS,
   requestOrigin,
+  seeOther,
   writeNodeResponse,
 } from './chart-preview.js';
+import { BIRTH_OCCASIONS } from '../lib/occasions/saved-path.js';
 import {
   bigThreeCardModel,
   type BigThreeCardModel,
@@ -146,6 +156,41 @@ export function readOccasionShare(params: URLSearchParams): OccasionShare | null
   const share = parseOccasionShare(params);
   return share && { ...share, names: null, place: null };
 }
+
+/** The query keys each family of share links no longer keeps: read, then cleared from the address. */
+export const RETIRED_SHARE_KEYS = Object.freeze({
+  compatibility: Object.freeze(['a', 'b']),
+  occasion: Object.freeze(['n', 'p']),
+  milestone: Object.freeze(['f', 'l']),
+  'chinese-zodiac': Object.freeze(['y']),
+} as const);
+export type RetiredShareFamily = keyof typeof RETIRED_SHARE_KEYS;
+
+const BIRTH_DATE_RE = /^\d{4}-(\d{2})-(\d{2})$/u;
+
+/**
+ * The answer to a share link that still carries a retired detail, or null when
+ * it carries none: a 303 that clears it from the address. `picture` is the
+ * family's image or story route.
+ */
+export function retiredLinkRedirect(family: RetiredShareFamily, url: URL, picture: boolean): Response | null {
+  if (family === 'occasion') {
+    const occasion = url.searchParams.get('o');
+    if (occasion !== null && BIRTH_OCCASIONS.has(occasion)) {
+      if (picture) return seeOther(`${url.origin}${DEFAULT_SHARE_IMAGE_PATH}`);
+      const day = occasion === 'birthday' ? BIRTH_DATE_RE.exec(url.searchParams.get('d') ?? '') : null;
+      return seeOther(day ? `${url.origin}${BIRTHDAY_SHARE_PATH}?d=${day[1]}-${day[2]}` : `${url.origin}${OCCASION_SHARE_PATH}`);
+    }
+  }
+  const retired: readonly string[] = RETIRED_SHARE_KEYS[family];
+  if (![...url.searchParams.keys()].some((key) => retired.includes(key))) return null;
+  const kept = new URLSearchParams();
+  for (const [key, value] of url.searchParams) if (!retired.includes(key)) kept.append(key, value);
+  const query = kept.toString();
+  return seeOther(`${url.origin}${url.pathname}${query ? `?${query}` : ''}`);
+}
+
+const retiredFor = (family: RetiredShareFamily, request: Request, picture: boolean) => retiredLinkRedirect(family, new URL(request.url), picture);
 
 export const RESULT_SHARE_ROUTE_KEY = '__zodiacs_share';
 export const RESULT_SHARE_ROUTES = [
@@ -753,6 +798,8 @@ async function renderImage(element: VNode<any>, size: { width: number; height: n
 
 export async function handleCompatibilityImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('compatibility', request, true);
+  if (retired) return retired;
   const share = readCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
@@ -763,6 +810,8 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('occasion', request, true);
+  if (retired) return retired;
   const share = readOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
@@ -839,6 +888,8 @@ export async function handleFamousChartImageRequest(request: Request): Promise<R
 
 export async function handleMilestoneImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('milestone', request, true);
+  if (retired) return retired;
   const share = parseMilestoneShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = milestoneCardModel(share);
@@ -859,6 +910,8 @@ export async function handleBigThreeImageRequest(request: Request): Promise<Resp
 
 export async function handleChineseZodiacImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('chinese-zodiac', request, true);
+  if (retired) return retired;
   const share = parseChineseZodiacShare(new URL(request.url).searchParams);
   const model = share ? chineseZodiacCardModel(share) : null;
   if (!model) return errorResponse(400);
@@ -1178,6 +1231,8 @@ const renderStory = (element: VNode<any>) => renderImage(element, STORY_SIZE);
 
 export async function handleCompatibilityStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('compatibility', request, true);
+  if (retired) return retired;
   const share = readCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
@@ -1188,6 +1243,8 @@ export async function handleCompatibilityStoryRequest(request: Request): Promise
 
 export async function handleOccasionStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('occasion', request, true);
+  if (retired) return retired;
   const share = readOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
@@ -1258,6 +1315,8 @@ export async function handleFamousChartStoryRequest(request: Request): Promise<R
 
 export async function handleMilestoneStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('milestone', request, true);
+  if (retired) return retired;
   const share = parseMilestoneShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = milestoneCardModel(share);
@@ -1274,6 +1333,8 @@ export async function handleBigThreeStoryRequest(request: Request): Promise<Resp
 
 export async function handleChineseZodiacStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('chinese-zodiac', request, true);
+  if (retired) return retired;
   const share = parseChineseZodiacShare(new URL(request.url).searchParams);
   const model = share ? chineseZodiacCardModel(share) : null;
   if (!model) return errorResponse(400);
@@ -1511,6 +1572,8 @@ export async function handleHoroscopeLinkRequest(request: Request): Promise<Resp
 
 export async function handleCompatibilityLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('compatibility', request, false);
+  if (retired) return retired;
   const url = new URL(request.url);
   const share = readCompatibilityShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultCompatibilityPage(url.origin)));
@@ -1531,6 +1594,8 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
 
 export async function handleOccasionLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('occasion', request, false);
+  if (retired) return retired;
   const url = new URL(request.url);
   const share = readOccasionShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultOccasionPage(url.origin)));
@@ -1647,6 +1712,8 @@ export async function handleFamousChartLinkRequest(request: Request): Promise<Re
 
 export async function handleMilestoneLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('milestone', request, false);
+  if (retired) return retired;
   const url = new URL(request.url);
   const share = parseMilestoneShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultMilestonePage(url.origin)));
@@ -1738,6 +1805,8 @@ export async function handleBigThreeLinkRequest(request: Request): Promise<Respo
 
 export async function handleChineseZodiacLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('chinese-zodiac', request, false);
+  if (retired) return retired;
   const url = new URL(request.url);
   const share = parseChineseZodiacShare(url.searchParams);
   const model = share ? chineseZodiacCardModel(share) : null;

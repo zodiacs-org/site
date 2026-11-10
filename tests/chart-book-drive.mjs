@@ -374,7 +374,7 @@ await withPreview({ port: 4410 }, async (baseURL) => {
     check('EN count line is byte-identical', await page.locator('.pf-count').textContent()
       === '1 chart saved.');
     check('EN profile privacy is byte-identical', await page.locator('.pf-privacy').textContent()
-      === 'Saved on this device. Nothing is uploaded unless you turn sync on.');
+      === 'Saved on this device. Chart sync is paused for now.');
     check('privacy renders under the chart list', await page.evaluate(() => {
       const list = document.querySelector('.pf-list');
       const privacy = document.querySelector('.pf-privacy');

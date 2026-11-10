@@ -29,10 +29,10 @@ const COPY = {
   invThrottled: 'Too many new links just now. Give it a minute.',
   invCapNote: 'Twelve invitations are open on your account. End one in your profile before making another.',
   siTitle: 'Invitations need an account.',
-  siBody: "An invitation keeps your side ready for up to 14 days, so it needs a place that belongs to you. Sign in, sync the chart you'd share, and the invitation button appears right here.",
+  siBody: 'An invitation keeps your side ready for up to 14 days, so it needs a chart you synced earlier. Sign in, and the invitation button appears here for those charts. Chart sync is paused for now.',
   siCta: 'Sign in from your profile',
-  siNoSyncedTitle: 'Sync a chart to invite with it.',
-  siNoSyncedBody: 'Invitations read a saved, synced chart. Charts kept only on this device stay here. Sync one from your profile if you want it to carry an invitation.',
+  siNoSyncedTitle: 'Chart sync is paused',
+  siNoSyncedBody: 'This needs a chart you synced earlier. Chart sync is paused for now.',
   siNoSyncedCta: 'Open your profile',
 } as const;
 

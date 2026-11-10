@@ -57,6 +57,18 @@ export function htmlEscape(value: string): string {
   })[char]!);
 }
 
+/** The site's default share picture, which a retired link's image request is sent to. */
+export const DEFAULT_SHARE_IMAGE_PATH = '/assets/og/v2/share.png';
+
+/**
+ * A 303 to a fixed address, for a retired link: the details it carried are
+ * read only as far as choosing the answer, and leave the address, the
+ * history, the share page's picture links and the device cache.
+ */
+export function seeOther(location: string): Response {
+  return new Response(null, { status: 303, headers: { ...PRIVACY_HEADERS, Location: location } });
+}
+
 function errorResponse(status: number): Response {
   return new Response('Chart preview unavailable.', {
     status,
@@ -149,6 +161,10 @@ export async function handleChartLinkRequest(request: Request): Promise<Response
 
 export async function handleChartImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  // An image asked for by an older link's full positions code is not drawn: the code leads back to the birth date
+  // and time. The request is sent to the site's default share picture instead.
+  const url = new URL(request.url);
+  if (url.searchParams.has('p')) return seeOther(`${url.origin}${DEFAULT_SHARE_IMAGE_PATH}`);
   const parsed = previewRequest(request);
   if (!parsed) return errorResponse(400);
   const model = previewModel(parsed.placements);
