@@ -144,3 +144,19 @@ describe('getYearScore', () => {
     await expect(getYearScore({ birthDate: '2005-05-03', from: '2004-01-01' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
   });
 });
+
+describe('get_year_score share links', () => {
+  const clock = createLocalTimeModule();
+  afterAll(() => clock.dispose());
+  it('gives a person’s own score a link with the Sun sign and score only', async () => {
+    const { data } = await getYearScore({ birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.shareUrl).toBe(`https://zodiacs.org/share/year-score/?s=taurus&v=${data.score!.toFixed(1)}`);
+  });
+  it('gives a figure the slug alone, scored from the first of the month like its page and card', async () => {
+    const { data } = await getYearScore({ person: 'Jensen Huang' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.from).toBe('2026-11-01');
+    expect(data.shareUrl).toBe('https://zodiacs.org/share/year-score/?p=jensen-huang');
+    const backtest = await getYearScore({ person: 'Jensen Huang', from: '2026-07-17' }, NOW, clock, 'https://zodiacs.org');
+    expect(backtest.data.shareUrl).toBeNull();
+  });
+});

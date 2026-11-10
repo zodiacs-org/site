@@ -330,6 +330,14 @@
       "destination": "/api/compatibility?__zodiacs_share=famous-chart-story"
     },
     {
+      "source": "/share/year-score/",
+      "destination": "/api/compatibility?__zodiacs_share=year-score-link"
+    },
+    {
+      "source": "/api/og/year-score-image",
+      "destination": "/api/compatibility?__zodiacs_share=year-score-image"
+    },
+    {
       "source": "/share/milestone/",
       "destination": "/api/compatibility?__zodiacs_share=milestone-link"
     },
