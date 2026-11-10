@@ -1,5 +1,6 @@
 import type { PageLocale as Locale, UiKey } from './i18n';
 import { TOOL_ICON_FOR_PATH, type ToolIconName } from './tool-icons';
+import { launchFlagOn, type LaunchFlag } from './launch-flags';
 
 /**
  * The English /tools/ hub's sections: the birth chart leads on its own, then
@@ -43,6 +44,8 @@ interface ToolCatalogEntry {
   footerLabel?: Record<Locale, string>;
   footerUsesLocalizedPath?: boolean;
   hub?: ToolHubCard;
+  /** A tool behind a launch switch (src/lib/launch-flags.ts): left out of every list while it is off. */
+  flag?: LaunchFlag;
 }
 
 export interface NavTool {
@@ -167,7 +170,7 @@ const NAV_SUBLABELS = {
  * footer, and English /tools/ hub. Surface-specific fields keep each list
  * deliberately short without copying hrefs or descriptions into templates.
  */
-export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
+export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   {
     href: '/birth-chart/', label: 'birthChart', sublabel: NAV_SUBLABELS.birth,
     navOrder: 1, footerOrder: 1, footerUsesLocalizedPath: true,
@@ -285,7 +288,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 25, title: 'Retrogrades', promise: 'Each planet’s retrograde dates at a glance.', group: 'year' },
   },
   {
-    href: '/retrogrades/for-you/',
+    href: '/retrogrades/for-you/', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED',
     hub: { order: 25.5, title: 'Retrogrades for you', promise: 'Mercury, Venus and Mars retrogrades in your own houses.', group: 'year' },
   },
   {
@@ -301,6 +304,10 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
   },
 ];
+
+/** The catalog a build shows: an entry behind a switch that is off is left out everywhere. */
+export const visibleTools = (isOn: (flag: LaunchFlag) => boolean = launchFlagOn) => ALL_TOOL_CATALOG.filter((tool) => !tool.flag || isOn(tool.flag));
+export const TOOL_CATALOG: readonly ToolCatalogEntry[] = visibleTools();
 
 export const NAV_TOOLS: readonly NavTool[] = TOOL_CATALOG
   .filter((tool): tool is typeof tool & Required<Pick<ToolCatalogEntry, 'label' | 'sublabel' | 'navOrder'>> => (
@@ -341,12 +348,14 @@ export const ALL_TOOLS_LABEL = {
   'zh-hant': '全部工具',
 } as const satisfies Record<Locale, string>;
 
+interface NavMoreEntry { href: string; label: Record<Locale, string>; flag?: LaunchFlag }
+
 /**
  * Newer sharing and return-visit tools, listed under the main eight in the
  * Tools menu with short labels. Every one has a route in all six catalog
  * locales; the Chinese zodiac section links their English pages.
  */
-export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[] = [
+export const ALL_NAV_MORE: readonly NavMoreEntry[] = [
   { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы', 'zh-hans': '群组星盘', 'zh-hant': '群組星盤' } },
   { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы', 'zh-hans': '星盘双胞胎', 'zh-hant': '星盤雙胞胎' } },
   { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка', 'zh-hans': '日月升卡片', 'zh-hant': '日月升卡片' } },
@@ -354,9 +363,12 @@ export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[
   { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба', 'zh-hans': '天象日历', 'zh-hant': '天象日曆' } },
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня', 'zh-hans': '每日星盘', 'zh-hant': '每日星盤' } },
   { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года', 'zh-hans': '你的年度星空', 'zh-hant': '你的年度星空' } },
-  { href: '/retrogrades/for-you/', label: { en: 'Retrogrades for you', es: 'Tus retrógrados', pt: 'Seus retrógrados', fr: 'Tes rétrogrades', it: 'I tuoi retrogradi', ru: 'Ваши ретрограды', 'zh-hans': '你的逆行', 'zh-hant': '你的逆行' } },
+  { href: '/retrogrades/for-you/', flag: 'PUBLIC_RETROGRADES_FOR_YOU_ENABLED', label: { en: 'Retrogrades for you', es: 'Tus retrógrados', pt: 'Seus retrógrados', fr: 'Tes rétrogrades', it: 'I tuoi retrogradi', ru: 'Ваши ретрограды', 'zh-hans': '你的逆行', 'zh-hant': '你的逆行' } },
   { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты', 'zh-hans': '星盘 PDF', 'zh-hant': '星盤 PDF' } },
 ];
+/** The menu a build shows: an entry behind a switch that is off is left out. */
+export const visibleNavMore = (isOn: (flag: LaunchFlag) => boolean = launchFlagOn) => ALL_NAV_MORE.filter((entry) => !entry.flag || isOn(entry.flag));
+export const NAV_MORE: readonly NavMoreEntry[] = visibleNavMore();
 
 export const NAV_MORE_LABEL = {
   en: 'More to explore', es: 'Más para explorar', pt: 'Mais para explorar', fr: 'À explorer aussi', it: 'Altro da esplorare', ru: 'Ещё стоит посмотреть',

@@ -36,6 +36,7 @@ import registryResearchPublicationData from '../data/registry-research/publicati
 import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
 type RegistryResearchPublication = {
@@ -646,11 +647,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
   // Retrogrades in your chart, first published, with the retrograde pages' lines and the tools hub's card
-  // linking to it. Last, so this date wins.
-  ['/retrogrades/for-you/', '2026-11-09'] as const,
-  ['/retrogrades/', '2026-11-09'] as const,
-  ['/mercury-retrograde/', '2026-11-09'] as const,
-  ['/tools/', '2026-11-09'] as const,
+  // linking to it. Last, so this date wins. Only while PUBLIC_RETROGRADES_FOR_YOU_ENABLED is on: off, those
+  // pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED')
+    ? ['/retrogrades/for-you/', '/retrogrades/', '/mercury-retrograde/', '/tools/'].map((loc) => [loc, '2026-11-09'] as const)
+    : []),
 ]);
 
 function getLastmod(loc: string): string {
@@ -724,7 +725,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/eclipses/2027/', priority: 0.7 },
     { loc: '/mercury-retrograde/2027/', priority: 0.7 },
     { loc: '/retrogrades/', priority: 0.8 },
-    { loc: '/retrogrades/for-you/', priority: 0.75 },
+    ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED') ? [{ loc: '/retrogrades/for-you/', priority: 0.75 }] : []),
     { loc: '/today/', priority: 0.8 },
     ...(eventsPublication.hub.indexEligible
       ? [{ loc: eventsPublication.hub.path, priority: 0.82 }]

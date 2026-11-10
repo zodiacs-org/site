@@ -1,7 +1,10 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import RetrogradeForYou from '../../../islands/RetrogradeForYou';
+import { launchFlagOn } from '../../../lib/launch-flags';
 import '../../../styles/calculator.css';
+
+if (!launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED')) return Astro.redirect('/404.html');
 
 const faq = [
   { q: 'What does a retrograde mean for me personally?', a: 'Astrologers read a retrograde through the part of your chart it passes through. The sign the planet loops back over falls in one of your twelve houses, and that house names the area of life where the review, the delays or the second look are expected to show up. A natal planet inside the loop’s degrees is crossed three times, which is traditionally when a retrograde is felt most.' },
