@@ -122,7 +122,9 @@
           "latestSwapOnChain": "2026-11-09T17:22:33.000Z",
           "latestSwapSignature": "SZvSvsdJryAEPmiSny9KbdHsxpvtMsRkwtx3mWKjG6cA6E1MTTVtbW5LH4ViSXYzcDKzUkvF8PpgxEHkuRrG8cr",
           "dexscreener": "pool not returned by Dexscreener's pair or token endpoint at capture",
-          "verificationUrl": "https://solscan.io/account/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ"
+          "verificationUrl": "https://solscan.io/account/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "Dexscreener, 2026-07-23 capture (the pool was not returned at the 2026-11-10 capture)"
         },
         {
           "sign": "virgo",
@@ -152,7 +154,9 @@
           "latestSwapOnChain": "2026-11-09T07:06:39.000Z",
           "latestSwapSignature": "5G3Der8PfV3ATFsrcjCN1h2WZFzLo7Xk8VZSeNGeenjqy3ZewEpLTzcoWXrseQuakuBZr8TtB7eTLqjUkLWgoczv",
           "dexscreener": "pool not returned by Dexscreener's pair or token endpoint at capture",
-          "verificationUrl": "https://solscan.io/account/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta"
+          "verificationUrl": "https://solscan.io/account/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "Dexscreener, 2026-07-23 capture (the pool was not returned at the 2026-11-10 capture)"
         },
         {
           "sign": "sagittarius",
@@ -182,7 +186,9 @@
           "latestSwapOnChain": "2026-11-09T19:03:30.000Z",
           "latestSwapSignature": "49fzjycg9JLCuKEYJ43dLpax7su5UnKuJKTybnfpThheT2bvvnf4KrsGtrhLU6AEMChKiWVZ8Kh1AvACEWFDVZJ8",
           "dexscreener": "pool not returned by Dexscreener's pair or token endpoint at capture",
-          "verificationUrl": "https://solscan.io/account/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv"
+          "verificationUrl": "https://solscan.io/account/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "Dexscreener, 2026-07-23 capture (the pool was not returned at the 2026-11-10 capture)"
         },
         {
           "sign": "pisces",
