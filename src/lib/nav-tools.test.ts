@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { RELEASED_LOCALES, localizePath, t } from './i18n';
 import { TOOL_ICON_FOR_PATH } from './tool-icons';
-import { launchFlagOn } from './launch-flags';
+import { LAUNCH_FLAGS, launchFlagOn, type LaunchFlag } from './launch-flags';
 import {
   ALL_NAV_MORE,
   ALL_TOOL_CATALOG,
@@ -15,9 +15,20 @@ import {
   visibleTools,
 } from './nav-tools';
 
-// The /astrocartography/ hub card ('you' group) and menu entry appear only while
-// PUBLIC_ASTROCARTOGRAPHY_ENABLED is '1'; with it unset these are main's numbers.
-const astrocartographyCards = Number(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED'));
+// A page behind a launch switch (src/lib/launch-flags.ts) adds its hub card
+// and menu entry only while its switch is '1'. With every switch unset the
+// counts are main's; each switched entry that is on adds one, so the numbers
+// hold for any branch, any merge of them and any mix of switches.
+type IsOn = (flag: LaunchFlag) => boolean;
+const HUB_GROUPS = ['you', 'together', 'sky', 'year'] as const;
+const MAIN_HUB = { you: 6, together: 6, sky: 6, year: 10 } as const;
+const MAIN_HUB_LENGTH = 29;
+const MAIN_NAV_MORE_LENGTH = 8;
+const switchedOn = (entries: readonly { flag?: LaunchFlag }[], isOn: IsOn) => entries.filter((entry) => entry.flag !== undefined && isOn(entry.flag)).length;
+const switchedHubCards = (isOn: IsOn, group?: string) => switchedOn(ALL_TOOL_CATALOG.filter((tool) => tool.hub && (group === undefined || tool.hub.group === group)), isOn);
+const expectedGroups = (isOn: IsOn) => Object.fromEntries(HUB_GROUPS.map((group) => [group, MAIN_HUB[group] + switchedHubCards(isOn, group)]));
+const groupCounts = (hub: readonly { group: string }[]) => Object.fromEntries(HUB_GROUPS.map((group) => [group, hub.filter((tool) => tool.group === group).length]));
+const buildIsOn: IsOn = (flag) => launchFlagOn(flag);
 
 describe('NAV_TOOLS', () => {
   it.each(['es', 'pt', 'fr', 'it'] as const)('recognizes the existing %s Birthday language cue once', (locale) => {
@@ -78,7 +89,7 @@ describe('NAV_TOOLS', () => {
       '/transits/',
       '/retrogrades/',
     ]);
-    expect(TOOLS_HUB).toHaveLength(29 + astrocartographyCards);
+    expect(TOOLS_HUB).toHaveLength(MAIN_HUB_LENGTH + switchedHubCards(buildIsOn));
     for (const tool of [...NAV_TOOLS, ...FOOTER_TOOLS, ...TOOLS_HUB]) {
       expect(catalogueHrefs.has(tool.href)).toBe(true);
     }
@@ -87,8 +98,7 @@ describe('NAV_TOOLS', () => {
   it('leads the tools hub with the birth chart and sorts the rest into four groups, one icon each', () => {
     expect(TOOLS_HUB.filter((tool) => tool.group === 'lead').map((tool) => tool.href)).toEqual(['/birth-chart/']);
     expect(TOOLS_HUB[0].href).toBe('/birth-chart/');
-    const counts = Object.fromEntries(['you', 'together', 'sky', 'year'].map((group) => [group, TOOLS_HUB.filter((tool) => tool.group === group).length]));
-    expect(counts).toEqual({ you: 6 + astrocartographyCards, together: 6, sky: 6, year: 10 });
+    expect(groupCounts(TOOLS_HUB)).toEqual(expectedGroups(buildIsOn));
     expect(new Set(TOOLS_HUB.map((tool) => tool.icon)).size).toBe(TOOLS_HUB.length);
     for (const tool of TOOLS_HUB) {
       expect(tool.promise).not.toMatch(/[\r\n\u2013\u2014]/u);
@@ -124,16 +134,46 @@ describe('NAV_TOOLS', () => {
 });
 
 describe('tools behind a launch switch', () => {
-  it('shows /astrocartography/ on the hub and in the menu only while its switch is on, and every hub card has an icon either way', () => {
+  const flagged = [...ALL_TOOL_CATALOG, ...ALL_NAV_MORE].filter((entry) => entry.flag !== undefined);
+  const hubOf = (isOn: IsOn) => visibleTools(isOn).filter((tool): tool is typeof tool & { hub: NonNullable<typeof tool.hub> } => tool.hub !== undefined).map((tool) => tool.hub);
+  // Every switch alone, every switch but one, all and none: the states a
+  // merge of these branches can be built in.
+  const states: [string, IsOn][] = [
+    ['every switch off', () => false],
+    ['every switch on', () => true],
+    ...LAUNCH_FLAGS.map((only): [string, IsOn] => [`only ${only} on`, (flag) => flag === only]),
+    ...LAUNCH_FLAGS.map((except): [string, IsOn] => [`every switch on but ${except}`, (flag) => flag !== except]),
+  ];
+
+  it('has switched entries, each with a known switch', () => {
+    expect(flagged.length).toBeGreaterThan(0);
+    for (const entry of flagged) expect(LAUNCH_FLAGS).toContain(entry.flag);
+  });
+
+  it.each(states)('with %s, lists exactly the unswitched entries and the switched ones that are on', (_state, isOn) => {
+    expect(hubOf(isOn)).toHaveLength(MAIN_HUB_LENGTH + switchedHubCards(isOn));
+    expect(groupCounts(hubOf(isOn))).toEqual(expectedGroups(isOn));
+    expect(visibleNavMore(isOn)).toHaveLength(MAIN_NAV_MORE_LENGTH + switchedOn(ALL_NAV_MORE, isOn));
+    for (const entry of ALL_TOOL_CATALOG) {
+      expect(visibleTools(isOn).includes(entry)).toBe(entry.flag === undefined || isOn(entry.flag));
+    }
+    for (const entry of ALL_NAV_MORE) {
+      expect(visibleNavMore(isOn).includes(entry)).toBe(entry.flag === undefined || isOn(entry.flag));
+    }
+  });
+
+  it('builds the hub and the menu from the switches the build has on, and every hub card has an icon either way', () => {
     expect(visibleTools(() => true)).toEqual(ALL_TOOL_CATALOG);
-    expect(visibleTools(() => false).every((tool) => !tool.flag)).toBe(true);
-    expect(visibleTools(() => true).some((tool) => tool.href === '/astrocartography/')).toBe(true);
-    expect(visibleTools(() => false).some((tool) => tool.href === '/astrocartography/')).toBe(false);
     expect(visibleNavMore(() => true)).toEqual(ALL_NAV_MORE);
-    expect(visibleNavMore(() => true).some((entry) => entry.href === '/astrocartography/')).toBe(true);
-    expect(visibleNavMore(() => false).some((entry) => entry.href === '/astrocartography/')).toBe(false);
-    expect(TOOLS_HUB.some((tool) => tool.href === '/astrocartography/')).toBe(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED'));
-    expect(NAV_MORE.some((entry) => entry.href === '/astrocartography/')).toBe(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED'));
+    expect(TOOL_CATALOG).toEqual(visibleTools(buildIsOn));
+    expect(NAV_MORE).toEqual(visibleNavMore(buildIsOn));
+    expect(NAV_MORE).toHaveLength(MAIN_NAV_MORE_LENGTH + switchedOn(ALL_NAV_MORE, buildIsOn));
+    for (const tool of ALL_TOOL_CATALOG) {
+      if (tool.flag && tool.hub) expect(TOOLS_HUB.some((card) => card.href === tool.href)).toBe(launchFlagOn(tool.flag));
+    }
+    for (const entry of ALL_NAV_MORE) {
+      if (entry.flag) expect(NAV_MORE.some((item) => item.href === entry.href)).toBe(launchFlagOn(entry.flag));
+    }
     for (const tool of ALL_TOOL_CATALOG) {
       if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
     }
