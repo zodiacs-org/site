@@ -41651,17 +41651,34 @@ function vedicReading(input) {
   };
 }
 
-// src/lib/vedic-signs/compute.ts
-function momentAt(utc, place2, timeKnown, ayanamsa2) {
+// src/lib/vedic-signs/sidereal.ts
+var sidereal = (moment2, ayanamsa2) => siderealMoment(moment2.utc, { sun: moment2.sun, moon: moment2.moon, asc: moment2.asc }, ayanamsa2);
+function vedicFromTropical(moments, ayanamsa2) {
+  return vedicReading({
+    timeKnown: moments.timeKnown,
+    placed: moments.placed,
+    ayanamsa: ayanamsa2,
+    at: sidereal(moments.at, ayanamsa2),
+    ends: moments.ends ? moments.ends.map((end) => sidereal(end, ayanamsa2)) : null
+  });
+}
+
+// src/lib/vedic-signs/tropical.ts
+function tropicalAt(utc, place2, timeKnown) {
   const chart = computeChart2({ utc, ...place2 ?? {}, houseSystem: "whole", timeKnown });
   const lon = (name) => chart.bodies.find((row) => row.body === name).lon;
-  return siderealMoment(utc, { sun: lon("Sun"), moon: lon("Moon"), asc: timeKnown && place2 && chart.angles ? chart.angles.asc : null }, ayanamsa2);
+  return { utc, sun: lon("Sun"), moon: lon("Moon"), asc: timeKnown && place2 && chart.angles ? chart.angles.asc : null };
 }
-function computeVedicSigns(input) {
+function tropicalMoments(input) {
   const place2 = input.latitude !== void 0 && input.longitude !== void 0 ? { latitude: input.latitude, longitude: input.longitude } : null;
-  const at = momentAt(input.birthUtc, place2, input.timeKnown, input.ayanamsa);
-  const ends = input.timeKnown ? null : (input.dayEnds ?? []).map((end) => momentAt(end, null, false, input.ayanamsa));
-  return vedicReading({ timeKnown: input.timeKnown, placed: place2 !== null, ayanamsa: input.ayanamsa, at, ends: ends && ends.length ? ends : null });
+  const at = tropicalAt(input.birthUtc, place2, input.timeKnown);
+  const ends = input.timeKnown ? null : (input.dayEnds ?? []).map((end) => tropicalAt(end, null, false));
+  return { timeKnown: input.timeKnown, placed: place2 !== null, at, ends: ends && ends.length ? ends : null };
+}
+
+// src/lib/vedic-signs/compute.ts
+function computeVedicSigns(input) {
+  return vedicFromTropical(tropicalMoments(input), input.ayanamsa);
 }
 
 // src/lib/vedic-signs/share.ts

@@ -1,15 +1,15 @@
 /**
  * The Vedic signs, from birth instants: the chart engine's tropical positions
  * (../engine/full), made sidereal at the boundary in ../engine/vedic, then the
- * reading (./reading). The /vedic-signs/ page runs this in the browser and the
- * get_vedic_signs tool on the server, with the same instants, so their answers
- * are the same. Carries the ephemeris: in the browser only the page's worker
- * (src/islands/vedic-signs/vedic.worker.ts) loads it. Pure: no network,
- * storage or logging.
+ * reading (./reading). The get_vedic_signs tool runs this on the server; the
+ * /vedic-signs/ page runs the same two halves in the browser, the tropical one
+ * (./tropical) on the main thread and the sidereal one (./sidereal) in its
+ * worker, with the same instants, so their answers are the same. Pure: no
+ * network, storage or logging.
  */
-import { computeChart } from '../engine/full';
-import { siderealMoment, type SiderealMoment } from '../engine/vedic';
-import { vedicReading, type VedicReading } from './reading';
+import type { VedicReading } from './reading';
+import { vedicFromTropical } from './sidereal';
+import { tropicalMoments } from './tropical';
 import type { VedicAyanamsa } from './wording';
 
 export interface VedicSignsInstants {
@@ -24,15 +24,7 @@ export interface VedicSignsInstants {
   ayanamsa: VedicAyanamsa;
 }
 
-function momentAt(utc: Date, place: { latitude: number; longitude: number } | null, timeKnown: boolean, ayanamsa: VedicAyanamsa): SiderealMoment {
-  const chart = computeChart({ utc, ...(place ?? {}), houseSystem: 'whole', timeKnown });
-  const lon = (name: string) => chart.bodies.find((row) => row.body === name)!.lon;
-  return siderealMoment(utc, { sun: lon('Sun'), moon: lon('Moon'), asc: timeKnown && place && chart.angles ? chart.angles.asc : null }, ayanamsa);
-}
-
+/** Both halves at once, as the get_vedic_signs tool runs them; the page runs the same two halves split across its worker. */
 export function computeVedicSigns(input: VedicSignsInstants): VedicReading {
-  const place = input.latitude !== undefined && input.longitude !== undefined ? { latitude: input.latitude, longitude: input.longitude } : null;
-  const at = momentAt(input.birthUtc, place, input.timeKnown, input.ayanamsa);
-  const ends = input.timeKnown ? null : (input.dayEnds ?? []).map((end) => momentAt(end, null, false, input.ayanamsa));
-  return vedicReading({ timeKnown: input.timeKnown, placed: place !== null, ayanamsa: input.ayanamsa, at, ends: ends && ends.length ? ends : null });
+  return vedicFromTropical(tropicalMoments(input), input.ayanamsa);
 }

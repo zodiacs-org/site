@@ -963,9 +963,9 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
-  // The tools hub's card for Vedic signs, the birth chart page's question on the Vedic zodiac, and the big three and Moon sign pages' lines linking to it (2026-11-09).
+  // The tools hub's card for Vedic signs, the birth chart page's question on the Vedic zodiac, and the big three and Moon sign pages' lines linking to it, and the engine page's line on the sidereal entry the page uses (2026-11-09).
   for (const url of urls) {
-    if (url.loc === '/tools/' || url.loc === '/big-three/' || url.loc === '/birth-chart/' || url.loc === '/moon-sign/') {
+    if (url.loc === '/tools/' || url.loc === '/big-three/' || url.loc === '/birth-chart/' || url.loc === '/moon-sign/' || url.loc === '/developers/engine/') {
       url.lastmod = laterDate(url.lastmod, '2026-11-09');
     }
   }

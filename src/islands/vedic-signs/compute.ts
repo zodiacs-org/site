@@ -1,11 +1,14 @@
 /**
  * The /vedic-signs/ page's calculation, on this device. The birth instant and
  * the ends of an untimed birth day come from the site's local-time resolver,
- * as the get_vedic_signs tool resolves them; the signs from
- * src/lib/vedic-signs/compute.ts, the same function the tool runs, in the
- * page's worker (./vedic.worker.ts). Nothing here leaves the browser.
+ * as the get_vedic_signs tool resolves them; the tropical Sun, Moon and
+ * rising degree from the site's chart engine here on the main thread
+ * (src/lib/vedic-signs/tropical.ts, loaded as every chart page loads the
+ * engine), then the sidereal reading in the page's worker (./vedic.worker.ts),
+ * the same two halves the tool runs. Nothing here leaves the browser.
  */
 import type { VedicReading } from '../../lib/vedic-signs/reading';
+import type { TropicalMoment } from '../../lib/vedic-signs/tropical';
 import type { VedicAyanamsa } from '../../lib/vedic-signs/wording';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 
@@ -31,7 +34,11 @@ export function computeVedicFromForm(input: VedicFormInput): Promise<VedicReadin
   ];
   // The birthplace rounded to two decimals, as every tool rounds a place it is given.
   const round2 = (value: number) => Math.round(value * 100) / 100;
-  return inWorker({ birthUtc: birthUtc.toISOString(), timeKnown, latitude: round2(input.place.lat), longitude: round2(input.place.lon), ayanamsa: input.ayanamsa, dayEnds: dayEnds?.map((end) => end.toISOString()) });
+  return import('../../lib/vedic-signs/tropical').then(({ tropicalMoments }) => {
+    const moments = tropicalMoments({ birthUtc, timeKnown, latitude: round2(input.place.lat), longitude: round2(input.place.lon), dayEnds });
+    const wire = (moment: TropicalMoment) => ({ ...moment, utc: moment.utc.toISOString() });
+    return inWorker({ ...moments, at: wire(moments.at), ends: moments.ends ? moments.ends.map(wire) : null, ayanamsa: input.ayanamsa });
+  });
 }
 
 function inWorker(message: object): Promise<VedicReading> {
