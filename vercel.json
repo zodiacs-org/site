@@ -338,6 +338,14 @@
       "destination": "/api/compatibility?__zodiacs_share=year-score-image"
     },
     {
+      "source": "/share/birthday-report/",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-report-link"
+    },
+    {
+      "source": "/api/og/birthday-report-image",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-report-image"
+    },
+    {
       "source": "/share/milestone/",
       "destination": "/api/compatibility?__zodiacs_share=milestone-link"
     },
