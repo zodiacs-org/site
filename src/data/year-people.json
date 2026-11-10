@@ -6,6 +6,9 @@
     {
       "slug": "michael-saylor",
       "name": "Michael Saylor",
+      "aliases": [
+        "saylor"
+      ],
       "description": "Business executive, co-founder and executive chairman of Strategy",
       "category": "founder",
       "birthDate": "1965-02-04",
@@ -24,6 +27,7 @@
     {
       "slug": "jensen-huang",
       "name": "Jensen Huang",
+      "aliases": [],
       "description": "Engineer, co-founder and chief executive of NVIDIA",
       "category": "ceo",
       "birthDate": "1963-02-17",
@@ -46,6 +50,9 @@
     {
       "slug": "elon-musk",
       "name": "Elon Musk",
+      "aliases": [
+        "elonmusk"
+      ],
       "description": "Entrepreneur, chief executive of Tesla and SpaceX",
       "category": "founder",
       "birthDate": "1971-06-28",
@@ -64,6 +71,531 @@
       ],
       "alternateBirthDates": [],
       "note": "Birth times published for him disagree and none comes from a birth record, so this uses a noon chart."
+    },
+    {
+      "slug": "jeff-bezos",
+      "name": "Jeff Bezos",
+      "aliases": [],
+      "description": "Entrepreneur, founder and executive chairman of Amazon",
+      "category": "founder",
+      "birthDate": "1964-01-12",
+      "birthTime": null,
+      "zone": "America/Denver",
+      "birthplace": "Albuquerque, New Mexico, United States",
+      "sources": [
+        {
+          "title": "Wikipedia: Jeff Bezos",
+          "url": "https://en.wikipedia.org/wiki/Jeff_Bezos"
+        },
+        {
+          "title": "Britannica: Jeff Bezos",
+          "url": "https://www.britannica.com/money/Jeff-Bezos"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "bill-gates",
+      "name": "Bill Gates",
+      "aliases": [
+        "BillGates"
+      ],
+      "description": "Co-founder of Microsoft and chair of the Gates Foundation",
+      "category": "founder",
+      "birthDate": "1955-10-28",
+      "birthTime": null,
+      "zone": "America/Los_Angeles",
+      "birthplace": "Seattle, Washington, United States",
+      "sources": [
+        {
+          "title": "Britannica: Bill Gates",
+          "url": "https://www.britannica.com/money/Bill-Gates"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "mark-zuckerberg",
+      "name": "Mark Zuckerberg",
+      "aliases": [],
+      "description": "Co-founder and chief executive of Meta",
+      "category": "founder",
+      "birthDate": "1984-05-14",
+      "birthTime": null,
+      "zone": "America/New_York",
+      "birthplace": "White Plains, New York, United States",
+      "sources": [
+        {
+          "title": "Britannica: Mark Zuckerberg",
+          "url": "https://www.britannica.com/facts/Mark-Zuckerberg"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "tim-cook",
+      "name": "Tim Cook",
+      "aliases": [],
+      "description": "Chief executive of Apple",
+      "category": "ceo",
+      "birthDate": "1960-11-01",
+      "birthTime": null,
+      "zone": "America/Chicago",
+      "birthplace": "Mobile, Alabama, United States",
+      "sources": [
+        {
+          "title": "Encyclopedia of Alabama: Tim Cook",
+          "url": "https://encyclopediaofalabama.org/article/tim-cook/"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "satya-nadella",
+      "name": "Satya Nadella",
+      "aliases": [],
+      "description": "Chairman and chief executive of Microsoft",
+      "category": "ceo",
+      "birthDate": "1967-08-19",
+      "birthTime": null,
+      "zone": "Asia/Kolkata",
+      "birthplace": "Hyderabad, India",
+      "sources": [
+        {
+          "title": "Wikipedia: Satya Nadella",
+          "url": "https://en.wikipedia.org/wiki/Satya_Nadella"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "sundar-pichai",
+      "name": "Sundar Pichai",
+      "aliases": [],
+      "description": "Chief executive of Alphabet and Google",
+      "category": "ceo",
+      "birthDate": "1972-06-10",
+      "birthTime": null,
+      "zone": "Asia/Kolkata",
+      "birthplace": "Tamil Nadu, India",
+      "sources": [
+        {
+          "title": "Wikipedia: Sundar Pichai",
+          "url": "https://en.wikipedia.org/wiki/Sundar_Pichai"
+        },
+        {
+          "title": "Britannica: Sundar Pichai",
+          "url": "https://www.britannica.com/money/Sundar-Pichai"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": "Sources disagree on the birthplace (Madurai or Chennai); both are on India's clock, so the chart is the same."
+    },
+    {
+      "slug": "sam-altman",
+      "name": "Sam Altman",
+      "aliases": [
+        "sama"
+      ],
+      "description": "Entrepreneur, chief executive of OpenAI",
+      "category": "ceo",
+      "birthDate": "1985-04-22",
+      "birthTime": null,
+      "zone": "America/Chicago",
+      "birthplace": "Chicago, Illinois, United States",
+      "sources": [
+        {
+          "title": "Wikipedia: Sam Altman",
+          "url": "https://en.wikipedia.org/wiki/Sam_Altman"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "warren-buffett",
+      "name": "Warren Buffett",
+      "aliases": [],
+      "description": "Chairman of Berkshire Hathaway",
+      "category": "investor",
+      "birthDate": "1930-08-30",
+      "birthTime": null,
+      "zone": "America/Chicago",
+      "birthplace": "Omaha, Nebraska, United States",
+      "sources": [
+        {
+          "title": "Britannica: Warren Buffett",
+          "url": "https://www.britannica.com/print/article/766234"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "larry-ellison",
+      "name": "Larry Ellison",
+      "aliases": [],
+      "description": "Co-founder and chief technology officer of Oracle",
+      "category": "founder",
+      "birthDate": "1944-08-17",
+      "birthTime": null,
+      "zone": "America/New_York",
+      "birthplace": "New York City, United States",
+      "sources": [
+        {
+          "title": "Wikipedia: Larry Ellison",
+          "url": "https://en.wikipedia.org/wiki/Larry_Ellison"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "jack-dorsey",
+      "name": "Jack Dorsey",
+      "aliases": [],
+      "description": "Co-founder of Twitter and Block",
+      "category": "founder",
+      "birthDate": "1976-11-19",
+      "birthTime": null,
+      "zone": "America/Chicago",
+      "birthplace": "St. Louis, Missouri, United States",
+      "sources": [
+        {
+          "title": "Biography: Jack Dorsey",
+          "url": "https://www.biography.com/business-figure/jack-dorsey"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "lisa-su",
+      "name": "Lisa Su",
+      "aliases": [],
+      "description": "Engineer, chair and chief executive of AMD",
+      "category": "ceo",
+      "birthDate": "1969-11-07",
+      "birthTime": null,
+      "zone": "Asia/Taipei",
+      "birthplace": "Tainan, Taiwan",
+      "sources": [
+        {
+          "title": "Wikipedia: Lisa Su",
+          "url": "https://en.wikipedia.org/wiki/Lisa_Su"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "masayoshi-son",
+      "name": "Masayoshi Son",
+      "aliases": [],
+      "description": "Founder and chief executive of SoftBank Group",
+      "category": "founder",
+      "birthDate": "1957-08-11",
+      "birthTime": null,
+      "zone": "Asia/Tokyo",
+      "birthplace": "Tosu, Saga, Japan",
+      "sources": [
+        {
+          "title": "Wikipedia: Masayoshi Son",
+          "url": "https://en.wikipedia.org/wiki/Masayoshi_Son"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "vitalik-buterin",
+      "name": "Vitalik Buterin",
+      "aliases": [
+        "VitalikButerin"
+      ],
+      "description": "Programmer, co-founder of Ethereum",
+      "category": "founder",
+      "birthDate": "1994-01-31",
+      "birthTime": null,
+      "zone": "Europe/Moscow",
+      "birthplace": "Kolomna, Russia",
+      "sources": [
+        {
+          "title": "Wikipedia: Vitalik Buterin",
+          "url": "https://en.wikipedia.org/wiki/Vitalik_Buterin"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "oprah-winfrey",
+      "name": "Oprah Winfrey",
+      "aliases": [],
+      "description": "Television host, producer and author",
+      "category": "entertainer",
+      "birthDate": "1954-01-29",
+      "birthTime": null,
+      "zone": "America/Chicago",
+      "birthplace": "Kosciusko, Mississippi, United States",
+      "sources": [
+        {
+          "title": "Britannica: Oprah Winfrey",
+          "url": "https://explore.britannica.com/explore/100women/profiles/oprah-winfrey"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "taylor-swift",
+      "name": "Taylor Swift",
+      "aliases": [
+        "taylorswift13"
+      ],
+      "description": "Singer and songwriter",
+      "category": "entertainer",
+      "birthDate": "1989-12-13",
+      "birthTime": null,
+      "zone": "America/New_York",
+      "birthplace": "West Reading, Pennsylvania, United States",
+      "sources": [
+        {
+          "title": "Britannica: Taylor Swift",
+          "url": "https://www.britannica.com/biography/Taylor-Swift"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "beyonce",
+      "name": "Beyoncé",
+      "aliases": [
+        "Beyonce"
+      ],
+      "description": "Singer, songwriter and performer",
+      "category": "entertainer",
+      "birthDate": "1981-09-04",
+      "birthTime": null,
+      "zone": "America/Chicago",
+      "birthplace": "Houston, Texas, United States",
+      "sources": [
+        {
+          "title": "Britannica: Beyoncé",
+          "url": "https://explore.britannica.com/explore/100women/profiles/beyonce"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "rihanna",
+      "name": "Rihanna",
+      "aliases": [],
+      "description": "Singer and entrepreneur",
+      "category": "entertainer",
+      "birthDate": "1988-02-20",
+      "birthTime": null,
+      "zone": "America/Barbados",
+      "birthplace": "Saint Michael, Barbados",
+      "sources": [
+        {
+          "title": "Biography: Rihanna",
+          "url": "https://www.biography.com/musicians/rihanna"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "kim-kardashian",
+      "name": "Kim Kardashian",
+      "aliases": [
+        "KimKardashian"
+      ],
+      "description": "Media personality and entrepreneur",
+      "category": "entertainer",
+      "birthDate": "1980-10-21",
+      "birthTime": null,
+      "zone": "America/Los_Angeles",
+      "birthplace": "Los Angeles, California, United States",
+      "sources": [
+        {
+          "title": "Wikipedia: Kim Kardashian",
+          "url": "https://en.wikipedia.org/wiki/Kim_Kardashian"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "cristiano-ronaldo",
+      "name": "Cristiano Ronaldo",
+      "aliases": [
+        "Cristiano",
+        "CR7"
+      ],
+      "description": "Footballer",
+      "category": "athlete",
+      "birthDate": "1985-02-05",
+      "birthTime": null,
+      "zone": "Atlantic/Madeira",
+      "birthplace": "Funchal, Madeira, Portugal",
+      "sources": [
+        {
+          "title": "Britannica: Cristiano Ronaldo",
+          "url": "https://www.britannica.com/biography/Cristiano-Ronaldo"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "lionel-messi",
+      "name": "Lionel Messi",
+      "aliases": [
+        "Leo Messi"
+      ],
+      "description": "Footballer",
+      "category": "athlete",
+      "birthDate": "1987-06-24",
+      "birthTime": null,
+      "zone": "America/Argentina/Cordoba",
+      "birthplace": "Rosario, Argentina",
+      "sources": [
+        {
+          "title": "Britannica: Lionel Messi",
+          "url": "https://www.britannica.com/biography/Lionel-Messi"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "serena-williams",
+      "name": "Serena Williams",
+      "aliases": [],
+      "description": "Tennis player",
+      "category": "athlete",
+      "birthDate": "1981-09-26",
+      "birthTime": null,
+      "zone": "America/Detroit",
+      "birthplace": "Saginaw, Michigan, United States",
+      "sources": [
+        {
+          "title": "Britannica: Serena Williams",
+          "url": "https://www.britannica.com/summary/Serena-Williams"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "lebron-james",
+      "name": "LeBron James",
+      "aliases": [
+        "KingJames"
+      ],
+      "description": "Basketball player",
+      "category": "athlete",
+      "birthDate": "1984-12-30",
+      "birthTime": null,
+      "zone": "America/New_York",
+      "birthplace": "Akron, Ohio, United States",
+      "sources": [
+        {
+          "title": "Britannica: LeBron James",
+          "url": "https://www.britannica.com/biography/LeBron-James"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "roger-federer",
+      "name": "Roger Federer",
+      "aliases": [],
+      "description": "Tennis player",
+      "category": "athlete",
+      "birthDate": "1981-08-08",
+      "birthTime": null,
+      "zone": "Europe/Zurich",
+      "birthplace": "Basel, Switzerland",
+      "sources": [
+        {
+          "title": "Britannica: Roger Federer",
+          "url": "https://www.britannica.com/biography/Roger-Federer"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "novak-djokovic",
+      "name": "Novak Djokovic",
+      "aliases": [],
+      "description": "Tennis player",
+      "category": "athlete",
+      "birthDate": "1987-05-22",
+      "birthTime": null,
+      "zone": "Europe/Belgrade",
+      "birthplace": "Belgrade, Serbia",
+      "sources": [
+        {
+          "title": "Britannica: Novak Djokovic",
+          "url": "https://www.britannica.com/biography/Novak-Djokovic"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "usain-bolt",
+      "name": "Usain Bolt",
+      "aliases": [],
+      "description": "Sprinter",
+      "category": "athlete",
+      "birthDate": "1986-08-21",
+      "birthTime": null,
+      "zone": "America/Jamaica",
+      "birthplace": "Sherwood Content, Jamaica",
+      "sources": [
+        {
+          "title": "Britannica: Usain Bolt",
+          "url": "https://www.britannica.com/biography/Usain-Bolt"
+        },
+        {
+          "title": "Olympedia: Usain Bolt",
+          "url": "https://www.olympedia.org/place_names/23368"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
+    },
+    {
+      "slug": "shohei-ohtani",
+      "name": "Shohei Ohtani",
+      "aliases": [],
+      "description": "Baseball player",
+      "category": "athlete",
+      "birthDate": "1994-07-05",
+      "birthTime": null,
+      "zone": "Asia/Tokyo",
+      "birthplace": "Oshu, Iwate, Japan",
+      "sources": [
+        {
+          "title": "Wikipedia: Shohei Ohtani",
+          "url": "https://en.wikipedia.org/wiki/Shohei_Ohtani"
+        }
+      ],
+      "alternateBirthDates": [],
+      "note": null
     }
   ]
 }
