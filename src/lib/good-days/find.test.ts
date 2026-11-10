@@ -9,10 +9,12 @@ import { GOOD_DAYS_FIRST, GOOD_DAYS_LAST, UNDER_13_SENTENCE, UNDER_18_PARTNERSHI
 const clock = createLocalTimeModule();
 afterAll(() => clock.dispose());
 const TODAY = '2026-11-09';
+/** Each test here runs the real ephemeris over weeks or months of days: seconds locally, more on a loaded CI runner. */
+const TIMEOUT = 30_000;
 const DAY = 86_400_000;
 const daysApart = (a: string, b: string) => Math.abs(Date.parse(`${a}T00:00:00Z`) - Date.parse(`${b}T00:00:00Z`)) / DAY;
 
-describe('the void-of-course Moon', () => {
+describe('the void-of-course Moon', { timeout: TIMEOUT }, () => {
   it('gives the site calendar\'s periods to the second (src/data/void-of-course.ts)', () => {
     const from = new Date('2027-01-01T00:00:00Z');
     const to = new Date('2027-04-01T00:00:00Z');
@@ -28,7 +30,7 @@ describe('the void-of-course Moon', () => {
   });
 });
 
-describe('known answers', () => {
+describe('known answers', { timeout: TIMEOUT }, () => {
   it('finds Mercury retrograde in 2027 where the almanacs put it: 9 February to 3 March (UTC)', async () => {
     const result = await findGoodDays({ goal: 'contract', from: '2027-01-15', to: '2027-03-31', zone: 'UTC', today: TODAY }, clock);
     const mercury = result.periods.filter((period) => period.kind === 'mercury-retrograde');
@@ -80,7 +82,7 @@ describe('known answers', () => {
   });
 });
 
-describe('the answer', () => {
+describe('the answer', { timeout: TIMEOUT }, () => {
   it('ranks the best days highest first, spread at least two days apart, each with one line', async () => {
     const result = await findGoodDays({ goal: 'move', from: '2027-03-01', to: '2027-05-31', zone: 'Europe/London', count: 6, today: TODAY }, clock);
     expect(result.best).toHaveLength(6);
@@ -131,7 +133,7 @@ describe('the answer', () => {
   });
 });
 
-describe('birth details', () => {
+describe('birth details', { timeout: TIMEOUT }, () => {
   const birth = { date: '1990-05-03', time: '08:30', zone: 'America/New_York' };
 
   it('adds the person\'s own chart and returns only the natal Sun sign', async () => {
