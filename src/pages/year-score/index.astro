@@ -61,15 +61,17 @@ const jsonLd = [
     <noscript><p>The Year Ahead Score needs JavaScript. Enable it and reload to calculate your score from your birth date.</p></noscript>
   </section>
 
-  <section class="section--tight container container--narrow">
-    <div class="prose">
-      <h2>Well-known people’s years</h2>
-      <p>
-        The same score, read for founders, chief executives, athletes and entertainers from their public birth dates:{' '}
-        <a href="/year/" rel="nofollow">see the Year Ahead directory</a>.
-      </p>
-    </div>
-  </section>
+  {launchFlagOn('PUBLIC_YEAR_PEOPLE_ENABLED') && (
+    <section class="section--tight container container--narrow">
+      <div class="prose">
+        <h2>Well-known people’s years</h2>
+        <p>
+          The same score, read for founders, chief executives, athletes and entertainers from their public birth dates:{' '}
+          <a href="/year/" rel="nofollow">see the Year Ahead directory</a>.
+        </p>
+      </div>
+    </section>
+  )}
 
   <section class="section--tight container container--narrow">
     <div class="prose">

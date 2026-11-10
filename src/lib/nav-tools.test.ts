@@ -70,7 +70,7 @@ describe('NAV_TOOLS', () => {
       '/transits/',
       '/retrogrades/',
     ]);
-    expect(TOOLS_HUB).toHaveLength(31);
+    expect(TOOLS_HUB).toHaveLength(29);
     for (const tool of [...NAV_TOOLS, ...FOOTER_TOOLS, ...TOOLS_HUB]) {
       expect(catalogueHrefs.has(tool.href)).toBe(true);
     }
@@ -80,7 +80,7 @@ describe('NAV_TOOLS', () => {
     expect(TOOLS_HUB.filter((tool) => tool.group === 'lead').map((tool) => tool.href)).toEqual(['/birth-chart/']);
     expect(TOOLS_HUB[0].href).toBe('/birth-chart/');
     const counts = Object.fromEntries(['you', 'together', 'sky', 'year'].map((group) => [group, TOOLS_HUB.filter((tool) => tool.group === group).length]));
-    expect(counts).toEqual({ you: 6, together: 6, sky: 6, year: 12 });
+    expect(counts).toEqual({ you: 6, together: 6, sky: 6, year: 10 });
     expect(new Set(TOOLS_HUB.map((tool) => tool.icon)).size).toBe(TOOLS_HUB.length);
     for (const tool of TOOLS_HUB) {
       expect(tool.promise).not.toMatch(/[\r\n\u2013\u2014]/u);
@@ -119,6 +119,10 @@ describe('tools behind a launch switch', () => {
   it('shows a switched tool only while its switch is on, and every hub card has an icon either way', () => {
     expect(visibleTools(() => true)).toEqual(ALL_TOOL_CATALOG);
     expect(visibleTools(() => false).every((tool) => !tool.flag)).toBe(true);
+    const hrefs = (on: boolean) => visibleTools(() => on).map((tool) => tool.href);
+    expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/']));
+    expect(hrefs(false)).not.toContain('/year-score/');
+    expect(hrefs(false)).not.toContain('/birthday-report/');
     for (const tool of ALL_TOOL_CATALOG) {
       if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
     }

@@ -10,6 +10,11 @@ import SignIcon from '../../components/SignIcon.astro';
 import { YEAR_PERSON_CATEGORIES } from '../../lib/year-score/people';
 import { allYearPages } from '../../lib/year-score/page-data';
 import { dayName } from '../../lib/year-score/reading';
+import { launchFlagOn } from '../../lib/launch-flags';
+
+if (!launchFlagOn('PUBLIC_YEAR_PEOPLE_ENABLED')) {
+  return Astro.redirect('/404.html');
+}
 
 const pages = await allYearPages();
 const GROUP: Record<(typeof YEAR_PERSON_CATEGORIES)[number], string> = {
