@@ -559,6 +559,19 @@ var Ephemeris = class {
     if (!key) fail("unknown-body", `unknown body ${body}`);
     return this.#ssb(key, et, out);
   }
+  /**
+   * The Earth-Moon system's parts at `et`: the barycentre from the SSB, and
+   * the Moon and the Earth each from the barycentre (the Earth as -k times
+   * the Moon), so a reduction can form the geocentric Moon without the
+   * barycentre's 1.5e8 km.
+   */
+  lunar(et, emb, moon, earth) {
+    if (this.k === void 0) fail("bad-header", "pack carries no EMRAT, so Earth and Moon cannot be derived");
+    this.#ssb("emb", et, emb);
+    this.#ssb("moon", et, moon);
+    const f = -this.k;
+    for (let i = 0; i < 6; i += 1) earth[i] = f * moon[i];
+  }
 };
 var PACK_NAME = Object.freeze({
   Mercury: "mercuryBary",
@@ -743,6 +756,7 @@ var AU_KM = 1495978707e-1;
 var LIGHT_TIME_AU = 499.004783836;
 var C_KM_S = AU_KM / LIGHT_TIME_AU;
 var DAY = 86400;
+var LUNAR_ACCELERATION_STEP_SEC = 60;
 var SRS = 197412574336e-19;
 var CONTRACT = Object.freeze({
   bodies: Object.freeze(["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]),
@@ -872,6 +886,45 @@ var Reducer = class {
     this.a = new Float64Array(6);
     this.b = new Float64Array(6);
     this.c = new Float64Array(6);
+    this.emb = new Float64Array(6);
+    this.moon = new Float64Array(6);
+    this.earth = new Float64Array(6);
+  }
+  /**
+   * For the geocentric Moon (P4.1's preregistration; audit finding
+   * alpha-reduction-math-8): the Earth relative to the Earth-Moon barycentre
+   * at et, and the barycentre's velocity and its acceleration there, the
+   * acceleration as a central difference of the velocity over +-60 s.
+   */
+  #lunarBasis(et) {
+    this.backend.lunar(et + LUNAR_ACCELERATION_STEP_SEC, this.emb, this.moon, this.earth);
+    const after = [this.emb[3], this.emb[4], this.emb[5]];
+    this.backend.lunar(et - LUNAR_ACCELERATION_STEP_SEC, this.emb, this.moon, this.earth);
+    const before = [this.emb[3], this.emb[4], this.emb[5]];
+    this.backend.lunar(et, this.emb, this.moon, this.earth);
+    const span = 2 * LUNAR_ACCELERATION_STEP_SEC;
+    return {
+      earth: [this.earth[0], this.earth[1], this.earth[2]],
+      embVelocity: [this.emb[3], this.emb[4], this.emb[5]],
+      embAcceleration: [(after[0] - before[0]) / span, (after[1] - before[1]) / span, (after[2] - before[2]) / span]
+    };
+  }
+  /**
+   * MoonRelEMB(emission) - EarthRelEMB(et) + [EMB(emission) - EMB(et)], the
+   * bracket as -v tau + a tau^2 / 2, so the barycentre's 30 km/s never
+   * multiplies the rounding of the double et - tau.
+   */
+  #geocentricMoon(emission, tau, basis) {
+    this.backend.lunar(emission, this.emb, this.moon, this.earth);
+    const m = [this.moon[0], this.moon[1], this.moon[2]];
+    const v = basis.embVelocity;
+    const acc = basis.embAcceleration;
+    const e = basis.earth;
+    return [
+      m[0] - e[0] + (-v[0] * tau + 0.5 * acc[0] * tau * tau),
+      m[1] - e[1] + (-v[1] * tau + 0.5 * acc[1] * tau * tau),
+      m[2] - e[2] + (-v[2] * tau + 0.5 * acc[2] * tau * tau)
+    ];
   }
   #pos(body, et, buf) {
     this.backend.state(body, et, buf);
@@ -914,8 +967,10 @@ var Reducer = class {
     let observerVel;
     if (o.observerVelocity === "analytic") observerVel = [this.b[3], this.b[4], this.b[5]];
     else observerVel = this.#velCentral("Earth", et, o.observerVelocity === "central600" ? 600 : 60);
+    const lunar = body === "Moon" && offsetKm === void 0 && typeof this.backend.lunar === "function" ? this.#lunarBasis(et) : null;
+    const geoAt = (tau2) => lunar ? this.#geocentricMoon(et - tau2, tau2, lunar) : sub(target(et - tau2), observer);
     let tau = 0;
-    let geo = sub(target(et), observer);
+    let geo = geoAt(0);
     let iters = 0;
     let converged = false;
     for (let i = 0; i < o.lightTimeIters; i += 1) {
@@ -930,7 +985,7 @@ var Reducer = class {
       if (!this.backend.covers(et - tau)) {
         fail("out-of-coverage", "the light-time lookback reaches outside the pack's coverage", { et: et - tau });
       }
-      geo = sub(target(et - tau), observer);
+      geo = geoAt(tau);
     }
     const geometric = geo;
     const distKm = norm(geo);

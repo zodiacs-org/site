@@ -236,6 +236,20 @@ export class Ephemeris {
     if (!key) fail('unknown-body', `unknown body ${body}`);
     return this.#ssb(key, et, out);
   }
+
+  /**
+   * The Earth-Moon system's parts at `et`: the barycentre from the SSB, and
+   * the Moon and the Earth each from the barycentre (the Earth as -k times
+   * the Moon), so a reduction can form the geocentric Moon without the
+   * barycentre's 1.5e8 km.
+   */
+  lunar(et, emb, moon, earth) {
+    if (this.k === undefined) fail('bad-header', 'pack carries no EMRAT, so Earth and Moon cannot be derived');
+    this.#ssb('emb', et, emb);
+    this.#ssb('moon', et, moon);
+    const f = -this.k;
+    for (let i = 0; i < 6; i += 1) earth[i] = f * moon[i];
+  }
 }
 
 /** API body name -> the name the pack stores it under. */
