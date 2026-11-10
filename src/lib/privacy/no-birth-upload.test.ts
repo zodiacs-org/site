@@ -2,13 +2,17 @@
  * No birth details leave the device or are stored. One fixture of values that
  * cannot be mistaken for anything else is driven through every builder that
  * writes to the account or answers a retired link, and every captured value
- * is searched for it: as written, URL decoded, base64 and base64url decoded
- * (every token of 8 or more characters), and JSON parsed, repeatedly.
+ * is searched for it: as written, URL decoded, each query or fragment value
+ * on its own, base64 and base64url decoded (every token of 8 or more
+ * characters, with and without the key before it), and JSON parsed,
+ * repeatedly. Numbers are searched too, alone and in lists.
  *
- * It fails on any fixture value in a common form, on a YYYY-MM-DD date
- * outside a short allowlist (the save time, the week's start and days, a
- * non-birth occasion's own day), and on a list of ten or more numbers between
- * 0 and 360 (a positions list).
+ * It fails on any fixture value in a common form, on a number within a
+ * twentieth of a degree of the fixture's latitude or longitude, on a
+ * YYYY-MM-DD date outside a short allowlist (the save time, the week's start
+ * and days, a non-birth occasion's own day), and on a list of ten or more
+ * numbers between 0 and 360 (a positions list, whether plain numbers or
+ * placements such as { body, lon }).
  */
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
@@ -131,16 +135,47 @@ function inRange(value: number): boolean {
   return Number.isFinite(value) && value >= 0 && value <= 360;
 }
 
-/** Every string reachable from a value, with what each decodes to, and every list of numbers. */
-function collect(value: unknown, strings: Set<string>, numberLists: number[][], depth = 0): void {
+/** The numbers among a list's items, and among the fields of each item that is itself an object or a list. */
+function numbersIn(values: readonly unknown[]): number[][] {
+  const own = values.filter((item): item is number => typeof item === 'number');
+  const inner = values.flatMap((item) => (item && typeof item === 'object' ? Object.values(item).filter((field): field is number => typeof field === 'number') : []));
+  return [own, inner];
+}
+
+/** The values of a query or fragment, such as `?payload=...&b=2` or `#state=...`, each on its own. */
+function queryValues(value: string): string[] {
+  const values: string[] = [];
+  for (const part of value.split(/[?#&;]/u)) {
+    const at = part.indexOf('=');
+    if (at < 0) continue;
+    const raw = part.slice(at + 1);
+    values.push(raw);
+    try { values.push(decodeURIComponent(raw.replace(/\+/gu, ' '))); } catch { /* not URL encoded */ }
+  }
+  return values;
+}
+
+/** Every string reachable from a value, with what each decodes to, every number and every list of numbers. */
+function collect(value: unknown, strings: Set<string>, numberLists: number[][], numbers: number[], depth = 0): void {
   if (depth > 12) return;
+  if (typeof value === 'number') {
+    numbers.push(value);
+    // A number's own text, so 19870314 is read as the date it spells.
+    collect(String(value), strings, numberLists, numbers, depth + 1);
+    return;
+  }
   if (typeof value === 'string') {
     if (strings.has(value)) return;
     strings.add(value);
+    // A number written as text, such as a form field's "43.26".
+    if (/^-?\d+(?:\.\d+)?$/u.test(value.trim())) numbers.push(Number(value));
     const variants = new Set<string>();
     try { variants.add(decodeURIComponent(value)); } catch { /* not URL encoded */ }
     try { variants.add(decodeURIComponent(value.replace(/\+/gu, ' '))); } catch { /* not form encoded */ }
-    for (const token of value.match(/[A-Za-z0-9+/_=-]{8,}/gu) ?? []) {
+    for (const item of queryValues(value)) variants.add(item);
+    // Tokens with '=' kept (base64 padding) and with '=' as a boundary (a key before the value).
+    const tokens = new Set([...(value.match(/[A-Za-z0-9+/_=-]{8,}/gu) ?? []), ...(value.match(/[A-Za-z0-9+/_-]{8,}={0,2}/gu) ?? [])]);
+    for (const token of tokens) {
       for (const url of [false, true]) {
         const decoded = decodeBase64(token, url);
         if (decoded !== null) variants.add(decoded);
@@ -148,9 +183,9 @@ function collect(value: unknown, strings: Set<string>, numberLists: number[][], 
     }
     const trimmed = value.trim();
     if (/^[[{"]/u.test(trimmed)) {
-      try { collect(JSON.parse(trimmed), strings, numberLists, depth + 1); } catch { /* not JSON */ }
+      try { collect(JSON.parse(trimmed), strings, numberLists, numbers, depth + 1); } catch { /* not JSON */ }
     }
-    for (const variant of variants) if (variant !== value) collect(variant, strings, numberLists, depth + 1);
+    for (const variant of variants) if (variant !== value) collect(variant, strings, numberLists, numbers, depth + 1);
     // A run of numbers in text, such as "12.5, 40.1, ...".
     for (const run of value.match(/-?\d+(?:\.\d+)?(?:[\s,;|]+-?\d+(?:\.\d+)?){9,}/gu) ?? []) {
       numberLists.push(run.split(/[\s,;|]+/u).map(Number));
@@ -158,28 +193,32 @@ function collect(value: unknown, strings: Set<string>, numberLists: number[][], 
     return;
   }
   if (Array.isArray(value)) {
-    numberLists.push(value.filter((item): item is number => typeof item === 'number'));
-    for (const item of value) collect(item, strings, numberLists, depth + 1);
+    // A list's own numbers, and one level down, such as [{ body, lon }, ...] or [[lon], ...].
+    numberLists.push(...numbersIn(value));
+    for (const item of value) collect(item, strings, numberLists, numbers, depth + 1);
     return;
   }
   if (value && typeof value === 'object') {
-    const values = Object.values(value as Record<string, unknown>);
-    numberLists.push(values.filter((item): item is number => typeof item === 'number'));
-    // Numbers one level down too, such as [{ body, lon }, ...].
-    numberLists.push(values.flatMap((item) => (item && typeof item === 'object' ? Object.values(item).filter((inner): inner is number => typeof inner === 'number') : [])));
+    // An object's own numbers, and one level down, such as { sun: { lon }, moon: { lon }, ... }.
+    numberLists.push(...numbersIn(Object.values(value as Record<string, unknown>)));
     for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
-      collect(key, strings, numberLists, depth + 1);
-      collect(item, strings, numberLists, depth + 1);
+      collect(key, strings, numberLists, numbers, depth + 1);
+      collect(item, strings, numberLists, numbers, depth + 1);
     }
   }
 }
+
+/** Within a twentieth of a degree (about 5 km) of the fixture's latitude or longitude: rounded forms are found too. */
+const nearFixture = (value: number) => [BIRTH.latitude, BIRTH.longitude].some((coordinate) => Math.abs(value - coordinate) < 0.05);
 
 /** The problems found in a captured value; empty when it holds no birth detail. */
 function birthDetailsIn(value: unknown, allowedDates: readonly string[] = []): string[] {
   const strings = new Set<string>();
   const numberLists: number[][] = [];
-  collect(value, strings, numberLists);
+  const numbers: number[] = [];
+  collect(value, strings, numberLists, numbers);
   const problems: string[] = [];
+  for (const number of numbers) if (nearFixture(number)) problems.push(`the number ${number}, the fixture's latitude or longitude`);
   const allowed = new Set([SAVE_DAY, ...allowedDates]);
   for (const text of strings) {
     for (const form of FORBIDDEN) {
@@ -218,6 +257,43 @@ describe('the search', () => {
       expect(birthDetailsIn(value), JSON.stringify(value)).not.toEqual([]);
     }
     expect(birthDetailsIn(['/compatibility/aries-leo/', 'Leo and Aries · compatibility', `${SAVE_DAY}T09:00:00.000Z`, '/share/birthday/?d=03-14'])).toEqual([]);
+  });
+
+  it('finds coordinates held as numbers, alone or rounded', () => {
+    for (const value of [
+      { latitude: BIRTH.latitude, longitude: BIRTH.longitude },
+      [BIRTH.latitude, BIRTH.longitude],
+      { place: { lat: 43.26, lon: 76.93 } },
+      { at: 19870314 },
+      { lat: '43.26' },
+    ]) {
+      expect(birthDetailsIn(value), JSON.stringify(value)).not.toEqual([]);
+    }
+    expect(birthDetailsIn({ lat: 43.77, lon: 11.26, score: 76, rating: 43 })).toEqual([]);
+  });
+
+  it('finds positions held as a list of placements', () => {
+    const placements = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto']
+      .map((body, index) => ({ body, lon: 3.1 + index * 29.7 }));
+    expect(placements).toHaveLength(10);
+    for (const value of [placements, { bodies: placements }, { chart: { bodies: placements.map(({ lon }) => [lon]) } }]) {
+      expect(birthDetailsIn(value), JSON.stringify(value).slice(0, 80)).not.toEqual([]);
+    }
+  });
+
+  it('finds an encoded name or date in a query value, whatever key comes before it', () => {
+    const named = Buffer.from(JSON.stringify({ n: BIRTH.names[0] })).toString('base64url');
+    const dated = Buffer.from(JSON.stringify({ d: BIRTH.date, padding: '??>>' })).toString('base64url');
+    const plain = Buffer.from(JSON.stringify({ n: BIRTH.names[1] })).toString('base64');
+    for (const value of [
+      `https://zodiacs.org/x/?payload=${named}`,
+      `/x/?a=1&payload=${dated}&b=2`,
+      `/x/#state=${named}`,
+      `/x/?data=${encodeURIComponent(plain)}`,
+      { href: `/x/?payload=${named}` },
+    ]) {
+      expect(birthDetailsIn(value), JSON.stringify(value)).not.toEqual([]);
+    }
   });
 });
 

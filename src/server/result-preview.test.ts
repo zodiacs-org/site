@@ -386,6 +386,26 @@ describe('share link pages', () => {
     }
   });
 
+  it('send a birth occasion away when its keys are repeated or joined by others', async () => {
+    const page = await handleOccasionLinkRequest(new Request('https://zodiacs.org/share/occasion/?o=birthday&d=1987-03-14&ref=chatgpt&ref=assistant&sun=pisces&moon=leo&score=70&v=good'));
+    expect(page.status).toBe(303);
+    expect(page.headers.get('location')).toBe('https://zodiacs.org/share/birthday/?d=03-14');
+    const hidden = await handleOccasionLinkRequest(new Request('https://zodiacs.org/share/occasion/?o=wedding&o=birthday&d=1987-03-14&sun=pisces&moon=leo&score=70&v=good'));
+    expect(hidden.status).toBe(303);
+    expect(hidden.headers.get('location')).toBe('https://zodiacs.org/share/birthday/?d=03-14');
+    for (const handle of [handleOccasionImageRequest, handleOccasionStoryRequest]) {
+      const response = await handle(new Request('https://zodiacs.org/api/og/occasion-image?o=baby&o=baby&d=2008-03-14&fbclid=IwAR0&sun=pisces&moon=leo&score=70&v=good'));
+      expect(response.status).toBe(303);
+      expect(response.headers.get('location')).toBe('https://zodiacs.org/assets/og/v2/share.png');
+    }
+    const names = await handleOccasionLinkRequest(new Request(`https://zodiacs.org/share/occasion/?${OCCASION}&n=Qwertina&n=Zolvar`));
+    expect(names.status).toBe(303);
+    expect(names.headers.get('location')).toBe(`https://zodiacs.org/share/occasion/?${OCCASION}`);
+    const year = await handleChineseZodiacLinkRequest(new Request('https://zodiacs.org/share/chinese-zodiac/?a=horse&y=1990&y=2002'));
+    expect(year.status).toBe(303);
+    expect(year.headers.get('location')).toBe('https://zodiacs.org/share/chinese-zodiac/?a=horse');
+  });
+
   it('send a milestone’s pass days and a Chinese zodiac year away with a 303', async () => {
     const cases = [
       [handleMilestoneLinkRequest, '/share/milestone/', SATURN_OLDER, SATURN],
@@ -598,10 +618,17 @@ describe('the deployed entry', () => {
     await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'birthday-story', d: '05-03', fbclid: 'IwAR0' } }, story, 'birthday-story');
     expect(story.statusCode).toBe(400);
 
+    // A repeated key the page uses opens the plain page, without a result.
     const repeated = nodeResponse();
-    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'compatibility-link', ...Object.fromEntries(new URLSearchParams(COMPAT)), a: ['Ana', 'Eve'] } }, repeated, 'compatibility-link');
+    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'compatibility-link', ...Object.fromEntries(new URLSearchParams(COMPAT)), score: ['78', '79'] } }, repeated, 'compatibility-link');
     expect(repeated.statusCode).toBe(200);
     expect(repeated.body.toString()).toContain('Compare two birth charts');
+
+    // Repeated names are retired keys: the 303 clears them, however many there are.
+    const named = nodeResponse();
+    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'compatibility-link', ...Object.fromEntries(new URLSearchParams(COMPAT)), a: ['Ana', 'Eve'] } }, named, 'compatibility-link');
+    expect(named.statusCode).toBe(303);
+    expect(named.headers.get('location')).toBe(`https://zodiacs.org/share/compatibility/?${COMPAT}`);
 
     // Apps add their own keys as a link is opened; the page keeps the result.
     const opened = nodeResponse();
@@ -615,6 +642,107 @@ describe('the deployed entry', () => {
     await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'evil.example' }, query: { __zodiacs_share: 'occasion-link', ...Object.fromEntries(new URLSearchParams(OCCASION)) } }, page, 'occasion-link');
     expect(page.statusCode).toBe(200);
     expect(page.body.toString()).toContain('content="https://zodiacs.org/api/og/occasion-image?');
+  });
+});
+
+describe('retired links through the deployed entry', () => {
+  type Query = Record<string, string | string[]>;
+  const node = async (route: (typeof RESULT_SHARE_ROUTES)[number], query: Query, method = 'GET') => {
+    const res = nodeResponse();
+    await handleResultShareNodeRequest({ method, headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: route, ...query } }, res, route);
+    return res;
+  };
+  const BIRTH = { d: '1987-03-14', sun: 'pisces', moon: 'leo', score: '70', v: 'good' };
+  const PERSONAL = /1987|Qwertina|Zolvar|Zzyzx|Florence|Ana|Luis|Eve|1990/u;
+
+  it('sends a birthday link with a repeated ref to the birthday page, with the month and day only', async () => {
+    const res = await node('occasion-link', { o: 'birthday', ...BIRTH, ref: ['chatgpt', 'assistant'] });
+    expect(res.statusCode).toBe(303);
+    const location = res.headers.get('location')!;
+    expect(location).toBe('https://zodiacs.org/share/birthday/?d=03-14');
+    expect(location).not.toContain('1987');
+    expect(location).not.toContain('1987-03-14');
+    expect(res.headers.get('cache-control')).toBe('no-store, max-age=0');
+    expect(res.body.length).toBe(0);
+  });
+
+  it('reads every occasion and every date, so a repeated key cannot hide a birthday', async () => {
+    for (const query of [
+      { o: ['wedding', 'birthday'], ...BIRTH },
+      { o: 'birthday', ...BIRTH, d: ['03-14', '1987-03-14'] },
+      { o: 'birthday', ...BIRTH, fbclid: 'IwAR0', utm_source: 'share' },
+    ] as Query[]) {
+      const res = await node('occasion-link', query);
+      expect(res.statusCode, JSON.stringify(query)).toBe(303);
+      expect(res.headers.get('location'), JSON.stringify(query)).toBe('https://zodiacs.org/share/birthday/?d=03-14');
+    }
+    for (const occasion of ['baby', 'coming-of-age']) {
+      const res = await node('occasion-link', { o: occasion, ...BIRTH, ref: ['a', 'b'], n: ['Qwertina', 'Zolvar'] });
+      expect(res.statusCode, occasion).toBe(303);
+      expect(res.headers.get('location'), occasion).toBe('https://zodiacs.org/share/occasion/');
+    }
+  });
+
+  it('clears repeated names and places from an occasion link, keeping the rest of the address', async () => {
+    const res = await node('occasion-link', { ...Object.fromEntries(new URLSearchParams(OCCASION)), n: ['Qwertina', 'Zolvar'], p: 'Zzyzx Canary', ref: ['chatgpt', 'assistant'] });
+    expect(res.statusCode).toBe(303);
+    const location = res.headers.get('location')!;
+    expect(location).toBe(`https://zodiacs.org/share/occasion/?${OCCASION}&ref=chatgpt&ref=assistant`);
+    expect(location).not.toMatch(PERSONAL);
+  });
+
+  it('clears a repeated Chinese zodiac year, on the page and on both pictures', async () => {
+    for (const [route, path] of [
+      ['chinese-zodiac-link', '/share/chinese-zodiac/'],
+      ['chinese-zodiac-image', '/api/og/chinese-zodiac-image'],
+      ['chinese-zodiac-story', '/api/og/chinese-zodiac-story'],
+    ] as const) {
+      const res = await node(route, { a: 'horse', y: ['1990', '2002'] });
+      expect(res.statusCode, route).toBe(303);
+      expect(res.headers.get('location'), route).toBe(`https://zodiacs.org${path}?a=horse`);
+    }
+  });
+
+  it('clears repeated names, pass days and extra keys from every family’s pictures before the query is checked', async () => {
+    const cases = [
+      ['compatibility-image', '/api/og/compatibility-image', { ...Object.fromEntries(new URLSearchParams(COMPAT)), a: ['Ana', 'Eve'], b: 'Luis', fbclid: 'IwAR0' }, `${COMPAT}&fbclid=IwAR0`],
+      ['compatibility-story', '/api/og/compatibility-story', { ...Object.fromEntries(new URLSearchParams(COMPAT)), a: 'Ana' }, COMPAT],
+      ['occasion-image', '/api/og/occasion-image', { ...Object.fromEntries(new URLSearchParams(OCCASION)), n: ['Ana', 'Luis'], utm_source: 'share' }, `${OCCASION}&utm_source=share`],
+      ['occasion-story', '/api/og/occasion-story', { ...Object.fromEntries(new URLSearchParams(OCCASION)), p: ['Florence', 'Florence'] }, OCCASION],
+      ['milestone-link', '/share/milestone/', { ...Object.fromEntries(new URLSearchParams(SATURN)), f: ['2026-04-23', '2026-04-24'], l: '2026-12-31', ref: ['a', 'b'] }, `${SATURN}&ref=a&ref=b`],
+      ['milestone-image', '/api/og/milestone-image', { ...Object.fromEntries(new URLSearchParams(SATURN)), f: '2026-04-23', lat: '1' }, `${SATURN}&lat=1`],
+    ] as const;
+    for (const [route, path, query, kept] of cases) {
+      const res = await node(route, query as Query);
+      expect(res.statusCode, route).toBe(303);
+      expect(res.headers.get('location'), route).toBe(`https://zodiacs.org${path}?${kept}`);
+      expect(res.headers.get('location'), route).not.toMatch(PERSONAL);
+    }
+  });
+
+  it('sends a birth occasion’s picture to the default share picture, with extra or repeated keys, never a 400', async () => {
+    for (const route of ['occasion-image', 'occasion-story'] as const) {
+      for (const query of [
+        { o: 'birthday', ...BIRTH, fbclid: 'IwAR0' },
+        { o: 'baby', ...BIRTH, ref: ['chatgpt', 'assistant'] },
+        { o: 'coming-of-age', ...BIRTH, d: ['2008-03-14', '2008-03-15'], lat: '43.2567' },
+        { o: ['birthday', 'birthday'], ...BIRTH },
+      ] as Query[]) {
+        const res = await node(route, query);
+        expect(res.statusCode, `${route} ${JSON.stringify(query)}`).toBe(303);
+        expect(res.headers.get('location'), route).toBe('https://zodiacs.org/assets/og/v2/share.png');
+      }
+    }
+  });
+
+  it('leaves a link with no retired key to the usual checks', async () => {
+    const image = await node('occasion-image', { ...Object.fromEntries(new URLSearchParams(OCCASION)), lat: '1' });
+    expect(image.statusCode).toBe(400);
+    const page = await node('chinese-zodiac-link', { a: 'horse', fbclid: 'IwAR0' });
+    expect(page.statusCode).toBe(200);
+    // Only a GET is redirected; anything else keeps its refusal.
+    const post = await node('occasion-link', { o: 'birthday', ...BIRTH }, 'POST');
+    expect(post.statusCode).toBe(405);
   });
 });
 

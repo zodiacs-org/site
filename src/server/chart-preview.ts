@@ -230,6 +230,14 @@ export async function handleChartPreviewNodeRequest(
   res: any,
   route: ChartPreviewRoute,
 ): Promise<void> {
+  // An image asked for with an older link's positions code goes to the default share picture before the query is
+  // checked, so a repeated code or a key added by an app still gets the 303 rather than a refusal.
+  const query = req.query && typeof req.query === 'object' ? req.query : {};
+  const method = typeof req.method === 'string' ? req.method : 'GET';
+  if (route === 'image' && method === 'GET' && Object.hasOwn(query, 'p')) {
+    await writeNodeResponse(res, seeOther(`${requestOrigin(req)}${DEFAULT_SHARE_IMAGE_PATH}`));
+    return;
+  }
   const params = strictNodeQuery(req, route);
   if (params === null) {
     await writeNodeResponse(res, errorResponse(400));

@@ -334,6 +334,32 @@ describe('chart preview functions', () => {
     }
   });
 
+  it('sends an image asked for with a positions code to the default picture through the Node route, before the query is checked', async () => {
+    imageResponseMock.element.mockClear();
+    for (const query of [
+      { [CHART_PREVIEW_ROUTE_KEY]: 'image', p: token },
+      { [CHART_PREVIEW_ROUTE_KEY]: 'image', p: [token, token] },
+      { [CHART_PREVIEW_ROUTE_KEY]: 'image', p: token, fbclid: 'IwAR0' },
+      { [CHART_PREVIEW_ROUTE_KEY]: 'image', p: token, utm_source: 'share', utm_medium: ['a', 'b'] },
+      { [CHART_PREVIEW_ROUTE_KEY]: 'image', p: token, sun: '0', moon: '29' },
+      { [CHART_PREVIEW_ROUTE_KEY]: 'image', p: 'bad' },
+    ]) {
+      const headers = new Map<string, string>();
+      const end = vi.fn();
+      const response = { statusCode: 0, setHeader: (name: string, value: string) => headers.set(name.toLowerCase(), value), end };
+      await handleChartPreviewNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query }, response, 'image');
+      expect(response.statusCode, JSON.stringify(query)).toBe(303);
+      expect(headers.get('location'), JSON.stringify(query)).toBe('https://zodiacs.org/assets/og/v2/share.png');
+      expect(headers.get('cache-control')).toBe('no-store, max-age=0');
+      expect(Buffer.from(end.mock.calls[0]?.[0] as Buffer).length).toBe(0);
+    }
+    expect(imageResponseMock.element).not.toHaveBeenCalled();
+    // The link route keeps its answer: a repeated code there is still refused.
+    const response = { statusCode: 0, setHeader: vi.fn(), end: vi.fn() };
+    await handleChartPreviewNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { [CHART_PREVIEW_ROUTE_KEY]: 'link', p: [token, token] } }, response, 'link');
+    expect(response.statusCode).toBe(400);
+  });
+
   it('returns a generic 503 before committing a streaming renderer failure', async () => {
     imageResponseMock.renderFailure = new Error('render failed');
     const response = await imageHandler(new Request(`https://zodiacs.org/api/og/chart-image?${PREVIEW_QUERY}`));

@@ -52,37 +52,37 @@ const PF_PAIR_COPY = {
 } as const satisfies Record<Locale, Record<'savedPairs' | 'pairRemoved', string>>;
 const PF_EMAIL_COPY = {
   en: {
-    syncLabel: 'Email for chart sync',
+    syncLabel: 'Email for account sign-in',
     digestLabel: 'Optional weekly email',
     digestTitle: 'Personalized weekly sky email',
     digestCopy: 'A forecast based on your synced saved chart. Off until you check this box.',
   },
   es: {
-    syncLabel: 'Email para sincronizar cartas',
+    syncLabel: 'Email para iniciar sesión en tu cuenta',
     digestLabel: 'Email semanal opcional',
     digestTitle: 'Email semanal personalizado del cielo',
     digestCopy: 'Un pronóstico basado en tu carta guardada y sincronizada. Está desactivado hasta que marques esta casilla.',
   },
   pt: {
-    syncLabel: 'E-mail para sincronizar mapas',
+    syncLabel: 'E-mail para entrar na sua conta',
     digestLabel: 'E-mail semanal opcional',
     digestTitle: 'E-mail semanal personalizado do céu',
     digestCopy: 'Uma previsão baseada no seu mapa salvo e sincronizado. Fica desativada até você marcar esta caixa.',
   },
   fr: {
-    syncLabel: 'E-mail pour synchroniser les thèmes',
+    syncLabel: 'E-mail pour te connecter à ton compte',
     digestLabel: 'E-mail hebdomadaire facultatif',
     digestTitle: 'E-mail personnalisé du ciel de la semaine',
     digestCopy: 'Une prévision basée sur ton thème enregistré et synchronisé. Désactivée tant que tu ne coches pas cette case.',
   },
   it: {
-    syncLabel: 'E-mail per sincronizzare i temi',
+    syncLabel: 'E-mail per accedere al tuo account',
     digestLabel: 'E-mail settimanale facoltativa',
     digestTitle: 'E-mail personalizzata del cielo settimanale',
     digestCopy: 'Una previsione basata sul tema salvato e sincronizzato. Resta disattivata finché non selezioni questa casella.',
   },
   ru: {
-    syncLabel: 'Почта для синхронизации карт',
+    syncLabel: 'Почта для входа в аккаунт',
     digestLabel: 'Необязательное еженедельное письмо',
     digestTitle: 'Персональный еженедельный прогноз',
     digestCopy: 'Прогноз по вашей сохранённой и синхронизированной карте. Выключен, пока вы сами не поставите отметку.',

@@ -175,10 +175,13 @@ const BIRTH_DATE_RE = /^\d{4}-(\d{2})-(\d{2})$/u;
  */
 export function retiredLinkRedirect(family: RetiredShareFamily, url: URL, picture: boolean): Response | null {
   if (family === 'occasion') {
-    const occasion = url.searchParams.get('o');
-    if (occasion !== null && BIRTH_OCCASIONS.has(occasion)) {
+    // Every value is read, so a repeated key cannot hide a birth occasion or its date behind another.
+    const occasions = url.searchParams.getAll('o');
+    if (occasions.some((occasion) => BIRTH_OCCASIONS.has(occasion))) {
       if (picture) return seeOther(`${url.origin}${DEFAULT_SHARE_IMAGE_PATH}`);
-      const day = occasion === 'birthday' ? BIRTH_DATE_RE.exec(url.searchParams.get('d') ?? '') : null;
+      const day = occasions.includes('birthday')
+        ? url.searchParams.getAll('d').map((value) => BIRTH_DATE_RE.exec(value)).find(Boolean) ?? null
+        : null;
       return seeOther(day ? `${url.origin}${BIRTHDAY_SHARE_PATH}?d=${day[1]}-${day[2]}` : `${url.origin}${OCCASION_SHARE_PATH}`);
     }
   }
@@ -1887,10 +1890,44 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
 
-/** The Node entry: only the route key and the route's own keys, each a single string. */
+/** The family of retired keys each route answers for, if any. */
+function retiredFamily(route: ResultShareRoute): RetiredShareFamily | null {
+  for (const family of Object.keys(RETIRED_SHARE_KEYS) as RetiredShareFamily[]) {
+    if (route.startsWith(`${family}-`)) return family;
+  }
+  return null;
+}
+
+/** The whole query as it arrived, repeated keys and keys the route does not use included, without the route key. */
+function rawNodeQuery(query: Record<string, unknown>): URLSearchParams {
+  const raw = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (key === RESULT_SHARE_ROUTE_KEY) continue;
+    for (const item of Array.isArray(value) ? value : [value]) if (typeof item === 'string') raw.append(key, item);
+  }
+  return raw;
+}
+
+/**
+ * The Node entry. A retired link is answered first, from the whole query as it
+ * arrived, so a repeated key or a key the route does not use cannot keep a birth
+ * date or a name in the address. Otherwise only the route key and the route's own
+ * keys, each a single string, are passed on.
+ */
 export async function handleResultShareNodeRequest(req: any, res: any, route: ResultShareRoute): Promise<void> {
   const target = ROUTES[route];
   const query = req.query && typeof req.query === 'object' ? req.query : {};
+  const family = retiredFamily(route);
+  const method = typeof req.method === 'string' ? req.method : 'GET';
+  if (family && method === 'GET') {
+    const raw = rawNodeQuery(query).toString();
+    const url = new URL(`${requestOrigin(req)}${target.path}${raw ? `?${raw}` : ''}`);
+    const retired = retiredLinkRedirect(family, url, isPictureRoute(route));
+    if (retired) {
+      await writeNodeResponse(res, retired);
+      return;
+    }
+  }
   let params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (key === RESULT_SHARE_ROUTE_KEY) continue;
@@ -1908,8 +1945,6 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
     }
     params.set(key, value);
   }
-  const request = new Request(`${requestOrigin(req)}${target.path}?${params.toString()}`, {
-    method: typeof req.method === 'string' ? req.method : 'GET',
-  });
+  const request = new Request(`${requestOrigin(req)}${target.path}?${params.toString()}`, { method });
   await writeNodeResponse(res, await target.handle(request));
 }
