@@ -2,7 +2,7 @@
   "lastMonth": {
     "url": "https://api.npmjs.org/downloads/point/last-month/@zodiacs/sdk",
     "status": 200,
-    "fetchedAt": "2026-11-10T19:14:16.887Z",
+    "fetchedAt": "2026-11-10T19:21:57.833Z",
     "body": {
       "downloads": 593,
       "start": "2026-10-11",
@@ -13,7 +13,7 @@
   "registry": {
     "url": "https://registry.npmjs.org/@zodiacs/sdk",
     "status": 200,
-    "fetchedAt": "2026-11-10T19:14:17.274Z",
+    "fetchedAt": "2026-11-10T19:21:58.207Z",
     "body": {
       "_id": "@zodiacs/sdk",
       "_rev": "3-0c5992f8b0f74a5ad45fb2fe68e45886",

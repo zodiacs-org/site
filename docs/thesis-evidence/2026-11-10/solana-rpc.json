@@ -1,5 +1,655 @@
 {
-  "capturedAt": "2026-11-10T19:14:10.110Z",
-  "endpoint": null,
-  "signs": {}
+  "capturedAt": "2026-11-10T19:17:51.059Z",
+  "endpoint": "https://api.mainnet-beta.solana.com",
+  "largestAccountsEndpoint": null,
+  "signs": {
+    "aries": {
+      "mint": "GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv",
+      "pool": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835109
+          },
+          "value": {
+            "amount": "999596350537038",
+            "decimals": 6,
+            "uiAmount": 999596350.537038,
+            "uiAmountString": "999596350.537038"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835110
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999596350537038"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 95398847,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "taurus": {
+      "mint": "EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp",
+      "pool": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835285
+          },
+          "value": {
+            "amount": "999956490259699",
+            "decimals": 6,
+            "uiAmount": 999956490.259699,
+            "uiAmountString": "999956490.259699"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835286
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999956490259699"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 406046626,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "gemini": {
+      "mint": "ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc",
+      "pool": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835378
+          },
+          "value": {
+            "amount": "999823945485411",
+            "decimals": 6,
+            "uiAmount": 999823945.485411,
+            "uiAmountString": "999823945.485411"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835380
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999823945485411"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 432434721,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "cancer": {
+      "mint": "CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ",
+      "pool": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835486
+          },
+          "value": {
+            "amount": "999937225455531",
+            "decimals": 6,
+            "uiAmount": 999937225.455531,
+            "uiAmountString": "999937225.455531"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835487
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999937225455531"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 1461600,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "leo": {
+      "mint": "8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm",
+      "pool": "48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835566
+          },
+          "value": {
+            "amount": "999790687091088",
+            "decimals": 6,
+            "uiAmount": 999790687.091088,
+            "uiAmountString": "999790687.091088"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835567
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999790687091088"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 133334225,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "virgo": {
+      "mint": "Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
+      "pool": "5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835658
+          },
+          "value": {
+            "amount": "999901230758444",
+            "decimals": 6,
+            "uiAmount": 999901230.758444,
+            "uiAmountString": "999901230.758444"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835660
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999901230758444"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 1461600,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "libra": {
+      "mint": "7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe",
+      "pool": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835678
+          },
+          "value": {
+            "amount": "999793750623200",
+            "decimals": 6,
+            "uiAmount": 999793750.6232,
+            "uiAmountString": "999793750.6232"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835679
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999793750623200"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 391572451,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "scorpio": {
+      "mint": "J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1",
+      "pool": "3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835730
+          },
+          "value": {
+            "amount": "999990990891822",
+            "decimals": 6,
+            "uiAmount": 999990990.891822,
+            "uiAmountString": "999990990.891822"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835732
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999990990891822"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 5001461722,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "sagittarius": {
+      "mint": "8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3",
+      "pool": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835796
+          },
+          "value": {
+            "amount": "999520132436445",
+            "decimals": 6,
+            "uiAmount": 999520132.436445,
+            "uiAmountString": "999520132.436445"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835798
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999520132436445"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 1461700,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "capricorn": {
+      "mint": "3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+      "pool": "549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835855
+          },
+          "value": {
+            "amount": "999981308976726",
+            "decimals": 6,
+            "uiAmount": 999981308.976726,
+            "uiAmountString": "999981308.976726"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835856
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999981308976726"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 1461700,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "aquarius": {
+      "mint": "C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt",
+      "pool": "BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835863
+          },
+          "value": {
+            "amount": "999986134488303",
+            "decimals": 6,
+            "uiAmount": 999986134.488303,
+            "uiAmountString": "999986134.488303"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467835864
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999986134488303"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 1461600,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    },
+    "pisces": {
+      "mint": "3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+      "pool": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
+      "supply": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467836017
+          },
+          "value": {
+            "amount": "999915684507524",
+            "decimals": 6,
+            "uiAmount": 999915684.507524,
+            "uiAmountString": "999915684.507524"
+          }
+        }
+      },
+      "accountInfo": {
+        "ok": true,
+        "result": {
+          "context": {
+            "apiVersion": "4.4.0",
+            "slot": 467836018
+          },
+          "value": {
+            "data": {
+              "parsed": {
+                "info": {
+                  "decimals": 6,
+                  "freezeAuthority": null,
+                  "isInitialized": true,
+                  "mintAuthority": null,
+                  "supply": "999915684507524"
+                },
+                "type": "mint"
+              },
+              "program": "spl-token",
+              "space": 82
+            },
+            "executable": false,
+            "lamports": 1461600,
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "rentEpoch": 18446744073709552000,
+            "space": 82
+          }
+        }
+      },
+      "largest": {
+        "ok": false,
+        "error": "no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)"
+      },
+      "topTenOwners": {}
+    }
+  }
 }

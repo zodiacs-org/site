@@ -1,10 +1,10 @@
 {
-  "capturedAt": "2026-11-10T19:14:10.111Z",
+  "capturedAt": "2026-11-10T19:21:19.406Z",
   "signs": {
     "aries": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:10.407Z",
+      "fetchedAt": "2026-11-10T19:21:19.461Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -67,7 +67,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/2768fbb77c834217f9800eb98a83c9c8330829cd62b210b8135e3984235eeea9?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/0c7c9444dc445d512e84f059a76ed32e3a46219715af521704fe4bd8f5075bb2?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -92,7 +92,7 @@
     "taurus": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:10.929Z",
+      "fetchedAt": "2026-11-10T19:21:19.957Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -152,7 +152,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/25fcd569a14e8ac254b55869fa54a4e59209181d62d7295fd2ce99d0cb52cf4e?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/65465a7c4b2cc7e1b68579f09acf9f96d962277bbb362702da5ce33aa6c8963e?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -177,7 +177,7 @@
     "gemini": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:11.439Z",
+      "fetchedAt": "2026-11-10T19:21:20.403Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -203,7 +203,7 @@
             "priceUsd": "0.0001250",
             "txns": {
               "m5": {
-                "buys": 1,
+                "buys": 0,
                 "sells": 0
               },
               "h1": {
@@ -223,10 +223,9 @@
               "h24": 100.05,
               "h6": 40.22,
               "h1": 28.95,
-              "m5": 28.95
+              "m5": 0
             },
             "priceChange": {
-              "m5": 1.49,
               "h1": 1.49,
               "h6": -3.53,
               "h24": -3.53
@@ -242,7 +241,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/cb28b57f84142110499606118e351408c4293988cf604607e79629dd1193f953?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/0b4e286d528166775e4fc0d5426c27df369531fd378a253f9ded967af1d754bd?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -267,7 +266,7 @@
     "cancer": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:11.960Z",
+      "fetchedAt": "2026-11-10T19:21:20.857Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -327,7 +326,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/68ec7693c926d5a428947ffea5bdc33db5c74207793fb13bba9534d48a580779?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/ab955aa66c4d64fc036b04954aa7f994c29cea35cb37ab633c7a1183a0a0f932?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -352,7 +351,7 @@
     "leo": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:12.527Z",
+      "fetchedAt": "2026-11-10T19:21:21.359Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": null
@@ -361,7 +360,7 @@
     "virgo": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:13.067Z",
+      "fetchedAt": "2026-11-10T19:21:21.828Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -421,7 +420,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/c0187a26cebaa41cee5a7fd59ab28542839ebb2626817fd0c4683ea7a66cd0d9?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/2397e6ecead441455eee6c8e3093c16655babc50aabbe73d6d834308de0345b9?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -496,7 +495,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/c0187a26cebaa41cee5a7fd59ab28542839ebb2626817fd0c4683ea7a66cd0d9?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/2397e6ecead441455eee6c8e3093c16655babc50aabbe73d6d834308de0345b9?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -521,7 +520,7 @@
     "libra": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:13.606Z",
+      "fetchedAt": "2026-11-10T19:21:22.288Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -584,7 +583,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/8bda517e698d7ad754a5d51e8777d72bf7a7a661a2b52e691717d453e53d51d0?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/140173612da2352b23fa4e97874221d0c023dbcf19965b6c56750adfd1e59fad?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -609,7 +608,7 @@
     "scorpio": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:14.099Z",
+      "fetchedAt": "2026-11-10T19:21:22.767Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": null
@@ -618,7 +617,7 @@
     "sagittarius": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:14.632Z",
+      "fetchedAt": "2026-11-10T19:21:23.232Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -678,7 +677,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/1a3cbcebc7af52b10280fcbf3cb9380b12177f2f91e50633f9f5063ff20893bb?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/51d5e9429f743ff42afd141c7cf89e6b8aaf92d9c231adbe989f7bdf5844c7f9?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -703,7 +702,7 @@
     "capricorn": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:15.146Z",
+      "fetchedAt": "2026-11-10T19:21:23.749Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -763,7 +762,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/18a2e72ca7b0c9a489f7b1d1a686b0a95946408cacbc6b57e795bc43ca120f51?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/8bba280a38cce76ca896ea8ece594691b0207478d090cfb72832d276bd87c2f6?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz",
@@ -838,7 +837,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/c0187a26cebaa41cee5a7fd59ab28542839ebb2626817fd0c4683ea7a66cd0d9?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/2397e6ecead441455eee6c8e3093c16655babc50aabbe73d6d834308de0345b9?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
@@ -863,7 +862,7 @@
     "aquarius": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:15.680Z",
+      "fetchedAt": "2026-11-10T19:21:24.260Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": null
@@ -872,7 +871,7 @@
     "pisces": {
       "url": "https://api.dexscreener.com/latest/dex/tokens/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
       "status": 200,
-      "fetchedAt": "2026-11-10T19:14:16.247Z",
+      "fetchedAt": "2026-11-10T19:21:24.748Z",
       "body": {
         "schemaVersion": "1.0.0",
         "pairs": [
@@ -935,7 +934,7 @@
             "info": {
               "imageUrl": "https://cdn.dexscreener.com/cms/images/464ce5a5e32152111ae6545c38466992a9d267ea8064df272120b2edea14918e?width=800&height=800&quality=95&format=auto",
               "header": "https://cdn.dexscreener.com/cms/images/3648f904a3e2c67ef9e6b17fe55eca3f20569d352037a92668fc50ce21625fb4?width=1500&height=500&quality=95&format=auto",
-              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE?timestamp=1794337800000",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE?timestamp=1794338400000",
               "websites": [
                 {
                   "url": "https://astrofolio.xyz/",
