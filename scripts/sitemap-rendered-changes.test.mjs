@@ -498,42 +498,48 @@ describe('a pull request that rolls the daily edition', () => {
     });
     afterEach(async () => { await rm(repo, { recursive: true, force: true }); });
 
-    const git = (...args) => execFileSync('git', args, { cwd: repo, encoding: 'utf8' }).trim();
-    async function commit(files) {
-      for (const [path, content] of Object.entries(files)) {
-        await mkdir(dirname(join(repo, path)), { recursive: true });
-        await writeFile(join(repo, path), content);
+    // Each test binds these to the repository it started with, so a test that outlives its time limit keeps
+    // writing to its own (removed) folder and never into the next test's.
+    function fixture(repo) {
+      const git = (...args) => execFileSync('git', args, { cwd: repo, encoding: 'utf8' }).trim();
+      async function commit(files) {
+        for (const [path, content] of Object.entries(files)) {
+          await mkdir(dirname(join(repo, path)), { recursive: true });
+          await writeFile(join(repo, path), content);
+        }
+        git('add', '-A');
+        git('-c', 'user.name=t', '-c', 'user.email=t@invalid', 'commit', '-qm', 'c');
+        return git('rev-parse', 'HEAD');
       }
-      git('add', '-A');
-      git('-c', 'user.name=t', '-c', 'user.email=t@invalid', 'commit', '-qm', 'c');
-      return git('rev-parse', 'HEAD');
-    }
-    async function plan(base, head) {
-      const { script, pattern, addedOnly } = await planStep();
-      const output = join(repo, 'output.txt');
-      await writeFile(output, '');
-      let status = 0;
-      let stdout = '';
-      try {
-        stdout = execFileSync('bash', ['-e', '-c', script], {
-          cwd: repo,
-          encoding: 'utf8',
-          stdio: ['ignore', 'pipe', 'pipe'],
-          env: {
-            ...process.env, EVENT: 'workflow_dispatch', BASE_INPUT: base, HEAD_INPUT: head, DAILY_PACKAGE: pattern, DAILY_ADDED_ONLY: addedOnly,
-            GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: join(repo, 'summary.txt'), RUNNER_TEMP: join(repo, 'temp'),
-          },
-        });
-      } catch (error) {
-        status = error.status;
-        stdout = error.stdout;
+      async function plan(base, head) {
+        const { script, pattern, addedOnly } = await planStep();
+        const output = join(repo, 'output.txt');
+        await writeFile(output, '');
+        let status = 0;
+        let stdout = '';
+        try {
+          stdout = execFileSync('bash', ['-e', '-c', script], {
+            cwd: repo,
+            encoding: 'utf8',
+            stdio: ['ignore', 'pipe', 'pipe'],
+            env: {
+              ...process.env, EVENT: 'workflow_dispatch', BASE_INPUT: base, HEAD_INPUT: head, DAILY_PACKAGE: pattern, DAILY_ADDED_ONLY: addedOnly,
+              GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: join(repo, 'summary.txt'), RUNNER_TEMP: join(repo, 'temp'),
+            },
+          });
+        } catch (error) {
+          status = error.status;
+          stdout = error.stdout;
+        }
+        const outputs = Object.fromEntries((await readFile(output, 'utf8')).split('\n').filter(Boolean).map((line) => line.split('=')));
+        return { status, stdout, outputs };
       }
-      const outputs = Object.fromEntries((await readFile(output, 'utf8')).split('\n').filter(Boolean).map((line) => line.split('=')));
-      return { status, stdout, outputs };
+      return { git, commit, plan };
     }
     const edition = (date) => JSON.stringify({ date });
 
     it('compares two commits of one edition', async () => {
+      const { git, commit, plan } = fixture(repo);
       const base = await commit({ 'src/data/daily.json': edition('2026-10-15'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '' });
       const head = await commit({ 'src/pages/a.astro': 'a' });
       const { status, outputs } = await plan(base, head);
@@ -542,6 +548,7 @@ describe('a pull request that rolls the daily edition', () => {
     });
 
     it('passes a head that only rolls the edition, with nothing to compare', async () => {
+      const { git, commit, plan } = fixture(repo);
       const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '' });
       const head = await commit({
         'src/data/daily.json': edition('2026-10-15'),
@@ -556,6 +563,7 @@ describe('a pull request that rolls the daily edition', () => {
     });
 
     it('fails a head that rolls the edition and changes a file of those directories the publication does not write', async () => {
+      const { git, commit, plan } = fixture(repo);
       const base = await commit({
         'src/data/daily.json': edition('2026-10-14'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '',
         'public/registry/aries/index.html': '<p>', 'public/registry/technical/index.html': '<p>',
@@ -589,9 +597,11 @@ describe('a pull request that rolls the daily edition', () => {
       result = await plan(base, head);
       expect(result.status).toBe(0);
       expect(result.outputs).toEqual({ compare: 'false' });
-    });
+      // Four commits and four runs of the plan step: more than vitest's 5 s default on a loaded runner.
+    }, 30_000);
 
     it('fails a head that rolls the edition and changes anything else', async () => {
+      const { git, commit, plan } = fixture(repo);
       const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '' });
       const head = await commit({ 'src/data/daily.json': edition('2026-10-15'), 'src/pages/sitemap.xml.ts': 'x' });
       const { status, stdout, outputs } = await plan(base, head);
