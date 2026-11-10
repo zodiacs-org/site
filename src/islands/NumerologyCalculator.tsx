@@ -232,9 +232,11 @@ function ageSpan(starts: readonly number[], i: number): string {
 interface Props {
   /** The Life Path whose page this island sits on, so the lead does not link the reader to where they already are. */
   currentLifePath?: CoreNumber;
+  /** The "Share your Life Path" block, shown only while PUBLIC_NUMEROLOGY_SHARE_ENABLED is on (read by the page at build time). */
+  share?: boolean;
 }
 
-export default function NumerologyCalculator({ currentLifePath }: Props) {
+export default function NumerologyCalculator({ currentLifePath, share = false }: Props) {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [submitted, setSubmitted] = useState<Submitted | null>(null);
@@ -416,7 +418,7 @@ export default function NumerologyCalculator({ currentLifePath }: Props) {
             </div>
           )}
 
-          {(() => {
+          {share && (() => {
             const story = numerologyStoryContent(lifePath.value as CoreNumber);
             // The card and its link carry the Life Path number alone: never the name or the birth date.
             return (
