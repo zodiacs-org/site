@@ -1,247 +1,262 @@
 {
- "$comment": "Method-and-capture evidence backing every reader-facing candidacy field in thesis-candidacy.json. Each criterion records what was measured, where, how, when (UTC), what was excluded, what was found, and where a stranger can re-check. Negative results are scoped to the defined search, never asserted as exhaustive. Refreshing this file is a reviewed action, not part of any build. Every observation carries an independence classification under independencePolicy; only unsolicited-unaffiliated observations count toward pass conditions, and each exclusion decision is recorded with its criterion.",
- "reviewedAt": "2026-07-23",
- "criteria": {
-  "independentIntegrations": {
-   "definition": "A public repository, package, or application that reads /registry/zodiacs.registry.json or depends on @zodiacs/sdk and is not operated by Zodiacs.org, Astrofolio, or the SDK’s own examples.",
-   "sourcesSearched": [
-    "npm registry metadata: https://registry.npmjs.org/@zodiacs/sdk (versions 1.0.0-rc.1, 1.0.0, 1.0.1; published 2026-06-05)",
-    "npm downloads API: https://api.npmjs.org/downloads/point/last-month/@zodiacs/sdk → 81 downloads (2026-06-22..2026-07-21)",
-    "web search: \"@zodiacs/sdk\" OR \"zodiacs.registry.json\" -site:zodiacs.org (no consumers found; results were the unrelated Gnosis Zodiac tooling)",
-    "grep.app code search: attempted, blocked by a bot checkpoint — recorded as an unsearched source"
-   ],
-   "method": "Package-registry lookup plus keyword search for the two machine-readable identifiers a consumer must reference. npm exposes no public dependents API; dependents were checked only via the searches above.",
-   "capturedAtUtc": "2026-07-23T04:05:00Z to 2026-07-23T04:20:00Z (session window; npm responses saved verbatim in the closeout notes)",
-   "exclusions": "Zodiacs.org properties, Astrofolio properties, @zodiacs/sdk’s own examples, owner-controlled accounts.",
-   "result": "No qualifying results found in the defined search. Not exhaustive: private, unpublished, or unindexed integrations would not be found, and one code-search source was unavailable.",
-   "verificationUrls": [
-    "https://www.npmjs.com/package/@zodiacs/sdk",
-    "https://api.npmjs.org/downloads/point/last-month/@zodiacs/sdk"
-   ]
-  },
-  "thirdPartyCitations": {
-   "definition": "An editorial mention of zodiacs.org or one of its twelve canonical mint addresses by an independent publication, i.e. written by a person rather than generated from chain data.",
-   "sourcesSearched": [
-    "web search: \"zodiacs.org\" -site:zodiacs.org registry OR thesis OR zodiac tokens",
-    "web search: \"GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv\" OR \"8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm\" (aries and leo canonical mints)"
-   ],
-   "method": "Search-engine queries for the site and for two canonical mint addresses as citation anchors; every hit classified as editorial, automated listing, or owner-adjacent.",
-   "capturedAtUtc": "2026-07-23T04:05:00Z to 2026-07-23T04:20:00Z (session window)",
-   "exclusions": "Astrofolio properties (owner-adjacent by counting rule regardless of control); automated wallet/aggregator listings (Solflare price pages, CryptoDB dataset record) — observed, listed below, not counted.",
-   "result": "No qualifying editorial citations found in the defined searches. Observed and excluded: Solflare auto-generated price pages for the aries and leo mints; a CryptoDB dataset record. Not exhaustive: two search queries cannot cover all publications; the other ten mints were not individually queried.",
-   "verificationUrls": [
-    "https://www.solflare.com/prices/aries/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv/",
-    "https://www.solflare.com/prices/leo/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm/"
-   ]
-  },
-  "holderDispersion": {
-   "definition": "Median and range of per-sign top-10 token-account share, from the repository’s weekly public distribution snapshots (public/assets/distribution.json, refreshed by the distribution-refresh workflow).",
-   "sourcesSearched": [
-    "git history of public/assets/distribution.json on origin/main"
-   ],
-   "method": "git show <sha>:public/assets/distribution.json for every commit touching the file; per snapshot, median and min–max of signs[*].top10Pct.",
-   "capturedAtUtc": "2026-07-23T04:30:00Z (extraction); snapshot dates are the capturedAt fields inside each committed file",
-   "exclusions": "None; all four existing snapshots used.",
-   "result": "Four weekly snapshots exist: 2026-06-29 median 26.62% (range 23.2–28.9), 2026-07-06 median 26.62% (23.2–28.9), 2026-07-13 median 27.16% (23.0–30.6), 2026-07-20 median 27.16% (23.0–30.6). Baseline established; no widening — the median moved slightly toward concentration.",
-   "verificationUrls": [
-    "https://github.com/ZodiacsOfficial/site/commits/main/public/assets/distribution.json"
-   ]
-  },
-  "liquidityPersistence": {
-   "definition": "Whether each sign’s canonical Raydium pool (the reviewed pool addresses published in the instrument disclosure) exists and holds liquidity at capture, plus the pool-creation date Dexscreener reports.",
-   "sourcesSearched": [
-    "Dexscreener token endpoint per canonical mint: https://api.dexscreener.com/latest/dex/tokens/{mint}"
-   ],
-   "method": "One API call per mint; the canonical pool is matched by the reviewed pool address; liquidity.usd, volume.h24, and pairCreatedAt recorded per pool. The twelve per-pool records are embedded below.",
-   "capturedAtUtc": "2026-07-23T04:09:02.853Z",
-   "exclusions": "Non-canonical pools (stray Meteora pairs) observed but not counted toward the canonical-pool claim.",
-   "result": "12 of 12 canonical pools live at the capture with $11.9k–17.8k liquidity and $10–158 of 24h volume; Dexscreener reports pair creation 2024-07-05 for all twelve. Continuous historical depth between creation and capture was NOT archived and is not claimed.",
-   "verificationUrls": [
-    "https://dexscreener.com/solana/HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
-    "https://dexscreener.com/solana/2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
-    "https://dexscreener.com/solana/HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
-    "https://dexscreener.com/solana/DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
-    "https://dexscreener.com/solana/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
-    "https://dexscreener.com/solana/5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
-    "https://dexscreener.com/solana/DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
-    "https://dexscreener.com/solana/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
-    "https://dexscreener.com/solana/7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
-    "https://dexscreener.com/solana/549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
-    "https://dexscreener.com/solana/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
-    "https://dexscreener.com/solana/Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko"
-   ],
-   "pools": [
-    {
-     "sign": "aries",
-     "pairAddress": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 12625.36,
-     "volume24hUsdAtCapture": 44.76,
-     "verificationUrl": "https://dexscreener.com/solana/HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS"
+  "$comment": "Method-and-capture evidence backing every reader-facing candidacy field in thesis-candidacy.json. Each criterion records what was measured, where, how, when (UTC), what was excluded, what was found, and where a stranger can re-check. Negative results are scoped to the defined search, never asserted as exhaustive. Refreshing this file is a reviewed action, not part of any build. Every observation carries an independence classification under independencePolicy; only unsolicited-unaffiliated observations count toward pass conditions, and each exclusion decision is recorded with its criterion.",
+  "reviewedAt": "2026-10-14",
+  "criteria": {
+    "independentIntegrations": {
+      "definition": "A public repository, package, or application that reads /registry/zodiacs.registry.json or depends on @zodiacs/sdk and is not operated by Zodiacs.org, Astrofolio, or the SDK’s own examples.",
+      "sourcesSearched": [
+        "npm registry metadata: https://registry.npmjs.org/@zodiacs/sdk (versions 1.0.0-rc.1, 1.0.0, 1.0.1; published 2026-06-05)",
+        "npm downloads API: https://api.npmjs.org/downloads/point/last-month/@zodiacs/sdk → 81 downloads (2026-06-22..2026-07-21)",
+        "web search: \"@zodiacs/sdk\" OR \"zodiacs.registry.json\" -site:zodiacs.org (no consumers found; results were the unrelated Gnosis Zodiac tooling)",
+        "grep.app code search: attempted, blocked by a bot checkpoint — recorded as an unsearched source"
+      ],
+      "method": "Package-registry lookup plus keyword search for the two machine-readable identifiers a consumer must reference. npm exposes no public dependents API; dependents were checked only via the searches above.",
+      "capturedAtUtc": "2026-07-23T04:05:00Z to 2026-07-23T04:20:00Z (session window; npm responses saved verbatim in the closeout notes)",
+      "exclusions": "Zodiacs.org properties, Astrofolio properties, @zodiacs/sdk’s own examples, owner-controlled accounts.",
+      "result": "No qualifying results found in the defined search. Not exhaustive: private, unpublished, or unindexed integrations would not be found, and one code-search source was unavailable.",
+      "verificationUrls": [
+        "https://www.npmjs.com/package/@zodiacs/sdk",
+        "https://api.npmjs.org/downloads/point/last-month/@zodiacs/sdk"
+      ]
     },
-    {
-     "sign": "taurus",
-     "pairAddress": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 12488.47,
-     "volume24hUsdAtCapture": 48.51,
-     "verificationUrl": "https://dexscreener.com/solana/2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu"
+    "thirdPartyCitations": {
+      "definition": "An editorial mention of zodiacs.org or one of its twelve canonical mint addresses by an independent publication, i.e. written by a person rather than generated from chain data.",
+      "sourcesSearched": [
+        "web search: \"zodiacs.org\" -site:zodiacs.org registry OR thesis OR zodiac tokens",
+        "web search: \"GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv\" OR \"8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm\" (aries and leo canonical mints)"
+      ],
+      "method": "Search-engine queries for the site and for two canonical mint addresses as citation anchors; every hit classified as editorial, automated listing, or owner-adjacent.",
+      "capturedAtUtc": "2026-07-23T04:05:00Z to 2026-07-23T04:20:00Z (session window)",
+      "exclusions": "Astrofolio properties (owner-adjacent by counting rule regardless of control); automated wallet/aggregator listings (Solflare price pages, CryptoDB dataset record) — observed, listed below, not counted.",
+      "result": "No qualifying editorial citations found in the defined searches. Observed and excluded: Solflare auto-generated price pages for the aries and leo mints; a CryptoDB dataset record. Not exhaustive: two search queries cannot cover all publications; the other ten mints were not individually queried.",
+      "verificationUrls": [
+        "https://www.solflare.com/prices/aries/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv/",
+        "https://www.solflare.com/prices/leo/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm/"
+      ]
     },
-    {
-     "sign": "gemini",
-     "pairAddress": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 17814.66,
-     "volume24hUsdAtCapture": 157.81,
-     "verificationUrl": "https://dexscreener.com/solana/HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9"
+    "holderDispersion": {
+      "definition": "Median and range of per-sign top-10 token-account share, from the repository’s weekly public distribution snapshots (public/assets/distribution.json, refreshed by the distribution-refresh workflow).",
+      "sourcesSearched": [
+        "getTokenLargestAccounts + getTokenSupply via https://api.mainnet-beta.solana.com (and publicnode, drpc, blastapi, omniatech, leorpc alternates)",
+        "git history of public/assets/distribution.json on origin/main",
+        "Solscan and SolanaFM public holder APIs (both gated)"
+      ],
+      "method": "Quarterly RPC capture attempted 2026-10-14 via scripts/build-thesis-disclosure.mjs at 300ms–50s pacing across four runs and a 2h watch-loop, plus an 8h-cooldown retry: getTokenLargestAccounts returned HTTP 429 (per-method budget) on every attempt from this runner, and every probed alternate endpoint is paywalled, keyed, or down. The weekly distribution series was extracted from git history as the secondary source.",
+      "capturedAtUtc": "2026-10-14T19:45:00Z (attempt); last successful observations are dated inside the snapshots cited in the result",
+      "exclusions": "The 2026-08-24 partial snapshot carries 8 of 12 signs forward from earlier captures; only its four observed signs are compared.",
+      "result": "No fresh full per-sign capture. The weekly distribution series stalled: last full snapshot 2026-08-03 (median 26.89%, range 23.0–30.6), one partial 2026-08-24 observing 4 of 12 signs — aries 28.4→29.75%, gemini 23.0→22.53%, leo 26.8→27.87%, capricorn 30.6→31.8% versus 2026-07-14. Direction on that subset is mildly more concentrated; no widening. The last full per-sign capture remains 2026-07-14 (23.0–30.6%, median ~27.2%). The capture failure and the stalled weekly pipeline are findings, not footnotes: the dispersion instrumentation needs repair before the next quarterly.",
+      "verificationUrls": [
+        "https://github.com/zodiacs-org/site/commits/main/public/assets/distribution.json"
+      ]
     },
-    {
-     "sign": "cancer",
-     "pairAddress": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 13509.94,
-     "volume24hUsdAtCapture": 47.26,
-     "verificationUrl": "https://dexscreener.com/solana/DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW"
+    "liquidityPersistence": {
+      "definition": "Whether each sign’s canonical Raydium pool (the reviewed pool addresses published in the instrument disclosure) exists and holds liquidity at capture, plus the pool-creation date Dexscreener reports.",
+      "sourcesSearched": [
+        "GeckoTerminal pools endpoint per canonical mint: https://api.geckoterminal.com/api/v2/networks/solana/tokens/{mint}/pools",
+        "Dexscreener token endpoint per canonical mint: https://api.dexscreener.com/latest/dex/tokens/{mint}"
+      ],
+      "method": "One GeckoTerminal call per mint (with retries on rate limits); the canonical pool is matched by the reviewed pool address from the instrument disclosure; reserve_in_usd and volume_usd.h24 recorded per pool. Dexscreener was the July source and was queried first; it still indexes ten of the twelve pairs and reports pair creation 2024-07-05 for each of them, but returned no pairs for two mints (scorpio, pisces) whose canonical pools GeckoTerminal and the chain show live, so GeckoTerminal carries the liveness capture and the gap is recorded rather than smoothed. For the two unindexed pairs the 2024-07-05 creation date is carried forward from the 2026-07-23 Dexscreener capture embedded in this file’s git history, where Dexscreener reported it for all twelve. The twelve per-pool records are embedded below.",
+      "capturedAtUtc": "2026-10-14T09:24:12.521Z",
+      "exclusions": "Non-canonical pools (Orca, Meteora, Raydium-CLMM pairs that have appeared around the canonical pools) observed but not counted toward the canonical-pool claim.",
+      "result": "12 of 12 canonical pools live at the capture with $12,922–24,159 reserves and $0–201 of 24h volume (several pools quiet at $0). July 2026 baseline for comparison: $11.9k–17.8k and $10–158. Reserves persisted and ranged slightly higher; volumes remain minimal. Continuous historical depth is still not archived.",
+      "verificationUrls": [
+        "https://www.geckoterminal.com/solana/pools/HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+        "https://www.geckoterminal.com/solana/pools/2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+        "https://www.geckoterminal.com/solana/pools/HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+        "https://www.geckoterminal.com/solana/pools/DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+        "https://www.geckoterminal.com/solana/pools/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
+        "https://www.geckoterminal.com/solana/pools/5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+        "https://www.geckoterminal.com/solana/pools/DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+        "https://www.geckoterminal.com/solana/pools/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
+        "https://www.geckoterminal.com/solana/pools/7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+        "https://www.geckoterminal.com/solana/pools/549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+        "https://www.geckoterminal.com/solana/pools/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
+        "https://www.geckoterminal.com/solana/pools/Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko"
+      ],
+      "pools": [
+        {
+          "sign": "aries",
+          "pairAddress": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 14927.87,
+          "volume24hUsdAtCapture": 113.1,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS"
+        },
+        {
+          "sign": "taurus",
+          "pairAddress": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 13876.68,
+          "volume24hUsdAtCapture": 29.79,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu"
+        },
+        {
+          "sign": "gemini",
+          "pairAddress": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 24158.53,
+          "volume24hUsdAtCapture": 201.03,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9"
+        },
+        {
+          "sign": "cancer",
+          "pairAddress": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 14939.72,
+          "volume24hUsdAtCapture": 3.26,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW"
+        },
+        {
+          "sign": "leo",
+          "pairAddress": "48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 14048.95,
+          "volume24hUsdAtCapture": 105.66,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ"
+        },
+        {
+          "sign": "virgo",
+          "pairAddress": "5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 13227.55,
+          "volume24hUsdAtCapture": 4.9,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh"
+        },
+        {
+          "sign": "libra",
+          "pairAddress": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 19708.45,
+          "volume24hUsdAtCapture": 71.16,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9"
+        },
+        {
+          "sign": "scorpio",
+          "pairAddress": "3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-07-23 capture (pair no longer indexed by Dexscreener at 2026-10-14)",
+          "reserveUsdAtCapture": 14072.58,
+          "volume24hUsdAtCapture": 0,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta"
+        },
+        {
+          "sign": "sagittarius",
+          "pairAddress": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 13929.49,
+          "volume24hUsdAtCapture": 2.97,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky"
+        },
+        {
+          "sign": "capricorn",
+          "pairAddress": "549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 13960.67,
+          "volume24hUsdAtCapture": 56.74,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin"
+        },
+        {
+          "sign": "aquarius",
+          "pairAddress": "BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-10-14 capture",
+          "reserveUsdAtCapture": 17434.1,
+          "volume24hUsdAtCapture": 88.11,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv"
+        },
+        {
+          "sign": "pisces",
+          "pairAddress": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
+          "dex": "raydium",
+          "pairCreatedAtPerDexscreener": "2024-07-05",
+          "pairCreatedAtSource": "dexscreener 2026-07-23 capture (pair no longer indexed by Dexscreener at 2026-10-14)",
+          "reserveUsdAtCapture": 12921.5,
+          "volume24hUsdAtCapture": 0,
+          "verificationUrl": "https://www.geckoterminal.com/solana/pools/Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko"
+        }
+      ]
     },
-    {
-     "sign": "leo",
-     "pairAddress": "48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 13228.87,
-     "volume24hUsdAtCapture": 56.02,
-     "verificationUrl": "https://dexscreener.com/solana/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ"
-    },
-    {
-     "sign": "virgo",
-     "pairAddress": "5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 12029.15,
-     "volume24hUsdAtCapture": 27.28,
-     "verificationUrl": "https://dexscreener.com/solana/5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh"
-    },
-    {
-     "sign": "libra",
-     "pairAddress": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 17329.82,
-     "volume24hUsdAtCapture": 10.63,
-     "verificationUrl": "https://dexscreener.com/solana/DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9"
-    },
-    {
-     "sign": "scorpio",
-     "pairAddress": "3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 12738.19,
-     "volume24hUsdAtCapture": 44.51,
-     "verificationUrl": "https://dexscreener.com/solana/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta"
-    },
-    {
-     "sign": "sagittarius",
-     "pairAddress": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 13070.15,
-     "volume24hUsdAtCapture": 119.3,
-     "verificationUrl": "https://dexscreener.com/solana/7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky"
-    },
-    {
-     "sign": "capricorn",
-     "pairAddress": "549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 12434.18,
-     "volume24hUsdAtCapture": 36.02,
-     "verificationUrl": "https://dexscreener.com/solana/549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin"
-    },
-    {
-     "sign": "aquarius",
-     "pairAddress": "BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 12871.97,
-     "volume24hUsdAtCapture": 22.04,
-     "verificationUrl": "https://dexscreener.com/solana/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv"
-    },
-    {
-     "sign": "pisces",
-     "pairAddress": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
-     "dex": "raydium",
-     "pairCreatedAtPerDexscreener": "2024-07-05",
-     "liquidityUsdAtCapture": 11973.64,
-     "volume24hUsdAtCapture": 48.73,
-     "verificationUrl": "https://dexscreener.com/solana/Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko"
+    "archiveContinuity": {
+      "definition": "Count, earliest, latest, and largest day-gap of HTTP-200 Internet Archive captures of zodiacs.org since 2024-01-01 (one per day via collapse), plus the repository’s own continuously versioned archive.",
+      "sourcesSearched": [
+        "Wayback CDX API: https://web.archive.org/cdx/search/cdx?url=zodiacs.org&output=json&fl=timestamp,statuscode&filter=statuscode:200&collapse=timestamp:8&from=20240101"
+      ],
+      "method": "One CDX query; the raw response rows are embedded below; the gap statistic is computed from consecutive capture dates.",
+      "capturedAtUtc": "2026-07-23T04:07:07.972Z",
+      "exclusions": "Pre-2024 captures of the domain (predate the registry; the domain had unrelated prior history) and non-200 captures.",
+      "result": "9 captures since 2024-01-01; earliest 20240726, latest 20250719; largest gap 166 days (20240804 → 20250117); no capture in the 12 months before the query. The repository’s own version archive is continuous and independently verifiable through its public commit history.",
+      "verificationUrls": [
+        "https://web.archive.org/web/2024*/zodiacs.org",
+        "https://web.archive.org/cdx/search/cdx?url=zodiacs.org&output=json&fl=timestamp,statuscode&filter=statuscode:200&collapse=timestamp:8&from=20240101"
+      ],
+      "cdxRows": [
+        {
+          "timestamp": "20240726200056",
+          "statuscode": "200"
+        },
+        {
+          "timestamp": "20240803063054",
+          "statuscode": "200"
+        },
+        {
+          "timestamp": "20240804151146",
+          "statuscode": "200"
+        },
+        {
+          "timestamp": "20250117023345",
+          "statuscode": "200"
+        },
+        {
+          "timestamp": "20250425102553",
+          "statuscode": "200"
+        },
+        {
+          "timestamp": "20250427022514",
+          "statuscode": "200"
+        },
+        {
+          "timestamp": "20250513055006",
+          "statuscode": "200"
+        },
+        {
+          "timestamp": "20250615140324",
+          "statuscode": "200"
+        },
+        {
+          "timestamp": "20250719223440",
+          "statuscode": "200"
+        }
+      ]
     }
-   ]
   },
-  "archiveContinuity": {
-   "definition": "Count, earliest, latest, and largest day-gap of HTTP-200 Internet Archive captures of zodiacs.org since 2024-01-01 (one per day via collapse), plus the repository’s own continuously versioned archive.",
-   "sourcesSearched": [
-    "Wayback CDX API: https://web.archive.org/cdx/search/cdx?url=zodiacs.org&output=json&fl=timestamp,statuscode&filter=statuscode:200&collapse=timestamp:8&from=20240101"
-   ],
-   "method": "One CDX query; the raw response rows are embedded below; the gap statistic is computed from consecutive capture dates.",
-   "capturedAtUtc": "2026-07-23T04:07:07.972Z",
-   "exclusions": "Pre-2024 captures of the domain (predate the registry; the domain had unrelated prior history) and non-200 captures.",
-   "result": "9 captures since 2024-01-01; earliest 20240726, latest 20250719; largest gap 166 days (20240804 → 20250117); no capture in the 12 months before the query. The repository’s own version archive is continuous and independently verifiable through its public commit history.",
-   "verificationUrls": [
-    "https://web.archive.org/web/2024*/zodiacs.org",
-    "https://web.archive.org/cdx/search/cdx?url=zodiacs.org&output=json&fl=timestamp,statuscode&filter=statuscode:200&collapse=timestamp:8&from=20240101"
-   ],
-   "cdxRows": [
-    {
-     "timestamp": "20240726200056",
-     "statuscode": "200"
-    },
-    {
-     "timestamp": "20240803063054",
-     "statuscode": "200"
-    },
-    {
-     "timestamp": "20240804151146",
-     "statuscode": "200"
-    },
-    {
-     "timestamp": "20250117023345",
-     "statuscode": "200"
-    },
-    {
-     "timestamp": "20250425102553",
-     "statuscode": "200"
-    },
-    {
-     "timestamp": "20250427022514",
-     "statuscode": "200"
-    },
-    {
-     "timestamp": "20250513055006",
-     "statuscode": "200"
-    },
-    {
-     "timestamp": "20250615140324",
-     "statuscode": "200"
-    },
-    {
-     "timestamp": "20250719223440",
-     "statuscode": "200"
-    }
-   ]
+  "independencePolicy": {
+    "classes": [
+      "unsolicited-unaffiliated",
+      "unsolicited-unknown",
+      "prompted",
+      "campaign",
+      "affiliated"
+    ],
+    "rule": "Only unsolicited-unaffiliated observations count toward any candidacy pass condition. Operator, related-party, paid, prompted, and coordinated activity is recorded and excluded. Prompted mentions are recorded as prompted."
   }
- },
- "independencePolicy": {
-  "classes": [
-   "unsolicited-unaffiliated",
-   "unsolicited-unknown",
-   "prompted",
-   "campaign",
-   "affiliated"
-  ],
-  "rule": "Only unsolicited-unaffiliated observations count toward any candidacy pass condition. Operator, related-party, paid, prompted, and coordinated activity is recorded and excluded. Prompted mentions are recorded as prompted."
- }
 }
