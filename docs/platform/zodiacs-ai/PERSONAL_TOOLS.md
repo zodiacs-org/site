@@ -22,6 +22,18 @@ listed after every other tool, so every earlier entry keeps its place.
 
 Nobody switches it on from a pull request; that is the owner's call.
 
+## The pages' switches
+
+Each page has its own build flag: `PUBLIC_VEDIC_SIGNS_ENABLED` for
+`/vedic-signs/`, `PUBLIC_YOUR_DAY_ENABLED` for `/your-day/`,
+`PUBLIC_RETROGRADES_FOR_YOU_ENABLED` for `/retrogrades/for-you/` and
+`PUBLIC_ASTROCARTOGRAPHY_ENABLED` for `/astrocartography/`
+(`src/lib/launch-flags.ts`). Each is on only when exactly `1`. Off, the page
+redirects to the 404 page, and its hub card, menu entry, sitemap row, links
+from other pages, Guide line and share routes are all absent. Switch a page's
+flag on and deploy before `ZODIACS_PERSONAL_TOOLS_ENABLED`, or that tool's
+`pageUrl` and `shareUrl` lead to a missing page.
+
 ## How a tool is added
 
 Each tool is one module in `src/ai-tools/personal/` that exports a definition

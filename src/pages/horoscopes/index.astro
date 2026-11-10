@@ -7,6 +7,7 @@ import SignIcon from '../../components/SignIcon.astro';
 import AskGuideLine from '../../components/AskGuideLine.astro';
 import GuideQuickPrompts from '../../components/GuideQuickPrompts.astro';
 import EmailCapture from '../../components/EmailCapture.astro';
+import { launchFlagOn } from '../../lib/launch-flags';
 import programData from '../../data/horoscope-program.json';
 import { horoscopeHubTeaser, pageReadingFromProgram } from '../../lib/horoscope-page-data';
 import type { HoroscopeProgram } from '../../lib/horoscope-program';
@@ -104,7 +105,9 @@ const jsonLd = [
     <EmailCapture placement="horoscopes" />
 
     <p class="horo-note">
-      For a reading from your own birth chart, <a href="/your-day/">read your day</a>: today’s transits to your chart, ranked, with exact times. For the sky against your chart, <a href="/today/">open Today</a>. New here? <a href="/birth-chart/">Get your free birth chart</a>.
+      {launchFlagOn('PUBLIC_YOUR_DAY_ENABLED')
+        ? <>For a reading from your own birth chart, <a href="/your-day/">read your day</a>: today’s transits to your chart, ranked, with exact times. For the sky against your chart, <a href="/today/">open Today</a>.</>
+        : <>For a reading alongside your own birth chart, <a href="/today/">open Today</a>.</>} New here? <a href="/birth-chart/">Get your free birth chart</a>.
       {seasonNow && <>{" "}It is {seasonNow.name} season: <a href={`/seasons/${seasonNow.slug}/`}>see what it asks of each sign</a>.</>}
     </p>
 

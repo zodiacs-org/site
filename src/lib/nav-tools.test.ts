@@ -1,12 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import { RELEASED_LOCALES, localizePath, t } from './i18n';
+import { TOOL_ICON_FOR_PATH } from './tool-icons';
+import { launchFlagOn } from './launch-flags';
 import {
+  ALL_NAV_MORE,
+  ALL_TOOL_CATALOG,
   FOOTER_TOOLS,
+  NAV_MORE,
   NAV_TOOLS,
   navToolLabelHasEnglishCue,
   TOOL_CATALOG,
   TOOLS_HUB,
+  visibleNavMore,
+  visibleTools,
 } from './nav-tools';
+
+// The /your-day/ hub card ('sky' group) and menu entry appear only while
+// PUBLIC_YOUR_DAY_ENABLED is '1'; with it unset these are main's numbers.
+const yourDayCards = Number(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED'));
 
 describe('NAV_TOOLS', () => {
   it.each(['es', 'pt', 'fr', 'it'] as const)('recognizes the existing %s Birthday language cue once', (locale) => {
@@ -67,7 +78,7 @@ describe('NAV_TOOLS', () => {
       '/transits/',
       '/retrogrades/',
     ]);
-    expect(TOOLS_HUB).toHaveLength(30);
+    expect(TOOLS_HUB).toHaveLength(29 + yourDayCards);
     for (const tool of [...NAV_TOOLS, ...FOOTER_TOOLS, ...TOOLS_HUB]) {
       expect(catalogueHrefs.has(tool.href)).toBe(true);
     }
@@ -77,7 +88,7 @@ describe('NAV_TOOLS', () => {
     expect(TOOLS_HUB.filter((tool) => tool.group === 'lead').map((tool) => tool.href)).toEqual(['/birth-chart/']);
     expect(TOOLS_HUB[0].href).toBe('/birth-chart/');
     const counts = Object.fromEntries(['you', 'together', 'sky', 'year'].map((group) => [group, TOOLS_HUB.filter((tool) => tool.group === group).length]));
-    expect(counts).toEqual({ you: 6, together: 6, sky: 7, year: 10 });
+    expect(counts).toEqual({ you: 6, together: 6, sky: 6 + yourDayCards, year: 10 });
     expect(new Set(TOOLS_HUB.map((tool) => tool.icon)).size).toBe(TOOLS_HUB.length);
     for (const tool of TOOLS_HUB) {
       expect(tool.promise).not.toMatch(/[\r\n\u2013\u2014]/u);
@@ -108,6 +119,29 @@ describe('NAV_TOOLS', () => {
     for (const locale of ['fr', 'it', 'ru'] as const) {
       expect(localizePath(locale, '/today/')).toBe('/today/');
       expect(today?.labels?.[locale]).toMatch(/anglais|inglese|английски/u);
+    }
+  });
+});
+
+describe('tools behind a launch switch', () => {
+  it('shows /your-day/ on the hub and in the menu only while its switch is on, and every hub card has an icon either way', () => {
+    expect(visibleTools(() => true)).toEqual(ALL_TOOL_CATALOG);
+    expect(visibleTools(() => false).every((tool) => !tool.flag)).toBe(true);
+    expect(visibleTools(() => true).some((tool) => tool.href === '/your-day/')).toBe(true);
+    expect(visibleTools(() => false).some((tool) => tool.href === '/your-day/')).toBe(false);
+    expect(visibleNavMore(() => true)).toEqual(ALL_NAV_MORE);
+    expect(visibleNavMore(() => true).some((entry) => entry.href === '/your-day/')).toBe(true);
+    expect(visibleNavMore(() => false).some((entry) => entry.href === '/your-day/')).toBe(false);
+    expect(TOOLS_HUB.some((tool) => tool.href === '/your-day/')).toBe(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED'));
+    expect(NAV_MORE.some((entry) => entry.href === '/your-day/')).toBe(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED'));
+    for (const tool of ALL_TOOL_CATALOG) {
+      if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
+    }
+  });
+
+  it('keeps all eight locale labels on every menu entry, switched or not', () => {
+    for (const entry of ALL_NAV_MORE) {
+      expect(Object.keys(entry.label).sort()).toEqual(['en', 'es', 'fr', 'it', 'pt', 'ru', 'zh-hans', 'zh-hant']);
     }
   });
 });

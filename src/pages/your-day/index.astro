@@ -1,7 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import YourDay from '../../islands/YourDay';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
+
+if (!launchFlagOn('PUBLIC_YOUR_DAY_ENABLED')) return Astro.redirect('/404.html');
 
 const faq = [
   { q: 'What is a transit?', a: 'A transit is a planet in today’s sky making an aspect to a point in your birth chart: sitting on it (a conjunction), facing it (an opposition), or at a square, trine or sextile to it. Astrologers read the moving planet as what arrives and your natal point as the part of life it touches.' },
