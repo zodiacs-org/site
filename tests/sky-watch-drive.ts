@@ -8,7 +8,7 @@ import { createAiNodeHandler } from '../src/ai-tools/http';
 import { SkyWatch } from '../src/ai-tools/watch/service';
 import { destinationVault, digest, signature } from '../src/ai-tools/watch/crypto';
 import { DAY, WATCH_VERSION, type Rpc } from '../src/ai-tools/watch/contracts';
-import { deliverWatchEvents, fillWatchLedger } from '../src/ai-tools/watch/worker';
+import { calculateWindow, deliverWatchEvents, fillWatchLedger } from '../src/ai-tools/watch/worker';
 
 const database = process.env.SKY_WATCH_TEST_DATABASE_URL;
 if (!database) throw new Error('Set SKY_WATCH_TEST_DATABASE_URL to an isolated local test database.');
@@ -172,13 +172,19 @@ try {
   assert.equal((await call('events/list', {}, token2)).status, 401);
   // The actual engine and persistent scheduler also survive restart and missed runs.
   await sql('truncate sky_watch.outbox, sky_watch.ledger, sky_watch.progress;');
-  const firstTick = Date.parse('2026-10-10T12:00:00Z');
+  // Dates are relative to today: the ledger cleanup drops events older than 30 days, so a fixed date
+  // stops working a month later. Start at the first UTC day from 20 days ago whose two-day window has
+  // at least one event, so the ledger check below is never empty.
+  let firstDay = Math.floor((Date.now() - 20 * DAY) / DAY) * DAY;
+  while (firstDay + 6 * DAY <= Date.now() && (await calculateWindow(new Date(firstDay).toISOString(), new Date(firstDay + 2 * DAY).toISOString())).length === 0) firstDay += DAY;
+  assert.ok(firstDay + 6 * DAY <= Date.now(), 'no sky event in the last 20 days');
+  const firstTick = firstDay + DAY / 2;
   assert.equal(await fillWatchLedger(rpc, firstTick), 2);
   const idsBeforeRestart = await sql('select jsonb_agg(id order by id) from sky_watch.ledger;');
   assert.notEqual(idsBeforeRestart, '');
   assert.equal(await fillWatchLedger(rpc, firstTick), 0);
   assert.equal(await sql('select jsonb_agg(id order by id) from sky_watch.ledger;'), idsBeforeRestart);
-  const missedRuns = Date.parse('2026-10-14T12:00:00Z');
+  const missedRuns = firstTick + 4 * DAY;
   assert.equal(await fillWatchLedger(rpc, missedRuns), 3);
   assert.equal(await fillWatchLedger(rpc, missedRuns), 1);
   assert.equal(await fillWatchLedger(rpc, missedRuns), 0);
