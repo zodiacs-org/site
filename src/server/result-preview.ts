@@ -1888,7 +1888,7 @@ export async function handleAstrocartographyLinkRequest(request: Request): Promi
 
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response> }>> = {
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -1922,9 +1922,9 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-link': { path: INVITE_SHARE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteLinkRequest },
   'invite-image': { path: INVITE_SHARE_IMAGE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteImageRequest },
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
-  'astrocartography-link': { path: ASTROCARTOGRAPHY_SHARE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyLinkRequest },
-  'astrocartography-image': { path: ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyImageRequest },
-  'astrocartography-story': { path: ASTROCARTOGRAPHY_SHARE_STORY_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyStoryRequest },
+  'astrocartography-link': { path: ASTROCARTOGRAPHY_SHARE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyLinkRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
+  'astrocartography-image': { path: ASTROCARTOGRAPHY_SHARE_IMAGE_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyImageRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
+  'astrocartography-story': { path: ASTROCARTOGRAPHY_SHARE_STORY_PATH, keys: ASTROCARTOGRAPHY_SHARE_KEYS, handle: handleAstrocartographyStoryRequest, flag: 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
@@ -1932,6 +1932,11 @@ export const isResultShareRoute = (value: unknown): value is ResultShareRoute =>
 /** The Node entry: only the route key and the route's own keys, each a single string. */
 export async function handleResultShareNodeRequest(req: any, res: any, route: ResultShareRoute): Promise<void> {
   const target = ROUTES[route];
+  // A tool behind a switch that is off has no share page or picture: the same 404 as an unknown route.
+  if (target.flag && process.env[target.flag] !== '1') {
+    await writeNodeResponse(res, errorResponse(404));
+    return;
+  }
   const query = req.query && typeof req.query === 'object' ? req.query : {};
   let params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {

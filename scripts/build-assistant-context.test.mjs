@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { ASSISTANT_CONTEXT } from '../api/_assistant/context.ts';
 import {
   BANNED_CONSUMER_VOCABULARY,
+  LAUNCH_FLAGGED_ROUTES,
   MAX_CONTEXT_BYTES,
   MIN_CONTEXT_BYTES,
   TOOL_ROUTES,
@@ -16,6 +17,12 @@ import {
 
 let temporaryDirectory;
 
+// The committed module is the output with every launch switch unset; the
+// Astrocartography page joins the inventory only while its switch is exactly '1'.
+const FLAGS_OFF = Object.freeze({});
+const PAGE_ON = Object.freeze({ PUBLIC_ASTROCARTOGRAPHY_ENABLED: '1' });
+const PAGE_LINE = '- /astrocartography/ —';
+
 afterEach(async () => {
   if (temporaryDirectory) {
     await rm(temporaryDirectory, { force: true, recursive: true });
@@ -24,8 +31,12 @@ afterEach(async () => {
 });
 
 describe('assistant site context', () => {
-  it('contains every tool route and the complete live route families', async () => {
-    const { context, counts } = await generateAssistantContext();
+  it.each([
+    ['unset', FLAGS_OFF],
+    ['on', PAGE_ON],
+  ])('contains every tool route and the complete live route families (Astrocartography switch %s)', async (_mode, env) => {
+    const pageOn = env.PUBLIC_ASTROCARTOGRAPHY_ENABLED === '1';
+    const { context, counts } = await generateAssistantContext({ env });
 
     expect(TOOL_ROUTES).toEqual([
       '/ask/',
@@ -79,15 +90,18 @@ describe('assistant site context', () => {
       // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
-      // Astrocartography at /astrocartography/ adds one more.
-      consumerRoutes: 718,
+      // Astrocartography at /astrocartography/ adds one static page, only while
+      // PUBLIC_ASTROCARTOGRAPHY_ENABLED is '1'.
+      consumerRoutes: 717 + Number(pageOn),
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 79,
+      staticPages: 78 + Number(pageOn),
       tools: 28,
     });
+    if (pageOn) expect(context).toContain(PAGE_LINE);
+    else expect(context).not.toContain('/astrocartography/');
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
     expect(context).toContain('- /learn/placements/sun-in-aries/ — What Sun in Aries means in a birth chart.');
@@ -164,14 +178,35 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
     const output = join(temporaryDirectory, 'context.ts');
 
-    const first = await buildAssistantContext({ output });
+    const first = await buildAssistantContext({ output, env: FLAGS_OFF });
     const firstBytes = await readFile(output);
-    const second = await buildAssistantContext({ output });
+    const second = await buildAssistantContext({ output, env: FLAGS_OFF });
     const secondBytes = await readFile(output);
 
     expect(second.context).toBe(first.context);
     expect(second.source).toBe(first.source);
     expect(secondBytes.equals(firstBytes)).toBe(true);
     expect(ASSISTANT_CONTEXT).toBe(first.context);
+  });
+
+  it('commits the switches-unset output, and the Astrocartography switch adds exactly its one line', async () => {
+    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/astrocartography/': 'PUBLIC_ASTROCARTOGRAPHY_ENABLED' });
+    temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
+
+    const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
+    expect(ASSISTANT_CONTEXT).toBe(off.context);
+    expect(off.context).not.toContain('/astrocartography/');
+
+    for (const value of ['', '0', 'true', ' 1']) {
+      const notOn = await generateAssistantContext({ env: { PUBLIC_ASTROCARTOGRAPHY_ENABLED: value } });
+      expect(notOn.context).toBe(off.context);
+    }
+
+    const on = await buildAssistantContext({ output: join(temporaryDirectory, 'on.ts'), env: PAGE_ON });
+    const offLines = off.context.split('\n');
+    const added = on.context.split('\n').filter((line) => !offLines.includes(line));
+    expect(added).toHaveLength(1);
+    expect(added[0].startsWith(PAGE_LINE)).toBe(true);
+    expect(on.context.split('\n').filter((line) => line !== added[0])).toEqual(offLines);
   });
 });

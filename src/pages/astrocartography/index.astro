@@ -1,7 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import AstrocartographyMap from '../../islands/AstrocartographyMap';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
+
+if (!launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED')) return Astro.redirect('/404.html');
 
 const faq = [
   { q: 'What is astrocartography?', a: 'A map of the moment you were born. For each planet it draws the places on Earth where that planet was rising, setting, overhead or underfoot at that instant. Astrologers read a place near one of your lines as carrying that planet\'s character for you: Venus for love and ease, Jupiter for growth and opportunity, Saturn for hard work and staying power.' },
