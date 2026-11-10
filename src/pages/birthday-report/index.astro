@@ -1,7 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
 import BirthdayReport from '../../islands/BirthdayReport';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
+
+if (!launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED')) {
+  return Astro.redirect('/404.html');
+}
 
 const jsonLd = [
   { '@type': 'WebApplication', name: 'Birthday report', url: 'https://zodiacs.org/birthday-report/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
@@ -23,7 +28,7 @@ const jsonLd = [
         <a href="/numerology/">numerology</a> Personal Year and one tarot card for the year ahead, from your birth date.
       </p>
     </div>
-    <BirthdayReport client:load />
+    <BirthdayReport client:load yearScoreLink={launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED')} />
     <noscript><p>The birthday report needs JavaScript. Enable it and reload to make your report from your birth date.</p></noscript>
   </section>
 
