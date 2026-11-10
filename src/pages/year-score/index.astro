@@ -2,7 +2,12 @@
 import Base from '../../layouts/Base.astro';
 import YearScoreCalculator from '../../islands/YearScoreCalculator';
 import { ASPECT_ORB, PLANET_WEIGHT, POINT_WEIGHT } from '../../lib/year-score/core';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
+
+if (!launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED')) {
+  return Astro.redirect('/404.html');
+}
 
 const faq = [
   {
