@@ -136,7 +136,7 @@ its source takes 0.3.33.
 ## Release steps (owner)
 
 1. Review this draft PR and the copy in `goals.ts`.
-2. Apply `supabase/migrations/20261109120000_zodiacs_mcp_usage_good_days.sql`
+2. Apply `supabase/migrations/20261110090000_zodiacs_mcp_usage_november_tools.sql`
    so the anonymous daily counter accepts the name (until then counting it
    fails quietly; replies are never affected).
 3. Set `ZODIACS_GOOD_DAYS_ENABLED=1` on preview first, then production, when
