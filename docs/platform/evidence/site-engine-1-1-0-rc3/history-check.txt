@@ -1,0 +1,42 @@
+Private birth-data search, 2026-11-10 (counts only)
+
+Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
+(SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), run
+from this checkout with Node 22.22.2, with the programme's private-scan
+classifiers for merges, bundles and archives (merge-aware-added.mjs,
+tree-delta-categories.mjs, classify-bundle-context.mjs, classify-archives.mjs)
+and two counts-only classifiers written for this record (the added lines of one
+commit by coarse path category, and whether each is, versions and digests
+apart, already in the previous adoption's copy of the same file).
+Patterns: the owner's two private pattern sets, kept outside every repository
+with the raw outputs. No pattern, matched line, label or path is recorded here.
+The owner's excluded engine file does not exist in this repository; the
+tool's exclusion is stated in its output all the same.
+
+Each pattern set gives the same counts.
+
+Run before the first push of the adoption, over origin/main..751c62ea with
+main at 633f01e5: the branch's 11 commits, one of them a merge of main
+(a7df1015). It reads every added line, every added or changed binary with
+gzip contents read, added paths and messages, and the head's tree.
+
+- The commits add 36 birth-data lines. The head's tree holds 672, against
+  654 in main's tree as merged (633f01e5). The 18 more are all in the two new
+  archives' copies of their bundles, developer plugin 0.3.32's ZIP and MCP
+  adapter 0.1.0-rc.27's archive (5 places in each); no place in main's tree
+  gains or loses a line.
+- Read against each parent: the adoption commit 71b478c0 adds 0 data-pattern
+  and 6 name-pattern lines, all in this folder's AI runtime inventories, and
+  all 6 are, versions and digests apart, lines of 1.1.0-rc.2's inventories
+  already on main (site-engine-1-1-0-rc2/private-state-review/). The merge of
+  main, read against main, adds the branch's lines again (0 and 6), and read
+  against the branch none. Every other commit adds none.
+- Bundles: no matching line the range leaves in a regenerated bundle.
+- Archives: 28 matching lines in the 4 archive places the range adds (2 ZIP,
+  2 tgz), all 28 their base source's lines apart from version strings and
+  digests.
+
+Every matching line the branch adds is birth data main already carries,
+re-emitted by the regenerated inventories and the new archives. The tree's
+lines predate this adoption and stay as the earlier records classified them;
+no blanket privacy clearance of the tree is claimed.
