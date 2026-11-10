@@ -72,8 +72,9 @@ const TRANSLATED_NEW_PAGES_ROUTES = (['es', 'pt', 'fr', 'it'] as const).flatMap(
 // it. Each Life Path page dates itself from its own `updated` field, the same
 // date its Article markup carries.
 const NUMEROLOGY_LASTMOD = '2026-09-07';
-// The tarot draw, and the tools hub that lists it.
-const TAROT_LASTMOD = '2026-11-09';
+// The tarot draw, and the pages that link to it: the tools hub, the homepage's row of tools and the numerology
+// calculator. The day of the daily edition it was built with.
+const TAROT_LASTMOD = '2026-11-10';
 // The void-of-course Moon calendar shipped in the same review cycle.
 const VOID_OF_COURSE_LASTMOD = '2026-09-07';
 // Phase 1 of the engine brief and the claims ledger's corrections (step 1.14)
@@ -647,8 +648,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...eventsPublication.pages
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
-  // The tarot draw, first published, and the tools hub's card for it. Last, so this date wins.
-  ...['/tarot/', '/tools/'].map((loc) => [loc, TAROT_LASTMOD] as const),
+  // The tarot draw, first published, and the pages that link to it. Last, so this date wins.
+  ...['/tarot/', '/tools/', '/', '/numerology/'].map((loc) => [loc, TAROT_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

@@ -1498,7 +1498,8 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
   new Set(['/numerology/']),
 );
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-09-07</lastmod>')) {
+// Revised on 10 November 2026 with its link to the tarot draw (TAROT_LASTMOD in src/pages/sitemap.xml.ts).
+if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-11-10</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(
