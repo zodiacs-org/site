@@ -635,7 +635,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/transits/', '2026-11-06'] as const,
   // The Year Ahead Score calculator, published 2026-11-09.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/year-score/', '2026-11-09'] as const] : []),
-  ['/birthday-report/', '2026-11-09'] as const,
+  ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday-report/', '2026-11-09'] as const] : []),
   ...(['es', 'pt', 'fr', 'it', 'ru'] as const).map((locale) => [`/${locale}/transits/`, '2026-11-06'] as const),
   ['/events/jupiter-opposition-pluto-2026-07-20/', '2026-11-06'] as const,
   // Your 2027 sky's eclipse lines read the full longitude, so 1°59′ Virgo prints 1°, not 2° (every language).
@@ -715,7 +715,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/numerology/', priority: 0.85 },
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [{ loc: '/year-score/', priority: 0.8 }] : []),
-    { loc: '/birthday-report/', priority: 0.8 },
+    ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [{ loc: '/birthday-report/', priority: 0.8 }] : []),
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
     { loc: '/mercury-retrograde/', priority: 0.85 },
     { loc: '/transits/', priority: 0.85 },

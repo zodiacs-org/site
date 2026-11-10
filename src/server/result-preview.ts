@@ -1971,8 +1971,8 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
   'year-score-link': { path: YEAR_SCORE_SHARE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreLinkRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
   'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
-  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest },
-  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest },
+  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
+  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);

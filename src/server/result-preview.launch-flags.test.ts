@@ -8,6 +8,8 @@ const FLAGS = ['PUBLIC_YEAR_SCORE_ENABLED', 'PUBLIC_YEAR_PEOPLE_ENABLED', 'PUBLI
 const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]; query: Record<string, string> }[] = [
   { route: 'year-score-link', flag: 'PUBLIC_YEAR_SCORE_ENABLED', query: { s: 'taurus', v: '6.4' } },
   { route: 'year-score-image', flag: 'PUBLIC_YEAR_SCORE_ENABLED', query: { s: 'taurus', v: '6.4' } },
+  { route: 'birthday-report-link', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', py: '7', t: '17' } },
+  { route: 'birthday-report-image', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', py: '7', t: '17' } },
 ];
 
 function nodeResponse() {
