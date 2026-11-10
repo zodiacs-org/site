@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-10T19:17:51.059Z",
+  "capturedAt": "2026-11-10T19:26:13.493Z",
   "endpoint": "https://api.mainnet-beta.solana.com",
   "largestAccountsEndpoint": null,
   "signs": {
@@ -11,7 +11,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835109
+            "slot": 467837437
           },
           "value": {
             "amount": "999596350537038",
@@ -26,7 +26,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835110
+            "slot": 467837438
           },
           "value": {
             "data": {
@@ -65,7 +65,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835285
+            "slot": 467837445
           },
           "value": {
             "amount": "999956490259699",
@@ -80,7 +80,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835286
+            "slot": 467837446
           },
           "value": {
             "data": {
@@ -119,7 +119,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835378
+            "slot": 467837453
           },
           "value": {
             "amount": "999823945485411",
@@ -134,7 +134,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835380
+            "slot": 467837454
           },
           "value": {
             "data": {
@@ -173,7 +173,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835486
+            "slot": 467837461
           },
           "value": {
             "amount": "999937225455531",
@@ -188,7 +188,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835487
+            "slot": 467837462
           },
           "value": {
             "data": {
@@ -227,7 +227,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835566
+            "slot": 467837468
           },
           "value": {
             "amount": "999790687091088",
@@ -242,7 +242,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835567
+            "slot": 467837470
           },
           "value": {
             "data": {
@@ -281,7 +281,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835658
+            "slot": 467837476
           },
           "value": {
             "amount": "999901230758444",
@@ -296,7 +296,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835660
+            "slot": 467837477
           },
           "value": {
             "data": {
@@ -335,7 +335,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835678
+            "slot": 467837484
           },
           "value": {
             "amount": "999793750623200",
@@ -350,7 +350,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835679
+            "slot": 467837485
           },
           "value": {
             "data": {
@@ -389,7 +389,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835730
+            "slot": 467837491
           },
           "value": {
             "amount": "999990990891822",
@@ -404,7 +404,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835732
+            "slot": 467837493
           },
           "value": {
             "data": {
@@ -443,7 +443,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835796
+            "slot": 467837497
           },
           "value": {
             "amount": "999520132436445",
@@ -458,7 +458,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835798
+            "slot": 467837500
           },
           "value": {
             "data": {
@@ -497,7 +497,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835855
+            "slot": 467837506
           },
           "value": {
             "amount": "999981308976726",
@@ -512,7 +512,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835856
+            "slot": 467837507
           },
           "value": {
             "data": {
@@ -551,7 +551,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835863
+            "slot": 467837511
           },
           "value": {
             "amount": "999986134488303",
@@ -566,7 +566,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467835864
+            "slot": 467837513
           },
           "value": {
             "data": {
@@ -605,7 +605,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467836017
+            "slot": 467837520
           },
           "value": {
             "amount": "999915684507524",
@@ -620,7 +620,7 @@
         "result": {
           "context": {
             "apiVersion": "4.4.0",
-            "slot": 467836018
+            "slot": 467837521
           },
           "value": {
             "data": {

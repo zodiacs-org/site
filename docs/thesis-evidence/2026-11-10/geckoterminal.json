@@ -1,14 +1,14 @@
 {
-  "capturedAt": "2026-11-10T19:21:25.148Z",
+  "capturedAt": "2026-11-10T19:26:40.979Z",
   "signs": {
     "aries": {
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS/ohlcv/day?limit=35",
         "status": 200,
-        "fetchedAt": "2026-11-10T19:21:25.540Z",
+        "fetchedAt": "2026-11-10T19:26:41.266Z",
         "body": {
           "data": {
-            "id": "f156f905-7bcd-44f3-a0b3-d876557f48bf",
+            "id": "a8406631-4362-4010-8f7f-1c17d3b34091",
             "type": "ohlcv_request_response",
             "attributes": {
               "ohlcv_list": [
@@ -314,7 +314,7 @@
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv/info",
         "status": 200,
-        "fetchedAt": "2026-11-10T19:21:25.815Z",
+        "fetchedAt": "2026-11-10T19:26:41.403Z",
         "body": {
           "data": {
             "id": "solana_GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv",
@@ -381,10 +381,10 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu/ohlcv/day?limit=35",
         "status": 200,
-        "fetchedAt": "2026-11-10T19:21:28.693Z",
+        "fetchedAt": "2026-11-10T19:26:44.039Z",
         "body": {
           "data": {
-            "id": "447e9254-0394-4ba2-bf34-f2a7777ff2a8",
+            "id": "30497667-3d0f-4ad9-8adf-9316e1a80012",
             "type": "ohlcv_request_response",
             "attributes": {
               "ohlcv_list": [
@@ -690,7 +690,7 @@
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp/info",
         "status": 200,
-        "fetchedAt": "2026-11-10T19:21:28.875Z",
+        "fetchedAt": "2026-11-10T19:26:44.215Z",
         "body": {
           "data": {
             "id": "solana_EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp",
@@ -757,10 +757,10 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9/ohlcv/day?limit=35",
         "status": 200,
-        "fetchedAt": "2026-11-10T19:21:31.649Z",
+        "fetchedAt": "2026-11-10T19:26:46.853Z",
         "body": {
           "data": {
-            "id": "58471b83-8466-4643-bb66-50f0224240ec",
+            "id": "03141c9e-3d98-405d-bd0d-21253cf27df7",
             "type": "ohlcv_request_response",
             "attributes": {
               "ohlcv_list": [
@@ -1066,7 +1066,7 @@
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc/info",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:31.710Z",
+        "fetchedAt": "2026-11-10T19:26:46.870Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1079,7 +1079,7 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW/ohlcv/day?limit=35",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:34.398Z",
+        "fetchedAt": "2026-11-10T19:26:49.390Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1090,7 +1090,7 @@
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ/info",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:34.420Z",
+        "fetchedAt": "2026-11-10T19:26:49.448Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1103,7 +1103,7 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ/ohlcv/day?limit=35",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:37.097Z",
+        "fetchedAt": "2026-11-10T19:26:51.972Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1114,7 +1114,7 @@
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm/info",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:37.106Z",
+        "fetchedAt": "2026-11-10T19:26:51.993Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1127,7 +1127,7 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh/ohlcv/day?limit=35",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:39.618Z",
+        "fetchedAt": "2026-11-10T19:26:54.517Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1138,7 +1138,7 @@
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso/info",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:39.628Z",
+        "fetchedAt": "2026-11-10T19:26:54.539Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1151,7 +1151,7 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9/ohlcv/day?limit=35",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:42.139Z",
+        "fetchedAt": "2026-11-10T19:26:57.057Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1162,7 +1162,7 @@
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe/info",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:42.149Z",
+        "fetchedAt": "2026-11-10T19:26:57.079Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1175,7 +1175,7 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta/ohlcv/day?limit=35",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:44.660Z",
+        "fetchedAt": "2026-11-10T19:26:59.615Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1186,7 +1186,7 @@
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1/info",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:44.673Z",
+        "fetchedAt": "2026-11-10T19:26:59.637Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1198,19 +1198,317 @@
     "sagittarius": {
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky/ohlcv/day?limit=35",
-        "status": 429,
-        "fetchedAt": "2026-11-10T19:21:47.213Z",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:27:02.711Z",
         "body": {
-          "status": {
-            "error_code": 429,
-            "error_message": "You've exceeded the Rate Limit. Please visit https://www.coingecko.com/en/api/pricing to subscribe to our API plans for higher rate limits and use the onchain endpoints: https://docs.coingecko.com/reference/endpoint-overview"
+          "data": {
+            "id": "07a7fe6a-e936-4d2e-b503-7f358ba385d4",
+            "type": "ohlcv_request_response",
+            "attributes": {
+              "ohlcv_list": [
+                [
+                  1794268800,
+                  0.000052989843148098835,
+                  0.000052989843148098835,
+                  0.0000501652706847961,
+                  0.0000501652706847961,
+                  0.8877001098056592
+                ],
+                [
+                  1794182400,
+                  0.0000524521105116008,
+                  0.0000539035153179789,
+                  0.000049170803898591865,
+                  0.000052989843148098835,
+                  529.5372016977998
+                ],
+                [
+                  1794096000,
+                  0.00005282351916324663,
+                  0.00005282351916324663,
+                  0.0000524521105116008,
+                  0.0000524521105116008,
+                  21.640275264243044
+                ],
+                [
+                  1794009600,
+                  0.0000521197373076304,
+                  0.00005282351916324663,
+                  0.0000521197373076304,
+                  0.00005282351916324663,
+                  19.83898528231387
+                ],
+                [
+                  1793923200,
+                  0.00005220275189254355,
+                  0.00005220275189254355,
+                  0.0000521197373076304,
+                  0.0000521197373076304,
+                  4.038526753181322
+                ],
+                [
+                  1793836800,
+                  0.00005489379255198244,
+                  0.00005616403318909651,
+                  0.00005220275189254355,
+                  0.00005220275189254355,
+                  0.42963027807895154
+                ],
+                [
+                  1793664000,
+                  0.000054818676220242565,
+                  0.00005489379255198244,
+                  0.00005232874751928026,
+                  0.00005489379255198244,
+                  260.0439197916385
+                ],
+                [
+                  1793577600,
+                  0.000057172060857561226,
+                  0.000057172060857561226,
+                  0.000054818676220242565,
+                  0.000054818676220242565,
+                  13.894802916867178
+                ],
+                [
+                  1793404800,
+                  0.00005842915355415798,
+                  0.00005842915355415798,
+                  0.000055497087328389854,
+                  0.000057172060857561226,
+                  109.68733122329787
+                ],
+                [
+                  1793232000,
+                  0.000057723370503419966,
+                  0.000058997395913048125,
+                  0.000057723370503419966,
+                  0.00005842915355415798,
+                  94.08943100850689
+                ],
+                [
+                  1793145600,
+                  0.000057473396631183155,
+                  0.00005836274688008301,
+                  0.0000570188510688022,
+                  0.000057723370503419966,
+                  30.741631726367633
+                ],
+                [
+                  1793059200,
+                  0.000056916084087779344,
+                  0.000057473396631183155,
+                  0.000056916084087779344,
+                  0.000057473396631183155,
+                  11.526249711920622
+                ],
+                [
+                  1792972800,
+                  0.000057316666185248105,
+                  0.000057316666185248105,
+                  0.000056916084087779344,
+                  0.000056916084087779344,
+                  16.374409196832197
+                ],
+                [
+                  1792886400,
+                  0.000055873617906455866,
+                  0.00005813181636077715,
+                  0.000055873617906455866,
+                  0.000057316666185248105,
+                  84.8236610335956
+                ],
+                [
+                  1792800000,
+                  0.00006165144999346141,
+                  0.00006165144999346141,
+                  0.000055873617906455866,
+                  0.000055873617906455866,
+                  92.34200313579066
+                ],
+                [
+                  1792540800,
+                  0.00006141161080400527,
+                  0.00006208218767920251,
+                  0.00006141161080400527,
+                  0.00006165144999346141,
+                  30.202185168864915
+                ],
+                [
+                  1792454400,
+                  0.0000603081667751517,
+                  0.00006173136950765476,
+                  0.00006012249247451602,
+                  0.00006141161080400527,
+                  9.919685415680336
+                ],
+                [
+                  1792368000,
+                  0.000059907113942569925,
+                  0.00006096589322281905,
+                  0.000059907113942569925,
+                  0.0000603081667751517,
+                  17.752971290604105
+                ],
+                [
+                  1792195200,
+                  0.000060501454982517586,
+                  0.000060581331129451415,
+                  0.000059907113942569925,
+                  0.000059907113942569925,
+                  13.563988629184392
+                ],
+                [
+                  1792108800,
+                  0.000058728568847622785,
+                  0.000060591711979649746,
+                  0.00005790717118806714,
+                  0.000060501454982517586,
+                  216.3092334670925
+                ],
+                [
+                  1792022400,
+                  0.00005948279134256686,
+                  0.00005948279134256686,
+                  0.0000578554709838434,
+                  0.000058728568847622785,
+                  18.71122859831423
+                ],
+                [
+                  1791936000,
+                  0.0000587813722243961,
+                  0.00005948279134256686,
+                  0.0000587813722243961,
+                  0.00005948279134256686,
+                  2.966205618939688
+                ],
+                [
+                  1791849600,
+                  0.000058610723671984916,
+                  0.0000587813722243961,
+                  0.000058610723671984916,
+                  0.0000587813722243961,
+                  8.108967091574526
+                ],
+                [
+                  1791763200,
+                  0.00006134104485620006,
+                  0.00006173399025422233,
+                  0.000058610723671984916,
+                  0.000058610723671984916,
+                  312.07502111202587
+                ],
+                [
+                  1791676800,
+                  0.00006071236338886464,
+                  0.000061617045109341,
+                  0.00006002801017677101,
+                  0.00006134104485620006,
+                  40.66437719963776
+                ],
+                [
+                  1791590400,
+                  0.00006002246985312351,
+                  0.00006086931316605763,
+                  0.00006002246985312351,
+                  0.00006071236338886464,
+                  15.259898002671203
+                ],
+                [
+                  1791504000,
+                  0.000060025743876587886,
+                  0.00006078135490942888,
+                  0.0000595519450963849,
+                  0.00006002246985312351,
+                  191.9777821216161
+                ],
+                [
+                  1791417600,
+                  0.00006711314991932056,
+                  0.00006711314991932056,
+                  0.000057604991099989004,
+                  0.000060025743876587886,
+                  313.83896583223685
+                ],
+                [
+                  1791331200,
+                  0.00006930059578591591,
+                  0.00006930059578591591,
+                  0.00006711314991932056,
+                  0.00006711314991932056,
+                  69.05234778285649
+                ],
+                [
+                  1791244800,
+                  0.00006622667452793943,
+                  0.0000694234304476174,
+                  0.0000657435017471656,
+                  0.00006930059578591591,
+                  200.47207812070576
+                ],
+                [
+                  1791244800,
+                  0.00006930059578591591,
+                  0.0000694234304476174,
+                  0.0000657435017471656,
+                  0.00006930059578591591,
+                  200.47207812070576
+                ],
+                [
+                  1791158400,
+                  0.00007074496105278581,
+                  0.00007074496105278581,
+                  0.00006607780420793612,
+                  0.00006622667452793943,
+                  293.1538991132523
+                ],
+                [
+                  1791072000,
+                  0.0000782004855380534,
+                  0.00008193872337153041,
+                  0.00006579245218251052,
+                  0.00007074496105278581,
+                  1545.4004324938696
+                ],
+                [
+                  1790985600,
+                  0.00007448096618398589,
+                  0.00007873048678847812,
+                  0.00007448096618398589,
+                  0.0000782004855380534,
+                  363.63839544156446
+                ],
+                [
+                  1790899200,
+                  0.00007730094287397343,
+                  0.0000776431872337872,
+                  0.00007448096618398589,
+                  0.00007448096618398589,
+                  346.221867601139
+                ]
+              ]
+            }
+          },
+          "meta": {
+            "base": {
+              "name": "Sagittarius",
+              "symbol": "SAGIT",
+              "coingecko_coin_id": "sagittarius",
+              "address": "8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3"
+            },
+            "quote": {
+              "name": "Wrapped SOL",
+              "symbol": "SOL",
+              "coingecko_coin_id": "wrapped-solana",
+              "address": "So11111111111111111111111111111111111111112"
+            }
           }
         }
       },
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3/info",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:47.222Z",
+        "fetchedAt": "2026-11-10T19:27:02.731Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1223,7 +1521,7 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin/ohlcv/day?limit=35",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:49.729Z",
+        "fetchedAt": "2026-11-10T19:27:05.252Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1233,12 +1531,66 @@
       },
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2/info",
-        "status": 429,
-        "fetchedAt": "2026-11-10T19:21:49.737Z",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:27:05.671Z",
         "body": {
-          "status": {
-            "error_code": 429,
-            "error_message": "You've exceeded the Rate Limit. Please visit https://www.coingecko.com/en/api/pricing to subscribe to our API plans for higher rate limits and use the onchain endpoints: https://docs.coingecko.com/reference/endpoint-overview"
+          "data": {
+            "id": "solana_3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+            "type": "token",
+            "attributes": {
+              "address": "3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+              "name": "Capricorn",
+              "symbol": "CAPRICORN",
+              "decimals": 6,
+              "image_url": "https://coin-images.coingecko.com/coins/images/51148/large/capricorn.webp?1730237937",
+              "image": {
+                "thumb": "https://coin-images.coingecko.com/coins/images/51148/thumb/capricorn.webp?1730237937",
+                "small": "https://coin-images.coingecko.com/coins/images/51148/small/capricorn.webp?1730237937",
+                "large": "https://coin-images.coingecko.com/coins/images/51148/large/capricorn.webp?1730237937"
+              },
+              "banner_image_url": null,
+              "coingecko_coin_id": "capricorn-2",
+              "websites": [
+                "https://astrofolio.xyz"
+              ],
+              "discord_url": null,
+              "farcaster_url": null,
+              "zora_url": null,
+              "telegram_handle": "astrofoliosol",
+              "twitter_handle": "astrofoliosol",
+              "description": "Astrofolio taps into current cultural trends by referencing memes and popular narratives within the crypto space. It allows users to speculate on or invest in cryptocurrencies based on astrological signs, which is a novel approach in the crypto space. \n\nThis fusion of ancient wisdom with modern financial technology creates a unique niche for enthusiasts of both fields.\n\nCapricorn, the Goat 🐐, resonates with the ambitious and disciplined energy of early winter, from mid-December to mid-January. Grounded in perseverance and strategy, Capricorn season aims for success and mastery. 🏆 Harness the determined and strategic energy of Capricorn!",
+              "gt_score": 56.36363636363636,
+              "gt_score_details": {
+                "pool": 54.286,
+                "transaction": 0,
+                "creation": 100,
+                "info": 100,
+                "holders": 72.5
+              },
+              "gt_verified": true,
+              "categories": [
+                "Astrology"
+              ],
+              "gt_category_ids": [
+                "astrology"
+              ],
+              "holders": {
+                "count": 2930,
+                "distribution_percentage": {
+                  "top_10": "32.6036",
+                  "11_20": "11.8629",
+                  "21_40": "17.0664",
+                  "rest": "38.4671"
+                },
+                "last_updated": "2026-11-09T01:09:04Z"
+              },
+              "mint_authority": "no",
+              "freeze_authority": "no",
+              "is_honeypot": "unknown",
+              "is_nsfw": false,
+              "developer_address": null,
+              "developer_holding_percentage": null
+            }
           }
         }
       }
@@ -1247,7 +1599,7 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv/ohlcv/day?limit=35",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:52.440Z",
+        "fetchedAt": "2026-11-10T19:27:08.188Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1257,12 +1609,66 @@
       },
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt/info",
-        "status": 429,
-        "fetchedAt": "2026-11-10T19:21:52.447Z",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:27:08.642Z",
         "body": {
-          "status": {
-            "error_code": 429,
-            "error_message": "You've exceeded the Rate Limit. Please visit https://www.coingecko.com/en/api/pricing to subscribe to our API plans for higher rate limits and use the onchain endpoints: https://docs.coingecko.com/reference/endpoint-overview"
+          "data": {
+            "id": "solana_C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt",
+            "type": "token",
+            "attributes": {
+              "address": "C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt",
+              "name": "Aquarius",
+              "symbol": "AQUARIUS",
+              "decimals": 6,
+              "image_url": "https://coin-images.coingecko.com/coins/images/51137/large/aquarius.webp?1730196594",
+              "image": {
+                "thumb": "https://coin-images.coingecko.com/coins/images/51137/thumb/aquarius.webp?1730196594",
+                "small": "https://coin-images.coingecko.com/coins/images/51137/small/aquarius.webp?1730196594",
+                "large": "https://coin-images.coingecko.com/coins/images/51137/large/aquarius.webp?1730196594"
+              },
+              "banner_image_url": null,
+              "coingecko_coin_id": "aquarius-2",
+              "websites": [
+                "https://astrofolio.xyz"
+              ],
+              "discord_url": null,
+              "farcaster_url": null,
+              "zora_url": null,
+              "telegram_handle": "astrofoliosol",
+              "twitter_handle": "astrofoliosol",
+              "description": "Astrofolio taps into current cultural trends by referencing memes and popular narratives within the crypto space. It allows users to speculate on or invest in cryptocurrencies based on astrological signs, which is a novel approach in the crypto space. \n\nThis fusion of ancient wisdom with modern financial technology creates a unique niche for enthusiasts of both fields.\n\nAquarius, the Water Bearer, embodies the energy of vision and progress during the heart of winter, from mid-January to mid-February. This sign represents innovation and the spirit of challenging the status quo. Embrace the creativity and originality that Aquarius season inspires!\n",
+              "gt_score": 56.36363636363636,
+              "gt_score_details": {
+                "pool": 54.286,
+                "transaction": 0,
+                "creation": 100,
+                "info": 100,
+                "holders": 72.5
+              },
+              "gt_verified": true,
+              "categories": [
+                "Astrology"
+              ],
+              "gt_category_ids": [
+                "astrology"
+              ],
+              "holders": {
+                "count": 2776,
+                "distribution_percentage": {
+                  "top_10": "27.7045",
+                  "11_20": "11.3733",
+                  "21_40": "17.3303",
+                  "rest": "43.5919"
+                },
+                "last_updated": "2026-11-08T16:26:59Z"
+              },
+              "mint_authority": "no",
+              "freeze_authority": "no",
+              "is_honeypot": "unknown",
+              "is_nsfw": false,
+              "developer_address": null,
+              "developer_holding_percentage": null
+            }
           }
         }
       }
@@ -1271,7 +1677,7 @@
       "ohlcvDay": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/pools/Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko/ohlcv/day?limit=35",
         "status": 429,
-        "fetchedAt": "2026-11-10T19:21:54.954Z",
+        "fetchedAt": "2026-11-10T19:27:11.165Z",
         "body": {
           "status": {
             "error_code": 429,
@@ -1281,12 +1687,66 @@
       },
       "tokenInfo": {
         "url": "https://api.geckoterminal.com/api/v2/networks/solana/tokens/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE/info",
-        "status": 429,
-        "fetchedAt": "2026-11-10T19:21:54.963Z",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:27:11.561Z",
         "body": {
-          "status": {
-            "error_code": 429,
-            "error_message": "You've exceeded the Rate Limit. Please visit https://www.coingecko.com/en/api/pricing to subscribe to our API plans for higher rate limits and use the onchain endpoints: https://docs.coingecko.com/reference/endpoint-overview"
+          "data": {
+            "id": "solana_3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+            "type": "token",
+            "attributes": {
+              "address": "3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+              "name": "Pisces",
+              "symbol": "PISCES",
+              "decimals": 6,
+              "image_url": "https://coin-images.coingecko.com/coins/images/51152/large/pisces.webp?1730238177",
+              "image": {
+                "thumb": "https://coin-images.coingecko.com/coins/images/51152/thumb/pisces.webp?1730238177",
+                "small": "https://coin-images.coingecko.com/coins/images/51152/small/pisces.webp?1730238177",
+                "large": "https://coin-images.coingecko.com/coins/images/51152/large/pisces.webp?1730238177"
+              },
+              "banner_image_url": null,
+              "coingecko_coin_id": "pisces",
+              "websites": [
+                "https://astrofolio.xyz"
+              ],
+              "discord_url": null,
+              "farcaster_url": null,
+              "zora_url": null,
+              "telegram_handle": "astrofoliosol",
+              "twitter_handle": "astrofoliosol",
+              "description": "Astrofolio taps into current cultural trends by referencing memes and popular narratives within the crypto space. It allows users to speculate on or invest in cryptocurrencies based on astrological signs, which is a novel approach in the crypto space. \n\nThis fusion of ancient wisdom with modern financial technology creates a unique niche for enthusiasts of both fields.\n\nPisces, the Fish 🐟, captures the dreamlike and intuitive energy of late winter, from mid-February to mid-March. Known for its deep emotional and spiritual connections, Pisces season invites you to dive into the realms of imagination and compassion. 🌌 Connect with the mystical and empathetic spirit of Pisces!",
+              "gt_score": 56.36363636363636,
+              "gt_score_details": {
+                "pool": 54.286,
+                "transaction": 0,
+                "creation": 100,
+                "info": 100,
+                "holders": 72.5
+              },
+              "gt_verified": true,
+              "categories": [
+                "Astrology"
+              ],
+              "gt_category_ids": [
+                "astrology"
+              ],
+              "holders": {
+                "count": 2309,
+                "distribution_percentage": {
+                  "top_10": "31.9657",
+                  "11_20": "11.3562",
+                  "21_40": "18.7483",
+                  "rest": "37.9298"
+                },
+                "last_updated": "2026-11-08T10:58:16Z"
+              },
+              "mint_authority": "no",
+              "freeze_authority": "no",
+              "is_honeypot": "unknown",
+              "is_nsfw": false,
+              "developer_address": null,
+              "developer_holding_percentage": null
+            }
           }
         }
       }

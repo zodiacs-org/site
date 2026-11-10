@@ -1,13 +1,13 @@
 {
-  "capturedAt": "2026-11-10T19:17:51.059Z",
+  "capturedAt": "2026-11-10T19:26:13.493Z",
   "endpoint": "https://api.mainnet-beta.solana.com",
   "windowDays": 30,
   "signs": {
     "aries": {
       "pool": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
       "latestSwap": {
-        "signature": "H7po5wWWRJeAV1LEfFPraQEW2ruHgoUCzH8bPCn6zxANizbQpGGMfgKeyr2NJnMpUvwLJ7b82mhuschJuwLTS5b",
-        "date": "2026-11-10T00:49:34.000Z"
+        "signature": "GEPD82vZcAZADLoXBresYv7nPEzLRLqPZ9C2Q7EDzGWnnkQwxar28E1c9ydFxrkv9s1t7iZmANjo2zXrroqHxnM",
+        "date": "2026-11-10T16:22:42.000Z"
       },
       "signatures": [
         {
@@ -289,32 +289,14 @@
         {
           "signature": "GEPD82vZcAZADLoXBresYv7nPEzLRLqPZ9C2Q7EDzGWnnkQwxar28E1c9ydFxrkv9s1t7iZmANjo2zXrroqHxnM",
           "blockTime": 1794327762,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "2CVFC6Rdbxpwwb1kJmrc72MqBjfwxMjSnkbng1tu7iXrBFvHan886h7SSTyBhuX3h6GPnAX8Kun9yJcuW9Axn5pu",
-          "blockTime": 1794273029,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "4wKazBMvihhWnVDvALJzh8okpn5N8QGr6UPK1uH7BGCn3fx81wx3inYXphbcH9z2cWAcmDmnaYrJvxFnHqEqMtez",
-          "blockTime": 1794271796,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "H7po5wWWRJeAV1LEfFPraQEW2ruHgoUCzH8bPCn6zxANizbQpGGMfgKeyr2NJnMpUvwLJ7b82mhuschJuwLTS5b",
-          "blockTime": 1794271774,
           "swap": true,
           "swapLogs": [
-            "Program log: Instruction: SwapTob",
-            "Program log: Instruction: SwapV3",
-            "Program log: Instruction: SwapBaseInput"
+            "Program log: Instruction: GetAccountDataSize",
+            "Program log: Instruction: InitializeImmutableOwner",
+            "Program log: Instruction: InitializeAccount3",
+            "Program log: Instruction: RouteV2",
+            "Program log: Instruction: SwapBaseInput",
+            "Program log: Instruction: Swap"
           ]
         }
       ]
@@ -322,8 +304,8 @@
     "taurus": {
       "pool": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
       "latestSwap": {
-        "signature": "4nhbPy4DmALiHAyhooEh41qh2SGV2EZUfBGtJS9evtSGKGUwEhhSQSt58bHDSWwvPDD93oy9Kjn4dF7mSZ5uTkWZ",
-        "date": "2026-11-09T17:21:47.000Z"
+        "signature": "3iEYSBLh3GAbQ1XPHWn6ics2zA6tj2LTGosxtvFfKcPaXMsmv7E5DHa4UxkjX4SvJxKoQxeaA8VxL86JztjMh4tN",
+        "date": "2026-11-10T16:26:27.000Z"
       },
       "signatures": [
         {
@@ -689,20 +671,13 @@
         {
           "signature": "3iEYSBLh3GAbQ1XPHWn6ics2zA6tj2LTGosxtvFfKcPaXMsmv7E5DHa4UxkjX4SvJxKoQxeaA8VxL86JztjMh4tN",
           "blockTime": 1794327987,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "4nhbPy4DmALiHAyhooEh41qh2SGV2EZUfBGtJS9evtSGKGUwEhhSQSt58bHDSWwvPDD93oy9Kjn4dF7mSZ5uTkWZ",
-          "blockTime": 1794244907,
           "swap": true,
           "swapLogs": [
-            "Program log: Instruction: SwapTob",
-            "Program log: Instruction: Swap2",
+            "Program log: Instruction: Swap2WithDestination",
             "Program log: Instruction: SwapBaseInput",
-            "Program log: Instruction: SwapBaseInput",
-            "Program log: Instruction: BuyExactQuoteInV2",
+            "Program log: Instruction: GetAccountDataSize",
+            "Program log: Instruction: InitializeImmutableOwner",
+            "Program log: Instruction: InitializeAccount3",
             "Program log: Instruction: TransferChecked"
           ]
         }
@@ -711,8 +686,8 @@
     "gemini": {
       "pool": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
       "latestSwap": {
-        "signature": "5u8pvCYvq9gQ5LqRBeQC61AaJfQ3LHVyH6efQoddMbwGpv7W26gmcvWjkUNhypJRS55Pi8M1sWFJ33YpsykjjBaV",
-        "date": "2026-11-10T16:30:35.000Z"
+        "signature": "3ReuZHe2hCR455jJWuh3NuPfLodyaPmgbxbSfTBeriVKBWC2ciau5qrnYMPYnbCLEs6PSTGRm15NkqimfStSBdSG",
+        "date": "2026-11-10T19:09:56.000Z"
       },
       "signatures": [
         {
@@ -1050,22 +1025,12 @@
         {
           "signature": "3ReuZHe2hCR455jJWuh3NuPfLodyaPmgbxbSfTBeriVKBWC2ciau5qrnYMPYnbCLEs6PSTGRm15NkqimfStSBdSG",
           "blockTime": 1794337796,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "4HZN2x1w1xLf8nVmA2QfWMS4t8cH9VMPvYf4LgmAZwEMEt7Xw9oexcTgEvrhTx6xsJRKAXuFrMYMccQ6M6JdHqar",
-          "blockTime": 1794334172,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "5u8pvCYvq9gQ5LqRBeQC61AaJfQ3LHVyH6efQoddMbwGpv7W26gmcvWjkUNhypJRS55Pi8M1sWFJ33YpsykjjBaV",
-          "blockTime": 1794328235,
           "swap": true,
           "swapLogs": [
+            "Program log: Instruction: CreateIdempotentAssociatedTokenAccount",
+            "Program log: Instruction: SharedAccountsRouteV2",
+            "Program log: Instruction: Swap",
+            "Program log: Instruction: Swap",
             "Program log: Instruction: SwapV2",
             "Program log: Instruction: SwapBaseInput"
           ]
@@ -1075,8 +1040,8 @@
     "cancer": {
       "pool": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
       "latestSwap": {
-        "signature": "Pn8xkpw3oyrwM13iD4qXjSdumsUtxU23HhwLqKnRm3ugLXHbm2LKUrvv1dcwYL7rH9hpHx2FwAiLT6Lt29i73iv",
-        "date": "2026-11-09T17:22:56.000Z"
+        "signature": "2edcjbMz9SA65b66AGuoCPtcAT255Hriqtm3AczCs4wWDpgKapRpHE5sqGJ5rAeJsb9tetDHKio5LQWwkbjujBVz",
+        "date": "2026-11-10T16:25:45.000Z"
       },
       "signatures": [
         {
@@ -1435,19 +1400,13 @@
         {
           "signature": "2edcjbMz9SA65b66AGuoCPtcAT255Hriqtm3AczCs4wWDpgKapRpHE5sqGJ5rAeJsb9tetDHKio5LQWwkbjujBVz",
           "blockTime": 1794327945,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "Pn8xkpw3oyrwM13iD4qXjSdumsUtxU23HhwLqKnRm3ugLXHbm2LKUrvv1dcwYL7rH9hpHx2FwAiLT6Lt29i73iv",
-          "blockTime": 1794244976,
           "swap": true,
           "swapLogs": [
-            "Program log: Instruction: SwapTob",
+            "Program log: Instruction: Swap2WithDestination",
             "Program log: Instruction: SwapBaseInput",
-            "Program log: Instruction: BuyExactQuoteInV2",
-            "Program log: Instruction: TransferChecked",
+            "Program log: Instruction: GetAccountDataSize",
+            "Program log: Instruction: InitializeImmutableOwner",
+            "Program log: Instruction: InitializeAccount3",
             "Program log: Instruction: TransferChecked"
           ]
         }
@@ -2218,8 +2177,8 @@
     "libra": {
       "pool": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
       "latestSwap": {
-        "signature": "ibbs5U5DyyV5x99ZQ4XFf1iBmnJS2MSWANe7awmXf6KMkkEszR9cErxzEHVZmP2yQ5K5bpFNTqS2wEhQ2NbRpjf",
-        "date": "2026-11-10T16:53:48.000Z"
+        "signature": "5eGtwb4eycH3qivKNtfeVetVMspEAawEegGvVgn6pM6JjSPELXncc2gw5R46quFtuaGsBZVF2jiSqmgjLZmBfyMC",
+        "date": "2026-11-10T18:09:52.000Z"
       },
       "signatures": [
         {
@@ -2557,21 +2516,11 @@
         {
           "signature": "5eGtwb4eycH3qivKNtfeVetVMspEAawEegGvVgn6pM6JjSPELXncc2gw5R46quFtuaGsBZVF2jiSqmgjLZmBfyMC",
           "blockTime": 1794334192,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "ibbs5U5DyyV5x99ZQ4XFf1iBmnJS2MSWANe7awmXf6KMkkEszR9cErxzEHVZmP2yQ5K5bpFNTqS2wEhQ2NbRpjf",
-          "blockTime": 1794329628,
           "swap": true,
           "swapLogs": [
-            "Program log: Instruction: GetAccountDataSize",
-            "Program log: Instruction: InitializeImmutableOwner",
-            "Program log: Instruction: InitializeAccount3",
-            "Program log: Instruction: Route",
-            "Program log: Instruction: SwapV2",
-            "Program log: Instruction: TransferChecked"
+            "Program log: Instruction: WrapSol",
+            "Program log: Instruction: Swap2",
+            "Program log: Instruction: SwapBaseInput"
           ]
         }
       ]
@@ -2579,8 +2528,8 @@
     "scorpio": {
       "pool": "3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
       "latestSwap": {
-        "signature": "43GXf6zxJVRufNv5k7jFiDqs9SqvHmqSB5GSZg5GYymdFpBW9GHSSk7mVvHFjpjqYdwuD6UyoSfGQmYLAQGAYRjV",
-        "date": "2026-11-09T06:47:28.000Z"
+        "signature": "5G3Der8PfV3ATFsrcjCN1h2WZFzLo7Xk8VZSeNGeenjqy3ZewEpLTzcoWXrseQuakuBZr8TtB7eTLqjUkLWgoczv",
+        "date": "2026-11-09T07:06:39.000Z"
       },
       "signatures": [
         {
@@ -2967,18 +2916,10 @@
         {
           "signature": "5G3Der8PfV3ATFsrcjCN1h2WZFzLo7Xk8VZSeNGeenjqy3ZewEpLTzcoWXrseQuakuBZr8TtB7eTLqjUkLWgoczv",
           "blockTime": 1794207999,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "43GXf6zxJVRufNv5k7jFiDqs9SqvHmqSB5GSZg5GYymdFpBW9GHSSk7mVvHFjpjqYdwuD6UyoSfGQmYLAQGAYRjV",
-          "blockTime": 1794206848,
           "swap": true,
           "swapLogs": [
-            "Program log: Instruction: SharedAccountsRouteV2",
             "Program log: Instruction: SwapBaseInput",
-            "Program log: Instruction: Swap",
+            "Program log: Instruction: Swap2",
             "Program log: Instruction: SwapBaseInput"
           ]
         }
@@ -2987,8 +2928,8 @@
     "sagittarius": {
       "pool": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
       "latestSwap": {
-        "signature": "3z2B5zJCDCKRTvwFNxc66yznLGWzEsnoC57Q67DmTkHQwXgzppTsTtqPT4iqokg1VUpLSZoqgaHfiDca9UhMFono",
-        "date": "2026-11-09T17:15:44.000Z"
+        "signature": "VarhqsZocyV9AVQHL2VnkoyzCo5T31hqo1mYMUVCCSe9AVKf7aLVueUUsqoVqFCJr9q2gnBKgrvM68siikb1cdp",
+        "date": "2026-11-10T16:23:04.000Z"
       },
       "signatures": [
         {
@@ -3368,21 +3309,14 @@
         {
           "signature": "VarhqsZocyV9AVQHL2VnkoyzCo5T31hqo1mYMUVCCSe9AVKf7aLVueUUsqoVqFCJr9q2gnBKgrvM68siikb1cdp",
           "blockTime": 1794327784,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "3z2B5zJCDCKRTvwFNxc66yznLGWzEsnoC57Q67DmTkHQwXgzppTsTtqPT4iqokg1VUpLSZoqgaHfiDca9UhMFono",
-          "blockTime": 1794244544,
           "swap": true,
           "swapLogs": [
-            "Program log: Instruction: SwapTob",
-            "Program log: Instruction: Swap2",
+            "Program log: Instruction: Swap2WithDestination",
             "Program log: Instruction: SwapBaseInput",
-            "Program log: Instruction: BuyExactQuoteInV2",
-            "Program log: Instruction: TransferChecked",
-            "Program log: Instruction: TransferChecked"
+            "Program log: Instruction: Swap",
+            "Program log: Instruction: GetAccountDataSize",
+            "Program log: Instruction: InitializeImmutableOwner",
+            "Program log: Instruction: InitializeAccount3"
           ]
         }
       ]
@@ -3749,7 +3683,10 @@
     },
     "aquarius": {
       "pool": "BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
-      "latestSwap": null,
+      "latestSwap": {
+        "signature": "49fzjycg9JLCuKEYJ43dLpax7su5UnKuJKTybnfpThheT2bvvnf4KrsGtrhLU6AEMChKiWVZ8Kh1AvACEWFDVZJ8",
+        "date": "2026-11-09T19:03:30.000Z"
+      },
       "signatures": [
         {
           "blockTime": 1794251010,
@@ -4135,31 +4072,21 @@
         {
           "signature": "49fzjycg9JLCuKEYJ43dLpax7su5UnKuJKTybnfpThheT2bvvnf4KrsGtrhLU6AEMChKiWVZ8Kh1AvACEWFDVZJ8",
           "blockTime": 1794251010,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "3F3qaGjDRkd2i6DmywBvW23dfZr9K6STFTS1xG9L6u4hV4sf5PcttQCkHAHrceZ3i8ocUNUYg8pYJWugjdrdg6dw",
-          "blockTime": 1794208319,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "27CD94qGaVrofBcFPdXJnVKWJYDSa1cZQGbiPMXhLE9gSZcgz3xJkp9jKZS7xVfHouTdFJqsrsGv8uuHmY5h58Cj",
-          "blockTime": 1794207119,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
+          "swap": true,
+          "swapLogs": [
+            "Program log: Instruction: WrapSol",
+            "Program log: Instruction: Swap2",
+            "Program log: Instruction: SwapBaseInput",
+            "Program log: Instruction: Swap2"
+          ]
         }
       ]
     },
     "pisces": {
       "pool": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
       "latestSwap": {
-        "signature": "4hGra2VPdwPygW1sjCTcCAEBEC6mmCAhdwqDV1TPSfejYWXsiaxdgxtWU7T91kBNRyPwH5CweawV3sMdXkstHJNs",
-        "date": "2026-11-10T16:09:10.000Z"
+        "signature": "5GGxhfovjNSnNpiXbyL2JupFuspU2LbuTygNQ7DnEAf7hsEUkXev8VqgNHFYzTXM61DEy5GYnPbp8eirUjwSDycF",
+        "date": "2026-11-10T16:26:05.000Z"
       },
       "signatures": [
         {
@@ -4525,18 +4452,14 @@
         {
           "signature": "5GGxhfovjNSnNpiXbyL2JupFuspU2LbuTygNQ7DnEAf7hsEUkXev8VqgNHFYzTXM61DEy5GYnPbp8eirUjwSDycF",
           "blockTime": 1794327965,
-          "swap": false,
-          "swapLogs": [],
-          "error": "getTransaction: HTTP 200 Transaction version (1) is not supported by the requesting client. Please try the request again with the following configuration parameter: \"maxSupportedTransactionVersion\": 1"
-        },
-        {
-          "signature": "4hGra2VPdwPygW1sjCTcCAEBEC6mmCAhdwqDV1TPSfejYWXsiaxdgxtWU7T91kBNRyPwH5CweawV3sMdXkstHJNs",
-          "blockTime": 1794326950,
           "swap": true,
           "swapLogs": [
-            "Program log: Instruction: SharedAccountsRouteV2",
+            "Program log: Instruction: Swap2WithDestination",
             "Program log: Instruction: SwapBaseInput",
-            "Program log: Instruction: Swap"
+            "Program log: Instruction: Swap",
+            "Program log: Instruction: GetAccountDataSize",
+            "Program log: Instruction: InitializeImmutableOwner",
+            "Program log: Instruction: InitializeAccount3"
           ]
         }
       ]
