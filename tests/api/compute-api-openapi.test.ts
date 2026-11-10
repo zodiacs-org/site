@@ -78,7 +78,11 @@ describe('compute API in the OpenAPI document', () => {
       expect(operation.responses['429'].headers['Retry-After'].schema.enum).toEqual([RETRY_AFTER_SECONDS.rateLimited]);
       expect(operation.responses['503'].headers['Retry-After'].schema.enum.sort())
         .toEqual([RETRY_AFTER_SECONDS.rateLimitUnavailable, RETRY_AFTER_SECONDS.disabled].sort());
-      expect(Object.keys(operation.responses['503'].content['application/json'].examples).sort()).toEqual(['disabled', 'rate-limit-unavailable']);
+      // The endpoints that give positions also refuse a de440 they cannot open, without Retry-After.
+      const backend = ['chart', 'positions', 'events', 'sky-fact', 'elections'].includes(endpoint);
+      expect(Object.keys(operation.responses['503'].content['application/json'].examples).sort())
+        .toEqual(['disabled', 'rate-limit-unavailable', ...(backend ? ['backend-unavailable'] : [])].sort());
+      expect(operation.responses['503'].headers['Retry-After'].required, endpoint).toBe(!backend);
     }
   });
 
@@ -86,7 +90,9 @@ describe('compute API in the OpenAPI document', () => {
     for (const [name, refusal] of Object.entries<any>(committed.refusals)) {
       const expected: Record<string, string> = {};
       if (refusal.status === 405) expected.allow = 'POST, OPTIONS';
-      if (refusal.status === 429 || refusal.status === 503) expected['retry-after'] = String(refusal.response.error.retryAfterSeconds);
+      if (refusal.status === 429 || (refusal.status === 503 && refusal.response.error.code !== 'backend-unavailable')) {
+        expected['retry-after'] = String(refusal.response.error.retryAfterSeconds);
+      }
       expect(refusal.headers, name).toEqual(expected);
     }
   });
@@ -188,6 +194,19 @@ describe('compute API in the OpenAPI document', () => {
       ['sky-fact', { kind: 'aspect', body: 'Venus', other: 'North Node', aspect: 'square', instant: '2026-10-14T00:00:00Z' }, false],
       ['sky-fact', { kind: 'aspect', body: 'Venus', aspect: 'square', date: '2026-10-14' }, false],
       ['sky-fact', { kind: 'aspect', body: 'Venus', other: 'Mars', aspect: 'square', instant: '2026-10-14T00:00:00Z', zone: 'UTC' }, false],
+      // The backend field: the five endpoints that give positions take it; a name it does not know is refused.
+      ['chart', { utc: '2000-01-01T12:00:00Z', latitude: 10, longitude: 10, backend: 'astronomy-engine' }, true],
+      ['chart', { utc: '2000-01-01T12:00:00Z', latitude: 10, longitude: 10, backend: 'DE440' }, false],
+      ['chart', { utc: '2000-01-01T12:00:00Z', latitude: 10, longitude: 10, backend: null }, false],
+      ['houses', { utc: '2000-01-01T12:00:00Z', latitude: 10, longitude: 10, backend: 'astronomy-engine' }, false],
+      ['positions', { instants: ['2026-01-01T00:00:00Z'], backend: 'astronomy-engine' }, true],
+      ['positions', { instants: ['2026-01-01T00:00:00Z'], backend: 'swiss' }, false],
+      ['events', { from: '2026-01-01T00:00:00Z', to: '2026-01-02T00:00:00Z', backend: 'astronomy-engine' }, true],
+      ['time', { local: { date: '2026-01-01', time: '12:00', zone: 'Asia/Tokyo' }, backend: 'astronomy-engine' }, false],
+      ['sky-fact', { kind: 'phase', phase: 'full', date: '2026-09-29', backend: 'astronomy-engine' }, true],
+      ['sky-fact', { kind: 'sign', body: 'Sun', sign: 'libra', instant: '2026-09-29T00:00:00Z', backend: 'astronomy-engine' }, true],
+      ['elections', { from: '2026-12-09T00:00:00Z', to: '2026-12-10T00:00:00Z', conditions: [{ kind: 'phase', phase: 'waxing' }], backend: 'astronomy-engine' }, true],
+      ['elections', { from: '2026-12-09T00:00:00Z', to: '2026-12-10T00:00:00Z', conditions: [{ kind: 'phase', phase: 'waxing' }], backend: 'de441' }, false],
     ];
     for (const [endpoint, body, valid] of cases) {
       const schema = validator(requestComponentName(endpoint))(body);

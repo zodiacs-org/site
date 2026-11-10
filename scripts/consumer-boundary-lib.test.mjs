@@ -94,6 +94,11 @@ const description = 'A free astrology calculator.';
     `;
     expect(findConsumerBoundaryViolations(source, 'api/session.ts')).toEqual([]);
     expect(findConsumerBoundaryViolations("throw new Error('web-crypto-unavailable')", 'src/lib/hash.ts')).toEqual([]);
+    const webCrypto = 'throw new TypeError("openDe440Pack needs WebCrypto (crypto.subtle) to check the pack\'s digest");';
+    expect(findConsumerBoundaryViolations(webCrypto, 'api/_compute/compute.mjs')).toEqual([]);
+    // The exemption is that text in that file only.
+    expect(findConsumerBoundaryViolations(webCrypto, 'api/_compute/other.mjs').length).toBeGreaterThan(0);
+    expect(findConsumerBoundaryViolations('throw new TypeError("openDe440Pack needs WebCrypto (crypto.subtle) for a crypto market");', 'api/_compute/compute.mjs').length).toBeGreaterThan(0);
     expect(findConsumerBoundaryViolations("export const copy = 'Elle peut marcher ici.'", 'src/data/fr-guides.ts')).toEqual([]);
     expect(findConsumerBoundaryViolations('<p>A sessão permanece criptografada.</p>', 'src/pages/pt/profile/index.astro')).toEqual([]);
     expect(findConsumerBoundaryViolations("throw new Error('Invalid positions-only chart token.')", 'api/calendar/transits.ts')).toEqual([]);

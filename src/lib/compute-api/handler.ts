@@ -36,6 +36,8 @@ import {
   computeTime,
   type ComputeDependencies,
 } from './endpoints.js';
+import { De440Error, openDe440Pack, type De440Source } from '@zodiacs/engine/de440';
+import { DE440_PACK_SHA256, requestedBackend, selectBackend, type BackendChoice } from './backend.js';
 import { computeElections } from './elections.js';
 import {
   ComputeApiError,
@@ -64,7 +66,12 @@ export { PREFLIGHT_HEADERS, RESPONSE_HEADERS };
 
 export type { RateLimitVerdict };
 
-export interface ComputeHandlerOptions {
+/**
+ * `precision` opens the DE440 source of this deployment, or gives null without
+ * its pack (api/_compute/handler.ts opens the pack the deploy built);
+ * `defaultBackend` answers a request that names none (backend.ts).
+ */
+export interface ComputeHandlerOptions extends BackendChoice {
   localTime: LocalTimeModule;
   /** Defaults to process.env, read on each request. */
   env?: Readonly<Record<string, string | undefined>>;
@@ -246,15 +253,66 @@ async function readJsonBody(req: any): Promise<unknown> {
   }
 }
 
-async function dispatch(endpoint: ComputeEndpoint, body: unknown, dependencies: ComputeDependencies, zones: ZoneNames): Promise<unknown> {
+/**
+ * A deployment's DE440 sources, from the bytes `read` gives (the pack the
+ * deploy built), read once. Each call opens a new source against the pinned
+ * digest, so that nothing a request selected (a source keeps the record it
+ * last decoded for each body) outlives the request; null, and a warning that
+ * names no input, when there is no pack or it does not open.
+ */
+export function de440FromFile(read: () => Promise<Uint8Array | null>): () => Promise<De440Source | null> {
+  let bytes: Promise<Uint8Array | null> | null = null;
+  let warned = false;
+  const warn = (message: string) => {
+    if (!warned) console.warn(`compute API: ${message}; backend de440 answers backend-unavailable`);
+    warned = true;
+  };
+  return async () => {
+    const pack = await (bytes ??= read());
+    if (!pack) {
+      warn('no DE440 pack in this deployment');
+      return null;
+    }
+    try {
+      return await openDe440Pack(pack, { expectDigest: DE440_PACK_SHA256 });
+    } catch (error) {
+      warn(`the DE440 pack did not open (${error instanceof De440Error ? error.code : 'unknown'})`);
+      return null;
+    }
+  };
+}
+
+async function dispatch(
+  endpoint: ComputeEndpoint,
+  body: unknown,
+  dependencies: ComputeDependencies,
+  zones: ZoneNames,
+  options: ComputeHandlerOptions,
+): Promise<unknown> {
+  const { name, rest } = requestedBackend(endpoint, body);
   switch (endpoint) {
-    case 'chart': return computeChart(await parsePlaceInstantRequest(body, zones), dependencies);
-    case 'houses': return computeHouses(await parsePlaceInstantRequest(body, zones), dependencies);
-    case 'positions': return computePositions(parsePositionsRequest(body));
-    case 'events': return computeEvents(parseEventsRequest(body));
-    case 'time': return computeTime(await parseTimeRequest(body, zones), dependencies);
-    case 'sky-fact': return computeSkyFact(await parseSkyFactRequest(body, zones), dependencies);
-    case 'elections': return computeElections(parseElectionsRequest(body));
+    case 'chart': {
+      const request = await parsePlaceInstantRequest(rest, zones);
+      return computeChart(request, dependencies, await selectBackend(name, options));
+    }
+    case 'houses': return computeHouses(await parsePlaceInstantRequest(rest, zones), dependencies);
+    case 'positions': {
+      const request = parsePositionsRequest(rest);
+      return computePositions(request, await selectBackend(name, options));
+    }
+    case 'events': {
+      const request = parseEventsRequest(rest);
+      return computeEvents(request, await selectBackend(name, options));
+    }
+    case 'time': return computeTime(await parseTimeRequest(rest, zones), dependencies);
+    case 'sky-fact': {
+      const request = await parseSkyFactRequest(rest, zones);
+      return computeSkyFact(request, dependencies, await selectBackend(name, options));
+    }
+    case 'elections': {
+      const request = parseElectionsRequest(rest);
+      return computeElections(request, await selectBackend(name, options));
+    }
   }
 }
 
@@ -286,7 +344,7 @@ export function createComputeApiHandler(options: ComputeHandlerOptions) {
       if (verdict === 'limited') throw rateLimited();
       if (verdict !== 'allowed') throw rateLimitUnavailable();
       const body = await readJsonBody(req);
-      text = JSON.stringify(await dispatch(endpoint, body, dependencies, zones));
+      text = JSON.stringify(await dispatch(endpoint, body, dependencies, zones, options));
     } catch (error) {
       const refusal = error instanceof ComputeApiError ? error : calculationFailed();
       status = refusal.status;

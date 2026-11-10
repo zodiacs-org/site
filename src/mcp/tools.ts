@@ -181,8 +181,8 @@ export function describeCapabilities(): ToolOutcome {
   const receipt = capabilitiesReceipt();
   const value: CapabilitiesOutput = {
     adapter: { name: ADAPTER_NAME, version: ADAPTER_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' },
-    // 1.1.0-rc.2 is the candidate the site vendors, and npm does not carry it: npm serves 1.0.0 under
-    // `latest` (docs/platform/evidence/site-engine-1-1-0-rc2/). The adapter is not on npm either.
+    // 1.1.0-rc.3 is the candidate the site vendors, and npm does not carry it: npm serves 1.0.0 under
+    // `latest` (docs/platform/evidence/site-engine-1-1-0-rc3/npm-view.txt). The adapter is not on npm either.
     engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'unpublished-candidate' },
     schemas: { envelope: NATAL_ENVELOPE_SCHEMA, receipt: NATAL_RECEIPT_SCHEMA, diagnostic: NATAL_DIAGNOSTIC_SCHEMA },
     supported: {
@@ -299,7 +299,10 @@ export function calculateNatalChart(args: z.infer<typeof NATAL_INPUT>): ToolOutc
   // never writes. Checked rather than assumed: a throw here is a refusal.
   const { ephemeris } = receipt.engine;
   if (!ephemeris) throw new TypeError('The engine wrote a receipt that names no ephemeris');
-  const engine = { name: receipt.engine.name, version: receipt.engine.version, ephemeris };
+  // From 1.1.0-rc.3 a receipt may name jpl-de440, for a chart computed inside withEphemeris. This server never
+  // runs the engine with another source (the DE440 backend is the hosted compute API's), so its receipts name
+  // astronomy-engine, as its output schema requires; the SDK checks every result against that schema.
+  const engine = { name: receipt.engine.name, version: receipt.engine.version, ephemeris: ephemeris as { name: 'astronomy-engine'; version: string } };
   // The summary cites the receipt it leaves out, so a summary and a record of
   // one calculation cite one digest; only the record carries the receipt.
   const cite = citeFor('calculate_natal_chart', receipt);

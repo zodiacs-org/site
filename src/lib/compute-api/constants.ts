@@ -171,6 +171,7 @@ export const ERROR_CODES = Object.freeze([
   'invalid-request',
   'budget-exhausted',
   'calculation-failed',
+  'backend-unavailable',
 ] as const);
 export type ErrorCode = (typeof ERROR_CODES)[number];
 
@@ -186,6 +187,7 @@ export const ERROR_STATUS: Readonly<Record<ErrorCode, number>> = Object.freeze({
   'invalid-request': 400,
   'budget-exhausted': 422,
   'calculation-failed': 500,
+  'backend-unavailable': 503,
 });
 
 /**

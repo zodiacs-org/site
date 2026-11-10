@@ -389,6 +389,10 @@ function isPureRouteOrState(text) {
 
 function isTechnicalState(fragment) {
   if (fragment.text === 'web-crypto-unavailable') return true;
+  // @zodiacs/engine/de440's error when a runtime lacks the Web Cryptography API, which the compute bundle
+  // carries from the engine's archive (P4.1): exactly this text, in exactly that file.
+  if (fragment.file === 'api/_compute/compute.mjs'
+    && fragment.text === "openDe440Pack needs WebCrypto (crypto.subtle) to check the pack's digest") return true;
   if (/^(?:api|src\/lib)\//u.test(fragment.file)
     && /^(?:expired|invalid|malformed|missing|revoked) (?:access|auth|csrf|invite|refresh|reset|session|unsubscribe|verification) token$/iu.test(fragment.text)) return true;
 

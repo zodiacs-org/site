@@ -86,7 +86,8 @@ var ERROR_CODES = Object.freeze([
   "invalid-json",
   "invalid-request",
   "budget-exhausted",
-  "calculation-failed"
+  "calculation-failed",
+  "backend-unavailable"
 ]);
 var ERROR_STATUS = Object.freeze({
   "not-found": 404,
@@ -99,7 +100,8 @@ var ERROR_STATUS = Object.freeze({
   "invalid-json": 400,
   "invalid-request": 400,
   "budget-exhausted": 422,
-  "calculation-failed": 500
+  "calculation-failed": 500,
+  "backend-unavailable": 503
 });
 var HOUSE_SYSTEM_NAMES = Object.freeze([
   "whole",
@@ -193,6 +195,87 @@ var COMPUTE_RECEIPT_SCHEMA = "zodiacs.compute-receipt.v1";
 
 // src/lib/compute-api/handler.ts
 import { checkRateLimit } from "@vercel/firewall";
+
+// node_modules/@zodiacs/engine/dist/chunk-AWVBVRFH.js
+var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
+  "conjunction",
+  "sextile",
+  "square",
+  "trine",
+  "opposition"
+]);
+var ASPECTS = /* @__PURE__ */ Object.freeze([
+  /* @__PURE__ */ Object.freeze({ type: "conjunction", angle: 0, orb: 8, luminaryOrb: 10 }),
+  /* @__PURE__ */ Object.freeze({ type: "sextile", angle: 60, orb: 4, luminaryOrb: 5 }),
+  /* @__PURE__ */ Object.freeze({ type: "square", angle: 90, orb: 7, luminaryOrb: 8 }),
+  /* @__PURE__ */ Object.freeze({ type: "trine", angle: 120, orb: 7, luminaryOrb: 8 }),
+  /* @__PURE__ */ Object.freeze({ type: "opposition", angle: 180, orb: 8, luminaryOrb: 10 })
+]);
+var LUMINARIES = /* @__PURE__ */ new Set(["Sun", "Moon"]);
+var ASPECT_BODY_NAMES = /* @__PURE__ */ Object.freeze([
+  "Sun",
+  "Moon",
+  "Mercury",
+  "Venus",
+  "Mars",
+  "Jupiter",
+  "Saturn",
+  "Uranus",
+  "Neptune",
+  "Pluto"
+]);
+var ASPECT_BODY_SET = /* @__PURE__ */ new Set(ASPECT_BODY_NAMES);
+var ASPECT_BODIES = /* @__PURE__ */ new Set(ASPECT_BODY_NAMES);
+var STATIONARY_RELATIVE_SPEED = 1e-9;
+function aspectMotion(a, b, angle) {
+  const relative = a.speed - b.speed;
+  if (!(Math.abs(relative) >= STATIONARY_RELATIVE_SPEED)) return "stationary";
+  const wrapped = ((a.lon - b.lon) % 360 + 360) % 360;
+  const signed = wrapped > 180 ? wrapped - 360 : wrapped;
+  const deviation = Math.abs(signed) - angle;
+  if (deviation === 0) return "separating";
+  return Math.sign(deviation) * Math.sign(signed) * relative < 0 ? "applying" : "separating";
+}
+function separation(a, b) {
+  const difference = Math.abs(((a - b) % 360 + 360) % 360);
+  return difference > 180 ? 360 - difference : difference;
+}
+function matchAspect(aBody, aLongitude, bBody, bLongitude) {
+  const distance2 = separation(aLongitude, bLongitude);
+  const hasLuminary = LUMINARIES.has(aBody) || LUMINARIES.has(bBody);
+  let best = null;
+  for (const definition of ASPECTS) {
+    const orb = Math.abs(distance2 - definition.angle);
+    const maximum = hasLuminary ? definition.luminaryOrb : definition.orb;
+    if (orb <= maximum && (!best || orb < best.orb)) {
+      best = { definition, orb };
+    }
+  }
+  return best;
+}
+function findAspects(bodies) {
+  const candidates = bodies.filter((body2) => ASPECT_BODY_SET.has(body2.body));
+  const aspects2 = [];
+  for (let first2 = 0; first2 < candidates.length; first2 += 1) {
+    for (let second = first2 + 1; second < candidates.length; second += 1) {
+      const a = candidates[first2];
+      const b = candidates[second];
+      if (!a || !b) continue;
+      const match = matchAspect(a.body, a.lon, b.body, b.lon);
+      if (!match) continue;
+      aspects2.push({
+        a: a.body,
+        b: b.body,
+        type: match.definition.type,
+        orb: match.orb,
+        applying: aspectMotion(a, b, match.definition.angle) === "applying"
+      });
+    }
+  }
+  return aspects2.sort((a, b) => a.orb - b.orb);
+}
+var ENGINE_VERSION = "1.1.0-rc.3";
+var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
 // node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
 var SIGNS = /* @__PURE__ */ Object.freeze([
@@ -625,7 +708,7 @@ function houseOf(longitude2, cusps) {
   return 12;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
+// node_modules/@zodiacs/engine/dist/chunk-Y4E3WJU5.js
 var DEG2 = Math.PI / 180;
 var ARCSEC = DEG2 / 3600;
 var ARGUMENTS = [
@@ -699,8 +782,10 @@ function tilt(tt) {
     ee: dpsi * Math.cos(mobl * DEG2) + 264096e-8 * Math.sin(om) + 6352e-8 * Math.sin(2 * om)
   };
 }
-var DEG22 = Math.PI / 180;
-var ASEC2RAD = DEG22 / 3600;
+
+// node_modules/@zodiacs/engine/dist/chunk-2PZYJQV5.js
+var DEG3 = Math.PI / 180;
+var ASEC2RAD = DEG3 / 3600;
 var RAD2 = 180 / Math.PI;
 var last;
 function eclipticFrame(tt) {
@@ -732,7 +817,7 @@ function eclipticFrame(tt) {
   const yz = -sc * cb * ca - sa * cc;
   const zz = -sc * cb * sa + cc * ca;
   const at = tilt(tt);
-  const e = at.mobl * DEG22;
+  const e = at.mobl * DEG3;
   const ce = Math.cos(e);
   const se = Math.sin(e);
   last = {
@@ -1258,87 +1343,6 @@ function pieceOf({ timeScale, deltaT: deltaT2, utcMs, ut1Days }) {
 function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
-
-// node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
-var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
-  "conjunction",
-  "sextile",
-  "square",
-  "trine",
-  "opposition"
-]);
-var ASPECTS = /* @__PURE__ */ Object.freeze([
-  /* @__PURE__ */ Object.freeze({ type: "conjunction", angle: 0, orb: 8, luminaryOrb: 10 }),
-  /* @__PURE__ */ Object.freeze({ type: "sextile", angle: 60, orb: 4, luminaryOrb: 5 }),
-  /* @__PURE__ */ Object.freeze({ type: "square", angle: 90, orb: 7, luminaryOrb: 8 }),
-  /* @__PURE__ */ Object.freeze({ type: "trine", angle: 120, orb: 7, luminaryOrb: 8 }),
-  /* @__PURE__ */ Object.freeze({ type: "opposition", angle: 180, orb: 8, luminaryOrb: 10 })
-]);
-var LUMINARIES = /* @__PURE__ */ new Set(["Sun", "Moon"]);
-var ASPECT_BODY_NAMES = /* @__PURE__ */ Object.freeze([
-  "Sun",
-  "Moon",
-  "Mercury",
-  "Venus",
-  "Mars",
-  "Jupiter",
-  "Saturn",
-  "Uranus",
-  "Neptune",
-  "Pluto"
-]);
-var ASPECT_BODY_SET = /* @__PURE__ */ new Set(ASPECT_BODY_NAMES);
-var ASPECT_BODIES = /* @__PURE__ */ new Set(ASPECT_BODY_NAMES);
-var STATIONARY_RELATIVE_SPEED = 1e-9;
-function aspectMotion(a, b, angle) {
-  const relative = a.speed - b.speed;
-  if (!(Math.abs(relative) >= STATIONARY_RELATIVE_SPEED)) return "stationary";
-  const wrapped = ((a.lon - b.lon) % 360 + 360) % 360;
-  const signed = wrapped > 180 ? wrapped - 360 : wrapped;
-  const deviation = Math.abs(signed) - angle;
-  if (deviation === 0) return "separating";
-  return Math.sign(deviation) * Math.sign(signed) * relative < 0 ? "applying" : "separating";
-}
-function separation(a, b) {
-  const difference = Math.abs(((a - b) % 360 + 360) % 360);
-  return difference > 180 ? 360 - difference : difference;
-}
-function matchAspect(aBody, aLongitude, bBody, bLongitude) {
-  const distance2 = separation(aLongitude, bLongitude);
-  const hasLuminary = LUMINARIES.has(aBody) || LUMINARIES.has(bBody);
-  let best = null;
-  for (const definition of ASPECTS) {
-    const orb = Math.abs(distance2 - definition.angle);
-    const maximum = hasLuminary ? definition.luminaryOrb : definition.orb;
-    if (orb <= maximum && (!best || orb < best.orb)) {
-      best = { definition, orb };
-    }
-  }
-  return best;
-}
-function findAspects(bodies) {
-  const candidates = bodies.filter((body2) => ASPECT_BODY_SET.has(body2.body));
-  const aspects2 = [];
-  for (let first2 = 0; first2 < candidates.length; first2 += 1) {
-    for (let second = first2 + 1; second < candidates.length; second += 1) {
-      const a = candidates[first2];
-      const b = candidates[second];
-      if (!a || !b) continue;
-      const match = matchAspect(a.body, a.lon, b.body, b.lon);
-      if (!match) continue;
-      aspects2.push({
-        a: a.body,
-        b: b.body,
-        type: match.definition.type,
-        orb: match.orb,
-        applying: aspectMotion(a, b, match.definition.angle) === "applying"
-      });
-    }
-  }
-  return aspects2.sort((a, b) => a.orb - b.orb);
-}
-var ENGINE_VERSION = "1.1.0-rc.2";
-var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
 // node_modules/astronomy-engine/esm/astronomy.js
 /**
@@ -3247,17 +3251,26 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
+// node_modules/@zodiacs/engine/dist/chunk-AMCCLJCB.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
-var DEG3 = Math.PI / 180;
+var DEG4 = Math.PI / 180;
 var RAD3 = 180 / Math.PI;
 var RA_POLE_TOLERANCE = 32 * Number.EPSILON;
-var DEG23 = Math.PI / 180;
+var DEG22 = Math.PI / 180;
 var RAD22 = 180 / Math.PI;
 var ARCSEC2 = 1 / 3600;
 var RAD32 = 180 / Math.PI;
 var DAY2 = 864e5;
 var UTC_CLOCK = { scale: "utc", pin: void 0 };
+var source = null;
+function refuseUnderSource(what) {
+  if (source) throw new TypeError(`${what} does not run inside withEphemeris: it is computed on astronomy-engine`);
+}
+var tidy = (lon) => lon === 360 ? 0 : lon + 0;
+function sourceLongitude(from, body2, ttDays) {
+  if (body2 === "North Node") return tidy(from.trueNode(ttDays));
+  return body2 === "South Node" ? normalizeLongitude(from.trueNode(ttDays) + 180) : tidy(from.place(body2, ttDays).lon);
+}
 function timeOf(basis) {
   const { from, to } = EPHEMERIS_SPAN.daysFromJ2000;
   if (!(basis.ttDays >= from && basis.ttDays <= to)) {
@@ -3336,6 +3349,7 @@ function longitudeAt(body2, ms, clock2) {
   return longitudeOn(body2, basisAt(ms, clock2));
 }
 function longitudeOn(body2, basis) {
+  if (source) return sourceLongitude(source, body2, basis.ttDays);
   const time = timeOf(basis);
   if (body2 === "Moon") return moonOfDate(time).lon;
   if (body2 === "North Node") return trueNodeLongitude(time);
@@ -3382,6 +3396,7 @@ function computeBodies(date3) {
   return evaluated(() => bodiesAt(date3.getTime(), UTC_CLOCK));
 }
 function bodiesAt(ms, clock2) {
+  if (source) return sourceBodiesAt(source, ms, clock2);
   const bodies = [];
   for (const planet of PLANETS) {
     const coordinates = planetOfDate(planet.body, timeAt(ms, clock2));
@@ -3398,6 +3413,15 @@ function bodiesAt(ms, clock2) {
     position("South Node", normalizeLongitude(northNode + 180), 0, nodeSpeed)
   );
   return bodies;
+}
+function sourceBodiesAt(from, ms, clock2) {
+  const tt = basisAt(ms, clock2).ttDays;
+  return ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "North Node", "South Node"].map(
+    (body2) => {
+      const place2 = body2 === "North Node" || body2 === "South Node" ? { lon: sourceLongitude(from, body2, tt), lat: 0 } : from.place(body2, tt);
+      return position(body2, tidy(place2.lon), place2.lat, speedAt(body2, ms, clock2));
+    }
+  );
 }
 var clockOf = (input) => ({
   scale: input.timeScale ?? "utc",
@@ -3439,7 +3463,8 @@ function chartAt(input) {
     flags,
     deltaT: basis.deltaT,
     timeScale: basis.timeScale,
-    engineVersion: ENGINE_VERSION
+    engineVersion: ENGINE_VERSION,
+    ...source && { ephemeris: { name: source.ephemeris.name, version: source.ephemeris.version } }
   };
 }
 
@@ -3789,7 +3814,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
+// node_modules/@zodiacs/engine/dist/chunk-63ZBQK2X.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -4055,13 +4080,20 @@ var CONVENTIONS = /* @__PURE__ */ (() => Object.freeze({
   ...CONVENTIONS_RC16,
   conventionIds: "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt"
 }))();
+var CONVENTIONS_DE440 = /* @__PURE__ */ (() => Object.freeze({
+  ...CONVENTIONS,
+  planetPositions: "apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto",
+  moonPosition: "ephemeris-geocentric-moon;light-time;solar-deflection;relativistic-aberration",
+  positionFrame: "icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term"
+}))();
 var NATAL_RECEIPT_CONVENTION_SETS = /* @__PURE__ */ Object.freeze([
   CONVENTIONS,
   CONVENTIONS_RC16,
   CONVENTIONS_RC15,
   CONVENTIONS_RC8,
   CONVENTIONS_RC7,
-  CONVENTIONS_RC3
+  CONVENTIONS_RC3,
+  CONVENTIONS_DE440
 ]);
 var RC3_TO_RC6 = /^0\.1\.1-rc\.[3-6](?:\+[A-Za-z0-9.-]+)?$/;
 var RC7 = /^0\.1\.1-rc\.7(?:\+[A-Za-z0-9.-]+)?$/;
@@ -4070,6 +4102,10 @@ var RC15 = /^0\.1\.1-rc\.15(?:\+[A-Za-z0-9.-]+)?$/;
 var before = (version2, release) => compareVersions(version2, release) < 0;
 var NUTATION_RELEASE = "0.1.1-rc.16";
 var IDS_FEATURE = "convention-ids";
+var DE440_FEATURE = "ephemeris-jpl-de440";
+var DE440_EPHEMERIS = "jpl-de440";
+var DE440_RELEASE = "1.1.0-rc.3";
+var SHA256_HEX = /^[0-9a-f]{64}$/;
 var RC9_RELEASE = "0.1.1-rc.9";
 var RC10_RELEASE = "0.1.1-rc.10";
 var COVERAGE = /* @__PURE__ */ Object.freeze({
@@ -4581,16 +4617,16 @@ function commit(value) {
   if (typeof value !== "string" || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(value))
     fail("invalid_value");
 }
-function validateProvenance(value, engineVersion) {
+function validateProvenance(value, engineVersion, de440Version) {
   if (value === null) return;
   const facts = record(value);
   fields(facts, ["status"], ["source", "artifact", "runtime", "ephemeris"]);
   if (facts.status !== "claimed" || Object.keys(facts).length === 1) fail("invalid_shape");
   if (facts.source !== void 0) {
-    const source = record(facts.source);
-    fields(source, ["repository", "commit"]);
-    repository(source.repository);
-    commit(source.commit);
+    const source2 = record(facts.source);
+    fields(source2, ["repository", "commit"]);
+    repository(source2.repository);
+    commit(source2.commit);
   }
   if (facts.artifact !== void 0) {
     const artifact = record(facts.artifact);
@@ -4617,8 +4653,12 @@ function validateProvenance(value, engineVersion) {
   if (facts.ephemeris !== void 0) {
     const ephemeris = record(facts.ephemeris);
     fields(ephemeris, ["name", "version"]);
-    if (ephemeris.name !== "astronomy-engine") fail("unsupported_feature");
-    version(ephemeris.version);
+    if (de440Version !== null) {
+      if (ephemeris.name !== DE440_EPHEMERIS || ephemeris.version !== de440Version) fail("invalid_context");
+    } else {
+      if (ephemeris.name !== "astronomy-engine") fail("unsupported_feature");
+      version(ephemeris.version);
+    }
   }
 }
 function validateEnvelope(input) {
@@ -4626,7 +4666,7 @@ function validateEnvelope(input) {
   if (envelope.schema !== NATAL_ENVELOPE_SCHEMA) fail("unsupported_version");
   fields(envelope, ["schema", "requiredFeatures", "receipt", "result"], ["extensions"]);
   const features = list(envelope.requiredFeatures);
-  if (features.some((feature2) => feature2 !== IDS_FEATURE)) fail("unsupported_feature");
+  if (features.some((feature2) => feature2 !== IDS_FEATURE && feature2 !== DE440_FEATURE)) fail("unsupported_feature");
   const receipt = record(envelope.receipt);
   if (receipt.schema !== NATAL_RECEIPT_SCHEMA) fail("unsupported_version");
   fields(receipt, [
@@ -4669,11 +4709,15 @@ function validateEnvelope(input) {
     if (timeKnown && Math.abs(coords.latitude) === 90) fail("unsupported_feature");
   }
   const conventions = conventionSet(receipt.conventions);
-  const timeBasis22 = conventions === CONVENTIONS || conventions === CONVENTIONS_RC16 || conventions === CONVENTIONS_RC15;
+  const de440 = conventions === CONVENTIONS_DE440;
+  const withIds = conventions === CONVENTIONS || de440;
+  const timeBasis22 = withIds || conventions === CONVENTIONS_RC16 || conventions === CONVENTIONS_RC15;
   const current = timeBasis22 || conventions === CONVENTIONS_RC8;
   if (timeBasis22 !== Object.hasOwn(receipt, "timeScale")) fail("invalid_shape");
-  if (conventions === CONVENTIONS !== Object.hasOwn(receipt, "conventionIds")) fail("invalid_shape");
-  if (features.length !== (conventions === CONVENTIONS ? 1 : 0)) fail("inconsistent_result");
+  if (withIds !== Object.hasOwn(receipt, "conventionIds")) fail("invalid_shape");
+  const expectedFeatures = de440 ? [IDS_FEATURE, DE440_FEATURE] : withIds ? [IDS_FEATURE] : [];
+  if (features.length !== expectedFeatures.length || features.some((feature2, index) => feature2 !== expectedFeatures[index]))
+    fail("inconsistent_result");
   const scale = timeBasis22 ? choice(receipt.timeScale, TIME_SCALE_NAMES) : null;
   const result = validateResult(
     envelope.result,
@@ -4708,15 +4752,20 @@ function validateEnvelope(input) {
   if (current) {
     const ephemeris = record(engine.ephemeris);
     fields(ephemeris, ["name", "version"]);
-    if (ephemeris.name !== "astronomy-engine") fail("unsupported_feature");
-    version(ephemeris.version);
+    if (de440) {
+      if (ephemeris.name !== DE440_EPHEMERIS) fail("unsupported_feature");
+      if (typeof ephemeris.version !== "string" || !SHA256_HEX.test(ephemeris.version)) fail("invalid_value");
+    } else {
+      if (ephemeris.name !== "astronomy-engine") fail("unsupported_feature");
+      version(ephemeris.version);
+    }
   }
-  validateProvenance(receipt.provenance, engineVersion);
+  validateProvenance(receipt.provenance, engineVersion, de440 ? record(engine.ephemeris).version : null);
   validateLocal(receipt.localResolution, receipt, timeBasis22);
-  if (conventions === CONVENTIONS_RC3 && !RC3_TO_RC6.test(engineVersion) || conventions === CONVENTIONS_RC7 && !RC7.test(engineVersion) || conventions === CONVENTIONS_RC8 && !RC8_TO_RC14.test(engineVersion) || conventions === CONVENTIONS_RC15 && !RC15.test(engineVersion) || (conventions === CONVENTIONS || conventions === CONVENTIONS_RC16) && before(engineVersion, NUTATION_RELEASE) || !HOUSE_SYSTEMS_BEFORE_RC9.includes(requested) && before(engineVersion, RC9_RELEASE) || !HOUSE_SYSTEMS_BEFORE_RC10.includes(requested) && before(engineVersion, RC10_RELEASE))
+  if (conventions === CONVENTIONS_RC3 && !RC3_TO_RC6.test(engineVersion) || conventions === CONVENTIONS_RC7 && !RC7.test(engineVersion) || conventions === CONVENTIONS_RC8 && !RC8_TO_RC14.test(engineVersion) || conventions === CONVENTIONS_RC15 && !RC15.test(engineVersion) || (conventions === CONVENTIONS || conventions === CONVENTIONS_RC16) && before(engineVersion, NUTATION_RELEASE) || de440 && before(engineVersion, DE440_RELEASE) || !HOUSE_SYSTEMS_BEFORE_RC9.includes(requested) && before(engineVersion, RC9_RELEASE) || !HOUSE_SYSTEMS_BEFORE_RC10.includes(requested) && before(engineVersion, RC10_RELEASE))
     fail("inconsistent_result");
   fixedFields(receipt.coverage, COVERAGE);
-  if (conventions === CONVENTIONS) {
+  if (withIds) {
     const ids = list(receipt.conventionIds);
     if (ids.some((id) => typeof id !== "string")) fail("invalid_value");
     const named = natalConventionIds({ receipt, result });
@@ -4738,7 +4787,7 @@ function checked(input) {
 }
 function createNatalEnvelope(chart, context = {}) {
   return guarded(() => {
-    const source = record(cloneData(chart, true));
+    const source2 = record(cloneData(chart, true));
     const required2 = [
       "input",
       "bodies",
@@ -4750,14 +4799,21 @@ function createNatalEnvelope(chart, context = {}) {
       "timeScale",
       "engineVersion"
     ];
-    if (required2.some((key) => !Object.hasOwn(source, key))) fail("invalid_shape");
-    const input = record(source.input);
+    if (required2.some((key) => !Object.hasOwn(source2, key))) fail("invalid_shape");
+    const input = record(source2.input);
     fields(
       input,
       ["utc", "houseSystem", "timeKnown"],
       ["latitude", "longitude", "flags", "deltaT", "timeScale"]
     );
     if (!(input.utc instanceof Date)) fail("invalid_value");
+    const ephemerisNamed = source2.ephemeris === void 0 ? null : record(source2.ephemeris);
+    if (ephemerisNamed !== null) {
+      fields(ephemerisNamed, ["name", "version"]);
+      if (ephemerisNamed.name !== DE440_EPHEMERIS) fail("unsupported_feature");
+      if (typeof ephemerisNamed.version !== "string" || !SHA256_HEX.test(ephemerisNamed.version)) fail("invalid_value");
+    }
+    const de440 = ephemerisNamed !== null;
     const supplied = record(cloneData(context));
     fields(
       supplied,
@@ -4767,7 +4823,7 @@ function createNatalEnvelope(chart, context = {}) {
     if (supplied.provenance !== void 0)
       fields(record(supplied.provenance), [], ["source", "artifact", "runtime", "ephemeris"]);
     if (input.latitude === void 0 !== (input.longitude === void 0)) fail("invalid_value");
-    const houses = source.houses === null ? null : record(source.houses);
+    const houses = source2.houses === null ? null : record(source2.houses);
     const receipt = {
       schema: NATAL_RECEIPT_SCHEMA,
       instant: Date.prototype.toISOString.call(input.utc),
@@ -4783,23 +4839,23 @@ function createNatalEnvelope(chart, context = {}) {
         absenceReason: !input.timeKnown ? "unknown-time" : input.latitude === void 0 ? "missing-location" : null
       },
       inputFlags: input.flags ?? [],
-      resultFlags: source.flags,
+      resultFlags: source2.flags,
       engine: {
         name: "@zodiacs/engine",
-        version: source.engineVersion,
-        ephemeris: { ...EPHEMERIS }
+        version: source2.engineVersion,
+        ephemeris: de440 ? { name: DE440_EPHEMERIS, version: ephemerisNamed.version } : { ...EPHEMERIS }
       },
       provenance: supplied.provenance === void 0 ? null : { ...record(supplied.provenance), status: "claimed" },
-      conventions: { ...CONVENTIONS },
+      conventions: { ...de440 ? CONVENTIONS_DE440 : CONVENTIONS },
       coverage: { ...COVERAGE }
     };
     const result = {
-      bodies: list(source.bodies).map((body2) => kept(body2, BODY_RECORD)),
-      angles: source.angles === null ? null : kept(source.angles, ANGLES_RECORD),
+      bodies: list(source2.bodies).map((body2) => kept(body2, BODY_RECORD)),
+      angles: source2.angles === null ? null : kept(source2.angles, ANGLES_RECORD),
       houses: houses === null ? null : kept(houses, HOUSES_RECORD),
-      aspects: list(source.aspects).map((aspect) => kept(aspect, ASPECT_RECORD)),
-      deltaT: kept(source.deltaT, DELTA_T_RECORD),
-      timeScale: timeScaleKept(source.timeScale)
+      aspects: list(source2.aspects).map((aspect) => kept(aspect, ASPECT_RECORD)),
+      deltaT: kept(source2.deltaT, DELTA_T_RECORD),
+      timeScale: timeScaleKept(source2.timeScale)
     };
     let conventionIds2 = [];
     try {
@@ -4808,7 +4864,7 @@ function createNatalEnvelope(chart, context = {}) {
     }
     const envelope = {
       schema: NATAL_ENVELOPE_SCHEMA,
-      requiredFeatures: [IDS_FEATURE],
+      requiredFeatures: de440 ? [IDS_FEATURE, DE440_FEATURE] : [IDS_FEATURE],
       receipt: { ...receipt, conventionIds: conventionIds2 },
       result,
       ...supplied.extensions === void 0 ? {} : { extensions: supplied.extensions }
@@ -5177,7 +5233,9 @@ var MESSAGES = Object.freeze({
   unsupportedMediaType: "Send the body as application/json in UTF-8, without a content encoding.",
   payloadTooLarge: `The body is larger than ${MAX_BODY_BYTES} bytes.`,
   invalidJson: "The body is not valid JSON in UTF-8.",
-  calculationFailed: "The engine could not complete this calculation."
+  calculationFailed: "The engine could not complete this calculation.",
+  backendUnavailable: "The de440 backend is not available here: this runtime has no DE440 pack. Ask for astronomy-engine, or leave out backend.",
+  backend: "Must be astronomy-engine or de440."
 });
 function invalidRequest(pointer, message) {
   return new ComputeApiError({ code: "invalid-request", message, pointer });
@@ -5190,6 +5248,26 @@ function budgetExhausted(limit) {
     max: BUDGETS[limit]
   });
 }
+
+// src/lib/compute-api/backend.ts
+var BACKEND_NAMES = Object.freeze(["astronomy-engine", "de440"]);
+var DEFAULT_BACKEND = "astronomy-engine";
+var DE440_PACK_SHA256 = "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7";
+var ENGINE_IDENTITY = Object.freeze({
+  name: "@zodiacs/engine",
+  version: ENGINE_VERSION,
+  ephemeris: Object.freeze({ name: EPHEMERIS.name, version: EPHEMERIS.version })
+});
+var ASTRONOMY_ENGINE_BACKEND = Object.freeze({
+  name: "astronomy-engine",
+  identity: ENGINE_IDENTITY,
+  run: (fn) => fn()
+});
+var FALLBACK_BACKEND = Object.freeze({
+  name: "astronomy-engine",
+  identity: Object.freeze({ ...ENGINE_IDENTITY, fallback: Object.freeze({ from: "de440", reason: "pack-unavailable" }) }),
+  run: (fn) => fn()
+});
 
 // src/lib/time/fixed-zones.ts
 var FIXED_OFFSET_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
@@ -5282,16 +5360,18 @@ var BACKEND = Object.freeze({
   version: ENGINE_VERSION,
   ephemeris: Object.freeze({ name: EPHEMERIS.name, version: EPHEMERIS.version })
 });
-var statements = null;
-function engineStatements() {
-  if (!statements) {
-    const chart = natalChart({ utc: "2000-01-01T12:00:00Z", timeKnown: false });
+var statementsByEphemeris = /* @__PURE__ */ new Map();
+function engineStatements(backend = ASTRONOMY_ENGINE_BACKEND) {
+  const key = `${backend.identity.ephemeris.name}@${backend.identity.ephemeris.version}`;
+  let statements2 = statementsByEphemeris.get(key);
+  if (!statements2) {
+    const chart = backend.run(() => natalChart({ utc: "2000-01-01T12:00:00Z", timeKnown: false }));
     const { receipt } = createNatalEnvelope(chart);
     const { model, table, tableDigest } = chart.deltaT;
     if (model !== "iers-utc/1" || table === null || tableDigest === null) {
       throw new Error("The engine's chart for 2000-01-01 no longer names the IERS table.");
     }
-    statements = {
+    statements2 = {
       conventions: receipt.conventions,
       coverage: receipt.coverage,
       deltaT: [
@@ -5299,8 +5379,9 @@ function engineStatements() {
         { model: DELTA_T_MODEL, table: DELTA_T_TABLE.version, tableDigest: DELTA_T_TABLE.digest }
       ]
     };
+    statementsByEphemeris.set(key, statements2);
   }
-  return statements;
+  return statements2;
 }
 function computeConventionIds(receipt) {
   const ids = /* @__PURE__ */ new Set();
@@ -5309,7 +5390,7 @@ function computeConventionIds(receipt) {
   }
   ids.add(conventionId("ephemeris", `${receipt.engine.ephemeris.name}@${receipt.engine.ephemeris.version}`));
   ids.add(conventionId("endpoint", receipt.endpoint));
-  for (const source of receipt.deltaT) ids.add(conventionId("deltat-model", source.model));
+  for (const source2 of receipt.deltaT) ids.add(conventionId("deltat-model", source2.model));
   if (receipt.timeResolution) {
     ids.add(conventionId("fold-policy", receipt.timeResolution.policy.fold));
     ids.add(conventionId("gap-policy", receipt.timeResolution.policy.gap));
@@ -5326,12 +5407,12 @@ function computeConventionIds(receipt) {
   }
   return [...ids].sort();
 }
-function computeReceipt(endpoint, extra = {}) {
-  const { conventions, coverage, deltaT: deltaT2 } = engineStatements();
+function computeReceipt(endpoint, extra = {}, backend = ASTRONOMY_ENGINE_BACKEND) {
+  const { conventions, coverage, deltaT: deltaT2 } = engineStatements(backend);
   const receipt = {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,
-    engine: BACKEND,
+    engine: backend.identity,
     conventions,
     coverage,
     referenceSpan: { from: REFERENCE_SPAN.from, to: REFERENCE_SPAN.to },
@@ -5350,12 +5431,12 @@ function citeFor(endpoint, receipt) {
     version: BACKEND.version
   };
 }
-function successBody(endpoint, result, receipt) {
+function successBody(endpoint, result, receipt, backend = ASTRONOMY_ENGINE_BACKEND) {
   return {
     schema: responseSchemaName(endpoint),
     result,
     receipt,
-    backend: BACKEND,
+    backend: backend.identity,
     cite: citeFor(endpoint, receipt)
   };
 }
@@ -5538,7 +5619,8 @@ var VALIDATION_POINTERS = Object.freeze([
   "/place",
   "/place/latitude",
   "/place/longitude",
-  "/place/houseSystem"
+  "/place/houseSystem",
+  "/backend"
 ]);
 var INDEXED_POINTERS = Object.freeze(["/instants", "/bodies", "/kinds", "/conditions"]);
 var CONDITION_FIELD_POINTERS = Object.freeze(["kind", "phase", "body", "sign", "not"]);
@@ -5825,7 +5907,10 @@ function localSummary(local) {
     zoneUncertain: local.zoneUncertain
   };
 }
-function computePositions(request2) {
+function computePositions(request2, backend = ASTRONOMY_ENGINE_BACKEND) {
+  return backend.run(() => positionsBody(request2, backend));
+}
+function positionsBody(request2, backend) {
   const instants = request2.instants.map((instant2) => {
     const rows2 = positions(instant2);
     const { deltaT: deltaT2, timeScale } = basisOf(instant2);
@@ -5837,11 +5922,14 @@ function computePositions(request2) {
       flags: outsideReferenceSpan(instant2) ? ["outside-reference-span"] : []
     };
   });
-  return successBody("positions", { instants }, computeReceipt("positions"));
+  return successBody("positions", { instants }, computeReceipt("positions", {}, backend), backend);
 }
 var KIND_ORDER = { ingress: 0, station: 1, lunation: 2 };
 var BODY_ORDER = new Map(["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"].map((body2, index) => [body2, index]));
-function computeEvents(request2) {
+function computeEvents(request2, backend = ASTRONOMY_ENGINE_BACKEND) {
+  return backend.run(() => eventsBody(request2, backend));
+}
+function eventsBody(request2, backend) {
   const { from, to } = request2;
   const budget = new SampleBudget("events.samples");
   const rowsAt = positionsMemo();
@@ -5883,7 +5971,7 @@ function computeEvents(request2) {
     }
   }
   events.sort((a, b) => a.at.localeCompare(b.at) || KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || (BODY_ORDER.get("body" in a ? a.body : "Moon") ?? 0) - (BODY_ORDER.get("body" in b ? b.body : "Moon") ?? 0));
-  return successBody("events", { from: iso(from), to: iso(to), events }, computeReceipt("events", { search: budget.facts() }));
+  return successBody("events", { from: iso(from), to: iso(to), events }, computeReceipt("events", { search: budget.facts() }, backend), backend);
 }
 function nextDate(date3) {
   return new Date(Date.parse(`${date3}T00:00:00Z`) + DAY_MS2).toISOString().slice(0, 10);
@@ -5966,7 +6054,12 @@ function relativeCrossings(request2, target, from, to, budget, rowsAt) {
   const step = request2.body === "Moon" || request2.other === "Moon" ? SEARCH_STEP_DAYS.moon : SEARCH_STEP_DAYS.default;
   return budget.settle(searchLongitudeCrossingsWith(relativeAt, request2.body, target, from, to, budget.options(step)));
 }
-async function computeSkyFact(request2, dependencies) {
+async function computeSkyFact(request2, dependencies, backend = ASTRONOMY_ENGINE_BACKEND) {
+  const day = "day" in request2 ? request2.day : "instant" in request2.when ? null : request2.when;
+  const window = day ? await dayWindow(day, dependencies) : null;
+  return backend.run(() => skyFactBody(request2, dependencies, window, backend));
+}
+function skyFactBody(request2, dependencies, prepared, backend) {
   const budget = new SampleBudget("sky-fact.samples");
   const rowsAt = positionsMemo();
   const fact = factEcho(request2);
@@ -5989,7 +6082,7 @@ async function computeSkyFact(request2, dependencies) {
         timeScale: basis.timeScale,
         flags: outsideReferenceSpan(instant2) ? ["outside-reference-span"] : []
       }
-    }, computeReceipt("sky-fact"));
+    }, computeReceipt("sky-fact", {}, backend), backend);
   }
   if ((request2.kind === "sign" || request2.kind === "retrograde") && "instant" in request2.when) {
     const instant2 = request2.when.instant;
@@ -6010,10 +6103,10 @@ async function computeSkyFact(request2, dependencies) {
         ...request2.kind === "sign" ? { boundaryMarginArcsec: boundaryMarginArcsec(state.lon) } : {},
         flags: outsideReferenceSpan(instant2) ? ["outside-reference-span"] : []
       }
-    }, computeReceipt("sky-fact"));
+    }, computeReceipt("sky-fact", {}, backend), backend);
   }
-  const day = "day" in request2 ? request2.day : request2.when;
-  const window = await dayWindow(day, dependencies);
+  if (!prepared) throw new Error("A fact over a day has its window.");
+  const window = prepared;
   const span2 = searchSpan(window);
   const anyZone = window.basis === "any-zone-day";
   const flags = spanFlags(window.from, span2.to);
@@ -6082,7 +6175,7 @@ async function computeSkyFact(request2, dependencies) {
   }, computeReceipt("sky-fact", {
     search: budget.facts(),
     ...window.zone ? { timeResolution: timeResolutionFacts(dependencies.localTime) } : {}
-  }));
+  }, backend), backend);
 }
 function factEcho(request2) {
   switch (request2.kind) {
@@ -6167,6 +6260,15 @@ var object = (required2, properties, description) => ({
 });
 var place = object(["lon", "sign", "degree"], { lon: num, sign, degree: num }, "A longitude, with its sign and the degree within it.");
 var allowedOrb = { type: "number", minimum: 0, description: "The widest orb at which the aspect holds between these two bodies, in degrees: the wider one when the Sun or the Moon is one of them." };
+var ASTRONOMY_ENGINE_BACKEND_SCHEMA = Object.freeze({
+  type: "object",
+  required: ["name", "version", "ephemeris"],
+  properties: {
+    name: { const: "@zodiacs/engine" },
+    version: str,
+    ephemeris: { type: "object", required: ["name", "version"], properties: { name: { const: "astronomy-engine" }, version: str } }
+  }
+});
 var COMPUTE_SCHEMAS = Object.freeze({
   Instant: {
     type: "string",
@@ -6197,6 +6299,11 @@ var COMPUTE_SCHEMAS = Object.freeze({
       zone: requestZone
     }
   },
+  BackendName: {
+    enum: [...BACKEND_NAMES],
+    default: DEFAULT_BACKEND,
+    description: `The ephemeris the positions come from: astronomy-engine (the engine as the site runs it), or de440, JPL's DE440 through the sealed pack the deployment builds from NAIF's de440.bsp (SHA-256 ${DE440_PACK_SHA256}, 1790 to 2210), reduced to apparent places of date on the server. ${DEFAULT_BACKEND} when omitted. A runtime without the pack answers de440 with backend-unavailable (503). Angles and houses do not depend on it.`
+  },
   Latitude: { type: "number", exclusiveMinimum: -90, exclusiveMaximum: 90, description: "Degrees north. The poles are refused: the engine does not compute angles there." },
   Longitude: { type: "number", minimum: -180, maximum: 180, description: "Degrees east." },
   HouseSystem: { enum: [...HOUSE_SYSTEM_NAMES], description: "One of the engine's thirteen house systems." },
@@ -6214,13 +6321,29 @@ var COMPUTE_SCHEMAS = Object.freeze({
     },
     description: "Exactly one of utc and local, a place, and a house system (placidus when omitted)."
   },
+  ChartRequest: {
+    type: "object",
+    additionalProperties: false,
+    required: ["latitude", "longitude"],
+    oneOf: [{ required: ["utc"] }, { required: ["local"] }],
+    properties: {
+      utc: ref("Instant"),
+      local: ref("LocalTime"),
+      latitude: ref("Latitude"),
+      longitude: ref("Longitude"),
+      houseSystem: { ...ref("HouseSystem"), default: "placidus" },
+      backend: ref("BackendName")
+    },
+    description: "Exactly one of utc and local, a place, a house system (placidus when omitted) and a backend (astronomy-engine when omitted)."
+  },
   PositionsRequest: {
     type: "object",
     additionalProperties: false,
     required: ["instants"],
     properties: {
       instants: { type: "array", minItems: 1, maxItems: BUDGETS["positions.instants"], items: ref("Instant") },
-      bodies: { type: "array", minItems: 1, uniqueItems: true, items: bodyName, description: "Rows to return; all twelve when omitted." }
+      bodies: { type: "array", minItems: 1, uniqueItems: true, items: bodyName, description: "Rows to return; all twelve when omitted." },
+      backend: ref("BackendName")
     }
   },
   EventsRequest: {
@@ -6232,7 +6355,8 @@ var COMPUTE_SCHEMAS = Object.freeze({
       from: ref("Instant"),
       to: ref("Instant"),
       bodies: { type: "array", minItems: 1, uniqueItems: true, items: { enum: [...EVENT_BODIES] }, description: "All ten when omitted." },
-      kinds: { type: "array", minItems: 1, uniqueItems: true, items: { enum: [...EVENT_KINDS] }, description: "All three when omitted." }
+      kinds: { type: "array", minItems: 1, uniqueItems: true, items: { enum: [...EVENT_KINDS] }, description: "All three when omitted." },
+      backend: ref("BackendName")
     }
   },
   TimeRequest: {
@@ -6256,7 +6380,8 @@ var COMPUTE_SCHEMAS = Object.freeze({
       from: ref("Instant"),
       to: ref("Instant"),
       conditions: { type: "array", minItems: 1, maxItems: MAX_ELECTION_CONDITIONS, items: ref("ElectionCondition") },
-      place: ref("ElectionPlace")
+      place: ref("ElectionPlace"),
+      backend: ref("BackendName")
     }
   },
   ElectionCondition: {
@@ -6340,6 +6465,7 @@ var COMPUTE_SCHEMAS = Object.freeze({
     ],
     properties: {
       kind: { const: "sign" },
+      backend: ref("BackendName"),
       body: { enum: [...EVENT_BODIES] },
       sign,
       instant: ref("Instant"),
@@ -6357,6 +6483,7 @@ var COMPUTE_SCHEMAS = Object.freeze({
     ],
     properties: {
       kind: { const: "retrograde" },
+      backend: ref("BackendName"),
       body: { enum: [...EVENT_BODIES] },
       instant: ref("Instant"),
       date: { type: "string", pattern: `^${DATE}$` },
@@ -6369,6 +6496,7 @@ var COMPUTE_SCHEMAS = Object.freeze({
     required: ["kind", "body", "sign", "date"],
     properties: {
       kind: { const: "ingress" },
+      backend: ref("BackendName"),
       body: { enum: [...EVENT_BODIES] },
       sign,
       date: { type: "string", pattern: `^${DATE}$` },
@@ -6381,6 +6509,7 @@ var COMPUTE_SCHEMAS = Object.freeze({
     required: ["kind", "phase", "date"],
     properties: {
       kind: { const: "phase" },
+      backend: ref("BackendName"),
       phase: { enum: [...PHASE_NAMES] },
       date: { type: "string", pattern: `^${DATE}$` },
       zone: requestZone
@@ -6396,6 +6525,7 @@ var COMPUTE_SCHEMAS = Object.freeze({
     ],
     properties: {
       kind: { const: "aspect" },
+      backend: ref("BackendName"),
       body: { enum: [...EVENT_BODIES] },
       other: { enum: [...EVENT_BODIES], description: "A body other than body: the order of the two changes nothing but the order they are reported in." },
       aspect: { enum: [...ASPECT_TYPES], description: `One of the five major aspects, held within the orbs a chart's aspects use: ${ASPECTS.map((definition) => `${definition.type} ${definition.angle}\xB0 within ${definition.orb}\xB0`).join(", ")}, each widened (${ASPECTS.map((definition) => `${definition.luminaryOrb}\xB0`).join(", ")}) when the Sun or the Moon is one of the two.` },
@@ -6569,10 +6699,28 @@ var COMPUTE_SCHEMAS = Object.freeze({
   Backend: {
     type: "object",
     required: ["name", "version", "ephemeris"],
+    description: "The engine that answered and its ephemeris: astronomy-engine and its version, or jpl-de440 with the SHA-256 of the pack as its version.",
     properties: {
       name: { const: "@zodiacs/engine" },
       version: str,
-      ephemeris: { type: "object", required: ["name", "version"], properties: { name: { const: "astronomy-engine" }, version: str } }
+      ephemeris: { type: "object", required: ["name", "version"], properties: { name: { enum: ["astronomy-engine", "jpl-de440"] }, version: str } },
+      pack: {
+        type: "object",
+        required: ["sha256", "startEtSecTdb", "stopEtSecTdb", "compiler"],
+        description: "With jpl-de440: the pack the positions came from, its span in TDB seconds from J2000 and the compiler that made it.",
+        properties: {
+          sha256: { type: "string", pattern: "^[0-9a-f]{64}$" },
+          startEtSecTdb: num,
+          stopEtSecTdb: num,
+          compiler: nullable(object(["name", "version"], { name: str, version: str }))
+        }
+      },
+      fallback: {
+        type: "object",
+        required: ["from", "reason"],
+        description: "Present when a request that named no backend was answered by astronomy-engine in place of the default, de440, because this runtime has no DE440 pack.",
+        properties: { from: { const: "de440" }, reason: { const: "pack-unavailable" } }
+      }
     }
   },
   Cite: {
@@ -6914,9 +7062,9 @@ var COMPUTE_TAG = Object.freeze({
   description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. The function writes nothing from a request or its result to a log, a file or a database, and responses are not cached; the host's request logs keep each request's web address and IP address. The endpoints answer only while their per-address rate limit is in place, and 503 otherwise. A body with a repeated key is read as JSON.parse reads it: the last value wins. Documentation: ${COMPUTE_DOCS_URL}`
 });
 
-// node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
-var DEG4 = Math.PI / 180;
-var ARCSEC3 = DEG4 / 3600;
+// node_modules/@zodiacs/engine/dist/chunk-4XOYTBLS.js
+var DEG5 = Math.PI / 180;
+var ARCSEC3 = DEG5 / 3600;
 function toEquator(m, angle) {
   const c = Math.cos(angle);
   const s = Math.sin(angle);
@@ -6950,7 +7098,7 @@ function toTrueEquinox(m, dpsi) {
 function equatorRows(tt, kind) {
   const frame = eclipticFrame(tt);
   const { mobl, tobl, dpsi } = frame.tilt;
-  return kind === "mean" ? toEquator(frame.rows, mobl * DEG4) : toEquator(toTrueEquinox(frame.rows, dpsi * ARCSEC3), tobl * DEG4);
+  return kind === "mean" ? toEquator(frame.rows, mobl * DEG5) : toEquator(toTrueEquinox(frame.rows, dpsi * ARCSEC3), tobl * DEG5);
 }
 function turn2(m, x, y, z15) {
   return [m[0] * x + m[1] * y + m[2] * z15, m[3] * x + m[4] * y + m[5] * z15, m[6] * x + m[7] * y + m[8] * z15];
@@ -7054,6 +7202,7 @@ function conventionsOf(body2, input) {
   return Object.freeze({ limb, refraction, refractionArcmin: refraction === "standard" ? STANDARD_REFRACTION_ARCMIN : 0 });
 }
 function stateAt2(body2, site, conventions, ms) {
+  refuseUnderSource("@zodiacs/engine/sky's rising and setting");
   return onChartClock(ms, "utc", void 0, (time) => {
     const g = GeoVector(BODIES2[body2], time, true);
     const [vx, vy, vz] = turn2(equatorRows(time.tt, "true"), g.x, g.y, g.z);
@@ -7356,7 +7505,7 @@ function sunMoonLine(sunSign, moonSign) {
 }
 
 // src/lib/engine/lite.ts
-var DEG5 = Math.PI / 180;
+var DEG6 = Math.PI / 180;
 var MOON_PHASE_NEW_ILLUMINATION = 0.03;
 var MOON_PHASE_QUARTER_DEGREES = 12;
 function moonPhaseNameFromAngle(a) {
@@ -8291,16 +8440,16 @@ function occasionQuery(share, withRef2 = false) {
   return params.toString();
 }
 var confidenceOf = (value, allowed) => value === null || value === void 0 ? null : allowed.includes(value) ? value : void 0;
-function compatibilityShareQuery(source) {
-  const { overall, areas } = source.score;
+function compatibilityShareQuery(source2) {
+  const { overall, areas } = source2.score;
   if (![overall, areas.attraction, areas.communication, areas.stability].every(isScore)) return null;
-  const confidence = confidenceOf(source.confidence, PAIR_CONFIDENCES);
+  const confidence = confidenceOf(source2.confidence, PAIR_CONFIDENCES);
   if (confidence === void 0) return null;
   return compatibilityQuery({
-    a: shareName(source.a.name),
-    b: shareName(source.b.name),
-    aSun: isSign(source.a.sun) ? source.a.sun : null,
-    bSun: isSign(source.b.sun) ? source.b.sun : null,
+    a: shareName(source2.a.name),
+    b: shareName(source2.b.name),
+    aSun: isSign(source2.a.sun) ? source2.a.sun : null,
+    bSun: isSign(source2.b.sun) ? source2.b.sun : null,
     score: overall,
     attraction: areas.attraction,
     communication: areas.communication,
@@ -8310,29 +8459,29 @@ function compatibilityShareQuery(source) {
     ref: null
   });
 }
-function occasionShareQuery(source) {
-  if (!isScore(source.score) || !OCCASION_KINDS.includes(source.occasion) || !validDate(source.date)) return null;
-  const confidence = confidenceOf(source.confidence, DAY_CONFIDENCES);
+function occasionShareQuery(source2) {
+  if (!isScore(source2.score) || !OCCASION_KINDS.includes(source2.occasion) || !validDate(source2.date)) return null;
+  const confidence = confidenceOf(source2.confidence, DAY_CONFIDENCES);
   if (confidence === void 0) return null;
   return occasionQuery({
-    occasion: source.occasion,
-    date: source.date,
-    names: shareNames(source.names),
-    place: sharePlace(source.place),
-    sun: isSign(source.sun) ? source.sun : null,
-    moon: isSign(source.moon) ? source.moon : null,
-    score: source.score,
-    verdict: dateVerdictKey(source.score),
+    occasion: source2.occasion,
+    date: source2.date,
+    names: shareNames(source2.names),
+    place: sharePlace(source2.place),
+    sun: isSign(source2.sun) ? source2.sun : null,
+    moon: isSign(source2.moon) ? source2.moon : null,
+    score: source2.score,
+    verdict: dateVerdictKey(source2.score),
     confidence,
     ref: null
   });
 }
-var compatibilityShareUrl = (origin, source) => {
-  const query = compatibilityShareQuery(source);
+var compatibilityShareUrl = (origin, source2) => {
+  const query = compatibilityShareQuery(source2);
   return query === null ? null : `${origin}${COMPATIBILITY_SHARE_PATH}?${query}`;
 };
-var occasionShareUrl = (origin, source) => {
-  const query = occasionShareQuery(source);
+var occasionShareUrl = (origin, source2) => {
+  const query = occasionShareQuery(source2);
   return query === null ? null : `${origin}${OCCASION_SHARE_PATH}?${query}`;
 };
 function validDate(value) {
@@ -8481,9 +8630,9 @@ function horoscopeQuery(share, withRef2 = false) {
   if (withRef2 && share.ref) params.set("ref", share.ref);
   return params.toString();
 }
-function birthdayShareUrl(origin, source) {
-  if (!validMonthDay(source.month, source.day)) return null;
-  return `${origin}${BIRTHDAY_SHARE_PATH}?${birthdayQuery({ month: source.month, day: source.day, sign: isSign2(source.cuspSign) ? source.cuspSign : null, ref: null })}`;
+function birthdayShareUrl(origin, source2) {
+  if (!validMonthDay(source2.month, source2.day)) return null;
+  return `${origin}${BIRTHDAY_SHARE_PATH}?${birthdayQuery({ month: source2.month, day: source2.day, sign: isSign2(source2.cuspSign) ? source2.cuspSign : null, ref: null })}`;
 }
 function skyCalendarShareFromEvent(event2) {
   const date3 = new Date(event2.start);
@@ -8502,16 +8651,16 @@ function skyCalendarShareUrl(origin, event2) {
   const share = skyCalendarShareFromEvent(event2);
   return share && validDate2(share.date) ? `${origin}${SKY_CALENDAR_SHARE_PATH}?${skyCalendarQuery({ ...share, ref: null })}` : null;
 }
-function horoscopeShareUrl(origin, source, ref3 = null) {
-  if (!isSign2(source.sign) || !validDate2(source.date) || !SHARE_FOCUSES.includes(source.focus)) return null;
-  if (source.week && !isMonday(source.date)) return null;
-  const share = { sign: source.sign, date: source.date, period: source.week ? "week" : "day", focus: source.week ? "general" : source.focus, ref: ref3 };
+function horoscopeShareUrl(origin, source2, ref3 = null) {
+  if (!isSign2(source2.sign) || !validDate2(source2.date) || !SHARE_FOCUSES.includes(source2.focus)) return null;
+  if (source2.week && !isMonday(source2.date)) return null;
+  const share = { sign: source2.sign, date: source2.date, period: source2.week ? "week" : "day", focus: source2.week ? "general" : source2.focus, ref: ref3 };
   return `${origin}${HOROSCOPE_SHARE_PATH}?${horoscopeQuery(share, true)}`;
 }
-function horoscopePeriodShareUrl(origin, source) {
-  if (!isSign2(source.sign) || !validDate2(source.date)) return null;
-  const date3 = source.period === "month" ? `${source.date.slice(0, 7)}-01` : `${source.date.slice(0, 4)}-01-01`;
-  return `${origin}${HOROSCOPE_SHARE_PATH}?${horoscopeQuery({ sign: source.sign, date: date3, period: source.period, focus: "general", ref: null })}`;
+function horoscopePeriodShareUrl(origin, source2) {
+  if (!isSign2(source2.sign) || !validDate2(source2.date)) return null;
+  const date3 = source2.period === "month" ? `${source2.date.slice(0, 7)}-01` : `${source2.date.slice(0, 4)}-01-01`;
+  return `${origin}${HOROSCOPE_SHARE_PATH}?${horoscopeQuery({ sign: source2.sign, date: date3, period: source2.period, focus: "general", ref: null })}`;
 }
 function chartTwinsQuery(share, withRef2 = false) {
   const params = new URLSearchParams({ s: share.sun });
@@ -8565,9 +8714,9 @@ function bigThreeShareUrl(origin, chart) {
   const rising = moon && isSign2(chart.rising) ? chart.rising : null;
   return `${origin}${BIG_THREE_SHARE_PATH}?${bigThreeQuery({ sun: chart.sun, moon, rising, ref: null })}`;
 }
-function chineseZodiacShareUrl(origin, source) {
-  if (!CHINESE_ANIMALS.includes(source.animal)) return null;
-  return `${origin}${CHINESE_ZODIAC_SHARE_PATH}?${chineseZodiacQuery({ animal: source.animal, ref: null })}`;
+function chineseZodiacShareUrl(origin, source2) {
+  if (!CHINESE_ANIMALS.includes(source2.animal)) return null;
+  return `${origin}${CHINESE_ZODIAC_SHARE_PATH}?${chineseZodiacQuery({ animal: source2.animal, ref: null })}`;
 }
 function inviteShareUrl(origin, signs) {
   const query = inviteQuery({ sun: isSign2(signs.sun) ? signs.sun : null, partner: isSign2(signs.partner) ? signs.partner : null, ref: null });
@@ -24992,7 +25141,7 @@ function mostRecentSolarReturnInstant(natalSunLongitude, at) {
   if (last2 === void 0) throw new RangeError("No previous solar return found in the scan window.");
   return new Date(last2.at.getTime());
 }
-var DEG6 = Math.PI / 180;
+var DEG7 = Math.PI / 180;
 var VOID_BODIES = /* @__PURE__ */ Object.freeze({
   modern: /* @__PURE__ */ Object.freeze(["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]),
   traditional: /* @__PURE__ */ Object.freeze(["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"])
@@ -39755,20 +39904,21 @@ var INPUT_SCHEMAS = {
   }).refine((args) => args.birthDate !== void 0 || args.birthTime === void 0 && args.birthZone === void 0, { message: "A birth time or birthplace zone needs the birth date." })
 };
 var link3 = z11.object({ title: z11.string(), url: z11.url() });
+var component = (name) => name === "Backend" ? ASTRONOMY_ENGINE_BACKEND_SCHEMA : COMPUTE_SCHEMAS[name];
 function inlined(schema) {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== "object") return schema;
   const node = schema;
   if (typeof node.$ref === "string") {
-    const component = COMPUTE_SCHEMAS[node.$ref.replace("#/components/schemas/", "")];
-    if (!component) throw new Error(`No compute API component for ${node.$ref}`);
-    return inlined(component);
+    const resolved = component(node.$ref.replace("#/components/schemas/", ""));
+    if (!resolved) throw new Error(`No compute API component for ${node.$ref}`);
+    return inlined(resolved);
   }
   return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
 }
-function computeValue(component) {
-  if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
-  return z11.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` }).meta(inlined(COMPUTE_SCHEMAS[component]));
+function computeValue(name) {
+  if (!component(name)) throw new Error(`No compute API component ${name}`);
+  return z11.unknown().refine((value) => typeof value === "object" && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${name}` }).meta(inlined(component(name)));
 }
 var calculationOf = (result) => z11.object({
   schema: z11.string(),
@@ -39777,7 +39927,7 @@ var calculationOf = (result) => z11.object({
   backend: computeValue("Backend"),
   cite: z11.object({ url: z11.url(), receipt: z11.string(), engine: z11.string(), version: z11.string() })
 });
-var statements2 = z11.record(z11.string(), z11.string());
+var statements = z11.record(z11.string(), z11.string());
 var limits = z11.object({
   from: z11.string(),
   to: z11.string(),
@@ -39875,7 +40025,7 @@ var lifeMilestones = z11.object({
 var OCCASION_NOTE = occasionNote;
 var dataSchemas = {
   open_chart_studio: z11.object({ title: z11.literal("Chart Studio"), calculation: z11.literal("browser-local"), initialChart: z11.literal("birth-details"), sharing: z11.literal("user-reviewed-selection-only") }),
-  get_capabilities: z11.object({ name: z11.literal("Zodiacs"), version: z11.string(), engine: computeValue("Backend"), tools: z11.array(z11.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements2, coverage: statements2, privacy: z11.string(), limitations: z11.array(z11.string()) }),
+  get_capabilities: z11.object({ name: z11.literal("Zodiacs"), version: z11.string(), engine: computeValue("Backend"), tools: z11.array(z11.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements, coverage: statements, privacy: z11.string(), limitations: z11.array(z11.string()) }),
   get_sky: z11.object({ mode: z11.enum(["current-instant", "requested-instant"]), time: localTime, calculation: calculationOf(positionResult), moonPhase: z11.object({ name: z11.string(), angle: z11.number(), illumination: z11.number() }), interpretation: z11.literal("Astronomical calculations; no personal prediction is supplied.") }),
   get_upcoming_events: z11.object({ from: z11.string(), to: z11.string(), zone: z11.string(), events: z11.array(event), calculation: calculationOf(computeValue("EventsResult")), completeness: z11.literal("tested-not-proven") }),
   check_sky_fact: z11.object({ answer: z11.enum(["true", "false", "depends"]), calculation: calculationOf(computeValue("SkyFactResult")), interpretation: z11.literal("The verdict checks an astronomical proposition, not an astrological prediction.") }),
@@ -41154,11 +41304,11 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         break;
       }
       case "get_capabilities": {
-        const statements3 = engineStatements();
+        const statements2 = engineStatements();
         const offered = offeredTools(dependencies);
         const eclipseLine = skyEvents2 ? "Eclipses are listed by search_sky_events, get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations over the next days or weeks; search_sky_events finds eclipses, stations, sign changes, new and full Moons and void-of-course Moon periods months or years ahead. No birth-time rectification, reminders or account access." : dependencies.coverage ? "Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead). Exact aspects to a birth chart are listed by get_personal_transits. get_upcoming_events lists ingresses, stations and lunations. No birth-time rectification, reminders or account access." : "Eclipses are listed by get_sky_calendar. get_upcoming_events lists ingresses, stations and lunations, not eclipses or aspects. No birth-time rectification, reminders or account access.";
         const skyEventsCoverage = skyEvents2 ? { skyEvents: "search_sky_events gives eclipses from the eclipse table (2026 to 2030), sign changes of the Sun through Pluto from the ingress table, stations and new and full Moons from the engine for windows of up to two years, and void-of-course Moon periods under the rule of the void-of-course calendar (the last major aspect to the Sun or a planet through Pluto), with its times, up to 31 days at a time. Chiron's stations and sign changes, and Chiron in get_natal_chart, come from NASA JPL Horizons positions for 1800 to 2199; outside those years Chiron is left out." } : {};
-        data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS, conventions: statements3.conventions, coverage: { ...statements3.coverage, tools: offered.join(", "), eclipses: skyEvents2 ? "search_sky_events lists the eclipses from 2026 to 2030; get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : dependencies.coverage ? "get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : "get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.", aspects: dependencies.coverage ? "get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects." : "get_upcoming_events does not search aspects.", ...skyEventsCoverage }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", eclipseLine, dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
+        data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: offered.filter((name) => ALL_AI_TOOL_NAMES.includes(name)), limits: LIMITS, conventions: statements2.conventions, coverage: { ...statements2.coverage, tools: offered.join(", "), eclipses: skyEvents2 ? "search_sky_events lists the eclipses from 2026 to 2030; get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : dependencies.coverage ? "get_sky_calendar, get_horoscope_period and get_personal_transits year-ahead include eclipses. get_upcoming_events lists ingresses, stations and lunations." : "get_sky_calendar includes eclipses. get_upcoming_events lists ingresses, stations and lunations.", aspects: dependencies.coverage ? "get_personal_transits lists exact aspects to a birth chart. get_upcoming_events does not search aspects." : "get_upcoming_events does not search aspects.", ...skyEventsCoverage }, privacy: dependencies.occasions ? privacyWithBirthTools(!!dependencies.accounts) : PRIVACY, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", eclipseLine, dependencies.occasions ? "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; with a birth date, get_horoscope also gives a personal forecast for the week from the person\u2019s own chart." : "Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are not personal birth-chart forecasts.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
         if (dependencies.occasions) {
           const capabilities = data;
           capabilities.privacy += " The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result goes to the assistant. Share links and card links leave out names and raw birth details, and coordinates in a link are rounded to two decimals. A birthday gets no card link and no share link, because that date can be a birth date. The famous-chart and sky-calendar tools need no personal details. Zodiacs is not directed at children under 13: its tools make no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years.";

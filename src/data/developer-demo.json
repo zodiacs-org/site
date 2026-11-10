@@ -362,7 +362,7 @@
             "version": "2.1.19"
           },
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         },
         "houses": {
           "absenceReason": null,
@@ -398,7 +398,7 @@
       },
       "backend": {
         "name": "@zodiacs/engine",
-        "version": "1.1.0-rc.2",
+        "version": "1.1.0-rc.3",
         "ephemeris": {
           "name": "astronomy-engine",
           "version": "2.1.19"
@@ -406,9 +406,9 @@
       },
       "cite": {
         "url": "https://zodiacs.org/developers/compute/#chart",
-        "receipt": "sha256:1fc1f685222c36d470a147054adadb5bbe4891408096d3e5671361ba99e2ce75",
+        "receipt": "sha256:da93881b169b808f7db93cafc838e76605101772d3181a9d68b4eef4e3b69b54",
         "engine": "@zodiacs/engine",
-        "version": "1.1.0-rc.2"
+        "version": "1.1.0-rc.3"
       }
     }
   },
@@ -461,7 +461,7 @@
           "endpoint": "events",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -548,7 +548,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -556,9 +556,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:7689993570eccc752f3324ae049630a099bacf1b9faa00327e1119ec19295c5d",
+          "receipt": "sha256:5ed534b286581b4570a45a3dd05fc58639caeffa1e894dc13eb98e38be3ed719",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       },
       {
@@ -592,7 +592,7 @@
           "endpoint": "events",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.1.0-rc.2",
+            "version": "1.1.0-rc.3",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -679,7 +679,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.1.0-rc.2",
+          "version": "1.1.0-rc.3",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -687,9 +687,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:9d8bf248caa839d103c2aec359ef908e4f8a4273fd3991a61e59ef70e54dc783",
+          "receipt": "sha256:1933a25ef643df2f942f098f7bce2c793dff397c776d1d7e0c7168baef88fb58",
           "engine": "@zodiacs/engine",
-          "version": "1.1.0-rc.2"
+          "version": "1.1.0-rc.3"
         }
       }
     ]

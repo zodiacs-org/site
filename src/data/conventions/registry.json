@@ -1,21 +1,21 @@
 {
   "schema": "zodiacs.conventions-registry.v1",
-  "version": "2026-11-04",
+  "version": "2026-11-10",
   "title": "Conventions registry",
   "base": "https://zodiacs.org/developers/conventions/",
   "license": "CC0-1.0",
   "idSyntax": "An id is a namespace, a colon and a value. The value is everything after the first colon and may itself hold colons, semicolons, slashes or an @. A receipt that holds a value under a field names the id of that field's namespace and that value. Natal receipts from @zodiacs/engine 1.1.0-rc.1 list, as conventionIds, every id that they and their result name, in code-unit order, each once, and the compute API's receipts list the ids their own fields name in the same way.",
   "engine": {
     "package": "@zodiacs/engine",
-    "version": "1.1.0-rc.2",
+    "version": "1.1.0-rc.3",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "883371f5d592cd952873422f13766038fcfa7b68"
+    "commit": "bc0b5a769ad2cfb17e1f853b94d94eb271fdd56d"
   },
   "conformance": {
     "suite": "zodiacs-conformance",
     "suiteVersion": "0.2.0",
     "repository": "https://github.com/zodiacs-org/engine",
-    "commit": "883371f5d592cd952873422f13766038fcfa7b68"
+    "commit": "bc0b5a769ad2cfb17e1f853b94d94eb271fdd56d"
   },
   "groups": [
     {
@@ -61,6 +61,7 @@
         "longitudeUnit",
         "moonNodes",
         "moonPosition",
+        "positionFrame",
         "planetPositions",
         "timeScale"
       ]
@@ -134,7 +135,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
         },
         {
           "id": "zodiac:sidereal",
@@ -875,7 +876,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0"
         }
       ]
     },
@@ -1130,7 +1131,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
         },
         {
           "id": "speed:degrees-per-day;central-difference-plus-minus-0.25-day",
@@ -1170,6 +1171,23 @@
             {
               "title": "astronomy-engine 2.1.19 (Don Cross)",
               "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ephemeris:jpl-de440@51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7",
+          "value": "jpl-de440@51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7",
+          "title": "JPL DE440, through the pinned pack",
+          "definition": "JPL's DE440 (NAIF's de440.bsp) through the sealed pack of Chebyshev series that zodiacs.org's research runtime's compiler 2.0.0 refits from it for 1790 to 2210, named by the pack's SHA-256: the hosted compute API's de440 backend.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.3, docs/de440.md, The pack",
+              "url": "https://github.com/zodiacs-org/engine/blob/cc910b3775e279222e23af0b395bb6f2b51a3c3a/docs/de440.md#the-pack"
+            },
+            {
+              "title": "NAIF generic kernels, de440.bsp",
+              "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/"
             }
           ],
           "status": "current"
@@ -1523,7 +1541,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
         },
         {
           "id": "angles:gast-and-mean-obliquity",
@@ -1606,7 +1624,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
         },
         {
           "id": "aspects:major-aspects;sun-moon-eight-planets;no-nodes",
@@ -1698,7 +1716,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
         }
       ]
     },
@@ -1738,7 +1756,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2"
+          "writtenBy": "1.1.0-rc.1 to rc.3"
         }
       ]
     },
@@ -1766,7 +1784,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
         },
         {
           "id": "deltaT:tt-minus-ut1;ut1-read-as-utc;value-in-result",
@@ -1816,7 +1834,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
         }
       ]
     },
@@ -1840,7 +1858,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
         }
       ]
     },
@@ -1864,7 +1882,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
         }
       ]
     },
@@ -1896,7 +1914,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0"
         },
         {
           "id": "moonPosition:astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
@@ -1933,6 +1951,52 @@
           ],
           "status": "superseded",
           "writtenBy": "0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        },
+        {
+          "id": "moonPosition:ephemeris-geocentric-moon;light-time;solar-deflection;relativistic-aberration",
+          "value": "ephemeris-geocentric-moon;light-time;solar-deflection;relativistic-aberration",
+          "title": "The ephemeris's geocentric Moon, apparent",
+          "definition": "With a DE440 source: the Moon formed from the Earth-Moon system's parts of the ephemeris, corrected for light time, the Sun's deflection of light and relativistic annual aberration, on the true ecliptic and equinox of date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.3, docs/de440.md, The reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/cc910b3775e279222e23af0b395bb6f2b51a3c3a/docs/de440.md#the-reduction"
+            },
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.3, src/receipt.ts, the DE440 conventions set",
+              "url": "https://github.com/zodiacs-org/engine/blob/cc910b3775e279222e23af0b395bb6f2b51a3c3a/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "1.1.0-rc.3, with a DE440 source"
+        }
+      ]
+    },
+    {
+      "name": "positionFrame",
+      "title": "Position frame",
+      "description": "The frame a DE440 source's places are reduced to, in a natal receipt of a chart computed with that source.",
+      "usedIn": [
+        "natal receipts: conventions.positionFrame"
+      ],
+      "entries": [
+        {
+          "id": "positionFrame:icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term",
+          "value": "icrf-to-true-ecliptic-of-date;iau2006-precession-with-bias;iau2000b-nutation-p03;tdb-three-term",
+          "title": "ICRF to the true ecliptic of date",
+          "definition": "From the ICRF to the true ecliptic and equinox of date: the frame bias and IAU 2006 precession (Fukushima-Williams angles), IAU 2000B nutation adjusted to IAU 2006 (P03), and the true obliquity; TT to TDB by the three-term form.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.3, docs/de440.md, The reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/cc910b3775e279222e23af0b395bb6f2b51a3c3a/docs/de440.md#the-reduction"
+            },
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.3, src/receipt.ts, the DE440 conventions set",
+              "url": "https://github.com/zodiacs-org/engine/blob/cc910b3775e279222e23af0b395bb6f2b51a3c3a/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "1.1.0-rc.3, with a DE440 source"
         }
       ]
     },
@@ -1956,7 +2020,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14"
         },
         {
           "id": "planetPositions:apparent-geocentric-ecliptic-of-date",
@@ -1971,6 +2035,24 @@
           ],
           "status": "superseded",
           "writtenBy": "0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        },
+        {
+          "id": "planetPositions:apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto",
+          "value": "apparent-geocentric-ecliptic-of-date;light-time;solar-deflection;relativistic-aberration;barycentres-mars-to-pluto",
+          "title": "Apparent geocentric, from a DE440 pack",
+          "definition": "With a DE440 source (@zodiacs/engine/de440): apparent geocentric places on the true ecliptic and equinox of date, corrected for light time, the Sun's deflection of light and relativistic annual aberration; Mars to Pluto are the barycentres of their systems.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.3, docs/de440.md, The reduction",
+              "url": "https://github.com/zodiacs-org/engine/blob/cc910b3775e279222e23af0b395bb6f2b51a3c3a/docs/de440.md#the-reduction"
+            },
+            {
+              "title": "@zodiacs/engine 1.1.0-rc.3, src/receipt.ts, the DE440 conventions set",
+              "url": "https://github.com/zodiacs-org/engine/blob/cc910b3775e279222e23af0b395bb6f2b51a3c3a/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "1.1.0-rc.3, with a DE440 source"
         }
       ]
     },
@@ -2006,7 +2088,7 @@
             }
           ],
           "status": "current",
-          "writtenBy": "1.1.0-rc.1 to rc.2; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+          "writtenBy": "1.1.0-rc.1 to rc.3; 0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
         }
       ]
     },

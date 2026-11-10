@@ -407,6 +407,11 @@ const ENGINE_110_RC2_ROUTES = [
   '/developers/conventions/', '/developers/demo/', '/developers/engine/', '/developers/mcp/',
   '/developers/playground/', '/developers/support/', ...DEVELOPER_GUIDES_ROUTES,
 ];
+// Engine 1.1.0-rc.3 (P4.1) adopted 2026-11-10, the day of the daily edition it was built with: the same 36
+// pages, which the Sitemap Dates comparison found changed again (the engine's version and its DE440 entry, the
+// compute API's backend, the conventions registry 2026-11-10, MCP adapter 0.1.0-rc.27, the playground's engine,
+// the demo's receipts, the guides' links at the new source).
+const ENGINE_110_RC3_LASTMOD = '2026-11-10';
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -645,6 +650,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...eventsPublication.pages
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  // Engine 1.1.0-rc.3's pages, last so this date wins.
+  ...ENGINE_110_RC2_ROUTES.map((loc) => [loc, ENGINE_110_RC3_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

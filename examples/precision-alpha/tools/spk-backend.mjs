@@ -47,6 +47,15 @@ export class SpkBackend {
     return Number.isFinite(et) && et >= this.coverage.startEtSecTdb && et <= this.coverage.stopEtSecTdb;
   }
 
+  /** The Earth-Moon barycentre from the SSB, and the Moon and the Earth from it, as the kernel stores them. */
+  lunar(et, emb, moon, earth) {
+    for (const [t, c, out] of [[NAIF.EMB, NAIF.SSB, emb], [NAIF.MOON, NAIF.EMB, moon], [NAIF.EARTH, NAIF.EMB, earth]]) {
+      const s = this.spk.state(this.#seg(t, c), et);
+      out[0] = s.pos[0]; out[1] = s.pos[1]; out[2] = s.pos[2];
+      out[3] = s.vel[0]; out[4] = s.vel[1]; out[5] = s.vel[2];
+    }
+  }
+
   state(body, et, out) {
     out.fill(0);
     for (const [t, c] of ROUTE[body]) {

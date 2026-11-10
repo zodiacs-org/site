@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "node": "v22.22.2",
+  "source": {
+    "path": "api/_compute/compute.mjs",
+    "sha256": "3607971d9881ef553841d4dc157e9ad669b18394f02da27a6a52fd74d403c8e7"
+  },
+  "pack": {
+    "sha256": "51428874d9a47213abc0ff42cbcec65f338624eaa2d8831f0e6ddc3654bf1fa7",
+    "bytes": 2489664
+  },
+  "globalsObserved": 375,
+  "cases": [
+    {
+      "label": "chart 1800-01-01T12:00:00.002Z",
+      "endpoint": "chart",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "chart 2000-01-01T12:00:00Z",
+      "endpoint": "chart",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "chart 2026-10-01T00:00:00Z",
+      "endpoint": "chart",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "chart 2199-12-31T12:00:00.002Z",
+      "endpoint": "chart",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "positions",
+      "endpoint": "positions",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "events",
+      "endpoint": "events",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "sky-fact",
+      "endpoint": "sky-fact",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "elections",
+      "endpoint": "elections",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "DE440 as the default",
+      "endpoint": "chart",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "refused: unknown backend",
+      "endpoint": "chart",
+      "status": 400,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "refused: longitude",
+      "endpoint": "chart",
+      "status": 400,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "refused: too many instants",
+      "endpoint": "positions",
+      "status": 422,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "refused: no pack",
+      "endpoint": "chart",
+      "status": 503,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "fallback: no pack, DE440 the default",
+      "endpoint": "chart",
+      "status": 200,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    },
+    {
+      "label": "failure inside the calculation",
+      "endpoint": "chart",
+      "status": 500,
+      "changedBindings": [],
+      "lifetime": {
+        "frame": null,
+        "pluto": [],
+        "moon": 0,
+        "deltaTReset": true,
+        "source": null
+      },
+      "readersAndReducersAlive": 0
+    }
+  ],
+  "freshModuleChartsCompared": [
+    "1800-01-01T12:00:00.002Z",
+    "2000-01-01T12:00:00Z",
+    "2026-10-01T00:00:00Z",
+    "2199-12-31T12:00:00.002Z"
+  ],
+  "positiveControl": {
+    "request": "2082-03-14T05:29:17.001Z",
+    "keptMoonRecord": {
+      "index": 3335,
+      "from": "2082-03-06T03:06:34.896Z",
+      "to": "2082-04-07T03:04:28.738Z",
+      "intervalDays": 31.9985398414685
+    },
+    "requestInsideKeptRecord": true
+  },
+  "readersAndReducersCreated": 24,
+  "limits": [
+    "Finite same-runtime regression observation with the deploy pack, supplemented by source review; not a proof for every input.",
+    "Reachability is observed through V8 weak references after forced garbage collection (--expose-gc); unreachable is not erased: freed memory is not cleared.",
+    "Weak collections are not enumerated, and function snapshots cannot enumerate captured closures, as in the rc.16 inventory.",
+    "No independent accuracy, secure memory erasure or production-performance claim."
+  ]
+}

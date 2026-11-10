@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { BUDGETS, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
-import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
+import { ASTRONOMY_ENGINE_BACKEND_SCHEMA, COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
 import type { OccasionKind } from '../lib/occasions/kinds';
 import { BEST_DAYS_MAX_WINDOW } from '../lib/occasions/best-dates';
 import { compatibilityInput, compatibilityResult } from './features/compatibility';
@@ -206,15 +206,22 @@ export const INPUT_SCHEMAS = {
 
 const link = z.object({ title: z.string(), url: z.url() });
 
+/**
+ * The compute API's components as these tools publish them. They answer only from astronomy-engine, so their
+ * backend, in a result and in its receipt, keeps the schema it was published with, before the compute API's
+ * `Backend` also described DE440 (P4.1).
+ */
+const component = (name: string) => (name === 'Backend' ? ASTRONOMY_ENGINE_BACKEND_SCHEMA : COMPUTE_SCHEMAS[name]);
+
 /** A compute API schema with its references to other components written out, so it stands alone in a tool's schema. */
 function inlined(schema: unknown): unknown {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== 'object') return schema;
   const node = schema as Record<string, unknown>;
   if (typeof node.$ref === 'string') {
-    const component = COMPUTE_SCHEMAS[node.$ref.replace('#/components/schemas/', '')];
-    if (!component) throw new Error(`No compute API component for ${node.$ref}`);
-    return inlined(component);
+    const resolved = component(node.$ref.replace('#/components/schemas/', ''));
+    if (!resolved) throw new Error(`No compute API component for ${node.$ref}`);
+    return inlined(resolved);
   }
   return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
 }
@@ -225,11 +232,11 @@ function inlined(schema: unknown): unknown {
  * it is still checked only as an object, as before, so the server never refuses its own calculation over a field
  * the API documents loosely.
  */
-function computeValue(component: string): z.ZodType<Record<string, unknown>> {
-  if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
+function computeValue(name: string): z.ZodType<Record<string, unknown>> {
+  if (!component(name)) throw new Error(`No compute API component ${name}`);
   return z.unknown()
-    .refine((value) => typeof value === 'object' && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` })
-    .meta(inlined(COMPUTE_SCHEMAS[component]) as Record<string, unknown>) as z.ZodType<Record<string, unknown>>;
+    .refine((value) => typeof value === 'object' && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${name}` })
+    .meta(inlined(component(name)) as Record<string, unknown>) as z.ZodType<Record<string, unknown>>;
 }
 const calculationOf = <R extends z.ZodType>(result: R) => z.object({
   schema: z.string(), result, receipt: computeValue('ComputeReceipt'), backend: computeValue('Backend'),

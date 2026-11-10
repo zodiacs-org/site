@@ -3,6 +3,7 @@ import Base from '../../../layouts/Base.astro';
 import { FREE_OFFER, OPENAPI_URL, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 import examples from '../../../lib/compute-api/examples.json';
 import { SUCCESS_EXAMPLES } from '../../../lib/compute-api/examples';
+import { DE440_PACK_SHA256 } from '../../../lib/compute-api/backend';
 import {
   ANGULAR_MAX_ABS_LATITUDE,
   BUDGETS,
@@ -79,6 +80,7 @@ const refusals: Array<[ErrorCode, string]> = [
   ['invalid-request', 'A field is missing, out of range, of the wrong type, or not one the endpoint takes.'],
   ['budget-exhausted', 'The request is over one of the limits above; limit and max name it.'],
   ['calculation-failed', 'The engine could not complete the calculation.'],
+  ['backend-unavailable', 'The request named de440 and this deployment has no DE440 pack. There is no Retry-After: ask for astronomy-engine, or leave out backend.'],
   ['not-found', 'The request reached the function by a path that is not one of the seven endpoints.'],
 ];
 
@@ -209,6 +211,34 @@ const jsonLd = [
         {HOUSE_SYSTEM_NAMES.map((name, index) => (
           <>{index > 0 && (index === HOUSE_SYSTEM_NAMES.length - 1 ? ' and ' : ', ')}<code>{name}</code></>
         ))}, with <code>placidus</code> when none is given.
+      </p>
+    </div>
+
+    <h2 id="backend">Ephemeris</h2>
+    <div class="prose">
+      <p>
+        The chart, positions, events, sky-fact and elections endpoints take an
+        optional <code>backend</code>, which names where the positions come
+        from. <code>astronomy-engine</code>, the default, is the engine as this
+        site's calculators run it in the browser. <code>de440</code> reads
+        JPL's DE440 on the server, through a pack of Chebyshev series that the
+        deployment compiles from NAIF's <code>de440.bsp</code> for 1790 to
+        2210 (SHA-256 <code>{DE440_PACK_SHA256}</code>), and reduces it to
+        apparent places on the ecliptic and equinox of date: light time, the
+        Sun's deflection of light, aberration, IAU 2006 precession and IAU
+        2000B nutation. Mars to Pluto are the barycentres of their systems. The
+        true node is the node of the plane of the Moon's geocentric orbit, from
+        the same series. Angles and house cusps do not depend on the
+        ephemeris.
+      </p>
+      <p>
+        Every answer names its source in <code>backend</code> and in the
+        receipt: with <code>de440</code>, the ephemeris is{' '}
+        <code>jpl-de440</code> with the pack's SHA-256 as its version, and{' '}
+        <code>backend.pack</code> gives the pack's span and the compiler that
+        made it. A deployment that cannot open its pack answers{' '}
+        <code>de440</code> with <code>503 backend-unavailable</code>. The
+        houses and time endpoints compute no position and refuse the field.
       </p>
     </div>
 
@@ -577,7 +607,7 @@ const jsonLd = [
         run: when one is spent the request is refused and nothing is returned.
         The limits were set from local request-cost measurements in every
         year from 1800 to 2199. A fresh local run on 2026-10-07 with engine
-        1.0.0-rc.2, whose calculations 1.1.0-rc.2 keeps unchanged, measured 4,600 requests across nine synthetic shapes, after
+        1.0.0-rc.2, whose calculations 1.1.0-rc.3 keeps unchanged with astronomy-engine, measured 4,600 requests across nine synthetic shapes, after
         two warmups per shape. Observed CPU maxima were 1,001.5 ms for events,
         287.1 ms for positions and 1,447.5 ms for the slowest election shape.
         A separate 5,200-request houses sweep measured a 98.5 ms maximum.

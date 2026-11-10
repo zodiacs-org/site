@@ -56,6 +56,7 @@ import {
   signCrossings,
   stationCrossings,
 } from './endpoints.js';
+import { ASTRONOMY_ENGINE_BACKEND, type ComputeBackend } from './backend.js';
 import { computeReceipt, successBody, type ElectionSearchFacts } from './receipt.js';
 import type { ElectionCondition, ElectionPlace, ElectionsRequest } from './validate.js';
 
@@ -496,7 +497,11 @@ export function electionReach(request: ElectionsRequest): { first: Date; last: D
   };
 }
 
-export function computeElections(request: ElectionsRequest) {
+export function computeElections(request: ElectionsRequest, backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND) {
+  return backend.run(() => electionsBody(request, backend));
+}
+
+function electionsBody(request: ElectionsRequest, backend: ComputeBackend) {
   const { windows, samples, maxSamples } = searchElections(request);
   const reach = electionReach(request);
   const flags = outsideReferenceSpan(reach.first) || outsideReferenceSpan(reach.last)
@@ -509,7 +514,7 @@ export function computeElections(request: ElectionsRequest) {
     place: request.place,
     windows: windows.map((span) => ({ from: iso(new Date(span.from)), to: iso(new Date(span.to)) })),
     flags,
-  }, computeReceipt('elections', { electionSearch: electionSearchFacts(samples, maxSamples) }));
+  }, computeReceipt('elections', { electionSearch: electionSearchFacts(samples, maxSamples) }, backend), backend);
 }
 
 export function electionSearchFacts(samples: number, maxSamples: number): ElectionSearchFacts {

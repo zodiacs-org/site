@@ -24,8 +24,13 @@ export const VOCABULARY_SCHEMA = 'zodiacs.conventions-vocabulary.v1';
 
 /**
  * The engine versions that wrote each set of `NATAL_RECEIPT_CONVENTION_SETS`,
- * in its order, as the engine's declarations document them. `to: null` is the
- * current set.
+ * in its order, as the engine's declarations document them: first the set the
+ * installed engine writes for a chart from astronomy-engine (`to: null`), as
+ * every chart this server calculates is; then the earlier sets, newest first;
+ * and last, from 1.1.0-rc.3, the set it writes for a chart from a DE440 pack
+ * (`ephemeris: 'jpl-de440'`), which the engine placed last so that no earlier
+ * set's index moved. This server writes no DE440 set; a record from the hosted
+ * compute API's `de440` backend carries one.
  */
 export const SET_WRITERS = Object.freeze([
   { from: '1.1.0-rc.1', to: null },
@@ -34,6 +39,7 @@ export const SET_WRITERS = Object.freeze([
   { from: '0.1.1-rc.8', to: '0.1.1-rc.14' },
   { from: '0.1.1-rc.7', to: '0.1.1-rc.7' },
   { from: '0.1.1-rc.3', to: '0.1.1-rc.6' },
+  { from: '1.1.0-rc.3', to: null, ephemeris: 'jpl-de440' },
 ] as const);
 
 /** What each key of a conventions set covers. Its value is the engine's own token. */
@@ -52,6 +58,7 @@ export const CONVENTION_KEYS: Readonly<Record<string, string>> = Object.freeze({
   speed: 'The unit of daily motion, and the interval it is differenced over.',
   aspects: 'Which aspects, between which bodies, and how applying is judged.',
   longitudeUnit: 'The unit and range of a longitude.',
+  positionFrame: 'For a chart from a DE440 pack: how positions are carried from the ICRF to the true ecliptic and equinox of date, by which precession and nutation, and how TDB is formed.',
 });
 
 /** What each chart flag reports. */
@@ -71,13 +78,16 @@ export function conventionsVocabulary() {
     conventions,
   }));
   const keys = Object.fromEntries(Object.entries(CONVENTION_KEYS).map(([key, covers]) => {
-    // The earliest set carrying the key: the sets run from the current one back.
-    const earliest = [...sets].reverse().find((set) => key in set.conventions);
+    // The earliest set carrying the key: astronomy-engine's sets run from the current one back, and the DE440 set,
+    // placed after them, counts only for a key none of them carries.
+    const lineage = sets.filter((set) => !('ephemeris' in set.writtenBy));
+    const earliest = [...lineage].reverse().find((set) => key in set.conventions)
+      ?? sets.find((set) => 'ephemeris' in set.writtenBy && key in set.conventions);
     return [key, { covers, recordedFrom: earliest?.writtenBy.from ?? null }];
   }));
   return {
     schema: VOCABULARY_SCHEMA,
-    note: 'A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions, and from 1.1.0-rc.1 lists the ids of the Zodiacs conventions registry that it names in receipt.conventionIds. A record is read only under a set the engine version it names may carry: a set before rc.16\'s under the versions that wrote it, and rc.16\'s and the current one under 0.1.1-rc.16 and later.',
+    note: 'A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions, and from 1.1.0-rc.1 lists the ids of the Zodiacs conventions registry that it names in receipt.conventionIds. A record is read only under a set the engine version it names may carry: a set before rc.16\'s under the versions that wrote it, rc.16\'s and the current one under 0.1.1-rc.16 and later, and the DE440 set, which a chart from a DE440 pack carries with the pack\'s SHA-256 as its ephemeris version, under 1.1.0-rc.3 and later.',
     receiptSchema: NATAL_RECEIPT_SCHEMA,
     engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { name: EPHEMERIS.name, version: EPHEMERIS.version } },
     keys,

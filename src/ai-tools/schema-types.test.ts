@@ -4,7 +4,7 @@ import addFormats from 'ajv-formats';
 import { EVERY_TOOL_WITH_SKY_EVENTS, INPUT_SCHEMAS, OUTPUT_SCHEMAS, SKY_EVENTS_INPUT_SCHEMAS, SKY_EVENTS_OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { SAVE_OUTPUT_SCHEMA, SAVE_TOOL_NAME, saveInput } from './accounts/contracts';
 import { executeAiTool } from './tools';
-import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
+import { ASTRONOMY_ENGINE_BACKEND_SCHEMA, COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
 import { EPOCH, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS, STATION_BODIES } from '../lib/compute-api/constants';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
@@ -50,11 +50,14 @@ function* subschemas(schema: unknown, path: string, keyword = ''): Generator<[st
 }
 
 /** A compute API component with its references written out, as a tool's schema carries it. */
+// The tools answer only from astronomy-engine, so they keep the backend as it was published, before the compute API's
+// Backend also described DE440 (P4.1).
+const component = (name: string) => (name === 'Backend' ? ASTRONOMY_ENGINE_BACKEND_SCHEMA : COMPUTE_SCHEMAS[name]);
 function inlined(schema: unknown): unknown {
   if (Array.isArray(schema)) return schema.map(inlined);
   if (!schema || typeof schema !== 'object') return schema;
   const node = schema as Json;
-  if (typeof node.$ref === 'string') return inlined(COMPUTE_SCHEMAS[node.$ref.replace('#/components/schemas/', '')]);
+  if (typeof node.$ref === 'string') return inlined(component(node.$ref.replace('#/components/schemas/', '')));
   return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
 }
 
@@ -78,9 +81,12 @@ describe('the tools\' schemas', () => {
     expect(parts).toBeGreaterThan(1000);
   });
 
-  it('give the values the compute API returns exactly the schemas the API documents for them', () => {
+  it('give the values the compute API returns exactly the schemas the API documents for them, the backend as published', () => {
     const data = (tool: AiToolName) => at(advertised(OUTPUT_SCHEMAS[tool], 'output'), 'anyOf', '0', 'properties', 'data', 'properties');
-    const documented = (name: string) => inlined(COMPUTE_SCHEMAS[name]);
+    const documented = (name: string) => inlined(component(name));
+    // The compute API documents DE440 too; the tools' backend is its astronomy-engine branch, as published.
+    expect(at(COMPUTE_SCHEMAS.Backend as Json, 'properties', 'ephemeris', 'properties', 'name')).toEqual({ enum: ['astronomy-engine', 'jpl-de440'] });
+    expect(data('get_capabilities').engine).toEqual(ASTRONOMY_ENGINE_BACKEND_SCHEMA);
     expect(data('get_capabilities').engine).toEqual(documented('Backend'));
     for (const [tool, result] of [['get_upcoming_events', 'EventsResult'], ['check_sky_fact', 'SkyFactResult']] as const) {
       const calculation = at(data(tool), 'calculation', 'properties');

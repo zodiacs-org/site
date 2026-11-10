@@ -1,0 +1,93 @@
+{
+  "what": "The engine chunk's static closure (scripts/report-bundles.mjs, engine-chunk), gzip bytes per chunk, measured with a one-line print added to a scratch copy of the script in a separate clone",
+  "build": "npm run build with the production flags and stand-ins of .github/workflows/sitemap-dates.yml, under ZODIACS_FROZEN_CLOCK=2026-11-10T12:00:00Z, Node 22.22.2, macOS arm64",
+  "base": {
+    "commit": "633f01e589aa802e876521c91faf16193eb3d719",
+    "engine": "1.1.0-rc.2",
+    "closureGzipBytes": 33361,
+    "chunks": [
+      [
+        "/_astro/full.AUZx8EGL.js",
+        313
+      ],
+      [
+        "/_astro/rolldown-runtime.DK3Fl9T5.js",
+        154
+      ],
+      [
+        "/_astro/chart-adapter.D7gaZnvr.js",
+        304
+      ],
+      [
+        "/_astro/chunk-NIRYKLHT.Bm5YfgXm.js",
+        22989
+      ],
+      [
+        "/_astro/chunk-F4JKI3XV.DXFJXQuL.js",
+        745
+      ],
+      [
+        "/_astro/chunk-RMBWKZI2.DZR4n1wo.js",
+        538
+      ],
+      [
+        "/_astro/chunk-NNOSOOWS.CflCEcE2.js",
+        1781
+      ],
+      [
+        "/_astro/chunk-B5LKF437.7_bxrzb_.js",
+        6537
+      ]
+    ]
+  },
+  "head": {
+    "commit": "a7df1015ea6e0ae35bb53cf684290ab4a50ba435",
+    "engine": "1.1.0-rc.3",
+    "closureGzipBytes": 33397,
+    "chunks": [
+      [
+        "/_astro/full.l_g6Imlv.js",
+        313
+      ],
+      [
+        "/_astro/rolldown-runtime.DK3Fl9T5.js",
+        154
+      ],
+      [
+        "/_astro/chart-adapter.D7gaZnvr.js",
+        304
+      ],
+      [
+        "/_astro/chunk-AMCCLJCB.w7s11t8G.js",
+        23025
+      ],
+      [
+        "/_astro/chunk-AWVBVRFH.vC-JIwKZ.js",
+        745
+      ],
+      [
+        "/_astro/chunk-RMBWKZI2.DZR4n1wo.js",
+        538
+      ],
+      [
+        "/_astro/chunk-NNOSOOWS.CflCEcE2.js",
+        1781
+      ],
+      [
+        "/_astro/chunk-B5LKF437.7_bxrzb_.js",
+        6537
+      ]
+    ]
+  },
+  "growthBytes": 36,
+  "budget": {
+    "before": {
+      "kib": 32.598046875,
+      "bytes": 33380.4
+    },
+    "after": {
+      "kib": 32.633203125,
+      "bytes": 33416.4
+    }
+  }
+}

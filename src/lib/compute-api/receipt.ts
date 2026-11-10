@@ -37,6 +37,7 @@ import {
 } from './constants.js';
 import type { TimeResolutionFacts } from './local-time.js';
 import { receiptDigest } from '../receipt-digest.js';
+import { ASTRONOMY_ENGINE_BACKEND, type BackendIdentity, type ComputeBackend } from './backend.js';
 
 export { canonicalJson, receiptDigest } from '../receipt-digest.js';
 
@@ -55,7 +56,8 @@ export interface DeltaTSource {
 }
 
 type EngineStatements = Pick<NatalReceipt, 'conventions' | 'coverage'> & { deltaT: readonly [DeltaTSource, DeltaTSource] };
-let statements: EngineStatements | null = null;
+/** Per backend's ephemeris: the statements of astronomy-engine, and of each DE440 pack. */
+const statementsByEphemeris = new Map<string, EngineStatements>();
 
 /**
  * The conventions and coverage statement exactly as the engine writes them
@@ -66,9 +68,11 @@ let statements: EngineStatements | null = null;
  * UT1 table's, so those are read from a chart and a receipt it writes for a
  * fixed instant.
  */
-export function engineStatements(): EngineStatements {
+export function engineStatements(backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND): EngineStatements {
+  const key = `${backend.identity.ephemeris.name}@${backend.identity.ephemeris.version}`;
+  let statements = statementsByEphemeris.get(key);
   if (!statements) {
-    const chart = natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false });
+    const chart = backend.run(() => natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false }));
     const { receipt } = createNatalEnvelope(chart);
     const { model, table, tableDigest } = chart.deltaT;
     if (model !== 'iers-utc/1' || table === null || tableDigest === null) {
@@ -82,6 +86,7 @@ export function engineStatements(): EngineStatements {
         { model: DELTA_T_MODEL, table: DELTA_T_TABLE.version, tableDigest: DELTA_T_TABLE.digest },
       ],
     };
+    statementsByEphemeris.set(key, statements);
   }
   return statements;
 }
@@ -125,7 +130,8 @@ export interface ElectionSearchFacts {
 export interface ComputeReceipt {
   schema: typeof COMPUTE_RECEIPT_SCHEMA;
   endpoint: ComputeEndpoint;
-  engine: typeof BACKEND;
+  /** The backend that answered: the engine, its ephemeris and, with DE440, the pack. */
+  engine: BackendIdentity;
   conventions: EngineStatements['conventions'];
   coverage: EngineStatements['coverage'];
   referenceSpan: { from: string; to: string };
@@ -171,12 +177,13 @@ export function computeConventionIds(receipt: Omit<ComputeReceipt, 'conventionId
 export function computeReceipt(
   endpoint: ComputeEndpoint,
   extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts; electionSearch?: ElectionSearchFacts } = {},
+  backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND,
 ): ComputeReceipt {
-  const { conventions, coverage, deltaT } = engineStatements();
+  const { conventions, coverage, deltaT } = engineStatements(backend);
   const receipt: Omit<ComputeReceipt, 'conventionIds'> = {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,
-    engine: BACKEND,
+    engine: backend.identity,
     conventions,
     coverage,
     referenceSpan: { from: REFERENCE_SPAN.from, to: REFERENCE_SPAN.to },
@@ -208,7 +215,7 @@ export interface SuccessBody<Result, Receipt> {
   schema: string;
   result: Result;
   receipt: Receipt;
-  backend: typeof BACKEND;
+  backend: BackendIdentity;
   cite: Cite;
 }
 
@@ -216,12 +223,13 @@ export function successBody<Result, Receipt>(
   endpoint: ComputeEndpoint,
   result: Result,
   receipt: Receipt,
+  backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND,
 ): SuccessBody<Result, Receipt> {
   return {
     schema: responseSchemaName(endpoint),
     result,
     receipt,
-    backend: BACKEND,
+    backend: backend.identity,
     cite: citeFor(endpoint, receipt),
   };
 }

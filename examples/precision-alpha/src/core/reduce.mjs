@@ -28,6 +28,8 @@ const AU_KM = 149597870.700;
 const LIGHT_TIME_AU = 499.004783836;          // seconds per au, IAU 2009
 const C_KM_S = AU_KM / LIGHT_TIME_AU;
 const DAY = 86400;
+/** Half the step of the central difference that gives the Earth-Moon barycentre's acceleration, seconds. */
+const LUNAR_ACCELERATION_STEP_SEC = 60;
 /** Schwarzschild radius of the Sun divided by the astronomical unit, radians. */
 const SRS = 1.97412574336e-8;
 
@@ -162,6 +164,47 @@ export class Reducer {
     this.a = new Float64Array(6);
     this.b = new Float64Array(6);
     this.c = new Float64Array(6);
+    this.emb = new Float64Array(6);
+    this.moon = new Float64Array(6);
+    this.earth = new Float64Array(6);
+  }
+
+  /**
+   * For the geocentric Moon (P4.1's preregistration; audit finding
+   * alpha-reduction-math-8): the Earth relative to the Earth-Moon barycentre
+   * at et, and the barycentre's velocity and its acceleration there, the
+   * acceleration as a central difference of the velocity over +-60 s.
+   */
+  #lunarBasis(et) {
+    this.backend.lunar(et + LUNAR_ACCELERATION_STEP_SEC, this.emb, this.moon, this.earth);
+    const after = [this.emb[3], this.emb[4], this.emb[5]];
+    this.backend.lunar(et - LUNAR_ACCELERATION_STEP_SEC, this.emb, this.moon, this.earth);
+    const before = [this.emb[3], this.emb[4], this.emb[5]];
+    this.backend.lunar(et, this.emb, this.moon, this.earth);
+    const span = 2 * LUNAR_ACCELERATION_STEP_SEC;
+    return {
+      earth: [this.earth[0], this.earth[1], this.earth[2]],
+      embVelocity: [this.emb[3], this.emb[4], this.emb[5]],
+      embAcceleration: [(after[0] - before[0]) / span, (after[1] - before[1]) / span, (after[2] - before[2]) / span],
+    };
+  }
+
+  /**
+   * MoonRelEMB(emission) - EarthRelEMB(et) + [EMB(emission) - EMB(et)], the
+   * bracket as -v tau + a tau^2 / 2, so the barycentre's 30 km/s never
+   * multiplies the rounding of the double et - tau.
+   */
+  #geocentricMoon(emission, tau, basis) {
+    this.backend.lunar(emission, this.emb, this.moon, this.earth);
+    const m = [this.moon[0], this.moon[1], this.moon[2]];
+    const v = basis.embVelocity;
+    const acc = basis.embAcceleration;
+    const e = basis.earth;
+    return [
+      m[0] - e[0] + (-v[0] * tau + 0.5 * acc[0] * tau * tau),
+      m[1] - e[1] + (-v[1] * tau + 0.5 * acc[1] * tau * tau),
+      m[2] - e[2] + (-v[2] * tau + 0.5 * acc[2] * tau * tau),
+    ];
   }
 
   #pos(body, et, buf) {
@@ -212,9 +255,15 @@ export class Reducer {
     if (o.observerVelocity === 'analytic') observerVel = [this.b[3], this.b[4], this.b[5]];
     else observerVel = this.#velCentral('Earth', et, o.observerVelocity === 'central600' ? 600 : 60);
 
+    // The Moon, from a backend that gives the Earth-Moon system's parts, is
+    // formed from them (#geocentricMoon); every other target as before.
+    const lunar = body === 'Moon' && offsetKm === undefined && typeof this.backend.lunar === 'function'
+      ? this.#lunarBasis(et) : null;
+    const geoAt = (tau) => (lunar ? this.#geocentricMoon(et - tau, tau, lunar) : sub(target(et - tau), observer));
+
     // Light-time iteration.
     let tau = 0;
-    let geo = sub(target(et), observer);
+    let geo = geoAt(0);
     let iters = 0;
     let converged = false;
     for (let i = 0; i < o.lightTimeIters; i += 1) {
@@ -225,7 +274,7 @@ export class Reducer {
       if (!this.backend.covers(et - tau)) {
         fail('out-of-coverage', 'the light-time lookback reaches outside the pack\'s coverage', { et: et - tau });
       }
-      geo = sub(target(et - tau), observer);
+      geo = geoAt(tau);
     }
     const geometric = geo;
     const distKm = norm(geo);

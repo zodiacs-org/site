@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { transform } from 'esbuild';
 import { describe, expect, it } from 'vitest';
+import { syntheticPack } from './helpers/synthetic-de440-pack';
 
 /*
  * Inspect the actual private state of the generated server modules, rather
@@ -29,7 +30,7 @@ describe('compute API private module lifetime', () => {
     try {
       let compute = read('api/_compute/compute.mjs');
       compute = once(compute, 'from "@vercel/firewall";', `from ${JSON.stringify(pathToFileURL(require.resolve('@vercel/firewall')).href)};`);
-      compute += `\nexport function auditEngineState() { return { frame: last ? structuredClone(last) : null, deltaTReset: DeltaT === deltaT, moonCalls: CalcMoonCount, plutoSegments: Object.keys(pluto_cache) }; }
+      compute += `\nexport function auditEngineState() { return { frame: last ? structuredClone(last) : null, deltaTReset: DeltaT === deltaT, moonCalls: CalcMoonCount, plutoSegments: Object.keys(pluto_cache), source: source === null ? null : 'set' }; }
 export { createComputeApiHandler as auditUnwrappedHandler };
 export let auditFailFrame = false;
 export function auditSetFrameFailure(value) { auditFailFrame = value; }
@@ -50,6 +51,9 @@ dispose() {`);
       writeFileSync(join(directory, 'handler.mjs'), adapter.code);
       const timeEntry = JSON.parse(read('node_modules/@zodiacs/engine/package.json')).exports['./time'].import;
       const basis = pathToFileURL(join(root, 'node_modules/@zodiacs/engine', timeEntry)).href;
+      // P4.1: a synthetic DE440 pack (its positions mean nothing) for the de440 backend's lifetime.
+      const de440Entry = pathToFileURL(join(root, 'node_modules/@zodiacs/engine', JSON.parse(read('node_modules/@zodiacs/engine/package.json')).exports['./de440'].import)).href;
+      writeFileSync(join(directory, 'pack.zeph'), syntheticPack());
       writeFileSync(join(directory, 'run.mjs'), `
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -58,6 +62,9 @@ import handler from './handler.mjs';
 import { createComputeApiHandler, auditUnwrappedHandler, auditEngineState, auditSetFrameFailure } from './compute.mjs';
 import { createLocalTimeModule, auditRuntimes, auditPause } from './local-time.mjs';
 import { timeBasis } from ${JSON.stringify(basis)};
+import { openDe440Pack } from ${JSON.stringify(de440Entry)};
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 process.env.NODE_ENV = 'production';
 let firewall = 204;
 globalThis.fetch = async () => new Response(null, { status: firewall });
@@ -65,7 +72,7 @@ const utc = '2082-03-14T05:29:17Z';
 const chart = { utc, latitude: -31.55537, longitude: 159.07735 };
 const localChart = { local: { date: '1913-07-19', time: '04:37', zone: 'Australia/Lord_Howe' }, latitude: -31.55537, longitude: 159.07735 };
 const empty = { offset: [], histories: [], pending: [] };
-const engineEmpty = () => assert.deepEqual(auditEngineState(), { frame: null, deltaTReset: true, moonCalls: 0, plutoSegments: [] });
+const engineEmpty = () => assert.deepEqual(auditEngineState(), { frame: null, deltaTReset: true, moonCalls: 0, plutoSegments: [], source: null });
 const allEmpty = () => { engineEmpty(); for (const runtime of auditRuntimes) assert.deepEqual(runtime.auditState(), empty); };
 async function run(entry, endpoint, body, extra = {}) {
   const bytes = Buffer.from(typeof body === 'string' ? body : JSON.stringify(body));
@@ -156,6 +163,42 @@ for (const [endpoint, body, extra, status] of [
   assert.equal((await run(handler, endpoint, body, extra)).status, status);
   allEmpty();
 }
+// P4.1: with the de440 backend, the engine's source is put back after every
+// request, answered, refused or failed. Each request gets its own resolver,
+// as the deployed adapter gives it.
+const pack = new Uint8Array(readFileSync(new URL('./pack.zeph', import.meta.url)));
+const digest = createHash('sha256').update(pack).digest('hex');
+let seenInside = null;
+let failAfter = Infinity;
+const precision = async () => {
+  const opened = await openDe440Pack(pack, { expectDigest: digest });
+  return {
+    ephemeris: opened.ephemeris, pack: opened.pack, trueNode: (tt) => opened.trueNode(tt),
+    place(body, tt) { seenInside ??= auditEngineState().source; if (--failAfter < 0) throw new Error('synthetic DE440 failure'); return opened.place(body, tt); },
+  };
+};
+async function de440(endpoint, body) {
+  const localTime = createLocalTimeModule();
+  try {
+    return await run(createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed', precision }), endpoint, body);
+  } finally {
+    localTime.dispose();
+  }
+}
+for (const endpoint of ['chart', 'positions', 'events', 'sky-fact', 'elections']) {
+  const result = await de440(endpoint, { ...inputs[endpoint], backend: 'de440' });
+  assert.equal(result.status, 200, endpoint);
+  assert.equal(result.body.backend.ephemeris.name, 'jpl-de440', endpoint);
+  allEmpty();
+}
+// The observer reads the real binding: it saw the source in place during a calculation.
+assert.equal(seenInside, 'set');
+assert.equal((await de440('chart', { ...chart, backend: 'DE440' })).status, 400);
+allEmpty();
+failAfter = 3;
+assert.equal((await de440('chart', { ...chart, backend: 'de440' })).status, 500);
+allEmpty();
+failAfter = Infinity;
 for (const status of [429, 404, 502]) {
   firewall = status;
   assert.equal((await run(handler, 'chart', localChart)).status, status === 429 ? 429 : 503);
@@ -191,13 +234,13 @@ release();
 assert.deepEqual(await first, expected);
 auditPause(null);
 allEmpty();
-console.log(JSON.stringify({ positiveControl: 'exact UTC recovered from pre-cleanup module state', endpoints: Object.keys(inputs), refusalAndFailureCleanup: true, interleavedResolverParity: true, freshProcessResponses: 9, engineExceptionCleanup: true, isolatedRuntimes: auditRuntimes.length }));
+console.log(JSON.stringify({ positiveControl: 'exact UTC recovered from pre-cleanup module state', endpoints: Object.keys(inputs), refusalAndFailureCleanup: true, interleavedResolverParity: true, freshProcessResponses: 9, engineExceptionCleanup: true, de440SourceRestored: true, isolatedRuntimes: auditRuntimes.length }));
 `);
       const result = spawnSync(process.execPath, ['--no-experimental-detect-module', join(directory, 'run.mjs')], {
         cwd: root, encoding: 'utf8', timeout: 60_000,
       });
       expect(result.status, result.stderr || result.stdout).toBe(0);
-      expect(JSON.parse(result.stdout)).toMatchObject({ refusalAndFailureCleanup: true, interleavedResolverParity: true });
+      expect(JSON.parse(result.stdout)).toMatchObject({ refusalAndFailureCleanup: true, interleavedResolverParity: true, de440SourceRestored: true });
     } finally {
       rmSync(directory, { recursive: true, force: true });
     }

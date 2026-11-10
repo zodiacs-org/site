@@ -29,7 +29,8 @@ describe('the playground\'s examples', () => {
       expect(example.answer).toEqual((examples.success as any)[endpoint][name]);
       expect(example.body).toEqual((SUCCESS_EXAMPLES as any)[endpoint][name].body);
     }
-    expect(offered.refusals.map(({ name }) => name).sort()).toEqual(['budget-exhausted', 'invalid-json', 'invalid-request']);
+    // A browser has no DE440 pack, so a body naming de440 is refused there as a deployment without one refuses it.
+    expect(offered.refusals.map(({ name }) => name).sort()).toEqual(['backend-unavailable', 'budget-exhausted', 'invalid-json', 'invalid-request']);
     expect(bodyRefusals().map(([name]) => name).sort()).toEqual(offered.refusals.map(({ name }) => name).sort());
     for (const refusal of offered.refusals) {
       expect(refusal.answer).toEqual((examples.refusals as any)[refusal.name].response);

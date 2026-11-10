@@ -50,11 +50,11 @@ describe('independent true node and polar references', () => {
     const digest = (name: string) => createHash('sha256')
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
-    // 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 rebuilds: engine version metadata only (and
+    // 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1, 1.1.0-rc.2 and 1.1.0-rc.3 rebuilds: engine version metadata only (and
     // 1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time); policies and
     // retained Horizons responses are unchanged.
     expect(digest('independent-node-polar.json'))
-      .toBe('52190b00b3b6769e73822bf0ca4d1fbc0e4652b451efe90e640dcc5f3d653651');
+      .toBe('35571d5758653f47d59f2457a9940989d59007dffa71334c26fe6ecdfce19fb1');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });
@@ -113,10 +113,10 @@ describe('independent representative supported epochs', () => {
       .digest('hex');
     // rc.16 nutation moves the product's solar-return instant; its independent
     // returned-chart references were re-evaluated there, with every gate unchanged.
-    // The 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1 and 1.1.0-rc.2 rebuilds update the recorded engine version
+    // The 1.0.0-rc.2, 1.0.0, 1.1.0-rc.1, 1.1.0-rc.2 and 1.1.0-rc.3 rebuilds update the recorded engine version
     // (1.1.0-rc.2's also the digest of tools/engine-clock.ts, whose time basis now comes from @zodiacs/engine/time).
     expect(digest('independent-eight-cases.json'))
-      .toBe('20ddba7551196a01dfe72fdb22bbc2a5d1a5d21f6d938cb1022f67f4511dbb3e');
+      .toBe('a84c2cb5863957f3f84aa74dc588580a4240c4b043271c5c8395cf7c84083777');
     expect(digest('swiss-eight-cases-policy.json'))
       .toBe('9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4');
   });
