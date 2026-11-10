@@ -182,7 +182,7 @@ async function latestSwap(pool) {
   const signatures = await rpc('getSignaturesForAddress', [pool, { limit: 25 }]);
   for (const entry of signatures) {
     if (entry.err || !entry.blockTime) continue;
-    const tx = await rpc('getTransaction', [entry.signature, { encoding: 'json', maxSupportedTransactionVersion: 0 }]);
+    const tx = await rpc('getTransaction', [entry.signature, { encoding: 'json', maxSupportedTransactionVersion: 1 }]);
     const logs = tx?.meta?.logMessages ?? [];
     if (logs.some((line) => /Instruction: Swap/i.test(line))) {
       return new Date(entry.blockTime * 1000).toISOString().slice(0, 10);

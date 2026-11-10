@@ -1,6 +1,6 @@
 {
   "$comment": "Every factual or comparative sentence in the essay on /thesis/, with its source. Held to the page by tests/thesis-contract.test.mjs: every sentence in the essay that carries a number has an entry, and every entry's match is printed on the page. Refreshing a checkedAt date is a reviewed action.",
-  "reviewedAt": "2026-11-10",
+  "reviewedAt": "2026-11-11",
   "statuses": [
     "checked",
     "listed",
@@ -22,8 +22,8 @@
       "match": "They are thinly traded and can fall to zero",
       "claim": "Daily trading is thin; the coins can lose all their value",
       "source": "https://zodiacs.org/thesis/thesis-candidacy.json",
-      "sourceDate": "2026-07-23",
-      "checkedAt": "2026-07-23",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
       "status": "listed"
     },
     {
@@ -137,10 +137,10 @@
     {
       "id": "no-more",
       "match": "nobody can make more of them, including us",
-      "claim": "Mint authority renounced on all twelve",
+      "claim": "Mint authority renounced on all twelve, re-read on chain 10 Nov 2026",
       "source": "https://zodiacs.org/thesis/thesis-disclosure.json",
-      "sourceDate": "2026-07-23",
-      "checkedAt": "2026-07-23",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
       "status": "listed"
     },
     {
@@ -236,16 +236,16 @@
     {
       "id": "lunch",
       "match": "less than the price of a lunch",
-      "claim": "Lowest daily volume across the twelve pools was $10 at the 2026-07-23 capture",
+      "claim": "Lowest 24-hour volume among the nine pools Dexscreener returned was $0.88 at the 2026-11-10 capture",
       "source": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json",
-      "sourceDate": "2026-07-23",
-      "checkedAt": "2026-07-23",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
       "status": "listed"
     },
     {
       "id": "top-ten",
       "match": "between 23% and 31% of each coin, a figure that includes the trading pool",
-      "claim": "Top-10 token-account share per sign: lowest 23.0%, highest 30.6%, pool accounts included",
+      "claim": "Top-10 token-account share per sign: lowest 23.0%, highest 30.6%, pool accounts included (not refreshed on 10 Nov 2026: no keyless public RPC answers getTokenLargestAccounts)",
       "source": "https://zodiacs.org/thesis/thesis-disclosure.json",
       "sourceDate": "2026-07-14",
       "checkedAt": "2026-07-14",
@@ -256,8 +256,8 @@
       "match": "No outside app has adopted them yet",
       "claim": "The candidacy scoreboard records no qualifying independent integration",
       "source": "https://zodiacs.org/thesis/thesis-candidacy.json",
-      "sourceDate": "2026-07-23",
-      "checkedAt": "2026-07-23",
+      "sourceDate": "2026-11-10",
+      "checkedAt": "2026-11-10",
       "status": "listed"
     },
     {

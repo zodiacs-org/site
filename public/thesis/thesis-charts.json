@@ -1,5 +1,5 @@
 {
-  "$comment": "Every number printed by the two bar charts in the essay on /thesis/ (figures fig-know and fig-lifespan). Stamped into the page by scripts/build-thesis-charts.mjs; never edit the stamped SVG. Refreshing a checkedAt date is a reviewed action. twelve.tradedInWindow stays null until scripts/build-thesis-charts.mjs --trade-check has read the twelve pools on the public ledger; while it is null the lifespan chart prints only CoinGecko's three bars.",
+  "$comment": "Every number printed by the two bar charts in the essay on /thesis/ (figures fig-know and fig-lifespan). Stamped into the page by scripts/build-thesis-charts.mjs; never edit the stamped SVG. Refreshing a checkedAt date is a reviewed action. twelve.tradedInWindow comes from a trade check of the twelve pools on the public ledger (scripts/build-thesis-charts.mjs --trade-check, or the capture in docs/thesis-evidence/); while it is null the lifespan chart prints only CoinGecko's three bars.",
   "know": {
     "source": "YouGov",
     "url": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
@@ -14,7 +14,10 @@
     "updated": "2026-06-23",
     "checkedAt": "2026-11-10",
     "sample": 18675645,
-    "window": ["2024-01-14", "2026-06-18"],
+    "window": [
+      "2024-01-14",
+      "2026-06-18"
+    ],
     "lastTradeOnCreationDayPct": 68.67,
     "lastTradeByNextDayPct": 80.37,
     "lasted90DaysPct": 4.55,
@@ -22,10 +25,10 @@
   },
   "twelve": {
     "createdAt": "2024-07-05",
-    "checkedAt": null,
+    "checkedAt": "2026-11-10",
     "windowDays": 30,
-    "tradedInWindow": null,
-    "source": null,
+    "tradedInWindow": 12,
+    "source": "Solana RPC (api.mainnet-beta.solana.com): getSignaturesForAddress on each pool, newest transaction whose logs record a swap; raw capture docs/thesis-evidence/2026-11-10/pool-trades.json",
     "pools": {
       "aries": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
       "taurus": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
@@ -40,6 +43,19 @@
       "aquarius": "BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
       "pisces": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko"
     },
-    "perSign": {}
+    "perSign": {
+      "aries": "2026-11-10",
+      "taurus": "2026-11-10",
+      "gemini": "2026-11-10",
+      "cancer": "2026-11-10",
+      "leo": "2026-11-09",
+      "virgo": "2026-11-10",
+      "libra": "2026-11-10",
+      "scorpio": "2026-11-09",
+      "sagittarius": "2026-11-10",
+      "capricorn": "2026-11-10",
+      "aquarius": "2026-11-09",
+      "pisces": "2026-11-10"
+    }
   }
 }
