@@ -15,3 +15,13 @@ here is a volume: every number stays TBD until Keyword Planner returns it.
 | tr | Turkey | Every query again without Turkish letters (koc, boga, ikizler, yengec, aslan, basak, terazi, akrep, yay, oglak, kova, balik; "burcu" stays) | Many people type without ç, ğ, ı, ö, ş, ü, and Keyword Planner reports those spellings apart |
 | ja | Japan | Every sign query again with the kanji names (牡羊座, 牡牛座, 双子座, 蟹座, 獅子座, 乙女座, 天秤座, 蠍座, 射手座, 山羊座, 水瓶座, 魚座); the generic "12星座占い" and "星座占い 今日" | Demand splits between kana and kanji spellings |
 | hi | India | Romanized forms ("mesh rashifal", "aaj ka rashifal") | Hindi astrology is mostly sidereal (Vedic) and Moon-sign based, while the site is tropical and Sun-sign based, so a high volume overstates the audience the site serves. Romanized searches are missing from a Devanagari list, so the list also understates total demand. "कल" means both yesterday and tomorrow |
+
+## How the numbers choose the language (decided 2026-11-09)
+
+Dias delegated the choice rule. Total each candidate's monthly volume over
+the five families, variants included, and count Hindi's horoscope and
+sign-meaning rows at half, for the sidereal reason above. The highest total
+wins; a tie within 10 percent goes to the language whose fonts are ready
+(German), then to one that needs only latin-ext subsets (Polish, Turkish).
+If the volumes never arrive, the choice is German. The same rule is in
+`docs/i18n/NEW-LOCALE-RUNBOOK.md` on the Part 2 branch.
