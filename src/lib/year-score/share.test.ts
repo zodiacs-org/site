@@ -40,11 +40,36 @@ describe('the Year Ahead Score share page and picture', () => {
     expect(html).toContain('href="/year-score/"');
     expect(html).not.toMatch(/[–—]/u);
   }, 30_000);
+  it('answer a figure with 404 while the people switches are off', async () => {
+    const saved = [process.env.PUBLIC_YEAR_SCORE_ENABLED, process.env.PUBLIC_YEAR_PEOPLE_ENABLED];
+    delete process.env.PUBLIC_YEAR_SCORE_ENABLED;
+    delete process.env.PUBLIC_YEAR_PEOPLE_ENABLED;
+    try {
+      expect((await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=jensen-huang'))).status).toBe(404);
+      expect((await handleYearScoreImageRequest(new Request('https://zodiacs.org/api/og/year-score-image?p=jensen-huang'))).status).toBe(404);
+    } finally {
+      restore('PUBLIC_YEAR_SCORE_ENABLED', saved[0]);
+      restore('PUBLIC_YEAR_PEOPLE_ENABLED', saved[1]);
+    }
+  });
   it('score a figure on the server, and answer an unknown figure with 404 and its picture with 400', async () => {
-    const html = await (await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=jensen-huang'))).text();
-    expect(html).toMatch(/Jensen Huang’s Year Ahead Score: \d{1,2}\.\d\/10/u);
-    expect(html).toContain('href="/year/jensen-huang/"');
-    expect((await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=changpeng-zhao'))).status).toBe(404);
-    expect((await handleYearScoreImageRequest(new Request('https://zodiacs.org/api/og/year-score-image?p=nobody-here'))).status).toBe(400);
+    const saved = [process.env.PUBLIC_YEAR_SCORE_ENABLED, process.env.PUBLIC_YEAR_PEOPLE_ENABLED];
+    process.env.PUBLIC_YEAR_SCORE_ENABLED = '1';
+    process.env.PUBLIC_YEAR_PEOPLE_ENABLED = '1';
+    try {
+      const html = await (await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=jensen-huang'))).text();
+      expect(html).toMatch(/Jensen Huang’s Year Ahead Score: \d{1,2}\.\d\/10/u);
+      expect(html).toContain('href="/year/jensen-huang/"');
+      expect((await handleYearScoreLinkRequest(new Request('https://zodiacs.org/share/year-score/?p=changpeng-zhao'))).status).toBe(404);
+      expect((await handleYearScoreImageRequest(new Request('https://zodiacs.org/api/og/year-score-image?p=nobody-here'))).status).toBe(400);
+    } finally {
+      restore('PUBLIC_YEAR_SCORE_ENABLED', saved[0]);
+      restore('PUBLIC_YEAR_PEOPLE_ENABLED', saved[1]);
+    }
   }, 30_000);
 });
+
+function restore(name: string, value: string | undefined) {
+  if (value === undefined) delete process.env[name];
+  else process.env[name] = value;
+}
