@@ -1,0 +1,58 @@
+name: Thesis evidence capture
+
+# One-off, reviewed capture for the /thesis/ evidence refresh (Linear ZOD-33).
+# Runs only when this file changes on an admin/zod-33-* branch: it captures the
+# raw public data into docs/thesis-evidence/<date>/, reruns the reviewed
+# refresh scripts, and commits the result to the same branch for review. It
+# never runs on main and is removed before the pull request merges.
+
+on:
+  push:
+    branches: ["admin/zod-33-*"]
+    paths: [".github/workflows/thesis-evidence-capture.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Pick a public RPC that answers getTokenLargestAccounts
+        id: rpc
+        run: |
+          url="$(node scripts/capture-thesis-evidence.mjs --probe || true)"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "chosen RPC: ${url:-none}"
+      - name: Capture raw evidence
+        run: node scripts/capture-thesis-evidence.mjs
+        env:
+          RPC_URL: ${{ steps.rpc.outputs.url }}
+      - name: Refresh the disclosure (supply, authorities, ten largest accounts)
+        run: node scripts/build-thesis-disclosure.mjs --as-of "$(date -u +%F)" || true
+        env:
+          SOLANA_RPC_URL: ${{ steps.rpc.outputs.url || 'https://api.mainnet-beta.solana.com' }}
+      - name: Refresh distribution and the Registry sign pages
+        run: |
+          node scripts/build-distribution.mjs || true
+          node scripts/build-sign-pages.mjs
+        env:
+          RPC_URL: ${{ steps.rpc.outputs.url }}
+      - name: Refresh the Wikipedia reads snapshot (figure F2)
+        run: node scripts/build-thesis-figures.mjs --refresh || true
+      - name: Bake the disclosure into the page
+        run: node scripts/bake-thesis-disclosure-static.mjs
+      - name: Commit to this branch
+        run: |
+          git config user.name "Zodiacs Admin"
+          git config user.email "admin@zodiacs.org"
+          git add docs/thesis-evidence public/thesis public/assets/distribution.json public/registry
+          git commit -m "Thesis evidence: raw captures and refreshed figures for $(date -u +%F)" || echo "nothing to commit"
+          git push
