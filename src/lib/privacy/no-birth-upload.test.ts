@@ -12,7 +12,7 @@
  * YYYY-MM-DD date outside a short allowlist (the save time, the week's start
  * and days, a non-birth occasion's own day), and on a list of ten or more
  * numbers between 0 and 360 (a positions list, whether plain numbers or
- * placements such as { body, lon }).
+ * placements such as { body, lon }, held as numbers or as numeric strings).
  */
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
@@ -135,10 +135,18 @@ function inRange(value: number): boolean {
   return Number.isFinite(value) && value >= 0 && value <= 360;
 }
 
-/** The numbers among a list's items, and among the fields of each item that is itself an object or a list. */
+/** A number, or a number written as text such as a form field's "43.26"; anything else is null. */
+function asNumber(value: unknown): number | null {
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string' && /^-?\d+(?:\.\d+)?$/u.test(value.trim())) return Number(value);
+  return null;
+}
+
+/** The numbers among a list's items, and among the fields of each item that is itself an object or a list, numbers written as text included. */
 function numbersIn(values: readonly unknown[]): number[][] {
-  const own = values.filter((item): item is number => typeof item === 'number');
-  const inner = values.flatMap((item) => (item && typeof item === 'object' ? Object.values(item).filter((field): field is number => typeof field === 'number') : []));
+  const numeric = (items: readonly unknown[]) => items.map(asNumber).filter((item): item is number => item !== null);
+  const own = numeric(values);
+  const inner = values.flatMap((item) => (item && typeof item === 'object' ? numeric(Object.values(item)) : []));
   return [own, inner];
 }
 
@@ -168,7 +176,8 @@ function collect(value: unknown, strings: Set<string>, numberLists: number[][], 
     if (strings.has(value)) return;
     strings.add(value);
     // A number written as text, such as a form field's "43.26".
-    if (/^-?\d+(?:\.\d+)?$/u.test(value.trim())) numbers.push(Number(value));
+    const number = asNumber(value);
+    if (number !== null) numbers.push(number);
     const variants = new Set<string>();
     try { variants.add(decodeURIComponent(value)); } catch { /* not URL encoded */ }
     try { variants.add(decodeURIComponent(value.replace(/\+/gu, ' '))); } catch { /* not form encoded */ }
@@ -279,6 +288,33 @@ describe('the search', () => {
     for (const value of [placements, { bodies: placements }, { chart: { bodies: placements.map(({ lon }) => [lon]) } }]) {
       expect(birthDetailsIn(value), JSON.stringify(value).slice(0, 80)).not.toEqual([]);
     }
+  });
+
+  it('finds positions written as numeric strings, alone or in a query payload', () => {
+    const bodies = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+    const placements = bodies.map((body, index) => ({ body, lon: String(3.1 + index * 29.7) }));
+    const numbered = Array.from({ length: 10 }, (_, index) => ({ body: String(index), lon: String(3.1 + index * 29.7) }));
+    const lons = placements.map(({ lon }) => lon);
+    const payload = Buffer.from(JSON.stringify({ bodies: placements })).toString('base64url');
+    const listPayload = Buffer.from(JSON.stringify(lons)).toString('base64url');
+    for (const value of [
+      placements,
+      { bodies: placements },
+      { bodies: numbered },
+      `/x/?payload=${Buffer.from(JSON.stringify({ bodies: numbered })).toString('base64url')}`,
+      lons,
+      { chart: { bodies: lons.map((lon) => [lon]) } },
+      Object.fromEntries(placements.map(({ body, lon }) => [body, { lon }])),
+      JSON.stringify({ bodies: placements }),
+      `/x/?payload=${payload}`,
+      `/x/?a=1&p=${listPayload}&b=2`,
+      { href: `/x/#state=${payload}` },
+    ]) {
+      expect(birthDetailsIn(value), JSON.stringify(value).slice(0, 80)).not.toEqual([]);
+    }
+    // Nine are not a positions list, and neither are ten strings that are not numbers.
+    expect(birthDetailsIn(placements.slice(0, 9))).toEqual([]);
+    expect(birthDetailsIn(bodies.map((body, index) => ({ body, lon: `${index}th` })))).toEqual([]);
   });
 
   it('finds an encoded name or date in a query value, whatever key comes before it', () => {
