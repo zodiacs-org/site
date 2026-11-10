@@ -74,18 +74,14 @@ describe('astrocartography lines against the engine\'s own rise, set and transit
     expect(mcLongitude(bodies.find((row) => row.body === 'Sun')!, gast)).toBeCloseTo(66.72, 1);
   });
 
-  it('gives the browser\'s conversion from the chart engine the same lines as the server\'s calc() within 0.01 degrees', () => {
-    const chart = computeChart({ utc: BIRTH, latitude: 0, longitude: 0, houseSystem: 'whole', timeKnown: true });
-    const t = (BIRTH.getTime() / 86_400_000 + 2440587.5 - 2451545) / 36525;
-    const obliquity = meanObliquity(t);
-    expect(Math.abs(wrapLongitude(ramcFromMc(chart.angles!.mc, obliquity) - gast))).toBeLessThan(0.01);
-    for (const name of ACG_BODIES) {
-      const row = chart.bodies.find((entry) => entry.body === name)!;
-      const browser = eclipticToEquatorial(row.lon, row.lat, obliquity);
-      const server = bodies.find((entry) => entry.body === name)!;
-      expect(Math.abs(wrapLongitude(browser.ra - server.ra)), name).toBeLessThan(0.01);
-      expect(Math.abs(browser.dec - server.dec), name).toBeLessThan(0.01);
-    }
+  it('reads Greenwich sidereal time and the Sun\'s right ascension and declination at J2000 as published', () => {
+    // 2000-01-01 12:00 UT: Greenwich sidereal time 280.46 degrees (18h 41m 50s); the Sun at
+    // right ascension 281.29 degrees (18h 45m 09s), declination -23.03 degrees (Astronomical Almanac 2000).
+    const j2000 = new Date('2000-01-01T12:00:00Z');
+    expect(greenwichSiderealDegrees(j2000)).toBeCloseTo(280.46, 1);
+    const sun = equatorialBodies(j2000).find((row) => row.body === 'Sun')!;
+    expect(sun.ra).toBeCloseTo(281.29, 1);
+    expect(sun.dec).toBeCloseTo(-23.03, 1);
   });
 });
 

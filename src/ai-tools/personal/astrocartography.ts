@@ -3,17 +3,16 @@
  * closest to the towns and cities they name.
  *
  * The birth instant is resolved as every chart tool resolves it. Each body's
- * apparent right ascension and declination of date come from
- * @zodiacs/engine/calc (calc, frame "equatorial-true-of-date"), and Greenwich
- * sidereal time from the engine's relocation of the same instant to longitude
- * 0 (houses().armc). The lines and distances are src/lib/astrocartography's,
+ * right ascension and declination, and Greenwich sidereal time, come from the
+ * site's chart engine (src/lib/astrocartography/positions.ts), the same
+ * quantities the /astrocartography/ page reads. The lines and distances are src/lib/astrocartography's,
  * the same geometry the /astrocartography/ page draws in the browser; the
  * readings are pre-written there. Towns and cities are resolved from the
  * GeoNames index bundled with Zodiacs (find_birthplace's), so a name is not
  * sent anywhere. Nothing is stored, logged or put in a link.
  */
 import { z } from 'zod';
-import { calc, houses, type CalcBody } from '@zodiacs/engine/calc';
+import { equatorialMoment } from '../../lib/astrocartography/positions';
 import { ACG_ANGLES, ACG_BODIES, NOTICEABLE_KM, STRONG_KM, horizonLongitude, lineDistances, mcLongitude, strengthOf, wrapLongitude, type EquatorialBody } from '../../lib/astrocartography/lines';
 import { ANGLE_LABEL, ANGLE_NAME, LINE_MEANING, lineSentence } from '../../lib/astrocartography/meanings';
 import { astrocartographyShareUrl } from '../../lib/astrocartography/share';
@@ -90,20 +89,14 @@ export const astrocartographyData = z.object({
 });
 export type AstrocartographyData = z.infer<typeof astrocartographyData>;
 
-/** Each body's apparent right ascension and declination of date at an instant, from the engine. */
+/** Each body's right ascension and declination at an instant, from the site's chart engine (src/lib/astrocartography/positions.ts). */
 export function equatorialBodies(utc: Date): EquatorialBody[] {
-  return ACG_BODIES.map((name) => {
-    const position = calc({ body: name as CalcBody, time: utc.toISOString(), frame: 'equatorial-true-of-date', flags: { speeds: false } });
-    if (position.status !== 'ok') throw new RangeError('The birth date is outside the years the map can be drawn for (1800 to 2199).');
-    return { body: name, ra: position.lon, dec: position.lat };
-  });
+  return equatorialMoment(utc).bodies;
 }
 
-/** Greenwich apparent sidereal time, degrees: the right ascension of the Midheaven at longitude 0, the engine's relocation of the instant there. */
+/** Greenwich sidereal time, degrees: the right ascension of the Midheaven at longitude 0. */
 export function greenwichSiderealDegrees(utc: Date): number {
-  const result = houses({ time: utc.toISOString(), place: { latitude: 0, longitude: 0 } });
-  if (result.status !== 'ok') throw new RangeError('The birth date is outside the years the map can be drawn for (1800 to 2199).');
-  return result.armc;
+  return equatorialMoment(utc).gast;
 }
 
 /** "Lisbon" or "Paris, France". */
