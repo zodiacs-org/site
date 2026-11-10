@@ -1,9 +1,10 @@
 /** Browser QA for the public showcase. BASE_URL defaults to the local review server. */
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 const base=process.env.BASE_URL??'http://127.0.0.1:56640';
+const tour=JSON.parse(await readFile(new URL('../src/data/apps-showcase-tour.json',import.meta.url),'utf8'));
 const out=process.env.APPS_QA_OUT??'/tmp/zodiacs-apps-qa';await mkdir(out,{recursive:true});
 const browser=await chromium.launch({executablePath:await findChromium(),args:STABLE_CHROMIUM_ARGS,headless:true});
 const checks=[];
@@ -16,7 +17,8 @@ try{
   await page.evaluate(()=>document.fonts.ready);
   assert.equal(await page.locator('.apps-page h1').count(),1);
   assert.equal(await page.locator('.apps-examples article').count(),4);
-  assert.equal(await page.locator('.apps-availability dd').allTextContents().then(v=>v.every(x=>x.includes('in review'))),true);
+  assert.deepEqual(await page.locator('.apps-availability dd').allTextContents(),['Directory listing in review','Directory listing in review','Template available']);
+  assert.equal(await page.locator('.apps-connect a[href="https://x.ai/bot/e0DWoivlUkNRrhEcvBX8G"][target="_blank"][rel~="noopener"]').count(),1,'Grok template link');
   assert.equal(await page.locator('.apps-connect a[href*="chatgpt.com"]').count(),0,'No private/unapproved installation link');
   assert.equal(media.length,0,'Video stays unloaded until played');
   for(const img of await page.locator('.apps-page img').all()){
@@ -39,7 +41,7 @@ try{
   if(width===1280){
    await page.locator('video').evaluate(async video=>{await video.play();video.pause();});
    const video=await page.locator('video').evaluate(v=>({width:v.videoWidth,height:v.videoHeight,duration:v.duration}));
-   assert.deepEqual(video,{width:1080,height:1600,duration:41});
+   assert.deepEqual({width:video.width,height:video.height,seconds:Math.round(video.duration)},{width:tour.width,height:tour.height,seconds:Math.round(tour.seconds)});
   }
   assert.deepEqual(errors,[],width+' no browser errors');
   checks.push({width,height,cls,overflow:false,imagesDecoded:true,copyPrompts:true,copyEndpoint:true,ownedLinks200:true,reducedMotion:motion==='reduce',slowFonts,errors});

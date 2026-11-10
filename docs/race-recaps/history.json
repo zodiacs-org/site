@@ -108,5 +108,60 @@
         "points": 0
       }
     ]
+  },
+  {
+    "seasonId": "scorpio-2026",
+    "isoYear": 2026,
+    "isoWeek": 46,
+    "standings": [
+      {
+        "sign": "aries",
+        "points": 0
+      },
+      {
+        "sign": "taurus",
+        "points": 0
+      },
+      {
+        "sign": "gemini",
+        "points": 0
+      },
+      {
+        "sign": "cancer",
+        "points": 0
+      },
+      {
+        "sign": "leo",
+        "points": 0
+      },
+      {
+        "sign": "virgo",
+        "points": 0
+      },
+      {
+        "sign": "libra",
+        "points": 0
+      },
+      {
+        "sign": "scorpio",
+        "points": 0
+      },
+      {
+        "sign": "sagittarius",
+        "points": 0
+      },
+      {
+        "sign": "capricorn",
+        "points": 0
+      },
+      {
+        "sign": "aquarius",
+        "points": 0
+      },
+      {
+        "sign": "pisces",
+        "points": 0
+      }
+    ]
   }
 ]
