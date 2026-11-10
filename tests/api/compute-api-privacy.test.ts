@@ -518,6 +518,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/birthplace.ts',
       // search_sky_events (ZODIACS_SKY_EVENTS_ENABLED=1) finds stations and new and full Moons with the same event searches, server-side.
       'src/ai-tools/features/sky-events.ts',
+      // get_year_score (ZODIACS_YEAR_SCORE_ENABLED=1) resolves a birth's local time with the same operations, server-side.
+      'src/ai-tools/features/year-score.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the
