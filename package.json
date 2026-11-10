@@ -47,6 +47,7 @@
     "data:search-index": "vite-node --script scripts/build-search-index.mjs",
     "data:disclosure": "node scripts/build-thesis-disclosure.mjs && node scripts/bake-thesis-disclosure-static.mjs",
     "data:disclosure:bake": "node scripts/bake-thesis-disclosure-static.mjs",
+    "data:thesis-charts": "node scripts/build-thesis-charts.mjs",
     "data:registry-establishment": "node scripts/sync-registry-establishment.mjs",
     "data:cities": "node scripts/build-cities.mjs",
     "data:cities:also": "vite-node --script scripts/build-cities-also.ts",
