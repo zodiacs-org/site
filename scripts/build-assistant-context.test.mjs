@@ -95,7 +95,8 @@ describe('assistant site context', () => {
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
       // The tarot draw adds one English tool and one consumer route and static
-      // page, only while PUBLIC_TAROT_ENABLED is '1'.
+      // page, only while PUBLIC_TAROT_ENABLED is '1'. The Year Ahead Score at
+      // /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
       consumerRoutes: 717 + Number(tarot),
       glossary: 145,
       guides: 12,
@@ -194,7 +195,7 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
   });
 
   it('commits the switches-unset output, and the tarot switch adds exactly its one line', async () => {
-    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/tarot/': 'PUBLIC_TAROT_ENABLED' });
+    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/tarot/': 'PUBLIC_TAROT_ENABLED', '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED' });
     expect(ALL_TOOL_ROUTES).toEqual(withTarot(MAIN_TOOL_ROUTES));
     temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
 

@@ -31,6 +31,7 @@ export const MAX_CONTEXT_BYTES = 60 * 1024;
 // never recommended. Commit the output generated with every switch unset.
 export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
   '/tarot/': 'PUBLIC_TAROT_ENABLED',
+  '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
 });
 const launchedRoute = (route, env) => !LAUNCH_FLAGGED_ROUTES[route] || env[LAUNCH_FLAGGED_ROUTES[route]] === '1';
 

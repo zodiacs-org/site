@@ -1291,6 +1291,8 @@ const registryAuraIndexed = sitemapLocs.has('/registry/collection/');
 // the Registry Collection follows its own: the sitemap entry and the built
 // page appear and disappear together.
 const raceIndexed = sitemapLocs.has('/race/');
+// The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
+const yearScoreIndexed = sitemapLocs.has('/year-score/');
 // The tarot draw follows its launch flag (src/lib/launch-flags.ts) the same way.
 const tarotIndexed = sitemapLocs.has('/tarot/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
@@ -1353,7 +1355,9 @@ const sitemapPolicy = {
   // +1 for /your-2027-sky/, the 2027 personal sky edition.
   // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
+  // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+    + Number(yearScoreIndexed)
     + Number(tarotIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
@@ -1405,6 +1409,7 @@ const indexedFamilies = [
   { label: 'Life Path pages', pattern: /^\/numerology\/life-path\/(?:[1-9]|11|22|33)\/$/, expected: 12, localized: false },
   { label: 'Registry Collection', pattern: /^\/registry\/collection\/$/, expected: Number(registryAuraIndexed), localized: false },
   { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
+  { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
   { label: 'Tarot draw', pattern: /^\/tarot\/$/, expected: Number(tarotIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
