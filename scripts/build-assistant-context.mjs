@@ -26,6 +26,14 @@ const DEFAULT_OUTPUT = resolve(repo, 'api/_assistant/context.ts');
 export const MIN_CONTEXT_BYTES = 30 * 1024;
 export const MAX_CONTEXT_BYTES = 60 * 1024;
 
+// Pages behind a launch switch (src/lib/launch-flags.ts) stay out of the
+// inventory until their switch is exactly '1', so a page that is not live is
+// never recommended. Commit the output generated with every switch unset.
+const LAUNCH_FLAGGED_ROUTES = Object.freeze({
+  '/tarot/': 'PUBLIC_TAROT_ENABLED',
+});
+const launchedRoute = (route) => !LAUNCH_FLAGGED_ROUTES[route] || process.env[LAUNCH_FLAGGED_ROUTES[route]] === '1';
+
 // These are the English tools and utilities that accept a date, chart, pair,
 // or current-sky question. The generator verifies every route has a real page
 // and takes its explanation from that page's meta description.
@@ -59,7 +67,7 @@ export const TOOL_ROUTES = Object.freeze([
   '/transits/',
   '/void-of-course-moon/',
   '/widgets/',
-]);
+].filter(launchedRoute));
 
 export const BANNED_CONSUMER_VOCABULARY = Object.freeze([
   'astrofolio',
@@ -268,6 +276,7 @@ async function loadStaticPages(repoRoot, context) {
     if (local === '404.astro') continue;
     const route = pagePath(file, pagesRoot);
     if (UNLISTED_ROUTE_PREFIXES.some((prefix) => route.startsWith(prefix))) continue;
+    if (!launchedRoute(route)) continue;
     // Labeled sample pages for event-template review: never part of the
     // recommendable site inventory.
     if (route.startsWith('/events/preview/')) continue;

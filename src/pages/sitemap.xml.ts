@@ -36,6 +36,7 @@ import registryResearchPublicationData from '../data/registry-research/publicati
 import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
 type RegistryResearchPublication = {
@@ -649,7 +650,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
   // The tarot draw, first published, and the pages that link to it. Last, so this date wins.
-  ...['/tarot/', '/tools/', '/', '/numerology/'].map((loc) => [loc, TAROT_LASTMOD] as const),
+  // Only while PUBLIC_TAROT_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? ['/tarot/', '/tools/', '/', '/numerology/'].map((loc) => [loc, TAROT_LASTMOD] as const) : []),
 ]);
 
 function getLastmod(loc: string): string {
@@ -712,7 +714,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
     { loc: '/numerology/', priority: 0.85 },
-    { loc: '/tarot/', priority: 0.8 },
+    ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? [{ loc: '/tarot/', priority: 0.8 }] : []),
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
     { loc: '/mercury-retrograde/', priority: 0.85 },

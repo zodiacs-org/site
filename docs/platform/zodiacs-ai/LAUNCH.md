@@ -213,6 +213,10 @@ pins and existing Firewall counters. Host connections can be disconnected.
    not provide a stable directory-review endpoint. Keep production disabled
    until the accepted gates and reviewer access are ready.
 
+## Tarot switch order
+
+Switch `PUBLIC_TAROT_ENABLED` on and deploy before `ZODIACS_TAROT_ENABLED`, or `draw_tarot` links to a missing page (`src/ai-tools/features/tarot.ts:63`). With `PUBLIC_TAROT_ENABLED` unset, `/tarot/` redirects to the 404 page, and its hub card, the homepage item, the numerology paragraph, the sitemap row, the four `TAROT_LASTMOD` dates and the Guide line are all left out (`src/lib/launch-flags.ts`).
+
 ## Personal release and measurement
 
 The existing synthetic Personal Week Ahead uses an arbitrary unknown-time chart

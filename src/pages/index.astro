@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { homeTrustFaq } from '../lib/home-trust';
+import { launchFlagOn } from '../lib/launch-flags';
 import ArtFrame from '../components/ArtFrame.astro';
 import AstroTerm from '../components/AstroTerm.astro';
 import SignIcon from '../components/SignIcon.astro';
@@ -90,7 +91,7 @@ const together = [
 const also = [
   { href: '/void-of-course-moon/', label: 'Void-of-course Moon' },
   { href: '/numerology/', label: 'Numerology' },
-  { href: '/tarot/', label: 'Tarot' },
+  ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? [{ href: '/tarot/', label: 'Tarot' }] : []),
   { href: '/learn/chinese-zodiac/', label: 'Chinese zodiac' },
 ];
 

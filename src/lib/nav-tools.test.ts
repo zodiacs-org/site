@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { RELEASED_LOCALES, localizePath, t } from './i18n';
+import { TOOL_ICON_FOR_PATH } from './tool-icons';
 import {
+  ALL_TOOL_CATALOG,
   FOOTER_TOOLS,
   NAV_TOOLS,
   navToolLabelHasEnglishCue,
   TOOL_CATALOG,
   TOOLS_HUB,
+  visibleTools,
 } from './nav-tools';
 
 describe('NAV_TOOLS', () => {
@@ -67,7 +70,7 @@ describe('NAV_TOOLS', () => {
       '/transits/',
       '/retrogrades/',
     ]);
-    expect(TOOLS_HUB).toHaveLength(30);
+    expect(TOOLS_HUB).toHaveLength(29);
     for (const tool of [...NAV_TOOLS, ...FOOTER_TOOLS, ...TOOLS_HUB]) {
       expect(catalogueHrefs.has(tool.href)).toBe(true);
     }
@@ -77,7 +80,7 @@ describe('NAV_TOOLS', () => {
     expect(TOOLS_HUB.filter((tool) => tool.group === 'lead').map((tool) => tool.href)).toEqual(['/birth-chart/']);
     expect(TOOLS_HUB[0].href).toBe('/birth-chart/');
     const counts = Object.fromEntries(['you', 'together', 'sky', 'year'].map((group) => [group, TOOLS_HUB.filter((tool) => tool.group === group).length]));
-    expect(counts).toEqual({ you: 7, together: 6, sky: 6, year: 10 });
+    expect(counts).toEqual({ you: 6, together: 6, sky: 6, year: 10 });
     expect(new Set(TOOLS_HUB.map((tool) => tool.icon)).size).toBe(TOOLS_HUB.length);
     for (const tool of TOOLS_HUB) {
       expect(tool.promise).not.toMatch(/[\r\n\u2013\u2014]/u);
@@ -97,8 +100,9 @@ describe('NAV_TOOLS', () => {
     for (const locale of RELEASED_LOCALES) expect(localizePath(locale, '/numerology/')).toBe('/numerology/');
   });
 
-  it('publishes tarot only in the English tools hub', () => {
-    expect(TOOLS_HUB.find((tool) => tool.href === '/tarot/')).toMatchObject({ group: 'you', icon: 'tarot' });
+  it('publishes tarot only in the English tools hub, and only while PUBLIC_TAROT_ENABLED is on', () => {
+    expect(TOOLS_HUB.some((tool) => tool.href === '/tarot/')).toBe(false);
+    expect(ALL_TOOL_CATALOG.find((tool) => tool.href === '/tarot/')?.hub).toMatchObject({ group: 'you' });
     expect([...NAV_TOOLS, ...FOOTER_TOOLS].some((tool) => tool.href === '/tarot/')).toBe(false);
     for (const locale of RELEASED_LOCALES) expect(localizePath(locale, '/tarot/')).toBe('/tarot/');
   });
@@ -114,6 +118,18 @@ describe('NAV_TOOLS', () => {
     for (const locale of ['fr', 'it', 'ru'] as const) {
       expect(localizePath(locale, '/today/')).toBe('/today/');
       expect(today?.labels?.[locale]).toMatch(/anglais|inglese|английски/u);
+    }
+  });
+});
+
+describe('tools behind a launch switch', () => {
+  it('shows a switched tool only while its switch is on, and every hub card has an icon either way', () => {
+    expect(visibleTools(() => true)).toEqual(ALL_TOOL_CATALOG);
+    expect(visibleTools(() => false).every((tool) => !tool.flag)).toBe(true);
+    expect(visibleTools(() => true).some((tool) => tool.href === '/tarot/')).toBe(true);
+    expect(visibleTools(() => false).some((tool) => tool.href === '/tarot/')).toBe(false);
+    for (const tool of ALL_TOOL_CATALOG) {
+      if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
     }
   });
 });

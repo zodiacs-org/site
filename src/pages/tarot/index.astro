@@ -4,8 +4,13 @@ import TarotDraw from '../../islands/TarotDraw';
 import { TAROT_DECK, SUIT_THEMES, type Suit } from '../../lib/tarot/deck';
 import { TAROT_MEANINGS } from '../../lib/tarot/meanings';
 import { SUIT_HUES, SUIT_PATHS, type SuitKey } from '../../lib/tarot/suit-icons';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
 import '../../styles/tarot.css';
+
+if (!launchFlagOn('PUBLIC_TAROT_ENABLED')) {
+  return Astro.redirect('/404.html');
+}
 
 const GROUPS: SuitKey[] = ['major', 'wands', 'cups', 'swords', 'pentacles'];
 const cardsIn = (group: SuitKey) => TAROT_DECK.filter((card) => (group === 'major' ? card.arcana === 'major' : card.suit === (group as Suit)));
