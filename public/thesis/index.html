@@ -335,7 +335,7 @@
     .essay__body .mov.mov--flow { padding: 0; border-top: 0; }
     .essay__body .mov.mov--flow + .mov.mov--flow { margin-top: 18px; }
     .essay__note { margin: 0 0 26px; max-width: 64ch; font-family: var(--serif); font-size: 15.5px; line-height: 1.6; color: var(--ink-dim); }
-    .essay__note em { font-style: italic; }
+    /* Roman, not italic: the italic face is not preloaded, and its late swap moved this line on phones (CLS). */
     .essay__note a { color: var(--ink-2); text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
     .mov__head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
     .mov__no { font-family: var(--display); font-weight: 500; font-size: 9.5px; letter-spacing: 0.16em; color: var(--ink-mute); }
@@ -1947,7 +1947,7 @@
       </div>
 
       <div class="essay__body">
-        <p class="essay__note" id="who-wrote-this"><em>Zodiacs.org runs Astrofolio and wrote this essay. We hold some of these coins and take no fee when you buy one. They are thinly traded and can fall to zero.</em> <a href="/disclosure/">Full disclosures</a></p>
+        <p class="essay__note" id="who-wrote-this">Zodiacs.org runs Astrofolio and wrote this essay. We hold some of these coins and take no fee when you buy one. They are thinly traded and can fall to zero. <a href="/disclosure/">Full disclosures</a></p>
 
         <section class="mov mov--flow reveal" id="everyone-has-a-sign">
           <p>
