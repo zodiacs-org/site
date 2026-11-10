@@ -5,7 +5,7 @@ import { unsubscribeToken } from '../../src/lib/birthday-reminder/core';
 import vercel from '../../vercel.json';
 
 const SECRET = 'x'.repeat(40);
-const ENV = { BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service', RESEND_API_KEY: 'resend', RESEND_FROM_EMAIL: 'Zodiacs.org <hello@zodiacs.org>', BIRTHDAY_REMINDER_SECRET: SECRET };
+const ENV = { BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_YEAR_SCORE_ENABLED: '1', PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service', RESEND_API_KEY: 'resend', RESEND_FROM_EMAIL: 'Zodiacs.org <hello@zodiacs.org>', BIRTHDAY_REMINDER_SECRET: SECRET };
 
 function response() {
   const res: any = { headers: {} as Record<string, string>, statusCode: 0, body: '' };

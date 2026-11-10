@@ -3,7 +3,7 @@ import { birthdayEmail, birthdaysOn, confirmationEmail, hashToken, newConfirmTok
 import { birthdayReminderEnabled } from './config';
 
 const SECRET = 'x'.repeat(40);
-const ENV = { BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service', RESEND_API_KEY: 'resend', RESEND_FROM_EMAIL: 'Zodiacs.org <hello@zodiacs.org>', BIRTHDAY_REMINDER_SECRET: SECRET };
+const ENV = { BIRTHDAY_REMINDER_ENABLED: '1', PUBLIC_YEAR_SCORE_ENABLED: '1', PUBLIC_SUPABASE_URL: 'https://synthetic.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service', RESEND_API_KEY: 'resend', RESEND_FROM_EMAIL: 'Zodiacs.org <hello@zodiacs.org>', BIRTHDAY_REMINDER_SECRET: SECRET };
 
 describe('a birthday reminder sign-up', () => {
   it('keeps only the email and the birthday’s month and day, with both yeses', () => {
@@ -54,6 +54,8 @@ describe('the switch', () => {
     expect(birthdayReminderEnabled({})).toBe(false);
     expect(birthdayReminderEnabled({ ...ENV, BIRTHDAY_REMINDER_ENABLED: 'true' })).toBe(false);
     expect(birthdayReminderEnabled({ ...ENV, BIRTHDAY_REMINDER_SECRET: 'short' })).toBe(false);
+    expect(birthdayReminderEnabled({ ...ENV, PUBLIC_YEAR_SCORE_ENABLED: undefined })).toBe(false);
+    expect(birthdayReminderEnabled({ ...ENV, PUBLIC_YEAR_SCORE_ENABLED: 'true' })).toBe(false);
     expect(birthdayReminderEnabled(ENV)).toBe(true);
   });
 });
