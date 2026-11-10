@@ -7,8 +7,11 @@
  * - no horizontal scroll at 360px;
  * - the page is listed on the tools hub, and linked from the occasions and void-of-course pages.
  * With --screenshots it writes the PR evidence to docs/platform/zodiacs-ai/evidence/good-days/.
+ *
+ * All of that only when the build had PUBLIC_GOOD_DAYS_ENABLED=1 (set it in the shell for this run too). With the
+ * flag off it checks the opposite in dist/: both pages are the redirect to the 404 page, and nothing links to them.
  */
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
@@ -17,12 +20,29 @@ import { projectRoot, withPreview } from './visual/preview-server.mjs';
 const SCREENSHOTS = process.argv.includes('--screenshots');
 const evidence = resolve(projectRoot, 'docs/platform/zodiacs-ai/evidence/good-days');
 const BIRTH = '1990-05-03';
-if (SCREENSHOTS) await mkdir(evidence, { recursive: true });
 const failures = [];
 const check = (name, ok, detail = '') => {
   console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${ok ? '' : `: ${detail}`}`);
   if (!ok) failures.push(name);
 };
+
+// The launch flag, as the build read it (src/lib/launch-flags.ts): off, the finder must not exist anywhere.
+if (process.env.PUBLIC_GOOD_DAYS_ENABLED !== '1') {
+  const built = (path) => readFile(resolve(projectRoot, 'dist', `.${path}`, 'index.html'), 'utf8');
+  for (const path of ['/good-days/', '/good-days/how-did-it-go/']) {
+    const html = await built(path);
+    check(`flag off: ${path} is the redirect to the 404 page`, /http-equiv="refresh"[^>]*\/404\.html/u.test(html), html.slice(0, 200));
+  }
+  for (const path of ['/tools/', '/occasions/', '/void-of-course-moon/']) {
+    check(`flag off: ${path} does not link to /good-days/`, !(await built(path)).includes('/good-days/'));
+  }
+  const sitemap = await readFile(resolve(projectRoot, 'dist/sitemap.xml'), 'utf8');
+  check('flag off: the sitemap does not list /good-days/', !sitemap.includes('/good-days/'));
+  console.log(failures.length ? `good-days drive (flag off): ${failures.length} failure(s)` : 'good-days drive (flag off): PASS');
+  process.exit(failures.length ? 1 : 0);
+}
+
+if (SCREENSHOTS) await mkdir(evidence, { recursive: true });
 
 const VIEWPORTS = [
   { name: 'mobile', width: 360, height: 780, deviceScaleFactor: 2, isMobile: true, hasTouch: true },

@@ -36,6 +36,7 @@ import registryResearchPublicationData from '../data/registry-research/publicati
 import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
 type RegistryResearchPublication = {
@@ -449,7 +450,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/occasions/milestones/', '2026-10-11'] as const,
   ['/occasions/baby-shower/', '2026-10-11'] as const,
   // The good day finder, first published 2026-11-09.
-  ['/good-days/', '2026-11-09'] as const,
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-09'] as const] : []),
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -649,7 +650,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
   // The good day finder's links: its card on the tools hub, and the lines on the occasions and void-of-course
   // pages that point to it. The day of the daily edition they were built with; last so this date wins.
-  ...['/occasions/', '/tools/', '/void-of-course-moon/'].map((loc) => [loc, '2026-11-09'] as const),
+  // Only while PUBLIC_GOOD_DAYS_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? ['/occasions/', '/tools/', '/void-of-course-moon/'].map((loc) => [loc, '2026-11-09'] as const) : []),
 ]);
 
 function getLastmod(loc: string): string {
@@ -746,7 +748,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/occasions/', priority: 0.7 },
     { loc: '/occasions/milestones/', priority: 0.6 },
     { loc: '/occasions/baby-shower/', priority: 0.6 },
-    { loc: '/good-days/', priority: 0.7 },
+    ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [{ loc: '/good-days/', priority: 0.7 }] : []),
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },

@@ -2,11 +2,17 @@
 import Base from '../../layouts/Base.astro';
 import GoodDayFinder from '../../islands/GoodDayFinder.tsx';
 import { OG_EN } from '../../strings/seo.en.mjs';
-
-// The "How did your day go?" follow-up, off unless PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1 at build time.
-const outcomesEnabled = (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
 import '../../styles/good-days.css';
+
+if (!launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED')) {
+  return Astro.redirect('/404.html');
+}
+
+// The "How did your day go?" follow-up, off unless PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1 at build time (and the finder is on).
+const outcomesEnabled = launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED')
+  && (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
 
 const faq = [
   {

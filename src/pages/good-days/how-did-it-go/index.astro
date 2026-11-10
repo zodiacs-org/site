@@ -3,9 +3,15 @@ import Base from '../../../layouts/Base.astro';
 import GoodDayOutcome from '../../../islands/GoodDayOutcome.tsx';
 import '../../../styles/calculator.css';
 import '../../../styles/good-days.css';
+import { launchFlagOn } from '../../../lib/launch-flags';
 
-// The follow-up is off unless PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1 at build time. Off, the page says so and runs no script.
-const outcomesEnabled = (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
+if (!launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED')) {
+  return Astro.redirect('/404.html');
+}
+
+// The follow-up is off unless PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1 at build time (and the finder is on). Off, the page says so and runs no script.
+const outcomesEnabled = launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED')
+  && (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
 ---
 <Base
   clientUi

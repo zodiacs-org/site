@@ -1,5 +1,6 @@
 import type { PageLocale as Locale, UiKey } from './i18n';
 import { TOOL_ICON_FOR_PATH, type ToolIconName } from './tool-icons';
+import { launchFlagOn, type LaunchFlag } from './launch-flags';
 
 /**
  * The English /tools/ hub's sections: the birth chart leads on its own, then
@@ -43,6 +44,8 @@ interface ToolCatalogEntry {
   footerLabel?: Record<Locale, string>;
   footerUsesLocalizedPath?: boolean;
   hub?: ToolHubCard;
+  /** A tool behind a launch switch (src/lib/launch-flags.ts): left out of every list while it is off. */
+  flag?: LaunchFlag;
 }
 
 export interface NavTool {
@@ -167,7 +170,7 @@ const NAV_SUBLABELS = {
  * footer, and English /tools/ hub. Surface-specific fields keep each list
  * deliberately short without copying hrefs or descriptions into templates.
  */
-export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
+export const ALL_TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   {
     href: '/birth-chart/', label: 'birthChart', sublabel: NAV_SUBLABELS.birth,
     navOrder: 1, footerOrder: 1, footerUsesLocalizedPath: true,
@@ -277,7 +280,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 26, title: 'Full moon calendar', promise: 'Every full moon through 2030, with its sign.', group: 'year' },
   },
   {
-    href: '/good-days/',
+    href: '/good-days/', flag: 'PUBLIC_GOOD_DAYS_ENABLED',
     hub: { order: 29, title: 'Good day finder', promise: 'The best days ahead for a launch, a move or a wedding.', group: 'year' },
   },
   {
@@ -301,6 +304,10 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
   },
 ];
+
+/** The catalog a build shows: an entry behind a switch that is off is left out everywhere. */
+export const visibleTools = (isOn: (flag: LaunchFlag) => boolean = launchFlagOn) => ALL_TOOL_CATALOG.filter((tool) => !tool.flag || isOn(tool.flag));
+export const TOOL_CATALOG: readonly ToolCatalogEntry[] = visibleTools();
 
 export const NAV_TOOLS: readonly NavTool[] = TOOL_CATALOG
   .filter((tool): tool is typeof tool & Required<Pick<ToolCatalogEntry, 'label' | 'sublabel' | 'navOrder'>> => (

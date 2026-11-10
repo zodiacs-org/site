@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import { siteVoidOfCourseAt, siteVoidOfCourseWindows, type VoidOfCourseWindow } from '../../data/void-of-course';
 import { signBySlug } from '../../lib/signs';
+import { launchFlagOn } from '../../lib/launch-flags';
 
 // Build-time: every void-of-course window from the start of this month to
 // the end of the month after next, computed in Node by @zodiacs/engine, the
@@ -258,9 +259,11 @@ const description = 'Void-of-course Moon times for this month and the next two, 
         A void of a few minutes means the Moon perfected its last aspect just before changing sign; a void of a
         day and a half means the sign's aspects came early. Both are ordinary. The sign the Moon enters ends
         the void, and the <a href="/moon-phase/">moon phase</a> and <a href="/full-moon-calendar/">full moon
-        calendar</a> pages carry the rest of the month's lunar timing. To choose a day for a launch, a move or a
-        wedding with the void and the rest of the sky weighed together, use the <a href="/good-days/">good day
-        finder</a>.
+        calendar</a> pages carry the rest of the month's lunar timing.{launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') && (
+          <> To choose a day for a launch, a move or a
+          wedding with the void and the rest of the sky weighed together, use the <a href="/good-days/">good day
+          finder</a>.</>
+        )}
       </p>
     </div>
   </section>

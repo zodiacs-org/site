@@ -43,6 +43,15 @@ No language model is called. Every sentence is pre-written in those two files.
   a birth date or a name; opening it runs the general reading for those dates.
   The page is on the tools hub ("Through the year", with its own icon) and is
   linked from `/occasions/` and `/void-of-course-moon/`.
+- Launch flag: the page, `/good-days/how-did-it-go/`, the hub card, the two
+  inbound links (and the occasions FAQ answer, also JSON-LD), the sitemap row
+  and its date bumps, and the Guide line all exist only when
+  `PUBLIC_GOOD_DAYS_ENABLED` is exactly `1` at build time
+  (`src/lib/launch-flags.ts`). Unset, both pages redirect to the 404 page as
+  `/race/` does, and `/tools/`, `/occasions/` and `/void-of-course-moon/` keep
+  main's HTML and sitemap dates. The outcome follow-up also needs this flag.
+  The drive runs both ways: CI's main build checks the flag-off state, and the
+  `good-days-drive` job builds with the flag on.
 - Layout shift: results fill a slot that reserves a full screen of height from
   the click, or from first paint for a shared link (a head script sets
   `gd-shared` before paint), so nothing on screen moves.
@@ -141,6 +150,10 @@ its source takes 0.3.33.
    fails quietly; replies are never affected).
 3. Set `ZODIACS_GOOD_DAYS_ENABLED=1` on preview first, then production, when
    the next plugin version is ready for review.
+
+Switch `PUBLIC_GOOD_DAYS_ENABLED` on and deploy before
+`ZODIACS_GOOD_DAYS_ENABLED`, or `find_good_days` links to a missing page
+(`src/ai-tools/features/good-days.ts:118,122`).
 
 Recommended order: merge this PR with the switch off; apply the migration
 (additive, logged in #879); switch preview on and check `tools/list`, one call
