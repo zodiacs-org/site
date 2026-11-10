@@ -50,7 +50,7 @@ const researchLastmod = terminalResearchLastmod(registryResearchPublication);
 const YEARLY_HOROSCOPE_LASTMOD = '2026-11-06';
 const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
-const THESIS_LASTMOD = '2026-09-05';
+const THESIS_LASTMOD = '2026-11-10';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 // The sign-season pages and their hub were published together.
