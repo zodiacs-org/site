@@ -23,34 +23,6 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  good-days-drive:
-    name: Good day finder drive
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      PUBLIC_GOOD_DAYS_ENABLED: "1"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-
-      - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Install Chromium
-        run: npx playwright-core install chromium
-
-      - name: Build (good day finder flag on)
-        run: npm run build
-
-      - name: Good day finder drive (zero CLS, privacy, share link)
-        run: npm run test:good-days:browser
-
   build-check:
     name: Build & Check
     runs-on: ubuntu-latest
@@ -558,6 +530,34 @@ jobs:
 
       - name: PostgreSQL 17 migration, RLS, replay, and concurrency gates
         run: bash scripts/test-living-chart-sync-sql.sh
+
+  good-days-drive:
+    name: Good day finder drive
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PUBLIC_GOOD_DAYS_ENABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright-core install chromium
+
+      - name: Build (good day finder flag on)
+        run: npm run build
+
+      - name: Good day finder drive (zero CLS, privacy, share link)
+        run: npm run test:good-days:browser
 
   phase7-living-chart-drive:
     name: Phase 7 Living Chart drive
