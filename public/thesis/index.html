@@ -1803,12 +1803,12 @@
     body { background:var(--bg); }
     .essay .mov > p { font-family:'Instrument Sans',system-ui,sans-serif; }
     .essay__body > .mov > p { max-width:min(62ch,680px); font-size:18px; line-height:1.7; }
-    #fig-2, #fig-3 { padding:20px; border:1px solid var(--hair); border-radius:14px; }
-    #fig-2 .zfig-cap, #fig-3 .zfig-cap {
+    #fig-2, #fig-3, .thesis-bars { padding:20px; border:1px solid var(--hair); border-radius:14px; }
+    #fig-2 .zfig-cap, #fig-3 .zfig-cap, .thesis-bars .zfig-cap {
       max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif;
       font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2);
     }
-    #fig-2 .zfig-src, #fig-3 .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
+    #fig-2 .zfig-src, #fig-3 .zfig-src, .thesis-bars .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
     /* Compact comparisons: three short rows, then the recurring calendar. */
     .thesis-plate .attention-patterns { grid-template-columns:1fr; gap:0; }
     .thesis-plate .attention-patterns .fact-card {
@@ -1823,6 +1823,7 @@
     .thesis-plate .attention-patterns .fact-card:last-child svg { height:98px; }
     .attention-patterns__axis { font-family:'Instrument Sans',system-ui,sans-serif; font-size:12px; color:var(--ink-dim); }
     .thesis-bars svg.bars-chart--small { display:none; }
+    .thesis-bars .zfig-head { margin-bottom:16px; }
     .thesis-bars svg text.bar-lab { font-family:'Instrument Sans',system-ui,sans-serif; fill:var(--ink-2); font-size:18px; }
     .thesis-bars svg text.bar-val { font-family:var(--mono); fill:var(--ink); font-size:17px; }
     .thesis-bars svg.bars-chart--small text.bar-lab { font-size:13px; }
