@@ -1821,6 +1821,7 @@
     {"path":"src/data/nasa-event-instants.json","text":"every new and full Moon agrees with NASA to the second (docs/accuracy-audit-2026-11/REPORT.md)","claim":"acc.event-times-nasa"},
     {"path":"src/data/nasa-event-instants.json","text":"nine-point Lagrange interpolation of each table, roots by bisection to 1e-9 day (scripts/accuracy-audit/truth.py, docs/engine-validation/independent-references/tools/series.py); instants rounded to the second","claim":"acc.event-times-nasa"},
     {"path":"src/data/tz-names.json","text":"The zone names of tzdata 2025c compiled with its backzone file, which @zodiacs/engine/geo ships; names only, for spelling a name given in any letter case as tzdb does (src/lib/time/zone-names.ts).","claim":"time.pinned-history"},
+    {"path":"src/data/year-people.json","text":"Entrepreneur, chief executive of OpenAI","exempt":"third-party","source":"https://en.wikipedia.org/wiki/Sam_Altman"},
     {"path":"src/islands/AccountSaveAction.tsx","text":"Saved charts stay in this browser until you sign in, then they open on any device.","claim":"priv.account-sync"},
     {"path":"src/islands/AccountSyncV2Panel.tsx","text":"${…} kept on this device before sign-in.","claim":"priv.calc-records"},
     {"path":"src/islands/AccountSyncV2Panel.tsx","text":"Calculation records kept on this device as a guest are not affected by this choice.","claim":"priv.calc-records"},
