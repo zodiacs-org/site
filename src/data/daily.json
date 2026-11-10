@@ -1,92 +1,84 @@
 {
   "schema": "zodiacs.daily-facts.v1",
-  "date": "2026-11-09",
-  "snapshotAt": "2026-11-09T12:00:00.000Z",
+  "date": "2026-11-10",
+  "snapshotAt": "2026-11-10T12:00:00.000Z",
   "bodies": [
     {
       "body": "Moon",
-      "lon": 229.4516293936767,
-      "sign": "scorpio",
-      "degree": 19.45162939367674,
+      "lon": 241.7310523197212,
+      "sign": "sagittarius",
+      "degree": 1.7310523197211296,
       "retrograde": false
     },
     {
       "body": "Sun",
-      "lon": 227.09728608280773,
+      "lon": 228.10229046881966,
       "sign": "scorpio",
-      "degree": 17.097286082807727,
+      "degree": 18.10229046881966,
       "retrograde": false
     },
     {
       "body": "Mercury",
-      "lon": 216.6977035224934,
+      "lon": 215.99461534991963,
       "sign": "scorpio",
-      "degree": 6.697703522493384,
+      "degree": 5.994615349919627,
       "retrograde": true
     },
     {
       "body": "Venus",
-      "lon": 203.27590640484544,
+      "lon": 203.1119067423888,
       "sign": "libra",
-      "degree": 23.2759064048455,
+      "degree": 23.111906742388783,
       "retrograde": true
     },
     {
       "body": "Mars",
-      "lon": 142.77790824363672,
+      "lon": 143.24939881410342,
       "sign": "leo",
-      "degree": 22.777908243636716,
+      "degree": 23.249398814103415,
       "retrograde": false
     },
     {
       "body": "Jupiter",
-      "lon": 145.2684884177936,
+      "lon": 145.36782768487865,
       "sign": "leo",
-      "degree": 25.268488417793606,
+      "degree": 25.367827684878648,
       "retrograde": false
     },
     {
       "body": "Saturn",
-      "lon": 8.791323759556349,
+      "lon": 8.73958184425237,
       "sign": "aries",
-      "degree": 8.791323759556349,
+      "degree": 8.73958184425237,
       "retrograde": true
     },
     {
       "body": "Uranus",
-      "lon": 64.35238015394594,
+      "lon": 64.31270954054975,
       "sign": "gemini",
-      "degree": 4.352380153945944,
+      "degree": 4.312709540549747,
       "retrograde": true
     },
     {
       "body": "Neptune",
-      "lon": 1.92311208931784,
+      "lon": 1.905787354053814,
       "sign": "aries",
-      "degree": 1.92311208931784,
+      "degree": 1.905787354053814,
       "retrograde": true
     },
     {
       "body": "Pluto",
-      "lon": 303.2091388344685,
+      "lon": 303.2209056268967,
       "sign": "aquarius",
-      "degree": 3.20913883446849,
+      "degree": 3.220905626896638,
       "retrograde": false
     }
   ],
   "moon": {
     "phase": "New Moon",
-    "illumination": 0
+    "illumination": 0.014
   },
   "eventsCoverage": "complete",
   "eventsSource": "src/data/transits-2026-11.json",
-  "events": [
-    {
-      "kind": "lunation",
-      "type": "new",
-      "at": "2026-11-09T07:02:05.269Z",
-      "sign": "scorpio",
-      "degree": 16.889435752120562
-    }
-  ]
+  "events": []
 }
