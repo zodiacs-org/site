@@ -650,6 +650,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
   // The transits page's link to the Year Ahead Score (2026-11-09), last so this date wins.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/transits/', '2026-11-09'] as const] : []),
+  // The Russian rising-sign calculator writes «во Льве» (2026-11-10), last so this date wins.
+  ['/ru/rising-sign/', '2026-11-10'] as const,
 ]);
 
 function getLastmod(loc: string): string {
