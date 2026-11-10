@@ -39,7 +39,8 @@ describe('the playground\'s browser run', () => {
     const cases = bodies();
     expect(new Set(cases.map(([, endpoint]) => endpoint))).toEqual(new Set(COMPUTE_ENDPOINTS));
     expect(cases.filter(([name]) => name.startsWith('refusal')).map(([name]) => name).sort()).toEqual([
-      'refusal budget-exhausted', 'refusal invalid-json', 'refusal invalid-request', 'refusal payload-too-large, counted',
+      // backend-unavailable: a browser has no DE440 pack, so it answers de440 as a deployment without one does.
+      'refusal backend-unavailable', 'refusal budget-exhausted', 'refusal invalid-json', 'refusal invalid-request', 'refusal payload-too-large, counted',
     ]);
     for (const [name, endpoint, text] of cases) {
       const hosted = await run(handler, { endpoint: endpoint as never, body: text });

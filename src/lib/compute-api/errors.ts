@@ -55,6 +55,8 @@ export const MESSAGES = Object.freeze({
   payloadTooLarge: `The body is larger than ${MAX_BODY_BYTES} bytes.`,
   invalidJson: 'The body is not valid JSON in UTF-8.',
   calculationFailed: 'The engine could not complete this calculation.',
+  backendUnavailable: 'The de440 backend is not available here: this runtime has no DE440 pack. Ask for astronomy-engine, or leave out backend.',
+  backend: 'Must be astronomy-engine or de440.',
 });
 
 export function notFound(): ComputeApiError {
@@ -120,6 +122,10 @@ export function budgetExhausted(limit: BudgetName): ComputeApiError {
     limit,
     max: BUDGETS[limit],
   });
+}
+
+export function backendUnavailable(): ComputeApiError {
+  return new ComputeApiError({ code: 'backend-unavailable', message: MESSAGES.backendUnavailable });
 }
 
 export function calculationFailed(): ComputeApiError {

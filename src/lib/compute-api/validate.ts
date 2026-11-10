@@ -192,7 +192,7 @@ export const VALIDATION_POINTERS = Object.freeze([
   '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude', '/calendar', '/country', '/atlasPlace',
   '/houseSystem', '/instants', '/bodies', '/from', '/to', '/kinds', '/kind', '/body', '/sign',
   '/phase', '/other', '/aspect', '/instant', '/date', '/zone', '/conditions', '/place', '/place/latitude',
-  '/place/longitude', '/place/houseSystem',
+  '/place/longitude', '/place/houseSystem', '/backend',
 ] as const);
 export const INDEXED_POINTERS = Object.freeze(['/instants', '/bodies', '/kinds', '/conditions'] as const);
 /** The fields of a condition a pointer may name after its index: /conditions/2/body. */

@@ -25,3 +25,6 @@ docs/engine-validation/swiss-output-removal/__pycache__/
 
 # The daily short videos (npm run data:shorts): built for posting by hand, never committed.
 dist-shorts/
+
+# The sealed DE440 pack the deploy builds (scripts/build-precision-pack.mjs); never committed (P4.1).
+api/_compute/precision/

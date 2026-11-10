@@ -39,7 +39,7 @@ describe("the compute API's handler bundle", () => {
   it('fails closed when reviewed private-state markers change or another frame is bundled', () => {
     const source = read(BUNDLE_PATH).toString('utf8')
       .split('// Server-only lifetime boundary.')[0]
-      .replace('  createStatelessComputeApiHandler as createComputeApiHandler\n};', '  createComputeApiHandler\n};');
+      .replace('  createStatelessComputeApiHandler as createComputeApiHandler,\n  de440FromFile\n};', '  createComputeApiHandler,\n  de440FromFile\n};');
     expect(() => addComputeLifetimeBoundary(source)).not.toThrow();
     for (const marker of ['var last;', 'var pluto_cache = [];', 'var CalcMoonCount = 0;']) {
       expect(() => addComputeLifetimeBoundary(source.replace(marker, ''))).toThrow(/review cleanup/u);

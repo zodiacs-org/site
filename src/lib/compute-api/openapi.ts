@@ -13,6 +13,7 @@
  * `from`); those are refused with invalid-request too.
  */
 import { ASPECTS, ASPECT_TYPES } from '@zodiacs/engine';
+import { BACKEND_ENDPOINTS, BACKEND_NAMES, DE440_PACK_SHA256, DEFAULT_BACKEND } from './backend.js';
 import {
   ANGULAR_MAX_ABS_LATITUDE,
   COMPUTE_DOCS_URL,
@@ -114,6 +115,11 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       zone: requestZone,
     },
   },
+  BackendName: {
+    enum: [...BACKEND_NAMES],
+    default: DEFAULT_BACKEND,
+    description: `The ephemeris the positions come from: astronomy-engine (the engine as the site runs it), or de440, JPL's DE440 through the sealed pack the deployment builds from NAIF's de440.bsp (SHA-256 ${DE440_PACK_SHA256}, 1790 to 2210), reduced to apparent places of date on the server. ${DEFAULT_BACKEND} when omitted. A runtime without the pack answers de440 with backend-unavailable (503). Angles and houses do not depend on it.`,
+  },
   Latitude: { type: 'number', exclusiveMinimum: -90, exclusiveMaximum: 90, description: 'Degrees north. The poles are refused: the engine does not compute angles there.' },
   Longitude: { type: 'number', minimum: -180, maximum: 180, description: 'Degrees east.' },
   HouseSystem: { enum: [...HOUSE_SYSTEM_NAMES], description: 'One of the engine\'s thirteen house systems.' },
@@ -132,6 +138,21 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     },
     description: 'Exactly one of utc and local, a place, and a house system (placidus when omitted).',
   },
+  ChartRequest: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['latitude', 'longitude'],
+    oneOf: [{ required: ['utc'] }, { required: ['local'] }],
+    properties: {
+      utc: ref('Instant'),
+      local: ref('LocalTime'),
+      latitude: ref('Latitude'),
+      longitude: ref('Longitude'),
+      houseSystem: { ...ref('HouseSystem'), default: 'placidus' },
+      backend: ref('BackendName'),
+    },
+    description: 'Exactly one of utc and local, a place, a house system (placidus when omitted) and a backend (astronomy-engine when omitted).',
+  },
   PositionsRequest: {
     type: 'object',
     additionalProperties: false,
@@ -139,6 +160,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     properties: {
       instants: { type: 'array', minItems: 1, maxItems: BUDGETS['positions.instants'], items: ref('Instant') },
       bodies: { type: 'array', minItems: 1, uniqueItems: true, items: bodyName, description: 'Rows to return; all twelve when omitted.' },
+      backend: ref('BackendName'),
     },
   },
   EventsRequest: {
@@ -151,6 +173,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       to: ref('Instant'),
       bodies: { type: 'array', minItems: 1, uniqueItems: true, items: { enum: [...EVENT_BODIES] }, description: 'All ten when omitted.' },
       kinds: { type: 'array', minItems: 1, uniqueItems: true, items: { enum: [...EVENT_KINDS] }, description: 'All three when omitted.' },
+      backend: ref('BackendName'),
     },
   },
   TimeRequest: {
@@ -175,6 +198,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       to: ref('Instant'),
       conditions: { type: 'array', minItems: 1, maxItems: MAX_ELECTION_CONDITIONS, items: ref('ElectionCondition') },
       place: ref('ElectionPlace'),
+      backend: ref('BackendName'),
     },
   },
   ElectionCondition: {
@@ -258,6 +282,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     ],
     properties: {
       kind: { const: 'sign' },
+      backend: ref('BackendName'),
       body: { enum: [...EVENT_BODIES] },
       sign,
       instant: ref('Instant'),
@@ -275,6 +300,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     ],
     properties: {
       kind: { const: 'retrograde' },
+      backend: ref('BackendName'),
       body: { enum: [...EVENT_BODIES] },
       instant: ref('Instant'),
       date: { type: 'string', pattern: `^${DATE}$` },
@@ -287,6 +313,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     required: ['kind', 'body', 'sign', 'date'],
     properties: {
       kind: { const: 'ingress' },
+      backend: ref('BackendName'),
       body: { enum: [...EVENT_BODIES] },
       sign,
       date: { type: 'string', pattern: `^${DATE}$` },
@@ -299,6 +326,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     required: ['kind', 'phase', 'date'],
     properties: {
       kind: { const: 'phase' },
+      backend: ref('BackendName'),
       phase: { enum: [...PHASE_NAMES] },
       date: { type: 'string', pattern: `^${DATE}$` },
       zone: requestZone,
@@ -314,6 +342,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     ],
     properties: {
       kind: { const: 'aspect' },
+      backend: ref('BackendName'),
       body: { enum: [...EVENT_BODIES] },
       other: { enum: [...EVENT_BODIES], description: 'A body other than body: the order of the two changes nothing but the order they are reported in.' },
       aspect: { enum: [...ASPECT_TYPES], description: `One of the five major aspects, held within the orbs a chart's aspects use: ${ASPECTS.map((definition) => `${definition.type} ${definition.angle}° within ${definition.orb}°`).join(', ')}, each widened (${ASPECTS.map((definition) => `${definition.luminaryOrb}°`).join(', ')}) when the Sun or the Moon is one of the two.` },
@@ -483,10 +512,28 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   Backend: {
     type: 'object',
     required: ['name', 'version', 'ephemeris'],
+    description: 'The engine that answered and its ephemeris: astronomy-engine and its version, or jpl-de440 with the SHA-256 of the pack as its version.',
     properties: {
       name: { const: '@zodiacs/engine' },
       version: str,
-      ephemeris: { type: 'object', required: ['name', 'version'], properties: { name: { const: 'astronomy-engine' }, version: str } },
+      ephemeris: { type: 'object', required: ['name', 'version'], properties: { name: { enum: ['astronomy-engine', 'jpl-de440'] }, version: str } },
+      pack: {
+        type: 'object',
+        required: ['sha256', 'startEtSecTdb', 'stopEtSecTdb', 'compiler'],
+        description: 'With jpl-de440: the pack the positions came from, its span in TDB seconds from J2000 and the compiler that made it.',
+        properties: {
+          sha256: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+          startEtSecTdb: num,
+          stopEtSecTdb: num,
+          compiler: nullable(object(['name', 'version'], { name: str, version: str })),
+        },
+      },
+      fallback: {
+        type: 'object',
+        required: ['from', 'reason'],
+        description: 'Present when a request that named no backend was answered by astronomy-engine in place of the default, de440, because this runtime has no DE440 pack.',
+        properties: { from: { const: 'de440' }, reason: { const: 'pack-unavailable' } },
+      },
     },
   },
   Cite: {
@@ -762,7 +809,7 @@ const RESULT_SCHEMA: Readonly<Record<ComputeEndpoint, string>> = {
 };
 
 const REQUEST_SCHEMA: Readonly<Record<ComputeEndpoint, string>> = {
-  chart: 'PlaceInstantRequest',
+  chart: 'ChartRequest',
   positions: 'PositionsRequest',
   houses: 'PlaceInstantRequest',
   events: 'EventsRequest',
@@ -852,6 +899,7 @@ function operation(endpoint: ComputeEndpoint): Schema {
   const success = (examples.success as Record<string, Record<string, unknown>>)[endpoint];
   const requests = SUCCESS_EXAMPLES[endpoint];
   const budgeted = endpoint === 'positions' || endpoint === 'events' || endpoint === 'sky-fact' || endpoint === 'elections';
+  const backend = BACKEND_ENDPOINTS.has(endpoint);
   return {
     options: {
       operationId: `preflight${operationName(endpoint)}`,
@@ -907,8 +955,14 @@ function operation(endpoint: ComputeEndpoint): Schema {
           'Retry-After': RETRY_AFTER_HEADER([RETRY_AFTER_SECONDS.rateLimited], 'the length of the rate limit\'s window'),
         }),
         500: errorResponse('The engine could not complete the calculation.', ['calculation-failed']),
-        503: errorResponse('The compute endpoints are switched off, or their rate limit is not in place or could not be checked: they answer only while it is. Retry-After gives the seconds to wait.', ['disabled', 'rate-limit-unavailable'], {
-          'Retry-After': RETRY_AFTER_HEADER([RETRY_AFTER_SECONDS.rateLimitUnavailable, RETRY_AFTER_SECONDS.disabled], `${RETRY_AFTER_SECONDS.rateLimitUnavailable} when the rate limit could not be checked, ${RETRY_AFTER_SECONDS.disabled} when the API is switched off`),
+        503: errorResponse(backend
+          ? 'The compute endpoints are switched off, or their rate limit is not in place or could not be checked: they answer only while it is, and Retry-After gives the seconds to wait. Or the request named de440 and this runtime has no DE440 pack (backend-unavailable, with no Retry-After).'
+          : 'The compute endpoints are switched off, or their rate limit is not in place or could not be checked: they answer only while it is. Retry-After gives the seconds to wait.',
+        ['disabled', 'rate-limit-unavailable', ...(backend ? ['backend-unavailable'] : [])], {
+          'Retry-After': {
+            ...RETRY_AFTER_HEADER([RETRY_AFTER_SECONDS.rateLimitUnavailable, RETRY_AFTER_SECONDS.disabled], `${RETRY_AFTER_SECONDS.rateLimitUnavailable} when the rate limit could not be checked, ${RETRY_AFTER_SECONDS.disabled} when the API is switched off`),
+            ...(backend ? { required: false } : {}),
+          },
         }),
       },
     },

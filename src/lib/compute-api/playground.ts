@@ -28,6 +28,7 @@ import {
   type ComputeDependencies,
 } from './endpoints.js';
 import { computeElections } from './elections.js';
+import { requestedBackend, selectBackend } from './backend.js';
 import { ComputeApiError, calculationFailed, invalidJson, notFound, payloadTooLarge } from './errors.js';
 import type { LocalTimeModule } from './local-time.js';
 import {
@@ -46,16 +47,36 @@ const localTime: LocalTimeModule = { TZDB, prepareLocalTime, resolveLocalToUtc, 
 const dependencies: ComputeDependencies = { localTime };
 const zones: ZoneNames = (name) => localTime.canonicalZoneName(name);
 
-/** The handler's dispatch, endpoint by endpoint. */
+/**
+ * The handler's dispatch, endpoint by endpoint. A browser has no DE440 pack,
+ * so a request naming `de440` is answered as a deployment without one answers
+ * it (backend-unavailable); the hosted API computes it.
+ */
 async function dispatch(endpoint: ComputeEndpoint, body: unknown): Promise<unknown> {
+  const { name, rest } = requestedBackend(endpoint, body);
   switch (endpoint) {
-    case 'chart': return computeChart(await parsePlaceInstantRequest(body, zones), dependencies);
-    case 'houses': return computeHouses(await parsePlaceInstantRequest(body, zones), dependencies);
-    case 'positions': return computePositions(parsePositionsRequest(body));
-    case 'events': return computeEvents(parseEventsRequest(body));
-    case 'time': return computeTime(await parseTimeRequest(body, zones), dependencies);
-    case 'sky-fact': return computeSkyFact(await parseSkyFactRequest(body, zones), dependencies);
-    case 'elections': return computeElections(parseElectionsRequest(body));
+    case 'chart': {
+      const request = await parsePlaceInstantRequest(rest, zones);
+      return computeChart(request, dependencies, await selectBackend(name, {}));
+    }
+    case 'houses': return computeHouses(await parsePlaceInstantRequest(rest, zones), dependencies);
+    case 'positions': {
+      const request = parsePositionsRequest(rest);
+      return computePositions(request, await selectBackend(name, {}));
+    }
+    case 'events': {
+      const request = parseEventsRequest(rest);
+      return computeEvents(request, await selectBackend(name, {}));
+    }
+    case 'time': return computeTime(await parseTimeRequest(rest, zones), dependencies);
+    case 'sky-fact': {
+      const request = await parseSkyFactRequest(rest, zones);
+      return computeSkyFact(request, dependencies, await selectBackend(name, {}));
+    }
+    case 'elections': {
+      const request = parseElectionsRequest(rest);
+      return computeElections(request, await selectBackend(name, {}));
+    }
   }
 }
 

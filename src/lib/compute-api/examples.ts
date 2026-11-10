@@ -30,6 +30,10 @@ export const SUCCESS_EXAMPLES: Readonly<Record<ComputeEndpoint, Readonly<Record<
       summary: 'Three bodies at two instants',
       body: { instants: ['2026-09-29T12:00:00Z', '2026-12-31T00:00:00-05:00'], bodies: ['Sun', 'Moon', 'Mercury'] },
     },
+    backend: {
+      summary: 'The backend named: astronomy-engine, the default',
+      body: { instants: ['2026-09-29T12:00:00Z'], bodies: ['Sun', 'Moon'], backend: 'astronomy-engine' },
+    },
   },
   houses: {
     koch: {
@@ -200,6 +204,14 @@ export const REFUSAL_EXAMPLES: Readonly<Record<string, RefusalExample>> = {
     contentType: json,
     body: { kind: 'phase', phase: 'new', date: '2026-10-10' },
     env: { COMPUTE_API_ENABLED: '0' },
+  },
+  'backend-unavailable': {
+    summary: 'The de440 backend named where the runtime has no DE440 pack',
+    code: 'backend-unavailable',
+    endpoint: 'positions',
+    method: 'POST',
+    contentType: json,
+    body: { instants: ['2026-09-29T12:00:00Z'], backend: 'de440' },
   },
   'calculation-failed': {
     summary: 'The engine could not complete the calculation',

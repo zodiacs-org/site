@@ -52,6 +52,7 @@ import {
   type PhaseName,
   type SignSlug,
 } from './constants.js';
+import { ASTRONOMY_ENGINE_BACKEND, type ComputeBackend } from './backend.js';
 import { budgetExhausted, invalidRequest } from './errors.js';
 import {
   resolveLocal,
@@ -249,18 +250,19 @@ function localSummary(local: LocalResolution): LocalSummary {
 async function placeInstantChart(
   request: PlaceInstantRequest,
   dependencies: ComputeDependencies,
+  backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND,
 ): Promise<{ chart: Chart; receipt: NatalReceipt; local: LocalResolution | null }> {
   const local = request.local ? await resolveLocal(dependencies.localTime, request.local, request.longitude) : null;
   const instant = local ? local.utc : request.utc;
   if (!instant) throw new Error('A validated request has an instant.');
-  const chart = natalChart({
+  const chart = backend.run(() => natalChart({
     utc: instant,
     latitude: request.latitude,
     longitude: request.longitude,
     houseSystem: request.houseSystem,
     timeKnown: true,
     flags: local ? local.flags : [],
-  });
+  }));
   const context: NatalEnvelopeContext = { reference: 'supplied-instant' };
   if (request.sourceInstant !== null) context.sourceInstant = request.sourceInstant;
   if (local) {
@@ -285,8 +287,12 @@ async function placeInstantChart(
   return { chart, receipt, local };
 }
 
-export async function computeChart(request: PlaceInstantRequest, dependencies: ComputeDependencies) {
-  const { chart, receipt, local } = await placeInstantChart(request, dependencies);
+export async function computeChart(
+  request: PlaceInstantRequest,
+  dependencies: ComputeDependencies,
+  backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND,
+) {
+  const { chart, receipt, local } = await placeInstantChart(request, dependencies, backend);
   return successBody('chart', {
     instant: iso(chart.input.utc),
     local: local ? localSummary(local) : null,
@@ -297,7 +303,7 @@ export async function computeChart(request: PlaceInstantRequest, dependencies: C
     flags: chart.flags,
     deltaT: chart.deltaT,
     timeScale: chart.timeScale,
-  }, receipt);
+  }, receipt, backend);
 }
 
 export async function computeHouses(request: PlaceInstantRequest, dependencies: ComputeDependencies) {
@@ -315,7 +321,11 @@ export async function computeHouses(request: PlaceInstantRequest, dependencies: 
 
 // ---------- positions ----------
 
-export function computePositions(request: PositionsRequest) {
+export function computePositions(request: PositionsRequest, backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND) {
+  return backend.run(() => positionsBody(request, backend));
+}
+
+function positionsBody(request: PositionsRequest, backend: ComputeBackend) {
   const instants = request.instants.map((instant) => {
     const rows = positions(instant);
     const { deltaT, timeScale } = basisOf(instant);
@@ -327,7 +337,7 @@ export function computePositions(request: PositionsRequest) {
       flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],
     };
   });
-  return successBody('positions', { instants }, computeReceipt('positions'));
+  return successBody('positions', { instants }, computeReceipt('positions', {}, backend), backend);
 }
 
 // ---------- events ----------
@@ -341,7 +351,11 @@ const KIND_ORDER: Readonly<Record<EventKind, number>> = { ingress: 0, station: 1
 const BODY_ORDER = new Map<string, number>(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']
   .map((body, index) => [body, index]));
 
-export function computeEvents(request: EventsRequest) {
+export function computeEvents(request: EventsRequest, backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND) {
+  return backend.run(() => eventsBody(request, backend));
+}
+
+function eventsBody(request: EventsRequest, backend: ComputeBackend) {
   const { from, to } = request;
   const budget = new SampleBudget('events.samples');
   const rowsAt = positionsMemo();
@@ -385,7 +399,7 @@ export function computeEvents(request: EventsRequest) {
   events.sort((a, b) => a.at.localeCompare(b.at)
     || KIND_ORDER[a.kind] - KIND_ORDER[b.kind]
     || (BODY_ORDER.get('body' in a ? a.body : 'Moon') ?? 0) - (BODY_ORDER.get('body' in b ? b.body : 'Moon') ?? 0));
-  return successBody('events', { from: iso(from), to: iso(to), events }, computeReceipt('events', { search: budget.facts() }));
+  return successBody('events', { from: iso(from), to: iso(to), events }, computeReceipt('events', { search: budget.facts() }, backend), backend);
 }
 
 // ---------- time ----------
@@ -588,7 +602,20 @@ function relativeCrossings(request: AspectFact, target: number, from: Date, to: 
   return budget.settle(searchLongitudeCrossingsWith(relativeAt, request.body, target, from, to, budget.options(step)));
 }
 
-export async function computeSkyFact(request: SkyFactRequest, dependencies: ComputeDependencies) {
+export async function computeSkyFact(
+  request: SkyFactRequest,
+  dependencies: ComputeDependencies,
+  backend: ComputeBackend = ASTRONOMY_ENGINE_BACKEND,
+) {
+  // The local day is resolved first, asynchronously; every engine call then
+  // runs synchronously on the request's backend.
+  // A fact at an instant (`when.instant`: sign, retrograde, aspect) needs no day.
+  const day: FactDay | null = 'day' in request ? request.day : ('instant' in request.when ? null : request.when);
+  const window = day ? await dayWindow(day, dependencies) : null;
+  return backend.run(() => skyFactBody(request, dependencies, window, backend));
+}
+
+function skyFactBody(request: SkyFactRequest, dependencies: ComputeDependencies, prepared: DayWindow | null, backend: ComputeBackend) {
   const budget = new SampleBudget('sky-fact.samples');
   const rowsAt = positionsMemo();
   const fact = factEcho(request);
@@ -612,7 +639,7 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
         timeScale: basis.timeScale,
         flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],
       },
-    }, computeReceipt('sky-fact'));
+    }, computeReceipt('sky-fact', {}, backend), backend);
   }
 
   if ((request.kind === 'sign' || request.kind === 'retrograde') && 'instant' in request.when) {
@@ -636,11 +663,11 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
         ...(request.kind === 'sign' ? { boundaryMarginArcsec: boundaryMarginArcsec(state.lon) } : {}),
         flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],
       },
-    }, computeReceipt('sky-fact'));
+    }, computeReceipt('sky-fact', {}, backend), backend);
   }
 
-  const day: FactDay = 'day' in request ? request.day : (request.when as FactDay);
-  const window = await dayWindow(day, dependencies);
+  if (!prepared) throw new Error('A fact over a day has its window.');
+  const window = prepared;
   const span = searchSpan(window);
   const anyZone = window.basis === 'any-zone-day';
   // The day read at the ends of the accepted dates can reach past the reference span.
@@ -726,7 +753,7 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
   }, computeReceipt('sky-fact', {
     search: budget.facts(),
     ...(window.zone ? { timeResolution: timeResolutionFacts(dependencies.localTime) } : {}),
-  }));
+  }, backend), backend);
 }
 
 /** The fact as validated, for a reader who holds only the response. */
