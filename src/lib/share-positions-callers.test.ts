@@ -302,7 +302,9 @@ const ROOTS = ['src', 'api'];
 const CODE = /\.(?:ts|tsx|mts|cts|js|jsx|mjs|cjs|astro|mdx)$/u;
 const NOT_PRODUCTION = /\.(?:test|spec)\.[cm]?[jt]sx?$|\.d\.[cm]?ts$/u;
 /** Files that hold no code: data, styles, fonts, images, prose and test snapshots. */
-const NOT_CODE = /\.(?:json|css|snap|woff2?|ttf|otf|svg|png|jpe?g|webp|avif|gif|ico|md|txt|html|xml|yaml|yml|csv|wasm)$/u;
+// .zeph: the sealed DE440 pack a deploy build writes under api/_compute/precision/ (git ignores it; P4.1), data the
+// pack reader decodes, never code.
+const NOT_CODE = /\.(?:json|css|snap|woff2?|ttf|otf|svg|png|jpe?g|webp|avif|gif|ico|md|txt|html|xml|yaml|yml|csv|wasm|zeph)$/u;
 /** Package names the builds map to repository files (scripts/build-precision-preview.mjs). */
 const ALIASES: Record<string, string> = {
   '@zodiacs/precision-alpha/browser': 'examples/precision-alpha/src/browser.mjs',
