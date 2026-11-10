@@ -133,7 +133,7 @@ describe('what the tools return', () => {
       if (result.ok) answered.add(tool);
       else refused.push(`${tool} ${JSON.stringify(input)}: ${result.error.code} ${result.error.message}`);
       // CALLS names only the tools listed with the sky events switch; the later switches' tools have their own tests.
-      const validate = validators.get(tool as typeof EVERY_TOOL_WITH_SKY_EVENTS[number])!;
+      const validate = validators.get(tool as AiToolName)!;
       if (!validate(result)) invalid.push(`${tool} ${JSON.stringify(input)}: ${ajv.errorsText(validate.errors).slice(0, 300)}`);
       // The server checks the same result with the tool's own schema before it answers.
       if (!OUTPUT_SCHEMAS[tool].safeParse(result).success) invalid.push(`${tool} ${JSON.stringify(input)}: refused by its own schema`);
