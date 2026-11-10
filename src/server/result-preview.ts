@@ -1851,7 +1851,8 @@ export async function handleSolarReturnLinkRequest(request: Request): Promise<Re
     imageAlt: `A ${share.year} solar return: ${lines.title}, Jupiter in ${capitalSign(share.jupiter)}, ${capitalSign(share.sun)} Sun.`,
     explanation: `${share.rising ? `${lines.title}: the sign rising when the Sun came back sets the tone of the year. ` : ''}Jupiter in ${capitalSign(share.jupiter)} shows where the year’s growth is.`,
     action,
-    more: { label: 'Score the year ahead', href: withRef('/year-score/', share.ref) },
+    // The Year Ahead Score has its own launch switch; the link waits for it.
+    ...(process.env.PUBLIC_YEAR_SCORE_ENABLED === '1' ? { more: { label: 'Score the year ahead', href: withRef('/year-score/', share.ref) } } : {}),
     note: SOLAR_RETURN_SHARE_NOTE,
   }));
 }
