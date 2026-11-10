@@ -14,6 +14,8 @@ export const YEAR_PERSON_CATEGORIES = ['founder', 'ceo', 'investor', 'athlete', 
 const person = z.strictObject({
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/u),
   name: z.string().min(1),
+  /** Other names and X handles people use for them (without @), for matching trending names. */
+  aliases: z.array(z.string().min(2).max(40)),
   description: z.string().min(1),
   category: z.enum(YEAR_PERSON_CATEGORIES),
   birthDate: day,
@@ -41,6 +43,7 @@ const BY_KEY = new Map<string, YearPerson>();
 for (const entry of YEAR_PEOPLE) {
   BY_KEY.set(personKey(entry.slug), entry);
   BY_KEY.set(personKey(entry.name), entry);
+  for (const alias of entry.aliases) BY_KEY.set(personKey(alias), entry);
 }
 
 /** A directory figure by slug or full name, or undefined. */
@@ -49,3 +52,11 @@ export function findYearPerson(query: string): YearPerson | undefined {
 }
 
 export const yearPersonPath = (slug: string) => `/year/${slug}/`;
+
+/**
+ * The start of the twelve months a figure's page is scored for: the first day of
+ * the month it is built in (UTC), so a page reads the same all month.
+ */
+export function yearPageStart(now: Date): string {
+  return `${now.toISOString().slice(0, 7)}-01`;
+}
