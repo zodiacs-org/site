@@ -36,6 +36,7 @@ import registryResearchPublicationData from '../data/registry-research/publicati
 import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
 type RegistryResearchPublication = {
@@ -444,8 +445,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
-  // The Vedic signs page, first published 2026-11-09.
-  ['/vedic-signs/', '2026-11-09'] as const,
+  // The Vedic signs page, first published 2026-11-09, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [['/vedic-signs/', '2026-11-09'] as const] : []),
   // The occasion cards, first published 2026-10-11.
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -708,7 +709,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/saturn-return/', priority: 0.85 },
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
-    { loc: '/vedic-signs/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [{ loc: '/vedic-signs/', priority: 0.85 }] : []),
     { loc: '/numerology/', priority: 0.85 },
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
@@ -964,7 +965,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
   // The tools hub's card for Vedic signs, the big three and Moon sign pages' lines linking to it, and the engine page's line on the sidereal entry the page uses (2026-11-09).
-  for (const url of urls) {
+  // Only while PUBLIC_VEDIC_SIGNS_ENABLED is on: off, those pages keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? urls : []) {
     if (url.loc === '/tools/' || url.loc === '/big-three/' || url.loc === '/moon-sign/' || url.loc === '/developers/engine/') {
       url.lastmod = laterDate(url.lastmod, '2026-11-09');
     }

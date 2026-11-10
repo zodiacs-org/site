@@ -1,7 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import VedicSigns from '../../islands/VedicSigns';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
+
+if (!launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED')) return Astro.redirect('/404.html');
 
 const faq = [
   { q: 'Why is my Vedic sign different from my Western sign?', a: 'The two zodiacs start in different places. Western astrology starts Aries at the spring equinox, so its signs keep step with the seasons. Vedic astrology (Jyotish) starts Aries from the stars. The equinox slides back along the stars by about one degree every 72 years, and the two zodiacs now sit about 24 degrees apart, so most placements fall one sign earlier in the Vedic chart. If your Western Sun is late in its sign, it can stay in the same sign.' },

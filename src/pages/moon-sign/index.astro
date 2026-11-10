@@ -4,6 +4,7 @@ import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
 
 const faq = [
@@ -84,11 +85,13 @@ const jsonLd = [
         <a href="/birth-chart/">get your birth chart</a>: sun, moon, and rising
         together are the real summary of you.
       </p>
-      <p>
-        Vedic astrology reads the Moon sign first, and counts it from the stars
-        rather than the seasons, so it usually falls one sign earlier. See your{' '}
-        <a href="/vedic-signs/">Vedic Moon sign and nakshatra</a>.
-      </p>
+      {launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') && (
+        <p>
+          Vedic astrology reads the Moon sign first, and counts it from the stars
+          rather than the seasons, so it usually falls one sign earlier. See your{' '}
+          <a href="/vedic-signs/">Vedic Moon sign and nakshatra</a>.
+        </p>
+      )}
       <EvidenceDisclosure
         label="Why birth time can change the answer"
         description="Moon speed and historical clock changes"

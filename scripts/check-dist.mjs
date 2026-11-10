@@ -1291,6 +1291,8 @@ const registryAuraIndexed = sitemapLocs.has('/registry/collection/');
 // the Registry Collection follows its own: the sitemap entry and the built
 // page appear and disappear together.
 const raceIndexed = sitemapLocs.has('/race/');
+// Vedic signs follows its launch flag (src/lib/launch-flags.ts) the same way.
+const vedicSignsIndexed = sitemapLocs.has('/vedic-signs/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
 const indexablePeoplePaths = new Set(
   JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).people
@@ -1350,8 +1352,9 @@ const sitemapPolicy = {
   // +1 for /your-2027-sky/, the 2027 personal sky edition.
   // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
-  // +1 for /vedic-signs/, the English-only Vedic signs page.
-  total: 1541 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /vedic-signs/, the English-only Vedic signs page, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
+  total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+    + Number(vedicSignsIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1402,6 +1405,7 @@ const indexedFamilies = [
   { label: 'Life Path pages', pattern: /^\/numerology\/life-path\/(?:[1-9]|11|22|33)\/$/, expected: 12, localized: false },
   { label: 'Registry Collection', pattern: /^\/registry\/collection\/$/, expected: Number(registryAuraIndexed), localized: false },
   { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
+  { label: 'Vedic signs', pattern: /^\/vedic-signs\/$/, expected: Number(vedicSignsIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
   { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },
