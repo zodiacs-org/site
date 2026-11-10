@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { RELEASED_LOCALES, localizePath, t } from './i18n';
 import { TOOL_ICON_FOR_PATH } from './tool-icons';
+import { launchFlagOn } from './launch-flags';
 import {
   ALL_TOOL_CATALOG,
   FOOTER_TOOLS,
@@ -101,7 +102,7 @@ describe('NAV_TOOLS', () => {
   });
 
   it('publishes tarot only in the English tools hub, and only while PUBLIC_TAROT_ENABLED is on', () => {
-    expect(TOOLS_HUB.some((tool) => tool.href === '/tarot/')).toBe(false);
+    expect(TOOLS_HUB.some((tool) => tool.href === '/tarot/')).toBe(launchFlagOn('PUBLIC_TAROT_ENABLED'));
     expect(ALL_TOOL_CATALOG.find((tool) => tool.href === '/tarot/')?.hub).toMatchObject({ group: 'you' });
     expect([...NAV_TOOLS, ...FOOTER_TOOLS].some((tool) => tool.href === '/tarot/')).toBe(false);
     for (const locale of RELEASED_LOCALES) expect(localizePath(locale, '/tarot/')).toBe('/tarot/');
