@@ -17,6 +17,7 @@ on the vendored archive with the site's own generators, on Node 22.22.2
 | [regenerated-outputs.json](regenerated-outputs.json) | 76 regenerated files against the base `a67b7c9a`: 68 identical, 6 kept at the base's bytes (one date, five last-bit arm64 values, D-9 of 1.1.0-rc.2's adoption), 2 regenerated; `tools/check-regenerated-outputs.py` checks it |
 | [PRIVATE-STATE.md](PRIVATE-STATE.md), [private-state-review/](private-state-review/) | the compute bundle's and the AI runtimes' private-state review |
 | [accuracy-refresh/](accuracy-refresh/) | both Swiss statistics runs on 1.1.0-rc.3: every statistic equals 1.1.0-rc.2's (aggregates only) |
+| [bundle-audit/engine-closure.json](bundle-audit/engine-closure.json) | the engine chunk's static closure with production's flags: 33,361 gzip bytes on 1.1.0-rc.2, 33,397 on 1.1.0-rc.3, all 36 in the root's ephemeris chunk; the budget rises by exactly that ([DECISIONS-2026-11-10-rc3-bundle.md](../../programme/DECISIONS-2026-11-10-rc3-bundle.md)) |
 | [tools/](tools/) | `regenerate.py` and its checker, the accuracy refresh and the MCP comparison, 1.1.0-rc.2's tools with their paths moved |
 
 Also regenerated: the engine reference (sixteen entry points, `./de440`
