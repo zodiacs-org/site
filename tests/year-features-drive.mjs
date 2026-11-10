@@ -163,7 +163,8 @@ try {
           const intro = await page.locator('.tool-hero a[href="/year-score/"]').count();
           const months = await linkCount(page, 'See the months and the transits behind it');
           if (intro !== Number(FLAGS.yearScore) || months !== Number(FLAGS.yearScore)) fail(`${path} result @${size.width}: introduction ${intro}, result ${months} link(s) to /year-score/ with the score's switch ${FLAGS.yearScore ? 'on' : 'off'}`);
-          if (!FLAGS.yearScore && !(await page.locator('.tool-hero').innerText()).includes('your Year Ahead Score, your')) fail(`${path} @${size.width}: the introduction lost its words with the score's switch off`);
+          const introText = (await page.locator('.tool-hero p').first().innerText()).replace(/\s+/gu, ' ');
+          if (!introText.includes('your Year Ahead Score, your numerology Personal Year')) fail(`${path} @${size.width}: the introduction reads "${introText}"`);
         }
         if (shots) await page.screenshot({ path: `${shots}/${path.replaceAll('/', '_')}result-${size.name}.png`, fullPage: true });
         console.log(`ok ${path} result @${size.width}: ${href}`);
