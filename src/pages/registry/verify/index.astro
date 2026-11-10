@@ -1,0 +1,119 @@
+---
+import Base from '../../../layouts/Base.astro';
+import SignIcon from '../../../components/SignIcon.astro';
+import { evidence, STATUS_LABELS, REVIEW_POLICY_LABELS } from '../../../registry/astrofolio-verification/evidence';
+import { BASE_COMPARISON_NOTE, NORMALIZATION_NOTE } from '../../../registry/astrofolio-verification/checker';
+import '../../../registry/astrofolio-verification/page.css';
+
+const assets = [...new Set(evidence.records.map((record) => record.sign))].map((sign) => ({
+  sign,
+  name: evidence.records.find((record) => record.sign === sign)!.displayName,
+  records: evidence.records.filter((record) => record.sign === sign),
+}));
+const serializedEvidence = JSON.stringify(evidence).replaceAll('<', '\\u003c');
+const jsonLd = [{
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },
+    { '@type': 'ListItem', position: 2, name: 'Registry', item: 'https://zodiacs.org/registry/' },
+    { '@type': 'ListItem', position: 3, name: 'Astrofolio verification', item: 'https://zodiacs.org/registry/verify/' },
+  ],
+}];
+---
+<Base title="Astrofolio verification — identifiers & evidence | Zodiacs.org"
+  description="Check an Astrofolio identifier against the published Registry. Inspect native and bridged records, dated evidence, operator statements, and unresolved rights."
+  path="/registry/verify/" noindex privateSurface jsonLd={jsonLd}>
+  <div class="av-page container">
+    <nav class="av-breadcrumb" aria-label="Breadcrumb"><a href="/registry/">Registry</a><span aria-hidden="true">/</span><span>Astrofolio verification</span></nav>
+    <section class="av-hero" aria-labelledby="verification-title">
+      <header class="av-intro">
+        <p class="kicker">Astrofolio verification</p>
+        <h1 id="verification-title">Know what you’re<br class="av-desktop-break" /> looking at.</h1>
+        <p class="av-lead">Twelve signs. Exact identifiers.<br />Evidence you can follow.</p>
+        <p class="av-summary">Astrofolio is the collection experience on Zodiacs.org. The Registry publishes its asset identifiers. Start with the network and address, then inspect what the records establish.</p>
+        <div class="av-signs" aria-hidden="true">{assets.map((asset) => <SignIcon sign={asset.sign} size={32} loading="eager" />)}</div>
+        <a class="av-text-link" href="#evidence">Read the statements and their limits <span aria-hidden="true">↓</span></a>
+      </header>
+      <div class="av-check-shell">
+        <section class="av-check-core" aria-labelledby="check-title">
+          <div class="av-check-heading"><span class="av-index">01 / Identify</span><span class="av-version">Registry {evidence.registryVersion}</span></div>
+          <h2 id="check-title">Check an identifier</h2>
+          <p class="av-helper">Use a mint or contract address. A name or ticker cannot identify an asset.</p>
+          <form id="verify-form" data-registry-sha256={evidence.registrySha256} autocomplete="off">
+            <fieldset id="verify-fields" disabled>
+              <label for="verify-network">Network and representation</label>
+              <select id="verify-network">
+                <option value="solana">Solana mainnet · native SPL</option>
+                <option value="base">Base mainnet · bridged ERC20 · 8453</option>
+              </select>
+              <label for="verify-address">Full asset identifier</label>
+              <input id="verify-address" type="text" placeholder="Paste a mint or contract address" maxlength="128" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="input-note" />
+              <p id="input-note" class="av-input-note">{NORMALIZATION_NOTE} {BASE_COMPARISON_NOTE}</p>
+              <button id="verify-submit" type="submit" class="av-primary">Check against the Registry <span aria-hidden="true">→</span></button>
+            </fieldset>
+          </form>
+          <noscript><p class="av-nojs">The interactive check needs JavaScript. You can still compare every identifier in the collection records below and follow its sources.</p></noscript>
+          <div id="verify-result" class="av-result" role="status" aria-live="polite" aria-atomic="true" data-state="idle"><p>Ready when you have an identifier.</p></div>
+          <p class="av-privacy">The check fetches this site’s public Registry, using same-origin cookies where access requires them. Your pasted identifier stays in this page; it is not sent with the request or saved. No wallet connection or signature.</p>
+        </section>
+      </div>
+    </section>
+
+    <aside class="av-boundary" aria-labelledby="match-scope">
+      <h2 id="match-scope">A match has a precise meaning.</h2>
+      <p>It establishes membership in the Registry served by this site. It does not establish legal ownership, a person’s identity or wallet control, endorsement, safety, liquidity, or future value. A missing match is not evidence of fraud.</p>
+    </aside>
+
+    <section class="av-section" id="records" aria-labelledby="records-title">
+      <div class="av-section-heading"><div><p class="kicker">The published collection</p><h2 id="records-title">One sign. Two representations.</h2></div><p>Solana is the native origin.<br />Base is listed as a bridge representation.</p></div>
+      <div class="av-source-note">
+        <p><strong>Snapshot, Registry {evidence.registryVersion}.</strong> These records come from the source revision below. The interactive check fetches the Registry again and requires the same content; a changed source requires a page refresh.</p>
+        <a href={`https://github.com/ZodiacsOfficial/site/blob/${evidence.sourceRevision}/public/registry/zodiacs.registry.json`}>Inspect the source revision <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="av-records">{assets.map((asset, index) => (
+        <details class="av-record" data-asset={asset.sign}>
+          <summary><span class="av-record-number">{String(index + 1).padStart(2, '0')}</span><SignIcon sign={asset.sign} size={40} /><span class="av-record-name">{asset.name}</span><span class="av-record-count">2 records</span><span class="av-expand" aria-hidden="true">+</span></summary>
+          <div class="av-record-body">{asset.records.map((record) => (
+            <div class="av-representation">
+              <div class="av-representation-heading"><h3>{record.networkLabel}</h3><span>{record.kind} · {record.tokenStandard}</span></div>
+              <div class="av-address-line"><code data-identifier>{record.address}</code><button type="button" class="av-copy" data-copy-address={record.address} aria-label={`Copy ${asset.name} ${record.chain} identifier`} hidden>Copy</button></div>
+              {record.originReceipt ? <a class="av-record-source" href={record.originReceipt.explorerUrl} rel="noreferrer">Native mint receipt · {record.originReceipt.blockTime.slice(0, 10)} <span aria-hidden="true">↗</span></a> : <a class="av-record-source" href={`https://github.com/ZodiacsOfficial/site/blob/${evidence.sourceRevision}/public/registry/zodiacs.registry.json`}>Published bridge classification <span aria-hidden="true">↗</span></a>}
+            </div>
+          ))}</div>
+        </details>
+      ))}</div>
+      <p id="copy-status" class="av-copy-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="av-section" id="evidence" aria-labelledby="evidence-title">
+      <div class="av-section-heading"><div><p class="kicker">Statements and evidence</p><h2 id="evidence-title">Read the claim.<br />Keep the qualification.</h2></div><p>Public records, operator statements, and open questions carry different evidence.</p></div>
+      <p class="av-evidence-intro">Zodiacs LLC is the stated operator. Its control statement is an attestation, not independent proof. The site, repository, and operator accounts are related sources, not separate confirmations. This page is a source review, not a security audit or certification.</p>
+      <div class="av-claims">{evidence.claims.map((claim) => (
+        <article class="av-claim" id={claim.id} data-claim-id={claim.id} data-claim-status={claim.status}>
+          <div class="av-claim-label"><h3>{claim.title}</h3><span class="av-status" data-status={claim.status}>{STATUS_LABELS[claim.status]}</span></div>
+          <div class="av-claim-content"><p>{claim.statement}</p>
+            <ul class="av-qualifications">{claim.qualifications.map((qualification) => <li>{qualification}</li>)}</ul>
+            <details class="av-evidence-detail"><summary>Sources, dates and review scope</summary>
+              <p><strong>Statement / observation date:</strong> {claim.observedAt ?? 'Not established in the available records'}</p>
+              <p><strong>Method:</strong> {claim.review.method}</p>
+              <p><strong>Review recorded:</strong> {claim.review.reviewedAt ?? 'No independent review recorded'}</p>
+              <p><strong>Review policy:</strong> {REVIEW_POLICY_LABELS[claim.review.policy]}</p>
+              <ul>{claim.sources.map((source) => <li><a href={source.url}>{source.label} <span aria-hidden="true">↗</span></a></li>)}</ul>
+            </details>
+          </div>
+        </article>
+      ))}</div>
+    </section>
+
+    <section class="av-section av-reproduce" aria-labelledby="reproduce-title">
+      <div><p class="kicker">For a second look</p><h2 id="reproduce-title">Make the check reproducible.</h2><p>Compare the complete identifier under the same network and representation in the <a href="/registry/zodiacs.registry.json">published Registry</a>. Follow the <a href="/disclosure/">disclosure</a> for the underlying statements. An explorer link lets you inspect a receipt; it does not mean this page just checked the chain.</p><p>The page’s facts below preserve the same claims, dates, qualifications, and unknowns. A new build does not renew an old attestation. <a href={evidence.comparisonPolicySources[0].url}>Inspect the comparison rules and source-loading code.</a></p></div>
+      <dl class="av-revision"><dt>Registry version</dt><dd>{evidence.registryVersion}</dd><dt>Repository revision</dt><dd>{evidence.sourceRevision}</dd><dt>Registry SHA-256</dt><dd>{evidence.registrySha256}</dd></dl>
+      <details class="av-machine"><summary>Page facts · JSON</summary><pre tabindex="0" aria-label="Page facts in JSON">{JSON.stringify(evidence, null, 2)}</pre></details>
+    </section>
+    <p class="av-review-note">Review preview · This verification page is not a production release. Unresolved evidence remains labeled above.</p>
+  </div>
+  <script is:inline type="application/json" id="verification-evidence" set:html={serializedEvidence} />
+  <script>
+    import '../../../registry/astrofolio-verification/client';
+  </script>
+</Base>

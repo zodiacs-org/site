@@ -1,0 +1,2 @@
+phase1-scope-guard: 1 protected path change(s)
+  - src/pages/registry/verify/index.astro (Registry wing)
