@@ -12,6 +12,10 @@ import {
   visibleTools,
 } from './nav-tools';
 
+// The tarot hub card ('you' group) appears only while PUBLIC_TAROT_ENABLED
+// is '1'; with it unset these are main's numbers.
+const tarotCards = Number(launchFlagOn('PUBLIC_TAROT_ENABLED'));
+
 describe('NAV_TOOLS', () => {
   it.each(['es', 'pt', 'fr', 'it'] as const)('recognizes the existing %s Birthday language cue once', (locale) => {
     expect(navToolLabelHasEnglishCue(locale, 'birthday', t(locale, 'birthday'))).toBe(true);
@@ -71,7 +75,7 @@ describe('NAV_TOOLS', () => {
       '/transits/',
       '/retrogrades/',
     ]);
-    expect(TOOLS_HUB).toHaveLength(29);
+    expect(TOOLS_HUB).toHaveLength(29 + tarotCards);
     for (const tool of [...NAV_TOOLS, ...FOOTER_TOOLS, ...TOOLS_HUB]) {
       expect(catalogueHrefs.has(tool.href)).toBe(true);
     }
@@ -81,7 +85,7 @@ describe('NAV_TOOLS', () => {
     expect(TOOLS_HUB.filter((tool) => tool.group === 'lead').map((tool) => tool.href)).toEqual(['/birth-chart/']);
     expect(TOOLS_HUB[0].href).toBe('/birth-chart/');
     const counts = Object.fromEntries(['you', 'together', 'sky', 'year'].map((group) => [group, TOOLS_HUB.filter((tool) => tool.group === group).length]));
-    expect(counts).toEqual({ you: 6, together: 6, sky: 6, year: 10 });
+    expect(counts).toEqual({ you: 6 + tarotCards, together: 6, sky: 6, year: 10 });
     expect(new Set(TOOLS_HUB.map((tool) => tool.icon)).size).toBe(TOOLS_HUB.length);
     for (const tool of TOOLS_HUB) {
       expect(tool.promise).not.toMatch(/[\r\n\u2013\u2014]/u);
