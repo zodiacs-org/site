@@ -4,7 +4,7 @@ name: Thesis evidence capture
 # Runs only when this file changes on an admin/zod-33-* branch: it captures the
 # raw public data into docs/thesis-evidence/<date>/, reruns the reviewed
 # refresh scripts, and commits the result to the same branch for review. It
-# never runs on main and is removed before the pull request merges.
+# never runs on main and is removed before the pull request merges. Run 2.
 
 on:
   push:

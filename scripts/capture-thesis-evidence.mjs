@@ -112,16 +112,20 @@ async function main() {
 
   const probed = await probe(mints.leo);
   await save('rpc-endpoint-probe.json', { capturedAt: new Date().toISOString(), chosen: probed.url, tried: probed.tried });
-  const rpc = probed.url ? makeRpc(probed.url) : null;
+  // getTokenLargestAccounts is the call public endpoints refuse; the other calls
+  // (supply, account info, signatures, transactions) still work on the
+  // Solana Foundation endpoint, so fall back to it for everything else.
+  const fallbackUrl = 'https://api.mainnet-beta.solana.com';
+  const rpc = makeRpc(probed.url ?? fallbackUrl);
 
-  const chain = { capturedAt: new Date().toISOString(), endpoint: probed.url, signs: {} };
-  const trades = { capturedAt: new Date().toISOString(), endpoint: probed.url, windowDays: 30, signs: {} };
-  if (rpc) {
+  const chain = { capturedAt: new Date().toISOString(), endpoint: probed.url ?? fallbackUrl, largestAccountsEndpoint: probed.url, signs: {} };
+  const trades = { capturedAt: new Date().toISOString(), endpoint: probed.url ?? fallbackUrl, windowDays: 30, signs: {} };
+  {
     for (const sign of signs) {
       const mint = mints[sign];
       const supply = await rpc('getTokenSupply', [mint, { commitment: 'finalized' }]);
       const accountInfo = await rpc('getAccountInfo', [mint, { encoding: 'jsonParsed', commitment: 'finalized' }]);
-      const largest = await rpc('getTokenLargestAccounts', [mint, { commitment: 'finalized' }]);
+      const largest = probed.url ? await rpc('getTokenLargestAccounts', [mint, { commitment: 'finalized' }]) : { ok: false, error: 'no public endpoint answered getTokenLargestAccounts (see rpc-endpoint-probe.json)' };
       const owners = {};
       if (largest.ok) {
         for (const row of largest.result.value.slice(0, 10)) {
@@ -157,6 +161,17 @@ async function main() {
     await sleep(400);
   }
   await save('dexscreener.json', dex);
+  // GeckoTerminal: daily pool candles (volume per day over the last 30 days)
+  // and the token's own holder summary, kept as a cross-check only.
+  const gecko = { capturedAt: new Date().toISOString(), signs: {} };
+  for (const sign of signs) {
+    gecko.signs[sign] = {
+      ohlcvDay: await getJson(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${pools[sign]}/ohlcv/day?limit=35`),
+      tokenInfo: await getJson(`https://api.geckoterminal.com/api/v2/networks/solana/tokens/${mints[sign]}/info`),
+    };
+    await sleep(2500);
+  }
+  await save('geckoterminal.json', gecko);
   await save('npm-downloads.json', {
     lastMonth: await getJson('https://api.npmjs.org/downloads/point/last-month/@zodiacs/sdk'),
     registry: await getJson('https://registry.npmjs.org/@zodiacs/sdk'),
