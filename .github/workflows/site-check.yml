@@ -534,7 +534,7 @@ jobs:
   retrogrades-for-you-flag-on:
     name: Retrogrades for you (flag on)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       PUBLIC_RETROGRADES_FOR_YOU_ENABLED: "1"
     steps:
@@ -550,14 +550,19 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Unit tests that follow the switch (Retrogrades for you flag on)
-        run: npx vitest run src/lib/launch-flags.test.ts src/lib/nav-tools.test.ts src/lib/tool-icons.test.ts scripts/build-assistant-context.test.mjs src/ai-tools/personal-tools.test.ts src/server/result-preview.launch-flags.test.ts
-
       - name: Install pinned Chromium
         run: npx playwright-core install chromium
 
       - name: Build (Retrogrades for you flag on)
         run: npm run build
+
+      - name: Typecheck (Retrogrades for you flag on)
+        timeout-minutes: 5
+        run: npm run check
+
+      - name: Unit tests (Retrogrades for you flag on)
+        timeout-minutes: 25
+        run: npm test
 
       - name: Retrogrades for you drive (zero CLS, address bar, share link keys)
         run: node tests/personal-pages-drive.mjs
