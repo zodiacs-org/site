@@ -56,8 +56,15 @@ the next Moon page. The whole set is 864 pages: 209 each in Spanish and
 Portuguese, 223 each in French and Italian. Each locale's Moon families
 follow every full and new Moon the English publishes, 62 of each from 2026
 to 2030. At this pace that is about 87 weeks, and the Moon pages for dates
-in 2028 to 2030 come due in date order, so they never wait at the back. Raising the cap is Dias's decision, not the agent's; see the
-recommendation in the PR.
+in 2028 to 2030 come due in date order, so they never wait at the back.
+
+## The cap stays at 10 a week (decided 2026-11-10, delegated by Dias)
+
+The cap is not raised. Reason: it is the site-wide Growth OS rule, and these
+pages are written from shared facts, so a steady pace lets Search Console show
+whether they earn their place before more of them go out. The plan is looked
+at again after the first eight batches; any change to the cap is a change to
+`docs/growth/README.md`, not to this file.
 
 ## Gate for each batch
 
