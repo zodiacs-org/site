@@ -1,5 +1,4 @@
 ---
-import { launchFlagOn } from '../../../lib/launch-flags';
 import Base from '../../../layouts/Base.astro';
 import candidate from '../../../data/platform-engine-candidate.json';
 import bundle from '../../../data/engine-bundle.json';
@@ -33,7 +32,7 @@ const api = [
   ['findConfiguredAspects(bodies, policy)', 'Aspects under a policy you set with createAspectPolicy: major, minor or custom angles, and orbs per aspect, per body and for applying or separating motion.'],
   ['chartDeclinations(chart)', 'Right ascension and declination of each body, parallels and contraparallels, and each body\'s signed margin to the out-of-bounds limit, in arcseconds.'],
   ['@zodiacs/engine/timing', 'Hellenistic timing, a separate import: annual profections, firdaria, zodiacal releasing and solar arc directions. This site uses none of it.'],
-  ['@zodiacs/engine/vedic', 'The sidereal zodiac, a separate import: ayanamsas, sidereal charts, nakshatras, vargas, KP sub-lords and the Vimshottari, Yogini and Ashtottari dashas. ' + (launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? 'This site\'s Vedic signs page and its get_vedic_signs tool read the ayanamsa, sidereal longitudes and nakshatras from it, and nothing else.' : 'This site uses none of it.')],
+  ['@zodiacs/engine/vedic', 'The sidereal zodiac, a separate import: ayanamsas, sidereal charts, nakshatras, vargas, KP sub-lords and the Vimshottari, Yogini and Ashtottari dashas. This site\'s Vedic signs page and its get_vedic_signs tool read the ayanamsa, sidereal longitudes and nakshatras from it, and nothing else.'],
   ['@zodiacs/engine/time', 'The engine\'s own time basis, a separate import: the UT1 and TT of an instant with the ΔT and time scale a chart records, the nutation and frame of date that turn its positions, and first-order time bands. This site\'s server ephemeris and compute API take their time basis from it.'],
   ['@zodiacs/engine/lite', 'Declinations and parallels, sect, composite midpoints and essential dignities, a separate import that loads no ephemeris. This site\'s three-dimensional view, relationship page and chart take theirs from it.'],
 ];

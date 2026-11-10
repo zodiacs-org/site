@@ -530,7 +530,7 @@ jobs:
   vedic-signs-flag-on:
     name: Vedic signs (flag on)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       PUBLIC_VEDIC_SIGNS_ENABLED: "1"
     steps:
@@ -546,14 +546,19 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Unit tests that follow the switch (Vedic signs flag on)
-        run: npx vitest run src/lib/launch-flags.test.ts src/lib/nav-tools.test.ts src/lib/tool-icons.test.ts scripts/build-assistant-context.test.mjs src/ai-tools/personal-tools.test.ts src/server/result-preview.launch-flags.test.ts
-
       - name: Install pinned Chromium
         run: npx playwright-core install chromium
 
       - name: Build (Vedic signs flag on)
         run: npm run build
+
+      - name: Typecheck (Vedic signs flag on)
+        timeout-minutes: 5
+        run: npm run check
+
+      - name: Unit tests (Vedic signs flag on)
+        timeout-minutes: 25
+        run: npm test
 
   phase7-living-chart-drive:
     name: Phase 7 Living Chart drive
