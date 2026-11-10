@@ -27,8 +27,9 @@ const jsonLd = [
     <div class="tool-hero">
       <h1 class="display">Your birthday year, on one page.</h1>
       <p>
-        Your <a href="/solar-return/">solar return</a>, your {yearScoreOn ? <a href="/year-score/">Year Ahead Score</a> : 'Year Ahead Score'}, your
-        <a href="/numerology/">numerology</a> Personal Year and one tarot card for the year ahead, from your birth date.
+        Your <a href="/solar-return/">solar return</a>,
+        your {yearScoreOn ? <a href="/year-score/">Year Ahead Score</a> : 'Year Ahead Score'}, your <a href="/numerology/">numerology</a> Personal Year
+        and one tarot card for the year ahead, from your birth date.
       </p>
     </div>
     <BirthdayReport client:load yearScoreLink={yearScoreOn} />
