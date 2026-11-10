@@ -8,7 +8,15 @@
  * Each page follows its launch switch (src/lib/launch-flags.ts), read here from
  * the shell as the build reads it. A page whose switch is off is checked in the
  * built HTML instead: the 404 redirect and none of the page's own markup, or,
- * for a figure's page, no page at all.
+ * for a figure's page, no page at all. Each switch launches on its own, so no
+ * built page, no sitemap row and no link a calculator draws may lead to a page
+ * whose switch is off, and the solar return result shows its themes and share
+ * link only with PUBLIC_SOLAR_RETURN_SHARE_ENABLED.
+ *
+ * Run it once per build, with the same switches in the shell as the build had.
+ * The combinations that matter: every switch unset; each one alone
+ * (PUBLIC_BIRTHDAY_REPORT_ENABLED=1 alone is the report without the score);
+ * the people switch without the score's (still off); all four.
  *
  *   npm run build && node tests/year-features-drive.mjs [--shots <dir>]
  */
@@ -40,6 +48,19 @@ const ALL_PAGES = [
   { path: '/tools/', on: true, markup: [] },
 ];
 const PAGES = ALL_PAGES.filter((page) => page.on).map((page) => page.path);
+/** Where each switch's pages live: no page may link there while the switch is off. */
+const OFF_TARGETS = [
+  { flag: 'yearScore', test: (href) => href === '/year-score/' },
+  { flag: 'birthdayReport', test: (href) => href === '/birthday-report/' },
+  { flag: 'yearPeople', test: (href) => href.startsWith('/year/') },
+].filter(({ flag }) => !FLAGS[flag]);
+/** A site-relative path from an href or a sitemap location, without its query or fragment. */
+const sitePath = (href) => {
+  try { return new URL(href, 'https://zodiacs.org').pathname; } catch { return href; }
+};
+const offTarget = (href) => OFF_TARGETS.find(({ test }) => test(sitePath(href)))?.flag;
+/** Built pages that carry, or used to carry, a link to one of the switched pages. */
+const LINKING_PAGES = ['/year-score/', '/birthday-report/', '/year/', '/year/jensen-huang/', '/solar-return/', '/tools/', '/transits/', '/birthday/', '/'];
 const failures = [];
 const fail = (message) => { failures.push(message); console.error(`FAIL ${message}`); };
 console.log(`switches: ${Object.entries(FLAGS).map(([name, value]) => `${name} ${value ? 'on' : 'off'}`).join(', ')}`);
@@ -57,6 +78,41 @@ for (const { path, markup } of ALL_PAGES.filter((page) => !page.on)) {
   for (const text of markup) if (html.includes(text)) fail(`${path}: prints ${text} although its switch is off`);
   console.log(`ok ${path}: redirects, switch off`);
 }
+
+// No built page and no sitemap row leads to a page whose switch is off.
+for (const path of LINKING_PAGES.filter((path) => ALL_PAGES.find((page) => page.path === path)?.on ?? true)) {
+  const file = `dist${path}index.html`;
+  if (!existsSync(file)) { fail(`${path}: not built`); continue; }
+  const html = await readFile(file, 'utf8');
+  const hrefs = [...html.matchAll(/\shref="([^"]*)"/gu)].map((match) => match[1]);
+  const bad = hrefs.filter((href) => offTarget(href));
+  if (bad.length) fail(`${path}: links to ${[...new Set(bad)].join(', ')} although its switch is off`);
+  else console.log(`ok ${path}: no link to a page whose switch is off`);
+}
+{
+  const sitemap = await readFile('dist/sitemap.xml', 'utf8');
+  const locs = [...sitemap.matchAll(/<loc>([^<]*)<\/loc>/gu)].map((match) => match[1]);
+  const bad = locs.filter((loc) => offTarget(loc));
+  if (bad.length) fail(`sitemap.xml lists ${bad.join(', ')} although its switch is off`);
+  for (const [flag, path] of [['yearScore', '/year-score/'], ['birthdayReport', '/birthday-report/']]) {
+    if (FLAGS[flag] && !locs.some((loc) => sitePath(loc) === path)) fail(`sitemap.xml leaves out ${path} although its switch is on`);
+  }
+  console.log('ok sitemap.xml: lists the switched pages only while on');
+}
+
+/** Links in the live page to a page whose switch is off, after the scripts have drawn the page. */
+const offLinks = (page) => page.evaluate(() => [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')))
+  .then((hrefs) => [...new Set(hrefs.filter((href) => offTarget(href)))]);
+const linkCount = (page, name) => page.getByRole('link', { name, exact: true }).count();
+
+/** The saved chart the solar return casts from, as tests/solar-return-drive.mjs seeds it (a public figure's published birth). */
+const SR_PROFILE = {
+  version: 1, settings: { houseSystem: 'whole' }, charts: [{
+    id: 'kahlo-located', name: 'Frida', createdAt: '2026-01-01T00:00:00Z', updatedAt: '2026-01-01T00:00:00Z',
+    birth: { date: '1907-07-06', time: '08:30', timeKnown: true, place: { name: 'Mexico City', admin1: 'Ciudad de México', country: 'Mexico', lat: 19.4326, lon: -99.1332, tz: 'America/Mexico_City' } },
+    summary: { engineVersion: '1.0.0', utcISO: '1907-07-06T15:06:36Z', houseSystem: 'whole', bodies: [{ body: 'Sun', lon: 103.3755, retrograde: false }], angles: null, flags: [] },
+  }],
+};
 
 async function layoutShiftBeforeInput(page) {
   return page.evaluate(() => new Promise((resolve) => {
@@ -80,6 +136,8 @@ try {
         if (cls > 0.001) fail(`${path} @${size.width}: layout shift ${cls.toFixed(4)} before any input`);
         const wide = await overflow(page);
         if (wide > 0) fail(`${path} @${size.width}: scrolls sideways by ${wide}px`);
+        const off = await offLinks(page);
+        if (off.length) fail(`${path} @${size.width}: links to ${off.join(', ')} although its switch is off`);
         if (shots) await page.screenshot({ path: `${shots}/${path.replaceAll('/', '_') || 'home'}-${size.name}.png`, fullPage: true });
         console.log(`ok ${path} @${size.width}: CLS ${cls.toFixed(4)}`);
       }
@@ -98,10 +156,51 @@ try {
         if (/1990|05-03/u.test(page.url())) fail(`${path} @${size.width}: the address bar carries a birth detail`);
         const wide = await overflow(page);
         if (wide > 0) fail(`${path} result @${size.width}: scrolls sideways by ${wide}px`);
+        const off = await offLinks(page);
+        if (off.length) fail(`${path} result @${size.width}: links to ${off.join(', ')} although its switch is off`);
+        if (path === '/birthday-report/') {
+          // The report includes the score either way; its links to the score's page wait for that switch.
+          const intro = await page.locator('.tool-hero a[href="/year-score/"]').count();
+          const months = await linkCount(page, 'See the months and the transits behind it');
+          if (intro !== Number(FLAGS.yearScore) || months !== Number(FLAGS.yearScore)) fail(`${path} result @${size.width}: introduction ${intro}, result ${months} link(s) to /year-score/ with the score's switch ${FLAGS.yearScore ? 'on' : 'off'}`);
+          if (!FLAGS.yearScore && !(await page.locator('.tool-hero').innerText()).includes('your Year Ahead Score, your')) fail(`${path} @${size.width}: the introduction lost its words with the score's switch off`);
+        }
         if (shots) await page.screenshot({ path: `${shots}/${path.replaceAll('/', '_')}result-${size.name}.png`, fullPage: true });
         console.log(`ok ${path} result @${size.width}: ${href}`);
       }
       await context.close();
+
+      // The solar return result: themes and share link behind their own switch, each button behind its page's.
+      const srContext = await browser.newContext({ viewport: { width: size.width, height: size.height }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
+      await srContext.addInitScript((seed) => {
+        if (location.origin !== 'null') localStorage.setItem('zodiacs.profile.v1', JSON.stringify(seed));
+      }, SR_PROFILE);
+      const sr = await srContext.newPage();
+      await sr.goto(`${baseURL}/solar-return/`, { waitUntil: 'networkidle' });
+      await sr.waitForFunction(() => document.querySelector('#sr-source')?.value === 'kahlo-located');
+      await sr.locator('#sr-year-mode').selectOption('custom');
+      await sr.getByLabel('Custom return year').fill('2024');
+      await sr.getByRole('button', { name: 'Find my solar return', exact: true }).click();
+      await sr.locator('[data-solar-return-result]').waitFor({ state: 'visible', timeout: 45_000 });
+      const themes = await sr.locator('.sr-themes [data-sr-theme]').count();
+      if (FLAGS.solarReturnShare ? themes === 0 : themes !== 0) fail(`/solar-return/ result @${size.width}: ${themes} theme(s) with the share switch ${FLAGS.solarReturnShare ? 'on' : 'off'}`);
+      const shareLinks = sr.locator('[data-sr-share-link]');
+      const shareCount = await shareLinks.count();
+      if (shareCount !== Number(FLAGS.solarReturnShare)) fail(`/solar-return/ result @${size.width}: ${shareCount} share link(s) with the share switch ${FLAGS.solarReturnShare ? 'on' : 'off'}`);
+      if (shareCount) {
+        const href = await shareLinks.first().getAttribute('href');
+        if (!href || !sitePath(href).startsWith('/share/solar-return/') || /1907|07-06|0706|08:30|Mexico|19\.43|99\.13/u.test(href)) fail(`/solar-return/ result @${size.width}: share link ${href}`);
+      }
+      for (const [flag, name] of [['yearScore', 'Score the year ahead →'], ['birthdayReport', 'Your birthday report →']]) {
+        const count = await linkCount(sr, name);
+        if (count !== Number(FLAGS[flag])) fail(`/solar-return/ result @${size.width}: ${count} "${name}" link(s) with ${flag} ${FLAGS[flag] ? 'on' : 'off'}`);
+      }
+      const srOff = await offLinks(sr);
+      if (srOff.length) fail(`/solar-return/ result @${size.width}: links to ${srOff.join(', ')} although its switch is off`);
+      if (/1907|07-06/u.test(sr.url())) fail(`/solar-return/ result @${size.width}: the address bar carries a birth detail`);
+      if (shots) await sr.screenshot({ path: `${shots}/_solar-return_result-${size.name}.png`, fullPage: true });
+      console.log(`ok /solar-return/ result @${size.width}: ${themes} theme(s), share ${shareCount ? 'on' : 'off'}`);
+      await srContext.close();
     }
   });
 } finally {
