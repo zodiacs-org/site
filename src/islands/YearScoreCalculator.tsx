@@ -11,6 +11,7 @@ import { signForLongitude } from '../lib/signs';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import type { City } from '../lib/geo/search';
 import { createModuleLoader } from '../lib/module-load';
+import { yearScoreShareUrl } from '../lib/year-score/share';
 import { dayName, shortMonth, yearReading, type YearReading } from '../lib/year-score/reading';
 
 const loadScorer = createModuleLoader(() => import('../lib/year-score/browser'));
@@ -26,7 +27,7 @@ const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no s
 
 interface Result {
   reading: YearReading;
-  sign: { name: string; hue: string };
+  sign: { name: string; slug: string; hue: string };
   from: string;
   to: string;
   confidence: string;
@@ -67,7 +68,7 @@ export default function YearScoreCalculator() {
       const guard = underAge(date, today, 18) ? softenMinor : (text: string) => text;
       setResult({
         reading: yearReading(year, guard),
-        sign: { name: sign.name, hue: sign.hue },
+        sign: { name: sign.name, slug: sign.slug, hue: sign.hue },
         from: year.from,
         to: year.to,
         confidence: confidenceLabel(timeKnown && !!placed),
@@ -163,6 +164,11 @@ export default function YearScoreCalculator() {
           )}
           {!result.timeKnown && <p class="field__help">Without a birth time and place the Moon is left out; the other contacts can shift by about a day.</p>}
           <div class="calc__actions">
+            {(() => {
+              // The link carries the Sun sign and the score only: never the birth date, time or place.
+              const share = yearScoreShareUrl(location.origin, { sun: result.sign.slug, score: result.reading.score });
+              return share ? <a class="btn btn--primary" href={share}><span>Share your score</span><span class="orb">↗</span></a> : null;
+            })()}
             <a class="btn btn--ghost" href="/transits/"><span>See every transit to your chart</span><span class="orb">↗</span></a>
           </div>
         </div>

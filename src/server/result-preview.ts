@@ -62,6 +62,9 @@ import {
   skyEvents,
 } from './result-preview-model.js';
 import { HUES } from './chart-preview-model.js';
+import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PATH, parseYearScoreShare, yearScoreQuery, type YearScoreShare } from '../lib/year-score/share.js';
+import { scoreTier } from '../lib/year-score/tier.js';
+import { figureYearScore } from './year-score-figure.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
   BIG_THREE_SHARE_KEYS,
@@ -156,6 +159,7 @@ export const RESULT_SHARE_ROUTES = [
   'milestone-link', 'milestone-image', 'milestone-story',
   'big-three-link', 'big-three-image', 'big-three-story', 'chinese-zodiac-link', 'chinese-zodiac-image', 'chinese-zodiac-story',
   'invite-link', 'invite-image', 'invite-story',
+  'year-score-link', 'year-score-image',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -593,6 +597,42 @@ export function chartTwinsCard(model: ChartTwinsCardModel, images: Map<ShareSign
 const italicLine = (text: string, size: number, marginTop: number) =>
   h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: size, lineHeight: 1.25, color: INK_SOFT, marginTop: `${marginTop}px` } }, text);
 
+/** What a Year Ahead Score card shows: the Sun sign, the score and its tier, and for a directory figure their name. Never a birth detail. */
+export interface YearScoreCardModel {
+  sign: PreviewSign;
+  score: number;
+  label: string;
+  hue: string;
+  /** A directory figure's name and slug; null on a person's own card. */
+  name: string | null;
+  slug: string | null;
+}
+
+const capitalSign = (slug: ShareSign) => slug.charAt(0).toUpperCase() + slug.slice(1);
+
+/** The model for a share: a person's own from the link, a figure's worked out on the server. Null for a figure the directory does not have. */
+export async function yearScoreCardModel(share: YearScoreShare, now = new Date()): Promise<YearScoreCardModel | null> {
+  if (share.kind === 'self') {
+    return { sign: { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] }, score: share.score, label: scoreTier(share.score).label, hue: HUES[share.sun], name: null, slug: null };
+  }
+  const figure = await figureYearScore(share.slug, now);
+  if (!figure) return null;
+  const sun = figure.sun as ShareSign;
+  return { sign: { slug: sun, label: `${capitalSign(sun)} Sun`, hue: HUES[sun] }, score: figure.score, label: figure.label, hue: HUES[sun], name: figure.person.name, slug: figure.person.slug };
+}
+
+/** A Year Ahead Score (A, the number as a trophy): the Sun sign's panel and disc, the score large, its tier, and the Sun sign. */
+export function yearScoreCard(model: YearScoreCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return frame(art, words({
+    discs: discRow([model.sign], images),
+    kicker: model.name ? `${model.name}’s Year Ahead Score` : 'My Year Ahead Score',
+    hue: model.hue,
+    title: [titleLine(`${model.score.toFixed(1)}/10`, 120)],
+    // Two runs, as commaLine splits a comma: the renderer would open a wide gap after the full stop.
+    line: [h('span', null, `${model.label}.`), h('span', null, `\u00a0${model.sign.label}.`)],
+  }), model.name ? null : model.sign.slug);
+}
+
 /** A famous chart (A, the name as a trophy): the Sun sign's panel and disc, the name, the Sun's degree, and who they were. */
 export function famousChartCard(model: FamousChartCardModel, images: Map<ShareSign, string>, art: string[]) {
   return frame(art, words({
@@ -835,6 +875,23 @@ export async function handleFamousChartImageRequest(request: Request): Promise<R
   const model = famousChartCardModel(share, data.people);
   if (!model) return errorResponse(400);
   return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => famousChartCard(model, images, art));
+}
+
+/**
+ * A directory figure's share (p=) follows the people pages' switch, which needs the score's switch on too
+ * (src/lib/launch-flags.ts). This file runs as plain Node, so it reads process.env at run time.
+ */
+const yearPeopleShareOn = () => process.env.PUBLIC_YEAR_PEOPLE_ENABLED === '1' && process.env.PUBLIC_YEAR_SCORE_ENABLED === '1';
+
+export async function handleYearScoreImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseYearScoreShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  if (share.kind === 'figure' && !yearPeopleShareOn()) return errorResponse(404);
+  const model = await yearScoreCardModel(share).catch(() => undefined);
+  if (model === undefined) return errorResponse(503);
+  if (!model) return errorResponse(400);
+  return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => yearScoreCard(model, images, art));
 }
 
 export async function handleMilestoneImageRequest(request: Request): Promise<Response> {
@@ -1645,6 +1702,49 @@ export async function handleFamousChartLinkRequest(request: Request): Promise<Re
   }));
 }
 
+function defaultYearScorePage(origin: string): SharePage {
+  return {
+    title: 'Year Ahead Score on Zodiacs',
+    description: 'A score from 0 to 10 for your next twelve months, from the slow planets meeting your birth chart.',
+    heading: 'Your year ahead, as one number',
+    imageUrl: `${origin}/assets/og/v2/share.png`,
+    imageType: 'image/png',
+    imageAlt: 'Zodiacs',
+    explanation: 'Zodiacs scores the next twelve months from how Jupiter, Saturn, Uranus, Neptune and Pluto meet your birth chart, with your best and hardest months.',
+    action: { label: 'Score your own year', href: '/year-score/' },
+    note: YEAR_SCORE_SHARE_NOTE,
+  };
+}
+
+/** The share page's closing line: what the number is, with no reflection boilerplate (copy rule of 9 November 2026). */
+export const YEAR_SCORE_SHARE_NOTE = 'Scored by Zodiacs from the slow planets’ transits to a birth chart. 5 is an ordinary year.';
+
+export async function handleYearScoreLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseYearScoreShare(url.searchParams);
+  if (share?.kind === 'figure' && !yearPeopleShareOn()) return errorResponse(404);
+  const model = share ? await yearScoreCardModel(share).catch(() => undefined) : null;
+  if (share && model === null) return errorResponse(404);
+  if (!share || !model) return htmlResponse(sharePageHtml(defaultYearScorePage(url.origin)));
+  const query = yearScoreQuery(share);
+  const whose = model.name ? `${model.name}’s` : 'My';
+  return htmlResponse(sharePageHtml({
+    title: `${whose} Year Ahead Score: ${model.score.toFixed(1)}/10`,
+    description: `${model.label}. ${model.sign.label}.`,
+    heading: `${whose} year ahead: ${model.score.toFixed(1)} out of 10`,
+    imageUrl: `${url.origin}${YEAR_SCORE_SHARE_IMAGE_PATH}?${query}`,
+    imageType: 'image/jpeg',
+    imageAlt: `${whose} Year Ahead Score: ${model.score.toFixed(1)} out of 10, ${model.label.toLowerCase()}, ${model.sign.label}.`,
+    explanation: `${model.label}. ${scoreTier(model.score).summary}`,
+    action: model.slug
+      ? { label: `See ${model.name}’s year`, href: withRef(`/year/${model.slug}/`, share.ref) }
+      : { label: 'Score your own year', href: withRef('/year-score/', share.ref) },
+    ...(model.slug ? { more: { label: 'Score your own year', href: withRef('/year-score/', share.ref) } } : {}),
+    note: YEAR_SCORE_SHARE_NOTE,
+  }));
+}
+
 export async function handleMilestoneLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
@@ -1780,7 +1880,7 @@ export async function handleInviteLinkRequest(request: Request): Promise<Respons
 
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response> }>> = {
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -1814,6 +1914,8 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-link': { path: INVITE_SHARE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteLinkRequest },
   'invite-image': { path: INVITE_SHARE_IMAGE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteImageRequest },
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
+  'year-score-link': { path: YEAR_SCORE_SHARE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreLinkRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
+  'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
@@ -1821,6 +1923,11 @@ export const isResultShareRoute = (value: unknown): value is ResultShareRoute =>
 /** The Node entry: only the route key and the route's own keys, each a single string. */
 export async function handleResultShareNodeRequest(req: any, res: any, route: ResultShareRoute): Promise<void> {
   const target = ROUTES[route];
+  // A tool behind a switch that is off has no share page or picture: the same 404 as an unknown route.
+  if (target.flag && process.env[target.flag] !== '1') {
+    await writeNodeResponse(res, errorResponse(404));
+    return;
+  }
   const query = req.query && typeof req.query === 'object' ? req.query : {};
   let params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {

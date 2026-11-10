@@ -40438,8 +40438,11 @@ function findYearPerson(query) {
   return BY_KEY.get(personKey(query));
 }
 var yearPersonPath = (slug) => `/year/${slug}/`;
+function yearPageStart(now) {
+  return `${now.toISOString().slice(0, 7)}-01`;
+}
 
-// src/lib/year-score/reading.ts
+// src/lib/year-score/tier.ts
 function scoreTier(score2) {
   if (score2 >= 8) return { key: "open", label: "A wide open year", summary: "The slow planets mostly help. Tradition reads a year like this as strong for career growth and earnings, and a good window to start things and sign agreements." };
   if (score2 >= 6.5) return { key: "supportive", label: "A supportive year", summary: "More of the slow-planet weather helps than presses. A good year to build on what already works, at work and with money alike." };
@@ -40447,6 +40450,8 @@ function scoreTier(score2) {
   if (score2 >= 3) return { key: "pressure", label: "A year of steady pressure", summary: "The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, careful spending and taking rest seriously." };
   return { key: "heavy-pressure", label: "A year of heavy pressure", summary: "The slow planets press hard on the chart. Tradition reads this as a demanding year: keep commitments clear, look after your energy and let patient work do the building." };
 }
+
+// src/lib/year-score/reading.ts
 var MONTHS5 = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 function monthName(month) {
@@ -40498,6 +40503,24 @@ function yearReading(year, guard = (text2) => text2) {
   };
 }
 
+// src/lib/year-score/share.ts
+var YEAR_SCORE_SHARE_PATH = "/share/year-score/";
+var YEAR_SCORE_SHARE_KEYS = Object.freeze(["s", "v", "p", "ref"]);
+var SLUG_RE2 = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+var isSign3 = (value) => typeof value === "string" && SHARE_SIGNS.includes(value);
+function yearScoreQuery(share, withRef2 = false) {
+  const params = share.kind === "self" ? new URLSearchParams({ s: share.sun, v: share.score.toFixed(1) }) : new URLSearchParams({ p: share.slug });
+  if (withRef2 && share.ref) params.set("ref", share.ref);
+  return params.toString();
+}
+function yearScoreShareUrl(origin, you) {
+  if (!isSign3(you.sun) || !Number.isFinite(you.score) || you.score < 0 || you.score > 10) return null;
+  return `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "self", sun: you.sun, score: Math.round(you.score * 10) / 10, ref: null })}`;
+}
+function figureYearScoreShareUrl(origin, slug) {
+  return SLUG_RE2.test(slug) && slug.length <= 64 ? `${origin}${YEAR_SCORE_SHARE_PATH}?${yearScoreQuery({ kind: "figure", slug, ref: null })}` : null;
+}
+
 // src/ai-tools/features/year-score.ts
 var DAY15 = 864e5;
 var ZONE_PATTERN9 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -40512,7 +40535,7 @@ var yearScoreInput = z12.strictObject({
   zone: zone4.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z12.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
   longitude: z12.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude, for birth times before standard time. Nothing is stored."),
-  from: z12.string().regex(DATE5).optional().describe("The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC).")
+  from: z12.string().regex(DATE5).optional().describe("The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC), or for a directory figure the first day of this month, as its page shows.")
 }).superRefine((args, context) => {
   if (args.person === void 0 === (args.birthDate === void 0)) context.addIssue({ code: "custom", message: "Give either person or birthDate, not both." });
   if (args.person !== void 0 && (args.time !== void 0 || args.zone !== void 0 || args.latitude !== void 0 || args.longitude !== void 0)) context.addIssue({ code: "custom", message: "With person, leave out the birth details." });
@@ -40565,7 +40588,9 @@ var yearScoreData = z12.object({
   sources: z12.array(z12.object({ title: z12.string(), url: z12.url() })),
   limits: z12.array(z12.string()),
   under18: z12.boolean(),
-  pageUrl: z12.url()
+  pageUrl: z12.url(),
+  /** The share page with its picture: the Sun sign and score only for a person's own score, the slug for a figure. Null when the Sun sign is not settled. */
+  shareUrl: z12.url().nullable()
 });
 function natalPointsAt(utc, timeKnown) {
   const chart = computeChart3({ utc, houseSystem: "whole", timeKnown });
@@ -40611,7 +40636,7 @@ var EMPTY = { subject: null, from: null, to: null, score: null, label: null, sum
 async function getYearScore(args, now, clock2, origin) {
   const pageUrl = `${origin}/year-score/`;
   const links = [{ title: "Year Ahead Score on Zodiacs", url: pageUrl }, { title: "Your transits on Zodiacs", url: `${origin}/transits/` }];
-  const start = args.from ?? today(now);
+  const start = args.from ?? (args.person !== void 0 ? yearPageStart(now) : today(now));
   if (!parseCivilDate(start) || start < YEAR_SCORE_START_MIN || start > YEAR_SCORE_START_MAX) throw new RangeError(`from must be a real date from ${YEAR_SCORE_START_MIN} to ${YEAR_SCORE_START_MAX}.`);
   const startDate = /* @__PURE__ */ new Date(`${start}T00:00:00Z`);
   const limits2 = [];
@@ -40625,7 +40650,7 @@ async function getYearScore(args, now, clock2, origin) {
     figure = findYearPerson(args.person);
     if (!figure) {
       return {
-        data: { status: "not-in-directory", ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person\u2019s own consent, their birth date gives a score instead.`], under18: false, pageUrl },
+        data: { status: "not-in-directory", ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person\u2019s own consent, their birth date gives a score instead.`], under18: false, pageUrl, shareUrl: null },
         links
       };
     }
@@ -40691,7 +40716,9 @@ async function getYearScore(args, now, clock2, origin) {
       limits: limits2,
       under18,
       // A directory figure's own page; a person's own details have no page, so the calculator.
-      pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl
+      pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
+      // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
+      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null : yearScoreShareUrl(origin, { sun: settledSun(birthDate, timeKnown, sunLon), score: year.score })
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links
   };
