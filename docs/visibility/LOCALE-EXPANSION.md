@@ -129,7 +129,7 @@ including three it lacked that es, pt, fr and it already publish:
 |---|---|
 | Daily horoscope + hub, today | 14 |
 | Tomorrow, week, month, love, work, 2026, 2027 | 84 |
-| Full and new Moon pages | 50 |
+| Full and new Moon pages (2026 to 2030) | 124 |
 | Zodiac dates | 1 |
 | Sign guides (`sign-guide`): already built at `/ru/{sign}/` as noindex; a release makes them indexable | 12 |
 | Rising-sign profiles (`rising-profile`) | 12 |
@@ -142,13 +142,15 @@ including three it lacked that es, pt, fr and it already publish:
   colons and full stops instead.
 - The guide and share blocks have no Russian, so the Russian daily pages
   leave them out, as the existing Russian pages do.
-- `signInRu()` writes «во Льве»: Russian puts «во» before Льве. Several
-  browser islands still write «в Льве» through `t('readIn')` plus the
-  prepositional case: the explorer inspector, the sky ticker, the chart
-  calculator and the Moon phase tool. They sit under tight bundle budgets
-  and are left for a separate fix.
+- `signInRu()` writes «во Льве»: Russian puts «во» before Льве. The live
+  rising calculator, the horoscope event labels, the explorer inspector, the
+  sky ticker, the chart calculator, the Moon phase tool, the baby zodiac tool
+  and the Russian birth chart all use it, within their bundle budgets.
 - The independent review of the Russian copy is in
   `samples/review-2026-11-09/ru.md`, and every item is applied.
 
-Russian's release status is Dias's decision (#924, decision 1). This part
-builds and holds the pages; it releases nothing.
+Russian's release status (#924, decision 1) was delegated to the agent and
+is decided in [RELEASE-PLAN.md](RELEASE-PLAN.md#russian-decided-2026-11-09-delegated-by-dias):
+released through the same weekly batches, after the other four locales'
+computed batches, sign guides first. This part builds and holds the pages;
+it releases nothing.

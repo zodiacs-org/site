@@ -56,3 +56,21 @@ chooses.
    (`scripts/locale-expansion/sample-sheet.ts`).
 7. **R2 release** in batches within 10 new indexable pages a week, as
    `docs/visibility/RELEASE-PLAN.md` describes.
+
+## The choice rule (decided 2026-11-09, delegated by Dias)
+
+When Part 5's Keyword Planner volumes are in:
+
+1. Sum each candidate's monthly volume over the five families (horoscope,
+   compatibility, birth chart, Moon, sign meaning), variants included.
+2. Discount Hindi by half for the horoscope and sign-meaning families:
+   Indian search for these mostly means sidereal (Vedic) astrology, which
+   the site does not compute.
+3. Pick the highest total. On a tie within 10 percent, pick the candidate
+   whose fonts are already covered (German), then the one that needs only
+   latin-ext subsets (Polish, Turkish).
+4. If the volumes never arrive, the default is German: its fonts are
+   covered, its search market is large, and its copy needs no new script.
+
+The choice still starts as a draft PR (step 1 above), so Dias
+sees it before any page is written.
