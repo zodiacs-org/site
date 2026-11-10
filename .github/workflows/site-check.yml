@@ -550,6 +550,9 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Unit tests that follow the switch (good day finder flag on)
+        run: npx vitest run src/lib/launch-flags.test.ts src/lib/nav-tools.test.ts src/lib/tool-icons.test.ts scripts/build-assistant-context.test.mjs
+
       - name: Install Chromium
         run: npx playwright-core install chromium
 

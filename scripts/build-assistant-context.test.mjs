@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { ASSISTANT_CONTEXT } from '../api/_assistant/context.ts';
 import {
   BANNED_CONSUMER_VOCABULARY,
+  LAUNCH_FLAGGED_ROUTES,
   MAX_CONTEXT_BYTES,
   MIN_CONTEXT_BYTES,
   TOOL_ROUTES,
@@ -16,6 +17,12 @@ import {
 
 let temporaryDirectory;
 
+// The committed module is the output with every launch switch unset; the
+// good day finder joins the inventory only while its switch is exactly '1'.
+const FLAGS_OFF = Object.freeze({});
+const GOOD_DAYS_ON = Object.freeze({ PUBLIC_GOOD_DAYS_ENABLED: '1' });
+const GOOD_DAYS_LINE = '- /good-days/ —';
+
 afterEach(async () => {
   if (temporaryDirectory) {
     await rm(temporaryDirectory, { force: true, recursive: true });
@@ -24,8 +31,12 @@ afterEach(async () => {
 });
 
 describe('assistant site context', () => {
-  it('contains every tool route and the complete live route families', async () => {
-    const { context, counts } = await generateAssistantContext();
+  it.each([
+    ['unset', FLAGS_OFF],
+    ['on', GOOD_DAYS_ON],
+  ])('contains every tool route and the complete live route families (good day finder switch %s)', async (_mode, env) => {
+    const goodDays = env.PUBLIC_GOOD_DAYS_ENABLED === '1';
+    const { context, counts } = await generateAssistantContext({ env });
 
     expect(TOOL_ROUTES).toEqual([
       '/ask/',
@@ -79,15 +90,18 @@ describe('assistant site context', () => {
       // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
-      // The good day finder at /good-days/ stays out while PUBLIC_GOOD_DAYS_ENABLED is off.
-      consumerRoutes: 717,
+      // The good day finder at /good-days/ adds one static page, only while
+      // PUBLIC_GOOD_DAYS_ENABLED is '1'.
+      consumerRoutes: 717 + Number(goodDays),
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 78,
+      staticPages: 78 + Number(goodDays),
       tools: 28,
     });
+    if (goodDays) expect(context).toContain(GOOD_DAYS_LINE);
+    else expect(context).not.toContain('/good-days/');
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
     expect(context).toContain('- /learn/placements/sun-in-aries/ — What Sun in Aries means in a birth chart.');
@@ -164,14 +178,35 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
     const output = join(temporaryDirectory, 'context.ts');
 
-    const first = await buildAssistantContext({ output });
+    const first = await buildAssistantContext({ output, env: FLAGS_OFF });
     const firstBytes = await readFile(output);
-    const second = await buildAssistantContext({ output });
+    const second = await buildAssistantContext({ output, env: FLAGS_OFF });
     const secondBytes = await readFile(output);
 
     expect(second.context).toBe(first.context);
     expect(second.source).toBe(first.source);
     expect(secondBytes.equals(firstBytes)).toBe(true);
     expect(ASSISTANT_CONTEXT).toBe(first.context);
+  });
+
+  it('commits the switches-unset output, and the good day finder switch adds exactly its one line', async () => {
+    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED' });
+    temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
+
+    const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
+    expect(ASSISTANT_CONTEXT).toBe(off.context);
+    expect(off.context).not.toContain('/good-days/');
+
+    for (const value of ['', '0', 'true', ' 1']) {
+      const notOn = await generateAssistantContext({ env: { PUBLIC_GOOD_DAYS_ENABLED: value } });
+      expect(notOn.context).toBe(off.context);
+    }
+
+    const on = await buildAssistantContext({ output: join(temporaryDirectory, 'on.ts'), env: GOOD_DAYS_ON });
+    const offLines = off.context.split('\n');
+    const added = on.context.split('\n').filter((line) => !offLines.includes(line));
+    expect(added).toHaveLength(1);
+    expect(added[0].startsWith(GOOD_DAYS_LINE)).toBe(true);
+    expect(on.context.split('\n').filter((line) => line !== added[0])).toEqual(offLines);
   });
 });
