@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ASSISTANT_CONTEXT } from '../api/_assistant/context.ts';
+import { LAUNCH_FLAGS } from '../src/lib/launch-flags.ts';
 import {
   BANNED_CONSUMER_VOCABULARY,
   LAUNCH_FLAGGED_ROUTES,
@@ -17,11 +18,23 @@ import {
 
 let temporaryDirectory;
 
-// The committed module is the output with every launch switch unset; the
-// Your day page joins the inventory only while its switch is exactly '1'.
+// The committed module is the output with every launch switch unset. Each
+// page in LAUNCH_FLAGGED_ROUTES joins the inventory, as one static page and
+// one line, only while its own switch is exactly '1', so the expectations
+// below follow whichever switches an env has on, for any number of pages.
 const FLAGS_OFF = Object.freeze({});
-const PAGE_ON = Object.freeze({ PUBLIC_YOUR_DAY_ENABLED: '1' });
-const PAGE_LINE = '- /your-day/ —';
+const switchedRoutes = (env) => Object.entries(LAUNCH_FLAGGED_ROUTES)
+  .filter(([, flag]) => env[flag] === '1')
+  .map(([route]) => route);
+const allSwitches = (value) => Object.fromEntries(LAUNCH_FLAGS.map((flag) => [flag, value]));
+// Every switch off, every switch on, each switch alone and each switch off
+// with the rest on: the states a merge of the flagged pages can be built in.
+const SWITCH_STATES = [
+  ['unset', FLAGS_OFF],
+  ['all on', allSwitches('1')],
+  ...LAUNCH_FLAGS.map((only) => [`only ${only} on`, { ...allSwitches('0'), [only]: '1' }]),
+  ...LAUNCH_FLAGS.map((except) => [`all on but ${except}`, { ...allSwitches('1'), [except]: '0' }]),
+];
 
 afterEach(async () => {
   if (temporaryDirectory) {
@@ -33,9 +46,9 @@ afterEach(async () => {
 describe('assistant site context', () => {
   it.each([
     ['unset', FLAGS_OFF],
-    ['on', PAGE_ON],
-  ])('contains every tool route and the complete live route families (Your day switch %s)', async (_mode, env) => {
-    const pageOn = env.PUBLIC_YOUR_DAY_ENABLED === '1';
+    ['all on', allSwitches('1')],
+  ])('contains every tool route and the complete live route families (launch switches %s)', async (_mode, env) => {
+    const pagesOn = switchedRoutes(env).length;
     const { context, counts } = await generateAssistantContext({ env });
 
     expect(TOOL_ROUTES).toEqual([
@@ -90,18 +103,19 @@ describe('assistant site context', () => {
       // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
-      // Your day at /your-day/ adds one static page, only while
-      // PUBLIC_YOUR_DAY_ENABLED is '1'.
-      consumerRoutes: 717 + Number(pageOn),
+      // Each page in LAUNCH_FLAGGED_ROUTES adds one static page, only while
+      // its switch is '1'.
+      consumerRoutes: 717 + pagesOn,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 78 + Number(pageOn),
+      staticPages: 78 + pagesOn,
       tools: 28,
     });
-    if (pageOn) expect(context).toContain(PAGE_LINE);
-    else expect(context).not.toContain('/your-day/');
+    for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) {
+      expect(context.includes(`- ${route} —`)).toBe(switchedRoutes(env).includes(route));
+    }
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
     expect(context).toContain('- /learn/placements/sun-in-aries/ — What Sun in Aries means in a birth chart.');
@@ -189,24 +203,37 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     expect(ASSISTANT_CONTEXT).toBe(first.context);
   });
 
-  it('commits the switches-unset output, and the Your day switch adds exactly its one line', async () => {
-    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/your-day/': 'PUBLIC_YOUR_DAY_ENABLED' });
-    temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
+  it('names a known launch switch for every flagged page', () => {
+    expect(Object.keys(LAUNCH_FLAGGED_ROUTES).length).toBeGreaterThan(0);
+    for (const [route, flag] of Object.entries(LAUNCH_FLAGGED_ROUTES)) {
+      expect(route).toMatch(/^\/[a-z0-9/-]+\/$/u);
+      expect(LAUNCH_FLAGS).toContain(flag);
+    }
+  });
 
+  it('commits the switches-unset output, and a switch that is not exactly 1 adds nothing', async () => {
+    temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
     const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
     expect(ASSISTANT_CONTEXT).toBe(off.context);
-    expect(off.context).not.toContain('/your-day/');
+    for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) expect(off.context).not.toContain(route);
 
     for (const value of ['', '0', 'true', ' 1']) {
-      const notOn = await generateAssistantContext({ env: { PUBLIC_YOUR_DAY_ENABLED: value } });
+      const notOn = await generateAssistantContext({ env: allSwitches(value) });
       expect(notOn.context).toBe(off.context);
     }
+  });
 
-    const on = await buildAssistantContext({ output: join(temporaryDirectory, 'on.ts'), env: PAGE_ON });
+  it.each(SWITCH_STATES)('with launch switches %s, adds exactly one line for each flagged page that is on', async (_state, env) => {
+    const off = await generateAssistantContext({ env: FLAGS_OFF });
+    const { context, counts } = await generateAssistantContext({ env });
+    const on = switchedRoutes(env);
     const offLines = off.context.split('\n');
-    const added = on.context.split('\n').filter((line) => !offLines.includes(line));
-    expect(added).toHaveLength(1);
-    expect(added[0].startsWith(PAGE_LINE)).toBe(true);
-    expect(on.context.split('\n').filter((line) => line !== added[0])).toEqual(offLines);
+    const added = context.split('\n').filter((line) => !offLines.includes(line));
+
+    expect(added).toHaveLength(on.length);
+    for (const route of on) expect(added.filter((line) => line.startsWith(`- ${route} —`))).toHaveLength(1);
+    expect(context.split('\n').filter((line) => !added.includes(line))).toEqual(offLines);
+    expect(counts.staticPages).toBe(off.counts.staticPages + on.length);
+    expect(counts.consumerRoutes).toBe(off.counts.consumerRoutes + on.length);
   });
 });
