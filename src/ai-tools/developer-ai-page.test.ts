@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { EVERY_AI_TOOL_NAME, EVERY_TOOL_NAME } from '../ai-tools/contracts';
+import { EVERY_AI_TOOL_NAME, EVERY_TOOL_NAME } from './contracts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const read = (path: string) => readFile(resolve(root, path), 'utf8');
