@@ -514,11 +514,19 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       )}
 
       <h2>Email</h2>
-      {weeklyDigestEnabled && (
+      {weeklyDigestEnabled && !accountSyncV2Enabled && (
         <p>
-          {accountSyncV2Enabled
-            ? 'Account holders can opt in to a weekly email summarizing the coming week\'s sky. With Use my chart for my emails on, it is written from your synced chart; otherwise it lists the week\'s notable sky events and uses no chart.'
-            : 'Account holders can opt in to a weekly email summarizing the coming week\'s sky for their saved charts.'}
+          Account holders can opt in to a weekly email summarizing the coming
+          week's sky for their saved charts. It is unchecked by default. If you
+          opt in, we store that preference and send the email through our email
+          provider, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
+          Every email includes a one-click unsubscribe link, and you can turn it
+          off from your profile at any time.
+        </p>
+      )}
+      {weeklyDigestEnabled && accountSyncV2Enabled && (
+        <p>
+          Account holders can opt in to a weekly email summarizing the coming week's sky. With Use my chart for my emails on, it is written from your synced chart; otherwise it lists the week's notable sky events and uses no chart.
           It is unchecked by default. If you
           opt in, we store that preference and send the email through our email
           provider, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.

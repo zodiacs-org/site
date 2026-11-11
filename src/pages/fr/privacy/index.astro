@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '3 octobre 2026';
-const modifiedAt = '2026-10-03T00:00:00.000Z';
+const updated = '11 novembre 2026';
+const modifiedAt = '2026-11-11T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -390,11 +390,20 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       )}
 
       <h2>E-mail</h2>
-      {weeklyDigestEnabled && (
+      {weeklyDigestEnabled && !accountSyncV2Enabled && (
         <p>
-          {accountSyncV2Enabled
-            ? 'Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire qui résume le ciel de la semaine à venir. Quand « Utiliser mon thème pour mes e-mails » est activé, il est rédigé à partir de ton thème synchronisé ; sinon, il liste les événements marquants du ciel de la semaine et n’utilise aucun thème.'
-            : 'Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire qui résume le ciel de la semaine à venir pour leurs thèmes enregistrés.'}
+          Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire
+          qui résume le ciel de la semaine à venir pour leurs thèmes enregistrés.
+          L’option est décochée par défaut. Si tu t’inscris, nous conservons cette
+          préférence et envoyons l’e-mail par l’intermédiaire de notre
+          fournisseur d’e-mail, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
+          Chaque e-mail comporte un lien de désabonnement en un clic, et tu peux
+          le désactiver depuis ton profil à tout moment.
+        </p>
+      )}
+      {weeklyDigestEnabled && accountSyncV2Enabled && (
+        <p>
+          Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire qui résume le ciel de la semaine à venir. Quand « Utiliser mon thème pour mes e-mails » est activé, il est rédigé à partir de ton thème synchronisé ; sinon, il liste les événements marquants du ciel de la semaine et n’utilise aucun thème.
           L’option est décochée par défaut. Si tu t’inscris, nous conservons cette
           préférence et envoyons l’e-mail par l’intermédiaire de notre
           fournisseur d’e-mail, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.

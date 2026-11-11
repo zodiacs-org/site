@@ -609,9 +609,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // or the names you give, and a birthday link only the month and day), worded exactly on 5 November, and the
   // assistants it names, with Gemini added on 6 November, and the occasions it lists with no card link, a birthday
   // alone from 7 November. On 11 November it described encrypted chart sync, chart emails and the analytics
-  // scope, and the terms the encrypted sync account; after the owner-trust entry so both win.
+  // scope, and the terms the encrypted sync account; after the owner-trust entry so both win. The five translated
+  // privacy pages describe the same with the switch on and print the same date.
   ['/privacy/', '2026-11-11'] as const,
   ['/terms/', '2026-11-11'] as const,
+  ...['/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/']
+    .map((loc) => [loc, '2026-11-11'] as const),
   // The conventions registry's traditional void-of-course bodies (void-of-course-bodies:traditional), which the
   // hosted search_sky_events names. The day of the daily edition it was built with.
   ['/developers/conventions/', '2026-11-04'] as const,
