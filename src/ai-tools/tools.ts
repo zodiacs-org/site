@@ -8,6 +8,7 @@ import { BACKEND, engineStatements } from '../lib/compute-api/receipt';
 import { parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, zoneAt } from '../lib/compute-api/validate';
 import type { LocalTimeModule } from '../lib/compute-api/local-time';
 import { occasionCard } from '../lib/occasions/card';
+import { BIRTH_OCCASIONS } from '../lib/occasions/saved-path';
 import { MILESTONE_WORDS, milestoneCard } from '../lib/occasions/milestone-card';
 import type { Milestone } from '../lib/occasions/milestones';
 import { compatibilityMissing, computeCompatibility } from './features/compatibility';
@@ -232,8 +233,8 @@ function clockTime(utc: string, zone: string | null) {
 }
 const optionalClock = (utc: string | null, zone: string | null) => (utc ? clockTime(utc, zone) : null);
 
-/** A birthday, a baby's arrival, or a coming of age: the date can be a birth date, so it stays out of every link. */
-export const BIRTH_OCCASIONS: ReadonlySet<string> = new Set(['birthday', 'baby', 'coming-of-age']);
+/** A birthday, a baby's arrival, or a coming of age: the date can be a birth date, so it stays out of every link (shared with the site's saves). */
+export { BIRTH_OCCASIONS };
 
 const CIVIL_DATE = /^\d{4}-\d{2}-\d{2}$/u;
 const fieldOf = (value: unknown, key: string): unknown => (value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>)[key] : undefined);

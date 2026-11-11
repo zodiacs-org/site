@@ -6,6 +6,8 @@ import { shareCardText } from '../lib/share-card-copy';
 import { signForLongitude, signName } from '../lib/signs';
 import type { SavedPairSide } from '../lib/profile/pairs';
 import type { SavedChart } from '../lib/profile/schema';
+import { settledSignIndex } from '../lib/profile/settled-signs';
+import { SIGNS } from '../lib/signs';
 
 interface CompatibilitySharePerson {
   label: string;
@@ -121,8 +123,9 @@ interface CompatibilityResult {
  * here, in this module that loads after the result renders, so the
  * compatibility page's first load carries none of it.
  */
-export function CompatibilityResultActions({ result, charts, locale }: {
+export function CompatibilityResultActions({ result, locale }: {
   result: CompatibilityResult;
+  /** No longer read: the profile save keeps only the two Sun signs. */
   charts: readonly SavedChart[];
   locale: Locale;
 }) {
@@ -134,7 +137,7 @@ export function CompatibilityResultActions({ result, charts, locale }: {
     <>
       <CompatibilityPairingCta a={person(result.a)} b={person(result.b)} locale={locale} />
       <CompatibilityShareControl a={person(result.a)} b={person(result.b)} summary={result.summary} locale={locale} />
-      {ACCOUNT_SAVES && a && b && <CompatibilityAccountSave a={a} b={b} charts={charts} locale={locale} />}
+      {ACCOUNT_SAVES && a && b && <CompatibilityAccountSave signA={settledSunSlug(result.a)} signB={settledSunSlug(result.b)} locale={locale} />}
     </>
   );
 }
@@ -147,10 +150,21 @@ export function CompatibilityResultActions({ result, charts, locale }: {
  */
 const ACCOUNT_SAVES = import.meta.env.PUBLIC_ACCOUNT_SAVES_ENABLED === '1' && Boolean(import.meta.env.PUBLIC_SUPABASE_URL);
 
-function CompatibilityAccountSave({ a, b, charts, locale }: {
-  a: SavedPairSide;
-  b: SavedPairSide;
-  charts: readonly SavedChart[];
+/**
+ * The Sun sign the reading on screen settles, or null. A side with no rising
+ * sign may lack a birth time, so its Sun counts only when a day's motion
+ * keeps it in one sign.
+ */
+export function settledSunSlug(person: Pick<CompatibilitySharePerson, 'bodies' | 'asc' | 'untimedDate'>): string | null {
+  const sun = person.bodies.find((body) => body.body === 'Sun');
+  if (!sun) return null;
+  const index = settledSignIndex('Sun', sun.lon, person.untimedDate === undefined && person.asc !== null);
+  return index === null ? null : SIGNS[index].slug;
+}
+
+function CompatibilityAccountSave({ signA, signB, locale }: {
+  signA: string | null;
+  signB: string | null;
   locale: Locale;
 }) {
   const [account, setAccount] = useState<typeof import('./AccountSaveAction') | null>(null);
@@ -160,5 +174,5 @@ function CompatibilityAccountSave({ a, b, charts, locale }: {
     void import('./AccountSaveAction').then((loaded) => { if (active) setAccount(loaded); }).catch(() => {});
     return () => { active = false; };
   }, [locale]);
-  return account ? <account.ComparisonSave a={a} b={b} charts={charts} /> : null;
+  return account ? <account.ComparisonSave signA={signA} signB={signB} /> : null;
 }
