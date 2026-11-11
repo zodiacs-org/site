@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { bodyLongitude, computeChart } from '../engine/full';
-import { ASPECT_ORB, MONTH_SCORE_SCALE, PLANET_WEIGHT, POINT_WEIGHT, SCORE_CENTER, VALENCE, YEAR_SCORE_SCALE, contactsOn, curve, scoreYear, type NatalPoints, type SlowPlanet } from './core';
+import { ASPECT_ORB, MONTH_SCORE_SCALE, MONTH_SCORE_SCALE_TIMED, PLANET_WEIGHT, POINT_WEIGHT, SCORE_CENTER, SCORE_CENTER_TIMED, VALENCE, YEAR_SCORE_SCALE, YEAR_SCORE_SCALE_TIMED, contactsOn, curve, scoreYear, type NatalPoints, type SlowPlanet } from './core';
 import { YEAR_PEOPLE, findYearPerson, personKey } from './people';
 import { monthLine, scoreTier, yearReading } from './reading';
 
@@ -13,7 +13,7 @@ const natalAt = (iso: string): NatalPoints => {
 
 describe('year score weights', () => {
   it('pins every weight, so a change to the formula is a reviewed change', () => {
-    expect({ ASPECT_ORB, POINT_WEIGHT, PLANET_WEIGHT, VALENCE, SCORE_CENTER, YEAR_SCORE_SCALE, MONTH_SCORE_SCALE }).toMatchInlineSnapshot(`
+    expect({ ASPECT_ORB, POINT_WEIGHT, PLANET_WEIGHT, VALENCE, SCORE_CENTER, YEAR_SCORE_SCALE, MONTH_SCORE_SCALE, SCORE_CENTER_TIMED, YEAR_SCORE_SCALE_TIMED, MONTH_SCORE_SCALE_TIMED }).toMatchInlineSnapshot(`
       {
         "ASPECT_ORB": {
           "conjunction": 3,
@@ -23,6 +23,7 @@ describe('year score weights', () => {
           "trine": 3,
         },
         "MONTH_SCORE_SCALE": 0.73,
+        "MONTH_SCORE_SCALE_TIMED": 0.85,
         "PLANET_WEIGHT": {
           "Jupiter": 1,
           "Neptune": 0.7,
@@ -38,6 +39,7 @@ describe('year score weights', () => {
           "Venus": 0.7,
         },
         "SCORE_CENTER": -0.05,
+        "SCORE_CENTER_TIMED": -0.07,
         "VALENCE": {
           "Jupiter": {
             "conjunction": 1,
@@ -76,6 +78,7 @@ describe('year score weights', () => {
           },
         },
         "YEAR_SCORE_SCALE": 0.47,
+        "YEAR_SCORE_SCALE_TIMED": 0.55,
       }
     `);
   });
@@ -85,6 +88,8 @@ describe('year score weights', () => {
     expect(curve(100, YEAR_SCORE_SCALE)).toBe(10);
     expect(curve(-100, YEAR_SCORE_SCALE)).toBe(0);
     expect(curve(SCORE_CENTER + YEAR_SCORE_SCALE, YEAR_SCORE_SCALE)).toBeCloseTo(8.8, 1);
+    expect(curve(SCORE_CENTER_TIMED, YEAR_SCORE_SCALE_TIMED, SCORE_CENTER_TIMED)).toBe(5);
+    expect(curve(SCORE_CENTER_TIMED + YEAR_SCORE_SCALE_TIMED, YEAR_SCORE_SCALE_TIMED, SCORE_CENTER_TIMED)).toBeCloseTo(8.8, 1);
   });
 });
 
@@ -133,6 +138,32 @@ describe('scoreYear', () => {
     expect(a.points).toEqual(['Sun', 'Mercury', 'Venus', 'Mars']);
   });
 
+  it('scores a chart with a birth time on its own curve, and leaves a chart without one exactly as before', () => {
+    // Identical points apart from the Moon, which nothing touches: Jupiter 2.5 degrees from the Sun, the rest of the sky at 45.
+    const untimed: NatalPoints = { Sun: 10, Moon: null, Mercury: 200, Venus: 240, Mars: 300 };
+    const timed: NatalPoints = { ...untimed, Moon: 150 };
+    const sky = fixed({ Jupiter: 12.5 });
+    const start = new Date('2026-01-01T00:00:00Z');
+    const a = scoreYear(untimed, sky, start);
+    const b = scoreYear(timed, sky, start);
+    expect(b.drivers.every((driver) => driver.point !== 'Moon')).toBe(true);
+    expect({ support: b.support, pressure: b.pressure }).toEqual({ support: a.support, pressure: a.pressure });
+    // The same balance, two curves.
+    expect(a.score).toBe(curve(a.support - a.pressure, YEAR_SCORE_SCALE, SCORE_CENTER));
+    expect(b.score).toBe(curve(b.support - b.pressure, YEAR_SCORE_SCALE_TIMED, SCORE_CENTER_TIMED));
+    expect(b.months[0].score).toBe(curve(b.months[0].support - b.months[0].pressure, MONTH_SCORE_SCALE_TIMED, SCORE_CENTER_TIMED));
+    for (const score of [b.score, ...b.months.map((month) => month.score)]) {
+      expect(Number.isFinite(score)).toBe(true);
+      expect(score).toBeGreaterThanOrEqual(0);
+      expect(score).toBeLessThanOrEqual(10);
+    }
+    expect(b.score).not.toBe(a.score);
+    // Before ZOD-15 this untimed chart scored 7.2 for the year and 6.4 for every month.
+    expect(a.score).toBe(7.2);
+    expect(a.months.map((month) => month.score)).toEqual(Array(12).fill(6.4));
+    expect(b.score).toBe(7);
+  });
+
   it('refuses an invalid start date', () => {
     expect(() => scoreYear({ Sun: 0, Moon: null, Mercury: 0, Venus: 0, Mars: 0 }, () => 0, new Date('nope'))).toThrow(RangeError);
   });
@@ -149,6 +180,16 @@ describe('the words', () => {
     }
     expect(scoreTier(1).label).toBe('A year of heavy pressure');
     expect(scoreTier(5).label).toBe('A balanced year');
+    // The cut points sit symmetrically around 5: 2, 3.5, 6.5 and 8.
+    expect(scoreTier(4.4).key).toBe('balanced');
+    expect(scoreTier(3.5).key).toBe('balanced');
+    expect(scoreTier(3.4).key).toBe('pressure');
+    expect(scoreTier(2).key).toBe('pressure');
+    expect(scoreTier(1.9).key).toBe('heavy-pressure');
+    expect(scoreTier(6.4).key).toBe('balanced');
+    expect(scoreTier(6.5).key).toBe('supportive');
+    expect(scoreTier(7.9).key).toBe('supportive');
+    expect(scoreTier(8).key).toBe('open');
     // Traditional themes are welcome: earnings in a strong year, rest in a hard one.
     expect(scoreTier(9).summary).toContain('earnings');
     expect(scoreTier(1).summary).toContain('look after your energy');
