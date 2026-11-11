@@ -771,7 +771,7 @@ describe('assistant profile-access privacy fence', () => {
     const guide = await readFile(new URL('src/pages/ask/index.astro', root), 'utf8');
     expect(base).not.toContain('guideRuntimeEnabled');
     expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface');
-    expect(base).toContain('&& !accountSyncV2Enabled,');
+    expect(base).not.toContain('&& !accountSyncV2Enabled');
     expect(base).toContain('data-guide-analytics-boundary={plausibleEnabled || webAnalyticsEnabled ?');
     expect(base).toContain("sessionStorage.getItem(guidePrivateSessionKey) === '1'");
     expect(loader).toContain("export const GUIDE_PRIVATE_SESSION_KEY = 'zodiacs.guide.private-session.v1';");

@@ -13,7 +13,8 @@ describe('account sync v2 cutover guards', () => {
       expect(source).toContain('<AccountBoundProfileSurface');
       expect(source).toContain(`<ProfileDashboard locale="${locale}"`);
       expect(source).toContain(`<ProfileManager locale="${locale}"`);
-      expect(source).toContain('PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK');
+      expect(source).toContain('PUBLIC_ACCOUNT_SYNC_V2_ENABLED');
+      expect(source).not.toContain('PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK');
       expect(source).toContain('privateSurface={accountSyncV2Enabled}');
     }
   });
@@ -148,12 +149,16 @@ describe('account sync v2 cutover guards', () => {
     expect(reader).not.toContain("from './storage-identity';");
   });
 
-  it('scopes remote analytics away from Guide and the private preview build', async () => {
+  it('scopes remote analytics away from Guide and the account surfaces only', async () => {
     const base = await readFile(new URL('../../layouts/Base.astro', import.meta.url), 'utf8');
     const guide = await readFile(new URL('../../pages/ask/index.astro', import.meta.url), 'utf8');
+    const callback = await readFile(new URL('../../pages/auth/callback/index.astro', import.meta.url), 'utf8');
     expect(base).not.toContain('guideRuntimeEnabled');
-    expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface');
-    expect(base).toContain('&& !accountSyncV2Enabled,');
+    expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface,');
+    // Ordinary pages keep analytics when the v2 client is on; the account
+    // surfaces opt out through privateSurface instead of a site-wide switch.
+    expect(base).not.toContain('&& !accountSyncV2Enabled');
+    expect(callback).toContain('privateSurface={true}');
     expect(base).toContain('data-guide-analytics-boundary={plausibleEnabled || webAnalyticsEnabled ?');
     // The flagged Vercel pageview counter sits behind the same surface exclusions
     // and the same private-session check as Plausible.

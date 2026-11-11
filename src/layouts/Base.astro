@@ -121,15 +121,19 @@ const plausibleEndpoint = import.meta.env.PUBLIC_PLAUSIBLE_ENDPOINT?.trim() ?? '
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN?.trim() ?? '';
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
+// Remote analytics never run on a privateSurface page. The account, sync and
+// profile surfaces (profile in every locale, the auth callback) are private
+// whenever account sync v2 is on, so the signed-in account panel, its synced
+// chart and its consents never share a page with an analytics script. The
+// access-controlled preview also turned analytics off on every other page;
+// since launch ordinary pages keep the same privacy-scoped analytics they had
+// with the v1 client (docs/ACCOUNT-SYNC-V2-TECHNICAL-CONTRACT.md).
 const plausibleEnabled = Boolean(
-  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface
-  && !accountSyncV2Enabled,
+  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface,
 );
 const webAnalyticsEnabled = Boolean(
-  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface
-  && !accountSyncV2Enabled,
+  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface,
 );
 const dailyEmailLifecycleEnabled = hasDailyChartEmailProvider(process.env);
 const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ? direction : undefined;

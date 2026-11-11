@@ -14,7 +14,6 @@ import '../../../styles/profile-page.css';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   PUBLIC_SAVED_RECORDS_ENABLED: process.env.PUBLIC_SAVED_RECORDS_ENABLED,
@@ -57,7 +56,7 @@ const jsonLd = [
     <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="fr" client:load />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
-        ? <>Le test de synchronisation chiffrée se gère temporairement sur <a href="/profile/">/profile/</a>. Ici, tes thèmes restent uniquement sur cet appareil.</>
+        ? <>La synchronisation chiffrée se gère sur <a href="/profile/">/profile/</a>. Ici, tes thèmes restent uniquement sur cet appareil.</>
         : 'Si tu effaces les données du navigateur, les thèmes enregistrés uniquement en local seront supprimés. Connecte-toi pour synchroniser tes thèmes et répercuter leur suppression sur tes autres appareils.'}</p>
     </aside>
   </section>
