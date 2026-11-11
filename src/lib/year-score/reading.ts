@@ -43,26 +43,59 @@ export function driverTitle(driver: Pick<Driver, 'planet' | 'aspect' | 'point'>)
   return `${driver.planet} ${ASPECT_WORD[driver.aspect]} your ${driver.point}`;
 }
 
-/** The site's transit sentence for a driver. */
-export function driverLine(driver: Pick<Driver, 'planet' | 'aspect' | 'point'>): string {
+/**
+ * The word a reading gives a contact. Jupiter's square and opposition count
+ * mildly for the year (their VALENCE stays positive, so the number is
+ * unchanged), but the tradition reads them as growth that overreaches, so
+ * they read as mixed rather than as support or pressure.
+ */
+export type DriverTone = 'support' | 'pressure' | 'mixed';
+export function driverTone(contact: Pick<Driver, 'planet' | 'aspect' | 'tone'>): DriverTone {
+  return contact.planet === 'Jupiter' && (contact.aspect === 'square' || contact.aspect === 'opposition') ? 'mixed' : contact.tone;
+}
+
+/** The site's transit sentence for a driver; a mixed contact gets its own. */
+export function driverLine(driver: Pick<Driver, 'planet' | 'aspect' | 'point' | 'tone'>): string {
+  if (driverTone(driver) === 'mixed') return `${driverTitle(driver)}: growth that asks for restraint.`;
   return transitLine(driver.planet, driver.aspect, driver.point);
 }
 
 const role = (point: ScorePoint) => BODY_ROLE[point] ?? point;
 
+export interface MonthLineContext {
+  /** Another listed month comes as close (core.ts TIE_MARGIN), so the month is one of several. */
+  tied?: boolean;
+  /** The month's pressure is the lowest of every listed month. */
+  leastPressure?: boolean;
+}
+
 /** One sentence for the best or the hardest month. */
-export function monthLine(month: MonthScore, which: 'best' | 'hardest'): string {
+export function monthLine(month: MonthScore, which: 'best' | 'hardest', { tied = false, leastPressure = false }: MonthLineContext = {}): string {
   const name = monthName(month.month);
-  if (!month.lead) return which === 'best' ? `${name} is the lightest month, with no slow planet close to the chart.` : `${name} is the quietest month; no slow planet presses hard.`;
-  const lead = `${month.lead.planet} ${ASPECT_WORD[month.lead.aspect]} your ${month.lead.point}`;
-  if (which === 'best') {
-    return month.lead.tone === 'support'
-      ? `${name} is the strongest month: ${lead} backs your ${role(month.lead.point)}.`
-      : `${name} is the strongest month, with the least pressure of the year; ${lead} still asks something of your ${role(month.lead.point)}.`;
+  if (!month.lead) {
+    if (which === 'best') return `${name} is ${tied ? 'one of the lightest months' : 'the lightest month'}, with no slow planet close to the chart.`;
+    return tied ? `${name} is one of the hardest months; no slow planet presses hard.` : `${name} is the quietest month; no slow planet presses hard.`;
   }
-  return month.lead.tone === 'pressure'
+  const lead = `${month.lead.planet} ${ASPECT_WORD[month.lead.aspect]} your ${month.lead.point}`;
+  const tone = driverTone(month.lead);
+  if (which === 'best') {
+    if (tied) {
+      return tone === 'support'
+        ? `${name} is one of the lightest months: ${lead} backs your ${role(month.lead.point)}.`
+        : `${name} is one of the lightest months; ${lead} still asks something of your ${role(month.lead.point)}.`;
+    }
+    return tone === 'support'
+      ? `${name} is the strongest month: ${lead} backs your ${role(month.lead.point)}.`
+      : `${name} is the strongest month, ${leastPressure ? 'with the least pressure of the year' : 'with the most support of the year'}; ${lead} still asks something of your ${role(month.lead.point)}.`;
+  }
+  if (tied) {
+    return tone === 'pressure'
+      ? `${name} is one of the hardest months: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.`
+      : `${name} is one of the hardest months; ${lead} still helps.`;
+  }
+  return tone === 'pressure'
     ? `${name} carries the most pressure: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.`
-    : `${name} is the softest month of the year, though ${lead} still helps.`;
+    : `${name} has the least support of the year; ${lead} still helps.`;
 }
 
 export interface YearReading {
@@ -74,7 +107,7 @@ export interface YearReading {
     planet: SlowPlanet;
     aspect: ScoreAspect;
     point: ScorePoint;
-    tone: 'support' | 'pressure';
+    tone: DriverTone;
     share: number;
     title: string;
     line: string;
@@ -87,7 +120,10 @@ export interface YearReading {
 
 /** The words for a computed year. `guard` softens a line, e.g. for a reading for someone under 18. */
 export function yearReading(year: YearScore, guard: (text: string) => string = (text) => text): YearReading {
-  const month = (entry: MonthScore | null, which: 'best' | 'hardest') => (entry ? { month: entry.month, name: monthName(entry.month), score: entry.score, line: guard(monthLine(entry, which)) } : null);
+  const leastPressure = (entry: MonthScore) => year.months.every((other) => entry.pressure <= other.pressure);
+  const month = (entry: MonthScore | null, which: 'best' | 'hardest') => (entry
+    ? { month: entry.month, name: monthName(entry.month), score: entry.score, line: guard(monthLine(entry, which, { tied: year.ties[which], leastPressure: leastPressure(entry) })) }
+    : null);
   // The best and hardest months are the same only when every month scores alike; then name just one.
   const same = year.best && year.hardest && year.best.month === year.hardest.month;
   return {
@@ -99,7 +135,7 @@ export function yearReading(year: YearScore, guard: (text: string) => string = (
       planet: driver.planet,
       aspect: driver.aspect,
       point: driver.point,
-      tone: driver.tone,
+      tone: driverTone(driver),
       share: driver.share,
       title: driverTitle(driver),
       line: guard(driverLine(driver)),

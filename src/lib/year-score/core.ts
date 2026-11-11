@@ -71,6 +71,9 @@ export const YEAR_SCORE_SCALE = 0.47;
 /** The same curve for a month, whose balance swings wider than a year's average. */
 export const MONTH_SCORE_SCALE = 0.73;
 
+/** Two months whose unrounded daily balances differ by less than this are read as tied for best or hardest. */
+export const TIE_MARGIN = 0.005;
+
 export const YEAR_DAYS = 365;
 const DAY = 86_400_000;
 
@@ -141,6 +144,8 @@ export interface YearScore {
   /** The month with the highest score and the one with the lowest, among months with at least 10 days in the window. */
   best: MonthScore | null;
   hardest: MonthScore | null;
+  /** Whether another listed month comes within TIE_MARGIN of the best (or the hardest) month's balance, so the month is one of several. */
+  ties: { best: boolean; hardest: boolean };
   /** The contacts that moved the year most, heaviest first. */
   drivers: Driver[];
   /** Natal points the score used. */
@@ -225,6 +230,8 @@ export function scoreYear(natal: NatalPoints, longitudeAt: LongitudeAt, start: D
       }
     }
   }
+  // Each month's unrounded balance (support minus pressure), for picking and tying the best and hardest months.
+  const balance = new Map<string, number>();
   const months: MonthScore[] = monthOrder.map((month) => {
     const acc = monthAcc.get(month)!;
     let lead: MonthScore['lead'] = null;
@@ -237,12 +244,19 @@ export function scoreYear(natal: NatalPoints, longitudeAt: LongitudeAt, start: D
     }
     const s = acc.support / acc.days;
     const p = acc.pressure / acc.days;
+    balance.set(month, s - p);
     return { month, days: acc.days, score: curve(s - p, MONTH_SCORE_SCALE), support: round(s, 4), pressure: round(p, 4), lead };
   });
   const eligible = months.filter((month) => month.days >= 10);
-  // Ties go to the earlier month, so the answer is stable.
-  const best = eligible.reduce<MonthScore | null>((top, month) => (!top || month.score > top.score ? month : top), null);
-  const hardest = eligible.reduce<MonthScore | null>((low, month) => (!low || month.score < low.score ? month : low), null);
+  // Picked on the unrounded balance, not the one-decimal score. Exact ties go to the earlier month, so the answer is stable.
+  const bal = (month: MonthScore) => balance.get(month.month)!;
+  const best = eligible.reduce<MonthScore | null>((top, month) => (!top || bal(month) > bal(top) ? month : top), null);
+  const hardest = eligible.reduce<MonthScore | null>((low, month) => (!low || bal(month) < bal(low) ? month : low), null);
+  // A pick is one of several when any other listed month (the whole strip, partial months too) comes as close or closer.
+  const ties = {
+    best: !!best && months.some((month) => month !== best && bal(month) > bal(best) - TIE_MARGIN),
+    hardest: !!hardest && months.some((month) => month !== hardest && bal(month) < bal(hardest) + TIE_MARGIN),
+  };
   const total = [...drivers.values()].reduce((sum, entry) => sum + entry.abs, 0);
   const ranked = [...drivers.values()]
     .sort((a, b) => b.abs - a.abs || a.from - b.from)
@@ -272,6 +286,7 @@ export function scoreYear(natal: NatalPoints, longitudeAt: LongitudeAt, start: D
     months,
     best,
     hardest,
+    ties,
     drivers: ranked,
     points: SCORE_POINTS.filter((point) => natal[point] !== null),
   };

@@ -24,6 +24,8 @@ const softenMinor = (text: string) => text.replace(/\bway of loving\b/gu, 'way o
 const confidenceLabel = (timed: boolean) => `Reading confidence ${timed ? 70 : 55}%`;
 
 const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.';
+const FUTURE_DATE = 'Enter a birth date in the past.';
+const TIME_NEEDS_PLACE = 'Add the birthplace to use the birth time, or clear the time.';
 
 interface Result {
   reading: YearReading;
@@ -42,11 +44,16 @@ export default function YearScoreCalculator() {
   const [result, setResult] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  // A birth time is used only with a birthplace (its zone); without one, submit is refused and the note shows under the time.
+  const [timeNeedsPlace, setTimeNeedsPlace] = useState(false);
+  // Today's date as the date field's latest, set after hydration so the built page never carries the build day.
+  const [maxDate, setMaxDate] = useState<string | undefined>(undefined);
+  useEffect(() => { setMaxDate(new Date().toISOString().slice(0, 10)); }, []);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const generation = useRef(0);
   useEffect(() => () => { generation.current += 1; }, []);
 
-  function invalidate() { generation.current++; setBusy(false); setResult(null); setError(''); }
+  function invalidate() { generation.current++; setBusy(false); setResult(null); setError(''); setTimeNeedsPlace(false); }
 
   async function compute(event: Event) {
     event.preventDefault();
@@ -57,7 +64,9 @@ export default function YearScoreCalculator() {
     try {
       const today = new Date().toISOString().slice(0, 10);
       if (!/^\d{4}-\d{2}-\d{2}$/u.test(date) || date < '1800-01-01') { setError('Enter a birth date from 1800 on.'); return; }
+      if (date > today) { setError(FUTURE_DATE); return; }
       if (underAge(date, today, 13)) { setError(UNDER_13); return; }
+      if (showDetail && time && !city) { setTimeNeedsPlace(true); return; }
       const placed = showDetail && city;
       const [scorer] = await Promise.all([loadScorer(), placed ? prepareLocalTime(date, city.tz) : null]);
       if (run !== generation.current) return;
@@ -86,12 +95,12 @@ export default function YearScoreCalculator() {
 
   return (
     <div class="calc" data-year-score-calculator>
-      <form class="calc__form shell" onSubmit={compute} aria-busy={busy}>
+      <form class="calc__form shell" onSubmit={compute} aria-busy={busy} noValidate>
         <div class="core calc__core">
           <div class="calc__fields">
             <div class="field">
               <label class="field__label" for="ys-date">Birth date</label>
-              <input id="ys-date" class="field__input" type="date" required min="1800-01-01" value={date}
+              <input id="ys-date" class="field__input" type="date" required min="1800-01-01" max={maxDate} value={date}
                 onFocus={() => { void loadScorer(); }}
                 onInput={(e) => { invalidate(); setDate((e.target as HTMLInputElement).value); }} />
               <p class="field__help">A date alone is enough. A birth time and place add the Moon.</p>
@@ -103,7 +112,13 @@ export default function YearScoreCalculator() {
             <div class="calc__fields">
               <div class="field">
                 <label class="field__label" for="ys-time">Birth time</label>
-                <input id="ys-time" class="field__input" type="time" value={time} onInput={(e) => { invalidate(); setTime((e.target as HTMLInputElement).value); }} />
+                <input id="ys-time" class="field__input" type="time" value={time} aria-invalid={timeNeedsPlace || undefined} aria-describedby={timeNeedsPlace ? 'ys-time-note' : undefined}
+                  onInput={(e) => { invalidate(); setTime((e.target as HTMLInputElement).value); }} />
+                {/* The hidden copy holds the note's height from the start, so showing the note moves nothing. */}
+                <p class="field__help ys__time-note">
+                  <span class="ys__time-note-space" aria-hidden="true">{TIME_NEEDS_PLACE}</span>
+                  <span id="ys-time-note" role="alert">{timeNeedsPlace ? TIME_NEEDS_PLACE : ''}</span>
+                </p>
               </div>
               <div class="field">
                 <label class="field__label" for="ys-place">Birthplace</label>
@@ -125,7 +140,7 @@ export default function YearScoreCalculator() {
           <div class="ys__score shell tinted" style={`--sign:${result.sign.hue}`}>
             <div class="core tinted ys__score-core">
               <h2 class="ys__heading" tabIndex={-1} ref={headingRef}>
-                <span class="ys__number">{result.reading.score.toFixed(1)}</span><span class="ys__outof">/10</span>
+                <span class="sr-only">Your Year Ahead Score: </span><span class="ys__number">{result.reading.score.toFixed(1)}</span><span class="ys__outof" aria-hidden="true">/10</span><span class="sr-only"> out of 10</span>
               </h2>
               <p class="ys__tier">{result.reading.tier.label}</p>
               <p class="ys__summary">{result.reading.tier.summary}</p>
@@ -155,7 +170,7 @@ export default function YearScoreCalculator() {
               <ul>
                 {result.reading.drivers.map((driver) => (
                   <li key={driver.title}>
-                    <strong>{driver.title}</strong> <span class="ys__tone">{driver.tone === 'support' ? 'support' : 'pressure'}, {Math.round(driver.share * 100)}% of the year</span>
+                    <strong>{driver.title}</strong> <span class="ys__tone">{driver.tone}, {Math.round(driver.share * 100)}% of the year</span>
                     <p>{driver.line}</p>
                     <p class="ys__when">In orb {dayName(driver.inOrbFrom)} to {dayName(driver.inOrbTo)}, closest {dayName(driver.peak)}</p>
                   </li>

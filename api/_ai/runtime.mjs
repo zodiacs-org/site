@@ -39667,6 +39667,7 @@ var VALENCE = {
 var SCORE_CENTER = -0.05;
 var YEAR_SCORE_SCALE = 0.47;
 var MONTH_SCORE_SCALE = 0.73;
+var TIE_MARGIN = 5e-3;
 var YEAR_DAYS = 365;
 var DAY14 = 864e5;
 var norm = (lon) => (lon % 360 + 360) % 360;
@@ -39753,6 +39754,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
       }
     }
   }
+  const balance = /* @__PURE__ */ new Map();
   const months = monthOrder.map((month) => {
     const acc = monthAcc.get(month);
     let lead = null;
@@ -39765,11 +39767,17 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
     }
     const s2 = acc.support / acc.days;
     const p2 = acc.pressure / acc.days;
+    balance.set(month, s2 - p2);
     return { month, days: acc.days, score: curve(s2 - p2, MONTH_SCORE_SCALE), support: round(s2, 4), pressure: round(p2, 4), lead };
   });
   const eligible = months.filter((month) => month.days >= 10);
-  const best = eligible.reduce((top, month) => !top || month.score > top.score ? month : top, null);
-  const hardest = eligible.reduce((low, month) => !low || month.score < low.score ? month : low, null);
+  const bal = (month) => balance.get(month.month);
+  const best = eligible.reduce((top, month) => !top || bal(month) > bal(top) ? month : top, null);
+  const hardest = eligible.reduce((low, month) => !low || bal(month) < bal(low) ? month : low, null);
+  const ties = {
+    best: !!best && months.some((month) => month !== best && bal(month) > bal(best) - TIE_MARGIN),
+    hardest: !!hardest && months.some((month) => month !== hardest && bal(month) < bal(hardest) + TIE_MARGIN)
+  };
   const total = [...drivers.values()].reduce((sum, entry) => sum + entry.abs, 0);
   const ranked = [...drivers.values()].sort((a, b) => b.abs - a.abs || a.from - b.from).slice(0, options.maxDrivers ?? 6).map((entry) => ({
     planet: entry.sample.planet,
@@ -39796,6 +39804,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
     months,
     best,
     hardest,
+    ties,
     drivers: ranked,
     points: SCORE_POINTS.filter((point2) => natal[point2] !== null)
   };
@@ -40472,21 +40481,36 @@ var ASPECT_WORD = { conjunction: "conjunct", sextile: "sextile", square: "square
 function driverTitle(driver) {
   return `${driver.planet} ${ASPECT_WORD[driver.aspect]} your ${driver.point}`;
 }
+function driverTone(contact) {
+  return contact.planet === "Jupiter" && (contact.aspect === "square" || contact.aspect === "opposition") ? "mixed" : contact.tone;
+}
 function driverLine(driver) {
+  if (driverTone(driver) === "mixed") return `${driverTitle(driver)}: growth that asks for restraint.`;
   return transitLine(driver.planet, driver.aspect, driver.point);
 }
 var role = (point2) => BODY_ROLE[point2] ?? point2;
-function monthLine(month, which) {
+function monthLine(month, which, { tied = false, leastPressure = false } = {}) {
   const name = monthName(month.month);
-  if (!month.lead) return which === "best" ? `${name} is the lightest month, with no slow planet close to the chart.` : `${name} is the quietest month; no slow planet presses hard.`;
-  const lead = `${month.lead.planet} ${ASPECT_WORD[month.lead.aspect]} your ${month.lead.point}`;
-  if (which === "best") {
-    return month.lead.tone === "support" ? `${name} is the strongest month: ${lead} backs your ${role(month.lead.point)}.` : `${name} is the strongest month, with the least pressure of the year; ${lead} still asks something of your ${role(month.lead.point)}.`;
+  if (!month.lead) {
+    if (which === "best") return `${name} is ${tied ? "one of the lightest months" : "the lightest month"}, with no slow planet close to the chart.`;
+    return tied ? `${name} is one of the hardest months; no slow planet presses hard.` : `${name} is the quietest month; no slow planet presses hard.`;
   }
-  return month.lead.tone === "pressure" ? `${name} carries the most pressure: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.` : `${name} is the softest month of the year, though ${lead} still helps.`;
+  const lead = `${month.lead.planet} ${ASPECT_WORD[month.lead.aspect]} your ${month.lead.point}`;
+  const tone = driverTone(month.lead);
+  if (which === "best") {
+    if (tied) {
+      return tone === "support" ? `${name} is one of the lightest months: ${lead} backs your ${role(month.lead.point)}.` : `${name} is one of the lightest months; ${lead} still asks something of your ${role(month.lead.point)}.`;
+    }
+    return tone === "support" ? `${name} is the strongest month: ${lead} backs your ${role(month.lead.point)}.` : `${name} is the strongest month, ${leastPressure ? "with the least pressure of the year" : "with the most support of the year"}; ${lead} still asks something of your ${role(month.lead.point)}.`;
+  }
+  if (tied) {
+    return tone === "pressure" ? `${name} is one of the hardest months: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.` : `${name} is one of the hardest months; ${lead} still helps.`;
+  }
+  return tone === "pressure" ? `${name} carries the most pressure: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.` : `${name} has the least support of the year; ${lead} still helps.`;
 }
 function yearReading(year, guard = (text2) => text2) {
-  const month = (entry, which) => entry ? { month: entry.month, name: monthName(entry.month), score: entry.score, line: guard(monthLine(entry, which)) } : null;
+  const leastPressure = (entry) => year.months.every((other) => entry.pressure <= other.pressure);
+  const month = (entry, which) => entry ? { month: entry.month, name: monthName(entry.month), score: entry.score, line: guard(monthLine(entry, which, { tied: year.ties[which], leastPressure: leastPressure(entry) })) } : null;
   const same2 = year.best && year.hardest && year.best.month === year.hardest.month;
   return {
     score: year.score,
@@ -40497,7 +40521,7 @@ function yearReading(year, guard = (text2) => text2) {
       planet: driver.planet,
       aspect: driver.aspect,
       point: driver.point,
-      tone: driver.tone,
+      tone: driverTone(driver),
       share: driver.share,
       title: driverTitle(driver),
       line: guard(driverLine(driver)),
@@ -40587,7 +40611,7 @@ var yearScoreData = z12.object({
     planet,
     aspect,
     point,
-    tone: z12.enum(["support", "pressure"]),
+    tone: z12.enum(["support", "pressure", "mixed"]),
     /** Share of everything that moved the year, 0 to 1. */
     share: z12.number().min(0).max(1),
     title: z12.string(),

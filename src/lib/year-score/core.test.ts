@@ -162,6 +162,71 @@ describe('the words', () => {
   });
 });
 
+describe('lines that agree with their headings', () => {
+  const natal: NatalPoints = { Sun: 10, Moon: null, Mercury: 200, Venus: 240, Mars: 300 };
+  // A sky that changes by calendar month (UTC): month index to the slow planets' longitudes; the rest sit at 45, touching nothing.
+  const byMonth = (months: Record<number, Partial<Record<SlowPlanet, number>>>, rest: Partial<Record<SlowPlanet, number>>) =>
+    (body: SlowPlanet, date: Date) => (months[date.getUTCMonth()] ?? rest)[body] ?? 45;
+  const start = new Date('2026-01-01T00:00:00Z');
+
+  it('calls a hardest month with a supportive lead the one with the least support, never the softest', () => {
+    // Jupiter exactly on the Sun all year except March, when it stands 2 degrees off.
+    const year = scoreYear(natal, byMonth({ 2: { Jupiter: 12 } }, { Jupiter: 10 }), start);
+    expect(year.hardest?.month).toBe('2026-03');
+    expect(year.ties.hardest).toBe(false);
+    const line = yearReading(year).hardest!.line;
+    expect(line).toBe('March 2026 has the least support of the year; Jupiter conjunct your Sun still helps.');
+    expect(line).not.toContain('softest');
+  });
+
+  it('reads Jupiter square or opposite a point as mixed, with its own sentence', () => {
+    for (const [lon, aspect] of [[100, 'square'], [190, 'opposite']] as const) {
+      const reading = yearReading(scoreYear(natal, byMonth({}, { Jupiter: lon }), start));
+      expect(reading.drivers[0]).toMatchObject({ planet: 'Jupiter', point: 'Sun', tone: 'mixed', line: `Jupiter ${aspect} your Sun: growth that asks for restraint.` });
+      expect(reading.drivers[0].line).not.toMatch(/backs|pushes against|stands opposite/u);
+      expect(reading.best!.line).not.toContain('backs');
+    }
+    // The number is the same as before: only the word changes.
+    expect(scoreYear(natal, byMonth({}, { Jupiter: 100 }), start).drivers[0].tone).toBe('support');
+  });
+
+  it('claims the least pressure of the year only for the month with the least pressure', () => {
+    // Saturn exactly square the Sun all year; in May 1 degree off (less pressure).
+    const least = yearReading(scoreYear(natal, byMonth({ 4: { Saturn: 101 } }, { Saturn: 100 }), start));
+    expect(least.best!.line).toBe('May 2026 is the strongest month, with the least pressure of the year; Saturn square your Sun still asks something of your sense of self.');
+    // In May Saturn stays exact but Jupiter comes within a degree of the Sun; in June Saturn alone is a degree off, so June has less pressure.
+    const most = scoreYear(natal, byMonth({ 4: { Saturn: 100, Jupiter: 11 }, 5: { Saturn: 101 } }, { Saturn: 100 }), start);
+    expect(most.best?.month).toBe('2026-05');
+    expect(most.best?.lead?.planet).toBe('Saturn');
+    expect(yearReading(most).best!.line).toBe('May 2026 is the strongest month, with the most support of the year; Saturn square your Sun still asks something of your sense of self.');
+  });
+
+  it('picks months on the unrounded balance and calls a tie one of several', () => {
+    // A quiet year: every month balances at exactly 0, so the first month is one of the lightest.
+    const quiet = yearReading(scoreYear(natal, () => 45, new Date('2026-07-17T00:00:00Z')));
+    expect(quiet.best!.line).toBe('July 2026 is one of the lightest months, with no slow planet close to the chart.');
+    expect(quiet.hardest).toBeNull();
+    // Saturn exactly square the Sun in every month but April: the hardest months tie, the best does not.
+    const year = scoreYear(natal, byMonth({ 3: { Saturn: 101 } }, { Saturn: 100 }), start);
+    expect(year.ties).toEqual({ best: false, hardest: true });
+    const reading = yearReading(year);
+    expect(reading.best!.line).toContain('April 2026 is the strongest month');
+    expect(reading.hardest!.line).toBe('January 2026 is one of the hardest months: Saturn square your Sun leans on your sense of self. A month to pace yourself, not to fear.');
+    // February and March print the same one-decimal score, but March's balance is higher by more than the margin:
+    // March is the best month (the rounded score would have picked February), and it is not a tie.
+    const apart = scoreYear(natal, byMonth({ 1: { Jupiter: 12.949 }, 2: { Jupiter: 12.925 } }, {}), start);
+    expect(apart.months[1].score).toBe(apart.months[2].score);
+    expect(apart.best?.month).toBe('2026-03');
+    expect(apart.ties.best).toBe(false);
+    expect(yearReading(apart).best!.line).toContain('March 2026 is the strongest month');
+    // Balances less than the margin apart are a tie, and the line says so.
+    const close = scoreYear(natal, byMonth({ 1: { Jupiter: 12.97 }, 2: { Jupiter: 12.98 } }, {}), start);
+    expect(close.best?.month).toBe('2026-02');
+    expect(close.ties.best).toBe(true);
+    expect(yearReading(close).best!.line).toBe('February 2026 is one of the lightest months: Jupiter conjunct your Sun backs your sense of self.');
+  });
+});
+
 describe('the Year Ahead directory', () => {
   const REVIEW = '2026-11-09';
   it('lists only adults, each with a cited source and a unique slug', () => {

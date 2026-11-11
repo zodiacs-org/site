@@ -166,8 +166,53 @@ try {
           const introText = (await page.locator('.tool-hero p').first().innerText()).replace(/\s+/gu, ' ');
           if (!introText.includes('your Year Ahead Score, your numerology Personal Year')) fail(`${path} @${size.width}: the introduction reads "${introText}"`);
         }
+        if (path === '/year-score/') {
+          // The focused heading reads as a sentence, not a bare number.
+          const heading = await page.locator('.ys__heading').evaluate((node) => node.textContent.replace(/\s+/gu, ' ').trim());
+          const named = await page.getByRole('heading', { level: 2, name: /^Your Year Ahead Score: \d+\.\d out of 10$/u }).count();
+          if (!named) fail(`${path} result @${size.width}: the result heading reads "${heading}"`);
+        }
         if (shots) await page.screenshot({ path: `${shots}/${path.replaceAll('/', '_')}result-${size.name}.png`, fullPage: true });
         console.log(`ok ${path} result @${size.width}: ${href}`);
+      }
+
+      // The Year Ahead Score's form traps: a time without a place, and a date in the future.
+      if (PAGES.includes('/year-score/')) {
+        const path = '/year-score/';
+        const UNDER_13 = 'Zodiacs is not directed at children under 13';
+        await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+        await page.getByRole('button', { name: 'Add birth time and place' }).click();
+        await page.fill('#ys-date', '1990-05-03');
+        const placeBefore = (await page.locator('#ys-place').boundingBox())?.y;
+        await page.fill('#ys-time', '08:30');
+        await page.getByRole('button', { name: 'Score my year' }).click();
+        const note = page.locator('#ys-time-note');
+        await note.waitFor({ state: 'visible' });
+        const noteText = (await note.innerText()).trim();
+        if (noteText !== 'Add the birthplace to use the birth time, or clear the time.') fail(`${path} @${size.width}: a time without a place shows "${noteText}"`);
+        await page.waitForTimeout(500);
+        if (await page.locator('.ys__number').count()) fail(`${path} @${size.width}: a time without a place still gives a result`);
+        const placeAfter = (await page.locator('#ys-place').boundingBox())?.y;
+        if (placeBefore !== placeAfter) fail(`${path} @${size.width}: the time note moves the birthplace field from ${placeBefore} to ${placeAfter}`);
+        await page.fill('#ys-time', '');
+        if ((await note.innerText()).trim()) fail(`${path} @${size.width}: the time note stays after the time is cleared`);
+
+        await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+        const max = await page.locator('#ys-date').getAttribute('max');
+        if (!/^\d{4}-\d{2}-\d{2}$/u.test(max ?? '')) fail(`${path} @${size.width}: the date field's latest date is ${max}`);
+        await page.fill('#ys-date', '2091-01-01');
+        await page.getByRole('button', { name: 'Score my year' }).click();
+        const error = page.locator('.calc__error');
+        await error.waitFor({ state: 'visible' });
+        const errorText = (await error.innerText()).trim();
+        if (errorText !== 'Enter a birth date in the past.' || errorText.includes(UNDER_13)) fail(`${path} @${size.width}: a future date shows "${errorText}"`);
+        // A past date less than 13 years ago still gets the refusal, unchanged.
+        const recent = `${new Date().getUTCFullYear() - 5}-01-01`;
+        await page.fill('#ys-date', recent);
+        await page.getByRole('button', { name: 'Score my year' }).click();
+        const refusal = (await error.innerText()).trim();
+        if (refusal !== 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.') fail(`${path} @${size.width}: a date five years ago shows "${refusal}"`);
+        console.log(`ok ${path} form @${size.width}: time without place, future date and under-13 refusal`);
       }
       await context.close();
 

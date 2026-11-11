@@ -95,7 +95,7 @@ export const yearScoreData = z.object({
   hardest: monthPick,
   drivers: z.array(z.object({
     planet, aspect, point,
-    tone: z.enum(['support', 'pressure']),
+    tone: z.enum(['support', 'pressure', 'mixed']),
     /** Share of everything that moved the year, 0 to 1. */
     share: z.number().min(0).max(1),
     title: z.string(),
