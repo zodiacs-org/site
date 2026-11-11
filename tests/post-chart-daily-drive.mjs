@@ -471,9 +471,9 @@ await withPreview({ port: 4426 }, async (baseURL) => {
             && await note.locator('button, input, select, textarea').count() === 0);
           check(`${prefix} sync explainer target`, await note.locator('a').getAttribute('href') === '/profile/#profile-sync');
           check(`${prefix} exact device-only note`, (await note.innerText()).replace(/\s+/gu, ' ').trim() === (
-            'Prefer a brief matched to this exact chart? That exists only for account-synced charts. '
-            + 'Syncing is always your call, and this chart stays on your device until you make it. '
-            + 'How chart sync works'
+            'Prefer a brief matched to this exact chart? This needs a chart you synced earlier. '
+            + 'Chart sync is paused for now. '
+            + 'About the pause'
           ));
           const text = (await shell.innerText()).replace(testCase.expected, '').trim();
           if (testCase.name === 'device-only') deviceText = text;
