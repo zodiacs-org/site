@@ -8,7 +8,6 @@ import { configuredWalletChains } from '../../../lib/wallet/config';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
@@ -269,10 +268,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         <>
           <p>
             As contas continuam opcionais. As calculadoras sem conta e o
-            salvamento local de mapas funcionam sem entrar em uma conta. A
-            versão canário da sincronização criptografada aceita no máximo um
-            mapa, que você confirma explicitamente ser seu. A prévia é restrita
-            a adultos de 18 anos ou mais.
+            salvamento local de mapas funcionam sem entrar em uma conta. A sincronização criptografada guarda no máximo um mapa, que você confirma explicitamente ser seu, e é só para adultos de 18 anos ou mais.
           </p>
           <ul>
             <li>
@@ -291,10 +287,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
               fuso horário e as posições derivadas são criptografados pelo
               nosso servidor com uma chave de dados própria de cada registro.
               Essa chave é encapsulada por uma chave de serviço armazenada fora
-              do banco de dados. Esta é uma criptografia gerenciada pelo
-              serviço — não uma criptografia de ponta a ponta —, então a
-              Zodiacs pode descriptografar o registro quando você o restaura em
-              outro dispositivo conectado.
+              do banco de dados. Esta é uma criptografia gerenciada pelo serviço, não uma criptografia de ponta a ponta, então a Zodiacs pode descriptografar o registro quando você o restaura em outro dispositivo conectado, quando cria um convite a partir dele e, se você ativar os e-mails com seu mapa, quando seus e-mails são escritos.
             </li>
             <li>
               O banco de dados recebe um envelope criptografado do mapa, além
@@ -338,11 +331,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
               assinatura do e-mail ou a entrar em contato com o suporte.
             </li>
             <li>
-              Contas com mapas do sistema anterior de sincronização na nuvem não
-              são migradas silenciosamente. A versão canário pausa e oferece a
-              exportação até que esteja disponível uma revisão explícita da
-              migração, mapa por mapa; a exclusão permanente da conta também
-              remove esses registros antigos.
+              Mapas do sistema anterior de sincronização na nuvem nunca são transferidos para a sincronização criptografada. Até que os removamos do nosso banco de dados, a exportação da conta os inclui e a exclusão permanente da conta os remove.
+            </li>
+            <li>
+              “Usar meu mapa nos meus e-mails” é uma opção separada no seu perfil, desativada por padrão, e precisa do seu mapa sincronizado. Enquanto estiver ativada, o e-mail diário do mapa que você confirmar e, se você o receber, o resumo semanal são escritos a partir desse mapa: o processo de envio o descriptografa só para escrever seu e-mail. Um e-mail diário do mapa mostra o nome do mapa, a data, a hora e o local de nascimento, como o seu perfil, e é enviado ao endereço da sua conta pela Resend. Enquanto estiver desativada, nenhum e-mail usa seu mapa.
             </li>
           </ul>
         </>
@@ -471,32 +463,23 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 
       <h2>Hospedagem, registros e análise de uso</h2>
       <p> O site é hospedado na <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>. Como acontece com qualquer serviço de hospedagem na web, os servidores dela processam as solicitações feitas pelo seu navegador e podem manter registros técnicos de curta duração (como endereço IP e tipo de navegador) para entregar o site e protegê-lo contra abusos. Não veiculamos publicidade e não usamos cookies de rastreamento entre sites nem pixels de marketing de terceiros. </p>
-      {accountSyncV2Enabled ? (
-        <p>
-          A análise de uso de terceiros fica desativada durante toda a prévia de
-          acesso controlado da sincronização criptografada. Isso impede que um
-          script de análise compartilhe o mesmo contexto de página que o
-          armazenamento privado de mapas no navegador.
-        </p>
-      ) : (
-        <p>
-          Contamos visualizações de página e o uso anônimo de recursos com o
-          Plausible, um serviço de análise sem cookies. Para não contar o mesmo
-          dispositivo repetidamente durante um dia, o Plausible processa
-          brevemente o endereço IP e o agente do usuário para derivar um
-          identificador limitado a este site, dispositivo e dia. O IP e o agente
-          do usuário originais não são armazenados; o sal usado nesse
-          identificador é trocado e apagado a cada 24 horas. O Plausible não
-          recebe dados de nascimento, endereço público, identificador de mapa,
-          identificador de conta conectada nem a lista exata dos signos que um
-          endereço detém. Também não recebe nenhum identificador entre sites.
-          Os eventos do Aura levam apenas categorias de uma lista permitida,
-          como um resultado e uma faixa aproximada de quantos signos o endereço
-          detém; da mesma forma, os outros eventos registram “um mapa foi
-          salvo”, nunca de quem.
-        </p>
-      )}
-      {webAnalyticsEnabled && !accountSyncV2Enabled && (
+      <p>
+        Contamos visualizações de página e o uso anônimo de recursos com o
+        Plausible, um serviço de análise sem cookies. Para não contar o mesmo
+        dispositivo repetidamente durante um dia, o Plausible processa
+        brevemente o endereço IP e o agente do usuário para derivar um
+        identificador limitado a este site, dispositivo e dia. O IP e o agente
+        do usuário originais não são armazenados; o sal usado nesse
+        identificador é trocado e apagado a cada 24 horas. O Plausible não
+        recebe dados de nascimento, endereço público, identificador de mapa,
+        identificador de conta conectada nem a lista exata dos signos que um
+        endereço detém. Também não recebe nenhum identificador entre sites.
+        Os eventos do Aura levam apenas categorias de uma lista permitida,
+        como um resultado e uma faixa aproximada de quantos signos o endereço
+        detém; da mesma forma, os outros eventos registram “um mapa foi
+        salvo”, nunca de quem.{accountSyncV2Enabled ? ' Nenhum script de análise é executado na sua página de perfil nem na página de login, onde sua conta e seu mapa sincronizado aparecem.' : ''}
+      </p>
+      {webAnalyticsEnabled && (
         <p>
           Também contamos visualizações de página com o Vercel Web Analytics, o
           contador sem cookies integrado à nossa plataforma de hospedagem. Ele
@@ -544,6 +527,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         {accountSyncV2Enabled
           ? <li>Exportar ou excluir uma conta na página de perfil; escolher separadamente se quer limpar este navegador.</li>
           : <li>Excluir uma conta e os dados sincronizados dela enviando um e-mail para nós.</li>}
+        {accountSyncV2Enabled && <li>Desativar “Usar meu mapa nos meus e-mails” ou retirar a sincronização de mapas pelo seu perfil, a qualquer momento.</li>}
         {weeklyDigestEnabled && <li>Desativar o e-mail semanal com um clique, a qualquer momento.</li>}
         <li>Cancelar um convite de compatibilidade no seu perfil antes que ele seja usado.</li>
         <li>Pedir a correção, a ocultação ou a remoção de um perfil do diretório People.</li>

@@ -8,7 +8,6 @@ import { configuredWalletChains } from '../../../lib/wallet/config';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
@@ -262,10 +261,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         <>
           <p>
             Las cuentas siguen siendo opcionales. Las calculadoras sin cuenta y
-            el guardado local de cartas funcionan sin iniciar sesión. La prueba
-            de sincronización cifrada acepta como máximo una carta que confirmes
-            explícitamente como tuya. La versión preliminar está limitada a
-            personas adultas de 18 años o más.
+            el guardado local de cartas funcionan sin iniciar sesión. La sincronización cifrada guarda como máximo una carta, que confirmas explícitamente como tuya, y es solo para personas adultas de 18 años o más.
           </p>
           <ul>
             <li>
@@ -284,10 +280,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
               hora, el lugar, las coordenadas, la zona horaria y las posiciones
               derivadas con una clave de datos propia de cada registro. Esa
               clave se envuelve con una clave de servicio almacenada fuera de la
-              base de datos. Es un cifrado gestionado por el servicio —no un
-              cifrado de extremo a extremo—, así que Zodiacs puede descifrar el
-              registro cuando lo restauras en otro dispositivo con sesión
-              iniciada.
+              base de datos. Es un cifrado gestionado por el servicio, no un cifrado de extremo a extremo, así que Zodiacs puede descifrar el registro cuando lo restauras en otro dispositivo con sesión iniciada, cuando creas una invitación a partir de él y, si activas los correos con tu carta, cuando se redactan tus correos.
             </li>
             <li>
               La base de datos recibe un sobre cifrado con la carta, además de
@@ -331,11 +324,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
               o que contactes con soporte.
             </li>
             <li>
-              Las cuentas con cartas del sistema anterior de sincronización en la
-              nube no se migran sin avisar. La prueba queda en pausa y ofrece la
-              exportación hasta que haya disponible una revisión explícita de la
-              migración carta por carta; el borrado permanente de la cuenta
-              también elimina esos registros antiguos.
+              Las cartas del sistema anterior de sincronización en la nube nunca se trasladan a la sincronización cifrada. Hasta que las eliminemos de nuestra base de datos, la exportación de la cuenta las incluye y el borrado permanente de la cuenta las elimina.
+            </li>
+            <li>
+              «Usar mi carta para mis correos» es una opción aparte en tu perfil, desactivada por defecto, que necesita tu carta sincronizada. Mientras está activada, el correo diario de carta que confirmes y, si lo recibes, el resumen semanal se redactan a partir de esa carta: el proceso de envío la descifra solo para redactar tu correo. Un correo diario de carta muestra el nombre de la carta, la fecha, la hora y el lugar de nacimiento, como tu perfil, y se envía a la dirección de tu cuenta a través de Resend. Mientras está desactivada, ningún correo usa tu carta.
             </li>
           </ul>
         </>
@@ -465,32 +457,23 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 
       <h2>Alojamiento, registros y analítica</h2>
       <p> El sitio está alojado en <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>. Como todos los servicios de alojamiento web, sus servidores procesan las solicitudes que hace tu navegador y pueden conservar registros técnicos de corta duración (como la dirección IP y el tipo de navegador) para servir el sitio y protegerlo de abusos. No mostramos publicidad y no usamos cookies de seguimiento entre sitios ni píxeles de marketing de terceros. </p>
-      {accountSyncV2Enabled ? (
-        <p>
-          La analítica de terceros está desactivada en toda la versión
-          preliminar de sincronización cifrada con acceso controlado. Así se
-          evita que un script de analítica comparta el mismo contexto de página
-          que el almacenamiento privado de cartas del navegador.
-        </p>
-      ) : (
-        <p>
-          Contamos las visitas a páginas y el uso anónimo de funciones con
-          Plausible, un servicio de analítica sin cookies. Para no contar varias
-          veces el mismo dispositivo durante un día, Plausible procesa
-          brevemente la dirección IP y el agente de usuario para derivar un
-          identificador limitado a este sitio, dispositivo y día. La IP y el
-          agente de usuario originales no se almacenan; la sal usada para ese
-          identificador rota y se elimina cada 24 horas. Plausible no recibe
-          ningún dato de nacimiento, dirección pública, identificador de carta,
-          identificador de cuenta conectada ni la lista exacta de signos que se
-          poseen. Tampoco recibe ningún identificador entre sitios.
-          Los eventos de Aura solo llevan categorías permitidas, como un
-          resultado y un rango aproximado del número de signos que se poseen;
-          los demás eventos registran de forma similar «se guardó una carta»,
-          nunca de quién.
-        </p>
-      )}
-      {webAnalyticsEnabled && !accountSyncV2Enabled && (
+      <p>
+        Contamos las visitas a páginas y el uso anónimo de funciones con
+        Plausible, un servicio de analítica sin cookies. Para no contar varias
+        veces el mismo dispositivo durante un día, Plausible procesa
+        brevemente la dirección IP y el agente de usuario para derivar un
+        identificador limitado a este sitio, dispositivo y día. La IP y el
+        agente de usuario originales no se almacenan; la sal usada para ese
+        identificador rota y se elimina cada 24 horas. Plausible no recibe
+        ningún dato de nacimiento, dirección pública, identificador de carta,
+        identificador de cuenta conectada ni la lista exacta de signos que se
+        poseen. Tampoco recibe ningún identificador entre sitios.
+        Los eventos de Aura solo llevan categorías permitidas, como un
+        resultado y un rango aproximado del número de signos que se poseen;
+        los demás eventos registran de forma similar «se guardó una carta»,
+        nunca de quién.{accountSyncV2Enabled ? ' Ningún script de analítica se ejecuta en tu página de perfil ni en la página de inicio de sesión, donde se muestran tu cuenta y tu carta sincronizada.' : ''}
+      </p>
+      {webAnalyticsEnabled && (
         <p>
           También contamos las visitas a páginas con Vercel Web Analytics, el
           contador sin cookies integrado en nuestra plataforma de alojamiento.
@@ -538,6 +521,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         {accountSyncV2Enabled
           ? <li>Exportar o eliminar una cuenta desde la página de perfil; elegir por separado si también se borran los datos de este navegador.</li>
           : <li>Eliminar una cuenta y sus datos sincronizados escribiéndonos un correo.</li>}
+        {accountSyncV2Enabled && <li>Desactivar «Usar mi carta para mis correos» o retirar la sincronización de cartas desde tu perfil en cualquier momento.</li>}
         {weeklyDigestEnabled && <li>Desactivar el correo semanal con un clic, en cualquier momento.</li>}
         <li>Retirar una invitación de compatibilidad desde tu perfil antes de que se use.</li>
         <li>Solicitar la corrección, la ocultación o la eliminación de un perfil de People.</li>
