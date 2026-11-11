@@ -26,6 +26,7 @@
 import { z } from 'zod';
 import eclipseTable from '../../data/eclipses.json';
 import ingressTable from '../../data/ingresses.json';
+import { nasaIngressNear, refineIngressEvents } from './nasa-ingress';
 import { computeEvents } from '../../lib/compute-api/endpoints';
 import { parseEventsRequest } from '../../lib/compute-api/validate';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
@@ -222,9 +223,11 @@ export async function getHoroscopePeriod(
   type Raw = { kind: 'ingress' | 'station' | 'lunation' | 'eclipse'; at: string; planet: string; sign: string; type?: string };
   let raw: Raw[] = [];
   if (args.period === 'year') {
+    // Each sign change at NASA's time where the site's NASA table has it (nasa-ingress.ts), as the pages print it.
     raw = (ingressTable.windows as { planet: string; sign: string; from: string }[])
-      .filter((window) => YEAR_PLANETS.includes(window.planet) && window.from >= fromUtc.toISOString() && window.from < toUtc.toISOString())
-      .map((window) => ({ kind: 'ingress' as const, at: window.from, planet: window.planet, sign: window.sign }));
+      .filter((window) => YEAR_PLANETS.includes(window.planet))
+      .map((window) => ({ kind: 'ingress' as const, at: nasaIngressNear(window.planet, window.sign, window.from) ?? window.from, planet: window.planet, sign: window.sign }))
+      .filter((event) => event.at >= fromUtc.toISOString() && event.at < toUtc.toISOString());
     const yearsCovered = ingressTable.horizons.filter((horizon) => horizon.planets.some((planet) => YEAR_PLANETS.includes(planet)));
     if (yearsCovered.some((horizon) => to > horizon.to || from < horizon.from)) notes.push('Sign changes are listed only within the years the ingress table covers.');
   } else {
@@ -232,8 +235,10 @@ export async function getHoroscopePeriod(
       const verdict = await sources.allowEvents();
       if (verdict !== 'allowed') return { refused: verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable' };
     }
-    const calculation = computeEvents(parseEventsRequest({ from: fromUtc.toISOString(), to: toUtc.toISOString() }));
-    raw = calculation.result.events.map((event: { kind: 'ingress' | 'station' | 'lunation'; at: string; body?: string; sign: string; type?: string }) => ({
+    const eventsRequest = parseEventsRequest({ from: fromUtc.toISOString(), to: toUtc.toISOString() });
+    const calculation = computeEvents(eventsRequest);
+    // Each planet's sign change at NASA's time where the site's NASA table has it (nasa-ingress.ts).
+    raw = refineIngressEvents(calculation.result.events as { kind: 'ingress' | 'station' | 'lunation'; at: string; body?: string; sign: string; type?: string; retrograde?: boolean }[], eventsRequest.from, eventsRequest.to, eventsRequest.bodies).events.map((event: { kind: 'ingress' | 'station' | 'lunation'; at: string; body?: string; sign: string; type?: string }) => ({
       kind: event.kind, at: event.at, planet: event.kind === 'lunation' ? 'Moon' : event.body!, sign: event.sign, ...(event.type ? { type: event.type } : {}),
     }));
     // The Moon changes sign every two to three days; over a month those changes would bury the rest.

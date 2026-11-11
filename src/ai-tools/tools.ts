@@ -24,6 +24,7 @@ import { getChineseZodiac } from './features/chinese-zodiac';
 import { getPersonalTransits } from './features/personal-transits';
 import { explainAstrology } from './features/explain';
 import { searchSkyEvents } from './features/sky-events';
+import { checkIngressFact, ingressSourceLinks, refineIngressEvents } from './features/nasa-ingress';
 import { getYearScore } from './features/year-score';
 import { getSolarReturn } from './features/solar-return';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
@@ -461,8 +462,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone, events: calculation.result.events.map(event => ({ ...event, localAt: displayTime(event.at, zone) })), calculation, completeness: calculation.receipt.search!.completeness };
-        links = [{ title: 'Subscribe to these in your calendar (get_sky_calendar)', url: `${ORIGIN}/sky-calendar/` },
+        // A planet's sign change is given at NASA's time where the site's NASA table has it, as the pages print it
+        // (features/nasa-ingress.ts); the calculation block stays the engine's own receipted answer.
+        const refined = refineIngressEvents(calculation.result.events, parsedRequest.from, parsedRequest.to, parsedRequest.kinds.includes('ingress') ? parsedRequest.bodies : []);
+        data = { from: calculation.result.from, to: calculation.result.to, zone, events: refined.events.map(event => ({ ...event, localAt: displayTime(event.at, zone) })), calculation, completeness: calculation.receipt.search!.completeness };
+        links = [...ingressSourceLinks(ORIGIN, refined), { title: 'Subscribe to these in your calendar (get_sky_calendar)', url: `${ORIGIN}/sky-calendar/` },
           // With the sky events switch, the tool for one kind of event further ahead.
           ...(skyEvents ? [{ title: 'Eclipses, stations, sign changes and Moons months or years ahead (search_sky_events)', url: `${ORIGIN}/events/` }] : []),
           { title: 'Explore the lunar calendar', url: `${ORIGIN}/full-moon-calendar/` }, { title: 'Explore retrogrades', url: `${ORIGIN}/retrogrades/` }, methodLink];
@@ -481,8 +485,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
         const calculation = await computeSkyFact(request, { localTime: localTime() });
-        data = { answer: calculation.result.answer, calculation, interpretation: 'The verdict checks an astronomical proposition, not an astrological prediction.' };
-        links = [methodLink, calendarLink];
+        // An ingress claim is judged on NASA's time for the sign change where the site's NASA table has it
+        // (features/nasa-ingress.ts); the calculation block stays the engine's own receipted answer.
+        const ingressCheck = request.kind === 'ingress' ? checkIngressFact(ORIGIN, calculation.result) : null;
+        data = { answer: ingressCheck?.answer ?? calculation.result.answer, calculation, interpretation: 'The verdict checks an astronomical proposition, not an astrological prediction.' };
+        links = [...(ingressCheck?.links ?? []), methodLink, calendarLink];
         break;
       }
       case 'get_horoscope': {
