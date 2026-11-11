@@ -181,6 +181,12 @@ export const BIG_THREE_SHARE_STORY_PATH = '/api/og/big-three-story';
 export const CHINESE_ZODIAC_SHARE_STORY_PATH = '/api/og/chinese-zodiac-story';
 export const INVITE_SHARE_STORY_PATH = '/api/og/invite-story';
 
+/**
+ * Keys a birthday report link must never carry, refused rather than skipped like fbclid. The Personal Year (py)
+ * left the link (ZOD-24): with the Sun sign and the card it narrows the birth date further.
+ */
+const BIRTHDAY_REPORT_REFUSED_SHARE_KEYS: readonly string[] = Object.freeze(['py']);
+
 /** An image route takes only its own keys, each once; a page skips the ones it does not use. */
 const isPictureRoute = (route: ResultShareRoute) => route.endsWith('-image') || route.endsWith('-story');
 
@@ -2005,7 +2011,7 @@ export async function handleInviteLinkRequest(request: Request): Promise<Respons
 
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string }>> = {
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string; refused?: readonly string[] }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -2041,8 +2047,8 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
   'year-score-link': { path: YEAR_SCORE_SHARE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreLinkRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
   'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
-  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
-  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
+  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
+  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
   'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
   'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
 };
@@ -2059,7 +2065,14 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
   }
   const query = req.query && typeof req.query === 'object' ? req.query : {};
   let params = new URLSearchParams();
-  for (const [key, value] of Object.entries(query)) {
+  // A key the route refuses outright (the birthday report's old py), once or repeated, is checked before the
+  // unknown keys are skipped: the image refuses, the page opens without a result.
+  const refused = target.refused !== undefined && Object.keys(query).some((key) => target.refused!.includes(key));
+  if (refused && isPictureRoute(route)) {
+    await writeNodeResponse(res, errorResponse(400));
+    return;
+  }
+  for (const [key, value] of refused ? [] : Object.entries(query)) {
     if (key === RESULT_SHARE_ROUTE_KEY) continue;
     // The page skips a key it does not use, such as the fbclid or utm_source an app adds to a
     // link as it is opened, so the result still shows; the image takes only its own keys.

@@ -73,6 +73,44 @@ describe('share routes behind a launch switch', () => {
     expect(await statusOf(route, { p: 'jensen-huang' })).toBe(404);
   }, 30_000);
 
+  describe('a birthday report link that still carries the Personal Year (py)', () => {
+    const REPORT = { s: 'capricorn', v: '6.8', t: '13' };
+    const PERSONAL = 'My birthday report: 6.8/10, Capricorn Sun';
+    const send = async (route: 'birthday-report-link' | 'birthday-report-image', query: Record<string, string | string[]>) => {
+      const res = nodeResponse();
+      await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: route, ...query } }, res, route);
+      return { status: res.statusCode, body: res.body.toString('utf8') };
+    };
+    const WITH_PY: readonly [string, Record<string, string | string[]>][] = [
+      ['once', { ...REPORT, py: '4' }],
+      ['repeated', { ...REPORT, py: ['4', '5'] }],
+      ['first', { py: '4', ...REPORT }],
+      ['empty', { ...REPORT, py: '' }],
+    ];
+
+    beforeEach(() => { process.env.PUBLIC_BIRTHDAY_REPORT_ENABLED = '1'; });
+
+    it('opens the page with the result, and skips an app\'s fbclid or utm_source as before', async () => {
+      expect((await send('birthday-report-link', REPORT)).body).toContain(PERSONAL);
+      const opened = await send('birthday-report-link', { ...REPORT, fbclid: 'IwAR0', utm_source: 'share' });
+      expect(opened.status).toBe(200);
+      expect(opened.body).toContain(PERSONAL);
+    });
+
+    it.each(WITH_PY)('opens the page without a result when py is there (%s)', async (_, query) => {
+      const page = await send('birthday-report-link', query);
+      expect(page.status).toBe(200);
+      expect(page.body).not.toContain(PERSONAL);
+      expect(page.body).not.toContain('6.8');
+      expect(page.body).not.toContain('Personal Year 4');
+      expect(page.body).toContain('Your birthday report');
+    });
+
+    it.each(WITH_PY)('refuses the image when py is there (%s)', async (_, query) => {
+      expect((await send('birthday-report-image', query)).status).toBe(400);
+    });
+  });
+
   it('links the solar return share page to the Year Ahead Score only while that switch is on', async () => {
     process.env.PUBLIC_SOLAR_RETURN_SHARE_ENABLED = '1';
     const html = async () => {
