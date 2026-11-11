@@ -1706,7 +1706,8 @@ export async function prepareSolarReturnCard(source: SolarReturnExportModel): Pr
   ctx.fillText(title, 72, 68);
   ctx.font = `400 22px ${MONO}`;
   ctx.fillStyle = INK_2;
-  ctx.fillText(`${model.instantUtc.slice(0, 16).replace('T', ' ')} UTC`, 72, 144);
+  // Without a birth time the return is a date, a day either side, never a clock time.
+  ctx.fillText(model.noTime ? `${model.instantUtc.slice(0, 10)} UTC` : `${model.instantUtc.slice(0, 16).replace('T', ' ')} UTC`, 72, 144);
 
   const wheel = await loadSvg(await wheelSvgString(model.wheel));
   ctx.drawImage(wheel, (W - 610) / 2, 192, 610, 610);

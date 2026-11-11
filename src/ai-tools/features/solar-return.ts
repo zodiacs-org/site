@@ -47,7 +47,7 @@ const sign = z.enum(SIGNS.map((entry) => entry.slug) as [string, ...string[]]);
 export const solarReturnData = z.object({
   which: z.enum(['next', 'current']),
   returnYear: z.number().int(),
-  /** The return instant in UTC and on the person's clock. */
+  /** The return instant in UTC and on the person's clock; without a birth time, `local` is the return's UTC date only and `zone` is UTC. */
   instantUtc: z.string(),
   local: z.string(),
   zone: z.string(),
@@ -76,6 +76,12 @@ function clockLabel(at: Date, timeZone: string): string {
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
 }
 
+/** Without a birth time the return is a date, not a clock time: its UTC date, a day either side. */
+function dateLabel(at: Date): string {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).formatToParts(at).map((part) => [part.type, part.value]));
+  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+}
+
 /** `birthdayReportPage`: the site's /birthday-report/ is switched on (PUBLIC_BIRTHDAY_REPORT_ENABLED=1); only then does the answer link to it. */
 export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: SolarReturnClock, origin: string, birthdayReportPage = false): Promise<{ data: SolarReturnData; links: { title: string; url: string }[] }> {
   const birth = parseCivilDate(args.birthDate);
@@ -100,7 +106,8 @@ export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: S
   const chart = computeChart({ utc: instant, ...(location ?? {}), houseSystem: 'whole', timeKnown: true });
   const cusps = location && chart.houses ? chart.houses.cusps : null;
   const asc = location && chart.angles ? chart.angles.asc : null;
-  const shownZone = args.currentZone ?? args.zone ?? 'UTC';
+  // Without a birth time the return is told as its UTC date, as the birthday report and /solar-return/ tell it.
+  const shownZone = timeKnown ? args.currentZone ?? args.zone ?? 'UTC' : 'UTC';
   const today = now.toISOString().slice(0, 10);
   const under18 = isUnder18(args.birthDate, today);
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
@@ -123,14 +130,14 @@ export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: S
   if (!timeKnown) limits.push('No birth time was given, so the return instant can shift by up to about a day; the Moon, the rising sign and the houses are left out.');
   else if (!placed) limits.push('No birthplace coordinates were given, so the rising sign and the houses are left out.');
   else limits.push('The return is cast for the birthplace. Astrologers who cast it where the person spends the birthday get a different rising sign and houses, with the same planets.');
-  if (!args.currentZone && args.zone) limits.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
-  if (!args.zone) limits.push('The time is in UTC because no time zone was given.');
+  if (!timeKnown) limits.push('Without a birth time the return is given as its date in UTC, not a clock time, and it can be a day either side.');
+  else if (!args.currentZone) limits.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
   const detail = readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed });
   const pageUrl = `${origin}/solar-return/`;
   return {
     data: {
       which, returnYear: Number(new Intl.DateTimeFormat('en-CA', { timeZone: shownZone, year: 'numeric' }).format(instant)),
-      instantUtc: instant.toISOString(), local: clockLabel(instant, shownZone), zone: shownZone, timeKnown, placed,
+      instantUtc: instant.toISOString(), local: timeKnown ? clockLabel(instant, shownZone) : dateLabel(instant), zone: shownZone, timeKnown, placed,
       sun: sunSign, rising, placements, themes,
       confidence: readingConfidence(detail), confidenceLabel: readingConfidenceLabel(detail),
       limits, under18, pageUrl,

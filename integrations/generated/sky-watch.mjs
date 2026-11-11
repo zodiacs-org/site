@@ -40942,7 +40942,7 @@ var sign2 = z13.enum(SIGNS2.map((entry) => entry.slug));
 var solarReturnData = z13.object({
   which: z13.enum(["next", "current"]),
   returnYear: z13.number().int(),
-  /** The return instant in UTC and on the person's clock. */
+  /** The return instant in UTC and on the person's clock; without a birth time, `local` is the return's UTC date only and `zone` is UTC. */
   instantUtc: z13.string(),
   local: z13.string(),
   zone: z13.string(),
@@ -40966,6 +40966,10 @@ function clockLabel(at, timeZone) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(at).map((part) => [part.type, part.value]));
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
 }
+function dateLabel(at) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short", year: "numeric" }).formatToParts(at).map((part) => [part.type, part.value]));
+  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+}
 async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = false) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
@@ -40987,7 +40991,7 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
   const chart = computeChart3({ utc: instant2, ...location ?? {}, houseSystem: "whole", timeKnown: true });
   const cusps = location && chart.houses ? chart.houses.cusps : null;
   const asc = location && chart.angles ? chart.angles.asc : null;
-  const shownZone = args.currentZone ?? args.zone ?? "UTC";
+  const shownZone = timeKnown ? args.currentZone ?? args.zone ?? "UTC" : "UTC";
   const today2 = now.toISOString().slice(0, 10);
   const under18 = isUnder18(args.birthDate, today2);
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
@@ -41008,8 +41012,8 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
   if (!timeKnown) limits2.push("No birth time was given, so the return instant can shift by up to about a day; the Moon, the rising sign and the houses are left out.");
   else if (!placed) limits2.push("No birthplace coordinates were given, so the rising sign and the houses are left out.");
   else limits2.push("The return is cast for the birthplace. Astrologers who cast it where the person spends the birthday get a different rising sign and houses, with the same planets.");
-  if (!args.currentZone && args.zone) limits2.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
-  if (!args.zone) limits2.push("The time is in UTC because no time zone was given.");
+  if (!timeKnown) limits2.push("Without a birth time the return is given as its date in UTC, not a clock time, and it can be a day either side.");
+  else if (!args.currentZone) limits2.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
   const detail = readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed });
   const pageUrl = `${origin}/solar-return/`;
   return {
@@ -41017,7 +41021,7 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
       which,
       returnYear: Number(new Intl.DateTimeFormat("en-CA", { timeZone: shownZone, year: "numeric" }).format(instant2)),
       instantUtc: instant2.toISOString(),
-      local: clockLabel(instant2, shownZone),
+      local: timeKnown ? clockLabel(instant2, shownZone) : dateLabel(instant2),
       zone: shownZone,
       timeKnown,
       placed,

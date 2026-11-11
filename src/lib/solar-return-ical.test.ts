@@ -57,8 +57,14 @@ describe('Solar Return calendar handoff', () => {
     });
     const calendar = buildSolarReturnCalendar(approximate, GENERATED_AT);
     expect(property(calendar, 'SUMMARY')).toBe('SUMMARY:Approximate solar return · 2027');
-    expect(property(calendar, 'DTSTART')).toBe('DTSTART:20270101T000000Z');
-    expect(property(calendar, 'UID')).toContain('solar-return-2027-20270101T000000000Z@zodiacs.org');
+    // Without a birth time the marker is the return's date, a whole day, never a clock time.
+    expect(unfold(calendar)).toContain(`DTSTART;VALUE=DATE:20270101${CRLF}DTEND;VALUE=DATE:20270102${CRLF}`);
+    expect(unfold(calendar)).not.toMatch(/DTSTART:|DURATION:/u);
+    // The receipt time (DTSTAMP) is the only clock time in the file.
+    expect(unfold(calendar).split(CRLF).filter((line) => /\d{8}T\d{6}/u.test(line))).toEqual(['DTSTAMP:20260905T080000Z']);
+    expect(property(calendar, 'UID')).toBe('UID:solar-return-2027-20270101@zodiacs.org');
+    expect(property(calendar, 'DESCRIPTION')).toContain('Calendar marker for the day of the return.');
+    expect(property(calendar, 'DESCRIPTION')).not.toContain('one-minute');
     expect(property(calendar, 'DESCRIPTION')).toContain('The return instant can shift by hours with your exact birth time.');
     expect(solarReturnCalendarFilename(approximate)).toBe('zodiacs-approximate-solar-return-2027.ics');
   });
@@ -93,8 +99,11 @@ describe('Solar Return calendar handoff', () => {
       expect(new TextEncoder().encode(line).byteLength).toBeLessThanOrEqual(75);
     }
     expect(property(calendar, 'DESCRIPTION')).toBe(
-      'DESCRIPTION:Calendar marker. The one-minute duration is for display only\\, not a duration of the solar return.'
+      'DESCRIPTION:Calendar marker for the day of the return. It is not a duration of the solar return.'
       + '\\nThe return instant can shift by hours with your exact birth time.',
+    );
+    expect(property(buildSolarReturnCalendar(model(), GENERATED_AT), 'DESCRIPTION')).toBe(
+      'DESCRIPTION:Calendar marker. The one-minute duration is for display only\\, not a duration of the solar return.',
     );
   });
 

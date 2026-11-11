@@ -32,7 +32,7 @@ export function solarReturnCalendarFilename(model: SolarReturnExportModel): stri
   return `zodiacs-${model.noTime ? 'approximate-' : ''}solar-return-${returnYear(model)}.ics`;
 }
 
-/** One transparent minute marks an instant; it is not a forecast duration. */
+/** One transparent minute marks an instant (a whole day for a return without a birth time); it is not a forecast duration. */
 export function buildSolarReturnCalendar(
   model: SolarReturnExportModel,
   generatedAt: Date | string,
@@ -46,9 +46,20 @@ export function buildSolarReturnCalendar(
   const dtstamp = formatIcalUtc(generatedAt);
   if (!/^\d{8}T\d{6}Z$/.test(dtstamp)) throw new RangeError('Invalid UTC calendar receipt time.');
   const title = model.noTime ? 'Approximate solar return' : 'Solar return';
-  const uidInstant = instant.toISOString().replace(/[-:.]/g, '');
+  // Without a birth time the return is a date, a day either side, never a
+  // clock time: the marker is the UTC date of the whole minute the image
+  // prints the date of, as an all-day event.
+  const dayStart = Date.UTC(instant.getUTCFullYear(), instant.getUTCMonth(), instant.getUTCDate());
+  const icalDate = (ms: number) => new Date(ms).toISOString().slice(0, 10).replace(/-/g, '');
+  const [day, nextDay] = [icalDate(dayStart), icalDate(dayStart + 86_400_000)];
+  const uidInstant = model.noTime ? day : instant.toISOString().replace(/[-:.]/g, '');
+  const when = model.noTime
+    ? [`DTSTART;VALUE=DATE:${day}`, `DTEND;VALUE=DATE:${nextDay}`]
+    : [`DTSTART:${formatIcalUtc(instant)}`, 'DURATION:PT1M'];
   const description = [
-    'Calendar marker. The one-minute duration is for display only, not a duration of the solar return.',
+    model.noTime
+      ? 'Calendar marker for the day of the return. It is not a duration of the solar return.'
+      : 'Calendar marker. The one-minute duration is for display only, not a duration of the solar return.',
     ...(model.noTime ? ['The return instant can shift by hours with your exact birth time.'] : []),
   ].join('\n');
 
@@ -62,8 +73,7 @@ export function buildSolarReturnCalendar(
     'BEGIN:VEVENT',
     `UID:solar-return-${year}-${uidInstant}@zodiacs.org`,
     `DTSTAMP:${dtstamp}`,
-    `DTSTART:${formatIcalUtc(instant)}`,
-    'DURATION:PT1M',
+    ...when,
     'TRANSP:TRANSPARENT',
     `SUMMARY:${escapeIcalText(`${title} · ${year}`)}`,
     `DESCRIPTION:${escapeIcalText(description)}`,

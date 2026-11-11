@@ -118,10 +118,13 @@ export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yea
         <div class="sr-result__details-content">
           <p class="sr-result__instant mono" data-return-instant>
             Sun · {formatLongitude(sun.lon)}
-            <br />UTC · {chart.input.utc.toISOString().slice(0, 19).replace('T', ' · ')}
-            <br />Your time · {chart.input.utc.toLocaleString(undefined, {
-              year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short',
-            })}
+            {/* Without a birth time the return is a date, a day either side, never a clock time. */}
+            {result.noTime ? <><br />UTC date · {chart.input.utc.toISOString().slice(0, 10)}</> : <>
+              <br />UTC · {chart.input.utc.toISOString().slice(0, 19).replace('T', ' · ')}
+              <br />Your time · {chart.input.utc.toLocaleString(undefined, {
+                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short',
+              })}
+            </>}
           </p>
           {planetsOnly && (
             <p class="sr-result__instant mono" data-sr-planets-only-receipt>

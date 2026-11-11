@@ -121,6 +121,24 @@ describe('getSolarReturn', () => {
       expect(data.limits.join(' ')).not.toContain('half a day');
     }
   });
+  it('gives an untimed return as its UTC date, not a clock time, on any clock', async () => {
+    const plain = await getSolarReturn({ birthDate: '1990-05-03' }, NOW, clock, 'https://zodiacs.org');
+    const elsewhere = await getSolarReturn({ birthDate: '1990-05-03', zone: 'Asia/Tokyo', currentZone: 'America/Los_Angeles' }, NOW, clock, 'https://zodiacs.org');
+    for (const { data } of [plain, elsewhere]) {
+      expect(data.local).toMatch(/^[A-Z][a-z]{2} \d{1,2} [A-Z][a-z]{2} \d{4}$/u);
+      expect(data.local).not.toMatch(/\d\d:\d\d/u);
+      expect(data.zone).toBe('UTC');
+      expect(data.limits).toContain('Without a birth time the return is given as its date in UTC, not a clock time, and it can be a day either side.');
+      expect(data.limits.join(' ')).not.toMatch(/The time is/u);
+    }
+    expect(elsewhere.data.local).toBe(plain.data.local);
+    expect(plain.data.local).toBe(new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(plain.data.instantUtc)).replace(',', ''));
+    // A timed birth keeps its clock time on the person's clock.
+    const timed = await getSolarReturn({ birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org');
+    expect(timed.data.local).toMatch(/, \d\d:\d\d$/u);
+    expect(timed.data.zone).toBe('Europe/Madrid');
+    expect(timed.data.limits).toContain('The time is on the birthplace clock (Europe/Madrid) because no current time zone was given.');
+  });
   it('names no Sun sign and gives no share link when an untimed birth day straddles a sign change', async () => {
     // The Sun entered Aries on 20 March 1990 at 21:19 UTC.
     const { data } = await getSolarReturn({ birthDate: '1990-03-20' }, NOW, clock, 'https://zodiacs.org');
