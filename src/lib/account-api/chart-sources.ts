@@ -129,7 +129,7 @@ async function rpc(
   connection: AccountChartSourceConnection,
 ): Promise<unknown> {
   const key = connection.serviceKey.trim();
-  if (key.length < 16) throw new AccountChartSourceFailure();
+  if (!key) throw new AccountChartSourceFailure();
   const fetcher = connection.fetcher ?? fetch;
   let response: Response;
   try {

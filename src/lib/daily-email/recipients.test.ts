@@ -65,18 +65,21 @@ describe('daily email recipient selection', () => {
     }
   });
 
-  it('loads only the explicitly selected owned synced chart', async () => {
+  const OPTED_IN = new Set([preference.user_id]);
+
+  it('sends the chart edition only to an opted-in account and reads only its own chart', async () => {
+    const loadChart = vi.fn(async (userId: string) => (userId === preference.user_id ? chart : null));
     const result = await selectChartRecipients({
       preferences: [preference],
-      charts: [
-        { id: chart.id, user_id: preference.user_id, payload: chart },
-        { id: chart.id, user_id: '20000000-0000-4000-8000-000000000002', payload: chart },
-      ],
+      optedIn: OPTED_IN,
+      loadChart,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T11:13:00Z'),
       getAuthEmail: vi.fn().mockResolvedValue(' Person@Example.com '),
       recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
     });
+    expect(loadChart).toHaveBeenCalledTimes(1);
+    expect(loadChart).toHaveBeenCalledWith(preference.user_id);
     expect(result.recipients).toHaveLength(1);
     expect(result.recipients[0]).toMatchObject({
       tier: 'chart', email: 'person@example.com', chartId: chart.id,
@@ -86,14 +89,34 @@ describe('daily email recipient selection', () => {
     expect(result.suppressSunRecipientHashes).toEqual(new Set([preference.recipient_hash]));
   });
 
-  it('suppresses the Sun tier even before the chart timezone is due', async () => {
+  it('leaves an account without chart emails to the Sun tier and never decrypts it', async () => {
+    const loadChart = vi.fn();
+    const getAuthEmail = vi.fn();
+    const result = await selectChartRecipients({
+      preferences: [preference],
+      optedIn: new Set(),
+      loadChart,
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T11:13:00Z'),
+      getAuthEmail,
+      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+    });
+    expect(result.recipients).toEqual([]);
+    expect(result.notOptedIn).toBe(1);
+    expect(result.suppressSunRecipientHashes).toEqual(new Set());
+    expect(loadChart).not.toHaveBeenCalled();
+    expect(getAuthEmail).not.toHaveBeenCalled();
+  });
+
+  it('suppresses the Sun tier for an opted-in account even before its chart timezone is due', async () => {
     const getAuthEmail = vi.fn().mockResolvedValue('same@example.com');
     const result = await selectChartRecipients({
       preferences: [{
         ...preference,
         recipient_hash: dailyRecipientHash('same@example.com', HASH_SECRET),
       }],
-      charts: [{ id: chart.id, user_id: preference.user_id, payload: chart }],
+      optedIn: OPTED_IN,
+      loadChart: vi.fn().mockResolvedValue(chart),
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
       getAuthEmail,
@@ -120,11 +143,41 @@ describe('daily email recipient selection', () => {
     expect(merged).toEqual([]);
   });
 
-  it('treats a deleted selected chart as paused and lets the Sun tier resume', async () => {
+  it('falls back to the Sun tier when an opted-in chart cannot be decrypted', async () => {
+    const result = await selectChartRecipients({
+      preferences: [preference],
+      optedIn: OPTED_IN,
+      loadChart: vi.fn().mockRejectedValue(new Error('no key')),
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T07:13:00Z'),
+      getAuthEmail: vi.fn(),
+      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+    });
+    expect(result.recipients).toEqual([]);
+    expect(result.invalidCharts).toEqual([{ userId: preference.user_id, chartId: chart.id }]);
+    expect(result.suppressSunRecipientHashes).toEqual(new Set());
+    const sun = {
+      tier: 'sun_sign' as const, email: 'person@example.com', sign: 'aries',
+      contactId: 'contact_person_1', timezone: 'UTC' as const,
+    };
+    expect(mergeDailyEmailRecipients({
+      chart: [],
+      sun: [sun],
+      suppressSunEmails: result.suppressSunEmails,
+      suppressSunRecipientHashes: result.suppressSunRecipientHashes,
+      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T07:13:00Z'),
+    })).toEqual([sun]);
+  });
+
+  it('treats a paused or retired v1 preference as paused and lets the Sun tier resume', async () => {
     const getAuthEmail = vi.fn();
+    const loadChart = vi.fn();
     const result = await selectChartRecipients({
       preferences: [{ ...preference, chart_id: null }],
-      charts: [],
+      optedIn: OPTED_IN,
+      loadChart,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
       getAuthEmail,
@@ -133,6 +186,7 @@ describe('daily email recipient selection', () => {
     expect(result.recipients).toEqual([]);
     expect(result.suppressSunRecipientHashes).toEqual(new Set());
     expect(getAuthEmail).not.toHaveBeenCalled();
+    expect(loadChart).not.toHaveBeenCalled();
 
     const sun = {
       tier: 'sun_sign' as const,
@@ -176,10 +230,11 @@ describe('daily email recipient selection', () => {
     expect(merged).toEqual([chartRecipient]);
   });
 
-  it('holds a missing, malformed, or ownership-mismatched selected chart without substitution', async () => {
+  it('holds a malformed decrypted chart without substitution', async () => {
     const result = await selectChartRecipients({
       preferences: [preference],
-      charts: [{ id: chart.id, user_id: preference.user_id, payload: { ...chart, id: 'wrong' } }],
+      optedIn: OPTED_IN,
+      loadChart: vi.fn().mockResolvedValue({ ...chart, summary: { ...chart.summary, bodies: [] } }),
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T11:13:00Z'),
       getAuthEmail: vi.fn().mockResolvedValue('person@example.com'),
@@ -193,7 +248,8 @@ describe('daily email recipient selection', () => {
   it('holds a stale auth identity while its opaque hash still suppresses the old Sun tier', async () => {
     const result = await selectChartRecipients({
       preferences: [preference],
-      charts: [{ id: chart.id, user_id: preference.user_id, payload: chart }],
+      optedIn: OPTED_IN,
+      loadChart: vi.fn().mockResolvedValue(chart),
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T11:13:00Z'),
       getAuthEmail: vi.fn().mockResolvedValue('changed@example.com'),

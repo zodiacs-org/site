@@ -6,7 +6,9 @@
 --   1. widens the consent purpose checks with chart_emails ("Use my chart for
 --      my emails"), off by default, with its own policy version;
 --   2. replaces account_v2_record_consent and account_v2_current_policy_version
---      so chart_emails can be granted and withdrawn like every other purpose;
+--      so chart_emails can be granted and withdrawn like every other purpose
+--      (decisions and events as before; only chart_sync decisions enter the
+--      purpose-less sync change feed, which clients read as chart_sync);
 --   3. replaces account_v2_bootstrap so it no longer reads public.charts and
 --      reports the chart_emails consent state;
 --   4. adds account_v2_chart_email_sources (service only): the encrypted self
@@ -89,7 +91,8 @@ revoke all on function private.account_v2_current_policy_version(text)
 grant execute on function private.account_v2_current_policy_version(text)
   to service_role;
 
--- Same function as 20260811153303 with chart_emails added to the purposes.
+-- Same function as 20260811153303 with chart_emails added to the purposes,
+-- and with only chart_sync decisions written to the sync change feed.
 create or replace function public.account_v2_record_consent(
   candidate_user_id uuid,
   candidate_purpose text,
@@ -328,23 +331,28 @@ begin
     end loop;
   end if;
 
-  insert into private.account_sync_changes (
-    user_id,
-    entity_type,
-    entity_id,
-    operation,
-    revision,
-    mutation_id,
-    created_at
-  ) values (
-    candidate_user_id,
-    'consent',
-    null,
-    candidate_decision,
-    event_number,
-    candidate_mutation_id,
-    operation_time
-  );
+  -- The change feed's consent entries carry no purpose, and every client
+  -- reads them as chart_sync. Only chart_sync decisions enter the feed; other
+  -- devices learn the chart_emails state from bootstrap.
+  if candidate_purpose = 'chart_sync' then
+    insert into private.account_sync_changes (
+      user_id,
+      entity_type,
+      entity_id,
+      operation,
+      revision,
+      mutation_id,
+      created_at
+    ) values (
+      candidate_user_id,
+      'consent',
+      null,
+      candidate_decision,
+      event_number,
+      candidate_mutation_id,
+      operation_time
+    );
+  end if;
 
   result_value := jsonb_build_object(
     'outcome', case when candidate_decision = 'grant' then 'granted' else 'withdrawn' end,

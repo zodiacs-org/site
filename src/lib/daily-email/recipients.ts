@@ -11,18 +11,15 @@ export interface ChartPreferenceRow {
   confirmed_at: string;
 }
 
-export interface SyncedChartRow {
-  id: string;
-  user_id: string;
-  payload: unknown;
-}
-
 export interface ChartRecipientSelection {
   recipients: ChartRecipient[];
   suppressSunEmails: Set<string>;
   suppressSunRecipientHashes: Set<string>;
+  /** Opted-in accounts whose chart could not be read; they fall back to Sun. */
   invalidCharts: Array<{ userId: string; chartId: string }>;
   invalidIdentities: string[];
+  /** Confirmed chart preferences whose account does not hold chart_emails. */
+  notOptedIn: number;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -128,45 +125,76 @@ export function isDailyEmailSavedChart(value: unknown): value is SavedChart {
   ));
 }
 
-function chartKey(userId: string, chartId: string): string {
-  return `${userId}:${chartId}`;
-}
-
 /**
+ * The chart edition goes only to an account that has a confirmed daily chart
+ * preference (double opt-in, timezone) whose chart_id names a v2 chart AND
+ * that currently holds chart_sync and chart_emails (`optedIn`, from
+ * account_v2_chart_email_sources). Its chart is the account's encrypted self
+ * chart, decrypted by `loadChart` in this job and nowhere stored.
+ *
+ * Everyone else is left to the Sun tier: a preference paused when v1 chart
+ * sync was retired (chart_id null), an account without chart_emails, and an
+ * opted-in account whose chart cannot be decrypted right now. Their Sun
+ * edition is not suppressed, so a confirmed Sun subscriber still gets it.
  * Auth emails are resolved only during this send operation. They are never
  * copied into preference rows or delivery receipts.
  */
 export async function selectChartRecipients({
   preferences,
-  charts,
+  optedIn,
+  loadChart,
   editionDate,
   at,
   getAuthEmail,
   recipientHashForEmail,
 }: {
   preferences: readonly ChartPreferenceRow[];
-  charts: readonly SyncedChartRow[];
+  optedIn: ReadonlySet<string>;
+  /** Decrypts the account's self chart; null when it cannot be read. */
+  loadChart: (userId: string) => Promise<SavedChart | null>;
   editionDate: string;
   at: Date;
   getAuthEmail: (userId: string) => Promise<string | null>;
   recipientHashForEmail: (email: string) => string;
 }): Promise<ChartRecipientSelection> {
-  const chartRows = new Map(charts.map((row) => [chartKey(row.user_id, row.id), row]));
   const recipients: ChartRecipient[] = [];
   const suppressSunEmails = new Set<string>();
   const suppressSunRecipientHashes = new Set<string>();
   const invalidCharts: Array<{ userId: string; chartId: string }> = [];
   const invalidIdentities: string[] = [];
+  let notOptedIn = 0;
+  const sunDue = isDailyEmailDue(editionDate, at, 'UTC');
 
   for (const preference of [...preferences].sort((a, b) => a.user_id.localeCompare(b.user_id))) {
     if (!preference.confirmed_at) continue;
-    // A null chart id is the deliberate paused state left by chart deletion.
-    // It must not suppress a separately confirmed Sun-sign daily.
+    // A null chart id is the paused state (a removed chart, or a v1 chart
+    // retired at launch). It must not suppress a separately confirmed Sun.
     if (!preference.chart_id) continue;
-    suppressSunRecipientHashes.add(preference.recipient_hash);
+    if (!optedIn.has(preference.user_id.toLowerCase())) {
+      notOptedIn += 1;
+      continue;
+    }
+    const due = isDailyEmailDue(editionDate, at, preference.timezone);
+    // Decrypt only when this run sends either edition this account could get.
+    if (!due && !sunDue) {
+      suppressSunRecipientHashes.add(preference.recipient_hash);
+      continue;
+    }
+    let chart: SavedChart | null = null;
+    try {
+      chart = await loadChart(preference.user_id);
+    } catch {
+      chart = null;
+    }
+    if (!chart || !isDailyEmailSavedChart(chart)) {
+      // Fall back: the Sun tier stays unsuppressed for this account.
+      invalidCharts.push({ userId: preference.user_id, chartId: preference.chart_id });
+      continue;
+    }
     // The opaque preference hash is enough to suppress a matching Sun tier.
-    // Avoid reading Auth identity or chart data until this timezone is due.
-    if (!isDailyEmailDue(editionDate, at, preference.timezone)) continue;
+    // Avoid reading Auth identity until this timezone is due.
+    suppressSunRecipientHashes.add(preference.recipient_hash);
+    if (!due) continue;
     let authEmail: string | null = null;
     try {
       authEmail = await getAuthEmail(preference.user_id);
@@ -184,19 +212,13 @@ export async function selectChartRecipients({
       continue;
     }
     suppressSunEmails.add(email);
-
-    const row = chartRows.get(chartKey(preference.user_id, preference.chart_id));
-    if (!row || !isDailyEmailSavedChart(row.payload) || row.payload.id !== preference.chart_id) {
-      invalidCharts.push({ userId: preference.user_id, chartId: preference.chart_id });
-      continue;
-    }
     const timezone = localDeliveryTime(at, preference.timezone).timezone;
     recipients.push({
       tier: 'chart',
       email,
       userId: preference.user_id,
-      chartId: preference.chart_id,
-      chart: row.payload,
+      chartId: chart.id,
+      chart,
       timezone,
     });
   }
@@ -207,6 +229,7 @@ export async function selectChartRecipients({
     suppressSunRecipientHashes,
     invalidCharts,
     invalidIdentities,
+    notOptedIn,
   };
 }
 

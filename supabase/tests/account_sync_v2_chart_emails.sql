@@ -305,6 +305,16 @@ select pg_temp.assert_true(
     ),
   'chart_emails decisions must be recorded as immutable events with current state'
 );
+
+select pg_temp.assert_true(
+  (
+    select count(*)
+    from private.account_sync_changes
+    where user_id = '71000000-0000-4000-8000-000000000001'
+      and entity_type = 'consent'
+  ) = 1,
+  'only the chart_sync grant may enter the purpose-less consent change feed'
+);
 set role service_role;
 
 -- Withdrawing chart_sync removes the chart, so the account leaves both
