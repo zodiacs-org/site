@@ -1,8 +1,8 @@
 # Second-session review of the ZOD-108 drafts
 
 A separate session tried to break the builder's results against tests L1 to
-L6. Run on 11 November 2026 from about 18:40 to 19:10 UTC (12 November,
-01:40 to 02:10 Asia/Bangkok), on commit `87f97962`. Nothing was sent,
+L6. Run on 11 November 2026 from about 18:38 to 18:50 UTC (12 November,
+01:38 to 01:50 Asia/Bangkok), on commit `87f97962`. Nothing was sent,
 published, submitted, merged or marked ready. No draft and no other file in
 this folder was changed; this file is the only addition.
 
