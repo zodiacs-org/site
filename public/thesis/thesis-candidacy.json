@@ -2,15 +2,15 @@
   "$comment": "Maintainer-editable candidacy evidence for /thesis Section V. Same contract as thesis-disclosure.json: pending fields render the amber chip; filled fields render the value, the asOf date, and a Verify link. Values are observations scoped to their defined searches — negative results say 'no qualifying results found', never an exhaustive zero. The complete measurement definitions, sources, queries, UTC capture times, exclusions, and raw capture records live in thesis-candidacy-evidence.json (each row's Verify link); refreshing either file is a reviewed action.",
   "criteria": {
     "independentIntegrations": {
-      "value": "no qualifying results found in the defined search · public package-registry and web queries for consumers of this registry or @zodiacs/sdk, excluding Zodiacs.org, Astrofolio, and the SDK's own examples · @zodiacs/sdk: 81 npm downloads in 30 days",
+      "value": "no qualifying results found in the defined search · public package-registry and web queries for consumers of this registry or @zodiacs/sdk, excluding Zodiacs.org, Astrofolio, and the SDK's own examples · @zodiacs/sdk: 593 npm downloads in 30 days",
       "status": "filled",
-      "asOf": "2026-07-23",
+      "asOf": "2026-11-10",
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     },
     "thirdPartyCitations": {
       "value": "no qualifying editorial citations found in the defined searches · automated wallet and aggregator listings of the addresses were observed and are excluded by definition",
       "status": "filled",
-      "asOf": "2026-07-23",
+      "asOf": "2026-11-10",
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     },
     "holderDispersion": {
@@ -20,15 +20,15 @@
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     },
     "liquidityPersistence": {
-      "value": "12 of 12 canonical Raydium pools live at the 2026-07-23 capture · $11.9k–17.8k depth, $10–158 of 24h volume · pair creation 2024-07-05 per Dexscreener · continuous historical depth was not archived",
+      "value": "12 of 12 canonical Raydium pools traded on chain in the 30 days before the 2026-11-10 capture (every pool's newest swap fell on 9 or 10 Nov) · Dexscreener returned 9 of the 12 pools: $10.5k to $18.7k depth, $0.88 to $100 of 24h volume · Leo, Scorpio and Aquarius were not returned by Dexscreener · continuous historical depth was not archived",
       "status": "filled",
-      "asOf": "2026-07-23",
+      "asOf": "2026-11-10",
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     },
     "archiveContinuity": {
-      "value": "own version archive continuous in the public repository since 2024 · Internet Archive: 9 captures since 2024-01-01, largest gap 166 days, none in the 12 months before the 2026-07-23 query",
+      "value": "own version archive continuous in the public repository since 2024 · Internet Archive: 13 captures since 2024-01-01, latest 2026-10-11, largest gap 326 days",
       "status": "filled",
-      "asOf": "2026-07-23",
+      "asOf": "2026-11-10",
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     }
   }
