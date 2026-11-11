@@ -75,13 +75,13 @@
       "name": "zodiacs-developer",
       "version": "0.3.39",
       "file": "zodiacs-developer-0.3.39.zip",
-      "bytes": 6695905,
-      "sha256": "61df26449b3d44965bc5255e28219ff2953a860acf50a5c8202d89bba4d501c1",
+      "bytes": 6697390,
+      "sha256": "cd3fe57ba8cd20fb748b16c8a6c97dbbbbefe9a077a690c1cfc39e01c63171d2",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
-          "bytes": 9911,
-          "sha256": "f3a2937f22afd298eabfea6ff4cef5bb40dd0d459049f591cc0bfe21a8dd2edf"
+          "bytes": 10010,
+          "sha256": "359ab39cd1b1341ff91aea53d8c3a54f79f97aa00fd25af604001c27a101f6c8"
         },
         {
           "path": ".mcp.json",
@@ -116,7 +116,7 @@
         {
           "path": "README.md",
           "bytes": 6203,
-          "sha256": "9f9ac688997ecb72e91a19fe4cfcc5ffc10d0602f28743cf7fbf08ea74a97e75"
+          "sha256": "5b3eaefd8a3b3ca559c930de206f221ba4d9f329b0378bede6cd406c8f2a6340"
         },
         {
           "path": "assets/icon.png",
@@ -145,13 +145,13 @@
         },
         {
           "path": "mcp/server.mjs",
-          "bytes": 6567962,
-          "sha256": "51a9afe255b0ca1d3ca6b8600ad77dbb0373c02f4a094a05d83bd366c19897ad"
+          "bytes": 6569249,
+          "sha256": "0b00923dfa30191f62316d11fadf7b0f5644ff6db659ad748e8c70dfdd2b00ec"
         },
         {
           "path": "package-lock.json",
           "bytes": 2444,
-          "sha256": "4be11ec0616ca7d85538a0e767d31a4b9734212bb3af08484a5a7aefaaad86c3"
+          "sha256": "dca9d3854fc925d9822d5023f81980f05480e5cc36f64ecb383b09510139533a"
         },
         {
           "path": "package.json",
@@ -160,8 +160,8 @@
         },
         {
           "path": "plugin.json",
-          "bytes": 10022,
-          "sha256": "8b2f2698fcb4641868d7d123db072562a7cae06382d859e24f3094ab1ccda9df"
+          "bytes": 10121,
+          "sha256": "107f56dafc492253a024c82ac9f75f5e52ce318ed327384d6061711d84ccea53"
         },
         {
           "path": "skills/build-with-zodiacs/SKILL.md",

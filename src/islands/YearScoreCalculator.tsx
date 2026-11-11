@@ -11,6 +11,7 @@ import { signForLongitude } from '../lib/signs';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import type { City } from '../lib/geo/search';
 import { createModuleLoader } from '../lib/module-load';
+import { birthDayEnds, rangeWorthShowing, untimedScoreNote, type ScoreRange } from '../lib/year-score/range';
 import { yearScoreShareUrl } from '../lib/year-score/share';
 import { dayName, shortMonth, yearReading, type YearReading } from '../lib/year-score/reading';
 
@@ -32,6 +33,8 @@ interface Result {
   to: string;
   confidence: string;
   timeKnown: boolean;
+  /** Without a birth time: the lowest and highest score across the birth day. Null with a birth time. */
+  range: ScoreRange | null;
 }
 
 export default function YearScoreCalculator() {
@@ -63,7 +66,17 @@ export default function YearScoreCalculator() {
       if (run !== generation.current) return;
       const timeKnown = !!(placed && time);
       const utc = placed ? resolveLocalToUtc(date, time || '12:00', city.tz, { longitude: city.lon }).utc : new Date(`${date}T12:00:00Z`);
-      const { year, sunLon } = scorer.scoreBirth(utc, timeKnown, new Date(`${today}T00:00:00Z`));
+      // Without a birth time, the birth day's two ends: local midnight to 23:59 with a place, every clock's version of the date without.
+      let local: [Date, Date] | null | undefined;
+      if (!timeKnown && placed) {
+        try {
+          local = [resolveLocalToUtc(date, '00:00', city.tz, { longitude: city.lon }).utc, resolveLocalToUtc(date, '23:59', city.tz, { longitude: city.lon }).utc];
+        } catch {
+          local = null;
+        }
+      }
+      const day = timeKnown ? undefined : birthDayEnds(date, utc, local);
+      const { year, sunLon, range } = scorer.scoreBirth(utc, timeKnown, new Date(`${today}T00:00:00Z`), day);
       const sign = signForLongitude(sunLon);
       const guard = underAge(date, today, 18) ? softenMinor : (text: string) => text;
       setResult({
@@ -73,6 +86,7 @@ export default function YearScoreCalculator() {
         to: year.to,
         confidence: confidenceLabel(timeKnown && !!placed),
         timeKnown,
+        range,
       });
       requestAnimationFrame(() => headingRef.current?.focus());
     } catch (err) {
@@ -94,7 +108,7 @@ export default function YearScoreCalculator() {
               <input id="ys-date" class="field__input" type="date" required min="1800-01-01" value={date}
                 onFocus={() => { void loadScorer(); }}
                 onInput={(e) => { invalidate(); setDate((e.target as HTMLInputElement).value); }} />
-              <p class="field__help">A date alone is enough. A birth time and place add the Moon.</p>
+              <p class="field__help">A date alone gives a first reading. A birth time and place settle it and add the Moon.</p>
             </div>
           </div>
           {!showDetail ? (
@@ -128,6 +142,9 @@ export default function YearScoreCalculator() {
                 <span class="ys__number">{result.reading.score.toFixed(1)}</span><span class="ys__outof">/10</span>
               </h2>
               <p class="ys__tier">{result.reading.tier.label}</p>
+              {rangeWorthShowing(result.range) && (
+                <p class="ys__range">Without a birth time this could be anywhere from {result.range.low.toFixed(1)} to {result.range.high.toFixed(1)}. Add your birth time and place to settle it.</p>
+              )}
               <p class="ys__summary">{result.reading.tier.summary}</p>
               <p class="ys__meta">{result.sign.name} Sun · {dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
             </div>
@@ -163,7 +180,7 @@ export default function YearScoreCalculator() {
               </ul>
             </div>
           )}
-          {!result.timeKnown && <p class="field__help">Without a birth time and place the Moon is left out; the other contacts can shift by about a day.</p>}
+          {!result.timeKnown && <p class="field__help">{untimedScoreNote(result.range)}</p>}
           <div class="calc__actions">
             {(() => {
               // The link carries the Sun sign and the score only: never the birth date, time or place.
