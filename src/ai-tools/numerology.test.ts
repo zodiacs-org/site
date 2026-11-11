@@ -131,6 +131,23 @@ describe('the numerology switch on', () => {
     expect(capabilities.privacy).toContain('The numerology tool takes a birth date and, if given, a name, for that call only');
   });
 
+  it('with every released tool on, lists get_numerology after sky events, year score and solar return', async () => {
+    const host = await serve({
+      ...SCENARIOS.coverage,
+      ZODIACS_SKY_EVENTS_ENABLED: '1',
+      ZODIACS_YEAR_SCORE_ENABLED: '1',
+      ZODIACS_SOLAR_RETURN_ENABLED: '1',
+      ZODIACS_NUMEROLOGY_ENABLED: '1',
+    });
+    const names = (message((await post(host, rpc('tools/list'))).text).result.tools as { name: string }[]).map((tool) => tool.name);
+    expect(names).toEqual([...EVERY_SWITCHED_TOOL]);
+    const numerology = names.indexOf('get_numerology');
+    expect(numerology).toBeGreaterThan(names.indexOf('search_sky_events'));
+    expect(numerology).toBeGreaterThan(names.indexOf('get_year_score'));
+    expect(numerology).toBeGreaterThan(names.indexOf('get_solar_return'));
+    expect(names.at(-1)).toBe('get_numerology');
+  });
+
   it('answers with structured content that validates against its advertised schema, and counts only the tool name', async () => {
     const counted: string[] = [];
     const host = await serveAt(ON, counted);
