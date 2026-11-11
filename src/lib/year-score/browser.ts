@@ -14,6 +14,11 @@ export function natalPoints(utc: Date, timeKnown: boolean): { natal: NatalPoints
   return { natal: { Sun: lon('Sun'), Moon: timeKnown ? lon('Moon') : null, Mercury: lon('Mercury'), Venus: lon('Venus'), Mars: lon('Mars') }, sunLon: lon('Sun') };
 }
 
+/** The Sun's longitude at an instant, from the same chart the score reads (for src/lib/sun-settled.ts). */
+export function sunLonAt(utc: Date): number {
+  return natalPoints(utc, false).sunLon;
+}
+
 /**
  * The score for a birth instant. For an untimed birth, pass the birth day's
  * two ends (src/lib/year-score/range.ts, birthDayEnds) to get the range the
