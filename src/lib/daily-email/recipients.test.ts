@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { SavedChart } from '../profile/schema';
 import {
+  dailySunFallbacks,
   filterDailyEmailCohort,
   isDailyEmailSavedChart,
   mergeDailyEmailRecipients,
@@ -65,69 +66,165 @@ describe('daily email recipient selection', () => {
     }
   });
 
-  const OPTED_IN = new Set([preference.user_id]);
+  /** The account's current eligible self chart, as account_v2_chart_email_sources returns it. */
+  const SOURCE = { chartId: chart.id, revision: 3 };
+  const hashFor = (email: string) => dailyRecipientHash(email, HASH_SECRET);
 
-  it('sends the chart edition only to an opted-in account and reads only its own chart', async () => {
-    const loadChart = vi.fn(async (userId: string) => (userId === preference.user_id ? chart : null));
+  it('sends the chart edition only to an eligible account and decrypts only its own chart', async () => {
+    const loadSource = vi.fn(async (userId: string) => (userId === preference.user_id ? SOURCE : null));
+    const decrypt = vi.fn(async () => chart);
     const result = await selectChartRecipients({
       preferences: [preference],
-      optedIn: OPTED_IN,
-      loadChart,
+      loadSource,
+      decrypt,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T11:13:00Z'),
       getAuthEmail: vi.fn().mockResolvedValue(' Person@Example.com '),
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
     });
-    expect(loadChart).toHaveBeenCalledTimes(1);
-    expect(loadChart).toHaveBeenCalledWith(preference.user_id);
+    expect(loadSource).toHaveBeenCalledTimes(1);
+    expect(loadSource).toHaveBeenCalledWith(preference.user_id);
+    expect(decrypt).toHaveBeenCalledWith(SOURCE);
     expect(result.recipients).toHaveLength(1);
     expect(result.recipients[0]).toMatchObject({
-      tier: 'chart', email: 'person@example.com', chartId: chart.id,
+      tier: 'chart', email: 'person@example.com', chartId: chart.id, revision: 3,
       userId: preference.user_id, timezone: 'America/New_York',
     });
     expect(result.suppressSunEmails).toEqual(new Set(['person@example.com']));
     expect(result.suppressSunRecipientHashes).toEqual(new Set([preference.recipient_hash]));
   });
 
-  it('leaves an account without chart emails to the Sun tier and never decrypts it', async () => {
-    const loadChart = vi.fn();
+  it('asks for eligibility immediately before each decryption, not from an earlier list', async () => {
+    // Two accounts: the second withdraws chart emails while the first is
+    // being decrypted. Its eligibility is read after that, so it is never
+    // decrypted and its Sun edition is not held back.
+    const second: ChartPreferenceRow = {
+      ...preference,
+      user_id: '10000000-0000-4000-8000-000000000009',
+      recipient_hash: hashFor('second@example.com'),
+    };
+    const eligible = new Set([preference.user_id, second.user_id]);
+    const order: string[] = [];
+    const loadSource = vi.fn(async (userId: string) => {
+      order.push(`eligibility:${userId}`);
+      return eligible.has(userId) ? SOURCE : null;
+    });
+    const decrypt = vi.fn(async () => {
+      order.push('decrypt');
+      eligible.delete(second.user_id);
+      return chart;
+    });
+    const result = await selectChartRecipients({
+      preferences: [second, preference],
+      loadSource,
+      decrypt,
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T11:13:00Z'),
+      getAuthEmail: vi.fn().mockResolvedValue('person@example.com'),
+      recipientHashForEmail: hashFor,
+    });
+    expect(order).toEqual([
+      `eligibility:${preference.user_id}`,
+      'decrypt',
+      `eligibility:${second.user_id}`,
+    ]);
+    expect(decrypt).toHaveBeenCalledTimes(1);
+    expect(result.recipients.map((recipient) => recipient.userId)).toEqual([preference.user_id]);
+    expect(result.notOptedIn).toBe(1);
+    expect(result.suppressSunRecipientHashes.has(second.recipient_hash)).toBe(false);
+  });
+
+  it('pauses a preference that names a removed chart A after chart B was synced', async () => {
+    // Chart A was deleted and chart B synced; the preference still names A.
+    // The account is eligible, but its self chart is B: nothing is
+    // decrypted, no chart edition is sent, and the Sun tier is not held back.
+    const chartB = { chartId: '10000000-0000-4000-8000-0000000000bb', revision: 1 };
+    const decrypt = vi.fn();
     const getAuthEmail = vi.fn();
     const result = await selectChartRecipients({
       preferences: [preference],
-      optedIn: new Set(),
-      loadChart,
+      loadSource: vi.fn().mockResolvedValue(chartB),
+      decrypt,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T11:13:00Z'),
       getAuthEmail,
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
+    });
+    expect(result.recipients).toEqual([]);
+    expect(result.pausedCharts).toBe(1);
+    expect(result.suppressSunRecipientHashes).toEqual(new Set());
+    expect(result.suppressSunEmails).toEqual(new Set());
+    expect(decrypt).not.toHaveBeenCalled();
+    expect(getAuthEmail).not.toHaveBeenCalled();
+    const sun = {
+      tier: 'sun_sign' as const, email: 'person@example.com', sign: 'aries',
+      contactId: 'contact_person_1', timezone: 'UTC' as const,
+    };
+    expect(mergeDailyEmailRecipients({
+      chart: result.recipients,
+      sun: [sun],
+      suppressSunEmails: result.suppressSunEmails,
+      suppressSunRecipientHashes: result.suppressSunRecipientHashes,
+      recipientHashForEmail: hashFor,
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T11:13:00Z'),
+    })).toEqual([sun]);
+  });
+
+  it('leaves an account without chart emails to the Sun tier and never decrypts it', async () => {
+    const decrypt = vi.fn();
+    const getAuthEmail = vi.fn();
+    const result = await selectChartRecipients({
+      preferences: [preference],
+      loadSource: vi.fn().mockResolvedValue(null),
+      decrypt,
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T11:13:00Z'),
+      getAuthEmail,
+      recipientHashForEmail: hashFor,
     });
     expect(result.recipients).toEqual([]);
     expect(result.notOptedIn).toBe(1);
     expect(result.suppressSunRecipientHashes).toEqual(new Set());
-    expect(loadChart).not.toHaveBeenCalled();
+    expect(decrypt).not.toHaveBeenCalled();
     expect(getAuthEmail).not.toHaveBeenCalled();
   });
 
-  it('suppresses the Sun tier for an opted-in account even before its chart timezone is due', async () => {
+  it('falls back to the Sun tier when eligibility cannot be read', async () => {
+    const decrypt = vi.fn();
+    const result = await selectChartRecipients({
+      preferences: [preference],
+      loadSource: vi.fn().mockRejectedValue(new Error('offline')),
+      decrypt,
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T11:13:00Z'),
+      getAuthEmail: vi.fn(),
+      recipientHashForEmail: hashFor,
+    });
+    expect(result.recipients).toEqual([]);
+    expect(result.unavailable).toBe(1);
+    expect(result.suppressSunRecipientHashes).toEqual(new Set());
+    expect(decrypt).not.toHaveBeenCalled();
+  });
+
+  it('suppresses the Sun tier for an eligible account even before its chart timezone is due', async () => {
     const getAuthEmail = vi.fn().mockResolvedValue('same@example.com');
     const result = await selectChartRecipients({
       preferences: [{
         ...preference,
-        recipient_hash: dailyRecipientHash('same@example.com', HASH_SECRET),
+        recipient_hash: hashFor('same@example.com'),
       }],
-      optedIn: OPTED_IN,
-      loadChart: vi.fn().mockResolvedValue(chart),
+      loadSource: vi.fn().mockResolvedValue(SOURCE),
+      decrypt: vi.fn().mockResolvedValue(chart),
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
       getAuthEmail,
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
     });
     expect(result.recipients).toEqual([]);
     expect(getAuthEmail).not.toHaveBeenCalled();
     expect(result.suppressSunEmails).toEqual(new Set());
-    expect(result.suppressSunRecipientHashes).toEqual(new Set([
-      dailyRecipientHash('same@example.com', HASH_SECRET),
-    ]));
+    expect(result.suppressSunRecipientHashes).toEqual(new Set([hashFor('same@example.com')]));
     const merged = mergeDailyEmailRecipients({
       chart: [],
       sun: [{
@@ -136,22 +233,37 @@ describe('daily email recipient selection', () => {
       }],
       suppressSunEmails: result.suppressSunEmails,
       suppressSunRecipientHashes: result.suppressSunRecipientHashes,
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
     });
     expect(merged).toEqual([]);
   });
 
-  it('falls back to the Sun tier when an opted-in chart cannot be decrypted', async () => {
+  it('reads nothing for an account when neither edition is due in this run', async () => {
+    const loadSource = vi.fn();
     const result = await selectChartRecipients({
       preferences: [preference],
-      optedIn: OPTED_IN,
-      loadChart: vi.fn().mockRejectedValue(new Error('no key')),
+      loadSource,
+      decrypt: vi.fn(),
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T03:13:00Z'),
+      getAuthEmail: vi.fn(),
+      recipientHashForEmail: hashFor,
+    });
+    expect(result.recipients).toEqual([]);
+    expect(loadSource).not.toHaveBeenCalled();
+  });
+
+  it('falls back to the Sun tier when an eligible chart cannot be decrypted', async () => {
+    const result = await selectChartRecipients({
+      preferences: [preference],
+      loadSource: vi.fn().mockResolvedValue(SOURCE),
+      decrypt: vi.fn().mockRejectedValue(new Error('no key')),
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
       getAuthEmail: vi.fn(),
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
     });
     expect(result.recipients).toEqual([]);
     expect(result.invalidCharts).toEqual([{ userId: preference.user_id, chartId: chart.id }]);
@@ -165,7 +277,7 @@ describe('daily email recipient selection', () => {
       sun: [sun],
       suppressSunEmails: result.suppressSunEmails,
       suppressSunRecipientHashes: result.suppressSunRecipientHashes,
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
     })).toEqual([sun]);
@@ -173,20 +285,22 @@ describe('daily email recipient selection', () => {
 
   it('treats a paused or retired v1 preference as paused and lets the Sun tier resume', async () => {
     const getAuthEmail = vi.fn();
-    const loadChart = vi.fn();
+    const loadSource = vi.fn();
+    const decrypt = vi.fn();
     const result = await selectChartRecipients({
       preferences: [{ ...preference, chart_id: null }],
-      optedIn: OPTED_IN,
-      loadChart,
+      loadSource,
+      decrypt,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
       getAuthEmail,
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
     });
     expect(result.recipients).toEqual([]);
     expect(result.suppressSunRecipientHashes).toEqual(new Set());
     expect(getAuthEmail).not.toHaveBeenCalled();
-    expect(loadChart).not.toHaveBeenCalled();
+    expect(loadSource).not.toHaveBeenCalled();
+    expect(decrypt).not.toHaveBeenCalled();
 
     const sun = {
       tier: 'sun_sign' as const,
@@ -200,45 +314,64 @@ describe('daily email recipient selection', () => {
       sun: [sun],
       suppressSunEmails: result.suppressSunEmails,
       suppressSunRecipientHashes: result.suppressSunRecipientHashes,
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
     })).toEqual([sun]);
   });
 
-  it('keeps provider routing identity out of the chart tier', () => {
+  it('keeps provider routing identity out of the chart tier and remembers the held Sun edition', () => {
     const chartRecipient = {
       tier: 'chart' as const,
       email: 'same@example.com',
       userId: preference.user_id,
       chartId: chart.id,
+      revision: 3,
       chart,
       timezone: 'UTC',
     };
+    const sun = {
+      tier: 'sun_sign' as const, email: 'same@example.com', sign: 'aries',
+      contactId: 'contact_same_1', timezone: 'UTC' as const,
+    };
+    const other = { ...sun, email: 'other@example.com', contactId: 'contact_other_1' };
     const merged = mergeDailyEmailRecipients({
       chart: [chartRecipient],
-      sun: [{
-        tier: 'sun_sign', email: 'same@example.com', sign: 'aries',
-        contactId: 'contact_same_1', timezone: 'UTC',
-      }],
+      sun: [sun, other],
       suppressSunEmails: new Set(['same@example.com']),
       suppressSunRecipientHashes: new Set(),
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
     });
-    expect(merged).toEqual([chartRecipient]);
+    expect(merged).toEqual([other, chartRecipient]);
+    const fallbacks = dailySunFallbacks({
+      chart: [chartRecipient],
+      sun: [sun, other],
+      recipientHashForEmail: hashFor,
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T07:13:00Z'),
+    });
+    expect([...fallbacks.entries()]).toEqual([[hashFor('same@example.com'), sun]]);
+    // Before the Sun edition is due there is nothing to fall back to.
+    expect(dailySunFallbacks({
+      chart: [chartRecipient],
+      sun: [sun],
+      recipientHashForEmail: hashFor,
+      editionDate: '2026-07-20',
+      at: new Date('2026-07-20T03:13:00Z'),
+    }).size).toBe(0);
   });
 
   it('holds a malformed decrypted chart without substitution', async () => {
     const result = await selectChartRecipients({
       preferences: [preference],
-      optedIn: OPTED_IN,
-      loadChart: vi.fn().mockResolvedValue({ ...chart, summary: { ...chart.summary, bodies: [] } }),
+      loadSource: vi.fn().mockResolvedValue(SOURCE),
+      decrypt: vi.fn().mockResolvedValue({ ...chart, summary: { ...chart.summary, bodies: [] } }),
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T11:13:00Z'),
       getAuthEmail: vi.fn().mockResolvedValue('person@example.com'),
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
     });
     expect(result.recipients).toEqual([]);
     expect(result.invalidCharts).toEqual([{ userId: preference.user_id, chartId: chart.id }]);
@@ -248,12 +381,12 @@ describe('daily email recipient selection', () => {
   it('holds a stale auth identity while its opaque hash still suppresses the old Sun tier', async () => {
     const result = await selectChartRecipients({
       preferences: [preference],
-      optedIn: OPTED_IN,
-      loadChart: vi.fn().mockResolvedValue(chart),
+      loadSource: vi.fn().mockResolvedValue(SOURCE),
+      decrypt: vi.fn().mockResolvedValue(chart),
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T11:13:00Z'),
       getAuthEmail: vi.fn().mockResolvedValue('changed@example.com'),
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
     });
     expect(result.recipients).toEqual([]);
     expect(result.invalidIdentities).toEqual([preference.user_id]);
@@ -265,7 +398,7 @@ describe('daily email recipient selection', () => {
       }],
       suppressSunEmails: result.suppressSunEmails,
       suppressSunRecipientHashes: result.suppressSunRecipientHashes,
-      recipientHashForEmail: (email) => dailyRecipientHash(email, HASH_SECRET),
+      recipientHashForEmail: hashFor,
       editionDate: '2026-07-20',
       at: new Date('2026-07-20T07:13:00Z'),
     });

@@ -4,6 +4,8 @@ import {
   assertDailyEmailSendInterlocks,
   dailyRecipientUnsubscribeClaim,
   canaryRecipient,
+  createChartDispatchCheck,
+  loadCurrentChartEmailSource,
   parseDailyEmailArgs,
   recipientHashPrefix,
   requireResendCapabilities,
@@ -16,7 +18,8 @@ import publicationData from '../src/data/daily-publication.json';
 import programData from '../src/data/horoscope-program.json';
 import { houseLine, wholeSignHouseFromAsc, type Daily } from '../src/lib/daily';
 import { renderDailyEmail } from '../src/lib/daily-email/content';
-import type { ChartRecipient, DailyEmailRecipient } from '../src/lib/daily-email/types';
+import { dailyRecipientHash } from '../src/lib/daily-email/identity';
+import type { ChartRecipient, DailyEmailRecipient, SunSignRecipient } from '../src/lib/daily-email/types';
 import type { DailyPublication } from '../src/lib/daily-publication';
 import legacyPolar from '../src/lib/engine/fixtures/legacy-polar-saved.json';
 import * as engine from '../src/lib/engine/full';
@@ -59,7 +62,7 @@ describe('daily email CLI', () => {
       log: vi.fn(),
     });
     expect(report).toEqual({
-      considered: 2, reserved: 0, sent: 0, failed: 0, duplicate: 0, dryRun: 2,
+      considered: 2, reserved: 0, sent: 0, failed: 0, duplicate: 0, dryRun: 2, fellBack: 0, withdrawn: 0,
     });
     expect(fetcher).not.toHaveBeenCalled();
   });
@@ -143,7 +146,7 @@ describe('daily email CLI', () => {
     }).text;
     const chartRecipient = (chart: SavedChart): ChartRecipient => ({
       tier: 'chart', email: 'chart@example.com', userId: '10000000-0000-4000-8000-000000000002',
-      chartId: chart.id, chart, timezone: 'UTC',
+      chartId: chart.id, revision: 1, chart, timezone: 'UTC',
     });
     // Synced from a browser that read Stockholm on Berlin's summer time in
     // July 1947: 10:00Z for a noon birth, where Sweden's +1:00 gives 11:00Z.
@@ -208,6 +211,7 @@ describe('daily email CLI', () => {
     const chart = dailyRecipientUnsubscribeClaim({
       tier: 'chart', email: 'SAME@example.com', userId: '10000000-0000-4000-8000-000000000002',
       chartId: '10000000-0000-4000-8000-000000000001',
+      revision: 1,
       chart: {
         id: '10000000-0000-4000-8000-000000000001', name: 'Chart',
         createdAt: '2026-07-01T00:00:00Z', updatedAt: '2026-07-01T00:00:00Z',
@@ -242,5 +246,66 @@ describe('daily email CLI', () => {
     expect(workflow).toContain('RESEND_CONTACTS_API_KEY');
     expect(workflow).not.toContain('RESEND_DAILY_SIGN_SEGMENTS_JSON');
     expect(workflow).toContain('DAILY_EMAIL_COHORT');
+  });
+});
+
+describe('daily chart email dispatch check', () => {
+  const HASH_SECRET = 'recipient-hash-secret-that-is-long-enough';
+  const hashFor = (email: string) => dailyRecipientHash(email, HASH_SECRET);
+  const userId = '10000000-0000-4000-8000-000000000002';
+  const chartA = '10000000-0000-4000-8000-0000000000aa';
+  const chartB = '10000000-0000-4000-8000-0000000000bb';
+  const recipient: ChartRecipient = {
+    tier: 'chart', email: 'person@example.com', userId, chartId: chartA, revision: 4,
+    chart: {
+      id: chartA, name: 'Chart',
+      createdAt: '2026-07-01T00:00:00Z', updatedAt: '2026-07-01T00:00:00Z',
+      birth: { date: '1990-01-01', time: null, timeKnown: false, place: null },
+      summary: {
+        engineVersion: 'fixture', utcISO: '1990-01-01T12:00:00Z', houseSystem: 'whole',
+        bodies: [{ body: 'Sun', lon: 1, retrograde: false }], angles: null, flags: [],
+      },
+    },
+    timezone: 'UTC',
+  };
+  const sun: SunSignRecipient = {
+    tier: 'sun_sign', email: 'Person@Example.com', sign: 'aries', contactId: 'contact_person_1', timezone: 'UTC',
+  };
+  const withSun = new Map([[hashFor('person@example.com'), sun]]);
+
+  it('keeps the chart edition only while the same chart and revision are still eligible', async () => {
+    const loadSource = vi.fn().mockResolvedValue({ chartId: chartA.toUpperCase(), revision: 4 });
+    const check = createChartDispatchCheck({ loadSource, sunFallbacks: withSun, recipientHashForEmail: hashFor });
+    await expect(check(recipient)).resolves.toBe(recipient);
+    expect(loadSource).toHaveBeenCalledWith(userId);
+  });
+
+  it('falls back to the Sun edition, or to nothing, once the account is no longer eligible', async () => {
+    for (const current of [
+      null, // chart emails or chart sync withdrawn, chart removed, or account in deletion
+      { chartId: chartA, revision: 5 }, // the chart changed after it was decrypted
+      { chartId: chartB, revision: 1 }, // chart A deleted and chart B synced
+    ]) {
+      const loadSource = vi.fn().mockResolvedValue(current);
+      const withFallback = createChartDispatchCheck({ loadSource, sunFallbacks: withSun, recipientHashForEmail: hashFor });
+      await expect(withFallback(recipient)).resolves.toEqual({ ...sun, email: 'person@example.com' });
+      const without = createChartDispatchCheck({ loadSource, sunFallbacks: new Map(), recipientHashForEmail: hashFor });
+      await expect(without(recipient)).resolves.toBeNull();
+    }
+    const failing = createChartDispatchCheck({
+      loadSource: vi.fn().mockRejectedValue(new Error('database down')),
+      sunFallbacks: new Map(),
+      recipientHashForEmail: hashFor,
+    });
+    await expect(failing(recipient)).resolves.toBeNull();
+  });
+
+  it('asks the database for exactly one account each time', async () => {
+    const fetcher = vi.fn().mockResolvedValue(new Response('[]', { status: 200 }));
+    await expect(loadCurrentChartEmailSource(userId, {
+      supabaseUrl: 'https://project.supabase.co', serviceKey: 'service-key', fetcher,
+    })).resolves.toBeNull();
+    expect(String(fetcher.mock.calls[0][0])).toBe('https://project.supabase.co/rest/v1/rpc/account_v2_chart_email_sources');
+    expect(JSON.parse(String(fetcher.mock.calls[0][1].body))).toEqual({ candidate_user_ids: [userId] });
   });
 });

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { Daily } from '../daily';
 import type { DailyPublication } from '../daily-publication';
 import type { HoroscopeProgram } from '../horoscope-program';
-import { dailyDeliveryIdempotencyKey, dailyRecipientHash, maskDailyEmail } from './identity';
+import { dailyDeliveryIdempotencyKey, dailyRecipientHash } from './identity';
 import { createRateLimitedResendRequest, type ResendRequest } from './resend-request';
 import type {
   DailyEmailMessage,
@@ -327,6 +327,25 @@ export function createResendDelivery({
   };
 }
 
+/**
+ * Rechecks a chart recipient immediately before dispatch. It returns the same
+ * recipient while the account is still eligible, the Sun edition recipient
+ * for the same address when it is not but that address is a confirmed Sun
+ * subscriber, or null when there is nothing to send. It must fail closed.
+ */
+export type DailyEmailDispatchCheck = (
+  recipient: DailyEmailRecipient,
+) => Promise<DailyEmailRecipient | null>;
+
+/**
+ * Logs never carry an address, not even a masked one: each recipient is
+ * named by the first 12 hex characters of its keyed recipient hash, which
+ * is opaque without DAILY_EMAIL_RECIPIENT_HASH_SECRET.
+ */
+export function dailyRecipientLogRef(recipientHash: string): string {
+  return `ref=${recipientHash.slice(0, 12)}`;
+}
+
 export async function deliverDailyEmails({
   recipients,
   editionDate,
@@ -336,6 +355,7 @@ export async function deliverDailyEmails({
   receipts,
   resend,
   render,
+  confirmBeforeDispatch,
   now = () => new Date(),
   log = console.log,
 }: {
@@ -347,6 +367,8 @@ export async function deliverDailyEmails({
   receipts: DeliveryReceiptStore;
   resend: ResendDelivery;
   render: (recipient: DailyEmailRecipient, context: DailyEmailRenderContext) => DailyEmailMessage;
+  /** Chart recipients only; see DailyEmailDispatchCheck. */
+  confirmBeforeDispatch?: DailyEmailDispatchCheck;
   now?: () => Date;
   log?: (message: string) => void;
 }): Promise<DeliveryReport> {
@@ -357,13 +379,39 @@ export async function deliverDailyEmails({
     failed: 0,
     duplicate: 0,
     dryRun: 0,
+    fellBack: 0,
+    withdrawn: 0,
   };
   if (!Number.isSafeInteger(limit) || limit < 1) throw new Error('Daily email limit must be positive.');
 
-  for (const recipient of recipients) {
+  /**
+   * The recipient to send to right now. A replacement must share the
+   * address (so the receipt, idempotency key and hash stay the same) and be
+   * the Sun tier; anything else, or a failing check, is treated as nothing
+   * to send.
+   */
+  async function dispatchRecipient(
+    recipient: DailyEmailRecipient,
+  ): Promise<DailyEmailRecipient | null> {
+    if (recipient.tier !== 'chart' || !confirmBeforeDispatch) return recipient;
+    let confirmed: DailyEmailRecipient | null;
+    try {
+      confirmed = await confirmBeforeDispatch(recipient);
+    } catch {
+      return null;
+    }
+    if (confirmed === recipient) return recipient;
+    return confirmed
+      && confirmed.tier === 'sun_sign'
+      && confirmed.email === recipient.email
+      ? confirmed
+      : null;
+  }
+
+  for (const candidate of recipients) {
     if ((dryRun ? report.dryRun : report.reserved) >= limit) break;
     report.considered += 1;
-    const maskedEmail = maskDailyEmail(recipient.email);
+    let recipient = candidate;
     let recipientHash: string;
     let idempotencyKey: string;
     try {
@@ -371,28 +419,51 @@ export async function deliverDailyEmails({
       idempotencyKey = dailyDeliveryIdempotencyKey(editionDate, recipient.email, hashSecret);
     } catch {
       report.failed += 1;
-      log(`daily-email: failed ${recipient.tier} for ${maskedEmail} during recipient validation`);
+      log(`daily-email: failed ${recipient.tier} for one recipient during recipient validation`);
       continue;
     }
+    const ref = dailyRecipientLogRef(recipientHash);
 
     if (dryRun) {
+      const current = await dispatchRecipient(recipient);
+      if (!current) {
+        report.withdrawn += 1;
+        log(`daily-email: dry-run chart ${ref} no longer eligible; nothing to send`);
+        continue;
+      }
+      if (current !== recipient) {
+        report.fellBack += 1;
+        log(`daily-email: dry-run chart ${ref} no longer eligible; Sun edition instead`);
+        recipient = current;
+      }
       try {
         render(recipient, { firstDelivery: false });
         report.dryRun += 1;
-        log(`daily-email: dry-run ${recipient.tier} ${maskedEmail}`);
+        log(`daily-email: dry-run ${recipient.tier} ${ref}`);
       } catch {
         report.failed += 1;
-        log(`daily-email: failed ${recipient.tier} for ${maskedEmail} during render`);
+        log(`daily-email: failed ${recipient.tier} for ${ref} during render`);
       }
       continue;
     }
 
-    const leaseToken = await receipts.reserve(editionDate, recipientHash, recipient.tier);
+    let leaseToken = await receipts.reserve(editionDate, recipientHash, recipient.tier);
     if (!leaseToken) {
       report.duplicate += 1;
       continue;
     }
     report.reserved += 1;
+
+    const releaseReservation = async (): Promise<boolean> => {
+      try {
+        await receipts.markFailed(editionDate, recipientHash, leaseToken!);
+        return true;
+      } catch {
+        log(`daily-email: receipt update failed for ${ref}`);
+        return false;
+      }
+    };
+
     // Only editions before this one count, so a retry of today's edition
     // renders the same message under the same provider idempotency key.
     let firstDelivery: boolean;
@@ -400,12 +471,8 @@ export async function deliverDailyEmails({
       firstDelivery = !await receipts.sentBefore(editionDate, recipientHash);
     } catch {
       report.failed += 1;
-      try {
-        await receipts.markFailed(editionDate, recipientHash, leaseToken);
-      } catch {
-        log(`daily-email: receipt update failed for ${maskedEmail}`);
-      }
-      log(`daily-email: failed ${recipient.tier} for ${maskedEmail} during history lookup`);
+      await releaseReservation();
+      log(`daily-email: failed ${recipient.tier} for ${ref} during history lookup`);
       continue;
     }
     let message: DailyEmailMessage;
@@ -413,13 +480,44 @@ export async function deliverDailyEmails({
       message = render(recipient, { firstDelivery });
     } catch {
       report.failed += 1;
-      try {
-        await receipts.markFailed(editionDate, recipientHash, leaseToken);
-      } catch {
-        log(`daily-email: receipt update failed for ${maskedEmail}`);
-      }
-      log(`daily-email: failed ${recipient.tier} for ${maskedEmail} during render`);
+      await releaseReservation();
+      log(`daily-email: failed ${recipient.tier} for ${ref} during render`);
       continue;
+    }
+
+    // Immediately before dispatch, a chart edition is checked once more: the
+    // account may have withdrawn chart emails or chart sync, removed or
+    // replaced its chart, or entered deletion since it was selected.
+    const current = await dispatchRecipient(recipient);
+    if (current !== recipient) {
+      // Nothing was sent under this reservation. Releasing it (as failed, the
+      // receipt's "not sent" state) lets the Sun edition, now or in a later
+      // run, take the same receipt with its own tier.
+      if (!await releaseReservation()) {
+        report.failed += 1;
+        continue;
+      }
+      if (!current) {
+        report.withdrawn += 1;
+        log(`daily-email: chart ${ref} no longer eligible at dispatch; nothing sent`);
+        continue;
+      }
+      report.fellBack += 1;
+      log(`daily-email: chart ${ref} no longer eligible at dispatch; Sun edition instead`);
+      recipient = current;
+      leaseToken = await receipts.reserve(editionDate, recipientHash, recipient.tier);
+      if (!leaseToken) {
+        report.duplicate += 1;
+        continue;
+      }
+      try {
+        message = render(recipient, { firstDelivery });
+      } catch {
+        report.failed += 1;
+        await releaseReservation();
+        log(`daily-email: failed ${recipient.tier} for ${ref} during render`);
+        continue;
+      }
     }
 
     try {
@@ -432,15 +530,11 @@ export async function deliverDailyEmails({
         now().toISOString(),
       );
       report.sent += 1;
-      log(`daily-email: sent ${recipient.tier} to ${maskedEmail}`);
+      log(`daily-email: sent ${recipient.tier} to ${ref}`);
     } catch {
       report.failed += 1;
-      try {
-        await receipts.markFailed(editionDate, recipientHash, leaseToken);
-      } catch {
-        log(`daily-email: receipt update failed for ${maskedEmail}`);
-      }
-      log(`daily-email: failed ${recipient.tier} for ${maskedEmail} during delivery`);
+      await releaseReservation();
+      log(`daily-email: failed ${recipient.tier} for ${ref} during delivery`);
     }
   }
   return report;

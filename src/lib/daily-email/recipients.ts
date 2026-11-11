@@ -15,11 +15,24 @@ export interface ChartRecipientSelection {
   recipients: ChartRecipient[];
   suppressSunEmails: Set<string>;
   suppressSunRecipientHashes: Set<string>;
-  /** Opted-in accounts whose chart could not be read; they fall back to Sun. */
+  /** Eligible accounts whose chart could not be read; they fall back to Sun. */
   invalidCharts: Array<{ userId: string; chartId: string }>;
   invalidIdentities: string[];
-  /** Confirmed chart preferences whose account does not hold chart_emails. */
+  /** Confirmed chart preferences whose account is not eligible right now. */
   notOptedIn: number;
+  /**
+   * Eligible accounts whose self chart is not the chart the preference names
+   * (the chart was removed and another synced): paused, Sun tier only.
+   */
+  pausedCharts: number;
+  /** Accounts whose eligibility could not be read; they fall back to Sun. */
+  unavailable: number;
+}
+
+/** What the eligibility lookup returns: the account's current self chart. */
+export interface ChartEmailSourceReference {
+  chartId: string;
+  revision: number;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -127,31 +140,37 @@ export function isDailyEmailSavedChart(value: unknown): value is SavedChart {
 
 /**
  * The chart edition goes only to an account that has a confirmed daily chart
- * preference (double opt-in, timezone) whose chart_id names a v2 chart AND
- * that currently holds chart_sync and chart_emails (`optedIn`, from
- * account_v2_chart_email_sources). Its chart is the account's encrypted self
- * chart, decrypted by `loadChart` in this job and nowhere stored.
+ * preference (double opt-in, timezone) whose chart_id names its v2 self chart
+ * AND that, when this run reaches it, is active and holds chart_sync and
+ * chart_emails. `loadSource` asks the database exactly that, for this one
+ * account, immediately before decryption (account_v2_chart_email_sources); it
+ * returns the account's current self chart id and revision, or null. The
+ * chart is decrypted by `decrypt` in this job and nowhere stored.
  *
  * Everyone else is left to the Sun tier: a preference paused when v1 chart
- * sync was retired (chart_id null), an account without chart_emails, and an
- * opted-in account whose chart cannot be decrypted right now. Their Sun
- * edition is not suppressed, so a confirmed Sun subscriber still gets it.
- * Auth emails are resolved only during this send operation. They are never
- * copied into preference rows or delivery receipts.
+ * sync was retired (chart_id null), an account without both consents, an
+ * account whose self chart is no longer the chart the preference names (it
+ * was removed and another one synced: the profile shows that preference as
+ * paused, so it stays paused here), and an eligible account whose chart
+ * cannot be read right now. Their Sun edition is not suppressed, so a
+ * confirmed Sun subscriber still gets it. Auth emails are resolved only
+ * during this send operation. They are never copied into preference rows or
+ * delivery receipts.
  */
-export async function selectChartRecipients({
+export async function selectChartRecipients<Source extends ChartEmailSourceReference>({
   preferences,
-  optedIn,
-  loadChart,
+  loadSource,
+  decrypt,
   editionDate,
   at,
   getAuthEmail,
   recipientHashForEmail,
 }: {
   preferences: readonly ChartPreferenceRow[];
-  optedIn: ReadonlySet<string>;
-  /** Decrypts the account's self chart; null when it cannot be read. */
-  loadChart: (userId: string) => Promise<SavedChart | null>;
+  /** The account's current eligible self chart, read fresh; null when not eligible. */
+  loadSource: (userId: string) => Promise<Source | null>;
+  /** Decrypts that chart; null when it cannot be read. */
+  decrypt: (source: Source) => Promise<SavedChart | null>;
   editionDate: string;
   at: Date;
   getAuthEmail: (userId: string) => Promise<string | null>;
@@ -163,6 +182,8 @@ export async function selectChartRecipients({
   const invalidCharts: Array<{ userId: string; chartId: string }> = [];
   const invalidIdentities: string[] = [];
   let notOptedIn = 0;
+  let pausedCharts = 0;
+  let unavailable = 0;
   const sunDue = isDailyEmailDue(editionDate, at, 'UTC');
 
   for (const preference of [...preferences].sort((a, b) => a.user_id.localeCompare(b.user_id))) {
@@ -170,19 +191,30 @@ export async function selectChartRecipients({
     // A null chart id is the paused state (a removed chart, or a v1 chart
     // retired at launch). It must not suppress a separately confirmed Sun.
     if (!preference.chart_id) continue;
-    if (!optedIn.has(preference.user_id.toLowerCase())) {
+    const due = isDailyEmailDue(editionDate, at, preference.timezone);
+    // Neither edition goes out for this account in this run: read nothing.
+    // (The Sun tier is not merged at all when it is not due.)
+    if (!due && !sunDue) continue;
+
+    let source: Source | null;
+    try {
+      source = await loadSource(preference.user_id);
+    } catch {
+      unavailable += 1;
+      continue;
+    }
+    if (!source) {
       notOptedIn += 1;
       continue;
     }
-    const due = isDailyEmailDue(editionDate, at, preference.timezone);
-    // Decrypt only when this run sends either edition this account could get.
-    if (!due && !sunDue) {
-      suppressSunRecipientHashes.add(preference.recipient_hash);
+    if (source.chartId.toLowerCase() !== preference.chart_id.toLowerCase()) {
+      pausedCharts += 1;
       continue;
     }
+
     let chart: SavedChart | null = null;
     try {
-      chart = await loadChart(preference.user_id);
+      chart = await decrypt(source);
     } catch {
       chart = null;
     }
@@ -217,7 +249,8 @@ export async function selectChartRecipients({
       tier: 'chart',
       email,
       userId: preference.user_id,
-      chartId: chart.id,
+      chartId: source.chartId.toLowerCase(),
+      revision: source.revision,
       chart,
       timezone,
     });
@@ -230,7 +263,38 @@ export async function selectChartRecipients({
     invalidCharts,
     invalidIdentities,
     notOptedIn,
+    pausedCharts,
+    unavailable,
   };
+}
+
+/**
+ * The confirmed Sun recipients this run holds back because the same address
+ * gets the chart edition, keyed by recipient hash. If that chart recipient is
+ * no longer eligible at dispatch, this is the edition it falls back to. Empty
+ * when the Sun edition is not due in this run.
+ */
+export function dailySunFallbacks({
+  chart,
+  sun,
+  recipientHashForEmail,
+  editionDate,
+  at,
+}: {
+  chart: readonly ChartRecipient[];
+  sun: readonly SunSignRecipient[];
+  recipientHashForEmail: (email: string) => string;
+  editionDate: string;
+  at: Date;
+}): Map<string, SunSignRecipient> {
+  const fallbacks = new Map<string, SunSignRecipient>();
+  if (!isDailyEmailDue(editionDate, at, 'UTC')) return fallbacks;
+  const chartHashes = new Set(chart.map((recipient) => recipientHashForEmail(recipient.email)));
+  for (const recipient of sun) {
+    const hash = recipientHashForEmail(recipient.email);
+    if (chartHashes.has(hash) && !fallbacks.has(hash)) fallbacks.set(hash, recipient);
+  }
+  return fallbacks;
 }
 
 export function mergeDailyEmailRecipients({
