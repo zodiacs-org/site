@@ -3,7 +3,9 @@
  * directory pages in Chromium at phone (390px) and desktop (1280px) widths:
  * the layout shift before any input stays at zero, nothing scrolls sideways,
  * the calculators answer from a birth date alone and offer their share links,
- * and no answer puts a birth detail in the address bar.
+ * an untimed solar return is a date with no clock time, a birth date on which
+ * the Sun changes sign gets both signs and no share link, and no answer puts a
+ * birth detail in the address bar.
  *
  * Each page follows its launch switch (src/lib/launch-flags.ts), read here from
  * the shell as the build reads it. A page whose switch is off is checked in the
@@ -159,6 +161,9 @@ try {
         const off = await offLinks(page);
         if (off.length) fail(`${path} result @${size.width}: links to ${off.join(', ')} although its switch is off`);
         if (path === '/birthday-report/') {
+          // Without a birth time the return is a date: no clock time, and the line says it can be a day either side.
+          const returnLine = (await page.locator('[data-br-return]').innerText()).trim();
+          if (/\b\d{1,2}:\d{2}\b/u.test(returnLine) || !returnLine.startsWith('Around ')) fail(`${path} result @${size.width}: the untimed return line reads "${returnLine}"`);
           // The report includes the score either way; its links to the score's page wait for that switch.
           const intro = await page.locator('.tool-hero a[href="/year-score/"]').count();
           const months = await linkCount(page, 'See the months and the transits behind it');
@@ -168,6 +173,22 @@ try {
         }
         if (shots) await page.screenshot({ path: `${shots}/${path.replaceAll('/', '_')}result-${size.name}.png`, fullPage: true });
         console.log(`ok ${path} result @${size.width}: ${href}`);
+      }
+
+      // A date-only birth on the day the Sun changes sign (into Aries, 20 March 1990 at 21:19 UTC): both signs, and no share link.
+      for (const [path, field, button, result, share, unsettled] of [
+        ['/year-score/', '#ys-date', 'Score my year', '.ys__number', 'Share your score', '[data-ys-sun-unsettled]'],
+        ['/birthday-report/', '#br-date', 'Make my birthday report', '.br__heading', 'Share my birthday report', '[data-br-sun-unsettled]'],
+      ].filter(([path]) => PAGES.includes(path))) {
+        await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+        await page.fill(field, '1990-03-20');
+        await page.getByRole('button', { name: button }).click();
+        await page.locator(result).first().waitFor({ timeout: 30_000 });
+        const shares = await page.getByRole('link', { name: share }).count();
+        if (shares !== 0) fail(`${path} 1990-03-20 @${size.width}: ${shares} share link(s) for an unsettled Sun sign`);
+        const line = (await page.locator(unsettled).innerText().catch(() => '')).trim();
+        if (line !== 'Your Sun is in Pisces or Aries: a birth time settles it.') fail(`${path} 1990-03-20 @${size.width}: the Sun line reads "${line}"`);
+        console.log(`ok ${path} 1990-03-20 @${size.width}: no share link, ${line}`);
       }
       await context.close();
 

@@ -20,7 +20,7 @@ const en = {
     trustReference: "Reference UTC instant (birth time unknown; no rising sign or houses)",
     trustMissingInstant: "The original UTC instant was not shared with these positions.",
     trustReturnInstant: "Return UTC instant",
-    trustApproxReturn: "Approximate return UTC instant, based on a reference birth time",
+    trustApproxReturn: "Approximate return UTC date, based on a reference birth time",
     trustIntro: "Your chart can help you reflect on your needs, strengths, and relationships.",
     trustOtherIntro: "This chart can help you reflect on this person’s needs, strengths, and relationships.",
     trustPairIntro: "Your differences can be a starting point for understanding each other.",
