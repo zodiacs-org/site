@@ -176,6 +176,16 @@ describe('get_year_score share links', () => {
     const { data } = await getYearScore({ birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org');
     expect(data.shareUrl).toBe(`https://zodiacs.org/share/year-score/?s=taurus&v=${data.score!.toFixed(1)}`);
   });
+  it('names no Sun sign and gives no link when an untimed birth day straddles a sign change, unless the birthplace clock settles it', async () => {
+    // The Sun entered Aries on 20 March 1990 at 21:19 UTC.
+    const { data } = await getYearScore({ birthDate: '1990-03-20' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.subject?.sun).toBeNull();
+    expect(data.shareUrl).toBeNull();
+    // The Tokyo clock's 23:59 is 14:59 UTC, before the change.
+    const tokyo = await getYearScore({ birthDate: '1990-03-20', zone: 'Asia/Tokyo' }, NOW, clock, 'https://zodiacs.org');
+    expect(tokyo.data.subject?.sun).toBe('pisces');
+    expect(tokyo.data.shareUrl).toContain('s=pisces');
+  });
   it('gives a figure the slug alone, scored from the first of the month like its page and card', async () => {
     const { data } = await getYearScore({ person: 'Jensen Huang' }, NOW, clock, 'https://zodiacs.org');
     expect(data.from).toBe('2026-11-01');

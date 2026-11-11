@@ -40896,6 +40896,16 @@ async function searchSkyEvents(args, clock2, options) {
 // src/ai-tools/features/year-score.ts
 import { z as z14 } from "zod";
 
+// src/lib/sun-settled.ts
+function birthDayEnvelope(date3) {
+  const start = Date.parse(`${date3}T00:00:00Z`);
+  return [new Date(start - 14 * 36e5), new Date(start + (24 * 60 - 1) * 6e4 + 12 * 36e5)];
+}
+function settledSunSign(ends, sunLonAt2) {
+  const signs = ends.map((at) => Math.floor((sunLonAt2(at) % 360 + 360) % 360 / 30));
+  return signs[0] === signs[1] ? { sign: signs[0], candidates: [] } : { sign: null, candidates: signs };
+}
+
 // src/lib/year-score/core.ts
 var YEAR_SCORE_VERSION = "year-score.v1";
 var SLOW_PLANETS = ["Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
@@ -41868,13 +41878,12 @@ async function birthInstant3(birthDate, time, timeZone, clock2, longitude2) {
   const local = time ?? "12:00";
   return (longitude2 !== void 0 ? clock2.resolveLocalToUtc(birthDate, local, timeZone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(birthDate, local, timeZone)).utc;
 }
-function settledSun(birthDate, timeKnown, sunLon) {
-  const sign3 = SIGNS2[signIndexForLongitude2(sunLon)].slug;
-  if (timeKnown) return sign3;
-  const start = Date.parse(`${birthDate}T00:00:00Z`) - 14 * 36e5;
-  const end = Date.parse(`${birthDate}T23:59:00Z`) + 12 * 36e5;
-  const signs = new Set([start, end].map((ms) => signIndexForLongitude2(computeChart2({ utc: new Date(ms), houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon)));
-  return signs.size === 1 ? sign3 : null;
+var sunLonAt = (at) => computeChart2({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon;
+function settledSun(birthDate, utc, timeKnown, timeZone, clock2, longitude2) {
+  const local = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(birthDate, time, timeZone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(birthDate, time, timeZone)).utc;
+  const ends = timeKnown ? [utc, utc] : timeZone ? [local("00:00"), local("23:59")] : birthDayEnvelope(birthDate);
+  const { sign: sign3 } = settledSunSign(ends, sunLonAt);
+  return sign3 === null ? null : SIGNS2[sign3].slug;
 }
 function scoreFrom(natal, start) {
   const cache = /* @__PURE__ */ new Map();
@@ -41936,7 +41945,8 @@ async function getYearScore(args, now, clock2, origin) {
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
   if (under18) limits2.push(MINOR_NOTE);
   const utc = await birthInstant3(birthDate, time, timeZone, clock2, longitude2);
-  const { natal, sunLon } = natalPointsAt(utc, timeKnown);
+  const { natal } = natalPointsAt(utc, timeKnown);
+  const sun = settledSun(birthDate, utc, timeKnown, timeZone, clock2, longitude2);
   const year = scoreFrom(natal, startDate);
   const reading = yearReading(year, guard);
   const exact = exactPasses(natal, year);
@@ -41954,7 +41964,7 @@ async function getYearScore(args, now, clock2, origin) {
   return {
     data: {
       status: "found",
-      subject: { kind: figure ? "person" : "self", name: figure?.name ?? null, description: figure?.description ?? null, sun: settledSun(birthDate, timeKnown, sunLon), timeKnown },
+      subject: { kind: figure ? "person" : "self", name: figure?.name ?? null, description: figure?.description ?? null, sun, timeKnown },
       from: year.from,
       to: year.to,
       score: year.score,
@@ -41983,7 +41993,7 @@ async function getYearScore(args, now, clock2, origin) {
       // A directory figure's own page; a person's own details have no page, so the calculator.
       pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
       // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
-      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null : yearScoreShareUrl(origin, { sun: settledSun(birthDate, timeKnown, sunLon), score: year.score })
+      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null : yearScoreShareUrl(origin, { sun, score: year.score })
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links
   };
@@ -42213,11 +42223,9 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
   const timeKnown = args.time !== void 0;
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
-  if (args.zone) {
-    await clock2.prepareLocalTime(args.birthDate, args.zone);
-    const local = args.time ?? "12:00";
-    birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, local, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, local, args.zone)).utc;
-  }
+  const onBirthplaceClock = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+  if (args.zone) await clock2.prepareLocalTime(args.birthDate, args.zone);
+  if (args.time !== void 0) birthUtc = onBirthplaceClock(args.time);
   if (birthUtc.getTime() > now.getTime()) throw new RangeError("The birth date is still to come.");
   const natalSun = computeChart2({ utc: birthUtc, houseSystem: "whole", timeKnown }).bodies.find((row) => row.body === "Sun").lon;
   const which = args.which ?? "next";
@@ -42238,13 +42246,14 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
     degree: Math.floor(row.lon % 30 * 10) / 10,
     house: cusps ? houseOf(row.lon, [...cusps]) : null
   })).filter((row) => timeKnown || row.body !== "Moon");
-  const sunSign = SIGNS2[signIndexForLongitude2(natalSun)].slug;
-  const settled = timeKnown || new Set([-14, 36].map((hours) => signIndexForLongitude2(computeChart2({ utc: new Date(Date.parse(`${args.birthDate}T00:00:00Z`) + hours * 36e5), houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon))).size === 1;
+  const ends = timeKnown ? [birthUtc, birthUtc] : args.zone ? [onBirthplaceClock("00:00"), onBirthplaceClock("23:59")] : birthDayEnvelope(args.birthDate);
+  const settledIndex = settledSunSign(ends, (at) => computeChart2({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon).sign;
+  const sunSign = settledIndex === null ? null : SIGNS2[settledIndex].slug;
   const rising = asc !== null ? SIGNS2[signIndexForLongitude2(asc)].slug : null;
   const jupiter = placements.find((row) => row.body === "Jupiter").sign;
   const limits2 = [];
   if (under18) limits2.push(MINOR_NOTE);
-  if (!timeKnown) limits2.push("No birth time was given, so the return instant can shift by up to about half a day; the Moon, the rising sign and the houses are left out.");
+  if (!timeKnown) limits2.push("No birth time was given, so the return instant can shift by up to about a day; the Moon, the rising sign and the houses are left out.");
   else if (!placed) limits2.push("No birthplace coordinates were given, so the rising sign and the houses are left out.");
   else limits2.push("The return is cast for the birthplace. Astrologers who cast it where the person spends the birthday get a different rising sign and houses, with the same planets.");
   if (!args.currentZone && args.zone) limits2.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
@@ -42260,7 +42269,7 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
       zone: shownZone,
       timeKnown,
       placed,
-      sun: settled ? sunSign : null,
+      sun: sunSign,
       rising,
       placements,
       themes,
@@ -42269,7 +42278,7 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
       limits: limits2,
       under18,
       pageUrl,
-      shareUrl: solarReturnShareUrl(origin, { sun: settled ? sunSign : null, year: instant2.getUTCFullYear(), rising, jupiter })
+      shareUrl: solarReturnShareUrl(origin, { sun: sunSign, year: instant2.getUTCFullYear(), rising, jupiter })
     },
     links: [
       { title: "Solar return chart on Zodiacs", url: pageUrl },

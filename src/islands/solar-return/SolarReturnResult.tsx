@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from 'preact/hooks';
 import type { ComponentType } from 'preact';
 import type { WheelProps } from '../../lib/wheel/Wheel';
 import { houseOf } from '../../lib/engine/houses';
-import { formatLongitude, signForLongitude } from '../../lib/signs';
+import { SIGNS, formatLongitude, signForLongitude } from '../../lib/signs';
 import type { SolarReturnResultData } from './compute';
 import { SR_COPY } from './copy';
 import { solarReturnExportModel } from './export-model';
@@ -39,13 +39,15 @@ export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yea
     asc: wheel.angles?.asc ?? null, cusps: wheel.houses?.cusps ?? null, timeKnown: !result.noTime,
   }).filter((theme) => theme.kind !== 'rising' && theme.kind !== 'sun-house' && !(planetsOnly && theme.kind === 'aspect')), [chart, wheel, result.noTime, planetsOnly]);
   // The share link carries the Sun sign, the year and the rising and Jupiter signs only, never a birth detail.
+  // Without a birth time, only when the birth day settles the Sun sign (result.sunSign); no sign is guessed.
+  const sunSlug = result.noTime ? (typeof result.sunSign === 'number' ? SIGNS[result.sunSign].slug : null) : signForLongitude(sun.lon).slug;
   const shareUrl = useMemo(() => {
     const jupiter = chart.bodies.find((body) => body.body === 'Jupiter');
-    return jupiter ? solarReturnShareUrl(location.origin, {
-      sun: signForLongitude(sun.lon).slug, year: result.returnYear,
+    return jupiter && sunSlug ? solarReturnShareUrl(location.origin, {
+      sun: sunSlug, year: result.returnYear,
       rising: wheel.angles ? signForLongitude(wheel.angles.asc).slug : null, jupiter: signForLongitude(jupiter.lon).slug,
     }) : null;
-  }, [chart, sun.lon, result.returnYear, wheel.angles]);
+  }, [chart, sunSlug, result.returnYear, wheel.angles]);
 
   useEffect(() => {
     (window as typeof window & {
@@ -86,7 +88,11 @@ export function SolarReturnResult({ result, Wheel, themes: themesOn = false, yea
 
       {themesOn && themes.length > 0 && (
         <section class="sr-themes" aria-labelledby="solar-return-themes-title">
-          <h2 id="solar-return-themes-title">The year’s main themes</h2>
+          {/* Without house cusps the themes read the planets by sign, the same for everyone with a birthday near this one. */}
+          {wheel.houses?.cusps ? <h2 id="solar-return-themes-title">The year’s main themes</h2> : <>
+            <h2 id="solar-return-themes-title">This birthday season's sky</h2>
+            <p data-sr-themes-shared>Shared by everyone with a birthday near yours. A birth time and place make it yours.</p>
+          </>}
           <ul class="sr-themes__list">
             {themes.map((theme) => (
               <li key={theme.kind} class="tile sr-themes__item" data-sr-theme={theme.kind}>

@@ -15,6 +15,7 @@ import { computeChart } from '../../lib/engine/full.js';
 import { mostRecentSolarReturnInstant, solarReturnInstant } from '../../lib/engine/solar-return';
 import { houseOf } from '../../lib/engine/houses';
 import { SIGNS, signIndexForLongitude } from '../../lib/signs';
+import { birthDayEnvelope, settledSunSign } from '../../lib/sun-settled';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { solarReturnThemes } from '../../lib/solar-return/themes';
 import { solarReturnShareUrl } from '../../lib/solar-return/share';
@@ -84,12 +85,11 @@ export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: S
   const longitude = args.longitude === undefined ? undefined : roundCoordinate(args.longitude);
   const timeKnown = args.time !== undefined;
   const placed = latitude !== undefined && longitude !== undefined;
+  // Without a birth time the chart is cast from 12:00 UTC on the birth date whatever the zone, as /solar-return/ and the birthday report are.
   let birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
-  if (args.zone) {
-    await clock.prepareLocalTime(args.birthDate, args.zone);
-    const local = args.time ?? '12:00';
-    birthUtc = (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, local, args.zone, { longitude }) : clock.resolveLocalToUtc(args.birthDate, local, args.zone)).utc;
-  }
+  const onBirthplaceClock = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone!, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone!)).utc;
+  if (args.zone) await clock.prepareLocalTime(args.birthDate, args.zone);
+  if (args.time !== undefined) birthUtc = onBirthplaceClock(args.time);
   if (birthUtc.getTime() > now.getTime()) throw new RangeError('The birth date is still to come.');
   const natalSun = computeChart({ utc: birthUtc, houseSystem: 'whole', timeKnown }).bodies.find((row) => row.body === 'Sun')!.lon;
   const which = args.which ?? 'next';
@@ -111,14 +111,16 @@ export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: S
     degree: Math.floor((row.lon % 30) * 10) / 10,
     house: cusps ? houseOf(row.lon, [...cusps]) : null,
   })).filter((row) => timeKnown || row.body !== 'Moon');
-  // Without a birth time the natal Sun can be half a degree out, and the return about half a day; its sign is the birth date's only if the Sun kept to one sign all that day.
-  const sunSign = SIGNS[signIndexForLongitude(natalSun)].slug;
-  const settled = timeKnown || new Set([-14, 36].map((hours) => signIndexForLongitude(computeChart({ utc: new Date(Date.parse(`${args.birthDate}T00:00:00Z`) + hours * 3_600_000), houseSystem: 'whole', timeKnown: false }).bodies.find((row) => row.body === 'Sun')!.lon))).size === 1;
+  // Without a birth time the natal Sun can be up to a degree out, and the return about a day; its sign is the birth date's only if the Sun
+  // kept to one sign all that day: on the birthplace clock when the zone is known, else on every clock (src/lib/sun-settled.ts).
+  const ends: [Date, Date] = timeKnown ? [birthUtc, birthUtc] : args.zone ? [onBirthplaceClock('00:00'), onBirthplaceClock('23:59')] : birthDayEnvelope(args.birthDate);
+  const settledIndex = settledSunSign(ends, (at) => computeChart({ utc: at, houseSystem: 'whole', timeKnown: false }).bodies.find((row) => row.body === 'Sun')!.lon).sign;
+  const sunSign = settledIndex === null ? null : SIGNS[settledIndex].slug;
   const rising = asc !== null ? SIGNS[signIndexForLongitude(asc)].slug : null;
   const jupiter = placements.find((row) => row.body === 'Jupiter')!.sign;
   const limits: string[] = [];
   if (under18) limits.push(MINOR_NOTE);
-  if (!timeKnown) limits.push('No birth time was given, so the return instant can shift by up to about half a day; the Moon, the rising sign and the houses are left out.');
+  if (!timeKnown) limits.push('No birth time was given, so the return instant can shift by up to about a day; the Moon, the rising sign and the houses are left out.');
   else if (!placed) limits.push('No birthplace coordinates were given, so the rising sign and the houses are left out.');
   else limits.push('The return is cast for the birthplace. Astrologers who cast it where the person spends the birthday get a different rising sign and houses, with the same planets.');
   if (!args.currentZone && args.zone) limits.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
@@ -129,10 +131,10 @@ export async function getSolarReturn(args: SolarReturnInput, now: Date, clock: S
     data: {
       which, returnYear: Number(new Intl.DateTimeFormat('en-CA', { timeZone: shownZone, year: 'numeric' }).format(instant)),
       instantUtc: instant.toISOString(), local: clockLabel(instant, shownZone), zone: shownZone, timeKnown, placed,
-      sun: settled ? sunSign : null, rising, placements, themes,
+      sun: sunSign, rising, placements, themes,
       confidence: readingConfidence(detail), confidenceLabel: readingConfidenceLabel(detail),
       limits, under18, pageUrl,
-      shareUrl: solarReturnShareUrl(origin, { sun: settled ? sunSign : null, year: instant.getUTCFullYear(), rising, jupiter }),
+      shareUrl: solarReturnShareUrl(origin, { sun: sunSign, year: instant.getUTCFullYear(), rising, jupiter }),
     },
     links: [
       { title: 'Solar return chart on Zodiacs', url: pageUrl },

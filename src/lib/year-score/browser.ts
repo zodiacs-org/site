@@ -13,6 +13,11 @@ export function natalPoints(utc: Date, timeKnown: boolean): { natal: NatalPoints
   return { natal: { Sun: lon('Sun'), Moon: timeKnown ? lon('Moon') : null, Mercury: lon('Mercury'), Venus: lon('Venus'), Mars: lon('Mars') }, sunLon: lon('Sun') };
 }
 
+/** The Sun's longitude at an instant, from the same chart the score reads (for src/lib/sun-settled.ts). */
+export function sunLonAt(utc: Date): number {
+  return natalPoints(utc, false).sunLon;
+}
+
 export function scoreBirth(utc: Date, timeKnown: boolean, start: Date): { year: YearScore; sunLon: number } {
   const { natal, sunLon } = natalPoints(utc, timeKnown);
   return { year: scoreYear(natal, (body: SlowPlanet, date: Date) => bodyLongitude(body, date), start), sunLon };

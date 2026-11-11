@@ -82,9 +82,9 @@ source with unchanged tools, and 0.3.30 keeps its bytes. The Year Ahead Score
 (9 November 2026) adds get_year_score to the hosted server, offered only with
 ZODIACS_YEAR_SCORE_ENABLED=1 beside the coverage switch; with it off no tool
 definition changes and the Zodiacs 0.6.6 ZIP keeps its bytes. Developer 0.3.32
-is rebuilt from that source with unchanged tools, and 0.3.31 keeps its bytes. Developer 0.3.33 is rebuilt from the Year Ahead directory's expansion with unchanged tools, and 0.3.32 keeps its bytes. Developer 0.3.34 is rebuilt from the Year Ahead Score share card's source with unchanged tools, and 0.3.33 keeps its bytes. Developer 0.3.35 is rebuilt from the solar return tool's source (the birthday report link follows the site's switch) with unchanged tools, and 0.3.34 keeps its bytes.
+is rebuilt from that source with unchanged tools, and 0.3.31 keeps its bytes. Developer 0.3.33 is rebuilt from the Year Ahead directory's expansion with unchanged tools, and 0.3.32 keeps its bytes. Developer 0.3.34 is rebuilt from the Year Ahead Score share card's source with unchanged tools, and 0.3.33 keeps its bytes. Developer 0.3.35 is rebuilt from the solar return tool's source (the birthday report link follows the site's switch) with unchanged tools, and 0.3.34 keeps its bytes. Developer 0.3.36 is rebuilt from the solar return and Year Ahead Score tools' source (a birth without a time is cast from 12:00 UTC, and its Sun sign is named only when the birth day settles it) with unchanged tools, and 0.3.35 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.35**;
+Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.36**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production

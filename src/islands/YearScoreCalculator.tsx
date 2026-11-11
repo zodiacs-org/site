@@ -7,7 +7,8 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import PlaceSearch from './PlaceSearch';
-import { signForLongitude } from '../lib/signs';
+import { SIGNS, signForLongitude } from '../lib/signs';
+import { birthDayEnvelope, settledSunSign } from '../lib/sun-settled';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import type { City } from '../lib/geo/search';
 import { createModuleLoader } from '../lib/module-load';
@@ -27,7 +28,11 @@ const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no s
 
 interface Result {
   reading: YearReading;
-  sign: { name: string; slug: string; hue: string };
+  /** The Sun sign, null when an untimed birth day starts and ends in different signs (then `candidates` names both). */
+  sign: { name: string; slug: string } | null;
+  candidates: string[];
+  /** The tint: the sign of the chart the score was read from. */
+  hue: string;
   from: string;
   to: string;
   confidence: string;
@@ -64,11 +69,17 @@ export default function YearScoreCalculator() {
       const timeKnown = !!(placed && time);
       const utc = placed ? resolveLocalToUtc(date, time || '12:00', city.tz, { longitude: city.lon }).utc : new Date(`${date}T12:00:00Z`);
       const { year, sunLon } = scorer.scoreBirth(utc, timeKnown, new Date(`${today}T00:00:00Z`));
-      const sign = signForLongitude(sunLon);
+      // The Sun sign is the birth day's only when both ends of the day agree: the birthplace clock's 00:00 and 23:59, or every clock's version of the date.
+      const ends: [Date, Date] = timeKnown ? [utc, utc] : placed
+        ? [resolveLocalToUtc(date, '00:00', city.tz, { longitude: city.lon }).utc, resolveLocalToUtc(date, '23:59', city.tz, { longitude: city.lon }).utc]
+        : birthDayEnvelope(date);
+      const settled = settledSunSign(ends, scorer.sunLonAt);
       const guard = underAge(date, today, 18) ? softenMinor : (text: string) => text;
       setResult({
         reading: yearReading(year, guard),
-        sign: { name: sign.name, slug: sign.slug, hue: sign.hue },
+        sign: settled.sign === null ? null : { name: SIGNS[settled.sign].name, slug: SIGNS[settled.sign].slug },
+        candidates: settled.candidates.map((index) => SIGNS[index].name),
+        hue: signForLongitude(sunLon).hue,
         from: year.from,
         to: year.to,
         confidence: confidenceLabel(timeKnown && !!placed),
@@ -121,15 +132,20 @@ export default function YearScoreCalculator() {
       </form>
 
       {result && (
-        <div class="calc__result ys" style={`--sign:${result.sign.hue}`}>
-          <div class="ys__score shell tinted" style={`--sign:${result.sign.hue}`}>
+        <div class="calc__result ys" style={`--sign:${result.hue}`}>
+          <div class="ys__score shell tinted" style={`--sign:${result.hue}`}>
             <div class="core tinted ys__score-core">
               <h2 class="ys__heading" tabIndex={-1} ref={headingRef}>
                 <span class="ys__number">{result.reading.score.toFixed(1)}</span><span class="ys__outof">/10</span>
               </h2>
               <p class="ys__tier">{result.reading.tier.label}</p>
               <p class="ys__summary">{result.reading.tier.summary}</p>
-              <p class="ys__meta">{result.sign.name} Sun · {dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
+              {result.sign
+                ? <p class="ys__meta">{result.sign.name} Sun · {dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
+                : <>
+                  <p class="ys__meta" data-ys-sun-unsettled>Your Sun is in {result.candidates[0]} or {result.candidates[1]}: a birth time settles it.</p>
+                  <p class="ys__meta">{dayName(result.from)} to {dayName(result.to)} · {result.confidence}</p>
+                </>}
             </div>
           </div>
 
@@ -166,8 +182,8 @@ export default function YearScoreCalculator() {
           {!result.timeKnown && <p class="field__help">Without a birth time and place the Moon is left out; the other contacts can shift by about a day.</p>}
           <div class="calc__actions">
             {(() => {
-              // The link carries the Sun sign and the score only: never the birth date, time or place.
-              const share = yearScoreShareUrl(location.origin, { sun: result.sign.slug, score: result.reading.score });
+              // The link carries the Sun sign and the score only: never the birth date, time or place. No settled sign, no link.
+              const share = result.sign ? yearScoreShareUrl(location.origin, { sun: result.sign.slug, score: result.reading.score }) : null;
               return share ? <a class="btn btn--primary" href={share}><span>Share your score</span><span class="orb">↗</span></a> : null;
             })()}
             <a class="btn btn--ghost" href="/transits/"><span>See every transit to your chart</span><span class="orb">↗</span></a>

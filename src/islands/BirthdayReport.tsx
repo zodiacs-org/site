@@ -20,8 +20,15 @@ const loadReport = createModuleLoader(() => import('../lib/birthday-report/repor
 const underAge = (birthDate: string, today: string, years: number) => birthDate > `${String(Number(today.slice(0, 4)) - years).padStart(4, '0')}${today.slice(4)}`;
 const UNDER_13 = 'Zodiacs is not directed at children under 13, so it makes no report for a birth date less than 13 years ago.';
 
-function clock(iso: string, zone: string | null): string {
-  return new Intl.DateTimeFormat('en-GB', { timeZone: zone ?? 'UTC', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', ...(zone ? {} : { timeZoneName: 'short' }) }).format(new Date(iso));
+/** A timed return on the birthplace clock, named so the reader knows whose clock it is. */
+function clock(iso: string, zone: string): string {
+  const at = new Intl.DateTimeFormat('en-GB', { timeZone: zone, day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(iso));
+  return `${at} (${zone}, your birthplace's clock)`;
+}
+
+/** An untimed return as its date only (the UTC date of the return cast from 12:00 UTC): without a birth time it can be a day either side. */
+function day(iso: string): string {
+  return new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso));
 }
 
 /** `yearScoreLink`: the page passes whether /year-score/ is switched on (src/lib/launch-flags.ts); the island runs in the browser. */
@@ -48,14 +55,15 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
       const today = new Date().toISOString().slice(0, 10);
       if (!/^\d{4}-\d{2}-\d{2}$/u.test(date) || date < '1800-01-01') { setError('Enter a birth date from 1800 on.'); return; }
       if (underAge(date, today, 13)) { setError(UNDER_13); return; }
-      const placed = showDetail && city;
-      const [module] = await Promise.all([loadReport(), placed ? prepareLocalTime(date, city.tz) : null]);
+      const placed = showDetail && city ? city : null;
+      const [module] = await Promise.all([loadReport(), placed ? prepareLocalTime(date, placed.tz) : null]);
       if (run !== generation.current) return;
-      const timeKnown = !!(placed && time);
-      const utc = placed ? resolveLocalToUtc(date, time || '12:00', city.tz, { longitude: city.lon }).utc : new Date(`${date}T12:00:00Z`);
-      const data = module.birthdayReport(utc, date, timeKnown, new Date());
-      const share = birthdayReportShareUrl(location.origin, { sun: data.sun.slug, score: data.year.score, personalYear: data.personalYear, card: data.card.number });
-      setReport({ data, zone: placed ? city.tz : null, share });
+      // Without a birth time the report is cast from 12:00 UTC on the birth date, place or no place, as /solar-return/ is.
+      const { birthUtc, timeKnown, sunEnds } = module.reportInstants({ date, time: time || null, place: placed ? { tz: placed.tz, lon: placed.lon } : null }, { resolveLocalToUtc });
+      const data = module.birthdayReport(birthUtc, date, timeKnown, new Date(), sunEnds);
+      // No settled Sun sign, no share link: the link never guesses one.
+      const share = data.sun ? birthdayReportShareUrl(location.origin, { sun: data.sun.slug, score: data.year.score, personalYear: data.personalYear, card: data.card.number }) : null;
+      setReport({ data, zone: timeKnown && placed ? placed.tz : null, share });
       requestAnimationFrame(() => headingRef.current?.focus());
     } catch (err) {
       if (run !== generation.current) return;
@@ -76,7 +84,7 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
             <div class="field">
               <label class="field__label" for="br-date">Birth date</label>
               <input id="br-date" class="field__input" type="date" required min="1800-01-01" value={date} onFocus={() => { void loadReport(); }} onInput={(e) => { invalidate(); setDate((e.target as HTMLInputElement).value); }} />
-              <p class="field__help">A date alone is enough. A birth time and place set the solar return on your clock and add the Moon to the score.</p>
+              <p class="field__help">A date alone is enough. A birth time and place set the solar return on your birthplace's clock and add the Moon to the score. A birthplace is used only with a birth time.</p>
             </div>
           </div>
           {!showDetail ? (
@@ -102,13 +110,15 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
       </form>
 
       {data && report && (
-        <div class="calc__result br" style={`--sign:${data.sun.hue}`}>
-          <h2 class="br__heading" tabIndex={-1} ref={headingRef}>Your birthday year, {data.sun.name} Sun</h2>
+        <div class="calc__result br" style={`--sign:${data.hue}`}>
+          <h2 class="br__heading" tabIndex={-1} ref={headingRef}>{data.sun ? `Your birthday year, ${data.sun.name} Sun` : 'Your birthday year'}</h2>
+          {!data.sun && <p data-br-sun-unsettled>Your Sun is in {data.sunCandidates[0].name} or {data.sunCandidates[1].name}: a birth time settles it.</p>}
 
           <section class="tile br__part">
             <h3>Solar return</h3>
-            <p class="br__big">{clock(data.solarReturn, report.zone)}</p>
-            <p>The Sun came back to the degree it held when you were born, and your birthday year began. The next return is {clock(data.nextSolarReturn, report.zone)}.</p>
+            <p class="br__big" data-br-return>{report.zone ? clock(data.solarReturn, report.zone) : `Around ${day(data.solarReturn)}`}</p>
+            {!report.zone && <p>Without a birth time this can be a day either side. Add your birth time and place for the minute.</p>}
+            <p>The Sun came back to the degree it held when you were born, and your birthday year began. The next return is {report.zone ? clock(data.nextSolarReturn, report.zone) : `around ${day(data.nextSolarReturn)}`}.</p>
             <p><a href="/solar-return/">Cast the full solar return chart</a></p>
           </section>
 

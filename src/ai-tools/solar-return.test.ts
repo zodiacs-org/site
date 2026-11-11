@@ -108,6 +108,28 @@ describe('getSolarReturn', () => {
     expect(data.limits.join(' ')).toContain('No birth time was given');
     expect(data.confidenceLabel).toBe('Reading confidence 55%');
   });
+  it('casts an untimed birth from 12:00 UTC whatever the zone, as the site does, and says the return can move by about a day', async () => {
+    const tokyo = await getSolarReturn({ birthDate: '1990-05-03', zone: 'Asia/Tokyo' }, NOW, clock, 'https://zodiacs.org');
+    const plain = await getSolarReturn({ birthDate: '1990-05-03' }, NOW, clock, 'https://zodiacs.org');
+    expect(tokyo.data.instantUtc).toBe(plain.data.instantUtc);
+    expect(tokyo.data.placements).toEqual(plain.data.placements);
+    expect(tokyo.data.themes).toEqual(plain.data.themes);
+    expect(tokyo.data.sun).toBe('taurus');
+    expect(tokyo.data.shareUrl).toBe(plain.data.shareUrl);
+    for (const { data } of [tokyo, plain]) {
+      expect(data.limits.join(' ')).toContain('about a day');
+      expect(data.limits.join(' ')).not.toContain('half a day');
+    }
+  });
+  it('names no Sun sign and gives no share link when an untimed birth day straddles a sign change', async () => {
+    // The Sun entered Aries on 20 March 1990 at 21:19 UTC.
+    const { data } = await getSolarReturn({ birthDate: '1990-03-20' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.sun).toBeNull();
+    expect(data.shareUrl).toBeNull();
+    // On the Tokyo clock the day ended at 14:59 UTC, before the change: still Pisces all day.
+    const tokyo = await getSolarReturn({ birthDate: '1990-03-20', zone: 'Asia/Tokyo' }, NOW, clock, 'https://zodiacs.org');
+    expect(tokyo.data.sun).toBe('pisces');
+  });
   it('gives the current return when asked', async () => {
     const { data } = await getSolarReturn({ birthDate: '1990-05-03', which: 'current' }, NOW, clock, 'https://zodiacs.org');
     expect(data.instantUtc.slice(0, 4)).toBe('2026');

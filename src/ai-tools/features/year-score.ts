@@ -18,7 +18,8 @@ import { z } from 'zod';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { bodyLongitude, computeChart } from '../../lib/engine/full.js';
 import { scanTransitContacts } from '../../lib/engine/transit-scan';
-import { SIGNS, signIndexForLongitude } from '../../lib/signs';
+import { SIGNS } from '../../lib/signs';
+import { birthDayEnvelope, settledSunSign } from '../../lib/sun-settled';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { scoreYear, type NatalPoints, type SlowPlanet, type YearScore } from '../../lib/year-score/core';
 import { YEAR_PEOPLE, findYearPerson, yearPageStart, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
@@ -136,15 +137,19 @@ export async function birthInstant(birthDate: string, time: string | null, timeZ
   return (longitude !== undefined ? clock.resolveLocalToUtc(birthDate, local, timeZone, { longitude }) : clock.resolveLocalToUtc(birthDate, local, timeZone)).utc;
 }
 
-/** The Sun sign, or null when an untimed birth day starts and ends in different signs. */
-function settledSun(birthDate: string, timeKnown: boolean, sunLon: number): string | null {
-  const sign = SIGNS[signIndexForLongitude(sunLon)].slug;
-  if (timeKnown) return sign;
-  // Every clock's version of the date: from 14 hours before UTC midnight to 12 hours after the next.
-  const start = Date.parse(`${birthDate}T00:00:00Z`) - 14 * 3_600_000;
-  const end = Date.parse(`${birthDate}T23:59:00Z`) + 12 * 3_600_000;
-  const signs = new Set([start, end].map((ms) => signIndexForLongitude(computeChart({ utc: new Date(ms), houseSystem: 'whole', timeKnown: false }).bodies.find((row) => row.body === 'Sun')!.lon)));
-  return signs.size === 1 ? sign : null;
+/** The Sun's longitude from a chart cast at `at`, as the score reads it. */
+const sunLonAt = (at: Date) => computeChart({ utc: at, houseSystem: 'whole', timeKnown: false }).bodies.find((row) => row.body === 'Sun')!.lon;
+
+/**
+ * The Sun sign, or null when an untimed birth day starts and ends in different signs (src/lib/sun-settled.ts):
+ * the birthplace clock's 00:00 and 23:59 when its zone is known, else every clock's version of the date.
+ * With a zone, `birthInstant` has already prepared the local time for the birth date.
+ */
+function settledSun(birthDate: string, utc: Date, timeKnown: boolean, timeZone: string | null, clock: YearScoreClock, longitude?: number): string | null {
+  const local = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(birthDate, time, timeZone!, { longitude }) : clock.resolveLocalToUtc(birthDate, time, timeZone!)).utc;
+  const ends: [Date, Date] = timeKnown ? [utc, utc] : timeZone ? [local('00:00'), local('23:59')] : birthDayEnvelope(birthDate);
+  const { sign } = settledSunSign(ends, sunLonAt);
+  return sign === null ? null : SIGNS[sign].slug;
 }
 
 /** The score with the slow planets' daily positions cached, so a second chart for the same window costs only arithmetic. */
@@ -212,7 +217,8 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
   if (under18) limits.push(MINOR_NOTE);
   const utc = await birthInstant(birthDate, time, timeZone, clock, longitude);
-  const { natal, sunLon } = natalPointsAt(utc, timeKnown);
+  const { natal } = natalPointsAt(utc, timeKnown);
+  const sun = settledSun(birthDate, utc, timeKnown, timeZone, clock, longitude);
   const year = scoreFrom(natal, startDate);
   const reading = yearReading(year, guard);
   const exact = exactPasses(natal, year);
@@ -230,7 +236,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
   return {
     data: {
       status: 'found',
-      subject: { kind: figure ? 'person' : 'self', name: figure?.name ?? null, description: figure?.description ?? null, sun: settledSun(birthDate, timeKnown, sunLon), timeKnown },
+      subject: { kind: figure ? 'person' : 'self', name: figure?.name ?? null, description: figure?.description ?? null, sun, timeKnown },
       from: year.from,
       to: year.to,
       score: year.score,
@@ -254,7 +260,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
       // A directory figure's own page; a person's own details have no page, so the calculator.
       pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
       // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
-      shareUrl: figure ? (start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null) : yearScoreShareUrl(origin, { sun: settledSun(birthDate, timeKnown, sunLon), score: year.score }),
+      shareUrl: figure ? (start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null) : yearScoreShareUrl(origin, { sun, score: year.score }),
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links,
   };
