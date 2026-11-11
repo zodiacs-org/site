@@ -5,7 +5,9 @@
  * report, through a result held back past the input window and through
  * switching the birthday year), nothing scrolls sideways,
  * the calculators answer from a birth date alone and offer their share links,
- * and no answer puts a birth detail in the address bar.
+ * an untimed solar return is a date with no clock time, a birth date on which
+ * the Sun changes sign gets both signs and no share link, and no answer puts a
+ * birth detail in the address bar.
  *
  * Each page follows its launch switch (src/lib/launch-flags.ts), read here from
  * the shell as the build reads it. A page whose switch is off is checked in the
@@ -161,6 +163,9 @@ try {
         const off = await offLinks(page);
         if (off.length) fail(`${path} result @${size.width}: links to ${off.join(', ')} although its switch is off`);
         if (path === '/birthday-report/') {
+          // Without a birth time the return is a date: no clock time, and the line says it can be a day either side.
+          const returnLine = (await page.locator('[data-br-return]').innerText()).trim();
+          if (/\b\d{1,2}:\d{2}\b/u.test(returnLine) || !returnLine.startsWith('Around ')) fail(`${path} result @${size.width}: the untimed return line reads "${returnLine}"`);
           // The report includes the score either way; its links to the score's page wait for that switch.
           const intro = await page.locator('.tool-hero a[href="/year-score/"]').count();
           const months = await linkCount(page, 'See the months and the transits behind it');
@@ -190,10 +195,13 @@ try {
         });
         const reserved = await rowBox();
         await page.route('**/_astro/*.js', async (route) => { await new Promise((resolve) => setTimeout(resolve, 1500)); await route.continue(); });
-        // A birthday 20 days from today, so the report opens on the year it starts.
+        // A birthday 20 days from today (27 at most), so the report opens on the year it starts. A date from
+        // the 18th to the 24th moves on to the 26th: the Sun can change sign on those days, and an unsettled
+        // Sun gets no share link to compare.
         const soon = new Date(Date.now() + 20 * 86_400_000);
         const month = soon.getUTCMonth() + 1;
-        const birthDate = `1990-${String(month).padStart(2, '0')}-${String(month === 2 ? Math.min(soon.getUTCDate(), 28) : soon.getUTCDate()).padStart(2, '0')}`;
+        const dayOfMonth = soon.getUTCDate() >= 18 && soon.getUTCDate() <= 24 ? 26 : soon.getUTCDate();
+        const birthDate = `1990-${String(month).padStart(2, '0')}-${String(month === 2 ? Math.min(dayOfMonth, 28) : dayOfMonth).padStart(2, '0')}`;
         await page.fill('#br-date', birthDate);
         const clicked = Date.now();
         await page.getByRole('button', { name: 'Make my birthday report' }).click();
@@ -225,6 +233,22 @@ try {
         if ((await rowBox()).top !== filled.top) fail(`/birthday-report/ @${size.width}: switching years moved the year row`);
         console.log(`ok /birthday-report/ years @${size.width}: row reserved (${reserved.height}px), result after ${waited}ms, CLS ${cls.toFixed(4)} through it and two switches`);
         await brContext.close();
+      }
+
+      // A date-only birth on the day the Sun changes sign (into Aries, 20 March 1990 at 21:19 UTC): both signs, and no share link.
+      for (const [path, field, button, result, share, unsettled] of [
+        ['/year-score/', '#ys-date', 'Score my year', '.ys__number', 'Share your score', '[data-ys-sun-unsettled]'],
+        ['/birthday-report/', '#br-date', 'Make my birthday report', '.br__heading', 'Share my birthday report', '[data-br-sun-unsettled]'],
+      ].filter(([path]) => PAGES.includes(path))) {
+        await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+        await page.fill(field, '1990-03-20');
+        await page.getByRole('button', { name: button }).click();
+        await page.locator(result).first().waitFor({ timeout: 30_000 });
+        const shares = await page.getByRole('link', { name: share }).count();
+        if (shares !== 0) fail(`${path} 1990-03-20 @${size.width}: ${shares} share link(s) for an unsettled Sun sign`);
+        const line = (await page.locator(unsettled).innerText().catch(() => '')).trim();
+        if (line !== 'Your Sun is in Pisces or Aries: a birth time settles it.') fail(`${path} 1990-03-20 @${size.width}: the Sun line reads "${line}"`);
+        console.log(`ok ${path} 1990-03-20 @${size.width}: no share link, ${line}`);
       }
       await context.close();
 

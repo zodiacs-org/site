@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { birthdayCalendarYear, birthdayReport } from './report';
+import { birthdayCalendarYear, birthdayReport, reportInstants } from './report';
+import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 import { birthdayReportShareUrl, parseBirthdayReportShare } from './share';
 import { birthdayReportImageTitle, handleBirthdayReportImageRequest, handleBirthdayReportLinkRequest, isResultShareRoute } from '../../server/result-preview';
 import { MAJOR_ARCANA, cardTitle, tarotYearCard } from '../tarot/year-card';
@@ -8,7 +9,8 @@ import vercel from '../../../vercel.json';
 describe('the birthday report', () => {
   it('opens the year at the latest solar return and reads every part from it', () => {
     const report = birthdayReport(new Date('1990-05-03T12:00:00Z'), '1990-05-03', false, new Date('2026-11-09T00:00:00Z'));
-    expect(report.sun.slug).toBe('taurus');
+    expect(report.sun?.slug).toBe('taurus');
+    expect(report.sunCandidates).toEqual([]);
     expect(report.solarReturn.slice(0, 10)).toMatch(/^2026-05-0[2-4]$/u);
     expect(report.nextSolarReturn.slice(0, 4)).toBe('2027');
     expect(report.year.from).toBe(report.solarReturn.slice(0, 10));
@@ -70,6 +72,50 @@ describe('the tarot year card on the birthday report', () => {
     expect(report.cardTitle).toBe('Death: change');
     expect(report.heading).toBe(`Your birthday year: Personal Year ${report.personalYear} (2026), Capricorn Sun`);
     expect(report.heading).not.toContain('Death');
+  });
+});
+
+describe('the birthday report without a birth time', () => {
+  const now = new Date('2026-11-09T00:00:00Z');
+  it('casts from 12:00 UTC with or without a birthplace, so the solar return is the same instant (and the same as /solar-return/)', async () => {
+    await prepareLocalTime('1990-05-03', 'Asia/Tokyo');
+    const tokyo = reportInstants({ date: '1990-05-03', time: null, place: { tz: 'Asia/Tokyo', lon: 139.69 } }, { resolveLocalToUtc });
+    const nowhere = reportInstants({ date: '1990-05-03', time: null, place: null }, { resolveLocalToUtc });
+    expect(tokyo.timeKnown).toBe(false);
+    expect(tokyo.birthUtc.toISOString()).toBe('1990-05-03T12:00:00.000Z');
+    expect(nowhere.birthUtc.toISOString()).toBe('1990-05-03T12:00:00.000Z');
+    // The Tokyo clock's 00:00 and 23:59 settle the sign; without a place, every clock's version of the date.
+    expect(tokyo.sunEnds.map((at) => at.toISOString())).toEqual(['1990-05-02T15:00:00.000Z', '1990-05-03T14:59:00.000Z']);
+    expect(nowhere.sunEnds.map((at) => at.toISOString())).toEqual(['1990-05-02T10:00:00.000Z', '1990-05-04T11:59:00.000Z']);
+    const withZone = birthdayReport(tokyo.birthUtc, '1990-05-03', tokyo.timeKnown, now, 'current', tokyo.sunEnds);
+    const without = birthdayReport(nowhere.birthUtc, '1990-05-03', nowhere.timeKnown, now, 'current', nowhere.sunEnds);
+    expect(withZone.solarReturn).toBe(without.solarReturn);
+    expect(withZone.nextSolarReturn).toBe(without.nextSolarReturn);
+    expect(withZone.year.score).toBe(without.year.score);
+  });
+  it('uses the birth time and place when both are given', async () => {
+    await prepareLocalTime('1990-05-03', 'Asia/Tokyo');
+    const timed = reportInstants({ date: '1990-05-03', time: '08:30', place: { tz: 'Asia/Tokyo', lon: 139.69 } }, { resolveLocalToUtc });
+    expect(timed.timeKnown).toBe(true);
+    expect(timed.birthUtc.toISOString()).toBe('1990-05-02T23:30:00.000Z');
+    expect(timed.sunEnds).toEqual([timed.birthUtc, timed.birthUtc]);
+  });
+  it('names no Sun sign when the birth day straddles a sign change, and gives both candidates', () => {
+    const report = birthdayReport(new Date('1990-03-20T12:00:00Z'), '1990-03-20', false, now);
+    expect(report.sun).toBeNull();
+    expect(report.sunCandidates).toEqual([{ slug: 'pisces', name: 'Pisces' }, { slug: 'aries', name: 'Aries' }]);
+    expect(report.hue).toMatch(/^#/u);
+    // The heading keeps the Personal Year and its civil year and never invents a Sun sign.
+    expect(report.heading).toBe(`Your birthday year: Personal Year ${report.personalYear} (${report.calendarYear})`);
+    for (const sign of ['Pisces', 'Aries']) expect(report.heading).not.toContain(sign);
+  });
+  it('reads the next birthday year with an unsettled Sun as well', () => {
+    const current = birthdayReport(new Date('1990-03-20T12:00:00Z'), '1990-03-20', false, now);
+    const next = birthdayReport(new Date('1990-03-20T12:00:00Z'), '1990-03-20', false, now, 'next');
+    expect(next.sun).toBeNull();
+    expect(next.solarReturn).toBe(current.nextSolarReturn);
+    expect(next.calendarYear).toBe(current.calendarYear + 1);
+    expect(next.heading).toBe(`Your birthday year: Personal Year ${next.personalYear} (${next.calendarYear})`);
   });
 });
 

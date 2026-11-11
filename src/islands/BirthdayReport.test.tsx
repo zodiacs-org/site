@@ -101,3 +101,40 @@ describe('the year buttons and the share link', () => {
     expect(backHtml).toContain(`Numerology: Personal Year ${back.data.personalYear} (2025)`);
   });
 });
+
+describe('a date-only birth on the day the Sun changes sign', () => {
+  const now = new Date('2026-11-10T12:00:00Z');
+
+  it('names both signs, never one, and offers no share link in either birthday year', () => {
+    const state = openReport(reportModule, birth('1990-03-20'), null, now, ORIGIN);
+    for (const year of [state, switchYear(reportModule, state, state.which === 'current' ? 'next' : 'current', ORIGIN)]) {
+      expect(year.data.sun).toBeNull();
+      expect(year.share).toBeNull();
+      expect(year.data.heading).toBe(`Your birthday year: Personal Year ${year.data.personalYear} (${year.data.calendarYear})`);
+      const html = plain(render(<ReportResult state={year} yearScoreLink={false} />));
+      expect(html).toContain('Your Sun is in Pisces or Aries: a birth time settles it.');
+      expect(html).not.toContain('Share my birthday report');
+      expect(html).not.toMatch(/(Pisces|Aries) Sun/u);
+      expect(html).toContain(year.data.cardTitle);
+      // The page still takes a tint: the sign of the Sun the report was cast from.
+      expect(year.data.hue).toMatch(/^#/u);
+    }
+  });
+
+  it('gives an untimed return as a date, and a timed one on the birthplace clock, named', async () => {
+    const untimed = openReport(reportModule, birth('1990-05-03'), null, now, ORIGIN);
+    const untimedHtml = plain(render(<ReportResult state={untimed} yearScoreLink={false} />));
+    const line = untimedHtml.match(/data-br-return[^>]*>([^<]*)</u)![1];
+    expect(line).toMatch(/^Around \d{1,2} May 2026$/u);
+    expect(untimedHtml).toContain('Without a birth time this can be a day either side.');
+
+    const { prepareLocalTime, resolveLocalToUtc } = await import('../lib/time/localToUtc');
+    await prepareLocalTime('1990-05-03', 'Asia/Tokyo');
+    const timedBirth = reportModule.reportInstants({ date: '1990-05-03', time: '08:30', place: { tz: 'Asia/Tokyo', lon: 139.69 } }, { resolveLocalToUtc });
+    const timed = openReport(reportModule, { utc: timedBirth.birthUtc, date: '1990-05-03', timeKnown: true, sunEnds: timedBirth.sunEnds }, 'Asia/Tokyo', now, ORIGIN);
+    const timedHtml = plain(render(<ReportResult state={timed} yearScoreLink={false} />));
+    expect(timedHtml.match(/data-br-return[^>]*>([^<]*)</u)![1]).toMatch(/^\d{1,2} May 2026(,| at)? \d{2}:\d{2} \(Asia\/Tokyo, your birthplace's clock\)$/u);
+    expect(timedHtml).not.toContain('Without a birth time');
+    expect(shared(timed).share?.sun).toBe('taurus');
+  });
+});
