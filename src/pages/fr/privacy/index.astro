@@ -392,8 +392,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <h2>E-mail</h2>
       {weeklyDigestEnabled && (
         <p>
-          Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire
-          qui résume le ciel de la semaine à venir pour leurs thèmes enregistrés.
+          {accountSyncV2Enabled
+            ? 'Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire qui résume le ciel de la semaine à venir. Quand « Utiliser mon thème pour mes e-mails » est activé, il est rédigé à partir de ton thème synchronisé ; sinon, il liste les événements marquants du ciel de la semaine et n’utilise aucun thème.'
+            : 'Les titulaires d’un compte peuvent s’inscrire à un e-mail hebdomadaire qui résume le ciel de la semaine à venir pour leurs thèmes enregistrés.'}
           L’option est décochée par défaut. Si tu t’inscris, nous conservons cette
           préférence et envoyons l’e-mail par l’intermédiaire de notre
           fournisseur d’e-mail, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
@@ -488,7 +489,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         intersite. Les événements Aura ne contiennent que des catégories
         autorisées, comme un résultat et une tranche approximative du nombre de
         signes détenus ; de même, les autres événements enregistrent « un thème
-        a été enregistré », jamais à qui il appartient.{accountSyncV2Enabled ? ' Aucun script d’analyse ne s’exécute sur ta page de profil ni sur la page de connexion, où ton compte et ton thème synchronisé sont affichés.' : ''}
+        a été enregistré », jamais à qui il appartient.{accountSyncV2Enabled ? ' Aucun script d’analyse ne s’exécute sur ta page de profil, sur la page de connexion, ni sur aucune page qui peut afficher un thème enregistré dans ton navigateur ou synchronisé avec ton compte, comme la page d’accueil, le thème natal ou les transits.' : ''}
       </p>
       {webAnalyticsEnabled && (
         <p>

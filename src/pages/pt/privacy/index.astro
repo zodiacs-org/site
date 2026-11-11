@@ -383,8 +383,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <h2>E-mail</h2>
       {weeklyDigestEnabled && (
         <p>
-          Quem tem conta pode optar por receber um e-mail semanal que resume o
-          céu da próxima semana para os seus mapas salvos. A opção vem
+          {accountSyncV2Enabled
+            ? 'Quem tem conta pode optar por receber um e-mail semanal que resume o céu da próxima semana. Com “Usar meu mapa nos meus e-mails” ativado, ele é escrito a partir do seu mapa sincronizado; caso contrário, lista os principais eventos do céu da semana e não usa nenhum mapa.'
+            : 'Quem tem conta pode optar por receber um e-mail semanal que resume o céu da próxima semana para os seus mapas salvos.'}
+          A opção vem
           desmarcada por padrão. Se você optar por recebê-lo, armazenamos essa
           preferência e enviamos o e-mail pelo nosso provedor de e-mail, o
           <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
@@ -477,7 +479,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Os eventos do Aura levam apenas categorias de uma lista permitida,
         como um resultado e uma faixa aproximada de quantos signos o endereço
         detém; da mesma forma, os outros eventos registram “um mapa foi
-        salvo”, nunca de quem.{accountSyncV2Enabled ? ' Nenhum script de análise é executado na sua página de perfil nem na página de login, onde sua conta e seu mapa sincronizado aparecem.' : ''}
+        salvo”, nunca de quem.{accountSyncV2Enabled ? ' Nenhum script de análise é executado na sua página de perfil, na página de login nem em qualquer página que possa mostrar um mapa salvo no seu navegador ou sincronizado com a sua conta, como a página inicial, o mapa astral ou os trânsitos.' : ''}
       </p>
       {webAnalyticsEnabled && (
         <p>

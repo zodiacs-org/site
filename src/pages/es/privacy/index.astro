@@ -376,8 +376,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <h2>Correo electrónico</h2>
       {weeklyDigestEnabled && (
         <p>
-          Quienes tienen una cuenta pueden optar por recibir un correo semanal
-          que resume el cielo de la semana siguiente para sus cartas guardadas.
+          {accountSyncV2Enabled
+            ? 'Quienes tienen una cuenta pueden optar por recibir un correo semanal que resume el cielo de la semana siguiente. Con «Usar mi carta para mis correos» activada, se redacta a partir de tu carta sincronizada; si no, enumera los acontecimientos destacados del cielo de la semana y no usa ninguna carta.'
+            : 'Quienes tienen una cuenta pueden optar por recibir un correo semanal que resume el cielo de la semana siguiente para sus cartas guardadas.'}
           La opción está desmarcada de forma predeterminada. Si optas por
           recibirlo, guardamos esa preferencia y enviamos el correo a través de
           nuestro proveedor de correo, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
@@ -471,7 +472,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Los eventos de Aura solo llevan categorías permitidas, como un
         resultado y un rango aproximado del número de signos que se poseen;
         los demás eventos registran de forma similar «se guardó una carta»,
-        nunca de quién.{accountSyncV2Enabled ? ' Ningún script de analítica se ejecuta en tu página de perfil ni en la página de inicio de sesión, donde se muestran tu cuenta y tu carta sincronizada.' : ''}
+        nunca de quién.{accountSyncV2Enabled ? ' Ningún script de analítica se ejecuta en tu página de perfil, en la página de inicio de sesión ni en ninguna página que pueda mostrar una carta guardada en tu navegador o sincronizada con tu cuenta, como la página de inicio, la carta natal o los tránsitos.' : ''}
       </p>
       {webAnalyticsEnabled && (
         <p>

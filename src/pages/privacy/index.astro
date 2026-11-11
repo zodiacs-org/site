@@ -516,8 +516,10 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
       <h2>Email</h2>
       {weeklyDigestEnabled && (
         <p>
-          Account holders can opt in to a weekly email summarizing the coming
-          week's sky for their saved charts. It is unchecked by default. If you
+          {accountSyncV2Enabled
+            ? 'Account holders can opt in to a weekly email summarizing the coming week\'s sky. With Use my chart for my emails on, it is written from your synced chart; otherwise it lists the week\'s notable sky events and uses no chart.'
+            : 'Account holders can opt in to a weekly email summarizing the coming week\'s sky for their saved charts.'}
+          It is unchecked by default. If you
           opt in, we store that preference and send the email through our email
           provider, <a href="https://resend.com/" rel="noopener noreferrer">Resend</a>.
           Every email includes a one-click unsubscribe link, and you can turn it
@@ -645,7 +647,7 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         saved,” never whose. Links from the Zodiacs app in ChatGPT or
         another assistant end in ?ref=chatgpt or ?ref=assistant. The page
         takes that off its address as it opens, and Plausible counts the
-        visit under that name and nothing else from the link.{accountSyncV2Enabled ? ' No analytics script runs on your profile page or the sign-in page, where your account and synced chart are shown.' : ''}
+        visit under that name and nothing else from the link.{accountSyncV2Enabled ? ' No analytics script runs on your profile page, the sign-in page, or any page that can show a chart saved in your browser or synced to your account, such as the home page, the birth chart, Today, transits and the daily horoscope for your sign.' : ''}
       </p>
       {webAnalyticsEnabled && (
         <p>

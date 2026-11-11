@@ -381,8 +381,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <h2>E-mail</h2>
       {weeklyDigestEnabled && (
         <p>
-          Chi ha un account può iscriversi a un’e-mail settimanale che riassume
-          il cielo della settimana in arrivo per i propri temi salvati.
+          {accountSyncV2Enabled
+            ? 'Chi ha un account può iscriversi a un’e-mail settimanale che riassume il cielo della settimana in arrivo. Con «Usa il mio tema per le mie email» attivo, è scritta a partire dal tuo tema sincronizzato; altrimenti elenca gli eventi principali del cielo della settimana e non usa alcun tema.'
+            : 'Chi ha un account può iscriversi a un’e-mail settimanale che riassume il cielo della settimana in arrivo per i propri temi salvati.'}
           L’opzione non è selezionata per impostazione predefinita. Se ti
           iscrivi, conserviamo quella preferenza e inviamo l’e-mail tramite il
           nostro fornitore di e-mail,
@@ -477,7 +478,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Gli eventi di Aura contengono solo categorie ammesse, come un esito e
         una fascia approssimativa del numero di segni detenuti; allo stesso
         modo, gli altri eventi registrano «è stato salvato un tema», mai di
-        chi.{accountSyncV2Enabled ? ' Nessuno script di analisi viene eseguito sulla tua pagina del profilo né sulla pagina di accesso, dove sono mostrati il tuo account e il tuo tema sincronizzato.' : ''}
+        chi.{accountSyncV2Enabled ? ' Nessuno script di analisi viene eseguito sulla tua pagina del profilo, sulla pagina di accesso né su alcuna pagina che può mostrare un tema salvato nel tuo browser o sincronizzato con il tuo account, come la home page, il tema natale o i transiti.' : ''}
       </p>
       {webAnalyticsEnabled && (
         <p>
