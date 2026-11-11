@@ -40938,6 +40938,9 @@ var VALENCE = {
 var SCORE_CENTER = -0.05;
 var YEAR_SCORE_SCALE = 0.47;
 var MONTH_SCORE_SCALE = 0.73;
+var SCORE_CENTER_TIMED = -0.07;
+var YEAR_SCORE_SCALE_TIMED = 0.55;
+var MONTH_SCORE_SCALE_TIMED = 0.85;
 var YEAR_DAYS = 365;
 var DAY14 = 864e5;
 var norm = (lon) => (lon % 360 + 360) % 360;
@@ -40950,8 +40953,8 @@ var round = (value, places) => {
   const f = 10 ** places;
   return Math.round(value * f) / f;
 };
-function curve(balance, scale) {
-  return round(Math.min(10, Math.max(0, 5 + 5 * Math.tanh((balance - SCORE_CENTER) / scale))), 1);
+function curve(balance, scale, center = SCORE_CENTER) {
+  return round(Math.min(10, Math.max(0, 5 + 5 * Math.tanh((balance - center) / scale))), 1);
 }
 function contactsOn(natal, longitudeAt2, date3) {
   const out = [];
@@ -40982,6 +40985,10 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
     const lon = natal[point2];
     if (lon !== null && !Number.isFinite(lon)) throw new RangeError("Natal longitudes must be finite.");
   }
+  const timed = natal.Moon !== null;
+  const center = timed ? SCORE_CENTER_TIMED : SCORE_CENTER;
+  const yearScale = timed ? YEAR_SCORE_SCALE_TIMED : YEAR_SCORE_SCALE;
+  const monthScale = timed ? MONTH_SCORE_SCALE_TIMED : MONTH_SCORE_SCALE;
   const first2 = dayStart(start);
   const monthOrder = [];
   const monthAcc = /* @__PURE__ */ new Map();
@@ -41036,7 +41043,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
     }
     const s2 = acc.support / acc.days;
     const p2 = acc.pressure / acc.days;
-    return { month, days: acc.days, score: curve(s2 - p2, MONTH_SCORE_SCALE), support: round(s2, 4), pressure: round(p2, 4), lead };
+    return { month, days: acc.days, score: curve(s2 - p2, monthScale, center), support: round(s2, 4), pressure: round(p2, 4), lead };
   });
   const eligible = months.filter((month) => month.days >= 10);
   const best = eligible.reduce((top, month) => !top || month.score > top.score ? month : top, null);
@@ -41060,7 +41067,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
     version: YEAR_SCORE_VERSION,
     from: isoDay2(first2),
     to: isoDay2(first2 + (YEAR_DAYS - 1) * DAY14),
-    score: curve(s - p, YEAR_SCORE_SCALE),
+    score: curve(s - p, yearScale, center),
     support: round(s, 4),
     pressure: round(p, 4),
     activeDays: round(active / YEAR_DAYS, 3),
@@ -41723,8 +41730,8 @@ function yearPageStart(now) {
 function scoreTier(score2) {
   if (score2 >= 8) return { key: "open", label: "A wide open year", summary: "The slow planets mostly help. Tradition reads a year like this as strong for career growth and earnings, and a good window to start things and sign agreements." };
   if (score2 >= 6.5) return { key: "supportive", label: "A supportive year", summary: "More of the slow-planet weather helps than presses. A good year to build on what already works, at work and with money alike." };
-  if (score2 >= 4.5) return { key: "balanced", label: "A balanced year", summary: "Support and pressure arrive in about equal measure. The months below show when each one leads." };
-  if (score2 >= 3) return { key: "pressure", label: "A year of steady pressure", summary: "The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, careful spending and taking rest seriously." };
+  if (score2 >= 3.5) return { key: "balanced", label: "A balanced year", summary: "Support and pressure arrive in about equal measure. The months below show when each one leads." };
+  if (score2 >= 2) return { key: "pressure", label: "A year of steady pressure", summary: "The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, careful spending and taking rest seriously." };
   return { key: "heavy-pressure", label: "A year of heavy pressure", summary: "The slow planets press hard on the chart. Tradition reads this as a demanding year: keep commitments clear, look after your energy and let patient work do the building." };
 }
 
