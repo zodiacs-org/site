@@ -67,6 +67,7 @@ import { scoreTier } from '../lib/year-score/tier.js';
 import { figureYearScore } from './year-score-figure.js';
 import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
 import { MAJOR_ARCANA } from '../lib/tarot/year-card.js';
+import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
   BIG_THREE_SHARE_KEYS,
@@ -163,6 +164,7 @@ export const RESULT_SHARE_ROUTES = [
   'invite-link', 'invite-image', 'invite-story',
   'year-score-link', 'year-score-image',
   'birthday-report-link', 'birthday-report-image',
+  'solar-return-link', 'solar-return-image',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -649,6 +651,24 @@ export function birthdayReportCard(share: BirthdayReportShare, images: Map<Share
   }), share.sun);
 }
 
+/** What the solar return card says: its year, the rising sign when the chart settles it, and Jupiter's sign. */
+function solarReturnLines(share: SolarReturnShare) {
+  return { title: share.rising ? `${capitalSign(share.rising)} rising` : `${capitalSign(share.sun)} Sun`, line: `Jupiter in ${capitalSign(share.jupiter)}.`, more: `${capitalSign(share.sun)} Sun.` };
+}
+
+/** A solar return card: the Sun sign's panel and disc, the return's year, its rising sign, and where Jupiter grows. No birth detail. */
+export function solarReturnCard(share: SolarReturnShare, images: Map<ShareSign, string>, art: string[]) {
+  const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
+  const lines = solarReturnLines(share);
+  return frame(art, words({
+    discs: discRow([sign], images),
+    kicker: `My ${share.year} solar return`,
+    hue: sign.hue,
+    title: [titleBlock(lines.title)],
+    line: share.rising ? [h('span', null, lines.line), h('span', null, `\u00a0${lines.more}`)] : lines.line,
+  }), share.sun);
+}
+
 /** A famous chart (A, the name as a trophy): the Sun sign's panel and disc, the name, the Sun's degree, and who they were. */
 export function famousChartCard(model: FamousChartCardModel, images: Map<ShareSign, string>, art: string[]) {
   return frame(art, words({
@@ -916,6 +936,14 @@ export async function handleBirthdayReportImageRequest(request: Request): Promis
   if (!share) return errorResponse(400);
   const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
   return imageFor([sign], artOfSigns([sign]), (images, art) => birthdayReportCard(share, images, art));
+}
+
+export async function handleSolarReturnImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseSolarReturnShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
+  return imageFor([sign], artOfSigns([sign]), (images, art) => solarReturnCard(share, images, art));
 }
 
 export async function handleMilestoneImageRequest(request: Request): Promise<Response> {
@@ -1800,6 +1828,37 @@ export async function handleBirthdayReportLinkRequest(request: Request): Promise
 /** Astrology, numerology and tarot are separate traditions; the page says so instead of a reflection line. */
 export const BIRTHDAY_REPORT_SHARE_NOTE = 'Astrology, numerology and tarot are separate traditions; Zodiacs reads each on its own terms.';
 
+export async function handleSolarReturnLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseSolarReturnShare(url.searchParams);
+  const action = { label: 'Cast your own solar return', href: withRef('/solar-return/', share?.ref ?? null) };
+  if (!share) {
+    return htmlResponse(sharePageHtml({
+      title: 'Solar return on Zodiacs', description: 'The chart of your next birthday, and the year’s main themes.',
+      heading: 'Your solar return', imageUrl: `${url.origin}/assets/og/v2/share.png`, imageType: 'image/png', imageAlt: 'Zodiacs',
+      explanation: 'Your solar return is the chart for the moment the Sun comes back to where it was when you were born: astrology’s chart for your personal new year.',
+      action, note: SOLAR_RETURN_SHARE_NOTE,
+    }));
+  }
+  const lines = solarReturnLines(share);
+  return htmlResponse(sharePageHtml({
+    title: `My ${share.year} solar return: ${lines.title}`,
+    description: `${lines.line} ${lines.more}`,
+    heading: `My ${share.year} solar return`,
+    imageUrl: `${url.origin}${SOLAR_RETURN_SHARE_IMAGE_PATH}?${solarReturnQuery(share)}`,
+    imageType: 'image/jpeg',
+    imageAlt: `A ${share.year} solar return: ${lines.title}, Jupiter in ${capitalSign(share.jupiter)}, ${capitalSign(share.sun)} Sun.`,
+    explanation: `${share.rising ? `${lines.title}: the sign rising when the Sun came back sets the tone of the year. ` : ''}Jupiter in ${capitalSign(share.jupiter)} shows where the year’s growth is.`,
+    action,
+    // The Year Ahead Score has its own launch switch; the link waits for it.
+    ...(process.env.PUBLIC_YEAR_SCORE_ENABLED === '1' ? { more: { label: 'Score the year ahead', href: withRef('/year-score/', share.ref) } } : {}),
+    note: SOLAR_RETURN_SHARE_NOTE,
+  }));
+}
+
+export const SOLAR_RETURN_SHARE_NOTE = 'Cast by Zodiacs for the instant the Sun returns to its birth degree.';
+
 export async function handleMilestoneLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
@@ -1973,6 +2032,8 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
   'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
   'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
+  'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
+  'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
