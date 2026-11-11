@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "date-only-solar-return-math-receipt-2026-11-11",
-  "baseCommit": "f2d0c122fed9b48db0e8efaba80280082da37974",
+  "baseCommit": "47fee79f8f5bb64270cd52ba39cbf1f8e65b2044",
   "protectedPaths": [
     "src/lib/i18n/ui/en.ts",
     "src/lib/i18n/ui/es.ts",
