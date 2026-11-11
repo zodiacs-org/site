@@ -1,5 +1,13 @@
 # Zodiacs for ChatGPT — review candidate
 
+Note added 11 November 2026: most of this file describes the 0.5.0
+candidate of October and is kept as written. Today the hosted server reports
+0.6.6 and offers 19 read-only tools, and Zodiacs 0.6.6 is in OpenAI review
+(`docs/platform/zodiacs-ai/RESUBMISSION-0.6.0.md`). The privacy paragraph
+below is out of date on links: since 0.6.1 a link never carries a birth year,
+a birth time, a birthplace or the names you give, and a birthday link carries
+only the month and day.
+
 The 0.5.0 candidate has thirteen read-only tools. The six released in 0.4.0
 are capabilities, sky positions, events, sky fact checks, horoscopes and Chart
 Studio. The seven new ones share the occasions panel

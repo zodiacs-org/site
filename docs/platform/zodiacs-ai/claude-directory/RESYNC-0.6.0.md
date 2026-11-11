@@ -6,6 +6,18 @@ brought up to date on 4 November 2026 for 0.6.1 (branch
 the dated sections below, newest first, record what has been since. Every
 step that touches production, the portal or email needs Dias's separate yes.
 
+## Records brought together, 11 November 2026
+
+The current version, tool count and behaviour, and what the reviewers were
+last told on each channel, are now stated once at the top of
+[LISTING.md](LISTING.md). The hosted server reports 0.6.6 and offers 19
+tools. The sections below stay as dated records: where one says the server
+reports 0.6.0, 0.6.1 or 0.6.5, that was true on its date.
+
+The draft email at the end of this file was written for 0.6.1 and is
+replaced by [REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md), a draft that
+has not been sent. Nothing was synced, saved or sent on 11 November.
+
 ## Children under 13, 8 November 2026
 
 Asked in Claude on 7 November for a card with the sky on the day a baby was
@@ -228,6 +240,11 @@ screen names below are the ones recorded in `LISTING.md` on 28 October.
 7. Add a dated entry to `LISTING.md` with what was synced, saved and sent.
 
 ## Draft update note to mcp-review@anthropic.com
+
+Replaced on 11 November 2026 by [REVIEWER-NOTE-DRAFT.md](REVIEWER-NOTE-DRAFT.md).
+The text below is kept as the 0.6.1 draft of 4 November; do not send it. It
+names 0.6.1 and says the thirteen earlier tools are unchanged, and neither
+holds since 0.6.5.
 
 `LISTING.md` records that a correction of the 15 October note was already sent
 that day at 18:01 UTC as a reply on ticket #145701231. This draft restates

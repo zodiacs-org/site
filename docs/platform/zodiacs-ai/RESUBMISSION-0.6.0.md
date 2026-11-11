@@ -146,6 +146,10 @@ the test cases are unchanged.
 
 ## Where things stand
 
+Note added 11 November 2026: this section is the 2 November record. Since
+then 0.6.6 was submitted on 7 November and is in review (top of this file),
+the hosted server reports 0.6.6, and it offers 19 tools.
+
 - **0.5.1 is in review.** The latest portal record (`PORTAL_REVIEW.md`, 28
   October) shows the app **In review**, metadata and skills version 0.5.1,
   **Not published**. Earlier entries in `RESUBMISSION-0.5.0.md` describe 0.5.1
