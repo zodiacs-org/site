@@ -3,7 +3,12 @@ import type { Daily } from '../daily';
 import type { DailyPublication } from '../daily-publication';
 import type { HoroscopeProgram } from '../horoscope-program';
 import { dailyDeliveryIdempotencyKey, dailyRecipientHash } from './identity';
-import { createRateLimitedResendRequest, type ResendRequest } from './resend-request';
+import {
+  ResendRequestWithdrawnError,
+  createRateLimitedResendRequest,
+  type ResendRequest,
+  type ResendRequestControl,
+} from './resend-request';
 import type {
   DailyEmailMessage,
   DailyEmailRecipient,
@@ -34,11 +39,18 @@ export interface DailyEmailRenderContext {
 }
 
 export interface ResendDelivery {
+  /**
+   * When `control.beforeAttempt` is given, it must be awaited immediately
+   * before every provider attempt, retries included, and a false answer must
+   * send nothing and reject with ResendRequestWithdrawnError (the provider
+   * queue does both).
+   */
   send(
     recipient: DailyEmailRecipient,
     editionDate: string,
     message: DailyEmailMessage,
     idempotencyKey: string,
+    control?: ResendRequestControl,
   ): Promise<string>;
 }
 
@@ -291,7 +303,7 @@ export function createResendDelivery({
   request?: ResendRequest;
 }): ResendDelivery {
   return {
-    async send(recipient, editionDate, message, idempotencyKey) {
+    async send(recipient, editionDate, message, idempotencyKey, control) {
       const response = await request('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -314,7 +326,7 @@ export function createResendDelivery({
             { name: 'tier', value: recipient.tier },
           ],
         }),
-      });
+      }, control);
       if (!response.ok) {
         throw new Error(`Resend daily email failed (${response.status}).`);
       }
@@ -485,56 +497,80 @@ export async function deliverDailyEmails({
       continue;
     }
 
-    // Immediately before dispatch, a chart edition is checked once more: the
-    // account may have withdrawn chart emails or chart sync, removed or
-    // replaced its chart, or entered deletion since it was selected.
-    const current = await dispatchRecipient(recipient);
-    if (current !== recipient) {
-      // Nothing was sent under this reservation. Releasing it (as failed, the
-      // receipt's "not sent" state) lets the Sun edition, now or in a later
-      // run, take the same receipt with its own tier.
-      if (!await releaseReservation()) {
-        report.failed += 1;
-        continue;
+    // Before dispatch, a chart edition is checked once more: the account may
+    // have withdrawn chart emails or chart sync, removed or replaced its
+    // chart, or entered deletion since it was selected. The same check runs
+    // again inside the provider queue, after its pacing wait and immediately
+    // before every POST attempt, retries after a 429 included.
+    let current = await dispatchRecipient(recipient);
+    for (;;) {
+      if (current !== recipient) {
+        // Nothing was sent under this reservation: no attempt was made, or
+        // every attempt was an explicit 429 rejection. Releasing it (as
+        // failed, the receipt's "not sent" state) lets the Sun edition, now
+        // or in a later run, take the same receipt with its own tier.
+        if (!await releaseReservation()) {
+          report.failed += 1;
+          break;
+        }
+        if (!current) {
+          report.withdrawn += 1;
+          log(`daily-email: chart ${ref} no longer eligible at dispatch; nothing sent`);
+          break;
+        }
+        report.fellBack += 1;
+        log(`daily-email: chart ${ref} no longer eligible at dispatch; Sun edition instead`);
+        recipient = current;
+        leaseToken = await receipts.reserve(editionDate, recipientHash, recipient.tier);
+        if (!leaseToken) {
+          report.duplicate += 1;
+          break;
+        }
+        try {
+          message = render(recipient, { firstDelivery });
+        } catch {
+          report.failed += 1;
+          await releaseReservation();
+          log(`daily-email: failed ${recipient.tier} for ${ref} during render`);
+          break;
+        }
       }
-      if (!current) {
-        report.withdrawn += 1;
-        log(`daily-email: chart ${ref} no longer eligible at dispatch; nothing sent`);
-        continue;
-      }
-      report.fellBack += 1;
-      log(`daily-email: chart ${ref} no longer eligible at dispatch; Sun edition instead`);
-      recipient = current;
-      leaseToken = await receipts.reserve(editionDate, recipientHash, recipient.tier);
-      if (!leaseToken) {
-        report.duplicate += 1;
-        continue;
-      }
+
+      const sending = recipient;
+      // Fails closed: a withdrawal the guard did not record sends nothing.
+      let attemptCheck: DailyEmailRecipient | null = null;
+      const control: ResendRequestControl | undefined = sending.tier === 'chart' && confirmBeforeDispatch
+        ? {
+          async beforeAttempt() {
+            attemptCheck = await dispatchRecipient(sending);
+            return attemptCheck === sending;
+          },
+        }
+        : undefined;
       try {
-        message = render(recipient, { firstDelivery });
-      } catch {
+        const providerReceipt = await resend.send(sending, editionDate, message, idempotencyKey, control);
+        await receipts.markSent(
+          editionDate,
+          recipientHash,
+          leaseToken,
+          providerReceipt,
+          now().toISOString(),
+        );
+        report.sent += 1;
+        log(`daily-email: sent ${sending.tier} to ${ref}`);
+      } catch (error) {
+        if (error instanceof ResendRequestWithdrawnError && control) {
+          // Withdrawn during the queue's pacing or a 429 backoff. Only the
+          // Sun edition for the same address can follow; it is not checked
+          // again, since it holds no chart.
+          current = attemptCheck;
+          continue;
+        }
         report.failed += 1;
         await releaseReservation();
-        log(`daily-email: failed ${recipient.tier} for ${ref} during render`);
-        continue;
+        log(`daily-email: failed ${sending.tier} for ${ref} during delivery`);
       }
-    }
-
-    try {
-      const providerReceipt = await resend.send(recipient, editionDate, message, idempotencyKey);
-      await receipts.markSent(
-        editionDate,
-        recipientHash,
-        leaseToken,
-        providerReceipt,
-        now().toISOString(),
-      );
-      report.sent += 1;
-      log(`daily-email: sent ${recipient.tier} to ${ref}`);
-    } catch {
-      report.failed += 1;
-      await releaseReservation();
-      log(`daily-email: failed ${recipient.tier} for ${ref} during delivery`);
+      break;
     }
   }
   return report;

@@ -18,7 +18,13 @@ import publicationData from '../src/data/daily-publication.json';
 import programData from '../src/data/horoscope-program.json';
 import { houseLine, wholeSignHouseFromAsc, type Daily } from '../src/lib/daily';
 import { renderDailyEmail } from '../src/lib/daily-email/content';
+import {
+  createResendDelivery,
+  deliverDailyEmails,
+  type DeliveryReceiptStore,
+} from '../src/lib/daily-email/delivery';
 import { dailyRecipientHash } from '../src/lib/daily-email/identity';
+import { createRateLimitedResendRequest } from '../src/lib/daily-email/resend-request';
 import type { ChartRecipient, DailyEmailRecipient, SunSignRecipient } from '../src/lib/daily-email/types';
 import type { DailyPublication } from '../src/lib/daily-publication';
 import legacyPolar from '../src/lib/engine/fixtures/legacy-polar-saved.json';
@@ -307,5 +313,167 @@ describe('daily chart email dispatch check', () => {
     })).resolves.toBeNull();
     expect(String(fetcher.mock.calls[0][0])).toBe('https://project.supabase.co/rest/v1/rpc/account_v2_chart_email_sources');
     expect(JSON.parse(String(fetcher.mock.calls[0][1].body))).toEqual({ candidate_user_ids: [userId] });
+  });
+
+  /**
+   * The real job wiring: the dispatch check above, the delivery loop, the
+   * Resend adapter and the one serialized provider queue. Only fetch, the
+   * clock and the receipt store are stand-ins. The account withdraws while
+   * its chart edition waits in the queue.
+   */
+  function throughProviderQueue({
+    responses,
+    sunFallbacks,
+  }: {
+    responses: Array<() => Response>;
+    sunFallbacks: Map<string, SunSignRecipient>;
+  }) {
+    let eligible = true;
+    let time = 1_000;
+    const posts: Array<{ tier: string; to: string }> = [];
+    const queued = [...responses];
+    const fetcher = vi.fn(async (_input: string | URL, init?: RequestInit) => {
+      const body = JSON.parse(String(init?.body)) as { to: string[]; tags: Array<{ name: string; value: string }> };
+      posts.push({ tier: body.tags.find((tag) => tag.name === 'tier')!.value, to: body.to[0]! });
+      return (queued.shift() ?? (() => new Response(JSON.stringify({ id: 're_sent' }), { status: 200 })))();
+    });
+    const sleep = vi.fn(async (milliseconds: number) => {
+      time += milliseconds;
+      // Chart emails are withdrawn while the queue waits.
+      eligible = false;
+    });
+    const request = createRateLimitedResendRequest(fetcher as typeof fetch, {
+      now: () => time,
+      sleep,
+      minIntervalMs: 250,
+      maxRetries: 3,
+    });
+    const loadSource = vi.fn(async () => (eligible ? { chartId: chartA, revision: 4 } : null));
+    const leases = [
+      '30000000-0000-4000-8000-000000000003',
+      '30000000-0000-4000-8000-000000000004',
+      '30000000-0000-4000-8000-000000000005',
+    ];
+    const receipts: DeliveryReceiptStore = {
+      reserve: vi.fn(async () => leases.shift() ?? null),
+      markSent: vi.fn().mockResolvedValue(undefined),
+      markFailed: vi.fn().mockResolvedValue(undefined),
+      sentBefore: vi.fn().mockResolvedValue(true),
+    };
+    const run = (recipients: DailyEmailRecipient[]) => deliverDailyEmails({
+      recipients,
+      editionDate: publicationData.date,
+      limit: 10,
+      dryRun: false,
+      hashSecret: HASH_SECRET,
+      receipts,
+      resend: createResendDelivery({
+        fetchImpl: fetcher as typeof fetch,
+        apiKey: 're_test',
+        from: 'Zodiacs.org <daily@zodiacs.org>',
+        request,
+      }),
+      render: () => ({
+        subject: 'Daily', preheader: 'Today', text: 'Today', html: '<p>Today</p>',
+        unsubscribeUrl: 'https://zodiacs.org/api/email/unsubscribe?token=test',
+      }),
+      confirmBeforeDispatch: createChartDispatchCheck({ loadSource, sunFallbacks, recipientHashForEmail: hashFor }),
+      log: vi.fn(),
+    });
+    return { run, posts, loadSource, receipts, sleep };
+  }
+  const otherSun: SunSignRecipient = {
+    tier: 'sun_sign', email: 'other@example.com', sign: 'leo', contactId: 'contact_other_1', timezone: 'UTC',
+  };
+
+  it('sends no chart email when chart emails are withdrawn during the initial pacing wait', async () => {
+    for (const sunFallbacks of [withSun, new Map<string, SunSignRecipient>()]) {
+      const queue = throughProviderQueue({ responses: [], sunFallbacks });
+      // The Sun email ahead of it makes the chart edition wait for pacing.
+      const report = await queue.run([otherSun, recipient]);
+      expect(queue.sleep).toHaveBeenCalledWith(250);
+      expect(queue.posts.filter((post) => post.tier === 'chart')).toEqual([]);
+      if (sunFallbacks.size) {
+        expect(queue.posts).toEqual([
+          { tier: 'sun_sign', to: 'other@example.com' },
+          { tier: 'sun_sign', to: 'person@example.com' },
+        ]);
+        expect(report).toMatchObject({ sent: 2, fellBack: 1, withdrawn: 0, failed: 0 });
+      } else {
+        expect(queue.posts).toEqual([{ tier: 'sun_sign', to: 'other@example.com' }]);
+        expect(report).toMatchObject({ sent: 1, fellBack: 0, withdrawn: 1, failed: 0 });
+      }
+      // Checked before the queue and again after its wait.
+      expect(queue.loadSource).toHaveBeenCalledTimes(2);
+    }
+  });
+
+  it('sends no chart email when chart emails are withdrawn during a 429 backoff', async () => {
+    for (const sunFallbacks of [withSun, new Map<string, SunSignRecipient>()]) {
+      const queue = throughProviderQueue({
+        responses: [() => new Response('slow down', { status: 429, headers: { 'Retry-After': '1' } })],
+        sunFallbacks,
+      });
+      const report = await queue.run([recipient]);
+      expect(queue.sleep).toHaveBeenCalledWith(1_000);
+      // The one chart POST is the attempt the provider rejected with 429.
+      expect(queue.posts.filter((post) => post.tier === 'chart')).toHaveLength(1);
+      expect(queue.posts[0]).toEqual({ tier: 'chart', to: 'person@example.com' });
+      if (sunFallbacks.size) {
+        expect(queue.posts.slice(1)).toEqual([{ tier: 'sun_sign', to: 'person@example.com' }]);
+        expect(report).toMatchObject({ sent: 1, fellBack: 1, withdrawn: 0, failed: 0 });
+        expect(queue.receipts.reserve).toHaveBeenNthCalledWith(2, publicationData.date, hashFor('person@example.com'), 'sun_sign');
+      } else {
+        expect(queue.posts).toHaveLength(1);
+        expect(report).toMatchObject({ sent: 0, fellBack: 0, withdrawn: 1, failed: 0 });
+        expect(queue.receipts.markSent).not.toHaveBeenCalled();
+      }
+      expect(queue.receipts.markFailed).toHaveBeenCalledOnce();
+      // Before the queue, before the first POST, and after the backoff.
+      expect(queue.loadSource).toHaveBeenCalledTimes(3);
+    }
+  });
+
+  it('keeps sending the chart edition through a 429 retry while it stays eligible', async () => {
+    let time = 0;
+    const posts: string[] = [];
+    const fetcher = vi.fn(async (_input: string | URL, init?: RequestInit) => {
+      posts.push(JSON.parse(String(init?.body)).tags[1].value);
+      return posts.length === 1
+        ? new Response('', { status: 429 })
+        : new Response(JSON.stringify({ id: 're_sent' }), { status: 200 });
+    });
+    const loadSource = vi.fn().mockResolvedValue({ chartId: chartA, revision: 4 });
+    const report = await deliverDailyEmails({
+      recipients: [recipient],
+      editionDate: publicationData.date,
+      limit: 10,
+      dryRun: false,
+      hashSecret: HASH_SECRET,
+      receipts: {
+        reserve: vi.fn().mockResolvedValue('30000000-0000-4000-8000-000000000003'),
+        markSent: vi.fn().mockResolvedValue(undefined),
+        markFailed: vi.fn().mockResolvedValue(undefined),
+        sentBefore: vi.fn().mockResolvedValue(true),
+      },
+      resend: createResendDelivery({
+        fetchImpl: fetcher as typeof fetch,
+        apiKey: 're_test',
+        from: 'Zodiacs.org <daily@zodiacs.org>',
+        request: createRateLimitedResendRequest(fetcher as typeof fetch, {
+          now: () => time,
+          sleep: async (milliseconds) => { time += milliseconds; },
+        }),
+      }),
+      render: () => ({
+        subject: 'Daily', preheader: 'Today', text: 'Today', html: '<p>Today</p>',
+        unsubscribeUrl: 'https://zodiacs.org/api/email/unsubscribe?token=test',
+      }),
+      confirmBeforeDispatch: createChartDispatchCheck({ loadSource, sunFallbacks: withSun, recipientHashForEmail: hashFor }),
+      log: vi.fn(),
+    });
+    expect(posts).toEqual(['chart', 'chart']);
+    expect(report).toMatchObject({ sent: 1, fellBack: 0, withdrawn: 0 });
+    expect(loadSource).toHaveBeenCalledTimes(3);
   });
 });
