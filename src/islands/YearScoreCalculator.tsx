@@ -134,10 +134,11 @@ export default function YearScoreCalculator() {
           </div>
 
           <ol class="ys__months" aria-label="Score by month">
-            {result.reading.months.map((month) => (
+            {result.reading.months.map((month, index) => (
               <li key={month.month} class="ys__month" title={`${month.name}: ${month.score.toFixed(1)}`}>
                 <span class="ys__bar" style={`--h:${Math.max(4, month.score * 10)}%`} aria-hidden="true" />
-                <span class="ys__month-label">{shortMonth(month.month)}</span>
+                {/* The strip can hold the same month twice, a year apart, so the year shows under the first month and each January. */}
+                <span class="ys__month-label" aria-hidden="true">{shortMonth(month.month)}<span class="ys__month-year">{index === 0 || month.month.endsWith('-01') ? `’${month.month.slice(2, 4)}` : '\u00a0'}</span></span>
                 <span class="sr-only">{month.name}: {month.score.toFixed(1)} out of 10</span>
               </li>
             ))}

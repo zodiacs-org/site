@@ -10,6 +10,8 @@ const SWITCHED: readonly { route: ResultShareRoute; flag: (typeof FLAGS)[number]
   { route: 'year-score-image', flag: 'PUBLIC_YEAR_SCORE_ENABLED', query: { s: 'taurus', v: '6.4' } },
   { route: 'birthday-report-link', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', py: '7', t: '17' } },
   { route: 'birthday-report-image', flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', query: { s: 'leo', v: '6.4', py: '7', t: '17' } },
+  { route: 'solar-return-link', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
+  { route: 'solar-return-image', flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED', query: { s: 'taurus', y: '2027', r: 'leo', j: 'leo' } },
 ];
 
 function nodeResponse() {
@@ -70,4 +72,16 @@ describe('share routes behind a launch switch', () => {
     delete process.env.PUBLIC_YEAR_SCORE_ENABLED;
     expect(await statusOf(route, { p: 'jensen-huang' })).toBe(404);
   }, 30_000);
+
+  it('links the solar return share page to the Year Ahead Score only while that switch is on', async () => {
+    process.env.PUBLIC_SOLAR_RETURN_SHARE_ENABLED = '1';
+    const html = async () => {
+      const res = nodeResponse();
+      await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'solar-return-link', s: 'taurus', y: '2027', r: 'leo', j: 'leo' } }, res, 'solar-return-link');
+      return res.body.toString('utf8');
+    };
+    expect(await html()).not.toContain('/year-score/');
+    process.env.PUBLIC_YEAR_SCORE_ENABLED = '1';
+    expect(await html()).toContain('/year-score/');
+  });
 });
