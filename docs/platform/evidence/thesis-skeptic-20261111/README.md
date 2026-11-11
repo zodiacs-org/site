@@ -30,12 +30,12 @@ edit.
 
 ## The failures that matter most
 
-Of the 29 entries in the claims file, 10 fail here: `age-of-signs` (C4),
+Of the 29 entries in the claims file, 8 fail here: `age-of-signs` (C4),
 `social-media` (D5), `one-address` (G7), `critics` (G15), `community-built`
-(H3), `chatgpt-claude` (H5), `top-ten` (H10), `making-the-case` (H15), and,
-through their headline use, the scope of `coingecko-day-one` (A1, E5, E10).
-`operator-holds` passes as a statement but cites a statement date that is not
-published (B4).
+(H3), `chatgpt-claude` (H5), `top-ten` (H10) and `making-the-case` (H15).
+The three CoinGecko entries pass as sentences, but the headline built on them
+fails on scope (A1, E5, E10). `operator-holds` passes as a statement but
+cites a statement date that is not published (B4).
 
 1. **The survival comparison is not like for like** (A1, A2, E5, E10, E12).
    CoinGecko studied coins launched on Pump.fun and counted only trades on
