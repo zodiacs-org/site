@@ -26,6 +26,7 @@ const confidenceLabel = (timed: boolean) => `Reading confidence ${timed ? 70 : 5
 const UNDER_13 = 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.';
 const FUTURE_DATE = 'Enter a birth date in the past.';
 const TIME_NEEDS_PLACE = 'Add the birthplace to use the birth time, or clear the time.';
+const TIME_INCOMPLETE = 'Enter the full birth time, or clear the time.';
 
 interface Result {
   reading: YearReading;
@@ -44,8 +45,11 @@ export default function YearScoreCalculator() {
   const [result, setResult] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  // A birth time is used only with a birthplace (its zone); without one, submit is refused and the note shows under the time.
-  const [timeNeedsPlace, setTimeNeedsPlace] = useState(false);
+  // A birth time is used only when complete and with a birthplace (its zone); otherwise submit is refused and the note
+  // under the time says why. The form is noValidate (for the site's own date sentences), so an incomplete time, which
+  // leaves the field's value empty, is caught here from the field's own validity rather than by the browser.
+  const [timeNote, setTimeNote] = useState('');
+  const timeRef = useRef<HTMLInputElement>(null);
   // Today's date as the date field's latest, set after hydration so the built page never carries the build day.
   const [maxDate, setMaxDate] = useState<string | undefined>(undefined);
   useEffect(() => { setMaxDate(new Date().toISOString().slice(0, 10)); }, []);
@@ -53,7 +57,7 @@ export default function YearScoreCalculator() {
   const generation = useRef(0);
   useEffect(() => () => { generation.current += 1; }, []);
 
-  function invalidate() { generation.current++; setBusy(false); setResult(null); setError(''); setTimeNeedsPlace(false); }
+  function invalidate() { generation.current++; setBusy(false); setResult(null); setError(''); setTimeNote(''); }
 
   async function compute(event: Event) {
     event.preventDefault();
@@ -66,7 +70,8 @@ export default function YearScoreCalculator() {
       if (!/^\d{4}-\d{2}-\d{2}$/u.test(date) || date < '1800-01-01') { setError('Enter a birth date from 1800 on.'); return; }
       if (date > today) { setError(FUTURE_DATE); return; }
       if (underAge(date, today, 13)) { setError(UNDER_13); return; }
-      if (showDetail && time && !city) { setTimeNeedsPlace(true); return; }
+      if (showDetail && timeRef.current && !timeRef.current.validity.valid) { setTimeNote(TIME_INCOMPLETE); return; }
+      if (showDetail && time && !city) { setTimeNote(TIME_NEEDS_PLACE); return; }
       const placed = showDetail && city;
       const [scorer] = await Promise.all([loadScorer(), placed ? prepareLocalTime(date, city.tz) : null]);
       if (run !== generation.current) return;
@@ -112,12 +117,12 @@ export default function YearScoreCalculator() {
             <div class="calc__fields">
               <div class="field">
                 <label class="field__label" for="ys-time">Birth time</label>
-                <input id="ys-time" class="field__input" type="time" value={time} aria-invalid={timeNeedsPlace || undefined} aria-describedby={timeNeedsPlace ? 'ys-time-note' : undefined}
+                <input id="ys-time" ref={timeRef} class="field__input" type="time" value={time} aria-invalid={!!timeNote || undefined} aria-describedby={timeNote ? 'ys-time-note' : undefined}
                   onInput={(e) => { invalidate(); setTime((e.target as HTMLInputElement).value); }} />
                 {/* The hidden copy holds the note's height from the start, so showing the note moves nothing. */}
                 <p class="field__help ys__time-note">
                   <span class="ys__time-note-space" aria-hidden="true">{TIME_NEEDS_PLACE}</span>
-                  <span id="ys-time-note" role="alert">{timeNeedsPlace ? TIME_NEEDS_PLACE : ''}</span>
+                  <span id="ys-time-note" role="alert">{timeNote}</span>
                 </p>
               </div>
               <div class="field">

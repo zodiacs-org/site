@@ -176,7 +176,7 @@ try {
         console.log(`ok ${path} result @${size.width}: ${href}`);
       }
 
-      // The Year Ahead Score's form traps: a time without a place, and a date in the future.
+      // The Year Ahead Score's form traps: a time without a place, an incomplete time, and a date in the future.
       if (PAGES.includes('/year-score/')) {
         const path = '/year-score/';
         const UNDER_13 = 'Zodiacs is not directed at children under 13';
@@ -199,6 +199,22 @@ try {
         await page.fill('#ys-time', '');
         if ((await note.innerText()).trim()) fail(`${path} @${size.width}: the time note stays after the time is cleared`);
 
+        // An incomplete time typed at the keyboard (the hour only) leaves the field's value empty; with the form's
+        // noValidate the browser does not stop it, so the calculator must, not fall back to a date-only score.
+        await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+        await page.getByRole('button', { name: 'Add birth time and place' }).click();
+        await page.fill('#ys-date', '1990-05-03');
+        await page.locator('#ys-time').focus();
+        await page.keyboard.type('08');
+        const partial = await page.locator('#ys-time').evaluate((node) => ({ value: node.value, badInput: node.validity.badInput }));
+        if (partial.value !== '' || !partial.badInput) fail(`${path} @${size.width}: typing the hour alone left the time field at "${partial.value}" (badInput ${partial.badInput}), so the incomplete-time check is not exercised`);
+        await page.getByRole('button', { name: 'Score my year' }).click();
+        await note.waitFor({ state: 'visible' });
+        const partialText = (await note.innerText()).trim();
+        if (partialText !== 'Enter the full birth time, or clear the time.') fail(`${path} @${size.width}: an incomplete time shows "${partialText}"`);
+        await page.waitForTimeout(1500);
+        if (await page.locator('.ys__number').count()) fail(`${path} @${size.width}: an incomplete time still gives a date-only result`);
+
         await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
         const max = await page.locator('#ys-date').getAttribute('max');
         if (!/^\d{4}-\d{2}-\d{2}$/u.test(max ?? '')) fail(`${path} @${size.width}: the date field's latest date is ${max}`);
@@ -214,7 +230,7 @@ try {
         await page.getByRole('button', { name: 'Score my year' }).click();
         const refusal = (await error.innerText()).trim();
         if (refusal !== 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.') fail(`${path} @${size.width}: a date five years ago shows "${refusal}"`);
-        console.log(`ok ${path} form @${size.width}: time without place, future date and under-13 refusal`);
+        console.log(`ok ${path} form @${size.width}: time without place, incomplete time, future date and under-13 refusal`);
       }
       await context.close();
 
