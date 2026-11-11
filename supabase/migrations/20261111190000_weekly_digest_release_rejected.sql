@@ -1,16 +1,18 @@
 -- Weekly digest: release a chart edition the provider definitively rejected.
 --
 -- A delivery in `dispatching` that a later run finds is replayed byte for
--- byte by `weekly_digest_recover_v1`, and that replay's first attempt is not
--- rechecked: the original dispatch may already have been accepted under the
--- same idempotency key (a timeout, a network failure, a 5xx, a 408 or 409, a
--- malformed success). That exception is only for such ambiguous outcomes.
+-- byte by `weekly_digest_recover_v1` under the same idempotency key, because
+-- the original dispatch may already have been accepted (a timeout, a network
+-- failure, a 5xx, a 408 or 409, a malformed success). The sender rechecks
+-- every attempt of that replay, the first included, with
+-- `weekly_digest_dispatch_recheck_v1`, which quarantines a moved replay, so
+-- this release is not what keeps a withdrawn chart from being sent.
 --
 -- When the provider answered a new chart edition with an explicit rejection
 -- instead (a 4xx other than 408 and 409, an exhausted run of 429s included),
 -- nothing was accepted under the request. The sender then calls this
--- function before it stops the batch, so the delivery never reaches the
--- recovery replay. It returns to `reserved` under the same lease, with its
+-- function before it stops the batch, so the delivery is rebuilt rather than
+-- replayed. It returns to `reserved` under the same lease, with its
 -- sealed envelope and dispatch fields cleared, exactly as
 -- `weekly_digest_dispatch_recheck_v1` releases a moved delivery. The next run
 -- that may create deliveries prunes the stale reservation and builds the

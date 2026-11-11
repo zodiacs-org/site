@@ -646,8 +646,8 @@ async function cancelWeeklyDelivery(
 
 /**
  * Asked by the provider queue after every wait, immediately before each POST
- * attempt of a chart edition or a recovery retry (see
- * weekly_digest_dispatch_recheck_v1).
+ * attempt of a chart edition or of a recovery replay, the first attempt
+ * included (see weekly_digest_dispatch_recheck_v1).
  */
 async function recheckWeeklyDelivery(
   supabase: DigestSupabase,
@@ -839,12 +839,10 @@ function abortProviderBatch(error: WeeklyDigestProviderAbortError): never {
 }
 
 /**
- * Replays a recovered envelope (see replayWeeklyRecovery). Only an ambiguous
- * first dispatch reaches recovery: a new chart edition the provider
- * definitively rejected was released before its batch stopped. The replay's
- * first attempt goes out as claimed; every retry after an explicit 429 is
- * rechecked first, and a replay whose content moved is quarantined instead
- * of sent.
+ * Replays a recovered envelope (see replayWeeklyRecovery). Nothing records
+ * that a recovered envelope was actually sent, so every attempt of the
+ * replay, the first included, is rechecked immediately before its POST, and
+ * a replay whose content moved is quarantined instead of sent.
  */
 async function replayAndFinalize(
   supabase: DigestSupabase,
@@ -866,7 +864,7 @@ async function replayAndFinalize(
   } catch (error) {
     if (error instanceof WeeklyDigestProviderAbortError) abortProviderBatch(error);
     if (error instanceof WeeklyDispatchRecheckError) {
-      throw new Error('Weekly recovery recheck failed before a retry; nothing more was sent.');
+      throw new Error('Weekly recovery recheck failed before a provider attempt; nothing more was sent.');
     }
     throw new Error('Weekly digest provider dispatch failed before finalization.');
   }
@@ -980,9 +978,9 @@ async function run(): Promise<void> {
   await pruneWeeklyDeliveryState(supabase!);
   const resendRequest = createWeeklyDigestResendRequest(fetch);
 
-  // Recover ambiguous <=24-hour dispatches first. The opened object contains
-  // the exact original body and idempotency key; no personalized field is
-  // queried or rebuilt for replay.
+  // Recover <=24-hour dispatches first. The opened object contains the exact
+  // original body and idempotency key; no personalized field is queried or
+  // rebuilt for replay. Every replay attempt is rechecked before its POST.
   let recoveryScans = 0;
   let recoveryRequest: ReturnType<typeof createWeeklyDigestResendRequest> | null = null;
   let recoveryRequestDeadline = 0;
@@ -1036,7 +1034,7 @@ async function run(): Promise<void> {
     if (result.kind === 'withdrawn') {
       if (result.recheck === 'reconciliation') reconciliation += 1;
       else skipped += 1;
-      console.log(`weekly-digest: recovered delivery no longer eligible before a retry (${result.recheck}); nothing more sent`);
+      console.log(`weekly-digest: recovered delivery no longer eligible before a provider attempt (${result.recheck}); nothing more sent`);
       continue;
     }
     if (result.kind === 'sent') {

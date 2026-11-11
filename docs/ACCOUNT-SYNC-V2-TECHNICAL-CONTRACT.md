@@ -314,23 +314,24 @@ already chose use their synced chart:
   the request; for a chart edition (and when its recheck cannot be read) the
   job releases the delivery with the service-only
   `weekly_digest_release_rejected_v1` (migration `20261111190000`) before it
-  stops the batch, so it never reaches the recovery replay. The delivery
+  stops the batch, so it is rebuilt rather than replayed. The delivery
   returns to reserved under the same lease with its sealed envelope dropped;
   the next run that may create deliveries prunes the stale reservation and
   builds the digest again from current content through the path above,
   checked before every POST, so an account that withdrew chart emails in the
-  meantime gets the sky edition or nothing. Only an ambiguous dispatch
-  (transport failure, timeout, 5xx, 408, 409, a malformed success) stays in
-  dispatching and is replayed byte for byte under the provider idempotency
-  key within 24 hours; that replay is of a message that may already have been
-  accepted, not a new send, so its first attempt is not rechecked (its
-  recovery claim has just made the same check). Each retry of a replay after
-  an explicit 429 is rechecked, a replay whose content moved is quarantined
-  for reconciliation, never resent, and a replay is never released. A
-  release that cannot be written (the database unreachable just after the
-  rejection) leaves the delivery in dispatching, where recovery treats it as
-  ambiguous; the job logs `release=failed` for it. A chart edition released
-  after the last Monday creation run is not sent that week.
+  meantime gets the sky edition or nothing. A delivery still in dispatching
+  (an ambiguous dispatch: transport failure, timeout, 5xx, 408, 409, a
+  malformed success; or a release that could not be written, logged as
+  `release=failed`) is replayed byte for byte under the provider idempotency
+  key within 24 hours. Unchecked replay is denied by default: it would be
+  safe only with a durable record that a POST of that exact envelope was
+  sent with an unknown outcome, and the job keeps no such record (a
+  delivery in dispatching may never have been sent). So every attempt of a
+  replay, the first included, is rechecked immediately before its POST like
+  a new chart edition; a replay whose content moved is quarantined for
+  reconciliation and never resent, a recheck that cannot be read sends
+  nothing, and a replay is never released. A chart edition released after
+  the last Monday creation run is not sent that week.
 
 Withdrawing `chart_emails`, withdrawing `chart_sync`, removing the synced
 chart, or starting account deletion removes the account from

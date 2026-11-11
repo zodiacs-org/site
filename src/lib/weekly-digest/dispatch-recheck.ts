@@ -73,9 +73,10 @@ export class WeeklyDispatchRecheckError extends Error {
 /**
  * The provider definitively rejected a new chart edition (see
  * WeeklyDigestProviderAbortError.definitive). Nothing was accepted, so the
- * delivery was released rather than left for the recovery replay, whose
- * first attempt is not rechecked. `release` is `failed` when the release
- * could not be made; the batch stops either way.
+ * delivery was released, and the next run that may create deliveries builds
+ * it again from current content. `release` is `failed` when the release
+ * could not be made; the batch stops either way, and the recovery replay,
+ * which rechecks every attempt, finds it.
  */
 export class WeeklyChartRejectedError extends Error {
   readonly abort: WeeklyDigestProviderAbortError;
@@ -106,22 +107,18 @@ export interface WeeklyAttemptGuard {
 }
 
 /**
- * A beforeAttempt guard for the provider queue. With `fromAttempt: 1` the
- * first attempt goes out unchecked: that is only for a recovery replay, whose
- * first dispatch had an ambiguous outcome and may already have been accepted
- * under the same idempotency key. A new chart edition the provider
- * definitively rejected never reaches recovery (dispatchWeeklyWithRecheck
- * releases it). Every retry after an explicit 429 is checked.
+ * A beforeAttempt guard for the provider queue. It rechecks every attempt,
+ * the first included, and allows the POST only when the answer is
+ * `dispatch`. There is no unchecked attempt anywhere: the weekly sender keeps
+ * no durable record that a provider POST for an envelope was actually sent
+ * with an unknown outcome, so a delivery's recovery state cannot prove that a
+ * replay would only repeat an accepted request (see replayWeeklyRecovery).
  */
-export function weeklyAttemptGuard(
-  recheck: () => Promise<WeeklyDispatchRecheck>,
-  { fromAttempt = 0 }: { fromAttempt?: 0 | 1 } = {},
-): WeeklyAttemptGuard {
+export function weeklyAttemptGuard(recheck: () => Promise<WeeklyDispatchRecheck>): WeeklyAttemptGuard {
   let last: WeeklyDispatchRecheck | 'failed' | null = null;
   return {
     control: {
-      async beforeAttempt(attempt) {
-        if (attempt < fromAttempt) return true;
+      async beforeAttempt() {
         try {
           last = await recheck();
         } catch {
@@ -156,11 +153,13 @@ export type WeeklyDispatchOutcome<Recipient, Prepared> =
  *
  * When the provider definitively rejects a chart edition (an explicit 4xx,
  * an exhausted run of 429s included), or its recheck cannot be read, nothing
- * was accepted under it, so the delivery is released (`releaseRejected`)
- * instead of being left in dispatching for the recovery replay, and this
- * rejects with WeeklyChartRejectedError or WeeklyDispatchRecheckError. An
- * ambiguous outcome (transport, 5xx, 408, 409, a malformed success) is
- * rethrown as it came and left for recovery.
+ * was accepted under it, so the delivery is released (`releaseRejected`) and
+ * the next run rebuilds it from current content, and this rejects with
+ * WeeklyChartRejectedError or WeeklyDispatchRecheckError. An ambiguous
+ * outcome (transport, 5xx, 408, 409, a malformed success) is rethrown as it
+ * came and left for recovery. Neither path depends on the release for
+ * privacy: a delivery left in dispatching (a failed release included) is
+ * replayed only through replayWeeklyRecovery, which rechecks every attempt.
  */
 export async function dispatchWeeklyWithRecheck<
   Recipient,
@@ -215,13 +214,17 @@ export async function dispatchWeeklyWithRecheck<
 }
 
 /**
- * Replays a recovered envelope byte for byte. Only a delivery whose first
- * dispatch had an ambiguous outcome reaches recovery, so the replay's first
- * attempt goes out as claimed (`weekly_digest_recover_v1` has just checked
- * it, and the original may already have been accepted under the same
- * idempotency key). Every retry after an explicit 429 is rechecked, and a
- * replay that moved is quarantined (`reconciliation`) instead of sent. A
- * replay is never released, whatever the provider answers it.
+ * Replays a recovered envelope byte for byte, under its original idempotency
+ * key. Recovery is default-deny: an unchecked replay would be safe only with
+ * a positive, durable record that a POST of this exact envelope was sent and
+ * its outcome is unknown, and the sender keeps no such record. A recovered
+ * delivery may never have been sent at all (its recheck or its release
+ * failed before any POST, or every attempt was an explicit 429), so the
+ * replay is rechecked immediately before every attempt, the first included,
+ * like a new chart edition. When it is no longer what was authorized it is
+ * quarantined (`reconciliation`) and nothing is sent; a recheck that cannot
+ * be read sends nothing. A replay is never released, whatever the provider
+ * answers it.
  */
 export async function replayWeeklyRecovery({
   envelope,
@@ -237,7 +240,7 @@ export async function replayWeeklyRecovery({
   | { kind: 'provider'; result: WeeklyDigestProviderResult }
   | { kind: 'withdrawn'; recheck: Exclude<WeeklyDispatchRecheck, 'dispatch'> }
 > {
-  const guard = weeklyAttemptGuard(recheck, { fromAttempt: 1 });
+  const guard = weeklyAttemptGuard(recheck);
   try {
     return { kind: 'provider', result: await sendWeeklyDigestEnvelope(envelope, apiKey, request, guard.control) };
   } catch (error) {

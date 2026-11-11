@@ -179,7 +179,7 @@ describe('weekly chart edition recheck through the provider queue', () => {
     });
     expect(queue.posts).toEqual([]);
     expect(queue.reauthorize).not.toHaveBeenCalled();
-    // Nothing was accepted, so it is not left in dispatching for the unchecked replay.
+    // Nothing was accepted, so it is rebuilt by the next run rather than replayed.
     expect(queue.db.status).toBe('reserved');
   });
 
@@ -215,7 +215,7 @@ describe('weekly chart edition recheck through the provider queue', () => {
     expect(queue.reauthorize).toHaveBeenCalledOnce();
   });
 
-  it('lets a recovery replay make its first attempt and rechecks every retry', async () => {
+  it('rechecks a recovery replay before its first attempt, not only its retries', async () => {
     let time = 0;
     const posts: number[] = [];
     const fetcher = vi.fn(async () => {
@@ -235,8 +235,25 @@ describe('weekly chart edition recheck through the provider queue', () => {
       apiKey: 'resend_test_key',
       request,
     })).resolves.toEqual({ kind: 'withdrawn', recheck: 'reconciliation' });
-    expect(posts).toHaveLength(1);
+    expect(posts).toEqual([]);
     expect(recheck).toHaveBeenCalledOnce();
+  });
+
+  it('sends nothing for a recovery replay whose first recheck cannot be read', async () => {
+    let time = 0;
+    const fetcher = vi.fn(async () => Response.json({ id: 'receipt' }));
+    const request = createWeeklyDigestResendRequest(fetcher as typeof fetch, {
+      now: () => time,
+      sleep: async (milliseconds) => { time += milliseconds; },
+      timeoutSignal: () => new AbortController().signal,
+    });
+    await expect(replayWeeklyRecovery({
+      envelope: prepare({ userId: PERSON, edition: 'chart' }).envelope,
+      recheck: async () => { throw new Error('database down'); },
+      apiKey: 'resend_test_key',
+      request,
+    })).rejects.toBeInstanceOf(WeeklyDispatchRecheckError);
+    expect(fetcher).not.toHaveBeenCalled();
   });
 
   it('accepts only the recheck and release answers the database defines', () => {
@@ -263,8 +280,11 @@ describe('weekly chart edition recheck through the provider queue', () => {
     expect(sender).toContain('releaseRejected: () => releaseRejectedWeeklyDelivery(');
     expect(sender).toContain('replayed = await replayWeeklyRecovery({');
     expect(sender).toContain('if (error instanceof WeeklyChartRejectedError) releasedProviderBatch(error);');
-    // The replay exception lives in one place, used only by recovery.
+    // No unchecked replay exists: the guard has no attempt to skip.
     expect(sender).not.toContain('fromAttempt');
+    const library = await readFile(resolve(process.cwd(), 'src/lib/weekly-digest/dispatch-recheck.ts'), 'utf8');
+    expect(library).not.toContain('fromAttempt');
+    expect(library).not.toMatch(/beforeAttempt\(attempt\)/);
     expect(sender).not.toContain('sendWeeklyDigestEnvelope(');
     expect(sender).not.toContain('sendAndFinalize(');
   });
@@ -395,7 +415,7 @@ async function exhaustedChartRun(store: ReturnType<typeof deliveryStore>) {
 }
 
 describe('a weekly chart edition the provider definitively rejected', () => {
-  it('is released after exhausted 429s, so recovery never replays it unchecked', async () => {
+  it('is released after exhausted 429s, so recovery finds nothing to replay', async () => {
     const store = deliveryStore();
     const { run, error } = await exhaustedChartRun(store);
     expect(error).toBeInstanceOf(WeeklyChartRejectedError);
@@ -505,12 +525,89 @@ describe('a weekly chart edition the provider definitively rejected', () => {
     expect(store.db.status).toBe('dispatching');
   });
 
-  it('reports a release that could not be made', async () => {
+  it('reports a release that could not be made, and its recovery sends no chart after a withdrawal during pacing', async () => {
     const store = deliveryStore();
     store.releaseRejected.mockRejectedValueOnce(new Error('database down'));
-    const { error } = await exhaustedChartRun(store);
+    const { run, error } = await exhaustedChartRun(store);
     expect(error).toBeInstanceOf(WeeklyChartRejectedError);
     expect(error).toMatchObject({ release: 'failed' });
+    expect(run.posts).toHaveLength(4);
+    // Left in dispatching with its envelope; the next run's recovery claims
+    // it while the account is still eligible.
+    expect(store.db.status).toBe('dispatching');
+    const envelope = store.recover();
+    expect(envelope).not.toBeNull();
+    if (!envelope) throw new Error('fixture must be claimed');
+
+    // Chart emails are withdrawn while the replay waits for pacing behind
+    // another recovered delivery.
+    const recovery = senderRun([], () => {
+      store.db.edition = 'sky';
+    });
+    await sendWeeklyDigestEnvelope(prepare({ userId: OTHER, edition: 'sky' }).envelope, 'resend_test_key', recovery.request);
+    store.recheck.mockClear();
+    const outcome = await replayWeeklyRecovery({
+      envelope,
+      recheck: store.recheck,
+      apiKey: 'resend_test_key',
+      request: recovery.request,
+    });
+    expect(recovery.sleep).toHaveBeenCalledWith(250);
+    expect(outcome).toEqual({ kind: 'withdrawn', recheck: 'reconciliation' });
+    expect(recovery.posts.filter((post) => post.edition === 'chart')).toEqual([]);
+    expect(store.recheck).toHaveBeenCalledOnce();
+    expect(store.db).toMatchObject({ status: 'reconciliation', envelope: null });
+  });
+
+  it('sends no chart from recovery when the recheck and the release both failed and nothing was ever posted', async () => {
+    const store = deliveryStore();
+    store.reserve();
+    const authorized = store.authorize();
+    if (!authorized.authorized) throw new Error('fixture must authorize');
+    store.recheck.mockRejectedValueOnce(new Error('database down'));
+    store.releaseRejected.mockRejectedValueOnce(new Error('database down'));
+    const first = senderRun([]);
+    const error = await dispatchStored(store, first, authorized).catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(WeeklyDispatchRecheckError);
+    expect(error).toMatchObject({ release: 'failed' });
+    // Zero original POSTs, yet the row is still dispatching with its envelope.
+    expect(first.posts).toEqual([]);
+    expect(store.db.status).toBe('dispatching');
+    const envelope = store.recover();
+    if (!envelope) throw new Error('fixture must be claimed');
+
+    const recovery = senderRun([], () => {
+      store.db.edition = 'sky';
+    });
+    await sendWeeklyDigestEnvelope(prepare({ userId: OTHER, edition: 'sky' }).envelope, 'resend_test_key', recovery.request);
+    const outcome = await replayWeeklyRecovery({
+      envelope,
+      recheck: store.recheck,
+      apiKey: 'resend_test_key',
+      request: recovery.request,
+    });
+    expect(outcome).toEqual({ kind: 'withdrawn', recheck: 'reconciliation' });
+    expect(recovery.posts.filter((post) => post.edition === 'chart')).toEqual([]);
+    expect(store.db.status).toBe('reconciliation');
+  });
+
+  it('replays a recovered chart edition that is still eligible, after rechecking it', async () => {
+    const store = deliveryStore();
+    store.releaseRejected.mockRejectedValueOnce(new Error('database down'));
+    await exhaustedChartRun(store);
+    const envelope = store.recover();
+    if (!envelope) throw new Error('fixture must be claimed');
+    store.recheck.mockClear();
+    const recovery = senderRun([]);
+    const outcome = await replayWeeklyRecovery({
+      envelope,
+      recheck: store.recheck,
+      apiKey: 'resend_test_key',
+      request: recovery.request,
+    });
+    expect(outcome).toMatchObject({ kind: 'provider', result: { kind: 'sent' } });
+    expect(recovery.posts).toEqual([{ edition: 'chart', to: '1@example.com', status: 200 }]);
+    expect(store.recheck).toHaveBeenCalledOnce();
   });
 
   it('never releases a recovery replay, whatever the provider answers it', async () => {
@@ -528,8 +625,138 @@ describe('a weekly chart edition the provider definitively rejected', () => {
     }).catch((caught: unknown) => caught);
     expect(error).toBeInstanceOf(WeeklyDigestProviderAbortError);
     expect(store.releaseRejected).not.toHaveBeenCalled();
-    // First attempt unchecked (the ambiguous replay exception), then each retry.
-    expect(store.recheck).toHaveBeenCalledTimes(3);
+    // Every attempt rechecked, the first included.
+    expect(run.posts).toHaveLength(4);
+    expect(store.recheck).toHaveBeenCalledTimes(4);
     expect(store.db.status).toBe('dispatching');
   });
+});
+
+describe('weekly recovery is default-deny for unchecked replay', () => {
+  const unavailable = () => Response.json({ name: 'application_error', statusCode: 503 }, { status: 503 });
+  const conflict = () => Response.json({ name: 'concurrent_idempotent_requests', statusCode: 409 }, { status: 409 });
+  const unauthorized = () => Response.json({ name: 'missing_api_key', statusCode: 401 }, { status: 401 });
+  const reset = (): Response => { throw new Error('connection reset'); };
+
+  /**
+   * Every way a delivery can be left in dispatching for recovery: an
+   * ambiguous outcome after a POST (the original may have been accepted), and
+   * every failed cleanup of a definitive rejection or a failed recheck,
+   * including one with zero original POSTs.
+   */
+  const states: Array<{
+    name: string;
+    responses: Array<() => Response>;
+    recheckFails?: 'first' | 'second';
+    releaseFails?: boolean;
+    originalPosts: number;
+  }> = [
+    // The fetch stand-in throws before a response is recorded, so it counts no POST.
+    { name: 'transport failure', responses: [reset], originalPosts: 0 },
+    { name: '503 after a POST', responses: [unavailable], originalPosts: 1 },
+    { name: '409 after a POST', responses: [conflict], originalPosts: 1 },
+    { name: '429 then 503', responses: [rateLimited, unavailable], originalPosts: 2 },
+    { name: 'exhausted 429s, release failed', responses: [rateLimited, rateLimited, rateLimited, rateLimited], releaseFails: true, originalPosts: 4 },
+    { name: 'definitive 401, release failed', responses: [unauthorized], releaseFails: true, originalPosts: 1 },
+    { name: 'initial recheck failed, release failed', responses: [], recheckFails: 'first', releaseFails: true, originalPosts: 0 },
+    { name: 'recheck failed after a 429, release failed', responses: [rateLimited], recheckFails: 'second', releaseFails: true, originalPosts: 1 },
+  ];
+  const withdrawals = ['before-claim', 'pacing', 'backoff', 'recheck-unreadable', 'none'] as const;
+
+  it.each(states.flatMap((state) => withdrawals.map((withdrawal) => [state.name, withdrawal, state] as const)))(
+    '%s, withdrawal %s: no chart POST after the withdrawal, and none without a recheck',
+    async (_name, withdrawal, state) => {
+      const store = deliveryStore();
+      store.reserve();
+      const authorized = store.authorize();
+      if (!authorized.authorized) throw new Error('fixture must authorize');
+      if (state.recheckFails === 'first') store.recheck.mockRejectedValueOnce(new Error('database down'));
+      if (state.recheckFails === 'second') {
+        store.recheck
+          .mockImplementationOnce(async () => 'dispatch')
+          .mockRejectedValueOnce(new Error('database down'));
+      }
+      if (state.releaseFails) store.releaseRejected.mockRejectedValueOnce(new Error('database down'));
+      const original = senderRun(state.responses);
+      await dispatchStored(store, original, authorized).catch(() => undefined);
+      expect(original.posts).toHaveLength(state.originalPosts);
+      // Every such state is left in dispatching with its sealed envelope.
+      expect(store.db.status).toBe('dispatching');
+
+      // The recovery run, with weekly_digest_dispatch_recheck_v1 as it answers
+      // a recovered row. Each POST must follow a recheck that answered dispatch.
+      let withdrawn = false;
+      let armed = false;
+      const withdraw = () => {
+        withdrawn = true;
+        store.db.edition = 'sky';
+      };
+      const recheck = vi.fn(async (): Promise<WeeklyDispatchRecheck> => {
+        if (withdrawal === 'recheck-unreadable') throw new Error('database down');
+        if (store.db.status !== 'dispatching') return 'missing';
+        if (store.db.edition === store.db.authorized) {
+          armed = true;
+          return 'dispatch';
+        }
+        store.db.envelope = null;
+        store.db.status = 'reconciliation';
+        return 'reconciliation';
+      });
+      if (withdrawal === 'before-claim') withdraw();
+      const envelope = store.recover();
+      if (!envelope) {
+        expect(withdrawal).toBe('before-claim');
+        expect(store.db.status).toBe('reconciliation');
+        return;
+      }
+      let waits = 0;
+      const recovery = senderRun(withdrawal === 'backoff' ? [rateLimited] : [], () => {
+        waits += 1;
+        if ((withdrawal === 'pacing' || withdrawal === 'backoff') && waits === 1) withdraw();
+      });
+      if (withdrawal === 'pacing') {
+        await sendWeeklyDigestEnvelope(prepare({ userId: OTHER, edition: 'sky' }).envelope, 'resend_test_key', recovery.request);
+      }
+      const replayed: Array<{ edition: string; afterWithdrawal: boolean; rechecked: boolean }> = [];
+      const postsBefore = recovery.posts.length;
+      const tracked: typeof recovery.request = async (input, init, control) => recovery.request(input, init, {
+        async beforeAttempt(attempt) {
+          const allowed = control?.beforeAttempt ? await control.beforeAttempt(attempt) : true;
+          if (allowed) {
+            replayed.push({ edition: 'chart', afterWithdrawal: withdrawn, rechecked: armed });
+            armed = false;
+          }
+          return allowed;
+        },
+      });
+      const outcome = await replayWeeklyRecovery({
+        envelope,
+        recheck,
+        apiKey: 'resend_test_key',
+        request: tracked,
+      }).catch((caught: unknown) => caught);
+
+      const chartPosts = recovery.posts.slice(postsBefore).filter((post) => post.edition === 'chart');
+      expect(chartPosts).toHaveLength(replayed.length);
+      // The sender keeps no durable "sent, outcome unknown" record, so the set
+      // of envelopes allowed an unchecked replay is empty: whatever the
+      // original outcome, no chart POST follows a withdrawal, and every chart
+      // POST of the replay followed a recheck that answered dispatch.
+      expect(replayed.filter((post) => post.afterWithdrawal)).toEqual([]);
+      expect(replayed.every((post) => post.rechecked)).toBe(true);
+      expect(recheck.mock.calls.length).toBeGreaterThanOrEqual(replayed.length);
+      if (withdrawal === 'none') {
+        expect(outcome).toMatchObject({ kind: 'provider', result: { kind: 'sent' } });
+        expect(chartPosts).toHaveLength(1);
+      } else if (withdrawal === 'recheck-unreadable') {
+        expect(outcome).toBeInstanceOf(WeeklyDispatchRecheckError);
+        expect(chartPosts).toEqual([]);
+      } else {
+        expect(outcome).toEqual({ kind: 'withdrawn', recheck: 'reconciliation' });
+        expect(store.db).toMatchObject({ status: 'reconciliation', envelope: null });
+        // Only the backoff case reached a POST, the one answered with 429 before the withdrawal.
+        expect(chartPosts.map((post) => post.status)).toEqual(withdrawal === 'backoff' ? [429] : []);
+      }
+    },
+  );
 });
