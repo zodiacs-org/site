@@ -674,9 +674,9 @@ function findAspects(bodies) {
   const candidates = bodies.filter((body2) => ASPECT_BODY_SET.has(body2.body));
   const aspects2 = [];
   for (let first2 = 0; first2 < candidates.length; first2 += 1) {
-    for (let second = first2 + 1; second < candidates.length; second += 1) {
+    for (let second2 = first2 + 1; second2 < candidates.length; second2 += 1) {
       const a = candidates[first2];
-      const b = candidates[second];
+      const b = candidates[second2];
       if (!a || !b) continue;
       const match = matchAspect(a.body, a.lon, b.body, b.lon);
       if (!match) continue;
@@ -6555,13 +6555,13 @@ function computeConventionIds(receipt) {
   return [...ids].sort();
 }
 function computeReceipt(endpoint, extra = {}) {
-  const { conventions, coverage, deltaT: deltaT2 } = engineStatements();
+  const { conventions, coverage: coverage2, deltaT: deltaT2 } = engineStatements();
   const receipt = {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,
     engine: BACKEND,
     conventions,
-    coverage,
+    coverage: coverage2,
     referenceSpan: { from: REFERENCE_SPAN.from, to: REFERENCE_SPAN.to },
     deltaT: deltaT2,
     ...extra.timeResolution ? { timeResolution: extra.timeResolution } : {},
@@ -6905,12 +6905,12 @@ async function computeSkyFact(request, dependencies) {
     }
     case "ingress": {
       const index = SIGN_SLUGS2.indexOf(request.sign);
-      const ingresses2 = [
+      const ingresses3 = [
         ...signCrossings(request.body, index * 30, span2.from, span2.to, budget).filter((crossing) => !crossing.retrograde),
         ...signCrossings(request.body, (index + 1) % 12 * 30, span2.from, span2.to, budget).filter((crossing) => crossing.retrograde)
       ].map((crossing) => ({ at: iso(crossing.at), retrograde: crossing.retrograde })).sort((a, b) => a.at.localeCompare(b.at));
-      answer = ingresses2.length === 0 ? "false" : anyZone ? "depends" : "true";
-      facts = { ingresses: ingresses2, flags };
+      answer = ingresses3.length === 0 ? "false" : anyZone ? "depends" : "true";
+      facts = { ingresses: ingresses3, flags };
       break;
     }
     case "phase": {
@@ -28765,8 +28765,8 @@ var NATAL_PLANET_ORDER = [
 ];
 function aspectKey(a, type, b) {
   const first2 = NATAL_PLANET_ORDER.indexOf(a);
-  const second = NATAL_PLANET_ORDER.indexOf(b);
-  return first2 >= 0 && second >= 0 && first2 > second ? `${b}:${type}:${a}` : `${a}:${type}:${b}`;
+  const second2 = NATAL_PLANET_ORDER.indexOf(b);
+  return first2 >= 0 && second2 >= 0 && first2 > second2 ? `${b}:${type}:${a}` : `${a}:${type}:${b}`;
 }
 function planetInHouseLine(body2, house, opts = {}) {
   const curated = CURATED[`${body2}:${house}`];
@@ -32277,6 +32277,668 @@ var ingresses_default = {
   ]
 };
 
+// src/data/nasa-event-instants.json
+var coverage = {
+  Mercury: {
+    ingresses: "2025-11-06 to 2031-05-27",
+    stations: "2025-11-06 to 2031-05-27"
+  },
+  Venus: {
+    ingresses: "2025-11-06 to 2031-05-27",
+    stations: "2025-11-06 to 2031-05-27"
+  },
+  Mars: {
+    ingresses: "2025-11-06 to 2031-05-27",
+    stations: "2025-11-06 to 2031-05-27"
+  },
+  Jupiter: {
+    ingresses: "2013-11-06 to 2046-02-24",
+    stations: "2025-11-06 to 2031-05-27"
+  },
+  Saturn: {
+    ingresses: "1979-11-06 to 2080-02-25",
+    stations: "2025-11-06 to 2031-05-27"
+  },
+  Uranus: {
+    ingresses: "1899-11-06 to 2100-02-23",
+    stations: "2025-11-06 to 2031-05-27"
+  },
+  Neptune: {
+    ingresses: "1899-11-06 to 2100-02-23",
+    stations: "2025-11-06 to 2031-05-27"
+  },
+  Pluto: {
+    ingresses: "1899-11-06 to 2100-02-23",
+    stations: "2025-11-06 to 2031-05-27"
+  }
+};
+var ingresses2 = [
+  { body: "Neptune", sign: "cancer", retrograde: false, nasa: "1901-07-19T23:57:03Z", engine: ["1901-07-19T23:29:00.641Z"] },
+  { body: "Neptune", sign: "gemini", retrograde: true, nasa: "1901-12-25T13:29:38Z", engine: ["1901-12-25T14:13:06.211Z"] },
+  { body: "Neptune", sign: "cancer", retrograde: false, nasa: "1902-05-21T13:35:11Z", engine: ["1902-05-21T12:52:02.763Z"] },
+  { body: "Uranus", sign: "capricorn", retrograde: false, nasa: "1904-12-20T13:32:57Z", engine: ["1904-12-20T13:57:32.463Z"] },
+  { body: "Uranus", sign: "aquarius", retrograde: false, nasa: "1912-01-30T22:38:43Z", engine: ["1912-01-30T23:14:11.697Z"] },
+  { body: "Uranus", sign: "capricorn", retrograde: true, nasa: "1912-09-04T16:53:40Z", engine: ["1912-09-04T15:42:28.390Z"] },
+  { body: "Pluto", sign: "cancer", retrograde: false, nasa: "1912-09-10T16:40:52Z", engine: ["1912-09-10T14:32:21.239Z"] },
+  { body: "Pluto", sign: "gemini", retrograde: true, nasa: "1912-10-20T08:07:11Z", engine: ["1912-10-20T10:21:21.845Z"] },
+  { body: "Uranus", sign: "aquarius", retrograde: false, nasa: "1912-11-12T08:38:44Z", engine: ["1912-11-12T09:39:58.118Z"] },
+  { body: "Pluto", sign: "cancer", retrograde: false, nasa: "1913-07-09T22:28:12Z", engine: ["1913-07-09T21:45:48.287Z"] },
+  { body: "Pluto", sign: "gemini", retrograde: true, nasa: "1913-12-28T04:13:14Z", engine: ["1913-12-28T05:01:58.873Z"] },
+  { body: "Pluto", sign: "cancer", retrograde: false, nasa: "1914-05-26T20:46:59Z", engine: ["1914-05-26T20:02:48.457Z"] },
+  { body: "Neptune", sign: "leo", retrograde: false, nasa: "1914-09-23T20:23:49Z", engine: ["1914-09-23T16:52:34.739Z"] },
+  { body: "Neptune", sign: "cancer", retrograde: true, nasa: "1914-12-14T20:38:57Z", engine: ["1914-12-15T00:38:41.036Z"] },
+  { body: "Neptune", sign: "leo", retrograde: false, nasa: "1915-07-19T13:32:56Z", engine: ["1915-07-19T11:15:45.527Z"] },
+  { body: "Neptune", sign: "cancer", retrograde: true, nasa: "1916-03-19T15:25:08Z", engine: ["1916-03-19T23:32:55.824Z"] },
+  { body: "Neptune", sign: "leo", retrograde: false, nasa: "1916-05-02T10:46:13Z", engine: ["1916-05-02T02:55:44.508Z"] },
+  { body: "Uranus", sign: "pisces", retrograde: false, nasa: "1919-04-01T01:44:29Z", engine: ["1919-04-01T01:52:27.035Z"] },
+  { body: "Uranus", sign: "aquarius", retrograde: true, nasa: "1919-08-16T22:09:58Z", engine: ["1919-08-16T22:07:08.928Z"] },
+  { body: "Uranus", sign: "pisces", retrograde: false, nasa: "1920-01-22T18:29:35Z", engine: ["1920-01-22T18:25:26.167Z"] },
+  { body: "Uranus", sign: "aries", retrograde: false, nasa: "1927-03-31T17:23:04Z", engine: ["1927-03-31T17:26:06.062Z"] },
+  { body: "Uranus", sign: "pisces", retrograde: true, nasa: "1927-11-04T10:35:16Z", engine: ["1927-11-04T10:16:23.526Z"] },
+  { body: "Uranus", sign: "aries", retrograde: false, nasa: "1928-01-13T08:41:53Z", engine: ["1928-01-13T09:02:35.919Z"] },
+  { body: "Neptune", sign: "virgo", retrograde: false, nasa: "1928-09-21T12:02:37Z", engine: ["1928-09-21T09:51:02.284Z"] },
+  { body: "Neptune", sign: "leo", retrograde: true, nasa: "1929-02-19T11:25:37Z", engine: ["1929-02-19T14:13:43.764Z"] },
+  { body: "Neptune", sign: "virgo", retrograde: false, nasa: "1929-07-24T15:02:13Z", engine: ["1929-07-24T12:51:44.286Z"] },
+  { body: "Uranus", sign: "taurus", retrograde: false, nasa: "1934-06-06T15:37:51Z", engine: ["1934-06-06T14:54:35.747Z"] },
+  { body: "Uranus", sign: "aries", retrograde: true, nasa: "1934-10-10T00:40:44Z", engine: ["1934-10-10T01:33:44.659Z"] },
+  { body: "Uranus", sign: "taurus", retrograde: false, nasa: "1935-03-28T02:54:32Z", engine: ["1935-03-28T02:18:02.285Z"] },
+  { body: "Pluto", sign: "leo", retrograde: false, nasa: "1937-10-07T12:19:06Z", engine: ["1937-10-07T11:36:34.157Z"] },
+  { body: "Pluto", sign: "cancer", retrograde: true, nasa: "1937-11-25T09:01:04Z", engine: ["1937-11-25T09:51:28.774Z"] },
+  { body: "Pluto", sign: "leo", retrograde: false, nasa: "1938-08-03T17:59:47Z", engine: ["1938-08-03T17:42:52.610Z"] },
+  { body: "Pluto", sign: "cancer", retrograde: true, nasa: "1939-02-07T12:53:54Z", engine: ["1939-02-07T13:16:47.709Z"] },
+  { body: "Pluto", sign: "leo", retrograde: false, nasa: "1939-06-14T04:50:45Z", engine: ["1939-06-14T04:29:10.131Z"] },
+  { body: "Uranus", sign: "gemini", retrograde: false, nasa: "1941-08-07T15:26:11Z", engine: ["1941-08-07T15:07:59.967Z"] },
+  { body: "Uranus", sign: "taurus", retrograde: true, nasa: "1941-10-05T02:14:12Z", engine: ["1941-10-05T02:30:03.882Z"] },
+  { body: "Uranus", sign: "gemini", retrograde: false, nasa: "1942-05-15T04:02:19Z", engine: ["1942-05-15T03:57:36.019Z"] },
+  { body: "Neptune", sign: "libra", retrograde: false, nasa: "1942-10-03T16:57:58Z", engine: ["1942-10-03T16:51:59.248Z"] },
+  { body: "Neptune", sign: "virgo", retrograde: true, nasa: "1943-04-17T10:59:35Z", engine: ["1943-04-17T11:01:26.945Z"] },
+  { body: "Neptune", sign: "libra", retrograde: false, nasa: "1943-08-02T19:06:14Z", engine: ["1943-08-02T19:07:47.182Z"] },
+  { body: "Uranus", sign: "cancer", retrograde: false, nasa: "1948-08-30T15:35:55Z", engine: ["1948-08-30T15:29:03.842Z"] },
+  { body: "Uranus", sign: "gemini", retrograde: true, nasa: "1948-11-12T13:31:23Z", engine: ["1948-11-12T13:36:28.321Z"] },
+  { body: "Uranus", sign: "cancer", retrograde: false, nasa: "1949-06-10T04:05:27Z", engine: ["1949-06-10T04:04:53.940Z"] },
+  { body: "Uranus", sign: "leo", retrograde: false, nasa: "1955-08-24T18:01:40Z", engine: ["1955-08-24T18:15:39.230Z"] },
+  { body: "Neptune", sign: "scorpio", retrograde: false, nasa: "1955-12-24T15:18:19Z", engine: ["1955-12-24T18:37:19.894Z"] },
+  { body: "Uranus", sign: "cancer", retrograde: true, nasa: "1956-01-28T01:59:52Z", engine: ["1956-01-28T01:49:40.386Z"] },
+  { body: "Neptune", sign: "libra", retrograde: true, nasa: "1956-03-12T01:57:15Z", engine: ["1956-03-11T22:16:00.578Z"] },
+  { body: "Uranus", sign: "leo", retrograde: false, nasa: "1956-06-10T01:45:43Z", engine: ["1956-06-10T01:48:02.005Z"] },
+  { body: "Neptune", sign: "scorpio", retrograde: false, nasa: "1956-10-19T09:25:32Z", engine: ["1956-10-19T11:19:43.841Z"] },
+  { body: "Pluto", sign: "virgo", retrograde: false, nasa: "1956-10-20T06:20:33Z", engine: ["1956-10-20T05:50:23.612Z"] },
+  { body: "Pluto", sign: "leo", retrograde: true, nasa: "1957-01-15T02:35:16Z", engine: ["1957-01-15T03:08:33.359Z"] },
+  { body: "Neptune", sign: "libra", retrograde: true, nasa: "1957-06-15T20:13:21Z", engine: ["1957-06-15T14:43:15.762Z"] },
+  { body: "Neptune", sign: "scorpio", retrograde: false, nasa: "1957-08-06T08:18:57Z", engine: ["1957-08-06T13:29:47.128Z"] },
+  { body: "Pluto", sign: "virgo", retrograde: false, nasa: "1957-08-19T04:28:25Z", engine: ["1957-08-19T04:09:39.469Z"] },
+  { body: "Pluto", sign: "leo", retrograde: true, nasa: "1958-04-11T14:45:24Z", engine: ["1958-04-11T15:29:30.537Z"] },
+  { body: "Pluto", sign: "virgo", retrograde: false, nasa: "1958-06-10T19:01:59Z", engine: ["1958-06-10T18:19:45.557Z"] },
+  { body: "Uranus", sign: "virgo", retrograde: false, nasa: "1961-11-01T15:57:22Z", engine: ["1961-11-01T15:34:47.047Z"] },
+  { body: "Uranus", sign: "leo", retrograde: true, nasa: "1962-01-10T05:56:37Z", engine: ["1962-01-10T06:18:39.392Z"] },
+  { body: "Uranus", sign: "virgo", retrograde: false, nasa: "1962-08-10T01:17:15Z", engine: ["1962-08-10T01:09:50.201Z"] },
+  { body: "Uranus", sign: "libra", retrograde: false, nasa: "1968-09-28T16:08:19Z", engine: ["1968-09-28T16:48:07.937Z"] },
+  { body: "Uranus", sign: "virgo", retrograde: true, nasa: "1969-05-20T20:55:51Z", engine: ["1969-05-20T18:20:11.038Z"] },
+  { body: "Uranus", sign: "libra", retrograde: false, nasa: "1969-06-24T10:31:06Z", engine: ["1969-06-24T12:52:41.098Z"] },
+  { body: "Neptune", sign: "sagittarius", retrograde: false, nasa: "1970-01-04T19:53:38Z", engine: ["1970-01-04T23:38:20.179Z"] },
+  { body: "Neptune", sign: "scorpio", retrograde: true, nasa: "1970-05-03T01:32:27Z", engine: ["1970-05-02T21:04:14.648Z"] },
+  { body: "Neptune", sign: "sagittarius", retrograde: false, nasa: "1970-11-06T16:30:45Z", engine: ["1970-11-06T19:20:38.357Z"] },
+  { body: "Pluto", sign: "libra", retrograde: false, nasa: "1971-10-05T06:18:24Z", engine: ["1971-10-05T05:50:43.733Z"] },
+  { body: "Pluto", sign: "virgo", retrograde: true, nasa: "1972-04-17T07:43:04Z", engine: ["1972-04-17T08:26:45.321Z"] },
+  { body: "Pluto", sign: "libra", retrograde: false, nasa: "1972-07-30T11:44:27Z", engine: ["1972-07-30T11:02:55.930Z"] },
+  { body: "Uranus", sign: "scorpio", retrograde: false, nasa: "1974-11-21T09:30:58Z", engine: ["1974-11-21T09:58:08.644Z"] },
+  { body: "Uranus", sign: "libra", retrograde: true, nasa: "1975-05-01T17:47:09Z", engine: ["1975-05-01T17:08:58.274Z"] },
+  { body: "Uranus", sign: "scorpio", retrograde: false, nasa: "1975-09-08T05:15:25Z", engine: ["1975-09-08T05:41:27.963Z"] },
+  { body: "Saturn", sign: "libra", retrograde: false, nasa: "1980-09-21T10:47:56Z", engine: ["1980-09-21T11:01:17.672Z"] },
+  { body: "Uranus", sign: "sagittarius", retrograde: false, nasa: "1981-02-17T09:01:08Z", engine: ["1981-02-17T11:28:35.712Z"] },
+  { body: "Uranus", sign: "scorpio", retrograde: true, nasa: "1981-03-20T23:16:14Z", engine: ["1981-03-20T20:44:20.111Z"] },
+  { body: "Uranus", sign: "sagittarius", retrograde: false, nasa: "1981-11-16T12:04:44Z", engine: ["1981-11-16T12:33:20.196Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: false, nasa: "1982-11-29T10:28:50Z", engine: ["1982-11-29T10:25:27.675Z"] },
+  { body: "Saturn", sign: "libra", retrograde: true, nasa: "1983-05-06T19:29:25Z", engine: ["1983-05-06T19:30:18.084Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: false, nasa: "1983-08-24T11:53:39Z", engine: ["1983-08-24T11:55:12.143Z"] },
+  { body: "Pluto", sign: "scorpio", retrograde: false, nasa: "1983-11-05T21:09:15Z", engine: ["1983-11-05T20:39:19.668Z"] },
+  { body: "Neptune", sign: "capricorn", retrograde: false, nasa: "1984-01-19T02:55:13Z", engine: ["1984-01-19T04:45:01.798Z"] },
+  { body: "Pluto", sign: "libra", retrograde: true, nasa: "1984-05-18T14:31:11Z", engine: ["1984-05-18T15:20:22.364Z"] },
+  { body: "Neptune", sign: "sagittarius", retrograde: true, nasa: "1984-06-23T01:09:31Z", engine: ["1984-06-22T22:48:37.782Z"] },
+  { body: "Pluto", sign: "scorpio", retrograde: false, nasa: "1984-08-28T04:46:50Z", engine: ["1984-08-28T04:04:18.878Z"] },
+  { body: "Neptune", sign: "capricorn", retrograde: false, nasa: "1984-11-21T13:21:13Z", engine: ["1984-11-21T15:03:37.404Z"] },
+  { body: "Saturn", sign: "sagittarius", retrograde: false, nasa: "1985-11-17T02:09:26Z", engine: ["1985-11-17T01:58:37.779Z"] },
+  { body: "Saturn", sign: "capricorn", retrograde: false, nasa: "1988-02-13T23:50:38Z", engine: ["1988-02-13T23:36:15.882Z"] },
+  { body: "Uranus", sign: "capricorn", retrograde: false, nasa: "1988-02-15T00:11:01Z", engine: ["1988-02-15T01:14:59.043Z"] },
+  { body: "Uranus", sign: "sagittarius", retrograde: true, nasa: "1988-05-27T01:16:44Z", engine: ["1988-05-27T00:03:25.888Z"] },
+  { body: "Saturn", sign: "sagittarius", retrograde: true, nasa: "1988-06-10T05:22:01Z", engine: ["1988-06-10T05:36:26.511Z"] },
+  { body: "Saturn", sign: "capricorn", retrograde: false, nasa: "1988-11-12T09:25:55Z", engine: ["1988-11-12T09:20:41.955Z"] },
+  { body: "Uranus", sign: "capricorn", retrograde: false, nasa: "1988-12-02T15:35:38Z", engine: ["1988-12-02T16:11:52.907Z"] },
+  { body: "Saturn", sign: "aquarius", retrograde: false, nasa: "1991-02-06T18:51:23Z", engine: ["1991-02-06T18:50:54.883Z"] },
+  { body: "Saturn", sign: "pisces", retrograde: false, nasa: "1993-05-21T04:58:36Z", engine: ["1993-05-21T05:00:30.087Z"] },
+  { body: "Saturn", sign: "aquarius", retrograde: true, nasa: "1993-06-30T08:27:57Z", engine: ["1993-06-30T08:21:58.949Z"] },
+  { body: "Saturn", sign: "pisces", retrograde: false, nasa: "1994-01-28T23:43:08Z", engine: ["1994-01-28T23:50:07.849Z"] },
+  { body: "Pluto", sign: "sagittarius", retrograde: false, nasa: "1995-01-17T09:16:47Z", engine: ["1995-01-17T08:52:13.546Z"] },
+  { body: "Uranus", sign: "aquarius", retrograde: false, nasa: "1995-04-01T12:11:59Z", engine: ["1995-04-01T14:02:15.680Z"] },
+  { body: "Pluto", sign: "scorpio", retrograde: true, nasa: "1995-04-21T02:54:57Z", engine: ["1995-04-21T03:19:56.326Z"] },
+  { body: "Uranus", sign: "capricorn", retrograde: true, nasa: "1995-06-09T01:40:47Z", engine: ["1995-06-08T23:37:32.553Z"] },
+  { body: "Pluto", sign: "sagittarius", retrograde: false, nasa: "1995-11-10T19:12:07Z", engine: ["1995-11-10T18:59:21.958Z"] },
+  { body: "Uranus", sign: "aquarius", retrograde: false, nasa: "1996-01-12T07:13:44Z", engine: ["1996-01-12T08:03:42.774Z"] },
+  { body: "Saturn", sign: "aries", retrograde: false, nasa: "1996-04-07T08:49:06Z", engine: ["1996-04-07T08:53:37.447Z"] },
+  { body: "Neptune", sign: "aquarius", retrograde: false, nasa: "1998-01-29T02:52:36Z", engine: ["1998-01-29T01:29:44.384Z"] },
+  { body: "Saturn", sign: "taurus", retrograde: false, nasa: "1998-06-09T06:07:08Z", engine: ["1998-06-09T06:09:49.841Z"] },
+  { body: "Neptune", sign: "capricorn", retrograde: true, nasa: "1998-08-23T00:11:52Z", engine: ["1998-08-23T02:39:13.921Z"] },
+  { body: "Saturn", sign: "aries", retrograde: true, nasa: "1998-10-25T18:40:20Z", engine: ["1998-10-25T18:32:21.468Z"] },
+  { body: "Neptune", sign: "aquarius", retrograde: false, nasa: "1998-11-28T01:20:10Z", engine: ["1998-11-27T23:09:48.701Z"] },
+  { body: "Saturn", sign: "taurus", retrograde: false, nasa: "1999-03-01T01:25:55Z", engine: ["1999-03-01T01:34:18.933Z"] },
+  { body: "Saturn", sign: "gemini", retrograde: false, nasa: "2000-08-10T02:26:31Z", engine: ["2000-08-10T01:34:34.649Z"] },
+  { body: "Saturn", sign: "taurus", retrograde: true, nasa: "2000-10-16T00:44:09Z", engine: ["2000-10-16T01:53:55.693Z"] },
+  { body: "Saturn", sign: "gemini", retrograde: false, nasa: "2001-04-20T21:59:19Z", engine: ["2001-04-20T21:23:28.830Z"] },
+  { body: "Uranus", sign: "pisces", retrograde: false, nasa: "2003-03-10T20:53:58Z", engine: ["2003-03-10T21:30:53.592Z"] },
+  { body: "Saturn", sign: "cancer", retrograde: false, nasa: "2003-06-04T01:28:03Z", engine: ["2003-06-04T01:22:16.060Z"] },
+  { body: "Uranus", sign: "aquarius", retrograde: true, nasa: "2003-09-15T03:45:03Z", engine: ["2003-09-15T02:48:18.878Z"] },
+  { body: "Uranus", sign: "pisces", retrograde: false, nasa: "2003-12-30T09:15:41Z", engine: ["2003-12-30T10:00:24.889Z"] },
+  { body: "Saturn", sign: "leo", retrograde: false, nasa: "2005-07-16T12:30:22Z", engine: ["2005-07-16T12:26:17.868Z"] },
+  { body: "Saturn", sign: "virgo", retrograde: false, nasa: "2007-09-02T13:48:36Z", engine: ["2007-09-02T13:40:44.614Z"] },
+  { body: "Pluto", sign: "capricorn", retrograde: false, nasa: "2008-01-26T02:38:43Z", engine: ["2008-01-26T02:41:18.589Z"] },
+  { body: "Pluto", sign: "sagittarius", retrograde: true, nasa: "2008-06-14T05:11:15Z", engine: ["2008-06-14T05:08:07.145Z"] },
+  { body: "Pluto", sign: "capricorn", retrograde: false, nasa: "2008-11-27T01:04:22Z", engine: ["2008-11-27T01:05:44.674Z"] },
+  { body: "Saturn", sign: "libra", retrograde: false, nasa: "2009-10-29T17:08:45Z", engine: ["2009-10-29T17:25:16.908Z"] },
+  { body: "Saturn", sign: "virgo", retrograde: true, nasa: "2010-04-07T18:51:14Z", engine: ["2010-04-07T18:18:53.210Z"] },
+  { body: "Uranus", sign: "aries", retrograde: false, nasa: "2010-05-28T01:46:20Z", engine: ["2010-05-28T01:52:20.564Z"] },
+  { body: "Saturn", sign: "libra", retrograde: false, nasa: "2010-07-21T15:10:08Z", engine: ["2010-07-21T15:36:36.756Z"] },
+  { body: "Uranus", sign: "pisces", retrograde: true, nasa: "2010-08-14T03:33:27Z", engine: ["2010-08-14T03:25:55.806Z"] },
+  { body: "Uranus", sign: "aries", retrograde: false, nasa: "2011-03-12T00:50:43Z", engine: ["2011-03-12T01:00:04.660Z"] },
+  { body: "Neptune", sign: "pisces", retrograde: false, nasa: "2011-04-04T13:50:44Z", engine: ["2011-04-04T10:08:13.463Z"] },
+  { body: "Neptune", sign: "aquarius", retrograde: true, nasa: "2011-08-05T02:53:06Z", engine: ["2011-08-05T07:19:01.333Z"] },
+  { body: "Neptune", sign: "pisces", retrograde: false, nasa: "2012-02-03T19:03:15Z", engine: ["2012-02-03T16:09:53.390Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: false, nasa: "2012-10-05T20:34:05Z", engine: ["2012-10-05T20:34:48.808Z"] },
+  { body: "Jupiter", sign: "leo", retrograde: false, nasa: "2014-07-16T10:30:40Z", engine: ["2014-07-16T10:31:14.692Z"] },
+  { body: "Saturn", sign: "sagittarius", retrograde: false, nasa: "2014-12-23T16:33:58Z", engine: ["2014-12-23T16:33:36.456Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: true, nasa: "2015-06-15T00:35:40Z", engine: ["2015-06-15T00:36:44.316Z"] },
+  { body: "Jupiter", sign: "virgo", retrograde: false, nasa: "2015-08-11T11:11:32Z", engine: ["2015-08-11T11:06:50.577Z"] },
+  { body: "Saturn", sign: "sagittarius", retrograde: false, nasa: "2015-09-18T02:49:11Z", engine: ["2015-09-18T02:45:20.982Z"] },
+  { body: "Jupiter", sign: "libra", retrograde: false, nasa: "2016-09-09T11:18:16Z", engine: ["2016-09-09T11:08:05.600Z"] },
+  { body: "Jupiter", sign: "scorpio", retrograde: false, nasa: "2017-10-10T13:20:31Z", engine: ["2017-10-10T13:15:26.976Z"] },
+  { body: "Saturn", sign: "capricorn", retrograde: false, nasa: "2017-12-20T04:48:39Z", engine: ["2017-12-20T04:45:58.239Z"] },
+  { body: "Uranus", sign: "taurus", retrograde: false, nasa: "2018-05-15T15:18:15Z", engine: ["2018-05-15T14:58:56.635Z"] },
+  { body: "Uranus", sign: "aries", retrograde: true, nasa: "2018-11-06T18:56:45Z", engine: ["2018-11-06T19:23:11.945Z"] },
+  { body: "Jupiter", sign: "sagittarius", retrograde: false, nasa: "2018-11-08T12:38:43Z", engine: ["2018-11-08T12:31:35.800Z"] },
+  { body: "Uranus", sign: "taurus", retrograde: false, nasa: "2019-03-06T08:28:48Z", engine: ["2019-03-06T08:05:24.224Z"] },
+  { body: "Jupiter", sign: "capricorn", retrograde: false, nasa: "2019-12-02T18:20:25Z", engine: ["2019-12-02T18:12:28.498Z"] },
+  { body: "Saturn", sign: "aquarius", retrograde: false, nasa: "2020-03-22T03:58:46Z", engine: ["2020-03-22T04:12:05.391Z"] },
+  { body: "Saturn", sign: "capricorn", retrograde: true, nasa: "2020-07-01T23:36:40Z", engine: ["2020-07-01T23:27:33.977Z"] },
+  { body: "Saturn", sign: "aquarius", retrograde: false, nasa: "2020-12-17T05:04:14Z", engine: ["2020-12-17T05:02:00.354Z"] },
+  { body: "Jupiter", sign: "aquarius", retrograde: false, nasa: "2020-12-19T13:07:23Z", engine: ["2020-12-19T13:09:09.864Z"] },
+  { body: "Jupiter", sign: "pisces", retrograde: false, nasa: "2021-05-13T22:36:14Z", engine: ["2021-05-13T22:49:23.451Z"] },
+  { body: "Jupiter", sign: "aquarius", retrograde: true, nasa: "2021-07-28T12:41:58Z", engine: ["2021-07-28T12:24:53.307Z"] },
+  { body: "Jupiter", sign: "pisces", retrograde: false, nasa: "2021-12-29T04:09:44Z", engine: ["2021-12-29T04:16:59.015Z"] },
+  { body: "Jupiter", sign: "aries", retrograde: false, nasa: "2022-05-10T23:22:14Z", engine: ["2022-05-10T23:29:49.375Z"] },
+  { body: "Jupiter", sign: "pisces", retrograde: true, nasa: "2022-10-28T05:09:31Z", engine: ["2022-10-28T04:44:40.270Z"] },
+  { body: "Jupiter", sign: "aries", retrograde: false, nasa: "2022-12-20T14:32:46Z", engine: ["2022-12-20T14:54:48.638Z"] },
+  { body: "Saturn", sign: "pisces", retrograde: false, nasa: "2023-03-07T13:35:01Z", engine: ["2023-03-07T13:41:14.855Z"] },
+  { body: "Pluto", sign: "aquarius", retrograde: false, nasa: "2023-03-23T12:23:43Z", engine: ["2023-03-23T12:48:15.218Z"] },
+  { body: "Jupiter", sign: "taurus", retrograde: false, nasa: "2023-05-16T17:20:11Z", engine: ["2023-05-16T17:28:05.018Z"] },
+  { body: "Pluto", sign: "capricorn", retrograde: true, nasa: "2023-06-11T09:34:50Z", engine: ["2023-06-11T09:04:12.650Z"] },
+  { body: "Pluto", sign: "aquarius", retrograde: false, nasa: "2024-01-21T00:56:19Z", engine: ["2024-01-21T01:10:40.625Z"] },
+  { body: "Jupiter", sign: "gemini", retrograde: false, nasa: "2024-05-25T23:14:55Z", engine: ["2024-05-25T23:20:00.831Z"] },
+  { body: "Pluto", sign: "capricorn", retrograde: true, nasa: "2024-09-01T23:57:09Z", engine: ["2024-09-01T23:29:02.533Z"] },
+  { body: "Pluto", sign: "aquarius", retrograde: false, nasa: "2024-11-19T20:40:00Z", engine: ["2024-11-19T21:06:21.066Z"] },
+  { body: "Neptune", sign: "aries", retrograde: false, nasa: "2025-03-30T11:58:27Z", engine: ["2025-03-30T09:57:19.227Z"] },
+  { body: "Saturn", sign: "aries", retrograde: false, nasa: "2025-05-25T03:36:08Z", engine: ["2025-05-25T04:16:42.370Z"] },
+  { body: "Jupiter", sign: "cancer", retrograde: false, nasa: "2025-06-09T21:02:15Z", engine: ["2025-06-09T21:04:57.144Z"] },
+  { body: "Uranus", sign: "gemini", retrograde: false, nasa: "2025-07-07T07:47:45Z", engine: ["2025-07-07T07:58:22.576Z"] },
+  { body: "Saturn", sign: "pisces", retrograde: true, nasa: "2025-09-01T08:05:45Z", engine: ["2025-09-01T07:14:17.845Z"] },
+  { body: "Neptune", sign: "pisces", retrograde: true, nasa: "2025-10-22T09:49:55Z", engine: ["2025-10-22T13:18:34.123Z"] },
+  { body: "Venus", sign: "scorpio", retrograde: false, nasa: "2025-11-06T22:39:32Z", engine: [] },
+  { body: "Uranus", sign: "taurus", retrograde: true, nasa: "2025-11-08T02:19:04Z", engine: ["2025-11-08T02:04:28.463Z"] },
+  { body: "Mercury", sign: "scorpio", retrograde: true, nasa: "2025-11-19T03:20:17Z", engine: [] },
+  { body: "Venus", sign: "sagittarius", retrograde: false, nasa: "2025-11-30T20:13:38Z", engine: [] },
+  { body: "Mercury", sign: "sagittarius", retrograde: false, nasa: "2025-12-11T22:39:43Z", engine: [] },
+  { body: "Mars", sign: "capricorn", retrograde: false, nasa: "2025-12-15T07:33:50Z", engine: [] },
+  { body: "Venus", sign: "capricorn", retrograde: false, nasa: "2025-12-24T16:25:58Z", engine: [] },
+  { body: "Mercury", sign: "capricorn", retrograde: false, nasa: "2026-01-01T21:10:43Z", engine: ["2026-01-01T21:11:14.576Z", "2026-01-01T21:11:14.814Z"] },
+  { body: "Venus", sign: "aquarius", retrograde: false, nasa: "2026-01-17T12:43:25Z", engine: ["2026-01-17T12:42:51.184Z", "2026-01-17T12:42:51.211Z"] },
+  { body: "Mercury", sign: "aquarius", retrograde: false, nasa: "2026-01-20T16:41:12Z", engine: ["2026-01-20T16:41:30.958Z", "2026-01-20T16:41:31.148Z"] },
+  { body: "Mars", sign: "aquarius", retrograde: false, nasa: "2026-01-23T09:16:47Z", engine: ["2026-01-23T09:16:24.668Z", "2026-01-23T09:16:24.814Z"] },
+  { body: "Neptune", sign: "aries", retrograde: false, nasa: "2026-01-26T17:35:23Z", engine: ["2026-01-26T14:30:44.561Z", "2026-01-26T14:31:41.082Z"] },
+  { body: "Mercury", sign: "pisces", retrograde: false, nasa: "2026-02-06T22:48:04Z", engine: ["2026-02-06T22:48:04.125Z", "2026-02-06T22:48:04.616Z"] },
+  { body: "Venus", sign: "pisces", retrograde: false, nasa: "2026-02-10T10:18:39Z", engine: ["2026-02-10T10:18:08.585Z", "2026-02-10T10:18:09.031Z"] },
+  { body: "Saturn", sign: "aries", retrograde: false, nasa: "2026-02-14T00:11:49Z", engine: ["2026-02-14T00:39:37.844Z", "2026-02-14T00:39:45.096Z"] },
+  { body: "Mars", sign: "pisces", retrograde: false, nasa: "2026-03-02T14:15:52Z", engine: ["2026-03-02T14:15:45.158Z", "2026-03-02T14:15:46.387Z"] },
+  { body: "Venus", sign: "aries", retrograde: false, nasa: "2026-03-06T10:45:46Z", engine: ["2026-03-06T10:45:08.163Z", "2026-03-06T10:45:08.968Z"] },
+  { body: "Venus", sign: "taurus", retrograde: false, nasa: "2026-03-30T16:00:53Z", engine: ["2026-03-30T16:00:07.607Z", "2026-03-30T16:00:07.781Z"] },
+  { body: "Mars", sign: "aries", retrograde: false, nasa: "2026-04-09T19:36:11Z", engine: ["2026-04-09T19:36:33.734Z", "2026-04-09T19:36:37.141Z"] },
+  { body: "Mercury", sign: "aries", retrograde: false, nasa: "2026-04-15T03:21:30Z", engine: ["2026-04-15T03:21:21.875Z", "2026-04-15T03:21:23.249Z"] },
+  { body: "Venus", sign: "gemini", retrograde: false, nasa: "2026-04-24T04:03:26Z", engine: ["2026-04-24T04:02:55.451Z", "2026-04-24T04:02:57.942Z"] },
+  { body: "Uranus", sign: "gemini", retrograde: false, nasa: "2026-04-26T00:51:53Z", engine: ["2026-04-26T01:00:44.564Z", "2026-04-26T01:01:21.002Z"] },
+  { body: "Mercury", sign: "taurus", retrograde: false, nasa: "2026-05-03T02:56:56Z", engine: ["2026-05-03T02:57:18.856Z", "2026-05-03T02:57:19.096Z"] },
+  { body: "Mercury", sign: "gemini", retrograde: false, nasa: "2026-05-17T10:26:24Z", engine: ["2026-05-17T10:26:26.650Z", "2026-05-17T10:26:26.712Z"] },
+  { body: "Mars", sign: "taurus", retrograde: false, nasa: "2026-05-18T22:25:29Z", engine: ["2026-05-18T22:26:02.680Z", "2026-05-18T22:26:05.783Z"] },
+  { body: "Venus", sign: "cancer", retrograde: false, nasa: "2026-05-19T01:05:18Z", engine: ["2026-05-19T01:05:11.529Z", "2026-05-19T01:05:13.651Z"] },
+  { body: "Mercury", sign: "cancer", retrograde: false, nasa: "2026-06-01T11:55:44Z", engine: ["2026-06-01T11:55:48.415Z", "2026-06-01T11:55:48.975Z"] },
+  { body: "Venus", sign: "leo", retrograde: false, nasa: "2026-06-13T10:46:49Z", engine: ["2026-06-13T10:47:00.491Z", "2026-06-13T10:47:01.853Z"] },
+  { body: "Mars", sign: "gemini", retrograde: false, nasa: "2026-06-28T19:29:16Z", engine: ["2026-06-28T19:29:43.622Z", "2026-06-28T19:29:43.951Z"] },
+  { body: "Jupiter", sign: "leo", retrograde: false, nasa: "2026-06-30T05:52:27Z", engine: ["2026-06-30T05:56:21.335Z", "2026-06-30T05:56:23.952Z"] },
+  { body: "Venus", sign: "virgo", retrograde: false, nasa: "2026-07-09T17:22:08Z", engine: ["2026-07-09T17:22:32.792Z", "2026-07-09T17:22:36.083Z"] },
+  { body: "Venus", sign: "libra", retrograde: false, nasa: "2026-08-06T19:12:47Z", engine: ["2026-08-06T19:13:53.723Z", "2026-08-06T19:13:57.026Z"] },
+  { body: "Mercury", sign: "leo", retrograde: false, nasa: "2026-08-09T16:28:23Z", engine: ["2026-08-09T16:28:16.322Z", "2026-08-09T16:28:16.438Z"] },
+  { body: "Mars", sign: "cancer", retrograde: false, nasa: "2026-08-11T08:30:32Z", engine: ["2026-08-11T08:31:05.298Z", "2026-08-11T08:31:07.818Z"] },
+  { body: "Mercury", sign: "virgo", retrograde: false, nasa: "2026-08-25T11:04:14Z", engine: ["2026-08-25T11:04:25.565Z", "2026-08-25T11:04:25.579Z"] },
+  { body: "Venus", sign: "scorpio", retrograde: false, nasa: "2026-09-10T08:06:51Z", engine: ["2026-09-10T08:12:45.649Z", "2026-09-10T08:12:49.810Z"] },
+  { body: "Mercury", sign: "libra", retrograde: false, nasa: "2026-09-10T16:20:39Z", engine: ["2026-09-10T16:21:18.350Z", "2026-09-10T16:21:19.823Z"] },
+  { body: "Mars", sign: "leo", retrograde: false, nasa: "2026-09-28T02:48:54Z", engine: ["2026-09-28T02:49:07.307Z", "2026-09-28T02:49:07.661Z"] },
+  { body: "Mercury", sign: "scorpio", retrograde: false, nasa: "2026-09-30T11:44:25Z", engine: ["2026-09-30T11:44:48.668Z", "2026-09-30T11:44:48.723Z"] },
+  { body: "Venus", sign: "libra", retrograde: true, nasa: "2026-10-25T09:09:46Z", engine: ["2026-10-25T08:57:01.333Z", "2026-10-25T08:57:04.018Z"] },
+  { body: "Mars", sign: "virgo", retrograde: false, nasa: "2026-11-25T23:37:08Z", engine: ["2026-11-25T23:37:31.441Z", "2026-11-25T23:37:34.581Z"] },
+  { body: "Venus", sign: "scorpio", retrograde: false, nasa: "2026-12-04T08:12:42Z", engine: ["2026-12-04T08:14:41.932Z", "2026-12-04T08:14:43.491Z"] },
+  { body: "Mercury", sign: "sagittarius", retrograde: false, nasa: "2026-12-06T08:33:20Z", engine: ["2026-12-06T08:33:58.463Z", "2026-12-06T08:33:58.728Z"] },
+  { body: "Mercury", sign: "capricorn", retrograde: false, nasa: "2026-12-25T18:22:30Z", engine: ["2026-12-25T18:22:59.761Z", "2026-12-25T18:23:01.041Z"] },
+  { body: "Venus", sign: "sagittarius", retrograde: false, nasa: "2027-01-07T08:53:28Z", engine: ["2027-01-07T08:53:40.737Z", "2027-01-07T08:53:41.526Z"] },
+  { body: "Mercury", sign: "aquarius", retrograde: false, nasa: "2027-01-13T06:05:52Z", engine: ["2027-01-13T06:06:28.708Z", "2027-01-13T06:06:29.368Z"] },
+  { body: "Mercury", sign: "pisces", retrograde: false, nasa: "2027-02-01T01:25:40Z", engine: ["2027-02-01T01:26:50.944Z", "2027-02-01T01:26:53.058Z"] },
+  { body: "Venus", sign: "capricorn", retrograde: false, nasa: "2027-02-03T14:30:33Z", engine: ["2027-02-03T14:30:37.801Z", "2027-02-03T14:30:39.185Z"] },
+  { body: "Mercury", sign: "aquarius", retrograde: true, nasa: "2027-02-18T12:15:33Z", engine: ["2027-02-18T12:17:12.747Z", "2027-02-18T12:17:13.715Z"] },
+  { body: "Mars", sign: "leo", retrograde: true, nasa: "2027-02-21T14:13:26Z", engine: ["2027-02-21T14:15:58.995Z", "2027-02-21T14:16:01.248Z"] },
+  { body: "Venus", sign: "aquarius", retrograde: false, nasa: "2027-03-01T06:32:17Z", engine: ["2027-03-01T06:32:16.737Z", "2027-03-01T06:32:17.719Z"] },
+  { body: "Mercury", sign: "pisces", retrograde: false, nasa: "2027-03-18T10:01:54Z", engine: ["2027-03-18T10:02:19.132Z", "2027-03-18T10:02:19.563Z"] },
+  { body: "Venus", sign: "pisces", retrograde: false, nasa: "2027-03-26T08:16:33Z", engine: ["2027-03-26T08:16:23.240Z", "2027-03-26T08:16:23.591Z"] },
+  { body: "Mercury", sign: "aries", retrograde: false, nasa: "2027-04-08T23:20:10Z", engine: ["2027-04-08T23:20:39.929Z", "2027-04-08T23:20:42.209Z"] },
+  { body: "Venus", sign: "aries", retrograde: false, nasa: "2027-04-20T03:57:06Z", engine: ["2027-04-20T03:56:50.696Z", "2027-04-20T03:56:51.503Z"] },
+  { body: "Mercury", sign: "taurus", retrograde: false, nasa: "2027-04-24T22:18:07Z", engine: ["2027-04-24T22:18:41.884Z", "2027-04-24T22:18:42.342Z"] },
+  { body: "Mercury", sign: "gemini", retrograde: false, nasa: "2027-05-09T01:57:45Z", engine: ["2027-05-09T01:58:07.190Z", "2027-05-09T01:58:07.393Z"] },
+  { body: "Mars", sign: "virgo", retrograde: false, nasa: "2027-05-14T14:47:28Z", engine: ["2027-05-14T14:47:32.657Z", "2027-05-14T14:47:36.526Z"] },
+  { body: "Venus", sign: "taurus", retrograde: false, nasa: "2027-05-14T21:01:31Z", engine: ["2027-05-14T21:01:12.641Z", "2027-05-14T21:01:13.559Z"] },
+  { body: "Mercury", sign: "cancer", retrograde: false, nasa: "2027-05-28T17:06:36Z", engine: ["2027-05-28T17:07:27.409Z", "2027-05-28T17:07:27.808Z"] },
+  { body: "Venus", sign: "gemini", retrograde: false, nasa: "2027-06-08T12:32:33Z", engine: ["2027-06-08T12:32:01.040Z", "2027-06-08T12:32:03.134Z"] },
+  { body: "Mercury", sign: "gemini", retrograde: true, nasa: "2027-06-26T07:19:11Z", engine: ["2027-06-26T07:23:33.410Z", "2027-06-26T07:23:36.540Z"] },
+  { body: "Venus", sign: "cancer", retrograde: false, nasa: "2027-07-03T02:01:32Z", engine: ["2027-07-03T02:00:41.005Z", "2027-07-03T02:00:42.662Z"] },
+  { body: "Mercury", sign: "cancer", retrograde: false, nasa: "2027-07-12T13:48:00Z", engine: ["2027-07-12T13:45:23.702Z", "2027-07-12T13:45:23.735Z"] },
+  { body: "Mars", sign: "libra", retrograde: false, nasa: "2027-07-15T05:40:26Z", engine: ["2027-07-15T05:40:18.975Z", "2027-07-15T05:40:21.241Z"] },
+  { body: "Jupiter", sign: "virgo", retrograde: false, nasa: "2027-07-26T04:49:16Z", engine: ["2027-07-26T04:45:27.093Z", "2027-07-26T04:45:45.886Z"] },
+  { body: "Venus", sign: "leo", retrograde: false, nasa: "2027-07-27T12:30:58Z", engine: ["2027-07-27T12:30:00.362Z", "2027-07-27T12:30:04.146Z"] },
+  { body: "Mercury", sign: "leo", retrograde: false, nasa: "2027-08-02T10:52:23Z", engine: ["2027-08-02T10:52:29.107Z", "2027-08-02T10:52:29.216Z"] },
+  { body: "Mercury", sign: "virgo", retrograde: false, nasa: "2027-08-17T04:43:22Z", engine: ["2027-08-17T04:43:14.124Z", "2027-08-17T04:43:14.571Z"] },
+  { body: "Venus", sign: "virgo", retrograde: false, nasa: "2027-08-20T19:42:45Z", engine: ["2027-08-20T19:42:01.407Z", "2027-08-20T19:42:02.816Z"] },
+  { body: "Mars", sign: "scorpio", retrograde: false, nasa: "2027-09-02T01:52:11Z", engine: ["2027-09-02T01:51:45.263Z", "2027-09-02T01:51:46.554Z"] },
+  { body: "Mercury", sign: "libra", retrograde: false, nasa: "2027-09-03T11:36:55Z", engine: ["2027-09-03T11:36:37.823Z", "2027-09-03T11:36:38.232Z"] },
+  { body: "Venus", sign: "libra", retrograde: false, nasa: "2027-09-14T00:24:44Z", engine: ["2027-09-14T00:24:14.378Z", "2027-09-14T00:24:15.282Z"] },
+  { body: "Mercury", sign: "scorpio", retrograde: false, nasa: "2027-09-27T09:09:43Z", engine: ["2027-09-27T09:08:39.419Z", "2027-09-27T09:08:42.439Z"] },
+  { body: "Venus", sign: "scorpio", retrograde: false, nasa: "2027-10-08T03:59:06Z", engine: ["2027-10-08T03:58:47.272Z", "2027-10-08T03:58:50.173Z"] },
+  { body: "Mars", sign: "sagittarius", retrograde: false, nasa: "2027-10-15T23:13:56Z", engine: ["2027-10-15T23:13:34.306Z", "2027-10-15T23:13:35.033Z"] },
+  { body: "Mercury", sign: "libra", retrograde: true, nasa: "2027-10-16T07:36:25Z", engine: ["2027-10-16T07:38:06.940Z", "2027-10-16T07:38:07.544Z"] },
+  { body: "Venus", sign: "sagittarius", retrograde: false, nasa: "2027-11-01T07:34:34Z", engine: ["2027-11-01T07:34:25.394Z", "2027-11-01T07:34:27.356Z"] },
+  { body: "Mercury", sign: "scorpio", retrograde: false, nasa: "2027-11-10T00:26:19Z", engine: ["2027-11-10T00:26:35.810Z", "2027-11-10T00:26:37.035Z"] },
+  { body: "Venus", sign: "capricorn", retrograde: false, nasa: "2027-11-25T11:59:27Z", engine: ["2027-11-25T11:59:16.534Z", "2027-11-25T11:59:17.601Z"] },
+  { body: "Mars", sign: "capricorn", retrograde: false, nasa: "2027-11-25T18:38:09Z", engine: ["2027-11-25T18:37:58.660Z", "2027-11-25T18:38:00.211Z"] },
+  { body: "Mercury", sign: "sagittarius", retrograde: false, nasa: "2027-11-29T10:23:36Z", engine: ["2027-11-29T10:23:45.574Z", "2027-11-29T10:23:46.264Z"] },
+  { body: "Mercury", sign: "capricorn", retrograde: false, nasa: "2027-12-18T11:58:05Z", engine: ["2027-12-18T11:58:19.153Z", "2027-12-18T11:58:19.205Z"] },
+  { body: "Venus", sign: "aquarius", retrograde: false, nasa: "2027-12-19T18:40:15Z", engine: ["2027-12-19T18:39:57.187Z", "2027-12-19T18:39:57.716Z"] },
+  { body: "Mars", sign: "aquarius", retrograde: false, nasa: "2028-01-03T16:01:39Z", engine: ["2028-01-03T16:01:06.622Z", "2028-01-03T16:01:08.474Z"] },
+  { body: "Mercury", sign: "aquarius", retrograde: false, nasa: "2028-01-06T05:57:42Z", engine: ["2028-01-06T05:58:06.886Z", "2028-01-06T05:58:08.357Z"] },
+  { body: "Venus", sign: "pisces", retrograde: false, nasa: "2028-01-13T07:20:10Z", engine: ["2028-01-13T07:19:47.834Z", "2028-01-13T07:19:49.145Z"] },
+  { body: "Venus", sign: "aries", retrograde: false, nasa: "2028-02-07T10:01:10Z", engine: ["2028-02-07T10:00:35.600Z", "2028-02-07T10:00:36.874Z"] },
+  { body: "Mars", sign: "pisces", retrograde: false, nasa: "2028-02-10T16:31:50Z", engine: ["2028-02-10T16:31:29.431Z", "2028-02-10T16:31:30.903Z"] },
+  { body: "Venus", sign: "taurus", retrograde: false, nasa: "2028-03-04T20:00:57Z", engine: ["2028-03-04T20:00:16.574Z", "2028-03-04T20:00:20.062Z"] },
+  { body: "Mercury", sign: "pisces", retrograde: false, nasa: "2028-03-13T07:07:28Z", engine: ["2028-03-13T07:07:18.071Z", "2028-03-13T07:07:19.125Z"] },
+  { body: "Mars", sign: "aries", retrograde: false, nasa: "2028-03-19T19:35:54Z", engine: ["2028-03-19T19:35:59.206Z", "2028-03-19T19:36:01.229Z"] },
+  { body: "Mercury", sign: "aries", retrograde: false, nasa: "2028-03-31T12:27:40Z", engine: ["2028-03-31T12:28:17.303Z", "2028-03-31T12:28:19.364Z"] },
+  { body: "Venus", sign: "gemini", retrograde: false, nasa: "2028-04-03T20:27:38Z", engine: ["2028-04-03T20:27:52.062Z", "2028-04-03T20:27:54.290Z"] },
+  { body: "Saturn", sign: "taurus", retrograde: false, nasa: "2028-04-13T03:39:54Z", engine: ["2028-04-13T04:04:45.979Z", "2028-04-13T04:05:03.310Z"] },
+  { body: "Mercury", sign: "taurus", retrograde: false, nasa: "2028-04-15T11:48:07Z", engine: ["2028-04-15T11:49:01.691Z", "2028-04-15T11:49:02.981Z"] },
+  { body: "Mars", sign: "taurus", retrograde: false, nasa: "2028-04-27T22:21:22Z", engine: ["2028-04-27T22:21:19.123Z", "2028-04-27T22:21:21.573Z"] },
+  { body: "Mercury", sign: "gemini", retrograde: false, nasa: "2028-05-01T01:42:11Z", engine: ["2028-05-01T01:42:46.253Z", "2028-05-01T01:42:46.385Z"] },
+  { body: "Mars", sign: "gemini", retrograde: false, nasa: "2028-06-07T18:20:20Z", engine: ["2028-06-07T18:20:14.183Z", "2028-06-07T18:20:19.130Z"] },
+  { body: "Mercury", sign: "cancer", retrograde: false, nasa: "2028-07-09T01:37:31Z", engine: ["2028-07-09T01:36:55.776Z", "2028-07-09T01:36:55.806Z"] },
+  { body: "Mars", sign: "cancer", retrograde: false, nasa: "2028-07-20T20:10:01Z", engine: ["2028-07-20T20:09:44.107Z", "2028-07-20T20:09:47.451Z"] },
+  { body: "Mercury", sign: "leo", retrograde: false, nasa: "2028-07-24T01:50:32Z", engine: ["2028-07-24T01:50:12.436Z", "2028-07-24T01:50:12.807Z"] },
+  { body: "Venus", sign: "cancer", retrograde: false, nasa: "2028-08-07T15:26:18Z", engine: ["2028-08-07T15:25:46.680Z", "2028-08-07T15:25:48.171Z"] },
+  { body: "Mercury", sign: "virgo", retrograde: false, nasa: "2028-08-08T05:09:45Z", engine: ["2028-08-08T05:09:27.773Z", "2028-08-08T05:09:28.638Z"] },
+  { body: "Jupiter", sign: "libra", retrograde: false, nasa: "2028-08-24T05:08:33Z", engine: ["2028-08-24T05:04:19.914Z", "2028-08-24T05:04:20.110Z"] },
+  { body: "Mercury", sign: "libra", retrograde: false, nasa: "2028-08-27T13:07:54Z", engine: ["2028-08-27T13:07:39.861Z", "2028-08-27T13:07:42.893Z"] },
+  { body: "Mars", sign: "leo", retrograde: false, nasa: "2028-09-04T14:36:16Z", engine: ["2028-09-04T14:36:07.920Z", "2028-09-04T14:36:08.692Z"] },
+  { body: "Venus", sign: "leo", retrograde: false, nasa: "2028-09-05T23:17:57Z", engine: ["2028-09-05T23:17:40.230Z", "2028-09-05T23:17:40.529Z"] },
+  { body: "Venus", sign: "virgo", retrograde: false, nasa: "2028-10-02T10:08:12Z", engine: ["2028-10-02T10:07:46.563Z", "2028-10-02T10:07:47.672Z"] },
+  { body: "Mars", sign: "virgo", retrograde: false, nasa: "2028-10-24T01:10:30Z", engine: ["2028-10-24T01:11:05.573Z", "2028-10-24T01:11:13.769Z"] },
+  { body: "Venus", sign: "libra", retrograde: false, nasa: "2028-10-27T13:51:53Z", engine: ["2028-10-27T13:51:22.404Z", "2028-10-27T13:51:23.193Z"] },
+  { body: "Mercury", sign: "scorpio", retrograde: false, nasa: "2028-11-02T15:04:14Z", engine: ["2028-11-02T15:03:37.569Z", "2028-11-02T15:03:38.162Z"] },
+  { body: "Venus", sign: "scorpio", retrograde: false, nasa: "2028-11-21T00:57:58Z", engine: ["2028-11-21T00:57:45.959Z", "2028-11-21T00:57:47.715Z"] },
+  { body: "Mercury", sign: "sagittarius", retrograde: false, nasa: "2028-11-21T03:59:48Z", engine: ["2028-11-21T03:59:32.066Z", "2028-11-21T03:59:33.370Z"] },
+  { body: "Mercury", sign: "capricorn", retrograde: false, nasa: "2028-12-10T09:11:55Z", engine: ["2028-12-10T09:11:48.183Z", "2028-12-10T09:11:49.560Z"] },
+  { body: "Venus", sign: "sagittarius", retrograde: false, nasa: "2028-12-15T03:39:01Z", engine: ["2028-12-15T03:39:07.045Z", "2028-12-15T03:39:08.058Z"] },
+  { body: "Mars", sign: "libra", retrograde: false, nasa: "2028-12-21T08:46:27Z", engine: ["2028-12-21T08:46:40.351Z", "2028-12-21T08:46:41.402Z"] },
+  { body: "Mercury", sign: "aquarius", retrograde: false, nasa: "2028-12-31T14:49:09Z", engine: ["2028-12-31T14:50:26.470Z", "2028-12-31T14:50:27.556Z"] },
+  { body: "Venus", sign: "capricorn", retrograde: false, nasa: "2029-01-08T02:47:10Z", engine: ["2029-01-08T02:47:23.198Z", "2029-01-08T02:47:23.455Z"] },
+  { body: "Mercury", sign: "capricorn", retrograde: true, nasa: "2029-01-13T12:13:30Z", engine: ["2029-01-13T12:13:08.171Z", "2029-01-13T12:13:11.443Z"] },
+  { body: "Venus", sign: "aquarius", retrograde: false, nasa: "2029-02-01T01:03:19Z", engine: ["2029-02-01T01:03:32.764Z", "2029-02-01T01:03:33.043Z"] },
+  { body: "Mercury", sign: "aquarius", retrograde: false, nasa: "2029-02-13T17:52:19Z", engine: ["2029-02-13T17:51:56.099Z", "2029-02-13T17:51:56.531Z"] },
+  { body: "Venus", sign: "pisces", retrograde: false, nasa: "2029-02-25T00:03:24Z", engine: ["2029-02-25T00:03:31.719Z", "2029-02-25T00:03:33.524Z"] },
+  { body: "Mercury", sign: "pisces", retrograde: false, nasa: "2029-03-06T18:15:21Z", engine: ["2029-03-06T18:15:25.521Z", "2029-03-06T18:15:26.743Z"] },
+  { body: "Venus", sign: "aries", retrograde: false, nasa: "2029-03-21T01:03:38Z", engine: ["2029-03-21T01:03:41.488Z", "2029-03-21T01:03:44.117Z"] },
+  { body: "Mercury", sign: "aries", retrograde: false, nasa: "2029-03-23T12:18:36Z", engine: ["2029-03-23T12:18:32.631Z", "2029-03-23T12:18:34.609Z"] },
+  { body: "Mercury", sign: "taurus", retrograde: false, nasa: "2029-04-07T08:51:31Z", engine: ["2029-04-07T08:51:16.768Z", "2029-04-07T08:51:17.660Z"] },
+  { body: "Mars", sign: "virgo", retrograde: true, nasa: "2029-04-07T13:09:17Z", engine: ["2029-04-07T13:09:02.386Z", "2029-04-07T13:09:06.852Z"] },
+  { body: "Venus", sign: "taurus", retrograde: false, nasa: "2029-04-14T05:06:23Z", engine: ["2029-04-14T05:06:34.223Z", "2029-04-14T05:06:35.225Z"] },
+  { body: "Venus", sign: "gemini", retrograde: false, nasa: "2029-05-08T12:46:11Z", engine: ["2029-05-08T12:46:23.532Z", "2029-05-08T12:46:23.776Z"] },
+  { body: "Venus", sign: "cancer", retrograde: false, nasa: "2029-06-02T00:10:55Z", engine: ["2029-06-02T00:10:47.471Z", "2029-06-02T00:10:49.702Z"] },
+  { body: "Mars", sign: "libra", retrograde: false, nasa: "2029-06-05T04:49:11Z", engine: ["2029-06-05T04:47:36.789Z"] },
+  { body: "Mercury", sign: "gemini", retrograde: false, nasa: "2029-06-13T16:46:24Z", engine: ["2029-06-13T16:46:00.735Z"] },
+  { body: "Venus", sign: "leo", retrograde: false, nasa: "2029-06-26T15:37:25Z", engine: ["2029-06-26T15:36:59.910Z"] },
+  { body: "Mercury", sign: "cancer", retrograde: false, nasa: "2029-07-01T12:01:25Z", engine: ["2029-07-01T12:01:07.661Z"] },
+  { body: "Mercury", sign: "leo", retrograde: false, nasa: "2029-07-15T13:37:00Z", engine: ["2029-07-15T13:36:28.897Z"] },
+  { body: "Venus", sign: "virgo", retrograde: false, nasa: "2029-07-21T12:20:41Z", engine: ["2029-07-21T12:20:23.361Z"] },
+  { body: "Mercury", sign: "virgo", retrograde: false, nasa: "2029-07-31T23:35:08Z", engine: ["2029-07-31T23:34:41.993Z"] },
+  { body: "Mars", sign: "scorpio", retrograde: false, nasa: "2029-08-07T16:02:44Z", engine: ["2029-08-07T16:01:40.543Z"] },
+  { body: "Venus", sign: "libra", retrograde: false, nasa: "2029-08-15T17:06:25Z", engine: ["2029-08-15T17:06:25.268Z"] },
+  { body: "Mercury", sign: "libra", retrograde: false, nasa: "2029-08-27T02:20:54Z", engine: ["2029-08-27T02:23:40.372Z"] },
+  { body: "Mercury", sign: "virgo", retrograde: true, nasa: "2029-09-08T10:59:28Z", engine: ["2029-09-08T10:55:27.674Z"] },
+  { body: "Venus", sign: "scorpio", retrograde: false, nasa: "2029-09-10T10:54:28Z", engine: ["2029-09-10T10:54:39.355Z"] },
+  { body: "Mars", sign: "sagittarius", retrograde: false, nasa: "2029-09-23T08:14:07Z", engine: ["2029-09-23T08:13:50.224Z"] },
+  { body: "Jupiter", sign: "scorpio", retrograde: false, nasa: "2029-09-24T06:24:10Z", engine: ["2029-09-24T06:27:10.332Z", "2029-09-24T06:27:17.997Z"] },
+  { body: "Venus", sign: "sagittarius", retrograde: false, nasa: "2029-10-07T04:47:24Z", engine: ["2029-10-07T04:47:36.879Z"] },
+  { body: "Mercury", sign: "libra", retrograde: false, nasa: "2029-10-08T12:40:36Z", engine: ["2029-10-08T12:39:40.529Z"] },
+  { body: "Mercury", sign: "scorpio", retrograde: false, nasa: "2029-10-26T06:03:49Z", engine: ["2029-10-26T06:03:07.164Z"] },
+  { body: "Mars", sign: "capricorn", retrograde: false, nasa: "2029-11-04T00:32:04Z", engine: ["2029-11-04T00:32:00.150Z"] },
+  { body: "Venus", sign: "capricorn", retrograde: false, nasa: "2029-11-05T13:38:55Z", engine: ["2029-11-05T13:39:47.836Z"] },
+  { body: "Mercury", sign: "sagittarius", retrograde: false, nasa: "2029-11-13T22:09:25Z", engine: ["2029-11-13T22:08:53.134Z"] },
+  { body: "Mercury", sign: "capricorn", retrograde: false, nasa: "2029-12-03T22:47:09Z", engine: ["2029-12-03T22:46:40.949Z"] },
+  { body: "Mars", sign: "aquarius", retrograde: false, nasa: "2029-12-13T05:24:53Z", engine: ["2029-12-13T05:24:30.264Z"] },
+  { body: "Mars", sign: "pisces", retrograde: false, nasa: "2030-01-20T10:27:27Z", engine: ["2030-01-20T10:26:57.467Z"] },
+  { body: "Mercury", sign: "aquarius", retrograde: false, nasa: "2030-02-08T14:03:28Z", engine: ["2030-02-08T14:03:17.000Z"] },
+  { body: "Mercury", sign: "pisces", retrograde: false, nasa: "2030-02-27T08:59:38Z", engine: ["2030-02-27T08:58:49.425Z"] },
+  { body: "Mars", sign: "aries", retrograde: false, nasa: "2030-02-27T19:07:20Z", engine: ["2030-02-27T19:06:45.232Z"] },
+  { body: "Venus", sign: "aquarius", retrograde: false, nasa: "2030-03-06T12:51:06Z", engine: ["2030-03-06T12:49:34.245Z"] },
+  { body: "Mercury", sign: "aries", retrograde: false, nasa: "2030-03-15T08:41:46Z", engine: ["2030-03-15T08:41:25.212Z"] },
+  { body: "Mercury", sign: "taurus", retrograde: false, nasa: "2030-04-01T04:46:56Z", engine: ["2030-04-01T04:47:07.330Z"] },
+  { body: "Venus", sign: "pisces", retrograde: false, nasa: "2030-04-05T09:18:47Z", engine: ["2030-04-05T09:18:18.802Z"] },
+  { body: "Mars", sign: "taurus", retrograde: false, nasa: "2030-04-08T05:26:55Z", engine: ["2030-04-08T05:26:25.902Z"] },
+  { body: "Mercury", sign: "aries", retrograde: true, nasa: "2030-04-28T13:44:24Z", engine: ["2030-04-28T13:43:18.684Z"] },
+  { body: "Venus", sign: "aries", retrograde: false, nasa: "2030-05-02T06:37:30Z", engine: ["2030-05-02T06:37:33.373Z"] },
+  { body: "Mercury", sign: "taurus", retrograde: false, nasa: "2030-05-15T01:30:11Z", engine: ["2030-05-15T01:29:24.004Z"] },
+  { body: "Mars", sign: "gemini", retrograde: false, nasa: "2030-05-19T09:28:25Z", engine: ["2030-05-19T09:28:23.428Z"] },
+  { body: "Venus", sign: "taurus", retrograde: false, nasa: "2030-05-28T03:32:38Z", engine: ["2030-05-28T03:33:03.349Z"] },
+  { body: "Saturn", sign: "gemini", retrograde: false, nasa: "2030-06-01T02:34:19Z", engine: ["2030-06-01T02:32:31.850Z", "2030-06-01T02:32:43.173Z"] },
+  { body: "Mercury", sign: "gemini", retrograde: false, nasa: "2030-06-08T06:31:20Z", engine: ["2030-06-08T06:31:26.904Z"] },
+  { body: "Venus", sign: "gemini", retrograde: false, nasa: "2030-06-22T12:23:30Z", engine: ["2030-06-22T12:24:03.618Z"] },
+  { body: "Mercury", sign: "cancer", retrograde: false, nasa: "2030-06-22T23:56:24Z", engine: ["2030-06-22T23:56:26.527Z"] },
+  { body: "Mars", sign: "cancer", retrograde: false, nasa: "2030-07-01T15:19:43Z", engine: ["2030-07-01T15:19:35.309Z"] },
+  { body: "Mercury", sign: "leo", retrograde: false, nasa: "2030-07-07T10:22:42Z", engine: ["2030-07-07T10:22:44.933Z"] },
+  { body: "Venus", sign: "cancer", retrograde: false, nasa: "2030-07-17T12:46:09Z", engine: ["2030-07-17T12:46:43.630Z"] },
+  { body: "Mercury", sign: "virgo", retrograde: false, nasa: "2030-07-26T14:53:45Z", engine: ["2030-07-26T14:54:20.091Z"] },
+  { body: "Venus", sign: "leo", retrograde: false, nasa: "2030-08-11T05:24:01Z", engine: ["2030-08-11T05:24:37.436Z"] },
+  { body: "Mars", sign: "leo", retrograde: false, nasa: "2030-08-15T23:56:11Z", engine: ["2030-08-15T23:56:18.339Z"] },
+  { body: "Venus", sign: "virgo", retrograde: false, nasa: "2030-09-04T14:50:27Z", engine: ["2030-09-04T14:50:53.964Z"] },
+  { body: "Venus", sign: "libra", retrograde: false, nasa: "2030-09-28T18:33:48Z", engine: ["2030-09-28T18:34:00.921Z"] },
+  { body: "Mercury", sign: "libra", retrograde: false, nasa: "2030-10-01T10:49:49Z", engine: ["2030-10-01T10:50:00.468Z"] },
+  { body: "Mars", sign: "virgo", retrograde: false, nasa: "2030-10-02T09:42:12Z", engine: ["2030-10-02T09:42:36.174Z"] },
+  { body: "Mercury", sign: "scorpio", retrograde: false, nasa: "2030-10-18T17:03:17Z", engine: ["2030-10-18T17:03:18.212Z"] },
+  { body: "Venus", sign: "scorpio", retrograde: false, nasa: "2030-10-22T18:39:44Z", engine: ["2030-10-22T18:39:52.155Z"] },
+  { body: "Jupiter", sign: "sagittarius", retrograde: false, nasa: "2030-10-22T23:14:24Z", engine: ["2030-10-22T23:13:59.291Z", "2030-10-22T23:14:05.468Z"] },
+  { body: "Mercury", sign: "sagittarius", retrograde: false, nasa: "2030-11-07T00:30:32Z", engine: ["2030-11-07T00:30:16.316Z"] },
+  { body: "Venus", sign: "sagittarius", retrograde: false, nasa: "2030-11-15T17:00:50Z", engine: ["2030-11-15T17:01:07.949Z"] },
+  { body: "Mars", sign: "libra", retrograde: false, nasa: "2030-11-21T07:54:43Z", engine: ["2030-11-21T07:54:31.864Z"] },
+  { body: "Mercury", sign: "capricorn", retrograde: false, nasa: "2030-12-01T02:27:10Z", engine: ["2030-12-01T02:26:21.329Z"] },
+  { body: "Venus", sign: "capricorn", retrograde: false, nasa: "2030-12-09T14:51:47Z", engine: ["2030-12-09T14:52:14.817Z"] },
+  { body: "Mercury", sign: "sagittarius", retrograde: true, nasa: "2030-12-10T15:10:38Z", engine: ["2030-12-10T15:08:13.912Z"] },
+  { body: "Venus", sign: "aquarius", retrograde: false, nasa: "2031-01-02T13:14:24Z", engine: [] },
+  { body: "Mercury", sign: "capricorn", retrograde: false, nasa: "2031-01-12T04:18:36Z", engine: [] },
+  { body: "Mars", sign: "scorpio", retrograde: false, nasa: "2031-01-15T22:48:02Z", engine: [] },
+  { body: "Venus", sign: "pisces", retrograde: false, nasa: "2031-01-26T13:48:43Z", engine: [] },
+  { body: "Mercury", sign: "aquarius", retrograde: false, nasa: "2031-02-01T21:14:53Z", engine: [] },
+  { body: "Mercury", sign: "pisces", retrograde: false, nasa: "2031-02-19T15:01:58Z", engine: [] },
+  { body: "Venus", sign: "aries", retrograde: false, nasa: "2031-02-19T19:29:52Z", engine: [] },
+  { body: "Mercury", sign: "aries", retrograde: false, nasa: "2031-03-07T15:01:29Z", engine: [] },
+  { body: "Venus", sign: "taurus", retrograde: false, nasa: "2031-03-16T10:41:53Z", engine: [] },
+  { body: "Venus", sign: "gemini", retrograde: false, nasa: "2031-04-10T18:01:23Z", engine: [] },
+  { body: "Venus", sign: "cancer", retrograde: false, nasa: "2031-05-07T06:06:31Z", engine: [] },
+  { body: "Mercury", sign: "taurus", retrograde: false, nasa: "2031-05-14T13:59:55Z", engine: [] },
+  { body: "Jupiter", sign: "capricorn", retrograde: false, nasa: "2031-11-15T10:29:38Z", engine: ["2031-11-15T10:27:33.907Z"] },
+  { body: "Jupiter", sign: "aquarius", retrograde: false, nasa: "2032-04-12T00:59:01Z", engine: ["2032-04-12T00:57:24.830Z"] },
+  { body: "Jupiter", sign: "capricorn", retrograde: true, nasa: "2032-06-26T12:56:22Z", engine: ["2032-06-26T12:56:48.966Z"] },
+  { body: "Saturn", sign: "cancer", retrograde: false, nasa: "2032-07-14T02:16:05Z", engine: ["2032-07-14T02:15:31.206Z"] },
+  { body: "Uranus", sign: "cancer", retrograde: false, nasa: "2032-08-03T18:22:52Z", engine: ["2032-08-03T18:48:05.207Z"] },
+  { body: "Jupiter", sign: "aquarius", retrograde: false, nasa: "2032-11-30T03:31:57Z", engine: ["2032-11-30T03:33:05.427Z"] },
+  { body: "Uranus", sign: "gemini", retrograde: true, nasa: "2032-12-12T06:18:55Z", engine: ["2032-12-12T05:49:40.493Z"] },
+  { body: "Jupiter", sign: "pisces", retrograde: false, nasa: "2033-04-14T22:45:00Z", engine: ["2033-04-14T22:42:57.562Z"] },
+  { body: "Uranus", sign: "cancer", retrograde: false, nasa: "2033-05-22T13:17:04Z", engine: ["2033-05-22T13:38:13.291Z"] },
+  { body: "Jupiter", sign: "aquarius", retrograde: true, nasa: "2033-09-12T22:27:51Z", engine: ["2033-09-12T22:32:07.221Z"] },
+  { body: "Jupiter", sign: "pisces", retrograde: false, nasa: "2033-12-01T22:34:42Z", engine: ["2033-12-01T22:29:42.839Z"] },
+  { body: "Jupiter", sign: "aries", retrograde: false, nasa: "2034-04-21T09:39:42Z", engine: ["2034-04-21T09:34:40.349Z"] },
+  { body: "Saturn", sign: "leo", retrograde: false, nasa: "2034-08-27T02:46:29Z", engine: ["2034-08-27T03:04:07.128Z"] },
+  { body: "Saturn", sign: "cancer", retrograde: true, nasa: "2035-02-15T19:34:56Z", engine: ["2035-02-15T19:04:48.128Z"] },
+  { body: "Jupiter", sign: "taurus", retrograde: false, nasa: "2035-04-29T18:57:15Z", engine: ["2035-04-29T18:53:33.396Z"] },
+  { body: "Saturn", sign: "leo", retrograde: false, nasa: "2035-05-11T20:44:48Z", engine: ["2035-05-11T21:06:58.042Z"] },
+  { body: "Jupiter", sign: "gemini", retrograde: false, nasa: "2036-05-09T14:52:08Z", engine: ["2036-05-09T14:48:05.303Z"] },
+  { body: "Saturn", sign: "virgo", retrograde: false, nasa: "2036-10-16T07:34:31Z", engine: ["2036-10-16T07:13:15.388Z"] },
+  { body: "Saturn", sign: "leo", retrograde: true, nasa: "2037-02-11T06:46:25Z", engine: ["2037-02-11T07:22:11.053Z"] },
+  { body: "Jupiter", sign: "cancer", retrograde: false, nasa: "2037-05-24T02:12:50Z", engine: ["2037-05-24T02:11:49.413Z"] },
+  { body: "Saturn", sign: "virgo", retrograde: false, nasa: "2037-07-07T02:30:52Z", engine: ["2037-07-07T02:04:46.508Z"] },
+  { body: "Neptune", sign: "taurus", retrograde: false, nasa: "2038-05-22T00:13:01Z", engine: ["2038-05-21T23:49:22.797Z"] },
+  { body: "Jupiter", sign: "leo", retrograde: false, nasa: "2038-06-12T15:25:43Z", engine: ["2038-06-12T15:32:05.380Z"] },
+  { body: "Neptune", sign: "aries", retrograde: true, nasa: "2038-10-21T12:25:32Z", engine: ["2038-10-21T13:01:10.682Z"] },
+  { body: "Jupiter", sign: "virgo", retrograde: false, nasa: "2038-11-16T21:20:58Z", engine: ["2038-11-16T21:23:23.866Z"] },
+  { body: "Jupiter", sign: "leo", retrograde: true, nasa: "2039-01-16T14:54:52Z", engine: ["2039-01-16T14:51:40.093Z"] },
+  { body: "Neptune", sign: "taurus", retrograde: false, nasa: "2039-03-23T20:36:32Z", engine: ["2039-03-23T20:10:45.658Z"] },
+  { body: "Jupiter", sign: "virgo", retrograde: false, nasa: "2039-07-08T00:24:33Z", engine: ["2039-07-08T00:25:28.801Z"] },
+  { body: "Uranus", sign: "leo", retrograde: false, nasa: "2039-08-06T10:02:48Z", engine: ["2039-08-06T10:23:36.438Z"] },
+  { body: "Saturn", sign: "libra", retrograde: false, nasa: "2039-09-05T15:14:46Z", engine: ["2039-09-05T15:10:49.764Z"] },
+  { body: "Jupiter", sign: "libra", retrograde: false, nasa: "2039-12-12T22:05:16Z", engine: ["2039-12-12T21:50:08.885Z"] },
+  { body: "Jupiter", sign: "virgo", retrograde: true, nasa: "2040-02-20T05:35:25Z", engine: ["2040-02-20T05:49:10.706Z"] },
+  { body: "Uranus", sign: "cancer", retrograde: true, nasa: "2040-02-25T07:34:06Z", engine: ["2040-02-25T07:15:27.450Z"] },
+  { body: "Uranus", sign: "leo", retrograde: false, nasa: "2040-05-15T22:17:28Z", engine: ["2040-05-15T22:27:01.444Z"] },
+  { body: "Jupiter", sign: "libra", retrograde: false, nasa: "2040-08-05T22:03:23Z", engine: ["2040-08-05T22:03:19.716Z"] },
+  { body: "Jupiter", sign: "scorpio", retrograde: false, nasa: "2041-01-11T19:33:21Z", engine: ["2041-01-11T19:33:31.101Z"] },
+  { body: "Jupiter", sign: "libra", retrograde: true, nasa: "2041-03-21T00:01:21Z", engine: ["2041-03-20T23:56:10.521Z"] },
+  { body: "Jupiter", sign: "scorpio", retrograde: false, nasa: "2041-09-06T00:12:31Z", engine: ["2041-09-06T00:18:25.236Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: false, nasa: "2041-11-11T10:58:04Z", engine: ["2041-11-11T10:44:50.652Z"] },
+  { body: "Jupiter", sign: "sagittarius", retrograde: false, nasa: "2042-02-08T23:52:58Z", engine: ["2042-02-08T23:55:27.613Z"] },
+  { body: "Jupiter", sign: "scorpio", retrograde: true, nasa: "2042-04-24T12:40:32Z", engine: ["2042-04-24T12:40:16.798Z"] },
+  { body: "Saturn", sign: "libra", retrograde: true, nasa: "2042-06-21T10:26:15Z", engine: ["2042-06-21T11:56:09.656Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: false, nasa: "2042-07-14T13:59:09Z", engine: ["2042-07-14T12:34:34.024Z"] },
+  { body: "Jupiter", sign: "sagittarius", retrograde: false, nasa: "2042-10-04T09:59:29Z", engine: ["2042-10-04T09:57:33.317Z"] },
+  { body: "Jupiter", sign: "capricorn", retrograde: false, nasa: "2043-03-01T17:06:13Z", engine: ["2043-03-01T17:01:12.604Z"] },
+  { body: "Pluto", sign: "pisces", retrograde: false, nasa: "2043-03-09T01:01:31Z", engine: ["2043-03-09T01:55:54.796Z"] },
+  { body: "Jupiter", sign: "sagittarius", retrograde: true, nasa: "2043-06-09T21:42:10Z", engine: ["2043-06-09T21:46:05.628Z"] },
+  { body: "Pluto", sign: "aquarius", retrograde: true, nasa: "2043-09-01T03:12:50Z", engine: ["2043-09-01T01:55:29.583Z"] },
+  { body: "Jupiter", sign: "capricorn", retrograde: false, nasa: "2043-10-26T11:30:38Z", engine: ["2043-10-26T11:32:24.057Z"] },
+  { body: "Pluto", sign: "pisces", retrograde: false, nasa: "2044-01-19T09:48:41Z", engine: ["2044-01-19T10:51:04.490Z"] },
+  { body: "Saturn", sign: "sagittarius", retrograde: false, nasa: "2044-02-21T14:21:03Z", engine: ["2044-02-21T13:58:19.466Z"] },
+  { body: "Jupiter", sign: "aquarius", retrograde: false, nasa: "2044-03-15T04:27:26Z", engine: ["2044-03-15T04:34:52.941Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: true, nasa: "2044-03-25T10:01:45Z", engine: ["2044-03-25T10:29:27.410Z"] },
+  { body: "Jupiter", sign: "capricorn", retrograde: true, nasa: "2044-08-09T12:42:10Z", engine: ["2044-08-09T12:21:11.433Z"] },
+  { body: "Saturn", sign: "sagittarius", retrograde: false, nasa: "2044-10-31T12:52:25Z", engine: ["2044-10-31T12:43:56.759Z"] },
+  { body: "Jupiter", sign: "aquarius", retrograde: false, nasa: "2044-11-04T17:33:01Z", engine: ["2044-11-04T17:48:22.071Z"] },
+  { body: "Jupiter", sign: "pisces", retrograde: false, nasa: "2045-03-26T05:08:22Z", engine: [] },
+  { body: "Uranus", sign: "virgo", retrograde: false, nasa: "2045-10-06T07:14:31Z", engine: ["2045-10-06T06:31:52.134Z"] },
+  { body: "Uranus", sign: "leo", retrograde: true, nasa: "2046-02-08T18:48:27Z", engine: ["2046-02-08T19:48:04.185Z"] },
+  { body: "Uranus", sign: "virgo", retrograde: false, nasa: "2046-07-22T22:33:14Z", engine: ["2046-07-22T21:48:02.693Z"] },
+  { body: "Saturn", sign: "capricorn", retrograde: false, nasa: "2047-01-24T15:40:44Z", engine: ["2047-01-24T15:39:51.069Z"] },
+  { body: "Saturn", sign: "sagittarius", retrograde: true, nasa: "2047-07-11T02:59:00Z", engine: ["2047-07-11T02:56:41.029Z"] },
+  { body: "Saturn", sign: "capricorn", retrograde: false, nasa: "2047-10-22T11:09:40Z", engine: ["2047-10-22T11:15:26.097Z"] },
+  { body: "Saturn", sign: "aquarius", retrograde: false, nasa: "2050-01-21T13:16:12Z", engine: ["2050-01-21T13:27:29.396Z"] },
+  { body: "Neptune", sign: "gemini", retrograde: false, nasa: "2051-07-16T11:53:21Z", engine: ["2051-07-16T12:25:47.773Z"] },
+  { body: "Neptune", sign: "taurus", retrograde: true, nasa: "2051-10-22T23:51:46Z", engine: ["2051-10-22T23:13:41.988Z"] },
+  { body: "Uranus", sign: "libra", retrograde: false, nasa: "2051-12-08T20:48:30Z", engine: ["2051-12-08T19:49:45.718Z"] },
+  { body: "Uranus", sign: "virgo", retrograde: true, nasa: "2052-02-01T03:00:59Z", engine: ["2052-02-01T04:05:08.171Z"] },
+  { body: "Saturn", sign: "pisces", retrograde: false, nasa: "2052-04-16T13:54:20Z", engine: ["2052-04-16T14:06:56.263Z"] },
+  { body: "Neptune", sign: "gemini", retrograde: false, nasa: "2052-05-12T10:07:53Z", engine: ["2052-05-12T10:30:47.088Z"] },
+  { body: "Saturn", sign: "aquarius", retrograde: true, nasa: "2052-08-09T03:34:58Z", engine: ["2052-08-09T03:18:12.733Z"] },
+  { body: "Uranus", sign: "libra", retrograde: false, nasa: "2052-09-11T08:10:01Z", engine: ["2052-09-11T07:44:25.707Z"] },
+  { body: "Saturn", sign: "pisces", retrograde: false, nasa: "2053-01-11T02:51:39Z", engine: ["2053-01-11T03:02:39.870Z"] },
+  { body: "Saturn", sign: "aries", retrograde: false, nasa: "2055-03-22T18:30:12Z", engine: ["2055-03-22T18:42:15.409Z"] },
+  { body: "Saturn", sign: "taurus", retrograde: false, nasa: "2057-05-20T06:00:23Z", engine: ["2057-05-20T06:07:06.013Z"] },
+  { body: "Saturn", sign: "aries", retrograde: true, nasa: "2057-11-29T18:50:26Z", engine: ["2057-11-29T18:27:50.297Z"] },
+  { body: "Saturn", sign: "taurus", retrograde: false, nasa: "2058-01-31T09:16:05Z", engine: ["2058-01-31T09:40:02.750Z"] },
+  { body: "Uranus", sign: "scorpio", retrograde: false, nasa: "2058-11-03T09:27:09Z", engine: ["2058-11-03T09:33:39.787Z"] },
+  { body: "Uranus", sign: "libra", retrograde: true, nasa: "2059-06-01T19:13:59Z", engine: ["2059-06-01T19:04:48.582Z"] },
+  { body: "Saturn", sign: "gemini", retrograde: false, nasa: "2059-07-12T19:58:09Z", engine: ["2059-07-12T20:12:43.466Z"] },
+  { body: "Uranus", sign: "scorpio", retrograde: false, nasa: "2059-08-11T18:50:29Z", engine: ["2059-08-11T18:53:54.860Z"] },
+  { body: "Saturn", sign: "taurus", retrograde: true, nasa: "2059-11-21T10:20:13Z", engine: ["2059-11-21T10:12:20.304Z"] },
+  { body: "Saturn", sign: "gemini", retrograde: false, nasa: "2060-03-31T11:50:13Z", engine: ["2060-03-31T11:44:02.663Z"] },
+  { body: "Saturn", sign: "cancer", retrograde: false, nasa: "2061-09-01T07:39:00Z", engine: ["2061-09-01T07:22:14.576Z"] },
+  { body: "Saturn", sign: "gemini", retrograde: true, nasa: "2061-11-24T19:04:25Z", engine: ["2061-11-24T19:18:59.355Z"] },
+  { body: "Saturn", sign: "cancer", retrograde: false, nasa: "2062-05-16T10:50:09Z", engine: ["2062-05-16T10:53:07.654Z"] },
+  { body: "Saturn", sign: "leo", retrograde: false, nasa: "2064-06-28T19:26:56Z", engine: ["2064-06-28T19:41:20.704Z"] },
+  { body: "Uranus", sign: "sagittarius", retrograde: false, nasa: "2065-01-10T19:55:34Z", engine: ["2065-01-10T19:50:04.793Z"] },
+  { body: "Uranus", sign: "scorpio", retrograde: true, nasa: "2065-05-01T08:58:51Z", engine: ["2065-05-01T09:13:43.191Z"] },
+  { body: "Neptune", sign: "cancer", retrograde: false, nasa: "2065-07-03T07:09:24Z", engine: ["2065-07-03T06:43:20.750Z"] },
+  { body: "Uranus", sign: "sagittarius", retrograde: false, nasa: "2065-10-28T21:04:44Z", engine: ["2065-10-28T20:47:54.385Z"] },
+  { body: "Neptune", sign: "gemini", retrograde: true, nasa: "2066-01-14T21:10:52Z", engine: ["2066-01-14T21:47:37.543Z"] },
+  { body: "Neptune", sign: "cancer", retrograde: false, nasa: "2066-05-01T21:41:31Z", engine: ["2066-05-01T21:08:30.863Z"] },
+  { body: "Pluto", sign: "aries", retrograde: false, nasa: "2066-06-17T15:18:50Z", engine: ["2066-06-18T00:54:24.936Z"] },
+  { body: "Pluto", sign: "pisces", retrograde: true, nasa: "2066-07-11T22:03:39Z", engine: ["2066-07-11T12:27:37.361Z"] },
+  { body: "Saturn", sign: "virgo", retrograde: false, nasa: "2066-08-16T07:24:57Z", engine: ["2066-08-16T07:11:14.345Z"] },
+  { body: "Pluto", sign: "aries", retrograde: false, nasa: "2067-04-08T22:01:38Z", engine: ["2067-04-08T23:43:48.264Z"] },
+  { body: "Pluto", sign: "pisces", retrograde: true, nasa: "2067-09-27T16:48:31Z", engine: ["2067-09-27T14:34:57.604Z"] },
+  { body: "Pluto", sign: "aries", retrograde: false, nasa: "2068-02-23T13:39:18Z", engine: ["2068-02-23T15:24:22.965Z"] },
+  { body: "Saturn", sign: "libra", retrograde: false, nasa: "2068-10-11T02:55:56Z", engine: ["2068-10-11T02:54:09.047Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: false, nasa: "2070-12-25T20:46:10Z", engine: ["2070-12-25T20:33:04.720Z"] },
+  { body: "Saturn", sign: "libra", retrograde: true, nasa: "2071-03-27T18:17:00Z", engine: ["2071-03-27T18:36:41.164Z"] },
+  { body: "Saturn", sign: "scorpio", retrograde: false, nasa: "2071-09-18T17:22:25Z", engine: ["2071-09-18T17:12:28.428Z"] },
+  { body: "Uranus", sign: "capricorn", retrograde: false, nasa: "2072-01-22T11:29:35Z", engine: ["2072-01-22T11:36:32.834Z"] },
+  { body: "Uranus", sign: "sagittarius", retrograde: true, nasa: "2072-06-25T10:28:36Z", engine: ["2072-06-25T10:22:11.774Z"] },
+  { body: "Uranus", sign: "capricorn", retrograde: false, nasa: "2072-11-12T05:01:24Z", engine: ["2072-11-12T05:04:18.719Z"] },
+  { body: "Saturn", sign: "sagittarius", retrograde: false, nasa: "2073-12-06T02:56:19Z", engine: ["2073-12-06T02:40:28.532Z"] },
+  { body: "Saturn", sign: "capricorn", retrograde: false, nasa: "2076-12-03T16:02:53Z", engine: ["2076-12-03T15:48:45.725Z"] },
+  { body: "Neptune", sign: "leo", retrograde: false, nasa: "2078-09-01T09:28:53Z", engine: ["2078-09-01T07:11:45.678Z"] },
+  { body: "Neptune", sign: "cancer", retrograde: true, nasa: "2079-01-06T10:08:53Z", engine: ["2079-01-06T12:51:49.658Z"] },
+  { body: "Saturn", sign: "aquarius", retrograde: false, nasa: "2079-02-28T17:25:47Z", engine: ["2079-02-28T17:24:52.581Z"] },
+  { body: "Uranus", sign: "aquarius", retrograde: false, nasa: "2079-03-02T17:05:56Z", engine: ["2079-03-02T16:47:13.551Z"] },
+  { body: "Neptune", sign: "leo", retrograde: false, nasa: "2079-07-03T05:59:20Z", engine: ["2079-07-03T04:02:24.799Z"] },
+  { body: "Uranus", sign: "capricorn", retrograde: true, nasa: "2079-07-13T12:32:36Z", engine: ["2079-07-13T13:01:27.593Z"] },
+  { body: "Saturn", sign: "capricorn", retrograde: true, nasa: "2079-08-02T12:26:09Z", engine: ["2079-08-02T12:29:40.257Z"] },
+  { body: "Saturn", sign: "aquarius", retrograde: false, nasa: "2079-11-27T14:19:47Z", engine: [] },
+  { body: "Uranus", sign: "aquarius", retrograde: false, nasa: "2079-12-23T06:32:19Z", engine: ["2079-12-23T06:12:24.809Z"] },
+  { body: "Uranus", sign: "pisces", retrograde: false, nasa: "2087-02-18T22:43:57Z", engine: ["2087-02-18T22:38:19.264Z"] },
+  { body: "Neptune", sign: "virgo", retrograde: false, nasa: "2092-09-04T14:50:46Z", engine: ["2092-09-04T12:09:44.526Z"] },
+  { body: "Neptune", sign: "leo", retrograde: true, nasa: "2093-03-11T13:33:30Z", engine: ["2093-03-11T17:44:51.174Z"] },
+  { body: "Neptune", sign: "virgo", retrograde: false, nasa: "2093-07-05T12:47:40Z", engine: [] },
+  { body: "Uranus", sign: "aries", retrograde: false, nasa: "2094-04-28T18:14:30Z", engine: ["2094-04-28T18:40:31.362Z"] },
+  { body: "Uranus", sign: "pisces", retrograde: true, nasa: "2094-09-16T16:25:15Z", engine: ["2094-09-16T15:47:41.847Z"] },
+  { body: "Uranus", sign: "aries", retrograde: false, nasa: "2095-02-19T03:01:26Z", engine: [] },
+  { body: "Pluto", sign: "taurus", retrograde: false, nasa: "2095-06-09T04:48:42Z", engine: ["2095-06-09T07:56:39.972Z"] },
+  { body: "Pluto", sign: "aries", retrograde: true, nasa: "2095-09-20T22:16:23Z", engine: ["2095-09-20T18:49:50.717Z"] },
+  { body: "Pluto", sign: "taurus", retrograde: false, nasa: "2096-04-22T23:13:18Z", engine: ["2096-04-23T01:23:22.100Z"] },
+  { body: "Pluto", sign: "aries", retrograde: true, nasa: "2096-11-14T14:41:10Z", engine: ["2096-11-14T11:37:15.414Z"] },
+  { body: "Pluto", sign: "taurus", retrograde: false, nasa: "2097-03-10T00:40:18Z", engine: [] }
+];
+
+// src/ai-tools/features/nasa-ingress.ts
+var DAY9 = 864e5;
+var NASA_MATCH_WINDOW_MS = 2 * DAY9;
+var ROWS = /* @__PURE__ */ new Map();
+for (const row of ingresses2) {
+  const list3 = ROWS.get(row.body) ?? [];
+  list3.push({ body: row.body, sign: row.sign, retrograde: row.retrograde, time: Date.parse(row.nasa), engine: row.engine.map((at) => Date.parse(at)) });
+  ROWS.set(row.body, list3);
+}
+for (const list3 of ROWS.values()) list3.sort((a, b) => a.time - b.time);
+var SPANS = /* @__PURE__ */ new Map();
+for (const [body2, entry] of Object.entries(coverage)) {
+  const [fromDay, toDay] = entry.ingresses.split(" to ");
+  SPANS.set(body2, { from: Date.parse(`${fromDay}T00:00:00Z`), to: Date.parse(`${toDay}T00:00:00Z`), fromDay, toDay });
+}
+var NASA_INGRESS_BODIES = [...ROWS.keys()];
+var toIngress = (row) => ({ body: row.body, sign: row.sign, retrograde: row.retrograde, at: new Date(row.time).toISOString() });
+function nasaCoversIngress(body2, at) {
+  const span2 = SPANS.get(body2);
+  const time = new Date(at).getTime();
+  return !!span2 && time >= span2.from && time <= span2.to;
+}
+function nearest(body2, sign3, at, retrograde) {
+  const time = new Date(at).getTime();
+  let best;
+  for (const row of ROWS.get(body2) ?? []) {
+    if (row.sign !== sign3 || retrograde !== void 0 && row.retrograde !== retrograde) continue;
+    if (Math.abs(row.time - time) > NASA_MATCH_WINDOW_MS) continue;
+    if (!best || Math.abs(row.time - time) < Math.abs(best.time - time)) best = row;
+  }
+  return best;
+}
+function nasaIngressNear(body2, sign3, at, retrograde) {
+  const row = nearest(body2, sign3, at, retrograde);
+  return row ? new Date(row.time).toISOString() : void 0;
+}
+function nasaIngressesBetween(body2, from, to) {
+  return (ROWS.get(body2) ?? []).filter((row) => row.time > from.getTime() && row.time <= to.getTime()).map(toIngress);
+}
+function largestCorrectionSeconds(body2) {
+  const rows3 = ROWS.get(body2);
+  if (!rows3) return void 0;
+  let worst = 0;
+  for (const row of rows3) for (const engine of row.engine) worst = Math.max(worst, Math.abs(row.time - engine) / 1e3);
+  return worst;
+}
+function largestCorrectionWords(body2) {
+  const seconds2 = largestCorrectionSeconds(body2);
+  if (seconds2 === void 0) return void 0;
+  const minutes = Math.max(1, Math.ceil(seconds2 / 60));
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
+  if (hours === 0) return `about ${plural(minutes, "minute")}`;
+  return rest === 0 ? `about ${plural(hours, "hour")}` : `about ${plural(hours, "hour")} ${plural(rest, "minute")}`;
+}
+function refineIngressEvents(events, from, to, bodies) {
+  const out = [];
+  const nasa = [];
+  const engineOnly = [];
+  const used = /* @__PURE__ */ new Set();
+  const inside = (time) => time > from.getTime() && time <= to.getTime();
+  for (const event2 of events) {
+    if (event2.kind !== "ingress" || !event2.body || !ROWS.has(event2.body)) {
+      out.push(event2);
+      continue;
+    }
+    const row = nearest(event2.body, event2.sign, event2.at, event2.retrograde);
+    if (!row) {
+      out.push(event2);
+      engineOnly.push({ body: event2.body, sign: event2.sign, at: event2.at });
+      continue;
+    }
+    used.add(row);
+    if (!inside(row.time)) continue;
+    out.push({ ...event2, at: new Date(row.time).toISOString() });
+    nasa.push(toIngress(row));
+  }
+  for (const body2 of bodies) {
+    for (const row of ROWS.get(body2) ?? []) {
+      if (used.has(row) || !inside(row.time)) continue;
+      const added = toIngress(row);
+      out.push({ kind: "ingress", body: added.body, at: added.at, sign: added.sign, retrograde: added.retrograde });
+      nasa.push(added);
+    }
+  }
+  const events2 = out.map((event2, index) => ({ event: event2, index })).sort((a, b) => a.event.at.localeCompare(b.event.at) || a.index - b.index).map((entry) => entry.event);
+  nasa.sort((a, b) => a.at.localeCompare(b.at));
+  return { events: events2, nasa, engineOnly };
+}
+var METHOD_PATH = "/methodology/#event-times";
+var listWords2 = (items) => items.length <= 2 ? items.join(" and ") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+function ingressSourceLinks(origin, refined) {
+  const links = [];
+  const url = `${origin}${METHOD_PATH}`;
+  if (refined.nasa.length) links.push({ title: "Sign-change times of Mercury through Pluto are NASA JPL Horizons times; the calculation block keeps the engine's own", url });
+  const bodies = [...new Set(refined.engineOnly.map((event2) => event2.body))];
+  if (bodies.length) {
+    const gaps = bodies.map((body2) => `${largestCorrectionWords(body2)} for ${body2}`);
+    links.push({ title: `Not checked against NASA at these dates: the sign-change time of ${listWords2(bodies)} is the engine's own. Where it was checked it was up to ${listWords2(gaps)} from NASA's, and it can be more here`, url });
+  }
+  return links;
+}
+var cap3 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var second = (at) => at.replace(".000Z", "Z");
+var nasaLine = (row) => `${row.body} ${row.retrograde ? "moves back into" : "enters"} ${cap3(row.sign)} at ${second(row.at)}`;
+function checkIngressFact(origin, result) {
+  const { body: body2, sign: sign3 } = result.fact;
+  if (!body2 || !sign3 || !result.window || !ROWS.has(body2)) return null;
+  const url = `${origin}${METHOD_PATH}`;
+  const from = new Date(Date.parse(result.window.from) - 1);
+  const to = new Date(Date.parse(result.window.to) - 1);
+  const engine = result.facts.ingresses ?? [];
+  if (!nasaCoversIngress(body2, from) || !nasaCoversIngress(body2, to)) {
+    return engine.length ? { answer: null, links: ingressSourceLinks(origin, { nasa: [], engineOnly: engine.map((event2) => ({ body: body2, sign: sign3, at: event2.at })) }) } : null;
+  }
+  const rows3 = nasaIngressesBetween(body2, from, to).filter((row) => row.sign === sign3);
+  const answer = rows3.length === 0 ? "false" : result.basis === "any-zone-day" ? "depends" : "true";
+  const outside = rows3.length ? [] : engine.map((event2) => nearest(body2, sign3, event2.at, event2.retrograde)).filter((row) => !!row).map(toIngress);
+  const lines = [...rows3.map(nasaLine), ...outside.map((row) => `${nasaLine(row)}, outside this day`)];
+  return {
+    answer,
+    links: lines.length ? [{ title: `By NASA JPL Horizons, ${listWords2(lines)}; the verdict follows NASA's time, and the calculation block keeps the engine's own`, url }] : []
+  };
+}
+
 // src/lib/daily.ts
 function solarHouse(planetSign, sunSign) {
   const p = SIGN_SLUGS3.indexOf(planetSign);
@@ -32304,7 +32966,7 @@ var HOUSE_THEME = {
 };
 
 // src/ai-tools/features/horoscope-period.ts
-var DAY9 = 864e5;
+var DAY10 = 864e5;
 var ZONE_PATTERN5 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var ORDINAL4 = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"];
 var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -32362,8 +33024,8 @@ var horoscopePeriodDataWithShare = horoscopePeriodData.extend({
   /** The card of the month's or year's published reading, by its sign and period alone; null for a week or with no reading. */
   shareUrl: z7.url().nullable()
 });
-var cap3 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
-var addDays = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY9).toISOString().slice(0, 10);
+var cap4 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var addDays = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY10).toISOString().slice(0, 10);
 var monthLabel = (month) => `${MONTHS[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
 var shortDay = (date3) => `${Number(date3.slice(8, 10))} ${MONTHS[Number(date3.slice(5, 7)) - 1]} ${date3.slice(0, 4)}`;
 function dayOn(iso3, timeZone) {
@@ -32372,17 +33034,17 @@ function dayOn(iso3, timeZone) {
 }
 function skyLine(kind, planet2, type, sign3, house, day2) {
   const where = `your ${ORDINAL4[house]} solar house, ${HOUSE_THEME[house]}`;
-  if (kind === "ingress") return `${planet2} enters ${cap3(sign3)} on ${day2}, moving into ${where}.`;
-  if (kind === "station") return `${planet2} turns ${type} in ${cap3(sign3)} on ${day2}, in ${where}: ${type === "retrograde" ? "a time for revisions there" : "forward motion returns there"}.`;
-  if (kind === "lunation") return `${type === "new" ? "New" : "Full"} Moon in ${cap3(sign3)} on ${day2}, in ${where}: ${type === "new" ? "a clean line to start something" : "something comes due"}.`;
-  return `${cap3(type ?? "")} eclipse in ${cap3(sign3)} on ${day2}, in ${where}: a marker the year turns on.`;
+  if (kind === "ingress") return `${planet2} enters ${cap4(sign3)} on ${day2}, moving into ${where}.`;
+  if (kind === "station") return `${planet2} turns ${type} in ${cap4(sign3)} on ${day2}, in ${where}: ${type === "retrograde" ? "a time for revisions there" : "forward motion returns there"}.`;
+  if (kind === "lunation") return `${type === "new" ? "New" : "Full"} Moon in ${cap4(sign3)} on ${day2}, in ${where}: ${type === "new" ? "a clean line to start something" : "something comes due"}.`;
+  return `${cap4(type ?? "")} eclipse in ${cap4(sign3)} on ${day2}, in ${where}: a marker the year turns on.`;
 }
 async function getHoroscopePeriod(args, today2, zone9, zoneSource, clock2, sources, origin, options = {}) {
   const focus = args.focus ?? "general";
   const date3 = args.date ?? today2;
   if (Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) || (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) !== date3) throw new RangeError("date must be a real date, such as 2026-12-01.");
   const sign3 = args.sign;
-  const signName7 = cap3(sign3);
+  const signName7 = cap4(sign3);
   const months = await sources.months();
   const servedMonths = Object.keys(months.months).filter((month) => month <= today2.slice(0, 7)).sort();
   const program = await sources.program();
@@ -32446,7 +33108,7 @@ async function getHoroscopePeriod(args, today2, zone9, zoneSource, clock2, sourc
   }
   let raw = [];
   if (args.period === "year") {
-    raw = ingresses_default.windows.filter((window) => YEAR_PLANETS.includes(window.planet) && window.from >= fromUtc.toISOString() && window.from < toUtc.toISOString()).map((window) => ({ kind: "ingress", at: window.from, planet: window.planet, sign: window.sign }));
+    raw = ingresses_default.windows.filter((window) => YEAR_PLANETS.includes(window.planet)).map((window) => ({ kind: "ingress", at: nasaIngressNear(window.planet, window.sign, window.from) ?? window.from, planet: window.planet, sign: window.sign })).filter((event2) => event2.at >= fromUtc.toISOString() && event2.at < toUtc.toISOString());
     const yearsCovered = ingresses_default.horizons.filter((horizon) => horizon.planets.some((planet2) => YEAR_PLANETS.includes(planet2)));
     if (yearsCovered.some((horizon) => to > horizon.to || from < horizon.from)) notes.push("Sign changes are listed only within the years the ingress table covers.");
   } else {
@@ -32454,8 +33116,9 @@ async function getHoroscopePeriod(args, today2, zone9, zoneSource, clock2, sourc
       const verdict = await sources.allowEvents();
       if (verdict !== "allowed") return { refused: verdict === "limited" ? "rate-limited" : "rate-limit-unavailable" };
     }
-    const calculation = computeEvents(parseEventsRequest({ from: fromUtc.toISOString(), to: toUtc.toISOString() }));
-    raw = calculation.result.events.map((event2) => ({
+    const eventsRequest = parseEventsRequest({ from: fromUtc.toISOString(), to: toUtc.toISOString() });
+    const calculation = computeEvents(eventsRequest);
+    raw = refineIngressEvents(calculation.result.events, eventsRequest.from, eventsRequest.to, eventsRequest.bodies).events.map((event2) => ({
       kind: event2.kind,
       at: event2.at,
       planet: event2.kind === "lunation" ? "Moon" : event2.body,
@@ -32817,7 +33480,7 @@ function chineseYearOf(date3) {
 var animalAt = (position2) => CHINESE_ZODIAC_ANIMALS[((position2 - 1) % 12 + 12) % 12];
 var animalPage = (origin, slug) => `${origin}/learn/chinese-zodiac/${slug}/`;
 var ref2 = (origin, animal) => ({ slug: animal.slug, name: animal.name, pageUrl: animalPage(origin, animal.slug) });
-var cap4 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var cap5 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 var dayBefore = (date3) => new Date(Date.parse(`${date3}T00:00:00Z`) - 864e5).toISOString().slice(0, 10);
 var SIX_HARMONY = { rat: "ox", ox: "rat", tiger: "pig", pig: "tiger", rabbit: "dog", dog: "rabbit", dragon: "rooster", rooster: "dragon", snake: "monkey", monkey: "snake", horse: "goat", goat: "horse" };
 function longDate(date3) {
@@ -32833,7 +33496,7 @@ function yearFacts(year, origin) {
     element,
     yinYang,
     stemBranch: stemBranchYear(year),
-    label: `${cap4(element)} ${animal.name} (${yinYang})`,
+    label: `${cap5(element)} ${animal.name} (${yinYang})`,
     starts,
     ends: dayBefore(lunarNewYearOf(year + 1))
   };
@@ -32909,7 +33572,7 @@ function getChineseZodiac(args, today2, zone9, origin = DEFAULT_ORIGIN4, zoneAss
 import { z as z9 } from "zod";
 
 // src/lib/engine/returns.ts
-var DAY10 = 864e5;
+var DAY11 = 864e5;
 function findLongitudeCrossings2(body2, targetLon, from, to, stepDays = 5) {
   if (!(to.getTime() > from.getTime())) return [];
   return findLongitudeCrossingsWith(bodyLongitude2, body2, targetLon, from, to, stepDays);
@@ -32918,7 +33581,7 @@ function groupIntoSeasons2(crossings, gapDays = 400) {
   const seasons = [];
   for (const c of crossings) {
     const cur = seasons[seasons.length - 1];
-    if (cur && c.at.getTime() - cur.last.getTime() <= gapDays * DAY10) {
+    if (cur && c.at.getTime() - cur.last.getTime() <= gapDays * DAY11) {
       cur.crossings.push(c);
       cur.last = c.at;
     } else {
@@ -32931,8 +33594,8 @@ function saturnReturns(birthUtc) {
   const natalLon = bodyLongitude2("Saturn", birthUtc);
   const speed = longitudeSpeed2("Saturn", birthUtc);
   const window = clipToReferenceSpan(
-    new Date(birthUtc.getTime() + 26 * 365.25 * DAY10),
-    new Date(birthUtc.getTime() + 92 * 365.25 * DAY10)
+    new Date(birthUtc.getTime() + 26 * 365.25 * DAY11),
+    new Date(birthUtc.getTime() + 92 * 365.25 * DAY11)
   );
   const crossings = window ? findLongitudeCrossings2("Saturn", natalLon, window.from, window.to) : [];
   return {
@@ -32989,7 +33652,7 @@ var NATAL_POINT_ORDER = [
 ];
 
 // src/lib/engine/transit-scan-core.ts
-var DAY11 = 864e5;
+var DAY12 = 864e5;
 var MINUTE = 6e4;
 var BOUNDARY_EPSILON_MS = 100;
 var ASPECT_TARGET_OFFSETS = {
@@ -33108,7 +33771,7 @@ function refineLongitudeExtremum(ephemeris, body2, fromMs, toMs, maximize) {
 }
 function stationBreakpoints(ephemeris, body2, from, to, stepDays) {
   const stations = [];
-  const stepMs = stepDays * DAY11;
+  const stepMs = stepDays * DAY12;
   const toMs = to.getTime();
   let previousMs = from.getTime();
   let previousSpeed = ephemeris.longitudeSpeed(body2, from);
@@ -33363,12 +34026,12 @@ var monthDay = (iso3) => {
   const d = new Date(iso3);
   return `${MONTHS2[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
 };
-var cap5 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+var cap6 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 function eclipseHitLine(hit) {
   const e = hit.eclipse;
   const where = hit.contact === "conjunction" ? `lands on your ${hit.body}` : `lands directly across from your ${hit.body}`;
   const role2 = BODY_ROLE[hit.body] ?? hit.body.toLowerCase();
-  return `The ${e.kind} ${e.type} eclipse of ${monthDay(e.peak)} (${e.degree.toFixed(1)}\xB0 ${cap5(e.sign)}) ${where}. Eclipses tend to fast-forward whatever house your ${role2} runs.`;
+  return `The ${e.kind} ${e.type} eclipse of ${monthDay(e.peak)} (${e.degree.toFixed(1)}\xB0 ${cap6(e.sign)}) ${where}. Eclipses tend to fast-forward whatever house your ${role2} runs.`;
 }
 
 // src/lib/year-ahead.ts
@@ -33419,7 +34082,7 @@ function aspectEvents(scan) {
     receipt: aspectReceipt(e)
   }));
 }
-var cap6 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+var cap7 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 function ingressEvents(windows2, sunSign, risingSign, from, to) {
   const out = [];
   for (const w of windows2) {
@@ -33432,8 +34095,8 @@ function ingressEvents(windows2, sunSign, risingSign, from, to) {
       at: w.from,
       kind: "ingress",
       body: w.planet,
-      line: `${w.planet} enters ${cap6(w.sign)} on ${monthDay(w.from)}, ${tone}.${yours}`,
-      receipt: `${w.planet} \u2192 ${cap6(w.sign)} \xB7 ${monthDay(w.from)}`
+      line: `${w.planet} enters ${cap7(w.sign)} on ${monthDay(w.from)}, ${tone}.${yours}`,
+      receipt: `${w.planet} \u2192 ${cap7(w.sign)} \xB7 ${monthDay(w.from)}`
     });
   }
   return out;
@@ -33467,7 +34130,7 @@ function assembleYearAhead(parts) {
 }
 
 // src/ai-tools/features/personal-transits.ts
-var DAY12 = 864e5;
+var DAY13 = 864e5;
 var HOUR4 = 36e5;
 var ZONE_PATTERN7 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE2 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
@@ -33595,7 +34258,7 @@ function numberTransitPasses(contacts) {
   }
   const numbered = /* @__PURE__ */ new Map();
   for (const list3 of groups.values()) {
-    const gap = (LOOP_GAP_DAYS[list3[0].transitBody] ?? 0) * DAY12;
+    const gap = (LOOP_GAP_DAYS[list3[0].transitBody] ?? 0) * DAY13;
     const sorted = [...list3].sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
     let cluster = [];
     const flush = () => {
@@ -33630,7 +34293,7 @@ function scanTransitLoops(natal, from, to, loopFrom, loopTo, planets, points) {
 }
 var BEFORE_BIRTH = "The window starts before the birth date; give a from date on or after the birth date.";
 var YEAR_BEFORE_BIRTH = "year-ahead starts today, which is before the birth date.";
-var cap7 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var cap8 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 function natalSunSign(args, timeKnown, sunLon, longitude2, clock2) {
   const sign3 = SIGNS2[signIndexForLongitude2(sunLon)].slug;
   if (timeKnown) return sign3;
@@ -33677,21 +34340,21 @@ async function getPersonalTransits(args, now, clock2, origin) {
   const mode = args.mode ?? "window";
   if (mode === "window") {
     const fromDate = args.from ?? today2;
-    const toDate2 = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + (TRANSITS_DEFAULT_DAYS - 1) * DAY12).toISOString().slice(0, 10);
+    const toDate2 = args.to ?? new Date(Date.parse(`${fromDate}T00:00:00Z`) + (TRANSITS_DEFAULT_DAYS - 1) * DAY13).toISOString().slice(0, 10);
     if (!parseCivilDate(fromDate) || !parseCivilDate(toDate2)) throw new RangeError("from and to must be real dates, such as 2026-11-01.");
-    const days = Math.round((Date.parse(`${toDate2}T00:00:00Z`) - Date.parse(`${fromDate}T00:00:00Z`)) / DAY12);
+    const days = Math.round((Date.parse(`${toDate2}T00:00:00Z`) - Date.parse(`${fromDate}T00:00:00Z`)) / DAY13);
     if (days < 0) throw new RangeError("to must be on or after from.");
     if (days > TRANSITS_MAX_DAYS) throw new RangeError(`The window is at most ${TRANSITS_MAX_DAYS} days; to is ${days} days after from.`);
     if (fromDate < args.birthDate) throw new RangeError(BEFORE_BIRTH);
     const fromUtc2 = await startOfDay(fromDate, shownZone, clock2);
-    const nextDay = new Date(Date.parse(`${toDate2}T00:00:00Z`) + DAY12).toISOString().slice(0, 10);
+    const nextDay = new Date(Date.parse(`${toDate2}T00:00:00Z`) + DAY13).toISOString().slice(0, 10);
     const toUtc2 = await startOfDay(nextDay, shownZone, clock2);
     const planets = days <= TRANSITS_PERSONAL_DAYS ? [...DEFAULT_TRANSIT_BODIES] : [...SLOW_TRANSIT_BODIES];
     if (days > TRANSITS_PERSONAL_DAYS) limits2.push(`Windows longer than ${TRANSITS_PERSONAL_DAYS} days list only Jupiter, Saturn, Uranus, Neptune and Pluto; ask for a shorter window for the Sun, Mercury, Venus and Mars.`);
     const natal2 = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles };
     const pad2 = transitLoopPadDays(planets);
-    const expandedFrom = new Date(Math.max(SPAN_START, fromUtc2.getTime() - pad2 * DAY12));
-    const expandedTo = new Date(Math.min(SPAN_END, toUtc2.getTime() + pad2 * DAY12));
+    const expandedFrom = new Date(Math.max(SPAN_START, fromUtc2.getTime() - pad2 * DAY13));
+    const expandedTo = new Date(Math.min(SPAN_END, toUtc2.getTime() + pad2 * DAY13));
     const fromIso = fromUtc2.toISOString();
     const toIso = toUtc2.toISOString();
     const found = numberTransitPasses(scanTransitLoops(natal2, fromUtc2, toUtc2, expandedFrom, expandedTo, planets, points)).filter((contact) => contact.exactUtc >= fromIso && contact.exactUtc <= toIso).sort((a, b) => a.exactUtc.localeCompare(b.exactUtc));
@@ -33725,13 +34388,13 @@ async function getPersonalTransits(args, now, clock2, origin) {
   }
   if (today2 < args.birthDate) throw new RangeError(YEAR_BEFORE_BIRTH);
   const fromUtc = await startOfDay(today2, shownZone, clock2);
-  const toUtc = new Date(fromUtc.getTime() + 365 * DAY12);
+  const toUtc = new Date(fromUtc.getTime() + 365 * DAY13);
   const scan = yearScan({ sunLon: lon("Sun"), moonLon: timeKnown ? lon("Moon") : null, ascLon: angles ? angles.asc : null, birthUtc }, fromUtc, toUtc);
   const sunSign = SIGNS2[signIndexForLongitude2(lon("Sun"))].slug;
   const risingSign = angles ? SIGNS2[signIndexForLongitude2(angles.asc)].slug : null;
   const natalBodies = chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body) && (timeKnown || row.body !== "Moon")).map(({ body: body2, lon: at }) => ({ body: body2, lon: at }));
   const ingressWindows = ingresses_default.windows;
-  const ingresses2 = ingressEvents(ingressWindows, sunSign, risingSign, fromUtc, toUtc);
+  const ingresses3 = ingressEvents(ingressWindows, sunSign, risingSign, fromUtc, toUtc);
   const ingressSign = new Map(ingressWindows.map((window) => [`${window.planet}|${window.from}`, window.sign]));
   const natal = { bodies: chart.bodies.filter((row) => TRANSIT_BODY_ORDER.includes(row.body)).map(({ body: body2, lon: at }) => ({ body: body2, lon: at })), angles: null };
   const outerPoints = ["Sun", ...timeKnown ? ["Moon"] : [], ...YEAR_AHEAD_PERSONAL_POINTS];
@@ -33759,7 +34422,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
     aspectEvents(scan),
     personalEvents,
     saturnSeasonEvents(scan.saturnSeasons, fromUtc, toUtc),
-    ingresses2,
+    ingresses3,
     eclipseEvents(eclipses_default.eclipses, natalBodies, fromUtc, toUtc)
   ]);
   const highlights = events.map((event2) => {
@@ -33774,7 +34437,7 @@ async function getPersonalTransits(args, now, clock2, origin) {
       line: `${guard(event2.line)} ${label}.`,
       confidence: readingConfidence(detail, event2.kind === "aspect"),
       confidenceLabel: label,
-      house: number2 ? { number: number2, line: guard(`In your chart, ${cap7(sign3)} is your ${ORDINAL6[number2]} house: ${NATAL_HOUSE_THEME[number2]}.`) } : null
+      house: number2 ? { number: number2, line: guard(`In your chart, ${cap8(sign3)} is your ${ORDINAL6[number2]} house: ${NATAL_HOUSE_THEME[number2]}.`) } : null
     };
   });
   const toDate = dateIn(new Date(toUtc.getTime() - 1), shownZone);
@@ -36095,7 +36758,7 @@ var term = (slug) => {
   return found;
 };
 var signRange = (sign3) => `${sign3.start[1]} ${MONTHS3[sign3.start[0] - 1]} to ${sign3.end[1]} ${MONTHS3[sign3.end[0] - 1]}`;
-var cap8 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var cap9 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 var TOPICS = [
   ...SIGNS2.map((sign3) => ({
     key: sign3.slug,
@@ -36131,7 +36794,7 @@ var TOPICS = [
   },
   ...HOUSE_SLUGS.map((slug, index) => ({
     key: `${slug}-house`,
-    title: `The ${cap8(slug)} house`,
+    title: `The ${cap9(slug)} house`,
     aliases: [`${index + 1} house`, `${index + 1}th house`, `house ${index + 1}`, `${["1st", "2nd", "3rd"][index] ?? `${index + 1}th`} house`],
     glossary: [`${slug}-house`],
     extra: () => [`In a birth chart, the ${slug} house covers ${NATAL_HOUSE_THEME[index + 1]}.`],
@@ -36139,7 +36802,7 @@ var TOPICS = [
     related: ["houses"]
   })),
   { key: "aspects", title: "Aspects", aliases: ["aspect", "major aspects", "orb", "orbs"], glossary: ["aspect", "major-aspect", "orb", "exact-aspect", "applying", "separating"], pages: [{ title: "Aspects", path: "/learn/aspects/" }], related: ASPECTS3 },
-  ...ASPECTS3.map((aspect2) => ({ key: aspect2, title: cap8(aspect2), aliases: [`${aspect2} aspect`, `${aspect2}s`], glossary: [aspect2], pages: [{ title: cap8(aspect2), path: `/learn/aspects/${aspect2}/` }], related: ["aspects"] })),
+  ...ASPECTS3.map((aspect2) => ({ key: aspect2, title: cap9(aspect2), aliases: [`${aspect2} aspect`, `${aspect2}s`], glossary: [aspect2], pages: [{ title: cap9(aspect2), path: `/learn/aspects/${aspect2}/` }], related: ["aspects"] })),
   { key: "retrogrades", title: "Retrogrades", aliases: ["retrograde", "retrograde planets", "planet retrograde", "station", "stationing", "direct motion", "rx"], glossary: ["retrograde", "station", "direct", "retrograde-loop"], pages: [{ title: "Retrogrades", path: "/retrogrades/" }, { title: "Mercury retrograde", path: "/mercury-retrograde/" }], related: ["mercury-retrograde", "transits"] },
   {
     key: "mercury-retrograde",
@@ -36192,7 +36855,7 @@ var TOPICS = [
     title: "The elements",
     aliases: ["element", "fire signs", "earth signs", "air signs", "water signs", "fire sign", "earth sign", "air sign", "water sign", "fire", "earth", "air", "water"],
     glossary: ["element", "fire", "earth", "air", "water"],
-    extra: () => ["fire", "earth", "air", "water"].map((element) => `${cap8(element)} signs: ${SIGNS2.filter((sign3) => sign3.element === element).map((sign3) => sign3.name).join(", ")}.`),
+    extra: () => ["fire", "earth", "air", "water"].map((element) => `${cap9(element)} signs: ${SIGNS2.filter((sign3) => sign3.element === element).map((sign3) => sign3.name).join(", ")}.`),
     pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }],
     related: ["modalities", "polarity"]
   },
@@ -36201,7 +36864,7 @@ var TOPICS = [
     title: "The modalities",
     aliases: ["modality", "modes", "qualities", "cardinal", "fixed", "mutable", "cardinal signs", "fixed signs", "mutable signs"],
     glossary: ["modality", "cardinal", "fixed", "mutable"],
-    extra: () => ["cardinal", "fixed", "mutable"].map((modality) => `${cap8(modality)} signs: ${SIGNS2.filter((sign3) => sign3.modality === modality).map((sign3) => sign3.name).join(", ")}.`),
+    extra: () => ["cardinal", "fixed", "mutable"].map((modality) => `${cap9(modality)} signs: ${SIGNS2.filter((sign3) => sign3.modality === modality).map((sign3) => sign3.name).join(", ")}.`),
     pages: [{ title: "Zodiac dates", path: "/learn/zodiac-dates/" }],
     related: ["elements", "polarity"]
   },
@@ -36482,7 +37145,7 @@ function placementParts({ planet: planet2, sign: sign3, house }) {
   }
   const slug = HOUSE_SLUGS[house - 1];
   return {
-    title: `${planet2} in the ${cap8(slug)} house`,
+    title: `${planet2} in the ${cap9(slug)} house`,
     paragraphs: [planetInHouseLine(planet2, house)],
     pages: [{ title: `The ${slug} house`, path: `/learn/houses/${slug}-house/` }],
     related: [`${slug}-house`, "houses", "birth-chart"]
@@ -36503,7 +37166,7 @@ function chironParts(query) {
   if (!word) return null;
   const house = HOUSE_SLUGS.includes(word) ? HOUSE_SLUGS.indexOf(word) + 1 : Number.parseInt(word, 10);
   const name = HOUSE_SLUGS[house - 1];
-  return { title: `Chiron in the ${cap8(name)} house`, paragraphs: [chironHouseLine(house, "Chiron")], pages: [{ title: `The ${name} house`, path: `/learn/houses/${name}-house/` }], related: [`${name}-house`, "houses", "birth-chart"] };
+  return { title: `Chiron in the ${cap9(name)} house`, paragraphs: [chironHouseLine(house, "Chiron")], pages: [{ title: `The ${name} house`, path: `/learn/houses/${name}-house/` }], related: [`${name}-house`, "houses", "birth-chart"] };
 }
 var FRIENDSHIP = /\b(?:friend\w*|platonic)\b/u;
 function matchSignPair(query) {
@@ -40556,7 +41219,7 @@ function siteVoidOfCourseWindows(from, to) {
 }
 
 // src/ai-tools/features/sky-events.ts
-var DAY13 = 864e5;
+var DAY14 = 864e5;
 var ZONE_PATTERN8 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE4 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var SKY_EVENT_KINDS = ["solar-eclipse", "lunar-eclipse", "station", "ingress", "new-moon", "full-moon", "void-of-course"];
@@ -40626,11 +41289,11 @@ var skyEventsData = z12.object({
   message: z12.string().nullable(),
   note: z12.literal(SKY_EVENTS_NOTE)
 });
-var cap9 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var cap10 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 var signName5 = (slug) => SIGNS2.find((sign3) => sign3.slug === slug).name;
 var isRealDate = (date3) => !Number.isNaN(Date.parse(`${date3}T00:00:00Z`)) && (/* @__PURE__ */ new Date(`${date3}T00:00:00Z`)).toISOString().slice(0, 10) === date3;
-var addDays2 = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY13).toISOString().slice(0, 10);
-var daysBetween = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY13);
+var addDays2 = (date3, days) => new Date(Date.parse(`${date3}T00:00:00Z`) + days * DAY14).toISOString().slice(0, 10);
+var daysBetween = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY14);
 var yearsLater = (date3, years) => {
   const [year, month, day2] = date3.split("-").map(Number);
   return new Date(Date.UTC(year + years, month - 1, day2)).toISOString().slice(0, 10);
@@ -40658,7 +41321,7 @@ function published(origin, id) {
 function retrogradeWindowOf(planet2, at, direction) {
   return RETROGRADES.find((window) => {
     const edge = direction === "retrograde" ? window.from : window.to;
-    return window.planet === planet2 && edge !== null && !(direction === "retrograde" && edge === SKY_FROM) && Math.abs(Date.parse(edge) - at.getTime()) <= 2 * DAY13;
+    return window.planet === planet2 && edge !== null && !(direction === "retrograde" && edge === SKY_FROM) && Math.abs(Date.parse(edge) - at.getTime()) <= 2 * DAY14;
   });
 }
 function pageFor(origin, event2) {
@@ -40680,7 +41343,7 @@ function pageFor(origin, event2) {
       return own ?? `${origin}/retrogrades/#retrograde-${event2.planet.toLowerCase()}-${isoDay(window.from)}`;
     }
     case "ingress":
-      return published(origin, ingressId(event2.planet, event2.sign, event2.at.toISOString())) ?? (event2.planet === "Sun" ? `${origin}/learn/zodiac-dates/` : null);
+      return published(origin, ingressId(event2.planet, event2.sign, event2.idAt ?? event2.at.toISOString())) ?? (event2.planet === "Sun" ? `${origin}/learn/zodiac-dates/` : null);
     case "void-of-course":
       return `${origin}/void-of-course-moon/`;
   }
@@ -40697,9 +41360,9 @@ var ASPECT_VERB2 = { conjunction: "conjunct", sextile: "sextile", square: "squar
 function titleOf(event2) {
   switch (event2.kind) {
     case "solar-eclipse":
-      return `${cap9(event2.type)} solar eclipse in ${signName5(event2.sign)}`;
+      return `${cap10(event2.type)} solar eclipse in ${signName5(event2.sign)}`;
     case "lunar-eclipse":
-      return `${cap9(event2.type)} lunar eclipse in ${signName5(event2.sign)}`;
+      return `${cap10(event2.type)} lunar eclipse in ${signName5(event2.sign)}`;
     case "station":
       return `${event2.planet} turns ${event2.type} in ${signName5(event2.sign)}`;
     case "ingress": {
@@ -40721,7 +41384,7 @@ function lineOf(event2, at, until, eclipseOn) {
     case "lunar-eclipse": {
       const body2 = event2.kind === "solar-eclipse" ? "solar" : "lunar";
       const minutes = event2.extra?.totalMinutes;
-      return `${cap9(event2.type)} ${body2} eclipse at ${where}: ${ECLIPSE_LINE[`${body2}:${event2.type}`]}${minutes ? `, with totality lasting about ${minutes} minutes` : ""}.`;
+      return `${cap10(event2.type)} ${body2} eclipse at ${where}: ${ECLIPSE_LINE[`${body2}:${event2.type}`]}${minutes ? `, with totality lasting about ${minutes} minutes` : ""}.`;
     }
     case "station":
       return event2.type === "retrograde" ? `${event2.planet} stands still at ${where} and turns retrograde: from here it appears to move backward through the zodiac.` : `${event2.planet} stands still at ${where} and turns direct: from here it moves forward through the zodiac again.`;
@@ -40746,21 +41409,24 @@ function ingressHorizon(planet2) {
   if (!horizon) throw new Error(`The ingress table has no horizon for ${planet2}.`);
   return { from: horizon.from, to: horizon.to };
 }
+function nasaAt(planet2, sign3, committed) {
+  return new Date(nasaIngressNear(planet2, sign3, committed) ?? committed);
+}
 function ingressesOf(planet2, rows3) {
   const own = INGRESS_WINDOWS.filter((window) => window.planet === planet2).sort((a, b) => a.from.localeCompare(b.from));
   const out = own.map((window, index) => {
     const previous = own[index - 1]?.sign;
     const retrograde = previous !== void 0 ? SIGNS2.findIndex((sign3) => sign3.slug === window.sign) === (SIGNS2.findIndex((sign3) => sign3.slug === previous) + 11) % 12 : signAfter(rows3, planet2, new Date(window.from)).retrograde;
-    return { kind: "ingress", at: new Date(window.from), planet: planet2, sign: window.sign, extra: { retrograde } };
+    return { kind: "ingress", at: nasaAt(planet2, window.sign, window.from), idAt: window.from, planet: planet2, sign: window.sign, extra: { retrograde } };
   });
   const last2 = own.at(-1);
   if (last2) {
     const entered = signAfter(rows3, planet2, new Date(last2.to));
-    out.push({ kind: "ingress", at: new Date(last2.to), planet: planet2, sign: entered.sign, extra: { retrograde: entered.retrograde } });
+    out.push({ kind: "ingress", at: nasaAt(planet2, entered.sign, last2.to), idAt: last2.to, planet: planet2, sign: entered.sign, extra: { retrograde: entered.retrograde } });
   }
   return out;
 }
-var listWords2 = (items) => items.length <= 2 ? items.join(" and ") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+var listWords3 = (items) => items.length <= 2 ? items.join(" and ") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
 async function searchSkyEvents(args, clock2, options) {
   const { zone: zone9, zoneSource, origin } = options;
   const planets = args.planets ? SKY_EVENT_PLANETS.filter((planet2) => args.planets.includes(planet2)) : null;
@@ -40806,8 +41472,8 @@ async function searchSkyEvents(args, clock2, options) {
       if (from < horizon.from || to >= horizon.to) outside.push(planet2 === "Sun" ? "the Sun" : planet2);
     }
     if (outside.length) {
-      const spans = ingresses_default.horizons.filter((horizon) => horizon.planets.some((planet2) => outside.includes(planet2 === "Sun" ? "the Sun" : planet2))).map((horizon) => `${listWords2(horizon.planets.map((planet2) => planet2 === "Sun" ? "the Sun" : planet2))} from ${longDay(horizon.from)} to ${longDay(addDays2(horizon.to, -1))}`);
-      notes.push(`Sign changes come from the ingress table, which covers ${listWords2(spans)}; outside those dates none are listed.`);
+      const spans = ingresses_default.horizons.filter((horizon) => horizon.planets.some((planet2) => outside.includes(planet2 === "Sun" ? "the Sun" : planet2))).map((horizon) => `${listWords3(horizon.planets.map((planet2) => planet2 === "Sun" ? "the Sun" : planet2))} from ${longDay(horizon.from)} to ${longDay(addDays2(horizon.to, -1))}`);
+      notes.push(`Sign changes come from the ingress table, which covers ${listWords3(spans)}; outside those dates none are listed.`);
     }
   }
   const budget = new SampleBudget("events.samples");
@@ -40838,7 +41504,7 @@ async function searchSkyEvents(args, clock2, options) {
     }
   }
   if (voids) {
-    const periods = siteVoidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY13));
+    const periods = siteVoidOfCourseWindows(start, new Date(end.getTime() + 3 * DAY14));
     for (const period of periods) {
       if (period.from.getTime() >= end.getTime() || period.to.getTime() <= start.getTime()) continue;
       raw.push({ kind: "void-of-course", at: period.from, until: period.to, sign: period.sign, nextSign: period.nextSign, extra: { lastAspect: period.lastAspect ? { body: period.lastAspect.body, aspect: period.lastAspect.aspect } : null } });
@@ -40921,7 +41587,7 @@ var SCORE_CENTER_TIMED = -0.07;
 var YEAR_SCORE_SCALE_TIMED = 0.55;
 var MONTH_SCORE_SCALE_TIMED = 0.85;
 var YEAR_DAYS = 365;
-var DAY14 = 864e5;
+var DAY15 = 864e5;
 var norm = (lon) => (lon % 360 + 360) % 360;
 var separation2 = (a, b) => {
   const d = Math.abs(norm(a) - norm(b));
@@ -40976,7 +41642,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
   let pressure = 0;
   let active = 0;
   for (let index = 0; index < YEAR_DAYS; index++) {
-    const ms = first2 + index * DAY14;
+    const ms = first2 + index * DAY15;
     const month = isoDay2(ms).slice(0, 7);
     let acc = monthAcc.get(month);
     if (!acc) {
@@ -40985,7 +41651,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
       monthOrder.push(month);
     }
     acc.days++;
-    const samples = contactsOn(natal, longitudeAt2, new Date(ms + DAY14 / 2));
+    const samples = contactsOn(natal, longitudeAt2, new Date(ms + DAY15 / 2));
     if (samples.length) active++;
     for (const sample2 of samples) {
       const k = key(sample2);
@@ -41045,7 +41711,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
   return {
     version: YEAR_SCORE_VERSION,
     from: isoDay2(first2),
-    to: isoDay2(first2 + (YEAR_DAYS - 1) * DAY14),
+    to: isoDay2(first2 + (YEAR_DAYS - 1) * DAY15),
     score: curve(s - p, yearScale, center),
     support: round(s, 4),
     pressure: round(p, 4),
@@ -41785,7 +42451,7 @@ function figureYearScoreShareUrl(origin, slug) {
 }
 
 // src/ai-tools/features/year-score.ts
-var DAY15 = 864e5;
+var DAY16 = 864e5;
 var ZONE_PATTERN9 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE5 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var YEAR_SCORE_START_MIN = "2000-01-01";
@@ -41900,7 +42566,7 @@ function scoreFrom(natal, start) {
 function exactPasses(natal, year) {
   const bodies = Object.entries(natal).filter((entry) => entry[1] !== null).map(([body2, lon]) => ({ body: body2, lon }));
   const from = /* @__PURE__ */ new Date(`${year.from}T00:00:00Z`);
-  const to = new Date(Date.parse(`${year.to}T00:00:00Z`) + DAY15);
+  const to = new Date(Date.parse(`${year.to}T00:00:00Z`) + DAY16);
   return year.drivers.map((driver) => scanTransitContacts({ bodies, angles: null }, from, to, { transitBodies: [driver.planet], natalPoints: [driver.point], aspects: [driver.aspect] }).map((contact) => contact.exactUtc.slice(0, 10)));
 }
 function today(now) {
@@ -42115,7 +42781,7 @@ var MOON_TONE = {
   aquarius: "independent and friendly; you want room and like-minded people",
   pisces: "sensitive and imaginative; rest and creative time refill the tank"
 };
-var cap10 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
+var cap11 = (text2) => text2.charAt(0).toUpperCase() + text2.slice(1);
 function solarReturnThemes(chart) {
   const themes = [];
   const at = (body2) => chart.bodies.find((row) => row.body === body2)?.lon;
@@ -42136,7 +42802,7 @@ function solarReturnThemes(chart) {
   const jupiter = at("Jupiter");
   if (jupiter !== void 0) {
     const sign3 = signForLongitude2(jupiter);
-    themes.push({ kind: "jupiter", title: `Jupiter in ${sign3.name}`, line: `${cap10("growth this year favors")} ${JUPITER_FOCUS[sign3.slug]}.`, basis: `Jupiter in ${sign3.name}` });
+    themes.push({ kind: "jupiter", title: `Jupiter in ${sign3.name}`, line: `${cap11("growth this year favors")} ${JUPITER_FOCUS[sign3.slug]}.`, basis: `Jupiter in ${sign3.name}` });
   }
   const saturn = at("Saturn");
   if (saturn !== void 0) {
@@ -42168,7 +42834,7 @@ function solarReturnShareUrl(origin, source2) {
 }
 
 // src/ai-tools/features/solar-return.ts
-var DAY16 = 864e5;
+var DAY17 = 864e5;
 var ZONE_PATTERN10 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE6 = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var BODIES4 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
@@ -42231,7 +42897,7 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
   const natalSun = computeChart2({ utc: birthUtc, houseSystem: "whole", timeKnown }).bodies.find((row) => row.body === "Sun").lon;
   const which = args.which ?? "next";
   const latest = mostRecentSolarReturnInstant2(natalSun, now);
-  const instant2 = which === "current" ? latest : solarReturnInstant2(natalSun, new Date(latest.getTime() + 365.25 * DAY16));
+  const instant2 = which === "current" ? latest : solarReturnInstant2(natalSun, new Date(latest.getTime() + 365.25 * DAY17));
   const location = timeKnown && placed ? { latitude, longitude: longitude2 } : null;
   const chart = computeChart2({ utc: instant2, ...location ?? {}, houseSystem: "whole", timeKnown: true });
   const cusps = location && chart.houses ? chart.houses.cusps : null;
@@ -43635,7 +44301,7 @@ function createLocalTimeModule() {
       if (date3.year < 0 || date3.year > 9999) return null;
       return `${String(date3.year).padStart(4, "0")}-${String(date3.month).padStart(2, "0")}-${String(date3.day).padStart(2, "0")}`;
     }
-    var ROWS = `AT|Austria|Austria|1584-01-17|t|Grotefend 1898: 1583-10-16, with Bavaria. Salzburg 1583-10-16; Styria 1583-12-25.
+    var ROWS2 = `AT|Austria|Austria|1584-01-17|t|Grotefend 1898: 1583-10-16, with Bavaria. Salzburg 1583-10-16; Styria 1583-12-25.
 BE|Belgium|Brabant, Flanders, Hainaut|1583-01-01|t|Grotefend 1891, 1898: 1582-12-25. Bishopric of Li\xE8ge 1583-02-21.
 CH|Switzerland|Z\xFCrich, Bern, Basel, Schaffhausen|1701-01-12|t18|Also Geneva and Thurgau. Catholic cantons 1584-01-22 (Grotefend 1891: 1584-01-23); Unterwalden June 1584; Glarus, Appenzell, St. Gallen city 1724; Valais 1655 (Grotefend 1898: 1622); Graub\xFCnden 1760-1812 (Grotefend 1898: to 1811); bishopric of Basel 1583-10-31.
 CZ|Czech Republic|Bohemia|1584-01-17|t18|Silesia 1584-01-23. Moravia is not dated.
@@ -43655,7 +44321,7 @@ RU|Russia|Soviet Russia|1918-02-14|t|Grotefend 1891, 1898: still Julian. Duchy o
 SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates are one day ahead of the Julian (Grotefend 1898).`;
     var SOURCE_KEYS = { t: "tzdb", 1: "grotefend-1891", 8: "grotefend-1898" };
     var GREGORIAN_ADOPTION2 = /* @__PURE__ */ Object.freeze(
-      /* @__PURE__ */ ROWS.split("\n").map((line) => {
+      /* @__PURE__ */ ROWS2.split("\n").map((line) => {
         const [code, country, region, firstGregorian, sources, note] = line.split("|");
         const day2 = julianDayNumber2(parseCalendarDate2(firstGregorian, "gregorian"), "gregorian");
         return Object.freeze({
@@ -43835,7 +44501,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       const sign3 = match[1] === "-" ? -1 : 1;
       return sign3 * (Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0) + Number(match[4] ?? 0) / 60);
     }
-    var DAY21 = 864e5;
+    var DAY22 = 864e5;
     var PROBE = 36 * 36e5;
     var MAX_DEPARTURE_SECONDS = 180 * 60;
     var FIXED_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
@@ -43860,12 +44526,12 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
           readings.push({ utcMs: utcMs2, offset });
         }
       }
-      const [first2, second] = readings.sort((a, b) => a.utcMs - b.utcMs);
+      const [first2, second2] = readings.sort((a, b) => a.utcMs - b.utcMs);
       if (first2) {
-        return second ? { chosen: first2, kind: "fold", at: firstChange(clockAt, first2.utcMs, second.utcMs) } : { chosen: first2, kind: null, at: null };
+        return second2 ? { chosen: first2, kind: "fold", at: firstChange(clockAt, first2.utcMs, second2.utcMs) } : { chosen: first2, kind: null, at: null };
       }
-      let lo = wallMs - PROBE - DAY21;
-      let hi = wallMs + PROBE + DAY21;
+      let lo = wallMs - PROBE - DAY22;
+      let hi = wallMs + PROBE + DAY22;
       while (hi - lo > 1) {
         const mid = Math.floor((lo + hi) / 2);
         if (mid + clockAt(mid) * 1e3 > wallMs) hi = mid;
@@ -43933,7 +44599,7 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
       wall.setUTCFullYear(civil.year, civil.month - 1, civil.day);
       const wallMs = wall.setUTCHours(Number(hhmm[1]), Number(hhmm[2]));
       const loaded = FIXED_ZONE.test(timeZone) ? null : loadedHistory(timeZone);
-      if (loaded === void 0 && wallMs < DAY21) throw new ZoneHistoryNotLoadedError();
+      if (loaded === void 0 && wallMs < DAY22) throw new ZoneHistoryNotLoadedError();
       const history = loaded ?? null;
       const zoneAt2 = zoneClock(timeZone, history);
       const place2 = longitude2 !== void 0 && history ? birthplaceClock(history, wallMs, longitude2, zoneAt2) : null;
@@ -44103,8 +44769,8 @@ function savedOccasionPath(args, data) {
 }
 
 // src/lib/occasions/milestones.ts
-var DAY17 = 864e5;
-var YEAR2 = 365.25 * DAY17;
+var DAY18 = 864e5;
+var YEAR2 = 365.25 * DAY18;
 var SYNODIC_MONTH = 29.530588;
 var MERCURY_STEP_DAYS = 4;
 function ageAt(birth, at) {
@@ -44132,7 +44798,7 @@ function fullMoonsBetween(from, to) {
   if (!(to.getTime() > from.getTime())) return 0;
   const start = moonPhase(from).angle;
   const end = moonPhase(to).angle;
-  const days = (to.getTime() - from.getTime()) / DAY17;
+  const days = (to.getTime() - from.getTime()) / DAY18;
   const remainder = ((end - start) % 360 + 360) % 360;
   const turns = Math.round((days * 360 / SYNODIC_MONTH - remainder) / 360);
   const gained = turns * 360 + remainder;
@@ -44142,7 +44808,7 @@ function fullMoonsBetween(from, to) {
 function mercuryRetrogradesBetween(from, to) {
   let count = 0;
   let previous = longitudeSpeed2("Mercury", from);
-  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY17; ; t += MERCURY_STEP_DAYS * DAY17) {
+  for (let t = from.getTime() + MERCURY_STEP_DAYS * DAY18; ; t += MERCURY_STEP_DAYS * DAY18) {
     const at = Math.min(t, to.getTime());
     const speed = longitudeSpeed2("Mercury", new Date(at));
     if (previous >= 0 && speed < 0) count += 1;
@@ -44200,7 +44866,7 @@ var MILESTONE_WORDS = {
 };
 
 // src/lib/occasions/milestone-card.ts
-var DAY18 = 864e5;
+var DAY19 = 864e5;
 async function milestoneCard(input, asOf, clock2) {
   if (!validOccasionDate(input.birthDate)) throw new RangeError("The birth date must be a real date from 1800 to 2199.");
   if (input.time !== null && !/^([01]\d|2[0-3]):[0-5]\d$/u.test(input.time)) throw new RangeError("The time must be HH:MM.");
@@ -44212,7 +44878,7 @@ async function milestoneCard(input, asOf, clock2) {
     birth = (input.birthplace ? resolveLocalToUtc(input.birthDate, input.time, input.timeZone, { longitude: input.birthplace.lon }) : resolveLocalToUtc(input.birthDate, input.time, input.timeZone)).utc;
   } else {
     const [year, month, day2] = input.birthDate.split("-").map(Number);
-    birth = new Date(Date.UTC(year, month - 1, day2) + DAY18 / 2);
+    birth = new Date(Date.UTC(year, month - 1, day2) + DAY19 / 2);
   }
   if (birth.getTime() > asOf.getTime()) throw new RangeError("The birth date is in the future.");
   return { ...lifeMilestones2(birth, asOf), timeKnown: input.time !== null };
@@ -44222,7 +44888,7 @@ async function milestoneCard(input, asOf, clock2) {
 var WEEK_DAYS = 7;
 var WEEK_ORB = 3;
 var WEEK_LIMIT = 5;
-var DAY19 = 864e5;
+var DAY20 = 864e5;
 var SAMPLE_MS = 6 * 36e5;
 var UNTIMED_LEFT_OUT = ["Moon", "ASC", "MC"];
 function remember(ephemeris) {
@@ -44253,7 +44919,7 @@ function scanYourWeek(request, ephemeris, limit = WEEK_LIMIT) {
   const fromMs = Date.parse(request.fromUtc);
   if (!Number.isFinite(fromMs)) throw new RangeError("The week needs a valid start.");
   if (typeof request.timeKnown !== "boolean") throw new RangeError("Confirm whether the birth time is known.");
-  const toMs = fromMs + WEEK_DAYS * DAY19;
+  const toMs = fromMs + WEEK_DAYS * DAY20;
   const from = new Date(fromMs), to = new Date(toMs);
   const natal = request.timeKnown ? request.natal : { bodies: request.natal.bodies, angles: null };
   const points = natalTransitPoints(natal).filter((point2) => request.timeKnown || !UNTIMED_LEFT_OUT.includes(point2.name));
@@ -44422,8 +45088,8 @@ function offeredTools(dependencies) {
   const released = AI_TOOL_NAMES.filter((tool) => tool !== "get_horoscope" || !!dependencies.horoscopeWindow);
   if (!dependencies.occasions) return released;
   if (!dependencies.coverage) return [...released, ...OCCASION_TOOL_NAMES];
-  const coverage = COVERAGE_TOOL_NAMES.filter((tool) => tool !== "get_horoscope_period" || !!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram);
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...skyEventsOn2(dependencies) ? SKY_EVENTS_TOOL_NAMES : [], ...yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : [], ...solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : [], ...numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []];
+  const coverage2 = COVERAGE_TOOL_NAMES.filter((tool) => tool !== "get_horoscope_period" || !!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram);
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage2, ...PLACE_TOOL_NAMES, ...skyEventsOn2(dependencies) ? SKY_EVENTS_TOOL_NAMES : [], ...yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : [], ...solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : [], ...numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : []];
 }
 var isCoverageTool = (tool) => COVERAGE_TOOL_NAMES.includes(tool);
 var isPlaceTool = (tool) => PLACE_TOOL_NAMES.includes(tool);
@@ -44656,8 +45322,10 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone: zone9, events: calculation.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone9) })), calculation, completeness: calculation.receipt.search.completeness };
+        const refined = refineIngressEvents(calculation.result.events, parsedRequest.from, parsedRequest.to, parsedRequest.kinds.includes("ingress") ? parsedRequest.bodies : []);
+        data = { from: calculation.result.from, to: calculation.result.to, zone: zone9, events: refined.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone9) })), calculation, completeness: calculation.receipt.search.completeness };
         links = [
+          ...ingressSourceLinks(ORIGIN, refined),
           { title: "Subscribe to these in your calendar (get_sky_calendar)", url: `${ORIGIN}/sky-calendar/` },
           // With the sky events switch, the tool for one kind of event further ahead.
           ...skyEvents2 ? [{ title: "Eclipses, stations, sign changes and Moons months or years ahead (search_sky_events)", url: `${ORIGIN}/events/` }] : [],
@@ -44677,8 +45345,9 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Zodiacs is busy. Try again in a minute.", verdict === "limited" ? 60 : 300);
         }
         const calculation = await computeSkyFact(request, { localTime: localTime2() });
-        data = { answer: calculation.result.answer, calculation, interpretation: "The verdict checks an astronomical proposition, not an astrological prediction." };
-        links = [methodLink, calendarLink];
+        const ingressCheck = request.kind === "ingress" ? checkIngressFact(ORIGIN, calculation.result) : null;
+        data = { answer: ingressCheck?.answer ?? calculation.result.answer, calculation, interpretation: "The verdict checks an astronomical proposition, not an astrological prediction." };
+        links = [...ingressCheck?.links ?? [], methodLink, calendarLink];
         break;
       }
       case "get_horoscope": {

@@ -7,7 +7,8 @@
  *
  * Every event comes from the site's own data or engine, nothing new:
  * - eclipses from src/data/eclipses.json (2026 to 2030, astronomy-engine's eclipse searches);
- * - sign changes of the Sun through Pluto from src/data/ingresses.json, within the dates it covers;
+ * - sign changes of the Sun through Pluto from src/data/ingresses.json, within the dates it covers, each of Mercury's
+ *   through Pluto's at the time NASA JPL Horizons gives for it (src/data/nasa-event-instants.json), as the pages print it;
  * - stations and new and full Moons from the compute API's event searches (the engine's crossing
  *   solver, as get_upcoming_events runs it), over windows of up to two years;
  * - void-of-course Moon periods from src/data/void-of-course.ts, the module the site's own
@@ -32,6 +33,7 @@ import { publishedEventById } from '../../lib/events/publication';
 import { SIGNS, formatLongitude, signIndexForLongitude } from '../../lib/signs';
 import { SITE_VOID_CONVENTION_IDS, siteVoidOfCourseWindows } from '../../data/void-of-course';
 import { chironEvents } from './chiron';
+import { nasaIngressNear } from './nasa-ingress';
 
 const DAY = 86_400_000;
 const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
@@ -164,7 +166,7 @@ function signAfter(rows: ReturnType<typeof positionsMemo>, planet: TablePlanet, 
   return { sign: SIGNS[signIndexForLongitude(row.lon)].slug, retrograde: row.speed < 0 };
 }
 
-interface Raw { kind: SkyEventKind; at: Date; until?: Date; planet?: SkyEventPlanet; sign: string; nextSign?: string; lon?: number; type?: SkyEvent['type']; extra?: { totalMinutes?: number; lastAspect?: { body: string; aspect: string } | null; retrograde?: boolean } }
+interface Raw { kind: SkyEventKind; at: Date; /** A sign change's instant in the ingress table, which its page's id is built from. */ idAt?: string; until?: Date; planet?: SkyEventPlanet; sign: string; nextSign?: string; lon?: number; type?: SkyEvent['type']; extra?: { totalMinutes?: number; lastAspect?: { body: string; aspect: string } | null; retrograde?: boolean } }
 
 type EclipseRow = { type: 'solar' | 'lunar'; kind: 'total' | 'annular' | 'partial' | 'penumbral'; peak: string; sign: string; lon: number; totalMinutes?: number };
 type IngressWindow = { planet: string; sign: string; from: string; to: string };
@@ -213,7 +215,7 @@ function pageFor(origin: string, event: Raw): string | null {
       return own ?? `${origin}/retrogrades/#retrograde-${event.planet!.toLowerCase()}-${isoDay(window.from)}`;
     }
     case 'ingress':
-      return published(origin, ingressId(event.planet!, event.sign, event.at.toISOString())) ?? (event.planet === 'Sun' ? `${origin}/learn/zodiac-dates/` : null);
+      return published(origin, ingressId(event.planet!, event.sign, event.idAt ?? event.at.toISOString())) ?? (event.planet === 'Sun' ? `${origin}/learn/zodiac-dates/` : null);
     case 'void-of-course':
       return `${origin}/void-of-course-moon/`;
   }
@@ -285,6 +287,15 @@ function ingressHorizon(planet: TablePlanet): { from: string; to: string } {
   return { from: horizon.from, to: horizon.to };
 }
 
+/**
+ * When a sign change happens: NASA's instant (JPL Horizons, features/nasa-ingress.ts) where the site's NASA table
+ * has the event, as the pages print it, else the ingress table's own. The Sun's are not in the NASA table: the
+ * engine places them within a minute of NASA.
+ */
+function nasaAt(planet: TablePlanet, sign: string, committed: string): Date {
+  return new Date(nasaIngressNear(planet, sign, committed) ?? committed);
+}
+
 /** Every sign change of a planet in the ingress table: each closed window's start, and the last window's end. */
 function ingressesOf(planet: TablePlanet, rows: ReturnType<typeof positionsMemo>): Raw[] {
   const own = INGRESS_WINDOWS.filter((window) => window.planet === planet).sort((a, b) => a.from.localeCompare(b.from));
@@ -294,12 +305,12 @@ function ingressesOf(planet: TablePlanet, rows: ReturnType<typeof positionsMemo>
     const retrograde = previous !== undefined
       ? SIGNS.findIndex((sign) => sign.slug === window.sign) === (SIGNS.findIndex((sign) => sign.slug === previous) + 11) % 12
       : signAfter(rows, planet, new Date(window.from)).retrograde;
-    return { kind: 'ingress', at: new Date(window.from), planet, sign: window.sign, extra: { retrograde } };
+    return { kind: 'ingress', at: nasaAt(planet, window.sign, window.from), idAt: window.from, planet, sign: window.sign, extra: { retrograde } };
   });
   const last = own.at(-1);
   if (last) {
     const entered = signAfter(rows, planet, new Date(last.to));
-    out.push({ kind: 'ingress', at: new Date(last.to), planet, sign: entered.sign, extra: { retrograde: entered.retrograde } });
+    out.push({ kind: 'ingress', at: nasaAt(planet, entered.sign, last.to), idAt: last.to, planet, sign: entered.sign, extra: { retrograde: entered.retrograde } });
   }
   return out;
 }

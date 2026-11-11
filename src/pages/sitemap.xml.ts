@@ -969,6 +969,12 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-08');
     }
   }
+  // The methodology page says over which years the slow planets' sign changes
+  // are read from NASA, and that the tools for AI assistants give the same
+  // times (ZOD-63). The day of the daily edition it was built with.
+  for (const url of urls) {
+    if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-11');
+  }
   // The event pages of 2028 to 2030 were published on 2026-11-08 (their own
   // dates come from events-publication-2028-2030.json), and the eclipse and
   // full moon calendars, in English and translated, now link them.
