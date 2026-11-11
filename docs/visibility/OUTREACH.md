@@ -68,12 +68,12 @@ contested.
 
 | # | Where | Page | Route |
 |---|---|---|---|
-| 12 | AlternativeTo | [Co-Star alternatives](https://alternativeto.net/software/co-star) | Free account; suggest zodiacs.org as an alternative (self-listing is allowed there) |
+| 12 | AlternativeTo | [Co-Star alternatives](https://alternativeto.net/software/co-star) | Free account; suggest zodiacs.org as an alternative (self-listing is allowed there). A public listing: Dias's call |
 | 13 | Product Hunt | [Co-Star alternatives](https://www.producthunt.com/products/co-star-astrology/alternatives) | A Product Hunt launch is a public post: Dias's call |
 | 14 | Product Hunt | [Astro Seek launch](https://www.producthunt.com/products/astro-seek/launches) | Reference only |
 | 15 | GummySearch | [Astrology apps reviews from Reddit](https://gummysearch.com/tools/best-products/astrology-apps/) | Built from Reddit mentions, so earned only through real Reddit use |
 | 16 | Reddit r/astrologyreadings, r/AstrologyChartShare | FAQ / wiki recommending Astro.com and Astro-Seek (seen through mirrors) | Ask moderators whether a free, no-account tool fits the resource list. Never post promotional threads |
-| 17 | astro-kb (GitHub Pages) | [Natal chart tools](https://codingwithandres.github.io/astro-kb/natal-charts/tools) | Open source knowledge base; an issue or pull request suggesting the site is acceptable there |
+| 17 | astro-kb (GitHub Pages) | [Natal chart tools](https://codingwithandres.github.io/astro-kb/natal-charts/tools) | Open source knowledge base; an issue or pull request suggesting the site is acceptable there. A public post: Dias's call |
 | 18 | Cafe Astrology | [Astrologers' resources](https://cafeastrology.com/astrologyresources.html) | Competitor; low odds |
 
 ## Tier 3: smaller 2026 roundups and reviews

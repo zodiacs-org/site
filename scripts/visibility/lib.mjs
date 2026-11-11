@@ -52,7 +52,8 @@ export function scoreAnswer(text, citations = []) {
 // Search Console phrase matching: exact (after normalising case, spacing and
 // punctuation) or close (every phrase word present, any order).
 export function normaliseQuery(q) {
-  return String(q).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  // Case, accents and punctuation folded; letters of any script kept.
+  return String(q).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
 }
 
 export function matchPhrase(query, phrase) {

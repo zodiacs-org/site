@@ -108,7 +108,7 @@ const L = {
 
 // What the site publishes per locale (from coverage.md); used for target_url and coverage.
 const PUBLISHED = {
-  en: { horoscope: ['today', 'tomorrow', 'weekly', 'monthly', 'yearly'], compat: true, signs: true, chart: true, sky: ['moon-phase', 'full-moon', 'new-moon', 'mercury-retrograde', 'retrogrades', 'eclipses', 'mars-retrograde'] },
+  en: { horoscope: ['today', 'tomorrow', 'weekly', 'monthly', 'yearly'], compat: true, signs: true, chart: true, sky: ['moon-phase', 'full-moon', 'new-moon', 'mercury-retrograde', 'retrogrades', 'eclipses'] },
   es: { horoscope: ['today'], compat: true, signs: true, chart: true, sky: ['moon-phase', 'mercury-retrograde', 'retrogrades', 'eclipses'] },
   pt: { horoscope: ['today'], compat: true, signs: true, chart: true, sky: ['moon-phase', 'mercury-retrograde', 'retrogrades', 'eclipses'] },
   fr: { horoscope: [], compat: true, signs: true, chart: true, sky: ['moon-phase', 'mercury-retrograde', 'retrogrades', 'eclipses'] },
@@ -153,9 +153,12 @@ export function rowsFor(locale) {
     const has = pub.chart && sub !== 'how-to-read';
     add('birth-chart', sub, q, has ? `${p}${route}` : route, has ? 'full' : 'partial', has ? '' : 'English page only');
   });
-  const skyUrl = { 'moon-phase': '/moon-phase/', 'full-moon': '/full-moon/2026-11-24/', 'new-moon': '/new-moon/2026-11-09/', 'mercury-retrograde': '/mercury-retrograde/', retrogrades: '/retrogrades/', eclipses: '/eclipses/', 'mars-retrograde': '/mars-retrograde/' };
+  const skyUrl = { 'moon-phase': '/moon-phase/', 'full-moon': '/full-moon/2026-11-24/', 'new-moon': '/new-moon/2026-11-09/', 'mercury-retrograde': '/mercury-retrograde/', retrogrades: '/retrogrades/', eclipses: '/eclipses/', 'mars-retrograde': '/retrogrades/' };
   c.sky.forEach(([sub, q]) => {
-    const has = pub.sky.includes(sub);
+    // There is no /mars-retrograde/ hub, only dated window pages; the
+    // retrogrades page lists every Mars window, so it answers the query.
+    const page = sub === 'mars-retrograde' ? 'retrogrades' : sub;
+    const has = pub.sky.includes(page);
     add('sky-events', sub, q, has ? `${p}${skyUrl[sub]}` : skyUrl[sub], has ? 'full' : 'partial', has ? '' : 'English page only');
   });
   SLUGS.forEach((slug, i) => c.signQ.forEach((fn) => add('signs', 'meaning', fn(c.signs[i]), pub.signs ? `${p}/${slug}/` : `/${slug}/`, pub.signs ? 'full' : 'partial', pub.signs ? '' : 'English page only')));
