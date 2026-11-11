@@ -9,9 +9,10 @@
  * orb; how much it counts depends on the planet, the natal point, the aspect
  * and how close it is to exact. Supportive contacts add, pressing contacts
  * subtract, and the year's average lands on the 0 to 10 scale through a fixed
- * curve (see YEAR_SCORE_SCALE). Every weight is written down below, chosen
- * from the tradition before any person was scored, and pinned by
- * core.test.ts so a change to them is a reviewed change.
+ * curve (see YEAR_SCORE_SCALE; a chart with a birth time has its own). Every
+ * weight is written down below, chosen from the tradition before any person
+ * was scored, and pinned by core.test.ts so a change to them is a reviewed
+ * change.
  *
  * Engine-free on purpose: the caller injects `longitude(body, date)` (the
  * browser passes engine/full.ts, the server the server ephemeris), so this
@@ -59,17 +60,27 @@ export const VALENCE: Record<SlowPlanet, Record<ScoreAspect, number>> = {
 /**
  * The curve from the year's average daily balance to the 0 to 10 score:
  * score = 5 + 5 * tanh((balance - SCORE_CENTER) / YEAR_SCORE_SCALE). Center and
- * scale come from a fixed population, never from a named person: 4,000
+ * scale come from fixed populations, never from a named person: 4,000
  * synthetic birth dates (1940 to 2008) scored for twelve start dates (2020 to
- * 2031). The center is the population's average balance, so an ordinary year
- * reads 5; the scale is twice its spread, so about 19 years in 20 land
- * between 1.2 and 8.8. scripts/calibrate-year-score.ts reproduces both
- * (mean -0.054, standard deviation 0.237 for a year and 0.365 for a month).
+ * 2031), once at noon without the Moon (as for an unknown birth time) and once
+ * at a random time of day with the Moon. A chart with the Moon has a fifth
+ * point, so its balance runs lower and wider; each population gets its own
+ * center and scale, so adding a birth time does not pull the number down. The
+ * center is the population's average balance, so an ordinary year reads 5;
+ * the scale is twice its spread, so about 19 years in 20 land between 1.2 and
+ * 8.8. scripts/calibrate-year-score.ts reproduces all six (without the Moon:
+ * mean -0.054, standard deviation 0.237 for a year and 0.365 for a month;
+ * with it: mean -0.069, standard deviation 0.275 for a year and 0.424 for a
+ * month).
  */
 export const SCORE_CENTER = -0.05;
 export const YEAR_SCORE_SCALE = 0.47;
 /** The same curve for a month, whose balance swings wider than a year's average. */
 export const MONTH_SCORE_SCALE = 0.73;
+/** The curve for a chart with a birth time, which scores the Moon too. */
+export const SCORE_CENTER_TIMED = -0.07;
+export const YEAR_SCORE_SCALE_TIMED = 0.55;
+export const MONTH_SCORE_SCALE_TIMED = 0.85;
 
 export const YEAR_DAYS = 365;
 const DAY = 86_400_000;
@@ -154,8 +165,8 @@ const isoDay = (ms: number) => new Date(ms).toISOString().slice(0, 10);
 const round = (value: number, places: number) => { const f = 10 ** places; return Math.round(value * f) / f; };
 
 /** The 0 to 10 curve, one decimal. */
-export function curve(balance: number, scale: number): number {
-  return round(Math.min(10, Math.max(0, 5 + 5 * Math.tanh((balance - SCORE_CENTER) / scale))), 1);
+export function curve(balance: number, scale: number, center: number = SCORE_CENTER): number {
+  return round(Math.min(10, Math.max(0, 5 + 5 * Math.tanh((balance - center) / scale))), 1);
 }
 
 /** Every slow-planet contact in orb on one day, with its signed value. */
@@ -196,6 +207,10 @@ export function scoreYear(natal: NatalPoints, longitudeAt: LongitudeAt, start: D
     const lon = natal[point];
     if (lon !== null && !Number.isFinite(lon)) throw new RangeError('Natal longitudes must be finite.');
   }
+  const timed = natal.Moon !== null;
+  const center = timed ? SCORE_CENTER_TIMED : SCORE_CENTER;
+  const yearScale = timed ? YEAR_SCORE_SCALE_TIMED : YEAR_SCORE_SCALE;
+  const monthScale = timed ? MONTH_SCORE_SCALE_TIMED : MONTH_SCORE_SCALE;
   const first = dayStart(start);
   const monthOrder: string[] = [];
   const monthAcc = new Map<string, { days: number; support: number; pressure: number; byContact: Map<string, number> }>();
@@ -237,7 +252,7 @@ export function scoreYear(natal: NatalPoints, longitudeAt: LongitudeAt, start: D
     }
     const s = acc.support / acc.days;
     const p = acc.pressure / acc.days;
-    return { month, days: acc.days, score: curve(s - p, MONTH_SCORE_SCALE), support: round(s, 4), pressure: round(p, 4), lead };
+    return { month, days: acc.days, score: curve(s - p, monthScale, center), support: round(s, 4), pressure: round(p, 4), lead };
   });
   const eligible = months.filter((month) => month.days >= 10);
   // Ties go to the earlier month, so the answer is stable.
@@ -265,7 +280,7 @@ export function scoreYear(natal: NatalPoints, longitudeAt: LongitudeAt, start: D
     version: YEAR_SCORE_VERSION,
     from: isoDay(first),
     to: isoDay(first + (YEAR_DAYS - 1) * DAY),
-    score: curve(s - p, YEAR_SCORE_SCALE),
+    score: curve(s - p, yearScale, center),
     support: round(s, 4),
     pressure: round(p, 4),
     activeDays: round(active / YEAR_DAYS, 3),
