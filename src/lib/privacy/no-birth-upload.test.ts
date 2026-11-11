@@ -135,11 +135,14 @@ function inRange(value: number): boolean {
   return Number.isFinite(value) && value >= 0 && value <= 360;
 }
 
-/** A number, or a number written as text such as a form field's "43.26"; anything else is null. */
+/** A number, or a finite number written as text such as a form field's "43.26" or String(1e-7)'s "1e-7"; anything else is null. */
 function asNumber(value: unknown): number | null {
   if (typeof value === 'number') return value;
-  if (typeof value === 'string' && /^-?\d+(?:\.\d+)?$/u.test(value.trim())) return Number(value);
-  return null;
+  if (typeof value !== 'string') return null;
+  const text = value.trim();
+  if (!/^-?\d+(?:\.\d+)?(?:e[-+]?\d+)?$/iu.test(text)) return null;
+  const number = Number(text);
+  return Number.isFinite(number) ? number : null;
 }
 
 /** The numbers among a list's items, and among the fields of each item that is itself an object or a list, numbers written as text included. */
@@ -315,6 +318,24 @@ describe('the search', () => {
     // Nine are not a positions list, and neither are ten strings that are not numbers.
     expect(birthDetailsIn(placements.slice(0, 9))).toEqual([]);
     expect(birthDetailsIn(bodies.map((body, index) => ({ body, lon: `${index}th` })))).toEqual([]);
+  });
+
+  it('finds positions written in scientific notation, alone or in a query payload', () => {
+    const bodies = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+    const placements = bodies.map((body, index) => ({ body, lon: String(index ? 3.1 + index * 29.7 : 1e-7) }));
+    expect(placements[0].lon).toBe('1e-7');
+    const payload = Buffer.from(JSON.stringify({ bodies: placements })).toString('base64url');
+    for (const value of [placements, { bodies: placements }, `/x/?payload=${payload}`, { href: `/x/#state=${payload}` }]) {
+      expect(birthDetailsIn(value), JSON.stringify(value).slice(0, 80)).not.toEqual([]);
+    }
+    for (const text of ['1e-7', '1E-7', '1.2e-3', '-4e+2', String(1e-7), String(1e21), ' 43.26 ']) {
+      expect(asNumber(text), text).toBe(Number(text));
+    }
+    for (const text of ['', ' ', 'e5', '1e', '1e-', '.5e1', '0x10', '0b1', 'Infinity', '-Infinity', 'NaN', '1e400', '12th', '1_000']) {
+      expect(asNumber(text), JSON.stringify(text)).toBeNull();
+    }
+    // Nine in scientific notation are still not a positions list.
+    expect(birthDetailsIn(placements.slice(0, 9))).toEqual([]);
   });
 
   it('finds an encoded name or date in a query value, whatever key comes before it', () => {
