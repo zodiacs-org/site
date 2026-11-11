@@ -16,7 +16,7 @@ const faq = [
   },
   {
     q: 'What is an ordinary score?',
-    a: 'Five. The scale is set so that a typical year lands near the middle and about nineteen years in twenty fall between 1 and 9. A score above 6.5 means more of the slow-planet weather helps than presses; below 4.5, more presses than helps.',
+    a: 'Five. The scale is set so that a typical year lands near the middle and about nineteen years in twenty fall between 1 and 9. A score above 6.5 means more of the slow-planet weather helps than presses; below 3.5, more presses than helps.',
   },
   {
     q: 'Is a low score bad news?',
@@ -24,7 +24,7 @@ const faq = [
   },
   {
     q: 'Why do I need only a birth date?',
-    a: 'The slow planets move a fraction of a degree a day, and so do your Sun, Mercury, Venus and Mars across one birth day, so a date alone places them well. Only the Moon needs a birth time and place; without them it is left out.',
+    a: 'A date alone gives a first reading. Across one birth day the Sun moves about a degree and Mercury up to two, so without a birth time the score can move; the result shows the range. A birth time and place settle it and add the Moon.',
   },
 ];
 
@@ -125,6 +125,7 @@ const jsonLd = [
   :global(.ys__outof) { font-size: var(--text-xl); color: var(--muted); margin-left: 4px; }
   :global(.ys__tier) { margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); }
   :global(.ys__summary) { margin: 0; color: var(--text-2); }
+  :global(.ys__range) { margin: 0; color: var(--text-2); font-size: var(--text-sm); }
   :global(.ys__meta) { margin: 4px 0 0; color: var(--muted); font-family: var(--font-mono); font-size: var(--text-xs); }
   :global(.ys__months) { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px; align-items: end; height: 140px; }
   :global(.ys__month) { display: grid; grid-template-rows: 1fr auto; height: 100%; align-items: end; text-align: center; }
