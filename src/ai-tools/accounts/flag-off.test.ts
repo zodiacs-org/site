@@ -32,10 +32,9 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * privacy text each gain one sentence: Zodiacs is not directed at children under 13, and its tools refuse a birth date
  * less than 13 years ago. Their compatibility limitation now says that from 13 to 17 it points to a friendship reading
  * (src/ai-tools/under-13.test.ts). The released scenario, every tools/list and every resources/list keep their bytes.
- * ZOD-58 (a draft, waiting for the owner's approval, still 0.6.6) rewrites tool descriptions and the server
+ * 0.6.7 (ZOD-58) changes the reported version in every scenario, and rewrites tool descriptions and the server
  * instructions as plain descriptions, so every scenario's initialize, tools/list and bearer answers change in those
- * texts alone (src/ai-tools/published-tools.ts). Every schema, every resources/list and the get_capabilities
- * answer keep their bytes.
+ * texts too (src/ai-tools/published-tools.ts). Every schema and every resources/list keep their bytes.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

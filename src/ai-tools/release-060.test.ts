@@ -28,7 +28,7 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * That touches four places, all in get_occasion_sky: its description, its occasion field's description and the
  * occasion enum in its input and output schemas. Every other byte of the thirteen comes back as published.
  * 0.6.6 changes only the reported version and the plugin's picture.
- * ZOD-58 (a draft, waiting for the owner's approval, with no version change) rewrites the description of ten of the
+ * 0.6.7 (ZOD-58) changes the reported version and rewrites the description of ten of the
  * thirteen as plain descriptions: what the tool does, when to use it, what it returns and its limits, with no
  * sentence that tells the assistant how to behave, offers a schedule or promotes anything. Only those ten
  * description fields change (src/ai-tools/published-tools.ts pins each in full); every name, title, schema,
@@ -162,11 +162,11 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(other.structuredContent.error.message).toBe('occasion must be one of: wedding, anniversary, met, birthday, pet, home, job, graduation, retirement, gathering.');
   });
 
-  it('reports 0.6.6 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
+  it('reports 0.6.7 in the handshake and in get_capabilities, whose tool list keeps its published names', async () => {
     const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'release-060', version: '1' } })).result;
-    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.6' });
+    expect(init.serverInfo).toEqual({ name: 'zodiacs', version: '0.6.7' });
     const capabilities = (await rpc('tools/call', { name: 'get_capabilities', arguments: {} })).result.structuredContent;
-    expect(capabilities.data.version).toBe('0.6.6');
+    expect(capabilities.data.version).toBe('0.6.7');
     expect(capabilities.data.tools).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(capabilities.data.limitations.join(' ')).toContain('Version 0.6.0 adds tools listed in tools/list');
   });
