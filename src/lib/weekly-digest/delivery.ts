@@ -6,8 +6,10 @@ import {
   randomBytes,
 } from 'node:crypto';
 import {
+  ResendRequestWithdrawnError,
   createRateLimitedResendRequest,
   type ResendRequest,
+  type ResendRequestControl,
 } from '../daily-email/resend-request.js';
 
 const RESEND_EMAILS_ENDPOINT = 'https://api.resend.com/emails';
@@ -537,11 +539,17 @@ export function createWeeklyDigestResendRequest(
   });
 }
 
-/** Sends a previously built or opened envelope without reconstructing its body. */
+/**
+ * Sends a previously built or opened envelope without reconstructing its body.
+ * `control.beforeAttempt` runs immediately before every provider attempt; when
+ * it declines, this rejects with ResendRequestWithdrawnError and nothing more
+ * is sent.
+ */
 export async function sendWeeklyDigestEnvelope(
   envelope: WeeklyDigestRequestEnvelope,
   apiKey: string,
   request: ResendRequest = createWeeklyDigestResendRequest(fetch),
+  control?: ResendRequestControl,
 ): Promise<WeeklyDigestProviderResult> {
   const normalized = validatedEnvelope(envelope);
   if (!normalized || !validBoundedHeader(apiKey, 1_024)) {
@@ -561,8 +569,9 @@ export async function sendWeeklyDigestEnvelope(
       // The weekly request factory replaces this with a fresh signal for every
       // hidden 429 attempt. It remains a bounded fallback for custom requests.
       signal: AbortSignal.timeout(WEEKLY_DIGEST_PROVIDER_TIMEOUT_MS),
-    });
-  } catch {
+    }, control);
+  } catch (error) {
+    if (error instanceof ResendRequestWithdrawnError) throw error;
     throw new WeeklyDigestProviderAbortError('transport');
   }
 

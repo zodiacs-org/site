@@ -276,10 +276,13 @@ already chose use their synced chart:
   uses it only when the self chart is the chart the preference names (a
   preference that still names a removed chart A after chart B was synced
   stays paused). It decrypts in memory, renders the chart edition, and keeps
-  nothing. Immediately before dispatch it asks again for the exact chart id
-  and revision it decrypted; if the account is no longer eligible, the
-  reservation is released unsent and the address gets the Sun edition when
-  it is a confirmed Daily Sun subscriber due in that run, or nothing. A
+  nothing. Before dispatch, and again inside the provider queue after its
+  pacing wait and after every 429 backoff, immediately before each POST
+  attempt, it asks for the exact chart id and revision it decrypted; if the
+  account is no longer eligible, no further POST is made, the reservation is
+  released unsent (any earlier attempt was an explicit 429, so nothing was
+  accepted) and the address gets the Sun edition when it is a confirmed Daily
+  Sun subscriber due in that run, or nothing. A
   chart that cannot be decrypted falls back to the Sun edition for that
   person. Everyone else, including preferences paused when v1 sync was
   retired, gets the Sun edition only if they are a confirmed Daily Sun
@@ -297,9 +300,21 @@ already chose use their synced chart:
   is part of the content digest, the authorization recheck immediately before
   dispatch refuses an envelope whose consent or chart moved; the job then
   reads the content again and, if it is now the sky edition, rebuilds and
-  sends that. An ambiguous dispatch already authorized is replayed byte for
-  byte under the provider idempotency key within 24 hours; that replay is of
-  a message whose dispatch had started, not a new send.
+  sends that. Authorization comes before the provider queue, which can wait
+  for pacing and retry explicit 429 responses, so a chart edition is checked
+  again after each of those waits, immediately before every POST attempt,
+  with the service-only `weekly_digest_dispatch_recheck_v1` (migration
+  `20261111180000`): it recomputes the opt-in, the unsubscribe marker and the
+  content digest under the same locks. If anything moved, no further POST is
+  made; the delivery returns to reserved under the same lease with its sealed
+  envelope dropped, and the job rebuilds it from current content (the sky
+  edition) once, or cancels it. An ambiguous dispatch already authorized is
+  replayed byte for byte under the provider idempotency key within 24 hours;
+  that replay is of a message whose dispatch had started, not a new send, so
+  its first attempt is not rechecked (its recovery claim has just made the
+  same check). Each retry of a replay after an explicit 429 is rechecked, and
+  a replay whose content moved is quarantined for reconciliation, never
+  resent.
 
 Withdrawing `chart_emails`, withdrawing `chart_sync`, removing the synced
 chart, or starting account deletion removes the account from

@@ -34,6 +34,22 @@ import {
   type WeeklyDigestProviderResult,
   type WeeklyDigestRequestEnvelope,
 } from '../src/lib/weekly-digest/delivery';
+import { ResendRequestWithdrawnError } from '../src/lib/daily-email/resend-request';
+import {
+  dispatchWeeklyWithRecheck,
+  weeklyAttemptGuard,
+  weeklyDispatchRecheck,
+  WeeklyDispatchRecheckError,
+  type WeeklyDispatchOutcome,
+  type WeeklyDispatchRecheck,
+} from '../src/lib/weekly-digest/dispatch-recheck';
+
+/** Rebuilding a released delivery failed; its reservation was cancelled. */
+class WeeklyPreparationError extends Error {
+  constructor() {
+    super('Weekly digest preparation failed after its reservation was cancelled.');
+  }
+}
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DIGEST_ORB = 3;
@@ -627,6 +643,26 @@ async function cancelWeeklyDelivery(
   }, 'Weekly delivery cancellation');
 }
 
+/**
+ * Asked by the provider queue after every wait, immediately before each POST
+ * attempt of a chart edition or a recovery retry (see
+ * weekly_digest_dispatch_recheck_v1).
+ */
+async function recheckWeeklyDelivery(
+  supabase: DigestSupabase,
+  weekStart: Date,
+  userId: string,
+  leaseToken: string,
+): Promise<WeeklyDispatchRecheck> {
+  const { data, error } = await supabase.rpc('weekly_digest_dispatch_recheck_v1', {
+    candidate_week_start: editionDate(weekStart),
+    candidate_user_id: userId,
+    candidate_lease_token: leaseToken,
+  });
+  if (error) throw databaseFailure('Weekly delivery recheck', error);
+  return weeklyDispatchRecheck(data);
+}
+
 async function finishWeeklyDelivery(
   supabase: DigestSupabase,
   weekStart: Date,
@@ -763,7 +799,14 @@ function abortProviderBatch(error: WeeklyDigestProviderAbortError): never {
   throw new Error('Weekly digest stopped after a non-terminal provider outcome.');
 }
 
-async function sendAndFinalize(
+/**
+ * Replays a recovered envelope. Its first attempt goes out as claimed (the
+ * claim rechecked consent and content, and the original dispatch may already
+ * have been accepted under this idempotency key); every retry after an
+ * explicit 429 is rechecked first, and a replay whose content moved is
+ * quarantined instead of sent.
+ */
+async function replayAndFinalize(
   supabase: DigestSupabase,
   weekStart: Date,
   userId: string,
@@ -771,15 +814,35 @@ async function sendAndFinalize(
   envelope: WeeklyDigestRequestEnvelope,
   resendKey: string,
   resendRequest: ReturnType<typeof createWeeklyDigestResendRequest>,
-): Promise<WeeklyDigestProviderResult> {
+): Promise<WeeklyDigestProviderResult | { kind: 'withdrawn'; recheck: WeeklyDispatchRecheck }> {
+  const guard = weeklyAttemptGuard(
+    () => recheckWeeklyDelivery(supabase, weekStart, userId, leaseToken),
+    { fromAttempt: 1 },
+  );
   let providerResult: WeeklyDigestProviderResult;
   try {
-    providerResult = await sendWeeklyDigestEnvelope(envelope, resendKey, resendRequest);
+    providerResult = await sendWeeklyDigestEnvelope(envelope, resendKey, resendRequest, guard.control);
   } catch (error) {
     if (error instanceof WeeklyDigestProviderAbortError) abortProviderBatch(error);
+    if (error instanceof ResendRequestWithdrawnError) {
+      const answer = guard.last();
+      if (answer === null || answer === 'failed' || answer === 'dispatch') {
+        throw new Error('Weekly recovery recheck failed before a retry; nothing more was sent.');
+      }
+      return { kind: 'withdrawn', recheck: answer };
+    }
     throw new Error('Weekly digest provider dispatch failed before finalization.');
   }
+  return finalize(supabase, weekStart, userId, leaseToken, providerResult);
+}
 
+async function finalize(
+  supabase: DigestSupabase,
+  weekStart: Date,
+  userId: string,
+  leaseToken: string,
+  providerResult: WeeklyDigestProviderResult,
+): Promise<WeeklyDigestProviderResult> {
   const finalized = await finishWeeklyDelivery(
     supabase,
     weekStart,
@@ -923,7 +986,7 @@ async function run(): Promise<void> {
     }
 
     attempts += 1;
-    const result = await sendAndFinalize(
+    const result = await replayAndFinalize(
       supabase!,
       parseDate(recovery.weekStart),
       recovery.userId,
@@ -932,6 +995,12 @@ async function run(): Promise<void> {
       resendKey!,
       recoveryRequest,
     );
+    if (result.kind === 'withdrawn') {
+      if (result.recheck === 'reconciliation') reconciliation += 1;
+      else skipped += 1;
+      console.log(`weekly-digest: recovered delivery no longer eligible before a retry (${result.recheck}); nothing more sent`);
+      continue;
+    }
     if (result.kind === 'sent') {
       sent += 1;
       console.log(`weekly-digest: recovered and finalized ${sent}/${attempts} attempted delivery(s)`);
@@ -977,6 +1046,30 @@ async function run(): Promise<void> {
 
     let prepared: ReturnType<typeof prepareWeeklyEnvelope> | null = null;
     let authorized = false;
+    const authorizeFrom = (initial: RecipientDigest) => authorizeWithFreshContent({
+      initial,
+      readContent: () => readRecipientContent(supabase!, userId, maxCharts),
+      withCharts: withDigestCharts,
+      prepare: (current) => prepareWeeklyEnvelope(
+        current,
+        weekStart,
+        reservation.unsubscribeToken,
+        maxCharts,
+        postalAddress,
+        process.env.DIGEST_FROM_EMAIL || 'Zodiacs.org <hello@zodiacs.org>',
+        envelopeSecret!,
+      ),
+      authorize: (current, content) => authorizeWeeklyDelivery(
+        supabase!,
+        weekStart,
+        userId,
+        reservation.leaseToken,
+        current.envelope,
+        content.contentDigest,
+        current.sealedEnvelope,
+        maxCharts,
+      ),
+    });
     try {
       // Re-read the content after rendering and immediately before the
       // authorization RPC, which itself recomputes the content (consents,
@@ -985,30 +1078,7 @@ async function run(): Promise<void> {
       // because it moved in between (for example chart emails withdrawn
       // during the run), the digest is rebuilt from the new content, so the
       // subscriber gets the sky edition; a second movement is skipped.
-      const outcome = await authorizeWithFreshContent({
-        initial: recipient,
-        readContent: () => readRecipientContent(supabase!, userId, maxCharts),
-        withCharts: withDigestCharts,
-        prepare: (current) => prepareWeeklyEnvelope(
-          current,
-          weekStart,
-          reservation.unsubscribeToken,
-          maxCharts,
-          postalAddress,
-          process.env.DIGEST_FROM_EMAIL || 'Zodiacs.org <hello@zodiacs.org>',
-          envelopeSecret!,
-        ),
-        authorize: (current, content) => authorizeWeeklyDelivery(
-          supabase!,
-          weekStart,
-          userId,
-          reservation.leaseToken,
-          current.envelope,
-          content.contentDigest,
-          current.sealedEnvelope,
-          maxCharts,
-        ),
-      });
+      const outcome = await authorizeFrom(recipient);
       if (outcome.authorized) {
         authorized = true;
         prepared = outcome.prepared;
@@ -1026,14 +1096,57 @@ async function run(): Promise<void> {
     }
 
     attempts += 1;
-    const providerResult = await sendAndFinalize(
+    // A chart edition is checked again inside the provider queue, after its
+    // pacing wait and every 429 backoff, immediately before each POST. If it
+    // is no longer what was authorized, nothing more is sent: the delivery
+    // is released and rebuilt from current content (the sky edition), or
+    // cancelled.
+    let dispatched: WeeklyDispatchOutcome<RecipientDigest, ReturnType<typeof prepareWeeklyEnvelope>>;
+    try {
+      dispatched = await dispatchWeeklyWithRecheck({
+        authorized: { recipient, prepared },
+        reauthorize: async (previous) => {
+          try {
+            return await authorizeFrom(previous);
+          } catch {
+            await cancelWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken);
+            throw new WeeklyPreparationError();
+          }
+        },
+        isChartEdition: (current) => current.charts.length > 0,
+        recheck: () => recheckWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken),
+        apiKey: resendKey!,
+        request: resendRequest,
+      });
+    } catch (error) {
+      if (error instanceof WeeklyDigestProviderAbortError) abortProviderBatch(error);
+      if (error instanceof WeeklyDispatchRecheckError) {
+        throw new Error('Weekly delivery recheck failed before a provider attempt; nothing was sent and the dispatch is left for recovery.');
+      }
+      if (error instanceof WeeklyPreparationError) throw error;
+      throw new Error('Weekly digest provider dispatch failed before finalization.');
+    }
+    if (dispatched.kind === 'withdrawn') {
+      if (dispatched.recheck === 'released') {
+        await cancelWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken);
+      }
+      skipped += 1;
+      console.log(
+        `weekly-digest: recipient ${candidateIndex + 1}/${candidateIds.length} chart edition no longer eligible at dispatch (${dispatched.recheck}); nothing sent`,
+      );
+      continue;
+    }
+    if (dispatched.recipient !== recipient) {
+      console.log(
+        `weekly-digest: recipient ${candidateIndex + 1}/${candidateIds.length} chart edition no longer eligible at dispatch; rebuilt from current content`,
+      );
+    }
+    const providerResult = await finalize(
       supabase!,
       weekStart,
       userId,
       reservation.leaseToken,
-      prepared.envelope,
-      resendKey!,
-      resendRequest,
+      dispatched.result,
     );
     if (providerResult.kind === 'rejected') {
       failed += 1;
