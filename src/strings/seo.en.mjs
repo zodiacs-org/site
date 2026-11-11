@@ -84,10 +84,10 @@ export const OG_EN = Object.freeze({
   thesis: {
     kicker: 'The Thesis',
     title: 'Why Zodiacs Matter',
-    footer: 'zodiacs.org — The Registry · History, ownership, modern rails · Nº 09',
+    footer: 'zodiacs.org · The Registry · An essay on twelve zodiac coins · Nº 10',
     path: '/thesis/',
     image: '/assets/og/v2/thesis.png',
-    alt: 'Why Zodiacs Matter — history, digital ownership, and modern rails · Nº 09.',
+    alt: 'Why Zodiacs Matter, an essay on twelve zodiac coins · Nº 10.',
   },
   disclosure: {
     kicker: 'Registry disclosure',
