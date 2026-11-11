@@ -568,7 +568,7 @@ function timeBasis(ms, scale = "utc", pin) {
   const utc = scale === "tt" ? ms - modelDeltaT(ms).seconds * 1e3 : ms;
   if (utc < LEAP_SECONDS_FROM || utc > UT1_TO_MS) {
     let ut1Ms2 = ms;
-    if (scale === "tt") for (let round2 = 0; round2 < 4; round2 += 1) ut1Ms2 = ms - modelDeltaT(ut1Ms2).seconds * 1e3;
+    if (scale === "tt") for (let round3 = 0; round3 < 4; round3 += 1) ut1Ms2 = ms - modelDeltaT(ut1Ms2).seconds * 1e3;
     return record2(ut1Ms2, ut1Ms2, modelDeltaT(ut1Ms2), "delta-t", utc > UT1_TO_MS && scale !== "ut1" ? fallback() : null, null);
   }
   let taiMs;
@@ -43453,6 +43453,28 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
   return localTimeModule;
 }
 
+// src/lib/occasions/saved-path.ts
+var BIRTH_OCCASIONS = /* @__PURE__ */ new Set(["birthday", "baby", "coming-of-age"]);
+var BIRTH_OCCASION_SAVE_LABELS = Object.freeze({
+  birthday: "Birthday",
+  baby: "New baby",
+  "coming-of-age": "Coming of age"
+});
+var round2 = (value) => Math.round(value * 100) / 100;
+function savedOccasionPath(args, data) {
+  if (BIRTH_OCCASIONS.has(data.occasion)) return null;
+  const params = new URLSearchParams({ o: data.occasion, d: data.date });
+  const hasCoords = args.latitude !== void 0 && args.longitude !== void 0;
+  if (data.zone && !hasCoords) return `/occasions/#${params.toString()}`;
+  if (data.time) params.set("t", data.time);
+  if (data.zone && hasCoords) {
+    params.set("tz", data.zone);
+    params.set("lat", round2(args.latitude).toFixed(2));
+    params.set("lon", round2(args.longitude).toFixed(2));
+  }
+  return `/occasions/#${params.toString()}`;
+}
+
 // src/lib/occasions/milestones.ts
 var DAY17 = 864e5;
 var YEAR2 = 365.25 * DAY17;
@@ -43829,7 +43851,6 @@ function clockTime3(utc, zone9) {
   return { utc, local: zone9 ? local : `${local} UTC` };
 }
 var optionalClock = (utc, zone9) => utc ? clockTime3(utc, zone9) : null;
-var BIRTH_OCCASIONS = /* @__PURE__ */ new Set(["birthday", "baby", "coming-of-age"]);
 var CIVIL_DATE = /^\d{4}-\d{2}-\d{2}$/u;
 var fieldOf = (value, key2) => value && typeof value === "object" && !Array.isArray(value) ? value[key2] : void 0;
 var LATEST_CLOCK_MS = 14 * 36e5;
@@ -44710,6 +44731,23 @@ var OCCASION_NAMES = {
   "coming-of-age": "Coming of age",
   gathering: "A gathering"
 };
+function storedSide(row) {
+  return {
+    sun: row.sun,
+    moon: row.moon,
+    rising: row.rising,
+    timeKnown: row.timeKnown,
+    placed: row.placed,
+    famous: row.famous,
+    url: row.url,
+    ...row.famous ? { name: row.name } : {}
+  };
+}
+function withoutDisplayDetails(person2) {
+  if (person2.famous !== void 0) return person2;
+  const { name: _name, place: _place, ...rest } = person2;
+  return rest;
+}
 function chartLine(row) {
   const parts = [signName6(row.sun) && `Sun in ${signName6(row.sun)}`, signName6(row.moon) && `Moon in ${signName6(row.moon)}`, signName6(row.rising) && `${signName6(row.rising)} rising`].filter(Boolean);
   return parts.length ? parts.join(", ") : "The Sun changed sign that day, so the sign depends on the birth time.";
@@ -44732,24 +44770,11 @@ function recordProblem(record2) {
   if (!problem && Buffer.byteLength(JSON.stringify(record2)) > MAX_SAVED_RECORD_BYTES) problem = "too-large";
   return problem;
 }
-function recordDigest(record2) {
-  return createHash2("sha256").update(JSON.stringify([record2.schema, record2.kind, record2.data])).digest("hex");
-}
-function savedOccasionPath(args, data) {
-  if (BIRTH_OCCASIONS.has(data.occasion)) return null;
-  const params = new URLSearchParams({ o: data.occasion, d: data.date });
-  const hasCoords = args.latitude !== void 0 && args.longitude !== void 0;
-  if (data.zone && !hasCoords) return `/occasions/#${params.toString()}`;
-  if (data.time) params.set("t", data.time);
-  if (data.zone && hasCoords) {
-    params.set("tz", data.zone);
-    params.set("lat", roundCoordinate(args.latitude).toFixed(2));
-    params.set("lon", roundCoordinate(args.longitude).toFixed(2));
-  }
-  return `/occasions/#${params.toString()}`;
+function recordDigest(record2, label) {
+  return createHash2("sha256").update(JSON.stringify([record2.schema, record2.kind, record2.data, ...label === void 0 ? [] : [label]])).digest("hex");
 }
 async function buildSavedRecord(input, dependencies = {}) {
-  const linked = (record2, href) => ({ ...record2, href: href(recordDigest(record2).slice(0, 16)) });
+  const linked = (record2, href) => ({ ...record2, href: href(recordDigest(record2, input.label).slice(0, 16)) });
   const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
   const madeBy = { chart: "get_natal_chart", comparison: "get_compatibility", occasion: "get_occasion_sky", week: "get_horoscope" };
   const child2 = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now, dependencies.hostZone);
@@ -44761,32 +44786,34 @@ async function buildSavedRecord(input, dependencies = {}) {
   try {
     switch (input.kind) {
       case "chart": {
-        const person2 = input.chart;
+        const person2 = withoutDisplayDetails(input.chart);
         if (person2.famous !== void 0 && compatibilityMissing({ a: person2, b: person2 })) return { failure: "Zodiacs has no chart for that name in its famous-people directory." };
         const zone9 = person2.zone ? await zoneAt(person2.zone, "/chart/zone", (name) => localTime2().canonicalZoneName(name)) : void 0;
         const row = await computePersonChart(zone9 ? { ...person2, zone: zone9 } : person2, localTime2());
         return linked({
           schema: SAVED_RECORD_SCHEMA,
           kind: "chart",
-          title: label ?? (row.famous ? `${row.name}'s chart` : row.name ? `${row.name}'s birth chart` : `Birth chart, ${row.birthDate}`),
+          title: label ?? (row.famous ? `${row.name}'s chart` : "Birth chart"),
           summary: chartLine(row),
-          data: { ...row, ...person2.time && !row.famous ? { time: person2.time } : {}, ...zone9 && !row.famous ? { zone: zone9 } : {} },
+          data: storedSide(row),
           links: row.url ? [{ title: `${row.name}'s chart on Zodiacs`, url: row.url }] : [{ title: "Your birth chart on Zodiacs", url: `${ORIGIN}/birth-chart/` }]
         }, (saved) => row.url ? sitePath(row.url) : `/birth-chart/#saved=${saved}`);
       }
       case "comparison": {
-        const result = await executeAiTool("get_compatibility", input.comparison, tools);
+        const comparison = { a: withoutDisplayDetails(input.comparison.a), b: withoutDisplayDetails(input.comparison.b) };
+        const result = await executeAiTool("get_compatibility", comparison, tools);
         if (!result.ok) return { failure: result.error.message };
         if (result.tool !== "get_compatibility" || "found" in result.data) return { failure: "Zodiacs has no chart for that name in its famous-people directory." };
         const data = result.data;
+        const sunOr = (row, fallback2) => signName6(row.sun) ?? fallback2;
         return linked({
           schema: SAVED_RECORD_SCHEMA,
           kind: "comparison",
-          title: label ?? `${data.a.label} and ${data.b.label}: ${data.score.overall} out of 100`,
+          title: label ?? `${sunOr(data.a, "Person A")} and ${sunOr(data.b, "Person B")}: ${data.score.overall} out of 100`,
           summary: `${data.score.verdict}. ${data.score.headline}`,
           data: {
-            a: data.a,
-            b: data.b,
+            a: { ...storedSide(data.a), label: data.a.label },
+            b: { ...storedSide(data.b), label: data.b.label },
             score: data.score,
             signPair: data.signPair?.slug ?? null,
             contacts: data.contacts.map((contact) => contact.line),
@@ -44799,24 +44826,25 @@ async function buildSavedRecord(input, dependencies = {}) {
         }, (saved) => data.cardUrl ? sitePath(data.cardUrl) : `${data.pageUrl ? sitePath(data.pageUrl) : "/compatibility/"}#saved=${saved}`);
       }
       case "occasion": {
-        const result = await executeAiTool("get_occasion_sky", input.occasion, tools);
+        const { names: _names, place: _place, ...occasionArgs } = input.occasion;
+        const result = await executeAiTool("get_occasion_sky", occasionArgs, tools);
         if (!result.ok) return { failure: result.error.message };
         if (result.tool !== "get_occasion_sky") return { failure: "Zodiacs could not work that out again." };
         const data = result.data;
         const sign3 = (body2) => data.sky.bodies.find((row) => row.body === body2)?.sign ?? null;
-        const path = savedOccasionPath(input.occasion, data);
+        const name = OCCASION_NAMES[data.occasion] ?? "Occasion";
+        const path = savedOccasionPath(occasionArgs, data);
+        const birth = BIRTH_OCCASIONS.has(data.occasion);
         return linked({
           schema: SAVED_RECORD_SCHEMA,
           kind: "occasion",
-          title: label ?? `${OCCASION_NAMES[data.occasion] ?? "Occasion"}, ${data.date}: ${data.rating.score} out of 100`,
-          summary: `${data.rating.verdict}. ${data.card.title}`,
-          data: {
+          title: label ?? (birth ? `${name}: ${data.rating.score} out of 100` : `${name}, ${data.date}: ${data.rating.score} out of 100`),
+          summary: birth ? `${data.rating.verdict}.` : `${data.rating.verdict}. ${data.card.title}`,
+          data: birth ? { occasion: data.occasion, rating: { score: data.rating.score, verdict: data.rating.verdict }, sky: { sun: sign3("Sun"), moon: sign3("Moon") }, cardUrl: null, note: data.note } : {
             occasion: data.occasion,
             date: data.date,
             time: data.time,
             zone: data.zone,
-            place: data.place,
-            names: data.names,
             card: data.card,
             rating: data.rating,
             sky: { sun: sign3("Sun"), moon: sign3("Moon"), moonPhase: data.sky.moon.phase, retrograde: data.sky.retrograde },
@@ -44839,7 +44867,7 @@ async function buildSavedRecord(input, dependencies = {}) {
           kind: "week",
           title: label ?? `Your week from ${from}`,
           summary: week.items[0] ? `${week.items[0].title}. ${week.items[0].when}` : "No close contacts to your chart this week.",
-          data: { from, zone: zone9, birthDate: args.birthDate, timeKnown: week.timeKnown, items: week.items, note: week.note },
+          data: { from, timeKnown: week.timeKnown, items: week.items, note: week.note },
           links: [{ title: "Horoscopes on Zodiacs", url: `${ORIGIN}/horoscopes/` }]
         }, (saved) => `/horoscopes/#week=${from}&saved=${saved}`);
       }
