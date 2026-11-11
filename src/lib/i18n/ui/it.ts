@@ -21,7 +21,7 @@ const it = {
     trustReference: "Istante UTC di riferimento (ora di nascita sconosciuta; senza ascendente né case)",
     trustMissingInstant: "L’istante UTC originale non è stato condiviso con queste posizioni.",
     trustReturnInstant: "Istante UTC del ritorno",
-    trustApproxReturn: "Istante UTC approssimativo del ritorno, basato su un’ora di nascita di riferimento",
+    trustApproxReturn: "Data UTC approssimativa del ritorno, basata su un’ora di nascita di riferimento",
     trustIntro: "Il tuo tema può aiutarti a riflettere sui tuoi bisogni, punti di forza e relazioni.",
     trustOtherIntro: "Questo tema può aiutarti a riflettere sui bisogni, punti di forza e relazioni di questa persona.",
     trustPairIntro: "Le vostre differenze possono essere un punto di partenza per capirvi.",

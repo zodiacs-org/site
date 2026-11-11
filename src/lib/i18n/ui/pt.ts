@@ -21,7 +21,7 @@ const pt = {
     trustReference: "Instante UTC de referência (hora de nascimento desconhecida; sem ascendente nem casas)",
     trustMissingInstant: "O instante UTC original não foi compartilhado com estas posições.",
     trustReturnInstant: "Instante UTC do retorno",
-    trustApproxReturn: "Instante UTC aproximado do retorno, baseado em uma hora de nascimento de referência",
+    trustApproxReturn: "Data UTC aproximada do retorno, baseada em uma hora de nascimento de referência",
     trustIntro: "Seu mapa pode ajudar você a refletir sobre suas necessidades, qualidades e relações.",
     trustOtherIntro: "Este mapa pode ajudar você a refletir sobre as necessidades, qualidades e relações desta pessoa.",
     trustPairIntro: "As diferenças entre vocês podem ser um ponto de partida para se entenderem.",

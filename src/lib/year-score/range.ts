@@ -12,6 +12,7 @@
  * local-time resolver (prepared first, as CLAUDE.md requires). Nothing here
  * sees a place or keeps a birth detail.
  */
+import { birthDayEnvelope } from '../sun-settled';
 import { scoreYear, type LongitudeAt, type NatalPoints, type SlowPlanet } from './core';
 
 const HOUR = 3_600_000;
@@ -36,11 +37,10 @@ export function birthDaySamples(earliest: Date, latest: Date): Date[] {
 /**
  * Every clock's version of a date (YYYY-MM-DD) when the birthplace is not
  * known: from 14 hours before its UTC midnight (UTC+14 starts the day first)
- * to 12 hours after 23:59 UTC (UTC-12 ends it last).
+ * to 12 hours after 23:59 UTC (UTC-12 ends it last). One definition, in
+ * src/lib/sun-settled.ts, re-exported here for this module's importers.
  */
-export function birthDayEnvelope(date: string): [Date, Date] {
-  return [new Date(Date.parse(`${date}T00:00:00Z`) - 14 * HOUR), new Date(Date.parse(`${date}T23:59:00Z`) + 12 * HOUR)];
-}
+export { birthDayEnvelope };
 
 /**
  * The two ends of an untimed birth day.
