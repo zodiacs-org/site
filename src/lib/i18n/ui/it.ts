@@ -449,13 +449,13 @@ const it = {
   inviteNote:
     "Il link contiene i dati di nascita di questa persona e apre la pagina con quel lato già compilato. Non ci viene inviato nulla. Se non sei tu, è bene avere il suo consenso.",
   inviteCopied: "Link di invito copiato negli appunti.",
-  syncOn: "Sincronizzazione attiva",
-  keepEveryDevice: "Ritrova i temi su ogni dispositivo",
+  syncOn: "La sincronizzazione dei temi è in pausa",
+  keepEveryDevice: "La sincronizzazione dei temi è in pausa",
   signedIn: "Accesso effettuato",
   syncCopyOn:
-    "I temi salvati e le rimozioni vengono sincronizzati su tutti i tuoi dispositivi.",
+    "I tuoi temi restano salvati su questo dispositivo. Nulla di nuovo viene inviato al tuo account. Puoi ancora rimuovere i temi sincronizzati in precedenza.",
   syncCopyOff:
-    "Salva i temi su questo dispositivo. Accedi quando vorrai ritrovarli su ogni dispositivo.",
+    "I temi salvati restano in questo browser. La sincronizzazione dei temi è in pausa per ora.",
   weeklyDigestTitle: "Email settimanale sul cielo",
   weeklyDigestCopy:
     "Un’email alla settimana: il cielo rispetto ai tuoi temi salvati. Puoi annullare l’iscrizione in qualsiasi momento.",
@@ -464,10 +464,10 @@ const it = {
   digestFailed:
     "Non è stato possibile aggiornare la preferenza email. Riprova.",
   checkEmail:
-    "Controlla la posta per trovare il link di accesso. Questa pagina si sincronizzerà quando torni.",
+    "Controlla la posta per trovare il link di accesso.",
   syncFailed: "Sincronizzazione non riuscita. Riprova.",
   syncing: "Sincronizzazione…",
-  synced: "Sincronizzato",
+  synced: "Sincronizzazione in pausa",
   syncNow: "Sincronizza ora",
   signOut: "Esci",
   emailSyncAria: "Email per sincronizzare il profilo",
