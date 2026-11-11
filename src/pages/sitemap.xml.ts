@@ -655,6 +655,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // each dated only once its launch switch is on.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') || launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/tools/', '2026-11-09'] as const] : []),
   ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday/', '2026-11-09'] as const] : []),
+  // Chart sync pause copy on the birth chart page, the privacy page, and the
+  // profile pages (every language). The day of the daily edition they were
+  // built with.
+  ['/birth-chart/', '2026-11-11'] as const,
+  ['/privacy/', '2026-11-11'] as const,
+  ...['/profile/', '/es/profile/', '/fr/profile/', '/it/profile/', '/pt/profile/', '/ru/profile/']
+    .map((loc) => [loc, '2026-11-11'] as const),
 ]);
 
 function getLastmod(loc: string): string {
