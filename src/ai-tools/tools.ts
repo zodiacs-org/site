@@ -1,5 +1,5 @@
 import { moonPhase } from '@zodiacs/engine';
-import { moonPhaseNameFromAngle } from '../lib/engine/lite';
+import { localIso, localMinuteIso, minuteUtc, moonPhaseLabel } from './clear-time';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
@@ -102,8 +102,9 @@ export function dailyEmailLink(origin: string, sign?: string): { title: string; 
 }
 const LIMITS = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS['events.samples'], factSamples: BUDGETS['sky-fact.samples'] };
 
+/** The zone's clock as ISO 8601 with its offset, 2026-11-10T15:35:46+07:00: a day-first date reads as another month in the United States. */
 export function displayTime(utc: string, zone: string): string {
-  return new Intl.DateTimeFormat('en-GB', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23', timeZoneName: 'shortOffset' }).format(new Date(utc));
+  return localIso(utc, zone);
 }
 
 function failure(tool: AiToolName, code: string, message: string, retryAfterSeconds?: number) {
@@ -444,7 +445,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const calculation = computePositions(parsePositionsRequest({ instants: [instant], ...(args.bodies ? { bodies: args.bodies } : {}) }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
+        data = { mode: args.instant ? 'requested-instant' : 'current-instant', time: { utc, zone, display: displayTime(utc, zone) }, calculation, moonPhase: { name: moonPhaseLabel(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: 'Astronomical calculations; no personal prediction is supplied.' };
         links = [moonLink, methodLink, calendarLink];
         break;
       }
@@ -461,7 +462,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
         const calculation = computeEvents(parsedRequest);
-        data = { from: calculation.result.from, to: calculation.result.to, zone, events: calculation.result.events.map(event => ({ ...event, localAt: displayTime(event.at, zone) })), calculation, completeness: calculation.receipt.search!.completeness };
+        data = { from: calculation.result.from, to: calculation.result.to, zone, // Each time to the minute, on the UTC clock and on the zone's; the solved instants stay in calculation, under its receipt.
+          events: calculation.result.events.map(event => ({ ...event, at: minuteUtc(event.at), localAt: localMinuteIso(event.at, zone) })), calculation, completeness: calculation.receipt.search!.completeness };
         links = [{ title: 'Subscribe to these in your calendar (get_sky_calendar)', url: `${ORIGIN}/sky-calendar/` },
           // With the sky events switch, the tool for one kind of event further ahead.
           ...(skyEvents ? [{ title: 'Eclipses, stations, sign changes and Moons months or years ahead (search_sky_events)', url: `${ORIGIN}/events/` }] : []),
