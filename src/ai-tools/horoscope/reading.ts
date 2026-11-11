@@ -5,6 +5,7 @@
  */
 import type { HoroscopeEvidenceReceipt, HoroscopeSign } from '../../lib/horoscope-program-types';
 import type { ShareRef } from '../../lib/share-results';
+import { softenMinor } from '../features/reading-guards';
 import { horoscopeShareUrl } from '../share-links.js';
 import type { HoroscopeWindow, WindowReading } from './window';
 
@@ -254,5 +255,37 @@ export function horoscopePanel(
     weeks,
     note: WHY_NOTE,
     disclosure: HOROSCOPE_DISCLOSURE,
+  };
+}
+
+const softenParagraphs = (paragraphs: { heading?: string; text: string }[]) =>
+  paragraphs.map((paragraph) => (paragraph.heading ? { heading: softenMinor(paragraph.heading), text: softenMinor(paragraph.text) } : { text: softenMinor(paragraph.text) }));
+
+/**
+ * An answer for a birth date under 18: the reading's wording goes through softenMinor, so no line reads as
+ * romance. The caller asks for the general reading in place of love (../tools.ts) before this.
+ */
+export function softenMinorAnswer(answer: HoroscopeAnswer): HoroscopeAnswer {
+  if (!answer.reading) return answer;
+  return { ...answer, reading: { title: answer.reading.title, paragraphs: softenParagraphs(answer.reading.paragraphs) } };
+}
+
+/**
+ * The panel for a birth date under 18: it holds no love reading to switch to, and the other readings go through
+ * softenMinor. An emptied love reading shows as the panel's own "no love reading here" line.
+ */
+export function softenMinorPanel(panel: HoroscopePanelData): HoroscopePanelData {
+  const soften = (reading: PanelReading): PanelReading => ({ ...reading, paragraphs: softenParagraphs(reading.paragraphs) });
+  return {
+    ...panel,
+    days: panel.days.map((day) => ({
+      date: day.date,
+      focuses: {
+        general: soften(day.focuses.general),
+        love: { status: 'unavailable', paragraphs: [], facts: [], houses: [], from: day.focuses.love.from, through: day.focuses.love.through, shareUrl: null },
+        career: soften(day.focuses.career),
+      },
+    })),
+    weeks: panel.weeks.map(soften),
   };
 }

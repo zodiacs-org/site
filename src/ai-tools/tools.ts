@@ -29,11 +29,11 @@ import { getSolarReturn } from './features/solar-return';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, type AiToolName, type SolarReturnToolName, type CoverageToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
-import { isUnder13 } from './features/reading-guards';
+import { MINOR_LOVE_NOTE, isUnder13, isUnder18 } from './features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
-import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
+import { HOROSCOPE_SIGNS, dateInZone, horoscopePanel, resolveHoroscope, softenMinorAnswer, softenMinorPanel, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
 
 export interface AiDependencies {
@@ -499,11 +499,17 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         }
         const window = await dependencies.horoscopeWindow();
         const localDate = dateInZone(dependencies.now?.() ?? new Date(), zone);
-        const request = { period: args.period ?? 'day', focus: args.focus ?? 'general', ...(args.sign ? { sign: args.sign } : {}), ...(args.date ? { date: args.date } : {}) } as const;
-        data = resolveHoroscope(window, request, zone, zoneSource, localDate, ORIGIN);
+        // Under 18 on the person's own date, Zodiacs gives no love or romance reading: the general one stands in,
+        // with a note that says so, and no line of any reading reads as romance. The birth date is only compared.
+        const minor = args.birthDate !== undefined && isUnder18(args.birthDate, localDate);
+        const loveWithheld = minor && args.focus === 'love';
+        const request = { period: args.period ?? 'day', focus: loveWithheld ? 'general' : args.focus ?? 'general', ...(args.sign ? { sign: args.sign } : {}), ...(args.date ? { date: args.date } : {}) } as const;
+        const answer = resolveHoroscope(window, request, zone, zoneSource, localDate, ORIGIN);
+        data = minor ? softenMinorAnswer(answer) : answer;
+        if (loveWithheld) (data as { message?: string }).message = answer.message ? `${answer.message} ${MINOR_LOVE_NOTE}` : MINOR_LOVE_NOTE;
         const horoscope = data as { disclosure: string; reading?: { paragraphs: { text: string; heading?: string }[] }; personal?: { note: string } };
         const signLabel = readingConfidenceLabel('sign');
-        horoscope.disclosure = `${horoscope.disclosure} ${signLabel}. For a month, a year, or a love or career week, use get_horoscope_period.`;
+        horoscope.disclosure = `${horoscope.disclosure} ${signLabel}. ${minor ? 'For a month, a year or a career week' : 'For a month, a year, or a love or career week'}, use get_horoscope_period.`;
         // A personal forecast takes a birth date, so it follows the same switch as the other birth-date tools.
         if (args.birthDate && dependencies.occasions) {
           let birthZone: string | undefined;
@@ -522,7 +528,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
             throw error;
           }
         }
-        if (args.sign) context.horoscopePanel = horoscopePanel(window, args.sign, { period: request.period, focus: request.focus, ...(args.date ? { date: args.date } : {}), ...(zoneSource === 'default' ? {} : { zone }) }, { origin: ORIGIN, ref: context.ref ?? null });
+        if (args.sign) context.horoscopePanel = (minor ? softenMinorPanel : (panel: HoroscopePanelData) => panel)(horoscopePanel(window, args.sign, { period: request.period, focus: request.focus, ...(args.date ? { date: args.date } : {}), ...(zoneSource === 'default' ? {} : { zone }) }, { origin: ORIGIN, ref: context.ref ?? null }));
         links = [...(args.sign ? [{ title: `${args.sign[0].toUpperCase()}${args.sign.slice(1)} on Zodiacs`, url: `${ORIGIN}/horoscopes/${args.sign}/` }] : []), methodLink, dailyEmailLink(ORIGIN, args.sign)];
         break;
       }
