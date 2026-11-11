@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "thesis-evidence-refresh-2026-11-10",
-  "baseCommit": "cbc2fcb925396258446bca0e3f63dcb37e35a7e4",
+  "baseCommit": "ea664b731c50454ac9e0890d326eec1df6b4e453",
   "protectedPaths": [
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
