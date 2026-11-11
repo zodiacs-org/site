@@ -42,14 +42,17 @@ export function buildSolarReturnCalendar(
   // the second, the return gives the birth instant to about a second, and
   // before standard time the birthplace's longitude. Re-export and
   // relocation preserve the same UID.
-  const instant = wholeMinute(returnInstant(model.instantUtc));
+  const exact = returnInstant(model.instantUtc);
+  const instant = wholeMinute(exact);
   const dtstamp = formatIcalUtc(generatedAt);
   if (!/^\d{8}T\d{6}Z$/.test(dtstamp)) throw new RangeError('Invalid UTC calendar receipt time.');
   const title = model.noTime ? 'Approximate solar return' : 'Solar return';
   // Without a birth time the return is a date, a day either side, never a
-  // clock time: the marker is the UTC date of the whole minute the image
-  // prints the date of, as an all-day event.
-  const dayStart = Date.UTC(instant.getUTCFullYear(), instant.getUTCMonth(), instant.getUTCDate());
+  // clock time: the marker is the UTC date of the return itself, unrounded
+  // (as the page, the birthday report and the image give it), as an all-day
+  // event. Rounding to the minute first could move 23:59:30 or later to the
+  // next day.
+  const dayStart = Date.UTC(exact.getUTCFullYear(), exact.getUTCMonth(), exact.getUTCDate());
   const icalDate = (ms: number) => new Date(ms).toISOString().slice(0, 10).replace(/-/g, '');
   const [day, nextDay] = [icalDate(dayStart), icalDate(dayStart + 86_400_000)];
   const uidInstant = model.noTime ? day : instant.toISOString().replace(/[-:.]/g, '');
