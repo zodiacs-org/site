@@ -10,6 +10,7 @@ import SignIcon from '../../components/SignIcon.astro';
 import { YEAR_PERSON_CATEGORIES } from '../../lib/year-score/people';
 import { allYearPages } from '../../lib/year-score/page-data';
 import { dayName } from '../../lib/year-score/reading';
+import { rangeWorthShowing } from '../../lib/year-score/range';
 import { launchFlagOn } from '../../lib/launch-flags';
 
 if (!launchFlagOn('PUBLIC_YEAR_PEOPLE_ENABLED')) {
@@ -55,6 +56,7 @@ const from = pages[0]?.from;
                 <span class="yd__name">{page.person.name}</span>
                 <span class="yd__score">{page.reading.score.toFixed(1)}<span>/10</span></span>
                 <span class="yd__tier">{page.reading.tier.label}</span>
+                {rangeWorthShowing(page.range) && <span class="yd__range">Between {page.range.low.toFixed(1)} and {page.range.high.toFixed(1)} without a birth time</span>}
               </a>
             </li>
           ))}
@@ -72,11 +74,12 @@ const from = pages[0]?.from;
   .yd__group { margin-top: 28px; }
   .yd__group h2 { margin: 0 0 12px; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-xl); }
   .yd__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
-  .yd__card { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; grid-template-areas: 'icon name score' 'icon tier score'; column-gap: 12px; align-items: center; text-decoration: none; color: var(--text); min-height: 72px; padding: 12px 16px; }
+  .yd__card { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; grid-template-areas: 'icon name score' 'icon tier score' 'icon range range'; column-gap: 12px; align-items: center; text-decoration: none; color: var(--text); min-height: 72px; padding: 12px 16px; }
   .yd__icon { grid-area: icon; display: flex; }
   .yd__name { grid-area: name; font-weight: 550; }
   .yd__score { grid-area: score; font-family: var(--font-serif); font-size: var(--text-xl); white-space: nowrap; }
   .yd__score span { font-size: var(--text-sm); color: var(--muted); }
   .yd__tier { grid-area: tier; color: var(--muted); font-size: var(--text-sm); }
+  .yd__range { grid-area: range; color: var(--muted); font-size: var(--text-xs); }
   .yd__note { margin-top: 28px; color: var(--muted); font-size: var(--text-sm); }
 </style>

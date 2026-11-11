@@ -16,6 +16,7 @@ import { birthplaceData, birthplaceInput } from './features/birthplace';
 import { skyEventsData, skyEventsInput } from './features/sky-events';
 import { yearScoreData, yearScoreInput, yearScoreSelfInput } from './features/year-score';
 import { solarReturnData, solarReturnInput } from './features/solar-return';
+import { numerologyData, numerologyInput } from './features/numerology';
 
 export const AI_VERSION = '0.6.6';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
@@ -89,14 +90,23 @@ export const YEAR_SCORE_TOOL_NAMES = ['get_year_score'] as const;
  * keeps its place and bytes (src/ai-tools/solar-return.test.ts).
  */
 export const SOLAR_RETURN_TOOL_NAMES = ['get_solar_return'] as const;
-/** Every tool name the hosted server knows, in tools/list order. */
-export const EVERY_TOOL_NAME = [...EVERY_TOOL_WITH_SKY_EVENTS, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES] as const;
+/**
+ * get_numerology: Pythagorean numerology from a birth date and, if given, a name. Numerology is a separate tradition
+ * from astrology. Offered only where ZODIACS_NUMEROLOGY_ENABLED=1 joins the coverage and occasion switches, after every
+ * other tool, so with the switch off every entry before it keeps its place and bytes (src/ai-tools/numerology.test.ts).
+ */
+export const NUMEROLOGY_TOOL_NAMES = ['get_numerology'] as const;
+/** Every tool name the hosted server knows, in tools/list order, with every switch on. */
+export const EVERY_TOOL_NAME = [...EVERY_TOOL_WITH_SKY_EVENTS, ...YEAR_SCORE_TOOL_NAMES, ...SOLAR_RETURN_TOOL_NAMES, ...NUMEROLOGY_TOOL_NAMES] as const;
+/** The same list, under the name the numerology and schema tests use. */
+export const EVERY_SWITCHED_TOOL = EVERY_TOOL_NAME;
 export type AiToolName = typeof EVERY_TOOL_NAME[number];
 export type CoverageToolName = typeof COVERAGE_TOOL_NAMES[number];
 export type PlaceToolName = typeof PLACE_TOOL_NAMES[number];
 export type SkyEventsToolName = typeof SKY_EVENTS_TOOL_NAMES[number];
 export type YearScoreToolName = typeof YEAR_SCORE_TOOL_NAMES[number];
 export type SolarReturnToolName = typeof SOLAR_RETURN_TOOL_NAMES[number];
+export type NumerologyToolName = typeof NUMEROLOGY_TOOL_NAMES[number];
 export const OCCASIONS_SWITCH_ENV = 'ZODIACS_OCCASIONS_ENABLED';
 export const COVERAGE_SWITCH_ENV = 'ZODIACS_COVERAGE_ENABLED';
 /** Off unless exactly '1', and only with the coverage switch: search_sky_events, the natal chart's houseSystem and nodes, and explain_astrology's event and house topics. */
@@ -111,6 +121,8 @@ export const YEAR_SCORE_SWITCH_ENV = 'ZODIACS_YEAR_SCORE_ENABLED';
 export const YEAR_SCORE_PEOPLE_SWITCH_ENV = 'ZODIACS_YEAR_SCORE_PEOPLE_ENABLED';
 /** Off unless exactly '1', and only with the occasion and coverage switches: get_solar_return. */
 export const SOLAR_RETURN_SWITCH_ENV = 'ZODIACS_SOLAR_RETURN_ENABLED';
+/** Off unless exactly '1', and only with the coverage and occasion switches: get_numerology. */
+export const NUMEROLOGY_SWITCH_ENV = 'ZODIACS_NUMEROLOGY_ENABLED';
 /** The compute API's own events bound. */
 export const MAX_EVENT_DAYS = BUDGETS['events.windowDays'];
 export const MAX_HTTP_BYTES = 16_384;
@@ -167,6 +179,7 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   search_sky_events: 'Search sky events',
   get_year_score: 'Year Ahead Score',
   get_solar_return: 'Your solar return',
+  get_numerology: 'Numerology numbers',
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).');
@@ -225,6 +238,7 @@ export const INPUT_SCHEMAS = {
   // The person's own birth details only; the public-figure form is YEAR_SCORE_PEOPLE_INPUT (inputSchemaFor).
   get_year_score: yearScoreSelfInput,
   get_solar_return: solarReturnInput,
+  get_numerology: numerologyInput,
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
@@ -366,6 +380,7 @@ const dataSchemas = {
   search_sky_events: skyEventsData,
   get_year_score: yearScoreData,
   get_solar_return: solarReturnData,
+  get_numerology: numerologyData,
 };
 
 export const ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(ALL_AI_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
@@ -379,13 +394,16 @@ export const SKY_EVENTS_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SC
 export const SOLAR_RETURN_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(SOLAR_RETURN_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 /** get_year_score names only itself. */
 export const YEAR_SCORE_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(YEAR_SCORE_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+/** get_numerology names only itself. */
+export const NUMEROLOGY_ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(NUMEROLOGY_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: S) {
   const error = (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool)
     ? COVERAGE_ERROR_SCHEMA
     : (PLACE_TOOL_NAMES as readonly string[]).includes(tool) ? PLACE_ERROR_SCHEMA
       : (SKY_EVENTS_TOOL_NAMES as readonly string[]).includes(tool) ? SKY_EVENTS_ERROR_SCHEMA
         : (YEAR_SCORE_TOOL_NAMES as readonly string[]).includes(tool) ? YEAR_SCORE_ERROR_SCHEMA
-          : (SOLAR_RETURN_TOOL_NAMES as readonly string[]).includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA : ERROR_SCHEMA;
+          : (SOLAR_RETURN_TOOL_NAMES as readonly string[]).includes(tool) ? SOLAR_RETURN_ERROR_SCHEMA
+            : (NUMEROLOGY_TOOL_NAMES as readonly string[]).includes(tool) ? NUMEROLOGY_ERROR_SCHEMA : ERROR_SCHEMA;
   return z.union([
     z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(true), tool: z.literal(tool), data, links: z.array(link) }),
     error,
@@ -412,6 +430,7 @@ export const OUTPUT_SCHEMAS = {
   search_sky_events: outputSchema('search_sky_events', dataSchemas.search_sky_events),
   get_year_score: outputSchema('get_year_score', dataSchemas.get_year_score),
   get_solar_return: outputSchema('get_solar_return', dataSchemas.get_solar_return),
+  get_numerology: outputSchema('get_numerology', dataSchemas.get_numerology),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
@@ -438,6 +457,7 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets and Chiron turning retrograde or direct (stations), planets and Chiron changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, when Chiron changes sign, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets (or Chiron) for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, with the same times: from the Moon's last major aspect to the Sun or a planet through Pluto in a sign until it enters the next sign. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts: share them as facts, and keep what they mean in astrology separate.",
   get_year_score: "Gives the Year Ahead Score for the person's own birth chart: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their own year ahead looks. Give their birth date, with the time and time zone only if they know them; never guess a time. It scores the person's own chart only: for a public figure, say it does not score other people here. Birth details are used for this answer only: never stored, logged or put in a link. Share the score with its reading-confidence label and the limits it returns, and the returned shareUrl exactly if they want to share it. A low score means pressure, not doom: describe it as a demanding year that rewards patience. Money, career, wellbeing and legal themes may be read as astrology traditionally reads them, such as a strong year for earnings or a good window to sign agreements; never give a price or trading call, a buy or sell signal, a diagnosis or medical timing, a death prediction, or a legal win or loss. It refuses a birth date less than 13 years ago.",
   get_solar_return: "Gives the person's solar return: the chart for their next birthday, cast for the instant the Sun returns to its birth degree, with the year's main themes (the return's rising sign and the house of its Sun with a birth time and place, the Moon's sign with a birth time, where Jupiter grows and Saturn builds, and the chart's tightest aspect). Use it for questions such as what my next birthday chart says, or what themes my coming year holds. Give their birth date, with the time, time zone and coordinates only if they know them; never guess a time. which: current gives the return that opened the birthday year now running. Birth details are used for this answer only: never stored, logged or put in a link. Share the themes with the reading-confidence label and the limits it returns, the time on the person's clock, and the returned shareUrl exactly if they want to share it. Money, career, wellbeing and legal themes may be read as astrology traditionally reads them; never give a price or trading call, a buy or sell signal, a diagnosis or medical timing, a death prediction, or a legal win or loss. It refuses a birth date less than 13 years ago.",
+  get_numerology: "Works out numerology numbers from a birth date and, if the person gives it, their full name at birth: the Life Path, Expression, Soul Urge and Personality numbers (Pythagorean system, with 11, 22 and 33 kept as master numbers) and the Personal Year, each with Zodiacs' own written meaning. Numerology is a separate tradition from astrology, with no planets, signs or sky in it: say so when you share it, and do not present it as part of a birth chart. Use it when someone asks for their life path number or another numerology number. Give the birth date, and the name only as the person gives it for this reading; never guess either. The name and date are used for this answer only: they are not returned, stored or put in a link. Share the meanings plainly as numerology's traditional reading, including work, money and wellbeing where the tradition speaks to them, such as an 8 Personal Year as a strong year for earnings. Give no specific price or investment calls, buy or sell signals, diagnoses or medical timing, predictions of death, or word that someone will win or lose a legal matter.",
 };
 
 /**
