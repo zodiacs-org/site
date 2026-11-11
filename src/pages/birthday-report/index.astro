@@ -43,8 +43,9 @@ const jsonLd = [
       <h2>What is in the report</h2>
       <p>
         <strong>The solar return</strong> is the moment the Sun comes back to the exact degree it held at your birth.
-        Astrologers start the personal year there rather than at midnight on the birthday, and the report shows the
-        one that opened your current birthday year and the next.
+        Astrologers start the personal year there rather than at midnight on the birthday. The report reads the
+        birthday year you choose: it shows the solar return that opens that year and the one after it. It opens on
+        your current birthday year, or on the next one when that birthday is 45 days away or less.
       </p>
       <p>
         <strong>The Year Ahead Score</strong> reads the twelve months from that solar return: how Jupiter, Saturn,
@@ -69,9 +70,18 @@ const jsonLd = [
   .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
   :global(.ys__more) { background: none; border: 0; padding: 0; color: var(--text-2); text-decoration: underline; cursor: pointer; font: inherit; justify-self: start; }
   :global(.br) { display: grid; gap: 14px; }
+  :global(.br__result) { display: grid; gap: 14px; }
+  /* The space held for the result from the click reaches past the fold, so a result that arrives late moves nothing on screen. */
+  :global(.br__pending) { min-height: 100vh; }
+  :global(.br__submit) { display: inline-grid; }
+  :global(.br__submit > span) { grid-area: 1 / 1; }
+  :global(.br__submit[data-busy="false"] > span:last-child), :global(.br__submit[data-busy="true"] > span:first-child) { visibility: hidden; }
   :global(.br__heading) { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-xl); }
-  :global(.br__years) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  :global(.br__year) { min-height: 44px; padding: 10px 14px; border: 1px solid var(--hair-2); border-radius: var(--r-full); background: transparent; color: var(--text-2); font: inherit; font-size: var(--text-sm); line-height: 1.4; text-align: center; cursor: pointer; }
+  /* Drawn, hidden, from the first paint: one label per line and a fixed height, so the report fills the reserved row without moving it. */
+  :global(.br__years) { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  :global(.br__years[data-ready="false"]) { visibility: hidden; }
+  @media (min-width: 560px) { :global(.br__years) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  :global(.br__year) { box-sizing: border-box; height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: var(--r-full); background: transparent; color: var(--text-2); font: inherit; font-size: var(--text-sm); line-height: 1.4; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
   :global(.br__year:hover) { border-color: var(--hair-3); color: var(--text); }
   :global(.br__year:focus-visible) { outline: 2px solid var(--ink-0); outline-offset: 2px; }
   :global(.br__year[aria-pressed="true"]) { border-color: var(--hair-3); color: var(--text); background: rgba(198, 204, 218, 0.06); }

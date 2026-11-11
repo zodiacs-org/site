@@ -5,8 +5,10 @@
  * submit and everything is calculated on this device; the birth details are
  * never sent, stored or put in the address bar. Close to a birthday (45 days
  * or less) the report opens on the year that birthday starts, and two
- * buttons switch between that year and the one in progress.
+ * buttons switch between that year and the one in progress. The buttons'
+ * row is reserved from the first paint, so the result never shifts it.
  */
+import type { Ref } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import PlaceSearch from './PlaceSearch';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
@@ -36,7 +38,113 @@ function clock(iso: string, zone: string | null): string {
   return new Intl.DateTimeFormat('en-GB', { timeZone: zone ?? 'UTC', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', ...(zone ? {} : { timeZoneName: 'short' }) }).format(new Date(iso));
 }
 
-const shareOf = (data: Report) => birthdayReportShareUrl(location.origin, { sun: data.sun.slug, score: data.year.score, card: data.card.number });
+/** The report's state once calculated: the chosen year's report, the dates both buttons name, and what a switch recomputes from. */
+export interface ReportState {
+  data: Report;
+  zone: string | null;
+  share: string | null;
+  which: BirthdayYear;
+  returns: Record<BirthdayYear, string>;
+  now: Date;
+  birth: { utc: Date; date: string; timeKnown: boolean };
+}
+type ReportModule = Pick<typeof import('../lib/birthday-report/report'), 'birthdayReport'>;
+
+/** The report opens on the next birthday year when its solar return is 45 days away or less. */
+export function openingYear(nextReturn: string, now: Date): BirthdayYear {
+  return Date.parse(nextReturn) - now.getTime() <= NEXT_YEAR_WITHIN ? 'next' : 'current';
+}
+
+/** The score tile's title: a window that began more than 30 days ago is mostly behind, so it is not the year ahead. */
+export function scoreTitle(solarReturn: string, now: Date): 'Year Ahead Score' | 'Year score' {
+  return now.getTime() - Date.parse(solarReturn) <= AHEAD_FOR ? 'Year Ahead Score' : 'Year score';
+}
+
+/** The share link for a report: the Sun sign, the score and the card number, nothing else. */
+export const shareOf = (origin: string, data: Report) => birthdayReportShareUrl(origin, { sun: data.sun.slug, score: data.year.score, card: data.card.number });
+
+/** The first report for a birth: both return dates, the year it opens on, and that year's report and share link. */
+export function openReport(module: ReportModule, birth: ReportState['birth'], zone: string | null, now: Date, origin: string): ReportState {
+  const current = module.birthdayReport(birth.utc, birth.date, birth.timeKnown, now);
+  const returns = { current: current.solarReturn, next: current.nextSolarReturn };
+  const which = openingYear(returns.next, now);
+  const data = which === 'next' ? module.birthdayReport(birth.utc, birth.date, birth.timeKnown, now, 'next') : current;
+  return { data, zone, share: shareOf(origin, data), which, returns, now, birth };
+}
+
+/** The same birth's report for the other birthday year, recalculated on this device; the share link follows the chosen year. */
+export function switchYear(module: ReportModule, state: ReportState, which: BirthdayYear, origin: string): ReportState {
+  if (which === state.which) return state;
+  const { utc, date, timeKnown } = state.birth;
+  const data = module.birthdayReport(utc, date, timeKnown, state.now, which);
+  return { ...state, data, which, share: shareOf(origin, data) };
+}
+
+/**
+ * The two year buttons. They are drawn from the first paint, hidden and
+ * disabled until there is a report, so the result never moves them or the
+ * page when it arrives. Each label stays on one line (the buttons stack on a
+ * phone), so the reserved row is exactly the row the report fills.
+ */
+export function YearChoice({ state, onChoose }: { state: ReportState | null; onChoose: (which: BirthdayYear) => void }) {
+  return (
+    <div class="br__years" role="group" aria-label="Birthday year" aria-hidden={state ? undefined : 'true'} data-ready={state ? 'true' : 'false'}>
+      {(['current', 'next'] as const).map((which) => (
+        <button key={which} type="button" class="br__year" disabled={!state} aria-pressed={state ? state.which === which : undefined} onClick={() => onChoose(which)}>
+          Year from {state ? day(state.returns[which], state.zone) : '\u00a0'}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** The report itself, for the chosen birthday year. */
+export function ReportResult({ state, yearScoreLink, headingRef }: { state: ReportState; yearScoreLink: boolean; headingRef?: Ref<HTMLHeadingElement> }) {
+  const { data, zone, now } = state;
+  const opened = Date.parse(data.solarReturn) <= now.getTime();
+  const lifePath = NUMBER_MEANINGS[data.lifePath as CoreNumber];
+  const tier = scoreTier(data.year.score);
+  return (
+    <div class="calc__result br__result">
+      <h2 class="br__heading" tabIndex={-1} ref={headingRef}>{data.heading}</h2>
+
+      <section class="tile br__part">
+        <h3>Solar return</h3>
+        <p class="br__big">{clock(data.solarReturn, zone)}</p>
+        {opened
+          ? <p>The Sun came back to the degree it held when you were born, and your birthday year began. The next return is {clock(data.nextSolarReturn, zone)}.</p>
+          : <p>The Sun comes back to the degree it held when you were born, and your next birthday year begins. The return after it is {clock(data.nextSolarReturn, zone)}.</p>}
+        <p><a href="/solar-return/">Cast the full solar return chart</a></p>
+      </section>
+
+      <section class="tile br__part">
+        <h3>{scoreTitle(data.solarReturn, now)}</h3>
+        <p class="br__big">{data.year.score.toFixed(1)}/10 <span class="br__tier">{tier.label}</span></p>
+        <p>{tier.summary}</p>
+        {data.year.best && data.year.hardest && <p>Strongest month: {monthName(data.year.best.month)}. Most pressure: {monthName(data.year.hardest.month)}. From {dayName(data.year.from)}.</p>}
+        {yearScoreLink && <p><a href="/year-score/">See the months and the transits behind it</a></p>}
+      </section>
+
+      <section class="tile br__part">
+        <h3>Numerology: Personal Year {data.personalYear} ({data.calendarYear})</h3>
+        <p>{PERSONAL_YEAR_MEANINGS[data.personalYear as SingleDigit]}</p>
+        {lifePath && <p>Your Life Path is {data.lifePath}, {lifePath.name.toLowerCase()}: {lifePath.keywords.join(', ')}.</p>}
+        <p><a href="/numerology/">Work out every number from your name too</a></p>
+      </section>
+
+      <section class="tile br__part">
+        <h3>Tarot year card: {data.card.numeral} {data.cardTitle}</h3>
+        <p>{data.card.year}</p>
+        <p class="br__note">The year card adds your birthday’s month and day to {data.calendarYear} and reduces the total to a Major Arcana card, as tarot readers do.</p>
+      </section>
+
+      <p class="br__note">Astrology, numerology and tarot are separate traditions; this page reads each on its own terms.</p>
+      <div class="calc__actions">
+        {state.share && <a class="btn btn--primary" href={state.share}><span>Share my birthday report</span><span class="orb">↗</span></a>}
+      </div>
+    </div>
+  );
+}
 
 /** `yearScoreLink`: the page passes whether /year-score/ is switched on (src/lib/launch-flags.ts); the island runs in the browser. */
 export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLink?: boolean } = {}) {
@@ -44,7 +152,7 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
   const [time, setTime] = useState('');
   const [city, setCity] = useState<City | null>(null);
   const [showDetail, setShowDetail] = useState(false);
-  const [report, setReport] = useState<{ data: Report; zone: string | null; share: string | null; which: BirthdayYear; returns: Record<BirthdayYear, string>; now: Date; birth: { utc: Date; date: string; timeKnown: boolean } } | null>(null);
+  const [report, setReport] = useState<ReportState | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -67,12 +175,7 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
       if (run !== generation.current) return;
       const timeKnown = !!(placed && time);
       const utc = placed ? resolveLocalToUtc(date, time || '12:00', city.tz, { longitude: city.lon }).utc : new Date(`${date}T12:00:00Z`);
-      const now = new Date();
-      const current = module.birthdayReport(utc, date, timeKnown, now);
-      const returns = { current: current.solarReturn, next: current.nextSolarReturn };
-      const which: BirthdayYear = Date.parse(returns.next) - now.getTime() <= NEXT_YEAR_WITHIN ? 'next' : 'current';
-      const data = which === 'next' ? module.birthdayReport(utc, date, timeKnown, now, 'next') : current;
-      setReport({ data, zone: placed ? city.tz : null, share: shareOf(data), which, returns, now, birth: { utc, date, timeKnown } });
+      setReport(openReport(module, { utc, date, timeKnown }, placed ? city.tz : null, new Date(), location.origin));
       requestAnimationFrame(() => headingRef.current?.focus());
     } catch (err) {
       if (run !== generation.current) return;
@@ -90,9 +193,7 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
     try {
       const module = await loadReport();
       if (run !== generation.current) return;
-      const { utc, date: birthDate, timeKnown } = report.birth;
-      const data = module.birthdayReport(utc, birthDate, timeKnown, report.now, which);
-      setReport({ ...report, data, which, share: shareOf(data) });
+      setReport(switchYear(module, report, which, location.origin));
     } catch (err) {
       if (run !== generation.current) return;
       setError('The report could not be calculated. Check the date and try again.');
@@ -100,10 +201,6 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
     }
   }
 
-  const data = report?.data;
-  const ahead = !!(data && report && report.now.getTime() - Date.parse(data.solarReturn) <= AHEAD_FOR);
-  const opened = !!(data && report && Date.parse(data.solarReturn) <= report.now.getTime());
-  const lifePath = data ? NUMBER_MEANINGS[data.lifePath as CoreNumber] : null;
   return (
     <div class="calc" data-birthday-report>
       <form class="calc__form shell" onSubmit={compute} aria-busy={busy}>
@@ -130,61 +227,21 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
             </div>
           )}
           <button class="btn btn--primary calc__submit" type="submit" disabled={!date || busy}>
-            <span>{busy ? 'Calculating' : 'Make my birthday report'}</span><span class="orb">↗</span>
+            {/* Both labels share one cell, so the button keeps its width while it calculates. */}
+            <span class="br__submit" data-busy={busy ? 'true' : 'false'}><span>Make my birthday report</span><span>Calculating</span></span><span class="orb">↗</span>
           </button>
           <p class="calc__privacy">Calculated on your device. Your birth details are not sent or saved.</p>
           {error && <p class="calc__error" role="alert">{error}</p>}
         </div>
       </form>
 
-      {data && report && (
-        <div class="calc__result br" style={`--sign:${data.sun.hue}`}>
-          <h2 class="br__heading" tabIndex={-1} ref={headingRef}>{data.heading}</h2>
-
-          <div class="br__years" role="group" aria-label="Birthday year">
-            {(['current', 'next'] as const).map((which) => (
-              <button key={which} type="button" class="br__year" aria-pressed={report.which === which} onClick={() => { void choose(which); }}>
-                Year from {day(report.returns[which], report.zone)}
-              </button>
-            ))}
-          </div>
-
-          <section class="tile br__part">
-            <h3>Solar return</h3>
-            <p class="br__big">{clock(data.solarReturn, report.zone)}</p>
-            {opened
-              ? <p>The Sun came back to the degree it held when you were born, and your birthday year began. The next return is {clock(data.nextSolarReturn, report.zone)}.</p>
-              : <p>The Sun comes back to the degree it held when you were born, and your next birthday year begins. The return after it is {clock(data.nextSolarReturn, report.zone)}.</p>}
-            <p><a href="/solar-return/">Cast the full solar return chart</a></p>
-          </section>
-
-          <section class="tile br__part">
-            <h3>{ahead ? 'Year Ahead Score' : 'Year score'}</h3>
-            <p class="br__big">{data.year.score.toFixed(1)}/10 <span class="br__tier">{scoreTier(data.year.score).label}</span></p>
-            <p>{scoreTier(data.year.score).summary}</p>
-            {data.year.best && data.year.hardest && <p>Strongest month: {monthName(data.year.best.month)}. Most pressure: {monthName(data.year.hardest.month)}. From {dayName(data.year.from)}.</p>}
-            {yearScoreLink && <p><a href="/year-score/">See the months and the transits behind it</a></p>}
-          </section>
-
-          <section class="tile br__part">
-            <h3>Numerology: Personal Year {data.personalYear} ({data.calendarYear})</h3>
-            <p>{PERSONAL_YEAR_MEANINGS[data.personalYear as SingleDigit]}</p>
-            {lifePath && <p>Your Life Path is {data.lifePath}, {lifePath.name.toLowerCase()}: {lifePath.keywords.join(', ')}.</p>}
-            <p><a href="/numerology/">Work out every number from your name too</a></p>
-          </section>
-
-          <section class="tile br__part">
-            <h3>Tarot year card: {data.card.numeral} {data.cardTitle}</h3>
-            <p>{data.card.year}</p>
-            <p class="br__note">The year card adds your birthday’s month and day to {data.calendarYear} and reduces the total to a Major Arcana card, as tarot readers do.</p>
-          </section>
-
-          <p class="br__note">Astrology, numerology and tarot are separate traditions; this page reads each on its own terms.</p>
-          <div class="calc__actions">
-            {report.share && <a class="btn btn--primary" href={report.share}><span>Share my birthday report</span><span class="orb">↗</span></a>}
-          </div>
-        </div>
-      )}
+      <div class="br" style={report ? `--sign:${report.data.sun.hue}` : undefined}>
+        <YearChoice state={report} onChoose={(which) => { void choose(which); }} />
+        {report
+          ? <ReportResult state={report} yearScoreLink={yearScoreLink} headingRef={headingRef} />
+          // Held from the click, inside its input window, so a result that arrives late fills space already taken.
+          : busy && <div class="br__pending" aria-hidden="true" />}
+      </div>
     </div>
   );
 }
