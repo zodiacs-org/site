@@ -21,7 +21,6 @@ const ENV = {
   ACCOUNT_SYNC_V2_FINGERPRINT_KEYS: JSON.stringify({ 3: FINGERPRINT_KEY }),
   ACCOUNT_SYNC_V2_ACTIVE_FINGERPRINT_KEY_VERSION: '3',
   DAILY_EMAIL_RECIPIENT_HASH_SECRET: 'daily-email-recipient-hash-test-secret-2026',
-  ACCOUNT_SYNC_V2_CANARY_USER_IDS: USER_ID,
 };
 
 const birth = {
@@ -123,7 +122,7 @@ function hexToBase64(value: unknown): string {
 }
 
 describe('dormant account chart-sync API', () => {
-  it('fails closed for authenticated users outside the server-side canary allowlist', async () => {
+  it('admits any signed-in account without an allowlist and ignores a retired canary list', async () => {
     const fetcher = authenticatedFetcher({
       outcome: 'ready',
       account_state: 'active',
@@ -131,28 +130,28 @@ describe('dormant account chart-sync API', () => {
       cursor: 0,
     });
     const response = responseRecorder();
-    const { ACCOUNT_SYNC_V2_CANARY_USER_IDS: _allowlist, ...envWithoutAllowlist } = ENV;
     await handleAccountApi(request('bootstrap', {
       deviceId: DEVICE_ID,
       platform: 'web',
-    }), response, { env: envWithoutAllowlist, fetcher });
+    }), response, {
+      env: { ...ENV, ACCOUNT_SYNC_V2_CANARY_USER_IDS: '99999999-9999-4999-8999-999999999999' },
+      fetcher,
+    });
 
-    expect(response.statusCode).toBe(403);
-    expect(JSON.parse(response.body)).toEqual({ error: 'canary_not_allowed' });
-    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body)).toMatchObject({ outcome: 'ready', chart_sync_consent: 'pending' });
   });
 
-  it('keeps granular consent withdrawal available after canary admission is removed', async () => {
+  it('keeps granular consent withdrawal available', async () => {
     const fetcher = authenticatedFetcher({
       outcome: 'withdrawn', purpose: 'chart_sync', event_id: 10,
     });
     const response = responseRecorder();
-    const { ACCOUNT_SYNC_V2_CANARY_USER_IDS: _allowlist, ...envWithoutAllowlist } = ENV;
     await handleAccountApi(request('consent', {
       mutationId: MUTATION_ID,
       decision: 'withdraw',
       policyVersion: 'chart-sync-2026-08-12.v1',
-    }), response, { env: envWithoutAllowlist, fetcher });
+    }), response, { env: ENV, fetcher });
 
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body)).toEqual({
@@ -196,18 +195,17 @@ describe('dormant account chart-sync API', () => {
     expect(bootstrapFetcher).not.toHaveBeenCalled();
   });
 
-  it('keeps deletion of an existing remote chart available after canary admission is removed', async () => {
+  it('keeps deletion of an existing remote chart available', async () => {
     const fetcher = authenticatedFetcher({
       outcome: 'already_deleted', chart_id: CHART_ID, revision: 2,
     });
     const response = responseRecorder();
-    const { ACCOUNT_SYNC_V2_CANARY_USER_IDS: _allowlist, ...envWithoutAllowlist } = ENV;
     await handleAccountApi(request('chart-delete', {
       deviceId: DEVICE_ID,
       chartId: CHART_ID,
       baseRevision: 2,
       mutationId: MUTATION_ID,
-    }), response, { env: envWithoutAllowlist, fetcher });
+    }), response, { env: ENV, fetcher });
 
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body)).toEqual({
