@@ -1,0 +1,133 @@
+{
+ "id": "25-get_famous_chart",
+ "why": "valid call",
+ "sentAtUtc": "2026-11-11T16:00:40+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_famous_chart",
+   "arguments": {
+    "name": "Ada Lovelace"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_famous_chart\",\"data\":{\"found\":true,\"person\":{\"name\":\"Ada Lovelace\",\"slug\":\"ada-lovelace\",\"shortDescription\":\"Mathematician · United Kingdom · 1815 to 1852\",\"born\":\"1815-12-10\",\"birthplace\":\"London\",\"sun\":{\"sign\":\"sagittarius\",\"degree\":17.6},\"moon\":{\"sign\":null,\"degree\":null},\"placements\":[{\"body\":\"Sun\",\"sign\":\"sagittarius\",\"degree\":17.6,\"settled\":true},{\"body\":\"Moon\",\"sign\":\"aries\",\"degree\":5.2,\"settled\":false},{\"body\":\"Mercury\",\"sign\":\"sagittarius\",\"degree\":0.5,\"settled\":false},{\"body\":\"Venus\",\"sign\":\"scorpio\",\"degree\":1.5,\"settled\":true},{\"body\":\"Mars\",\"sign\":\"aries\",\"degree\":20.4,\"settled\":true},{\"body\":\"Jupiter\",\"sign\":\"scorpio\",\"degree\":2.2,\"settled\":true},{\"body\":\"Saturn\",\"sign\":\"aquarius\",\"degree\":8.6,\"settled\":true},{\"body\":\"Uranus\",\"sign\":\"sagittarius\",\"degree\":7.8,\"settled\":true},{\"body\":\"Neptune\",\"sign\":\"sagittarius\",\"degree\":19.6,\"settled\":true},{\"body\":\"Pluto\",\"sign\":\"pisces\",\"degree\":20.9,\"settled\":true}],\"lede\":\"Venus and Jupiter sit 0.7° from an exact conjunction, near enough that the tradition reads taste and expansion as a single working part. A conjunction is the least negotiable aspect in the scheme, no distance to argue across, so the pair arrives as a single instinct.\",\"url\":\"https://zodiacs.org/people/ada-lovelace/?ref=assistant\",\"birthdayUrl\":\"https://zodiacs.org/birthday/december-10/?ref=assistant\"},\"alsoMatched\":[],\"note\":\"Positions at 12:00 civil time in London, a reference instant, not a birth time. No houses, rising sign, angles, or sect were computed.\",\"shareUrl\":\"https://zodiacs.org/share/famous-chart/?p=ada-lovelace&ref=assistant\"},\"links\":[{\"title\":\"Ada Lovelace's chart on Zodiacs\",\"url\":\"https://zodiacs.org/people/ada-lovelace/?ref=assistant\"},{\"title\":\"Famous birth charts on Zodiacs\",\"url\":\"https://zodiacs.org/people/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_famous_chart",
+    "data": {
+     "found": true,
+     "person": {
+      "name": "Ada Lovelace",
+      "slug": "ada-lovelace",
+      "shortDescription": "Mathematician · United Kingdom · 1815 to 1852",
+      "born": "1815-12-10",
+      "birthplace": "London",
+      "sun": {
+       "sign": "sagittarius",
+       "degree": 17.6
+      },
+      "moon": {
+       "sign": null,
+       "degree": null
+      },
+      "placements": [
+       {
+        "body": "Sun",
+        "sign": "sagittarius",
+        "degree": 17.6,
+        "settled": true
+       },
+       {
+        "body": "Moon",
+        "sign": "aries",
+        "degree": 5.2,
+        "settled": false
+       },
+       {
+        "body": "Mercury",
+        "sign": "sagittarius",
+        "degree": 0.5,
+        "settled": false
+       },
+       {
+        "body": "Venus",
+        "sign": "scorpio",
+        "degree": 1.5,
+        "settled": true
+       },
+       {
+        "body": "Mars",
+        "sign": "aries",
+        "degree": 20.4,
+        "settled": true
+       },
+       {
+        "body": "Jupiter",
+        "sign": "scorpio",
+        "degree": 2.2,
+        "settled": true
+       },
+       {
+        "body": "Saturn",
+        "sign": "aquarius",
+        "degree": 8.6,
+        "settled": true
+       },
+       {
+        "body": "Uranus",
+        "sign": "sagittarius",
+        "degree": 7.8,
+        "settled": true
+       },
+       {
+        "body": "Neptune",
+        "sign": "sagittarius",
+        "degree": 19.6,
+        "settled": true
+       },
+       {
+        "body": "Pluto",
+        "sign": "pisces",
+        "degree": 20.9,
+        "settled": true
+       }
+      ],
+      "lede": "Venus and Jupiter sit 0.7° from an exact conjunction, near enough that the tradition reads taste and expansion as a single working part. A conjunction is the least negotiable aspect in the scheme, no distance to argue across, so the pair arrives as a single instinct.",
+      "url": "https://zodiacs.org/people/ada-lovelace/?ref=assistant",
+      "birthdayUrl": "https://zodiacs.org/birthday/december-10/?ref=assistant"
+     },
+     "alsoMatched": [],
+     "note": "Positions at 12:00 civil time in London, a reference instant, not a birth time. No houses, rising sign, angles, or sect were computed.",
+     "shareUrl": "https://zodiacs.org/share/famous-chart/?p=ada-lovelace&ref=assistant"
+    },
+    "links": [
+     {
+      "title": "Ada Lovelace's chart on Zodiacs",
+      "url": "https://zodiacs.org/people/ada-lovelace/?ref=assistant"
+     },
+     {
+      "title": "Famous birth charts on Zodiacs",
+      "url": "https://zodiacs.org/people/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

@@ -1,0 +1,466 @@
+{
+ "id": "40-u18-get_horoscope-love-15",
+ "why": "D2: the 10 Nov finding, love reading for a 15-year-old's birth date",
+ "sentAtUtc": "2026-11-11T16:01:38+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_horoscope",
+   "arguments": {
+    "sign": "gemini",
+    "focus": "love",
+    "zone": "Asia/Bangkok",
+    "birthDate": "2011-06-15"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "_meta": {
+    "zodiacs/horoscope": {
+     "sign": "gemini",
+     "signName": "Gemini",
+     "requested": {
+      "period": "day",
+      "focus": "love",
+      "zone": "Asia/Bangkok"
+     },
+     "days": [
+      {
+       "date": "2026-11-10",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, put the agreement or disagreement directly on the table. For Gemini, the sharp question is more valuable than another quick answer. The new moon puts partners and one-to-one relationships on the day’s agenda."
+          },
+          {
+           "text": "Write the message plainly, confirm the route, and ask the question that would prevent avoidable confusion. In this reading, Mars in Leo brings attention to messages, errands, siblings, and your local community."
+          },
+          {
+           "text": "Connect partners and one-to-one relationships with messages, errands, siblings, and your local community; write the question down before collecting another opinion."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 1° Sagittarius",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Mars at 23° Leo",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 7th solar house",
+          "Mars in Leo: your 3rd solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-10&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Allow pleasure and affection to be direct rather than overmanaged. For Gemini, curiosity helps when the conversation is allowed to finish. Venus brings creativity, romance, children, and enjoyment into the relationship foreground."
+          },
+          {
+           "text": "Treat reciprocity as an observable practice. Compare what was offered with what was returned instead of translating the response into a hidden riddle. The Moon shifts the emotional weather toward partners and one-to-one relationships."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 23° Libra",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 1° Sagittarius",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 5th solar house",
+          "Moon in Sagittarius: your 7th solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-10&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Tighten the brief, message, or nearby exchange. For Gemini, a precise brief will carry farther than scattered cleverness. Mars brings messages, errands, siblings, and your local community into the work picture."
+          },
+          {
+           "text": "Repair the workflow before asking effort alone to solve it. Change one part of the workflow and watch the repeatable result before scaling it. The Sun widens the frame to daily work, health routines, and responsibilities."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Mars at 23° Leo",
+           "at": "2026-11-10T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 18° Scorpio",
+           "at": "2026-11-10T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Mars in Leo: your 3rd solar house",
+          "Sun in Scorpio: your 6th solar house"
+         ],
+         "from": "2026-11-10",
+         "through": "2026-11-10",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-10&f=career&ref=assistant"
+        }
+       }
+      },
+      {
+       "date": "2026-11-11",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, put the agreement or disagreement directly on the table. For Gemini, the sharp question is more valuable than another quick answer. The waxing crescent Moon puts partners and one-to-one relationships on the day’s agenda."
+          },
+          {
+           "text": "Write the message plainly, confirm the route, and ask the question that would prevent avoidable confusion. In this reading, Mars in Leo brings attention to messages, errands, siblings, and your local community."
+          },
+          {
+           "text": "Connect partners and one-to-one relationships with messages, errands, siblings, and your local community; write the question down before collecting another opinion."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 13° Sagittarius",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Mars at 23° Leo",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 7th solar house",
+          "Mars in Leo: your 3rd solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-11&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Allow pleasure and affection to be direct rather than overmanaged. For Gemini, curiosity helps when the conversation is allowed to finish. Venus brings creativity, romance, children, and enjoyment into the relationship foreground."
+          },
+          {
+           "text": "Treat reciprocity as an observable practice. Compare what was offered with what was returned instead of translating the response into a hidden riddle. The Moon shifts the emotional weather toward partners and one-to-one relationships."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 22° Libra",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 13° Sagittarius",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 5th solar house",
+          "Moon in Sagittarius: your 7th solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-11&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Tighten the brief, message, or nearby exchange. For Gemini, a precise brief will carry farther than scattered cleverness. Mars brings messages, errands, siblings, and your local community into the work picture."
+          },
+          {
+           "text": "Repair the workflow before asking effort alone to solve it. Change one part of the workflow and watch the repeatable result before scaling it. The Sun widens the frame to daily work, health routines, and responsibilities."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Mars at 23° Leo",
+           "at": "2026-11-11T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 19° Scorpio",
+           "at": "2026-11-11T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Mars in Leo: your 3rd solar house",
+          "Sun in Scorpio: your 6th solar house"
+         ],
+         "from": "2026-11-11",
+         "through": "2026-11-11",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-11&f=career&ref=assistant"
+        }
+       }
+      },
+      {
+       "date": "2026-11-12",
+       "focuses": {
+        "general": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Today, put the agreement or disagreement directly on the table. For Gemini, the sharp question is more valuable than another quick answer. The waxing crescent Moon puts partners and one-to-one relationships on the day’s agenda."
+          },
+          {
+           "text": "Write the message plainly, confirm the route, and ask the question that would prevent avoidable confusion. In this reading, Mars in Leo brings attention to messages, errands, siblings, and your local community."
+          },
+          {
+           "text": "Connect partners and one-to-one relationships with messages, errands, siblings, and your local community; write the question down before collecting another opinion."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Moon at 25° Sagittarius",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Mars at 24° Leo",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Moon in Sagittarius: your 7th solar house",
+          "Mars in Leo: your 3rd solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-12&ref=assistant"
+        },
+        "love": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Allow pleasure and affection to be direct rather than overmanaged. For Gemini, curiosity helps when the conversation is allowed to finish. Venus brings creativity, romance, children, and enjoyment into the relationship foreground."
+          },
+          {
+           "text": "Treat reciprocity as an observable practice. Compare what was offered with what was returned instead of translating the response into a hidden riddle. The Moon shifts the emotional weather toward partners and one-to-one relationships."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Venus at 22° Libra",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Moon at 25° Sagittarius",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Venus in Libra: your 5th solar house",
+          "Moon in Sagittarius: your 7th solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-12&f=love&ref=assistant"
+        },
+        "career": {
+         "status": "available",
+         "paragraphs": [
+          {
+           "text": "Tighten the brief, message, or nearby exchange. For Gemini, a precise brief will carry farther than scattered cleverness. Mars brings messages, errands, siblings, and your local community into the work picture."
+          },
+          {
+           "text": "Repair the workflow before asking effort alone to solve it. Change one part of the workflow and watch the repeatable result before scaling it. The Sun widens the frame to daily work, health routines, and responsibilities."
+          }
+         ],
+         "facts": [
+          {
+           "text": "Mars at 24° Leo",
+           "at": "2026-11-12T12:00:00.000Z"
+          },
+          {
+           "text": "Sun at 20° Scorpio",
+           "at": "2026-11-12T12:00:00.000Z"
+          }
+         ],
+         "houses": [
+          "Mars in Leo: your 3rd solar house",
+          "Sun in Scorpio: your 6th solar house"
+         ],
+         "from": "2026-11-12",
+         "through": "2026-11-12",
+         "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-12&f=career&ref=assistant"
+        }
+       }
+      }
+     ],
+     "weeks": [
+      {
+       "status": "available",
+       "paragraphs": [
+        {
+         "text": "Sort the useful signal from the week’s competing messages. The week opens with daily work, health routines, and responsibilities, moves through partners and one-to-one relationships by Thursday, and closes on travel, learning, beliefs, and long-term plans. Give routines and workload the first concrete move instead of asking one choice to settle all three areas at once."
+        },
+        {
+         "text": "Early in the week, turn toward daily work, health routines, and responsibilities: choose one change that would make your daily work easier, then remove one repeated snag from the routine before adding another promise to the week. Keep the routines and workload adjustment small enough to see what it changes before adding another."
+        },
+        {
+         "text": "By midweek, attention shifts to partners and one-to-one relationships: put the agreement or disagreement directly on the table, then state the term that is still vague and give the other person a real chance to answer it."
+        },
+        {
+         "text": "At the exact contact, inspect the recurring snag instead of treating effort as the only variable. The New Moon in Scorpio brings daily work, health routines, and responsibilities into focus."
+        },
+        {
+         "text": "The week closes with travel, learning, beliefs, and long-term plans: test the larger belief against study, distance, or direct experience, then choose the course, journey, publication, or conversation that could test the larger idea in real life. For Gemini, the final review is to write the question down before collecting another opinion."
+        }
+       ],
+       "facts": [
+        {
+         "text": "New Moon in Scorpio at 16.9°",
+         "at": "2026-11-09T07:02:05.269Z"
+        },
+        {
+         "text": "Moon at 19° Scorpio",
+         "at": "2026-11-09T12:00:00.000Z"
+        },
+        {
+         "text": "Moon at 25° Sagittarius",
+         "at": "2026-11-12T12:00:00.000Z"
+        },
+        {
+         "text": "Moon at 1° Aquarius",
+         "at": "2026-11-15T12:00:00.000Z"
+        }
+       ],
+       "houses": [
+        "Moon in Scorpio: your 6th solar house",
+        "Moon in Sagittarius: your 7th solar house",
+        "Moon in Aquarius: your 9th solar house"
+       ],
+       "from": "2026-11-09",
+       "through": "2026-11-15",
+       "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&w=2026-11-09&ref=assistant"
+      }
+     ],
+     "note": "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.",
+     "disclosure": "For reflection. Astrology does not establish what will happen in your life."
+    }
+   },
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_horoscope\",\"data\":{\"status\":\"available\",\"sign\":\"gemini\",\"signName\":\"Gemini\",\"period\":\"day\",\"focus\":\"love\",\"date\":\"2026-11-11\",\"dateLabel\":\"Wednesday 11 November\",\"zone\":\"Asia/Bangkok\",\"zoneLabel\":\"Bangkok\",\"zoneSource\":\"request\",\"reading\":{\"title\":\"Gemini · Wednesday 11 November · Love\",\"paragraphs\":[{\"text\":\"Allow pleasure and affection to be direct rather than overmanaged. For Gemini, curiosity helps when the conversation is allowed to finish. Venus brings creativity, romance, children, and enjoyment into the relationship foreground.\"},{\"text\":\"Treat reciprocity as an observable practice. Compare what was offered with what was returned instead of translating the response into a hidden riddle. The Moon shifts the emotional weather toward partners and one-to-one relationships.\"}]},\"why\":{\"note\":\"These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.\",\"facts\":[{\"text\":\"Venus at 22° Libra\",\"when\":\"Wed 11 Nov, 7:00 pm\"},{\"text\":\"Moon at 13° Sagittarius\",\"when\":\"Wed 11 Nov, 7:00 pm\"}],\"houses\":[\"Venus in Libra: your 5th solar house\",\"Moon in Sagittarius: your 7th solar house\"]},\"personal\":{\"timeKnown\":false,\"items\":[{\"title\":\"Mars sextile your Sun\",\"line\":\"Mars opens a door for your sense of self: a charged stretch of heat and urgency, an opening that rewards you if you take it.\",\"when\":\"All week · exact on Thu 12 Nov\"},{\"title\":\"Mars square your Mars\",\"line\":\"Mars pushes against your drive: a charged stretch of heat and urgency, friction that will not resolve on its own.\",\"when\":\"All week · exact on Mon 16 Nov\"},{\"title\":\"Jupiter square your Mars\",\"line\":\"Jupiter pushes against your drive: a generous stretch of confidence, friction that will not resolve on its own.\",\"when\":\"All week · exact on Tue 17 Nov\"},{\"title\":\"Mercury sextile your Pluto\",\"line\":\"Mercury opens a door for your intensity: a busy stretch for messages and errands, an opening that rewards you if you take it.\",\"when\":\"All week · exact on Wed 18 Nov\"},{\"title\":\"Sun opposition your Mars\",\"line\":\"Sun stands opposite your drive: a few days of spotlight, a tension best met head-on rather than absorbed.\",\"when\":\"From Sun 15 Nov · exact on Wed 18 Nov\"}],\"note\":\"From your own birth chart: astrology’s forecast for your week, not a guarantee. This birth date is under 18, so romantic and attraction readings are left out. Reading confidence 55%. For the dates of these contacts, use get_personal_transits.\"},\"shareUrl\":\"https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-11&f=love&ref=assistant\",\"disclosure\":\"For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%. For a month, a year, or a love or career week, use get_horoscope_period.\"},\"links\":[{\"title\":\"Gemini on Zodiacs\",\"url\":\"https://zodiacs.org/horoscopes/gemini/?ref=assistant\"},{\"title\":\"How we calculate\",\"url\":\"https://zodiacs.org/methodology/?ref=assistant\"},{\"title\":\"The Gemini horoscope by email each morning\",\"url\":\"https://zodiacs.org/horoscopes/gemini/?ref=assistant#daily-email\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_horoscope",
+    "data": {
+     "status": "available",
+     "sign": "gemini",
+     "signName": "Gemini",
+     "period": "day",
+     "focus": "love",
+     "date": "2026-11-11",
+     "dateLabel": "Wednesday 11 November",
+     "zone": "Asia/Bangkok",
+     "zoneLabel": "Bangkok",
+     "zoneSource": "request",
+     "reading": {
+      "title": "Gemini · Wednesday 11 November · Love",
+      "paragraphs": [
+       {
+        "text": "Allow pleasure and affection to be direct rather than overmanaged. For Gemini, curiosity helps when the conversation is allowed to finish. Venus brings creativity, romance, children, and enjoyment into the relationship foreground."
+       },
+       {
+        "text": "Treat reciprocity as an observable practice. Compare what was offered with what was returned instead of translating the response into a hidden riddle. The Moon shifts the emotional weather toward partners and one-to-one relationships."
+       }
+      ]
+     },
+     "why": {
+      "note": "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.",
+      "facts": [
+       {
+        "text": "Venus at 22° Libra",
+        "when": "Wed 11 Nov, 7:00 pm"
+       },
+       {
+        "text": "Moon at 13° Sagittarius",
+        "when": "Wed 11 Nov, 7:00 pm"
+       }
+      ],
+      "houses": [
+       "Venus in Libra: your 5th solar house",
+       "Moon in Sagittarius: your 7th solar house"
+      ]
+     },
+     "personal": {
+      "timeKnown": false,
+      "items": [
+       {
+        "title": "Mars sextile your Sun",
+        "line": "Mars opens a door for your sense of self: a charged stretch of heat and urgency, an opening that rewards you if you take it.",
+        "when": "All week · exact on Thu 12 Nov"
+       },
+       {
+        "title": "Mars square your Mars",
+        "line": "Mars pushes against your drive: a charged stretch of heat and urgency, friction that will not resolve on its own.",
+        "when": "All week · exact on Mon 16 Nov"
+       },
+       {
+        "title": "Jupiter square your Mars",
+        "line": "Jupiter pushes against your drive: a generous stretch of confidence, friction that will not resolve on its own.",
+        "when": "All week · exact on Tue 17 Nov"
+       },
+       {
+        "title": "Mercury sextile your Pluto",
+        "line": "Mercury opens a door for your intensity: a busy stretch for messages and errands, an opening that rewards you if you take it.",
+        "when": "All week · exact on Wed 18 Nov"
+       },
+       {
+        "title": "Sun opposition your Mars",
+        "line": "Sun stands opposite your drive: a few days of spotlight, a tension best met head-on rather than absorbed.",
+        "when": "From Sun 15 Nov · exact on Wed 18 Nov"
+       }
+      ],
+      "note": "From your own birth chart: astrology’s forecast for your week, not a guarantee. This birth date is under 18, so romantic and attraction readings are left out. Reading confidence 55%. For the dates of these contacts, use get_personal_transits."
+     },
+     "shareUrl": "https://zodiacs.org/share/horoscope/?s=gemini&d=2026-11-11&f=love&ref=assistant",
+     "disclosure": "For reflection. Astrology does not establish what will happen in your life. Reading confidence 40%. For a month, a year, or a love or career week, use get_horoscope_period."
+    },
+    "links": [
+     {
+      "title": "Gemini on Zodiacs",
+      "url": "https://zodiacs.org/horoscopes/gemini/?ref=assistant"
+     },
+     {
+      "title": "How we calculate",
+      "url": "https://zodiacs.org/methodology/?ref=assistant"
+     },
+     {
+      "title": "The Gemini horoscope by email each morning",
+      "url": "https://zodiacs.org/horoscopes/gemini/?ref=assistant#daily-email"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

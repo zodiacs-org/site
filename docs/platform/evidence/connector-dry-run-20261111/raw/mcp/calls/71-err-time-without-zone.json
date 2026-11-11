@@ -1,0 +1,42 @@
+{
+ "id": "71-err-time-without-zone",
+ "why": "D4: time without zone",
+ "sentAtUtc": "2026-11-11T16:03:37+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_natal_chart",
+   "arguments": {
+    "birthDate": "1990-05-03",
+    "time": "08:30"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "isError": true,
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_natal_chart\",\"error\":{\"code\":\"invalid-request\",\"message\":\"A birth time or a place needs its time zone.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_natal_chart",
+    "error": {
+     "code": "invalid-request",
+     "message": "A birth time or a place needs its time zone."
+    }
+   }
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

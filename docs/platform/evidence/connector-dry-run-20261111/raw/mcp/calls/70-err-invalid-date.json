@@ -1,0 +1,41 @@
+{
+ "id": "70-err-invalid-date",
+ "why": "D4: impossible calendar date",
+ "sentAtUtc": "2026-11-11T16:03:36+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_natal_chart",
+   "arguments": {
+    "birthDate": "1990-02-30"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_natal_chart\",\"error\":{\"code\":\"invalid-request\",\"message\":\"birthDate must be a real date from 1800 to 2199.\"}}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_natal_chart",
+    "error": {
+     "code": "invalid-request",
+     "message": "birthDate must be a real date from 1800 to 2199."
+    }
+   },
+   "isError": true
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

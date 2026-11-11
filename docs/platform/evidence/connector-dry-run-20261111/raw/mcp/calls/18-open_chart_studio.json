@@ -1,0 +1,47 @@
+{
+ "id": "18-open_chart_studio",
+ "why": "valid call",
+ "sentAtUtc": "2026-11-11T16:00:14+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "open_chart_studio",
+   "arguments": {}
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"open_chart_studio\",\"data\":{\"title\":\"Chart Studio\",\"calculation\":\"browser-local\",\"initialChart\":\"birth-details\",\"sharing\":\"user-reviewed-selection-only\"},\"links\":[{\"title\":\"Birth chart page. A chat readout from details already given uses get_natal_chart.\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "open_chart_studio",
+    "data": {
+     "title": "Chart Studio",
+     "calculation": "browser-local",
+     "initialChart": "birth-details",
+     "sharing": "user-reviewed-selection-only"
+    },
+    "links": [
+     {
+      "title": "Birth chart page. A chat readout from details already given uses get_natal_chart.",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

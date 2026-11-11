@@ -1,0 +1,310 @@
+{
+ "id": "45-u18-get_natal_chart",
+ "why": "D2: chart for a 16-year-old",
+ "sentAtUtc": "2026-11-11T16:01:58+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_natal_chart",
+   "arguments": {
+    "birthDate": "2010-03-15"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_natal_chart\",\"data\":{\"birthDate\":\"2010-03-15\",\"time\":null,\"zone\":null,\"place\":null,\"timeKnown\":false,\"placed\":false,\"castFor\":{\"utc\":\"2010-03-15T12:00:00.000Z\",\"basis\":\"utc-noon\"},\"houseSystem\":null,\"sun\":{\"sign\":\"pisces\",\"possibleSigns\":[\"pisces\"],\"meaning\":\"Your edges are porous: you absorb moods, read subtext, and imagine your way into other lives without trying. Boundaries are not a betrayal of that gift. They are its maintenance.\",\"pageUrl\":\"https://zodiacs.org/pisces/?ref=assistant\"},\"moon\":{\"sign\":null,\"possibleSigns\":[\"pisces\",\"aries\"],\"meaning\":null,\"pageUrl\":null},\"rising\":{\"sign\":null,\"possibleSigns\":[],\"meaning\":null,\"pageUrl\":null},\"planets\":[{\"body\":\"Sun\",\"sign\":\"pisces\",\"possibleSigns\":[\"pisces\"],\"position\":\"24°47′ Pisces\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/sun-in-pisces/?ref=assistant\"},{\"body\":\"Moon\",\"sign\":null,\"possibleSigns\":[\"pisces\",\"aries\"],\"position\":null,\"retrograde\":false,\"house\":null,\"signLine\":null,\"houseLine\":null,\"pageUrl\":null},{\"body\":\"Mercury\",\"sign\":\"pisces\",\"possibleSigns\":[\"pisces\"],\"position\":\"25°42′ Pisces\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/mercury-in-pisces/?ref=assistant\"},{\"body\":\"Venus\",\"sign\":\"aries\",\"possibleSigns\":[\"aries\"],\"position\":\"9°55′ Aries\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Aries, it takes on a cardinal fire style. First out of the gate. Direct, fast, unafraid to start.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/venus-in-aries/?ref=assistant\"},{\"body\":\"Mars\",\"sign\":\"leo\",\"possibleSigns\":[\"leo\"],\"position\":\"0°25′ Leo\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Leo, it takes on a fixed fire style. Warm-hearted, expressive, born for the spotlight.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/mars-in-leo/?ref=assistant\"},{\"body\":\"Jupiter\",\"sign\":\"pisces\",\"possibleSigns\":[\"pisces\"],\"position\":\"13°21′ Pisces\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/jupiter-in-pisces/?ref=assistant\"},{\"body\":\"Saturn\",\"sign\":\"libra\",\"possibleSigns\":[\"libra\"],\"position\":\"1°47′ Libra\",\"retrograde\":true,\"house\":null,\"signLine\":\"In Libra, it takes on a cardinal air style. Balance-seeking, charming, allergic to unfairness.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/saturn-in-libra/?ref=assistant\"},{\"body\":\"Uranus\",\"sign\":\"pisces\",\"possibleSigns\":[\"pisces\"],\"position\":\"26°28′ Pisces\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/uranus-in-pisces/?ref=assistant\"},{\"body\":\"Neptune\",\"sign\":\"aquarius\",\"possibleSigns\":[\"aquarius\"],\"position\":\"27°12′ Aquarius\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Aquarius, it takes on a fixed air style. Independent, inventive, loyal to the future.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/neptune-in-aquarius/?ref=assistant\"},{\"body\":\"Pluto\",\"sign\":\"capricorn\",\"possibleSigns\":[\"capricorn\"],\"position\":\"5°17′ Capricorn\",\"retrograde\":false,\"house\":null,\"signLine\":\"In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.\",\"houseLine\":null,\"pageUrl\":\"https://zodiacs.org/learn/placements/pluto-in-capricorn/?ref=assistant\"}],\"angles\":null,\"aspects\":[{\"a\":\"Mercury\",\"b\":\"Uranus\",\"type\":\"conjunction\",\"orb\":0.8,\"line\":\"Your Mercury is fused to your Uranus. Your way of thinking and your independence run as one instrument, hard to play separately.\"},{\"a\":\"Sun\",\"b\":\"Mercury\",\"type\":\"conjunction\",\"orb\":0.9,\"line\":\"Your Sun is fused to your Mercury. The self and its narrator share a desk, which makes the account vivid and the distance between you and your own opinions small.\"},{\"a\":\"Mars\",\"b\":\"Saturn\",\"type\":\"sextile\",\"orb\":1.4,\"line\":\"Your Mars has an open line to your Saturn. Your drive and your sense of duty cooperate whenever you remember to ask.\"},{\"a\":\"Sun\",\"b\":\"Uranus\",\"type\":\"conjunction\",\"orb\":1.7,\"line\":\"Your Sun is fused to your Uranus. Your sense of self and your independence run as one instrument, hard to play separately.\"},{\"a\":\"Saturn\",\"b\":\"Pluto\",\"type\":\"square\",\"orb\":3.5,\"line\":\"Your Saturn grinds against your Pluto. Your sense of duty and your intensity pull in directions ninety degrees apart: permanent friction, and the strength that comes from working against it.\"},{\"a\":\"Mars\",\"b\":\"Uranus\",\"type\":\"trine\",\"orb\":4,\"line\":\"Your Mars runs downhill into your Uranus. Your drive and your independence help each other so smoothly the gift is easy to miss.\"},{\"a\":\"Venus\",\"b\":\"Pluto\",\"type\":\"square\",\"orb\":4.6,\"line\":\"Your Venus grinds against your Pluto. Your way of caring and your intensity pull in directions ninety degrees apart: permanent friction, and the strength that comes from working against it.\"},{\"a\":\"Mercury\",\"b\":\"Mars\",\"type\":\"trine\",\"orb\":4.7,\"line\":\"Your Mercury runs downhill into your Mars. Your way of thinking and your drive help each other so smoothly the gift is easy to miss.\"}],\"balance\":{\"elements\":{\"fire\":2,\"earth\":1,\"air\":2,\"water\":5},\"modalities\":{\"cardinal\":3,\"fixed\":2,\"mutable\":5},\"lines\":[\"Water carries 5 of the ten planets. The chart reads the room before the memo: feeling is the first sense.\",\"Mutable count 5 of ten: heavy on mutable signs, built to adapt, tempted to drift.\",\"Sun, Mercury, Jupiter, Uranus all sit in Pisces, a stellium; that sign's agenda gets 4 votes.\"]},\"unknown\":[\"No birth time was given, so the rising sign and the houses are unknown, and the chart is cast for midday.\",\"The Moon changed sign that day: it was in Pisces or Aries, depending on the birth time.\",\"No time zone was given, so the chart is cast for noon UTC on the birth date.\",\"This birth date is under 18, so romantic and attraction readings are left out.\"],\"chartUrl\":\"https://zodiacs.org/birth-chart/?ref=assistant\",\"under18\":true,\"note\":\"Astrology’s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny.\"},\"links\":[{\"title\":\"Open the birth chart page on Zodiacs\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"Resolve a town or city (find_birthplace)\",\"url\":\"https://zodiacs.org/birth-chart/?ref=assistant\"},{\"title\":\"Pisces on Zodiacs\",\"url\":\"https://zodiacs.org/pisces/?ref=assistant\"},{\"title\":\"How to read a birth chart\",\"url\":\"https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_natal_chart",
+    "data": {
+     "birthDate": "2010-03-15",
+     "time": null,
+     "zone": null,
+     "place": null,
+     "timeKnown": false,
+     "placed": false,
+     "castFor": {
+      "utc": "2010-03-15T12:00:00.000Z",
+      "basis": "utc-noon"
+     },
+     "houseSystem": null,
+     "sun": {
+      "sign": "pisces",
+      "possibleSigns": [
+       "pisces"
+      ],
+      "meaning": "Your edges are porous: you absorb moods, read subtext, and imagine your way into other lives without trying. Boundaries are not a betrayal of that gift. They are its maintenance.",
+      "pageUrl": "https://zodiacs.org/pisces/?ref=assistant"
+     },
+     "moon": {
+      "sign": null,
+      "possibleSigns": [
+       "pisces",
+       "aries"
+      ],
+      "meaning": null,
+      "pageUrl": null
+     },
+     "rising": {
+      "sign": null,
+      "possibleSigns": [],
+      "meaning": null,
+      "pageUrl": null
+     },
+     "planets": [
+      {
+       "body": "Sun",
+       "sign": "pisces",
+       "possibleSigns": [
+        "pisces"
+       ],
+       "position": "24°47′ Pisces",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/sun-in-pisces/?ref=assistant"
+      },
+      {
+       "body": "Moon",
+       "sign": null,
+       "possibleSigns": [
+        "pisces",
+        "aries"
+       ],
+       "position": null,
+       "retrograde": false,
+       "house": null,
+       "signLine": null,
+       "houseLine": null,
+       "pageUrl": null
+      },
+      {
+       "body": "Mercury",
+       "sign": "pisces",
+       "possibleSigns": [
+        "pisces"
+       ],
+       "position": "25°42′ Pisces",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/mercury-in-pisces/?ref=assistant"
+      },
+      {
+       "body": "Venus",
+       "sign": "aries",
+       "possibleSigns": [
+        "aries"
+       ],
+       "position": "9°55′ Aries",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Aries, it takes on a cardinal fire style. First out of the gate. Direct, fast, unafraid to start.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/venus-in-aries/?ref=assistant"
+      },
+      {
+       "body": "Mars",
+       "sign": "leo",
+       "possibleSigns": [
+        "leo"
+       ],
+       "position": "0°25′ Leo",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Leo, it takes on a fixed fire style. Warm-hearted, expressive, born for the spotlight.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/mars-in-leo/?ref=assistant"
+      },
+      {
+       "body": "Jupiter",
+       "sign": "pisces",
+       "possibleSigns": [
+        "pisces"
+       ],
+       "position": "13°21′ Pisces",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/jupiter-in-pisces/?ref=assistant"
+      },
+      {
+       "body": "Saturn",
+       "sign": "libra",
+       "possibleSigns": [
+        "libra"
+       ],
+       "position": "1°47′ Libra",
+       "retrograde": true,
+       "house": null,
+       "signLine": "In Libra, it takes on a cardinal air style. Balance-seeking, charming, allergic to unfairness.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/saturn-in-libra/?ref=assistant"
+      },
+      {
+       "body": "Uranus",
+       "sign": "pisces",
+       "possibleSigns": [
+        "pisces"
+       ],
+       "position": "26°28′ Pisces",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Pisces, it takes on a mutable water style. Porous, imaginative, tuned to what goes unspoken.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/uranus-in-pisces/?ref=assistant"
+      },
+      {
+       "body": "Neptune",
+       "sign": "aquarius",
+       "possibleSigns": [
+        "aquarius"
+       ],
+       "position": "27°12′ Aquarius",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Aquarius, it takes on a fixed air style. Independent, inventive, loyal to the future.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/neptune-in-aquarius/?ref=assistant"
+      },
+      {
+       "body": "Pluto",
+       "sign": "capricorn",
+       "possibleSigns": [
+        "capricorn"
+       ],
+       "position": "5°17′ Capricorn",
+       "retrograde": false,
+       "house": null,
+       "signLine": "In Capricorn, it takes on a cardinal earth style. Patient, ambitious, building something that lasts.",
+       "houseLine": null,
+       "pageUrl": "https://zodiacs.org/learn/placements/pluto-in-capricorn/?ref=assistant"
+      }
+     ],
+     "angles": null,
+     "aspects": [
+      {
+       "a": "Mercury",
+       "b": "Uranus",
+       "type": "conjunction",
+       "orb": 0.8,
+       "line": "Your Mercury is fused to your Uranus. Your way of thinking and your independence run as one instrument, hard to play separately."
+      },
+      {
+       "a": "Sun",
+       "b": "Mercury",
+       "type": "conjunction",
+       "orb": 0.9,
+       "line": "Your Sun is fused to your Mercury. The self and its narrator share a desk, which makes the account vivid and the distance between you and your own opinions small."
+      },
+      {
+       "a": "Mars",
+       "b": "Saturn",
+       "type": "sextile",
+       "orb": 1.4,
+       "line": "Your Mars has an open line to your Saturn. Your drive and your sense of duty cooperate whenever you remember to ask."
+      },
+      {
+       "a": "Sun",
+       "b": "Uranus",
+       "type": "conjunction",
+       "orb": 1.7,
+       "line": "Your Sun is fused to your Uranus. Your sense of self and your independence run as one instrument, hard to play separately."
+      },
+      {
+       "a": "Saturn",
+       "b": "Pluto",
+       "type": "square",
+       "orb": 3.5,
+       "line": "Your Saturn grinds against your Pluto. Your sense of duty and your intensity pull in directions ninety degrees apart: permanent friction, and the strength that comes from working against it."
+      },
+      {
+       "a": "Mars",
+       "b": "Uranus",
+       "type": "trine",
+       "orb": 4,
+       "line": "Your Mars runs downhill into your Uranus. Your drive and your independence help each other so smoothly the gift is easy to miss."
+      },
+      {
+       "a": "Venus",
+       "b": "Pluto",
+       "type": "square",
+       "orb": 4.6,
+       "line": "Your Venus grinds against your Pluto. Your way of caring and your intensity pull in directions ninety degrees apart: permanent friction, and the strength that comes from working against it."
+      },
+      {
+       "a": "Mercury",
+       "b": "Mars",
+       "type": "trine",
+       "orb": 4.7,
+       "line": "Your Mercury runs downhill into your Mars. Your way of thinking and your drive help each other so smoothly the gift is easy to miss."
+      }
+     ],
+     "balance": {
+      "elements": {
+       "fire": 2,
+       "earth": 1,
+       "air": 2,
+       "water": 5
+      },
+      "modalities": {
+       "cardinal": 3,
+       "fixed": 2,
+       "mutable": 5
+      },
+      "lines": [
+       "Water carries 5 of the ten planets. The chart reads the room before the memo: feeling is the first sense.",
+       "Mutable count 5 of ten: heavy on mutable signs, built to adapt, tempted to drift.",
+       "Sun, Mercury, Jupiter, Uranus all sit in Pisces, a stellium; that sign's agenda gets 4 votes."
+      ]
+     },
+     "unknown": [
+      "No birth time was given, so the rising sign and the houses are unknown, and the chart is cast for midday.",
+      "The Moon changed sign that day: it was in Pisces or Aries, depending on the birth time.",
+      "No time zone was given, so the chart is cast for noon UTC on the birth date.",
+      "This birth date is under 18, so romantic and attraction readings are left out."
+     ],
+     "chartUrl": "https://zodiacs.org/birth-chart/?ref=assistant",
+     "under18": true,
+     "note": "Astrology’s reading of a birth chart: tendencies to reflect on, not a prediction or a fixed destiny."
+    },
+    "links": [
+     {
+      "title": "Open the birth chart page on Zodiacs",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "Resolve a town or city (find_birthplace)",
+      "url": "https://zodiacs.org/birth-chart/?ref=assistant"
+     },
+     {
+      "title": "Pisces on Zodiacs",
+      "url": "https://zodiacs.org/pisces/?ref=assistant"
+     },
+     {
+      "title": "How to read a birth chart",
+      "url": "https://zodiacs.org/learn/how-to-read-a-birth-chart/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

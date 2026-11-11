@@ -1,0 +1,187 @@
+{
+ "id": "14-check_sky_fact-neptune-aries",
+ "why": "ZOD-63: which time the connector gives for Neptune into Aries",
+ "sentAtUtc": "2026-11-11T15:59:49+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "check_sky_fact",
+   "arguments": {
+    "kind": "ingress",
+    "body": "Neptune",
+    "sign": "aries",
+    "date": "2026-01-26"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"check_sky_fact\",\"data\":{\"answer\":\"depends\",\"calculation\":{\"schema\":\"zodiacs.compute-api.sky-fact.v1\",\"result\":{\"answer\":\"depends\",\"basis\":\"any-zone-day\",\"fact\":{\"kind\":\"ingress\",\"body\":\"Neptune\",\"sign\":\"aries\",\"date\":\"2026-01-26\",\"zone\":null},\"instant\":null,\"window\":{\"from\":\"2026-01-25T10:00:00.000Z\",\"to\":\"2026-01-27T12:00:00.000Z\"},\"zone\":null,\"facts\":{\"ingresses\":[{\"at\":\"2026-01-26T14:31:41.084Z\",\"retrograde\":false}],\"flags\":[]}},\"receipt\":{\"schema\":\"zodiacs.compute-receipt.v1\",\"endpoint\":\"sky-fact\",\"engine\":{\"name\":\"@zodiacs/engine\",\"version\":\"1.1.0-rc.2\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"conventions\":{\"angles\":\"gast-and-true-obliquity\",\"aspects\":\"major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate\",\"calendar\":\"proleptic-gregorian\",\"conventionIds\":\"zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt\",\"deltaT\":\"tt-minus-ut1;value-in-result\",\"localTime\":\"tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record\",\"longitudeUnit\":\"degrees-[0,360)\",\"moonNodes\":\"instantaneous-geocentric-moon-orbit-plane\",\"moonPosition\":\"astronomy-engine-geo-moon;no-light-time;no-aberration\",\"nutation\":\"iau2000b;equation-of-equinoxes-with-two-complementary-terms\",\"planetPositions\":\"aberrated-geocentric-ecliptic-of-date;no-deflection\",\"speed\":\"degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",\"timeScale\":\"tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result\",\"zodiac\":\"tropical\"},\"coverage\":{\"angleExclusions\":\"exact-geographic-poles-and-ecliptic-horizon-coincidence\",\"assessment\":\"finite-reference-cases-only\",\"broadDateRange\":\"not-certified\",\"inputSyntax\":\"not-an-astronomical-accuracy-guarantee\"},\"referenceSpan\":{\"from\":\"1800-01-01T00:00:00.000Z\",\"to\":\"2200-01-01T00:00:00.000Z\"},\"deltaT\":[{\"model\":\"iers-utc/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"064d98b4a531053a\"},{\"model\":\"zodiacs-deltat/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"6371988c510a1c6c\"}],\"search\":{\"solver\":\"engine-longitude-crossings\",\"stepDays\":{\"default\":5,\"moon\":1,\"elongation\":1},\"bisections\":24,\"samples\":30,\"maxSamples\":1000,\"window\":\"start-exclusive-end-inclusive\",\"completeness\":\"tested-not-proven\"},\"conventionIds\":[\"angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence\",\"angles:gast-and-true-obliquity\",\"aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate\",\"assessment:finite-reference-cases-only\",\"broadDateRange:not-certified\",\"calendar:proleptic-gregorian\",\"completeness:tested-not-proven\",\"conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt\",\"deltaT:tt-minus-ut1;value-in-result\",\"deltat-model:iers-utc/1\",\"deltat-model:zodiacs-deltat/1\",\"endpoint:sky-fact\",\"ephemeris:astronomy-engine@2.1.19\",\"inputSyntax:not-an-astronomical-accuracy-guarantee\",\"localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record\",\"longitudeUnit:degrees-[0,360)\",\"moonNodes:instantaneous-geocentric-moon-orbit-plane\",\"moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration\",\"nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms\",\"planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection\",\"search-solver:engine-longitude-crossings\",\"search-window:start-exclusive-end-inclusive\",\"speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",\"timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result\",\"zodiac:tropical\"]},\"backend\":{\"name\":\"@zodiacs/engine\",\"version\":\"1.1.0-rc.2\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"cite\":{\"url\":\"https://zodiacs.org/developers/compute/?ref=assistant#sky-fact\",\"receipt\":\"sha256:0271ee11e3589e9a6f54db48d79fa179445abd28b8a2c440a9545f8171e94fc5\",\"engine\":\"@zodiacs/engine\",\"version\":\"1.1.0-rc.2\"}},\"interpretation\":\"The verdict checks an astronomical proposition, not an astrological prediction.\"},\"links\":[{\"title\":\"How we calculate\",\"url\":\"https://zodiacs.org/methodology/?ref=assistant\"},{\"title\":\"New and full Moons, eclipses and retrogrades in your calendar app (get_sky_calendar)\",\"url\":\"https://zodiacs.org/sky-calendar/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "check_sky_fact",
+    "data": {
+     "answer": "depends",
+     "calculation": {
+      "schema": "zodiacs.compute-api.sky-fact.v1",
+      "result": {
+       "answer": "depends",
+       "basis": "any-zone-day",
+       "fact": {
+        "kind": "ingress",
+        "body": "Neptune",
+        "sign": "aries",
+        "date": "2026-01-26",
+        "zone": null
+       },
+       "instant": null,
+       "window": {
+        "from": "2026-01-25T10:00:00.000Z",
+        "to": "2026-01-27T12:00:00.000Z"
+       },
+       "zone": null,
+       "facts": {
+        "ingresses": [
+         {
+          "at": "2026-01-26T14:31:41.084Z",
+          "retrograde": false
+         }
+        ],
+        "flags": []
+       }
+      },
+      "receipt": {
+       "schema": "zodiacs.compute-receipt.v1",
+       "endpoint": "sky-fact",
+       "engine": {
+        "name": "@zodiacs/engine",
+        "version": "1.1.0-rc.2",
+        "ephemeris": {
+         "name": "astronomy-engine",
+         "version": "2.1.19"
+        }
+       },
+       "conventions": {
+        "angles": "gast-and-true-obliquity",
+        "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+        "calendar": "proleptic-gregorian",
+        "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+        "deltaT": "tt-minus-ut1;value-in-result",
+        "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+        "longitudeUnit": "degrees-[0,360)",
+        "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+        "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+        "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+        "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+        "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+        "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+        "zodiac": "tropical"
+       },
+       "coverage": {
+        "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+        "assessment": "finite-reference-cases-only",
+        "broadDateRange": "not-certified",
+        "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+       },
+       "referenceSpan": {
+        "from": "1800-01-01T00:00:00.000Z",
+        "to": "2200-01-01T00:00:00.000Z"
+       },
+       "deltaT": [
+        {
+         "model": "iers-utc/1",
+         "table": "2026-09-24",
+         "tableDigest": "064d98b4a531053a"
+        },
+        {
+         "model": "zodiacs-deltat/1",
+         "table": "2026-09-24",
+         "tableDigest": "6371988c510a1c6c"
+        }
+       ],
+       "search": {
+        "solver": "engine-longitude-crossings",
+        "stepDays": {
+         "default": 5,
+         "moon": 1,
+         "elongation": 1
+        },
+        "bisections": 24,
+        "samples": 30,
+        "maxSamples": 1000,
+        "window": "start-exclusive-end-inclusive",
+        "completeness": "tested-not-proven"
+       },
+       "conventionIds": [
+        "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+        "angles:gast-and-true-obliquity",
+        "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+        "assessment:finite-reference-cases-only",
+        "broadDateRange:not-certified",
+        "calendar:proleptic-gregorian",
+        "completeness:tested-not-proven",
+        "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+        "deltaT:tt-minus-ut1;value-in-result",
+        "deltat-model:iers-utc/1",
+        "deltat-model:zodiacs-deltat/1",
+        "endpoint:sky-fact",
+        "ephemeris:astronomy-engine@2.1.19",
+        "inputSyntax:not-an-astronomical-accuracy-guarantee",
+        "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+        "longitudeUnit:degrees-[0,360)",
+        "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+        "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+        "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+        "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+        "search-solver:engine-longitude-crossings",
+        "search-window:start-exclusive-end-inclusive",
+        "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+        "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+        "zodiac:tropical"
+       ]
+      },
+      "backend": {
+       "name": "@zodiacs/engine",
+       "version": "1.1.0-rc.2",
+       "ephemeris": {
+        "name": "astronomy-engine",
+        "version": "2.1.19"
+       }
+      },
+      "cite": {
+       "url": "https://zodiacs.org/developers/compute/?ref=assistant#sky-fact",
+       "receipt": "sha256:0271ee11e3589e9a6f54db48d79fa179445abd28b8a2c440a9545f8171e94fc5",
+       "engine": "@zodiacs/engine",
+       "version": "1.1.0-rc.2"
+      }
+     },
+     "interpretation": "The verdict checks an astronomical proposition, not an astrological prediction."
+    },
+    "links": [
+     {
+      "title": "How we calculate",
+      "url": "https://zodiacs.org/methodology/?ref=assistant"
+     },
+     {
+      "title": "New and full Moons, eclipses and retrogrades in your calendar app (get_sky_calendar)",
+      "url": "https://zodiacs.org/sky-calendar/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

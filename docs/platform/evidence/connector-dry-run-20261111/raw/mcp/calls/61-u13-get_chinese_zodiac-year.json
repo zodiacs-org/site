@@ -1,0 +1,131 @@
+{
+ "id": "61-u13-get_chinese_zodiac-year",
+ "why": "D4: year only, no birth date",
+ "sentAtUtc": "2026-11-11T16:03:23+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_chinese_zodiac",
+   "arguments": {
+    "year": 2020
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":true,\"tool\":\"get_chinese_zodiac\",\"data\":{\"from\":\"year\",\"birthDate\":null,\"person\":{\"year\":2020,\"animal\":{\"slug\":\"rat\",\"name\":\"Rat\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/rat/?ref=assistant\",\"branch\":\"子\",\"branchPinyin\":\"zǐ\",\"position\":1},\"element\":\"metal\",\"yinYang\":\"yang\",\"stemBranch\":\"庚子\",\"label\":\"Metal Rat (yang)\",\"starts\":\"2020-01-25\",\"ends\":\"2021-02-11\",\"association\":\"Traditionally associated with alertness, adaptability, and finding a way through constrained circumstances.\",\"context\":\"The Rat opens the twelve-year sequence. Modern personality summaries often call it resourceful; that is a cultural association, not a measured trait.\",\"pairings\":{\"harmony\":[{\"slug\":\"dragon\",\"name\":\"Dragon\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/dragon/?ref=assistant\"},{\"slug\":\"monkey\",\"name\":\"Monkey\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/monkey/?ref=assistant\"}],\"partner\":{\"slug\":\"ox\",\"name\":\"Ox\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/ox/?ref=assistant\"},\"opposite\":{\"slug\":\"horse\",\"name\":\"Horse\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant\"},\"text\":\"Tradition groups the Rat with the Dragon and the Monkey as a harmonious three (三合), pairs it with the Ox (六合), and sets it opposite the Horse (六冲), a pairing read as a clash.\"}},\"boundary\":{\"lunarNewYear\":\"2020-01-25\",\"beforeNewYear\":null,\"earlierAnimal\":{\"slug\":\"pig\",\"name\":\"Pig\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/pig/?ref=assistant\"},\"text\":\"The Rat year of 2020 began on 25 January 2020. Anyone born in 2020 before that day belongs to the Pig year of 2019; ask for the birth date to be sure.\"},\"current\":{\"year\":2026,\"animal\":{\"slug\":\"horse\",\"name\":\"Horse\",\"pageUrl\":\"https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant\",\"branch\":\"午\",\"branchPinyin\":\"wǔ\",\"position\":7},\"element\":\"fire\",\"yinYang\":\"yang\",\"stemBranch\":\"丙午\",\"label\":\"Fire Horse (yang)\",\"starts\":\"2026-02-17\",\"ends\":\"2027-02-05\"},\"today\":\"2026-11-11\",\"zone\":\"UTC\",\"zoneNote\":\"The current year assumes UTC because no time zone was given.\",\"guideUrl\":\"https://zodiacs.org/learn/chinese-zodiac/?ref=assistant\",\"note\":\"Traditional associations of the Chinese calendar, for reflection: not a personality test or a prediction.\"},\"links\":[{\"title\":\"The Rat on Zodiacs\",\"url\":\"https://zodiacs.org/learn/chinese-zodiac/rat/?ref=assistant\"},{\"title\":\"The Horse, this year's animal\",\"url\":\"https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant\"},{\"title\":\"The Chinese zodiac on Zodiacs\",\"url\":\"https://zodiacs.org/learn/chinese-zodiac/?ref=assistant\"}]}"
+    }
+   ],
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": true,
+    "tool": "get_chinese_zodiac",
+    "data": {
+     "from": "year",
+     "birthDate": null,
+     "person": {
+      "year": 2020,
+      "animal": {
+       "slug": "rat",
+       "name": "Rat",
+       "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/rat/?ref=assistant",
+       "branch": "子",
+       "branchPinyin": "zǐ",
+       "position": 1
+      },
+      "element": "metal",
+      "yinYang": "yang",
+      "stemBranch": "庚子",
+      "label": "Metal Rat (yang)",
+      "starts": "2020-01-25",
+      "ends": "2021-02-11",
+      "association": "Traditionally associated with alertness, adaptability, and finding a way through constrained circumstances.",
+      "context": "The Rat opens the twelve-year sequence. Modern personality summaries often call it resourceful; that is a cultural association, not a measured trait.",
+      "pairings": {
+       "harmony": [
+        {
+         "slug": "dragon",
+         "name": "Dragon",
+         "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/dragon/?ref=assistant"
+        },
+        {
+         "slug": "monkey",
+         "name": "Monkey",
+         "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/monkey/?ref=assistant"
+        }
+       ],
+       "partner": {
+        "slug": "ox",
+        "name": "Ox",
+        "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/ox/?ref=assistant"
+       },
+       "opposite": {
+        "slug": "horse",
+        "name": "Horse",
+        "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant"
+       },
+       "text": "Tradition groups the Rat with the Dragon and the Monkey as a harmonious three (三合), pairs it with the Ox (六合), and sets it opposite the Horse (六冲), a pairing read as a clash."
+      }
+     },
+     "boundary": {
+      "lunarNewYear": "2020-01-25",
+      "beforeNewYear": null,
+      "earlierAnimal": {
+       "slug": "pig",
+       "name": "Pig",
+       "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/pig/?ref=assistant"
+      },
+      "text": "The Rat year of 2020 began on 25 January 2020. Anyone born in 2020 before that day belongs to the Pig year of 2019; ask for the birth date to be sure."
+     },
+     "current": {
+      "year": 2026,
+      "animal": {
+       "slug": "horse",
+       "name": "Horse",
+       "pageUrl": "https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant",
+       "branch": "午",
+       "branchPinyin": "wǔ",
+       "position": 7
+      },
+      "element": "fire",
+      "yinYang": "yang",
+      "stemBranch": "丙午",
+      "label": "Fire Horse (yang)",
+      "starts": "2026-02-17",
+      "ends": "2027-02-05"
+     },
+     "today": "2026-11-11",
+     "zone": "UTC",
+     "zoneNote": "The current year assumes UTC because no time zone was given.",
+     "guideUrl": "https://zodiacs.org/learn/chinese-zodiac/?ref=assistant",
+     "note": "Traditional associations of the Chinese calendar, for reflection: not a personality test or a prediction."
+    },
+    "links": [
+     {
+      "title": "The Rat on Zodiacs",
+      "url": "https://zodiacs.org/learn/chinese-zodiac/rat/?ref=assistant"
+     },
+     {
+      "title": "The Horse, this year's animal",
+      "url": "https://zodiacs.org/learn/chinese-zodiac/horse/?ref=assistant"
+     },
+     {
+      "title": "The Chinese zodiac on Zodiacs",
+      "url": "https://zodiacs.org/learn/chinese-zodiac/?ref=assistant"
+     }
+    ]
+   },
+   "isError": false
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

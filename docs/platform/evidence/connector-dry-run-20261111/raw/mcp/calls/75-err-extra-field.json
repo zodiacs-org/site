@@ -1,0 +1,42 @@
+{
+ "id": "75-err-extra-field",
+ "why": "D4: unknown argument",
+ "sentAtUtc": "2026-11-11T16:03:44+00:00",
+ "httpMethod": "POST",
+ "request": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+   "name": "get_sky",
+   "arguments": {
+    "zone": "Asia/Bangkok",
+    "notes": "x"
+   }
+  }
+ },
+ "httpStatus": 200,
+ "contentType": "text/event-stream",
+ "response": {
+  "result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"schema\":\"zodiacs.ai-tool-result.v1\",\"ok\":false,\"tool\":\"get_sky\",\"error\":{\"code\":\"invalid-arguments\",\"message\":\"The arguments include a field this tool does not accept; call tools/list for its fields.\"}}"
+    }
+   ],
+   "isError": true,
+   "structuredContent": {
+    "schema": "zodiacs.ai-tool-result.v1",
+    "ok": false,
+    "tool": "get_sky",
+    "error": {
+     "code": "invalid-arguments",
+     "message": "The arguments include a field this tool does not accept; call tools/list for its fields."
+    }
+   }
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+ }
+}

@@ -1,0 +1,178 @@
+Developer Tools — Local Charts, Sky Data & Embeds | Zodiacs.orgSkip to content <#main>
+Zodiacs·org </>
+ToolsSignsToday </today/>Learn </learn/>Horoscopes </horoscopes/> </profile/>/Astrofolio </astrofolio/>
+Birth chartSee your sun, moon, rising, planets, houses, and what they mean. </birth-chart/>CompatibilityCompare two charts and see where they click, clash, and grow. </compatibility/>TransitsExplore today’s planets and their connections to your chart. </transits/>Moon signHow you feel, and what settles you. </moon-sign/>Rising signFind the sign people meet first. Birth time helps. </rising-sign/>Moon phaseTonight’s moon, and the moon of any date you care about. </moon-phase/>Saturn returnWhen yours hits, exactly, and what it tends to ask. </saturn-return/>BirthdayFind your Sun sign from your birthday, including dates near a sign change. </birthday/>
+More to explore
+- Group charts </group-charts/>
+- Chart twins </chart-twins/>
+- Big three card </big-three/>
+- Invite a friend </compatibility/invite/>
+- Sky calendar </sky-calendar/>
+- Chart of the day </chart-of-the-day/>
+- Your sky, wrapped </your-sky-wrapped/>
+- Chart PDF </astrologer-kit/>All tools → </tools/>
+AriesMar 21 to Apr 19 </aries/>TaurusApr 20 to May 20 </taurus/>GeminiMay 21 to Jun 20 </gemini/>CancerJun 21 to Jul 22 </cancer/>LeoJul 23 to Aug 22 </leo/>VirgoAug 23 to Sep 22 </virgo/>LibraSep 23 to Oct 22 </libra/>ScorpioOct 23 to Nov 21 </scorpio/>SagittariusNov 22 to Dec 21 </sagittarius/>CapricornDec 22 to Jan 19 </capricorn/>AquariusJan 20 to Feb 18 </aquarius/>PiscesFeb 19 to Mar 20 </pisces/>
+The siteBirth chart </birth-chart/>Compatibility </compatibility/>TodayYour daily reading and personal chart highlights </today/>Learn </learn/>HoroscopesDaily readings for your zodiac sign </horoscopes/>Saved chartsYour birth chart and the people you’ve added </profile/>
+Tools
+Transits </transits/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Birthday </birthday/>All tools → </tools/>
+Developers </developers/>AstrofolioOfficial Zodiac token collection </astrofolio/>
+The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+For developers and AI agents
+# Charts, data, and embeds.
+- 
+Vendored candidate · engine 1.1.0-rc.2
+## Calculate a chart </developers/engine/>
+Quickstarts, recipes and reference guides </developers/docs/>, each with a Markdown twin.
+@zodiacs/engine takes an instant and coordinates and returns bodies, angles, cusps and aspects, in your own browser or Node.js process, with no network request. What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and how to install it are on its page. The starter </developers/examples/> is the same job as a running project; it pins engine 0.1.1-rc.3, while the site runs 1.1.0-rc.2.
+- 
+Available · runs on our server
+## Calculate on our server </developers/compute/>
+Seven POST endpoints for a chart, positions, houses, the events in a window, a local time read as UTC, whether a sky fact holds, and when chosen conditions all hold, each answer with a receipt and the engine's version. No key. Birth data goes in the request body, and the function writes nothing from a request to a log, a file or a database. The endpoints answer only while their per-address rate limit is in place.
+The playground </developers/playground/> sends each documented request to them, runs it in your browser with their own code, and compares the answers.
+The demo </developers/demo/> asks three sample questions, a birth chart, the next Mercury retrograde and how two charts compare, and shows each answer with its JSON, the cURL command and the MCP tool call.
+- 
+Available · hosted embeds
+## Embed a tool </widgets/>
+Choose a Moon, sky, or mini birth-chart iframe, set its theme and size, and copy the embed. The credit link stays.
+- 
+Unpublished candidate · 0.1.0-rc.26
+## Connect an AI assistant </developers/mcp/>
+A local MCP server, tested with Claude Code. It calculates a chart or compares two records on your own machine over stdio. The calculation never leaves the machine; what the assistant you connect it to does with the result is a separate question.
+- 
+Available · runs in your browser
+## Compare two calculation records </developers/compare/>
+When two runs of this engine disagree, this lists every value that differs and says which of them anything in the two files can actually explain. It reads the record format this site produces, not screenshots or another program's export.
+- 
+Review candidates · public sky and local development
+## Review the AI integrations </developers/ai/>
+A public-sky ChatGPT app and a developer plugin share bounded calculations and receipts. Inspect their supported tasks, installation requirements and privacy before connecting a host.
+- 
+Available · suite 0.2.0
+## Check an engine against independent references </developers/conformance/>
+Test vectors for positions, houses and angles, time zones, time scales and calendars, each with an independent arbiter and a stated tolerance, with the results for @zodiacs/engine and for Swiss Ephemeris. Any engine can be run against them through a small adapter.
+- 
+Available · registry 2026-11-04
+## Look up what a receipt's ids mean </developers/conventions/>
+Every id a receipt or a conformance vector names, such as zodiac:tropical or a house system, with its definition, its sources and an address of its own, as a page and as JSON. The conventions earlier engine versions wrote are there too, marked superseded.
+- 
+Available · version 0
+## Test an assistant on questions about the sky </developers/sky-benchmark/>
+Questions a calculation settles (which sign a body was in, whether a planet was retrograde, when the Moon was full), with the engine's answer to each, a scorer that reads replies without a person, and the MCP adapter's check_sky_fact reply to each.
+- 
+Available · atlas 0.1.0
+## Check what the clocks said, 1870 to 1919 </developers/time-atlas/>
+The historical time atlas for 21 places of France and the United States, each rule cited to a primary source, under CC BY 4.0, with every period of its comparison with tzdb 2025c and the explanation of each difference.
+Also here, without an account or a key: shared sky data <#sky-data> as plain JSON files, and the support matrix </developers/support/> — runtime requirements, the runtimes actually tested and known limits — worth reading before you choose an integration.
+The optional ownership SDK </sdk/> is a separate, read-only integration for registry verification and public ownership reads. Charts, sky data, and widgets do not require it or a wallet.
+## Shared sky data
+The computed dates behind this site's calendars — today's sky, the weeks ahead, retrograde windows, stations, sign ingresses, moon phases, eclipses, and exact aspects — are published as versioned JSON. The files are static, cached at the edge, and open to any origin. There is no key or signup. These files contain no personal birth data: they describe the shared sky, and the site's own chart calculation stays on the device </methodology/>.
+## Quick start
+One request returns today's sky. No key, no account:
+curl --fail --silent --show-error https://zodiacs.org/api/v1/sky/today.json
+The payload opens with a summary you can read straight out, and names the edition it was computed for in date and snapshotAt. Editions change daily and delivery can be delayed, so read those fields rather than assuming the file you hold is current. Before noon, a snapshot describes positions computed for later that day.
+In JavaScript, with the checks worth keeping in production:
+const response = await fetch('https://zodiacs.org/api/v1/sky/today.json', {
+ cache: 'no-cache',
+ signal: AbortSignal.timeout(10_000),
+});
+if (!response.ok) throw new Error(`Sky request failed: HTTP ${response.status}`);
+const sky = await response.json();
+if (sky?.schema !== 'zodiacs.sky-api.today.v1'
+ || typeof sky.date !== 'string'
+ || typeof sky.snapshotAt !== 'string'
+ || typeof sky.summary !== 'string'
+ || !Array.isArray(sky.bodies)
+ || sky.bodies.length === 0
+ || sky.bodies.some((body) => !body
+ || typeof body !== 'object'
+ || typeof body.body !== 'string'
+ || typeof body.position !== 'string'
+ || typeof body.retrograde !== 'boolean')) {
+ throw new Error('Unexpected sky payload');
+}
+const today = new Date().toISOString().slice(0, 10);
+if (sky.date !== today) {
+ throw new Error(`Sky edition ${sky.date} is not current (${today} UTC)`);
+}
+if (sky.snapshotAt !== `${sky.date}T12:00:00.000Z`) {
+ throw new Error('Unexpected sky snapshot time');
+}
+console.log(`Computed positions for ${sky.snapshotAt}`);
+console.log(sky.summary);
+for (const body of sky.bodies) {
+ console.log(body.body, body.position, body.retrograde ? 'Rx' : '');
+}
+This one checks the payload kind, the fields it uses, and the current UTC edition before displaying the computed snapshot.
+## Sky data for AI agents
+Every payload is self-describing. It opens with a summary — one or two plain sentences that state the file's facts, ready to quote — and carries an about block that defines each field and its units, a $schema link to its JSON Schema, and links to the related files. Raw numbers come with formatted twins (lon alongside position, illumination alongside illuminationPercent), and every event carries a label such as "Mercury retrograde in Scorpio, October 24, 2026 – November 13, 2026".
+An agent should start at /api/v1/llms.txt </api/v1/llms.txt>: it lists every endpoint, defines every field, states the caveats worth repeating, and maps common questions ("Is Mercury retrograde?", "When is the next full moon?", "When does the Sun enter Libra?") to the file and field that answer them. Tool-calling frameworks can load /api/v1/openapi.json </api/v1/openapi.json> directly, and the daily files have Markdown twins for readers that fetch pages as text.
+## Daily endpoints
+- /api/v1/sky/today.json
+Today's positions for the Sun, Moon, and eight planets (raw longitudes and formatted labels like 14°53′ Virgo), moon phase and illumination, the active retrograde windows, the next new and full moon with signs and traditional names, the day's exact events, and a plain-language summary. Positions are a 12:00 UTC snapshot. Daily publication is scheduled from 00:00 UTC; check the payload date because delivery can be delayed.
+- /api/v1/sky/upcoming.json
+Every lunation, sign ingress, station, eclipse, and exact aspect in the next 60 days in order, plus the next occurrence of each kind and the current and next Mercury retrograde.
+- /api/v1/planets/{sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto}.json
+One body: position at the daily snapshot, whether it is retrograde, its current and next retrograde window, every window in coverage, and its next sign ingress and station.
+- /api/v1/signs.json
+The twelve signs: element, modality, ruler and traditional ruler, polarity, house, conventional dates, the computed Sun season for this year, and which bodies occupy each sign today.
+## Yearly endpoints
+- /api/v1/retrogrades/{2026–2030}.json
+Retrograde windows intersecting the year: retrograde and direct station instants and signs, pre- and post-shadow boundaries, duration, and clipping flags where the data boundary truncates a window.
+- /api/v1/stations/{2026–2030}.json
+Every station — a planet turning retrograde or direct — with its sign and degree.
+- /api/v1/ingresses/{2026–2030}.json
+Every planetary sign ingress, with the exact instant and whether the planet entered moving retrograde.
+- /api/v1/moon-phases/{2026–2030}.json
+Every new and full moon with sign, degree, and the traditional full-moon name (Blue for a second full moon in one month).
+- /api/v1/eclipses/{2026–2030}.json
+Solar and lunar eclipses by instant of greatest eclipse: type, kind, sign, obscuration, and totality length.
+- /api/v1/aspects/{2026–2030}.json
+Exact planetary aspects (orb 0) across the year, each with a label such as Mars square Saturn.
+## Documents and schemas
+- /api/v1/llms.txt
+The guide for AI agents: every endpoint, every field, the caveats worth stating, and which file answers which question.
+- /api/v1/openapi.json
+OpenAPI 3.1 with every JSON Schema embedded, for tool-calling frameworks and typed clients.
+- /api/v1/schema/{name}.v1.json
+Each payload family's JSON Schema (draft 2020-12); every payload links its own under $schema.
+- /api/v1/sky/today.md and /api/v1/sky/upcoming.md
+The daily files rendered as Markdown for readers that fetch pages as text.
+- /api/v1/index.json
+Every endpoint and document above, with coverage and the data vintage.
+## The contract
+Positions are apparent geocentric tropical longitudes from the same engine the calculators use, tested against NASA JPL Horizons reference data at two dates, 1907 and 2020, where the largest difference is 14.8 arcseconds. Today's positions are a single snapshot taken at 12:00 UTC (snapshotAt). Publication is scheduled from 00:00 UTC; jobs, deployment, or caches can delay availability. All instants are UTC in ISO 8601, and signs are lowercase slugs with an English signName beside them.
+A retrograde window's from and to are its stations unless clippedStart or clippedEnd is true, which means the data boundary truncated the window and the real station lies outside coverage. Within v1, fields are added, never renamed or removed; a breaking change would ship under /api/v2/ and v1 would keep working. Yearly files are byte-stable between data refreshes, so conditional requests are cheap. Year files cover 2026–2030 today and grow as the underlying data is extended; read index.json </api/v1/index.json> rather than assuming which years exist.
+## Freshness and caching
+Check the file you consume: date identifies the UTC edition for today's sky, planet files, and signs; snapshotAt is its noon snapshot. Upcoming events use from as the snapshot instant. generatedAt records the file build time and can change without a new edition. The index's coverage.dailyDate describes the index; separately cached files can have different dates. Label an older edition by its date or wait for a current one before presenting it as today's sky.
+Current cache lifetimes are 300 seconds for sky/today.json, 3,600 seconds for index.json, and 86,400 seconds for the remaining API files, including upcoming events, planets, signs, and Markdown twins. Revalidation can refresh a cached response; always check its edition date as well. Yearly files remain byte-stable between data refreshes.
+## License and attribution
+The data is free to use under CC BY 4.0 <https://creativecommons.org/licenses/by/4.0/>. Credit "Zodiacs.org" with a link to https://zodiacs.org </> wherever the data is shown.
+## Widgets and feeds
+If you would rather embed a finished surface than consume JSON, the embeddable widgets </widgets/> render tonight's moon, today's sky, and a mini birth chart inside a sandboxed iframe. Dated editorial is available as RSS: daily horoscopes </feeds/horoscopes.xml> and the daily sky </feeds/daily-sky.xml>. The site-wide guide for agents is llms.txt </llms.txt>.
+## Embed today's sky
+The same daily edition as /api/v1/sky/today.json, as a finished card: one iframe, no script on your page, and the theme and accent parameters are applied inside the frame. The card links back to zodiacs.org, which is the attribution.
+<iframe src="https://zodiacs.org/embed/sky/?theme=dark" title="The sky today | Zodiacs.org" width="480" height="250" style="border:0;border-radius:14px;overflow:hidden;max-width:100%" loading="lazy" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+## The daily, by email.
+Your sign’s reading each morning. Free, unsubscribe anytime.
+Leave this field blank
+Email address
+ChangeYour Sun sign
+AriesTaurusGeminiCancerLeoVirgoLibraScorpioSagittariusCapricornAquariusPiscesEmail my daily horoscope
+We store your email and your chosen sign, nothing else. Never your birth details.
+You’re set. If confirmation or a change is needed, check your inbox.Choose your Sun sign so we can send its daily horoscope.That email address doesn’t look complete.Couldn't start the subscription. Please try again.
+Zodiacs·org </>
+Free astrology tools and sign guides, with charts calculated privately in your browser.Guide→
+An AI assistant for astrology questions and help using Zodiacs.
+Tools
+Birth chart </birth-chart/>Today </today/>Compatibility </compatibility/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Transits </transits/>Retrogrades </retrogrades/>Learn
+Learn astrology </learn/>Horoscopes </horoscopes/>The planets </learn/planets/>The houses </learn/houses/>Zodiac dates </learn/zodiac-dates/>Glossary </learn/glossary/>How charts are calculated </methodology/>Saved charts </profile/>Registry
+Astrofolio </astrofolio/>Registry </registry/>SDK </sdk/>Disclosure </disclosure/>Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. Read our disclosure </disclosure/>.The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+LanguageEnglishEspañol </es/>Português (Brasil) </pt/>Français </fr/>Italiano </it/>
+© 2026 Zodiacs.orgLegal
+About </about/>Privacy </privacy/>Terms </terms/>More
+Developers </developers/>Widgets </widgets/>RSS </feeds/horoscopes.xml>
+Data & licenses
+Place data: GeoNames <https://www.geonames.org/> · CC BY 4.0
+Fonts under SIL OFL 1.1 </fonts/OFL-instrument-sans.txt>
