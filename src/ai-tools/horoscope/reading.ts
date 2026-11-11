@@ -5,7 +5,7 @@
  */
 import type { HoroscopeEvidenceReceipt, HoroscopeSign } from '../../lib/horoscope-program-types';
 import type { ShareRef } from '../../lib/share-results';
-import { softenMinor } from '../features/reading-guards';
+import { softenMinor } from '../features/reading-guards.js';
 import { horoscopeShareUrl } from '../share-links.js';
 import type { HoroscopeWindow, WindowReading } from './window';
 
