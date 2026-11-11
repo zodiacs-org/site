@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import SolarReturnCalculator from '../../islands/SolarReturnCalculator';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
 
 const relocation = `Astrologers disagree about whether a solar-return chart should be cast for your birthplace or for where you actually are on your birthday. Both traditions are old and neither is provable, so this tool defaults to your birthplace and lets you recast for any location. The planets don't move, but the houses and rising sign do. If you travel for your birthday, casting both and comparing is the honest experiment.`;
@@ -23,6 +24,8 @@ const jsonLd = [
   title="Solar Return Calculator: Your Birthday Chart for Any Year"
   description="See the themes shaping your personal year with a solar return chart for any year and location. Free and private by default."
   path="/solar-return/"
+  image="/assets/og/v2/tool/solar-return.png"
+  imageAlt="Your solar return: Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
@@ -30,7 +33,12 @@ const jsonLd = [
       <h1 class="display">Your solar return</h1>
       <p>See the themes shaping your personal year: where to grow, what needs steadier attention, and which part of life is asking to lead. Choose a year and location to cast the chart.</p>
     </div>
-    <SolarReturnCalculator client:load />
+    <SolarReturnCalculator
+      client:load
+      themes={launchFlagOn('PUBLIC_SOLAR_RETURN_SHARE_ENABLED')}
+      yearScoreLink={launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED')}
+      birthdayReportLink={launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED')}
+    />
     <noscript><p>This solar return calculator needs JavaScript. Enable it and reload to cast the chart in your browser.</p></noscript>
   </section>
 
@@ -50,4 +58,11 @@ const jsonLd = [
   .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* The year's main themes (src/lib/solar-return/themes.ts): one column on phones, two from tablets. */
+  :global(.sr-themes) { display: grid; gap: 12px; }
+  :global(.sr-themes h2) { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-xl); }
+  :global(.sr-themes__list) { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  :global(.sr-themes__item) { padding: 16px 18px; }
+  :global(.sr-themes__item h3) { margin: 0 0 6px; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-lg); }
+  :global(.sr-themes__item p) { margin: 0; color: var(--text-2); }
 </style>

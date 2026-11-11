@@ -80,6 +80,7 @@ describe('assistant site context', () => {
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
       // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
+      // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
       consumerRoutes: 717,
       glossary: 145,
       guides: 12,

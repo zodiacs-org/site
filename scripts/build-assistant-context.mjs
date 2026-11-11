@@ -104,6 +104,8 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/people/',
   '/registry/',
   '/terminal/',
+  // The Year Ahead directory of living public figures: noindex and nofollow, as the protected People pages are.
+  '/year/',
 ]);
 
 // Pages behind a launch switch (src/lib/launch-flags.ts) stay out of the
@@ -111,6 +113,7 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
 // never recommended. Commit the output generated with every switch unset.
 const LAUNCH_FLAGGED_ROUTES = Object.freeze({
   '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
+  '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
 });
 
 function compareText(left, right) {
