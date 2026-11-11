@@ -39770,14 +39770,12 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
     balance.set(month, s2 - p2);
     return { month, days: acc.days, score: curve(s2 - p2, MONTH_SCORE_SCALE), support: round(s2, 4), pressure: round(p2, 4), lead };
   });
-  const eligible = months.filter((month) => month.days >= 10);
+  const eligible = active ? months.filter((month) => month.days >= 10) : [];
   const bal = (month) => balance.get(month.month);
   const best = eligible.reduce((top, month) => !top || bal(month) > bal(top) ? month : top, null);
   const hardest = eligible.reduce((low, month) => !low || bal(month) < bal(low) ? month : low, null);
-  const ties = {
-    best: !!best && months.some((month) => month !== best && bal(month) > bal(best) - TIE_MARGIN),
-    hardest: !!hardest && months.some((month) => month !== hardest && bal(month) < bal(hardest) + TIE_MARGIN)
-  };
+  const tiedWith = (pick) => !!pick && months.some((month) => month !== pick && Math.abs(bal(month) - bal(pick)) < TIE_MARGIN);
+  const ties = { best: tiedWith(best), hardest: tiedWith(hardest) };
   const total = [...drivers.values()].reduce((sum, entry) => sum + entry.abs, 0);
   const ranked = [...drivers.values()].sort((a, b) => b.abs - a.abs || a.from - b.from).slice(0, options.maxDrivers ?? 6).map((entry) => ({
     planet: entry.sample.planet,

@@ -202,10 +202,15 @@ describe('lines that agree with their headings', () => {
   });
 
   it('picks months on the unrounded balance and calls a tie one of several', () => {
-    // A quiet year: every month balances at exactly 0, so the first month is one of the lightest.
-    const quiet = yearReading(scoreYear(natal, () => 45, new Date('2026-07-17T00:00:00Z')));
-    expect(quiet.best!.line).toBe('July 2026 is one of the lightest months, with no slow planet close to the chart.');
+    // A year with no contact at all has no best or hardest month, in the score and in the words.
+    const quietYear = scoreYear(natal, () => 45, new Date('2026-07-17T00:00:00Z'));
+    expect(quietYear.activeDays).toBe(0);
+    expect(quietYear).toMatchObject({ best: null, hardest: null, ties: { best: false, hardest: false } });
+    const quiet = yearReading(quietYear);
+    expect(quiet.best).toBeNull();
     expect(quiet.hardest).toBeNull();
+    // A listed month with no contact still ties the lightest months when the picks also balance at 0.
+    expect(monthLine({ month: '2026-08', days: 31, score: 5.3, support: 0, pressure: 0, lead: null }, 'best', { tied: true })).toBe('August 2026 is one of the lightest months, with no slow planet close to the chart.');
     // Saturn exactly square the Sun in every month but April: the hardest months tie, the best does not.
     const year = scoreYear(natal, byMonth({ 3: { Saturn: 101 } }, { Saturn: 100 }), start);
     expect(year.ties).toEqual({ best: false, hardest: true });
@@ -224,6 +229,28 @@ describe('lines that agree with their headings', () => {
     expect(close.best?.month).toBe('2026-02');
     expect(close.ties.best).toBe(true);
     expect(yearReading(close).best!.line).toBe('February 2026 is one of the lightest months: Jupiter conjunct your Sun backs your sense of self.');
+  });
+
+  it('ties a month only with months that balance within the margin of it, on either side', () => {
+    // From 25 January: the seven January days are too few to pick, and the twelfth month (January 2027) has 24.
+    // The sky is keyed on the date, so only those seven days differ from the rest.
+    const from = new Date('2026-01-25T00:00:00Z');
+    const sky = (partial: Partial<Record<SlowPlanet, number>>, june: Partial<Record<SlowPlanet, number>>, rest: Partial<Record<SlowPlanet, number>>) =>
+      (body: SlowPlanet, date: Date) => (date < new Date('2026-02-01T00:00:00Z') ? partial : date.toISOString().startsWith('2026-06') ? june : rest)[body] ?? 45;
+    // Jupiter exactly on the Sun in the partial January, a degree off in June and two degrees off otherwise:
+    // June is the best month and January, far better but too short to pick, is not a tie for it.
+    const best = scoreYear(natal, sky({ Jupiter: 10 }, { Jupiter: 11 }, { Jupiter: 12 }), from);
+    expect(best.months[0]).toMatchObject({ month: '2026-01', days: 7 });
+    expect(best.best?.month).toBe('2026-06');
+    expect(best.months[0].support).toBeGreaterThan(best.best!.support + 0.1);
+    expect(best.ties.best).toBe(false);
+    expect(yearReading(best).best!.line).toContain('June 2026 is the strongest month');
+    // The same for the hardest month: Saturn exact in the partial January, a degree off in June and two degrees off otherwise.
+    const hardest = scoreYear(natal, sky({ Saturn: 100 }, { Saturn: 101 }, { Saturn: 102 }), from);
+    expect(hardest.hardest?.month).toBe('2026-06');
+    expect(hardest.months[0].pressure).toBeGreaterThan(hardest.hardest!.pressure + 0.1);
+    expect(hardest.ties.hardest).toBe(false);
+    expect(yearReading(hardest).hardest!.line).toContain('June 2026 carries the most pressure');
   });
 });
 

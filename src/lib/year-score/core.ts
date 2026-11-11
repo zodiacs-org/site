@@ -141,10 +141,10 @@ export interface YearScore {
   /** The share of days with any slow-planet contact in orb. */
   activeDays: number;
   months: MonthScore[];
-  /** The month with the highest score and the one with the lowest, among months with at least 10 days in the window. */
+  /** The month with the highest balance and the one with the lowest, among months with at least 10 days in the window; both null in a year with no contact. */
   best: MonthScore | null;
   hardest: MonthScore | null;
-  /** Whether another listed month comes within TIE_MARGIN of the best (or the hardest) month's balance, so the month is one of several. */
+  /** Whether another listed month balances within TIE_MARGIN of the best (or the hardest) month, either side, so the month is one of several. */
   ties: { best: boolean; hardest: boolean };
   /** The contacts that moved the year most, heaviest first. */
   drivers: Driver[];
@@ -247,16 +247,15 @@ export function scoreYear(natal: NatalPoints, longitudeAt: LongitudeAt, start: D
     balance.set(month, s - p);
     return { month, days: acc.days, score: curve(s - p, MONTH_SCORE_SCALE), support: round(s, 4), pressure: round(p, 4), lead };
   });
-  const eligible = months.filter((month) => month.days >= 10);
-  // Picked on the unrounded balance, not the one-decimal score. Exact ties go to the earlier month, so the answer is stable.
+  // A year with no contact at all has no best or hardest month. Otherwise both are picked among months with
+  // at least 10 days, on the unrounded balance, not the one-decimal score; exact ties go to the earlier month.
+  const eligible = active ? months.filter((month) => month.days >= 10) : [];
   const bal = (month: MonthScore) => balance.get(month.month)!;
   const best = eligible.reduce<MonthScore | null>((top, month) => (!top || bal(month) > bal(top) ? month : top), null);
   const hardest = eligible.reduce<MonthScore | null>((low, month) => (!low || bal(month) < bal(low) ? month : low), null);
-  // A pick is one of several when any other listed month (the whole strip, partial months too) comes as close or closer.
-  const ties = {
-    best: !!best && months.some((month) => month !== best && bal(month) > bal(best) - TIE_MARGIN),
-    hardest: !!hardest && months.some((month) => month !== hardest && bal(month) < bal(hardest) + TIE_MARGIN),
-  };
+  // A pick is one of several when any other listed month (the whole strip, partial months too) balances within TIE_MARGIN of it, either side.
+  const tiedWith = (pick: MonthScore | null) => !!pick && months.some((month) => month !== pick && Math.abs(bal(month) - bal(pick)) < TIE_MARGIN);
+  const ties = { best: tiedWith(best), hardest: tiedWith(hardest) };
   const total = [...drivers.values()].reduce((sum, entry) => sum + entry.abs, 0);
   const ranked = [...drivers.values()]
     .sort((a, b) => b.abs - a.abs || a.from - b.from)
