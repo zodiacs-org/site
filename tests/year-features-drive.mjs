@@ -183,7 +183,9 @@ try {
         await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
         await page.getByRole('button', { name: 'Add birth time and place' }).click();
         await page.fill('#ys-date', '1990-05-03');
-        const placeBefore = (await page.locator('#ys-place').boundingBox())?.y;
+        // Measured from the top of the page, not the viewport: the click scrolls the button into view.
+        const placeTop = () => page.locator('#ys-place').evaluate((node) => node.getBoundingClientRect().top + window.scrollY);
+        const placeBefore = await placeTop();
         await page.fill('#ys-time', '08:30');
         await page.getByRole('button', { name: 'Score my year' }).click();
         const note = page.locator('#ys-time-note');
@@ -192,7 +194,7 @@ try {
         if (noteText !== 'Add the birthplace to use the birth time, or clear the time.') fail(`${path} @${size.width}: a time without a place shows "${noteText}"`);
         await page.waitForTimeout(500);
         if (await page.locator('.ys__number').count()) fail(`${path} @${size.width}: a time without a place still gives a result`);
-        const placeAfter = (await page.locator('#ys-place').boundingBox())?.y;
+        const placeAfter = await placeTop();
         if (placeBefore !== placeAfter) fail(`${path} @${size.width}: the time note moves the birthplace field from ${placeBefore} to ${placeAfter}`);
         await page.fill('#ys-time', '');
         if ((await note.innerText()).trim()) fail(`${path} @${size.width}: the time note stays after the time is cleared`);
