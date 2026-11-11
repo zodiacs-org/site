@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import { scoreBirth } from './browser';
 import { type NatalPoints, type SlowPlanet } from './core';
-import { birthDayEnds, birthDayEnvelope, birthDayRange, birthDaySamples, cachedLongitude, rangeWorthShowing, scoreRange } from './range';
+import { birthDayEnds, birthDayEnvelope, birthDayRange, birthDaySamples, cachedLongitude, rangeWorthShowing, scoreRange, untimedScoreNote } from './range';
 
 const START = new Date('2026-01-01T00:00:00Z');
 // Pluto held at 100 degrees all year; the other slow planets at 245, clear of every natal point below.
@@ -113,5 +113,29 @@ describe('the date-only copy', () => {
       expect(text, file).not.toContain('shift by about a day');
       expect(text, file).not.toContain('fraction of a degree');
     }
+  });
+});
+
+describe('the untimed note', () => {
+  const LONG = 'No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.';
+  const SHORT = 'No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time.';
+
+  it('points to the range only when the range is shown', () => {
+    expect(untimedScoreNote({ low: 5, high: 5.3 })).toBe(LONG);
+    expect(untimedScoreNote({ low: 3.7, high: 5.8 })).toBe(LONG);
+    expect(untimedScoreNote({ low: 5, high: 5.2 })).toBe(SHORT);
+    expect(untimedScoreNote({ low: 4.7, high: 4.9 })).toBe(SHORT);
+    expect(untimedScoreNote(null)).toBe(SHORT);
+    for (const note of [LONG, SHORT]) expect(note).not.toMatch(/[\u2013\u2014]/);
+  });
+
+  it('is the one source for the calculator and get_year_score', () => {
+    for (const file of ['src/islands/YearScoreCalculator.tsx', 'src/ai-tools/features/year-score.ts']) {
+      const text = readFileSync(new URL(`../../../${file}`, import.meta.url), 'utf8');
+      expect(text, file).not.toContain('the range shows by how much');
+      expect(text, file).toContain('untimedScoreNote(');
+    }
+    const island = readFileSync(new URL('../../../src/islands/YearScoreCalculator.tsx', import.meta.url), 'utf8');
+    expect(island).toContain('{!result.timeKnown && <p class="field__help">{untimedScoreNote(result.range)}</p>}');
   });
 });

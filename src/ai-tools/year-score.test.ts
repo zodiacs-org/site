@@ -5,6 +5,7 @@ import { createAiNodeHandler } from './http';
 import { EVERY_AI_TOOL_NAME, UNDER_13_REFUSAL, YEAR_SCORE_SWITCH_ENV } from './contracts';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { getYearScore } from './features/year-score';
+import { rangeWorthShowing } from '../lib/year-score/range';
 import committedWindow from '../data/horoscope-window.json';
 import committedMonths from '../data/horoscope-months.json';
 import committedProgram from '../data/horoscope-program.json';
@@ -17,6 +18,8 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * On, it adds get_year_score last in tools/list and changes no other entry.
  */
 const FIXTURE = JSON.parse(readFileSync(new URL('./accounts/flag-off.fixture.json', import.meta.url), 'utf8')) as Record<string, Record<string, { text: string }>>;
+const LONG_NOTE = 'No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.';
+const SHORT_NOTE = 'No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time.';
 const servers: Server[] = [];
 afterAll(async () => { await Promise.all(servers.map((server) => new Promise<void>((resolve) => server.close(() => resolve())))); });
 const NOW = new Date('2026-11-09T08:00:00Z');
@@ -170,7 +173,8 @@ describe('getYearScore', () => {
       expect(data.scoreRange, JSON.stringify(args)).not.toBeNull();
       expect(data.scoreRange!.low).toBeLessThanOrEqual(data.score!);
       expect(data.score!).toBeLessThanOrEqual(data.scoreRange!.high);
-      expect(data.limits).toContain('No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.');
+      // The note points to the range only when the range is shown (spread 0.3 or more).
+      expect(data.limits).toContain(rangeWorthShowing(data.scoreRange) ? LONG_NOTE : SHORT_NOTE);
     }
     const timed = await getYearScore({ birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', from: '2026-11-09' }, NOW, clock, 'https://zodiacs.org');
     expect(timed.data.scoreRange).toBeNull();
@@ -179,6 +183,20 @@ describe('getYearScore', () => {
     expect(figure.data.score!).toBeLessThanOrEqual(figure.data.scoreRange!.high);
     const unlisted = await getYearScore({ person: 'Somebody Unlisted' }, NOW, clock, 'https://zodiacs.org');
     expect(unlisted.data.scoreRange).toBeNull();
+  });
+
+  it('mentions the range in the untimed note only when the range is shown', async () => {
+    // 3 May 1990 spreads 4.7 to 4.9, too narrow to show; 15 January 1990 spreads 3.7 to 5.8.
+    const narrow = await getYearScore({ birthDate: '1990-05-03', from: '2026-11-09' }, NOW, clock, 'https://zodiacs.org');
+    expect(rangeWorthShowing(narrow.data.scoreRange)).toBe(false);
+    expect(narrow.data.limits).toContain(SHORT_NOTE);
+    expect(narrow.data.limits).not.toContain(LONG_NOTE);
+    const wide = await getYearScore({ birthDate: '1990-01-15', from: '2026-11-09' }, NOW, clock, 'https://zodiacs.org');
+    expect(rangeWorthShowing(wide.data.scoreRange)).toBe(true);
+    expect(wide.data.limits).toContain(LONG_NOTE);
+    expect(wide.data.limits).not.toContain(SHORT_NOTE);
+    const timed = await getYearScore({ birthDate: '1990-01-15', time: '08:30', zone: 'Europe/Madrid', from: '2026-11-09' }, NOW, clock, 'https://zodiacs.org');
+    expect(timed.data.limits.some((limit) => limit.startsWith('No birth time'))).toBe(false);
   });
 
   it('refuses a start before the birth date', async () => {

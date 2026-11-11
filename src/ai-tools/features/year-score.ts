@@ -22,7 +22,7 @@ import { SIGNS, signIndexForLongitude } from '../../lib/signs';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
 import { scoreYear, type LongitudeAt, type NatalPoints, type SlowPlanet, type YearScore } from '../../lib/year-score/core';
 import { YEAR_PEOPLE, findYearPerson, yearPageStart, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
-import { birthDayEnds, birthDayEnvelope, birthDayRange, cachedLongitude } from '../../lib/year-score/range';
+import { birthDayEnds, birthDayEnvelope, birthDayRange, cachedLongitude, untimedScoreNote } from '../../lib/year-score/range';
 import { dayName, yearReading } from '../../lib/year-score/reading';
 import { figureYearScoreShareUrl, yearScoreShareUrl } from '../../lib/year-score/share';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
@@ -232,7 +232,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
   const scoreRange = timeKnown ? null : birthDayRange(natal, (at) => natalPointsAt(at, false).natal, await untimedDayEnds(birthDate, timeZone, utc, clock, longitude), longitudeAt, startDate);
   const reading = yearReading(year, guard);
   const exact = exactPasses(natal, year);
-  if (!timeKnown) limits.push(figure ? 'No published birth time, so the chart is cast for noon on the birthplace clock and the Moon is left out.' : 'No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.');
+  if (!timeKnown) limits.push(figure ? 'No published birth time, so the chart is cast for noon on the birthplace clock and the Moon is left out.' : untimedScoreNote(scoreRange));
   if (!timeZone && !figure) limits.push('No time zone was given, so the birth is placed at noon UTC.');
   limits.push('The score reads Jupiter, Saturn, Uranus, Neptune and Pluto against the Sun, Moon, Mercury, Venus and Mars. Fast planets and eclipses are left out.');
   if (figure?.note) limits.push(figure.note);

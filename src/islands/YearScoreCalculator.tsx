@@ -11,7 +11,7 @@ import { signForLongitude } from '../lib/signs';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import type { City } from '../lib/geo/search';
 import { createModuleLoader } from '../lib/module-load';
-import { birthDayEnds, rangeWorthShowing, type ScoreRange } from '../lib/year-score/range';
+import { birthDayEnds, rangeWorthShowing, untimedScoreNote, type ScoreRange } from '../lib/year-score/range';
 import { yearScoreShareUrl } from '../lib/year-score/share';
 import { dayName, shortMonth, yearReading, type YearReading } from '../lib/year-score/reading';
 
@@ -180,7 +180,7 @@ export default function YearScoreCalculator() {
               </ul>
             </div>
           )}
-          {!result.timeKnown && <p class="field__help">No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.</p>}
+          {!result.timeKnown && <p class="field__help">{untimedScoreNote(result.range)}</p>}
           <div class="calc__actions">
             {(() => {
               // The link carries the Sun sign and the score only: never the birth date, time or place.

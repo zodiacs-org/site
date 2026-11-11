@@ -40481,6 +40481,14 @@ function cachedLongitude(longitudeAt2) {
 function birthDayRange(midday, natalAt, ends, longitudeAt2, start) {
   return scoreRange([midday, ...birthDaySamples(ends[0], ends[1]).map(natalAt)], longitudeAt2, start);
 }
+function rangeWorthShowing(range) {
+  return range !== null && Math.round((range.high - range.low) * 10) >= 3;
+}
+var UNTIMED_NOTE_WITH_RANGE = "No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.";
+var UNTIMED_NOTE = "No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time.";
+function untimedScoreNote(range) {
+  return rangeWorthShowing(range) ? UNTIMED_NOTE_WITH_RANGE : UNTIMED_NOTE;
+}
 
 // src/lib/year-score/tier.ts
 function scoreTier(score2) {
@@ -40730,7 +40738,7 @@ async function getYearScore(args, now, clock2, origin) {
   const scoreRange2 = timeKnown ? null : birthDayRange(natal, (at) => natalPointsAt(at, false).natal, await untimedDayEnds(birthDate, timeZone, utc, clock2, longitude2), longitudeAt2, startDate);
   const reading = yearReading(year, guard);
   const exact = exactPasses(natal, year);
-  if (!timeKnown) limits2.push(figure ? "No published birth time, so the chart is cast for noon on the birthplace clock and the Moon is left out." : "No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.");
+  if (!timeKnown) limits2.push(figure ? "No published birth time, so the chart is cast for noon on the birthplace clock and the Moon is left out." : untimedScoreNote(scoreRange2));
   if (!timeZone && !figure) limits2.push("No time zone was given, so the birth is placed at noon UTC.");
   limits2.push("The score reads Jupiter, Saturn, Uranus, Neptune and Pluto against the Sun, Moon, Mercury, Venus and Mars. Fast planets and eclipses are left out.");
   if (figure?.note) limits2.push(figure.note);

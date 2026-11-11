@@ -85,3 +85,11 @@ export function birthDayRange(midday: NatalPoints, natalAt: (utc: Date) => Natal
 export function rangeWorthShowing(range: ScoreRange | null): range is ScoreRange {
   return range !== null && Math.round((range.high - range.low) * 10) >= 3;
 }
+
+/** The untimed note for a person's own birth. It points to the range only when the range is shown, so the two stay in step. */
+export const UNTIMED_NOTE_WITH_RANGE = 'No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.';
+export const UNTIMED_NOTE = 'No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time.';
+
+export function untimedScoreNote(range: ScoreRange | null): string {
+  return rangeWorthShowing(range) ? UNTIMED_NOTE_WITH_RANGE : UNTIMED_NOTE;
+}
