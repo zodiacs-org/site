@@ -577,6 +577,21 @@ grant execute on function public.account_v2_bootstrap(uuid, uuid, text, text, js
 -- currently hold both chart_sync and chart_emails are returned, with the
 -- envelope of their one active self chart at its current revision. Nothing
 -- here is plaintext; the job decrypts with the service keyring it holds.
+--
+-- SECURITY INVOKER, on purpose, for this function and
+-- account_v2_owner_self_chart below. Both are callable only by service_role
+-- (execute revoked from public, anon and authenticated), and service_role
+-- already holds the table privileges on private.account_states,
+-- account_consents, account_chart_records and
+-- account_chart_secret_envelopes that the foundation migration grants it;
+-- every other account_v2_* RPC the foundation added is SECURITY INVOKER for
+-- the same reason. As invoker the function can never read more than its
+-- caller already may: a mistaken future grant of execute to anon or
+-- authenticated would fail on the private schema instead of handing out
+-- envelopes, which SECURITY DEFINER (running as the owner) would do. The
+-- one definer caller, weekly_digest_content_v1, runs as its owner and calls
+-- this function in that context. search_path is pinned to pg_catalog and
+-- every relation is schema-qualified.
 create or replace function public.account_v2_chart_email_sources(
   candidate_user_ids uuid[]
 )
@@ -644,6 +659,7 @@ grant execute on function public.account_v2_chart_email_sources(uuid[])
 -- 5. The owner's own self chart for a compatibility invitation. Called only
 -- by the server during the owner's authenticated request; it returns the
 -- envelope, never plaintext, and only while chart_sync is granted.
+-- SECURITY INVOKER, service_role only: see the note on section 4.
 create or replace function public.account_v2_owner_self_chart(
   candidate_user_id uuid
 )
