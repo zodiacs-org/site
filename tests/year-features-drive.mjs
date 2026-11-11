@@ -238,6 +238,8 @@ try {
         const refusal = (await error.innerText()).trim();
         if (refusal !== 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.') fail(`${path} @${size.width}: a date five years ago shows "${refusal}"`);
         console.log(`ok ${path} form @${size.width}: time without place, incomplete time, future date and under-13 refusal`);
+      }
+
       // The birthday report's year buttons: their row is reserved from the first paint, so a result that
       // arrives long after the click (every lazy chunk held back) and each switch of year shift nothing.
       if (FLAGS.birthdayReport) {
