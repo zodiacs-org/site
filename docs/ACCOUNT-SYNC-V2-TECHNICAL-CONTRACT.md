@@ -269,21 +269,37 @@ already chose use their synced chart:
   chart can ask for the daily chart email from the profile. The existing
   double opt-in stores a confirmed `daily_chart_preferences` row whose
   `chart_id` is the v2 chart id (the FK to `public.charts` is dropped). The
-  hourly job reads confirmed rows, calls the service-only
-  `account_v2_chart_email_sources(user_ids)` for those accounts, and receives
-  envelopes only for accounts that are active and hold both `chart_sync` and
-  `chart_emails` at that moment. It decrypts each one in memory, renders the
-  chart edition, and keeps nothing. A chart that cannot be decrypted falls
-  back to the Sun edition for that person. Everyone else, including
-  preferences paused when v1 sync was retired, gets the Sun edition only if
-  they are a confirmed Daily Sun subscriber; nothing new is stored about them.
+  hourly job reads confirmed rows and, for each account, immediately before
+  decrypting, calls the service-only `account_v2_chart_email_sources` for
+  that one account. It receives an envelope only for an account that is
+  active and holds both `chart_sync` and `chart_emails` at that moment, and
+  uses it only when the self chart is the chart the preference names (a
+  preference that still names a removed chart A after chart B was synced
+  stays paused). It decrypts in memory, renders the chart edition, and keeps
+  nothing. Immediately before dispatch it asks again for the exact chart id
+  and revision it decrypted; if the account is no longer eligible, the
+  reservation is released unsent and the address gets the Sun edition when
+  it is a confirmed Daily Sun subscriber due in that run, or nothing. A
+  chart that cannot be decrypted falls back to the Sun edition for that
+  person. Everyone else, including preferences paused when v1 sync was
+  retired, gets the Sun edition only if they are a confirmed Daily Sun
+  subscriber; nothing new is stored about them. Delivery logs name a
+  recipient only by a 12 character prefix of its keyed recipient hash.
 - Weekly digest. `profiles.digest_opt_in` still decides who gets any digest.
+  With the v2 client on, the profile's account panel shows the same opt in
+  and opt out ("Send me the Monday digest") whenever
+  `PUBLIC_WEEKLY_DIGEST_ENABLED=1`, the condition the earlier checkbox used.
   `weekly_digest_content_v1` returns the address and, only for an opted-in
-  account, the chart id and revision. The job decrypts that chart and sends
-  the chart edition; everyone else gets the sky edition (the week's published
-  events). Because the chart reference is part of the content digest,
-  withdrawing `chart_emails` between selection and dispatch makes the
-  authorization recheck refuse the stale envelope.
+  account, the chart id and revision. The job decrypts that chart only after
+  a fresh read for that account, immediately before decryption, still shows
+  the same id and revision, and sends the chart edition; everyone else gets
+  the sky edition (the week's published events). Because the chart reference
+  is part of the content digest, the authorization recheck immediately before
+  dispatch refuses an envelope whose consent or chart moved; the job then
+  reads the content again and, if it is now the sky edition, rebuilds and
+  sends that. An ambiguous dispatch already authorized is replayed byte for
+  byte under the provider idempotency key within 24 hours; that replay is of
+  a message whose dispatch had started, not a new send.
 
 Withdrawing `chart_emails`, withdrawing `chart_sync`, removing the synced
 chart, or starting account deletion removes the account from

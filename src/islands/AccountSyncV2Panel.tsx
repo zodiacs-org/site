@@ -76,6 +76,8 @@ import {
 import { runExclusiveAccountProfileTransition } from '../lib/account-v2/profile-lease';
 import { savedRecordsEnabled, savedRecordsRetainedOnDevice } from '../lib/profile/saved-record-flags';
 import AccountChartEmails from './AccountChartEmails';
+import AccountWeeklyDigest from './AccountWeeklyDigest';
+import { weeklyDigestSignupEnabled } from '../lib/weekly-digest/feature-flags';
 
 type SyncModule = typeof import('../lib/profile/sync');
 type SavedRecordAccess = typeof import('../lib/profile/saved-record-access');
@@ -1784,6 +1786,14 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
                 current ? { ...current, chartEmails } : current
               ))}
             />
+
+            {weeklyDigestSignupEnabled() && (
+              <AccountWeeklyDigest
+                accountId={session.user.id}
+                chartEmails={account.chartEmails === 'granted'}
+                disabled={busy}
+              />
+            )}
 
             <section class="pf-account-v2__section" aria-labelledby="account-controls-heading">
               <h2 id="account-controls-heading">Account controls</h2>
