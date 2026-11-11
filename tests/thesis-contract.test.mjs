@@ -187,7 +187,7 @@ describe('thesis publication metadata contract', () => {
 
     expect(dates).toEqual([
       { datetime: '2026-08-01', label: 'Published 1 Aug 2026' },
-      { datetime: '2026-11-10', label: 'Updated 10 Nov 2026' },
+      { datetime: '2026-11-11', label: 'Updated 11 Nov 2026' },
     ]);
     expect(textOf(hero)).toContain('Evidence checked 10 Nov 2026');
   });
@@ -204,7 +204,7 @@ describe('thesis publication metadata contract', () => {
       headline: 'Why Zodiacs Matter',
       url: 'https://zodiacs.org/thesis/',
       datePublished: '2026-08-01',
-      dateModified: '2026-11-10',
+      dateModified: '2026-11-11',
     });
   });
 });
