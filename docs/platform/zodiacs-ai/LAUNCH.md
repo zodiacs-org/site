@@ -213,9 +213,13 @@ pins and existing Firewall counters. Host connections can be disconnected.
    not provide a stable directory-review endpoint. Keep production disabled
    until the accepted gates and reviewer access are ready.
 
-## Year Ahead Score switch order
+## Year Ahead Score and solar return switch order
 
 Switch `PUBLIC_YEAR_SCORE_ENABLED` on and deploy before `ZODIACS_YEAR_SCORE_ENABLED`, or the tool links to a missing page.
+
+Switch `PUBLIC_YEAR_PEOPLE_ENABLED` on (it needs `PUBLIC_YEAR_SCORE_ENABLED` as well) and deploy before `ZODIACS_YEAR_SCORE_PEOPLE_ENABLED`, or a public figure's answer links to a missing `/year/{slug}/` page and a share link that answers 404.
+
+Switch `PUBLIC_SOLAR_RETURN_SHARE_ENABLED` on and deploy before `ZODIACS_SOLAR_RETURN_ENABLED`, or every `get_solar_return` answer carries a `shareUrl` that answers 404. Its link to `/birthday-report/` already waits for `PUBLIC_BIRTHDAY_REPORT_ENABLED`.
 
 ## Personal release and measurement
 

@@ -177,9 +177,23 @@ describe('the Year Ahead directory', () => {
       expect(`${person.description} ${person.note ?? ''}`).not.toMatch(/[–—]|\b(?:crypto\w*|bitcoin|tokens?|coins?|markets?)\b/iu);
     }
   });
+  it('keeps every name and alias pointing at one figure, and no alias is a bare first name shared by two', () => {
+    const owner = new Map<string, string>();
+    for (const person of YEAR_PEOPLE) {
+      for (const key of [person.slug, person.name, ...person.aliases].map(personKey)) {
+        expect(owner.get(key) ?? person.slug, key).toBe(person.slug);
+        owner.set(key, person.slug);
+      }
+    }
+  });
+  it('holds back figures whose published birth dates disagree', () => {
+    expect(YEAR_PEOPLE.every((person) => person.alternateBirthDates.length === 0)).toBe(true);
+    expect(findYearPerson('Changpeng Zhao')).toBeUndefined();
+  });
   it('finds a figure by name or slug', () => {
     expect(findYearPerson('Jensen Huang')?.slug).toBe('jensen-huang');
     expect(findYearPerson('  elon-musk ')?.name).toBe('Elon Musk');
+    expect(findYearPerson('elonmusk')?.slug).toBe('elon-musk');
     expect(findYearPerson('Nobody Here')).toBeUndefined();
     expect(personKey('Changpéng  ZHAO')).toBe('changpeng zhao');
   });
