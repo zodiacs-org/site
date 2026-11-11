@@ -41739,7 +41739,7 @@ function monthLine(month, which, { tied = false, leastPressure = false } = {}) {
   const name = monthName(month.month);
   if (!month.lead) {
     if (which === "best") return `${name} is ${tied ? "one of the lightest months" : "the lightest month"}, with no slow planet close to the chart.`;
-    return tied ? `${name} is one of the hardest months; no slow planet presses hard.` : `${name} is the quietest month; no slow planet presses hard.`;
+    return tied ? `${name} is one of the quietest months; no slow planet presses hard.` : `${name} is the quietest month; no slow planet presses hard.`;
   }
   const lead = `${month.lead.planet} ${ASPECT_WORD[month.lead.aspect]} your ${month.lead.point}`;
   const tone = driverTone(month.lead);

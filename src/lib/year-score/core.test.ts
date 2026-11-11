@@ -159,6 +159,7 @@ describe('the words', () => {
     const text = [reading.best?.line, reading.hardest?.line, ...reading.drivers.map((driver) => driver.line)].join(' ');
     expect(text).not.toMatch(banned);
     expect(monthLine({ month: '2026-10', days: 31, score: 2, support: 0, pressure: 1, lead: null }, 'hardest')).toBe('October 2026 is the quietest month; no slow planet presses hard.');
+    expect(monthLine({ month: '2026-10', days: 31, score: 2, support: 0, pressure: 1, lead: null }, 'hardest', { tied: true })).toBe('October 2026 is one of the quietest months; no slow planet presses hard.');
   });
 });
 
