@@ -41726,6 +41726,48 @@ function yearPageStart(now) {
   return `${now.toISOString().slice(0, 7)}-01`;
 }
 
+// src/lib/year-score/range.ts
+var HOUR5 = 36e5;
+function scoreRange(natals, longitudeAt2, start) {
+  const scores = natals.map((natal) => scoreYear(natal, longitudeAt2, start).score);
+  return { low: Math.min(...scores), high: Math.max(...scores) };
+}
+function birthDaySamples(earliest, latest) {
+  const span2 = latest.getTime() - earliest.getTime();
+  return [0, 0.25, 0.5, 0.75, 1].map((part) => new Date(earliest.getTime() + span2 * part));
+}
+function birthDayEnvelope(date3) {
+  return [new Date(Date.parse(`${date3}T00:00:00Z`) - 14 * HOUR5), new Date(Date.parse(`${date3}T23:59:00Z`) + 12 * HOUR5)];
+}
+function birthDayEnds(date3, midday, local) {
+  if (local === void 0) return birthDayEnvelope(date3);
+  if (local && Number.isFinite(local[0].getTime()) && Number.isFinite(local[1].getTime()) && local[0] < local[1]) return [local[0], local[1]];
+  return [new Date(midday.getTime() - 12 * HOUR5), new Date(midday.getTime() + 12 * HOUR5)];
+}
+function cachedLongitude(longitudeAt2) {
+  const cache = /* @__PURE__ */ new Map();
+  return (body2, date3) => {
+    const key2 = `${body2}|${date3.getTime()}`;
+    let value = cache.get(key2);
+    if (value === void 0) {
+      value = longitudeAt2(body2, date3);
+      cache.set(key2, value);
+    }
+    return value;
+  };
+}
+function birthDayRange(midday, natalAt, ends, longitudeAt2, start) {
+  return scoreRange([midday, ...birthDaySamples(ends[0], ends[1]).map(natalAt)], longitudeAt2, start);
+}
+function rangeWorthShowing(range) {
+  return range !== null && Math.round((range.high - range.low) * 10) >= 3;
+}
+var UNTIMED_NOTE_WITH_RANGE = "No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.";
+var UNTIMED_NOTE = "No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time.";
+function untimedScoreNote(range) {
+  return rangeWorthShowing(range) ? UNTIMED_NOTE_WITH_RANGE : UNTIMED_NOTE;
+}
+
 // src/lib/year-score/tier.ts
 function scoreTier(score2) {
   if (score2 >= 8) return { key: "open", label: "A wide open year", summary: "The slow planets mostly help. Tradition reads a year like this as strong for career growth and earnings, and a good window to start things and sign agreements." };
@@ -41875,6 +41917,8 @@ var yearScoreData = z14.object({
     exact: z14.array(z14.string())
   })).max(6),
   months: z14.array(z14.object({ month: z14.string(), score: z14.number().min(0).max(10) })),
+  /** Without a birth time: the lowest and highest score across the birth day (the score above is the midday chart's). Null with a birth time. */
+  scoreRange: z14.object({ low: z14.number().min(0).max(10), high: z14.number().min(0).max(10) }).nullable(),
   /** For a figure whose sources disagree on the birth date: the score with the other date. */
   alternates: z14.array(z14.object({ birthDate: z14.string(), score: z14.number().min(0).max(10), label: z14.string() })),
   confidence: z14.number().int().min(40).max(95).nullable(),
@@ -41901,22 +41945,22 @@ async function birthInstant3(birthDate, time, timeZone, clock2, longitude2) {
 function settledSun(birthDate, timeKnown, sunLon) {
   const sign3 = SIGNS2[signIndexForLongitude2(sunLon)].slug;
   if (timeKnown) return sign3;
-  const start = Date.parse(`${birthDate}T00:00:00Z`) - 14 * 36e5;
-  const end = Date.parse(`${birthDate}T23:59:00Z`) + 12 * 36e5;
-  const signs = new Set([start, end].map((ms) => signIndexForLongitude2(computeChart2({ utc: new Date(ms), houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon)));
+  const signs = new Set(birthDayEnvelope(birthDate).map((at) => signIndexForLongitude2(computeChart2({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon)));
   return signs.size === 1 ? sign3 : null;
 }
-function scoreFrom(natal, start) {
-  const cache = /* @__PURE__ */ new Map();
-  return scoreYear(natal, (body2, date3) => {
-    const key2 = `${body2}|${date3.getTime()}`;
-    let value = cache.get(key2);
-    if (value === void 0) {
-      value = bodyLongitude2(body2, date3);
-      cache.set(key2, value);
-    }
-    return value;
-  }, start);
+function scoreFrom(natal, start, longitudeAt2 = cachedLongitude((body2, date3) => bodyLongitude2(body2, date3))) {
+  return scoreYear(natal, longitudeAt2, start);
+}
+async function untimedDayEnds(birthDate, timeZone, midday, clock2, longitude2) {
+  if (!timeZone) return birthDayEnds(birthDate, midday);
+  await clock2.prepareLocalTime(birthDate, timeZone);
+  let local;
+  try {
+    local = longitude2 !== void 0 ? [clock2.resolveLocalToUtc(birthDate, "00:00", timeZone, { longitude: longitude2 }).utc, clock2.resolveLocalToUtc(birthDate, "23:59", timeZone, { longitude: longitude2 }).utc] : [clock2.resolveLocalToUtc(birthDate, "00:00", timeZone).utc, clock2.resolveLocalToUtc(birthDate, "23:59", timeZone).utc];
+  } catch {
+    local = null;
+  }
+  return birthDayEnds(birthDate, midday, local);
 }
 function exactPasses(natal, year) {
   const bodies = Object.entries(natal).filter((entry) => entry[1] !== null).map(([body2, lon]) => ({ body: body2, lon }));
@@ -41927,7 +41971,7 @@ function exactPasses(natal, year) {
 function today(now) {
   return now.toISOString().slice(0, 10);
 }
-var EMPTY = { subject: null, from: null, to: null, score: null, label: null, summary: null, best: null, hardest: null, drivers: [], months: [], alternates: [], confidence: null, confidenceLabel: null, sources: [] };
+var EMPTY = { subject: null, from: null, to: null, score: null, label: null, summary: null, best: null, hardest: null, drivers: [], months: [], scoreRange: null, alternates: [], confidence: null, confidenceLabel: null, sources: [] };
 async function getYearScore(args, now, clock2, origin) {
   const pageUrl = `${origin}/year-score/`;
   const links = [{ title: "Year Ahead Score on Zodiacs", url: pageUrl }, { title: "Your transits on Zodiacs", url: `${origin}/transits/` }];
@@ -41967,10 +42011,12 @@ async function getYearScore(args, now, clock2, origin) {
   if (under18) limits2.push(MINOR_NOTE);
   const utc = await birthInstant3(birthDate, time, timeZone, clock2, longitude2);
   const { natal, sunLon } = natalPointsAt(utc, timeKnown);
-  const year = scoreFrom(natal, startDate);
+  const longitudeAt2 = cachedLongitude((body2, date3) => bodyLongitude2(body2, date3));
+  const year = scoreFrom(natal, startDate, longitudeAt2);
+  const scoreRange2 = timeKnown ? null : birthDayRange(natal, (at) => natalPointsAt(at, false).natal, await untimedDayEnds(birthDate, timeZone, utc, clock2, longitude2), longitudeAt2, startDate);
   const reading = yearReading(year, guard);
   const exact = exactPasses(natal, year);
-  if (!timeKnown) limits2.push(figure ? "No published birth time, so the chart is cast for noon on the birthplace clock and the Moon is left out." : "No birth time was given, so the Moon is left out; the other contacts can shift by about a day.");
+  if (!timeKnown) limits2.push(figure ? "No published birth time, so the chart is cast for noon on the birthplace clock and the Moon is left out." : untimedScoreNote(scoreRange2));
   if (!timeZone && !figure) limits2.push("No time zone was given, so the birth is placed at noon UTC.");
   limits2.push("The score reads Jupiter, Saturn, Uranus, Neptune and Pluto against the Sun, Moon, Mercury, Venus and Mars. Fast planets and eclipses are left out.");
   if (figure?.note) limits2.push(figure.note);
@@ -42004,6 +42050,7 @@ async function getYearScore(args, now, clock2, origin) {
         exact: exact[index]
       })),
       months: reading.months.map((month) => ({ month: month.month, score: month.score })),
+      scoreRange: scoreRange2,
       alternates,
       confidence: readingConfidence(detail),
       confidenceLabel: readingConfidenceLabel(detail),
