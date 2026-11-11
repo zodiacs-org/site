@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { bodyLongitude, computeChart } from '../engine/full';
-import { ASPECT_ORB, MONTH_SCORE_SCALE, MONTH_SCORE_SCALE_TIMED, PLANET_WEIGHT, POINT_WEIGHT, SCORE_CENTER, SCORE_CENTER_TIMED, VALENCE, YEAR_SCORE_SCALE, YEAR_SCORE_SCALE_TIMED, contactsOn, curve, scoreYear, type NatalPoints, type SlowPlanet } from './core';
+import { ASPECT_ORB, MONTH_SCORE_SCALE, MONTH_SCORE_SCALE_TIMED, PLANET_WEIGHT, POINT_WEIGHT, SCORE_CENTER, SCORE_CENTER_TIMED, VALENCE, YEAR_SCORE_SCALE, YEAR_SCORE_SCALE_TIMED, contactsOn, curve, scoreYear, type MonthScore, type NatalPoints, type SlowPlanet, type YearScore } from './core';
 import { YEAR_PEOPLE, findYearPerson, personKey } from './people';
 import { monthLine, scoreTier, yearReading } from './reading';
 
@@ -216,9 +216,60 @@ describe('lines that agree with their headings', () => {
     const year = scoreYear(natal, byMonth({ 2: { Jupiter: 12 } }, { Jupiter: 10 }), start);
     expect(year.hardest?.month).toBe('2026-03');
     expect(year.ties.hardest).toBe(false);
+    // The line names the least support only because March's support is the lowest of every listed month.
+    expect(year.months.every((other) => year.hardest!.support <= other.support)).toBe(true);
     const line = yearReading(year).hardest!.line;
     expect(line).toBe('March 2026 has the least support of the year; Jupiter conjunct your Sun still helps.');
     expect(line).not.toContain('softest');
+  });
+
+  // A year built by hand, so each month's support and pressure can be set exactly; the picks are on balance, as core.ts makes them.
+  const handYear = (rows: { month: string; support: number; pressure: number; lead?: MonthScore['lead'] }[]): YearScore => {
+    const months: MonthScore[] = rows.map((row) => ({ month: row.month, days: 30, score: 5, support: row.support, pressure: row.pressure, lead: row.lead ?? null }));
+    const bal = (entry: MonthScore) => entry.support - entry.pressure;
+    const best = months.reduce((pick, entry) => (bal(entry) > bal(pick) ? entry : pick));
+    const hardest = months.reduce((pick, entry) => (bal(entry) < bal(pick) ? entry : pick));
+    return { version: 'year-score.v1', from: '2026-01-01', to: '2026-12-31', score: 5, support: 0, pressure: 0, activeDays: 1, months, best, hardest, ties: { best: false, hardest: false }, drivers: [], points: ['Sun', 'Mercury', 'Venus', 'Mars'] };
+  };
+  const saturnSquare = { planet: 'Saturn', aspect: 'square', point: 'Sun', tone: 'pressure' } as const;
+  const jupiterOn = { planet: 'Jupiter', aspect: 'conjunction', point: 'Sun', tone: 'support' } as const;
+
+  it('claims the most support for the best month only when no listed month has more', () => {
+    // May is uniquely best on balance, but July has more support (and more pressure), and March less pressure.
+    const year = handYear([
+      { month: '2026-03', support: 0, pressure: 0.2 },
+      { month: '2026-05', support: 1.0267, pressure: 0.5, lead: saturnSquare },
+      { month: '2026-07', support: 1.36, pressure: 1.2 },
+    ]);
+    expect(year.best?.month).toBe('2026-05');
+    const line = yearReading(year).best!.line;
+    expect(line).not.toContain('most support');
+    expect(line).not.toContain('least pressure');
+    expect(line).toBe('May 2026 is the strongest month; Saturn square your Sun still asks something of your sense of self.');
+  });
+
+  it('claims the least support or the most pressure for the hardest month only when it is true', () => {
+    // May is uniquely hardest with support 1 while every other month has none: it does not have the least support.
+    const most = handYear([
+      { month: '2026-04', support: 0, pressure: 0 },
+      { month: '2026-05', support: 1, pressure: 3, lead: jupiterOn },
+      { month: '2026-06', support: 0, pressure: 0.5 },
+    ]);
+    expect(most.hardest?.month).toBe('2026-05');
+    const mostLine = yearReading(most).hardest!.line;
+    expect(mostLine).not.toContain('least support');
+    expect(mostLine).not.toContain('softest');
+    expect(mostLine).toBe('May 2026 carries the most pressure of the year; Jupiter conjunct your Sun still helps.');
+    // Neither holds: June has less support and July more pressure, but May still balances lowest.
+    const neither = handYear([
+      { month: '2026-05', support: 1, pressure: 3.5, lead: jupiterOn },
+      { month: '2026-06', support: 0, pressure: 0.5 },
+      { month: '2026-07', support: 3, pressure: 4 },
+    ]);
+    expect(neither.hardest?.month).toBe('2026-05');
+    const neitherLine = yearReading(neither).hardest!.line;
+    expect(neitherLine).toBe('May 2026 is the hardest month; Jupiter conjunct your Sun still helps.');
+    expect(neitherLine).not.toMatch(/least support|most pressure|softest/u);
   });
 
   it('reads Jupiter square or opposite a point as mixed, with its own sentence', () => {
@@ -240,6 +291,7 @@ describe('lines that agree with their headings', () => {
     const most = scoreYear(natal, byMonth({ 4: { Saturn: 100, Jupiter: 11 }, 5: { Saturn: 101 } }, { Saturn: 100 }), start);
     expect(most.best?.month).toBe('2026-05');
     expect(most.best?.lead?.planet).toBe('Saturn');
+    expect(most.months.every((other) => most.best!.support >= other.support)).toBe(true);
     expect(yearReading(most).best!.line).toBe('May 2026 is the strongest month, with the most support of the year; Saturn square your Sun still asks something of your sense of self.');
   });
 
@@ -292,7 +344,8 @@ describe('lines that agree with their headings', () => {
     expect(hardest.hardest?.month).toBe('2026-06');
     expect(hardest.months[0].pressure).toBeGreaterThan(hardest.hardest!.pressure + 0.1);
     expect(hardest.ties.hardest).toBe(false);
-    expect(yearReading(hardest).hardest!.line).toContain('June 2026 carries the most pressure');
+    // The partial January carries more pressure than June, so June's line does not claim the most.
+    expect(yearReading(hardest).hardest!.line).toBe('June 2026 is the hardest month: Saturn square your Sun leans on your sense of self. A month to pace yourself, not to fear.');
   });
 });
 

@@ -41786,7 +41786,7 @@ function driverLine(driver) {
   return transitLine(driver.planet, driver.aspect, driver.point);
 }
 var role = (point2) => BODY_ROLE[point2] ?? point2;
-function monthLine(month, which, { tied = false, leastPressure = false } = {}) {
+function monthLine(month, which, { tied = false, leastPressure = false, mostPressure = false, leastSupport = false, mostSupport = false } = {}) {
   const name = monthName(month.month);
   if (!month.lead) {
     if (which === "best") return `${name} is ${tied ? "one of the lightest months" : "the lightest month"}, with no slow planet close to the chart.`;
@@ -41798,16 +41798,27 @@ function monthLine(month, which, { tied = false, leastPressure = false } = {}) {
     if (tied) {
       return tone === "support" ? `${name} is one of the lightest months: ${lead} backs your ${role(month.lead.point)}.` : `${name} is one of the lightest months; ${lead} still asks something of your ${role(month.lead.point)}.`;
     }
-    return tone === "support" ? `${name} is the strongest month: ${lead} backs your ${role(month.lead.point)}.` : `${name} is the strongest month, ${leastPressure ? "with the least pressure of the year" : "with the most support of the year"}; ${lead} still asks something of your ${role(month.lead.point)}.`;
+    if (tone === "support") return `${name} is the strongest month: ${lead} backs your ${role(month.lead.point)}.`;
+    const best = leastPressure ? "is the strongest month, with the least pressure of the year" : mostSupport ? "is the strongest month, with the most support of the year" : "is the strongest month";
+    return `${name} ${best}; ${lead} still asks something of your ${role(month.lead.point)}.`;
   }
   if (tied) {
     return tone === "pressure" ? `${name} is one of the hardest months: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.` : `${name} is one of the hardest months; ${lead} still helps.`;
   }
-  return tone === "pressure" ? `${name} carries the most pressure: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.` : `${name} has the least support of the year; ${lead} still helps.`;
+  if (tone === "pressure") {
+    return `${name} ${mostPressure ? "carries the most pressure" : "is the hardest month"}: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.`;
+  }
+  const hardest = leastSupport ? "has the least support of the year" : mostPressure ? "carries the most pressure of the year" : "is the hardest month";
+  return `${name} ${hardest}; ${lead} still helps.`;
 }
 function yearReading(year, guard = (text2) => text2) {
-  const leastPressure = (entry) => year.months.every((other) => entry.pressure <= other.pressure);
-  const month = (entry, which) => entry ? { month: entry.month, name: monthName(entry.month), score: entry.score, line: guard(monthLine(entry, which, { tied: year.ties[which], leastPressure: leastPressure(entry) })) } : null;
+  const extremes = (entry) => ({
+    leastPressure: year.months.every((other) => entry.pressure <= other.pressure),
+    mostPressure: year.months.every((other) => entry.pressure >= other.pressure),
+    leastSupport: year.months.every((other) => entry.support <= other.support),
+    mostSupport: year.months.every((other) => entry.support >= other.support)
+  });
+  const month = (entry, which) => entry ? { month: entry.month, name: monthName(entry.month), score: entry.score, line: guard(monthLine(entry, which, { tied: year.ties[which], ...extremes(entry) })) } : null;
   const same2 = year.best && year.hardest && year.best.month === year.hardest.month;
   return {
     score: year.score,
