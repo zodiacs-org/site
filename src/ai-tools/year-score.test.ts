@@ -164,6 +164,23 @@ describe('getYearScore', () => {
     expect(data).toMatchObject({ status: 'not-in-directory', score: null });
   });
 
+  it('gives the range across the birth day without a birth time, and none with one', async () => {
+    for (const args of [{ birthDate: '1990-05-03' }, { birthDate: '1990-05-03', zone: 'Europe/Madrid' }, { birthDate: '1990-05-03', zone: 'Europe/Madrid', latitude: 40.42, longitude: -3.7 }]) {
+      const { data } = await getYearScore({ ...args, from: '2026-11-09' }, NOW, clock, 'https://zodiacs.org');
+      expect(data.scoreRange, JSON.stringify(args)).not.toBeNull();
+      expect(data.scoreRange!.low).toBeLessThanOrEqual(data.score!);
+      expect(data.score!).toBeLessThanOrEqual(data.scoreRange!.high);
+      expect(data.limits).toContain('No birth time was given, so the chart is cast for midday and the Moon is left out. The score can move with the birth time; the range shows by how much.');
+    }
+    const timed = await getYearScore({ birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', from: '2026-11-09' }, NOW, clock, 'https://zodiacs.org');
+    expect(timed.data.scoreRange).toBeNull();
+    const figure = await getYearScore({ person: 'Jensen Huang' }, NOW, clock, 'https://zodiacs.org');
+    expect(figure.data.scoreRange!.low).toBeLessThanOrEqual(figure.data.score!);
+    expect(figure.data.score!).toBeLessThanOrEqual(figure.data.scoreRange!.high);
+    const unlisted = await getYearScore({ person: 'Somebody Unlisted' }, NOW, clock, 'https://zodiacs.org');
+    expect(unlisted.data.scoreRange).toBeNull();
+  });
+
   it('refuses a start before the birth date', async () => {
     await expect(getYearScore({ birthDate: '2005-05-03', from: '2004-01-01' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
   });
