@@ -28,20 +28,21 @@ import {
   createWeeklyDigestResendRequest,
   openWeeklyDigestRequestEnvelope,
   sealWeeklyDigestRequestEnvelope,
-  sendWeeklyDigestEnvelope,
   WeeklyDigestProviderAbortError,
   weeklyDigestEnvelopeDigest,
   type WeeklyDigestProviderResult,
   type WeeklyDigestRequestEnvelope,
 } from '../src/lib/weekly-digest/delivery';
-import { ResendRequestWithdrawnError } from '../src/lib/daily-email/resend-request';
 import {
   dispatchWeeklyWithRecheck,
-  weeklyAttemptGuard,
+  replayWeeklyRecovery,
+  WeeklyChartRejectedError,
   weeklyDispatchRecheck,
   WeeklyDispatchRecheckError,
+  weeklyRejectedRelease,
   type WeeklyDispatchOutcome,
   type WeeklyDispatchRecheck,
+  type WeeklyRejectedRelease,
 } from '../src/lib/weekly-digest/dispatch-recheck';
 
 /** Rebuilding a released delivery failed; its reservation was cancelled. */
@@ -663,6 +664,27 @@ async function recheckWeeklyDelivery(
   return weeklyDispatchRecheck(data);
 }
 
+/**
+ * Asked when the provider definitively rejected a new chart edition, or its
+ * recheck could not be read: nothing was accepted, so the delivery goes back
+ * to reserved instead of waiting for the recovery replay (see
+ * weekly_digest_release_rejected_v1).
+ */
+async function releaseRejectedWeeklyDelivery(
+  supabase: DigestSupabase,
+  weekStart: Date,
+  userId: string,
+  leaseToken: string,
+): Promise<WeeklyRejectedRelease> {
+  const { data, error } = await supabase.rpc('weekly_digest_release_rejected_v1', {
+    candidate_week_start: editionDate(weekStart),
+    candidate_user_id: userId,
+    candidate_lease_token: leaseToken,
+  });
+  if (error) throw databaseFailure('Weekly delivery release', error);
+  return weeklyRejectedRelease(data);
+}
+
 async function finishWeeklyDelivery(
   supabase: DigestSupabase,
   weekStart: Date,
@@ -786,25 +808,43 @@ function prepareWeeklyEnvelope(
   return { envelope, sealedEnvelope };
 }
 
-function abortProviderBatch(error: WeeklyDigestProviderAbortError): never {
+function providerMetadata(error: WeeklyDigestProviderAbortError): string {
   const status = Number.isInteger(error.status) && error.status! >= 100 && error.status! <= 599
     ? String(error.status)
     : 'none';
   const code = typeof error.code === 'string' && SAFE_PROVIDER_CODE.test(error.code)
     ? error.code
     : 'none';
+  return `reason=${error.reason} status=${status} code=${code}`;
+}
+
+/**
+ * A new chart edition the provider definitively rejected: nothing was
+ * accepted, and the delivery was released (or, with release=failed, left in
+ * dispatching because the database could not be reached). The batch stops
+ * as for any other provider rejection outside the recipient codes.
+ */
+function releasedProviderBatch(error: WeeklyChartRejectedError): never {
   console.error(
-    `weekly-digest: provider batch abort reason=${error.reason} status=${status} code=${code}; exact sealed replay retained`,
+    `weekly-digest: provider batch stop ${providerMetadata(error.abort)}; chart edition definitively rejected, release=${error.release}`,
+  );
+  throw new Error('Weekly digest stopped after a provider rejection; nothing was accepted for the chart edition.');
+}
+
+function abortProviderBatch(error: WeeklyDigestProviderAbortError): never {
+  console.error(
+    `weekly-digest: provider batch abort ${providerMetadata(error)}; exact sealed replay retained`,
   );
   throw new Error('Weekly digest stopped after a non-terminal provider outcome.');
 }
 
 /**
- * Replays a recovered envelope. Its first attempt goes out as claimed (the
- * claim rechecked consent and content, and the original dispatch may already
- * have been accepted under this idempotency key); every retry after an
- * explicit 429 is rechecked first, and a replay whose content moved is
- * quarantined instead of sent.
+ * Replays a recovered envelope (see replayWeeklyRecovery). Only an ambiguous
+ * first dispatch reaches recovery: a new chart edition the provider
+ * definitively rejected was released before its batch stopped. The replay's
+ * first attempt goes out as claimed; every retry after an explicit 429 is
+ * rechecked first, and a replay whose content moved is quarantined instead
+ * of sent.
  */
 async function replayAndFinalize(
   supabase: DigestSupabase,
@@ -815,25 +855,23 @@ async function replayAndFinalize(
   resendKey: string,
   resendRequest: ReturnType<typeof createWeeklyDigestResendRequest>,
 ): Promise<WeeklyDigestProviderResult | { kind: 'withdrawn'; recheck: WeeklyDispatchRecheck }> {
-  const guard = weeklyAttemptGuard(
-    () => recheckWeeklyDelivery(supabase, weekStart, userId, leaseToken),
-    { fromAttempt: 1 },
-  );
-  let providerResult: WeeklyDigestProviderResult;
+  let replayed: Awaited<ReturnType<typeof replayWeeklyRecovery>>;
   try {
-    providerResult = await sendWeeklyDigestEnvelope(envelope, resendKey, resendRequest, guard.control);
+    replayed = await replayWeeklyRecovery({
+      envelope,
+      recheck: () => recheckWeeklyDelivery(supabase, weekStart, userId, leaseToken),
+      apiKey: resendKey,
+      request: resendRequest,
+    });
   } catch (error) {
     if (error instanceof WeeklyDigestProviderAbortError) abortProviderBatch(error);
-    if (error instanceof ResendRequestWithdrawnError) {
-      const answer = guard.last();
-      if (answer === null || answer === 'failed' || answer === 'dispatch') {
-        throw new Error('Weekly recovery recheck failed before a retry; nothing more was sent.');
-      }
-      return { kind: 'withdrawn', recheck: answer };
+    if (error instanceof WeeklyDispatchRecheckError) {
+      throw new Error('Weekly recovery recheck failed before a retry; nothing more was sent.');
     }
     throw new Error('Weekly digest provider dispatch failed before finalization.');
   }
-  return finalize(supabase, weekStart, userId, leaseToken, providerResult);
+  if (replayed.kind === 'withdrawn') return replayed;
+  return finalize(supabase, weekStart, userId, leaseToken, replayed.result);
 }
 
 async function finalize(
@@ -1115,13 +1153,21 @@ async function run(): Promise<void> {
         },
         isChartEdition: (current) => current.charts.length > 0,
         recheck: () => recheckWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken),
+        releaseRejected: () => releaseRejectedWeeklyDelivery(
+          supabase!,
+          weekStart,
+          userId,
+          reservation.leaseToken,
+        ),
         apiKey: resendKey!,
         request: resendRequest,
       });
     } catch (error) {
+      if (error instanceof WeeklyChartRejectedError) releasedProviderBatch(error);
       if (error instanceof WeeklyDigestProviderAbortError) abortProviderBatch(error);
       if (error instanceof WeeklyDispatchRecheckError) {
-        throw new Error('Weekly delivery recheck failed before a provider attempt; nothing was sent and the dispatch is left for recovery.');
+        console.error(`weekly-digest: chart edition recheck failed; release=${error.release ?? 'none'}`);
+        throw new Error('Weekly delivery recheck failed before a provider attempt; nothing more was sent.');
       }
       if (error instanceof WeeklyPreparationError) throw error;
       throw new Error('Weekly digest provider dispatch failed before finalization.');

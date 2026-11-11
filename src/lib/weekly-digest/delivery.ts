@@ -87,6 +87,14 @@ export class WeeklyDigestProviderAbortError extends Error {
   readonly reason: WeeklyDigestProviderAbortReason;
   readonly status: number | null;
   readonly code: string | null;
+  /**
+   * The provider explicitly rejected the request, so nothing was accepted
+   * under it: a 4xx other than 408 and 409, an exhausted run of 429s
+   * included (the queue retries only 429s, so every earlier attempt was one).
+   * Everything else (transport failures, 5xx, 408, 409, a malformed success)
+   * is ambiguous: the request may have been accepted.
+   */
+  readonly definitive: boolean;
 
   constructor(
     reason: WeeklyDigestProviderAbortReason,
@@ -98,6 +106,12 @@ export class WeeklyDigestProviderAbortError extends Error {
     this.reason = reason;
     this.status = status;
     this.code = code;
+    this.definitive = reason === 'provider-response'
+      && Number.isInteger(status)
+      && status! >= 400
+      && status! <= 499
+      && status !== 408
+      && status !== 409;
   }
 }
 
