@@ -42681,7 +42681,7 @@ var PERSONAL_YEAR_MEANINGS = Object.freeze({
   5: "A year for change. Travel, new people, and a restlessness the tradition says is worth following, within reason. Freedom is the theme; discipline is the counterweight.",
   6: "A year for responsibility. Family, home, and the people who depend on you take the foreground. The tradition pairs the care given in this year with care returned in later ones.",
   7: "A year for the inward turn. Study, rest, and questions that need quiet to answer. Less is happening on the surface than underneath.",
-  8: "A year for results. Ambition, authority, money, and what the last seven years of effort add up to; the tradition reads it as a strong year for earnings and promotion. Decisions carry weight; so do their consequences.",
+  8: "A year for results. Ambition, authority, and what the last seven years of effort add up to. Decisions carry weight; so do their consequences.",
   9: "A year for completion. Endings, clearing out, and finishing what the cycle started. The tradition says to let go now so the 1 year that follows starts clear."
 });
 var KARMIC_DEBT_MEANINGS = Object.freeze({
@@ -42715,7 +42715,7 @@ var POSITION_READINGS = Object.freeze({
     5: "As a Life Path, 5 reads as a road of movement and variety. Change teaches you more than routine does, and the lesson is choosing your commitments freely rather than escaping them.",
     6: "As a Life Path, 6 reads as a road of responsibility: home, community and the people who rely on you. The lesson that keeps returning is care without control, and taking your own rest and wellbeing as seriously as everyone else's.",
     7: "As a Life Path, 7 reads as a road of study and questions. You trust what you have examined for yourself, and the lesson is letting that understanding take in people as well as ideas.",
-    8: "As a Life Path, 8 reads as a road of authority and results: organising, leading, and a strong head for money and business. The tradition counts it among the best numbers for earning and building, and the recurring lesson is judging a life by more than what it earned.",
+    8: "As a Life Path, 8 reads as a road of authority and results: organising, leading, and a head for running things at scale. The tradition counts it among the strongest numbers for building, and the recurring lesson is judging a life by more than what it achieved.",
     9: "As a Life Path, 9 reads as a road toward the wide view: generosity, causes and finishing things well. The lesson is letting go gracefully, and giving to the people nearest you as well as to the many.",
     11: "As a Life Path, 11 reads as a road of insight. You pick up what others miss and are drawn to inspire them; the tradition says the work is grounding that sensitivity in plain, everyday steps. On ordinary days it lives as a 2.",
     22: "As a Life Path, 22 reads as a road of large, practical vision: turning a big idea into something that lasts and that other people can use. The tradition says it asks for patience with scale. On ordinary days it lives as a 4.",
@@ -42725,11 +42725,11 @@ var POSITION_READINGS = Object.freeze({
     1: "As an Expression number, 1 points to a gift for initiative. You tend to work best when you can set the direction, and careers where you lead or work for yourself suit it well.",
     2: "As an Expression number, 2 points to a gift for collaboration: mediating, refining an idea someone else started, and noticing the detail that makes a joint effort hold together.",
     3: "As an Expression number, 3 points to a gift for communication: writing, speaking, performing or teaching, anything that turns an idea into something people enjoy hearing.",
-    4: "As an Expression number, 4 points to a gift for method: organising, building and finishing. You tend to be the one who turns a rough plan into a schedule that works, and the tradition reads it as a steady earner in any trade.",
+    4: "As an Expression number, 4 points to a gift for method: organising, building and finishing. You tend to be the one who turns a rough plan into a schedule that works, and the tradition reads it as dependable in any trade.",
     5: "As an Expression number, 5 points to a gift for adaptability: learning quickly, persuading, and handling the unexpected well. Variety in the work tends to bring out your best.",
     6: "As an Expression number, 6 points to a gift for care and fairness: teaching, hosting, advising, and making a place feel looked after.",
     7: "As an Expression number, 7 points to a gift for analysis: research, close reading, and solving the problem other people stopped looking at.",
-    8: "As an Expression number, 8 points to a gift for organisation at scale: running people, projects and budgets, and seeing a plan through to its end. The tradition ties it to business, management and handling money well.",
+    8: "As an Expression number, 8 points to a gift for organisation at scale: running people and projects, and seeing a plan through to its end. The tradition ties it to leadership, management and carrying large responsibilities.",
     9: "As an Expression number, 9 points to a gift for the broad view: understanding many kinds of people, and work that serves a purpose larger than yourself.",
     11: "As an Expression number, 11 points to a gift for inspiration: ideas that arrive whole, and a way of explaining them that moves people. It carries the 2's tact as well.",
     22: "As an Expression number, 22 points to a gift for building on a large scale, pairing a wide vision with the patience to organise the details. It carries the 4's method as well.",
