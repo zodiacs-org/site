@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "account-sync-v2-launch-2026-11-11",
-  "baseCommit": "ea664b731c50454ac9e0890d326eec1df6b4e453",
+  "baseCommit": "f2d0c122fed9b48db0e8efaba80280082da37974",
   "protectedPaths": [
     "src/pages/es/birth-chart/index.astro",
     "src/pages/es/index.astro",
