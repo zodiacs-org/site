@@ -113,7 +113,9 @@ select dblink_exec('account_v2_a', 'set role authenticated');
 select dblink_exec('account_v2_a', 'begin');
 select dblink_exec(
   'account_v2_a',
-  $$select public.account_v2_legacy_sync_allowed()$$
+  $$do $lock$ begin
+    perform public.account_v2_legacy_sync_allowed();
+  end $lock$;$$
 );
 
 select dblink_send_query(

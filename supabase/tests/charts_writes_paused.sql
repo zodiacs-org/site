@@ -98,12 +98,16 @@ with removed as (
   returning 1
 )
 select pg_temp.assert_true(
-  exists (select 1 from removed)
-    and not exists (
-      select 1 from public.charts
-      where id = '74000000-0000-4000-8000-000000000001'
-    ),
-  'authenticated delete of an existing v1 row must still work'
+  exists (select 1 from removed),
+  'authenticated delete of an existing v1 row must still return the removed row'
+);
+
+select pg_temp.assert_true(
+  not exists (
+    select 1 from public.charts
+    where id = '74000000-0000-4000-8000-000000000001'
+  ),
+  'authenticated delete of an existing v1 row must leave no row behind'
 );
 
 reset role;
