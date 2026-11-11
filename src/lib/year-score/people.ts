@@ -6,7 +6,7 @@
  * Pure: parsing and lookup, no network or logging.
  */
 import { z } from 'zod';
-import raw from '../../data/year-people.json';
+import raw from '../../data/year-people.json' with { type: 'json' };
 
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/u);
 const source = z.object({ title: z.string().min(1), url: z.url() });

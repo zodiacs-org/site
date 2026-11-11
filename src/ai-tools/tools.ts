@@ -25,10 +25,11 @@ import { getPersonalTransits } from './features/personal-transits';
 import { explainAstrology } from './features/explain';
 import { searchSkyEvents } from './features/sky-events';
 import { getYearScore } from './features/year-score';
+import { getSolarReturn } from './features/solar-return';
 import { getNumerology } from './features/numerology';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
-import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, inputSchemaFor, type AiToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, type AiToolName, type SolarReturnToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
 import { isUnder13 } from './features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
@@ -56,6 +57,12 @@ export interface AiDependencies {
   skyEvents?: boolean;
   /** get_year_score (ZODIACS_YEAR_SCORE_ENABLED=1), in effect only with the coverage and occasion tools (yearScoreOn). */
   yearScore?: boolean;
+  /** get_year_score also takes a public figure (ZODIACS_YEAR_SCORE_PEOPLE_ENABLED=1); only with the Year Ahead Score switch in effect. */
+  yearScorePeople?: boolean;
+  /** get_solar_return (ZODIACS_SOLAR_RETURN_ENABLED=1), in effect only with the coverage and occasion tools (solarReturnOn). */
+  solarReturn?: boolean;
+  /** The site's /birthday-report/ page is live (PUBLIC_BIRTHDAY_REPORT_ENABLED=1), so get_solar_return may link to it. */
+  birthdayReportPage?: boolean;
   /**
    * get_numerology (ZODIACS_NUMEROLOGY_ENABLED=1), in effect only with the coverage and occasion tools (numerologyOn).
    * Numerology is a separate tradition from astrology.
@@ -145,6 +152,16 @@ export function numerologyOn(dependencies: AiDependencies): boolean {
   return !!(dependencies.occasions && dependencies.coverage && dependencies.numerology);
 }
 
+/** Whether get_year_score takes a public figure: its own switch, in effect only with the Year Ahead Score switch. */
+export function yearScorePeopleOn(dependencies: AiDependencies): boolean {
+  return yearScoreOn(dependencies) && !!dependencies.yearScorePeople;
+}
+
+/** Whether get_solar_return is offered: like the Year Ahead Score, it joins the occasion and coverage switches. */
+export function solarReturnOn(dependencies: AiDependencies): boolean {
+  return !!(dependencies.occasions && dependencies.coverage && dependencies.solarReturn);
+}
+
 /** The tools this server actually offers with these dependencies. */
 export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   const released: AiToolName[] = AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope' || !!dependencies.horoscopeWindow);
@@ -154,14 +171,15 @@ export function offeredTools(dependencies: AiDependencies): AiToolName[] {
   const coverage = COVERAGE_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope_period' || (!!dependencies.horoscopeWindow && !!dependencies.horoscopeMonths && !!dependencies.horoscopeProgram));
   // search_sky_events comes last, so the nineteen entries before it keep their places.
   // get_year_score comes after everything else, so every entry before it keeps its place.
-  // get_numerology comes after get_year_score, so every entry before it keeps its place.
-  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : [])];
+  // get_numerology comes after get_solar_return, so every entry before it keeps its place.
+  return [...released, ...OCCASION_TOOL_NAMES, ...coverage, ...PLACE_TOOL_NAMES, ...(skyEventsOn(dependencies) ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScoreOn(dependencies) ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturnOn(dependencies) ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerologyOn(dependencies) ? NUMEROLOGY_TOOL_NAMES : [])];
 }
 
 const isCoverageTool = (tool: string): tool is CoverageToolName => (COVERAGE_TOOL_NAMES as readonly string[]).includes(tool);
 const isPlaceTool = (tool: string): tool is PlaceToolName => (PLACE_TOOL_NAMES as readonly string[]).includes(tool);
 export const isSkyEventsTool = (tool: string): tool is SkyEventsToolName => (SKY_EVENTS_TOOL_NAMES as readonly string[]).includes(tool);
 export const isYearScoreTool = (tool: string): tool is YearScoreToolName => (YEAR_SCORE_TOOL_NAMES as readonly string[]).includes(tool);
+export const isSolarReturnTool = (tool: string): tool is SolarReturnToolName => (SOLAR_RETURN_TOOL_NAMES as readonly string[]).includes(tool);
 export const isNumerologyTool = (tool: string): tool is NumerologyToolName => (NUMEROLOGY_TOOL_NAMES as readonly string[]).includes(tool);
 /** What search_sky_events does, for get_capabilities. */
 const SKY_EVENTS_TOOL_SUMMARY: Record<SkyEventsToolName, string> = {
@@ -183,10 +201,11 @@ const FIELD_FORMAT: Record<string, string> = {
 };
 
 /** The birth years a tool takes, named when a date in the right form falls outside them (1799-05-03). */
-const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | NumerologyToolName, string>> = {
+const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName, string>> = {
   get_natal_chart: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_personal_transits: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_year_score: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
+  get_solar_return: `${NATAL_MIN_YEAR} to ${NATAL_MAX_YEAR}`,
   get_numerology: '1800 to 2199',
 };
 
@@ -196,7 +215,7 @@ const BIRTH_YEARS: Partial<Record<CoverageToolName | PlaceToolName | SkyEventsTo
  * values; nothing from the request is repeated, so an unknown property's name never comes back. `schema` is the
  * tool's input schema in effect, its sky events form while that switch is on; an array item is named as kinds[0].
  */
-export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | NumerologyToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
+export function coverageInputRefusal(tool: CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName, input: unknown, schema: z.ZodType = INPUT_SCHEMAS[tool]) {
   const parsed = schema.safeParse(input ?? {});
   if (parsed.success) return null;
   const record = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
@@ -365,9 +384,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
   const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     if ((OCCASION_TOOL_NAMES as readonly string[]).includes(tool) && !dependencies.occasions) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isNumerologyTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
-    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isNumerologyTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents)); if (refusal) return refusal; }
-    const parsed = inputSchemaFor(tool, skyEvents).safeParse(input);
+    if (((COVERAGE_TOOL_NAMES as readonly string[]).includes(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool)) && !offeredTools(dependencies).includes(tool)) return failure(tool, 'unavailable', 'This tool is not offered here.');
+    // get_year_score takes a public figure only with its people switch (contracts.ts, YEAR_SCORE_PEOPLE_INPUT).
+    const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
+    if (isCoverageTool(tool) || isPlaceTool(tool) || isSkyEventsTool(tool) || isYearScoreTool(tool) || isSolarReturnTool(tool) || isNumerologyTool(tool)) { const refusal = coverageInputRefusal(tool, input, inputSchemaFor(tool, skyEvents, switches)); if (refusal) return refusal; }
+    const parsed = inputSchemaFor(tool, skyEvents, switches).safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
     let data: unknown;
     let links: { title: string; url: string }[] = [methodLink];
@@ -735,7 +756,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         break;
       }
       case 'get_year_score': {
-        const args = INPUT_SCHEMAS.get_year_score.parse(input);
+        const args = inputSchemaFor(tool, skyEvents, switches).parse(input) as Parameters<typeof getYearScore>[0];
         const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : undefined;
         // Twelve months of the slow planets is an event search; count it as one at the hosted boundary.
         if (dependencies.allowEvents) {
@@ -743,6 +764,17 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Zodiacs is busy. Try again in a minute.', verdict === 'limited' ? 60 : 300);
         }
         const result = await feature(() => getYearScore({ ...args, ...(zone ? { zone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), ORIGIN));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'get_solar_return': {
+        const args = INPUT_SCHEMAS.get_solar_return.parse(input);
+        const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : undefined;
+        let currentZone = args.currentZone ? await zoneAt(args.currentZone, '/currentZone', resolveZone) : undefined;
+        // A zone the assistant shares is where the person is now, so it sets the clock the return is told on.
+        if (!currentZone && context.hostZone) { try { currentZone = await zoneAt(context.hostZone, '/currentZone', resolveZone); } catch { /* the answer says which clock it used */ } }
+        const result = await feature(() => getSolarReturn({ ...args, ...(zone ? { zone } : {}), ...(currentZone ? { currentZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), ORIGIN, !!dependencies.birthdayReportPage));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
         break;

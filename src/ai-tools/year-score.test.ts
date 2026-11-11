@@ -73,13 +73,37 @@ describe('the Year Ahead Score switch on', () => {
     expect(JSON.stringify(tools.slice(0, before.length))).toBe(JSON.stringify(before));
     const tool = tools.at(-1)!;
     expect(tool.annotations).toMatchObject({ readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: false });
-    expect(Object.keys(tool.inputSchema.properties)).toEqual(['person', 'birthDate', 'time', 'zone', 'latitude', 'longitude', 'from']);
+    // The person's own details only: no public figure until ZODIACS_YEAR_SCORE_PEOPLE_ENABLED=1.
+    expect(Object.keys(tool.inputSchema.properties)).toEqual(['birthDate', 'time', 'zone', 'latitude', 'longitude', 'from']);
+    expect(tool.inputSchema.required).toEqual(['birthDate']);
+    expect(tool.description).toContain('It scores the person\'s own chart only');
     expect(tool.description).not.toMatch(/[–—]/u);
   });
 
-  it('scores a directory figure by name and counts the call', async () => {
+  it('refuses a public figure while the people switch is off, naming nothing from the request', async () => {
+    for (const value of [undefined, '0', 'true']) {
+      const counted: string[] = [];
+      const host = await serve({ ...env, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: value }, counted);
+      const result = message((await post(host, rpc('tools/call', { name: 'get_year_score', arguments: { person: 'Jensen Huang' } }))).text).result;
+      expect(result.isError, String(value)).toBe(true);
+      expect(JSON.stringify(result)).not.toContain('Jensen');
+    }
+    // The people switch alone, without the Year Ahead Score switch, offers nothing.
+    const alone = await serve({ ...COVERAGE, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: '1' });
+    expect((await post(alone, rpc('tools/list'))).text).toBe(FIXTURE.coverage.toolsList.text);
+  });
+
+  it('with the people switch on, takes a public figure as well and says so', async () => {
+    const host = await serve({ ...env, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: '1' });
+    const tools = message((await post(host, rpc('tools/list'))).text).result.tools as Record<string, any>[];
+    const tool = tools.at(-1)!;
+    expect(Object.keys(tool.inputSchema.properties)).toEqual(['person', 'birthDate', 'time', 'zone', 'latitude', 'longitude', 'from']);
+    expect(tool.description).toContain("how a well-known person's year looks");
+  });
+
+  it('scores a directory figure by name and counts the call, with the people switch on', async () => {
     const counted: string[] = [];
-    const host = await serve(env, counted);
+    const host = await serve({ ...env, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: '1' }, counted);
     const result = message((await post(host, rpc('tools/call', { name: 'get_year_score', arguments: { person: 'Jensen Huang', from: '2026-07-17' } }))).text).result;
     expect(result.isError).toBe(false);
     const data = result.structuredContent.data;
@@ -101,7 +125,7 @@ describe('the Year Ahead Score switch on', () => {
   });
 
   it('names its own fields when the arguments are wrong', async () => {
-    const host = await serve(env);
+    const host = await serve({ ...env, ZODIACS_YEAR_SCORE_PEOPLE_ENABLED: '1' });
     const both = message((await post(host, rpc('tools/call', { name: 'get_year_score', arguments: { person: 'Elon Musk', birthDate: '1990-01-01' } }))).text).result;
     expect(both.structuredContent.error.message).toBe('Give either person or birthDate, not both.');
     const none = message((await post(host, rpc('tools/call', { name: 'get_year_score', arguments: {} }))).text).result;
@@ -142,5 +166,21 @@ describe('getYearScore', () => {
 
   it('refuses a start before the birth date', async () => {
     await expect(getYearScore({ birthDate: '2005-05-03', from: '2004-01-01' }, NOW, clock, 'https://zodiacs.org')).rejects.toThrow(RangeError);
+  });
+});
+
+describe('get_year_score share links', () => {
+  const clock = createLocalTimeModule();
+  afterAll(() => clock.dispose());
+  it('gives a person’s own score a link with the Sun sign and score only', async () => {
+    const { data } = await getYearScore({ birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.shareUrl).toBe(`https://zodiacs.org/share/year-score/?s=taurus&v=${data.score!.toFixed(1)}`);
+  });
+  it('gives a figure the slug alone, scored from the first of the month like its page and card', async () => {
+    const { data } = await getYearScore({ person: 'Jensen Huang' }, NOW, clock, 'https://zodiacs.org');
+    expect(data.from).toBe('2026-11-01');
+    expect(data.shareUrl).toBe('https://zodiacs.org/share/year-score/?p=jensen-huang');
+    const backtest = await getYearScore({ person: 'Jensen Huang', from: '2026-07-17' }, NOW, clock, 'https://zodiacs.org');
+    expect(backtest.data.shareUrl).toBeNull();
   });
 });
