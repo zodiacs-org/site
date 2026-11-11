@@ -66,7 +66,7 @@ import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PA
 import { scoreTier } from '../lib/year-score/tier.js';
 import { figureYearScore } from './year-score-figure.js';
 import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
-import { MAJOR_ARCANA } from '../lib/tarot/year-card.js';
+import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
@@ -638,7 +638,12 @@ export function yearScoreCard(model: YearScoreCardModel, images: Map<ShareSign, 
   }), model.name ? null : model.sign.slug);
 }
 
-/** A Birthday report card: the Sun sign, the year's score, the Personal Year and the tarot year card. No birth detail. */
+/**
+ * A Birthday report card: the Sun sign, the year's score and the tarot year
+ * card. No birth detail. The title is the score and the Sun sign; the card
+ * stands only in the line under it, always with its keyword ("Death: change"),
+ * so no card is the headline of a birthday.
+ */
 export function birthdayReportCard(share: BirthdayReportShare, images: Map<ShareSign, string>, art: string[]) {
   const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
   const card = MAJOR_ARCANA[share.card];
@@ -646,10 +651,14 @@ export function birthdayReportCard(share: BirthdayReportShare, images: Map<Share
     discs: discRow([sign], images),
     kicker: 'My birthday report',
     hue: sign.hue,
-    title: [titleBlock(`${card.name} · Personal Year ${share.personalYear}`)],
-    line: [h('span', null, `Year Ahead Score ${share.score.toFixed(1)}/10.`), h('span', null, `\u00a0${sign.label}.`)],
+    title: [titleBlock(birthdayReportImageTitle(share))],
+    // Two lines, so the card's longer titles ("Wheel of Fortune: turning points") wrap on their own.
+    line: [h('div', { style: { display: 'flex', flexDirection: 'column' } }, h('div', { style: { display: 'flex' } }, 'Year Ahead Score.'), h('div', { style: { display: 'flex' } }, `Tarot year card: ${cardTitle(card)}.`))],
   }), share.sun);
 }
+
+/** The Birthday report image's title: the score and the Sun sign, never the tarot card. */
+export const birthdayReportImageTitle = (share: BirthdayReportShare) => `${share.score.toFixed(1)}/10 · ${capitalSign(share.sun)} Sun`;
 
 /** What the solar return card says: its year, the rising sign when the chart settles it, and Jupiter's sign. */
 function solarReturnLines(share: SolarReturnShare) {
@@ -1810,16 +1819,18 @@ export async function handleBirthdayReportLinkRequest(request: Request): Promise
       action, note: BIRTHDAY_REPORT_SHARE_NOTE,
     }));
   }
+  // The headlines lead with the score and the Sun sign; the tarot card stands in the body and the alt text's second sentence only, with its keyword.
   const card = MAJOR_ARCANA[share.card];
   const sun = `${capitalSign(share.sun)} Sun`;
+  const score = share.score.toFixed(1);
   return htmlResponse(sharePageHtml({
-    title: `My birthday report: ${card.name}, Personal Year ${share.personalYear}`,
-    description: `Year Ahead Score ${share.score.toFixed(1)}/10. ${sun}.`,
-    heading: `My birthday year: ${card.name}`,
+    title: `My birthday report: ${score}/10, ${sun}`,
+    description: `Year Ahead Score ${score}/10. ${sun}.`,
+    heading: `My birthday year: ${score} out of 10, ${sun}`,
     imageUrl: `${url.origin}${BIRTHDAY_REPORT_SHARE_IMAGE_PATH}?${birthdayReportQuery(share)}`,
     imageType: 'image/jpeg',
-    imageAlt: `A birthday report: ${card.name}, Personal Year ${share.personalYear}, Year Ahead Score ${share.score.toFixed(1)} out of 10, ${sun}.`,
-    explanation: `${card.year} ${scoreTier(share.score).label}, by the slow planets.`,
+    imageAlt: `My birthday report: Year Ahead Score ${score} out of 10, ${sun}. Tarot year card: ${cardTitle(card)}.`,
+    explanation: `${scoreTier(share.score).label}, by the slow planets. Tarot year card: ${cardTitle(card)}. ${card.year}`,
     action,
     note: BIRTHDAY_REPORT_SHARE_NOTE,
   }));

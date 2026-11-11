@@ -57,7 +57,7 @@ const jsonLd = [
       </p>
       <p>
         <strong>The tarot year card</strong> adds your birthday's month and day to that year and reduces the total
-        to one of the 22 Major Arcana. Nothing is drawn at random, so the card is the same each time you look.
+        to a Major Arcana card. Nothing is drawn at random, so the card is the same each time you look.
       </p>
     </div>
   </section>
@@ -70,6 +70,11 @@ const jsonLd = [
   :global(.ys__more) { background: none; border: 0; padding: 0; color: var(--text-2); text-decoration: underline; cursor: pointer; font: inherit; justify-self: start; }
   :global(.br) { display: grid; gap: 14px; }
   :global(.br__heading) { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-xl); }
+  :global(.br__years) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  :global(.br__year) { min-height: 44px; padding: 10px 14px; border: 1px solid var(--hair-2); border-radius: var(--r-full); background: transparent; color: var(--text-2); font: inherit; font-size: var(--text-sm); line-height: 1.4; text-align: center; cursor: pointer; }
+  :global(.br__year:hover) { border-color: var(--hair-3); color: var(--text); }
+  :global(.br__year:focus-visible) { outline: 2px solid var(--ink-0); outline-offset: 2px; }
+  :global(.br__year[aria-pressed="true"]) { border-color: var(--hair-3); color: var(--text); background: rgba(198, 204, 218, 0.06); }
   :global(.br__part) { padding: 16px 18px; }
   :global(.br__part h3) { margin: 0 0 6px; font-family: var(--font-serif); font-weight: 500; }
   :global(.br__part p) { margin: 6px 0 0; color: var(--text-2); }

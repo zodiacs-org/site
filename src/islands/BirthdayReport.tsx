@@ -1,9 +1,11 @@
 /**
  * The Birthday report: a birth date in, four readings for the birthday year
  * out (src/lib/birthday-report/report.ts), with a share link that carries the
- * Sun sign, the score, the Personal Year and the card number only. The engine
- * lazy-loads on submit and everything is calculated on this device; the
- * birth details are never sent, stored or put in the address bar.
+ * Sun sign, the score and the card number only. The engine lazy-loads on
+ * submit and everything is calculated on this device; the birth details are
+ * never sent, stored or put in the address bar. Close to a birthday (45 days
+ * or less) the report opens on the year that birthday starts, and two
+ * buttons switch between that year and the one in progress.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import PlaceSearch from './PlaceSearch';
@@ -13,16 +15,28 @@ import { createModuleLoader } from '../lib/module-load';
 import { dayName, monthName, scoreTier } from '../lib/year-score/reading';
 import { birthdayReportShareUrl } from '../lib/birthday-report/share';
 import { NUMBER_MEANINGS, PERSONAL_YEAR_MEANINGS, type CoreNumber, type SingleDigit } from '../data/numerology-meanings';
-import type { BirthdayReport as Report } from '../lib/birthday-report/report';
+import type { BirthdayReport as Report, BirthdayYear } from '../lib/birthday-report/report';
 
 const loadReport = createModuleLoader(() => import('../lib/birthday-report/report'));
 // Islands never import the assistant tools, so the age rule is restated here with the same cutoff.
 const underAge = (birthDate: string, today: string, years: number) => birthDate > `${String(Number(today.slice(0, 4)) - years).padStart(4, '0')}${today.slice(4)}`;
 const UNDER_13 = 'Zodiacs is not directed at children under 13, so it makes no report for a birth date less than 13 years ago.';
 
+const DAY = 86_400_000;
+/** The report opens on the next birthday year when its solar return is this close. */
+const NEXT_YEAR_WITHIN = 45 * DAY;
+/** A window that began longer ago than this is mostly behind, so its score is not called the year ahead. */
+const AHEAD_FOR = 30 * DAY;
+
+function day(iso: string, zone: string | null): string {
+  return new Intl.DateTimeFormat('en-GB', { timeZone: zone ?? 'UTC', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso));
+}
+
 function clock(iso: string, zone: string | null): string {
   return new Intl.DateTimeFormat('en-GB', { timeZone: zone ?? 'UTC', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', ...(zone ? {} : { timeZoneName: 'short' }) }).format(new Date(iso));
 }
+
+const shareOf = (data: Report) => birthdayReportShareUrl(location.origin, { sun: data.sun.slug, score: data.year.score, card: data.card.number });
 
 /** `yearScoreLink`: the page passes whether /year-score/ is switched on (src/lib/launch-flags.ts); the island runs in the browser. */
 export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLink?: boolean } = {}) {
@@ -30,7 +44,7 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
   const [time, setTime] = useState('');
   const [city, setCity] = useState<City | null>(null);
   const [showDetail, setShowDetail] = useState(false);
-  const [report, setReport] = useState<{ data: Report; zone: string | null; share: string | null } | null>(null);
+  const [report, setReport] = useState<{ data: Report; zone: string | null; share: string | null; which: BirthdayYear; returns: Record<BirthdayYear, string>; now: Date; birth: { utc: Date; date: string; timeKnown: boolean } } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -53,9 +67,12 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
       if (run !== generation.current) return;
       const timeKnown = !!(placed && time);
       const utc = placed ? resolveLocalToUtc(date, time || '12:00', city.tz, { longitude: city.lon }).utc : new Date(`${date}T12:00:00Z`);
-      const data = module.birthdayReport(utc, date, timeKnown, new Date());
-      const share = birthdayReportShareUrl(location.origin, { sun: data.sun.slug, score: data.year.score, personalYear: data.personalYear, card: data.card.number });
-      setReport({ data, zone: placed ? city.tz : null, share });
+      const now = new Date();
+      const current = module.birthdayReport(utc, date, timeKnown, now);
+      const returns = { current: current.solarReturn, next: current.nextSolarReturn };
+      const which: BirthdayYear = Date.parse(returns.next) - now.getTime() <= NEXT_YEAR_WITHIN ? 'next' : 'current';
+      const data = which === 'next' ? module.birthdayReport(utc, date, timeKnown, now, 'next') : current;
+      setReport({ data, zone: placed ? city.tz : null, share: shareOf(data), which, returns, now, birth: { utc, date, timeKnown } });
       requestAnimationFrame(() => headingRef.current?.focus());
     } catch (err) {
       if (run !== generation.current) return;
@@ -66,7 +83,26 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
     }
   }
 
+  /** Recalculates the report on this device for the other birthday year; nothing is sent. */
+  async function choose(which: BirthdayYear) {
+    if (!report || which === report.which || busy) return;
+    const run = ++generation.current;
+    try {
+      const module = await loadReport();
+      if (run !== generation.current) return;
+      const { utc, date: birthDate, timeKnown } = report.birth;
+      const data = module.birthdayReport(utc, birthDate, timeKnown, report.now, which);
+      setReport({ ...report, data, which, share: shareOf(data) });
+    } catch (err) {
+      if (run !== generation.current) return;
+      setError('The report could not be calculated. Check the date and try again.');
+      console.error(err);
+    }
+  }
+
   const data = report?.data;
+  const ahead = !!(data && report && report.now.getTime() - Date.parse(data.solarReturn) <= AHEAD_FOR);
+  const opened = !!(data && report && Date.parse(data.solarReturn) <= report.now.getTime());
   const lifePath = data ? NUMBER_MEANINGS[data.lifePath as CoreNumber] : null;
   return (
     <div class="calc" data-birthday-report>
@@ -103,17 +139,27 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
 
       {data && report && (
         <div class="calc__result br" style={`--sign:${data.sun.hue}`}>
-          <h2 class="br__heading" tabIndex={-1} ref={headingRef}>Your birthday year, {data.sun.name} Sun</h2>
+          <h2 class="br__heading" tabIndex={-1} ref={headingRef}>{data.heading}</h2>
+
+          <div class="br__years" role="group" aria-label="Birthday year">
+            {(['current', 'next'] as const).map((which) => (
+              <button key={which} type="button" class="br__year" aria-pressed={report.which === which} onClick={() => { void choose(which); }}>
+                Year from {day(report.returns[which], report.zone)}
+              </button>
+            ))}
+          </div>
 
           <section class="tile br__part">
             <h3>Solar return</h3>
             <p class="br__big">{clock(data.solarReturn, report.zone)}</p>
-            <p>The Sun came back to the degree it held when you were born, and your birthday year began. The next return is {clock(data.nextSolarReturn, report.zone)}.</p>
+            {opened
+              ? <p>The Sun came back to the degree it held when you were born, and your birthday year began. The next return is {clock(data.nextSolarReturn, report.zone)}.</p>
+              : <p>The Sun comes back to the degree it held when you were born, and your next birthday year begins. The return after it is {clock(data.nextSolarReturn, report.zone)}.</p>}
             <p><a href="/solar-return/">Cast the full solar return chart</a></p>
           </section>
 
           <section class="tile br__part">
-            <h3>Year Ahead Score</h3>
+            <h3>{ahead ? 'Year Ahead Score' : 'Year score'}</h3>
             <p class="br__big">{data.year.score.toFixed(1)}/10 <span class="br__tier">{scoreTier(data.year.score).label}</span></p>
             <p>{scoreTier(data.year.score).summary}</p>
             {data.year.best && data.year.hardest && <p>Strongest month: {monthName(data.year.best.month)}. Most pressure: {monthName(data.year.hardest.month)}. From {dayName(data.year.from)}.</p>}
@@ -121,14 +167,14 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
           </section>
 
           <section class="tile br__part">
-            <h3>Numerology: Personal Year {data.personalYear}</h3>
+            <h3>Numerology: Personal Year {data.personalYear} ({data.calendarYear})</h3>
             <p>{PERSONAL_YEAR_MEANINGS[data.personalYear as SingleDigit]}</p>
             {lifePath && <p>Your Life Path is {data.lifePath}, {lifePath.name.toLowerCase()}: {lifePath.keywords.join(', ')}.</p>}
             <p><a href="/numerology/">Work out every number from your name too</a></p>
           </section>
 
           <section class="tile br__part">
-            <h3>Tarot year card: {data.card.numeral} {data.card.name}</h3>
+            <h3>Tarot year card: {data.card.numeral} {data.cardTitle}</h3>
             <p>{data.card.year}</p>
             <p class="br__note">The year card adds your birthday’s month and day to {data.calendarYear} and reduces the total to a Major Arcana card, as tarot readers do.</p>
           </section>
