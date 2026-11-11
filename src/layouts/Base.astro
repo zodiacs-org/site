@@ -70,6 +70,14 @@ interface Props {
   /** Suppress third-party runtime scripts on pages handling private account data. */
   privateSurface?: boolean;
   /**
+   * This page reads the browser's saved charts or account (the local profile
+   * store, the living chart, or a chart restored from account sync v2) and can
+   * render them. While account sync v2 is on, remote analytics stay off here,
+   * exactly as on a privateSurface page. `tests/analytics-account-surfaces.test.ts`
+   * finds every such page through its imports and fails if one is missing.
+   */
+  accountSurface?: boolean;
+  /**
    * Do not register the PWA worker on this route.
    *
    * For a surface that must be able to say it stores nothing: the worker's
@@ -124,16 +132,22 @@ const accountSyncV2Enabled = isAccountSyncV2Enabled({
 });
 // Remote analytics never run on a privateSurface page. The account, sync and
 // profile surfaces (profile in every locale, the auth callback) are private
-// whenever account sync v2 is on, so the signed-in account panel, its synced
-// chart and its consents never share a page with an analytics script. The
-// access-controlled preview also turned analytics off on every other page;
-// since launch ordinary pages keep the same privacy-scoped analytics they had
-// with the v1 client (docs/ACCOUNT-SYNC-V2-TECHNICAL-CONTRACT.md).
+// whenever account sync v2 is on, and so is every accountSurface page: each
+// page that reads the saved charts or the account and can render them (the
+// birth chart, Today, transits, the homepages' welcome back, the chart tools).
+// A saved or synced chart and its consents therefore never share a page with
+// an analytics script. The access-controlled preview turned analytics off on
+// every page; since launch ordinary content pages keep the same
+// privacy-scoped analytics they had with the v1 client
+// (docs/ACCOUNT-SYNC-V2-TECHNICAL-CONTRACT.md).
+const analyticsExcluded = Boolean(
+  props.privateSurface || (props.accountSurface && accountSyncV2Enabled),
+);
 const plausibleEnabled = Boolean(
-  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface,
+  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
 const webAnalyticsEnabled = Boolean(
-  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface,
+  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
 const dailyEmailLifecycleEnabled = hasDailyChartEmailProvider(process.env);
 const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ? direction : undefined;

@@ -101,9 +101,20 @@ account data. That protection is kept, scoped to where account data is shown:
 remote analytics never run on a `privateSurface` page, and the account, sync
 and profile surfaces are private whenever the v2 client is on (the profile in
 every locale, the auth callback; the chart tools that were already private
-stay so). Ordinary pages keep the same privacy-scoped analytics they had with
-the v1 client: canonical path only, no referrer, no query, no account or chart
-data. The privacy policy describes the same split.
+stay so). Every other page that reads the browser's saved charts, the living
+chart or the account and can render them passes `accountSurface` to the
+layout, which keeps both analytics loaders off there while the v2 client is
+on. That covers the homepages (welcome back), the birth chart, Today,
+transits, the daily sign horoscope (its saved chart line), moon and rising
+sign, the pair pages, solar and lunar return, the return tools, Learn and the
+Registry collection, in every locale where they exist.
+`tests/analytics-account-surfaces.test.ts` finds these pages by following each
+page's imports to the profile, living chart and account readers, and fails if
+one keeps analytics. The walk stops at the shared layout: the navigation
+avatar on every page shows one initial or a photo, never a chart, and is not
+counted. Ordinary content pages keep the same privacy-scoped analytics they
+had with the v1 client: canonical path only, no referrer, no query, no account
+or chart data. The privacy policy describes the same split.
 
 ## Data planes
 

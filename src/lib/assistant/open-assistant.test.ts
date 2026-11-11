@@ -770,7 +770,8 @@ describe('assistant profile-access privacy fence', () => {
     const loader = await readFile(new URL('src/lib/assistant/guide-loader.mjs', root), 'utf8');
     const guide = await readFile(new URL('src/pages/ask/index.astro', root), 'utf8');
     expect(base).not.toContain('guideRuntimeEnabled');
-    expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface');
+    expect(base).toContain('props.privateSurface || (props.accountSurface && accountSyncV2Enabled)');
+    expect(base).toContain('plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded');
     expect(base).not.toContain('&& !accountSyncV2Enabled');
     expect(base).toContain('data-guide-analytics-boundary={plausibleEnabled || webAnalyticsEnabled ?');
     expect(base).toContain("sessionStorage.getItem(guidePrivateSessionKey) === '1'");

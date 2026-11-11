@@ -37,9 +37,11 @@ interface Props {
   signSlug: string;
   surface: HoroscopeSurface;
   reading: HoroscopeProgramPageReading;
+  /** Set by a route that adds an island reading the saved charts (DailyForYou). */
+  accountSurface?: boolean;
 }
 
-const { signSlug, surface, reading } = Astro.props;
+const { signSlug, surface, reading, accountSurface = false } = Astro.props;
 const sign = signBySlug(signSlug);
 const daily = dailyData as Daily;
 const program = programData as HoroscopeProgram;
@@ -359,6 +361,7 @@ const ctaLede = edgeMoon && moonHouse
   : `This reading counts the wheel from ${sign.name}. Your birth chart counts from your own rising sign, so the same sky may touch a different part of your life.`;
 ---
 <Base
+  accountSurface={accountSurface}
   inlineCriticalCss
   stableTypography
   title={`${sign.name} ${reading.title}, ${reading.label} | Zodiacs.org`}
