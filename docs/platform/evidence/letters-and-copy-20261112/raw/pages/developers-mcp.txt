@@ -1,0 +1,166 @@
+Connect an AI Assistant to the Engine | Zodiacs.orgSkip to content <#main>
+Zodiacs·org </>
+ToolsSignsToday </today/>Learn </learn/>Horoscopes </horoscopes/> </profile/>/Astrofolio </astrofolio/>
+Birth chartSee your sun, moon, rising, planets, houses, and what they mean. </birth-chart/>CompatibilityCompare two charts and see where they click, clash, and grow. </compatibility/>TransitsExplore today’s planets and their connections to your chart. </transits/>Moon signHow you feel, and what settles you. </moon-sign/>Rising signFind the sign people meet first. Birth time helps. </rising-sign/>Moon phaseTonight’s moon, and the moon of any date you care about. </moon-phase/>Saturn returnWhen yours hits, exactly, and what it tends to ask. </saturn-return/>BirthdayFind your Sun sign from your birthday, including dates near a sign change. </birthday/>
+More to explore
+- Group charts </group-charts/>
+- Chart twins </chart-twins/>
+- Big three card </big-three/>
+- Invite a friend </compatibility/invite/>
+- Sky calendar </sky-calendar/>
+- Chart of the day </chart-of-the-day/>
+- Your sky, wrapped </your-sky-wrapped/>
+- Chart PDF </astrologer-kit/>All tools → </tools/>
+AriesMar 21 to Apr 19 </aries/>TaurusApr 20 to May 20 </taurus/>GeminiMay 21 to Jun 20 </gemini/>CancerJun 21 to Jul 22 </cancer/>LeoJul 23 to Aug 22 </leo/>VirgoAug 23 to Sep 22 </virgo/>LibraSep 23 to Oct 22 </libra/>ScorpioOct 23 to Nov 21 </scorpio/>SagittariusNov 22 to Dec 21 </sagittarius/>CapricornDec 22 to Jan 19 </capricorn/>AquariusJan 20 to Feb 18 </aquarius/>PiscesFeb 19 to Mar 20 </pisces/>
+The siteBirth chart </birth-chart/>Compatibility </compatibility/>TodayYour daily reading and personal chart highlights </today/>Learn </learn/>HoroscopesDaily readings for your zodiac sign </horoscopes/>Saved chartsYour birth chart and the people you’ve added </profile/>
+Tools
+Transits </transits/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Birthday </birthday/>All tools → </tools/>
+Developers </developers/>AstrofolioOfficial Zodiac token collection </astrofolio/>
+The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+Developer tools
+# Connect an assistant to the engine
+A local MCP server, so an AI assistant you connect it to can calculate a natal chart, read what differs between two calculation records, find positions, sign ingresses, stations and lunations, and check a stated sky fact. It speaks the Model Context Protocol over stdio: one process on your machine, started by whichever host you point at it. No listener, no port, no outbound request, no files read or written.
+Unpublished candidate· zodiacs-mcp-server 0.1.0-rc.26. It is not on npm. Install it from the archive below, whose SHA-256 is published beside it. The adapter's code is MIT. The archive is MIT and CC BY 4.0 together, because it bundles the engine's ΔT values; it also carries the IERS leap-second list and UT1 − UTC values the engine reads 1972 to 2027 with, and its NOTICE gives the attributions. The archives of 0.1.0-rc.8 to rc.10 carry the same values without a notice of their own; their notice </examples/zodiacs-mcp-server-0.1.0-rc.8-to-rc.10-NOTICE.txt> is published beside them.
+## The calculation is local. The conversation may not be.
+The server runs on your machine and calculates there. Nothing reaches Zodiacs.org and nothing is saved. It writes one line to its diagnostic channel when it starts and one if the connection errors — your host may show those, or keep them in its own log — and they carry a version number and an error class, never a birth detail or a record.
+That is not the same as a local AI experience, and the difference matters more than the first sentence. Whatever assistant you connect this to decides what reaches its model provider: your message, the arguments it builds for these tools, and the results it reads back. If the assistant runs in the cloud — and most do — assume the birth details in a request reach it, under that provider's terms rather than ours. A local calculation server does not make a cloud assistant local.
+Two smaller points in the same family. A comparison reports the exact difference between two charts, so anyone holding one of the two can reconstruct the other from it: safer to pass on than a full record, not anonymous. And a version, checksum or source URL inside a record you supply is a claim that record makes about itself — nothing here authenticates it.
+## Install
+You need Node >=22 and a POSIX shell — macOS, Linux, or WSL or Git Bash on Windows. The block below is not PowerShell. Nothing here needs an account, a key or a network service at run time.
+The download is pinned to the commit that holds it, so the bytes cannot change under the digest. The block compares that digest and stops if it does not match: it does not print it for you to check by eye. If verification fails, nothing is extracted and nothing is installed.
+( set -eu
+# POSIX shell — macOS, Linux or WSL. Not PowerShell. It runs in a subshell, so a
+# failure stops the install without closing your terminal.
+FILE='zodiacs-mcp-server-0.1.0-rc.26.tgz'
+DEST='zodiacs-mcp-server-0.1.0-rc.26'
+for path in "$FILE" "$DEST"; do
+ if test -e "$path" || test -L "$path"; then
+ echo "Stop: $path already exists here. Move or delete it, then run this again." >&2
+ exit 1
+ fi
+done
+# Anything this block creates, it removes if it does not finish. Without that a
+# failed run leaves the archive and a half-filled directory in the way, and the
+# next attempt stops on the guards above instead of retrying. The paths are
+# absolute because the failure can happen after the cd below, where a relative
+# name would resolve inside the very directory being removed.
+BASE=$(pwd)
+trap 'status=$?; if test "$status" -ne 0; then rm -rf "$BASE/$DEST" "$BASE/$FILE"; fi; exit $status' EXIT
+curl --disable --fail --silent --show-error --location --proto '=https' --max-time 60 \
+ 'https://raw.githubusercontent.com/zodiacs-org/site/620403bcf73c91020053230fd8da2de0899698d4/public/examples/zodiacs-mcp-server-0.1.0-rc.26.tgz' -o "$FILE"
+test -s "$FILE" || { echo "Stop: the download produced no file. Nothing was extracted and nothing was installed." >&2; exit 1; }
+node --input-type=module <<'JS'
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+const file = 'zodiacs-mcp-server-0.1.0-rc.26.tgz';
+const expected = '48b7a36c775df1b4793a250612f082956d1723e7c20f537d6a83451bfb0ffccc';
+const expectedBytes = 905475;
+const bytes = readFileSync(file);
+const stop = (why) => {
+ console.error(`Stop: ${why}`);
+ console.error('Nothing was extracted and nothing was installed.');
+ process.exit(1);
+};
+if (bytes.length !== expectedBytes) stop(`incomplete or altered download, ${bytes.length} bytes, expected ${expectedBytes}.`);
+const actual = createHash('sha256').update(bytes).digest('hex');
+if (actual !== expected) stop(`this is not the published archive.\n expected ${expected}\n got ${actual}`);
+console.log(`Archive verified: ${actual}`);
+JS
+mkdir "$DEST"
+tar -xzf "$FILE" --strip-components=1 -C "$DEST"
+cd "$DEST"
+npm ci --no-audit --no-fund
+npm run verify
+trap - EXIT
+echo "Installed and verified. Connect it from there:"
+echo " cd $DEST"
+)
+npm run verify is the check that the install works, not a second integrity check: it launches the server as a real process, speaks MCP to it with the official client library, calls all eight tools with synthetic charts, dates and places, refuses two bad requests, and confirms the session still works afterwards; the client checks every result other than a refusal against the output schema the server declares. Twenty-five checks, one line each, exit 0 when they all pass. It tests behaviour rather than identity, so a tampered archive can pass it — the digest comparison above is what establishes you have the published bytes.
+npm ci installs exactly the tree recorded in the npm-shrinkwrap.json inside the archive, so two people running these commands get the same dependencies. This package declares no preinstall, install, postinstall or prepare script of its own.
+The install brings fourteen packages. Three are the server's own, pinned exactly —@modelcontextprotocol/server 2.0.0, @modelcontextprotocol/core 2.0.0 and zod 4.6.5 — and the other eleven are development dependencies of the MCP client, which only npm run verify uses. npm ci --omit=dev installs the three and the server runs; only the verifier needs the rest. The engine (@zodiacs/engine 1.1.0-rc.2) and the comparison are already inside server.mjs; bundling keeps one copy of the comparison rules. That engine version is a release candidate that is not on npm: the registry read of 2026-11-04 records 1.0.0 under latest, and get_capabilities labels it an unpublished candidate. The MCP adapter itself is not on npm. Node >=22.
+## Connect it to a host
+Claude Code CLI connected to this bundle in the named-host drive. From the extracted directory:
+claude mcp add zodiacs -- node "$PWD/server.mjs"
+claude mcp list
+Expect zodiacs: node … - ✓ Connected. Add --scope project to write it into a .mcp.json your repository shares, or --scope user for every project on the machine.
+For Claude Desktop, VS Code or Cursor, add the same entry to the config file their own documentation names — claude_desktop_config.json under mcpServers, .vscode/mcp.json under servers, .cursor/mcp.json under mcpServers. Those locations come from their docs rather than from a run here, so they are not tested claims; Claude Desktop is macOS and Windows only and could not be exercised on the machine this was built on.
+{
+ "command": "node",
+ "args": ["/absolute/path/to/package/server.mjs"]
+}
+Use an absolute path. The server needs no environment variables and is given none: there is no key, credential or secret anywhere in the package.
+## The eight tools
+get_capabilities
+No arguments. The engine and adapter versions, the record schemas, every limit a request must respect, the two resources, and the list of what this adapter does not do. Worth calling before the others rather than guessing at supported options.
+calculate_natal_chart
+One chart from an instant and, optionally, coordinates. Returns the bodies, angles, cusps and aspects, plus whether the time was known and which house system was requested against which one was actually used. The full calculation record is a separate, explicit request.
+compare_calculation_records
+Two records, passed as content. Names where they differ, from the inputs and settings to the computed values, then what accounts for it — reproduced by a local recalculation, reported by the records, a hypothesis that fits, or unresolved. By default it leaves out the values of rows carrying birth details or computed positions, keeping their labels and their numeric differences; ask for the values explicitly when you need to read them.
+get_positions
+Up to 100 instants, each with Z or an offset. Returns the twelve rows of a chart at each, the longitude, latitude, daily motion, sign and degree of every body, with the ΔT and time scale the engine used: the rows calculate_natal_chart gives for the same instant.
+find_events
+A window of at most 92 days. Returns the sign ingresses, the stations of Mercury to Pluto and the new and full moons in it, in time order, found by the engine's crossing search. The search is tested, not proven to miss nothing, and every reply's receipt says so.
+check_sky_fact
+Whether a body is in a sign or retrograde, at an instant or on a date, whether it enters a sign on a date, whether the Moon reaches a phase on a date, or whether two bodies are in an aspect, at an instant or on a date: true, false or depends, with the computed values that decide it, and never an interpretation. There is no zone argument: a date is read as that day in every UTC offset in use today at once, from 14 hours before its midnight UTC to 36 hours after.
+resolve_birth_time
+A local date and time in an IANA time zone, and optionally the place's longitude, the calendar its date is written in and its country. Returns the instant in UTC and Terrestrial Time, with flags for a time the clocks skipped or repeated, a time read on a local mean time, and a zone history before 1970 that the runtime's own time zone data disputes. A date written in the Julian calendar up to 1923 is converted before the time is read, and a place of the Zodiacs time atlas gets the atlas's cited reading of the same wall time, with its uncertainty flag. The compute API's time endpoint, run here with the zone histories and the atlas built into the adapter.
+search_places
+A place name or its start, with or without accents (Zürich or Zurich). Returns the places whose names start with it, then, from three characters, those whose names begin with the same letter and contain it, each in order of population, with the region, the country, coordinates rounded to 0.01° and the IANA time zone: the index and ranking of the site's birthplace search, GeoNames cities15000 under CC BY 4.0, built into the adapter.
+Each tool declares an output schema beside its arguments, which a host reads before it calls. The server checks every result other than a refusal against that schema before sending it, so a result that did not match would come back as an error rather than as data the schema does not describe. The site's tests hold every result over a seeded synthetic corpus to these schemas.
+get_positions, find_events and check_sky_fact run the compute API </developers/compute/>'s own parsers and calculations, without a zone, and resolve_birth_time runs its time endpoint with the zone histories built into the adapter. For the same request each returns the compute API's body, with the same result and the same receipt; only the citation's link names the tool here. A request the compute API's parser refuses gets its sentence, after the field it names; one the input schema refuses first, such as an unknown argument or a value outside a list, gets the MCP SDK's validation message.
+Ask your assistant, in your own words: calculate a natal chart for 1988-03-21T06:45:00Z at latitude 40.7128, longitude -74.0060, with Placidus houses. Those are round public coordinates for New York on an ordinary date — a synthetic chart, nobody's birth details. You should get twelve bodies, four angles and twelve cusps, with the Sun at 0.873331° and the ascendant at 274.044963°, and houses reading { requested: "placidus", actual: "placidus", absenceReason: null }. Then drop the zone — ask for 1988-03-21T06:45:00 with no Z — and it refuses rather than guessing: utc must be an ISO-8601 instant with an explicit zone. For a wall clock in a place, ask for its instant first: search_places gives the place's zone and resolve_birth_time the UTC instant to pass on.
+compare_calculation_records reads the record format this site produces — zodiacs.natal-envelope.draft-v1, what the birth chart here offers for download, what the developer starter writes, and what calculate_natal_chart carries in the record field of its reply when you pass output: "record". That field holds the whole record, as text; the two keys beside it name the engine that produced it and the vocabulary it speaks. Pass the field, not the reply around it — the reply is a different shape and the comparison refuses it. The vocabulary is a Zodiacs-owned draft rather than an industry interchange format, so another program's export and a screenshot are both out of scope.
+Every argument is bounded by a schema the host can read: an instant needs an explicit zone and falls within 1800 to 2199 — an accepted input range, not a range every date in which has been independently checked for accuracy; the engine's own receipts record broadDateRange as not certified. Coordinates come as a pair or not at all, the house system is one of the thirteen the engine computes, and a record is at most 64 KB of content. An argument the schema does not know is refused rather than ignored. A model-supplied value becomes a number, a date or one of a fixed set of option strings — never a command, a path, a module name, a URL or a package version, because the adapter imports nothing that could carry one out.
+The comparison is the same code as the browser tool on this site </developers/compare/>, which is the reason the adapter lives in the site's own repository: one set of rules, not a copy that drifts.
+A cause is called reproduced only when three things hold: both records name a version this installation actually has, each record's own recorded values — cusps, angles and body positions — are reproduced from its own declared inputs, and changing only the house system turns each chart into the other, checked in both directions so the answer cannot depend on which record you passed first.
+That is a statement about the engine on your machine and about those values. It does not establish where either record came from, and nothing here can: a version, checksum or source URL inside a record is a claim the record makes about itself. If the two records claim different builds of the same version, the answer says so in its stated limits and the verdict still rests on the recalculation rather than on the claim. When the arithmetic works and only the identity behind it cannot be established, the cause stays a hypothesis and the answer says what the installed engine does, which is a different claim from saying that setting explains the difference.
+A comparison's answer leaves out the values of rows carrying birth details or computed positions and keeps their labels, kinds and numeric differences. You supplied both records to the call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever the answer travels through. That shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records. It is not anonymisation, and the default answer is not an anonymous artifact: the exact differences are still there, and anyone holding one of the two records can reconstruct the other from them.
+## Citing a result
+Every result other than a refusal carries cite, the same four fields the compute API </developers/compute/> puts on its answers: url, the tool's entry on this page; receipt, sha256: and the SHA-256 of a receipt's RFC 8785 canonical JSON; and the engine and its version.
+A chart cites the engine's calculation receipt, the one inside the record that output: "record" returns for the same arguments, so a summary and a record of one calculation cite one digest, and anyone given the record can recompute it. That receipt holds the instant as it was written, offset included, the coordinates and the settings, so the digest identifies the birth details from either side. With the date and the place, trying each time of day finds the time. With the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known.
+get_capabilities, compare_calculation_records and search_places cite the adapter's own receipt, which the reply carries: the adapter and the engine that answered, for a comparison its output, and for a search the place index it read. It holds nothing from either record or from the query, so a comparison's citation says how the comparison was made, not which records it read.
+get_positions, find_events, check_sky_fact and resolve_birth_time cite the compute API's receipt for the same calculation, which the reply carries: the engine, its conventions and coverage, the reference span, the two sources of ΔT, for a search how it searched and how many evaluations it made, for a local time how time zones were read, and the ids of the conventions registry </developers/conventions/> those fields name. It holds no instant, date, zone or body from the request, and the compute API cites the same digest for the same request.
+## Two resources
+zodiacs://conventions is the conventions vocabulary of the calculation records the server writes and reads: every conventions set a record may carry, taken from the engine, with the engine versions that wrote it, what each key covers, the coverage statement the engine's receipts carry, and what each chart flag reports. zodiacs://methodology says how the server calculates, with links to the methodology page </methodology/>. Both are built into server.mjs: reading one opens no file and makes no request.
+## Known limits
+- Narrow searches only. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days. No transits, progressions, returns or eclipses.
+- No interpretation. Positions and differences, no readings.
+- Time zones from tzdb, places from GeoNames. resolve_birth_time reads tzdb's zone histories and, for a place of the time atlas named in atlasPlace, the atlas's cited reading beside them, with no other town-level clock records, and search_places finds only the places of 15,000 people or more that GeoNames lists. The other tools take an instant with an explicit offset, and check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.
+- No file access and no fetching. Records are passed as content.
+- No cancellation and no timeout. A calculation is synchronous, so a timer could not stop it mid-way; the work is bounded instead: one chart per call, at most 100 instants, a window of at most 92 days, and at most 12,000 evaluations for an events request, or 1,000 for a fact on a date.
+- Large replies. The largest get_positions answer the limits allow, a hundred instants of twelve rows, is about 230 KB of JSON, sent once as structured content and again as text. A host may warn about a reply that size or keep it out of the conversation, so ask for the instants you need.
+- No authentication of anything — not a record, not an engine version, not the claim that two records came from independent software. Two records from one engine agreeing shows consistency, not independent accuracy.
+- No body-to-house mapping. The summary returns the cusps and the body longitudes; which house a body falls in is left to the caller.
+- A single request longer than 1 MB is dropped rather than answered. The stdio framing is one JSON message per line, so a line that cannot be buffered cannot be refused with a reply; it is discarded at the next newline and the session carries on.
+## Uninstall
+Nothing is installed outside the directory you extracted and nothing is written to disk elsewhere: no config of its own, cache file or database. The process keeps in-memory calculation caches until it exits. Remove the entry from your host (claude mcp remove zodiacs, or delete it from the config file you added it to) and delete the directory.
+## How it was tested
+Recorded in the repository under docs/platform/evidence/mcp-adapter/, kept as separate records because they establish separate things: the official client library against the real server process; the Claude Code CLI connecting to it; model-driven interoperability records from earlier candidates; and a fixed synthetic corpus of eighteen scenarios with the classification each should receive, written before the candidate ran against any of them. That last one is a regression corpus rather than an accuracy rate — both sides of every pair come from the same engine, so it says nothing about how often the tool is right about a disagreement between independently authored software.
+The site's tests also run 301 synthetic requests through get_positions, find_events and check_sky_fact and through the compute API's own handler, and hold the two answers to be the same apart from the citation's link. They do the same for 130 requests through resolve_birth_time, and hold search_places to the site's own birthplace search over 75 queries.
+The current bundle passed the protocol, synthetic regression and Claude Code CLI connection drives. The latter checks setup and stdio, without a login or model turn. Model-driven records from earlier candidates remain historical.
+Every chart in every test is synthetic: round coordinates for well-known cities on dates chosen for what they exercise.
+Building something on this? Open an issue on the site repository <https://github.com/zodiacs-org/site/issues> — what you connected it to, what you asked it for, and what it got wrong. Use a synthetic chart: a public issue should not carry someone's name or real birth details. Our own tests are not adoption and are not counted as any.
+## The daily, by email.
+Your sign’s reading each morning. Free, unsubscribe anytime.
+Leave this field blank
+Email address
+ChangeYour Sun sign
+AriesTaurusGeminiCancerLeoVirgoLibraScorpioSagittariusCapricornAquariusPiscesEmail my daily horoscope
+We store your email and your chosen sign, nothing else. Never your birth details.
+You’re set. If confirmation or a change is needed, check your inbox.Choose your Sun sign so we can send its daily horoscope.That email address doesn’t look complete.Couldn't start the subscription. Please try again.
+Zodiacs·org </>
+Free astrology tools and sign guides, with charts calculated privately in your browser.Guide→
+An AI assistant for astrology questions and help using Zodiacs.
+Tools
+Birth chart </birth-chart/>Today </today/>Compatibility </compatibility/>Moon sign </moon-sign/>Rising sign </rising-sign/>Moon phase </moon-phase/>Saturn return </saturn-return/>Transits </transits/>Retrogrades </retrogrades/>Learn
+Learn astrology </learn/>Horoscopes </horoscopes/>The planets </learn/planets/>The houses </learn/houses/>Zodiac dates </learn/zodiac-dates/>Glossary </learn/glossary/>How charts are calculated </methodology/>Saved charts </profile/>Registry
+Astrofolio </astrofolio/>Registry </registry/>SDK </sdk/>Disclosure </disclosure/>Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. Read our disclosure </disclosure/>.The twelve
+Aries </aries/>Taurus </taurus/>Gemini </gemini/>Cancer </cancer/>Leo </leo/>Virgo </virgo/>Libra </libra/>Scorpio </scorpio/>Sagittarius </sagittarius/>Capricorn </capricorn/>Aquarius </aquarius/>Pisces </pisces/>
+LanguageEnglishEspañol </es/>Português (Brasil) </pt/>Français </fr/>Italiano </it/>
+© 2026 Zodiacs.orgLegal
+About </about/>Privacy </privacy/>Terms </terms/>More
+Developers </developers/>Widgets </widgets/>RSS </feeds/horoscopes.xml>
+Data & licenses
+Place data: GeoNames <https://www.geonames.org/> · CC BY 4.0
+Fonts under SIL OFL 1.1 </fonts/OFL-instrument-sans.txt>
