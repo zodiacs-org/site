@@ -1,0 +1,37 @@
+## get_sky instant 2026-11-11T18:17:55.962Z
+Sun: 19.372° Scorpio
+Moon: 16.999° Sagittarius
+Mercury: 5.378° Scorpio retrograde
+Venus: 22.964° Libra retrograde
+Mars: 23.839° Leo
+Jupiter: 25.490° Leo
+Saturn: 8.676° Aries retrograde
+Uranus: 4.262° Gemini retrograde
+Neptune: 1.885° Aries retrograde
+Pluto: 3.236° Aquarius
+Moon elongation 27.63°, illuminated 0.0570
+## Synthetic chart 1990-05-03
+Sun at noon UTC: 12.796° Taurus
+Moon at noon UTC: 2.475° Virgo
+Mercury at noon UTC: 13.585° Taurus retrograde
+Venus at noon UTC: 29.261° Pisces
+Mars at noon UTC: 9.399° Pisces
+Jupiter at noon UTC: 7.369° Cancer
+Saturn at noon UTC: 25.337° Capricorn
+Uranus at noon UTC: 9.428° Capricorn retrograde
+Neptune at noon UTC: 14.496° Capricorn retrograde
+Pluto at noon UTC: 16.504° Scorpio retrograde
+Moon crosses 0° Virgo: 1990-05-03T07:17Z
+Venus crosses 0° Aries: 1990-05-04T03:51Z
+Mars-Uranus: 0.03° from 60°
+Sun-Mercury: 0.79° from 0°
+Mercury-Neptune: 0.91° from 120°
+Sun-Neptune: 1.70° from 120°
+Neptune-Pluto: 2.01° from 60°
+Mars-Jupiter: 2.03° from 120°
+Jupiter-Uranus: 2.06° from 180°
+Mercury-Pluto: 2.92° from 180°
+transit Mercury 180° natal Sun: 2026-11-24T04:43Z
+transit Mercury 180° natal Mercury: 2026-11-24T19:56Z
+transit Venus 90° natal Saturn: 2026-11-25T12:54Z
+transit Mercury 60° natal Neptune: 2026-11-25T13:03Z
