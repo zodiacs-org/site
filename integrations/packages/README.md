@@ -88,10 +88,10 @@ The numerology change (11 November 2026) adds get_numerology to the hosted
 server's source behind ZODIACS_NUMEROLOGY_ENABLED=1, which is off; with it off
 no tool definition changes and the Zodiacs 0.6.6 ZIP keeps its bytes.
 Developer 0.3.37 is rebuilt from that source with unchanged tools, and 0.3.36
-keeps its bytes. Developer 0.3.38 is rebuilt from the clear times change (get_upcoming_events and get_sky write event times, local times and the Moon's phase more plainly) with unchanged tool
-definitions, and 0.3.37 keeps its bytes.
+keeps its bytes. Developer 0.3.38 is rebuilt from the Year Ahead Score's recalibration (its own curve for a chart with a birth time, and tiers cut at 2, 3.5, 6.5 and 8) with unchanged tools, and 0.3.37 keeps its bytes. Developer 0.3.39 is rebuilt from the clear times change (get_upcoming_events and get_sky write event times, local times and the Moon's phase more plainly) with unchanged tool
+definitions, and 0.3.38 keeps its bytes.
 
-Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.38**;
+Current candidates are **Zodiacs 0.6.6** and **Zodiacs Developer 0.3.39**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
