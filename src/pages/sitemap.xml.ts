@@ -51,7 +51,7 @@ const researchLastmod = terminalResearchLastmod(registryResearchPublication);
 const YEARLY_HOROSCOPE_LASTMOD = '2026-11-06';
 const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
-const THESIS_LASTMOD = '2026-09-05';
+const THESIS_LASTMOD = '2026-11-10';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 // The sign-season pages and their hub were published together.
@@ -655,6 +655,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // each dated only once its launch switch is on.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') || launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/tools/', '2026-11-09'] as const] : []),
   ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [['/birthday/', '2026-11-09'] as const] : []),
+  // Chart sync pause copy on the birth chart page, the privacy page, and the
+  // profile pages (every language). The day of the daily edition they were
+  // built with.
+  ['/birth-chart/', '2026-11-11'] as const,
+  ['/privacy/', '2026-11-11'] as const,
+  ...['/profile/', '/es/profile/', '/fr/profile/', '/it/profile/', '/pt/profile/', '/ru/profile/']
+    .map((loc) => [loc, '2026-11-11'] as const),
 ]);
 
 function getLastmod(loc: string): string {

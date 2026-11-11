@@ -143,19 +143,33 @@ describe('what can be saved', () => {
     }
     const chart = await buildSavedRecord(saveInput.parse(cases[0]), { now });
     if ('failure' in chart) throw new Error(chart.failure);
-    expect(chart.data).toMatchObject({ sun: 'taurus', zone: 'Europe/Madrid', time: '08:30', birthDate: '1990-05-03' });
+    // The signs only: no birth date, time, zone, place, label or name for anyone who is not a published famous person.
+    expect(Object.keys(chart.data).sort()).toEqual(['famous', 'moon', 'placed', 'rising', 'sun', 'timeKnown', 'url']);
+    expect(chart.data).toMatchObject({ sun: 'taurus', timeKnown: true, placed: true, famous: false, url: null });
+    expect(chart.title).toBe('Birth chart');
+    expect(JSON.stringify(chart)).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid/u);
     // A chart links to the birth chart page with the result's digest, never its birth details; a famous chart to the person's page.
     expect(chart.href).toMatch(/^\/birth-chart\/#saved=[0-9a-f]{16}$/u);
     expect(JSON.stringify([chart.href, chart.links])).not.toMatch(/1990|08:30|40\.4|-3\.7|Ana|Madrid|#c=/u);
     const famous = await buildSavedRecord(saveInput.parse(cases[1]), { now });
     if ('failure' in famous) throw new Error(famous.failure);
     expect(famous.href).toBe('/people/frida-kahlo/');
+    expect(famous.title).toBe("Frida Kahlo's chart");
+    expect(famous.data).toMatchObject({ name: 'Frida Kahlo', famous: true, url: 'https://zodiacs.org/people/frida-kahlo/' });
+    expect(famous.data).not.toHaveProperty('birthDate');
     const week = await buildSavedRecord(saveInput.parse(cases[4]), { now });
     if ('failure' in week) throw new Error(week.failure);
     expect(week.href).toMatch(/^\/horoscopes\/#week=2026-10-1[45]&saved=[0-9a-f]{16}$/u);
+    expect(Object.keys(week.data).sort()).toEqual(['from', 'items', 'note', 'timeKnown']);
+    expect(JSON.stringify(week)).not.toMatch(/1990-05-03|Madrid|Bangkok/u);
     const comparison = await buildSavedRecord(saveInput.parse(cases[2]), { now });
     if ('failure' in comparison) throw new Error(comparison.failure);
-    expect(comparison.title).toMatch(/^Ana and Frida Kahlo: \d+ out of 100$/u);
+    // Sun signs in the title, never the names; the non-famous side is Person A throughout.
+    expect(comparison.title).toMatch(/^Taurus and Cancer: \d+ out of 100$/u);
+    expect(JSON.stringify(comparison)).not.toMatch(/Ana|1990-05-03/u);
+    expect(comparison.data).toMatchObject({ a: { label: 'Person A', famous: false, sun: 'taurus' }, b: { label: 'Frida Kahlo', name: 'Frida Kahlo', famous: true } });
+    expect((comparison.data as { a: object }).a).not.toHaveProperty('name');
+    expect((comparison.data as { a: object }).a).not.toHaveProperty('birthDate');
     const occasion = await buildSavedRecord(saveInput.parse(cases[3]), { now });
     if ('failure' in occasion) throw new Error(occasion.failure);
     expect((occasion.data as { bestDays: { best: unknown[] } }).bestDays.best).toHaveLength(3);
@@ -163,6 +177,9 @@ describe('what can be saved', () => {
     // A saved occasion link follows the tool's own rule: no names and no place name.
     expect(occasion.href).not.toMatch(/Ana|Luis|Florence|&n=|place=/u);
     expect(JSON.stringify(occasion.links)).not.toMatch(/Ana|Luis|Florence/u);
+    expect(JSON.stringify(occasion)).not.toMatch(/Ana|Luis|Florence/u);
+    expect(occasion.data).not.toHaveProperty('names');
+    expect(occasion.data).not.toHaveProperty('place');
     const pairOnly = await buildSavedRecord(saveInput.parse(cases[2]), { now });
     if ('failure' in pairOnly) throw new Error(pairOnly.failure);
     // A famous side has no birth place, so the comparison links to its sign pair with the result's digest.
@@ -190,6 +207,10 @@ describe('what can be saved', () => {
         expect(record.links).toEqual([{ title: 'Occasion cards on Zodiacs', url: 'https://zodiacs.org/occasions/' }]);
         const linked = JSON.stringify([record.href, record.links, (record.data as { cardUrl: unknown }).cardUrl]);
         for (const detail of [date, date.slice(5), '08:15', '08%3A15', '51.5', '-0.1', 'London', 'Mia']) expect(linked, detail).not.toContain(detail);
+        // Nothing stored dates it either: no date, time, zone, best days, card words, names or place.
+        for (const detail of [date, date.slice(5), '08:15', '51.5', '-0.1', 'London', 'Mia']) expect(JSON.stringify(record), detail).not.toContain(detail);
+        expect(Object.keys(record.data).sort()).toEqual(['cardUrl', 'note', 'occasion', 'rating', 'sky']);
+        expect(record.title).toMatch(/^Birthday: \d+ out of 100$/u);
         hrefs.add(record.href);
       }
     }
