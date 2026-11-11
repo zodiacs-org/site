@@ -398,7 +398,16 @@ insert into auth.users (id) values
   ('51000000-0000-4000-8000-000000000004')
 on conflict (id) do nothing;
 
--- Before bootstrap, existing users retain the legacy owner policies.
+-- Existing v1 rows are seeded as the table owner (the same privilege the
+-- service role has). Authenticated insert and update on public.charts are
+-- paused; select and delete, and chart_deletions writes, stay available
+-- until bootstrap.
+insert into public.charts (id, user_id, payload) values (
+  '54000000-0000-4000-8000-000000000001',
+  '51000000-0000-4000-8000-000000000001',
+  '{"label":"legacy private payload","birthDate":"1990-01-01"}'::jsonb
+);
+
 select set_config(
   'request.jwt.claim.sub',
   '51000000-0000-4000-8000-000000000001',
@@ -406,15 +415,39 @@ select set_config(
 );
 set role authenticated;
 
-insert into public.charts (id, user_id, payload) values (
-  '54000000-0000-4000-8000-000000000001',
-  '51000000-0000-4000-8000-000000000001',
-  '{"label":"legacy private payload","birthDate":"1990-01-01"}'::jsonb
-);
-
 insert into public.chart_deletions (user_id, id) values (
   '51000000-0000-4000-8000-000000000001',
   '54000000-0000-4000-8000-000000000099'
+);
+
+do $block$
+declare
+  write_blocked boolean := false;
+begin
+  begin
+    insert into public.charts (id, user_id, payload) values (
+      '54000000-0000-4000-8000-000000000198',
+      '51000000-0000-4000-8000-000000000001',
+      '{"fixture":"must not write"}'::jsonb
+    );
+  exception when insufficient_privilege then
+    write_blocked := true;
+  end;
+  if not write_blocked then
+    raise exception 'assertion failed: pre-bootstrap authenticated chart inserts must be refused';
+  end if;
+end;
+$block$;
+
+with changed as (
+  update public.charts
+  set payload = '{"fixture":"must not update"}'::jsonb
+  where id = '54000000-0000-4000-8000-000000000001'
+  returning 1
+)
+select pg_temp.assert_true(
+  not exists (select 1 from changed),
+  'pre-bootstrap authenticated chart updates must change no rows'
 );
 
 reset role;
@@ -1295,13 +1328,14 @@ select set_config(
   '51000000-0000-4000-8000-000000000002',
   false
 );
-set role authenticated;
+-- Seed the v1-only deletion fixture as the table owner; authenticated
+-- inserts into public.charts are paused.
+reset role;
 insert into public.charts (id, user_id, payload) values (
   '54000000-0000-4000-8000-000000000020',
   '51000000-0000-4000-8000-000000000002',
   '{"birthDate":"1988-08-08"}'::jsonb
 );
-reset role;
 set role service_role;
 
 insert into account_v2_results values (
