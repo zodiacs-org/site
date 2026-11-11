@@ -303,6 +303,14 @@ export async function runSolarReturnChecks({ browser, baseURL, check, outDir }) 
       && await page.getByRole('button', { name: 'Add to calendar', exact: true }).isEnabled()
       && await page.locator('[data-noon-notice]').textContent() === 'Computed from the sky at 12:00 UTC on your birth date. The return instant can shift by up to about a day with your exact birth time, and houses need it.'
       && await page.getByRole('columnheader', { name: 'House', includeHidden: true }).count() === 0);
+    // The always-visible receipt gives a return without a birth time its UTC date, never a clock time.
+    const untimedReceipt = page.locator('[data-solar-return-result] [data-check-our-math]');
+    const untimedReceiptText = await untimedReceipt.textContent();
+    const untimedReceiptTime = await untimedReceipt.locator('time').getAttribute('datetime');
+    check('Solar: the visible receipt of an untimed return shows its UTC date and no clock time',
+      await untimedReceipt.getAttribute('data-instant-basis') === 'approximate-return'
+      && /^\d{4}-\d\d-\d\d$/.test(untimedReceiptTime ?? '') && untimedReceiptText.includes(untimedReceiptTime)
+      && !/T\d\d:\d\d|\d\d:\d\d/.test(untimedReceiptText), untimedReceiptText);
     record('unknown-calendar', (await checkCalendar(page, check, outDir, 'unknown-2024', true)).file);
     if (outDir) await page.locator('[data-sr-exports]').screenshot({ path: `${outDir}/image-encode-failure-390.png`, animations: 'disabled' });
     await page.getByRole('button', { name: 'Prepare image again', exact: true }).click();
