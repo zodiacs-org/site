@@ -476,4 +476,102 @@ describe('daily chart email dispatch check', () => {
     expect(report).toMatchObject({ sent: 1, fellBack: 0, withdrawn: 0 });
     expect(loadSource).toHaveBeenCalledTimes(3);
   });
+
+  /**
+   * The daily job keeps no sealed message to replay: a chart edition the
+   * provider rejected (429s until the queue gives up) leaves its receipt
+   * failed, and the next run selects, checks and renders it afresh through
+   * the same guarded path. Receipts follow the store's rules: a failed
+   * receipt may be reserved again, any other may not.
+   */
+  it('sends no chart after exhausted 429s when chart emails are withdrawn during the next run\'s pacing wait', async () => {
+    for (const sunFallbacks of [withSun, new Map<string, SunSignRecipient>()]) {
+      let eligible = true;
+      const loadSource = vi.fn(async () => (eligible ? { chartId: chartA, revision: 4 } : null));
+      const rows = new Map<string, { status: 'reserved' | 'sent' | 'failed'; lease: string }>();
+      let leaseCount = 0;
+      const receipts: DeliveryReceiptStore = {
+        reserve: vi.fn(async (_edition: string, hash: string) => {
+          if (rows.has(hash) && rows.get(hash)!.status !== 'failed') return null;
+          leaseCount += 1;
+          const lease = `30000000-0000-4000-8000-${String(leaseCount).padStart(12, '0')}`;
+          rows.set(hash, { status: 'reserved', lease });
+          return lease;
+        }),
+        markSent: vi.fn(async (_edition: string, hash: string) => { rows.get(hash)!.status = 'sent'; }),
+        markFailed: vi.fn(async (_edition: string, hash: string) => { rows.get(hash)!.status = 'failed'; }),
+        sentBefore: vi.fn().mockResolvedValue(true),
+      };
+      const senderRun = (responses: Array<() => Response>, onWait: () => void) => {
+        let time = 1_000;
+        const posts: Array<{ tier: string; to: string; status: number }> = [];
+        const queued = [...responses];
+        const fetcher = vi.fn(async (_input: string | URL, init?: RequestInit) => {
+          const body = JSON.parse(String(init?.body)) as { to: string[]; tags: Array<{ name: string; value: string }> };
+          const response = (queued.shift() ?? (() => new Response(JSON.stringify({ id: 're_sent' }), { status: 200 })))();
+          posts.push({ tier: body.tags.find((tag) => tag.name === 'tier')!.value, to: body.to[0]!, status: response.status });
+          return response;
+        });
+        const request = createRateLimitedResendRequest(fetcher as typeof fetch, {
+          now: () => time,
+          sleep: async (milliseconds) => {
+            time += milliseconds;
+            onWait();
+          },
+          minIntervalMs: 250,
+          maxRetries: 3,
+        });
+        const run = (recipients: DailyEmailRecipient[]) => deliverDailyEmails({
+          recipients,
+          editionDate: publicationData.date,
+          limit: 10,
+          dryRun: false,
+          hashSecret: HASH_SECRET,
+          receipts,
+          resend: createResendDelivery({
+            fetchImpl: fetcher as typeof fetch,
+            apiKey: 're_test',
+            from: 'Zodiacs.org <daily@zodiacs.org>',
+            request,
+          }),
+          render: () => ({
+            subject: 'Daily', preheader: 'Today', text: 'Today', html: '<p>Today</p>',
+            unsubscribeUrl: 'https://zodiacs.org/api/email/unsubscribe?token=test',
+          }),
+          confirmBeforeDispatch: createChartDispatchCheck({ loadSource, sunFallbacks, recipientHashForEmail: hashFor }),
+          log: vi.fn(),
+        });
+        return { run, posts };
+      };
+      const rateLimited = () => new Response('slow down', { status: 429, headers: { 'Retry-After': '1' } });
+
+      // First run: still eligible, but every attempt is rejected with 429.
+      const first = senderRun([rateLimited, rateLimited, rateLimited, rateLimited], () => undefined);
+      await expect(first.run([recipient])).resolves.toMatchObject({ sent: 0, failed: 1 });
+      expect(first.posts).toEqual(Array.from({ length: 4 }, () => ({ tier: 'chart', to: 'person@example.com', status: 429 })));
+      expect(rows.get(hashFor('person@example.com'))?.status).toBe('failed');
+
+      // Next run: the chart edition is selected again and checked before the
+      // queue, then chart emails are withdrawn while it waits for pacing
+      // behind another recipient's email.
+      loadSource.mockClear();
+      const next = senderRun([], () => {
+        eligible = false;
+      });
+      const report = await next.run([otherSun, recipient]);
+      expect(next.posts.filter((post) => post.tier === 'chart')).toEqual([]);
+      if (sunFallbacks.size) {
+        expect(next.posts).toEqual([
+          { tier: 'sun_sign', to: 'other@example.com', status: 200 },
+          { tier: 'sun_sign', to: 'person@example.com', status: 200 },
+        ]);
+        expect(report).toMatchObject({ sent: 2, fellBack: 1, withdrawn: 0, failed: 0 });
+      } else {
+        expect(next.posts).toEqual([{ tier: 'sun_sign', to: 'other@example.com', status: 200 }]);
+        expect(report).toMatchObject({ sent: 1, fellBack: 0, withdrawn: 1, failed: 0 });
+      }
+      // Checked before the queue and again after its wait.
+      expect(loadSource).toHaveBeenCalledTimes(2);
+    }
+  });
 });
