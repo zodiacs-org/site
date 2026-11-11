@@ -33,8 +33,6 @@ interface Chrome {
   kicker: string;
   and: string;
   pairName: (a: string, b: string) => string;
-  /** The page title in the words people search with in this language. */
-  searchTitle: (a: string, b: string) => string;
   imageAlt: (a: string, b: string) => string;
   about: (sign: string) => string;
   basisTitle: string;
@@ -57,7 +55,6 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilidad',
     and: 'y',
     pairName: (x, y) => `${x} y ${y}`,
-    searchTitle: (x, y) => `Compatibilidad ${x} y ${y} en el amor`,
     imageAlt: (x, y) => `Compatibilidad entre ${x} y ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrología)`,
     basisTitle: 'Por qué esta combinación se lee así',
@@ -78,7 +75,6 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilidade',
     and: 'e',
     pairName: (x, y) => `${x} e ${y}`,
-    searchTitle: (x, y) => `${x} e ${y} combinam? Compatibilidade no amor`,
     imageAlt: (x, y) => `Compatibilidade entre ${x} e ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologia)`,
     basisTitle: 'Por que esse par é lido assim',
@@ -99,7 +95,6 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilité',
     and: 'et',
     pairName: (x, y) => `${x} et ${y}`,
-    searchTitle: (x, y) => `Compatibilité ${x} et ${y} en amour`,
     imageAlt: (x, y) => `Compatibilité ${x} et ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologie)`,
     basisTitle: 'Pourquoi ce duo se lit ainsi',
@@ -120,7 +115,6 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilità',
     and: 'e',
     pairName: (x, y) => `${x} e ${y}`,
-    searchTitle: (x, y) => `Affinità ${x} e ${y} in amore`,
     imageAlt: (x, y) => `Compatibilità tra ${x} e ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologia)`,
     basisTitle: 'Perché questa coppia si legge così',
@@ -153,10 +147,6 @@ const otherPairs = (sign: Sign) => SIGNS.map((other) => {
   return { other, slug, now: slug === facts.slug };
 });
 const signFacts = (sign: Sign) => `${signDateRange(sign, locale)} · ${elementLabel(sign.element, locale)} · ${modalityLabel(sign.modality, locale)} · ${planetLabel(locale, sign.ruler)}`;
-
-// The article keeps its own title as the headline; the browser title uses
-// the words people search with in this language.
-const pageTitle = c.searchTitle(nameA, nameB);
 
 const jsonLd = [
   {
@@ -198,7 +188,7 @@ const jsonLd = [
 <Base
   clientUi
   inlineCriticalCss
-  title={pageTitle}
+  title={entry.data.title}
   description={entry.data.description}
   path={pagePath}
   locale={locale}

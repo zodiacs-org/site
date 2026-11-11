@@ -192,13 +192,17 @@ F2, F4 and F5 add no pages and can start as soon as Dias says yes.
 
 Dias delegated the start decision; F2 was chosen (decision recorded on the PR).
 
-- **F2a, in this PR:** the 312 localized pair pages now carry titles in each
-  language's search form: "Compatibilidad Leo y Escorpio en el amor",
-  "Leão e Escorpião combinam? Compatibilidade no amor", "Compatibilité Lion et
-  Scorpion en amour", "Affinità Leone e Scorpione in amore". The article
-  headline in JSON-LD keeps the article's own title. One shared component
-  (`src/components/compat/LocalizedPairPage.astro`); Phase 1 visual evidence
-  recaptured.
+- **F2a, built, then parked on 2026-11-11 (see Decisions below):** the 312
+  localized pair pages titled in each language's search form: "Compatibilidad
+  Leo y Escorpio en el amor", "Leão e Escorpião combinam? Compatibilidade no
+  amor", "Compatibilité Lion et Scorpion en amour", "Affinità Leone e Scorpione
+  in amore". The article headline in JSON-LD keeps the article's own title.
+  One shared component (`src/components/compat/LocalizedPairPage.astro`) plus
+  the sitemap re-dating, in
+  [parked/2026-11-11-f2a-pair-titles.patch](parked/2026-11-11-f2a-pair-titles.patch).
+  CI passed with it, and an independent review found no blockers. Shipping it
+  needs a fresh Phase 1 capture (`npm run build`,
+  `npm run test:phase1:acceptance`) and the sitemap date set to the merge day.
 - **F2b, parked, needs Dias:** the hub titles ("Compatibilidad de signos",
   "Compatibilidade de signos", "Compatibilité amoureuse des signes", "Affinità
   di coppia tra segni"), a row on each localized sign guide linking all twelve
@@ -227,8 +231,20 @@ Dias delegated the start decision; F2 was chosen (decision recorded on the PR).
   Dias decides its status.
 - **Next step:** F1, specified in [F1-SPEC.md](F1-SPEC.md). It cannot be built
   here without the freeze allowance and a production workflow change, both
-  Dias's to grant. F1 and F3
-need a decision on the pace cap and on native review.
+  Dias's to grant.
+
+### Decisions, 2026-11-11 (delegated by Dias)
+
+- **Ready to merge as docs and scripts.** Recommended to Dias; the merge is
+  his. An independent review found no blockers, and its fixes are in.
+- **F2a parked with F2b.** The pair titles reach 312 pages routed from the
+  frozen locale trees through a shared component the scope guard does not
+  list. Reason: the freeze should be lifted openly by the owner, not routed
+  around; F2a and F2b then ship together under one allowance. The PR now
+  changes nothing under `src/`, so it no longer touches the sitemap or the
+  Phase 1 evidence and stops conflicting with `main`.
+- **Recommended, needs Dias's yes:** one scope allowance covering F2a and
+  F2b, then apply both patches; the rest as listed on 2026-11-10.
 
 ## Still needed from outside the sandbox
 
@@ -237,5 +253,5 @@ need a decision on the pace cap and on native review.
   `competition.json`.
 - Search Console exports at weeks 4 and 8 (and the family block filled from
   them).
-- Dias: confirm Russian's status, the pace cap for F1 and F3, and whether to
+- Dias: confirm Russian's status and whether to
   pay for native review.
