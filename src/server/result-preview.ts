@@ -15,18 +15,28 @@
  * made before the assistant tools stopped writing names (0.6.1) still opens, but
  * its names and place are dropped as soon as it is read (readCompatibilityShare,
  * readOccasionShare): no page, picture or link drawn from it carries them.
+ *
+ * Retired keys are also cleared from the address (retiredLinkRedirect): a link
+ * that carries names (a, b, n), a place (p), a milestone's pass days (f, l) or
+ * a Chinese zodiac year (y) is answered with a 303 to the same address without
+ * them. A birthday's date link goes to the birthday page with the month and day
+ * only; a baby's arrival or a coming of age goes to the occasion page, and their
+ * pictures to the default share picture.
  */
 import { readFile } from 'node:fs/promises';
 import { encode as encodeJpeg } from 'jpeg-js';
 import { PNG } from 'pngjs';
 import { h, type VNode } from 'preact';
 import {
+  DEFAULT_SHARE_IMAGE_PATH,
   exactArrayBuffer,
   htmlEscape,
   PRIVACY_HEADERS,
   requestOrigin,
+  seeOther,
   writeNodeResponse,
 } from './chart-preview.js';
+import { BIRTH_OCCASIONS } from '../lib/occasions/saved-path.js';
 import {
   bigThreeCardModel,
   type BigThreeCardModel,
@@ -62,6 +72,12 @@ import {
   skyEvents,
 } from './result-preview-model.js';
 import { HUES } from './chart-preview-model.js';
+import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PATH, parseYearScoreShare, yearScoreQuery, type YearScoreShare } from '../lib/year-score/share.js';
+import { scoreTier } from '../lib/year-score/tier.js';
+import { figureYearScore } from './year-score-figure.js';
+import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
+import { MAJOR_ARCANA } from '../lib/tarot/year-card.js';
+import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
   BIG_THREE_SHARE_KEYS,
@@ -147,6 +163,44 @@ export function readOccasionShare(params: URLSearchParams): OccasionShare | null
   return share && { ...share, names: null, place: null };
 }
 
+/** The query keys each family of share links no longer keeps: read, then cleared from the address. */
+export const RETIRED_SHARE_KEYS = Object.freeze({
+  compatibility: Object.freeze(['a', 'b']),
+  occasion: Object.freeze(['n', 'p']),
+  milestone: Object.freeze(['f', 'l']),
+  'chinese-zodiac': Object.freeze(['y']),
+} as const);
+export type RetiredShareFamily = keyof typeof RETIRED_SHARE_KEYS;
+
+const BIRTH_DATE_RE = /^\d{4}-(\d{2})-(\d{2})$/u;
+
+/**
+ * The answer to a share link that still carries a retired detail, or null when
+ * it carries none: a 303 that clears it from the address. `picture` is the
+ * family's image or story route.
+ */
+export function retiredLinkRedirect(family: RetiredShareFamily, url: URL, picture: boolean): Response | null {
+  if (family === 'occasion') {
+    // Every value is read, so a repeated key cannot hide a birth occasion or its date behind another.
+    const occasions = url.searchParams.getAll('o');
+    if (occasions.some((occasion) => BIRTH_OCCASIONS.has(occasion))) {
+      if (picture) return seeOther(`${url.origin}${DEFAULT_SHARE_IMAGE_PATH}`);
+      const day = occasions.includes('birthday')
+        ? url.searchParams.getAll('d').map((value) => BIRTH_DATE_RE.exec(value)).find(Boolean) ?? null
+        : null;
+      return seeOther(day ? `${url.origin}${BIRTHDAY_SHARE_PATH}?d=${day[1]}-${day[2]}` : `${url.origin}${OCCASION_SHARE_PATH}`);
+    }
+  }
+  const retired: readonly string[] = RETIRED_SHARE_KEYS[family];
+  if (![...url.searchParams.keys()].some((key) => retired.includes(key))) return null;
+  const kept = new URLSearchParams();
+  for (const [key, value] of url.searchParams) if (!retired.includes(key)) kept.append(key, value);
+  const query = kept.toString();
+  return seeOther(`${url.origin}${url.pathname}${query ? `?${query}` : ''}`);
+}
+
+const retiredFor = (family: RetiredShareFamily, request: Request, picture: boolean) => retiredLinkRedirect(family, new URL(request.url), picture);
+
 export const RESULT_SHARE_ROUTE_KEY = '__zodiacs_share';
 export const RESULT_SHARE_ROUTES = [
   'compatibility-link', 'compatibility-image', 'occasion-link', 'occasion-image',
@@ -156,6 +210,9 @@ export const RESULT_SHARE_ROUTES = [
   'milestone-link', 'milestone-image', 'milestone-story',
   'big-three-link', 'big-three-image', 'big-three-story', 'chinese-zodiac-link', 'chinese-zodiac-image', 'chinese-zodiac-story',
   'invite-link', 'invite-image', 'invite-story',
+  'year-score-link', 'year-score-image',
+  'birthday-report-link', 'birthday-report-image',
+  'solar-return-link', 'solar-return-image',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -593,6 +650,73 @@ export function chartTwinsCard(model: ChartTwinsCardModel, images: Map<ShareSign
 const italicLine = (text: string, size: number, marginTop: number) =>
   h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: size, lineHeight: 1.25, color: INK_SOFT, marginTop: `${marginTop}px` } }, text);
 
+/** What a Year Ahead Score card shows: the Sun sign, the score and its tier, and for a directory figure their name. Never a birth detail. */
+export interface YearScoreCardModel {
+  sign: PreviewSign;
+  score: number;
+  label: string;
+  hue: string;
+  /** A directory figure's name and slug; null on a person's own card. */
+  name: string | null;
+  slug: string | null;
+}
+
+const capitalSign = (slug: ShareSign) => slug.charAt(0).toUpperCase() + slug.slice(1);
+
+/** The model for a share: a person's own from the link, a figure's worked out on the server. Null for a figure the directory does not have. */
+export async function yearScoreCardModel(share: YearScoreShare, now = new Date()): Promise<YearScoreCardModel | null> {
+  if (share.kind === 'self') {
+    return { sign: { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] }, score: share.score, label: scoreTier(share.score).label, hue: HUES[share.sun], name: null, slug: null };
+  }
+  const figure = await figureYearScore(share.slug, now);
+  if (!figure) return null;
+  const sun = figure.sun as ShareSign;
+  return { sign: { slug: sun, label: `${capitalSign(sun)} Sun`, hue: HUES[sun] }, score: figure.score, label: figure.label, hue: HUES[sun], name: figure.person.name, slug: figure.person.slug };
+}
+
+/** A Year Ahead Score (A, the number as a trophy): the Sun sign's panel and disc, the score large, its tier, and the Sun sign. */
+export function yearScoreCard(model: YearScoreCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return frame(art, words({
+    discs: discRow([model.sign], images),
+    kicker: model.name ? `${model.name}’s Year Ahead Score` : 'My Year Ahead Score',
+    hue: model.hue,
+    title: [titleLine(`${model.score.toFixed(1)}/10`, 120)],
+    // Two runs, as commaLine splits a comma: the renderer would open a wide gap after the full stop.
+    line: [h('span', null, `${model.label}.`), h('span', null, `\u00a0${model.sign.label}.`)],
+  }), model.name ? null : model.sign.slug);
+}
+
+/** A Birthday report card: the Sun sign, the year's score, the Personal Year and the tarot year card. No birth detail. */
+export function birthdayReportCard(share: BirthdayReportShare, images: Map<ShareSign, string>, art: string[]) {
+  const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
+  const card = MAJOR_ARCANA[share.card];
+  return frame(art, words({
+    discs: discRow([sign], images),
+    kicker: 'My birthday report',
+    hue: sign.hue,
+    title: [titleBlock(`${card.name} · Personal Year ${share.personalYear}`)],
+    line: [h('span', null, `Year Ahead Score ${share.score.toFixed(1)}/10.`), h('span', null, `\u00a0${sign.label}.`)],
+  }), share.sun);
+}
+
+/** What the solar return card says: its year, the rising sign when the chart settles it, and Jupiter's sign. */
+function solarReturnLines(share: SolarReturnShare) {
+  return { title: share.rising ? `${capitalSign(share.rising)} rising` : `${capitalSign(share.sun)} Sun`, line: `Jupiter in ${capitalSign(share.jupiter)}.`, more: `${capitalSign(share.sun)} Sun.` };
+}
+
+/** A solar return card: the Sun sign's panel and disc, the return's year, its rising sign, and where Jupiter grows. No birth detail. */
+export function solarReturnCard(share: SolarReturnShare, images: Map<ShareSign, string>, art: string[]) {
+  const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
+  const lines = solarReturnLines(share);
+  return frame(art, words({
+    discs: discRow([sign], images),
+    kicker: `My ${share.year} solar return`,
+    hue: sign.hue,
+    title: [titleBlock(lines.title)],
+    line: share.rising ? [h('span', null, lines.line), h('span', null, `\u00a0${lines.more}`)] : lines.line,
+  }), share.sun);
+}
+
 /** A famous chart (A, the name as a trophy): the Sun sign's panel and disc, the name, the Sun's degree, and who they were. */
 export function famousChartCard(model: FamousChartCardModel, images: Map<ShareSign, string>, art: string[]) {
   return frame(art, words({
@@ -753,6 +877,8 @@ async function renderImage(element: VNode<any>, size: { width: number; height: n
 
 export async function handleCompatibilityImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('compatibility', request, true);
+  if (retired) return retired;
   const share = readCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
@@ -763,6 +889,8 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('occasion', request, true);
+  if (retired) return retired;
   const share = readOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
@@ -837,8 +965,43 @@ export async function handleFamousChartImageRequest(request: Request): Promise<R
   return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => famousChartCard(model, images, art));
 }
 
+/**
+ * A directory figure's share (p=) follows the people pages' switch, which needs the score's switch on too
+ * (src/lib/launch-flags.ts). This file runs as plain Node, so it reads process.env at run time.
+ */
+const yearPeopleShareOn = () => process.env.PUBLIC_YEAR_PEOPLE_ENABLED === '1' && process.env.PUBLIC_YEAR_SCORE_ENABLED === '1';
+
+export async function handleYearScoreImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseYearScoreShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  if (share.kind === 'figure' && !yearPeopleShareOn()) return errorResponse(404);
+  const model = await yearScoreCardModel(share).catch(() => undefined);
+  if (model === undefined) return errorResponse(503);
+  if (!model) return errorResponse(400);
+  return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => yearScoreCard(model, images, art));
+}
+
+export async function handleBirthdayReportImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseBirthdayReportShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
+  return imageFor([sign], artOfSigns([sign]), (images, art) => birthdayReportCard(share, images, art));
+}
+
+export async function handleSolarReturnImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseSolarReturnShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
+  return imageFor([sign], artOfSigns([sign]), (images, art) => solarReturnCard(share, images, art));
+}
+
 export async function handleMilestoneImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('milestone', request, true);
+  if (retired) return retired;
   const share = parseMilestoneShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = milestoneCardModel(share);
@@ -859,6 +1022,8 @@ export async function handleBigThreeImageRequest(request: Request): Promise<Resp
 
 export async function handleChineseZodiacImageRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('chinese-zodiac', request, true);
+  if (retired) return retired;
   const share = parseChineseZodiacShare(new URL(request.url).searchParams);
   const model = share ? chineseZodiacCardModel(share) : null;
   if (!model) return errorResponse(400);
@@ -1178,6 +1343,8 @@ const renderStory = (element: VNode<any>) => renderImage(element, STORY_SIZE);
 
 export async function handleCompatibilityStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('compatibility', request, true);
+  if (retired) return retired;
   const share = readCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
@@ -1188,6 +1355,8 @@ export async function handleCompatibilityStoryRequest(request: Request): Promise
 
 export async function handleOccasionStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('occasion', request, true);
+  if (retired) return retired;
   const share = readOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
@@ -1258,6 +1427,8 @@ export async function handleFamousChartStoryRequest(request: Request): Promise<R
 
 export async function handleMilestoneStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('milestone', request, true);
+  if (retired) return retired;
   const share = parseMilestoneShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = milestoneCardModel(share);
@@ -1274,6 +1445,8 @@ export async function handleBigThreeStoryRequest(request: Request): Promise<Resp
 
 export async function handleChineseZodiacStoryRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('chinese-zodiac', request, true);
+  if (retired) return retired;
   const share = parseChineseZodiacShare(new URL(request.url).searchParams);
   const model = share ? chineseZodiacCardModel(share) : null;
   if (!model) return errorResponse(400);
@@ -1511,6 +1684,8 @@ export async function handleHoroscopeLinkRequest(request: Request): Promise<Resp
 
 export async function handleCompatibilityLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('compatibility', request, false);
+  if (retired) return retired;
   const url = new URL(request.url);
   const share = readCompatibilityShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultCompatibilityPage(url.origin)));
@@ -1531,6 +1706,8 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
 
 export async function handleOccasionLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('occasion', request, false);
+  if (retired) return retired;
   const url = new URL(request.url);
   const share = readOccasionShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultOccasionPage(url.origin)));
@@ -1645,8 +1822,115 @@ export async function handleFamousChartLinkRequest(request: Request): Promise<Re
   }));
 }
 
+function defaultYearScorePage(origin: string): SharePage {
+  return {
+    title: 'Year Ahead Score on Zodiacs',
+    description: 'A score from 0 to 10 for your next twelve months, from the slow planets meeting your birth chart.',
+    heading: 'Your year ahead, as one number',
+    imageUrl: `${origin}/assets/og/v2/share.png`,
+    imageType: 'image/png',
+    imageAlt: 'Zodiacs',
+    explanation: 'Zodiacs scores the next twelve months from how Jupiter, Saturn, Uranus, Neptune and Pluto meet your birth chart, with your best and hardest months.',
+    action: { label: 'Score your own year', href: '/year-score/' },
+    note: YEAR_SCORE_SHARE_NOTE,
+  };
+}
+
+/** The share page's closing line: what the number is, with no reflection boilerplate (copy rule of 9 November 2026). */
+export const YEAR_SCORE_SHARE_NOTE = 'Scored by Zodiacs from the slow planets’ transits to a birth chart. 5 is an ordinary year.';
+
+export async function handleYearScoreLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseYearScoreShare(url.searchParams);
+  if (share?.kind === 'figure' && !yearPeopleShareOn()) return errorResponse(404);
+  const model = share ? await yearScoreCardModel(share).catch(() => undefined) : null;
+  if (share && model === null) return errorResponse(404);
+  if (!share || !model) return htmlResponse(sharePageHtml(defaultYearScorePage(url.origin)));
+  const query = yearScoreQuery(share);
+  const whose = model.name ? `${model.name}’s` : 'My';
+  return htmlResponse(sharePageHtml({
+    title: `${whose} Year Ahead Score: ${model.score.toFixed(1)}/10`,
+    description: `${model.label}. ${model.sign.label}.`,
+    heading: `${whose} year ahead: ${model.score.toFixed(1)} out of 10`,
+    imageUrl: `${url.origin}${YEAR_SCORE_SHARE_IMAGE_PATH}?${query}`,
+    imageType: 'image/jpeg',
+    imageAlt: `${whose} Year Ahead Score: ${model.score.toFixed(1)} out of 10, ${model.label.toLowerCase()}, ${model.sign.label}.`,
+    explanation: `${model.label}. ${scoreTier(model.score).summary}`,
+    action: model.slug
+      ? { label: `See ${model.name}’s year`, href: withRef(`/year/${model.slug}/`, share.ref) }
+      : { label: 'Score your own year', href: withRef('/year-score/', share.ref) },
+    ...(model.slug ? { more: { label: 'Score your own year', href: withRef('/year-score/', share.ref) } } : {}),
+    note: YEAR_SCORE_SHARE_NOTE,
+  }));
+}
+
+export async function handleBirthdayReportLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseBirthdayReportShare(url.searchParams);
+  const action = { label: 'Make your own birthday report', href: withRef('/birthday-report/', share?.ref ?? null) };
+  if (!share) {
+    return htmlResponse(sharePageHtml({
+      title: 'Birthday report on Zodiacs', description: 'Your solar return, Year Ahead Score, Personal Year and tarot year card, on one page.',
+      heading: 'Your birthday report', imageUrl: `${url.origin}/assets/og/v2/share.png`, imageType: 'image/png', imageAlt: 'Zodiacs',
+      explanation: 'Zodiacs puts your solar return, your Year Ahead Score, your numerology Personal Year and your tarot year card on one page for your birthday.',
+      action, note: BIRTHDAY_REPORT_SHARE_NOTE,
+    }));
+  }
+  const card = MAJOR_ARCANA[share.card];
+  const sun = `${capitalSign(share.sun)} Sun`;
+  return htmlResponse(sharePageHtml({
+    title: `My birthday report: ${card.name}, Personal Year ${share.personalYear}`,
+    description: `Year Ahead Score ${share.score.toFixed(1)}/10. ${sun}.`,
+    heading: `My birthday year: ${card.name}`,
+    imageUrl: `${url.origin}${BIRTHDAY_REPORT_SHARE_IMAGE_PATH}?${birthdayReportQuery(share)}`,
+    imageType: 'image/jpeg',
+    imageAlt: `A birthday report: ${card.name}, Personal Year ${share.personalYear}, Year Ahead Score ${share.score.toFixed(1)} out of 10, ${sun}.`,
+    explanation: `${card.year} ${scoreTier(share.score).label}, by the slow planets.`,
+    action,
+    note: BIRTHDAY_REPORT_SHARE_NOTE,
+  }));
+}
+
+/** Astrology, numerology and tarot are separate traditions; the page says so instead of a reflection line. */
+export const BIRTHDAY_REPORT_SHARE_NOTE = 'Astrology, numerology and tarot are separate traditions; Zodiacs reads each on its own terms.';
+
+export async function handleSolarReturnLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseSolarReturnShare(url.searchParams);
+  const action = { label: 'Cast your own solar return', href: withRef('/solar-return/', share?.ref ?? null) };
+  if (!share) {
+    return htmlResponse(sharePageHtml({
+      title: 'Solar return on Zodiacs', description: 'The chart of your next birthday, and the year’s main themes.',
+      heading: 'Your solar return', imageUrl: `${url.origin}/assets/og/v2/share.png`, imageType: 'image/png', imageAlt: 'Zodiacs',
+      explanation: 'Your solar return is the chart for the moment the Sun comes back to where it was when you were born: astrology’s chart for your personal new year.',
+      action, note: SOLAR_RETURN_SHARE_NOTE,
+    }));
+  }
+  const lines = solarReturnLines(share);
+  return htmlResponse(sharePageHtml({
+    title: `My ${share.year} solar return: ${lines.title}`,
+    description: `${lines.line} ${lines.more}`,
+    heading: `My ${share.year} solar return`,
+    imageUrl: `${url.origin}${SOLAR_RETURN_SHARE_IMAGE_PATH}?${solarReturnQuery(share)}`,
+    imageType: 'image/jpeg',
+    imageAlt: `A ${share.year} solar return: ${lines.title}, Jupiter in ${capitalSign(share.jupiter)}, ${capitalSign(share.sun)} Sun.`,
+    explanation: `${share.rising ? `${lines.title}: the sign rising when the Sun came back sets the tone of the year. ` : ''}Jupiter in ${capitalSign(share.jupiter)} shows where the year’s growth is.`,
+    action,
+    // The Year Ahead Score has its own launch switch; the link waits for it.
+    ...(process.env.PUBLIC_YEAR_SCORE_ENABLED === '1' ? { more: { label: 'Score the year ahead', href: withRef('/year-score/', share.ref) } } : {}),
+    note: SOLAR_RETURN_SHARE_NOTE,
+  }));
+}
+
+export const SOLAR_RETURN_SHARE_NOTE = 'Cast by Zodiacs for the instant the Sun returns to its birth degree.';
+
 export async function handleMilestoneLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('milestone', request, false);
+  if (retired) return retired;
   const url = new URL(request.url);
   const share = parseMilestoneShare(url.searchParams);
   if (!share) return htmlResponse(sharePageHtml(defaultMilestonePage(url.origin)));
@@ -1738,6 +2022,8 @@ export async function handleBigThreeLinkRequest(request: Request): Promise<Respo
 
 export async function handleChineseZodiacLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
+  const retired = retiredFor('chinese-zodiac', request, false);
+  if (retired) return retired;
   const url = new URL(request.url);
   const share = parseChineseZodiacShare(url.searchParams);
   const model = share ? chineseZodiacCardModel(share) : null;
@@ -1780,7 +2066,7 @@ export async function handleInviteLinkRequest(request: Request): Promise<Respons
 
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response> }>> = {
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -1814,14 +2100,59 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-link': { path: INVITE_SHARE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteLinkRequest },
   'invite-image': { path: INVITE_SHARE_IMAGE_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteImageRequest },
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
+  'year-score-link': { path: YEAR_SCORE_SHARE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreLinkRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
+  'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
+  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
+  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
+  'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
+  'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
 
-/** The Node entry: only the route key and the route's own keys, each a single string. */
+/** The family of retired keys each route answers for, if any. */
+function retiredFamily(route: ResultShareRoute): RetiredShareFamily | null {
+  for (const family of Object.keys(RETIRED_SHARE_KEYS) as RetiredShareFamily[]) {
+    if (route.startsWith(`${family}-`)) return family;
+  }
+  return null;
+}
+
+/** The whole query as it arrived, repeated keys and keys the route does not use included, without the route key. */
+function rawNodeQuery(query: Record<string, unknown>): URLSearchParams {
+  const raw = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (key === RESULT_SHARE_ROUTE_KEY) continue;
+    for (const item of Array.isArray(value) ? value : [value]) if (typeof item === 'string') raw.append(key, item);
+  }
+  return raw;
+}
+
+/**
+ * The Node entry. A retired link is answered first, from the whole query as it
+ * arrived, so a repeated key or a key the route does not use cannot keep a birth
+ * date or a name in the address. Otherwise only the route key and the route's own
+ * keys, each a single string, are passed on.
+ */
 export async function handleResultShareNodeRequest(req: any, res: any, route: ResultShareRoute): Promise<void> {
   const target = ROUTES[route];
+  // A tool behind a switch that is off has no share page or picture: the same 404 as an unknown route.
+  if (target.flag && process.env[target.flag] !== '1') {
+    await writeNodeResponse(res, errorResponse(404));
+    return;
+  }
   const query = req.query && typeof req.query === 'object' ? req.query : {};
+  const family = retiredFamily(route);
+  const method = typeof req.method === 'string' ? req.method : 'GET';
+  if (family && method === 'GET') {
+    const raw = rawNodeQuery(query).toString();
+    const url = new URL(`${requestOrigin(req)}${target.path}${raw ? `?${raw}` : ''}`);
+    const retired = retiredLinkRedirect(family, url, isPictureRoute(route));
+    if (retired) {
+      await writeNodeResponse(res, retired);
+      return;
+    }
+  }
   let params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (key === RESULT_SHARE_ROUTE_KEY) continue;
@@ -1839,8 +2170,6 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
     }
     params.set(key, value);
   }
-  const request = new Request(`${requestOrigin(req)}${target.path}?${params.toString()}`, {
-    method: typeof req.method === 'string' ? req.method : 'GET',
-  });
+  const request = new Request(`${requestOrigin(req)}${target.path}?${params.toString()}`, { method });
   await writeNodeResponse(res, await target.handle(request));
 }

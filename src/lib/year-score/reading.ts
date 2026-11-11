@@ -15,20 +15,8 @@ import { BODY_ROLE } from '../compat';
 import { transitLine } from '../transits';
 import type { Driver, MonthScore, ScoreAspect, ScorePoint, SlowPlanet, YearScore } from './core';
 
-export interface ScoreTier {
-  key: 'open' | 'supportive' | 'balanced' | 'pressure' | 'heavy-pressure';
-  label: string;
-  summary: string;
-}
-
-/** The tier for a 0 to 10 score. */
-export function scoreTier(score: number): ScoreTier {
-  if (score >= 8) return { key: 'open', label: 'A wide open year', summary: 'The slow planets mostly help. Tradition reads a year like this as strong for career growth and earnings, and a good window to start things and sign agreements.' };
-  if (score >= 6.5) return { key: 'supportive', label: 'A supportive year', summary: 'More of the slow-planet weather helps than presses. A good year to build on what already works, at work and with money alike.' };
-  if (score >= 4.5) return { key: 'balanced', label: 'A balanced year', summary: 'Support and pressure arrive in about equal measure. The months below show when each one leads.' };
-  if (score >= 3) return { key: 'pressure', label: 'A year of steady pressure', summary: 'The slow planets ask more than they give. Astrology reads this as a year for patience and follow through: steady work, careful spending and taking rest seriously.' };
-  return { key: 'heavy-pressure', label: 'A year of heavy pressure', summary: 'The slow planets press hard on the chart. Tradition reads this as a demanding year: keep commitments clear, look after your energy and let patient work do the building.' };
-}
+export { scoreTier, type ScoreTier } from './tier';
+import { scoreTier, type ScoreTier } from './tier';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
