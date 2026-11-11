@@ -15,11 +15,13 @@ import {
   type EmailSection,
 } from '../src/lib/email/template';
 import { SIGNS } from '../src/lib/signs';
+import { loadChartEmailSources } from '../src/lib/account-api/chart-sources';
 import {
-  accountChartBodies,
-  decryptAccountChartSource,
-  loadChartEmailSources,
-} from '../src/lib/account-api/chart-sources';
+  authorizeWithFreshContent,
+  decryptDigestChart,
+  type DigestChart,
+  type DigestChartReference,
+} from '../src/lib/weekly-digest/chart-edition';
 import { futurePublishedEvents } from '../src/lib/events/site-publication';
 import {
   buildWeeklyDigestRequestEnvelope,
@@ -61,24 +63,18 @@ interface CliOptions {
   weekStart: Date | null;
 }
 
-interface DigestChart {
-  name: string;
-  bodies: MinimalBody[];
-}
-
-interface DigestChartReference {
-  chartId: string;
-  revision: number;
-}
-
-interface RecipientDigest {
+/** The content snapshot, as weekly_digest_content_v1 returns it; nothing decrypted. */
+interface RecipientContent {
   userId: string;
   email: string;
   /** Present only while the account holds chart_sync and chart_emails. */
   chartReference: DigestChartReference | null;
+  contentDigest: string;
+}
+
+interface RecipientDigest extends RecipientContent {
   /** The decrypted chart for this run (zero or one); empty means the sky edition. */
   charts: DigestChart[];
-  contentDigest: string;
 }
 
 /** Counts only; never a label, a birth field or an address. */
@@ -164,13 +160,13 @@ function recipientHashPrefix(email: string): string {
 
 /** Narrow this week's bounded candidates to the one canary recipient, or send to nobody. */
 async function canaryCandidates(
-  supabase: SupabaseClient,
+  supabase: DigestSupabase,
   candidateIds: string[],
   maxCharts: number,
   canaryTo: string,
 ): Promise<string[]> {
   for (const userId of candidateIds) {
-    const recipient = await loadRecipientContent(supabase, userId, maxCharts);
+    const recipient = await readRecipientContent(supabase, userId, maxCharts);
     if (recipient && recipient.email.trim().toLowerCase() === canaryTo) return [userId];
   }
   throw new Error(
@@ -451,34 +447,6 @@ function validEmail(value: unknown): value is string {
     && /^[^\s@]+@[^\s@]+$/u.test(value);
 }
 
-function digestChart(value: unknown): DigestChart | null {
-  const chart = objectValue(value);
-  if (!chart
-    || typeof chart.name !== 'string'
-    || [...chart.name].length < 1
-    || [...chart.name].length > 200
-    || CONTROL_CHARACTER.test(chart.name)
-    || !Array.isArray(chart.bodies)
-    || chart.bodies.length < 1
-    || chart.bodies.length > 64) return null;
-
-  const bodies: MinimalBody[] = [];
-  for (const valueBody of chart.bodies) {
-    const body = objectValue(valueBody);
-    if (!body
-      || typeof body.body !== 'string'
-      || [...body.body].length < 1
-      || [...body.body].length > 32
-      || CONTROL_CHARACTER.test(body.body)
-      || typeof body.lon !== 'number'
-      || !Number.isFinite(body.lon)
-      || body.lon < 0
-      || body.lon >= 360) return null;
-    bodies.push({ body: body.body, lon: body.lon });
-  }
-  return { name: chart.name, bodies };
-}
-
 function chartReference(value: unknown): DigestChartReference | null | undefined {
   if (value === null) return null;
   const reference = objectValue(value);
@@ -494,7 +462,7 @@ function chartReference(value: unknown): DigestChartReference | null | undefined
 function recipientContent(
   value: unknown,
   userId: string,
-): Omit<RecipientDigest, 'charts'> | null {
+): RecipientContent | null {
   const result = objectValue(value);
   const snapshot = objectValue(result?.snapshot);
   if (!result
@@ -514,34 +482,21 @@ function recipientContent(
 }
 
 /**
- * Decrypts the opted-in account's self chart in this job, only when the
- * content snapshot names it, and only if the chart still matches that id and
- * revision. Any failure returns no chart: the subscriber gets the sky edition.
+ * Adds the decrypted self chart when the snapshot names one, after a fresh
+ * read shows the account is still eligible with that same chart and
+ * revision. Any failure means the sky edition. Counts only are kept.
  */
-async function decryptedDigestCharts(
-  userId: string,
-  reference: DigestChartReference | null,
-): Promise<DigestChart[]> {
-  if (!reference) return [];
-  chartDecryption.attempted += 1;
-  try {
-    const sources = await loadChartEmailSources([userId], {
+async function withDigestCharts(content: RecipientContent): Promise<RecipientDigest> {
+  const result = await decryptDigestChart(content.chartReference, {
+    env: process.env,
+    loadSource: async () => (await loadChartEmailSources([content.userId], {
       supabaseUrl: process.env.PUBLIC_SUPABASE_URL ?? '',
       serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
-    });
-    const source = sources.get(userId.toLowerCase());
-    const payload = source
-      && source.chartId === reference.chartId
-      && source.revision === reference.revision
-      ? decryptAccountChartSource(source, process.env)
-      : null;
-    const chart = payload ? digestChart({ name: payload.label, bodies: accountChartBodies(payload) }) : null;
-    if (chart) return [chart];
-  } catch {
-    // Counted below; the sky edition is sent instead.
-  }
-  chartDecryption.failed += 1;
-  return [];
+    })).get(content.userId.toLowerCase()) ?? null,
+  });
+  if (result.outcome !== 'sky') chartDecryption.attempted += 1;
+  if (result.outcome === 'fell_back') chartDecryption.failed += 1;
+  return { ...content, charts: result.charts };
 }
 
 async function loadCandidateIds(
@@ -568,11 +523,12 @@ async function loadCandidateIds(
   return [...unique];
 }
 
-async function loadRecipientContent(
+/** The content snapshot only; no chart is read or decrypted. */
+async function readRecipientContent(
   supabase: DigestSupabase,
   userId: string,
   maxCharts: number,
-): Promise<RecipientDigest | null> {
+): Promise<RecipientContent | null> {
   const { data, error } = await supabase.rpc('weekly_digest_content_v1', {
     candidate_user_id: userId,
     candidate_max_charts: maxCharts,
@@ -581,7 +537,16 @@ async function loadRecipientContent(
   if (data === null) return null;
   const parsed = recipientContent(data, userId);
   if (!parsed) throw new Error('Weekly recipient content returned an invalid result.');
-  return { ...parsed, charts: await decryptedDigestCharts(userId, parsed.chartReference) };
+  return parsed;
+}
+
+async function loadRecipientContent(
+  supabase: DigestSupabase,
+  userId: string,
+  maxCharts: number,
+): Promise<RecipientDigest | null> {
+  const content = await readRecipientContent(supabase, userId, maxCharts);
+  return content ? withDigestCharts(content) : null;
 }
 
 async function booleanRpc(
@@ -1013,36 +978,41 @@ async function run(): Promise<void> {
     let prepared: ReturnType<typeof prepareWeeklyEnvelope> | null = null;
     let authorized = false;
     try {
-      // Re-fetch after rendering and immediately before the authorization RPC.
-      // If content moved, rebuild once; a second movement is skipped. The RPC
-      // itself repeats the digest/consent check under the profile row lock.
-      for (let refresh = 0; refresh < 2; refresh += 1) {
-        prepared = prepareWeeklyEnvelope(
-          recipient,
+      // Re-read the content after rendering and immediately before the
+      // authorization RPC, which itself recomputes the content (consents,
+      // chart id and revision) under the profile row lock just before
+      // dispatch. If the content moved, or the authorization is refused
+      // because it moved in between (for example chart emails withdrawn
+      // during the run), the digest is rebuilt from the new content, so the
+      // subscriber gets the sky edition; a second movement is skipped.
+      const outcome = await authorizeWithFreshContent({
+        initial: recipient,
+        readContent: () => readRecipientContent(supabase!, userId, maxCharts),
+        withCharts: withDigestCharts,
+        prepare: (current) => prepareWeeklyEnvelope(
+          current,
           weekStart,
           reservation.unsubscribeToken,
           maxCharts,
           postalAddress,
           process.env.DIGEST_FROM_EMAIL || 'Zodiacs.org <hello@zodiacs.org>',
           envelopeSecret!,
-        );
-        const refreshed = await loadRecipientContent(supabase!, userId, maxCharts);
-        if (!refreshed) break;
-        if (refreshed.contentDigest === recipient.contentDigest) {
-          authorized = await authorizeWeeklyDelivery(
-            supabase!,
-            weekStart,
-            userId,
-            reservation.leaseToken,
-            prepared.envelope,
-            recipient.contentDigest,
-            prepared.sealedEnvelope,
-            maxCharts,
-          );
-          break;
-        }
-        recipient = refreshed;
-        prepared = null;
+        ),
+        authorize: (current, content) => authorizeWeeklyDelivery(
+          supabase!,
+          weekStart,
+          userId,
+          reservation.leaseToken,
+          current.envelope,
+          content.contentDigest,
+          current.sealedEnvelope,
+          maxCharts,
+        ),
+      });
+      if (outcome.authorized) {
+        authorized = true;
+        prepared = outcome.prepared;
+        recipient = outcome.recipient;
       }
     } catch {
       await cancelWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken);
