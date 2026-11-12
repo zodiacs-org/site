@@ -98,7 +98,7 @@ describe('get_numerology privacy', () => {
 
 describe('the numerology copy', () => {
   /**
-   * Work, money and wellbeing are allowed as the tradition reads them. Still not allowed: price, stock or coin calls,
+   * Work and wellbeing are allowed as the tradition reads them; money, earnings and promotion wording is not (ZOD-30). Also not allowed: price, stock or coin calls,
    * buy or sell signals, diagnoses or medical timing, death predictions, and saying a legal matter will be won or lost.
    */
   const DISALLOWED = /\b(?:stocks?|share prices?|crypto\w*|tokens?|coins?|bitcoin|price targets?|buy|sell|selling|diagnos\w*|prognos\w*|surgery|death|die|dies|dying|dead|lawsuit|verdict|(?:will|going to) (?:win|lose)|lottery|gambl\w*)\b/iu;
