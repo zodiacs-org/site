@@ -1,8 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { isHiddenAlmanacSlug } from '../../data/hidden-child-pages.mjs';
 
-const entries = (await getCollection('almanac', ({ data }) => !data.draft))
+// Hidden articles (src/data/hidden-child-pages.mjs) stay built but are not listed.
+const entries = (await getCollection('almanac', ({ id, data }) => !data.draft && !isHiddenAlmanacSlug(id)))
   .sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
 
 if (entries.length < 1) {

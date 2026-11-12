@@ -14,7 +14,6 @@ import '../../../styles/profile-page.css';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   PUBLIC_SAVED_RECORDS_ENABLED: process.env.PUBLIC_SAVED_RECORDS_ENABLED,
@@ -57,7 +56,7 @@ const jsonLd = [
     <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="es" client:load />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
-        ? <>La prueba de sincronización cifrada se gestiona temporalmente en <a href="/profile/">/profile/</a>. Aquí tus cartas permanecen solo en este dispositivo.</>
+        ? <>La sincronización cifrada se gestiona en <a href="/profile/">/profile/</a>. Aquí tus cartas permanecen solo en este dispositivo.</>
         : 'Si borras los datos del navegador, se borran las cartas que solo están guardadas localmente. Inicia sesión para sincronizar cartas guardadas y eliminaciones entre dispositivos.'}</p>
     </aside>
   </section>

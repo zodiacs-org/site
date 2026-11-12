@@ -174,6 +174,10 @@ describe('tools behind a launch switch', () => {
     for (const entry of ALL_NAV_MORE) {
       if (entry.flag) expect(NAV_MORE.some((item) => item.href === entry.href)).toBe(launchFlagOn(entry.flag));
     }
+    const hrefs = (on: boolean) => visibleTools(() => on).map((tool) => tool.href);
+    expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/']));
+    expect(hrefs(false)).not.toContain('/year-score/');
+    expect(hrefs(false)).not.toContain('/birthday-report/');
     for (const tool of ALL_TOOL_CATALOG) {
       if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
     }

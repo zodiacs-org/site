@@ -15,17 +15,42 @@ import {
   type EmailSection,
 } from '../src/lib/email/template';
 import { SIGNS } from '../src/lib/signs';
+import { loadChartEmailSources } from '../src/lib/account-api/chart-sources';
+import {
+  authorizeWithFreshContent,
+  decryptDigestChart,
+  type DigestChart,
+  type DigestChartReference,
+} from '../src/lib/weekly-digest/chart-edition';
+import { futurePublishedEvents } from '../src/lib/events/site-publication';
 import {
   buildWeeklyDigestRequestEnvelope,
   createWeeklyDigestResendRequest,
   openWeeklyDigestRequestEnvelope,
   sealWeeklyDigestRequestEnvelope,
-  sendWeeklyDigestEnvelope,
   WeeklyDigestProviderAbortError,
   weeklyDigestEnvelopeDigest,
   type WeeklyDigestProviderResult,
   type WeeklyDigestRequestEnvelope,
 } from '../src/lib/weekly-digest/delivery';
+import {
+  dispatchWeeklyWithRecheck,
+  replayWeeklyRecovery,
+  WeeklyChartRejectedError,
+  weeklyDispatchRecheck,
+  WeeklyDispatchRecheckError,
+  weeklyRejectedRelease,
+  type WeeklyDispatchOutcome,
+  type WeeklyDispatchRecheck,
+  type WeeklyRejectedRelease,
+} from '../src/lib/weekly-digest/dispatch-recheck';
+
+/** Rebuilding a released delivery failed; its reservation was cancelled. */
+class WeeklyPreparationError extends Error {
+  constructor() {
+    super('Weekly digest preparation failed after its reservation was cancelled.');
+  }
+}
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DIGEST_ORB = 3;
@@ -55,17 +80,22 @@ interface CliOptions {
   weekStart: Date | null;
 }
 
-interface DigestChart {
-  name: string;
-  bodies: MinimalBody[];
-}
-
-interface RecipientDigest {
+/** The content snapshot, as weekly_digest_content_v1 returns it; nothing decrypted. */
+interface RecipientContent {
   userId: string;
   email: string;
-  charts: DigestChart[];
+  /** Present only while the account holds chart_sync and chart_emails. */
+  chartReference: DigestChartReference | null;
   contentDigest: string;
 }
+
+interface RecipientDigest extends RecipientContent {
+  /** The decrypted chart for this run (zero or one); empty means the sky edition. */
+  charts: DigestChart[];
+}
+
+/** Counts only; never a label, a birth field or an address. */
+const chartDecryption = { attempted: 0, failed: 0 };
 
 interface WeeklyReservation {
   leaseToken: string;
@@ -147,13 +177,13 @@ function recipientHashPrefix(email: string): string {
 
 /** Narrow this week's bounded candidates to the one canary recipient, or send to nobody. */
 async function canaryCandidates(
-  supabase: SupabaseClient,
+  supabase: DigestSupabase,
   candidateIds: string[],
   maxCharts: number,
   canaryTo: string,
 ): Promise<string[]> {
   for (const userId of candidateIds) {
-    const recipient = await loadRecipientContent(supabase, userId, maxCharts);
+    const recipient = await readRecipientContent(supabase, userId, maxCharts);
     if (recipient && recipient.email.trim().toLowerCase() === canaryTo) return [userId];
   }
   throw new Error(
@@ -309,6 +339,11 @@ function chartSunSign(chart: DigestChart): string | undefined {
   return SIGNS[index]?.slug;
 }
 
+function weekEvents(weekStart: Date) {
+  // Published event pages dated Monday through Sunday of this week.
+  return futurePublishedEvents(editionDate(addDays(weekStart, -1)), { days: 7, limit: 6 });
+}
+
 function renderDigest(
   recipient: RecipientDigest,
   weekStart: Date,
@@ -319,6 +354,40 @@ function renderDigest(
   const label = rangeLabel(weekStart);
   const charts = recipient.charts.slice(0, maxCharts);
   const unsubscribe = unsubscribeUrl(unsubscribeToken);
+  const footerLines = [
+    'You receive this because you asked for the Monday digest.',
+    postalAddress,
+  ];
+
+  if (charts.length === 0) {
+    // The sky edition: for every subscriber who has not turned on chart
+    // emails, or whose chart could not be read this week. No chart is used.
+    const events = weekEvents(weekStart);
+    const doc: EmailDocument = {
+      preheader: `The sky, ${label}: this week's notable events.`,
+      eyebrow: `Weekly digest · ${label}`,
+      title: `The sky, ${label}`,
+      intro: 'The notable events in the sky this week, with a page for each.',
+      sections: [{
+        heading: 'This week',
+        rows: events.map((event) => ({
+          label: monthDay(new Date(event.anchor)),
+          body: event.summary || event.title,
+        })),
+        empty: 'A quiet week: no major events are published for these seven days.',
+      }],
+      cta: { label: 'Read your sign\u2019s horoscope', url: `${baseUrl()}/horoscopes/` },
+      links: events.slice(0, 4).map((event) => ({ label: event.title, url: `${baseUrl()}${event.path}` })),
+      footerLines,
+      unsubscribeUrl: unsubscribe,
+    };
+    return {
+      subject: `The sky, ${label}`,
+      text: renderEmailText(doc),
+      html: renderEmailHtml(doc, baseUrl()),
+      unsubscribe,
+    };
+  }
 
   const sections: EmailSection[] = charts.map((chart) => {
     const hits = topTransits(chart, weekStart);
@@ -329,29 +398,21 @@ function renderDigest(
         body: transitSentence(hit).replace(`${monthDay(hit.date)}: `, ''),
         receipt: receiptLine(hit).replace(/^Receipt: /, ''),
       })),
-      empty: `Nothing within ${DIGEST_ORB}° of exact this week — a quiet one for this chart.`,
+      empty: `Nothing within ${DIGEST_ORB}° of exact this week, a quiet one for this chart.`,
     };
   });
 
-  if (recipient.charts.length > maxCharts) {
-    sections.push({
-      paragraphs: [`Showing ${maxCharts} of ${recipient.charts.length} saved charts this week.`],
-    });
-  }
-
   const doc: EmailDocument = {
-    preheader: `Your saved charts, ${label} — the closest transits, with orbs.`,
+    preheader: `Your chart, ${label}: the closest transits, with orbs.`,
     eyebrow: `Weekly digest · ${label}`,
     title: `Your sky, ${label}`,
     sign: charts[0] ? chartSunSign(charts[0]) : undefined,
-    identity: charts.length === 1
-      ? charts[0].name
-      : `${charts.length} saved charts`,
-    intro: 'The closest aspects to your saved charts this week, with the orb each one is measured at.',
+    identity: charts[0].name,
+    intro: 'The closest aspects to your synced chart this week, with the orb each one is measured at.',
     sections,
     cta: { label: 'Read all transits', url: `${baseUrl()}/transits/` },
     footerLines: [
-      'You receive this because you asked for a Monday digest of your saved charts.',
+      'You receive this because you asked for the Monday digest and turned on chart emails.',
       postalAddress,
     ],
     unsubscribeUrl: unsubscribe,
@@ -403,57 +464,56 @@ function validEmail(value: unknown): value is string {
     && /^[^\s@]+@[^\s@]+$/u.test(value);
 }
 
-function digestChart(value: unknown): DigestChart | null {
-  const chart = objectValue(value);
-  if (!chart
-    || typeof chart.name !== 'string'
-    || [...chart.name].length < 1
-    || [...chart.name].length > 200
-    || CONTROL_CHARACTER.test(chart.name)
-    || !Array.isArray(chart.bodies)
-    || chart.bodies.length < 1
-    || chart.bodies.length > 64) return null;
-
-  const bodies: MinimalBody[] = [];
-  for (const valueBody of chart.bodies) {
-    const body = objectValue(valueBody);
-    if (!body
-      || typeof body.body !== 'string'
-      || [...body.body].length < 1
-      || [...body.body].length > 32
-      || CONTROL_CHARACTER.test(body.body)
-      || typeof body.lon !== 'number'
-      || !Number.isFinite(body.lon)
-      || body.lon < 0
-      || body.lon >= 360) return null;
-    bodies.push({ body: body.body, lon: body.lon });
-  }
-  return { name: chart.name, bodies };
+function chartReference(value: unknown): DigestChartReference | null | undefined {
+  if (value === null) return null;
+  const reference = objectValue(value);
+  if (!reference
+    || Object.keys(reference).sort().join(',') !== 'chart_id,revision'
+    || typeof reference.chart_id !== 'string'
+    || !UUID.test(reference.chart_id)
+    || !Number.isSafeInteger(reference.revision)
+    || (reference.revision as number) < 1) return undefined;
+  return { chartId: reference.chart_id.toLowerCase(), revision: reference.revision as number };
 }
 
 function recipientContent(
   value: unknown,
   userId: string,
-  maxCharts: number,
-): RecipientDigest | null {
+): RecipientContent | null {
   const result = objectValue(value);
   const snapshot = objectValue(result?.snapshot);
   if (!result
     || !snapshot
+    || Object.keys(snapshot).sort().join(',') !== 'chart,email'
     || typeof result.digest !== 'string'
     || !SHA256_HEX.test(result.digest)
-    || !validEmail(snapshot.email)
-    || !Array.isArray(snapshot.charts)
-    || snapshot.charts.length < 1
-    || snapshot.charts.length > maxCharts) return null;
-  const charts = snapshot.charts.map(digestChart);
-  if (charts.some((chart) => chart === null)) return null;
+    || !validEmail(snapshot.email)) return null;
+  const reference = chartReference(snapshot.chart);
+  if (reference === undefined) return null;
   return {
     userId,
     email: snapshot.email,
-    charts: charts as DigestChart[],
+    chartReference: reference,
     contentDigest: result.digest,
   };
+}
+
+/**
+ * Adds the decrypted self chart when the snapshot names one, after a fresh
+ * read shows the account is still eligible with that same chart and
+ * revision. Any failure means the sky edition. Counts only are kept.
+ */
+async function withDigestCharts(content: RecipientContent): Promise<RecipientDigest> {
+  const result = await decryptDigestChart(content.chartReference, {
+    env: process.env,
+    loadSource: async () => (await loadChartEmailSources([content.userId], {
+      supabaseUrl: process.env.PUBLIC_SUPABASE_URL ?? '',
+      serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
+    })).get(content.userId.toLowerCase()) ?? null,
+  });
+  if (result.outcome !== 'sky') chartDecryption.attempted += 1;
+  if (result.outcome === 'fell_back') chartDecryption.failed += 1;
+  return { ...content, charts: result.charts };
 }
 
 async function loadCandidateIds(
@@ -480,20 +540,30 @@ async function loadCandidateIds(
   return [...unique];
 }
 
-async function loadRecipientContent(
+/** The content snapshot only; no chart is read or decrypted. */
+async function readRecipientContent(
   supabase: DigestSupabase,
   userId: string,
   maxCharts: number,
-): Promise<RecipientDigest | null> {
+): Promise<RecipientContent | null> {
   const { data, error } = await supabase.rpc('weekly_digest_content_v1', {
     candidate_user_id: userId,
     candidate_max_charts: maxCharts,
   });
   if (error) throw databaseFailure('Weekly recipient content', error);
   if (data === null) return null;
-  const parsed = recipientContent(data, userId, maxCharts);
+  const parsed = recipientContent(data, userId);
   if (!parsed) throw new Error('Weekly recipient content returned an invalid result.');
   return parsed;
+}
+
+async function loadRecipientContent(
+  supabase: DigestSupabase,
+  userId: string,
+  maxCharts: number,
+): Promise<RecipientDigest | null> {
+  const content = await readRecipientContent(supabase, userId, maxCharts);
+  return content ? withDigestCharts(content) : null;
 }
 
 async function booleanRpc(
@@ -574,6 +644,47 @@ async function cancelWeeklyDelivery(
   }, 'Weekly delivery cancellation');
 }
 
+/**
+ * Asked by the provider queue after every wait, immediately before each POST
+ * attempt of a chart edition or of a recovery replay, the first attempt
+ * included (see weekly_digest_dispatch_recheck_v1).
+ */
+async function recheckWeeklyDelivery(
+  supabase: DigestSupabase,
+  weekStart: Date,
+  userId: string,
+  leaseToken: string,
+): Promise<WeeklyDispatchRecheck> {
+  const { data, error } = await supabase.rpc('weekly_digest_dispatch_recheck_v1', {
+    candidate_week_start: editionDate(weekStart),
+    candidate_user_id: userId,
+    candidate_lease_token: leaseToken,
+  });
+  if (error) throw databaseFailure('Weekly delivery recheck', error);
+  return weeklyDispatchRecheck(data);
+}
+
+/**
+ * Asked when the provider definitively rejected a new chart edition, or its
+ * recheck could not be read: nothing was accepted, so the delivery goes back
+ * to reserved instead of waiting for the recovery replay (see
+ * weekly_digest_release_rejected_v1).
+ */
+async function releaseRejectedWeeklyDelivery(
+  supabase: DigestSupabase,
+  weekStart: Date,
+  userId: string,
+  leaseToken: string,
+): Promise<WeeklyRejectedRelease> {
+  const { data, error } = await supabase.rpc('weekly_digest_release_rejected_v1', {
+    candidate_week_start: editionDate(weekStart),
+    candidate_user_id: userId,
+    candidate_lease_token: leaseToken,
+  });
+  if (error) throw databaseFailure('Weekly delivery release', error);
+  return weeklyRejectedRelease(data);
+}
+
 async function finishWeeklyDelivery(
   supabase: DigestSupabase,
   weekStart: Date,
@@ -636,21 +747,28 @@ async function claimWeeklyRecovery(supabase: DigestSupabase): Promise<WeeklyReco
   return parseRecovery(data);
 }
 
-function fixtureRecipient(): RecipientDigest {
+function fixtureRecipients(): RecipientDigest[] {
   const bodies = computeBodies(new Date('1990-07-13T12:00:00.000Z')).map((body) => ({
     body: body.body,
     lon: body.lon,
   }));
 
-  return {
+  return [{
     userId: '00000000-0000-4000-8000-000000000000',
     email: 'fixture@example.com',
+    chartReference: { chartId: '00000000-0000-4000-8000-000000000001', revision: 1 },
     contentDigest: '0'.repeat(64),
     charts: [{
       name: 'Fixture chart',
       bodies,
     }],
-  };
+  }, {
+    userId: '00000000-0000-4000-8000-000000000002',
+    email: 'fixture-sky@example.com',
+    chartReference: null,
+    contentDigest: '1'.repeat(64),
+    charts: [],
+  }];
 }
 
 function prepareWeeklyEnvelope(
@@ -690,20 +808,43 @@ function prepareWeeklyEnvelope(
   return { envelope, sealedEnvelope };
 }
 
-function abortProviderBatch(error: WeeklyDigestProviderAbortError): never {
+function providerMetadata(error: WeeklyDigestProviderAbortError): string {
   const status = Number.isInteger(error.status) && error.status! >= 100 && error.status! <= 599
     ? String(error.status)
     : 'none';
   const code = typeof error.code === 'string' && SAFE_PROVIDER_CODE.test(error.code)
     ? error.code
     : 'none';
+  return `reason=${error.reason} status=${status} code=${code}`;
+}
+
+/**
+ * A new chart edition the provider definitively rejected: nothing was
+ * accepted, and the delivery was released (or, with release=failed, left in
+ * dispatching because the database could not be reached). The batch stops
+ * as for any other provider rejection outside the recipient codes.
+ */
+function releasedProviderBatch(error: WeeklyChartRejectedError): never {
   console.error(
-    `weekly-digest: provider batch abort reason=${error.reason} status=${status} code=${code}; exact sealed replay retained`,
+    `weekly-digest: provider batch stop ${providerMetadata(error.abort)}; chart edition definitively rejected, release=${error.release}`,
+  );
+  throw new Error('Weekly digest stopped after a provider rejection; nothing was accepted for the chart edition.');
+}
+
+function abortProviderBatch(error: WeeklyDigestProviderAbortError): never {
+  console.error(
+    `weekly-digest: provider batch abort ${providerMetadata(error)}; exact sealed replay retained`,
   );
   throw new Error('Weekly digest stopped after a non-terminal provider outcome.');
 }
 
-async function sendAndFinalize(
+/**
+ * Replays a recovered envelope (see replayWeeklyRecovery). Nothing records
+ * that a recovered envelope was actually sent, so every attempt of the
+ * replay, the first included, is rechecked immediately before its POST, and
+ * a replay whose content moved is quarantined instead of sent.
+ */
+async function replayAndFinalize(
   supabase: DigestSupabase,
   weekStart: Date,
   userId: string,
@@ -711,15 +852,33 @@ async function sendAndFinalize(
   envelope: WeeklyDigestRequestEnvelope,
   resendKey: string,
   resendRequest: ReturnType<typeof createWeeklyDigestResendRequest>,
-): Promise<WeeklyDigestProviderResult> {
-  let providerResult: WeeklyDigestProviderResult;
+): Promise<WeeklyDigestProviderResult | { kind: 'withdrawn'; recheck: WeeklyDispatchRecheck }> {
+  let replayed: Awaited<ReturnType<typeof replayWeeklyRecovery>>;
   try {
-    providerResult = await sendWeeklyDigestEnvelope(envelope, resendKey, resendRequest);
+    replayed = await replayWeeklyRecovery({
+      envelope,
+      recheck: () => recheckWeeklyDelivery(supabase, weekStart, userId, leaseToken),
+      apiKey: resendKey,
+      request: resendRequest,
+    });
   } catch (error) {
     if (error instanceof WeeklyDigestProviderAbortError) abortProviderBatch(error);
+    if (error instanceof WeeklyDispatchRecheckError) {
+      throw new Error('Weekly recovery recheck failed before a provider attempt; nothing more was sent.');
+    }
     throw new Error('Weekly digest provider dispatch failed before finalization.');
   }
+  if (replayed.kind === 'withdrawn') return replayed;
+  return finalize(supabase, weekStart, userId, leaseToken, replayed.result);
+}
 
+async function finalize(
+  supabase: DigestSupabase,
+  weekStart: Date,
+  userId: string,
+  leaseToken: string,
+  providerResult: WeeklyDigestProviderResult,
+): Promise<WeeklyDigestProviderResult> {
   const finalized = await finishWeeklyDelivery(
     supabase,
     weekStart,
@@ -781,14 +940,15 @@ async function run(): Promise<void> {
   let attempts = 0;
 
   if (options.dryRun) {
+    const fixtures = options.fixture ? fixtureRecipients() : [];
     let candidateIds = options.fixture
-      ? [fixtureRecipient().userId]
+      ? fixtures.map((fixture) => fixture.userId)
       : await loadCandidateIds(supabase!, weekStart, limit);
     if (canaryTo) candidateIds = await canaryCandidates(supabase!, candidateIds, maxCharts, canaryTo);
     console.log(`weekly-digest: ${candidateIds.length} bounded candidate(s), week ${rangeLabel(weekStart)}, dryRun=true`);
     for (const [candidateIndex, userId] of candidateIds.entries()) {
       const recipient = options.fixture
-        ? fixtureRecipient()
+        ? fixtures[candidateIndex]!
         : await loadRecipientContent(supabase!, userId, maxCharts);
       if (!recipient) {
         skipped += 1;
@@ -807,6 +967,7 @@ async function run(): Promise<void> {
         console.log(`weekly-digest: rendered recipient ${candidateIndex + 1}/${candidateIds.length} (all personalized fields redacted)`);
       }
     }
+    console.log(`weekly-digest: chart editions decrypted=${chartDecryption.attempted - chartDecryption.failed} fellBackToSky=${chartDecryption.failed}`);
     console.log(`weekly-digest: done, sent=0, failed=0, skipped=${skipped}, reconciliation=0, attempted=0, dryRun=true`);
     if (canaryTo) console.log(`weekly-digest: canary receipt sent=0 recipient=sha256:${recipientHashPrefix(canaryTo)} dryRun=true`);
     return;
@@ -817,9 +978,9 @@ async function run(): Promise<void> {
   await pruneWeeklyDeliveryState(supabase!);
   const resendRequest = createWeeklyDigestResendRequest(fetch);
 
-  // Recover ambiguous <=24-hour dispatches first. The opened object contains
-  // the exact original body and idempotency key; no personalized field is
-  // queried or rebuilt for replay.
+  // Recover <=24-hour dispatches first. The opened object contains the exact
+  // original body and idempotency key; no personalized field is queried or
+  // rebuilt for replay. Every replay attempt is rechecked before its POST.
   let recoveryScans = 0;
   let recoveryRequest: ReturnType<typeof createWeeklyDigestResendRequest> | null = null;
   let recoveryRequestDeadline = 0;
@@ -861,7 +1022,7 @@ async function run(): Promise<void> {
     }
 
     attempts += 1;
-    const result = await sendAndFinalize(
+    const result = await replayAndFinalize(
       supabase!,
       parseDate(recovery.weekStart),
       recovery.userId,
@@ -870,6 +1031,12 @@ async function run(): Promise<void> {
       resendKey!,
       recoveryRequest,
     );
+    if (result.kind === 'withdrawn') {
+      if (result.recheck === 'reconciliation') reconciliation += 1;
+      else skipped += 1;
+      console.log(`weekly-digest: recovered delivery no longer eligible before a provider attempt (${result.recheck}); nothing more sent`);
+      continue;
+    }
     if (result.kind === 'sent') {
       sent += 1;
       console.log(`weekly-digest: recovered and finalized ${sent}/${attempts} attempted delivery(s)`);
@@ -915,37 +1082,43 @@ async function run(): Promise<void> {
 
     let prepared: ReturnType<typeof prepareWeeklyEnvelope> | null = null;
     let authorized = false;
+    const authorizeFrom = (initial: RecipientDigest) => authorizeWithFreshContent({
+      initial,
+      readContent: () => readRecipientContent(supabase!, userId, maxCharts),
+      withCharts: withDigestCharts,
+      prepare: (current) => prepareWeeklyEnvelope(
+        current,
+        weekStart,
+        reservation.unsubscribeToken,
+        maxCharts,
+        postalAddress,
+        process.env.DIGEST_FROM_EMAIL || 'Zodiacs.org <hello@zodiacs.org>',
+        envelopeSecret!,
+      ),
+      authorize: (current, content) => authorizeWeeklyDelivery(
+        supabase!,
+        weekStart,
+        userId,
+        reservation.leaseToken,
+        current.envelope,
+        content.contentDigest,
+        current.sealedEnvelope,
+        maxCharts,
+      ),
+    });
     try {
-      // Re-fetch after rendering and immediately before the authorization RPC.
-      // If content moved, rebuild once; a second movement is skipped. The RPC
-      // itself repeats the digest/consent check under the profile row lock.
-      for (let refresh = 0; refresh < 2; refresh += 1) {
-        prepared = prepareWeeklyEnvelope(
-          recipient,
-          weekStart,
-          reservation.unsubscribeToken,
-          maxCharts,
-          postalAddress,
-          process.env.DIGEST_FROM_EMAIL || 'Zodiacs.org <hello@zodiacs.org>',
-          envelopeSecret!,
-        );
-        const refreshed = await loadRecipientContent(supabase!, userId, maxCharts);
-        if (!refreshed) break;
-        if (refreshed.contentDigest === recipient.contentDigest) {
-          authorized = await authorizeWeeklyDelivery(
-            supabase!,
-            weekStart,
-            userId,
-            reservation.leaseToken,
-            prepared.envelope,
-            recipient.contentDigest,
-            prepared.sealedEnvelope,
-            maxCharts,
-          );
-          break;
-        }
-        recipient = refreshed;
-        prepared = null;
+      // Re-read the content after rendering and immediately before the
+      // authorization RPC, which itself recomputes the content (consents,
+      // chart id and revision) under the profile row lock just before
+      // dispatch. If the content moved, or the authorization is refused
+      // because it moved in between (for example chart emails withdrawn
+      // during the run), the digest is rebuilt from the new content, so the
+      // subscriber gets the sky edition; a second movement is skipped.
+      const outcome = await authorizeFrom(recipient);
+      if (outcome.authorized) {
+        authorized = true;
+        prepared = outcome.prepared;
+        recipient = outcome.recipient;
       }
     } catch {
       await cancelWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken);
@@ -959,14 +1132,65 @@ async function run(): Promise<void> {
     }
 
     attempts += 1;
-    const providerResult = await sendAndFinalize(
+    // A chart edition is checked again inside the provider queue, after its
+    // pacing wait and every 429 backoff, immediately before each POST. If it
+    // is no longer what was authorized, nothing more is sent: the delivery
+    // is released and rebuilt from current content (the sky edition), or
+    // cancelled.
+    let dispatched: WeeklyDispatchOutcome<RecipientDigest, ReturnType<typeof prepareWeeklyEnvelope>>;
+    try {
+      dispatched = await dispatchWeeklyWithRecheck({
+        authorized: { recipient, prepared },
+        reauthorize: async (previous) => {
+          try {
+            return await authorizeFrom(previous);
+          } catch {
+            await cancelWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken);
+            throw new WeeklyPreparationError();
+          }
+        },
+        isChartEdition: (current) => current.charts.length > 0,
+        recheck: () => recheckWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken),
+        releaseRejected: () => releaseRejectedWeeklyDelivery(
+          supabase!,
+          weekStart,
+          userId,
+          reservation.leaseToken,
+        ),
+        apiKey: resendKey!,
+        request: resendRequest,
+      });
+    } catch (error) {
+      if (error instanceof WeeklyChartRejectedError) releasedProviderBatch(error);
+      if (error instanceof WeeklyDigestProviderAbortError) abortProviderBatch(error);
+      if (error instanceof WeeklyDispatchRecheckError) {
+        console.error(`weekly-digest: chart edition recheck failed; release=${error.release ?? 'none'}`);
+        throw new Error('Weekly delivery recheck failed before a provider attempt; nothing more was sent.');
+      }
+      if (error instanceof WeeklyPreparationError) throw error;
+      throw new Error('Weekly digest provider dispatch failed before finalization.');
+    }
+    if (dispatched.kind === 'withdrawn') {
+      if (dispatched.recheck === 'released') {
+        await cancelWeeklyDelivery(supabase!, weekStart, userId, reservation.leaseToken);
+      }
+      skipped += 1;
+      console.log(
+        `weekly-digest: recipient ${candidateIndex + 1}/${candidateIds.length} chart edition no longer eligible at dispatch (${dispatched.recheck}); nothing sent`,
+      );
+      continue;
+    }
+    if (dispatched.recipient !== recipient) {
+      console.log(
+        `weekly-digest: recipient ${candidateIndex + 1}/${candidateIds.length} chart edition no longer eligible at dispatch; rebuilt from current content`,
+      );
+    }
+    const providerResult = await finalize(
       supabase!,
       weekStart,
       userId,
       reservation.leaseToken,
-      prepared.envelope,
-      resendKey!,
-      resendRequest,
+      dispatched.result,
     );
     if (providerResult.kind === 'rejected') {
       failed += 1;
@@ -980,6 +1204,7 @@ async function run(): Promise<void> {
     console.log(`weekly-digest: sent ${sent}/${attempts} attempted delivery(s)`);
   }
 
+  console.log(`weekly-digest: chart editions decrypted=${chartDecryption.attempted - chartDecryption.failed} fellBackToSky=${chartDecryption.failed}`);
   console.log(`weekly-digest: done, sent=${sent}, failed=${failed}, skipped=${skipped}, reconciliation=${reconciliation}, attempted=${attempts}, dryRun=false`);
   if (canaryTo) console.log(`weekly-digest: canary receipt sent=${sent} recipient=sha256:${recipientHashPrefix(canaryTo)} dryRun=false`);
   if (failed > 0) throw new Error(`weekly-digest: ${failed} explicit provider rejection(s)`);
