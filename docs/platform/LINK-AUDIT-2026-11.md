@@ -218,14 +218,12 @@ personal.
 7. **Row 14, the site's occasion card link.** The largest open gap. For a
    birth occasion the fragment holds the full birth date with the year, the
    time, coordinates to 4 decimals, the place label and the names, and the
-   button is offered. Smallest fix in `cardLink` in `OccasionSky.tsx`: for a
-   kind in `BIRTH_OCCASIONS` copy the bare `/occasions/` address (which
-   carries nothing); for every other kind drop `n` and `place`; then stop
-   reading `n` and `place` in `readLink`. This removes every birth detail
-   and name. The occasion date, time and rounded place that remain for
-   other occasions are not birth details, but they are more than the
-   new-work rule allows; meeting it fully means a card ID (row 15 and row
-   30 show the stored-address pattern).
+   button is offered. Smallest fix in `cardLink` in `OccasionSky.tsx`: for
+   every occasion kind, copy a card ID (row 15 and row 30 show the
+   stored-address pattern), a Sun sign only, or the bare `/occasions/`
+   address, which carries nothing. Stop reading birth details, names,
+   occasion dates, times, zones and coordinates from the fragment. This
+   meets the rule for new work for every occasion kind.
 8. **Rows 16, 17, 22 and 23, older inbound share links.** The server already
    303s these to an address without the retired keys, but the first request
    with the names, place, pass days or year has already reached the server
