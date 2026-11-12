@@ -29,7 +29,9 @@ events and property keys outside the allowlist, and drops string values longer
 than 32 characters.
 
 Never add an event or property that could carry a birth date, time, place,
-coordinates, pasted address, or anything a visitor typed. The integration
+coordinates, pasted address, or anything a visitor typed. A change to the
+event list or its closed values needs the owner's dated yes and, when it
+changes what is counted, the privacy page's description in the same change. The integration
 uses no cookies, pixels, persistent/browser fingerprinting, or session
 recording.
 
@@ -88,7 +90,7 @@ recorded in `docs/growth/records/2026/GROWTH-2026-09-01-vercel-web-analytics-fla
 | `chart_computed` | `mode`, `source` | A browser-computed or positions-only shared chart renders; `source` is `fresh`, `shared_details`, or `shared_positions` |
 | `chart_saved` | `source` | A chart or comparison is saved locally |
 | `compat_computed` | `source` | A compatibility comparison renders |
-| `email_subscribed` | `placement` | An anonymous week-ahead opt-in request is accepted |
+| `email_subscribed` | `placement`, `source` | An anonymous week-ahead opt-in request is accepted; the closed values are under "Growth test events" |
 | `share_card_downloaded` | `variant` | A locally rendered PNG is downloaded or shared |
 | `widget_embed_copied` | `widget`, `mode` | Embed code is copied from the widget generator |
 | `registry_visit` | — | The Registry catalogue loads |
@@ -104,6 +106,75 @@ never includes the email or selected sign.
 `surface`, and only `consumer_to_pro` or `pro_to_consumer` for `direction`.
 It never records the selected sign, destination URL, stored preference, or
 banner-dismissal state.
+
+## Growth test events
+
+Approved by the owner on 2026-11-12 (18:27 Bangkok) for the eight growth
+tests, T1 to T8 (their pass and fail numbers are in the scoreboard,
+`docs/growth/records/2026/GROWTH-2026-11-16-eight-tests.md`, added by P6.2):
+a fixed list of events that records no email address, no star sign or Sun
+sign, no birth date, time or place, no name and nothing typed. Every property
+below has a closed list in `src/lib/analytics-config.mjs`; any other value,
+any other property, any string over 32 characters and any unlisted event are
+dropped, in `src/lib/analytics.ts` and again in the shim in `Base.astro`.
+`src/lib/analytics.test.ts` holds that to be so for each of these events.
+
+**Nothing fires these yet.** The pages that call them arrive in later
+changes, each of which adds its call and nothing else to this contract.
+
+| Event | Props and closed values | Fires when |
+| --- | --- | --- |
+| `email_capture_viewed` | `placement`: `chart`, `horoscopes`, `footer`, `note_page`, `good_days`, `year_score`, `birthday_card`; `source`: the arrival list | A sign-up form first comes into view on a page (once per page view) |
+| `email_subscribed` | `placement` and `source`, the same lists | The sign-up request is accepted |
+| `good_day_check` | `use`: `first`, `second`, `more`; `source`: the arrival list | A good-day check finishes and shows its days |
+| `good_day_calendar_add` | `source`: the arrival list | A visitor adds a day the check found to a calendar |
+| `year_score_completed` | none | A Year Ahead Score result is shown |
+| `year_pack_cta` | `surface`: `year_score`, `year_sky`, `birthday_report`, `birthday_card` | A visitor follows the year pack offer from that page |
+| `year_pack_unlocked` | `kind`: `self`, `gift` | A year pack opens, for the buyer or from a gift code |
+| `birthday_card_made` | `source`: `direct`, `card` | A birthday sky card link is made; `card` when the maker arrived from someone else's card |
+| `birthday_card_arrival` | none | A birthday sky card link is opened |
+| `birthday_reminder_added` | none | A birthday reminder is added to a calendar |
+| `birthday_gift_cta` | none | A visitor follows the gift offer on a birthday card or report |
+
+The two email events had only an open `placement` before; it is now closed,
+and the site's existing forms send `chart`, `horoscopes` and `footer`, which
+stay on the list. A form that sends no placement, or another one, is still
+counted, without the property.
+
+**Arrival source.** The `source` list is `direct`, `video`, `chatgpt`,
+`assistant`, `card`, `app`, `note`. A link the site gives out may end in
+`?ref=` and one of the six words after `direct`. The inline script in
+`src/layouts/Base.astro` takes `ref` off the address as the page opens (as it
+always has) and, when the word is on the list, keeps that word in session
+storage (`zodiacs.arrival-source.v1`) for this browser tab only. Any other word
+is dropped and never stored. A later page reads it with `readArrivalSource()`
+from `src/lib/arrival-source.ts`, which answers `direct` when the tab holds no
+listed word. It is a category shared by everyone who followed that kind of
+link: no identifier, no free string, and gone when the tab closes.
+`assistant_arrival` is unchanged and still counts only `chatgpt` and
+`assistant`.
+
+**Use bucket.** `good_day_check`'s `use` comes from `countGoodDayCheck()` in
+`src/lib/use-count.ts`: a count in this browser's local storage
+(`zodiacs.good-day-checks.v1`) that stops at 3, so the device holds at most
+"a later one", never a history or a date. Only the bucket word goes into the
+event. No identifier of any kind is created, and the count is never sent.
+
+### What each test reads
+
+| Test | Its numbers come from |
+| --- | --- |
+| T1 Monday Note | `email_capture_viewed` and `email_subscribed` by `placement`; result-page viewers from `chart_computed`; confirmations and click rate from the email provider, not analytics |
+| T2 2027 calendar | `year_score_completed`, `year_pack_cta` by `surface`, `year_pack_unlocked` by `kind`; landing visits are pageviews |
+| T3 Good Day | `good_day_check` (with `use` for the second-use bucket), `good_day_calendar_add`, `email_subscribed` with `placement` `good_days`; page views are pageviews |
+| T4 Birthday card loop | `birthday_card_made` (by `source`), `birthday_card_arrival`, `birthday_reminder_added`, `email_subscribed` with `placement` `birthday_card`, `birthday_gift_cta`, `year_pack_unlocked` with `kind` `gift` |
+| T5 App Review probe | App Review's answer; not site analytics |
+| T6 Thirty testers | TestFlight and the testers' answers; not site analytics |
+| T7 Videos to list | `email_subscribed` with `source` `video`; post views from the video platforms |
+| T8 Assistant store hook | `assistant_arrival` for referred visits; `email_subscribed` and `good_day_calendar_add` with `source` `chatgpt` or `assistant` |
+
+Counts are totals per event and value. None of them follows a visitor from
+one page or one day to the next.
 
 ## Existing product vocabulary
 
