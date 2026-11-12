@@ -19,6 +19,7 @@ import { createHash } from 'node:crypto';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import './lib/deltat-install.mjs';
 import * as Astronomy from 'astronomy-engine';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -217,7 +218,7 @@ export function seasonMotion() {
   <style data-thesis-seasons>
     .thesis-seasons { padding:20px; border:1px solid var(--hair); border-radius:14px; }
     .thesis-seasons .zfig-head { margin-bottom:8px; }
-    .season-readout { margin:0 0 10px; min-height:3.2em; font-family:'Instrument Sans',system-ui,sans-serif; font-size:15px; line-height:1.6; color:var(--ink-2); }
+    .season-readout { margin:0 0 10px; min-height:3.3em; font-family:'Instrument Sans',system-ui,sans-serif; font-size:15px; line-height:1.6; color:var(--ink-2); }
     .thesis-seasons svg.season-chart { display:block; width:100%; height:auto; }
     .thesis-seasons svg.attention-chart--small { display:none; }
     .thesis-seasons .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
@@ -233,6 +234,8 @@ export function seasonMotion() {
     .thesis-seasons svg.attention-chart--small text.season-name { font-size:11.5px; }
     .thesis-seasons svg.attention-chart--small text.season-lift { font-size:11px; }
     .thesis-seasons svg.attention-chart--small text.season-month { font-size:10px; }
+    @media (max-width:599px) { .season-readout { min-height:4.9em; } }
+    @media (max-width:413px) { .season-readout { min-height:6.5em; } }
     @media (max-width:739px) {
       .thesis-seasons svg.attention-chart--wide { display:none; }
       .thesis-seasons svg.attention-chart--small { display:block; }

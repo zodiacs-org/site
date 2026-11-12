@@ -81,35 +81,41 @@ export function deathOrder(n, seed) {
   return order;
 }
 
-/** One hundred people: 90 know their sign, 27 of them believe. */
+/**
+ * Two groups of one hundred U.S. adults, drawn separately because the survey
+ * reports two shares, not their overlap: 90 picked their own sign, 27 say they
+ * believe in astrology.
+ */
 function peopleSvg(k, { small, label }) {
-  const step = small ? 25 : 24;
-  const r = small ? 7.5 : 7.5;
-  const gx = small ? 35 : 6;
-  const gy = small ? 6 : 6;
+  const step = small ? 14.5 : 24;
+  const r = small ? 4.9 : 7.6;
   const grid = step * 10;
   const width = small ? 320 : 920;
-  let dots = '';
-  for (let i = 0; i < 100; i++) {
-    const cx = gx + (i % 10) * step + step / 2;
-    const cy = gy + Math.floor(i / 10) * step + step / 2;
-    const cls = i < k.believePct ? 'pd pd--believe' : i < k.knowSignPct ? 'pd pd--know' : 'pd pd--not';
-    const fill = i < k.believePct ? SIGN_HUES[i % 12] : i < k.knowSignPct ? INK : 'none';
-    const stroke = i >= k.knowSignPct ? ` stroke="${DIM.replace('0.16', '0.5')}" stroke-width="1.2"` : '';
-    dots += `<circle class="${cls}" style="--i:${i}${i < k.believePct ? `;--hue:${SIGN_HUES[i % 12]}` : ''}" cx="${cx}" cy="${cy}" r="${r}" fill="${fill}"${stroke}/>`;
-  }
-  const statX = small ? 0 : gx + grid + 64;
-  const statY = small ? gy + grid + 46 : 60;
-  const gap = small ? 74 : 112;
-  const stat = (y, n, line1, line2, cls) => `<text x="${statX}" y="${y}" class="stat-num ${cls}">${n}%</text>`
-    + `<text x="${statX + (small ? 92 : 128)}" y="${y - (small ? 20 : 28)}" class="stat-lab">${esc(line1)}</text>`
-    + `<text x="${statX + (small ? 92 : 128)}" y="${y - (small ? 2 : 6)}" class="stat-lab">${esc(line2)}</text>`;
-  const height = small ? statY + gap + 14 : gy + grid + 8;
+  const lefts = small ? [6, 6 + grid + 22] : [30, 500];
+  const top = 6;
+  const groups = [
+    { n: k.knowSignPct, cls: 'know', line1: 'picked their own sign', line2: 'when shown the twelve', hue: (i) => SIGN_HUES[i % 12] },
+    { n: k.believePct, cls: 'believe', line1: 'say they believe', line2: 'in astrology', hue: () => INK },
+  ];
+  let body = '';
+  groups.forEach((g, gi) => {
+    for (let i = 0; i < 100; i++) {
+      const cx = lefts[gi] + (i % 10) * step + step / 2;
+      const cy = top + Math.floor(i / 10) * step + step / 2;
+      const on = i < g.n;
+      body += on
+        ? `<circle class="pd" style="--i:${i + gi * 40}" cx="${cx}" cy="${cy}" r="${r}" fill="${g.hue(i)}"/>`
+        : `<circle class="pd pd--off" style="--i:${i + gi * 40}" cx="${cx}" cy="${cy}" r="${r - 0.6}" fill="none" stroke="rgba(198,204,218,0.34)" stroke-width="1.1"/>`;
+    }
+    const statY = top + grid + (small ? 40 : 66);
+    body += `<text x="${lefts[gi]}" y="${statY}" class="stat-num stat-num--${g.cls}">${g.n}%</text>`;
+    body += `<text x="${lefts[gi]}" y="${statY + (small ? 18 : 28)}" class="stat-lab">${esc(g.line1)}</text>`;
+    body += `<text x="${lefts[gi]}" y="${statY + (small ? 34 : 50)}" class="stat-lab">${esc(g.line2)}</text>`;
+  });
+  const height = top + grid + (small ? 82 : 128);
   return `<svg class="dots-chart dots-chart--${small ? 'small' : 'wide'}" data-people viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(label)}">`
-    + `<desc>One hundred dots, one for each hundredth of U.S. adults. ${k.knowSignPct} are filled: they picked their own sign. ${k.believePct} of those are in colour: they also said they believe in astrology. ${100 - k.knowSignPct} are hollow.</desc>`
-    + dots
-    + stat(statY, k.knowSignPct, 'picked their own sign', 'when shown the twelve', 'stat-num--know')
-    + stat(statY + gap, k.believePct, 'said they believe', 'in astrology', 'stat-num--believe')
+    + `<desc>Two grids of one hundred dots, each dot one in a hundred U.S. adults. In the first, ${k.knowSignPct} dots are filled: they picked their own sign. In the second, ${k.believePct} are filled: they say they believe in astrology.</desc>`
+    + body
     + '</svg>';
 }
 
@@ -117,12 +123,12 @@ export function knowFigure(data) {
   const k = data.know;
   const [fy, fm] = k.fielded.split('-').map(Number);
   const when = `${MONTHS[fm - 1]} ${fy}`;
-  const label = `Dot chart of one hundred U.S. adults. ${k.knowSignPct}% picked their own sign when shown the twelve. ${k.believePct}% said they believe in astrology. ${k.source}, ${when}.`;
+  const label = `Two dot grids of one hundred U.S. adults each. ${k.knowSignPct}% picked their own sign when shown the twelve. ${k.believePct}% said they believe in astrology. ${k.source}, ${when}.`;
   return `<figure class="zfig thesis-plate thesis-dots" id="fig-know" data-motion="people">
             <figcaption class="zfig-head">Almost everyone knows their sign. Few say they believe.</figcaption>
             ${peopleSvg(k, { small: false, label })}
             ${peopleSvg(k, { small: true, label })}
-            <p class="zfig-cap">Each dot is one in a hundred U.S. adults. Coloured dots know their sign and believe; white dots know it and do not; hollow dots could not pick it.</p>
+            <p class="zfig-cap">Each grid is one hundred U.S. adults, and each dot one of them. The survey reports each share on its own, not how they overlap, so the two groups are drawn apart.</p>
             <p class="zfig-src"><a href="${esc(k.url)}" rel="noopener noreferrer">${esc(k.source)}</a>, U.S. adults, ${when}. Respondents were shown the twelve signs and asked to pick their own.</p>
           </figure>`;
 }
@@ -194,7 +200,7 @@ export function lifespanFigure(data) {
     ['one', 'Day 1', counts.afterOne],
     ['two', 'Day 2', counts.afterTwo],
     ['ninety', 'Day 90', counts.after90],
-  ].map(([key, name, value]) => `<button type="button" class="field-step" data-step="${key}" data-alive="${value}"><span class="field-step__name">${name}</span> <span class="field-step__n">${thousands(value)}</span></button>`).join('');
+  ].map(([key, name, value]) => `<button type="button" class="field-step" data-step="${key}" data-alive="${value}" aria-pressed="${key === 'ninety'}"><span class="field-step__name">${name}</span> <span class="field-step__n">${thousands(value)}</span></button>`).join('');
   let twelve = '';
   let twelveSource = '';
   if (checked) {
@@ -250,7 +256,7 @@ export function motionBlock() {
     .dots-chart text.stat-num { font-family:var(--serif); font-size:64px; fill:var(--ink); }
     .dots-chart text.stat-num--believe { fill:#D3A9DE; }
     .dots-chart text.stat-lab { font-family:'Instrument Sans',system-ui,sans-serif; font-size:17px; fill:var(--ink-2); }
-    .dots-chart--small text.stat-num { font-size:46px; }
+    .dots-chart--small text.stat-num { font-size:40px; }
     .dots-chart--small text.stat-lab { font-size:13px; }
     .field-top { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px 28px; margin-bottom:14px; }
     .field-readout { margin:0; display:flex; align-items:baseline; gap:12px; }
@@ -277,8 +283,6 @@ export function motionBlock() {
     @media (prefers-reduced-motion:no-preference) {
       .is-armed .pd { opacity:.08; transition:opacity .5s ease, fill .9s ease; transition-delay:calc(var(--i) * 12ms); }
       .is-armed.is-on .pd { opacity:1; }
-      .is-armed .pd--believe { fill:${INK}; }
-      .is-armed.is-colour .pd--believe { fill:var(--hue); }
       .is-armed .stat-num, .is-armed .stat-lab { opacity:0; transition:opacity .8s ease 1.2s; }
       .is-armed.is-on .stat-num, .is-armed.is-on .stat-lab { opacity:1; }
       .is-armed .tw { opacity:.12; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
@@ -287,7 +291,7 @@ export function motionBlock() {
   const js = `
 (function () {
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce || !('IntersectionObserver' in window)) return;
+  var animate = !reduce && ('IntersectionObserver' in window);
   function below(el) { return el.getBoundingClientRect().top > window.innerHeight * 0.9; }
   function once(el, fn) {
     var io = new IntersectionObserver(function (entries) {
@@ -296,11 +300,10 @@ export function motionBlock() {
     io.observe(el);
   }
   var people = document.querySelector('[data-motion="people"]');
-  if (people && below(people)) {
+  if (animate && people && below(people)) {
     people.classList.add('is-armed');
     once(people, function () {
       people.classList.add('is-on');
-      setTimeout(function () { people.classList.add('is-colour'); }, 1700);
     });
   }
   var fig = document.querySelector('[data-motion="field"]');
@@ -320,7 +323,7 @@ export function motionBlock() {
     stageOf[idx] = p < n - alive[1] ? 1 : p < n - alive[2] ? 2 : p < n - alive[3] ? 3 : 4;
     jitter[idx] = jr();
   }
-  var canvas, ctx, geo, level = 0, from = 0, to = 0, t0 = 0, raf = 0, shown = alive[3];
+  var canvas, ctx, geo, level = 3, from = 0, to = 0, t0 = 0, raf = 0, shown = alive[3];
   function svg() { var all = frame.querySelectorAll('svg'); for (var q = 0; q < all.length; q++) if (all[q].getClientRects().length) return all[q]; return null; }
   function setup() {
     var el = svg(); if (!el) return false;
@@ -350,6 +353,7 @@ export function motionBlock() {
   function press(stage) { buttons.forEach(function (b, q) { b.setAttribute('aria-pressed', q === stage ? 'true' : 'false'); }); }
   function run(target, ms) {
     cancelAnimationFrame(raf); from = level; to = target; t0 = performance.now();
+    if (!(ms > 0)) { level = target; draw(level); press(target); fig.classList.toggle('is-twelve', target === 3); return; }
     (function tick(now) {
       var u = Math.min(1, (now - t0) / ms), e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
       level = from + (to - from) * e; draw(level);
@@ -357,22 +361,24 @@ export function motionBlock() {
       else { press(Math.round(level)); if (Math.round(level) === 3) fig.classList.add('is-twelve'); }
     })(t0);
   }
-  if (!below(fig)) return;
-  fig.classList.add('is-armed');
-  once(fig, function () {
-    if (!setup()) return;
-    frame.classList.add('is-live'); level = 0; draw(0); press(0);
-    setTimeout(function () { run(1, 1500); }, 700);
-    setTimeout(function () { run(2, 1100); }, 2500);
-    setTimeout(function () { run(3, 1500); }, 3900);
-  });
+  var timers = [];
   buttons.forEach(function (b, q) {
     b.addEventListener('click', function () {
       if (!canvas && !setup()) return;
-      frame.classList.add('is-live'); fig.classList.add('is-armed');
+      timers.forEach(clearTimeout); timers = [];
+      frame.classList.add('is-live');
       if (q < 3) fig.classList.remove('is-twelve');
-      run(q, 900 * Math.max(1, Math.abs(q - level)));
+      run(q, reduce ? 0 : 900 * Math.max(1, Math.abs(q - level)));
     });
+  });
+  if (!animate || !below(fig)) return;
+  fig.classList.add('is-armed');
+  once(fig, function () {
+    if (!setup()) return;
+    frame.classList.add('is-live'); level = 0; draw(0); press(0); fig.classList.remove('is-twelve');
+    timers.push(setTimeout(function () { run(1, 1500); }, 700));
+    timers.push(setTimeout(function () { run(2, 1100); }, 2500));
+    timers.push(setTimeout(function () { run(3, 1500); }, 3900));
   });
   var rt; window.addEventListener('resize', function () { if (!canvas) return; clearTimeout(rt); rt = setTimeout(function () { setup(); draw(level); }, 120); });
 })();`;
