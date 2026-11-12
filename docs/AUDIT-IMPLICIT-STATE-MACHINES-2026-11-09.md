@@ -132,7 +132,14 @@ that point, unless the encrypted v2 path feeds those emails. At the audit
 commit that was not verified.
 
 **Update since the audit (source on `main`, 2026-11-12, not checked in
-production).** Two later changes bear on this decision. #976 (`2e860d556`)
+production).** Everything above in this decision describes the audit commit
+and the production deployment observed on 2026-11-09. Three later changes on
+`main` alter it. #963 (`6e0e903ee`, 2026-11-11) stops the uploads
+themselves in source, with no flag: chart sync no longer sends a chart
+payload, and compatibility saves keep only a sign-level link
+(`/compatibility/{pair}/`, or `/compatibility/` when the signs are missing).
+Existing stored rows stay readable and removable. This is fix 1 below, apart
+from the scrub. #976 (`2e860d556`)
 adds `supabase/migrations/20261111140000_charts_writes_paused.sql`:
 restrictive policies that refuse every authenticated insert and update on
 `public.charts`, leaving select and delete as they were. #977 (`9ed6fe685`)
@@ -140,10 +147,12 @@ adds `20261111170000`, `20261111180000` and `20261111190000`, which move the
 weekly digest, the daily brief and invitations to the encrypted v2 self chart
 behind a new `chart_emails` consent, drop the daily brief's foreign key to
 `public.charts`, and make `PUBLIC_ACCOUNT_SYNC_V2_ENABLED` the only public
-switch. Whether these migrations are applied in production, and so whether
-the v1 uploads above are now refused, was not checked here. The client-side
-uploads remain reachable while the switch is off. `saved_pages` is untouched
-by both.
+switch. Which of these is deployed to production, and whether the
+migrations are applied there, was not checked here. Once #963 is deployed,
+the plaintext uploads observed on 2026-11-09 are no longer reachable from the
+current client; an old browser tab still running the earlier code is what
+#976's policies refuse, if applied. The rows already stored are unchanged by
+all three.
 
 ### Decision C. Should the calculators and the compute API refuse under-13 birth dates? Calculators yes, compute API no.
 
@@ -178,7 +187,12 @@ How the check works:
   due-date `BabyZodiac`, `BabyShowerSky` and the Moon phase tool. Neither baby
   tool uses `PlaceSearch`, `BirthFields`, a name field, saving or chart
   handoff. A test should keep it that way, since the MCP 0.6.5 removal of the
-  baby occasion was triggered by names, places and coordinates.
+  baby occasion was triggered by names, places and coordinates. Update since
+  the audit: #985 (`7d005c477`, 2026-11-12) hides the baby zodiac, baby
+  shower and child's chart pages from discovery (noindex and nofollow, out of
+  the sitemap, tools hub and occasion picker; the page files stay). The
+  exemption covers only what these tools compute; it does not argue for
+  listing them again, and the later decision to hide them stands.
 
 **Compute API: no.** Its operations (`chart`, `houses`, `positions`,
 `events`, `time`, `sky-fact`, `elections`; `src/lib/compute-api/handler.ts:251-257`)
