@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseCsv, parseResponsesApi, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
+import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseAnthropicResponse, parseCsv, parseGeminiResponse, parseResponsesApi, volumeLabel, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
 
 describe('visibility lib', () => {
   it('holds fifty questions with unique ids and phrases', () => {
@@ -124,5 +124,39 @@ describe('keyword tables', () => {
     const errored = { id: 'q01', run: 1, question: 'Q?', error: 'response status failed' };
     const plan = planAnswers({ answers: [errored] }, [{ id: 'q01', question: 'Q?' }], 1);
     expect(plan.todo.map(([q, r]) => `${q.id}#${r}`)).toEqual(['q01#1']);
+  });
+  it('retries Gemini and Claude answers that did not finish', () => {
+    const gem = (finishReason, text = 'Answer') => ({ modelVersion: 'g', candidates: [{ finishReason, content: { parts: [{ text }] } }] });
+    expect(parseGeminiResponse(gem('STOP'), 'g').text).toBe('Answer');
+    for (const reason of ['MAX_TOKENS', 'SAFETY', 'RECITATION', undefined]) expect(() => parseGeminiResponse(gem(reason), 'g')).toThrow();
+    expect(() => parseGeminiResponse(gem('STOP', ' '), 'g')).toThrow();
+    const ant = (stop_reason, text = 'Answer') => ({ model: 'c', stop_reason, content: [{ type: 'text', text, citations: [] }] });
+    expect(parseAnthropicResponse(ant('end_turn')).text).toBe('Answer');
+    for (const reason of ['max_tokens', 'pause_turn', 'tool_use']) expect(() => parseAnthropicResponse(ant(reason))).toThrow();
+    expect(parseAnthropicResponse(ant('refusal')).refused).toBe(true);
+  });
+
+  it('imports Keyword Planner CSV and UTF-16 exports and labels ranged volumes', async () => {
+    const { mkdtempSync, writeFileSync: write, rmSync } = await import('node:fs');
+    const { tmpdir } = await import('node:os');
+    const { join } = await import('node:path');
+    const { readKeywordPlanner } = await import('./families.mjs');
+    const dir = mkdtempSync(join(tmpdir(), 'kp-'));
+    try {
+      const csv = join(dir, 'kp.csv');
+      write(csv, 'Keyword Stats\nKeyword,Avg. monthly searches,Competition\nwhat is my rising sign,10 - 100,Low\nmoon sign,,Medium\nsun sign,"1,300",High\n');
+      const a = readKeywordPlanner(csv);
+      expect(a.get('what is my rising sign')).toEqual({ volume: '10-100', competition: 'Low' });
+      expect(a.get('moon sign').volume).toBe('TBD');
+      expect(a.get('sun sign').volume).toBe('1300');
+      const tsv = join(dir, 'kp.tsv');
+      write(tsv, Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from('Keyword\tAvg. monthly searches\tCompetition\nmoon sign\t1K \u2013 10K\tLow\n', 'utf16le')]));
+      expect(readKeywordPlanner(tsv).get('moon sign')).toEqual({ volume: '1000-10000', competition: 'Low' });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+    expect(volumeLabel({ known: 0, volume: 0, ranged: false })).toBe('TBD');
+    expect(volumeLabel({ known: 2, volume: 110, ranged: true })).toBe('at least 110');
+    expect(volumeLabel({ known: 1, volume: 1300, ranged: false })).toBe('1300');
   });
 });

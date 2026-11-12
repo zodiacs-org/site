@@ -239,3 +239,37 @@ export function parseResponsesApi(json) {
   if (!text.trim()) throw new Error('response has no answer text');
   return { text, citations, model: json.model };
 }
+
+// Gemini generateContent: only a candidate that finished normally (STOP) is an
+// answer. MAX_TOKENS, SAFETY, RECITATION, a missing finish reason or empty text
+// throw, so the run records an error entry and the next run asks again.
+export function parseGeminiResponse(json, model) {
+  const cand = json?.candidates?.[0] || {};
+  const text = (cand.content?.parts || []).map((p) => p.text || '').join('');
+  if (cand.finishReason !== 'STOP' || !text.trim()) throw new Error(`no finished answer (finishReason ${cand.finishReason || 'none'})`);
+  const citations = (cand.groundingMetadata?.groundingChunks || []).filter((c) => c.web).map((c) => ({ url: c.web.uri, title: c.web.title || '' }));
+  return { text, citations, model: json.modelVersion || model };
+}
+
+// Anthropic Messages: a refusal is kept as a refused answer; any stop other
+// than end_turn (max_tokens, pause_turn, ...) or empty text throws so it is
+// asked again.
+export function parseAnthropicResponse(response) {
+  if (response?.stop_reason === 'refusal') return { text: '', citations: [], model: response.model, refused: true };
+  let text = '';
+  const citations = [];
+  for (const block of response?.content || []) {
+    if (block.type === 'text') {
+      text += block.text;
+      for (const c of block.citations || []) if (c.url) citations.push({ url: c.url, title: c.title || '' });
+    }
+  }
+  if (response?.stop_reason !== 'end_turn' || !text.trim()) throw new Error(`no finished answer (stop_reason ${response?.stop_reason})`);
+  return { text, citations, model: response.model };
+}
+
+// The ranking's monthly volume cell: TBD when unknown, "at least N" when any
+// query's volume is the low end of a Keyword Planner range.
+export function volumeLabel({ known, volume, ranged }) {
+  return known ? (ranged ? `at least ${volume}` : String(volume)) : 'TBD';
+}
