@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   ACCOUNT_V2_LOCAL_OWNER_KEY,
@@ -13,12 +14,14 @@ import {
   clearAccountBoundLocalProfileEverywhere,
   clearAccountDataFromDevice,
   clearAllZodiacsDataFromDevice,
+  clearZodiacsCacheStorage,
   completeAccountBoundaryDecision,
   completeDeletedAccountLocalData,
   hasAccountBoundLocalProfileData,
   isolateLocalProfileForAccountSwitch,
   localProfileArchiveKey,
   retainAccountBoundProfileAfterDeletion,
+  SERVICE_WORKER_CACHE_PREFIX,
 } from './profile-boundary';
 import {
   LIVING_CHART_CHANGE_EVENT,
@@ -478,5 +481,40 @@ describe('account-bound local profile data', () => {
       targets: ['all'],
     });
     expect([...session.values.keys()].filter((key) => key.startsWith('zodiacs'))).toEqual([]);
+  });
+});
+
+describe('clearing the service worker caches with all Zodiacs data', () => {
+  function cacheStorage(names: string[]) {
+    const open = new Set(names);
+    return {
+      open,
+      keys: vi.fn(async () => [...open]),
+      delete: vi.fn(async (name: string) => open.delete(name)),
+    };
+  }
+
+  it('uses the prefix the service worker names its caches with', () => {
+    const worker = readFileSync(new URL('../../../public/sw.js', import.meta.url), 'utf8');
+    expect(worker).toContain(`const CACHE_PREFIX = '${SERVICE_WORKER_CACHE_PREFIX}';`);
+    const names = [...worker.matchAll(/const [A-Z]+_CACHE = `([^`]+)`/g)].map(([, name]) => name);
+    expect(names.length).toBeGreaterThanOrEqual(2);
+    for (const name of names) expect(name.startsWith(SERVICE_WORKER_CACHE_PREFIX)).toBe(true);
+  });
+
+  it('deletes every Zodiacs cache, invitation pages included, and leaves other caches', async () => {
+    const storage = cacheStorage(['zodiacs-shell-build1', 'zodiacs-data-build1', 'zodiacs-shell-old', 'other-app']);
+    await expect(clearZodiacsCacheStorage(storage)).resolves.toBe(true);
+    expect([...storage.open]).toEqual(['other-app']);
+  });
+
+  it('reports a cache it could not delete, and a browser without Cache Storage as clear', async () => {
+    const stuck = cacheStorage(['zodiacs-shell-build1']);
+    stuck.delete.mockResolvedValue(false);
+    await expect(clearZodiacsCacheStorage(stuck)).resolves.toBe(false);
+    const failing = cacheStorage([]);
+    failing.keys.mockRejectedValue(new Error('synthetic SecurityError'));
+    await expect(clearZodiacsCacheStorage(failing)).resolves.toBe(false);
+    await expect(clearZodiacsCacheStorage(null)).resolves.toBe(true);
   });
 });

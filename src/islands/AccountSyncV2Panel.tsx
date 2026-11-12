@@ -47,6 +47,7 @@ import type {
 } from '../lib/account-v2/types';
 import {
   clearAllZodiacsDataFromDevice,
+  clearZodiacsCacheStorage,
   completeDeletedAccountLocalData,
   completeAccountBoundaryDecision,
   hasAccountBoundLocalProfileData,
@@ -1310,6 +1311,9 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
       setBusy(false);
       return;
     }
+    // Pages the service worker kept, invitation links included. A cache that
+    // cannot be deleted does not hold up the sign-out itself.
+    if (removeFromDevice) await clearZodiacsCacheStorage();
     const finished = await finishLocalSignOut(removeFromDevice, {
       signOut: syncApi.signOutOfSyncLocal,
       forgetSession: syncApi.forgetLocalSyncSession,
