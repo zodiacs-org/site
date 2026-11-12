@@ -4,9 +4,11 @@
  * email each, at most once a year. Deletes unconfirmed requests older than 48
  * hours on the way. Prints counts only, never an address.
  *
- * Runs only with BIRTHDAY_REMINDER_ENABLED=1 and its configuration; the
- * workflow (.github/workflows/birthday-reminders.yml) runs it only where the
- * repository variable BIRTHDAY_REMINDERS_SENDING is '1'. Both are off.
+ * Runs only with BIRTHDAY_REMINDER_ENABLED=1, PUBLIC_YEAR_SCORE_ENABLED=1 and
+ * its configuration; the workflow (.github/workflows/birthday-reminders.yml)
+ * runs it only where the repository variable BIRTHDAY_REMINDERS_SENDING is
+ * '1', and reads the other two from repository variables of the same names.
+ * All are off.
  *
  *   npx vite-node --script scripts/send-birthday-reminders.ts [--date YYYY-MM-DD] [--dry-run]
  */

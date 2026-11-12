@@ -40,6 +40,8 @@ jobs:
       - name: Send
         env:
           BIRTHDAY_REMINDER_ENABLED: ${{ vars.BIRTHDAY_REMINDER_ENABLED }}
+          # The email links to /year-score/, so the send also needs that page's switch (src/lib/birthday-reminder/config.ts).
+          PUBLIC_YEAR_SCORE_ENABLED: ${{ vars.PUBLIC_YEAR_SCORE_ENABLED }}
           BIRTHDAY_REMINDER_SECRET: ${{ secrets.BIRTHDAY_REMINDER_SECRET }}
           PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
