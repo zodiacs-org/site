@@ -17,12 +17,14 @@ not re-traced line by line. Line numbers are as of `main` at `a67b7c9a`.
   and account v2 status have status columns with check constraints. The
   implicit state machines are in the browser islands, the MCP result envelope
   and the locale lists.
-- **Privacy has one real problem, and its client side is live in production.**
-  No birth details reach logs or analytics. But two save paths send birth
-  details to the database in plain text: the legacy v1 chart sync and the
-  compatibility saves in `saved_pages`. The live client makes these uploads;
-  that the production database accepts them is inferred from the source
-  migrations, not read from the deployed database (Decision B).
+- **Privacy had one real problem, and on 2026-11-09 its client side was live
+  in production.** No birth details reach logs or analytics. But at the audit
+  commit two save paths sent birth details to the database in plain text: the
+  legacy v1 chart sync and the compatibility saves in `saved_pages`. The live
+  client made these uploads; that the production database accepted them is
+  inferred from the source migrations, not read from the deployed database.
+  #963 has since stopped both uploads in source (Decision B, "Update since the
+  audit").
 - **The under-13 refusal from #915 only covers the hosted tools.** The browser
   calculators and the compute API do not check age and compute charts for
   future dates. The hosted check works out "today" in UTC, so a child can be
@@ -255,8 +257,8 @@ by hand. `clearResult()` (`:430-458`) resets about 25 setters by hand.
 
 | Path | Status |
 |---|---|
-| `saved_pages.href` holds both people's full birth input | Verified in source; the live client sends it; database acceptance inferred |
-| v1 `charts.payload` plaintext sync | Verified in source; the live client uploads; database acceptance inferred (see the update under Decision B) |
+| `saved_pages.href` holds both people's full birth input | At the audit (2026-11-09): verified in source, sent by the live client, database acceptance inferred. Stopped in source by #963 (see the update under Decision B) |
+| v1 `charts.payload` plaintext sync | At the audit (2026-11-09): verified in source, uploaded by the live client, database acceptance inferred. Stopped in source by #963, writes refused by #976 if applied (see the update under Decision B) |
 | Copy details link, `#c=` handoffs, chart card links | Breach under Decision A |
 | v2 sync | Encrypted, 18+ gate. Fine |
 | History API, analytics, console, MCP logs | Clean |
