@@ -151,14 +151,18 @@ export function BirthFields({
 
     <div class="field">
       <div class="field__labelrow">
-        <label class="field__label" for={timeId}>{t(locale, 'birthTime')}</label>
+        <label class="field__label" id={`${timeId}-label`} for={timeId}>{t(locale, 'birthTime')}</label>
         {showUnknownTime && (
           <label class="field__toggle">
+            {/* Named with the Birth time label first, so the checkbox says
+                what it refers to when reached by Tab ("Birth time, I don't
+                know it"), in every locale without a new string. */}
             <input
               type="checkbox" checked={!timeKnown}
+              aria-labelledby={`${timeId}-label ${timeId}-unknown`}
               onChange={(e) => onTimeKnownChange(!(e.target as HTMLInputElement).checked)}
             />
-            {t(locale, 'noBirthTime')}
+            <span id={`${timeId}-unknown`}>{t(locale, 'noBirthTime')}</span>
           </label>
         )}
       </div>

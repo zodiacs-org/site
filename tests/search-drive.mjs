@@ -1,6 +1,6 @@
 /**
  * End-to-end drive of the site search against `astro preview`: open with
- * the nav button, `/`, and Cmd+K; type; arrow through results; Enter
+ * the nav button and Ctrl/Cmd+K (a bare `/` does nothing, WCAG 2.1.4); type; arrow through results; Enter
  * navigates; Escape closes and restores focus; the mobile close control
  * supports touch and a two-control keyboard loop; ES pages have no search.
  *
@@ -47,16 +47,20 @@ try {
   await page.waitForURL((u) => u.pathname !== '/learn/', { timeout: 8000 });
   check('Enter navigates to the active result', page.url() !== 'http://127.0.0.1:4399/learn/', page.url());
 
-  // `/` opens; Escape closes and restores focus to the opener context.
+  // A bare `/` is not a shortcut (WCAG 2.1.4 Character Key Shortcuts).
   await page.goto('http://127.0.0.1:4399/', { waitUntil: 'networkidle' });
   await page.keyboard.press('/');
+  await wait(200);
+  check('slash does not open the dialog', (await page.locator('.zsearch:not([hidden])').count()) === 0);
+
+  // Cmd/Ctrl+K opens; Escape closes and restores focus to the opener context.
+  await page.keyboard.press('Control+k');
   await page.waitForSelector('.zsearch__input', { timeout: 10000 });
-  check('slash opens the dialog', await page.locator('.zsearch__panel').isVisible());
+  check('Ctrl+K opens the dialog on a fresh page', await page.locator('.zsearch__panel').isVisible());
   await page.keyboard.press('Escape');
   await wait(150);
   check('Escape closes the dialog', !(await page.locator('.zsearch').isVisible()));
 
-  // Cmd/Ctrl+K opens too.
   await page.keyboard.press('Control+k');
   await page.waitForSelector('.zsearch__input', { timeout: 5000 });
   check('Ctrl+K opens the dialog', await page.locator('.zsearch__panel').isVisible());

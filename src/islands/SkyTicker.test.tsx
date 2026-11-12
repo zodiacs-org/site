@@ -15,7 +15,8 @@ describe('server-rendered sky receipt', () => {
     expect(html).toContain('class="skyticker"');
     expect(html).toContain(`Sun ${formatLongitude(sun.lon, 'en')}`);
     expect(html).toContain(`Moon in ${signForLongitude(moon.lon).name}`);
-    expect(html).toContain('aria-label=');
+    // A group, so the label with the date and UTC context is announced (a plain <p> cannot take a name).
+    expect(html).toMatch(/<p class="skyticker" role="group" aria-label="[^"]+"/u);
     expect(html).not.toMatch(/<(?:button|input|select|script)\b/u);
   });
 

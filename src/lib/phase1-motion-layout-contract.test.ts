@@ -269,7 +269,7 @@ describe('Phase 1 layout and motion contract', () => {
     expect(routeTypography).not.toContain('--font-nav-');
     expect(nav).toMatch(/\.nav-wrap\s*\{[^}]*font-family:\s*var\(--font-nav-sans\);/u);
     expect(nav).toMatch(/\.mobile-menu\s*\{[^}]*font-family:\s*var\(--font-nav-sans\);/u);
-    expect(nav).toContain('class="nav__search-kbd"');
+    expect(nav).toContain('font-family: var(--font-nav-mono);');
     expect(nav).toContain('.nav { gap: 4px; padding-inline: 10px 4px; }');
     expect(nav).toContain('.nav__name { font-size: 11px; letter-spacing: 0.08em; }');
     expect(nav).toContain('.nav__chip { padding-inline: 7px 0; font-size: 11px; letter-spacing: 0.04em; }');

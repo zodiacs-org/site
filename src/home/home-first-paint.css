@@ -89,7 +89,7 @@ html[data-local-chrome-typography][lang='en'] {
   right: 76px;
   bottom: 33px;
   font-size: 12px;
-  color: rgba(198, 204, 218, 0.55);
+  color: var(--muted);
 }
 
 @keyframes hero-poster-drift {

@@ -299,7 +299,7 @@ export default function TodayBrief({
 
         {!personalized ? (
           <>
-            <div class="today-returning-chart-placeholder today-reading" aria-label="Saved-chart fallback">
+            <div class="today-returning-chart-placeholder today-reading">
               <div class="today-reading__head">
                 <h3>For your saved chart</h3>
                 <p>A few themes from the {editionLabel} sky, compared with your saved birth chart.</p>

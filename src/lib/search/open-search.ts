@@ -187,6 +187,8 @@ function build() {
   input.autocomplete = 'off';
   input.spellcheck = false;
   input.placeholder = 'Search the site…';
+  // A name of its own: the placeholder is only a fallback name (WCAG 4.1.2).
+  input.setAttribute('aria-label', 'Search the site');
   input.addEventListener('input', () => render(input!.value));
   input.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); }

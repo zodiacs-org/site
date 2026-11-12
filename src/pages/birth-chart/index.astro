@@ -714,7 +714,7 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
         alt=""
         focus="50% 52%"
       />
-      <div class="bc-cmp only-desktop" aria-label="The sample chart with and without a birth time">
+      <div class="bc-cmp only-desktop" role="group" aria-label="The sample chart with and without a birth time">
         <div>
           <span class="bc-cmp__lbl"><b>With a time</b>{SAMPLE_BIRTH.time}</span>
           <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
@@ -733,7 +733,7 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
       <span class="kicker">Birth time</span>
       <h2 class="h-2">No birth time? You still get a chart.</h2>
       <p class="klede bc-nt__lede">Many people don’t know it. Here is exactly what changes, so nothing in your chart is guessed.</p>
-      <div class="bc-cmp only-mobile" aria-label="The sample chart with and without a birth time">
+      <div class="bc-cmp only-mobile" role="group" aria-label="The sample chart with and without a birth time">
         <div>
           <span class="bc-cmp__lbl"><b>With a time</b>{SAMPLE_BIRTH.time}</span>
           <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
