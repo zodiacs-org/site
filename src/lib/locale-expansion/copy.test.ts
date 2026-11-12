@@ -14,6 +14,8 @@ import { expansionMonth } from './horoscope/month';
 import { LUNATION_COPY } from './lunation/modules';
 import { lunations } from './lunation/catalog';
 import { zodiacDatesCopy } from './zodiac-dates/modules';
+import { fr as frDaily } from './daily-copy/fr';
+import { it as itDaily } from './daily-copy/it';
 import { copyProblems } from './copy-rules';
 import type { ExpansionLocale } from './horoscope/types';
 import type { HoroscopeSign } from '../horoscope-program-types';
@@ -128,6 +130,18 @@ describe('zodiac dates copy', () => {
       const cells = SIGN_SLUGS.map((sign) => signDateRange(sign, locale));
       expect(cells.flatMap((text) => copyProblems(locale, text).map((problem) => `${problem}: ${text}`))).toEqual([]);
       expect(cells.filter((text) => /[–—]/u.test(text))).toEqual([]);
+    });
+  }
+});
+
+describe('fr and it daily page copy', () => {
+  for (const [locale, mod] of [['fr', frDaily], ['it', itDaily]] as const) {
+    it(`${locale} passes the copy rules on every horoscope, today and hub string`, () => {
+      // A few functions take structured arguments the walker cannot supply;
+      // their placeholder output says "undefined" and is left out.
+      const texts = strings(mod).filter((text) => !text.includes('undefined'));
+      expect(texts.length).toBeGreaterThan(50);
+      expect(texts.flatMap((text) => copyProblems(locale, text).map((problem) => `${problem}: ${text.slice(0, 120)}`))).toEqual([]);
     });
   }
 });

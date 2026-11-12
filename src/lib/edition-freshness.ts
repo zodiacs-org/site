@@ -156,16 +156,21 @@ const PORTUGUESE_TITLE_RULES: readonly EditionRule[] = [
   [new RegExp(`^(\\s*)Horóscopo de (${PORTUGUESE_SIGNS}) hoje, `, 'gu'), '$1Horóscopo de $2 de '],
 ];
 
-/** Put the date label into a replacement; Italian elides its article before 8 and 11 ("dell’8", "l’11"). */
-function fillEditionDate(replacement: string, label: string): string {
-  return replacement.replaceAll('{date}', label)
+/**
+ * Put the date label into a replacement. Italian alone elides its article
+ * before 8 and 11 ("dell’8", "l’11"); Spanish keeps "del 8".
+ */
+function fillEditionDate(replacement: string, label: string, locale: EditionLocale): string {
+  const filled = replacement.replaceAll('{date}', label);
+  if (locale !== 'it') return filled;
+  return filled
     .replace(/\b(d|D)el (8|11) /gu, '$1ell’$2 ')
     .replace(/(^|\s|\$\d)(i|I)l (8|11) /gu, (_, lead, article, day) => `${lead}${article === 'I' ? 'L' : 'l'}’${day} `);
 }
 
-function applyEditionRules(value: string, rules: readonly EditionRule[], label: string): string {
+function applyEditionRules(value: string, rules: readonly EditionRule[], label: string, locale: EditionLocale): string {
   return rules.reduce((text, [pattern, replacement]) => (
-    text.replace(pattern, fillEditionDate(replacement, label))
+    text.replace(pattern, fillEditionDate(replacement, label, locale))
   ), value);
 }
 
@@ -176,7 +181,7 @@ function applyEditionRules(value: string, rules: readonly EditionRule[], label: 
  * English, for EditionText and the islands; `datedEditionTextIn` takes a locale.
  */
 export function datedEditionText(value: string, editionDate: string): string {
-  return applyEditionRules(value, ENGLISH_RULES, editionDateLabel(editionDate));
+  return applyEditionRules(value, ENGLISH_RULES, editionDateLabel(editionDate), 'en');
 }
 
 /** The dating rules for a locale's daily pages, or null where it has none. */
@@ -196,12 +201,12 @@ export function editionRules(locale: string): readonly EditionRule[] | null {
 export function inlineEditionRules(locale: EditionLocale, editionDate: string): [string, string, string][] {
   const label = editionDateLabel(editionDate, locale);
   return (editionRules(locale) ?? []).map(([pattern, replacement]) => (
-    [pattern.source, pattern.flags, fillEditionDate(replacement, label)]
+    [pattern.source, pattern.flags, fillEditionDate(replacement, label, locale)]
   ));
 }
 
 export function datedEditionTextIn(locale: EditionLocale, value: string, editionDate: string): string {
-  return applyEditionRules(value, editionRules(locale) ?? [], editionDateLabel(editionDate, locale));
+  return applyEditionRules(value, editionRules(locale) ?? [], editionDateLabel(editionDate, locale), locale);
 }
 
 /** The rules for a daily page's tab title; none for English, whose titles name only their date. */

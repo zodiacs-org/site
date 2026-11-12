@@ -104,10 +104,11 @@ released (Dias's call; paid review is his decision).
 The hreflang and rendering policy lives in `src/lib/i18n/index.ts`, which
 `scripts/phase1-scope-guard.mjs` freezes. The change there is one hook,
 `withExpansion()`, that adds released (or previewed) locales to a path's set
-and changes nothing while every family is held. The guard needs an
-owner-approved one-time allowance; it is not committed. If Dias approves, the
-allowance to commit is below, with `baseCommit` set to the pull request's
-base commit at merge time.
+and changes nothing while every family is held. The guard needs a one-time
+allowance. Dias delegated that decision on this pull request (see
+[RELEASE-PLAN.md](RELEASE-PLAN.md)), and the allowance is committed as
+`.github/phase1-scope-allowance.json`, in the shape below, with `baseCommit`
+re-pinned to `main` each time `main` is merged in.
 
 ```json
 {
