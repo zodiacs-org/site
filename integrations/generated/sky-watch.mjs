@@ -39671,6 +39671,16 @@ async function searchSkyEvents(args, clock2, options) {
 // src/ai-tools/features/year-score.ts
 import { z as z12 } from "zod";
 
+// src/lib/sun-settled.ts
+function birthDayEnvelope(date3) {
+  const start = Date.parse(`${date3}T00:00:00Z`);
+  return [new Date(start - 14 * 36e5), new Date(start + (24 * 60 - 1) * 6e4 + 12 * 36e5)];
+}
+function settledSunSign(ends, sunLonAt2) {
+  const signs = ends.map((at) => Math.floor((sunLonAt2(at) % 360 + 360) % 360 / 30));
+  return signs[0] === signs[1] ? { sign: signs[0], candidates: [] } : { sign: null, candidates: signs };
+}
+
 // src/lib/year-score/core.ts
 var YEAR_SCORE_VERSION = "year-score.v1";
 var SLOW_PLANETS = ["Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
@@ -39693,6 +39703,7 @@ var MONTH_SCORE_SCALE = 0.73;
 var SCORE_CENTER_TIMED = -0.07;
 var YEAR_SCORE_SCALE_TIMED = 0.55;
 var MONTH_SCORE_SCALE_TIMED = 0.85;
+var TIE_MARGIN = 5e-3;
 var YEAR_DAYS = 365;
 var DAY14 = 864e5;
 var norm = (lon) => (lon % 360 + 360) % 360;
@@ -39783,6 +39794,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
       }
     }
   }
+  const balance = /* @__PURE__ */ new Map();
   const months = monthOrder.map((month) => {
     const acc = monthAcc.get(month);
     let lead = null;
@@ -39795,11 +39807,15 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
     }
     const s2 = acc.support / acc.days;
     const p2 = acc.pressure / acc.days;
+    balance.set(month, s2 - p2);
     return { month, days: acc.days, score: curve(s2 - p2, monthScale, center), support: round(s2, 4), pressure: round(p2, 4), lead };
   });
-  const eligible = months.filter((month) => month.days >= 10);
-  const best = eligible.reduce((top, month) => !top || month.score > top.score ? month : top, null);
-  const hardest = eligible.reduce((low, month) => !low || month.score < low.score ? month : low, null);
+  const eligible = active ? months.filter((month) => month.days >= 10) : [];
+  const bal = (month) => balance.get(month.month);
+  const best = eligible.reduce((top, month) => !top || bal(month) > bal(top) ? month : top, null);
+  const hardest = eligible.reduce((low, month) => !low || bal(month) < bal(low) ? month : low, null);
+  const tiedWith = (pick) => !!pick && months.some((month) => month !== pick && Math.abs(bal(month) - bal(pick)) < TIE_MARGIN);
+  const ties = { best: tiedWith(best), hardest: tiedWith(hardest) };
   const total = [...drivers.values()].reduce((sum, entry) => sum + entry.abs, 0);
   const ranked = [...drivers.values()].sort((a, b) => b.abs - a.abs || a.from - b.from).slice(0, options.maxDrivers ?? 6).map((entry) => ({
     planet: entry.sample.planet,
@@ -39826,6 +39842,7 @@ function scoreYear(natal, longitudeAt2, start, options = {}) {
     months,
     best,
     hardest,
+    ties,
     drivers: ranked,
     points: SCORE_POINTS.filter((point2) => natal[point2] !== null)
   };
@@ -40488,9 +40505,6 @@ function birthDaySamples(earliest, latest) {
   const span2 = latest.getTime() - earliest.getTime();
   return [0, 0.25, 0.5, 0.75, 1].map((part) => new Date(earliest.getTime() + span2 * part));
 }
-function birthDayEnvelope(date3) {
-  return [new Date(Date.parse(`${date3}T00:00:00Z`) - 14 * HOUR5), new Date(Date.parse(`${date3}T23:59:00Z`) + 12 * HOUR5)];
-}
 function birthDayEnds(date3, midday, local) {
   if (local === void 0) return birthDayEnvelope(date3);
   if (local && Number.isFinite(local[0].getTime()) && Number.isFinite(local[1].getTime()) && local[0] < local[1]) return [local[0], local[1]];
@@ -40544,21 +40558,47 @@ var ASPECT_WORD = { conjunction: "conjunct", sextile: "sextile", square: "square
 function driverTitle(driver) {
   return `${driver.planet} ${ASPECT_WORD[driver.aspect]} your ${driver.point}`;
 }
+function driverTone(contact) {
+  return contact.planet === "Jupiter" && (contact.aspect === "square" || contact.aspect === "opposition") ? "mixed" : contact.tone;
+}
 function driverLine(driver) {
+  if (driverTone(driver) === "mixed") return `${driverTitle(driver)}: growth that asks for restraint.`;
   return transitLine(driver.planet, driver.aspect, driver.point);
 }
 var role = (point2) => BODY_ROLE[point2] ?? point2;
-function monthLine(month, which) {
+function monthLine(month, which, { tied = false, leastPressure = false, mostPressure = false, leastSupport = false, mostSupport = false } = {}) {
   const name = monthName(month.month);
-  if (!month.lead) return which === "best" ? `${name} is the lightest month, with no slow planet close to the chart.` : `${name} is the quietest month; no slow planet presses hard.`;
-  const lead = `${month.lead.planet} ${ASPECT_WORD[month.lead.aspect]} your ${month.lead.point}`;
-  if (which === "best") {
-    return month.lead.tone === "support" ? `${name} is the strongest month: ${lead} backs your ${role(month.lead.point)}.` : `${name} is the strongest month, with the least pressure of the year; ${lead} still asks something of your ${role(month.lead.point)}.`;
+  if (!month.lead) {
+    if (which === "best") return `${name} is ${tied ? "one of the lightest months" : "the lightest month"}, with no slow planet close to the chart.`;
+    return tied ? `${name} is one of the quietest months; no slow planet presses hard.` : `${name} is the quietest month; no slow planet presses hard.`;
   }
-  return month.lead.tone === "pressure" ? `${name} carries the most pressure: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.` : `${name} is the softest month of the year, though ${lead} still helps.`;
+  const lead = `${month.lead.planet} ${ASPECT_WORD[month.lead.aspect]} your ${month.lead.point}`;
+  const tone = driverTone(month.lead);
+  if (which === "best") {
+    if (tied) {
+      return tone === "support" ? `${name} is one of the lightest months: ${lead} backs your ${role(month.lead.point)}.` : `${name} is one of the lightest months; ${lead} still asks something of your ${role(month.lead.point)}.`;
+    }
+    if (tone === "support") return `${name} is the strongest month: ${lead} backs your ${role(month.lead.point)}.`;
+    const best = leastPressure ? "is the strongest month, with the least pressure of the year" : mostSupport ? "is the strongest month, with the most support of the year" : "is the strongest month";
+    return `${name} ${best}; ${lead} still asks something of your ${role(month.lead.point)}.`;
+  }
+  if (tied) {
+    return tone === "pressure" ? `${name} is one of the hardest months: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.` : `${name} is one of the hardest months; ${lead} still helps.`;
+  }
+  if (tone === "pressure") {
+    return `${name} ${mostPressure ? "carries the most pressure" : "is the hardest month"}: ${lead} leans on your ${role(month.lead.point)}. A month to pace yourself, not to fear.`;
+  }
+  const hardest = leastSupport ? "has the least support of the year" : mostPressure ? "carries the most pressure of the year" : "is the hardest month";
+  return `${name} ${hardest}; ${lead} still helps.`;
 }
 function yearReading(year, guard = (text2) => text2) {
-  const month = (entry, which) => entry ? { month: entry.month, name: monthName(entry.month), score: entry.score, line: guard(monthLine(entry, which)) } : null;
+  const extremes = (entry) => ({
+    leastPressure: year.months.every((other) => entry.pressure <= other.pressure),
+    mostPressure: year.months.every((other) => entry.pressure >= other.pressure),
+    leastSupport: year.months.every((other) => entry.support <= other.support),
+    mostSupport: year.months.every((other) => entry.support >= other.support)
+  });
+  const month = (entry, which) => entry ? { month: entry.month, name: monthName(entry.month), score: entry.score, line: guard(monthLine(entry, which, { tied: year.ties[which], ...extremes(entry) })) } : null;
   const same2 = year.best && year.hardest && year.best.month === year.hardest.month;
   return {
     score: year.score,
@@ -40569,7 +40609,7 @@ function yearReading(year, guard = (text2) => text2) {
       planet: driver.planet,
       aspect: driver.aspect,
       point: driver.point,
-      tone: driver.tone,
+      tone: driverTone(driver),
       share: driver.share,
       title: driverTitle(driver),
       line: guard(driverLine(driver)),
@@ -40659,7 +40699,7 @@ var yearScoreData = z12.object({
     planet,
     aspect,
     point,
-    tone: z12.enum(["support", "pressure"]),
+    tone: z12.enum(["support", "pressure", "mixed"]),
     /** Share of everything that moved the year, 0 to 1. */
     share: z12.number().min(0).max(1),
     title: z12.string(),
@@ -40694,11 +40734,12 @@ async function birthInstant3(birthDate, time, timeZone, clock2, longitude2) {
   const local = time ?? "12:00";
   return (longitude2 !== void 0 ? clock2.resolveLocalToUtc(birthDate, local, timeZone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(birthDate, local, timeZone)).utc;
 }
-function settledSun(birthDate, timeKnown, sunLon) {
-  const sign3 = SIGNS2[signIndexForLongitude2(sunLon)].slug;
-  if (timeKnown) return sign3;
-  const signs = new Set(birthDayEnvelope(birthDate).map((at) => signIndexForLongitude2(computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon)));
-  return signs.size === 1 ? sign3 : null;
+var sunLonAt = (at) => computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon;
+function settledSun(birthDate, utc, timeKnown, timeZone, clock2, longitude2) {
+  const local = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(birthDate, time, timeZone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(birthDate, time, timeZone)).utc;
+  const ends = timeKnown ? [utc, utc] : timeZone ? [local("00:00"), local("23:59")] : birthDayEnvelope(birthDate);
+  const { sign: sign3 } = settledSunSign(ends, sunLonAt);
+  return sign3 === null ? null : SIGNS2[sign3].slug;
 }
 function scoreFrom(natal, start, longitudeAt2 = cachedLongitude((body2, date3) => bodyLongitude2(body2, date3))) {
   return scoreYear(natal, longitudeAt2, start);
@@ -40762,7 +40803,8 @@ async function getYearScore(args, now, clock2, origin) {
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
   if (under18) limits2.push(MINOR_NOTE);
   const utc = await birthInstant3(birthDate, time, timeZone, clock2, longitude2);
-  const { natal, sunLon } = natalPointsAt(utc, timeKnown);
+  const { natal } = natalPointsAt(utc, timeKnown);
+  const sun = settledSun(birthDate, utc, timeKnown, timeZone, clock2, longitude2);
   const longitudeAt2 = cachedLongitude((body2, date3) => bodyLongitude2(body2, date3));
   const year = scoreFrom(natal, startDate, longitudeAt2);
   const scoreRange2 = timeKnown ? null : birthDayRange(natal, (at) => natalPointsAt(at, false).natal, await untimedDayEnds(birthDate, timeZone, utc, clock2, longitude2), longitudeAt2, startDate);
@@ -40782,7 +40824,7 @@ async function getYearScore(args, now, clock2, origin) {
   return {
     data: {
       status: "found",
-      subject: { kind: figure ? "person" : "self", name: figure?.name ?? null, description: figure?.description ?? null, sun: settledSun(birthDate, timeKnown, sunLon), timeKnown },
+      subject: { kind: figure ? "person" : "self", name: figure?.name ?? null, description: figure?.description ?? null, sun, timeKnown },
       from: year.from,
       to: year.to,
       score: year.score,
@@ -40812,7 +40854,7 @@ async function getYearScore(args, now, clock2, origin) {
       // A directory figure's own page; a person's own details have no page, so the calculator.
       pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
       // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
-      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null : yearScoreShareUrl(origin, { sun: settledSun(birthDate, timeKnown, sunLon), score: year.score })
+      shareUrl: figure ? start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null : yearScoreShareUrl(origin, { sun, score: year.score })
     },
     links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links
   };
@@ -41009,7 +41051,7 @@ var sign2 = z13.enum(SIGNS2.map((entry) => entry.slug));
 var solarReturnData = z13.object({
   which: z13.enum(["next", "current"]),
   returnYear: z13.number().int(),
-  /** The return instant in UTC and on the person's clock. */
+  /** The return instant in UTC and on the person's clock; without a birth time, `local` is the return's UTC date only and `zone` is UTC. */
   instantUtc: z13.string(),
   local: z13.string(),
   zone: z13.string(),
@@ -41033,6 +41075,10 @@ function clockLabel(at, timeZone) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(at).map((part) => [part.type, part.value]));
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
 }
+function dateLabel(at) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short", year: "numeric" }).formatToParts(at).map((part) => [part.type, part.value]));
+  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+}
 async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = false) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < 1800 || birth.year > 2199) throw new RangeError("birthDate must be a real date from 1800 to 2199.");
@@ -41042,11 +41088,9 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
   const timeKnown = args.time !== void 0;
   const placed = latitude !== void 0 && longitude2 !== void 0;
   let birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
-  if (args.zone) {
-    await clock2.prepareLocalTime(args.birthDate, args.zone);
-    const local = args.time ?? "12:00";
-    birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, local, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, local, args.zone)).utc;
-  }
+  const onBirthplaceClock = (time) => (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
+  if (args.zone) await clock2.prepareLocalTime(args.birthDate, args.zone);
+  if (args.time !== void 0) birthUtc = onBirthplaceClock(args.time);
   if (birthUtc.getTime() > now.getTime()) throw new RangeError("The birth date is still to come.");
   const natalSun = computeChart3({ utc: birthUtc, houseSystem: "whole", timeKnown }).bodies.find((row) => row.body === "Sun").lon;
   const which = args.which ?? "next";
@@ -41056,7 +41100,7 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
   const chart = computeChart3({ utc: instant2, ...location ?? {}, houseSystem: "whole", timeKnown: true });
   const cusps = location && chart.houses ? chart.houses.cusps : null;
   const asc = location && chart.angles ? chart.angles.asc : null;
-  const shownZone = args.currentZone ?? args.zone ?? "UTC";
+  const shownZone = timeKnown ? args.currentZone ?? args.zone ?? "UTC" : "UTC";
   const today2 = now.toISOString().slice(0, 10);
   const under18 = isUnder18(args.birthDate, today2);
   const guard = (text2) => under18 ? softenMinor(text2) : text2;
@@ -41067,17 +41111,18 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
     degree: Math.floor(row.lon % 30 * 10) / 10,
     house: cusps ? houseOf(row.lon, [...cusps]) : null
   })).filter((row) => timeKnown || row.body !== "Moon");
-  const sunSign = SIGNS2[signIndexForLongitude2(natalSun)].slug;
-  const settled = timeKnown || new Set([-14, 36].map((hours) => signIndexForLongitude2(computeChart3({ utc: new Date(Date.parse(`${args.birthDate}T00:00:00Z`) + hours * 36e5), houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon))).size === 1;
+  const ends = timeKnown ? [birthUtc, birthUtc] : args.zone ? [onBirthplaceClock("00:00"), onBirthplaceClock("23:59")] : birthDayEnvelope(args.birthDate);
+  const settledIndex = settledSunSign(ends, (at) => computeChart3({ utc: at, houseSystem: "whole", timeKnown: false }).bodies.find((row) => row.body === "Sun").lon).sign;
+  const sunSign = settledIndex === null ? null : SIGNS2[settledIndex].slug;
   const rising = asc !== null ? SIGNS2[signIndexForLongitude2(asc)].slug : null;
   const jupiter = placements.find((row) => row.body === "Jupiter").sign;
   const limits2 = [];
   if (under18) limits2.push(MINOR_NOTE);
-  if (!timeKnown) limits2.push("No birth time was given, so the return instant can shift by up to about half a day; the Moon, the rising sign and the houses are left out.");
+  if (!timeKnown) limits2.push("No birth time was given, so the return instant can shift by up to about a day; the Moon, the rising sign and the houses are left out.");
   else if (!placed) limits2.push("No birthplace coordinates were given, so the rising sign and the houses are left out.");
   else limits2.push("The return is cast for the birthplace. Astrologers who cast it where the person spends the birthday get a different rising sign and houses, with the same planets.");
-  if (!args.currentZone && args.zone) limits2.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
-  if (!args.zone) limits2.push("The time is in UTC because no time zone was given.");
+  if (!timeKnown) limits2.push("Without a birth time the return is given as its date in UTC, not a clock time, and it can be a day either side.");
+  else if (!args.currentZone) limits2.push(`The time is on the birthplace clock (${shownZone}) because no current time zone was given.`);
   const detail = readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed });
   const pageUrl = `${origin}/solar-return/`;
   return {
@@ -41085,11 +41130,11 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
       which,
       returnYear: Number(new Intl.DateTimeFormat("en-CA", { timeZone: shownZone, year: "numeric" }).format(instant2)),
       instantUtc: instant2.toISOString(),
-      local: clockLabel(instant2, shownZone),
+      local: timeKnown ? clockLabel(instant2, shownZone) : dateLabel(instant2),
       zone: shownZone,
       timeKnown,
       placed,
-      sun: settled ? sunSign : null,
+      sun: sunSign,
       rising,
       placements,
       themes,
@@ -41098,7 +41143,7 @@ async function getSolarReturn(args, now, clock2, origin, birthdayReportPage = fa
       limits: limits2,
       under18,
       pageUrl,
-      shareUrl: solarReturnShareUrl(origin, { sun: settled ? sunSign : null, year: instant2.getUTCFullYear(), rising, jupiter })
+      shareUrl: solarReturnShareUrl(origin, { sun: sunSign, year: instant2.getUTCFullYear(), rising, jupiter })
     },
     links: [
       { title: "Solar return chart on Zodiacs", url: pageUrl },
