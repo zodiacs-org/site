@@ -25,6 +25,7 @@ function runWorker(source) {
   const networkFetch = vi.fn(async () => ({
     ok: true,
     status: 200,
+    headers: new Headers(),
     clone: () => ({ ok: true, status: 200 }),
   }));
   const caches = {
@@ -111,6 +112,7 @@ describe('offline service worker posture', () => {
     const volatilePaths = [
       '/registry', '/registry/', '/registry/index.html',
       '/registry/exchange', '/registry/exchange/', '/registry/exchange/index.html',
+      '/registry/exchange/leo/', '/registry/exchange/leo/index.html',
       '/astrofolio', '/astrofolio/', '/astrofolio/index.html',
       '/astrofolio/how-to-buy', '/astrofolio/how-to-buy/', '/astrofolio/how-to-buy/index.html',
       '/astrofolio/how-to-buy/leo/', '/astrofolio/how-to-buy/leo/index.html',
@@ -136,6 +138,61 @@ describe('offline service worker posture', () => {
       await expect(offline, path).rejects.toThrow('offline');
     }
     expect(worker.caches.open).not.toHaveBeenCalled();
+  });
+
+  it('treats every route vercel.json serves no-store under /registry/exchange/ as volatile', async () => {
+    const config = JSON.parse(await readFile(resolve(ROOT, 'vercel.json'), 'utf8'));
+    const rule = config.headers.find((entry) => entry.source === '/registry/exchange/(.*)');
+    expect(rule?.headers?.find((header) => header.key === 'Cache-Control')?.value).toBe('no-store');
+    const worker = runWorker(await builtWorker(false));
+    const handler = worker.handlers.get('fetch');
+    for (const path of ['/registry/exchange/aries/', '/registry/exchange/quote/leo/', '/registry/exchange/receipt.html']) {
+      let completion;
+      handler({
+        request: { method: 'GET', mode: 'navigate', url: `https://zodiacs.org${path}` },
+        respondWith: (promise) => { completion = Promise.resolve(promise); },
+      });
+      await completion;
+    }
+    expect(worker.caches.open).not.toHaveBeenCalled();
+  });
+
+  it('never writes a no-store response to Cache Storage, on any branch', async () => {
+    const worker = runWorker(await builtWorker(false));
+    const handler = worker.handlers.get('fetch');
+    const cache = { put: vi.fn(async () => {}), match: vi.fn(async () => undefined), keys: vi.fn(async () => []) };
+    worker.caches.open.mockImplementation(async () => cache);
+    const respond = (path, mode, cacheControl) => {
+      worker.networkFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers(cacheControl ? { 'Cache-Control': cacheControl } : {}),
+        clone: () => ({ ok: true, status: 200 }),
+      });
+      let completion;
+      handler({
+        request: { method: 'GET', mode, url: `https://zodiacs.org${path}` },
+        respondWith: (promise) => { completion = Promise.resolve(promise); },
+      });
+      return completion;
+    };
+    // Navigation, the wing's network-first branch, data and a cache-first asset.
+    const cases = [
+      ['/c/abc123/', 'navigate'],
+      ['/thesis/', 'navigate'],
+      ['/data/chart-twins.json', 'cors'],
+      ['/_astro/page.abc123.js', 'script'],
+    ];
+    for (const [path, mode] of cases) {
+      for (const value of ['no-store', 'private, no-store', 'NO-STORE, max-age=0']) {
+        const answer = await respond(path, mode, value);
+        expect(answer.ok, `${path} ${value}`).toBe(true);
+      }
+    }
+    expect(cache.put).not.toHaveBeenCalled();
+    // A response without no-store is still kept as the offline copy.
+    for (const [path, mode] of cases) await respond(path, mode, 'public, max-age=0, must-revalidate');
+    expect(cache.put).toHaveBeenCalledTimes(cases.length);
   });
 
   it('keeps non-authoritative Terminal pages network-first with an offline fallback', async () => {

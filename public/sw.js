@@ -87,9 +87,10 @@ function registryVolatileSurface(url) {
   return url.pathname === '/registry'
     || url.pathname === '/registry/'
     || url.pathname === '/registry/index.html'
+    // Every Exchange route, not only its index: vercel.json serves
+    // `/registry/exchange/(.*)` no-store.
     || url.pathname === '/registry/exchange'
-    || url.pathname === '/registry/exchange/'
-    || url.pathname === '/registry/exchange/index.html'
+    || url.pathname.startsWith('/registry/exchange/')
     || url.pathname === '/astrofolio'
     || url.pathname === '/astrofolio/'
     || url.pathname === '/astrofolio/index.html'
@@ -130,11 +131,18 @@ async function trimShellPages(cache) {
   }
 }
 
+// A response that says `Cache-Control: no-store` is never written to Cache
+// Storage, whichever branch fetched it. The route lists above only name
+// the paths known when they were written; the header is the server's word.
+function storable(response) {
+  return response.ok && !/\bno-store\b/i.test(response.headers.get('Cache-Control') ?? '');
+}
+
 async function networkFirst(request, cacheName, allowFallback = true) {
   const cache = await caches.open(cacheName);
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    if (storable(response)) {
       await cache.put(request, response.clone());
       if (cacheName === SHELL_CACHE) trimShellPages(cache).catch(() => {});
     }
@@ -152,7 +160,7 @@ async function cacheFirst(request, cacheName) {
   const cached = await cache.match(request);
   if (cached) return cached;
   const response = await fetch(request);
-  if (response.ok) await cache.put(request, response.clone());
+  if (storable(response)) await cache.put(request, response.clone());
   return response;
 }
 
