@@ -538,10 +538,6 @@
           "value": "strict-origin-when-cross-origin"
         },
         {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
           "key": "Permissions-Policy",
           "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()"
         },
@@ -560,6 +556,15 @@
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/((?!embed/).*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
         }
       ]
     },
@@ -769,12 +774,8 @@
       "source": "/embed/(.*)",
       "headers": [
         {
-          "key": "X-Frame-Options",
-          "value": "ALLOWALL"
-        },
-        {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors *; object-src 'none'; base-uri 'self'"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors *; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
         },
         {
           "key": "Cache-Control",

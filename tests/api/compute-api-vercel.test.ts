@@ -31,13 +31,17 @@ describe('vercel.json for the compute API', () => {
   });
 
   it('lets no header rule set a cache lifetime, CORS or anything but the site-wide security headers on a compute path', () => {
-    const siteWide = config.headers.find((rule: any) => rule.source === '/(.*)');
+    // The site-wide rule, and X-Frame-Options: DENY everywhere but the framed /embed/ widgets.
+    const siteWideSources = ['/(.*)', '/((?!embed/).*)'];
+    const siteWide = config.headers.filter((rule: any) => siteWideSources.includes(rule.source));
+    expect(siteWide.map((rule: any) => rule.source)).toEqual(siteWideSources);
+    expect(siteWide[1].headers).toEqual([{ key: 'X-Frame-Options', value: 'DENY' }]);
     for (const path of [...COMPUTE_PATHS, ...COMPUTE_PATHS.map((path) => `${path}/`), COMPUTE_FUNCTION_PATH]) {
-      expect(matchingHeaderRules(config, path).map((rule: any) => rule.source), path).toEqual(['/(.*)']);
+      expect(matchingHeaderRules(config, path).map((rule: any) => rule.source), path).toEqual(siteWideSources);
       const headers = effectiveHeaders(config, path);
       expect(headers.get('cache-control'), path).toBeUndefined();
       expect(headers.get('access-control-allow-origin'), path).toBeUndefined();
-      expect([...headers.keys()].sort()).toEqual(siteWide.headers.map((header: any) => header.key.toLowerCase()).sort());
+      expect([...headers.keys()].sort()).toEqual(siteWide.flatMap((rule: any) => rule.headers).map((header: any) => header.key.toLowerCase()).sort());
     }
   });
 

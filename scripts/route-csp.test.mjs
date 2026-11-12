@@ -39,10 +39,15 @@ const SANCTIONED_NARROWING = {
   },
 };
 
-// `/embed/(.*)` sends a frame-ancestors-only policy so third parties can
-// frame the widgets; it is not a narrowed copy of the global policy and is
-// tracked separately (security-headers audit, F3).
-const NOT_DERIVED = new Set(['/embed/(.*)']);
+// Each route's deliberate replacements: the directive's whole source list
+// differs from the global one. The widgets under `/embed/` are framed by
+// other sites, so their only change is frame-ancestors; they keep every
+// other directive and source (security-headers audit, F3).
+const SANCTIONED_REPLACEMENT = {
+  '/embed/(.*)': {
+    'frame-ancestors': ['*'],
+  },
+};
 
 function parsePolicy(value) {
   const directives = new Map();
@@ -68,24 +73,36 @@ describe('route-scoped CSPs derive from the global policy', () => {
     const rules = await cspRules();
     const scoped = rules.map(({ source }) => source).filter((source) => source !== '/(.*)');
     expect(rules.filter(({ source }) => source === '/(.*)')).toHaveLength(1);
-    expect(scoped.sort()).toEqual([...Object.keys(SANCTIONED_NARROWING), ...NOT_DERIVED].sort());
+    expect(scoped.sort()).toEqual([...Object.keys(SANCTIONED_NARROWING), ...Object.keys(SANCTIONED_REPLACEMENT)].sort());
   });
 
   it('keeps every global directive and source except the sanctioned narrowings', async () => {
     const rules = await cspRules();
     const global = parsePolicy(rules.find(({ source }) => source === '/(.*)').csp);
     for (const { source, csp } of rules) {
-      if (source === '/(.*)' || NOT_DERIVED.has(source)) continue;
+      if (source === '/(.*)') continue;
       const route = parsePolicy(csp);
       const allowedToDrop = SANCTIONED_NARROWING[source] ?? {};
+      const replaced = SANCTIONED_REPLACEMENT[source] ?? {};
       for (const [directive, globalSources] of global) {
         expect(route.has(directive), `${source} drops ${directive}`).toBe(true);
+        if (directive in replaced) {
+          expect(route.get(directive), `${source} ${directive}`).toEqual(replaced[directive]);
+          continue;
+        }
         const dropped = globalSources.filter((value) => !route.get(directive).includes(value));
         expect(dropped, `${source} ${directive}`).toEqual(
           globalSources.filter((value) => (allowedToDrop[directive] ?? []).includes(value)),
         );
       }
     }
+  });
+
+  it('changes only frame-ancestors on the embed widgets', async () => {
+    const rules = await cspRules();
+    const global = rules.find(({ source }) => source === '/(.*)').csp;
+    const embed = rules.find(({ source }) => source === '/embed/(.*)').csp;
+    expect(embed).toBe(global.replace("frame-ancestors 'none'", 'frame-ancestors *'));
   });
 
   it('never sanctions dropping the account backend', async () => {
