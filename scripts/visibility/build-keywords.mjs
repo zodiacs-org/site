@@ -193,12 +193,13 @@ const csvCell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '
 const HEAD = ['locale', 'kp_language', 'kp_locations', 'family', 'subfamily', 'query', 'target_url', 'coverage', 'monthly_volume', 'volume_source', 'competition', 'notes'];
 
 // Which calculator answers a birth chart query. Order matters: "sun, moon and
-// rising" is the big three, not the rising sign.
+// rising" is the big three, not the rising sign. The candidate locales (de, pl,
+// tr, ja, hi) name the same four intents in their own words.
 function chartTarget(q) {
-  if (/big three|sol luna|sol lua|soleil lune|sole luna|солнце луна|太阳月亮|太陽月亮|الشمس والقمر/.test(q)) return ['big-three', '/big-three/'];
-  if (/rising|ascend|асцендент|上升|طالع/.test(q)) return ['rising-sign', '/rising-sign/'];
-  if (/moon sign|lunar|lunaire|lunare|luna natale|лунный|луны|月亮|القمر/.test(q)) return ['moon-sign', '/moon-sign/'];
-  if (/read|leer|ler |lire|leggere|читать|怎么看|怎麼看|قراءة/.test(q)) return ['how-to-read', '/learn/how-to-read-a-birth-chart/'];
+  if (/big three|sol luna|sol lua|soleil lune|sole luna|солнце луна|太阳月亮|太陽月亮|الشمس والقمر|sonne mond aszendent|słońce księżyc|güneş ay yükselen|太陽星座/.test(q)) return ['big-three', '/big-three/'];
+  if (/rising|ascend|асцендент|上升|طالع|aszendent|yükselen|アセンダント|लग्न/.test(q)) return ['rising-sign', '/rising-sign/'];
+  if (/moon sign|lunar|lunaire|lunare|luna natale|лунный|луны|月亮|القمر|mondzeichen|księżyca|ay burcu|月星座|चंद्र राशि/.test(q)) return ['moon-sign', '/moon-sign/'];
+  if (/read|leer|ler |lire|leggere|читать|怎么看|怎麼看|قراءة|deuten|czytać|okunur|読み方|कैसे देखें/.test(q)) return ['how-to-read', '/learn/how-to-read-a-birth-chart/'];
   return ['calculator', '/birth-chart/'];
 }
 

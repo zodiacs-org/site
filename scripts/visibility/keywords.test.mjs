@@ -27,7 +27,8 @@ describe('keyword tables', () => {
       for (const row of read(locale)) {
         const [volume, source, competition] = row.slice(8, 11);
         if (volume !== 'TBD' || competition !== 'TBD') expect(source, `${locale} ${row[5]}`).not.toBe('TBD');
-        if (volume !== 'TBD') expect(volume, `${locale} ${row[5]}`).toMatch(/^\d+$/);
+        // A Keyword Planner range is kept as low-high (lib.mjs parseVolume).
+        if (volume !== 'TBD') expect(volume, `${locale} ${row[5]}`).toMatch(/^\d+(-\d+)?$/);
       }
     }
   });
@@ -38,6 +39,27 @@ describe('keyword tables', () => {
       expect(new Set(queries).size, locale).toBe(queries.length);
       for (const query of queries) expect(query).not.toMatch(/[‒-―]/u);
     }
+  });
+
+  it('send each candidate chart query to the calculator that answers it', () => {
+    const target = (locale, query) => read(locale).find((row) => row[5] === query)?.[6];
+    expect(target('de', 'aszendent berechnen')).toBe('/rising-sign/');
+    expect(target('de', 'mondzeichen')).toBe('/moon-sign/');
+    expect(target('de', 'sonne mond aszendent')).toBe('/big-three/');
+    expect(target('de', 'geburtshoroskop deuten')).toBe('/learn/how-to-read-a-birth-chart/');
+    expect(target('pl', 'słońce księżyc ascendent')).toBe('/big-three/');
+    expect(target('pl', 'znak księżyca')).toBe('/moon-sign/');
+    expect(target('pl', 'jak czytać horoskop urodzeniowy')).toBe('/learn/how-to-read-a-birth-chart/');
+    expect(target('tr', 'yükselen burç')).toBe('/rising-sign/');
+    expect(target('tr', 'ay burcu hesaplama')).toBe('/moon-sign/');
+    expect(target('tr', 'güneş ay yükselen')).toBe('/big-three/');
+    expect(target('ja', 'アセンダント')).toBe('/rising-sign/');
+    expect(target('ja', '月星座 調べ方')).toBe('/moon-sign/');
+    expect(target('ja', '月星座 太陽星座')).toBe('/big-three/');
+    expect(target('hi', 'लग्न राशि')).toBe('/rising-sign/');
+    expect(target('hi', 'चंद्र राशि')).toBe('/moon-sign/');
+    expect(target('hi', 'कुंडली कैसे देखें')).toBe('/learn/how-to-read-a-birth-chart/');
+    for (const locale of CANDIDATES) expect(target(locale, read(locale).find((row) => row[3] === 'birth-chart')[5])).toBe('/birth-chart/');
   });
 
   it('mark candidates as unpublished and held pages with the URL they will have', () => {
