@@ -669,6 +669,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/privacy/', '2026-11-11'] as const,
   ...['/profile/', '/es/profile/', '/fr/profile/', '/it/profile/', '/pt/profile/', '/ru/profile/']
     .map((loc) => [loc, '2026-11-11'] as const),
+  // The privacy page's encrypted chart sync, chart emails and analytics scope
+  // wording, merged on 12 November after the pause copy above, so this wins.
+  ['/privacy/', '2026-11-12'] as const,
 ]);
 
 function getLastmod(loc: string): string {
