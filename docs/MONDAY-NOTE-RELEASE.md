@@ -67,7 +67,7 @@ into the repo, a ticket, a log or proof files.
 | `EMAIL_CONFIRM_SECRET` | A new random value of at least 32 bytes, made only for this list. |
 | `RESEND_SEGMENT_ID` | The ID of the weekly Segment in Resend → Contacts → Segments. Must not equal `RESEND_DAILY_SEGMENT_ID`. |
 | `STANDALONE_WEEKLY_EMAIL_ENABLED` | The release switch. Set to `1` to show the form and open the endpoints; any other value, or unset, keeps them off. |
-| `EMAIL_CONFIRM_BASE_URL` | Optional. Leave unset in Production. Set it in the Preview scope only, to the Preview deployment's HTTPS origin, so the test confirmation link opens the Preview and not production. |
+| `EMAIL_CONFIRM_BASE_URL` | Optional. Leave unset in Production. Set it in the Preview scope only, to the test branch's stable Preview alias, `https://zodiacs-org-git-<branch>-zodiacsofficial.vercel.app`, so the test confirmation link opens the Preview and not production. Never use a unique deployment URL (the one with a random hash): the next redeploy replaces that deployment, and a link already emailed would keep pointing at the old one with the old settings. |
 
 ## Cost
 
@@ -94,9 +94,17 @@ shell history.
   used again for the production smoke check.
 - The owner-approved postal address and the Monday Note's first draft
   (P1.3) to hand.
-- A Preview deployment of `main` (or of the P1.5 branch) that you can open in
-  a browser. Steps 3 to 6 run there first, because the confirm endpoint does
-  not answer while the switch is off.
+- A pushed test branch (the P1.5 branch) with a Preview deployment you can
+  open in a browser, reached through its stable branch alias
+  `https://zodiacs-org-git-<branch>-zodiacsofficial.vercel.app`. Steps 3 to 6
+  run there first, because the confirm endpoint does not answer while the
+  switch is off. Use the alias for every Preview visit, never a unique
+  deployment URL.
+- Settings changes apply only to new deployments. After every Preview
+  redeploy below, check on the new deployment's page in Vercel that the
+  branch alias now points at it before going on, and open the form and any
+  confirmation page fresh on the alias. A page left open from before the
+  redeploy was built with the old settings.
 
 ## The procedure
 
@@ -139,13 +147,18 @@ is the condition for the next.
   3. In Resend → API Keys, create two keys: one with sending access only, one
      with the access that Contacts and Segments need. They must be different
      keys.
-  4. Decide click counting. Resend can count clicks per Broadcast if click
-     tracking is turned on for the domain; that rewrites links through
-     Resend. Leave open tracking off: it is a pixel. If the owner does not
-     approve click tracking (and the matching privacy line in Step 1), measure
-     clicks instead with a plain tag on each link, such as
-     `?src=monday-note-YYYY-MM-DD`, counted in site analytics. A tag never
-     carries anything about the reader.
+  4. Decide click counting. The only source of click counts for this note
+     is Resend's own click tracking, turned on for the sending domain; it
+     rewrites links through Resend and reports unique clicks per Broadcast.
+     It needs the owner's approval and the matching privacy line in Step 1.
+     Leave open tracking off: it is a pixel. If the owner does not approve
+     click tracking, click counts cannot be read today: site analytics
+     records the canonical path with no query string (`src/layouts/Base.astro`
+     and the Vercel insights hook strip it, and `docs/ANALYTICS.md` forbids
+     query strings), and the site's `ref` query is read only for assistant
+     arrivals and then removed. Do not add tags to links expecting a count.
+     The click column then stays blank until a later analytics ticket
+     provides a way.
   5. In Resend → Broadcasts, make a reusable draft named "Monday Note
      template": From on the verified domain, a plain subject, a footer with
      the operator name, the approved postal address, a one-line reason the
@@ -156,28 +169,32 @@ is the condition for the next.
   6. In Vercel, Preview scope only, enter `EMAIL_PROVIDER`=`resend`, `RESEND_API_KEY`,
      `RESEND_CONTACTS_API_KEY`, `RESEND_FROM_EMAIL`, a new
      `EMAIL_CONFIRM_SECRET`, `RESEND_SEGMENT_ID`,
-     `EMAIL_CONFIRM_BASE_URL` (the Preview origin) and
+     `EMAIL_CONFIRM_BASE_URL` (the branch alias, not a unique deployment
+     URL) and
      `STANDALONE_WEEKLY_EMAIL_ENABLED`=`1`. Nothing in the Production scope
      changes in this step.
-  7. Redeploy the Preview so the form is built in.
+  7. Redeploy the Preview so the form is built in, and check that the
+     branch alias points at the new deployment.
 - **Proof:** `step-2.png` showing the verified domain, the empty Segment and
   the template's preview with the footer and unsubscribe link (no addresses
   or IDs visible); `step-2.md` listing which settings were entered in which
-  scope (names only), the click-counting decision, and the Preview deployment
-  URL.
+  scope (names only), the click-counting decision (Resend click tracking
+  approved, or not approved and the click column left blank), and the branch
+  alias used.
 
 ### Step 3. Fixture A: the confirmation email and its link create nothing
 
 - **Who:** the owner (it uses the fixture inbox).
-- **Where:** the Preview deployment; the fixture A inbox; Resend → Contacts.
+- **Where:** the Preview branch alias; the fixture A inbox; Resend → Contacts.
 - **Do:**
-  1. On the Preview, find the capture form (horoscope page, footer or chart
+  1. On the Preview branch alias, find the capture form (horoscope page, footer or chart
      result) and submit fixture A, with a sign.
   2. Confirm the page says to check the inbox.
   3. In Resend → Contacts, search for fixture A: there is no Contact. The
      weekly Segment still holds 0.
   4. Open the confirmation email. Check the sender, that the link points at
-     the Preview origin and that the message loads no remote images.
+     the Preview branch alias (not a unique deployment URL and not
+     zodiacs.org) and that the message loads no remote images.
   5. Open the link (this is the `GET`). A page with a confirm button appears.
      Do not press it yet.
   6. In Resend → Contacts, search again: still no Contact, Segment still 0.
@@ -250,14 +267,16 @@ is the condition for the next.
         address on a domain that is **not** verified in Resend (for example
         a subdomain the owner has never added to Resend → Domains). Type the
         new value straight into Vercel; do not copy the old one anywhere.
-        Redeploy the Preview.
-     3. On the Preview, submit fixture C. The answer is the capture error
+        Redeploy the Preview and check the branch alias points at the new
+        deployment.
+     3. Open the form fresh on the branch alias and submit fixture C. The answer is the capture error
         page (HTTP 502), not "check your inbox". No email arrives.
      4. In Resend → Logs (the API request log), find that request to
         `/emails`: Resend refused it with a 4xx naming the unverified domain.
         In Resend → Contacts, fixture C is not there.
      5. Set `RESEND_FROM_EMAIL` back to the verified sender in the Preview
-        scope and redeploy. Submit fixture C again. "Check your inbox"
+        scope, redeploy, and check the alias points at the new deployment.
+        Open the form fresh on the alias and submit fixture C again. "Check your inbox"
         appears, one confirmation arrives, and Resend → Logs shows the send
         accepted. Do not confirm it; let it expire.
   6. **Confirm step fails, then the same link works (owner, Preview only).**
@@ -270,13 +289,17 @@ is the condition for the next.
         everything is normal, and open its confirmation link. Do not press
         confirm yet.
      3. In Vercel, Preview scope only, put the temporary key in
-        `RESEND_CONTACTS_API_KEY`, typed in directly. Redeploy the Preview.
-     4. Press confirm on fixture D's page. The answer is the capture error
+        `RESEND_CONTACTS_API_KEY`, typed in directly. Redeploy the Preview
+        and check the alias points at the new deployment.
+     4. Close the confirm page opened in item 2. Open fixture D's
+        confirmation link from the email again, so the page loads on the
+        alias from the new deployment, and press confirm. The answer is the capture error
         page (HTTP 502), not "confirmed". Resend → Logs shows the request to
         `/contacts` refused for lack of permission, and fixture D is in no
         Segment.
-     5. Put the Contacts key back in the Preview scope and redeploy. Open the
-        same link from the email again (it lasts 48 hours and the secret did
+     5. Put the Contacts key back in the Preview scope, redeploy, and check
+        the alias points at the new deployment. Open the same link from the
+        email again (it lasts 48 hours and the secret did
         not change) and press confirm. "Confirmed" appears and fixture D is
         now in the weekly Segment, once.
      6. Delete the temporary key in Resend → API Keys, and delete fixture D's
@@ -341,15 +364,17 @@ About fifteen minutes. The owner, or whoever the owner names, sends it.
    health or election calls, and no token, market or crypto language.
 2. **Paste.** In Resend → Broadcasts, duplicate "Monday Note template" and
    paste the draft. Keep the footer, postal address and unsubscribe link as
-   they are. If links carry the plain `src` tag, set this week's date.
+   they are.
 3. **Check.** Use the editor's preview and send a test to an owner address.
    Read it once on a phone.
 4. **Send to the Segment.** Choose the weekly Segment and nothing else, then
    send (or schedule for Monday morning).
 5. **Record.** The next day, copy from the Broadcast's results into the
-   scoreboard (P6.2): send date, Segment size, delivered, unique clicks (or
-   the tagged visits from site analytics), unsubscribes, bounces and
-   complaints. Click rate is unique clicks divided by delivered. The T1 test
+   scoreboard (P6.2): send date, Segment size, delivered, unique clicks,
+   unsubscribes, bounces and complaints. Click rate is unique clicks divided
+   by delivered. Unique clicks come only from Resend click tracking, if the
+   owner approved it in Step 2; otherwise leave the clicks and click rate
+   blank, because site analytics cannot supply them today. The T1 test
    reads its numbers from here. Record counts only, never addresses.
 
 If a complaint rate or bounce rate looks unusual, pause the next send and tell
