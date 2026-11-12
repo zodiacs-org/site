@@ -68,7 +68,7 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   ...(dailyPublishedDays.length ? ['/ru/chart-of-the-day/'] : []),
   '/ru/', '/ru/tools/', '/ru/birth-chart/', '/ru/compatibility/',
   '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
-  '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',
+  '/ru/saturn-return/', '/ru/transits/',
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
   '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
   '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
