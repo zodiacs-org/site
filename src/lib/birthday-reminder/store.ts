@@ -1,5 +1,5 @@
 /**
- * Birthday reminder storage: six service-role RPCs from
+ * Birthday reminder storage: seven service-role RPCs from
  * supabase/migrations/20261112090000_birthday_reminders.sql. The table holds
  * the email, the month and day, the confirmation hash and two dates; nothing
  * else. Errors carry status codes only, never a request's values.
@@ -43,7 +43,7 @@ export function deleteReminder(id: string, env: Environment = process.env, fetch
   return rpc<boolean>('birthday_reminder_delete', { p_id: id }, env, fetcher);
 }
 
-/** Confirmed reminders for these birthdays not yet sent this year, after deleting unconfirmed requests older than 48 hours. */
+/** Confirmed reminders for these birthdays not yet sent this year. Reads only. */
 export function dueReminders(days: { month: number; day: number }[], env: Environment = process.env, fetcher: Fetch = fetch) {
   return rpc<{ id: string; email: string }[]>('birthday_reminders_due', { p_days: days }, env, fetcher);
 }
@@ -53,6 +53,12 @@ export function sweepExpiredRequests(env: Environment = process.env, fetcher: Fe
   return rpc<number>('birthday_reminders_sweep', {}, env, fetcher);
 }
 
-export function markReminderSent(id: string, env: Environment = process.env, fetcher: Fetch = fetch) {
-  return rpc<boolean>('birthday_reminder_sent', { p_id: id }, env, fetcher);
+/** Claims this year's email for one reminder before sending it. False when another run has it, it was sent this year, or it was stopped. */
+export function claimReminder(id: string, env: Environment = process.env, fetcher: Fetch = fetch) {
+  return rpc<boolean>('birthday_reminder_claim', { p_id: id }, env, fetcher);
+}
+
+/** Gives back today's claim after the email failed. */
+export function releaseReminder(id: string, env: Environment = process.env, fetcher: Fetch = fetch) {
+  return rpc<boolean>('birthday_reminder_release', { p_id: id }, env, fetcher);
 }

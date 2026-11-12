@@ -17,7 +17,7 @@
 import { birthdayReminderEnabled, birthdayReminderSecret, birthdayReminderStorageReady } from '../src/lib/birthday-reminder/config';
 import { birthdayEmail, birthdaysOn, unsubscribeToken } from '../src/lib/birthday-reminder/core';
 import { sendPlainEmail } from '../src/lib/birthday-reminder/send';
-import { dueReminders, markReminderSent, sweepExpiredRequests } from '../src/lib/birthday-reminder/store';
+import { claimReminder, dueReminders, releaseReminder, sweepExpiredRequests } from '../src/lib/birthday-reminder/store';
 
 const args = process.argv.slice(2);
 const dateArg = args.includes('--date') ? args[args.indexOf('--date') + 1] : undefined;
@@ -39,15 +39,21 @@ if (!birthdayReminderEnabled()) {
 const origin = 'https://zodiacs.org';
 const due = await dueReminders(birthdaysOn(date));
 let sent = 0;
+let skipped = 0;
 let failed = 0;
 for (const reminder of due) {
   if (dryRun) continue;
+  // Claimed before sending, so a second or concurrent run, or a stop since the list was read, sends nothing.
+  if (!await claimReminder(reminder.id)) { skipped++; continue; }
   const unsubscribeUrl = `${origin}/api/email/birthday-reminder?unsubscribe=${unsubscribeToken(reminder.id, birthdayReminderSecret())}`;
   try {
-    await sendPlainEmail(reminder.email, birthdayEmail(origin, unsubscribeUrl), process.env, fetch, { 'List-Unsubscribe': `<${unsubscribeUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' });
-    await markReminderSent(reminder.id);
+    await sendPlainEmail(reminder.email, birthdayEmail(origin, unsubscribeUrl), process.env, fetch, { 'List-Unsubscribe': `<${unsubscribeUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' }, `birthday-reminder/${reminder.id}/${date.slice(0, 4)}`);
     sent++;
-  } catch { failed++; }
+  } catch {
+    failed++;
+    // The next run tries again; the idempotency key keeps Resend from sending twice if this one went out after all.
+    await releaseReminder(reminder.id).catch(() => false);
+  }
 }
-console.log(`Birthday reminders for ${date}: ${due.length} due, ${dryRun ? 'dry run, none' : sent} sent, ${failed} failed.`);
+console.log(`Birthday reminders for ${date}: ${due.length} due, ${dryRun ? 'dry run, none' : sent} sent, ${skipped} already claimed or stopped, ${failed} failed.`);
 if (failed) process.exitCode = 1;

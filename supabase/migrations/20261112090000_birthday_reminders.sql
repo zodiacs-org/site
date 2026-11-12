@@ -75,11 +75,10 @@ begin
 end;
 $$;
 
+-- Reads only: the expired requests are deleted by birthday_reminders_sweep, so a dry run changes nothing.
 create or replace function public.birthday_reminders_due(p_days jsonb)
-returns table (id uuid, email text) language plpgsql security definer set search_path = '' as $$
+returns table (id uuid, email text) language plpgsql stable security definer set search_path = '' as $$
 begin
-  delete from zodiacs_reminders_private.birthday_reminders r
-    where r.confirmed_at is null and r.requested_at < pg_catalog.now() - interval '48 hours';
   return query select r.id, r.email from zodiacs_reminders_private.birthday_reminders r
     join pg_catalog.jsonb_to_recordset(p_days) as d(month int, day int) on r.month = d.month and r.day = d.day
     where r.confirmed_at is not null
@@ -87,12 +86,29 @@ begin
 end;
 $$;
 
-create or replace function public.birthday_reminder_sent(p_id uuid)
+-- Claims this year's email before it is sent: true for one caller only, and only while the reminder is
+-- still there, confirmed and not yet sent this year. A second run, a concurrent run or a stop link that
+-- arrived after the due list was read gets false, so no one is emailed twice or after stopping.
+create or replace function public.birthday_reminder_claim(p_id uuid)
 returns boolean language plpgsql security definer set search_path = '' as $$
 declare found_id uuid;
 begin
   update zodiacs_reminders_private.birthday_reminders set last_sent_on = (pg_catalog.now() at time zone 'UTC')::date
-    where id = p_id returning id into found_id;
+    where id = p_id and confirmed_at is not null
+      and (last_sent_on is null or last_sent_on < pg_catalog.date_trunc('year', pg_catalog.now() at time zone 'UTC')::date)
+    returning id into found_id;
+  return found_id is not null;
+end;
+$$;
+
+-- Gives back today's claim after the email failed, so the next run can try again.
+create or replace function public.birthday_reminder_release(p_id uuid)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare found_id uuid;
+begin
+  update zodiacs_reminders_private.birthday_reminders set last_sent_on = null
+    where id = p_id and last_sent_on = (pg_catalog.now() at time zone 'UTC')::date
+    returning id into found_id;
   return found_id is not null;
 end;
 $$;
@@ -102,10 +118,12 @@ revoke all on function public.birthday_reminder_request(text, int, int, text) fr
 revoke all on function public.birthday_reminder_confirm(text) from public, anon, authenticated;
 revoke all on function public.birthday_reminder_delete(uuid) from public, anon, authenticated;
 revoke all on function public.birthday_reminders_due(jsonb) from public, anon, authenticated;
-revoke all on function public.birthday_reminder_sent(uuid) from public, anon, authenticated;
+revoke all on function public.birthday_reminder_claim(uuid) from public, anon, authenticated;
+revoke all on function public.birthday_reminder_release(uuid) from public, anon, authenticated;
 grant execute on function public.birthday_reminders_sweep() to service_role;
 grant execute on function public.birthday_reminder_request(text, int, int, text) to service_role;
 grant execute on function public.birthday_reminder_confirm(text) to service_role;
 grant execute on function public.birthday_reminder_delete(uuid) to service_role;
 grant execute on function public.birthday_reminders_due(jsonb) to service_role;
-grant execute on function public.birthday_reminder_sent(uuid) to service_role;
+grant execute on function public.birthday_reminder_claim(uuid) to service_role;
+grant execute on function public.birthday_reminder_release(uuid) to service_role;
