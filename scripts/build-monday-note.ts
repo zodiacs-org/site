@@ -2,7 +2,7 @@
  * The Monday Note: one command writes the week's email draft from the sky
  * data and readings the site already publishes.
  *
- *   npm run note:build -- --week 2026-11-23
+ *   npx vite-node --script scripts/build-monday-note.ts --week 2026-11-23
  *
  * It writes `.monday-note/<week>.html` and `.monday-note/<week>.txt` (both
  * ignored by git) to paste into the provider's broadcast tool. It sends
@@ -711,9 +711,9 @@ export function parseArgs(argv: string[]): { week: string; outDir: string } {
     else if (arg.startsWith('--week=')) week = arg.slice('--week='.length);
     else if (arg === '--out') outDir = resolve(argv[++i] ?? '');
     else if (arg.startsWith('--out=')) outDir = resolve(arg.slice('--out='.length));
-    else throw new Error(`Unknown argument ${JSON.stringify(arg)}. Usage: npm run note:build -- --week YYYY-MM-DD [--out DIR]`);
+    else throw new Error(`Unknown argument ${JSON.stringify(arg)}. Usage: npx vite-node --script scripts/build-monday-note.ts --week YYYY-MM-DD [--out DIR]`);
   }
-  if (!week) throw new Error('Usage: npm run note:build -- --week YYYY-MM-DD [--out DIR] (the week\'s Monday)');
+  if (!week) throw new Error('Usage: npx vite-node --script scripts/build-monday-note.ts --week YYYY-MM-DD [--out DIR] (the week\'s Monday)');
   return { week, outDir };
 }
 
