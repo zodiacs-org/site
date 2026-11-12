@@ -1,11 +1,12 @@
 {
   "version": 1,
-  "id": "hide-baby-coming-of-age-pages-2026-11-12",
-  "baseCommit": "9ed6fe685af4b9a7e6671a7a8d5c9bd2ecf363ae",
+  "id": "pause-registry-research-feed-2026-11-12",
+  "baseCommit": "7d005c4778a4983a477b082f75f5c7d60fc70b42",
   "protectedPaths": [
-    "src/pages/es/baby-zodiac/index.astro",
-    "src/pages/fr/baby-zodiac/index.astro",
-    "src/pages/it/baby-zodiac/index.astro",
-    "src/pages/pt/baby-zodiac/index.astro"
+    "scripts/build-app.mjs",
+    "scripts/registry-research-lib.mjs",
+    "scripts/registry-research-pause.mjs",
+    "scripts/registry-research-pause.test.mjs",
+    "scripts/registry-research.test.mjs"
   ]
 }
