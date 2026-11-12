@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseCsv, scoreAnswer, summarisePhrase } from './lib.mjs';
+import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseCsv, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
 
 describe('visibility lib', () => {
   it('holds fifty questions with unique ids and phrases', () => {
@@ -102,5 +102,17 @@ describe('keyword tables', () => {
       expect(r[8] === 'TBD' || /^\d+$/.test(r[8])).toBe(true);
       expect(copyProblems(r[5])).toEqual([]);
     }
+  });
+  it('reads Keyword Planner volumes without gluing ranges or turning blanks into zero', () => {
+    expect(parseVolume('10 - 100')).toBe('10-100');
+    expect(parseVolume('1K \u2013 10K')).toBe('1000-10000');
+    expect(parseVolume('100K-1M')).toBe('100000-1000000');
+    expect(parseVolume('1,300')).toBe('1300');
+    expect(parseVolume('1.5K')).toBe('1500');
+    expect(parseVolume('0')).toBe('0');
+    for (const blank of ['', ' ', '-', '--', undefined, 'n/a']) expect(parseVolume(blank)).toBe('TBD');
+    expect(volumeOf('10-100')).toEqual({ low: 10, exact: false });
+    expect(volumeOf('1300')).toEqual({ low: 1300, exact: true });
+    expect(volumeOf('TBD')).toBe(null);
   });
 });

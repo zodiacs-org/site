@@ -185,3 +185,33 @@ export function copyProblems(text) {
   if (m) out.push(`market word "${m[0]}"`);
   return out;
 }
+
+// Keyword Planner "Avg. monthly searches" comes as an exact count ("1,300"),
+// a bucket ("10 - 100", "1K – 10K", "100K-1M") or blank / "-" when it has no
+// data. Exact counts become digits, buckets become "low-high" in digits, and
+// anything else is 'TBD' (missing data, never a measured zero).
+export function parseVolume(raw) {
+  const s = String(raw ?? '').trim();
+  const num = (t) => {
+    const m = /^(\d+(?:[.,]\d+)?|\d{1,3}(?:[,.\s]\d{3})+)\s*([KkMm])?$/.exec(t.trim());
+    if (!m) return null;
+    const mult = m[2] ? (/k/i.test(m[2]) ? 1e3 : 1e6) : 1;
+    const n = m[2] ? Number(m[1].replace(',', '.')) : Number(m[1].replace(/[,.\s]/g, ''));
+    return Number.isFinite(n) ? Math.round(n * mult) : null;
+  };
+  const range = /^(.+?)\s*[-\u2013\u2014]\s*(.+)$/.exec(s);
+  if (range) {
+    const lo = num(range[1]), hi = num(range[2]);
+    return lo != null && hi != null && lo <= hi ? `${lo}-${hi}` : 'TBD';
+  }
+  const n = num(s);
+  return n == null ? 'TBD' : String(n);
+}
+
+// Volume cell from a keyword table: { low, exact } or null when not known.
+export function volumeOf(cell) {
+  const s = String(cell ?? '');
+  if (/^\d+$/.test(s)) return { low: +s, exact: true };
+  const m = /^(\d+)-(\d+)$/.exec(s);
+  return m ? { low: +m[1], exact: false } : null;
+}
