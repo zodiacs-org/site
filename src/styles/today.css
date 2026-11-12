@@ -45,7 +45,7 @@
 .tbs__read-stamp { font-size: 12px; letter-spacing: 0; color: var(--faint); }
 .tbs__lines { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
 .tbs__lines p { margin: 0 0 3px; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; max-width: 64ch; }
-.tbs__receipt { font-size: 10.5px; color: var(--faint); letter-spacing: 0.05em; }
+.tbs__receipt { font-size: 12px; color: var(--faint); letter-spacing: 0.05em; }
 .tbs__more { justify-self: start; font-size: 12.5px; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--hair-2); }
 .tbs__more:hover { color: var(--text); border-bottom-color: var(--sign); }
 

@@ -702,7 +702,7 @@ body:has(:focus-visible) .reveal { animation: none; }
   padding: 10px 16px;
   border-top: 1px solid var(--hair-1);
   color: var(--faint);
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.05em;
 }
 

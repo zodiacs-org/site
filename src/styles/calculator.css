@@ -91,7 +91,7 @@
 .calc__privacy {
   margin: 14px 0 0;
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0;
   font-variant-numeric: tabular-nums;
   color: var(--faint);
@@ -394,7 +394,7 @@
 .calc__receipt {
   margin: 14px 0 0;
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--faint);
   letter-spacing: 0.05em;
 }
@@ -1138,7 +1138,7 @@
 .syn-invite__privacy,
 .syn-arrival__fine {
   color: var(--faint) !important;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.04em;
 }
 .syn-arrival { min-height: 176px; }
@@ -1366,7 +1366,7 @@
   display: grid;
   gap: 8px;
 }
-.syn__aspect-receipt { font-size: 11.5px; color: var(--muted); letter-spacing: 0.03em; }
+.syn__aspect-receipt { font-size: 12px; color: var(--muted); letter-spacing: 0.03em; }
 .syn__aspect-read { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; }
 .syn__aspect-name {
   display: flex;
@@ -1679,7 +1679,7 @@
   margin: 0;
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.04em;
 }
 .calc__deep-read-footer {
@@ -1883,7 +1883,7 @@
 .calc__comm-aspects li { display: grid; gap: 5px; font-size: 12px; color: var(--muted); line-height: 1.55; }
 .calc__comm-aspect-label { display: flex; align-items: center; gap: 6px; color: var(--text-2); font-weight: 600; }
 .calc__comm-aspect-label small { margin-inline-start: auto; color: var(--faint); font-family: var(--font-mono); font-weight: 400; }
-.calc__comm-privacy { margin: 0; color: var(--faint); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; }
+.calc__comm-privacy { margin: 0; color: var(--faint); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; }
 @media (hover: hover) and (pointer: fine) {
   .calc__comm-part:hover { border-color: var(--hair-3); }
 }
@@ -1928,7 +1928,7 @@
 .pfd__pick .field__input { height: 38px; max-width: 320px; }
 .pfd__lines { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
 .pfd__lines p { margin: 0 0 3px; max-width: 62ch; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; }
-.pfd__receipt { font-size: 10.5px; color: var(--faint); letter-spacing: 0.05em; }
+.pfd__receipt { font-size: 12px; color: var(--faint); letter-spacing: 0.05em; }
 .pfd__quiet { margin: 0; font-size: var(--text-sm); color: var(--muted); }
 .pfd__more { font-size: 12.5px; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--hair-2); justify-self: start; }
 .pfd__more:hover { color: var(--text); border-bottom-color: var(--muted); }
@@ -2529,7 +2529,7 @@
 }
 
 /* Method fine print for the dimensional view — the receipts stay visible. */
-.ev-fine { font-size: 11px; color: var(--faint); }
+.ev-fine { font-size: 12px; color: var(--faint); }
 
 /* ── Synastry: the second chart, dashed ── */
 .ev-body.is-partner .ev-disc { stroke-dasharray: 3 2.2; }

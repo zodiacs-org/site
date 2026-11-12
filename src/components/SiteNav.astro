@@ -619,15 +619,14 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
   .tools-menu__item:hover,
   .tools-menu__item:focus-visible { background: rgba(198, 204, 218, 0.07); }
   .tools-menu__name { font-size: 14px; font-weight: 550; line-height: 1.25; }
+  /* 12px is the floor for menu descriptions (accessibility audit M4). The
+     longer localized lines wrap instead of being cut off with an ellipsis. */
   .tools-menu__desc {
-    overflow: hidden;
     font-family: var(--font-nav-mono);
-    font-size: 9px;
+    font-size: 12px;
     line-height: 1.4;
     letter-spacing: 0.025em;
     color: var(--faint);
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .tools-menu__all {
     grid-column: 1 / -1;
@@ -684,7 +683,7 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
   .signs-menu__name { font-size: 14px; font-weight: 550; color: var(--text); line-height: 1.25; }
   .signs-menu__dates {
     font-family: var(--font-nav-mono);
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.06em;
     color: var(--faint);
   }
@@ -1082,6 +1081,24 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
     mobileMenu!.scrollTop += Math.min(0, top - edge) || Math.max(0, bottom - innerHeight + 8);
   }));
 
+  // The page behind the full-screen menu is inert while it is open, so screen
+  // readers and pointer users cannot reach it either. Only the elements this
+  // sets are released on close; anything already inert stays inert.
+  const inertBehindMenu = new Set<Element>();
+  function setPageInert(open: boolean) {
+    if (!open) {
+      inertBehindMenu.forEach((element) => element.removeAttribute('inert'));
+      inertBehindMenu.clear();
+      return;
+    }
+    for (const element of Array.from(document.body.children)) {
+      if (element.contains(mobileMenu) || element.contains(burger) || element.hasAttribute('inert')) continue;
+      if (element.matches('script, style, link, template')) continue;
+      element.setAttribute('inert', '');
+      inertBehindMenu.add(element);
+    }
+  }
+
   function setMobile(open: boolean) {
     if (!burger || !mobileMenu) return;
     const hadFocusInside = mobileMenu.contains(document.activeElement);
@@ -1096,6 +1113,7 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
       : (burger.dataset.openLabel || 'Menu'));
     mobileMenu.hidden = !open;
     mobileMenu.classList.toggle('is-open', open);
+    setPageInert(open);
     document.documentElement.style.overflow = open ? 'hidden' : '';
     // The overlay covers the page, so focus must travel with it: into the
     // first menu link on open, back to the burger on close — never dropped

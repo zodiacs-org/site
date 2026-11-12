@@ -1,6 +1,7 @@
 // Keyboard access to the desktop navigation (accessibility audit, 12 Nov 2026):
 // every link in an open Tools or Signs panel is reachable with Tab, and site
-// search opens with Ctrl/Cmd+K only, never on a bare character key (WCAG 2.1.4).
+// search opens with Ctrl/Cmd+K only, never on a bare character key (WCAG 2.1.4),
+// and the page behind the open mobile menu is inert.
 // The real nav module and search loader from SiteNav.astro run in Chromium
 // against a small fixture with the same hooks and DOM order (the panels sit
 // after the nav, as they do on the site).
@@ -27,11 +28,15 @@ const fixture = `<!doctype html><html lang="en"><body>
       <a href="/today/">Today</a>
     </div>
     <button type="button" data-search-open aria-label="Search the site">Search</button>
+    <button type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu">Menu</button>
   </nav>
   <div id="tools-menu" data-tools-menu hidden><div>${links(tools)}</div></div>
   <div id="signs-menu" data-signs-menu hidden><div>${links(signs)}</div></div>
 </div>
+<div id="mobile-menu" data-mobile-menu hidden><nav aria-label="Mobile"><a href="/tools/">Mobile tools</a></nav></div>
 <main><a href="/learn/">Learn</a><input aria-label="Name"></main>
+<aside data-already-inert inert><a href="/elsewhere/">Elsewhere</a></aside>
+<footer><a href="/privacy/">Privacy</a></footer>
 <script type="module">${navModule}</script>
 <script>${searchLoader}</script>
 </body></html>`;
@@ -122,6 +127,29 @@ describe('desktop navigation menus', () => {
     await page.focus('[data-tools-toggle]');
     await page.keyboard.press('Tab');
     expect(await focused()).toBe('Signs');
+  });
+});
+
+describe('mobile menu', () => {
+  const inert = () => page.evaluate(() => Object.fromEntries(
+    ['main', 'footer', '[data-already-inert]', '.nav-wrap', '[data-mobile-menu]']
+      .map((selector) => [selector, document.querySelector(selector).inert]),
+  ));
+
+  it('makes the page behind it inert while open, and releases only what it set', async () => {
+    await load();
+    await page.click('[data-menu-toggle]');
+    expect(await expanded('data-menu-toggle')).toBe('true');
+    expect(await focused()).toBe('Mobile tools');
+    expect(await inert()).toEqual({
+      main: true, footer: true, '[data-already-inert]': true, '.nav-wrap': false, '[data-mobile-menu]': false,
+    });
+    await page.keyboard.press('Escape');
+    expect(await expanded('data-menu-toggle')).toBe('false');
+    expect(await focused()).toBe('Menu');
+    expect(await inert()).toEqual({
+      main: false, footer: false, '[data-already-inert]': true, '.nav-wrap': false, '[data-mobile-menu]': false,
+    });
   });
 });
 
