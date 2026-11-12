@@ -785,7 +785,7 @@ export default function ProfileManager({
               {dailyChartChooser}
               <p class="pf-daily__consent">{PF_DAILY_COPY.consentNote}</p>
               <button class="btn btn--primary" type="submit" disabled={dailyBusy || !effectiveDailyChartId}>
-                <span>{PF_DAILY_COPY.enroll}</span><span class="orb">↗</span>
+                <span>{PF_DAILY_COPY.enroll}</span><span class="orb" aria-hidden="true">↗</span>
               </button>
             </form>
           ) : (
@@ -880,7 +880,7 @@ export default function ProfileManager({
               {dailyChartChooser}
               <p class="pf-daily__consent">{PF_DAILY_COPY.consentNote}</p>
               <button class="btn btn--primary" type="submit" disabled={dailyBusy || !effectiveDailyChartId}>
-                <span>{PF_DAILY_COPY.enroll}</span><span class="orb">↗</span>
+                <span>{PF_DAILY_COPY.enroll}</span><span class="orb" aria-hidden="true">↗</span>
               </button>
             </form>
           )}
@@ -937,7 +937,7 @@ export default function ProfileManager({
               required
             />
             <button class="btn btn--primary" type="submit" disabled={!syncApi || syncState === 'sending'}>
-              <span>{syncState === 'sending' ? t(locale, 'sending') : t(locale, 'sendSignIn')}</span><span class="orb">↗</span>
+              <span>{syncState === 'sending' ? t(locale, 'sending') : t(locale, 'sendSignIn')}</span><span class="orb" aria-hidden="true">↗</span>
             </button>
           </form>
           </div>
@@ -1085,14 +1085,14 @@ export default function ProfileManager({
               class="btn btn--primary pf-next__cta"
               href={`${localizePath(locale, '/compatibility/')}?a=${profile.charts[0].id}&b=${profile.charts[1].id}`}
             >
-              <span>{t(locale, 'compareThese')}</span><span class="orb">↗</span>
+              <span>{t(locale, 'compareThese')}</span><span class="orb" aria-hidden="true">↗</span>
             </a>
           </div>
         </div>
       )}
 
       <div class="pf-foot">
-        <a class="btn btn--ghost" href={locale === 'en' ? '/birth-chart/someone-else/' : localizePath(locale, '/birth-chart/')}><span>{PF_BOOK_COPY[locale].add}</span><span class="orb">+</span></a>
+        <a class="btn btn--ghost" href={locale === 'en' ? '/birth-chart/someone-else/' : localizePath(locale, '/birth-chart/')}><span>{PF_BOOK_COPY[locale].add}</span><span class="orb" aria-hidden="true">+</span></a>
       </div>
 
       {syncPanel}

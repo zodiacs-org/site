@@ -49,7 +49,7 @@ export function CompatibilityPairingCta({
         a: signName(signA, locale),
         b: signName(signB, locale),
       })}{locale === 'ru' ? ' (пока по-английски)' : ''}</span>
-      <span class="orb">→</span>
+      <span class="orb" aria-hidden="true">→</span>
     </a>
   );
 }
@@ -96,7 +96,7 @@ export function CompatibilityShareControl({
         <span>{card === 'busy'
           ? shareCardText(locale, 'compatibilityBusy')
           : shareCardText(locale, 'compatibilityAction')}</span>
-        <span class="orb">{card === 'saved' ? '✓' : '↗'}</span>
+        <span class="orb" aria-hidden="true">{card === 'saved' ? '✓' : '↗'}</span>
       </button>
       {noTime && <p class="field__help" data-compatibility-no-time>{shareCardText(locale, 'compatibilityNoTimeNote')}</p>}
       {card === 'saved' && (

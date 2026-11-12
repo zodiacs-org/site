@@ -1538,7 +1538,7 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
                 required
               />
               <button class="btn btn--primary" type="submit" disabled={busy || !syncApi}>
-                <span>{busy ? 'Working…' : 'Send private sign-in link'}</span><span class="orb">↗</span>
+                <span>{busy ? 'Working…' : 'Send private sign-in link'}</span><span class="orb" aria-hidden="true">↗</span>
               </button>
             </form>
           </>

@@ -257,7 +257,7 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
 
           <button class="btn btn--primary calc__submit" type="submit" disabled={!date || busy}>
             <span>{busy ? t(locale, 'computing') : t(locale, 'findThatMoon')}</span>
-            <span class="orb">↗</span>
+            <span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="calc__privacy">{t(locale, 'privacyDevice')}</p>
           {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
@@ -299,7 +299,7 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
                 : localizePath(locale, '/birth-chart/')}
               data-birth-chart-handoff
             >
-              <span>{t(locale, 'birthChartForDate')}</span><span class="orb">↗</span>
+              <span>{t(locale, 'birthChartForDate')}</span><span class="orb" aria-hidden="true">↗</span>
             </a>
           </div>
         </div>

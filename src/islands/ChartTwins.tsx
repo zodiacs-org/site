@@ -46,7 +46,7 @@ export default function ChartTwins({ locale = 'en', directory }: { locale?: Cata
     <p class="notice">{s(locale, 'twinsLimit')}</p>
     <form class="sharing-form" onSubmit={compute}>
       <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(next) => { generation.current++; setEntry((current) => ({ ...current, ...next })); setResult(null); setBusy(false); setError(''); }} />
-      <button class="btn btn--primary" disabled={busy} data-twins-submit><span>{s(locale, busy ? 'computing' : 'twinsSubmit')}</span><span class="orb">↗</span></button>
+      <button class="btn btn--primary" disabled={busy} data-twins-submit><span>{s(locale, busy ? 'computing' : 'twinsSubmit')}</span><span class="orb" aria-hidden="true">↗</span></button>
       <p class="sharing-note">{s(locale, 'privacy')}</p>{error && <p class="field__error" role="alert">{error}</p>}<CalculationReload error={error} locale={locale} />
     </form>
     {result && <section class="sharing-result" tabIndex={-1} ref={resultRef} aria-label={s(locale, 'twinsTitle')} data-twins-result>

@@ -270,7 +270,7 @@ export function TransitSearch({
 
         <button class="btn btn--primary" type="submit" disabled={!canRun} data-search-run>
           <span>Find exact dates</span>
-          <span class="orb">↗</span>
+          <span class="orb" aria-hidden="true">↗</span>
         </button>
         {!natal && <p class="field__help">Load your natal chart above to search its points.</p>}
       </form>

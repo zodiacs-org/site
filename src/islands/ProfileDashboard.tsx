@@ -217,7 +217,7 @@ export default function ProfileDashboard({ locale: rawLocale = 'en' }: Props) {
           <h2>{t(locale, 'pfdEmptyTitle')}</h2>
           <p>{t(locale, 'pfdEmptyBody')}</p>
           <a class="btn btn--primary" href={localizePath(locale, '/birth-chart/')}>
-            <span>{t(locale, 'getBirthChart')}</span><span class="orb">↗</span>
+            <span>{t(locale, 'getBirthChart')}</span><span class="orb" aria-hidden="true">↗</span>
           </a>
         </div>
       </section>

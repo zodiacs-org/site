@@ -1498,7 +1498,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
 
           <button class="btn btn--primary calc__submit" type="submit" disabled={!canCompare}>
             <span>{busy ? t(locale, 'comparing') : t(locale, 'compareCharts')}</span>
-            <span class="orb">↗</span>
+            <span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="calc__privacy">{t(locale, 'privacyDevice')}</p>
           {locale === 'en' && <p class="calc__guide">Questions about these charts? <a href="/ask/" data-assistant-open>Ask Guide</a></p>}

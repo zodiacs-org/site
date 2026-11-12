@@ -98,7 +98,7 @@ export default function ReturnPersonal({ kind, locale }: { kind: 'kit' | 'wrappe
         {!saved.length && <p class="sharing-note">{s(locale, 'wrappedSaveHint')} <a href={localizePath(locale, '/birth-chart/')}>{s(locale, 'saveChart')} →</a></p>}
         <div class="field"><label class="field__label" for="wrapped-year">{s(locale, 'year')}</label><select id="wrapped-year" class="field__input" value={year} onChange={(event) => { clear(); setYear(Number(event.currentTarget.value)); }}>{Array.from({ length: 5 }, (_, i) => currentYear - i).filter((year) => year >= 1800 && year <= 2199).map((year) => <option value={year}>{year}</option>)}</select></div>
       </>}
-      <button class="btn btn--primary" disabled={busy} data-return-submit><span>{s(locale, busy ? 'generating' : kind === 'kit' ? 'makePdf' : 'makeWrapped')}</span><span class="orb">↗</span></button>
+      <button class="btn btn--primary" disabled={busy} data-return-submit><span>{s(locale, busy ? 'generating' : kind === 'kit' ? 'makePdf' : 'makeWrapped')}</span><span class="orb" aria-hidden="true">↗</span></button>
       {busy && <button class="btn btn--ghost" type="button" onClick={clear}>{s(locale, 'cancel')}</button>}
       <p class="sharing-note">{sharingText(locale, 'privacy')}</p>
       {error && <p class="field__error" role="alert">{error}</p>}<CalculationReload error={error} locale={locale} />

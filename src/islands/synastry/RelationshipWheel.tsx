@@ -422,7 +422,7 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
               data-swap
             >
               <span>{formatRelationshipCopy(c.swap, { name: outer.label })}</span>
-              <span class="orb">⇄</span>
+              <span class="orb" aria-hidden="true">⇄</span>
             </button>
           </div>
           <p class="field__help rwheel__hint">{c.tapHint}</p>

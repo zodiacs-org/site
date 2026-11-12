@@ -62,7 +62,7 @@ const { title, sub, cta, horoscope, horoscopeHref, englishCue, trust, credit, pa
       <h1 class="lhero__title">{title}</h1>
       <p class="lhero__sub">{sub}</p>
       <div class="lhero__ctas">
-        <a class="btn btn--primary" href={localizePath('ru', '/birth-chart/')}><span>{cta}</span><span class="orb">↗</span></a>
+        <a class="btn btn--primary" href={localizePath('ru', '/birth-chart/')}><span>{cta}</span><span class="orb" aria-hidden="true">↗</span></a>
         <a
           class="btn btn--ghost lhero__ghost"
           href={horoscopeHref}

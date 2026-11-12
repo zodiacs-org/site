@@ -105,8 +105,8 @@ const description = `${person.name}'s Year Ahead Score from ${dayName(page.from)
     </div>
 
     <p class="ypp__cta">
-      <a class="btn btn--primary" href="/year-score/"><span>Score your own year</span><span class="orb">↗</span></a>
-      <a class="btn btn--ghost" href="/year/" rel="nofollow"><span>All Year Ahead scores</span><span class="orb">→</span></a>
+      <a class="btn btn--primary" href="/year-score/"><span>Score your own year</span><span class="orb" aria-hidden="true">↗</span></a>
+      <a class="btn btn--ghost" href="/year/" rel="nofollow"><span>All Year Ahead scores</span><span class="orb" aria-hidden="true">→</span></a>
     </p>
     {/* The share link opens the card page, whose picture the server draws from the directory (src/server/result-preview.ts). */}
     <ShareRow text={`${person.name}'s Year Ahead Score: ${reading.score.toFixed(1)}/10`} url={figureYearScoreShareUrl('https://zodiacs.org', person.slug)!} label="Share this score:" />

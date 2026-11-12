@@ -41,14 +41,14 @@ export default function PrivateCompatibilityInvite({ locale = 'en' }: { locale?:
   return <div class="sharing-tool">
     <form class="sharing-form" onSubmit={compute}>
       <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(next) => { generation.current++; setEntry((current) => ({ ...current, ...next })); setResult(null); setBusy(false); setError(''); setCopyStatus(''); }} />
-      <button class="btn btn--primary" disabled={busy} data-private-invite-create><span>{s(locale, busy ? 'computing' : 'inviteCreate')}</span><span class="orb">↗</span></button>
+      <button class="btn btn--primary" disabled={busy} data-private-invite-create><span>{s(locale, busy ? 'computing' : 'inviteCreate')}</span><span class="orb" aria-hidden="true">↗</span></button>
       <p class="sharing-note">{s(locale, 'privacy')}</p>
       {error && <p role="alert" class="field__error">{error}</p>}<CalculationReload error={error} locale={locale} />
     </form>
     {result && <section class="sharing-result" data-private-invite-result>
       <result.trust.ResultOpening locale={locale} /><result.trust.CheckOurMath utc={result.chart.input.utc} basis={result.chart.input.timeKnown ? 'birth' : 'reference'} locale={locale} />
       <h2>{s(locale, 'inviteReady')}</h2><p>{s(locale, 'inviteNote')}</p>
-      <button class="btn btn--glass" type="button" onClick={copy} data-private-invite-copy><span>{s(locale, 'inviteShare')}</span><span class="orb">↑</span></button>
+      <button class="btn btn--glass" type="button" onClick={copy} data-private-invite-copy><span>{s(locale, 'inviteShare')}</span><span class="orb" aria-hidden="true">↑</span></button>
       <label class="field__label" for="private-invite-link">{s(locale, 'linkLabel')}</label>
       <input id="private-invite-link" class="field__input sharing-link" readOnly value={link} onFocus={(event) => event.currentTarget.select()} />
       <p role="status">{copyStatus}</p>

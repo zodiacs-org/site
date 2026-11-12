@@ -178,7 +178,8 @@ export default function LearningPath({ lessons = {}, children }: {
                 }}
               >
                 <span class="lesson__n" aria-hidden="true">{index + 1}</span>
-                <span class="lesson__art" aria-hidden={decor.art ? undefined : 'true'}>
+                {/* The painting is decoration inside the link: the lesson title names it. */}
+                <span class="lesson__art" aria-hidden="true">
                   {decor.art && (
                     <img
                       src={decor.art.src}
@@ -186,7 +187,7 @@ export default function LearningPath({ lessons = {}, children }: {
                       sizes="(max-width: 760px) 92px, 196px"
                       width={decor.art.width}
                       height={decor.art.height}
-                      alt={decor.art.alt}
+                      alt=""
                       loading="lazy"
                       decoding="async"
                     />

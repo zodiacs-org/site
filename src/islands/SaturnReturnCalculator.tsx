@@ -141,7 +141,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
 
           <button class="btn btn--primary calc__submit" type="submit" disabled={!date || busy}>
             <span>{busy ? t(locale, 'computing') : t(locale, 'findSaturnReturn')}</span>
-            <span class="orb">↗</span>
+            <span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="calc__privacy">{t(locale, 'privacyDevice')}</p>
           {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
@@ -209,14 +209,14 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
 
           <div class="calc__actions">
             <a class="btn btn--ghost" href={localizePath(locale, '/birth-chart/')}>
-              <span>{t(locale, 'seeSaturnChart')}</span><span class="orb">↗</span>
+              <span>{t(locale, 'seeSaturnChart')}</span><span class="orb" aria-hidden="true">↗</span>
             </a>
             <a
               class="btn btn--ghost"
               href="/learn/planets/saturn/"
               title={locale === 'ru' ? 'Материал пока доступен по-английски' : undefined}
             >
-              <span>{t(locale, 'whatSaturnMeans')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb">→</span>
+              <span>{t(locale, 'whatSaturnMeans')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb" aria-hidden="true">→</span>
             </a>
           </div>
         </div>

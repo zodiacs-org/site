@@ -454,7 +454,7 @@ export default function DemoChart({ locale = 'en' }: { locale?: CatalogLocale })
 
         <div class="demo__actions">
           <a class="btn btn--primary demo__cta" href={l10n ? localizePath(locale, '/birth-chart/') : '/birth-chart/'}>
-            <span>{l10n ? l10n.cta : 'See my birth chart'}</span><span class="orb">↗</span>
+            <span>{l10n ? l10n.cta : 'See my birth chart'}</span><span class="orb" aria-hidden="true">↗</span>
           </a>
           <a class="textlink" href={l10n ? localizePath(locale, '/methodology/') : '/methodology/'} data-check-our-math>{t(locale, 'trustMath')} <span class="arr" aria-hidden="true">→</span></a>
         </div>

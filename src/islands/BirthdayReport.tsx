@@ -151,7 +151,7 @@ export function ReportResult({ state, yearScoreLink, headingRef }: { state: Repo
 
       <p class="br__note">Astrology, numerology and tarot are separate traditions; this page reads each on its own terms.</p>
       <div class="calc__actions">
-        {state.share && <a class="btn btn--primary" href={state.share}><span>Share my birthday report</span><span class="orb">↗</span></a>}
+        {state.share && <a class="btn btn--primary" href={state.share}><span>Share my birthday report</span><span class="orb" aria-hidden="true">↗</span></a>}
       </div>
     </div>
   );
@@ -239,7 +239,7 @@ export default function BirthdayReport({ yearScoreLink = false }: { yearScoreLin
           )}
           <button class="btn btn--primary calc__submit" type="submit" disabled={!date || busy}>
             {/* Both labels share one cell, so the button keeps its width while it calculates. */}
-            <span class="br__submit" data-busy={busy ? 'true' : 'false'}><span>Make my birthday report</span><span>Calculating</span></span><span class="orb">↗</span>
+            <span class="br__submit" data-busy={busy ? 'true' : 'false'}><span>Make my birthday report</span><span>Calculating</span></span><span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="calc__privacy">Calculated on your device. Your birth details are not sent or saved.</p>
           {error && <p class="calc__error" role="alert">{error}</p>}

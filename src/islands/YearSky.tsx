@@ -232,18 +232,18 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
           {charts.length > 1 && <select id="ys-chart" class="field__input ys-chooser__select" aria-label={w.chooserSaved} value={chosen?.id ?? ''} onChange={(event) => { clear(); setSelected(event.currentTarget.value); }}>
             {charts.map((chart) => <option key={chart.id} value={chart.id}>{chart.name}</option>)}
           </select>}
-          <button class="btn btn--primary" disabled={busy} data-year-sky-read><span>{busy ? w.reading : w.readMine}</span><span class="orb">↗</span></button>
+          <button class="btn btn--primary" disabled={busy} data-year-sky-read><span>{busy ? w.reading : w.readMine}</span><span class="orb" aria-hidden="true">↗</span></button>
           {busy && <button class="btn btn--ghost" type="button" onClick={clear}>{w.cancel}</button>}
         </div>
       </> : !entering ? <>
         <p class="ys-chooser__lede">{w.enterDetailsLede} <a href="#shared-sky">{w.orGeneral}</a></p>
         <div class="ys-chooser__actions">
-          <button class="btn btn--primary" type="button" onClick={() => setEntering(true)} data-year-sky-enter><span>{w.enterDetails}</span><span class="orb">↗</span></button>
+          <button class="btn btn--primary" type="button" onClick={() => setEntering(true)} data-year-sky-enter><span>{w.enterDetails}</span><span class="orb" aria-hidden="true">↗</span></button>
         </div>
       </> : <>
         <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(patch) => { clear(); setEntry((current) => ({ ...current, ...patch })); }} />
         <div class="ys-chooser__actions">
-          <button class="btn btn--primary" disabled={busy} data-year-sky-read><span>{busy ? w.reading : w.readEntered}</span><span class="orb">↗</span></button>
+          <button class="btn btn--primary" disabled={busy} data-year-sky-read><span>{busy ? w.reading : w.readEntered}</span><span class="orb" aria-hidden="true">↗</span></button>
           {busy && <button class="btn btn--ghost" type="button" onClick={clear}>{w.cancel}</button>}
           {charts.length > 0 && !busy && <button class="btn btn--ghost" type="button" onClick={() => { clear(); setEntering(false); }}>{w.useSaved}</button>}
         </div>
@@ -306,7 +306,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
       {result.calendar && <div class="ys-calendar">
         <h3>{w.calendarTitle}</h3>
         <p>{w.calendarLede}</p>
-        <div class="return-actions"><button type="button" class="btn btn--primary" onClick={() => { void downloadCalendar(); }} data-year-sky-calendar><span>{w.calendarButton}</span><span class="orb">↓</span></button></div>
+        <div class="return-actions"><button type="button" class="btn btn--primary" onClick={() => { void downloadCalendar(); }} data-year-sky-calendar><span>{w.calendarButton}</span><span class="orb" aria-hidden="true">↓</span></button></div>
         <p class="sharing-note">{w.calendarNote}</p>
       </div>}
       <p role="status" class="ys-status">{status}</p>

@@ -259,7 +259,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
         <div class="big-three__actions">
           <button type="submit" class="btn btn--primary" disabled={busy} data-big-three-submit>
             <span>{s(locale, busy ? 'computing' : 'bigSubmit')}</span>
-            <span class="orb">→</span>
+            <span class="orb" aria-hidden="true">→</span>
           </button>
           {error && <p class="field__error big-three__error" role="alert">{error}</p>}
           <CalculationReload error={error} locale={locale} />
@@ -294,7 +294,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
           <div class="big-three__next">
             <a class="btn btn--primary" href={handoff} data-big-three-full>
               <span>{s(locale, 'fullChart')}</span>
-              <span class="orb">↗</span>
+              <span class="orb" aria-hidden="true">↗</span>
             </a>
             <button
               type="button"
@@ -306,7 +306,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
               <span>
                 {s(locale, cardState === 'preparing' ? 'cardPreparing' : cardState === 'sharing' ? 'sharing' : cardState === 'shared' ? 'shared' : cardState === 'downloaded' ? 'saved' : cardState === 'failed' ? 'retry' : 'bigShare')}
               </span>
-              <span class="orb">↑</span>
+              <span class="orb" aria-hidden="true">↑</span>
             </button>
           </div>
           {cardError && <p class="field__error big-three__error" role="alert">{cardError}</p>}

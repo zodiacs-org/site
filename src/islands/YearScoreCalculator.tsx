@@ -157,7 +157,7 @@ export default function YearScoreCalculator() {
           )}
           <button class="btn btn--primary calc__submit" type="submit" disabled={!date || busy}>
             <span>{busy ? 'Calculating' : 'Score my year'}</span>
-            <span class="orb">↗</span>
+            <span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="calc__privacy">Calculated on your device. Your birth details are not sent or saved.</p>
           {error && <p class="calc__error" role="alert">{error}</p>}
@@ -220,9 +220,9 @@ export default function YearScoreCalculator() {
             {(() => {
               // The link carries the Sun sign and the score only: never the birth date, time or place. No settled sign, no link.
               const share = result.sign ? yearScoreShareUrl(location.origin, { sun: result.sign.slug, score: result.reading.score }) : null;
-              return share ? <a class="btn btn--primary" href={share}><span>Share your score</span><span class="orb">↗</span></a> : null;
+              return share ? <a class="btn btn--primary" href={share}><span>Share your score</span><span class="orb" aria-hidden="true">↗</span></a> : null;
             })()}
-            <a class="btn btn--ghost" href="/transits/"><span>See every transit to your chart</span><span class="orb">↗</span></a>
+            <a class="btn btn--ghost" href="/transits/"><span>See every transit to your chart</span><span class="orb" aria-hidden="true">↗</span></a>
           </div>
         </div>
       )}

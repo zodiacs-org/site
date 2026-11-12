@@ -152,7 +152,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
         <div class="calc__actions">
           <button class="btn btn--primary" type="submit" disabled={busy}>
             <span>{busy ? t(locale, 'computing') : t(locale, 'babyCompute')}</span>
-            <span class="orb">{busy ? '…' : '→'}</span>
+            <span class="orb" aria-hidden="true">{busy ? '…' : '→'}</span>
           </button>
         </div>
         {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
@@ -226,10 +226,10 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
               href={reading.birthdayHref}
               title={locale === 'ru' ? 'Материал пока доступен по-английски' : undefined}
             >
-              <span>{t(locale, 'babyDateLink')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb">→</span>
+              <span>{t(locale, 'babyDateLink')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb" aria-hidden="true">→</span>
             </a>
             <a class="btn btn--primary" href={localizePath(locale, '/birth-chart/')}>
-              <span>{t(locale, 'babyChartLink')}</span><span class="orb">↗</span>
+              <span>{t(locale, 'babyChartLink')}</span><span class="orb" aria-hidden="true">↗</span>
             </a>
           </div>
         </div>
