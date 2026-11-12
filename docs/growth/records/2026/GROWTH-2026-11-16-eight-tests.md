@@ -66,6 +66,8 @@ public HTML only. No secret, `.env` file or dashboard was read.
 |---|---|---|---|---|---|
 | https://zodiacs.org/ | 200 | absent | absent | absent | present |
 | https://zodiacs.org/birth-chart/ | 200 | absent | absent | absent | present |
+| https://zodiacs.org/moon-phase/ (content page, not an account surface; fetched 11:50 UTC) | 200 | present, with a Plausible script address | absent | n/a | present |
+| https://zodiacs.org/your-2027-sky/ (fetched 11:50 UTC) | 200 | absent | absent | n/a | present |
 
 Both pages carry only the always-present stub
 `window.zodiacsAnalytics = ... Object.freeze({ track: function () {} })`, which
@@ -78,9 +80,10 @@ and the live `data-account-sync-v2` attribute shows account sync v2 is built on.
 whatever the environment holds. So on these two pages analytics is off by
 design, and the fetch cannot tell whether `PUBLIC_PLAUSIBLE_SCRIPT_URL` or
 `PUBLIC_VERCEL_WEB_ANALYTICS` is set for the rest of the site. To settle that,
-fetch one ordinary content page that is not an account surface (for example a
-sign guide or https://zodiacs.org/your-2027-sky/) and look for the same two
-loaders. That fetch was outside this ticket's brief and was not made.
+a follow-up fetch of a content page that is not an account surface
+(/moon-phase/) found the Plausible loader with a Plausible script address, so
+`PUBLIC_PLAUSIBLE_SCRIPT_URL` is set in production. No Vercel pageview loader
+was found on any page, so Vercel Web Analytics is not on.
 
 Supporting evidence from the repository: the Vercel record
 `GROWTH-2026-09-01-vercel-web-analytics-flag` is still `status: proposed`,
@@ -88,12 +91,14 @@ which means the owner's switch-on steps were not recorded as done. The final
 audit says the only traffic exports are dated 28 to 30 Sep 2026, covering July
 and August, and "I do not know whether analytics is still switched on."
 
-**Result for week 1: treat analytics as not running** until a content page shows
-a loader. The two pages most of the tests depend on (home and birth chart)
-cannot report at all while account sync v2 is on; see Proposal A.
+**Result for week 1: Plausible is running on content pages; Vercel Web
+Analytics is off.** The pages most of the tests depend on (home, birth chart
+and other account surfaces) cannot report while account sync v2 is on; see
+Proposal A.
 
 ### Settings Dias would set (not set by this ticket)
 
+`PUBLIC_PLAUSIBLE_SCRIPT_URL` is already set (seen live on 12 Nov). The rest stay as they are unless Dias decides otherwise.
 All are build-time `PUBLIC_` variables in the Vercel project `zodiacs-org`,
 production environment, and need a redeploy to take effect.
 
@@ -325,8 +330,7 @@ Only tools the code or docs show in use are listed. The code supports Plausible
 Each line names the export and a read-only way to give access instead. Either
 is enough. Exports and links stay private; nothing here is posted.
 
-1. **Plausible** (only if a Plausible site exists for zodiacs.org; if none does,
-   say so and the column stays null).
+1. **Plausible** (live: the loader is on content pages such as /moon-phase/).
    - Export: Plausible > zodiacs.org > Dashboard > date picker > Custom range,
      1 Sep 2026 to 15 Nov 2026 > Export (the download control on the
      dashboard; it gives a CSV zip with visitors, sources, pages, countries,
