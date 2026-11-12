@@ -7,9 +7,9 @@ zodiacs.org is already listed is unchecked for every row**. Full records:
 `baseline/2026-11-08/rankings.json` (`outreach`).
 
 What the assistants actually cite is still to be measured: once
-`ai-answers.mjs` has run, the `citedHosts` on questions q42 to q44 ("best free
-astrology website", "best astrology app", "private birth chart no signup")
-give the real list, and this file is re-ranked by how often each page is cited.
+`ai-answers.mjs` has run, the `citedHosts` on questions t06, q43, t01 and t02
+("best free astrology website", "best astrology app", "free birth chart
+calculator no signup", "private birth chart calculator") give the real list, and this file is re-ranked by how often each page is cited.
 
 Nothing here has been contacted. Dias sends every message. The ask is the same
 everywhere: a fair look at a free, no-account birth chart and astrology tool
