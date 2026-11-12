@@ -1,6 +1,8 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import publicationJson from '../../../data/registry-research/publication.json';
+import pause from '../../../data/registry-research/pause.json';
+import { registryResearchPauseNotice } from '../../../../scripts/registry-research-lib.mjs';
 import { terminalResearchLastmod } from '../../../lib/seo-lastmod';
 
 type ResearchItem = {
@@ -26,6 +28,9 @@ const dateLabel = (value: string) => new Intl.DateTimeFormat('en-US', {
 const categoryFor = (item: ResearchItem) => item.kind === 'event-brief' ? 'calendar' : 'zodiacs-research';
 const visibleItems = publication.items.filter((item) => item.status === 'published' && item.visibleAt <= publication.generatedAt);
 const researchLastmod = terminalResearchLastmod(publication);
+// While src/data/registry-research/pause.json says "paused", the page says so
+// and the ledger below is the archive published before the pause.
+const pauseNotice = registryResearchPauseNotice(pause);
 const terminalResearchCollection = {
   '@type': 'CollectionPage',
   '@id': 'https://zodiacs.org/terminal/research/#collection',
@@ -66,12 +71,18 @@ const terminalResearchBreadcrumb = {
         <strong>Research boundary</strong>
         <span>Astrology has no established predictive relationship with asset prices. Symbolic research is not investment advice, and crypto assets can lose all value.</span>
       </div>
+      {pauseNotice && (
+        <div class="research-disclosure research-paused" role="note" data-research-paused>
+          <strong>Publishing paused</strong>
+          <span>{pauseNotice}</span>
+        </div>
+      )}
     </header>
 
     <section class="research-stream" aria-labelledby="research-stream-title">
       <div class="research-stream__head">
         <div>
-          <p class="research-kicker">Latest editions</p>
+          <p class="research-kicker">{pauseNotice ? 'Archive' : 'Latest editions'}</p>
           <h2 id="research-stream-title">The research ledger</h2>
         </div>
         <button id="research-source-updates" class="research-updates" type="button" hidden>Source updates</button>
@@ -316,6 +327,7 @@ const terminalResearchBreadcrumb = {
   .research-deck { max-width: 690px; margin: 28px 0 0; color: var(--text-2); font-size: clamp(18px, 2.3vw, 23px); line-height: 1.48; text-wrap: pretty; }
   .research-disclosure { display: grid; grid-template-columns: minmax(130px, .35fr) 1fr; gap: 24px; margin-top: 42px; padding: 22px 0; border-block: 1px solid var(--hair-1); color: var(--muted); font-size: 13px; line-height: 1.65; }
   .research-disclosure strong { color: var(--text); font: 500 11px/1.5 var(--font-mono); letter-spacing: .11em; text-transform: uppercase; }
+  .research-paused { margin-top: 0; border-top: 0; }
   .research-stream { padding: clamp(46px, 7vw, 72px) 0; border-top: 1px solid var(--hair-1); }
   .research-stream__head { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
   .research-stream h2, .research-method h2 { max-width: 720px; margin: 0; font: 500 clamp(36px, 5vw, 58px)/.98 var(--font-serif); letter-spacing: -.02em; }

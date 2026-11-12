@@ -1,4 +1,5 @@
 import { profileAccessAllowed } from '../account-v2/profile-access-reader';
+import { accountSyncV2Enabled } from '../account-v2/feature-flags';
 
 type Fetcher = typeof fetch;
 
@@ -248,11 +249,18 @@ export function rememberedDailyChartSelection(): string | null {
 }
 
 /**
- * Returns only chart ids that currently exist in the signed-in account's
- * RLS-protected cloud table. Device-only local charts never become eligible
- * merely because they are visible elsewhere on the profile page.
+ * Returns only chart ids that the signed-in account holds in the cloud.
+ * Device-only local charts never become eligible merely because they are
+ * visible elsewhere on the profile page.
+ *
+ * With account sync v2 on, that is the one encrypted self chart this browser
+ * has synced for this account (local sync metadata, ids only); the retired
+ * v1 table (public.charts) is never read. The server still decides, from the
+ * chart_sync and chart_emails consents, whether the chart may be used.
  */
 export async function getSyncedChartIds(userId: string): Promise<string[]> {
+  if (!UUID.test(userId)) return [];
+  if (accountSyncV2Enabled()) return accountV2SyncedChartIds(userId);
   const { getSupabaseClient } = await import('../supabase/client');
   const client = getSupabaseClient();
   if (!client || !UUID.test(userId)) return [];
@@ -264,6 +272,21 @@ export async function getSyncedChartIds(userId: string): Promise<string[]> {
   return (data ?? [])
     .map((row) => row.id)
     .filter((id): id is string => typeof id === 'string' && UUID.test(id));
+}
+
+async function accountV2SyncedChartIds(userId: string): Promise<string[]> {
+  if (!profileAccessAllowed()) return [];
+  const [{ getAccountV2BrowserStorage }, { readAccountSyncMetadata }] = await Promise.all([
+    import('../account-v2/browser-storage'),
+    import('../account-v2/local-state'),
+  ]);
+  const storage = getAccountV2BrowserStorage();
+  if (!storage) return [];
+  const result = readAccountSyncMetadata(storage.local, userId);
+  if (result.status !== 'ready') return [];
+  return result.metadata.charts
+    .filter((chart) => chart.selectedForSync && chart.serverRevision > 0 && UUID.test(chart.chartId))
+    .map((chart) => chart.chartId);
 }
 
 /** First letter + ellipsis + domain, as specified by the Phase 3 copy deck. */

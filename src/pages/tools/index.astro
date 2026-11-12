@@ -6,12 +6,15 @@ import ToolsHelpCard from '../../components/tools/ToolsHelpCard.astro';
 import ToolsLead from '../../components/tools/ToolsLead.astro';
 import { TOOLS_HUB, type ToolGroup } from '../../lib/nav-tools';
 import { HERO_CROP_SIZE, heroCropSrc, heroCropSrcset, type HeroCropName } from '../../lib/hero-crops';
+import { isHiddenChildPage } from '../../data/hidden-child-pages.mjs';
 import '../../styles/tools-hub.css';
 
 // The birth chart leads on its own; every other tool sits in one of four
 // groups named for the question a visitor arrives with. Membership, order,
-// names, one-line descriptions and icons all come from the shared catalogue.
-const lead = TOOLS_HUB.find((tool) => tool.group === 'lead');
+// names, one-line descriptions and icons all come from the shared catalogue,
+// less the pages hidden since 2026-11-12 (src/data/hidden-child-pages.mjs).
+const hubTools = TOOLS_HUB.filter((tool) => !isHiddenChildPage(tool.href));
+const lead = hubTools.find((tool) => tool.group === 'lead');
 if (!lead) throw new Error('The tools hub needs a lead tool.');
 
 interface Chapter {
@@ -31,7 +34,7 @@ const chapters = ([
   { id: 'together', group: 'together', title: 'You and someone else', summary: 'Compatibility, group charts', copy: 'Partners, friends, family, and people who share your sky.', art: 'twins', focus: '45% 50%' },
   { id: 'sky-now', group: 'sky', title: 'The sky now', summary: 'Today, moon phase, horoscopes', copy: 'What the Sun, Moon and planets are doing today.', art: 'crescent', focus: '40% 45%' },
   { id: 'the-year', group: 'year', title: 'Through the year', summary: 'Returns, eclipses, retrogrades', copy: 'Your returns, and the sky’s calendar of moons, eclipses and retrogrades.', art: 'clock-dial', focus: '50% 50%' },
-] satisfies Chapter[]).map((chapter) => ({ ...chapter, tools: TOOLS_HUB.filter((tool) => tool.group === chapter.group) }));
+] satisfies Chapter[]).map((chapter) => ({ ...chapter, tools: hubTools.filter((tool) => tool.group === chapter.group) }));
 
 const UNITS = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
 const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
@@ -40,7 +43,7 @@ function inWords(n: number): string {
   if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? `-${UNITS[n % 10]}` : '');
   return String(n);
 }
-const toolCount = TOOLS_HUB.length;
+const toolCount = hubTools.length;
 const countWords = inWords(toolCount);
 const countTitle = countWords.charAt(0).toUpperCase() + countWords.slice(1);
 
@@ -53,7 +56,7 @@ const jsonLd = [
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: toolCount,
-      itemListElement: TOOLS_HUB.map((tool, index) => ({
+      itemListElement: hubTools.map((tool, index) => ({
         '@type': 'ListItem',
         position: index + 1,
         name: tool.title,
@@ -139,7 +142,7 @@ const jsonLd = [
           ))}
         </ul>
         {chapter.group === 'year' && <p class="tools-chapter__note">Explore the <a class="textlink" href="/learn/chinese-zodiac/">Chinese zodiac calendar and its twelve animals</a>, or follow the sky through our <a class="textlink" href="/feeds/">RSS feeds</a>.</p>}
-        {chapter.group === 'together' && <p class="tools-chapter__note">Mark a shared moment with <a class="textlink" href="/occasions/">occasion cards for milestones and baby showers</a>.</p>}
+        {chapter.group === 'together' && <p class="tools-chapter__note">Mark a shared moment with <a class="textlink" href="/occasions/">occasion cards for weddings, birthdays and milestones</a>.</p>}
       </div>
     </section>
   ))}

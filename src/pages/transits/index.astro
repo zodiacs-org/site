@@ -53,6 +53,7 @@ const jsonLd = [
 ];
 ---
 <Base
+  accountSurface
   clientUi
   title="Transit Tracker: The Sky Moving Over Your Birth Chart | Zodiacs.org"
   description="See what is active in your birth chart today, then move the date up to a year forward or back to watch each transit build and release."
@@ -68,7 +69,10 @@ const jsonLd = [
       <p>
         Start with today&rsquo;s strongest themes, then move the date up to a year
         forward or back to watch each <AstroTerm term="transit" label="transit" surface="transits-page" /> build, peak, and release.
-        Pick a saved chart or enter your birth details.{launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') && (
+        Pick a saved chart or enter your birth details.{launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') && (
+          <> For the next twelve months as one number, try the{' '}
+          <a href="/year-score/">Year Ahead Score</a>.</>
+        )}{launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') && (
           <> For one day ranked by strength, with exact times on your clock, read <a href="/your-day/">your day</a>.</>
         )}
       </p>

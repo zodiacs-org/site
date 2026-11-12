@@ -14,7 +14,6 @@ import '../../../styles/profile-page.css';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   PUBLIC_SAVED_RECORDS_ENABLED: process.env.PUBLIC_SAVED_RECORDS_ENABLED,
@@ -57,7 +56,7 @@ const jsonLd = [
     <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="it" client:load />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
-        ? <>La prova di sincronizzazione cifrata viene gestita temporaneamente su <a href="/profile/">/profile/</a>. Qui i tuoi temi restano solo su questo dispositivo.</>
+        ? <>La sincronizzazione cifrata si gestisce su <a href="/profile/">/profile/</a>. Qui i tuoi temi restano solo su questo dispositivo.</>
         : 'Se cancelli i dati del browser, i temi salvati solo in locale verranno eliminati. Accedi per sincronizzare i temi salvati e fare in modo che le eliminazioni si riflettano su tutti i tuoi dispositivi.'}</p>
     </aside>
   </section>
