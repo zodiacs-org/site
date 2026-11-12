@@ -20,21 +20,47 @@ import { copyProblems } from './copy-rules';
 import type { ExpansionLocale } from './horoscope/types';
 import type { HoroscopeSign } from '../horoscope-program-types';
 
-/** Walk any copy object, calling functions with plausible arguments, and collect every string. */
-function strings(value: unknown, depth = 0): string[] {
+type CopyCall = (fn: (...args: never[]) => unknown) => unknown;
+
+/**
+ * Walk any copy object, calling functions with plausible arguments, and
+ * collect every string. A function that needs structured arguments gets them
+ * from `calls`, keyed by its dotted path. A function that throws fails the
+ * walk with its path, so no copy can drop out of the checks unseen.
+ */
+function strings(value: unknown, calls: Record<string, CopyCall> = {}, path = '', depth = 0): string[] {
   if (depth > 6 || value == null) return [];
   if (typeof value === 'string') return [value];
-  if (Array.isArray(value)) return value.flatMap((item) => strings(item, depth + 1));
+  if (Array.isArray(value)) return value.flatMap((item, index) => strings(item, calls, `${path}[${index}]`, depth + 1));
   if (typeof value === 'function') {
+    const call: CopyCall = calls[path] ?? ((fn) => (fn as (...args: unknown[]) => unknown)('Leo', '24 de noviembre', 3));
+    let result: unknown;
     try {
-      return strings((value as (...args: unknown[]) => unknown)('Leo', '24 de noviembre', 3), depth + 1);
-    } catch {
-      return [];
+      result = call(value as (...args: never[]) => unknown);
+    } catch (error) {
+      throw new Error(`copy function ${path || '(root)'} threw: ${error instanceof Error ? error.message : String(error)}`);
     }
+    return strings(result, calls, path, depth + 1);
   }
-  if (typeof value === 'object') return Object.values(value as Record<string, unknown>).flatMap((item) => strings(item, depth + 1));
+  if (typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>)
+      .flatMap(([key, item]) => strings(item, calls, path ? `${path}.${key}` : key, depth + 1));
+  }
   return [];
 }
+
+describe('copy walker', () => {
+  it('fails on a copy function that throws, naming it', () => {
+    const copy = { lede: 'Plain', nested: { broken: () => { throw new Error('needs a date'); } } };
+    expect(() => strings(copy)).toThrow('copy function nested.broken threw: needs a date');
+  });
+
+  it('calls a function that needs structured arguments with the ones it is given', () => {
+    const copy = { note: (at: { when: { day: string } }) => `On ${at.when.day}` };
+    expect(() => strings(copy)).toThrow('copy function note threw');
+    expect(strings(copy, { note: (fn) => (fn as (at: { when: { day: string } }) => string)({ when: { day: '3 mai' } }) })).toEqual(['On 3 mai']);
+  });
+});
 
 const month = expansionMonth();
 
@@ -119,8 +145,7 @@ for (const [locale, copy] of Object.entries(LUNATION_COPY) as Array<[ExpansionLo
 describe('zodiac dates copy', () => {
   for (const locale of Object.keys(HOROSCOPE_MODULES) as ExpansionLocale[]) {
     it(`${locale} passes the copy rules`, () => {
-      let copy;
-      try { copy = zodiacDatesCopy(locale); } catch { return; }
+      const copy = zodiacDatesCopy(locale);
       expect(copy.title(2026, 2027).length).toBeLessThanOrEqual(60);
       expect(Object.keys(copy.season).sort()).toEqual(['Autumn', 'Spring', 'Summer', 'Winter']);
       expect(strings(copy).flatMap((text) => copyProblems(locale, text).map((problem) => `${problem}: ${text}`))).toEqual([]);
@@ -135,11 +160,24 @@ describe('zodiac dates copy', () => {
 });
 
 describe('fr and it daily page copy', () => {
+  // What LocalizedToday.astro hands the two functions that take structured
+  // arguments: a localized sign and day, and localized planet names.
+  const SAMPLE = {
+    fr: { sign: 'Sagittaire', date: '22 novembre', a: 'Mars', b: 'Vénus' },
+    it: { sign: 'Sagittario', date: '22 novembre', a: 'Marte', b: 'Venere' },
+  } as const;
   for (const [locale, mod] of [['fr', frDaily], ['it', itDaily]] as const) {
     it(`${locale} passes the copy rules on every horoscope, today and hub string`, () => {
-      // A few functions take structured arguments the walker cannot supply;
-      // their placeholder output says "undefined" and is left out.
-      const texts = strings(mod).filter((text) => !text.includes('undefined'));
+      const { today } = mod;
+      const sample = SAMPLE[locale];
+      const texts = strings(mod, {
+        // Every third of the sign, with and without a coming ingress.
+        'today.sunNote': () => [0, 1, 2].flatMap((third) => [
+          today.sunNote(third, null),
+          today.sunNote(third, { sign: sample.sign, date: sample.date }),
+        ]),
+        'today.represent': () => today.represent(sample.a, today.topics.Mars, sample.b, today.topics.Venus),
+      });
       expect(texts.length).toBeGreaterThan(50);
       expect(texts.flatMap((text) => copyProblems(locale, text).map((problem) => `${problem}: ${text.slice(0, 120)}`))).toEqual([]);
     });
