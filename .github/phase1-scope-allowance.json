@@ -1,13 +1,11 @@
 {
   "version": 1,
-  "id": "date-only-solar-return-math-receipt-2026-11-11",
-  "baseCommit": "47fee79f8f5bb64270cd52ba39cbf1f8e65b2044",
+  "id": "hide-baby-coming-of-age-pages-2026-11-12",
+  "baseCommit": "1853a6814d483a2253e480c0303eae2712fdd703",
   "protectedPaths": [
-    "src/lib/i18n/ui/en.ts",
-    "src/lib/i18n/ui/es.ts",
-    "src/lib/i18n/ui/fr.ts",
-    "src/lib/i18n/ui/it.ts",
-    "src/lib/i18n/ui/pt.ts",
-    "src/lib/i18n/ui/ru.ts"
+    "src/pages/es/baby-zodiac/index.astro",
+    "src/pages/fr/baby-zodiac/index.astro",
+    "src/pages/it/baby-zodiac/index.astro",
+    "src/pages/pt/baby-zodiac/index.astro"
   ]
 }
