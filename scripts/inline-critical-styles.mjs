@@ -97,9 +97,9 @@ const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-
 // The tarot draw is built only while PUBLIC_TAROT_ENABLED is exactly '1' (src/lib/launch-flags.ts); off, its
 // path is a redirect with nothing to inline.
 const tarotEnabled = process.env.PUBLIC_TAROT_ENABLED === '1';
-// 115 entry pages carry 228 inlined stylesheets; the tarot draw, when on, adds one page and three (its share card
-// one of them). Other feature flags do not change it.
-const entryInlinedStylesheets = tarotEnabled ? 231 : 228;
+// 115 entry pages carry 228 inlined stylesheets; the tarot draw, when on, adds one page and two. Its share card's
+// stylesheet is no longer its own: main's numerology share card brought the same one. Other feature flags do not change it.
+const entryInlinedStylesheets = tarotEnabled ? 230 : 228;
 const entryPages = tarotEnabled ? 116 : 115;
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
