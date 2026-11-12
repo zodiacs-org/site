@@ -183,7 +183,7 @@ describe('thesis publication metadata contract', () => {
 
     expect(dates).toEqual([
       { datetime: '2026-08-01', label: 'Published 1 Aug 2026' },
-      { datetime: '2026-11-11', label: 'Updated 11 Nov 2026' },
+      { datetime: '2026-11-12', label: 'Updated 12 Nov 2026' },
     ]);
     expect(textOf(hero)).toContain('Evidence checked 10 Nov 2026');
   });
@@ -200,7 +200,7 @@ describe('thesis publication metadata contract', () => {
       headline: 'Why Zodiacs Matter',
       url: 'https://zodiacs.org/thesis/',
       datePublished: '2026-08-01',
-      dateModified: '2026-11-11',
+      dateModified: '2026-11-12',
     });
   });
 });
@@ -314,7 +314,9 @@ describe('thesis feedback simplification contract', () => {
       expect.stringContaining('attention-chart--wide'),
       expect.stringContaining('attention-chart--small'),
     ]));
-    expect(fig2).toContain('href="/thesis/thesis-attention.json"');
+    expect(fig2).toContain('href="/thesis/thesis-seasons.json"');
+    const seasons = spawnSync(process.execPath, ['scripts/build-thesis-figures.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
+    expect(seasons.status, seasons.stderr).toBe(0);
     expect(textOf(fig2)).toContain('curiosity, not demand for the coins');
   });
 
