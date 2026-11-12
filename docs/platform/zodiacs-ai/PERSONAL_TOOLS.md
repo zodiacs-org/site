@@ -34,6 +34,15 @@ from other pages, Guide line and share routes are all absent. Switch a page's
 flag on and deploy before `ZODIACS_PERSONAL_TOOLS_ENABLED`, or that tool's
 `pageUrl` and `shareUrl` lead to a missing page.
 
+`public/llms-full.txt` is a static file and cannot follow a flag, so it keeps
+saying the site uses neither `@zodiacs/engine/timing` nor
+`@zodiacs/engine/vedic` while `PUBLIC_VEDIC_SIGNS_ENABLED` is off. In the
+change that switches Vedic signs on, replace that clause with "the root imports
+neither; this site uses the sidereal one only, for the ayanamsa, sidereal
+longitudes and nakshatras of its Vedic signs page and get_vedic_signs tool, and
+Hellenistic timing not at all." and update its record in
+`docs/claims/ledger.json` to match.
+
 ## How a tool is added
 
 Each tool is one module in `src/ai-tools/personal/` that exports a definition
