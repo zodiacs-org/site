@@ -26,11 +26,13 @@ async function rpc<T>(name: string, body: Record<string, unknown>, env: Environm
 }
 
 /**
- * Records a pending reminder. 'requested'; 'capped' when the same address asked within the last minute; or
- * 'confirmed' when the address already has a confirmed reminder, which a request never changes.
+ * Records a pending reminder. 'requested' with the row id (for the stop link); 'capped' when the same address
+ * asked within the last minute; or 'confirmed' when the address already has a confirmed reminder, which a
+ * request never changes.
  */
+export type ReminderRequestOutcome = { outcome: 'requested'; id: string } | { outcome: 'capped' | 'confirmed' };
 export function requestReminder(email: string, month: number, day: number, confirmHash: string, env: Environment = process.env, fetcher: Fetch = fetch) {
-  return rpc<'requested' | 'capped' | 'confirmed'>('birthday_reminder_request', { p_email: email, p_month: month, p_day: day, p_confirm_hash: confirmHash }, env, fetcher);
+  return rpc<ReminderRequestOutcome>('birthday_reminder_request', { p_email: email, p_month: month, p_day: day, p_confirm_hash: confirmHash }, env, fetcher);
 }
 
 /** Confirms the reminder a token's hash belongs to, within 48 hours. */

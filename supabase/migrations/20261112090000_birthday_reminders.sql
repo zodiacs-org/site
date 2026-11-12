@@ -37,21 +37,25 @@ $$;
 
 -- A new or repeated request waits for confirmation with the new month and day. A confirmed reminder is
 -- never changed by a request: knowing an address is not enough to undo it. Its owner stops it with the
--- link in its email, then asks again.
+-- link in its email, then asks again. A new request answers with its row id, so the confirmation email
+-- can carry a stop link that works before and after confirming.
 create or replace function public.birthday_reminder_request(p_email text, p_month int, p_day int, p_confirm_hash text)
-returns text language plpgsql security definer set search_path = '' as $$
-declare previous timestamptz; confirmed timestamptz;
+returns jsonb language plpgsql security definer set search_path = '' as $$
+declare previous timestamptz; confirmed timestamptz; reminder_id uuid;
 begin
   perform public.birthday_reminders_sweep();
   select requested_at, confirmed_at into previous, confirmed from zodiacs_reminders_private.birthday_reminders where email = p_email;
-  if confirmed is not null then return 'confirmed'; end if;
-  if previous is not null and previous > pg_catalog.now() - interval '60 seconds' then return 'capped'; end if;
+  if confirmed is not null then return pg_catalog.jsonb_build_object('outcome', 'confirmed'); end if;
+  if previous is not null and previous > pg_catalog.now() - interval '60 seconds' then return pg_catalog.jsonb_build_object('outcome', 'capped'); end if;
   insert into zodiacs_reminders_private.birthday_reminders as r (email, month, day, confirm_hash, requested_at, confirmed_at)
     values (p_email, p_month, p_day, p_confirm_hash, pg_catalog.now(), null)
   on conflict (email) do update set month = excluded.month, day = excluded.day, confirm_hash = excluded.confirm_hash,
     requested_at = excluded.requested_at
-    where r.confirmed_at is null;
-  return 'requested';
+    where r.confirmed_at is null
+  returning r.id into reminder_id;
+  -- No row back means it was confirmed in the meantime: it is left as it is.
+  if reminder_id is null then return pg_catalog.jsonb_build_object('outcome', 'confirmed'); end if;
+  return pg_catalog.jsonb_build_object('outcome', 'requested', 'id', reminder_id);
 end;
 $$;
 

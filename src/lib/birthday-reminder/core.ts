@@ -95,8 +95,8 @@ export function readUnsubscribeToken(token: string, secret: string): string | nu
   return expected.length === given.length && timingSafeEqual(expected, given) ? match[1] : null;
 }
 
-/** The confirmation email: what was asked for, and what is kept. */
-export function confirmationEmail(confirmUrl: string): { subject: string; text: string } {
+/** The confirmation email: what was asked for, what is kept, and the way out from the start. */
+export function confirmationEmail(confirmUrl: string, stopUrl: string): { subject: string; text: string } {
   return {
     subject: 'Confirm your Zodiacs.org birthday reminder',
     text: [
@@ -107,6 +107,8 @@ export function confirmationEmail(confirmUrl: string): { subject: string; text: 
       `The link works for ${CONFIRM_HOURS} hours. If you did not ask for this, ignore this email and nothing will be kept.`,
       '',
       'We keep only this email address and your birthday’s month and day, never your birth year, time or place.',
+      '',
+      `Stop and delete it at any time, before or after confirming: ${stopUrl}`,
     ].join('\n'),
   };
 }

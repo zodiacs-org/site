@@ -48,7 +48,7 @@ describe('the birthday reminder endpoint', () => {
   });
 
   it('sends nothing for an address that already has a confirmed reminder, and answers the same', async () => {
-    const fetcher = vi.fn(async () => new Response('"confirmed"'));
+    const fetcher = vi.fn(async () => new Response('{"outcome":"confirmed"}'));
     const res = response();
     await birthdayReminderHandler(request('POST', { body: { email: 'ana@example.com', month: 6, day: 9, consent: true, adult: true } }), res, { env: ENV, fetcher: fetcher as unknown as typeof fetch, rateLimit: async () => false });
     expect(res.statusCode).toBe(202);
@@ -59,7 +59,7 @@ describe('the birthday reminder endpoint', () => {
     const calls: { url: string; body: string }[] = [];
     const fetcher = vi.fn(async (url: string, init: RequestInit) => {
       calls.push({ url: String(url), body: String(init.body) });
-      return String(url).includes('supabase') ? new Response('"requested"') : new Response('{"id":"x"}');
+      return String(url).includes('supabase') ? new Response('{"outcome":"requested","id":"0f8fad5b-d9cb-469f-a165-70867728950e"}') : new Response('{"id":"x"}');
     });
     const log = vi.spyOn(console, 'log'); const error = vi.spyOn(console, 'error'); const warn = vi.spyOn(console, 'warn');
     const res = response();
@@ -69,6 +69,8 @@ describe('the birthday reminder endpoint', () => {
     expect(Object.keys(JSON.parse(calls[0].body)).sort()).toEqual(['p_confirm_hash', 'p_day', 'p_email', 'p_month']);
     expect(calls[1].url).toBe('https://api.resend.com/emails');
     expect(calls[1].body).toContain('/api/email/birthday-reminder?confirm=');
+    // The way out is in the confirmation email, from the start.
+    expect(calls[1].body).toContain(`/api/email/birthday-reminder?unsubscribe=${unsubscribeToken('0f8fad5b-d9cb-469f-a165-70867728950e', SECRET)}`);
     expect(res.body).not.toContain('ana@example.com');
     for (const spy of [log, error, warn]) expect(spy).not.toHaveBeenCalled();
   });

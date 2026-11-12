@@ -42,7 +42,7 @@ describe('the birthday send', () => {
     expect(hash).not.toContain(token);
   });
   it('words both emails plainly, with no dashes and no birth details', () => {
-    const texts = [confirmationEmail('https://zodiacs.org/api/email/birthday-reminder?confirm=t'), birthdayEmail('https://zodiacs.org', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u')];
+    const texts = [confirmationEmail('https://zodiacs.org/api/email/birthday-reminder?confirm=t', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u'), birthdayEmail('https://zodiacs.org', 'https://zodiacs.org/api/email/birthday-reminder?unsubscribe=u')];
     for (const email of texts) expect(`${email.subject} ${email.text}`).not.toMatch(/[–—]/u);
     expect(texts[1].text).toContain('https://zodiacs.org/year-score/');
     expect(texts[1].text).toContain('Stop these birthday emails');

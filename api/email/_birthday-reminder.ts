@@ -5,7 +5,7 @@
 // Nothing here logs, and no response repeats the email, month or day.
 import { checkRateLimit } from '@vercel/firewall';
 import { birthdayReminderEnabled, birthdayReminderSecret, birthdayReminderStorageReady } from '../../src/lib/birthday-reminder/config.js';
-import { confirmationEmail, hashToken, newConfirmToken, parseReminderRequest, readUnsubscribeToken } from '../../src/lib/birthday-reminder/core.js';
+import { confirmationEmail, hashToken, newConfirmToken, parseReminderRequest, readUnsubscribeToken, unsubscribeToken } from '../../src/lib/birthday-reminder/core.js';
 import { confirmReminder, deleteReminder, requestReminder } from '../../src/lib/birthday-reminder/store.js';
 import { sendPlainEmail } from '../../src/lib/birthday-reminder/send.js';
 import { dailyEmailPage } from '../../src/lib/email/daily-page.js';
@@ -102,9 +102,10 @@ export default async function birthdayReminderHandler(req: any, res: any, deps: 
   if ('refused' in parsed) { sendJson(res, 400, { error: parsed.refused }); return; }
   try {
     const { token, hash } = newConfirmToken();
-    const outcome = await requestReminder(parsed.email, parsed.month, parsed.day, hash, env, fetcher);
-    if (outcome === 'requested') {
-      const email = confirmationEmail(`${origin(env)}${PATH}?confirm=${token}`);
+    const result = await requestReminder(parsed.email, parsed.month, parsed.day, hash, env, fetcher);
+    if (result.outcome === 'requested') {
+      const base = `${origin(env)}${PATH}`;
+      const email = confirmationEmail(`${base}?confirm=${token}`, `${base}?unsubscribe=${unsubscribeToken(result.id, birthdayReminderSecret(env))}`);
       await sendPlainEmail(parsed.email, email, env, fetcher);
     }
     // Capped or not, the answer is the same: a confirmation email is on its way if the address can take one.
