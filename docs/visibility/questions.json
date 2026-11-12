@@ -1,7 +1,7 @@
 {
-  "version": 2,
+  "version": 3,
   "created": "2026-11-08",
-  "note": "Fifty astrology questions as people ask them. t01 to t15 are the fifteen priority phrases chosen on 2026-11-08 from the baseline gathered outside the sandbox (docs/visibility/PHRASES.md); the other 35 are from the program's first list. placement 'title' means the phrase owns the page title, H1 and opening answer; 'section' means it gets an exact-phrase H2, a 40 to 60 word answer and a matching FAQ entry on the page that already serves that intent, because a separate page per wording would be a doorway page. target null: no page answers it yet (the proposed /compare/ guide needs Dias's yes). The external 2026-11-08 AI baseline used its own 50 questions; align this file with that list before the week 4 re-run so the comparison is like for like.",
+  "note": "Fifty astrology questions as people ask them. t01 to t15 are the fifteen priority phrases chosen on 2026-11-08 from the baseline gathered outside the sandbox (docs/visibility/PHRASES.md); the other 35 are from the program's first list. placement 'title' means the phrase owns the page title, H1 and opening answer; 'section' means it gets an exact-phrase H2, a 40 to 60 word answer and a matching FAQ entry on the page that already serves that intent, because a separate page per wording would be a doorway page. target null: no page answers it yet (the proposed /compare/ guide needs Dias's yes). The external 2026-11-08 AI baseline used its own 50 questions; align this file with that list before the week 4 re-run so the comparison is like for like. Version 3 (2026-11-12) replaced q17, a question about a baby's sign that targeted /baby-zodiac/, with an adult question for /today/: the program does not target pages about children. The 2026-11-08 page snapshot keeps the old q17 as dated evidence.",
   "questions": [
     {
       "id": "t01",
@@ -224,10 +224,10 @@
     },
     {
       "id": "q17",
-      "question": "What zodiac sign will my baby be?",
-      "phrase": "what sign will my baby be",
-      "intent": "tool",
-      "target": "/baby-zodiac/"
+      "question": "What is happening in the sky today in astrology?",
+      "phrase": "astrology today",
+      "intent": "dates",
+      "target": "/today/"
     },
     {
       "id": "q18",
@@ -384,5 +384,5 @@
       "target": null
     }
   ],
-  "updated": "2026-11-08"
+  "updated": "2026-11-12"
 }

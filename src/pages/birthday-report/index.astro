@@ -1,0 +1,94 @@
+---
+import Base from '../../layouts/Base.astro';
+import BirthdayReport from '../../islands/BirthdayReport';
+import { launchFlagOn } from '../../lib/launch-flags';
+import '../../styles/calculator.css';
+
+if (!launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED')) {
+  return Astro.redirect('/404.html');
+}
+
+// The report includes the Year Ahead Score either way; only the link to its page waits for that page's switch.
+const yearScoreOn = launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED');
+
+const jsonLd = [
+  { '@type': 'WebApplication', name: 'Birthday report', url: 'https://zodiacs.org/birthday-report/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
+];
+---
+<Base
+  privateSurface
+  clientUi
+  title="Birthday Report: Solar Return, Year Score, Numerology and Tarot | Zodiacs.org"
+  description="A free birthday report: your solar return, your Year Ahead Score, your numerology Personal Year and your tarot year card on one page, calculated on your device."
+  path="/birthday-report/"
+  image="/assets/og/v2/tool/birthday-report.png"
+  imageAlt="Your birthday report: Zodiacs.org"
+  jsonLd={jsonLd}
+>
+  <section class="section--tight container">
+    <div class="tool-hero">
+      <h1 class="display">Your birthday year, on one page.</h1>
+      <p>
+        Your <a href="/solar-return/">solar return</a>,
+        your {yearScoreOn ? <a href="/year-score/">Year Ahead Score</a> : 'Year Ahead Score'}, your <a href="/numerology/">numerology</a> Personal Year
+        and one tarot card for the year ahead, from your birth date.
+      </p>
+    </div>
+    <BirthdayReport client:load yearScoreLink={yearScoreOn} />
+    <noscript><p>The birthday report needs JavaScript. Enable it and reload to make your report from your birth date.</p></noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose">
+      <h2>What is in the report</h2>
+      <p>
+        <strong>The solar return</strong> is the moment the Sun comes back to the exact degree it held at your birth.
+        Astrologers start the personal year there rather than at midnight on the birthday. The report reads the
+        birthday year you choose: it shows the solar return that opens that year and the one after it. It opens on
+        your current birthday year, or on the next one when that birthday is 45 days away or less.
+      </p>
+      <p>
+        <strong>The Year Ahead Score</strong> reads the twelve months from that solar return: how Jupiter, Saturn,
+        Uranus, Neptune and Pluto meet your Sun, Mercury, Venus and Mars (and the Moon with a birth time), as one
+        number from 0 to 10.
+      </p>
+      <p>
+        <strong>The Personal Year</strong> comes from numerology, a separate tradition: your birth month and day added
+        to the calendar year your birthday year began in, reduced to one digit.
+      </p>
+      <p>
+        <strong>The tarot year card</strong> adds your birthday's month and day to that year and reduces the total
+        to a Major Arcana card. Nothing is drawn at random, so the card is the same each time you look.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
+  .tool-hero h1 { margin: 0 0 16px; font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 500; line-height: 1.04; text-wrap: balance; }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+  :global(.ys__more) { background: none; border: 0; padding: 0; color: var(--text-2); text-decoration: underline; cursor: pointer; font: inherit; justify-self: start; }
+  :global(.br) { display: grid; gap: 14px; }
+  :global(.br__result) { display: grid; gap: 14px; }
+  /* The space held for the result from the click reaches past the fold, so a result that arrives late moves nothing on screen. */
+  :global(.br__pending) { min-height: 100vh; }
+  :global(.br__submit) { display: inline-grid; }
+  :global(.br__submit > span) { grid-area: 1 / 1; }
+  :global(.br__submit[data-busy="false"] > span:last-child), :global(.br__submit[data-busy="true"] > span:first-child) { visibility: hidden; }
+  :global(.br__heading) { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-xl); }
+  /* Drawn, hidden, from the first paint: one label per line and a fixed height, so the report fills the reserved row without moving it. */
+  :global(.br__years) { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  :global(.br__years[data-ready="false"]) { visibility: hidden; }
+  @media (min-width: 560px) { :global(.br__years) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  :global(.br__year) { box-sizing: border-box; height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: var(--r-full); background: transparent; color: var(--text-2); font: inherit; font-size: var(--text-sm); line-height: 1.4; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+  :global(.br__year:hover) { border-color: var(--hair-3); color: var(--text); }
+  :global(.br__year:focus-visible) { outline: 2px solid var(--ink-0); outline-offset: 2px; }
+  :global(.br__year[aria-pressed="true"]) { border-color: var(--hair-3); color: var(--text); background: rgba(198, 204, 218, 0.06); }
+  :global(.br__part) { padding: 16px 18px; }
+  :global(.br__part h3) { margin: 0 0 6px; font-family: var(--font-serif); font-weight: 500; }
+  :global(.br__part p) { margin: 6px 0 0; color: var(--text-2); }
+  :global(.br__big) { font-family: var(--font-serif); font-size: var(--text-xl); color: var(--text) !important; }
+  :global(.br__tier) { font-size: var(--text-base); color: var(--muted); margin-left: 6px; }
+  :global(.br__note) { color: var(--muted); font-size: var(--text-sm); margin: 0; }
+</style>

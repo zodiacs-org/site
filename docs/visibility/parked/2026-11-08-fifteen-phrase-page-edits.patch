@@ -41,7 +41,7 @@ index 9d563213..b6d9f801 100644
  const faq = [
 +  {
 +    q: 'Is there a free birth chart calculator with no signup?',
-+    a: "Yes. This one needs no account and no email. Enter your birth date, time and place and you get every planet's sign and degree, your rising sign, all twelve houses and the aspects, calculated in your browser.",
++    a: "Yes. This one needs no account and no email. Enter your birth date, time and place and you get every planet's sign and degree, your rising sign, all twelve houses and the aspects (the rising sign and houses need the birth time), calculated in your browser.",
 +  },
 +  {
 +    q: 'Where can I get a free birth chart with houses?',
@@ -61,7 +61,7 @@ index 9d563213..b6d9f801 100644
 -  title="Free Birth Chart Calculator: Sun, Moon & Rising | Zodiacs.org"
 -  description="Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean, computed privately, in your browser."
 +  title="Free Birth Chart Calculator, No Signup: Houses Included | Zodiacs.org"
-+  description="Free birth chart calculator with no signup: Sun, Moon, rising sign, every planet and all twelve houses, calculated privately in your browser."
++  description="Free birth chart calculator with no signup: Sun, Moon, every planet, and with a birth time your rising sign and all twelve houses, calculated in your browser."
    path="/birth-chart/"
    image="/assets/og/v2/tool/birth-chart.png"
    imageAlt="Free birth chart calculator, Zodiacs.org"
@@ -72,7 +72,7 @@ index 9d563213..b6d9f801 100644
 -        <h1 class="bc-title">Get your free birth chart.</h1>
 -        <p class="bc-lede">Your Sun, Moon and rising sign, every planet and house, and what each one means.</p>
 +        <h1 class="bc-title">Free birth chart calculator, no signup</h1>
-+        <p class="bc-lede">Enter your birth date, time and place to get your full birth chart free, with no account and no email: every planet&rsquo;s sign and degree, your rising sign, all twelve houses and what each one means. It is calculated in your browser, so your details stay on your device.</p>
++        <p class="bc-lede">Enter your birth date, time and place to get your full birth chart free, with no account and no email: every planet&rsquo;s sign and degree, and with a birth time your rising sign and all twelve houses and what each one means. It is calculated in your browser, and your details leave your device only if you choose account sync, a share link or the assistant.</p>
        </div>
  
        <div class="bc-main" id="bc-form">

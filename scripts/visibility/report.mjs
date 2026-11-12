@@ -10,7 +10,7 @@
 // Writes REPORT.md (rank) or COMPARE-<from>-to-<to>.md beside the data.
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { loadQuestions, opportunityScore, VIS_DIR } from './lib.mjs';
+import { answerCounts, loadQuestions, opportunityScore, VIS_DIR } from './lib.mjs';
 
 const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
@@ -25,11 +25,13 @@ export function load(label) {
 }
 
 // Share of a question's answers (all runs, all providers) naming or citing zodiacs.org.
-function aiRates(data, id) {
+// Only successful answers to the question's current wording count, so a
+// comparison across a wording change shows n/a rather than mixing questions.
+function aiRates(data, q) {
   const per = {};
   let cited = 0, n = 0;
   for (const [prov, doc] of Object.entries(data.ai)) {
-    const a = (doc.answers || []).filter((x) => x.id === id && !x.error);
+    const a = (doc.answers || []).filter((x) => answerCounts(x, q));
     if (!a.length) continue;
     const c = a.filter((x) => x.cited).length;
     const m = a.filter((x) => x.mentioned || x.cited).length;
@@ -39,6 +41,10 @@ function aiRates(data, id) {
   return { per, citeRate: n ? cited / n : null };
 }
 
+// A Search Console row counts for a question only when it was measured for the
+// same phrase, so a question id reused for new wording never inherits old data.
+const gscFor = (data, q) => data.gsc?.phrases.find((p) => p.id === q.id && p.close?.phrase === q.phrase);
+
 const fit = (q) => (!q.target ? 0.6 : q.intent === 'tool' || q.intent === 'dates' ? 1 : 0.8);
 const fmt = (v) => (v == null ? 'n/a' : String(v));
 
@@ -46,8 +52,8 @@ function rank(label) {
   const d = load(label);
   const providers = Object.keys(d.ai);
   const rows = loadQuestions().map((q) => {
-    const g = d.gsc?.phrases.find((p) => p.id === q.id);
-    const r = aiRates(d, q.id);
+    const g = gscFor(d, q);
+    const r = aiRates(d, q);
     const serp = d.rankings?.rankings?.find((x) => x.phrase === q.phrase);
     const demand = g ? g.close.impressions : null;
     return {
@@ -74,14 +80,16 @@ function compare(from, to) {
   const a = load(from), b = load(to);
   const lines = [`# Movement ${from} to ${to}`, '', '| Phrase | Impr. | Clicks | Avg pos. | AI cite rate | Title / H1 / opening |', '|---|---|---|---|---|---|'];
   for (const q of loadQuestions()) {
-    const ga = a.gsc?.phrases.find((p) => p.id === q.id)?.close, gb = b.gsc?.phrases.find((p) => p.id === q.id)?.close;
-    const ra = aiRates(a, q.id).citeRate, rb = aiRates(b, q.id).citeRate;
+    const ga = gscFor(a, q)?.close, gb = gscFor(b, q)?.close;
+    const ra = aiRates(a, q).citeRate, rb = aiRates(b, q).citeRate;
     const pb = b.pages?.pages.find((p) => p.path === q.target)?.phrases.find((x) => x.id === q.id);
     const d = (x, y) => (x == null || y == null ? 'n/a' : `${x} to ${y}`);
     const pct = (x) => (x == null ? null : `${Math.round(x * 100)}%`);
     lines.push(`| ${q.phrase} | ${d(ga?.impressions, gb?.impressions)} | ${d(ga?.clicks, gb?.clicks)} | ${d(ga?.position, gb?.position)} | ${d(pct(ra), pct(rb))} | ${pb ? [pb.inTitle, pb.inH1, pb.inOpening].map((v) => (v ? 'yes' : 'no')).join(' / ') : 'n/a'} |`);
   }
-  lines.push('', 'Spam check (manual, in Search Console): Security & Manual actions shows "No issues detected" for both dates; Pages report shows no new "Duplicate without user-selected canonical" or "Crawled, currently not indexed" spike on the changed URLs.');
+  lines.push('', 'Spam check (manual, in Search Console; not checked by this script, tick only after looking):', '',
+    '- [ ] Security & Manual actions shows "No issues detected" for both dates.',
+    '- [ ] Pages report shows no new "Duplicate without user-selected canonical" or "Crawled, currently not indexed" spike on the changed URLs.');
   const file = path.join(b.dir, `COMPARE-${from}-to-${to}.md`);
   writeFileSync(file, lines.join('\n') + '\n');
   console.log(`Wrote ${path.relative(process.cwd(), file)}`);

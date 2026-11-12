@@ -31,7 +31,7 @@ Inputs: Search Console MISSING; AI answers MISSING; page snapshot yes; search re
 | 25 | moon phase today | /moon-phase/ | n/a | n/a | n/a | n/a | n/a |
 | 26 | moon phase on my birthday | /moon-phase/ | n/a | n/a | n/a | n/a | n/a |
 | 27 | life path number calculator | /numerology/ | n/a | n/a | n/a | n/a | n/a |
-| 28 | what sign will my baby be | /baby-zodiac/ | n/a | n/a | n/a | n/a | n/a |
+| 28 | astrology today | /today/ | n/a | n/a | n/a | n/a | n/a |
 | 29 | how to read a birth chart | /learn/how-to-read-a-birth-chart/ | n/a | n/a | n/a | n/a | n/a |
 | 30 | birth chart without birth time | none | n/a | n/a | n/a | n/a | n/a |
 | 31 | 12 houses in astrology | /learn/houses/ | n/a | n/a | n/a | n/a | n/a |

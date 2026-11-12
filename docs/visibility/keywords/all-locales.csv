@@ -222,7 +222,7 @@ en,English,United States; United Kingdom; Canada; Australia; India,sky-events,me
 en,English,United States; United Kingdom; Canada; Australia; India,sky-events,retrogrades,planets in retrograde now,/retrogrades/,full,TBD,TBD,TBD,
 en,English,United States; United Kingdom; Canada; Australia; India,sky-events,eclipses,eclipse 2027,/eclipses/,full,TBD,TBD,TBD,
 en,English,United States; United Kingdom; Canada; Australia; India,sky-events,eclipses,solar eclipse 2027,/eclipses/,full,TBD,TBD,TBD,
-en,English,United States; United Kingdom; Canada; Australia; India,sky-events,mars-retrograde,mars retrograde 2027,/mars-retrograde/,full,TBD,TBD,TBD,
+en,English,United States; United Kingdom; Canada; Australia; India,sky-events,mars-retrograde,mars retrograde 2027,/retrogrades/,full,TBD,TBD,TBD,
 en,English,United States; United Kingdom; Canada; Australia; India,signs,meaning,aries traits,/aries/,full,TBD,TBD,TBD,
 en,English,United States; United Kingdom; Canada; Australia; India,signs,meaning,aries zodiac sign,/aries/,full,TBD,TBD,TBD,
 en,English,United States; United Kingdom; Canada; Australia; India,signs,meaning,aries man,/aries/,full,TBD,TBD,TBD,
@@ -518,7 +518,7 @@ es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,mercury-
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,retrogrades,planetas retrógrados ahora,/es/retrogrades/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,eclipses,eclipse 2027,/es/eclipses/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,eclipses,eclipse solar 2027,/es/eclipses/,full,TBD,TBD,TBD,
-es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,mars-retrograde,marte retrógrado 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only
+es,Spanish,Spain; Mexico; Argentina; Colombia; United States,sky-events,mars-retrograde,marte retrógrado 2027,/es/retrogrades/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,signs,meaning,aries características,/es/aries/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,signs,meaning,signo aries,/es/aries/,full,TBD,TBD,TBD,
 es,Spanish,Spain; Mexico; Argentina; Colombia; United States,signs,meaning,hombre aries,/es/aries/,full,TBD,TBD,TBD,
@@ -814,7 +814,7 @@ pt,Portuguese,Brazil; Portugal,sky-events,mercury-retrograde,mercúrio retrógra
 pt,Portuguese,Brazil; Portugal,sky-events,retrogrades,planetas retrógrados agora,/pt/retrogrades/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,sky-events,eclipses,eclipse 2027,/pt/eclipses/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,sky-events,eclipses,eclipse solar 2027,/pt/eclipses/,full,TBD,TBD,TBD,
-pt,Portuguese,Brazil; Portugal,sky-events,mars-retrograde,marte retrógrado 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only
+pt,Portuguese,Brazil; Portugal,sky-events,mars-retrograde,marte retrógrado 2027,/pt/retrogrades/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,signs,meaning,signo de áries características,/pt/aries/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,signs,meaning,signo de áries,/pt/aries/,full,TBD,TBD,TBD,
 pt,Portuguese,Brazil; Portugal,signs,meaning,homem de áries,/pt/aries/,full,TBD,TBD,TBD,
@@ -1110,7 +1110,7 @@ fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,mercury-retro
 fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,retrogrades,planètes rétrogrades en ce moment,/fr/retrogrades/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,eclipses,éclipse 2027,/fr/eclipses/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,eclipses,éclipse solaire 2027,/fr/eclipses/,full,TBD,TBD,TBD,
-fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,mars-retrograde,mars rétrograde 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only
+fr,French,France; Belgium; Switzerland; Canada (Quebec),sky-events,mars-retrograde,mars rétrograde 2027,/fr/retrogrades/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,bélier caractère,/fr/aries/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,signe bélier,/fr/aries/,full,TBD,TBD,TBD,
 fr,French,France; Belgium; Switzerland; Canada (Quebec),signs,meaning,homme bélier,/fr/aries/,full,TBD,TBD,TBD,
@@ -1406,7 +1406,7 @@ it,Italian,Italy; Switzerland,sky-events,mercury-retrograde,mercurio retrogrado 
 it,Italian,Italy; Switzerland,sky-events,retrogrades,pianeti retrogradi oggi,/it/retrogrades/,full,TBD,TBD,TBD,
 it,Italian,Italy; Switzerland,sky-events,eclipses,eclissi 2027,/it/eclipses/,full,TBD,TBD,TBD,
 it,Italian,Italy; Switzerland,sky-events,eclipses,eclissi solare 2027,/it/eclipses/,full,TBD,TBD,TBD,
-it,Italian,Italy; Switzerland,sky-events,mars-retrograde,marte retrogrado 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only
+it,Italian,Italy; Switzerland,sky-events,mars-retrograde,marte retrogrado 2027,/it/retrogrades/,full,TBD,TBD,TBD,
 it,Italian,Italy; Switzerland,signs,meaning,ariete caratteristiche,/it/aries/,full,TBD,TBD,TBD,
 it,Italian,Italy; Switzerland,signs,meaning,segno ariete,/it/aries/,full,TBD,TBD,TBD,
 it,Italian,Italy; Switzerland,signs,meaning,uomo ariete,/it/aries/,full,TBD,TBD,TBD,
@@ -1702,7 +1702,7 @@ ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russ
 ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russian speakers),sky-events,retrogrades,ретроградные планеты сейчас,/retrogrades/,partial,TBD,TBD,TBD,English page only
 ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russian speakers),sky-events,eclipses,затмение 2027,/eclipses/,partial,TBD,TBD,TBD,English page only
 ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russian speakers),sky-events,eclipses,солнечное затмение 2027,/eclipses/,partial,TBD,TBD,TBD,English page only
-ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russian speakers),sky-events,mars-retrograde,ретроградный марс 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only
+ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russian speakers),sky-events,mars-retrograde,ретроградный марс 2027,/retrogrades/,partial,TBD,TBD,TBD,English page only
 ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russian speakers),signs,meaning,овен характеристика знака,/ru/aries/,held,TBD,TBD,TBD,built in this language and held until its release batch
 ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russian speakers),signs,meaning,знак зодиака овен,/ru/aries/,held,TBD,TBD,TBD,built in this language and held until its release batch
 ru,Russian,Russia; Kazakhstan; Belarus; Ukraine (Russian speakers); Israel (Russian speakers),signs,meaning,овен мужчина,/ru/aries/,held,TBD,TBD,TBD,built in this language and held until its release batch
@@ -1998,7 +1998,7 @@ zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainl
 zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainland China),sky-events,retrogrades,现在逆行的行星,/retrogrades/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainland China),sky-events,eclipses,2027日食,/eclipses/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainland China),sky-events,eclipses,2027月食,/eclipses/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
-zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainland China),sky-events,mars-retrograde,2027火星逆行,/mars-retrograde/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
+zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainland China),sky-events,mars-retrograde,2027火星逆行,/retrogrades/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainland China),signs,meaning,白羊座性格,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainland China),signs,meaning,白羊座是几月几号,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hans,Chinese (simplified),Singapore; Malaysia (Google is little used in mainland China),signs,meaning,白羊座男,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
@@ -2294,7 +2294,7 @@ zh-hant,Chinese (traditional),Taiwan; Hong Kong,sky-events,mercury-retrograde,�
 zh-hant,Chinese (traditional),Taiwan; Hong Kong,sky-events,retrogrades,現在逆行的行星,/retrogrades/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hant,Chinese (traditional),Taiwan; Hong Kong,sky-events,eclipses,2027日食,/eclipses/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hant,Chinese (traditional),Taiwan; Hong Kong,sky-events,eclipses,2027月食,/eclipses/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
-zh-hant,Chinese (traditional),Taiwan; Hong Kong,sky-events,mars-retrograde,2027火星逆行,/mars-retrograde/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
+zh-hant,Chinese (traditional),Taiwan; Hong Kong,sky-events,mars-retrograde,2027火星逆行,/retrogrades/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hant,Chinese (traditional),Taiwan; Hong Kong,signs,meaning,牡羊座個性,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hant,Chinese (traditional),Taiwan; Hong Kong,signs,meaning,牡羊座是幾月幾號,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
 zh-hant,Chinese (traditional),Taiwan; Hong Kong,signs,meaning,牡羊座男,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; only the Chinese zodiac guide is published in Chinese
@@ -2590,7 +2590,7 @@ ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,sky-events,me
 ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,sky-events,retrogrades,الكواكب المتراجعة الآن,/retrogrades/,partial,TBD,TBD,TBD,English page only; native review needed before use; no Arabic pages published
 ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,sky-events,eclipses,كسوف 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; native review needed before use; no Arabic pages published
 ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,sky-events,eclipses,خسوف 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; native review needed before use; no Arabic pages published
-ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,sky-events,mars-retrograde,تراجع المريخ 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only; native review needed before use; no Arabic pages published
+ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,sky-events,mars-retrograde,تراجع المريخ 2027,/retrogrades/,partial,TBD,TBD,TBD,English page only; native review needed before use; no Arabic pages published
 ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,signs,meaning,صفات برج الحمل,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; no Arabic pages published
 ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,signs,meaning,برج الحمل,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; no Arabic pages published
 ar,Arabic,Saudi Arabia; Egypt; United Arab Emirates; Morocco; Iraq,signs,meaning,رجل برج الحمل,/aries/,partial,TBD,TBD,TBD,English page only; native review needed before use; no Arabic pages published
@@ -2886,7 +2886,7 @@ de,German,Germany; Austria; Switzerland,sky-events,mercury-retrograde,merkur rü
 de,German,Germany; Austria; Switzerland,sky-events,retrogrades,rückläufige planeten aktuell,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 de,German,Germany; Austria; Switzerland,sky-events,eclipses,mondfinsternis 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 de,German,Germany; Austria; Switzerland,sky-events,eclipses,sonnenfinsternis 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
-de,German,Germany; Austria; Switzerland,sky-events,mars-retrograde,mars rückläufig 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
+de,German,Germany; Austria; Switzerland,sky-events,mars-retrograde,mars rückläufig 2027,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 de,German,Germany; Austria; Switzerland,signs,meaning,sternzeichen widder eigenschaften,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 de,German,Germany; Austria; Switzerland,signs,meaning,sternzeichen widder,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 de,German,Germany; Austria; Switzerland,signs,meaning,sternzeichen widder mann,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
@@ -3182,7 +3182,7 @@ pl,Polish,Poland,sky-events,mercury-retrograde,retrogradacja merkurego teraz,/me
 pl,Polish,Poland,sky-events,retrogrades,planety w retrogradacji,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 pl,Polish,Poland,sky-events,eclipses,zaćmienie księżyca 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 pl,Polish,Poland,sky-events,eclipses,zaćmienie słońca 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
-pl,Polish,Poland,sky-events,mars-retrograde,retrogradacja marsa 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
+pl,Polish,Poland,sky-events,mars-retrograde,retrogradacja marsa 2027,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 pl,Polish,Poland,signs,meaning,baran znak zodiaku cechy,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 pl,Polish,Poland,signs,meaning,znak zodiaku baran,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 pl,Polish,Poland,signs,meaning,baran znak zodiaku mężczyzna,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
@@ -3478,7 +3478,7 @@ tr,Turkish,Turkey,sky-events,mercury-retrograde,merkür retrosu ne zaman,/mercur
 tr,Turkish,Turkey,sky-events,retrogrades,retro gezegenler,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 tr,Turkish,Turkey,sky-events,eclipses,ay tutulması 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 tr,Turkish,Turkey,sky-events,eclipses,güneş tutulması 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
-tr,Turkish,Turkey,sky-events,mars-retrograde,mars retrosu 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
+tr,Turkish,Turkey,sky-events,mars-retrograde,mars retrosu 2027,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 tr,Turkish,Turkey,signs,meaning,koç burcu özellikleri,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 tr,Turkish,Turkey,signs,meaning,koç burcu,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
 tr,Turkish,Turkey,signs,meaning,koç erkeği,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use
@@ -3774,7 +3774,7 @@ ja,Japanese,Japan,sky-events,mercury-retrograde,水星逆行 いつ,/mercury-ret
 ja,Japanese,Japan,sky-events,retrogrades,逆行 惑星 今,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; no spaces in Japanese queries except where people type them
 ja,Japanese,Japan,sky-events,eclipses,日食 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; no spaces in Japanese queries except where people type them
 ja,Japanese,Japan,sky-events,eclipses,月食 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; no spaces in Japanese queries except where people type them
-ja,Japanese,Japan,sky-events,mars-retrograde,火星逆行 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; no spaces in Japanese queries except where people type them
+ja,Japanese,Japan,sky-events,mars-retrograde,火星逆行 2027,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; no spaces in Japanese queries except where people type them
 ja,Japanese,Japan,signs,meaning,おひつじ座 性格,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; no spaces in Japanese queries except where people type them
 ja,Japanese,Japan,signs,meaning,おひつじ座 特徴,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; no spaces in Japanese queries except where people type them
 ja,Japanese,Japan,signs,meaning,おひつじ座 男性,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; no spaces in Japanese queries except where people type them
@@ -4070,7 +4070,7 @@ hi,Hindi,India,sky-events,mercury-retrograde,बुध वक्री कब �
 hi,Hindi,India,sky-events,retrogrades,वक्री ग्रह,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; much Hindi astrology search is sidereal (Vedic) while the site is tropical
 hi,Hindi,India,sky-events,eclipses,चंद्र ग्रहण 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; much Hindi astrology search is sidereal (Vedic) while the site is tropical
 hi,Hindi,India,sky-events,eclipses,सूर्य ग्रहण 2027,/eclipses/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; much Hindi astrology search is sidereal (Vedic) while the site is tropical
-hi,Hindi,India,sky-events,mars-retrograde,मंगल वक्री 2027,/mars-retrograde/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; much Hindi astrology search is sidereal (Vedic) while the site is tropical
+hi,Hindi,India,sky-events,mars-retrograde,मंगल वक्री 2027,/retrogrades/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; much Hindi astrology search is sidereal (Vedic) while the site is tropical
 hi,Hindi,India,signs,meaning,मेष राशि के लोग कैसे होते हैं,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; much Hindi astrology search is sidereal (Vedic) while the site is tropical
 hi,Hindi,India,signs,meaning,मेष राशि,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; much Hindi astrology search is sidereal (Vedic) while the site is tropical
 hi,Hindi,India,signs,meaning,मेष राशि पुरुष,/aries/,partial,TBD,TBD,TBD,English page only; candidate locale: nothing published in this language; native review of the query wording needed before use; much Hindi astrology search is sidereal (Vedic) while the site is tropical

@@ -13,12 +13,16 @@
 // says it used is recorded with every answer, so a re-run can match it.
 //
 // Output: docs/visibility/baseline/<label>/ai/<provider>.json. The script
-// resumes: answers already in the file are kept and not asked again.
+// resumes: successful answers to a question's current wording are kept and
+// not asked again. A failed call is never treated as done: the next run asks
+// it again and the new attempt replaces the error entry (the report never
+// counts errors). Answers to older wording move to `superseded`, which the
+// report ignores, and the question is asked again in its current wording.
 // The questions carry no personal data and the prompts carry no birth details.
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import Anthropic from '@anthropic-ai/sdk';
-import { loadQuestions, scoreAnswer, VIS_DIR } from './lib.mjs';
+import { loadQuestions, planAnswers, scoreAnswer, VIS_DIR } from './lib.mjs';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, all) => {
@@ -137,11 +141,14 @@ async function runProvider(name) {
   if (!p) throw new Error(`Unknown provider ${name}`);
   const file = path.join(outDir, `${name}.json`);
   const doc = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { provider: name, label, answers: [] };
-  const done = new Set(doc.answers.map((a) => `${a.id}#${a.run}`));
-  const todo = [];
-  for (const q of questions) for (let r = 1; r <= runs; r++) if (!done.has(`${q.id}#${r}`)) todo.push([q, r]);
+  // Failed calls are retried and answers to older wording are asked again;
+  // only successful answers to the current wording are reused.
+  const plan = planAnswers(doc, questions, runs);
+  const { todo } = plan;
   if (args['dry-run']) return { name, ready: p.ready(), todo: todo.length };
   if (!p.ready()) return { name, ready: false, todo: todo.length };
+  doc.answers = plan.answers;
+  if (plan.superseded.length) doc.superseded = plan.superseded;
   mkdirSync(outDir, { recursive: true });
   for (const [q, r] of todo) {
     let entry;
@@ -155,12 +162,14 @@ async function runProvider(name) {
     writeFileSync(file, JSON.stringify(doc, null, 2) + '\n');
     process.stdout.write(`${name} ${q.id}#${r} ${entry.error ? 'error' : entry.cited ? 'CITED' : entry.mentioned ? 'named' : '-'}\n`);
   }
-  return { name, ready: true, todo: todo.length };
+  const failed = doc.answers.filter((a) => a.error).length;
+  return { name, ready: true, todo: todo.length, failed };
 }
 
 const results = await Promise.all(wanted.map(runProvider));
 for (const r of results) {
   if (!r.ready) console.log(`${r.name}: skipped, no credentials in the shell (${r.todo} answers still to collect)`);
   else if (args['dry-run']) console.log(`${r.name}: ready, ${r.todo} answers to collect`);
+  else if (r.failed) console.log(`${r.name}: ${r.failed} call(s) failed and are not counted; run again to retry them`);
 }
 if (args['dry-run']) console.log(`Plan: ${questions.length} questions x ${runs} run(s) per provider into ${path.relative(process.cwd(), outDir)}`);

@@ -92,7 +92,8 @@ function ogEntries() {
   entries.push({ key: 'og.pin.howTo.kicker', english: OG_EN.pin.howTo.kicker });
   entries.push({ key: 'og.pin.howTo.title', english: OG_EN.pin.howTo.title });
   entries.push(...entriesFromObject('og.pin.howTo.steps', OG_EN.pin.howTo.steps));
-  for (const tool of OG_EN.tools) {
+  // Tools whose pages exist only in English have no localized card to translate.
+  for (const tool of OG_EN.tools.filter((entry) => !entry.englishOnly)) {
     for (const field of ['kicker', 'title', 'sub']) {
       entries.push({ key: `og.tools.${tool.key}.${field}`, english: tool[field] });
     }

@@ -363,7 +363,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<FormFieldErrors>({});
-  const [saved, setSaved] = useState<'idle' | 'saved' | 'full' | 'error'>('idle');
+  const [saved, setSaved] = useState<'idle' | 'saved' | 'full' | 'error' | 'unavailable'>('idle');
   const chartAccountSave = useAccountSaveModule(Boolean(chart) && mode === 'full' && locale === 'en');
   const [shareInput, setShareInput] = useState<ShareChartInput | null>(null);
   const [computedInput, setComputedInput] = useState<RunInput | null>(null);
@@ -1830,9 +1830,28 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
     const identity = chartIdentity();
     if (!owner || !chart || !computedInput || !identity) return;
     track('chart_save', { source: saveOriginRef.current });
+    const saveGeneration = savePromptGenerationRef.current;
+    if (!profileAccessAllowed()) {
+      // With account sync on, this page may not have loaded the access
+      // bootstrap yet. Wait for its decision; the write below still runs
+      // only if it grants this tab access, and the access generation is
+      // captured after that decision, so a later change still cancels it.
+      let access: 'allowed' | 'denied' | 'unavailable' = 'unavailable';
+      try {
+        const { ensureProfileWriteAccess } = await import('../lib/account-v2/profile-access-request');
+        access = await ensureProfileWriteAccess();
+      } catch {
+        access = 'unavailable';
+      }
+      if (!resultIsCurrent(owner) || saveGeneration !== savePromptGenerationRef.current) return;
+      if (access === 'unavailable') {
+        setSaved('unavailable');
+        closeSavePrompt();
+        return;
+      }
+    }
     const now = new Date().toISOString();
     const accessGeneration = profileAccessGeneration.current;
-    const saveGeneration = savePromptGenerationRef.current;
     const saveUiIsCurrent = () => resultIsCurrent(owner)
       && accessGeneration === profileAccessGeneration.current
       && saveGeneration === savePromptGenerationRef.current;
@@ -1984,7 +2003,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const AspectPatternFeature = chartActionDockModule?.AspectPatternFeature;
   const saveError = saved === 'full'
     ? t(locale, 'chartSaveFull')
-    : saved === 'error' ? t(locale, 'chartSaveError') : null;
+    : saved === 'error' ? t(locale, 'chartSaveError')
+      : saved === 'unavailable' ? t(locale, 'profileSaveUnavailable') : null;
   const CalendarSubscribe = calendarSurface?.default;
   const ApproachRead = approachSurface?.default;
   const CommunicationRead = communicationSurface?.default;

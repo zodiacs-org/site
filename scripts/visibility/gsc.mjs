@@ -17,11 +17,12 @@
 //      node scripts/visibility/gsc.mjs --api --site sc-domain:zodiacs.org \
 //        --start 2026-10-11 --end 2026-11-07 --label 2026-11-08
 //
-// Output: docs/visibility/baseline/<label>/gsc.json, aggregate counts only
-// (Search Console holds no personal data; anonymised queries are not returned).
+// Output: docs/visibility/baseline/<label>/gsc.json, aggregate counts only.
+// No query text is written: a searcher can type a birth date, time or place,
+// so each phrase records how many queries matched, never which ones.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
-import { loadQuestions, parseCsv, summarisePhrase, VIS_DIR } from './lib.mjs';
+import { loadQuestions, pagePath, parseCsv, summarisePhrase, VIS_DIR } from './lib.mjs';
 
 const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? (argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : true) : undefined; };
@@ -50,7 +51,7 @@ async function fromApi(site, start, end) {
     });
     if (!res.ok) throw new Error(`Search Console ${res.status}: ${(await res.text()).slice(0, 300)}`);
     const json = await res.json();
-    for (const r of json.rows || []) out.push({ query: r.keys[0], page: r.keys[1], clicks: r.clicks, impressions: r.impressions, position: r.position });
+    for (const r of json.rows || []) out.push({ query: r.keys[0], page: pagePath(r.keys[1]), clicks: r.clicks, impressions: r.impressions, position: r.position });
     if (!json.rows || json.rows.length < 25000) break;
   }
   return out;
@@ -71,21 +72,50 @@ const phrases = questions.map((q) => ({ id: q.id, target: q.target, exact: summa
 // folded) against the keyword tables in docs/visibility/keywords/.
 const fold = (q) => String(q).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim();
 const kwDir = path.join(VIS_DIR, 'keywords');
+// The same query can sit in several locales' tables (a sign name or a year
+// reads the same in more than one language), so a query alone does not say
+// which locale it belongs to. With a landing page (API rows) the page's locale
+// decides; a query-only row (CSV) counts for a locale only when exactly one
+// table holds it, and otherwise goes to `ambiguous`, never to whichever table
+// came last.
 const kwIndex = new Map();
 if (existsSync(path.join(kwDir, 'all-locales.csv'))) {
-  for (const r of parseCsv(readFileSync(path.join(kwDir, 'all-locales.csv'), 'utf8')).slice(1)) kwIndex.set(fold(r[5]), `${r[3]}:${r[0]}`);
+  for (const r of parseCsv(readFileSync(path.join(kwDir, 'all-locales.csv'), 'utf8')).slice(1)) {
+    const k = fold(r[5]);
+    const list = kwIndex.get(k) || [];
+    if (!list.some((x) => x.family === r[3] && x.locale === r[0])) list.push({ family: r[3], locale: r[0] });
+    kwIndex.set(k, list);
+  }
+}
+const PAGE_LOCALES = ['es', 'pt', 'fr', 'it', 'ru', 'zh-hans', 'zh-hant', 'ar'];
+function pageLocale(page) {
+  try {
+    const first = new URL(page).pathname.split('/')[1];
+    return PAGE_LOCALES.includes(first) ? first : 'en';
+  } catch {
+    return null;
+  }
 }
 const families = {};
-for (const r of rows) {
-  const key = kwIndex.get(fold(r.query));
-  if (!key) continue;
-  const f = (families[key] ??= { clicks: 0, impressions: 0, weighted: 0, queries: 0 });
+const ambiguous = {};
+const add = (bucket, key, r) => {
+  const f = (bucket[key] ??= { clicks: 0, impressions: 0, weighted: 0, queries: 0 });
   f.clicks += r.clicks; f.impressions += r.impressions; f.weighted += r.position * r.impressions; f.queries++;
+};
+for (const r of rows) {
+  const cands = kwIndex.get(fold(r.query));
+  if (!cands) continue;
+  const loc = r.page ? pageLocale(r.page) : null;
+  const pick = loc ? cands.filter((c) => c.locale === loc) : cands;
+  if (pick.length === 1) { add(families, `${pick[0].family}:${pick[0].locale}`, r); continue; }
+  const fams = [...new Set(cands.map((c) => c.family))].sort().join('|');
+  const locs = [...new Set(cands.map((c) => c.locale))].sort();
+  add(ambiguous, `${fams}:${locs.join('+')}`, r);
 }
-for (const f of Object.values(families)) { f.position = f.impressions ? +(f.weighted / f.impressions).toFixed(1) : null; delete f.weighted; }
+for (const bucket of [families, ambiguous]) for (const f of Object.values(bucket)) { f.position = f.impressions ? +(f.weighted / f.impressions).toFixed(1) : null; delete f.weighted; }
 
 const totals = rows.reduce((t, r) => ({ clicks: t.clicks + r.clicks, impressions: t.impressions + r.impressions }), { clicks: 0, impressions: 0 });
 const out = path.join(VIS_DIR, 'baseline', label);
 mkdirSync(out, { recursive: true });
-writeFileSync(path.join(out, 'gsc.json'), JSON.stringify({ label, source, rows: rows.length, totals, families, phrases }, null, 2) + '\n');
+writeFileSync(path.join(out, 'gsc.json'), JSON.stringify({ label, source, localeBasis: opt('api') ? 'landing page' : 'query only (CSV)', rows: rows.length, totals, families, ambiguous, phrases }, null, 2) + '\n');
 console.log(`${rows.length} rows, ${totals.impressions} impressions, ${totals.clicks} clicks; ${phrases.filter((p) => p.close.impressions).length} of ${phrases.length} phrases have impressions`);

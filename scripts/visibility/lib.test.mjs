@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { citationHost, copyProblems, loadQuestions, matchPhrase, opportunityScore, parseCsv, scoreAnswer, summarisePhrase } from './lib.mjs';
+import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseCsv, scoreAnswer, summarisePhrase } from './lib.mjs';
 
 describe('visibility lib', () => {
   it('holds fifty questions with unique ids and phrases', () => {
@@ -37,6 +37,13 @@ describe('visibility lib', () => {
     expect(s.impressions).toBe(400);
     expect(s.position).toBe(17.5);
     expect(summarisePhrase(data, 'what is my rising sign', { closeMatches: false }).impressions).toBe(100);
+    // Query text is never kept: a searcher can type birth details.
+    expect(s.queryCount).toBe(2);
+    expect(JSON.stringify(s)).not.toMatch(/rising sign what is my/);
+    // Landing pages keep only origin and path.
+    const withPage = summarisePhrase([{ query: 'what is my rising sign', page: 'https://zodiacs.org/rising-sign/?date=1990-03-12&time=15:00&place=London#x', clicks: 0, impressions: 5, position: 3 }], 'what is my rising sign');
+    expect(withPage.topPages).toEqual(['https://zodiacs.org/rising-sign/']);
+    expect(pagePath('not a url')).toBe(null);
   });
 
   it('ranks striking-distance phrases above ones already on top', () => {
@@ -50,6 +57,33 @@ describe('visibility lib', () => {
     expect(copyProblems('Free birth chart \u2014 with houses')).toEqual(['em or en dash']);
     expect(copyProblems('Buy the token')[0]).toMatch(/market word/);
     expect(copyProblems('What is my rising sign?')).toEqual([]);
+  });
+
+  it('resumes only successful answers to the current wording', () => {
+    const qs = [
+      { id: 'q1', question: 'What is my rising sign?' },
+      { id: 'q2', question: 'Is there a free birth chart calculator with no signup?' },
+    ];
+    const doc = {
+      answers: [
+        { id: 'q1', run: 1, question: 'What is my rising sign?', text: 'ok' },
+        { id: 'q1', run: 2, question: 'What is my rising sign?', error: '503 overloaded' },
+        { id: 'q2', run: 1, question: 'Is there a free birth chart calculator?', text: 'old wording' },
+        { id: 'q9', run: 1, question: 'Outside this run', error: '500' },
+      ],
+    };
+    const plan = planAnswers(doc, qs, 2);
+    // The failed call and the answer to old wording are asked again.
+    expect(plan.todo.map(([q, r]) => `${q.id}#${r}`)).toEqual(['q1#2', 'q2#1', 'q2#2']);
+    expect(plan.answers.map((a) => `${a.id}#${a.run}`)).toEqual(['q1#1', 'q9#1']);
+    expect(plan.superseded.map((a) => a.text)).toEqual(['old wording']);
+    // A rerun after the retries succeed has nothing left to ask.
+    const after = { answers: [...plan.answers, ...plan.todo.map(([q, r]) => ({ id: q.id, run: r, question: q.question, text: 'new' }))], superseded: plan.superseded };
+    expect(planAnswers(after, qs, 2).todo).toEqual([]);
+    expect(planAnswers(after, qs, 2).superseded).toHaveLength(1);
+    expect(answerCounts(doc.answers[0], qs[0])).toBe(true);
+    expect(answerCounts(doc.answers[1], qs[0])).toBe(false);
+    expect(answerCounts(doc.answers[2], qs[1])).toBe(false);
   });
 
   it('keeps API keys out of the committed scripts', () => {
