@@ -33,6 +33,7 @@ import daily from '../data/daily.json';
 import developerGuides from '../data/developer-guides.json';
 import horoscopeProgram from '../data/horoscope-program.json';
 import registryResearchPublicationData from '../data/registry-research/publication.json';
+import registryResearchPause from '../data/registry-research/pause.json';
 import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
@@ -46,7 +47,13 @@ type RegistryResearchPublication = {
 };
 const registryResearchPublication = registryResearchPublicationData as unknown as RegistryResearchPublication;
 const birthdayFacts = birthdayFactsData as unknown as { days: Record<string, { cusp?: unknown }> };
-const researchLastmod = terminalResearchLastmod(registryResearchPublication);
+// /terminal/research/ says publishing is paused while
+// src/data/registry-research/pause.json says so; the notice went up on this date.
+const TERMINAL_RESEARCH_PAUSE_LASTMOD = '2026-11-12';
+const researchLastmod = terminalResearchLastmod(
+  registryResearchPublication,
+  registryResearchPause.status === 'paused' ? TERMINAL_RESEARCH_PAUSE_LASTMOD : undefined,
+);
 // Both yearly pages last changed when their planet ingress, station and
 // aspect times were taken from NASA JPL Horizons (src/lib/nasa-instants.ts).
 const YEARLY_HOROSCOPE_LASTMOD = '2026-11-06';
