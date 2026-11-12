@@ -1,0 +1,176 @@
+diff --git a/src/pages/es/[sign]/index.astro b/src/pages/es/[sign]/index.astro
+index 5aea9217..a68a6b72 100644
+--- a/src/pages/es/[sign]/index.astro
++++ b/src/pages/es/[sign]/index.astro
+@@ -140,6 +140,14 @@ const jsonLd = [
+               );
+             })}
+           </div>
++          <p class="guide-es-panel__chips-label">{signName(sign, 'es')} con cada signo</p>
++          <div class="guide-es-panel__chips">
++            {SIGNS.map((s) => (
++              <a class="chip" href={`/es/compatibility/${pairSlug(sign.slug, s.slug)}/`} style={`--sign:${s.hue}`}>
++                <SignIcon sign={s.slug} size={18} class="chip__icon" /> {signName(s, 'es')}
++              </a>
++            ))}
++          </div>
+         </div>
+       </section>
+ 
+@@ -174,6 +182,7 @@ const jsonLd = [
+   .guide-es-panel h2 { margin: 0; font-size: var(--text-xl); }
+   .guide-es-panel p { margin: 0; max-width: 58ch; color: var(--text-2); line-height: 1.65; }
+   .guide-es-panel__chips { display: flex; flex-wrap: wrap; gap: 8px; }
++  .guide-es-panel__chips-label { margin-top: 6px !important; font-size: var(--text-sm); color: var(--text-3, var(--muted)) !important; }
+   .guide-es-nav {
+     display: flex;
+     justify-content: space-between;
+diff --git a/src/pages/es/compatibility/index.astro b/src/pages/es/compatibility/index.astro
+index 1524d98a..30973237 100644
+--- a/src/pages/es/compatibility/index.astro
++++ b/src/pages/es/compatibility/index.astro
+@@ -48,7 +48,7 @@ const jsonLd = [
+ ---
+ <Base privateSurface
+   clientUi
+-  title="Calculadora de compatibilidad astrológica | Zodiacs.org"
++  title="Compatibilidad de signos: calculadora y las 78 parejas | Zodiacs.org"
+   description="Compara dos cartas natales gratis y de forma privada en tu navegador, con lecturas claras y guías para las 78 combinaciones de signos."
+   path="/es/compatibility/"
+   locale="es"
+diff --git a/src/pages/fr/[sign]/index.astro b/src/pages/fr/[sign]/index.astro
+index f8cf57aa..57e327e9 100644
+--- a/src/pages/fr/[sign]/index.astro
++++ b/src/pages/fr/[sign]/index.astro
+@@ -129,7 +129,6 @@ const jsonLd = [
+           <p>
+             L’alchimie entre deux signes solaires n’est qu’un début. Ces signes
+             s’accordent souvent avec {signName(sign, 'fr')} ; pour une lecture complète, compare les deux thèmes.
+-            Les guides de paires liés ci-dessous sont en anglais.
+           </p>
+           <div class="guide-es-panel__chips">
+             {easeful.map((slug) => {
+@@ -141,6 +140,14 @@ const jsonLd = [
+               );
+             })}
+           </div>
++          <p class="guide-es-panel__chips-label">{signName(sign, 'fr')} avec chaque signe</p>
++          <div class="guide-es-panel__chips">
++            {SIGNS.map((s) => (
++              <a class="chip" href={`/fr/compatibility/${pairSlug(sign.slug, s.slug)}/`} style={`--sign:${s.hue}`}>
++                <SignIcon sign={s.slug} size={18} class="chip__icon" /> {signName(s, 'fr')}
++              </a>
++            ))}
++          </div>
+         </div>
+       </section>
+ 
+@@ -175,6 +182,7 @@ const jsonLd = [
+   .guide-es-panel h2 { margin: 0; font-size: var(--text-xl); }
+   .guide-es-panel p { margin: 0; max-width: 58ch; color: var(--text-2); line-height: 1.65; }
+   .guide-es-panel__chips { display: flex; flex-wrap: wrap; gap: 8px; }
++  .guide-es-panel__chips-label { margin-top: 6px !important; font-size: var(--text-sm); color: var(--text-3, var(--muted)) !important; }
+   .guide-es-nav {
+     display: flex;
+     justify-content: space-between;
+diff --git a/src/pages/fr/compatibility/index.astro b/src/pages/fr/compatibility/index.astro
+index 546f1682..b8f30e8c 100644
+--- a/src/pages/fr/compatibility/index.astro
++++ b/src/pages/fr/compatibility/index.astro
+@@ -48,7 +48,7 @@ const jsonLd = [
+ ---
+ <Base privateSurface
+   clientUi
+-  title="Calculateur de compatibilité astrologique | Zodiacs.org"
++  title="Compatibilité amoureuse des signes : calculateur et 78 couples | Zodiacs.org"
+   description="Compare gratuitement deux thèmes astraux dans ton navigateur, avec les aspects qui les relient et des guides pour les 78 combinaisons de signes."
+   path="/fr/compatibility/"
+   locale="fr"
+diff --git a/src/pages/it/[sign]/index.astro b/src/pages/it/[sign]/index.astro
+index 3acec99d..f9b2854e 100644
+--- a/src/pages/it/[sign]/index.astro
++++ b/src/pages/it/[sign]/index.astro
+@@ -129,7 +129,6 @@ const jsonLd = [
+           <p>
+             L’intesa tra due segni solari è solo l’inizio. Questi segni tendono
+             ad accordarsi con {signName(sign, 'it')}; per una lettura completa, confronta i due temi.
+-            Le guide alle coppie collegate qui sotto sono in inglese.
+           </p>
+           <div class="guide-es-panel__chips">
+             {easeful.map((slug) => {
+@@ -141,6 +140,14 @@ const jsonLd = [
+               );
+             })}
+           </div>
++          <p class="guide-es-panel__chips-label">{signName(sign, 'it')} con ogni segno</p>
++          <div class="guide-es-panel__chips">
++            {SIGNS.map((s) => (
++              <a class="chip" href={`/it/compatibility/${pairSlug(sign.slug, s.slug)}/`} style={`--sign:${s.hue}`}>
++                <SignIcon sign={s.slug} size={18} class="chip__icon" /> {signName(s, 'it')}
++              </a>
++            ))}
++          </div>
+         </div>
+       </section>
+ 
+@@ -175,6 +182,7 @@ const jsonLd = [
+   .guide-es-panel h2 { margin: 0; font-size: var(--text-xl); }
+   .guide-es-panel p { margin: 0; max-width: 58ch; color: var(--text-2); line-height: 1.65; }
+   .guide-es-panel__chips { display: flex; flex-wrap: wrap; gap: 8px; }
++  .guide-es-panel__chips-label { margin-top: 6px !important; font-size: var(--text-sm); color: var(--text-3, var(--muted)) !important; }
+   .guide-es-nav {
+     display: flex;
+     justify-content: space-between;
+diff --git a/src/pages/it/compatibility/index.astro b/src/pages/it/compatibility/index.astro
+index dbf47b29..722140ae 100644
+--- a/src/pages/it/compatibility/index.astro
++++ b/src/pages/it/compatibility/index.astro
+@@ -48,7 +48,7 @@ const jsonLd = [
+ ---
+ <Base privateSurface
+   clientUi
+-  title="Calcolatore di compatibilità astrologica | Zodiacs.org"
++  title="Affinità di coppia tra segni: calcolatore e 78 coppie | Zodiacs.org"
+   description="Confronta gratuitamente due temi natali nel tuo browser, in modo riservato, con letture chiare e guide per le 78 combinazioni di segni."
+   path="/it/compatibility/"
+   locale="it"
+diff --git a/src/pages/pt/[sign]/index.astro b/src/pages/pt/[sign]/index.astro
+index ed83c4fb..973486b3 100644
+--- a/src/pages/pt/[sign]/index.astro
++++ b/src/pages/pt/[sign]/index.astro
+@@ -141,6 +141,14 @@ const jsonLd = [
+               );
+             })}
+           </div>
++          <p class="guide-pt-panel__chips-label">{signName(sign, 'pt')} com cada signo</p>
++          <div class="guide-pt-panel__chips">
++            {SIGNS.map((s) => (
++              <a class="chip" href={`/pt/compatibility/${pairSlug(sign.slug, s.slug)}/`} style={`--sign:${s.hue}`}>
++                <SignIcon sign={s.slug} size={18} class="chip__icon" /> {signName(s, 'pt')}
++              </a>
++            ))}
++          </div>
+         </div>
+       </section>
+ 
+@@ -175,6 +183,7 @@ const jsonLd = [
+   .guide-pt-panel h2 { margin: 0; font-size: var(--text-xl); }
+   .guide-pt-panel p { margin: 0; max-width: 58ch; color: var(--text-2); line-height: 1.65; }
+   .guide-pt-panel__chips { display: flex; flex-wrap: wrap; gap: 8px; }
++  .guide-pt-panel__chips-label { margin-top: 6px !important; font-size: var(--text-sm); color: var(--text-3, var(--muted)) !important; }
+   .guide-pt-nav {
+     display: flex;
+     justify-content: space-between;
+diff --git a/src/pages/pt/compatibility/index.astro b/src/pages/pt/compatibility/index.astro
+index b0130476..f27a1218 100644
+--- a/src/pages/pt/compatibility/index.astro
++++ b/src/pages/pt/compatibility/index.astro
+@@ -48,7 +48,7 @@ const jsonLd = [
+ ---
+ <Base privateSurface
+   clientUi
+-  title="Calculadora de compatibilidade astrológica | Zodiacs.org"
++  title="Compatibilidade de signos: calculadora e os 78 pares | Zodiacs.org"
+   description="Compare dois mapas astrais grátis e com privacidade no seu navegador, com leituras claras e guias para as 78 combinações de signos."
+   path="/pt/compatibility/"
+   locale="pt"
