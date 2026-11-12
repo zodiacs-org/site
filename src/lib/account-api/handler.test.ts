@@ -179,7 +179,7 @@ function exportFetcher(v2Export: unknown = EMPTY_V2_RPC_EXPORT) {
 }
 
 describe('account lifecycle API foundation', () => {
-  it('keeps deletion receipt recovery available while the sync canary switch is disabled', async () => {
+  it('keeps deletion receipt recovery available while the sync kill switch is disabled', async () => {
     const fetcher = vi.fn(async () => json({
       outcome: 'ready', request_id: REQUEST_ID, user_id: USER_ID, state: 'prepared',
       prepared_at: '2026-08-11T16:00:01.000Z', completed_at: null,

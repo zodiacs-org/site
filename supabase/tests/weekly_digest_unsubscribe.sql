@@ -146,11 +146,19 @@ begin
     '10000000-0000-4000-8000-000000000001',
     5
   );
+  -- Since 20261111170000 the projection never reads public.charts. An
+  -- account without the v2 chart_emails consent gets a null chart reference
+  -- and the non-chart digest; no v1 name, body or birth field crosses.
   if content ->> 'digest' !~ '^[0-9a-f]{64}$'
     or content #>> '{snapshot,email}' <> 'weekly-1@example.com'
-    or pg_catalog.jsonb_array_length(content #> '{snapshot,charts}') <> 1
+    or content #> '{snapshot,chart}' <> 'null'::jsonb
+    or (select pg_catalog.array_agg(key order by key)
+        from pg_catalog.jsonb_object_keys(content -> 'snapshot') as keys(key))
+      <> array['chart', 'email']
     or content::text like '%1990-01-01%'
     or content::text like '%Must not cross%'
+    or content::text like '%Private chart%'
+    or content::text like '%15.25%'
   then
     raise exception 'minimal weekly content projection drifted';
   end if;
@@ -169,8 +177,9 @@ $$;
 
 reset role;
 
--- Empty, malformed, and oversized natal-body arrays are ineligible before a
--- reservation and cannot make the bounded content projection fan out.
+-- A v1 chart payload, valid or not, no longer affects eligibility or
+-- content: the digest reads only the opt-in, the address, and an opted-in v2
+-- chart reference. Empty, malformed, and oversized v1 body arrays are inert.
 update public.charts
 set payload = pg_catalog.jsonb_build_object(
   'name', 'Empty chart',
@@ -189,18 +198,7 @@ set payload = pg_catalog.jsonb_build_object(
 )
 where user_id = '10000000-0000-4000-8000-000000000085';
 
-update public.charts
-set payload = pg_catalog.jsonb_build_object(
-  'name', 'Oversized chart',
-  'summary', pg_catalog.jsonb_build_object(
-    'bodies', (
-      select pg_catalog.jsonb_agg(
-        pg_catalog.jsonb_build_object('body', 'Sun', 'lon', body_number::numeric)
-      )
-      from pg_catalog.generate_series(1, 65) as bodies(body_number)
-    )
-  )
-)
+delete from public.charts
 where user_id = '10000000-0000-4000-8000-000000000086';
 
 set local role service_role;
@@ -208,21 +206,20 @@ do $$
 declare
   account_number integer;
   account_id uuid;
+  content jsonb;
 begin
   for account_number in 84..86 loop
     account_id := (
       '10000000-0000-4000-8000-'
       || pg_catalog.lpad(account_number::text, 12, '0')
     )::uuid;
-    if public.weekly_digest_content_v1(account_id, 5) is not null then
-      raise exception 'invalid body array % crossed the content boundary', account_number;
-    end if;
-    if exists (
-      select 1
-      from public.weekly_digest_candidates_v1(pg_temp.weekly_test_monday(), 80) as candidate
-      where candidate.user_id = account_id
-    ) then
-      raise exception 'invalid body array % crossed the candidate boundary', account_number;
+    content := public.weekly_digest_content_v1(account_id, 5);
+    if content is null
+      or content #> '{snapshot,chart}' <> 'null'::jsonb
+      or content::text like '%Empty chart%'
+      or content::text like '%Malformed%'
+    then
+      raise exception 'v1 chart % changed the weekly content boundary', account_number;
     end if;
   end loop;
 end;
