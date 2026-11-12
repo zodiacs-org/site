@@ -177,6 +177,13 @@ try {
   process.exit(1);
 }
 
+// budgets.json is plain JSON, so its reasons live here. `/birth-chart/` and
+// `/compatibility/` carry the account access bootstrap (AccountProfileAccessBootstrap,
+// client:load): with encrypted account sync on, a first save on these two
+// calculators needs it. Their limits were raised just enough to fit it, by
+// owner decision on 2026-11-12: /birth-chart/ 71 -> 88 KB (87.5 measured) and
+// /compatibility/ 36 -> 54.5 KB (53.8 measured), each under 1 KB of margin. Every other page loads the bootstrap only on
+// demand (src/lib/account-v2/profile-access-loader.mjs), outside these sums.
 const routeBudgets = Object.entries(budgets).filter(([key]) => key.startsWith('/'));
 for (const [key, value] of Object.entries(budgets)) {
   if (typeof value !== 'number' || value < 0 || !Number.isFinite(value)) {
