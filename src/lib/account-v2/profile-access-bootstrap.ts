@@ -18,6 +18,7 @@ import {
   setProfileAccessLeaseActive,
   setRetainedProfileAccessGrant,
 } from './profile-access';
+import { browserProfileAccessReader } from './profile-access-reader';
 import {
   acquireAccountProfileReadLease,
   onAccountProfileLeaseRevocation,
@@ -58,6 +59,15 @@ function announceAccessChange(): void {
   window.dispatchEvent(new Event('zodiacs:profile'));
 }
 
+/** True while this tab can read its profile (the pre-hydration reader's verdict). */
+function readerCanRead(): boolean {
+  try {
+    return browserProfileAccessReader()?.canRead() === true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * The tab-lifetime shared lease required by every private profile reader and
  * writer. This is the only code that activates the lease or writes a grant.
@@ -72,19 +82,33 @@ function runProfileAccessBootstrap(onDecided: () => void): () => void {
   let accessVersion = 0;
   let evaluations = 0;
   let currentAccountId: string | null = null;
+  // The account the last evaluation was for; undefined before the first.
+  let evaluatedAccountId: string | null | undefined;
+  let ownTransition = false;
   let lease: AccountProfileReadLease | null = null;
   const browserStorage = getAccountV2BrowserStorage();
 
-  const revoke = () => {
+  /**
+   * Withdraws access. Listeners hear it when access was actually held, or when
+   * `changed` says the owner or the account changed; a revoke on a tab that
+   * was already locked, such as the one that opens every evaluation, changes
+   * nothing and announces nothing. A save waiting for the first decision is
+   * therefore not cancelled by the bootstrap starting.
+   */
+  const revoke = (changed = false) => {
+    const held = lease !== null || readerCanRead();
     accessVersion += 1;
     setProfileAccessLeaseActive(false);
     if (browserStorage) clearProfileAccessGrant(browserStorage.session);
     lease?.release();
     lease = null;
-    announceAccessChange();
+    if (held || changed) announceAccessChange();
   };
 
-  unsubscribeRevocation = onAccountProfileLeaseRevocation(revoke);
+  // Another tab's owner transition, or one this tab's account panel runs, is
+  // an owner change. This bootstrap's own transitions follow the revoke that
+  // opened their evaluation, so they withdraw nothing new.
+  unsubscribeRevocation = onAccountProfileLeaseRevocation(() => revoke(!ownTransition));
   if (!browserStorage) {
     revoke();
     onDecided();
@@ -94,6 +118,16 @@ function runProfileAccessBootstrap(onDecided: () => void): () => void {
     };
   }
   const { local, session } = browserStorage;
+
+  const runOwnTransition = <T>(transition: () => Promise<T> | T) => {
+    ownTransition = true;
+    try {
+      // The lease revocation is broadcast synchronously, before the first await.
+      return runExclusiveAccountProfileTransition(local, transition);
+    } finally {
+      ownTransition = false;
+    }
+  };
 
   const grant = async (
     mode: 'unowned' | 'retained' | 'account',
@@ -132,7 +166,11 @@ function runProfileAccessBootstrap(onDecided: () => void): () => void {
   };
 
   const evaluate = async (accountId: string | null, expectedAuthVersion: number) => {
-    revoke();
+    // An evaluation for another account than the last one is an account
+    // change even on a tab that held nothing.
+    const accountChanged = evaluatedAccountId !== undefined && evaluatedAccountId !== accountId;
+    evaluatedAccountId = accountId;
+    revoke(accountChanged);
     if (!live || authVersion !== expectedAuthVersion) return;
     // Remove the exact UTC/coordinate residue written by a brief v1 client
     // before granting any account, retained, or account-free profile lease.
@@ -161,7 +199,7 @@ function runProfileAccessBootstrap(onDecided: () => void): () => void {
       // pending record storage keeps this tab locked rather than binding.
       if (await discoverSavedRecords() !== 'empty') return;
       if (!live || authVersion !== expectedAuthVersion) return;
-      const transition = await runExclusiveAccountProfileTransition(local, async () => {
+      const transition = await runOwnTransition(async () => {
         if (!live || authVersion !== expectedAuthVersion) return false;
         const current = inspectLocalAccountBoundary(
           local,
@@ -182,8 +220,7 @@ function runProfileAccessBootstrap(onDecided: () => void): () => void {
       if (retained.status === 'invalid' || retained.status === 'unavailable') return;
       if (retained.status === 'ready') {
         if (retained.accountId !== accountId) return;
-        const transition = await runExclusiveAccountProfileTransition(
-          local,
+        const transition = await runOwnTransition(
           () => live
             && authVersion === expectedAuthVersion
             && lockCurrentAccountProfile(local, accountId),
