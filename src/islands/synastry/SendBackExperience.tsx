@@ -321,12 +321,15 @@ export function InvitationConversionCard({
   onSavePair,
   onStartOwn,
   onConverted,
+  unavailableMessage,
 }: {
   inviterLabel: string;
   onSaveChart: () => Promise<boolean>;
-  onSavePair?: () => boolean;
+  onSavePair?: () => boolean | Promise<boolean>;
   onStartOwn: () => void;
   onConverted?: (action: 'saved_chart' | 'saved_pair' | 'own_chart') => void;
+  /** Set when a save could not start because the account script did not load. */
+  unavailableMessage?: string;
 }) {
   const [saveState, setSaveState] = useState<'idle' | 'busy' | 'saved' | 'error'>('idle');
 
@@ -338,8 +341,8 @@ export function InvitationConversionCard({
     if (saved) onConverted?.('saved_chart');
   }
 
-  function savePair() {
-    if (!onSavePair?.()) return;
+  async function savePair() {
+    if (!await onSavePair?.()) return;
     onConverted?.('saved_pair');
   }
 
@@ -381,7 +384,7 @@ export function InvitationConversionCard({
             <p class="field__help" role="status">Saved on this device. Your full chart is in your profile.</p>
           )}
           {saveState === 'error' && (
-            <p class="calc__error" role="alert">Couldn't save this chart on the device. Please try again.</p>
+            <p class="calc__error" role="alert">{unavailableMessage ?? "Couldn't save this chart on the device. Please try again."}</p>
           )}
         </>
       )}
