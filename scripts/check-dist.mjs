@@ -60,6 +60,19 @@ const redirectSources = new Set(
 );
 const failures = [];
 const fail = (msg) => { failures.push(msg); };
+// vercel.json sends unknown paths under a locale prefix to that locale's own
+// 404 page; each one it names must be built, in its own language.
+{
+  const rewrites = JSON.parse(await readFile(resolve(repo, 'vercel.json'), 'utf8')).rewrites ?? [];
+  const localeNotFound = rewrites.find((rule) => rule.destination === '/:locale/404/');
+  const locales = localeNotFound?.source.match(/^\/:locale\(([a-z|]+)\)\//)?.[1].split('|') ?? [];
+  if (!locales.length) fail('vercel.json: no locale 404 rewrite (/:locale/404/)');
+  for (const locale of locales) {
+    const html = await readFile(join(root, locale, '404', 'index.html'), 'utf8').catch(() => null);
+    if (html === null) fail(`vercel.json: locale 404 rewrite names /${locale}/404/, which is not built`);
+    else if (!new RegExp(`<html[^>]*\\blang="${locale}(?:-[A-Za-z]+)?"`).test(html)) fail(`${locale}/404/index.html: not marked lang="${locale}"`);
+  }
+}
 let searchIndexCount = 0;
 const ZODIAC_SIGN_SLUGS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
