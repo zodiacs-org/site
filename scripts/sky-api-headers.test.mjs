@@ -5,6 +5,9 @@ import { describe, expect, it } from 'vitest';
 
 import { loadSkyApiSources } from '../src/lib/sky-api/sources.ts';
 import { buildSkyApi } from '../src/lib/sky-api/files.ts';
+import { YEAR_FAMILIES } from '../src/lib/sky-api/build.ts';
+import { cacheControlFor } from '../src/lib/sky-api/schemas.ts';
+import { PLANET_SLUGS } from '../src/lib/sky-api/meta.ts';
 import { effectiveHeaders as headersFor } from './lib/vercel-source-pattern.mjs';
 
 /**
@@ -109,6 +112,73 @@ describe('shared sky API delivery headers', () => {
     // letting it fall back to the wildcard is a failure rather than a no-op.
     expect(index, 'index.json must be cached more tightly than the family default').toBeLessThan(family);
     expect(today).toBeLessThanOrEqual(index);
+  });
+
+  it('sends each written file the lifetime the OpenAPI document states for it', () => {
+    const openapi = JSON.parse(build.files.get('openapi.json'));
+    for (const path of servedPaths) {
+      const file = path.slice('/api/v1/'.length);
+      // Every file the builder writes gets a real lifetime from a rule that
+      // names it, never the catch-all fallback kept for misses.
+      expect(maxAge(path), `${path} falls through to the miss fallback; name it in vercel.json`).toBeGreaterThan(0);
+      if (file.endsWith('.json') && build.payloads.has(file)) {
+        expect(effectiveHeaders(path).get('cache-control'), path).toBe(cacheControlFor(file));
+      }
+    }
+    // The OpenAPI header for each operation is the one its example file is sent with.
+    let checked = 0;
+    for (const [route, item] of Object.entries(openapi.paths)) {
+      const ok = item.get?.responses?.[200];
+      if (!ok) continue;
+      const example = ok.content['application/json'].examples.served.externalValue.replace('https://zodiacs.org', '');
+      expect(ok.headers['Cache-Control'].schema.const, route).toBe(effectiveHeaders(example).get('cache-control'));
+      checked += 1;
+    }
+    expect(checked).toBe(11);
+  });
+
+  it('does not cache a miss outside coverage as if it were a file', () => {
+    const misses = [
+      ...YEAR_FAMILIES.flatMap((family) => {
+        const years = advertised
+          .map(({ path }) => new RegExp(`^/api/v1/${family}/(\\d{4})\\.json$`, 'u').exec(path)?.[1])
+          .filter(Boolean)
+          .map(Number);
+        expect(years.length, family).toBeGreaterThan(0);
+        return [Math.min(...years) - 1, Math.max(...years) + 1].map((year) => `/api/v1/${family}/${year}.json`);
+      }),
+      '/api/v1/retrogrades/2031.json',
+      '/api/v1/retrogrades/2025.json',
+      '/api/v1/planets/chiron.json',
+      '/api/v1/schema/nope.v1.json',
+      '/api/v1/sky/tomorrow.json',
+      '/api/v1/index.md',
+    ];
+    for (const path of misses) {
+      expect(servedPaths, path).not.toContain(path);
+      const headers = effectiveHeaders(path);
+      expect(headers.get('cache-control'), path).toBe('public, max-age=0, must-revalidate');
+      // Still data, still open: a 404 here is not indexed and is readable cross-origin.
+      expect(headers.get('x-robots-tag'), path).toBe('noindex');
+      expect(headers.get('access-control-allow-origin'), path).toBe('*');
+    }
+    // The planet rule names exactly the published bodies.
+    for (const slug of PLANET_SLUGS) expect(maxAge(`/api/v1/planets/${slug}.json`), slug).toBe(DAY_SECONDS);
+  });
+
+  it('advertises each document with the Content-Type it is served with', () => {
+    // Vercel sends a static file the type of its extension unless a header
+    // rule sets one; observed in production on 2026-11-12, for instance
+    // application/json; charset=utf-8 on /api/v1/schema/today.v1.json.
+    const byExtension = { json: 'application/json', txt: 'text/plain', md: 'text/markdown' };
+    const { documents } = build.payloads.get('index.json');
+    expect(documents.length).toBeGreaterThanOrEqual(15);
+    for (const { path, contentType } of documents) {
+      expect(servedPaths, path).toContain(path);
+      const set = effectiveHeaders(path).get('content-type');
+      const served = (set ?? byExtension[path.split('.').pop()]).split(';')[0].trim();
+      expect(contentType, path).toBe(served);
+    }
   });
 
   it('keeps the API delivery rules off the rest of the site', () => {

@@ -1038,6 +1038,42 @@
         },
         {
           "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/v1/:file(openapi\\.json|llms\\.txt|signs\\.json|sky/upcoming\\.json|sky/today\\.md|sky/upcoming\\.md)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/v1/planets/:planet(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto).json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/v1/schema/:name(index|today|upcoming|retrogrades|stations|ingresses|moon-phases|eclipses|aspects|planet|signs).v1.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/v1/:family(retrogrades|stations|ingresses|moon-phases|eclipses|aspects)/:year(2026|2027|2028|2029|2030).json",
+      "headers": [
+        {
+          "key": "Cache-Control",
           "value": "public, max-age=86400, must-revalidate"
         }
       ]
