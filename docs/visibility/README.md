@@ -40,6 +40,8 @@ The program has two layers:
 4. **Export Search Console** at weeks 4 and 8 (Performance, Search results,
    Export, CSV) and run `node scripts/visibility/gsc.mjs --csv <folder> --label <date>`.
    The property was verified on 2026-11-08, so there is no earlier history.
+   That is missing data, not a measured zero: the first export is the first
+   baseline, and movement is only reported between two exports.
    Check Security & Manual actions at the same time.
 5. **AI re-run.** The 2026-11-08 baseline covered Claude and Google only.
    For the re-run, send the exact 50 questions that baseline used so
@@ -56,7 +58,7 @@ The program has two layers:
 | --- | --- | --- |
 | Locales and families | en full in all five families; es and pt daily horoscope only; fr and it no horoscopes; ru calculators only; zh and ar nothing in these families | [baseline/2026-11-08/coverage.md](baseline/2026-11-08/coverage.md) |
 | Keyword tables | 2,664 queries across 9 languages, volumes TBD | [keywords/](keywords/) |
-| Search Console | Domain property verified 2026-11-08; no history, so every family and phrase starts at zero | [baseline/2026-11-08/external.json](baseline/2026-11-08/external.json) |
+| Search Console | Domain property verified 2026-11-08; no history before that date. This is missing data, not a measured zero: no family or phrase has a baseline until the first export | [baseline/2026-11-08/external.json](baseline/2026-11-08/external.json) |
 | AI and Google answers | zodiacs.org named in **0 of 100** answers (50 questions on Claude and Google). ChatGPT, Gemini and Grok not run | same |
 | Competitors named most | Cafe Astrology, Astro-Seek, Astro.com, CHANI, TimePassages, The Pattern, Co-Star; small sites Augurine, ZodiScope, ChartNova, ChartLune | same |
 | Page snapshot for the 15 phrases | None of the 15 appears exactly in any title, H1, opening or H2 | [baseline/2026-11-08/pages.json](baseline/2026-11-08/pages.json) |
@@ -69,7 +71,10 @@ The program has two layers:
 At weeks 4 and 8 after each family PR merges, per family and locale:
 
 - Search Console impressions, clicks and average position from the
-  `families` block in `gsc.json`, compared with the same window length.
+  `families` block in `gsc.json`, compared with the same window length in an
+  earlier export. With no earlier export there is no baseline: report the
+  first export's figures as they are, not as growth from zero
+  (`report.mjs --from/--to` prints n/a when either side has no `gsc.json`).
 - Which URL Google shows for the sample queries (it should be the page in
   that language).
 - AI answers: the share of runs naming or citing zodiacs.org, per assistant.

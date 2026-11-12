@@ -20,8 +20,10 @@ Dias raises it.
 
 From the local build of `main` at f17b7ce2 with default feature flags, sitemap
 entries only ([baseline/2026-11-08/coverage.md](baseline/2026-11-08/coverage.md),
-`node scripts/visibility/coverage.mjs`). Production enables a few more
-flagged pages; none of them is in these families.
+`node scripts/visibility/coverage.mjs`). Treat this as a local-build
+baseline. Production enables a few more flagged pages; we believe none of
+them is in these families, but that was not checked against production's
+flags or the live sitemap.
 
 Locales the code knows: en, es, pt, fr, it (released); ru (calculators in the
 sitemap); zh-hans, zh-hant (Chinese zodiac guide only); ar (nothing
@@ -91,8 +93,10 @@ estimated. To fill them:
 
 Search Console matches its queries against the same tables:
 `gsc.json` now has a `families` block (impressions, clicks, position per
-family and locale). The property was verified on 2026-11-08, so every family
-starts at zero history.
+family and locale). The property was verified on 2026-11-08, so no family has
+any history before that date. That is missing data, not a measured zero: the
+first export is each family's baseline, and growth is only reported between
+two exports covering the same window length.
 
 The Arabic and Chinese lists need a native speaker's check before use (noted in
 each row). The Chinese lists target Singapore, Malaysia, Taiwan and Hong Kong:

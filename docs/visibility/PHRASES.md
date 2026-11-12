@@ -80,14 +80,19 @@ taken from the methodology page and the November accuracy audit.
 - Title: `Free Birth Chart Calculator, No Signup: Houses Included | Zodiacs.org`
 - H1: `Free birth chart calculator, no signup`
 - Opening: "Enter your birth date, time and place to get your full birth chart
-  free, with no account and no email: every planet's sign and degree, your
-  rising sign, all twelve houses and the aspects between them. The chart is
-  calculated in your browser, so your birth details stay on your device."
+  free, with no account and no email: every planet's sign and degree and the
+  aspects between them, plus your rising sign and all twelve houses when you
+  give a birth time. The chart is calculated in your browser, and your birth
+  details leave your device only if you choose account sync, a share link or
+  the assistant."
+  (The houses and rising sign need a birth time; the privacy line names the
+  same three exceptions as the page's FAQ and `/privacy/`.)
 - H2 `A private birth chart calculator`: what stays on the device, what leaves
   only when you choose (saving to an account, sharing a link, asking the
   assistant), link to `/privacy/`.
-- H2 `Free birth chart with houses`: Whole sign or Placidus houses, what
-  each house covers, link to `/learn/houses/`.
+- H2 `Free birth chart with houses`: says first that houses need a birth
+  time, then Whole sign or Placidus houses, what each house covers, link to
+  `/learn/houses/`.
 - FAQ: the three questions first, with the same answers.
 
 ### `/privacy/`: t03 section
@@ -138,17 +143,25 @@ taken from the methodology page and the November accuracy audit.
 
 - H2 `An astrology app without a subscription`: every tool on the site is
   free with no subscription and no account; the site can be added to the home
-  screen and works like an app, and saved charts stay on the device.
+  screen and works like an app, and saved charts stay on the device unless
+  you choose account sync.
 
 ### `/methodology/`: t08 title, t07 section
 
 - Title: `How Accurate Are Online Birth Chart Calculators? | Zodiacs.org`
 - H1: `How accurate are online birth chart calculators?`
-- Opening: "Accurate enough that the birth time, not the software, is usually
-  what limits your chart. This site's planet positions differ from Swiss
-  Ephemeris by a median of 1.6 arcseconds; a sign is 108,000 arcseconds wide.
-  Below is how each part is calculated, what we measured, and where precision
-  has limits."
+- Opening: "Across 160 measured planet positions from 1801 to 2026, this
+  site's longitudes differ from Swiss Ephemeris by a median of 1.6 arcseconds;
+  a sign is 108,000 arcseconds wide. That measures where the planets are
+  calculated to be, not whether a reading comes true. For most charts the
+  birth time, not the calculation, limits the precision of the houses and
+  rising sign. Below is how each part is calculated, what we measured, and
+  where precision has limits."
+  (The 1.6 figure is the median longitude difference in the audit sample on
+  `/methodology/` and in `docs/platform/evidence/swiss-benchmark/RESULTS.md`,
+  the 160 measurements from 1801 to 2026. It is agreement with another
+  ephemeris on measured positions only; it is not evidence of predictive
+  accuracy and must not be quoted without its sample.)
 - H2 `Most accurate birth chart calculator`: what to check in any calculator
   (ephemeris source, published comparison, how it handles an unknown time and
   old time zones), with this site's own measured figures. No claim to be the

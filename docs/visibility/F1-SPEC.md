@@ -86,6 +86,25 @@ New code, roughly:
 Structured data follows the English period pages: Article with
 `datePublished` and `dateModified`, BreadcrumbList, `inLanguage`.
 
+### Only released pages are linked
+
+The release list is the single gate for everything that points at a
+localized period page, not only for the route:
+
+- The period switcher, the sign page's links to week, month and tomorrow, and
+  the language switcher on the English period page link to an es or pt period
+  page only when that sign and period is in
+  `src/data/horoscope-locale-release.json`. Until then they keep today's
+  behaviour (the English page).
+- hreflang is reciprocal and released-only: the English period page lists an
+  es or pt alternate only for a released page, and the released page lists
+  the English page back. The sitemap uses the same check, so it never names a
+  withheld URL or an alternate that would 404.
+- One helper (for example `isLocalePeriodReleased(locale, sign, period)`)
+  answers this for the routes, the switchers, the head tags and the sitemap,
+  and a test builds a partial release list and checks that no page, link,
+  hreflang or sitemap entry names an unreleased page.
+
 ## Measures
 
 The keyword table rows for these pages (`keywords/es.csv`, `keywords/pt.csv`,
