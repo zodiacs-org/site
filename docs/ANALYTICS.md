@@ -119,8 +119,9 @@ any other property, any string over 32 characters and any unlisted event are
 dropped, in `src/lib/analytics.ts` and again in the shim in `Base.astro`.
 `src/lib/analytics.test.ts` holds that to be so for each of these events.
 
-**Nothing fires these yet.** The pages that call them arrive in later
-changes, each of which adds its call and nothing else to this contract.
+**None of the nine new events fires yet** (the two email events already
+fire, now with closed placement and source values). The pages that call the
+new events arrive in later changes, each of which adds its call and nothing else to this contract.
 
 | Event | Props and closed values | Fires when |
 | --- | --- | --- |
