@@ -449,6 +449,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
+  // The personal day: one day's transits to your own chart, first published 2026-11-09, once PUBLIC_YOUR_DAY_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? [['/your-day/', '2026-11-09'] as const] : []),
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -749,6 +751,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...LIFE_PATH_NUMBERS.map((number) => ({ loc: `/numerology/life-path/${number}/`, priority: 0.7 })),
     { loc: '/mercury-retrograde/', priority: 0.85 },
     { loc: '/transits/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? [{ loc: '/your-day/', priority: 0.8 }] : []),
     { loc: '/eclipses/', priority: 0.85 },
     { loc: '/full-moon-calendar/', priority: 0.85 },
     { loc: '/your-2027-sky/', priority: 0.8 },
@@ -995,6 +998,13 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const loc of EVENTS_2030) {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
+  }
+  // The tools hub's card for Your day, and the transits page's line linking to it (2026-11-09).
+  // Only while PUBLIC_YOUR_DAY_ENABLED is on: off, those pages keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/transits/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no

@@ -6,8 +6,8 @@
  * warm. The notes forecast in astrology's terms what a pairing tends to be
  * like; they never guarantee how a relationship turns out.
  */
-import { SIGNS, SIGN_SLUGS, signBySlug } from './signs';
-import type { Element, Modality, Sign } from './signs';
+import { SIGNS, SIGN_SLUGS, signBySlug } from './signs.js';
+import type { Element, Modality, Sign } from './signs.js';
 
 /** Canonical pair slug: both signs in zodiac order, joined with a hyphen. */
 export function pairSlug(a: string, b: string): string {

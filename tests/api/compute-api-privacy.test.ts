@@ -522,6 +522,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/features/year-score.ts',
       // get_solar_return (ZODIACS_SOLAR_RETURN_ENABLED=1) resolves a birth's local time with the same operations, server-side.
       'src/ai-tools/features/solar-return.ts',
+      // The personal tools (ZODIACS_PERSONAL_TOOLS_ENABLED=1) resolve a birth's local time with the same operations, server-side.
+      'src/ai-tools/personal/shared.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the

@@ -23,6 +23,7 @@ import { ASPECT_GLYPH, PLANET_GLYPH } from '../../lib/glyphs/paths';
 import { livingChartCaptureEnabled, livingChartSyncEnabled } from '../../lib/living-chart/feature-flags';
 import { NATAL_BODY_THEME } from '../../lib/natal-context';
 import { TOOLS_HUB } from '../../lib/nav-tools';
+import { launchFlagOn } from '../../lib/launch-flags';
 import { ART, artSrc, artSrcset } from '../../lib/art';
 import { signBySlug } from '../../lib/signs';
 import { refinePublishedAnchors, refineRetrogradeWindows, refineTransitMonth } from '../../lib/nasa-instants';
@@ -148,7 +149,8 @@ const retrogradeSummary = [
 const windowEndLabel = shortDate(new Date(Date.parse(timeline.to) - 86_400_000).toISOString(), true);
 const periodYear = (iso: string) => iso.slice(0, 4) !== publication.date.slice(0, 4);
 
-const goFurther = ['/transits/', '/moon-phase/', '/sky-calendar/', '/eclipses/']
+// Your day takes the eclipses' place only while PUBLIC_YOUR_DAY_ENABLED is on; off, the list is main's.
+const goFurther = (launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') ? ['/your-day/', '/transits/', '/moon-phase/', '/sky-calendar/'] : ['/transits/', '/moon-phase/', '/sky-calendar/', '/eclipses/'])
   .map((href) => TOOLS_HUB.find((tool) => tool.href === href))
   .filter((tool): tool is (typeof TOOLS_HUB)[number] => Boolean(tool));
 const monthDay = (iso: string) => ({

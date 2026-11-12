@@ -8,7 +8,7 @@
  * planet pressing on a fixed point of one chart needs its own register,
  * so only BODY_ROLE is shared.
  */
-import { BODY_ROLE } from './compat';
+import { BODY_ROLE } from './compat.js';
 import type { TodayContact } from './today';
 
 /** Max orb, in degrees, for a transit to count as active. */

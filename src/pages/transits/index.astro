@@ -3,10 +3,10 @@ import Base from '../../layouts/Base.astro';
 import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import TransitTracker from '../../islands/TransitTracker.tsx';
+import { launchFlagOn } from '../../lib/launch-flags';
 import PlanetGlyph from '../../components/PlanetGlyph';
 import { dayLabel, eventList, transitMonthForEdition, monthLabel } from '../../lib/horoscopes';
 import daily from '../../data/daily.json';
-import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/calculator.css';
 
 // The month's receipts render statically from the committed transit
@@ -72,6 +72,8 @@ const jsonLd = [
         Pick a saved chart or enter your birth details.{launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') && (
           <> For the next twelve months as one number, try the{' '}
           <a href="/year-score/">Year Ahead Score</a>.</>
+        )}{launchFlagOn('PUBLIC_YOUR_DAY_ENABLED') && (
+          <> For one day ranked by strength, with exact times on your clock, read <a href="/your-day/">your day</a>.</>
         )}
       </p>
     </div>

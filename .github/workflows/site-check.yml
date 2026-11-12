@@ -530,6 +530,41 @@ jobs:
       - name: PostgreSQL 17 migration, RLS, replay, and concurrency gates
         run: bash scripts/test-living-chart-sync-sql.sh
 
+  your-day-flag-on:
+    name: Your day (flag on)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PUBLIC_YOUR_DAY_ENABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install pinned Chromium
+        run: npx playwright-core install chromium
+
+      - name: Build (Your day flag on)
+        run: npm run build
+
+      - name: Typecheck (Your day flag on)
+        timeout-minutes: 5
+        run: npm run check
+
+      - name: Unit tests (Your day flag on)
+        timeout-minutes: 25
+        run: npm test
+
   phase7-living-chart-drive:
     name: Phase 7 Living Chart drive
     runs-on: ubuntu-latest
