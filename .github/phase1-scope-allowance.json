@@ -1,12 +1,19 @@
 {
   "version": 1,
-  "id": "pause-registry-research-feed-2026-11-12",
-  "baseCommit": "7d005c4778a4983a477b082f75f5c7d60fc70b42",
+  "id": "account-sync-v2-locale-profile-links-2026-11-12",
+  "baseCommit": "c30d4810f5842fc57bb56da20ff5ab03a07caa40",
   "protectedPaths": [
-    "scripts/build-app.mjs",
-    "scripts/registry-research-lib.mjs",
-    "scripts/registry-research-pause.mjs",
-    "scripts/registry-research-pause.test.mjs",
-    "scripts/registry-research.test.mjs"
+    "src/lib/i18n/index.test.ts",
+    "src/lib/i18n/ui/en.ts",
+    "src/lib/i18n/ui/es.ts",
+    "src/lib/i18n/ui/fr.ts",
+    "src/lib/i18n/ui/it.ts",
+    "src/lib/i18n/ui/pt.ts",
+    "src/lib/i18n/ui/ru.test.ts",
+    "src/lib/i18n/ui/ru.ts",
+    "src/pages/es/profile/index.astro",
+    "src/pages/fr/profile/index.astro",
+    "src/pages/it/profile/index.astro",
+    "src/pages/pt/profile/index.astro"
   ]
 }

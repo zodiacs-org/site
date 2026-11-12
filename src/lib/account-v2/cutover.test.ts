@@ -34,7 +34,7 @@ describe('account sync v2 cutover guards', () => {
 
   it('subscribes to auth before reading a session snapshot', async () => {
     for (const relativePath of [
-      '../../islands/AccountProfileAccessBootstrap.tsx',
+      './profile-access-bootstrap.ts',
       '../../islands/AccountBoundProfileSurface.tsx',
     ]) {
       const source = await readFile(new URL(relativePath, import.meta.url), 'utf8');
