@@ -145,6 +145,7 @@ const pt = {
   saveThisChart: 'Salvar este mapa',
   chartSavedStatus: 'Mapa salvo neste dispositivo.',
   chartSaveFull: 'Você pode salvar até 40 mapas. Remova um primeiro.',
+  profileSaveUnavailable: 'Não foi possível iniciar o salvamento. Tente de novo.',
   chartSaveError: 'Não foi possível salvar. Talvez seu navegador esteja bloqueando o armazenamento local.',
   chartSavedMessage: 'Salvo nos seus mapas. Entre aqui quando quiser acessá-los em todos os dispositivos.',
   linkCopied: 'Link copiado',

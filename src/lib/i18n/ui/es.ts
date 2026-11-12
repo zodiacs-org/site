@@ -145,6 +145,7 @@ const es = {
     saveThisChart: 'Guardar esta carta',
     chartSavedStatus: 'Carta guardada en este dispositivo.',
     chartSaveFull: 'Puedes guardar hasta 40 cartas. Elimina una primero.',
+    profileSaveUnavailable: 'No se pudo iniciar el guardado. Inténtalo de nuevo.',
     chartSaveError: 'No se pudo guardar. Tu navegador puede estar bloqueando el almacenamiento local.',
     chartSavedMessage: 'Guardada en tus cartas. Inicia sesión aquí cuando quieras tenerlas en todos tus dispositivos.',
     linkCopied: 'Enlace copiado',

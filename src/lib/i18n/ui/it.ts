@@ -154,6 +154,7 @@ const it = {
   saveThisChart: "Salva questo tema",
   chartSavedStatus: "Tema salvato su questo dispositivo.",
   chartSaveFull: "Puoi salvare fino a 40 temi. Prima rimuovine uno.",
+  profileSaveUnavailable: 'Non è stato possibile avviare il salvataggio. Riprova.',
   chartSaveError:
     "Non è stato possibile salvare. Il browser potrebbe bloccare l’archiviazione locale.",
   chartSavedMessage:
