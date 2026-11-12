@@ -150,7 +150,10 @@ weekly digest and the daily brief to the encrypted v2 self chart behind a new
 `chart_emails` consent (with `chart_sync`), move compatibility invitations to
 the owner's v2 self chart under `chart_sync` and their own consent flow, drop
 the daily brief's foreign key to `public.charts`, and make `PUBLIC_ACCOUNT_SYNC_V2_ENABLED` the only public
-switch. Which of these is deployed to production, and whether the
+switch. `20261111170000` also sets `chart_id` to null on every confirmed
+daily brief preference whose account has no matching v2 chart record, so
+existing personalised briefs can pause as soon as that migration is applied,
+whatever the public switch says. Which of these is deployed to production, and whether the
 migrations are applied there, was not checked here. Once #963 is deployed,
 the plaintext uploads observed on 2026-11-09 are no longer reachable from the
 current client; an old browser tab still running the earlier code is what
@@ -187,10 +190,16 @@ How the check works:
 - A future date gets its own code and copy instead of the message about
   children.
 - Exempt: date-only sky readers that take no name, place or save, such as the
-  due-date `BabyZodiac`, `BabyShowerSky` and the Moon phase tool. Neither baby
-  tool uses `PlaceSearch`, `BirthFields`, a name field, saving or chart
-  handoff. A test should keep it that way, since the MCP 0.6.5 removal of the
-  baby occasion was triggered by names, places and coordinates. Update since
+  due-date `BabyZodiac` and the Moon phase tool. `BabyZodiac` uses no
+  `PlaceSearch`, `BirthFields`, name field, saving or chart handoff. A test
+  should keep it that way, since the MCP 0.6.5 removal of the baby occasion
+  was triggered by names, places and coordinates.
+- Not exempt as built: `BabyShowerSky` has an optional "Whose shower" names
+  field (`src/islands/BabyShowerSky.tsx:78`) and reads and writes those names
+  in the link's `#n=` fragment (`:60`), at the audit commit and on `main`. It
+  takes no place and no save, but it does carry names in a link. Either drop
+  the names field and the `#n=` key, or keep the page out of the exemption and
+  under the same rules as the other tools. Update since
   the audit: #985 (`7d005c477`, 2026-11-12) hides the baby zodiac, baby
   shower and child's chart pages from discovery (noindex and nofollow, out of
   the sitemap, tools hub and occasion picker; the page files stay). The
@@ -242,7 +251,7 @@ by hand. `clearResult()` (`:430-458`) resets about 25 setters by hand.
   a run starts, so an old result can sit next to a new error.
 - **Reported.** BigThreeQuick allows `cardState === 'ready' && card === null`.
   SynastryCalculator holds about 30 state values.
-- **Verified.** No browser calculator refuses any birth date.
+- **Verified.** No browser calculator enforces an age-based refusal.
 
 **Under-13 refusal (#915).**
 
