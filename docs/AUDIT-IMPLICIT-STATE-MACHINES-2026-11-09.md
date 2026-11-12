@@ -146,9 +146,10 @@ adds `supabase/migrations/20261111140000_charts_writes_paused.sql`:
 restrictive policies that refuse every authenticated insert and update on
 `public.charts`, leaving select and delete as they were. #977 (`9ed6fe685`)
 adds `20261111170000`, `20261111180000` and `20261111190000`, which move the
-weekly digest, the daily brief and invitations to the encrypted v2 self chart
-behind a new `chart_emails` consent, drop the daily brief's foreign key to
-`public.charts`, and make `PUBLIC_ACCOUNT_SYNC_V2_ENABLED` the only public
+weekly digest and the daily brief to the encrypted v2 self chart behind a new
+`chart_emails` consent (with `chart_sync`), move compatibility invitations to
+the owner's v2 self chart under `chart_sync` and their own consent flow, drop
+the daily brief's foreign key to `public.charts`, and make `PUBLIC_ACCOUNT_SYNC_V2_ENABLED` the only public
 switch. Which of these is deployed to production, and whether the
 migrations are applied there, was not checked here. Once #963 is deployed,
 the plaintext uploads observed on 2026-11-09 are no longer reachable from the
@@ -170,8 +171,8 @@ Reasons:
    tools already refuse. A person should not get different answers from the
    site and from ChatGPT or Claude.
 2. The data does leave the device. The calculators compute in the browser,
-   but their results feed save-to-account (which uploads plain text today,
-   Decision B), share links and email.
+   but their results feed save-to-account (which uploaded plain text at the
+   audit commit, Decision B), share links and email.
 3. Synastry also gets the under-18 romance guard, matching `get_compatibility`.
 
 How the check works:
