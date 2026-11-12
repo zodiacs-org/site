@@ -71,11 +71,19 @@ self.addEventListener('activate', (event) => {
  * worker, then open the preview -- `caches` held
  * `/developers/precision-preview/`. Storage is storage, so the route is
  * excluded here rather than the claim being softened.
+ *
+ * The sign-in callback opts out the same way and is excluded for the same
+ * reason: its URL carries the one-time `?code=` (or the provider's error),
+ * and the navigate branch keyed the cached page by that full URL. Every page
+ * that sets `noServiceWorker` belongs in this list
+ * (build-service-worker.test.mjs checks it).
  */
 function neverCached(url) {
   return url.pathname === '/developers/precision-preview'
     || url.pathname.startsWith('/developers/precision-preview/')
-    || url.pathname.startsWith('/precision-preview/');
+    || url.pathname.startsWith('/precision-preview/')
+    || url.pathname === '/auth/callback'
+    || url.pathname.startsWith('/auth/callback/');
 }
 
 function registryAuthority(url) {

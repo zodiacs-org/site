@@ -42,6 +42,10 @@
       "src": "^/c(?:/(.*))$"
     },
     {
+      "source": "/auth/callback/(.*)",
+      "src": "^/auth/callback(?:/(.*))$"
+    },
+    {
       "source": "/year/(.*)",
       "src": "^/year(?:/(.*))$"
     },

@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { runInNewContext } from 'node:vm';
 import { buildServiceWorker, serviceWorkerAssets } from './build-service-worker.mjs';
+import { effectiveHeaders } from './lib/vercel-source-pattern.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
 
@@ -104,6 +105,55 @@ describe('offline service worker posture', () => {
     });
     await expect(offline).rejects.toThrow('offline');
     expect(worker.caches.open).not.toHaveBeenCalled();
+  });
+
+  it('never caches a page that opts out of the worker, with or without a query string', async () => {
+    // Every page that sets `noServiceWorker`, read from the source, so a new
+    // one cannot be left out. The sign-in callback is the case the PWA audit
+    // found (finding 2): an active worker cached `/auth/callback/?code=...`
+    // under its full URL, though the page opts out.
+    const pagesDirectory = resolve(ROOT, 'src/pages');
+    const routes = [];
+    for (const file of await readdir(pagesDirectory, { recursive: true })) {
+      if (!file.endsWith('.astro')) continue;
+      if (!/\bnoServiceWorker(?:=\{true\})?(?=[\s/>])/u.test(await readFile(resolve(pagesDirectory, file), 'utf8'))) continue;
+      expect(file, 'an opted-out page with a dynamic route needs its own case').not.toMatch(/\[/u);
+      routes.push(`/${file.replace(/\\/gu, '/').replace(/(?:^|\/)index\.astro$/u, '').replace(/\.astro$/u, '')}/`.replace(/\/+/gu, '/'));
+    }
+    expect(routes.sort()).toEqual(['/auth/callback/', '/developers/precision-preview/']);
+
+    const worker = runWorker(await builtWorker(false));
+    const handler = worker.handlers.get('fetch');
+    const navigate = (url) => {
+      let completion;
+      handler({
+        request: { method: 'GET', mode: 'navigate', url },
+        respondWith: (promise) => { completion = Promise.resolve(promise); },
+      });
+      return completion;
+    };
+    const urls = routes.flatMap((route) => [
+      `https://zodiacs.org${route}`,
+      `https://zodiacs.org${route.slice(0, -1)}`,
+      `https://zodiacs.org${route}index.html`,
+      `https://zodiacs.org${route}?next=%2Fprofile%2F&code=4f8c2a1e-7b0d-4c55-9a3e-2f1b6d8e9c00`,
+      `https://zodiacs.org${route}?error=access_denied&error_description=User+cancelled`,
+    ]);
+    for (const url of urls) await navigate(url);
+    expect(worker.networkFetch).toHaveBeenCalledTimes(urls.length);
+    expect(worker.caches.open).not.toHaveBeenCalled();
+
+    // Offline is an honest failure, not a stale copy of the callback.
+    worker.networkFetch.mockRejectedValueOnce(new TypeError('offline'));
+    await expect(navigate('https://zodiacs.org/auth/callback/?code=x')).rejects.toThrow('offline');
+    expect(worker.caches.open).not.toHaveBeenCalled();
+  });
+
+  it('serves the sign-in callback no-store, so no cache keeps its one-time code', async () => {
+    const config = JSON.parse(await readFile(resolve(ROOT, 'vercel.json'), 'utf8'));
+    for (const path of ['/auth/callback/', '/auth/callback/index.html']) {
+      expect(effectiveHeaders(config, path).get('cache-control'), path).toBe('private, no-store');
+    }
   });
 
   it('never caches or stale-serves Registry authority or any build-time Terminal flag surface', async () => {

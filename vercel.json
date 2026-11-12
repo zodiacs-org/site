@@ -586,6 +586,15 @@
       ]
     },
     {
+      "source": "/auth/callback/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
       "source": "/year/(.*)",
       "headers": [
         {
