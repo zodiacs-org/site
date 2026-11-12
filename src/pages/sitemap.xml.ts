@@ -676,6 +676,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
   // after the October design sweep dates above, so this wins.
   ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
+  // Retrogrades in your chart, first published, with the retrograde pages' lines and the tools hub's card
+  // linking to it. After the entries above, so this date wins. Only while PUBLIC_RETROGRADES_FOR_YOU_ENABLED is
+  // on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED')
+    ? ['/retrogrades/for-you/', '/retrogrades/', '/mercury-retrograde/', '/tools/'].map((loc) => [loc, '2026-11-09'] as const)
+    : []),
   // The privacy page's analytics paragraph names the arrival words a link can
   // carry and what the growth test events count (approved 12 November), last so
   // this wins.
@@ -756,6 +762,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/eclipses/2027/', priority: 0.7 },
     { loc: '/mercury-retrograde/2027/', priority: 0.7 },
     { loc: '/retrogrades/', priority: 0.8 },
+    ...(launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED') ? [{ loc: '/retrogrades/for-you/', priority: 0.75 }] : []),
     { loc: '/today/', priority: 0.8 },
     ...(eventsPublication.hub.indexEligible
       ? [{ loc: eventsPublication.hub.path, priority: 0.82 }]

@@ -2,6 +2,7 @@
 import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 import Base from '../../layouts/Base.astro';
 import AskGuideAbout from '../../components/AskGuideAbout.astro';
+import { launchFlagOn } from '../../lib/launch-flags';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
@@ -242,7 +243,12 @@ const jsonLd = [
         an engine rebuild for drive itself. The yearly outer-planet spans
         pass mostly unremarked, felt only where they cross something exact
         in your own chart, which is what the{' '}
-        <a href="/transits/">transit tracker</a> checks.
+        <a href="/transits/">transit tracker</a> checks.{launchFlagOn('PUBLIC_RETROGRADES_FOR_YOU_ENABLED') && (
+          <> For Mercury, Venus
+          and Mars, <a href="/retrogrades/for-you/">retrogrades in your chart</a>{' '}
+          names the house each one falls in for you and the natal planets it
+          loops over.</>
+        )}
       </p>
       <p>
         Born during a retrograde? Common and unalarming: roughly one

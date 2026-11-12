@@ -36,6 +36,7 @@ import {
   type SkyEventKind,
   type SkyPlanet,
 } from '../ai-tools/share-links.js';
+import type { RetrogradeForYouShare, ShareRetrogradePlanet } from '../lib/retrograde-for-you/share.js';
 
 /** The ring's colour where a sign is not known. */
 export const NEUTRAL_HUE = '#C6CCDA';
@@ -644,4 +645,79 @@ export function inviteCardModel(share: InviteShare): InviteCardModel {
   const signs = [share.sun, share.partner].filter((slug): slug is ShareSign => slug !== null).map(sunOf);
   const names = signs.length === 2 ? `${signName(signs[0].slug!)} and ${signName(signs[1].slug!)}` : `${signName(signs[0].slug!)} Sun`;
   return { signs, line: `${names}. Two birth charts, read together.`, hue: signs[0].hue, front: share.sun };
+}
+
+// ── A retrograde in one person's chart (src/lib/retrograde-for-you/share.ts) ──
+
+const RETROGRADE_PLANET_NAME: Readonly<Record<ShareRetrogradePlanet, string>> = { mercury: 'Mercury', venus: 'Venus', mars: 'Mars' };
+/** Each planet wears the hue of the sign it rules, as on the page (src/islands/RetrogradeForYou.tsx). */
+export const RETROGRADE_PLANET_SIGN: Readonly<Record<ShareRetrogradePlanet, ShareSign>> = { mercury: 'gemini', venus: 'taurus', mars: 'aries' };
+/**
+ * What each house covers, as the birth chart says it (NATAL_HOUSE_THEME in
+ * src/lib/natal.ts, which a test holds this to), with the fifth house's
+ * romance read as play: a card carries no age, so it says what an under-18
+ * reading would.
+ */
+export const RETROGRADE_CARD_HOUSE_THEME: Readonly<Record<number, string>> = {
+  1: 'first impressions, instinct, and the way you arrive',
+  2: 'earning, owning, and what security is made of',
+  3: 'language, siblings, short trips, and the everyday mind',
+  4: 'home, roots, family, and where you go to be unobserved',
+  5: 'pleasure, play, children, and what you make for its own sake',
+  6: 'routines, health, craft, and the daily load',
+  7: 'partnership, the people you meet as equals',
+  8: 'shared resources, trust, and what gets merged',
+  9: 'travel, study, belief, and the long view',
+  10: 'career, reputation, and the public record',
+  11: 'friends, groups, allies, and the future you point at',
+  12: 'solitude, rest, and what runs beneath awareness',
+};
+const HOUSE_ORDINAL = ['', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth'];
+const DAY_WITH_YEAR = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const yearDay = (at: string) => {
+  const parts = Object.fromEntries(DAY_WITH_YEAR.formatToParts(new Date(at)).map((part) => [part.type, part.value]));
+  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+};
+
+export interface RetrogradeForYouCardModel {
+  planet: string;
+  /** "Mercury retrograde in my seventh house", or "Mercury retrograde in my chart" when the chart settles no house. */
+  title: string;
+  /** "Sat 24 Oct 2026 to Fri 13 Nov 2026", the window's UTC days. */
+  span: string;
+  /** "The seventh house covers partnership, the people you meet as equals.", and what it was counted from. */
+  line: string;
+  /** The planet's retrograde in general, said once. */
+  about: string;
+  confidence: string;
+  hue: string;
+  sign: ShareSign;
+}
+
+const RETROGRADE_ABOUT: Readonly<Record<ShareRetrogradePlanet, string>> = {
+  mercury: 'Mercury retrograde is traditionally a time to review, revise and reconnect rather than launch.',
+  venus: 'Venus retrograde traditionally asks you to revisit what you value: relationships, money and what you find beautiful.',
+  mars: 'Mars retrograde traditionally slows drive and ambition, and asks you to rework a strategy rather than force it.',
+};
+
+/** The card for a checked link, or null when the sky data lists no such retrograde. */
+export function retrogradeForYouCardModel(share: RetrogradeForYouShare, events: readonly SkyEvent[]): RetrogradeForYouCardModel | null {
+  const event = events.find((candidate) => candidate.kind === 'retrograde' && candidate.planet === share.planet && candidate.date === share.date);
+  if (!event || !event.end) return null;
+  const planet = RETROGRADE_PLANET_NAME[share.planet];
+  const sign = RETROGRADE_PLANET_SIGN[share.planet];
+  const where = share.house ? `in my ${HOUSE_ORDINAL[share.house]} house` : 'in my chart';
+  const line = share.house
+    ? `The ${HOUSE_ORDINAL[share.house]} house covers ${RETROGRADE_CARD_HOUSE_THEME[share.house]}.${share.basis === 'sun' ? ' Counted from the Sun sign.' : ''}`
+    : RETROGRADE_ABOUT[share.planet];
+  return {
+    planet,
+    title: `${planet} retrograde ${where}`,
+    span: `${yearDay(event.start)} to ${yearDay(event.end)}`,
+    line,
+    about: RETROGRADE_ABOUT[share.planet],
+    confidence: readingConfidenceText(share.confidence),
+    hue: HUES[sign],
+    sign,
+  };
 }
