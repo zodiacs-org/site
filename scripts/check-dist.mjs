@@ -53,11 +53,11 @@ const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
 const SITE_ORIGIN = 'https://zodiacs.org';
 /** Literal redirect sources from vercel.json — served URLs with no dist file. */
-const redirectSources = new Set(
-  (JSON.parse(await readFile(resolve(repo, 'vercel.json'), 'utf8')).redirects ?? [])
-    .map((rule) => rule.source)
-    .filter((source) => typeof source === 'string' && source.startsWith('/') && !/[:*(?]/.test(source)),
-);
+const literalRedirects = (JSON.parse(await readFile(resolve(repo, 'vercel.json'), 'utf8')).redirects ?? [])
+  .filter((rule) => typeof rule.source === 'string' && rule.source.startsWith('/') && !/[:*(?]/.test(rule.source));
+const redirectSources = new Set(literalRedirects.map((rule) => rule.source));
+/** Literal redirect source -> destination, to catch a link that bounces back to its own page. */
+const redirectDestinations = new Map(literalRedirects.map((rule) => [rule.source, rule.destination]));
 const failures = [];
 const fail = (msg) => { failures.push(msg); };
 let searchIndexCount = 0;
@@ -371,7 +371,16 @@ for (const file of files) {
       // one: a withdrawn page still deserves to be named where it is
       // discussed. Only exact literal sources count — patterns are not
       // evaluated here.
-      if (redirectSources.has(value.split(/[?#]/)[0])) continue;
+      const redirected = value.split(/[?#]/)[0];
+      if (redirectSources.has(redirected)) {
+        // Naming it is fine; linking to it from the very page it redirects to only
+        // reloads that page (the corrections log once linked a withdrawn profile).
+        const pagePath = `/${rel.split(sep).join('/').replace(/(^|\/)index\.html$/, '$1')}`;
+        if (redirectDestinations.get(redirected) === pagePath) {
+          fail(`${rel}: links to ${value}, which redirects back to this page; show the path as text`);
+        }
+        continue;
+      }
       fail(`${rel}: broken reference ${value}`);
       continue;
     }
