@@ -70,25 +70,30 @@ export function expansionState(record = publication, env = readEnv()) {
   return { preview, rows };
 }
 
-const STATE = expansionState();
-
-export const localeExpansionPreview = STATE.preview;
+// Computed on first use, not at import: the module then has no top-level side
+// effect, so a browser bundle that imports src/lib/i18n never carries the
+// record (the expansion hook there runs only on the server).
+let STATE;
+function currentState() {
+  STATE ??= expansionState();
+  return STATE;
+}
 
 /** Locales whose copy of this family is published (indexable, in sitemaps and hreflang). */
-export function publishedExpansionLocales(family, state = STATE) {
+export function publishedExpansionLocales(family, state = currentState()) {
   return state.rows.filter((row) => row.family === family && row.published).map((row) => row.locale);
 }
 
 /** Locales whose copy of this family is built: published, or held under the preview flag. */
-export function enabledExpansionLocales(family, state = STATE) {
+export function enabledExpansionLocales(family, state = currentState()) {
   return state.rows.filter((row) => row.family === family && row.enabled).map((row) => row.locale);
 }
 
-export function isExpansionPublished(locale, family, state = STATE) {
+export function isExpansionPublished(locale, family, state = currentState()) {
   return state.rows.some((row) => row.locale === locale && row.family === family && row.published);
 }
 
-export function isExpansionEnabled(locale, family, state = STATE) {
+export function isExpansionEnabled(locale, family, state = currentState()) {
   return state.rows.some((row) => row.locale === locale && row.family === family && row.enabled);
 }
 
@@ -96,26 +101,26 @@ const publishedFor = (row, path) => row.published && (!row.paths || row.paths.ha
 const enabledFor = (row, path) => row.preview || publishedFor(row, path);
 
 /** Extra discovery locales for an English canonical path, beyond the base route policy. */
-export function publishedLocalesForPath(canonicalPath, state = STATE) {
+export function publishedLocalesForPath(canonicalPath, state = currentState()) {
   const family = familyForPath(canonicalPath);
   if (!family) return [];
   return state.rows.filter((row) => row.family === family && publishedFor(row, canonicalPath)).map((row) => row.locale);
 }
 
 /** Extra renderable locales for an English canonical path (published or previewed). */
-export function enabledLocalesForPath(canonicalPath, state = STATE) {
+export function enabledLocalesForPath(canonicalPath, state = currentState()) {
   const family = familyForPath(canonicalPath);
   if (!family) return [];
   return state.rows.filter((row) => row.family === family && enabledFor(row, canonicalPath)).map((row) => row.locale);
 }
 
 /** Whether this locale's copy of an English path is built. */
-export function isPathEnabled(locale, canonicalPath, state = STATE) {
+export function isPathEnabled(locale, canonicalPath, state = currentState()) {
   return enabledLocalesForPath(canonicalPath, state).includes(locale);
 }
 
 /** True when this localized copy is built only for review: it must be noindex. */
-export function isHeldPreview(locale, canonicalPath, state = STATE) {
+export function isHeldPreview(locale, canonicalPath, state = currentState()) {
   return isPathEnabled(locale, canonicalPath, state) && !publishedLocalesForPath(canonicalPath, state).includes(locale);
 }
 
@@ -136,7 +141,7 @@ export const EXPANSION_ROUTES = [
   { families: ['zodiac-dates'], pattern: '/learn/zodiac-dates/', file: 'zodiac-dates' },
 ];
 
-export function localeExpansionRoutes(state = STATE) {
+export function localeExpansionRoutes(state = currentState()) {
   return {
     name: 'locale-expansion-publication',
     hooks: {
