@@ -181,9 +181,14 @@ try {
 // `/compatibility/` carry the account access bootstrap (AccountProfileAccessBootstrap,
 // client:load): with encrypted account sync on, a first save on these two
 // calculators needs it. Their limits were raised just enough to fit it, by
-// owner decision on 2026-11-12: /birth-chart/ 71 -> 88 KB (87.5 measured) and
-// /compatibility/ 36 -> 54.5 KB (53.8 measured), each under 1 KB of margin. Every other page loads the bootstrap only on
-// demand (src/lib/account-v2/profile-access-loader.mjs), outside these sums.
+// owner decision on 2026-11-12: raise only these two calculator limits.
+// /birth-chart/ 71 -> 93 KB. Local flags-on builds measured 87.5 KB (fix 6)
+// then 88.0 KB (fix 7). The GitHub flags-on job on the same fix-6 head
+// measured 90.7 KB and 61 chunks (local had 60), so 88 KB failed CI.
+// 93 KB covers that CI measurement with a small margin. /compatibility/
+// 36 -> 54.5 KB (53.8 to 54.2 measured). Every other page loads the
+// bootstrap only on demand (src/lib/account-v2/profile-access-loader.mjs),
+// outside these sums.
 const routeBudgets = Object.entries(budgets).filter(([key]) => key.startsWith('/'));
 for (const [key, value] of Object.entries(budgets)) {
   if (typeof value !== 'number' || value < 0 || !Number.isFinite(value)) {
