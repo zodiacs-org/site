@@ -35,6 +35,7 @@ import {
   getSyncSession,
   signOutOfSync,
   signOutOfSyncLocal,
+  forgetLocalSyncSession,
   syncNow,
 } from './sync';
 
@@ -144,5 +145,25 @@ describe('profile sync auth outcomes', () => {
     auth.signOut.mockResolvedValue({ error: null });
     await expect(signOutOfSync()).resolves.toBeUndefined();
     await expect(signOutOfSyncLocal()).resolves.toBeUndefined();
+  });
+
+  it('forgets the stored session on this device after a failed local sign-out', async () => {
+    const name = 'sb-syntheticref000000-auth-token';
+    const map = new Map([[name, '{"refresh_token":"synthetic"}'], ['theme', 'void']]);
+    vi.stubEnv('PUBLIC_SUPABASE_URL', 'https://syntheticref000000.supabase.co');
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => map.get(key) ?? null,
+      removeItem: (key: string) => { map.delete(key); },
+    });
+    try {
+      auth.signOut.mockResolvedValueOnce({ error: new Error('synthetic network failure') });
+      await expect(signOutOfSyncLocal()).rejects.toThrow();
+      expect(map.has(name)).toBe(true);
+      expect(forgetLocalSyncSession()).toBe(true);
+      expect([...map.keys()]).toEqual(['theme']);
+    } finally {
+      vi.unstubAllGlobals();
+      vi.unstubAllEnvs();
+    }
   });
 });

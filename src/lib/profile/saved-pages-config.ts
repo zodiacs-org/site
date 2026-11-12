@@ -332,5 +332,25 @@ export function hasStoredAuthSession(
   }
 }
 
+/**
+ * Removes this project's stored Supabase session from the browser without
+ * asking the server: the session entry and the two entries Supabase keeps
+ * beside it. For use only after a local sign-out request has failed, when
+ * Supabase keeps the session. True only when no session entry remains.
+ */
+export function removeStoredAuthSession(
+  storage: Pick<Storage, 'getItem' | 'removeItem'> | null = defaultStorage(),
+  url: string | undefined = import.meta.env.PUBLIC_SUPABASE_URL,
+): boolean {
+  const name = supabaseAuthStorageKeyName(url);
+  if (!storage || !name) return false;
+  try {
+    for (const key of [name, `${name}-code-verifier`, `${name}-user`]) storage.removeItem(key);
+    return storage.getItem(name) === null;
+  } catch {
+    return false;
+  }
+}
+
 /** Where "Sign in to save" goes: the sign-in panel on the profile. */
 export const SIGN_IN_TO_SAVE_HREF = '/profile/#profile-sync';

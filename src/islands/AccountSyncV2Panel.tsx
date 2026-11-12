@@ -222,6 +222,35 @@ export function displayAccountV2Error(error: unknown, hasDurableMutation = false
     : 'That action could not be completed safely. Nothing else will happen until you try again.';
 }
 
+/**
+ * The last step of "Sign out", after the local profile was kept or cleared.
+ * Supabase keeps the stored session when its sign-out request fails (offline,
+ * timeout, 5xx), so the session is then removed from this device directly.
+ * After "clear all Zodiacs data" the page reloads only once no session is
+ * stored: a reload with one would bind the emptied browser to the account
+ * again and restore the cloud chart to it.
+ */
+export async function finishLocalSignOut(
+  removeFromDevice: boolean,
+  steps: {
+    signOut: () => Promise<void>;
+    forgetSession: () => boolean;
+    lockProfile: () => Promise<unknown>;
+  },
+): Promise<'reload' | 'signed-out' | 'stopped'> {
+  try {
+    await steps.signOut();
+    return removeFromDevice ? 'reload' : 'signed-out';
+  } catch {
+    const forgotten = steps.forgetSession();
+    if (removeFromDevice) return forgotten ? 'reload' : 'stopped';
+    // Keeping the device: the profile stays locked until the next sign-in,
+    // so nothing is restored even if the session could not be removed.
+    await steps.lockProfile();
+    return 'reload';
+  }
+}
+
 export function accountDeletionCompletionMessage(
   removeFromDevice: boolean,
   dailySun: DailySunDeletionTruth,
@@ -1281,18 +1310,19 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
       setBusy(false);
       return;
     }
-    try {
-      await syncApi.signOutOfSyncLocal();
-      if (removeFromDevice) window.location.reload();
-      else showSignedOutState();
-    } catch {
-      if (!removeFromDevice) {
-        await runExclusiveAccountProfileTransition(
-          accountStorage,
-          () => lockCurrentAccountProfile(accountStorage, accountId),
-        );
-      }
-      window.location.reload();
+    const finished = await finishLocalSignOut(removeFromDevice, {
+      signOut: syncApi.signOutOfSyncLocal,
+      forgetSession: syncApi.forgetLocalSyncSession,
+      lockProfile: () => runExclusiveAccountProfileTransition(
+        accountStorage,
+        () => lockCurrentAccountProfile(accountStorage, accountId),
+      ),
+    });
+    if (finished === 'reload') window.location.reload();
+    else if (finished === 'signed-out') showSignedOutState();
+    else {
+      setMessage('Sign-out could not be confirmed. This browser remains locked; try again.');
+      setBusy(false);
     }
   }
 
