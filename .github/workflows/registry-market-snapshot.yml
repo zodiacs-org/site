@@ -79,31 +79,9 @@ jobs:
 
       - name: Require current, internally paired artifacts
         run: |
-          node --input-type=module <<'NODE'
-          import { readFile } from 'node:fs/promises';
-          const [history, outlook, researchDrafts, researchPublication, researchFeed] = await Promise.all([
-            readFile('public/assets/data/registry-market-history.v1.json', 'utf8').then(JSON.parse),
-            readFile('public/assets/registry-outlook.json', 'utf8').then(JSON.parse),
-            readFile('src/data/registry-research/drafts.json', 'utf8').then(JSON.parse),
-            readFile('src/data/registry-research/publication.json', 'utf8').then(JSON.parse),
-            readFile('public/assets/registry-research-feed.json', 'utf8').then(JSON.parse),
-          ]);
-          const latest = history.snapshots?.at(-1);
-          const dates = {
-            market: latest?.date,
-            marketRead: latest?.source?.readAt?.slice(0, 10),
-            dailyOutlook: outlook.daily?.date,
-            weeklyOutlook: outlook.weekly?.date,
-            researchDrafts: researchDrafts.generatedAt?.slice(0, 10),
-            researchPublication: researchPublication.generatedAt?.slice(0, 10),
-            researchFeed: researchFeed.generatedAt?.slice(0, 10),
-          };
-          for (const [label, date] of Object.entries(dates)) {
-            if (date !== process.env.TARGET_DATE) {
-              throw new Error(`${label} artifact is ${date ?? 'undated'}; expected ${process.env.TARGET_DATE}`);
-            }
-          }
-          NODE
+          # Accepts the last published outlook and research editions while
+          # src/data/registry-research/pause.json says "paused".
+          node scripts/check-registry-pairing.mjs
 
       - name: Commit if today's observation changed
         env:

@@ -14,7 +14,6 @@ import '../../../styles/profile-page.css';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   PUBLIC_SAVED_RECORDS_ENABLED: process.env.PUBLIC_SAVED_RECORDS_ENABLED,
@@ -57,7 +56,7 @@ const jsonLd = [
     <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="pt" client:load />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
-        ? <>O teste de sincronização criptografada é gerenciado temporariamente em <a href="/profile/">/profile/</a>. Aqui, seus mapas ficam somente neste dispositivo.</>
+        ? <>A sincronização criptografada é gerenciada em <a href="/profile/">/profile/</a>. Aqui, seus mapas ficam somente neste dispositivo.</>
         : 'Se você apagar os dados do navegador, os mapas armazenados apenas localmente também serão apagados. Entre na conta para sincronizar mapas salvos e exclusões entre dispositivos.'}</p>
     </aside>
   </section>

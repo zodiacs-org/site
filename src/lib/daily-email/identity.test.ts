@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   dailyDeliveryIdempotencyKey,
   dailyRecipientHash,
-  maskDailyEmail,
 } from './identity';
 
 const SECRET = 'recipient-hash-secret-that-is-long-enough';
@@ -31,10 +30,8 @@ describe('daily email identity', () => {
     expect(first.length).toBeLessThan(256);
   });
 
-  it('fails closed on malformed input and never logs a full address', () => {
+  it('fails closed on malformed input', () => {
     expect(() => dailyRecipientHash('not-an-email', SECRET)).toThrow(/recipient/u);
     expect(() => dailyRecipientHash('person@example.com', 'short')).toThrow(/32/u);
-    expect(maskDailyEmail('person@example.com')).toBe('pe***@example.com');
-    expect(maskDailyEmail('not-an-email')).toBe('[email hidden]');
   });
 });

@@ -175,6 +175,14 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   for byte into the AI runtime and the published developer plugin, so the
   seasons do not extend it. No timestamp, so `--check` catches drift; the
   site-check drift gate runs it)
+- `src/data/moon-distances.json` ← `node scripts/build-moon-distances.mjs`
+  (each new and full Moon in sky.json with the Moon's geocentric distance in
+  whole km and the perigee and apogee on each side; astronomy-engine with one
+  measured scale factor, held to JPL DE421 and Horizons by
+  `scripts/build-moon-distances.test.mjs` and the fixtures from
+  `scripts/moon-distances-de421.py`. It names no rule about close Moons.
+  sky.json stays untouched. No timestamp, so `--check` catches drift; the
+  site-check drift gate runs it. Rerun it whenever sky.json is rebuilt)
 - `src/data/eclipses.json` ← `node scripts/build-eclipses.mjs` (refresh
   yearly with sky.json)
 - `src/data/birthdays.json` ← `node scripts/build-birthdays.mjs` (the
