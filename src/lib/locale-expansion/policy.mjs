@@ -17,17 +17,24 @@ const SIGNS = 'aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|ca
 
 export const HOROSCOPE_PERIODS = ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2026', '2027'];
 
+// The top-level values below are marked pure: nothing here runs for its side
+// effects, so a browser bundle that never uses the policy drops the module.
+
 /** English canonical path patterns, one per family. The first match wins. */
-export const EXPANSION_FAMILIES = [
+export const EXPANSION_FAMILIES = /* @__PURE__ */ buildFamilies();
+
+function buildFamilies() {
+  return [
   ['horoscope-daily', new RegExp(`^/horoscopes/(?:(?:${SIGNS})/)?$`)],
   ['today', /^\/today\/$/],
   ...HOROSCOPE_PERIODS.map((period) => [`horoscope-${period}`, new RegExp(`^/horoscopes/(?:${SIGNS})/${period}/$`)]),
   ['full-moon', /^\/full-moon\/\d{4}-\d{2}-\d{2}\/$/],
   ['new-moon', /^\/new-moon\/\d{4}-\d{2}-\d{2}\/$/],
   ['zodiac-dates', /^\/learn\/zodiac-dates\/$/],
-];
+  ];
+}
 
-export const EXPANSION_FAMILY_IDS = EXPANSION_FAMILIES.map(([id]) => id);
+export const EXPANSION_FAMILY_IDS = /* @__PURE__ */ EXPANSION_FAMILIES.map(([id]) => id);
 
 export function familyForPath(canonicalPath) {
   return EXPANSION_FAMILIES.find(([, pattern]) => pattern.test(canonicalPath))?.[0];
@@ -124,7 +131,11 @@ export function isHeldPreview(locale, canonicalPath, state = currentState()) {
   return isPathEnabled(locale, canonicalPath, state) && !publishedLocalesForPath(canonicalPath, state).includes(locale);
 }
 
-export const LOCALE_EXPANSION_UPDATED = publication.updated;
+export const LOCALE_EXPANSION_UPDATED = /* @__PURE__ */ readUpdated();
+
+function readUpdated() {
+  return publication.updated;
+}
 
 // ── Routes ──
 // The pages live outside src/pages (the Phase 1 freeze covers the locale
@@ -134,7 +145,7 @@ const ENTRY = './src/locale-pages';
 export const EXPANSION_ROUTES = [
   { families: ['horoscope-daily'], pattern: '/horoscopes/', file: 'horoscope-hub' },
   { families: ['horoscope-daily'], pattern: '/horoscopes/[sign]/', file: 'horoscope-daily' },
-  { families: HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`), pattern: '/horoscopes/[sign]/[period]/', file: 'horoscope-period' },
+  { families: /* @__PURE__ */ HOROSCOPE_PERIODS.map((period) => `horoscope-${period}`), pattern: '/horoscopes/[sign]/[period]/', file: 'horoscope-period' },
   { families: ['today'], pattern: '/today/', file: 'today' },
   { families: ['full-moon'], pattern: '/full-moon/[date]/', file: 'full-moon' },
   { families: ['new-moon'], pattern: '/new-moon/[date]/', file: 'new-moon' },
