@@ -6,6 +6,7 @@ import {
   findProfileAccessChunk,
   profileAccessLoaderProblems,
   stampProfileAccessLoader,
+  verifyProfileAccessLoader,
 } from './stamp-profile-access-loader.mjs';
 import {
   PROFILE_ACCESS_CHUNK_PLACEHOLDER,
@@ -70,5 +71,39 @@ describe('profile access loader stamping', () => {
   it('has nothing to check when no page carries the loader', async () => {
     await site({ pages: { 'index.html': '<!doctype html><html><body></body></html>' } });
     expect(await profileAccessLoaderProblems(dist, null)).toEqual([]);
+  });
+});
+
+describe('the verification check-dist runs', () => {
+  it('passes a correctly stamped site whose chunk the save path imports', async () => {
+    await site({ pages: { 'aries/index.html': page(`/_astro/${CHUNK}`) } });
+    expect(await verifyProfileAccessLoader(dist)).toEqual({ needed: true, chunkName: CHUNK, problems: [] });
+  });
+
+  it('fails a correctly stamped page when no built chunk imports the bootstrap chunk', async () => {
+    await site({ importer: false, pages: { 'aries/index.html': page(`/_astro/${CHUNK}`) } });
+    // The pages alone are right; the shared import is what is missing.
+    expect(await profileAccessLoaderProblems(dist, CHUNK)).toEqual([]);
+    const { problems } = await verifyProfileAccessLoader(dist);
+    expect(problems).toEqual([`no built chunk imports ${CHUNK}; the save path and the inline loader would not share it`]);
+  });
+
+  it('fails when the chunk is missing even though no page problem names it', async () => {
+    await site({ chunks: [], pages: { 'aries/index.html': page(`/_astro/${CHUNK}`) } });
+    const { problems } = await verifyProfileAccessLoader(dist);
+    expect(problems[0]).toMatch(/found 0/u);
+  });
+
+  it('has nothing to verify when no page carries the loader (account sync v2 off)', async () => {
+    await site({ importer: false, pages: { 'index.html': '<!doctype html><html><body></body></html>' } });
+    expect(await verifyProfileAccessLoader(dist)).toEqual({ needed: false, chunkName: null, problems: [] });
+  });
+
+  it('is what check-dist enforces, reporting every problem on its own', async () => {
+    const source = await readFile(new URL('./check-dist.mjs', import.meta.url), 'utf8');
+    const block = source.slice(source.indexOf('// ---- Profile access loader'), source.indexOf('// ---- Report'));
+    expect(block).toContain('await verifyProfileAccessLoader(root)');
+    expect(block).toMatch(/for \(const problem of problems\.slice\(0, 20\)\) fail\(/u);
+    expect(block).not.toMatch(/if \(problems\.length\)/u);
   });
 });

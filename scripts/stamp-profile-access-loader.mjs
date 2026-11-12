@@ -116,6 +116,29 @@ export async function profileAccessLoaderProblems(dist, chunkName) {
   return problems;
 }
 
+/** True when any built page carries the loader or its placeholder (account sync v2 on). */
+async function pagesNeedChunk(dist) {
+  for (const file of await htmlFiles(dist)) {
+    const html = await readFile(file, 'utf8');
+    if (html.includes(PROFILE_ACCESS_CHUNK_PLACEHOLDER) || html.includes(PROFILE_ACCESS_LOADER_ATTRIBUTE)) return true;
+  }
+  return false;
+}
+
+/**
+ * The whole verification check-dist runs: when any page carries the loader,
+ * the chunk must be the one the save path imports AND every page must name
+ * it. Either kind of problem fails on its own.
+ * @param {string} dist
+ * @returns {Promise<{ needed: boolean, chunkName: string | null, problems: string[] }>}
+ */
+export async function verifyProfileAccessLoader(dist) {
+  if (!await pagesNeedChunk(dist)) return { needed: false, chunkName: null, problems: [] };
+  const chunk = await findProfileAccessChunk(dist);
+  const pages = await profileAccessLoaderProblems(dist, chunk.name);
+  return { needed: true, chunkName: chunk.name, problems: [...chunk.problems, ...pages] };
+}
+
 /** Stamps every page; returns the number of pages changed. */
 export async function stampProfileAccessLoader(dist, chunkName) {
   const url = `${ASSET_PREFIX}${chunkName}`;
@@ -132,16 +155,7 @@ export async function stampProfileAccessLoader(dist, chunkName) {
 async function main() {
   const dist = resolve(repo, 'dist');
   const checkOnly = process.argv.includes('--check');
-  const pages = await htmlFiles(dist);
-  let needsChunk = false;
-  for (const file of pages) {
-    const html = await readFile(file, 'utf8');
-    if (html.includes(PROFILE_ACCESS_CHUNK_PLACEHOLDER) || html.includes(PROFILE_ACCESS_LOADER_ATTRIBUTE)) {
-      needsChunk = true;
-      break;
-    }
-  }
-  if (!needsChunk) {
+  if (!await pagesNeedChunk(dist)) {
     console.log('stamp-profile-access-loader: no page carries the loader (account sync v2 off)');
     return;
   }
@@ -154,7 +168,7 @@ async function main() {
     const stamped = await stampProfileAccessLoader(dist, chunk.name);
     console.log(`stamp-profile-access-loader: ${ASSET_PREFIX}${chunk.name} written into ${stamped} pages`);
   }
-  const problems = await profileAccessLoaderProblems(dist, chunk.name);
+  const { problems } = await verifyProfileAccessLoader(dist);
   if (problems.length) {
     console.error(`stamp-profile-access-loader: ${problems.length} problem(s)`);
     for (const problem of problems.slice(0, 20)) console.error(`  ✗ ${problem}`);

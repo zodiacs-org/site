@@ -47,7 +47,7 @@ import {
   hreflangRouteFamily,
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
-import { findProfileAccessChunk, profileAccessLoaderProblems } from './stamp-profile-access-loader.mjs';
+import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -1879,14 +1879,11 @@ for (const [file, path] of builtPageByFile) {
 // With account sync v2, pages outside the profile and the two main calculators
 // import the access bootstrap through an inline loader whose chunk URL is
 // stamped after the build (scripts/stamp-profile-access-loader.mjs). Every
-// loader must name the one chunk the save path also imports.
+// loader must name the one chunk the save path also imports, and that chunk
+// must be imported by the save path; each requirement fails on its own.
 {
-  const chunk = await findProfileAccessChunk(root);
-  const problems = await profileAccessLoaderProblems(root, chunk.name);
-  if (problems.length) {
-    for (const problem of chunk.problems) fail(`profile access loader: ${problem}`);
-    for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
-  }
+  const { problems } = await verifyProfileAccessLoader(root);
+  for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
 }
 
 // ---- Report ------------------------------------------------------------------
