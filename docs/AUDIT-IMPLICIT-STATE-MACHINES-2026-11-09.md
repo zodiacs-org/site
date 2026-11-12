@@ -17,14 +17,17 @@ not re-traced line by line. Line numbers are as of `main` at `a67b7c9a`.
   and account v2 status have status columns with check constraints. The
   implicit state machines are in the browser islands, the MCP result envelope
   and the locale lists.
-- **Privacy has one real problem, and it is live in production.** No birth
-  details reach logs or analytics. But two save paths write birth details to
-  the database in plain text: the legacy v1 chart sync and the compatibility
-  saves in `saved_pages` (Decision B).
+- **Privacy has one real problem, and its client side is live in production.**
+  No birth details reach logs or analytics. But two save paths send birth
+  details to the database in plain text: the legacy v1 chart sync and the
+  compatibility saves in `saved_pages`. The live client makes these uploads;
+  that the production database accepts them is inferred from the source
+  migrations, not read from the deployed database (Decision B).
 - **The under-13 refusal from #915 only covers the hosted tools.** The browser
   calculators and the compute API do not check age and compute charts for
   future dates. The hosted check works out "today" in UTC, so a child can be
-  accepted about a day before their 13th birthday in western time zones.
+  accepted up to 12 hours before their 13th birthday in western time zones
+  (at UTC-12).
 
 ## Owner decisions (delegated by Dias, decided toward the stricter option)
 
@@ -37,10 +40,12 @@ of it. Putting the data after the `#` does not change that.
 Reasons:
 
 1. AGENTS.md says "Links never carry a birth year, a birth time, a birthplace
-   or the names you give", with no exception for fragments. The fragment never
-   reaches our server, but people paste links into chats, email and notes,
-   chat apps fetch link previews, and browsers sync history. All of those keep
-   the fragment.
+   or the names you give", with no exception for fragments. Browsers never put
+   the fragment in an HTTP request, so it never reaches our server, and a chat
+   app's link-preview fetch does not send it either. But the link itself is
+   kept whole wherever it is put: the chat or email message (and the app's own
+   record of it), notes, bookmarks, and browser history and history sync. Each
+   of those keeps the fragment with the rest of the URL.
 2. `encodeChartLink` (`src/lib/share.ts:70-84`) writes the date, the time,
    coordinates to 4 decimals, the zone, the place name and the person's name.
 3. The MCP tools already work this way: they tell agents never to put birth
@@ -64,7 +69,13 @@ What has to change:
   link. The replacements are a sign-level link, or an account-mediated invite
   that never puts details in the URL.
 
-### Decision B. Is the plaintext `charts.payload` v1 sync reachable in production? Yes, checked: it is live.
+### Decision B. Is the plaintext `charts.payload` v1 sync reachable in production? Yes, from the client: the live site makes the uploads. Database acceptance is inferred.
+
+What was checked is the live client, not the live database. The deployment
+shows that signed-in visitors' browsers send plaintext uploads to
+`public.charts`. That the production database accepts them rests on the
+source migration that sets the write policies, on the assumption that it is
+applied as written.
 
 Evidence from the production deployment `dpl_DGrctqozBzgmCgD2xGpvcL6NQzWV`
 (main at `5e9e166a`), read through the Vercel connector on 2026-11-09:
@@ -76,21 +87,63 @@ Evidence from the production deployment `dpl_DGrctqozBzgmCgD2xGpvcL6NQzWV`
 | Supabase is configured | `ProfileSafety` gets `{"syncConfigured":true}`, and the live CSP allows the project's Supabase host. |
 | The live client loads the v1 sync | The live ProfileManager chunk imports the `sync` chunk unless `accountSyncV2Enabled` is true, then calls `syncNow()` when the session is restored and on every auth change. |
 | Any saved chart triggers an upload | `src/lib/profile/store.ts:55-66` `queueCloudSync()` runs after each profile save while the v2 flag is off. |
-| The database still accepts the writes | Since migration `20260811153303` (`:579-648`), the `charts` write policies require `account_v2_legacy_sync_allowed()`, which is true for every signed-in user with no `private.account_states` row: everyone while v2 is off. |
+| The database accepts the writes (inferred from source, not checked in production) | In source, since migration `20260811153303` (`:579-648`), the `charts` write policies require `account_v2_legacy_sync_allowed()`, which is true for every signed-in user with no `private.account_states` row: everyone while v2 is off. |
 | What gets written | The whole `SavedChart` (birth date, time, place and name) into `charts.payload` as plain JSONB (`src/lib/profile/sync.ts:204-212`). |
 
-Second production finding: `SavedPagesPanel` renders with `{"enabled":true}`,
-so account saves are on (`src/pages/profile/index.astro:39-41,91`).
-Compatibility saves write both people's full birth details into
-`saved_pages.href` as plain text (`src/lib/profile/comparison-link.ts:41-46`,
-`src/lib/profile/saved-pages-cloud.ts:47`), with no age check.
+Evidence still missing for the database half (not gathered, because the
+audit was read-only and did not query production Supabase): the policies
+actually deployed on production `public.charts` (for example its
+`pg_policies` rows, or the applied migration history showing
+`20260811153303` and nothing later that changes them), and an aggregate with
+no personal data, such as the count of `charts` rows created or updated after
+a given date, showing that writes succeed.
 
-Dependency to handle (partly checked): the weekly digest reads `public.charts`
-on the server (`supabase/migrations/20260827090000_weekly_digest_unsubscribe_capability.sql:212,336`),
-and the daily brief needs a synced chart (its preference row references
-`charts`). Stopping v1 uploads therefore also stops personalised emails for
-charts saved after that point. Whether the encrypted v2 path can feed those
-emails was not verified.
+Second production finding, with the same limit: `SavedPagesPanel` renders
+with `{"enabled":true}`, so account saves are on in the live client
+(`src/pages/profile/index.astro:39-41,91`). Compatibility saves send both
+people's full birth details for `saved_pages.href` as plain text
+(`src/lib/profile/comparison-link.ts:41-46`,
+`src/lib/profile/saved-pages-cloud.ts:47`), with no age check. Acceptance by
+the production `saved_pages` policies is likewise inferred from source.
+
+Dependencies on `public.charts` to resolve before any v1 data is deleted
+(checked in source at the audit commit):
+
+- **Weekly digest.** `weekly_digest_candidates_v1` only selects accounts with
+  a valid v1 chart, and `weekly_digest_content_v1` reads that chart's name and
+  bodies from `charts.payload`
+  (`supabase/migrations/20260827090000_weekly_digest_unsubscribe_capability.sql:212,336`).
+  Deleting or emptying the rows drops those accounts from the digest.
+- **Daily brief.** `daily_chart_preferences.chart_id` has the foreign key
+  `daily_chart_preferences_chart_owner_fkey` to `public.charts (id, user_id)`
+  with `on delete set null (chart_id)`
+  (`supabase/migrations/20260720074516_phase3_habit_layer.sql:60-63`).
+  Deleting a v1 row keeps the preference row but nulls its chart, which pauses
+  that person's personalised brief.
+- **Deletion scope.** Scrubbing `charts.payload` alone, deleting the
+  `charts` rows, and scrubbing the `#c=` fragments in `saved_pages.href` are
+  three separate operations with different effects on the two emails above.
+- **Historical copies.** None of those operations reaches database backups or
+  point-in-time recovery, emails already sent, or the copies kept on people's
+  devices (the local profile store and the pending localStorage upload).
+
+So stopping v1 uploads also stops personalised emails for charts saved after
+that point, unless the encrypted v2 path feeds those emails. At the audit
+commit that was not verified.
+
+**Update since the audit (source on `main`, 2026-11-12, not checked in
+production).** Two later changes bear on this decision. #976 (`2e860d556`)
+adds `supabase/migrations/20261111140000_charts_writes_paused.sql`:
+restrictive policies that refuse every authenticated insert and update on
+`public.charts`, leaving select and delete as they were. #977 (`9ed6fe685`)
+adds `20261111170000`, `20261111180000` and `20261111190000`, which move the
+weekly digest, the daily brief and invitations to the encrypted v2 self chart
+behind a new `chart_emails` consent, drop the daily brief's foreign key to
+`public.charts`, and make `PUBLIC_ACCOUNT_SYNC_V2_ENABLED` the only public
+switch. Whether these migrations are applied in production, and so whether
+the v1 uploads above are now refused, was not checked here. The client-side
+uploads remain reachable while the switch is off. `saved_pages` is untouched
+by both.
 
 ### Decision C. Should the calculators and the compute API refuse under-13 birth dates? Calculators yes, compute API no.
 
@@ -114,8 +167,11 @@ How the check works:
 
 - "Today" is the date at UTC-12, the earliest calendar date anywhere, so
   nobody is accepted before their 13th birthday in any time zone. The cost is
-  that someone east of UTC can be refused for up to one extra day. The hosted
-  tools switch to the same rule.
+  a delay that grows toward the east. The UTC-12 date turns at 12:00 UTC, so
+  at UTC+14 someone's 13th birthday begins 26 hours before the check accepts
+  them: refused for all of their local birthday and the first 2 hours of the
+  next day. At UTC it is 12 hours, at UTC+7 19 hours. The hosted tools switch
+  to the same rule.
 - A future date gets its own code and copy instead of the message about
   children.
 - Exempt: date-only sky readers that take no name, place or save, such as the
@@ -185,8 +241,8 @@ by hand. `clearResult()` (`:430-458`) resets about 25 setters by hand.
 
 | Path | Status |
 |---|---|
-| `saved_pages.href` holds both people's full birth input | Verified, live in production |
-| v1 `charts.payload` plaintext sync | Verified, live in production |
+| `saved_pages.href` holds both people's full birth input | Verified in source; the live client sends it; database acceptance inferred |
+| v1 `charts.payload` plaintext sync | Verified in source; the live client uploads; database acceptance inferred (see the update under Decision B) |
 | Copy details link, `#c=` handoffs, chart card links | Breach under Decision A |
 | v2 sync | Encrypted, 18+ gate. Fine |
 | History API, analytics, console, MCP logs | Clean |
@@ -327,10 +383,26 @@ State per locale (reported):
 
 1. **Scrub the birth details already stored on the server**: the payloads in
    `charts.payload` and the fragments in `saved_pages.href`. This deletes data,
-   so AGENTS.md reserves it for the owner. Recommended after fix 1 lands.
-2. **Choose where synced charts go next**: cut over to v2 encrypted sync (both
-   `PUBLIC_ACCOUNT_SYNC_V2_*` flags), or accept that cross-device sync and
-   personalised emails stay paused for newly saved charts. This is a product
-   cutover, not a fix for a live problem.
+   so AGENTS.md reserves it for the owner, and it is not approved. Recommended
+   only after fix 1 lands and after the `public.charts` dependencies listed
+   under Decision B (weekly digest, daily brief, deletion scope, historical
+   copies) are resolved.
+2. **Choose where synced charts go next**: cut over to v2 encrypted sync, or
+   accept that cross-device sync and personalised emails stay paused for newly
+   saved charts. This is a product cutover, not a fix for a live problem, and
+   nothing here switches anything on. Prerequisites before enabling
+   `PUBLIC_ACCOUNT_SYNC_V2_ENABLED` (and `PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK`,
+   which was the second switch at the audit commit; #977 later removed it):
+   - **The email integration is verified.** At the audit commit nothing showed
+     that the weekly digest and the daily brief can be fed from v2 charts.
+     #977 adds that path in source (the `chart_emails` consent and the
+     service-only chart sources); it must be shown working in production,
+     with its migrations applied, before the switch goes on.
+   - **Existing charts stay available after cutover.** v1 charts are never
+     copied into v2 (`docs/ACCOUNT-SYNC-V2-TECHNICAL-CONTRACT.md`, invariant 9
+     and "Retirement of v1 cloud charts"), so after cutover a person's charts
+     come from their device's local store or a fresh v2 selection. Check, for
+     an account with v1 charts and for a fresh device, which charts the person
+     can still see, and what the daily brief and weekly digest send them.
 3. **Accept the cost of Decision A**: exact-chart sharing by link goes away,
    replaced by sign-level links or account-mediated invites.
