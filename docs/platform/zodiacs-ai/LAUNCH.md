@@ -219,6 +219,8 @@ Switch `PUBLIC_YEAR_SCORE_ENABLED` on and deploy before `ZODIACS_YEAR_SCORE_ENAB
 
 Switch `PUBLIC_YEAR_PEOPLE_ENABLED` on (it needs `PUBLIC_YEAR_SCORE_ENABLED` as well) and deploy before `ZODIACS_YEAR_SCORE_PEOPLE_ENABLED`, or a public figure's answer links to a missing `/year/{slug}/` page and a share link that answers 404.
 
+Set the repository variable `TRENDING_X_ENABLED` to `1` only after the people pages are live (`PUBLIC_YEAR_PEOPLE_ENABLED`): every Trending on X draft links to a figure's `/year/{slug}/` page. The workflow only uploads drafts for review and never posts.
+
 Switch `PUBLIC_SOLAR_RETURN_SHARE_ENABLED` on and deploy before `ZODIACS_SOLAR_RETURN_ENABLED`, or every `get_solar_return` answer carries a `shareUrl` that answers 404. Its link to `/birthday-report/` already waits for `PUBLIC_BIRTHDAY_REPORT_ENABLED`.
 
 ## Personal release and measurement

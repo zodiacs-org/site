@@ -58,6 +58,7 @@ describe('GitHub Actions trust boundaries', () => {
       ['db-backup.yml', 'database-backup-production'],
       ['preview-api-smoke.yml', 'preview-smoke-production'],
       ['push-daily.yml', 'daily-push-production'],
+      ['trending-x.yml', 'trending-x-production'],
       ['weekly-digest.yml', 'weekly-digest-production'],
     ]);
     const files = await workflows();
@@ -68,6 +69,16 @@ describe('GitHub Actions trust boundaries', () => {
       expect(body, name).toContain(`environment: ${expected.get(name)}`);
       expect(body, name).toContain('permissions:\n  contents: read');
     }
+  });
+
+  it('keeps Trending on X off, and its X token withheld, unless TRENDING_X_ENABLED is 1', async () => {
+    const body = await readFile(resolve(workflowsRoot, 'trending-x.yml'), 'utf8');
+    expect(body).toContain("if: github.event_name == 'workflow_dispatch' || vars.TRENDING_X_ENABLED == '1'");
+    expect(body).toContain("X_BEARER_TOKEN: ${{ vars.TRENDING_X_ENABLED == '1' && secrets.X_BEARER_TOKEN || '' }}");
+    expect(body.match(/secrets\./gu)).toHaveLength(1);
+    // It only uploads a report: no write permission, no posting endpoint.
+    expect(body).toContain('permissions:\n  contents: read');
+    expect(body).not.toMatch(/contents: write|api\.x\.com\/2\/tweets|statuses\/update/u);
   });
 
   it('pins preview probes to the configured project and team hostname family', async () => {
