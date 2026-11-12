@@ -43,8 +43,12 @@ const MAX_EXPORT_BYTES = 10 * 1024 * 1024;
 const MAX_DAILY_SUN_ALIASES = 16;
 const PROVIDER_DRAIN_BUDGET_MS = 5_000;
 const PROVIDER_REQUEST_TIMEOUT_MS = 2_000;
+// Every purpose the private.account_consents and account_consent_events checks
+// allow (20261111170000). account_v2_export returns every row unfiltered, so a
+// purpose missing here makes the whole export fail closed.
 const PURPOSES = new Set([
   'chart_sync',
+  'chart_emails',
   'weekly_digest',
   'daily_chart_email',
   'compatibility_invites',

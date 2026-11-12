@@ -1,4 +1,5 @@
 import { Buffer } from 'node:buffer';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import {
   encryptAccountDailySunAliasLocator,
@@ -448,6 +449,88 @@ describe('account lifecycle API foundation', () => {
           },
           bound_at: '2026-08-01T00:00:00.000Z',
           updated_at: '2026-08-03T00:00:00.000Z',
+        }],
+      }),
+      now: () => NOW,
+    });
+    expect(response.statusCode).toBe(503);
+    expect(JSON.parse(response.body)).toEqual({ error: 'export_unavailable' });
+  });
+
+  it('exports chart_emails consents and events alongside every other purpose the database allows', async () => {
+    const migration = readFileSync(
+      new URL('../../../supabase/migrations/20261111170000_account_sync_v2_chart_emails.sql', import.meta.url),
+      'utf8',
+    );
+    const consentCheck = /account_consents_purpose_valid\s+check \(purpose in \(([^)]*)\)/.exec(migration)?.[1] ?? '';
+    const purposes = [...consentCheck.matchAll(/'([a-z_]+)'/g)].map(([, purpose]) => purpose);
+    expect(purposes).toContain('chart_emails');
+    expect(purposes.length).toBeGreaterThanOrEqual(7);
+
+    const consents = purposes.map((purpose) => ({
+      purpose,
+      state: purpose === 'chart_emails' ? 'withdrawn' : 'granted',
+      policy_version: purpose === 'chart_emails' ? 'chart-emails-2026-11-11.v1' : 'chart-sync-2026-08-12.v1',
+      granted_at: '2026-11-11T10:00:00.000Z',
+      withdrawn_at: purpose === 'chart_emails' ? '2026-11-11T11:00:00.000Z' : null,
+      updated_at: '2026-11-11T11:00:00.000Z',
+    }));
+    const consentEvents = [
+      ...purposes.map((purpose, index) => ({
+        event_id: index + 1,
+        purpose,
+        decision: 'grant',
+        policy_version: purpose === 'chart_emails' ? 'chart-emails-2026-11-11.v1' : 'chart-sync-2026-08-12.v1',
+        source: 'web',
+        occurred_at: '2026-11-11T10:00:00.000Z',
+      })),
+      {
+        event_id: purposes.length + 1,
+        purpose: 'chart_emails',
+        decision: 'withdraw',
+        policy_version: 'chart-emails-2026-11-11.v1',
+        source: 'web',
+        occurred_at: '2026-11-11T11:00:00.000Z',
+      },
+    ];
+    const account = {
+      status: 'active',
+      created_at: '2026-08-01T00:00:00.000Z',
+      updated_at: '2026-11-11T11:00:00.000Z',
+      deletion_started_at: null,
+    };
+    const response = responseRecorder();
+    await handleAccountApi(request('export'), response, {
+      env: ENV,
+      fetcher: exportFetcher({ ...EMPTY_V2_RPC_EXPORT, account, consents, consent_events: consentEvents }),
+      now: () => NOW,
+    });
+
+    expect(response.statusCode).toBe(200);
+    const exported = JSON.parse(response.body).cloud.accountSyncV2;
+    expect(exported.consents).toEqual(consents);
+    expect(exported.consent_events).toEqual(consentEvents);
+  });
+
+  it('still fails the export closed on a consent purpose the database does not allow', async () => {
+    const response = responseRecorder();
+    await handleAccountApi(request('export'), response, {
+      env: ENV,
+      fetcher: exportFetcher({
+        ...EMPTY_V2_RPC_EXPORT,
+        account: {
+          status: 'active',
+          created_at: '2026-08-01T00:00:00.000Z',
+          updated_at: '2026-11-11T10:00:00.000Z',
+          deletion_started_at: null,
+        },
+        consents: [{
+          purpose: 'marketing',
+          state: 'granted',
+          policy_version: 'chart-sync-2026-08-12.v1',
+          granted_at: '2026-11-11T10:00:00.000Z',
+          withdrawn_at: null,
+          updated_at: '2026-11-11T10:00:00.000Z',
         }],
       }),
       now: () => NOW,
