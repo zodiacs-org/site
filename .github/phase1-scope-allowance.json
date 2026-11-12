@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "locale-expansion-hook-2026-11-09",
-  "baseCommit": "c30d4810f5842fc57bb56da20ff5ab03a07caa40",
+  "baseCommit": "605ce43a682568a5860800fc2d7af7c3d345e4d7",
   "protectedPaths": [
     "src/lib/i18n/index.ts"
   ]

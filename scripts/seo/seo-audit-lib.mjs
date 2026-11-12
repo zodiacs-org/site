@@ -17,7 +17,8 @@ export function stripLocalePath(path) {
   return locale === 'en' ? path : path.slice(locale.length + 1) || '/';
 }
 
-const attr = (tag, name) => tag.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, 'i'))?.slice(2, 4).find((value) => value !== undefined);
+// Double-quoted, single-quoted or unquoted, as HTML allows.
+const attr = (tag, name) => tag.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*("([^"]*)"|'([^']*)'|([^\\s"'=<>\`]+))`, 'i'))?.slice(2, 5).find((value) => value !== undefined);
 
 /** Head facts of one built page. */
 export function parsePage(html) {
@@ -121,7 +122,11 @@ export const STRUCTURED_DATA_MATRIX = [
 ];
 
 const typesOf = (node) => [node?.['@type']].flat().filter(Boolean);
-const LANG_BASE = (value) => String(value ?? '').toLowerCase().split('-')[0];
+/** The language with its script, when it names one: 'pt-BR' is 'pt', but 'zh-Hant' stays 'zh-hant'. */
+const LANG_BASE = (value) => {
+  const [language, script] = String(value ?? '').toLowerCase().split('-');
+  return script?.length === 4 ? `${language}-${script}` : language;
+};
 
 /**
  * The page type's required nodes are present and valid JSON, and every
