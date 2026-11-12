@@ -235,7 +235,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
                         <button type="button" class="btn btn--sm" onClick={() => keepOnDevice(pickOf(day)!)}>Remind me on this device</button>
                       </div>
                       {kept === `calendar:${day.date}` && <p class="field__help">The calendar file has the day and, a week later, the link to tell us how it went.</p>}
-                      {kept === `device:${day.date}` && <p class="field__help">This browser will ask when you come back a week after the day. It keeps the goal, the day and its score, nothing else.</p>}
+                      {kept === `device:${day.date}` && <p class="field__help">This browser will ask when you come back a week after the day. It keeps the goal, the day, its score, whether your birth date was used and whether you have answered, nothing else.</p>}
                       {kept === `refused:${day.date}` && <p class="field__help">This browser does not keep site data. Add it to your calendar instead.</p>}
                     </div>
                   ) : (
