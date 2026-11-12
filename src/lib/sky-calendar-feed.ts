@@ -9,12 +9,16 @@
  *   clipped at the feed's edge keeps its edge;
  * - a lunar eclipse too slight to be seen says so
  *   (src/lib/nasa-lunar-eclipses.ts).
+ *
+ * A window whose times NASA's moved carries LAST-MODIFIED and SEQUENCE:1, and
+ * the file's DTSTAMP is the latest revision, so a calendar that merges events
+ * by UID takes the new times.
  */
 import sky from '../data/sky.json';
 import eclipses from '../data/eclipses.json';
 import { serializeSkyEvents, type SkyCalendarEvent } from './ical';
 import type { CatalogLocale } from './i18n/core';
-import { nasaStationAt } from './nasa-instants';
+import { nasaCalendarRevision, nasaStationAt } from './nasa-instants';
 import { isInvisiblePenumbral, penumbralMagnitude } from './nasa-lunar-eclipses';
 import { skyCalendarEvents } from './return-visits/sky-calendar';
 import { returnText } from './return-visits/copy';
@@ -36,11 +40,10 @@ export function siteSkyCalendarEvents(locale: CatalogLocale): SkyCalendarEvent[]
   return skyCalendarEvents(locale).map((event) => {
     const window = retrogradeById.get(event.id);
     if (window) {
-      return {
-        ...event,
-        start: nasaStationAt(window.planet, window.from) ?? event.start,
-        end: window.to ? nasaStationAt(window.planet, window.to) ?? event.end : event.end,
-      };
+      const start = nasaStationAt(window.planet, window.from) ?? event.start;
+      const end = window.to ? nasaStationAt(window.planet, window.to) ?? event.end : event.end;
+      // A window NASA's times moved says so (LAST-MODIFIED, SEQUENCE), and moves the file's DTSTAMP.
+      return { ...event, start, end, ...nasaCalendarRevision(sky.generatedAt, [[event.start, start], [event.end, end]]) };
     }
     const eclipse = eclipseById.get(event.id);
     if (eclipse && eclipse.type === 'lunar' && isInvisiblePenumbral(eclipse.peak, eclipse.kind)) {

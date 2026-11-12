@@ -30,6 +30,18 @@
       "src": "^(?:/(es|pt|fr|it|ru))/sky-calendar\\.ics$"
     },
     {
+      "source": "/eclipses/2027.ics",
+      "src": "^/eclipses/2027\\.ics$"
+    },
+    {
+      "source": "/full-moon-calendar/2027.ics",
+      "src": "^/full-moon-calendar/2027\\.ics$"
+    },
+    {
+      "source": "/mercury-retrograde/2027.ics",
+      "src": "^/mercury-retrograde/2027\\.ics$"
+    },
+    {
       "source": "/(.*)",
       "src": "^(?:/(.*))$"
     },
