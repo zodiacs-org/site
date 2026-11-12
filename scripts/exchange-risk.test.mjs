@@ -114,7 +114,7 @@ describe('Exchange risk and trust copy', () => {
     const headers = new Map(rule?.headers?.map(({ key, value }) => [key, value]));
     const csp = headers.get('Content-Security-Policy') ?? '';
     expect(csp).toContain("default-src 'self'");
-    expect(csp).toContain("connect-src 'self' https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://plausible.io;");
+    expect(csp).toContain("connect-src 'self' https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co;");
     expect(csp).toContain("frame-src 'none'");
     expect(csp).not.toContain('*');
     expect(headers.get('Referrer-Policy')).toBe('same-origin');
