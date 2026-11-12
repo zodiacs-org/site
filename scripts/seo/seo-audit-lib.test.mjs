@@ -65,8 +65,17 @@ describe('seo audit rules', () => {
       .toEqual(['horoscope page has no Article']);
     expect(structuredDataProblems('/es/horoscopes/leo/weekly/', page({ path: '/es/horoscopes/leo/weekly/', ld: [{ ...article, inLanguage: 'en' }, crumbs] })))
       .toEqual(['Article inLanguage en on a es page']);
-    expect(structuredDataProblems('/pt/compatibility/aries-leo/', page({ path: '/pt/compatibility/aries-leo/', lang: 'pt-BR', ld: [{ '@type': 'Article', inLanguage: 'pt-BR' }, crumbs, { '@type': 'FAQPage' }] })))
+    expect(structuredDataProblems('/pt/compatibility/aries-leo/', page({ path: '/pt/compatibility/aries-leo/', lang: 'pt-BR', ld: [{ '@type': 'Article', url: `${S}/pt/compatibility/aries-leo/`, inLanguage: 'pt-BR' }, crumbs, { '@type': 'FAQPage' }] })))
       .toEqual([]);
+    const { url: _url, ...noUrl } = article;
+    expect(structuredDataProblems('/es/horoscopes/leo/weekly/', page({ path: '/es/horoscopes/leo/weekly/', ld: [noUrl, crumbs] })))
+      .toEqual(['Article has no url']);
+  });
+
+  it('reads single-quoted JSON-LD script tags, valid or not', () => {
+    const html = (json) => `<html lang="es"><head><script type='application/ld+json'>${json}</script></head><body></body></html>`;
+    expect(parsePage(html(JSON.stringify({ '@type': 'BreadcrumbList' }))).jsonLd).toEqual([{ '@type': 'BreadcrumbList' }]);
+    expect(structuredDataProblems('/es/aries/', parsePage(html('{ not json')))).toContain('invalid JSON-LD');
   });
 
   it('flags a localized page linking English when its own twin is indexable, but not deliberate cross-language links', () => {

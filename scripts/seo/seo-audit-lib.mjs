@@ -27,7 +27,7 @@ export function parsePage(html) {
   const alternates = [...head.matchAll(/<link\b[^>]*>/gi)].map((m) => m[0])
     .filter((tag) => attr(tag, 'rel')?.toLowerCase() === 'alternate' && attr(tag, 'hreflang'))
     .map((tag) => ({ hreflang: attr(tag, 'hreflang'), href: attr(tag, 'href') }));
-  const jsonLd = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)].flatMap((m) => {
+  const jsonLd = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)].flatMap((m) => {
     try {
       const value = JSON.parse(m[1]);
       const graph = Array.isArray(value) ? value : value['@graph'] ?? [value];
@@ -125,7 +125,8 @@ const LANG_BASE = (value) => String(value ?? '').toLowerCase().split('-')[0];
 
 /**
  * The page type's required nodes are present and valid JSON, and every
- * Article or WebApplication node says the page's language and URL.
+ * Article or WebApplication node names the page's URL and, where it states
+ * a language, the page's language.
  */
 export function structuredDataProblems(path, page) {
   if (page.noindex) return [];
@@ -137,10 +138,12 @@ export function structuredDataProblems(path, page) {
   for (const type of rule.required) if (!present.has(type)) problems.push(`${rule.type} page has no ${type}`);
   const pageLang = LANG_BASE(HTML_LANG[localeOfPath(path)]);
   for (const node of page.jsonLd.filter((candidate) => typesOf(candidate).some((type) => type === 'Article' || type === 'WebApplication'))) {
+    // Some English calculators' WebApplication nodes name no language yet; a stated one must match.
     if (node.inLanguage !== undefined && LANG_BASE(node.inLanguage) !== pageLang) {
       problems.push(`${typesOf(node)[0]} inLanguage ${node.inLanguage} on a ${pageLang} page`);
     }
-    if (node.url !== undefined && node.url !== `${SITE}${path}`) problems.push(`${typesOf(node)[0]} url ${node.url} is not the page`);
+    if (node.url === undefined) problems.push(`${typesOf(node)[0]} has no url`);
+    else if (node.url !== `${SITE}${path}`) problems.push(`${typesOf(node)[0]} url ${node.url} is not the page`);
   }
   return problems;
 }
