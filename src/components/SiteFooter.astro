@@ -73,6 +73,12 @@ const consumerPath = stripLocale(Astro.url.pathname);
 const isRegistryWing = /^\/(?:terminal|registry|sdk|thesis|archive|disclosure)(?:\/|$)/.test(consumerPath);
 const suppressFooterEmailCapture = /^\/(?:birth-chart|horoscopes|profile)(?:\/|$)/.test(consumerPath);
 const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
+// "Registry" and "Guide" are kept as English names on translated pages. The
+// landmarks take their names from the visible label, marked lang="en", so a
+// screen reader speaks them in English instead of the page's language.
+const englishName = (label: string, english: string) => (locale !== 'en' && label === english ? ('en' as const) : undefined);
+const guideLang = englishName(FOOTER_COPY[locale].assistant, FOOTER_COPY.en.assistant);
+const registryLang = englishName(t(locale, 'footerRegistry'), t('en', 'footerRegistry'));
 ---
 <footer class="zfooter">
   <div class="zfooter__inner">
@@ -88,7 +94,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
         {!isTool && isRegistryWing && <p class="zfooter__tag">{t(locale, 'trustWalletNotice')}</p>}
       </div>
       {!Astro.props.noAssistant && (
-        <aside class="zfooter__help" aria-label={FOOTER_COPY[locale].assistant}>
+        <aside class="zfooter__help" aria-labelledby="footer-guide-label">
         <button
           class="zfooter__guide"
           type="button"
@@ -99,7 +105,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           aria-describedby="footer-guide-description"
         >
           <img src="/assets/guide-avatar.webp" width="32" height="32" alt="" loading="lazy" decoding="async" />
-          <span>{FOOTER_COPY[locale].assistant}</span><span class="zfooter__guide-arrow" aria-hidden="true">→</span>
+          <span id="footer-guide-label" lang={guideLang}>{FOOTER_COPY[locale].assistant}</span><span class="zfooter__guide-arrow" aria-hidden="true">→</span>
         </button>
         <p id="footer-guide-description" class="zfooter__help-description">{FOOTER_COPY[locale].guideDescription}</p>
         </aside>
@@ -138,8 +144,8 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
       </details></nav>
 
       {showCollection && (
-      <nav class="zfooter__group zfooter__group--wide" aria-label={t(locale, 'footerRegistry')}>
-        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">{t(locale, 'footerRegistry')}</span></summary>
+      <nav class="zfooter__group zfooter__group--wide" aria-labelledby="footer-registry-label">
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label" id="footer-registry-label" lang={registryLang}>{t(locale, 'footerRegistry')}</span></summary>
         <div class="zfooter__links">
           <a href="/astrofolio/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'navCollect')}{englishSuffix}</a>
           <a href="/registry/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerRegistry')}{englishSuffix}</a>

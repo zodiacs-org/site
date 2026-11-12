@@ -46,6 +46,9 @@ export default function PlaceSearch({
     chipRef.current?.focus();
   }, [selected]);
   const pickHint = validationError || (!selected && query.trim() ? selectionHint : '');
+  const announcement = loading
+    ? t(locale, 'placeSearching')
+    : open && !results.length ? t(locale, 'placeNoResults') : '';
 
   useEffect(() => {
     // Continue a query already entered into the visible server form.
@@ -168,7 +171,12 @@ export default function PlaceSearch({
           {pickHint}
         </p>
       )}
-      {loading && <p class="place__hint" role="status">{t(locale, 'placeSearching')}</p>}
+      {loading && <p class="place__hint">{t(locale, 'placeSearching')}</p>}
+      {/* One live region mounted from the first render, so screen readers
+          hear "searching" and an empty result. Its position is absolute
+          inside .place, so it never moves the layout. The result count
+          reaches them through aria-setsize/aria-posinset on each option. */}
+      <p class="sr-only" id={`${id}-status`} role="status" aria-live="polite">{announcement}</p>
       {error && (
         <div class="place__error">
           <p role="alert">{error}</p>
@@ -179,33 +187,34 @@ export default function PlaceSearch({
           <CalculationReload error={error} locale={locale} />
         </div>
       )}
-      {open && (
-        <ul class="place__list" id={`${id}-list`} role="listbox">
-          {results.length ? (
-            results.map((c, i) => (
-              <li key={c.name + c.lat + c.lon} role="none">
-                <button
-                  type="button"
-                  id={`${id}-opt-${i}`}
-                  role="option"
-                  aria-selected={i === active}
-                  tabIndex={-1}
-                  class={i === active ? 'place__option is-active' : 'place__option'}
-                  onMouseEnter={() => setActive(i)}
-                  onClick={() => choose(c)}
-                >
-                  <span class="place__name">{c.name}</span>
-                  <span class="place__meta">{[c.admin1, c.country].filter(Boolean).join(', ')}</span>
-                </button>
-              </li>
-            ))
-          ) : (
-            <li class="place__empty" role="option" aria-disabled={true}>
-              {t(locale, 'placeNoResults')}
+      {/* Always rendered so aria-controls never points at a missing node. */}
+      <ul class="place__list" id={`${id}-list`} role="listbox" hidden={!open}>
+        {open && (results.length ? (
+          results.map((c, i) => (
+            <li key={c.name + c.lat + c.lon} role="none">
+              <button
+                type="button"
+                id={`${id}-opt-${i}`}
+                role="option"
+                aria-selected={i === active}
+                aria-setsize={results.length}
+                aria-posinset={i + 1}
+                tabIndex={-1}
+                class={i === active ? 'place__option is-active' : 'place__option'}
+                onMouseEnter={() => setActive(i)}
+                onClick={() => choose(c)}
+              >
+                <span class="place__name">{c.name}</span>
+                <span class="place__meta">{[c.admin1, c.country].filter(Boolean).join(', ')}</span>
+              </button>
             </li>
-          )}
-        </ul>
-      )}
+          ))
+        ) : (
+          <li class="place__empty" role="option" aria-disabled={true}>
+            {t(locale, 'placeNoResults')}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
