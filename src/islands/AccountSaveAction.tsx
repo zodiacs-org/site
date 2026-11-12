@@ -2,8 +2,8 @@
  * The quiet account line under a result. Signed in: "Save to your profile"
  * keeps a link to this reading or card with the account. Signed out: one
  * "Sign in to save" link; the page waits on this device until sign-in, then
- * the profile saves it. On the birth chart, the existing Save already keeps
- * the chart (and syncs it once signed in), so there it only offers sign-in.
+ * the profile saves it. On the birth chart, the existing Save keeps the
+ * chart on this device; chart sync is paused, so there it only says so.
  *
  * Hosts load this module only when PUBLIC_ACCOUNT_SAVES_ENABLED is on.
  */
@@ -17,8 +17,6 @@ import {
 } from '../lib/profile/saved-pages-config';
 import type { SaveOutcome } from '../lib/profile/saved-pages-cloud';
 import { comparisonSavedPage } from '../lib/profile/comparison-link';
-import type { SavedPairSide } from '../lib/profile/pairs';
-import type { SavedChart } from '../lib/profile/schema';
 import { accountSyncV2Enabled } from '../lib/account-v2/feature-flags';
 import '../styles/account.css';
 
@@ -37,7 +35,7 @@ export const ACCOUNT_SAVE_COPY = {
   full: `Your profile holds ${MAX_SAVED_PAGES} saved pages. Remove one there to save this.`,
   error: 'This could not be saved. Check your connection and try again.',
   signIn: 'Sign in to save',
-  chartSignedOut: 'Saved charts stay in this browser until you sign in, then they open on any device.',
+  chartSignedOut: 'Saved charts stay in this browser. Chart sync is paused for now.',
 } as const;
 
 function useStoredSession(): boolean {
@@ -59,12 +57,12 @@ export default function AccountSaveAction(props: Props) {
   useEffect(() => { setState('idle'); }, [draft?.href]);
 
   if (props.kind === 'chart') {
-    // The line describes the sign-in upload of every saved chart; the
-    // account v2 preview syncs one chart by explicit choice instead.
+    // Chart sync is paused: signing in sends no chart, so the line offers no
+    // sign-in. The account v2 preview syncs one chart by explicit choice instead.
     if (signedIn || accountSyncV2Enabled()) return null;
     return (
       <div class="acct-save" data-account-save="chart">
-        <p>{ACCOUNT_SAVE_COPY.chartSignedOut} <a href={SIGN_IN_TO_SAVE_HREF}>{ACCOUNT_SAVE_COPY.signIn}</a></p>
+        <p>{ACCOUNT_SAVE_COPY.chartSignedOut}</p>
       </div>
     );
   }
@@ -121,8 +119,11 @@ export default function AccountSaveAction(props: Props) {
   );
 }
 
-/** The compatibility result's line: the reading's link is worked out here, in this lazy chunk. */
-export function ComparisonSave({ a, b, charts }: { a: SavedPairSide; b: SavedPairSide; charts: readonly SavedChart[] }) {
-  const draft = useMemo(() => comparisonSavedPage(a, b, charts), [a, b, charts]);
+/**
+ * The compatibility result's line. It saves the two Sun signs' pair page (or
+ * the compatibility page when a Sun sign is unsettled): no birth details, no names.
+ */
+export function ComparisonSave({ signA, signB }: { signA: string | null; signB: string | null }) {
+  const draft = useMemo(() => comparisonSavedPage(signA, signB), [signA, signB]);
   return <AccountSaveAction kind="page" noun="reading" draft={draft} />;
 }

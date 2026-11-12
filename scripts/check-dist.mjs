@@ -21,6 +21,7 @@
  *      sitemap-index.xml's section sitemaps list exactly its entries, once.
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
+ *  10. The inline profile access loader names the built bootstrap chunk.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
 import { attr, canonicalHref, renderedLinks, crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
@@ -34,6 +35,7 @@ import {
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
+import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
 import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
 import {
   ABSENT_LOCALES,
@@ -45,6 +47,7 @@ import {
   hreflangRouteFamily,
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
+import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -68,7 +71,7 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   ...(dailyPublishedDays.length ? ['/ru/chart-of-the-day/'] : []),
   '/ru/', '/ru/tools/', '/ru/birth-chart/', '/ru/compatibility/',
   '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
-  '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',
+  '/ru/saturn-return/', '/ru/transits/',
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
   '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
   '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
@@ -1134,7 +1137,7 @@ for (const match of sitemap.matchAll(/<xhtml:link\b[^>]*>/g)) {
     }
   }
 }
-for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.registry.json']) {
+for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.registry.json', '/sky-calendar-heads-up.ics', '/sky-calendar-heads-up.json']) {
   if (sitemapLocs.has(artifact)) fail(`sitemap.xml: machine artifact must not be indexed — ${artifact}`);
   const target = targetPath(artifact);
   if (!target || !(await exists(target))) {
@@ -1291,6 +1294,9 @@ const registryAuraIndexed = sitemapLocs.has('/registry/collection/');
 // the Registry Collection follows its own: the sitemap entry and the built
 // page appear and disappear together.
 const raceIndexed = sitemapLocs.has('/race/');
+// The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
+const yearScoreIndexed = sitemapLocs.has('/year-score/');
+const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
 const indexablePeoplePaths = new Set(
   JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).people
@@ -1350,7 +1356,12 @@ const sitemapPolicy = {
   // +1 for /your-2027-sky/, the 2027 personal sky edition.
   // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
-  total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
+  // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
+  // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
+  // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/).
+  total: 1532 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1401,6 +1412,8 @@ const indexedFamilies = [
   { label: 'Life Path pages', pattern: /^\/numerology\/life-path\/(?:[1-9]|11|22|33)\/$/, expected: 12, localized: false },
   { label: 'Registry Collection', pattern: /^\/registry\/collection\/$/, expected: Number(registryAuraIndexed), localized: false },
   { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
+  { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
+  { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
   { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },
@@ -1565,10 +1578,13 @@ for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const rel = relative(root, file);
   const pagePath = htmlFileToPath(rel.split(sep).join('/'));
+  const hiddenChildPage = isHiddenChildPage(pagePath);
   const russianRouteAvailable = expectedHreflangsForPath(pagePath).has('ru')
-    || LOCALIZED_404_PATHS.has(pagePath);
+    || LOCALIZED_404_PATHS.has(pagePath)
+    || (hiddenChildPage && pagePath.startsWith('/ru/'));
   const russianRouteRenderable = russianRouteAvailable
-    || hreflangRouteFamily(pagePath) === 'sign-guide';
+    || hreflangRouteFamily(pagePath) === 'sign-guide'
+    || hiddenChildPage;
   if (!russianRouteRenderable && /href=["'](?:https:\/\/zodiacs\.org)?\/ru(?:\/|["'#?])/.test(html)) {
     fail(`${rel}: Russian route leaked onto a deferred or programmatic page`);
   }
@@ -1857,6 +1873,17 @@ for (const [file, path] of builtPageByFile) {
     .replace(ENTITIES, (entity) => (/^&(?:nbsp|#160|#x[aA]0);$/u.test(entity) ? ' ' : 'x'));
   const joined = [...html.matchAll(INLINE_JOIN)].length;
   if (joined) fail(`${path}: ${joined} place(s) where text runs into an inline element; end the line with {' '}`);
+}
+
+// ---- Profile access loader ---------------------------------------------------
+// With account sync v2, pages outside the profile and the two main calculators
+// import the access bootstrap through an inline loader whose chunk URL is
+// stamped after the build (scripts/stamp-profile-access-loader.mjs). Every
+// loader must name the one chunk the save path also imports, and that chunk
+// must be imported by the save path; each requirement fails on its own.
+{
+  const { problems } = await verifyProfileAccessLoader(root);
+  for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
 }
 
 // ---- Report ------------------------------------------------------------------

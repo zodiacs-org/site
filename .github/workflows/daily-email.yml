@@ -98,6 +98,11 @@ jobs:
           RESEND_SEGMENT_ID: ${{ secrets.RESEND_SEGMENT_ID }}
           PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # Decrypts, in this job only, the self chart of accounts that hold
+          # both chart_sync and chart_emails. Without them those accounts fall
+          # back to the Sun edition; nothing is logged but counts.
+          ACCOUNT_SYNC_V2_ENCRYPTION_KEYS: ${{ secrets.ACCOUNT_SYNC_V2_ENCRYPTION_KEYS }}
+          ACCOUNT_SYNC_V2_ACTIVE_KEY_VERSION: ${{ secrets.ACCOUNT_SYNC_V2_ACTIVE_KEY_VERSION }}
           DAILY_EMAIL_DRY_RUN: ${{ inputs.dry_run }}
           DAILY_EMAIL_AT: ${{ inputs.at }}
           DAILY_EMAIL_LIMIT: ${{ inputs.limit }}

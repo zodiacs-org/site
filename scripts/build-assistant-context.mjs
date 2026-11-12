@@ -19,6 +19,7 @@ import { RETURN_EN } from '../src/lib/return-visits/copy.ts';
 import { SHARING_EN } from '../src/lib/sharing/copy-en.ts';
 import { WIDGET_EN } from '../src/strings/widgets.ts';
 import { currentHoroscopeMonth, utcMonth } from '../src/lib/horoscope-month.mjs';
+import { HIDDEN_CHILD_PAGE_PATHS } from '../src/data/hidden-child-pages.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_OUTPUT = resolve(repo, 'api/_assistant/context.ts');
@@ -35,7 +36,6 @@ export const TOOL_ROUTES = Object.freeze([
   '/astrologer-kit/',
   '/your-sky-wrapped/',
   '/chart-of-the-day/',
-  '/baby-zodiac/',
   '/big-three/',
   '/chart-twins/',
   '/compatibility/invite/',
@@ -106,7 +106,19 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/people/',
   '/registry/',
   '/terminal/',
+  // The Year Ahead directory of living public figures: noindex and nofollow, as the protected People pages are.
+  '/year/',
+  // Pages about babies and children, hidden on 2026-11-12: noindex and nofollow (src/data/hidden-child-pages.mjs).
+  ...HIDDEN_CHILD_PAGE_PATHS,
 ]);
+
+// Pages behind a launch switch (src/lib/launch-flags.ts) stay out of the
+// inventory until their switch is exactly '1', so a page that is not live is
+// never recommended. Commit the output generated with every switch unset.
+const LAUNCH_FLAGGED_ROUTES = Object.freeze({
+  '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
+  '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
+});
 
 function compareText(left, right) {
   return left < right ? -1 : left > right ? 1 : 0;
@@ -269,6 +281,8 @@ async function loadStaticPages(repoRoot, context) {
     if (local === '404.astro') continue;
     const route = pagePath(file, pagesRoot);
     if (UNLISTED_ROUTE_PREFIXES.some((prefix) => route.startsWith(prefix))) continue;
+    const launchFlag = LAUNCH_FLAGGED_ROUTES[route];
+    if (launchFlag && process.env[launchFlag] !== '1') continue;
     // Labeled sample pages for event-template review: never part of the
     // recommendable site inventory.
     if (route.startsWith('/events/preview/')) continue;
