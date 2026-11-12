@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { useProfileSurface } from '../lib/profile/surface-gate';
+import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
+import { t } from '../lib/i18n';
 import type { ChartBackup } from '../lib/profile/backup';
 import type { ChartSaveStatus } from '../lib/profile/sync';
 
@@ -70,6 +72,12 @@ export default function ProfileSafety({ syncConfigured = false, accountBound = f
     if (!pending) return;
     setBusy(true); setMessage('');
     try {
+      if (!profileAccessAllowed()) {
+        // Waits for the account access decision; the restore below still
+        // refuses unless this tab is granted access.
+        const { ensureProfileWriteAccess } = await import('../lib/account-v2/profile-access-request');
+        if (await ensureProfileWriteAccess() === 'unavailable') throw new Error(t('en', 'profileSaveUnavailable'));
+      }
       const { restoreChartBackup } = await import('../lib/profile/backup');
       const added = restoreChartBackup(pending, restoreIdentity);
       if (syncConfigured && !accountBound) void import('../lib/profile/sync').then(async api => {

@@ -145,6 +145,7 @@ const fr = {
   saveThisChart: 'Enregistrer ce thème',
   chartSavedStatus: 'Thème enregistré sur cet appareil.',
   chartSaveFull: 'Tu peux enregistrer jusqu’à 40 thèmes. Supprimes-en un d’abord.',
+  profileSaveUnavailable: 'L’enregistrement n’a pas pu démarrer. Réessaie.',
   chartSaveError: 'Impossible d’enregistrer. Ton navigateur bloque peut-être le stockage local.',
   chartSavedMessage: 'Ajouté à tes thèmes. Connecte-toi ici quand tu voudras les retrouver sur tous tes appareils.',
   linkCopied: 'Lien copié',
