@@ -109,6 +109,8 @@ const it = {
   birthDateRequired: "Inserisci la data di nascita.",
   birthDateRange: "Scegli una data di nascita tra il 1800 e il 2199.",
   birthTimeRequired: "Inserisci l’ora di nascita.",
+  dateRequired: 'Inserisci una data.',
+  dateRange: 'Scegli una data tra il 1800 e il 2199.',
   houseSystem: "Sistema di case",
   wholeSignDefault: "Case a segno intero (predefinito)",
   placidus: "Placidus",

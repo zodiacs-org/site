@@ -7,6 +7,7 @@
 import { Fragment } from 'preact';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, type CalendarChoice } from './BirthFields';
+import { birthFieldMessages, focusField, type BirthFieldMessages } from './birth-field-check';
 import SignChip from './SignChip';
 import { NextActionCard } from '../components/NextActionCard';
 import {
@@ -373,7 +374,7 @@ function resolvePositions(
 }
 
 function SlotForm({
-  slot, setSlot, charts, idPrefix, fallbackLabel, locale, loadEngine,
+  slot, setSlot, charts, idPrefix, fallbackLabel, locale, loadEngine, messages = {}, sourceDescribedBy,
 }: {
   slot: SlotState;
   setSlot: (updater: (s: SlotState) => SlotState) => void;
@@ -382,11 +383,20 @@ function SlotForm({
   fallbackLabel: string;
   locale: Locale;
   loadEngine: EngineLoader;
+  /** The birth fields' messages after a Compare that could not run. */
+  messages?: BirthFieldMessages;
+  /** The note that both sides name the same saved chart, for the chart picker. */
+  sourceDescribedBy?: string;
 }) {
+  // Removing a carried chart removes its button; focus goes to the slot's first field.
+  const clearSlot = () => {
+    setSlot(() => emptySlot());
+    focusField(charts.length > 0 ? `${idPrefix}-source` : `${idPrefix}-name`);
+  };
   if (slot.source === 'positions' && slot.positions) {
     return (
-      <div class="syn__slot">
-        <span class="mono--label">{fallbackLabel}</span>
+      <div class="syn__slot" role="group" aria-labelledby={`${idPrefix}-label`}>
+        <span class="mono--label" id={`${idPrefix}-label`}>{fallbackLabel}</span>
         <div class="field">
           <label class="field__label" for={`${idPrefix}-positions`}>{t(locale, 'chart')}</label>
           <span class="place__chip">
@@ -401,7 +411,7 @@ function SlotForm({
               type="button"
               class="place__clear"
               aria-label={t(locale, 'removeSharedChart')}
-              onClick={() => setSlot(() => emptySlot())}
+              onClick={() => clearSlot()}
             >×</button>
           </span>
           <p class="field__help">{t(locale, 'trustMissingInstant')}</p>
@@ -413,8 +423,8 @@ function SlotForm({
   if (slot.source === 'link' && slot.link) {
     const received = slot.link.received === true;
     return (
-      <div class="syn__slot">
-        <span class="mono--label">{fallbackLabel}</span>
+      <div class="syn__slot" role="group" aria-labelledby={`${idPrefix}-label`}>
+        <span class="mono--label" id={`${idPrefix}-label`}>{fallbackLabel}</span>
         <div class="field">
           <label class="field__label" for={`${idPrefix}-linked`}>{t(locale, 'chart')}</label>
           <span class="place__chip">
@@ -424,7 +434,7 @@ function SlotForm({
             />
             <button
               type="button" class="place__clear" aria-label={t(locale, 'removeSharedChart')}
-              onClick={() => setSlot(() => emptySlot())}
+              onClick={() => clearSlot()}
             >×</button>
           </span>
           <p class="field__help">{received ? t(locale, 'sharedSideHelp') : pc(locale, 'restoredSideHelp')}</p>
@@ -434,8 +444,8 @@ function SlotForm({
   }
 
   return (
-    <div class="syn__slot">
-      <span class="mono--label">{fallbackLabel}</span>
+    <div class="syn__slot" role="group" aria-labelledby={`${idPrefix}-label`}>
+      <span class="mono--label" id={`${idPrefix}-label`}>{fallbackLabel}</span>
 
       {charts.length > 0 && (
         <div class="field">
@@ -443,6 +453,8 @@ function SlotForm({
           <select
             id={`${idPrefix}-source`} class="field__input"
             value={slot.source === 'saved' ? slot.savedId : ''}
+            aria-invalid={sourceDescribedBy ? 'true' : undefined}
+            aria-describedby={sourceDescribedBy}
             onChange={(e) => {
               const v = (e.target as HTMLSelectElement).value;
               setSlot((s) => (v === ''
@@ -482,6 +494,8 @@ function SlotForm({
             onTimeKnownChange={(timeKnown) => setSlot((s) => ({ ...s, timeKnown }))}
             onCityChange={(city) => setSlot((s) => ({ ...s, city }))}
             onWarm={loadEngine}
+            dateError={messages.dateError}
+            placeError={messages.placeError}
           />
         </>
       )}
@@ -1025,7 +1039,13 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     slotA.source === 'saved' && slotB.source === 'saved'
     && slotA.savedId !== '' && slotA.savedId === slotB.savedId;
 
-  const canCompare = slotReady(slotA) && slotReady(slotB) && !sameSaved && !busy;
+  // After a Compare that could not run, each entered side names what it is missing.
+  const [slotsChecked, setSlotsChecked] = useState(false);
+  const slotMessages = (slot: SlotState, prefix: string): BirthFieldMessages => slot.source === 'form'
+    ? birthFieldMessages(locale, { date: `${prefix}-date`, place: `${prefix}-place` }, slot)
+    : {};
+  const messagesA = slotsChecked ? slotMessages(slotA, 'syn-a') : {};
+  const messagesB = slotsChecked ? slotMessages(slotB, 'syn-b') : {};
 
   const track = (name: string, props: Record<string, string> = {}) => {
     (window as unknown as {
@@ -1297,7 +1317,15 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     // Ref, not state: two effects in one commit share the same stale
     // `busy` closure, so state can't gate re-entry.
     if (compareInFlightRef.current) return;
-    if (!slotReady(slotA) || !slotReady(slotB) || sameSaved) return;
+    if (!slotReady(slotA) || !slotReady(slotB) || sameSaved) {
+      if (!e) return;
+      setSlotsChecked(true);
+      const firstMissing = (slot: SlotState, prefix: string) =>
+        slot.source === 'form' ? slotMessages(slot, prefix).first : `${prefix}-source`;
+      focusField(!slotReady(slotA) ? firstMissing(slotA, 'syn-a')
+        : !slotReady(slotB) ? firstMissing(slotB, 'syn-b') : 'syn-b-source');
+      return;
+    }
     const request = ++requestRef.current;
     returnTokenRef.current = null;
     setReturnBand('none');
@@ -1436,7 +1464,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
           }}
         />
       )}
-      <form class="calc__form shell" onSubmit={compare} aria-busy={busy}>
+      <form class="calc__form shell" onSubmit={compare} aria-busy={busy} noValidate>
         <div class="core calc__core">
           {/* Always mounted: role=status nodes inserted together with
               their text are routinely missed by VoiceOver — the region
@@ -1492,18 +1520,23 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
               fallbackLabel={t(locale, 'personA')}
               locale={locale}
               loadEngine={loadEngine}
+              messages={messagesA}
             />
-            <SlotForm slot={slotB} setSlot={(u) => setSlotB(u)} charts={charts} idPrefix="syn-b" fallbackLabel={t(locale, 'personB')} locale={locale} loadEngine={loadEngine} />
+            <SlotForm
+              slot={slotB} setSlot={(u) => setSlotB(u)} charts={charts} idPrefix="syn-b"
+              fallbackLabel={t(locale, 'personB')} locale={locale} loadEngine={loadEngine}
+              messages={messagesB} sourceDescribedBy={sameSaved ? 'syn-same-chart' : undefined}
+            />
           </div>
 
-          <button class="btn btn--primary calc__submit" type="submit" disabled={!canCompare}>
+          <button class="btn btn--primary calc__submit" type="submit" disabled={busy}>
             <span>{busy ? t(locale, 'comparing') : t(locale, 'compareCharts')}</span>
             <span class="orb">↗</span>
           </button>
           <p class="calc__privacy">{t(locale, 'privacyDevice')}</p>
           {locale === 'en' && <p class="calc__guide">Questions about these charts? <a href="/ask/" data-assistant-open>Ask Guide</a></p>}
           {sameSaved && (
-            <p class="field__help">{t(locale, 'sameChart')}</p>
+            <p id="syn-same-chart" class="field__help">{t(locale, 'sameChart')}</p>
           )}
           {charts.length < 2 && (
             <p class="field__help">

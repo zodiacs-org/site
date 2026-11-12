@@ -48,12 +48,14 @@ interface BirthDateFieldProps {
   charted?: boolean;
   onFocus?: () => unknown;
   help?: ComponentChildren;
+  /** The id of the element in `help` that describes the field. */
+  helpId?: string;
   error?: string;
 }
 
 /** The birth date field, with the calendar control once a date before 1924 is entered. */
 export function BirthDateField({
-  locale, id, date, city, onDateChange, calendar, onCalendarChange, charted, onFocus, help, error,
+  locale, id, date, city, onDateChange, calendar, onCalendarChange, charted, onFocus, help, helpId, error,
 }: BirthDateFieldProps) {
   const [Calendar, setCalendar] = useState<CalendarControl | null>(null);
   // The control asks for a text field while a date is typed as written.
@@ -71,7 +73,7 @@ export function BirthDateField({
         min="1800-01-01" max="2199-12-31" value={date}
         placeholder={textFormat ?? undefined}
         aria-invalid={error ? 'true' : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
+        aria-describedby={[error ? `${id}-error` : null, helpId].filter(Boolean).join(' ') || undefined}
         onFocus={onFocus}
         onInput={(e) => onDateChange((e.target as HTMLInputElement).value)}
       />
@@ -186,9 +188,10 @@ export function BirthFields({
         locale={locale}
         validationError={placeError}
         selectionHint={t(locale, 'placePickHint')}
+        describedBy={placeHelp !== undefined ? `${placeId}-help` : undefined}
         required
       />
-      {placeHelp !== undefined && <p class="field__help">{placeHelp}</p>}
+      {placeHelp !== undefined && <p id={`${placeId}-help`} class="field__help">{placeHelp}</p>}
     </div>,
   ];
 }

@@ -8,6 +8,7 @@ import { CheckOurMath, ResultOpening } from './ChartTrust';
  */
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { birthFieldMessages, focusField } from './birth-field-check';
 import type { MinimalBody } from '../lib/engine/synastry';
 import type { Chart } from '../lib/engine/types';
 import type { SavedChart } from '../lib/profile/schema';
@@ -266,9 +267,18 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
   const ready = slot.source === 'saved'
     ? charts.some((c) => c.id === slot.savedId)
     : slot.date !== '' && slot.city !== null;
+  // After a check that could not run, the entered fields name what is missing.
+  const [fieldsChecked, setFieldsChecked] = useState(false);
+  const fieldMessages = () => birthFieldMessages(locale, { date: 'trans-date', place: 'trans-place' }, slot);
+  const messages = fieldsChecked && slot.source === 'form' ? fieldMessages() : {};
 
   async function check(e?: Event) {
     e?.preventDefault();
+    if (e && !ready && mounted.current) {
+      setFieldsChecked(true);
+      focusField(slot.source === 'form' ? fieldMessages().first : 'trans-source');
+      return;
+    }
     if (!mounted.current || !ready || inFlight.current) return;
     inFlight.current = true;
     focusAfterComputeRef.current = e !== undefined;
@@ -385,7 +395,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
 
   return (
     <div class="calc">
-      <form class="calc__form shell" onSubmit={check} aria-busy={busy}>
+      <form class="calc__form shell" onSubmit={check} aria-busy={busy} noValidate>
         <div class="core calc__core">
           <div class="trans__grid">
             <div class="trans__side">
@@ -427,6 +437,8 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
                   onTimeKnownChange={(timeKnown) => changeSlot((s) => ({ ...s, timeKnown }))}
                   onCityChange={(city) => changeSlot((s) => ({ ...s, city }))}
                   onWarm={loadEngine}
+                  dateError={messages.dateError}
+                  placeError={messages.placeError}
                 />
               )}
             </div>
@@ -443,7 +455,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
             </div>
           </div>
 
-          <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy}>
+          <button class="btn btn--primary calc__submit" type="submit" disabled={busy}>
             <span>{busy ? t(locale, 'checking') : t(locale, 'checkTransits')}</span>
             <span class="orb">↗</span>
           </button>

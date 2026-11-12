@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
 import { BirthFields, birthDateForChart, type CalendarChoice } from './BirthFields';
+import { birthFieldMessages, focusField } from './birth-field-check';
 import type { City } from '../lib/geo/search';
 import { pairSlug } from '../lib/compat';
 import { decodeChartLink, NAME_MAX, type ShareChartInput } from '../lib/share';
@@ -135,12 +136,14 @@ function SignSelect({
   label,
   value,
   required = false,
+  error,
   onChange,
 }: {
   id: string;
   label: string;
   value: string;
   required?: boolean;
+  error?: string;
   onChange: (value: string) => void;
 }) {
   return (
@@ -150,11 +153,14 @@ function SignSelect({
         id={id}
         required={required}
         value={value}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
         onChange={(event) => onChange((event.currentTarget as HTMLSelectElement).value)}
       >
         <option value="">{required ? 'Choose a sign' : 'Not known'}</option>
         {SIGNS.map((sign) => <option key={sign.slug} value={sign.slug}>{sign.name}</option>)}
       </select>
+      {error && <p id={`${id}-error`} class="other-chart__error" role="alert">{error}</p>}
     </div>
   );
 }
@@ -208,8 +214,12 @@ export default function SomeoneElseChart() {
     [sun, moon, rising],
   );
 
+  // After an action that could not run, each field that stopped it says why.
+  const [checked, setChecked] = useState(false);
+
   useEffect(() => {
     setLinkError('');
+    setChecked(false);
   }, [mode]);
 
   useEffect(() => {
@@ -235,22 +245,53 @@ export default function SomeoneElseChart() {
     setCurrentMine({ kind: 'saved', id });
   }, [pendingProfileMineId, profile, profileReady]);
 
+  const permissionError = checked && !consent;
   const permission = (
-    <label class="other-chart__permission">
-      <input
-        type="checkbox"
-        checked={consent}
-        onChange={(event) => setConsent((event.currentTarget as HTMLInputElement).checked)}
-      />
-      <span>
-        <strong>I have their permission to use this information.</strong>
-        <small>Birth details are personal. Only enter or paste what this person chose to share with you.</small>
-      </span>
-    </label>
+    <>
+      <label class="other-chart__permission">
+        <input
+          id="other-permission"
+          type="checkbox"
+          checked={consent}
+          aria-required="true"
+          aria-invalid={permissionError ? 'true' : undefined}
+          aria-describedby={permissionError ? 'other-permission-error' : undefined}
+          onChange={(event) => setConsent((event.currentTarget as HTMLInputElement).checked)}
+        />
+        <span>
+          <strong>I have their permission to use this information.</strong>
+          <small>Birth details are personal. Only enter or paste what this person chose to share with you.</small>
+        </span>
+      </label>
+      {permissionError && (
+        <p id="other-permission-error" class="other-chart__error" role="alert">
+          Tick the box to confirm you have their permission.
+        </p>
+      )}
+    </>
   );
+
+  const detailMessages = () => birthFieldMessages('en', {
+    date: 'other-birth-date', time: 'other-birth-time', place: 'other-birth-place',
+  }, { date, time, timeKnown, requireTime: true, city }, {
+    dateRequired: 'Enter their birth date.',
+    timeRequired: 'Enter their birth time, or choose “I don’t know it”.',
+    place: 'Pick their birthplace from the list.',
+  });
+  const fieldMessages = checked ? detailMessages() : {};
+
+  /** Marks what stops an action and moves focus to the first of it; true when nothing does. */
+  function allowed(firstMissing: string | undefined): boolean {
+    const first = firstMissing ?? (consent ? undefined : 'other-permission');
+    if (!first) return true;
+    setChecked(true);
+    focusField(first);
+    return false;
+  }
 
   /** Their details for the handoff, with a date before 1924 read in its calendar first. */
   async function fullDetailsInput(): Promise<ShareChartInput | null> {
+    if (!allowed(detailMessages().first)) return null;
     if (!consent || !date || !city || (timeKnown && !time)) return null;
     const entry = await birthDateForChart('en', date, calendar);
     if ('error' in entry) {
@@ -287,11 +328,13 @@ export default function SomeoneElseChart() {
     go(compatibilityHandoffPath(input, comparisonMine));
   }
 
-  function validateSharedLink(event: Event) {
-    event.preventDefault();
+  function validateSharedLink(event?: Event) {
+    event?.preventDefault();
     const parsed = parseSharedChartUrl(sharedUrl, window.location.origin);
     setShared(parsed);
     setLinkError(parsed ? '' : 'Paste a complete Zodiacs birth-chart link with valid chart details or positions.');
+    if (!parsed) focusField('other-chart-link');
+    return parsed;
   }
 
   const sharedBigThree = shared?.kind === 'positions' ? bigThreeFromPositions(shared.chart) : null;
@@ -299,14 +342,17 @@ export default function SomeoneElseChart() {
   const compareHref = comparisonPath(ownSun, theirComparisonSun);
 
   function openSharedChart() {
-    if (!shared || !consent) return;
-    if (shared.kind === 'positions') {
-      go(`/birth-chart/#p=${shared.token}&subject=other`);
+    // A pasted link that was not checked yet is checked first.
+    const link = shared ?? validateSharedLink();
+    if (!link || !allowed(undefined)) return;
+    if (!consent) return;
+    if (link.kind === 'positions') {
+      go(`/birth-chart/#p=${link.token}&subject=other`);
       return;
     }
     const input = name.trim()
-      ? { ...shared.input, name: name.trim() }
-      : shared.input;
+      ? { ...link.input, name: name.trim() }
+      : link.input;
     go(`/birth-chart/#${chartHandoffFragment(input, {
       subjectMode: 'other',
       mine: comparisonMine,
@@ -315,6 +361,7 @@ export default function SomeoneElseChart() {
   }
 
   function compareSharedDetails() {
+    if (!allowed(undefined)) return;
     if (!shared || shared.kind !== 'details' || !consent) return;
     const input = name.trim()
       ? { ...shared.input, name: name.trim() }
@@ -323,6 +370,7 @@ export default function SomeoneElseChart() {
   }
 
   function openManualReading() {
+    if (!allowed(sun ? undefined : 'other-sun')) return;
     if (!consent || !sun) return;
     setManualReadOpen(true);
     requestAnimationFrame(() => manualReadHeading.current?.focus());
@@ -376,7 +424,7 @@ export default function SomeoneElseChart() {
       </section>
 
       {mode === 'details' && (
-        <form class="other-chart__panel shell" onSubmit={openFullChart} data-entry-mode="details">
+        <form class="other-chart__panel shell" onSubmit={openFullChart} data-entry-mode="details" noValidate>
           <div class="other-chart__panel-core core">
             <header>
               <span class="other-chart__step">Most complete</span>
@@ -396,7 +444,9 @@ export default function SomeoneElseChart() {
                 onDateChange={(value) => { setDate(value); setDateError(''); }}
                 calendar={calendar}
                 onCalendarChange={(value) => { setCalendar(value); setDateError(''); }}
-                dateError={dateError || undefined}
+                dateError={dateError || fieldMessages.dateError}
+                timeError={fieldMessages.timeError}
+                placeError={fieldMessages.placeError}
                 onTimeChange={setTime}
                 onTimeKnownChange={setTimeKnown}
                 onCityChange={setCity}
@@ -410,12 +460,13 @@ export default function SomeoneElseChart() {
                   id="other-house-system"
                   class="field__input"
                   value={houseSystem}
+                  aria-describedby="other-house-system-help"
                   onChange={(event) => setHouseSystem((event.currentTarget as HTMLSelectElement).value as 'whole' | 'placidus')}
                 >
                   <option value="whole">Whole sign (default)</option>
                   <option value="placidus">Placidus</option>
                 </select>
-                <p class="field__help">You can change this again on the chart.</p>
+                <p id="other-house-system-help" class="field__help">You can change this again on the chart.</p>
               </div>
             </div>
             {permission}
@@ -423,14 +474,12 @@ export default function SomeoneElseChart() {
               <button
                 class="btn btn--primary other-chart__primary"
                 type="submit"
-                disabled={!consent || !date || !city || (timeKnown && !time)}
               >
                 <span>Open their full chart</span><span class="orb" aria-hidden="true">→</span>
               </button>
               <button
                 class="btn btn--ghost"
                 type="button"
-                disabled={!consent || !date || !city || (timeKnown && !time)}
                 onClick={compareFullChart}
               >
                 <span>{comparisonMine ? 'Compare with mine' : 'Add my chart to compare'}</span>
@@ -452,7 +501,10 @@ export default function SomeoneElseChart() {
               <p>The Sun is enough for a quick pairing guide. Moon and Rising add context, but they cannot recreate a full birth chart.</p>
             </header>
             <div class="other-chart__select-grid">
-              <SignSelect id="other-sun" label="Their Sun sign" value={sun} required onChange={setSun} />
+              <SignSelect
+                id="other-sun" label="Their Sun sign" value={sun} required onChange={setSun}
+                error={checked && !sun ? 'Choose their Sun sign.' : undefined}
+              />
               <SignSelect id="other-moon" label="Their Moon sign (optional)" value={moon} onChange={setMoon} />
               <SignSelect id="other-rising" label="Their Rising sign (optional)" value={rising} onChange={setRising} />
             </div>
@@ -476,7 +528,6 @@ export default function SomeoneElseChart() {
               <button
                 class="btn btn--primary other-chart__primary"
                 type="button"
-                disabled={!consent || !sun}
                 onClick={openManualReading}
               >
                 <span>Read their chart</span>
@@ -485,8 +536,7 @@ export default function SomeoneElseChart() {
               <button
                 class="btn btn--ghost"
                 type="button"
-                disabled={!consent || !sun}
-                onClick={() => go(compareHref)}
+                onClick={() => { if (allowed(sun ? undefined : 'other-sun')) go(compareHref); }}
               >
                 <span>{ownSun ? 'Compare your Sun signs' : 'Open compatibility'}</span>
               </button>
@@ -544,7 +594,7 @@ export default function SomeoneElseChart() {
               <h2>Use the link they sent</h2>
               <p>Paste a Zodiacs birth-chart link. Full-details links and positions-only links both work.</p>
             </header>
-            <form class="other-chart__link-form" onSubmit={validateSharedLink}>
+            <form class="other-chart__link-form" onSubmit={validateSharedLink} noValidate>
               <label for="other-chart-link">Zodiacs chart link</label>
               <div>
                 <input
@@ -552,6 +602,8 @@ export default function SomeoneElseChart() {
                   type="url"
                   required
                   value={sharedUrl}
+                  aria-invalid={linkError ? 'true' : undefined}
+                  aria-describedby={linkError ? 'other-chart-link-error' : undefined}
                   onInput={(event) => {
                     setSharedUrl((event.currentTarget as HTMLInputElement).value);
                     setShared(null);
@@ -562,7 +614,7 @@ export default function SomeoneElseChart() {
                 <button class="btn btn--ghost" type="submit"><span>Check link</span></button>
               </div>
             </form>
-            {linkError && <p class="other-chart__error" role="alert">{linkError}</p>}
+            {linkError && <p id="other-chart-link-error" class="other-chart__error" role="alert">{linkError}</p>}
             {shared && (
               <div class="other-chart__link-result" role="status">
                 <span class="other-chart__valid" aria-hidden="true">✓</span>
@@ -590,15 +642,15 @@ export default function SomeoneElseChart() {
             )}
             {permission}
             <div class="other-chart__actions">
-              <button class="btn btn--primary" type="button" disabled={!shared || !consent} onClick={openSharedChart}>
+              <button class="btn btn--primary" type="button" onClick={openSharedChart}>
                 <span>Open their chart</span><span class="orb" aria-hidden="true">→</span>
               </button>
               {shared?.kind === 'details' ? (
-                <button class="btn btn--ghost" type="button" disabled={!consent} onClick={compareSharedDetails}>
+                <button class="btn btn--ghost" type="button" onClick={compareSharedDetails}>
                   <span>{comparisonMine ? 'Compare with mine' : 'Add my chart to compare'}</span>
                 </button>
               ) : sharedBigThree ? (
-                <button class="btn btn--ghost" type="button" disabled={!consent} onClick={() => go(compareHref)}>
+                <button class="btn btn--ghost" type="button" onClick={() => { if (allowed(undefined)) go(compareHref); }}>
                   <span>{ownSun ? 'Read your Sun-sign pairing' : 'Open compatibility'}</span>
                 </button>
               ) : null}

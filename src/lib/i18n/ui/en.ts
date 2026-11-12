@@ -106,6 +106,8 @@ const en = {
     birthDateRequired: 'Enter your birth date.',
     birthDateRange: 'Choose a birth date from 1800 through 2199.',
     birthTimeRequired: 'Enter your birth time.',
+    dateRequired: 'Enter a date.',
+    dateRange: 'Choose a date from 1800 through 2199.',
     houseSystem: 'House system',
     wholeSignDefault: 'Whole sign (default)',
     placidus: 'Placidus',

@@ -95,6 +95,13 @@ const returned = () => ({ chart: { input: { utc: new Date('2026-03-20T12:00:00Z'
 const modules = () => [{ computeLunarReturn: harness.compute, prepareLocalTime: async () => {} }, { LunarReturnResult: Result }, { StaticWheel: () => null }];
 const fields = () => nodes(render(lunar)).find((node) => node.type === BirthFields)!.props;
 const fill = () => { fields().onDateChange('1990-02-01'); fields().onTimeChange('12:00'); fields().onCityChange(city); };
+/** Records the ids the form moves focus to (runs the next frame at once). */
+const trackFocus = () => {
+  const focused: string[] = [];
+  vi.stubGlobal('requestAnimationFrame', (callback: () => void) => { callback(); return 0; });
+  vi.stubGlobal('document', { getElementById: (id: string) => ({ focus: () => focused.push(id) }) });
+  return focused;
+};
 const resultNode = () => nodes(render(lunar)).find((node) => node.type === Result);
 const savedChart = () => ({ id: 'private-id', name: 'Private name', birth: { date: '1990-02-01', time: '12:00', timeKnown: true, place: city }, summary: { houseSystem: 'whole', engineVersion: 'old', bodies: [{ body: 'Moon', lon: 999 }] } });
 beforeEach(() => { harness.compute.mockReturnValue(returned()); harness.lunarImport.mockResolvedValue(modules()); });
@@ -133,17 +140,46 @@ describe('lunar calculator reference and source ownership', () => {
   ])('blocks incomplete saved birth input %j and offers manual entry', async (invalid) => {
     harness.profile.charts = [{ ...savedChart(), birth: { ...savedChart().birth, ...invalid } }]; render(lunar);
     const view = nodes(render(lunar));
-    expect(view.find((n) => n.props.type === 'submit')!.props.disabled).toBe(true);
+    // The button stays reachable; pressing it moves focus to the note that says what is missing.
+    expect(view.find((n) => n.props.type === 'submit')!.props.disabled).toBe(false);
     expect(view.some((n) => n.props['data-lr-incomplete'] !== undefined)).toBe(true);
+    expect(view.find((n) => n.props.id === 'lr-incomplete')!.props.tabIndex).toBe(-1);
+    const focused = trackFocus();
     await submit(lunar); expect(harness.compute).not.toHaveBeenCalled();
+    expect(focused).toEqual(['lr-incomplete']);
     view.find((n) => n.type === 'button' && n.props.children === 'Enter complete birth details')!.props.onClick();
     expect(fields()).toBeDefined();
   });
   it('blocks unknown manual time and removes stale result/actions', async () => {
     fill(); await submit(lunar); expect(resultNode()).toBeDefined();
     fields().onTimeKnownChange(false); expect(resultNode()).toBeUndefined();
+    const focused = trackFocus();
     await submit(lunar); expect(harness.compute).toHaveBeenCalledOnce();
-    expect(nodes(render(lunar)).find((n) => n.props.type === 'submit')!.props.disabled).toBe(true);
+    expect(focused).toEqual(['lr-incomplete']);
+  });
+  it('names each missing manual field and focuses the first one instead of disabling the button', async () => {
+    expect(nodes(render(lunar)).find((n) => n.props.type === 'submit')!.props.disabled).toBe(false);
+    expect(fields().dateError).toBeUndefined();
+    const focused = trackFocus();
+    await submit(lunar);
+    expect(harness.compute).not.toHaveBeenCalled();
+    expect(focused).toEqual(['lr-date']);
+    expect(fields()).toMatchObject({
+      dateError: 'Enter your birth date.', timeError: 'Enter your birth time.', placeError: 'Pick your birthplace from the list.',
+    });
+    fields().onDateChange('2000-01-01');
+    expect(fields().dateError).toBeUndefined();
+    expect(fields().timeError).toBe('Enter your birth time.');
+  });
+  it('names a missing return location when casting for a different place', async () => {
+    fill(); render(lunar);
+    nodes(render(lunar)).find((n) => n.type === 'input' && n.props.type === 'checkbox')!.props.onChange({ currentTarget: { checked: true } });
+    const focused = trackFocus();
+    await submit(lunar);
+    expect(harness.compute).not.toHaveBeenCalled();
+    expect(focused).toEqual(['lr-cast-place']);
+    expect(nodes(render(lunar)).find((n) => n.type === PlaceSearch && n.props.id === 'lr-cast-place')!.props.validationError)
+      .toBe('Pick the return location from the list.');
   });
   it('invalidates relocation immediately and gives the recast result its own lifetime', async () => {
     fill(); await submit(lunar); const key = resultNode()!.key;

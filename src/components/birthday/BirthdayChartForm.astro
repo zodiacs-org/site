@@ -42,7 +42,7 @@ const dd = String(day).padStart(2, '0');
       </div>
       <div class="bday-form__field">
         <label class="bday-form__label" for="bday-year">Year</label>
-        <input class="bday-form__input" id="bday-year" inputmode="numeric" autocomplete="bday-year" maxlength="4" placeholder="e.g. 1994" aria-describedby="bday-form-error" />
+        <input class="bday-form__input" id="bday-year" inputmode="numeric" autocomplete="bday-year" maxlength="4" placeholder="e.g. 1994" aria-required="true" aria-describedby="bday-form-error" />
       </div>
     </div>
     <div class="bday-form__field">
@@ -70,6 +70,8 @@ const dd = String(day).padStart(2, '0');
     var say = function (message) {
       error.textContent = message;
       error.hidden = !message;
+      if (message) year.setAttribute('aria-invalid', 'true');
+      else year.removeAttribute('aria-invalid');
       if (message) year.focus();
     };
     unknown.addEventListener('change', function () {

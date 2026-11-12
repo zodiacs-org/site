@@ -30,7 +30,8 @@ import type { YearSkyNatal, YearSkyScan } from '../lib/year-sky/scan';
 import type { YearMoment } from '../lib/year-sky/types';
 import type { PreparedYearCard, YearCardFormat } from '../lib/year-sky/card';
 import PlanetGlyph from '../components/PlanetGlyph';
-import SharingBirthForm from './SharingBirthForm';
+import SharingBirthForm, { entryMessages } from './SharingBirthForm';
+import { focusField } from './birth-field-check';
 import CalculationReload, { calculationError } from './CalculationReload';
 
 const loadMoments = createModuleLoader(() => import('../lib/year-sky/moments'));
@@ -87,6 +88,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
   const [entry, setEntry] = useState(emptyEntry(27));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [entryChecked, setEntryChecked] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const [cards, setCards] = useState<Record<YearCardFormat, PreparedYearCard> | null>(null);
   const [previews, setPreviews] = useState<Partial<Record<YearCardFormat, string>>>({});
@@ -141,6 +143,13 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
     clear();
     const run = generation.current;
     const fromSaved = !entering && chosen ? chosen : null;
+    // Entered details are checked field by field first: each gap is named on its field.
+    const missing = fromSaved ? undefined : entryMessages(entry, locale).first;
+    if (missing) {
+      setEntryChecked(true);
+      focusField(missing);
+      return;
+    }
     setBusy(true);
     try {
       let natal: YearSkyNatal;
@@ -224,7 +233,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
   const byQuarter = (moments: YearMoment[]) => QUARTERS.map((quarter) => moments.filter((moment) => quarterOf(moment.at) === quarter));
 
   return <div class="ys">
-    <form class="ys-chooser" onSubmit={read} aria-busy={busy} data-year-sky-chooser>
+    <form class="ys-chooser" onSubmit={read} aria-busy={busy} data-year-sky-chooser noValidate>
       <h2 class="ys-chooser__title">{w.chooserTitle}</h2>
       {!mounted ? null : !entering && charts.length > 0 ? <>
         <p class="ys-chooser__lede">{w.savedLede(charts.length > 1 ? null : chosen?.name ?? null)} <button type="button" class="ys-chooser__switch" onClick={() => { clear(); setEntering(true); }}>{w.enterOther}</button></p>
@@ -241,7 +250,7 @@ export default function YearSky({ locale = 'en', year, eclipses, ingresses, retr
           <button class="btn btn--primary" type="button" onClick={() => setEntering(true)} data-year-sky-enter><span>{w.enterDetails}</span><span class="orb">↗</span></button>
         </div>
       </> : <>
-        <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(patch) => { clear(); setEntry((current) => ({ ...current, ...patch })); }} />
+        <SharingBirthForm locale={locale} entry={entry} warm={engine} checked={entryChecked} onChange={(patch) => { clear(); setEntry((current) => ({ ...current, ...patch })); }} />
         <div class="ys-chooser__actions">
           <button class="btn btn--primary" disabled={busy} data-year-sky-read><span>{busy ? w.reading : w.readEntered}</span><span class="orb">↗</span></button>
           {busy && <button class="btn btn--ghost" type="button" onClick={clear}>{w.cancel}</button>}

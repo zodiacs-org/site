@@ -38,6 +38,8 @@ import {
 const UNSUPPORTED_LETTERS_MESSAGE =
   'This name uses letters outside A to Z once accents are removed. The Pythagorean table only covers the Latin alphabet.';
 const INVALID_DATE_MESSAGE = 'That date is not a real calendar date.';
+const DATE_REQUIRED_MESSAGE = 'Enter your birth date.';
+const DATE_RANGE_MESSAGE = 'Choose a birth date from 1800 through 2199.';
 const GENERIC_MESSAGE = 'The numbers could not be computed. Check the date and the name and try again.';
 const NAME_EMPTIED_NOTE =
   'Nothing was left of that name once titles, suffixes, and anything that is not a letter were removed, so these are the date numbers only.';
@@ -250,9 +252,22 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
   const errorRef = useRef<HTMLParagraphElement>(null);
   const focusAfterComputeRef = useRef(false);
 
+  // After a submit without a usable date, the date field says what it needs.
+  const [dateChecked, setDateChecked] = useState(false);
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const dateProblem = () => date === '' ? DATE_REQUIRED_MESSAGE
+    : dateInputRef.current?.validity?.valid === false ? DATE_RANGE_MESSAGE : '';
+  const dateError = dateChecked ? dateProblem() : '';
+  // A date the calculation could not read is marked on the field as well.
+  const dateInvalid = Boolean(dateError) || error === INVALID_DATE_MESSAGE;
+
   function submit(e: Event) {
     e.preventDefault();
-    if (!date) return;
+    if (dateProblem()) {
+      setDateChecked(true);
+      requestAnimationFrame(() => dateInputRef.current?.focus());
+      return;
+    }
     focusAfterComputeRef.current = true;
     setError('');
     setAttempt((n) => n + 1);
@@ -316,7 +331,7 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
 
   return (
     <div class="calc num">
-      <form class="calc__form shell" onSubmit={submit}>
+      <form class="calc__form shell" onSubmit={submit} noValidate>
         <div class="core calc__core">
           <div class="calc__fields">
             <div class="field">
@@ -335,20 +350,27 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
             <div class="field">
               <label class="field__label" for="num-date">Birth date</label>
               <input
-                id="num-date" class="field__input" type="date" required
-                min="1800-01-01" max="2199-12-31" value={date} aria-describedby="num-date-help"
+                id="num-date" ref={dateInputRef} class="field__input" type="date" required
+                min="1800-01-01" max="2199-12-31" value={date}
+                aria-invalid={dateInvalid ? 'true' : undefined}
+                aria-describedby={[
+                  dateError ? 'num-date-error' : null,
+                  error === INVALID_DATE_MESSAGE ? 'num-error' : null,
+                  'num-date-help',
+                ].filter(Boolean).join(' ')}
                 onInput={(e) => setDate((e.target as HTMLInputElement).value)}
               />
+              {dateError && <p id="num-date-error" class="field__error" role="alert">{dateError}</p>}
               <p class="field__help" id="num-date-help">Month, day, and year. No time or place needed.</p>
             </div>
           </div>
 
-          <button class="btn btn--primary calc__submit" type="submit" disabled={!date}>
+          <button class="btn btn--primary calc__submit" type="submit">
             <span>Find my numbers</span>
             <span class="orb">↗</span>
           </button>
           <p class="calc__privacy">Private by default. Your name and birth date stay in this browser.</p>
-          {error && <p key={attempt} class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
+          {error && <p key={attempt} id="num-error" class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
         </div>
       </form>
 

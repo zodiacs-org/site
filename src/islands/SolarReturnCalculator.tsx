@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { ComponentType } from 'preact';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { birthFieldMessages, focusField } from './birth-field-check';
 import PlaceSearch from './PlaceSearch';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
@@ -124,16 +125,37 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
   const manualReady = date !== '' && city !== null && (!timeKnown || time !== '');
   const ready = source === 'saved' ? saved !== null : manualReady;
   const effectiveTimeKnown = saved ? saved.birth.timeKnown && Boolean(saved.birth.time) : timeKnown;
+  const needsCastCity = differentPlace && effectiveTimeKnown && !(saved && !saved.birth.place) && !castCity;
+  // After a press that could not calculate, each field names what it is missing.
+  const [fieldsChecked, setFieldsChecked] = useState(false);
+  const fieldMessages = () => birthFieldMessages('en', { date: 'sr-date', time: 'sr-time', place: 'sr-place' }, {
+    date, time, timeKnown, requireTime: true, city,
+  });
+  const messages = fieldsChecked && source === 'manual' ? fieldMessages() : {};
+  const castError = fieldsChecked && needsCastCity ? 'Pick the return location from the list.' : undefined;
+  const yearValue = Number(customYear);
+  const yearProblem = yearMode === 'custom' && !(Number.isInteger(yearValue) && yearValue >= 1800 && yearValue <= 2199);
+  const yearError = fieldsChecked && yearProblem ? 'Enter a return year from 1800 through 2199.' : undefined;
 
   useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
 
   async function calculate(event: Event) {
     event.preventDefault();
-    if (!mounted.current || !ready || inFlight.current) return;
+    if (!mounted.current || inFlight.current) return;
+    // Whatever stops the calculation is named on its field, and focus goes there.
+    const blocked = (field: string | undefined) => {
+      setFieldsChecked(true);
+      focusField(field);
+    };
+    if (!ready) return blocked(source === 'manual' ? fieldMessages().first : 'sr-source');
     const selected = source === 'saved' ? saved : null;
     const birthplace = selected ? selected.birth.place : city;
     const known = selected ? selected.birth.timeKnown && Boolean(selected.birth.time) : timeKnown;
-    if (differentPlace && known && birthplace && !castCity) return;
+    const chosenYear = Number(customYear);
+    if (yearMode === 'custom' && !(Number.isInteger(chosenYear) && chosenYear >= 1800 && chosenYear <= 2199)) {
+      return blocked('sr-custom-year');
+    }
+    if (differentPlace && known && birthplace && !castCity) return blocked('sr-cast-place');
     const input = {
       birthDate: selected?.birth.date ?? date,
       birthTime: selected?.birth.time ?? (time || null),
@@ -193,7 +215,7 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
 
   return (
     <div class="calc" data-solar-return-calculator>
-      <form class="calc__form shell" onSubmit={calculate} aria-busy={busy}>
+      <form class="calc__form shell" onSubmit={calculate} aria-busy={busy} noValidate>
         <div class="core calc__core">
           {profile.charts.length > 0 && (
             <div class="field sr-form__source">
@@ -226,6 +248,9 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
                 requireKnownTime
                 timeHelp="Unknown time uses the sky at 12:00 UTC on the birth date and leaves out houses."
                 placeHelp="A birthplace is required so the birth date can be resolved in its timezone."
+                dateError={messages.dateError}
+                timeError={messages.timeError}
+                placeError={messages.placeError}
               />
             </div>
           )}
@@ -239,7 +264,12 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
                 <option value="current">Current return</option>
                 <option value="custom">Choose a year</option>
               </select>
-              {yearMode === 'custom' && <input aria-label="Custom return year" class="field__input" type="number" min="1800" max="2199" required value={customYear} onInput={(event) => { invalidateResult(); setCustomYear((event.target as HTMLInputElement).value); }} />}
+              {yearMode === 'custom' && <input
+                id="sr-custom-year" aria-label="Custom return year" class="field__input" type="number" min="1800" max="2199" required value={customYear}
+                aria-invalid={yearError ? 'true' : undefined} aria-describedby={yearError ? 'sr-custom-year-error' : undefined}
+                onInput={(event) => { invalidateResult(); setCustomYear((event.target as HTMLInputElement).value); }}
+              />}
+              {yearError && <p id="sr-custom-year-error" class="field__error" role="alert">{yearError}</p>}
             </div>
 
             {effectiveTimeKnown && !(saved && !saved.birth.place) && (
@@ -250,13 +280,13 @@ export default function SolarReturnCalculator({ themes = false, yearScoreLink = 
                   setDifferentPlace(checked);
                   setCastCity(null);
                 }} />Cast for a different place</label>
-                {differentPlace && <><label class="field__label" for="sr-cast-place">Return location</label><PlaceSearch id="sr-cast-place" selected={castCity} onSelect={(value) => { invalidateResult(); setCastCity(value); }} locale="en" /></>}
+                {differentPlace && <><label class="field__label" for="sr-cast-place">Return location</label><PlaceSearch id="sr-cast-place" selected={castCity} onSelect={(value) => { invalidateResult(); setCastCity(value); }} locale="en" required validationError={castError} /></>}
                 <p class="field__help">Defaults to the birthplace. Relocation changes angles and houses, not planets.</p>
               </div>
             )}
           </div>
 
-          <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy || (differentPlace && effectiveTimeKnown && !(saved && !saved.birth.place) && !castCity)}><span>{busy ? 'Computing…' : 'Find my solar return'}</span><span class="orb" aria-hidden="true">↗</span></button>
+          <button class="btn btn--primary calc__submit" type="submit" disabled={busy}><span>{busy ? 'Computing…' : 'Find my solar return'}</span><span class="orb" aria-hidden="true">↗</span></button>
           <p class="calc__privacy"><strong>Private by default.</strong> The chart is calculated on this device; nothing is uploaded.</p>
           {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
           <CalculationReload error={error} locale="en" />

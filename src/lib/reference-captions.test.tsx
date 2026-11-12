@@ -48,9 +48,9 @@ describe('reference caption output contracts', () => {
     expect(shareCardTimeNotes(locale, { referenceTime: false })).toEqual([]);
   });
 
-  it.each(locales)('%s preserves 453 keys with complete caption retirement, two reference-Sun additions, and the account-sync save-unavailable message', locale => {
+  it.each(locales)('%s preserves 455 keys with complete caption retirement, two reference-Sun additions, and the account-sync save-unavailable message', locale => {
     const catalog = catalogs[locale];
-    expect(Object.keys(catalog)).toHaveLength(453);
+    expect(Object.keys(catalog)).toHaveLength(455);
     expect(catalog.profileSaveUnavailable).toBeTruthy();
     expect(catalog.referenceChartName).toBeTruthy();
     expect(catalog.unknownTimeSunReference).toBeTruthy();

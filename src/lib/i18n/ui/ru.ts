@@ -160,6 +160,8 @@ const ru = {
   birthDateRequired: 'Укажите дату рождения.',
   birthDateRange: 'Выберите дату рождения с 1800 по 2199 год.',
   birthTimeRequired: 'Укажите время рождения.',
+  dateRequired: 'Укажите дату.',
+  dateRange: 'Выберите дату с 1800 по 2199 год.',
   houseSystem: 'Система домов',
   wholeSignDefault: 'Целые знаки (по умолчанию)',
   placidus: 'Плацидус',

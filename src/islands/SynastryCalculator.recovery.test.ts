@@ -169,6 +169,43 @@ beforeEach(() => {
 });
 afterEach(() => { unmount(); vi.unstubAllGlobals(); });
 
+describe('compatibility form names and errors', () => {
+  const slot = (idPrefix: string) => view().find((node) => node.props.idPrefix === idPrefix)!;
+  const expand = (node: VNode<Record<string, any>>) => nodes((node.type as Function)(node.props));
+
+  it('names each side as a group so its fields say whose details they hold', () => {
+    for (const [idPrefix, label] of [['syn-a', 'Person A'], ['syn-b', 'Person B']]) {
+      const [group, ...inside] = expand(slot(idPrefix));
+      expect(group.props.role).toBe('group');
+      expect(group.props['aria-labelledby']).toBe(`${idPrefix}-label`);
+      expect(inside.find((node) => node.props.id === `${idPrefix}-label`)!.props.children).toBe(label);
+    }
+  });
+
+  it('keeps Compare reachable and names what each side is missing, focusing the first gap', async () => {
+    const focused: string[] = [];
+    vi.stubGlobal('requestAnimationFrame', (callback: () => void) => { callback(); return 0; });
+    vi.stubGlobal('document', Object.assign(new EventTarget(), {
+      getElementById: (id: string) => ({ focus: () => focused.push(id) }),
+    }));
+    expect(view().find((node) => node.props.type === 'submit')!.props.disabled).toBe(false);
+    expect(slot('syn-a').props.messages).toEqual({});
+    await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
+    expect(focused).toEqual(['syn-a-date']);
+    expect(harness.summarize).not.toHaveBeenCalled();
+    for (const idPrefix of ['syn-a', 'syn-b']) {
+      expect(slot(idPrefix).props.messages).toMatchObject({
+        dateError: 'Enter your birth date.', placeError: 'Pick your birthplace from the list.',
+      });
+    }
+    // Person A complete: the next press goes to Person B's first gap.
+    slot('syn-a').props.setSlot((prior: object) => ({ ...prior, source: 'positions', positions: { chart, label: 'A' } }));
+    expect(slot('syn-a').props.messages).toEqual({});
+    await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
+    expect(focused).toEqual(['syn-a-date', 'syn-b-date']);
+  });
+});
+
 describe('compatibility optional sharing and invitation recovery', () => {
   it('keeps independent invitation controls when SendBack fails, then retries only the UI', async () => {
     window.location.hash = `#invite=${handle}`;

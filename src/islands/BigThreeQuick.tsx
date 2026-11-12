@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
+import { birthFieldMessages, focusField } from './birth-field-check';
 import type { City } from '../lib/geo/search';
 import { useEngine } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
@@ -72,6 +73,12 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   const generation = useRef(0);
   const cardAttempt = useRef(0);
   const cardSource = useRef<{ chart: Chart; run: number } | null>(null);
+  // After a submit that could not run, each missing field says what it needs.
+  const [fieldsChecked, setFieldsChecked] = useState(false);
+  const fieldMessages = () => birthFieldMessages(locale, { date: 'bt-date', time: 'bt-time', place: 'bt-place' }, {
+    date, time, timeKnown: true, requireTime: true, city,
+  });
+  const messages = fieldsChecked ? fieldMessages() : {};
 
   useEffect(() => {
     // Warm the same index without placing the search module in the form's
@@ -113,10 +120,17 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
 
   async function compute(event: Event): Promise<void> {
     event.preventDefault();
-    if (!date || !time || !city) {
-      setError(s(locale, 'required'));
-      return;
+    // A missing field, or a date outside the field's range, is named on its field.
+    if (!date || !time || !city || (event.currentTarget as HTMLFormElement | null)?.checkValidity?.() === false) {
+      const missing = fieldMessages().first;
+      if (missing) {
+        setFieldsChecked(true);
+        setError('');
+        focusField(missing);
+        return;
+      }
     }
+    if (!date || !time || !city) return;
     const run = ++generation.current;
     setBusy(true);
     setError('');
@@ -255,6 +269,9 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
           showUnknownTime={false}
           requireKnownTime
           timeHelp={<a href={localizePath(locale, '/birth-chart/')}>{s(locale, 'bigHelp')}</a>}
+          dateError={messages.dateError}
+          timeError={messages.timeError}
+          placeError={messages.placeError}
         />
         <div class="big-three__actions">
           <button type="submit" class="btn btn--primary" disabled={busy} data-big-three-submit>

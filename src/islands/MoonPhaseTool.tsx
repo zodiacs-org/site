@@ -7,6 +7,7 @@ import { CheckOurMath } from './ChartTrust';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import EvidenceDisclosure from './EvidenceDisclosure';
 import PlaceSearch from './PlaceSearch';
+import { dateMessage, focusField } from './birth-field-check';
 import SignChip from './SignChip';
 import {
   moonIllumination, moonLongitude, moonPhaseAngle, moonPhaseName, moonPhaseNameFromAngle,
@@ -119,9 +120,18 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
     setBusy(false);
   }
 
+  // After a lookup that could not run, the date field says what it needs.
+  const [dateChecked, setDateChecked] = useState(false);
+  const dateError = dateChecked ? dateMessage(locale, 'mp-date', date) : undefined;
+
   async function lookup(e: Event) {
     e.preventDefault();
-    if (!date) return;
+    // An empty date, or one outside the field's range, is named on the field.
+    if (!date || (e.currentTarget as HTMLFormElement | null)?.checkValidity?.() === false) {
+      setDateChecked(true);
+      focusField('mp-date');
+      return;
+    }
     const revision = ++lookupRevisionRef.current;
     const localDateReferenceFailure = new Error('Could not establish a calculation time within the local date.');
     const isCurrent = () => revision === lookupRevisionRef.current;
@@ -219,7 +229,7 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
         </div>
       </div>
 
-      <form class="calc__form shell" onSubmit={lookup} aria-busy={busy}>
+      <form class="calc__form shell" onSubmit={lookup} aria-busy={busy} noValidate>
         <div class="core calc__core">
           <div class="calc__fields">
             <div class="field">
@@ -227,13 +237,16 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
               <input
                 id="mp-date" class="field__input" type="date" required
                 min="1800-01-01" max="2199-12-31" value={date}
+                aria-invalid={dateError ? 'true' : undefined}
+                aria-describedby={dateError ? 'mp-date-error mp-date-help' : 'mp-date-help'}
                 onFocus={() => loadEngine()}
                 onInput={(e) => {
                   invalidateLookup();
                   setDate((e.target as HTMLInputElement).value);
                 }}
               />
-              <p class="field__help">{t(locale, 'dateHelp')}</p>
+              {dateError && <p id="mp-date-error" class="field__error" role="alert">{dateError}</p>}
+              <p id="mp-date-help" class="field__help">{t(locale, 'dateHelp')}</p>
             </div>
             <div class="field">
               <label class="field__label" for="mp-time">{t(locale, 'time')} <span class="field__optional">{t(locale, 'optional')}</span></label>
@@ -255,7 +268,7 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
             </div>
           </div>
 
-          <button class="btn btn--primary calc__submit" type="submit" disabled={!date || busy}>
+          <button class="btn btn--primary calc__submit" type="submit" disabled={busy}>
             <span>{busy ? t(locale, 'computing') : t(locale, 'findThatMoon')}</span>
             <span class="orb">↗</span>
           </button>

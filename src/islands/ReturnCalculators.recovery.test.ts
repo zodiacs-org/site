@@ -450,7 +450,12 @@ describe('solar-return result ownership', () => {
     render(solar);
     nodes(render(solar)).find((node) => node.type === 'input' && node.props.type === 'checkbox')!
       .props.onChange({ target: { checked: true } });
-    expect(nodes(render(solar)).find((node) => node.props.type === 'submit')!.props.disabled).toBe(true);
+    // The button stays reachable; pressing it names the missing return location instead.
+    expect(nodes(render(solar)).find((node) => node.props.type === 'submit')!.props.disabled).toBe(false);
+    await submit(solar);
+    expect(harness.compute).not.toHaveBeenCalled();
+    expect(nodes(render(solar)).find((node) => node.type === PlaceSearch)!.props.validationError)
+      .toBe('Pick the return location from the list.');
     harness.profile = { ...harness.profile, charts: [{ ...savedChart(), birth: { ...savedChart().birth, time: null, timeKnown: false } }] };
     window.dispatchEvent(new Event('zodiacs:profile'));
     expect(nodes(render(solar)).some((node) => node.type === PlaceSearch)).toBe(false);
