@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import dailyPublication from '../src/data/daily-publication.json';
 import dailyManifest from '../src/data/daily-publication-manifest.json';
 import horoscopeProgram from '../src/data/horoscope-program.json';
+import aspectDayProgram from './fixtures/horoscope-program.aspect-day.json';
 import constitution from '../src/lib/editorial-policy/constitution.v1.json';
 import {
   independentWordCount,
@@ -182,7 +183,14 @@ describe('independent copy verifier', () => {
   });
 
   it('independently reconciles prose claims to phase, sign, aspect, house, and event receipts', () => {
-    const tampered = structuredClone(horoscopeProgram) as unknown as {
+    // The live sky may publish a day with no exact aspect (2026-08-03 shipped
+    // none), so tampering runs against the pinned 2026-08-02 program instead
+    // of the committed day. The untampered fixture must verify clean so every
+    // failure below is caused by the tampering alone; refresh the fixture from
+    // any newer day whose prose cites a sky-event aspect receipt.
+    expect(verifyHoroscopeProgramCopy(aspectDayProgram)).toEqual([]);
+
+    const tampered = structuredClone(aspectDayProgram) as unknown as {
       evidence: Array<Record<string, unknown>>;
       signs: Array<{
         readings: Record<string, {
@@ -230,10 +238,16 @@ describe('independent copy verifier', () => {
     derived.house = (Number(derived.house) % 12) + 1;
     skyEvent.sign = skyEvent.sign === 'aries' ? 'taurus' : 'aries';
 
-    const ids = ruleIds(verifyHoroscopeProgramCopy(tampered));
+    const failures = verifyHoroscopeProgramCopy(tampered);
+    const ids = ruleIds(failures);
     expect(ids).toContain('COPY-EVIDENCE-CLAIM');
     expect(ids).toContain('COPY-EVIDENCE-THEME');
     expect(ids).toContain('COPY-EVIDENCE-DERIVATION');
+    // The moon and sign tampers also raise COPY-EVIDENCE-CLAIM, so the aspect
+    // tamper must be pinned to its own failure or it could regress unnoticed.
+    expect(failures.some((violation) => (
+      violation.ruleId === 'COPY-EVIDENCE-CLAIM' && violation.message.includes('aspect')
+    ))).toBe(true);
   });
 
   it('has no renderer, builder, or generator-validator dependency', () => {
