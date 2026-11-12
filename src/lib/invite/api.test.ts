@@ -11,6 +11,9 @@ import sessionHandler from './routes/invite-session';
 import sweepHandler from './routes/invite-sweep';
 import invitesHandler from './routes/invites';
 import { compatibilityInviteTokenHash } from './token';
+import { Buffer } from 'node:buffer';
+import { encryptAccountPrivatePayload } from '../account-api/encryption';
+import { serializeAccountPrivateChartPayload } from '../account-api/sync-wire';
 
 const ORIGINAL_ENV = { ...process.env };
 const OWNER_ID = '110e8400-e29b-41d4-a716-446655440000';
@@ -31,7 +34,50 @@ function configure(enabled = true): void {
     COMPAT_INVITE_TEST_USER_IDS: OWNER_ID,
     COMPAT_INVITE_SWEEP_SECRET: 's'.repeat(32),
     COMPAT_INVITE_RECIPIENT_HASH_SECRET: 'r'.repeat(32),
+    ACCOUNT_SYNC_V2_ENCRYPTION_KEYS: JSON.stringify({ 2: Buffer.alloc(32, 0x31).toString('base64') }),
+    ACCOUNT_SYNC_V2_ACTIVE_KEY_VERSION: '2',
   });
+}
+
+/** The owner's encrypted v2 self chart, as account_v2_owner_self_chart returns it. */
+function ownerSelfChart(): Record<string, unknown> {
+  const envelope = encryptAccountPrivatePayload(serializeAccountPrivateChartPayload({
+    label: 'Private chart',
+    birth: {
+      date: '1990-01-01',
+      time: '08:45',
+      timeKnown: true,
+      place: {
+        name: 'Private place', admin1: 'Region', country: 'Thailand',
+        lat: 13.7563, lon: 100.5018, tz: 'Asia/Bangkok',
+      },
+    },
+    derived: {
+      positions: {
+        b: POSITION_BODY_ORDER.map((_, index) => 15 + index * 27),
+        a: [12, 101],
+        h: 'w',
+        v: 'zodiacs-1.0.0',
+      },
+      timeKnown: true,
+      sunSign: 'aries',
+      engineVersion: 'zodiacs-1.0.0',
+      houseSystem: 'whole',
+    },
+  }), { userId: OWNER_ID, chartId: CHART_ID, revision: 2 }, process.env);
+  return {
+    outcome: 'ready',
+    chart_id: CHART_ID,
+    revision: 2,
+    encrypted_source: {
+      ciphertext: envelope.ciphertext.toString('base64'),
+      nonce: envelope.nonce.toString('base64'),
+      format: 'opaque_v1',
+      key_scope: 'service',
+      key_version: 2,
+      wrapped_key: envelope.wrappedKey.toString('base64'),
+    },
+  };
 }
 
 afterEach(() => {
@@ -61,20 +107,6 @@ function json(body: unknown, status = 200): Response {
     status,
     headers: { 'content-type': 'application/json' },
   });
-}
-
-function chartPayload() {
-  return {
-    name: 'Private chart',
-    birth: { date: '1907-07-06', time: '08:30', timeKnown: true, place: { name: 'Private' } },
-    summary: {
-      engineVersion: 'zodiacs-1.0.0',
-      utcISO: '1907-07-06T08:30:00.000Z',
-      houseSystem: 'whole',
-      bodies: POSITION_BODY_ORDER.map((body, index) => ({ body, lon: index * 27 })),
-      angles: { asc: 12, mc: 101 },
-    },
-  };
 }
 
 describe('Phase 4 invite API boundary', () => {
@@ -147,7 +179,7 @@ describe('Phase 4 invite API boundary', () => {
       if (url.endsWith('/auth/v1/user')) {
         return json({ id: OWNER_ID, email: 'owner@example.com' });
       }
-      if (url.includes('/rest/v1/charts?')) return json([]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_owner_self_chart')) return json({ outcome: 'not_found' });
       throw new Error(`Unexpected request: ${url}`);
     });
     vi.stubGlobal('fetch', fetcher);
@@ -160,7 +192,7 @@ describe('Phase 4 invite API boundary', () => {
     expect(response.statusCode).toBe(404);
     expect(JSON.parse(response.body)).toEqual({ error: 'chart_not_found' });
     expect(fetcher).toHaveBeenCalledTimes(2);
-    expect(String(fetcher.mock.calls[1]?.[0])).toContain('/rest/v1/charts?');
+    expect(String(fetcher.mock.calls[1]?.[0])).toContain('/rest/v1/rpc/account_v2_owner_self_chart');
   });
 
   it('authenticates, derives positions server-side, and returns the raw URL once', async () => {
@@ -169,7 +201,7 @@ describe('Phase 4 invite API boundary', () => {
     const fetcher = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const url = String(input);
       if (url.endsWith('/auth/v1/user')) return json({ id: OWNER_ID, email: 'owner@example.com' });
-      if (url.includes('/rest/v1/charts?')) return json([{ id: CHART_ID, payload: chartPayload() }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_owner_self_chart')) return json(ownerSelfChart());
       if (url.endsWith('/rest/v1/rpc/create_compatibility_invite')) {
         createBody = JSON.parse(String(init?.body));
         return json({
@@ -194,7 +226,7 @@ describe('Phase 4 invite API boundary', () => {
     const persisted = createBody as unknown as Record<string, unknown>;
     expect(persisted.candidate_token_hash).toMatch(/^[0-9a-f]{64}$/u);
     expect(JSON.stringify(persisted)).not.toMatch(
-      /owner@example|1907|Private place|birth|chart_id|raw_token/iu,
+      /owner@example|1990-01-01|Private place|Region|13\.75|birth|chart_id|raw_token/iu,
     );
     const rawToken = body.url.split('/').at(-2);
     expect(JSON.stringify(persisted)).not.toContain(rawToken);
