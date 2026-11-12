@@ -1,7 +1,9 @@
 /**
  * Drives the Year Ahead Score, Birthday report, solar return and Year Ahead
  * directory pages in Chromium at phone (390px) and desktop (1280px) widths:
- * the layout shift before any input stays at zero, nothing scrolls sideways,
+ * the layout shift before any input stays at zero (and, on the birthday
+ * report, through a result held back past the input window and through
+ * switching the birthday year), nothing scrolls sideways,
  * the calculators answer from a birth date alone and offer their share links,
  * an untimed solar return is a date with no clock time, a birth date on which
  * the Sun changes sign gets both signs and no share link, and no answer puts a
@@ -171,8 +173,129 @@ try {
           const introText = (await page.locator('.tool-hero p').first().innerText()).replace(/\s+/gu, ' ');
           if (!introText.includes('your Year Ahead Score, your numerology Personal Year')) fail(`${path} @${size.width}: the introduction reads "${introText}"`);
         }
+        if (path === '/year-score/') {
+          // The focused heading reads as a sentence, not a bare number.
+          const heading = await page.locator('.ys__heading').evaluate((node) => node.textContent.replace(/\s+/gu, ' ').trim());
+          const named = await page.getByRole('heading', { level: 2, name: /^Your Year Ahead Score: \d+\.\d out of 10$/u }).count();
+          if (!named) fail(`${path} result @${size.width}: the result heading reads "${heading}"`);
+        }
         if (shots) await page.screenshot({ path: `${shots}/${path.replaceAll('/', '_')}result-${size.name}.png`, fullPage: true });
         console.log(`ok ${path} result @${size.width}: ${href}`);
+      }
+
+      // The Year Ahead Score's form traps: a time without a place, an incomplete time, and a date in the future.
+      if (PAGES.includes('/year-score/')) {
+        const path = '/year-score/';
+        const UNDER_13 = 'Zodiacs is not directed at children under 13';
+        await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+        await page.getByRole('button', { name: 'Add birth time and place' }).click();
+        await page.fill('#ys-date', '1990-05-03');
+        // Measured from the top of the page, not the viewport: the click scrolls the button into view.
+        const placeTop = () => page.locator('#ys-place').evaluate((node) => node.getBoundingClientRect().top + window.scrollY);
+        const placeBefore = await placeTop();
+        await page.fill('#ys-time', '08:30');
+        await page.getByRole('button', { name: 'Score my year' }).click();
+        const note = page.locator('#ys-time-note');
+        await note.waitFor({ state: 'visible' });
+        const noteText = (await note.innerText()).trim();
+        if (noteText !== 'Add the birthplace to use the birth time, or clear the time.') fail(`${path} @${size.width}: a time without a place shows "${noteText}"`);
+        await page.waitForTimeout(500);
+        if (await page.locator('.ys__number').count()) fail(`${path} @${size.width}: a time without a place still gives a result`);
+        const placeAfter = await placeTop();
+        if (placeBefore !== placeAfter) fail(`${path} @${size.width}: the time note moves the birthplace field from ${placeBefore} to ${placeAfter}`);
+        await page.fill('#ys-time', '');
+        if ((await note.innerText()).trim()) fail(`${path} @${size.width}: the time note stays after the time is cleared`);
+
+        // An incomplete time typed at the keyboard (the hour only) leaves the field's value empty; with the form's
+        // noValidate the browser does not stop it, so the calculator must, not fall back to a date-only score.
+        await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+        await page.getByRole('button', { name: 'Add birth time and place' }).click();
+        await page.fill('#ys-date', '1990-05-03');
+        await page.locator('#ys-time').focus();
+        await page.keyboard.type('08');
+        const partial = await page.locator('#ys-time').evaluate((node) => ({ value: node.value, badInput: node.validity.badInput }));
+        if (partial.value !== '' || !partial.badInput) fail(`${path} @${size.width}: typing the hour alone left the time field at "${partial.value}" (badInput ${partial.badInput}), so the incomplete-time check is not exercised`);
+        await page.getByRole('button', { name: 'Score my year' }).click();
+        await note.waitFor({ state: 'visible' });
+        const partialText = (await note.innerText()).trim();
+        if (partialText !== 'Enter the full birth time, or clear the time.') fail(`${path} @${size.width}: an incomplete time shows "${partialText}"`);
+        await page.waitForTimeout(1500);
+        if (await page.locator('.ys__number').count()) fail(`${path} @${size.width}: an incomplete time still gives a date-only result`);
+
+        await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+        const max = await page.locator('#ys-date').getAttribute('max');
+        if (!/^\d{4}-\d{2}-\d{2}$/u.test(max ?? '')) fail(`${path} @${size.width}: the date field's latest date is ${max}`);
+        await page.fill('#ys-date', '2091-01-01');
+        await page.getByRole('button', { name: 'Score my year' }).click();
+        const error = page.locator('.calc__error');
+        await error.waitFor({ state: 'visible' });
+        const errorText = (await error.innerText()).trim();
+        if (errorText !== 'Enter a birth date in the past.' || errorText.includes(UNDER_13)) fail(`${path} @${size.width}: a future date shows "${errorText}"`);
+        // A past date less than 13 years ago still gets the refusal, unchanged.
+        const recent = `${new Date().getUTCFullYear() - 5}-01-01`;
+        await page.fill('#ys-date', recent);
+        await page.getByRole('button', { name: 'Score my year' }).click();
+        const refusal = (await error.innerText()).trim();
+        if (refusal !== 'Zodiacs is not directed at children under 13, so it gives no score for a birth date less than 13 years ago.') fail(`${path} @${size.width}: a date five years ago shows "${refusal}"`);
+        console.log(`ok ${path} form @${size.width}: time without place, incomplete time, future date and under-13 refusal`);
+      }
+
+      // The birthday report's year buttons: their row is reserved from the first paint, so a result that
+      // arrives long after the click (every lazy chunk held back) and each switch of year shift nothing.
+      if (FLAGS.birthdayReport) {
+        // Its own context with the service worker blocked: the worker serves /_astro/ from its cache, which no route can hold back.
+        const brContext = await browser.newContext({ viewport: { width: size.width, height: size.height }, deviceScaleFactor: 1, reducedMotion: 'reduce', serviceWorkers: 'block' });
+        const page = await brContext.newPage();
+        await page.goto(`${baseURL}/birthday-report/`, { waitUntil: 'networkidle' });
+        await page.evaluate(() => {
+          window.__brShifts = [];
+          new PerformanceObserver((list) => { for (const entry of list.getEntries()) window.__brShifts.push({ value: entry.value, recent: entry.hadRecentInput }); })
+            .observe({ type: 'layout-shift' });
+        });
+        const rowBox = () => page.locator('.br__years').evaluate((row) => {
+          const box = row.getBoundingClientRect();
+          return { top: Math.round(box.top + window.scrollY), height: Math.round(box.height), visible: getComputedStyle(row).visibility };
+        });
+        const reserved = await rowBox();
+        await page.route('**/_astro/*.js', async (route) => { await new Promise((resolve) => setTimeout(resolve, 1500)); await route.continue(); });
+        // A birthday 20 days from today (27 at most), so the report opens on the year it starts. A date from
+        // the 18th to the 24th moves on to the 26th: the Sun can change sign on those days, and an unsettled
+        // Sun gets no share link to compare.
+        const soon = new Date(Date.now() + 20 * 86_400_000);
+        const month = soon.getUTCMonth() + 1;
+        const dayOfMonth = soon.getUTCDate() >= 18 && soon.getUTCDate() <= 24 ? 26 : soon.getUTCDate();
+        const birthDate = `1990-${String(month).padStart(2, '0')}-${String(month === 2 ? Math.min(dayOfMonth, 28) : dayOfMonth).padStart(2, '0')}`;
+        await page.fill('#br-date', birthDate);
+        const clicked = Date.now();
+        await page.getByRole('button', { name: 'Make my birthday report' }).click();
+        await page.locator('.br__heading').waitFor({ timeout: 45_000 });
+        const waited = Date.now() - clicked;
+        await page.unroute('**/_astro/*.js');
+        // Routing turns the HTTP cache off, so the chunks come late; the result must land outside the click's 500ms input window.
+        if (waited < 1000) fail(`/birthday-report/ @${size.width}: the result came ${waited}ms after the click, too soon to test a late result`);
+        const filled = await rowBox();
+        if (reserved.visible !== 'hidden' || filled.visible !== 'visible') fail(`/birthday-report/ @${size.width}: year row ${reserved.visible} before the report, ${filled.visible} after`);
+        if (reserved.top !== filled.top || reserved.height !== filled.height) fail(`/birthday-report/ @${size.width}: the year row moved from ${JSON.stringify(reserved)} to ${JSON.stringify(filled)}`);
+        const years = page.locator('.br__year');
+        const states = async () => years.evaluateAll((buttons) => buttons.map((button) => button.getAttribute('aria-pressed')));
+        if ((await states()).join() !== 'false,true') fail(`/birthday-report/ @${size.width}: a birthday 20 days away opens with aria-pressed ${(await states()).join()}`);
+        const shareHref = () => page.getByRole('link', { name: 'Share my birthday report' }).getAttribute('href');
+        const nextShare = await shareHref();
+        await years.nth(0).click();
+        await page.waitForFunction(() => document.querySelector('.br__year')?.getAttribute('aria-pressed') === 'true');
+        const currentShare = await shareHref();
+        if (!currentShare || currentShare === nextShare || /1990|py=/u.test(currentShare)) fail(`/birthday-report/ @${size.width}: share link after switching ${currentShare}`);
+        await page.waitForTimeout(700);
+        await years.nth(1).click();
+        await page.waitForFunction(() => document.querySelectorAll('.br__year')[1]?.getAttribute('aria-pressed') === 'true');
+        if (await shareHref() !== nextShare) fail(`/birthday-report/ @${size.width}: switching back did not restore the share link`);
+        await page.waitForTimeout(700);
+        const shifts = await page.evaluate(() => window.__brShifts);
+        const cls = shifts.filter((entry) => !entry.recent).reduce((sum, entry) => sum + entry.value, 0);
+        if (cls > 0.001) fail(`/birthday-report/ @${size.width}: layout shift ${cls.toFixed(4)} from a delayed result and switching years`);
+        if ((await rowBox()).top !== filled.top) fail(`/birthday-report/ @${size.width}: switching years moved the year row`);
+        console.log(`ok /birthday-report/ years @${size.width}: row reserved (${reserved.height}px), result after ${waited}ms, CLS ${cls.toFixed(4)} through it and two switches`);
+        await brContext.close();
       }
 
       // A date-only birth on the day the Sun changes sign (into Aries, 20 March 1990 at 21:19 UTC): both signs, and no share link.
