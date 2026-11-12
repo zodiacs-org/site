@@ -112,20 +112,29 @@ describe('heads-up times', () => {
     for (const event of json.events) {
       const row = moonDistanceLunation(event.subtype, eventsPublication.timeline.find((r) => r.id === event.id)!.anchor);
       const expected = event.family === 'lunation' ? supermoon(row!) : null;
-      const description = unfold(byUid.get(`sky-heads-up-${event.id}-event@zodiacs.org`)!.lines.find((l) => l.startsWith('DESCRIPTION:'))!);
+      const describe = (role: string) => byUid.get(`sky-heads-up-${event.id}-${role}@zodiacs.org`)!.lines.find((l) => l.startsWith('DESCRIPTION:'))!;
+      const description = describe('event');
+      const reminders = [describe('minus-72h'), describe('minus-24h')];
       if (expected) {
         marked += 1;
         expect(event.subtype, event.id).toBe('full');
         expect(event.supermoon, event.id).toEqual(expected);
         expect(event.title, event.id).toMatch(/^Full moon in \w+, .+ \(supermoon\)$/u);
-        expect(description, event.id).toContain('It counts as a supermoon because it is full within 10%');
+        for (const text of [description, ...reminders]) expect(text, event.id).toContain('It counts as a supermoon because it is full within 10%');
         expect(byUid.get(`sky-heads-up-${event.id}-minus-24h@zodiacs.org`)!.summary, event.id).toContain('(supermoon)');
       } else {
         expect(event, event.id).not.toHaveProperty('supermoon');
         expect(event.title, event.id).not.toMatch(/supermoon/iu);
-        expect(description, event.id).not.toMatch(/supermoon/iu);
+        for (const text of [description, ...reminders]) expect(text, event.id).not.toMatch(/supermoon/iu);
       }
-      if (event.family === 'lunation') expect(description, event.id).toContain(`The Moon is ${event.moonDistanceKm!.toLocaleString('en-US').replace(/,/g, '\\,')} km from Earth\\, center to center.`);
+      // Every entry of a moon, the event and both reminders, gives its distance; no other event names one.
+      const distance = event.family === 'lunation'
+        ? `The Moon is ${event.moonDistanceKm!.toLocaleString('en-US').replace(/,/g, '\\,')} km from Earth\\, center to center.`
+        : null;
+      for (const text of [description, ...reminders]) {
+        if (distance) expect(text, event.id).toContain(distance);
+        else expect(text, event.id).not.toMatch(/ km /u);
+      }
     }
     expect(marked).toBeGreaterThan(5);
     expect(json.events.filter((e) => e.subtype === 'new' && e.supermoon)).toEqual([]);
@@ -142,6 +151,12 @@ describe('heads-up times', () => {
     expect(description).toContain('SUMMARY:Full moon in Gemini\\, November 24\\, 2026 (supermoon)');
     expect(description).toContain('The Moon is 360\\,764 km from Earth\\, center to center. It counts as a supermoon because it is full within 10% of the way from this orbit’s closest point (perigee) to its farthest (apogee).');
     expect(unfold(ics)).toContain('SUMMARY:Tomorrow: Full moon in Gemini\\, November 24\\, 2026 (supermoon)');
+    // Both reminders carry the distance and the reason, then the exact time.
+    for (const role of ['minus-72h', 'minus-24h']) {
+      const reminder = unfold(ics).split('BEGIN:VEVENT\r\n').find((block) => block.includes(`UID:sky-heads-up-full-moon-2026-11-24-${role}@`))!;
+      expect(reminder, role).toContain('DESCRIPTION:The Moon is 360\\,764 km from Earth\\, center to center. It counts as a supermoon because it is full within 10% of the way from this orbit’s closest point (perigee) to its farthest (apogee). Exact time: 2026-11-24 14:53 UTC.');
+      expect(reminder, role).not.toMatch(/[\u2012-\u2015]/u);
+    }
     for (const text of [nov.title, dec.title, description]) expect(text).not.toMatch(/[\u2012-\u2015]/u);
     // A far full Moon carries its distance and no mark.
     const far = json.events.find((e) => e.id === 'full-moon-2026-10-26')!;

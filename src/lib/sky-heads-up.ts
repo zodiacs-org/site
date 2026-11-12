@@ -142,12 +142,19 @@ export function headsUpFeed(now: Date = new Date()): HeadsUpFeed {
 const utcMinute = (value: string) => `${value.slice(0, 10)} ${value.slice(11, 16)}`;
 const kilometres = (km: number) => km.toLocaleString('en-US');
 
+/** A lunation's distance line and, on a supermoon, why it counts; empty for other events. */
+function moonLines(event: HeadsUpEvent): string[] {
+  return [
+    event.moonDistanceKm === undefined ? '' : headsUpText('headsUpMoonDistance', { km: kilometres(event.moonDistanceKm) }),
+    event.supermoon ? headsUpText('headsUpSupermoon') : '',
+  ];
+}
+
 /** The calendar description of the event entry. */
 function eventDescription(event: HeadsUpEvent): string {
   return [
     event.summary,
-    event.moonDistanceKm === undefined ? '' : headsUpText('headsUpMoonDistance', { km: kilometres(event.moonDistanceKm) }),
-    event.supermoon ? headsUpText('headsUpSupermoon') : '',
+    ...moonLines(event),
     headsUpText('headsUpWhen', { time: utcMinute(event.at) }),
     returnText('en', 'calendarEventNote'),
     event.family === 'eclipse' ? returnText('en', 'eclipseNote') : '',
@@ -157,8 +164,9 @@ function eventDescription(event: HeadsUpEvent): string {
 /** The three calendar entries of one event. */
 export function headsUpCalendarEntries(event: HeadsUpEvent): PersonalCalendarEvent[] {
   const uid = (role: string) => `sky-heads-up-${event.id}-${role}@zodiacs.org`;
-  // The advance entries say when; the event entry carries the summary and notes.
-  const ahead = headsUpText('headsUpWhen', { time: utcMinute(event.at) });
+  // The advance entries say when and, for a moon, how far it is (and why a
+  // supermoon counts); the event entry also carries the summary and notes.
+  const ahead = [...moonLines(event), headsUpText('headsUpWhen', { time: utcMinute(event.at) })].filter(Boolean).join(' ');
   return [
     { uid: uid('event'), start: event.at, summary: event.title, description: eventDescription(event), url: event.url },
     ...HEADS_UP_OFFSETS.map((offset, index) => ({
