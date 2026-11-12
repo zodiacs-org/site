@@ -22,7 +22,7 @@
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import Anthropic from '@anthropic-ai/sdk';
-import { loadQuestions, planAnswers, scoreAnswer, VIS_DIR } from './lib.mjs';
+import { loadQuestions, parseAnthropicResponse, parseGeminiResponse, parseResponsesApi, planAnswers, scoreAnswer, VIS_DIR } from './lib.mjs';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, all) => {
@@ -47,23 +47,6 @@ async function postJson(url, headers, body) {
   return JSON.parse(text);
 }
 
-// OpenAI Responses API and xAI's compatible Responses API share a shape:
-// output[] message items whose output_text parts carry url_citation annotations.
-function parseResponsesApi(json) {
-  let text = '';
-  const citations = [];
-  for (const item of json.output || []) {
-    if (item.type !== 'message') continue;
-    for (const part of item.content || []) {
-      if (part.type !== 'output_text') continue;
-      text += part.text;
-      for (const a of part.annotations || []) if (a.type === 'url_citation') citations.push({ url: a.url, title: a.title || '' });
-    }
-  }
-  for (const url of json.citations || []) citations.push({ url: typeof url === 'string' ? url : url.url, title: '' });
-  return { text, citations, model: json.model };
-}
-
 const providers = {
   openai: {
     ready: () => !!process.env.OPENAI_API_KEY,
@@ -84,10 +67,7 @@ const providers = {
         contents: [{ role: 'user', parts: [{ text: question }] }],
         tools: [{ google_search: {} }],
       });
-      const cand = json.candidates?.[0] || {};
-      const text = (cand.content?.parts || []).map((p) => p.text || '').join('');
-      const citations = (cand.groundingMetadata?.groundingChunks || []).filter((c) => c.web).map((c) => ({ url: c.web.uri, title: c.web.title || '' }));
-      return { text, citations, model: json.modelVersion || model };
+      return parseGeminiResponse(json, model);
     },
   },
   anthropic: {
@@ -111,16 +91,7 @@ const providers = {
         if (response.stop_reason !== 'pause_turn') break;
         messages.push({ role: 'assistant', content: response.content });
       }
-      if (response.stop_reason === 'refusal') return { text: '', citations: [], model: response.model, refused: true };
-      let text = '';
-      const citations = [];
-      for (const block of response.content) {
-        if (block.type === 'text') {
-          text += block.text;
-          for (const c of block.citations || []) if (c.url) citations.push({ url: c.url, title: c.title || '' });
-        }
-      }
-      return { text, citations, model: response.model };
+      return parseAnthropicResponse(response);
     },
   },
   xai: {

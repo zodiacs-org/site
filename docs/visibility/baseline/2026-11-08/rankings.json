@@ -676,62 +676,6 @@
       "zodiacs_pos": null
     },
     {
-      "phrase": "what sign will my baby be",
-      "results": [
-        {
-          "pos": 1,
-          "url": "https://www.pampers.ca/en-ca/toddler/birthdays-and-holidays/article/baby-horoscope-by-date-of-birth",
-          "title": "Baby Horoscope by Date of Birth: Understand Your Baby's Zodiac Sign"
-        },
-        {
-          "pos": 2,
-          "url": "https://www.pampers.ca/toddler/birthdays-and-holidays/article/baby-horoscope-by-date-of-birth",
-          "title": "baby horoscope by date of birth"
-        },
-        {
-          "pos": 3,
-          "url": "https://babyyumyum.com/?p=57283",
-          "title": "Baby Zodiac Calculator – Discover Your Baby's Star Sign"
-        },
-        {
-          "pos": 4,
-          "url": "https://en.mamasandpapas.com.sa/blog/article/baby-astrological-signs-personality",
-          "title": "baby astrological signs personality"
-        },
-        {
-          "pos": 5,
-          "url": "https://lillydoo.com/blogs/la-vie-de-bebe/astral-theme-and-characteristics-of-the-zodiac-signs",
-          "title": "astral theme and characteristics of the zodiac signs"
-        },
-        {
-          "pos": 6,
-          "url": "https://www.todaysparent.com/baby-horoscopes/babyscopes-aquarius/",
-          "title": "babyscopes aquarius"
-        },
-        {
-          "pos": 7,
-          "url": "https://tv.fpabramo.org.br/?p=33705",
-          "title": "Birthday Zodiac Sign Chart: Unlocking the Secrets of Your Birth Month"
-        },
-        {
-          "pos": 8,
-          "url": "https://www.pampers.com/en-us/baby/parenting-life/article/baby-horoscope-by-date-of-birth",
-          "title": "baby horoscope by date of birth"
-        },
-        {
-          "pos": 9,
-          "url": "https://forum.nuaire.co.uk/viralvibes2/zodiac-signs-with-dates.html",
-          "title": "12 Zodiac Signs Explained Simply List, Dates, Meanings & More"
-        },
-        {
-          "pos": 10,
-          "url": "https://www.pampers.com/baby/parenting-life/article/baby-horoscope-by-date-of-birth",
-          "title": "Hands drawing on a zodiac birth chart"
-        }
-      ],
-      "zodiacs_pos": null
-    },
-    {
       "phrase": "how to read a birth chart",
       "results": [
         {
@@ -1781,5 +1725,6 @@
       "created": null,
       "live_site_search": "WebSearch for the bare domain returned no result on the domain itself (no indexed pages seen)"
     }
-  ]
+  ],
+  "removed_note": "Entries about pages or searches aimed at children were removed on 2026-11-12: the program does not target pages about children (#985 hid those pages)."
 }

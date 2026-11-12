@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseCsv, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
+import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseAnthropicResponse, parseCsv, parseGeminiResponse, parseResponsesApi, volumeLabel, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
 
 describe('visibility lib', () => {
   it('holds fifty questions with unique ids and phrases', () => {
@@ -99,7 +99,7 @@ describe('keyword tables', () => {
     const rows = parseCsv(readFileSync(new URL('../../docs/visibility/keywords/all-locales.csv', import.meta.url), 'utf8')).slice(1);
     expect(rows.length).toBe(14 * 296); // nine site locales and the five candidates (de, pl, tr, ja, hi)
     for (const r of rows) {
-      expect(r[8] === 'TBD' || /^\d+$/.test(r[8])).toBe(true);
+      expect(r[8] === 'TBD' || /^\d+$/.test(r[8]) || /^(\d+)-(\d+)$/.test(r[8]) && +r[8].split('-')[0] <= +r[8].split('-')[1]).toBe(true);
       expect(copyProblems(r[5])).toEqual([]);
     }
   });
@@ -114,5 +114,49 @@ describe('keyword tables', () => {
     expect(volumeOf('10-100')).toEqual({ low: 10, exact: false });
     expect(volumeOf('1300')).toEqual({ low: 1300, exact: true });
     expect(volumeOf('TBD')).toBe(null);
+  });
+  it('treats failed, incomplete or empty AI responses as errors so they are asked again', () => {
+    const ok = { status: 'completed', model: 'm', output: [{ type: 'message', content: [{ type: 'output_text', text: 'Answer', annotations: [{ type: 'url_citation', url: 'https://zodiacs.org/', title: 'Z' }] }] }] };
+    expect(parseResponsesApi(ok)).toEqual({ text: 'Answer', citations: [{ url: 'https://zodiacs.org/', title: 'Z' }], model: 'm' });
+    for (const status of ['failed', 'incomplete', 'cancelled', 'in_progress']) expect(() => parseResponsesApi({ ...ok, status })).toThrow();
+    expect(() => parseResponsesApi({ ...ok, error: { message: 'boom' } })).toThrow();
+    expect(() => parseResponsesApi({ status: 'completed', output: [] })).toThrow();
+    const errored = { id: 'q01', run: 1, question: 'Q?', error: 'response status failed' };
+    const plan = planAnswers({ answers: [errored] }, [{ id: 'q01', question: 'Q?' }], 1);
+    expect(plan.todo.map(([q, r]) => `${q.id}#${r}`)).toEqual(['q01#1']);
+  });
+  it('retries Gemini and Claude answers that did not finish', () => {
+    const gem = (finishReason, text = 'Answer') => ({ modelVersion: 'g', candidates: [{ finishReason, content: { parts: [{ text }] } }] });
+    expect(parseGeminiResponse(gem('STOP'), 'g').text).toBe('Answer');
+    for (const reason of ['MAX_TOKENS', 'SAFETY', 'RECITATION', undefined]) expect(() => parseGeminiResponse(gem(reason), 'g')).toThrow();
+    expect(() => parseGeminiResponse(gem('STOP', ' '), 'g')).toThrow();
+    const ant = (stop_reason, text = 'Answer') => ({ model: 'c', stop_reason, content: [{ type: 'text', text, citations: [] }] });
+    expect(parseAnthropicResponse(ant('end_turn')).text).toBe('Answer');
+    for (const reason of ['max_tokens', 'pause_turn', 'tool_use']) expect(() => parseAnthropicResponse(ant(reason))).toThrow();
+    expect(parseAnthropicResponse(ant('refusal')).refused).toBe(true);
+  });
+
+  it('imports Keyword Planner CSV and UTF-16 exports and labels ranged volumes', async () => {
+    const { mkdtempSync, writeFileSync: write, rmSync } = await import('node:fs');
+    const { tmpdir } = await import('node:os');
+    const { join } = await import('node:path');
+    const { readKeywordPlanner } = await import('./families.mjs');
+    const dir = mkdtempSync(join(tmpdir(), 'kp-'));
+    try {
+      const csv = join(dir, 'kp.csv');
+      write(csv, 'Keyword Stats\nKeyword,Avg. monthly searches,Competition\nwhat is my rising sign,10 - 100,Low\nmoon sign,,Medium\nsun sign,"1,300",High\n');
+      const a = readKeywordPlanner(csv);
+      expect(a.get('what is my rising sign')).toEqual({ volume: '10-100', competition: 'Low' });
+      expect(a.get('moon sign').volume).toBe('TBD');
+      expect(a.get('sun sign').volume).toBe('1300');
+      const tsv = join(dir, 'kp.tsv');
+      write(tsv, Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from('Keyword\tAvg. monthly searches\tCompetition\nmoon sign\t1K \u2013 10K\tLow\n', 'utf16le')]));
+      expect(readKeywordPlanner(tsv).get('moon sign')).toEqual({ volume: '1000-10000', competition: 'Low' });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+    expect(volumeLabel({ known: 0, volume: 0, ranged: false })).toBe('TBD');
+    expect(volumeLabel({ known: 2, volume: 110, ranged: true })).toBe('at least 110');
+    expect(volumeLabel({ known: 1, volume: 1300, ranged: false })).toBe('1300');
   });
 });
