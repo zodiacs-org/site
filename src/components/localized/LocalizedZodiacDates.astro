@@ -8,7 +8,8 @@ import Base from '../../layouts/Base.astro';
 import SignIcon from '../SignIcon.astro';
 import '../../styles/rx-table.css';
 import { localizePath, type Locale } from '../../lib/i18n';
-import { elementLabel, modalityLabel, signDates, signName } from '../../lib/signs';
+import { elementLabel, modalityLabel, signName } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 import { planetLabel } from '../../lib/i18n/astrology';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { INGRESS_YEARS, ZODIAC_DATE_ROWS, ingressIsoMinute } from '../../lib/zodiac-dates';
@@ -89,7 +90,7 @@ const when = (iso: string) => `${dayMonth(locale, iso)}, ${utcClock(iso)}`;
                 <th scope="row" data-label={c.columns.sign}>
                   <a href={local(`/${row.sign.slug}/`)}><SignIcon sign={row.sign.slug} size={22} /> {signName(row.sign, locale)}</a>
                 </th>
-                <td data-label={c.columns.dates}>{signDates(row.sign, locale)}</td>
+                <td data-label={c.columns.dates}>{signDateRange(row.sign, locale)}</td>
                 <td class="mono" data-label={c.columns.longitude}>{row.longitudeRange}</td>
                 <td data-label={c.columns.element}>{elementLabel(row.sign.element, locale)}</td>
                 <td data-label={c.columns.modality}>{modalityLabel(row.sign.modality, locale)}</td>

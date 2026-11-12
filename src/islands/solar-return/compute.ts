@@ -3,6 +3,7 @@ import { solarReturnChart, solarReturnInstant } from '../../lib/engine/solar-ret
 import type { Chart, HouseSystem } from '../../lib/engine/types';
 import { sharedReferenceInstant, sharedTimedInstant } from '../../lib/share-positions-noon';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
+import { birthDayEnvelope, settledSunSign } from '../../lib/sun-settled';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
 
@@ -37,6 +38,13 @@ export interface SolarReturnResultData {
    */
   shared?: Chart;
   returnYear: number;
+  /**
+   * The natal Sun's sign index when the birth settles it, else null: an untimed
+   * birth day that starts and ends in different signs, on the birthplace clock
+   * or, without one, on every clock (src/lib/sun-settled.ts). Absent: not
+   * checked, so an untimed chart's Sun sign is not shared.
+   */
+  sunSign?: number | null;
   noTime: boolean;
   noPlace: boolean;
 }
@@ -113,10 +121,16 @@ export function computeSolarReturn(input: SolarReturnComputeInput, now = new Dat
     ? { latitude: input.castLocation.lat, longitude: input.castLocation.lon }
     : null;
   const chart = solarReturnChart(natalSunLon, near, location, input.houseSystem);
+  // The calculator has awaited prepareLocalTime(input.birthDate, input.birthplace.tz) for the birthplace clock's 00:00 and 23:59.
+  const dayEnds: readonly [Date, Date] | null = input.timeKnown ? null : input.birthplace
+    ? [resolveLocalToUtc(input.birthDate, '00:00', input.birthplace.tz, { longitude: input.birthplace.lon }).utc, resolveLocalToUtc(input.birthDate, '23:59', input.birthplace.tz, { longitude: input.birthplace.lon }).utc]
+    : birthDayEnvelope(input.birthDate);
+  const sunSign = dayEnds ? settledSunSign(dayEnds, (at) => sunAt(at)!).sign : Math.floor((((natalSunLon % 360) + 360) % 360) / 30);
   return {
     chart,
     ...(sharedSunLon !== natalSunLon ? { shared: solarReturnChart(sharedSunLon, near, location, input.houseSystem) } : {}),
     returnYear,
+    sunSign,
     noTime: !input.timeKnown,
     noPlace: input.birthplace == null,
   };

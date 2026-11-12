@@ -15,14 +15,16 @@ const signs = [
 const corePaths = [
   '/', '/tools/', '/birth-chart/', '/compatibility/', '/moon-sign/',
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
-  '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
+  '/profile/', '/methodology/', '/privacy/', '/disclosure/',
   '/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/',
   ...signs.map((sign) => `/${sign}/`),
 ];
 const signPaths = new Set(signs.map((sign) => `/${sign}/`));
+const hiddenChildRoutes = new Set(['/ru/baby-zodiac/']);
+const hiddenChildEnglishPaths = ['/baby-zodiac/'];
 const indexedRoutes = corePaths.filter((path) => !signPaths.has(path)).map((path) => `/ru${path}`);
 const noindexSignRoutes = new Set(signs.map((sign) => `/ru/${sign}/`));
-const routes = [...indexedRoutes, ...noindexSignRoutes, '/ru/404/'];
+const routes = [...indexedRoutes, ...noindexSignRoutes, ...hiddenChildRoutes, '/ru/404/'];
 const expectedHreflangs = ['en', 'es', 'pt-BR', 'fr', 'it', 'ru', 'x-default'];
 const structuredImageRoutes = new Set([
   '/ru/birth-chart/', '/ru/compatibility/', '/ru/moon-sign/',
@@ -82,11 +84,15 @@ await withPreview({ port: 4418 }, async (baseURL) => {
           arHref: Boolean(document.querySelector('a[href="/ar"], a[href^="/ar/"]')),
         }));
         const notFound = route === '/ru/404/';
-        const noindex = notFound || noindexSignRoutes.has(route);
+        const hiddenChild = hiddenChildRoutes.has(route);
+        const noindex = notFound || noindexSignRoutes.has(route) || hiddenChild;
+        const nofollow = hiddenChild;
         check(state.lang === 'ru', `${route}@${viewport.width}: lang=${state.lang}`);
         check(state.dir === null, `${route}@${viewport.width}: Russian page emitted dir=${state.dir}`);
         check(
-          state.robots === (noindex ? 'noindex, follow, max-image-preview:large' : 'max-image-preview:large'),
+          state.robots === (noindex
+            ? `${nofollow ? 'noindex, nofollow' : 'noindex, follow'}, max-image-preview:large`
+            : 'max-image-preview:large'),
           `${route}: robots=${state.robots}`,
         );
         check(state.canonical === `https://zodiacs.org${route}`, `${route}: canonical=${state.canonical}`);
@@ -145,14 +151,15 @@ await withPreview({ port: 4418 }, async (baseURL) => {
       }
 
       if (viewport.width === 1280) {
-        for (const path of corePaths) {
+        for (const path of [...corePaths, ...hiddenChildEnglishPaths]) {
           await page.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
           const russianAlternateNode = page.locator('link[rel="alternate"][hreflang="ru"]');
           const russianAlternate = await russianAlternateNode.count() > 0
             ? await russianAlternateNode.first().getAttribute('href')
             : null;
+          const expectRussian = !signPaths.has(path) && !hiddenChildEnglishPaths.includes(path);
           check(
-            russianAlternate === (signPaths.has(path) ? null : `https://zodiacs.org/ru${path}`),
+            russianAlternate === (expectRussian ? `https://zodiacs.org/ru${path}` : null),
             `${path}: reciprocal Russian alternate=${russianAlternate}`,
           );
           check(

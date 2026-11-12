@@ -21,7 +21,7 @@ const core = [
   ...(approvedDailyDays.length ? ['/chart-of-the-day/'] : []),
   '/', '/tools/', '/birth-chart/', '/compatibility/', '/moon-sign/',
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
-  '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
+  '/profile/', '/methodology/', '/privacy/', '/disclosure/',
   '/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/',
   '/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/',
   ...signs.map((sign) => `/${sign}/`),
@@ -33,6 +33,8 @@ const indexedRoutes = core.filter((path) => !signPaths.has(path)).map((path) => 
 const noindexSignRoutes = new Set(signs
   .filter((sign) => !publishedLocalesForPath(`/${sign}/`).includes('ru'))
   .map((sign) => `/ru/${sign}/`));
+// Hidden on 2026-11-12: still built, noindex nofollow, out of the sitemap and hreflang set.
+const hiddenChildRoutes = new Set(['/ru/baby-zodiac/']);
 const notFoundRoute = '/ru/404/';
 const withheldDailyRoute = approvedDailyDays.length ? null : '/ru/chart-of-the-day/';
 const releasedSignRoutes = signs.map((sign) => `/ru/${sign}/`).filter((route) => !noindexSignRoutes.has(route));
@@ -43,7 +45,7 @@ const releasedExpansionRoutes = EXPANSION_FAMILY_IDS.filter((family) => family !
   .flatMap((family) => expansionFamilyPaths(family))
   .filter((path) => publishedLocalesForPath(path).includes('ru'))
   .map((path) => `/ru${path}`);
-const expectedRoutes = [...indexedRoutes, ...releasedSignRoutes, ...noindexSignRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
+const expectedRoutes = [...indexedRoutes, ...releasedSignRoutes, ...noindexSignRoutes, ...hiddenChildRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
 const expectedFiles = new Map(expectedRoutes.map((route) => [
   route,
   resolve(dist, route.replace(/^\//, ''), 'index.html'),
@@ -52,7 +54,7 @@ const expectedHreflangs = ['en', 'es', 'pt-BR', 'fr', 'it', 'ru', 'x-default'];
 const structuredImageRoutes = new Set([
   '/ru/birth-chart/', '/ru/compatibility/', '/ru/moon-sign/',
   '/ru/rising-sign/', '/ru/moon-phase/', '/ru/saturn-return/',
-  '/ru/transits/', '/ru/baby-zodiac/', '/ru/methodology/',
+  '/ru/transits/', '/ru/methodology/',
   ...signs.map((sign) => `/ru/${sign}/`),
 ]);
 const publicLocaleCards = [
@@ -192,12 +194,13 @@ for (const [route, file] of expectedFiles) {
     continue;
   }
   const text = visibleText(html);
-  const noindex = route === notFoundRoute || route === withheldDailyRoute || noindexSignRoutes.has(route);
+  const noindex = route === notFoundRoute || route === withheldDailyRoute || noindexSignRoutes.has(route) || hiddenChildRoutes.has(route);
+  const nofollow = hiddenChildRoutes.has(route);
   if (!/<html\b[^>]*\blang=["']ru["']/u.test(html)) fail(`${route}: html lang is not ru`);
   if (/<html\b[^>]*\bdir=/u.test(html)) fail(`${route}: Russian LTR page must not emit dir`);
   const robots = metaContent(html, 'robots');
   const expectedRobots = noindex
-    ? 'noindex, follow, max-image-preview:large'
+    ? `${nofollow ? 'noindex, nofollow' : 'noindex, follow'}, max-image-preview:large`
     : 'max-image-preview:large';
   if (robots !== expectedRobots) fail(`${route}: robots is ${robots ?? 'missing'}; expected ${expectedRobots}`);
   if (canonicalHref(html) !== `https://zodiacs.org${route}`) fail(`${route}: canonical is not self-referential`);
