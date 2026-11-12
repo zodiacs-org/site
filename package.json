@@ -76,6 +76,7 @@
     "data:birthdays": "node scripts/build-birthdays.mjs",
     "digest:weekly": "vite-node scripts/send-weekly-digest.ts",
     "email:daily": "vite-node --script scripts/send-daily-email.ts",
+    "note:build": "vite-node --script scripts/build-monday-note.ts",
     "push:daily": "node scripts/send-daily-push.mjs",
     "push:lunation": "vite-node --script scripts/send-lunation-reminders.ts",
     "report:bundles": "node scripts/report-bundles.mjs",
