@@ -21,6 +21,8 @@ import {
 import type { PositionsShareInput } from '../lib/share-positions';
 import type { SavedChart } from '../lib/profile/schema';
 import { MAX_CIRCLE, addCard, type AddCardResult } from '../lib/profile/circle';
+import { runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
+import { t } from '../lib/i18n';
 import { settledSunHue } from '../lib/profile/settled-signs';
 import { announceInboxPrimary, useProfileSurface } from '../lib/profile/surface-gate';
 
@@ -46,6 +48,7 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
   const { profile, ready } = useProfile();
   const surface = useProfileSurface(accountBound);
   const [arrival, setArrival] = useState<Arrival>({ state: 'none' });
+  const [unavailable, setUnavailable] = useState(false);
   const self = useMemo(() => explicitSelfChart(profile.charts), [profile.charts]);
   // The positions a card of one's own chart would carry, to recognise it,
   // with the chart they belong to. Until they are known the card waits,
@@ -106,7 +109,12 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
 
   function keep() {
     if (arrival.state !== 'ready') return;
-    setArrival({ ...arrival, result: addCard(arrival.card) });
+    const current = arrival;
+    setUnavailable(false);
+    runAfterProfileAccess(
+      () => setArrival({ ...current, result: addCard(current.card) }),
+      () => setUnavailable(true),
+    );
   }
 
   function sendYours() {
@@ -152,6 +160,9 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
           <p class="next-action__body" role={added ? 'status' : undefined}>{copy.body}</p>
           {result === 'full' && (
             <p class="field__error" role="alert">Your people list is full ({MAX_CIRCLE}). Remove someone to make room.</p>
+          )}
+          {unavailable && (
+            <p class="field__error" role="alert">{t('en', 'profileSaveUnavailable')}</p>
           )}
           {result === 'error' && (
             <p class="field__error" role="alert">This browser wouldn’t keep it. Private browsing or a full disk can do that.</p>
