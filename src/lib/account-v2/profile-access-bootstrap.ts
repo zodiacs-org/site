@@ -123,6 +123,10 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   // has not begun and reads the state afresh, rather than replacing it with
   // one for an account not yet known.
   let awaitingSession = false;
+  // The start whose auth subscription is live; 0 when none is. A listener
+  // left over from a start that failed and dropped its subscription is then
+  // ignored even if the sync module calls it late.
+  let subscribedStart = 0;
   let currentAccountId: string | null = null;
   // The account the last evaluation was for; undefined before the first.
   let evaluatedAccountId: string | null | undefined;
@@ -305,12 +309,19 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
 
   // The start is itself in flight until its first evaluation ends, so a save
   // never reads the locked state the tab opens with as a decision.
+  //
+  // Every step that changes state after an await first checks that this
+  // start's generation is still the current one. An auth event that arrives
+  // while the session read is in flight opens a newer generation, which then
+  // owns the verdict, the subscription and the auth version: a late answer or
+  // a late failure of the superseded read changes none of them.
   const start = () => {
     failed = false;
     awaitingSession = true;
     const opened = begin();
+    const startCurrent = () => live && generation === opened;
     void syncImporter().then(async (api) => {
-      if (!live) return;
+      if (!startCurrent()) return;
       if (!api.isSupabaseConfigured()) {
         awaitingSession = false;
         revoke();
@@ -318,7 +329,9 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
       }
       // Subscribe before reading the snapshot so a stale async read can never
       // restore the previous account's lease.
+      subscribedStart = opened;
       unsubscribeAuth = api.onSyncAuthChange((next) => {
+        if (!live || subscribedStart !== opened) return;
         authVersion += 1;
         currentAccountId = next?.user.id ?? null;
         awaitingSession = false;
@@ -326,15 +339,20 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
       });
       const snapshotVersion = authVersion;
       const current = await api.getSyncSession();
-      if (!live || authVersion !== snapshotVersion || generation !== opened) return;
+      if (!startCurrent() || authVersion !== snapshotVersion) return;
       currentAccountId = current?.user.id ?? null;
       awaitingSession = false;
       await evaluate(currentAccountId, snapshotVersion, opened);
     }).catch(() => {
-      if (!live) return;
+      // A newer evaluation began after this start (an auth event during the
+      // session read): its verdict, its subscription and its auth version are
+      // current, so the superseded start's failure changes nothing.
+      if (!startCurrent()) return;
+      // This start is still the current work and could not finish. Stay
+      // locked, drop anything it set in motion, and report it as unavailable
+      // so the next save starts again.
       awaitingSession = false;
-      // Could not start. Stay locked, drop anything this start set in motion,
-      // and report it as unavailable so the next save starts again.
+      subscribedStart = 0;
       unsubscribeAuth();
       unsubscribeAuth = () => {};
       authVersion += 1;
@@ -344,8 +362,11 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   };
   start();
 
+  // A failed start keeps the tab locked until a retry starts again: with no
+  // auth subscription there is no current session to evaluate, so a
+  // reevaluation would decide for an account this tab may no longer hold.
   const reevaluate = () => {
-    if (awaitingSession) return;
+    if (awaitingSession || failed) return;
     void runEvaluation(currentAccountId, authVersion);
   };
   window.addEventListener(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT, reevaluate);
