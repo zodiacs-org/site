@@ -34,6 +34,7 @@ import {
   searchIndexShapeFailures, shouldIndexPath,
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
+import { dailyPublicationDashMatches, renderedDashMatches, searchIndexDashMatches } from './consumer-dashes-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
 import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
 import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
@@ -492,6 +493,10 @@ for (const file of files) {
   const pagePath = htmlFileToPath(relative(root, file));
   for (const phrase of backstageCopyMatches(html, pagePath)) {
     fail(`${pagePath}: default-visible copy exposes backstage language (${phrase})`);
+  }
+  // No em or en dashes on the surfaces the dash gate covers (consumer-dashes-lib.mjs).
+  for (const match of renderedDashMatches(html, pagePath).slice(0, 5)) {
+    fail(`${pagePath}: dash in copy, ${match}`);
   }
 }
 
@@ -1884,6 +1889,23 @@ for (const [file, path] of builtPageByFile) {
 {
   const { problems } = await verifyProfileAccessLoader(root);
   for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
+}
+
+// ---- Dash gate: search entries and the daily lines ------------------------------
+{
+  // A missing or malformed index is reported by the search-index section above.
+  const entries = await readFile(resolve(root, 'search-index.json'), 'utf8')
+    .then((text) => JSON.parse(text)).catch(() => []);
+  for (const match of searchIndexDashMatches(Array.isArray(entries) ? entries : []).slice(0, 10)) {
+    fail(`search-index.json: dash in copy, ${match}`);
+  }
+  const publicRecordPath = resolve(root, 'data/daily-publication.json');
+  if (await exists(publicRecordPath)) {
+    const publication = JSON.parse(await readFile(publicRecordPath, 'utf8'));
+    for (const match of dailyPublicationDashMatches(publication).slice(0, 10)) {
+      fail(`daily-publication: dash in copy, ${match}`);
+    }
+  }
 }
 
 // ---- Report ------------------------------------------------------------------

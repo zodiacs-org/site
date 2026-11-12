@@ -24,14 +24,14 @@
   },
   "publication": {
     "path": "src/data/daily-publication.json",
-    "canonicalSha256": "153e9cbc9c679ea3a9e8853506b61f9b9f8ff1b9d5c0f678b99bb0b6283060e1",
+    "canonicalSha256": "21e4f29f5a24a44c978a3acbb1a179e4c681f24894394a62337af5bf4eda88d2",
     "signCount": 12,
     "outputCount": 72
   },
   "generation": {
     "mode": "deterministic-template",
-    "generatorId": "zodiacs.daily-renderer.v1.2",
-    "generatorSha256": "e6ef525c3c6ae2abd327d49d54154126fbf48ff286fc2bc1b35ee591629be226",
+    "generatorId": "zodiacs.daily-renderer.v1.3",
+    "generatorSha256": "eb8ad5f45121bf640f2f8d5a35ffb803a3baf90dd308f1277f3b6b9ac616ba4c",
     "model": null,
     "freeformModelOutput": false
   },

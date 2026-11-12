@@ -203,7 +203,7 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
             <span class="mp__meta">
               {now
                 ? `${Math.round(moonIllumination(now) * 100)}% ${t(locale, 'illuminated')} · ${t(locale, 'moonIn')} ${locale === 'ru' ? signPrepositional(signForLongitude(moonLongitude(now))) : signName(signForLongitude(moonLongitude(now)), locale)}`
-                : '—'}
+                : '\u00a0' /* holds the line while the sky is read; the phase line above says so in words */}
             </span>
             {now && (
               <EvidenceDisclosure label={t(locale, 'howWeCompute')}>

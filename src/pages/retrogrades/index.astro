@@ -8,6 +8,7 @@ import { bodyLongitude } from '../../lib/engine/full';
 import type { BodyName } from '../../lib/engine/types';
 import { formatLongitude } from '../../lib/signs';
 import { formatShortDate } from '../../lib/i18n/dates';
+import { directStationCell, retrogradeStationCell } from '../../lib/station-cell';
 
 // All computed at build time from the committed sky data — receipts,
 // no client ephemeris.
@@ -208,8 +209,8 @@ const jsonLd = [
                 {p.windows.map((w) => (
                   <tr id={`retrograde-${p.planet.toLowerCase()}-${w.from.toISOString().slice(0, 10)}`} class={w.state === 'past' ? 'rx-table__past' : ''}>
                     <td class="planet__window" data-label="Window">{w.label}</td>
-                    <td class="mono" data-label="Stations retrograde at">{w.stationRx ?? '—'}</td>
-                    <td class="mono" data-label="Stations direct at">{w.stationDirect ?? '—'}</td>
+                    <td class="mono" data-label="Stations retrograde at">{retrogradeStationCell(w.stationRx, 'en', firstYear)}</td>
+                    <td class="mono" data-label="Stations direct at">{directStationCell(w.stationDirect, 'en')}</td>
                     <td class="mono rx-table__state" data-label="Status">{w.state === 'active' ? 'now' : w.state === 'upcoming' ? 'ahead' : ''}</td>
                   </tr>
                 ))}

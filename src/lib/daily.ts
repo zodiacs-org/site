@@ -169,7 +169,7 @@ export function houseLine(
   const rx = body.retrograde ? ', retrograde' : '';
   const sourceFactId = context ? dailyBodyFactId(context.date, body) : null;
   return {
-    text: `${PLANET_VERB[body.body] ?? `${body.body} is in`} your ${ORDINAL[house]} house — ${HOUSE_THEME[house]}.`,
+    text: `${PLANET_VERB[body.body] ?? `${body.body} is in`} your ${ORDINAL[house]} house: ${HOUSE_THEME[house]}.`,
     receipt: `${body.body} ${body.degree.toFixed(1)}° ${cap(body.sign)}${rx} · house ${house}`,
     house,
     body: body.body,
@@ -200,7 +200,7 @@ function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | nu
   if (e.kind === 'ingress' && e.planet && e.sign) {
     const house = solarHouse(e.sign, sunSign);
     return {
-      text: `${e.planet} enters your ${ORDINAL[house]} house today — ${HOUSE_THEME[house]} picks up ${e.planet === 'Saturn' || e.planet === 'Pluto' ? 'a long-term tenant' : 'new weather'}.`,
+      text: `${e.planet} enters your ${ORDINAL[house]} house today: ${HOUSE_THEME[house]} picks up ${e.planet === 'Saturn' || e.planet === 'Pluto' ? 'a long-term tenant' : 'new weather'}.`,
       receipt: `${e.planet} → 0° ${cap(e.sign)} · ${utcTime(e.at)}`,
       house,
       body: e.planet,
@@ -214,7 +214,7 @@ function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | nu
     const house = solarHouse(e.sign, sunSign);
     const name = e.type === 'new' ? 'New Moon' : 'Full Moon';
     return {
-      text: `${name} in your ${ORDINAL[house]} house — ${e.type === 'new' ? 'a clean line to start something in' : 'something comes due in'} ${HOUSE_THEME[house]}.`,
+      text: `${name} in your ${ORDINAL[house]} house: ${e.type === 'new' ? 'a clean line to start something in' : 'something comes due in'} ${HOUSE_THEME[house]}.`,
       receipt: `${name} ${e.degree?.toFixed(1)}° ${cap(e.sign)} · ${utcTime(e.at)}`,
       house,
       body: 'Moon',
@@ -228,7 +228,7 @@ function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | nu
     const house = solarHouse(e.sign, sunSign);
     const dir = e.type === 'retrograde' ? 'stations retrograde' : 'stations direct';
     return {
-      text: `${e.planet} ${dir} in your ${ORDINAL[house]} house — ${e.type === 'retrograde' ? 'expect revisions in' : 'forward motion returns to'} ${HOUSE_THEME[house]}.`,
+      text: `${e.planet} ${dir} in your ${ORDINAL[house]} house: ${e.type === 'retrograde' ? 'expect revisions in' : 'forward motion returns to'} ${HOUSE_THEME[house]}.`,
       receipt: `${e.planet} ${dir} ${e.degree?.toFixed(1)}° ${cap(e.sign)} · ${utcTime(e.at)}`,
       house,
       body: e.planet,
@@ -240,7 +240,7 @@ function eventLine(e: DailyEvent, sunSign: string, date: string): DailyLine | nu
   }
   if (e.kind === 'aspect' && e.a && e.b && e.type) {
     return {
-      text: `${e.a} ${e.type} ${e.b} is exact today — sky-wide weather, worth knowing the hour.`,
+      text: `${e.a} ${e.type} ${e.b} is exact today: sky-wide weather, worth knowing the hour.`,
       receipt: `${e.a} ${e.type} ${e.b} · exact ${utcTime(e.at)}`,
       body: e.a,
       templateId: 'aspect-collective.v1',

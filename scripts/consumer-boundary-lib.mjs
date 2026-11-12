@@ -407,11 +407,11 @@ function isAstrofolioNavigationDescription(fragment) {
   return fragment.file === 'src/components/SiteNav.astro'
     && new Set([
     'Official Zodiac token collection',
-    'Colección oficial de tokens del Zodiaco — en inglés',
-    'Coleção oficial de tokens do Zodíaco — em inglês',
-    'Collection officielle de jetons du Zodiaque — en anglais',
-    'Collezione ufficiale di token zodiacali — in inglese',
-    'Официальная коллекция токенов Зодиака — на английском',
+    'Colección oficial de tokens del Zodiaco (en inglés)',
+    'Coleção oficial de tokens do Zodíaco (em inglês)',
+    'Collection officielle de jetons du Zodiaque (en anglais)',
+    'Collezione ufficiale di token zodiacali (in inglese)',
+    'Официальная коллекция токенов Зодиака (на английском)',
     // Owner-directed Chinese wording (2026-10-24), for the Chinese zodiac guide.
     '十二星座官方代币收藏（英文）',
     '十二星座官方代幣收藏（英文）',

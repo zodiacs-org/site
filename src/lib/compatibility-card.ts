@@ -115,10 +115,12 @@ function placementRows(person: CompatibilityCardPerson, locale: Locale) {
  * the link leaves for the ascendant.
  */
 export function compatibilityPlacementLine(person: CompatibilityCardPerson, locale: Locale = 'en'): string {
+  // A placement the birth details cannot settle (the Moon and rising sign
+  // without a birth time) is left out, not marked with a dash glyph; the
+  // line keeps the order Sun, Moon, rising.
   return placementRows(person, locale)
-    .map((row) => (row.sign
-      ? `${row.sign} ${Math.floor(row.degree!)}°`
-      : '—'))
+    .filter((row) => row.sign !== null)
+    .map((row) => `${row.sign} ${Math.floor(row.degree!)}°`)
     .join('  ·  ');
 }
 
@@ -379,7 +381,8 @@ export async function drawCompatibilityCard(
     ctx.textAlign = 'left';
     ctx.fillStyle = FAINT;
     ctx.font = `400 20px ${MONO}`;
-    const marker = personIndex === 0 ? '—' : '┄';
+    // Line samples for the two people's strokes: solid, then dotted (box drawing, not dashes).
+    const marker = personIndex === 0 ? '\u2500' : '┄';
     ctx.fillText(`${marker}  ${person.label}`, 120, y);
     ctx.textAlign = 'right';
     ctx.fillStyle = MUTED;

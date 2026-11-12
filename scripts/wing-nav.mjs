@@ -93,6 +93,13 @@ export function brandMarkSvg(size = 17) {
   return `<svg class="wnav__brand" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true">${dots}</svg>`;
 }
 
+// The menu prints a sign's range with "to", as the main site's menu does
+// (signDateRange in src/lib/sign-display.ts): no en dash in copy. NAV_SIGNS
+// keeps the table form, which mirrors src/lib/signs.ts.
+export function wingSignDates(dates) {
+  return dates.split(' \u2013 ').join(' to ');
+}
+
 // The full nav markup (bar + Tools/Signs dropdowns + mobile overlay). Astrofolio is the
 // consumer collection destination even when the current wing page is a Registry record.
 export function wingNavHtml({ includeSearch = true } = {}) {
@@ -100,7 +107,7 @@ export function wingNavHtml({ includeSearch = true } = {}) {
     `<a class="wnav-signs__item" href="/${s.slug}/" style="--sign:${s.hue}">` +
       `<picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/${s.slug}.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/${s.slug}.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture>` +
       `<span class="wnav-signs__name">${s.name}</span>` +
-      `<span class="wnav-signs__dates">${s.dates}</span>` +
+      `<span class="wnav-signs__dates">${wingSignDates(s.dates)}</span>` +
     `</a>`
   )).join('');
   // The phone menu mirrors the main site's (src/components/SiteNav.astro):

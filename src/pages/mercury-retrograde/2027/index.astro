@@ -5,6 +5,7 @@ import sky from '../../../data/sky.json';
 import { bodyLongitude } from '../../../lib/engine/full';
 import { formatLongitude, signForLongitude } from '../../../lib/signs';
 import { formatDate, formatShortDate } from '../../../lib/i18n/dates';
+import { directStationCell } from '../../../lib/station-cell';
 import { publishedEventById } from '../../../lib/events/site-publication';
 
 // The 2027 Mercury retrograde windows, cut from the same committed sky data
@@ -128,7 +129,7 @@ const jsonLd = [
             <tr id={w.id} class={w.state === 'past' ? 'rx-table__past' : ''}>
               <td data-label="Window">{w.path ? <a href={w.path}>{w.label}</a> : w.label}</td>
               <td class="mono" data-label="Stations retrograde at">{w.stationRx}</td>
-              <td class="mono" data-label="Stations direct at">{w.stationDirect ?? '—'}</td>
+              <td class="mono" data-label="Stations direct at">{directStationCell(w.stationDirect, 'en')}</td>
               <td class="mono rx-table__state" data-label="Status">{w.state === 'active' ? 'now' : w.state === 'upcoming' ? 'ahead' : ''}</td>
             </tr>
           ))}

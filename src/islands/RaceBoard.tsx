@@ -295,7 +295,7 @@ export default function RaceBoard({
             const isMine = membership?.sign === row.sign;
             return (
               <tr key={row.sign} data-mine={isMine ? 'true' : undefined} style={`--sign:${sign?.hue ?? 'var(--ink-dim)'}`}>
-                <td class="race-board__rank">{standings === null || row.points === 0 ? '—' : board.findIndex((entry) => entry.points === row.points) + 1}</td>
+                <td class="race-board__rank">{standings === null || row.points === 0 ? <span class="sr-only">No rank yet</span> : board.findIndex((entry) => entry.points === row.points) + 1}</td>
                 <td class="race-board__sign">
                   <span class="race-board__sign-inner">
                     {signIcon(row.sign, 24)}
