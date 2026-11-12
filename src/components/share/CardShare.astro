@@ -18,7 +18,9 @@ const file = card.split('/').pop();
   {!compact && <img src={card} width="600" height="315" loading="lazy" decoding="async" alt={l.imageAlt(title)} class="cshare__img" />}
   <div class="cshare__actions">
     <button type="button" class="btn btn--sm" data-card-share-button>{compact ? title : l.share}</button>
-    {!compact && <a class="textlink" href={card} download={file}>{l.download}</a>}
+    {compact
+      ? <a class="textlink" href={card} download={file} data-card-share-download hidden>{l.download}</a>
+      : <a class="textlink" href={card} download={file}>{l.download}</a>}
     <span class="cshare__status" aria-live="polite"></span>
   </div>
 </div>
@@ -43,7 +45,10 @@ const file = card.split('/').pop();
     } catch (error) {
       if (error && error.name === 'AbortError') return;
     }
-    try { await navigator.clipboard.writeText(url); if (status) status.textContent = copied; } catch { window.open(card, '_blank', 'noopener'); }
+    // Without a share sheet the compact row still offers its card: the hidden download link appears.
+    const download = root.querySelector('[data-card-share-download]');
+    if (download) download.hidden = false;
+    try { await navigator.clipboard.writeText(url); if (status) status.textContent = copied; } catch { if (!download) window.open(card, '_blank', 'noopener'); }
   });
 })();
 </script>

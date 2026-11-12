@@ -64,4 +64,48 @@ describe('shareable cards', () => {
     expect(control).not.toMatch(/<input|<form|<select|<textarea/u);
     expect(control).not.toMatch(/birth|date|time|place|lat|lon/iu);
   });
+
+  it('sends only the card and the page address, and a compact row without a share sheet still offers its card', async () => {
+    const control = readFileSync('src/components/share/CardShare.astro', 'utf8');
+    const script = /<script is:inline>([\s\S]*?)<\/script>/u.exec(control)?.[1] ?? '';
+    const card = '/cards/es/big-three/leo.jpg';
+    const url = 'https://zodiacs.org/es/leo/';
+    const run = async (nav: Record<string, unknown>) => {
+      const calls: { fetched: string[]; shared: unknown[]; copied: string[]; opened: string[] } = { fetched: [], shared: [], copied: [], opened: [] };
+      let onClick: (event: { target: unknown }) => Promise<void> = async () => {};
+      const status = { textContent: '' };
+      const download = { hidden: true };
+      const root = {
+        dataset: { card, url, title: 'Leo', copied: 'Copied' },
+        querySelector: (selector: string) => (selector === '.cshare__status' ? status : selector === '[data-card-share-download]' ? download : null),
+      };
+      const button = { closest: (selector: string) => (selector === '[data-card-share-button]' ? button : root) };
+      class FakeElement {}
+      Object.setPrototypeOf(button, FakeElement.prototype);
+      const navigator = {
+        ...nav,
+        share: nav.share ? async (data: unknown) => { calls.shared.push(data); } : undefined,
+        clipboard: { writeText: async (text: string) => { calls.copied.push(text); } },
+      };
+      const window: Record<string, unknown> = { open: (href: string) => { calls.opened.push(href); } };
+      const document = { addEventListener: (_: string, handler: typeof onClick) => { onClick = handler; } };
+      const fetch = async (href: string) => { calls.fetched.push(href); return { blob: async () => new Blob(['x']) }; };
+      new Function('window', 'document', 'navigator', 'fetch', 'Element', 'File', script)(window, document, navigator, fetch, FakeElement, File);
+      await onClick({ target: button });
+      return { calls, status, download };
+    };
+
+    const sheet = await run({ share: true, canShare: () => true });
+    expect(sheet.calls.fetched).toEqual([card]);
+    expect(sheet.calls.shared).toHaveLength(1);
+    const shared = sheet.calls.shared[0] as { title: string; url: string; files: File[] };
+    expect([shared.title, shared.url, shared.files.map((file) => file.name)]).toEqual(['Leo', url, ['leo.jpg']]);
+    expect(sheet.download.hidden).toBe(true);
+
+    const fallback = await run({});
+    expect(fallback.calls.copied).toEqual([url]);
+    expect(fallback.calls.shared).toEqual([]);
+    expect(fallback.status.textContent).toBe('Copied');
+    expect(fallback.download.hidden).toBe(false);
+  });
 });
