@@ -10,13 +10,22 @@ export function mathInstant(value?: Date | string | null): string | null {
   return Number.isFinite(date.getTime()) ? date.toISOString() : null;
 }
 
+/** The UTC calendar date of the computed instant, for a basis without a birth time; never a clock time. */
+export function mathDate(value?: Date | string | null): string | null {
+  const instant = mathInstant(value);
+  return instant ? instant.slice(0, instant.indexOf('T')) : null;
+}
+
+/** Bases whose receipt is a date: an untimed solar return moves by up to about a day with the birth time. */
+const DATE_ONLY_BASES: ReadonlySet<InstantBasis> = new Set(['approximate-return']);
+
 export function CheckOurMath({ utc, basis = 'birth', locale = 'en', subject }: {
   utc?: Date | string | null;
   basis?: InstantBasis;
   locale?: CatalogLocale;
   subject?: string;
 }) {
-  const instant = mathInstant(utc);
+  const instant = DATE_ONLY_BASES.has(basis) ? mathDate(utc) : mathInstant(utc);
   const key = ({ birth: 'trustInstant', reference: 'trustReference', return: 'trustReturnInstant',
     'approximate-return': 'trustApproxReturn', 'sky-reference': 'trustSkyReference', record: 'trustRecordInstant' } as const)[basis];
   return <aside class="chart-trust" data-check-our-math data-instant-basis={instant ? basis : 'unavailable'}>
