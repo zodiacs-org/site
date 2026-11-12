@@ -1297,6 +1297,8 @@ const raceIndexed = sitemapLocs.has('/race/');
 // The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
 const yearScoreIndexed = sitemapLocs.has('/year-score/');
 const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
+// The good day finder follows its launch flag (src/lib/launch-flags.ts) the same way.
+const goodDaysIndexed = sitemapLocs.has('/good-days/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
 const indexablePeoplePaths = new Set(
   JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).people
@@ -1356,12 +1358,13 @@ const sitemapPolicy = {
   // +1 for /your-2027-sky/, the 2027 personal sky edition.
   // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
+  // +1 for /good-days/, the English-only good day finder, once PUBLIC_GOOD_DAYS_ENABLED is on.
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/).
   total: 1532 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
-    + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed) + Number(goodDaysIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1412,6 +1415,7 @@ const indexedFamilies = [
   { label: 'Life Path pages', pattern: /^\/numerology\/life-path\/(?:[1-9]|11|22|33)\/$/, expected: 12, localized: false },
   { label: 'Registry Collection', pattern: /^\/registry\/collection\/$/, expected: Number(registryAuraIndexed), localized: false },
   { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
+  { label: 'Good day finder', pattern: /^\/good-days\/$/, expected: Number(goodDaysIndexed), localized: false },
   { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
   { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },

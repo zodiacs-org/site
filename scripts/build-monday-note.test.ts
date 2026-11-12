@@ -203,9 +203,9 @@ describe('Monday Note builder', () => {
       'https://zodiacs.org/your-2027-sky/?ref=note',
       UNSUBSCRIBE_TAG,
     ]);
-    // Good Days has a launch flag and, on this branch, no page: both must be on for the link.
+    // Good Days has a launch flag and a page: both must be on for the link.
     const flagOn = { PUBLIC_GOOD_DAYS_ENABLED: '1' };
-    expect(buildMondayNote(WEEK, sources({ env: flagOn })).links.map((link) => link.url)).not.toContain('https://zodiacs.org/good-days/?ref=note');
+    expect(buildMondayNote(WEEK, sources({ env: flagOn, routeExists: (route) => route !== '/good-days/' })).links.map((link) => link.url)).not.toContain('https://zodiacs.org/good-days/?ref=note');
     const built = buildMondayNote(WEEK, sources({ env: flagOn, routeExists: () => true }));
     expect(built.links.map((link) => link.url)).toEqual([
       'https://zodiacs.org/today/?ref=note',

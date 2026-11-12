@@ -192,6 +192,26 @@ try {
 } catch {
   failures.push(`${OG_EN.yearSky.image}: missing`);
 }
+// The good day finder's own card (npm run data:og -- --only-good-days-card),
+// checked like Your 2027 sky's.
+try {
+  const goodDaysCard = OG_EN.goodDays.image;
+  if (!/^\/assets\/og\/good-days\/v\d+\/card\.jpg$/u.test(goodDaysCard)) {
+    failures.push(`Good day finder image: expected a good-days JPEG, received ${goodDaysCard}`);
+  }
+  const bytes = await readFile(resolve(root, `public${goodDaysCard}`));
+  const metadata = await sharp(bytes).metadata();
+  if (metadata.format !== 'jpeg' || metadata.width !== 1200 || metadata.height !== 630) {
+    failures.push(`${goodDaysCard}: expected 1200x630 JPEG, received ${metadata.width ?? '?'}x${metadata.height ?? '?'} ${metadata.format ?? 'unknown'}`);
+  }
+  if (bytes.length > ART_CARD_MAX_BYTES) failures.push(`${goodDaysCard}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+  const hash = createHash('sha256').update(bytes).digest('hex');
+  const duplicate = hashes.get(hash);
+  if (duplicate) failures.push(`${goodDaysCard}: byte-identical to ${duplicate}`);
+  else hashes.set(hash, goodDaysCard);
+} catch {
+  failures.push(`${OG_EN.goodDays.image}: missing`);
+}
 if (OG_EN.terminal.image !== expectedTerminalPath) {
   failures.push(`Terminal image: expected ${expectedTerminalPath}, received ${OG_EN.terminal.image}`);
 }

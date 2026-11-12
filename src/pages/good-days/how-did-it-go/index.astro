@@ -1,0 +1,40 @@
+---
+import Base from '../../../layouts/Base.astro';
+import GoodDayOutcome from '../../../islands/GoodDayOutcome.tsx';
+import '../../../styles/calculator.css';
+import '../../../styles/good-days.css';
+import { launchFlagOn } from '../../../lib/launch-flags';
+
+if (!launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED')) {
+  return Astro.redirect('/404.html');
+}
+
+// The follow-up is off unless PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED=1 at build time (and the finder is on). Off, the page says so and runs no script.
+const outcomesEnabled = launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED')
+  && (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
+---
+<Base
+  clientUi
+  noindex
+  privateSurface
+  title="How Did Your Day Go? | Zodiacs.org"
+  description="Tell us how a day you picked with the good day finder went: a rating and an optional note, kept anonymously."
+  path="/good-days/how-did-it-go/"
+>
+  <section class="section--tight container container--narrow">
+    {outcomesEnabled ? (
+      <>
+        <GoodDayOutcome client:load />
+        <noscript><p>This form needs JavaScript. Enable it and reload.</p></noscript>
+      </>
+    ) : (
+      <div class="outcome shell">
+        <div class="core outcome__core">
+          <h1 class="display outcome__title">How did your day go?</h1>
+          <p class="outcome__day">Follow-ups are not open yet.</p>
+          <div class="outcome__body"><p><a class="btn" href="/good-days/">Find good days</a></p></div>
+        </div>
+      </div>
+    )}
+  </section>
+</Base>

@@ -452,6 +452,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
+  // The good day finder, first published 2026-11-09.
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [['/good-days/', '2026-11-09'] as const] : []),
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -657,6 +659,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...eventsPublication.pages
     .filter((event) => event.family === 'eclipse')
     .map((event) => [event.path, ACCURACY_AUDIT_REST_LASTMOD] as const),
+  // The good day finder's links: its card on the tools hub, and the lines on the occasions and void-of-course
+  // pages that point to it. The day of the daily edition they were built with; the later dates below win.
+  // Only while PUBLIC_GOOD_DAYS_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? ['/occasions/', '/tools/', '/void-of-course-moon/'].map((loc) => [loc, '2026-11-09'] as const) : []),
   // The transits page's link to the Year Ahead Score (2026-11-09), last so this date wins.
   ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [['/transits/', '2026-11-09'] as const] : []),
   // The tools hub's Year Ahead Score and Birthday report cards, and the birthday hub's link to the report,
@@ -773,6 +779,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/birthday/', priority: 0.7 },
     { loc: '/occasions/', priority: 0.7 },
     { loc: '/occasions/milestones/', priority: 0.6 },
+    ...(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED') ? [{ loc: '/good-days/', priority: 0.7 }] : []),
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },

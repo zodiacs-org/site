@@ -76,6 +76,17 @@ export const OG_EN = Object.freeze({
     line: 'The year’s eclipses, returns and slow planets, read for your own chart.',
     alt: 'Your 2027 sky: the year’s eclipses, returns and slow planets, read for your own chart, beside a ring of the twelve sign discs.',
   },
+  // The good day finder's own card (npm run data:og -- --only-good-days-card):
+  // the page's headline and a line, with a month of hairline days and three of
+  // them marked by sign discs. Built like the art cards, in its own folder so
+  // the v8 family stays as published; a new design takes a new folder.
+  goodDays: {
+    path: '/good-days/',
+    image: '/assets/og/good-days/v1/card.jpg',
+    title: 'Good day finder',
+    line: 'The best days ahead to launch, sign, move, travel or marry.',
+    alt: 'Good day finder: the best days ahead to launch, sign, move, travel or marry, beside a month of days with three marked by sign discs.',
+  },
   terminal: {
     path: '/terminal/',
     image: '/assets/og/v7/terminal.png',

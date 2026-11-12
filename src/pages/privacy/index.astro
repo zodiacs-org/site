@@ -41,6 +41,8 @@ const jsonLd = [
 const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 // The hosted app's 0.5.0 tools (src/ai-tools, ZODIACS_OCCASIONS_ENABLED) take birth dates; the page says so only while they are offered.
 const assistantBirthToolsEnabled = (import.meta.env.ZODIACS_OCCASIONS_ENABLED ?? process.env.ZODIACS_OCCASIONS_ENABLED) === '1';
+// The good day finder's "How did your day go?" follow-up: described only while it is switched on.
+const goodDaysOutcomesEnabled = (import.meta.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED ?? process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED) === '1';
 // Save to my Zodiacs account (src/ai-tools/accounts, ZODIACS_ACCOUNTS_ENABLED) is offered only with those tools and the profile's saved list; the page says so only while it is.
 // The 0.6.0 birth chart, transit and Chinese zodiac tools (ZODIACS_COVERAGE_ENABLED, with the 0.5.0 tools) take birth dates too; the page names them only while they are offered.
 const assistantCoverageEnabled = assistantBirthToolsEnabled && (import.meta.env.ZODIACS_COVERAGE_ENABLED ?? process.env.ZODIACS_COVERAGE_ENABLED) === '1';
@@ -139,6 +141,21 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
           site data removes saved charts, and we cannot see or recover charts that
           were only saved in your browser.
         </p>
+      )}
+
+      {goodDaysOutcomesEnabled && (
+        <>
+          <h2>How did your day go?</h2>
+          <p>
+            When you pick a day with the good day finder, you can add a reminder to your calendar or ask this browser
+            to remind you. The browser reminder keeps the goal, the day, the finder's score for it, whether your birth
+            date was used to rank it and whether you have answered, in local storage, and nothing else. A week after the day, we ask how it went. If you answer, we keep the goal, the day, the
+            finder's score, whether your birth date was used to rank it (never the birth date), your rating and your
+            note, with the date it arrived. We take dates, times, email addresses, web addresses and phone numbers out of
+            the note, and we drop a note that mentions a child, a birth or an age. We keep no name, IP address, account or device identifier
+            with the answer. We use these answers to test how well the days the finder picks go.
+          </p>
+        </>
       )}
 
       <h2>Share links and invitations</h2>

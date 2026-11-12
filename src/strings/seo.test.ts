@@ -60,6 +60,19 @@ describe('Astrofolio and Terminal SEO identity', () => {
   });
 });
 
+describe('The good day finder share card', () => {
+  it('carries the page headline, its own folder and plain words', () => {
+    const card = OG_EN.goodDays;
+    expect(card.path).toBe('/good-days/');
+    expect(card.image).toBe('/assets/og/good-days/v1/card.jpg');
+    for (const words of [card.title, card.line, card.alt]) {
+      expect(words).not.toMatch(/[\u2013\u2014]/u);
+      expect(words).not.toMatch(/token|market|crypto/iu);
+    }
+    expect(card.alt.startsWith(`${card.title}:`)).toBe(true);
+  });
+});
+
 describe('Your 2027 sky share card', () => {
   it('carries the page headline, its own folder and plain words', () => {
     const card = OG_EN.yearSky;

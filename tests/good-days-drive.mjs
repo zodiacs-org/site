@@ -1,0 +1,197 @@
+/**
+ * The good day finder in Chromium, against the built site (npm run build first):
+ * - zero layout shift on first load, on a shared link (#g=…&f=…&t=…) that opens on its results, and when the
+ *   person submits the form, at 360px and 1280px;
+ * - privacy: with a birth date entered, no request carries it, nothing is written to storage, and the address bar
+ *   keeps no detail; the share link carries the goal and dates only;
+ * - no horizontal scroll at 360px;
+ * - the page is listed on the tools hub, and linked from the occasions and void-of-course pages.
+ * With --screenshots it writes the PR evidence to docs/platform/zodiacs-ai/evidence/good-days/.
+ *
+ * All of that only when the build had PUBLIC_GOOD_DAYS_ENABLED=1 (set it in the shell for this run too). With the
+ * flag off it checks the opposite in dist/: both pages are the redirect to the 404 page, and nothing links to them.
+ */
+import { mkdir, readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { chromium } from 'playwright-core';
+import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
+import { projectRoot, withPreview } from './visual/preview-server.mjs';
+
+const SCREENSHOTS = process.argv.includes('--screenshots');
+const evidence = resolve(projectRoot, 'docs/platform/zodiacs-ai/evidence/good-days');
+const BIRTH = '1990-05-03';
+const failures = [];
+const check = (name, ok, detail = '') => {
+  console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${ok ? '' : `: ${detail}`}`);
+  if (!ok) failures.push(name);
+};
+
+// The launch flag, as the build read it (src/lib/launch-flags.ts): off, the finder must not exist anywhere.
+if (process.env.PUBLIC_GOOD_DAYS_ENABLED !== '1') {
+  const built = (path) => readFile(resolve(projectRoot, 'dist', `.${path}`, 'index.html'), 'utf8');
+  for (const path of ['/good-days/', '/good-days/how-did-it-go/']) {
+    const html = await built(path);
+    check(`flag off: ${path} is the redirect to the 404 page`, /http-equiv="refresh"[^>]*\/404\.html/u.test(html), html.slice(0, 200));
+  }
+  for (const path of ['/tools/', '/occasions/', '/void-of-course-moon/']) {
+    check(`flag off: ${path} does not link to /good-days/`, !(await built(path)).includes('/good-days/'));
+  }
+  const sitemap = await readFile(resolve(projectRoot, 'dist/sitemap.xml'), 'utf8');
+  check('flag off: the sitemap does not list /good-days/', !sitemap.includes('/good-days/'));
+  console.log(failures.length ? `good-days drive (flag off): ${failures.length} failure(s)` : 'good-days drive (flag off): PASS');
+  process.exit(failures.length ? 1 : 0);
+}
+
+if (SCREENSHOTS) await mkdir(evidence, { recursive: true });
+
+const VIEWPORTS = [
+  { name: 'mobile', width: 360, height: 780, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+  { name: 'desktop', width: 1280, height: 900, deviceScaleFactor: 2 },
+];
+
+async function page(browser, viewport) {
+  const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: SCREENSHOTS ? viewport.deviceScaleFactor : 1, isMobile: !!viewport.isMobile, hasTouch: !!viewport.hasTouch, timezoneId: 'Europe/London', locale: 'en-GB' });
+  await context.addInitScript(() => {
+    window.__cls = 0;
+    window.__shifts = [];
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (entry.hadRecentInput) continue;
+        window.__cls += entry.value;
+        window.__shifts.push({ value: entry.value, sources: entry.sources?.map((source) => source.node?.outerHTML?.slice(0, 160)) });
+      }
+    }).observe({ type: 'layout-shift', buffered: true });
+  });
+  const tab = await context.newPage();
+  const requests = [];
+  tab.on('request', (request) => requests.push(`${request.url()} ${request.postData() ?? ''}`));
+  const errors = [];
+  tab.on('pageerror', (error) => errors.push(String(error)));
+  return { context, tab, requests, errors };
+}
+const settle = (tab) => tab.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(done, 300)))));
+const cls = (tab) => tab.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts }));
+
+await withPreview({ port: 4371 }, async (base) => {
+  const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS });
+  try {
+    for (const viewport of VIEWPORTS) {
+      // First load, then a search with a birth date.
+      {
+        const { context, tab, requests, errors } = await page(browser, viewport);
+        await tab.goto(`${base}/good-days/`, { waitUntil: 'networkidle' });
+        await settle(tab);
+        const load = await cls(tab);
+        check(`${viewport.name}: first load has zero CLS`, load.cls === 0, JSON.stringify(load));
+        if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}-form.png` });
+        await tab.selectOption('#gd-goal', 'contract');
+        await tab.fill('#gd-from', '2027-01-01');
+        await tab.fill('#gd-to', '2027-06-30');
+        await tab.check('.good-days__check input');
+        await tab.fill('#gd-birth', BIRTH);
+        const urlBefore = tab.url();
+        await tab.click('.calc__submit');
+        await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
+        await settle(tab);
+        const after = await cls(tab);
+        check(`${viewport.name}: results arrive with zero CLS`, after.cls === 0, JSON.stringify(after));
+        check(`${viewport.name}: no request carries the birth date`, !requests.some((line) => line.includes(BIRTH) || line.includes('1990')), requests.filter((line) => line.includes('1990')).join('\n'));
+        const stored = await tab.evaluate(() => JSON.stringify({ ...localStorage }) + JSON.stringify({ ...sessionStorage }) + document.cookie);
+        check(`${viewport.name}: nothing written to storage or cookies`, !stored.includes('1990') && !stored.includes('good'), stored);
+        check(`${viewport.name}: the address bar is unchanged`, tab.url() === urlBefore, tab.url());
+        const link = await tab.textContent('.good-days__link code');
+        check(`${viewport.name}: the share link carries only the goal and dates`, /^http:\/\/127\.0\.0\.1:\d+\/good-days\/#g=contract&f=2027-01-01&t=2027-06-30$/u.test(link ?? ''), link ?? '');
+        const card = await tab.textContent('.good-days-card');
+        check(`${viewport.name}: the share card holds no birth detail`, !/1990|05-03|3 May 1990/u.test(card ?? ''), card ?? '');
+        const overflow = await tab.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+        check(`${viewport.name}: no horizontal scroll`, !overflow);
+        check(`${viewport.name}: no page errors`, errors.length === 0, errors.join('\n'));
+        if (SCREENSHOTS) {
+          await tab.locator('.good-days__result').screenshot({ path: `${evidence}/${viewport.name}-results.png` });
+          await tab.locator('.good-days-card').screenshot({ path: `${evidence}/${viewport.name}-share-card.png` });
+        }
+        await context.close();
+      }
+      // A shared link opens on its results with no shift.
+      {
+        const { context, tab, errors } = await page(browser, viewport);
+        await tab.goto(`${base}/good-days/#g=wedding&f=2027-04-01&t=2027-09-30`, { waitUntil: 'networkidle' });
+        await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
+        await settle(tab);
+        const shared = await cls(tab);
+        check(`${viewport.name}: a shared link opens on its results with zero CLS`, shared.cls === 0, JSON.stringify(shared));
+        check(`${viewport.name}: the shared link reads the general sky`, (await tab.textContent('.good-days__title'))?.startsWith('Wedding: the best days') === true);
+        check(`${viewport.name}: shared link has no page errors`, errors.length === 0, errors.join('\n'));
+        await context.close();
+      }
+    }
+    // The outcome follow-up, as built: off (the CI build), nothing of it shows; on, the whole flow.
+    const outcomesOn = process.env.PUBLIC_GOOD_DAYS_OUTCOMES_ENABLED === '1';
+    if (!outcomesOn) {
+      const { context, tab } = await page(browser, VIEWPORTS[0]);
+      await tab.goto(`${base}/good-days/#g=move&f=2027-04-01&t=2027-05-31`, { waitUntil: 'networkidle' });
+      await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
+      check('outcomes off: no pick buttons on the finder', (await tab.locator('.good-days__pick-button').count()) === 0);
+      await tab.goto(`${base}/good-days/how-did-it-go/#g=move&d=2027-04-19&s=80&p=0`);
+      check('outcomes off: the follow-up page says it is not open, and runs no form', (await tab.textContent('.outcome__day'))?.includes('not open yet') === true && (await tab.locator('form').count()) === 0);
+      await context.close();
+    } else {
+      for (const viewport of VIEWPORTS) {
+        const { context, tab, requests, errors } = await page(browser, viewport);
+        // Pick a day on 1 April 2027, and come back on 3 June.
+        await tab.clock.setFixedTime(new Date('2027-04-01T09:00:00Z'));
+        await tab.goto(`${base}/good-days/#g=move&f=2027-04-01&t=2027-05-31`, { waitUntil: 'networkidle' });
+        await tab.waitForSelector('.good-days__result', { timeout: 60_000 });
+        await tab.locator('.good-days__pick-button').first().click();
+        await tab.getByRole('button', { name: 'Remind me on this device' }).click();
+        const stored = await tab.evaluate(() => localStorage.getItem('zodiacs.goodDays.followUps.v1'));
+        const kept = JSON.parse(stored ?? '[]');
+        check(`${viewport.name}: the device keeps only the goal, the day, the score and the flag`, kept.length === 1 && Object.keys(kept[0]).sort().join() === 'day,goal,personal,score', stored ?? '');
+        if (SCREENSHOTS) await tab.locator('.good-days__pick').first().screenshot({ path: `${evidence}/${viewport.name}-pick-day.png` });
+        await tab.clock.setFixedTime(new Date('2027-06-03T09:00:00Z'));
+        await tab.goto(`${base}/good-days/`, { waitUntil: 'networkidle' });
+        await tab.waitForSelector('.good-days__toast');
+        await settle(tab);
+        const toastCls = await cls(tab);
+        check(`${viewport.name}: the reminder toast appears with zero CLS`, toastCls.cls === 0, JSON.stringify(toastCls));
+        if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}-reminder-toast.png` });
+        const posted = [];
+        await tab.route('**/api/good-days/outcome', async (route) => { posted.push(route.request().postDataJSON()); await route.fulfill({ status: 201, contentType: 'application/json', body: '{"ok":true,"noteKept":true}' }); });
+        await tab.click('.good-days__toast a');
+        await tab.waitForSelector('.outcome__ratings');
+        await settle(tab);
+        const followCls = await cls(tab);
+        check(`${viewport.name}: the follow-up opens with zero CLS`, followCls.cls === 0, JSON.stringify(followCls));
+        await tab.locator('.outcome__rating').nth(1).click();
+        await tab.fill('#outcome-note', 'Smooth move, the van was early.');
+        if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}-how-did-it-go.png`, fullPage: false });
+        await tab.click('.outcome__body button[type="submit"]');
+        await tab.waitForSelector('.outcome__thanks');
+        check(`${viewport.name}: the answer sends exactly its fields`, posted.length === 1 && Object.keys(posted[0]).sort().join() === 'day,goal,note,personal,rating,score' && posted[0].rating === 4, JSON.stringify(posted));
+        check(`${viewport.name}: nothing but the answer leaves the page`, !requests.some((line) => /plausible|vitals|insights/u.test(line)), requests.filter((line) => /plausible|vitals|insights/u.test(line)).join('\n'));
+        if (SCREENSHOTS) await tab.screenshot({ path: `${evidence}/${viewport.name}-thanks.png` });
+        const after = await tab.evaluate(() => localStorage.getItem('zodiacs.goodDays.followUps.v1'));
+        check(`${viewport.name}: an answered pick is not asked again`, JSON.parse(after ?? '[]')[0]?.done === true, after ?? '');
+        check(`${viewport.name}: follow-up has no page errors`, errors.length === 0, errors.join('\n'));
+        await context.close();
+      }
+    }
+    // Where it is linked from.
+    const { context, tab } = await page(browser, VIEWPORTS[1]);
+    for (const path of ['/tools/', '/occasions/', '/void-of-course-moon/']) {
+      await tab.goto(`${base}${path}`);
+      check(`${path} links to /good-days/`, (await tab.locator('a[href="/good-days/"]').count()) > 0);
+    }
+    if (SCREENSHOTS) {
+      await tab.goto(`${base}/tools/`);
+      await tab.locator('a[href="/good-days/"]').first().scrollIntoViewIfNeeded();
+      await tab.locator('a[href="/good-days/"]').first().screenshot({ path: `${evidence}/desktop-tools-hub-card.png` });
+    }
+    await context.close();
+  } finally {
+    await browser.close();
+  }
+});
+
+console.log(failures.length ? `good-days drive: ${failures.length} failure(s)` : 'good-days drive: PASS');
+process.exit(failures.length ? 1 : 0);
