@@ -18,6 +18,7 @@ import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
+import { directStationCell } from '../../lib/station-cell';
 import { planetLabel } from '../../lib/i18n/astrology';
 import { ENGLISH_ONLY_COPY } from '../../lib/i18n';
 
@@ -516,7 +517,7 @@ const jsonLd = [
             <tr id={`mercury-retrograde-${w.from.toISOString().slice(0, 10)}`} class={w.state === 'past' ? 'rx-table__past' : ''}>
               <td data-label={c.colWindow}>{w.label}</td>
               <td class="mono" data-label={c.colRetrograde}>{w.stationRx}</td>
-              <td class="mono" data-label={c.colDirect}>{w.stationDirect ?? '—'}</td>
+              <td class="mono" data-label={c.colDirect}>{directStationCell(w.stationDirect, locale)}</td>
               <td class="rx-table__state" data-label={c.colStatus}>{w.state === 'active' ? c.now : w.state === 'upcoming' ? c.ahead : ''}</td>
             </tr>
           ))}

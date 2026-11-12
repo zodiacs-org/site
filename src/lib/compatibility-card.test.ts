@@ -34,7 +34,7 @@ describe('compatibility share card', () => {
     };
     // 42.7° rounded would be Taurus 13°, half a degree past what the link's 12.5° allows.
     expect(compatibilityPlacementLine(person)).toBe('Aries 12°  ·  Cancer 10°  ·  Taurus 12°');
-    expect(compatibilityPlacementLine({ ...person, asc: null })).toBe('Aries 12°  ·  Cancer 10°  ·  —');
+    expect(compatibilityPlacementLine({ ...person, asc: null })).toBe('Aries 12°  ·  Cancer 10°');
   });
 
   it('draws a person without a birth time as their link carries them: 12:00 UTC on the date, without the Moon', async () => {
@@ -72,7 +72,7 @@ describe('compatibility share card', () => {
       expect(drawn.b).toBe(partner);
       expect(drawn.summary).toEqual(summarizePair(noon, partner.bodies));
       expect(drawn.summary.aspects.some((contact) => contact.a === 'Moon')).toBe(false);
-      expect(compatibilityPlacementLine(drawn.a)).toMatch(/^\S+ \d+°  ·  —  ·  —$/u);
+      expect(compatibilityPlacementLine(drawn.a)).toMatch(/^\S+ \d+°$/u);
       pictures.add(JSON.stringify(drawn));
     }
     expect(own.size).toBe(2);

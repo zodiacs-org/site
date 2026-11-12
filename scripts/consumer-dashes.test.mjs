@@ -1,11 +1,14 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import corrections from '../src/data/corrections.json';
 import dailyPublication from '../src/data/daily-publication.json';
+import { compatibilityPlacementLine } from '../src/lib/compatibility-card';
 import { dailyReading, houseLine } from '../src/lib/daily';
+import { directStationCell, retrogradeStationCell } from '../src/lib/station-cell';
 import { PEOPLE, peopleText } from '../src/lib/people';
 import {
   dailyPublicationDashMatches,
+  loneDashMatches,
   renderedDashMatches,
   searchIndexDashMatches,
 } from './consumer-dashes-lib.mjs';
@@ -46,6 +49,18 @@ describe('rendered-copy dash gate', () => {
     const body = '<p>Лунный знак \u2014 это знак</p><script>const a = "\u2014";</script><!-- a \u2014 b -->';
     expect(renderedDashMatches(page('<title>Ru \u2014 title</title>', body), '/ru/moon-sign/')).toEqual([]);
     expect(renderedDashMatches(page('', '<script>"\u2014"</script><!-- \u2014 -->'), '/people/x/')).toEqual([]);
+  });
+
+  it('flags a lone dash standing in for an empty value on any page outside the wing and developer lanes', () => {
+    const cell = '<table><tr><td class="mono" data-label="Stations retrograde at">\u2014</td></tr></table>';
+    expect(renderedDashMatches(page('', cell), '/retrogrades/')).toEqual(['empty-value glyph: <td Stations retrograde at>\u2014']);
+    expect(renderedDashMatches(page('', '<span class="mp__meta">&mdash;</span>'), '/ru/moon-phase/')[0]).toMatch(/^empty-value glyph/u);
+    expect(loneDashMatches(page('', '<span> \u2013 </span>'))).toHaveLength(1);
+    // Words, a space holding the line, and dashes inside prose are not lone glyphs.
+    expect(loneDashMatches(page('', '<td>before 2026</td><span>\u00a0</span><p>a \u2014 b</p><script>"\u2014"</script>'))).toEqual([]);
+    for (const path of ['/fomo/', '/registry/aries/', '/terminal/markets/', '/developers/conformance/']) {
+      expect(renderedDashMatches(page('', cell), path), path).toEqual([]);
+    }
   });
 
   it('checks the gated search entries and every printed daily line', () => {
@@ -164,5 +179,65 @@ describe('the copy the dash gate covers carries no dash at source', () => {
       expect(reading.headline).not.toMatch(DASH);
     }
     expect(dailyPublicationDashMatches(dailyPublication)).toEqual([]);
+  });
+});
+
+describe('no dash glyph stands in for an empty value', () => {
+  it('retrograde station cells say why in words', () => {
+    expect(retrogradeStationCell('15°05′ Cancer', 'en', 2026)).toBe('15°05′ Cancer');
+    expect(retrogradeStationCell(null, 'en', 2026)).toBe('before 2026');
+    expect(directStationCell(null, 'en')).toBe('not yet available');
+    for (const locale of ['es', 'pt', 'fr', 'it']) {
+      expect(retrogradeStationCell(null, locale, 2026), locale).toMatch(/2026$/u);
+      expect(directStationCell(null, locale), locale).not.toMatch(DASH);
+    }
+  });
+
+  it('the compatibility picture leaves out a placement it cannot settle', () => {
+    const person = { label: 'A', bodies: [{ body: 'Sun', lon: 12.5 }, { body: 'Moon', lon: 100.2 }], asc: null };
+    expect(compatibilityPlacementLine(person)).toBe('Aries 12°  ·  Cancer 10°');
+    expect(compatibilityPlacementLine({ ...person, bodies: person.bodies.slice(0, 1) })).toBe('Aries 12°');
+  });
+
+  // A bare dash string ('—', "–", `—`) or a lone dash between tags is an
+  // empty-value or loading glyph. Each exempt path awaits a decision or is
+  // pinned elsewhere; anything new in src/ fails here.
+  const EXEMPT = [
+    // The wing lanes of WING_ONLY_SOURCE (scripts/consumer-boundary-lib.mjs).
+    [/^src\/(?:app\.jsx$|(?:exchange|registry|shelf|trade)\/|islands\/(?:RegistryAura|WalletChart)\.tsx$|islands\/aura\/)/u,
+      'wing lanes: market, shelf and registry app tables (audit finding 13)'],
+    [/^src\/pages\/(?:fomo|registry|terminal|astrofolio\/how-to-buy)\//u, 'wing pages (audit finding 13)'],
+    [/^src\/pages\/developers\//u, 'developer pages (audit finding 13)'],
+    [/^src\/lib\/sky-api\//u, 'developer API text and llms.txt (audit finding 13)'],
+    [/^src\/lib\/compare\//u, 'imported by the pinned chart studio panel (SOURCE_SHA256)'],
+    [/^src\/ai-tools\//u, 'MCP output, gated by src/ai-tools/output-dashes.test.ts'],
+    [/^src\/islands\/ChartCalculator\.tsx$/u, 'Russian grammar dash in the aspects heading (audit finding 5)'],
+    [/^src\/lib\/daily-email\/content\.ts$/u, 'plain-text email footer rule, awaiting review'],
+  ];
+  const GLYPH = /(['"`])[\u2013\u2014]\1|>\s*[\u2013\u2014]\s*</u;
+
+  function sourceFiles(dir) {
+    return readdirSync(new URL(`../${dir}`, import.meta.url), { withFileTypes: true }).flatMap((entry) => {
+      const path = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) return sourceFiles(path);
+      return /\.(?:astro|tsx?|mjs|jsx?)$/u.test(entry.name) && !/\.test\./u.test(entry.name) ? [path] : [];
+    });
+  }
+
+  it('in any source file outside the exempt lanes', () => {
+    const found = sourceFiles('src')
+      .filter((path) => !EXEMPT.some(([pattern]) => pattern.test(path)))
+      .flatMap((path) => source(path).split('\n')
+        .map((line, index) => [line, index + 1])
+        .filter(([line]) => GLYPH.test(line) && !/^\s*(?:\/\/|\*|\/\*)/u.test(line))
+        .map(([line, number]) => `${path}:${number}: ${line.trim()}`));
+    expect(found).toEqual([]);
+  });
+
+  it('the exempt lanes still exist, so the list cannot go stale silently', () => {
+    const files = sourceFiles('src');
+    for (const [pattern, reason] of EXEMPT) {
+      expect(files.some((path) => pattern.test(path)), reason).toBe(true);
+    }
   });
 });

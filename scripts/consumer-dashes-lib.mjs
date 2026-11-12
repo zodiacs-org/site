@@ -12,11 +12,15 @@
  *     including the closed evidence panel;
  *   - the /lunar-return/ and /numerology/ titles (and their search entries);
  *   - the /corrections/ body;
- *   - the daily publication's lines, which /today/ and /profile/ print.
+ *   - the daily publication's lines, which /today/ and /profile/ print;
+ *   - a lone dash standing in for an empty value or a loading state (a table
+ *     cell, a meta line) on every page outside the wing and developer lanes.
+ *     The retrograde tables now say "before 2026" or "not yet available",
+ *     and the Moon phase tool's loading line holds its height with a space.
  *
  * Other surfaces still carry dashes on purpose or await a decision (the
- * Russian locale, legal and disclosure keys, wing pages, OG images, the
- * empty-value glyph), so the gate is scoped rather than site-wide. Widen
+ * Russian locale's prose, legal and disclosure keys, wing and developer pages,
+ * OG images), so the gate is scoped rather than site-wide. Widen
  * DASH_GATED_PAGES as each surface is cleaned.
  */
 
@@ -29,10 +33,19 @@ const BODY_PAGES = new Set(['/corrections/']);
 /** Pages whose title, og:title and twitter:title must carry no dash. */
 const TITLE_PAGES = new Set(['/lunar-return/', '/numerology/']);
 
+/**
+ * Lanes whose lone-dash empty values await a decision (finding 13 of the
+ * audit): the wing's market tables and the developer pages' data tables.
+ */
+const LONE_DASH_EXEMPT_PREFIXES = Object.freeze([
+  '/archive/', '/astrofolio/', '/developers/', '/fomo/', '/registry/', '/sdk/', '/terminal/', '/thesis/',
+]);
+
 export const DASH_GATED_PAGES = Object.freeze({
   wholePagePrefixes: WHOLE_PAGE_PREFIXES,
   bodyPages: [...BODY_PAGES],
   titlePages: [...TITLE_PAGES],
+  loneDashExemptPrefixes: LONE_DASH_EXEMPT_PREFIXES,
 });
 
 function decode(value) {
@@ -105,8 +118,27 @@ function navigationDescriptionTexts(html) {
   return texts;
 }
 
+/**
+ * Elements whose whole visible text is one dash: an empty-value or loading
+ * glyph rather than prose. Scripts, styles and comments are not text.
+ */
+export function loneDashMatches(html) {
+  const body = (html.match(/<body\b[^>]*>[\s\S]*<\/body>/iu)?.[0] ?? html)
+    .replace(/<!--[\s\S]*?-->/gu, ' ')
+    .replace(/<(script|style|svg|template)\b[^>]*>[\s\S]*?<\/\1>/giu, ' ');
+  const found = [];
+  for (const match of body.matchAll(/<([a-z][a-z0-9-]*)\b([^>]*)>([^<]*)<\/\1>/giu)) {
+    if (!/^\s*[\u2013\u2014]\s*$/u.test(decode(match[3]))) continue;
+    const label = attribute(`<${match[1]}${match[2]}>`, 'data-label') ?? attribute(`<${match[1]}${match[2]}>`, 'class') ?? '';
+    found.push(`empty-value glyph: <${match[1]}${label ? ` ${label}` : ''}>${match[3].trim()}`);
+    if (found.length >= 3) break;
+  }
+  return found;
+}
+
 /** Dash findings for one built HTML page at a site path such as /people/ada-lovelace/. */
 export function renderedDashMatches(html, path) {
+  const lone = LONE_DASH_EXEMPT_PREFIXES.some((prefix) => path.startsWith(prefix)) ? [] : loneDashMatches(html);
   const texts = [...navigationDescriptionTexts(html)];
   if (WHOLE_PAGE_PREFIXES.some((prefix) => path.startsWith(prefix))) {
     texts.push(...headTexts(html), ...jsonLdTexts(html), ['body', bodyText(html)]);
@@ -115,7 +147,7 @@ export function renderedDashMatches(html, path) {
   } else if (BODY_PAGES.has(path)) {
     texts.push(['body', bodyText(html)]);
   }
-  return texts.flatMap(([label, text]) => (DASH.test(text) ? snippets(label, text) : []));
+  return [...lone, ...texts.flatMap(([label, text]) => (DASH.test(text) ? snippets(label, text) : []))];
 }
 
 /** Search entries for the gated pages: their titles and descriptions. */

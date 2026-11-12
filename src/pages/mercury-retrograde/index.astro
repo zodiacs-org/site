@@ -7,6 +7,7 @@ import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate } from '../../lib/i18n/dates';
+import { directStationCell } from '../../lib/station-cell';
 
 // The years the committed table covers (sky.json runs to the start of its
 // last year plus one), so the copy names the span the table lists.
@@ -178,7 +179,7 @@ const jsonLd = [
             <tr id={`mercury-retrograde-${w.from.toISOString().slice(0, 10)}`} class={w.state === 'past' ? 'rx-table__past' : ''}>
               <td data-label="Window">{w.label}</td>
               <td class="mono" data-label="Stations retrograde at">{w.stationRx}</td>
-              <td class="mono" data-label="Stations direct at">{w.stationDirect ?? '—'}</td>
+              <td class="mono" data-label="Stations direct at">{directStationCell(w.stationDirect, 'en')}</td>
               <td class="rx-table__state" data-label="Status">{w.state === 'active' ? 'now' : w.state === 'upcoming' ? 'ahead' : ''}</td>
             </tr>
           ))}
