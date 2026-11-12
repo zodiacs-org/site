@@ -177,7 +177,9 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   whole km and the perigee and apogee on each side; astronomy-engine with one
   measured scale factor, held to JPL DE421 and Horizons by
   `scripts/build-moon-distances.test.mjs` and the fixtures from
-  `scripts/moon-distances-de421.py`. It names no rule about close Moons.
+  `scripts/moon-distances-de421.py`. It names no rule about close Moons;
+  the supermoon rule (owner, 2026-11-12: a full Moon within 10% of its
+  orbit's perigee to apogee range from perigee) is `src/lib/supermoon.ts`.
   sky.json stays untouched. No timestamp, so `--check` catches drift; the
   site-check drift gate runs it. Rerun it whenever sky.json is rebuilt)
 - `src/data/eclipses.json` ← `node scripts/build-eclipses.mjs` (refresh
