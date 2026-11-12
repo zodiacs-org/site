@@ -425,6 +425,123 @@ describe('first saves over the real bootstrap', () => {
     expect(sync.listeners).toHaveLength(1);
   });
 
+  it('keeps a newer grant when the superseded session read then fails', async () => {
+    // An empty browser, signed out. The start's session read is held; an auth
+    // event then grants, and only afterwards does the obsolete read fail.
+    let failSession = () => {};
+    sync.heldSession = new Promise((_resolve, reject) => { failSession = () => reject(new Error('session read failed')); });
+    const request = await import('./profile-access-request');
+    const bootstrap = await import('./profile-access-bootstrap');
+    const reader = await import('./profile-access-reader');
+    const store = await import('../profile/store');
+    const first = request.ensureProfileWriteAccess(2_000);
+    await vi.waitFor(() => expect(sync.listeners).toHaveLength(1));
+    for (const listener of sync.listeners) listener(null);
+    await expect(first).resolves.toBe('allowed');
+    expect(reader.profileAccessAllowed()).toBe(true);
+    failSession();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    // The grant, the lease and the one subscription all stand.
+    expect(reader.profileAccessAllowed()).toBe(true);
+    expect(JSON.parse(session.getItem(ACCOUNT_V2_PROFILE_ACCESS_KEY)!)).toEqual({ version: 1, mode: 'unowned' });
+    expect(sync.listeners).toHaveLength(1);
+    expect(bootstrap.profileAccessSettled()).toBe(true);
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('allowed');
+    expect(sync.sessionReads).toBe(1);
+    expect(store.saveChart(syntheticChart())).toBe('saved');
+    // The kept subscription is the live one: a sign-in elsewhere still reaches this tab.
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: B }));
+    for (const listener of sync.listeners) listener(null);
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('denied');
+  });
+
+  it('keeps a newer denial settled when the superseded session read then fails', async () => {
+    // This browser belongs to B and nobody is signed in here.
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: B }));
+    let failSession = () => {};
+    sync.heldSession = new Promise((_resolve, reject) => { failSession = () => reject(new Error('session read failed')); });
+    const request = await import('./profile-access-request');
+    const bootstrap = await import('./profile-access-bootstrap');
+    const reader = await import('./profile-access-reader');
+    const first = request.ensureProfileWriteAccess(2_000);
+    await vi.waitFor(() => expect(sync.listeners).toHaveLength(1));
+    for (const listener of sync.listeners) listener(null);
+    await expect(first).resolves.toBe('denied');
+    failSession();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(bootstrap.profileAccessSettled()).toBe(true);
+    expect(sync.listeners).toHaveLength(1);
+    // A save now reports the settled denial. It does not start again: a retry
+    // whose session read never answered would otherwise report unavailable.
+    sync.heldSession = new Promise(() => {});
+    await expect(request.ensureProfileWriteAccess(500)).resolves.toBe('denied');
+    expect(sync.sessionReads).toBe(1);
+    expect(reader.profileAccessAllowed()).toBe(false);
+    expect(session.getItem(ACCOUNT_V2_PROFILE_ACCESS_KEY)).toBeNull();
+  });
+
+  it('lets a newer evaluation still in flight grant after the superseded session read fails', async () => {
+    let failSession = () => {};
+    sync.heldSession = new Promise((_resolve, reject) => { failSession = () => reject(new Error('session read failed')); });
+    const request = await import('./profile-access-request');
+    const bootstrap = await import('./profile-access-bootstrap');
+    const reader = await import('./profile-access-reader');
+    const first = request.ensureProfileWriteAccess(2_000);
+    await vi.waitFor(() => expect(sync.listeners).toHaveLength(1));
+    // The newer evaluation holds at its lease while the obsolete read fails.
+    let releaseLease = () => {};
+    holdNextLease = { held: new Promise<void>((resolve) => { releaseLease = resolve; }) };
+    for (const listener of sync.listeners) listener(null);
+    await vi.waitFor(() => expect(holdNextLease).toBeNull());
+    failSession();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(bootstrap.profileAccessSettled()).toBe(false);
+    // The obsolete failure moved neither the auth version nor the access
+    // version, so the current evaluation still grants when its lease arrives.
+    releaseLease();
+    await expect(first).resolves.toBe('allowed');
+    expect(reader.profileAccessAllowed()).toBe(true);
+    expect(sync.listeners).toHaveLength(1);
+    expect(sync.sessionReads).toBe(1);
+  });
+
+  it('stays locked after a failed start until a save starts it again, whatever asks to reevaluate', async () => {
+    sync.sessionFailures = 1;
+    const request = await import('./profile-access-request');
+    const reader = await import('./profile-access-reader');
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('unavailable');
+    window.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(reader.profileAccessAllowed()).toBe(false);
+    expect(session.getItem(ACCOUNT_V2_PROFILE_ACCESS_KEY)).toBeNull();
+    // The next save still starts again, and only that grants.
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('allowed');
+    expect(sync.sessionReads).toBe(2);
+    expect(sync.listeners).toHaveLength(1);
+  });
+
+  it('ignores an auth event from the subscription a failed start dropped', async () => {
+    let failSession = () => {};
+    sync.heldSession = new Promise((_resolve, reject) => { failSession = () => reject(new Error('session read failed')); });
+    const request = await import('./profile-access-request');
+    const reader = await import('./profile-access-reader');
+    const first = request.ensureProfileWriteAccess(2_000);
+    await vi.waitFor(() => expect(sync.listeners).toHaveLength(1));
+    const dropped = sync.listeners[0];
+    // No auth event came first, so this failure is the current start's own.
+    failSession();
+    await expect(first).resolves.toBe('unavailable');
+    expect(sync.listeners).toHaveLength(0);
+    // The sync module calls the dropped listener late: it grants nothing.
+    dropped(null);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(reader.profileAccessAllowed()).toBe(false);
+    expect(session.getItem(ACCOUNT_V2_PROFILE_ACCESS_KEY)).toBeNull();
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('allowed');
+    expect(sync.sessionReads).toBe(2);
+    expect(sync.listeners).toHaveLength(1);
+  });
+
   it('stays locked rather than granting when Supabase is not configured', async () => {
     sync.configured = false;
     const request = await import('./profile-access-request');
