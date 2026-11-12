@@ -8,6 +8,7 @@
  * Pure: no network, storage or logging (the X fetch lives in the script).
  */
 import { YEAR_PEOPLE, personKey, type YearPerson } from './people';
+import { rangeWorthShowing } from './range';
 
 /** A post on X fits in 280 characters; a link counts as 23 of them. */
 export const X_POST_LIMIT = 280;
@@ -33,6 +34,8 @@ export interface DraftScore {
   hardest: { name: string } | null;
   drivers: { title: string }[];
   confidenceLabel: string | null;
+  /** Without a birth time: the lowest and highest score across the birth day, as the figure's page shows it. */
+  scoreRange?: { low: number; high: number } | null;
 }
 
 export interface TrendInput { name: string; volume?: number | null }
@@ -74,11 +77,15 @@ export const DRAFT_BANNED = /\b(?:buy|sell|selling|price targets?|stocks?|crypto
 /** A draft post for one match, under X's limit with its link counted as 23 characters, or null if it trips the guard. */
 export function draftPost(person: YearPerson, data: DraftScore, url: string): string | null {
   if (data.status !== 'found' || data.score === null || !data.label) return null;
+  // The same range, in the same words, as the figure's /year/ page shows beside its score.
+  const range = data.scoreRange ?? null;
+  const between = rangeWorthShowing(range) ? ` (between ${range.low.toFixed(1)} and ${range.high.toFixed(1)} without a birth time)` : '';
   const lines = [
-    `${person.name}'s next twelve months on the Zodiacs Year Ahead Score: ${data.score.toFixed(1)}/10, ${data.label.charAt(0).toLowerCase()}${data.label.slice(1)}.`,
+    `${person.name}'s next twelve months on the Zodiacs Year Ahead Score: ${data.score.toFixed(1)}/10${between}, ${data.label.charAt(0).toLowerCase()}${data.label.slice(1)}.`,
   ];
   if (data.best) lines.push(`Strongest month: ${data.best.name}.`);
-  if (data.hardest) lines.push(`Most pressure: ${data.hardest.name}.`);
+  // The hardest month is picked on the month's net balance, not its pressure alone, so it is named as the page heads it.
+  if (data.hardest) lines.push(`Hardest month: ${data.hardest.name}.`);
   if (data.drivers[0]) lines.push(`Main transit: ${data.drivers[0].title.replace(' your ', ` ${person.name.split(' ')[0]}'s `)}.`);
   lines.push(`${data.confidenceLabel}.`);
   let text = lines.join(' ');

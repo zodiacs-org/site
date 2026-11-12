@@ -30,11 +30,15 @@ describe('draft posts', () => {
     const draft = draftPost(person, score(), url)!;
     expect(draft.endsWith(`\n${url}`)).toBe(true);
     expect(draft).toContain('6.4/10');
-    expect(draft).toContain('Strongest month: March 2027. Most pressure: October 2026.');
+    expect(draft).toContain('Strongest month: March 2027. Hardest month: October 2026.');
     expect(draft).toContain('Reading confidence 55%');
     expect(draft).toContain("Jupiter trine Jensen's Sun");
     expect(draft.length - url.length + 23).toBeLessThanOrEqual(X_POST_LIMIT);
     expect(draft).not.toMatch(DRAFT_BANNED);
+  });
+  it('gives the score’s birth-day range as the figure’s page does, when it is wide enough to show', () => {
+    expect(draftPost(person, score({ scoreRange: { low: 5.9, high: 6.8 } }), url)).toContain('6.4/10 (between 5.9 and 6.8 without a birth time), a supportive year.');
+    expect(draftPost(person, score({ scoreRange: { low: 6.3, high: 6.4 } }), url)).toContain('6.4/10, a supportive year.');
   });
   it('withholds a draft that would carry a trading call or a diagnosis, and gives none without a score', () => {
     expect(draftPost(person, score({ label: 'A year to buy' }), url)).toBeNull();

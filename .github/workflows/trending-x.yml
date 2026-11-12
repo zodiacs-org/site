@@ -6,6 +6,9 @@ name: Trending on X (drafts for review)
 # marketing team, and the names not in the directory for human review.
 # It never posts, never publishes, never commits and never adds anyone to the
 # directory. Its only output is the workflow artifact.
+# Off by default: the schedule runs, and X is read, only where the repository
+# variable TRENDING_X_ENABLED is exactly 1. Without it, only a manual run with
+# names given checks those names, and the X token is never handed to the job.
 
 on:
   schedule:
@@ -23,6 +26,7 @@ permissions:
 jobs:
   trending:
     name: Match trending names and draft posts
+    if: github.event_name == 'workflow_dispatch' || vars.TRENDING_X_ENABLED == '1'
     runs-on: ubuntu-latest
     # The X token is scoped to its own protected environment, as every secret-bearing workflow is.
     environment: trending-x-production
@@ -44,7 +48,7 @@ jobs:
 
       - name: Build the report
         env:
-          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+          X_BEARER_TOKEN: ${{ vars.TRENDING_X_ENABLED == '1' && secrets.X_BEARER_TOKEN || '' }}
           NAMES: ${{ github.event.inputs.names }}
         run: |
           if [ -n "$NAMES" ]; then
@@ -52,9 +56,9 @@ jobs:
           elif [ -n "$X_BEARER_TOKEN" ]; then
             npx vite-node --script scripts/trending-x.ts -- --x-trends --out trending-report
           else
-            echo "No names given and no X_BEARER_TOKEN secret; nothing to read today."
+            echo "No names given, and X is read only with TRENDING_X_ENABLED=1 and the X_BEARER_TOKEN secret; nothing to read today."
             mkdir -p trending-report
-            echo "No input today: set the X_BEARER_TOKEN secret or run with names." > trending-report/README.md
+            echo "No input today: run with names, or set TRENDING_X_ENABLED=1 and the X_BEARER_TOKEN secret." > trending-report/README.md
           fi
 
       - name: Upload the report for review
