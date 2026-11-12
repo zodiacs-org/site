@@ -36,6 +36,7 @@ import registryResearchPublicationData from '../data/registry-research/publicati
 import { eventsPublication } from '../lib/events/site-publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { isHiddenAlmanacSlug, isHiddenChildPage } from '../data/hidden-child-pages.mjs';
 import { launchFlagOn } from '../lib/launch-flags';
 
 const SITE = 'https://zodiacs.org';
@@ -198,7 +199,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/about/',
   '/almanac/',
   '/ask/',
-  '/baby-zodiac/',
   '/big-three/',
   '/birth-chart/',
   '/birth-chart/someone-else/',
@@ -211,7 +211,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/eclipses/',
   '/eclipses/2027/',
   '/es/',
-  '/es/baby-zodiac/',
   '/es/birth-chart/',
   '/es/chart-of-the-day/',
   '/es/compatibility/',
@@ -228,7 +227,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/events/',
   '/feeds/',
   '/fr/',
-  '/fr/baby-zodiac/',
   '/fr/birth-chart/',
   '/fr/chart-of-the-day/',
   '/fr/compatibility/',
@@ -245,7 +243,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/full-moon-calendar/',
   '/full-moon-calendar/2027/',
   '/it/',
-  '/it/baby-zodiac/',
   '/it/birth-chart/',
   '/it/chart-of-the-day/',
   '/it/compatibility/',
@@ -269,12 +266,10 @@ const DESIGN_SWEEP_ROUTES = [
   '/moon-phase/',
   '/moon-sign/',
   '/occasions/',
-  '/occasions/baby-shower/',
   '/occasions/milestones/',
   '/privacy/',
   '/profile/',
   '/pt/',
-  '/pt/baby-zodiac/',
   '/pt/birth-chart/',
   '/pt/chart-of-the-day/',
   '/pt/compatibility/',
@@ -291,7 +286,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/retrogrades/',
   '/rising-sign/',
   '/ru/',
-  '/ru/baby-zodiac/',
   '/ru/birth-chart/',
   '/ru/chart-of-the-day/',
   '/ru/compatibility/',
@@ -419,11 +413,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/today/', '/learn/', '/tools/',
     '/profile/', '/learn/how-to-read-a-birth-chart/', '/learn/communication/', '/learn/zodiac-dates/', '/learn/glossary/', '/learn/planets/',
     '/learn/houses/', '/learn/aspects/', '/learn/placements/', '/birthday/',
-    '/baby-zodiac/', '/widgets/', '/methodology/', '/about/', '/corrections/', '/privacy/',
+    '/widgets/', '/methodology/', '/about/', '/corrections/', '/privacy/',
     '/terms/', '/feeds/', '/almanac/',
     '/es/', '/es/birth-chart/', '/es/compatibility/', '/es/moon-sign/',
     '/es/rising-sign/', '/es/moon-phase/', '/es/saturn-return/', '/es/transits/',
-    '/es/tools/', '/es/profile/', '/es/baby-zodiac/', '/es/methodology/', '/es/privacy/',
+    '/es/tools/', '/es/profile/', '/es/methodology/', '/es/privacy/',
   ].map((loc) => [
     loc,
     [
@@ -447,10 +441,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
-  // The occasion cards, first published 2026-10-11.
+  // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
-  ['/occasions/baby-shower/', '2026-10-11'] as const,
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -479,7 +472,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/pt/', '/pt/birth-chart/', '/pt/compatibility/', '/pt/moon-sign/',
     '/pt/rising-sign/', '/pt/moon-phase/', '/pt/saturn-return/', '/pt/transits/',
-    '/pt/tools/', '/pt/profile/', '/pt/baby-zodiac/', '/pt/methodology/', '/pt/privacy/',
+    '/pt/tools/', '/pt/profile/', '/pt/methodology/', '/pt/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -488,7 +481,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/fr/', '/fr/birth-chart/', '/fr/compatibility/', '/fr/moon-sign/',
     '/fr/rising-sign/', '/fr/moon-phase/', '/fr/saturn-return/', '/fr/transits/',
-    '/fr/tools/', '/fr/profile/', '/fr/baby-zodiac/', '/fr/methodology/', '/fr/privacy/',
+    '/fr/tools/', '/fr/profile/', '/fr/methodology/', '/fr/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -497,7 +490,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/it/', '/it/birth-chart/', '/it/compatibility/', '/it/moon-sign/',
     '/it/rising-sign/', '/it/moon-phase/', '/it/saturn-return/', '/it/transits/',
-    '/it/tools/', '/it/profile/', '/it/baby-zodiac/', '/it/methodology/', '/it/privacy/',
+    '/it/tools/', '/it/profile/', '/it/methodology/', '/it/privacy/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
@@ -506,7 +499,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...[
     '/ru/', '/ru/birth-chart/', '/ru/compatibility/', '/ru/moon-sign/',
     '/ru/rising-sign/', '/ru/moon-phase/', '/ru/saturn-return/', '/ru/transits/',
-    '/ru/tools/', '/ru/profile/', '/ru/baby-zodiac/', '/ru/methodology/',
+    '/ru/tools/', '/ru/profile/', '/ru/methodology/',
     '/ru/privacy/', '/ru/disclosure/',
     ...[
       'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -698,7 +691,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const learn = await getCollection('learn', ({ data }) => !data.draft);
   const horoscopes = await getCollection('horoscopes', ({ data }) => !data.draft);
   const birthdays = await getCollection('birthdays', ({ data }) => !data.draft);
-  const almanac = await getCollection('almanac', ({ data }) => !data.draft);
+  // Hidden articles (src/data/hidden-child-pages.mjs) are noindex and stay out of the sitemap.
+  const almanac = await getCollection('almanac', ({ id, data }) => !data.draft && !isHiddenAlmanacSlug(id));
   const latestMonth = currentHoroscopeMonth(horoscopes.map((h) => h.data.month), utcMonth(daily.date));
   const latestMonthlyBySign = new Map(
     horoscopes
@@ -766,10 +760,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/learn/aspects/', priority: 0.7 },
     { loc: '/learn/placements/', priority: 0.7 },
     { loc: '/birthday/', priority: 0.7 },
-    { loc: '/baby-zodiac/', priority: 0.8 },
     { loc: '/occasions/', priority: 0.7 },
     { loc: '/occasions/milestones/', priority: 0.6 },
-    { loc: '/occasions/baby-shower/', priority: 0.6 },
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },
@@ -989,10 +981,18 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
   }
+  // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
+  // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no
+  // longer lists the article on a child's chart.
+  for (const url of urls) {
+    if (url.loc === '/occasions/' || url.loc === '/tools/' || url.loc === '/almanac/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-12');
+    }
+  }
   return [
     ...urls,
     ...localizedUrls,
-  ];
+  ].filter((url) => !isHiddenChildPage(url.loc));
 }
 
 /** A urlset of the given entries, each with its hreflang alternates, lastmod and priority. */
