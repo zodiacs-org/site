@@ -26,6 +26,7 @@ import {
   ACCOUNT_V2_LOCAL_OWNER_KEY,
   ACCOUNT_V2_RETAINED_OWNER_KEY,
 } from '../lib/account-v2/storage-identity';
+import { isHiddenChildPage } from '../data/hidden-child-pages.mjs';
 
 interface Props {
   title: string;
@@ -96,7 +97,10 @@ interface Props {
   terminalMarketNotice?: boolean;
 }
 
-const props = Astro.props;
+const props = {
+  ...Astro.props,
+  ...(isHiddenChildPage(Astro.props.path) ? { noindex: true, nofollow: true } : {}),
+};
 const locale = normalizePageLocale(props.locale);
 // WebMCP (Track A2): Search on English pages, and on a calculator page, in every locale, the page's own tool.
 const webMcpSearch = locale === 'en';
