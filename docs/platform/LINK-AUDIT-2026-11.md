@@ -1,8 +1,9 @@
 # Link audit, November 2026 (ZOD-114, plan key P6.9)
 
 Read at `origin/main` 1853a6814 on 12 November 2026, revised the same day
-after review. This is a report only: nothing in the site was changed,
-switched or deployed for it.
+after review, and again after `7d005c477` (pull request 985) landed later that
+day. This is a report only: nothing in the site was changed, switched or
+deployed for it.
 
 ## The question
 
@@ -109,7 +110,7 @@ such links, but it does not refuse them either.
 
 | # | Link kind (shape) | Where it is made | Data in | Carries | Seen by | Still offered | House rule | New-work rule |
 |---|---|---|---|---|---|---|---|---|
-| 14 | Occasion card link from the site: `/occasions/#o=<kind>&d=YYYY-MM-DD&n=<names>&t=HH:MM&tz=<zone>&lat=&lon=&place=<label>` | `cardLink` in `src/islands/OccasionSky.tsx` ("Copy the card's link") | Fragment | O with year, names (up to 60 characters), time, zone, coordinates to 4 decimals, place label. For the three birth occasions in `BIRTH_OCCASIONS` (`src/lib/occasions/saved-path.ts`) the date is a birth date, so this is D, T, P and N | No server | Yes, for every occasion kind, including the birth occasions | **FLAG** | Outside |
+| 14 | Occasion card link from the site: `/occasions/#o=<kind>&d=YYYY-MM-DD&n=<names>&t=HH:MM&tz=<zone>&lat=&lon=&place=<label>` | `cardLink` in `src/islands/OccasionSky.tsx` ("Copy the card's link") | Fragment | O with year, names (up to 60 characters), time, zone, coordinates to 4 decimals, place label. For the three birth occasions in `BIRTH_OCCASIONS` (`src/lib/occasions/saved-path.ts`) the date is a birth date, so this is D, T, P and N | No server | Yes, for the occasions the picker still offers, including a birthday. As of pull request 985, a new baby or a coming of age is not in the picker (`PICKER_OCCASION_KINDS` in `src/lib/occasions/picker.ts`). An old link that names one is cleared from the address bar and makes no card | **FLAG** | Outside |
 | 15 | Occasion card link from the assistant, and a saved occasion page: `/occasions/#o=<kind>&d=YYYY-MM-DD&t=HH:MM&tz=<zone>&lat=&lon=` | `occasionCardUrl` in `src/ai-tools/tools.ts`; `savedOccasionPath` in `src/lib/occasions/saved-path.ts` | Fragment | O, time, zone, coordinates to 2 decimals. Never names or a place label. No link at all for a birth occasion | No navigation request carries it. But the assistant builds it on the server, and a saved occasion is stored as this whole address, fragment included, in the account's saved pages (see row 30) | Yes | OK | Outside |
 | 16 | Occasion share: `/share/occasion/?o=<kind>&d=YYYY-MM-DD&sun=&moon=&score=&v=&c=` and its images | `occasionShareUrl` in `src/lib/share-results.ts`, called from `src/ai-tools/tools.ts` for non-birth occasions only | Query | O, signs, score. Older links also carried `n` (names) and `p` (place), and could name a birth occasion | Server and request log. Older links' names, place and a birth occasion's date arrive before the 303 in `retiredLinkRedirect` clears them | Yes (new form) | New form OK. **FLAG (inbound)** for older links | Outside |
 
@@ -169,7 +170,7 @@ server's request log see the whole link.
 | # | Link kind (shape) | Read by | Data in | Carries | Seen by | Still offered | House rule | New-work rule |
 |---|---|---|---|---|---|---|---|---|
 | 44 | Milestones page arrival: `/occasions/milestones/#b=YYYY-MM-DD` | `src/islands/LifeMilestones.tsx` | Fragment | D. The page does not clear the fragment after reading it, so it stays in the address bar | No server | No producer found in the site or the assistant tools; the page still accepts it | **FLAG** | Outside |
-| 45 | Baby shower page arrival: `/occasions/baby-shower/#due=YYYY-MM-DD&n=<names>` | `src/islands/BabyShowerSky.tsx` | Fragment | A date and names (up to the page's name limit). The page fills the names in and does not clear the fragment | No server | No producer found; the page still accepts it | **FLAG** (N) | Outside |
+| 45 | Baby shower page arrival: `/occasions/baby-shower/#due=YYYY-MM-DD&n=<names>` | `src/islands/BabyShowerSky.tsx` | Fragment | A date and names (up to the page's name limit). The page fills the names in and does not clear the fragment | No server | No producer found; the page still accepts it. As of pull request 985 the page is noindex and nofollow, and is out of the sitemap and navigation, but it stays reachable at this address | **FLAG** (N) | Outside |
 
 ## Flagged rows and the smallest fix
 
@@ -218,7 +219,11 @@ personal.
 7. **Row 14, the site's occasion card link.** The largest open gap. For a
    birth occasion the fragment holds the full birth date with the year, the
    time, coordinates to 4 decimals, the place label and the names, and the
-   button is offered. Smallest fix in `cardLink` in `OccasionSky.tsx`: for
+   button is offered. As of pull request 985 the picker no longer offers a
+   new baby or a coming of age, and an inbound link that names one is
+   cleared from the address bar and makes no card. A birthday is still
+   offered, and its copied link still carries those birth details.
+   Smallest fix in `cardLink` in `OccasionSky.tsx`: for
    every occasion kind, copy a card ID (row 15 and row 30 show the
    stored-address pattern), a Sun sign only, or the bare `/occasions/`
    address, which carries nothing. Stop reading birth details, names,
@@ -254,9 +259,10 @@ personal.
 12. **Row 44, `#b=` on the milestones page.** Smallest fix: stop reading
     `#b=`; if it stays, clear it with `history.replaceState` right after
     reading, as the calculator does.
-13. **Row 45, `#n=` on the baby shower page.** Smallest fix: stop reading
-    `n`, so no link can put names on that page. No other change is
-    recommended for that page.
+13. **Row 45, `#n=` on the baby shower page.** The page is hidden from
+    discovery as of pull request 985, but it still accepts the fragment.
+    Smallest fix: stop reading `n`, so no link can put names on that page.
+    No other change is recommended for that page.
 
 Count: 45 rows. Flagged: rows 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 16,
 17, 22, 23, 28, 34, 40, 44 and 45 (21 rows). Of these, rows 7, 13, 16, 17,
@@ -274,12 +280,26 @@ server still receives it.
   a digest; for a saved non-birth occasion it is the date, time, zone and
   two-decimal coordinates. Commit #963 kept older saved-page rows readable,
   so rows made before it may still hold addresses of the kind in row 14;
-  that is a stored-data question for a separate ticket.
+  that is a stored-data question for a separate ticket. If such a stored
+  address names a new baby or a coming of age, opening it now shows the
+  picker's notice and clears the fragment (`isHiddenOccasion` in
+  `OccasionSky.tsx`).
 - **Row 37, sign-in.** `safeReturnPath` keeps the query and the fragment of
   `next`. Today the only caller passes `/profile/`, so nothing leaks. If a
   later caller passed the current page address, a fragment such as row 14's
   would move into a query that Supabase, the sign-in provider and the
   request log all see. A later ticket could strip the fragment from `next`.
+- **Rows 14 and 45 after pull request 985.** The picker no longer offers
+  a new baby or a coming of age. An old card link that names one is
+  cleared and makes no card. The baby shower page, the baby zodiac pages
+  and the Almanac article on reading a child's chart stay built and
+  reachable, marked noindex and nofollow, and are left out of the
+  sitemap, the tools hub, the occasions list, the Almanac lists and the
+  assistant guide (`src/data/hidden-child-pages.mjs`). None of that adds
+  or removes a link kind in this table. Row 14 stays flagged because a
+  birthday card link is still offered with birth details. Row 45 stays
+  flagged because the baby shower page still reads names from the
+  fragment.
 - **Rows outside the new-work rule but not breaches.** Rows 15, 16 (new
   form), 17 (new form), 18, 19 and 20 (with a Moon or rising sign), 22 and
   23 (new forms), 27 (with a score) and 29 carry more than a card ID or a
@@ -291,7 +311,8 @@ server still receives it.
 - Read in full: `src/lib/share.ts`, `src/lib/share-positions.ts`,
   `src/lib/share-positions-noon.ts`, `src/islands/ChartShareDialog.tsx`,
   `api/calendar/transits.ts`, `src/islands/CalendarSubscribe.tsx`,
-  `src/lib/occasions/saved-path.ts`, `src/islands/OccasionSky.tsx`,
+  `src/lib/occasions/saved-path.ts`, `src/lib/occasions/picker.ts`,
+  `src/data/hidden-child-pages.mjs`, `src/islands/OccasionSky.tsx`,
   `src/ai-tools/share-links.ts`, `src/lib/share-results.ts`,
   `src/lib/chart-handoff.ts`, `src/lib/share-synastry.ts`,
   `src/lib/profile/card-link.ts`, `src/lib/sharing/private-invite.ts`,
