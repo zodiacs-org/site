@@ -62,6 +62,15 @@ describe('keyword tables', () => {
     for (const locale of CANDIDATES) expect(target(locale, read(locale).find((row) => row[3] === 'birth-chart')[5])).toBe('/birth-chart/');
   });
 
+  it('give every coverage value a readiness weight in the ranking', () => {
+    // families.mjs runs as a CLI on import, so read its weights from the source.
+    const src = readFileSync('scripts/visibility/families.mjs', 'utf8');
+    const weights = src.match(/const READY = \{([^}]*)\}/)[1];
+    const coverage = new Set(LOCALES.flatMap((locale) => read(locale).map((row) => row[7])));
+    expect(coverage.has('held')).toBe(true);
+    for (const value of coverage) expect(weights, value).toMatch(new RegExp(`\\b${value}: `));
+  });
+
   it('mark candidates as unpublished and held pages with the URL they will have', () => {
     for (const locale of CANDIDATES) {
       for (const row of read(locale)) {

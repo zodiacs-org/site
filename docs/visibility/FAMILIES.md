@@ -124,8 +124,9 @@ which writes [RANKING.md](RANKING.md):
 
 `winnable = monthly volume x (1 - organic competition) x readiness`
 
-Readiness is 1 when a page in that language answers the query, 0.6 when
-only the English page does, 0.3 when nothing does. Organic competition is a
+Readiness is 1 when a page in that language answers the query or is built
+and held for its release batch, 0.6 when only the English page does, 0.3
+when nothing does. Organic competition is a
 0 to 1 score per family and locale in `competition.json`, set by looking at
 page one for 10 sample queries per cell: 0.9 when it is all national media
 and long-established astrology sites, 0.5 when mixed, 0.2 when thin or off
