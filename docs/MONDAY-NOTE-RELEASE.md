@@ -54,19 +54,19 @@ Read from `src/lib/email/config.ts`, `api/email/subscribe.ts`,
 
 ## Settings this procedure uses
 
-Named here, never their values. Values are entered by the owner in Vercel →
+Named here, never their values: no key, secret, Segment ID or email address is written in this document. The two public contract values, `resend` and `1`, are written because the code and `docs/EMAIL-CAPTURE.md` name them. Values are entered by the owner in Vercel →
 Project `zodiacs-org` → Settings → Environment Variables, and are never pasted
 into the repo, a ticket, a log or proof files.
 
 | Setting | What it is |
 | --- | --- |
-| `EMAIL_PROVIDER` | Set to the Resend adapter name. |
+| `EMAIL_PROVIDER` | Set to `resend`, the Resend adapter name. |
 | `RESEND_API_KEY` | Sending access key, used only to send the confirmation email. |
 | `RESEND_CONTACTS_API_KEY` | A second, different key with Contact and Segment access (Resend's sending-only permission does not grant it). The capture stays hidden if the two keys are equal. |
 | `RESEND_FROM_EMAIL` | The confirmation email's sender, on a domain verified in Resend. |
 | `EMAIL_CONFIRM_SECRET` | A new random value of at least 32 bytes, made only for this list. |
 | `RESEND_SEGMENT_ID` | The ID of the weekly Segment in Resend → Contacts → Segments. Must not equal `RESEND_DAILY_SEGMENT_ID`. |
-| `STANDALONE_WEEKLY_EMAIL_ENABLED` | The release switch. `1` shows the form and opens the endpoints. |
+| `STANDALONE_WEEKLY_EMAIL_ENABLED` | The release switch. Set to `1` to show the form and open the endpoints; any other value, or unset, keeps them off. |
 | `EMAIL_CONFIRM_BASE_URL` | Optional. Leave unset in Production. Set it in the Preview scope only, to the Preview deployment's HTTPS origin, so the test confirmation link opens the Preview and not production. |
 
 ## Cost
@@ -90,7 +90,8 @@ shell history.
 
 - A new fixture address that the owner controls and that has never been on any
   Zodiacs list (not the daily cohort, not an account). Call it fixture A.
-  A second one, fixture B, is needed for the production smoke check.
+  Three more, fixtures B, C and D, are needed for the Step 6 checks; B is
+  used again for the production smoke check.
 - The owner-approved postal address and the Monday Note's first draft
   (P1.3) to hand.
 - A Preview deployment of `main` (or of the P1.5 branch) that you can open in
@@ -152,7 +153,7 @@ is the condition for the next.
      `{{{RESEND_UNSUBSCRIBE_URL}}}` placeholder, or the editor's built-in
      unsubscribe footer). Use the editor's preview to check the unsubscribe
      link renders.
-  6. In Vercel, Preview scope only, enter `EMAIL_PROVIDER`, `RESEND_API_KEY`,
+  6. In Vercel, Preview scope only, enter `EMAIL_PROVIDER`=`resend`, `RESEND_API_KEY`,
      `RESEND_CONTACTS_API_KEY`, `RESEND_FROM_EMAIL`, a new
      `EMAIL_CONFIRM_SECRET`, `RESEND_SEGMENT_ID`,
      `EMAIL_CONFIRM_BASE_URL` (the Preview origin) and
@@ -240,14 +241,67 @@ is the condition for the next.
      error; a script sees `Retry-After: 60`. If any submit answers 503 instead,
      the Firewall rule `zodiacs-email-subscribe` is missing for this project:
      stop and see `docs/OWNER-SETUP-RUNBOOK.md` §3.
-  5. **Failure and retry.** Provider failure cannot be caused safely on a live
-     account, so it is covered by the contract tests. Run
-     `npm test -- --run src/lib/email/email.test.ts` and confirm it passes.
-     These tests prove request shape and ordering only, not live behaviour,
-     which Steps 3 to 5 cover.
-- **Proof:** `step-6.md` with each check's time and result, fixture B's hash
-  prefix, the HTTP status seen for the 11th submit, and the test run's summary
-  line.
+  5. **Confirmation send fails, then a retry sends (owner, Preview only).**
+     This makes real Resend refuse a real send, without touching production
+     or the account's working keys and domain.
+     1. Fixture C: a third new owner-controlled address, never submitted
+        before.
+     2. In Vercel, Preview scope only, change `RESEND_FROM_EMAIL` to an
+        address on a domain that is **not** verified in Resend (for example
+        a subdomain the owner has never added to Resend → Domains). Type the
+        new value straight into Vercel; do not copy the old one anywhere.
+        Redeploy the Preview.
+     3. On the Preview, submit fixture C. The answer is the capture error
+        page (HTTP 502), not "check your inbox". No email arrives.
+     4. In Resend → Logs (the API request log), find that request to
+        `/emails`: Resend refused it with a 4xx naming the unverified domain.
+        In Resend → Contacts, fixture C is not there.
+     5. Set `RESEND_FROM_EMAIL` back to the verified sender in the Preview
+        scope and redeploy. Submit fixture C again. "Check your inbox"
+        appears, one confirmation arrives, and Resend → Logs shows the send
+        accepted. Do not confirm it; let it expire.
+  6. **Confirm step fails, then the same link works (owner, Preview only).**
+     This makes real Resend refuse the Contact write and shows the same
+     link succeeds once access is back.
+     1. In Resend → API Keys, create a temporary key with **sending access
+        only**, named for this check. It differs from `RESEND_API_KEY`, so
+        the site still counts as configured.
+     2. Submit fixture D (a fourth new owner address) on the Preview while
+        everything is normal, and open its confirmation link. Do not press
+        confirm yet.
+     3. In Vercel, Preview scope only, put the temporary key in
+        `RESEND_CONTACTS_API_KEY`, typed in directly. Redeploy the Preview.
+     4. Press confirm on fixture D's page. The answer is the capture error
+        page (HTTP 502), not "confirmed". Resend → Logs shows the request to
+        `/contacts` refused for lack of permission, and fixture D is in no
+        Segment.
+     5. Put the Contacts key back in the Preview scope and redeploy. Open the
+        same link from the email again (it lasts 48 hours and the secret did
+        not change) and press confirm. "Confirmed" appears and fixture D is
+        now in the weekly Segment, once.
+     6. Delete the temporary key in Resend → API Keys, and delete fixture D's
+        Contact so the Segment is back to fixture A only.
+  7. **Limits of 5 and 6, stated plainly.** They show real Resend refusing a
+     send and a Contact write, the site answering 502 without saying success,
+     no Contact being made, and a retry then succeeding. They do not show a
+     Resend outage, a timeout or a 5xx, which cannot be caused safely, and
+     Resend's exact Log wording should be read as it appears. They also do
+     not prove the 10-minute hold is released after a failure: each
+     redeploy starts new server instances, which clears the hold anyway.
+  8. **Contract tests, supporting only.** Run
+     `npm test -- --run src/lib/email/email.test.ts tests/api/email-subscribe-cooldown.test.ts`
+     and confirm it passes. These are mocked: they prove request shape,
+     ordering and that a failed send does not hold the address (the case
+     item 7 cannot show live). They are **not** provider acceptance, and they
+     do not replace items 5 and 6. Step 7 may not start until items 1 to 6
+     each have proof.
+- **Proof:** `step-6.md` with each check's time and result, the hash
+  prefixes of fixtures B, C and D, the HTTP status seen for the 11th submit
+  and for the two refused requests, the status codes Resend → Logs showed
+  for the refused and then accepted requests (codes only, no request bodies,
+  keys or addresses), a note that the Preview values were restored and the
+  temporary key deleted, and the test run's summary line. Screenshots of
+  Resend → Logs with addresses and keys hidden.
 
 ### Step 7. Switch the form on in production
 
@@ -255,9 +309,10 @@ is the condition for the next.
   log issue (#879).
 - **Where:** Vercel → Project `zodiacs-org`; Resend.
 - **Do:**
-  1. Remove fixture A and fixture B from the weekly Segment (delete the
-     Contacts), so the list starts empty. Confirm the Segment holds 0.
-  2. In Vercel, Production scope, enter the same names as Step 2 except
+  1. Remove every fixture (A to D) from Resend → Contacts, so the weekly
+     Segment starts empty. Confirm the Segment holds 0.
+  2. In Vercel, Production scope, enter the same names as Step 2 (with
+     `EMAIL_PROVIDER`=`resend` and the real verified sender) except
      `EMAIL_CONFIRM_BASE_URL` (leave unset, so links use
      `https://zodiacs.org`). Use the same weekly Segment. Then set
      `STANDALONE_WEEKLY_EMAIL_ENABLED`=`1` last.
