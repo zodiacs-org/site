@@ -289,6 +289,18 @@ export function supabaseAuthStorageKey(url: string | undefined, keys: Iterable<s
   return null;
 }
 
+/**
+ * The exact name Supabase gives this project's browser session entry, built
+ * from the same pattern `supabaseAuthStorageKey` matches. A name only: the
+ * account presence loader compares it with stored key names, never values.
+ */
+export function supabaseAuthStorageKeyName(url: string | undefined): string | null {
+  const ref = supabaseProjectRef(url);
+  if (!ref || !/^[a-z0-9-]+$/u.test(ref)) return null;
+  const name = SUPABASE_SESSION_ENTRY.source.slice(1, -1).replace('([a-z0-9-]+)', ref);
+  return SUPABASE_SESSION_ENTRY.exec(name)?.[1] === ref ? name : null;
+}
+
 function storageKeys(storage: Pick<Storage, 'key' | 'length'>): string[] {
   const keys: string[] = [];
   for (let index = 0; index < storage.length; index += 1) {

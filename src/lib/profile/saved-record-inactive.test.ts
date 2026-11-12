@@ -102,8 +102,8 @@ afterEach(() => {
  * (pages, hooks, legacy stores, other islands) may import any saved-record module.
  */
 const ALLOWED_INBOUND = new Set([
-  'src/islands/AccountProfileAccessBootstrap.tsx -> src/lib/profile/saved-record-access.ts',
-  'src/islands/AccountProfileAccessBootstrap.tsx -> src/lib/profile/saved-record-flags.ts',
+  'src/lib/account-v2/profile-access-bootstrap.ts -> src/lib/profile/saved-record-access.ts',
+  'src/lib/account-v2/profile-access-bootstrap.ts -> src/lib/profile/saved-record-flags.ts',
   'src/islands/AccountSyncV2Panel.tsx -> src/lib/profile/saved-record-access.ts',
   'src/islands/AccountSyncV2Panel.tsx -> src/lib/profile/saved-record-flags.ts',
   'src/islands/ChartCalculator.tsx -> src/lib/profile/saved-record-access.ts',
