@@ -146,6 +146,13 @@ async function installAccessListeners(file: string, context: Record<string, any>
 
 const flush = async () => { for (let index = 0; index < 20; index += 1) await new Promise((resolve) => setTimeout(resolve, 0)); };
 
+/** Waits for conditions rather than a fixed number of ticks: module loads take longer under load. */
+const bootstrapSubscribed = () => vi.waitFor(() => expect(sync.listeners).toHaveLength(1));
+const accessGranted = (context: Record<string, any>) => vi.waitFor(() => expect(context.profileAccessAllowed()).toBe(true));
+const bootstrapSettled = () => vi.waitFor(async () => {
+  expect((await import('../lib/account-v2/profile-access-autostart')).profileAccessSettled()).toBe(true);
+});
+
 /** Another tab (or this tab's account panel) starting an owner transition. */
 const ownerTransition = () => win.dispatchEvent(new Event(ACCOUNT_V2_PROFILE_REVOKE_EVENT));
 
@@ -250,12 +257,11 @@ describe('first-time guest save with account sync on', () => {
     const releaseSession = deferredSession();
     const context = await chartContext();
     const save = context.commitSave(undefined, 'skip');
-    await flush();
+    await bootstrapSubscribed();
     // An auth event grants this tab while the start's session read is pending,
     // then another tab's owner transition takes that access away.
     for (const listener of sync.listeners) listener(null);
-    await flush();
-    expect(context.profileAccessAllowed()).toBe(true);
+    await accessGranted(context);
     ownerTransition();
     expect(context.profileAccessAllowed()).toBe(false);
     win.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
@@ -297,7 +303,7 @@ describe('first-time guest save with account sync on', () => {
     expect(local.length).toBe(0);
     context.onSavePair();
     expect(context.pairSave).toBe('idle');
-    await flush();
+    await vi.waitFor(() => expect(context.pairSave).toBe('saved'));
 
     expect(importBootstrap).toHaveBeenCalledTimes(1);
     expect(context.pairSave).toBe('saved');
@@ -315,13 +321,13 @@ describe('first-time guest save with account sync on', () => {
     const releaseSession = deferredSession();
     const context = await pairContext();
     context.onSavePair();
-    await flush();
+    await bootstrapSubscribed();
     for (const listener of sync.listeners) listener(null);
-    await flush();
-    expect(context.profileAccessAllowed()).toBe(true);
+    await accessGranted(context);
     ownerTransition();
     win.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
     releaseSession();
+    await bootstrapSettled();
     await flush();
     expect(context.profileAccessAllowed()).toBe(true);
     expect(local.getItem('zodiacs.pairs.v1')).toBeNull();
@@ -337,7 +343,7 @@ describe('first-time guest save with account sync on', () => {
       crypto: { randomUUID: () => 'x' }, savePair,
     });
     context.onSavePair();
-    await flush();
+    await vi.waitFor(() => expect(context.pairSave).toBe('unavailable'));
     expect(savePair).not.toHaveBeenCalled();
     expect(context.pairSave).toBe('unavailable');
     expect(context.pairAnnounce).toBe('profileSaveUnavailable');
