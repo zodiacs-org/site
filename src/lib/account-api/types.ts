@@ -5,7 +5,6 @@ export type AccountApiErrorCode =
   | 'disabled'
   | 'method_not_allowed'
   | 'forbidden'
-  | 'canary_not_allowed'
   | 'unauthorized'
   | 'invalid_action'
   | 'invalid_request'
