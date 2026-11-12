@@ -34,6 +34,7 @@ import {
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
 import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
+import { isHiddenChildPage } from '../src/data/hidden-child-pages.mjs';
 import { TIME_ATLAS_DATA_FILES, TIME_ATLAS_FOLDER, timeAtlasFileProblems, timeAtlasPageProblems } from './check-time-atlas.mjs';
 import {
   ABSENT_LOCALES,
@@ -68,7 +69,7 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   ...(dailyPublishedDays.length ? ['/ru/chart-of-the-day/'] : []),
   '/ru/', '/ru/tools/', '/ru/birth-chart/', '/ru/compatibility/',
   '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
-  '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',
+  '/ru/saturn-return/', '/ru/transits/',
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
   '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
   '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
@@ -1291,6 +1292,9 @@ const registryAuraIndexed = sitemapLocs.has('/registry/collection/');
 // the Registry Collection follows its own: the sitemap entry and the built
 // page appear and disappear together.
 const raceIndexed = sitemapLocs.has('/race/');
+// The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
+const yearScoreIndexed = sitemapLocs.has('/year-score/');
+const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
 const indexablePeoplePaths = new Set(
   JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).people
@@ -1350,7 +1354,12 @@ const sitemapPolicy = {
   // +1 for /your-2027-sky/, the 2027 personal sky edition.
   // +60 for the Spanish, Portuguese, French and Italian editions of /your-2027-sky/, /moon-journal/, /seasons/
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
-  total: 1540 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
+  // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
+  // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
+  // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/).
+  total: 1532 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+    + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1401,6 +1410,8 @@ const indexedFamilies = [
   { label: 'Life Path pages', pattern: /^\/numerology\/life-path\/(?:[1-9]|11|22|33)\/$/, expected: 12, localized: false },
   { label: 'Registry Collection', pattern: /^\/registry\/collection\/$/, expected: Number(registryAuraIndexed), localized: false },
   { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
+  { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
+  { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
   { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },
@@ -1565,10 +1576,13 @@ for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const rel = relative(root, file);
   const pagePath = htmlFileToPath(rel.split(sep).join('/'));
+  const hiddenChildPage = isHiddenChildPage(pagePath);
   const russianRouteAvailable = expectedHreflangsForPath(pagePath).has('ru')
-    || LOCALIZED_404_PATHS.has(pagePath);
+    || LOCALIZED_404_PATHS.has(pagePath)
+    || (hiddenChildPage && pagePath.startsWith('/ru/'));
   const russianRouteRenderable = russianRouteAvailable
-    || hreflangRouteFamily(pagePath) === 'sign-guide';
+    || hreflangRouteFamily(pagePath) === 'sign-guide'
+    || hiddenChildPage;
   if (!russianRouteRenderable && /href=["'](?:https:\/\/zodiacs\.org)?\/ru(?:\/|["'#?])/.test(html)) {
     fail(`${rel}: Russian route leaked onto a deferred or programmatic page`);
   }

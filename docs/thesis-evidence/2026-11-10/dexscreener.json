@@ -1,0 +1,2456 @@
+{
+  "capturedAt": "2026-11-10T19:26:32.417Z",
+  "signs": {
+    "aries": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:32.652Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/hrn98ylgigp475es1gaqyrmbqk1v4dkv6tdkylhvh2is",
+            "pairAddress": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv",
+              "name": "Aries",
+              "symbol": "ARIES"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006648",
+            "priceUsd": "0.00005476",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 1,
+                "sells": 3
+              }
+            },
+            "volume": {
+              "h24": 33.83,
+              "h6": 0.99,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {
+              "h6": -4.96,
+              "h24": -5.22
+            },
+            "liquidity": {
+              "usd": 11446.73,
+              "base": 104514100,
+              "quote": 69.4836
+            },
+            "fdv": 54746,
+            "marketCap": 54746,
+            "pairCreatedAt": 1720206330000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/2768fbb77c834217f9800eb98a83c9c8330829cd62b210b8135e3984235eeea9?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/0c7c9444dc445d512e84f059a76ed32e3a46219715af521704fe4bd8f5075bb2?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:32.740Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/hrn98ylgigp475es1gaqyrmbqk1v4dkv6tdkylhvh2is",
+              "pairAddress": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv",
+                "name": "Aries",
+                "symbol": "ARIES"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.0000006648",
+              "priceUsd": "0.00005476",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 0,
+                  "sells": 1
+                },
+                "h24": {
+                  "buys": 1,
+                  "sells": 3
+                }
+              },
+              "volume": {
+                "h24": 33.83,
+                "h6": 0.99,
+                "h1": 0,
+                "m5": 0
+              },
+              "priceChange": {
+                "h6": -4.96,
+                "h24": -5.22
+              },
+              "liquidity": {
+                "usd": 11446.73,
+                "base": 104514100,
+                "quote": 69.4836
+              },
+              "fdv": 54746,
+              "marketCap": 54746,
+              "pairCreatedAt": 1720206330000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/2768fbb77c834217f9800eb98a83c9c8330829cd62b210b8135e3984235eeea9?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/0c7c9444dc445d512e84f059a76ed32e3a46219715af521704fe4bd8f5075bb2?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz/",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://t.me/astrofoliosol",
+                    "type": "telegram"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/hrn98ylgigp475es1gaqyrmbqk1v4dkv6tdkylhvh2is",
+            "pairAddress": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv",
+              "name": "Aries",
+              "symbol": "ARIES"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006648",
+            "priceUsd": "0.00005476",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 1,
+                "sells": 3
+              }
+            },
+            "volume": {
+              "h24": 33.83,
+              "h6": 0.99,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {
+              "h6": -4.96,
+              "h24": -5.22
+            },
+            "liquidity": {
+              "usd": 11446.73,
+              "base": 104514100,
+              "quote": 69.4836
+            },
+            "fdv": 54746,
+            "marketCap": 54746,
+            "pairCreatedAt": 1720206330000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/2768fbb77c834217f9800eb98a83c9c8330829cd62b210b8135e3984235eeea9?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/0c7c9444dc445d512e84f059a76ed32e3a46219715af521704fe4bd8f5075bb2?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "taurus": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:33.319Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/2gntxia4flw3urj5mlqvfgokragdpphtavazk41etpfu",
+            "pairAddress": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp",
+              "name": "Taurus",
+              "symbol": "TAURUS"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006703",
+            "priceUsd": "0.00005510",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 0,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 0.93,
+              "h6": 0.93,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 11052.15,
+              "base": 100280645,
+              "quote": 67.2272
+            },
+            "fdv": 55106,
+            "marketCap": 55106,
+            "pairCreatedAt": 1720206368000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/25fcd569a14e8ac254b55869fa54a4e59209181d62d7295fd2ce99d0cb52cf4e?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/65465a7c4b2cc7e1b68579f09acf9f96d962277bbb362702da5ce33aa6c8963e?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:33.477Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/2gntxia4flw3urj5mlqvfgokragdpphtavazk41etpfu",
+              "pairAddress": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp",
+                "name": "Taurus",
+                "symbol": "TAURUS"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.0000006703",
+              "priceUsd": "0.00005510",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 0,
+                  "sells": 1
+                },
+                "h24": {
+                  "buys": 0,
+                  "sells": 1
+                }
+              },
+              "volume": {
+                "h24": 0.93,
+                "h6": 0.93,
+                "h1": 0,
+                "m5": 0
+              },
+              "priceChange": {},
+              "liquidity": {
+                "usd": 11052.15,
+                "base": 100280645,
+                "quote": 67.2272
+              },
+              "fdv": 55106,
+              "marketCap": 55106,
+              "pairCreatedAt": 1720206368000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/25fcd569a14e8ac254b55869fa54a4e59209181d62d7295fd2ce99d0cb52cf4e?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/65465a7c4b2cc7e1b68579f09acf9f96d962277bbb362702da5ce33aa6c8963e?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz/",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://t.me/astrofoliosol",
+                    "type": "telegram"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/2gntxia4flw3urj5mlqvfgokragdpphtavazk41etpfu",
+            "pairAddress": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp",
+              "name": "Taurus",
+              "symbol": "TAURUS"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006703",
+            "priceUsd": "0.00005510",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 0,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 0.93,
+              "h6": 0.93,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 11052.15,
+              "base": 100280645,
+              "quote": 67.2272
+            },
+            "fdv": 55106,
+            "marketCap": 55106,
+            "pairCreatedAt": 1720206368000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/25fcd569a14e8ac254b55869fa54a4e59209181d62d7295fd2ce99d0cb52cf4e?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/65465a7c4b2cc7e1b68579f09acf9f96d962277bbb362702da5ce33aa6c8963e?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "gemini": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:34.038Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/hxhdkrb1upswfumozmvzpvelzbpwhdyn6phu9cbfium9",
+            "pairAddress": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc",
+              "name": "Gemini",
+              "symbol": "GEMINI"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.000001508",
+            "priceUsd": "0.0001250",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 1,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 3,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 3,
+                "sells": 2
+              }
+            },
+            "volume": {
+              "h24": 100.05,
+              "h6": 40.22,
+              "h1": 28.95,
+              "m5": 0
+            },
+            "priceChange": {
+              "h1": 1.49,
+              "h6": -3.53,
+              "h24": -3.53
+            },
+            "liquidity": {
+              "usd": 18729.09,
+              "base": 74915274,
+              "quote": 112.9756
+            },
+            "fdv": 124987,
+            "marketCap": 124987,
+            "pairCreatedAt": 1720206340000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/cb28b57f84142110499606118e351408c4293988cf604607e79629dd1193f953?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/0b4e286d528166775e4fc0d5426c27df369531fd378a253f9ded967af1d754bd?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:34.187Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/hxhdkrb1upswfumozmvzpvelzbpwhdyn6phu9cbfium9",
+              "pairAddress": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc",
+                "name": "Gemini",
+                "symbol": "GEMINI"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.000001508",
+              "priceUsd": "0.0001250",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 1,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 3,
+                  "sells": 1
+                },
+                "h24": {
+                  "buys": 3,
+                  "sells": 2
+                }
+              },
+              "volume": {
+                "h24": 100.05,
+                "h6": 40.22,
+                "h1": 28.95,
+                "m5": 0
+              },
+              "priceChange": {
+                "h1": 1.49,
+                "h6": -3.53,
+                "h24": -3.53
+              },
+              "liquidity": {
+                "usd": 18729.09,
+                "base": 74915274,
+                "quote": 112.9756
+              },
+              "fdv": 124987,
+              "marketCap": 124987,
+              "pairCreatedAt": 1720206340000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/cb28b57f84142110499606118e351408c4293988cf604607e79629dd1193f953?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/0b4e286d528166775e4fc0d5426c27df369531fd378a253f9ded967af1d754bd?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz/",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://t.me/astrofoliosol",
+                    "type": "telegram"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/hxhdkrb1upswfumozmvzpvelzbpwhdyn6phu9cbfium9",
+            "pairAddress": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc",
+              "name": "Gemini",
+              "symbol": "GEMINI"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.000001508",
+            "priceUsd": "0.0001250",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 1,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 3,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 3,
+                "sells": 2
+              }
+            },
+            "volume": {
+              "h24": 100.05,
+              "h6": 40.22,
+              "h1": 28.95,
+              "m5": 0
+            },
+            "priceChange": {
+              "h1": 1.49,
+              "h6": -3.53,
+              "h24": -3.53
+            },
+            "liquidity": {
+              "usd": 18729.09,
+              "base": 74915274,
+              "quote": 112.9756
+            },
+            "fdv": 124987,
+            "marketCap": 124987,
+            "pairCreatedAt": 1720206340000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/cb28b57f84142110499606118e351408c4293988cf604607e79629dd1193f953?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/0b4e286d528166775e4fc0d5426c27df369531fd378a253f9ded967af1d754bd?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "cancer": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:34.740Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/datech6da4i1evzu37f9ibqiryxhlkzpkdzdno346nsw",
+            "pairAddress": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ",
+              "name": "Cancer",
+              "symbol": "CANCER"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006518",
+            "priceUsd": "0.00005358",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 0,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 0.97,
+              "h6": 0.97,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 12056.55,
+              "base": 112507836,
+              "quote": 73.3367
+            },
+            "fdv": 53579,
+            "marketCap": 53579,
+            "pairCreatedAt": 1720206222000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/68ec7693c926d5a428947ffea5bdc33db5c74207793fb13bba9534d48a580779?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/ab955aa66c4d64fc036b04954aa7f994c29cea35cb37ab633c7a1183a0a0f932?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:34.895Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/datech6da4i1evzu37f9ibqiryxhlkzpkdzdno346nsw",
+              "pairAddress": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ",
+                "name": "Cancer",
+                "symbol": "CANCER"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.0000006518",
+              "priceUsd": "0.00005358",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 0,
+                  "sells": 1
+                },
+                "h24": {
+                  "buys": 0,
+                  "sells": 1
+                }
+              },
+              "volume": {
+                "h24": 0.97,
+                "h6": 0.97,
+                "h1": 0,
+                "m5": 0
+              },
+              "priceChange": {},
+              "liquidity": {
+                "usd": 12056.55,
+                "base": 112507836,
+                "quote": 73.3367
+              },
+              "fdv": 53579,
+              "marketCap": 53579,
+              "pairCreatedAt": 1720206222000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/68ec7693c926d5a428947ffea5bdc33db5c74207793fb13bba9534d48a580779?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/ab955aa66c4d64fc036b04954aa7f994c29cea35cb37ab633c7a1183a0a0f932?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz/",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/datech6da4i1evzu37f9ibqiryxhlkzpkdzdno346nsw",
+            "pairAddress": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ",
+              "name": "Cancer",
+              "symbol": "CANCER"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006518",
+            "priceUsd": "0.00005358",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 0,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 0.97,
+              "h6": 0.97,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 12056.55,
+              "base": 112507836,
+              "quote": 73.3367
+            },
+            "fdv": 53579,
+            "marketCap": 53579,
+            "pairCreatedAt": 1720206222000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/68ec7693c926d5a428947ffea5bdc33db5c74207793fb13bba9534d48a580779?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/ab955aa66c4d64fc036b04954aa7f994c29cea35cb37ab633c7a1183a0a0f932?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "leo": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:35.441Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": null
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:35.606Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": null,
+          "pair": null
+        }
+      }
+    },
+    "virgo": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:36.184Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/5wcvjf8fzpkhazqtszddbdfl6p2blbageigxpevnrcrh",
+            "pairAddress": "5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
+              "name": "Virgo",
+              "symbol": "VIRGO"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000005951",
+            "priceUsd": "0.00005094",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h24": {
+                "buys": 1,
+                "sells": 0
+              }
+            },
+            "volume": {
+              "h24": 3.82,
+              "h6": 0,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 10960.08,
+              "base": 107573872,
+              "quote": 64.01919
+            },
+            "fdv": 50942,
+            "marketCap": 50942,
+            "pairCreatedAt": 1720206269000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/c0187a26cebaa41cee5a7fd59ab28542839ebb2626817fd0c4683ea7a66cd0d9?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/2397e6ecead441455eee6c8e3093c16655babc50aabbe73d6d834308de0345b9?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          },
+          {
+            "chainId": "solana",
+            "dexId": "meteora",
+            "url": "https://dexscreener.com/solana/byrhfsvzrhwvzzm7qbv1kxt2b3fidih1vtilunfeff8w",
+            "pairAddress": "BYrHFSvZRHWvZzm7qbV1KXT2B3FidiH1vTiLuNFEfF8w",
+            "labels": [
+              "DLMM"
+            ],
+            "baseToken": {
+              "address": "Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
+              "name": "Virgo",
+              "symbol": "VIRGO"
+            },
+            "quoteToken": {
+              "address": "3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+              "name": "Capricorn",
+              "symbol": "CAPRICORN"
+            },
+            "priceNative": "0.9511",
+            "priceUsd": "0.00005094",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h24": {
+                "buys": 0,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 3.81,
+              "h6": 0,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 508.96,
+              "base": 5500683,
+              "quote": 4270357
+            },
+            "fdv": 50946,
+            "marketCap": 50946,
+            "pairCreatedAt": 1742427917000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/c0187a26cebaa41cee5a7fd59ab28542839ebb2626817fd0c4683ea7a66cd0d9?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/2397e6ecead441455eee6c8e3093c16655babc50aabbe73d6d834308de0345b9?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:36.288Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/5wcvjf8fzpkhazqtszddbdfl6p2blbageigxpevnrcrh",
+              "pairAddress": "5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
+                "name": "Virgo",
+                "symbol": "VIRGO"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.0000005951",
+              "priceUsd": "0.00005094",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h24": {
+                  "buys": 1,
+                  "sells": 0
+                }
+              },
+              "volume": {
+                "h24": 3.82,
+                "h6": 0,
+                "h1": 0,
+                "m5": 0
+              },
+              "priceChange": {},
+              "liquidity": {
+                "usd": 10960.08,
+                "base": 107573872,
+                "quote": 64.01919
+              },
+              "fdv": 50942,
+              "marketCap": 50942,
+              "pairCreatedAt": 1720206269000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/c0187a26cebaa41cee5a7fd59ab28542839ebb2626817fd0c4683ea7a66cd0d9?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/2397e6ecead441455eee6c8e3093c16655babc50aabbe73d6d834308de0345b9?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz/",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://t.me/astrofoliosol",
+                    "type": "telegram"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/5wcvjf8fzpkhazqtszddbdfl6p2blbageigxpevnrcrh",
+            "pairAddress": "5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
+              "name": "Virgo",
+              "symbol": "VIRGO"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000005951",
+            "priceUsd": "0.00005094",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h24": {
+                "buys": 1,
+                "sells": 0
+              }
+            },
+            "volume": {
+              "h24": 3.82,
+              "h6": 0,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 10960.08,
+              "base": 107573872,
+              "quote": 64.01919
+            },
+            "fdv": 50942,
+            "marketCap": 50942,
+            "pairCreatedAt": 1720206269000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/c0187a26cebaa41cee5a7fd59ab28542839ebb2626817fd0c4683ea7a66cd0d9?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/2397e6ecead441455eee6c8e3093c16655babc50aabbe73d6d834308de0345b9?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "libra": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:36.873Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/dtxpqjk4ae4h2wc7d5rpij8ymsqxqlutcnkrpbcjcan9",
+            "pairAddress": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe",
+              "name": "Libra",
+              "symbol": "LIBRA"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000007358",
+            "priceUsd": "0.00006047",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 2,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 2,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 3.13,
+              "h6": 3.13,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {
+              "h6": -0.18,
+              "h24": -0.18
+            },
+            "liquidity": {
+              "usd": 15240.01,
+              "base": 126004230,
+              "quote": 92.7233
+            },
+            "fdv": 60471,
+            "marketCap": 60471,
+            "pairCreatedAt": 1720206200000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/8bda517e698d7ad754a5d51e8777d72bf7a7a661a2b52e691717d453e53d51d0?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/140173612da2352b23fa4e97874221d0c023dbcf19965b6c56750adfd1e59fad?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:37.022Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/dtxpqjk4ae4h2wc7d5rpij8ymsqxqlutcnkrpbcjcan9",
+              "pairAddress": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe",
+                "name": "Libra",
+                "symbol": "LIBRA"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.0000007358",
+              "priceUsd": "0.00006047",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 2,
+                  "sells": 1
+                },
+                "h24": {
+                  "buys": 2,
+                  "sells": 1
+                }
+              },
+              "volume": {
+                "h24": 3.13,
+                "h6": 3.13,
+                "h1": 0,
+                "m5": 0
+              },
+              "priceChange": {
+                "h6": -0.18,
+                "h24": -0.18
+              },
+              "liquidity": {
+                "usd": 15240.01,
+                "base": 126004230,
+                "quote": 92.7233
+              },
+              "fdv": 60471,
+              "marketCap": 60471,
+              "pairCreatedAt": 1720206200000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/8bda517e698d7ad754a5d51e8777d72bf7a7a661a2b52e691717d453e53d51d0?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/140173612da2352b23fa4e97874221d0c023dbcf19965b6c56750adfd1e59fad?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz/",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://t.me/astrofoliosol",
+                    "type": "telegram"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/dtxpqjk4ae4h2wc7d5rpij8ymsqxqlutcnkrpbcjcan9",
+            "pairAddress": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe",
+              "name": "Libra",
+              "symbol": "LIBRA"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000007358",
+            "priceUsd": "0.00006047",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 2,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 2,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 3.13,
+              "h6": 3.13,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {
+              "h6": -0.18,
+              "h24": -0.18
+            },
+            "liquidity": {
+              "usd": 15240.01,
+              "base": 126004230,
+              "quote": 92.7233
+            },
+            "fdv": 60471,
+            "marketCap": 60471,
+            "pairCreatedAt": 1720206200000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/8bda517e698d7ad754a5d51e8777d72bf7a7a661a2b52e691717d453e53d51d0?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/140173612da2352b23fa4e97874221d0c023dbcf19965b6c56750adfd1e59fad?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "scorpio": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:37.521Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": null
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:37.679Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": null,
+          "pair": null
+        }
+      }
+    },
+    "sagittarius": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:38.262Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/7mp6wevybnt3eao5szsmpmuhughhjnrx26tcrgjxzrky",
+            "pairAddress": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3",
+              "name": "Sagittarius",
+              "symbol": "SAGIT"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006112",
+            "priceUsd": "0.00005035",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 0,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 0.88,
+              "h6": 0.88,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 11251.51,
+              "base": 111729116,
+              "quote": 68.2986
+            },
+            "fdv": 50333,
+            "marketCap": 50333,
+            "pairCreatedAt": 1720206406000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/1a3cbcebc7af52b10280fcbf3cb9380b12177f2f91e50633f9f5063ff20893bb?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/51d5e9429f743ff42afd141c7cf89e6b8aaf92d9c231adbe989f7bdf5844c7f9?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:38.418Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/7mp6wevybnt3eao5szsmpmuhughhjnrx26tcrgjxzrky",
+              "pairAddress": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3",
+                "name": "Sagittarius",
+                "symbol": "SAGIT"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.0000006112",
+              "priceUsd": "0.00005035",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 0,
+                  "sells": 1
+                },
+                "h24": {
+                  "buys": 0,
+                  "sells": 1
+                }
+              },
+              "volume": {
+                "h24": 0.88,
+                "h6": 0.88,
+                "h1": 0,
+                "m5": 0
+              },
+              "priceChange": {},
+              "liquidity": {
+                "usd": 11251.51,
+                "base": 111729116,
+                "quote": 68.2986
+              },
+              "fdv": 50333,
+              "marketCap": 50333,
+              "pairCreatedAt": 1720206406000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/1a3cbcebc7af52b10280fcbf3cb9380b12177f2f91e50633f9f5063ff20893bb?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/51d5e9429f743ff42afd141c7cf89e6b8aaf92d9c231adbe989f7bdf5844c7f9?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz/",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://t.me/astrofoliosol",
+                    "type": "telegram"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/7mp6wevybnt3eao5szsmpmuhughhjnrx26tcrgjxzrky",
+            "pairAddress": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3",
+              "name": "Sagittarius",
+              "symbol": "SAGIT"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006112",
+            "priceUsd": "0.00005035",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 1
+              },
+              "h24": {
+                "buys": 0,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 0.88,
+              "h6": 0.88,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 11251.51,
+              "base": 111729116,
+              "quote": 68.2986
+            },
+            "fdv": 50333,
+            "marketCap": 50333,
+            "pairCreatedAt": 1720206406000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/1a3cbcebc7af52b10280fcbf3cb9380b12177f2f91e50633f9f5063ff20893bb?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/51d5e9429f743ff42afd141c7cf89e6b8aaf92d9c231adbe989f7bdf5844c7f9?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "capricorn": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:38.958Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/549aknncvxbiqmiks6sany6dbg37meenwn6zfbfc7sin",
+            "pairAddress": "549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+              "name": "Capricorn",
+              "symbol": "CAPRICORN"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006257",
+            "priceUsd": "0.00005356",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h24": {
+                "buys": 1,
+                "sells": 0
+              }
+            },
+            "volume": {
+              "h24": 1.16,
+              "h6": 0,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 11359.13,
+              "base": 106038822,
+              "quote": 66.35
+            },
+            "fdv": 53561,
+            "marketCap": 53561,
+            "pairCreatedAt": 1720206323000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/18a2e72ca7b0c9a489f7b1d1a686b0a95946408cacbc6b57e795bc43ca120f51?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/8bba280a38cce76ca896ea8ece594691b0207478d090cfb72832d276bd87c2f6?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          },
+          {
+            "chainId": "solana",
+            "dexId": "meteora",
+            "url": "https://dexscreener.com/solana/byrhfsvzrhwvzzm7qbv1kxt2b3fidih1vtilunfeff8w",
+            "pairAddress": "BYrHFSvZRHWvZzm7qbV1KXT2B3FidiH1vTiLuNFEfF8w",
+            "labels": [
+              "DLMM"
+            ],
+            "baseToken": {
+              "address": "Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
+              "name": "Virgo",
+              "symbol": "VIRGO"
+            },
+            "quoteToken": {
+              "address": "3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+              "name": "Capricorn",
+              "symbol": "CAPRICORN"
+            },
+            "priceNative": "0.9511",
+            "priceUsd": "0.00005094",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h24": {
+                "buys": 0,
+                "sells": 1
+              }
+            },
+            "volume": {
+              "h24": 3.81,
+              "h6": 0,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 508.96,
+              "base": 5500683,
+              "quote": 4270357
+            },
+            "fdv": 50946,
+            "marketCap": 50946,
+            "pairCreatedAt": 1742427917000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/c0187a26cebaa41cee5a7fd59ab28542839ebb2626817fd0c4683ea7a66cd0d9?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/2397e6ecead441455eee6c8e3093c16655babc50aabbe73d6d834308de0345b9?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:39.137Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/549aknncvxbiqmiks6sany6dbg37meenwn6zfbfc7sin",
+              "pairAddress": "549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+                "name": "Capricorn",
+                "symbol": "CAPRICORN"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.0000006257",
+              "priceUsd": "0.00005356",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h24": {
+                  "buys": 1,
+                  "sells": 0
+                }
+              },
+              "volume": {
+                "h24": 1.16,
+                "h6": 0,
+                "h1": 0,
+                "m5": 0
+              },
+              "priceChange": {},
+              "liquidity": {
+                "usd": 11359.13,
+                "base": 106038822,
+                "quote": 66.35
+              },
+              "fdv": 53561,
+              "marketCap": 53561,
+              "pairCreatedAt": 1720206323000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/18a2e72ca7b0c9a489f7b1d1a686b0a95946408cacbc6b57e795bc43ca120f51?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/8bba280a38cce76ca896ea8ece594691b0207478d090cfb72832d276bd87c2f6?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://t.me/astrofoliosol",
+                    "type": "telegram"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/549aknncvxbiqmiks6sany6dbg37meenwn6zfbfc7sin",
+            "pairAddress": "549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+              "name": "Capricorn",
+              "symbol": "CAPRICORN"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006257",
+            "priceUsd": "0.00005356",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h24": {
+                "buys": 1,
+                "sells": 0
+              }
+            },
+            "volume": {
+              "h24": 1.16,
+              "h6": 0,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {},
+            "liquidity": {
+              "usd": 11359.13,
+              "base": 106038822,
+              "quote": 66.35
+            },
+            "fdv": 53561,
+            "marketCap": 53561,
+            "pairCreatedAt": 1720206323000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/18a2e72ca7b0c9a489f7b1d1a686b0a95946408cacbc6b57e795bc43ca120f51?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/8bba280a38cce76ca896ea8ece594691b0207478d090cfb72832d276bd87c2f6?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "aquarius": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:39.697Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": null
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:39.782Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": null,
+          "pair": null
+        }
+      }
+    },
+    "pisces": {
+      "url": "https://api.dexscreener.com/latest/dex/tokens/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+      "status": 200,
+      "fetchedAt": "2026-11-10T19:26:40.406Z",
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/fzz8qrsv8spkstthocwyare8zo6rd4wv2ee4jtcuidko",
+            "pairAddress": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+              "name": "Pisces",
+              "symbol": "PISCES"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006190",
+            "priceUsd": "0.00005088",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 1,
+                "sells": 3
+              },
+              "h24": {
+                "buys": 1,
+                "sells": 3
+              }
+            },
+            "volume": {
+              "h24": 36.16,
+              "h6": 36.16,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {
+              "h6": -1.33,
+              "h24": -1.33
+            },
+            "liquidity": {
+              "usd": 10544.06,
+              "base": 103601874,
+              "quote": 64.1366
+            },
+            "fdv": 50887,
+            "marketCap": 50887,
+            "pairCreatedAt": 1720206527000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/464ce5a5e32152111ae6545c38466992a9d267ea8064df272120b2edea14918e?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/3648f904a3e2c67ef9e6b17fe55eca3f20569d352037a92668fc50ce21625fb4?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "pool": {
+        "url": "https://api.dexscreener.com/latest/dex/pairs/solana/Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
+        "status": 200,
+        "fetchedAt": "2026-11-10T19:26:40.578Z",
+        "body": {
+          "schemaVersion": "1.0.0",
+          "pairs": [
+            {
+              "chainId": "solana",
+              "dexId": "raydium",
+              "url": "https://dexscreener.com/solana/fzz8qrsv8spkstthocwyare8zo6rd4wv2ee4jtcuidko",
+              "pairAddress": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
+              "labels": [
+                "CPMM"
+              ],
+              "baseToken": {
+                "address": "3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+                "name": "Pisces",
+                "symbol": "PISCES"
+              },
+              "quoteToken": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL"
+              },
+              "priceNative": "0.0000006190",
+              "priceUsd": "0.00005088",
+              "txns": {
+                "m5": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h1": {
+                  "buys": 0,
+                  "sells": 0
+                },
+                "h6": {
+                  "buys": 1,
+                  "sells": 3
+                },
+                "h24": {
+                  "buys": 1,
+                  "sells": 3
+                }
+              },
+              "volume": {
+                "h24": 36.16,
+                "h6": 36.16,
+                "h1": 0,
+                "m5": 0
+              },
+              "priceChange": {
+                "h6": -1.33,
+                "h24": -1.33
+              },
+              "liquidity": {
+                "usd": 10544.06,
+                "base": 103601874,
+                "quote": 64.1366
+              },
+              "fdv": 50887,
+              "marketCap": 50887,
+              "pairCreatedAt": 1720206527000,
+              "info": {
+                "imageUrl": "https://cdn.dexscreener.com/cms/images/464ce5a5e32152111ae6545c38466992a9d267ea8064df272120b2edea14918e?width=800&height=800&quality=95&format=auto",
+                "header": "https://cdn.dexscreener.com/cms/images/3648f904a3e2c67ef9e6b17fe55eca3f20569d352037a92668fc50ce21625fb4?width=1500&height=500&quality=95&format=auto",
+                "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE?timestamp=1794338700000",
+                "websites": [
+                  {
+                    "url": "https://astrofolio.xyz/",
+                    "label": "Website"
+                  }
+                ],
+                "socials": [
+                  {
+                    "url": "https://x.com/astrofoliosol",
+                    "type": "twitter"
+                  },
+                  {
+                    "url": "https://t.me/astrofoliosol",
+                    "type": "telegram"
+                  }
+                ]
+              }
+            }
+          ],
+          "pair": {
+            "chainId": "solana",
+            "dexId": "raydium",
+            "url": "https://dexscreener.com/solana/fzz8qrsv8spkstthocwyare8zo6rd4wv2ee4jtcuidko",
+            "pairAddress": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
+            "labels": [
+              "CPMM"
+            ],
+            "baseToken": {
+              "address": "3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+              "name": "Pisces",
+              "symbol": "PISCES"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.0000006190",
+            "priceUsd": "0.00005088",
+            "txns": {
+              "m5": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h1": {
+                "buys": 0,
+                "sells": 0
+              },
+              "h6": {
+                "buys": 1,
+                "sells": 3
+              },
+              "h24": {
+                "buys": 1,
+                "sells": 3
+              }
+            },
+            "volume": {
+              "h24": 36.16,
+              "h6": 36.16,
+              "h1": 0,
+              "m5": 0
+            },
+            "priceChange": {
+              "h6": -1.33,
+              "h24": -1.33
+            },
+            "liquidity": {
+              "usd": 10544.06,
+              "base": 103601874,
+              "quote": 64.1366
+            },
+            "fdv": 50887,
+            "marketCap": 50887,
+            "pairCreatedAt": 1720206527000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/464ce5a5e32152111ae6545c38466992a9d267ea8064df272120b2edea14918e?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/3648f904a3e2c67ef9e6b17fe55eca3f20569d352037a92668fc50ce21625fb4?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE?timestamp=1794338700000",
+              "websites": [
+                {
+                  "url": "https://astrofolio.xyz/",
+                  "label": "Website"
+                }
+              ],
+              "socials": [
+                {
+                  "url": "https://x.com/astrofoliosol",
+                  "type": "twitter"
+                },
+                {
+                  "url": "https://t.me/astrofoliosol",
+                  "type": "telegram"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
