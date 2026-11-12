@@ -1,0 +1,60 @@
+name: Birthday reminders
+
+# Sends the day's birthday reminders (scripts/send-birthday-reminders.ts):
+# one email a year to people who asked for it and confirmed it. Runs only
+# where the repository variable BIRTHDAY_REMINDERS_SENDING or
+# BIRTHDAY_REMINDER_ENABLED is '1'. With BIRTHDAY_REMINDER_ENABLED alone it
+# only deletes unconfirmed requests older than 48 hours: keep that variable at
+# '1' while sign-ups are open and for two days after they close. It sends only
+# with BIRTHDAY_REMINDERS_SENDING at '1', and the script sends nothing unless
+# BIRTHDAY_REMINDER_ENABLED is '1' with its storage, sending and secret
+# configured. All are off until the owner switches them on. The log carries
+# counts only, never an address.
+
+on:
+  schedule:
+    - cron: "17 7 * * *" # daily, 07:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  send:
+    name: Send today's birthday reminders
+    if: vars.BIRTHDAY_REMINDERS_SENDING == '1' || vars.BIRTHDAY_REMINDER_ENABLED == '1'
+    runs-on: ubuntu-latest
+    environment: birthday-reminders-production
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Send
+        env:
+          BIRTHDAY_REMINDER_ENABLED: ${{ vars.BIRTHDAY_REMINDER_ENABLED }}
+          # The email links to /year-score/, so the send also needs that page's switch (src/lib/birthday-reminder/config.ts).
+          PUBLIC_YEAR_SCORE_ENABLED: ${{ vars.PUBLIC_YEAR_SCORE_ENABLED }}
+          BIRTHDAY_REMINDER_SECRET: ${{ secrets.BIRTHDAY_REMINDER_SECRET }}
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
+          BIRTHDAY_REMINDERS_SENDING: ${{ vars.BIRTHDAY_REMINDERS_SENDING }}
+        run: |
+          if [ "$BIRTHDAY_REMINDERS_SENDING" = "1" ]; then
+            npx vite-node --script scripts/send-birthday-reminders.ts
+          else
+            npx vite-node --script scripts/send-birthday-reminders.ts -- --cleanup-only
+          fi
