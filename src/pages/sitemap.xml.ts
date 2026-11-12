@@ -202,6 +202,7 @@ const PT_FIRST_DAY_ROUTES = ['/pt/eclipses/', '/pt/full-moon-calendar/', '/pt/me
 // turned into back-links and datelines, tool discs added to the tools hubs, and
 // em and en dashes in the copy rewritten as commas, periods and range words.
 const DESIGN_SWEEP_LASTMOD = '2026-10-16';
+const ASTROCARTOGRAPHY_LASTMOD = '2026-11-09';
 const DESIGN_SWEEP_ROUTES = [
   '/',
   '/about/',
@@ -532,6 +533,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...['/numerology/', '/tools/', '/methodology/'].map((loc) => [loc, NUMEROLOGY_LASTMOD] as const),
   ...LIFE_PATH_PAGES.map((page) => [`/numerology/life-path/${page.number}/`, page.updated] as const),
   ['/void-of-course-moon/', VOID_OF_COURSE_LASTMOD] as const,
+  // The astrocartography map (2026-11-09), and the pages that link to it: the tools hub, the solar return's relocation answer and the rising sign's.
+  // Only while PUBLIC_ASTROCARTOGRAPHY_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED')
+    ? ['/astrocartography/', '/tools/', '/solar-return/', '/rising-sign/'].map((loc) => [loc, ASTROCARTOGRAPHY_LASTMOD] as const)
+    : []),
   // The ephemeris section now carries a measured comparison against Swiss
   // Ephemeris in place of the upstream library's own arcminute target. Last,
   // so it wins over the numerology cycle's date for the same page.
@@ -734,6 +740,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, priority: 0.7 })) : []),
     ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
     ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
+    ...(launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED') ? [{ loc: '/astrocartography/', priority: 0.8 }] : []),
     { loc: '/compatibility/', priority: 0.9 },
     { loc: '/moon-sign/', priority: 0.9 },
     { loc: '/rising-sign/', priority: 0.9 },
@@ -995,6 +1002,13 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const loc of EVENTS_2030) {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
+  }
+  // The tools hub's card for Astrocartography, the rising sign page's question on moving, and the solar return page's line linking to the map (2026-11-09).
+  // Only while PUBLIC_ASTROCARTOGRAPHY_ENABLED is on: off, those pages keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_ASTROCARTOGRAPHY_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/rising-sign/' || url.loc === '/solar-return/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no

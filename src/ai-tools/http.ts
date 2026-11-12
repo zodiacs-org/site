@@ -1,7 +1,7 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName, type SolarReturnToolName } from './contracts';
+import { PERSONAL_SWITCH_ENV, PERSONAL_TOOL_NAMES, AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName, type SolarReturnToolName, type PersonalToolName } from './contracts';
 import { createAiServer } from './server';
 import { coverageInputRefusal, isNumerologyTool, isSkyEventsTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
@@ -219,11 +219,13 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     const solarReturn = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[SOLAR_RETURN_SWITCH_ENV] === '1';
     // The numerology switch is read the same way, and also counts only with both of them on.
     const numerology = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[NUMEROLOGY_SWITCH_ENV] === '1';
+    // The personal tools' switch is read the same way. They are offered, never counted: usage counting names no personal tool.
+    const personal = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[PERSONAL_SWITCH_ENV] === '1';
     let calledTool: CountedToolName | undefined;
     if (message.method === 'tools/call' && message.params && typeof message.params === 'object') {
       const name = (message.params as Record<string, unknown>).name;
       // Only offered tools are counted: the occasion tools count only while their switch is on, the save tool only with accounts.
-      const offered: readonly string[] = env[OCCASIONS_SWITCH_ENV] === '1' ? [...(env[COVERAGE_SWITCH_ENV] === '1' ? EVERY_AI_TOOL_NAME : ALL_AI_TOOL_NAMES), ...(skyEvents ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScore ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturn ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerology ? NUMEROLOGY_TOOL_NAMES : []), ...(account ? [SAVE_TOOL_NAME] : [])] : AI_TOOL_NAMES;
+      const offered: readonly string[] = env[OCCASIONS_SWITCH_ENV] === '1' ? [...(env[COVERAGE_SWITCH_ENV] === '1' ? EVERY_AI_TOOL_NAME : ALL_AI_TOOL_NAMES), ...(skyEvents ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScore ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturn ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerology ? NUMEROLOGY_TOOL_NAMES : []), ...(personal ? PERSONAL_TOOL_NAMES : []), ...(account ? [SAVE_TOOL_NAME] : [])] : AI_TOOL_NAMES;
       if (offered.includes(String(name))) operation = String(name);
       if (typeof name === 'string' && name === operation) calledTool = name as CountedToolName;
     }
@@ -246,7 +248,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
-    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(env.PUBLIC_BIRTHDAY_REPORT_ENABLED === '1' ? { birthdayReportPage: true } : {}), ...(numerology ? { numerology: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
+    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(env.PUBLIC_BIRTHDAY_REPORT_ENABLED === '1' ? { birthdayReportPage: true } : {}), ...(numerology ? { numerology: true } : {}), ...(personal ? { personal: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
       try {
         const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
@@ -273,8 +275,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         function sanitize(text: string) {
           const parsed = JSON.parse(text);
           // A 0.6.0 tool's or search_sky_events' arguments refused by the SDK's schema check get the tool's own field-named refusal.
-          const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent
-            ? coverageInputRefusal(calledTool as CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName, (message.params as { arguments?: unknown }).arguments, inputSchemaFor(calledTool as AiToolName, skyEvents, { yearScorePeople })) : null;
+          const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || (PERSONAL_TOOL_NAMES as readonly string[]).includes(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent
+            ? coverageInputRefusal(calledTool as CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | PersonalToolName, (message.params as { arguments?: unknown }).arguments, inputSchemaFor(calledTool as AiToolName, skyEvents, { yearScorePeople })) : null;
           if (named) return JSON.stringify({ ...parsed, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(named) }], structuredContent: named } });
           return JSON.stringify(sanitizeProtocolMessage(parsed, refusal));
         }
@@ -288,7 +290,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     } catch { if (!res.headersSent) send(res, 500, 'protocol-failed'); else res.end(); }
     finally {
       // The reply has ended: count the call once, including an error result.
-      if (calledTool) countAfterReply(options, env, calledTool, req.headers?.['user-agent']);
+      // A personal tool is never counted: not even its name reaches the usage counter.
+      if (calledTool && !(PERSONAL_TOOL_NAMES as readonly string[]).includes(calledTool)) countAfterReply(options, env, calledTool, req.headers?.['user-agent']);
       await sdk.close().catch(() => {});
     }
     } finally {

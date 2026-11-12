@@ -249,6 +249,10 @@ jobs:
         timeout-minutes: 5
         run: OUT_DIR=tests/visual/artifacts/events npm run test:events:browser
 
+      - name: Personal tool pages stay off with their switches unset
+        timeout-minutes: 5
+        run: node tests/personal-pages-drive.mjs
+
       - name: Phase 5 People noindex pilot
         timeout-minutes: 10
         run: OUT_DIR=tests/visual/artifacts/phase5-people npm run test:phase5:people
@@ -368,6 +372,9 @@ jobs:
 
       - name: Verify Sun ingress table drift
         run: node scripts/build-sun-ingresses.mjs --check
+
+      - name: Verify astrocartography land dots drift
+        run: node scripts/build-astrocartography-land.mjs --check
 
       - name: Verify Moon distance table drift
         run: node scripts/build-moon-distances.mjs --check
@@ -529,6 +536,44 @@ jobs:
 
       - name: PostgreSQL 17 migration, RLS, replay, and concurrency gates
         run: bash scripts/test-living-chart-sync-sql.sh
+
+  astrocartography-flag-on:
+    name: Astrocartography (flag on)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PUBLIC_ASTROCARTOGRAPHY_ENABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install pinned Chromium
+        run: npx playwright-core install chromium
+
+      - name: Build (Astrocartography flag on)
+        run: npm run build
+
+      - name: Typecheck (Astrocartography flag on)
+        timeout-minutes: 5
+        run: npm run check
+
+      - name: Unit tests (Astrocartography flag on)
+        timeout-minutes: 25
+        run: npm test
+
+      - name: Astrocartography drive (zero CLS, address bar, share link keys)
+        run: node tests/personal-pages-drive.mjs
 
   phase7-living-chart-drive:
     name: Phase 7 Living Chart drive
