@@ -29,7 +29,9 @@ describe('weekly digest operational boundary', () => {
     expect(sender).toContain('weeklyDigestEnvelopeDigest(');
     expect(sender).toContain('sealWeeklyDigestRequestEnvelope(');
     expect(sender).toContain('openWeeklyDigestRequestEnvelope(');
-    expect(sender).toContain('sendWeeklyDigestEnvelope(');
+    // The opened envelope is replayed by replayWeeklyRecovery, which sends it
+    // with sendWeeklyDigestEnvelope (src/lib/weekly-digest/dispatch-recheck.ts).
+    expect(sender).toContain('replayed = await replayWeeklyRecovery({');
     expect(sender).toContain('createWeeklyDigestResendRequest(fetch)');
     expect(sender).toContain('const RESEND_IDEMPOTENCY_SAFETY_MARGIN_MS = 60 * 1_000;');
     expect(sender).toContain('Date.now() >= providerDeadline');

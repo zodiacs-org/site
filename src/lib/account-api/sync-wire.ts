@@ -3,7 +3,10 @@ import {
   serializePrivateChartPayloadV1,
   type PrivateChartPayloadV1Input,
 } from '../account-v2/mutation-fingerprint.js';
-import { ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION } from '../account-v2/policy.js';
+import {
+  accountConsentPolicyVersion,
+  type AccountConsentPurpose,
+} from '../account-v2/policy.js';
 import { accountRequestHeader, isAccountUuid, type AccountApiAction } from './request.js';
 
 const MAX_BODY_BYTES = 32 * 1024;
@@ -73,6 +76,7 @@ export interface AccountBootstrapInput {
 
 export interface AccountConsentGrantInput {
   action: 'consent';
+  purpose: AccountConsentPurpose;
   mutationId: string;
   decision: 'grant';
   policyVersion: string;
@@ -80,6 +84,7 @@ export interface AccountConsentGrantInput {
 
 export interface AccountConsentWithdrawInput {
   action: 'consent';
+  purpose: AccountConsentPurpose;
   mutationId: string;
   decision: 'withdraw';
 }
@@ -344,25 +349,33 @@ export function parseAccountSyncInput(action: AccountSyncAction, req: any): Acco
   }
   if (action === 'consent') {
     if (!isAccountUuid(body.mutationId)) return null;
+    // A body without a purpose is the original chart_sync shape. Only the
+    // two launched purposes may be named; anything else is refused.
+    const hasPurpose = Object.prototype.hasOwnProperty.call(body, 'purpose');
+    if (hasPurpose && body.purpose !== 'chart_sync' && body.purpose !== 'chart_emails') return null;
+    const purpose: AccountConsentPurpose = body.purpose === 'chart_emails' ? 'chart_emails' : 'chart_sync';
+    const base = hasPurpose ? ['mutationId', 'decision', 'purpose'] : ['mutationId', 'decision'];
     if (body.decision === 'grant') {
-      return hasExactKeys(body, ['mutationId', 'decision', 'policyVersion'])
-        && body.policyVersion === ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION
+      const policyVersion = accountConsentPolicyVersion(purpose);
+      return hasExactKeys(body, [...base, 'policyVersion'])
+        && body.policyVersion === policyVersion
         ? {
             action,
+            purpose,
             mutationId: body.mutationId.toLowerCase(),
             decision: 'grant',
-            policyVersion: ACCOUNT_SYNC_V2_CHART_SYNC_POLICY_VERSION,
+            policyVersion,
           }
         : null;
     }
     if (body.decision !== 'withdraw') return null;
-    const exactCurrentShape = hasExactKeys(body, ['mutationId', 'decision']);
-    const staleCompatibleShape = hasExactKeys(body, ['mutationId', 'decision', 'policyVersion'])
+    const exactCurrentShape = hasExactKeys(body, base);
+    const staleCompatibleShape = hasExactKeys(body, [...base, 'policyVersion'])
       && boundedText(body.policyVersion, 64, MAX_POLICY_VERSION_BYTES) !== null;
     // Withdrawal accepts a legacy policy field but normalizes it away; consent
     // withdrawal authority never depends on a client policy version.
     return exactCurrentShape || staleCompatibleShape
-      ? { action, mutationId: body.mutationId.toLowerCase(), decision: 'withdraw' }
+      ? { action, purpose, mutationId: body.mutationId.toLowerCase(), decision: 'withdraw' }
       : null;
   }
   if (action === 'chart-put') {
@@ -432,7 +445,7 @@ export function parseAccountSyncInput(action: AccountSyncAction, req: any): Acco
   return null;
 }
 
-/** UTC calendar-age gate for the account-sync canary; local charts are unaffected. */
+/** UTC calendar-age gate for remote chart storage; local charts are unaffected. */
 export function isAdultAccountBirthDate(
   birthDate: string,
   nowMs: number,
