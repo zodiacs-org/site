@@ -43,6 +43,10 @@ describe('draft posts', () => {
   it('withholds a draft that would carry a trading call or a diagnosis, and gives none without a score', () => {
     expect(draftPost(person, score({ label: 'A year to buy' }), url)).toBeNull();
     expect(draftPost(person, score({ status: 'not-in-directory', score: null }), url)).toBeNull();
+    expect(draftPost(person, score({ confidenceLabel: null }), url)).toBeNull();
+    for (const label of ['A good time for surgery', 'A year to start treatment', 'Recovery from illness', 'A cure arrives']) {
+      expect(draftPost(person, score({ label }), url), label).toBeNull();
+    }
   });
   it('allows money and wellbeing themes read the traditional way', () => {
     expect('a strong year for earnings; take rest seriously; a good window to sign contracts').not.toMatch(DRAFT_BANNED);

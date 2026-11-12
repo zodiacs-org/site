@@ -71,12 +71,13 @@ export function matchTrends(trends: readonly TrendInput[]): TrendReport {
  * traditional way are fine. A draft that trips this is withheld from the
  * report, never softened silently.
  */
-export const DRAFT_BANNED = /\b(?:buy|sell|selling|price targets?|stocks?|crypto\w*|bitcoin|btc|tokens?|coins?|diagnos\w*|prognos\w*|death|die|dies|dying|doom\w*|disaster|ruin\w*|crash\w*|collapse\w*|catastroph\w*|guarantee\w*)\b|\b(?:will|going to) (?:win|lose)\b|[\u2013\u2014]/iu;
+export const DRAFT_BANNED = /\b(?:buy|sell|selling|price targets?|stocks?|crypto\w*|bitcoin|btc|tokens?|coins?|diagnos\w*|prognos\w*|surger\w*|surgical|operations?|treatments?|medica\w*|illness\w*|diseases?|cancer|pregnan\w*|recover(?:y|ies)|cure\w*|death|die|dies|dying|doom\w*|disaster|ruin\w*|crash\w*|collapse\w*|catastroph\w*|guarantee\w*)\b|\b(?:will|going to) (?:win|lose)\b|[\u2013\u2014]/iu;
 
 
 /** A draft post for one match, under X's limit with its link counted as 23 characters, or null if it trips the guard. */
 export function draftPost(person: YearPerson, data: DraftScore, url: string): string | null {
-  if (data.status !== 'found' || data.score === null || !data.label) return null;
+  // No score, no wording or no confidence label: no draft, rather than one with a gap in it.
+  if (data.status !== 'found' || data.score === null || !data.label || !data.confidenceLabel) return null;
   // The same range, in the same words, as the figure's /year/ page shows beside its score.
   const range = data.scoreRange ?? null;
   const between = rangeWorthShowing(range) ? ` (between ${range.low.toFixed(1)} and ${range.high.toFixed(1)} without a birth time)` : '';
