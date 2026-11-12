@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import chartPreferenceHandler from '../../../api/email/chart-preference';
@@ -68,6 +69,22 @@ function json(body: unknown, status = 200): Response {
 
 function claimedChartSend(): Response {
   return json({ outcome: 'claimed', claimed_at: CLAIMED_AT, retry_after_seconds: 0 });
+}
+
+
+/** One eligible v2 chart source: account_v2_chart_email_sources answers ids and an envelope only. */
+function chartEmailSourceRows(userId: string, chartId: string): Array<Record<string, unknown>> {
+  return [{
+    user_id: userId,
+    chart_id: chartId,
+    revision: 1,
+    ciphertext: Buffer.alloc(32, 1).toString('base64'),
+    nonce: Buffer.alloc(12, 2).toString('base64'),
+    format: 'opaque_v1',
+    key_scope: 'service',
+    key_version: 1,
+    wrapped_key: Buffer.alloc(68, 3).toString('base64'),
+  }];
 }
 
 describe('daily chart confirmation send claim', () => {
@@ -367,8 +384,8 @@ describe('daily chart preference', () => {
     const fetcher = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const url = String(input);
       if (url.endsWith('/auth/v1/user')) return json({ id: USER_ID, email: 'person@example.com' });
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.includes('/rest/v1/daily_chart_preferences?') && !init?.method) return json([]);
       if (url.endsWith('/rest/v1/rpc/claim_daily_chart_confirmation_send')) return claimedChartSend();
@@ -404,7 +421,7 @@ describe('daily chart preference', () => {
     const emailBody = JSON.parse(String(emailRequest?.[1]?.body));
     expect(emailBody.to).toEqual(['person@example.com']);
     expect(emailBody.subject).toBe('Confirm your Zodiacs.org personal daily brief');
-    expect(emailBody.text).toContain('personal daily brief for My chart');
+    expect(emailBody.text).toContain('personal daily brief for your synced chart');
     expect(emailBody.text).toContain('/api/email/confirm?token=');
     expect(emailBody).not.toHaveProperty('html');
     const claimIndex = fetcher.mock.calls.findIndex(([url]) => (
@@ -541,8 +558,8 @@ describe('daily chart preference', () => {
           confirmed_at: null,
         }]);
       }
-      if (url.includes('/rest/v1/charts?') && !init?.method) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.endsWith('/rest/v1/rpc/claim_daily_chart_confirmation_send')) return claimedChartSend();
       if (url.includes('/rest/v1/daily_chart_preferences?') && init?.method === 'PATCH') {
@@ -607,8 +624,8 @@ describe('daily chart preference', () => {
           confirmed_at: null,
         }]);
       }
-      if (url.includes('/rest/v1/charts?') && !init?.method) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.endsWith('/rest/v1/rpc/claim_daily_chart_confirmation_send')) return claimedChartSend();
       if (url.includes('/rest/v1/daily_chart_preferences?') && init?.method === 'PATCH') {
@@ -641,8 +658,8 @@ describe('daily chart preference', () => {
           confirmed_at: null,
         }]);
       }
-      if (url.includes('/rest/v1/charts?') && !init?.method) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.endsWith('/rest/v1/rpc/claim_daily_chart_confirmation_send')) {
         return json({
@@ -677,8 +694,8 @@ describe('daily chart preference', () => {
       if (url.endsWith('/auth/v1/user')) {
         return json({ id: USER_ID, email: 'new-address@example.com' });
       }
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.includes('/rest/v1/daily_chart_preferences?') && !init?.method) {
         return json([{
@@ -727,8 +744,8 @@ describe('daily chart preference', () => {
     const fetcher = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const url = String(input);
       if (url.endsWith('/auth/v1/user')) return json({ id: USER_ID, email: 'person@example.com' });
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.includes('/rest/v1/daily_chart_preferences?') && !init?.method) return json([]);
       if (url.endsWith('/rest/v1/rpc/claim_daily_chart_confirmation_send')) {
@@ -768,8 +785,8 @@ describe('daily chart preference', () => {
           confirmed_at: null,
         }]);
       }
-      if (url.includes('/rest/v1/charts?') && !init?.method) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.endsWith('/rest/v1/rpc/claim_daily_chart_confirmation_send')) return claimedChartSend();
       if (url.includes('/rest/v1/daily_chart_preferences?') && init?.method === 'PATCH') {
@@ -811,8 +828,8 @@ describe('daily chart preference', () => {
     const fetcher = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const url = String(input);
       if (url.endsWith('/auth/v1/user')) return json({ id: USER_ID, email: 'person@example.com' });
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.includes('/rest/v1/daily_chart_preferences?') && !init?.method) {
         return json([{
@@ -862,8 +879,8 @@ describe('daily chart preference', () => {
     const fetcher = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const url = String(input);
       if (url.endsWith('/auth/v1/user')) return json({ id: USER_ID, email: 'person@example.com' });
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.includes('/rest/v1/daily_chart_preferences?') && !init?.method) {
         return json([{
@@ -904,8 +921,8 @@ describe('daily chart preference', () => {
       if (url.endsWith('/auth/v1/user')) {
         return json({ id: USER_ID, email: 'new-address@example.com' });
       }
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.includes('/rest/v1/daily_chart_preferences?') && !init?.method) {
         return json([{
@@ -970,8 +987,8 @@ describe('daily chart preference', () => {
       if (url.endsWith('/auth/v1/user')) {
         return json({ id: USER_ID, email: 'new-address@example.com' });
       }
-      if (url.includes('/rest/v1/charts?')) {
-        return json([{ id: CHART_ID, payload: { name: 'My chart' } }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) {
+        return json(chartEmailSourceRows(USER_ID, CHART_ID));
       }
       if (url.includes('/rest/v1/daily_chart_preferences?') && !init?.method) {
         return json([{
@@ -1049,7 +1066,7 @@ describe('daily chart preference', () => {
     await confirmHandler({ method: 'POST', body: { token } }, confirmation);
     expect(confirmation.statusCode).toBe(409);
     expect(confirmation.body).toContain('This link is not valid.');
-    expect(fetcher.mock.calls.some(([url]) => String(url).includes('/rest/v1/charts?'))).toBe(false);
+    expect(fetcher.mock.calls.some(([url]) => String(url).includes('/rest/v1/rpc/account_v2_chart_email_sources'))).toBe(false);
   });
 
   it('revalidates ownership before confirmation and then stores only the selection', async () => {
@@ -1069,7 +1086,7 @@ describe('daily chart preference', () => {
           confirmed_at: null,
         }]);
       }
-      if (url.includes('/rest/v1/charts?')) return json([{ id: CHART_ID }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) return json(chartEmailSourceRows(USER_ID, CHART_ID));
       if (url.includes(`/auth/v1/admin/users/${USER_ID}`)) {
         return json({ id: USER_ID, email: 'person@example.com' });
       }
@@ -1109,7 +1126,7 @@ describe('daily chart preference', () => {
           confirmed_at: null,
         }]);
       }
-      if (url.includes('/rest/v1/charts?')) return json([{ id: CHART_ID }]);
+      if (url.endsWith('/rest/v1/rpc/account_v2_chart_email_sources')) return json(chartEmailSourceRows(USER_ID, CHART_ID));
       if (url.includes(`/auth/v1/admin/users/${USER_ID}`)) {
         return json({ id: USER_ID, email: 'person@example.com' });
       }

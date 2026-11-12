@@ -50,7 +50,9 @@ export type ToolIconName =
   | 'sky-events'
   | 'good-days'
   | 'guide'
-  | 'privacy';
+  | 'privacy'
+  | 'year-score'
+  | 'birthday-report';
 
 export interface ToolIconDrawing {
   /** The sign whose pastel hue paints the disc. */
@@ -220,6 +222,16 @@ export const TOOL_ICONS: Readonly<Record<ToolIconName, ToolIconDrawing>> = {
     hue: 'gemini',
     body: '<path d="M5.2 5.2h13.6a1.7 1.7 0 0 1 1.7 1.7v8.2a1.7 1.7 0 0 1-1.7 1.7h-7.1L7.2 20v-3.2h-2a1.7 1.7 0 0 1-1.7-1.7V6.9a1.7 1.7 0 0 1 1.7-1.7Z"/><path d="M8 9.6h8M8 12.6h5"/>',
   },
+  // A dial: the twelve months as an arc, with the needle on the score.
+  'year-score': {
+    hue: 'sagittarius',
+    body: '<path d="M4.2 16.4a7.8 7.8 0 0 1 15.6 0"/><path d="M6.3 10.7l1.2.9M12 7.8v1.5M17.7 10.7l-1.2.9"/><path d="M12 16.4l3.6-4.4"/><circle cx="12" cy="16.4" r="1.2" fill="currentColor" stroke="none"/>',
+  },
+  // A folded card with the Sun on its face: the birthday report.
+  'birthday-report': {
+    hue: 'leo',
+    body: '<rect x="5.2" y="3.6" width="13.6" height="16.8" rx="1.8"/><circle cx="12" cy="10.4" r="2.6"/><path d="M12 5.9v.9M12 14v.9M7.5 10.4h.9M15.6 10.4h.9"/><path d="M8.4 17.4h7.2"/>',
+  },
   // A padlock.
   privacy: {
     hue: 'scorpio',
@@ -252,6 +264,8 @@ export const TOOL_ICON_FOR_PATH: Readonly<Record<string, ToolIconName>> = {
   '/chart-of-the-day/': 'chart-of-the-day',
   '/saturn-return/': 'saturn-return',
   '/solar-return/': 'solar-return',
+  '/year-score/': 'year-score',
+  '/birthday-report/': 'birthday-report',
   '/lunar-return/': 'lunar-return',
   '/your-sky-wrapped/': 'sky-wrapped',
   '/your-2027-sky/': 'year-sky',

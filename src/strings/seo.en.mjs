@@ -95,10 +95,10 @@ export const OG_EN = Object.freeze({
   thesis: {
     kicker: 'The Thesis',
     title: 'Why Zodiacs Matter',
-    footer: 'zodiacs.org — The Registry · History, ownership, modern rails · Nº 09',
+    footer: 'zodiacs.org · The Registry · An essay on twelve zodiac coins · Nº 10',
     path: '/thesis/',
     image: '/assets/og/v2/thesis.png',
-    alt: 'Why Zodiacs Matter — history, digital ownership, and modern rails · Nº 09.',
+    alt: 'Why Zodiacs Matter, an essay on twelve zodiac coins · Nº 10.',
   },
   disclosure: {
     kicker: 'Registry disclosure',
@@ -166,6 +166,9 @@ export const OG_EN = Object.freeze({
     { key: 'rising-sign', path: '/rising-sign/', kicker: 'Free calculator', title: 'Your rising sign', sub: 'How people first read you — from your birth time and place.' },
     { key: 'moon-phase', path: '/moon-phase/', kicker: 'Free calculator', title: 'The moon, any night', sub: 'Tonight’s phase, and the moon of any date that matters to you.' },
     { key: 'saturn-return', path: '/saturn-return/', kicker: 'Free calculator', title: 'Your Saturn return', sub: 'The exact dates, every pass and retrograde loop included.' },
+    { key: 'solar-return', englishOnly: true, path: '/solar-return/', kicker: 'Free calculator', title: 'Your solar return', sub: 'The chart of your next birthday, and the year’s main themes.' },
+    { key: 'year-score', englishOnly: true, path: '/year-score/', kicker: 'Free calculator', title: 'Your year ahead, scored', sub: 'The next twelve months from 0 to 10, with your best and hardest months.' },
+    { key: 'birthday-report', englishOnly: true, path: '/birthday-report/', kicker: 'For your birthday', title: 'Your birthday report', sub: 'Solar return, Year Ahead Score, numerology and a tarot card, on one page.' },
     { key: 'mercury-retrograde', path: '/mercury-retrograde/', kicker: 'The calendar', title: 'Mercury retrograde', sub: 'Every window through 2030, with station dates and the themes to watch.' },
     { key: 'compatibility', path: '/compatibility/', kicker: 'Compatibility', title: 'Two charts, compared', sub: 'Whole-chart synastry — plus guides to all 78 sign pairings.' },
     { key: 'horoscopes', path: '/horoscopes/', kicker: 'Horoscopes', title: 'All twelve signs', sub: 'Daily through yearly readings with clear themes and one useful next move.' },

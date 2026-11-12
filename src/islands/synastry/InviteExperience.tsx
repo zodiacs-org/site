@@ -6,6 +6,7 @@ import type { SavedChart } from '../../lib/profile/schema';
 import type { InvitePublicPayload } from '../../lib/invite/types';
 import { rememberInviteLink } from '../../lib/invite/local-links';
 import { signIcon } from '../../lib/sign-icon';
+import { accountSyncV2Enabled } from '../../lib/account-v2/feature-flags';
 
 const COPY = {
   invTitle: 'Invite them to fill in their half.',
@@ -29,12 +30,20 @@ const COPY = {
   invThrottled: 'Too many new links just now. Give it a minute.',
   invCapNote: 'Twelve invitations are open on your account. End one in your profile before making another.',
   siTitle: 'Invitations need an account.',
-  siBody: "An invitation keeps your side ready for up to 14 days, so it needs a place that belongs to you. Sign in, sync the chart you'd share, and the invitation button appears right here.",
+  siBody: 'An invitation keeps your side ready for up to 14 days, so it needs a chart you synced earlier. Sign in, and the invitation button appears here for those charts. Chart sync is paused for now.',
   siCta: 'Sign in from your profile',
-  siNoSyncedTitle: 'Sync a chart to invite with it.',
-  siNoSyncedBody: 'Invitations read a saved, synced chart. Charts kept only on this device stay here. Sync one from your profile if you want it to carry an invitation.',
+  siNoSyncedTitle: 'Chart sync is paused',
+  siNoSyncedBody: 'This needs a chart you synced earlier. Chart sync is paused for now.',
   siNoSyncedCta: 'Open your profile',
 } as const;
+
+/** With encrypted sync launched, an invitation uses the one self chart you synced. */
+const SYNCED_COPY = {
+  siBody: 'An invitation keeps your side ready for up to 14 days, so it uses the chart you synced to your account. Sign in and sync your own chart from your profile, and the invitation button appears here.',
+  siNoSyncedTitle: 'Sync your chart first',
+  siNoSyncedBody: 'An invitation uses your own chart, synced to your account. You can sync it from your profile.',
+} as const;
+const SIGNED_IN_COPY = accountSyncV2Enabled() ? { ...COPY, ...SYNCED_COPY } : COPY;
 
 export type AccountState = 'loading' | 'signed-out' | 'signed-in';
 type CreateState = 'idle' | 'creating' | 'ready' | 'error' | 'throttled' | 'capped';
@@ -352,7 +361,7 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
       <aside class="syn-invite shell" aria-labelledby="syn-invite-title">
         <div class="core syn-invite__core">
           <h2 id="syn-invite-title">{COPY.siTitle}</h2>
-          <p>{COPY.siBody}</p>
+          <p>{SIGNED_IN_COPY.siBody}</p>
           <a class="text-link" href="/profile/">{COPY.siCta} →</a>
         </div>
       </aside>
@@ -363,8 +372,8 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
     return (
       <aside class="syn-invite shell" aria-labelledby="syn-invite-title">
         <div class="core syn-invite__core">
-          <h2 id="syn-invite-title">{COPY.siNoSyncedTitle}</h2>
-          <p>{COPY.siNoSyncedBody}</p>
+          <h2 id="syn-invite-title">{SIGNED_IN_COPY.siNoSyncedTitle}</h2>
+          <p>{SIGNED_IN_COPY.siNoSyncedBody}</p>
           <a class="text-link" href="/profile/">{COPY.siNoSyncedCta} →</a>
         </div>
       </aside>

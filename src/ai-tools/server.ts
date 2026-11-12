@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, READ_ONLY, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, descriptionFor, inputSchemaFor, outputSchemaFor, type AiToolName } from './contracts';
-import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, type AiCallContext, type AiDependencies } from './tools';
+import { SAVED_PAGE_EXCEPTION, childBirthDateRefusal, executeAiTool, goodDaysOn, offeredTools, skyEventsOn, yearScorePeopleOn, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
@@ -48,7 +48,7 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
 };
 
 /** Tools whose answer moves with the server's clock (today, this week, the current year), so a repeat call can differ. */
-const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'find_good_days']);
+const CLOCK_DEPENDENT: ReadonlySet<AiToolName> = new Set(['get_sky', 'get_upcoming_events', 'get_horoscope', 'get_life_milestones', 'get_birthday', 'get_sky_calendar', 'get_horoscope_period', 'get_chinese_zodiac', 'get_personal_transits', 'find_birthplace', 'search_sky_events', 'get_year_score', 'get_solar_return', 'find_good_days']);
 
 const artResourceDomains = ['https://zodiacs.org'];
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen', art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: art ? artResourceDomains : [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
@@ -95,6 +95,8 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation.' },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: STUDIO_HTML, _meta: panelMeta('fullscreen') }] }));
   const tools = offeredTools(dependencies);
+  // get_year_score's definition takes a public figure only with its people switch.
+  const switches = { yearScorePeople: yearScorePeopleOn(dependencies) };
   // With the sky events switch on, the natal chart and the explainer register their wider forms; off, every definition is the published one.
   const skyEvents = skyEventsOn(dependencies);
   // With it on, the natal chart's panel is the one that lists the lunar nodes; the other readings keep theirs.
@@ -120,9 +122,9 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
   for (const tool of tools) {
     const panel = panelFor(tool);
     server.registerTool(tool, {
-      title: TOOL_TITLES[tool], description: descriptionFor(tool, skyEvents),
+      title: TOOL_TITLES[tool], description: descriptionFor(tool, skyEvents, switches),
       ...(panel ? { icons: [{ src: `https://zodiacs.org/assets/ai/${panel.icon}.svg`, mimeType: 'image/svg+xml', sizes: ['20x20'] }] } : {}),
-      inputSchema: inputSchemaFor(tool, skyEvents), outputSchema: outputSchemaFor(tool, skyEvents),
+      inputSchema: inputSchemaFor(tool, skyEvents, switches), outputSchema: outputSchemaFor(tool, skyEvents),
       annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: !CLOCK_DEPENDENT.has(tool) },
       _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: readingsPanel(panel.uri) ? [{ type: 'thread' }] : [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {

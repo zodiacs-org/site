@@ -124,6 +124,10 @@ describe('tools behind a launch switch', () => {
   it('shows a switched tool only while its switch is on, and every hub card has an icon either way', () => {
     expect(visibleTools(() => true)).toEqual(ALL_TOOL_CATALOG);
     expect(visibleTools(() => false).every((tool) => !tool.flag)).toBe(true);
+    const hrefs = (on: boolean) => visibleTools(() => on).map((tool) => tool.href);
+    expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/']));
+    expect(hrefs(false)).not.toContain('/year-score/');
+    expect(hrefs(false)).not.toContain('/birthday-report/');
     expect(visibleTools(() => true).some((tool) => tool.href === '/good-days/')).toBe(true);
     expect(visibleTools(() => false).some((tool) => tool.href === '/good-days/')).toBe(false);
     expect(TOOLS_HUB.some((tool) => tool.href === '/good-days/')).toBe(launchFlagOn('PUBLIC_GOOD_DAYS_ENABLED'));

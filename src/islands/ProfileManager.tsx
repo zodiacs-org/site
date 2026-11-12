@@ -52,37 +52,37 @@ const PF_PAIR_COPY = {
 } as const satisfies Record<Locale, Record<'savedPairs' | 'pairRemoved', string>>;
 const PF_EMAIL_COPY = {
   en: {
-    syncLabel: 'Email for chart sync',
+    syncLabel: 'Email for account sign-in',
     digestLabel: 'Optional weekly email',
     digestTitle: 'Personalized weekly sky email',
     digestCopy: 'A forecast based on your synced saved chart. Off until you check this box.',
   },
   es: {
-    syncLabel: 'Email para sincronizar cartas',
+    syncLabel: 'Email para iniciar sesión en tu cuenta',
     digestLabel: 'Email semanal opcional',
     digestTitle: 'Email semanal personalizado del cielo',
     digestCopy: 'Un pronóstico basado en tu carta guardada y sincronizada. Está desactivado hasta que marques esta casilla.',
   },
   pt: {
-    syncLabel: 'E-mail para sincronizar mapas',
+    syncLabel: 'E-mail para entrar na sua conta',
     digestLabel: 'E-mail semanal opcional',
     digestTitle: 'E-mail semanal personalizado do céu',
     digestCopy: 'Uma previsão baseada no seu mapa salvo e sincronizado. Fica desativada até você marcar esta caixa.',
   },
   fr: {
-    syncLabel: 'E-mail pour synchroniser les thèmes',
+    syncLabel: 'E-mail pour te connecter à ton compte',
     digestLabel: 'E-mail hebdomadaire facultatif',
     digestTitle: 'E-mail personnalisé du ciel de la semaine',
     digestCopy: 'Une prévision basée sur ton thème enregistré et synchronisé. Désactivée tant que tu ne coches pas cette case.',
   },
   it: {
-    syncLabel: 'E-mail per sincronizzare i temi',
+    syncLabel: 'E-mail per accedere al tuo account',
     digestLabel: 'E-mail settimanale facoltativa',
     digestTitle: 'E-mail personalizzata del cielo settimanale',
     digestCopy: 'Una previsione basata sul tema salvato e sincronizzato. Resta disattivata finché non selezioni questa casella.',
   },
   ru: {
-    syncLabel: 'Почта для синхронизации карт',
+    syncLabel: 'Почта для входа в аккаунт',
     digestLabel: 'Необязательное еженедельное письмо',
     digestTitle: 'Персональный еженедельный прогноз',
     digestCopy: 'Прогноз по вашей сохранённой и синхронизированной карте. Выключен, пока вы сами не поставите отметку.',
@@ -91,8 +91,8 @@ const PF_EMAIL_COPY = {
 const PF_DAILY_COPY = {
   title: 'Personal daily brief',
   body: 'One synced chart, read against each morning’s sky, in your inbox.',
-  noChartsBeforeLink: 'This needs a synced chart. Charts saved only on this device never enter email. Sync one first if you want the brief.',
-  syncLink: 'How chart sync works',
+  noChartsBeforeLink: 'This needs a chart you synced earlier. Chart sync is paused for now.',
+  syncLink: 'About the pause',
   chartLegend: 'Which chart should the brief read?',
   timezoneLabel: 'Deliver around 7:00 in',
   timezoneUtc: 'UTC (the default morning)',
@@ -131,7 +131,7 @@ export const PF_BOOK_COPY = {
       ? '1 birth chart saved.'
       : `${n} birth charts saved, yours and the people you read for.`,
     add: "Add someone's chart",
-    privacy: 'Saved on this device. Nothing is uploaded unless you turn sync on.',
+    privacy: 'Saved on this device. Chart sync is paused for now.',
     details: 'Birth details',
   },
   es: {
@@ -139,7 +139,7 @@ export const PF_BOOK_COPY = {
       ? '1 carta natal guardada.'
       : `${n} cartas natales guardadas: la tuya y las de las personas para quienes haces lecturas.`,
     add: 'Agrega la carta de alguien',
-    privacy: 'Guardado en este dispositivo. No se sube nada salvo que actives la sincronización.',
+    privacy: 'Guardado en este dispositivo. La sincronización de cartas está en pausa por ahora.',
     details: 'Datos de nacimiento',
   },
   pt: {
@@ -147,7 +147,7 @@ export const PF_BOOK_COPY = {
       ? '1 mapa astral salvo.'
       : `${n} mapas astrais salvos: o seu e os das pessoas para quem você faz leituras.`,
     add: 'Adicionar o mapa de alguém',
-    privacy: 'Salvo neste dispositivo. Nada é enviado, a menos que você ative a sincronização.',
+    privacy: 'Salvo neste dispositivo. A sincronização de mapas está pausada por enquanto.',
     details: 'Dados de nascimento',
   },
   fr: {
@@ -155,7 +155,7 @@ export const PF_BOOK_COPY = {
       ? '1 thème astral enregistré.'
       : `${n} thèmes astraux enregistrés : le tien et ceux que tu interprètes pour d’autres personnes.`,
     add: 'Ajouter le thème de quelqu’un',
-    privacy: 'Enregistré sur cet appareil. Rien n’est envoyé tant que tu n’actives pas la synchronisation.',
+    privacy: 'Enregistré sur cet appareil. La synchronisation des thèmes est en pause pour le moment.',
     details: 'Données de naissance',
   },
   it: {
@@ -163,13 +163,13 @@ export const PF_BOOK_COPY = {
       ? '1 tema natale salvato.'
       : `${n} temi natali salvati: il tuo e quelli che interpreti per altre persone.`,
     add: 'Aggiungi il tema di qualcuno',
-    privacy: 'Salvato su questo dispositivo. Non viene caricato nulla, a meno che tu non attivi la sincronizzazione.',
+    privacy: 'Salvato su questo dispositivo. La sincronizzazione dei temi è in pausa per ora.',
     details: 'Dati di nascita',
   },
   ru: {
     count: (n: number) => `${tp('ru', 'savedCharts', n, russianRuntime().plurals)}, ваши и тех, для кого вы читаете.`,
     add: 'Добавить карту другого человека',
-    privacy: 'Сохранено на этом устройстве. Ничего не загружается, пока вы сами не включите синхронизацию.',
+    privacy: 'Сохранено на этом устройстве. Синхронизация карт пока приостановлена.',
     details: 'Данные рождения',
   },
 } as const;
@@ -255,7 +255,7 @@ export default function ProfileManager({
   const [syncApi, setSyncApi] = useState<typeof Sync | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [email, setEmail] = useState('');
-  const [syncState, setSyncState] = useState<'idle' | 'sending' | 'sent' | 'syncing' | 'synced' | 'error'>('idle');
+  const [syncState, setSyncState] = useState<'idle' | 'sending' | 'sent' | 'syncing' | 'paused' | 'error'>('idle');
   const [syncMessage, setSyncMessage] = useState('');
   const [digestMessage, setDigestMessage] = useState('');
   const [digestState, setDigestState] = useState<'idle' | 'saved' | 'error'>('idle');
@@ -348,7 +348,7 @@ export default function ProfileManager({
   useEffect(() => {
     let unsubscribe = () => {};
     // Stale saved summaries are rewritten before this page's first sync
-    // uploads them. A refresh that cannot load leaves them as stored.
+    // pass. A refresh that cannot load leaves them as stored.
     const refreshed = import('../lib/profile/refresh')
       .then(({ refreshSavedChartSummaries }) => refreshSavedChartSummaries(loadEngine))
       .catch(() => 0);
@@ -362,9 +362,9 @@ export default function ProfileManager({
         if (current) {
           setSyncState('syncing');
           await refreshed;
-          if (!await api.syncNow()) throw new Error('Charts are saved in this browser. Sign in again to resume sync.');
+          if (!await api.syncNow()) throw new Error('Charts are saved in this browser. Sign in again to reach your account.');
           setDigestOptInState(await api.getDigestOptIn());
-          setSyncState('synced');
+          setSyncState('paused');
           await loadDailyState(current);
         }
         unsubscribe = api.onSyncAuthChange(async (next) => {
@@ -377,7 +377,7 @@ export default function ProfileManager({
           setSyncState('syncing');
           if (!await api.syncNow()) { setSyncState('error'); return; }
           setDigestOptInState(await api.getDigestOptIn());
-          setSyncState('synced');
+          setSyncState('paused');
           await loadDailyState(next);
         });
       })
@@ -466,21 +466,6 @@ export default function ProfileManager({
     } else {
       setSyncState('error');
       setSyncMessage(locale === 'ru' ? t(locale, 'syncFailed') : result.message);
-    }
-  }
-
-  async function onSyncNow() {
-    if (!syncApi) return;
-    setSyncState('syncing');
-    try {
-      if (!await syncApi.syncNow()) throw new Error('Charts are saved in this browser. Sign in again to resume sync.');
-      setSyncState('synced');
-      if (session) await loadDailyState(session);
-    } catch (err) {
-      setSyncState('error');
-      setSyncMessage(locale === 'ru'
-        ? t(locale, 'syncFailed')
-        : err instanceof Error ? err.message : t(locale, 'syncFailed'));
     }
   }
 
@@ -911,9 +896,10 @@ export default function ProfileManager({
         </div>
         {session ? (
           <div class="pf-sync__actions">
-            <button class="pf-chart__action" type="button" onClick={onSyncNow} disabled={syncState === 'syncing'}>
-              {syncState === 'syncing' ? t(locale, 'syncing') : syncState === 'synced' ? t(locale, 'synced') : t(locale, 'syncNow')}
-            </button>
+            {/* Chart sync is paused: no "Sync now". The pass that runs on sign-in only reads and removes. */}
+            <span class="pf-sync__chip" role="status">
+              {syncState === 'syncing' ? t(locale, 'syncing') : t(locale, 'synced')}
+            </span>
             <button class="pf-chart__action" type="button" onClick={onSignOut}>{t(locale, 'signOut')}</button>
           </div>
         ) : (

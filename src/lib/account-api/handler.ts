@@ -6,7 +6,6 @@ import {
   accountRequestHeader,
   hasNoRequestBody,
   hasRecentNonRefreshAuthentication,
-  isAccountUuid,
   isExactAccountOrigin,
   parseDeletionPrepareRequest,
   parseDeletionReceiptProof,
@@ -26,14 +25,12 @@ import { executeAccountSync } from './sync-server.js';
 import {
   parseAccountSyncInput,
   type AccountSyncAction,
-  type AccountSyncInput,
 } from './sync-wire.js';
 import type { AccountApiErrorBody, AccountApiErrorCode } from './types.js';
 
 type Environment = Record<string, unknown>;
 type Fetch = typeof fetch;
 
-const MAX_CANARY_USERS = 100;
 const ACCOUNT_RECEIPT_CLEANUP_BATCH = 256;
 
 function accountReceiptCleanupSecret(env: Environment): string {
@@ -65,25 +62,6 @@ function hasEmptyCleanupBody(req: any): boolean {
   return typeof req.body === 'object'
     && !Array.isArray(req.body)
     && Object.keys(req.body).length === 0;
-}
-
-function isSyncCanaryUser(userId: string, env: Environment): boolean {
-  const raw = env.ACCOUNT_SYNC_V2_CANARY_USER_IDS;
-  if (typeof raw !== 'string' || raw.length > 10_000) return false;
-  const values = raw.split(',').map((value) => value.trim()).filter(Boolean);
-  if (values.length < 1 || values.length > MAX_CANARY_USERS) return false;
-  const normalized = new Set<string>();
-  for (const value of values) {
-    if (!isAccountUuid(value)) return false;
-    normalized.add(value.toLowerCase());
-  }
-  return normalized.has(userId.toLowerCase());
-}
-
-function requiresSyncCanaryAdmission(input: AccountSyncInput): boolean {
-  if (input.action === 'chart-delete') return false;
-  if (input.action === 'consent' && input.decision === 'withdraw') return false;
-  return true;
 }
 
 export interface AccountApiDependencies {
@@ -217,9 +195,10 @@ export async function handleAccountApi(
     sendError(res, 400, 'invalid_request');
     return;
   }
-  // The canary switch controls enrollment and ordinary sync mutation. It must
+  // The kill switch controls enrollment and ordinary sync mutation. It must
   // never revoke lifecycle rights or existing-state privacy controls during a
-  // rollback: consent withdrawal and remote-chart deletion stay callable.
+  // rollback: consent withdrawal (any purpose) and remote-chart deletion stay
+  // callable.
   const rollbackPrivacyControl = syncInput?.action === 'chart-delete'
     || (syncInput?.action === 'consent' && syncInput.decision === 'withdraw');
   if (!lifecycleAction
@@ -293,12 +272,9 @@ export async function handleAccountApi(
     return;
   }
 
-  // Export and deletion remain available account controls. New sync state is
-  // limited to explicitly allowlisted internal users until the canary review.
-  if (syncInput && requiresSyncCanaryAdmission(syncInput) && !isSyncCanaryUser(user.id, env)) {
-    sendError(res, 403, 'canary_not_allowed');
-    return;
-  }
+  // Every signed-in account is admitted. Remote chart storage still requires
+  // the chart_sync consent, the self attestation, and the 18+ birth-date gate
+  // in chart-put, which also refuses every under-13 chart.
 
   if (action === 'export') {
     try {

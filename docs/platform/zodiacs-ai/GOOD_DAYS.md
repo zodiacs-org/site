@@ -125,7 +125,7 @@ and `ZODIACS_GOOD_DAYS_OUTCOMES_ENABLED=1` (the endpoint). Both are unset.
   published), a 2 KB strict body and the day (it must have come, within 120
   days), scrubs the note (dates, email and web addresses and phone numbers out;
   a note that mentions a child dropped whole) and stores through
-  `good_days_outcome_record_v1` (migration `20261109150000`, unapplied). The
+  `good_days_outcome_record_v1` (migration `20261112100000`, unapplied). The
   row keeps no name, birth detail, IP, user agent, account, time of day or
   caller identifier, and nothing is logged.
 - The finder's rules version (`good-days-1`) is stored with each answer, so a

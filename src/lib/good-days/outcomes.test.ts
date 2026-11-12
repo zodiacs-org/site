@@ -186,7 +186,7 @@ describe('the endpoint', () => {
 });
 
 describe('the migration', () => {
-  const sql = readFileSync(new URL('../../../supabase/migrations/20261109150000_good_days_outcomes.sql', import.meta.url), 'utf8');
+  const sql = readFileSync(new URL('../../../supabase/migrations/20261112100000_good_days_outcomes.sql', import.meta.url), 'utf8');
 
   it('takes the arguments the endpoint sends, and the goals the finder reads', () => {
     const args = Object.keys(rpcArguments({ goal: 'move', day: '2027-01-01', finderScore: null, personal: false, rating: 3, note: null, rulesVersion: OUTCOME_RULES_VERSION }, 'preview'));

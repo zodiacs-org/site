@@ -44,7 +44,6 @@ describe('assistant site context', () => {
       '/astrologer-kit/',
       '/your-sky-wrapped/',
       '/chart-of-the-day/',
-      '/baby-zodiac/',
       '/big-three/',
       '/chart-twins/',
       '/compatibility/invite/',
@@ -85,20 +84,23 @@ describe('assistant site context', () => {
       // The engine's own product page at /developers/engine/ adds one more.
       // The conformance suite's results page at /developers/conformance/ adds one more.
       // The compute API, AI integrations and sky benchmark each add a page.
-      // The three occasion cards (/occasions/, milestones, baby shower) add three.
+      // The occasion cards (/occasions/, milestones) add two; the baby shower card was hidden on 2026-11-12.
+      // Hidden on 2026-11-12: /baby-zodiac/ (one tool, one static/consumer route) and /occasions/baby-shower/ (one static/consumer route).
       // The conventions registry at /developers/conventions/ adds one more.
       // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
       // The good day finder at /good-days/ adds one static page, only while
       // PUBLIC_GOOD_DAYS_ENABLED is '1'.
-      consumerRoutes: 717 + Number(goodDays),
+      // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
+      // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
+      consumerRoutes: 715 + Number(goodDays),
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 78 + Number(goodDays),
-      tools: 28,
+      staticPages: 76 + Number(goodDays),
+      tools: 27,
     });
     if (goodDays) expect(context).toContain(GOOD_DAYS_LINE);
     else expect(context).not.toContain('/good-days/');
@@ -190,7 +192,7 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
   });
 
   it('commits the switches-unset output, and the good day finder switch adds exactly its one line', async () => {
-    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED' });
+    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/good-days/': 'PUBLIC_GOOD_DAYS_ENABLED', '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED', '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED' });
     temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
 
     const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
