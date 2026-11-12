@@ -6,7 +6,7 @@ import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import ShareRow from '../../components/ShareRow.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import Wheel from '../../lib/wheel/Wheel';
-import { PEOPLE, type PersonRecord } from '../../lib/people';
+import { PEOPLE, peopleText, type PersonRecord } from '../../lib/people';
 import { latestModifiedAt, PEOPLE_TEMPLATE_MODIFIED_AT } from '../../lib/seo-lastmod';
 import { signBySlug } from '../../lib/signs';
 import { correctedPeopleText, PEOPLE_DEGREES_MODIFIED_AT, peopleDegreesChanged, sunTenths } from '../../lib/people-degrees';
@@ -62,7 +62,7 @@ const profileQualityNote = publishedTimeRecord
     : 'Birth date sourced. Birth time unknown.';
 const metaDescription = publishedTimeRecord
   ? `${person.displayName}'s date-sourced chart: Sun at ${sunTenths(person)}° ${person.sunSign.name}. This frozen Wikidata profile omits angles and houses; a separate published-time record is disclosed.`
-  : correctedPeopleText(person, person.copy.metaDescription);
+  : peopleText(correctedPeopleText(person, person.copy.metaDescription));
 const moonStatement = person.moon.uncertain
   ? `${publishedTimeRecord ? 'Within this date-only profile, the Moon sign is left open.' : 'Moon sign undetermined.'} The Moon crossed from ${signBySlug(person.moon.signAtCivilDayStart).name} into ${signBySlug(person.moon.signAtCivilDayEnd).name} during that civil day.`
   : `The Moon remained in ${person.moon.signName} throughout that civil day.`;
@@ -87,7 +87,7 @@ const displayBlocks = person.copy.blocks.map((block) => (
         ...block,
         text: `The Moon crossed from Taurus into Gemini during that civil day. This profile leaves it open because its frozen Wikidata source contains a date but no time. A separate Astro-Databank record publishes 8:30 a.m. and is disclosed below; the calculator sample uses that record, while this page keeps its independently reproducible date-only computation instead of silently merging sources.`,
       }
-    : { ...block, text: correctedPeopleText(person, block.text, block.key) }
+    : { ...block, text: peopleText(correctedPeopleText(person, block.text, block.key)) }
 ));
 const pageUrl = `https://zodiacs.org/people/${person.slug}/`;
 // The share cards whose Sun degree moved in the reference-instant migration of
@@ -137,11 +137,11 @@ const jsonLd = [
     '@type': 'Person',
     '@id': `${pageUrl}#person`,
     name: person.displayName,
-    description: person.shortDescription,
+    description: peopleText(person.shortDescription),
     ...(!adoptedDate ? { birthDate: person.birthDate.displayedDate } : {}),
     ...(!referenceLocation ? { birthPlace: {
       '@type': 'Place',
-      name: person.birthPlace.normalisedLabel,
+      name: peopleText(person.birthPlace.normalisedLabel),
       sameAs: `https://www.wikidata.org/wiki/${person.birthPlace.entity}`,
     } } : {}),
     sameAs: [
@@ -191,7 +191,7 @@ const jsonLd = [
               />
               <figcaption class="person-credit">
                 <a href={person.portrait.renderedAttributionLinks.creator} target="_blank" rel="noopener noreferrer">
-                  {person.portrait.creator}
+                  {peopleText(person.portrait.creator)}
                 </a>
                 {' · '}
                 {person.portrait.licenceUrl ? (
@@ -218,7 +218,7 @@ const jsonLd = [
             <h1 class="display">{person.displayName}</h1>
           </div>
         </div>
-        <p class="person-identity__description">{person.shortDescription}</p>
+        <p class="person-identity__description">{peopleText(person.shortDescription)}</p>
         <p class="person-identity__meta">
           {person.sunSign.name} {sunTenths(person)}° · {adoptedDate ? 'adopted date' : 'born'} {longDate}<br />
           {profileSourceNote}
@@ -226,7 +226,7 @@ const jsonLd = [
         {person.sourceReview && (
           <p class="person-quality" data-source-review>
             <strong>{adoptedDate ? 'About the adopted date' : referenceLocation ? 'About the reference location' : 'Source correction'}</strong>
-            <span>{person.sourceReview.note} <a href="#sources">Review the sources</a>.</span>
+            <span>{peopleText(person.sourceReview.note)} <a href="#sources">Review the sources</a>.</span>
           </p>
         )}
         <details class="person-quality person-quality--details">
@@ -243,7 +243,7 @@ const jsonLd = [
       </header>
 
       <div class="person-reading">
-        <p class="person-lede">{correctedPeopleText(person, person.copy.lede)}</p>
+        <p class="person-lede">{peopleText(correctedPeopleText(person, person.copy.lede))}</p>
         <CheckOurMath utc={person.computation.utcInstant} basis="reference" />
 
         <div class="person-wheel">
@@ -254,7 +254,7 @@ const jsonLd = [
             ariaLabel={`Time-unknown chart wheel for ${person.displayName}: ten bodies at the noon reference, with no houses or angles`}
           />
           <p class="person-wheel__caption">
-            Positions at 12:00 civil time in {person.birthPlace.entityLabel}, a reference instant, not a birth time.
+            Positions at 12:00 civil time in {peopleText(person.birthPlace.entityLabel)}, a reference instant, not a birth time.
             No houses, rising sign, angles, or sect were computed.
           </p>
         </div>
@@ -306,7 +306,7 @@ const jsonLd = [
             <div>
               <dt>{referenceLocation ? 'Calculation reference location' : 'Birthplace'}</dt>
               <dd>
-                {person.birthPlace.normalisedLabel} ·{' '}
+                {peopleText(person.birthPlace.normalisedLabel)} ·{' '}
                 <a href={`https://www.wikidata.org/wiki/${person.birthPlace.entity}`} target="_blank" rel="noopener noreferrer">
                   {person.birthPlace.entity}
                 </a>
@@ -316,9 +316,9 @@ const jsonLd = [
               <div>
                 <dt>Reviewed source decision · {person.sourceReview.reviewedOn}</dt>
                 <dd>
-                  <p>{person.sourceReview.note}</p>
+                  <p>{peopleText(person.sourceReview.note)}</p>
                   <ul>{person.sourceReview.sources.map((source) => (
-                    <li><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a></li>
+                    <li><a href={source.url} target="_blank" rel="noopener noreferrer">{peopleText(source.title)}</a></li>
                   ))}</ul>
                   <p>The Wikidata and Wikipedia revisions above remain historical source records. Reviewed corrections are recorded separately.</p>
                 </dd>
@@ -329,12 +329,12 @@ const jsonLd = [
               <dd>
                 {coordinates.latitude.toFixed(4)}, {coordinates.longitude.toFixed(4)} · from{' '}
                 <a href={`https://www.wikidata.org/wiki/${coordinates.sourceEntity}`} target="_blank" rel="noopener noreferrer">
-                  {coordinates.sourceEntityLabel} ({coordinates.sourceEntity})
+                  {peopleText(coordinates.sourceEntityLabel)} ({coordinates.sourceEntity})
                 </a>
-                {coordinates.precisionDowngrade ? ` · ${coordinates.precisionDowngrade}` : ''}
+                {coordinates.precisionDowngrade ? ` · ${peopleText(coordinates.precisionDowngrade)}` : ''}
               </dd>
             </div>
-            <div><dt>Birth-time evidence in this profile</dt><dd>{person.birthTimeEvidence}</dd></div>
+            <div><dt>Birth-time evidence in this profile</dt><dd>{peopleText(person.birthTimeEvidence)}</dd></div>
             {publishedTimeRecord && (
               <div>
                 <dt>Separate published-time record</dt>
@@ -370,8 +370,8 @@ const jsonLd = [
               <dt>Portrait</dt>
               <dd>
                 {person.portrait.available
-                  ? person.portrait.renderedAttribution
-                  : `None published · ${person.portrait.reason}`}
+                  ? peopleText(person.portrait.renderedAttribution)
+                  : `None published · ${peopleText(person.portrait.reason)}`}
               </dd>
             </div>
           </dl>

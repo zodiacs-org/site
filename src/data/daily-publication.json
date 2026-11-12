@@ -6,10 +6,10 @@
     "id": "org.zodiacs.daily.en",
     "version": "1.1.0"
   },
-  "rendererVersion": "zodiacs.daily-renderer.v1.2",
+  "rendererVersion": "zodiacs.daily-renderer.v1.3",
   "generation": {
     "mode": "deterministic-template",
-    "generatorId": "zodiacs.daily-renderer.v1.2",
+    "generatorId": "zodiacs.daily-renderer.v1.3",
     "model": null
   },
   "facts": [
@@ -549,10 +549,10 @@
   "signs": [
     {
       "sign": "aries",
-      "headline": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
+      "headline": "The Moon spends today in your ninth house: travel, learning, beliefs, and long-term plans.",
       "lines": [
         {
-          "text": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
+          "text": "The Moon spends today in your ninth house: travel, learning, beliefs, and long-term plans.",
           "receipt": "Moon 25.8° Sagittarius · house 9",
           "house": 9,
           "body": "Moon",
@@ -565,7 +565,7 @@
           ]
         },
         {
-          "text": "Mercury is working your eighth house — shared finances, debts, intimacy, and trust.",
+          "text": "Mercury is working your eighth house: shared finances, debts, intimacy, and trust.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 8",
           "house": 8,
           "body": "Mercury",
@@ -578,7 +578,7 @@
           ]
         },
         {
-          "text": "Venus is warming your seventh house — partners and one-to-one relationships.",
+          "text": "Venus is warming your seventh house: partners and one-to-one relationships.",
           "receipt": "Venus 22.9° Libra, retrograde · house 7",
           "house": 7,
           "body": "Venus",
@@ -591,7 +591,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your fifth house — creativity, romance, children, and enjoyment.",
+          "text": "Mars is pushing on your fifth house: creativity, romance, children, and enjoyment.",
           "receipt": "Mars 24.2° Leo · house 5",
           "house": 5,
           "body": "Mars",
@@ -619,10 +619,10 @@
     },
     {
       "sign": "taurus",
-      "headline": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
+      "headline": "The Moon spends today in your eighth house: shared finances, debts, intimacy, and trust.",
       "lines": [
         {
-          "text": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
+          "text": "The Moon spends today in your eighth house: shared finances, debts, intimacy, and trust.",
           "receipt": "Moon 25.8° Sagittarius · house 8",
           "house": 8,
           "body": "Moon",
@@ -635,7 +635,7 @@
           ]
         },
         {
-          "text": "Mercury is working your seventh house — partners and one-to-one relationships.",
+          "text": "Mercury is working your seventh house: partners and one-to-one relationships.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 7",
           "house": 7,
           "body": "Mercury",
@@ -648,7 +648,7 @@
           ]
         },
         {
-          "text": "Venus is warming your sixth house — daily work, health routines, and responsibilities.",
+          "text": "Venus is warming your sixth house: daily work, health routines, and responsibilities.",
           "receipt": "Venus 22.9° Libra, retrograde · house 6",
           "house": 6,
           "body": "Venus",
@@ -661,7 +661,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your fourth house — home, family, and your private life.",
+          "text": "Mars is pushing on your fourth house: home, family, and your private life.",
           "receipt": "Mars 24.2° Leo · house 4",
           "house": 4,
           "body": "Mars",
@@ -689,10 +689,10 @@
     },
     {
       "sign": "gemini",
-      "headline": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
+      "headline": "The Moon spends today in your seventh house: partners and one-to-one relationships.",
       "lines": [
         {
-          "text": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
+          "text": "The Moon spends today in your seventh house: partners and one-to-one relationships.",
           "receipt": "Moon 25.8° Sagittarius · house 7",
           "house": 7,
           "body": "Moon",
@@ -705,7 +705,7 @@
           ]
         },
         {
-          "text": "Mercury is working your sixth house — daily work, health routines, and responsibilities.",
+          "text": "Mercury is working your sixth house: daily work, health routines, and responsibilities.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 6",
           "house": 6,
           "body": "Mercury",
@@ -718,7 +718,7 @@
           ]
         },
         {
-          "text": "Venus is warming your fifth house — creativity, romance, children, and enjoyment.",
+          "text": "Venus is warming your fifth house: creativity, romance, children, and enjoyment.",
           "receipt": "Venus 22.9° Libra, retrograde · house 5",
           "house": 5,
           "body": "Venus",
@@ -731,7 +731,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your third house — messages, errands, siblings, and your local community.",
+          "text": "Mars is pushing on your third house: messages, errands, siblings, and your local community.",
           "receipt": "Mars 24.2° Leo · house 3",
           "house": 3,
           "body": "Mars",
@@ -759,10 +759,10 @@
     },
     {
       "sign": "cancer",
-      "headline": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
+      "headline": "The Moon spends today in your sixth house: daily work, health routines, and responsibilities.",
       "lines": [
         {
-          "text": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
+          "text": "The Moon spends today in your sixth house: daily work, health routines, and responsibilities.",
           "receipt": "Moon 25.8° Sagittarius · house 6",
           "house": 6,
           "body": "Moon",
@@ -775,7 +775,7 @@
           ]
         },
         {
-          "text": "Mercury is working your fifth house — creativity, romance, children, and enjoyment.",
+          "text": "Mercury is working your fifth house: creativity, romance, children, and enjoyment.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 5",
           "house": 5,
           "body": "Mercury",
@@ -788,7 +788,7 @@
           ]
         },
         {
-          "text": "Venus is warming your fourth house — home, family, and your private life.",
+          "text": "Venus is warming your fourth house: home, family, and your private life.",
           "receipt": "Venus 22.9° Libra, retrograde · house 4",
           "house": 4,
           "body": "Venus",
@@ -801,7 +801,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your second house — your money, possessions, and priorities.",
+          "text": "Mars is pushing on your second house: your money, possessions, and priorities.",
           "receipt": "Mars 24.2° Leo · house 2",
           "house": 2,
           "body": "Mars",
@@ -829,10 +829,10 @@
     },
     {
       "sign": "leo",
-      "headline": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
+      "headline": "The Moon spends today in your fifth house: creativity, romance, children, and enjoyment.",
       "lines": [
         {
-          "text": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
+          "text": "The Moon spends today in your fifth house: creativity, romance, children, and enjoyment.",
           "receipt": "Moon 25.8° Sagittarius · house 5",
           "house": 5,
           "body": "Moon",
@@ -845,7 +845,7 @@
           ]
         },
         {
-          "text": "Mercury is working your fourth house — home, family, and your private life.",
+          "text": "Mercury is working your fourth house: home, family, and your private life.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 4",
           "house": 4,
           "body": "Mercury",
@@ -858,7 +858,7 @@
           ]
         },
         {
-          "text": "Venus is warming your third house — messages, errands, siblings, and your local community.",
+          "text": "Venus is warming your third house: messages, errands, siblings, and your local community.",
           "receipt": "Venus 22.9° Libra, retrograde · house 3",
           "house": 3,
           "body": "Venus",
@@ -871,7 +871,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your first house — your identity and how you present yourself.",
+          "text": "Mars is pushing on your first house: your identity and how you present yourself.",
           "receipt": "Mars 24.2° Leo · house 1",
           "house": 1,
           "body": "Mars",
@@ -899,10 +899,10 @@
     },
     {
       "sign": "virgo",
-      "headline": "The Moon spends today in your fourth house — home, family, and your private life.",
+      "headline": "The Moon spends today in your fourth house: home, family, and your private life.",
       "lines": [
         {
-          "text": "The Moon spends today in your fourth house — home, family, and your private life.",
+          "text": "The Moon spends today in your fourth house: home, family, and your private life.",
           "receipt": "Moon 25.8° Sagittarius · house 4",
           "house": 4,
           "body": "Moon",
@@ -915,7 +915,7 @@
           ]
         },
         {
-          "text": "Mercury is working your third house — messages, errands, siblings, and your local community.",
+          "text": "Mercury is working your third house: messages, errands, siblings, and your local community.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 3",
           "house": 3,
           "body": "Mercury",
@@ -928,7 +928,7 @@
           ]
         },
         {
-          "text": "Venus is warming your second house — your money, possessions, and priorities.",
+          "text": "Venus is warming your second house: your money, possessions, and priorities.",
           "receipt": "Venus 22.9° Libra, retrograde · house 2",
           "house": 2,
           "body": "Venus",
@@ -941,7 +941,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your twelfth house — rest, privacy, and unfinished matters.",
+          "text": "Mars is pushing on your twelfth house: rest, privacy, and unfinished matters.",
           "receipt": "Mars 24.2° Leo · house 12",
           "house": 12,
           "body": "Mars",
@@ -969,10 +969,10 @@
     },
     {
       "sign": "libra",
-      "headline": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
+      "headline": "The Moon spends today in your third house: messages, errands, siblings, and your local community.",
       "lines": [
         {
-          "text": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
+          "text": "The Moon spends today in your third house: messages, errands, siblings, and your local community.",
           "receipt": "Moon 25.8° Sagittarius · house 3",
           "house": 3,
           "body": "Moon",
@@ -985,7 +985,7 @@
           ]
         },
         {
-          "text": "Mercury is working your second house — your money, possessions, and priorities.",
+          "text": "Mercury is working your second house: your money, possessions, and priorities.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 2",
           "house": 2,
           "body": "Mercury",
@@ -998,7 +998,7 @@
           ]
         },
         {
-          "text": "Venus is warming your first house — your identity and how you present yourself.",
+          "text": "Venus is warming your first house: your identity and how you present yourself.",
           "receipt": "Venus 22.9° Libra, retrograde · house 1",
           "house": 1,
           "body": "Venus",
@@ -1011,7 +1011,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your eleventh house — friends, groups, and plans for the future.",
+          "text": "Mars is pushing on your eleventh house: friends, groups, and plans for the future.",
           "receipt": "Mars 24.2° Leo · house 11",
           "house": 11,
           "body": "Mars",
@@ -1039,10 +1039,10 @@
     },
     {
       "sign": "scorpio",
-      "headline": "The Moon spends today in your second house — your money, possessions, and priorities.",
+      "headline": "The Moon spends today in your second house: your money, possessions, and priorities.",
       "lines": [
         {
-          "text": "The Moon spends today in your second house — your money, possessions, and priorities.",
+          "text": "The Moon spends today in your second house: your money, possessions, and priorities.",
           "receipt": "Moon 25.8° Sagittarius · house 2",
           "house": 2,
           "body": "Moon",
@@ -1055,7 +1055,7 @@
           ]
         },
         {
-          "text": "Mercury is working your first house — your identity and how you present yourself.",
+          "text": "Mercury is working your first house: your identity and how you present yourself.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 1",
           "house": 1,
           "body": "Mercury",
@@ -1068,7 +1068,7 @@
           ]
         },
         {
-          "text": "Venus is warming your twelfth house — rest, privacy, and unfinished matters.",
+          "text": "Venus is warming your twelfth house: rest, privacy, and unfinished matters.",
           "receipt": "Venus 22.9° Libra, retrograde · house 12",
           "house": 12,
           "body": "Venus",
@@ -1081,7 +1081,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your tenth house — career, reputation, and public responsibilities.",
+          "text": "Mars is pushing on your tenth house: career, reputation, and public responsibilities.",
           "receipt": "Mars 24.2° Leo · house 10",
           "house": 10,
           "body": "Mars",
@@ -1109,10 +1109,10 @@
     },
     {
       "sign": "sagittarius",
-      "headline": "The Moon spends today in your first house — your identity and how you present yourself.",
+      "headline": "The Moon spends today in your first house: your identity and how you present yourself.",
       "lines": [
         {
-          "text": "The Moon spends today in your first house — your identity and how you present yourself.",
+          "text": "The Moon spends today in your first house: your identity and how you present yourself.",
           "receipt": "Moon 25.8° Sagittarius · house 1",
           "house": 1,
           "body": "Moon",
@@ -1125,7 +1125,7 @@
           ]
         },
         {
-          "text": "Mercury is working your twelfth house — rest, privacy, and unfinished matters.",
+          "text": "Mercury is working your twelfth house: rest, privacy, and unfinished matters.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 12",
           "house": 12,
           "body": "Mercury",
@@ -1138,7 +1138,7 @@
           ]
         },
         {
-          "text": "Venus is warming your eleventh house — friends, groups, and plans for the future.",
+          "text": "Venus is warming your eleventh house: friends, groups, and plans for the future.",
           "receipt": "Venus 22.9° Libra, retrograde · house 11",
           "house": 11,
           "body": "Venus",
@@ -1151,7 +1151,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your ninth house — travel, learning, beliefs, and long-term plans.",
+          "text": "Mars is pushing on your ninth house: travel, learning, beliefs, and long-term plans.",
           "receipt": "Mars 24.2° Leo · house 9",
           "house": 9,
           "body": "Mars",
@@ -1179,10 +1179,10 @@
     },
     {
       "sign": "capricorn",
-      "headline": "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters.",
+      "headline": "The Moon spends today in your twelfth house: rest, privacy, and unfinished matters.",
       "lines": [
         {
-          "text": "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters.",
+          "text": "The Moon spends today in your twelfth house: rest, privacy, and unfinished matters.",
           "receipt": "Moon 25.8° Sagittarius · house 12",
           "house": 12,
           "body": "Moon",
@@ -1195,7 +1195,7 @@
           ]
         },
         {
-          "text": "Mercury is working your eleventh house — friends, groups, and plans for the future.",
+          "text": "Mercury is working your eleventh house: friends, groups, and plans for the future.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 11",
           "house": 11,
           "body": "Mercury",
@@ -1208,7 +1208,7 @@
           ]
         },
         {
-          "text": "Venus is warming your tenth house — career, reputation, and public responsibilities.",
+          "text": "Venus is warming your tenth house: career, reputation, and public responsibilities.",
           "receipt": "Venus 22.9° Libra, retrograde · house 10",
           "house": 10,
           "body": "Venus",
@@ -1221,7 +1221,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your eighth house — shared finances, debts, intimacy, and trust.",
+          "text": "Mars is pushing on your eighth house: shared finances, debts, intimacy, and trust.",
           "receipt": "Mars 24.2° Leo · house 8",
           "house": 8,
           "body": "Mars",
@@ -1249,10 +1249,10 @@
     },
     {
       "sign": "aquarius",
-      "headline": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
+      "headline": "The Moon spends today in your eleventh house: friends, groups, and plans for the future.",
       "lines": [
         {
-          "text": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
+          "text": "The Moon spends today in your eleventh house: friends, groups, and plans for the future.",
           "receipt": "Moon 25.8° Sagittarius · house 11",
           "house": 11,
           "body": "Moon",
@@ -1265,7 +1265,7 @@
           ]
         },
         {
-          "text": "Mercury is working your tenth house — career, reputation, and public responsibilities.",
+          "text": "Mercury is working your tenth house: career, reputation, and public responsibilities.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 10",
           "house": 10,
           "body": "Mercury",
@@ -1278,7 +1278,7 @@
           ]
         },
         {
-          "text": "Venus is warming your ninth house — travel, learning, beliefs, and long-term plans.",
+          "text": "Venus is warming your ninth house: travel, learning, beliefs, and long-term plans.",
           "receipt": "Venus 22.9° Libra, retrograde · house 9",
           "house": 9,
           "body": "Venus",
@@ -1291,7 +1291,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your seventh house — partners and one-to-one relationships.",
+          "text": "Mars is pushing on your seventh house: partners and one-to-one relationships.",
           "receipt": "Mars 24.2° Leo · house 7",
           "house": 7,
           "body": "Mars",
@@ -1319,10 +1319,10 @@
     },
     {
       "sign": "pisces",
-      "headline": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
+      "headline": "The Moon spends today in your tenth house: career, reputation, and public responsibilities.",
       "lines": [
         {
-          "text": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
+          "text": "The Moon spends today in your tenth house: career, reputation, and public responsibilities.",
           "receipt": "Moon 25.8° Sagittarius · house 10",
           "house": 10,
           "body": "Moon",
@@ -1335,7 +1335,7 @@
           ]
         },
         {
-          "text": "Mercury is working your ninth house — travel, learning, beliefs, and long-term plans.",
+          "text": "Mercury is working your ninth house: travel, learning, beliefs, and long-term plans.",
           "receipt": "Mercury 5.2° Scorpio, retrograde · house 9",
           "house": 9,
           "body": "Mercury",
@@ -1348,7 +1348,7 @@
           ]
         },
         {
-          "text": "Venus is warming your eighth house — shared finances, debts, intimacy, and trust.",
+          "text": "Venus is warming your eighth house: shared finances, debts, intimacy, and trust.",
           "receipt": "Venus 22.9° Libra, retrograde · house 8",
           "house": 8,
           "body": "Venus",
@@ -1361,7 +1361,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your sixth house — daily work, health routines, and responsibilities.",
+          "text": "Mars is pushing on your sixth house: daily work, health routines, and responsibilities.",
           "receipt": "Mars 24.2° Leo · house 6",
           "house": 6,
           "body": "Mars",

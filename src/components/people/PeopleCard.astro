@@ -1,5 +1,5 @@
 ---
-import { peopleDisciplineGroups, type PersonRecord } from '../../lib/people';
+import { peopleDisciplineGroups, peopleText, type PersonRecord } from '../../lib/people';
 import SignIcon from '../SignIcon.astro';
 
 interface Props {
@@ -27,6 +27,6 @@ const birthDate = new Intl.DateTimeFormat('en-US', {
   <span class="people-card__body">
     <strong>{person.displayName}</strong>
     <span>{person.sunSign.name} · born {birthDate}</span>
-    {!compact && <small>{person.shortDescription}</small>}
+    {!compact && <small>{peopleText(person.shortDescription)}</small>}
   </span>
 </a>

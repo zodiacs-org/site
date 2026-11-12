@@ -676,6 +676,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
   // after the October design sweep dates above, so this wins.
   ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
+  // The copy audit's dash fixes (12 November): the /lunar-return/ and /numerology/
+  // titles and the corrections record's wording. Last, so this date wins.
+  ...['/lunar-return/', '/numerology/', '/corrections/'].map((loc) => [loc, '2026-11-12'] as const),
 ]);
 
 function getLastmod(loc: string): string {

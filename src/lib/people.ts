@@ -398,6 +398,60 @@ const DISCIPLINE_GROUP_BY_SOURCE: Readonly<Record<string, PeopleDisciplineGroup>
   'martial artist': 'sport',
 };
 
+/**
+ * The People pages print the frozen released copy (src/data/people.json) with
+ * plain punctuation. The released copy and its generator stay untouched; this
+ * rewrites only the dashes, at render time, so the words are the same words.
+ *
+ * - A range between numbers takes "to": 1926–1996 becomes 1926 to 1996, and
+ *   0°–10° becomes 0° to 10°.
+ * - Any other en dash (a name such as a hospital's) becomes a hyphen.
+ * - Within a clause (a sentence, or a part of one between semicolons), two em
+ *   dashes enclose an aside, which goes in parentheses; a single em dash
+ *   introduces what follows, which takes a colon (or a comma, when the clause
+ *   already has a colon).
+ */
+const EN_DASH = '\u2013';
+const EM_DASH = '\u2014';
+
+function closeAside(aside: string, rest: string): string {
+  // After the closing parenthesis the clause either goes on with its verb
+  // ("(…) flags four placements") or starts a new statement ("(…), the chart
+  // gives …"). The templates' verbs are third-person singular, ending in s.
+  const next = rest.match(/^\p{L}+/u)?.[0] ?? '';
+  const joiner = /^\p{P}/u.test(rest) ? '' : /^\p{Ll}+s$/u.test(next) ? ' ' : ', ';
+  return ` (${aside})${rest ? joiner + rest : ''}`;
+}
+
+function plainClause(clause: string): string {
+  const parts = clause.split(/[ \t]*\u2014[ \t]*/u);
+  if (parts.length === 1) return clause;
+  let result = parts[0];
+  let index = 1;
+  while (index < parts.length) {
+    if (parts.length - index >= 2) {
+      result += closeAside(parts[index], parts[index + 1]);
+      index += 2;
+    } else {
+      result += (result.includes(':') ? ', ' : ': ') + parts[index];
+      index += 1;
+    }
+  }
+  return result;
+}
+
+export function peopleText(text: string): string {
+  if (!text.includes(EN_DASH) && !text.includes(EM_DASH)) return text;
+  const ranged = text
+    .replace(/(\d[°′″]?)[ \t]*\u2013[ \t]*(?=(?:ca\.[ \t]*)?\d)/gu, '$1 to ')
+    .replace(/[ \t]*\u2013[ \t]*/gu, '-');
+  if (!ranged.includes(EM_DASH)) return ranged;
+  return ranged
+    .split(/(?<=[.!?])(\s+)/u)
+    .map((sentence) => sentence.split(/(;\s*)/u).map(plainClause).join(''))
+    .join('');
+}
+
 export function peopleDisciplineGroups(person: PersonRecord): PeopleDisciplineGroup[] {
   return [...new Set(person.disciplines.map((discipline) => {
     const group = DISCIPLINE_GROUP_BY_SOURCE[discipline];
