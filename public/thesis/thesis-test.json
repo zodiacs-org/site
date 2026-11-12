@@ -1,5 +1,5 @@
 {
-  "$comment": "Preregistration of the one-tap test (/thesis Section VII). Committed before the test begins; the claim surface is NOT yet live and the test has NOT begun. The result — success, mixed, or failure — will be published on /thesis/ and in this file within 14 days of the final cohort day's day-90 mark. Field contract matches thesis-disclosure.json; 'preregistered' renders like a filled value with its committed date.",
+  "$comment": "Preregistration of the one-tap test (/thesis Section VII). Committed before the test begins; the claim surface is NOT yet live and the test has NOT begun. The result — success, mixed, or failure — will be published on /thesis/ and in this file within 14 days of the final cohort day's day-90 mark. Field contract matches thesis-disclosure.json; 'preregistered' renders like a filled value with its committed date. The 2026-10-31 start was missed; see startMissed.",
   "status": "preregistered",
   "preregisteredAt": "2026-07-23",
   "start": {
@@ -28,9 +28,9 @@
   },
   "publication": "Within 14 days of the final cohort day's day-90 mark, on /thesis/ and in this file, regardless of outcome, including failure",
   "startWindow": {
-    "value": "on claim-surface deploy · no later than 2026-10-31 · 28-day window",
+    "value": "was due by 2026-10-31 · not started · redesign pending",
     "status": "preregistered",
-    "asOf": "2026-07-23",
+    "asOf": "2026-11-10",
     "verifyUrl": null
   },
   "verdictRule": {
@@ -58,5 +58,10 @@
       "asOf": "2026-07-23",
       "verifyUrl": null
     }
+  },
+  "startMissed": {
+    "wasDueBy": "2026-10-31",
+    "acknowledgedAt": "2026-11-10",
+    "note": "The start date was missed. The claim surface was never built. The test is being redesigned. The thresholds are unchanged."
   }
 }

@@ -1,0 +1,61 @@
+{
+  "$comment": "Every number printed by the two bar charts in the essay on /thesis/ (figures fig-know and fig-lifespan). Stamped into the page by scripts/build-thesis-charts.mjs; never edit the stamped SVG. Refreshing a checkedAt date is a reviewed action. twelve.tradedInWindow comes from a trade check of the twelve pools on the public ledger (scripts/build-thesis-charts.mjs --trade-check, or the capture in docs/thesis-evidence/); while it is null the lifespan chart prints only CoinGecko's three bars.",
+  "know": {
+    "source": "YouGov",
+    "url": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
+    "fielded": "2022-04",
+    "checkedAt": "2026-11-10",
+    "knowSignPct": 90,
+    "believePct": 27
+  },
+  "lifespan": {
+    "source": "CoinGecko",
+    "url": "https://www.coingecko.com/research/publications/average-lifespan-of-pumpfun-tokens",
+    "updated": "2026-06-23",
+    "checkedAt": "2026-11-10",
+    "sample": 18675645,
+    "window": [
+      "2024-01-14",
+      "2026-06-18"
+    ],
+    "lastTradeOnCreationDayPct": 68.67,
+    "lastTradeByNextDayPct": 80.37,
+    "lasted90DaysPct": 4.55,
+    "caveat": "Counts trades on Pump.fun only."
+  },
+  "twelve": {
+    "createdAt": "2024-07-05",
+    "checkedAt": "2026-11-10",
+    "windowDays": 30,
+    "tradedInWindow": 12,
+    "source": "Solana RPC (api.mainnet-beta.solana.com): getSignaturesForAddress on each pool, newest transaction whose logs record a swap; raw capture docs/thesis-evidence/2026-11-10/pool-trades.json",
+    "pools": {
+      "aries": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+      "taurus": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+      "gemini": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+      "cancer": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+      "leo": "48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
+      "virgo": "5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+      "libra": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+      "scorpio": "3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
+      "sagittarius": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+      "capricorn": "549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+      "aquarius": "BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
+      "pisces": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko"
+    },
+    "perSign": {
+      "aries": "2026-11-10",
+      "taurus": "2026-11-10",
+      "gemini": "2026-11-10",
+      "cancer": "2026-11-10",
+      "leo": "2026-11-09",
+      "virgo": "2026-11-10",
+      "libra": "2026-11-10",
+      "scorpio": "2026-11-09",
+      "sagittarius": "2026-11-10",
+      "capricorn": "2026-11-10",
+      "aquarius": "2026-11-09",
+      "pisces": "2026-11-10"
+    }
+  }
+}

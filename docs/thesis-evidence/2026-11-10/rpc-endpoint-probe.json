@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-11-10T19:26:13.492Z",
+  "chosen": null,
+  "tried": [
+    {
+      "url": "https://solana-rpc.publicnode.com",
+      "error": "getTokenLargestAccounts: HTTP 429 Rate limit exceeded. To obtain higher limits, please request a personal token or a dedicated node: https://www.allnodes.com/publicnode"
+    },
+    {
+      "url": "https://api.mainnet-beta.solana.com",
+      "error": "getTokenLargestAccounts: HTTP 429 Too many requests for a specific RPC call"
+    },
+    {
+      "url": "https://solana.drpc.org",
+      "error": "getTokenLargestAccounts: HTTP 400 chain is not available on free plan, please upgrade to paid plan"
+    },
+    {
+      "url": "https://endpoints.omniatech.io/v1/sol/mainnet/public",
+      "error": "getTokenLargestAccounts: HTTP 521 <!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class"
+    },
+    {
+      "url": "https://solana.api.onfinality.io/public",
+      "error": "getTokenLargestAccounts: HTTP 429 Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit"
+    },
+    {
+      "url": "https://rpc.ankr.com/solana",
+      "error": "getTokenLargestAccounts: HTTP 403"
+    }
+  ]
+}

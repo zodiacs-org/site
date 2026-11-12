@@ -15,6 +15,7 @@ import { loadModule } from '../lib/module-load';
 import CalculationReload, { calculationError } from './CalculationReload';
 
 type ResultComponent = ComponentType<SolarReturnResultProps>;
+type SolarReturnLaunch = Pick<SolarReturnResultProps, 'themes' | 'yearScoreLink' | 'birthdayReportLink'>;
 
 function profileInputKey(profile: Profile, source: 'saved' | 'manual', savedId: string): string {
   if (source === 'manual') return JSON.stringify(profile.settings.houseSystem);
@@ -29,7 +30,8 @@ function profileInputKey(profile: Profile, source: 'saved' | 'manual', savedId: 
   });
 }
 
-export default function SolarReturnCalculator() {
+/** The launch switches the page reads at build time (src/lib/launch-flags.ts), passed on to the result. */
+export default function SolarReturnCalculator({ themes = false, yearScoreLink = false, birthdayReportLink = false }: SolarReturnLaunch = {}) {
   const { profile, ready: profileReady } = useProfile();
   const [source, setSource] = useState<'saved' | 'manual'>('manual');
   const [savedId, setSavedId] = useState('');
@@ -260,7 +262,7 @@ export default function SolarReturnCalculator() {
           <CalculationReload error={error} locale="en" />
         </div>
       </form>
-      {result && ResultView && WheelView && <ResultView key={result.revision} result={result.data} Wheel={WheelView} />}
+      {result && ResultView && WheelView && <ResultView key={result.revision} result={result.data} Wheel={WheelView} themes={themes} yearScoreLink={yearScoreLink} birthdayReportLink={birthdayReportLink} />}
     </div>
   );
 }
