@@ -75,7 +75,7 @@ note; this page only takes its total count.)
 | Mon 30 Nov 2026 | T5: submit by this date |
 | Mon 7 Dec 2026 | Three-week read of T1 to T4 for any of them that started 16 Nov (16 Nov to 6 Dec). A test that started later is read on its own start plus 21 days. T6 starts by this date |
 | Wed 16 Dec 2026 | Verdict date for every 30-day test that started 16 Nov. A test that started later gets its verdict on start date plus 30 days. Day 1 is the start date, so the verdict falls on day 31 |
-| Mon 28 Dec 2026 | T6 day 21, if it starts on 7 Dec |
+| Mon 28 Dec 2026 | T6 read: start plus 21 days (after day 21), if it starts on 7 Dec |
 | Sun 10 Jan 2027 | Owned reach count. Target 500, floor 150 |
 | Sun 31 Jan 2027 | T5's kill deadline, as written in its kill number |
 
@@ -150,7 +150,7 @@ for the personal 2027 calendar.
 | T3 Good Day | Planned Mon 16 Nov 2026; actual null until the finder is merged and on | 30 days | 300 completed checks (site plus hosted tool), 20% added to a calendar, 25 note signups from the page | Fewer than 80 checks after 1,000 page views, or calendar adds under 5% | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or start plus 30 days if it starts later |
 | T4 Birthday card loop | Planned Mon 16 Nov 2026; actual null until the page is live (plan: week 3) | 30 days | 200 cards made; 0.15 new makers or subscribers per card; 10 paid gift codes | Under 0.05 per card after 150 cards, and fewer than 3 paid | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or start plus 30 days if it starts later |
 | T5 App Review probe | Submission date (by 30 Nov 2026) | Submit by 30 Nov; expect 1 to 3 weeks | Approved within two submissions | Two 4.3(b) rejections and a failed appeal by 31 Jan 2027: ship the web version first | Not applicable | First approval, or 31 Jan 2027 |
-| T6 Thirty testers | By Mon 7 Dec 2026 | 21 days of use, starting by 7 Dec | 12 of 30 open it on 4 or more days in week 3; 40% say "very disappointed" without it; 5 tap to start the annual trial | Fewer than 6 of 30 active in week 3 | Not applicable | Day 21 (28 Dec 2026 if it starts 7 Dec) |
+| T6 Thirty testers | By Mon 7 Dec 2026 | 21 days of use, starting by 7 Dec | 12 of 30 open it on 4 or more days in week 3; 40% say "very disappointed" without it; 5 tap to start the annual trial | Fewer than 6 of 30 active in week 3 | Not applicable | Start plus 21 days, after day 21 (28 Dec 2026 if it starts 7 Dec) |
 | T7 Videos to list | Planned Mon 16 Nov 2026; actual null until the first post (plan: week 2) | 30 days | A median of 500 views a post by week 4 and 75 note signups tagged to video | A median under 150 views and under 15 signups after 60 posts | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or start plus 30 days if it starts later |
 | T8 Assistant store hook | The day either listing is approved (null until then) | 30 days after either listing is approved | 5% of referred visits subscribe or add a calendar | Under 1% after 300 referred visits | Start plus 21 days | Start plus 30 days |
 
