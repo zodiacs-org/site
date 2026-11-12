@@ -9,7 +9,7 @@ import { enabledOAuthProviders } from '../../lib/auth/oauth-config';
 import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
-  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
+  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: import.meta.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED ?? process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
 });
 const weeklyDigestEnabled = weeklyDigestSignupEnabled();
 const webPushEnabled = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
@@ -20,11 +20,11 @@ const walletChartEnabled = configuredWalletChains({
 }).length > 0;
 // Google and Apple sign-in and saved pages are build flags, off until set up.
 const oauthProviders = enabledOAuthProviders({
-  PUBLIC_AUTH_GOOGLE: process.env.PUBLIC_AUTH_GOOGLE,
-  PUBLIC_AUTH_APPLE: process.env.PUBLIC_AUTH_APPLE,
+  PUBLIC_AUTH_GOOGLE: import.meta.env.PUBLIC_AUTH_GOOGLE ?? process.env.PUBLIC_AUTH_GOOGLE,
+  PUBLIC_AUTH_APPLE: import.meta.env.PUBLIC_AUTH_APPLE ?? process.env.PUBLIC_AUTH_APPLE,
 });
 const oauthProviderNames = oauthProviders.map((provider) => (provider === 'google' ? 'Google' : 'Apple')).join(' or ');
-const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
+const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: import.meta.env.PUBLIC_ACCOUNT_SAVES_ENABLED ?? process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
 const updated = '11 November 2026';
 const modifiedAt = '2026-11-11T00:00:00.000Z';
 

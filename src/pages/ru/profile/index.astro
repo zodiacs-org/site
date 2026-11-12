@@ -15,10 +15,10 @@ import '../../../styles/profile-page.css';
 
 const englishOnly = ENGLISH_ONLY_COPY.ru;
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
-  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
+  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: import.meta.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED ?? process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
 });
 const savedRecordsSurfaceEnabled = savedRecordsEnabled({
-  PUBLIC_SAVED_RECORDS_ENABLED: process.env.PUBLIC_SAVED_RECORDS_ENABLED,
+  PUBLIC_SAVED_RECORDS_ENABLED: import.meta.env.PUBLIC_SAVED_RECORDS_ENABLED ?? process.env.PUBLIC_SAVED_RECORDS_ENABLED,
 });
 
 const jsonLd = [

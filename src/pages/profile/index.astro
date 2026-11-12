@@ -27,19 +27,19 @@ import '../../styles/profile-page.css';
 
 const dailyEmailEnabled = hasDailyChartEmailProvider(process.env);
 const syncConfigured = Boolean(import.meta.env.PUBLIC_SUPABASE_URL && (import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY));
-const inviteUiEnabled = process.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
+const inviteUiEnabled = (import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED ?? process.env.PUBLIC_COMPAT_INVITES_ENABLED) === '1';
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
-  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
+  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: import.meta.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED ?? process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
 });
 const livingChartSyncPrivacyEnabled = livingChartSyncEnabled({
-  PUBLIC_LIVING_CHART_SYNC_ENABLED: process.env.PUBLIC_LIVING_CHART_SYNC_ENABLED,
+  PUBLIC_LIVING_CHART_SYNC_ENABLED: import.meta.env.PUBLIC_LIVING_CHART_SYNC_ENABLED ?? process.env.PUBLIC_LIVING_CHART_SYNC_ENABLED,
 });
 const livingChartSurfaceEnabled = true;
 const accountSavesSurfaceEnabled = syncConfigured && accountSavesEnabled({
-  PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED,
+  PUBLIC_ACCOUNT_SAVES_ENABLED: import.meta.env.PUBLIC_ACCOUNT_SAVES_ENABLED ?? process.env.PUBLIC_ACCOUNT_SAVES_ENABLED,
 });
 const savedRecordsSurfaceEnabled = savedRecordsEnabled({
-  PUBLIC_SAVED_RECORDS_ENABLED: process.env.PUBLIC_SAVED_RECORDS_ENABLED,
+  PUBLIC_SAVED_RECORDS_ENABLED: import.meta.env.PUBLIC_SAVED_RECORDS_ENABLED ?? process.env.PUBLIC_SAVED_RECORDS_ENABLED,
 });
 ---
 <Base

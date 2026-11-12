@@ -138,7 +138,7 @@ const plausibleScriptUrl = import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT_URL?.trim();
 const plausibleEndpoint = import.meta.env.PUBLIC_PLAUSIBLE_ENDPOINT?.trim() ?? '';
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN?.trim() ?? '';
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
-  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
+  PUBLIC_ACCOUNT_SYNC_V2_ENABLED: import.meta.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED ?? process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
 });
 // Remote analytics never run on a privateSurface page. The account, sync and
 // profile surfaces (profile in every locale, the auth callback) are private

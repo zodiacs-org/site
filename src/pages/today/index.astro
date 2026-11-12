@@ -55,10 +55,10 @@ const sunSignReadings = Object.fromEntries(
   }]),
 );
 const livingChartEnabled = livingChartCaptureEnabled({
-  PUBLIC_LIVING_CHART_CAPTURE_ENABLED: process.env.PUBLIC_LIVING_CHART_CAPTURE_ENABLED,
+  PUBLIC_LIVING_CHART_CAPTURE_ENABLED: import.meta.env.PUBLIC_LIVING_CHART_CAPTURE_ENABLED ?? process.env.PUBLIC_LIVING_CHART_CAPTURE_ENABLED,
 });
 const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled({
-  PUBLIC_LIVING_CHART_SYNC_ENABLED: process.env.PUBLIC_LIVING_CHART_SYNC_ENABLED,
+  PUBLIC_LIVING_CHART_SYNC_ENABLED: import.meta.env.PUBLIC_LIVING_CHART_SYNC_ENABLED ?? process.env.PUBLIC_LIVING_CHART_SYNC_ENABLED,
 });
 
 // ── The edition's sky. Every value below comes from committed data for the
