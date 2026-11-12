@@ -36,7 +36,7 @@ const WING_ONLY_SOURCE = Object.freeze([
   /^src\/(?:exchange|registry|shelf|trade)\//u,
   /^src\/components\/(?:Registry[^/]*|TerminalMarketVenueNotice)\.astro$/u,
   /^src\/data\/(?:aura-moon-ingresses|registry-origin-receipts)\.json$/u,
-  /^src\/data\/registry-research\/(?:approval-manifest|drafts|publication)\.json$/u,
+  /^src\/data\/registry-research\/(?:approval-manifest|drafts|publication|pause)\.json$/u,
   /^src\/islands\/(?:RegistryAura|WalletChart)\.tsx$/u,
   /^src\/islands\/aura\//u,
   /^src\/lib\/(?:aura(?:-|\/)|registry(?:-|\/)|wallet\/)\S*/u,

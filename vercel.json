@@ -330,6 +330,30 @@
       "destination": "/api/compatibility?__zodiacs_share=famous-chart-story"
     },
     {
+      "source": "/share/year-score/",
+      "destination": "/api/compatibility?__zodiacs_share=year-score-link"
+    },
+    {
+      "source": "/api/og/year-score-image",
+      "destination": "/api/compatibility?__zodiacs_share=year-score-image"
+    },
+    {
+      "source": "/share/birthday-report/",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-report-link"
+    },
+    {
+      "source": "/api/og/birthday-report-image",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-report-image"
+    },
+    {
+      "source": "/share/solar-return/",
+      "destination": "/api/compatibility?__zodiacs_share=solar-return-link"
+    },
+    {
+      "source": "/api/og/solar-return-image",
+      "destination": "/api/compatibility?__zodiacs_share=solar-return-image"
+    },
+    {
       "source": "/share/milestone/",
       "destination": "/api/compatibility?__zodiacs_share=milestone-link"
     },
