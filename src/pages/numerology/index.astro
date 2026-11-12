@@ -79,7 +79,7 @@ const jsonLd = [
       </p>
     </div>
 
-    <NumerologyCalculator client:interaction />
+    <NumerologyCalculator client:interaction share={launchFlagOn('PUBLIC_NUMEROLOGY_SHARE_ENABLED')} />
     <noscript>
       <p>This numerology calculator needs JavaScript. Enable it and reload to compute your Life Path and name numbers from your birth date and full name.</p>
     </noscript>

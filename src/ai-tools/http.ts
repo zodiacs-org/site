@@ -1,9 +1,9 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, TAROT_SWITCH_ENV, TAROT_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type PlaceToolName, type SkyEventsToolName, type TarotToolName, type YearScoreToolName } from './contracts';
+import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, COVERAGE_SWITCH_ENV, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, PLACE_TOOL_NAMES, SKY_EVENTS_SWITCH_ENV, SKY_EVENTS_TOOL_NAMES, YEAR_SCORE_SWITCH_ENV, YEAR_SCORE_TOOL_NAMES, YEAR_SCORE_PEOPLE_SWITCH_ENV, SOLAR_RETURN_SWITCH_ENV, SOLAR_RETURN_TOOL_NAMES, NUMEROLOGY_SWITCH_ENV, NUMEROLOGY_TOOL_NAMES, TAROT_SWITCH_ENV, TAROT_TOOL_NAMES, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, READINGS_SKY_EVENTS_URI, READINGS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, inputSchemaFor, type AiToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type TarotToolName, type YearScoreToolName, type SolarReturnToolName } from './contracts';
 import { createAiServer } from './server';
-import { coverageInputRefusal, isSkyEventsTool, isTarotTool, isYearScoreTool, normaliseCoverageCall, type AiDependencies } from './tools';
+import { coverageInputRefusal, isNumerologyTool, isSkyEventsTool, isTarotTool, isYearScoreTool, isSolarReturnTool, normaliseCoverageCall, type AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { argumentRefusal } from './argument-hints';
 import { reserveAiQuota, type QuotaKind } from './quota';
@@ -214,13 +214,18 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     const skyEvents = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[SKY_EVENTS_SWITCH_ENV] === '1';
     // The Year Ahead Score switch is read the same way: off unless exactly '1', and only with both of those on.
     const yearScore = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[YEAR_SCORE_SWITCH_ENV] === '1';
+    // A public figure in get_year_score: its own switch, off until the owner approves, and only with the tool itself.
+    const yearScorePeople = yearScore && env[YEAR_SCORE_PEOPLE_SWITCH_ENV] === '1';
+    const solarReturn = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[SOLAR_RETURN_SWITCH_ENV] === '1';
+    // The numerology switch is read the same way, and also counts only with both of them on.
+    const numerology = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[NUMEROLOGY_SWITCH_ENV] === '1';
     // The tarot switch is read the same way, and also counts only with both of them on.
     const tarot = env[OCCASIONS_SWITCH_ENV] === '1' && env[COVERAGE_SWITCH_ENV] === '1' && env[TAROT_SWITCH_ENV] === '1';
     let calledTool: CountedToolName | undefined;
     if (message.method === 'tools/call' && message.params && typeof message.params === 'object') {
       const name = (message.params as Record<string, unknown>).name;
       // Only offered tools are counted: the occasion tools count only while their switch is on, the save tool only with accounts.
-      const offered: readonly string[] = env[OCCASIONS_SWITCH_ENV] === '1' ? [...(env[COVERAGE_SWITCH_ENV] === '1' ? EVERY_AI_TOOL_NAME : ALL_AI_TOOL_NAMES), ...(skyEvents ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScore ? YEAR_SCORE_TOOL_NAMES : []), ...(tarot ? TAROT_TOOL_NAMES : []), ...(account ? [SAVE_TOOL_NAME] : [])] : AI_TOOL_NAMES;
+      const offered: readonly string[] = env[OCCASIONS_SWITCH_ENV] === '1' ? [...(env[COVERAGE_SWITCH_ENV] === '1' ? EVERY_AI_TOOL_NAME : ALL_AI_TOOL_NAMES), ...(skyEvents ? SKY_EVENTS_TOOL_NAMES : []), ...(yearScore ? YEAR_SCORE_TOOL_NAMES : []), ...(solarReturn ? SOLAR_RETURN_TOOL_NAMES : []), ...(numerology ? NUMEROLOGY_TOOL_NAMES : []), ...(tarot ? TAROT_TOOL_NAMES : []), ...(account ? [SAVE_TOOL_NAME] : [])] : AI_TOOL_NAMES;
       if (offered.includes(String(name))) operation = String(name);
       if (typeof name === 'string' && name === operation) calledTool = name as CountedToolName;
     }
@@ -236,14 +241,14 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     }
     // A 0.6.0 tool's sign arrives as written ("Leo"); it is lower-cased before the SDK checks the published enum.
     if (calledTool && normaliseCoverageCall(body)) text = JSON.stringify(body);
-    const refusal = calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments, calledTool === SAVE_TOOL_NAME ? undefined : inputSchemaFor(calledTool, skyEvents)) : undefined;
+    const refusal = calledTool ? argumentRefusal(calledTool, (message.params as Record<string, unknown>).arguments, calledTool === SAVE_TOOL_NAME ? undefined : inputSchemaFor(calledTool, skyEvents, { yearScorePeople })) : undefined;
     const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
     if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
     if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list', ...(watch ? ['events/list', 'events/subscribe', 'events/unsubscribe'] : [])].includes(String(message.method))) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
-    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(tarot ? { tarot: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
+    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true, ...(env[COVERAGE_SWITCH_ENV] === '1' ? { coverage: true } : {}) } : {}), ...(skyEvents ? { skyEvents: true } : {}), ...(yearScore ? { yearScore: true } : {}), ...(yearScorePeople ? { yearScorePeople: true } : {}), ...(solarReturn ? { solarReturn: true } : {}), ...(env.PUBLIC_BIRTHDAY_REPORT_ENABLED === '1' ? { birthdayReportPage: true } : {}), ...(numerology ? { numerology: true } : {}), ...(tarot ? { tarot: true } : {}), ...(account ? { accounts: true } : {}), allowEvents: async () => {
       try {
         const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
@@ -270,8 +275,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         function sanitize(text: string) {
           const parsed = JSON.parse(text);
           // A 0.6.0 tool's or search_sky_events' arguments refused by the SDK's schema check get the tool's own field-named refusal.
-          const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isTarotTool(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent
-            ? coverageInputRefusal(calledTool as CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | TarotToolName, (message.params as { arguments?: unknown }).arguments, inputSchemaFor(calledTool as AiToolName, skyEvents)) : null;
+          const named = calledTool && ((COVERAGE_TOOL_NAMES as readonly string[]).includes(calledTool) || (PLACE_TOOL_NAMES as readonly string[]).includes(calledTool) || isSkyEventsTool(calledTool) || isYearScoreTool(calledTool) || isSolarReturnTool(calledTool) || isNumerologyTool(calledTool) || isTarotTool(calledTool)) && parsed.result?.isError && !parsed.result?.structuredContent
+            ? coverageInputRefusal(calledTool as CoverageToolName | PlaceToolName | SkyEventsToolName | YearScoreToolName | SolarReturnToolName | NumerologyToolName | TarotToolName, (message.params as { arguments?: unknown }).arguments, inputSchemaFor(calledTool as AiToolName, skyEvents, { yearScorePeople })) : null;
           if (named) return JSON.stringify({ ...parsed, result: { isError: true, content: [{ type: 'text', text: JSON.stringify(named) }], structuredContent: named } });
           return JSON.stringify(sanitizeProtocolMessage(parsed, refusal));
         }

@@ -8,6 +8,9 @@ import {
   readCompatibilityInvite,
 } from './server';
 import { deriveInviteChartFromSyncedPayload } from './validate';
+import { encryptAccountPrivatePayload } from '../account-api/encryption';
+import { serializeAccountPrivateChartPayload } from '../account-api/sync-wire';
+import { Buffer } from 'node:buffer';
 
 const OWNER = {
   id: '110e8400-e29b-41d4-a716-446655440000',
@@ -26,6 +29,52 @@ function json(body: unknown, status = 200): Response {
     status,
     headers: { 'content-type': 'application/json' },
   });
+}
+
+const V2_ENV = {
+  ...ENV,
+  ACCOUNT_SYNC_V2_ENCRYPTION_KEYS: JSON.stringify({ 2: Buffer.alloc(32, 0x31).toString('base64') }),
+  ACCOUNT_SYNC_V2_ACTIVE_KEY_VERSION: '2',
+};
+
+function ownerSelfChart(): Record<string, unknown> {
+  const envelope = encryptAccountPrivatePayload(serializeAccountPrivateChartPayload({
+    label: 'Private chart',
+    birth: {
+      date: '1990-01-01',
+      time: '08:45',
+      timeKnown: true,
+      place: {
+        name: 'Bangkok', admin1: 'Bangkok', country: 'Thailand',
+        lat: 13.7563, lon: 100.5018, tz: 'Asia/Bangkok',
+      },
+    },
+    derived: {
+      positions: {
+        b: [15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345],
+        a: [100, 190],
+        h: 'w',
+        v: '3.2.1',
+      },
+      timeKnown: true,
+      sunSign: 'aries',
+      engineVersion: '3.2.1',
+      houseSystem: 'whole',
+    },
+  }), { userId: OWNER.id, chartId: CHART_ID, revision: 2 }, V2_ENV);
+  return {
+    outcome: 'ready',
+    chart_id: CHART_ID,
+    revision: 2,
+    encrypted_source: {
+      ciphertext: envelope.ciphertext.toString('base64'),
+      nonce: envelope.nonce.toString('base64'),
+      format: 'opaque_v1',
+      key_scope: 'service',
+      key_version: 2,
+      wrapped_key: envelope.wrappedKey.toString('base64'),
+    },
+  };
 }
 
 function chartPayload(): Record<string, unknown> {
@@ -48,14 +97,40 @@ function chartPayload(): Record<string, unknown> {
 }
 
 describe('Phase 4 invite Supabase boundary', () => {
-  it('loads a chart only through the owner/id pair', async () => {
-    const fetcher = vi.fn().mockResolvedValue(json([{ id: CHART_ID, payload: chartPayload() }]));
-    await expect(getOwnedSyncedChartPayload(OWNER.id, CHART_ID, ENV, fetcher))
-      .resolves.toMatchObject({ name: 'Private chart' });
+  it('loads only the owner\'s own v2 self chart, decrypts it in memory, and never reads public.charts', async () => {
+    const fetcher = vi.fn().mockResolvedValue(json(ownerSelfChart()));
+    const payload = await getOwnedSyncedChartPayload(OWNER.id, CHART_ID, V2_ENV, fetcher) as Record<string, any>;
+    expect(payload.name).toBe('Private chart');
+    expect(payload.birth).toEqual({ date: '1990-01-01', timeKnown: true });
+    // 08:45 in Bangkok (UTC+7) is 01:45 UTC.
+    expect(payload.summary.utcISO).toBe('1990-01-01T01:45:00.000Z');
+    expect(payload.summary.bodies).toHaveLength(12);
+    expect(payload.summary.angles).toEqual({ asc: 100, mc: 190 });
+    expect(JSON.stringify(payload)).not.toMatch(/Bangkok|13\.75|100\.50/u);
     const url = new URL(String(fetcher.mock.calls[0]?.[0]));
-    expect(url.pathname).toBe('/rest/v1/charts');
-    expect(url.searchParams.get('user_id')).toBe(`eq.${OWNER.id}`);
-    expect(url.searchParams.get('id')).toBe(`eq.${CHART_ID}`);
+    expect(url.pathname).toBe('/rest/v1/rpc/account_v2_owner_self_chart');
+    expect(JSON.parse(String(fetcher.mock.calls[0]?.[1]?.body))).toEqual({ candidate_user_id: OWNER.id });
+    expect(fetcher.mock.calls.some(([input]) => String(input).includes('/rest/v1/charts'))).toBe(false);
+    const chart = deriveInviteChartFromSyncedPayload(payload);
+    expect(chart?.label).toBe('Private chart');
+    expect(chart?.sunSign).toBe('aries');
+  });
+
+  it('refuses another chart id, a missing chart, an undecryptable chart, and a minor', async () => {
+    const other = '440e8400-e29b-41d4-a716-446655440000';
+    expect(await getOwnedSyncedChartPayload(OWNER.id, other, V2_ENV, vi.fn().mockResolvedValue(json(ownerSelfChart()))))
+      .toBeNull();
+    expect(await getOwnedSyncedChartPayload(OWNER.id, CHART_ID, V2_ENV, vi.fn().mockResolvedValue(json({ outcome: 'not_found' }))))
+      .toBeNull();
+    expect(await getOwnedSyncedChartPayload(OWNER.id, CHART_ID, ENV, vi.fn().mockResolvedValue(json(ownerSelfChart()))))
+      .toBeNull();
+    expect(await getOwnedSyncedChartPayload(
+      OWNER.id,
+      CHART_ID,
+      V2_ENV,
+      vi.fn().mockResolvedValue(json(ownerSelfChart())),
+      Date.parse('2001-06-01T00:00:00Z'),
+    )).toBeNull();
   });
 
   it('creates with a digest and derived positions, never a raw token or birth input', async () => {

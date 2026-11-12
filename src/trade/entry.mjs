@@ -17,8 +17,19 @@ const START = '<!-- registry-trade:start -->';
 const END = '<!-- registry-trade:end -->';
 const SLOT = /<!-- registry-trade:slot (\{.*?\}) -->/;
 
+/**
+ * Pinned off (owner decision, 12 November 2026, with the Registry Research
+ * pause in src/data/registry-research/pause.json): the sign-page trade panel
+ * stays off even when PUBLIC_REGISTRY_TRADE_ENABLED=1 is set. To lift the pin,
+ * set this to false and the flag decides again. Lifting it only stamps the
+ * flag marker: the panel markup and scripts/configure-registry-trade.mjs were
+ * retired in #628 and would have to be restored by a reviewed change.
+ */
+export const REGISTRY_TRADE_PINNED_OFF = true;
+
 export function registryTradeEnabled(env = {}) {
-  return false;
+  if (REGISTRY_TRADE_PINNED_OFF) return false;
+  return env?.[REGISTRY_TRADE_FLAG] === '1';
 }
 
 /** The comment the generator emits, carrying everything the stamper needs. */

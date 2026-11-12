@@ -4,10 +4,9 @@ import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../lib/accoun
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
-const updated = '3 October 2026';
-const modifiedAt = '2026-10-03T00:00:00.000Z';
+const updated = '11 November 2026';
+const modifiedAt = '2026-11-11T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -110,9 +109,10 @@ const jsonLd = [
         <p>
           An account is optional. If you create one, keep access to its email
           secure and synchronize only a chart containing your own birth data.
-          The current canary permits one self chart and requires an explicit
-          review and confirmation before upload. The canary is limited to users
-          aged 18 or older. You may export or permanently
+          Encrypted sync holds one self chart, requires an explicit review and
+          confirmation before upload, and is for users aged 18 or older. Using
+          that chart for your emails is a separate choice you can turn off at
+          any time. You may export or permanently
           delete the account from your profile. Account deletion also attempts
           to stop the independently confirmed Daily Sun subscription linked to
           the same email; if that match cannot be confirmed, account erasure

@@ -131,8 +131,11 @@ describe('tools behind a launch switch', () => {
   it('shows a switched tool only while its switch is on, and every hub card has an icon either way', () => {
     expect(visibleTools(() => true)).toEqual(ALL_TOOL_CATALOG);
     expect(visibleTools(() => false).every((tool) => !tool.flag)).toBe(true);
-    expect(visibleTools(() => true).some((tool) => tool.href === '/tarot/')).toBe(true);
-    expect(visibleTools(() => false).some((tool) => tool.href === '/tarot/')).toBe(false);
+    const hrefs = (on: boolean) => visibleTools(() => on).map((tool) => tool.href);
+    expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/', '/tarot/']));
+    expect(hrefs(false)).not.toContain('/year-score/');
+    expect(hrefs(false)).not.toContain('/birthday-report/');
+    expect(hrefs(false)).not.toContain('/tarot/');
     for (const tool of ALL_TOOL_CATALOG) {
       if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
     }

@@ -133,6 +133,19 @@ describe('the tarot switch on', () => {
     expect(capabilities.privacy).toContain('The tarot draw takes no personal details and no question.');
   });
 
+  it('with every switch on, lists draw_tarot after numerology, the last of the other switched tools', async () => {
+    const host = await serve({
+      ...ON,
+      ZODIACS_SKY_EVENTS_ENABLED: '1',
+      ZODIACS_YEAR_SCORE_ENABLED: '1',
+      ZODIACS_SOLAR_RETURN_ENABLED: '1',
+      ZODIACS_NUMEROLOGY_ENABLED: '1',
+    });
+    const names = (message((await post(host, rpc('tools/list'))).text).result.tools as { name: string }[]).map((tool) => tool.name);
+    expect(names).toEqual([...EVERY_SWITCHED_TOOL]);
+    expect(names.slice(-2)).toEqual(['get_numerology', 'draw_tarot']);
+  });
+
   it('draws each spread at full size, validated against its advertised schema, and counts only the tool name', async () => {
     const counted: string[] = [];
     const host = await serveAt(ON, counted);

@@ -18,12 +18,21 @@ async function json(relativePath) {
 }
 
 async function committedInputs() {
-  const [daily, outlook, marketHistory, approvals] = await Promise.all([
+  const [committedDaily, outlook, marketHistory, approvals] = await Promise.all([
     json('src/data/daily.json'),
     json('public/assets/registry-outlook.json'),
     json('public/assets/data/registry-market-history.v1.json'),
     json('src/data/registry-research/approval-manifest.json'),
   ]);
+  // While publishing is paused (src/data/registry-research/pause.json) the
+  // outlook keeps its last edition and the Daily Sky moves on, so the
+  // generator is exercised on the outlook's own edition day. When the two
+  // agree, as they do while publishing, this is the committed daily as is.
+  const daily = committedDaily.date === outlook.daily.date ? committedDaily : {
+    ...committedDaily,
+    date: outlook.daily.date,
+    snapshotAt: `${outlook.daily.date}${committedDaily.snapshotAt.slice(10)}`,
+  };
   const start = new Date(`${daily.date}T00:00:00.000Z`);
   const end = new Date(start.getTime() + (8 * 86_400_000));
   const monthKeys = new Set([start.toISOString().slice(0, 7), end.toISOString().slice(0, 7)]);
