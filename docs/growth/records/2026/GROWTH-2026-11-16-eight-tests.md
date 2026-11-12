@@ -74,7 +74,7 @@ note; this page only takes its total count.)
 | Mon 16 Nov 2026 | Planned start of T1, T3, T4, T7 (and T2 if it is ready; the audit says "ideally 20 Nov to 20 Dec"). Only T1 is expected to start that day. T3 waits for the good day finder to be merged and switched on, T4 for its page (plan: week 3), T7 for its first post (plan: week 2). Week 1 of the plan: "Switch analytics on and take a fresh baseline." |
 | Mon 30 Nov 2026 | T5: submit by this date |
 | Mon 7 Dec 2026 | Three-week read of T1 to T4 for any of them that started 16 Nov (16 Nov to 6 Dec). A test that started later is read on its own start plus 21 days. T6 starts by this date |
-| Wed 16 Dec 2026 | Verdict date for every 30-day test that started 16 Nov. A test that started later gets its verdict on its own day 30 (start date plus 30 days) |
+| Wed 16 Dec 2026 | Verdict date for every 30-day test that started 16 Nov. A test that started later gets its verdict on start date plus 30 days. Day 1 is the start date, so the verdict falls on day 31 |
 | Mon 28 Dec 2026 | T6 day 21, if it starts on 7 Dec |
 | Sun 10 Jan 2027 | Owned reach count. Target 500, floor 150 |
 | Sun 31 Jan 2027 | T5's kill deadline, as written in its kill number |
@@ -146,13 +146,13 @@ for the personal 2027 calendar.
 | Test | Start | Duration | Success number | Kill number | Three-week read | Verdict date |
 |---|---|---|---|---|---|---|
 | T1 Monday Note | Mon 16 Nov 2026 | 30 days | 150 confirmed subscribers and a week-4 click rate of 10% or more | Fewer than 40 confirmed after 1,500 result-page viewers, or a click rate under 4% in weeks 3 and 4 | Mon 7 Dec 2026 | Wed 16 Dec 2026 |
-| T2 2027 calendar | When it goes on sale (target 20 Nov 2026; null until known) | 30 days, ideally 20 Nov to 20 Dec | 25 paid orders and 2.5% or more of score completers buying | Under 1% buying after 500 completers, or fewer than 8 orders by day 30 with 1,000 landing visits | Start plus 21 days (7 Dec only if it starts 16 Nov) | Day 30 (20 Dec 2026 if it starts 20 Nov) |
-| T3 Good Day | Planned Mon 16 Nov 2026; actual null until the finder is merged and on | 30 days | 300 completed checks (site plus hosted tool), 20% added to a calendar, 25 note signups from the page | Fewer than 80 checks after 1,000 page views, or calendar adds under 5% | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or day 30 if it starts later |
-| T4 Birthday card loop | Planned Mon 16 Nov 2026; actual null until the page is live (plan: week 3) | 30 days | 200 cards made; 0.15 new makers or subscribers per card; 10 paid gift codes | Under 0.05 per card after 150 cards, and fewer than 3 paid | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or day 30 if it starts later |
+| T2 2027 calendar | When it goes on sale (target 20 Nov 2026; null until known) | 30 days, ideally 20 Nov to 20 Dec | 25 paid orders and 2.5% or more of score completers buying | Under 1% buying after 500 completers, or fewer than 8 orders by day 30 with 1,000 landing visits | Start plus 21 days (7 Dec only if it starts 16 Nov) | Start plus 30 days (20 Dec 2026 if it starts 20 Nov) |
+| T3 Good Day | Planned Mon 16 Nov 2026; actual null until the finder is merged and on | 30 days | 300 completed checks (site plus hosted tool), 20% added to a calendar, 25 note signups from the page | Fewer than 80 checks after 1,000 page views, or calendar adds under 5% | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or start plus 30 days if it starts later |
+| T4 Birthday card loop | Planned Mon 16 Nov 2026; actual null until the page is live (plan: week 3) | 30 days | 200 cards made; 0.15 new makers or subscribers per card; 10 paid gift codes | Under 0.05 per card after 150 cards, and fewer than 3 paid | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or start plus 30 days if it starts later |
 | T5 App Review probe | Submission date (by 30 Nov 2026) | Submit by 30 Nov; expect 1 to 3 weeks | Approved within two submissions | Two 4.3(b) rejections and a failed appeal by 31 Jan 2027: ship the web version first | Not applicable | First approval, or 31 Jan 2027 |
 | T6 Thirty testers | By Mon 7 Dec 2026 | 21 days of use, starting by 7 Dec | 12 of 30 open it on 4 or more days in week 3; 40% say "very disappointed" without it; 5 tap to start the annual trial | Fewer than 6 of 30 active in week 3 | Not applicable | Day 21 (28 Dec 2026 if it starts 7 Dec) |
-| T7 Videos to list | Planned Mon 16 Nov 2026; actual null until the first post (plan: week 2) | 30 days | A median of 500 views a post by week 4 and 75 note signups tagged to video | A median under 150 views and under 15 signups after 60 posts | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or day 30 if it starts later |
-| T8 Assistant store hook | The day either listing is approved (null until then) | 30 days after either listing is approved | 5% of referred visits subscribe or add a calendar | Under 1% after 300 referred visits | Start plus 21 days | Day 30 |
+| T7 Videos to list | Planned Mon 16 Nov 2026; actual null until the first post (plan: week 2) | 30 days | A median of 500 views a post by week 4 and 75 note signups tagged to video | A median under 150 views and under 15 signups after 60 posts | Mon 7 Dec 2026 if it starts 16 Nov, otherwise start plus 21 days | Wed 16 Dec 2026, or start plus 30 days if it starts later |
+| T8 Assistant store hook | The day either listing is approved (null until then) | 30 days after either listing is approved | 5% of referred visits subscribe or add a calendar | Under 1% after 300 referred visits | Start plus 21 days | Start plus 30 days |
 
 The source rows in the audit start "All start Monday 16 Nov 2026 unless noted",
 so a start date above that differs from 16 Nov comes from the row's own
@@ -222,7 +222,7 @@ Start date: null. The table counts days from the actual start.
 | 2 | days 8 to 14 | null | null | null | null | null | null |
 | 3 | days 15 to 21 | null | null | null | null | null | null |
 | 4 | days 22 to 28 | null | null | null | null | null | null |
-| Close | days 29 to 30 | null | null | null | null | null | null |
+| Close | days 29 to 31 | null | null | null | null | null | null |
 
 ### T3 Good Day
 
@@ -245,7 +245,7 @@ credit its calendar adds.
 | 2 | days 8 to 14 (provisional: 23 to 29 Nov) | null | null | null | null | null | null |
 | 3 | days 15 to 21 (provisional: 30 Nov to 6 Dec) | null | null | null | null | null | null |
 | 4 | days 22 to 28 (provisional: 7 to 13 Dec) | null | null | null | null | null | null |
-| Close | days 29 to 30 (provisional: 14 to 16 Dec) | null | null | null | null | null | null |
+| Close | days 29 to 31 (provisional: 14 to 16 Dec) | null | null | null | null | null | null |
 
 ### T4 Birthday card loop
 
@@ -268,7 +268,7 @@ not built yet: its events count only if it is built without `privateSurface` or
 | 2 | days 8 to 14 (provisional: 23 to 29 Nov) | null | null | null | null | null | null | null |
 | 3 | days 15 to 21 (provisional: 30 Nov to 6 Dec) | null | null | null | null | null | null | null |
 | 4 | days 22 to 28 (provisional: 7 to 13 Dec) | null | null | null | null | null | null | null |
-| Close | days 29 to 30 (provisional: 14 to 16 Dec) | null | null | null | null | null | null | null |
+| Close | days 29 to 31 (provisional: 14 to 16 Dec) | null | null | null | null | null | null | null |
 
 ### T5 App Review probe
 
@@ -315,7 +315,7 @@ are provisional (a 16 Nov start); shift them to the actual start.
 | 2 | days 8 to 14 (provisional: 23 to 29 Nov) | null | null | null | null | null |
 | 3 | days 15 to 21 (provisional: 30 Nov to 6 Dec) | null | null | null | null | null |
 | 4 | days 22 to 28 (provisional: 7 to 13 Dec) | null | null | null | null | null |
-| Close | days 29 to 30 (provisional: 14 to 16 Dec) | null | null | null | null | null |
+| Close | days 29 to 31 (provisional: 14 to 16 Dec) | null | null | null | null | null |
 
 ### T8 Assistant store hook
 
@@ -332,7 +332,7 @@ Start date: null until either listing is approved.
 | 2 | days 8 to 14 | null | null | null | null |
 | 3 | days 15 to 21 | null | null | null | null |
 | 4 | days 22 to 28 | null | null | null | null |
-| Close | days 29 to 30 | null | null | null | null |
+| Close | days 29 to 31 | null | null | null | null |
 
 ## 5. Baseline, 1 Sep to 15 Nov 2026
 
