@@ -113,7 +113,7 @@ re-pinned to `main` each time `main` is merged in.
 ```json
 {
   "version": 1,
-  "id": "locale-expansion-hook-2026-11-08",
+  "id": "locale-expansion-hook-2026-11-09",
   "baseCommit": "<the PR's base commit>",
   "protectedPaths": [
     "src/lib/i18n/index.ts"
