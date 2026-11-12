@@ -211,6 +211,8 @@ describe('weekly digest provider boundary', () => {
       reason: 'provider-response',
       status: 429,
       code: 'rate_limit_exceeded',
+      // Every attempt was an explicit 429: nothing was accepted.
+      definitive: true,
     });
   });
 
@@ -232,29 +234,33 @@ describe('weekly digest provider boundary', () => {
     });
 
     const error = await capturedAbort(sendWeeklyDigestEmail(EMAIL, request));
-    expect(error).toMatchObject({ reason: 'transport', status: null, code: null });
+    expect(error).toMatchObject({ reason: 'transport', status: null, code: null, definitive: false });
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(timeoutSignal).toHaveBeenCalledExactlyOnceWith(200);
     expect(sleep).not.toHaveBeenCalled();
     expect(clock).toBe(1_000);
   });
 
+  // A 409 (an idempotency conflict: the key may already hold an accepted
+  // request), a 408 and a 5xx are ambiguous; any other explicit 4xx is a
+  // definitive rejection, so nothing was accepted.
   it.each([
-    [409, 'concurrent_idempotent_requests'],
-    [409, 'invalid_idempotent_request'],
-    [500, 'application_error'],
-    [503, 'service_unavailable'],
-    [401, 'missing_api_key'],
-    [403, 'restricted_api_key'],
-    [400, 'validation_error'],
-    [422, 'validation_error'],
-    [418, 'unknown_provider_code'],
-  ])('aborts provider-wide, configuration, or unknown %s/%s responses', async (status, code) => {
+    [409, 'concurrent_idempotent_requests', false],
+    [409, 'invalid_idempotent_request', false],
+    [408, 'request_timeout', false],
+    [500, 'application_error', false],
+    [503, 'service_unavailable', false],
+    [401, 'missing_api_key', true],
+    [403, 'restricted_api_key', true],
+    [400, 'validation_error', true],
+    [422, 'validation_error', true],
+    [418, 'unknown_provider_code', true],
+  ])('aborts provider-wide, configuration, or unknown %s/%s responses (definitive=%s)', async (status, code, definitive) => {
     const error = await capturedAbort(sendWeeklyDigestEmail(
       EMAIL,
       async () => providerError(status, code, `private detail for ${EMAIL.to}`),
     ));
-    expect(error).toMatchObject({ reason: 'provider-response', status, code });
+    expect(error).toMatchObject({ reason: 'provider-response', status, code, definitive });
     expect(error.message).not.toContain(EMAIL.to);
     expect(error.message).not.toContain(EMAIL.apiKey);
   });
@@ -301,7 +307,7 @@ describe('weekly digest provider boundary', () => {
     const transport = await capturedAbort(sendWeeklyDigestEmail(EMAIL, async () => {
       throw new Error(`connection reset for ${EMAIL.to} using ${EMAIL.apiKey}`);
     }));
-    expect(transport).toMatchObject({ reason: 'transport', status: null, code: null });
+    expect(transport).toMatchObject({ reason: 'transport', status: null, code: null, definitive: false });
     expect(transport.message).not.toContain(EMAIL.to);
     expect(transport.message).not.toContain(EMAIL.apiKey);
 
@@ -309,6 +315,6 @@ describe('weekly digest provider boundary', () => {
       EMAIL,
       async () => Response.json({ unexpected: true }),
     ));
-    expect(malformed).toMatchObject({ reason: 'invalid-success', status: 200, code: null });
+    expect(malformed).toMatchObject({ reason: 'invalid-success', status: 200, code: null, definitive: false });
   });
 });

@@ -110,7 +110,7 @@ describe('AccountSyncV2Panel server-safe shell', () => {
     const source = await readFile(new URL('./AccountSyncV2Panel.tsx', import.meta.url), 'utf8');
     expect(source).toContain("result.outcome === 'ineligible_age'");
     expect(source).toContain('pendingOperation: null');
-    expect(source).toContain('limited to adults aged 18 or older');
+    expect(source).toContain('is for adults aged 18 or older');
   });
 
   it('revalidates profile access and ownership immediately before an upload', async () => {
