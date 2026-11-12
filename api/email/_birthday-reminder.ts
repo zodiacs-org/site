@@ -1,9 +1,10 @@
 // Bundled by the public email lifecycle entrypoint (api/email/subscribe.ts); not a standalone Function.
 // The birthday reminder (src/lib/birthday-reminder/): a sign-up (POST JSON), its confirmation, and the way out.
-// Off unless BIRTHDAY_REMINDER_ENABLED=1 with storage, sending and the secret configured: then every route is 404.
+// Off unless BIRTHDAY_REMINDER_ENABLED=1 with storage, sending and the secret configured: then sign-ups and
+// confirmations are 404. A stop link keeps working whenever storage and the secret are configured, switch or not.
 // Nothing here logs, and no response repeats the email, month or day.
 import { checkRateLimit } from '@vercel/firewall';
-import { birthdayReminderEnabled, birthdayReminderSecret } from '../../src/lib/birthday-reminder/config.js';
+import { birthdayReminderEnabled, birthdayReminderSecret, birthdayReminderStorageReady } from '../../src/lib/birthday-reminder/config.js';
 import { confirmationEmail, hashToken, newConfirmToken, parseReminderRequest, readUnsubscribeToken } from '../../src/lib/birthday-reminder/core.js';
 import { confirmReminder, deleteReminder, requestReminder } from '../../src/lib/birthday-reminder/store.js';
 import { sendPlainEmail } from '../../src/lib/birthday-reminder/send.js';
@@ -61,9 +62,11 @@ export interface ReminderDependencies {
 export default async function birthdayReminderHandler(req: any, res: any, deps: ReminderDependencies = {}): Promise<void> {
   const env = deps.env ?? process.env;
   const fetcher = deps.fetcher ?? fetch;
-  if (!birthdayReminderEnabled(env)) { sendJson(res, 404, { error: 'not-offered' }); return; }
   const confirm = field(req, 'confirm');
   const unsubscribe = field(req, 'unsubscribe');
+  // The way out stays open after the switch goes off: a stop link needs only the list and the secret.
+  const open = unsubscribe && !confirm ? birthdayReminderStorageReady(env) : birthdayReminderEnabled(env);
+  if (!open) { sendJson(res, 404, { error: 'not-offered' }); return; }
 
   if (confirm || unsubscribe) {
     if (req.method !== 'GET' && req.method !== 'POST') { res.setHeader('Allow', 'GET, POST'); sendJson(res, 405, { error: 'method' }); return; }

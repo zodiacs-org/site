@@ -3,7 +3,8 @@
  * BIRTHDAY_REMINDER_ENABLED=1 and the storage, sending and secret it needs;
  * the site shows the offer only with PUBLIC_BIRTHDAY_REMINDER_ENABLED=1; the
  * daily send runs only where its workflow's repository variable
- * BIRTHDAY_REMINDERS_SENDING=1 is set. All three are off: the owner switches
+ * BIRTHDAY_REMINDERS_SENDING=1 is set (with BIRTHDAY_REMINDER_ENABLED=1 alone,
+ * the workflow only deletes expired unconfirmed requests). All three are off: the owner switches
  * them on. The email links to /year-score/, so sign-ups and sends also need
  * that page's switch, PUBLIC_YEAR_SCORE_ENABLED=1 (src/lib/launch-flags.ts).
  */
@@ -16,6 +17,17 @@ export const BIRTHDAY_REMINDER_PUBLIC_SWITCH = 'PUBLIC_BIRTHDAY_REMINDER_ENABLED
 
 export function birthdayReminderSecret(env: Environment = process.env): string {
   return environmentValue(env, 'BIRTHDAY_REMINDER_SECRET');
+}
+
+/**
+ * The list can be reached: storage and the token secret are configured. The
+ * way out (a stop link) and the 48-hour deletion of unconfirmed requests need
+ * only this, so they keep working while sign-ups or sending are switched off.
+ */
+export function birthdayReminderStorageReady(env: Environment = process.env): boolean {
+  return !!environmentValue(env, 'PUBLIC_SUPABASE_URL')
+    && !!environmentValue(env, 'SUPABASE_SERVICE_ROLE_KEY')
+    && birthdayReminderSecret(env).length >= 32;
 }
 
 /** Sign-ups are open: the switch is exactly '1', the Year Ahead Score the email links to is on, and storage, sending and the token secret are configured. */

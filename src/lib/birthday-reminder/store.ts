@@ -1,5 +1,5 @@
 /**
- * Birthday reminder storage: five service-role RPCs from
+ * Birthday reminder storage: six service-role RPCs from
  * supabase/migrations/20261112090000_birthday_reminders.sql. The table holds
  * the email, the month and day, the confirmation hash and two dates; nothing
  * else. Errors carry status codes only, never a request's values.
@@ -25,9 +25,12 @@ async function rpc<T>(name: string, body: Record<string, unknown>, env: Environm
   return await response.json() as T;
 }
 
-/** Records a pending reminder. 'requested', or 'capped' when the same address asked within the last minute. */
+/**
+ * Records a pending reminder. 'requested'; 'capped' when the same address asked within the last minute; or
+ * 'confirmed' when the address already has a confirmed reminder, which a request never changes.
+ */
 export function requestReminder(email: string, month: number, day: number, confirmHash: string, env: Environment = process.env, fetcher: Fetch = fetch) {
-  return rpc<'requested' | 'capped'>('birthday_reminder_request', { p_email: email, p_month: month, p_day: day, p_confirm_hash: confirmHash }, env, fetcher);
+  return rpc<'requested' | 'capped' | 'confirmed'>('birthday_reminder_request', { p_email: email, p_month: month, p_day: day, p_confirm_hash: confirmHash }, env, fetcher);
 }
 
 /** Confirms the reminder a token's hash belongs to, within 48 hours. */
@@ -43,6 +46,11 @@ export function deleteReminder(id: string, env: Environment = process.env, fetch
 /** Confirmed reminders for these birthdays not yet sent this year, after deleting unconfirmed requests older than 48 hours. */
 export function dueReminders(days: { month: number; day: number }[], env: Environment = process.env, fetcher: Fetch = fetch) {
   return rpc<{ id: string; email: string }[]>('birthday_reminders_due', { p_days: days }, env, fetcher);
+}
+
+/** Deletes unconfirmed requests older than 48 hours. The number deleted. */
+export function sweepExpiredRequests(env: Environment = process.env, fetcher: Fetch = fetch) {
+  return rpc<number>('birthday_reminders_sweep', {}, env, fetcher);
 }
 
 export function markReminderSent(id: string, env: Environment = process.env, fetcher: Fetch = fetch) {

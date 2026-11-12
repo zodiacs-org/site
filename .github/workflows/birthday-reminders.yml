@@ -2,10 +2,14 @@ name: Birthday reminders
 
 # Sends the day's birthday reminders (scripts/send-birthday-reminders.ts):
 # one email a year to people who asked for it and confirmed it. Runs only
-# where the repository variable BIRTHDAY_REMINDERS_SENDING is '1', and the
-# script itself sends nothing unless BIRTHDAY_REMINDER_ENABLED is '1' with
-# its storage, sending and secret configured. Both are off until the owner
-# switches them on. The log carries counts only, never an address.
+# where the repository variable BIRTHDAY_REMINDERS_SENDING or
+# BIRTHDAY_REMINDER_ENABLED is '1'. With BIRTHDAY_REMINDER_ENABLED alone it
+# only deletes unconfirmed requests older than 48 hours: keep that variable at
+# '1' while sign-ups are open and for two days after they close. It sends only
+# with BIRTHDAY_REMINDERS_SENDING at '1', and the script sends nothing unless
+# BIRTHDAY_REMINDER_ENABLED is '1' with its storage, sending and secret
+# configured. All are off until the owner switches them on. The log carries
+# counts only, never an address.
 
 on:
   schedule:
@@ -18,7 +22,7 @@ permissions:
 jobs:
   send:
     name: Send today's birthday reminders
-    if: vars.BIRTHDAY_REMINDERS_SENDING == '1'
+    if: vars.BIRTHDAY_REMINDERS_SENDING == '1' || vars.BIRTHDAY_REMINDER_ENABLED == '1'
     runs-on: ubuntu-latest
     environment: birthday-reminders-production
     timeout-minutes: 15
@@ -47,4 +51,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
-        run: npx vite-node --script scripts/send-birthday-reminders.ts
+          BIRTHDAY_REMINDERS_SENDING: ${{ vars.BIRTHDAY_REMINDERS_SENDING }}
+        run: |
+          if [ "$BIRTHDAY_REMINDERS_SENDING" = "1" ]; then
+            npx vite-node --script scripts/send-birthday-reminders.ts
+          else
+            npx vite-node --script scripts/send-birthday-reminders.ts -- --cleanup-only
+          fi

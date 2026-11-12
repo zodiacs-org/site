@@ -32,6 +32,29 @@ describe('the birthday reminder endpoint', () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 
+  it('keeps a stop link working while the switch is off, as long as the list can be reached', async () => {
+    const token = unsubscribeToken('0f8fad5b-d9cb-469f-a165-70867728950e', SECRET);
+    for (const env of [{ ...ENV, BIRTHDAY_REMINDER_ENABLED: '0' }, { ...ENV, PUBLIC_YEAR_SCORE_ENABLED: '0', RESEND_API_KEY: '' }]) {
+      const fetcher = vi.fn(async () => new Response('true'));
+      const res = response();
+      await birthdayReminderHandler(request('POST', { query: { unsubscribe: token } }), res, { env, fetcher: fetcher as unknown as typeof fetch });
+      expect(res.statusCode).toBe(200);
+      expect(String((fetcher.mock.calls[0] as unknown[])[0])).toContain('/rest/v1/rpc/birthday_reminder_delete');
+    }
+    // A confirmation still needs the switch.
+    const res = response();
+    await birthdayReminderHandler(request('POST', { query: { confirm: 'a'.repeat(43) } }), res, { env: { ...ENV, BIRTHDAY_REMINDER_ENABLED: '0' }, fetcher: vi.fn() as unknown as typeof fetch });
+    expect(res.statusCode).toBe(404);
+  });
+
+  it('sends nothing for an address that already has a confirmed reminder, and answers the same', async () => {
+    const fetcher = vi.fn(async () => new Response('"confirmed"'));
+    const res = response();
+    await birthdayReminderHandler(request('POST', { body: { email: 'ana@example.com', month: 6, day: 9, consent: true, adult: true } }), res, { env: ENV, fetcher: fetcher as unknown as typeof fetch, rateLimit: async () => false });
+    expect(res.statusCode).toBe(202);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
   it('stores the email, month and day, sends one confirmation, and logs nothing', async () => {
     const calls: { url: string; body: string }[] = [];
     const fetcher = vi.fn(async (url: string, init: RequestInit) => {

@@ -22,17 +22,35 @@ create table if not exists zodiacs_reminders_private.birthday_reminders (
 alter table zodiacs_reminders_private.birthday_reminders enable row level security;
 revoke all on zodiacs_reminders_private.birthday_reminders from public, anon, authenticated;
 
--- A new or repeated request: the reminder waits for confirmation again, with the new month and day.
+-- Unconfirmed requests older than 48 hours are deleted: on every request, every daily run, and by
+-- birthday_reminders_sweep, which the daily workflow calls even while sending is off.
+create or replace function public.birthday_reminders_sweep()
+returns integer language plpgsql security definer set search_path = '' as $$
+declare swept integer;
+begin
+  delete from zodiacs_reminders_private.birthday_reminders
+    where confirmed_at is null and requested_at < pg_catalog.now() - interval '48 hours';
+  get diagnostics swept = row_count;
+  return swept;
+end;
+$$;
+
+-- A new or repeated request waits for confirmation with the new month and day. A confirmed reminder is
+-- never changed by a request: knowing an address is not enough to undo it. Its owner stops it with the
+-- link in its email, then asks again.
 create or replace function public.birthday_reminder_request(p_email text, p_month int, p_day int, p_confirm_hash text)
 returns text language plpgsql security definer set search_path = '' as $$
-declare previous timestamptz;
+declare previous timestamptz; confirmed timestamptz;
 begin
-  select requested_at into previous from zodiacs_reminders_private.birthday_reminders where email = p_email;
+  perform public.birthday_reminders_sweep();
+  select requested_at, confirmed_at into previous, confirmed from zodiacs_reminders_private.birthday_reminders where email = p_email;
+  if confirmed is not null then return 'confirmed'; end if;
   if previous is not null and previous > pg_catalog.now() - interval '60 seconds' then return 'capped'; end if;
   insert into zodiacs_reminders_private.birthday_reminders as r (email, month, day, confirm_hash, requested_at, confirmed_at)
     values (p_email, p_month, p_day, p_confirm_hash, pg_catalog.now(), null)
   on conflict (email) do update set month = excluded.month, day = excluded.day, confirm_hash = excluded.confirm_hash,
-    requested_at = excluded.requested_at, confirmed_at = null;
+    requested_at = excluded.requested_at
+    where r.confirmed_at is null;
   return 'requested';
 end;
 $$;
@@ -79,11 +97,13 @@ begin
 end;
 $$;
 
+revoke all on function public.birthday_reminders_sweep() from public, anon, authenticated;
 revoke all on function public.birthday_reminder_request(text, int, int, text) from public, anon, authenticated;
 revoke all on function public.birthday_reminder_confirm(text) from public, anon, authenticated;
 revoke all on function public.birthday_reminder_delete(uuid) from public, anon, authenticated;
 revoke all on function public.birthday_reminders_due(jsonb) from public, anon, authenticated;
 revoke all on function public.birthday_reminder_sent(uuid) from public, anon, authenticated;
+grant execute on function public.birthday_reminders_sweep() to service_role;
 grant execute on function public.birthday_reminder_request(text, int, int, text) to service_role;
 grant execute on function public.birthday_reminder_confirm(text) to service_role;
 grant execute on function public.birthday_reminder_delete(uuid) to service_role;
