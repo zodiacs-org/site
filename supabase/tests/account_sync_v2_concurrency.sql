@@ -95,8 +95,9 @@ create temporary table account_v2_concurrency_results (
 -- Authenticated v1 chart inserts are paused, so the old "legacy write wins
 -- the cutover race" schedule can no longer commit a row. Hold the same
 -- per-user lock with the helper the insert policy used to call, after seeding
--- an existing row as the table owner. Bootstrap must still wait, observe the
--- committed raw chart, and leave zero v2 authority.
+-- an existing row as the table owner. Bootstrap must still wait behind that
+-- lock. Since 20261111170000 it no longer reads public.charts: it creates v2
+-- state and leaves the v1 row exactly as it was.
 insert into public.charts (id, user_id, payload) values (
   '64000000-0000-4000-8000-000000000099',
   '61000000-0000-4000-8000-000000000003',
@@ -158,29 +159,20 @@ select pg_temp.assert_true(
 );
 
 select pg_temp.assert_true(
-  (select value = '{"outcome":"legacy_migration_required"}'::jsonb
+  (select value @> '{"outcome":"ready","chart_sync_consent":"pending","chart_emails_consent":"pending"}'::jsonb
    from account_v2_concurrency_results where test = 'legacy_cutover')
     and exists (
       select 1
       from public.charts
       where user_id = '61000000-0000-4000-8000-000000000003'
+        and payload = '{"fixture":"write-block-existing"}'::jsonb
     )
-    and not exists (
+    and exists (
       select 1
       from private.account_states
       where user_id = '61000000-0000-4000-8000-000000000003'
-    )
-    and not exists (
-      select 1
-      from private.account_sync_devices
-      where user_id = '61000000-0000-4000-8000-000000000003'
-    )
-    and not exists (
-      select 1
-      from private.account_daily_sun_recipient_aliases
-      where user_id = '61000000-0000-4000-8000-000000000003'
     ),
-  'an existing v1 row must force zero-write legacy_migration_required behind the shared lock'
+  'an existing v1 row no longer blocks bootstrap, which waits for the shared lock and leaves the row untouched'
 );
 
 select dblink_exec('account_v2_a', 'reset role');

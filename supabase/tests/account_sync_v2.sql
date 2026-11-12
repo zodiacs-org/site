@@ -471,22 +471,10 @@ select pg_temp.assert_true(
   'non-bootstrapped consent withdrawal must be a zero-write outcome'
 );
 
-select pg_temp.assert_true(
-  public.account_v2_bootstrap(
-    '51000000-0000-4000-8000-000000000001',
-    '52000000-0000-4000-8000-000000000001',
-    'web',
-    repeat('d', 64),
-    pg_temp.envelope('d')
-  ) = '{"outcome":"legacy_migration_required"}'::jsonb
-    and not exists (
-      select 1
-      from private.account_states
-      where user_id = '51000000-0000-4000-8000-000000000001'
-    ),
-  'bootstrap must leave zero v2 state while a raw legacy chart exists'
-);
-
+-- Since 20261111170000 bootstrap no longer reads public.charts; the v1 row
+-- is removed here by its owner only so the later legacy assertions keep
+-- their original fixture. account_sync_v2_chart_emails.sql covers bootstrap
+-- with a v1 row still present.
 reset role;
 set role authenticated;
 delete from public.charts

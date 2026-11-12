@@ -17,10 +17,6 @@ interface RemoteDeletionDbRow {
   deleted_at: string | null;
 }
 
-interface RemoteDigestPreferenceRow {
-  digest_opt_in: boolean | null;
-}
-
 let timer: number | undefined;
 /** Chart ids the last successful read found in the account; null before any read. */
 let accountChartIds: ReadonlySet<string> | null = null;
@@ -111,44 +107,7 @@ export async function signOutOfSyncLocal(): Promise<void> {
   accountChartIds = null;
 }
 
-export async function getDigestOptIn(): Promise<boolean> {
-  const client = getSupabaseClient();
-  if (!client) return false;
-
-  const { data: userData, error: userError } = await client.auth.getUser();
-  if (userError || !userData.user) return false;
-
-  const { data, error } = await client
-    .from('profiles')
-    .select('digest_opt_in')
-    .eq('user_id', userData.user.id)
-    .maybeSingle<RemoteDigestPreferenceRow>();
-  if (error) throw error;
-
-  return data?.digest_opt_in === true;
-}
-
-export async function setDigestOptIn(digestOptIn: boolean): Promise<boolean> {
-  const client = getSupabaseClient();
-  if (!client) return false;
-
-  const { data: userData, error: userError } = await client.auth.getUser();
-  if (userError || !userData.user) return false;
-
-  // Write only the digest column. On conflict this leaves `settings`
-  // untouched (the main sync path owns it); a stale local profile can no
-  // longer clobber the synced settings. On insert, `settings` takes its
-  // column default and the trigger stamps updated_at.
-  const { error } = await client
-    .from('profiles')
-    .upsert({
-      user_id: userData.user.id,
-      digest_opt_in: digestOptIn,
-    }, { onConflict: 'user_id' });
-  if (error) throw error;
-
-  return true;
-}
+export { getDigestOptIn, setDigestOptIn } from './digest-preference';
 
 export function scheduleCloudSync(delay = 500): void {
   if (ACCOUNT_SYNC_V2_ENABLED) return;
