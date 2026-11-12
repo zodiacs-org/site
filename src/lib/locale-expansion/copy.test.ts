@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { SIGN_SLUGS } from '../signs';
+import { signDateRange } from '../sign-display';
 import { horoscopeShingleJaccard } from '../horoscope-program';
 import { readingConfidence } from '../../ai-tools/reading-confidence';
 import { HOROSCOPE_MODULES } from './horoscope/modules';
@@ -121,6 +122,12 @@ describe('zodiac dates copy', () => {
       expect(copy.title(2026, 2027).length).toBeLessThanOrEqual(60);
       expect(Object.keys(copy.season).sort()).toEqual(['Autumn', 'Spring', 'Summer', 'Winter']);
       expect(strings(copy).flatMap((text) => copyProblems(locale, text).map((problem) => `${problem}: ${text}`))).toEqual([]);
+    });
+    it(`${locale} prints each sign's dates as words, not a dashed range`, () => {
+      // The table cells come from signDateRange (LocalizedZodiacDates.astro).
+      const cells = SIGN_SLUGS.map((sign) => signDateRange(sign, locale));
+      expect(cells.flatMap((text) => copyProblems(locale, text).map((problem) => `${problem}: ${text}`))).toEqual([]);
+      expect(cells.filter((text) => /[–—]/u.test(text))).toEqual([]);
     });
   }
 });

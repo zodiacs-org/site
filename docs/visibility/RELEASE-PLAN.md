@@ -46,10 +46,10 @@ batching. The other two decisions are in the PR description and in
 |---|---|---|
 | 1 | zodiac dates es, pt, fr, it; today fr, it; full Moon 2026-11-24 es, pt, fr, it | 10 |
 | 2 | new Moon 2026-12-09 es, pt, fr, it; full Moon 2026-12-24 es, pt (fr and it in week 3); horoscope hub fr, it; weekly es (aries, taurus) | 10 |
-| 3 | full Moon 2026-12-24 fr, it; weekly es (gemini to pisces, 8 signs) | 10 |
-| 4 | new Moon 2027-01-07 es, pt; weekly pt (aries to capricorn, 8 signs) | 10 |
-| 5 | new Moon 2027-01-07 fr, it; weekly pt (aquarius, pisces); monthly es (aries to virgo, 6 signs) | 10 |
-| 6 | full Moon 2027-01-22 es, pt; monthly es (libra to pisces, 6 signs); monthly pt (aries, taurus) | 10 |
+| 3 | full Moon 2026-12-24 fr, it; weekly es (gemini to capricorn, 8 signs) | 10 |
+| 4 | new Moon 2027-01-07 es, pt; weekly pt (aries to scorpio, 8 signs) | 10 |
+| 5 | new Moon 2027-01-07 fr, it; weekly es (aquarius, pisces); weekly pt (sagittarius to pisces, 4 signs); monthly es (aries, taurus) | 10 |
+| 6 | full Moon 2027-01-22 es, pt; monthly es (gemini to capricorn, 8 signs) | 10 |
 
 From week 7 the order above continues at 10 a week, with 2 slots a week for
 the next Moon page. The whole set is 864 pages: 209 each in Spanish and
