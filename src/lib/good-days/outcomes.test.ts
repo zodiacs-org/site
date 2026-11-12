@@ -51,7 +51,7 @@ describe('the note', () => {
     expect(scrubNote('My daughter loved the new house')).toEqual({ note: null, dropped: 'children' });
     expect(scrubNote('Moved the kids in')).toEqual({ note: null, dropped: 'children' });
     // Birth details and ages are never kept: the whole note goes, the rating stays.
-    for (const note of ['I was born on May 3, 1990 at 08:30 in Bangkok.', 'Signed on my birthday', 'My 8-year-old started well.', 'She is 7 years old now', 'aged 12 and happy', 'My natal Venus liked it']) {
+    for (const note of ['I was born on May 3, 1990 at 08:30 in Bangkok.', 'Signed on my birthday', 'My 8-year-old started well.', 'She is 7 years old now', 'aged 12 and happy', 'My natal Venus liked it', 'My eight-year-old enjoyed the move.', 'Our twelve year old settled in', 'DOB 3 May 1990; POB Bangkok; TOB 07:20.', 'Back in my hometown']) {
       expect(scrubNote(note), note).toEqual({ note: null, dropped: 'personal' });
     }
     // Written dates, years and clock times are taken out of a note that is kept.

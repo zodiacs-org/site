@@ -97,8 +97,9 @@ const CHILD_WORDS = /\b(?:child|children|childs?|kid|kids|kiddo|baby|babies|todd
  * Words and shapes that put birth details or an age in a note: such a note is dropped whole and the rating kept,
  * because Zodiacs never stores birth details, and an age can be a child's.
  */
-const BIRTH_WORDS = /\b(?:born|birth\w*|birthdays?|natal|bday|b-day)\b/iu;
-const AGE = /\b\d{1,3}\s*(?:-\s*)?(?:years?|yrs?|y\/o|yo|months?|weeks?)(?:\s*(?:-\s*)?old)?\b|\b(?:aged?|age of)\s*\d{1,3}\b|\b\d{1,3}\s*(?:years?|yrs?)\s+of\s+age\b/iu;
+const BIRTH_WORDS = /\b(?:born|birth\w*|birthdays?|birthplace|natal|bday|b-day|dob|pob|tob|hometown|home\s+town)\b/iu;
+// Any "year old" or "years of age", whatever the number is written as, and "aged" with a number.
+const AGE = /\byears?\s*-?\s*olds?\b|\byrs?\s*-?\s*olds?\b|\bmonths?\s*-?\s*olds?\b|\b\d{1,3}\s*(?:-\s*)?(?:years?|yrs?|y\/o|yo|months?|weeks?)(?:\s*(?:-\s*)?old)?\b|\b(?:aged?|age of)\s*\d{1,3}\b|\b\d{1,3}\s*(?:years?|yrs?)\s+of\s+age\b/iu;
 const MONTHS = '(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)';
 const WRITTEN_DATE = new RegExp(`\\b(?:${MONTHS}\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?(?:,?\\s+\\d{2,4})?|\\d{1,2}(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTHS}\\.?(?:,?\\s+\\d{2,4})?)\\b`, 'giu');
 
