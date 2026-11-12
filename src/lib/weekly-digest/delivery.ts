@@ -6,8 +6,10 @@ import {
   randomBytes,
 } from 'node:crypto';
 import {
+  ResendRequestWithdrawnError,
   createRateLimitedResendRequest,
   type ResendRequest,
+  type ResendRequestControl,
 } from '../daily-email/resend-request.js';
 
 const RESEND_EMAILS_ENDPOINT = 'https://api.resend.com/emails';
@@ -85,6 +87,14 @@ export class WeeklyDigestProviderAbortError extends Error {
   readonly reason: WeeklyDigestProviderAbortReason;
   readonly status: number | null;
   readonly code: string | null;
+  /**
+   * The provider explicitly rejected the request, so nothing was accepted
+   * under it: a 4xx other than 408 and 409, an exhausted run of 429s
+   * included (the queue retries only 429s, so every earlier attempt was one).
+   * Everything else (transport failures, 5xx, 408, 409, a malformed success)
+   * is ambiguous: the request may have been accepted.
+   */
+  readonly definitive: boolean;
 
   constructor(
     reason: WeeklyDigestProviderAbortReason,
@@ -96,6 +106,12 @@ export class WeeklyDigestProviderAbortError extends Error {
     this.reason = reason;
     this.status = status;
     this.code = code;
+    this.definitive = reason === 'provider-response'
+      && Number.isInteger(status)
+      && status! >= 400
+      && status! <= 499
+      && status !== 408
+      && status !== 409;
   }
 }
 
@@ -537,11 +553,17 @@ export function createWeeklyDigestResendRequest(
   });
 }
 
-/** Sends a previously built or opened envelope without reconstructing its body. */
+/**
+ * Sends a previously built or opened envelope without reconstructing its body.
+ * `control.beforeAttempt` runs immediately before every provider attempt; when
+ * it declines, this rejects with ResendRequestWithdrawnError and nothing more
+ * is sent.
+ */
 export async function sendWeeklyDigestEnvelope(
   envelope: WeeklyDigestRequestEnvelope,
   apiKey: string,
   request: ResendRequest = createWeeklyDigestResendRequest(fetch),
+  control?: ResendRequestControl,
 ): Promise<WeeklyDigestProviderResult> {
   const normalized = validatedEnvelope(envelope);
   if (!normalized || !validBoundedHeader(apiKey, 1_024)) {
@@ -561,8 +583,9 @@ export async function sendWeeklyDigestEnvelope(
       // The weekly request factory replaces this with a fresh signal for every
       // hidden 429 attempt. It remains a bounded fallback for custom requests.
       signal: AbortSignal.timeout(WEEKLY_DIGEST_PROVIDER_TIMEOUT_MS),
-    });
-  } catch {
+    }, control);
+  } catch (error) {
+    if (error instanceof ResendRequestWithdrawnError) throw error;
     throw new WeeklyDigestProviderAbortError('transport');
   }
 

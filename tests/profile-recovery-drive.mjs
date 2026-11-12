@@ -49,7 +49,7 @@ try { await withPreview({ port: 8786 }, async base => {
 for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').split(',')) {
   const browser = engine === 'webkit' ? await webkit.launch({ headless: true })
     : await chromium.launch({ headless: true, executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS });
-  const cloud = { charts: [], settings: { houseSystem: 'whole' }, fail: false, otp: null, otpURL: null };
+  const cloud = { charts: [], chartWrites: 0, settings: { houseSystem: 'whole' }, fail: false, otp: null, otpURL: null };
   // The PWA has its own drive. Keep these mocked account requests observable;
   // service-worker-controlled requests can bypass Playwright interception.
   const options = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1, reducedMotion: 'reduce', serviceWorkers: 'block' };
@@ -81,7 +81,8 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
         const table = url.pathname.split('/').pop();
         if (table === 'charts') {
           if (req.method() === 'GET') return reply(cloud.charts);
-          if (req.method() === 'POST') { cloud.charts = req.postDataJSON(); return reply(null, 201); }
+          // Chart sync is paused: the page reads and deletes, and never writes a chart.
+          if (req.method() === 'POST' || req.method() === 'PATCH') { cloud.chartWrites += 1; cloud.charts = req.postDataJSON(); return reply(null, 201); }
           return reply(null);
         }
         if (table === 'profiles') {
@@ -103,8 +104,8 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
     page.on('console', m => { if (m.type() === 'error') consoleErrors.push(m.text()); });
     await page.goto(`${base}/profile/`);
     await page.getByRole('button', { name: 'Edit profile', exact: true }).waitFor();
-    await page.getByRole('link', { name: 'Save across devices' }).waitFor();
-    check(`${engine}: top-of-page cross-device action exists`, await page.getByRole('link', { name: 'Save across devices' }).getAttribute('href') === '#profile-sync');
+    await page.getByRole('link', { name: 'Account sign-in' }).waitFor();
+    check(`${engine}: top-of-page cross-device action exists`, await page.getByRole('link', { name: 'Account sign-in' }).getAttribute('href') === '#profile-sync');
     check(`${engine}: mobile status is local without sign-in`, await page.locator('.pf-safety__status').innerText().then(s => s.includes('Saved in this browser')));
     await page.getByRole('button', { name: 'Edit profile', exact: true }).click();
     check(`${engine}: touch editor avoids opening the keyboard`, await page.locator('#pf-me-name').evaluate(e => document.activeElement !== e));
@@ -149,7 +150,7 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
       }
       check(`${engine}: no overflow at ${width}px`, fits);
     }
-    await page.getByRole('link', { name: 'Save across devices' }).click();
+    await page.getByRole('link', { name: 'Account sign-in' }).click();
     await page.getByRole('textbox', { name: 'Email for profile sync' }).fill(user.email);
     await page.getByRole('button', { name: 'Send sign-in link ↗' }).click();
     await page.waitForFunction(() => document.querySelector('.pf-sync__message')?.textContent?.includes('Check')).catch(async error => {
@@ -159,14 +160,17 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
     });
     check(`${engine}: email sign-in requests the correct return URL`, cloud.otp?.email === user.email && cloud.otpURL?.searchParams.get('redirect_to') === `${base}/profile/`);
     const cloudFirst = await context({ seed: true, signedIn: true }); const signed = await cloudFirst.newPage(); await signed.goto(`${base}/profile/`);
-    await signed.getByText('Charts synced to your account', { exact: true }).waitFor();
-    check(`${engine}: synced status follows a successful cloud write`, cloud.charts.length === 1);
+    await signed.locator('.pf-safety__status').getByText('Sync paused', { exact: true }).waitFor();
+    check(`${engine}: paused status follows a successful read, with no chart sent`, cloud.chartWrites === 0 && cloud.charts.length === 0);
+    // A chart synced before the pause is still read back on another device.
+    cloud.charts = [{ id: chart.id, payload: chart, updated_at: chart.updatedAt }];
     const cloudSecond = await context({ signedIn: true }); const recovered = await cloudSecond.newPage(); await recovered.goto(`${base}/profile/`);
     await recovered.getByRole('button', { name: 'Edit profile', exact: true }).waitFor();
     // The editor now exists before a chart arrives; wait for the recovery itself.
     await recovered.waitForFunction(() => JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null')?.charts?.some(c => c.id === '11111111-1111-4111-8111-111111111111'));
     check(`${engine}: signed-in second device retrieves a saved birth chart`, await recovered.evaluate(() => JSON.parse(localStorage.getItem('zodiacs.profile.v1')).charts.some(c => c.id === '11111111-1111-4111-8111-111111111111')));
-    cloud.fail = true; await signed.getByRole('button', { name: /^(Sync now|Synced)$/ }).click();
+    check(`${engine}: no chart was sent from either device`, cloud.chartWrites === 0);
+    cloud.fail = true; await signed.reload();
     await signed.getByText('Saved in this browser · sync needs attention', { exact: true }).waitFor();
     check(`${engine}: failed sync retains local chart`, await signed.evaluate(() => JSON.parse(localStorage.getItem('zodiacs.profile.v1')).charts.length === 1));
     await cloudFirst.setOffline(true);

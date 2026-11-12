@@ -1649,10 +1649,14 @@ export async function saveChartCard(
  * whole degree), with whole-sign houses, which follow from the ascendant's
  * sign; Placidus houses, and the house they put the Sun in, are left out, and
  * a note says so. A return without a birth time is computed from 12:00 UTC on
- * the birth date (solar-return/compute.ts).
+ * the birth date (solar-return/compute.ts) and printed as the UTC date of the
+ * return itself, unrounded: rounding to the minute first could move a return
+ * at 23:59:30 or later to the next day, away from the date the page gives.
  */
 export function solarReturnImageModel(model: SolarReturnExportModel): SolarReturnExportModel {
-  const instantUtc = wholeMinuteInstant(new Date(model.instantUtc)).toISOString();
+  const instantUtc = model.noTime
+    ? new Date(model.instantUtc).toISOString()
+    : wholeMinuteInstant(new Date(model.instantUtc)).toISOString();
   const { angles, houses } = model.wheel;
   if (!angles) return { ...model, instantUtc };
   const asc = wholeDegreeAngle(angles.asc);
@@ -1706,7 +1710,8 @@ export async function prepareSolarReturnCard(source: SolarReturnExportModel): Pr
   ctx.fillText(title, 72, 68);
   ctx.font = `400 22px ${MONO}`;
   ctx.fillStyle = INK_2;
-  ctx.fillText(`${model.instantUtc.slice(0, 16).replace('T', ' ')} UTC`, 72, 144);
+  // Without a birth time the return is a date, a day either side, never a clock time.
+  ctx.fillText(model.noTime ? `${model.instantUtc.slice(0, 10)} UTC` : `${model.instantUtc.slice(0, 16).replace('T', ' ')} UTC`, 72, 144);
 
   const wheel = await loadSvg(await wheelSvgString(model.wheel));
   ctx.drawImage(wheel, (W - 610) / 2, 192, 610, 610);
