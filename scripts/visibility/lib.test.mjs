@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, parseCsv, scoreAnswer, summarisePhrase } from './lib.mjs';
+import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseCsv, scoreAnswer, summarisePhrase } from './lib.mjs';
 
 describe('visibility lib', () => {
   it('holds fifty questions with unique ids and phrases', () => {
@@ -40,6 +40,10 @@ describe('visibility lib', () => {
     // Query text is never kept: a searcher can type birth details.
     expect(s.queryCount).toBe(2);
     expect(JSON.stringify(s)).not.toMatch(/rising sign what is my/);
+    // Landing pages keep only origin and path.
+    const withPage = summarisePhrase([{ query: 'what is my rising sign', page: 'https://zodiacs.org/rising-sign/?date=1990-03-12&time=15:00&place=London#x', clicks: 0, impressions: 5, position: 3 }], 'what is my rising sign');
+    expect(withPage.topPages).toEqual(['https://zodiacs.org/rising-sign/']);
+    expect(pagePath('not a url')).toBe(null);
   });
 
   it('ranks striking-distance phrases above ones already on top', () => {

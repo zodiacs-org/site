@@ -78,6 +78,18 @@ export function scoreAnswer(text, citations = []) {
   };
 }
 
+// A landing page as it may be written out: origin and path only. Query
+// strings and fragments are dropped, because a shared or bookmarked URL could
+// carry birth details. Returns null for anything that is not a URL.
+export function pagePath(url) {
+  try {
+    const u = new URL(url);
+    return u.origin + u.pathname;
+  } catch {
+    return null;
+  }
+}
+
 // Search Console phrase matching: exact (after normalising case, spacing and
 // punctuation) or close (every phrase word present, any order).
 export function normaliseQuery(q) {
@@ -131,7 +143,8 @@ export function summarisePhrase(rows, phrase, { closeMatches = true } = {}) {
     clicks += r.clicks;
     impressions += r.impressions;
     weighted += r.position * r.impressions;
-    if (r.page) pages.set(r.page, (pages.get(r.page) || 0) + r.impressions);
+    const page = r.page && pagePath(r.page);
+    if (page) pages.set(page, (pages.get(page) || 0) + r.impressions);
   }
   return {
     phrase,

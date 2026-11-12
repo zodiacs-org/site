@@ -41,6 +41,10 @@ function aiRates(data, q) {
   return { per, citeRate: n ? cited / n : null };
 }
 
+// A Search Console row counts for a question only when it was measured for the
+// same phrase, so a question id reused for new wording never inherits old data.
+const gscFor = (data, q) => data.gsc?.phrases.find((p) => p.id === q.id && p.close?.phrase === q.phrase);
+
 const fit = (q) => (!q.target ? 0.6 : q.intent === 'tool' || q.intent === 'dates' ? 1 : 0.8);
 const fmt = (v) => (v == null ? 'n/a' : String(v));
 
@@ -48,7 +52,7 @@ function rank(label) {
   const d = load(label);
   const providers = Object.keys(d.ai);
   const rows = loadQuestions().map((q) => {
-    const g = d.gsc?.phrases.find((p) => p.id === q.id);
+    const g = gscFor(d, q);
     const r = aiRates(d, q);
     const serp = d.rankings?.rankings?.find((x) => x.phrase === q.phrase);
     const demand = g ? g.close.impressions : null;
@@ -76,7 +80,7 @@ function compare(from, to) {
   const a = load(from), b = load(to);
   const lines = [`# Movement ${from} to ${to}`, '', '| Phrase | Impr. | Clicks | Avg pos. | AI cite rate | Title / H1 / opening |', '|---|---|---|---|---|---|'];
   for (const q of loadQuestions()) {
-    const ga = a.gsc?.phrases.find((p) => p.id === q.id)?.close, gb = b.gsc?.phrases.find((p) => p.id === q.id)?.close;
+    const ga = gscFor(a, q)?.close, gb = gscFor(b, q)?.close;
     const ra = aiRates(a, q).citeRate, rb = aiRates(b, q).citeRate;
     const pb = b.pages?.pages.find((p) => p.path === q.target)?.phrases.find((x) => x.id === q.id);
     const d = (x, y) => (x == null || y == null ? 'n/a' : `${x} to ${y}`);

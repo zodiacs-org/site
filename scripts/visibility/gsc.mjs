@@ -22,7 +22,7 @@
 // so each phrase records how many queries matched, never which ones.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
-import { loadQuestions, parseCsv, summarisePhrase, VIS_DIR } from './lib.mjs';
+import { loadQuestions, pagePath, parseCsv, summarisePhrase, VIS_DIR } from './lib.mjs';
 
 const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? (argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : true) : undefined; };
@@ -51,7 +51,7 @@ async function fromApi(site, start, end) {
     });
     if (!res.ok) throw new Error(`Search Console ${res.status}: ${(await res.text()).slice(0, 300)}`);
     const json = await res.json();
-    for (const r of json.rows || []) out.push({ query: r.keys[0], page: r.keys[1], clicks: r.clicks, impressions: r.impressions, position: r.position });
+    for (const r of json.rows || []) out.push({ query: r.keys[0], page: pagePath(r.keys[1]), clicks: r.clicks, impressions: r.impressions, position: r.position });
     if (!json.rows || json.rows.length < 25000) break;
   }
   return out;
