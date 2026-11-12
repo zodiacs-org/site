@@ -6,6 +6,7 @@
  * the installed app, and hiding it is remembered on this device.
  */
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import { runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useMe } from '../lib/hooks/useMe';
 import { explicitSelfChart } from '../lib/profile/read-store';
@@ -112,7 +113,9 @@ export default function ProfileKeepClose({ accountBound = false }: { accountBoun
 
   function dismiss() {
     setHidden(true);
-    saveMe({ keepCloseDismissed: true });
+    // A dismissal waits for access like any write; if it cannot start, the
+    // card stays hidden for this visit and may show again next time.
+    runAfterProfileAccess(() => { saveMe({ keepCloseDismissed: true }); }, () => {});
   }
 
   return (
