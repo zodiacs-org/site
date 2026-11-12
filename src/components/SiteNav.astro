@@ -84,7 +84,10 @@ const profileLabel: Record<Locale, string> = {
   en: 'Your profile', es: 'Tu perfil', pt: 'Seu perfil', fr: 'Ton profil', it: 'Il tuo profilo', ru: 'Ваш профиль',
   'zh-hans': '你的个人资料', 'zh-hant': '你的個人檔案',
 };
-const mobileNavLabel: Partial<Record<Locale, string>> = {
+// Every page locale names the mobile landmark in its own language; the full
+// Record keeps a new locale from silently falling back to English.
+const mobileNavLabel: Record<Locale, string> = {
+  en: 'Mobile', es: 'Menú móvil', pt: 'Menu móvel', fr: 'Menu mobile', it: 'Menu mobile',
   ru: 'Мобильная навигация', 'zh-hans': '移动版导航', 'zh-hant': '手機版選單',
 };
 // Shared English-only courtesy (src/lib/i18n/english-only.ts): hreflang="en"
@@ -234,7 +237,7 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
 </div>
 
 <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
-  <nav aria-label={mobileNavLabel[locale] ?? 'Mobile'}>
+  <nav aria-label={mobileNavLabel[locale]}>
     <div class="mobile-menu__group">
       <span class="mobile-menu__label">{t(locale, 'navSite')}</span>
       {visibleNavTools.filter((tool) => tool.href === '/birth-chart/' || tool.href === '/compatibility/').map((tool) => (
