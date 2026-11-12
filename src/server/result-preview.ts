@@ -76,7 +76,7 @@ import { YEAR_SCORE_SHARE_IMAGE_PATH, YEAR_SCORE_SHARE_KEYS, YEAR_SCORE_SHARE_PA
 import { scoreTier } from '../lib/year-score/tier.js';
 import { figureYearScore } from './year-score-figure.js';
 import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
-import { MAJOR_ARCANA } from '../lib/tarot/year-card.js';
+import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
@@ -228,6 +228,12 @@ export const MILESTONE_SHARE_STORY_PATH = '/api/og/milestone-story';
 export const BIG_THREE_SHARE_STORY_PATH = '/api/og/big-three-story';
 export const CHINESE_ZODIAC_SHARE_STORY_PATH = '/api/og/chinese-zodiac-story';
 export const INVITE_SHARE_STORY_PATH = '/api/og/invite-story';
+
+/**
+ * Keys a birthday report link must never carry, refused rather than skipped like fbclid. The Personal Year (py)
+ * left the link (ZOD-24): with the Sun sign and the card it narrows the birth date further.
+ */
+const BIRTHDAY_REPORT_REFUSED_SHARE_KEYS: readonly string[] = Object.freeze(['py']);
 
 /** An image route takes only its own keys, each once; a page skips the ones it does not use. */
 const isPictureRoute = (route: ResultShareRoute) => route.endsWith('-image') || route.endsWith('-story');
@@ -686,7 +692,12 @@ export function yearScoreCard(model: YearScoreCardModel, images: Map<ShareSign, 
   }), model.name ? null : model.sign.slug);
 }
 
-/** A Birthday report card: the Sun sign, the year's score, the Personal Year and the tarot year card. No birth detail. */
+/**
+ * A Birthday report card: the Sun sign, the year's score and the tarot year
+ * card. No birth detail. The title is the score and the Sun sign; the card
+ * stands only in the line under it, always with its keyword ("Death: change"),
+ * so no card is the headline of a birthday.
+ */
 export function birthdayReportCard(share: BirthdayReportShare, images: Map<ShareSign, string>, art: string[]) {
   const sign = { slug: share.sun, label: `${capitalSign(share.sun)} Sun`, hue: HUES[share.sun] };
   const card = MAJOR_ARCANA[share.card];
@@ -694,10 +705,14 @@ export function birthdayReportCard(share: BirthdayReportShare, images: Map<Share
     discs: discRow([sign], images),
     kicker: 'My birthday report',
     hue: sign.hue,
-    title: [titleBlock(`${card.name} · Personal Year ${share.personalYear}`)],
-    line: [h('span', null, `Year Ahead Score ${share.score.toFixed(1)}/10.`), h('span', null, `\u00a0${sign.label}.`)],
+    title: [titleBlock(birthdayReportImageTitle(share))],
+    // Two lines, so the card's longer titles ("Wheel of Fortune: turning points") wrap on their own.
+    line: [h('div', { style: { display: 'flex', flexDirection: 'column' } }, h('div', { style: { display: 'flex' } }, 'Year Ahead Score.'), h('div', { style: { display: 'flex' } }, `Tarot year card: ${cardTitle(card)}.`))],
   }), share.sun);
 }
+
+/** The Birthday report image's title: the score and the Sun sign, never the tarot card. */
+export const birthdayReportImageTitle = (share: BirthdayReportShare) => `${share.score.toFixed(1)}/10 · ${capitalSign(share.sun)} Sun`;
 
 /** What the solar return card says: its year, the rising sign when the chart settles it, and Jupiter's sign. */
 function solarReturnLines(share: SolarReturnShare) {
@@ -1878,16 +1893,18 @@ export async function handleBirthdayReportLinkRequest(request: Request): Promise
       action, note: BIRTHDAY_REPORT_SHARE_NOTE,
     }));
   }
+  // The headlines lead with the score and the Sun sign; the tarot card stands in the body and the alt text's second sentence only, with its keyword.
   const card = MAJOR_ARCANA[share.card];
   const sun = `${capitalSign(share.sun)} Sun`;
+  const score = share.score.toFixed(1);
   return htmlResponse(sharePageHtml({
-    title: `My birthday report: ${card.name}, Personal Year ${share.personalYear}`,
-    description: `Year Ahead Score ${share.score.toFixed(1)}/10. ${sun}.`,
-    heading: `My birthday year: ${card.name}`,
+    title: `My birthday report: ${score}/10, ${sun}`,
+    description: `Year Ahead Score ${score}/10. ${sun}.`,
+    heading: `My birthday year: ${score} out of 10, ${sun}`,
     imageUrl: `${url.origin}${BIRTHDAY_REPORT_SHARE_IMAGE_PATH}?${birthdayReportQuery(share)}`,
     imageType: 'image/jpeg',
-    imageAlt: `A birthday report: ${card.name}, Personal Year ${share.personalYear}, Year Ahead Score ${share.score.toFixed(1)} out of 10, ${sun}.`,
-    explanation: `${card.year} ${scoreTier(share.score).label}, by the slow planets.`,
+    imageAlt: `My birthday report: Year Ahead Score ${score} out of 10, ${sun}. Tarot year card: ${cardTitle(card)}.`,
+    explanation: `${scoreTier(share.score).label}, by the slow planets. Tarot year card: ${cardTitle(card)}. ${card.year}`,
     action,
     note: BIRTHDAY_REPORT_SHARE_NOTE,
   }));
@@ -2066,7 +2083,7 @@ export async function handleInviteLinkRequest(request: Request): Promise<Respons
 
 // ── The deployed function's entry ────────────────────────────────────
 
-const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string }>> = {
+const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response>; flag?: string; refused?: readonly string[] }>> = {
   'compatibility-link': { path: COMPATIBILITY_SHARE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityLinkRequest },
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
@@ -2102,8 +2119,8 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'invite-story': { path: INVITE_SHARE_STORY_PATH, keys: INVITE_SHARE_KEYS, handle: handleInviteStoryRequest },
   'year-score-link': { path: YEAR_SCORE_SHARE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreLinkRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
   'year-score-image': { path: YEAR_SCORE_SHARE_IMAGE_PATH, keys: YEAR_SCORE_SHARE_KEYS, handle: handleYearScoreImageRequest, flag: 'PUBLIC_YEAR_SCORE_ENABLED' },
-  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
-  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED' },
+  'birthday-report-link': { path: BIRTHDAY_REPORT_SHARE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportLinkRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
+  'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
   'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
   'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
 };
@@ -2154,7 +2171,14 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
     }
   }
   let params = new URLSearchParams();
-  for (const [key, value] of Object.entries(query)) {
+  // A key the route refuses outright (the birthday report's old py), once or repeated, is checked before the
+  // unknown keys are skipped: the image refuses, the page opens without a result.
+  const refused = target.refused !== undefined && Object.keys(query).some((key) => target.refused!.includes(key));
+  if (refused && isPictureRoute(route)) {
+    await writeNodeResponse(res, errorResponse(400));
+    return;
+  }
+  for (const [key, value] of refused ? [] : Object.entries(query)) {
     if (key === RESULT_SHARE_ROUTE_KEY) continue;
     // The page skips a key it does not use, such as the fbclid or utm_source an app adds to a
     // link as it is opened, so the result still shows; the image takes only its own keys.

@@ -141,19 +141,32 @@ async function checkCalendar(page, check, outDir, slug, approximate) {
   const file = await receiveDownload(page, 'Add to calendar', outDir, `${slug}.ics`);
   const fields = calendarFields(file.bytes);
   const receipt = await page.locator('[data-return-instant]').textContent();
+  const text = file.bytes.toString('utf8');
+  if (approximate) {
+    // Without a birth time the page, the image and the calendar give the return's date, never a clock time.
+    const date = receipt.match(/UTC date · (\d{4})-(\d\d)-(\d\d)/);
+    check(`Solar ${slug}: calendar marks the displayed return's date as a whole day with honest uncertainty`,
+      file.name === 'zodiacs-approximate-solar-return-2024.ics'
+      && !!date && !/\d\d:\d\d/.test(receipt) && !/Your time/.test(receipt)
+      && fields['DTSTART;VALUE=DATE'] === `${date[1]}${date[2]}${date[3]}` && /^\d{8}$/.test(fields['DTEND;VALUE=DATE'] ?? '')
+      && !('DTSTART' in fields) && !('DURATION' in fields) && fields.TRANSP === 'TRANSPARENT'
+      && fields.SUMMARY === 'Approximate solar return · 2024'
+      && fields.DESCRIPTION.includes('day of the return') && fields.DESCRIPTION.includes('shift by hours')
+      && !/Frida|1907-07-06|Mexico City|LOCATION:|BEGIN:VALARM|RRULE:/.test(text));
+    return { file, fields };
+  }
   const utc = receipt.match(/UTC · (\d{4}-\d\d-\d\d) · (\d\d:\d\d:\d\d)/);
   const shown = utc ? Date.parse(`${utc[1]}T${utc[2]}Z`) : Number.NaN;
   // The calendar marks the return to the whole minute, found from the birth
   // instant's whole minute: within a minute of the page's own return.
   const marked = /^(\d{4})(\d\d)(\d\d)T(\d\d)(\d\d)00Z$/.exec(fields.DTSTART ?? '');
   const markedMs = marked ? Date.UTC(+marked[1], +marked[2] - 1, +marked[3], +marked[4], +marked[5]) : Number.NaN;
-  const text = file.bytes.toString('utf8');
   check(`Solar ${slug}: calendar marks the displayed return to the whole minute with honest uncertainty`,
-    file.name === `zodiacs-${approximate ? 'approximate-' : ''}solar-return-2024.ics`
+    file.name === 'zodiacs-solar-return-2024.ics'
     && Math.abs(markedMs - shown) <= 60_000 && fields.DURATION === 'PT1M' && fields.TRANSP === 'TRANSPARENT'
-    && fields.SUMMARY === `${approximate ? 'Approximate solar return' : 'Solar return'} · 2024`
+    && fields.SUMMARY === 'Solar return · 2024'
     && fields.DESCRIPTION.includes('for display only')
-    && fields.DESCRIPTION.includes('shift by hours') === approximate
+    && !fields.DESCRIPTION.includes('shift by hours')
     && !/Frida|1907-07-06|Mexico City|LOCATION:|BEGIN:VALARM|RRULE:/.test(text));
   return { file, fields };
 }
@@ -172,6 +185,8 @@ async function checkImage(page, check, outDir, slug, approximate) {
     && painted.includes(`Engine ${ENGINE_VERSION}`) && painted.includes('ZODIACS · ORG') && !painted.includes('Zodiacs.org')
     && (await page.locator('[data-solar-return-result]').getAttribute('data-sr-no-place') !== 'true' || painted.includes('No stored birthplace is available, so this return is planets-only.'))
     && painted.includes('shift by hours') === approximate
+    // Without a birth time the image gives the return's UTC date, never a clock time.
+    && (approximate ? /\b\d{4}-\d\d-\d\d UTC\b/.test(painted) && !/\d\d:\d\d UTC/.test(painted) : /\d{4}-\d\d-\d\d \d\d:\d\d UTC/.test(painted))
     && !/Frida|1907-07-06|Mexico City|08:30/.test(painted), `${png.width}×${png.height}; ${file.sha256}`);
   return file;
 }
@@ -288,6 +303,14 @@ export async function runSolarReturnChecks({ browser, baseURL, check, outDir }) 
       && await page.getByRole('button', { name: 'Add to calendar', exact: true }).isEnabled()
       && await page.locator('[data-noon-notice]').textContent() === 'Computed from the sky at 12:00 UTC on your birth date. The return instant can shift by up to about a day with your exact birth time, and houses need it.'
       && await page.getByRole('columnheader', { name: 'House', includeHidden: true }).count() === 0);
+    // The always-visible receipt gives a return without a birth time its UTC date, never a clock time.
+    const untimedReceipt = page.locator('[data-solar-return-result] [data-check-our-math]');
+    const untimedReceiptText = await untimedReceipt.textContent();
+    const untimedReceiptTime = await untimedReceipt.locator('time').getAttribute('datetime');
+    check('Solar: the visible receipt of an untimed return shows its UTC date and no clock time',
+      await untimedReceipt.getAttribute('data-instant-basis') === 'approximate-return'
+      && /^\d{4}-\d\d-\d\d$/.test(untimedReceiptTime ?? '') && untimedReceiptText.includes(untimedReceiptTime)
+      && !/T\d\d:\d\d|\d\d:\d\d/.test(untimedReceiptText), untimedReceiptText);
     record('unknown-calendar', (await checkCalendar(page, check, outDir, 'unknown-2024', true)).file);
     if (outDir) await page.locator('[data-sr-exports]').screenshot({ path: `${outDir}/image-encode-failure-390.png`, animations: 'disabled' });
     await page.getByRole('button', { name: 'Prepare image again', exact: true }).click();

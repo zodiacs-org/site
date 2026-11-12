@@ -24,7 +24,7 @@ const faq = [
   },
   {
     q: 'Why do I need only a birth date?',
-    a: 'The slow planets move a fraction of a degree a day, and so do your Sun, Mercury, Venus and Mars across one birth day, so a date alone places them well. Only the Moon needs a birth time and place; without them it is left out.',
+    a: 'A date alone gives a first reading. Across one birth day the Sun moves about a degree and Mercury up to two, so without a birth time the score can move; the result shows the range. A birth time and place settle it and add the Moon.',
   },
 ];
 
@@ -112,6 +112,10 @@ const jsonLd = [
   .faq__item { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); padding: 4px 18px; }
   .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
   .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  :global(.ys__time-note) { display: grid; }
+  :global(.ys__time-note > span) { grid-area: 1 / 1; }
+  :global(.ys__time-note-space) { visibility: hidden; }
+  :global(#ys-time-note) { color: var(--sign-aries); }
   :global(.ys__more) { background: none; border: 0; padding: 0; color: var(--text-2); text-decoration: underline; cursor: pointer; font: inherit; justify-self: start; }
   :global(.ys) { display: grid; gap: 20px; }
   :global(.ys__score-core) { display: grid; gap: 6px; padding: clamp(20px, 4vw, 30px); }
@@ -121,6 +125,7 @@ const jsonLd = [
   :global(.ys__outof) { font-size: var(--text-xl); color: var(--muted); margin-left: 4px; }
   :global(.ys__tier) { margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); }
   :global(.ys__summary) { margin: 0; color: var(--text-2); }
+  :global(.ys__range) { margin: 0; color: var(--text-2); font-size: var(--text-sm); }
   :global(.ys__meta) { margin: 4px 0 0; color: var(--muted); font-family: var(--font-mono); font-size: var(--text-xs); }
   :global(.ys__months) { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px; align-items: end; height: 140px; }
   :global(.ys__month) { display: grid; grid-template-rows: 1fr auto; height: 100%; align-items: end; text-align: center; }

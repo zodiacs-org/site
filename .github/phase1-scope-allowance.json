@@ -1,13 +1,12 @@
 {
   "version": 1,
-  "id": "pause-v1-birth-uploads-2026-11-11",
-  "baseCommit": "514a4465a2500d708a2ffb86dd90322f910a9ac1",
+  "id": "pause-registry-research-feed-2026-11-12",
+  "baseCommit": "7d005c4778a4983a477b082f75f5c7d60fc70b42",
   "protectedPaths": [
-    "src/lib/i18n/ui/en.ts",
-    "src/lib/i18n/ui/es.ts",
-    "src/lib/i18n/ui/fr.ts",
-    "src/lib/i18n/ui/it.ts",
-    "src/lib/i18n/ui/pt.ts",
-    "src/lib/i18n/ui/ru.ts"
+    "scripts/build-app.mjs",
+    "scripts/registry-research-lib.mjs",
+    "scripts/registry-research-pause.mjs",
+    "scripts/registry-research-pause.test.mjs",
+    "scripts/registry-research.test.mjs"
   ]
 }
