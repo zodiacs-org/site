@@ -211,7 +211,7 @@ function withExpansion(
   // The policy is reached only inside this server branch, so browser bundles
   // drop it (and the publication record) entirely.
   if (!import.meta.env.SSR) return base;
-  const extra = kind === 'published' ? publishedLocalesForPath : enabledLocalesForPath;
+  const extra: (path: string) => readonly string[] = kind === 'published' ? publishedLocalesForPath : enabledLocalesForPath;
   const added = extra(canonical).filter((locale) => !base?.includes(locale as Locale)) as Locale[];
   if (!added.length) return base;
   return [...(base ?? [DEFAULT_LOCALE]), ...added];
