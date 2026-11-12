@@ -11,13 +11,16 @@ import Initial from '../components/Initial';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useCircle } from '../lib/hooks/useMe';
 import { explicitSelfChart } from '../lib/profile/read-store';
-import { removeCircleEntry } from '../lib/profile/circle';
+import { removeCircleEntry, type CircleEntry } from '../lib/profile/circle';
+import type { SavedChart } from '../lib/profile/schema';
 import { buildPeople, type PersonRow } from '../lib/profile/your-people';
 import { openCardComparison, savedCompareHref } from '../lib/profile/people-compare';
 import { OPEN_CARD_EVENT } from '../lib/profile/card-link';
 import { encodePositionsLink } from '../lib/share-positions';
 import { profileChartHandoffFragment } from '../lib/chart-handoff';
 import { useProfileSurface } from '../lib/profile/surface-gate';
+import { runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
+import { t } from '../lib/i18n';
 
 /** A date within this many days is coming up, and its stamp reads brighter. */
 const SOON_DAYS = 14;
@@ -55,6 +58,13 @@ export default function ProfilePeople({ accountBound = false }: { accountBound?:
   function compareCard(id: string) {
     const entry = cardById.get(id);
     if (!self || !entry) return;
+    runAfterProfileAccess(
+      () => openComparison(self, entry),
+      () => setMessage(t('en', 'profileSaveUnavailable')),
+    );
+  }
+
+  function openComparison(self: SavedChart, entry: CircleEntry) {
     const result = openCardComparison(self, entry);
     if (typeof result === 'object') {
       window.location.assign(result.href);
@@ -71,7 +81,9 @@ export default function ProfilePeople({ accountBound = false }: { accountBound?:
       return;
     }
     setArmed(null);
-    if (!removeCircleEntry(id)) setMessage('This browser wouldn’t remove that card. Try again.');
+    runAfterProfileAccess(() => {
+      if (!removeCircleEntry(id)) setMessage('This browser wouldn’t remove that card. Try again.');
+    }, () => setMessage(t('en', 'profileSaveUnavailable')));
   }
 
   return (
