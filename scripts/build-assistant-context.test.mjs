@@ -3,8 +3,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ASSISTANT_CONTEXT } from '../api/_assistant/context.ts';
+import { LAUNCH_FLAGS } from '../src/lib/launch-flags.ts';
 import {
   BANNED_CONSUMER_VOCABULARY,
+  LAUNCH_FLAGGED_ROUTES,
   MAX_CONTEXT_BYTES,
   MIN_CONTEXT_BYTES,
   TOOL_ROUTES,
@@ -16,6 +18,24 @@ import {
 
 let temporaryDirectory;
 
+// The committed module is the output with every launch switch unset. Each
+// page in LAUNCH_FLAGGED_ROUTES joins the inventory, as one static page and
+// one line, only while its own switch is exactly '1', so the expectations
+// below follow whichever switches an env has on, for any number of pages.
+const FLAGS_OFF = Object.freeze({});
+const switchedRoutes = (env) => Object.entries(LAUNCH_FLAGGED_ROUTES)
+  .filter(([, flag]) => env[flag] === '1')
+  .map(([route]) => route);
+const allSwitches = (value) => Object.fromEntries(LAUNCH_FLAGS.map((flag) => [flag, value]));
+// Every switch off, every switch on, each switch alone and each switch off
+// with the rest on: the states a merge of the flagged pages can be built in.
+const SWITCH_STATES = [
+  ['unset', FLAGS_OFF],
+  ['all on', allSwitches('1')],
+  ...LAUNCH_FLAGS.map((only) => [`only ${only} on`, { ...allSwitches('0'), [only]: '1' }]),
+  ...LAUNCH_FLAGS.map((except) => [`all on but ${except}`, { ...allSwitches('1'), [except]: '0' }]),
+];
+
 afterEach(async () => {
   if (temporaryDirectory) {
     await rm(temporaryDirectory, { force: true, recursive: true });
@@ -24,8 +44,12 @@ afterEach(async () => {
 });
 
 describe('assistant site context', () => {
-  it('contains every tool route and the complete live route families', async () => {
-    const { context, counts } = await generateAssistantContext();
+  it.each([
+    ['unset', FLAGS_OFF],
+    ['all on', allSwitches('1')],
+  ])('contains every tool route and the complete live route families (launch switches %s)', async (_mode, env) => {
+    const pagesOn = switchedRoutes(env).length;
+    const { context, counts } = await generateAssistantContext({ env });
 
     expect(TOOL_ROUTES).toEqual([
       '/ask/',
@@ -81,14 +105,19 @@ describe('assistant site context', () => {
       // The time atlas at /developers/time-atlas/ adds one more.
       // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
       // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
-      consumerRoutes: 715,
+      // Each page in LAUNCH_FLAGGED_ROUTES adds one static page, only while
+      // its switch is '1'.
+      consumerRoutes: 715 + pagesOn,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 76,
+      staticPages: 76 + pagesOn,
       tools: 27,
     });
+    for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) {
+      expect(context.includes(`- ${route} —`)).toBe(switchedRoutes(env).includes(route));
+    }
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
     expect(context).toContain('- /learn/placements/sun-in-aries/ — What Sun in Aries means in a birth chart.');
@@ -165,14 +194,48 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
     const output = join(temporaryDirectory, 'context.ts');
 
-    const first = await buildAssistantContext({ output });
+    const first = await buildAssistantContext({ output, env: FLAGS_OFF });
     const firstBytes = await readFile(output);
-    const second = await buildAssistantContext({ output });
+    const second = await buildAssistantContext({ output, env: FLAGS_OFF });
     const secondBytes = await readFile(output);
 
     expect(second.context).toBe(first.context);
     expect(second.source).toBe(first.source);
     expect(secondBytes.equals(firstBytes)).toBe(true);
     expect(ASSISTANT_CONTEXT).toBe(first.context);
+  });
+
+  it('names a known launch switch for every flagged page', () => {
+    expect(Object.keys(LAUNCH_FLAGGED_ROUTES).length).toBeGreaterThan(0);
+    for (const [route, flag] of Object.entries(LAUNCH_FLAGGED_ROUTES)) {
+      expect(route).toMatch(/^\/[a-z0-9/-]+\/$/u);
+      expect(LAUNCH_FLAGS).toContain(flag);
+    }
+  });
+
+  it('commits the switches-unset output, and a switch that is not exactly 1 adds nothing', async () => {
+    temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
+    const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
+    expect(ASSISTANT_CONTEXT).toBe(off.context);
+    for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) expect(off.context).not.toContain(route);
+
+    for (const value of ['', '0', 'true', ' 1']) {
+      const notOn = await generateAssistantContext({ env: allSwitches(value) });
+      expect(notOn.context).toBe(off.context);
+    }
+  });
+
+  it.each(SWITCH_STATES)('with launch switches %s, adds exactly one line for each flagged page that is on', async (_state, env) => {
+    const off = await generateAssistantContext({ env: FLAGS_OFF });
+    const { context, counts } = await generateAssistantContext({ env });
+    const on = switchedRoutes(env);
+    const offLines = off.context.split('\n');
+    const added = context.split('\n').filter((line) => !offLines.includes(line));
+
+    expect(added).toHaveLength(on.length);
+    for (const route of on) expect(added.filter((line) => line.startsWith(`- ${route} —`))).toHaveLength(1);
+    expect(context.split('\n').filter((line) => !added.includes(line))).toEqual(offLines);
+    expect(counts.staticPages).toBe(off.counts.staticPages + on.length);
+    expect(counts.consumerRoutes).toBe(off.counts.consumerRoutes + on.length);
   });
 });

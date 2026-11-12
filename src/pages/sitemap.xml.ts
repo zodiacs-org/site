@@ -449,6 +449,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
+  // The Vedic signs page, first published 2026-11-09, once PUBLIC_VEDIC_SIGNS_ENABLED is on.
+  ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [['/vedic-signs/', '2026-11-09'] as const] : []),
   // The occasion cards, first published 2026-10-11 (the baby shower card was hidden on 2026-11-12).
   ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
@@ -742,6 +744,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/saturn-return/', priority: 0.85 },
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? [{ loc: '/vedic-signs/', priority: 0.85 }] : []),
     { loc: '/numerology/', priority: 0.85 },
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [{ loc: '/year-score/', priority: 0.8 }] : []),
@@ -995,6 +998,17 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   for (const loc of EVENTS_2030) {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-08');
+  }
+  // The tools hub's card for Vedic signs and the big three and Moon sign pages' lines linking to it (2026-11-09).
+  // Only while PUBLIC_VEDIC_SIGNS_ENABLED is on: off, those pages keep their own dates.
+  for (const url of launchFlagOn('PUBLIC_VEDIC_SIGNS_ENABLED') ? urls : []) {
+    if (url.loc === '/tools/' || url.loc === '/big-three/' || url.loc === '/moon-sign/') {
+      url.lastmod = laterDate(url.lastmod, '2026-11-09');
+    }
+  }
+  // The engine page's line on the sidereal entry the site's code uses (2026-11-09), with the flag on or off.
+  for (const url of urls) {
+    if (url.loc === '/developers/engine/') url.lastmod = laterDate(url.lastmod, '2026-11-09');
   }
   // The baby and coming-of-age pages were hidden (src/data/hidden-child-pages.mjs): the occasions page no longer
   // offers those occasions or links the baby pages, the tools hub drops the baby zodiac card, and the Almanac no

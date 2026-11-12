@@ -2,7 +2,8 @@
  * Share links for eleven assistant cards: a compatibility score, a date's
  * rating, a birthday, the sky calendar's next event, a horoscope (a day, a
  * week, a month or a year), chart twins, a famous chart, a life milestone,
- * the big three, the Chinese zodiac and an invitation to compare charts. Each has
+ * the big three, the Chinese zodiac, an invitation to compare charts and the
+ * Vedic signs (src/lib/vedic-signs/share.ts). Each has
  * a page with the result's picture and a way to try it, the 1200×630
  * preview image link previews show, and a 1080×1920 picture to post as a story. They read only the link's checked query
  * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
@@ -40,6 +41,8 @@ import { BIRTH_OCCASIONS } from '../lib/occasions/saved-path.js';
 import {
   bigThreeCardModel,
   type BigThreeCardModel,
+  vedicSignsCardModel,
+  type VedicSignsCardModel,
   birthdayCardModel,
   type BirthdayCardModel,
   chineseZodiacCardModel,
@@ -78,6 +81,15 @@ import { figureYearScore } from './year-score-figure.js';
 import { BIRTHDAY_REPORT_SHARE_IMAGE_PATH, BIRTHDAY_REPORT_SHARE_KEYS, BIRTHDAY_REPORT_SHARE_PATH, birthdayReportQuery, parseBirthdayReportShare, type BirthdayReportShare } from '../lib/birthday-report/share.js';
 import { MAJOR_ARCANA, cardTitle } from '../lib/tarot/year-card.js';
 import { SOLAR_RETURN_SHARE_IMAGE_PATH, SOLAR_RETURN_SHARE_KEYS, SOLAR_RETURN_SHARE_PATH, parseSolarReturnShare, solarReturnQuery, type SolarReturnShare } from '../lib/solar-return/share.js';
+import {
+  VEDIC_SIGNS_PAGE_PATH,
+  VEDIC_SIGNS_SHARE_IMAGE_PATH,
+  VEDIC_SIGNS_SHARE_KEYS,
+  VEDIC_SIGNS_SHARE_PATH,
+  VEDIC_SIGNS_SHARE_STORY_PATH,
+  parseVedicSignsShare,
+  vedicSignsQuery,
+} from '../lib/vedic-signs/share.js';
 import {
   BIG_THREE_SHARE_IMAGE_PATH,
   BIG_THREE_SHARE_KEYS,
@@ -213,6 +225,7 @@ export const RESULT_SHARE_ROUTES = [
   'year-score-link', 'year-score-image',
   'birthday-report-link', 'birthday-report-image',
   'solar-return-link', 'solar-return-image',
+  'vedic-signs-link', 'vedic-signs-image', 'vedic-signs-story',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -787,6 +800,31 @@ export function bigThreeCard(model: BigThreeCardModel, images: Map<ShareSign, st
     ...model.rows.map((row) => bigThreeRow(row, images, size, 52, 14))), model.sun);
 }
 
+/** One Vedic sign: its disc, the rashi with the body, and the Western name of the same sign under it; an undetermined Moon is an empty ring and the words in italic. */
+function vedicRow(row: VedicSignsCardModel['rows'][number], images: Map<ShareSign, string>, size: number, disc: number, gap: number) {
+  const src = row.slug ? images.get(row.slug) : undefined;
+  return h('div', { style: { display: 'flex', alignItems: 'center', marginTop: `${gap}px` } },
+    src
+      ? h('img', { src, width: disc, height: disc, style: { width: `${disc}px`, height: `${disc}px`, flexShrink: 0 } })
+      : h('div', { style: { display: 'flex', width: `${disc}px`, height: `${disc}px`, borderRadius: '999px', border: '2px solid rgba(198,204,218,0.3)', flexShrink: 0 } }),
+    h('div', { style: { display: 'flex', flexDirection: 'column', marginLeft: `${Math.round(disc * 0.42)}px` } },
+      h('div', { style: { display: 'flex', fontFamily: SERIF, lineHeight: 1.05,
+        ...(row.slug ? { fontWeight: 500, fontSize: size, color: INK } : { fontStyle: 'italic', fontWeight: 400, fontSize: Math.round(size * 0.78), color: INK_SOFT }) } }, row.text),
+      ...(row.western ? [h('div', { style: { display: 'flex', fontSize: Math.round(size * 0.42), lineHeight: 1.2, color: MUTED, marginTop: '2px' } }, row.western)] : [])));
+}
+
+/**
+ * The Vedic signs (the three as a list, like the big three): the Sun's panel facing the Moon's when the Moon is
+ * settled, the rows with their discs, and the Moon's nakshatra under them.
+ */
+export function vedicSignsCard(model: VedicSignsCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const size = fit(model.rows.map((row) => row.text), TEXT_WIDTH - 76, 52, 36);
+  return frame(art, h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '56px', width: `${TEXT_WIDTH}px` } },
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: model.hue, marginBottom: '2px' } }, 'Vedic signs'),
+    ...model.rows.map((row) => vedicRow(row, images, size, 46, 10)),
+    h('div', { style: { display: 'flex', fontSize: 24, lineHeight: 1.3, color: INK_SOFT, marginTop: '18px' } }, `${model.nakshatra}.`)), model.sun);
+}
+
 const PLATE_LEFT = 480;
 const PLATE_WIDTH = WIDTH - PLATE_LEFT;
 let plateShade: string | null = null;
@@ -1033,6 +1071,14 @@ export async function handleBigThreeImageRequest(request: Request): Promise<Resp
   if (!share) return errorResponse(400);
   const model = bigThreeCardModel(share);
   return imageFor(model.signs, bigThreeArt(share), (images, art) => bigThreeCard(model, images, art));
+}
+
+export async function handleVedicSignsImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseVedicSignsShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = vedicSignsCardModel(share);
+  return imageFor(model.signs, bigThreeArt(share), (images, art) => vedicSignsCard(model, images, art));
 }
 
 export async function handleChineseZodiacImageRequest(request: Request): Promise<Response> {
@@ -1328,6 +1374,17 @@ export function bigThreeStory(model: BigThreeCardModel, images: Map<ShareSign, s
   ]), model.sun, STORY_PAIR_FADE);
 }
 
+/** The Vedic signs: the Sun's panel facing the Moon's, the rows with their discs, the nakshatra and the way to find yours. */
+export function vedicSignsStory(model: VedicSignsCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const size = fit(model.rows.map((row) => row.text), STORY_WIDTH - 144 - 120, 84, 52);
+  return storyFrame(art, storyColumn([
+    storyKicker('Vedic signs', model.hue),
+    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: '6px' } }, ...model.rows.map((row) => vedicRow(row, images, size, 80, 22))),
+    storyLine(`${model.nakshatra}.`, 36),
+    storyAction('Find your Vedic signs', 'zodiacs.org/vedic-signs'),
+  ]), model.sun, STORY_PAIR_FADE);
+}
+
 /** The Chinese zodiac (A, the animal as a trophy): the animal's piece across the top, around where it stands, and the animal, its own element, the yin or yang of its years and its associations. Never a year. */
 export function chineseZodiacStory(model: ChineseZodiacCardModel, art: string) {
   return h('div', { style: { width: `${STORY_WIDTH}px`, height: `${STORY_HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto' } },
@@ -1456,6 +1513,14 @@ export async function handleBigThreeStoryRequest(request: Request): Promise<Resp
   if (!share) return errorResponse(400);
   const model = bigThreeCardModel(share);
   return storyFor(model.signs, bigThreeArt(share), (images, art) => bigThreeStory(model, images, art));
+}
+
+export async function handleVedicSignsStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseVedicSignsShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = vedicSignsCardModel(share);
+  return storyFor(model.signs, bigThreeArt(share), (images, art) => vedicSignsStory(model, images, art));
 }
 
 export async function handleChineseZodiacStoryRequest(request: Request): Promise<Response> {
@@ -2037,6 +2102,44 @@ export async function handleBigThreeLinkRequest(request: Request): Promise<Respo
   }));
 }
 
+/** The Vedic signs page's own words: the reading of the sidereal zodiac, as Vedic astrology gives it. */
+const VEDIC_SIGNS_NOTE = 'Vedic astrology’s reading of the sidereal zodiac: tendencies to reflect on, not a prediction or a fixed destiny.';
+
+function defaultVedicSignsPage(origin: string): SharePage {
+  return {
+    title: 'Vedic signs on Zodiacs',
+    description: 'Your Sun, Moon and rising signs in the sidereal zodiac, and your Moon nakshatra.',
+    heading: 'Your Vedic signs',
+    imageUrl: `${origin}/assets/og/v2/share.png`,
+    imageType: 'image/png',
+    imageAlt: 'Zodiacs',
+    explanation: 'Zodiacs finds your Sun, Moon and rising signs in the sidereal zodiac of Vedic astrology, and the nakshatra your Moon was in. A birth time is needed for your rising sign.',
+    action: { label: 'Find your Vedic signs', href: VEDIC_SIGNS_PAGE_PATH },
+    note: VEDIC_SIGNS_NOTE,
+  };
+}
+
+export async function handleVedicSignsLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseVedicSignsShare(url.searchParams);
+  if (!share) return htmlResponse(sharePageHtml(defaultVedicSignsPage(url.origin)));
+  const model = vedicSignsCardModel(share);
+  return htmlResponse(sharePageHtml({
+    title: `${model.title}: Vedic signs on Zodiacs`,
+    description: model.about,
+    heading: model.title,
+    imageUrl: `${url.origin}${VEDIC_SIGNS_SHARE_IMAGE_PATH}?${vedicSignsQuery(share)}`,
+    story: { href: `${VEDIC_SIGNS_SHARE_STORY_PATH}?${vedicSignsQuery(share)}`, filename: `zodiacs-vedic-signs-${share.sun}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `Vedic signs: ${model.title}. ${model.nakshatra}.`,
+    explanation: model.about,
+    action: { label: 'Find your Vedic signs', href: withRef(VEDIC_SIGNS_PAGE_PATH, share.ref) },
+    more: { label: 'Your Western big three', href: withRef('/big-three/', share.ref) },
+    note: VEDIC_SIGNS_NOTE,
+  }));
+}
+
 export async function handleChineseZodiacLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const retired = retiredFor('chinese-zodiac', request, false);
@@ -2123,6 +2226,9 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'birthday-report-image': { path: BIRTHDAY_REPORT_SHARE_IMAGE_PATH, keys: BIRTHDAY_REPORT_SHARE_KEYS, handle: handleBirthdayReportImageRequest, flag: 'PUBLIC_BIRTHDAY_REPORT_ENABLED', refused: BIRTHDAY_REPORT_REFUSED_SHARE_KEYS },
   'solar-return-link': { path: SOLAR_RETURN_SHARE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnLinkRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
   'solar-return-image': { path: SOLAR_RETURN_SHARE_IMAGE_PATH, keys: SOLAR_RETURN_SHARE_KEYS, handle: handleSolarReturnImageRequest, flag: 'PUBLIC_SOLAR_RETURN_SHARE_ENABLED' },
+  'vedic-signs-link': { path: VEDIC_SIGNS_SHARE_PATH, keys: VEDIC_SIGNS_SHARE_KEYS, handle: handleVedicSignsLinkRequest, flag: 'PUBLIC_VEDIC_SIGNS_ENABLED' },
+  'vedic-signs-image': { path: VEDIC_SIGNS_SHARE_IMAGE_PATH, keys: VEDIC_SIGNS_SHARE_KEYS, handle: handleVedicSignsImageRequest, flag: 'PUBLIC_VEDIC_SIGNS_ENABLED' },
+  'vedic-signs-story': { path: VEDIC_SIGNS_SHARE_STORY_PATH, keys: VEDIC_SIGNS_SHARE_KEYS, handle: handleVedicSignsStoryRequest, flag: 'PUBLIC_VEDIC_SIGNS_ENABLED' },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
