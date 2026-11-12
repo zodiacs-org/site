@@ -80,6 +80,15 @@ describe('seo audit rules', () => {
     expect(parsePage(spaced).jsonLd).toEqual([{ '@type': '__invalid__' }]);
   });
 
+  it('reads unquoted attributes and tells the two Chinese scripts apart', () => {
+    const bare = parsePage(`<html lang=es><head><meta name=robots content=noindex><link rel=canonical href=${S}/es/aries/></head><body></body></html>`);
+    expect(bare.noindex).toBe(true);
+    expect(bare.canonical).toBe(`${S}/es/aries/`);
+    const hans = { '@type': 'Article', url: `${S}/zh-hant/learn/chinese-zodiac/`, inLanguage: 'zh-Hans' };
+    expect(structuredDataProblems('/zh-hant/learn/chinese-zodiac/', page({ path: '/zh-hant/learn/chinese-zodiac/', lang: 'zh-Hant', ld: [hans] })))
+      .toContain('Article inLanguage zh-Hans on a zh-hant page');
+  });
+
   it('checks Article url and language on pages outside the page-type matrix too', () => {
     const wrong = { '@type': 'Article', url: `${S}/today/`, inLanguage: 'en' };
     expect(structuredDataProblems('/es/today/', page({ path: '/es/today/', ld: [wrong] })))
