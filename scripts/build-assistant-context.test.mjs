@@ -57,7 +57,6 @@ describe('assistant site context', () => {
       '/astrologer-kit/',
       '/your-sky-wrapped/',
       '/chart-of-the-day/',
-      '/baby-zodiac/',
       '/big-three/',
       '/chart-twins/',
       '/compatibility/invite/',
@@ -98,20 +97,23 @@ describe('assistant site context', () => {
       // The engine's own product page at /developers/engine/ adds one more.
       // The conformance suite's results page at /developers/conformance/ adds one more.
       // The compute API, AI integrations and sky benchmark each add a page.
-      // The three occasion cards (/occasions/, milestones, baby shower) add three.
+      // The occasion cards (/occasions/, milestones) add two; the baby shower card was hidden on 2026-11-12.
+      // Hidden on 2026-11-12: /baby-zodiac/ (one tool, one static/consumer route) and /occasions/baby-shower/ (one static/consumer route).
       // The conventions registry at /developers/conventions/ adds one more.
       // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
+      // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
+      // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
       // Each page in LAUNCH_FLAGGED_ROUTES adds one static page, only while
       // its switch is '1'.
-      consumerRoutes: 717 + pagesOn,
+      consumerRoutes: 715 + pagesOn,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 78 + pagesOn,
-      tools: 28,
+      staticPages: 76 + pagesOn,
+      tools: 27,
     });
     for (const route of Object.keys(LAUNCH_FLAGGED_ROUTES)) {
       expect(context.includes(`- ${route} —`)).toBe(switchedRoutes(env).includes(route));

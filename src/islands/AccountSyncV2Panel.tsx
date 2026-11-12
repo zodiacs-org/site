@@ -75,6 +75,9 @@ import {
 } from '../lib/account-v2/profile-access';
 import { runExclusiveAccountProfileTransition } from '../lib/account-v2/profile-lease';
 import { savedRecordsEnabled, savedRecordsRetainedOnDevice } from '../lib/profile/saved-record-flags';
+import AccountChartEmails from './AccountChartEmails';
+import AccountWeeklyDigest from './AccountWeeklyDigest';
+import { weeklyDigestSignupEnabled } from '../lib/weekly-digest/feature-flags';
 
 type SyncModule = typeof import('../lib/profile/sync');
 type SavedRecordAccess = typeof import('../lib/profile/saved-record-access');
@@ -167,6 +170,8 @@ interface ReadyAccount {
   deviceId: string;
   metadata: AccountSyncMetadataV1;
   consent: ConsentState;
+  /** "Use my chart for my emails"; learned from bootstrap, not the change feed. */
+  chartEmails: ConsentState;
 }
 
 interface CloudRefreshResult {
@@ -204,8 +209,7 @@ export function displayAccountV2Error(error: unknown, hasDurableMutation = false
         ? 'The outcome is unknown. This browser kept the pending request so an unchanged retry is safe; check cloud status before choosing a different action.'
         : 'The server response could not be confirmed. Check your connection and try again.';
     }
-    if (error.code === 'disabled') return 'The private account canary is not enabled on the server.';
-    if (error.code === 'canary_not_allowed') return 'This account is not in the private sync canary. No chart was uploaded.';
+    if (error.code === 'disabled') return 'Chart sync is switched off on the server right now. No chart was uploaded.';
     if (error.code === 'deletion_receipt_not_found') {
       return 'The saved deletion request has not been prepared on the server. Sign in again to continue with this same request.';
     }
@@ -468,6 +472,9 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
         deviceId: metadata.deviceId,
         metadata,
         consent: result.chart_sync_consent,
+        chartEmails: result.chart_emails_consent === 'granted' || result.chart_emails_consent === 'withdrawn'
+          ? result.chart_emails_consent
+          : 'pending',
       };
       setAccount(ready);
       setView('ready');
@@ -916,7 +923,7 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
       entry.selectedForSync && entry.chartId !== chart.id
     ));
     if (selectedOther) {
-      setMessage('Only one self chart can be synced in this canary. Remove the current cloud copy first.');
+      setMessage('Only one self chart can be synced. Remove the current cloud copy first.');
       return;
     }
     const baseRevision = current?.serverRevision ?? 0;
@@ -1021,7 +1028,7 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
         if (!cleared || !persistAccountSyncMetadata(accountStorage, cleared)) throw new Error('metadata');
         setAccount({ ...account, metadata: cleared });
         setAttestedChartId(null);
-        setMessage('Encrypted account sync is limited to adults aged 18 or older in this preview. The chart remains only on this device.');
+        setMessage('Encrypted chart sync is for adults aged 18 or older. The chart stays only on this device.');
       } else if (result.outcome === 'mutation_conflict') {
         const cleared = withChartSyncMetadata(pending, {
           ...pending.charts.find((entry) => entry.chartId === chart.id)!,
@@ -1555,8 +1562,7 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
           <section class="pf-account-v2__section" aria-labelledby="legacy-account-heading">
             <h2 id="legacy-account-heading">Earlier cloud charts need a separate choice</h2>
             <p>
-              Zodiacs will not silently move old cloud charts into the encrypted system. This canary is paused for this account until a chart-by-chart migration and deletion review is available.
-              Earlier cloud data can still be exported or permanently deleted; there is no v2 sync consent to withdraw yet.
+              Zodiacs does not move charts from the earlier cloud sync into encrypted sync. Earlier cloud data can still be exported or permanently deleted.
             </p>
             <div class="pf-sync__actions">
               <button class="pf-chart__action" type="button" disabled={busy} onClick={() => void onExport()}>Download account export</button>
@@ -1682,7 +1688,7 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
             {account.consent === 'granted' && (
               <section class="pf-account-v2__section" aria-labelledby="self-chart-heading">
                 <h2 id="self-chart-heading">Choose your self chart</h2>
-                <p>No chart is selected automatically. This adult-only preview accepts only your own chart. Charts belonging to partners, family, clients, or children must stay device-only.</p>
+                <p>No chart is selected automatically. Sync is for adults and accepts only your own chart. Charts belonging to partners, family, clients, or children must stay device-only.</p>
                 <div class="pf-account-v2__charts">
                   {profile.charts.map((chart) => {
                     const metadata = account.metadata.charts.find((entry) => entry.chartId === chart.id);
@@ -1766,6 +1772,27 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
                   )}
                 </div>
               </section>
+            )}
+
+            <AccountChartEmails
+              accessToken={session.access_token}
+              email={session.user.email ?? null}
+              syncedChartId={account.metadata.charts.find(
+                (chart) => chart.selectedForSync && chart.serverRevision > 0,
+              )?.chartId ?? null}
+              consent={account.chartEmails}
+              disabled={busy}
+              onConsentChange={(chartEmails) => setAccount((current) => (
+                current ? { ...current, chartEmails } : current
+              ))}
+            />
+
+            {weeklyDigestSignupEnabled() && (
+              <AccountWeeklyDigest
+                accountId={session.user.id}
+                chartEmails={account.chartEmails === 'granted'}
+                disabled={busy}
+              />
             )}
 
             <section class="pf-account-v2__section" aria-labelledby="account-controls-heading">

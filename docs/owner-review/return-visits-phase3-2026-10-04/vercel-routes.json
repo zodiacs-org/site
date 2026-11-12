@@ -38,6 +38,10 @@
       "src": "^/c(?:/(.*))$"
     },
     {
+      "source": "/year/(.*)",
+      "src": "^/year(?:/(.*))$"
+    },
+    {
       "source": "/people/rigoberta-menchu/",
       "src": "^/people/rigoberta-menchu/$"
     },
