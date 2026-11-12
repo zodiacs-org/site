@@ -197,10 +197,10 @@ How the check works:
 - Not exempt as built: `BabyShowerSky` has an optional "Whose shower" names
   field (`src/islands/BabyShowerSky.tsx:78`) and reads names from an incoming
   link's `#n=` fragment (`:60`), at the audit commit and on `main`. It does
-  not write or generate such links, and it takes no place and no save, so the
-  date-only exemption still holds for what it stores and shares. A test should
-  keep it that way, and the `#n=` reader can be dropped when the page is next
-  touched. Update since
+  not write or generate such links and takes no place and no save, but the
+  names field alone keeps it outside the date-only exemption. Either remove
+  the names field and the `#n=` reader, after which the exemption and its test
+  apply to it too, or keep it under the same rules as the other tools. Update since
   the audit: #985 (`7d005c477`, 2026-11-12) hides the baby zodiac, baby
   shower and child's chart pages from discovery (noindex and nofollow, out of
   the sitemap, tools hub and occasion picker; the page files stay). The
