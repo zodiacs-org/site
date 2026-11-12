@@ -43710,6 +43710,7 @@ function nakshatraReading(position2) {
     line: `Your Moon was in ${name}, the ${nakshatraOrdinal(position2.index + 1)} nakshatra, ruled by ${position2.lord}, with ${lore.deity} as its deity and ${lore.symbol} as its symbol. ${lore.line}`
   };
 }
+var padaLimit = (nakshatra2, padas) => `The Moon stayed in ${nakshatra2} that day but moved through more than one of its quarters (padas): pada ${padas.slice(0, -1).join(", ")} or ${padas[padas.length - 1]}. A birth time settles it.`;
 function vedicReading(input) {
   const { at, ends } = input;
   const settled = (pick) => {
@@ -43724,12 +43725,17 @@ function vedicReading(input) {
   const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude2(at.rising.lon))) : null;
   const nakshatraNames = ends ? [...new Set(ends.map((end) => NAKSHATRA_NAMES[end.nakshatra.index]))] : [];
   const nakshatraHeld = !ends || nakshatraNames.length === 1;
-  const moonNakshatra = nakshatraHeld ? nakshatraReading(at.nakshatra) : null;
+  const endPadas = ends && nakshatraHeld ? ends.map((end) => end.nakshatra.pada) : [];
+  const firstPada = endPadas.length ? Math.min(...endPadas) : 0;
+  const lastPada = endPadas.length ? Math.max(...endPadas) : 0;
+  const padaCandidates = firstPada !== lastPada ? Array.from({ length: lastPada - firstPada + 1 }, (_, step) => firstPada + step) : [];
+  const moonNakshatra = nakshatraHeld ? { ...nakshatraReading(at.nakshatra), ...padaCandidates.length ? { pada: null } : {} } : null;
   const limits2 = [];
   if (!input.timeKnown) {
-    limits2.push("No birth time was given, so there is no rising sign (lagna), and the Moon sign and nakshatra are given only where the whole birth day keeps them.");
+    limits2.push("No birth time was given, so there is no rising sign (lagna), and the Moon sign, nakshatra and pada are given only where the whole birth day keeps them.");
     if (!moonHold.held) limits2.push(`The Moon changed sign that day: it was in ${moonHold.candidates.join(" or ")}. A birth time settles it.`);
     if (!nakshatraHeld) limits2.push(`The Moon changed nakshatra that day: it was in ${nakshatraNames.join(" or ")}. A birth time settles it.`);
+    if (padaCandidates.length) limits2.push(padaLimit(nakshatraNames[0], padaCandidates));
     if (!sunHold.held) limits2.push(`The Sun changed sign that day: it was in ${sunHold.candidates.join(" or ")}. A birth time settles it.`);
   } else if (!input.placed) limits2.push("No birthplace coordinates were given, so there is no rising sign (lagna).");
   const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line) => !!line);
@@ -43746,6 +43752,7 @@ function vedicReading(input) {
     rising,
     moonNakshatra,
     nakshatraCandidates: nakshatraHeld ? [] : nakshatraNames,
+    padaCandidates,
     summary: `${parts.join(" ")} ${confidenceLabel}.`.trim(),
     confidence,
     confidenceLabel,
@@ -43900,7 +43907,8 @@ var nakshatra = z18.object({
   name: z18.string(),
   /** 1 for Ashwini to 27 for Revati. */
   number: z18.number().int().min(1).max(27),
-  pada: z18.number().int().min(1).max(4),
+  /** The quarter of the nakshatra; null when an untimed birth day leaves it open (see padaCandidates). */
+  pada: z18.number().int().min(1).max(4).nullable(),
   /** Its ruling planet in the Vimshottari order. */
   lord: z18.string(),
   deity: z18.string(),
@@ -43920,6 +43928,8 @@ var vedicSignsData = z18.object({
   rising: sign3.nullable(),
   moonNakshatra: nakshatra.nullable(),
   nakshatraCandidates: z18.array(z18.string()),
+  /** Padas the Moon passed through on an untimed birth day that kept one nakshatra; empty when the pada is settled. */
+  padaCandidates: z18.array(z18.number().int().min(1).max(4)),
   /** One plain paragraph, built from the lines above. */
   summary: z18.string(),
   confidence: z18.number().int().min(40).max(95),
@@ -43955,7 +43965,7 @@ var vedicSignsTool = definePersonalTool({
   name: "get_vedic_signs",
   title: "Vedic signs",
   summary: "sidereal Sun, Moon and rising signs and the Moon nakshatra, Lahiri by default",
-  description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada, ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, and the Moon's sign and nakshatra come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
+  description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada, ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, and the Moon's sign, nakshatra and pada come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
   input: vedicSignsInput,
   data: vedicSignsData,
   clockDependent: false,

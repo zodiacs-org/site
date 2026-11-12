@@ -43,7 +43,8 @@ const nakshatra = z.object({
   name: z.string(),
   /** 1 for Ashwini to 27 for Revati. */
   number: z.number().int().min(1).max(27),
-  pada: z.number().int().min(1).max(4),
+  /** The quarter of the nakshatra; null when an untimed birth day leaves it open (see padaCandidates). */
+  pada: z.number().int().min(1).max(4).nullable(),
   /** Its ruling planet in the Vimshottari order. */
   lord: z.string(),
   deity: z.string(),
@@ -63,6 +64,8 @@ export const vedicSignsData = z.object({
   rising: sign.nullable(),
   moonNakshatra: nakshatra.nullable(),
   nakshatraCandidates: z.array(z.string()),
+  /** Padas the Moon passed through on an untimed birth day that kept one nakshatra; empty when the pada is settled. */
+  padaCandidates: z.array(z.number().int().min(1).max(4)),
   /** One plain paragraph, built from the lines above. */
   summary: z.string(),
   confidence: z.number().int().min(40).max(95),
@@ -98,7 +101,7 @@ export const vedicSignsTool = definePersonalTool({
   name: 'get_vedic_signs',
   title: 'Vedic signs',
   summary: 'sidereal Sun, Moon and rising signs and the Moon nakshatra, Lahiri by default',
-  description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada, ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, and the Moon's sign and nakshatra come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
+  description: "Gives the person's Vedic (sidereal) Sun, Moon and rising signs and the nakshatra their Moon was in, with its pada, ruling planet, deity and symbol, and what each is traditionally read as in Jyotish. Use it for my Vedic sign, my sidereal sign, my rashi, my lagna or my nakshatra, once the person has given a birth date. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. Without a birth time there is no rising sign, and the Moon's sign, nakshatra and pada come back only when the whole birth day settles them, otherwise as candidates. When they name a town or city instead of coordinates, use find_birthplace first. The zodiac is Lahiri unless the person asks for raman, krishnamurti, fagan-bradley, yukteswar or true-chitra. For the Western (tropical) chart use get_natal_chart. Share the readings plainly as Vedic astrology's reading, with the reading-confidence label.",
   input: vedicSignsInput,
   data: vedicSignsData,
   clockDependent: false,

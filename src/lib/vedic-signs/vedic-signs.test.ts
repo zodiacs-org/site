@@ -103,6 +103,21 @@ describe('the Vedic signs share link', () => {
     ]) expect(ok(bad), bad).toBeNull();
   });
 
+  it('gives a pada only when both ends of an untimed day share it', () => {
+    const moment = (moonLon: number, index: number, pada: 1 | 2 | 3 | 4) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index, pada, lord: 'Mars' } });
+    const base = { timeKnown: false, placed: false, ayanamsa: 'lahiri' as const };
+    const open = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(173.5, 13, 2), moment(183, 13, 4)] });
+    expect(open.moonNakshatra).toMatchObject({ name: 'Chitra', pada: null });
+    expect(open.padaCandidates).toEqual([2, 3, 4]);
+    expect(open.limits).toContain('The Moon stayed in Chitra that day but moved through more than one of its quarters (padas): pada 2, 3 or 4. A birth time settles it.');
+    const held = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(177, 13, 3), moment(179.9, 13, 3)] });
+    expect(held.moonNakshatra!.pada).toBe(3);
+    expect(held.padaCandidates).toEqual([]);
+    const moved = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(170, 12, 4), moment(184, 13, 4)] });
+    expect(moved.moonNakshatra).toBeNull();
+    expect(moved.padaCandidates).toEqual([]);
+  });
+
   it('is built from a reading the same way the tool builds it', () => {
     const reading = vedicReading({ timeKnown: false, placed: false, ayanamsa: 'yukteswar', at: { ayanamsa: 22.4, sun: { lon: 100, tropical: 124 }, moon: { lon: 200, tropical: 224 }, rising: null, nakshatra: { index: 14, pada: 3, lord: 'Rahu' } }, ends: null });
     expect(vedicSignsShareQuery(reading)).toBe('s=cancer&m=libra&n=15&a=yukteswar');

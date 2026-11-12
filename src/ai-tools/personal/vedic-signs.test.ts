@@ -62,6 +62,22 @@ describe('get_vedic_signs without a birth time', () => {
     expect(data.shareUrl).not.toMatch(/[?&](?:m|r)=/u);
   });
 
+  it('leaves the pada open, with its candidates, when the day keeps the nakshatra but not the pada', async () => {
+    // 1990-01-18 UTC: the Moon stays in Chitra all day but crosses padas 1 to 4. 2000-01-05 UTC: it stays in Mula, padas 1 to 4.
+    for (const [birthDate, name] of [['1990-01-18', 'Chitra'], ['2000-01-05', 'Mula']] as const) {
+      const data = await run({ birthDate, zone: 'UTC' });
+      expect(data.moonNakshatra, birthDate).toMatchObject({ name, pada: null });
+      expect(data.padaCandidates, birthDate).toEqual([1, 2, 3, 4]);
+      expect(data.nakshatraCandidates, birthDate).toEqual([]);
+      expect(data.limits.join(' '), birthDate).toContain(`The Moon stayed in ${name} that day but moved through more than one of its quarters (padas): pada 1, 2, 3 or 4. A birth time settles it.`);
+      expect(data.summary, birthDate).not.toMatch(/pada \d/u);
+    }
+    // With a birth time the same day gives one pada and no candidates.
+    const timed = await run({ birthDate: '1990-01-18', time: '12:00', zone: 'UTC' });
+    expect(timed.moonNakshatra!.pada).toBeGreaterThanOrEqual(1);
+    expect(timed.padaCandidates).toEqual([]);
+  });
+
   it('gives the Sun sign alone when the day keeps it, with no place given', async () => {
     const data = await run({ birthDate: '1990-05-03' });
     expect(data.sun).toMatchObject({ rashi: 'Mesha', tropicalSign: 'taurus' });

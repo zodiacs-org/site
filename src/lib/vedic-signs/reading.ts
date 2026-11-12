@@ -26,7 +26,8 @@ export interface VedicNakshatra {
   name: string;
   /** 1 for Ashwini to 27 for Revati. */
   number: number;
-  pada: number;
+  /** The quarter of the nakshatra, 1 to 4; null when an untimed birth day leaves it open (see padaCandidates). */
+  pada: number | null;
   lord: string;
   deity: string;
   symbol: string;
@@ -44,6 +45,8 @@ export interface VedicReading {
   rising: VedicSign | null;
   moonNakshatra: VedicNakshatra | null;
   nakshatraCandidates: string[];
+  /** The padas the Moon passed through on an untimed birth day that kept one nakshatra but not one pada; otherwise empty. */
+  padaCandidates: number[];
   summary: string;
   confidence: number;
   confidenceLabel: string;
@@ -82,6 +85,10 @@ export function nakshatraReading(position: SiderealMoment['nakshatra']): VedicNa
   };
 }
 
+/** The line for a pada an untimed birth day leaves open, such as padas 1, 2, 3 or 4 of Chitra. */
+export const padaLimit = (nakshatra: string, padas: readonly number[]) =>
+  `The Moon stayed in ${nakshatra} that day but moved through more than one of its quarters (padas): pada ${padas.slice(0, -1).join(', ')} or ${padas[padas.length - 1]}. A birth time settles it.`;
+
 /** The reading. A placement an untimed day leaves open comes back as candidates, never as a guess. */
 export function vedicReading(input: VedicReadingInput): VedicReading {
   const { at, ends } = input;
@@ -97,12 +104,18 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
   const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude(at.rising.lon))) : null;
   const nakshatraNames = ends ? [...new Set(ends.map((end) => NAKSHATRA_NAMES[end.nakshatra.index]))] : [];
   const nakshatraHeld = !ends || nakshatraNames.length === 1;
-  const moonNakshatra = nakshatraHeld ? nakshatraReading(at.nakshatra) : null;
+  // The Moon only moves forward, so within one nakshatra the day passed through every pada between the two ends.
+  const endPadas = ends && nakshatraHeld ? ends.map((end) => end.nakshatra.pada) : [];
+  const firstPada = endPadas.length ? Math.min(...endPadas) : 0;
+  const lastPada = endPadas.length ? Math.max(...endPadas) : 0;
+  const padaCandidates = firstPada !== lastPada ? Array.from({ length: lastPada - firstPada + 1 }, (_, step) => firstPada + step) : [];
+  const moonNakshatra = nakshatraHeld ? { ...nakshatraReading(at.nakshatra), ...(padaCandidates.length ? { pada: null } : {}) } : null;
   const limits: string[] = [];
   if (!input.timeKnown) {
-    limits.push('No birth time was given, so there is no rising sign (lagna), and the Moon sign and nakshatra are given only where the whole birth day keeps them.');
+    limits.push('No birth time was given, so there is no rising sign (lagna), and the Moon sign, nakshatra and pada are given only where the whole birth day keeps them.');
     if (!moonHold.held) limits.push(`The Moon changed sign that day: it was in ${moonHold.candidates.join(' or ')}. A birth time settles it.`);
     if (!nakshatraHeld) limits.push(`The Moon changed nakshatra that day: it was in ${nakshatraNames.join(' or ')}. A birth time settles it.`);
+    if (padaCandidates.length) limits.push(padaLimit(nakshatraNames[0], padaCandidates));
     if (!sunHold.held) limits.push(`The Sun changed sign that day: it was in ${sunHold.candidates.join(' or ')}. A birth time settles it.`);
   } else if (!input.placed) limits.push('No birthplace coordinates were given, so there is no rising sign (lagna).');
   const parts = [sun?.line, moon?.line, rising?.line, moonNakshatra?.line].filter((line): line is string => !!line);
@@ -111,7 +124,7 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
   return {
     timeKnown: input.timeKnown, placed: input.placed,
     ayanamsa: { name: input.ayanamsa, label: AYANAMSA_NAME[input.ayanamsa], degrees: Math.round(at.ayanamsa * 10_000) / 10_000 },
-    sun, sunCandidates: sunHold.candidates, moon, moonCandidates: moonHold.candidates, rising, moonNakshatra, nakshatraCandidates: nakshatraHeld ? [] : nakshatraNames,
+    sun, sunCandidates: sunHold.candidates, moon, moonCandidates: moonHold.candidates, rising, moonNakshatra, nakshatraCandidates: nakshatraHeld ? [] : nakshatraNames, padaCandidates,
     summary: `${parts.join(' ')} ${confidenceLabel}.`.trim(), confidence, confidenceLabel, limits, note: VEDIC_NOTE,
   };
 }

@@ -167,7 +167,7 @@ export default function VedicSigns() {
               <>
                 <h3 class="vedic__sign">{result.moonNakshatra.name} <span>nakshatra {result.moonNakshatra.number} of 27</span></h3>
                 <dl class="vedic__facts-list">
-                  <div><dt>Pada</dt><dd class="mono">{result.moonNakshatra.pada} of 4</dd></div>
+                  <div><dt>Pada</dt><dd class="mono">{result.moonNakshatra.pada !== null ? `${result.moonNakshatra.pada} of 4` : `not settled, ${result.padaCandidates[0]} to ${result.padaCandidates[result.padaCandidates.length - 1]} of 4`}</dd></div>
                   <div><dt>Lord</dt><dd>{result.moonNakshatra.lord}</dd></div>
                   <div><dt>Deity</dt><dd>{result.moonNakshatra.deity}</dd></div>
                   <div><dt>Symbol</dt><dd>{result.moonNakshatra.symbol}</dd></div>
