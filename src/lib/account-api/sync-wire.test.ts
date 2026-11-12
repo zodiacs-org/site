@@ -138,6 +138,7 @@ describe('account sync request boundary', () => {
       policyVersion: 'chart-sync-2026-08-12.v1',
     }))).toEqual({
       action: 'consent',
+      purpose: 'chart_sync',
       mutationId: MUTATION_ID,
       decision: 'grant',
       policyVersion: 'chart-sync-2026-08-12.v1',
@@ -167,13 +168,31 @@ describe('account sync request boundary', () => {
       policyVersion: 'chart-sync-older.v0',
     }))).toEqual({
       action: 'consent',
+      purpose: 'chart_sync',
       mutationId: MUTATION_ID,
       decision: 'withdraw',
     });
     expect(parseAccountSyncInput('consent', request({
       mutationId: MUTATION_ID,
       decision: 'withdraw',
-    }))).toEqual({ action: 'consent', mutationId: MUTATION_ID, decision: 'withdraw' });
+    }))).toEqual({ action: 'consent', purpose: 'chart_sync', mutationId: MUTATION_ID, decision: 'withdraw' });
+    expect(parseAccountSyncInput('consent', request({
+      mutationId: MUTATION_ID,
+      decision: 'withdraw',
+      purpose: 'chart_emails',
+    }))).toEqual({ action: 'consent', purpose: 'chart_emails', mutationId: MUTATION_ID, decision: 'withdraw' });
+    expect(parseAccountSyncInput('consent', request({
+      mutationId: MUTATION_ID,
+      decision: 'grant',
+      purpose: 'chart_emails',
+      policyVersion: 'chart-emails-2026-11-11.v1',
+    }))).toEqual({
+      action: 'consent',
+      purpose: 'chart_emails',
+      mutationId: MUTATION_ID,
+      decision: 'grant',
+      policyVersion: 'chart-emails-2026-11-11.v1',
+    });
     expect(parseAccountSyncInput('consent', request({
       mutationId: MUTATION_ID,
       decision: 'grant',
