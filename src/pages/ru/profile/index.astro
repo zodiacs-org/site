@@ -14,7 +14,6 @@ import '../../../styles/profile-page.css';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
 const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   PUBLIC_SAVED_RECORDS_ENABLED: process.env.PUBLIC_SAVED_RECORDS_ENABLED,
@@ -57,7 +56,7 @@ const jsonLd = [
     <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="ru" client:load />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
-        ? <>Тест зашифрованной синхронизации временно доступен на <a href="/profile/">/profile/</a>. Здесь карты остаются только на этом устройстве.</>
+        ? <>Зашифрованная синхронизация настраивается на <a href="/profile/">/profile/</a>. Здесь карты остаются только на этом устройстве.</>
         : 'Если очистить данные браузера, карты, сохранённые только локально, будут удалены. Войдите, чтобы синхронизировать сохранённые карты и удаления между устройствами.'}</p>
     </aside>
   </section>

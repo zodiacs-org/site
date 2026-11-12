@@ -37,9 +37,11 @@ interface Props {
   signSlug: string;
   surface: HoroscopeSurface;
   reading: HoroscopeProgramPageReading;
+  /** Set by a route that adds an island reading the saved charts (DailyForYou). */
+  accountSurface?: boolean;
 }
 
-const { signSlug, surface, reading } = Astro.props;
+const { signSlug, surface, reading, accountSurface = false } = Astro.props;
 const sign = signBySlug(signSlug);
 const daily = dailyData as Daily;
 const program = programData as HoroscopeProgram;
@@ -360,6 +362,7 @@ const ctaLede = edgeMoon && moonHouse
 ---
 <Base
   inlineCriticalCss
+  accountSurface={accountSurface}
   stableTypography
   title={`${sign.name} ${reading.title}, ${reading.label} | Zodiacs.org`}
   description={displayText(reading.description)}

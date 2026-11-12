@@ -92,9 +92,18 @@ create temporary table account_v2_concurrency_results (
   value jsonb not null
 );
 
--- The last possible browser-v1 chart write and first v2 bootstrap share the
--- same per-user lock. This schedule makes the legacy write win; bootstrap must
--- wake, observe the committed raw chart, and leave zero v2 authority.
+-- Authenticated v1 chart inserts are paused, so the old "legacy write wins
+-- the cutover race" schedule can no longer commit a row. Hold the same
+-- per-user lock with the helper the insert policy used to call, after seeding
+-- an existing row as the table owner. Bootstrap must still wait behind that
+-- lock. Since 20261111170000 it no longer reads public.charts: it creates v2
+-- state and leaves the v1 row exactly as it was.
+insert into public.charts (id, user_id, payload) values (
+  '64000000-0000-4000-8000-000000000099',
+  '61000000-0000-4000-8000-000000000003',
+  '{"fixture":"write-block-existing"}'::jsonb
+);
+
 select dblink_exec('account_v2_a', 'reset role');
 select dblink_exec(
   'account_v2_a',
@@ -105,11 +114,9 @@ select dblink_exec('account_v2_a', 'set role authenticated');
 select dblink_exec('account_v2_a', 'begin');
 select dblink_exec(
   'account_v2_a',
-  $$insert into public.charts (id, user_id, payload) values (
-    '64000000-0000-4000-8000-000000000099',
-    '61000000-0000-4000-8000-000000000003',
-    '{"birthDate":"1991-01-01"}'::jsonb
-  )$$
+  $$do $lock$ begin
+    perform public.account_v2_legacy_sync_allowed();
+  end $lock$;$$
 );
 
 select dblink_send_query(
@@ -132,7 +139,7 @@ select dblink_send_query(
 
 select pg_temp.assert_true(
   dblink_is_busy('account_v2_b') = 1,
-  'bootstrap must wait behind an in-flight legacy chart insert'
+  'bootstrap must wait behind an in-flight legacy sync lock'
 );
 
 select dblink_exec('account_v2_a', 'commit');
@@ -152,29 +159,20 @@ select pg_temp.assert_true(
 );
 
 select pg_temp.assert_true(
-  (select value = '{"outcome":"legacy_migration_required"}'::jsonb
+  (select value @> '{"outcome":"ready","chart_sync_consent":"pending","chart_emails_consent":"pending"}'::jsonb
    from account_v2_concurrency_results where test = 'legacy_cutover')
     and exists (
       select 1
       from public.charts
       where user_id = '61000000-0000-4000-8000-000000000003'
+        and payload = '{"fixture":"write-block-existing"}'::jsonb
     )
-    and not exists (
+    and exists (
       select 1
       from private.account_states
       where user_id = '61000000-0000-4000-8000-000000000003'
-    )
-    and not exists (
-      select 1
-      from private.account_sync_devices
-      where user_id = '61000000-0000-4000-8000-000000000003'
-    )
-    and not exists (
-      select 1
-      from private.account_daily_sun_recipient_aliases
-      where user_id = '61000000-0000-4000-8000-000000000003'
     ),
-  'legacy-write winner must force zero-write legacy_migration_required'
+  'an existing v1 row no longer blocks bootstrap, which waits for the shared lock and leaves the row untouched'
 );
 
 select dblink_exec('account_v2_a', 'reset role');

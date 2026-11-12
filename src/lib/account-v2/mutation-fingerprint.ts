@@ -107,11 +107,13 @@ export function deleteChartMutationPreimageV1(input: {
 export function consentMutationPreimageV1(input: {
   decision: 'grant' | 'withdraw';
   policyVersion?: string;
+  /** Defaults to chart_sync, whose preimage is unchanged since v1. */
+  purpose?: 'chart_sync' | 'chart_emails';
 }): string {
   const lines = [
     ACCOUNT_SYNC_MUTATION_FINGERPRINT_DOMAIN,
     'operation=consent',
-    'purpose=chart_sync',
+    `purpose=${input.purpose === 'chart_emails' ? 'chart_emails' : 'chart_sync'}`,
     `decision=${input.decision}`,
   ];
   if (input.decision === 'grant') {
@@ -141,6 +143,7 @@ export async function deleteChartMutationFingerprintV1(input: {
 export async function consentMutationFingerprintV1(input: {
   decision: 'grant' | 'withdraw';
   policyVersion?: string;
+  purpose?: 'chart_sync' | 'chart_emails';
 }): Promise<string> {
   return sha256HexUtf8(consentMutationPreimageV1(input));
 }

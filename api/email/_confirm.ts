@@ -369,8 +369,8 @@ export default async function handler(req: any, res: any): Promise<void> {
       );
       if (!chart) {
         send(res, 409, dailyEmailPage(
-          'That chart is no longer available',
-          'Choose another saved chart from your profile if you still want a personal daily brief.',
+          'Chart emails are off for this account',
+          'Nothing was turned on. To get a personal daily brief, sync your chart and turn on "Use my chart for my emails" in your profile, then ask for a new link.',
         ));
         return;
       }
