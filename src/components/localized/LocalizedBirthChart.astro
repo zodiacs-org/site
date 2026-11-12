@@ -700,7 +700,7 @@ const nextCards = [
         alt=""
         focus="50% 52%"
       />
-      <div class="bc-cmp only-desktop" aria-label={c.compare}>
+      <div class="bc-cmp only-desktop" role="group" aria-label={c.compare}>
         <div>
           <span class="bc-cmp__lbl"><b>{c.withTime}</b>{sampleTime}</span>
           <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'sun')}<small>{name(sun.sign.slug)}</small></span></span>
@@ -719,7 +719,7 @@ const nextCards = [
       <span class="kicker">{t(locale, 'birthTime')}</span>
       <h2 class="h-2">{c.ntTitle}</h2>
       <p class="klede bc-nt__lede">{c.ntLede}</p>
-      <div class="bc-cmp only-mobile" aria-label={c.compare}>
+      <div class="bc-cmp only-mobile" role="group" aria-label={c.compare}>
         <div>
           <span class="bc-cmp__lbl"><b>{c.withTime}</b>{sampleTime}</span>
           <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'sun')}<small>{name(sun.sign.slug)}</small></span></span>

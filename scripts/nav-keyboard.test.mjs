@@ -19,7 +19,7 @@ const tools = ['Birth chart', 'Compatibility', 'Transits', 'Moon sign', 'Rising 
 const signs = ['Aries', 'Taurus', 'Gemini', 'Cancer'];
 const links = (names) => names.map((name) => `<a href="/${name.toLowerCase().replace(/ /gu, '-')}/">${name}</a>`).join('');
 const fixture = `<!doctype html><html lang="en"><body>
-<div class="nav-wrap">
+<header class="nav-wrap">
   <nav data-nav aria-label="Primary">
     <a href="/">Home</a>
     <div>
@@ -32,7 +32,7 @@ const fixture = `<!doctype html><html lang="en"><body>
   </nav>
   <div id="tools-menu" data-tools-menu hidden><div>${links(tools)}</div></div>
   <div id="signs-menu" data-signs-menu hidden><div>${links(signs)}</div></div>
-</div>
+</header>
 <div id="mobile-menu" data-mobile-menu hidden><nav aria-label="Mobile"><a href="/tools/">Mobile tools</a></nav></div>
 <main><a href="/learn/">Learn</a><input aria-label="Name"></main>
 <aside data-already-inert inert><a href="/elsewhere/">Elsewhere</a></aside>

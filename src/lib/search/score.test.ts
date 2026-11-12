@@ -89,3 +89,13 @@ describe('search hands questions to Guide', () => {
     expect(offerGuide('is', 0)).toBe(false);
   });
 });
+
+describe('the search box', () => {
+  it('has a name of its own, not only placeholder text', async () => {
+    const { readFileSync } = await import('node:fs');
+    const source = readFileSync(new URL('./open-search.ts', import.meta.url), 'utf8');
+    // The statements between creating the input and creating the next element.
+    const block = source.split("input = document.createElement('input');")[1]?.split('document.createElement(')[0] ?? '';
+    expect(block).toContain("input.setAttribute('aria-label', 'Search the site')");
+  });
+});

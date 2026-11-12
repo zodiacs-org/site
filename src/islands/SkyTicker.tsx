@@ -133,7 +133,7 @@ export default function SkyTicker({ locale: rawLocale = 'en', discs = true }: { 
   }, [locale]);
 
   return (
-    <p class="skyticker" aria-label={tf(locale, 'skyTickerAria', { date: receiptDate })}>
+    <p class="skyticker" role="group" aria-label={tf(locale, 'skyTickerAria', { date: receiptDate })}>
       <span class="skyticker__label">{tf(locale, 'skyAsOf', { date: compactReceiptDate })}</span>
       {items.map((item) => (
         <span class={`skyticker__item skyticker__item--${item.kind}`} key={item.text}>

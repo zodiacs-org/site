@@ -110,7 +110,7 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
   englishOnlyHref(href) ? `${label}${ariaJoin}${englishOnlyAria}` : undefined
 );
 ---
-<div class="nav-wrap">
+<header class="nav-wrap">
   <nav class:list={['nav', { 'nav--localized': locale !== 'en', 'nav--without-search': locale === 'ru', 'nav--with-today': links.some((link) => link.href === '/today/') }]} aria-label={t(locale, 'navPrimary')} data-nav>
     <a {...homeEnglishOnly} class="nav__mark" href={localizePath(locale, '/')} aria-label="Zodiacs.org">
       <TiltedRing width={34} class="nav__ring" />
@@ -230,7 +230,7 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
       ))}
     </div>
   </div>
-</div>
+</header>
 
 <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
   <nav aria-label={mobileNavLabel[locale] ?? 'Mobile'}>
