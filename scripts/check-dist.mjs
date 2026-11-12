@@ -1295,6 +1295,8 @@ const raceIndexed = sitemapLocs.has('/race/');
 // The Year Ahead tools follow their launch flags (src/lib/launch-flags.ts) the same way.
 const yearScoreIndexed = sitemapLocs.has('/year-score/');
 const birthdayReportIndexed = sitemapLocs.has('/birthday-report/');
+// The tarot draw follows its launch flag (src/lib/launch-flags.ts) the same way.
+const tarotIndexed = sitemapLocs.has('/tarot/');
 const trophyHallIndexed = sitemapLocs.has('/games/history/');
 const indexablePeoplePaths = new Set(
   JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).people
@@ -1324,6 +1326,7 @@ const sitemapPolicy = {
   // +1 for the English-only lunar-return calculator.
   // +1 for /fomo/, the Astrofolio-on-Fomo landing page (wing register, indexable).
   // +13 for the numerology calculator and the twelve English-only Life Path pages.
+  // +1 for the English-only tarot draw, once PUBLIC_TAROT_ENABLED is on.
   // +1 for the void-of-course Moon calendar.
   // +2 for the platform support contract and runnable developer examples.
   // +1 for /developers/compare/, the browser-local chart-difference tool.
@@ -1356,10 +1359,12 @@ const sitemapPolicy = {
   //     and the twelve /seasons/{sign}/ pages (15 per locale).
   // +1 for /year-score/, the Year Ahead Score calculator, once PUBLIC_YEAR_SCORE_ENABLED is on.
   // +1 for /birthday-report/, the birthday report, once PUBLIC_BIRTHDAY_REPORT_ENABLED is on.
+  // +1 for /tarot/, the tarot draw, once PUBLIC_TAROT_ENABLED is on.
   // 1540 is the historical coordinated base; 8 hidden child pages left the sitemap on 2026-11-12
   // (baby zodiac in six languages, /occasions/baby-shower/, /almanac/reading-a-childs-chart/).
   total: 1532 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + Number(yearScoreIndexed) + Number(birthdayReportIndexed)
+    + Number(tarotIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
@@ -1412,6 +1417,7 @@ const indexedFamilies = [
   { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
   { label: 'Year Ahead Score', pattern: /^\/year-score\/$/, expected: Number(yearScoreIndexed), localized: false },
   { label: 'Birthday report', pattern: /^\/birthday-report\/$/, expected: Number(birthdayReportIndexed), localized: false },
+  { label: 'Tarot draw', pattern: /^\/tarot\/$/, expected: Number(tarotIndexed), localized: false },
   { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
   { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
   { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },
@@ -1508,7 +1514,9 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
   new Set(['/numerology/']),
 );
-if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-09-07</lastmod>')) {
+// Revised on 10 November 2026 with its link to the tarot draw (TAROT_LASTMOD in src/pages/sitemap.xml.ts), which
+// is there only while PUBLIC_TAROT_ENABLED is on; off, the reviewed 7 September revision stands.
+if (!sitemapBlocksByPath.get('/numerology/')?.includes(`<lastmod>${tarotIndexed ? '2026-11-10' : '2026-09-07'}</lastmod>`)) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
 }
 requireExactSet(

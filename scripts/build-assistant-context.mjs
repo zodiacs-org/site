@@ -27,10 +27,21 @@ const DEFAULT_OUTPUT = resolve(repo, 'api/_assistant/context.ts');
 export const MIN_CONTEXT_BYTES = 30 * 1024;
 export const MAX_CONTEXT_BYTES = 60 * 1024;
 
+// Pages behind a launch switch (src/lib/launch-flags.ts) stay out of the
+// inventory until their switch is exactly '1', so a page that is not live is
+// never recommended. Commit the output generated with every switch unset.
+export const LAUNCH_FLAGGED_ROUTES = Object.freeze({
+  '/tarot/': 'PUBLIC_TAROT_ENABLED',
+  '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
+  '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
+});
+const launchedRoute = (route, env) => !LAUNCH_FLAGGED_ROUTES[route] || env[LAUNCH_FLAGGED_ROUTES[route]] === '1';
+
 // These are the English tools and utilities that accept a date, chart, pair,
 // or current-sky question. The generator verifies every route has a real page
-// and takes its explanation from that page's meta description.
-export const TOOL_ROUTES = Object.freeze([
+// and takes its explanation from that page's meta description. A route behind
+// a launch switch is listed only while the switch is on (toolRoutes).
+export const ALL_TOOL_ROUTES = Object.freeze([
   '/ask/',
   '/sky-calendar/',
   '/astrologer-kit/',
@@ -55,10 +66,16 @@ export const TOOL_ROUTES = Object.freeze([
   '/rising-sign/',
   '/saturn-return/',
   '/solar-return/',
+  '/tarot/',
   '/transits/',
   '/void-of-course-moon/',
   '/widgets/',
 ]);
+
+/** The tool routes the Guide lists for these launch switches (the shell's by default). */
+export function toolRoutes(env = process.env) {
+  return ALL_TOOL_ROUTES.filter((route) => launchedRoute(route, env));
+}
 
 export const BANNED_CONSUMER_VOCABULARY = Object.freeze([
   'astrofolio',
@@ -109,14 +126,6 @@ const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   // Pages about babies and children, hidden on 2026-11-12: noindex and nofollow (src/data/hidden-child-pages.mjs).
   ...HIDDEN_CHILD_PAGE_PATHS,
 ]);
-
-// Pages behind a launch switch (src/lib/launch-flags.ts) stay out of the
-// inventory until their switch is exactly '1', so a page that is not live is
-// never recommended. Commit the output generated with every switch unset.
-const LAUNCH_FLAGGED_ROUTES = Object.freeze({
-  '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED',
-  '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED',
-});
 
 function compareText(left, right) {
   return left < right ? -1 : left > right ? 1 : 0;
@@ -268,7 +277,7 @@ async function loadHoroscopes(root) {
   return { latestMonth, current };
 }
 
-async function loadStaticPages(repoRoot, context) {
+async function loadStaticPages(repoRoot, context, env) {
   const pagesRoot = resolve(repoRoot, 'src/pages');
   const pages = [];
   for (const file of await filesUnder(pagesRoot, '.astro')) {
@@ -279,8 +288,7 @@ async function loadStaticPages(repoRoot, context) {
     if (local === '404.astro') continue;
     const route = pagePath(file, pagesRoot);
     if (UNLISTED_ROUTE_PREFIXES.some((prefix) => route.startsWith(prefix))) continue;
-    const launchFlag = LAUNCH_FLAGGED_ROUTES[route];
-    if (launchFlag && process.env[launchFlag] !== '1') continue;
+    if (!launchedRoute(route, env)) continue;
     // Labeled sample pages for event-template review: never part of the
     // recommendable site inventory.
     if (route.startsWith('/events/preview/')) continue;
@@ -368,14 +376,16 @@ function bannedVocabulary(text) {
   ));
 }
 
-export async function generateAssistantContext({ repoRoot = repo } = {}) {
+/** `env` holds the launch switches; it defaults to the shell's, and a test passes its own. */
+export async function generateAssistantContext({ repoRoot = repo, env = process.env } = {}) {
+  const listedTools = toolRoutes(env);
   const contentRoot = resolve(repoRoot, 'src/content');
   const horoscopeData = await loadHoroscopes(resolve(contentRoot, 'horoscopes'));
   const ingresses = JSON.parse(await readFile(resolve(repoRoot, 'src/data/ingresses.json'), 'utf8'));
   const staticPages = await loadStaticPages(repoRoot, {
     ingresses,
     latestHoroscopeMonth: horoscopeData.latestMonth,
-  });
+  }, env);
 
   const guides = await loadContentEntries(
     resolve(contentRoot, 'guides'),
@@ -397,7 +407,7 @@ export async function generateAssistantContext({ repoRoot = repo } = {}) {
   );
 
   const staticByRoute = new Map(staticPages.map((entry) => [entry.route, entry]));
-  for (const route of TOOL_ROUTES) {
+  for (const route of listedTools) {
     if (!staticByRoute.has(route)) throw new Error(`Tool route has no static page: ${route}`);
   }
 
@@ -421,8 +431,8 @@ export async function generateAssistantContext({ repoRoot = repo } = {}) {
   const rising = learn.filter((entry) => entry.id.startsWith('rising/'));
   const focusedLearn = learn.filter((entry) => !entry.id.startsWith('rising/') && !entry.id.startsWith('placements/'));
   const placements = learn.filter((entry) => entry.id.startsWith('placements/'));
-  const tools = TOOL_ROUTES.map((route) => staticByRoute.get(route));
-  const evergreen = staticPages.filter((entry) => !TOOL_ROUTES.includes(entry.route));
+  const tools = listedTools.map((route) => staticByRoute.get(route));
+  const evergreen = staticPages.filter((entry) => !listedTools.includes(entry.route));
   const glossaryNames = [...GLOSSARY]
     .map((entry) => entry.term)
     .sort(compareText);
@@ -536,8 +546,8 @@ function asTypeScript(context) {
   return `// Generated by scripts/build-assistant-context.mjs. Do not hand-edit.\nexport const ASSISTANT_CONTEXT = \`${escaped}\`;\n`;
 }
 
-export async function buildAssistantContext({ repoRoot = repo, output = DEFAULT_OUTPUT } = {}) {
-  const result = await generateAssistantContext({ repoRoot });
+export async function buildAssistantContext({ repoRoot = repo, output = DEFAULT_OUTPUT, env = process.env } = {}) {
+  const result = await generateAssistantContext({ repoRoot, env });
   const source = asTypeScript(result.context);
   await writeFile(output, source, 'utf8');
   return { ...result, source };

@@ -145,7 +145,12 @@ const jsonLd = [
         numerologists use, so the results agree with what a numerologist working by the
         same method would write down. The method is set out in full on the{' '}
         <a href="/methodology/#numerology">methodology page</a>.
-      </p>
+      </p>{launchFlagOn('PUBLIC_TAROT_ENABLED') && (
+        <p>
+          Zodiacs also has a <a href="/tarot/">tarot draw</a>, another practice that stands apart from astrology, with
+          our own reading of all 78 cards.
+        </p>
+      )}
 
       <h2>The twelve life paths</h2>
       <p>Each number has its own page: which totals reduce to it, how common it is, and what the tradition reads into it.</p>

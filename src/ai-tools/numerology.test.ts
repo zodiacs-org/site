@@ -104,7 +104,8 @@ describe('the numerology switch on', () => {
     const tools = message((await post(host, rpc('tools/list'))).text).result.tools as Record<string, any>[];
     const before = message(FIXTURE.coverage.toolsList.text).result.tools as Record<string, any>[];
     expect(tools.map((tool) => tool.name)).toEqual([...EVERY_AI_TOOL_NAME, 'get_numerology']);
-    expect(EVERY_SWITCHED_TOOL.at(-1)).toBe('get_numerology');
+    // With every switch on, only draw_tarot (its own switch) comes after it.
+    expect(EVERY_SWITCHED_TOOL.slice(-2)).toEqual(['get_numerology', 'draw_tarot']);
     expect(PUBLISHED_TOOLS.map((tool) => tool.name)).toEqual([...ALL_AI_TOOL_NAMES]);
     expect(JSON.stringify(tools.slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS));
     expect(JSON.stringify(tools.slice(0, -1))).toBe(JSON.stringify(before));
@@ -140,7 +141,7 @@ describe('the numerology switch on', () => {
       ZODIACS_NUMEROLOGY_ENABLED: '1',
     });
     const names = (message((await post(host, rpc('tools/list'))).text).result.tools as { name: string }[]).map((tool) => tool.name);
-    expect(names).toEqual([...EVERY_SWITCHED_TOOL]);
+    expect(names).toEqual(EVERY_SWITCHED_TOOL.filter((name) => name !== 'draw_tarot'));
     const numerology = names.indexOf('get_numerology');
     expect(numerology).toBeGreaterThan(names.indexOf('search_sky_events'));
     expect(numerology).toBeGreaterThan(names.indexOf('get_year_score'));

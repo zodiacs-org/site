@@ -4,17 +4,55 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ASSISTANT_CONTEXT } from '../api/_assistant/context.ts';
 import {
+  ALL_TOOL_ROUTES,
   BANNED_CONSUMER_VOCABULARY,
+  LAUNCH_FLAGGED_ROUTES,
   MAX_CONTEXT_BYTES,
   MIN_CONTEXT_BYTES,
-  TOOL_ROUTES,
   buildAssistantContext,
   extractCanonicalLabels,
   learnTopics,
   generateAssistantContext,
+  toolRoutes,
 } from './build-assistant-context.mjs';
 
 let temporaryDirectory;
+
+// The committed module is the output with every launch switch unset; the
+// tarot draw joins the tools and the inventory only while its switch is '1'.
+const FLAGS_OFF = Object.freeze({});
+const TAROT_ON = Object.freeze({ PUBLIC_TAROT_ENABLED: '1' });
+const TAROT_LINE = '- /tarot/ —';
+const MAIN_TOOL_ROUTES = Object.freeze([
+  '/ask/',
+  '/sky-calendar/',
+  '/astrologer-kit/',
+  '/your-sky-wrapped/',
+  '/chart-of-the-day/',
+  '/big-three/',
+  '/chart-twins/',
+  '/compatibility/invite/',
+  '/group-charts/',
+  '/birth-chart/',
+  '/birthday/',
+  '/compatibility/',
+  '/eclipses/',
+  '/full-moon-calendar/',
+  '/lunar-return/',
+  '/mercury-retrograde/',
+  '/moon-phase/',
+  '/moon-sign/',
+  '/numerology/',
+  '/profile/',
+  '/retrogrades/',
+  '/rising-sign/',
+  '/saturn-return/',
+  '/solar-return/',
+  '/transits/',
+  '/void-of-course-moon/',
+  '/widgets/',
+]);
+const withTarot = (routes) => [...routes.slice(0, routes.indexOf('/solar-return/') + 1), '/tarot/', ...routes.slice(routes.indexOf('/solar-return/') + 1)];
 
 afterEach(async () => {
   if (temporaryDirectory) {
@@ -24,39 +62,16 @@ afterEach(async () => {
 });
 
 describe('assistant site context', () => {
-  it('contains every tool route and the complete live route families', async () => {
-    const { context, counts } = await generateAssistantContext();
+  it.each([
+    ['unset', FLAGS_OFF],
+    ['on', TAROT_ON],
+  ])('contains every tool route and the complete live route families (tarot switch %s)', async (_mode, env) => {
+    const tarot = env.PUBLIC_TAROT_ENABLED === '1';
+    const { context, counts } = await generateAssistantContext({ env });
+    const routes = toolRoutes(env);
 
-    expect(TOOL_ROUTES).toEqual([
-      '/ask/',
-      '/sky-calendar/',
-      '/astrologer-kit/',
-      '/your-sky-wrapped/',
-      '/chart-of-the-day/',
-      '/big-three/',
-      '/chart-twins/',
-      '/compatibility/invite/',
-      '/group-charts/',
-      '/birth-chart/',
-      '/birthday/',
-      '/compatibility/',
-      '/eclipses/',
-      '/full-moon-calendar/',
-      '/lunar-return/',
-      '/mercury-retrograde/',
-      '/moon-phase/',
-      '/moon-sign/',
-      '/numerology/',
-      '/profile/',
-      '/retrogrades/',
-      '/rising-sign/',
-      '/saturn-return/',
-      '/solar-return/',
-      '/transits/',
-      '/void-of-course-moon/',
-      '/widgets/',
-    ]);
-    for (const route of TOOL_ROUTES) expect(context).toContain(`- ${route} —`);
+    expect(routes).toEqual(tarot ? withTarot(MAIN_TOOL_ROUTES) : [...MAIN_TOOL_ROUTES]);
+    for (const route of routes) expect(context).toContain(`- ${route} —`);
 
     expect(counts).toEqual({
       birthdays: 366,
@@ -79,16 +94,20 @@ describe('assistant site context', () => {
       // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
       // The time atlas at /developers/time-atlas/ adds one more.
-      // The Year Ahead Score at /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
+      // The tarot draw adds one English tool and one consumer route and static
+      // page, only while PUBLIC_TAROT_ENABLED is '1'. The Year Ahead Score at
+      // /year-score/ stays out while PUBLIC_YEAR_SCORE_ENABLED is off.
       // So does the birthday report at /birthday-report/ while PUBLIC_BIRTHDAY_REPORT_ENABLED is off.
-      consumerRoutes: 715,
+      consumerRoutes: 715 + Number(tarot),
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 76,
-      tools: 27,
+      staticPages: 76 + Number(tarot),
+      tools: 27 + Number(tarot),
     });
+    if (tarot) expect(context).toContain(TAROT_LINE);
+    else expect(context).not.toContain('/tarot/');
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');
     expect(context).toContain('- /learn/placements/sun-in-aries/ — What Sun in Aries means in a birth chart.');
@@ -165,14 +184,37 @@ Canonical labels: "Get your free birth chart" · "Save this chart" · "Saved cha
     temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
     const output = join(temporaryDirectory, 'context.ts');
 
-    const first = await buildAssistantContext({ output });
+    const first = await buildAssistantContext({ output, env: FLAGS_OFF });
     const firstBytes = await readFile(output);
-    const second = await buildAssistantContext({ output });
+    const second = await buildAssistantContext({ output, env: FLAGS_OFF });
     const secondBytes = await readFile(output);
 
     expect(second.context).toBe(first.context);
     expect(second.source).toBe(first.source);
     expect(secondBytes.equals(firstBytes)).toBe(true);
     expect(ASSISTANT_CONTEXT).toBe(first.context);
+  });
+
+  it('commits the switches-unset output, and the tarot switch adds exactly its one line', async () => {
+    expect(LAUNCH_FLAGGED_ROUTES).toEqual({ '/tarot/': 'PUBLIC_TAROT_ENABLED', '/year-score/': 'PUBLIC_YEAR_SCORE_ENABLED', '/birthday-report/': 'PUBLIC_BIRTHDAY_REPORT_ENABLED' });
+    expect(ALL_TOOL_ROUTES).toEqual(withTarot(MAIN_TOOL_ROUTES));
+    temporaryDirectory = await mkdtemp(join(tmpdir(), 'zodiacs-assistant-context-'));
+
+    const off = await buildAssistantContext({ output: join(temporaryDirectory, 'off.ts'), env: FLAGS_OFF });
+    expect(ASSISTANT_CONTEXT).toBe(off.context);
+    expect(off.context).not.toContain('/tarot/');
+
+    for (const value of ['', '0', 'true', ' 1']) {
+      const notOn = await generateAssistantContext({ env: { PUBLIC_TAROT_ENABLED: value } });
+      expect(notOn.context).toBe(off.context);
+      expect(toolRoutes({ PUBLIC_TAROT_ENABLED: value })).toEqual([...MAIN_TOOL_ROUTES]);
+    }
+
+    const on = await buildAssistantContext({ output: join(temporaryDirectory, 'on.ts'), env: TAROT_ON });
+    const offLines = off.context.split('\n');
+    const added = on.context.split('\n').filter((line) => !offLines.includes(line));
+    expect(added).toHaveLength(1);
+    expect(added[0].startsWith(TAROT_LINE)).toBe(true);
+    expect(on.context.split('\n').filter((line) => line !== added[0])).toEqual(offLines);
   });
 });

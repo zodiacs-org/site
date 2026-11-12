@@ -84,6 +84,9 @@ const TRANSLATED_NEW_PAGES_ROUTES = (['es', 'pt', 'fr', 'it'] as const).flatMap(
 // it. Each Life Path page dates itself from its own `updated` field, the same
 // date its Article markup carries.
 const NUMEROLOGY_LASTMOD = '2026-09-07';
+// The tarot draw, and the pages that link to it: the tools hub, the homepage's row of tools and the numerology
+// calculator. The day of the daily edition it was built with.
+const TAROT_LASTMOD = '2026-11-10';
 // The void-of-course Moon calendar shipped in the same review cycle.
 const VOID_OF_COURSE_LASTMOD = '2026-09-07';
 // Phase 1 of the engine brief and the claims ledger's corrections (step 1.14)
@@ -676,6 +679,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
   // after the October design sweep dates above, so this wins.
   ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
+  // The tarot draw, first published, and the pages that link to it. Last, so this date wins.
+  // Only while PUBLIC_TAROT_ENABLED is on: off, those pages keep their own dates.
+  ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? ['/tarot/', '/tools/', '/', '/numerology/'].map((loc) => [loc, TAROT_LASTMOD] as const) : []),
 ]);
 
 function getLastmod(loc: string): string {
@@ -739,6 +745,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/solar-return/', priority: 0.85 },
     { loc: '/lunar-return/', priority: 0.85 },
     { loc: '/numerology/', priority: 0.85 },
+    ...(launchFlagOn('PUBLIC_TAROT_ENABLED') ? [{ loc: '/tarot/', priority: 0.8 }] : []),
     { loc: '/void-of-course-moon/', priority: 0.8 },
     ...(launchFlagOn('PUBLIC_YEAR_SCORE_ENABLED') ? [{ loc: '/year-score/', priority: 0.8 }] : []),
     ...(launchFlagOn('PUBLIC_BIRTHDAY_REPORT_ENABLED') ? [{ loc: '/birthday-report/', priority: 0.8 }] : []),
