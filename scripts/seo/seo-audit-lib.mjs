@@ -27,7 +27,7 @@ export function parsePage(html) {
   const alternates = [...head.matchAll(/<link\b[^>]*>/gi)].map((m) => m[0])
     .filter((tag) => attr(tag, 'rel')?.toLowerCase() === 'alternate' && attr(tag, 'hreflang'))
     .map((tag) => ({ hreflang: attr(tag, 'hreflang'), href: attr(tag, 'href') }));
-  const jsonLd = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)].flatMap((m) => {
+  const jsonLd = [...html.matchAll(/<script[^>]*\btype\s*=\s*["']?application\/ld\+json["']?[^>]*>([\s\S]*?)<\/script>/gi)].flatMap((m) => {
     try {
       const value = JSON.parse(m[1]);
       const graph = Array.isArray(value) ? value : value['@graph'] ?? [value];
@@ -133,9 +133,10 @@ export function structuredDataProblems(path, page) {
   const rule = STRUCTURED_DATA_MATRIX.find((entry) => entry.test.test(stripLocalePath(path)));
   const problems = [];
   if (page.jsonLd.some((node) => typesOf(node).includes('__invalid__'))) problems.push('invalid JSON-LD');
-  if (!rule) return problems;
-  const present = new Set(page.jsonLd.flatMap(typesOf));
-  for (const type of rule.required) if (!present.has(type)) problems.push(`${rule.type} page has no ${type}`);
+  if (rule) {
+    const present = new Set(page.jsonLd.flatMap(typesOf));
+    for (const type of rule.required) if (!present.has(type)) problems.push(`${rule.type} page has no ${type}`);
+  }
   const pageLang = LANG_BASE(HTML_LANG[localeOfPath(path)]);
   for (const node of page.jsonLd.filter((candidate) => typesOf(candidate).some((type) => type === 'Article' || type === 'WebApplication'))) {
     // Some English calculators' WebApplication nodes name no language yet; a stated one must match.
