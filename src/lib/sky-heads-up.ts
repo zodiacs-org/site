@@ -17,17 +17,21 @@
  * the event's id and the entry's role, so it survives a corrected time, a
  * rebuild on another day and, later, another language.
  *
+ * Lunations carry the Moon's distance (src/data/moon-distances.json), and a
+ * full Moon that src/lib/supermoon.ts marks as a supermoon says so in its
+ * title, its description and a `supermoon` field.
+ *
  * Everything here is the same for every reader. The builder takes only a
  * build instant; no request, parameter or environment value reaches it.
  *
  * Build-side module (it reads the NASA table): routes import it, islands must not.
  */
-import moonDistances from '../data/moon-distances.json';
 import { serializePersonalEvents, type PersonalCalendarEvent } from './ical';
 import { eventsPublication, type PublishedEventDescriptor } from './events/site-publication';
 import { exactInstant, refinePublishedAnchors } from './nasa-instants';
 import { headsUpText, returnText } from './return-visits/copy';
 import { headsUpCopyProblems } from './sky-heads-up-safety';
+import { moonDistanceLunation, supermoon, type Supermoon } from './supermoon';
 
 export { EVENT_COPY_BANNED, FORBIDDEN_DASHES, headsUpCopyProblems } from './sky-heads-up-safety';
 
@@ -61,6 +65,8 @@ export interface HeadsUpEvent {
   headsUp: [string, string];
   /** Lunations only: the Moon's geocentric distance at `at`, whole km (src/data/moon-distances.json). */
   moonDistanceKm?: number;
+  /** Full Moons the site's rule marks only (src/lib/supermoon.ts): the distance, the rule and the apsides it used. */
+  supermoon?: Supermoon;
 }
 
 export interface HeadsUpFeed {
@@ -68,10 +74,6 @@ export interface HeadsUpFeed {
   coverageEnd: string;
   events: HeadsUpEvent[];
 }
-
-const distanceByLunation = new Map(
-  moonDistances.lunations.map((lunation) => [`${lunation.type}|${lunation.at}`, lunation.distanceKm] as const),
-);
 
 const iso = (value: string | number) => new Date(value).toISOString();
 
@@ -100,9 +102,14 @@ function headsUpEvent(row: PublishedEventDescriptor, refined: PublishedEventDesc
     headsUp: [iso(ms - HEADS_UP_OFFSETS[0].ms), iso(ms - HEADS_UP_OFFSETS[1].ms)],
   };
   if (row.family === 'lunation') {
-    const km = distanceByLunation.get(`${row.subtype}|${row.anchor}`);
-    if (km === undefined) throw new Error(`sky-heads-up: no Moon distance for ${row.id}; rerun node scripts/build-moon-distances.mjs`);
-    event.moonDistanceKm = km;
+    const lunation = moonDistanceLunation(row.subtype, row.anchor);
+    if (!lunation) throw new Error(`sky-heads-up: no Moon distance for ${row.id}; rerun node scripts/build-moon-distances.mjs`);
+    event.moonDistanceKm = lunation.distanceKm;
+    const marked = supermoon(lunation);
+    if (marked) {
+      event.title = headsUpText('headsUpSupermoonTitle', { title: row.title });
+      event.supermoon = marked;
+    }
   }
   return event;
 }
@@ -140,6 +147,7 @@ function eventDescription(event: HeadsUpEvent): string {
   return [
     event.summary,
     event.moonDistanceKm === undefined ? '' : headsUpText('headsUpMoonDistance', { km: kilometres(event.moonDistanceKm) }),
+    event.supermoon ? headsUpText('headsUpSupermoon') : '',
     headsUpText('headsUpWhen', { time: utcMinute(event.at) }),
     returnText('en', 'calendarEventNote'),
     event.family === 'eclipse' ? returnText('en', 'eclipseNote') : '',
