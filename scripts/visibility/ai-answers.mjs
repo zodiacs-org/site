@@ -22,7 +22,7 @@
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import Anthropic from '@anthropic-ai/sdk';
-import { loadQuestions, planAnswers, scoreAnswer, VIS_DIR } from './lib.mjs';
+import { loadQuestions, parseResponsesApi, planAnswers, scoreAnswer, VIS_DIR } from './lib.mjs';
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, all) => {
@@ -45,23 +45,6 @@ async function postJson(url, headers, body) {
   const text = await res.text();
   if (!res.ok) throw new Error(`${res.status} ${text.slice(0, 300)}`);
   return JSON.parse(text);
-}
-
-// OpenAI Responses API and xAI's compatible Responses API share a shape:
-// output[] message items whose output_text parts carry url_citation annotations.
-function parseResponsesApi(json) {
-  let text = '';
-  const citations = [];
-  for (const item of json.output || []) {
-    if (item.type !== 'message') continue;
-    for (const part of item.content || []) {
-      if (part.type !== 'output_text') continue;
-      text += part.text;
-      for (const a of part.annotations || []) if (a.type === 'url_citation') citations.push({ url: a.url, title: a.title || '' });
-    }
-  }
-  for (const url of json.citations || []) citations.push({ url: typeof url === 'string' ? url : url.url, title: '' });
-  return { text, citations, model: json.model };
 }
 
 const providers = {
@@ -87,6 +70,8 @@ const providers = {
       const cand = json.candidates?.[0] || {};
       const text = (cand.content?.parts || []).map((p) => p.text || '').join('');
       const citations = (cand.groundingMetadata?.groundingChunks || []).filter((c) => c.web).map((c) => ({ url: c.web.uri, title: c.web.title || '' }));
+      // A blocked or unfinished candidate is an error, asked again next run.
+      if (!text.trim()) throw new Error(`no answer text (finishReason ${cand.finishReason || 'none'})`);
       return { text, citations, model: json.modelVersion || model };
     },
   },
@@ -120,6 +105,7 @@ const providers = {
           for (const c of block.citations || []) if (c.url) citations.push({ url: c.url, title: c.title || '' });
         }
       }
+      if (response.stop_reason === 'pause_turn' || !text.trim()) throw new Error(`no finished answer (stop_reason ${response.stop_reason})`);
       return { text, citations, model: response.model };
     },
   },

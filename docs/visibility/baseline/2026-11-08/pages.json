@@ -751,44 +751,6 @@
       ]
     },
     {
-      "path": "/baby-zodiac/",
-      "status": "built",
-      "title": "Baby Zodiac Calculator: What Sign Will My Baby Be? | Zodiacs.org",
-      "description": "Enter a due date: the near-certain sun sign (cusp caveats computed, not guessed), the week's possible moon signs, and what has to wait for the birth minute. Free.",
-      "canonical": "https://zodiacs.org/baby-zodiac/",
-      "robots": "max-image-preview:large",
-      "h1": "What sign will the baby be?",
-      "opening": "Enter the due date and get the honest version: the sun sign is near certain, the moon sign is a shortlist the birth day picks from, and the rising sign has to wait for the clock. Computed on your device.",
-      "h2": [
-        "What a due date can and cannot tell you",
-        "Questions, answered"
-      ],
-      "jsonLdTypes": [
-        "Answer",
-        "BreadcrumbList",
-        "FAQPage",
-        "ImageObject",
-        "ListItem",
-        "Offer",
-        "Organization",
-        "Question",
-        "WebApplication",
-        "WebPage"
-      ],
-      "inboundPages": 8,
-      "phrases": [
-        {
-          "id": "q17",
-          "phrase": "what sign will my baby be",
-          "inTitle": true,
-          "inH1": false,
-          "inOpening": false,
-          "inH2": false,
-          "placement": null
-        }
-      ]
-    },
-    {
       "path": "/learn/how-to-read-a-birth-chart/",
       "status": "built",
       "title": "How to Read a Birth Chart, Step by Step | Zodiacs.org",
@@ -1269,5 +1231,6 @@
       "id": "q50",
       "phrase": "midheaven calculator"
     }
-  ]
+  ],
+  "removed_note": "Entries about pages or searches aimed at children were removed on 2026-11-12: the program does not target pages about children (#985 hid those pages)."
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseCsv, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
+import { answerCounts, citationHost, copyProblems, loadQuestions, planAnswers, matchPhrase, opportunityScore, pagePath, parseCsv, parseResponsesApi, parseVolume, volumeOf, scoreAnswer, summarisePhrase } from './lib.mjs';
 
 describe('visibility lib', () => {
   it('holds fifty questions with unique ids and phrases', () => {
@@ -99,7 +99,7 @@ describe('keyword tables', () => {
     const rows = parseCsv(readFileSync(new URL('../../docs/visibility/keywords/all-locales.csv', import.meta.url), 'utf8')).slice(1);
     expect(rows.length).toBe(9 * 296);
     for (const r of rows) {
-      expect(r[8] === 'TBD' || /^\d+$/.test(r[8])).toBe(true);
+      expect(r[8] === 'TBD' || /^\d+$/.test(r[8]) || /^(\d+)-(\d+)$/.test(r[8]) && +r[8].split('-')[0] <= +r[8].split('-')[1]).toBe(true);
       expect(copyProblems(r[5])).toEqual([]);
     }
   });
@@ -114,5 +114,15 @@ describe('keyword tables', () => {
     expect(volumeOf('10-100')).toEqual({ low: 10, exact: false });
     expect(volumeOf('1300')).toEqual({ low: 1300, exact: true });
     expect(volumeOf('TBD')).toBe(null);
+  });
+  it('treats failed, incomplete or empty AI responses as errors so they are asked again', () => {
+    const ok = { status: 'completed', model: 'm', output: [{ type: 'message', content: [{ type: 'output_text', text: 'Answer', annotations: [{ type: 'url_citation', url: 'https://zodiacs.org/', title: 'Z' }] }] }] };
+    expect(parseResponsesApi(ok)).toEqual({ text: 'Answer', citations: [{ url: 'https://zodiacs.org/', title: 'Z' }], model: 'm' });
+    for (const status of ['failed', 'incomplete', 'cancelled', 'in_progress']) expect(() => parseResponsesApi({ ...ok, status })).toThrow();
+    expect(() => parseResponsesApi({ ...ok, error: { message: 'boom' } })).toThrow();
+    expect(() => parseResponsesApi({ status: 'completed', output: [] })).toThrow();
+    const errored = { id: 'q01', run: 1, question: 'Q?', error: 'response status failed' };
+    const plan = planAnswers({ answers: [errored] }, [{ id: 'q01', question: 'Q?' }], 1);
+    expect(plan.todo.map(([q, r]) => `${q.id}#${r}`)).toEqual(['q01#1']);
   });
 });
