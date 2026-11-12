@@ -1,7 +1,8 @@
 name: Trending on X (drafts for review)
 
-# Once a day, reads trending names (X trends when the X_BEARER_TOKEN secret
-# is set, otherwise the names given to a manual run), matches them to the
+# Once a day, reads trending names (X trends when TRENDING_X_ENABLED is 1 and
+# the X_BEARER_TOKEN secret is set, otherwise the names given to a manual
+# run), matches them to the
 # Year Ahead directory and uploads a report: a draft post per match for the
 # marketing team, and the names not in the directory for human review.
 # It never posts, never publishes, never commits and never adds anyone to the

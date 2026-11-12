@@ -69,6 +69,8 @@ const lines = [
   '',
   'Nothing here has been posted or published. Drafts are for the marketing team to read, edit and post by hand. Check each draft before posting: no price or trading calls, no diagnoses, no death predictions, no legal outcomes.',
   '',
+  'Each draft links to the figure\'s /year/ page, which is live only once PUBLIC_YEAR_PEOPLE_ENABLED is on. Open the link before posting.',
+  '',
   '## Matches and draft posts',
   '',
   ...(matches.length ? matches.flatMap((match) => [
