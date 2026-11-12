@@ -33,6 +33,7 @@ import { loadModule } from '../lib/module-load';
 import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
+import { ensureProfileWriteAccess, runAfterProfileAccess } from '../lib/account-v2/profile-access-request';
 
 export interface SlotState {
   source: 'saved' | 'form' | 'link' | 'positions';
@@ -223,7 +224,7 @@ const pcf = (locale: Locale, key: keyof typeof PAIR_COPY_EN, values: Record<stri
   pc(locale, key).replace(/\{(\w+)\}/g, (_token: string, k: string) => String(values[k] ?? ''));
 const listLocale = (locale: Locale) => LOCALE_META[locale].intlLocale;
 
-export type PairSaveState = 'idle' | 'saved' | 'exists' | 'full' | 'error';
+export type PairSaveState = 'idle' | 'saved' | 'exists' | 'full' | 'error' | 'unavailable';
 export type ComparisonResultSource = 'plain' | 'invite' | 'invite-restored' | 'returned';
 
 /** One completed state covers both a save from this result and a pair that
@@ -1003,7 +1004,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
   // button must offer saving again; a slot freed → the full alert is
   // stale).
   useEffect(() => {
-    if (pairSave === 'idle' || pairSave === 'error') return;
+    if (pairSave === 'idle' || pairSave === 'error' || pairSave === 'unavailable') return;
     if (pairSave === 'full') {
       if (pairs.length < MAX_PAIRS) setPairSave('idle');
       return;
@@ -1089,26 +1090,57 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     };
   }
 
-  function onSavePair() {
-    if (!result || !result.sides[0] || !result.sides[1]) return;
-    const outcome = savePair({
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-      a: result.sides[0],
-      b: result.sides[1],
-    });
-    setPairSave(outcome);
-    if (outcome === 'saved' || outcome === 'exists') {
-      setPairAnnounce(pc(locale, outcome === 'saved' ? 'pairSaved' : 'pairExists'));
-    }
-    if (outcome === 'saved') track('chart_saved', { source: 'pair' });
+  function announcePairSaveUnavailable() {
+    setPairSave('unavailable');
+    setPairAnnounce(t(locale, 'profileSaveUnavailable'));
   }
 
-  function saveInvitationPair(): boolean {
+  /**
+   * With account sync on, a first save may find this tab's access bootstrap
+   * not loaded yet. Wait for its decision; the writer still refuses unless
+   * access is granted. False when the comparison changed while waiting or the
+   * bootstrap could not start.
+   */
+  async function pairWriteMayProceed(): Promise<boolean> {
+    if (profileAccessAllowed()) return true;
+    const request = requestRef.current;
+    const access = await ensureProfileWriteAccess();
+    if (requestRef.current !== request) return false;
+    if (access === 'unavailable') {
+      announcePairSaveUnavailable();
+      return false;
+    }
+    return true;
+  }
+
+  function onSavePair() {
+    if (!result || !result.sides[0] || !result.sides[1]) return;
+    const sides: [SavedPairSide, SavedPairSide] = [result.sides[0], result.sides[1]];
+    const request = requestRef.current;
+    runAfterProfileAccess(() => {
+      if (requestRef.current !== request) return;
+      const outcome = savePair({
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        a: sides[0],
+        b: sides[1],
+      });
+      setPairSave(outcome);
+      if (outcome === 'saved' || outcome === 'exists') {
+        setPairAnnounce(pc(locale, outcome === 'saved' ? 'pairSaved' : 'pairExists'));
+      }
+      if (outcome === 'saved') track('chart_saved', { source: 'pair' });
+    }, () => {
+      if (requestRef.current === request) announcePairSaveUnavailable();
+    });
+  }
+
+  async function saveInvitationPair(): Promise<boolean> {
     if (!result || result.source !== 'invite') return false;
     const a = positionsPairSide(result.a.positions, result.a.label);
     const b = positionsPairSide(result.b.positions, result.b.label);
     if (!a || !b) return false;
+    if (!await pairWriteMayProceed()) return false;
     const outcome = savePair({
       id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
@@ -1130,6 +1162,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     if (slotB.source === 'saved') return charts.some((chart) => chart.id === slotB.savedId);
     if (slotB.source !== 'form' || !slotB.city || !slotB.date) return false;
     const timeKnown = slotB.timeKnown && slotB.time !== '';
+    // Captured after the access decision, so only a later change cancels it.
+    if (!await pairWriteMayProceed()) return false;
     const accessGeneration = profileAccessGeneration.current;
     try {
       const [{ prepareLocalTime, resolveLocalToUtc }, { saveChart }, read] = await Promise.all([
@@ -1213,6 +1247,13 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
   }
 
   function onRemovePair(pair: SavedPair, index: number) {
+    runAfterProfileAccess(
+      () => removeStoredPair(pair, index),
+      () => setPairAnnounce(t(locale, 'profileSaveUnavailable')),
+    );
+  }
+
+  function removeStoredPair(pair: SavedPair, index: number) {
     if (!deletePair(pair.id)) {
       setPairAnnounce(t(locale, 'chartSaveError'));
       return;
@@ -1615,6 +1656,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
                   inviterLabel={result.a.label}
                   onSaveChart={saveInvitationOwnChart}
                   onSavePair={saveInvitationPair}
+                  unavailableMessage={pairSave === 'unavailable' ? t(locale, 'profileSaveUnavailable') : undefined}
                   onStartOwn={startOwnInvitationLoop}
                   onConverted={(action) => track('invite_converted', { action })}
                 />
@@ -1670,10 +1712,10 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
           {/* Announcement rides the persistent status node above; these
               visible notes are for sighted users (alerts announce fine
               on insertion). */}
-          {(pairSave === 'full' || pairSave === 'error') && (
+          {(pairSave === 'full' || pairSave === 'error' || pairSave === 'unavailable') && (
             pairSave === 'full'
               ? <p class="calc__error" role="alert" data-pair-status>{pcf(locale, 'pairSaveFull', { n: MAX_PAIRS })}</p>
-              : <p class="calc__error" role="alert" data-pair-status>{t(locale, 'chartSaveError')}</p>
+              : <p class="calc__error" role="alert" data-pair-status>{t(locale, pairSave === 'unavailable' ? 'profileSaveUnavailable' : 'chartSaveError')}</p>
           )}
 
           {wheelMod && result.source === 'plain' && slotA.source !== 'positions'
