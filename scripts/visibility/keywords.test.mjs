@@ -69,6 +69,10 @@ describe('keyword tables', () => {
     const coverage = new Set(LOCALES.flatMap((locale) => read(locale).map((row) => row[7])));
     expect(coverage.has('held')).toBe(true);
     for (const value of coverage) expect(weights, value).toMatch(new RegExp(`\\b${value}: `));
+    // A held page is built in the language and waits only for its release: nothing
+    // left to build, so it weighs the same as a published one.
+    expect(weights).toMatch(/\bheld: 1\b/);
+    expect(weights).toMatch(/\bfull: 1\b/);
   });
 
   it('mark candidates as unpublished and held pages with the URL they will have', () => {
