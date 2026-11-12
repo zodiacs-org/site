@@ -64,6 +64,7 @@ const REGISTRY_SIGN_LASTMOD = '2026-11-10';
 const THESIS_LASTMOD = '2026-11-11';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
+const SKY_HEADS_UP_LASTMOD = '2026-11-12';
 // The sign-season pages and their hub were published together.
 const SEASON_PAGES_LASTMOD = '2026-11-05';
 // The sign season pages' year tables run through 2040 from 2026-11-06.
@@ -674,6 +675,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The privacy page's encrypted chart sync, chart emails and analytics scope
   // wording, merged on 12 November after the pause copy above, so this wins.
   ['/privacy/', '2026-11-12'] as const,
+  // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
+  // after the October design sweep dates above, so this wins.
+  ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
 ]);
 
 function getLastmod(loc: string): string {
