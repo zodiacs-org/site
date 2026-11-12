@@ -194,7 +194,7 @@ var COMPUTE_RECEIPT_SCHEMA = "zodiacs.compute-receipt.v1";
 // src/lib/compute-api/handler.ts
 import { checkRateLimit } from "@vercel/firewall";
 
-// node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
 var SIGNS = /* @__PURE__ */ Object.freeze([
   /* @__PURE__ */ Object.freeze({
     slug: "aries",
@@ -310,7 +310,7 @@ function degreeInSign(lon) {
   return normalizeLongitude(lon) % 30;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
 var DEG = Math.PI / 180;
 var RAD = 180 / Math.PI;
 var HOUSE_SYSTEMS = /* @__PURE__ */ Object.freeze([
@@ -625,7 +625,7 @@ function houseOf(longitude2, cusps) {
   return 12;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
 var DEG2 = Math.PI / 180;
 var ARCSEC = DEG2 / 3600;
 var ARGUMENTS = [
@@ -769,7 +769,7 @@ function eclipticOfDate(x, y, z21, tt) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
   version: "2026-09-24",
@@ -1050,7 +1050,7 @@ function deltaT(ut) {
   return seconds(2e3 + ut / 365.25);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
 var REFERENCE_SPAN = /* @__PURE__ */ Object.freeze({
   from: "1800-01-01T00:00:00.000Z",
   to: "2200-01-01T00:00:00.000Z"
@@ -1259,7 +1259,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -1340,7 +1340,7 @@ function findAspects(bodies) {
 var ENGINE_VERSION = "1.1.0-rc.2";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
-// node_modules/astronomy-engine/esm/astronomy.js
+// ../opus-burn-locale/node_modules/astronomy-engine/esm/astronomy.js
 /**
     @preserve
 
@@ -3279,7 +3279,7 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
 var DEG3 = Math.PI / 180;
 var RAD3 = 180 / Math.PI;
@@ -3475,7 +3475,7 @@ function chartAt(input) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
 var ISO_INSTANT = /^(\d{4}|[+-]\d{6})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2})))?$/;
 function validIsoInput(input) {
   const match = ISO_INSTANT.exec(input);
@@ -3507,7 +3507,7 @@ function dateFrom(input, label2) {
   return date3;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
 var DAY3 = 864e5;
 var REFINE_STEPS = 24;
 var EDGE_PROBE_MAX_MS = 6e4;
@@ -3740,7 +3740,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
 var HOUSE_SYSTEM_NAMES2 = [
   "whole",
   "placidus",
@@ -3821,7 +3821,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -3909,7 +3909,7 @@ function moonPhase(date3) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
 var NAMESPACE = /^[A-Za-z][A-Za-z0-9-]*$/u;
 var VALUE = /^[^\s\p{Cc}\p{Cf}\p{Cs}]+$/u;
 function conventionId(namespace, value) {
@@ -3946,7 +3946,7 @@ function natalConventionIds(envelope) {
   return [...ids].sort();
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
 var julianLeap = (year) => year % 4 === 0;
 var gregorianLeap = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 function parseCalendarDate(value, calendar) {
@@ -3995,7 +3995,7 @@ function julianToGregorian(value) {
   return date3 ? format(civilDateOf(julianDayNumber(date3, "julian"), "gregorian")) : null;
 }
 
-// node_modules/@zodiacs/engine/dist/receipt.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/receipt.js
 var SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 var DIGITS = /^\d+$/;
 function isVersion(value) {
@@ -4849,7 +4849,7 @@ function createNatalEnvelope(chart, context = {}) {
   });
 }
 
-// node_modules/@zodiacs/engine/dist/time.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/time.js
 function timeBasis2(ms, scale2, pin) {
   if (typeof ms !== "number" || !(Math.abs(ms) <= 864e13)) throw new RangeError("ms must be an instant within the range of a Date.");
   if (scale2 !== void 0 && !TIME_SCALE_NAMES.includes(scale2)) throw new RangeError('scale must be "utc", "ut1" or "tt".');
@@ -5272,7 +5272,7 @@ function timeResolutionFacts(module) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/conventions.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/conventions.js
 var CONVENTIONS_REGISTRY = "https://zodiacs.org/developers/conventions/";
 function parseConventionId(id) {
   const colon = typeof id === "string" ? id.indexOf(":") : -1;
@@ -6946,7 +6946,7 @@ var COMPUTE_TAG = Object.freeze({
   description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. The function writes nothing from a request or its result to a log, a file or a database, and responses are not cached; the host's request logs keep each request's web address and IP address. The endpoints answer only while their per-address rate limit is in place, and 503 otherwise. A body with a repeated key is read as JSON.parse reads it: the last value wins. Documentation: ${COMPUTE_DOCS_URL}`
 });
 
-// node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
 var DEG4 = Math.PI / 180;
 var ARCSEC3 = DEG4 / 3600;
 function toEquator(m, angle) {
@@ -6988,7 +6988,7 @@ function turn2(m, x, y, z21) {
   return [m[0] * x + m[1] * y + m[2] * z21, m[3] * x + m[4] * y + m[5] * z21, m[6] * x + m[7] * y + m[8] * z21];
 }
 
-// node_modules/@zodiacs/engine/dist/sky.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/sky.js
 function firstMillisecond(reached, estimate) {
   const start = Math.round(estimate);
   let lo = start - 4;
@@ -24950,7 +24950,7 @@ var birthdays_default = {
   }
 };
 
-// node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
 function readOptions(value, allowed, label2) {
   const out = /* @__PURE__ */ Object.create(null);
   if (value === void 0) return out;
@@ -24974,7 +24974,7 @@ function readOptions(value, allowed, label2) {
   return out;
 }
 
-// node_modules/@zodiacs/engine/dist/techniques.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/techniques.js
 function oneOf2(value, allowed, fallback2, label2) {
   if (value === void 0) return fallback2;
   if (typeof value === "string" && allowed.includes(value)) return value;
@@ -41777,7 +41777,7 @@ function getNumerology(args, context) {
 // src/ai-tools/personal/vedic-signs.ts
 import { z as z16 } from "zod";
 
-// node_modules/@zodiacs/engine/dist/chunk-DCDIMC7W.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/chunk-DCDIMC7W.js
 var DEG7 = Math.PI / 180;
 var ARCSEC4 = DEG7 / 3600;
 var MAS = ARCSEC4 / 1e3;
@@ -42111,7 +42111,7 @@ function siderealLongitude(tropicalLongitude, ayanamsa2) {
   });
 }
 
-// node_modules/@zodiacs/engine/dist/vedic.js
+// ../opus-burn-locale/node_modules/@zodiacs/engine/dist/vedic.js
 var VIMSHOTTARI_LORDS = Object.freeze([
   "Ketu",
   "Venus",
@@ -42618,7 +42618,7 @@ function refineBirth(args, context) {
 function definePersonalTool(definition) {
   return definition;
 }
-async function castNatal(args, clock2) {
+async function resolveBirth(args, clock2) {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
   if (args.time !== void 0 && !parseCivilTime(args.time)) throw new RangeError("time must be HH:MM, such as 08:30.");
@@ -42632,9 +42632,7 @@ async function castNatal(args, clock2) {
     const time = args.time ?? "12:00";
     birthUtc = (longitude2 !== void 0 ? clock2.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude: longitude2 }) : clock2.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
   } else birthUtc = /* @__PURE__ */ new Date(`${args.birthDate}T12:00:00Z`);
-  const chart = computeChart3({ utc: birthUtc, ...placed ? { latitude, longitude: longitude2 } : {}, houseSystem: "whole", timeKnown });
-  const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude: longitude2, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { birthUtc, timeKnown, placed, latitude, longitude: longitude2, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
 }
 async function birthDayEnds2(args, clock2) {
   if (!args.zone) return [new Date(Date.parse(`${args.birthDate}T00:00:00Z`) - 14 * HOUR6), new Date(Date.parse(`${args.birthDate}T23:59:00Z`) + 12 * HOUR6)];
@@ -42699,14 +42697,14 @@ var vedicSignsData = z16.object({
 });
 async function vedicSigns(args, clock2, origin) {
   const ayanamsa2 = args.ayanamsa ?? "lahiri";
-  const natal = await castNatal(args, clock2);
+  const birth = await resolveBirth(args, clock2);
   const reading = computeVedicSigns({
-    birthUtc: natal.birthUtc,
-    timeKnown: natal.timeKnown,
-    latitude: natal.latitude,
-    longitude: natal.longitude,
+    birthUtc: birth.birthUtc,
+    timeKnown: birth.timeKnown,
+    latitude: birth.latitude,
+    longitude: birth.longitude,
     ayanamsa: ayanamsa2,
-    dayEnds: natal.timeKnown ? void 0 : await birthDayEnds2(args, clock2)
+    dayEnds: birth.timeKnown ? void 0 : await birthDayEnds2(args, clock2)
   });
   return {
     data: { birthDate: args.birthDate, ...reading, pageUrl: `${origin}/vedic-signs/`, shareUrl: vedicSignsShareUrl(origin, reading) },

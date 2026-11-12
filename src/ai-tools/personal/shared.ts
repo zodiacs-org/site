@@ -108,26 +108,29 @@ export function dayLabel(at: Date | string, timeZone: string): string {
   return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
 }
 
-export interface NatalCast {
+/** The birth instant and place, checked and resolved, before any chart is cast. */
+export interface BirthMoment {
   birthUtc: Date;
-  chart: Chart;
   timeKnown: boolean;
   placed: boolean;
   /** The birthplace rounded to two decimals, as every tool rounds a place it is given. */
   latitude: number | undefined;
   longitude: number | undefined;
-  /** The ascendant and Midheaven, only with a birth time and place. */
-  angles: { asc: number; mc: number } | null;
   detail: ReadingDetail;
 }
 
+export interface NatalCast extends BirthMoment {
+  chart: Chart;
+  /** The ascendant and Midheaven, only with a birth time and place. */
+  angles: { asc: number; mc: number } | null;
+}
+
 /**
- * The birth chart, cast once: the engine's (src/lib/engine/full.ts), whole-sign
- * houses, from the local time resolved by @zodiacs/engine/geo. Without a time
- * it is cast for local noon (UTC noon without a zone) with no angles, as
- * get_natal_chart and get_personal_transits cast it.
+ * The birth instant from the local time resolved by @zodiacs/engine/geo:
+ * local noon (UTC noon without a zone) without a time. It casts no chart, for
+ * a tool such as get_vedic_signs that runs its own calculation at the instant.
  */
-export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<NatalCast> {
+export async function resolveBirth(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<BirthMoment> {
   const birth = parseCivilDate(args.birthDate);
   if (!birth || birth.year < PERSONAL_MIN_YEAR || birth.year > PERSONAL_MAX_YEAR) throw new RangeError(`birthDate must be a real date from ${PERSONAL_MIN_YEAR} to ${PERSONAL_MAX_YEAR}.`);
   if (args.time !== undefined && !parseCivilTime(args.time)) throw new RangeError('time must be HH:MM, such as 08:30.');
@@ -141,9 +144,21 @@ export async function castNatal(args: BirthArgs, clock: PersonalToolContext['loc
     const time = args.time ?? '12:00';
     birthUtc = (longitude !== undefined ? clock.resolveLocalToUtc(args.birthDate, time, args.zone, { longitude }) : clock.resolveLocalToUtc(args.birthDate, time, args.zone)).utc;
   } else birthUtc = new Date(`${args.birthDate}T12:00:00Z`);
+  return { birthUtc, timeKnown, placed, latitude, longitude, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+}
+
+/**
+ * The birth chart, cast once: the engine's (src/lib/engine/full.ts), whole-sign
+ * houses, at the instant resolveBirth gives. Without a time it is cast for
+ * local noon (UTC noon without a zone) with no angles, as get_natal_chart and
+ * get_personal_transits cast it.
+ */
+export async function castNatal(args: BirthArgs, clock: PersonalToolContext['localTime']): Promise<NatalCast> {
+  const moment = await resolveBirth(args, clock);
+  const { birthUtc, timeKnown, placed, latitude, longitude } = moment;
   const chart = computeChart({ utc: birthUtc, ...(placed ? { latitude, longitude } : {}), houseSystem: 'whole', timeKnown });
   const angles = timeKnown && placed && chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null;
-  return { birthUtc, chart, timeKnown, placed, latitude, longitude, angles, detail: readingDetail({ hasDate: true, hasTime: timeKnown, hasPlace: placed }) };
+  return { ...moment, chart, angles };
 }
 
 /**

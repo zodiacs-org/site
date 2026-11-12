@@ -1,9 +1,16 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { NAKSHATRAS } from '@zodiacs/engine/vedic';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { executeAiTool } from '../tools';
 import { NAKSHATRA_LORE, RASHI_LINE, vedicSigns } from './vedic-signs';
 import { forbiddenClaim } from './shared';
+import { computeChart } from '../../lib/engine/full';
+
+// The engine, counted: the same computeChart, so every answer below is the real one.
+vi.mock('../../lib/engine/full', async (importOriginal) => {
+  const engine = await importOriginal<typeof import('../../lib/engine/full')>();
+  return { ...engine, computeChart: vi.fn(engine.computeChart) };
+});
 
 const clock = createLocalTimeModule();
 const run = (args: Parameters<typeof vedicSigns>[0]) => vedicSigns(args, clock, 'https://zodiacs.org').then((result) => result.data);
@@ -102,5 +109,17 @@ describe('get_vedic_signs privacy and refusals', () => {
   it('refuses a time without a zone, naming the field rule, and an unknown ayanamsa', async () => {
     expect(await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', time: '08:30' }, ON)).toMatchObject({ ok: false, error: { message: 'A birth time or a place needs its time zone.' } });
     expect(await executeAiTool('get_vedic_signs', { birthDate: '1990-05-03', ayanamsa: 'galactic' }, ON)).toMatchObject({ ok: false, error: { message: expect.stringContaining('ayanamsa must be one of') } });
+  });
+});
+
+describe('get_vedic_signs casts each chart once', () => {
+  it('runs the engine once for a timed birth, and once at noon and at each end of the day for an untimed one', async () => {
+    const charts = vi.mocked(computeChart);
+    charts.mockClear();
+    await run({ birthDate: '1990-05-03', time: '08:30', zone: 'Asia/Kolkata', latitude: 28.61, longitude: 77.21 });
+    expect(charts).toHaveBeenCalledTimes(1);
+    charts.mockClear();
+    await run({ birthDate: '1990-05-03', zone: 'Asia/Kolkata' });
+    expect(charts).toHaveBeenCalledTimes(3);
   });
 });

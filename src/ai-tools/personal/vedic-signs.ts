@@ -18,7 +18,7 @@ import { SIGNS } from '../../lib/signs';
 import { computeVedicSigns } from '../../lib/vedic-signs/compute';
 import { vedicSignsShareUrl } from '../../lib/vedic-signs/share';
 import { RASHIS, VEDIC_AYANAMSAS, type VedicAyanamsa } from '../../lib/vedic-signs/wording';
-import { birthDayEnds, birthFields, castNatal, definePersonalTool, refineBirth, type BirthArgs } from './shared';
+import { birthDayEnds, birthFields, definePersonalTool, refineBirth, resolveBirth, type BirthArgs } from './shared';
 
 export { NAKSHATRA_LORE, RASHIS, RASHI_LINE, VEDIC_AYANAMSAS, VEDIC_NOTE, type VedicAyanamsa } from '../../lib/vedic-signs/wording';
 
@@ -79,12 +79,13 @@ export const vedicSignsData = z.object({
 export type VedicSignsData = z.infer<typeof vedicSignsData>;
 
 /** The sidereal signs and Moon nakshatra for one birth. Throws RangeError for details it cannot use. */
-export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | undefined }, clock: Parameters<typeof castNatal>[1], origin: string): Promise<{ data: VedicSignsData; links: { title: string; url: string }[] }> {
+export async function vedicSigns(args: BirthArgs & { ayanamsa?: VedicAyanamsa | undefined }, clock: Parameters<typeof resolveBirth>[1], origin: string): Promise<{ data: VedicSignsData; links: { title: string; url: string }[] }> {
   const ayanamsa = args.ayanamsa ?? 'lahiri';
-  const natal = await castNatal(args, clock);
+  // The instant only: computeVedicSigns casts the one chart at it (and at the day's ends untimed).
+  const birth = await resolveBirth(args, clock);
   const reading = computeVedicSigns({
-    birthUtc: natal.birthUtc, timeKnown: natal.timeKnown, latitude: natal.latitude, longitude: natal.longitude, ayanamsa,
-    dayEnds: natal.timeKnown ? undefined : await birthDayEnds(args, clock),
+    birthUtc: birth.birthUtc, timeKnown: birth.timeKnown, latitude: birth.latitude, longitude: birth.longitude, ayanamsa,
+    dayEnds: birth.timeKnown ? undefined : await birthDayEnds(args, clock),
   });
   return {
     data: { birthDate: args.birthDate, ...reading, pageUrl: `${origin}/vedic-signs/`, shareUrl: vedicSignsShareUrl(origin, reading) },
