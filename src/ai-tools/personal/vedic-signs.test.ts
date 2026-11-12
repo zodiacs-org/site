@@ -56,6 +56,9 @@ describe('get_vedic_signs without a birth time', () => {
     expect(data.timeKnown).toBe(false);
     expect(data.moon).toBeNull();
     expect(data.moonCandidates).toEqual(['Libra (Tula)', 'Scorpio (Vrishchika)']);
+    expect(data.nakshatraCandidates).toEqual(['Vishakha', 'Anuradha']);
+    // With no zone the day runs about 50 hours, and the Moon passes from Swati through Vishakha into Anuradha.
+    expect((await run({ birthDate: '2000-01-02' })).nakshatraCandidates).toEqual(['Swati', 'Vishakha', 'Anuradha']);
     expect(data.limits.join(' ')).toContain('A birth time settles it');
     expect(data.confidenceLabel).toBe('Reading confidence 55%');
     // The share link leaves out the Moon sign the day did not settle, and has no rising sign.

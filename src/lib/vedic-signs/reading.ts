@@ -85,6 +85,17 @@ export function nakshatraReading(position: SiderealMoment['nakshatra']): VedicNa
   };
 }
 
+/**
+ * Every division a body passed through between the first and last of the day's
+ * moments, in order: the Sun and Moon never move backwards, so a day that starts
+ * in one sign or nakshatra and ends two along also passed through the one between.
+ */
+export function passedThrough(indices: readonly number[], count: number): number[] {
+  const first = indices[0], last = indices[indices.length - 1];
+  const steps = (last - first + count) % count;
+  return Array.from({ length: steps + 1 }, (_, step) => (first + step) % count);
+}
+
 /** The line for a pada an untimed birth day leaves open, such as padas 1, 2, 3 or 4 of Chitra. */
 export const padaLimit = (nakshatra: string, padas: readonly number[]) =>
   `The Moon stayed in ${nakshatra} that day but moved through more than one of its quarters (padas): pada ${padas.slice(0, -1).join(', ')} or ${padas[padas.length - 1]}. A birth time settles it.`;
@@ -94,7 +105,7 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
   const { at, ends } = input;
   const settled = (pick: (moment: SiderealMoment) => number) => {
     if (!ends) return { held: true, candidates: [] as string[] };
-    const indices = [...new Set(ends.map((end) => signIndexForLongitude(pick(end))))];
+    const indices = passedThrough(ends.map((end) => signIndexForLongitude(pick(end))), 12);
     return { held: indices.length === 1, candidates: indices.length === 1 ? [] : indices.map(label) };
   };
   const sunHold = settled((moment) => moment.sun.lon);
@@ -102,7 +113,7 @@ export function vedicReading(input: VedicReadingInput): VedicReading {
   const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude(at.sun.lon))) : null;
   const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude(at.moon.lon))) : null;
   const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude(at.rising.lon))) : null;
-  const nakshatraNames = ends ? [...new Set(ends.map((end) => NAKSHATRA_NAMES[end.nakshatra.index]))] : [];
+  const nakshatraNames = ends ? passedThrough(ends.map((end) => end.nakshatra.index), 27).map((index) => NAKSHATRA_NAMES[index]) : [];
   const nakshatraHeld = !ends || nakshatraNames.length === 1;
   // The Moon only moves forward, so within one nakshatra the day passed through every pada between the two ends.
   const endPadas = ends && nakshatraHeld ? ends.map((end) => end.nakshatra.pada) : [];

@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { NAKSHATRAS, siderealChart } from '@zodiacs/engine/vedic';
 import { computeVedicSigns } from './compute';
-import { UNDER_13_MESSAGE, isUnder13, vedicReading } from './reading';
+import { UNDER_13_MESSAGE, isUnder13, passedThrough, vedicReading } from './reading';
 import { parseVedicSignsShare, vedicSignsQuery, vedicSignsShareQuery, vedicSignsShareUrl, VEDIC_SIGNS_SHARE_KEYS } from './share';
 import { AYANAMSA_NAME, NAKSHATRA_LORE, NAKSHATRA_NAMES, RASHI_LINE, VEDIC_AYANAMSAS, VEDIC_NOTE, nakshatraSigns } from './wording';
 import { forbiddenClaim } from '../../ai-tools/personal/shared';
@@ -116,6 +116,21 @@ describe('the Vedic signs share link', () => {
     const moved = vedicReading({ ...base, at: moment(180, 13, 3), ends: [moment(170, 12, 4), moment(184, 13, 4)] });
     expect(moved.moonNakshatra).toBeNull();
     expect(moved.padaCandidates).toEqual([]);
+  });
+
+  it('lists every nakshatra and sign the Moon passed through, not only those at the ends of the day', () => {
+    const moment = (moonLon: number, index: number) => ({ ayanamsa: 24, sun: { lon: 100, tropical: 124 }, moon: { lon: moonLon, tropical: moonLon + 24 }, rising: null, nakshatra: { index, pada: 1 as const, lord: 'Mars' } });
+    const base = { timeKnown: false, placed: false, ayanamsa: 'lahiri' as const };
+    // Swati (186.67 to 200) to Anuradha (213.33 to 226.67) passes through Vishakha.
+    const three = vedicReading({ ...base, at: moment(205, 15), ends: [moment(199, 14), moment(214, 16)] });
+    expect(three.nakshatraCandidates).toEqual(['Swati', 'Vishakha', 'Anuradha']);
+    // Across Pisces into Aries: Revati to Bharani passes through Ashwini, and the 50 hour no-zone day can touch three signs.
+    const wrap = vedicReading({ ...base, at: moment(5, 0), ends: [moment(358, 26), moment(15, 1)] });
+    expect(wrap.nakshatraCandidates).toEqual(['Revati', 'Ashwini', 'Bharani']);
+    const signs = vedicReading({ ...base, at: moment(45, 3), ends: [moment(29.5, 2), moment(61, 4)] });
+    expect(signs.moonCandidates).toEqual(['Aries (Mesha)', 'Taurus (Vrishabha)', 'Gemini (Mithuna)']);
+    expect(passedThrough([26, 1], 27)).toEqual([26, 0, 1]);
+    expect(passedThrough([5, 5], 12)).toEqual([5]);
   });
 
   it('is built from a reading the same way the tool builds it', () => {

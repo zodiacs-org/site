@@ -42462,12 +42462,17 @@ function nakshatraReading(position2) {
     line: `Your Moon was in ${name}, the ${nakshatraOrdinal(position2.index + 1)} nakshatra, ruled by ${position2.lord}, with ${lore.deity} as its deity and ${lore.symbol} as its symbol. ${lore.line}`
   };
 }
+function passedThrough(indices, count) {
+  const first2 = indices[0], last2 = indices[indices.length - 1];
+  const steps = (last2 - first2 + count) % count;
+  return Array.from({ length: steps + 1 }, (_, step) => (first2 + step) % count);
+}
 var padaLimit = (nakshatra2, padas) => `The Moon stayed in ${nakshatra2} that day but moved through more than one of its quarters (padas): pada ${padas.slice(0, -1).join(", ")} or ${padas[padas.length - 1]}. A birth time settles it.`;
 function vedicReading(input) {
   const { at, ends } = input;
   const settled = (pick) => {
     if (!ends) return { held: true, candidates: [] };
-    const indices = [...new Set(ends.map((end) => signIndexForLongitude2(pick(end))))];
+    const indices = passedThrough(ends.map((end) => signIndexForLongitude2(pick(end))), 12);
     return { held: indices.length === 1, candidates: indices.length === 1 ? [] : indices.map(label) };
   };
   const sunHold = settled((moment2) => moment2.sun.lon);
@@ -42475,7 +42480,7 @@ function vedicReading(input) {
   const sun = sunHold.held ? signOf(at.sun, sunLine(signIndexForLongitude2(at.sun.lon))) : null;
   const moon = moonHold.held ? signOf(at.moon, moonLine(signIndexForLongitude2(at.moon.lon))) : null;
   const rising = input.timeKnown && input.placed && at.rising ? signOf(at.rising, risingLine(signIndexForLongitude2(at.rising.lon))) : null;
-  const nakshatraNames = ends ? [...new Set(ends.map((end) => NAKSHATRA_NAMES[end.nakshatra.index]))] : [];
+  const nakshatraNames = ends ? passedThrough(ends.map((end) => end.nakshatra.index), 27).map((index) => NAKSHATRA_NAMES[index]) : [];
   const nakshatraHeld = !ends || nakshatraNames.length === 1;
   const endPadas = ends && nakshatraHeld ? ends.map((end) => end.nakshatra.pada) : [];
   const firstPada = endPadas.length ? Math.min(...endPadas) : 0;
