@@ -195,11 +195,12 @@ How the check works:
   should keep it that way, since the MCP 0.6.5 removal of the baby occasion
   was triggered by names, places and coordinates.
 - Not exempt as built: `BabyShowerSky` has an optional "Whose shower" names
-  field (`src/islands/BabyShowerSky.tsx:78`) and reads and writes those names
-  in the link's `#n=` fragment (`:60`), at the audit commit and on `main`. It
-  takes no place and no save, but it does carry names in a link. Either drop
-  the names field and the `#n=` key, or keep the page out of the exemption and
-  under the same rules as the other tools. Update since
+  field (`src/islands/BabyShowerSky.tsx:78`) and reads names from an incoming
+  link's `#n=` fragment (`:60`), at the audit commit and on `main`. It does
+  not write or generate such links, and it takes no place and no save, so the
+  date-only exemption still holds for what it stores and shares. A test should
+  keep it that way, and the `#n=` reader can be dropped when the page is next
+  touched. Update since
   the audit: #985 (`7d005c477`, 2026-11-12) hides the baby zodiac, baby
   shower and child's chart pages from discovery (noindex and nofollow, out of
   the sitemap, tools hub and occasion picker; the page files stay). The
