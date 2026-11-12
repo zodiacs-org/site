@@ -971,6 +971,11 @@ function xmlEscape(value) {
 
 export const REGISTRY_RESEARCH_FEED_DESCRIPTION = 'Deterministic symbolic research and separately timestamped Zodiac market observations.';
 
+/**
+ * @param {object} feed
+ * @param {{ pause?: object | null }} [options]
+ * @returns {string}
+ */
 export function registryResearchRss(feed, { pause = null } = {}) {
   if (feed?.schema !== REGISTRY_RESEARCH_FEED_SCHEMA) throw new Error(`feed must use ${REGISTRY_RESEARCH_FEED_SCHEMA}`);
   const pauseNotice = registryResearchPauseNotice(pause);
