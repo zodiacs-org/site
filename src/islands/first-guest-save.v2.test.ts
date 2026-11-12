@@ -148,7 +148,6 @@ const flush = async () => { for (let index = 0; index < 20; index += 1) await ne
 
 /** Waits for conditions rather than a fixed number of ticks: module loads take longer under load. */
 const bootstrapSubscribed = () => vi.waitFor(() => expect(sync.listeners).toHaveLength(1));
-const accessGranted = (context: Record<string, any>) => vi.waitFor(() => expect(context.profileAccessAllowed()).toBe(true));
 const bootstrapSettled = () => vi.waitFor(async () => {
   expect((await import('../lib/account-v2/profile-access-autostart')).profileAccessSettled()).toBe(true);
 });
@@ -258,13 +257,13 @@ describe('first-time guest save with account sync on', () => {
     const context = await chartContext();
     const save = context.commitSave(undefined, 'skip');
     await bootstrapSubscribed();
-    // An auth event grants this tab while the start's session read is pending,
-    // then another tab's owner transition takes that access away.
-    for (const listener of sync.listeners) listener(null);
-    await accessGranted(context);
+    // The start's session read, the current evaluation, is still pending when
+    // another tab's owner transition takes access away from the waiting save.
+    expect(context.saved).toBe('idle');
     ownerTransition();
     expect(context.profileAccessAllowed()).toBe(false);
     win.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    // The read answers and the bootstrap grants this tab again.
     releaseSession();
     await save;
     await flush();
@@ -272,6 +271,23 @@ describe('first-time guest save with account sync on', () => {
     expect(context.profileAccessAllowed()).toBe(true);
     expect(local.getItem('zodiacs.profile.v1')).toBeNull();
     expect(context.saved).toBe('idle');
+  });
+
+  it('saves a chart as soon as a newer auth evaluation grants, while the superseded session read is pending', async () => {
+    const releaseSession = deferredSession();
+    const context = await chartContext();
+    const save = context.commitSave(undefined, 'skip');
+    await bootstrapSubscribed();
+    // The auth event's evaluation is current and grants; the start's read is obsolete.
+    for (const listener of sync.listeners) listener(null);
+    await save;
+    await vi.waitFor(() => expect(context.saved).toBe('saved'));
+    expect(JSON.parse(local.getItem('zodiacs.profile.v1')!).charts).toHaveLength(1);
+    // The obsolete read answers later and changes nothing.
+    releaseSession();
+    await flush();
+    expect(context.profileAccessAllowed()).toBe(true);
+    expect(context.saved).toBe('saved');
   });
 
   it('cancels a chart save when access is revoked after the wait, before the write', async () => {
@@ -322,8 +338,7 @@ describe('first-time guest save with account sync on', () => {
     const context = await pairContext();
     context.onSavePair();
     await bootstrapSubscribed();
-    for (const listener of sync.listeners) listener(null);
-    await accessGranted(context);
+    expect(context.pairSave).toBe('idle');
     ownerTransition();
     win.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
     releaseSession();

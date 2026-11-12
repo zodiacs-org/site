@@ -81,8 +81,10 @@ export function setProfileSyncImporterForTests(next?: () => Promise<SyncModule>)
 }
 
 /**
- * - `pending`: the bootstrap is starting, or an evaluation is in flight.
- * - `settled`: nothing is in flight; `profileAccessAllowed()` is the verdict.
+ * - `pending`: the bootstrap is starting, or its current evaluation is in flight.
+ * - `settled`: the current evaluation has ended; `profileAccessAllowed()` is
+ *   the verdict. Obsolete work may still be finishing, but it can no longer
+ *   grant anything, so it never holds the verdict back.
  * - `failed`: the bootstrap could not start (its sync module did not load, or
  *   reading the session failed). The tab stays locked until a retry succeeds.
  */
@@ -98,9 +100,9 @@ interface BootstrapControl {
 /**
  * The tab-lifetime shared lease required by every private profile reader and
  * writer. This is the only code that activates the lease or writes a grant.
- * `onSettled` runs each time nothing is in flight any more (settled or
- * failed), so a waiting save can read `profileAccessAllowed()` knowing the
- * coordinator has decided.
+ * `onSettled` runs each time the current evaluation ends (settled or failed),
+ * so a waiting save can read `profileAccessAllowed()` knowing the coordinator
+ * has decided.
  */
 function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   let live = true;
@@ -108,9 +110,19 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   let unsubscribeRevocation = () => {};
   let authVersion = 0;
   let accessVersion = 0;
-  // The start and every evaluation count while they run.
-  let inFlight = 0;
+  // The start and every evaluation each open a generation, and only the
+  // newest is current. Settlement follows the current generation alone: a
+  // superseded session read or lease request still in flight never holds the
+  // verdict back, and every step checks its generation, so obsolete work can
+  // neither activate a lease nor write a grant once a newer one has begun.
+  let generation = 0;
+  let decidedGeneration = 0;
   let failed = false;
+  // True from a start until it learns the session (its snapshot, or an auth
+  // event). A reevaluation then waits for the start's own evaluation, which
+  // has not begun and reads the state afresh, rather than replacing it with
+  // one for an account not yet known.
+  let awaitingSession = false;
   let currentAccountId: string | null = null;
   // The account the last evaluation was for; undefined before the first.
   let evaluatedAccountId: string | null | undefined;
@@ -135,11 +147,19 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
     if (held || changed) announceAccessChange();
   };
 
-  const begin = () => { inFlight += 1; };
-  const end = () => {
-    inFlight -= 1;
-    if (inFlight === 0) onSettled();
+  const begin = () => {
+    generation += 1;
+    return generation;
   };
+  const end = (opened: number) => {
+    if (opened !== generation) return;
+    decidedGeneration = opened;
+    onSettled();
+  };
+  const pending = () => decidedGeneration !== generation;
+  const isCurrent = (expectedAuthVersion: number, expectedGeneration: number) => live
+    && authVersion === expectedAuthVersion
+    && generation === expectedGeneration;
 
   // Another tab's owner transition, or one this tab's account panel runs, is
   // an owner change. This bootstrap's own transitions follow the revoke that
@@ -172,12 +192,12 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
     mode: 'unowned' | 'retained' | 'account',
     accountId: string | null,
     expectedAuthVersion: number,
+    expectedGeneration: number,
   ) => {
     const expectedAccessVersion = accessVersion;
     const nextLease = await acquireAccountProfileReadLease();
     if (!nextLease
-      || !live
-      || authVersion !== expectedAuthVersion
+      || !isCurrent(expectedAuthVersion, expectedGeneration)
       || accessVersion !== expectedAccessVersion) {
       nextLease?.release();
       return;
@@ -204,13 +224,18 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
     announceAccessChange();
   };
 
-  const evaluate = async (accountId: string | null, expectedAuthVersion: number) => {
+  const evaluate = async (
+    accountId: string | null,
+    expectedAuthVersion: number,
+    expectedGeneration: number,
+  ) => {
+    const stillCurrent = () => isCurrent(expectedAuthVersion, expectedGeneration);
     // An evaluation for another account than the last one is an account
     // change even on a tab that held nothing.
     const accountChanged = evaluatedAccountId !== undefined && evaluatedAccountId !== accountId;
     evaluatedAccountId = accountId;
     revoke(accountChanged);
-    if (!live || authVersion !== expectedAuthVersion) return;
+    if (!stillCurrent()) return;
     // Remove the exact UTC/coordinate residue written by a brief v1 client
     // before granting any account, retained, or account-free profile lease.
     if (!sanitizeLegacyFirstReadingIdentity(local)) return;
@@ -218,9 +243,9 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
     if (accountId === null) {
       const owner = readLocalAccountOwner(local);
       if (owner.status === 'missing') {
-        await grant('unowned', null, expectedAuthVersion);
+        await grant('unowned', null, expectedAuthVersion, expectedGeneration);
       } else if (owner.status === 'ready' && retainedProfileAccessAllowed(local, owner.accountId)) {
-        await grant('retained', owner.accountId, expectedAuthVersion);
+        await grant('retained', owner.accountId, expectedAuthVersion, expectedGeneration);
       }
       return;
     }
@@ -237,9 +262,9 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
       // legacy charts; the account panel presents it. Unavailable or
       // pending record storage keeps this tab locked rather than binding.
       if (await discoverSavedRecords() !== 'empty') return;
-      if (!live || authVersion !== expectedAuthVersion) return;
+      if (!stillCurrent()) return;
       const transition = await runOwnTransition(async () => {
-        if (!live || authVersion !== expectedAuthVersion) return false;
+        if (!stillCurrent()) return false;
         const current = inspectLocalAccountBoundary(
           local,
           accountId,
@@ -248,7 +273,7 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
         if (current.status !== 'ready' || current.localOwnerAccountId !== null) return false;
         // A count sampled before the lock is not proof; recheck under it.
         if (await discoverSavedRecords() !== 'empty') return false;
-        if (!live || authVersion !== expectedAuthVersion) return false;
+        if (!stillCurrent()) return false;
         return recordCompletedAccountBoundaryDecision(local, accountId, 'clear');
       });
       if (!transition.ok || !transition.value) return;
@@ -260,23 +285,21 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
       if (retained.status === 'ready') {
         if (retained.accountId !== accountId) return;
         const transition = await runOwnTransition(
-          () => live
-            && authVersion === expectedAuthVersion
-            && lockCurrentAccountProfile(local, accountId),
+          () => stillCurrent() && lockCurrentAccountProfile(local, accountId),
         );
         if (!transition.ok || !transition.value) return;
       }
     }
-    if (!live || authVersion !== expectedAuthVersion) return;
-    await grant('account', accountId, expectedAuthVersion);
+    if (!stillCurrent()) return;
+    await grant('account', accountId, expectedAuthVersion, expectedGeneration);
   };
 
   const runEvaluation = async (accountId: string | null, expectedAuthVersion: number) => {
-    begin();
+    const opened = begin();
     try {
-      await evaluate(accountId, expectedAuthVersion);
+      await evaluate(accountId, expectedAuthVersion, opened);
     } finally {
-      end();
+      end(opened);
     }
   };
 
@@ -284,10 +307,12 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   // never reads the locked state the tab opens with as a decision.
   const start = () => {
     failed = false;
-    begin();
+    awaitingSession = true;
+    const opened = begin();
     void syncImporter().then(async (api) => {
       if (!live) return;
       if (!api.isSupabaseConfigured()) {
+        awaitingSession = false;
         revoke();
         return;
       }
@@ -296,15 +321,18 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
       unsubscribeAuth = api.onSyncAuthChange((next) => {
         authVersion += 1;
         currentAccountId = next?.user.id ?? null;
+        awaitingSession = false;
         void runEvaluation(currentAccountId, authVersion);
       });
       const snapshotVersion = authVersion;
       const current = await api.getSyncSession();
-      if (!live || authVersion !== snapshotVersion) return;
+      if (!live || authVersion !== snapshotVersion || generation !== opened) return;
       currentAccountId = current?.user.id ?? null;
-      await evaluate(currentAccountId, snapshotVersion);
+      awaitingSession = false;
+      await evaluate(currentAccountId, snapshotVersion, opened);
     }).catch(() => {
       if (!live) return;
+      awaitingSession = false;
       // Could not start. Stay locked, drop anything this start set in motion,
       // and report it as unavailable so the next save starts again.
       unsubscribeAuth();
@@ -312,17 +340,20 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
       authVersion += 1;
       revoke();
       failed = true;
-    }).finally(end);
+    }).finally(() => end(opened));
   };
   start();
 
-  const reevaluate = () => { void runEvaluation(currentAccountId, authVersion); };
+  const reevaluate = () => {
+    if (awaitingSession) return;
+    void runEvaluation(currentAccountId, authVersion);
+  };
   window.addEventListener(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT, reevaluate);
 
   return {
-    state: () => (inFlight > 0 ? 'pending' : failed ? 'failed' : 'settled'),
+    state: () => (pending() ? 'pending' : failed ? 'failed' : 'settled'),
     retry: () => {
-      if (live && failed && inFlight === 0) start();
+      if (live && failed && !pending()) start();
     },
     stop: () => {
       live = false;
@@ -383,9 +414,9 @@ export class ProfileAccessStartError extends Error {
 }
 
 /**
- * True when nothing is in flight, so `profileAccessAllowed()` is the current
- * verdict. Read it in the same step as the verdict: an evaluation that starts
- * later makes it false again.
+ * True when the current evaluation has ended, so `profileAccessAllowed()` is
+ * the current verdict. Read it in the same step as the verdict: an evaluation
+ * that starts later makes it false again.
  */
 export function profileAccessSettled(): boolean {
   return running?.control?.state() !== 'pending';
