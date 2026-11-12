@@ -1590,6 +1590,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
           {result.source === 'plain' && sendBackMod && (
             <sendBackMod.SendBackCard
               variant="share"
+              locale={locale}
               a={result.a}
               b={result.b}
               summary={result.summary}
