@@ -314,7 +314,9 @@ describe('thesis feedback simplification contract', () => {
       expect.stringContaining('attention-chart--wide'),
       expect.stringContaining('attention-chart--small'),
     ]));
-    expect(fig2).toContain('href="/thesis/thesis-attention.json"');
+    expect(fig2).toContain('href="/thesis/thesis-seasons.json"');
+    const seasons = spawnSync(process.execPath, ['scripts/build-thesis-figures.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
+    expect(seasons.status, seasons.stderr).toBe(0);
     expect(textOf(fig2)).toContain('curiosity, not demand for the coins');
   });
 
