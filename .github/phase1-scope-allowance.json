@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "pause-registry-research-feed-2026-11-12",
-  "baseCommit": "1853a6814d483a2253e480c0303eae2712fdd703",
+  "baseCommit": "9ed6fe685af4b9a7e6671a7a8d5c9bd2ecf363ae",
   "protectedPaths": [
     "scripts/build-app.mjs",
     "scripts/registry-research-lib.mjs",

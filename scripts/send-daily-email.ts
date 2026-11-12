@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
 import dailyData from '../src/data/daily.json';
@@ -22,27 +22,35 @@ import {
   createResendDelivery,
   createSupabaseDeliveryReceiptStore,
   deliverDailyEmails,
+  type DailyEmailDispatchCheck,
   type DeliveryReceiptStore,
   type ResendDelivery,
 } from '../src/lib/daily-email/delivery';
 import { renderDailyEmail, validateDailyEmailSources } from '../src/lib/daily-email/content';
 import { dailyRecipientHash } from '../src/lib/daily-email/identity';
 import {
+  dailySunFallbacks,
   filterDailyEmailCohort,
   mergeDailyEmailRecipients,
   parseTestAllowlist,
   selectChartRecipients,
   type ChartPreferenceRow,
-  type SyncedChartRow,
 } from '../src/lib/daily-email/recipients';
-import { isDailyEmailDue } from '../src/lib/daily-email/schedule';
+import { savedChartFromAccountSource } from '../src/lib/daily-email/account-chart';
+import {
+  loadChartEmailSources,
+  type AccountChartSource,
+  type AccountChartSourceConnection,
+} from '../src/lib/account-api/chart-sources';
+import { encryptAccountPrivatePayload } from '../src/lib/account-api/encryption';
+import { serializeAccountPrivateChartPayload } from '../src/lib/account-api/sync-wire';
 import {
   createRateLimitedResendRequest,
   type ResendRequest,
 } from '../src/lib/daily-email/resend-request';
 import { loadDailySunContacts, requireDailySunSegmentId } from '../src/lib/daily-email/segments';
 import { loadAuthorizedSunRecipients } from '../src/lib/daily-email/sun-authority';
-import type { DailyEmailRecipient } from '../src/lib/daily-email/types';
+import type { DailyEmailRecipient, SunSignRecipient } from '../src/lib/daily-email/types';
 
 const daily = dailyData as Daily;
 const publication = dailyPublicationData as DailyPublication;
@@ -174,41 +182,60 @@ export function assertDailyEmailSendInterlocks(env: NodeJS.ProcessEnv): DailyEma
   return cohort;
 }
 
-function fixtureChart(): SavedChart {
-  return {
-    id: '10000000-0000-4000-8000-000000000001',
-    name: 'Fixture chart',
-    createdAt: `${publication.date}T00:00:00.000Z`,
-    updatedAt: `${publication.date}T00:00:00.000Z`,
-    birth: {
-      date: '1990-01-01',
-      time: '12:00',
+const FIXTURE_USER_ID = '10000000-0000-4000-8000-000000000002';
+const FIXTURE_CHART_ID = '10000000-0000-4000-8000-000000000001';
+
+/**
+ * The fixture chart goes through the same path as a real opted-in account:
+ * an encrypted v2 envelope, decrypted in this job with a keyring that exists
+ * only in memory for this smoke run. No environment key is read.
+ */
+async function fixtureChart(): Promise<SavedChart> {
+  const env = {
+    ACCOUNT_SYNC_V2_ENCRYPTION_KEYS: JSON.stringify({ 1: randomBytes(32).toString('base64') }),
+    ACCOUNT_SYNC_V2_ACTIVE_KEY_VERSION: '1',
+  };
+  const sun = daily.bodies[0]!.lon;
+  const bodies = Array.from({ length: 12 }, (_, index) => (
+    Math.round(((index === 0 ? sun : sun + 11.25 * index) % 360) * 1_000) / 1_000
+  ));
+  const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+    'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'] as const;
+  const payload = {
+    label: 'Fixture chart',
+    birth: { date: '1990-01-01', time: '12:00', timeKnown: true, place: null },
+    derived: {
+      positions: { b: bodies, a: [0, 270] as [number, number], h: 'w' as const, v: 'fixture' },
       timeKnown: true,
-      place: null,
-    },
-    summary: {
+      sunSign: signs[Math.floor(bodies[0]! / 30)]!,
       engineVersion: 'fixture',
-      utcISO: '1990-01-01T12:00:00.000Z',
-      houseSystem: 'whole',
-      bodies: daily.bodies.map((body, index) => ({
-        body: body.body,
-        lon: index === 0 ? body.lon : (body.lon + 11.25) % 360,
-        retrograde: false,
-      })),
-      angles: null,
-      flags: [],
+      houseSystem: 'whole' as const,
     },
   };
+  const source: AccountChartSource = {
+    userId: FIXTURE_USER_ID,
+    chartId: FIXTURE_CHART_ID,
+    revision: 1,
+    envelope: encryptAccountPrivatePayload(
+      serializeAccountPrivateChartPayload(payload),
+      { userId: FIXTURE_USER_ID, chartId: FIXTURE_CHART_ID, revision: 1 },
+      env,
+    ),
+  };
+  const chart = await savedChartFromAccountSource(source, env, `${publication.date}T00:00:00.000Z`);
+  if (!chart) throw new Error('The fixture chart did not decrypt.');
+  return chart;
 }
 
-function fixtureRecipients(to: string | null): DailyEmailRecipient[] {
+async function fixtureRecipients(to: string | null): Promise<DailyEmailRecipient[]> {
   const chartEmail = to ?? 'chart-fixture@example.com';
   const recipients: DailyEmailRecipient[] = [{
     tier: 'chart',
     email: chartEmail,
-    userId: '10000000-0000-4000-8000-000000000002',
-    chartId: '10000000-0000-4000-8000-000000000001',
-    chart: fixtureChart(),
+    userId: FIXTURE_USER_ID,
+    chartId: FIXTURE_CHART_ID,
+    revision: 1,
+    chart: await fixtureChart(),
     timezone: 'UTC',
   }];
   if (!to) {
@@ -240,28 +267,51 @@ async function readConfirmedPreferences(client: ReturnType<typeof createClient>)
   return rows;
 }
 
-async function readSelectedCharts(
-  client: ReturnType<typeof createClient>,
-  preferences: readonly ChartPreferenceRow[],
-): Promise<SyncedChartRow[]> {
-  const rows: SyncedChartRow[] = [];
-  for (let offset = 0; offset < preferences.length; offset += 100) {
-    const batch = preferences.slice(offset, offset + 100);
-    const users = batch.map((row) => row.user_id);
-    const chartIds = batch.flatMap((row) => row.chart_id ? [row.chart_id] : []);
-    if (users.length === 0 || chartIds.length === 0) continue;
-    const { data, error } = await client
-      .from('charts')
-      .select('id,user_id,payload')
-      .in('user_id', users)
-      .in('id', chartIds);
-    if (error) throw error;
-    rows.push(...((data ?? []) as SyncedChartRow[]));
-  }
-  const selected = new Set(preferences.flatMap((row) => (
-    row.chart_id ? [`${row.user_id}:${row.chart_id}`] : []
-  )));
-  return rows.filter((row) => selected.has(`${row.user_id}:${row.id}`));
+/**
+ * The account's current eligible self chart, read fresh from the database:
+ * active account, chart_sync and chart_emails granted, one self chart at its
+ * current revision. Null when it is not eligible right now.
+ */
+export async function loadCurrentChartEmailSource(
+  userId: string,
+  connection: AccountChartSourceConnection,
+): Promise<AccountChartSource | null> {
+  const sources = await loadChartEmailSources([userId], connection);
+  return sources.get(userId.toLowerCase()) ?? null;
+}
+
+/**
+ * The dispatch check for chart recipients. Immediately before each chart
+ * edition is sent, the account is asked again whether it is still eligible
+ * for exactly the chart and revision that were decrypted. If it is not (it
+ * withdrew chart emails or chart sync, removed or replaced its chart, or
+ * entered deletion) the same address gets the Sun edition when it is a
+ * confirmed Sun subscriber due in this run, and otherwise nothing. A failed
+ * lookup counts as not eligible.
+ */
+export function createChartDispatchCheck({
+  loadSource,
+  sunFallbacks,
+  recipientHashForEmail,
+}: {
+  loadSource: (userId: string) => Promise<{ chartId: string; revision: number } | null>;
+  sunFallbacks: ReadonlyMap<string, SunSignRecipient>;
+  recipientHashForEmail: (email: string) => string;
+}): DailyEmailDispatchCheck {
+  return async (recipient) => {
+    if (recipient.tier !== 'chart') return recipient;
+    let source: { chartId: string; revision: number } | null = null;
+    try {
+      source = await loadSource(recipient.userId);
+    } catch {
+      source = null;
+    }
+    if (source
+      && source.chartId.toLowerCase() === recipient.chartId.toLowerCase()
+      && source.revision === recipient.revision) return recipient;
+    const fallback = sunFallbacks.get(recipientHashForEmail(recipient.email));
+    return fallback ? { ...fallback, email: recipient.email } : null;
+  };
 }
 
 async function loadProductionRecipients({
@@ -274,7 +324,11 @@ async function loadProductionRecipients({
   at: Date;
   fetchImpl: typeof fetch;
   resendRequest: ResendRequest;
-}): Promise<{ recipients: DailyEmailRecipient[]; diagnostics: string[] }> {
+}): Promise<{
+  recipients: DailyEmailRecipient[];
+  diagnostics: string[];
+  confirmBeforeDispatch: DailyEmailDispatchCheck;
+}> {
   const supabaseUrl = requiredEnv(env, 'PUBLIC_SUPABASE_URL');
   const serviceKey = requiredEnv(env, 'SUPABASE_SERVICE_ROLE_KEY');
   const { contactsKey } = requireResendCapabilities(env);
@@ -282,14 +336,20 @@ async function loadProductionRecipients({
   const client = createClient(supabaseUrl, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
+  const connection: AccountChartSourceConnection = { supabaseUrl, serviceKey, fetcher: fetchImpl };
+  const loadSource = (userId: string) => loadCurrentChartEmailSource(userId, connection);
+  const recipientHashForEmail = (email: string) => dailyRecipientHash(email, hashSecret);
   const preferences = await readConfirmedPreferences(client);
-  const duePreferences = preferences.filter((preference) => (
-    isDailyEmailDue(publication.date, at, preference.timezone)
-  ));
-  const charts = await readSelectedCharts(client, duePreferences);
+  // Only confirmed preferences that name a v2 chart can become chart
+  // editions. For each of those accounts the database is asked, immediately
+  // before its chart is decrypted, whether it is active and holds both
+  // chart_sync and chart_emails right now, and which chart and revision is
+  // its self chart; public.charts is never read.
+  const diagnostics: string[] = [];
   const chart = await selectChartRecipients({
     preferences,
-    charts,
+    loadSource,
+    decrypt: (source) => savedChartFromAccountSource(source, env, at.toISOString()),
     editionDate: publication.date,
     at,
     async getAuthEmail(userId) {
@@ -297,10 +357,9 @@ async function loadProductionRecipients({
       if (result.error) throw result.error;
       return result.data.user?.email ?? null;
     },
-    recipientHashForEmail: (email) => dailyRecipientHash(email, hashSecret),
+    recipientHashForEmail,
   });
 
-  const diagnostics: string[] = [];
   const segment = requireDailySunSegmentId(
     requiredEnv(env, 'RESEND_DAILY_SEGMENT_ID'),
     env.RESEND_SEGMENT_ID,
@@ -321,7 +380,10 @@ async function loadProductionRecipients({
   const sunRecipients = authorizedSun.recipients;
   if (sun.duplicates.length) diagnostics.push(`${sun.duplicates.length} address(es) map to multiple provider contacts`);
   if (authorizedSun.rejected) diagnostics.push(`${authorizedSun.rejected} Sun contact(s) lack matching confirmed database consent`);
-  if (chart.invalidCharts.length) diagnostics.push(`${chart.invalidCharts.length} selected chart(s) are missing or invalid`);
+  if (chart.unavailable) diagnostics.push(`chart eligibility unavailable for ${chart.unavailable} account(s); they fall back to the Sun edition`);
+  if (chart.invalidCharts.length) diagnostics.push(`${chart.invalidCharts.length} opted-in chart(s) could not be decrypted or read; they fall back to the Sun edition`);
+  if (chart.notOptedIn) diagnostics.push(`${chart.notOptedIn} confirmed chart preference(s) without chart emails on; Sun edition only`);
+  if (chart.pausedCharts) diagnostics.push(`${chart.pausedCharts} confirmed chart preference(s) name a chart that is no longer the synced chart; paused, Sun edition only`);
   if (chart.invalidIdentities.length) diagnostics.push(`${chart.invalidIdentities.length} chart recipient identity record(s) are stale or unavailable`);
   return {
     recipients: mergeDailyEmailRecipients({
@@ -329,11 +391,22 @@ async function loadProductionRecipients({
       sun: sunRecipients,
       suppressSunEmails: chart.suppressSunEmails,
       suppressSunRecipientHashes: chart.suppressSunRecipientHashes,
-      recipientHashForEmail: (email) => dailyRecipientHash(email, hashSecret),
+      recipientHashForEmail,
       editionDate: publication.date,
       at,
     }),
     diagnostics,
+    confirmBeforeDispatch: createChartDispatchCheck({
+      loadSource,
+      sunFallbacks: dailySunFallbacks({
+        chart: chart.recipients,
+        sun: sunRecipients,
+        recipientHashForEmail,
+        editionDate: publication.date,
+        at,
+      }),
+      recipientHashForEmail,
+    }),
   };
 }
 
@@ -425,12 +498,16 @@ export async function runDailyEmail({
 
   let recipients: DailyEmailRecipient[];
   let diagnostics: string[] = [];
+  let confirmBeforeDispatch: DailyEmailDispatchCheck | undefined;
   if (options.fixture) {
-    recipients = fixtureRecipients(options.to);
+    recipients = await fixtureRecipients(options.to);
+    // The fixture chart is in memory only; it stays eligible for the run.
+    confirmBeforeDispatch = async (recipient) => recipient;
   } else {
     const loaded = await loadProductionRecipients({ env, at, fetchImpl, resendRequest });
     recipients = loaded.recipients;
     diagnostics = loaded.diagnostics;
+    confirmBeforeDispatch = loaded.confirmBeforeDispatch;
     recipients = filterDailyEmailCohort(
       recipients,
       cohort!,
@@ -474,6 +551,7 @@ export async function runDailyEmail({
     hashSecret,
     receipts,
     resend,
+    confirmBeforeDispatch,
     render(recipient, { firstDelivery }) {
       const claim = dailyRecipientUnsubscribeClaim(recipient, hashSecret);
       return renderDailyEmail({
@@ -490,7 +568,7 @@ export async function runDailyEmail({
     },
     log,
   });
-  log(`daily-email: done considered=${report.considered} reserved=${report.reserved} sent=${report.sent} failed=${report.failed} duplicate=${report.duplicate} dryRun=${report.dryRun}`);
+  log(`daily-email: done considered=${report.considered} reserved=${report.reserved} sent=${report.sent} failed=${report.failed} duplicate=${report.duplicate} dryRun=${report.dryRun} fellBack=${report.fellBack} withdrawn=${report.withdrawn}`);
   if (options.canary && options.to) {
     log(`daily-email: canary receipt sent=${report.sent} recipient=sha256:${recipientHashPrefix(options.to)} dryRun=${report.dryRun}`);
   }
