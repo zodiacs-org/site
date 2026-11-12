@@ -17,11 +17,18 @@ const sync = {
   listeners: [] as ((session: { user: { id: string } } | null) => void)[],
   sessionReads: 0,
   sessionFailures: 0,
+  // When set, the next session read waits for this instead of answering at once.
+  heldSession: null as Promise<{ user: { id: string } } | null> | null,
 };
 vi.mock('../profile/sync', () => ({
   isSupabaseConfigured: () => sync.configured,
   getSyncSession: async () => {
     sync.sessionReads += 1;
+    if (sync.heldSession) {
+      const held = sync.heldSession;
+      sync.heldSession = null;
+      return held;
+    }
     if (sync.sessionFailures > 0) {
       sync.sessionFailures -= 1;
       throw new Error('session read failed');
@@ -68,6 +75,7 @@ beforeEach(() => {
   session = new MemoryStorage();
   v2 = true;
   sync.configured = true; sync.session = null; sync.listeners = []; sync.sessionReads = 0; sync.sessionFailures = 0;
+  sync.heldSession = null;
   holdNextLease = null;
   const win = Object.assign(new EventTarget(), { localStorage: local, sessionStorage: session });
   vi.stubGlobal('window', win);
@@ -284,6 +292,90 @@ describe('first saves over the real bootstrap', () => {
     releaseLease();
     await expect(access).resolves.toBe('allowed');
     expect(store.saveChart(syntheticChart())).toBe('saved');
+  });
+
+  it('reports a newer denial at once while the superseded session read is still pending', async () => {
+    // This browser belongs to B. The start's session read (which would say B is
+    // signed in) is held; an auth event then says nobody is signed in here.
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: B }));
+    let releaseSession = () => {};
+    sync.heldSession = new Promise((resolve) => { releaseSession = () => resolve({ user: { id: B } }); });
+    const request = await import('./profile-access-request');
+    const bootstrap = await import('./profile-access-bootstrap');
+    const reader = await import('./profile-access-reader');
+    const first = request.ensureProfileWriteAccess(2_000);
+    await vi.waitFor(() => expect(sync.listeners).toHaveLength(1));
+    expect(bootstrap.profileAccessSettled()).toBe(false);
+    for (const listener of sync.listeners) listener(null);
+    // The newer evaluation decided; the obsolete read does not hold it back.
+    await expect(first).resolves.toBe('denied');
+    await expect(bootstrap.profileAccessDecision()).resolves.toBeUndefined();
+    expect(bootstrap.profileAccessSettled()).toBe(true);
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('denied');
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('denied');
+    // The obsolete read finally answers with B signed in: it grants nothing.
+    releaseSession();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(reader.profileAccessAllowed()).toBe(false);
+    expect(session.getItem(ACCOUNT_V2_PROFILE_ACCESS_KEY)).toBeNull();
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('denied');
+  });
+
+  it('reports a newer denial at once while the superseded lease request is still pending', async () => {
+    // The start's evaluation (an empty browser, signed out) holds at its lease.
+    let releaseLease = () => {};
+    holdNextLease = { held: new Promise<void>((resolve) => { releaseLease = resolve; }) };
+    const request = await import('./profile-access-request');
+    const bootstrap = await import('./profile-access-bootstrap');
+    const reader = await import('./profile-access-reader');
+    const first = request.ensureProfileWriteAccess(2_000);
+    await vi.waitFor(() => expect(holdNextLease).toBeNull());
+    expect(bootstrap.profileAccessSettled()).toBe(false);
+    // B takes this browser, and the auth event that follows is evaluated and denied.
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: B }));
+    for (const listener of sync.listeners) listener(null);
+    await expect(first).resolves.toBe('denied');
+    await expect(bootstrap.profileAccessDecision()).resolves.toBeUndefined();
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('denied');
+    // The obsolete lease arrives: it is released, never activated.
+    releaseLease();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(reader.profileAccessAllowed()).toBe(false);
+    expect(session.getItem(ACCOUNT_V2_PROFILE_ACCESS_KEY)).toBeNull();
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('denied');
+  });
+
+  it('never lets a lease superseded by a reevaluation grant after the newer denial', async () => {
+    const request = await import('./profile-access-request');
+    const reader = await import('./profile-access-reader');
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('allowed');
+    // A reevaluation holds at its lease; a second one, after B takes the browser, denies.
+    let releaseLease = () => {};
+    holdNextLease = { held: new Promise<void>((resolve) => { releaseLease = resolve; }) };
+    window.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    await vi.waitFor(() => expect(holdNextLease).toBeNull());
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: B }));
+    window.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    await expect(request.ensureProfileWriteAccess(2_000)).resolves.toBe('denied');
+    releaseLease();
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(reader.profileAccessAllowed()).toBe(false);
+    expect(session.getItem(ACCOUNT_V2_PROFILE_ACCESS_KEY)).toBeNull();
+  });
+
+  it('keeps the start current when a reevaluation arrives before the session is known', async () => {
+    // A signed-in owner whose session read is held: a reevaluation then must not
+    // replace the start with an evaluation for an account it does not know yet.
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: A }));
+    let releaseSession = () => {};
+    sync.heldSession = new Promise((resolve) => { releaseSession = () => resolve({ user: { id: A } }); });
+    const request = await import('./profile-access-request');
+    const access = request.ensureProfileWriteAccess(2_000);
+    await vi.waitFor(() => expect(sync.listeners).toHaveLength(1));
+    window.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    releaseSession();
+    await expect(access).resolves.toBe('allowed');
+    expect(JSON.parse(session.getItem(ACCOUNT_V2_PROFILE_ACCESS_KEY)!)).toEqual({ version: 1, mode: 'account', accountId: A });
   });
 
   it('reports the verdict current at each later save', async () => {
