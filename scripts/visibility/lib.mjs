@@ -13,6 +13,35 @@ export function loadQuestions(file = path.join(VIS_DIR, 'questions.json')) {
   return data.questions;
 }
 
+// An answer counts for a question only when it was asked in the question's
+// current wording and the call succeeded. Failed calls and answers to older
+// wording are not results.
+export function answerCounts(answer, question) {
+  return !!answer && !answer.error && answer.id === question.id && answer.question === question.question;
+}
+
+// Resume plan for one provider file. Answers that count are kept and not asked
+// again. A failed call is asked again and its error entry is replaced. An
+// answer to older wording is moved to `superseded` (kept for the record, never
+// scored) and the question is asked again in its current wording.
+export function planAnswers(doc, questions, runs) {
+  const byId = new Map(questions.map((q) => [q.id, q]));
+  const keep = [];
+  const superseded = [...(doc.superseded || [])];
+  const done = new Set();
+  for (const a of doc.answers || []) {
+    const q = byId.get(a.id);
+    if (!q) { keep.push(a); continue; } // outside this run (--only): untouched
+    if (a.error) continue; // asked again; the new attempt takes its place
+    if (a.question !== q.question) { superseded.push(a); continue; }
+    done.add(`${a.id}#${a.run}`);
+    keep.push(a);
+  }
+  const todo = [];
+  for (const q of questions) for (let r = 1; r <= runs; r++) if (!done.has(`${q.id}#${r}`)) todo.push([q, r]);
+  return { answers: keep, superseded, todo };
+}
+
 // Hostname without www, lowercase. Returns '' for anything that is not a URL.
 export function hostOf(url) {
   try {

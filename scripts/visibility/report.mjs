@@ -10,7 +10,7 @@
 // Writes REPORT.md (rank) or COMPARE-<from>-to-<to>.md beside the data.
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { loadQuestions, opportunityScore, VIS_DIR } from './lib.mjs';
+import { answerCounts, loadQuestions, opportunityScore, VIS_DIR } from './lib.mjs';
 
 const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
@@ -25,11 +25,13 @@ export function load(label) {
 }
 
 // Share of a question's answers (all runs, all providers) naming or citing zodiacs.org.
-function aiRates(data, id) {
+// Only successful answers to the question's current wording count, so a
+// comparison across a wording change shows n/a rather than mixing questions.
+function aiRates(data, q) {
   const per = {};
   let cited = 0, n = 0;
   for (const [prov, doc] of Object.entries(data.ai)) {
-    const a = (doc.answers || []).filter((x) => x.id === id && !x.error);
+    const a = (doc.answers || []).filter((x) => answerCounts(x, q));
     if (!a.length) continue;
     const c = a.filter((x) => x.cited).length;
     const m = a.filter((x) => x.mentioned || x.cited).length;
@@ -47,7 +49,7 @@ function rank(label) {
   const providers = Object.keys(d.ai);
   const rows = loadQuestions().map((q) => {
     const g = d.gsc?.phrases.find((p) => p.id === q.id);
-    const r = aiRates(d, q.id);
+    const r = aiRates(d, q);
     const serp = d.rankings?.rankings?.find((x) => x.phrase === q.phrase);
     const demand = g ? g.close.impressions : null;
     return {
@@ -75,7 +77,7 @@ function compare(from, to) {
   const lines = [`# Movement ${from} to ${to}`, '', '| Phrase | Impr. | Clicks | Avg pos. | AI cite rate | Title / H1 / opening |', '|---|---|---|---|---|---|'];
   for (const q of loadQuestions()) {
     const ga = a.gsc?.phrases.find((p) => p.id === q.id)?.close, gb = b.gsc?.phrases.find((p) => p.id === q.id)?.close;
-    const ra = aiRates(a, q.id).citeRate, rb = aiRates(b, q.id).citeRate;
+    const ra = aiRates(a, q).citeRate, rb = aiRates(b, q).citeRate;
     const pb = b.pages?.pages.find((p) => p.path === q.target)?.phrases.find((x) => x.id === q.id);
     const d = (x, y) => (x == null || y == null ? 'n/a' : `${x} to ${y}`);
     const pct = (x) => (x == null ? null : `${Math.round(x * 100)}%`);
