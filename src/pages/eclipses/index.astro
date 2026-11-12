@@ -7,6 +7,7 @@ import { signBySlug } from '../../lib/signs';
 import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
 import { publishedEventById } from '../../lib/events/site-publication';
 import { isInvisiblePenumbral, lunarTotalityMinutes } from '../../lib/nasa-lunar-eclipses';
+import { SKY_EVENT_LOCATION } from '../../lib/sky-event-schema.mjs';
 
 // Every eclipse in the committed data (2026 to 2030), receipts, no
 // client ephemeris.
@@ -116,12 +117,15 @@ const faq = [
 const eventNodes = upcomingEvents.map((e) => {
   return {
     '@type': 'Event',
-    '@id': `https://zodiacs.org${e.path ?? `/eclipses/#${e.anchorId}`}`,
+    // The row's anchor, not the event page's URL: that page declares its own
+    // URL as a WebPage, and one IRI must not name both.
+    '@id': `https://zodiacs.org/eclipses/#${e.anchorId}`,
     name: `${e.label} eclipse in ${e.sign.name}`,
     description: `${e.detail}; peak at ${e.peak} in universal time.`,
     startDate: e.peak,
     endDate: e.peak,
     eventStatus: 'https://schema.org/EventScheduled',
+    location: SKY_EVENT_LOCATION,
     url: `https://zodiacs.org${e.path ?? `/eclipses/#${e.anchorId}`}`,
   };
 });

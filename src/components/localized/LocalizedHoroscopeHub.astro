@@ -21,7 +21,7 @@ import type { Daily } from '../../lib/daily';
 import { dailyReadingForLocale } from '../../lib/i18n/daily-reading';
 import { formatDate } from '../../lib/i18n/dates';
 import { englishOnlyCue } from '../../lib/i18n/english-only';
-import { localizePath, t } from '../../lib/i18n';
+import { LOCALE_META, localizePath, t } from '../../lib/i18n';
 import { SIGNS, signName } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
 
@@ -124,6 +124,28 @@ const cards = SIGNS.map((sign) => {
   const reading = dailyReadingForLocale(sign.slug, daily, locale);
   return { sign, teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
 });
+// The English hub's markup (src/pages/horoscopes/index.astro): the edition's
+// CollectionPage, dated from the edition, and the twelve sign pages in order.
+const jsonLd = [
+  {
+    '@type': 'CollectionPage',
+    name: `${c.h1}, ${dateLabel}`,
+    url: `https://zodiacs.org/${locale}/horoscopes/`,
+    description: c.description(dateLabel),
+    dateModified: `${daily.date}T00:00:00.000Z`,
+    inLanguage: LOCALE_META[locale].htmlLang,
+  },
+  {
+    '@type': 'ItemList',
+    numberOfItems: 12,
+    itemListElement: cards.map(({ sign }, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: signName(sign, locale),
+      url: `https://zodiacs.org${local(`/horoscopes/${sign.slug}/`)}`,
+    })),
+  },
+];
 ---
 <Base
   stableTypography
@@ -134,6 +156,7 @@ const cards = SIGNS.map((sign) => {
   editionDate={daily.date}
   image="/assets/og/v2/tool/horoscopes.png"
   imageAlt={c.imageAlt}
+  jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow" data-edition-content="true">
     <div class="hhl-hero">

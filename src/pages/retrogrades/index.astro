@@ -8,6 +8,7 @@ import { bodyLongitude } from '../../lib/engine/full';
 import type { BodyName } from '../../lib/engine/types';
 import { formatLongitude } from '../../lib/signs';
 import { formatShortDate } from '../../lib/i18n/dates';
+import { SKY_EVENT_LOCATION } from '../../lib/sky-event-schema.mjs';
 
 // All computed at build time from the committed sky data — receipts,
 // no client ephemeris.
@@ -116,6 +117,7 @@ const eventNodes = upcomingWindows.map((window) => {
     startDate: from,
     ...(to ? { endDate: to } : {}),
     eventStatus: 'https://schema.org/EventScheduled',
+    location: SKY_EVENT_LOCATION,
     url: `https://zodiacs.org/retrogrades/#${id}`,
   };
 });

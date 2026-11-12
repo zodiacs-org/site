@@ -147,6 +147,7 @@ const pageNodes = jsonLd
         },
         image: imageUrl,
         publisher: { '@id': organization['@id'] },
+        inLanguage: LOCALE_META[locale].htmlLang,
         ...node,
       };
       return locale === 'ru' ? { ...application, image: imageUrl } : application;
@@ -179,7 +180,7 @@ function automaticBreadcrumb(): Record<string, unknown> | null {
       '@type': 'ListItem',
       position: 1,
       name: schema.breadcrumbHome,
-      item: `${site}${localePrefix || '/'}`,
+      item: `${site}${localePrefix}/`,
     },
   ];
   let current = localePrefix;
@@ -217,6 +218,7 @@ const automaticWebApplication = WEB_APPLICATION_PATHS.includes(normalizedCanonic
       },
       image: imageUrl,
       publisher: { '@id': organization['@id'] },
+      inLanguage: LOCALE_META[locale].htmlLang,
     }
   : null;
 

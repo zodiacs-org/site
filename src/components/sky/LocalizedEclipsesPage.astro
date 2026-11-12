@@ -12,6 +12,7 @@ import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
 import { publishedEventById } from '../../lib/events/site-publication';
 import { ENGLISH_ONLY_COPY } from '../../lib/i18n';
 import { isInvisiblePenumbral, lunarTotalityMinutes } from '../../lib/nasa-lunar-eclipses';
+import { SKY_EVENT_LOCATION } from '../../lib/sky-event-schema.mjs';
 
 type Locale = 'es' | 'pt' | 'fr' | 'it';
 interface Props { locale: Locale }
@@ -572,6 +573,7 @@ const eventNodes = upcomingEvents.map((e) => {
     startDate: e.peak,
     endDate: e.peak,
     eventStatus: 'https://schema.org/EventScheduled',
+    location: SKY_EVENT_LOCATION,
     inLanguage,
     url: `${pageUrl}#${e.anchorId}`,
   };

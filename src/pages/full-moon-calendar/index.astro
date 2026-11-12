@@ -7,6 +7,7 @@ import { bodyLongitude } from '../../lib/engine/full';
 import { formatLongitude, signForLongitude } from '../../lib/signs';
 import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
 import { publishedEventById } from '../../lib/events/site-publication';
+import { SKY_EVENT_LOCATION } from '../../lib/sky-event-schema.mjs';
 
 // Every full moon in the committed sky data (2026 to 2030), with the
 // Moon's sign computed at each instant — receipts, no client ephemeris.
@@ -95,12 +96,15 @@ const eventNodes = upcomingEvents.map((full) => {
   const iso = full.at.toISOString();
   return {
     '@type': 'Event',
-    '@id': `https://zodiacs.org${full.path ?? `/full-moon-calendar/#${full.id}`}`,
+    // The row's anchor, not the event page's URL: that page declares its own
+    // URL as a WebPage, and one IRI must not name both.
+    '@id': `https://zodiacs.org/full-moon-calendar/#${full.id}`,
     name: `${full.name === 'Blue' ? 'Blue moon' : `${full.name} Moon`} in ${full.sign.name}`,
     description: `Full moon at ${full.position}; exact opposition of the Sun and Moon at ${iso}.`,
     startDate: iso,
     endDate: iso,
     eventStatus: 'https://schema.org/EventScheduled',
+    location: SKY_EVENT_LOCATION,
     url: `https://zodiacs.org${full.path ?? `/full-moon-calendar/#${full.id}`}`,
   };
 });

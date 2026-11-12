@@ -12,6 +12,9 @@ import {
   DEVELOPER_PAGES, SKY_DATA_FOLDERS, developerExpectations, developerStructuredDataErrors, servesUrlIn, skyDataFiles,
 } from './developer-structured-data-checks.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
+import {
+  breadcrumbSlashErrors, eventErrors, horoscopeHubPrefix, htmlLangOf, isHoroscopeContentPath, languageErrors, ogTypeOf,
+} from './structured-data-checks.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(repo, 'dist');
@@ -129,6 +132,7 @@ function validateBreadcrumb(node, label, pathname) {
     const target = item.item ?? item.url;
     siteUrl(target, label, `breadcrumb ${index + 1} item`, undefined, { allowHash: true });
   });
+  failures.push(...breadcrumbSlashErrors(items).map((error) => `${label}: ${error}`));
   const lastTarget = items.at(-1)?.item ?? items.at(-1)?.url;
   siteUrl(lastTarget, label, 'final breadcrumb item', `${SITE_ORIGIN}${pathname}`);
 }
@@ -197,7 +201,7 @@ function validateFaq(node, label, expectedCount) {
   });
 }
 
-function validateHoroscopeItemList(node, label) {
+function validateHoroscopeItemList(node, label, prefix) {
   const items = node?.itemListElement;
   if (node?.numberOfItems !== SIGN_SLUGS.length || !Array.isArray(items) || items.length !== SIGN_SLUGS.length) {
     failures.push(`${label}: horoscope hub ItemList must contain all twelve signs`);
@@ -206,11 +210,14 @@ function validateHoroscopeItemList(node, label) {
   const urls = new Set();
   items.forEach((item, index) => {
     const sign = SIGN_SLUGS[index];
-    const expectedUrl = `${SITE_ORIGIN}/horoscopes/${sign}/`;
-    const expectedName = `${sign.charAt(0).toUpperCase()}${sign.slice(1)} daily horoscope`;
+    const expectedUrl = `${SITE_ORIGIN}${prefix}/horoscopes/${sign}/`;
+    // The English hub names each entry; a localized hub uses the sign's own name.
+    const expectedName = prefix ? item?.name : `${sign.charAt(0).toUpperCase()}${sign.slice(1)} daily horoscope`;
     if (
       !hasType(item, 'ListItem')
       || item.position !== index + 1
+      || typeof item.name !== 'string'
+      || !item.name.trim()
       || item.name !== expectedName
     ) {
       failures.push(`${label}: horoscope ItemList entry ${index + 1} has an invalid shape or order`);
@@ -269,6 +276,8 @@ for (const file of await htmlFiles(dist)) {
   }
   documentCount += documents.length;
   nodeCount += nodes.length;
+  failures.push(...eventErrors(nodes, canonicalUrl).map((error) => `${label}: ${error}`));
+  failures.push(...languageErrors(nodes, htmlLangOf(html)).map((error) => `${label}: ${error}`));
 
   if (pathname !== '/') {
     const breadcrumb = nodes.find((node) => hasType(node, 'BreadcrumbList'));
@@ -301,9 +310,7 @@ for (const file of await htmlFiles(dist)) {
   }
 
   const topLevelSlug = pathname.split('/').filter(Boolean);
-  const horoscopeContent = new RegExp(
-    `^/horoscopes/(?:${[...signSlugs].join('|')})(?:/(?:tomorrow|weekly|monthly|love|career|2027))?/$`,
-  ).test(pathname);
+  const horoscopeContent = isHoroscopeContentPath(pathname, SIGN_SLUGS);
   const eventContent = /^\/(?:full-moon|new-moon|eclipses|(?:mercury|venus|mars)-retrograde)\/\d{4}-\d{2}-\d{2}\/$/.test(pathname)
     || /^\/events\/(?!preview(?:\/|$))[a-z0-9-]+\/$/.test(pathname);
   const needsArticle = (topLevelSlug.length === 1 && signSlugs.has(topLevelSlug[0]))
@@ -325,6 +332,10 @@ for (const file of await htmlFiles(dist)) {
     }
   }
 
+  if (horoscopeContent && ogTypeOf(html) !== 'article') {
+    failures.push(`${label}: horoscope content needs og:type article (found ${ogTypeOf(html) ?? 'none'})`);
+  }
+
   if (horoscopeContent) {
     // FAQ rich results retreated to a handful of authority sites in 2023, so
     // the markup is optional: validated when present, retirable without a
@@ -335,7 +346,8 @@ for (const file of await htmlFiles(dist)) {
     } else if (faqs.length === 1) validateFaq(faqs[0], label, 3);
   }
 
-  if (pathname === '/horoscopes/') {
+  const hubPrefix = horoscopeHubPrefix(pathname);
+  if (hubPrefix !== null) {
     const collections = nodes.filter((node) => hasType(node, 'CollectionPage'));
     const lists = nodes.filter((node) => hasType(node, 'ItemList'));
     if (collections.length !== 1) {
@@ -354,7 +366,7 @@ for (const file of await htmlFiles(dist)) {
     }
     if (lists.length !== 1) {
       failures.push(`${label}: horoscope hub needs exactly one ItemList (found ${lists.length})`);
-    } else validateHoroscopeItemList(lists[0], label);
+    } else validateHoroscopeItemList(lists[0], label, hubPrefix);
   }
 
   if (WEB_APPLICATION_PATHS.includes(pathname)) {
