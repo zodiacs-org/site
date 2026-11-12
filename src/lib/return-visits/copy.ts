@@ -533,6 +533,32 @@ ru: {
   "cancel": "Отмена"
 },
 } satisfies Record<CatalogLocale, ReturnCopy>;
+/**
+ * The heads-up calendar on /sky-calendar/ (src/lib/sky-heads-up.ts), English
+ * only for now. Kept apart from RETURN_COPY on purpose: RETURN_COPY is
+ * bundled into the AI runtime through return-visits/sky-calendar.ts, and an
+ * unused export here is left out of that bundle, so its bytes do not move.
+ */
+export const HEADS_UP_EN = {
+  "headsUpTitle": "Heads-up calendar for major events",
+  "headsUpLede": "Full and new moons, eclipses, retrograde and direct stations, Jupiter to Pluto entering a new sign, and exact aspects between the slow planets. Each one has the same time as its event page.",
+  "headsUpAhead": "Each event also appears 3 days and 1 day ahead in your calendar. Your calendar app decides whether it alerts you.",
+  "headsUpRange": "Starts a week back and runs to the end of 2030. Times appear in your calendar’s timezone.",
+  "headsUpSeparate": "This is a separate calendar from the one above, so subscribing to both shows the moons and eclipses twice.",
+  "headsUpSubscribe": "Subscribe to heads-up calendar",
+  "headsUpDownload": "Download heads-up calendar",
+  "headsUpUrl": "Heads-up subscription URL",
+  "headsUpJson": "The same list as JSON",
+  "headsUpCalendarName": "Zodiacs.org sky heads-up",
+  "headsUpInThreeDays": "In 3 days: {title}",
+  "headsUpTomorrow": "Tomorrow: {title}",
+  "headsUpWhen": "Exact time: {time} UTC.",
+  "headsUpMoonDistance": "The Moon is {km} km from the center of the Earth.",
+} as const;
+export type HeadsUpKey = keyof typeof HEADS_UP_EN;
+export function headsUpText(key: HeadsUpKey, values: Record<string, string | number> = {}): string {
+  return HEADS_UP_EN[key].replace(/\{(\w+)\}/g, (token, name: string) => Object.hasOwn(values, name) ? String(values[name]) : token);
+}
 export function returnText(locale: CatalogLocale, key: ReturnKey, values: Record<string, string | number> = {}): string {
   return RETURN_COPY[locale][key].replace(/\{(\w+)\}/g, (token, name: string) => Object.hasOwn(values, name) ? String(values[name]) : token);
 }
