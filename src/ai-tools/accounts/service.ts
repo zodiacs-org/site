@@ -86,9 +86,14 @@ export function configuredAccounts(env: Environment, rpc?: AccountsRpc): Account
   });
   // One row in the site's public.saved_pages, listed and removed on the profile with everything else saved there.
   const save: SaveStore = async (principal: AccountPrincipal, record: SavedRecord) =>
-    call<StoredSave | 'full' | null>('save', { ...principal, resource, kind: PAGE_KINDS[record.kind], title: record.title, href: record.href, summary: record.summary, detail: record });
+    call<StoredSave | 'full' | null>('save', savedPageRpcArgs(principal, resource, record));
   return { oauth, save, clients, supabaseUrl: url, publishableKey: key,
     ...(previewWatchClients.length ? { previewWatchClients } : {}) };
+}
+
+/** Exactly what one save sends to the database (public.zodiacs_accounts_v1 'save'): the stored record and its row fields. */
+export function savedPageRpcArgs(principal: AccountPrincipal, resource: string, record: SavedRecord) {
+  return { ...principal, resource, kind: PAGE_KINDS[record.kind], title: record.title, href: record.href, summary: record.summary, detail: record };
 }
 
 /** The WWW-Authenticate value for a token that was present but is no longer usable. */

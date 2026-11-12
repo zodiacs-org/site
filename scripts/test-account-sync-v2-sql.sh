@@ -90,9 +90,29 @@ done
 run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/migrations/20260811153303_account_sync_v2_foundation.sql"
 
+# The write-block migration must be replay-safe for a reviewed SQL retry.
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/migrations/20261111140000_charts_writes_paused.sql"
+
+# The launch migration must be replay-safe for a reviewed SQL retry.
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/migrations/20261111170000_account_sync_v2_chart_emails.sql"
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/migrations/20261111180000_weekly_digest_dispatch_recheck.sql"
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/migrations/20261111190000_weekly_digest_release_rejected.sql"
+
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/tests/charts_writes_paused.sql"
 run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/tests/account_sync_v2.sql"
 run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/tests/account_sync_v2_concurrency.sql"
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/tests/account_sync_v2_chart_emails.sql"
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/tests/weekly_digest_dispatch_recheck.sql"
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/tests/weekly_digest_release_rejected.sql"
 
 echo "PostgreSQL 17 account sync v2 SQL tests passed."

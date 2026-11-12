@@ -2,17 +2,24 @@
  * "The sky on…": a keepsake card for a wedding, a birthday, a new home or
  * another day, from a date, an optional time and an optional place. Computed
  * on the device behind the lazy engine import; the card's link carries its
- * inputs, so nothing is stored unless a signed-in person saves that link to
- * their profile (PUBLIC_ACCOUNT_SAVES_ENABLED).
+ * inputs after the #, so it never reaches the server. A signed-in person
+ * can save the card to their profile (PUBLIC_ACCOUNT_SAVES_ENABLED): that
+ * keeps the day, time, zone and rounded coordinates only, never names or a
+ * place, and only the page address for a birthday, a baby or a coming of age
+ * (src/lib/occasions/saved-path.ts). The picker no longer offers a new baby or
+ * a coming of age (src/lib/occasions/picker.ts): a link that names one opens
+ * the picker with one plain line and makes no card.
  */
 import { signIcon } from '../lib/sign-icon';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { City } from '../lib/geo/search';
-import { OCCASION_KINDS, OCCASION_LABELS, type OccasionKind } from '../lib/occasions/kinds';
+import { OCCASION_LABELS, type OccasionKind } from '../lib/occasions/kinds';
+import { HIDDEN_OCCASION_NOTICE, PICKER_OCCASION_KINDS, isHiddenOccasion } from '../lib/occasions/picker';
 import type { OccasionCard } from '../lib/occasions/card';
 import PlaceSearch from './PlaceSearch';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
-import { savedPageHref, type SavedPageDraft } from '../lib/profile/saved-pages-config';
+import type { SavedPageDraft } from '../lib/profile/saved-pages-config';
+import { occasionSavedPage } from '../lib/occasions/saved-path';
 import { useAccountSaveModule } from './account-save-loader';
 
 const loadCard = () => Promise.all([import('../lib/occasions/card'), import('../lib/occasions/site-clock')]);
@@ -46,7 +53,7 @@ function readLink(): { occasion: OccasionKind; names: string; date: string; time
   const params = new URLSearchParams(window.location.hash.slice(1));
   const date = params.get('d');
   if (!date) return null;
-  const occasion = (OCCASION_KINDS as readonly string[]).includes(params.get('o') ?? '') ? params.get('o') as OccasionKind : 'wedding';
+  const occasion = (PICKER_OCCASION_KINDS as readonly string[]).includes(params.get('o') ?? '') ? params.get('o') as OccasionKind : 'wedding';
   const lat = Number(params.get('lat'));
   const lon = Number(params.get('lon'));
   const tz = params.get('tz');
@@ -79,6 +86,7 @@ export default function OccasionSky() {
   const [card, setCard] = useState<OccasionCard | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [copied, setCopied] = useState(false);
   // What the card on screen was made from, so a copied link always opens that card.
   const [shown, setShown] = useState<{ occasion: OccasionKind; names: string; date: string; time: string; city: City | null } | null>(null);
@@ -109,6 +117,13 @@ export default function OccasionSky() {
   }
 
   useEffect(() => {
+    // A link to an occasion the picker no longer offers makes no card. Its day can be a child's birth date, so the
+    // address bar drops it too.
+    if (isHiddenOccasion(new URLSearchParams(window.location.hash.slice(1)).get('o'))) {
+      setNotice(HIDDEN_OCCASION_NOTICE);
+      history.replaceState(history.state, '', `${window.location.pathname}${window.location.search}`);
+      return;
+    }
     const linked = readLink();
     if (!linked) return;
     setOccasion(linked.occasion);
@@ -121,6 +136,7 @@ export default function OccasionSky() {
 
   function submit(event: Event) {
     event.preventDefault();
+    setNotice('');
     if (time && !city) {
       setError('Add the place too: a time only makes sense with its time zone.');
       return;
@@ -140,15 +156,8 @@ export default function OccasionSky() {
   }
 
   const accountSave = useAccountSaveModule(Boolean(card));
-  const saveDraft: SavedPageDraft | null = card && shown ? (() => {
-    const href = savedPageHref(
-      'occasion',
-      cardLink(shown.occasion, shown.names, shown.date, shown.time, shown.city),
-      window.location.origin,
-    );
-    const title = [shown.names.trim(), card.words.title, longDate(card.input.date)].filter(Boolean).join(' · ');
-    return href ? { kind: 'occasion', title, href } : null;
-  })() : null;
+  // Never the names or the place: see src/lib/occasions/saved-path.ts.
+  const saveDraft: SavedPageDraft | null = card && shown ? occasionSavedPage(shown, card.words.title) : null;
 
   const tz = card?.input.timeZone ?? null;
   const sun = card?.sky.bodies.find((row) => row.body === 'Sun');
@@ -165,11 +174,12 @@ export default function OccasionSky() {
     <div class="calc occasion">
       <form class="calc__form shell" onSubmit={submit} aria-busy={busy}>
         <div class="core calc__core">
+          {notice && <p class="field__help" role="status">{notice}</p>}
           <div class="calc__fields">
             <div class="field">
               <label class="field__label" for="oc-kind">Occasion</label>
               <select id="oc-kind" class="field__input" value={occasion} onChange={(event) => setOccasion((event.target as HTMLSelectElement).value as OccasionKind)}>
-                {OCCASION_KINDS.map((kind) => <option value={kind} key={kind}>{OCCASION_LABELS[kind]}</option>)}
+                {PICKER_OCCASION_KINDS.map((kind) => <option value={kind} key={kind}>{OCCASION_LABELS[kind]}</option>)}
               </select>
             </div>
             <div class="field">
