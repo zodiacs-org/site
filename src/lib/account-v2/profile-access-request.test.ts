@@ -299,6 +299,40 @@ describe('first saves over the real bootstrap', () => {
     await expect(request.ensureProfileWriteAccess()).resolves.toBe('allowed');
   });
 
+  it('reports a failed profile/sync import as unavailable, writes nothing, and the next save starts again', async () => {
+    const bootstrap = await import('./profile-access-bootstrap');
+    // The nested chunk fails over the network while the save is waiting for it.
+    const syncImporter = vi.fn()
+      .mockImplementationOnce(() => new Promise((_resolve, reject) => { setTimeout(() => reject(new Error('chunk failed')), 10); }))
+      .mockImplementation(() => import('../profile/sync'));
+    bootstrap.setProfileSyncImporterForTests(syncImporter);
+    const request = await import('./profile-access-request');
+    const store = await import('../profile/store');
+    const write = vi.fn();
+    const unavailable = vi.fn();
+    request.runAfterProfileAccess(write, unavailable);
+    await vi.waitFor(() => expect(unavailable).toHaveBeenCalledTimes(1));
+    expect(write).not.toHaveBeenCalled();
+    expect(store.saveChart(syntheticChart())).toBe('error');
+    expect(local.getItem('zodiacs.profile.v1')).toBeNull();
+    expect(syncImporter).toHaveBeenCalledTimes(1);
+    // The import works now; a later save starts the bootstrap again and writes.
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('allowed');
+    expect(syncImporter).toHaveBeenCalledTimes(2);
+    expect(store.saveChart(syntheticChart())).toBe('saved');
+    expect(sync.listeners).toHaveLength(1);
+  });
+
+  it('reports a failed session read as unavailable and starts again without a second subscription', async () => {
+    sync.sessionFailures = 1;
+    const request = await import('./profile-access-request');
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('unavailable');
+    expect(sync.listeners).toHaveLength(0);
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('allowed');
+    expect(sync.sessionReads).toBe(2);
+    expect(sync.listeners).toHaveLength(1);
+  });
+
   it('stays locked rather than granting when Supabase is not configured', async () => {
     sync.configured = false;
     const request = await import('./profile-access-request');

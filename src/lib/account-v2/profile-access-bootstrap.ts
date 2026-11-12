@@ -68,21 +68,38 @@ function readerCanRead(): boolean {
   }
 }
 
+type SyncModule = Pick<
+  typeof import('../profile/sync'),
+  'isSupabaseConfigured' | 'getSyncSession' | 'onSyncAuthChange'
+>;
+const importSync = (): Promise<SyncModule> => import('../profile/sync');
+let syncImporter: () => Promise<SyncModule> = importSync;
+
+/** Test seam: replaces the bootstrap's import of profile/sync. Passing nothing restores it. */
+export function setProfileSyncImporterForTests(next?: () => Promise<SyncModule>): void {
+  syncImporter = next ?? importSync;
+}
+
 /**
  * - `pending`: the bootstrap is starting, or an evaluation is in flight.
  * - `settled`: nothing is in flight; `profileAccessAllowed()` is the verdict.
+ * - `failed`: the bootstrap could not start (its sync module did not load, or
+ *   reading the session failed). The tab stays locked until a retry succeeds.
  */
-type ProfileAccessState = 'pending' | 'settled';
+type ProfileAccessState = 'pending' | 'settled' | 'failed';
 
 interface BootstrapControl {
   state(): ProfileAccessState;
+  /** Starts again after a failed start; does nothing otherwise. */
+  retry(): void;
   stop(): void;
 }
 
 /**
  * The tab-lifetime shared lease required by every private profile reader and
  * writer. This is the only code that activates the lease or writes a grant.
- * `onSettled` runs each time nothing is in flight any more, so a waiting save can read `profileAccessAllowed()` knowing the
+ * `onSettled` runs each time nothing is in flight any more (settled or
+ * failed), so a waiting save can read `profileAccessAllowed()` knowing the
  * coordinator has decided.
  */
 function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
@@ -93,6 +110,7 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   let accessVersion = 0;
   // The start and every evaluation count while they run.
   let inFlight = 0;
+  let failed = false;
   let currentAccountId: string | null = null;
   // The account the last evaluation was for; undefined before the first.
   let evaluatedAccountId: string | null | undefined;
@@ -131,6 +149,7 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
     revoke();
     return {
       state: () => 'settled',
+      retry: () => {},
       stop: () => {
         live = false;
         unsubscribeRevocation();
@@ -264,8 +283,9 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   // The start is itself in flight until its first evaluation ends, so a save
   // never reads the locked state the tab opens with as a decision.
   const start = () => {
+    failed = false;
     begin();
-    void import('../profile/sync').then(async (api) => {
+    void syncImporter().then(async (api) => {
       if (!live) return;
       if (!api.isSupabaseConfigured()) {
         revoke();
@@ -284,7 +304,14 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
       currentAccountId = current?.user.id ?? null;
       await evaluate(currentAccountId, snapshotVersion);
     }).catch(() => {
+      if (!live) return;
+      // Could not start. Stay locked, drop anything this start set in motion,
+      // and report it as unavailable so the next save starts again.
+      unsubscribeAuth();
+      unsubscribeAuth = () => {};
+      authVersion += 1;
       revoke();
+      failed = true;
     }).finally(end);
   };
   start();
@@ -293,7 +320,10 @@ function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   window.addEventListener(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT, reevaluate);
 
   return {
-    state: () => (inFlight > 0 ? 'pending' : 'settled'),
+    state: () => (inFlight > 0 ? 'pending' : failed ? 'failed' : 'settled'),
+    retry: () => {
+      if (live && failed && inFlight === 0) start();
+    },
     stop: () => {
       live = false;
       authVersion += 1;
@@ -344,6 +374,14 @@ export function startProfileAccessBootstrap(): () => void {
   };
 }
 
+/** Raised to a waiting save when the bootstrap could not start. */
+export class ProfileAccessStartError extends Error {
+  constructor() {
+    super('The profile access bootstrap could not start.');
+    this.name = 'ProfileAccessStartError';
+  }
+}
+
 /**
  * True when nothing is in flight, so `profileAccessAllowed()` is the current
  * verdict. Read it in the same step as the verdict: an evaluation that starts
@@ -356,14 +394,19 @@ export function profileAccessSettled(): boolean {
 /**
  * Resolves once the bootstrap's current evaluation has decided (a grant, or
  * staying locked). When a newer evaluation starts before a waiter resumes, it
- * waits for that one too, so it never reports an earlier verdict. Access
- * itself is still read from `profileAccessAllowed()`.
+ * waits for that one too, so it never reports an earlier verdict. It rejects
+ * with ProfileAccessStartError when the bootstrap could not start; a call made
+ * after such a failure starts it again first. Access itself is still read from
+ * `profileAccessAllowed()`.
  */
 export async function profileAccessDecision(): Promise<void> {
+  const initial = running?.control;
+  if (initial?.state() === 'failed') initial.retry();
   for (;;) {
     const current = running;
     const state = current?.control?.state();
     if (!current || state === undefined || state === 'settled') return;
+    if (state === 'failed') throw new ProfileAccessStartError();
     await new Promise<void>((resolve) => { current.waiters.add(resolve); });
   }
 }
