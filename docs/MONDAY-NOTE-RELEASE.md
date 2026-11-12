@@ -126,7 +126,8 @@ is the condition for the next.
      is genuinely usable for the operator and can receive mail. A PO box or
      registered-agent address is not automatically enough (§1b).
   3. Confirm the privacy page describes this list. Today its Email section
-     covers the account digest and sign-in mail only, and says nothing about a
+     covers sign-in mail, the optional account weekly digest and chart emails,
+     and says nothing about a
      standalone weekly note or click counting (see Step 2). If it still does
      not, stop: the wording change is a separate legal PR that needs the
      owner's yes.
