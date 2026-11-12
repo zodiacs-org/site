@@ -1,0 +1,32 @@
+{
+  "schema": "zodiacs.claims-tested.v1",
+  "updated": "2026-11-10",
+  "entries": [
+    {
+      "id": "returns-worked-examples",
+      "kind": "calculation",
+      "claim": "Our solar and lunar return times match the returns astrologers worked out by hand and published.",
+      "verdict": "passed",
+      "result": "11 of 13 published returns agree with our engine: 6 of 8 solar returns, from 4 authors and 4 works, and all 5 lunar returns. The rule written before the search asked for 9 of 13.",
+      "sample": "13 returns published between 1911 and 1947, cast for 1893 to 1940",
+      "method": "The pass rule came first, then the search: 124 candidates from 380 sources, read without seeing our numbers (83 of them twice) and frozen before the engine ran.",
+      "whatWeDid": "The two disagreements come from one 1947 article whose printed figures give the natal Sun only to the degree. We kept them in the count.",
+      "preregistered": true,
+      "tested": "2026-11-08",
+      "source": { "label": "The preregistration, the holdout and the run", "url": "https://github.com/zodiacs-org/site/blob/main/docs/platform/evidence/returns-worked-examples-20261107/README.md" }
+    },
+    {
+      "id": "nasa-event-times",
+      "kind": "calculation",
+      "claim": "The times of the sky events we print agree with NASA.",
+      "verdict": "passed-after-correction",
+      "result": "Every sign, date and direction we print agrees with NASA JPL Horizons, and every new and full Moon, eclipse and Moon sign change agrees to the second. Our engine's own times for the slow planets did not: a few arcseconds of error is hours of travel for Pluto, up to 9.6 hours for one sign change.",
+      "sample": "9,367 sky facts in the published data files, and 533 close calls near a sign boundary or midnight",
+      "method": "Each fact was checked against NASA JPL Horizons (DE441) rather than against our own engine.",
+      "whatWeDid": "The pages now print NASA's times for planet sign changes, stations and aspects, and every time a page prints agrees with NASA within a second.",
+      "preregistered": false,
+      "tested": "2026-11-07",
+      "source": { "label": "The accuracy audit report", "url": "https://github.com/zodiacs-org/site/blob/main/docs/accuracy-audit-2026-11/REPORT.md" }
+    }
+  ]
+}

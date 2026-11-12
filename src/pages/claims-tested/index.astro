@@ -1,0 +1,88 @@
+---
+import Base from '../../layouts/Base.astro';
+import { CLAIM_VERDICTS, claimTally, claimsTestedEntries, tallyLine, type ClaimEntry } from '../../lib/claims-tested';
+import { OG_EN } from '../../strings/seo.en.mjs';
+import '../../styles/claims-tested.css';
+
+// Off unless PUBLIC_CLAIMS_TESTED_ENABLED=1 at build time. On or off, the page is noindex and out of the sitemap,
+// search and navigation until the owner approves publishing it.
+const enabled = (import.meta.env.PUBLIC_CLAIMS_TESTED_ENABLED ?? process.env.PUBLIC_CLAIMS_TESTED_ENABLED) === '1';
+const { updated, prediction, calculation } = claimsTestedEntries();
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const longDay = (date: string) => `${Number(date.slice(8, 10))} ${MONTHS[Number(date.slice(5, 7)) - 1]} ${date.slice(0, 4)}`;
+// Two tallies, one per kind, so a pass on arithmetic never adds to the prediction count.
+const summary = [tallyLine('prediction', claimTally(prediction)), tallyLine('calculation', claimTally(calculation))];
+const EMPTY: Record<string, string> = {
+  prediction: 'No prediction test we can stand behind yet. A first trial on four people and three checkable months was too small to report as a result. A fair test needs dozens of people with recorded birth times, scored blind.',
+};
+const sections: { id: string; title: string; lede: string; entries: ClaimEntry[] }[] = [
+  { id: 'prediction', title: 'Does the reading predict?', lede: 'Claims that a reading foretells something about a person or a day. These are the hard ones, and we report them whatever they show.', entries: prediction },
+  { id: 'calculation', title: 'Is the sky right?', lede: 'Claims about the positions and times we compute. Getting these right is the floor, not evidence that astrology predicts.', entries: calculation },
+];
+---
+<Base
+  noindex
+  title="Astrology Claims, Tested | Zodiacs.org"
+  description="The claims Zodiacs has tested and what each test found, whatever it showed."
+  path="/claims-tested/"
+  image={enabled ? OG_EN.claimsTested.image : undefined}
+  imageAlt={enabled ? OG_EN.claimsTested.alt : undefined}
+>
+  <section class="section--tight container container--narrow claims-page">
+    <div class="tool-hero">
+      <h1 class="display">Astrology claims, tested</h1>
+      {enabled ? (
+        <p>
+          Every claim we have put to a test, and what the test found. We list them all, including the ones that did not
+          hold up, and we say how each was run so you can judge it yourself.
+        </p>
+      ) : (
+        <p>This page is not published yet.</p>
+      )}
+    </div>
+
+    {enabled && (
+      <>
+        <ul class="claims-summary">
+          {summary.map((line) => <li>{line}</li>)}
+          <li>Updated: {longDay(updated)}</li>
+        </ul>
+        <p class="claims-rule">
+          How we report: the result comes first, in the test's own numbers. A test written down before it was run says
+          so. A result that does not hold up stays on this page.
+        </p>
+
+        {sections.map((section) => (
+          <div class="claims-group" id={section.id}>
+            <h2 class="claims-group__title">{section.title}</h2>
+            <p class="claims-lede">{section.lede}</p>
+            {section.entries.length === 0 ? (
+              <p class="claims-empty">{EMPTY[section.id]}</p>
+            ) : (
+            <ol class="claims-list">
+              {section.entries.map((entry) => (
+                <li class="tile claims-entry" id={entry.id}>
+                  <p class="claims-entry__verdict" data-verdict={entry.verdict}>{CLAIM_VERDICTS[entry.verdict]}</p>
+                  <h3 class="claims-entry__claim">{entry.claim}</h3>
+                  <p class="claims-entry__result">{entry.result}</p>
+                  <dl class="claims-entry__facts">
+                    <div><dt>Sample</dt><dd>{entry.sample}</dd></div>
+                    <div><dt>How</dt><dd>{entry.method}</dd></div>
+                    <div><dt>What we did</dt><dd>{entry.whatWeDid}</dd></div>
+                    <div><dt>Written down first</dt><dd>{entry.preregistered ? 'Yes' : 'No'}</dd></div>
+                    <div><dt>Tested</dt><dd>{longDay(entry.tested)}</dd></div>
+                  </dl>
+                  <p class="claims-entry__links">
+                    <a class="textlink" href={entry.source.url} rel="noopener">{entry.source.label}</a>
+                    <a class="claims-entry__anchor" href={`#${entry.id}`}>Link to this result</a>
+                  </p>
+                </li>
+              ))}
+            </ol>
+            )}
+          </div>
+        ))}
+      </>
+    )}
+  </section>
+</Base>
