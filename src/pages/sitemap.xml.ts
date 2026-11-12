@@ -519,8 +519,6 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...dailyEditions.flatMap((edition) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/${edition.day}/`, edition.ownerApproval.approvedAt.slice(0, 10)] as const)),
   ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, dailyEditions.map((edition) => edition.ownerApproval.approvedAt.slice(0, 10)).sort().at(-1)!] as const) : []),
   ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-04'] as const)),
-  // The English page gained the heads-up calendar on 2026-11-12.
-  ['/sky-calendar/', SKY_HEADS_UP_LASTMOD],
   ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-03'] as const)),
   ...['/full-moon-calendar/2027/', '/eclipses/2027/', '/mercury-retrograde/2027/']
     .map((loc) => [loc, YEAR_PAGES_LASTMOD] as const),
@@ -668,6 +666,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The privacy page's encrypted chart sync, chart emails and analytics scope
   // wording, merged on 12 November after the pause copy above, so this wins.
   ['/privacy/', '2026-11-12'] as const,
+  // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
+  // after the October design sweep dates above, so this wins.
+  ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
 ]);
 
 function getLastmod(loc: string): string {
