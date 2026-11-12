@@ -247,6 +247,27 @@ describe('sky event calendars', () => {
     expect(lines.every((line) => new TextEncoder().encode(line).byteLength <= 75)).toBe(true);
   });
 
+  it('writes a revised event\'s LAST-MODIFIED and SEQUENCE and stamps the calendar no earlier', async () => {
+    const { serializeSkyEvents } = await import('./ical');
+    const base = { summary: 'Mercury retrograde', description: 'Station to station.' };
+    const calendar = serializeSkyEvents([
+      { ...base, id: 'kept', start: '2027-01-22T12:17:00Z' },
+      { ...base, id: 'moved', start: '2027-02-09T13:02:11Z', end: '2027-03-03T04:00:00Z', lastModified: '2026-11-06T17:43:03Z', sequence: 1 },
+    ], { generatedAt });
+    const events = calendar.split('BEGIN:VEVENT').slice(1);
+    expect(events[0]).toContain('UID:sky-kept@zodiacs.org');
+    expect(events[0]).not.toMatch(/LAST-MODIFIED|SEQUENCE/);
+    expect(events[1]).toContain('\r\nLAST-MODIFIED:20261106T174303Z\r\nSEQUENCE:1\r\n');
+    // With no METHOD, DTSTAMP is the last revision: the latest of the data and the events.
+    expect(calendar.match(/^DTSTAMP:.+$/gm)).toEqual(['DTSTAMP:20261106T174303Z', 'DTSTAMP:20261106T174303Z']);
+
+    const unrevised = serializeSkyEvents([{ ...base, id: 'kept', start: '2027-01-22T12:17:00Z', sequence: 0 }], { generatedAt });
+    expect(unrevised).toContain('DTSTAMP:20260901T000000Z');
+    expect(unrevised).not.toMatch(/LAST-MODIFIED|SEQUENCE/);
+    expect(() => serializeSkyEvents([{ ...base, id: 'bad', start: '2027-01-22T12:17:00Z', sequence: -1 }], { generatedAt }))
+      .toThrow(RangeError);
+  });
+
   it('refuses an empty calendar', async () => {
     const { serializeSkyEvents } = await import('./ical');
     expect(() => serializeSkyEvents([], { generatedAt })).toThrow(RangeError);

@@ -527,6 +527,24 @@
       ]
     },
     {
+      "source": "/eclipses/2027.ics",
+      "headers": [
+        { "key": "Content-Disposition", "value": "attachment; filename=\"zodiacs-eclipses-2027.ics\"" }
+      ]
+    },
+    {
+      "source": "/full-moon-calendar/2027.ics",
+      "headers": [
+        { "key": "Content-Disposition", "value": "attachment; filename=\"zodiacs-full-moons-2027.ics\"" }
+      ]
+    },
+    {
+      "source": "/mercury-retrograde/2027.ics",
+      "headers": [
+        { "key": "Content-Disposition", "value": "attachment; filename=\"zodiacs-mercury-retrograde-2027.ics\"" }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {

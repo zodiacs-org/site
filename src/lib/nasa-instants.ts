@@ -30,6 +30,7 @@ interface AspectRow { a: string; b: string; type: string; aSign: string; nasa: s
 export interface NasaEventTable {
   schema: string;
   matchWindowDays: number;
+  provenance: { queries: { retrievedUtc: string }[] };
   ingresses: IngressRow[];
   stations: StationRow[];
   aspects: AspectRow[];
@@ -41,6 +42,33 @@ export const NASA_EVENT_TABLE = table as unknown as NasaEventTable;
 export const NASA_INSTANT_SOURCE = 'NASA JPL Horizons (DE441), src/data/nasa-event-instants.json';
 
 const iso = (value: string): string => new Date(value).toISOString();
+
+/**
+ * When the table's instants were last revised: the latest retrieval of the
+ * Horizons responses they were solved from. A rebuild of the table moves it.
+ */
+export const NASA_INSTANTS_REVISED_AT = iso(
+  NASA_EVENT_TABLE.provenance.queries.map((query) => iso(query.retrievedUtc)).sort().at(-1)!,
+);
+
+/**
+ * Calendar revision fields for an event whose times may be NASA's: pass each
+ * time the data file gives with the time the calendar shows instead. When
+ * any shown time differs from the data's to the second (as DTSTART and DTEND
+ * print it), the event's time has been revised once, at
+ * NASA_INSTANTS_REVISED_AT or `dataRevisedAt`, whichever is later;
+ * otherwise there is nothing to add.
+ */
+export function nasaCalendarRevision(
+  dataRevisedAt: string,
+  times: readonly (readonly [data: string | Date | null | undefined, shown: string | Date | null | undefined])[],
+): { lastModified: string; sequence: number } | Record<string, never> {
+  const second = (value: string | Date | null | undefined) =>
+    value == null ? undefined : Math.floor(new Date(value).getTime() / 1000);
+  const revised = times.some(([data, shown]) => second(data) !== second(shown));
+  if (!revised) return {};
+  return { lastModified: [iso(dataRevisedAt), NASA_INSTANTS_REVISED_AT].sort().at(-1)!, sequence: 1 };
+}
 
 const ingressIndex = new Map<string, string>();
 const stationIndex = new Map<string, string>();

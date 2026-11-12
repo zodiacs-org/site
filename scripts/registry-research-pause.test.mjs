@@ -365,6 +365,30 @@ describe('the public feeds while paused', () => {
     }
   });
 
+  it('the JSON feed is the JSON Feed 1.1 that /terminal/ advertises', async () => {
+    const { GET: jsonFeed } = await import('../src/pages/feeds/market-research.json.ts');
+    const text = await jsonFeed({}).text();
+    const feed = JSON.parse(text);
+    const terminal = await readFile(resolve(repositoryRoot, 'public/terminal/index.html'), 'utf8');
+    expect(terminal).toContain('type="application/feed+json" title="Zodiacs.org Markets Research" href="/feeds/market-research.json"');
+
+    // version is required and comes first; title and items are required.
+    expect(Object.keys(feed)[0]).toBe('version');
+    expect(feed.version).toBe('https://jsonfeed.org/version/1.1');
+    expect(typeof feed.title).toBe('string');
+    expect(feed.feed_url).toBe('https://zodiacs.org/feeds/market-research.json');
+    expect(Array.isArray(feed.items)).toBe(true);
+    expect(feed.items.length).toBeGreaterThan(0);
+    for (const item of feed.items) {
+      // Each item needs a string id and content_text or content_html.
+      expect(typeof item.id).toBe('string');
+      expect(typeof item.content_text === 'string' || typeof item.content_html === 'string', item.id).toBe(true);
+      expect(item.content_text).toBe(item.summary);
+      // Dates are RFC 3339.
+      expect(item.date_published).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/u);
+    }
+  });
+
   it('the archive page carries the notice and calls its list an archive', async () => {
     const page = await readFile(resolve(repositoryRoot, 'src/pages/terminal/research/index.astro'), 'utf8');
     expect(page).toContain("import pause from '../../../data/registry-research/pause.json';");
