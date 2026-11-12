@@ -277,7 +277,7 @@ export default function GoodDayFinder({ outcomes = false }: { outcomes?: boolean
                   <li key={day.date}><span>{day.label}</span><span class="good-days-card__score">{day.score}</span></li>
                 ))}
               </ol>
-              <p class="good-days-card__note">Read by the traditional rules of electional astrology.</p>
+              <p class="good-days-card__note">Read by the traditional rules of electional astrology. {CONFIDENCE_LABEL}.</p>
               <figcaption class="good-days-card__foot">zodiacs.org/good-days</figcaption>
             </figure>
             <div class="calc__actions good-days__actions">

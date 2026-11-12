@@ -59,7 +59,12 @@ export interface PickedDay {
 }
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/u;
-const realDate = (date: string) => DATE.test(date) && new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) === date;
+const realDate = (date: string) => {
+  if (!DATE.test(date)) return false;
+  // An impossible date such as 2026-99-99 parses to NaN: refused, never thrown.
+  const time = Date.parse(`${date}T00:00:00Z`);
+  return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === date;
+};
 
 /** The follow-up link: the goal, the day, the score and the personal flag after the #, and nothing else. */
 export function followUpLink(origin: string, pick: PickedDay): string {
@@ -89,18 +94,31 @@ export const followUpDue = (day: string) => addDays(day, FOLLOW_UP_DAYS);
 const CHILD_WORDS = /\b(?:child|children|childs?|kid|kids|kiddo|baby|babies|toddler|infant|newborn|son|sons|daughter|daughters|boy|girl|teen|teens|teenager|teenagers|preteen|school|schools|preschool|nursery|kindergarten|pupil|pupils|minor|minors|grandson|granddaughter|grandchild|grandchildren|stepson|stepdaughter|nephew|niece)\b/iu;
 
 /**
- * A note as it is kept: trimmed, one line, at most OUTCOME_NOTE_MAX characters, with email addresses, web addresses,
- * phone numbers and anything shaped like a date taken out, so a birth date or a contact detail typed into it is not
- * kept. A note about a child is dropped whole.
+ * Words and shapes that put birth details or an age in a note: such a note is dropped whole and the rating kept,
+ * because Zodiacs never stores birth details, and an age can be a child's.
  */
-export function scrubNote(input: unknown): { note: string | null; dropped: 'children' | null } {
+const BIRTH_WORDS = /\b(?:born|birth\w*|birthdays?|natal|bday|b-day)\b/iu;
+const AGE = /\b\d{1,3}\s*(?:-\s*)?(?:years?|yrs?|y\/o|yo|months?|weeks?)(?:\s*(?:-\s*)?old)?\b|\b(?:aged?|age of)\s*\d{1,3}\b|\b\d{1,3}\s*(?:years?|yrs?)\s+of\s+age\b/iu;
+const MONTHS = '(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)';
+const WRITTEN_DATE = new RegExp(`\\b(?:${MONTHS}\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?(?:,?\\s+\\d{2,4})?|\\d{1,2}(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTHS}\\.?(?:,?\\s+\\d{2,4})?)\\b`, 'giu');
+
+/**
+ * A note as it is kept: trimmed, one line, at most OUTCOME_NOTE_MAX characters, with email addresses, web addresses,
+ * phone numbers, dates (numeric or written out), years and clock times taken out, so a birth date or a contact detail
+ * typed into it is not kept. A note about a child, a birth or someone's age is dropped whole.
+ */
+export function scrubNote(input: unknown): { note: string | null; dropped: 'children' | 'personal' | null } {
   if (typeof input !== 'string') return { note: null, dropped: null };
   let text = input.normalize('NFC').replace(/[\u0000-\u001f\u007f]+/gu, ' ');
   if (CHILD_WORDS.test(text)) return { note: null, dropped: 'children' };
+  if (BIRTH_WORDS.test(text) || AGE.test(text)) return { note: null, dropped: 'personal' };
   text = text
     .replace(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/gu, '[removed]')
     .replace(/\b(?:https?:\/\/|www\.)\S+/giu, '[removed]')
     .replace(/\b\d{1,4}[-/.]\d{1,2}[-/.]\d{1,4}\b/gu, '[removed]')
+    .replace(WRITTEN_DATE, '[removed]')
+    .replace(/\b(?:1[89]|20)\d{2}\b/gu, '[removed]')
+    .replace(/\b\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)|\b\d{1,2}[:h.]\d{2}\b/giu, '[removed]')
     .replace(/\+?\d[\d\s().-]{6,}\d/gu, '[removed]')
     .replace(/\s+/gu, ' ')
     .trim();

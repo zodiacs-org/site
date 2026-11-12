@@ -73,7 +73,9 @@ describe('the outcome follow-up', () => {
     expect(outcome.match(/\bfetch\(/gu)).toHaveLength(1);
     expect(outcome).toContain('fetch(OUTCOMES_API_PATH,');
     expect(outcome).toContain("credentials: 'omit'");
-    expect(outcome).toContain('JSON.stringify({ goal: pick.goal, day: pick.day, score: pick.score, personal: pick.personal, rating, ...(note.trim() ? { note: note.trim() } : {}) })');
+    expect(outcome).toContain('JSON.stringify({ goal: pick.goal, day: pick.day, score: pick.score, personal: pick.personal, rating, ...(kept.note ? { note: kept.note } : {}) })');
+    // Only the scrubbed note is sent.
+    expect(outcome).toContain('const kept = scrubNote(note);');
     for (const pattern of [/localStorage/u, /sessionStorage/u, /document\.cookie/u, /history\.(?:push|replace)State/u, /sendBeacon/u, /console\./u, /plausible|gtag|posthog|analytics/iu, /birthDate|birth_date|birthTime/u]) {
       expect(outcome, String(pattern)).not.toMatch(pattern);
     }

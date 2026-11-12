@@ -40,12 +40,26 @@ describe('the note', () => {
   it('takes out email and web addresses, phone numbers and anything shaped like a date', () => {
     expect(scrubNote('Signed it! Mail me at ana@example.com or see https://example.com/x').note).toBe('Signed it! Mail me at [removed] or see [removed]');
     expect(scrubNote('Call +44 20 7946 0958 later').note).toBe('Call [removed] later');
-    expect(scrubNote('Born 1990-05-03, it went fine on 19/04/2027').note).toBe('Born [removed], it went fine on [removed]');
+    expect(scrubNote('Signed 2026-05-03, it went fine on 19/04/2027').note).toBe('Signed [removed], it went fine on [removed]');
+  });
+
+  it('refuses an impossible date rather than throwing', () => {
+    expect(readFollowUpLink('#g=move&d=2026-99-99&s=80&p=0')).toBeNull();
   });
 
   it('drops a note about a child whole, and keeps nothing empty', () => {
     expect(scrubNote('My daughter loved the new house')).toEqual({ note: null, dropped: 'children' });
     expect(scrubNote('Moved the kids in')).toEqual({ note: null, dropped: 'children' });
+    // Birth details and ages are never kept: the whole note goes, the rating stays.
+    for (const note of ['I was born on May 3, 1990 at 08:30 in Bangkok.', 'Signed on my birthday', 'My 8-year-old started well.', 'She is 7 years old now', 'aged 12 and happy', 'My natal Venus liked it']) {
+      expect(scrubNote(note), note).toEqual({ note: null, dropped: 'personal' });
+    }
+    // Written dates, years and clock times are taken out of a note that is kept.
+    expect(scrubNote('Signed on 3 May 2026 at 4pm, went smoothly')).toEqual({ note: 'Signed on [removed] at [removed], went smoothly', dropped: null });
+    expect(scrubNote('Moved on March 14th at 09:15')).toEqual({ note: 'Moved on [removed] at [removed]', dropped: null });
+    expect(scrubNote('Best launch since 2019')).toEqual({ note: 'Best launch since [removed]', dropped: null });
+    // Ordinary notes are kept as written.
+    expect(scrubNote('It went well, the movers were on time')).toEqual({ note: 'It went well, the movers were on time', dropped: null });
     expect(scrubNote('A smooth season at work').note).toBe('A smooth season at work');
     expect(scrubNote('   ')).toEqual({ note: null, dropped: null });
     expect(scrubNote(42)).toEqual({ note: null, dropped: null });

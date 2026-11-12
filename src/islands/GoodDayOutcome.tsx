@@ -36,7 +36,7 @@ export default function GoodDayOutcome() {
   const [rating, setRating] = useState<number | null>(null);
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [noteDropped, setNoteDropped] = useState(false);
+  const [noteDropped, setNoteDropped] = useState<'children' | 'personal' | null>(null);
   const card = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,16 +56,18 @@ export default function GoodDayOutcome() {
     if (!pick || rating === null) { setError('Choose how the day went.'); return; }
     setError(null);
     setState('sending');
+    // Only the scrubbed note leaves the device: a note about a child, a birth or an age is not sent at all.
+    const kept = scrubNote(note);
     try {
       const response = await fetch(OUTCOMES_API_PATH, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'omit', cache: 'no-store', referrerPolicy: 'strict-origin',
-        body: JSON.stringify({ goal: pick.goal, day: pick.day, score: pick.score, personal: pick.personal, rating, ...(note.trim() ? { note: note.trim() } : {}) }),
+        body: JSON.stringify({ goal: pick.goal, day: pick.day, score: pick.score, personal: pick.personal, rating, ...(kept.note ? { note: kept.note } : {}) }),
       });
       if (response.status === 404) { setState('closed'); return; }
       const answer = await response.json().catch(() => ({})) as { ok?: boolean; noteKept?: boolean; message?: string };
       if (!response.ok || !answer.ok) { setError(answer.message ?? 'That did not go through. Please try again.'); setState('ask'); return; }
       finishPick(deviceStorage(), pick);
-      setNoteDropped(scrubNote(note).dropped === 'children');
+      setNoteDropped(kept.dropped);
       setState('done');
       requestAnimationFrame(() => card.current?.focus());
     } catch {
@@ -117,7 +119,7 @@ export default function GoodDayOutcome() {
               <label class="field__label" for="outcome-note">Anything to add? <span class="field__optional">optional</span></label>
               <textarea id="outcome-note" class="field__input outcome__note" rows={3} maxLength={OUTCOME_NOTE_MAX} value={note} autocomplete="off"
                 onInput={(event) => setNote((event.target as HTMLTextAreaElement).value)} />
-              <p class="field__help">Please leave out names, contact details and anything about children. Dates and contact details are taken out before the note is kept.</p>
+              <p class="field__help">Please leave out names, contact details, birth details, ages and anything about children. Dates, times and contact details are taken out before the note is sent.</p>
             </div>
             <button class="btn btn--primary" type="submit" disabled={state === 'sending'}>{state === 'sending' ? 'Sending' : 'Send'}</button>
             <p class="calc__privacy">Kept anonymously with the goal, the day and the finder’s score for it, to test how well the days it picks go. No name, birth detail or address is kept.</p>
@@ -128,7 +130,7 @@ export default function GoodDayOutcome() {
         {state === 'done' && (
           <div class="outcome__body">
             <p class="outcome__thanks">Thank you. Your answer is in.</p>
-            {noteDropped && <p class="field__help">Your note mentioned a child, so only the rating was kept.</p>}
+            {noteDropped && <p class="field__help">{noteDropped === 'children' ? 'Your note mentioned a child' : 'Your note mentioned a birth or an age'}, so only the rating was kept.</p>}
             <p><a class="btn" href="/good-days/">Find more good days</a></p>
           </div>
         )}
