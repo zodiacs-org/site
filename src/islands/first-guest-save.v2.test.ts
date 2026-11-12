@@ -149,6 +149,12 @@ const flush = async () => { for (let index = 0; index < 20; index += 1) await ne
 /** Another tab (or this tab's account panel) starting an owner transition. */
 const ownerTransition = () => win.dispatchEvent(new Event(ACCOUNT_V2_PROFILE_REVOKE_EVENT));
 
+function deferredSession() {
+  let release = () => {};
+  sync.session = new Promise<null>((resolve) => { release = () => resolve(null); });
+  return () => release();
+}
+
 async function chartContext(overrides: Record<string, unknown> = {}) {
   const { profileAccessAllowed } = await import('../lib/account-v2/profile-access-reader');
   const computedInput = { date: '2000-01-01', time: '12:00', timeKnown: true, houseSystem: 'whole',
@@ -240,6 +246,28 @@ describe('first-time guest save with account sync on', () => {
     expect(local.getItem('zodiacs.profile.v1')).toBeNull();
   });
 
+  it('cancels a waiting chart save when access is revoked during the wait, even if granted again', async () => {
+    const releaseSession = deferredSession();
+    const context = await chartContext();
+    const save = context.commitSave(undefined, 'skip');
+    await flush();
+    // An auth event grants this tab while the start's session read is pending,
+    // then another tab's owner transition takes that access away.
+    for (const listener of sync.listeners) listener(null);
+    await flush();
+    expect(context.profileAccessAllowed()).toBe(true);
+    ownerTransition();
+    expect(context.profileAccessAllowed()).toBe(false);
+    win.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    releaseSession();
+    await save;
+    await flush();
+    // Access is back, but the save that was waiting through the revocation is dropped.
+    expect(context.profileAccessAllowed()).toBe(true);
+    expect(local.getItem('zodiacs.profile.v1')).toBeNull();
+    expect(context.saved).toBe('idle');
+  });
+
   it('cancels a chart save when access is revoked after the wait, before the write', async () => {
     let revokeBeforeStore = true;
     const context = await chartContext({
@@ -281,6 +309,23 @@ describe('first-time guest save with account sync on', () => {
     ownerTransition();
     expect(context.requestRef.current).toBe(request + 1);
     expect(context.result).toBeNull();
+  });
+
+  it('cancels a waiting comparison save when access is revoked during the wait, even if granted again', async () => {
+    const releaseSession = deferredSession();
+    const context = await pairContext();
+    context.onSavePair();
+    await flush();
+    for (const listener of sync.listeners) listener(null);
+    await flush();
+    expect(context.profileAccessAllowed()).toBe(true);
+    ownerTransition();
+    win.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    releaseSession();
+    await flush();
+    expect(context.profileAccessAllowed()).toBe(true);
+    expect(local.getItem('zodiacs.pairs.v1')).toBeNull();
+    expect(context.pairSave).toBe('idle');
   });
 
   it('shows the save-could-not-start message for a comparison when the bootstrap cannot load', async () => {

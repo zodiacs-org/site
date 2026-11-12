@@ -69,18 +69,30 @@ function readerCanRead(): boolean {
 }
 
 /**
+ * - `pending`: the bootstrap is starting, or an evaluation is in flight.
+ * - `settled`: nothing is in flight; `profileAccessAllowed()` is the verdict.
+ */
+type ProfileAccessState = 'pending' | 'settled';
+
+interface BootstrapControl {
+  state(): ProfileAccessState;
+  stop(): void;
+}
+
+/**
  * The tab-lifetime shared lease required by every private profile reader and
  * writer. This is the only code that activates the lease or writes a grant.
- * `onDecided` runs each time no evaluation is in flight any more, so a waiting
- * save can read `profileAccessAllowed()` knowing the coordinator has decided.
+ * `onSettled` runs each time nothing is in flight any more, so a waiting save can read `profileAccessAllowed()` knowing the
+ * coordinator has decided.
  */
-function runProfileAccessBootstrap(onDecided: () => void): () => void {
+function runProfileAccessBootstrap(onSettled: () => void): BootstrapControl {
   let live = true;
   let unsubscribeAuth = () => {};
   let unsubscribeRevocation = () => {};
   let authVersion = 0;
   let accessVersion = 0;
-  let evaluations = 0;
+  // The start and every evaluation count while they run.
+  let inFlight = 0;
   let currentAccountId: string | null = null;
   // The account the last evaluation was for; undefined before the first.
   let evaluatedAccountId: string | null | undefined;
@@ -105,16 +117,24 @@ function runProfileAccessBootstrap(onDecided: () => void): () => void {
     if (held || changed) announceAccessChange();
   };
 
+  const begin = () => { inFlight += 1; };
+  const end = () => {
+    inFlight -= 1;
+    if (inFlight === 0) onSettled();
+  };
+
   // Another tab's owner transition, or one this tab's account panel runs, is
   // an owner change. This bootstrap's own transitions follow the revoke that
   // opened their evaluation, so they withdraw nothing new.
   unsubscribeRevocation = onAccountProfileLeaseRevocation(() => revoke(!ownTransition));
   if (!browserStorage) {
     revoke();
-    onDecided();
-    return () => {
-      live = false;
-      unsubscribeRevocation();
+    return {
+      state: () => 'settled',
+      stop: () => {
+        live = false;
+        unsubscribeRevocation();
+      },
     };
   }
   const { local, session } = browserStorage;
@@ -232,61 +252,72 @@ function runProfileAccessBootstrap(onDecided: () => void): () => void {
     await grant('account', accountId, expectedAuthVersion);
   };
 
-  // Counts evaluations so a waiting save hears only the settled verdict, never
-  // the revoke that opens a newer evaluation.
   const runEvaluation = async (accountId: string | null, expectedAuthVersion: number) => {
-    evaluations += 1;
+    begin();
     try {
       await evaluate(accountId, expectedAuthVersion);
     } finally {
-      evaluations -= 1;
-      if (evaluations === 0) onDecided();
+      end();
     }
   };
 
-  void import('../profile/sync').then(async (api) => {
-    if (!live || !api.isSupabaseConfigured()) {
+  // The start is itself in flight until its first evaluation ends, so a save
+  // never reads the locked state the tab opens with as a decision.
+  const start = () => {
+    begin();
+    void import('../profile/sync').then(async (api) => {
+      if (!live) return;
+      if (!api.isSupabaseConfigured()) {
+        revoke();
+        return;
+      }
+      // Subscribe before reading the snapshot so a stale async read can never
+      // restore the previous account's lease.
+      unsubscribeAuth = api.onSyncAuthChange((next) => {
+        authVersion += 1;
+        currentAccountId = next?.user.id ?? null;
+        void runEvaluation(currentAccountId, authVersion);
+      });
+      const snapshotVersion = authVersion;
+      const current = await api.getSyncSession();
+      if (!live || authVersion !== snapshotVersion) return;
+      currentAccountId = current?.user.id ?? null;
+      await evaluate(currentAccountId, snapshotVersion);
+    }).catch(() => {
       revoke();
-      onDecided();
-      return;
-    }
-    // Subscribe before reading the snapshot so a stale async read can never
-    // restore the previous account's lease.
-    unsubscribeAuth = api.onSyncAuthChange((next) => {
-      authVersion += 1;
-      currentAccountId = next?.user.id ?? null;
-      void runEvaluation(currentAccountId, authVersion);
-    });
-    const snapshotVersion = authVersion;
-    const current = await api.getSyncSession();
-    if (!live || authVersion !== snapshotVersion) return;
-    currentAccountId = current?.user.id ?? null;
-    await runEvaluation(currentAccountId, snapshotVersion);
-  }).catch(() => {
-    revoke();
-    onDecided();
-  });
+    }).finally(end);
+  };
+  start();
 
   const reevaluate = () => { void runEvaluation(currentAccountId, authVersion); };
   window.addEventListener(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT, reevaluate);
 
-  return () => {
-    live = false;
-    authVersion += 1;
-    revoke();
-    unsubscribeAuth();
-    unsubscribeRevocation();
-    window.removeEventListener(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT, reevaluate);
+  return {
+    state: () => (inFlight > 0 ? 'pending' : 'settled'),
+    stop: () => {
+      live = false;
+      authVersion += 1;
+      revoke();
+      unsubscribeAuth();
+      unsubscribeRevocation();
+      window.removeEventListener(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT, reevaluate);
+    },
   };
 }
 
 interface RunningBootstrap {
   holders: number;
-  stop: () => void;
-  decided: Promise<void>;
+  control: BootstrapControl | null;
+  waiters: Set<() => void>;
 }
 
 let running: RunningBootstrap | null = null;
+
+function wake(bootstrap: RunningBootstrap): void {
+  const waiting = [...bootstrap.waiters];
+  bootstrap.waiters.clear();
+  for (const resolve of waiting) resolve();
+}
 
 /**
  * Starts the one bootstrap this tab runs, or joins it. The eager island and
@@ -295,11 +326,9 @@ let running: RunningBootstrap | null = null;
  */
 export function startProfileAccessBootstrap(): () => void {
   if (!running) {
-    let markDecided = () => {};
-    const decided = new Promise<void>((resolve) => { markDecided = resolve; });
-    const current: RunningBootstrap = { holders: 0, stop: () => {}, decided };
-    running = current;
-    current.stop = runProfileAccessBootstrap(() => markDecided());
+    const created: RunningBootstrap = { holders: 0, control: null, waiters: new Set() };
+    running = created;
+    created.control = runProfileAccessBootstrap(() => wake(created));
   }
   const current = running;
   current.holders += 1;
@@ -310,14 +339,31 @@ export function startProfileAccessBootstrap(): () => void {
     current.holders -= 1;
     if (current.holders > 0 || running !== current) return;
     running = null;
-    current.stop();
+    current.control?.stop();
+    wake(current);
   };
 }
 
 /**
- * Resolves once the running bootstrap has made its first decision (a grant,
- * or staying locked). Access itself is still read from `profileAccessAllowed()`.
+ * True when nothing is in flight, so `profileAccessAllowed()` is the current
+ * verdict. Read it in the same step as the verdict: an evaluation that starts
+ * later makes it false again.
  */
-export function profileAccessDecision(): Promise<void> {
-  return running?.decided ?? Promise.resolve();
+export function profileAccessSettled(): boolean {
+  return running?.control?.state() !== 'pending';
+}
+
+/**
+ * Resolves once the bootstrap's current evaluation has decided (a grant, or
+ * staying locked). When a newer evaluation starts before a waiter resumes, it
+ * waits for that one too, so it never reports an earlier verdict. Access
+ * itself is still read from `profileAccessAllowed()`.
+ */
+export async function profileAccessDecision(): Promise<void> {
+  for (;;) {
+    const current = running;
+    const state = current?.control?.state();
+    if (!current || state === undefined || state === 'settled') return;
+    await new Promise<void>((resolve) => { current.waiters.add(resolve); });
+  }
 }

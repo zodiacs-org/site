@@ -18,12 +18,15 @@ export const PROFILE_ACCESS_WAIT_MS = 12_000;
 /**
  * - `allowed`: this tab may write now.
  * - `denied`: the bootstrap decided and this tab stays locked; the writer refuses as before.
- * - `unavailable`: the bootstrap could not load or did not decide in time.
+ * - `unavailable`: the bootstrap could not load or start, or did not decide in time.
  */
 export type ProfileWriteAccess = 'allowed' | 'denied' | 'unavailable';
 
 interface BootstrapEntry {
+  /** Resolves when the current evaluation has decided; rejects if the bootstrap could not start. */
   profileAccessDecision(): Promise<void>;
+  /** True when no evaluation is in flight, so `profileAccessAllowed()` is the current verdict. */
+  profileAccessSettled(): boolean;
 }
 
 const importBootstrap = (): Promise<BootstrapEntry> => import('./profile-access-autostart');
@@ -68,18 +71,29 @@ export async function ensureProfileWriteAccess(
     timer = setTimeout(() => resolve('timeout'), timeoutMs);
   });
   try {
-    const decided = requestProfileAccessBootstrap()
-      .then((entry) => entry.profileAccessDecision())
-      .then(() => 'decided' as const);
-    if (await Promise.race([decided, timedOut]) === 'timeout') {
-      return profileAccessAllowed() ? 'allowed' : 'unavailable';
-    }
+    const verdict = await Promise.race([decidedAccess(), timedOut]);
+    if (verdict === 'timeout') return profileAccessAllowed() ? 'allowed' : 'unavailable';
+    return verdict;
   } catch {
+    // The bootstrap did not load, or could not start; the next save tries again.
     return profileAccessAllowed() ? 'allowed' : 'unavailable';
   } finally {
     clearTimeout(timer);
   }
-  return profileAccessAllowed() ? 'allowed' : 'denied';
+}
+
+/**
+ * Waits for the bootstrap's current decision and reads the verdict in the
+ * same step as it confirms nothing is in flight. If a newer evaluation began
+ * after the decision it waited for (an auth change, a reevaluation), it waits
+ * again, so it never reports a verdict that evaluation is about to replace.
+ */
+async function decidedAccess(): Promise<'allowed' | 'denied'> {
+  const entry = await requestProfileAccessBootstrap();
+  for (;;) {
+    await entry.profileAccessDecision();
+    if (entry.profileAccessSettled()) return profileAccessAllowed() ? 'allowed' : 'denied';
+  }
 }
 
 /**

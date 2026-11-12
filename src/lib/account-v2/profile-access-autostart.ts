@@ -6,8 +6,12 @@
  * stamps its hashed URL into the inline loader
  * (scripts/stamp-profile-access-loader.mjs).
  */
-import { profileAccessDecision, startProfileAccessBootstrap } from './profile-access-bootstrap';
+import {
+  profileAccessDecision,
+  profileAccessSettled,
+  startProfileAccessBootstrap,
+} from './profile-access-bootstrap';
 
 startProfileAccessBootstrap();
 
-export { profileAccessDecision };
+export { profileAccessDecision, profileAccessSettled };

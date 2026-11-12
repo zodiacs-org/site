@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ACCOUNT_V2_PROFILE_ACCESS_KEY } from './profile-access';
+import { ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT, ACCOUNT_V2_PROFILE_ACCESS_KEY } from './profile-access';
 import { ACCOUNT_V2_LOCAL_OWNER_KEY, ACCOUNT_V2_RETAINED_OWNER_KEY } from './storage-identity';
 
 /**
@@ -16,10 +16,18 @@ const sync = {
   session: null as { user: { id: string } } | null,
   listeners: [] as ((session: { user: { id: string } } | null) => void)[],
   sessionReads: 0,
+  sessionFailures: 0,
 };
 vi.mock('../profile/sync', () => ({
   isSupabaseConfigured: () => sync.configured,
-  getSyncSession: async () => { sync.sessionReads += 1; return sync.session; },
+  getSyncSession: async () => {
+    sync.sessionReads += 1;
+    if (sync.sessionFailures > 0) {
+      sync.sessionFailures -= 1;
+      throw new Error('session read failed');
+    }
+    return sync.session;
+  },
   onSyncAuthChange: (listener: (session: { user: { id: string } } | null) => void) => {
     sync.listeners.push(listener);
     return () => { sync.listeners.splice(sync.listeners.indexOf(listener), 1); };
@@ -50,6 +58,8 @@ function installBaseReader(win: object, local: MemoryStorage, session: MemorySto
 let local: MemoryStorage;
 let session: MemoryStorage;
 let v2 = true;
+// When set, the next shared (read lease) lock request waits until released.
+let holdNextLease: { held: Promise<void> } | null = null;
 
 beforeEach(() => {
   vi.resetModules();
@@ -57,13 +67,21 @@ beforeEach(() => {
   local = new MemoryStorage();
   session = new MemoryStorage();
   v2 = true;
-  sync.configured = true; sync.session = null; sync.listeners = []; sync.sessionReads = 0;
+  sync.configured = true; sync.session = null; sync.listeners = []; sync.sessionReads = 0; sync.sessionFailures = 0;
+  holdNextLease = null;
   const win = Object.assign(new EventTarget(), { localStorage: local, sessionStorage: session });
   vi.stubGlobal('window', win);
   vi.stubGlobal('localStorage', local);
   vi.stubGlobal('sessionStorage', session);
   vi.stubGlobal('document', { documentElement: { hasAttribute: (name: string) => v2 && name === 'data-account-sync-v2' } });
-  vi.stubGlobal('navigator', { locks: { request: async (_name: string, _options: unknown, callback: () => unknown) => callback() } });
+  vi.stubGlobal('navigator', { locks: { request: async (_name: string, options: { mode?: string }, callback: () => unknown) => {
+    if (options?.mode === 'shared' && holdNextLease) {
+      const { held } = holdNextLease;
+      holdNextLease = null;
+      await held;
+    }
+    return callback();
+  } } });
   vi.stubEnv('PUBLIC_ACCOUNT_SYNC_V2_ENABLED', '1');
   vi.stubEnv('PUBLIC_SUPABASE_URL', '');
   installBaseReader(win, local, session);
@@ -93,7 +111,7 @@ function syntheticChart() {
 function controlledBootstrap(onDecide: () => void) {
   let decide = () => {};
   const decided = new Promise<void>((resolve) => { decide = () => { onDecide(); resolve(); }; });
-  const importer = vi.fn(async () => ({ profileAccessDecision: () => decided }));
+  const importer = vi.fn(async () => ({ profileAccessDecision: () => decided, profileAccessSettled: () => true }));
   return { importer, decide: () => decide() };
 }
 
@@ -154,7 +172,7 @@ describe('ensureProfileWriteAccess', () => {
     const request = await import('./profile-access-request');
     const importer = vi.fn()
       .mockRejectedValueOnce(new Error('chunk failed'))
-      .mockResolvedValueOnce({ profileAccessDecision: async () => { grantUnowned(); } });
+      .mockResolvedValueOnce({ profileAccessDecision: async () => { grantUnowned(); }, profileAccessSettled: () => true });
     request.setProfileAccessBootstrapImporterForTests(importer);
     const write = vi.fn();
     const unavailable = vi.fn();
@@ -168,7 +186,8 @@ describe('ensureProfileWriteAccess', () => {
   it('reports a bootstrap that does not decide in time as unavailable', async () => {
     vi.useFakeTimers();
     const request = await import('./profile-access-request');
-    request.setProfileAccessBootstrapImporterForTests(async () => ({ profileAccessDecision: () => new Promise<void>(() => {}) }));
+    request.setProfileAccessBootstrapImporterForTests(async () => ({
+      profileAccessDecision: () => new Promise<void>(() => {}), profileAccessSettled: () => false }));
     const access = request.ensureProfileWriteAccess(1_000);
     await vi.advanceTimersByTimeAsync(999);
     let settled = false;
@@ -246,6 +265,38 @@ describe('first saves over the real bootstrap', () => {
     release();
     expect(sync.listeners).toHaveLength(1);
     expect(sync.sessionReads).toBe(1);
+  });
+
+  it('waits for an evaluation still in flight instead of reporting the earlier decision', async () => {
+    const request = await import('./profile-access-request');
+    const store = await import('../profile/store');
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('allowed');
+    // A second evaluation (an auth event) starts and holds at its lease acquisition.
+    let releaseLease = () => {};
+    holdNextLease = { held: new Promise<void>((resolve) => { releaseLease = resolve; }) };
+    for (const listener of sync.listeners) listener(null);
+    expect((await import('./profile-access-reader')).profileAccessAllowed()).toBe(false);
+    let verdict: string | null = null;
+    const access = request.ensureProfileWriteAccess().then((value) => { verdict = value; return value; });
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    // The first decision is obsolete: the save keeps waiting rather than reporting denied.
+    expect(verdict).toBeNull();
+    releaseLease();
+    await expect(access).resolves.toBe('allowed');
+    expect(store.saveChart(syntheticChart())).toBe('saved');
+  });
+
+  it('reports the verdict current at each later save', async () => {
+    const request = await import('./profile-access-request');
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('allowed');
+    // Another account takes this browser while signed out here: the reevaluation locks the tab.
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: B }));
+    window.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('denied');
+    // The marker goes away again; the next save sees the new grant, not the denial.
+    local.removeItem(ACCOUNT_V2_LOCAL_OWNER_KEY);
+    window.dispatchEvent(new Event(ACCOUNT_PROFILE_ACCESS_REEVALUATE_EVENT));
+    await expect(request.ensureProfileWriteAccess()).resolves.toBe('allowed');
   });
 
   it('stays locked rather than granting when Supabase is not configured', async () => {
