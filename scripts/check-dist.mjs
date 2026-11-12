@@ -22,6 +22,8 @@
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
  *  10. The inline profile access loader names the built bootstrap chunk.
+ *  11. PUBLIC_SUPABASE_* hold public keys, and no built file carries an
+ *      sb_secret_ key or a service_role JWT (scripts/lib/supabase-public-keys.mjs).
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
 import { attr, canonicalHref, renderedLinks, crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
@@ -48,6 +50,8 @@ import {
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
 import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
+import { publicBuildEnv } from './lib/public-build-env.mjs';
+import { distSupabaseSecretProblems, publicSupabaseKeyProblems } from './lib/supabase-public-keys.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -1884,6 +1888,15 @@ for (const [file, path] of builtPageByFile) {
 {
   const { problems } = await verifyProfileAccessLoader(root);
   for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
+}
+
+// ---- Public Supabase keys -----------------------------------------------------
+// Browser code inlines PUBLIC_SUPABASE_PUBLISHABLE_KEY (or the anon fallback).
+// Fail when either holds a secret or service_role key, and when any built file
+// carries one. Messages name the variable or file and the kind of key only.
+{
+  for (const problem of publicSupabaseKeyProblems(publicBuildEnv({ root: repo, mode: 'production' }))) fail(problem);
+  for (const problem of await distSupabaseSecretProblems(root)) fail(problem);
 }
 
 // ---- Report ------------------------------------------------------------------

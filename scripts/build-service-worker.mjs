@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { publicBuildEnv } from './lib/public-build-env.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(root, 'dist');
@@ -70,8 +71,11 @@ export async function buildServiceWorker({ outputDirectory = dist, pushEnabled =
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // The opt-in islands read PUBLIC_WEB_PUSH_ENABLED through import.meta.env,
+  // which includes .env files; read it the same way so the worker agrees.
+  const publicEnv = publicBuildEnv({ root });
   const report = await buildServiceWorker({
-    pushEnabled: process.env.PUBLIC_WEB_PUSH_ENABLED === '1' && process.env.PUSH_ENABLED === '1',
+    pushEnabled: publicEnv('PUBLIC_WEB_PUSH_ENABLED') === '1' && process.env.PUSH_ENABLED === '1',
   });
   console.log(`Service worker: ${report.assets} assets · cache ${report.version} · push ${report.pushEnabled ? 'on' : 'off'}.`);
 }

@@ -6,6 +6,7 @@ import {
   ANALYTICS_EVENT_VALUES,
 } from '../src/lib/analytics-config.mjs';
 import { GUIDE_LOADER_MARKER, guideLoaderSource } from '../src/lib/assistant/guide-loader.mjs';
+import { publicBuildEnv } from './lib/public-build-env.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
@@ -181,10 +182,14 @@ export async function configureLegacyAnalytics(config = {}) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // Base.astro reads the same names through import.meta.env, which includes
+  // .env files; read them the same way so wing pages and Astro pages agree.
+  const publicEnv = publicBuildEnv({ root });
+  const scriptUrl = publicEnv('PUBLIC_PLAUSIBLE_SCRIPT_URL');
   const result = await configureLegacyAnalytics({
-    scriptUrl: process.env.PUBLIC_PLAUSIBLE_SCRIPT_URL,
-    endpoint: process.env.PUBLIC_PLAUSIBLE_ENDPOINT,
-    domain: process.env.PUBLIC_PLAUSIBLE_DOMAIN,
+    scriptUrl,
+    endpoint: publicEnv('PUBLIC_PLAUSIBLE_ENDPOINT'),
+    domain: publicEnv('PUBLIC_PLAUSIBLE_DOMAIN'),
   });
-  console.log(`Legacy analytics: ${result.changed}/${result.targets} pages updated (${process.env.PUBLIC_PLAUSIBLE_SCRIPT_URL ? 'enabled' : 'disabled'}).`);
+  console.log(`Legacy analytics: ${result.changed}/${result.targets} pages updated (${scriptUrl ? 'enabled' : 'disabled'}).`);
 }

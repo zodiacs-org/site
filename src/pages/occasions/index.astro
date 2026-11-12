@@ -6,7 +6,7 @@ import '../../styles/occasions.css';
 import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
 import { SAVED_RESULT_FORWARD } from '../../lib/profile/saved-result-link';
 
-const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
+const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: import.meta.env.PUBLIC_ACCOUNT_SAVES_ENABLED ?? process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
 
 const faq = [
   {
