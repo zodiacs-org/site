@@ -1,28 +1,57 @@
 # HANDOFF, P6.2 eight tests scoreboard
 
-Branch `docs/eight-tests-scoreboard`, one commit `470f2078a` by Zodiacs Admin <admin@zodiacs.org>. Not pushed, no PR (coordinator opens the draft PR).
+Branch `docs/eight-tests-scoreboard`, three commits by Zodiacs Admin <admin@zodiacs.org>, no trailers:
+- `470f2078a` the scoreboard;
+- `d99ce9cfc` (coordinator) records the content-page fetch: Plausible is live on content pages such as /moon-phase/, Vercel Web Analytics is off;
+- the latest commit, fixes from the Codex review.
+
+Not pushed, no PR (the coordinator opens the draft PR). HANDOFF.md and STATUS.md were committed by the coordinator's commit and are kept tracked.
 
 ## What changed
-- New file `docs/growth/records/2026/GROWTH-2026-11-16-eight-tests.md` (growth record, type experiment, status approved). Nothing else.
-- Contents: the "reach problem" rule at the top; key dates (16 Nov start, 7 Dec three-week read, 16 Dec verdict or day 30, 10 Jan 2027 owned reach, target 500, floor 150); the live analytics check; the settings Dias would set; T1 to T8 pass and fail numbers copied word for word from final-audit.md section 4; one weekly table per test (all cells null) naming the P6.1 events and the non-analytics sources; a baseline table for 1 Sep to 15 Nov 2026 (all null); "What Dias needs to provide" (Plausible, Vercel Web Analytics, Google Search Console, each with export path and read-only alternative); five proposals A to E.
+- `docs/growth/records/2026/GROWTH-2026-11-16-eight-tests.md` (growth record, type experiment, status approved). Nothing else outside this file, HANDOFF.md and STATUS.md.
+- It holds:
+  - the "reach problem" rule at the top, with each kill condition judged separately against its own named volume (per-test table);
+  - the key dates (16 Nov planned start, 7 Dec three-week read or start plus 21 days, 16 Dec verdict or day 30, 10 Jan 2027 owned reach with target 500 and floor 150);
+  - the live analytics check and the settings Dias would set;
+  - the T1 to T8 pass and fail numbers, word for word from final-audit.md section 4;
+  - one weekly table per test, all cells null, naming the P6.1 events;
+  - a null baseline for 1 Sep to 15 Nov 2026;
+  - "What Dias needs to provide";
+  - proposals A to E.
 
-## Live check result (12 Nov 2026, 11:35 UTC)
-- https://zodiacs.org/ and https://zodiacs.org/birth-chart/: HTTP 200, no Plausible loader, no Vercel `/_vercel/insights/script.js` loader, no `data-guide-analytics-boundary`; only the no-op `zodiacsAnalytics` stub.
-- Both pages are `accountSurface` and live HTML shows `data-account-sync-v2`, so Base.astro excludes analytics on them regardless of env. The check therefore cannot tell whether `PUBLIC_PLAUSIBLE_SCRIPT_URL` / `PUBLIC_VERCEL_WEB_ANALYTICS` are set for other pages. Next step: fetch one non-account content page (a sign guide or /your-2027-sky/) to settle it.
-- Disclosure: I also made one extra public fetch of https://zodiacs.org/registry/ (grep for "plausible", no match). It is a static wing page that is analytics-free by design, so it is not used as evidence in the document.
+## Codex review fixes (latest commit)
+- **Blocker:** `/year-score/` and `/your-2027-sky/` are `privateSurface`, so analytics never loads on them.
+  - The T2 inputs that depend on them are marked "not measurable" in the feeds list and the table headers: `year_score_completed`, `year_pack_cta` on the year_score, year_sky and birthday_report surfaces, `email_subscribed` with placement year_score, and landing visits on those pages.
+  - Only paid orders, from the payment provider, can be read.
+  - Proposal A now covers privateSurface pages as well as account surfaces.
+- **Privacy line:** now limited to the scoreboard and its analytics events. It notes that the email provider keeps confirmed contacts' addresses and may keep a chosen sign.
+- **Kill conditions:** each is judged on its own volume. T1's click rate and T3's calendar adds have no volume gate. T2's 1,000 landing visits is independent of its 500 completers. "Reach problem" and "not measurable" are kept apart.
+- **Dates:** T3, T4 and T7 starts are "planned 16 Nov, actual null". Their weekly tables count days from the actual start, with the 16 Nov dates marked provisional. T3, T4 and T7 three-week reads now carry the "otherwise start plus 21 days" rule.
+- **Handoff:** this file now reflects the second commit, and the content-page fetch is no longer listed as open.
+
+## Live check result (12 Nov 2026)
+- 11:35 UTC: https://zodiacs.org/ and https://zodiacs.org/birth-chart/ return HTTP 200 with neither loader. Both are account surfaces with account sync v2 on, so they are excluded by design.
+- 11:50 UTC (coordinator): /moon-phase/ has the Plausible loader, so `PUBLIC_PLAUSIBLE_SCRIPT_URL` is set in production. /your-2027-sky/ has no loader (privateSurface). No Vercel loader was found anywhere.
+- Disclosure: I made one extra fetch of https://zodiacs.org/registry/, a static wing page that is analytics-free by design. It is not used as evidence.
 
 ## Tests
-- No code changed. Verified by script that all 24 success/kill/duration strings from section 4 appear verbatim, and that the file has no em or en dashes and no crypto words. `node_modules` is not installed in this worktree, so the npm test suite was not run; no test reads this new file (only `trust-surface-consistency.test.mjs` reads two other growth docs).
-- The verbatim T2 cells contain "buying" (paid orders for the 2027 calendar); kept because the ticket requires word for word copying. My own text uses "paid orders".
+- No code changed. A script checked that all 24 duration, success and kill strings from section 4 appear verbatim, and that the file, HANDOFF.md and STATUS.md contain no em or en dashes. It also found no crypto words in the scoreboard.
+- `node_modules` is not installed in this worktree, so `npm test` was not run. No test reads the new file.
+- The verbatim T2 cells say "buying" (paid orders for the 2027 calendar). They are kept because the copy must be word for word; my own text says "paid orders".
 
-## Flags or production settings needed (none set)
-- `PUBLIC_PLAUSIBLE_SCRIPT_URL` (required for every product event), optional `PUBLIC_PLAUSIBLE_ENDPOINT`, `PUBLIC_PLAUSIBLE_DOMAIN`; optional `PUBLIC_VERCEL_WEB_ANALYTICS=1` plus enabling Web Analytics on the Vercel project and the steps in GROWTH-2026-09-01-vercel-web-analytics-flag. All need Dias's yes.
-- Plausible goals for each P6.1 event and `assistant_arrival` (Proposal E).
+## Flags or production settings (none set by this ticket)
+- `PUBLIC_PLAUSIBLE_SCRIPT_URL` is already set. `PUBLIC_PLAUSIBLE_ENDPOINT` and `PUBLIC_PLAUSIBLE_DOMAIN` are optional.
+- `PUBLIC_VERCEL_WEB_ANALYTICS=1` is optional. It also needs Web Analytics enabled on the Vercel project and the steps in GROWTH-2026-09-01-vercel-web-analytics-flag, and needs Dias's yes.
+- Plausible goals are needed for each P6.1 event and `assistant_arrival` (Proposal E).
 
 ## Open
-- Proposal A (needs Dias's decision before 16 Nov): with account sync v2 on, analytics is off on home, birth chart, horoscope sign pages, today, transits and other account surfaces, so T1's chart and horoscopes placements, T1's result-page denominator and some T8 arrivals cannot be counted; /birthday-report/ is privateSurface so `year_pack_cta` surface birthday_report never counts.
-- Proposal B: Plausible sources read Direct/None by design (referrer nulled, canonical URL). Sources must come from the P6.1 `source` value.
-- Proposal C: confirm whether Vercel's script sends the referrer before switch-on; the 2026-09-01 record says it does not receive referrer-derived data.
-- Proposal D: docs/ANALYTICS.md lists wing_record_view / wing_acquisition_click that cannot fire and omits assistant_arrival. Could overlap with P6.1, which edits ANALYTICS.md.
-- Dias to supply the baseline exports listed in section 6; the July/August exports' tool is not recorded in the repo.
-- T2, T3, T4, T8 start dates are null until those features ship or a listing is approved.
+- **Proposal A**, Dias decides before 16 Nov; the recommendation is (a) now and (b) before T2 goes on sale. Analytics is off on account surfaces (home, birth chart, horoscope sign pages, today, transits and others) and on privateSurface pages (/year-score/, /your-2027-sky/, /birthday-report/). As a result:
+  - T1 kill condition (a) cannot be judged;
+  - neither T2 kill condition can be judged;
+  - T8 undercounts referred visits;
+  - the good day and birthday card pages (T3 and T4, not yet built) must be built without either flag for their events to count.
+- **Proposal B:** Plausible sources read Direct / None by design. Sources come from the P6.1 `source` value.
+- **Proposal C:** confirm whether Vercel's script sends the referrer before switching it on.
+- **Proposal D:** docs/ANALYTICS.md lists wing_record_view and wing_acquisition_click, which cannot fire, and omits assistant_arrival. This may overlap with P6.1, which edits ANALYTICS.md.
+- **Exports:** Dias supplies the baseline exports in section 6. The repo doesn't record which tool produced the July and August exports.
+- **Start dates:** T2, T3, T4, T7 and T8 have null start dates until they actually start.
