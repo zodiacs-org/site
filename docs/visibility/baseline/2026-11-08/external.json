@@ -1,0 +1,49 @@
+{
+  "label": "2026-11-08",
+  "source": "Gathered outside the cloud session on 2026-11-08 and handed to the program as a summary. Raw answers, the exact 50 questions and the Google surface definition were not included.",
+  "search_console": {
+    "property": "Domain property zodiacs.org",
+    "verified": "2026-11-08",
+    "history": "none: data starts on 2026-11-08",
+    "baseline_meaning": "Every phrase starts with no recorded impressions. The first usable window is 2026-11-08 onward."
+  },
+  "ai_and_google": {
+    "questions": 50,
+    "surfaces_run": ["Claude", "Google"],
+    "surfaces_not_run": ["ChatGPT", "Gemini", "Grok"],
+    "pairs": 100,
+    "zodiacs_named": 0,
+    "zodiacs_named_rate": 0
+  },
+  "competitors_named_most": ["Cafe Astrology", "Astro-Seek", "Astro.com", "CHANI", "TimePassages", "The Pattern", "Co-Star"],
+  "small_sites_google_names": ["Augurine", "ZodiScope", "ChartNova", "ChartLune"],
+  "cited_list_pages": [
+    "zodiscope.io/journal/best-birth-chart-sites",
+    "astrologify.com",
+    "allure.com/story/free-birth-chart",
+    "cosmic-patterns.com",
+    "getbirthchart.com/compare",
+    "chartingstars.com",
+    "astrologyranking.com",
+    "lifewire.com/best-astrology-apps-5078859"
+  ],
+  "already_pitched": { "date": "2026-10-24", "to": ["Natal Echo", "Allure", "ZodiScope", "Augurine"] },
+  "priority_phrases": [
+    "free birth chart calculator no signup",
+    "private birth chart calculator",
+    "astrology website that does not save my data",
+    "free birth chart with houses",
+    "best birth chart website",
+    "best free astrology website",
+    "most accurate birth chart calculator",
+    "how accurate are online birth chart calculators",
+    "free moon sign calculator",
+    "rising sign calculator without birth time",
+    "zodiac compatibility checker",
+    "big three calculator sun moon rising",
+    "free transit chart calculator",
+    "astrology app without subscription",
+    "best astrology site for compatibility"
+  ],
+  "most_winnable": "the privacy and no-signup calculator phrases"
+}
