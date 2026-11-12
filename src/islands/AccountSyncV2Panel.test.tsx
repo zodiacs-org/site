@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import AccountSyncV2Panel, {
   accountDeletionCompletionMessage,
   displayAccountV2Error,
+  finishLocalSignOut,
   planSavedRecordErasure,
   RECORDS_BLOCKED_MESSAGE,
   reconcileBootstrapConsentMetadata,
@@ -289,6 +290,50 @@ describe('records erasure plan for sign-out, boundary clear and confirmed deleti
       expect(body, handler).toContain('runPlannedSavedRecordErasure(plan, () => authEpoch.current === epoch)');
       expect(body, handler).toMatch(/=== 'failed'\) return/u);
       expect(body, handler).toContain("plan.status === 'blocked'");
+    }
+  });
+});
+
+describe('finishing sign-out', () => {
+  function steps(signOut: () => Promise<void>, forgotten: boolean) {
+    const order: string[] = [];
+    return {
+      order,
+      steps: {
+        signOut: vi.fn(async () => { order.push('sign-out'); await signOut(); }),
+        forgetSession: vi.fn(() => { order.push('forget'); return forgotten; }),
+        lockProfile: vi.fn(async () => { order.push('lock'); }),
+      },
+    };
+  }
+  const offline = () => Promise.reject(new Error('synthetic network failure'));
+
+  it('reloads after clearing the device, or shows the signed-out state, when Supabase confirms', async () => {
+    const cleared = steps(async () => {}, true);
+    expect(await finishLocalSignOut(true, cleared.steps)).toBe('reload');
+    const kept = steps(async () => {}, true);
+    expect(await finishLocalSignOut(false, kept.steps)).toBe('signed-out');
+    expect([...cleared.order, ...kept.order]).toEqual(['sign-out', 'sign-out']);
+  });
+
+  it('removes the stored session before reloading a cleared device whose sign-out request failed', async () => {
+    const { order, steps: failed } = steps(offline, true);
+    expect(await finishLocalSignOut(true, failed)).toBe('reload');
+    expect(order).toEqual(['sign-out', 'forget']);
+    expect(failed.lockProfile).not.toHaveBeenCalled();
+  });
+
+  it('never reloads a cleared device into a session it could not remove', async () => {
+    const { order, steps: stuck } = steps(offline, false);
+    expect(await finishLocalSignOut(true, stuck)).toBe('stopped');
+    expect(order).toEqual(['sign-out', 'forget']);
+  });
+
+  it('keeps a kept device locked after a failed sign-out request, with or without the session', async () => {
+    for (const forgotten of [true, false]) {
+      const { order, steps: kept } = steps(offline, forgotten);
+      expect(await finishLocalSignOut(false, kept)).toBe('reload');
+      expect(order).toEqual(['sign-out', 'forget', 'lock']);
     }
   });
 });

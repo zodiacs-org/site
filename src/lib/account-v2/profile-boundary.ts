@@ -426,6 +426,36 @@ export function clearAllZodiacsDataFromDevice(
   return { ok, restoredPreviousArchive: false };
 }
 
+/** The prefix of every Cache Storage name the service worker uses (public/sw.js CACHE_PREFIX). */
+export const SERVICE_WORKER_CACHE_PREFIX = 'zodiacs-';
+
+/**
+ * The Cache Storage half of "clear all Zodiacs data": the service worker keeps
+ * pages it has served there under their full address, invitation links
+ * (/c/<token>/) included. The worker opens its caches again on the next
+ * request. True when no Zodiacs cache remains (or the browser has none).
+ */
+export async function clearZodiacsCacheStorage(
+  storage: Pick<CacheStorage, 'keys' | 'delete'> | null = defaultCacheStorage(),
+): Promise<boolean> {
+  if (!storage) return true;
+  const owned = (names: string[]) => names.filter((name) => name.startsWith(SERVICE_WORKER_CACHE_PREFIX));
+  try {
+    await Promise.all(owned(await storage.keys()).map((name) => storage.delete(name)));
+    return owned(await storage.keys()).length === 0;
+  } catch {
+    return false;
+  }
+}
+
+function defaultCacheStorage(): CacheStorage | null {
+  try {
+    return typeof caches === 'undefined' ? null : caches;
+  } catch {
+    return null;
+  }
+}
+
 function isBrowserLocalStorage(storage: AccountV2Storage): boolean {
   if (typeof window === 'undefined') return false;
   try {

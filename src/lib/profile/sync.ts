@@ -2,6 +2,7 @@ import { isAuthSessionMissingError, type Session } from '@supabase/supabase-js';
 import { getSupabaseClient, isSupabaseConfigured } from '../supabase/client';
 import { loadChartDeletions, recordChartDeletion, replaceChartDeletions } from './deletions';
 import { mergeSyncState } from './merge';
+import { removeStoredAuthSession } from './saved-pages-config';
 import { loadProfile, replaceProfile } from './store';
 import type { RemoteChartSnapshot, RemoteDeletionSnapshot } from './merge';
 import { accountSyncV2Enabled } from '../account-v2/feature-flags';
@@ -105,6 +106,22 @@ export async function signOutOfSyncLocal(): Promise<void> {
   const { error } = await client.auth.signOut({ scope: 'local' });
   if (error) throw error;
   accountChartIds = null;
+}
+
+/**
+ * After signOutOfSyncLocal failed (offline, timeout, 5xx), Supabase keeps the
+ * session. This removes it from the browser anyway, so a reload does not sign
+ * back in. The server still honours the refresh token until it expires, but
+ * this device no longer holds it. True only when no stored session remains.
+ */
+export function forgetLocalSyncSession(): boolean {
+  try {
+    getSupabaseClient()?.auth.stopAutoRefresh().catch(() => {});
+  } catch {
+    // Removing the stored session below is what signs this device out.
+  }
+  accountChartIds = null;
+  return removeStoredAuthSession();
 }
 
 export { getDigestOptIn, setDigestOptIn } from './digest-preference';

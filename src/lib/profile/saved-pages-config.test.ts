@@ -8,6 +8,7 @@ import {
   accountSavesEnabled,
   cleanSavedPageTitle,
   hasStoredAuthSession,
+  removeStoredAuthSession,
   parseSavedPageRow,
   peekPendingSave,
   settlePendingSave,
@@ -227,5 +228,28 @@ describe('stored session', () => {
     expect(hasStoredAuthSession(memoryStorage({ 'sb-abcdefghijklmnopqrst-auth-token': 'null' }), url)).toBe(false);
     expect(hasStoredAuthSession(memoryStorage({ 'sb-abcdefghijklmnopqrst-auth-token': '{' }), url)).toBe(false);
     expect(hasStoredAuthSession(memoryStorage({ 'sb-abcdefghijklmnopqrst-auth-token': '{"refresh_token":"r"}' }), undefined)).toBe(false);
+  });
+
+  it('removes this project’s stored session and nothing else, and reports whether it is gone', () => {
+    const storage = memoryStorage({
+      'sb-abcdefghijklmnopqrst-auth-token': '{"refresh_token":"synthetic"}',
+      'sb-abcdefghijklmnopqrst-auth-token-code-verifier': 'synthetic',
+      'sb-abcdefghijklmnopqrst-auth-token-user': '{}',
+      'sb-otherprojectref0000-auth-token': '{"refresh_token":"other"}',
+      theme: 'void',
+    });
+    expect(removeStoredAuthSession(storage, url)).toBe(true);
+    expect([...storage.map.keys()].sort()).toEqual(['sb-otherprojectref0000-auth-token', 'theme']);
+    expect(hasStoredAuthSession(storage, url)).toBe(false);
+    expect(removeStoredAuthSession(storage, url)).toBe(true);
+  });
+
+  it('fails closed when the session cannot be removed or its name is unknown', () => {
+    const stuck = memoryStorage({ 'sb-abcdefghijklmnopqrst-auth-token': '{"refresh_token":"synthetic"}' });
+    expect(removeStoredAuthSession({ ...stuck, removeItem: () => { throw new Error('denied'); } }, url)).toBe(false);
+    expect(removeStoredAuthSession({ ...stuck, removeItem: () => {} }, url)).toBe(false);
+    expect(removeStoredAuthSession(stuck, undefined)).toBe(false);
+    expect(removeStoredAuthSession(null, url)).toBe(false);
+    expect(stuck.map.size).toBe(1);
   });
 });
