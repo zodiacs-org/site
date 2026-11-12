@@ -18,11 +18,14 @@ import { z } from 'zod';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { bodyLongitude, computeChart } from '../../lib/engine/full.js';
 import { scanTransitContacts } from '../../lib/engine/transit-scan';
-import { SIGNS, signIndexForLongitude } from '../../lib/signs';
+import { SIGNS } from '../../lib/signs';
+import { birthDayEnvelope, settledSunSign } from '../../lib/sun-settled';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
-import { scoreYear, type NatalPoints, type SlowPlanet, type YearScore } from '../../lib/year-score/core';
-import { YEAR_PEOPLE, findYearPerson, type YearPerson } from '../../lib/year-score/people';
+import { scoreYear, type LongitudeAt, type NatalPoints, type SlowPlanet, type YearScore } from '../../lib/year-score/core';
+import { YEAR_PEOPLE, findYearPerson, yearPageStart, yearPersonPath, type YearPerson } from '../../lib/year-score/people';
+import { birthDayEnds, birthDayRange, cachedLongitude, untimedScoreNote } from '../../lib/year-score/range';
 import { dayName, yearReading } from '../../lib/year-score/reading';
+import { figureYearScoreShareUrl, yearScoreShareUrl } from '../../lib/year-score/share';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from '../reading-confidence';
 import { roundCoordinate } from '../plain-text';
 import { MINOR_NOTE, isUnder18, softenMinor } from './reading-guards';
@@ -42,7 +45,7 @@ export const yearScoreInput = z.strictObject({
   zone: zone.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
   latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
   longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude, for birth times before standard time. Nothing is stored."),
-  from: z.string().regex(DATE).optional().describe('The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC).'),
+  from: z.string().regex(DATE).optional().describe('The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC), or for a directory figure the first day of this month, as its page shows.'),
 }).superRefine((args, context) => {
   if ((args.person === undefined) === (args.birthDate === undefined)) context.addIssue({ code: 'custom', message: 'Give either person or birthDate, not both.' });
   if (args.person !== undefined && (args.time !== undefined || args.zone !== undefined || args.latitude !== undefined || args.longitude !== undefined)) context.addIssue({ code: 'custom', message: 'With person, leave out the birth details.' });
@@ -50,6 +53,23 @@ export const yearScoreInput = z.strictObject({
   if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });
 });
 export type YearScoreInput = z.infer<typeof yearScoreInput>;
+
+/**
+ * The MCP's own form while ZODIACS_YEAR_SCORE_PEOPLE_ENABLED is off (the default): the person's own birth details
+ * only, with no person field, so an assistant cannot ask for a public figure's year until the owner approves it.
+ * The site's pages and the scripts keep public-figure scoring (getYearScore takes both).
+ */
+export const yearScoreSelfInput = z.strictObject({
+  birthDate: z.string().regex(DATE).describe('The person’s own birth date, such as 1990-05-03. Used for this answer only; never stored, logged or put in a link.'),
+  time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe('The birth time on the local clock, only if known. Never guess it. Needs zone. Without it the Moon is left out.'),
+  zone: zone.optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time."),
+  latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude, with longitude. Nothing is stored."),
+  longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude, for birth times before standard time. Nothing is stored."),
+  from: z.string().regex(DATE).optional().describe('The first day of the twelve months, such as 2026-07-17. Defaults to today (UTC).'),
+}).superRefine((args, context) => {
+  if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
+  if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });
+});
 
 const planet = z.enum(['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']);
 const point = z.enum(['Sun', 'Moon', 'Mercury', 'Venus', 'Mars']);
@@ -77,7 +97,7 @@ export const yearScoreData = z.object({
   hardest: monthPick,
   drivers: z.array(z.object({
     planet, aspect, point,
-    tone: z.enum(['support', 'pressure']),
+    tone: z.enum(['support', 'pressure', 'mixed']),
     /** Share of everything that moved the year, 0 to 1. */
     share: z.number().min(0).max(1),
     title: z.string(),
@@ -87,6 +107,8 @@ export const yearScoreData = z.object({
     exact: z.array(z.string()),
   })).max(6),
   months: z.array(z.object({ month: z.string(), score: z.number().min(0).max(10) })),
+  /** Without a birth time: the lowest and highest score across the birth day (the score above is the midday chart's). Null with a birth time. */
+  scoreRange: z.object({ low: z.number().min(0).max(10), high: z.number().min(0).max(10) }).nullable(),
   /** For a figure whose sources disagree on the birth date: the score with the other date. */
   alternates: z.array(z.object({ birthDate: z.string(), score: z.number().min(0).max(10), label: z.string() })),
   confidence: z.number().int().min(40).max(95).nullable(),
@@ -96,6 +118,8 @@ export const yearScoreData = z.object({
   limits: z.array(z.string()),
   under18: z.boolean(),
   pageUrl: z.url(),
+  /** The share page with its picture: the Sun sign and score only for a person's own score, the slug for a figure. Null when the Sun sign is not settled. */
+  shareUrl: z.url().nullable(),
 });
 export type YearScoreData = z.infer<typeof yearScoreData>;
 
@@ -116,26 +140,42 @@ export async function birthInstant(birthDate: string, time: string | null, timeZ
   return (longitude !== undefined ? clock.resolveLocalToUtc(birthDate, local, timeZone, { longitude }) : clock.resolveLocalToUtc(birthDate, local, timeZone)).utc;
 }
 
-/** The Sun sign, or null when an untimed birth day starts and ends in different signs. */
-function settledSun(birthDate: string, timeKnown: boolean, sunLon: number): string | null {
-  const sign = SIGNS[signIndexForLongitude(sunLon)].slug;
-  if (timeKnown) return sign;
-  // Every clock's version of the date: from 14 hours before UTC midnight to 12 hours after the next.
-  const start = Date.parse(`${birthDate}T00:00:00Z`) - 14 * 3_600_000;
-  const end = Date.parse(`${birthDate}T23:59:00Z`) + 12 * 3_600_000;
-  const signs = new Set([start, end].map((ms) => signIndexForLongitude(computeChart({ utc: new Date(ms), houseSystem: 'whole', timeKnown: false }).bodies.find((row) => row.body === 'Sun')!.lon)));
-  return signs.size === 1 ? sign : null;
+/** The Sun's longitude from a chart cast at `at`, as the score reads it. */
+const sunLonAt = (at: Date) => computeChart({ utc: at, houseSystem: 'whole', timeKnown: false }).bodies.find((row) => row.body === 'Sun')!.lon;
+
+/**
+ * The Sun sign, or null when an untimed birth day starts and ends in different signs (src/lib/sun-settled.ts):
+ * the birthplace clock's 00:00 and 23:59 when its zone is known, else every clock's version of the date.
+ * With a zone, `birthInstant` has already prepared the local time for the birth date.
+ */
+function settledSun(birthDate: string, utc: Date, timeKnown: boolean, timeZone: string | null, clock: YearScoreClock, longitude?: number): string | null {
+  const local = (time: string) => (longitude !== undefined ? clock.resolveLocalToUtc(birthDate, time, timeZone!, { longitude }) : clock.resolveLocalToUtc(birthDate, time, timeZone!)).utc;
+  const ends: [Date, Date] = timeKnown ? [utc, utc] : timeZone ? [local('00:00'), local('23:59')] : birthDayEnvelope(birthDate);
+  const { sign } = settledSunSign(ends, sunLonAt);
+  return sign === null ? null : SIGNS[sign].slug;
 }
 
-/** The score with the slow planets' daily positions cached, so a second chart for the same window costs only arithmetic. */
-export function scoreFrom(natal: NatalPoints, start: Date): YearScore {
-  const cache = new Map<string, number>();
-  return scoreYear(natal, (body: SlowPlanet, date: Date) => {
-    const key = `${body}|${date.getTime()}`;
-    let value = cache.get(key);
-    if (value === undefined) { value = bodyLongitude(body, date); cache.set(key, value); }
-    return value;
-  }, start);
+/** The score with the slow planets' daily positions cached (`longitudeAt`, shared with the range when given), so a second chart for the same window costs only arithmetic. */
+export function scoreFrom(natal: NatalPoints, start: Date, longitudeAt: LongitudeAt = cachedLongitude((body: SlowPlanet, date: Date) => bodyLongitude(body, date))): YearScore {
+  return scoreYear(natal, longitudeAt, start);
+}
+
+/**
+ * The two ends of an untimed birth day: local 00:00 and 23:59 on the birthplace clock with a zone (midday plus and
+ * minus 12 hours if either does not resolve), every clock's version of the date without one.
+ */
+async function untimedDayEnds(birthDate: string, timeZone: string | null, midday: Date, clock: YearScoreClock, longitude?: number): Promise<[Date, Date]> {
+  if (!timeZone) return birthDayEnds(birthDate, midday);
+  await clock.prepareLocalTime(birthDate, timeZone);
+  let local: [Date, Date] | null;
+  try {
+    local = longitude !== undefined
+      ? [clock.resolveLocalToUtc(birthDate, '00:00', timeZone, { longitude }).utc, clock.resolveLocalToUtc(birthDate, '23:59', timeZone, { longitude }).utc]
+      : [clock.resolveLocalToUtc(birthDate, '00:00', timeZone).utc, clock.resolveLocalToUtc(birthDate, '23:59', timeZone).utc];
+  } catch {
+    local = null;
+  }
+  return birthDayEnds(birthDate, midday, local);
 }
 
 /** Exact passes of each driver inside the window, from the transit scanner. */
@@ -151,12 +191,13 @@ function today(now: Date): string {
   return now.toISOString().slice(0, 10);
 }
 
-const EMPTY = { subject: null, from: null, to: null, score: null, label: null, summary: null, best: null, hardest: null, drivers: [], months: [], alternates: [], confidence: null, confidenceLabel: null, sources: [] };
+const EMPTY = { subject: null, from: null, to: null, score: null, label: null, summary: null, best: null, hardest: null, drivers: [], months: [], scoreRange: null, alternates: [], confidence: null, confidenceLabel: null, sources: [] };
 
 export async function getYearScore(args: YearScoreInput, now: Date, clock: YearScoreClock, origin: string): Promise<{ data: YearScoreData; links: { title: string; url: string }[] }> {
   const pageUrl = `${origin}/year-score/`;
   const links = [{ title: 'Year Ahead Score on Zodiacs', url: pageUrl }, { title: 'Your transits on Zodiacs', url: `${origin}/transits/` }];
-  const start = args.from ?? today(now);
+  // A figure is scored from the first day of the month by default, as its page and share card are, so all three agree.
+  const start = args.from ?? (args.person !== undefined ? yearPageStart(now) : today(now));
   if (!parseCivilDate(start) || start < YEAR_SCORE_START_MIN || start > YEAR_SCORE_START_MAX) throw new RangeError(`from must be a real date from ${YEAR_SCORE_START_MIN} to ${YEAR_SCORE_START_MAX}.`);
   const startDate = new Date(`${start}T00:00:00Z`);
   const limits: string[] = [];
@@ -170,7 +211,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
     figure = findYearPerson(args.person);
     if (!figure) {
       return {
-        data: { status: 'not-in-directory', ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person’s own consent, their birth date gives a score instead.`], under18: false, pageUrl },
+        data: { status: 'not-in-directory', ...EMPTY, limits: [`That name is not in the Year Ahead directory, so no score is given. The directory has ${YEAR_PEOPLE.length} public figures; with the person’s own consent, their birth date gives a score instead.`], under18: false, pageUrl, shareUrl: null },
         links,
       };
     }
@@ -191,11 +232,15 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
   const guard = (text: string) => (under18 ? softenMinor(text) : text);
   if (under18) limits.push(MINOR_NOTE);
   const utc = await birthInstant(birthDate, time, timeZone, clock, longitude);
-  const { natal, sunLon } = natalPointsAt(utc, timeKnown);
-  const year = scoreFrom(natal, startDate);
+  const { natal } = natalPointsAt(utc, timeKnown);
+  const sun = settledSun(birthDate, utc, timeKnown, timeZone, clock, longitude);
+  const longitudeAt = cachedLongitude((body: SlowPlanet, date: Date) => bodyLongitude(body, date));
+  const year = scoreFrom(natal, startDate, longitudeAt);
+  // Without a birth time the score can move with the hour of birth: five charts across the birth day, sharing the slow planets' pass.
+  const scoreRange = timeKnown ? null : birthDayRange(natal, (at) => natalPointsAt(at, false).natal, await untimedDayEnds(birthDate, timeZone, utc, clock, longitude), longitudeAt, startDate);
   const reading = yearReading(year, guard);
   const exact = exactPasses(natal, year);
-  if (!timeKnown) limits.push(figure ? 'No published birth time, so the chart is cast for noon on the birthplace clock and the Moon is left out.' : 'No birth time was given, so the Moon is left out; the other contacts can shift by about a day.');
+  if (!timeKnown) limits.push(figure ? 'No published birth time, so the chart is cast for noon on the birthplace clock and the Moon is left out.' : untimedScoreNote(scoreRange));
   if (!timeZone && !figure) limits.push('No time zone was given, so the birth is placed at noon UTC.');
   limits.push('The score reads Jupiter, Saturn, Uranus, Neptune and Pluto against the Sun, Moon, Mercury, Venus and Mars. Fast planets and eclipses are left out.');
   if (figure?.note) limits.push(figure.note);
@@ -209,7 +254,7 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
   return {
     data: {
       status: 'found',
-      subject: { kind: figure ? 'person' : 'self', name: figure?.name ?? null, description: figure?.description ?? null, sun: settledSun(birthDate, timeKnown, sunLon), timeKnown },
+      subject: { kind: figure ? 'person' : 'self', name: figure?.name ?? null, description: figure?.description ?? null, sun, timeKnown },
       from: year.from,
       to: year.to,
       score: year.score,
@@ -224,14 +269,18 @@ export async function getYearScore(args: YearScoreInput, now: Date, clock: YearS
         exact: exact[index],
       })),
       months: reading.months.map((month) => ({ month: month.month, score: month.score })),
+      scoreRange,
       alternates,
       confidence: readingConfidence(detail),
       confidenceLabel: readingConfidenceLabel(detail),
       sources: figure?.sources ?? [],
       limits,
       under18,
-      pageUrl,
+      // A directory figure's own page; a person's own details have no page, so the calculator.
+      pageUrl: figure ? `${origin}${yearPersonPath(figure.slug)}` : pageUrl,
+      // A figure's card is scored for the month on the server, so it matches the figure's page; a person's own, from this answer.
+      shareUrl: figure ? (start === yearPageStart(now) ? figureYearScoreShareUrl(origin, figure.slug) : null) : yearScoreShareUrl(origin, { sun, score: year.score }),
     },
-    links,
+    links: figure ? [{ title: `${figure.name}'s year ahead on Zodiacs`, url: `${origin}${yearPersonPath(figure.slug)}` }, ...links] : links,
   };
 }

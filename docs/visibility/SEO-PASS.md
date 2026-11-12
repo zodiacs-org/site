@@ -13,7 +13,7 @@ the embeds and the share receivers.
 | html lang | The page's `lang` matches its path's locale (pt-BR, zh-Hans and zh-Hant included) |
 | Hreflang | None on noindex pages. Otherwise the set includes the page itself, an x-default equal to the English alternate, and no duplicates |
 | Reciprocity | Every alternate is built, indexable and lists exactly the same set back. This now covers every page, not only sitemap pages |
-| Structured data | Each page type carries its nodes: horoscopes Article and BreadcrumbList; pairs and rising profiles Article, BreadcrumbList and FAQPage; Moon pages and zodiac dates Article and BreadcrumbList; calculators WebApplication; sign guides BreadcrumbList. Every Article or WebApplication says the page's language and URL. All JSON-LD parses |
+| Structured data | Each page type carries its nodes: horoscopes Article and BreadcrumbList; pairs and rising profiles Article, BreadcrumbList and FAQPage; Moon pages and zodiac dates Article and BreadcrumbList; calculators WebApplication; sign guides BreadcrumbList. Every Article or WebApplication names the page's URL, and any language it states is the page's (a few English calculators state none yet). All JSON-LD parses |
 | Locale links | A localized page never links the English page when its own language has the same page indexable. Links that declare `hreflang` (the language switcher, the English-only cue) are deliberate |
 | Locale sitemaps | `/sitemaps/{locale}.xml` lists only that locale's pages, every listed page is built and indexable, and `sitemap-index.xml` lists each file |
 

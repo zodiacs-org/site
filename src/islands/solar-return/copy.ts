@@ -13,7 +13,7 @@ const RETURN_ROLE: Record<string, string> = {
   Pluto: 'power and renewal',
 };
 
-const JUPITER_FOCUS: Record<string, string> = {
+export const JUPITER_FOCUS: Record<string, string> = {
   aries: 'decisive experiments and the courage to begin',
   taurus: 'patient building and resources that last',
   gemini: 'learning, exchange, and better questions',

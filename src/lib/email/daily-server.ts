@@ -1,4 +1,8 @@
+import { loadChartEmailSources } from '../account-api/chart-sources.js';
 import { normalizeEmail } from './input.js';
+
+/** Shown wherever the daily chart email names its chart; never the private label. */
+export const DAILY_CHART_EMAIL_CHART_NAME = 'your synced chart';
 
 type Environment = Record<string, unknown>;
 type Fetch = typeof fetch;
@@ -125,6 +129,13 @@ export async function chartBelongsToUser(
   return (await getOwnedDailyChart(userId, chartId, env, fetcher)) !== null;
 }
 
+/**
+ * The daily chart email uses the account's encrypted v2 self chart, and only
+ * while the account holds both chart_sync and chart_emails. The chart id must
+ * be that chart's id. Nothing is decrypted here: the name shown in the
+ * confirmation email and page is a fixed phrase, never the chart label, and
+ * public.charts is never read.
+ */
 export async function getOwnedDailyChart(
   userId: string,
   chartId: string,
@@ -132,27 +143,15 @@ export async function getOwnedDailyChart(
   fetcher: Fetch = fetch,
 ): Promise<OwnedDailyChart | null> {
   if (!UUID.test(userId) || !UUID.test(chartId)) return null;
-  const query = new URLSearchParams({
-    select: 'id,payload',
-    user_id: `eq.${userId}`,
-    id: `eq.${chartId}`,
-    limit: '1',
+  const sources = await loadChartEmailSources([userId], {
+    supabaseUrl: value(env, 'PUBLIC_SUPABASE_URL'),
+    serviceKey: value(env, 'SUPABASE_SERVICE_ROLE_KEY'),
+    fetcher,
   });
-  const response = await fetcher(`${supabaseOrigin(env)}/rest/v1/charts?${query}`, {
-    headers: serviceHeaders(env),
-  });
-  if (!response.ok) throw new Error(`Chart ownership lookup failed (${response.status})`);
-  const body = await response.json() as unknown;
-  if (!Array.isArray(body) || body.length !== 1) return null;
-  const row = body[0] as { id?: unknown; payload?: unknown };
-  if (row.id !== chartId) return null;
-  const rawName = row.payload && typeof row.payload === 'object'
-    ? (row.payload as { name?: unknown }).name
+  const source = sources.get(userId.toLowerCase());
+  return source && source.chartId === chartId.toLowerCase()
+    ? { id: source.chartId, name: DAILY_CHART_EMAIL_CHART_NAME }
     : null;
-  const name = typeof rawName === 'string'
-    ? rawName.replace(/[\r\n\t]+/gu, ' ').replace(/\s{2,}/gu, ' ').trim().slice(0, 120)
-    : '';
-  return { id: chartId, name: name || 'Saved chart' };
 }
 
 /**

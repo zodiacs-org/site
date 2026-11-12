@@ -6,6 +6,7 @@ import { baseDigit, MASTER_NUMBERS, NUMBER_MEANINGS, type CoreNumber } from '../
 import { lifePathDistribution, lifePathExample, nextDatesWithLifePath, reduceKeepingMasters } from '../../../lib/numerology';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
 import { HOME_ART_CARD } from '../../../lib/og-art-cards.mjs';
+import { launchFlagOn } from '../../../lib/launch-flags';
 import '../../../styles/calculator.css';
 
 export function getStaticPaths() {
@@ -152,7 +153,7 @@ const jsonLd = [
           Computed on your device; nothing is sent anywhere.
         </p>
       </div>
-      <NumerologyCalculator client:visible currentLifePath={number} />
+      <NumerologyCalculator client:visible currentLifePath={number} share={launchFlagOn('PUBLIC_NUMEROLOGY_SHARE_ENABLED')} />
       <noscript>
         <p>This numerology calculator needs JavaScript. Enable it and reload to compute your Life Path and name numbers from your birth date and full name.</p>
       </noscript>

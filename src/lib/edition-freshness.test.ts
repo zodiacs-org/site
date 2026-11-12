@@ -193,6 +193,22 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       }
     }
   });
+
+  it('elides the article before 8 and 11 in Italian only, on the server and in the browser', () => {
+    for (const day of ['2026-11-08', '2026-11-11']) {
+      const n = Number(day.slice(8));
+      for (const [locale, text, expected] of [
+        ['es', 'Horóscopos de hoy', `Horóscopos del ${n} de noviembre de 2026`],
+        ['es', 'Hoy', `El cielo del ${n} de noviembre de 2026`],
+        ['it', 'il cielo di oggi', `il cielo dell’${n} novembre 2026`],
+      ] as const) {
+        expect(datedEditionTextIn(locale, text, day)).toBe(expected);
+        const browser = inlineEditionRules(locale, day)
+          .reduce((value, [source, flags, replacement]) => value.replace(new RegExp(source, flags), replacement), text as string);
+        expect(browser).toBe(expected);
+      }
+    }
+  });
 });
 
 describe('dated tab titles and the pt-BR first of the month', () => {
