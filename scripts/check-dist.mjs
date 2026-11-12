@@ -21,6 +21,7 @@
  *      sitemap-index.xml's section sitemaps list exactly its entries, once.
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
+ *  10. The inline profile access loader names the built bootstrap chunk.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
 import { attr, canonicalHref, renderedLinks, crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
@@ -46,6 +47,7 @@ import {
   hreflangRouteFamily,
 } from './i18n-hreflang-policy.mjs';
 import { readEventsPublication } from './lib/events-publications.mjs';
+import { verifyProfileAccessLoader } from './stamp-profile-access-loader.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const root = resolve(repo, 'dist');
@@ -1871,6 +1873,17 @@ for (const [file, path] of builtPageByFile) {
     .replace(ENTITIES, (entity) => (/^&(?:nbsp|#160|#x[aA]0);$/u.test(entity) ? ' ' : 'x'));
   const joined = [...html.matchAll(INLINE_JOIN)].length;
   if (joined) fail(`${path}: ${joined} place(s) where text runs into an inline element; end the line with {' '}`);
+}
+
+// ---- Profile access loader ---------------------------------------------------
+// With account sync v2, pages outside the profile and the two main calculators
+// import the access bootstrap through an inline loader whose chunk URL is
+// stamped after the build (scripts/stamp-profile-access-loader.mjs). Every
+// loader must name the one chunk the save path also imports, and that chunk
+// must be imported by the save path; each requirement fails on its own.
+{
+  const { problems } = await verifyProfileAccessLoader(root);
+  for (const problem of problems.slice(0, 20)) fail(`profile access loader: ${problem}`);
 }
 
 // ---- Report ------------------------------------------------------------------
