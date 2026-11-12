@@ -1,3 +1,4 @@
+import { recordInviterConsent } from '../signup.js';
 import { authenticateEmailUser } from '../../email/daily-server.js';
 import { sendInviteJson, allowInviteMethods, validInviteBrowserRequest } from '../api.js';
 import {
@@ -94,6 +95,8 @@ export default async function handler(req: any, res: any): Promise<void> {
       });
       return;
     }
+    // With INVITE_SIGNUP_ENABLED=1, the consent the inviter just gave is recorded against the invite.
+    await recordInviterConsent(created.id, owner.id).catch(() => undefined);
     const base = compatibilityInviteBaseUrl(process.env);
     sendInviteJson(res, 201, {
       id: created.id,

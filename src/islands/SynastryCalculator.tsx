@@ -91,6 +91,16 @@ const emptySlot = (): SlotState => ({
 });
 
 const COMPAT_INVITES_UI_ENABLED = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
+/**
+ * Invite signups (PUBLIC_INVITE_SIGNUP_ENABLED=1, only with the invites): the recipient confirms the details are their
+ * own and that they are 13 or older before anything is worked out; a birth date under 13 is refused; the result is
+ * not reported as complete; and someone 18 or older may opt in to their own daily email, whose confirmation completes
+ * the invite (src/lib/invite/signup.ts).
+ */
+const SIGN_ORDER = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'] as const;
+/** The sign of an ecliptic longitude, for the recipient's own daily email. */
+const signOfLongitude = (lon: number) => SIGN_ORDER[Math.floor((((lon % 360) + 360) % 360) / 30)];
+const INVITE_SIGNUP_UI_ENABLED = COMPAT_INVITES_UI_ENABLED && import.meta.env.PUBLIC_INVITE_SIGNUP_ENABLED === '1';
 
 // Saved-comparison strings stay module-local (the RelationshipWheel COPY
 // precedent): only this island uses them, and the central UI dictionary
@@ -529,6 +539,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     && typeof window !== 'undefined'
     && window.location.pathname === '/compatibility/';
   const loadEngine = useEngine();
+  const [recipientConsent, setRecipientConsent] = useState(false);
+  const [recipientBand, setRecipientBand] = useState<import('../lib/invite/recipient').RecipientBand | null>(null);
+  const [signupMod, setSignupMod] = useState<typeof import('./synastry/InviteSignup') | null>(null);
   const { profile, ready: profileReady } = useProfile();
   const [slotA, setSlotA] = useState<SlotState>(emptySlot());
   const [slotB, setSlotB] = useState<SlotState>(emptySlot());
@@ -820,6 +833,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
   useEffect(() => {
     if (!profileAccessAllowed() || !result || result.source !== 'invite' || arrival.state !== 'ready') return;
     if (inviteCompletionRef.current === result.at) return;
+    // With signups on, an invite completes when the recipient confirms their opt-in, not when the result shows.
+    if (INVITE_SIGNUP_UI_ENABLED) return;
     let active = true;
     const request = requestRef.current;
     const access = profileAccessGeneration.current;
@@ -1025,7 +1040,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     slotA.source === 'saved' && slotB.source === 'saved'
     && slotA.savedId !== '' && slotA.savedId === slotB.savedId;
 
-  const canCompare = slotReady(slotA) && slotReady(slotB) && !sameSaved && !busy;
+  // An invite with signups on asks the recipient to confirm the details are their own, and their age, first.
+  const inviteSignupActive = INVITE_SIGNUP_UI_ENABLED && inviteUiActive && arrival.state === 'ready';
+  const canCompare = slotReady(slotA) && slotReady(slotB) && !sameSaved && !busy && (!inviteSignupActive || recipientConsent);
 
   const track = (name: string, props: Record<string, string> = {}) => {
     (window as unknown as {
@@ -1322,6 +1339,19 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
         return;
       }
       const [sideA, sideB] = read;
+      if (inviteSignupActive) {
+        // The recipient's own birth date decides what is offered; under 13 nothing is worked out or sent.
+        const { recipientBand: bandOf, deviceToday, UNDER_13_INVITE } = await loadModule(() => import('../lib/invite/recipient'));
+        const ownDate = sideB.source === 'form' ? sideB.date : charts.find((chart) => chart.id === sideB.savedId)?.birth?.date;
+        const band = typeof ownDate === 'string' && /^\d{4}-\d{2}-\d{2}$/u.test(ownDate) ? bandOf(ownDate, deviceToday()) : 'minor';
+        if (!requestIsCurrent(request, accessGeneration)) return;
+        setRecipientBand(band);
+        if (band === 'under13') {
+          setError(UNDER_13_INVITE);
+          return;
+        }
+        if (band === 'adult' && !signupMod) void loadModule(() => import('./synastry/InviteSignup')).then(setSignupMod).catch(() => {});
+      }
       const resolve = (slot: SlotState, fallback: string) =>
         slot.source === 'saved' ? resolveSaved(charts.find((c) => c.id === slot.savedId)!, loadEngine)
           : slot.source === 'link' ? resolveLink(slot.link!, loadEngine)
@@ -1496,6 +1526,12 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
             <SlotForm slot={slotB} setSlot={(u) => setSlotB(u)} charts={charts} idPrefix="syn-b" fallbackLabel={t(locale, 'personB')} locale={locale} loadEngine={loadEngine} />
           </div>
 
+          {inviteSignupActive && (
+            <label class="field__toggle syn__own-details">
+              <input type="checkbox" checked={recipientConsent} required onChange={(event) => setRecipientConsent((event.currentTarget as HTMLInputElement).checked)} />
+              <span>These are my own birth details, and I am 13 or older.</span>
+            </label>
+          )}
           <button class="btn btn--primary calc__submit" type="submit" disabled={!canCompare}>
             <span>{busy ? t(locale, 'comparing') : t(locale, 'compareCharts')}</span>
             <span class="orb">↗</span>
@@ -1608,6 +1644,12 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
                 inviterLabel={result.a.label}
                 onReturned={(method) => track('invite_returned', { method })}
               />
+              {result.source === 'invite' && inviteSignupActive && recipientBand === 'adult' && signupMod && (
+                <signupMod.InviteSignup handle={arrival.handle} label={result.a.label} sign={signOfLongitude(result.b.bodies.find((body) => body.body === 'Sun')?.lon ?? 0)} />
+              )}
+              {result.source === 'invite' && inviteSignupActive && recipientBand === 'minor' && (
+                <p class="field__help">The daily email is for adults, so nothing more is asked of you here.</p>
+              )}
               {result.source === 'invite'
                 && (slotB.source === 'form' || slotB.source === 'saved') && (
                 <sendBackMod.InvitationConversionCard

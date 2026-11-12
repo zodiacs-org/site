@@ -2139,6 +2139,7 @@
     {"path":"src/lib/i18n/ui/ru.ts","text":"Приблизительная дата возвращения в UTC, на основе опорного времени рождения","claim":"time.visible-math"},
     {"path":"src/lib/i18n/ui/ru.ts","text":"Рассчитанный момент UTC","claim":"time.visible-math"},
     {"path":"src/lib/invite/server.ts","text":"Supabase URL must use HTTPS.","exempt":"input-validation"},
+    {"path":"src/lib/invite/signup.ts","text":"Supabase URL must use HTTPS.","exempt":"input-validation"},
     {"path":"src/lib/living-chart/sync.ts","text":"Saved on this device.","claim":"priv.living-chart"},
     {"path":"src/lib/living-chart/sync.ts","text":"Your changes remain on this device.","claim":"priv.living-chart"},
     {"path":"src/lib/moon-journal/copy.ts","text":"Journal question: ${…} Write it at zodiacs.org/moon-journal/, where it stays on your device.","claim":"priv.device-features"},

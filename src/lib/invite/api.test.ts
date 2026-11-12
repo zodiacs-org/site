@@ -110,12 +110,14 @@ function json(body: unknown, status = 200): Response {
 }
 
 describe('Phase 4 invite API boundary', () => {
-  it('routes the seven public paths through one exact, fail-closed dispatcher', async () => {
+  it('routes the eight public paths through one exact, fail-closed dispatcher', async () => {
     expect(COMPATIBILITY_INVITE_ACTIONS).toEqual([
       'invites',
       'invite-exchange',
       'invite-session',
       'invite-complete',
+      // Invite signups (INVITE_SIGNUP_ENABLED=1); 404 while the switch is off.
+      'invite-signup',
       'invite-revoke',
       'invite-hide',
       'invite-sweep',

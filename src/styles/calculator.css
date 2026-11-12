@@ -1231,7 +1231,8 @@
 }
 .syn__next-action .next-action__actions,
 .syn-sendback .next-action__actions,
-.syn-conversion .next-action__actions {
+.syn-conversion .next-action__actions,
+.invite-signup .next-action__actions {
   justify-items: start;
   min-width: 0;
   width: 100%;
@@ -1241,7 +1242,14 @@
 .syn-sendback .next-action__primary,
 .syn-sendback .next-action__secondary,
 .syn-conversion .next-action__primary,
-.syn-conversion .next-action__secondary { justify-content: flex-start; }
+.syn-conversion .next-action__secondary,
+.invite-signup .next-action__primary,
+.invite-signup .next-action__secondary { justify-content: flex-start; }
+/* Invite signups (PUBLIC_INVITE_SIGNUP_ENABLED=1): the recipient's own-details check and the opt-in form. */
+.invite-signup__form { display: grid; gap: 10px; width: 100%; max-width: 32rem; }
+.invite-signup__form .btn { justify-self: start; }
+.invite-signup__consent, .syn__own-details { align-items: flex-start; min-height: 44px; line-height: 1.45; }
+.syn__own-details { margin: 4px 0 14px; }
 .syn__save-complete {
   display: flex;
   align-items: center;

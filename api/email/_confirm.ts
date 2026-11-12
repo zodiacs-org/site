@@ -37,6 +37,7 @@ import {
   releaseClaimedDailySunConfirmation,
 } from '../../src/lib/email/daily-sun-server.js';
 import { getAdminEmailUser } from '../../src/lib/email/daily-server.js';
+import { completeInviteSignupsForConfirmedEmail } from '../../src/lib/invite/signup-notify.js';
 import { dailyRecipientHash } from '../../src/lib/daily-email/identity.js';
 import { removeDailySunSegment } from '../../src/lib/email/daily-resend.js';
 import { signBySlug } from '../../src/lib/signs.js';
@@ -511,6 +512,8 @@ export default async function handler(req: any, res: any): Promise<void> {
         return;
       }
       await synchronizeProvider();
+      // A compatibility invite staged for this address completes with this confirmation (INVITE_SIGNUP_ENABLED=1 only).
+      await completeInviteSignupsForConfirmedEmail(sunClaim.email);
       send(res, 200, dailyEmailPage(
         'Subscription confirmed.',
         `Your ${signBySlug(sunClaim.sign).name} daily starts tomorrow morning. Every email includes an unsubscribe link.`,
