@@ -1137,7 +1137,7 @@ for (const match of sitemap.matchAll(/<xhtml:link\b[^>]*>/g)) {
     }
   }
 }
-for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.registry.json']) {
+for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.registry.json', '/sky-calendar-heads-up.ics', '/sky-calendar-heads-up.json']) {
   if (sitemapLocs.has(artifact)) fail(`sitemap.xml: machine artifact must not be indexed — ${artifact}`);
   const target = targetPath(artifact);
   if (!target || !(await exists(target))) {
