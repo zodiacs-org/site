@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.zodiacs-org/zodiacs",
+  "title": "Zodiacs",
+  "description": "Explore your birth chart, compatibility, horoscopes and the sky on days that matter.",
+  "version": "0.6.6",
+  "websiteUrl": "https://zodiacs.org/developers/ai/",
+  "icons": [
+    {
+      "src": "https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v3.png",
+      "mimeType": "image/png",
+      "sizes": ["512x512"]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://zodiacs.org/mcp"
+    }
+  ]
+}
