@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import birthdayReminderHandler from '../../api/email/_birthday-reminder';
+import birthdayReminderHandler, { rateLimited } from '../../api/email/_birthday-reminder';
 import { emailLifecycleRoute } from '../../api/email/subscribe';
 import { unsubscribeToken } from '../../src/lib/birthday-reminder/core';
 import vercel from '../../vercel.json';
@@ -53,6 +53,15 @@ describe('the birthday reminder endpoint', () => {
     await birthdayReminderHandler(request('POST', { body: { email: 'ana@example.com', month: 6, day: 9, consent: true, adult: true } }), res, { env: ENV, fetcher: fetcher as unknown as typeof fetch, rateLimit: async () => false });
     expect(res.statusCode).toBe(202);
     expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it('fails closed when the rate limiter is missing, broken or unclear', async () => {
+    const req = { headers: {} };
+    expect(await rateLimited(req, (async () => ({ rateLimited: false })) as never)).toBe(false);
+    expect(await rateLimited(req, (async () => ({ rateLimited: true })) as never)).toBe(true);
+    expect(await rateLimited(req, (async () => ({ rateLimited: false, error: 'not-found' })) as never)).toBe(true);
+    expect(await rateLimited(req, (async () => ({})) as never)).toBe(true);
+    expect(await rateLimited(req, (async () => { throw new Error('down'); }) as never)).toBe(true);
   });
 
   it('stores the email, month and day, sends one confirmation, and logs nothing', async () => {

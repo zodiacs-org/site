@@ -49,8 +49,13 @@ function origin(env: Record<string, unknown>): string {
   return url.origin;
 }
 
-async function rateLimited(req: any): Promise<boolean> {
-  try { return (await checkRateLimit(BIRTHDAY_REMINDER_RATE_LIMIT_ID, { headers: req.headers }))?.rateLimited === true; } catch { return false; }
+// Fails closed, as the email sign-up does: only an explicit "not limited" lets a request through. A missing rule,
+// an error or an unclear answer refuses it, so nothing is stored and no email is sent while the limiter is down.
+export async function rateLimited(req: any, check: typeof checkRateLimit = checkRateLimit): Promise<boolean> {
+  try {
+    const result = await check(BIRTHDAY_REMINDER_RATE_LIMIT_ID, { headers: req.headers });
+    return !(result && !('error' in result && result.error) && result.rateLimited === false);
+  } catch { return true; }
 }
 
 export interface ReminderDependencies {
