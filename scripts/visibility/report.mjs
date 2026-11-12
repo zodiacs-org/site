@@ -83,7 +83,9 @@ function compare(from, to) {
     const pct = (x) => (x == null ? null : `${Math.round(x * 100)}%`);
     lines.push(`| ${q.phrase} | ${d(ga?.impressions, gb?.impressions)} | ${d(ga?.clicks, gb?.clicks)} | ${d(ga?.position, gb?.position)} | ${d(pct(ra), pct(rb))} | ${pb ? [pb.inTitle, pb.inH1, pb.inOpening].map((v) => (v ? 'yes' : 'no')).join(' / ') : 'n/a'} |`);
   }
-  lines.push('', 'Spam check (manual, in Search Console): Security & Manual actions shows "No issues detected" for both dates; Pages report shows no new "Duplicate without user-selected canonical" or "Crawled, currently not indexed" spike on the changed URLs.');
+  lines.push('', 'Spam check (manual, in Search Console; not checked by this script, tick only after looking):', '',
+    '- [ ] Security & Manual actions shows "No issues detected" for both dates.',
+    '- [ ] Pages report shows no new "Duplicate without user-selected canonical" or "Crawled, currently not indexed" spike on the changed URLs.');
   const file = path.join(b.dir, `COMPARE-${from}-to-${to}.md`);
   writeFileSync(file, lines.join('\n') + '\n');
   console.log(`Wrote ${path.relative(process.cwd(), file)}`);

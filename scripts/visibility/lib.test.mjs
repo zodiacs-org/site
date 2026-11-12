@@ -37,6 +37,9 @@ describe('visibility lib', () => {
     expect(s.impressions).toBe(400);
     expect(s.position).toBe(17.5);
     expect(summarisePhrase(data, 'what is my rising sign', { closeMatches: false }).impressions).toBe(100);
+    // Query text is never kept: a searcher can type birth details.
+    expect(s.queryCount).toBe(2);
+    expect(JSON.stringify(s)).not.toMatch(/rising sign what is my/);
   });
 
   it('ranks striking-distance phrases above ones already on top', () => {

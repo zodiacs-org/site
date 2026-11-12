@@ -138,7 +138,9 @@ export function summarisePhrase(rows, phrase, { closeMatches = true } = {}) {
     clicks,
     impressions,
     position: impressions ? +(weighted / impressions).toFixed(1) : null,
-    queries: [...queries].slice(0, 20),
+    // A count only: raw queries are never written out, because a person can
+    // type a birth date, time or place into a search box.
+    queryCount: queries.size,
     topPages: [...pages.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([page]) => page),
   };
 }
