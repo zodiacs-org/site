@@ -60,13 +60,18 @@ const redirectSources = new Set(
 );
 const failures = [];
 const fail = (msg) => { failures.push(msg); };
-// vercel.json sends unknown paths under a locale prefix to that locale's own
-// 404 page; each one it names must be built, in its own language.
+// vercel.json sends unknown paths under a locale prefix to the function that
+// serves that locale's own 404 page with a 404 status; each page it names must
+// be built, in its own language. No rewrite may point at a built 404 page: a
+// rewrite keeps the destination's 200, which makes every miss a soft 404.
 {
   const rewrites = JSON.parse(await readFile(resolve(repo, 'vercel.json'), 'utf8')).rewrites ?? [];
-  const localeNotFound = rewrites.find((rule) => rule.destination === '/:locale/404/');
+  for (const rule of rewrites) {
+    if (/(?:^|\/)404(?:\/|\.html)?$/.test(rule.destination)) fail(`vercel.json: rewrite ${rule.source} -> ${rule.destination} would answer 200 for a missing page`);
+  }
+  const localeNotFound = rewrites.find((rule) => rule.destination === '/api/compatibility?__zodiacs_not_found=:locale');
   const locales = localeNotFound?.source.match(/^\/:locale\(([a-z|]+)\)\//)?.[1].split('|') ?? [];
-  if (!locales.length) fail('vercel.json: no locale 404 rewrite (/:locale/404/)');
+  if (!locales.length) fail('vercel.json: no locale 404 rewrite (/api/compatibility?__zodiacs_not_found=:locale)');
   for (const locale of locales) {
     const html = await readFile(join(root, locale, '404', 'index.html'), 'utf8').catch(() => null);
     if (html === null) fail(`vercel.json: locale 404 rewrite names /${locale}/404/, which is not built`);

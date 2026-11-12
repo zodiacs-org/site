@@ -3,6 +3,7 @@ import { sendInviteJson } from '../src/lib/invite/api.js';
 import { handleGamesApi } from '../src/lib/games/server.js';
 import { handleRegistryNews } from './_registry/news-handler.js';
 import { handleChartPreviewNodeRequest } from '../src/server/chart-preview.js';
+import { handleLocaleNotFound, LOCALE_NOT_FOUND_ROUTE_KEY } from '../src/server/locale-not-found.js';
 import { handleResultShareNodeRequest, isResultShareRoute, RESULT_SHARE_ROUTE_KEY } from '../src/server/result-preview.js';
 import completeHandler from '../src/lib/invite/routes/invite-complete.js';
 import exchangeHandler from '../src/lib/invite/routes/invite-exchange.js';
@@ -45,6 +46,13 @@ export function compatibilityInviteHandlerForAction(value: unknown): InviteHandl
 }
 
 export default async function handler(req: any, res: any): Promise<void> {
+  // Unknown paths under a locale prefix rewrite here last (vercel.json) and
+  // get the locale's 404 page with a 404 status. First, so no query string on
+  // the missing URL can reach another route.
+  if (req.query?.[LOCALE_NOT_FOUND_ROUTE_KEY] !== undefined) {
+    await handleLocaleNotFound(req, res);
+    return;
+  }
   if (req.query?.__zodiacs_ai !== undefined) {
     const { default: ai } = await import('./_ai/handler.js');
     await ai(req, res);

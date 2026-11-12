@@ -499,7 +499,7 @@
     },
     {
       "source": "/:locale(es|pt|fr|it|ru)/(.*)",
-      "destination": "/:locale/404/"
+      "destination": "/api/compatibility?__zodiacs_not_found=:locale"
     }
   ],
   "headers": [
