@@ -7,9 +7,14 @@ file, a Linear issue or an earlier review. Where a cited source could not be
 opened, it is listed under S18 and the claim is marked NOT VERIFIED or checked
 against a different source that is named.
 
-Small raw records are committed in `records/`. Large HTML captures stay in
-the job's scratch folder; their SHA-256 hashes are in
-`records/SHA256SUMS.txt` (48 files).
+Small raw records are committed in `records/`; their hashes are in
+`records/SHA256SUMS-committed.txt` and can be checked from this folder. Large
+HTML captures stay in the job's scratch folder; `records/SHA256SUMS.txt`
+lists the hashes of all 48 scratch files by their scratch names, so it cannot
+be checked from the committed folder alone.
+
+A fix round on 2026-11-13 reopened the sources behind the breaker review's
+findings. Those fetches are S19.
 
 ## S1. The live page and its published files
 
@@ -22,7 +27,7 @@ the job's scratch folder; their SHA-256 hashes are in
   flag-gated link ("View a wallet collection") that the build adds.
 - Published JSON beside the page, each fetched live and byte-identical to the
   repository copy: S1a `thesis-attention.json`, S1b `thesis-charts.json`,
-  S1c `thesis-claims.json` (29 entries, `reviewedAt` 2026-11-10), S1d
+  S1c `thesis-claims.json` (29 entries, `reviewedAt` 2026-11-11; most entries carry `checkedAt` 2026-11-10), S1d
   `thesis-candidacy.json`, S1e `thesis-candidacy-evidence.json`, S1f
   `thesis-disclosure.json`, S1g `thesis-test.json`, S1h
   `thesis-history.json` (`reviewedAt` 2026-07-31).
@@ -162,7 +167,8 @@ returns the post text and time. Records: `records/tweet-*.json`.
   Navigation: "Astrofolio: Official Zodiac token collection". `hreflang`
   values: en, es, fr, it, pt-BR, ru.
 - `/es/horoscopes/`, `/pt/horoscopes/`, `/fr/horoscopes/`, `/it/horoscopes/`
-  each HTTP 200. `/ru/` HTTP 200, `/ru/horoscopes/` HTTP 404.
+  each HTTP 200. The first pass did not read the pages; the French and
+  Italian ones are untranslated placeholders (S19a). `/ru/` HTTP 200, `/ru/horoscopes/` HTTP 404.
 - https://zodiacs.org/apps/ HTTP 200: "Made for ChatGPT and Claude. Directory
   listings are currently in review." Availability list: "ChatGPT: Directory
   listing in review. Claude: Directory listing in review. Grok: Template
@@ -239,7 +245,10 @@ Record: `records/onchain.json`.
   Virgo 2,444, Libra 6,681, Scorpio 2,971, Sagittarius 2,874, Capricorn
   2,967, Aquarius 2,814, Pisces 2,340. Each entry also carries
   `mintAuthorityDisabled: true`, `freezeAuthorityDisabled: true` and
-  `devMints: 24`. Record: `records/jup-tokens.json`.
+  `devMints: 24`, and a `topHoldersPercentage` of 17.4% to 23.3% across the
+  twelve. That field's definition was not looked up; it appears to leave out
+  the pool, so it is not comparable with the page's top-ten figure. Record:
+  `records/jup-tokens.json`.
 
 ## S13. Wikimedia
 
@@ -256,7 +265,8 @@ Record: `records/onchain.json`.
   (2026-06-05), 1.0.0 (2026-06-05), 1.0.1 (2026-06-07); maintainer "zodiacs".
 - Wayback CDX query from the page's evidence file, rerun: 13 rows, first
   20240726, last 20261011; largest gap 20250719 to 20260610, 326 days.
-  Record: `records/wayback-cdx.json`.
+  Record: `records/wayback-cdx.json`. The first pass did not open the
+  captures. See S19b: ten of the thirteen are a parked-domain page.
 
 ## S15. Reference sources
 
@@ -296,14 +306,60 @@ Record: `records/onchain.json`.
 - Repository public, `created_at` 2026-05-27T08:36:12Z. First commit
   2026-05-27T08:35:55Z `6370da541` "Initial zodiacs.org repo". No commits
   before 2026.
-- Commits to `public/assets/distribution.json`: 2026-07-06, 07-13, 07-20,
-  07-27, 08-03, 08-22, 08-24. None later.
+- Commits to `public/assets/distribution.json`: eight, on 2026-07-05, 07-06,
+  07-13, 07-20, 07-27, 08-03, 08-22 and 08-24. None later. (The first pass
+  listed seven and missed 07-05.)
 - Commits to `public/thesis/index.html` exist on 2026-07-23 ("thesis:
   amendment: surface-control attestation, reproducible evidence, drift
   gate"), 2026-08-01 and 2026-08-02; latest `47fee79f` on 2026-11-11.
 - `public/archive/feed.json` in the repository: nine entries dated 2024-01-01,
   2024-08-29, 2024-11-22, 2024-12-14, 2025-01-19, 2025-01-27, 2025-02-06,
   2025-02-17, 2025-10-29.
+
+## S19. Sources opened in the fix round, 2026-11-13T04:05Z
+
+- S19a. Locale horoscope pages. `https://zodiacs.org/fr/horoscopes/`: title
+  "Contenu en anglais | Zodiacs.org", heading "Cette page n'est pas encore
+  traduite.", "Disponible en anglais", `robots` `noindex`.
+  `https://zodiacs.org/it/horoscopes/`: title "Contenuto in inglese |
+  Zodiacs.org", heading "Questa pagina non è ancora tradotta.", `noindex`.
+  `https://zodiacs.org/es/horoscopes/`: "Horóscopos de hoy, 13 de noviembre
+  de 2026". `https://zodiacs.org/pt/horoscopes/`: "Horóscopos de hoje, 13 de
+  novembro de 2026".
+- S19b. Internet Archive. The CDX query of S14 rerun with digest and length
+  (`records/wayback-cdx-digests.json`): the ten captures from 20240726 to
+  20250719 share the digest `7HMQKXUYPBZDUEQGHND5JINF6WGD5MPJ`; the three from
+  2026 each have their own. Captures opened: 20240726200056 and
+  20250719223440 are each 114 bytes,
+  `<script>window.onload=function(){window.location.href="/lander"}</script>`;
+  20260610083004 is 78,479 bytes with the title "Zodiacs · The Twelve."
+  CDX for `zodiacs.org/thesis/`: first capture 20260713122037.
+- S19c. https://zodiacs.org/fomo/ : "It is not part of Zodiacs.org, which has
+  no referral deal with fomo and earns nothing when you trade there." and
+  "Zodiacs.org adds nothing and receives nothing." No date on the statement.
+- S19d. GitHub API, `zodiacs-org/site`. History of `thesis/index.html` (the
+  thesis page's path before the July restructure): first commit `b2811600`,
+  2026-06-10T13:04:42Z, "Add thesis page, astronomical clock artwork, and
+  Astrofolio glyph integration"; four more commits by 2026-06-11.
+  `public/assets/pulse.json`: "Refresh pulse data" on 2026-07-13, 07-27,
+  08-10, 08-24 and 11-09. `public/assets/distribution.json`: eight commits,
+  as corrected in S17. `public/thesis/thesis-test.json` at `99a2c2eb`:
+  `preregisteredAt` 2026-07-23, thresholds identical to today's.
+- S19e. Wikimedia pageviews API, `Virgo_(astrology)`, user traffic, daily:
+  20 Mar 1,095; 21 Mar 1,177; 22 Mar 1,775; 23 Mar 22,543; 24 Mar 5,626;
+  25 Mar 1,675.
+- S19f. Repository files at the branch head. `src/data/sun-ingresses.json`
+  holds the Cancer ingress as 2026-06-21T08:25:14.559Z.
+  `src/data/nasa-event-instants.json` has 498 ingress rows, for Mercury,
+  Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto; none for the Sun.
+- S19g. The saved capture of the live page (S1), read again for what the text
+  extractor dropped: the `application/ld+json` block (`datePublished`
+  2026-08-01, `dateModified` 2026-11-11, author and publisher "Zodiacs.org")
+  and the `aria-label` text of the figures, quoted in rows O12 to O22.
+- Checked again in the saved captures: the candidacy evidence file (S1e) has
+  one occurrence of "independence" (the policy) and none of
+  "economicInterest"; the disclosure page (S6) has no occurrence of "fees",
+  "confirmation" or "Wormhole".
 
 ## S18. Cited sources that could not be opened
 
@@ -315,5 +371,5 @@ Record: `records/onchain.json`.
 | `x.com/search?q=astrofolio dead bag` | Needs a login | Not opened. This is the only receipt for the "dead bag" entry. |
 | Google Trends comparison | Not opened | Pulse search figures NOT VERIFIED. |
 | Basescan token pages, Wormhole documentation | Not opened | Bridge mechanism NOT VERIFIED; contract existence checked by RPC (S10). |
-| https://zodiacs.org/fomo/ | TLS error on the one attempt | Not read. |
+| https://zodiacs.org/fomo/ | TLS error on the one attempt on 11 Nov | Opened on 13 Nov; see S19c. |
 | The operator "statement of 10 Nov 2026" named in the claims file | Not published anywhere found | The dated public statements are 2 Aug and 23 Aug 2026 (S6). |

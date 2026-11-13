@@ -4,7 +4,8 @@ Each pass reads the live page of 2026-11-11 top to bottom as one kind of
 reader, using only what that reader could open: the page, its links and
 public data. Row numbers point into `claims.md`; source ids into
 `sources.md`. These are rehearsals written by the builder, not interviews.
-The six-person cold-reader test (ZOD-42) was not run.
+The six-person cold-reader test (ZOD-42) was not run. Row references were
+updated in the fix round of 13 November 2026.
 
 ## 1. The hostile journalist
 
@@ -48,6 +49,12 @@ and what they stand to gain.
   None" with a "Verify" link that verifies nothing (K12).
 - "No one appointed these digital assets 'official'", beside the navigation's
   "Official Zodiac token collection" (I1).
+- "daily horoscopes in five languages", beside the French and Italian pages
+  that say "not yet translated" (H4).
+- "Archive continuity ... 13 captures since 2024", beside the ten captures
+  that show a parked domain (I11).
+- "Peak: 23 Mar · 38.1k" on a chart about the calendar, when 22,543 of those
+  reads were one article on one day (F7).
 - "We missed our own deadline" (J1). Honest, and quotable.
 
 **What they would share**
@@ -160,8 +167,10 @@ treats astrology as a practice or as a market.
 
 - The Naylor and Princess Margaret story, with the Smithsonian link.
 - The Unicode plate: the twelve glyphs, in Unicode since June 1993 (M8).
-- The Wikipedia reads chart with ingresses and eclipses marked (F6, F7). The
-  peak three days after the Aries ingress is a real and pleasing detail.
+- The Wikipedia reads chart with ingresses and eclipses marked (F6), though
+  not its labelled peak: that is a one-day spike on the Virgo article in late
+  March (F7), which an astrologer would see has nothing to do with the
+  calendar.
 - The free tools themselves, more than the essay.
 
 ## Problems all three readers hit, ranked
@@ -182,8 +191,8 @@ live edition.
    the single creating wallet, the astrologer finds a site "maintained by
    automated systems". One plain sentence about who created the coins and
    who the company is would settle all five rows.
-3. **The page says it has been checked more than it has (A6, H10, I9, K4, K9,
-   K27, L3, N10).** "Evidence checked 10 Nov 2026" sits over figures from
+3. **The page says it has been checked more than it has (A6, H4, H10, I9,
+   I11, K4, K9, K27, L3, N7, N10, O1, O2).** "Evidence checked 10 Nov 2026" sits over figures from
    July, a snapshot series that stopped in August, a redirect that goes
    somewhere else and labels that are not there. Each reader finds a
    different stale item, and each concludes the same thing.
@@ -199,8 +208,8 @@ live edition.
    omitted", "Project treasury: None" with a Verify link, "we hold some" with
    no amount. The skeptic and journalist hit this hard; the astrologer meets
    it as a general sense that the frank tone is not carried through.
-7. **False precision (F8, F9).** Millisecond ingress times that are off by up
-   to a minute. The astrologer hits it first; the other two meet it as one
+7. **False precision (F8, F9).** Millisecond ingress and eclipse times; the
+   ingress times are off by up to a minute. The astrologer hits it first; the other two meet it as one
    more sign that the numbers are decoration.
 
 ## What all three would share
