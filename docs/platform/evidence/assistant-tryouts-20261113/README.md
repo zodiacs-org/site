@@ -14,9 +14,12 @@ one picks. Start with `REPORT.md`.
 | `LIVE-CALLS.md` | How the live connector answered the calls sent on to it (generated) |
 | `raw/live/` | The live server's `initialize` and `tools/list`, fetched 13 November 2026 (0.6.6, 19 tools) |
 | `raw/pr971/` | The same two answers from PR 971 at `2d1f90f01` (0.6.7 draft), where this branch started |
-| `raw/branch/` | The same two answers from this branch |
+| `raw/branch/` | The same two answers from this branch as it stood before the fix round (on PR 971 at `2d1f90f01`) |
 | `raw/pr971b/` | The same two answers from PR 971's new head, `989c49537`, pushed while this ran |
 | `raw/pr971b-branch-instructions/` | A what-if pairing: the new head's tool list with this branch's instructions. No branch has it |
+| `FIX-ROUND.md` | The fix round of 13 November 2026, after Dias's answers: what changed, and the 200 asked again |
+| `raw/fix-round/` | The same two answers from this branch after the fix round: joined with PR 971 at `989c49537`, "ask first" back, four published descriptions reworded. `src/ai-tools/tryouts-routing.test.ts` holds the source to it |
+| `raw/fix-round-1/` | The fix round's first wording, before two sentences were tightened and the word "crypto" taken out. Its run rows carry `toolSet: fix-round`, the folder's name when they ran |
 | `tools/` | The scripts: `build-questions.py`, `run-tryouts.py`, `stub-mcp.mjs`, `score.py`, `replay-live.py`, `dump-branch-tools.ts`, `live-calls.py` |
 
 To run it again:

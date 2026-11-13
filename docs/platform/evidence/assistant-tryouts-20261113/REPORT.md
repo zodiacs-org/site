@@ -1,5 +1,9 @@
 # Assistant tryouts: 200 questions, which tool each assistant picks (ZOD-207)
 
+**Later the same day there was a fix round, after Dias answered the calls below: see `FIX-ROUND.md`. It joins PR 971's
+new head, restores "ask first", rewords four published descriptions and settles the child question. This report is
+left as first written.**
+
 13 November 2026, Asia/Bangkok. A draft. Nothing here is merged, published, submitted or sent, and the live
 connector was only read.
 

@@ -35,10 +35,13 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * 0.6.7 (ZOD-58) changes the reported version in every scenario, and rewrites tool descriptions and the server
  * instructions as plain descriptions, so every scenario's initialize, tools/list and bearer answers change in those
  * texts too (src/ai-tools/published-tools.ts). Every schema and every resources/list keep their bytes.
- * ZOD-207 (a draft on top of ZOD-58, still 0.6.7) adds to the server instructions what is outside Zodiacs and, in the
- * coverage scenario, which tool takes which request, and adds routing sentences to the get_natal_chart and
- * explain_astrology descriptions (docs/platform/evidence/assistant-tryouts-20261113/). None of the thirteen published
- * definitions changes, and every schema and every resources/list keep their bytes.
+ * ZOD-207 (a draft on top of ZOD-58, still 0.6.7) adds to the server instructions what is outside Zodiacs, that a
+ * named child under 13 gets no horoscope and, in the coverage scenario, which tool takes which request; it says "Ask
+ * before using someone else's birth details" there in the words get_capabilities uses; and it adds routing and
+ * declining sentences to the get_natal_chart, explain_astrology and get_horoscope_period descriptions and to four of
+ * the thirteen published ones, get_horoscope, check_sky_fact, get_upcoming_events and open_chart_studio, which the
+ * owner approved on 13 November 2026 (src/ai-tools/published-tools.ts, src/ai-tools/tryouts-routing.test.ts). Every
+ * schema and every resources/list keep their bytes.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

@@ -3,7 +3,7 @@ import { createServer, type Server } from 'node:http';
 import { createAiNodeHandler } from './http';
 import { UNDER_13_REFUSAL } from './contracts';
 import { birthDatesIn, childBirthDateRefusal, executeAiTool } from './tools';
-import { UNDER_13_INSTRUCTION } from './server';
+import { CHILD_HOROSCOPE, UNDER_13_INSTRUCTION } from './server';
 import { isUnder13, isUnder18 } from './features/reading-guards';
 import { MINOR_COMPATIBILITY_REFUSAL } from './features/compatibility';
 import { buildSavedRecord, saveToZodiacs } from './accounts/save';
@@ -178,6 +178,64 @@ describe('the hosted server refuses a child\'s birth date', () => {
     if (!capabilities.ok || capabilities.tool !== 'get_capabilities') throw new Error(JSON.stringify(capabilities));
     expect(capabilities.data.privacy).toContain('Zodiacs is not directed at children under 13: its tools make no card, chart or reading from a birth date less than 13 years ago, or a birthday card for a day in those years.');
     expect(capabilities.data.limitations.join(' ')).toContain('when either birth date is under 18 it gives no reading, and from 13 to 17 it points to a friendship reading');
+  });
+});
+
+/**
+ * The owner's answer of 13 November 2026 (ZOD-207): no horoscope for a named child under 13, and a bare Sun sign,
+ * with no name and no birth date, still gets that sign's general horoscope. The horoscope tools take a sign and, for
+ * get_horoscope, an optional birth date; they take no name and no age, so a named child reaches them only through
+ * what the assistant reads: the instructions and the two descriptions. Every date here is made up.
+ */
+describe('horoscopes and children under 13', () => {
+  const call = async (name: string, args: Record<string, unknown>) => (await rpc('tools/call', { name, arguments: args })).result;
+
+  it('gives a bare Sun sign its general horoscope: a day, a week, a month and a year', async () => {
+    // The committed window moves each day, so the day is the one it was built for, not this file's fixed clock.
+    const date = (committedWindow as HoroscopeWindow).generatedFor;
+    const day = await call('get_horoscope', { sign: 'leo', date });
+    expect(day.isError, JSON.stringify(day.structuredContent?.error)).toBe(false);
+    expect(day.structuredContent.data).toMatchObject({ status: 'available', sign: 'leo', period: 'day', focus: 'general' });
+    expect(day.structuredContent.data.personalWeek ?? null).toBeNull();
+    const week = await call('get_horoscope', { sign: 'leo', period: 'week', date });
+    expect(week.structuredContent.data).toMatchObject({ status: 'available', sign: 'leo', period: 'week' });
+    for (const period of ['month', 'year']) {
+      const answer = await call('get_horoscope_period', { sign: 'leo', period });
+      expect(answer.isError, `${period} ${JSON.stringify(answer.structuredContent?.error)}`).toBe(false);
+    }
+    // No sign at all: the person chooses one, and nothing is refused.
+    const none = await call('get_horoscope', {});
+    expect(none.isError).toBe(false);
+    expect(none.structuredContent.data.status).toBe('choose-sign');
+  });
+
+  it('still refuses a horoscope with a birth date less than 13 years ago, on the day before the 13th birthday too', async () => {
+    for (const birthDate of ['2017-08-17', '2013-11-09', '2026-11-01']) {
+      const answer = await call('get_horoscope', { sign: 'leo', birthDate });
+      refused(answer, 'get_horoscope');
+      expect(JSON.stringify(answer), birthDate).not.toContain(birthDate);
+    }
+    expect((await call('get_horoscope', { sign: 'scorpio', birthDate: '2013-11-08' })).isError).toBe(false);
+  });
+
+  it('has no field a child\'s name or age could travel in', async () => {
+    const tools = (await rpc('tools/list', {})).result.tools as { name: string; inputSchema: { properties: Record<string, unknown> } }[];
+    for (const name of ['get_horoscope', 'get_horoscope_period']) {
+      const fields = Object.keys(tools.find(tool => tool.name === name)!.inputSchema.properties);
+      expect(fields.filter(field => /name|age|child/iu.test(field)), name).toEqual([]);
+      expect((await call(name, { sign: 'leo', name: 'Example Child' })).isError, name).toBe(true);
+    }
+  });
+
+  it('says in the instructions and in both horoscope descriptions that a named child under 13 gets none', async () => {
+    const init = (await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'under-13', version: '1' } })).result;
+    expect(init.instructions).toContain(`${UNDER_13_INSTRUCTION} ${CHILD_HOROSCOPE}`);
+    const tools = (await rpc('tools/list', {})).result.tools as { name: string; description: string }[];
+    for (const name of ['get_horoscope', 'get_horoscope_period']) {
+      const description = tools.find(tool => tool.name === name)!.description;
+      expect(description, name).toContain('There is no horoscope for a named child under 13');
+      expect(description, name).toMatch(/A Sun sign on its own, with no name and no birth date, gets the general (?:horoscope|reading) for that sign\./u);
+    }
   });
 });
 
