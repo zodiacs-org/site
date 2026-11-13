@@ -1,0 +1,78 @@
+{
+  "what": "The engine's own event times for the Sun and the Moon, held to NASA JPL's DE421 ephemeris on a broad sample. Absolute differences in seconds of Terrestrial Time, engine against reference.",
+  "measured": "2026-11-13",
+  "engine": "@zodiacs/engine 1.1.0-rc.3 (zodiacs-org/engine bc0b5a769ad2), astronomy-engine 2.1.19",
+  "reference": "JPL DE421 read with jplephem 2.24 and reduced with pyerfa 2.0.1.5 to the apparent geocentric ecliptic longitude of date (light time, solar deflection, annual aberration, IAU 2006/2000A); each instant evaluated at the engine's own TT, so the differences are ephemeris and reduction only. Reference events found by a daily scan and bisection, independently of the engine.",
+  "referenceCalibration": "against the 140 committed Horizons DE441 vectors inside 1900 to 2050: Sun to Saturn within 0.008 arcseconds",
+  "events": {
+    "sunIngresses": {
+      "span": "1900 to 2050",
+      "n": 1812,
+      "medianSeconds": 9.71,
+      "p95Seconds": 29.23,
+      "maxSeconds": 50.32
+    },
+    "sunIngressesByEra": {
+      "1900-1949": {
+        "n": 600,
+        "medianSeconds": 9.22,
+        "maxSeconds": 40.04
+      },
+      "1950-1999": {
+        "n": 600,
+        "medianSeconds": 9.28,
+        "maxSeconds": 50.31
+      },
+      "2000-2025": {
+        "n": 312,
+        "medianSeconds": 9.54,
+        "maxSeconds": 50.32
+      },
+      "2026-2030": {
+        "n": 60,
+        "medianSeconds": 10.96,
+        "maxSeconds": 42.76
+      },
+      "2031-2050": {
+        "n": 240,
+        "medianSeconds": 11.67,
+        "maxSeconds": 47.86
+      }
+    },
+    "newAndFullMoons": {
+      "span": "1900 to 2050",
+      "n": 3736,
+      "medianSeconds": 1.81,
+      "p95Seconds": 5.59,
+      "maxSeconds": 10.32
+    },
+    "newAndFullMoons2026to2030": {
+      "span": "2026 to 2030",
+      "n": 124,
+      "medianSeconds": 1.49,
+      "p95Seconds": 3.9,
+      "maxSeconds": 5.4
+    },
+    "moonIngresses": {
+      "span": "2020 to 2031, and every 10th year from 1900 to 2050",
+      "n": 4169,
+      "medianSeconds": 1.27,
+      "p95Seconds": 4.02,
+      "maxSeconds": 7.64
+    },
+    "moonIngresses2020to2031": {
+      "span": "2020 to 2031",
+      "n": 1925,
+      "medianSeconds": 1.05,
+      "maxSeconds": 5.76
+    },
+    "quarterMoons": {
+      "span": "2020 to 2031",
+      "n": 297,
+      "medianSeconds": 1.18,
+      "p95Seconds": 3.43,
+      "maxSeconds": 5.75
+    }
+  },
+  "unmatched": "none: every engine event matched a reference event, apart from one Moon ingress that fell outside its year window in the comparison"
+}
