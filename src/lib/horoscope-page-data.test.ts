@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import programData from '../data/horoscope-program.json';
-import { evidenceMap, horoscopeHubTeaser, pageReadingFromProgram } from './horoscope-page-data';
+import { alsoInSkyEvents, evidenceMap, horoscopeHubTeaser, pageReadingFromProgram } from './horoscope-page-data';
 import type { HoroscopeEvidenceReceipt, HoroscopeProgram } from './horoscope-program';
-import { refineDailyEvents } from './nasa-instants';
+import { eventsOnUtcDay, refineDailyEvents } from './nasa-instants';
+import type { TransitCatalog } from './today-sky';
 
 const program = programData as HoroscopeProgram;
+const transitCatalogs = Object.values(import.meta.glob<{ default: TransitCatalog }>('../data/transits-*.json', { eager: true }))
+  .map((module) => module.default);
 const zodiacNamePattern = new RegExp(
   `\\b(?:${program.signs.map(({ sign }) => sign).join('|')})\\b`,
   'gu',
@@ -204,6 +207,34 @@ describe('horoscope page sky strip', () => {
     ]);
     expect(mercury.at).toBe('2026-11-13T15:53:52.000Z');
     expect(newMoon.at).toBe('2026-11-09T07:02:05.269Z');
+  });
+
+  it('lists an event on the UTC day of NASA’s instant when NASA moves it across midnight', () => {
+    // Neptune sextile Pluto: the engine dates it 24 July 2026 at 23:09:38 UTC,
+    // NASA 25 July at 05:28:07 UTC, so it belongs to 25 July's edition.
+    const sextile = (event: { kind: string; a?: string; b?: string; type?: string }) => (
+      event.kind === 'aspect' && event.a === 'Neptune' && event.b === 'Pluto' && event.type === 'sextile'
+    );
+    expect(eventsOnUtcDay(transitCatalogs, '2026-07-24').filter(sextile)).toEqual([]);
+    expect(eventsOnUtcDay(transitCatalogs, '2026-07-25').filter(sextile))
+      .toMatchObject([{ at: '2026-07-25T05:28:07.000Z', aSign: 'aries', bSign: 'aquarius' }]);
+    expect(alsoInSkyEvents(transitCatalogs, '2026-07-24', [])).not.toContain('Neptune sextile Pluto, exact at 05:28 UTC');
+    expect(alsoInSkyEvents(transitCatalogs, '2026-07-25', [])).toContain('Neptune sextile Pluto, exact at 05:28 UTC');
+  });
+
+  it('leaves out of “Also in this sky” the events the sky rows show, and keeps the rest', () => {
+    // 16 October 2026: Pluto stations direct (NASA 02:39:22 UTC) and Mars
+    // trines Saturn (NASA 08:32:24 UTC, the engine says 08:26).
+    expect(alsoInSkyEvents(transitCatalogs, '2026-10-16', [])).toEqual([
+      'Pluto stations direct at 02:39 UTC',
+      'Mars trine Saturn, exact at 08:32 UTC',
+    ]);
+    // The reading cites Pluto's station, so its sky row is at NASA's instant.
+    expect(alsoInSkyEvents(transitCatalogs, '2026-10-16', ['2026-10-16T02:39:22.000Z'])).toEqual([
+      'Mars trine Saturn, exact at 08:32 UTC',
+    ]);
+    // The engine's instant is not a row the page prints, so it removes nothing.
+    expect(alsoInSkyEvents(transitCatalogs, '2026-10-16', ['2026-10-16T02:39:20.905Z'])).toHaveLength(2);
   });
 
   it('uses tomorrow’s own Moon phase without repeating the marker label', () => {

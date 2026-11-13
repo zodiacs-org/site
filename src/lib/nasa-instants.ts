@@ -115,7 +115,9 @@ export function refineTransitMonth<T extends TransitMonthShape>(month: T): T {
 /**
  * A day's events (src/data/daily.json) with each planet ingress, station and
  * exact aspect at NASA's instant. Lunations and the Sun keep their instants.
- * Order is kept: the day's events are already sorted, and the move is minutes.
+ * Order is kept as given, though a correction can be hours and can move an
+ * event across midnight: a list for one UTC day takes its events from
+ * eventsOnUtcDay instead.
  */
 export function refineDailyEvents<E extends { kind: string; at: string; planet?: string; a?: string; b?: string; type?: string }>(events: readonly E[]): E[] {
   return events.map((event) => {
@@ -127,6 +129,62 @@ export function refineDailyEvents<E extends { kind: string; at: string; planet?:
     }
     return at === event.at ? event : { ...event, at };
   });
+}
+
+/** One event of a day, in the shape of daily.json's events. */
+export interface DayEvent {
+  kind: 'ingress' | 'lunation' | 'station' | 'aspect';
+  at: string;
+  planet?: string;
+  a?: string;
+  b?: string;
+  type?: string;
+  sign?: string;
+}
+
+type CatalogItem = Omit<DayEvent, 'kind'>;
+
+interface TransitCatalogShape {
+  month: string;
+  ingresses: readonly CatalogItem[];
+  lunations: readonly CatalogItem[];
+  stations: readonly CatalogItem[];
+  aspects: readonly CatalogItem[];
+}
+
+const EVENT_ARRAYS = [
+  ['ingresses', 'ingress'],
+  ['lunations', 'lunation'],
+  ['stations', 'station'],
+  ['aspects', 'aspect'],
+] as const;
+
+const shiftMonth = (month: string, by: number): string => {
+  const at = new Date(`${month}-01T00:00:00.000Z`);
+  at.setUTCMonth(at.getUTCMonth() + by);
+  return at.toISOString().slice(0, 7);
+};
+
+/**
+ * The events of one UTC day (YYYY-MM-DD) as the pages print them, in the
+ * shape of daily.json's events: every catalog ingress, lunation, station and
+ * aspect whose printed instant (refineDailyEvents) falls on that day, sorted.
+ * daily.json slices the catalog by the engine's instant, and NASA can move an
+ * event across midnight (Neptune sextile Pluto: engine 24 July 2026 23:09,
+ * NASA 25 July 05:28), so a day's list is built here rather than from that
+ * slice. The catalogs of the day's month and the months either side are read.
+ */
+export function eventsOnUtcDay(catalogs: readonly TransitCatalogShape[], date: string): DayEvent[] {
+  const month = date.slice(0, 7);
+  const months = new Set([shiftMonth(month, -1), month, shiftMonth(month, 1)]);
+  const events = catalogs
+    .filter((catalog) => months.has(catalog.month))
+    .flatMap((catalog) => EVENT_ARRAYS.flatMap(([array, kind]) => (
+      catalog[array].map((item): DayEvent => ({ kind, ...item }))
+    )));
+  return refineDailyEvents(events)
+    .filter((event) => event.at.slice(0, 10) === date)
+    .sort(byAt);
 }
 
 /**
