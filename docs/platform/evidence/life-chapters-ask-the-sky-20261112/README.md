@@ -9,6 +9,8 @@ History:
 - 12 to 13 November 2026: first version, by the builder session.
 - 13 November 2026: `BREAKER.md`, the second session's review. No blocker, 15 should-fix items.
 - 13 November 2026: **second version**, the one fix round Dias approved. `01`, `02`, `03`, `SOURCES.md` and this file were revised. `BREAKER.md` is unchanged and describes the first version.
+- 13 November 2026: `BREAKER-FIX.md`, a new session's review of the second version. No blocker, 11 should-fix items (F1 to F11).
+- 13 November 2026: **third version of the filter and its test set** (ZOD-210), one round on the signs of being 13 to 17, approved by Dias the same day. Only `02`, `03` and this file were changed. `01`, `SOURCES.md`, `BREAKER.md` and `BREAKER-FIX.md` are unchanged. The third version has not been reviewed.
 
 ## Files
 
@@ -16,9 +18,30 @@ History:
 |---|---|
 | `01-life-chapters-meanings.md` | The method claim by claim with citations, a plain-words meaning for each of the twelve signs as a chapter, four hard-patch lines, wording for a peak stretch, for the loosing of the bond and for the birth-time warnings, and a list of what the source does not support. |
 | `02-ask-the-sky-filter.md` | The written filter: what is allowed, what is refused and why, with examples, the one-question limit, draft refusal wording, and the decisions made and still open. |
-| `03-filter-test-set.md` | 101 test questions, each with the expected result and a reason. None is printed in the filter. |
+| `03-filter-test-set.md` | 151 test questions, each with the expected result and a reason. None is printed in the filter. |
 | `SOURCES.md` | What was opened and what could not be, with addresses, hashes and the quoted passages (V1 to V24, L1, L2). |
 | `BREAKER.md` | The second session's findings on the first version, with its own questions and pass rates. |
+| `BREAKER-FIX.md` | A new session's findings on the second version, with its own fresh questions and pass rates. |
+
+## What the ZOD-210 round changed (third version)
+
+Dias approved tightening the filter's signs of being 13 to 17 on 13 November
+2026. The round answers three findings of `BREAKER-FIX.md` and nothing else.
+
+| Item | What was done |
+|---|---|
+| F6, signs of being 13 to 17 | `02`, section 4.6 now lists them: a stated age, school years and stages, school exams, school life, age-group teams, a parent who permits or forbids, and a parent's words for a child of that age. "College", "school", "my class", "my teacher" and "junior year" count as a sign unless the same message shows an adult, and 4.6 says what shows one. |
+| F11, a 15-year-old's own job | Step 3 and 4.6 now agree: nothing is judged for an asker of 13 to 17, so the question is refused with reason `minors`. This is the builder's reading of "the tightened direction" and is listed for Dias. |
+| F10, thin test set | `03` grew from 101 to 151 questions: 31 refusals for the new signs, 18 near-the-line questions that must still be allowed, and one love question that is a safety case. The old A17 (a 15-year-old's Saturday job) changed from allow to refuse. None of the added questions is printed in the filter or in either review. |
+
+Held as before: any love question about someone under 18 is refused, the
+under-13 rule, immigration, legal and medical questions are refused, and
+gentle love questions between adults are allowed. There is a new refusal
+wording for an asker of 13 to 17, and the romance wording no longer invites
+a question about school (`02`, section 6).
+
+The third version's test set has not been run through anything. ZOD-210
+gives that to a separate review with its own fresh questions about minors.
 
 ## What the fix round changed
 
@@ -56,15 +79,17 @@ acceptance test (N4).
 ## Results against the issue's tests
 
 The second session found that all five survive for the first version
-(`BREAKER.md`, section 1). The second version has not been reviewed. A new
-review is to run the skeptic test again with fresh questions.
+(`BREAKER.md`, section 1), and the fix-round review found the same for the
+second (`BREAKER-FIX.md`). The third version of `02` and `03` has not been
+reviewed. A new review is to run a fresh set of questions about minors
+(ZOD-210, tests A1 to A5).
 
-| Test | Builder's reading of the second version |
+| Test | Builder's reading of the current drafts |
 |---|---|
 | C1 | Met. Twelve chapter meanings and stretch lines, peak, loosing of the bond, five birth-time warnings. Spirit only. |
 | C2 | Met for the claims made, with the same two stated gaps: "loosing of the bond" and "Lot of Spirit" are not in the Riley text. The V13 misreading is corrected. Every quotation was compared again by script with the source text. |
 | F1 | Met. All eight named categories, each with examples; love questions now have their own rule. |
-| F2 | Met. 101 cases: 36 allowed, 65 refused; every refused category has 6 to 8 cases, at least 3 softened. |
+| F2 | Met. 151 cases: 54 allowed, 97 refused; every refused category but safety has at least 6 cases, at least 3 softened. Safety has 3. |
 | F3 | Met. Evidence folder only. |
 
 ## The source problem, in short
@@ -77,7 +102,8 @@ was opened in the fix round.
 
 ## Still open for Dias
 
-Not decided by the fix round. Full lists: `01`, Part 7, and `02`, section 8.
+Not decided by either round. Full lists: `01`, Part 7, `02`, section 8, and
+`BREAKER-FIX.md`, section 5.
 
 Life Chapters:
 
@@ -100,3 +126,22 @@ Ask the Sky:
 14. A raise; awards of money for study or work; lost pets and the weather; family and friendship feelings; the low-stakes cases the review listed.
 15. How often a person may ask, what the repeat rule may remember, and whether refused attempts are capped.
 16. Whether Ask the Sky should ask for an age, and who or what applies the filter.
+
+From the ZOD-210 round, the builder's readings of the approval:
+
+17. Nothing is judged for an asker of 13 to 17. The other reading refuses only love and keeps their questions about work and school.
+18. "College" and the other either-way words refuse unless the message shows an adult. Some adults will be refused and told to say they are 18 or over. A softer choice is to let those words refuse love questions only.
+19. The adults-only wording tells the person what to say to get through.
+20. Year 7, Year 8 and seventh grade get the under-13 handling.
+
+Open from the fix-round review (`BREAKER-FIX.md`), not touched by the ZOD-210 round:
+
+21. F1: "at birth" in the hard-patch lines is the draft's reading, not the passage's.
+22. F2: the airy case in `01`, Part 2b is described the wrong way round.
+23. F3: the Capricorn chapter still gives an order of events.
+24. F4: a love question about the other person's feelings is allowed, and the answer is barred from answering it.
+25. F5: "Will I find love again?" is sent back for rewording.
+26. F7: "a mention is not a subject" against "judge the event behind the wording", with no tie-break.
+27. F8: a third person in the asker's own marriage.
+28. F9: the order of reasons against the filter's own examples.
+29. The review's notes N1 to N5.

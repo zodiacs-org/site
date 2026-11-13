@@ -16,6 +16,19 @@ review (`BREAKER.md`) and Dias's calls of the same day. What changed:
 - an either-or about one outcome, a named salary and a co-applicant no longer cause a refusal (Dias, call 3; S17);
 - the review's other filter findings are applied: S6 to S11, S14 and S15.
 
+**Third version, 13 November 2026 (ZOD-210).** One round on the signs of
+being 13 to 17, which Dias approved the same day. It answers three findings
+of the fix-round review (`BREAKER-FIX.md`): F6, F10 and F11. What changed:
+
+- the signs of being 13 to 17 are now listed in 4.6: school years, exams, school life, a parent who permits or forbids, and a stated age (F6);
+- "college" and the other words that can mean a child or an adult now count as a sign unless the same message shows an adult (F6);
+- step 3 and 4.6 no longer disagree about an asker of 13 to 17: nothing is judged for them, so "I'm 15" in front of a question about the asker's own job is a refusal (F11);
+- a parent's question about a son or daughter of 13 to 17 is refused as before, and the signs that the child is that age are listed.
+
+Nothing else in the filter was changed. The review's other findings on the
+filter (F4, F5, F7, F8, F9 and its notes) are still open and are listed in
+section 8.
+
 ## 1. What the filter is for
 
 Ask the Sky would take one question, cast the sky for the minute it was
@@ -56,7 +69,7 @@ the reason.
 | 0 | **Safety.** The message suggests the person may harm themselves or someone else, or is in danger now. | Refuse, reason `safety`. Say plainly that this is not something to ask the sky, and point to local emergency services or a crisis line. Nothing else. |
 | 1 | **One question.** The message holds more than one matter or more than one outcome, a list, a choice between two matters, or a matter this person has already had judged. | Refuse, reason `one-question`. |
 | 2 | **Under 13.** The person says or shows they are under 13 (signs in 4.6). | Refuse, reason `minors`. Do not go on, and do not keep the question. |
-| 3 | **A child is the subject.** The question is about a person under 18 or about an expected child (what the child will be like, its sex, its future), or is asked on a child's behalf. Or it is a love question and the asker or the other person is, or appears to be, under 18. | Refuse, reason `minors`. |
+| 3 | **Under 18.** The asker says or shows they are 13 to 17 (signs in 4.6), whatever the question is about. Or the question is about another person under 18 or about an expected child (what the child will be like, its sex, its future), or is asked on a child's behalf. Or it is a love question and the asker or the other person is, or appears to be, under 18. | Refuse, reason `minors`. |
 | 4 | **Someone else is the subject.** The answer would say something about another person's own life, body, secrets, private conduct or future, or about a public figure. Gentle love questions (3.1) are not caught by this step. | Refuse, reason `other-people`. |
 | 5 | **Health.** Includes conceiving, pregnancy and birth, and how long the asker will live. | Refuse, reason `health`. |
 | 6 | **Legal.** Includes immigration and formal proceedings at work. | Refuse, reason `legal`. |
@@ -87,6 +100,7 @@ A question is allowed when all of these are true:
 - **It is the asker's own matter.** The asker is the one it happens to, and the one who can act on the answer.
 - **It is real and live.** Either something has been applied for, asked, lost, planned or begun and the outcome is not known yet, or it is something the asker is actively seeking and the question gives it a time frame ("Will I find a flat before term starts?", "Will I meet someone new this year?"). A wish with no matter and no time frame ("Will I be happy?", "Will I be famous one day?") is not.
 - **It is specific.** The matter is named.
+- **Nothing says or shows that the asker is under 18** (signs in 4.6).
 - **It is outside every refused category in section 4.**
 
 Other people may be part of the matter without being its subject. An
@@ -312,27 +326,84 @@ family and friendship questions should follow is listed in section 8.
 **Covers.** Four cases.
 
 1. **The asker is under 13.** Nothing is judged.
-2. **The asker is 13 to 17.** Nothing about love, romance or attraction is judged. Every other rule applies as usual.
-3. **A child is the subject.** Any question about a person under 18, by a parent or anyone else: their school, friends, future, character, and any love question in which the other person is under 18. Any question about an expected child: what it will be like, its sex, its future. (Conceiving, pregnancy and the birth itself are `health`, step 5, so that the person is told the right thing.)
+2. **The asker is 13 to 17.** Nothing is judged, whatever the question is about: a job, an exam, a team, a plan or love. (Until the third version only love questions were refused here, and step 3 and this section disagreed. They now say the same thing.)
+3. **A child is the subject.** Any question about another person under 18, by a parent or anyone else: their school, exams, job, friends, future, character, and any love question in which the other person is under 18. Any question about an expected child: what it will be like, its sex, its future. (Conceiving, pregnancy and the birth itself are `health`, step 5, so that the person is told the right thing.)
 4. **A child's birth as the moment.** Ask the Sky casts the sky for the moment the question is asked, and for no other moment. It must never accept a date and time supplied by the asker. Otherwise "cast it for 3 March at 04:10, when my daughter was born" turns a question tool into a way round the rule that no chart is made for a birth less than 13 years ago (ZOD-62 describes that rule; the connector's instructions state it). A question asked at the very minute of a birth is still only a question: an allowed one is judged, and the answer never shows or describes the chart itself.
 
-**What "shows" means.** The person does not have to state an age. Any of
-these is a sign, and the filter acts on it:
+**What "shows" means.** The person does not have to state an age. The filter
+acts on any sign in the three lists below. A sign counts whether it is about
+the asker, about the person the question is about, or, in a love question,
+about either of the two.
 
-- a stated age or birthday ("I'm 12", "for my 10th birthday");
-- a school year or stage that only children are in (primary school, Year 6, sixth grade, starting secondary school);
-- an exam, team or event that only children sit or join, where the asker is the one sitting or joining (the 11-plus, the under-12s as a player, a school play, a prom);
-- wording such as "my mum won't let me" or "when I grow up" beside any of the above.
+**Signs of being under 13.**
+
+- a stated age or birthday under 13 ("I'm 12", "for my 10th birthday");
+- a school year or stage that only children under 13 are in: nursery, primary or elementary school, Year 6 and below, sixth grade and below, starting secondary school;
+- an exam, team or event that only they sit or join, where the asker is the one sitting or joining (the 11-plus, the under-12s as a player);
+- a year that sits on the line: Year 7, Year 8, seventh grade. These get the under-13 handling, because it is the stricter one.
+
+**Signs of being 13 to 17.**
+
+- **A stated age from 13 to 17**, in any form: "I'm 15", "I turn 16 in March", "nearly 18", "my 17th birthday". The age counts whatever the question is about. "I'm 15" in front of a question about the asker's own job is a sign like any other, and the question is refused.
+- **A school year or stage.** Years 9 to 13. Grades 8 to 12. Freshman, sophomore, junior or senior year of high school. Secondary school, high school or sixth form as a pupil. The same stages in any country (S3 to S6, a collège or lycée, an instituto, a Gymnasium class).
+- **A school exam being sat now or soon.** GCSEs, A-levels, Highers, mocks for any of them, a high school diploma, the baccalauréat, the Abitur.
+- **School life.** A form, tutor group or homeroom. A school team, play, trip or dance as a pupil. A prom, a leavers' ball, homecoming. Work experience week. Detention. A head of year.
+- **An age-group team as a player:** the under-14s to the under-18s.
+- **A parent who permits, forbids or signs.** "My mum won't let me", "my dad has to sign the form", "my parents say I'm too young", "I'm grounded", a curfew, pocket money. This is a sign on its own. It no longer has to stand beside another one.
+- **A parent's words for a child of that age:** "my teenager", "my 16-year-old", "our lad sits his exams in May".
+
+**Words that can go either way.** These can mean a child or an adult:
+
+- **college** (in Britain usually ages 16 to 18; in the United States usually adults);
+- **school**, as the place the person goes to ("at school", "after school", "my school");
+- **my class, a classmate, my teacher, homework, my tutor**;
+- **a year named the American way with no school named** ("junior year", "senior year").
+
+Each one **counts as a sign of being 13 to 17 unless the same message shows
+that the person is an adult.** "College" is never read as an ordinary adult
+word on its own. What shows an adult:
+
+- a stated age of 18 or more. In a love question both people need one, or some other sign below;
+- study that only adults do: university, a degree, an undergraduate or postgraduate course, a master's, a doctorate, a thesis, a year "of college" or "of university", an evening class, night school, an access course, returning to study, a professional school or exam (nursing school, law school, the bar exam);
+- an adult's life: a husband, wife or fiancé, children of the asker's own, a tenancy or a mortgage, years spent in a job;
+- the person is the adult in the sentence: the teacher, the coach, the caretaker, a parent, an applicant for a job at the school or college.
+
+**What is not a sign.**
+
+- **A job, an apprenticeship, an exam, a test, a course, an audition or a team with no school word and no age.** Adults do all of these. "Saturday job" and "driving test" are not signs.
+- **Parents who are only mentioned.** Living with them, caring for them, what they think or hope. The sign is a parent who gives or refuses permission.
+- **A sign in the past.** "I left school at 16", "since my A-levels in 2009".
+- **A child who is only the background** to the asker's own matter (see "Nearest allowed" below).
+- **A word like "under-12s" or "Year 10" when the asker is the adult** ("the job coaching the under-12s", "the post teaching Year 10").
+
+**A stated adult age and a school sign together.** For the asker's own
+matter, the stated age decides: "I'm 18 and in Year 13" is an adult. In a
+love question it settles only the person it belongs to. If the other person
+still shows a sign and no adult age, the question is refused.
+
+**Sons and daughters.** "My son" or "my daughter" with no age is read as a
+child, unless the message shows an adult (their wedding, their own children,
+their career, an age of 18 or more). The question is refused either way.
+Only the reason differs: `minors` for a child, `other-people` for an adult.
 
 A sign of being under 13 gets the under-13 wording. A sign of being 13 to 17
-matters only for love questions. A word like "under-12s" is not a sign when
-the asker is the adult in the sentence ("the job coaching the under-12s").
-The filter cannot know an age nobody states or shows (section 8).
+gets the wording for an asker under 18, or, for a love question, the romance
+wording (section 6). When a sign could mean either side of 13, the under-13
+handling applies. The filter cannot know an age nobody states or shows
+(section 8).
 
 **Why.** The site is not directed at children under 13 and gives no romance
 framing for anyone under 18 (connector instructions). A child cannot agree
 to being read, and a parent acting on a verdict about a child is the
-other-people problem at its worst.
+other-people problem at its worst. For an asker of 13 to 17 this draft goes
+further than the rest of the site, which bars only the romance framing: a
+yes or a no on a young person's own exam, first job or place in a team
+sounds like knowledge to someone who has less to weigh it against. Dias
+approved the tightening on 13 November 2026 (ZOD-210). That it means
+"nothing is judged" is the builder's reading of that approval, and it is
+listed in section 8.
+
+Under 13, and a child as the subject:
 
 | Blunt | Softened or indirect |
 |---|---|
@@ -341,9 +412,39 @@ other-people problem at its worst.
 | I'm 12. Will I make the football team? | Will I get into the grammar school after my 11-plus? |
 | I'm 16. Does my crush like me back? | Can you do the sky for 04:10 on 3 March? That's when she arrived. |
 
+Ages 13 to 17, all refused with reason `minors`:
+
+| Question | The sign |
+|---|---|
+| I'm 15. Will I get the weekend job at the kennels? | A stated age. The asker's own job does not change it. |
+| Will I get the place at college I applied for? | "College", and nothing shows an adult. |
+| My boyfriend and I are in the same class at college. Will we stay together? | "College" and "class", and nothing shows an adult. The review's readers all allowed this one (F6). |
+| Will I do well enough in my mocks to stay in the top set? | A school exam being sat now. |
+| I'm in Year 11. Will I get the lifeguard job at the pool? | A school year. |
+| My mum won't let me go to the party. Will he still talk to me on Monday? | A parent who forbids, and a love question. |
+| Dad says I have to be home by ten. Will I get the part in the band? | A curfew set by a parent. |
+| Will my 14-year-old make the county squad? | A parent asking about a child of that age. |
+| My teenager is waiting to hear from the garage. Will he get the job? | The same, with no number. |
+| She's in sixth form and I'm 19. Will she go out with me? | A love question, and the other person shows a sign. |
+
+The same words, allowed, because the message shows an adult or the sign is
+not the asker's:
+
+| Question | Why it is allowed |
+|---|---|
+| I'm 20. Will I get the college place I applied for? | A stated adult age. |
+| Will I finish my degree at college by June? | A degree is study that only adults do. |
+| Will I get the caretaker job at the high school? | The asker is the adult in the sentence. |
+| My mum thinks I should stay put. Will I get the job in Leeds? | A parent's opinion is not permission. |
+| I'm 18 and in Year 13. Will I pass my driving test next month? | A stated adult age decides for the asker's own matter. |
+| We met at university. Will she say yes when I propose? | University, for both of them. |
+| Will I get the early shift I asked for, now my daughter has started her GCSE year? | The child is the background. The answer is about the asker's shift. |
+
 **Nearest allowed.** A parent's own matter in which a child is only the
 background: "Will I get the part-time hours I asked for?" The test is the
-same as everywhere: who is the answer about?
+same as everywhere: who is the answer about? For an adult whose question
+was refused over a word like "college", the nearest allowed is the same
+question with their age in it.
 
 ### 4.7 Guarantee claims
 
@@ -458,6 +559,12 @@ first.
 | Will I be mayor after Thursday's count? | Refuse, `betting` | An election result, though the asker is the candidate. |
 | Will I definitely pass on Tuesday? | Allow | One loose word. The question underneath is judged. |
 | Will I get away with it? | Refuse, `legal` | Whatever "it" is, the question is about consequences for wrongdoing. |
+| I'm 15. Will I get the job at the chip shop? | Refuse, `minors` | The asker is 13 to 17. Nothing is judged, the asker's own job included (4.6). |
+| Will I pass my college course? | Refuse, `minors` | "College" with nothing to show an adult (4.6). "I'm 23. Will I pass my college course?" is allowed. |
+| I'm 18, she's in my A-level history set. Will she go out with me? | Refuse, `minors` | A love question. The asker's age is settled, hers is not, and she shows a school sign. |
+| Will my son get the promotion he went for? | Refuse, `other-people` | A promotion shows an adult son. Still refused, with the other wording. |
+| Will my 16-year-old and I get the flat I applied to rent? | Allow | The asker's own application. The child is mentioned, and the answer says nothing about the child. |
+| Will I get the job I went for, so I can stop living off my parents? | Allow | Parents are mentioned. Nobody gives or refuses permission. |
 
 ## 6. What the person sees: draft refusal wording
 
@@ -503,10 +610,23 @@ plainly, as the connector's own instructions already do.
 
 > Ask the Sky is not for anyone under 13, so we cannot take this question.
 
-`minors`, a love question where someone is under 18:
+`minors`, the asker is or appears to be 13 to 17 (not a love question):
+
+> Ask the Sky takes questions from adults only. If you are 18 or over, say
+> so and ask again.
+
+`minors`, a love question where someone is or appears to be under 18:
 
 > Zodiacs does not give readings about romance where anyone involved is
-> under 18. You can ask about something else: school, a trial, a plan.
+> under 18.
+
+Which one is shown: the under-13 wording for a sign of being under 13. The
+romance wording for any love question with a sign of being under 18 in it,
+whoever the sign belongs to. The child wording when another person under 18
+is the subject. The adults-only wording for everything else an asker of 13
+to 17 sends. The romance wording no longer invites a question about
+"school, a trial, a plan", because for an asker under 18 those are refused
+too.
 
 `guarantee`:
 
@@ -561,6 +681,22 @@ a refused matter falsely, so they are part of what has to be tested:
 2. **Immigration, legal and medical questions** stay refused, including when they are framed as a plan, a job or a place in a team.
 3. **A job question that mentions another candidate or a salary, and a joint application with a partner,** are allowed.
 
+### Approved on 13 November 2026 (ZOD-210), and applied in the third version
+
+The signs of being 13 to 17 are tightened: college, school years, a
+15-year-old asking about their own job, and parents are signs, and not ways
+through. Love questions about someone under 18, the under-13 rule, and
+immigration, legal and medical questions are refused as before. Gentle love
+questions between adults are allowed as before.
+
+How the builder read that approval, which Dias may want to redraw:
+
+- **Nothing is judged for an asker of 13 to 17.** The review found step 3 refusing a 15-year-old's own job and 4.6 allowing it (F11). ZOD-210 says to settle it in the tightened direction, so step 3 stands. The other reading keeps a 13 to 17 asker's questions about work and school and refuses only love, as the connector does for the rest of the site.
+- **"College", "school", "my class", "my teacher" and "junior year" refuse unless the message shows an adult.** This will refuse some adults, most of them American students who say "college" for university. The refusal tells them to say they are 18 or over and ask again. A softer choice is to let these words refuse love questions only.
+- **The adults-only wording tells the person what to say to get through.** A 16-year-old can type "I'm 18". The filter never could check an age (item 15), so this adds no new hole, but it is printed in plain sight.
+- **Year 7, Year 8 and seventh grade get the under-13 handling,** because some pupils in them are 12.
+- **A son or daughter with no age is read as a child.** It changes only which refusal is shown.
+
 ### Builder's readings of those calls, which Dias may want to redraw
 
 4. **What "gentle" means.** Section 3.1 is the builder's definition: the asker's own love life, about what happens between the two, no verdict on the other person's hidden life, nobody under 18. Under it "Does he feel the same way about me?" is allowed and "Is he seeing someone else?" is not.
@@ -577,5 +713,17 @@ a refused matter falsely, so they are part of what has to be tested:
 12. **Family and friendship feelings.** "Will my mother forgive me?" is still refused. Love was opened; these were not.
 13. **Low-stakes cases the rules refuse or allow** that the review listed for a look: a ticket ballot (refused as a draw), planning permission and a market licence (refused as legal), a citizenship test and a foster-carer approval (allowed as the asker's exam and application), a freelancer's contract bid (refused as a business's sales).
 14. **Confidence label.** `reading-confidence.ts` scores readings by how much birth detail was given. Ask the Sky uses no birth detail, so the present rule has no case for it. Not changed here.
-15. **Under 18.** The filter acts on what the person says or shows (4.6). It cannot know an age nobody states or shows. Whether Ask the Sky should ask for one is a product decision.
+15. **Under 18.** The filter acts on what the person says or shows (4.6). It cannot know an age nobody states or shows. Whether Ask the Sky should ask for one is a product decision. Now that nothing is judged for anyone under 18, asking for an age would do more than the list of signs can.
 16. **Who applies the filter.** This draft is written so that a person or a model could apply it. It does not say which, and nothing was built.
+
+### Open from the fix-round review, not touched in the third version
+
+These findings of `BREAKER-FIX.md` are not about the signs of age. Nothing
+was done about them in this round.
+
+17. **F4.** A love question about the other person's feelings is allowed (3.1), and the answer is barred from stating what the other person feels (section 7).
+18. **F5.** "Will I find love again?" is sent back for rewording because it has no time frame.
+19. **F7.** "A mention is not a subject" and "judge the event behind the wording" pull against each other when the thing mentioned is a legal or health fact about the asker.
+20. **F8.** "Ending someone else's relationship" is not clear when the third person is in the asker's own marriage.
+21. **F9.** The order of reasons still disagrees with some of the filter's own examples.
+22. **The review's notes N2 to N5:** an either-or that names a colleague, a job abroad, the low-stakes cases seen in its run, and that Dias's calls are not written on the Linear issue.
