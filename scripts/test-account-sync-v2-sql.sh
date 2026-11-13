@@ -120,5 +120,7 @@ run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/tests/account_sync_v2_retention.sql"
 run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/tests/account_sync_v2_retention_concurrency.sql"
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/tests/account_sync_v2_export.sql"
 
 echo "PostgreSQL 17 account sync v2 SQL tests passed."
