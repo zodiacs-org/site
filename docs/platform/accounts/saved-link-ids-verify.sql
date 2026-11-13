@@ -10,8 +10,11 @@
 -- Before the migration, as a preflight:
 --   digest_href_too_long and digest_detail_too_long should be 0. A row counted
 --   there would pass a size limit once its digest became a 36 character id
---   (href 2,048 characters, detail 16,384 bytes), so the migration leaves that
---   part of the row as it was and the check stays NOT VALID. Nothing is cut.
+--   (href 2,048 characters, detail 16,384 bytes). Nothing is cut, and each
+--   field is held to its own limit: a row counted in digest_href_too_long keeps
+--   both its href and detail's href as they were; a row counted only in
+--   digest_detail_too_long gets the new href while detail's href keeps the old
+--   value. Either way the check stays NOT VALID.
 --   other_saved_links counts saved= links that are neither an old digest nor
 --   their row's own id (for example a UUID written before the migration by the
 --   new server through the old save function). The migration leaves them as

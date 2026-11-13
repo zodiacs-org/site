@@ -188,4 +188,4 @@ begin
     raise exception 'Saved link assertion: the check validates once no digest is stored';
   end if;
 end $$;
-select 'Saved link SQL passed: old digest links and their record copies carry their row id, other values and oversize rows are left whole, the deleting gate is back, and saves take the owner lock first' as result;
+select 'Saved link SQL passed: old digest links and their record copies carry their row id, other values are left alone, a field a UUID would push past its limit keeps its old value, the deleting gate is back, and saves take the owner lock first' as result;

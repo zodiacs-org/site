@@ -51,9 +51,14 @@ out from the birth date, so a digest of it could be used to test guessed dates.
 Until 13 November 2026 the value was the first 16 hex characters of a SHA-256 of
 the result. That migration rewrote those old values, and only those (exactly 16
 lowercase hex digits), to the row id in the stored link and in the stored
-record's copy of it, rows of accounts being deleted included; a row that a UUID
-would push past the 2,048 character link limit or the 16,384 byte record limit
-is left whole and counted by `docs/platform/accounts/saved-link-ids-verify.sql`.
+record's copy of it, rows of accounts being deleted included. The two fields are
+held to their limits separately, and nothing is cut short. When the rewritten
+link would pass the 2,048 character link limit, neither field changes: the link
+and the record's copy both keep the old value. When the link fits but the
+record's rewritten copy would pass the 16,384 byte record limit, the link is
+rewritten and the record's copy keeps the old value. Both cases are counted by
+`docs/platform/accounts/saved-link-ids-verify.sql` (`digest_href_too_long`,
+`digest_detail_too_long`).
 A check (`saved_pages_no_digest_link`) refuses any new 16 hex `saved=` value,
 and an old 16 hex value opens only the plain profile page. The save RPC takes
 the account owner lock before the account's saved pages lock, the order every

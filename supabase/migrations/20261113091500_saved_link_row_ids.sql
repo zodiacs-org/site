@@ -25,10 +25,13 @@
 --      (a UUID, or anything else) is left exactly as it is. Nothing else changes: the
 --      id, title, summary, source, saved_at and the rest of detail stay as they are.
 --      An old digest then matches no row, so its link opens the plain profile page.
---      Size limits: a UUID is 20 characters longer than a digest. A row whose
---      rewritten href would pass 2,048 characters, or whose rewritten detail would
---      pass 16,384 bytes, is left as it was (nothing is cut short) and shows in the
---      verify file's `digest_href_too_long` and `digest_detail_too_long` counts.
+--      Size limits: a UUID is 20 characters longer than a digest, and nothing is
+--      cut short. Each field is held to its own limit. A row whose rewritten href
+--      would pass 2,048 characters keeps both its href and detail's href as they
+--      were (detail's copy follows href only once href is rewritten). A row whose
+--      href fits but whose rewritten detail would pass 16,384 bytes gets the new
+--      href while detail's href keeps the old value. They show in the verify
+--      file's `digest_href_too_long` and `digest_detail_too_long` counts.
 --      The deleting gate: account_v2_terminal_gate refuses any write to the rows of
 --      an account being deleted. The rewrite must not skip those rows, so for this
 --      one statement block the gate is switched off on saved_pages only, under an
