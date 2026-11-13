@@ -3,7 +3,7 @@
   "measured": "2026-11-13",
   "engine": "@zodiacs/engine 1.1.0-rc.3 (zodiacs-org/engine bc0b5a769ad2), astronomy-engine 2.1.19",
   "reference": "JPL DE421 read with jplephem 2.24 and reduced with pyerfa 2.0.1.5 to the apparent geocentric ecliptic longitude of date (light time, solar deflection, annual aberration, IAU 2006/2000A); each instant evaluated at the engine's own TT, so the differences are ephemeris and reduction only. Reference events found by a daily scan and bisection, independently of the engine.",
-  "referenceCalibration": "against the 140 committed Horizons DE441 vectors inside 1900 to 2050: Sun to Saturn within 0.008 arcseconds",
+  "referenceCalibration": "against the 140 committed Horizons DE441 vectors inside 1900 to 2050: Sun to Saturn within 0.008 arcseconds in longitude and 0.018 in latitude; scripts and outputs in zodiacs-org/engine docs/evidence/broad-sample-2026-11-13/",
   "events": {
     "sunIngresses": {
       "span": "1900 to 2050",

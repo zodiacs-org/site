@@ -4,6 +4,7 @@ import './lib/deltat-install.mjs';
 import { e_tilt, MakeTime, SiderealTime } from 'astronomy-engine';
 import { describe, expect, it } from 'vitest';
 import { eventsCatalog } from '../src/lib/events/catalog.ts';
+import { eventClock } from '../src/lib/events/format.ts';
 import { bodyLongitude, computeChart } from '../src/lib/engine/full.ts';
 import { solarReturnInstant } from '../src/lib/engine/solar-return.ts';
 import { offsetAt, prepareLocalTime, resolveLocalToUtc } from '../src/lib/time/localToUtc.ts';
@@ -221,11 +222,42 @@ describe('how event times are checked, on the methodology page', () => {
     expect(page()).toContain('exact aspects from November 2025 to May 2031');
   });
 
-  it('bounds the Sun\'s sign changes by the table\'s measured maximum', () => {
+  // The Sun and Moon keep the engine's own event times. Their figures are held
+  // to the committed DE421 sample (docs/accuracy-audit-2026-11/, correction of
+  // 2026-11-13) and, for the Sun, to the NASA table's Horizons maximum too.
+  const sample = () => JSON.parse(read('docs/accuracy-audit-2026-11/engine-de421-sample-2026-11-13.json')).events;
+
+  it('bounds the Sun\'s sign changes by the measured maxima, each with its range', () => {
     const table = JSON.parse(read('src/data/nasa-event-instants.json'));
-    expect(table.withinOneMinute.sunIngresses.maxSeconds).toBeLessThanOrEqual(44);
-    expect(page()).toContain('The Sun\'s sign changes keep the engine\'s times too: within 44 seconds of NASA\'s from 2026 to 2030, and up to 50.3 seconds from 1900 to 2050.');
-    expect(page()).toContain('which fall within 6 seconds of NASA\'s from 2026 to 2030; the pages print them to the minute.');
+    const events = sample();
+    const stated = /The Sun's sign changes keep the engine's times too: within (\d+) seconds of NASA's from 2026 to 2030, and up to ([\d.]+) seconds from 1900 to 2050\./u.exec(page());
+    expect(stated).toBeTruthy();
+    const recent = Number(stated[1]);
+    expect(recent).toBeGreaterThanOrEqual(table.withinOneMinute.sunIngresses.maxSeconds);
+    expect(recent).toBeGreaterThanOrEqual(events.sunIngressesByEra['2026-2030'].maxSeconds);
+    expect(events.sunIngresses.span).toBe('1900 to 2050');
+    expect(stated[2]).toBe(events.sunIngresses.maxSeconds.toFixed(1));
+  });
+
+  it('bounds the Moon\'s event times by the 2026 to 2030 sample and says the pages print the minute', () => {
+    const events = sample();
+    const stated = /New and full Moons and the Moon's sign changes keep the engine's times, which fall within (\d+) seconds of NASA's from 2026 to 2030; the pages print them to the minute\./u.exec(page());
+    expect(stated).toBeTruthy();
+    expect(events.newAndFullMoons2026to2030.span).toBe('2026 to 2030');
+    expect(events.moonIngresses2020to2031.span).toBe('2020 to 2031');
+    for (const measured of [events.newAndFullMoons2026to2030, events.moonIngresses2020to2031]) {
+      expect(Number(stated[1])).toBeGreaterThanOrEqual(measured.maxSeconds);
+    }
+    // Every figure stays inside the minute the pages print.
+    for (const measured of [events.newAndFullMoons, events.moonIngresses, events.quarterMoons, events.sunIngresses]) {
+      expect(measured.maxSeconds).toBeLessThan(MINUTE);
+    }
+    // The fact band and the "Behind this event" receipts print hours and minutes only.
+    expect(eventClock('2026-07-29T14:35:42.223Z')).toBe('14:35 UTC');
+    for (const path of ['src/components/events/EventFactsBand.astro', 'src/components/events/EventEvidence.astro']) {
+      expect(read(path), path).toContain('eventClock(');
+    }
+    expect(read('src/components/events/EventEvidence.astro')).not.toMatch(/value: facts\.(at|start|end|preShadowStart|postShadowEnd)\b/u);
   });
 
   it('states the built-page counts of the November 2026 audit', () => {
