@@ -15,10 +15,9 @@ const skyTools: [string, string][] = [
   ['get_horoscope_period', 'Shows a Sun-sign horoscope for a month, a year, or a love or career week.'],
   ['get_chinese_zodiac', 'Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year.'],
   ['explain_astrology', 'Explains a basic astrology topic in plain words, with links to the Zodiacs pages it comes from.'],
-  ['find_birthplace', 'Finds a town or city by name and returns its coordinates and time zone for the chart tools.'],
+  ['open_chart_studio', 'Opens Chart Studio, a birth chart you fill in yourself inside a panel; the assistant sees only what you choose to share.'],
 ];
 const birthTools: [string, string][] = [
-  ['open_chart_studio', 'Opens Chart Studio, a birth chart you fill in yourself inside a panel; the assistant sees only what you choose to share.'],
   ['get_occasion_sky', 'Describes the sky on a day that matters, such as a wedding, an anniversary or a move, and rates the date from 0 to 100.'],
   ['get_life_milestones', 'Lists the Jupiter returns, Saturn returns and Uranus opposition that follow from a birth date, with dates and ages.'],
   ['get_compatibility', 'Compares two people’s birth charts: their signs, the closest contacts between their planets and their elements.'],
@@ -26,6 +25,7 @@ const birthTools: [string, string][] = [
   ['get_birthday', 'Describes the sky on a birthday: the Sun’s sign, its decan and whether the date falls on a cusp.'],
   ['get_natal_chart', 'Reads one birth chart in the conversation: Sun, Moon and rising signs, planets, houses, aspects and balance.'],
   ['get_personal_transits', 'Lists dated transits to your own birth chart, with what astrology traditionally reads into each.'],
+  ['find_birthplace', 'Finds a town or city by name and returns its coordinates and time zone for the chart tools.'],
 ];
 const toolCount = skyTools.length + birthTools.length;
 ---
@@ -41,11 +41,11 @@ const toolCount = skyTools.length + birthTools.length;
       <h2>The hosted server</h2>
       <p>The hosted server lists {toolCount} tools. It calculates the sky at a moment you name, reads birth charts, compares two charts, and serves the dated Sun-sign horoscopes the site publishes. Answers give times on the person's own clock where a time zone is known. Calculated facts are kept apart from what astrology reads into them, and each reading carries a reading-confidence label that says how specific the details were, never the odds that something happens. Answers include UTC, a display timezone, calculation receipts and numerical limits. Event-search completeness is tested, not proven.</p>
       <p>The horoscopes come from the site's daily edition. It keeps the editions for the day before, the day of and the day after, so a reader in any time zone gets the reading written for their own date. Horoscopes are interpretation, for reflection.</p>
-      <h3>Tools that need no birth details</h3>
+      <h3>Tools that take no birth details from the conversation</h3>
       <ul class="ai-tools">
         {skyTools.map(([name, line]) => <li><code>{name}</code> {line}</li>)}
       </ul>
-      <h3>Tools that take a birth date or another date you give</h3>
+      <h3>Tools that take a birth date, a place or another date you give</h3>
       <ul class="ai-tools">
         {birthTools.map(([name, line]) => <li><code>{name}</code> {line}</li>)}
       </ul>
@@ -71,7 +71,7 @@ const toolCount = skyTools.length + birthTools.length;
         <li><code>get_upcoming_events</code> does not list eclipses or every aspect. Eclipses appear in the sky calendar feed and in the monthly and yearly horoscopes.</li>
         <li>It never guesses a birth time or a sign, and it tells the assistant to ask before using someone else's birth details.</li>
       </ul>
-      <p>The server keeps one count per day of how often each tool is used. The assistant you use can receive what you send and what comes back, under its own privacy policy. The <a href="/privacy/#ai-integrations">privacy policy</a> has the detail.</p>
+      <p>The server keeps a daily count of how often each tool is used, split only by deployment and by the kind of assistant that called it: ChatGPT, Claude or another. The assistant you use can receive what you send and what comes back, under its own privacy policy. The <a href="/privacy/#ai-integrations">privacy policy</a> has the detail.</p>
       <h2 id="troubleshooting">Troubleshooting</h2>
       <ul>
         <li><strong>A tool refuses a recent birth date.</strong> Any birth date less than 13 years ago, or in the future, gets a fixed refusal and no chart, card or reading. For someone 13 or older, give their own birth date.</li>
