@@ -419,6 +419,11 @@ const ENGINE_110_RC2_ROUTES = [
   '/developers/playground/', '/developers/support/', ...DEVELOPER_GUIDES_ROUTES,
 ];
 
+const CONNECTOR_PAGE_LASTMOD = '2026-11-11';
+const CONNECTOR_PAGE_ROUTES = [
+  '/developers/ai/', '/developers/docs/', '/developers/docs/astrology-mcp-server/', '/developers/support/',
+] as const;
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   ...[
@@ -696,6 +701,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
   ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
+  // The connector page's 19 live tools, limits, troubleshooting and support contact, the support page's
+  // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
+  // built with, last so this date wins.
+  ...CONNECTOR_PAGE_ROUTES.map((loc) => [loc, CONNECTOR_PAGE_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
