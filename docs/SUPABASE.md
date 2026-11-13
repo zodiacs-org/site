@@ -282,8 +282,53 @@ Editor, and update this table in the same change.
   If production ever moves to a different Supabase project, update and review
   the wrapper's explicit production-project guard before the next drill.
 - **Key escrow.** When `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS` is provisioned,
-  record where the keyring is escrowed (outside Vercel env) — losing the
-  wrapping keys silently bricks every v2 envelope, and no runbook covers
-  rotation-under-loss.
+  record where the keyring is escrowed (outside Vercel env), because losing the
+  wrapping keys silently bricks every v2 envelope. Rotation, the rewrap of old
+  envelopes (`scripts/account-sync-v2-rewrap.ts`), the seven day hold on old
+  fingerprint versions and escrow are in `docs/ACCOUNT-SYNC-V2-KEY-ROTATION.md`;
+  loss of a key that was never escrowed still has no recovery.
+- **Account retention.** Migration
+  `20261113090000_account_sync_v2_retention` adds the retention pass
+  `public.account_v2_run_retention(256)`: finish deletions past their seven
+  days with no live receipt (Auth identity included), then remove completed
+  expired receipts. Production has no pg_cron (checked 13 November 2026), so
+  the pass runs from the hourly GitHub workflow
+  `account-deletion-receipt-cleanup.yml` through
+  `POST /api/account/cleanup-receipts`; that needs
+  `ACCOUNT_SYNC_V2_CLEANUP_SECRET` in Vercel and in the
+  `account-cleanup-production` environment. Where pg_cron is installed, the
+  migration also schedules the job `account-v2-retention` (UTC minute 23,
+  hourly); check it with
+  `select jobname, schedule, active from cron.job where jobname = 'account-v2-retention';`
+  and its runs in `cron.job_run_details`. The same migration also replaces
+  `public.account_v2_prepare_deletion` (its recovery rotation keeps an
+  expired, incomplete receipt of a deleting account and its provider record
+  for the reaper), adds `public.account_v2_export_later_tables` (the export's
+  saved pages and Living Chart moments, reading only the tables and columns
+  that exist), and, where those features are installed,
+  `public.zodiacs_accounts_v1` (the assistant save takes the account owner
+  lock before it replaces a row) and `public.zodiacs_sky_watch_v1` (OAuth
+  access, subscribe and unsubscribe take the account owner lock and refuse an
+  account in deletion or without an Auth identity, and OAuth access checks its
+  authorization again under that lock; maintenance deletes expired principals
+  before it touches subscriptions). Deletion erases the account's Living
+  Chart rows and Sky Watch OAuth principals wherever those tables exist.
+- **Apply the retention migration again after a launch.** Production has
+  no Living Chart, Sky Watch or assistant accounts layer
+  (`zodiacs_accounts_private`, `zodiacs_accounts_v1`, the `saved_pages`
+  columns `source`, `summary`, `detail`). The retention migration applies
+  there as it is and skips, with a NOTICE each, the parts that attach to
+  them: Living Chart's deleting gate triggers and owner-lock RPC wrappers,
+  Sky Watch's principal gate, index and watch RPC changes, and the assistant
+  save RPC's owner lock. Deletion, the reaper and the export check for those
+  tables each time they run, so they cover them from the day they exist. But
+  each feature's own migration creates or replaces the RPCs the retention
+  migration changes, without the deleting gate. So after applying the
+  Living Chart, Sky Watch or assistant accounts migrations to production,
+  apply `20261113090000_account_sync_v2_retention.sql` again in the same
+  change (it is idempotent), then run query A7 of
+  `docs/sql/verify-20261113090000-account-sync-v2-retention.sql` (read only,
+  counts and booleans): every feature whose `_installed` is true must show
+  `_gated` true, and `reapply_needed` must be false.
 - **Unused-index cleanup** (live performance advisor, 7 INFO entries) can
   wait for real traffic before pruning.
