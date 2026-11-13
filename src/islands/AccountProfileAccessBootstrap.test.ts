@@ -180,3 +180,43 @@ describe('bootstrap auto-bind discovers guest calculation records first', () => 
     expect(JSON.parse(session.getItem('zodiacs.account-sync-v2.profile-access.v1') ?? 'null')).toEqual({ version: 1, mode: 'unowned' });
   });
 });
+
+describe('bootstrap access announcements', () => {
+  const B = '22222222-2222-4222-8222-222222222222';
+  let events = 0;
+  const count = () => { events += 1; };
+  beforeEach(() => {
+    events = 0;
+    window.addEventListener('zodiacs:profile-access', count);
+  });
+
+  it('announces only the grant when a locked tab starts, never the opening revoke', async () => {
+    await mount();
+    expect(lease.active).toBe(true);
+    expect(events).toBe(1);
+  });
+
+  it('announces nothing when a locked tab is reevaluated and stays locked', async () => {
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: B }));
+    await mount();
+    expect(lease.active).toBe(false);
+    window.dispatchEvent(new Event('zodiacs:profile-access-reevaluate'));
+    await settle();
+    expect(events).toBe(0);
+  });
+
+  it('announces a revoke of access that was held, and an account change on a locked tab', async () => {
+    await mount();
+    events = 0;
+    window.dispatchEvent(new Event('zodiacs:profile-lease-revoke'));
+    expect(lease.active).toBe(false);
+    expect(events).toBe(1);
+    // Locked now; a different account signing in is still an account change.
+    local.setItem(ACCOUNT_V2_LOCAL_OWNER_KEY, JSON.stringify({ version: 1, accountId: B }));
+    events = 0;
+    for (const listener of sync.listeners) listener({ user: { id: A } });
+    expect(events).toBe(1);
+    await settle();
+    expect(lease.active).toBe(false);
+  });
+});

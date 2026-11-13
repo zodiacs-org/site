@@ -158,7 +158,7 @@ describe('daily email content', () => {
     const expected = transitLine(contact.transiting, contact.type, contact.natal);
     const message = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'chart@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'chart@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily,
@@ -184,7 +184,7 @@ describe('daily email content', () => {
     })), ascendant);
     const message = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'grounded@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'grounded@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily, publication: groundedPublication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
@@ -204,7 +204,7 @@ describe('daily email content', () => {
     const chart = chartWithBodies([{ body: 'Sun', lon: 120, retrograde: false }], 120);
     const message = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'ahead@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'ahead@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily, publication, program, nearbyEvent: futureEvent,
@@ -222,7 +222,7 @@ describe('daily email content', () => {
 
     const ambiguous = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'ambiguous@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'ambiguous@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily,
@@ -238,7 +238,7 @@ describe('daily email content', () => {
     const untimedChart = chartWithBodies([{ body: 'Sun', lon: 120, retrograde: false }]);
     const untimed = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'untimed@example.com', userId: 'user', chartId: untimedChart.id,
+        tier: 'chart', email: 'untimed@example.com', userId: 'user', chartId: untimedChart.id, revision: 1,
         chart: untimedChart, timezone: 'UTC',
       },
       daily, publication, program, nearbyEvent: futureEvent,
@@ -252,7 +252,7 @@ describe('daily email content', () => {
     staleChart.birth.time = null;
     const stale = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'stale@example.com', userId: 'user', chartId: staleChart.id,
+        tier: 'chart', email: 'stale@example.com', userId: 'user', chartId: staleChart.id, revision: 1,
         chart: staleChart, timezone: 'UTC',
       },
       daily, publication, program, nearbyEvent: futureEvent,
@@ -280,7 +280,7 @@ describe('daily email content', () => {
     const recipients = [
       sun,
       {
-        tier: 'chart' as const, email: 'chart@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart' as const, email: 'chart@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
     ];
@@ -299,7 +299,7 @@ describe('daily email content', () => {
     expect(selectTodayContacts(natalPointsForChart(chart), daily.bodies, TRANSIT_ORB, 3)).toEqual([]);
     const message = renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'quiet@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'quiet@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily,
@@ -320,7 +320,7 @@ describe('daily email content', () => {
     reference.birth.time = null;
     const before = JSON.stringify(reference);
     const messageFor = (chart: SavedChart) => renderDailyEmail({
-      recipient: { tier: 'chart', email: 'reference@example.com', userId: 'user', chartId: chart.id, chart, timezone: 'UTC' },
+      recipient: { tier: 'chart', email: 'reference@example.com', userId: 'user', chartId: chart.id, revision: 1, chart, timezone: 'UTC' },
       daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
     });
     const known = messageFor(timed), unknown = messageFor(reference);
@@ -344,7 +344,7 @@ describe('daily email content', () => {
     reference.birth.time = null;
     const before = JSON.stringify(reference);
     const messageFor = (chart: SavedChart) => renderDailyEmail({
-      recipient: { tier: 'chart', email: 'reference@example.com', userId: 'user', chartId: chart.id, chart, timezone: 'UTC' },
+      recipient: { tier: 'chart', email: 'reference@example.com', userId: 'user', chartId: chart.id, revision: 1, chart, timezone: 'UTC' },
       daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
     });
     const known = messageFor(timed), unknown = messageFor(reference);
@@ -391,7 +391,7 @@ describe('brand and sign pictures', () => {
     if (!timed) chart.birth = { ...chart.birth, time: null, timeKnown: false };
     return renderDailyEmail({
       recipient: {
-        tier: 'chart', email: 'pictures@example.com', userId: 'user', chartId: chart.id,
+        tier: 'chart', email: 'pictures@example.com', userId: 'user', chartId: chart.id, revision: 1,
         chart, timezone: 'UTC',
       },
       daily, publication, program, nearbyEvent: eventOffset(2),
