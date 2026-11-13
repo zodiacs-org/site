@@ -1,9 +1,11 @@
 name: Account Deletion Receipt Cleanup
 
-# Backup for the hourly `account-v2-retention` pg_cron job inside Supabase
-# (migration 20261113090000). GitHub runs this schedule only a few times a day,
-# so it is not the hourly guarantee; it fails loudly when the secret is missing
-# or a deletion past its seven days is left unfinished.
+# The account retention pass (migration 20261113090000). Production has no
+# pg_cron (13 Nov 2026), so this workflow is what runs the pass there. Where
+# pg_cron is installed, the migration also schedules the hourly
+# `account-v2-retention` job inside the database and this run is the backup.
+# GitHub may start a scheduled run late or skip one. It fails loudly when the
+# secret is missing or a deletion past its seven days is left unfinished.
 on:
   schedule:
     - cron: "37 * * * *"
