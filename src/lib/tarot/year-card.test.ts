@@ -16,6 +16,9 @@ describe('the tarot year card', () => {
     expect(MAJOR_ARCANA.map((card) => card.number)).toEqual([...Array(22).keys()]);
     const banned = /\b(?:buy|sell|stocks?|crypto\w*|bitcoin|diagnos\w*|die|dies|dying)\b|\byou will (?:win|lose)\b|[–—]/iu;
     for (const card of MAJOR_ARCANA) expect(card.year, card.name).not.toMatch(banned);
+    // No money, earnings or promotion forecasts (ZOD-30).
+    const money = /\b(?:money|earn|earns|earned|earner|earners|earning|earnings|promotions?|income|salary|salaries|savings?|wealth\w*|profit\w*|budgets?|financ\w*|riches|prosper\w*)\b/iu;
+    for (const card of MAJOR_ARCANA) expect(card.year, card.name).not.toMatch(money);
     expect(MAJOR_ARCANA[13].year).toContain('It is not read literally.');
   });
 });

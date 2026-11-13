@@ -7,8 +7,8 @@
  * gives the same card and a share link can name it.
  *
  * The readings are the site's own words in the 9 November 2026 register: the
- * tradition's work, money, wellbeing and relationship themes, no price or
- * trading calls, diagnoses, death predictions or legal outcomes. Death (XIII)
+ * tradition's work, wellbeing and relationship themes, no money, earnings or
+ * promotion forecasts (ZOD-30), no price or trading calls, diagnoses, death predictions or legal outcomes. Death (XIII)
  * reads as change, as tarot reads it. Pure.
  */
 export interface TarotCard {
@@ -23,7 +23,7 @@ export const MAJOR_ARCANA: readonly TarotCard[] = Object.freeze([
   { number: 0, numeral: '0', name: 'The Fool', keywords: ['beginnings', 'trust', 'a leap'], year: 'A year that starts something. Tradition reads the Fool as the step taken before the map is finished: say yes to the new road, and pack light.' },
   { number: 1, numeral: 'I', name: 'The Magician', keywords: ['skill', 'focus', 'making'], year: 'A year to use what you already have. The Magician has every tool on the table; tradition reads it as a strong year for craft, pitches and work that shows.' },
   { number: 2, numeral: 'II', name: 'The High Priestess', keywords: ['intuition', 'study', 'quiet'], year: 'A year that rewards listening before acting. Tradition reads the High Priestess as study, private knowledge and trusting what you notice.' },
-  { number: 3, numeral: 'III', name: 'The Empress', keywords: ['growth', 'comfort', 'abundance'], year: 'A year of growth and good living. Tradition reads the Empress as plenty: creative work flowers, home feels good, and money tends to follow care.' },
+  { number: 3, numeral: 'III', name: 'The Empress', keywords: ['growth', 'comfort', 'abundance'], year: 'A year of growth and good living. Tradition reads the Empress as plenty: creative work flowers, home feels good, and what you tend grows.' },
   { number: 4, numeral: 'IV', name: 'The Emperor', keywords: ['structure', 'authority', 'plans'], year: 'A year to build structure. Tradition reads the Emperor as leadership and order: set the plan, take charge of it, and put your name to it.' },
   { number: 5, numeral: 'V', name: 'The Hierophant', keywords: ['learning', 'tradition', 'mentors'], year: 'A year for learning from those who came before. Tradition reads the Hierophant as teachers, institutions and agreements made in good faith: a good window to sign on with something established.' },
   { number: 6, numeral: 'VI', name: 'The Lovers', keywords: ['choice', 'partnership', 'values'], year: 'A year of choices that say who you are. Tradition reads the Lovers as partnership and alignment: in love, in work and in what you will and will not do.' },
