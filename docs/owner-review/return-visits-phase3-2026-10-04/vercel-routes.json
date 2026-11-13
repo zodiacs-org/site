@@ -222,6 +222,22 @@
       "src": "^/api/v1(?:/(.*\\.[^/]+))$"
     },
     {
+      "source": "/api/v1/:file(openapi\\.json|llms\\.txt|signs\\.json|sky/upcoming\\.json|sky/today\\.md|sky/upcoming\\.md)",
+      "src": "^/api/v1(?:/(openapi\\.json|llms\\.txt|signs\\.json|sky/upcoming\\.json|sky/today\\.md|sky/upcoming\\.md))$"
+    },
+    {
+      "source": "/api/v1/planets/:planet(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto).json",
+      "src": "^/api/v1/planets(?:/(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto))\\.json$"
+    },
+    {
+      "source": "/api/v1/schema/:name(index|today|upcoming|retrogrades|stations|ingresses|moon-phases|eclipses|aspects|planet|signs).v1.json",
+      "src": "^/api/v1/schema(?:/(index|today|upcoming|retrogrades|stations|ingresses|moon-phases|eclipses|aspects|planet|signs))\\.v1\\.json$"
+    },
+    {
+      "source": "/api/v1/:family(retrogrades|stations|ingresses|moon-phases|eclipses|aspects)/:year(2026|2027|2028|2029|2030).json",
+      "src": "^/api/v1(?:/(retrogrades|stations|ingresses|moon-phases|eclipses|aspects))(?:/(2026|2027|2028|2029|2030))\\.json$"
+    },
+    {
       "source": "/api/v1/sky/today.json",
       "src": "^/api/v1/sky/today\\.json$"
     },

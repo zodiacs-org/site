@@ -84,6 +84,44 @@ describe('sky data API — coverage and contracts', () => {
     }
   });
 
+  it('gives every payload the summary, about, $schema and links the guides promise, and every API link resolves', () => {
+    // llms.txt, llms-full.txt and /developers/ all say every payload carries
+    // these; the yearly files once had no links at all.
+    const urls = (value) => (typeof value === 'string' ? [value] : Object.values(value).flatMap(urls));
+    for (const path of dataFiles) {
+      const data = payload(path);
+      expect(typeof data.summary, path).toBe('string');
+      expect(typeof data.about, path).toBe('object');
+      expect(typeof data.$schema, path).toBe('string');
+      expect(data.links && typeof data.links, path).toBe('object');
+      const targets = urls(data.links);
+      expect(targets.length, path).toBeGreaterThan(0);
+      for (const url of targets) {
+        if (!url.startsWith('https://zodiacs.org/api/v1/')) continue;
+        expect(build.files.has(url.slice('https://zodiacs.org/api/v1/'.length)), `${path} links ${url}, which is not written`).toBe(true);
+      }
+    }
+  });
+
+  it('links each yearly file to the index, its neighbouring years and the same year in the other families', () => {
+    const first = build.transitYears[0];
+    const last = build.transitYears.at(-1);
+    const middle = payload(`stations/${first + 1}.json`).links;
+    expect(middle.index).toBe('https://zodiacs.org/api/v1/index.json');
+    expect(middle.previousYear).toBe(`https://zodiacs.org/api/v1/stations/${first}.json`);
+    expect(middle.nextYear).toBe(`https://zodiacs.org/api/v1/stations/${first + 2}.json`);
+    expect(middle.sameYear.retrogrades).toBe(`https://zodiacs.org/api/v1/retrogrades/${first + 1}.json`);
+    expect(middle.sameYear.moonPhases).toBe(`https://zodiacs.org/api/v1/moon-phases/${first + 1}.json`);
+    expect(middle.sameYear.stations).toBeUndefined();
+    // No link past either end of coverage.
+    expect(payload(`stations/${first}.json`).links.previousYear).toBeUndefined();
+    expect(payload(`stations/${last}.json`).links.nextYear).toBeUndefined();
+    for (const family of YEAR_FAMILIES) {
+      const years = dataFiles.filter((path) => path.startsWith(`${family}/`));
+      expect(years.length, family).toBeGreaterThan(0);
+    }
+  });
+
   it('advertises exactly the files it writes, and the OpenAPI document covers them all', async () => {
     const index = payload('index.json');
     const advertised = [...index.endpoints.map((entry) => entry.path), ...index.documents.map((entry) => entry.path)]

@@ -8,8 +8,9 @@ import { API_VERSION, PLANET_SLUGS } from './meta';
 import {
   buildAspectYear, buildEclipseYear, buildIndex, buildIngressYear, buildMoonPhaseYear, buildPlanet,
   buildRetrogradeYear, buildSigns, buildStationYear, buildToday, buildUpcoming,
-  completeTransitYears, dataVintage, yearsWithin,
+  completeTransitYears, dataVintage, yearLinks, yearsWithin,
 } from './build';
+import type { YearFamily } from './build';
 import { SCHEMAS, SCHEMA_NAMES, buildOpenApi } from './schemas';
 import { renderAgentGuide, renderTodayMarkdown, renderUpcomingMarkdown } from './text';
 import type { SkyApiSources } from './types';
@@ -40,17 +41,28 @@ export function buildSkyApi(sources: SkyApiSources, { generatedAt }: { generated
   for (const slug of PLANET_SLUGS) {
     payloads.set(`planets/${slug}.json`, buildPlanet({ slug, daily, sky, months, generatedAt }));
   }
+  const yearCoverage: Record<YearFamily, number[]> = {
+    retrogrades: skyYears,
+    stations: transitYears,
+    ingresses: transitYears,
+    'moon-phases': skyYears,
+    eclipses: eclipseYears,
+    aspects: transitYears,
+  };
+  const setYear = (family: YearFamily, year: number, payload: Record<string, unknown>) => {
+    payloads.set(`${family}/${year}.json`, { ...payload, links: yearLinks(family, year, yearCoverage) });
+  };
   for (const year of skyYears) {
-    payloads.set(`retrogrades/${year}.json`, buildRetrogradeYear(sky, months, year, vintage));
-    payloads.set(`moon-phases/${year}.json`, buildMoonPhaseYear(sky, months, year, vintage));
+    setYear('retrogrades', year, buildRetrogradeYear(sky, months, year, vintage));
+    setYear('moon-phases', year, buildMoonPhaseYear(sky, months, year, vintage));
   }
   for (const year of transitYears) {
-    payloads.set(`stations/${year}.json`, buildStationYear(months, year, vintage));
-    payloads.set(`ingresses/${year}.json`, buildIngressYear(months, year, vintage));
-    payloads.set(`aspects/${year}.json`, buildAspectYear(months, year, vintage));
+    setYear('stations', year, buildStationYear(months, year, vintage));
+    setYear('ingresses', year, buildIngressYear(months, year, vintage));
+    setYear('aspects', year, buildAspectYear(months, year, vintage));
   }
   for (const year of eclipseYears) {
-    payloads.set(`eclipses/${year}.json`, buildEclipseYear(eclipses, year, vintage));
+    setYear('eclipses', year, buildEclipseYear(eclipses, year, vintage));
   }
   payloads.set('index.json', buildIndex({
     transitYears, skyYears, eclipseYears, dailyDate: daily.date, vintage, generatedAt, schemaNames: SCHEMA_NAMES,
