@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+# Generated engine API reference (TypeDoc): noindex and in no sitemap.
+Disallow: /developers/engine/reference/
+Disallow: /sdk/engine/
 
 User-agent: OAI-SearchBot
 Allow: /
