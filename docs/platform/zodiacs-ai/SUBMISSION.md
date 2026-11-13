@@ -1,5 +1,16 @@
 # Publisher review package
 
+Note added 11 November 2026: the packet below was current on 15 October.
+The current one is Zodiacs 0.6.6, submitted on 7 November and in review
+(`RESUBMISSION-0.6.0.md`). The hosted server reports 0.6.6 and offers 19
+read-only tools; `claude-directory/LISTING.md` states the Claude listing's
+current state at its top.
+
+Note added 13 November 2026: the hosted server now reports 0.6.7, with
+plainer descriptions for all 19 tools. 0.6.6 stays the
+version in OpenAI review; 0.6.7 goes to OpenAI only after that review ends,
+and only with Dias's yes (`RESUBMISSION-0.6.0.md`).
+
 ## Current release packet — 15 October 2026
 
 The consumer listing is **Zodiacs — Birth charts & horoscopes**.
