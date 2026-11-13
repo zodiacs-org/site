@@ -7,7 +7,7 @@ import { handleResultShareNodeRequest, type ResultShareRoute } from './result-pr
 /**
  * Every share family opens its own result, with its own preview image and story picture, for each `ref` word a
  * link the site gives out may carry (src/lib/analytics-config.mjs, ARRIVAL_REF_VALUES), and keeps refusing any
- * other word.
+ * other word. The share page never passes the word on to its buttons.
  */
 
 const TODAY = (JSON.parse(readFileSync(new URL('../data/horoscope-window.json', import.meta.url), 'utf8')) as { generatedFor: string }).generatedFor;
@@ -83,12 +83,13 @@ describe('the ref words a share link may carry', () => {
 });
 
 describe.each(FAMILIES)('the $family share family', ({ family, query, story, plain = 200 }) => {
-  it('opens its own result for every listed ref word', async () => {
+  it('opens its own result for every listed ref word, and never passes the word on', async () => {
     for (const ref of SHARE_REFS) {
       const res = await send(`${family}-link`, `${query}&ref=${ref}`);
       expect(res.statusCode, ref).toBe(200);
       const html = res.body.toString();
       expect(html, ref).toContain(ownImage(family));
+      expect(html, ref).not.toMatch(/[?&;]ref=/u);
     }
   });
 

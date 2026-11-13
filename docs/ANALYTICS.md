@@ -152,6 +152,11 @@ is dropped and never stored. A later page reads it with `readArrivalSource()`
 from `src/lib/arrival-source.ts`, which answers `direct` when the tab holds no
 listed word. It is a category shared by everyone who followed that kind of
 link: no identifier, no free string, and gone when the tab closes.
+A shared result page under `/share/` is drawn by the server outside
+`Base.astro` and has no script: it accepts the same six words (any other word
+opens it without its result), keeps `ref` in the address it was opened with,
+and does not pass the word on to its links, so the next page opened from it
+counts as `direct`.
 `assistant_arrival` is unchanged and still counts only `chatgpt` and
 `assistant`.
 
