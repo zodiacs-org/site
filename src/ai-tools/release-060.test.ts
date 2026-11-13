@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { createAiNodeHandler } from './http';
 import { ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, EVERY_AI_TOOL_NAME, READINGS_URI, TOOL_DESCRIPTIONS, TOOL_TITLES, WITHDRAWN_OCCASION_REFUSAL } from './contracts';
 import { executeAiTool } from './tools';
-import { as065, asPlainDescription, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS } from './published-tools';
+import { as065, asPanelV7, asPlainDescription, LIVE_TOOLS, PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS } from './published-tools';
 import { EXPLAIN_TOPICS } from './features/explain';
 import { CHINESE_ZODIAC_ANIMALS } from '../data/chinese-zodiac';
 import { SIGNS } from '../lib/signs';
@@ -28,11 +28,12 @@ import type { HoroscopeProgram } from '../lib/horoscope-program-types';
  * That touches four places, all in get_occasion_sky: its description, its occasion field's description and the
  * occasion enum in its input and output schemas. Every other byte of the thirteen comes back as published.
  * 0.6.6 changes only the reported version and the plugin's picture.
- * 0.6.7 (ZOD-58) changes the reported version and rewrites the description of ten of the
- * thirteen as plain descriptions: what the tool does, when to use it, what it returns and its limits, with no
- * sentence that tells the assistant how to behave, offers a schedule or promotes anything. Only those ten
+ * 0.6.7 (ZOD-58) changes the reported version and rewrites the description of all thirteen as
+ * plain descriptions: what the tool does, when to use it, what it returns and its limits, with no
+ * sentence that tells the assistant how to behave, offers a schedule or promotes anything. Only those thirteen
  * description fields change (src/ai-tools/published-tools.ts pins each in full); every name, title, schema,
- * annotation and _meta comes back as published, and the ten keep their names and input schemas byte for byte.
+ * annotation and _meta comes back as published except get_horoscope's panel address (horoscopes-v7, which keeps a
+ * panel for a birth date under 18 softened after a sign switch), and the thirteen keep their names and input schemas byte for byte.
  */
 const root = new URL('../../', import.meta.url);
 const PUBLISHED = PUBLISHED_TOOLS;
@@ -101,7 +102,12 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
     expect(JSON.stringify(PUBLISHED)).not.toMatch(/baby|coming-of-age/u);
   });
 
-  it('changes only the description of ten published tools, to describe each tool instead of directing the assistant (ZOD-58)', async () => {
+  it('moves only get_horoscope\'s panel address, to horoscopes-v7 (ZOD-58)', () => {
+    const changes = LIVE_TOOLS.flatMap(tool => asPanelV7(asPlainDescription(as065(tool).tool).tool).changed);
+    expect(changes).toEqual(['get_horoscope._meta.ui.resourceUri', 'get_horoscope._meta.openai/outputTemplate']);
+  });
+
+  it('changes only the description of the thirteen published tools, to describe each tool instead of directing the assistant (ZOD-58)', async () => {
     const changes = LIVE_TOOLS.flatMap(tool => asPlainDescription(as065(tool).tool).changed);
     expect([...changes].sort()).toEqual([
       'check_sky_fact.description',

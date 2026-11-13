@@ -72,6 +72,8 @@ describe('a love horoscope and a birth date under 18', () => {
     expect(data.message).toBeUndefined();
     expect(JSON.stringify(data.reading)).not.toMatch(ROMANCE);
     expect(context.horoscopePanel!.days.every(day => day.focuses.love.status === 'unavailable')).toBe(true);
+    // Marked, so a sign picked inside the panel (which carries no birth date) stays softened (horoscope/app.tsx).
+    expect(context.horoscopePanel!.minor).toBe(true);
   });
   it('gives the love reading on the 18th birthday, to an adult, and with no birth date', async () => {
     for (const input of [{ birthDate: yearsAgo(18) }, { birthDate: yearsAgo(40) }, {}]) {
@@ -82,7 +84,15 @@ describe('a love horoscope and a birth date under 18', () => {
       expect(data.message).toBeUndefined();
       expect(context.horoscopePanel!.requested.focus).toBe('love');
       expect(context.horoscopePanel!.days.find(day => day.date === centre)!.focuses.love.status).toBe('available');
+      expect(context.horoscopePanel!.minor).toBeUndefined();
     }
+  });
+  it('keeps 29 February as 29 February: born on 1 March, still under 18 that day', async () => {
+    const leap = new Date('2028-02-29T12:00:00Z');
+    const result = await executeAiTool('get_horoscope', { sign: 'leo', focus: 'love', birthDate: '2010-03-01', zone: 'UTC' }, { now: () => leap, horoscopeWindow: async () => window }, {});
+    if (!result.ok || result.tool !== 'get_horoscope') throw new Error(JSON.stringify(result));
+    expect(result.data.focus).toBe('general');
+    expect(result.data.message).toContain(MINOR_LOVE_NOTE);
   });
   it('still refuses a birth date under 13 before any reading', () => {
     const refusal = childBirthDateRefusal('get_horoscope', { sign: 'leo', focus: 'love', birthDate: yearsAgo(12) }, NOW);

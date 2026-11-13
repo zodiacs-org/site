@@ -9,14 +9,17 @@ import { readFileSync } from 'node:fs';
  * under 13. That changes four places, all in get_occasion_sky: its description, its occasion field's description
  * and the occasion enum in its input and output schemas. Every other byte of the thirteen stays as published.
  *
- * ZOD-58 (a draft, waiting for the owner's approval) rewrites all thirteen descriptions, after a review of the
+ * ZOD-58 (approved by the owner on 11 and 13 November 2026) rewrites all thirteen descriptions, after a review of the
  * connector against the directory's guidance found sentences that told the assistant how to behave: an offer of a
  * daily horoscope by schedule, "share plainly", "lead with", "pass the time zone" and "give them the returned
  * shareUrl exactly". Each of the thirteen now says only what the tool does, what it fits and its limits, in the
  * wording of the ZOD-108 draft (docs/platform/evidence/letters-and-copy-20261112/05-tool-descriptions.md), with the
  * under-18 love sentence that ZOD-58's love reading fix makes true. Only the description field changes
  * (PLAIN_DESCRIPTIONS below holds the whole of each, as pinned text); every name, title, schema, annotation and
- * _meta stays as published.
+ * _meta stays as published, except get_horoscope's panel address below.
+ *
+ * ZOD-58 also moves get_horoscope's panel from horoscopes-v6 to horoscopes-v7, so a panel opened for a birth date under
+ * 18 stays softened when another sign is picked in it. That changes the two places in its _meta that name the panel.
  *
  * ZOD-207: four of those descriptions, get_horoscope, check_sky_fact, get_upcoming_events and open_chart_studio, also
  * say what is not a request for the tool (a stock or lottery pick, an investment call, a bet, an election or health forecast, a
@@ -60,7 +63,7 @@ export function as065(tool: Record<string, unknown>): { tool: Record<string, unk
   return { tool: walk(tool, String(tool.name)) as Record<string, unknown>, changed };
 }
 
-/** ZOD-58: the thirteen published descriptions as plain descriptions, whole, awaiting the owner's approval; four carry the ZOD-207 sentences the owner approved on 13 November 2026. */
+/** ZOD-58: the thirteen published descriptions as plain descriptions, whole; four carry the ZOD-207 sentences the owner approved on 13 November 2026. */
 export const PLAIN_DESCRIPTIONS: Record<string, string> = {
   get_capabilities: "Returns a list of what Zodiacs can do, its limits and how it handles privacy. It takes no input and needs no sign-in or birth details. It fits a question about what Zodiacs can do, or about its limits. It describes the service and calculates nothing. Zodiacs does not schedule anything, pick stocks or investments, make health predictions or guarantee outcomes.",
   get_sky: "Returns where the Sun, the Moon and the planets are now or at a given moment, with the Moon's phase. It fits a question about the sky at one moment, with no person's chart involved. It is astronomy only and makes no personal prediction. Moments run from 1800 to 2199. It takes an optional time zone; without one its times are in UTC. It gives positions for a moment, with no houses or rising sign.",
@@ -113,5 +116,15 @@ export function asPlainDescription(tool: Record<string, unknown>): { tool: Recor
   return { tool: { ...tool, description }, changed: [`${String(tool.name)}.description`] };
 }
 
+/** get_horoscope with its ZOD-58 panel address, and the paths that changed. */
+export function asPanelV7(tool: Record<string, unknown>): { tool: Record<string, unknown>; changed: string[] } {
+  if (tool.name !== 'get_horoscope') return { tool, changed: [] };
+  const meta = tool._meta as Record<string, unknown> & { ui: Record<string, unknown> };
+  const from = 'ui://zodiacs/horoscopes-v6.html';
+  const to = 'ui://zodiacs/horoscopes-v7.html';
+  if (meta.ui.resourceUri !== from || meta['openai/outputTemplate'] !== from) throw new Error('get_horoscope no longer names horoscopes-v6');
+  return { tool: { ...tool, _meta: { ...meta, ui: { ...meta.ui, resourceUri: to }, 'openai/outputTemplate': to } }, changed: ['get_horoscope._meta.ui.resourceUri', 'get_horoscope._meta.openai/outputTemplate'] };
+}
+
 /** The thirteen as this release lists them. */
-export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asPlainDescription(as065(tool).tool).tool);
+export const PUBLISHED_TOOLS = LIVE_TOOLS.map((tool) => asPanelV7(asPlainDescription(as065(tool).tool).tool).tool);

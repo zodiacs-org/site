@@ -28,6 +28,10 @@ import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
 import birthdayFactsData from '../data/birthdays.json';
 import { BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT, birthdayDegreesChanged } from '../lib/birthday-degrees';
+import {
+  BIRTHDAY_DAY_UPDATED, BIRTHDAY_HUB_UPDATED, ECLIPSES_2027_UPDATED, FULL_MOON_CALENDAR_2027_UPDATED,
+  MERCURY_RETROGRADE_2027_UPDATED, updatedIso,
+} from '../world-times/updated';
 import { PEOPLE_DEGREES_MODIFIED_AT, peopleDegreesChanged } from '../lib/people-degrees';
 import daily from '../data/daily.json';
 import developerGuides from '../data/developer-guides.json';
@@ -61,7 +65,7 @@ const YEARLY_2026_HOROSCOPE_LASTMOD = '2026-11-06';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 // The twelve Registry sign pages re-read their mint and freeze authority on chain (thesis evidence refresh).
 const REGISTRY_SIGN_LASTMOD = '2026-11-10';
-const THESIS_LASTMOD = '2026-11-12';
+const THESIS_LASTMOD = '2026-11-13';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 const SKY_HEADS_UP_LASTMOD = '2026-11-12';
@@ -398,6 +402,8 @@ const NASA_WINDOW_PLACEMENTS = [
 // Every event page says where its times come from, and the planets' ingress, station and aspect times are
 // NASA JPL's (src/lib/nasa-instants.ts). Dated here for the same reason as EVENT_WATCH_LASTMOD.
 const EVENT_NASA_TIMES_LASTMOD = '2026-11-06';
+// "Behind this event" prints its instants to the minute, as the rest of each event page does.
+const EVENT_EVIDENCE_MINUTE_LASTMOD = '2026-11-13';
 const ACCURACY_AUDIT_REST_LASTMOD = '2026-11-07';
 const ACCURACY_AUDIT_REST_ROUTES = [
   '/', '/events/', '/moon-phase/', '/tools/',
@@ -683,6 +689,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The English privacy page says what share pages do with the arrival word and
   // where assistant visits are counted, 13 November, last so this wins.
   ['/privacy/', '2026-11-13'] as const,
+  // Times in five zones, longer question lists and the accuracy line (ZOD-180). Each page prints the
+  // same constant as its "Updated" date and dateModified; last, so these win.
+  ['/mercury-retrograde/2027/', MERCURY_RETROGRADE_2027_UPDATED] as const,
+  ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
+  ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
+  ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -838,7 +850,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...eventsPublication.pages.map((event) => ({
       loc: event.path,
       priority: 0.64,
-      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVERGREEN_LASTMOD.get(event.path) ?? '']
+      lastmod: [event.lastModified, EVENT_WATCH_LASTMOD, EVENT_NASA_TIMES_LASTMOD, EVENT_EVIDENCE_MINUTE_LASTMOD,
+        EVERGREEN_LASTMOD.get(event.path) ?? '']
         .reduce((latest, date) => (date > latest ? date : latest)),
     })),
     // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
@@ -919,6 +932,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
         ...(peopleForBirthday(`/birthday/${b.id}/`).length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
         // The page began printing its degrees from birthdays-precise.json.
         ...(birthdayDegreesChanged(b.id) ? [BIRTHDAY_PRECISE_DEGREES_MODIFIED_AT] : []),
+        // The season question, the cusp crossing in five time zones and the Updated line.
+        updatedIso(BIRTHDAY_DAY_UPDATED),
       )),
     })),
     ...almanac.map((entry) => ({
@@ -1006,6 +1021,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     if (url.loc === '/occasions/' || url.loc === '/tools/' || url.loc === '/almanac/') {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
+  }
+  // The methodology page gives the Moon's and the Sun's event times to the
+  // precision the pages print, with the range of each figure.
+  for (const url of urls) {
+    if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
   }
   return [
     ...urls,

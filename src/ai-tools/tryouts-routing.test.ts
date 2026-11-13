@@ -11,7 +11,9 @@ import { PLAIN_DESCRIPTIONS, PUBLISHED_TOOLS, ZOD_207_SENTENCES } from './publis
  * descriptions that are not among the thirteen published ones, and, since the owner's answers of 13 November 2026
  * (17:12 Asia/Bangkok), in four of the thirteen: get_horoscope, check_sky_fact, get_upcoming_events and
  * open_chart_studio, so that declining and Chart Studio routing hold when a host withholds the instructions.
- * raw/pr971b/ is PR 971's list at 989c49537; raw/fix-round/ is this source's.
+ * raw/pr971b/ is PR 971's list at 989c49537; raw/fix-round/ is this source's before main was joined, and raw/join/
+ * is this source's after it. PR 971 merged to main as 6de2a8fae with those descriptions unchanged; what the join
+ * brought is get_horoscope's panel address (horoscopes-v7) and the instructions' sentence on occasion card links.
  */
 const saved = (folder: string, file: string) => JSON.parse(readFileSync(new URL(`../../docs/platform/evidence/assistant-tryouts-20261113/raw/${folder}/${file}`, import.meta.url), 'utf8'));
 type Listed = { name: string; description: string };
@@ -34,14 +36,22 @@ describe('the routing wording from the assistant tryouts', () => {
     expect(TOOL_DESCRIPTIONS.explain_astrology).toContain('are not requests for this tool, not even as a first step');
   });
 
-  it('is the saved tools/list and instructions of the fix round', () => {
-    const listed = saved('fix-round', 'tools-list.json').tools as Listed[];
-    for (const { name, description } of listed) expect(description, name).toBe(TOOL_DESCRIPTIONS[name as keyof typeof TOOL_DESCRIPTIONS]);
-    expect(JSON.stringify(listed.slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS));
-    const instructions = saved('fix-round', 'initialize.json').instructions as string;
-    expect(instructions).toContain(OUTSIDE_ZODIACS);
-    expect(instructions).toContain(CHILD_HOROSCOPE);
-    expect(instructions.endsWith(WHICH_TOOL)).toBe(true);
+  it('is the saved tools/list and instructions of the fix round, and of the join with main', () => {
+    for (const folder of ['fix-round', 'join']) {
+      const listed = saved(folder, 'tools-list.json').tools as Listed[];
+      for (const { name, description } of listed) expect(description, `${folder} ${name}`).toBe(TOOL_DESCRIPTIONS[name as keyof typeof TOOL_DESCRIPTIONS]);
+      const instructions = saved(folder, 'initialize.json').instructions as string;
+      expect(instructions).toContain(ASK_FIRST);
+      expect(instructions).toContain(OUTSIDE_ZODIACS);
+      expect(instructions).toContain(CHILD_HOROSCOPE);
+      expect(instructions.endsWith(WHICH_TOOL)).toBe(true);
+    }
+    expect(JSON.stringify((saved('join', 'tools-list.json').tools as Listed[]).slice(0, 13))).toBe(JSON.stringify(PUBLISHED_TOOLS));
+    // The join moved nothing in the list but get_horoscope's panel address, and one sentence of the instructions.
+    const v7 = (text: string) => text.replaceAll('ui://zodiacs/horoscopes-v6.html', 'ui://zodiacs/horoscopes-v7.html');
+    expect(v7(JSON.stringify(saved('fix-round', 'tools-list.json')))).toBe(JSON.stringify(saved('join', 'tools-list.json')));
+    expect((saved('fix-round', 'initialize.json').instructions as string).replace('birthplace, coordinates or place name.', 'birthplace or place name; an occasion card link can hold coordinates rounded to two decimals.'))
+      .toBe(saved('join', 'initialize.json').instructions);
   });
 });
 

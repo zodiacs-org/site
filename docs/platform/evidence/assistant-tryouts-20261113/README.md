@@ -20,6 +20,7 @@ one picks. Start with `REPORT.md`.
 | `FIX-ROUND.md` | The fix round of 13 November 2026, after Dias's answers: what changed, and the 200 asked again |
 | `raw/fix-round/` | The same two answers from this branch after the fix round: joined with PR 971 at `989c49537`, "ask first" back, four published descriptions reworded. `src/ai-tools/tryouts-routing.test.ts` holds the source to it |
 | `raw/fix-round-1/` | The fix round's first wording, before two sentences were tightened and the word "crypto" taken out. Its run rows carry `toolSet: fix-round`, the folder's name when they ran |
+| `raw/join/` | The same two answers from this branch after `main` was merged in on 14 November 2026 (PR 971 had merged there as `6de2a8fae`). All 19 descriptions are those of `raw/fix-round/`, byte for byte. Two things moved, both main's: `get_horoscope` names the panel `horoscopes-v7`, and the instructions say "birthplace or place name; an occasion card link can hold coordinates rounded to two decimals." where they said "birthplace, coordinates or place name." No questions were run against it by the builder |
 | `tools/` | The scripts: `build-questions.py`, `run-tryouts.py`, `stub-mcp.mjs`, `score.py`, `replay-live.py`, `dump-branch-tools.ts`, `live-calls.py` |
 
 To run it again:

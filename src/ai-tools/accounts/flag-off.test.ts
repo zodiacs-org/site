@@ -34,14 +34,16 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * (src/ai-tools/under-13.test.ts). The released scenario, every tools/list and every resources/list keep their bytes.
  * 0.6.7 (ZOD-58) changes the reported version in every scenario, and rewrites tool descriptions and the server
  * instructions as plain descriptions, so every scenario's initialize, tools/list and bearer answers change in those
- * texts too (src/ai-tools/published-tools.ts). Every schema and every resources/list keep their bytes.
+ * texts too (src/ai-tools/published-tools.ts). Every schema keeps its bytes. The horoscope panel moves to
+ * horoscopes-v7, so a panel opened for a birth date under 18 stays softened when another sign is picked in it: get_horoscope's
+ * panel address changes in every tools/list, and each resources/list gains v7, with v6 kept under a legacy name.
  * ZOD-207 (a draft on top of ZOD-58, still 0.6.7) adds to the server instructions what is outside Zodiacs, that a
  * named child under 13 gets no horoscope and, in the coverage scenario, which tool takes which request; it says "Ask
  * before using someone else's birth details" there in the words get_capabilities uses; and it adds routing and
  * declining sentences to the get_natal_chart, explain_astrology and get_horoscope_period descriptions and to four of
  * the thirteen published ones, get_horoscope, check_sky_fact, get_upcoming_events and open_chart_studio, which the
- * owner approved on 13 November 2026 (src/ai-tools/published-tools.ts, src/ai-tools/tryouts-routing.test.ts). Every
- * schema and every resources/list keep their bytes.
+ * owner approved on 13 November 2026 (src/ai-tools/published-tools.ts, src/ai-tools/tryouts-routing.test.ts). ZOD-207
+ * changes no schema, no panel address and no resources/list.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];
