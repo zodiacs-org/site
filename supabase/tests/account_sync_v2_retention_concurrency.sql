@@ -11,6 +11,10 @@
 --    transition holds the Auth row. The reaper must wait on the Auth row
 --    before it erases delivery rows; otherwise the digest waits on a delivery
 --    row while the reaper's Auth delete waits on the digest.
+-- 3. Sky Watch's subscribe and OAuth refresh while deletion prepare holds the
+--    account owner lock. The watch RPC must wait for the owner lock before it
+--    locks the principal that prepare erases, and must then refuse the
+--    deleting account instead of writing.
 --
 -- All people here are synthetic test ids.
 
@@ -335,6 +339,213 @@ select pg_temp.assert_true(
                     where user_id = 'a1000000-0000-4000-8000-000000000002'),
   format(
     'the reaper must finish after the digest commits (%s)',
+    (select jsonb_object_agg(key, value) from retention_concurrency_results)
+  )
+);
+
+-- 3. Sky Watch against deletion prepare --------------------------------------
+
+set role supabase_auth_admin;
+insert into auth.users (id) values ('a1000000-0000-4000-8000-000000000003');
+insert into auth.oauth_clients (id) values ('a3000000-0000-4000-8000-000000000003');
+insert into auth.sessions (id, user_id, oauth_client_id, scopes) values (
+  'a2000000-0000-4000-8000-000000000003',
+  'a1000000-0000-4000-8000-000000000003',
+  'a3000000-0000-4000-8000-000000000003',
+  'openid email'
+);
+insert into auth.oauth_consents (user_id, client_id, scopes) values (
+  'a1000000-0000-4000-8000-000000000003',
+  'a3000000-0000-4000-8000-000000000003',
+  'openid email'
+);
+reset role;
+insert into sky_watch.oauth_clients (id, resource) values (
+  'a3000000-0000-4000-8000-000000000003',
+  'https://zodiacs-retention-race.vercel.app/mcp'
+);
+
+set role service_role;
+select public.zodiacs_sky_watch_v1('oauth', jsonb_build_object(
+  'user', 'a1000000-0000-4000-8000-000000000003',
+  'session', 'a2000000-0000-4000-8000-000000000003',
+  'client', 'a3000000-0000-4000-8000-000000000003',
+  'resource', 'https://zodiacs-retention-race.vercel.app/mcp'
+))->>'id' as watch_principal \gset
+select public.zodiacs_sky_watch_v1('subscribe', jsonb_build_object(
+  'owner', :'watch_principal',
+  'id', 'sub_' || repeat('a', 64),
+  'name', 'zodiacs.sky.ingress',
+  'filters', '{"bodies":["mars"]}'::jsonb,
+  'sealed', 'sealed-test-callback',
+  'expected_revision', 0,
+  'ttl_ms', 86400000
+));
+reset role;
+insert into retention_concurrency_results values ('watch_principal', :'watch_principal');
+
+select pg_temp.assert_true(
+  exists (select 1 from sky_watch.subscriptions
+          where id = 'sub_' || repeat('a', 64) and active),
+  'the fixture must hold an active Sky Watch subscription before deletion'
+);
+
+-- Deletion prepare's first step: the owner lock, held open.
+select dblink_exec('retention_writer', 'set role service_role');
+select dblink_exec('retention_owner', 'begin');
+select dblink_exec(
+  'retention_owner',
+  $$do $lock$ begin
+    perform pg_advisory_xact_lock(
+      hashtextextended('a1000000-0000-4000-8000-000000000003', 7312025)
+    );
+  end $lock$;$$
+);
+
+select dblink_send_query(
+  'retention_writer',
+  format(
+    $$select public.zodiacs_sky_watch_v1('subscribe', jsonb_build_object(
+      'owner', %L,
+      'id', 'sub_' || repeat('a', 64),
+      'name', 'zodiacs.sky.ingress',
+      'filters', '{"bodies":["mars","venus"]}'::jsonb,
+      'sealed', 'sealed-test-callback',
+      'expected_revision', 1,
+      'ttl_ms', 86400000
+    ))::text$$,
+    (select value from retention_concurrency_results where key = 'watch_principal')
+  )
+);
+
+select pg_temp.wait_for_lock_wait(
+  (select pid from retention_concurrency_pids where name = 'retention_writer'),
+  'the watch subscribe'
+);
+
+select pg_temp.assert_true(
+  dblink_is_busy('retention_writer') = 1,
+  'the watch subscribe must wait behind the deletion owner lock'
+);
+
+select pg_temp.assert_true(
+  (
+    select count(*) = 1
+    from (
+      select 1
+      from sky_watch.principals
+      where oauth_user = 'a1000000-0000-4000-8000-000000000003'
+      for update skip locked
+    ) as free_rows
+  ),
+  'the watch subscribe must not hold the principal while it waits for the owner lock'
+);
+
+select dblink_send_query(
+  'retention_owner',
+  $$select public.account_v2_prepare_deletion(
+    'a1000000-0000-4000-8000-000000000003',
+    'a6000000-0000-4000-8000-000000000003',
+    jsonb_build_array('v1:' || repeat('c', 64)),
+    '[]'::jsonb,
+    true
+  )::text$$
+);
+
+insert into retention_concurrency_results
+select 'watch_race_prepare', value
+from dblink_get_result('retention_owner', false) as result(value text);
+insert into retention_concurrency_results
+select 'watch_race_prepare_error', dblink_error_message('retention_owner');
+select pg_temp.assert_true(
+  not exists (
+    select 1 from dblink_get_result('retention_owner', false) as drained(value text)
+  ),
+  'the prepare result must be fully drained'
+);
+select dblink_exec('retention_owner', 'commit');
+
+insert into retention_concurrency_results
+select 'watch_race_subscribe', value
+from dblink_get_result('retention_writer', false) as result(value text);
+insert into retention_concurrency_results
+select 'watch_race_subscribe_error', dblink_error_message('retention_writer');
+select pg_temp.assert_true(
+  not exists (
+    select 1 from dblink_get_result('retention_writer', false) as drained(value text)
+  ),
+  'the subscribe result must be fully drained'
+);
+
+select pg_temp.assert_true(
+  (select value::jsonb->>'outcome' = 'prepared'
+   from retention_concurrency_results where key = 'watch_race_prepare')
+    and not exists (select 1 from retention_concurrency_results
+                    where key = 'watch_race_subscribe')
+    and (select value like '%watch access unavailable%'
+         from retention_concurrency_results where key = 'watch_race_subscribe_error')
+    and not exists (select 1 from retention_concurrency_results
+                    where value like '%deadlock%')
+    and not exists (select 1 from sky_watch.principals
+                    where oauth_user = 'a1000000-0000-4000-8000-000000000003')
+    and not exists (select 1 from sky_watch.subscriptions
+                    where id = 'sub_' || repeat('a', 64)),
+  format(
+    'prepare must erase the Sky Watch principal and the waiting subscribe must be refused, not deadlock (%s)',
+    (select jsonb_object_agg(key, value) from retention_concurrency_results)
+  )
+);
+
+-- An OAuth refresh that waits on the owner lock of a deleting account must
+-- answer null and create nothing.
+select dblink_exec('retention_owner', 'begin');
+select dblink_exec(
+  'retention_owner',
+  $$do $lock$ begin
+    perform pg_advisory_xact_lock(
+      hashtextextended('a1000000-0000-4000-8000-000000000003', 7312025)
+    );
+  end $lock$;$$
+);
+
+select dblink_send_query(
+  'retention_writer',
+  $$select coalesce(public.zodiacs_sky_watch_v1('oauth', jsonb_build_object(
+    'user', 'a1000000-0000-4000-8000-000000000003',
+    'session', 'a2000000-0000-4000-8000-000000000003',
+    'client', 'a3000000-0000-4000-8000-000000000003',
+    'resource', 'https://zodiacs-retention-race.vercel.app/mcp'
+  ))::text, 'refused')$$
+);
+
+select pg_temp.wait_for_lock_wait(
+  (select pid from retention_concurrency_pids where name = 'retention_writer'),
+  'the watch OAuth refresh'
+);
+select pg_temp.assert_true(
+  dblink_is_busy('retention_writer') = 1,
+  'the watch OAuth refresh must wait behind the deletion owner lock'
+);
+select dblink_exec('retention_owner', 'commit');
+
+insert into retention_concurrency_results
+select 'watch_race_oauth', value
+from dblink_get_result('retention_writer', false) as result(value text);
+insert into retention_concurrency_results
+select 'watch_race_oauth_error', dblink_error_message('retention_writer');
+select pg_temp.assert_true(
+  not exists (
+    select 1 from dblink_get_result('retention_writer', false) as drained(value text)
+  ),
+  'the OAuth refresh result must be fully drained'
+);
+
+select pg_temp.assert_true(
+  (select value = 'refused' from retention_concurrency_results where key = 'watch_race_oauth')
+    and not exists (select 1 from sky_watch.principals
+                    where oauth_user = 'a1000000-0000-4000-8000-000000000003'),
+  format(
+    'an OAuth refresh for a deleting account must be refused (%s)',
     (select jsonb_object_agg(key, value) from retention_concurrency_results)
   )
 );

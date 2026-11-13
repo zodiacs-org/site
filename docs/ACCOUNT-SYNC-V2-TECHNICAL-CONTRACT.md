@@ -42,8 +42,10 @@ a feed.
    creates a short-lived recovery receipt before an unauthenticated
    proof-bearing finish retries the Auth hard delete.
    Product data includes the tables added after the foundation migration:
-   saved pages, Living Chart moments, consent and mutation receipts, and the
-   weekly digest delivery and unsubscribe rows. A deletion still unfinished
+   saved pages, Living Chart moments, consent and mutation receipts, the
+   weekly digest delivery and unsubscribe rows, and the account's Sky Watch
+   OAuth principals with their subscriptions and outbox rows (found by
+   `oauth_user`, which has no Auth foreign key). A deletion still unfinished
    once its seven days pass with no live receipt is finished by the database
    retention pass, which deletes the Auth identity itself.
    Provider cleanup is a separate durable reconciliation step and cannot
@@ -483,8 +485,8 @@ fused payload and create two competing authorities.
   not strand an account already in deleting state. Existing receipts remain
   valid until their seven-day expiry, with at most three live receipts at once.
   An account in deleting state refuses writes to every owner table, including
-  saved pages and Living Chart, and the retention pass finishes it once its
-  seven days pass without a live receipt.
+  saved pages, Living Chart and Sky Watch OAuth principals, and the retention
+  pass finishes it once its seven days pass without a live receipt.
 
 The approved export is a versioned JSON owner export containing an
 allowlisted decrypted private-chart representation plus the opaque service
