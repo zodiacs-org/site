@@ -81,55 +81,239 @@ export function deathOrder(n, seed) {
   return order;
 }
 
+/** The twelve sign symbols as drawn on the page's keyboard figure, in a 48 by 48 box. */
+export const SIGN_KEYS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+export const GLYPHS = [
+  'M24 39V15C24 3 6 3 8 17M24 15C24 3 42 3 40 17',
+  'M10 5C10 22 38 22 38 5M35 30A11 11 0 1 1 13 30A11 11 0 1 1 35 30',
+  'M11 7Q24 12 37 7M11 41Q24 36 37 41M17 10V38M31 10V38',
+  'M9 17C17 5 36 7 39 15M18 17A5 5 0 1 1 8 17A5 5 0 1 1 18 17M39 31C31 43 12 41 9 33M40 31A5 5 0 1 1 30 31A5 5 0 1 1 40 31',
+  'M17 27A6 6 0 1 1 5 27A6 6 0 1 1 17 27M17 27C24 17 12 10 22 6C36 1 40 17 32 29C25 42 35 46 42 35',
+  'M5 12Q12 6 12 17V35M12 15Q19 5 20 17V35M20 15Q28 5 28 17V32C28 43 43 34 40 21C38 12 29 17 32 27L42 41',
+  'M7 33H18C5 22 16 10 24 10C32 10 43 22 30 33H41M7 40H41',
+  'M5 12Q12 6 12 17V35M12 15Q20 5 20 17V35M20 15Q28 5 28 17V31Q28 40 42 35M36 31L43 35L39 41',
+  'M9 39L39 9M25 9H39V23M11 20L28 37',
+  'M5 14L11 10L18 37L27 11M27 11L28 34C28 47 45 42 41 32C38 26 28 29 24 39',
+  'M5 20L13 12L20 20L28 12L35 20L43 12M5 34L13 26L20 34L28 26L35 34L43 26',
+  'M12 6Q28 24 12 42M36 6Q20 24 36 42M6 24H42',
+];
+const DISC_INK = '#10131B';
+
+/** A sign disc: the sign's hue with its symbol in the page's dark ink, centred on (cx, cy). */
+export function signDisc(i, cx, cy, r, extra = '') {
+  const k = (r * 1.12) / 48;
+  const x = (cx - 24 * k).toFixed(2);
+  const y = (cy - 24 * k).toFixed(2);
+  return `<g class="disc"${extra}><circle cx="${cx}" cy="${cy}" r="${r}" fill="${SIGN_HUES[i]}"/>`
+    + `<path transform="translate(${x} ${y}) scale(${k.toFixed(4)})" d="${GLYPHS[i]}" fill="none" stroke="${DISC_INK}" stroke-width="${(2.1 / k).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+}
+
 /**
- * Two groups of one hundred U.S. adults, drawn separately because the survey
- * reports two shares, not their overlap: 90 picked their own sign, 27 say they
- * believe in astrology.
+ * Twelve coin faces with invented marks: no real coin's logo, letter or
+ * mascot. They stand for "a page of crypto coins" in general.
  */
-function peopleSvg(k, { small, label }) {
-  const step = small ? 14.5 : 24;
-  const r = small ? 4.9 : 7.6;
+export const COIN_MARKS = [
+  'M14 29A10 10 0 0 1 34 29M24 20H24.1',
+  'M24 13A11 11 0 1 1 13 24',
+  'M16 17V31M24 14V34M32 19V29',
+  'M14 30L24 18L34 30',
+  'M24 14V17M24 21V23M24 25V27M24 31V34M14 24H17M21 24H23M25 24H27M31 24H34',
+  'M24 14L34 32H14Z',
+  'M12 26C16 20 20 20 24 26S32 32 36 26',
+  'M24 13L35 24L24 35L13 24Z',
+  'M17 24H17.1M24 24H24.1M31 24H31.1',
+  'M13 28L18 20L23 28L28 20L33 28',
+  'M24 18A6 6 0 1 1 23.9 18M24 12A12 12 0 1 1 23.9 12',
+  'M15 31H33M15 24H27M15 17H21',
+];
+export function coinFace(i, cx, cy, r) {
+  const k = (r * 1.2) / 48;
+  const x = (cx - 24 * k).toFixed(2);
+  const y = (cy - 24 * k).toFixed(2);
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#1A1E28" stroke="rgba(198,204,218,0.32)" stroke-width="1.2"/>`
+    + `<path transform="translate(${x} ${y}) scale(${k.toFixed(4)})" d="${COIN_MARKS[i]}" fill="none" stroke="rgba(198,204,218,0.62)" stroke-width="${(2 / k).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+
+export const FILM = {
+  poster: '/assets/thesis/film/two-conversations-poster.webp',
+  av1: '/assets/thesis/film/two-conversations-1280-av1.mp4',
+  h264: '/assets/thesis/film/two-conversations-1280.mp4',
+};
+
+/** "Which one is yours": the film, then twelve unknown coins beside the twelve signs, which the reader can pick. */
+export function mineFigure() {
+  let coins = '';
+  for (let i = 0; i < 12; i++) coins += coinFace(i, 26 + (i % 6) * 49.6, 26 + Math.floor(i / 6) * 50, 21);
+  const buttons = SIGN_KEYS.map((key, i) => `<button type="button" class="mine-sign" data-sign="${key}" aria-pressed="false" aria-label="${SIGN_NAMES[i]}"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">${signDisc(i, 24, 24, 23)}</svg></button>`).join('');
+  return `<figure class="zfig thesis-plate thesis-mine" id="fig-mine" data-motion="mine">
+            <figcaption class="zfig-head">Nobody has to explain the twelve.</figcaption>
+            <div class="mine-film">
+              <video class="thesis-film" controls muted playsinline preload="none" width="1280" height="720" poster="${FILM.poster}" aria-describedby="thesis-film-desc">
+                <source src="${FILM.av1}" type='video/mp4; codecs="av01.0.05M.08"'>
+                <source src="${FILM.h264}" type="video/mp4">
+              </video>
+              <p class="mine-film__desc" id="thesis-film-desc">Watch: 20 seconds, no sound. One person talks about crypto in words nobody understands. A group nearby compares star signs and everyone joins in. It ends on the twelve signs and asks which one is yours.</p>
+            </div>
+            <div class="mine-panels">
+              <div class="mine-panel">
+                <svg class="mine-coins" viewBox="0 0 300 102" role="img" aria-label="Twelve coin faces with marks nobody recognises."><desc>Made-up coin faces. None of them is a real coin.</desc>${coins}</svg>
+                <p class="mine-label">What is this</p>
+              </div>
+              <div class="mine-panel">
+                <div class="mine-signs" role="group" aria-label="Pick your sign">${buttons}</div>
+                <p class="mine-label mine-label--you" data-mine-label aria-live="polite">Which one is yours</p>
+              </div>
+            </div>
+          </figure>`;
+}
+
+/**
+ * Three groups of one hundred U.S. adults, drawn separately because two
+ * surveys report three shares and not their overlap: 90 picked their own sign
+ * and 27 say they believe in astrology (YouGov); 19 have ever used crypto (Pew).
+ */
+function peopleSvg(data, { small, label }) {
+  const k = data.know;
+  const u = data.usedCrypto;
+  const step = small ? 14 : 21;
+  const r = small ? 4.7 : 6.6;
   const grid = step * 10;
   const width = small ? 320 : 920;
-  const lefts = small ? [6, 6 + grid + 22] : [30, 500];
   const top = 6;
+  const blockH = grid + (small ? 76 : 112);
+  const spots = small ? [[6, top], [176, top], [6, top + blockH + 14]] : [[20, top], [330, top], [640, top]];
   const groups = [
     { n: k.knowSignPct, cls: 'know', line1: 'picked their own sign', line2: 'when shown the twelve', hue: (i) => SIGN_HUES[i % 12] },
     { n: k.believePct, cls: 'believe', line1: 'say they believe', line2: 'in astrology', hue: () => INK },
+    { n: u.everUsedPct, cls: 'crypto', line1: 'have ever bought', line2: 'or used any crypto', hue: () => INK },
   ];
   let body = '';
   groups.forEach((g, gi) => {
+    const [left, gtop] = spots[gi];
     for (let i = 0; i < 100; i++) {
-      const cx = lefts[gi] + (i % 10) * step + step / 2;
-      const cy = top + Math.floor(i / 10) * step + step / 2;
-      const on = i < g.n;
-      body += on
-        ? `<circle class="pd" style="--i:${i + gi * 40}" cx="${cx}" cy="${cy}" r="${r}" fill="${g.hue(i)}"/>`
-        : `<circle class="pd pd--off" style="--i:${i + gi * 40}" cx="${cx}" cy="${cy}" r="${r - 0.6}" fill="none" stroke="rgba(198,204,218,0.34)" stroke-width="1.1"/>`;
+      const cx = left + (i % 10) * step + step / 2;
+      const cy = gtop + Math.floor(i / 10) * step + step / 2;
+      body += i < g.n
+        ? `<circle class="pd" style="--i:${i + gi * 30}" cx="${cx}" cy="${cy}" r="${r}" fill="${g.hue(i)}"/>`
+        : `<circle class="pd pd--off" style="--i:${i + gi * 30}" cx="${cx}" cy="${cy}" r="${(r - 0.6).toFixed(1)}" fill="none" stroke="rgba(198,204,218,0.34)" stroke-width="1.1"/>`;
     }
-    const statY = top + grid + (small ? 40 : 66);
-    body += `<text x="${lefts[gi]}" y="${statY}" class="stat-num stat-num--${g.cls}">${g.n}%</text>`;
-    body += `<text x="${lefts[gi]}" y="${statY + (small ? 18 : 28)}" class="stat-lab">${esc(g.line1)}</text>`;
-    body += `<text x="${lefts[gi]}" y="${statY + (small ? 34 : 50)}" class="stat-lab">${esc(g.line2)}</text>`;
+    const statY = gtop + grid + (small ? 38 : 56);
+    body += `<text x="${left}" y="${statY}" class="stat-num stat-num--${g.cls}">${g.n}%</text>`;
+    body += `<text x="${left}" y="${statY + (small ? 17 : 26)}" class="stat-lab">${esc(g.line1)}</text>`;
+    body += `<text x="${left}" y="${statY + (small ? 32 : 47)}" class="stat-lab">${esc(g.line2)}</text>`;
   });
-  const height = top + grid + (small ? 82 : 128);
+  const height = small ? top + blockH * 2 + 14 : top + blockH;
   return `<svg class="dots-chart dots-chart--${small ? 'small' : 'wide'}" data-people viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(label)}">`
-    + `<desc>Two grids of one hundred dots, each dot one in a hundred U.S. adults. In the first, ${k.knowSignPct} dots are filled: they picked their own sign. In the second, ${k.believePct} are filled: they say they believe in astrology.</desc>`
+    + `<desc>Three grids of one hundred dots, each dot one in a hundred U.S. adults. In the first, ${k.knowSignPct} dots are filled: they picked their own sign. In the second, ${k.believePct} are filled: they say they believe in astrology. In the third, ${u.everUsedPct} are filled: they have ever bought or used any crypto.</desc>`
     + body
     + '</svg>';
 }
 
 export function knowFigure(data) {
   const k = data.know;
+  const u = data.usedCrypto;
   const [fy, fm] = k.fielded.split('-').map(Number);
   const when = `${MONTHS[fm - 1]} ${fy}`;
-  const label = `Two dot grids of one hundred U.S. adults each. ${k.knowSignPct}% picked their own sign when shown the twelve. ${k.believePct}% said they believe in astrology. ${k.source}, ${when}.`;
+  const [py, pm] = u.fielded.split('-').map(Number);
+  const pwhen = `${MONTHS[pm - 1]} ${py}`;
+  const label = `Three dot grids of one hundred U.S. adults each. ${k.knowSignPct}% picked their own sign when shown the twelve and ${k.believePct}% said they believe in astrology (${k.source}, ${when}). ${u.everUsedPct}% have ever bought or used any crypto (${u.source}, ${pwhen}).`;
   return `<figure class="zfig thesis-plate thesis-dots" id="fig-know" data-motion="people">
-            <figcaption class="zfig-head">Almost everyone knows their sign. Few say they believe.</figcaption>
-            ${peopleSvg(k, { small: false, label })}
-            ${peopleSvg(k, { small: true, label })}
-            <p class="zfig-cap">Each grid is one hundred U.S. adults, and each dot one of them. The survey reports each share on its own, not how they overlap, so the two groups are drawn apart.</p>
-            <p class="zfig-src"><a href="${esc(k.url)}" rel="noopener noreferrer">${esc(k.source)}</a>, U.S. adults, ${when}. Respondents were shown the twelve signs and asked to pick their own.</p>
+            <figcaption class="zfig-head">Nine in ten know their sign. One in five has ever used crypto.</figcaption>
+            ${peopleSvg(data, { small: false, label })}
+            ${peopleSvg(data, { small: true, label })}
+            <p class="zfig-cap">Each grid is one hundred U.S. adults. The first two come from one survey and the third from another, so they are drawn apart and should not be added or subtracted.</p>
+            <p class="zfig-src"><a href="${esc(k.url)}" rel="noopener noreferrer">${esc(k.source)}</a>, U.S. adults, ${when}: respondents were shown the twelve signs and asked to pick their own. <a href="${esc(u.url)}" rel="noopener noreferrer">${esc(u.source)}</a>, U.S. adults, ${pwhen}: ever invested in, traded or used a cryptocurrency.</p>
+          </figure>`;
+}
+
+/** Geometry of the shelf: columns of dots grow up from a shared baseline. */
+export const SHELF = {
+  wide: { width: 920, step: 9, r: 3, cols: 16, xs: [18, 198, 378], base: 405, discs: { x: 590, y: 96, cols: 4, gap: 78, r: 31 } },
+  small: { width: 320, step: 6, r: 2.1, cols: 16, xs: [6, 114, 222], base: 264, discs: { x: 4, y: 0, cols: 6, gap: 52, r: 21 } },
+};
+
+function shelfColumn(g, x, n) {
+  const rows = Math.floor(n / g.cols);
+  const rem = n % g.cols;
+  return { full: { x, y: g.base - rows * g.step, w: g.cols * g.step, h: rows * g.step }, part: { x, y: g.base - (rows + 1) * g.step, w: rem * g.step, h: g.step } };
+}
+
+function shelfSvg(data, { small, label }) {
+  const g = small ? SHELF.small : SHELF.wide;
+  const id = `sh-${small ? 's' : 'w'}`;
+  const cats = data.shelf.categories;
+  let body = `<defs><pattern id="${id}" width="${g.step}" height="${g.step}" patternUnits="userSpaceOnUse"><circle cx="${g.step / 2}" cy="${g.step / 2}" r="${g.r}" fill="rgba(198,204,218,0.42)"/></pattern></defs>`;
+  cats.forEach((c, ci) => {
+    const x = g.xs[ci];
+    const col = shelfColumn(g, x, c.count);
+    body += `<g class="sh-col" data-n="${c.count}" data-cols="${g.cols}" data-step="${g.step}" data-x="${x}" data-base="${g.base}">`
+      + `<rect class="sh-full" x="${col.full.x}" y="${col.full.y}" width="${col.full.w}" height="${col.full.h}" fill="url(#${id})"/>`
+      + `<rect class="sh-part" x="${col.part.x}" y="${col.part.y}" width="${col.part.w}" height="${col.part.h}" fill="url(#${id})"/></g>`;
+    body += `<text x="${x}" y="${g.base + (small ? 30 : 40)}" class="sh-num" data-count="${c.count}">${thousands(c.count)}</text>`;
+    body += `<text x="${x}" y="${g.base + (small ? 47 : 63)}" class="sh-lab">${esc(c.label)}</text>`;
+  });
+  body += `<text x="${g.xs[0]}" y="${g.base + (small ? 66 : 90)}" class="sh-more">and counting</text>`;
+  const d = g.discs;
+  const discTop = small ? g.base + 96 : d.y;
+  let discs = '';
+  SIGN_KEYS.forEach((key, i) => {
+    const cx = d.x + d.r + (i % d.cols) * d.gap;
+    const cy = discTop + d.r + Math.floor(i / d.cols) * d.gap;
+    discs += signDisc(i, cx, cy, d.r, ` data-sign="${key}" style="--i:${i}"`);
+  });
+  const rowsOfDiscs = Math.ceil(12 / d.cols);
+  const twelveY = small ? discTop + rowsOfDiscs * d.gap + 22 : g.base + 40;
+  body += `<g class="sh-twelve">${discs}</g>`;
+  body += `<text x="${d.x}" y="${twelveY}" class="sh-num sh-num--twelve">12</text>`;
+  body += `<text x="${d.x}" y="${twelveY + (small ? 17 : 23)}" class="sh-lab">The same twelve for about 2,400 years.</text>`;
+  const height = small ? twelveY + 30 : g.base + 100;
+  return `<svg class="shelf-chart shelf-chart--${small ? 'small' : 'wide'}" data-shelf viewBox="0 0 ${g.width} ${height}" role="img" aria-label="${esc(label)}">`
+    + `<desc>Three columns of grey dots, one dot per coin, beside the twelve sign discs.</desc>${body}</svg>`;
+}
+
+export function shelfFigure(data) {
+  const sh = data.shelf;
+  const [cy, cm, cd] = sh.checkedAt.split('-').map(Number);
+  const read = `${cd} ${MONTHS[cm - 1]} ${cy}`;
+  const counts = sh.categories.map((c) => `${thousands(c.count)} ${c.label}`).join(', ');
+  const label = `Dot chart. CoinGecko lists ${counts}, one grey dot each, on ${read}. Beside them, the twelve signs.`;
+  const links = sh.categories.map((c) => `<a href="${esc(c.url)}" rel="noopener noreferrer">${esc(c.label)}</a>`).join(', ');
+  return `<figure class="zfig thesis-plate thesis-shelf" id="fig-shelf" data-motion="shelf">
+            <figcaption class="zfig-head">There is no end to dogs. There are twelve signs.</figcaption>
+            ${shelfSvg(data, { small: false, label })}
+            ${shelfSvg(data, { small: true, label })}
+            <p class="zfig-cap">Each grey dot is one coin listed by ${esc(sh.source)} in that category on ${read}. Many more exist that it does not list.</p>
+            <p class="zfig-src">${esc(sh.source)} category pages, read ${read}: ${links}.</p>
+          </figure>`;
+}
+
+/**
+ * "A calendar gives the meme a reason to return": the page's sketch, drawn on
+ * once when it scrolls into view. Not data: the caption says so.
+ */
+const CAL_AXIS = 'M10 12V107H290';
+const CAL_ROWS = [
+  ['A person can leave.', 'Schematic attention around a person fades after a peak.', 'M12 96C33 98 32 31 69 26S100 40 123 60S193 94 286 98', false],
+  ['A moment can pass.', 'Schematic attention around a news event peaks sharply, then fades.', 'M12 99L54 98L72 20C86 89 123 98 286 99', false],
+  ['A joke can wear thin.', 'Schematic attention around a joke rises then gradually fades.', 'M12 97C38 97 38 24 72 25S106 44 138 66S213 94 286 98', true],
+];
+export function calendarFigure() {
+  const rows = CAL_ROWS.map(([title, aria, d, dashed], i) => {
+    const line = dashed
+      ? `<mask id="cal-mask-${i}" maskUnits="userSpaceOnUse" x="0" y="0" width="300" height="115"><path class="cal-draw" pathLength="1" d="${d}" fill="none" stroke="#fff" stroke-width="8" style="--d:${i * 0.9}s"/></mask><path d="${d}" fill="none" stroke="var(--ink-2)" stroke-width="2.5" stroke-dasharray="6 4" mask="url(#cal-mask-${i})"/>`
+      : `<path class="cal-draw" pathLength="1" d="${d}" fill="none" stroke="var(--ink-2)" stroke-width="2.5" style="--d:${i * 0.9}s"/>`;
+    return `<div class="fact-card"><strong>${title}</strong><svg viewBox="0 0 300 115" preserveAspectRatio="none" role="img" aria-label="${aria}"><path d="${CAL_AXIS}" fill="none" stroke="var(--hair-2)"/>${line}</svg></div>`;
+  }).join('');
+  const peaks = (cls, delay, opacity) => SIGN_KEYS.map((key, i) => {
+    const x = 12 + i * 23;
+    return `<path class="cal-draw cal-peak" data-sign="${key}" pathLength="1" d="M${x} 99L${x + 8} 29L${x + 22} 99" stroke="${SIGN_HUES[i]}" fill="none" stroke-width="2.5" style="--d:${(delay + i * 0.16).toFixed(2)}s"${opacity < 1 ? ` stroke-opacity="${opacity}"` : ''}/>`;
+  }).join('');
+  const seasons = `<div class="fact-card"><strong>The seasons come back.</strong><svg viewBox="0 0 300 115" preserveAspectRatio="none" role="img" aria-label="Schematic: twelve recurring seasons, one peak in each sign hue, then the year starts again. Not measured attention."><path d="${CAL_AXIS}" fill="none" stroke="var(--hair-2)"/><g class="cal-pass">${peaks('', 2.7, 0.45)}</g><g class="cal-pass cal-pass--again">${peaks('again', 5.0, 1)}</g></svg><span class="attention-patterns__axis">Aries to Pisces, then Aries again</span></div>`;
+  return `<figure class="zfig thesis-plate thesis-calendar" id="fig-3" data-motion="calendar">
+            <figcaption class="zfig-head">A calendar gives the meme a reason to return.</figcaption>
+            <div class="fact-grid attention-patterns">${rows}${seasons}</div>
+            <p class="zfig-cap">A sketch: attention tied to a person, a moment or a joke tends to fade, and the zodiac brings its subject back every season. These curves are illustrative, not measured coin performance. The next chart shows the measured version.</p>
+            <p class="zfig-src">Illustration · <a href="#fig-2">measured Wikipedia reads</a>. No price forecast is implied.</p>
           </figure>`;
 }
 
@@ -221,7 +405,7 @@ export function lifespanFigure(data) {
             ${fieldSvg(counts, { small: false, label: fieldLabel })}
             ${fieldSvg(counts, { small: true, label: fieldLabel })}
             </div>
-            <p class="zfig-cap">Each grey dot stands for 10,000 of the ${millions} million coins launched on Pump.fun, lit while they still traded. Each coloured dot is one of the twelve zodiac coins.</p>
+            <p class="zfig-cap">Each grey dot stands for 10,000 of the ${millions} million coins launched on one site, Pump.fun, lit while they still traded. Each coloured dot is one of the twelve zodiac coins.</p>
             <p class="zfig-src"><a href="${esc(l.url)}" rel="noopener noreferrer">${esc(l.source)}</a>, updated ${ud} ${MONTHS[um - 1]} ${uy}. ${esc(l.source)} counted trades on Pump.fun only, so a coin that moved to another exchange may have traded for longer.${esc(twelveSource)}</p>
           </figure>`;
 }
@@ -287,6 +471,47 @@ export function motionBlock() {
       .is-armed.is-on .stat-num, .is-armed.is-on .stat-lab { opacity:1; }
       .is-armed .tw { opacity:.12; transition:opacity .45s ease; transition-delay:calc(var(--i) * 70ms); }
       .is-armed.is-twelve .tw { opacity:1; }
+    }
+    .thesis-mine, .thesis-shelf, .thesis-calendar { padding:20px; border:1px solid var(--hair); border-radius:14px; }
+    .thesis-mine .zfig-head, .thesis-shelf .zfig-head { margin-bottom:16px; }
+    .thesis-mine .zfig-cap, .thesis-shelf .zfig-cap, .thesis-calendar .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
+    .thesis-mine .zfig-src, .thesis-shelf .zfig-src, .thesis-calendar .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
+    .mine-film { margin:0 0 16px; }
+    .thesis-mine video.thesis-film { display:block; width:100%; height:auto; aspect-ratio:16/9; border-radius:10px; background:#0B0D12; }
+    .mine-film__desc { margin:8px 0 0; font-family:'Instrument Sans',system-ui,sans-serif; font-size:12px; line-height:1.55; color:var(--ink-dim); }
+    .mine-panels { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .mine-panel { border:1px solid var(--hair); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; }
+    .thesis-mine svg.mine-coins { display:block; width:100%; height:auto; }
+    .mine-signs { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; }
+    .mine-sign { appearance:none; background:none; border:0; padding:0; margin:0; border-radius:50%; cursor:pointer; aspect-ratio:1; transition:opacity .3s ease, transform .3s ease; }
+    .mine-sign svg { display:block; width:100%; height:100%; }
+    .mine-sign:focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
+    .mine-signs.has-pick .mine-sign[aria-pressed="false"] { opacity:.28; }
+    .mine-label { margin:0; min-height:2.7em; display:flex; align-items:flex-end; font-family:var(--serif); font-size:20px; line-height:1.3; color:var(--ink); }
+    .thesis-shelf svg.shelf-chart { display:block; width:100%; height:auto; }
+    .thesis-shelf svg.shelf-chart--small { display:none; }
+    .shelf-chart text.sh-num { font-family:var(--serif); font-size:34px; fill:var(--ink); font-variant-numeric:tabular-nums; }
+    .shelf-chart text.sh-num--twelve { font-size:44px; }
+    .shelf-chart text.sh-lab { font-family:'Instrument Sans',system-ui,sans-serif; font-size:15px; fill:var(--ink-2); }
+    .shelf-chart text.sh-more { font-family:var(--serif); font-style:italic; font-size:15px; fill:var(--ink-dim); }
+    .shelf-chart--small text.sh-num { font-size:22px; }
+    .shelf-chart--small text.sh-num--twelve { font-size:30px; }
+    .shelf-chart--small text.sh-lab { font-size:12px; }
+    .shelf-chart--small text.sh-more { font-size:12px; }
+    .shelf-chart .disc { transition:opacity .4s ease; }
+    .thesis-shelf.has-pick .disc:not(.is-me), .thesis-calendar.has-pick .cal-peak:not(.is-me) { opacity:.25; }
+    .thesis-field.has-pick .tw:not(.is-me) { opacity:.22 !important; }
+    @media (max-width:739px) {
+      .mine-panels { grid-template-columns:1fr; }
+      .thesis-shelf svg.shelf-chart--wide { display:none; }
+      .thesis-shelf svg.shelf-chart--small { display:block; }
+    }
+    @media (prefers-reduced-motion:no-preference) {
+      .is-armed .shelf-chart .disc { opacity:.1; transition:opacity .45s ease; transition-delay:calc(var(--i) * 80ms); }
+      .is-armed.is-twelve .shelf-chart .disc { opacity:1; }
+      .is-armed .cal-draw { stroke-dasharray:1 1; stroke-dashoffset:1; }
+      .is-armed.is-on .cal-draw { stroke-dashoffset:0; transition:stroke-dashoffset 1.1s ease; transition-delay:var(--d); }
+      .is-armed .cal-pass--again .cal-draw { transition-duration:.7s; }
     }`;
   const js = `
 (function () {
@@ -382,11 +607,91 @@ export function motionBlock() {
   });
   var rt; window.addEventListener('resize', function () { if (!canvas) return; clearTimeout(rt); rt = setTimeout(function () { setup(); draw(level); }, 120); });
 })();`;
-  return `<style data-thesis-figures>${css}\n  </style>\n  <script data-thesis-figures>${js}\n  </script>`;
+  const pick = `
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var animate = !reduce && ('IntersectionObserver' in window);
+  function below(el) { return el.getBoundingClientRect().top > window.innerHeight * 0.9; }
+  function once(el, fn) {
+    var io = new IntersectionObserver(function (entries) { if (entries[0].isIntersecting) { io.disconnect(); fn(); } }, { threshold: 0.4 });
+    io.observe(el);
+  }
+  var NAMES = { aries: 'Aries', taurus: 'Taurus', gemini: 'Gemini', cancer: 'Cancer', leo: 'Leo', virgo: 'Virgo', libra: 'Libra', scorpio: 'Scorpio', sagittarius: 'Sagittarius', capricorn: 'Capricorn', aquarius: 'Aquarius', pisces: 'Pisces' };
+  /* The reader's pick lives in this page only: nothing is stored or sent. */
+  var mine = document.querySelector('[data-motion="mine"]');
+  if (mine) {
+    var grid = mine.querySelector('.mine-signs');
+    var label = mine.querySelector('[data-mine-label]');
+    var resting = label.textContent;
+    [].forEach.call(mine.querySelectorAll('.mine-sign'), function (b) {
+      b.addEventListener('click', function () {
+        var sign = b.getAttribute('aria-pressed') === 'true' ? '' : b.getAttribute('data-sign');
+        [].forEach.call(mine.querySelectorAll('.mine-sign'), function (o) { o.setAttribute('aria-pressed', o === b && sign ? 'true' : 'false'); });
+        grid.classList.toggle('has-pick', !!sign);
+        label.textContent = sign ? NAMES[sign] + '. You already knew.' : resting;
+        document.documentElement.dataset.mySign = sign;
+        document.dispatchEvent(new CustomEvent('thesis:sign', { detail: { sign: sign } }));
+      });
+    });
+  }
+  function marks(fig, selector, sign) {
+    fig.classList.toggle('has-pick', !!sign);
+    [].forEach.call(fig.querySelectorAll(selector), function (el) { el.classList.toggle('is-me', !!sign && el.getAttribute('data-sign') === sign); });
+  }
+  var field = document.querySelector('[data-motion="field"]');
+  var shelf = document.querySelector('[data-motion="shelf"]');
+  var cal = document.querySelector('[data-motion="calendar"]');
+  if (field) [].forEach.call(field.querySelectorAll('.tw'), function (el, i) { el.setAttribute('data-sign', Object.keys(NAMES)[i]); });
+  document.addEventListener('thesis:sign', function (e) {
+    var sign = e.detail.sign;
+    if (field) marks(field, '.tw', sign);
+    if (shelf) marks(shelf, '.disc', sign);
+    if (cal) marks(cal, '.cal-peak', sign);
+  });
+  if (cal && animate && below(cal)) {
+    cal.classList.add('is-armed');
+    once(cal, function () { cal.classList.add('is-on'); });
+  }
+  if (!shelf || !animate || !below(shelf)) return;
+  var cols = [].slice.call(shelf.querySelectorAll('.sh-col'));
+  function setCol(col, shown) {
+    var c = +col.getAttribute('data-cols'), st = +col.getAttribute('data-step'), base = +col.getAttribute('data-base');
+    var rows = Math.floor(shown / c), rem = shown % c;
+    var full = col.querySelector('.sh-full'), part = col.querySelector('.sh-part');
+    full.setAttribute('y', base - rows * st); full.setAttribute('height', rows * st);
+    part.setAttribute('y', base - (rows + 1) * st); part.setAttribute('width', rem * st);
+  }
+  function counters(i, value) {
+    [].forEach.call(shelf.querySelectorAll('svg'), function (svg) { var t = svg.querySelectorAll('.sh-num[data-count]')[i]; if (t) t.textContent = value.toLocaleString('en-US'); });
+  }
+  var byIndex = [];
+  cols.forEach(function (col) { var svg = col.ownerSVGElement, k = [].indexOf.call(svg.querySelectorAll('.sh-col'), col); (byIndex[k] = byIndex[k] || []).push(col); setCol(col, 0); });
+  byIndex.forEach(function (_, k) { counters(k, 0); });
+  shelf.classList.add('is-armed');
+  once(shelf, function () {
+    var t0 = performance.now(), each = 1300;
+    (function tick(now) {
+      var done = true;
+      byIndex.forEach(function (group, k) {
+        var n = +group[0].getAttribute('data-n');
+        var u = Math.max(0, Math.min(1, (now - t0 - k * (each * 0.75)) / each));
+        if (u < 1) done = false;
+        var shown = Math.round(n * (1 - Math.pow(1 - u, 2)));
+        group.forEach(function (col) { setCol(col, shown); });
+        counters(k, shown);
+      });
+      if (!done) requestAnimationFrame(tick); else shelf.classList.add('is-twelve');
+    })(t0);
+  });
+})();`;
+  return `<style data-thesis-figures>${css}\n  </style>\n  <script data-thesis-figures>${js}${pick}\n  </script>`;
 }
 
 export function stampCharts(page, data) {
   let next = stamp(stamp(page, 'know', knowFigure(data)), 'lifespan', lifespanFigure(data));
+  next = stamp(next, 'mine', mineFigure());
+  next = stamp(next, 'shelf', shelfFigure(data));
+  next = stamp(next, 'calendar', calendarFigure());
   next = stamp(next, 'motion', motionBlock());
   return next;
 }

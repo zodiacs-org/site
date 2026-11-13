@@ -325,6 +325,13 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   the ring settling into the lockup from `src/lib/brand-lockup.mjs`, and the
   system's ffmpeg encodes it. Not byte-stable, so not in the drift job;
   `scripts/end-card.test.mjs` checks it. Rerun it when the lockup changes)
+- `public/assets/thesis/film/` ← `npm run data:thesis-film` (the thesis's
+  20-second silent film "Two conversations", 1280 × 720 in H.264 and AV1 with
+  its poster, and a 1080 × 1920 cut ending on the brand end card: Chromium
+  draws each frame from its time alone, from the sign hues, sign symbols and
+  invented coin marks in `scripts/build-thesis-charts.mjs`, and the system's
+  ffmpeg encodes it. Not byte-stable, so not in the drift job;
+  `scripts/thesis-film.test.mjs` checks it. Rerun it when those shapes change)
 - `public/assets/pulse.json` / `distribution.json` ← weekly cron workflows
 - `docs/phase5/people-pilot/index-demand.json` ← `node
   scripts/build-people-index-demand.mjs --refresh` (pinned twelve-month

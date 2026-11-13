@@ -280,7 +280,9 @@ export function seasonMotion() {
     g.addEventListener('click', pick);
     g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
   });
-  function settle() { if (current) focus(current, 'Today the Sun is in ' + names[current] + '. '); }
+  function picked() { return document.documentElement.dataset.mySign || ''; }
+  function settle() { var mine = picked(); if (mine) { focus(mine, ''); return; } if (current) focus(current, 'Today the Sun is in ' + names[current] + '. '); }
+  document.addEventListener('thesis:sign', function (e) { fig.setAttribute('data-picked', e.detail.sign || ''); if (e.detail.sign) focus(e.detail.sign, ''); else { focus(null, ''); settle(); } });
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce || !('IntersectionObserver' in window) || fig.getBoundingClientRect().top < window.innerHeight * 0.9) { settle(); return; }
   fig.classList.add('is-armed');
