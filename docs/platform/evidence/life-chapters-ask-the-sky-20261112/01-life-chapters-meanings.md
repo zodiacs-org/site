@@ -2,10 +2,17 @@
 
 Draft only. Nothing here is product copy until Dias says so.
 
+**Second version, 13 November 2026.** Revised once after the second session's
+review (`BREAKER.md`). What changed: the hard-patch lines no longer hang on
+the chapter's sign (S1), the day and night rule is stated as the source
+states it (S2), the Pisces and Sagittarius meanings no longer give an order
+of events (S3), no line promises an outcome (S5), and four smaller citation
+points are corrected (S4).
+
 This file holds:
 
 1. what the method is, each claim tied to a passage of Valens (Part 1);
-2. a plain-words meaning for each of the twelve signs as a Life Chapter (Part 2);
+2. a plain-words meaning for each of the twelve signs as a Life Chapter (Part 2), and four lines for a hard patch (Part 2b);
 3. the words for a peak stretch (Part 3);
 4. the words for the loosing of the bond (Part 4);
 5. the birth-time warnings (Part 5);
@@ -42,8 +49,8 @@ which sign is a peak (Part 3).
 | T13 | Riley calls the jump "making the connection". Valens says what it brings in three cases, which between them cover all six chapters that have one. | V10 |
 | T14 | The strongest places for a period counted from Daimon are the tenth sign from the Lot of Fortune and the sign of the Lot of Fortune itself. The other angles also bring rank, "but not to the same extent". | V12 |
 | T15 | Valens ties those results to the rest of the chart: the Lot's ruler, the helpful and harmful planets, and what he calls the basis of the nativity. A strong place in a modest chart brings a modest result. | V12, V14 |
-| T16 | Both Lots are counted from the rising degree, using the distance between the Sun and the Moon, and the count runs one way for a day birth and the other way for a night birth. | V18, V19 |
-| T17 | The rising degree depends on the hour of birth. A sign can rise in as little as an hour and a third, which is under three minutes for each degree. | V21, V22 |
+| T16 | Both Lots are counted from the rising degree, using the distance between the Sun and the Moon. For Daimon, the Lot the chapters are counted from, the count runs one way for a day birth and the other way for a night birth. For the Lot of Fortune Valens's night rule has a condition: the count is reversed only while the Moon is above the earth, and after the Moon has set it runs as by day. | V19 for Daimon; V18 for Fortune |
+| T17 | The rising degree depends on the hour of birth. In Valens's own example Aries rises in an hour and a third, which is under three minutes for each degree. That is his figure for one sign in one band of latitude, not a stated minimum. | V21, V22 |
 | T18 | The method works by whole signs: the chapter is the sign the Lot is in. | V7, V17 |
 | T19 | Valens starts the count from Fortune for infants, "until" the chart can show an occupation, and says the active qualities "come into play later". Life Chapters is a reading for an adult's working life. | V6 |
 
@@ -53,8 +60,10 @@ our reasoning, and they are marked so in Part 5:
 - If a small change in the birth time moves the Lot across a sign boundary,
   the chapters start from a different sign and every date changes.
 - If a birth is close to sunrise or sunset, a small change in the birth time
-  switches the day rule for the night rule, and the Lot lands somewhere else
-  entirely.
+  switches the day rule for the night rule, and the Lot the chapters are
+  counted from lands somewhere else entirely (V19). For the Lot of Fortune,
+  which only sets the peaks, the switch also depends on whether the Moon was
+  up (V18).
 
 ## Part 2. The twelve chapters in plain words
 
@@ -62,9 +71,11 @@ How these were written. Valens does not give a list of twelve chapter
 meanings. He reads a chapter from its sign, the planet that rules the sign,
 the planets in it and the chart as a whole (V3, V14), and he says the ruler
 produces its usual results "in each of the signs" (V24). So each meaning
-below is built from three things he does give: the nature of the sign (V24),
-the nature of its ruling planet (V23), and how each of the four kinds of sign
-behaves when a work period is under strain (V13). The wording is ours. Where
+below is built from two things he does give: the nature of the sign (V24)
+and the nature of its ruling planet (V23). The wording is ours. What Valens
+says in V24 is about people born under a sign, not about a period of years,
+so a meaning says what kind of years these are and never in what order
+things happen in them. Where
 Valens's list for a sign is a list of insults about people born under it,
 those words were left out, and that is said under the sign.
 
@@ -74,7 +85,6 @@ Each sign has:
   calendar. As a stretch inside another chapter, in the method's months and in days.
 - **Chapter.** The meaning, advice first.
 - **Stretch.** One line for when the sign is a stretch inside a chapter.
-- **Under strain.** One line for a hard patch, from V13.
 - **Built from.** The words of Valens the meaning rests on.
 
 ### Aries
@@ -92,11 +102,7 @@ Each sign has:
 
 > An Aries stretch is for starting something and pushing it yourself.
 
-**Under strain.**
-
-> When this gets hard, the risk is forcing it: acting before you have really decided.
-
-**Built from.** V24: "governing, fiery", "the cause of rank", "bold in thought ... restless ... quickly changing". V23: Mars is "the ruler of action and effort" and "causes commands, campaigns and leadership". V13, fiery sign: "will act against his own will".
+**Built from.** V24: "governing, fiery", "the cause of rank", "bold in thought ... restless ... quickly changing". V23: Mars is "the ruler of action and effort" and "causes commands, campaigns and leadership".
 
 ### Taurus
 
@@ -113,11 +119,7 @@ Each sign has:
 
 > A Taurus stretch is for steady work on one thing, and for finishing it well.
 
-**Under strain.**
-
-> When this gets hard, you can outlast it. Endurance is this chapter's strength.
-
-**Built from.** V24: "productive of order, earthy", "invariable, energetic", "noble, energetic, toilsome, good at keeping things, pleasure-loving". V23: Venus gives "craftsmanship or trade". V13, earthy sign: "will bear the blows of fortune nobly ... because of his endurance".
+**Built from.** V24: "productive of order, earthy", "invariable, energetic", "noble, energetic, toilsome, good at keeping things, pleasure-loving". V23: Venus gives "craftsmanship or trade".
 
 ### Gemini
 
@@ -134,11 +136,7 @@ Each sign has:
 
 > A Gemini stretch is for learning something and for getting your words in front of people.
 
-**Under strain.**
-
-> When this gets hard, check what you are actually getting done. This chapter can mistake being busy for making progress.
-
-**Built from.** V24: "bicorporeal, articulate, the house of Mercury", "scholars, those working in education and letters, poets", "translators, merchants". V23: Mercury "indicates education, letters, disputation, reasoning ... communication". V13, airy sign: "will suppose that he is accomplishing something other than what he really is".
+**Built from.** V24: "bicorporeal, articulate, the house of Mercury", "scholars, those working in education and letters, poets", "translators, merchants". V23: Mercury "indicates education, letters, disputation, reasoning ... communication".
 
 ### Cancer
 
@@ -155,11 +153,7 @@ Each sign has:
 
 > A Cancer stretch brings a move or a change of role, and work that faces the public.
 
-**Under strain.**
-
-> When this gets hard, the ground shifts more than once, and you find your feet each time.
-
-**Built from.** V24: "changeable, public, popular, civic", "ambitious, popular, constantly changing", "not sticking to one activity or (at the most) two, they become wanderers and travelers". V23: the Moon indicates "the household", "the city, the assembly of the people" and "voyages, travel and wanderings". V13, watery sign: "will come into vicissitudes in many affairs, but will manage to succeed".
+**Built from.** V24: "changeable, public, popular, civic", "ambitious, popular, constantly changing", "not sticking to one activity or (at the most) two, they become wanderers and travelers". V23: the Moon indicates "the household", "the city, the assembly of the people" and "voyages, travel and wanderings".
 
 ### Leo
 
@@ -176,11 +170,7 @@ Each sign has:
 
 > A Leo stretch is for showing the work and taking the lead on it.
 
-**Under strain.**
-
-> When this gets hard, the risk is pride: pressing on with something because backing down would be seen.
-
-**Built from.** V24: "kingly, stable, noble", "governing, civic, imperious", "distinguished, noble, steady, just, haters of evil, independent, haters of flattery". V23: the Sun indicates "public reputation, action, authority over the masses". V13, fiery sign: "will act against his own will". The word "pride" is ours, from "imperious".
+**Built from.** V24: "kingly, stable, noble", "governing, civic, imperious", "distinguished, noble, steady, just, haters of evil, independent, haters of flattery". V23: the Sun indicates "public reputation, action, authority over the masses".
 
 ### Virgo
 
@@ -197,11 +187,7 @@ Each sign has:
 
 > A Virgo stretch is for careful work, and for being trusted with something that is not yours.
 
-**Under strain.**
-
-> When this gets hard, you carry it well. This chapter holds up under weight.
-
-**Built from.** V24: "industrious", "burdened with care, leading a quite varied life, administrators of others’ goods, trusted, good stewards, secretaries, accountants". V13, earthy sign: "will bear the blows of fortune nobly".
+**Built from.** V24: "industrious", "burdened with care, leading a quite varied life, administrators of others’ goods, trusted, good stewards, secretaries, accountants".
 
 ### Libra
 
@@ -218,11 +204,7 @@ Each sign has:
 
 > A Libra stretch is for making an agreement or settling the terms of one.
 
-**Under strain.**
-
-> When this gets hard, check that what you agreed is what is really happening.
-
-**Built from.** V24: "the supervisor of crops, vineyards, olive groves, aromatics, homesteads, measures, and artisans", "noble and just", "living through ups and downs of fortune, being in charge of measures, posts". V23: Venus gives "friendship, companionship" and "agreements on favorable terms". V13, airy sign: "will suppose that he is accomplishing something other than what he really is". Left out: Valens also calls people born under Libra "malicious" and covetous.
+**Built from.** V24: "the supervisor of crops, vineyards, olive groves, aromatics, homesteads, measures, and artisans", "noble and just", "living through ups and downs of fortune, being in charge of measures, posts". V23: Venus gives "friendship, companionship" and "agreements on favorable terms". Left out: Valens also calls people born under Libra "malicious" and covetous.
 
 ### Scorpio
 
@@ -238,11 +220,7 @@ Each sign has:
 
 > A Scorpio stretch is for hard, quiet effort on one difficult thing.
 
-**Under strain.**
-
-> When this gets hard, it turns more than once before it settles, and it does settle.
-
-**Built from.** V24: "the house of Mars ... solid", "mute", "unchangeable". V23: Mars is "the ruler of action and effort" and rules "actions involving fire or iron, craftwork, masonry". V13, watery sign: "will come into vicissitudes in many affairs, but will manage to succeed". Left out: Valens's list for people born under Scorpio is a list of crimes. It describes a birth character and has no place in a reading of a period. This is the meaning with the thinnest support in the source. See Part 7, item 4.
+**Built from.** V24: "the house of Mars ... solid", "mute", "unchangeable". V23: Mars is "the ruler of action and effort" and rules "actions involving fire or iron, craftwork, masonry". Left out: Valens's list for people born under Scorpio is a list of crimes. It describes a birth character and has no place in a reading of a period. This is the meaning with the thinnest support in the source. See Part 7, item 4.
 
 ### Sagittarius
 
@@ -252,17 +230,14 @@ Each sign has:
 
 > Aim wider than you have before. A Sagittarius chapter brings bigger rooms:
 > teachers and backers, positions where you judge or advise, a reputation
-> worth having. Something you lose early in it tends to come back.
+> worth having. It is a generous chapter, and it goes best when you back
+> other people as well as yourself.
 
 **Stretch.**
 
 > A Sagittarius stretch is for reaching further: asking for the bigger role or the better teacher.
 
-**Under strain.**
-
-> When this gets hard, the risk is overreach: saying yes to more than you meant to.
-
-**Built from.** V24: "governing, kingly", "noble, just, great-hearted, judges, generous", "They lose much of their original possessions but gain them back", "seek a noble reputation, are benefactors, prominent". V23: Jupiter is "the ruler of rank, crowns and zeal" and indicates "friendships with great men" and "offices". V13, fiery sign: "will act against his own will".
+**Built from.** V24: "governing, kingly", "noble, just, great-hearted, judges, generous", "seek a noble reputation, are benefactors, prominent". Left out: "They lose much of their original possessions but gain them back" is about the property of people born under the sign, and the first version wrongly turned it into an order of events. V23: Jupiter is "the ruler of rank, crowns and zeal" and indicates "friendships with great men" and "offices".
 
 ### Capricorn
 
@@ -279,11 +254,7 @@ Each sign has:
 
 > A Capricorn stretch is for slow, heavy work that someone has to answer for.
 
-**Under strain.**
-
-> When this gets hard, you carry it. Endurance is what this chapter is made of.
-
-**Built from.** V24: "indicative of misfortune and toil, a sculptor, a farmer", "toilsome, burdened with care", "plotters of great deeds". V23: Saturn "puts into one’s hands great ranks and distinguished positions, supervisions, management of others’ property". V15: in Valens's own example the 27 Capricorn years were the man's best, though he puts that down to Jupiter being in the sign. V13, earthy sign: "will survive most things philosophically because of his endurance". Left out: "bad, warped" and the rest of the list for people born under the sign.
+**Built from.** V24: "indicative of misfortune and toil, a sculptor, a farmer", "toilsome, burdened with care", "plotters of great deeds". V23: Saturn "puts into one’s hands great ranks and distinguished positions, supervisions, management of others’ property". V15: in Valens's own example the 27 Capricorn years were the man's best, though he puts that down to Jupiter being in the sign. Left out: "bad, warped" and the rest of the list for people born under the sign.
 
 ### Aquarius
 
@@ -300,11 +271,7 @@ Each sign has:
 
 > An Aquarius stretch is for independent work on something stubborn.
 
-**Under strain.**
-
-> When this gets hard, check that the work is going where you think it is.
-
-**Built from.** V11: "Aquarius allots 30 years". V24: "solid", "free", "unchanging", "the cause of troubles arising from athletic training, carrying burdens, or work in hard materials, an artisan, public", "self-willed". V13, airy sign: "will suppose that he is accomplishing something other than what he really is". Left out: "malicious ... misanthropic" and the rest of the list for people born under the sign.
+**Built from.** V11: "Aquarius allots 30 years". V24: "solid", "free", "unchanging", "the cause of troubles arising from athletic training, carrying burdens, or work in hard materials, an artisan, public", "self-willed". Left out: "malicious ... misanthropic" and the rest of the list for people born under the sign.
 
 ### Pisces
 
@@ -314,25 +281,73 @@ Each sign has:
 
 > Stay loose and let the work change shape. A Pisces chapter is varied and
 > sociable: many people, more than one direction at once, some wandering.
-> Its pattern is a poor start that turns into a good run.
+> It is a changeable chapter and it does not hold one shape for long.
 
 **Stretch.**
 
-> A Pisces stretch is varied and sociable, and it tends to end better than it begins.
+> A Pisces stretch is varied and sociable, with more than one thing going at once.
 
-**Under strain.**
+**Built from.** V24: "changeable", "sociable/lewd", "the cause of wandering, varied", "in conflict with itself because one Fish is northern, the other southern". Left out: "unsteady, unreliable", the words about sex and theft, and "changing from bad fortune to good", which describes people born under the sign and which the first version wrongly turned into an order of events.
 
-> When this gets hard, it turns more than once, and it comes right.
+## Part 2b. A hard patch: four lines, keyed to where the chapter's ruler is
 
-**Built from.** V24: "changeable", "sociable/lewd", "the cause of wandering, varied", "in conflict with itself because one Fish is northern, the other southern", "changing from bad fortune to good". V13, watery sign: "will come into vicissitudes in many affairs, but will manage to succeed". Left out: "unsteady, unreliable" and the words about sex and theft.
+The first version gave every sign an "Under strain" line and took it from the
+element of the chapter's own sign. That misread the passage. V13 is about
+**the sign the ruling planet is in**, in that person's birth chart: "If the
+star controlling such a chronocratorship is found in a fiery sign". For an
+Aries chapter the question is where Mars was at birth, not that Aries is a
+fire sign. So the twelve lines are withdrawn, and there are four lines
+instead, chosen by a fact the engine would have to supply, as it supplies
+the peak.
+
+What the passage requires, and what the lines below assume:
+
+- the planet is the ruler of the current chapter's sign (the "star controlling" the period, V13, V7);
+- the line is chosen by the kind of sign that planet is in at birth: fiery, airy, earthy or watery;
+- Valens gives these results for a period under strain. His first sentence sets the case: the star "is not at an angle and has a malefic in conjunction or in aspect with the houseruler of its sign". For a fiery sign he repeats the condition, "with malefics in conjunction or in aspect". For an airy sign the condition is "if the sign or its ruler are afflicted". So these are lines for a hard patch only, and an engine that cannot test the condition should not print them;
+- they say what tends to happen. None is a promise.
+
+The chapter's ruler is in a fiery sign (Aries, Leo, Sagittarius):
+
+> When these years get hard, the risk is forcing things: acting before you
+> have really decided.
+
+Built from V13: "will act against his own will". Left out: the words about a breakdown, which the site's rules keep out of readings.
+
+The chapter's ruler is in an airy sign (Gemini, Libra, Aquarius):
+
+> When these years get hard, check what you are actually getting done. It is
+> easy here to mistake being busy for making progress.
+
+Built from V13: "will suppose that he is accomplishing something other than what he really is".
+
+The chapter's ruler is in an earthy sign (Taurus, Virgo, Capricorn):
+
+> When these years get hard, you tend to bear it well. Endurance is your
+> strength here.
+
+Built from V13: "he will bear the blows of fortune nobly, and will survive most things philosophically because of his endurance".
+
+The chapter's ruler is in a watery sign (Cancer, Scorpio, Pisces):
+
+> When these years get hard, expect things to shift more than once. People
+> with this placement are quick to steady themselves, and they tend to come
+> through.
+
+Built from V13: "will have a mind which can be easily reassured, will come into vicissitudes in many affairs, but will manage to succeed".
+
+Whether the product should use these lines at all is for Dias (Part 7,
+item 14). They are not needed for C1.
 
 ## Part 3. A peak stretch
 
 **What a peak is, in this draft.** A chapter or a stretch is a peak when its
 sign is the tenth sign counted from the sign of the Lot of Fortune (counting
 Fortune's own sign as the first), or is Fortune's own sign. Those are the two
-places Valens names first, with the largest result (V12, T14). He says the
-other angles also count, "but not to the same extent". Which of them the
+places Valens names first, with the largest result (V12, T14). He adds that a
+period arriving "at the Ascendant, at MC, or at the other angles" brings rank
+"but not to the same extent". The passage does not settle whether those are
+the chart's own angles or the angles counted from Fortune. Which places the
 product should call a peak is for Dias (Part 7, item 6).
 
 So the reading needs to know where the Lot of Fortune is, even though no
@@ -424,7 +439,7 @@ Capricorn to Cancer, and Aquarius to Leo:
 > long quiet work comes into the light. What you have built out of sight
 > starts to be noticed, and the pace picks up.
 
-Built from V10: "Saturn making the connection from Capricorn and Aquarius to Leo and Cancer indicates that the chronocratorship will be vigorous: it brings matters from darkness into the light".
+Built from V10: "Saturn making the connection from Capricorn and Aquarius to Leo and Cancer indicates that the chronocratorship will be vigorous: it brings matters from darkness into the light". Valens goes straight on to say this is "depending on the basis of the nativity", so how busy is a matter of the chart as a whole (T15). The wording says what kind of turn this is and does not promise its size.
 
 Gemini to Sagittarius, and Virgo to Pisces:
 
@@ -483,7 +498,10 @@ The Lot of Fortune is close to a sign edge (this changes peaks only):
 > {distance} from the edge of {neighbour sign}. If you were born about
 > {minutes} minutes {earlier or later}, different stretches would be the peaks.
 
-The birth is close to sunrise or sunset:
+The birth is close to sunrise or sunset. This warning is about the Lot the
+chapters are counted from, for which Valens gives a plain day rule and night
+rule (V19). It is not written for the Lot of Fortune, whose night rule has a
+further condition (T16):
 
 > You were born within {minutes} minutes of {sunrise or sunset}. The point
 > your chapters are counted from is worked out one way for a birth by day
@@ -529,7 +547,7 @@ Notes on that skeleton:
 2. **"Lot of Spirit" is not Riley's name.** He says Daimon. The drafts use "Lot of Spirit" because ZOD-60 does. If the site wants to cite Riley beside the reading, the two names have to be connected somewhere in plain words.
 3. **The twelve meanings are ours.** Valens gives no list of chapter meanings. He would read a chapter from the planets in the sign and the state of its ruler in that person's chart (V3, V14). A reading built only on the sign is a first layer. Dias decides whether that is enough for a first version.
 4. **Four signs were softened.** Valens's words for people born under Scorpio, Capricorn, Aquarius and Pisces are harsh. The meanings use his words about the sign and its ruler and leave out the character lists. Scorpio has the thinnest support.
-5. **"Spirit only" departs from Valens in three places.** He counts from Fortune for both subjects when Daimon or its ruler is badly placed (V4). When both Lots are in one sign, which is every birth at a new or full Moon, he counts work from the next sign (V5). And he counts from Fortune for infants and, usually, for women (V6). The first and third can be set aside as a product decision. The second cannot be ignored: the engine needs a rule for it, and it changes every date for those charts.
+5. **"Spirit only" departs from Valens in three places.** He counts from Fortune for both subjects when Daimon or its ruler is badly placed (V4). When both Lots are in one sign, he counts work from the next sign (V5). Valens names births at a new or full Moon. It also happens whenever the Sun and Moon are close enough to meeting or opposing each other for both Lots to land in one sign, so more charts need the rule than exact new and full Moons. And he counts from Fortune for infants and, usually, for women (V6). The first and third can be set aside as a product decision. The second cannot be ignored: the engine needs a rule for it, and it changes every date for those charts.
 6. **Which places are peaks.** Valens names the tenth from Fortune and Fortune's own sign first, then "the other angles" to a lesser degree (V12). The draft uses the first two. Modern tables often mark all four angles from Fortune. That practice was not checked here, because modern calculators are not a source for this job.
 7. **The warning threshold.** How close to a sign edge triggers the warning (the draft leaves `{distance}` open) is a design choice. A proposal: warn within 3 degrees, which is about 12 minutes of clock time on average, and always when the birth time is on the hour or the half hour.
 8. **The hardest turning point.** The Cancer and Leo wording is already softer than Valens. ZOD-24 (the "Death" headline) suggests care. Dias decides whether it stays this plain.
@@ -538,6 +556,8 @@ Notes on that skeleton:
 11. **Turning points below the month level.** Valens describes the jump for stretches inside a chapter (V8). He does not say whether the same happens at the day and hour levels. Not attested in the text opened.
 12. **The Lot formulas.** Valens himself reports "a variety of opinions" on how to count the Lot of Fortune (V18), and for night births he gives a rule that depends on whether the Moon is above the horizon. The engine build will need to choose one and say which. Not decided here.
 13. **Children.** Valens's own rule (T19) and the site's under-13 and under-18 rules point the same way: Life Chapters is for adults. The drafts assume an adult reader.
+
+14. **The hard-patch lines (Part 2b).** They need two facts from the chart: which sign the chapter's ruler is in, and whether Valens's condition of strain is met. Dias decides whether the product uses them, and if so whether a simpler trigger than Valens's is acceptable.
 
 A check that is not a source: the made-up sample on ZOD-60 has a Virgo
 chapter of 7,200 days, a last stretch of 570 days in Leo, and a jump to
