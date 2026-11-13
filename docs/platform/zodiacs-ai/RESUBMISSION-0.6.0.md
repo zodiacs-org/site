@@ -9,11 +9,12 @@ in `claude-directory/RESYNC-0.6.0.md`.
 ## Hosted server at 0.6.7, 13 November 2026
 
 PRs #970 and #971 went live on 13 November, and the hosted server now
-reports 0.6.7. The thirteen first reviewed tools have plainer descriptions,
+reports 0.6.7. Every one of the 19 tools has a plainer description, the
+server's instructions were reworded to say truly what a link can hold,
 `get_horoscope`'s panel moved to `ui://zodiacs/horoscopes-v7.html` (the
 earlier addresses are still served), and a love reading asked with a birth
 date under 18 gives the general reading. No name, input, annotation or tool
-count changed. 0.6.6 is still in OpenAI review, and Dias chose to wait until
+count changed. 0.6.6 is still in OpenAI review, and Dias chose, in his reply on the ZOD-58 task, to wait until
 that review ends before 0.6.7 goes in. `integrations/packages/zodiacs-sky-0.6.7.zip`
 (220,827 bytes) is built and has not been uploaded. A reviewer testing the
 live server during the 0.6.6 review now sees the 0.6.7 descriptions; if the

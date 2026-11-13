@@ -21,18 +21,18 @@ messages that do not agree with each other or with the live server:
 | 6 November | Email, reply | The thirteen reviewed tools are unchanged. 0.6.5 changed one the next day. |
 | 7 November | Email, short note | Names 0.6.5 as the version. The server reported 0.6.6 from 7 November and has reported 0.6.7 since 13 November. |
 
-The portal's additional notes, saved on 8 November, already name 0.6.6 and
-say links never carry names. So the email thread stops at 0.6.5 and still
-holds the 15 October sentence about first names, while the portal says the
-opposite. This note states the current facts once and replaces all four
-email statements above.
+The portal's additional notes, saved on 8 November, name 0.6.6. Whether they
+also say links never carry names is not on record here, so read them in the
+portal before sending. Either way the email thread stops at 0.6.5 and still
+holds the 15 October sentence about first names. This note states the
+current facts once and replaces all four email statements above.
 
 ## Finish these before sending
 
 1. Both changes this note waited for landed on 13 November: the fix for
    love readings asked for someone under 18 (PR #970) and the plainer tool
-   descriptions (PR #971). The live server reported 0.6.7 that day. The
-   thirteen first reviewed tools have new descriptions, so the reviewers'
+   descriptions (PR #971). The live server reported 0.6.7 that day. Every
+   tool's description changed, and so did the server's instructions, so the reviewers'
    copy of the tools needs a new sync in the portal before or with this note;
    ask for that sync in the same yes.
 2. Check the live server on the day: `initialize` reports the version named
@@ -51,7 +51,7 @@ email statements above.
 >
 > This is one summary of the Zodiacs connector at https://zodiacs.org/mcp (slug zodiacs, ticket #145701231) as it is today. Please read it in place of our earlier notes of 15 October (both the first note and the correction sent at 18:01 UTC), 6 November and 7 November. Where any of those differs from this one, this one is right.
 >
-> Version and tools. The server reports version 0.6.7 and offers 19 tools. All are read-only and need no sign-in. Thirteen are the tools first reviewed; one of them, get_occasion_sky, changed in 0.6.5 and no longer offers the baby's arrival or coming-of-age occasions. In 0.6.7 those thirteen have plainer descriptions that say only what each tool does, what it fits and its limits; no name, input or annotation changed, and get_horoscope's panel moved to a new address. The other six are get_natal_chart, get_horoscope_period, get_chinese_zodiac, get_personal_transits, explain_astrology and find_birthplace. TO CONFIRM before sending: the date of the last sync in the directory editor.
+> Version and tools. The server reports version 0.6.7 and offers 19 tools. All are read-only and need no sign-in. Thirteen are the tools first reviewed; one of them, get_occasion_sky, changed in 0.6.5 and no longer offers the baby's arrival or coming-of-age occasions. The other six are get_natal_chart, get_horoscope_period, get_chinese_zodiac, get_personal_transits, explain_astrology and find_birthplace. In 0.6.7 every tool has a plainer description that says only what it does, what it fits and its limits, and the server's instructions were reworded; no name, input or annotation changed, and get_horoscope's panel moved to a new address. TO CONFIRM before sending: the date of the last sync in the directory editor.
 >
 > Children and teenagers. Zodiacs is not directed at children under 13. Any call that carries a birth date less than 13 years ago is refused before anything is calculated, and so is a birthday card for a day in those years. For anyone under 18, Zodiacs gives no romance, attraction or sexual framing: get_compatibility gives no reading when either person is under 18 and points to a friendship reading of the two Sun signs. Asked for a love reading with a birth date under 18, get_horoscope gives the general reading with a note saying why.
 >

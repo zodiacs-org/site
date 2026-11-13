@@ -9,7 +9,8 @@ step that touches production, the portal or email needs Dias's separate yes.
 ## 0.6.7 live, 13 November 2026
 
 The hosted server reports 0.6.7 since PR #971 went live on 13 November.
-The thirteen first reviewed tools have plainer descriptions, and
+Every one of the 19 tools has a plainer description, the server's
+instructions were reworded to say truly what a link can hold, and
 `get_horoscope`'s panel moved to `ui://zodiacs/horoscopes-v7.html`; no name,
 input, annotation or tool count changed. A love reading asked with a birth
 date under 18 now gives the general reading (PR #970). The portal's copy of

@@ -14,11 +14,13 @@ on 13 November, after PR #971 went live) and offers 19 read-only tools
 with no sign-in: the thirteen first reviewed, then `get_natal_chart`,
 `get_horoscope_period`, `get_chinese_zodiac`, `get_personal_transits`,
 `explain_astrology` and `find_birthplace`. Tools added to the source since
-(`search_sky_events`, `get_year_score`, `get_solar_return`) sit behind their
+(`search_sky_events`, `get_year_score`, `get_solar_return`,
+`get_numerology`) sit behind their
 own switches and are not part of the 19.
 
-**What 0.6.7 changed.** The thirteen first reviewed tools have new
-descriptions that say only what each tool does, what it fits and its limits
+**What 0.6.7 changed.** Every one of the 19 tools has a new description
+that says only what the tool does, what it fits and its limits, and the
+server's instructions were reworded to say truly what a link can hold
 (PR #971, approved by the owner on 11 and 13 November). No name, title,
 input, annotation or tool count changed. `get_horoscope`'s panel moved to a
 new address, `ui://zodiacs/horoscopes-v7.html`, and the earlier addresses are
@@ -69,9 +71,9 @@ email has described the under-13 refusal of 8 November.
 - The first note of 15 October said Zodiacs never chooses or ranks dates,
   scores relationships or predicts outcomes. It was withdrawn the same day.
 - The correction of 15 October, 18:01 UTC, said share links carry first
-  names. Since 0.6.1 they carry none, and the portal notes of 8 November say
-  links never carry names. The two statements contradict each other in the
-  reviewers' hands, and no message has withdrawn the older one.
+  names. Since 0.6.1 they carry none, and no message has withdrawn the older
+  statement. Whether the portal notes of 8 November say links never carry
+  names is not on record here; read them in the portal.
 - The reply of 6 November said the thirteen reviewed tools were unchanged.
   0.6.5 changed one of them the next day, and the 7 November note said so.
 
