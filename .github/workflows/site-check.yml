@@ -373,6 +373,9 @@ jobs:
       - name: Verify Sun ingress table drift
         run: node scripts/build-sun-ingresses.mjs --check
 
+      - name: Verify Moon distance table drift
+        run: node scripts/build-moon-distances.mjs --check
+
       # Committed wing HTML must match what the builders produce from
       # sources (build-app resolves the pinned local @babel/standalone,
       # so this job runs fully offline).
@@ -876,6 +879,59 @@ jobs:
           name: aura-drive-proofs
           path: docs/acceptance/registry-aura/
           if-no-files-found: ignore
+
+  # The same production flags with encrypted account sync switched on, as
+  # production runs it once launched. PUBLIC_ACCOUNT_SYNC_V2_ENABLED is read
+  # at build time, so only a build with it on runs the dist checks (for
+  # example the localized pages' English-link checks) against the pages it
+  # changes. Build only: no browsers, no email, no Supabase.
+  account-sync-v2-flags-build:
+    name: Build with production's feature flags and account sync on
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PUBLIC_COMPAT_INVITES_ENABLED: "1"
+      PUBLIC_REGISTRY_AURA_ENABLED: "1"
+      PUBLIC_REGISTRY_COLLECTION_ENABLED: "1"
+      PUBLIC_REGISTRY_TRADE_ENABLED: "1"
+      PUBLIC_SAVED_RECORDS_ENABLED: "1"
+      PUBLIC_WEEKLY_DIGEST_ENABLED: "1"
+      PUBLIC_ZODIAC_GAMES_ENABLED: "1"
+      PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_stand_in
+      PUBLIC_VAPID_KEY: ci-stand-in-vapid-public-key
+      PUBLIC_PLAUSIBLE_SCRIPT_URL: https://plausible.io/js/script.js
+      SOLANA_RPC_URL: https://production-flags-ci.invalid/rpc
+      BASE_RPC_URL: https://production-flags-ci.invalid/base
+      # Linux WebKit resolves hosts before Playwright can intercept fetch.
+      # The recovery driver owns this loopback fixture; no live account service.
+      PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      SUPABASE_SERVICE_ROLE_KEY: ci_stand_in_service_role
+      DAILY_EMAIL_ENABLED: "1"
+      EMAIL_PROVIDER: resend
+      RESEND_API_KEY: re_ci_stand_in_sending
+      RESEND_CONTACTS_API_KEY: re_ci_stand_in_contacts
+      RESEND_FROM_EMAIL: "Zodiacs.org <ci@production-flags-ci.invalid>"
+      RESEND_DAILY_SEGMENT_ID: ci_stand_in_daily_segment
+      EMAIL_CONFIRM_SECRET: ci-stand-in-confirm-secret-00000000000000000000
+      DAILY_EMAIL_UNSUBSCRIBE_SECRET: ci-stand-in-unsubscribe-secret-000000000000000
+      DAILY_EMAIL_RECIPIENT_HASH_SECRET: ci-stand-in-recipient-secret-0000000000000000
+      PUBLIC_ACCOUNT_SYNC_V2_ENABLED: "1"
+      ACCOUNT_SYNC_V2_API_ENABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build, dist checks and route budgets (account sync on)
+        run: npm run build
 
   # Production builds with all of these public flags on. The other builds
   # here turn on one flag or none, and pages are smaller then, so a route can

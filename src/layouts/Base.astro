@@ -19,6 +19,16 @@ import { RUSSIAN_RUNTIME } from '../lib/i18n/ru-runtime/server';
 import AccountProfileAccessBootstrap from '../islands/AccountProfileAccessBootstrap';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../lib/account-v2/feature-flags';
 import { ACCOUNT_V2_PROFILE_ACCESS_KEY } from '../lib/account-v2/profile-access';
+import { ACCOUNT_BOUNDARY_PROFILE_KEYS } from '../lib/account-v2/profile-boundary';
+import {
+  PROFILE_ACCESS_CHUNK_PLACEHOLDER,
+  PROFILE_ACCESS_DEV_ENTRY,
+  profileAccessBootstrapEager,
+  profileAccessLoaderScript,
+  profileAccessMarkerKeys,
+} from '../lib/account-v2/profile-access-loader.mjs';
+import { PROFILE_SUN_SIGN_KEY } from '../lib/profile/store';
+import { supabaseAuthStorageKeyName } from '../lib/profile/saved-pages-config';
 import { GUIDE_PRIVATE_SESSION_KEY } from '../lib/assistant/guide-loader.mjs';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../lib/web-analytics.mjs';
 import { calculatorToolForPath } from '../lib/webmcp/calculator-tools';
@@ -69,6 +79,14 @@ interface Props {
   editionDate?: string;
   /** Suppress third-party runtime scripts on pages handling private account data. */
   privateSurface?: boolean;
+  /**
+   * This page reads the browser's saved charts or account (the local profile
+   * store, the living chart, or a chart restored from account sync v2) and can
+   * render them. While account sync v2 is on, remote analytics stay off here,
+   * exactly as on a privateSurface page. `tests/analytics-account-surfaces.test.ts`
+   * finds every such page through its imports and fails if one is missing.
+   */
+  accountSurface?: boolean;
   /**
    * Do not register the PWA worker on this route.
    *
@@ -121,16 +139,43 @@ const plausibleEndpoint = import.meta.env.PUBLIC_PLAUSIBLE_ENDPOINT?.trim() ?? '
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN?.trim() ?? '';
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
-  PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
+// Remote analytics never run on a privateSurface page. The account, sync and
+// profile surfaces (profile in every locale, the auth callback) are private
+// whenever account sync v2 is on, and so is every accountSurface page: each
+// page that reads the saved charts or the account and can render them (the
+// birth chart, Today, transits, the homepages' welcome back, the chart tools).
+// A saved or synced chart and its consents therefore never share a page with
+// an analytics script. The access-controlled preview turned analytics off on
+// every page; since launch ordinary content pages keep the same
+// privacy-scoped analytics they had with the v1 client
+// (docs/ACCOUNT-SYNC-V2-TECHNICAL-CONTRACT.md).
+const analyticsExcluded = Boolean(
+  props.privateSurface || (props.accountSurface && accountSyncV2Enabled),
+);
 const plausibleEnabled = Boolean(
-  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface
-  && !accountSyncV2Enabled,
+  plausibleScriptUrl && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
 const webAnalyticsEnabled = Boolean(
-  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !props.privateSurface
-  && !accountSyncV2Enabled,
+  vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
+// With account sync v2, only the profile pages and the two main calculators
+// hydrate the access bootstrap at load. Every other page carries the small
+// presence loader, which imports the same bootstrap only for a visitor who
+// already keeps something on this device, opens the account entry point, or
+// saves (src/lib/account-v2/profile-access-loader.mjs).
+const accountAccessEager = accountSyncV2Enabled && profileAccessBootstrapEager(props.path);
+const accountAccessLoader = accountSyncV2Enabled && !accountAccessEager
+  ? profileAccessLoaderScript({
+    src: import.meta.env.DEV ? PROFILE_ACCESS_DEV_ENTRY : PROFILE_ACCESS_CHUNK_PLACEHOLDER,
+    keys: profileAccessMarkerKeys({
+      supabaseAuthKey: supabaseAuthStorageKeyName(import.meta.env.PUBLIC_SUPABASE_URL),
+      ownerKey: ACCOUNT_V2_LOCAL_OWNER_KEY,
+      retainedOwnerKey: ACCOUNT_V2_RETAINED_OWNER_KEY,
+      profileKeys: [...ACCOUNT_BOUNDARY_PROFILE_KEYS, PROFILE_SUN_SIGN_KEY],
+    }),
+  })
+  : null;
 const dailyEmailLifecycleEnabled = hasDailyChartEmailProvider(process.env);
 const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ? direction : undefined;
 
@@ -440,7 +485,8 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <slot name="head" />
   </head>
   <body>
-    {accountSyncV2Enabled && <AccountProfileAccessBootstrap client:load />}
+    {accountAccessEager && <AccountProfileAccessBootstrap client:load />}
+    {accountAccessLoader && <script is:inline data-profile-access-loader set:html={accountAccessLoader} />}
     <!-- Keep the route catalog ahead of every island, but out of <head> so
          its ~20KB inline payload cannot delay CSS and LCP-font discovery. -->
     {clientUi && (

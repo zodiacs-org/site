@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { RELEASED_LOCALES, localizePath, t } from './i18n';
+import { TOOL_ICON_FOR_PATH } from './tool-icons';
 import {
+  ALL_TOOL_CATALOG,
   FOOTER_TOOLS,
   NAV_TOOLS,
   navToolLabelHasEnglishCue,
   TOOL_CATALOG,
   TOOLS_HUB,
+  visibleTools,
 } from './nav-tools';
 
 describe('NAV_TOOLS', () => {
@@ -108,6 +111,20 @@ describe('NAV_TOOLS', () => {
     for (const locale of ['fr', 'it', 'ru'] as const) {
       expect(localizePath(locale, '/today/')).toBe('/today/');
       expect(today?.labels?.[locale]).toMatch(/anglais|inglese|английски/u);
+    }
+  });
+});
+
+describe('tools behind a launch switch', () => {
+  it('shows a switched tool only while its switch is on, and every hub card has an icon either way', () => {
+    expect(visibleTools(() => true)).toEqual(ALL_TOOL_CATALOG);
+    expect(visibleTools(() => false).every((tool) => !tool.flag)).toBe(true);
+    const hrefs = (on: boolean) => visibleTools(() => on).map((tool) => tool.href);
+    expect(hrefs(true)).toEqual(expect.arrayContaining(['/year-score/', '/birthday-report/']));
+    expect(hrefs(false)).not.toContain('/year-score/');
+    expect(hrefs(false)).not.toContain('/birthday-report/');
+    for (const tool of ALL_TOOL_CATALOG) {
+      if (tool.hub) expect(TOOL_ICON_FOR_PATH[tool.href]).toBeTruthy();
     }
   });
 });
