@@ -9,7 +9,9 @@
 --    living_chart_private.living_chart_mutations,
 --    public.weekly_digest_deliveries, public.weekly_digest_unsubscribe_tokens
 --    and Sky Watch's OAuth principals (sky_watch.principals by oauth_user,
---    which cascades their subscriptions and outbox rows).
+--    which cascades their subscriptions and outbox rows). The Living Chart
+--    and Sky Watch tables are erased wherever they exist (see "Production
+--    shape" below).
 -- 2. The deleting gate. The foundation's terminal trigger now also guards
 --    saved_pages and the three Living Chart tables, so an account in deletion
 --    cannot write them again. The Living Chart RPC wrappers take the account
@@ -41,12 +43,39 @@
 --    reaper has acted. Deletion prepare's recovery rotation prune follows the
 --    same rule. public.account_v2_cleanup_deletion_receipts keeps its
 --    signature for the deployed API and now runs the same retention pass.
--- 5. Cadence. When pg_cron is installed (production), the retention pass is
---    scheduled hourly as `account-v2-retention`. The GitHub workflow stays as
---    a backup. Without pg_cron (the portable SQL tests) the schedule is skipped.
+-- 5. Cadence. When pg_cron is installed, the retention pass is scheduled
+--    hourly as `account-v2-retention`. Production has no pg_cron (13 Nov 2026)
+--    and neither do the portable SQL tests: there the schedule is skipped with
+--    a NOTICE, and the retention pass runs from the GitHub workflow
+--    account-deletion-receipt-cleanup.yml through POST
+--    /api/account/cleanup-receipts, which calls account_v2_run_retention.
 -- 6. Key rotation. Service-only RPCs list rows still wrapped under an old key
 --    version and swap in re-wrapped data keys, for
 --    scripts/account-sync-v2-rewrap.ts. They never read or write ciphertext.
+-- 7. Export. public.account_v2_export_later_tables returns the saved pages and
+--    Living Chart moments for the account export, reading only what exists.
+--
+-- Production shape. Production (13 Nov 2026) has the Account Sync v2
+-- foundation, the weekly digest tables and saved_pages without the assistant
+-- columns (source, summary, detail), but no Living Chart, no Sky Watch, no
+-- assistant accounts layer (zodiacs_accounts_private, zodiacs_accounts_v1)
+-- and no pg_cron. This file applies there as it is:
+-- - At run time, the erase helper and the export look up each optional table
+--   when they run and skip one that is missing, so retention, deletion and
+--   export work today and cover Living Chart and Sky Watch from the day those
+--   tables exist, with no further change.
+-- - At install time, the parts that attach to an optional feature (Living
+--   Chart's gate triggers and owner-lock wrappers; Sky Watch's principal gate,
+--   index and watch RPC; the assistant save RPC) are installed only when that
+--   feature is present, and are otherwise skipped with a NOTICE.
+-- Apply this file again after Living Chart, Sky Watch or the assistant
+-- accounts layer reaches a database that already has it. Their own migrations
+-- replace the RPCs this file changes and do not know the deleting gate;
+-- applying this file again installs the skipped parts and puts the gated RPCs
+-- back. Until then, deletion still erases their rows (the run time checks
+-- above), but a deleting account is not refused new writes to them.
+-- docs/SUPABASE.md records this step; query A7 of
+-- docs/sql/verify-20261113090000-account-sync-v2-retention.sql checks it.
 --
 -- Replay-safe: every statement can run again without change. UTC filename.
 
@@ -132,17 +161,32 @@ begin
   where user_id = candidate_user_id;
   get diagnostics saved_pages_removed = row_count;
 
-  delete from public.living_chart_moments
-  where user_id = candidate_user_id;
-  get diagnostics living_moments_removed = row_count;
+  -- Living Chart and Sky Watch are not in every database (production has
+  -- neither yet). Each optional table is looked up when this runs and erased
+  -- only if it exists, so the same function covers them from the day they
+  -- arrive. A missing table counts as zero rows.
+  living_moments_removed := 0;
+  living_mutations_removed := 0;
+  living_consents_removed := 0;
+  watch_principals_removed := 0;
 
-  delete from living_chart_private.living_chart_mutations
-  where user_id = candidate_user_id;
-  get diagnostics living_mutations_removed = row_count;
+  if pg_catalog.to_regclass('public.living_chart_moments') is not null then
+    execute 'delete from public.living_chart_moments where user_id = $1'
+      using candidate_user_id;
+    get diagnostics living_moments_removed = row_count;
+  end if;
 
-  delete from public.living_chart_sync_consents
-  where user_id = candidate_user_id;
-  get diagnostics living_consents_removed = row_count;
+  if pg_catalog.to_regclass('living_chart_private.living_chart_mutations') is not null then
+    execute 'delete from living_chart_private.living_chart_mutations where user_id = $1'
+      using candidate_user_id;
+    get diagnostics living_mutations_removed = row_count;
+  end if;
+
+  if pg_catalog.to_regclass('public.living_chart_sync_consents') is not null then
+    execute 'delete from public.living_chart_sync_consents where user_id = $1'
+      using candidate_user_id;
+    get diagnostics living_consents_removed = row_count;
+  end if;
 
   -- Sky Watch's OAuth principals name the account only in oauth_user, which
   -- has no Auth foreign key, so the Auth deletion would leave them. Deleting
@@ -151,15 +195,14 @@ begin
   -- are locked in id order first, the order Sky Watch maintenance locks
   -- expired principals in before it touches any subscription. Token
   -- principals and other accounts' principals are untouched.
-  perform 1
-  from sky_watch.principals
-  where oauth_user = candidate_user_id
-  order by id
-  for update;
+  if pg_catalog.to_regclass('sky_watch.principals') is not null then
+    execute 'select 1 from sky_watch.principals where oauth_user = $1 order by id for update'
+      using candidate_user_id;
 
-  delete from sky_watch.principals
-  where oauth_user = candidate_user_id;
-  get diagnostics watch_principals_removed = row_count;
+    execute 'delete from sky_watch.principals where oauth_user = $1'
+      using candidate_user_id;
+    get diagnostics watch_principals_removed = row_count;
+  end if;
 
   return jsonb_build_object(
     'daily_chart_preferences', daily_preferences_removed,
@@ -190,25 +233,56 @@ create trigger account_v2_terminal_gate
 before insert or update on public.saved_pages
 for each row execute function private.account_v2_reject_terminal_recreation();
 
-drop trigger if exists account_v2_terminal_gate on public.living_chart_sync_consents;
+-- Living Chart: installed only where Living Chart is (not production yet).
+-- Apply this migration again after Living Chart launches.
+do $do$
+begin
+  if pg_catalog.to_regclass('public.living_chart_sync_consents') is null
+    or pg_catalog.to_regclass('public.living_chart_moments') is null
+    or pg_catalog.to_regclass('living_chart_private.living_chart_mutations') is null
+    or pg_catalog.to_regprocedure('living_chart_private.living_chart_actor_id()') is null
+    or pg_catalog.to_regprocedure('living_chart_private.set_living_chart_sync_consent_impl(text,uuid,bigint,text)') is null
+    or pg_catalog.to_regprocedure('living_chart_private.put_living_chart_moment_impl(uuid,bigint,bigint,uuid,jsonb)') is null
+    or pg_catalog.to_regprocedure('living_chart_private.delete_living_chart_moment_impl(uuid,bigint,bigint,uuid)') is null then
+    raise notice 'account retention: Living Chart is not installed; its deleting gate and owner-lock wrappers were skipped (apply this migration again after Living Chart launches)';
+    return;
+  end if;
+
+  execute $ddl$
+drop trigger if exists account_v2_terminal_gate on public.living_chart_sync_consents
+$ddl$;
+
+  execute $ddl$
 create trigger account_v2_terminal_gate
 before insert or update on public.living_chart_sync_consents
-for each row execute function private.account_v2_reject_terminal_recreation();
+for each row execute function private.account_v2_reject_terminal_recreation()
+$ddl$;
 
-drop trigger if exists account_v2_terminal_gate on public.living_chart_moments;
+  execute $ddl$
+drop trigger if exists account_v2_terminal_gate on public.living_chart_moments
+$ddl$;
+
+  execute $ddl$
 create trigger account_v2_terminal_gate
 before insert or update on public.living_chart_moments
-for each row execute function private.account_v2_reject_terminal_recreation();
+for each row execute function private.account_v2_reject_terminal_recreation()
+$ddl$;
 
-drop trigger if exists account_v2_terminal_gate on living_chart_private.living_chart_mutations;
+  execute $ddl$
+drop trigger if exists account_v2_terminal_gate on living_chart_private.living_chart_mutations
+$ddl$;
+
+  execute $ddl$
 create trigger account_v2_terminal_gate
 before insert or update on living_chart_private.living_chart_mutations
-for each row execute function private.account_v2_reject_terminal_recreation();
+for each row execute function private.account_v2_reject_terminal_recreation()
+$ddl$;
 
--- Takes the account owner lock that deletion prepare takes first, so a Living
--- Chart write and a prepare for the same account never wait on each other in
--- opposite orders, and answers whether the caller's account is deleting. It
--- takes no argument: the account is always the caller's own.
+  -- Takes the account owner lock that deletion prepare takes first, so a Living
+  -- Chart write and a prepare for the same account never wait on each other in
+  -- opposite orders, and answers whether the caller's account is deleting. It
+  -- takes no argument: the account is always the caller's own.
+  execute $ddl$
 create or replace function living_chart_private.living_chart_account_deleting()
 returns boolean
 language plpgsql
@@ -229,13 +303,20 @@ begin
       and status = 'deleting'
   );
 end;
-$$;
+$$
+$ddl$;
 
+  execute $ddl$
 revoke all on function living_chart_private.living_chart_account_deleting()
-  from public, anon;
-grant execute on function living_chart_private.living_chart_account_deleting()
-  to authenticated, service_role;
+  from public, anon
+$ddl$;
 
+  execute $ddl$
+grant execute on function living_chart_private.living_chart_account_deleting()
+  to authenticated, service_role
+$ddl$;
+
+  execute $ddl$
 create or replace function public.set_living_chart_sync_consent(
   candidate_decision text,
   candidate_mutation_id uuid,
@@ -258,8 +339,10 @@ begin
     candidate_policy_version
   );
 end;
-$$;
+$$
+$ddl$;
 
+  execute $ddl$
 create or replace function public.put_living_chart_moment(
   candidate_moment_id uuid,
   candidate_base_revision bigint,
@@ -284,8 +367,10 @@ begin
     candidate_payload
   );
 end;
-$$;
+$$
+$ddl$;
 
+  execute $ddl$
 create or replace function public.delete_living_chart_moment(
   candidate_moment_id uuid,
   candidate_base_revision bigint,
@@ -308,25 +393,65 @@ begin
     candidate_mutation_id
   );
 end;
-$$;
+$$
+$ddl$;
 
+  execute $ddl$
 revoke all on function public.set_living_chart_sync_consent(text, uuid, bigint, text)
-  from public, anon;
+  from public, anon
+$ddl$;
+
+  execute $ddl$
 revoke all on function public.put_living_chart_moment(uuid, bigint, bigint, uuid, jsonb)
-  from public, anon;
+  from public, anon
+$ddl$;
+
+  execute $ddl$
 revoke all on function public.delete_living_chart_moment(uuid, bigint, bigint, uuid)
-  from public, anon;
+  from public, anon
+$ddl$;
+
+  execute $ddl$
 grant execute on function public.set_living_chart_sync_consent(text, uuid, bigint, text)
-  to authenticated, service_role;
+  to authenticated, service_role
+$ddl$;
+
+  execute $ddl$
 grant execute on function public.put_living_chart_moment(uuid, bigint, bigint, uuid, jsonb)
-  to authenticated, service_role;
+  to authenticated, service_role
+$ddl$;
+
+  execute $ddl$
 grant execute on function public.delete_living_chart_moment(uuid, bigint, bigint, uuid)
-  to authenticated, service_role;
+  to authenticated, service_role
+$ddl$;
+
+end;
+$do$;
 
 -- The assistant save RPC (20261015150000), unchanged except that it takes the
 -- account owner lock before it replaces a site row: saved_pages' terminal
 -- gate makes the owner lock part of every saved_pages insert, so the delete
 -- that precedes the insert must come after that lock, as in prepare.
+-- Installed only where the assistant accounts layer is (not production yet).
+-- Apply this migration again after it launches.
+do $do$
+begin
+  if pg_catalog.to_regprocedure('public.zodiacs_accounts_v1(text,jsonb)') is null
+    or pg_catalog.to_regprocedure('zodiacs_accounts_private.oauth_active(uuid,uuid,uuid,text,timestamptz)') is null
+    or (
+      select count(*)
+      from pg_catalog.pg_attribute
+      where attrelid = 'public.saved_pages'::regclass
+        and attname in ('source', 'summary', 'detail')
+        and attnum > 0
+        and not attisdropped
+    ) <> 3 then
+    raise notice 'account retention: the assistant accounts layer is not installed; zodiacs_accounts_v1 was not replaced (apply this migration again after it launches)';
+    return;
+  end if;
+
+  execute $ddl$
 create or replace function public.zodiacs_accounts_v1(operation text, input jsonb default '{}'::jsonb)
 returns jsonb language plpgsql security invoker set search_path = pg_catalog as $$
 declare
@@ -368,9 +493,19 @@ begin
   end;
   return jsonb_build_object('id', saved.id, 'saved_at', saved.saved_at, 'created', true);
 end;
-$$;
-revoke all on function public.zodiacs_accounts_v1(text, jsonb) from public, anon, authenticated;
-grant execute on function public.zodiacs_accounts_v1(text, jsonb) to service_role;
+$$
+$ddl$;
+
+  execute $ddl$
+revoke all on function public.zodiacs_accounts_v1(text, jsonb) from public, anon, authenticated
+$ddl$;
+
+  execute $ddl$
+grant execute on function public.zodiacs_accounts_v1(text, jsonb) to service_role
+$ddl$;
+
+end;
+$do$;
 
 -- Sky Watch. The account owner lock, then the account state, the order of
 -- prepare and terminal cleanup, which then erase the principals. Answers
@@ -460,24 +595,48 @@ $$;
 revoke all on function private.account_v2_reject_deleting_watch_principal()
   from public, anon, authenticated, service_role;
 
-drop trigger if exists account_v2_terminal_gate on sky_watch.principals;
+-- Sky Watch: installed only where Sky Watch is (not production yet).
+-- Apply this migration again after Sky Watch launches.
+do $do$
+begin
+  if pg_catalog.to_regclass('sky_watch.principals') is null
+    or pg_catalog.to_regclass('sky_watch.subscriptions') is null
+    or pg_catalog.to_regclass('sky_watch.outbox') is null
+    or pg_catalog.to_regclass('sky_watch.oauth_clients') is null
+    or pg_catalog.to_regclass('sky_watch.worker_state') is null
+    or pg_catalog.to_regprocedure('sky_watch.oauth_active(uuid,uuid,uuid,timestamptz)') is null
+    or pg_catalog.to_regprocedure('sky_watch.access_active(uuid,timestamptz)') is null
+    or pg_catalog.to_regprocedure('public.zodiacs_sky_watch_v1(text,jsonb)') is null then
+    raise notice 'account retention: Sky Watch is not installed; its principal gate, index and watch RPC changes were skipped (apply this migration again after Sky Watch launches)';
+    return;
+  end if;
+
+  execute $ddl$
+drop trigger if exists account_v2_terminal_gate on sky_watch.principals
+$ddl$;
+
+  execute $ddl$
 create trigger account_v2_terminal_gate
 before insert or update on sky_watch.principals
-for each row execute function private.account_v2_reject_deleting_watch_principal();
+for each row execute function private.account_v2_reject_deleting_watch_principal()
+$ddl$;
 
--- Erasure finds an account's principals by oauth_user.
+  -- Erasure finds an account's principals by oauth_user.
+  execute $ddl$
 create index if not exists principals_oauth_user_idx
 on sky_watch.principals (oauth_user)
-where oauth_user is not null;
+where oauth_user is not null
+$ddl$;
 
--- The Sky Watch RPC as of 20261006074029, with three changes: `oauth` takes
--- the owner lock, answers null for an account in deletion or without an Auth
--- identity, and checks the OAuth authorization again under the lock before it
--- creates or refreshes a principal; `get`, `subscribe` and `unsubscribe` take
--- the owner lock of an OAuth principal's account before they lock the
--- principal, answering 'watch access unavailable' while that account is
--- deleting or gone; and `enqueue` deletes expired principals first, in id
--- order, before it touches any subscription. Everything else is unchanged.
+  -- The Sky Watch RPC as of 20261006074029, with three changes: `oauth` takes
+  -- the owner lock, answers null for an account in deletion or without an Auth
+  -- identity, and checks the OAuth authorization again under the lock before it
+  -- creates or refreshes a principal; `get`, `subscribe` and `unsubscribe` take
+  -- the owner lock of an OAuth principal's account before they lock the
+  -- principal, answering 'watch access unavailable' while that account is
+  -- deleting or gone; and `enqueue` deletes expired principals first, in id
+  -- order, before it touches any subscription. Everything else is unchanged.
+  execute $ddl$
 create or replace function public.zodiacs_sky_watch_v1(operation text, input jsonb default '{}'::jsonb)
 returns jsonb language plpgsql security invoker set search_path = pg_catalog as $$
 declare
@@ -644,9 +803,19 @@ begin
   end if;
   raise exception 'watch operation unavailable';
 end;
-$$;
-revoke all on function public.zodiacs_sky_watch_v1(text,jsonb) from public,anon,authenticated;
-grant execute on function public.zodiacs_sky_watch_v1(text,jsonb) to service_role;
+$$
+$ddl$;
+
+  execute $ddl$
+revoke all on function public.zodiacs_sky_watch_v1(text,jsonb) from public,anon,authenticated
+$ddl$;
+
+  execute $ddl$
+grant execute on function public.zodiacs_sky_watch_v1(text,jsonb) to service_role
+$ddl$;
+
+end;
+$do$;
 
 -- 3. The reaper ---------------------------------------------------------------
 
@@ -1500,4 +1669,140 @@ $$;
 revoke all on function public.account_v2_rewrap_apply(text, jsonb)
   from public, anon, authenticated;
 grant execute on function public.account_v2_rewrap_apply(text, jsonb)
+  to service_role;
+
+-- 7. Export of the later tables ---------------------------------------------
+--
+-- The account export's saved pages and Living Chart moments, read in one call
+-- that works whatever is installed. Production has saved_pages without the
+-- assistant columns and no Living Chart yet; reading those through the REST
+-- API would fail the whole export. A site save without the assistant columns
+-- is exported as the column defaults would make it: source 'site', no summary,
+-- no detail. A missing table exports no rows. Each list stops one row past
+-- the export's own limit, so the API can refuse an account over the limit
+-- exactly as before.
+create or replace function private.account_v2_export_later_tables(
+  candidate_user_id uuid
+)
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+declare
+  saved_rows jsonb := '[]'::jsonb;
+  moment_rows jsonb := '[]'::jsonb;
+begin
+  if candidate_user_id is null then
+    return jsonb_build_object('outcome', 'invalid');
+  end if;
+
+  if pg_catalog.to_regclass('public.saved_pages') is not null then
+    if (
+      select count(*)
+      from pg_catalog.pg_attribute
+      where attrelid = 'public.saved_pages'::regclass
+        and attname in ('source', 'summary', 'detail')
+        and attnum > 0
+        and not attisdropped
+    ) = 3 then
+      execute $query$
+        select coalesce(pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(
+          'id', page.id,
+          'kind', page.kind,
+          'title', page.title,
+          'href', page.href,
+          'source', page.source,
+          'summary', page.summary,
+          'detail', page.detail,
+          'saved_at', page.saved_at
+        ) order by page.saved_at, page.id), '[]'::jsonb)
+        from (
+          select id, kind, title, href, source, summary, detail, saved_at
+          from public.saved_pages
+          where user_id = $1
+          order by saved_at, id
+          limit 101
+        ) as page
+      $query$
+      into saved_rows
+      using candidate_user_id;
+    else
+      execute $query$
+        select coalesce(pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(
+          'id', page.id,
+          'kind', page.kind,
+          'title', page.title,
+          'href', page.href,
+          'source', 'site',
+          'summary', null,
+          'detail', null,
+          'saved_at', page.saved_at
+        ) order by page.saved_at, page.id), '[]'::jsonb)
+        from (
+          select id, kind, title, href, saved_at
+          from public.saved_pages
+          where user_id = $1
+          order by saved_at, id
+          limit 101
+        ) as page
+      $query$
+      into saved_rows
+      using candidate_user_id;
+    end if;
+  end if;
+
+  if pg_catalog.to_regclass('public.living_chart_moments') is not null then
+    execute $query$
+      select coalesce(pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(
+        'moment_id', moment.moment_id,
+        'consent_epoch', moment.consent_epoch,
+        'revision', moment.revision,
+        'payload', moment.payload,
+        'created_at', moment.created_at,
+        'updated_at', moment.updated_at,
+        'deleted_at', moment.deleted_at
+      ) order by moment.created_at, moment.moment_id), '[]'::jsonb)
+      from (
+        select moment_id, consent_epoch, revision, payload, created_at,
+          updated_at, deleted_at
+        from public.living_chart_moments
+        where user_id = $1
+        order by created_at, moment_id
+        limit 1001
+      ) as moment
+    $query$
+    into moment_rows
+    using candidate_user_id;
+  end if;
+
+  return jsonb_build_object(
+    'outcome', 'ready',
+    'saved_pages', saved_rows,
+    'living_chart_moments', moment_rows
+  );
+end;
+$$;
+
+revoke all on function private.account_v2_export_later_tables(uuid)
+  from public, anon, authenticated;
+grant execute on function private.account_v2_export_later_tables(uuid)
+  to service_role;
+
+create or replace function public.account_v2_export_later_tables(
+  candidate_user_id uuid
+)
+returns jsonb
+language sql
+stable
+security invoker
+set search_path = pg_catalog
+as $$
+  select private.account_v2_export_later_tables(candidate_user_id);
+$$;
+
+revoke all on function public.account_v2_export_later_tables(uuid)
+  from public, anon, authenticated;
+grant execute on function public.account_v2_export_later_tables(uuid)
   to service_role;
