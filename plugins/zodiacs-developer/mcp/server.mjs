@@ -18684,6 +18684,7 @@ function softenMinor(text2) {
   return MINOR_WORDS.reduce((out, [pattern, word]) => out.replace(pattern, (match) => match[0] === match[0].toUpperCase() ? word[0].toUpperCase() + word.slice(1) : word), text2);
 }
 var MINOR_NOTE = "This birth date is under 18, so romantic and attraction readings are left out.";
+var MINOR_LOVE_NOTE = "This birth date is under 18, and Zodiacs does not give love or romance readings for anyone under 18, so this is the general reading.";
 
 // src/ai-tools/features/compatibility.ts
 var COMPATIBILITY_MIN_YEAR = 1800;
@@ -28646,6 +28647,26 @@ function horoscopePanel(window, sign3, requested, share) {
     weeks,
     note: WHY_NOTE,
     disclosure: HOROSCOPE_DISCLOSURE
+  };
+}
+var softenParagraphs = (paragraphs) => paragraphs.map((paragraph2) => paragraph2.heading ? { heading: softenMinor(paragraph2.heading), text: softenMinor(paragraph2.text) } : { text: softenMinor(paragraph2.text) });
+function softenMinorAnswer(answer) {
+  if (!answer.reading) return answer;
+  return { ...answer, reading: { title: answer.reading.title, paragraphs: softenParagraphs(answer.reading.paragraphs) } };
+}
+function softenMinorPanel(panel) {
+  const soften = (reading) => ({ ...reading, paragraphs: softenParagraphs(reading.paragraphs) });
+  return {
+    ...panel,
+    days: panel.days.map((day2) => ({
+      date: day2.date,
+      focuses: {
+        general: soften(day2.focuses.general),
+        love: { status: "unavailable", paragraphs: [], facts: [], houses: [], from: day2.focuses.love.from, through: day2.focuses.love.through, shareUrl: null },
+        career: soften(day2.focuses.career)
+      }
+    })),
+    weeks: panel.weeks.map(soften)
   };
 }
 
@@ -44807,11 +44828,15 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         }
         const window = await dependencies.horoscopeWindow();
         const localDate = dateInZone(dependencies.now?.() ?? /* @__PURE__ */ new Date(), zone9);
-        const request = { period: args.period ?? "day", focus: args.focus ?? "general", ...args.sign ? { sign: args.sign } : {}, ...args.date ? { date: args.date } : {} };
-        data = resolveHoroscope(window, request, zone9, zoneSource, localDate, ORIGIN);
+        const minor = args.birthDate !== void 0 && isUnderAge(args.birthDate, localDate, 18);
+        const loveWithheld = minor && args.focus === "love";
+        const request = { period: args.period ?? "day", focus: loveWithheld ? "general" : args.focus ?? "general", ...args.sign ? { sign: args.sign } : {}, ...args.date ? { date: args.date } : {} };
+        const answer = resolveHoroscope(window, request, zone9, zoneSource, localDate, ORIGIN);
+        data = minor ? softenMinorAnswer(answer) : answer;
+        if (loveWithheld) data.message = answer.message ? `${answer.message} ${MINOR_LOVE_NOTE}` : MINOR_LOVE_NOTE;
         const horoscope2 = data;
         const signLabel = readingConfidenceLabel("sign");
-        horoscope2.disclosure = `${horoscope2.disclosure} ${signLabel}. For a month, a year, or a love or career week, use get_horoscope_period.`;
+        horoscope2.disclosure = `${horoscope2.disclosure} ${signLabel}. ${minor ? "For a month, a year or a career week" : "For a month, a year, or a love or career week"}, use get_horoscope_period.`;
         if (args.birthDate && dependencies.occasions) {
           let birthZone;
           if (args.birthZone) {
@@ -44831,7 +44856,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
             throw error;
           }
         }
-        if (args.sign) context.horoscopePanel = horoscopePanel(window, args.sign, { period: request.period, focus: request.focus, ...args.date ? { date: args.date } : {}, ...zoneSource === "default" ? {} : { zone: zone9 } }, { origin: ORIGIN, ref: context.ref ?? null });
+        if (args.sign) context.horoscopePanel = (minor ? softenMinorPanel : (panel) => panel)(horoscopePanel(window, args.sign, { period: request.period, focus: request.focus, ...args.date ? { date: args.date } : {}, ...zoneSource === "default" ? {} : { zone: zone9 } }, { origin: ORIGIN, ref: context.ref ?? null }));
         links = [...args.sign ? [{ title: `${args.sign[0].toUpperCase()}${args.sign.slice(1)} on Zodiacs`, url: `${ORIGIN}/horoscopes/${args.sign}/` }] : [], methodLink, dailyEmailLink(ORIGIN, args.sign)];
         break;
       }
