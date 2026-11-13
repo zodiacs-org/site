@@ -12,6 +12,8 @@ import EditorialLine from '../components/EditorialLine.astro';
 import GlassDefs from '../components/GlassDefs.astro';
 import EditionFreshnessGuard from '../components/EditionFreshnessGuard.astro';
 import { ANALYTICS_EVENT_PROPS, ANALYTICS_EVENT_VALUES } from '../lib/analytics';
+import { ARRIVAL_REF_VALUES } from '../lib/analytics-config.mjs';
+import { ARRIVAL_SOURCE_SESSION_KEY } from '../lib/arrival-source';
 import { hasDailyChartEmailProvider } from '../lib/email/daily-config';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import { LOCALE_META, UI, isSectionLocale, normalizePageLocale, t, type PageLocale as Locale } from '../lib/i18n';
@@ -19,6 +21,16 @@ import { RUSSIAN_RUNTIME } from '../lib/i18n/ru-runtime/server';
 import AccountProfileAccessBootstrap from '../islands/AccountProfileAccessBootstrap';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../lib/account-v2/feature-flags';
 import { ACCOUNT_V2_PROFILE_ACCESS_KEY } from '../lib/account-v2/profile-access';
+import { ACCOUNT_BOUNDARY_PROFILE_KEYS } from '../lib/account-v2/profile-boundary';
+import {
+  PROFILE_ACCESS_CHUNK_PLACEHOLDER,
+  PROFILE_ACCESS_DEV_ENTRY,
+  profileAccessBootstrapEager,
+  profileAccessLoaderScript,
+  profileAccessMarkerKeys,
+} from '../lib/account-v2/profile-access-loader.mjs';
+import { PROFILE_SUN_SIGN_KEY } from '../lib/profile/store';
+import { supabaseAuthStorageKeyName } from '../lib/profile/saved-pages-config';
 import { GUIDE_PRIVATE_SESSION_KEY } from '../lib/assistant/guide-loader.mjs';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../lib/web-analytics.mjs';
 import { calculatorToolForPath } from '../lib/webmcp/calculator-tools';
@@ -149,6 +161,23 @@ const plausibleEnabled = Boolean(
 const webAnalyticsEnabled = Boolean(
   vercelWebAnalyticsFlag(import.meta.env) && (!props.noindex || props.analyticsOnNoindex) && !analyticsExcluded,
 );
+// With account sync v2, only the profile pages and the two main calculators
+// hydrate the access bootstrap at load. Every other page carries the small
+// presence loader, which imports the same bootstrap only for a visitor who
+// already keeps something on this device, opens the account entry point, or
+// saves (src/lib/account-v2/profile-access-loader.mjs).
+const accountAccessEager = accountSyncV2Enabled && profileAccessBootstrapEager(props.path);
+const accountAccessLoader = accountSyncV2Enabled && !accountAccessEager
+  ? profileAccessLoaderScript({
+    src: import.meta.env.DEV ? PROFILE_ACCESS_DEV_ENTRY : PROFILE_ACCESS_CHUNK_PLACEHOLDER,
+    keys: profileAccessMarkerKeys({
+      supabaseAuthKey: supabaseAuthStorageKeyName(import.meta.env.PUBLIC_SUPABASE_URL),
+      ownerKey: ACCOUNT_V2_LOCAL_OWNER_KEY,
+      retainedOwnerKey: ACCOUNT_V2_RETAINED_OWNER_KEY,
+      profileKeys: [...ACCOUNT_BOUNDARY_PROFILE_KEYS, PROFILE_SUN_SIGN_KEY],
+    }),
+  })
+  : null;
 const dailyEmailLifecycleEnabled = hasDailyChartEmailProvider(process.env);
 const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ? direction : undefined;
 
@@ -342,15 +371,20 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         })();
       </script>
     )}
-    <script is:inline>window.zodiacsAnalytics = window.zodiacsAnalytics || Object.freeze({ track: function () {} });
+    <script is:inline define:vars={{ arrivalRefs: ARRIVAL_REF_VALUES, arrivalSessionKey: ARRIVAL_SOURCE_SESSION_KEY }}>window.zodiacsAnalytics = window.zodiacsAnalytics || Object.freeze({ track: function () {} });
       // Links from the Zodiacs app in an assistant carry ?ref=chatgpt or ?ref=assistant. Note which,
       // then take it out of the address so it is not copied into links people share.
+      // A word on the closed arrival list is also kept for this tab only (src/lib/arrival-source.ts);
+      // any other word is dropped, never stored.
       (function () {
         try {
           var url = new URL(location.href);
           var ref = url.searchParams.get('ref');
           if (ref === null) return;
           window.zodiacsArrival = ref === 'chatgpt' || ref === 'assistant' ? ref : null;
+          if (arrivalRefs.indexOf(ref) !== -1) {
+            try { sessionStorage.setItem(arrivalSessionKey, ref); } catch (error) {}
+          }
           url.searchParams.delete('ref');
           history.replaceState(history.state, '', url.pathname + url.search + url.hash);
         } catch (error) {}
@@ -458,7 +492,8 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <slot name="head" />
   </head>
   <body>
-    {accountSyncV2Enabled && <AccountProfileAccessBootstrap client:load />}
+    {accountAccessEager && <AccountProfileAccessBootstrap client:load />}
+    {accountAccessLoader && <script is:inline data-profile-access-loader set:html={accountAccessLoader} />}
     <!-- Keep the route catalog ahead of every island, but out of <head> so
          its ~20KB inline payload cannot delay CSS and LCP-font discovery. -->
     {clientUi && (
