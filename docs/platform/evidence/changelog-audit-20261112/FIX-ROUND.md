@@ -44,8 +44,8 @@ F-corr-01 added).
 `integrations/packages/README.md`, after the sentence "`ai:package` never
 rewrites an archive that already exists ... every earlier ZIP keeps its
 bytes", now carries a dated note: the rule has held since Zodiacs 0.6.0 and
-Developer 0.3.20, and 13 ZIPs were rewritten under the same version before
-it, and Developer 0.3.19 four times after it (commits 3e7a645f6, 1a895a5c4,
+Developer 0.3.20, and 13 ZIPs have been rewritten under the same version:
+12 before it, and Developer 0.3.19, first packaged after it, four times after it (commits 3e7a645f6, 1a895a5c4,
 c65d955b8 and 3034745d9 on 3 November). No ZIP and no manifest was touched. The file
 is hand-written; no generator or test reads it. `npm run ai:check` could not
 be run in this worktree (its dependencies are not installed), so CI is the
