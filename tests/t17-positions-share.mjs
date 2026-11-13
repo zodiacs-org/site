@@ -952,6 +952,19 @@ try {
       assert.equal(receivedText.toLowerCase().includes(`engine v${ENGINE_VERSION}`.toLowerCase()), true,
         'positions result must carry the installed engine version receipt');
 
+      // The share dialog no longer offers a birth-details link, but incoming
+      // legacy #c=1. links still have to open as a receiver. Build that URL
+      // here rather than copying it from a removed control.
+      const fullUrl = `${baseURL}/birth-chart/#c=1.${Buffer.from(JSON.stringify({
+        d: BIRTH.date,
+        t: BIRTH.time,
+        z: 'America/New_York',
+        la: 40.71,
+        lo: -74.01,
+        p: 'New York',
+      })).toString('base64url')}`;
+      const fullParsed = new URL(fullUrl);
+
       const full = await trackedPage();
       await open(full, fullUrl);
       await full.locator('.calc__result').waitFor({ state: 'visible', timeout: TIMEOUT });

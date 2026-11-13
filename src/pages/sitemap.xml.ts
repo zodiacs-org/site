@@ -701,6 +701,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/full-moon-calendar/2027/', FULL_MOON_CALENDAR_2027_UPDATED] as const,
   ['/eclipses/2027/', ECLIPSES_2027_UPDATED] as const,
   ['/birthday/', BIRTHDAY_HUB_UPDATED] as const,
+  // Someone else's chart: the handoff note no longer says the URL fragment
+  // carries their details. Dated the daily edition this change shipped with.
+  ['/birth-chart/someone-else/', '2026-11-13'] as const,
   // The connector page's 19 live tools, limits, troubleshooting and support contact, the support page's
   // connector section and the MCP guides that count its tools (ZOD-58). The day of the daily edition it was
   // built with, last so this date wins.
