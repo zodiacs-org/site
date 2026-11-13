@@ -116,7 +116,11 @@ beforeEach(() => {
   harness.prepare.mockReset().mockResolvedValue(prepared);
   harness.save.mockReset().mockResolvedValue('shared');
   harness.track.mockReset();
-  vi.stubGlobal('window', { zodiacsAnalytics: { track: harness.track } });
+  vi.stubGlobal('window', {
+    zodiacsAnalytics: { track: harness.track },
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  });
   // The full-chart link is offered only where a session handoff can be stashed.
   const session = new Map<string, string>();
   vi.stubGlobal('sessionStorage', {

@@ -14,6 +14,7 @@ import {
 } from '../lib/chart-handoff';
 import { birthDateRefusal, birthDateRefusalLang, birthDateRefusalText } from '../lib/birth-date-policy';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
+import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import type { ShareChartInput } from '../lib/share';
 import type { Chart } from '../lib/engine/types';
 import type { PreparedChartCard } from '../lib/share-card';
@@ -101,6 +102,26 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   // A chart saved on this device, opened by its opaque id. The fragment is
   // stripped first; the chart is read only behind the profile access guard,
   // and its date passes the same birth date policy as the form.
+  const profileOriginRef = useRef(false);
+  const profileAccessGeneration = useProfileAccessGeneration(() => {
+    if (!profileOriginRef.current) return;
+    profileOriginRef.current = false;
+    generation.current += 1;
+    cardAttempt.current += 1;
+    cardSource.current = null;
+    setDate('');
+    setCalendar('gregorian');
+    setTime('');
+    setCity(null);
+    setPlacements(null);
+    setHandoff(null);
+    setCard(null);
+    setCardState('idle');
+    setCardError('');
+    setError('');
+    setBusy(false);
+  });
+
   useEffect(() => {
     const hash = typeof location === 'undefined' ? '' : location.hash;
     if (!new URLSearchParams(hash.slice(1)).has('profileChartId')) return;
@@ -112,18 +133,27 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     const open = () => {
       if (!active || resolving || !profileAccessAllowed()) return;
       resolving = true;
+      const accessGeneration = profileAccessGeneration.current;
       void import('../lib/profile/profile-chart-handoff').then(({ loadProfileChartRunInput }) => {
         resolving = false;
         if (!active || !profileAccessAllowed()) return;
-        active = false;
-        window.removeEventListener('zodiacs:profile-access', open);
+        if (accessGeneration !== profileAccessGeneration.current) return;
         const saved = loadProfileChartRunInput(chartId);
-        if (!saved || !saved.timeKnown || !saved.time) return;
+        if (!saved) return;
+        profileOriginRef.current = true;
         const from: SavedBirth = { date: saved.date, time: saved.time, city: saved.city };
         setDate(from.date);
         setCalendar('gregorian');
         setTime(from.time);
         setCity(from.city);
+        if (!saved.timeKnown || !saved.time) {
+          setPlacements(null);
+          setHandoff(null);
+          setCard(null);
+          setCardState('idle');
+          setError('This saved chart has no birth time. The date and place are filled in. Add a time to see Moon and Rising.');
+          return;
+        }
         void compute(null, from);
       }).catch(() => { resolving = false; });
     };
@@ -178,6 +208,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
       return;
     }
     const run = ++generation.current;
+    const accessGeneration = profileAccessGeneration.current;
     setBusy(true);
     setError('');
     cardSource.current = null;
@@ -213,6 +244,7 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
       const [engine, trust, reading] = await Promise.all([loadEngine(), loadResultTrust(), locale === 'en' ? loadReading().catch(() => null) : Promise.resolve(null)]);
       if (run === generation.current) setReadingModule(reading);
       if (run !== generation.current) return;
+      if (profileOriginRef.current && accessGeneration !== profileAccessGeneration.current) return;
       const chart: Chart = engine.computeChart({
         utc: resolution.utc,
         latitude: city.lat,
