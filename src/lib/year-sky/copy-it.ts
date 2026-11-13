@@ -215,14 +215,14 @@ export const YEAR_SKY_WORDS_IT: YearSkyWords = defineYearSkyWords('it', {
   calendarExact: 'Esatto alle {time} UTC.',
   calendarMore: 'Altro: {url}',
   calendarForecast: W.note,
-  confidenceNote: 'Ogni lettura riporta la sua affidabilità della lettura: quanto sono precisi i dati del tema su cui si basa, non la probabilità che qualcosa accada.',
+  confidenceNote: 'Ogni lettura riporta la sua fiducia della lettura: quanto sono specifici i dati del tema su cui si basa, non la probabilità che qualcosa accada.',
   cardHeadline: 'Il mio cielo nel',
   cardSun: P('Sun'),
   cardMoon: P('Moon'),
   cardRising: 'Ascendente',
   cardCount: (n) => (n === 1 ? '1 momento tocca il mio tema' : `${n} momenti toccano il mio tema`),
   cardQuiet: 'Un anno tranquillo per il mio tema',
-  confidence: (value) => `Affidabilità della lettura ${value}%`,
+  confidence: (value) => `Fiducia della lettura ${value}%`,
   day,
   dayTime: (iso) => {
     const d = new Date(iso);
