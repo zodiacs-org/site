@@ -224,7 +224,8 @@ describe('how event times are checked, on the methodology page', () => {
   it('bounds the Sun\'s sign changes by the table\'s measured maximum', () => {
     const table = JSON.parse(read('src/data/nasa-event-instants.json'));
     expect(table.withinOneMinute.sunIngresses.maxSeconds).toBeLessThanOrEqual(44);
-    expect(page()).toContain('The Sun\'s sign changes agree within 44 seconds.');
+    expect(page()).toContain('The Sun\'s sign changes keep the engine\'s times too: within 44 seconds of NASA\'s from 2026 to 2030, and up to 50.3 seconds from 1900 to 2050.');
+    expect(page()).toContain('which fall within 6 seconds of NASA\'s from 2026 to 2030; the pages print them to the minute.');
   });
 
   it('states the built-page counts of the November 2026 audit', () => {
