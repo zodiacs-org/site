@@ -7,10 +7,9 @@ skills, icons, notices and the developer's pinned runtime/recipes; no credential
 node_modules, personal data, cache or hosting configuration is included.
 
 The sky ZIP is the portable remote-MCP candidate for ChatGPT/Codex review. Its
-production connection is already deployed and domain-verified. The 0.5.0
-candidate still needs the occasion tools switched on (`ZODIACS_OCCASIONS_ENABLED=1`),
-its own preview acceptance, real-host checks and a reviewer walkthrough that
-shows the occasions panel. The developer ZIP runs local stdio MCP;
+production connection is deployed and domain-verified: `https://zodiacs.org/mcp`
+reports 0.6.7 and offers 19 read-only tools (checked live on 13 November
+2026; 0.6.6 is the version in OpenAI review). The developer ZIP runs local stdio MCP;
 install pinned dependencies after extracting. Public local-MCP directory support
 requires an OpenAI-supported distribution path; the repo marketplace and direct
 local MCP connection are the available development paths.
@@ -100,9 +99,8 @@ Current candidates are **Zodiacs 0.6.7** and **Zodiacs Developer 0.3.45**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
-MCP URL remains unchanged. Zodiacs 0.5.0 adds seven tools that share the
-occasions panel; the developer ZIP's local server keeps its eight tools and
-reports the 0.5.0 source. See [the 0.4.0 audit](../../docs/platform/zodiacs-ai/AUDIT-0.4.0.md)
+MCP URL remains unchanged. Zodiacs 0.5.0 added seven tools that share the
+occasions panel, and 0.6.0 and 0.6.1 added six more, for 19. See [the 0.4.0 audit](../../docs/platform/zodiacs-ai/AUDIT-0.4.0.md)
 for the last audited acceptance evidence and outstanding release gates.
 
 The October 8 integration retains main's developer 0.3.3 ZIP at its existing path. The earlier PR-carried 0.3.3 bytes are also retained at `history/zodiacs-developer-0.3.3-before-20261008-main.zip`; those two inherited variants have different digests. New combined developer sources used 0.3.6, preserving both inherited byte sequences. Developer 0.3.7 bundles engine 1.0.0, published on npm, and its recipes install 1.0.0 from npm; 0.3.6 and earlier ZIPs keep their bytes. Developer 0.3.14 bundles engine 1.1.0-rc.1, a vendored candidate not on npm, and its recipes still install 1.0.0 from npm; 0.3.13 and earlier ZIPs keep their bytes.
