@@ -93,9 +93,11 @@ expired receipts that are complete and expired provider leases. It answers 500
 `retention_incomplete` when a deletion past its window is left unfinished. It
 remains callable while the sync feature flags are off. Missing or mismatched
 configuration returns a not-found response and performs no database call.
-The hourly guarantee is the `account-v2-retention` pg_cron job inside
-Supabase, which runs the same pass; the GitHub workflow is a backup and fails
-when its secret is missing.
+Production has no pg_cron (13 November 2026), so the hourly GitHub workflow
+`account-deletion-receipt-cleanup.yml` is what runs the pass there; it fails
+when its secret is missing. Where pg_cron is installed, the migration also
+schedules the `account-v2-retention` job, which runs the same pass hourly
+inside the database, and the workflow is the backup.
 
 The email jobs (`.github/workflows/daily-email.yml` and `weekly-digest.yml`)
 receive `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS` and
