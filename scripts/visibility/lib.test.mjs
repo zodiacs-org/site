@@ -103,6 +103,12 @@ describe('keyword tables', () => {
       expect(copyProblems(r[5])).toEqual([]);
     }
   });
+  it('counts the English how-to-read article as full cover in English only', () => {
+    const rows = parseCsv(readFileSync(new URL('../../docs/visibility/keywords/all-locales.csv', import.meta.url), 'utf8')).slice(1);
+    const howTo = rows.filter((r) => r[3] === 'birth-chart' && r[4] === 'how-to-read');
+    expect(howTo.filter((r) => r[0] === 'en').length).toBeGreaterThan(0);
+    for (const r of howTo) expect(r[7]).toBe(r[0] === 'en' ? 'full' : 'partial');
+  });
   it('reads Keyword Planner volumes without gluing ranges or turning blanks into zero', () => {
     expect(parseVolume('10 - 100')).toBe('10-100');
     expect(parseVolume('1K \u2013 10K')).toBe('1000-10000');
