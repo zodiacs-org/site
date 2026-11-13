@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import programData from '../data/horoscope-program.json';
-import { horoscopeHubTeaser, pageReadingFromProgram } from './horoscope-page-data';
-import type { HoroscopeProgram } from './horoscope-program';
+import { alsoInSkyEvents, evidenceMap, horoscopeHubTeaser, pageReadingFromProgram } from './horoscope-page-data';
+import type { HoroscopeEvidenceReceipt, HoroscopeProgram } from './horoscope-program';
+import { eventsOnUtcDay, refineDailyEvents } from './nasa-instants';
+import type { TransitCatalog } from './today-sky';
 
 const program = programData as HoroscopeProgram;
+const transitCatalogs = Object.values(import.meta.glob<{ default: TransitCatalog }>('../data/transits-*.json', { eager: true }))
+  .map((module) => module.default);
 const zodiacNamePattern = new RegExp(
   `\\b(?:${program.signs.map(({ sign }) => sign).join('|')})\\b`,
   'gu',
@@ -39,10 +43,55 @@ function shingleSimilarity(left: string, right: string): number {
   return union === 0 ? 1 : intersection / union;
 }
 
+// The receipts as the page cites them: planet events at NASA's instant.
 function directEvidence(surface: 'today' | 'tomorrow') {
   const reading = program.signs.find(({ sign }) => sign === 'aries')?.readings[surface];
   const references = new Set(reading?.passages.flatMap((passage) => passage.evidenceRefs) ?? []);
-  return program.evidence.filter((receipt) => references.has(receipt.id));
+  const cited = evidenceMap(program);
+  return program.evidence
+    .filter((receipt) => references.has(receipt.id))
+    .map((receipt) => cited.get(receipt.id) ?? receipt);
+}
+
+// A fixed edition, 13 November 2026, whose Aries reading cites the noon Moon
+// and one dated planet event, so the strip does not depend on today's data.
+const FIXED_MOON: HoroscopeEvidenceReceipt = {
+  id: 'fixture:2026-11-13:position:moon',
+  kind: 'body-position',
+  sourceId: 'fixture',
+  label: 'Moon 7.7° Capricorn at 12:00 UTC',
+  at: '2026-11-13T12:00:00.000Z',
+  body: 'Moon',
+  sign: 'capricorn',
+  degree: 7.7,
+  moonPhase: 'Waxing Crescent',
+};
+
+function fixedEdition(event: HoroscopeEvidenceReceipt): HoroscopeProgram {
+  return {
+    ...program,
+    anchorDate: '2026-11-13',
+    evidence: [FIXED_MOON, event],
+    signs: program.signs.map((entry) => {
+      if (entry.sign !== 'aries') return entry;
+      const today = entry.readings.today;
+      return {
+        ...entry,
+        readings: {
+          ...entry.readings,
+          today: {
+            ...today,
+            status: 'publishable',
+            period: { from: '2026-11-13', through: '2026-11-13', utcBasis: true },
+            passages: [
+              { text: 'Fixture passage on the Moon.', evidenceRefs: [FIXED_MOON.id] },
+              { text: 'Fixture passage on the event.', evidenceRefs: [event.id] },
+            ],
+          },
+        },
+      };
+    }),
+  };
 }
 
 describe('horoscope page sky strip', () => {
@@ -98,6 +147,94 @@ describe('horoscope page sky strip', () => {
       });
       expect(reading.skyStrip.markers.some(({ label }) => label === 'Exact')).toBe(false);
     }
+  });
+
+  it.each([
+    {
+      name: 'Mercury’s station on 13 November 2026 (same minute)',
+      event: {
+        id: 'fact:2026-11-13:event:station:2026-11-13T15:53:06.309Z:mercury-direct',
+        kind: 'sky-event',
+        sourceId: 'src/data/transits-2026-11.json',
+        label: 'Mercury stations direct in Scorpio at 5.0° on November 13, 2026 at 15:53 UTC',
+        at: '2026-11-13T15:53:06.309Z',
+        body: 'Mercury',
+        eventKind: 'station',
+        eventType: 'direct',
+        sign: 'scorpio',
+        degree: 5.033887262793883,
+      },
+      nasa: '2026-11-13T15:53:52.000Z',
+      printed: 'Mercury stations direct in Scorpio at 5.0° on November 13, 2026 at 15:53 UTC',
+    },
+    {
+      name: 'Neptune’s entry into Aries on 26 January 2026 (NASA moves the time)',
+      event: {
+        id: 'fact:2026:event:ingress:2026-01-26T14:30:44.561Z:neptune-aries',
+        kind: 'sky-event',
+        sourceId: 'src/data/ingresses.json',
+        label: 'Neptune enters Aries on January 26, 2026 at 14:30 UTC',
+        at: '2026-01-26T14:30:44.561Z',
+        body: 'Neptune',
+        eventKind: 'ingress',
+        sign: 'aries',
+        degree: 0,
+      },
+      nasa: '2026-01-26T17:35:23.000Z',
+      printed: 'Neptune enters Aries on January 26, 2026 at 17:35 UTC',
+    },
+  ] satisfies { name: string; event: HoroscopeEvidenceReceipt; nasa: string; printed: string }[])(
+    'gives the strip and the cited receipt NASA’s instant for $name',
+    ({ event, nasa, printed }) => {
+      const edition = fixedEdition(event);
+      const reading = pageReadingFromProgram(edition, 'aries', 'today');
+      const cited = evidenceMap(edition).get(event.id);
+
+      // The receipt the page cites carries NASA's instant and prints its minute;
+      // its id still names the engine instant the program committed.
+      expect(cited).toMatchObject({ id: event.id, at: nasa, label: printed });
+      expect(reading.skyStrip.markers[1]).toEqual({ label: 'Exact', value: printed, datetime: nasa });
+      expect(reading.skyStrip.markers[1].datetime).toBe(cited?.at);
+      expect(reading.sections[1].receipt).toBe(printed);
+      expect(reading.sky?.find((row) => row.id === event.id)?.at).toBe(nasa);
+    },
+  );
+
+  it('puts a day’s planet events at the same NASA instant as the sky rows', () => {
+    const [mercury, newMoon] = refineDailyEvents([
+      { kind: 'station', planet: 'Mercury', at: '2026-11-13T15:53:06.309Z', type: 'direct', sign: 'scorpio' },
+      { kind: 'lunation', at: '2026-11-09T07:02:05.269Z', type: 'new', sign: 'scorpio' },
+    ]);
+    expect(mercury.at).toBe('2026-11-13T15:53:52.000Z');
+    expect(newMoon.at).toBe('2026-11-09T07:02:05.269Z');
+  });
+
+  it('lists an event on the UTC day of NASA’s instant when NASA moves it across midnight', () => {
+    // Neptune sextile Pluto: the engine dates it 24 July 2026 at 23:09:38 UTC,
+    // NASA 25 July at 05:28:07 UTC, so it belongs to 25 July's edition.
+    const sextile = (event: { kind: string; a?: string; b?: string; type?: string }) => (
+      event.kind === 'aspect' && event.a === 'Neptune' && event.b === 'Pluto' && event.type === 'sextile'
+    );
+    expect(eventsOnUtcDay(transitCatalogs, '2026-07-24').filter(sextile)).toEqual([]);
+    expect(eventsOnUtcDay(transitCatalogs, '2026-07-25').filter(sextile))
+      .toMatchObject([{ at: '2026-07-25T05:28:07.000Z', aSign: 'aries', bSign: 'aquarius' }]);
+    expect(alsoInSkyEvents(transitCatalogs, '2026-07-24', [])).not.toContain('Neptune sextile Pluto, exact at 05:28 UTC');
+    expect(alsoInSkyEvents(transitCatalogs, '2026-07-25', [])).toContain('Neptune sextile Pluto, exact at 05:28 UTC');
+  });
+
+  it('leaves out of “Also in this sky” the events the sky rows show, and keeps the rest', () => {
+    // 16 October 2026: Pluto stations direct (NASA 02:39:22 UTC) and Mars
+    // trines Saturn (NASA 08:32:24 UTC, the engine says 08:26).
+    expect(alsoInSkyEvents(transitCatalogs, '2026-10-16', [])).toEqual([
+      'Pluto stations direct at 02:39 UTC',
+      'Mars trine Saturn, exact at 08:32 UTC',
+    ]);
+    // The reading cites Pluto's station, so its sky row is at NASA's instant.
+    expect(alsoInSkyEvents(transitCatalogs, '2026-10-16', ['2026-10-16T02:39:22.000Z'])).toEqual([
+      'Mars trine Saturn, exact at 08:32 UTC',
+    ]);
+    // The engine's instant is not a row the page prints, so it removes nothing.
+    expect(alsoInSkyEvents(transitCatalogs, '2026-10-16', ['2026-10-16T02:39:20.905Z'])).toHaveLength(2);
   });
 
   it('uses tomorrow’s own Moon phase without repeating the marker label', () => {
