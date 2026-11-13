@@ -31,7 +31,7 @@ import { getNumerology } from './features/numerology';
 import type { HoroscopeProgram } from '../lib/horoscope-program-types';
 import type { z } from 'zod';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, ALL_AI_TOOL_NAMES, COVERAGE_TOOL_NAMES, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, PLACE_TOOL_NAMES, SKY_EVENTS_OUTPUT_SCHEMAS, SKY_EVENTS_TOOL_NAMES, NUMEROLOGY_TOOL_NAMES, UNDER_13_REFUSAL, YEAR_SCORE_TOOL_NAMES, SOLAR_RETURN_TOOL_NAMES, inputSchemaFor, type AiToolName, type SolarReturnToolName, type CoverageToolName, type NumerologyToolName, type PlaceToolName, type SkyEventsToolName, type YearScoreToolName } from './contracts';
-import { MINOR_LOVE_NOTE, isUnder13, isUnder18 } from './features/reading-guards';
+import { MINOR_LOVE_NOTE, isUnder13, isUnderAge } from './features/reading-guards';
 import { readingConfidence, readingConfidenceLabel, readingDetail } from './reading-confidence';
 import { roundCoordinate, stripConsumerDashes } from './plain-text';
 import { findBirthplace, type PlaceTable } from './features/birthplace';
@@ -518,7 +518,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const localDate = dateInZone(dependencies.now?.() ?? new Date(), zone);
         // Under 18 on the person's own date, Zodiacs gives no love or romance reading: the general one stands in,
         // with a note that says so, and no line of any reading reads as romance. The birth date is only compared.
-        const minor = args.birthDate !== undefined && isUnder18(args.birthDate, localDate);
+        // isUnderAge keeps 29 February as 29 February, so someone born on 1 March is still under 18 that day.
+        const minor = args.birthDate !== undefined && isUnderAge(args.birthDate, localDate, 18);
         const loveWithheld = minor && args.focus === 'love';
         const request = { period: args.period ?? 'day', focus: loveWithheld ? 'general' : args.focus ?? 'general', ...(args.sign ? { sign: args.sign } : {}), ...(args.date ? { date: args.date } : {}) } as const;
         const answer = resolveHoroscope(window, request, zone, zoneSource, localDate, ORIGIN);

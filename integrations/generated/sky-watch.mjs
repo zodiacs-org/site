@@ -43471,7 +43471,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         }
         const window = await dependencies.horoscopeWindow();
         const localDate = dateInZone(dependencies.now?.() ?? /* @__PURE__ */ new Date(), zone9);
-        const minor = args.birthDate !== void 0 && isUnder18(args.birthDate, localDate);
+        const minor = args.birthDate !== void 0 && isUnderAge(args.birthDate, localDate, 18);
         const loveWithheld = minor && args.focus === "love";
         const request2 = { period: args.period ?? "day", focus: loveWithheld ? "general" : args.focus ?? "general", ...args.sign ? { sign: args.sign } : {}, ...args.date ? { date: args.date } : {} };
         const answer = resolveHoroscope(window, request2, zone9, zoneSource, localDate, ORIGIN);
