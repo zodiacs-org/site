@@ -24,7 +24,7 @@
  *  10. The inline profile access loader names the built bootstrap chunk.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
-import { attr, canonicalHref, renderedLinks, crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
+import { attr, canonicalHref, renderedLinks, crawlDepths, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -1734,9 +1734,16 @@ for (const file of files) {
     }
     console.log(`Section sitemaps: ${listed.size} sitemaps, ${sectionPathOf.size}/${sitemapLocs.size} sitemap.xml URLs`);
   }
-  const robots = await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => '');
-  for (const line of ['Sitemap: https://zodiacs.org/sitemap.xml', 'Sitemap: https://zodiacs.org/sitemap-index.xml']) {
-    if (!robots.split('\n').includes(line)) fail(`robots.txt: missing "${line}"`);
+  // robots.txt names the sitemap index alone (ZOD-221): /sitemap.xml lists the
+  // same pages, still builds for IndexNow and the gates above, and is not
+  // submitted twice. No page a sitemap lists may be blocked from crawling.
+  const robots = robotsRules(await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => ''));
+  if (robots.sitemaps.join('\n') !== 'https://zodiacs.org/sitemap-index.xml') {
+    fail(`robots.txt: must name exactly one sitemap, https://zodiacs.org/sitemap-index.xml (names ${robots.sitemaps.join(', ') || 'none'})`);
+  }
+  const sectionFiles = (await readdir(resolve(root, 'sitemaps')).catch(() => [])).map((name) => `/sitemaps/${name}`);
+  for (const path of ['/sitemap-index.xml', ...sectionFiles, ...sitemapLocs]) {
+    if (robotsBlocks(robots, path)) fail(`robots.txt: blocks ${path}, which the sitemap index lists`);
   }
 }
 

@@ -1,8 +1,10 @@
 /**
  * A sitemap index over the section sitemaps under /sitemaps/, which together
  * list exactly the locations of /sitemap.xml. Each section's lastmod is the
- * latest of its entries' dates. /sitemap.xml stays as it is: robots.txt names
- * both, and the build gates and IndexNow read it.
+ * latest of its entries' dates. This index is the one sitemap robots.txt names
+ * (ZOD-221). /sitemap.xml stays as it is, so links and the Search Console
+ * submission to it keep working and the build gates and IndexNow can read it,
+ * but crawlers are no longer pointed at the same pages twice.
  */
 import type { APIRoute } from 'astro';
 import { partitionSitemap, sitemapSectionPath } from './sitemaps/_sections';

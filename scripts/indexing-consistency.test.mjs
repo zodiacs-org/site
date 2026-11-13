@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { crawlDepths as graphDepths, renderedLinks, sitemapCanonicalErrors } from './indexing-consistency.mjs';
+import { crawlDepths as graphDepths, renderedLinks, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 
 const crawlDepths = (pages) => graphDepths(new Map([...pages].map(([path, html]) => [path, renderedLinks(path, html)])));
 
@@ -42,3 +42,38 @@ describe('sitemap canonical contract', () => {
  it('accepts canonical rel tokens and ignores commented or data attributes', () => {
    expect(sitemapCanonicalErrors('/aries/', `<!-- <link rel="canonical" href="/wrong/"> --><link data-rel="canonical" href="/wrong/"><link rel='canonical foo' data-href='/wrong/' href=https://zodiacs.org/aries/>`)).toEqual([]);
  });
+
+describe('robots.txt rules', () => {
+  const rules = robotsRules([
+    'User-agent: *',
+    'Allow: /',
+    'Allow: /terminal/research/$',
+    'Disallow: /terminal/research/',
+    'Disallow: /developers/engine/reference/',
+    '',
+    'User-agent: GPTBot',
+    'Disallow: /private/',
+    '',
+    'Sitemap: https://zodiacs.org/sitemap-index.xml',
+  ].join('\n'));
+
+  it('reads the general group and the sitemaps, not named crawlers\' groups', () => {
+    expect(rules.sitemaps).toEqual(['https://zodiacs.org/sitemap-index.xml']);
+    expect(rules.disallow).toEqual(['/terminal/research/', '/developers/engine/reference/']);
+    expect(robotsBlocks(rules, '/private/')).toBe(false);
+  });
+
+  it('lets the longest rule win, with $ anchoring the end', () => {
+    expect(robotsBlocks(rules, '/terminal/research/')).toBe(false);
+    expect(robotsBlocks(rules, '/terminal/research/weekly-outlook-2026-10-05/')).toBe(true);
+    expect(robotsBlocks(rules, '/terminal/')).toBe(false);
+    expect(robotsBlocks(rules, '/developers/engine/')).toBe(false);
+    expect(robotsBlocks(rules, '/developers/engine/reference/functions/chart.html')).toBe(true);
+  });
+
+  it('treats * as any run of characters', () => {
+    const wild = robotsRules('User-agent: *\nDisallow: /a/*/b/\n');
+    expect(robotsBlocks(wild, '/a/x/y/b/')).toBe(true);
+    expect(robotsBlocks(wild, '/a/b/')).toBe(false);
+  });
+});
