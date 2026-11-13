@@ -36,6 +36,14 @@ import {
   type ZodiacsAccountExportV1,
 } from './types.js';
 import { isAccountUuid } from './request.js';
+import {
+  livingChartPayloadValid,
+  savedPageDetailValid,
+  savedPageHrefValid,
+  savedPageSourceKindValid,
+  savedPageSummaryValid,
+  savedPageTitleValid,
+} from './export-shapes.js';
 
 type Environment = Record<string, unknown>;
 type Fetch = typeof fetch;
@@ -382,38 +390,31 @@ function inviteExports(rows: Record<string, unknown>[]): CompatibilityInviteExpo
   });
 }
 
-const SAVED_PAGE_KINDS = new Set(['compatibility', 'occasion', 'chart', 'week']);
-
 // Same allowlist rule as the rest of the export: named columns only, no
-// owner id, and any row outside the table's own constraints fails closed.
+// owner id, and any row outside the table's own constraints (export-shapes.ts
+// mirrors them, including the assistant detail's schema) fails closed.
 function savedPageExports(rows: Record<string, unknown>[]): SavedPageExportV1[] {
   return rows.map((row) => {
     const savedAt = isoDate(row.saved_at);
-    const title = boundedText(row.title, 160);
-    const href = boundedText(row.href, 2048);
     const site = row.source === 'site';
     const assistant = row.source === 'assistant';
-    const summary = row.summary === null ? null : boundedText(row.summary, 600);
     if (!hasExactKeys(row, ['id', 'kind', 'title', 'href', 'source', 'summary', 'detail', 'saved_at'])
       || !isAccountUuid(row.id)
-      || typeof row.kind !== 'string'
-      || !SAVED_PAGE_KINDS.has(row.kind)
-      || !title
-      || !href
-      || !href.startsWith('/')
+      || !savedPageSourceKindValid(row.source, row.kind)
+      || !savedPageTitleValid(row.title)
+      || !savedPageHrefValid(row.href, row.kind)
       || !savedAt
-      || !(site || assistant)
       || (site && (row.summary !== null || row.detail !== null))
-      || (assistant && (!summary || !isRecord(row.detail)))) {
+      || (assistant && (!savedPageSummaryValid(row.summary) || !savedPageDetailValid(row.detail)))) {
       throw new AccountServerFailure('export_unavailable');
     }
     return {
       id: row.id.toLowerCase(),
       kind: row.kind as SavedPageExportV1['kind'],
-      title,
-      href,
+      title: row.title,
+      href: row.href,
       source: site ? 'site' : 'assistant',
-      summary: assistant ? summary : null,
+      summary: assistant ? row.summary as string : null,
       detail: assistant ? row.detail as Record<string, unknown> : null,
       savedAt,
     };
@@ -436,7 +437,7 @@ function livingChartMomentExports(rows: Record<string, unknown>[]): LivingChartM
       || !createdAt
       || !updatedAt
       || deletedAt === undefined
-      || (deletedAt === null ? !isRecord(row.payload) : row.payload !== null)) {
+      || (deletedAt === null ? !livingChartPayloadValid(row.payload) : row.payload !== null)) {
       throw new AccountServerFailure('export_unavailable');
     }
     return {

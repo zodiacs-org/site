@@ -26,7 +26,11 @@ re-wraps the data key and leaves the ciphertext and nonce untouched. The
 rewrap tool never decrypts a chart or an address, and the database RPCs it
 uses (`account_v2_rewrap_candidates`, `account_v2_rewrap_apply`,
 `account_v2_key_version_inventory`, migration 20261113090000) neither return
-nor accept ciphertext.
+nor accept ciphertext. The candidate list sends each wrapped key as one
+unbroken base64 string (PostgreSQL's own encoding breaks the line after 76
+characters); the tool also accepts the broken form and drops only line
+breaks before its strict check. An unknown command line argument is refused
+with a fixed message that never repeats the argument.
 
 ## Escrow
 

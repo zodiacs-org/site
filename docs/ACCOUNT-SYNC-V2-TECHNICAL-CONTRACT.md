@@ -201,11 +201,19 @@ An expired receipt is removed only once its deletion is complete. When an
 account has been deleting for seven days and holds no live receipt, the
 hourly retention pass repeats the terminal cleanup, deletes the Auth
 identity in SQL, marks the receipts complete, and only then removes them with
-their provider outbox rows.
+their provider outbox rows. The pass locks the Auth row before anything else,
+the order the weekly digest transitions use.
 The database serializes rotation under the existing recipient/account lock
-order, prunes that account's expired receipts, and permits at most three live
-receipts per account. A fourth fresh request returns
-`receipt_limit_reached`; exact receipt replay remains idempotent.
+order and permits at most three live receipts per account. Rotation prunes
+that account's expired receipts only where they are complete or the account
+is no longer deleting; an expired, incomplete receipt of a deleting account
+stays, with its provider outbox rows, until the retention pass has finished
+the deletion. Such a kept receipt counts as absent: it is outside the cap,
+and a prepare that names its request ID again gives it a fresh seven day
+window in place. A fourth fresh request returns `receipt_limit_reached`;
+exact receipt replay remains idempotent. The assistant save RPC takes the
+account owner lock before it replaces a saved row, so a save and a prepare
+for the same account wait in one order.
 Each receipt also persists `daily_sun_revoked` and
 `daily_sun_reconciliation_required`, so status and finish retries preserve the
 same cleanup truth after a lost response. Reconciliation is informational and
@@ -488,4 +496,10 @@ locator is represented explicitly as unavailable rather than silently omitted,
 while an invalid non-null locator fails the export closed. The export also
 lists the account's saved pages (with each assistant save's summary and
 detail) and its Living Chart moments, allowlisted column by column with no
-owner id; a row outside its table's shape fails the export closed.
+owner id. `src/lib/account-api/export-shapes.ts` mirrors the tables' check
+constraints, including the moment payload's nested forecast and the assistant
+detail's schema name, and a row outside them fails the export closed. Its one
+departure: the export also refuses an assistant detail without a schema name,
+which `saved_pages_assistant_detail` lets through because the comparison is
+NULL. The cases in `export-shapes.cases.ts` record each answer the database
+gives.

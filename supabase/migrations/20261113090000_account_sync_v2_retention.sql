@@ -16,16 +16,21 @@
 --    trigger: the digest only writes for an opted-in profile, prepare erases
 --    the profile and the profile's own terminal trigger keeps it erased, and a
 --    trigger there would invert the digest's Auth, profile, delivery lock order.
+--    The assistant save RPC (public.zodiacs_accounts_v1) now takes the owner
+--    lock before it replaces a site row, so the replacement and prepare take
+--    the owner lock and the saved row in the same order.
 -- 3. The reaper. Once an account has been deleting for seven days and holds no
 --    live deletion receipt, private.account_v2_reap_stranded_deletions repeats
 --    the terminal erasure, deletes the Auth identity (auth.users, which
---    cascades the rest) and records the receipts as completed. The seven day
+--    cascades the rest) and records the receipts as completed. It locks the
+--    Auth row before anything else, the weekly digest's order. The seven day
 --    window is the existing one; nothing here lengthens or shortens it.
 -- 4. Receipt cleanup. public.account_v2_run_retention reaps first and then
 --    removes expired receipts that are completed, or whose account is no
 --    longer deleting. An expired receipt of an account that is still deleting
 --    stays, with its Daily Sun provider reconciliation record, until the
---    reaper has acted. public.account_v2_cleanup_deletion_receipts keeps its
+--    reaper has acted. Deletion prepare's recovery rotation prune follows the
+--    same rule. public.account_v2_cleanup_deletion_receipts keeps its
 --    signature for the deployed API and now runs the same retention pass.
 -- 5. Cadence. When pg_cron is installed (production), the retention pass is
 --    scheduled hourly as `account-v2-retention`. The GitHub workflow stays as
@@ -290,6 +295,55 @@ grant execute on function public.put_living_chart_moment(uuid, bigint, bigint, u
 grant execute on function public.delete_living_chart_moment(uuid, bigint, bigint, uuid)
   to authenticated, service_role;
 
+-- The assistant save RPC (20261015150000), unchanged except that it takes the
+-- account owner lock before it replaces a site row: saved_pages' terminal
+-- gate makes the owner lock part of every saved_pages insert, so the delete
+-- that precedes the insert must come after that lock, as in prepare.
+create or replace function public.zodiacs_accounts_v1(operation text, input jsonb default '{}'::jsonb)
+returns jsonb language plpgsql security invoker set search_path = pg_catalog as $$
+declare
+  now_at timestamptz := clock_timestamp();
+  owner uuid; saved public.saved_pages%rowtype;
+begin
+  if operation not in ('oauth', 'save') then raise exception using errcode = '22023', message = 'Unsupported accounts operation'; end if;
+  if input->>'user' is null or input->>'session' is null or input->>'client' is null or input->>'resource' is null
+    or not zodiacs_accounts_private.oauth_active((input->>'user')::uuid, (input->>'session')::uuid, (input->>'client')::uuid, input->>'resource', now_at) then
+    return case when operation = 'oauth' then to_jsonb(false) else 'null'::jsonb end;
+  end if;
+  if operation = 'oauth' then return to_jsonb(true); end if;
+  owner := (input->>'user')::uuid;
+  -- The account owner lock that deletion prepare takes before it erases
+  -- saved_pages, taken before the replacement below deletes a row. Without it
+  -- the replacement holds that row and then waits on the owner lock in the
+  -- insert's terminal gate while prepare holds the lock and waits on the row.
+  perform pg_advisory_xact_lock(hashtextextended(owner::text, 7312025));
+  -- The same link saved by the assistant again: one row, left exactly as it was.
+  -- The same link saved on the site holds only the link, so the assistant's
+  -- record (with its summary and worked-out result) takes its place.
+  select * into saved from public.saved_pages where user_id = owner and href = input->>'href';
+  if found and saved.source = 'assistant' then
+    return jsonb_build_object('id', saved.id, 'saved_at', saved.saved_at, 'created', false);
+  end if;
+  if found then delete from public.saved_pages where id = saved.id; end if;
+  begin
+    -- saved_pages' own trigger serialises per account and enforces the 100-row limit.
+    insert into public.saved_pages(user_id, kind, title, href, source, summary, detail)
+      values (owner, input->>'kind', input->>'title', input->>'href', 'assistant', input->>'summary', input->'detail')
+      returning * into saved;
+  exception
+    when unique_violation then
+      select * into saved from public.saved_pages where user_id = owner and href = input->>'href';
+      return jsonb_build_object('id', saved.id, 'saved_at', saved.saved_at, 'created', false);
+    when raise_exception then
+      if sqlerrm = 'saved_pages_full' then return to_jsonb('full'::text); end if;
+      raise;
+  end;
+  return jsonb_build_object('id', saved.id, 'saved_at', saved.saved_at, 'created', true);
+end;
+$$;
+revoke all on function public.zodiacs_accounts_v1(text, jsonb) from public, anon, authenticated;
+grant execute on function public.zodiacs_accounts_v1(text, jsonb) to service_role;
+
 -- 3. The reaper ---------------------------------------------------------------
 
 -- Erasure for a deleting account that no longer has any receipt (one whose
@@ -355,8 +409,18 @@ begin
     return false;
   end if;
 
-  -- The lock order of prepare and terminal cleanup: every recipient alias the
-  -- account or its receipts know, then invite authority, then the owner.
+  -- The Auth parent first, the order every weekly digest transition and the
+  -- Auth deletion's own cascade use (Auth, then profile, owner, delivery and
+  -- capability). Erasing delivery rows before this lock could wait in a cycle
+  -- with a digest transition that holds Auth and waits on a delivery row.
+  -- When the identity is already gone there is nothing to lock or wait for.
+  perform 1
+  from auth.users as users
+  where users.id = candidate_user_id
+  for update;
+
+  -- Then the lock order of prepare and terminal cleanup: every recipient alias
+  -- the account or its receipts know, then invite authority, then the owner.
   for current_alias in
     select distinct aliases.recipient_hash
     from (
@@ -533,6 +597,233 @@ grant execute on function private.account_v2_reap_stranded_deletions(integer)
   to service_role;
 
 -- 4. Receipt cleanup -----------------------------------------------------------
+
+-- Deletion prepare (20260811153303), unchanged except for the recovery
+-- rotation prune: an expired receipt that is not completed, of an account that
+-- is still deleting, is no longer removed here (its delete would cascade the
+-- Daily Sun provider reconciliation records) but kept for the reaper. A kept
+-- expired receipt is treated as absent, as before: it counts against no cap,
+-- and a prepare that names it again gives it a fresh seven day window in
+-- place, which is what deleting and inserting it again used to give.
+create or replace function public.account_v2_prepare_deletion(
+  candidate_user_id uuid,
+  candidate_request_id uuid,
+  candidate_request_fingerprints jsonb,
+  candidate_provider_cleanup_entries jsonb,
+  candidate_provider_cleanup_inventory_complete boolean
+)
+returns jsonb
+language plpgsql
+security invoker
+set search_path = pg_catalog
+as $$
+declare
+  current_state private.account_states%rowtype;
+  current_receipt private.account_deletion_receipts%rowtype;
+  replay_mutation private.account_sync_mutations%rowtype;
+  result_value jsonb;
+  operation_time timestamptz := clock_timestamp();
+  response_outcome text;
+  current_alias text;
+begin
+  if candidate_user_id is null
+    or candidate_request_id is null
+    or not private.account_v2_valid_request_fingerprints(
+      candidate_request_fingerprints
+    )
+    or not private.account_v2_valid_provider_cleanup_entries(
+      candidate_provider_cleanup_entries
+    )
+    or candidate_provider_cleanup_inventory_complete is null
+  then
+    return jsonb_build_object('outcome', 'invalid');
+  end if;
+
+  -- Lock every known/supplied recipient before the owner row, matching Daily
+  -- Sun subscribe/confirm ordering. The API supplies the current alias first;
+  -- the stable alias table contributes historical aliases, including overflow.
+  for current_alias in
+    select distinct aliases.recipient_hash
+    from (
+      select recipient_hash
+      from private.account_daily_sun_recipient_aliases
+      where user_id = candidate_user_id
+      union all
+      select value->>'recipient_hash'
+      from jsonb_array_elements(candidate_provider_cleanup_entries)
+    ) as aliases
+    order by aliases.recipient_hash
+  loop
+    perform pg_advisory_xact_lock(hashtextextended(current_alias, 7312026));
+  end loop;
+
+  -- Match compatibility-invite and terminal-cleanup lock ordering. Taking the
+  -- invite authority before the legacy cutover lock prevents prepare from
+  -- deadlocking with an invite transaction whose terminal trigger acquires
+  -- the cutover lock after its own authority lock.
+  perform pg_advisory_xact_lock(
+    hashtextextended(candidate_user_id::text, 7312030)
+  );
+  perform pg_advisory_xact_lock(
+    hashtextextended(candidate_user_id::text, 7312025)
+  );
+
+  insert into private.account_states (user_id)
+  values (candidate_user_id)
+  on conflict (user_id) do nothing;
+
+  select * into current_state
+  from private.account_states
+  where user_id = candidate_user_id
+  for update;
+
+  select * into replay_mutation
+  from private.account_sync_mutations
+  where user_id = candidate_user_id
+    and mutation_id = candidate_request_id;
+
+  if found and (
+    replay_mutation.operation <> 'prepare_deletion'
+    or not exists (
+      select 1
+      from jsonb_array_elements_text(candidate_request_fingerprints)
+        as supplied(verifier)
+      where supplied.verifier = replay_mutation.request_fingerprint_verifier
+    )
+  ) then
+    return jsonb_build_object('outcome', 'mutation_conflict');
+  end if;
+
+  -- Recovery rotation is serialized by the owner row above. Prune this
+  -- account's expired capabilities inline, then cap live receipts so repeated
+  -- fresh request IDs cannot amplify durable/provider work without bound.
+  -- An expired receipt that is not completed while the account is deleting
+  -- stays, with its Daily Sun provider reconciliation records, until the
+  -- retention reaper has finished the deletion (20261113090000).
+  delete from private.account_deletion_receipts
+  where user_id = candidate_user_id
+    and expires_at <= operation_time
+    and (
+      completed_at is not null
+      or current_state.status <> 'deleting'
+    );
+
+  select * into current_receipt
+  from private.account_deletion_receipts
+  where request_id = candidate_request_id
+  for update;
+
+  if found and (
+    current_receipt.user_id <> candidate_user_id
+    or not exists (
+      select 1
+      from jsonb_array_elements_text(candidate_request_fingerprints)
+        as supplied(verifier)
+      where supplied.verifier = current_receipt.recovery_verifier
+    )
+  ) then
+    return jsonb_build_object('outcome', 'mutation_conflict');
+  end if;
+
+  -- A kept expired receipt counts as absent, exactly as when prune removed
+  -- it: it is subject to the cap and, when the same request ID comes back,
+  -- gets a fresh seven day window in place (its provider records stay).
+  if (
+    current_receipt.request_id is null
+    or current_receipt.expires_at <= operation_time
+  ) and (
+    select count(*)
+    from private.account_deletion_receipts
+    where user_id = candidate_user_id
+      and expires_at > operation_time
+  ) >= 3 then
+    return jsonb_build_object('outcome', 'receipt_limit_reached');
+  end if;
+
+  if current_receipt.request_id is not null
+    and current_receipt.expires_at <= operation_time
+  then
+    update private.account_deletion_receipts
+    set expires_at = operation_time + interval '7 days'
+    where request_id = candidate_request_id
+    returning * into current_receipt;
+  end if;
+
+  if current_state.status = 'active' then
+    update private.account_states
+    set status = 'deleting',
+        deletion_request_id = candidate_request_id,
+        deletion_started_at = operation_time,
+        updated_at = operation_time
+    where user_id = candidate_user_id
+    returning * into current_state;
+    response_outcome := 'prepared';
+  else
+    response_outcome := case
+      when current_state.deletion_request_id = candidate_request_id
+        then 'prepared'
+      else 'already_prepared'
+    end;
+  end if;
+
+  if current_receipt.request_id is null then
+    insert into private.account_deletion_receipts (
+      request_id,
+      user_id,
+      recovery_verifier,
+      prepared_at,
+      daily_sun_was_confirmed,
+      provider_cleanup_alias_count,
+      provider_cleanup_inventory_complete,
+      daily_sun_revoked,
+      daily_sun_reconciliation_required,
+      expires_at
+    ) values (
+      candidate_request_id,
+      candidate_user_id,
+      candidate_request_fingerprints->>0,
+      current_state.deletion_started_at,
+      current_state.daily_sun_was_confirmed or coalesce((
+        select bool_or(existing.daily_sun_was_confirmed)
+        from private.account_deletion_receipts as existing
+        where existing.user_id = candidate_user_id
+      ), false),
+      0,
+      candidate_provider_cleanup_inventory_complete,
+      false,
+      true,
+      operation_time + interval '7 days'
+    );
+  end if;
+
+  current_receipt := private.account_v2_reassert_terminal_cleanup(
+    candidate_request_id,
+    candidate_provider_cleanup_entries,
+    candidate_provider_cleanup_inventory_complete
+  );
+
+  result_value := jsonb_build_object(
+    'outcome', response_outcome,
+    'request_id', candidate_request_id,
+    'daily_sun_revoked', current_receipt.daily_sun_revoked,
+    'daily_sun_reconciliation_required',
+      current_receipt.daily_sun_reconciliation_required,
+    'prepared_at', current_receipt.prepared_at
+  );
+
+  return result_value;
+exception
+  when foreign_key_violation then
+    return jsonb_build_object('outcome', 'user_not_found');
+  when unique_violation then
+    return jsonb_build_object('outcome', 'mutation_conflict');
+end;
+$$;
+
+revoke all on function public.account_v2_prepare_deletion(uuid, uuid, jsonb, jsonb, boolean)
+  from public, anon, authenticated;
+grant execute on function public.account_v2_prepare_deletion(uuid, uuid, jsonb, jsonb, boolean)
+  to service_role;
 
 -- The hourly retention pass: reap, prune provider leases, then remove expired
 -- receipts that are completed or whose account is no longer deleting.
@@ -725,7 +1016,9 @@ grant execute on function public.account_v2_key_version_inventory()
   to service_role;
 
 -- One ordered page of rows still wrapped under candidate_key_version, with
--- only the ids, the AEAD context and the wrapped data key.
+-- only the ids, the AEAD context and the wrapped data key. PostgreSQL's base64
+-- breaks lines every 76 characters, so the line breaks are removed and the
+-- wrapped key travels as one unbroken string.
 create or replace function public.account_v2_rewrap_candidates(
   candidate_kind text,
   candidate_key_version integer,
@@ -759,7 +1052,7 @@ begin
         'chart_id', chart_id,
         'revision', revision,
         'key_version', key_version,
-        'wrapped_key', encode(wrapped_key, 'base64')
+        'wrapped_key', translate(encode(wrapped_key, 'base64'), E'\n\r', '')
       ) as row_value
       from private.account_chart_secret_envelopes
       where key_version = candidate_key_version
@@ -774,7 +1067,7 @@ begin
         'user_id', user_id,
         'recipient_hash', recipient_hash,
         'key_version', locator_key_version,
-        'wrapped_key', encode(locator_wrapped_key, 'base64')
+        'wrapped_key', translate(encode(locator_wrapped_key, 'base64'), E'\n\r', '')
       ) as row_value
       from private.account_daily_sun_recipient_aliases
       where locator_key_version = candidate_key_version
@@ -789,7 +1082,7 @@ begin
         'request_id', request_id,
         'recipient_hash', recipient_hash,
         'key_version', payload_key_version,
-        'wrapped_key', encode(payload_wrapped_key, 'base64')
+        'wrapped_key', translate(encode(payload_wrapped_key, 'base64'), E'\n\r', '')
       ) as row_value
       from private.account_deletion_provider_cleanup
       where payload_key_version = candidate_key_version

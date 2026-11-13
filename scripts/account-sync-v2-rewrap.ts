@@ -48,7 +48,11 @@ export function parseRewrapArgs(argv: readonly string[]): {
   const known = new Set(['--from', '--kind', '--batch', '--batches', '--apply']);
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
-    if (!known.has(arg)) throw new AccountRewrapError(`unknown argument ${JSON.stringify(arg)}`);
+    // A fixed message: an argument's text is never echoed, in case it holds a
+    // key pasted in the wrong place.
+    if (!known.has(arg)) {
+      throw new AccountRewrapError('unknown argument; accepted: --from, --kind, --batch, --batches, --apply');
+    }
     if (arg !== '--apply') index += 1;
   }
   const integer = (flag: string, fallback?: number): number => {

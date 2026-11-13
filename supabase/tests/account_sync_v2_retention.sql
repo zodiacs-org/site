@@ -609,7 +609,7 @@ select pg_temp.assert_true(
        'chart_id', '87000000-0000-4000-8000-000000000006',
        'revision', 3,
        'key_version', 1,
-       'wrapped_key', encode(decode(repeat('01', 68), 'hex'), 'base64')
+       'wrapped_key', translate(encode(decode(repeat('01', 68), 'hex'), 'base64'), E'\n', '')
      ))
      and not (value::text like '%ciphertext%')
    from retention_results where key = 'rewrap_candidates')
@@ -624,6 +624,30 @@ select pg_temp.assert_true(
     and public.account_v2_rewrap_candidates('secret', 1, 10) = '{"outcome":"invalid"}'::jsonb
     and public.account_v2_key_version_inventory() @> '[{"kind":"chart","key_version":1},{"kind":"alias","key_version":1}]'::jsonb,
   'rewrap candidates must list ids, context and the wrapped key only'
+);
+
+-- PostgreSQL's base64 breaks a 68-byte key after 76 characters. The rewrap
+-- tool reads the candidates as JSON, so every wrapped key must arrive as one
+-- unbroken 92-character string that decodes back to the stored bytes.
+select pg_temp.assert_true(
+  octet_length(encode(decode(repeat('01', 68), 'hex'), 'base64')) = 93
+    and not exists (
+      select 1
+      from (values ('chart'), ('alias'), ('provider')) as kinds(kind),
+        jsonb_array_elements(
+          public.account_v2_rewrap_candidates(kinds.kind, 1, 500)->'rows'
+        ) as listed(row_value)
+      where listed.row_value->>'wrapped_key' !~ '^[A-Za-z0-9+/]{91}=$'
+         or octet_length(decode(listed.row_value->>'wrapped_key', 'base64')) <> 68
+    )
+    and (
+      select count(*) >= 2
+      from (values ('chart'), ('alias')) as kinds(kind),
+        jsonb_array_elements(
+          public.account_v2_rewrap_candidates(kinds.kind, 1, 500)->'rows'
+        ) as listed(row_value)
+    ),
+  'rewrap candidates must carry each wrapped key as unbroken base64'
 );
 
 create or replace function pg_temp.rewrap_chart_row(old_fill text, new_fill text, revision integer)
@@ -690,4 +714,146 @@ select pg_temp.assert_true(
         and locator_ciphertext = decode(repeat('ef', 40), 'hex')
     ),
   'rewrap must change only the key version and wrapped key'
+);
+
+-- 8. Recovery rotation keeps an expired incomplete receipt ---------------------
+--
+-- A fresh prepare after the first receipt expired used to prune that receipt,
+-- cascading its Daily Sun provider reconciliation record while the account was
+-- still deleting and its Auth identity still existed. The record must stay
+-- until the reaper has finished the deletion.
+
+insert into auth.users (id) values
+  ('81000000-0000-4000-8000-000000000007'),
+  ('81000000-0000-4000-8000-000000000008')
+on conflict (id) do nothing;
+
+set role service_role;
+select public.account_v2_prepare_deletion(
+  '81000000-0000-4000-8000-000000000007',
+  '86000000-0000-4000-8000-000000000007',
+  pg_temp.retention_hmac('7'),
+  pg_temp.provider_entries(repeat('8', 64), '8'),
+  true
+);
+select public.account_v2_prepare_deletion(
+  '81000000-0000-4000-8000-000000000008',
+  '86000000-0000-4000-8000-000000000008',
+  pg_temp.retention_hmac('8'),
+  pg_temp.provider_entries(repeat('9', 64), '9'),
+  true
+);
+reset role;
+
+select pg_temp.age_deletion('81000000-0000-4000-8000-000000000007');
+select pg_temp.age_deletion('81000000-0000-4000-8000-000000000008');
+
+set role service_role;
+insert into retention_results values (
+  'rotation_new_id',
+  public.account_v2_prepare_deletion(
+    '81000000-0000-4000-8000-000000000007',
+    '86000000-0000-4000-8000-000000000017',
+    pg_temp.retention_hmac('a'),
+    '[]'::jsonb,
+    true
+  )
+);
+insert into retention_results values (
+  'rotation_same_id',
+  public.account_v2_prepare_deletion(
+    '81000000-0000-4000-8000-000000000008',
+    '86000000-0000-4000-8000-000000000008',
+    pg_temp.retention_hmac('8'),
+    '[]'::jsonb,
+    true
+  )
+);
+reset role;
+
+select pg_temp.assert_true(
+  (select value->>'outcome' = 'already_prepared'
+   from retention_results where key = 'rotation_new_id')
+    and exists (select 1 from auth.users where id = '81000000-0000-4000-8000-000000000007')
+    and exists (select 1 from private.account_states
+                where user_id = '81000000-0000-4000-8000-000000000007'
+                  and status = 'deleting')
+    and exists (select 1 from private.account_deletion_receipts
+                where request_id = '86000000-0000-4000-8000-000000000007'
+                  and completed_at is null
+                  and expires_at <= clock_timestamp())
+    and exists (select 1 from private.account_deletion_provider_cleanup
+                where request_id = '86000000-0000-4000-8000-000000000007'
+                  and recipient_hash = repeat('8', 64))
+    and exists (select 1 from private.account_deletion_receipts
+                where request_id = '86000000-0000-4000-8000-000000000017'
+                  and expires_at > clock_timestamp()),
+  format(
+    'a fresh prepare must keep the expired incomplete receipt and its provider record (%s)',
+    (select value from retention_results where key = 'rotation_new_id')
+  )
+);
+
+select pg_temp.assert_true(
+  (select value->>'outcome' = 'prepared'
+   from retention_results where key = 'rotation_same_id')
+    and exists (select 1 from private.account_deletion_receipts
+                where request_id = '86000000-0000-4000-8000-000000000008'
+                  and completed_at is null
+                  and expires_at > clock_timestamp() + interval '6 days 23 hours'
+                  and expires_at <= clock_timestamp() + interval '7 days')
+    and exists (select 1 from private.account_deletion_provider_cleanup
+                where request_id = '86000000-0000-4000-8000-000000000008'
+                  and recipient_hash = repeat('9', 64))
+    and (select count(*) = 1 from private.account_deletion_receipts
+         where user_id = '81000000-0000-4000-8000-000000000008'),
+  format(
+    'a prepare naming its own expired receipt must renew it in place (%s)',
+    (select value from retention_results where key = 'rotation_same_id')
+  )
+);
+
+-- A live receipt leaves the deletion to its owner; once every receipt has
+-- expired the reaper finishes it and only then do the receipts go.
+set role service_role;
+insert into retention_results values (
+  'rotation_live_pass',
+  public.account_v2_run_retention(50)
+);
+reset role;
+
+select pg_temp.assert_true(
+  exists (select 1 from auth.users where id = '81000000-0000-4000-8000-000000000007')
+    and exists (select 1 from private.account_deletion_provider_cleanup
+                where request_id = '86000000-0000-4000-8000-000000000007'),
+  'the retention pass must not remove a kept receipt while a live one exists'
+);
+
+select pg_temp.age_deletion('81000000-0000-4000-8000-000000000007');
+select pg_temp.age_deletion('81000000-0000-4000-8000-000000000008');
+
+set role service_role;
+insert into retention_results values (
+  'rotation_reaped_pass',
+  public.account_v2_run_retention(50)
+);
+reset role;
+
+select pg_temp.assert_true(
+  (select (value->>'reaped')::integer >= 2 and (value->>'reap_failed')::integer = 0
+   from retention_results where key = 'rotation_reaped_pass')
+    and not exists (select 1 from auth.users
+                    where id in ('81000000-0000-4000-8000-000000000007',
+                                 '81000000-0000-4000-8000-000000000008'))
+    and not exists (select 1 from private.account_deletion_receipts
+                    where user_id in ('81000000-0000-4000-8000-000000000007',
+                                      '81000000-0000-4000-8000-000000000008'))
+    and not exists (select 1 from private.account_deletion_provider_cleanup
+                    where request_id in ('86000000-0000-4000-8000-000000000007',
+                                         '86000000-0000-4000-8000-000000000017',
+                                         '86000000-0000-4000-8000-000000000008')),
+  format(
+    'the reaper must finish both deletions before their receipts go (%s)',
+    (select value from retention_results where key = 'rotation_reaped_pass')
+  )
 );

@@ -16,6 +16,7 @@ import {
   AccountRewrapError,
   accountKeyVersionInventory,
   runAccountKeyRewrap,
+  wrappedKeyBytes,
   type AccountRewrapKind,
   type AccountRewrapOptions,
 } from './rewrap';
@@ -73,8 +74,16 @@ function fixture() {
   return rows;
 }
 
+// PostgreSQL's encode(bytes, 'base64'): a newline after every 76 characters.
+// The migration strips them from the candidate list; the fake keeps them, so
+// the tool is tested against the raw server form too.
+function pgBase64(bytes: Buffer): string {
+  return bytes.toString('base64').replace(/(.{76})(?=.)/gu, '$1\n');
+}
+
 // An in-memory stand-in for the three service RPCs, with the same
-// compare-and-swap rule as the migration.
+// compare-and-swap rule as the migration (decode() ignores line breaks, so
+// the old wrapped key is compared as bytes).
 function fakeDatabase(rows: StoredRow[]) {
   const calls: Array<{ name: string; body: Record<string, unknown> }> = [];
   const rpc = vi.fn(async (name: string, body: Record<string, unknown>) => {
@@ -99,7 +108,7 @@ function fakeDatabase(rows: StoredRow[]) {
           .map((row) => ({
             ...row.ids,
             key_version: row.envelope.keyVersion,
-            wrapped_key: row.envelope.wrappedKey.toString('base64'),
+            wrapped_key: pgBase64(row.envelope.wrappedKey),
           })),
       };
     }
@@ -110,7 +119,7 @@ function fakeDatabase(rows: StoredRow[]) {
         const row = rows.find((stored) => stored.kind === body.candidate_kind
           && Object.entries(stored.ids).every(([key, value]) => candidate[key] === value)
           && stored.envelope.keyVersion === candidate.old_key_version
-          && stored.envelope.wrappedKey.toString('base64') === candidate.old_wrapped_key);
+          && stored.envelope.wrappedKey.equals(Buffer.from(candidate.old_wrapped_key as string, 'base64')));
         if (!row) {
           skipped += 1;
           continue;
@@ -196,6 +205,27 @@ describe('account key rewrap', () => {
     // The keyring must still hold the old version.
     expect(() => rewrapAccountPrivatePayloadKey(envelope.wrappedKey, 1, { userId, chartId, revision: 4 }, NEW_ONLY_ENV))
       .toThrow(AccountEncryptionFailure);
+  });
+
+  it('reads a wrapped key exactly as PostgreSQL 17 encodes it, with or without its line break', () => {
+    // Verbatim from PostgreSQL 17.11:
+    //   select to_jsonb(encode(decode(repeat('a7', 68), 'hex'), 'base64'))::text
+    // (the candidate RPC before it removed line breaks), and the same value
+    // with translate(..., E'\n\r', '') as the candidate RPC now returns it.
+    const raw = JSON.parse('"p6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6en\\np6enp6enp6enp6c="') as string;
+    const unbroken = JSON.parse('"p6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6c="') as string;
+    const expected = Buffer.alloc(68, 0xa7);
+    expect(raw).toHaveLength(93);
+    expect(raw.indexOf('\n')).toBe(76);
+    expect(pgBase64(expected)).toBe(raw);
+    expect(wrappedKeyBytes(raw)?.equals(expected)).toBe(true);
+    expect(wrappedKeyBytes(raw.replace('\n', '\r\n'))?.equals(expected)).toBe(true);
+    expect(wrappedKeyBytes(unbroken)?.equals(expected)).toBe(true);
+    // Only line breaks are tolerated; anything else still fails closed.
+    expect(wrappedKeyBytes(raw.replace('\n', ' '))).toBeNull();
+    expect(wrappedKeyBytes(raw.replace('\n', '\t'))).toBeNull();
+    expect(wrappedKeyBytes(`${unbroken}AA==`)).toBeNull();
+    expect(wrappedKeyBytes(unbroken.slice(0, -4))).toBeNull();
   });
 
   it('writes nothing in a dry run and prints only counts and ids', async () => {
@@ -319,6 +349,29 @@ describe('account key rewrap', () => {
     expect(() => parseRewrapArgs(['--from', '0'])).toThrow(AccountRewrapError);
     expect(() => parseRewrapArgs(['--from', '1', '--kind', 'charts'])).toThrow(AccountRewrapError);
     expect(() => parseRewrapArgs(['--from', '1', '--yes'])).toThrow(AccountRewrapError);
+  });
+
+  it('never echoes argument text in its errors', () => {
+    const pasted = randomBytes(32).toString('base64');
+    for (const argv of [
+      ['--from', '1', pasted],
+      ['--from', '1', `--key=${pasted}`],
+      [pasted, '--from', '1'],
+      ['--from', pasted],
+      ['--from', '1', '--kind', pasted],
+      ['--from', '1', '--batch', pasted],
+    ]) {
+      let message = '';
+      try {
+        parseRewrapArgs(argv);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AccountRewrapError);
+        message = (error as Error).message;
+      }
+      expect(message).not.toBe('');
+      expect(message).not.toContain(pasted);
+      expect(message).not.toContain(pasted.slice(0, 12));
+    }
   });
 
   it('calls only the service RPC endpoint and reports failures without the response body', async () => {
