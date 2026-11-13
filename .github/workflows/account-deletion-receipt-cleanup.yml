@@ -1,5 +1,9 @@
 name: Account Deletion Receipt Cleanup
 
+# Backup for the hourly `account-v2-retention` pg_cron job inside Supabase
+# (migration 20261113090000). GitHub runs this schedule only a few times a day,
+# so it is not the hourly guarantee; it fails loudly when the secret is missing
+# or a deletion past its seven days is left unfinished.
 on:
   schedule:
     - cron: "37 * * * *"
@@ -18,13 +22,13 @@ jobs:
     environment: account-cleanup-production
     timeout-minutes: 5
     steps:
-      - name: Prune expired deletion capabilities
+      - name: Run the backup retention pass
         env:
           ACCOUNT_SYNC_V2_CLEANUP_SECRET: ${{ secrets.ACCOUNT_SYNC_V2_CLEANUP_SECRET }}
         run: |
           if [ -z "$ACCOUNT_SYNC_V2_CLEANUP_SECRET" ]; then
-            echo "Account sync v2 cleanup is not provisioned; no cleanup request was sent."
-            exit 0
+            echo "::error::ACCOUNT_SYNC_V2_CLEANUP_SECRET is not set in the account-cleanup-production environment; the backup retention pass did not run."
+            exit 1
           fi
           curl \
             --fail-with-body \

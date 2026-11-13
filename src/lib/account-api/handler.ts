@@ -149,16 +149,34 @@ export async function handleAccountApi(
       sendError(res, 400, 'invalid_request');
       return;
     }
+    let retention: Awaited<ReturnType<typeof cleanupExpiredAccountDeletionReceipts>>;
     try {
-      const removed = await cleanupExpiredAccountDeletionReceipts(
+      retention = await cleanupExpiredAccountDeletionReceipts(
         ACCOUNT_RECEIPT_CLEANUP_BATCH,
         env,
         fetcher,
       );
-      sendJson(res, 200, { removed, limit: ACCOUNT_RECEIPT_CLEANUP_BATCH });
     } catch {
       sendError(res, 503, 'deletion_unavailable');
+      return;
     }
+    const counts = {
+      removed: retention.removed,
+      reaped: retention.reaped,
+      limit: ACCOUNT_RECEIPT_CLEANUP_BATCH,
+    };
+    if (retention.reapFailed > 0 || retention.overdue > 0) {
+      // A deletion past its seven days that the pass could not finish. Fail
+      // the scheduled caller loudly; the counts carry no account detail.
+      sendJson(res, 500, {
+        error: 'retention_incomplete',
+        ...counts,
+        reap_failed: retention.reapFailed,
+        overdue: retention.overdue,
+      });
+      return;
+    }
+    sendJson(res, 200, counts);
     return;
   }
   const lifecycleAction = action === 'export'

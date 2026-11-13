@@ -1174,22 +1174,46 @@ export async function prepareAccountDeletion(
   return accountDeletionStatus(requestId, recoverySecret, env, fetcher);
 }
 
+export interface AccountRetentionResult {
+  removed: number;
+  reaped: number;
+  reapFailed: number;
+  overdue: number;
+}
+
+/**
+ * One bounded retention pass (account_v2_run_retention, also scheduled hourly
+ * inside the database): finishes deletions whose seven day window passed with
+ * no live receipt, then removes expired receipts that are complete.
+ */
 export async function cleanupExpiredAccountDeletionReceipts(
   limit = 256,
   env: Environment = process.env,
   fetcher: Fetch = fetch,
-): Promise<number> {
+): Promise<AccountRetentionResult> {
   if (!Number.isInteger(limit) || limit < 1 || limit > 1_000) {
     throw new AccountServerFailure('deletion_unavailable');
   }
-  const result = await deletionRpc('account_v2_cleanup_deletion_receipts', {
+  const result = await deletionRpc('account_v2_run_retention', {
     candidate_limit: limit,
   }, env, fetcher);
-  const removed = safeInteger(result);
-  if (removed === null || removed > limit) {
+  if (!isRecord(result)
+    || !hasExactKeys(result, [
+      'outcome', 'receipts_removed', 'leases_removed', 'reaped', 'reap_failed',
+      'completions_recorded', 'overdue',
+    ])
+    || result.outcome !== 'ready') {
     throw new AccountServerFailure('deletion_unavailable');
   }
-  return removed;
+  const removed = safeInteger(result.receipts_removed);
+  const reaped = safeInteger(result.reaped);
+  const reapFailed = safeInteger(result.reap_failed);
+  const overdue = safeInteger(result.overdue);
+  if (removed === null || reaped === null || reapFailed === null || overdue === null
+    || removed > limit || reaped + reapFailed > limit) {
+    throw new AccountServerFailure('deletion_unavailable');
+  }
+  return { removed, reaped, reapFailed, overdue };
 }
 
 export async function accountDeletionStatus(

@@ -99,7 +99,7 @@ These values may appear in client bundles. They must never contain a secret.
 | `ACCOUNT_SYNC_V2_ACTIVE_KEY_VERSION` | Vercel server configuration | Positive version present in `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS`; new chart and provider-locator envelopes use this version. Change it only as part of a reviewed key-rotation plan. |
 | `ACCOUNT_SYNC_V2_FINGERPRINT_KEYS` | Vercel server secret | Separate JSON keyring containing 1–4 positive numeric versions mapped to canonical base64 32-byte HMAC keys for mutation and deletion-recovery verifiers. It must not reuse an encryption key or enter a browser bundle. |
 | `ACCOUNT_SYNC_V2_ACTIVE_FINGERPRINT_KEY_VERSION` | Vercel server configuration | Positive version present in `ACCOUNT_SYNC_V2_FINGERPRINT_KEYS`; new verifiers use this version while retries may use retained versions during rotation. |
-| `ACCOUNT_SYNC_V2_CLEANUP_SECRET` | Vercel + `account-cleanup-production` environment secret | 32–512 characters. The same value authenticates the hourly, fixed-256-row deletion-receipt cleanup request. It grants no account/user API access and must not use a `PUBLIC_` prefix. Do not provision it until the account-v2 migration and endpoint are approved for deployment. |
+| `ACCOUNT_SYNC_V2_CLEANUP_SECRET` | Vercel + `account-cleanup-production` environment secret | 32–512 characters. The same value authenticates the backup retention request (at most 256 rows a pass); the hourly guarantee is the `account-v2-retention` pg_cron job inside Supabase. It grants no account/user API access and must not use a `PUBLIC_` prefix. Do not provision it until the account-v2 migration and endpoint are approved for deployment. |
 | `COMPAT_INVITE_RECIPIENT_HASH_SECRET` | Vercel server secret | At least 32 characters. HMACs the resolved account email for the one-shot completion-email delivery claim; raw email is never stored in the Phase 4 tables. |
 
 ### Standalone email capture
@@ -315,8 +315,8 @@ Status, revocation, hiding, completion replay, delivery finalization, and
 cleanup are deliberately not disabled by the create/open switch. The hourly
 `.github/workflows/compat-invite-sweep.yml` job closes overdue invitations and
 deletes their positions-free evidence after 30 days. Missing sweep
-configuration exits without changing anything; it is not permission to enable
-Phase 4.
+configuration fails the job (it changes nothing); a red run is the signal to
+provision it, not permission to enable Phase 4.
 
 The optional completion email is a separate, one-invitation promise. It does
 not read or change Daily Email, weekly digest, or push consent. It reserves one
@@ -365,7 +365,7 @@ These are outside this program and should remain off unless separately authorize
 | Phase 4 canary creation | `COMPAT_INVITE_TEST_USER_IDS` | Only exact listed Auth user UUIDs may create. Missing or empty denies every creator; clearing it never creates public access. |
 | Account sync v2 client | `PUBLIC_ACCOUNT_SYNC_V2_ENABLED=1` (build time) | Missing or malformed preserves the v1 client, whose cloud chart writes are paused in the database. |
 | Account sync v2 enrollment/ordinary sync | `ACCOUNT_SYNC_V2_API_ENABLED=1` + complete server keyrings + pending private schema | New enrollment and ordinary sync return disabled. Export, account deletion prepare/status/finish, consent withdrawal, and deletion of an existing remote chart remain available privacy controls. |
-| Account deletion receipt cleanup | `ACCOUNT_SYNC_V2_CLEANUP_SECRET` in Vercel and GitHub Actions | The endpoint is indistinguishable from not found and performs no database call; the hourly workflow exits without sending a request. Provision before deletion receipts can exist, then retain through the recovery window even if sync flags are turned off. |
+| Account deletion receipt cleanup | `ACCOUNT_SYNC_V2_CLEANUP_SECRET` in Vercel and GitHub Actions | The endpoint is indistinguishable from not found and performs no database call; the backup workflow fails without sending a request. The `account-v2-retention` pg_cron job still runs hourly inside Supabase. Provision before deletion receipts can exist, then retain through the recovery window even if sync flags are turned off. |
 | Guide model call | default-on with complete server key/quota configuration; `GUIDE_KILL_SWITCH=1` is the emergency stop | The launcher remains useful without an account. If configuration or Luna access is unavailable, generation fails closed without a provider fallback. |
 | Registry Collection | `PUBLIC_REGISTRY_COLLECTION_ENABLED=1` + RPCs + firewall rule | No entry point, sitemap entry, or Aura route exposure. |
 | Wallet chart | `PUBLIC_WALLET_CHART_ENABLED=1` + a supported provider | Endpoint returns disabled; ordinary birth chart is unaffected. |
@@ -604,8 +604,8 @@ All schedules are UTC.
 | --- | --- | --- | --- |
 | `.github/workflows/daily-horoscopes.yml` | Daily 00:00 | Builds facts/publication, verifies, replays 30 days, commits changes, waits for live edition, pings IndexNow. GitHub may start the runner after the declared boundary. | Always on. Phase 1 covers all daily cuts and Monday weekly generation. |
 | `.github/workflows/daily-email.yml` | Hourly at UTC minute 13 | Runs a credential-free fixture smoke; when explicitly enabled, verifies the exact live edition and selects eligible test-list recipients. | Off by default; real delivery requires GitHub `DAILY_EMAIL_ENABLED=1`. Workflow is hardcoded to `test`; no general-audience path exists. |
-| `.github/workflows/compat-invite-sweep.yml` | Hourly at UTC minute 17 | Closes overdue Phase 4 invitations in bounded batches and prunes 30-day evidence; missing configuration exits cleanly. | Released, provisioned, and required while invitations can exist. |
-| `.github/workflows/account-deletion-receipt-cleanup.yml` | Hourly at UTC minute 37 | Sends one authenticated request that removes at most 256 expired account-deletion receipts and 256 expired provider leases; missing configuration exits without a request. | Committed only; leave unprovisioned until account sync v2 is approved. Required once deletion receipts can exist. |
+| `.github/workflows/compat-invite-sweep.yml` | Hourly at UTC minute 17 | Closes overdue Phase 4 invitations in bounded batches and prunes 30-day evidence; missing configuration fails the job. | Released, provisioned, and required while invitations can exist. |
+| `.github/workflows/account-deletion-receipt-cleanup.yml` | Hourly at UTC minute 37 (GitHub runs it a few times a day) | Backup for the hourly `account-v2-retention` pg_cron job: one authenticated request that finishes at most 256 deletions past their seven days, then removes at most 256 completed expired receipts and 256 expired provider leases. Fails when the secret is missing or a deletion past its seven days is left unfinished. | Provisioned. Required once deletion receipts can exist. |
 | `.github/workflows/weekly-digest.yml` | Monday 06:00, 06:15, 07:00, 10:00, 18:00; Tuesday recovery at 05:00/05:15, 06:00/06:15, 07:00/07:15, 10:00/10:15, 17:00/17:15 | Fixture smoke always. Scheduled delivery/recovery requires `DIGEST_ENABLED=true`; an explicit manual `dry_run=false` dispatch is the separately controlled limit-one canary path and does not use that schedule gate. | Off by default; live credentials exist only in the default-branch-restricted `weekly-digest-production` environment. |
 | `.github/workflows/pulse-refresh.yml` | Monday 06:17 | Refreshes Wikipedia/Trends pulse data and commits changes. | Existing, best effort. |
 | `.github/workflows/distribution-refresh.yml` | Monday 06:31 | Refreshes Registry ownership distribution and commits changes. | Existing Registry operation. |

@@ -846,13 +846,68 @@ describe('account lifecycle API foundation', () => {
     expect(JSON.parse(response.body)).toEqual({ error: 'deletion_blocked' });
   });
 
+  const retention = (overrides: Record<string, unknown> = {}) => ({
+    outcome: 'ready',
+    receipts_removed: 17,
+    leases_removed: 2,
+    reaped: 1,
+    reap_failed: 0,
+    completions_recorded: 0,
+    overdue: 0,
+    ...overrides,
+  });
+
+  it('fails the scheduled caller loudly when a deletion past its window is left unfinished', async () => {
+    const cleanupSecret = 'cleanup-secret-that-is-at-least-thirty-two-characters';
+    const env = { ...ENV, ACCOUNT_SYNC_V2_CLEANUP_SECRET: cleanupSecret };
+    for (const [overrides, reapFailed, overdue] of [
+      [{ reap_failed: 1, overdue: 1 }, 1, 1],
+      [{ overdue: 3 }, 0, 3],
+    ] as const) {
+      const response = responseRecorder();
+      await handleAccountApi(request('cleanup-receipts', {
+        token: null,
+        body: {},
+        headers: { authorization: `Bearer ${cleanupSecret}` },
+      }), response, {
+        env,
+        fetcher: vi.fn(async () => json(retention(overrides))),
+        now: () => NOW,
+      });
+      expect(response.statusCode).toBe(500);
+      expect(JSON.parse(response.body)).toEqual({
+        error: 'retention_incomplete',
+        removed: 17,
+        reaped: 1,
+        limit: 256,
+        reap_failed: reapFailed,
+        overdue,
+      });
+    }
+
+    for (const malformed of [17, retention({ outcome: 'invalid' }), retention({ extra: 1 }), retention({ reaped: -1 })]) {
+      const response = responseRecorder();
+      await handleAccountApi(request('cleanup-receipts', {
+        token: null,
+        body: {},
+        headers: { authorization: `Bearer ${cleanupSecret}` },
+      }), response, {
+        env,
+        fetcher: vi.fn(async () => json(malformed)),
+        now: () => NOW,
+      });
+      expect(response.statusCode).toBe(503);
+      expect(JSON.parse(response.body)).toEqual({ error: 'deletion_unavailable' });
+    }
+  });
+
   it('runs one bounded receipt cleanup batch behind a dedicated secret while flags are off', async () => {
     const cleanupSecret = 'cleanup-secret-that-is-at-least-thirty-two-characters';
     const fetcher = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const url = new URL(String(input));
-      expect(url.pathname).toBe('/rest/v1/rpc/account_v2_cleanup_deletion_receipts');
+      expect(url.pathname).toBe('/rest/v1/rpc/account_v2_run_retention');
       expect(JSON.parse(String(init?.body))).toEqual({ candidate_limit: 256 });
-      return json(17);
+      return json(retention());
     });
     const response = responseRecorder();
     await handleAccountApi(request('cleanup-receipts', {
@@ -869,7 +924,7 @@ describe('account lifecycle API foundation', () => {
       now: () => NOW,
     });
     expect(response.statusCode).toBe(200);
-    expect(JSON.parse(response.body)).toEqual({ removed: 17, limit: 256 });
+    expect(JSON.parse(response.body)).toEqual({ removed: 17, reaped: 1, limit: 256 });
     expect(fetcher).toHaveBeenCalledOnce();
 
     const deniedFetcher = vi.fn();
