@@ -1026,6 +1026,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-11-13');
   }
+  // The correction log names the withdrawn B. F. Skinner profile without
+  // linking it, since that address redirects back to the log (ZOD-221).
+  for (const url of urls) {
+    if (url.loc === '/corrections/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
   return [
     ...urls,
     ...localizedUrls,
