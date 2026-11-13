@@ -17,7 +17,13 @@ local MCP connection are the available development paths.
 
 These files are prepared packages, not evidence of upload, acceptance or listing.
 `ai:package` never rewrites an archive that already exists: a change needs a
-new version, so every earlier ZIP keeps its bytes.
+new version, so every earlier ZIP keeps its bytes. (Corrected
+13 November 2026: this has held since Zodiacs 0.6.0 and Developer 0.3.20.
+Before the rule, and after it for Developer 0.3.14 twice (2 November) and
+Developer 0.3.19 four times (3 November),
+ZIPs were rewritten under the same version: 13 of the ZIPs kept here have had more than one content in this
+repository's history, among them Developer 0.3.13, 0.3.14 and 0.3.19 and
+Zodiacs 0.5.0 and 0.5.1. Their bytes today are the last ones committed.)
 
 Zodiacs 0.6.0 adds five read-only tools offered where `ZODIACS_COVERAGE_ENABLED=1`
 joins the occasions switch, and an About that names the score and rating out of
