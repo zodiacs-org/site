@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import corrections from '../../data/corrections.json';
+import vercel from '../../../vercel.json';
 
 interface CorrectionEntry {
   id: string;
@@ -13,6 +14,11 @@ interface CorrectionEntry {
 }
 
 const entries = corrections.entries as CorrectionEntry[];
+
+// A page withdrawn after a correction is redirected away in vercel.json (the inbound
+// redirect stays for outside links). Linking to it from here would only bounce the
+// reader back to this log, so its path is shown as plain text.
+const redirectedPages = new Set(vercel.redirects.map((redirect) => redirect.source));
 
 const jsonLd = [
   {
@@ -57,7 +63,7 @@ const jsonLd = [
               <h2>{entry.summary}</h2>
               <p class="mono">
                 Corrected <time datetime={entry.correctedAt}>{entry.correctedAt.slice(0, 10)}</time>
-                {' · '}<a href={entry.page}>{entry.page}</a>
+                {' · '}{redirectedPages.has(entry.page) ? <span>{entry.page}</span> : <a href={entry.page}>{entry.page}</a>}
                 {entry.editionDate ? ` · edition ${entry.editionDate}` : ''}
               </p>
               <p><strong>Before:</strong> {entry.before}</p>

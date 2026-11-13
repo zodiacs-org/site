@@ -520,7 +520,7 @@ export default function SomeoneElseChart() {
                           <span>{placement.role}</span>
                         </div>
                         <p>{placement.reading}</p>
-                        <a href={`/signs/${placement.slug}/`}>Read {signName(sign)} →</a>
+                        <a href={`/${placement.slug}/`}>Read {signName(sign)} →</a>
                       </section>
                     );
                   })}
