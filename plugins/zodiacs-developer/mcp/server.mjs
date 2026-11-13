@@ -45458,7 +45458,7 @@ var SAVE_DESCRIPTION = "Saves something Zodiacs worked out in this conversation 
 var SAVE_NOTE = "Saved to your Zodiacs account. You can see it on your profile and delete it there at any time.";
 
 // src/ai-tools/accounts/save.ts
-import { createHash as createHash2 } from "node:crypto";
+import { randomUUID } from "node:crypto";
 var PAGE_PATHS = {
   chart: /^\/(?:birth-chart|people)\//u,
   comparison: /^\/(?:[a-z]{2}\/)?compatibility\//u,
@@ -45520,11 +45520,11 @@ function recordProblem(record2) {
   if (!problem && Buffer.byteLength(JSON.stringify(record2)) > MAX_SAVED_RECORD_BYTES) problem = "too-large";
   return problem;
 }
-function recordDigest(record2, label) {
-  return createHash2("sha256").update(JSON.stringify([record2.schema, record2.kind, record2.data, ...label === void 0 ? [] : [label]])).digest("hex");
+function savedLinkId(dependencies = {}) {
+  return (dependencies.newId ?? randomUUID)();
 }
 async function buildSavedRecord(input, dependencies = {}) {
-  const linked = (record2, href) => ({ ...record2, href: href(recordDigest(record2, input.label).slice(0, 16)) });
+  const linked = (record2, href) => ({ ...record2, href: href(savedLinkId(dependencies)) });
   const now = dependencies.now?.() ?? /* @__PURE__ */ new Date();
   const madeBy = { chart: "get_natal_chart", comparison: "get_compatibility", occasion: "get_occasion_sky", week: "get_horoscope" };
   const child2 = childBirthDateRefusal(madeBy[input.kind], input[input.kind], now, dependencies.hostZone);
@@ -45672,6 +45672,12 @@ async function saveToZodiacs(raw, principal, store, dependencies = {}, ref3) {
     links: [{ title: "Your Zodiacs profile", url: profileUrl }]
   });
 }
+
+// src/lib/profile/saved-result-link.ts
+var UUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+var SAVED_ID = new RegExp(`(?:^#|[#&])saved=(${UUID})(?:&|$)`, "u");
+var ANY_SAVED = new RegExp(`(?:^#|[#&])saved=(${UUID}|[0-9a-f]{16})(?:&|$)`, "u");
+var SAVED_RESULT_FORWARD = `(function () { var saved = /${ANY_SAVED.source}/.exec(location.hash); if (saved) location.replace(saved[1].length === 16 ? '/profile/' : '/profile/#saved=' + saved[1]); })();`;
 
 // src/ai-tools/accounts/service.ts
 function signInChallenge(oauth) {

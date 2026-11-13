@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { zoneAt } from '../../lib/compute-api/validate';
 import { ComputeApiError } from '../../lib/compute-api/errors';
@@ -29,8 +29,9 @@ export interface SavedRecord {
   links: { title: string; url: string }[];
   /**
    * The same-site link the profile lists it as (public.saved_pages.href): the
-   * page that reopens it where one exists, with the result's digest after the #
-   * where the page cannot carry the details. Not part of the digest.
+   * page that reopens it where one exists, or, where the page cannot carry the
+   * details, the page with `saved=<id>` after the #, the saved row's own id (a
+   * random UUID, see savedLinkId).
    */
   href: string;
 }
@@ -49,8 +50,11 @@ export interface AccountPrincipal { user: string; session: string; client: strin
 export interface StoredSave { id: string; saved_at: string; created: boolean }
 export type SaveStore = (principal: AccountPrincipal, record: SavedRecord) => Promise<StoredSave | 'full' | null>;
 
-/** hostZone is the time zone the assistant shares with the call, if any, for the under-13 rule's birthday check. */
-export interface SaveDependencies { localTime?: LocalTimeModule; now?: () => Date; hostZone?: string }
+/**
+ * hostZone is the time zone the assistant shares with the call, if any, for the under-13 rule's birthday check.
+ * newId makes the saved link's id (tests only; a random UUID otherwise).
+ */
+export interface SaveDependencies { localTime?: LocalTimeModule; now?: () => Date; hostZone?: string; newId?: () => string }
 
 const signName = (slug: string | null | undefined) => (slug ? SIGNS.find((sign) => sign.slug === slug)?.name ?? null : null);
 const OCCASION_NAMES: Record<string, string> = {
@@ -107,12 +111,16 @@ export function recordProblem(record: SavedRecord): string | null {
 }
 
 /**
- * The same item saved again is the same row. The digest covers the record as
- * stored (never the call's input, so it holds no birth detail to test guesses
- * against) and the optional label the person chose, not the default title.
+ * The id a `saved=` link carries, which becomes the saved_pages row's own id
+ * (public.zodiacs_accounts_v1 stores the row under it). A random UUID, never
+ * worked out from the record: a record can be a function of the birth date
+ * (a week's contacts to the natal chart), so anything derived from it, a
+ * digest included, would let someone holding the link test guesses. The same
+ * item saved again is still one row: the database finds it by what was
+ * stored (the kind, title and worked-out result), not by its link.
  */
-export function recordDigest(record: Omit<SavedRecord, 'href'>, label?: string): string {
-  return createHash('sha256').update(JSON.stringify([record.schema, record.kind, record.data, ...(label === undefined ? [] : [label])])).digest('hex');
+export function savedLinkId(dependencies: SaveDependencies = {}): string {
+  return (dependencies.newId ?? randomUUID)();
 }
 
 /** The occasion page rule, shared with the site's own saves (src/lib/occasions/saved-path.ts). */
@@ -125,8 +133,8 @@ export { savedOccasionPath };
  * itself would refuse.
  */
 export async function buildSavedRecord(input: SaveInput, dependencies: SaveDependencies = {}): Promise<SavedRecord | { failure: string }> {
-  // The link carries the result's digest after the # where the page cannot carry its details.
-  const linked = (record: Omit<SavedRecord, 'href'>, href: (saved: string) => string): SavedRecord => ({ ...record, href: href(recordDigest(record, input.label).slice(0, 16)) });
+  // Where the page cannot carry the details, the link carries only the saved row's random id after the #.
+  const linked = (record: Omit<SavedRecord, 'href'>, href: (saved: string) => string): SavedRecord => ({ ...record, href: href(savedLinkId(dependencies)) });
   const now = dependencies.now?.() ?? new Date();
   // A child's birth date is refused here as the tools refuse it, before anything is set up: each kind's details are
   // those of the tool that made it.
@@ -144,7 +152,7 @@ export async function buildSavedRecord(input: SaveInput, dependencies: SaveDepen
         if (person.famous !== undefined && compatibilityMissing({ a: person, b: person })) return { failure: 'Zodiacs has no chart for that name in its famous-people directory.' };
         const zone = person.zone ? await zoneAt(person.zone, '/chart/zone', (name) => localTime().canonicalZoneName(name)) : undefined;
         const row = await computePersonChart(zone ? { ...person, zone } : person, localTime());
-        // The saved chart is read on the profile: its signs only. Its link is the page with the result's digest after
+        // The saved chart is read on the profile: its signs only. Its link is the page with the saved row's id after
         // the #, never the birth date, time, place or name: links never carry those.
         return linked({
           schema: SAVED_RECORD_SCHEMA, kind: 'chart',
