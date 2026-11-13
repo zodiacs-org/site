@@ -1544,7 +1544,8 @@ function htmlResponse(html: string): Response {
 }
 
 // A share page has no script, so its own address keeps the link's ref word; its links never carry it on
-// (privacy page, "Hosting, logs, and analytics"). The page after it counts the visit as direct.
+// (privacy page, "Hosting, logs, and analytics"). The page after it arrives without ref, so Base.astro
+// keeps whatever listed word the tab already holds, and counts the visit as direct only when it holds none.
 export const SHARE_NOTE = 'Astrology’s reading, for insight and fun, not a guarantee of how things will turn out.';
 
 /** A link whose query is not a share query opens the plain page, with the site's own card. */
