@@ -6,6 +6,7 @@
  */
 import * as engine from '../engine/full';
 import { LUNAR_RETURN_MAX_UTC, LUNAR_RETURN_MIN_UTC } from '../engine/lunar-return';
+import { birthDateRefusal, birthDateRefusalText } from '../birth-date-policy';
 import { NumerologyInputError } from '../numerology';
 import type { TwinPerson } from '../sharing/twins';
 import { babyZodiacResult } from './calculators/baby-zodiac';
@@ -27,7 +28,7 @@ import { lunarReturnResult, saturnReturnResult, solarReturnResult } from './calc
 export type CalculatorErrorCode =
   | 'INVALID_INPUT' | 'TIME_NEEDS_PLACE' | 'LOCAL_DATE_REFERENCE' | 'CLOCK_CHANGE' | 'UNSUPPORTED_NAME'
   | 'DUPLICATE_PERSON' | 'OUTSIDE_REFERENCE_SPAN' | 'REFERENCE_BEFORE_BIRTH' | 'DIRECTORY_UNAVAILABLE' | 'CALCULATION_FAILED'
-  | 'UNKNOWN_TOOL';
+  | 'UNKNOWN_TOOL' | 'BIRTH_DATE_UNDER_13' | 'FUTURE_BIRTH_DATE';
 
 export type CalculatorEnvelope =
   | { ok: true; data: Record<string, unknown> }
@@ -49,6 +50,8 @@ const MESSAGES: Record<CalculatorErrorCode, string> = {
   DIRECTORY_UNAVAILABLE: 'The public directory could not be read from this site; try again.',
   CALCULATION_FAILED: 'The calculation could not be completed for that input.',
   UNKNOWN_TOOL: 'This page has no calculator tool of that name.',
+  BIRTH_DATE_UNDER_13: birthDateRefusalText('under_13'),
+  FUTURE_BIRTH_DATE: birthDateRefusalText('future_birth_date'),
 };
 
 class Refusal extends Error {
@@ -69,7 +72,17 @@ function fields(input: unknown, keys: readonly string[]): Record<string, unknown
   return input;
 }
 
-const birth = (value: unknown, timeRequired = false): Birth => need(readBirth(value, { timeRequired }));
+const birth = (value: unknown, timeRequired = false): Birth => {
+  const reading = need(readBirth(value, { timeRequired }));
+  admitBirthDate(reading.date);
+  return reading;
+};
+
+function admitBirthDate(date: string): void {
+  const refusal = birthDateRefusal(date);
+  if (refusal === 'under_13') throw new Refusal('BIRTH_DATE_UNDER_13');
+  if (refusal === 'future_birth_date') throw new Refusal('FUTURE_BIRTH_DATE');
+}
 
 /** The browser's local date, as the numerology page reads "today". */
 function localToday(now: Date): string {
@@ -184,6 +197,7 @@ async function lunarReturn(input: unknown) {
 async function numerology(input: unknown) {
   const { birthDate, fullName, today } = fields(input, ['birthDate', 'fullName', 'today']);
   const date = need(readDate(birthDate));
+  admitBirthDate(date);
   if (fullName !== undefined && (typeof fullName !== 'string' || characters(fullName) > 200)) {
     throw new Refusal('INVALID_INPUT');
   }

@@ -37,3 +37,8 @@ export function profileChartRunInput(
 export function loadProfileChartRunInput(chartId: string): ProfileChartRunInput | null {
   return profileChartRunInput(loadProfile().charts, chartId);
 }
+
+/** The admitted saved chart, even when it has no birthplace and cannot be run yet. */
+export function loadProfileChart(chartId: string): SavedChart | null {
+  return loadProfile().charts.find((candidate) => candidate.id === chartId) ?? null;
+}

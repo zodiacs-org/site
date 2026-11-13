@@ -15,6 +15,7 @@ import type { Birth } from './input';
 import { BIRTHS, city } from '../../../../tests/webmcp/calculator-fixtures';
 import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 import { LocalDateReferenceError } from './moon-phase';
+import { runCalculatorTool } from '../calculator-runtime';
 import { birthDateRefusal, birthDateRefusalText } from '../../birth-date-policy';
 
 // ChartCalculator's runChart, the code /birth-chart/, /moon-sign/ and /rising-sign/ calculate with.
@@ -70,6 +71,11 @@ describe('the chart tools calculate what the chart pages calculate', () => {
       expect(shown.chart).toBeNull();
       expect(shown.error).toBe(birthDateRefusalText(refusal));
       expect(runChart.missing.has('birthDateRefusal')).toBe(false);
+      const name = mode === 'full' ? 'zodiacs.birth_chart' : mode === 'moon' ? 'zodiacs.moon_sign' : 'zodiacs.rising_sign';
+      const input = { date: birth.date, place: birth.place, ...(birth.time ? { time: birth.time } : {}), ...(mode === 'full' ? { houseSystem } : {}) };
+      const envelope = await runCalculatorTool(name, input);
+      const code = refusal === 'under_13' ? 'BIRTH_DATE_UNDER_13' : 'FUTURE_BIRTH_DATE';
+      expect(envelope).toEqual({ ok: false, error: { code, message: birthDateRefusalText(refusal) } });
       return;
     }
     const computed = await tool(birth, houseSystem, receipt);

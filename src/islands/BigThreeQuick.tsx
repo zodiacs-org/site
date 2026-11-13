@@ -105,10 +105,12 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
   // and its date passes the same birth date policy as the form.
   const profileOriginRef = useRef(false);
   const profileChartIdRef = useRef<string | null>(null);
+  const profileHandoffIdRef = useRef(0);
   const profileAccessGeneration = useProfileAccessGeneration(() => {
     if (!profileOriginRef.current) return;
     profileOriginRef.current = false;
     profileChartIdRef.current = null;
+    profileHandoffIdRef.current += 1;
     generation.current += 1;
     cardAttempt.current += 1;
     cardSource.current = null;
@@ -133,20 +135,23 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
     if (!chartId) return;
     let active = true;
     let resolving = false;
+    const handoffId = ++profileHandoffIdRef.current;
+    const handoffIsCurrent = () => active && handoffId === profileHandoffIdRef.current;
     const open = () => {
-      if (!active || resolving || !profileAccessAllowed()) return;
+      if (!handoffIsCurrent() || resolving || !profileAccessAllowed()) return;
       resolving = true;
       const accessGeneration = profileAccessGeneration.current;
-      void import('../lib/profile/profile-chart-handoff').then(({ loadProfileChartRunInput }) => {
+      void import('../lib/profile/profile-chart-handoff').then(({ loadProfileChartRunInput, loadProfileChart }) => {
         resolving = false;
-        if (!active || !profileAccessAllowed()) return;
+        if (!handoffIsCurrent() || !profileAccessAllowed()) return;
         if (accessGeneration !== profileAccessGeneration.current) {
           // Access is still allowed; a refresh just bumped the generation.
           queueMicrotask(open);
           return;
         }
         const saved = loadProfileChartRunInput(chartId);
-        if (!saved) {
+        const record = saved ? null : loadProfileChart(chartId);
+        if (!saved && !record) {
           active = false;
           window.removeEventListener('zodiacs:profile-access', open);
           return;
@@ -158,6 +163,20 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
         window.removeEventListener('zodiacs:profile-access', open);
         profileOriginRef.current = true;
         profileChartIdRef.current = chartId;
+        if (!saved) {
+          // A supported saved chart with no birthplace cannot be recomputed
+          // until a place is added. Prefill what we have and say so.
+          setDate(record!.birth.date);
+          setCalendar('gregorian');
+          setTime(record!.birth.time ?? '');
+          setCity(null);
+          setPlacements(null);
+          setHandoff(null);
+          setCard(null);
+          setCardState('idle');
+          setError('This saved chart has no birthplace. The date is filled in. Add a place to see Sun, Moon and Rising.');
+          return;
+        }
         const from: SavedBirth = { date: saved.date, time: saved.time, city: saved.city };
         setDate(from.date);
         setCalendar('gregorian');
@@ -184,7 +203,9 @@ export default function BigThreeQuick({ locale = 'en', copy }: { locale?: Catalo
 
   function edit<T>(setter: (value: T) => void, value: T): void {
     generation.current += 1; cardAttempt.current += 1;
-    profileOriginRef.current = false;
+    // Drop the saved id so a later full-chart link is not the stale chart,
+    // but keep profile origin so a revoke still clears inherited fields.
+    profileHandoffIdRef.current += 1;
     profileChartIdRef.current = null;
     setter(value); setBusy(false); setPlacements(null); setHandoff(null);
     cardSource.current = null; setCard(null); setCardState('idle'); setCardError(''); setError('');

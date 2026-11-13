@@ -19,6 +19,7 @@ const harness = vi.hoisted(() => ({
   save: vi.fn(),
   track: vi.fn(),
   loadProfileChartRunInput: vi.fn(),
+  loadProfileChart: vi.fn(),
   profileAccessAllowed: vi.fn(() => true),
 }));
 
@@ -27,6 +28,7 @@ vi.mock('../lib/hooks/useEngine', () => ({ useEngine: () => harness.loadEngine }
 vi.mock('../lib/share-card', () => ({ prepareBigThreeCard: harness.prepare, savePreparedChartCard: harness.save }));
 vi.mock('../lib/profile/profile-chart-handoff', () => ({
   loadProfileChartRunInput: harness.loadProfileChartRunInput,
+  loadProfileChart: harness.loadProfileChart,
 }));
 vi.mock('../lib/account-v2/profile-access-reader', () => ({
   profileAccessAllowed: harness.profileAccessAllowed,
@@ -126,6 +128,7 @@ beforeEach(() => {
   harness.save.mockReset().mockResolvedValue('shared');
   harness.track.mockReset();
   harness.loadProfileChartRunInput.mockReset();
+  harness.loadProfileChart.mockReset().mockReturnValue(null);
   harness.profileAccessAllowed.mockReset().mockReturnValue(true);
   vi.stubGlobal('location', { hash: '', pathname: '/big-three/', search: '' });
   vi.stubGlobal('history', { replaceState: vi.fn() });
@@ -382,6 +385,65 @@ describe('Big Three saved-chart provenance', () => {
     const branch = source.slice(open, end);
     expect(branch).toContain('queueMicrotask(open)');
     expect(branch).toContain('accessGeneration !== profileAccessGeneration.current');
+  });
+
+  it('keeps profile provenance after a field edit so a revoke still clears inherited details', async () => {
+    await openSavedChart();
+    const fields = nodes(render()).find((node) => node.type === BirthFields)!;
+    fields.props.onDateChange('1990-01-01');
+    const hookListener = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls
+      .filter((call) => call[0] === 'zodiacs:profile-access')
+      .map((call) => call[1])
+      .find((listener) => !(window.removeEventListener as ReturnType<typeof vi.fn>).mock.calls
+        .some((call) => call[0] === 'zodiacs:profile-access' && call[1] === listener));
+    expect(hookListener).toBeTypeOf('function');
+    harness.profileAccessAllowed.mockReturnValue(false);
+    hookListener();
+    const after = nodes(render()).find((node) => node.type === BirthFields)!;
+    expect(after.props.date).toBe('');
+    expect(after.props.time).toBe('');
+    expect(after.props.city).toBeNull();
+  });
+
+  it('does not apply a pending saved chart after the form has been edited', async () => {
+    harness.loadProfileChartRunInput.mockReturnValue({
+      date: '1989-12-20',
+      time: '11:30',
+      timeKnown: true,
+      city: paris,
+      houseSystem: 'whole',
+    });
+    vi.stubGlobal('location', { hash: `#profileChartId=${PROFILE_CHART_ID}`, pathname: '/big-three/', search: '' });
+    render();
+    const fields = nodes(render()).find((node) => node.type === BirthFields)!;
+    fields.props.onDateChange('1990-01-01');
+    await settle();
+    expect(harness.computeChart).not.toHaveBeenCalled();
+    const after = nodes(render()).find((node) => node.type === BirthFields)!;
+    expect(after.props.date).toBe('1990-01-01');
+    expect(after.props.time).toBe('');
+  });
+
+  it('prefills a saved chart that has no birthplace and says so', async () => {
+    harness.loadProfileChartRunInput.mockReturnValue(null);
+    harness.loadProfileChart.mockReturnValue({
+      id: PROFILE_CHART_ID,
+      name: 'Saved',
+      relationship: 'self',
+      createdAt: '2020-01-01T00:00:00Z',
+      updatedAt: '2020-01-01T00:00:00Z',
+      birth: { date: '1989-12-20', time: '11:30', timeKnown: true, place: null },
+      summary: { engineVersion: 'test', utcISO: '1989-12-20T11:30:00Z', houseSystem: 'whole', bodies: [], angles: null, flags: [] },
+    });
+    vi.stubGlobal('location', { hash: `#profileChartId=${PROFILE_CHART_ID}`, pathname: '/big-three/', search: '' });
+    render();
+    await settle();
+    const fields = nodes(render()).find((node) => node.type === BirthFields)!;
+    expect(fields.props.date).toBe('1989-12-20');
+    expect(fields.props.time).toBe('11:30');
+    expect(fields.props.city).toBeNull();
+    expect(alerts()).toContain('This saved chart has no birthplace');
+    expect(find('data-big-three-result')).toBeUndefined();
   });
 });
 
