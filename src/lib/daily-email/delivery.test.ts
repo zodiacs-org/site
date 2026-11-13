@@ -9,11 +9,14 @@ import {
   assertLiveDailyEmailEdition,
   createResendDelivery,
   createSupabaseDeliveryReceiptStore,
+  dailyRecipientLogRef,
   deliverDailyEmails,
+  type DailyEmailDispatchCheck,
   type DeliveryReceiptStore,
   type ResendDelivery,
 } from './delivery';
-import type { DailyEmailMessage, SunSignRecipient } from './types';
+import { dailyRecipientHash } from './identity';
+import type { ChartRecipient, DailyEmailMessage, DailyEmailRecipient, SunSignRecipient } from './types';
 
 const daily = dailyData as Daily;
 const publication = publicationData as DailyPublication;
@@ -215,6 +218,7 @@ describe('daily email idempotent batch', () => {
     });
     expect(report).toEqual({
       considered: 3, reserved: 2, sent: 2, failed: 0, duplicate: 1, dryRun: 0,
+      fellBack: 0, withdrawn: 0,
     });
     expect(resend.send).toHaveBeenCalledTimes(2);
   });
@@ -309,6 +313,7 @@ describe('daily email idempotent batch', () => {
     });
     expect(report).toEqual({
       considered: 3, reserved: 2, sent: 1, failed: 2, duplicate: 0, dryRun: 0,
+      fellBack: 0, withdrawn: 0,
     });
     expect(store.reserve).toHaveBeenCalledTimes(2);
     expect(store.markFailed).toHaveBeenCalledOnce();
@@ -319,6 +324,40 @@ describe('daily email idempotent batch', () => {
     expect(logs.join('\n')).not.toContain('private chart name');
     expect(logs.join('\n')).toContain('during recipient validation');
     expect(logs.join('\n')).toContain('during render');
+  });
+
+  it('names recipients in logs by an opaque hash prefix, never by any part of the address', async () => {
+    const store: DeliveryReceiptStore = {
+      reserve: vi.fn().mockResolvedValue(LEASE_TOKEN),
+      markSent: vi.fn().mockResolvedValue(undefined),
+      markFailed: vi.fn().mockResolvedValue(undefined),
+      sentBefore: vi.fn().mockResolvedValue(true),
+    };
+    const resend = {
+      send: vi.fn().mockResolvedValueOnce('provider').mockRejectedValueOnce(new Error('down')),
+    };
+    const logs: string[] = [];
+    const input = {
+      recipients: [recipient('sent-person@private-domain.example'), recipient('failed-person@private-domain.example')],
+      editionDate: publication.date,
+      limit: 5,
+      hashSecret: 'recipient-hash-secret-that-is-long-enough',
+      receipts: store,
+      resend,
+      render: () => message,
+      log: (entry: string) => logs.push(entry),
+    };
+    await deliverDailyEmails({ ...input, dryRun: false });
+    await deliverDailyEmails({ ...input, dryRun: true });
+    const output = logs.join('\n');
+    expect(logs.length).toBeGreaterThanOrEqual(4);
+    for (const fragment of ['sent-person', 'failed-person', 'se***', 'fa***', 'private-domain', '@']) {
+      expect(output).not.toContain(fragment);
+    }
+    const ref = dailyRecipientLogRef(dailyRecipientHash('sent-person@private-domain.example', input.hashSecret));
+    expect(ref).toMatch(/^ref=[0-9a-f]{12}$/u);
+    expect(output).toContain(`sent sun_sign to ${ref}`);
+    expect(output).toContain(`dry-run sun_sign ${ref}`);
   });
 
   it('keeps fixture dry-runs entirely side-effect free', async () => {
@@ -403,5 +442,190 @@ describe('daily email first delivery', () => {
       limit: '1',
     });
     expect(fetcher.mock.calls[0][1]).toMatchObject({ method: 'GET' });
+  });
+});
+
+describe('daily chart email eligibility at dispatch', () => {
+  const HASH_SECRET = 'recipient-hash-secret-that-is-long-enough';
+  const chartRecipient: ChartRecipient = {
+    tier: 'chart',
+    email: 'person@example.com',
+    userId: '10000000-0000-4000-8000-000000000002',
+    chartId: '10000000-0000-4000-8000-000000000001',
+    revision: 2,
+    chart: {
+      id: '10000000-0000-4000-8000-000000000001', name: 'Chart',
+      createdAt: '2026-07-01T00:00:00Z', updatedAt: '2026-07-01T00:00:00Z',
+      birth: { date: '1990-01-01', time: null, timeKnown: false, place: null },
+      summary: {
+        engineVersion: 'fixture', utcISO: '1990-01-01T12:00:00Z', houseSystem: 'whole',
+        bodies: [{ body: 'Sun', lon: 1, retrograde: false }], angles: null, flags: [],
+      },
+    },
+    timezone: 'UTC',
+  };
+  const sunFallback: SunSignRecipient = {
+    tier: 'sun_sign', email: 'person@example.com', sign: 'capricorn',
+    contactId: 'contact_person_1', timezone: 'UTC',
+  };
+  const leases = ['30000000-0000-4000-8000-000000000003', '30000000-0000-4000-8000-000000000004'];
+  const storeFor = (): DeliveryReceiptStore => ({
+    reserve: vi.fn().mockResolvedValueOnce(leases[0]).mockResolvedValueOnce(leases[1]),
+    markSent: vi.fn().mockResolvedValue(undefined),
+    markFailed: vi.fn().mockResolvedValue(undefined),
+    sentBefore: vi.fn().mockResolvedValue(true),
+  });
+
+  /**
+   * The account withdraws chart emails while this run is under way: after it
+   * was selected and its chart decrypted, while its edition is being
+   * rendered. The dispatch check reads the live state, as the job does.
+   */
+  function withdrawalDuringRender(fallback: SunSignRecipient | null) {
+    let eligible = true;
+    const confirm: DailyEmailDispatchCheck = vi.fn(async (candidate: DailyEmailRecipient) => {
+      if (candidate.tier !== 'chart') return candidate;
+      return eligible ? candidate : fallback;
+    });
+    const render = vi.fn((candidate: DailyEmailRecipient) => {
+      if (candidate.tier === 'chart') eligible = false;
+      return { ...message, subject: candidate.tier };
+    });
+    return { confirm, render };
+  }
+
+  it('sends the Sun edition instead when chart emails are withdrawn during the run', async () => {
+    const store = storeFor();
+    const sent: Array<{ tier: string; subject: string }> = [];
+    const resend: ResendDelivery = {
+      send: vi.fn(async (candidate, _edition, rendered) => {
+        sent.push({ tier: candidate.tier, subject: rendered.subject });
+        return 'provider';
+      }),
+    };
+    const { confirm, render } = withdrawalDuringRender(sunFallback);
+    const report = await deliverDailyEmails({
+      recipients: [chartRecipient],
+      editionDate: publication.date,
+      limit: 5,
+      dryRun: false,
+      hashSecret: HASH_SECRET,
+      receipts: store,
+      resend,
+      render,
+      confirmBeforeDispatch: confirm,
+      log: vi.fn(),
+    });
+    expect(sent).toEqual([{ tier: 'sun_sign', subject: 'sun_sign' }]);
+    expect(report).toMatchObject({ sent: 1, failed: 0, fellBack: 1, withdrawn: 0 });
+    const hash = dailyRecipientHash('person@example.com', HASH_SECRET);
+    // The chart reservation is released unsent, then the same receipt is
+    // taken again for the Sun tier and finalized under that lease.
+    expect(store.reserve).toHaveBeenNthCalledWith(1, publication.date, hash, 'chart');
+    expect(store.markFailed).toHaveBeenCalledWith(publication.date, hash, leases[0]);
+    expect(store.reserve).toHaveBeenNthCalledWith(2, publication.date, hash, 'sun_sign');
+    expect(store.markSent).toHaveBeenCalledWith(publication.date, hash, leases[1], 'provider', expect.any(String));
+  });
+
+  it('sends nothing when chart emails are withdrawn during the run and there is no Sun subscription', async () => {
+    const store = storeFor();
+    const resend = { send: vi.fn() };
+    const { confirm, render } = withdrawalDuringRender(null);
+    const report = await deliverDailyEmails({
+      recipients: [chartRecipient],
+      editionDate: publication.date,
+      limit: 5,
+      dryRun: false,
+      hashSecret: HASH_SECRET,
+      receipts: store,
+      resend,
+      render,
+      confirmBeforeDispatch: confirm,
+      log: vi.fn(),
+    });
+    expect(resend.send).not.toHaveBeenCalled();
+    expect(store.markSent).not.toHaveBeenCalled();
+    expect(store.markFailed).toHaveBeenCalledOnce();
+    expect(store.reserve).toHaveBeenCalledOnce();
+    expect(report).toMatchObject({ sent: 0, failed: 0, fellBack: 0, withdrawn: 1 });
+  });
+
+  it('fails closed when the dispatch check errors or offers anything but the same address', async () => {
+    for (const confirm of [
+      vi.fn().mockRejectedValue(new Error('database down')),
+      vi.fn().mockResolvedValue({ ...sunFallback, email: 'someone-else@example.com' }),
+      vi.fn().mockResolvedValue({ ...chartRecipient, revision: 3 }),
+    ]) {
+      const store = storeFor();
+      const resend = { send: vi.fn() };
+      const report = await deliverDailyEmails({
+        recipients: [chartRecipient],
+        editionDate: publication.date,
+        limit: 5,
+        dryRun: false,
+        hashSecret: HASH_SECRET,
+        receipts: store,
+        resend,
+        render: () => message,
+        confirmBeforeDispatch: confirm as DailyEmailDispatchCheck,
+        log: vi.fn(),
+      });
+      expect(resend.send).not.toHaveBeenCalled();
+      expect(report).toMatchObject({ sent: 0, withdrawn: 1 });
+    }
+  });
+
+  it('checks immediately before dispatch, after rendering, and only for chart editions', async () => {
+    const store = storeFor();
+    const order: string[] = [];
+    const resend: ResendDelivery = {
+      send: vi.fn(async (candidate) => {
+        order.push(`send:${candidate.tier}`);
+        return 'provider';
+      }),
+    };
+    const confirm = vi.fn(async (candidate: DailyEmailRecipient) => {
+      order.push(`check:${candidate.tier}`);
+      return candidate;
+    });
+    const report = await deliverDailyEmails({
+      recipients: [chartRecipient, recipient('sun@example.com')],
+      editionDate: publication.date,
+      limit: 5,
+      dryRun: false,
+      hashSecret: HASH_SECRET,
+      receipts: { ...store, reserve: vi.fn().mockResolvedValue(LEASE_TOKEN) },
+      resend,
+      render: (candidate) => {
+        order.push(`render:${candidate.tier}`);
+        return message;
+      },
+      confirmBeforeDispatch: confirm,
+      log: vi.fn(),
+    });
+    expect(order).toEqual(['render:chart', 'check:chart', 'send:chart', 'render:sun_sign', 'send:sun_sign']);
+    expect(report).toMatchObject({ sent: 2, fellBack: 0, withdrawn: 0 });
+  });
+
+  it('applies the same check in a dry run without touching receipts or the provider', async () => {
+    const store = storeFor();
+    const resend = { send: vi.fn() };
+    const render = vi.fn(() => message);
+    const report = await deliverDailyEmails({
+      recipients: [chartRecipient],
+      editionDate: publication.date,
+      limit: 5,
+      dryRun: true,
+      hashSecret: HASH_SECRET,
+      receipts: store,
+      resend,
+      render,
+      confirmBeforeDispatch: vi.fn().mockResolvedValue(sunFallback),
+      log: vi.fn(),
+    });
+    expect(render).toHaveBeenCalledWith(sunFallback, { firstDelivery: false });
+    expect(report).toMatchObject({ dryRun: 1, fellBack: 1 });
+    expect(store.reserve).not.toHaveBeenCalled();
+    expect(resend.send).not.toHaveBeenCalled();
   });
 });
