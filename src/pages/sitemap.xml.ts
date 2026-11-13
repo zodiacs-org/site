@@ -680,6 +680,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // carry and what the growth test events count (approved 12 November), last so
   // this wins.
   ['/privacy/', '2026-11-12'] as const,
+  // The English privacy page says what the account export includes (saved
+  // pages and Living Chart moments), 13 November, last so this wins.
+  ['/privacy/', '2026-11-13'] as const,
 ]);
 
 function getLastmod(loc: string): string {

@@ -282,8 +282,19 @@ Editor, and update this table in the same change.
   If production ever moves to a different Supabase project, update and review
   the wrapper's explicit production-project guard before the next drill.
 - **Key escrow.** When `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS` is provisioned,
-  record where the keyring is escrowed (outside Vercel env) — losing the
-  wrapping keys silently bricks every v2 envelope, and no runbook covers
-  rotation-under-loss.
+  record where the keyring is escrowed (outside Vercel env), because losing the
+  wrapping keys silently bricks every v2 envelope. Rotation, the rewrap of old
+  envelopes (`scripts/account-sync-v2-rewrap.ts`), the seven day hold on old
+  fingerprint versions and escrow are in `docs/ACCOUNT-SYNC-V2-KEY-ROTATION.md`;
+  loss of a key that was never escrowed still has no recovery.
+- **Account retention runs in the database.** Migration
+  `20261113090000_account_sync_v2_retention` schedules the pg_cron job
+  `account-v2-retention` (UTC minute 23, hourly) when pg_cron is installed,
+  which it is in production. It runs `public.account_v2_run_retention(256)`:
+  finish deletions past their seven days with no live receipt (Auth identity
+  included), then remove completed expired receipts. Check it with
+  `select jobname, schedule, active from cron.job where jobname = 'account-v2-retention';`
+  and its runs in `cron.job_run_details`. The GitHub workflow
+  `account-deletion-receipt-cleanup.yml` stays as a backup.
 - **Unused-index cleanup** (live performance advisor, 7 INFO entries) can
   wait for real traffic before pruning.

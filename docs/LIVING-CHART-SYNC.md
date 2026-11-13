@@ -20,7 +20,11 @@ unreleased Account Sync v2 migration.
   advances `consent_epoch`, clears all moment rows plus put/delete receipts,
   and prevents an old tab or offline queue from restoring withdrawn data.
 - Auth user deletion cascades through consent, moments, and mutation receipts.
-  The paginated owner snapshot is also the cloud export surface.
+  Account deletion prepare erases them earlier, and while an account is
+  deleting the RPC wrappers answer `temporarily_disabled` and the account
+  terminal trigger refuses direct writes (migration 20261113090000).
+  The paginated owner snapshot is also the cloud export surface; the account
+  JSON export lists the same moments.
 
 ## Explicit tradeoff
 

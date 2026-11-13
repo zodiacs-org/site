@@ -101,6 +101,8 @@ run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/migrations/20261111180000_weekly_digest_dispatch_recheck.sql"
 run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/migrations/20261111190000_weekly_digest_release_rejected.sql"
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/migrations/20261113090000_account_sync_v2_retention.sql"
 
 run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/tests/charts_writes_paused.sql"
@@ -114,5 +116,7 @@ run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/tests/weekly_digest_dispatch_recheck.sql"
 run_account_v2_sql_file \
   "${account_v2_repo_root}/supabase/tests/weekly_digest_release_rejected.sql"
+run_account_v2_sql_file \
+  "${account_v2_repo_root}/supabase/tests/account_sync_v2_retention.sql"
 
 echo "PostgreSQL 17 account sync v2 SQL tests passed."

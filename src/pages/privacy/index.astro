@@ -25,8 +25,8 @@ const oauthProviders = enabledOAuthProviders({
 });
 const oauthProviderNames = oauthProviders.map((provider) => (provider === 'google' ? 'Google' : 'Apple')).join(' or ');
 const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
-const updated = '11 November 2026';
-const modifiedAt = '2026-11-11T00:00:00.000Z';
+const updated = '13 November 2026';
+const modifiedAt = '2026-11-13T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -405,7 +405,10 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
             )}
             <li>
               You can download a JSON account export or initiate permanent
-              deletion from the profile page. Account deletion also removes a
+              deletion from the profile page. The export includes the pages
+              saved to your profile, with the summary and result kept with each
+              assistant save, and the Living Chart moments kept for your
+              account. Account deletion also removes a
               linked, independently confirmed Daily Sun subscription when that
               cleanup can be confirmed. If an email change or key rotation makes
               the match ambiguous, account erasure still completes and the page

@@ -41,6 +41,11 @@ a feed.
    authenticated, recently reauthenticated prepare erases product data and
    creates a short-lived recovery receipt before an unauthenticated
    proof-bearing finish retries the Auth hard delete.
+   Product data includes the tables added after the foundation migration:
+   saved pages, Living Chart moments, consent and mutation receipts, and the
+   weekly digest delivery and unsubscribe rows. A deletion still unfinished
+   once its seven days pass with no live receipt is finished by the database
+   retention pass, which deletes the Auth identity itself.
    Provider cleanup is a separate durable reconciliation step and cannot
    delay or roll back first-party erasure or Auth deletion.
 9. Existing v1 charts are never copied to v2 automatically. The single v2
@@ -78,12 +83,17 @@ any consent (including `chart_emails`), and deletion of an existing remote
 chart remain available when it is off, so rollback cannot strand a deletion
 receipt or prevent an owner from exporting or erasing data.
 
-`ACCOUNT_SYNC_V2_CLEANUP_SECRET` is a separate server/GitHub secret of 32–512
+`ACCOUNT_SYNC_V2_CLEANUP_SECRET` is a separate server/GitHub secret of 32 to 512
 characters. It authenticates only `POST /api/account/cleanup-receipts`; the
-endpoint processes one fixed batch of at most 256 expired receipts and expired
-provider leases. It remains callable while the sync feature flags are off.
-Missing or mismatched configuration returns a not-found response and performs
-no database call. Committing the path does not provision or deploy the secret.
+endpoint runs one retention pass (`account_v2_run_retention`, at most 256 rows
+of each kind): it finishes deletions past their seven days, then removes
+expired receipts that are complete and expired provider leases. It answers 500
+`retention_incomplete` when a deletion past its window is left unfinished. It
+remains callable while the sync feature flags are off. Missing or mismatched
+configuration returns a not-found response and performs no database call.
+The hourly guarantee is the `account-v2-retention` pg_cron job inside
+Supabase, which runs the same pass; the GitHub workflow is a backup and fails
+when its secret is missing.
 
 The email jobs (`.github/workflows/daily-email.yml` and `weekly-digest.yml`)
 receive `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS` and
@@ -139,8 +149,10 @@ Server keys are supplied only through `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS`, a JSON
 keyring of canonical base64 32-byte keys, and
 `ACCOUNT_SYNC_V2_ACTIVE_KEY_VERSION`. New writes use the active version while
 reads may use retained older versions. An old key may not be retired until all
-records using it have been re-encrypted or deleted. Neither variable may use a
-`PUBLIC_` prefix or enter a browser bundle.
+records using it have been re-encrypted or deleted;
+`scripts/account-sync-v2-rewrap.ts` re-encrypts them and
+`docs/ACCOUNT-SYNC-V2-KEY-ROTATION.md` gives the order of steps. Neither
+variable may use a `PUBLIC_` prefix or enter a browser bundle.
 
 The same versioned service keyring encrypts two additional minimal payloads,
 with separate authenticated-data purposes from charts and from each other:
@@ -165,7 +177,10 @@ the canonical mutation preimage with a dedicated keyring from
 `ACCOUNT_SYNC_V2_FINGERPRINT_KEYS` and
 `ACCOUNT_SYNC_V2_ACTIVE_FINGERPRINT_KEY_VERSION`. The database stores only the
 active `version:lowercase-hex` verifier and accepts candidates produced with
-retained versions during rotation. These keys are separate from the chart
+retained versions during rotation. Deletion recovery proofs are verified the
+same way, so a retired fingerprint version must stay in the keyring for at
+least seven days after the active version changes, or an open deletion
+receipt cannot be verified. These keys are separate from the chart
 encryption keys and never enter the database or browser.
 
 The HTTP boundary is `/api/account/:action`. `bootstrap`, `consent`,
@@ -182,6 +197,11 @@ base64url recovery secret, but not a bearer token after Auth deletion. Only a
 server HMAC verifier is stored. Receipts expire after seven days; neither the
 secret nor service-only user ID is returned to the browser. The legacy
 single-step `delete` action is not routed.
+An expired receipt is removed only once its deletion is complete. When an
+account has been deleting for seven days and holds no live receipt, the
+hourly retention pass repeats the terminal cleanup, deletes the Auth
+identity in SQL, marks the receipts complete, and only then removes them with
+their provider outbox rows.
 The database serializes rotation under the existing recipient/account lock
 order, prunes that account's expired receipts, and permits at most three live
 receipts per account. A fourth fresh request returns
@@ -454,6 +474,9 @@ fused payload and create two competing authorities.
   while the Auth identity still exists, so loss of one browser capability does
   not strand an account already in deleting state. Existing receipts remain
   valid until their seven-day expiry, with at most three live receipts at once.
+  An account in deleting state refuses writes to every owner table, including
+  saved pages and Living Chart, and the retention pass finishes it once its
+  seven days pass without a live receipt.
 
 The approved export is a versioned JSON owner export containing an
 allowlisted decrypted private-chart representation plus the opaque service
@@ -462,4 +485,7 @@ the complete export rather than silently omitting data. It also decrypts each
 available historical Daily Sun alias locator into an allowlisted email and
 binding timestamps; recipient HMACs are omitted. A legacy alias without a
 locator is represented explicitly as unavailable rather than silently omitted,
-while an invalid non-null locator fails the export closed.
+while an invalid non-null locator fails the export closed. The export also
+lists the account's saved pages (with each assistant save's summary and
+detail) and its Living Chart moments, allowlisted column by column with no
+owner id; a row outside its table's shape fails the export closed.
