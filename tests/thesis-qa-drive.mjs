@@ -4,7 +4,7 @@
  * statically for no-JavaScript readers, re-hydrated from JSON with scripts
  * on), no amber pending chip remains, the hydration script stays silent on
  * console, and every illustrated module fits 375/390/730/810/1280/1440 viewports.
- * It also verifies the disclosed binary comparison, no-JavaScript
+ * It also verifies the essay's plain-prose structure and two bar charts, no-JavaScript
  * visibility, and the reduced-motion final state.
  *
  *   npm run build
@@ -23,22 +23,7 @@ const ZODIAC_SLUGS = [
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
 const ROMAN_LOTS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-const GALLERY_SELECTOR = '#what-holding-means [data-gallery-stage]';
-const COMPARISON_ROWS = [
-  ['Millennia of history', ['✓', '×', '✓']],
-  ['Ancient mythology and symbolism', ['✓', '×', '✓']],
-  ['Identity from birth', ['×', '×', '✓']],
-  ['Scarcity', ['✓', '✓', '✓']],
-  ['Fixed supply', ['×', '✓', '✓']],
-  ['Public verification', ['×', '✓', '✓']],
-  ['Digital ownership', ['×', '✓', '✓']],
-  ['Permissionless online transfer', ['×', '✓', '✓']],
-  ['Programmable', ['×', '✓', '✓']],
-  ['Base-layer settlement in seconds', ['×', '×', '✓']],
-  ['Built-in monthly cultural seasonality', ['×', '×', '✓']],
-  ['Everyday cultural participation', ['×', '×', '✓']],
-];
-const COMPARISON_MARK_COUNT = COMPARISON_ROWS.length * 3;
+const GALLERY_SELECTOR = '[data-thesis-gallery] [data-gallery-stage]';
 const LEO_MINT = '8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm';
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
   ?? (existsSync('/opt/pw-browsers/chromium')
@@ -101,7 +86,14 @@ const isVisuallyExposed = async (locator) => {
   });
 };
 
+// Edition Nº 10 moved the evidence figures (keyboard, curves, ownership records,
+// the Leo check) below the essay, into the collapsed Evidence & disclosures vault.
+const setVault = async (page, open) => {
+  await page.locator('details.evidence-vault').evaluate((node, value) => { node.open = value; }, open);
+};
+
 const checkOwnershipDrawer = async (page, label) => {
+  await setVault(page, true);
   const drawer = page.locator('#ownership-details');
   const figure = drawer.locator('#fig-authorities');
   check(`${label}: ownership records start collapsed`,
@@ -116,7 +108,7 @@ const waitForGalleryReady = async (page, timeout = 20_000) => {
   if (await gallery.count() !== 1) return false;
   const deadline = Date.now() + timeout;
   // Materialize the content-visibility section before aiming at its gallery.
-  await page.locator('#what-holding-means').scrollIntoViewIfNeeded({ timeout });
+  await page.locator('[data-thesis-gallery]').scrollIntoViewIfNeeded({ timeout });
   await wait(Math.min(200, Math.max(0, deadline - Date.now())));
   let readyInView = false;
   while (Date.now() < deadline) {
@@ -140,6 +132,8 @@ const waitForGalleryReady = async (page, timeout = 20_000) => {
 };
 
 const VISUAL_MODULES = [
+  ['know-and-believe chart', '#fig-know svg:visible'],
+  ['memecoin lifespan chart', '#fig-lifespan svg:visible'],
   ['history transmission', '#fig-1 .transmission'],
   ['measured attention chart', '#fig-2 [data-attention-chart]:visible'],
   ['Unicode keyboard', '#fig-keyboard'],
@@ -151,11 +145,14 @@ const VISUAL_MODULES = [
 ];
 
 const checkFigureFit = async (page, width) => {
-  for (const id of ['fig-keyboard', 'fig-2', 'fig-3', 'fig-authorities', 'fig-provenance']) {
+  for (const id of ['fig-know', 'fig-lifespan', 'fig-keyboard', 'fig-2', 'fig-3', 'fig-authorities', 'fig-provenance']) {
     const figure = page.locator(`#${id}`);
     const drawer = id === 'fig-authorities' ? page.locator('#ownership-details') : null;
     const wasOpen = drawer ? await drawer.getAttribute('open') !== null : false;
+    const inVault = await figure.evaluate((node) => !!node.closest('details.evidence-vault'));
+    const vaultWasOpen = await page.locator('details.evidence-vault').evaluate((node) => node.open);
     try {
+      if (inVault && !vaultWasOpen) await setVault(page, true);
       // Offscreen chapters use content-visibility:auto. Visit each figure as
       // a reader would so the browser lays it out before measuring its bounds.
       if (drawer && !wasOpen) await drawer.locator(':scope > summary').click();
@@ -174,6 +171,7 @@ const checkFigureFit = async (page, width) => {
         JSON.stringify(geometry));
     } finally {
       if (drawer && !wasOpen) await drawer.locator(':scope > summary').click();
+      if (inVault && !vaultWasOpen) await setVault(page, false);
     }
   }
 };
@@ -219,7 +217,8 @@ try {
   check('1440×900: no page-level horizontal overflow',
     await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
   const thesisGallery = page.locator(GALLERY_SELECTOR);
-  check('Section V contains one gallery stage', (await thesisGallery.count()) === 1);
+  check('the page contains one gallery stage, outside the essay', (await thesisGallery.count()) === 1
+    && (await page.locator('.essay__body > section [data-thesis-gallery]').count()) === 0);
   check('gallery bundle is not requested above the fold', galleryRequests.length === 0,
     galleryRequests.join(' | '));
 
@@ -231,7 +230,8 @@ try {
   for (const id of ['everyone-has-a-sign', 'where-the-signs-come-from', 'attention',
     'worth-holding', 'pulse', 'the-candidacy', 'what-holding-means', 'the-public-record',
     'the-conclusion', 'the-test', 'why-solana-why-base', 'the-case-against',
-    'the-instrument', 'the-honest-ending', 'appendix', 'essay']) {
+    'the-instrument', 'the-audience', 'who-wrote-this', 'ownership-details', 'fig-provenance',
+    'the-honest-ending', 'appendix', 'essay']) {
     check(`anchor #${id} resolves`, (await page.locator(`[id="${id}"]`).count()) === 1);
   }
 
@@ -245,7 +245,7 @@ try {
       && await page.evaluate(() => performance.getEntriesByType('resource')
         .filter((entry) => new URL(entry.name).pathname === '/assets/site-footer.css').length) === 0);
   // Masthead + footer.
-  check('masthead reads Nº 09 · Why Zodiacs Matter', /Nº 09 · Why Zodiacs Matter/.test(await page.locator('.essay__rail').textContent() ?? ''));
+  check('masthead reads Nº 10 · Why Zodiacs Matter', /Nº 10 · Why Zodiacs Matter/.test(await page.locator('.essay__rail').textContent() ?? ''));
   check('hero keeps one concise consumer subheader',
     (await page.locator('.hero__epi').count()) === 0
       && /Your sign already shows up in birthday wishes/.test(await page.locator('.hero__sub').textContent() ?? ''));
@@ -380,15 +380,20 @@ try {
     (await page.locator('#the-twelve .af-glyph').count()) === 0);
   check('essay opens with a familiar sign',
     /Before you had a username, you had a sign\./.test(await page.locator('#everyone-has-a-sign').textContent() ?? ''));
-  check('consumer copy introduces the twelve as digital assets',
-    /twelve public digital assets, one for each sign\./.test(await page.locator('#everyone-has-a-sign').textContent() ?? ''));
+  check('the note above the essay says who wrote it and that they hold the coins',
+    await isVisuallyExposed(page.locator('#who-wrote-this'))
+      && /Zodiacs\.org runs Astrofolio and wrote this essay\. We hold some of these coins/.test(await page.locator('#who-wrote-this').textContent() ?? ''));
+  check('the essay says memecoins in its third paragraph',
+    /They are memecoins\./.test(await page.locator('#where-the-signs-come-from').textContent() ?? ''));
+  check('the essay is plain prose: no headings, drawers or asides above the evidence',
+    (await page.locator('.essay__body > section h2, .essay__body > section h3, .essay__body > section details, .essay__body > section aside').count()) === 0);
   check('essay closes with a concrete invitation',
-    /Choose the sign you already carry\.[\s\S]*Choose your sign[\s\S]*Open the twelve digital assets/.test(await page.locator('#the-honest-ending').textContent() ?? ''));
+    /Choose the sign you already carry\.[\s\S]*Choose your sign[\s\S]*Open the twelve coins/.test(await page.locator('#the-honest-ending').textContent() ?? ''));
   const catalogueAction = page.locator('#the-honest-ending [data-thesis-cta="catalogue"]');
   check('essay close sends the primary action to the catalogue',
     (await catalogueAction.count()) === 1
       && await catalogueAction.getAttribute('href') === '/registry/'
-      && /Choose your sign[\s\S]*Open the twelve digital assets/.test(await catalogueAction.textContent() ?? ''));
+      && /Choose your sign[\s\S]*Open the twelve coins/.test(await catalogueAction.textContent() ?? ''));
   const collectionAction = page.locator('#the-honest-ending [data-thesis-cta="collection"]');
   check('Collection build marker controls the optional thesis action',
     (await collectionAction.count()) === (registryCollectionEnabled ? 1 : 0),
@@ -436,20 +441,16 @@ try {
     (await page.locator('#changelog, a[href="#changelog"]').count()) === 0);
   check('removed attention summary cards stay out of the essay',
     (await page.locator('.truth-panel').count()) === 0);
-  const attentionDrawer = page.locator('#attention > details.evidence-drawer');
-  check('Part III has one merged audience and attention drawer',
-    (await attentionDrawer.count()) === 1
-      && (await attentionDrawer.locator(':scope > summary').textContent())?.trim() === 'Audience & attention evidence'
-      && (await attentionDrawer.locator('.stats').count()) === 1
-      && (await attentionDrawer.locator('#pulse').count()) === 1);
-  await attentionDrawer.locator(':scope > summary').focus();
-  await page.keyboard.press('Enter');
-  check('merged Part III drawer exposes both audience figures and the Pulse',
-    await attentionDrawer.getAttribute('open') !== null
-      && await isVisuallyExposed(attentionDrawer.locator('.stats'))
-      && await isVisuallyExposed(attentionDrawer.locator('#pulse')));
-  await attentionDrawer.locator(':scope > summary').focus();
-  await page.keyboard.press('Enter');
+  const audience = page.locator('#the-audience');
+  check('E5 holds the audience figures and the Pulse below the essay',
+    (await page.locator('#attention details').count()) === 0
+      && (await audience.locator('.stats').count()) === 1
+      && (await audience.locator('#pulse').count()) === 1);
+  await setVault(page, true);
+  check('E5 exposes the audience figures and the Pulse once the evidence opens',
+    await isVisuallyExposed(audience.locator('.stats'))
+      && await isVisuallyExposed(audience.locator('#pulse')));
+  await setVault(page, false);
 
   // The last historical form is the branded digital asset, and the gallery
   // upgrades its authored fallback only when the reader reaches Section V.
@@ -463,16 +464,16 @@ try {
       date: era.querySelector('.era__time')?.textContent?.trim(),
     };
   });
-  check('F1 ends with the circle logo, Digital asset, and 5 Jul 2024',
+  check('F1 ends with the circle logo, Coin, and 5 Jul 2024',
     finalEraState.imageCount === 1
       && finalEraState.imageAlt === ''
       && finalEraState.imageSrc === '/assets/app-icons/v3/icon-192.png'
-      && finalEraState.label === 'Digital asset'
+      && finalEraState.label === 'Coin'
       && finalEraState.date === '5 Jul 2024',
     JSON.stringify(finalEraState));
 
   const galleryReady = await waitForGalleryReady(page);
-  check('gallery bundle loads once when Section V approaches',
+  check('gallery bundle loads once when the reader reaches it',
     galleryReady && galleryRequests.length === 1,
     `${galleryReady ? 'ready' : 'not ready'} · ${galleryRequests.length} request(s)`);
   const visibleWebGLContexts = await page.evaluate(() => window.__thesisWebGLContexts);
@@ -546,54 +547,8 @@ try {
   check('test card admits the test has not begun', /has not begun/.test(tcard));
   check('test card fixes the no-later-than date', /2026-10-31/.test(tcard));
 
-  // F3 puts the complete twelve-property comparison behind a native disclosure.
-  const comparison = page.locator('#fig-3 .comparison-panel .ztbl');
-  const comparisonNotes = page.locator('#comparison-drawer');
-  check('comparison starts collapsed in its evidence drawer',
-    await comparisonNotes.getAttribute('open') === null && !await comparison.isVisible());
-  await comparisonNotes.locator(':scope > summary').focus();
-  await page.keyboard.press('Enter');
-  check('comparison evidence opens from the keyboard and exposes the full matrix',
-    await comparisonNotes.getAttribute('open') !== null && await isVisuallyExposed(comparison));
-  check('comparison has four scoped column headers',
-    (await comparison.locator('thead th[scope="col"]').count()) === 4);
-  const propertyLabels = (await comparison.locator('tbody th[scope="row"]').allTextContents())
-    .map((label) => label.trim());
-  check('comparison has the exact twelve scoped property rows',
-    (await comparison.locator('tbody tr').count()) === COMPARISON_ROWS.length
-      && JSON.stringify(propertyLabels) === JSON.stringify(COMPARISON_ROWS.map(([label]) => label)),
-    propertyLabels.join(' · '));
-  check('comparison has exactly thirty-six standalone marks',
-    (await comparison.locator('tbody td .comparison-mark').count()) === COMPARISON_MARK_COUNT);
-  check('comparison gives every mark an sr-only label',
-    (await comparison.locator('tbody td .sr-only').count()) === COMPARISON_MARK_COUNT);
-  const cellContent = await comparison.locator('tbody td').evaluateAll((cells) => cells.map((cell) => {
-    const clone = cell.cloneNode(true);
-    clone.querySelectorAll('.sr-only').forEach((node) => node.remove());
-    return clone.textContent.trim();
-  }));
-  check('comparison cells contain only checks and X marks',
-    cellContent.length === COMPARISON_MARK_COUNT && cellContent.every((value) => value === '✓' || value === '×'),
-    [...new Set(cellContent)].join(', '));
-  const rowMarks = [];
-  for (const row of await comparison.locator('tbody tr').all()) {
-    rowMarks.push(await row.locator('td').evaluateAll((cells) => cells.map((cell) => {
-      const clone = cell.cloneNode(true);
-      clone.querySelectorAll('.sr-only').forEach((node) => node.remove());
-      return clone.textContent.trim();
-    })));
-  }
-  check('comparison uses the exact yes-or-no matrix',
-    JSON.stringify(rowMarks) === JSON.stringify(COMPARISON_ROWS.map(([, marks]) => marks)),
-    JSON.stringify(rowMarks));
-  const zodiacsMarks = rowMarks.map((row) => row[2]);
-  check('Zodiacs is checked on all twelve properties',
-    zodiacsMarks.length === COMPARISON_ROWS.length && zodiacsMarks.every((mark) => mark === '✓'),
-    JSON.stringify(zodiacsMarks));
-  await comparisonNotes.locator(':scope > summary').focus();
-  await page.keyboard.press('Enter');
-  check('comparison evidence drawer closes from the keyboard',
-    await comparisonNotes.getAttribute('open') === null && !await comparison.isVisible());
+  check('the gold, Bitcoin and Zodiacs comparison is gone',
+    (await page.locator('#comparison-drawer, .ztbl, .comparison-panel').count()) === 0);
   const evidenceVault = page.locator('details.evidence-vault');
   const appendix = page.locator('#appendix');
   check('technical appendix starts hidden inside the closed evidence vault',
@@ -635,14 +590,8 @@ try {
     (await page.locator('#fig-authorities .authority-summary .fact-card').count()) === 4
       && (await page.locator('#fig-authorities .burn-grid svg[role="img"]').count()) === 2
       && /burns are not uniformly complete/.test(await page.locator('#fig-authorities .zfig-cap').textContent() ?? ''));
-  check('Gold retains its bullion-bar mark in the comparison table',
-    (await comparison.locator('[data-icon="gold-bar"] [data-gold-bar]').count()) === 1);
   check('gallery display labels are removed',
     (await page.locator('.thesis-gallery__head, .gband__fallback-title').count()) === 0);
-  check('comparison headers render Gold, Bitcoin, and the complete zodiac wheel',
-    (await comparison.locator('.ztbl-brand--gold svg').count()) === 1
-      && (await comparison.locator('.ztbl-brand--bitcoin').count()) === 1
-      && (await comparison.locator('.ztbl-brand--zodiacs .brand-wheel i').count()) === 12);
   const realUseProof = page.locator('[data-real-use-proof]');
   const proofHrefs = await realUseProof.locator('.proof-loop__step').evaluateAll((links) => (
     links.map((link) => link.getAttribute('href'))
@@ -666,17 +615,21 @@ try {
       && /Concentration[\s\S]*by mistake[\s\S]*Dead bag/i.test(await provenance.textContent() ?? '')
       && /search link rather than an individual post receipt/.test(await provenance.locator('.zfig-cap').textContent() ?? ''));
 
-  const honestLimitation = page.locator('[data-honest-limitation]');
-  check('the main reading path visibly states what remains unproven',
-    await isVisuallyExposed(honestLimitation)
-      && /The assets are listed and transferable\. Their broader standing still has to be earned\./
-        .test(await honestLimitation.textContent() ?? '')
-      && /Independent adoption had not arrived\./.test(await honestLimitation.textContent() ?? '')
-      && /23 July 2026/.test(await honestLimitation.textContent() ?? '')
-      && (await honestLimitation.locator('a[href="#the-candidacy"]').count()) === 1);
+  const doubts = page.locator('#the-conclusion p').first();
+  check('the doubts are stated once, visibly, with a link to the scoreboard',
+    await isVisuallyExposed(doubts)
+      && /^A memecoin can go to zero, and these can too\./.test((await doubts.textContent() ?? '').trim())
+      && /No outside app has adopted them yet\./.test(await doubts.textContent() ?? '')
+      && (await doubts.locator('a[href="#the-candidacy"]').count()) === 1
+      && (await page.locator('[data-honest-limitation]').count()) === 0);
+  const lifespanText = await page.locator('#fig-lifespan').textContent() ?? '';
+  check('the lifespan chart names its source and its caveat',
+    /CoinGecko/.test(lifespanText) && /counted trades on Pump\.fun only/.test(lifespanText));
+  check('the know-and-believe chart prints both survey figures',
+    /90%[\s\S]*27%/.test(await page.locator('#fig-know svg.dots-chart--wide').textContent() ?? ''));
   check('plain candidacy snapshot renders', (await page.locator('.human-score__item').count()) === 4);
   check('three-question test renders', (await page.locator('.test-question').count()) === 3);
-  check('plain-language instrument renders', (await page.locator('#the-instrument .fact-card').count()) === 6);
+  check('plain-language instrument renders', (await page.locator('#the-instrument .fact-card:not(#ownership-details .fact-card)').count()) === 6);
   check('technical evidence is progressively disclosed', (await page.locator('details.evidence-drawer').count()) >= 6);
 
   // Entrances use one short transition and a restrained 50ms child stagger.
@@ -710,20 +663,23 @@ try {
     (await page.locator('#the-public-record a[href="https://zodiacs.org/disclosure/#origin"]').count()) === 1);
 
   // Evidence shots — desktop.
+  await shot(page, '#fig-know', 'thesis-know-desktop.png');
+  await shot(page, '#fig-lifespan', 'thesis-lifespan-desktop.png');
   await shot(page, '#fig-1', 'thesis-f1-desktop.png');
   await shot(page, '#fig-2', 'thesis-f2-desktop.png');
+  await shot(page, '#fig-provenance', 'thesis-provenance-desktop.png');
+  await shot(page, '#the-public-record', 'thesis-history-desktop.png');
+  for (const id of ['everyone-has-a-sign', 'where-the-signs-come-from', 'attention', 'what-holding-means', 'the-public-record', 'the-conclusion']) {
+    await shot(page, `#${id}`, `thesis-${id}-desktop.png`);
+  }
+  await shot(page, GALLERY_SELECTOR, 'thesis-gallery-desktop.png');
+  await setVault(page, true);
   await shot(page, '#fig-3', 'thesis-f3-desktop.png');
   await shot(page, '#fig-keyboard', 'thesis-keyboard-desktop.png');
   await shot(page, '#fig-authorities', 'thesis-authorities-desktop.png');
   await page.locator('#ownership-details > summary').click();
-  await shot(page, '#fig-provenance', 'thesis-provenance-desktop.png');
-  await shot(page, '#what-holding-means', 'thesis-proof-desktop.png');
-  await shot(page, GALLERY_SELECTOR, 'thesis-gallery-desktop.png');
-  await shot(page, '#the-public-record', 'thesis-history-desktop.png');
-  for (const id of ['everyone-has-a-sign', 'where-the-signs-come-from', 'attention', 'worth-holding', 'the-conclusion']) {
-    await shot(page, `#${id}`, `thesis-${id}-desktop.png`);
-  }
-  await page.locator('details.evidence-vault').evaluate((node) => { node.open = true; });
+  await shot(page, '#the-instrument [data-real-use-proof]', 'thesis-proof-desktop.png');
+  await shot(page, '#the-audience', 'thesis-audience-desktop.png');
   await shot(page, '#the-candidacy', 'thesis-v-desktop.png');
   await shot(page, '#the-test', 'thesis-vii-desktop.png');
   await shot(page, '#the-case-against', 'thesis-ix-desktop.png');
@@ -758,22 +714,12 @@ try {
   }));
   check('810px: no page-level horizontal overflow', reviewOverflow.doc <= reviewOverflow.win,
     `${reviewOverflow.doc} vs ${reviewOverflow.win}`);
-  await review.locator('#comparison-drawer > summary').click();
-  const reviewTable = review.locator('#fig-3 .ztbl');
-  const reviewTableLayout = await reviewTable.evaluate((table) => ({
-    row: getComputedStyle(table.tBodies[0].rows[0]).display,
-    scroll: table.parentElement.scrollWidth,
-    client: table.parentElement.clientWidth,
-  }));
-  check('810px: comparison remains a full table', reviewTableLayout.row === 'table-row', reviewTableLayout.row);
-  check('810px: comparison fits without local scrolling',
-    reviewTableLayout.scroll <= reviewTableLayout.client + 1,
-    `${reviewTableLayout.scroll} vs ${reviewTableLayout.client}`);
   await checkOwnershipDrawer(review, '810px');
   for (const [name, selector] of VISUAL_MODULES) {
     check(`810px: ${name} is visible`, await isVisuallyExposed(review.locator(selector).first()));
   }
-  await review.locator('#comparison-drawer > summary').click();
+  await shot(review, '#fig-know', 'thesis-know-810.png');
+  await shot(review, '#fig-lifespan', 'thesis-lifespan-810.png');
   await shot(review, '#fig-1', 'thesis-f1-810.png');
   await shot(review, '#fig-2', 'thesis-f2-810.png');
   await shot(review, '#fig-3', 'thesis-f3-810.png');
@@ -781,7 +727,7 @@ try {
   await shot(review, '#fig-authorities', 'thesis-authorities-810.png');
   await review.locator('#ownership-details > summary').click();
   await shot(review, '#fig-provenance', 'thesis-provenance-810.png');
-  await shot(review, '#what-holding-means', 'thesis-proof-810.png');
+  await shot(review, '#the-instrument [data-real-use-proof]', 'thesis-proof-810.png');
   await shot(review, GALLERY_SELECTOR, 'thesis-gallery-810.png');
   await shot(review, '#the-public-record', 'thesis-history-810.png');
   await review.locator('details.evidence-vault').evaluate((node) => { node.open = true; });
@@ -807,7 +753,7 @@ try {
   const annotatedLayout = await annotated.evaluate((selector) => {
     const gallery = document.querySelector(selector);
     const rail = gallery?.querySelector('[data-gallery-rail]');
-    const nextSection = document.querySelector('#the-public-record');
+    const nextSection = document.querySelector('#the-twelve');
     const galleryRect = gallery?.getBoundingClientRect();
     const nextRect = nextSection?.getBoundingClientRect();
     return {
@@ -830,7 +776,7 @@ try {
       && annotatedLayout.galleryRight <= annotatedLayout.viewportWidth + 1
       && annotatedLayout.galleryScrollWidth <= annotatedLayout.galleryClientWidth + 1,
     JSON.stringify({ ready: annotatedGalleryReady, ...annotatedLayout }));
-  check('730px: gallery precedes the next movement without overlap',
+  check('730px: gallery precedes the Twelve Catalogue without overlap',
     annotatedLayout.galleryBottom <= annotatedLayout.nextSectionTop + 1,
     JSON.stringify(annotatedLayout));
   check('730px: gallery rail owns any horizontal scrolling',
@@ -889,8 +835,8 @@ try {
   check('623px: transmission retains seven chronological anchors',
     JSON.stringify(chronology.map((value) => value.trim())) === JSON.stringify([
       'c. 450 BCE',
-      '150 BCE–150 CE',
-      '850–1150 CE',
+      '150 BCE to 150 CE',
+      '850 to 1150 CE',
       'c. 1500',
       '1930',
       'c. 2010',
@@ -898,6 +844,7 @@ try {
     ]),
     chronology.join(' · '));
 
+  await setVault(compact, true);
   const compactModules = [
     ['history transmission', '#fig-1 .story-figure', 0.24],
     ['real-use proof', '[data-real-use-proof]', 0.48],
@@ -941,7 +888,7 @@ try {
     JSON.stringify(compactRows));
   await shot(compact, '#fig-1', 'thesis-f1-623.png');
   await shot(compact, '#fig-3', 'thesis-f3-623.png');
-  await shot(compact, '#what-holding-means', 'thesis-proof-623.png');
+  await shot(compact, '#the-instrument [data-real-use-proof]', 'thesis-proof-623.png');
   await shot(compact, GALLERY_SELECTOR, 'thesis-gallery-623.png');
   check('no page errors or same-origin failures (623px)', compactErrors.length === 0,
     compactErrors.slice(0, 2).join(' | '));
@@ -1002,12 +949,6 @@ try {
     check(`no-JS: ${name} is visually exposed`, await isVisuallyExposed(nojs.locator(selector).first()));
   }
   await shot(nojs, GALLERY_SELECTOR, 'thesis-gallery-nojs.png');
-  check('no-JS: comparison starts collapsed',
-    await nojs.locator('#comparison-drawer').getAttribute('open') === null);
-  await nojs.locator('#comparison-drawer > summary').click();
-  check('no-JS: comparison opens and exposes the full matrix',
-    await isVisuallyExposed(nojs.locator('#comparison-drawer .ztbl')));
-  await nojs.locator('#comparison-drawer > summary').click();
   check('no-JS never downloads the ambient loop', nojsMedia.length === 0, JSON.stringify(nojsMedia));
   await nojsContext.close();
 
@@ -1070,12 +1011,6 @@ try {
   for (const [name, selector] of VISUAL_MODULES) {
     check(`reduced motion: ${name} is visually exposed`, await isVisuallyExposed(reduced.locator(selector).first()));
   }
-  check('reduced motion: comparison starts collapsed',
-    await reduced.locator('#comparison-drawer').getAttribute('open') === null);
-  await reduced.locator('#comparison-drawer > summary').click();
-  check('reduced motion: comparison opens and exposes the full matrix',
-    await isVisuallyExposed(reduced.locator('#comparison-drawer .ztbl')));
-  await reduced.locator('#comparison-drawer > summary').click();
   check('reduced motion never downloads the ambient loop', reducedMedia.length === 0, JSON.stringify(reducedMedia));
   await reducedContext.close();
 
@@ -1094,7 +1029,7 @@ try {
     JSON.stringify({ before: beforeMotionChange, after: afterMotionChange }));
   await changingMotionContext.close();
 
-  // Small-viewport passes — illustrated modules and comparison cards never scroll sideways.
+  // Small-viewport passes — illustrated modules and charts never scroll sideways.
   for (const width of [375, 390]) {
     const mob = await browser.newPage({ viewport: { width, height: 812 }, deviceScaleFactor: 2, hasTouch: true });
     const mobErrors = [];
@@ -1119,28 +1054,8 @@ try {
       doc: document.documentElement.scrollWidth, win: window.innerWidth,
     }));
     check(`${width}px: no page-level horizontal overflow`, overflow.doc <= overflow.win, `${overflow.doc} vs ${overflow.win}`);
-    await mob.locator('#comparison-drawer > summary').click();
-    const mobileTable = await mob.locator('#fig-3 .ztbl').evaluate((table) => ({
-      row: getComputedStyle(table.tBodies[0].rows[0]).display,
-      scroll: table.parentElement.scrollWidth,
-      client: table.parentElement.clientWidth,
-    }));
-    check(`${width}px: comparison rows become cards`, /^(?:grid|block)$/.test(mobileTable.row), mobileTable.row);
-    check(`${width}px: comparison has no local horizontal overflow`,
-      mobileTable.scroll <= mobileTable.client + 1, `${mobileTable.scroll} vs ${mobileTable.client}`);
-    const mobileBodyDecorations = await mob.locator('#fig-3 .ztbl tbody tr').evaluateAll((rows) => rows.map((row) => (
-      [...row.querySelectorAll('td')].map((cell) => {
-        const pseudo = getComputedStyle(cell, '::before');
-        return pseudo.backgroundImage;
-      })
-    )));
-    check(`${width}px: comparison body cells contain marks without repeated brand icons`,
-      mobileBodyDecorations.length === COMPARISON_ROWS.length && mobileBodyDecorations.every((decorations) => (
-        decorations.length === 3 && decorations.every((image) => image === 'none')
-      )));
-    await mob.locator('#comparison-drawer > summary').click();
     await mob.locator('details.evidence-vault').evaluate((node) => { node.open = true; });
-    await mob.locator('#the-instrument details.evidence-drawer').evaluate((n) => { n.open = true; });
+    await mob.locator('#the-instrument details.evidence-drawer:not(#ownership-details)').evaluate((n) => { n.open = true; });
     const discScroll = await mob.locator('.disc-scroll').evaluate((n) => n.scrollWidth > n.clientWidth);
     check(`${width}px: disclosure table scrolls inside its own region`, discScroll);
     await checkOwnershipDrawer(mob, `${width}px`);
@@ -1153,17 +1068,19 @@ try {
       check(`${width}px: ${name} fits without local overflow`, fits);
     }
     if (width === 375) {
+      await shot(mob, '#fig-know', 'thesis-know-mobile.png');
+      await shot(mob, '#fig-lifespan', 'thesis-lifespan-mobile.png');
       await shot(mob, '#fig-1', 'thesis-f1-mobile.png');
       await shot(mob, '#fig-2', 'thesis-f2-mobile.png');
       await shot(mob, '#fig-3', 'thesis-f3-mobile.png');
-      for (const id of ['everyone-has-a-sign', 'where-the-signs-come-from', 'attention', 'worth-holding', 'the-conclusion']) {
+      for (const id of ['everyone-has-a-sign', 'where-the-signs-come-from', 'attention', 'what-holding-means', 'the-public-record', 'the-conclusion']) {
         await shot(mob, `#${id}`, `thesis-${id}-mobile.png`);
       }
       await shot(mob, '#fig-keyboard', 'thesis-keyboard-mobile.png');
       await shot(mob, '#fig-authorities', 'thesis-authorities-mobile.png');
       await mob.locator('#ownership-details > summary').click();
       await shot(mob, '#fig-provenance', 'thesis-provenance-mobile.png');
-      await shot(mob, '#what-holding-means', 'thesis-proof-mobile.png');
+      await shot(mob, '#the-instrument [data-real-use-proof]', 'thesis-proof-mobile.png');
       await shot(mob, GALLERY_SELECTOR, 'thesis-gallery-mobile.png');
       await shot(mob, '#the-public-record', 'thesis-history-mobile.png');
       await mob.locator('#the-candidacy').scrollIntoViewIfNeeded();

@@ -36,7 +36,7 @@ const WING_ONLY_SOURCE = Object.freeze([
   /^src\/(?:exchange|registry|shelf|trade)\//u,
   /^src\/components\/(?:Registry[^/]*|TerminalMarketVenueNotice)\.astro$/u,
   /^src\/data\/(?:aura-moon-ingresses|registry-origin-receipts)\.json$/u,
-  /^src\/data\/registry-research\/(?:approval-manifest|drafts|publication)\.json$/u,
+  /^src\/data\/registry-research\/(?:approval-manifest|drafts|publication|pause)\.json$/u,
   /^src\/islands\/(?:RegistryAura|WalletChart)\.tsx$/u,
   /^src\/islands\/aura\//u,
   /^src\/lib\/(?:aura(?:-|\/)|registry(?:-|\/)|wallet\/)\S*/u,
@@ -53,6 +53,9 @@ const NON_SURFACE_SOURCE = Object.freeze([
   /(?:^|\/)[^/]+\.(?:spec|test)\.[^.]+$/u,
   /^api\/_assistant\/persona\.ts$/u,
   /^src\/lib\/guide-server\/safety\.ts$/u,
+  // The heads-up calendar's banned word list (src/lib/sky-heads-up.ts): the
+  // words it refuses to publish, not copy.
+  /^src\/lib\/sky-heads-up-safety\.ts$/u,
   // Generated base64 PNGs (scripts/build-email-inline-images.mjs): image
   // bytes, not copy, whose letter runs can spell anything.
   /^src\/lib\/email\/inline-images\.ts$/u,
