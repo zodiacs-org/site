@@ -26,7 +26,15 @@ interface Props { locale?: Locale; terminalMarketNotice?: boolean; noAssistant?:
 const locale = normalizePageLocale(Astro.props.locale);
 const isTool = isAstrologyToolPath(Astro.url.pathname);
 const showCollection = showsCollectionNavigation(Astro.url.pathname);
-const routeLanguageLinks = renderableAlternatePathEntries(Astro.url.pathname);
+// The Spanish, Portuguese, French and Italian birthday pages are noindex, so
+// the indexable English birthday pages do not link them: crawlers spend their
+// visits on pages that can be indexed (Linear ZOD-221). Those pages offer the
+// language homes instead, as English-only pages do. The translated birthday
+// pages still link one another and the English page.
+const ENGLISH_BIRTHDAY_DAY = /^\/birthday\/[a-z]+-\d{1,2}\/$/u;
+const routeLanguageLinks = ENGLISH_BIRTHDAY_DAY.test(Astro.url.pathname)
+  ? []
+  : renderableAlternatePathEntries(Astro.url.pathname);
 // Preserve the established locale-home fallback on English-only routes while
 // deriving the candidate set from actual route availability, never LOCALES.
 const availableHomeFallback = alternatePathEntries('/').filter((entry) => (
