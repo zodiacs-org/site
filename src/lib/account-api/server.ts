@@ -31,6 +31,8 @@ import {
   type LegacyChartDeletionExportV1,
   type LegacyChartExportV1,
   type LegacyProfileExportV1,
+  type LivingChartMomentExportV1,
+  type SavedPageExportV1,
   type ZodiacsAccountExportV1,
 } from './types.js';
 import { isAccountUuid } from './request.js';
@@ -376,6 +378,75 @@ function inviteExports(rows: Record<string, unknown>[]): CompatibilityInviteExpo
       authorityDestroyedAt: nullableDates.authorityDestroyedAt as string | null,
       deleteAfter: nullableDates.deleteAfter as string | null,
       ownerHiddenAt: nullableDates.ownerHiddenAt as string | null,
+    };
+  });
+}
+
+const SAVED_PAGE_KINDS = new Set(['compatibility', 'occasion', 'chart', 'week']);
+
+// Same allowlist rule as the rest of the export: named columns only, no
+// owner id, and any row outside the table's own constraints fails closed.
+function savedPageExports(rows: Record<string, unknown>[]): SavedPageExportV1[] {
+  return rows.map((row) => {
+    const savedAt = isoDate(row.saved_at);
+    const title = boundedText(row.title, 160);
+    const href = boundedText(row.href, 2048);
+    const site = row.source === 'site';
+    const assistant = row.source === 'assistant';
+    const summary = row.summary === null ? null : boundedText(row.summary, 600);
+    if (!hasExactKeys(row, ['id', 'kind', 'title', 'href', 'source', 'summary', 'detail', 'saved_at'])
+      || !isAccountUuid(row.id)
+      || typeof row.kind !== 'string'
+      || !SAVED_PAGE_KINDS.has(row.kind)
+      || !title
+      || !href
+      || !href.startsWith('/')
+      || !savedAt
+      || !(site || assistant)
+      || (site && (row.summary !== null || row.detail !== null))
+      || (assistant && (!summary || !isRecord(row.detail)))) {
+      throw new AccountServerFailure('export_unavailable');
+    }
+    return {
+      id: row.id.toLowerCase(),
+      kind: row.kind as SavedPageExportV1['kind'],
+      title,
+      href,
+      source: site ? 'site' : 'assistant',
+      summary: assistant ? summary : null,
+      detail: assistant ? row.detail as Record<string, unknown> : null,
+      savedAt,
+    };
+  });
+}
+
+function livingChartMomentExports(rows: Record<string, unknown>[]): LivingChartMomentExportV1[] {
+  return rows.map((row) => {
+    const consentEpoch = safeInteger(row.consent_epoch, 1);
+    const revision = safeInteger(row.revision, 1);
+    const createdAt = isoDate(row.created_at);
+    const updatedAt = isoDate(row.updated_at);
+    const deletedAt = nullableIsoDate(row.deleted_at);
+    if (!hasExactKeys(row, [
+      'moment_id', 'consent_epoch', 'revision', 'payload', 'created_at', 'updated_at', 'deleted_at',
+    ])
+      || !isAccountUuid(row.moment_id)
+      || !consentEpoch
+      || !revision
+      || !createdAt
+      || !updatedAt
+      || deletedAt === undefined
+      || (deletedAt === null ? !isRecord(row.payload) : row.payload !== null)) {
+      throw new AccountServerFailure('export_unavailable');
+    }
+    return {
+      momentId: row.moment_id.toLowerCase(),
+      consentEpoch,
+      revision,
+      payload: row.payload as Record<string, unknown> | null,
+      createdAt,
+      updatedAt,
+      deletedAt,
     };
   });
 }
@@ -729,6 +800,16 @@ export async function buildAccountExport(
     fetchLegacyInviteExport(user.id, env, fetcher),
     fetchV2Export(user.id, env, fetcher),
   ]);
+  const [savedPages, livingChartMoments] = await Promise.all([
+    fetchRows({
+      table: 'saved_pages', select: 'id,kind,title,href,source,summary,detail,saved_at', filters: { user_id: userFilter },
+      order: 'saved_at.asc,id.asc', pageSize: 100, maximumRows: 100,
+    }, env, fetcher),
+    fetchRows({
+      table: 'living_chart_moments', select: 'moment_id,consent_epoch,revision,payload,created_at,updated_at,deleted_at',
+      filters: { user_id: userFilter }, order: 'created_at.asc,moment_id.asc', pageSize: 250, maximumRows: 1_000,
+    }, env, fetcher),
+  ]);
 
   const result: ZodiacsAccountExportV1 = {
     schema: ACCOUNT_EXPORT_SCHEMA,
@@ -741,6 +822,8 @@ export async function buildAccountExport(
       dailyChartPreference: dailyPreferenceExport(dailyPreferences),
       compatibilityInvites: inviteExports(invites),
       accountSyncV2,
+      savedPages: savedPageExports(savedPages),
+      livingChartMoments: livingChartMomentExports(livingChartMoments),
     },
   };
   if (Buffer.byteLength(JSON.stringify(result), 'utf8') > MAX_EXPORT_BYTES) {
