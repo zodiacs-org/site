@@ -35,6 +35,10 @@ import type { HoroscopeProgram } from '../../lib/horoscope-program-types';
  * 0.6.7 (ZOD-58) changes the reported version in every scenario, and rewrites tool descriptions and the server
  * instructions as plain descriptions, so every scenario's initialize, tools/list and bearer answers change in those
  * texts too (src/ai-tools/published-tools.ts). Every schema and every resources/list keep their bytes.
+ * ZOD-207 (a draft on top of ZOD-58, still 0.6.7) adds to the server instructions what is outside Zodiacs and, in the
+ * coverage scenario, which tool takes which request, and adds routing sentences to the get_natal_chart and
+ * explain_astrology descriptions (docs/platform/evidence/assistant-tryouts-20261113/). None of the thirteen published
+ * definitions changes, and every schema and every resources/list keep their bytes.
  */
 const FIXTURE = new URL('./flag-off.fixture.json', import.meta.url);
 const servers: Server[] = [];

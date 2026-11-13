@@ -5,7 +5,7 @@
 import { Transform } from "node:stream";
 import { StdioServerTransport, serveStdio } from "@modelcontextprotocol/server/stdio";
 
-// node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-OVXQQEXL.js
 var NAMESPACE = /^[A-Za-z][A-Za-z0-9-]*$/u;
 var VALUE = /^[^\s\p{Cc}\p{Cf}\p{Cs}]+$/u;
 function conventionId(namespace, value) {
@@ -42,7 +42,7 @@ function natalConventionIds(envelope) {
   return [...ids].sort();
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
 var julianLeap = (year) => year % 4 === 0;
 var gregorianLeap = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 function parseCalendarDate(value, calendar) {
@@ -91,7 +91,7 @@ function julianToGregorian(value) {
   return date3 ? format(civilDateOf(julianDayNumber(date3, "julian"), "gregorian")) : null;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
 var ISO_INSTANT = /^(\d{4}|[+-]\d{6})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2})))?$/;
 function validIsoInput(input) {
   const match = ISO_INSTANT.exec(input);
@@ -123,7 +123,7 @@ function dateFrom(input, label) {
   return date3;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
   version: "2026-09-24",
@@ -404,7 +404,7 @@ function deltaT(ut) {
   return seconds(2e3 + ut / 365.25);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
 var REFERENCE_SPAN = /* @__PURE__ */ Object.freeze({
   from: "1800-01-01T00:00:00.000Z",
   to: "2200-01-01T00:00:00.000Z"
@@ -613,7 +613,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-F4JKI3XV.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -694,7 +694,7 @@ function findAspects(bodies) {
 var ENGINE_VERSION = "1.1.0-rc.2";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
-// node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-RMBWKZI2.js
 var SIGNS = /* @__PURE__ */ Object.freeze([
   /* @__PURE__ */ Object.freeze({
     slug: "aries",
@@ -810,7 +810,7 @@ function degreeInSign(lon) {
   return normalizeLongitude(lon) % 30;
 }
 
-// node_modules/@zodiacs/engine/dist/receipt.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/receipt.js
 function parseReceiptJson(json, limits2) {
   if (typeof json !== "string") return { ok: false, code: "invalid_json" };
   if (!Number.isSafeInteger(limits2.depth) || limits2.depth < 0 || !Number.isSafeInteger(limits2.nodes) || limits2.nodes < 1)
@@ -1913,7 +1913,7 @@ function bounded(value) {
 // src/mcp/tools.ts
 import { z as z2 } from "zod";
 
-// node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-NNOSOOWS.js
 var DEG = Math.PI / 180;
 var RAD = 180 / Math.PI;
 var HOUSE_SYSTEMS3 = /* @__PURE__ */ Object.freeze([
@@ -2228,7 +2228,7 @@ function houseOf(longitude2, cusps) {
   return 12;
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-2BB5GQ3P.js
 var DEG2 = Math.PI / 180;
 var ARCSEC = DEG2 / 3600;
 var ARGUMENTS = [
@@ -2372,7 +2372,7 @@ function eclipticOfDate(x, y, z21, tt) {
   };
 }
 
-// node_modules/astronomy-engine/esm/astronomy.js
+// ../mb-acc/node_modules/astronomy-engine/esm/astronomy.js
 /**
     @preserve
 
@@ -4279,7 +4279,7 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-NIRYKLHT.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
 var DEG3 = Math.PI / 180;
 var RAD3 = 180 / Math.PI;
@@ -4475,7 +4475,7 @@ function chartAt(input) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
 var DAY3 = 864e5;
 var REFINE_STEPS = 24;
 var EDGE_PROBE_MAX_MS = 6e4;
@@ -4708,7 +4708,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
 var HOUSE_SYSTEM_NAMES = [
   "whole",
   "placidus",
@@ -4789,7 +4789,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-QRBHGADI.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
@@ -6127,7 +6127,7 @@ var PLACES_MAX = 20;
 // src/mcp/sky-tools.ts
 import { z } from "zod";
 
-// node_modules/@zodiacs/engine/dist/time.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/time.js
 function timeBasis2(ms, scale, pin) {
   if (typeof ms !== "number" || !(Math.abs(ms) <= 864e13)) throw new RangeError("ms must be an instant within the range of a Date.");
   if (scale !== void 0 && !TIME_SCALE_NAMES.includes(scale)) throw new RangeError('scale must be "utc", "ut1" or "tt".');
@@ -6489,7 +6489,7 @@ function timeResolutionFacts(module) {
   };
 }
 
-// node_modules/@zodiacs/engine/dist/conventions.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/conventions.js
 var CONVENTIONS_REGISTRY = "https://zodiacs.org/developers/conventions/";
 function parseConventionId(id) {
   const colon = typeof id === "string" ? id.indexOf(":") : -1;
@@ -8162,7 +8162,7 @@ var COMPUTE_TAG = Object.freeze({
   description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. The function writes nothing from a request or its result to a log, a file or a database, and responses are not cached; the host's request logs keep each request's web address and IP address. The endpoints answer only while their per-address rate limit is in place, and 503 otherwise. A body with a repeated key is read as JSON.parse reads it: the last value wins. Documentation: ${COMPUTE_DOCS_URL}`
 });
 
-// node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-RRB65OLH.js
 var DEG4 = Math.PI / 180;
 var ARCSEC3 = DEG4 / 3600;
 function toEquator(m, angle) {
@@ -8204,7 +8204,7 @@ function turn2(m, x, y, z21) {
   return [m[0] * x + m[1] * y + m[2] * z21, m[3] * x + m[4] * y + m[5] * z21, m[6] * x + m[7] * y + m[8] * z21];
 }
 
-// node_modules/@zodiacs/engine/dist/sky.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/sky.js
 function firstMillisecond(reached, estimate) {
   const start = Math.round(estimate);
   let lo = start - 4;
@@ -26167,7 +26167,7 @@ var birthdays_default = {
   }
 };
 
-// node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/chunk-47ERTK5X.js
 function readOptions(value, allowed, label) {
   const out = /* @__PURE__ */ Object.create(null);
   if (value === void 0) return out;
@@ -26191,7 +26191,7 @@ function readOptions(value, allowed, label) {
   return out;
 }
 
-// node_modules/@zodiacs/engine/dist/techniques.js
+// ../mb-acc/node_modules/@zodiacs/engine/dist/techniques.js
 function oneOf2(value, allowed, fallback2, label) {
   if (value === void 0) return fallback2;
   if (typeof value === "string" && allowed.includes(value)) return value;
@@ -43326,11 +43326,11 @@ var TOOL_DESCRIPTIONS = {
   get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. When Zodiacs has no chart for that person the result says so and gives no chart. shareUrl is the link for sharing the chart.",
   get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. A full birth date is needed only to resolve a cusp date's sign in that birth year or to calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; modern birthdays need no coordinates. It links to the date's birthday page and names the famous people Zodiacs publishes who were born on that day, as the page does. It makes no prediction. shareUrl is the link for sharing it; it carries the month and day, never the year. It refuses a full birth date less than 13 years ago.",
   get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian. shareUrl is the link for sharing the calendar; it shows the next event.",
-  get_natal_chart: "Reads one person's birth chart in the conversation when they have already given their birth date. If they have not, or want to explore it themselves, use open_chart_studio. It gives the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets (the tightest by orb), and the balance of elements and modes, each with what astrology traditionally reads into it. Add the birth time, the birthplace's time zone and its latitude and longitude only as the person gives them, and never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used. For a birth date under 18 romantic and attraction readings are left out and a note says so. chartUrl opens the birth chart page and does not carry the birth date, time, place or coordinates; it is the page to open, not a link that holds their details. It refuses a birth date less than 13 years ago.",
+  get_natal_chart: "Reads one person's birth chart in the conversation when they have already given their birth date. If they have not, or want to explore it themselves, use open_chart_studio. That holds for any request for a chart, a rising sign or a Moon sign with no birth date in the conversation: open_chart_studio opens with no details and the person enters them there, so nothing needs asking first. It gives the Sun, Moon and rising signs, each planet's sign and degree, its house when the birth time and place are known, the closest aspects between the planets (the tightest by orb), and the balance of elements and modes, each with what astrology traditionally reads into it. Add the birth time, the birthplace's time zone and its latitude and longitude only as the person gives them, and never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Without a time it says plainly what is unknown: the rising sign, the houses and, on a day the Moon changed sign, the Moon sign, which it gives as the two possibilities. When the birth time fell in a daylight saving change (a skipped or a repeated hour), timeNote says which instant the chart used. For a birth date under 18 romantic and attraction readings are left out and a note says so. chartUrl opens the birth chart page and does not carry the birth date, time, place or coordinates; it is the page to open, not a link that holds their details. It refuses a birth date less than 13 years ago.",
   get_horoscope_period: `Shows a Sun-sign horoscope for a month, a year, or a love or career week: the reading Zodiacs publishes for that period and the period's sky for the sign (planets changing sign, turning retrograde or direct, new and full Moons and eclipses) placed in the sign's solar houses; a month's sky leaves out the Moon's sign changes. Monthly readings are published from the first of each month; yearly readings are published for 2026 and 2027. A week is only for focus love or career: it adds that focus's daily readings in the week and keeps the sky events that bear on it. For a general week, and for today's or tomorrow's horoscope, use get_horoscope. When a reading is not published the result says so and still gives the sky, with no reading in its place. The forecast carries a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. Limits: focus love is a romance reading for adults, so for anyone under 18 there is no love or romance reading. No betting tips, sports picks, stock picks, investment timing, election forecasts, health predictions or guaranteed outcomes. The sign is taken as the person gives it, never inferred.`,
   get_chinese_zodiac: "Gives the Chinese zodiac animal, element and yin or yang for a birth date or a year, and the current year's animal. A birth date before that year's Lunar New Year belongs to the previous animal year; the answer gives the Lunar New Year date it used. With only a year, it says which animal applies to anyone born before that year's Lunar New Year. It adds the animal's traditional associations and its traditional pairings (the harmonious three, the six-harmony partner and the opposite animal), with links to the animal's page. Pass the person's time zone if you know it so the current year is their own. Without a zone the current year assumes UTC and the answer says so.",
   get_personal_transits: `Lists dated transits to the person's own birth chart: when the moving planets make exact aspects to their natal planets (and to the rising degree and Midheaven when the birth time and place are known), with what astrology traditionally reads into each. Use it for my transits, what's coming up for me, or my year ahead, once the person has given a birth date; for a Sun-sign horoscope use get_horoscope or get_horoscope_period. Give the birth date, and the time, birthplace time zone and coordinates only as the person gives them; never guess a birth time. When they name a town or city instead of coordinates, use find_birthplace first and pass its latitude, longitude and time zone. Pass currentZone, where they live now, so the dates fall on their own clock. By default it covers the next 30 days; give from and to for any window up to 366 days (windows over 92 days keep to Jupiter through Pluto). The window cannot start before the birth date. A retrograde contact's pass number counts the whole loop, including passes outside the window. With mode year-ahead it gives the year's highlights instead: Jupiter and Saturn on the Sun, Moon, Mercury, Venus, Mars and rising degree, Uranus, Neptune and Pluto on the Sun, Moon, Mercury, Venus and Mars, the solar return, a Saturn return, Jupiter and Saturn changing sign (with the house it falls in when the time and place are known) and eclipses near natal planets. For a birth date under 18 romantic and attraction readings are left out and a note says so. Each line is astrology's reading and carries a "Reading confidence NN%" label that says how specific the details were, not the odds of an event; it is not a guarantee, and not health, financial or medical advice. It refuses a birth date less than 13 years ago.`,
-  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading for anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain, and no explainer. Limit: Sun-sign pair compatibility is a romance reading for adults; when either person is under 18 there is no love or romance reading, and the friendship reading takes its place.",
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading for anyone under 18. For the person's own placements, use get_natal_chart. When birth dates are given for two people, get_compatibility compares their charts instead, as partners, friends, family or colleagues; this tool takes two Sun signs with no birth dates. For the sign of a calendar date, use get_birthday. It covers a sign and its traits, a planet, a planet in a sign or a house, the houses or one house, aspects or one aspect, retrogrades and Mercury retrograde, Moon phases, the void-of-course Moon, eclipses, the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain, and no explainer. Limit: Sun-sign pair compatibility is a romance reading for adults; when either person is under 18 there is no love or romance reading, and the friendship reading takes its place.",
   find_birthplace: "Resolves a public town or city name only, so the chart tools can use its coordinates and time zone. Give the place name, and a country when several places share it. It does not take a street address. Results come from the GeoNames list of places of 15,000 people or more, bundled with Zodiacs, so the name is not sent anywhere else, and nothing is stored. Each place includes a region, a country, coordinates rounded to two decimals, an IANA time zone, and the UTC offset for an optional date (historical daylight saving included). Pass that latitude, longitude and time zone to get_natal_chart, get_personal_transits, get_compatibility or get_occasion_sky. A place says nothing about a birth time.",
   search_sky_events: "Finds one kind of sky event months or years ahead: solar and lunar eclipses, planets and Chiron turning retrograde or direct (stations), planets and Chiron changing sign (ingresses), new and full Moons, and void-of-course Moon periods. Use it for questions such as when the next eclipse is, when Mercury next turns retrograde, when Saturn enters Taurus, when Chiron changes sign, every full Moon next year, or when the Moon is void of course this week. Name the kinds, and the planets (or Chiron) for stations and sign changes; give from and to as dates (to at most two years after from, and at most 31 days in all for void-of-course periods), the person's time zone and, if needed, a limit. Each event comes with its time in UTC and on the person's clock, its sign, one plain line and a link to its page on zodiacs.org when there is one. Void-of-course periods follow the rule of the void-of-course calendar on zodiacs.org, with the same times: from the Moon's last major aspect to the Sun or a planet through Pluto in a sign until it enters the next sign. For everything that changes in the sky over the next days or weeks (up to 92 days), use get_upcoming_events; to follow eclipses, retrogrades and Moons in a calendar app, use get_sky_calendar. These are calculated dates, not forecasts, and carry no astrological reading.",
   get_year_score: `Gives the Year Ahead Score for the person's own birth chart: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their own year ahead looks. Give their birth date, with the time and time zone only if they know them; never guess a time. It scores the person's own chart only; it does not score public figures or other people here. Birth details are used for this answer only: never stored, logged or put in a link. The score comes with its limits and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. shareUrl is the link for sharing it. A low score means pressure, not doom: a demanding year that rewards patience. Money, career, wellbeing and legal themes are read as astrology traditionally reads them, such as a strong year for earnings or a good window to sign agreements; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`,
@@ -43350,7 +43350,7 @@ var SKY_EVENTS_TOOL_DESCRIPTIONS = {
   get_natal_chart: `${TOOL_DESCRIPTIONS.get_natal_chart} Houses are whole-sign unless houseSystem is placidus; Placidus cannot be drawn from about 66.6 degrees latitude, so there the chart uses whole-sign houses and houseNote says so. It also gives the North and South Nodes, the true node rather than the mean node, with their signs and houses, and Chiron, from NASA JPL Horizons positions for 1800 to 2199: its sign, degree, whether it is retrograde, its house when the birth time and place are known, and its aspects to the planets under the chart's own orbs. Outside those years Chiron is left out and unknown says so. shareUrl is the link for sharing the big three; it carries the Sun, Moon and rising signs, never the birth date.`,
   get_chinese_zodiac: `${TOOL_DESCRIPTIONS.get_chinese_zodiac} shareUrl is the link for sharing it; it names the animal alone, never a date or a year.`,
   get_horoscope_period: `${TOOL_DESCRIPTIONS.get_horoscope_period} shareUrl is the link for sharing a month's or a year's published reading.`,
-  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading for anyone under 18. For the person's own placements, use get_natal_chart. It covers a sign and its traits, a planet, a planet in a sign or a house, Chiron, the houses or one house, Placidus and whole-sign houses, aspects or one aspect, retrogrades, stations and retrograde loops, Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (planets changing sign), the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For the dates of eclipses, stations, sign changes, new and full Moons and void-of-course periods, Chiron's included, use search_sky_events. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain, and no explainer. Limit: Sun-sign pair compatibility is a romance reading for adults; when either person is under 18 there is no love or romance reading, and the friendship reading takes its place."
+  explain_astrology: "Explains a basic astrology topic in plain words from Zodiacs' own pages, with links to them. Use it for what-does-X-mean questions, and for whether two Sun signs are compatible, such as Leo and Scorpio, which it answers from that sign-pair page. For two Sun signs as friends, include the word friendship: that answer is the element and modality pattern alone, with no romance, and it is the reading for anyone under 18. For the person's own placements, use get_natal_chart. When birth dates are given for two people, get_compatibility compares their charts instead, as partners, friends, family or colleagues; this tool takes two Sun signs with no birth dates. For the sign of a calendar date, use get_birthday. It covers a sign and its traits, a planet, a planet in a sign or a house, Chiron, the houses or one house, Placidus and whole-sign houses, aspects or one aspect, retrogrades, stations and retrograde loops, Mercury retrograde, Moon phases, new and full Moons, the void-of-course Moon, eclipses, the lunar nodes, ingresses (planets changing sign), the rising sign or one sign rising, the Midheaven, the big three, cusps, the Saturn return, the solar return, elements, modalities, transits, synastry, Sun-sign pairs or the Chinese zodiac. For the dates of eclipses, stations, sign changes, new and full Moons and void-of-course periods, Chiron's included, use search_sky_events. Give the topic in a few words. If nothing matches, or the topic is tarot, numerology, horary, Vedic astrology or another system Zodiacs does not cover, it returns found: false with the topics it does explain, and no explainer. Limit: Sun-sign pair compatibility is a romance reading for adults; when either person is under 18 there is no love or romance reading, and the friendship reading takes its place."
 };
 var YEAR_SCORE_PEOPLE_INPUT = yearScoreInput;
 var YEAR_SCORE_PEOPLE_DESCRIPTION = `Gives the Year Ahead Score: a number from 0 to 10 for the twelve months from a date (today by default), the best and hardest months, and the slow-planet transits driving it (Jupiter, Saturn, Uranus, Neptune and Pluto in aspect to the Sun, Moon, Mercury, Venus and Mars). 5 is an ordinary year. Use it when someone asks how their year ahead looks, or how a well-known person's year looks, by name. Give either the person's own birth date (with the time and time zone only if they know them; never guess a time), or person with a public figure's full name from the Zodiacs Year Ahead directory. A name the directory does not have is answered with no score and no estimate. Birth details are used for this answer only: never stored, logged or put in a link. Someone else's private birth details are meant to be given with that person's agreement. The score comes with its limits and a "Reading confidence NN%" label that says how specific the details were, not the odds of an event. A low score means pressure, not doom: a demanding year that rewards patience. Money, career, wellbeing and legal themes are read as astrology traditionally reads them, such as a strong year for earnings or a good window to sign agreements; it gives no price or trading call, buy or sell signal, diagnosis or medical timing, death prediction, or legal win or loss. For a birth date under 18 romantic and attraction readings are left out and a note says so. It refuses a birth date less than 13 years ago.`;
@@ -45705,8 +45705,10 @@ function signInChallenge(oauth) {
 
 // src/ai-tools/server.ts
 var UNDER_13_INSTRUCTION = "Zodiacs is not directed at children under 13, so do not send a child's name, birth date or birthplace to its tools; they refuse a birth date less than 13 years ago.";
-function instructions(accounts, occasions) {
-  return "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Its results keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Calculation details such as versions, receipts and UTC are there for questions about how something was calculated. A URL in a result is complete as returned, including the query and the whole fragment after #, and a card link works only unchanged; where no card URL is returned, the returned page link takes its place. No Zodiacs link holds a birth date, birth time, birthplace, coordinates or place name. A birth time and a sign are taken as the person gives them, never guessed, and someone else's birth details are meant to be given with that person's agreement. Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day." + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : "") + (occasions ? ` ${UNDER_13_INSTRUCTION}` : "") + ` If a person or a birth date is under 18, Zodiacs gives no reading framed as romance, attraction or a sexual relationship. Scores, ratings and astrological forecasts are astrology's reading, and each comes with a "Reading confidence NN%" label: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice, so its tools have nothing to return for those requests.`;
+var OUTSIDE_ZODIACS = "A request for one of those is outside Zodiacs even when it names a sign, a planet, a retrograde, a birth date or a horoscope: a stock, crypto or lottery pick, a bet, an election or a medical outcome, a guarantee, a reminder or anything scheduled. No Zodiacs tool is for such a request, not even as a first step; the answer is that Zodiacs does not do this, with no tool call.";
+var WHICH_TOOL = "Which tool: a horoscope goes to get_horoscope even with no sign given, since the person picks the sign in its panel; a birth chart, rising sign or Moon sign asked for with no birth date in the conversation goes to open_chart_studio, which opens with no details and takes them from the person there, and to get_natal_chart once a birth date is given; two people with birth dates go to get_compatibility, as partners, friends, family or colleagues, and two Sun signs alone go to explain_astrology; the sign, decan or cusp of a calendar date goes to get_birthday; what Zodiacs can do, what can be asked of it and how it handles privacy goes to get_capabilities. Signs, dates and positions come from the tools, the well-known ones too, not from memory.";
+function instructions(accounts, occasions, coverage) {
+  return "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Its results keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Calculation details such as versions, receipts and UTC are there for questions about how something was calculated. A URL in a result is complete as returned, including the query and the whole fragment after #, and a card link works only unchanged; where no card URL is returned, the returned page link takes its place. No Zodiacs link holds a birth date, birth time, birthplace, coordinates or place name. A birth time and a sign are taken as the person gives them, never guessed, and someone else's birth details are meant to be given with that person's agreement; the person asking answers for that, and the tools take the details as given. Zodiacs never stores or logs birth details. Links never carry a birth year, a birth time, a birthplace or the names you give; a birthday link carries only the month and day." + (accounts ? ` ${SAVED_PAGE_EXCEPTION}` : "") + (occasions ? ` ${UNDER_13_INSTRUCTION}` : "") + ` If a person or a birth date is under 18, Zodiacs gives no reading framed as romance, attraction or a sexual relationship. Scores, ratings and astrological forecasts are astrology's reading, and each comes with a "Reading confidence NN%" label: it says how specific the details were, never the odds that an event happens. Zodiacs gives no betting tips, sports picks, investment timing, election forecasts or health predictions, and guarantees no outcome. It does not schedule anything, pick investments or give financial or medical advice. ` + OUTSIDE_ZODIACS + (occasions && coverage ? ` ${WHICH_TOOL}` : "");
 }
 var PANELS = {
   get_upcoming_events: { uri: WIDGET_URI, icon: "sky-calendar" },
@@ -45745,7 +45747,7 @@ function refFrom(meta) {
 function createAiServer(dependencies, watch, account) {
   const server = new McpServer({ name: "zodiacs", version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...watch ? { events: {} } : {} },
-    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions)
+    instructions: instructions(!!account && !!dependencies.occasions, !!dependencies.occasions, !!dependencies.coverage)
   });
   const versions = (name, uris) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ""}` }));
   for (const { uri, name } of versions("sky-events", [WIDGET_URI, ...LEGACY_WIDGET_URIS])) server.registerResource(name, uri, {
