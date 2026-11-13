@@ -1,0 +1,847 @@
+{
+ "what": "Breaker's independent Horizons solve (DE441, geocentre, apparent ecliptic of date, TIME_TYPE UT)",
+ "events": [
+  {
+   "id": "full:2026-12-24",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2026-12-24T01:28Z",
+   "solved": {
+    "instant": "2026-12-24T01:28:14.108Z",
+    "moonLon": 92.232798,
+    "fitResidualDeg": 8.1852291090867e-08
+   }
+  },
+  {
+   "id": "full:2027-01-22",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-01-22T12:17Z",
+   "solved": {
+    "instant": "2027-01-22T12:17:23.078Z",
+    "moonLon": 122.237789,
+    "fitResidualDeg": 9.868564049275719e-08
+   }
+  },
+  {
+   "id": "full:2027-02-20",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-02-20T23:23Z",
+   "solved": {
+    "instant": "2027-02-20T23:23:39.118Z",
+    "moonLon": 152.093098,
+    "fitResidualDeg": 8.902752317296869e-08
+   }
+  },
+  {
+   "id": "full:2027-03-22",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-03-22T10:43Z",
+   "solved": {
+    "instant": "2027-03-22T10:43:47.854Z",
+    "moonLon": 181.585162,
+    "fitResidualDeg": 7.157570674348745e-08
+   }
+  },
+  {
+   "id": "full:2027-04-20",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-04-20T22:27Z",
+   "solved": {
+    "instant": "2027-04-20T22:27:09.589Z",
+    "moonLon": 210.616508,
+    "fitResidualDeg": 8.316433192101513e-08
+   }
+  },
+  {
+   "id": "full:2027-05-20",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-05-20T10:59Z",
+   "solved": {
+    "instant": "2027-05-20T10:59:01.577Z",
+    "moonLon": 239.225509,
+    "fitResidualDeg": 9.410107562612957e-08
+   }
+  },
+  {
+   "id": "full:2027-06-19",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-06-19T00:44Z",
+   "solved": {
+    "instant": "2027-06-19T00:44:21.337Z",
+    "moonLon": 267.55736,
+    "fitResidualDeg": 9.190571534367642e-08
+   }
+  },
+  {
+   "id": "full:2027-07-18",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-07-18T15:45Z",
+   "solved": {
+    "instant": "2027-07-18T15:44:55.636Z",
+    "moonLon": 295.812604,
+    "fitResidualDeg": 7.305050652578471e-08
+   }
+  },
+  {
+   "id": "full:2027-08-17",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-08-17T07:28Z",
+   "solved": {
+    "instant": "2027-08-17T07:28:41.718Z",
+    "moonLon": 324.196833,
+    "fitResidualDeg": 1.0032103845564189e-07
+   }
+  },
+  {
+   "id": "full:2027-09-15",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-09-15T23:03Z",
+   "solved": {
+    "instant": "2027-09-15T23:03:31.519Z",
+    "moonLon": 352.882769,
+    "fitResidualDeg": 7.707683219448924e-08
+   }
+  },
+  {
+   "id": "full:2027-10-15",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-10-15T13:47Z",
+   "solved": {
+    "instant": "2027-10-15T13:47:00.606Z",
+    "moonLon": 21.982612,
+    "fitResidualDeg": 4.332669195639127e-08
+   }
+  },
+  {
+   "id": "full:2027-11-14",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-11-14T03:26Z",
+   "solved": {
+    "instant": "2027-11-14T03:25:55.948Z",
+    "moonLon": 51.521413,
+    "fitResidualDeg": 8.580155656107147e-08
+   }
+  },
+  {
+   "id": "full:2027-12-13",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2027-12-13T16:08Z",
+   "solved": {
+    "instant": "2027-12-13T16:08:48.004Z",
+    "moonLon": 81.412849,
+    "fitResidualDeg": 7.572503842728784e-08
+   }
+  },
+  {
+   "id": "full:2028-01-12",
+   "kind": "lunation",
+   "phase": "full",
+   "seed": "2028-01-12T04:03Z",
+   "solved": {
+    "instant": "2028-01-12T04:03:05.215Z",
+    "moonLon": 111.458775,
+    "fitResidualDeg": 6.335155972037043e-08
+   }
+  },
+  {
+   "id": "new:2027-01-07",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-01-07T20:24Z",
+   "solved": {
+    "instant": "2027-01-07T20:24:23.225Z",
+    "moonLon": 287.304302,
+    "fitResidualDeg": 8.848236208655602e-08
+   }
+  },
+  {
+   "id": "new:2027-02-06",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-02-06T15:56Z",
+   "solved": {
+    "instant": "2027-02-06T15:56:07.250Z",
+    "moonLon": 317.627099,
+    "fitResidualDeg": 7.328568624176413e-08
+   }
+  },
+  {
+   "id": "new:2027-03-08",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-03-08T09:29Z",
+   "solved": {
+    "instant": "2027-03-08T09:29:28.979Z",
+    "moonLon": 347.580124,
+    "fitResidualDeg": 8.268095994835856e-08
+   }
+  },
+  {
+   "id": "new:2027-04-06",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-04-06T23:51Z",
+   "solved": {
+    "instant": "2027-04-06T23:51:09.727Z",
+    "moonLon": 16.951805,
+    "fitResidualDeg": 6.63981397155955e-08
+   }
+  },
+  {
+   "id": "new:2027-05-06",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-05-06T10:58Z",
+   "solved": {
+    "instant": "2027-05-06T10:58:38.078Z",
+    "moonLon": 45.708931,
+    "fitResidualDeg": 7.600208487557047e-08
+   }
+  },
+  {
+   "id": "new:2027-06-04",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-06-04T19:40Z",
+   "solved": {
+    "instant": "2027-06-04T19:40:21.110Z",
+    "moonLon": 73.971962,
+    "fitResidualDeg": 8.776316481884372e-08
+   }
+  },
+  {
+   "id": "new:2027-07-04",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-07-04T03:02Z",
+   "solved": {
+    "instant": "2027-07-04T03:02:05.289Z",
+    "moonLon": 101.956476,
+    "fitResidualDeg": 7.710961229256963e-08
+   }
+  },
+  {
+   "id": "new:2027-08-02",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-08-02T10:05Z",
+   "solved": {
+    "instant": "2027-08-02T10:05:14.390Z",
+    "moonLon": 129.917362,
+    "fitResidualDeg": 6.303082143417973e-08
+   }
+  },
+  {
+   "id": "new:2027-08-31",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-08-31T17:41Z",
+   "solved": {
+    "instant": "2027-08-31T17:41:11.260Z",
+    "moonLon": 158.104298,
+    "fitResidualDeg": 7.058635827228432e-08
+   }
+  },
+  {
+   "id": "new:2027-09-30",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-09-30T02:36Z",
+   "solved": {
+    "instant": "2027-09-30T02:36:04.991Z",
+    "moonLon": 186.724032,
+    "fitResidualDeg": 7.250419484239323e-08
+   }
+  },
+  {
+   "id": "new:2027-10-29",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-10-29T13:36Z",
+   "solved": {
+    "instant": "2027-10-29T13:36:34.175Z",
+    "moonLon": 215.90362,
+    "fitResidualDeg": 1.0771465139280956e-07
+   }
+  },
+  {
+   "id": "new:2027-11-28",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-11-28T03:24Z",
+   "solved": {
+    "instant": "2027-11-28T03:24:26.498Z",
+    "moonLon": 245.653303,
+    "fitResidualDeg": 9.464301685413457e-08
+   }
+  },
+  {
+   "id": "new:2027-12-27",
+   "kind": "lunation",
+   "phase": "new",
+   "seed": "2027-12-27T20:12Z",
+   "solved": {
+    "instant": "2027-12-27T20:12:19.828Z",
+    "moonLon": 275.838098,
+    "fitResidualDeg": 6.576221124598991e-08
+   }
+  },
+  {
+   "id": "eclipse:solar:2026-08-12",
+   "kind": "eclipse",
+   "type": "solar",
+   "seed": "2026-08-12T17:46Z",
+   "solved": {
+    "instant": "2026-08-12T17:45:56.540Z",
+    "axisDistanceKm": 5726.0,
+    "moonLon": 140.125021,
+    "sunLon": 140.039034,
+    "geometricVariantUtc": "2026-08-12T17:46:30.961Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "eclipse:lunar:2026-08-28",
+   "kind": "eclipse",
+   "type": "lunar",
+   "seed": "2026-08-28T04:13Z",
+   "solved": {
+    "instant": "2026-08-28T04:12:56.335Z",
+    "axisDistanceKm": 3166.2,
+    "moonLon": 334.852335,
+    "sunLon": 154.8982,
+    "geometricVariantUtc": "2026-08-28T04:13:35.750Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "eclipse:solar:2027-02-06",
+   "kind": "eclipse",
+   "type": "solar",
+   "seed": "2027-02-06T16:00Z",
+   "solved": {
+    "instant": "2027-02-06T15:59:38.534Z",
+    "axisDistanceKm": 1882.7,
+    "moonLon": 317.656464,
+    "sunLon": 317.629578,
+    "geometricVariantUtc": "2027-02-06T16:00:21.988Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "eclipse:lunar:2027-02-20",
+   "kind": "eclipse",
+   "type": "lunar",
+   "seed": "2027-02-20T23:13Z",
+   "solved": {
+    "instant": "2027-02-20T23:12:52.311Z",
+    "axisDistanceKm": 6684.1,
+    "moonLon": 151.982895,
+    "sunLon": 332.085555,
+    "geometricVariantUtc": "2027-02-20T23:13:26.917Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "eclipse:lunar:2027-07-18",
+   "kind": "eclipse",
+   "type": "lunar",
+   "seed": "2027-07-18T16:03Z",
+   "solved": {
+    "instant": "2027-07-18T16:02:59.334Z",
+    "axisDistanceKm": 10050.6,
+    "moonLon": 295.960806,
+    "sunLon": 115.824568,
+    "geometricVariantUtc": "2027-07-18T16:03:41.988Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "eclipse:solar:2027-08-02",
+   "kind": "eclipse",
+   "type": "solar",
+   "seed": "2027-08-02T10:07Z",
+   "solved": {
+    "instant": "2027-08-02T10:06:40.967Z",
+    "axisDistanceKm": 906.8,
+    "moonLon": 129.932583,
+    "sunLon": 129.918321,
+    "geometricVariantUtc": "2027-08-02T10:07:13.425Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "eclipse:lunar:2027-08-17",
+   "kind": "eclipse",
+   "type": "lunar",
+   "seed": "2027-08-17T07:14Z",
+   "solved": {
+    "instant": "2027-08-17T07:13:51.410Z",
+    "axisDistanceKm": 8161.8,
+    "moonLon": 324.074556,
+    "sunLon": 144.186931,
+    "geometricVariantUtc": "2027-08-17T07:14:34.043Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "eclipse:lunar:2028-01-12",
+   "kind": "eclipse",
+   "type": "lunar",
+   "seed": "2028-01-12T04:13Z",
+   "solved": {
+    "instant": "2028-01-12T04:13:06.797Z",
+    "axisDistanceKm": 6261.5,
+    "moonLon": 111.562964,
+    "sunLon": 291.465867,
+    "geometricVariantUtc": "2028-01-12T04:13:41.007Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "eclipse:solar:2028-01-26",
+   "kind": "eclipse",
+   "type": "solar",
+   "seed": "2028-01-26T15:08Z",
+   "solved": {
+    "instant": "2028-01-26T15:07:49.563Z",
+    "axisDistanceKm": 2488.5,
+    "moonLon": 306.145048,
+    "sunLon": 306.180411,
+    "geometricVariantUtc": "2028-01-26T15:08:33.655Z",
+    "geometricVariantNote": "geometric Sun and Moon (VECTORS, VEC_CORR NONE), TDB minus 69.184 s"
+   }
+  },
+  {
+   "id": "station:Mercury:R:2026-10-24",
+   "kind": "station",
+   "body": "199",
+   "seed": "2026-10-24T07:13Z",
+   "solved": {
+    "instant": "2026-10-24T07:12:42.358Z",
+    "lon": 230.9789755,
+    "fitResidualDeg": 5.321285811987764e-08,
+    "secondFitDeltaS": -0.05
+   }
+  },
+  {
+   "id": "station:Mercury:D:2026-11-13",
+   "kind": "station",
+   "body": "199",
+   "seed": "2026-11-13T15:54Z",
+   "solved": {
+    "instant": "2026-11-13T15:53:52.353Z",
+    "lon": 215.0334765,
+    "fitResidualDeg": 5.374289457904524e-08,
+    "secondFitDeltaS": 0.01
+   }
+  },
+  {
+   "id": "station:Mars:R:2027-01-10",
+   "kind": "station",
+   "body": "499",
+   "seed": "2027-01-10T12:59Z",
+   "solved": {
+    "instant": "2027-01-10T12:59:11.444Z",
+    "lon": 160.4289986,
+    "fitResidualDeg": 5.70864528981474e-08,
+    "secondFitDeltaS": -0.22
+   }
+  },
+  {
+   "id": "station:Mercury:R:2027-02-09",
+   "kind": "station",
+   "body": "199",
+   "seed": "2027-02-09T17:36Z",
+   "solved": {
+    "instant": "2027-02-09T17:36:05.054Z",
+    "lon": 335.9812454,
+    "fitResidualDeg": 5.2988184506830294e-08,
+    "secondFitDeltaS": 0.0
+   }
+  },
+  {
+   "id": "station:Mercury:D:2027-03-03",
+   "kind": "station",
+   "body": "199",
+   "seed": "2027-03-03T12:32Z",
+   "solved": {
+    "instant": "2027-03-03T12:32:01.268Z",
+    "lon": 320.9231413,
+    "fitResidualDeg": 5.565436822507763e-08,
+    "secondFitDeltaS": 0.02
+   }
+  },
+  {
+   "id": "station:Mars:D:2027-04-01",
+   "kind": "station",
+   "body": "499",
+   "seed": "2027-04-01T14:08Z",
+   "solved": {
+    "instant": "2027-04-01T14:08:16.912Z",
+    "lon": 140.9265933,
+    "fitResidualDeg": 5.3909843700239435e-08,
+    "secondFitDeltaS": -0.34
+   }
+  },
+  {
+   "id": "station:Mercury:R:2027-06-10",
+   "kind": "station",
+   "body": "199",
+   "seed": "2027-06-10T18:15Z",
+   "solved": {
+    "instant": "2027-06-10T18:15:14.011Z",
+    "lon": 96.3611376,
+    "fitResidualDeg": 5.307923345299059e-08,
+    "secondFitDeltaS": -0.01
+   }
+  },
+  {
+   "id": "station:Mercury:D:2027-07-04",
+   "kind": "station",
+   "body": "199",
+   "seed": "2027-07-04T19:39Z",
+   "solved": {
+    "instant": "2027-07-04T19:39:22.475Z",
+    "lon": 87.4691958,
+    "fitResidualDeg": 5.897500443552417e-08,
+    "secondFitDeltaS": 0.02
+   }
+  },
+  {
+   "id": "station:Mercury:R:2027-10-07",
+   "kind": "station",
+   "body": "199",
+   "seed": "2027-10-07T14:37Z",
+   "solved": {
+    "instant": "2027-10-07T14:37:03.746Z",
+    "lon": 214.9277904,
+    "fitResidualDeg": 5.6594302577650524e-08,
+    "secondFitDeltaS": 0.07
+   }
+  },
+  {
+   "id": "station:Mercury:D:2027-10-28",
+   "kind": "station",
+   "body": "199",
+   "seed": "2027-10-28T14:10Z",
+   "solved": {
+    "instant": "2027-10-28T14:10:37.827Z",
+    "lon": 199.3120559,
+    "fitResidualDeg": 5.215164833316521e-08,
+    "secondFitDeltaS": -0.01
+   }
+  },
+  {
+   "id": "station:Mercury:R:2028-01-24",
+   "kind": "station",
+   "body": "199",
+   "seed": "2028-01-24T11:02Z",
+   "solved": {
+    "instant": "2028-01-24T11:02:25.802Z",
+    "lon": 319.6984366,
+    "fitResidualDeg": 5.017682269681245e-08,
+    "secondFitDeltaS": -0.01
+   }
+  },
+  {
+   "id": "station:Mercury:D:2028-02-14",
+   "kind": "station",
+   "body": "199",
+   "seed": "2028-02-14T12:38Z",
+   "solved": {
+    "instant": "2028-02-14T12:37:47.648Z",
+    "lon": 303.9853981,
+    "fitResidualDeg": 5.7463921621092595e-08,
+    "secondFitDeltaS": 0.03
+   }
+  },
+  {
+   "id": "station:Mars:R:2029-02-14",
+   "kind": "station",
+   "body": "499",
+   "seed": "2029-02-14T08:16Z",
+   "solved": {
+    "instant": "2029-02-14T08:16:19.274Z",
+    "lon": 193.9225976,
+    "fitResidualDeg": 5.167100880498765e-08,
+    "secondFitDeltaS": 0.1
+   }
+  },
+  {
+   "id": "station:Mars:D:2029-05-05",
+   "kind": "station",
+   "body": "499",
+   "seed": "2029-05-05T19:00Z",
+   "solved": {
+    "instant": "2029-05-05T18:59:54.014Z",
+    "lon": 174.9290216,
+    "fitResidualDeg": 5.414250381363672e-08,
+    "secondFitDeltaS": -0.06
+   }
+  },
+  {
+   "id": "station:Uranus:D:2027-02-08",
+   "kind": "station",
+   "body": "799",
+   "seed": "2027-02-08T12:29Z",
+   "slow": true,
+   "solved": {
+    "instant": "2027-02-08T12:29:18.816Z",
+    "lon": 61.682624,
+    "fitResidualDeg": 2.17049155537552e-07,
+    "secondFitDeltaS": 7.72
+   }
+  },
+  {
+   "id": "station:Uranus:R:2027-09-15",
+   "kind": "station",
+   "body": "799",
+   "seed": "2027-09-15T09:09Z",
+   "slow": true,
+   "solved": {
+    "instant": "2027-09-15T09:09:27.048Z",
+    "lon": 69.9556956,
+    "fitResidualDeg": 1.2185060427327699e-07,
+    "secondFitDeltaS": 1.62
+   }
+  },
+  {
+   "id": "station:Pluto:D:2027-10-18",
+   "kind": "station",
+   "body": "999",
+   "seed": "2027-10-18T03:50Z",
+   "slow": true,
+   "solved": {
+    "instant": "2027-10-18T04:47:24.251Z",
+    "lon": 304.7482504,
+    "fitResidualDeg": 3.2996077266034263e-06,
+    "secondFitDeltaS": 346.34
+   }
+  },
+  {
+   "id": "station:Neptune:D:2027-12-15",
+   "kind": "station",
+   "body": "899",
+   "seed": "2027-12-15T09:08Z",
+   "slow": true,
+   "solved": {
+    "instant": "2027-12-15T09:07:24.133Z",
+    "lon": 3.8525948,
+    "fitResidualDeg": 7.360097771247354e-07,
+    "secondFitDeltaS": -65.0
+   }
+  },
+  {
+   "id": "shadow:Mars:pre:2026-11-05",
+   "kind": "shadow",
+   "body": "499",
+   "seed": "2026-11-05T15:34Z",
+   "stationId": "station:Mars:D:2027-04-01",
+   "solved": {
+    "instant": "2026-11-05T15:33:42.273Z",
+    "lon": 140.9265933,
+    "fitResidualDeg": 4.5006553954594214e-08,
+    "direction": "forward",
+    "stationId": "station:Mars:D:2027-04-01"
+   }
+  },
+  {
+   "id": "shadow:Mercury:pre:2027-01-25",
+   "kind": "shadow",
+   "body": "199",
+   "seed": "2027-01-25T18:58Z",
+   "stationId": "station:Mercury:D:2027-03-03",
+   "solved": {
+    "instant": "2027-01-25T18:57:34.118Z",
+    "lon": 320.9231413,
+    "fitResidualDeg": 4.764213785805882e-08,
+    "direction": "forward",
+    "stationId": "station:Mercury:D:2027-03-03"
+   }
+  },
+  {
+   "id": "shadow:Mercury:post:2027-03-23",
+   "kind": "shadow",
+   "body": "199",
+   "seed": "2027-03-23T14:58Z",
+   "stationId": "station:Mercury:R:2027-02-09",
+   "solved": {
+    "instant": "2027-03-23T14:57:58.405Z",
+    "lon": 335.9812454,
+    "fitResidualDeg": 5.8120244842557733e-08,
+    "direction": "forward",
+    "stationId": "station:Mercury:R:2027-02-09"
+   }
+  },
+  {
+   "id": "shadow:Mercury:pre:2027-05-26",
+   "kind": "shadow",
+   "body": "199",
+   "seed": "2027-05-26T06:04Z",
+   "stationId": "station:Mercury:D:2027-07-04",
+   "solved": {
+    "instant": "2027-05-26T06:03:31.020Z",
+    "lon": 87.4691958,
+    "fitResidualDeg": 5.4936678996718447e-08,
+    "direction": "forward",
+    "stationId": "station:Mercury:D:2027-07-04"
+   }
+  },
+  {
+   "id": "shadow:Mars:post:2027-06-08",
+   "kind": "shadow",
+   "body": "499",
+   "seed": "2027-06-08T01:58Z",
+   "stationId": "station:Mars:R:2027-01-10",
+   "solved": {
+    "instant": "2027-06-08T01:58:03.221Z",
+    "lon": 160.4289986,
+    "fitResidualDeg": 5.1981616556312504e-08,
+    "direction": "forward",
+    "stationId": "station:Mars:R:2027-01-10"
+   }
+  },
+  {
+   "id": "shadow:Mercury:post:2027-07-19",
+   "kind": "shadow",
+   "body": "199",
+   "seed": "2027-07-19T08:43Z",
+   "stationId": "station:Mercury:R:2027-06-10",
+   "solved": {
+    "instant": "2027-07-19T08:42:36.250Z",
+    "lon": 96.3611376,
+    "fitResidualDeg": 5.127158951394317e-08,
+    "direction": "forward",
+    "stationId": "station:Mercury:R:2027-06-10"
+   }
+  },
+  {
+   "id": "shadow:Mercury:pre:2027-09-17",
+   "kind": "shadow",
+   "body": "199",
+   "seed": "2027-09-17T07:29Z",
+   "stationId": "station:Mercury:D:2027-10-28",
+   "solved": {
+    "instant": "2027-09-17T07:28:53.597Z",
+    "lon": 199.3120559,
+    "fitResidualDeg": 5.450002187046277e-08,
+    "direction": "forward",
+    "stationId": "station:Mercury:D:2027-10-28"
+   }
+  },
+  {
+   "id": "shadow:Mercury:post:2027-11-13",
+   "kind": "shadow",
+   "body": "199",
+   "seed": "2027-11-13T09:55Z",
+   "stationId": "station:Mercury:R:2027-10-07",
+   "solved": {
+    "instant": "2027-11-13T09:54:39.931Z",
+    "lon": 214.9277904,
+    "fitResidualDeg": 4.795732958407656e-08,
+    "direction": "forward",
+    "stationId": "station:Mercury:R:2027-10-07"
+   }
+  },
+  {
+   "id": "ingress:Jupiter:leo:2026-06-30",
+   "kind": "ingress",
+   "body": "599",
+   "lon": 120,
+   "seed": "2026-06-30T05:52Z",
+   "solved": {
+    "instant": "2026-06-30T05:52:23.006Z",
+    "lon": 120,
+    "fitResidualDeg": 4.713371481838719e-08,
+    "direction": "forward"
+   }
+  },
+  {
+   "id": "ingress:Jupiter:virgo:2027-07-26",
+   "kind": "ingress",
+   "body": "599",
+   "lon": 150,
+   "seed": "2027-07-26T04:49Z",
+   "solved": {
+    "instant": "2027-07-26T04:49:19.015Z",
+    "lon": 150,
+    "fitResidualDeg": 5.648570436432923e-08,
+    "direction": "forward"
+   }
+  },
+  {
+   "id": "ingress:Jupiter:libra:2028-08-24",
+   "kind": "ingress",
+   "body": "599",
+   "lon": 180,
+   "seed": "2028-08-24T05:08Z",
+   "solved": {
+    "instant": "2028-08-24T05:08:30.876Z",
+    "lon": 180,
+    "fitResidualDeg": 5.181895574375879e-08,
+    "direction": "forward"
+   }
+  },
+  {
+   "id": "aspect:Uranus:sextile:Neptune:2027-01-15",
+   "kind": "aspect",
+   "body": "799",
+   "body2": "899",
+   "angle": 60,
+   "seed": "2027-01-15T09:26Z",
+   "solved": {
+    "instant": "2027-01-15T09:27:06.862Z",
+    "fitResidualDeg": 8.499106590774755e-08
+   }
+  },
+  {
+   "id": "aspect:Uranus:sextile:Neptune:2027-06-06",
+   "kind": "aspect",
+   "body": "799",
+   "body2": "899",
+   "angle": 60,
+   "seed": "2027-06-06T10:12Z",
+   "solved": {
+    "instant": "2027-06-06T10:11:31.899Z",
+    "fitResidualDeg": 9.842590288170955e-08
+   }
+  },
+  {
+   "id": "aspect:Uranus:trine:Pluto:2027-06-15",
+   "kind": "aspect",
+   "body": "799",
+   "body2": "999",
+   "angle": 120,
+   "seed": "2027-06-15T08:10Z",
+   "solved": {
+    "instant": "2027-06-15T08:10:10.054Z",
+    "fitResidualDeg": 8.685076534516167e-08
+   }
+  },
+  {
+   "id": "aspect:Neptune:sextile:Pluto:2027-10-16",
+   "kind": "aspect",
+   "body": "899",
+   "body2": "999",
+   "angle": 60,
+   "seed": "2027-10-16T14:40Z",
+   "solved": {
+    "instant": "2027-10-16T14:38:26.952Z",
+    "fitResidualDeg": 9.197934123204854e-08
+   }
+  }
+ ]
+}
