@@ -19,8 +19,8 @@ These files are prepared packages, not evidence of upload, acceptance or listing
 `ai:package` never rewrites an archive that already exists: a change needs a
 new version, so every earlier ZIP keeps its bytes. (Corrected
 13 November 2026: this has held since Zodiacs 0.6.0 and Developer 0.3.20.
-Before the rule, and once after it, ZIPs were rewritten under the same
-version: 13 of the ZIPs kept here have had more than one content in this
+Before the rule, and for Developer 0.3.19 four times after it (3 November),
+ZIPs were rewritten under the same version: 13 of the ZIPs kept here have had more than one content in this
 repository's history, among them Developer 0.3.13, 0.3.14 and 0.3.19 and
 Zodiacs 0.5.0 and 0.5.1. Their bytes today are the last ones committed.)
 
