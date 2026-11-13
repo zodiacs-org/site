@@ -1004,6 +1004,11 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       url.lastmod = laterDate(url.lastmod, '2026-11-12');
     }
   }
+  // The methodology page gives the Moon's and the Sun's event times to the
+  // precision the pages print, with the range of each figure.
+  for (const url of urls) {
+    if (url.loc === '/methodology/') url.lastmod = laterDate(url.lastmod, '2026-11-13');
+  }
   return [
     ...urls,
     ...localizedUrls,
