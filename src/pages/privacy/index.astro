@@ -25,8 +25,8 @@ const oauthProviders = enabledOAuthProviders({
 });
 const oauthProviderNames = oauthProviders.map((provider) => (provider === 'google' ? 'Google' : 'Apple')).join(' or ');
 const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
-const updated = '11 November 2026';
-const modifiedAt = '2026-11-11T00:00:00.000Z';
+const updated = '13 November 2026';
+const modifiedAt = '2026-11-13T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -655,12 +655,15 @@ const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (
         saved,” never whose. Links from the Zodiacs app in ChatGPT or
         another assistant end in ?ref=chatgpt or ?ref=assistant. Some of our
         own links, such as those in our videos, cards, notes and app, can end
-        in ?ref=video, ?ref=card, ?ref=note or ?ref=app. The page takes that off
-        its address as it opens. When the word is one of these six, this
+        in ?ref=video, ?ref=card, ?ref=note or ?ref=app. A shared result page,
+        whose address begins with /share/, runs no script: it keeps the word in
+        the address it was opened with, stores and counts nothing from it, and
+        does not pass it on to its links. Our other pages take the word off
+        their address as they open. When the word is one of these six, this
         browser tab keeps only that word, until the tab is closed, so an event
         can say which kind of link opened it; any other word is dropped. For
-        an assistant link, Plausible counts the visit under that name and
-        nothing else from the link. Events for sign-ups, good-day checks, the
+        an assistant link to one of those pages, Plausible counts the visit
+        under that name and nothing else from the link. Events for sign-ups, good-day checks, the
         Year Ahead Score and birthday cards carry only fixed categories, such
         as where a sign-up form sat, which kind of link opened the tab, or
         whether a good-day check is the first, the second or a later one on

@@ -104,6 +104,7 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
   it('changes only the description of ten published tools, to describe each tool instead of directing the assistant (ZOD-58)', async () => {
     const changes = LIVE_TOOLS.flatMap(tool => asPlainDescription(as065(tool).tool).changed);
     expect([...changes].sort()).toEqual([
+      'check_sky_fact.description',
       'find_chart_twins.description',
       'get_birthday.description',
       'get_capabilities.description',
@@ -112,7 +113,9 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
       'get_horoscope.description',
       'get_life_milestones.description',
       'get_occasion_sky.description',
+      'get_sky.description',
       'get_sky_calendar.description',
+      'get_upcoming_events.description',
       'open_chart_studio.description',
     ].sort());
     expect(Object.keys(PLAIN_DESCRIPTIONS).sort()).toEqual(changes.map(path => path.split('.')[0]).sort());
@@ -133,11 +136,11 @@ describe('0.6.0 keeps the thirteen published tools as they are', () => {
   it('states what each tool does and its limits, with no order to the assistant, no offer of a schedule and no dash', async () => {
     const listed = (await rpc('tools/list', {})).result.tools as { name: string; description: string }[];
     for (const { name, description } of listed) {
-      expect(description, name).not.toMatch(/offer once|every morning|plainly and confidently|\blead with\b|give them the returned|share the (?:score|themes|forecast|reading|rating)|tell the person|do not frame|describe it as|never make one up|[\u2013\u2014]/iu);
+      expect(description, name).not.toMatch(/offer once|every morning|plainly and confidently|\blead with\b|give them the returned|share the (?:score|themes|forecast|reading|rating)|tell the person|do not frame|describe it as|never make one up|\buse it\b|\bpass (?:the|its)\b|\bsupply\b|never guess|\bask (?:the|them)\b|[\u2013\u2014]/iu);
     }
     const horoscope = listed.find(tool => tool.name === 'get_horoscope')!.description;
     expect(horoscope).toContain('"Reading confidence NN%" label');
-    expect(horoscope).toContain('For a birth date under 18 there is no love or romance reading.');
+    expect(horoscope).toContain('For a birth date under 18 there is no love or romance reading: the general reading stands in, with a note that says so.');
     expect(horoscope).toContain('It refuses a birth date less than 13 years ago.');
     expect(horoscope).toContain('never stored, logged or put in a link');
     expect(horoscope).toMatch(/no betting tips, sports picks, stock picks, investment timing, financial forecasts, election forecasts, health predictions or guaranteed outcomes/u);

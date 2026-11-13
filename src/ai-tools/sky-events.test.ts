@@ -139,7 +139,7 @@ describe('the sky events switch on', () => {
     expect(natalBefore._meta.ui.resourceUri).toBe(READINGS_URI);
     expect(natal._meta).toEqual({ ...natalBefore._meta, ui: { ...natalBefore._meta.ui, resourceUri: READINGS_SKY_EVENTS_URI }, 'openai/outputTemplate': READINGS_SKY_EVENTS_URI });
     const explain = tools.find((tool) => tool.name === 'explain_astrology')!;
-    expect(explain.description).toContain('use search_sky_events');
+    expect(explain.description).toContain('come from search_sky_events');
     expect(explain.inputSchema.properties.topic.description).toContain('the lunar nodes');
     expect(explain.inputSchema.properties.topic.description).toContain('Chiron or Chiron in a sign or house');
     expect(JSON.stringify(explain.outputSchema)).toBe(JSON.stringify(before.find((tool) => tool.name === 'explain_astrology')!.outputSchema));
