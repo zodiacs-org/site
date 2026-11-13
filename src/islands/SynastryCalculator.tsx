@@ -979,13 +979,13 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     // handoff is still applied if the effect re-runs before the import lands.
     if (fragment.has('h')) {
       history.replaceState(null, '', window.location.pathname + window.location.search);
-      const access = profileAccessGeneration.current;
+      const request = requestRef.current;
       void import('../lib/chart-handoff').then((module) => {
-        if (!activeRef.current) return;
+        // Consume the one-time entry even after a revoke. Fill only when
+        // this read is still current; a revoke advances requestRef, so a
+        // later grant cannot restore the previous session's details.
         const taken = module.takeChartHandoff(hash);
-        // Consume the one-time entry even after a revoke; only skip fill
-        // when access was lost while this import was pending.
-        if (access !== profileAccessGeneration.current && !profileAccessAllowed()) return;
+        if (!activeRef.current || request !== requestRef.current) return;
         if (taken?.kind === 'pair') fill(taken.a, taken.b);
       }).catch(() => {});
       return () => { active = false; };
@@ -996,10 +996,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     const tokenB = valuesB.length === 1 ? valuesB[0] : null;
     if (fragment.has('a') || fragment.has('b')) {
       history.replaceState(null, '', window.location.pathname + window.location.search);
-      const access = profileAccessGeneration.current;
+      const request = requestRef.current;
       void import('../lib/share').then((module) => {
-        if (!activeRef.current) return;
-        if (access !== profileAccessGeneration.current && !profileAccessAllowed()) return;
+        if (!activeRef.current || request !== requestRef.current) return;
         fill(tokenA ? module.decodeChartLink(tokenA) : null, tokenB ? module.decodeChartLink(tokenB) : null);
       }).catch(() => {});
     }
