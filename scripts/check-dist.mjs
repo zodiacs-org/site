@@ -24,7 +24,7 @@
  *  10. The inline profile access loader names the built bootstrap chunk.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
-import { attr, canonicalHref, renderedLinks, crawlDepths, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
+import { attr, canonicalHref, renderedLinks, crawlDepths, isDailyLastmodPath, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -1112,6 +1112,35 @@ for (const block of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
     fail(`sitemap.xml: ${loc} has invalid or missing lastmod`);
   }
 }
+// A sitemap date says when the page's content last changed (ZOD-221). Only the
+// pages that change with each daily edition (isDailyLastmodPath) carry the
+// edition's date because of it; every other date comes from the page's content
+// in src/pages/sitemap.xml.ts, which reads no clock
+// (scripts/sitemap-lastmod-sources.test.mjs). So no date may be later than the
+// daily edition, and when this check runs on a later day than the edition's,
+// no other page may carry the day it runs. A page that prints an "Updated"
+// date prints its sitemap date.
+{
+  const editionDay = dailyPublicationManifest.date;
+  const checkDay = new Date().toISOString().slice(0, 10);
+  let printed = 0;
+  for (const [path, block] of sitemapBlocksByPath) {
+    const lastmod = block.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
+    if (!lastmod) continue;
+    if (lastmod > editionDay) fail(`sitemap.xml: ${path} lastmod ${lastmod} is later than the daily edition ${editionDay}`);
+    if (!isDailyLastmodPath(path) && checkDay !== editionDay && lastmod === checkDay) {
+      fail(`sitemap.xml: ${path} lastmod ${lastmod} is the build date; date it from its content or list it as daily in scripts/indexing-consistency.mjs`);
+    }
+    const target = targetPath(path);
+    if (!target?.endsWith('.html')) continue;
+    const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
+    for (const [, shown] of html.matchAll(/Updated <time datetime="([^"]+)"/g)) {
+      printed++;
+      if (shown !== lastmod) fail(`sitemap.xml: ${path} prints Updated ${shown} but its lastmod is ${lastmod}`);
+    }
+  }
+  console.log(`Sitemap dates: none after the ${editionDay} edition; ${printed} printed Updated dates match their sitemap dates`);
+}
 for (const match of sitemap.matchAll(/<xhtml:link\b[^>]*>/g)) {
   const href = attr(match[0], 'href');
   if (!href) {
@@ -1715,6 +1744,10 @@ for (const file of files) {
       }
       if (!child.startsWith('<?xml') || !/<urlset\b/u.test(child)) fail(`${url.pathname}: not a urlset`);
       const blocks = [...child.matchAll(/<url>([\s\S]*?)<\/url>/g)];
+      // A section's date is the latest date of the pages it lists.
+      const sectionLastmod = index.slice(m.index).match(/<sitemap>[\s\S]*?<\/sitemap>/u)?.[0].match(/<lastmod>([^<]+)<\/lastmod>/u)?.[1];
+      const latest = blocks.map((block) => block[1].match(/<lastmod>([^<]+)<\/lastmod>/)?.[1]).filter(Boolean).sort().at(-1);
+      if (sectionLastmod !== latest) fail(`sitemap-index.xml: ${url.pathname} lastmod ${sectionLastmod ?? 'missing'} is not its latest page date ${latest ?? 'missing'}`);
       if (blocks.length === 0) fail(`${url.pathname}: lists no URLs`);
       if (blocks.length > 50_000) fail(`${url.pathname}: ${blocks.length} URLs, over the 50,000 limit`);
       for (const block of blocks) {

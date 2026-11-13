@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { crawlDepths as graphDepths, renderedLinks, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
+import { crawlDepths as graphDepths, isDailyLastmodPath, renderedLinks, robotsBlocks, robotsRules, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 
 const crawlDepths = (pages) => graphDepths(new Map([...pages].map(([path, html]) => [path, renderedLinks(path, html)])));
 
@@ -75,5 +75,16 @@ describe('robots.txt rules', () => {
     const wild = robotsRules('User-agent: *\nDisallow: /a/*/b/\n');
     expect(robotsBlocks(wild, '/a/x/y/b/')).toBe(true);
     expect(robotsBlocks(wild, '/a/b/')).toBe(false);
+  });
+});
+
+describe('daily sitemap dates', () => {
+  it('names only the pages that change with each daily edition', () => {
+    for (const path of ['/today/', '/es/today/', '/horoscopes/', '/pt/horoscopes/', '/es/horoscopes/leo/', '/horoscopes/leo/', '/horoscopes/leo/tomorrow/', '/horoscopes/leo/career/', '/chart-of-the-day/', '/ru/chart-of-the-day/2026-11-13/']) {
+      expect(isDailyLastmodPath(path), path).toBe(true);
+    }
+    for (const path of ['/birthday/', '/birthday/july-15/', '/horoscopes/leo/weekly/', '/horoscopes/leo/2027/', '/fr/horoscopes/leo/', '/privacy/', '/eclipses/2027/']) {
+      expect(isDailyLastmodPath(path), path).toBe(false);
+    }
   });
 });

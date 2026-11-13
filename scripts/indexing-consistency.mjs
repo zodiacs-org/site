@@ -106,3 +106,22 @@ export function robotsBlocks(rules, path) {
   return disallow >= 0 && disallow > longest(rules.allow);
 }
 
+/**
+ * Pages whose content changes with every daily edition, so their sitemap date
+ * is the edition's date: Today, the horoscope hubs and each sign's daily,
+ * tomorrow, love and career readings (English, Spanish and Portuguese), and
+ * the chart of the day. Every other page is dated from its content (a
+ * constant or a source date in src/pages/sitemap.xml.ts), never the build.
+ */
+const SIGN = '(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)';
+const DAILY_LASTMOD_PATTERNS = [
+  /^\/(?:(?:es|pt)\/)?today\/$/u,
+  /^\/(?:(?:es|pt)\/)?horoscopes\/$/u,
+  new RegExp(`^/(?:es|pt)/horoscopes/${SIGN}/$`, 'u'),
+  new RegExp(`^/horoscopes/${SIGN}/(?:tomorrow/|love/|career/)?$`, 'u'),
+  /^\/(?:(?:es|pt|fr|it|ru)\/)?chart-of-the-day\/(?:\d{4}-\d{2}-\d{2}\/)?$/u,
+];
+
+export function isDailyLastmodPath(path) {
+  return DAILY_LASTMOD_PATTERNS.some((pattern) => pattern.test(path));
+}
