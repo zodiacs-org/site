@@ -120,7 +120,8 @@ select pg_temp.assert_true(
       from (values
         ('private.account_v2_reap_stranded_deletions(integer)'),
         ('private.account_v2_reap_deleting_account(uuid)'),
-        ('private.account_v2_erase_deleting_account(uuid,uuid)')
+        ('private.account_v2_erase_deleting_account(uuid,uuid)'),
+        ('private.account_v2_lock_owner_deleting(uuid)')
       ) as helper(signature)
       where has_function_privilege('anon', helper.signature, 'execute')
          or has_function_privilege('authenticated', helper.signature, 'execute')
@@ -128,7 +129,14 @@ select pg_temp.assert_true(
          or not (select prosecdef from pg_catalog.pg_proc
                  where oid = helper.signature::regprocedure)
     )
-    and not has_function_privilege('anon', 'living_chart_private.living_chart_account_deleting()', 'execute'),
+    and not has_function_privilege('anon', 'living_chart_private.living_chart_account_deleting()', 'execute')
+    and not has_function_privilege('anon', 'public.zodiacs_sky_watch_v1(text,jsonb)', 'execute')
+    and not has_function_privilege('authenticated', 'public.zodiacs_sky_watch_v1(text,jsonb)', 'execute')
+    and not (select prosecdef from pg_catalog.pg_proc
+             where oid = 'public.zodiacs_sky_watch_v1(text,jsonb)'::regprocedure)
+    and exists (select 1 from pg_catalog.pg_trigger
+                where tgname = 'account_v2_terminal_gate'
+                  and tgrelid = 'sky_watch.principals'::regclass),
   'retention functions must keep the service-only privilege pattern'
 );
 
@@ -201,6 +209,36 @@ insert into public.weekly_digest_unsubscribe_tokens (
   clock_timestamp()
 );
 
+-- Sky Watch: an OAuth principal of this account with a subscription and an
+-- outbox row, plus two principals that must survive: a token principal, which
+-- names no account, and another account's OAuth principal.
+insert into auth.users (id) values ('81000000-0000-4000-8000-000000000009')
+on conflict (id) do nothing;
+insert into sky_watch.principals (id, oauth_user, oauth_session, oauth_client, expires_at) values
+  ('87000000-0000-4000-8000-000000000001', '81000000-0000-4000-8000-000000000001',
+   '88000000-0000-4000-8000-000000000001', '89000000-0000-4000-8000-000000000001',
+   clock_timestamp() + interval '7 days'),
+  ('87000000-0000-4000-8000-000000000009', '81000000-0000-4000-8000-000000000009',
+   '88000000-0000-4000-8000-000000000009', '89000000-0000-4000-8000-000000000001',
+   clock_timestamp() + interval '7 days');
+insert into sky_watch.principals (id, token_hash, expires_at) values (
+  '87000000-0000-4000-8000-000000000002', repeat('5', 64), clock_timestamp() + interval '7 days'
+);
+insert into sky_watch.subscriptions (id, owner, name, filters, verified_until, expires_at)
+select 'sub_' || repeat(fill, 64), owner_id::uuid, 'zodiacs.sky.ingress',
+  '{"bodies":["mars"]}'::jsonb, clock_timestamp() + interval '1 day', clock_timestamp() + interval '1 day'
+from (values
+  ('1', '87000000-0000-4000-8000-000000000001'),
+  ('2', '87000000-0000-4000-8000-000000000002'),
+  ('9', '87000000-0000-4000-8000-000000000009')
+) as fixture(fill, owner_id);
+insert into sky_watch.ledger (id, name, at, payload) values (
+  'retention-test-event', 'zodiacs.sky.ingress', clock_timestamp(), '{}'::jsonb
+) on conflict (id) do nothing;
+insert into sky_watch.outbox (subscription_id, event_id, due_at)
+select 'sub_' || repeat(fill, 64), 'retention-test-event', clock_timestamp()
+from (values ('1'), ('2'), ('9')) as fixture(fill);
+
 set role authenticated;
 select pg_temp.act_as('81000000-0000-4000-8000-000000000001');
 insert into retention_results values (
@@ -266,6 +304,23 @@ select pg_temp.assert_true(
     and exists (select 1 from auth.users
                 where id = '81000000-0000-4000-8000-000000000001'),
   'prepare must erase saved pages, Living Chart and weekly digest rows before the Auth deletion'
+);
+
+select pg_temp.assert_true(
+  not exists (select 1 from sky_watch.principals
+              where oauth_user = '81000000-0000-4000-8000-000000000001')
+    and not exists (select 1 from sky_watch.subscriptions
+                    where id = 'sub_' || repeat('1', 64))
+    and not exists (select 1 from sky_watch.outbox
+                    where subscription_id = 'sub_' || repeat('1', 64))
+    and (select count(*) = 2 from sky_watch.principals
+         where id in ('87000000-0000-4000-8000-000000000002',
+                      '87000000-0000-4000-8000-000000000009'))
+    and (select count(*) = 2 from sky_watch.subscriptions
+         where id in ('sub_' || repeat('2', 64), 'sub_' || repeat('9', 64)))
+    and (select count(*) = 2 from sky_watch.outbox
+         where subscription_id in ('sub_' || repeat('2', 64), 'sub_' || repeat('9', 64))),
+  'prepare must erase the account''s Sky Watch principals, subscriptions and outbox, and keep every other principal'
 );
 
 -- 2. The deleting gate ---------------------------------------------------------
@@ -341,6 +396,62 @@ exception
 end;
 $$;
 reset role;
+
+-- Sky Watch refuses a new principal for the deleting account, through its RPC
+-- (null, as for any lost access) and through a direct write, and still serves
+-- a live account.
+set role supabase_auth_admin;
+insert into auth.oauth_clients (id) values ('89000000-0000-4000-8000-000000000001');
+insert into auth.sessions (id, user_id, oauth_client_id, scopes) values
+  ('88000000-0000-4000-8000-000000000011', '81000000-0000-4000-8000-000000000001',
+   '89000000-0000-4000-8000-000000000001', 'openid email'),
+  ('88000000-0000-4000-8000-000000000019', '81000000-0000-4000-8000-000000000009',
+   '89000000-0000-4000-8000-000000000001', 'openid email');
+insert into auth.oauth_consents (user_id, client_id, scopes) values
+  ('81000000-0000-4000-8000-000000000001', '89000000-0000-4000-8000-000000000001', 'openid email'),
+  ('81000000-0000-4000-8000-000000000009', '89000000-0000-4000-8000-000000000001', 'openid email');
+reset role;
+insert into sky_watch.oauth_clients (id, resource) values (
+  '89000000-0000-4000-8000-000000000001', 'https://zodiacs-retention-test.vercel.app/mcp'
+);
+
+set role service_role;
+select pg_temp.assert_true(
+  public.zodiacs_sky_watch_v1('oauth', jsonb_build_object(
+    'user', '81000000-0000-4000-8000-000000000001',
+    'session', '88000000-0000-4000-8000-000000000011',
+    'client', '89000000-0000-4000-8000-000000000001',
+    'resource', 'https://zodiacs-retention-test.vercel.app/mcp'
+  )) is null
+    and public.zodiacs_sky_watch_v1('oauth', jsonb_build_object(
+      'user', '81000000-0000-4000-8000-000000000009',
+      'session', '88000000-0000-4000-8000-000000000019',
+      'client', '89000000-0000-4000-8000-000000000001',
+      'resource', 'https://zodiacs-retention-test.vercel.app/mcp'
+    )) ? 'id',
+  'Sky Watch must refuse OAuth access for a deleting account and still grant it to a live one'
+);
+
+do $$
+begin
+  insert into sky_watch.principals (oauth_user, oauth_session, oauth_client, expires_at)
+  values ('81000000-0000-4000-8000-000000000001', '88000000-0000-4000-8000-000000000021',
+          '89000000-0000-4000-8000-000000000001', clock_timestamp() + interval '7 days');
+  raise exception 'the service role created a Sky Watch principal for a deleting account';
+exception
+  when insufficient_privilege then null;
+end;
+$$;
+reset role;
+
+select pg_temp.assert_true(
+  not exists (select 1 from sky_watch.principals
+              where oauth_user = '81000000-0000-4000-8000-000000000001')
+    and exists (select 1 from sky_watch.principals
+                where oauth_user = '81000000-0000-4000-8000-000000000009'
+                  and oauth_session = '88000000-0000-4000-8000-000000000019'),
+  'no Sky Watch principal may exist for the deleting account'
+);
 
 -- 3. The reaper waits for the window ------------------------------------------
 
@@ -463,6 +574,15 @@ insert into public.saved_pages (user_id, kind, title, href) values (
   'Left behind',
   '/occasions/left-behind/'
 );
+insert into sky_watch.principals (id, oauth_user, oauth_session, oauth_client, expires_at) values (
+  '87000000-0000-4000-8000-000000000003', '81000000-0000-4000-8000-000000000003',
+  '88000000-0000-4000-8000-000000000003', '89000000-0000-4000-8000-000000000001',
+  clock_timestamp() + interval '7 days'
+);
+insert into sky_watch.subscriptions (id, owner, name, filters, verified_until, expires_at) values (
+  'sub_' || repeat('3', 64), '87000000-0000-4000-8000-000000000003', 'zodiacs.sky.ingress',
+  '{"bodies":["mars"]}'::jsonb, clock_timestamp() + interval '1 day', clock_timestamp() + interval '1 day'
+);
 insert into private.account_states (
   user_id, status, deletion_request_id, deletion_started_at, created_at, updated_at
 ) values (
@@ -515,6 +635,12 @@ select pg_temp.assert_true(
     and not exists (select 1 from auth.users where id = '81000000-0000-4000-8000-000000000003')
     and not exists (select 1 from public.saved_pages
                     where user_id = '81000000-0000-4000-8000-000000000003')
+    and not exists (select 1 from sky_watch.principals
+                    where oauth_user = '81000000-0000-4000-8000-000000000003')
+    and not exists (select 1 from sky_watch.subscriptions
+                    where id = 'sub_' || repeat('3', 64))
+    and exists (select 1 from sky_watch.principals
+                where id = '87000000-0000-4000-8000-000000000002')
     and exists (select 1 from auth.users where id = '81000000-0000-4000-8000-000000000004')
     and exists (select 1 from private.account_deletion_receipts
                 where user_id = '81000000-0000-4000-8000-000000000004'),

@@ -299,6 +299,9 @@ Editor, and update this table in the same change.
   migration also replaces `public.account_v2_prepare_deletion` (its recovery
   rotation keeps an expired, incomplete receipt of a deleting account and
   its provider record for the reaper) and `public.zodiacs_accounts_v1` (the
-  assistant save takes the account owner lock before it replaces a row).
+  assistant save takes the account owner lock before it replaces a row) and
+  `public.zodiacs_sky_watch_v1` (OAuth access, subscribe and unsubscribe take
+  the account owner lock and refuse an account in deletion; deletion erases
+  the account's Sky Watch OAuth principals).
 - **Unused-index cleanup** (live performance advisor, 7 INFO entries) can
   wait for real traffic before pruning.
