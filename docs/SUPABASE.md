@@ -301,7 +301,9 @@ Editor, and update this table in the same change.
   its provider record for the reaper) and `public.zodiacs_accounts_v1` (the
   assistant save takes the account owner lock before it replaces a row) and
   `public.zodiacs_sky_watch_v1` (OAuth access, subscribe and unsubscribe take
-  the account owner lock and refuse an account in deletion; deletion erases
-  the account's Sky Watch OAuth principals).
+  the account owner lock and refuse an account in deletion or without an Auth
+  identity, and OAuth access checks its authorization again under that lock;
+  maintenance deletes expired principals before it touches subscriptions;
+  deletion erases the account's Sky Watch OAuth principals).
 - **Unused-index cleanup** (live performance advisor, 7 INFO entries) can
   wait for real traffic before pruning.

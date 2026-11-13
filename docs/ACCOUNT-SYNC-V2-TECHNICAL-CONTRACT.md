@@ -486,7 +486,9 @@ fused payload and create two competing authorities.
   valid until their seven-day expiry, with at most three live receipts at once.
   An account in deleting state refuses writes to every owner table, including
   saved pages, Living Chart and Sky Watch OAuth principals, and the retention
-  pass finishes it once its seven days pass without a live receipt.
+  pass finishes it once its seven days pass without a live receipt. Once the
+  Auth identity is gone, Sky Watch refuses any new principal for it, so no
+  principal can outlive the account it names.
 
 The approved export is a versioned JSON owner export containing an
 allowlisted decrypted private-chart representation plus the opaque service

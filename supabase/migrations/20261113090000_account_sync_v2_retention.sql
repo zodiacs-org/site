@@ -22,9 +22,12 @@
 --    lock before it replaces a site row, so the replacement and prepare take
 --    the owner lock and the saved row in the same order. Sky Watch
 --    (public.zodiacs_sky_watch_v1) takes the owner lock before it creates,
---    refreshes or uses an OAuth principal and refuses an account in deletion,
---    and a trigger on sky_watch.principals refuses the same writes from any
---    other path. Subscriptions and outbox rows need a live principal.
+--    refreshes or uses an OAuth principal and refuses an account in deletion
+--    or without an Auth identity, checking the OAuth authorization again under
+--    the lock, and a trigger on sky_watch.principals refuses the same writes
+--    from any other path. Subscriptions and outbox rows need a live principal.
+--    Sky Watch maintenance (`enqueue`) deletes expired principals before it
+--    touches subscriptions, the principal, subscription order deletion uses.
 -- 3. The reaper. Once an account has been deleting for seven days and holds no
 --    live deletion receipt, private.account_v2_reap_stranded_deletions repeats
 --    the terminal erasure, deletes the Auth identity (auth.users, which
@@ -144,8 +147,16 @@ begin
   -- Sky Watch's OAuth principals name the account only in oauth_user, which
   -- has no Auth foreign key, so the Auth deletion would leave them. Deleting
   -- a principal cascades its subscriptions and their outbox rows, the
-  -- principal, subscription, outbox order the watch RPC uses. Token
+  -- principal, subscription, outbox order the watch RPC uses. The principals
+  -- are locked in id order first, the order Sky Watch maintenance locks
+  -- expired principals in before it touches any subscription. Token
   -- principals and other accounts' principals are untouched.
+  perform 1
+  from sky_watch.principals
+  where oauth_user = candidate_user_id
+  order by id
+  for update;
+
   delete from sky_watch.principals
   where oauth_user = candidate_user_id;
   get diagnostics watch_principals_removed = row_count;
@@ -363,8 +374,12 @@ grant execute on function public.zodiacs_accounts_v1(text, jsonb) to service_rol
 
 -- Sky Watch. The account owner lock, then the account state, the order of
 -- prepare and terminal cleanup, which then erase the principals. Answers
--- whether the account is deleting. Service only: the watch RPC runs as the
--- service role with invoker rights and cannot read account state itself.
+-- whether the account must be refused: it is deleting, or its Auth identity
+-- is gone (the reaper deletes Auth and, by cascade, the account state under
+-- this same owner lock, so a caller that waited through it finds neither).
+-- The checks run after the lock, on a fresh snapshot. Service only: the
+-- watch RPC runs as the service role with invoker rights and cannot read
+-- account state itself.
 create or replace function private.account_v2_lock_owner_deleting(
   candidate_user_id uuid
 )
@@ -387,6 +402,15 @@ begin
   where user_id = candidate_user_id
   for update;
 
+  if not exists (
+    select 1
+    from auth.users
+    where id = candidate_user_id
+      and deleted_at is null
+  ) then
+    return true;
+  end if;
+
   return exists (
     select 1
     from private.account_states
@@ -401,8 +425,8 @@ revoke all on function private.account_v2_lock_owner_deleting(uuid)
 grant execute on function private.account_v2_lock_owner_deleting(uuid)
   to service_role;
 
--- Refuses a new or refreshed OAuth principal for an account in deletion,
--- whatever path writes it. Revoking one (which only takes access away) and
+-- Refuses a new or refreshed OAuth principal for an account in deletion or
+-- without an Auth identity, whatever path writes it. Revoking one (which only takes access away) and
 -- token principals, which name no account, pass. The watch RPC takes the
 -- owner lock before it touches a principal, so when this runs inside the RPC
 -- the lock is already held and the order stays owner, then principal.
@@ -446,12 +470,14 @@ create index if not exists principals_oauth_user_idx
 on sky_watch.principals (oauth_user)
 where oauth_user is not null;
 
--- The Sky Watch RPC as of 20261006074029, with two changes: `oauth` takes the
--- owner lock and answers null for an account in deletion before it creates or
--- refreshes a principal, and `get`, `subscribe` and `unsubscribe` take the
--- owner lock of an OAuth principal's account before they lock the principal,
--- answering 'watch access unavailable' while that account is deleting.
--- Everything else is unchanged.
+-- The Sky Watch RPC as of 20261006074029, with three changes: `oauth` takes
+-- the owner lock, answers null for an account in deletion or without an Auth
+-- identity, and checks the OAuth authorization again under the lock before it
+-- creates or refreshes a principal; `get`, `subscribe` and `unsubscribe` take
+-- the owner lock of an OAuth principal's account before they lock the
+-- principal, answering 'watch access unavailable' while that account is
+-- deleting or gone; and `enqueue` deletes expired principals first, in id
+-- order, before it touches any subscription. Everything else is unchanged.
 create or replace function public.zodiacs_sky_watch_v1(operation text, input jsonb default '{}'::jsonb)
 returns jsonb language plpgsql security invoker set search_path = pg_catalog as $$
 declare
@@ -483,6 +509,10 @@ begin
       or not sky_watch.oauth_active((input->>'user')::uuid,(input->>'session')::uuid,(input->>'client')::uuid,now_at) then return null; end if;
     -- Account deletion erases this account's principals under the owner lock.
     if private.account_v2_lock_owner_deleting((input->>'user')::uuid) then return null; end if;
+    -- The wait may have outlasted the session, the consent or the account:
+    -- check the authorization again now that the owner lock is held.
+    if not exists(select 1 from sky_watch.oauth_clients where id=(input->>'client')::uuid and enabled and resource=input->>'resource')
+      or not sky_watch.oauth_active((input->>'user')::uuid,(input->>'session')::uuid,(input->>'client')::uuid,clock_timestamp()) then return null; end if;
     insert into sky_watch.principals(oauth_user,oauth_session,oauth_client,expires_at)
       values((input->>'user')::uuid,(input->>'session')::uuid,(input->>'client')::uuid,now_at+interval '7 days')
       on conflict(oauth_session) do update set expires_at=excluded.expires_at
@@ -562,13 +592,17 @@ begin
     return to_jsonb(true);
   elsif operation = 'enqueue' then
     -- Maintenance is bounded by the short preview TTL and the one-month ledger retention.
+    -- Expired principals go first, locked in id order, so maintenance takes
+    -- principal before subscription like account deletion does (deleting a
+    -- principal cascades its subscriptions and their outbox rows).
+    perform 1 from sky_watch.principals where expires_at < now_at-interval '30 days' order by id for update;
+    delete from sky_watch.principals where expires_at < now_at-interval '30 days';
     update sky_watch.subscriptions s set active=false,sealed=null,previous_sealed=null,revision=revision+1
       where s.active and (s.expires_at<=now_at or not exists(select 1 from sky_watch.principals p where p.id=s.owner and sky_watch.access_active(p.id,now_at)));
     update sky_watch.subscriptions set previous_sealed=null where previous_sealed is not null and rotate_until<=now_at;
     delete from sky_watch.outbox o where exists(select 1 from sky_watch.subscriptions s where s.id=o.subscription_id and not s.active);
     delete from sky_watch.ledger where at < now_at-interval '30 days';
     delete from sky_watch.subscriptions where not active and expires_at < now_at-interval '30 days';
-    delete from sky_watch.principals where expires_at < now_at-interval '30 days';
     update sky_watch.outbox set state='failed',lease=null,lease_until=null where state='leased' and lease_until<=now_at and attempts>=8;
     insert into sky_watch.outbox(subscription_id,event_id,due_at)
       select s.id,e.id,e.at from sky_watch.subscriptions s join sky_watch.principals p on p.id=s.owner
