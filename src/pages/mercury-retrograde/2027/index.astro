@@ -6,6 +6,10 @@ import { bodyLongitude } from '../../../lib/engine/full';
 import { formatLongitude, signForLongitude } from '../../../lib/signs';
 import { formatDate, formatShortDate } from '../../../lib/i18n/dates';
 import { publishedEventById } from '../../../lib/events/site-publication';
+import { nasaStationAt } from '../../../lib/nasa-instants';
+import { worldTimesSentence } from '../../../world-times/world-times';
+import { MERCURY_RETROGRADE_2027_UPDATED as UPDATED, updatedIso, updatedLabel } from '../../../world-times/updated';
+import WorldTimesTable from '../../../world-times/WorldTimesTable.astro';
 
 // The 2027 Mercury retrograde windows, cut from the same committed sky data
 // the hub renders and refined to the hour — receipts, no client ephemeris.
@@ -17,11 +21,23 @@ const sources = [
   { label: 'IANA Time Zone Database', href: 'https://www.iana.org/time-zones' },
 ];
 
-const windows = (sky.retrogrades as { planet: string; from: string; to: string | null }[])
-  .filter((r) => r.planet === 'Mercury')
-  .map((r) => ({ from: new Date(r.from), to: r.to ? new Date(r.to) : null, fromIso: r.from }))
+type SkyWindow = { planet: string; from: string; to: string | null; preShadowStart?: string | null; postShadowEnd?: string | null };
+const mercuryWindows = (sky.retrogrades as SkyWindow[]).filter((r) => r.planet === 'Mercury');
+
+const windows = mercuryWindows
+  .map((r) => ({
+    from: new Date(r.from),
+    to: r.to ? new Date(r.to) : null,
+    fromIso: r.from,
+    // The station instants printed below are NASA JPL Horizons' (src/lib/nasa-instants.ts);
+    // the id, the dates and the degrees keep the committed sky data, as the calendar file does.
+    rxAt: new Date(nasaStationAt('Mercury', r.from) ?? r.from),
+    directAt: r.to ? new Date(nasaStationAt('Mercury', r.to) ?? r.to) : null,
+    shadowFrom: r.preShadowStart ? new Date(r.preShadowStart) : null,
+    shadowTo: r.postShadowEnd ? new Date(r.postShadowEnd) : null,
+  }))
   .filter(({ from, to }) => from.getUTCFullYear() === YEAR || to?.getUTCFullYear() === YEAR)
-  .map(({ from, to, fromIso }) => {
+  .map(({ from, to, fromIso, rxAt, directAt, shadowFrom, shadowTo }) => {
     const rxLon = bodyLongitude('Mercury', from);
     const directLon = to ? bodyLongitude('Mercury', to) : null;
     const id = `mercury-retrograde-${fromIso.slice(0, 10)}`;
@@ -29,6 +45,10 @@ const windows = (sky.retrogrades as { planet: string; from: string; to: string |
       id,
       from,
       to,
+      rxAt,
+      directAt,
+      shadowFrom,
+      shadowTo,
       label: `${formatShortDate('en', from)} to ${to ? formatShortDate('en', to) : 'ongoing'}`,
       stationRx: formatLongitude(rxLon),
       stationDirect: directLon === null ? null : formatLongitude(directLon),
@@ -43,22 +63,60 @@ if (windows.length === 0) throw new Error(`No ${YEAR} Mercury retrograde windows
 
 const fmtMonthDay = (d: Date) => formatDate('en', d, { month: 'long', day: 'numeric', timeZone: 'UTC' });
 const spans = windows.map((w) => `${fmtMonthDay(w.from)} to ${w.to ? fmtMonthDay(w.to) : 'the end of the year'}`);
-const signs = [...new Set(windows.flatMap((w) => [w.signRx.name, w.signDirect?.name].filter(Boolean)))];
+const signs = [...new Set(windows.flatMap((w) => [w.signRx.name, w.signDirect?.name].filter((name): name is string => Boolean(name))))];
+const listJoin = (items: string[]) => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+const DAY_MS = 86_400_000;
 
-const description = `Every Mercury retrograde window of 2027 with exact dates in universal time and the degree Mercury stations at, plus a calendar file so the windows sit in your own calendar.`;
+// Every station of the year, for the five-clock table.
+const stationRows = windows.flatMap((w) => [
+  { label: `Turns retrograde in ${w.signRx.name}`, at: w.rxAt, past: w.rxAt < buildNow },
+  ...(w.directAt && w.signDirect ? [{ label: `Turns direct in ${w.signDirect.name}`, at: w.directAt, past: w.directAt < buildNow }] : []),
+]);
+
+const complete = windows.filter((w) => w.directAt && w.shadowFrom && w.shadowTo);
+if (complete.length !== windows.length) throw new Error(`A ${YEAR} Mercury window lacks a station or a shadow edge; update the page copy`);
+const lengths = complete.map((w) => Math.round((w.directAt!.getTime() - w.rxAt.getTime()) / DAY_MS));
+const passLengths = complete.map((w) => Math.round((w.shadowTo!.getTime() - w.shadowFrom!.getTime()) / DAY_MS));
+const shadowSpans = complete.map((w) => `${fmtMonthDay(w.shadowFrom!)} to ${fmtMonthDay(w.shadowTo!)}`);
+
+// The first window that starts after this year, from the same sky data.
+const nextRaw = mercuryWindows.find((r) => new Date(r.from).getUTCFullYear() > YEAR && r.to);
+if (!nextRaw) throw new Error(`No Mercury retrograde after ${YEAR} in sky.json`);
+const nextFrom = new Date(nasaStationAt('Mercury', nextRaw.from) ?? nextRaw.from);
+const nextTo = new Date(nasaStationAt('Mercury', nextRaw.to!) ?? nextRaw.to!);
+const nextSign = signForLongitude(bodyLongitude('Mercury', new Date(nextRaw.from)));
+const nextPath = publishedEventById.get(`mercury-retrograde-${nextRaw.from.slice(0, 10)}`)?.path ?? null;
+
+const description = `Every Mercury retrograde window of 2027 with each station's time in UTC, New York, London, Kolkata and Sydney, the degree Mercury stations at, the shadow dates, and a calendar file.`;
 
 const faq = [
   {
     q: `When is Mercury retrograde in ${YEAR}?`,
-    a: `${windows.length} times: ${spans.join('; ')}. Each window is Mercury's actual motion, station to station, refined to the hour.`,
+    a: `${windows.length} times: ${spans.join('; ')}. Each window runs from the station where Mercury turns retrograde to the station where it turns direct, and the dates are universal time.`,
+  },
+  {
+    q: 'What time does Mercury retrograde start where I live?',
+    a: `The first ${YEAR} window starts at ${worldTimesSentence(windows[0].rxAt)}. The local times table lists every ${YEAR} station on those five clocks, daylight saving included. For anywhere else, add or subtract your own offset from UTC.`,
+  },
+  {
+    q: 'How long does Mercury retrograde last?',
+    a: `From station to station, the ${YEAR} windows last ${listJoin(lengths.map(String))} days. Counting the shadow on both sides, each passage over the same stretch of the zodiac takes ${listJoin(passLengths.map(String))} days.`,
   },
   {
     q: 'Which signs do the 2027 retrogrades touch?',
-    a: `The stations fall in ${signs.join(', ')}. A retrograde that starts in one sign and ends in the previous one runs across that boundary, which is why the table shows both station positions.`,
+    a: `The stations fall in ${listJoin(signs)}. A retrograde that starts in one sign and ends in the previous one runs across that boundary, which is why the table shows both station positions.`,
   },
   {
     q: 'Is there a shadow period before and after?',
-    a: 'Mercury crosses the same degrees three times: forward before the retrograde station, backward during the window, and forward again after the direct station. Those bracketing passes are what people call the shadow; the dates in the table are the stations themselves.',
+    a: `Mercury crosses the same degrees three times: forward before the retrograde station, backward during the window, and forward again after the direct station. Those bracketing passes are what people call the shadow. The shadow starts when Mercury first reaches the degree where it will later turn direct, and ends when it passes the degree where it turned retrograde. In ${YEAR} that is ${listJoin(shadowSpans)}.`,
+  },
+  {
+    q: 'Can you see Mercury retrograde in the sky?',
+    a: 'Not as motion you can watch. Mercury turns retrograde around the time it passes between Earth and the Sun, so for much of each window it sits close to the Sun in the sky and is lost in its glare. The backward drift shows only when its position against the stars is compared over days.',
+  },
+  {
+    q: `When is the next Mercury retrograde after ${YEAR}?`,
+    a: `${fmtMonthDay(nextFrom)} to ${fmtMonthDay(nextTo)}, ${nextFrom.getUTCFullYear()}, starting in ${nextSign.name}. It turns retrograde at ${worldTimesSentence(nextFrom)}.`,
   },
 ];
 
@@ -68,6 +126,7 @@ const jsonLd = [
     name: `Mercury retrograde ${YEAR}`,
     url: `https://zodiacs.org/mercury-retrograde/${YEAR}/`,
     description,
+    dateModified: updatedIso(UPDATED),
     isPartOf: { '@type': 'WebPage', url: 'https://zodiacs.org/mercury-retrograde/' },
   },
   {
@@ -82,7 +141,7 @@ const jsonLd = [
 ---
 <Base
   title="Mercury Retrograde 2027: Exact Dates and Stations | Zodiacs.org"
-  description="Every Mercury retrograde window of 2027 with exact dates in universal time and the degree Mercury stations at, plus a calendar file so the windows sit in your own calendar."
+  description="Every Mercury retrograde window of 2027 with each station's time in UTC, New York, London, Kolkata and Sydney, the degree Mercury stations at, the shadow dates, and a calendar file."
   path={`/mercury-retrograde/${YEAR}/`}
   image="/assets/og/v2/tool/mercury-retrograde.png"
   imageAlt="Mercury retrograde 2027, Zodiacs.org"
@@ -96,8 +155,9 @@ const jsonLd = [
       <p>
         {windows.length} windows, each computed from <a href="/learn/glossary/#mercury">Mercury</a>’s actual motion{' '}
         <a href="/learn/glossary/#station">station to station</a>, with the degree it stands still at on each end.
-        Dates are universal time.
+        Dates are universal time; the <a href="#local-times">local times table</a> gives each station in New York, London, Kolkata and Sydney too.
       </p>
+      <p class="year-page__updated">Updated <time datetime={UPDATED}>{updatedLabel(UPDATED)}</time></p>
     </div>
 
     <div class="rx-now shell tinted reveal" style="--sign:var(--sign-gemini)">
@@ -137,6 +197,20 @@ const jsonLd = [
     </div>
   </section>
 
+  <section class="section--tight container container--narrow" id="local-times">
+    <div class="section-head reveal">
+      <h2>Station times in five time zones</h2>
+      <p>Each station at the minute it happens, on five clocks. The date moves with the zone: an evening station in UTC is the next morning in Sydney.</p>
+    </div>
+    <div class="reveal">
+      <WorldTimesTable rows={stationRows} eventLabel="Station" caption={`Mercury's ${YEAR} stations in UTC, New York, London, Kolkata and Sydney`} />
+    </div>
+    <p class="year-page__check reveal">
+      Station times come from NASA JPL Horizons (the DE441 ephemeris), solved to the second and printed to the minute.
+      The degrees and the shadow dates come from our own engine. <a href="/methodology/#event-times">How we check event times</a>
+    </p>
+  </section>
+
   <section class="section--tight container container--narrow">
     <div class="prose reveal">
       <h2>What the window asks</h2>
@@ -161,6 +235,7 @@ const jsonLd = [
       ))}
     </div>
     <p class="year-page__links reveal">
+      {nextPath && <><a href={nextPath}>The next one, {nextFrom.getUTCFullYear()}</a> · </>}
       <a href="/mercury-retrograde/">All years</a> · <a href="/retrogrades/">Every planet</a> ·
       <a href={`/full-moon-calendar/${YEAR}/`}>Full moons {YEAR}</a> · <a href={`/eclipses/${YEAR}/`}>Eclipses {YEAR}</a>
     </p>
@@ -169,6 +244,9 @@ const jsonLd = [
 
 <style>
   .tool-hero .kicker { display: block; margin-bottom: 10px; }
+  .year-page__updated { margin: 10px 0 0; color: var(--muted); font-size: var(--text-sm); }
+  .year-page__check { margin: 14px 0 0; max-width: 64ch; color: var(--muted); font-size: var(--text-sm); }
+  .year-page__check a { color: var(--text-2); }
   .year-page__links { margin-top: 18px; color: var(--muted); font-size: var(--text-sm); }
   .year-page__links a { color: var(--text-2); }
   .faq-item { border-top: 1px solid var(--hair-1); }

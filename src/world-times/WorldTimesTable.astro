@@ -1,0 +1,78 @@
+---
+/**
+ * A dated table of instants read on five clocks (src/world-times/world-times.ts):
+ * one row per event, one column per zone, each cell the local day, the time
+ * and the zone's offset at that instant. Static HTML from the build, so it
+ * cannot shift the layout. On a phone the rows stack into label and value
+ * pairs like every other rx-table.
+ */
+import '../styles/rx-table.css';
+import { WORLD_TIME_ZONES, worldTimes } from './world-times';
+
+interface Row {
+  label: string;
+  at: Date;
+  past?: boolean;
+}
+
+interface Props {
+  rows: Row[];
+  /** Header for the event column. */
+  eventLabel: string;
+  /** Accessible table caption. */
+  caption: string;
+}
+
+const { rows, eventLabel, caption } = Astro.props;
+const read = rows.map((row) => ({ ...row, times: worldTimes(row.at) }));
+---
+<div class="table-wrap">
+  <table class="rx-table wt-table">
+    <caption class="wt-table__caption">{caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col">{eventLabel}</th>
+        {WORLD_TIME_ZONES.map(({ city }) => <th scope="col">{city}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {read.map((row) => (
+        <tr class={row.past ? 'rx-table__past' : ''}>
+          <th scope="row">{row.label}</th>
+          {row.times.map((t) => (
+            <td class="wt-cell" data-label={t.city}>
+              <time datetime={row.at.toISOString()}>
+                <span class="wt-cell__day">{t.day}</span>
+                <span class="wt-cell__time mono">{t.time}</span>
+                {t.zone !== 'UTC' && <span class="wt-cell__off mono">{t.offset}</span>}
+              </time>
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .wt-table__caption {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .wt-table tbody th { font-size: var(--text-sm); white-space: normal; min-width: 8em; }
+  .wt-cell time { display: grid; gap: 1px; }
+  .wt-cell__day { font-size: 12.5px; color: var(--muted); }
+  .wt-cell__time { color: var(--text); }
+  .wt-cell__off { font-size: 11.5px; color: var(--faint); }
+  .rx-table__past .wt-cell__time { color: var(--faint); }
+
+  @media (max-width: 560px) {
+    .wt-cell time { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; align-items: baseline; gap: 0 8px; }
+    .wt-cell__day { font-size: var(--text-sm); color: var(--text-2); }
+  }
+</style>
