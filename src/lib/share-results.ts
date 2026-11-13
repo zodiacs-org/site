@@ -11,6 +11,8 @@
  * pattern; a query with anything else is not a share query. Pure: no network,
  * storage or logging.
  */
+import { ARRIVAL_REF_VALUES } from './arrival-refs.mjs';
+import type { ArrivalRef } from './arrival-source.js';
 import { COMPAT_VERDICTS, compatVerdictKey, type CompatVerdictKey } from './compat-score.js';
 import { DATE_VERDICTS, dateVerdictKey, type DateVerdictKey } from './occasions/date-score.js';
 import { OCCASION_KINDS, type OccasionKind } from './occasions/kinds.js';
@@ -22,7 +24,22 @@ export const SHARE_SIGNS = [
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ] as const;
 export type ShareSign = (typeof SHARE_SIGNS)[number];
-export type ShareRef = 'chatgpt' | 'assistant';
+/** A `ref` word a share link may carry: one of the site's arrival words (src/lib/arrival-refs.mjs), never `direct`. */
+export type ShareRef = Exclude<ArrivalRef, 'direct'>;
+
+/**
+ * The one list of `ref` words every share page, preview image and story picture accepts: the arrival words Base.astro
+ * reads, less any default such as `direct`, which no link carries. A share link with any other word is not a share.
+ */
+export const SHARE_REFS: readonly ShareRef[] = Object.freeze(
+  (ARRIVAL_REF_VALUES as readonly string[]).filter((ref) => ref !== 'direct') as ShareRef[],
+);
+
+/** A share link's `ref`: absent (null), a listed word, or anything else (undefined: not a share). */
+export function readShareRef(value: string | undefined): ShareRef | null | undefined {
+  if (value === undefined) return null;
+  return (SHARE_REFS as readonly string[]).includes(value) ? (value as ShareRef) : undefined;
+}
 
 export const COMPATIBILITY_SHARE_PATH = '/share/compatibility/';
 export const OCCASION_SHARE_PATH = '/share/occasion/';
@@ -238,11 +255,6 @@ function strictParams(params: URLSearchParams, allowed: readonly string[]): Map<
   return seen;
 }
 
-function readRef(value: string | undefined): ShareRef | null | undefined {
-  if (value === undefined) return null;
-  return value === 'chatgpt' || value === 'assistant' ? value : undefined;
-}
-
 function readScore(value: string | undefined): number | null {
   return value !== undefined && SCORE_RE.test(value) ? Number(value) : null;
 }
@@ -276,7 +288,7 @@ export function parseCompatibilityShare(params: URLSearchParams): CompatibilityS
   const aSun = readOptional(fields.get('as'), readSign);
   const bSun = readOptional(fields.get('bs'), readSign);
   const confidence = readConfidence(fields.get('c'), PAIR_CONFIDENCES);
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (a === undefined || b === undefined || aSun === undefined || bSun === undefined || confidence === undefined || ref === undefined) return null;
   return { a, b, aSun, bSun, score, attraction, communication, stability, verdict: verdict as CompatVerdictKey, confidence, ref };
 }
@@ -296,7 +308,7 @@ export function parseOccasionShare(params: URLSearchParams): OccasionShare | nul
   const sun = readOptional(fields.get('sun'), readSign);
   const moon = readOptional(fields.get('moon'), readSign);
   const confidence = readConfidence(fields.get('c'), DAY_CONFIDENCES);
-  const ref = readRef(fields.get('ref'));
+  const ref = readShareRef(fields.get('ref'));
   if (names === undefined || place === undefined || sun === undefined || moon === undefined || confidence === undefined || ref === undefined) return null;
   return { occasion: occasion as OccasionKind, date, names, place, sun, moon, score, verdict: verdict as DateVerdictKey, confidence, ref };
 }
