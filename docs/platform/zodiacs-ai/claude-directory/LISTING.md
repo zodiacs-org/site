@@ -20,7 +20,7 @@ own switches and are not part of the 19.
 
 **What 0.6.7 changed.** Every one of the 19 tools has a new description
 that says only what the tool does, what it fits and its limits, and the
-server's instructions were reworded to say truly what a link can hold
+server's instructions were reworded so they state facts about Zodiacs rather than orders to the assistant, and say truly what a link can hold
 (PR #971, approved by the owner on 11 and 13 November). No name, title,
 input, annotation or tool count changed. `get_horoscope`'s panel moved to a
 new address, `ui://zodiacs/horoscopes-v7.html`, and the earlier addresses are
