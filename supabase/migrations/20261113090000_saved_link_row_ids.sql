@@ -14,13 +14,16 @@
 --      stored (account, kind, title, worked-out result and the link apart from its
 --      id) instead of by its link, under the account's own lock;
 --   2. rewrites every stored href whose `saved=` value is not its row's own id (the
---      old 16 hex digests) to carry the row id. Only href changes: the id, title,
---      summary, detail, source and saved_at of every row stay exactly as they are.
---      An old digest then matches no row, so its link opens the plain profile page;
+--      old 16 hex digests) to carry the row id, and where the stored record's own
+--      copy of the link (detail's href) still carries an old 16 hex value, sets that
+--      copy to the row's href, so no stored link keeps the digest. Nothing else
+--      changes: the id, title, summary, source, saved_at and the rest of detail of
+--      every row stay exactly as they are. An old digest then matches no row, so
+--      its link opens the plain profile page;
 --   3. adds a check that any `saved=` value in a stored href is that row's own id.
 --
 -- Count-only checks to run before and after: docs/platform/accounts/saved-link-ids-verify.sql.
--- Replay-safe: the function is replaced, the rewrite finds nothing the second time,
+-- Replay-safe: the function is replaced, the rewrites find nothing the second time,
 -- and the check is dropped and added again. Run after
 -- 20261015150000_zodiacs_accounts_assistant_saves.sql.
 -- UTC filename; not applied to any database until the owner approves it.
@@ -103,11 +106,18 @@ $$;
 revoke all on function public.zodiacs_accounts_v1(text, jsonb) from public, anon, authenticated;
 grant execute on function public.zodiacs_accounts_v1(text, jsonb) to service_role;
 
--- 2. Stored links: the saved= value becomes the row's own id. Only href is set.
+-- 2. Stored links: the saved= value becomes the row's own id. Only href is set here.
 update public.saved_pages
   set href = regexp_replace(href, '^([^#]*#(?:[^&]*&)*)saved=[^&]*', '\1saved=' || id::text)
   where href ~ '^[^#]*#([^&]*&)*saved='
     and substring(href from '^[^#]*#(?:[^&]*&)*saved=([^&]*)') is distinct from id::text;
+
+-- The record's copy of the link: where it still carries an old 16 hex saved= value,
+-- it becomes the row's href (rewritten above). Only detail's href key is set.
+update public.saved_pages
+  set detail = jsonb_set(detail, '{href}', to_jsonb(href))
+  where jsonb_typeof(detail) = 'object' and detail ? 'href'
+    and detail->>'href' ~ '[#&]saved=[0-9a-f]{16}(&|$)';
 
 -- 3. From now on a saved= value in a stored link is that row's own id.
 alter table public.saved_pages drop constraint if exists saved_pages_saved_link_id;

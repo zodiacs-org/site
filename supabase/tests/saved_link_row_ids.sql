@@ -1,8 +1,8 @@
 -- Disposable PostgreSQL only. Runs after saved_link_row_ids_fixture.sql and a
 -- replay of 20261113090000_saved_link_row_ids.sql (as a reviewed SQL Editor retry
--- would): the stored links carry their row's own id, nothing else in a row
--- moved, the old digests match nothing, and the save RPC stores a saved= link
--- under the random id it carries. Every value is synthetic; the fixture's rows
+-- would): the stored links and the records' copies of them carry their row's own
+-- id, nothing else in a row moved, the old digests match nothing, and the save
+-- RPC stores a saved= link under the random id it carries. Every value is synthetic; the fixture's rows
 -- are removed at the end.
 \set ON_ERROR_STOP on
 begin;
@@ -23,14 +23,28 @@ select pg_temp.assert_saved_links((select href from public.saved_pages where id 
 select pg_temp.assert_saved_links((select href from public.saved_pages where id = '00000000-0000-4000-8000-0000000000b1') = '/people/test-person/'
   and (select href from public.saved_pages where id = '00000000-0000-4000-8000-0000000000b2') = '/occasions/#o=wedding&d=2027-06-12',
   'links without saved= are untouched');
-select pg_temp.assert_saved_links((select count(*) = 5 and bool_and(detail->>'href' ~ 'saved=(0123456789abcdef|1111111111111111|2222222222222222|3333333333333333|00000000-0000-4000-8000-0000000000ff)$')
-  from public.saved_pages where id::text like '00000000-0000-4000-8000-0000000000a_'), 'the stored record is left exactly as it was');
+-- The record's copy of the link follows the link where it held a digest; the rest of the record is as it was.
+select pg_temp.assert_saved_links((select count(*) = 4 and bool_and(detail->>'href' = href)
+  from public.saved_pages where id::text ~ '^00000000-0000-4000-8000-0000000000a[1-4]$'), 'a digest in the record''s copy of the link becomes the row''s link');
+select pg_temp.assert_saved_links((select detail->>'href' = '/birth-chart/#saved=00000000-0000-4000-8000-0000000000ff'
+  from public.saved_pages where id = '00000000-0000-4000-8000-0000000000a5'), 'a record copy without a digest is left as it was');
+select pg_temp.assert_saved_links((select count(*) = 5 from public.saved_pages p join (values
+  ('00000000-0000-4000-8000-0000000000a1'::uuid, '{"schema":"zodiacs.assistant-save.v1","kind":"chart","title":"Birth chart","summary":"Sun in Aries.","data":{"sun":"aries"},"links":[]}'::jsonb),
+  ('00000000-0000-4000-8000-0000000000a2', '{"schema":"zodiacs.assistant-save.v1","kind":"comparison","title":"Aries and Leo: 70 out of 100","summary":"Good. Test pair.","data":{"score":70},"links":[]}'),
+  ('00000000-0000-4000-8000-0000000000a3', '{"schema":"zodiacs.assistant-save.v1","kind":"occasion","title":"Birthday: 70 out of 100","summary":"Good.","data":{"occasion":"birthday"},"links":[]}'),
+  ('00000000-0000-4000-8000-0000000000a4', '{"schema":"zodiacs.assistant-save.v1","kind":"week","title":"Your week from 2026-10-19","summary":"No close contacts to your chart this week.","data":{"from":"2026-10-19","items":[]},"links":[]}'),
+  ('00000000-0000-4000-8000-0000000000a5', '{"schema":"zodiacs.assistant-save.v1","kind":"chart","title":"Second chart","summary":"Sun in Leo.","data":{"sun":"leo"},"links":[]}')
+  ) as kept(id, record) on p.id = kept.id where p.detail - 'href' = kept.record), 'the rest of each stored record is left exactly as it was');
+select pg_temp.assert_saved_links((select detail->>'href' = '/people/test-person/' from public.saved_pages where id = '00000000-0000-4000-8000-0000000000b1')
+  and (select detail is null from public.saved_pages where id = '00000000-0000-4000-8000-0000000000b2'), 'records without a digest are untouched');
 select pg_temp.assert_saved_links((select count(*) = 7 and bool_and(user_id = '00000000-0000-4000-8000-00000000f001' and saved_at < '2026-10-27T00:00:00Z')
   from public.saved_pages where user_id = '00000000-0000-4000-8000-00000000f001'), 'no row was added, removed or re-dated');
 select pg_temp.assert_saved_links((select title = 'Your week from 2026-10-19' and summary = 'No close contacts to your chart this week.' and source = 'assistant'
   and saved_at = '2026-10-23T00:00:00Z' from public.saved_pages where id = '00000000-0000-4000-8000-0000000000a4'), 'title, summary, source and date unchanged');
 -- The old digests open nothing: no stored link carries one.
 select pg_temp.assert_saved_links((select count(*) = 0 from public.saved_pages where href ~ '[#&]saved=[0-9a-f]{16}(&|$)'), 'no 16 hex digest is left in a link');
+select pg_temp.assert_saved_links((select count(*) = 0 from public.saved_pages where jsonb_typeof(detail) = 'object' and detail ? 'href'
+  and detail->>'href' ~ '[#&]saved=[0-9a-f]{16}(&|$)'), 'no 16 hex digest is left in a record''s copy of its link');
 select pg_temp.assert_saved_links((select count(*) = 0 from public.saved_pages
   where href ~ '^[^#]*#([^&]*&)*saved=' and substring(href from '^[^#]*#(?:[^&]*&)*saved=([^&]*)') <> id::text), 'every saved= value is its row id');
 
@@ -124,4 +138,4 @@ rollback;
 -- The fixture's rows and account go; the check stays.
 delete from public.saved_pages where user_id = '00000000-0000-4000-8000-00000000f001';
 delete from auth.users where id = '00000000-0000-4000-8000-00000000f001';
-select 'Saved link SQL passed: stored links carry their row id, nothing else moved, old digests match nothing, and saves are stored under their link''s id' as result;
+select 'Saved link SQL passed: stored links and their record copies carry their row id, nothing else moved, old digests match nothing, and saves are stored under their link''s id' as result;

@@ -4,6 +4,7 @@
 --
 -- Expected after the migration:
 --   old_digest_links = 0
+--   old_digest_detail_links = 0 (no stored record's copy of its link keeps a digest)
 --   saved_links = row_id_links (every saved= link carries its own row id)
 --   saved_links and total_rows unchanged from the run before (the migration
 --   rewrites links, it never adds or removes a row)
@@ -13,6 +14,8 @@ select
   count(*) as total_rows,
   count(*) filter (where href like '%saved=%') as saved_links,
   count(*) filter (where href ~ '[#&]saved=[0-9a-f]{16}(&|$)') as old_digest_links,
+  count(*) filter (where jsonb_typeof(detail) = 'object' and detail ? 'href'
+    and detail->>'href' ~ '[#&]saved=[0-9a-f]{16}(&|$)') as old_digest_detail_links,
   count(*) filter (where href ~ '[#&]saved=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(&|$)') as uuid_links,
   count(*) filter (where href ~ '^[^#]*#([^&]*&)*saved='
     and substring(href from '^[^#]*#(?:[^&]*&)*saved=([^&]*)') = id::text) as row_id_links
@@ -24,6 +27,8 @@ select
   count(*) as total_rows,
   count(*) filter (where href like '%saved=%') as saved_links,
   count(*) filter (where href ~ '[#&]saved=[0-9a-f]{16}(&|$)') as old_digest_links,
+  count(*) filter (where jsonb_typeof(detail) = 'object' and detail ? 'href'
+    and detail->>'href' ~ '[#&]saved=[0-9a-f]{16}(&|$)') as old_digest_detail_links,
   count(*) filter (where href ~ '^[^#]*#([^&]*&)*saved='
     and substring(href from '^[^#]*#(?:[^&]*&)*saved=([^&]*)') = id::text) as row_id_links
 from public.saved_pages
