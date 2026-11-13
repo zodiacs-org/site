@@ -7,7 +7,7 @@ import { EDITORIAL_METADATA } from '../src/lib/editorial-metadata.mjs';
 import { editorialGraphErrors, editorialSitemapErrors } from './editorial-metadata-checks.mjs';
 import { organizationIdentityErrors } from './organization-identity.mjs';
 import { WEB_APPLICATION_PATHS } from '../src/strings/seo.en.mjs';
-import { eventArticleDateFailures } from './event-article-dates.mjs';
+import { eventArticleDateFailures, eventUpdatedDay } from './event-article-dates.mjs';
 import {
   DEVELOPER_PAGES, SKY_DATA_FOLDERS, developerExpectations, developerStructuredDataErrors, servesUrlIn, skyDataFiles,
 } from './developer-structured-data-checks.mjs';
@@ -320,8 +320,20 @@ for (const file of await htmlFiles(dist)) {
       failures.push(`${label}: article content needs exactly one Article (found ${articles.length})`);
     } else {
       validateArticle(articles[0], label, canonicalUrl, { requireDates: horoscopeContent });
-      if (eventContent) failures.push(...eventArticleDateFailures(articles[0], publishedEvents.get(pathname))
+      if (eventContent) failures.push(...eventArticleDateFailures(articles[0], publishedEvents.get(pathname), eventUpdatedDay(html))
         .map((failure) => `${label}: ${failure}`));
+    }
+  }
+
+  if (eventContent) {
+    // The event pages written to the reading style guide mirror their visible
+    // questions in one FAQPage; the others carry none.
+    const faqs = nodes.filter((node) => hasType(node, 'FAQPage'));
+    if (faqs.length > 1) {
+      failures.push(`${label}: event content allows at most one FAQPage (found ${faqs.length})`);
+    } else if (faqs.length === 1) {
+      const visible = (html.match(/<details\b[^>]*class="[^"]*\bfaq-item\b/gu) ?? []).length;
+      validateFaq(faqs[0], label, visible);
     }
   }
 

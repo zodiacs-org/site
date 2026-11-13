@@ -15,6 +15,8 @@ interface Props {
 
 const { event } = Astro.props;
 const { facts } = event;
+// The 2027 full moons and eclipse peaks print NASA's instant too (src/lib/nasa-event-times-2027.ts).
+const nasaMoon = Boolean(facts.committed) && (facts.family === 'lunation' || facts.family === 'eclipse');
 
 // Instants print to the minute, as everywhere else on the page
 // ('2026-07-29 14:35 UTC'); the full instant stays in the datetime attribute.
@@ -61,7 +63,9 @@ for (const derivation of facts.provenance.derived ?? []) {
   </dl>
   <p>
     The times of planet ingresses, stations and aspects come from NASA
-    JPL's DE441 ephemeris, read through its Horizons service. Other instants
+    JPL's DE441 ephemeris, read through its Horizons service.
+    {nasaMoon && 'So does the exact instant on this page.'}
+    Other instants
     and the positions come from the site's astronomy engine and its
     committed yearly and monthly sky catalogs, the same data behind the{' '}
     <a href="/almanac/">Almanac</a> and the daily horoscopes. Times are

@@ -10,7 +10,12 @@ const editorialPages = catalog.pages.filter((event) => {
   const anchor = event.facts.at ?? event.facts.start ?? '';
   return anchor >= '2026-01-01' && anchor < '2031-01-01';
 });
-const generatedPages = editorialPages.filter(
+// The 2027 readings written to the reading style guide have their own shape
+// (one sentence of advice, why, an action, what is next) and their own test,
+// readings-2027.test.ts.
+const guidedPages = editorialPages.filter((event) => event.interpretation?.styleGuide);
+const composedPages = editorialPages.filter((event) => !event.interpretation?.styleGuide);
+const generatedPages = composedPages.filter(
   (event) => !BESPOKE_INTERPRETED_IDS.includes(event.facts.id),
 );
 
@@ -84,7 +89,11 @@ describe('events editorial — 2026 to 2030 coverage', () => {
   });
 
   it('gives every page a substantive reading and useful questions', () => {
-    for (const event of editorialPages) {
+    expect(guidedPages).toHaveLength(22);
+    for (const event of guidedPages) {
+      expect(event.interpretation!.body, `${event.facts.id} body`).toHaveLength(2);
+    }
+    for (const event of composedPages) {
       const reading = event.interpretation!;
       expect(wordCount(reading.lead), `${event.facts.id} lead`).toBeGreaterThanOrEqual(25);
       expect(reading.body, `${event.facts.id} body`).toHaveLength(2);
