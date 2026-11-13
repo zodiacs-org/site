@@ -8,7 +8,7 @@ import { localizePath, t } from '../../lib/i18n';
 import { SIGNS, signName } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
 
-export type HubLocale = 'es' | 'pt' | 'fr' | 'it';
+export type HubLocale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
 
 
 export interface HubCopy {

@@ -25,6 +25,7 @@ import ChartCalculator from '../../islands/ChartCalculator';
 import LocalizedHorizonDiagram from './LocalizedHorizonDiagram.astro';
 import type { HorizonLabels } from './LocalizedHorizonDiagram.astro';
 import { SIGNS, signName, signPrepositional, type Sign } from '../../lib/signs';
+import { signInRu } from '../../lib/sign-ru';
 import {
   RISING_AT,
   RISING_DAY,
@@ -481,9 +482,9 @@ const COPY: Record<RisingLocale, Copy> = {
     exampleTag: 'Что вы получите · пример',
     bornLead: 'Рождение:',
     place: 'Нью-Йорк',
-    rising: (sign) => `Асцендент в ${signPrepositional(sign)}`,
-    inSign: (planet, sign) => `${planet} в ${signPrepositional(sign)}`,
-    readGuide: (sign) => `Подробнее об асценденте в ${signPrepositional(sign)}`,
+    rising: (sign) => `Асцендент ${signInRu(sign)}`,
+    inSign: (planet, sign) => `${planet} ${signInRu(sign)}`,
+    readGuide: (sign) => `Подробнее об асценденте ${signInRu(sign)}`,
     fullChart: 'Посмотреть полную натальную карту',
     whyKicker: 'Почему мы спрашиваем время',
     whyTitle: 'Асцендент меняет знак примерно каждые два часа.',
@@ -543,8 +544,8 @@ const COPY: Record<RisingLocale, Copy> = {
       birthplace: 'Место рождения',
       risen: 'уже взошли',
       toRise: 'ещё взойдут',
-      aria: (rising) => `Схема: круг зодиака, рассечённый вашим горизонтом. На восточном горизонте ${name(rising)}, значит, асцендент в ${signPrepositional(rising)}. Знаки над линией уже взошли, знаки под ней ещё взойдут.`,
-      caption: (rising, next) => `Круг зодиака, рассечённый горизонтом места рождения. На восточном горизонте ${name(rising)}, значит, асцендент в ${signPrepositional(rising)}. Земля вращается, и следующим поднимется знак ${name(next)}.`,
+      aria: (rising) => `Схема: круг зодиака, рассечённый вашим горизонтом. На восточном горизонте ${name(rising)}, значит, асцендент ${signInRu(rising)}. Знаки над линией уже взошли, знаки под ней ещё взойдут.`,
+      caption: (rising, next) => `Круг зодиака, рассечённый горизонтом места рождения. На восточном горизонте ${name(rising)}, значит, асцендент ${signInRu(rising)}. Земля вращается, и следующим поднимется знак ${name(next)}.`,
     },
   },
 };

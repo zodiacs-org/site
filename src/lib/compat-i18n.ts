@@ -1,5 +1,5 @@
 /**
- * The pair page's computed panel and derived questions in the four
+ * The pair page's computed panel and derived questions in the five
  * translated languages. English stays in compat.ts, which also owns the
  * logic (which combination a pair is); this file only carries wording.
  * Server-side only: the translated pair pages render it at build time and
@@ -10,8 +10,8 @@ import type { InteractionNote, PairFacts } from './compat';
 import { signName } from './signs';
 import type { Sign } from './signs';
 
-export type PairLocale = 'es' | 'pt' | 'fr' | 'it';
-export const PAIR_LOCALES: readonly PairLocale[] = ['es', 'pt', 'fr', 'it'];
+export type PairLocale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
+export const PAIR_LOCALES: readonly PairLocale[] = ['es', 'pt', 'fr', 'it', 'ru'];
 
 type NoteTable = Record<string, InteractionNote>;
 
@@ -184,6 +184,48 @@ const ELEMENT_NOTES: Record<PairLocale, NoteTable> = {
       note: 'Vi leggete all’istante: un legame profondo e intuitivo, e sentirete l’uno gli stati d’animo dell’altro.',
     },
   },
+  ru: {
+    'fire+fire': {
+      label: 'Общий жар',
+      note: 'Вы оба загораетесь с полуслова: мгновенное притяжение, быстрые ссоры и ещё более быстрые примирения. Скучно не будет.',
+    },
+    'earth+fire': {
+      label: 'Искра и почва',
+      note: 'Огонь начинает, земля доводит до конца: вместе вы успеете многое, но будьте готовы спорить о темпе.',
+    },
+    'air+fire': {
+      label: 'Кислород',
+      note: 'Воздух раздувает огонь: живые разговоры, большие планы и лёгкая, быстрая связь.',
+    },
+    'fire+water': {
+      label: 'Пар',
+      note: 'Страсть встречает чувство: сильное притяжение, но эмоции могут перехлёстывать через край. Этой паре нужно терпение.',
+    },
+    'earth+earth': {
+      label: 'Твёрдая порода',
+      note: 'Надёжные и верные: вместе вы строите что-то прочное, хотя романтика рискует уйти в рутину.',
+    },
+    'air+earth': {
+      label: 'Идея и смета',
+      note: 'Идеи встречаются с практикой: вы уравновешиваете друг друга, но одному другой может казаться то слишком мечтательным, то слишком осторожным.',
+    },
+    'earth+water': {
+      label: 'Река и берег',
+      note: 'Одно из самых удачных сочетаний в астрологии: вода смягчает землю, земля даёт воде русло, и между вами растёт глубокое доверие.',
+    },
+    'air+air': {
+      label: 'Встречный ветер',
+      note: 'Сначала лучшие друзья: бесконечные разговоры и много свободы, хотя глубокие чувства порой так и остаются непроговорёнными.',
+    },
+    'air+water': {
+      label: 'Назвать погоду',
+      note: 'Голова встречает сердце: воздух хочет всё обсудить, вода хочет всё прочувствовать. Без терпения недоразумений не избежать.',
+    },
+    'water+water': {
+      label: 'Глубокая вода',
+      note: 'Вы понимаете друг друга без слов: глубокая, интуитивная связь, в которой настроение одного сразу чувствует другой.',
+    },
+  },
 };
 
 const MODALITY_NOTES: Record<PairLocale, NoteTable> = {
@@ -291,6 +333,32 @@ const MODALITY_NOTES: Record<PairLocale, NoteTable> = {
       note: 'Tranquilli e adattabili: pochi litigi, ma le decisioni possono restare in sospeso.',
     },
   },
+  ru: {
+    'cardinal+cardinal': {
+      label: 'Два инициатора',
+      note: 'Два лидера: много напора и частые споры о том, кто здесь главный.',
+    },
+    'cardinal+fixed': {
+      label: 'Начать и удержать',
+      note: 'Один начинает, другой удерживает: продуктивная команда, когда вы согласны насчёт направления.',
+    },
+    'cardinal+mutable': {
+      label: 'Начать и подстроиться',
+      note: 'Один ведёт, другой подстраивается: лёгкие отношения почти без борьбы за власть.',
+    },
+    'fixed+fixed': {
+      label: 'Два якоря',
+      note: 'Два верных и упрямых знака: прочная связь, но в споре не уступает ни один.',
+    },
+    'fixed+mutable': {
+      label: 'Якорь и парус',
+      note: 'Устойчивость встречает гибкость: вы хорошо уравновешиваете друг друга.',
+    },
+    'mutable+mutable': {
+      label: 'Два паруса',
+      note: 'Лёгкие и гибкие: ссор мало, зато решения могут повисать в воздухе.',
+    },
+  },
 };
 
 const POLARITY_NOTES: Record<PairLocale, { day: string; night: string; mixed: string }> = {
@@ -313,6 +381,11 @@ const POLARITY_NOTES: Record<PairLocale, { day: string; night: string; mixed: st
     day: 'Due estroversi: una coppia attiva, socievole e piena di energia.',
     night: 'Due riservati: un legame intimo e profondo, che ha bisogno di tempo da soli.',
     mixed: 'Un estroverso e un riservato: vi bilanciate, perché uno ne parla e l’altro ci riflette.',
+  },
+  ru: {
+    day: 'Оба открыты миру: активная, общительная пара, полная энергии.',
+    night: 'Оба сдержанны: близкая, глубокая связь, которой нужно время наедине.',
+    mixed: 'Один открыт миру, другой сдержан: вы уравновешиваете друг друга, потому что один проговаривает, а другой обдумывает.',
   },
 };
 
@@ -396,6 +469,15 @@ const FAQ_COPY: Record<PairLocale, FaqCopy> = {
     clashAnswer: (label, note) => `${label} descrive come si incontrano decisioni e ritmi: ${note}`,
     compatible: (names) => `La coppia ${names} è compatibile?`,
     compatibleAnswer: (polarity) => `Può esserlo. I segni solari descrivono un punto di partenza, non un verdetto. ${polarity} Un confronto completo legge anche le due Lune, le due Veneri, i due Marte e gli aspetti tra i temi natali.`,
+  },
+  ru: {
+    names: (a, b) => `${a} и ${b}`,
+    how: (names) => `Как складываются отношения в паре ${names}?`,
+    howAnswer: (label, note) => `«${label}»: это исходный рисунок пары. ${note} Как этот рисунок проживается на деле, решают остальные части обеих натальных карт.`,
+    clash: (names) => `Из-за чего чаще всего спорят ${names}?`,
+    clashAnswer: (label, note) => `«${label}»: так в этой паре сходятся решения и ритмы. ${note}`,
+    compatible: (names) => `Совместимы ли ${names}?`,
+    compatibleAnswer: (polarity) => `Могут быть. Солнечные знаки описывают отправную точку, а не приговор. ${polarity} Полное сравнение читает ещё обе Луны, обе Венеры, оба Марса и аспекты между картами.`,
   },
 };
 

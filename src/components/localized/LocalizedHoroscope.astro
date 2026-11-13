@@ -26,7 +26,7 @@ import Wheel from '../../lib/wheel/Wheel';
 import dailyData from '../../data/daily.json';
 import type { Daily } from '../../lib/daily';
 import { PLANET_GLYPH } from '../../lib/glyphs/paths';
-import { dailyReadingForLocale } from '../../lib/i18n/daily-reading';
+import { dailyReadingFor } from '../../lib/locale-expansion/daily-reading';
 import { formatDate } from '../../lib/i18n/dates';
 import { moonPhaseLabel, planetLabel } from '../../lib/i18n/astrology';
 import { englishOnlyCue } from '../../lib/i18n/english-only';
@@ -39,7 +39,7 @@ import { degreeMinutes } from '../../lib/today-sky';
 import { COPY_FOR_HOROSCOPE } from './today-copy-registry';
 import { named as namedBody } from './today-copy';
 
-type Locale = 'es' | 'pt' | 'fr' | 'it';
+type Locale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
 interface Props {
   locale: Locale;
   signSlug: string;
@@ -52,13 +52,13 @@ const local = (path: string) => localizePath(locale, path);
 const daily = dailyData as Daily;
 const sign = signBySlug(signSlug);
 const name = signName(sign, locale);
-const reading = dailyReadingForLocale(sign.slug, daily, locale);
+const reading = dailyReadingFor(sign.slug, daily, locale);
 const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 const planet = (body: string) => planetLabel(locale, body);
 const named = (body: string) => namedBody(locale, body);
 const listWords = (items: string[]) => (items.length <= 1
   ? items.join('')
-  : `${items.slice(0, -1).join(', ')} ${({ es: 'y', pt: 'e', fr: 'et', it: 'e' } as const)[locale]} ${items.at(-1)}`);
+  : `${items.slice(0, -1).join(', ')} ${({ es: 'y', pt: 'e', fr: 'et', it: 'e', ru: 'и' } as const)[locale]} ${items.at(-1)}`);
 
 const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
@@ -130,7 +130,7 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
   path={path}
   locale={locale}
   editionDate={daily.date}
-  image={locale === 'es' || locale === 'pt' ? localizedHoroscopeArtCard(sign.slug, locale) : localizedSignArtCard(sign.slug, locale)}
+  image={locale === 'es' || locale === 'pt' ? localizedHoroscopeArtCard(sign.slug, locale) : localizedSignArtCard(sign.slug, locale === 'ru' ? 'en' : locale)}
   imageAlt={c.imageAlt(name)}
 >
   <link
@@ -217,16 +217,16 @@ const englishAttrs = (href: string) => (href.startsWith(`/${locale}/`) || !href.
           <a href={local('/methodology/')} {...englishAttrs(local('/methodology/'))}>{c.methodLink}</a>
         </p>
 
-        <ShareRow
+        {locale !== 'ru' && <ShareRow
           text={c.share(name)}
           url={`https://zodiacs.org${path}`}
           locale={locale}
           label={c.shareLabel}
           variant="pills"
-        />
+        />}
 
-        <AskGuideLine lead={c.askLead} locale={locale} />
-        <GuideQuickPrompts prompts={c.prompts(name)} locale={locale} label={c.askLabel} />
+        {locale !== 'ru' && <AskGuideLine lead={c.askLead} locale={locale} />}
+        {locale !== 'ru' && <GuideQuickPrompts prompts={c.prompts(name)} locale={locale} label={c.askLabel} />}
       </section>
 
       <aside class="hzl-rail" aria-label={c.railAria}>

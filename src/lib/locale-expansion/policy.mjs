@@ -31,6 +31,11 @@ function buildFamilies() {
   ['full-moon', /^\/full-moon\/\d{4}-\d{2}-\d{2}\/$/],
   ['new-moon', /^\/new-moon\/\d{4}-\d{2}-\d{2}\/$/],
   ['zodiac-dates', /^\/learn\/zodiac-dates\/$/],
+  // Families the site already publishes in es, pt, fr and it; the record
+  // holds the further locales (Russian) that join them.
+  ['sign-guide', new RegExp(`^/(?:${SIGNS})/$`)],
+  ['rising-profile', new RegExp(`^/rising-sign/(?:${SIGNS})/$`)],
+  ['compatibility-pair', new RegExp(`^/compatibility/(?:${SIGNS})-(?:${SIGNS})/$`)],
   ];
 }
 
@@ -150,6 +155,8 @@ export const EXPANSION_ROUTES = [
   { families: ['full-moon'], pattern: '/full-moon/[date]/', file: 'full-moon' },
   { families: ['new-moon'], pattern: '/new-moon/[date]/', file: 'new-moon' },
   { families: ['zodiac-dates'], pattern: '/learn/zodiac-dates/', file: 'zodiac-dates' },
+  { families: ['rising-profile'], pattern: '/rising-sign/[sign]/', file: 'rising-profile' },
+  { families: ['compatibility-pair'], pattern: '/compatibility/[pair]/', file: 'compatibility-pair' },
 ];
 
 export function localeExpansionRoutes(state = currentState()) {

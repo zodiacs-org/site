@@ -13,6 +13,7 @@ import {
 } from '../lib/engine/lite';
 import type { MoonPhaseName } from '../lib/engine/lite';
 import { formatLongitude, signForLongitude, signName, signPrepositional } from '../lib/signs';
+import { signInRu } from '../lib/sign-ru';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { assessLocalDateReference } from '../lib/time/local-date-reference';
 import type { City } from '../lib/geo/search';
@@ -202,7 +203,7 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
             <strong class="mp__phase">{now ? moonPhaseLabel(locale, moonPhaseName(now)) : t(locale, 'moonReadingSky')}</strong>
             <span class="mp__meta">
               {now
-                ? `${Math.round(moonIllumination(now) * 100)}% ${t(locale, 'illuminated')} · ${t(locale, 'moonIn')} ${locale === 'ru' ? signPrepositional(signForLongitude(moonLongitude(now))) : signName(signForLongitude(moonLongitude(now)), locale)}`
+                ? `${Math.round(moonIllumination(now) * 100)}% ${t(locale, 'illuminated')} · ${locale === 'ru' ? `${t(locale, 'moonIn').replace(/(^| )в$/u, '')} ${signInRu(signForLongitude(moonLongitude(now)))}`.trimStart() : `${t(locale, 'moonIn')} ${signName(signForLongitude(moonLongitude(now)), locale)}`}`
                 : '—'}
             </span>
             {now && (
@@ -276,9 +277,9 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
                 <strong class="mp__phase">{moonPhaseLabel(locale, result.phase)}</strong>
                 <span class="mp__meta">{Math.round(result.illum * 100)}% {t(locale, 'illuminated')}</span>
                 <span class="mp__signline">
-                  {t(locale, 'moonIn')} {locale === 'ru'
-                    ? signPrepositional(signForLongitude(result.lon))
-                    : <SignChip lon={result.lon} locale={locale} />}
+                  {locale === 'ru'
+                    ? `${t(locale, 'moonIn').replace(/(^| )в$/u, '')} ${signInRu(signForLongitude(result.lon))}`.trimStart()
+                    : <>{t(locale, 'moonIn')} <SignChip lon={result.lon} locale={locale} /></>}
                 </span>
                 <EvidenceDisclosure label={t(locale, 'howWeCompute')}>
                   <span class="mp__meta mp__meta--faint">{formatLongitude(result.lon, locale)}</span>

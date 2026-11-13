@@ -682,6 +682,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The English /sky-calendar/ page gained the heads-up calendar on 12 November,
   // after the October design sweep dates above, so this wins.
   ['/sky-calendar/', SKY_HEADS_UP_LASTMOD] as const,
+  // The Russian rising-sign calculator writes «во Льве» (2026-11-10), last so this date wins.
+  ['/ru/rising-sign/', '2026-11-10'] as const,
   // The privacy page's analytics paragraph names the arrival words a link can
   // carry and what the growth test events count (approved 12 November), last so
   // this wins.

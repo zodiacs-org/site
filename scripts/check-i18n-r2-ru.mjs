@@ -2,6 +2,8 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
+import { EXPANSION_FAMILY_IDS, publishedLocalesForPath } from '../src/lib/locale-expansion/policy.mjs';
+import { expansionFamilyPaths } from './i18n-hreflang-policy.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(repo, 'dist');
@@ -26,12 +28,24 @@ const core = [
 ];
 const signPaths = new Set(signs.map((sign) => `/${sign}/`));
 const indexedRoutes = core.filter((path) => !signPaths.has(path)).map((path) => `/ru${path}`);
-const noindexSignRoutes = new Set(signs.map((sign) => `/ru/${sign}/`));
+// The Russian sign guides stay noindex until the locale expansion record
+// releases them (src/data/locale-expansion-publication.json, family sign-guide).
+const noindexSignRoutes = new Set(signs
+  .filter((sign) => !publishedLocalesForPath(`/${sign}/`).includes('ru'))
+  .map((sign) => `/ru/${sign}/`));
 // Hidden on 2026-11-12: still built, noindex nofollow, out of the sitemap and hreflang set.
 const hiddenChildRoutes = new Set(['/ru/baby-zodiac/']);
 const notFoundRoute = '/ru/404/';
 const withheldDailyRoute = approvedDailyDays.length ? null : '/ru/chart-of-the-day/';
-const expectedRoutes = [...indexedRoutes, ...noindexSignRoutes, ...hiddenChildRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
+const releasedSignRoutes = signs.map((sign) => `/ru/${sign}/`).filter((route) => !noindexSignRoutes.has(route));
+// Held sign guides keep the R2 contract (noindex, no Open Graph alternates); released ones join discovery.
+const heldSignPaths = new Set([...noindexSignRoutes].map((route) => route.slice(3)));
+// Other Russian pages the locale expansion has released (horoscopes, Moon pages, pairs and so on).
+const releasedExpansionRoutes = EXPANSION_FAMILY_IDS.filter((family) => family !== 'sign-guide')
+  .flatMap((family) => expansionFamilyPaths(family))
+  .filter((path) => publishedLocalesForPath(path).includes('ru'))
+  .map((path) => `/ru${path}`);
+const expectedRoutes = [...indexedRoutes, ...releasedSignRoutes, ...noindexSignRoutes, ...hiddenChildRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
 const expectedFiles = new Map(expectedRoutes.map((route) => [
   route,
   resolve(dist, route.replace(/^\//, ''), 'index.html'),
@@ -168,8 +182,8 @@ for (const [route, file] of expectedFiles) {
     fail(`${route}: expected Russian route is missing`);
   }
 }
-if (russianFiles.length !== expectedRoutes.length) {
-  fail(`Russian release has ${russianFiles.length} HTML files; expected exactly ${expectedRoutes.length}`);
+if (russianFiles.length !== expectedRoutes.length + releasedExpansionRoutes.length) {
+  fail(`Russian release has ${russianFiles.length} HTML files; expected exactly ${expectedRoutes.length + releasedExpansionRoutes.length}`);
 }
 
 for (const [route, file] of expectedFiles) {
@@ -254,7 +268,7 @@ for (const [route, file] of expectedFiles) {
 }
 
 for (const contentPath of core) {
-  const discoveryLocaleCards = signPaths.has(contentPath)
+  const discoveryLocaleCards = heldSignPaths.has(contentPath)
     ? publicLocaleCards.filter((entry) => entry.prefix !== '/ru')
     : publicLocaleCards;
   for (const locale of publicLocaleCards) {
@@ -269,7 +283,7 @@ for (const contentPath of core) {
     }
     const self = propertyMetaContents(html, 'og:locale');
     const alternates = propertyMetaContents(html, 'og:locale:alternate');
-    const expectedAlternates = signPaths.has(contentPath) && locale.prefix === '/ru'
+    const expectedAlternates = heldSignPaths.has(contentPath) && locale.prefix === '/ru'
       ? []
       : discoveryLocaleCards
         .filter((entry) => entry.ogLocale !== locale.ogLocale)
@@ -286,8 +300,9 @@ for (const contentPath of core) {
 const sitemap = await readFile(resolve(dist, 'sitemap.xml'), 'utf8');
 const russianSitemapRoutes = [...sitemap.matchAll(/<loc>https:\/\/zodiacs\.org(\/ru\/[^<]*)<\/loc>/gu)]
   .map((match) => match[1]);
-if (JSON.stringify([...russianSitemapRoutes].sort()) !== JSON.stringify([...indexedRoutes].sort())) {
-  fail(`sitemap.xml has ${russianSitemapRoutes.length}/${indexedRoutes.length} exact indexable Russian core routes`);
+const expectedRussianSitemap = [...indexedRoutes, ...releasedSignRoutes, ...releasedExpansionRoutes];
+if (JSON.stringify([...russianSitemapRoutes].sort()) !== JSON.stringify([...expectedRussianSitemap].sort())) {
+  fail(`sitemap.xml has ${russianSitemapRoutes.length}/${expectedRussianSitemap.length} exact indexable Russian routes`);
 }
 if (sitemap.includes('/ru/404/')) fail('sitemap.xml contains the noindex Russian 404');
 
@@ -347,4 +362,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`i18n-r2-ru: OK — ${indexedRoutes.length} indexable routes + 12 noindex sign guides + noindex 404 and unapproved daily edition, reciprocal discovery, ${fontBytes} font bytes, ${heroPosterBytes}/${mobileHeroPosterBytes} byte desktop/mobile homepage posters`);
+console.log(`i18n-r2-ru: OK — ${indexedRoutes.length + releasedSignRoutes.length + releasedExpansionRoutes.length} indexable routes + ${noindexSignRoutes.size} noindex sign guides + noindex 404 and unapproved daily edition, reciprocal discovery, ${fontBytes} font bytes, ${heroPosterBytes}/${mobileHeroPosterBytes} byte desktop/mobile homepage posters`);

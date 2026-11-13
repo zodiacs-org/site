@@ -75,3 +75,31 @@ at again after the first eight batches; any change to the cap is a change to
 - After merge and deploy: one live page from the batch is checked for
   `index`, self-canonical, reciprocal hreflang and its sitemap entry. The
   batch is logged in the merge log issue.
+
+## Russian (decided 2026-11-09, delegated by Dias)
+
+Russian is released through the same plan, inside the same 10 pages a week,
+and never ahead of the Spanish, Portuguese, French and Italian computed
+batches it would compete with. Its 325 held pages wait behind the first six
+batches above.
+
+- **Order.** The 12 sign guides first, two a week: they are already built at
+  `/ru/{sign}/` and only change from noindex to indexable. Then zodiac dates,
+  today and the next Moon pages, then the daily hub and signs, then the
+  periods in the order above, then the rising profiles and the 78 pairs,
+  which carry the most prose.
+- **Reasons.** The Russian pages pass the same copy rules and the same
+  independent review as the other four locales, and the existing Russian
+  calculators already earn Russian search traffic. Holding Russian back
+  entirely would leave built, reviewed pages unused; releasing it ahead of
+  the others would spend the weekly cap on the locale with the least
+  evidence so far.
+- **Gate.** The same per-batch gate applies. Before the first Russian batch,
+  the review notes in `samples/review-2026-11-09/ru.md` stay applied, and
+  the sample sheet `samples/ru.md` is regenerated. A paid native review is
+  recommended to Dias before the pairs and profiles go out, but nothing is
+  bought.
+
+Dias can reverse this at any time by leaving the Russian entries held; no
+batch PR releases Russian without the usual draft, CI, review and merge
+path.

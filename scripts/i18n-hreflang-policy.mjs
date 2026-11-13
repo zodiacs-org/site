@@ -15,12 +15,24 @@ const publishedEventPaths = mergeEventPublications(EVENT_PUBLICATION_FILES
   .map((file) => JSON.parse(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'))))
   .pages.map((page) => page.path);
 /** Base locales of a family before the expansion: the daily editions already publish es and pt. */
-const EXPANSION_BASE = { 'horoscope-daily': ['en', 'es', 'pt'], today: ['en', 'es', 'pt'] };
+const LIVE_FIVE = ['en', 'es', 'pt', 'fr', 'it'];
+const EXPANSION_BASE = {
+  'horoscope-daily': ['en', 'es', 'pt'],
+  today: ['en', 'es', 'pt'],
+  'sign-guide': LIVE_FIVE,
+  'rising-profile': LIVE_FIVE,
+  'compatibility-pair': LIVE_FIVE,
+};
 /** English paths per expansion family (src/lib/locale-expansion/policy.mjs). */
 export function expansionFamilyPaths(family) {
   if (family === 'horoscope-daily') return ['/horoscopes/', ...SIGNS_FOR_EXPANSION.map((slug) => `/horoscopes/${slug}/`)];
   if (family === 'today') return ['/today/'];
   if (family === 'zodiac-dates') return ['/learn/zodiac-dates/'];
+  if (family === 'sign-guide') return SIGNS_FOR_EXPANSION.map((slug) => `/${slug}/`);
+  if (family === 'rising-profile') return SIGNS_FOR_EXPANSION.map((slug) => `/rising-sign/${slug}/`);
+  if (family === 'compatibility-pair') {
+    return SIGNS_FOR_EXPANSION.flatMap((a, index) => SIGNS_FOR_EXPANSION.slice(index).map((b) => `/compatibility/${a}-${b}/`));
+  }
   if (family === 'full-moon' || family === 'new-moon') return publishedEventPaths.filter((path) => path.startsWith(`/${family}/`));
   const period = HOROSCOPE_PERIODS.find((candidate) => family === `horoscope-${candidate}`);
   return period ? SIGNS_FOR_EXPANSION.map((slug) => `/horoscopes/${slug}/${period}/`) : [];
