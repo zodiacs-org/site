@@ -496,6 +496,10 @@
     {
       "source": "/api/v1/elections",
       "destination": "/api/compatibility?__zodiacs_compute=elections"
+    },
+    {
+      "source": "/:locale(es|pt|fr|it|ru)/(.*)",
+      "destination": "/api/compatibility?__zodiacs_not_found=:locale"
     }
   ],
   "headers": [

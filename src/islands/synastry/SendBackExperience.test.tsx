@@ -63,6 +63,34 @@ describe('Phase 4 send-back share surfaces', () => {
     expect(markup).not.toMatch(/birth date|birth time|birth place|latitude|longitude/i);
   });
 
+  it('speaks the page language on a localized plain result, with no English phrase and no birth input', () => {
+    const english = [
+      'Share the reading', 'Send this to', 'One tap makes a picture', 'Send it',
+      'Copy the private link', 'Download the picture', 'Preparing the picture', 'Share the big three',
+    ];
+    const expected = {
+      es: ['Envíasela a Sam.', 'Copiar el enlace privado', 'Descargar la imagen', 'Compartir los tres grandes'],
+      pt: ['Envie para Sam.', 'Copiar o link privado', 'Baixar a imagem', 'Compartilhar meus três signos'],
+      fr: ['Envoie-la à Sam.', 'Copier le lien privé', 'Télécharger l’image', 'Partager les trois signes'],
+      it: ['Inviala a Sam.', 'Copia il link privato', 'Scarica l’immagine', 'Condividi i miei tre segni'],
+      ru: ['Пусть Sam тоже увидит.', 'Скопировать личную ссылку', 'Скачать картинку', 'Поделиться большой тройкой'],
+    } as const;
+    for (const [locale, phrases] of Object.entries(expected) as [keyof typeof expected, readonly string[]][]) {
+      const markup = render(h(SendBackCard, {
+        a: person('Me', true),
+        b: person('Sam', true),
+        summary: {} as PairSummary,
+        inviterLabel: 'Sam',
+        variant: 'share',
+        locale,
+      }));
+      for (const phrase of phrases) expect(markup, locale).toContain(phrase);
+      for (const phrase of english) expect(markup, `${locale}: ${phrase}`).not.toContain(phrase);
+      expect(markup, locale).not.toMatch(/[–—]/u);
+      expect(markup, locale).not.toMatch(/birth date|birth time|birth place|latitude|longitude/i);
+    }
+  });
+
   it('keeps the Big Three action absent for a no-time chart', () => {
     const markup = render(h(SendBackCard, {
       a: person('Frida', true),

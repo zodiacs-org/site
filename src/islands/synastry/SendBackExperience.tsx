@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { NextActionCard } from '../../components/NextActionCard';
 import type { MinimalBody, PairSummary } from '../../lib/engine/synastry';
+import type { CatalogLocale as Locale } from '../../lib/i18n';
 import type { PositionsShareInput } from '../../lib/share-positions';
 import type { BigThreeCardChart, PreparedChartCard } from '../../lib/share-card';
 import { shareCardText } from '../../lib/share-card-copy';
@@ -77,18 +78,125 @@ const COPY = {
   sendImage: 'Download the picture',
 } as const;
 
+type SendWording = { readonly [K in keyof typeof COPY]: string };
+
 // The same card offered on a plain result: nobody invited anyone, so the copy
-// is about sending, not sending back.
-const SHARE_COPY = {
-  sendCue: 'Share the reading',
-  sendTitle: 'Send this to {label}.',
-  sendBody: 'One tap makes a picture of this reading and a private link that carries both charts as positions, with the labels you typed and no birth details.',
-  sendShare: 'Send it',
-  sendShareText: 'Our charts, read together, from zodiacs.org',
-  sendCopy: 'Copy the private link',
-  sendCopied: 'Link copied. It carries chart positions and the two labels, with no birth details.',
-  sendImage: 'Download the picture',
-} as const;
+// is about sending, not sending back. This variant also renders on the
+// localized compatibility pages, so it speaks every catalog locale. The
+// return variant above stays English: invitations only run on English pages.
+const SHARE_COPY: Record<Locale, SendWording> = {
+  en: {
+    sendCue: 'Share the reading',
+    sendTitle: 'Send this to {label}.',
+    sendBody: 'One tap makes a picture of this reading and a private link that carries both charts as positions, with the labels you typed and no birth details.',
+    sendShare: 'Send it',
+    sendShareText: 'Our charts, read together, from zodiacs.org',
+    sendCopy: 'Copy the private link',
+    sendCopied: 'Link copied. It carries chart positions and the two labels, with no birth details.',
+    sendImage: 'Download the picture',
+  },
+  es: {
+    sendCue: 'Comparte la lectura',
+    sendTitle: 'Envíasela a {label}.',
+    sendBody: 'Con un toque se crea una imagen de esta lectura y un enlace privado que lleva las dos cartas como posiciones, con los nombres que escribiste y sin datos de nacimiento.',
+    sendShare: 'Enviar',
+    sendShareText: 'Nuestras cartas, leídas juntas, desde zodiacs.org',
+    sendCopy: 'Copiar el enlace privado',
+    sendCopied: 'Enlace copiado. Lleva las posiciones de las cartas y los dos nombres, sin datos de nacimiento.',
+    sendImage: 'Descargar la imagen',
+  },
+  pt: {
+    sendCue: 'Compartilhe a leitura',
+    sendTitle: 'Envie para {label}.',
+    sendBody: 'Com um toque, você cria uma imagem desta leitura e um link privado que leva os dois mapas como posições, com os nomes que você digitou e sem dados de nascimento.',
+    sendShare: 'Enviar',
+    sendShareText: 'Nossos mapas, lidos juntos, no zodiacs.org',
+    sendCopy: 'Copiar o link privado',
+    sendCopied: 'Link copiado. Ele leva as posições dos mapas e os dois nomes, sem dados de nascimento.',
+    sendImage: 'Baixar a imagem',
+  },
+  fr: {
+    sendCue: 'Partager la lecture',
+    sendTitle: 'Envoie-la à {label}.',
+    sendBody: 'Un geste crée une image de cette lecture et un lien privé qui transmet les deux thèmes sous forme de positions, avec les noms que tu as saisis et aucune donnée de naissance.',
+    sendShare: 'Envoyer',
+    sendShareText: 'Nos thèmes, lus ensemble, sur zodiacs.org',
+    sendCopy: 'Copier le lien privé',
+    sendCopied: 'Lien copié. Il transmet les positions des thèmes et les deux noms, sans données de naissance.',
+    sendImage: 'Télécharger l’image',
+  },
+  it: {
+    sendCue: 'Condividi la lettura',
+    sendTitle: 'Inviala a {label}.',
+    sendBody: 'Con un tocco crei un’immagine di questa lettura e un link privato che porta i due temi come posizioni, con i nomi che hai scritto e nessun dato di nascita.',
+    sendShare: 'Invia',
+    sendShareText: 'I nostri temi, letti insieme, da zodiacs.org',
+    sendCopy: 'Copia il link privato',
+    sendCopied: 'Link copiato. Porta le posizioni dei temi e i due nomi, senza dati di nascita.',
+    sendImage: 'Scarica l’immagine',
+  },
+  ru: {
+    sendCue: 'Поделиться разбором',
+    sendTitle: 'Пусть {label} тоже увидит.',
+    sendBody: 'Одно касание создаёт картинку с этим разбором и личную ссылку, в которой обе карты переданы как положения, с именами, которые вы ввели, и без данных рождения.',
+    sendShare: 'Отправить',
+    sendShareText: 'Наши карты, прочитанные вместе, с zodiacs.org',
+    sendCopy: 'Скопировать личную ссылку',
+    sendCopied: 'Ссылка скопирована. В ней положения карт и два имени, без данных рождения.',
+    sendImage: 'Скачать картинку',
+  },
+};
+
+const STATUS_COPY: Record<Locale, {
+  shareTitle: string;
+  preparing: string;
+  error: string;
+  bigThreeReady: string;
+  bigThreeError: string;
+}> = {
+  en: {
+    shareTitle: 'Our charts, read together | Zodiacs.org',
+    preparing: 'Preparing the picture…',
+    error: 'The share is still here. Please try again.',
+    bigThreeReady: 'Your Big Three picture is ready.',
+    bigThreeError: "The Big Three picture isn't ready. Please try again.",
+  },
+  es: {
+    shareTitle: 'Nuestras cartas, leídas juntas | Zodiacs.org',
+    preparing: 'Preparando la imagen…',
+    error: 'Lo que ibas a compartir sigue aquí. Inténtalo de nuevo.',
+    bigThreeReady: 'Tu imagen de los tres grandes está lista.',
+    bigThreeError: 'La imagen de los tres grandes no está lista. Inténtalo de nuevo.',
+  },
+  pt: {
+    shareTitle: 'Nossos mapas, lidos juntos | Zodiacs.org',
+    preparing: 'Preparando a imagem…',
+    error: 'O compartilhamento continua aqui. Tente de novo.',
+    bigThreeReady: 'Sua imagem dos três signos está pronta.',
+    bigThreeError: 'A imagem dos três signos ainda não está pronta. Tente de novo.',
+  },
+  fr: {
+    shareTitle: 'Nos thèmes, lus ensemble | Zodiacs.org',
+    preparing: 'Préparation de l’image…',
+    error: 'Le partage est toujours là. Réessaie.',
+    bigThreeReady: 'L’image de tes trois signes est prête.',
+    bigThreeError: 'L’image des trois signes n’est pas prête. Réessaie.',
+  },
+  it: {
+    shareTitle: 'I nostri temi, letti insieme | Zodiacs.org',
+    preparing: 'Preparo l’immagine…',
+    error: 'La condivisione è ancora qui. Riprova.',
+    bigThreeReady: 'L’immagine dei tuoi tre segni è pronta.',
+    bigThreeError: 'L’immagine dei tre segni non è pronta. Riprova.',
+  },
+  ru: {
+    shareTitle: 'Наши карты, прочитанные вместе | Zodiacs.org',
+    preparing: 'Готовим картинку…',
+    error: 'Всё на месте. Попробуйте ещё раз.',
+    bigThreeReady: 'Картинка с вашей большой тройкой готова.',
+    bigThreeError: 'Картинка с большой тройкой не готова. Попробуйте ещё раз.',
+  },
+};
 
 function download(blob: Blob) {
   const url = URL.createObjectURL(blob);
@@ -108,6 +216,7 @@ export function SendBackCard({
   inviterLabel,
   onReturned,
   variant = 'return',
+  locale = 'en',
 }: {
   a: SendPerson;
   b: SendPerson;
@@ -116,8 +225,11 @@ export function SendBackCard({
   onReturned?: (method: SendMethod) => void;
   /** `return` completes an invitation; `share` offers a plain result to the other person. */
   variant?: 'return' | 'share';
+  /** The page's language. Only the share variant renders off English pages. */
+  locale?: Locale;
 }) {
-  const wording = variant === 'share' ? SHARE_COPY : COPY;
+  const wording: SendWording = variant === 'share' ? SHARE_COPY[locale] : COPY;
+  const status = STATUS_COPY[locale];
   const [blob, setBlob] = useState<Blob | null>(null);
   const [state, setState] = useState<ActionState>('preparing');
   const [bigThree, setBigThree] = useState<{
@@ -150,7 +262,7 @@ export function SendBackCard({
     let active = true;
     setState('preparing');
     void import('../../lib/compatibility-card').then(({ drawCompatibilityCard }) => (
-      drawCompatibilityCard(a, b, summary, 'en')
+      drawCompatibilityCard(a, b, summary, locale)
     )).then((next) => {
       if (!active) return;
       setBlob(next);
@@ -159,7 +271,7 @@ export function SendBackCard({
       if (active) setState('error');
     });
     return () => { active = false; };
-  }, [a, b, summary]);
+  }, [a, b, summary, locale]);
 
   useEffect(() => {
     let active = true;
@@ -167,7 +279,7 @@ export function SendBackCard({
     setBigThreeState('preparing');
     if (!b.positions.angles) return () => { active = false; };
     void import('../../lib/share-card').then(async (module) => {
-      const prepared = await module.prepareBigThreeCard(bigThreeCardSource(b), 'en');
+      const prepared = await module.prepareBigThreeCard(bigThreeCardSource(b), locale);
       if (!active) return;
       setBigThree({ module, prepared });
       setBigThreeState('ready');
@@ -175,7 +287,7 @@ export function SendBackCard({
       if (active) setBigThreeState('error');
     });
     return () => { active = false; };
-  }, [b.positions, b.utc]);
+  }, [b.positions, b.utc, locale]);
 
   async function copy() {
     if (!url) return;
@@ -192,7 +304,7 @@ export function SendBackCard({
     if (!url || !navigator.share) return;
     const file = blob ? new File([blob], 'zodiacs-compatibility.png', { type: 'image/png' }) : null;
     const data: ShareData = {
-      title: 'Our charts, read together | Zodiacs.org',
+      title: status.shareTitle,
       text: wording.sendShareText,
       url,
       ...(file && navigator.canShare?.({ files: [file] }) ? { files: [file] } : {}),
@@ -271,17 +383,17 @@ export function SendBackCard({
               disabled={!bigThree || bigThreeState === 'preparing' || bigThreeState === 'busy'}
               data-share-card-action="big-three"
             >
-              {shareCardText('en', 'bigThreeAction')}
+              {shareCardText(locale, 'bigThreeAction')}
             </button>
           )}
-          {state === 'preparing' && <span class="field__help">Preparing the picture…</span>}
+          {state === 'preparing' && <span class="field__help">{status.preparing}</span>}
           {state === 'copied' && <p class="sr-only" role="status">{wording.sendCopied}</p>}
-          {state === 'error' && <p class="calc__error" role="alert">The share is still here. Please try again.</p>}
+          {state === 'error' && <p class="calc__error" role="alert">{status.error}</p>}
           {bigThreeState === 'saved' && (
-            <p class="sr-only" role="status">Your Big Three picture is ready.</p>
+            <p class="sr-only" role="status">{status.bigThreeReady}</p>
           )}
           {b.positions.angles && bigThreeState === 'error' && (
-            <p class="calc__error" role="alert">The Big Three picture isn't ready. Please try again.</p>
+            <p class="calc__error" role="alert">{status.bigThreeError}</p>
           )}
         </>
       )}
