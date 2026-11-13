@@ -106,7 +106,7 @@ export default function CalendarSubscribe({ locale, positions, birthDate, contac
             data-calendar-download
           >
             <span>{copy.download}</span>
-            <span class="orb">↓</span>
+            <span class="orb" aria-hidden="true">↓</span>
           </button>
           <p class="calendar-subscribe__note">{copy.downloadNote}</p>
         </>

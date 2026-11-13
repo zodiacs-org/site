@@ -411,7 +411,7 @@ export default function ChartShareDialog({
             disabled={card === 'busy' || !prepared[primaryChoice] || states[primaryChoice] === 'preparing' || states[primaryChoice] === 'busy'}
             data-share-card-action={primaryChoice}
           >
-            <span>{actionText(primaryChoice)}</span><span class="orb">{states[primaryChoice] === 'saved' ? '✓' : '↗'}</span>
+            <span>{actionText(primaryChoice)}</span><span class="orb" aria-hidden="true">{states[primaryChoice] === 'saved' ? '✓' : '↗'}</span>
           </button>
           {mode === 'full' && (
             <button
@@ -421,7 +421,7 @@ export default function ChartShareDialog({
               disabled={card === 'busy' || !prepared[primaryAlternative] || states[primaryAlternative] === 'preparing' || states[primaryAlternative] === 'busy'}
               data-share-card-action={primaryAlternative}
             >
-              <span>{actionText(primaryAlternative)}</span><span class="orb">{states[primaryAlternative] === 'saved' ? '✓' : states[primaryAlternative] === 'ready' ? '↗' : '+'}</span>
+              <span>{actionText(primaryAlternative)}</span><span class="orb" aria-hidden="true">{states[primaryAlternative] === 'saved' ? '✓' : states[primaryAlternative] === 'ready' ? '↗' : '+'}</span>
             </button>
           )}
         </div>
@@ -447,7 +447,7 @@ export default function ChartShareDialog({
                     disabled={story.state === 'preparing'}
                     data-share-story-make
                   >
-                    <span>{story.state === 'preparing' ? shareText(locale, 'preparingImage') : storyCardText(locale, 'storyAction')}</span><span class="orb">+</span>
+                    <span>{story.state === 'preparing' ? shareText(locale, 'preparingImage') : storyCardText(locale, 'storyAction')}</span><span class="orb" aria-hidden="true">+</span>
                   </button>
                 ) : (
                   <>
@@ -459,7 +459,7 @@ export default function ChartShareDialog({
                         disabled={story.state === 'busy'}
                         data-share-story-share
                       >
-                        <span>{storyCardText(locale, 'storyShare')}</span><span class="orb">↗</span>
+                        <span>{storyCardText(locale, 'storyShare')}</span><span class="orb" aria-hidden="true">↗</span>
                       </button>
                     )}
                     <button
@@ -468,7 +468,7 @@ export default function ChartShareDialog({
                       onClick={downloadStory}
                       data-share-story-download
                     >
-                      <span>{storyCardText(locale, 'storyDownload')}</span><span class="orb">{story.state === 'saved' ? '✓' : '↓'}</span>
+                      <span>{storyCardText(locale, 'storyDownload')}</span><span class="orb" aria-hidden={story.state === 'saved' ? undefined : 'true'}>{story.state === 'saved' ? '✓' : '↓'}</span>
                     </button>
                   </>
                 )}

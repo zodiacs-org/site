@@ -445,7 +445,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
 
           <button class="btn btn--primary calc__submit" type="submit" disabled={!ready || busy}>
             <span>{busy ? t(locale, 'checking') : t(locale, 'checkTransits')}</span>
-            <span class="orb">↗</span>
+            <span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="calc__privacy">{t(locale, 'privacyDevice')}</p>
           {charts.length === 0 && (

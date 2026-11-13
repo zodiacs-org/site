@@ -78,7 +78,7 @@ export default function GroupCharts({ locale = 'en' }: { locale?: CatalogLocale 
         {entries.length > 3 && <button class="group-remove" type="button" aria-label={s(locale, 'removePerson', { person: entry.name || s(locale, 'person', { n: index + 1 }) })} onClick={() => change((current) => current.filter((item) => item.id !== entry.id))}>{t(locale, 'remove')}</button>}
       </fieldset>)}</div>
       <div class="sharing-actions"><button type="button" class="btn btn--ghost" data-group-add disabled={entries.length >= 8} onClick={() => { const id = nextId.current++; change((current) => current.length < 8 ? [...current, emptyEntry(id)] : current); }}>{s(locale, 'addPerson')}</button>
-        <button type="submit" class="btn btn--primary" disabled={busy} data-group-submit><span>{s(locale, busy ? 'computing' : 'groupSubmit')}</span><span class="orb">↗</span></button></div>
+        <button type="submit" class="btn btn--primary" disabled={busy} data-group-submit><span>{s(locale, busy ? 'computing' : 'groupSubmit')}</span><span class="orb" aria-hidden="true">↗</span></button></div>
       <p class="sharing-note">{s(locale, 'privacy')}</p>
       {error && <p role="alert" class="field__error">{error}</p>}<CalculationReload error={error} locale={locale} />
     </form>
@@ -91,7 +91,7 @@ export default function GroupCharts({ locale = 'en' }: { locale?: CatalogLocale 
         <details><summary>{s(locale, 'groupMethod')}</summary><ul class="group-basis">{reading.placements.map((placement) => <li>{placement.body === 'Rising' ? t(locale, 'rising') : planetLabel(locale, placement.body)}: {signName(signBySlug(placement.sign), locale)}</li>)}</ul></details>
         <trust.CheckOurMath locale={locale} utc={chart.input.utc} basis={chart.input.timeKnown ? 'birth' : 'reference'} />
       </article>)}</div>
-      <button class="btn btn--glass" type="button" onClick={share} disabled={cardState === 'preparing' || cardState === 'sharing'} data-group-share><span>{s(locale, cardState === 'preparing' ? 'cardPreparing' : cardState === 'sharing' ? 'sharing' : cardState === 'shared' ? 'shared' : cardState === 'saved' ? 'saved' : cardState === 'failed' ? 'retry' : 'groupShare')}</span><span class="orb">↑</span></button>
+      <button class="btn btn--glass" type="button" onClick={share} disabled={cardState === 'preparing' || cardState === 'sharing'} data-group-share><span>{s(locale, cardState === 'preparing' ? 'cardPreparing' : cardState === 'sharing' ? 'sharing' : cardState === 'shared' ? 'shared' : cardState === 'saved' ? 'saved' : cardState === 'failed' ? 'retry' : 'groupShare')}</span><span class="orb" aria-hidden="true">↑</span></button>
       {cardState === 'failed' && <p class="field__error" role="alert">{s(locale, 'cardError')}</p>}
       <p class="sharing-note">{s(locale, 'groupCardNote')}</p>
     </section>}

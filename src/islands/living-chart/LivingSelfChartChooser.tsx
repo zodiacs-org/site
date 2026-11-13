@@ -68,7 +68,7 @@ export function LivingSelfChartPlaceholder() {
         <h2>Which chart is yours?</h2>
         <p>Choose your own birth chart to open a personal forecast.</p>
       </div>
-      <span class="btn btn--primary"><span>Use this as my chart</span><span class="orb">→</span></span>
+      <span class="btn btn--primary"><span>Use this as my chart</span><span class="orb" aria-hidden="true">→</span></span>
     </section>
   );
 }

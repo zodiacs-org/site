@@ -2100,7 +2100,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   ? otherSubjectCopy.submit
                   : t(locale, 'getBirthChart')}
             </span>
-            <span class="orb">↗</span>
+            <span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="calc__privacy">
             {subjectMode === 'other' ? otherSubjectCopy.privacy : t(locale, 'privacyDevice')}
@@ -2293,7 +2293,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                     <span>{firstReading.status === 'in_progress'
                       ? t(locale, 'firstReadingResume')
                       : t(locale, 'firstReadingStart')}</span>
-                    <span class="orb">→</span>
+                    <span class="orb" aria-hidden="true">→</span>
                   </button>
                   <button class="btn btn--ghost" type="button" onClick={dismissFirstReading} data-first-reading-dismiss>
                     {t(locale, 'firstReadingExplore')}
@@ -2676,7 +2676,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   data-primary-action={subjectMode === 'other' ? 'saved_charts' : 'today'}
                 >
                   <span>{subjectMode === 'other' ? t(locale, 'navSavedCharts') : t(locale, 'seeTodaySky')}{subjectMode === 'other' ? '' : russianCopy?.chart.englishOnlySuffix ?? ''}</span>
-                  <span class="orb">→</span>
+                  <span class="orb" aria-hidden="true">→</span>
                 </a>
               ) : null
             ) : (
@@ -2692,7 +2692,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   data-save-chart
                 >
                   <span aria-live="polite">{saved === 'saved' ? t(locale, 'chartSavedDevice') : t(locale, 'saveThisChart')}</span>
-                  <span class="orb">{saved === 'saved' ? '✓' : '+'}</span>
+                  <span class="orb" aria-hidden="true">{saved === 'saved' ? '✓' : '+'}</span>
                 </button>
                 <button
                   class="btn btn--ghost"
@@ -2702,7 +2702,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   data-share-placement
                 >
                   <span>{shareActionStatusLabel}</span>
-                  <span class="orb">↗</span>
+                  <span class="orb" aria-hidden="true">↗</span>
                 </button>
                 <a
                   class="btn btn--ghost"
@@ -2710,7 +2710,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                     ? `${localizePath(locale, '/birth-chart/')}#${chartHandoffFragment(shareInput, { subjectMode })}`
                     : localizePath(locale, '/birth-chart/')}
                   data-birth-chart-handoff
-                ><span>{t(locale, 'getBirthChart')}</span><span class="orb">↗</span></a>
+                ><span>{t(locale, 'getBirthChart')}</span><span class="orb" aria-hidden="true">↗</span></a>
               </>
             )}
           </div>
@@ -2748,7 +2748,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   data-share-options
                 >
                   <span>{t(locale, 'shareChart')} · {t(locale, 'chartActionsMore')}</span>
-                  <span class="orb">↗</span>
+                  <span class="orb" aria-hidden="true">↗</span>
                 </button>
                 <div class="calc__more-copy" data-calculation-receipt-export>
                     <button

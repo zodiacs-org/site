@@ -81,7 +81,7 @@ export default function PersonalCalendar({ locale }: { locale: CatalogLocale }) 
   return <div class="personal-calendar">
     <form class="return-personal" onSubmit={compute} aria-busy={busy}>
       <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(patch) => { clear(); setEntry((current) => ({ ...current, ...patch })); }} />
-      <button class="btn btn--primary" disabled={busy} data-personal-calendar-submit><span>{s(locale, busy ? 'generating' : 'personalFind')}</span><span class="orb">↗</span></button>
+      <button class="btn btn--primary" disabled={busy} data-personal-calendar-submit><span>{s(locale, busy ? 'generating' : 'personalFind')}</span><span class="orb" aria-hidden="true">↗</span></button>
       {busy && <button class="btn btn--ghost" type="button" onClick={clear}>{s(locale, 'cancel')}</button>}
       <p class="sharing-note">{s(locale, 'personalPrivacy')}</p>
       {error && <p class="field__error" role="alert">{error}</p>}<CalculationReload error={error} locale={locale} />
@@ -93,7 +93,7 @@ export default function PersonalCalendar({ locale }: { locale: CatalogLocale }) 
         <span>{event.summary}</span>
         <time dateTime={event.date ?? String(event.start)}>{shown(event)}</time>
       </li>)}</ul>
-      <div class="return-actions"><button type="button" class="btn btn--primary" onClick={() => { void download(); }} data-personal-calendar-download><span>{s(locale, 'personalDownload')}</span><span class="orb">↓</span></button></div>
+      <div class="return-actions"><button type="button" class="btn btn--primary" onClick={() => { void download(); }} data-personal-calendar-download><span>{s(locale, 'personalDownload')}</span><span class="orb" aria-hidden="true">↓</span></button></div>
       <p class="sharing-note">{s(locale, 'personalHow')}</p>
     </section>}
   </div>;

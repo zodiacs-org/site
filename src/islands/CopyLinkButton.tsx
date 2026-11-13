@@ -52,7 +52,7 @@ export function CopyLinkButton({
           data-details-link={dataHook === 'details' ? true : undefined}
         >
           <span>{state === 'copied' ? copiedLabel : idleLabel}</span>
-          <span class="orb">{state === 'copied' ? '✓' : '⧉'}</span>
+          <span class="orb" aria-hidden="true">{state === 'copied' ? '✓' : '⧉'}</span>
         </button>
       </div>
       {state === 'manual' && (

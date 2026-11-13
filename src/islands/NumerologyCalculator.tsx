@@ -345,7 +345,7 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
 
           <button class="btn btn--primary calc__submit" type="submit" disabled={!date}>
             <span>Find my numbers</span>
-            <span class="orb">↗</span>
+            <span class="orb" aria-hidden="true">↗</span>
           </button>
           <p class="calc__privacy">Private by default. Your name and birth date stay in this browser.</p>
           {error && <p key={attempt} class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
@@ -377,7 +377,7 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
               <p class="num__source">From your birth date, {profile.date.iso}</p>
               {lifePath.value !== currentLifePath && (
                 <a class="btn btn--ghost num__read" href={`/numerology/life-path/${lifePath.value}/`}>
-                  <span>Read about Life Path {lifePath.value}</span><span class="orb">→</span>
+                  <span>Read about Life Path {lifePath.value}</span><span class="orb" aria-hidden="true">→</span>
                 </a>
               )}
             </div>
@@ -503,10 +503,10 @@ export default function NumerologyCalculator({ currentLifePath, share = false }:
 
           <div class="calc__actions">
             <a class="btn btn--ghost" href="/tools/">
-              <span>All tools</span><span class="orb">→</span>
+              <span>All tools</span><span class="orb" aria-hidden="true">→</span>
             </a>
             <a class="btn btn--ghost" href="/birth-chart/">
-              <span>Your birth chart</span><span class="orb">↗</span>
+              <span>Your birth chart</span><span class="orb" aria-hidden="true">↗</span>
             </a>
           </div>
         </div>
