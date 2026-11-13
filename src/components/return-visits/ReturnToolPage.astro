@@ -43,6 +43,7 @@ const jsonLd = kind === 'calendar' ? [] : [{ '@type': 'WebApplication', name: s(
       <h2 id="heads-up-title">{h('headsUpTitle')}</h2>
       <p>{h('headsUpLede')}</p>
       <p>{h('headsUpAhead')}</p>
+      <p>{h('headsUpSupermoonRule')}</p>
       <div class="return-actions"><a class="btn btn--primary" href={headsUp.replace('https:', 'webcal:')}>{h('headsUpSubscribe')}</a><a class="btn btn--ghost" href={HEADS_UP_ICS_PATH} download="zodiacs-sky-heads-up.ics">{h('headsUpDownload')}</a></div>
       <p>{h('headsUpUrl')}</p><a class="return-url mono" href={headsUp}>{headsUp}</a>
       <p>{h('headsUpRange')}</p><p class="sharing-note">{h('headsUpSeparate')}</p>
