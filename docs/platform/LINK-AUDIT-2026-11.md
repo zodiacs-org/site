@@ -3,7 +3,10 @@
 Read at `origin/main` 1853a6814 on 12 November 2026, revised the same day
 after review, and again after `7d005c477` (pull request 985) landed later that
 day. This is a report only: nothing in the site was changed, switched or
-deployed for it.
+deployed for it. Revised on 13 November 2026 for two later fixes: row 30's
+saved result links now carry a random row id (the row was wrong to say a
+digest of the saved result fit the rule), and row 7's older form answers
+410.
 
 ## The question
 
@@ -98,7 +101,7 @@ such links, but it does not refuse them either.
 | 4 | Two-person compatibility hand-off: `/compatibility/#a=1.<code>&b=1.<code>`, or `/compatibility/?a=<id>#b=1.<code>` | `compatibilityHandoffPath` in `src/lib/chart-handoff.ts`, used by `ChartCalculator.tsx` and `SomeoneElseChart.tsx` | Fragment for the birth inputs; query for an opaque saved chart id | D, T, P, N for one or two people; the query part is ID only | Fragment: no server. Query: the saved id only | Yes | **FLAG** | Outside |
 | 5 | Date hand-off: `/birth-chart/#date=YYYY-MM-DD&time=HH:MM` (or `time=unknown`) | `dateHandoffFragment` (`MoonPhaseTool.tsx` without a place); the birthday page form `src/components/birthday/BirthdayChartForm.astro` builds the same two keys | Fragment | D, T | No server. Cleared on arrival | Yes | **FLAG** | Outside |
 | 6 | v2 positions link: `/birth-chart/#p=2.<code>` (localized receivers too) | `ChartShareDialog.tsx` "Copy positions link" (the primary share link), `encodeSharedPositionsLink` in `src/lib/share-positions.ts`; also as in-site navigation from `SomeoneElseChart.tsx` (`&subject=other`) and `ProfilePeople.tsx` | Fragment | X (12 bodies at 0.001 degrees, ASC and MC to the whole degree when timed), house system, engine version. No D, T, P or N field, but the positions give D and T back and narrow P | No server. Cleared on arrival | Yes, the primary chart share link | **FLAG** | Outside |
-| 7 | Chart preview link: `/api/og/chart?sun=&moon=&rising=&houses=` with `#p=2.<code>`; older form `/api/og/chart?p=2.<code>`; image `/api/og/chart-image?...` | `src/server/chart-preview.ts`, `src/lib/share-preview.ts` (rewritten in `vercel.json` to `/api/compatibility?__zodiacs_og_route=link`) | Query (whole-degree Sun, Moon, rising); the older form puts the full v2 code in the query | Newer: whole-degree Sun, Moon and rising, which narrow D to a short list of dates and narrow T. Older: X in full | Server function and request log, both forms | No producer left in `src/`; the server still answers both forms | **FLAG (inbound)** | Outside |
+| 7 | Chart preview link: `/api/og/chart?sun=&moon=&rising=&houses=` with `#p=2.<code>`; older form `/api/og/chart?p=2.<code>`; image `/api/og/chart-image?...` | `src/server/chart-preview.ts`, `src/lib/share-preview.ts` (rewritten in `vercel.json` to `/api/compatibility?__zodiacs_og_route=link`) | Query (whole-degree Sun, Moon, rising); the older form puts the full v2 code in the query | Newer: whole-degree Sun, Moon and rising, which narrow D to a short list of dates and narrow T. Older: X in full | Server function and request log, both forms. Since 13 November 2026 the older form is retired: any request with `p` gets 410 Gone (no-store) and a short page linking to `/birth-chart/`; the code is not decoded, drawn, put in an `og:image` address or passed on. The image route already answered `p` with a 303 to the default share picture | No producer left in `src/`; the server answers the newer form, and the older form only with 410 | **FLAG (inbound)** | Outside |
 | 8 | Two-chart send-back: `/compatibility/#s=s1.<code>` | `src/islands/synastry/SendBackExperience.tsx`, codec `src/lib/share-synastry.ts` | Fragment | X for two people, two labels (N, up to 24 characters each), time-known bits | No server. Cleared by `SynastryCalculator.tsx` on arrival | Yes | **FLAG** | Outside |
 | 9 | Private compatibility invite: `/compatibility/#p=2.<code>` | `src/islands/PrivateCompatibilityInvite.tsx`, `src/islands/PrivateInviteResultControl.tsx`, `privateInviteToken` in `src/lib/sharing/private-invite.ts` | Fragment | X of the inviting person | No server | Yes | **FLAG** | Outside |
 | 10 | Chart card: `/profile/#card=c1.<code>` | `src/islands/ProfileIdentity.tsx`, codec `src/lib/profile/card-link.ts` | Fragment | X, a label (N), time-known bit | No server. `ProfileCardInbox.tsx` strips it and stores it only on the receiving device if the reader adds it | Yes | **FLAG** | Outside |
@@ -201,7 +204,13 @@ personal.
    more. Smallest fix: add `chart` to the retired families so
    `/api/og/chart` answers 303 to `/birth-chart/` with the query dropped,
    and the image route answers 303 to the default share image, as
-   `retiredLinkRedirect` already does for other families.
+   `retiredLinkRedirect` already does for other families. Done for the
+   older form on 13 November 2026, the way the transit calendar feed was
+   retired: `/api/og/chart` with `p` answers 410 Gone, no-store, with a
+   short page linking to `/birth-chart/` and nothing from the request
+   (`retiredChartLink` in `src/server/chart-preview.ts`); the image route
+   keeps its 303. Each old link still reaches the request log once per
+   open, as item 6 says for the calendar feed.
 5. **Rows 8, 9 and 10, two-chart send-back, private invite and chart card.**
    Each carries positions that give back the birth date and time, and rows
    8 and 10 a name label. Smallest fix: each link carries a card ID only.
