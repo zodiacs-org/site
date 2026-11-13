@@ -570,6 +570,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const profileHandoffIdRef = useRef(0);
   const shareRuntimeRef = useRef<ShareRuntime>({});
   const profileAccessGeneration = useProfileAccessGeneration(() => {
+    // Drop a profile-origin session handoff that is still waiting for a grant,
+    // so a later sign-in cannot open the previous visitor's details.
+    profileHandoffIdRef.current += 1;
     savePromptGenerationRef.current += 1;
     setMatchedName(null);
     setSaved('idle');
@@ -1143,7 +1146,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       const taken = takeChartHandoff(hash);
       if (taken?.kind === 'date') openDate(taken);
       else if (taken?.kind === 'chart') {
-        const mine = taken.mine ? { kind: 'input', input: taken.mine } : nextMineHandoff;
+        const mine: MineHandoff | null = taken.mine ? { kind: 'input', input: taken.mine } : nextMineHandoff;
         const open = () => openDetails(taken.input, mine, 'fresh', taken.profileOrigin === true);
         // An ordinary unsaved handoff can open at once. A profile-origin one
         // waits for a current grant, as the saved-chart id path does, so
