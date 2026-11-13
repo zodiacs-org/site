@@ -24,7 +24,7 @@ You already know your sign. Now it is also a coin you can own, give and prove is
 
 Show someone a page of crypto coins and they will ask what they are looking at. Show them the twelve signs of the zodiac and they will point at one and say that one is theirs. Nobody has to explain it. Somebody told you your sign when you were small, and you have known it ever since, whether or not you ever read a horoscope.
 
-[FIGURE fig-mine. Two conversations, a 20 second silent film, then twelve unknown coin faces beside the twelve sign discs. The reader picks their sign.]
+[FIGURE fig-mine. Why the zodiac lasts, a 32 second silent film of sourced facts, then twelve unknown coin faces beside the twelve sign discs. The reader picks their sign.]
 
 Very few things are known like that. YouGov once showed Americans the twelve signs and asked them to pick their own, and [nine in ten could](https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology). Only about one in four said they believe in astrology, so you do not have to believe in it for it to be yours. Crypto is the other way round. After years of headlines, [about one in five](https://www.pewresearch.org/short-reads/2026/06/08/about-1-in-5-americans-have-used-crypto-republicans-use-has-ticked-up/) American adults has ever bought or used any of it.
 

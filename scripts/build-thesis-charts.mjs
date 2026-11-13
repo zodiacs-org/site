@@ -135,9 +135,9 @@ export function coinFace(i, cx, cy, r) {
 }
 
 export const FILM = {
-  poster: '/assets/thesis/film/two-conversations-poster.webp',
-  av1: '/assets/thesis/film/two-conversations-1280-av1.mp4',
-  h264: '/assets/thesis/film/two-conversations-1280.mp4',
+  poster: '/assets/thesis/film/why-the-zodiac-lasts-poster.webp',
+  av1: '/assets/thesis/film/why-the-zodiac-lasts-1280-av1.mp4',
+  h264: '/assets/thesis/film/why-the-zodiac-lasts-1280.mp4',
 };
 
 /** "Which one is yours": the film, then twelve unknown coins beside the twelve signs, which the reader can pick. */
@@ -152,7 +152,7 @@ export function mineFigure() {
                 <source src="${FILM.av1}" type='video/mp4; codecs="av01.0.05M.08"'>
                 <source src="${FILM.h264}" type="video/mp4">
               </video>
-              <p class="mine-film__desc" id="thesis-film-desc">Watch: 20 seconds, no sound. One person talks about crypto in words nobody understands. A group nearby compares star signs and everyone joins in. It ends on the twelve signs and asks which one is yours.</p>
+              <p class="mine-film__desc" id="thesis-film-desc">Watch: 32 seconds, no sound. Why the zodiac lasts, one sourced fact at a time: the signs are about 2,400 years old, nine in ten people can pick out their own, three in ten Americans consult astrology every year, and the twelve sign articles on Wikipedia have been read 156 million times since 2016. It ends on the twelve signs and asks which one is yours.</p>
             </div>
             <div class="mine-panels">
               <div class="mine-panel">

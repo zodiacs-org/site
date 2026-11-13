@@ -2,29 +2,54 @@ import { execFileSync } from 'node:child_process';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { FILM, FILM_WORDS } from './build-thesis-film.mjs';
+import { FILM, filmScript, loadFilmScript } from './build-thesis-film.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const file = (name) => resolve(root, `public${FILM.dir}/${name}`);
+const json = async (name) => JSON.parse(await readFile(resolve(root, `public/thesis/${name}`), 'utf8'));
 
 function probe(path) {
   try {
     const out = execFileSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=codec_name,width,height:format=duration', '-of', 'json', path], { encoding: 'utf8' });
-    const json = JSON.parse(out);
-    return { ...json.streams[0], duration: Number(json.format.duration) };
+    const parsed = JSON.parse(out);
+    return { ...parsed.streams[0], duration: Number(parsed.format.duration) };
   } catch {
     return null;
   }
 }
 
-describe('the thesis film, "Two conversations"', () => {
-  it('says only ordinary words: no dash, no brand, no number', () => {
-    const all = [FILM_WORDS.open, ...FILM_WORDS.jargon, ...FILM_WORDS.group, FILM_WORDS.ask, FILM_WORDS.close, FILM_WORDS.last];
-    for (const words of all) {
-      expect(words, words).not.toMatch(/[–—]/u);
-      expect(words, words).not.toMatch(/\d/u);
-      expect(words, words).not.toMatch(/bitcoin|ether|solana|doge|pepe|shib|xrp|pump|fomo|portnoy/iu);
+describe('the thesis film, "Why the zodiac lasts"', () => {
+  it('takes every number from the data files the page is stamped from', async () => {
+    const charts = await json('thesis-charts.json');
+    const seasons = await json('thesis-seasons.json');
+    const script = await loadFilmScript();
+    const words = script.scenes.flatMap((s) => [...s.lines, ...s.then]).join(' ');
+    expect(words).toContain(`${charts.consult.yearlyPct}% of Americans`);
+    expect(words).toContain(`${charts.consult.womenUnder50Pct}%`);
+    expect(words).toContain(`${Math.round(seasons.reads.total / 1e6)} million Wikipedia reads`);
+    expect(words).toContain(`${seasons.liftRange[0]}% to ${seasons.liftRange[1]}% more`);
+    expect(script.know).toBe(charts.know.knowSignPct);
+    expect(script.believe).toBe(charts.know.believePct);
+  });
+
+  it('shows a source on every scene and says nothing it cannot back', async () => {
+    const script = await loadFilmScript();
+    for (const scene of script.scenes) {
+      expect(scene.source.length, scene.lines[0]).toBeGreaterThan(10);
+      for (const words of [...scene.lines, ...scene.then, scene.source]) {
+        expect(words, words).not.toMatch(/[–—]/u);
+        expect(words, words).not.toMatch(/bitcoin|ether|solana|doge|pepe|shib|xrp|pump\.fun|portnoy|billion|price|profit|returns?\b/iu);
+      }
     }
+    expect(script.scenes.at(-1).source).toMatch(/can fall to zero/u);
+  });
+
+  it('refuses to render when a sentence stops being true', async () => {
+    const charts = await json('thesis-charts.json');
+    const seasons = await json('thesis-seasons.json');
+    expect(() => filmScript({ ...charts, know: { ...charts.know, knowSignPct: 70 } }, seasons)).toThrow();
+    expect(() => filmScript({ ...charts, consult: { ...charts.consult, yearlyPct: 12 } }, seasons)).toThrow();
+    expect(() => filmScript(charts, { ...seasons, signs: seasons.signs.map((s, i) => (i ? s : { ...s, lift: -3 })) })).toThrow();
   });
 
   it('commits both cuts and the poster within their budgets', async () => {
@@ -44,7 +69,7 @@ describe('the thesis film, "Two conversations"', () => {
     expect(head).toBe('ftyp');
   });
 
-  it('runs 20 seconds at 1280 x 720, and the tall cut 22 seconds at 1080 x 1920 with the end card', (context) => {
+  it(`runs ${FILM.seconds} seconds at 1280 x 720, and the tall cut 2 seconds longer at 1080 x 1920 with the end card`, (context) => {
     const wide = probe(file(FILM.wide.h264));
     if (!wide) return context.skip();
     expect(wide).toMatchObject({ codec_name: 'h264', width: 1280, height: 720 });
@@ -63,5 +88,6 @@ describe('the thesis film, "Two conversations"', () => {
     expect(page).toContain(`${FILM.dir}/${FILM.wide.av1}`);
     expect(page).toContain(`${FILM.dir}/${FILM.wide.h264}`);
     expect(video).toContain(`${FILM.dir}/${FILM.poster.webp}`);
+    expect(page).not.toContain('two-conversations');
   });
 });

@@ -1,26 +1,37 @@
 /**
- * "Two conversations": the thesis's 20-second silent film, rendered from the
- * page's own shapes. One person talks crypto at nobody; a group nearby
- * compares star signs and everyone joins in; it ends on the twelve signs and
- * asks which one is yours, handing over to the sign picker below it on
- * /thesis/ (fig-mine).
+ * "Why the zodiac lasts": the thesis's 32-second silent film. It makes the
+ * case for the zodiac itself, one claim per scene, each with its source on
+ * screen, and only then says the twelve have coins:
+ *
+ *   1. about 2,400 years old; it outlived every medium that carried it  (page timeline)
+ *   2. nine in ten can pick out their sign; one in four believes      (YouGov)
+ *   3. 28% of Americans consult astrology every year; 46% of women under 50
+ *                                                                  (Pew, 2025)
+ *   4. 156 million Wikipedia reads since 2016; each sign is looked up 45% to
+ *      80% more in its own season                      (Wikipedia pageviews)
+ *   5. a symbol on every keyboard; astronomers still use all twelve names
+ *                                                  (Unicode 1.1, IAU 1922)
+ *   6. there will only ever be twelve; each has had a coin since July 2024
+ *   7. which one is yours, and one line on the risk
  *
  *   npm run data:thesis-film
  *
- * Writes to public/assets/thesis/film/:
- *   two-conversations-1280.mp4        1280 x 720, H.264, 30 fps, 20 s (the page's film)
- *   two-conversations-1280-av1.mp4    the same in AV1, offered first
- *   two-conversations-poster.webp     the 13.6 s frame, also as .avif
- *   two-conversations-1080x1920.mp4   a tall cut for short-video apps, ending
- *                                     on the brand end card (22 s)
+ * Every number on screen is read from public/thesis/thesis-charts.json and
+ * public/thesis/thesis-seasons.json, the files the page's figures are stamped
+ * from, and the builder refuses to render if a sentence would stop being true.
+ * Market-size figures are left out on purpose: the published estimates are
+ * paywalled industry reports that disagree by a factor of two.
  *
- * Every frame is a pure function of its time: Chromium draws it on a canvas
- * from the page's sign hues, sign symbols and invented coin marks (imported
- * from build-thesis-charts.mjs, so the film and the figures cannot drift
- * apart), and the system's ffmpeg encodes the frames. No real coin, logo,
- * name, price or number appears. Chromium's text and the encoders are not
- * byte-stable across platforms, so the files are not in the drift job;
- * scripts/thesis-film.test.mjs checks their properties.
+ * Writes to public/assets/thesis/film/:
+ *   why-the-zodiac-lasts-1280.mp4        1280 x 720, H.264, 30 fps (the page's film)
+ *   why-the-zodiac-lasts-1280-av1.mp4    the same in AV1, offered first
+ *   why-the-zodiac-lasts-poster.webp     the frame at FILM.posterAt, also as .avif
+ *   why-the-zodiac-lasts-1080x1920.mp4   a tall cut for short-video apps, ending
+ *                                        on the brand end card
+ *
+ * Each frame is a pure function of its time, drawn by Chromium on a canvas
+ * and encoded by the system's ffmpeg. Not byte-stable across platforms, so
+ * not in the drift job; scripts/thesis-film.test.mjs checks the files.
  */
 import { execFile } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -29,31 +40,96 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
-import { COIN_MARKS, GLYPHS, SIGN_HUES } from './build-thesis-charts.mjs';
+import { GLYPHS, SIGN_HUES, SIGN_NAMES } from './build-thesis-charts.mjs';
 
 const run = promisify(execFile);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 export const FILM = Object.freeze({
   fps: 30,
-  seconds: 20,
-  posterAt: 13.6,
+  seconds: 32,
+  posterAt: 19.6,
   dir: '/assets/thesis/film',
-  wide: { width: 1280, height: 720, h264: 'two-conversations-1280.mp4', av1: 'two-conversations-1280-av1.mp4' },
-  tall: { width: 1080, height: 1920, h264: 'two-conversations-1080x1920.mp4' },
-  poster: { webp: 'two-conversations-poster.webp', avif: 'two-conversations-poster.avif' },
+  wide: { width: 1280, height: 720, h264: 'why-the-zodiac-lasts-1280.mp4', av1: 'why-the-zodiac-lasts-1280-av1.mp4' },
+  tall: { width: 1080, height: 1920, h264: 'why-the-zodiac-lasts-1080x1920.mp4' },
+  poster: { webp: 'why-the-zodiac-lasts-poster.webp', avif: 'why-the-zodiac-lasts-poster.avif' },
   endCard: '/assets/brand/end-card/zodiacs-end-card-9x16.mp4',
 });
 
-/** Every word on screen, in order. Ordinary words only: no brand, product, coin or person. */
-export const FILM_WORDS = Object.freeze({
-  open: 'What is this',
-  jargon: ['consensus', 'hash power', 'block times', 'decentralization'],
-  group: ['I’m such a Virgo.', 'Same.', 'Leos are so dramatic.'],
-  ask: 'What’s your sign',
-  close: 'Nobody has to explain the twelve.',
-  last: 'Which one is yours',
-});
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const SHORT = MONTHS.map((m) => m.slice(0, 3));
+const day = (iso) => { const [y, m, d] = iso.split('-').map(Number); return `${d} ${SHORT[m - 1]} ${y}`; };
+const daysBetween = (a, b) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86_400_000);
+
+function must(condition, message) {
+  if (!condition) throw new Error(`thesis film: ${message}. Rewrite the scene before rendering.`);
+}
+
+/**
+ * Every word on screen, built from the data files. Each sentence is checked
+ * against the number it states, so the film cannot drift from its evidence.
+ */
+export function filmScript(charts, seasons) {
+  const k = charts.know;
+  const c = charts.consult;
+  const t = charts.twelve;
+  const iau = charts.constellations;
+  must(k.knowSignPct >= 85 && k.knowSignPct <= 95, '"nine in ten" needs 85% to 95%');
+  must(k.believePct >= 22 && k.believePct <= 30, '"one in four" needs 22% to 30%');
+  must(c.yearlyPct >= 25 && c.yearlyPct <= 35, '"about three in ten" needs 25% to 35%');
+  must(seasons.signs.every((x) => x.lift > 0), 'every sign must be read more in its own season');
+  const millions = Math.round(seasons.reads.total / 1e6);
+  must(millions >= 100, 'the reads total should be in the hundreds of millions');
+  const [lo, hi] = seasons.liftRange;
+  const [cy, cm] = t.createdAt.split('-').map(Number);
+  const fromYear = seasons.reads.from.slice(0, 4);
+  return {
+    know: k.knowSignPct,
+    believe: k.believePct,
+    consult: c.yearlyPct,
+    women: c.womenUnder50Pct,
+    readsMillions: millions,
+    seasons: seasons.signs.map((x) => ({ sign: x.sign, lift: x.lift, curve: x.curve })),
+    eras: [['Clay tablet', 'c. 450 BCE'], ['Star map', '150 BCE'], ['Manuscript', '850'], ['Almanac', '1500'], ['Newspaper', '1930'], ['Phone', '2010'], ['Coin', String(cy)]],
+    scenes: [
+      {
+        lines: ['The twelve signs are about 2,400 years old.'],
+        then: ['They outlived every medium that carried them.'],
+        source: 'Babylonian tablets to printed horoscopes to phones · the dated timeline on this page',
+      },
+      {
+        lines: ['Nine in ten people can pick out their sign.'],
+        then: ['Only one in four says they believe in astrology.', 'You do not have to believe in it for it to be yours.'],
+        source: `${k.source}, U.S. adults, ${MONTHS[Number(k.fielded.slice(5, 7)) - 1]} ${k.fielded.slice(0, 4)}`,
+      },
+      {
+        lines: [`${c.yearlyPct}% of Americans consult astrology every year.`],
+        then: [`Among women under 50, it is ${c.womenUnder50Pct}%.`],
+        source: `${c.source}, ${c.sample.toLocaleString('en-US')} U.S. adults, ${MONTHS[Number(c.fielded.slice(5, 7)) - 1]} ${c.fielded.slice(0, 4)}`,
+      },
+      {
+        lines: [`${millions} million Wikipedia reads since ${fromYear}.`, 'Just the twelve articles about the signs.'],
+        then: [`Each sign is looked up ${lo}% to ${hi}% more`, 'in its own season. Every year.'],
+        source: `Wikimedia pageviews, English Wikipedia, each sign's article, ${fromYear} to ${seasons.reads.to.slice(0, 4)}`,
+      },
+      {
+        lines: ['Every keyboard has a symbol for each sign.'],
+        then: ['Astronomers still use all twelve names.'],
+        source: `Unicode 1.1, June 1993 · ${iau.source}, ${iau.total} constellations, ${iau.adopted}`,
+      },
+      {
+        lines: ['There are twelve signs.', 'There will only ever be twelve.'],
+        then: [`Since ${MONTHS[cm - 1]} ${cy}, each one has a coin.`],
+        source: 'One coin for each sign, on a public ledger · zodiacs.org/registry',
+      },
+      {
+        lines: ['Which one is yours'],
+        then: [],
+        source: 'Memecoins can fall to zero. Read the evidence first at zodiacs.org/thesis',
+      },
+    ],
+  };
+}
 
 async function fontUrl(path) {
   return `data:font/woff2;base64,${(await readFile(resolve(root, path))).toString('base64')}`;
@@ -70,28 +146,22 @@ canvas { display: block; }
 const D = ${JSON.stringify(data)};
 const cv = document.getElementById('film');
 const ctx = cv.getContext('2d');
-let W = 0, H = 0, tall = false;
-const BG = '#0B0D12', INK = '#EEF1F7', DIM = 'rgba(198,204,218,', SURFACE = '#1A1E28';
+let W = 0, H = 0, tall = false, L = null;
+const BG = '#0B0D12', INK = '#EEF1F7';
 const glyphs = D.glyphs.map((d) => new Path2D(d));
-const marks = D.marks.map((d) => new Path2D(d));
 const clamp = (x) => Math.max(0, Math.min(1, x));
 const ease = (x) => { x = clamp(x); return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
 const span = (t, a, b) => clamp((t - a) / (b - a));
-function rand(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const inout = (t, a, b, f = 0.45) => ease(span(t, a, a + f)) * (1 - ease(span(t, b - f, b)));
+function mulberry32(a) { return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
-function words(text, x, y, size, alpha, { font = 'EB Garamond', weight = 400, color = INK, align = 'center' } = {}) {
-  if (alpha <= 0) return;
-  ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
-  ctx.font = weight + ' ' + size + 'px "' + font + '"'; ctx.fillText(text, x, y); ctx.restore();
-}
-function coin(i, x, y, r, alpha) {
-  if (alpha <= 0) return;
-  ctx.save(); ctx.globalAlpha = alpha;
-  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = SURFACE; ctx.fill();
-  ctx.lineWidth = Math.max(1, r * 0.05); ctx.strokeStyle = DIM + '0.32)'; ctx.stroke();
-  const k = (r * 1.2) / 48; ctx.translate(x - 24 * k, y - 24 * k); ctx.scale(k, k);
-  ctx.lineWidth = 2 / k * (r / 22); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = DIM + '0.62)'; ctx.stroke(marks[i % marks.length]);
-  ctx.restore();
+// Scene timings, in seconds: [start, swap to "then", end].
+const T = [[0, 2.7, 5.2], [5.2, 7.5, 10.2], [10.2, 12.6, 14.8], [14.8, 17.5, 20.6], [20.6, 22.7, 24.8], [24.8, 27.0, 29.0], [29.0, 32, 32.2]];
+
+function text(str, x, y, size, alpha, { font = 'EB Garamond', weight = 400, color = INK, align = 'left' } = {}) {
+  if (alpha <= 0 || !str) return;
+  ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'alphabetic';
+  ctx.font = weight + ' ' + size + 'px "' + font + '"'; ctx.fillText(str, x, y); ctx.restore();
 }
 function disc(i, x, y, r, alpha) {
   if (alpha <= 0) return;
@@ -101,112 +171,169 @@ function disc(i, x, y, r, alpha) {
   ctx.lineWidth = 2.1 / k * (r / 24); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#10131B'; ctx.stroke(glyphs[i]);
   ctx.restore();
 }
-function person(x, y, r, fill, alpha) {
-  if (alpha <= 0) return;
-  ctx.save(); ctx.globalAlpha = alpha;
-  ctx.beginPath(); ctx.arc(x, y, r + r * 0.5, 0, Math.PI * 2); ctx.fillStyle = BG; ctx.fill();
-  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = fill; ctx.fill();
-  ctx.restore();
-}
-function bubble(text, x, y, size, alpha) {
-  if (alpha <= 0) return;
-  ctx.save(); ctx.globalAlpha = alpha; ctx.font = '500 ' + size + 'px "Instrument Sans"';
-  const w = ctx.measureText(text).width + size * 1.3, h = size * 2.05, r = h / 2;
-  const left = x - w / 2, top = y - h;
-  ctx.beginPath(); ctx.roundRect(left, top, w, h, r);
-  ctx.moveTo(x - size * 0.35, top + h - 1); ctx.lineTo(x, top + h + size * 0.45); ctx.lineTo(x + size * 0.35, top + h - 1);
-  ctx.fillStyle = SURFACE; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = DIM + '0.35)'; ctx.stroke();
-  ctx.fillStyle = INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, x, top + h / 2 + 1);
-  ctx.restore();
+function dot(x, y, r, fill) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = fill; ctx.fill(); }
+
+function layout() {
+  if (tall) {
+    const u = W / 1080;
+    return { u, pad: 80 * u, head: 76 * u, sub: 40 * u, src: 24 * u, headY: 300 * u, lineGap: 1.2,
+      vis: { x: 80 * u, y: 720 * u, w: 920 * u, h: 840 * u }, srcY: 1650 * u };
+  }
+  const u = H / 720;
+  return { u, pad: 72 * u, head: 46 * u, sub: 26 * u, src: 15 * u, headY: 96 * u, lineGap: 1.2,
+    vis: { x: 72 * u, y: 190 * u, w: 1136 * u, h: 440 * u }, srcY: 686 * u };
 }
 
-/** The layout for this frame size: positions as shares of the frame, sizes from its short side. */
-function layout() {
-  const u = Math.min(W, H) / 720;
-  return tall
-    ? { u, lone: [0.5, 0.78], group: [0.5, 0.46], spread: 120 * u, groupR: 26 * u, wall: { cols: 7, r: 36 * u }, title: 0.12, big: 60 * u, bubble: 28 * u, jargon: 30 * u, discs: { cols: 4, r: 58 * u, gap: 150 * u, y: 0.38 } }
-    : { u, lone: [0.2, 0.6], group: [0.68, 0.6], spread: 105 * u, groupR: 30 * u, wall: { cols: 13, r: 36 * u }, title: 0.13, big: 56 * u, bubble: 26 * u, jargon: 30 * u, discs: { cols: 6, r: 60 * u, gap: 150 * u, y: 0.4 } };
+/** Wrap one line to the frame width, so the tall cut can break long sentences. */
+function wrap(str, size, width, font = 'EB Garamond') {
+  ctx.save(); ctx.font = '400 ' + size + 'px "' + font + '"';
+  const words = str.split(' '), out = []; let line = '';
+  for (const w of words) { const next = line ? line + ' ' + w : w; if (ctx.measureText(next).width > width && line) { out.push(line); line = w; } else line = next; }
+  if (line) out.push(line); ctx.restore(); return out;
 }
-const GROUP = [[-1.2, 0.2], [-0.3, -0.55], [0.75, -0.35], [1.2, 0.5], [0.1, 0.75]];
-const GROUP_SIGNS = [5, 4, 7, 1, 2];
+
+/** The headline for scene s: its first lines, then its "then" lines replacing them. */
+function headline(t, s) {
+  const [a, b, c] = T[s], sc = D.scenes[s];
+  const first = inout(t, a + 0.15, sc.then.length ? b : c);
+  const second = sc.then.length ? inout(t, b, c) : 0;
+  const width = W - L.pad * 2;
+  const draw = (lines, alpha) => {
+    if (alpha <= 0) return;
+    let y = L.headY;
+    lines.forEach((line, i) => {
+      const size = i === 0 ? L.head : L.head * 0.8;
+      for (const part of wrap(line, size, width)) { text(part, L.pad, y, size, alpha * (i === 0 ? 1 : 0.78)); y += size * L.lineGap; }
+    });
+  };
+  draw(sc.lines, first); draw(sc.then, second);
+  const srcLines = wrap(sc.source, L.src, width, 'JetBrains Mono');
+  srcLines.forEach((part, i) => text(part, L.pad, L.srcY + i * L.src * 1.5, L.src, inout(t, a + 0.3, c) * 0.62, { font: 'JetBrains Mono', color: 'rgb(198,204,218)' }));
+}
+
+// 1. The timeline: every medium that carried the signs.
+function timeline(t, alpha) {
+  if (alpha <= 0) return;
+  const v = L.vis, n = D.eras.length;
+  if (!tall) {
+    const y = v.y + v.h * 0.45, x0 = v.x + 30 * L.u, x1 = v.x + v.w - 30 * L.u;
+    const grow = ease(span(t, 0.3, 3.6));
+    ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = 'rgba(198,204,218,0.3)'; ctx.lineWidth = 1.5 * L.u;
+    ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0 + (x1 - x0) * grow, y); ctx.stroke(); ctx.restore();
+    D.eras.forEach(([name, when], i) => {
+      const x = x0 + (x1 - x0) * (i / (n - 1)), on = ease(span(t, 0.4 + i * 0.45, 0.8 + i * 0.45));
+      if (i === n - 1) { for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2; ctx.save(); ctx.globalAlpha = alpha * on; dot(x + 22 * L.u * Math.cos(a), y + 22 * L.u * Math.sin(a), 5 * L.u, D.hues[k]); ctx.restore(); } }
+      else { ctx.save(); ctx.globalAlpha = alpha * on; dot(x, y, 11 * L.u, D.hues[(i * 2) % 12]); ctx.restore(); }
+      text(name, x, y + 64 * L.u, 19 * L.u, alpha * on, { font: 'Instrument Sans', align: 'center' });
+      text(when, x, y + 90 * L.u, 15 * L.u, alpha * on * 0.6, { font: 'JetBrains Mono', align: 'center', color: 'rgb(198,204,218)' });
+    });
+  } else {
+    const x = v.x + 90 * L.u, y0 = v.y + 20 * L.u, y1 = v.y + v.h - 40 * L.u;
+    const grow = ease(span(t, 0.3, 3.6));
+    ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = 'rgba(198,204,218,0.3)'; ctx.lineWidth = 2 * L.u;
+    ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y0 + (y1 - y0) * grow); ctx.stroke(); ctx.restore();
+    D.eras.forEach(([name, when], i) => {
+      const y = y0 + (y1 - y0) * (i / (n - 1)), on = ease(span(t, 0.4 + i * 0.45, 0.8 + i * 0.45));
+      if (i === n - 1) { for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2; ctx.save(); ctx.globalAlpha = alpha * on; dot(x + 30 * L.u * Math.cos(a), y + 30 * L.u * Math.sin(a), 7 * L.u, D.hues[k]); ctx.restore(); } }
+      else { ctx.save(); ctx.globalAlpha = alpha * on; dot(x, y, 16 * L.u, D.hues[(i * 2) % 12]); ctx.restore(); }
+      text(name, x + 80 * L.u, y + 4 * L.u, 40 * L.u, alpha * on, { font: 'Instrument Sans' });
+      text(when, x + 80 * L.u, y + 46 * L.u, 26 * L.u, alpha * on * 0.6, { font: 'JetBrains Mono', color: 'rgb(198,204,218)' });
+    });
+  }
+}
+
+// 2 and 3. Groups of one hundred people.
+function people(t, alpha, groups) {
+  if (alpha <= 0) return;
+  const v = L.vis;
+  const grid = tall ? v.h * 0.4 : Math.min(v.h * 0.78, v.w / 2 - 330 * L.u), step = grid / 10, rr = step * 0.33;
+  groups.forEach((g, gi) => {
+    const gx = tall ? v.x + 30 * L.u : v.x + gi * (v.w / 2) + 30 * L.u;
+    const gy = tall ? v.y + gi * (v.h / 2) : v.y;
+    ctx.save();
+    for (let i = 0; i < 100; i++) {
+      const x = gx + (i % 10 + 0.5) * step, y = gy + (Math.floor(i / 10) + 0.5) * step;
+      const show = ease(span(t, g.at + (i / 100) * 1.1, g.at + 0.3 + (i / 100) * 1.1));
+      if (i < g.n && show > 0) { ctx.globalAlpha = alpha * show; dot(x, y, rr, g.hue ? D.hues[i % 12] : INK); }
+      else { ctx.globalAlpha = alpha; ctx.beginPath(); ctx.arc(x, y, rr * 0.85, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(198,204,218,0.3)'; ctx.lineWidth = Math.max(1, rr * 0.14); ctx.stroke(); }
+    }
+    ctx.restore();
+    const on = alpha * ease(span(t, g.at + 0.7, g.at + 1.2));
+    text(g.n + '%', gx + grid + 34 * L.u, gy + grid * 0.5, L.head * 1.6, on, { color: g.hue ? '#D3A9DE' : INK });
+    text(g.label, gx + grid + 34 * L.u, gy + grid * 0.5 + L.sub * 1.4, L.sub, on * 0.75, { font: 'Instrument Sans', color: 'rgb(198,204,218)' });
+  });
+}
+
+// 4. Each sign's own season, from ten years of Wikipedia reads.
+const ROW_ORDER = [9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8];
+function ridges(t, alpha) {
+  if (alpha <= 0) return;
+  const v = L.vis, labelW = (tall ? 190 : 120) * L.u, x0 = v.x + labelW, x1 = v.x + v.w - (tall ? 120 : 80) * L.u;
+  const top = v.y + v.h * 0.12, gap = (v.h * 0.82) / 12, amp = gap * 2.1;
+  const maxR = Math.max(...D.seasons.flatMap((s) => s.curve)), floor = 0.6;
+  const sweep = x0 + (x1 - x0) * ease(span(t, 15.1, 18.3));
+  ctx.save(); ctx.globalAlpha = alpha;
+  ctx.beginPath(); ctx.rect(v.x, v.y - amp, sweep - v.x, v.h + amp * 2); ctx.clip();
+  ROW_ORDER.forEach((si, row) => {
+    const s = D.seasons[si], base = top + row * gap, n = s.curve.length;
+    const px = (b) => x0 + ((b + 0.5) / n) * (x1 - x0), py = (r) => base - Math.max(0, (r - floor) / (maxR - floor)) * amp;
+    ctx.beginPath(); ctx.moveTo(x0, base); s.curve.forEach((r, b) => ctx.lineTo(px(b), py(r))); ctx.lineTo(x1, base); ctx.closePath();
+    ctx.fillStyle = BG; ctx.fill(); ctx.globalAlpha = alpha * 0.22; ctx.fillStyle = D.hues[si]; ctx.fill(); ctx.globalAlpha = alpha;
+    ctx.beginPath(); s.curve.forEach((r, b) => (b ? ctx.lineTo(px(b), py(r)) : ctx.moveTo(px(b), py(r)))); ctx.strokeStyle = D.hues[si]; ctx.lineWidth = 2 * L.u; ctx.stroke();
+  });
+  ctx.restore();
+  const fs = (tall ? 24 : 15) * L.u;
+  ROW_ORDER.forEach((si, row) => {
+    text(D.names[si], x0 - 14 * L.u, top + row * gap - 3 * L.u, fs, alpha * 0.8, { font: 'Instrument Sans', align: 'right', color: 'rgb(198,204,218)' });
+    text('+' + D.seasons[si].lift + '%', x1 + 14 * L.u, top + row * gap - 3 * L.u, fs, alpha * ease(span(t, 17.6, 18.4)), { font: 'JetBrains Mono', color: D.hues[si] });
+  });
+  ['Jan', 'Apr', 'Jul', 'Oct'].forEach((m, i) => text(m, x0 + (x1 - x0) * (i / 4), top + 12 * gap + (tall ? 34 : 16) * L.u, fs * 0.9, alpha * 0.55, { font: 'JetBrains Mono', color: 'rgb(198,204,218)' }));
+}
+
+// 5. Keys: each sign's own symbol, and the sky's own names.
+function keys(t, alpha) {
+  if (alpha <= 0) return;
+  const v = L.vis, cols = tall ? 4 : 6, rows = 12 / cols;
+  const kw = tall ? 200 * L.u : 150 * L.u, kh = kw * 0.92, gap = 22 * L.u;
+  const ox = v.x + (v.w - (cols * kw + (cols - 1) * gap)) / 2, oy = v.y + (tall ? 30 * L.u : 10 * L.u);
+  for (let i = 0; i < 12; i++) {
+    const x = ox + (i % cols) * (kw + gap), y = oy + Math.floor(i / cols) * (kh + gap), on = ease(span(t, 20.8 + i * 0.07, 21.2 + i * 0.07));
+    ctx.save(); ctx.globalAlpha = alpha * on;
+    ctx.beginPath(); ctx.roundRect(x, y, kw, kh, 16 * L.u); ctx.fillStyle = '#151923'; ctx.fill(); ctx.strokeStyle = 'rgba(198,204,218,0.18)'; ctx.lineWidth = 1.5 * L.u; ctx.stroke();
+    const k = (kw * 0.42) / 48; ctx.translate(x + kw / 2 - 24 * k, y + kh * 0.42 - 24 * k); ctx.scale(k, k);
+    ctx.lineWidth = 2.3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = D.hues[i]; ctx.stroke(glyphs[i]);
+    ctx.restore();
+    const latin = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpius', 'Sagittarius', 'Capricornus', 'Aquarius', 'Pisces'][i];
+    const late = ease(span(t, 22.7, 23.3));
+    text(D.names[i], x + kw / 2, y + kh * 0.86, (tall ? 26 : 17) * L.u, alpha * on * (1 - late), { font: 'Instrument Sans', align: 'center' });
+    text(latin, x + kw / 2, y + kh * 0.86, (tall ? 24 : 15) * L.u, alpha * late, { font: 'JetBrains Mono', align: 'center', color: D.hues[i] });
+  }
+}
+
+// 6 and 7. Twelve discs.
+function twelve(t, alpha, from) {
+  if (alpha <= 0) return;
+  const v = L.vis, cols = tall ? 4 : 6, r = tall ? 70 * L.u : 46 * L.u, gap = r * 2.55;
+  const ox = v.x + (v.w - (cols - 1) * gap) / 2, oy = v.y + (tall ? v.h * 0.12 : v.h * 0.18);
+  for (let i = 0; i < 12; i++) disc(i, ox + (i % cols) * gap, oy + Math.floor(i / cols) * gap, r, alpha * ease(span(t, from + i * 0.06, from + 0.4 + i * 0.06)));
+}
 
 window.draw = (t) => {
-  const L = layout(), u = L.u;
+  L = layout();
   ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
-  const titleY = H * L.title, big = L.big;
-
-  // 1. A wall of coins nobody recognises, still arriving.
-  const wallOut = 1 - span(t, 3.5, 4.1);
-  if (wallOut > 0) {
-    const r = L.wall.r, step = r * 2.5, cols = L.wall.cols;
-    const rows = Math.ceil(H / step) + 1;
-    const ox = (W - (cols - 1) * step) / 2, oy = step * 0.9;
-    const order = rand(20240705);
-    let i = 0;
-    for (let row = 0; row < rows; row++) for (let col = 0; col < cols; col++, i++) {
-      const at = order() * 2.4;
-      const a = ease(span(t, at, at + 0.35)) * wallOut * 0.95;
-      coin((i * 7) % 12, ox + col * step, oy + row * step, r * (0.9 + 0.1 * ease(span(t, at, at + 0.35))), a);
-    }
-    ctx.save(); ctx.globalAlpha = wallOut;
-    const g = ctx.createLinearGradient(0, 0, 0, H * 0.3); g.addColorStop(0, 'rgba(11,13,18,0.96)'); g.addColorStop(1, 'rgba(11,13,18,0)');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * 0.3); ctx.restore();
-    person(W / 2, H * (tall ? 0.8 : 0.82), L.groupR * 1.1, INK, ease(span(t, 0.6, 1.1)) * wallOut);
-    words(D.words.open, W / 2, titleY, big, ease(span(t, 1.2, 1.8)) * wallOut);
-  }
-
-  // 2. One person talks; the group does not turn. 3. The group lights up; the person joins.
-  const scene = ease(span(t, 4.1, 4.7)) * (1 - ease(span(t, 14.0, 14.6)));
-  if (scene > 0) {
-    const gx = W * L.group[0], gy = H * L.group[1];
-    const walk = ease(span(t, 11.4, 13.2));
-    const loneX = W * L.lone[0] + (gx - L.spread * 2.3 - W * L.lone[0]) * walk * (tall ? 0 : 1);
-    const loneY = H * L.lone[1] + (gy + L.spread * 1.7 - H * L.lone[1]) * walk * (tall ? 1 : 0.6);
-    D.words.jargon.forEach((w, i) => {
-      const a = 4.6 + i * 1.05, rise = span(t, a, a + 1.9);
-      const alpha = Math.sin(Math.PI * rise) * 0.8 * scene;
-      words(w, loneX + (i % 2 ? 1 : -1) * 18 * u, loneY - L.groupR * 2.2 - rise * 150 * u, L.jargon, alpha, { font: 'JetBrains Mono', color: 'rgb(198,204,218)' });
-    });
-    GROUP.forEach(([dx, dy], i) => {
-      const lit = ease(span(t, 9.0 + i * 0.32, 9.4 + i * 0.32));
-      const hue = D.hues[GROUP_SIGNS[i]];
-      person(gx + dx * L.spread, gy + dy * L.spread, L.groupR, lit > 0.5 ? hue : 'rgb(120,126,140)', scene);
-      if (lit > 0 && lit <= 0.5) person(gx + dx * L.spread, gy + dy * L.spread, L.groupR, hue, scene * lit * 2);
-    });
-    person(loneX, loneY, L.groupR, INK, scene);
-    const bs = L.bubble;
-    const lines = [[0, 9.3], [2, 10.45], [3, 11.6]];
-    lines.forEach(([gi, at], k) => {
-      const [dx, dy] = GROUP[gi];
-      const a = ease(span(t, at, at + 0.3)) * (1 - ease(span(t, at + 1.3, at + 1.6))) * scene;
-      bubble(D.words.group[k], gx + dx * L.spread, gy + dy * L.spread - L.groupR * 1.6, bs, a);
-    });
-    bubble(D.words.ask, gx, gy - L.spread * 1.15 - L.groupR, bs * 1.1, ease(span(t, 13.0, 13.4)) * scene);
-  }
-
-  // 4. The twelve. 5. The question that hands over to the picker.
-  const d = L.discs;
-  if (t >= 14.4) {
-    const rowsN = Math.ceil(12 / d.cols);
-    const ox = W / 2 - ((d.cols - 1) * d.gap) / 2, oy = H * d.y - ((rowsN - 1) * d.gap) / 2;
-    for (let i = 0; i < 12; i++) {
-      const a = ease(span(t, 14.6 + i * 0.12, 15.0 + i * 0.12));
-      disc(i, ox + (i % d.cols) * d.gap, oy + Math.floor(i / d.cols) * d.gap, d.r * (0.85 + 0.15 * a), a);
-    }
-    const textY = tall ? H * 0.74 : H * 0.83;
-    words(D.words.close, W / 2, textY, big, ease(span(t, 15.8, 16.4)) * (1 - ease(span(t, 17.7, 18.1))));
-    words(D.words.last, W / 2, textY, big * 1.05, ease(span(t, 18.1, 18.6)));
-  }
+  timeline(t, inout(t, 0, 5.2));
+  people(t, inout(t, 5.2, 10.2), [{ n: D.know, at: 5.4, hue: true, label: 'picked their own sign' }, { n: D.believe, at: 7.6, hue: false, label: 'believe in astrology' }]);
+  people(t, inout(t, 10.2, 14.8), [{ n: D.consult, at: 10.4, hue: true, label: 'of U.S. adults, every year' }, { n: D.women, at: 12.7, hue: true, label: 'of women under 50' }]);
+  ridges(t, inout(t, 14.8, 20.6));
+  keys(t, inout(t, 20.6, 24.8));
+  twelve(t, ease(span(t, 24.8, 25.2)), 25.0);
+  for (let s = 0; s < T.length; s++) if (t >= T[s][0] - 0.01 && t <= T[s][2] + 0.01) headline(t, s);
 };
 
 window.setup = async (w, h) => {
   W = w; H = h; tall = h > w; cv.width = W; cv.height = H;
-  await Promise.all([
-    document.fonts.load('400 40px "EB Garamond"'),
-    document.fonts.load('500 30px "Instrument Sans"'),
-    document.fonts.load('400 30px "JetBrains Mono"'),
-  ]);
   for (const f of ['400 40px "EB Garamond"', '500 30px "Instrument Sans"', '400 30px "JetBrains Mono"']) {
+    await document.fonts.load(f);
     if (!document.fonts.check(f)) throw new Error('font did not load: ' + f);
   }
   return true;
@@ -227,7 +354,13 @@ async function frames(page, { width, height }, dir) {
 
 const COLOUR = ['-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-color_range', 'tv'];
 
-export async function renderFilm({ rootDirectory = root } = {}) {
+export async function loadFilmScript(rootDirectory = root) {
+  const charts = JSON.parse(await readFile(resolve(rootDirectory, 'public/thesis/thesis-charts.json'), 'utf8'));
+  const seasons = JSON.parse(await readFile(resolve(rootDirectory, 'public/thesis/thesis-seasons.json'), 'utf8'));
+  return filmScript(charts, seasons);
+}
+
+export async function renderFilm({ rootDirectory = root, only } = {}) {
   const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'playwright-core');
   const executablePath = process.env.CHROMIUM_PATH
     ?? (existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined);
@@ -236,7 +369,8 @@ export async function renderFilm({ rootDirectory = root } = {}) {
     sans: await fontUrl('public/fonts/instrument-sans-latin-wght-normal.woff2'),
     mono: await fontUrl('public/fonts/jetbrains-mono-latin-wght-normal.woff2'),
   };
-  const data = { hues: SIGN_HUES, glyphs: GLYPHS, marks: COIN_MARKS, words: FILM_WORDS };
+  const script = await loadFilmScript(rootDirectory);
+  const data = { ...script, hues: SIGN_HUES, glyphs: GLYPHS, names: SIGN_NAMES };
   const out = resolve(rootDirectory, `public${FILM.dir}`);
   await mkdir(out, { recursive: true });
   const work = await mkdtemp(join(tmpdir(), 'zodiacs-thesis-film-'));
@@ -247,31 +381,33 @@ export async function renderFilm({ rootDirectory = root } = {}) {
     page.on('pageerror', (error) => errors.push(error.message));
     await page.setContent(pageHtml({ fonts, data }), { waitUntil: 'load' });
 
-    const wideDir = join(work, 'wide');
-    await mkdir(wideDir);
-    await frames(page, FILM.wide, wideDir);
-    if (errors.length) throw new Error(`film page failed: ${errors.join('; ')}`);
-    const input = ['-framerate', String(FILM.fps), '-i', join(wideDir, 'f-%04d.png')];
-    const vf = ['-vf', 'scale=out_color_matrix=bt709:out_range=tv,format=yuv420p'];
-    await run('ffmpeg', ['-y', '-loglevel', 'error', ...input, ...vf, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '26', ...COLOUR, '-movflags', '+faststart', '-an', '-map_metadata', '-1', join(out, FILM.wide.h264)]);
-    await run('ffmpeg', ['-y', '-loglevel', 'error', ...input, ...vf, '-c:v', 'libsvtav1', '-preset', '8', '-crf', '40', ...COLOUR, '-movflags', '+faststart', '-an', '-map_metadata', '-1', join(out, FILM.wide.av1)], { maxBuffer: 1 << 26 });
-
-    const { default: sharp } = await import('sharp');
-    const still = join(wideDir, `f-${String(Math.round(FILM.posterAt * FILM.fps)).padStart(4, '0')}.png`);
-    await sharp(still).webp({ quality: 78 }).toFile(join(out, FILM.poster.webp));
-    await sharp(still).avif({ quality: 55 }).toFile(join(out, FILM.poster.avif));
-
-    const tallDir = join(work, 'tall');
-    await mkdir(tallDir);
-    await frames(page, FILM.tall, tallDir);
-    await run('ffmpeg', [
-      '-y', '-loglevel', 'error',
-      '-framerate', String(FILM.fps), '-i', join(tallDir, 'f-%04d.png'),
-      '-i', resolve(rootDirectory, `public${FILM.endCard}`),
-      '-filter_complex', `[0:v]scale=out_color_matrix=bt709:out_range=tv,format=yuv420p,setsar=1[a];[1:v]fps=${FILM.fps},format=yuv420p,setsar=1[b];[a][b]concat=n=2:v=1:a=0[v]`,
-      '-map', '[v]', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '24', ...COLOUR, '-movflags', '+faststart', '-an', '-map_metadata', '-1',
-      join(out, FILM.tall.h264),
-    ]);
+    if (only !== 'tall') {
+      const wideDir = join(work, 'wide');
+      await mkdir(wideDir);
+      await frames(page, FILM.wide, wideDir);
+      if (errors.length) throw new Error(`film page failed: ${errors.join('; ')}`);
+      const input = ['-framerate', String(FILM.fps), '-i', join(wideDir, 'f-%04d.png')];
+      const vf = ['-vf', 'scale=out_color_matrix=bt709:out_range=tv,format=yuv420p'];
+      await run('ffmpeg', ['-y', '-loglevel', 'error', ...input, ...vf, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '24', ...COLOUR, '-movflags', '+faststart', '-an', '-map_metadata', '-1', join(out, FILM.wide.h264)]);
+      await run('ffmpeg', ['-y', '-loglevel', 'error', ...input, ...vf, '-c:v', 'libsvtav1', '-preset', '8', '-crf', '38', ...COLOUR, '-movflags', '+faststart', '-an', '-map_metadata', '-1', join(out, FILM.wide.av1)], { maxBuffer: 1 << 26 });
+      const { default: sharp } = await import('sharp');
+      const still = join(wideDir, `f-${String(Math.round(FILM.posterAt * FILM.fps)).padStart(4, '0')}.png`);
+      await sharp(still).webp({ quality: 80 }).toFile(join(out, FILM.poster.webp));
+      await sharp(still).avif({ quality: 58 }).toFile(join(out, FILM.poster.avif));
+    }
+    if (only !== 'wide') {
+      const tallDir = join(work, 'tall');
+      await mkdir(tallDir);
+      await frames(page, FILM.tall, tallDir);
+      await run('ffmpeg', [
+        '-y', '-loglevel', 'error',
+        '-framerate', String(FILM.fps), '-i', join(tallDir, 'f-%04d.png'),
+        '-i', resolve(rootDirectory, `public${FILM.endCard}`),
+        '-filter_complex', `[0:v]scale=out_color_matrix=bt709:out_range=tv,format=yuv420p,setsar=1[a];[1:v]fps=${FILM.fps},format=yuv420p,setsar=1[b];[a][b]concat=n=2:v=1:a=0[v]`,
+        '-map', '[v]', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', ...COLOUR, '-movflags', '+faststart', '-an', '-map_metadata', '-1',
+        join(out, FILM.tall.h264),
+      ]);
+    }
     if (errors.length) throw new Error(`film page failed: ${errors.join('; ')}`);
     return { out, chromium: browser.version() };
   } finally {
@@ -281,6 +417,7 @@ export async function renderFilm({ rootDirectory = root } = {}) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const { out, chromium } = await renderFilm();
+  const onlyAt = process.argv.indexOf('--only');
+  const { out, chromium } = await renderFilm({ only: onlyAt > 0 ? process.argv[onlyAt + 1] : undefined });
   console.log(`Thesis film rendered in ${out} (Chromium ${chromium}).`);
 }

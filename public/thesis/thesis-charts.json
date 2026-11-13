@@ -89,5 +89,22 @@
         "count": 149
       }
     ]
+  },
+  "consult": {
+    "source": "Pew Research Center",
+    "url": "https://www.pewresearch.org/religion/2025/05/21/3-in-10-americans-consult-astrology-tarot-cards-or-fortune-tellers/",
+    "published": "2025-05-21",
+    "fielded": "2024-10",
+    "checkedAt": "2026-11-13",
+    "yearlyPct": 28,
+    "womenUnder50Pct": 46,
+    "sample": 9593
+  },
+  "constellations": {
+    "source": "International Astronomical Union",
+    "url": "https://en.wikipedia.org/wiki/IAU_designated_constellations",
+    "adopted": 1922,
+    "total": 88,
+    "checkedAt": "2026-11-13"
   }
 }

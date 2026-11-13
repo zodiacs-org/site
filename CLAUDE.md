@@ -326,12 +326,14 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   system's ffmpeg encodes it. Not byte-stable, so not in the drift job;
   `scripts/end-card.test.mjs` checks it. Rerun it when the lockup changes)
 - `public/assets/thesis/film/` ← `npm run data:thesis-film` (the thesis's
-  20-second silent film "Two conversations", 1280 × 720 in H.264 and AV1 with
-  its poster, and a 1080 × 1920 cut ending on the brand end card: Chromium
-  draws each frame from its time alone, from the sign hues, sign symbols and
-  invented coin marks in `scripts/build-thesis-charts.mjs`, and the system's
-  ffmpeg encodes it. Not byte-stable, so not in the drift job;
-  `scripts/thesis-film.test.mjs` checks it. Rerun it when those shapes change)
+  32-second silent film "Why the zodiac lasts", 1280 × 720 in H.264 and AV1
+  with its poster, and a 1080 × 1920 cut ending on the brand end card. Every
+  number on screen is read from `public/thesis/thesis-charts.json` and
+  `thesis-seasons.json` by `filmScript()`, which refuses to render when a
+  sentence stops being true; each scene shows its source. Chromium draws each
+  frame from its time alone and the system's ffmpeg encodes it. Not
+  byte-stable, so not in the drift job; `scripts/thesis-film.test.mjs` checks
+  it. Rerun it when those data files or the sign shapes change)
 - `public/assets/pulse.json` / `distribution.json` ← weekly cron workflows
 - `docs/phase5/people-pilot/index-demand.json` ← `node
   scripts/build-people-index-demand.mjs --refresh` (pinned twelve-month

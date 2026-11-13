@@ -132,6 +132,7 @@ export async function reduce() {
       : [[days[0], days.at(-1) + 1]];
   });
   const lifts = signs.map((x) => x.lift);
+  const totalReads = SIGNS.reduce((sum, key) => sum + raw.signs[key].views.reduce((n, v) => n + (v ?? 0), 0), 0);
   return {
     $comment: 'Reduced from the raw per-sign pageviews named in `raw` by scripts/build-thesis-figures.mjs --reduce. Each curve is one sign article on a typical day of the year (median across the years of views divided by that sign-year median day), in 73 five-day bins from 1 January. lift compares the mean of that ratio inside the sign\'s own season with the rest of the year; seasons are the Sun\'s solved sign entries each year (astronomy-engine), taken at noon UTC.',
     source: raw.source,
@@ -141,6 +142,7 @@ export async function reduce() {
     signYears,
     liftedYears,
     liftRange: [Math.min(...lifts), Math.max(...lifts)],
+    reads: { total: totalReads, from: raw.from, to: raw.to },
     signs,
   };
 }
