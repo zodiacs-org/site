@@ -143,6 +143,7 @@ async function transits(input: unknown) {
 async function saturnReturn(input: unknown) {
   const { date, time, place: rawPlace } = fields(input, ['date', 'time', 'place']);
   const day = need(readDate(date));
+  admitBirthDate(day);
   const clock = need(readTime(time));
   const place = need(readPlace(rawPlace));
   if (clock !== null && place === null) throw new Refusal('TIME_NEEDS_PLACE');

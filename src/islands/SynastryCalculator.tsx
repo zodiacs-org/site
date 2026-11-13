@@ -979,9 +979,13 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     // handoff is still applied if the effect re-runs before the import lands.
     if (fragment.has('h')) {
       history.replaceState(null, '', window.location.pathname + window.location.search);
+      const access = profileAccessGeneration.current;
       void import('../lib/chart-handoff').then((module) => {
         if (!activeRef.current) return;
         const taken = module.takeChartHandoff(hash);
+        // Consume the one-time entry even after a revoke; only skip fill
+        // when access was lost while this import was pending.
+        if (access !== profileAccessGeneration.current && !profileAccessAllowed()) return;
         if (taken?.kind === 'pair') fill(taken.a, taken.b);
       }).catch(() => {});
       return () => { active = false; };
@@ -992,8 +996,10 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     const tokenB = valuesB.length === 1 ? valuesB[0] : null;
     if (fragment.has('a') || fragment.has('b')) {
       history.replaceState(null, '', window.location.pathname + window.location.search);
+      const access = profileAccessGeneration.current;
       void import('../lib/share').then((module) => {
         if (!activeRef.current) return;
+        if (access !== profileAccessGeneration.current && !profileAccessAllowed()) return;
         fill(tokenA ? module.decodeChartLink(tokenA) : null, tokenB ? module.decodeChartLink(tokenB) : null);
       }).catch(() => {});
     }

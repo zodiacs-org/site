@@ -66,7 +66,10 @@ try {
 
     // A session handoff opens the chart, keeps the address bar clean and is deleted once read.
     const handoff = await context.newPage();
-    await handoff.goto(`${baseURL}/birth-chart/`, { waitUntil: 'domcontentloaded' });
+    // Stash the entry on this origin, then navigate from another page so the
+    // calculator mounts with the fragment. A same-page hash change would not
+    // remount it, and the handoff is only read in the mount effect.
+    await handoff.goto(`${baseURL}/`, { waitUntil: 'domcontentloaded' });
     const key = 'abcdef0123456789abcdef0123456789';
     await handoff.evaluate(([storageKey, token]) => {
       sessionStorage.setItem(`zodiacs.handoff.${storageKey}`, JSON.stringify({ k: 'chart', c: token }));

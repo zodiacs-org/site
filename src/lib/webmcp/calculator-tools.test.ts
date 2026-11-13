@@ -297,7 +297,9 @@ describe('refusals', () => {
       ['zodiacs.unknown', {}, 'UNKNOWN_TOOL'],
       ['zodiacs.birth_chart', { date: '2020-06-15', time: '14:30', place: LONDON, houseSystem: 'whole' }, 'BIRTH_DATE_UNDER_13'],
       ['zodiacs.numerology', { birthDate: '2020-06-15' }, 'BIRTH_DATE_UNDER_13'],
+      ['zodiacs.saturn_return', { date: '2020-06-15', time: '14:30', place: LONDON }, 'BIRTH_DATE_UNDER_13'],
       ['zodiacs.birth_chart', { date: '2199-12-31', place: LONDON, houseSystem: 'whole' }, 'FUTURE_BIRTH_DATE'],
+      ['zodiacs.saturn_return', { date: '2199-12-31', time: '23:59', place: LONDON }, 'FUTURE_BIRTH_DATE'],
     ];
     for (const [name, input, code] of cases) {
       const error = await refusal(name, input);
