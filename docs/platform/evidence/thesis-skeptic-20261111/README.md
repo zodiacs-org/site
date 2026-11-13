@@ -4,6 +4,12 @@ Linear: ZOD-100 (parent ZOD-56).
 Page under test: https://zodiacs.org/thesis/ , edition Nº 10, as served on
 2026-11-11T15:56:38Z (repository commit `47fee79f`).
 
+**The live page changed after this capture.** PR 995 (merged 12 Nov 2026)
+redrew three figures, so 17 rows here quote text that is no longer live. The
+rerun pinned to the page of 13 Nov 2026 is in `../thesis-skeptic-20261113/`
+(ZOD-209); use its `claims.md` for the live page. This folder stays as the
+record of the 11 Nov capture.
+
 This folder is evidence only. Nothing here changes the live page or any
 published thesis file. Suggested wording is a proposal for the owner, not an
 edit.

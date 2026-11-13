@@ -1,0 +1,874 @@
+[META viewport] width=device-width, initial-scale=1, viewport-fit=cover
+[META theme-color] #060709
+[META color-scheme] dark
+Why Zodiacs Matter: The Thesis | Zodiacs.org
+[META description] Most memecoins stop trading the day they are made. Twelve of them, one for each zodiac sign, are in their third year. An essay on why.
+[LINK canonical ] https://zodiacs.org/thesis/
+[META og:site_name] Zodiacs
+[META og:title] Why Zodiacs Matter
+[META og:description] Most memecoins stop trading the day they are made. Twelve of them, one for each zodiac sign, are in their third year. An essay on why.
+[META og:type] article
+[META og:url] https://zodiacs.org/thesis/
+[META article:published_time] 2026-08-01
+[META article:modified_time] 2026-11-12
+[META og:image] https://zodiacs.org/assets/og/v2/thesis.png
+[META og:image:width] 1200
+[META og:image:height] 630
+[META og:image:alt] Why Zodiacs Matter, zodiacs.org, The Registry · Nº 10 · 2026
+[META twitter:card] summary_large_image
+[META twitter:title] Why Zodiacs Matter
+[META twitter:description] Most memecoins stop trading the day they are made. Twelve of them, one for each zodiac sign, are in their third year. An essay on why.
+[META twitter:image] https://zodiacs.org/assets/og/v2/thesis.png
+[META twitter:image:alt] Why Zodiacs Matter, zodiacs.org, The Registry · Nº 10 · 2026
+[SCRIPT application/ld+json id=None] {
+"@context": "https://schema.org",
+"@graph": [
+{
+"@type": "BreadcrumbList",
+"itemListElement": [
+{ "@type": "ListItem", "position": 1, "name": "Zodiacs.org", "item": "https://zodiacs.org/" },
+{ "@type": "ListItem", "position": 2, "name": "Zodiacs Registry", "item": "https://zodiacs.org/registry/" },
+{ "@type": "ListItem", "position": 3, "name": "The Thesis", "item": "https://zodiacs.org/thesis/" }
+]
+},
+{
+"@type": "Article",
+"@id": "https://zodiacs.org/thesis/#article",
+"headline": "Why Zodiacs Matter",
+"description": "Most memecoins stop trading the day they are made. Twelve of them, one for each zodiac sign, are in their third year. An essay on why.",
+"image": "https://zodiacs.org/assets/og/v2/thesis.png",
+"url": "https://zodiacs.org/thesis/",
+"inLanguage": "en",
+"datePublished": "2026-08-01",
+"dateModified": "2026-11-12",
+"author": { "@type": "Organization", "@id": "https://zodiacs.org/#org", "name": "Zodiacs.org" },
+"publisher": { "@type": "Organization", "@id": "https://zodiacs.org/#org", "name": "Zodiacs.org" },
+"isPartOf": { "@type": "WebSite", "@id": "https://zodiacs.org/#site" },
+"about": [
+{ "@type": "Thing", "name": "Astrology" },
+{ "@type": "Dataset", "@id": "https://zodiacs.org/#registry", "name": "Zodiacs Registry" }
+]
+}
+]
+}[a #essay]Skip to content[/a]
+[nav aria-label] Primary
+[a aria-label] Zodiacs.org
+[a /]
+Zodiacs·org[/a]
+Tools
+Signs
+[a /today/]Today[/a][a /learn/]Learn[/a][a /horoscopes/]Horoscopes[/a]
+[a aria-label] Your profile
+[a title] Your profile
+[a /profile/]
+[/a]
+[a aria-label] Search the site
+[a /?search=1]
+/[/a][a /astrofolio/]Astrofolio[/a]
+[button aria-label] Open menu
+[a /birth-chart/]Birth chartSee your sun, moon, rising, planets, houses, and what they mean.[/a][a /compatibility/]CompatibilityCompare two charts and see where they click, clash, and grow.[/a][a /transits/]TransitsExplore today’s planets and their connections to your chart.[/a][a /moon-sign/]Moon signHow you feel, and what settles you.[/a][a /rising-sign/]Rising signFind the sign people meet first. Birth time helps.[/a][a /moon-phase/]Moon phaseTonight’s moon, and the moon of any date you care about.[/a][a /saturn-return/]Saturn returnWhen yours hits, exactly, and what it tends to ask.[/a][a /birthday/]BirthdayFind your Sun sign from your birthday, including dates near a sign change.[/a]
+[div aria-label] More to explore
+More to explore
+[a /group-charts/]Group charts[/a]
+[a /chart-twins/]Chart twins[/a]
+[a /big-three/]Big three card[/a]
+[a /compatibility/invite/]Invite a friend[/a]
+[a /sky-calendar/]Sky calendar[/a]
+[a /chart-of-the-day/]Chart of the day[/a]
+[a /your-sky-wrapped/]Your sky, wrapped[/a]
+[a /astrologer-kit/]Chart PDF[/a]
+[a /tools/]All tools →[/a]
+[a /aries/]AriesMar 21 – Apr 19[/a][a /taurus/]TaurusApr 20 – May 20[/a][a /gemini/]GeminiMay 21 – Jun 20[/a][a /cancer/]CancerJun 21 – Jul 22[/a][a /leo/]LeoJul 23 – Aug 22[/a][a /virgo/]VirgoAug 23 – Sep 22[/a][a /libra/]LibraSep 23 – Oct 22[/a][a /scorpio/]ScorpioOct 23 – Nov 21[/a][a /sagittarius/]SagittariusNov 22 – Dec 21[/a][a /capricorn/]CapricornDec 22 – Jan 19[/a][a /aquarius/]AquariusJan 20 – Feb 18[/a][a /pisces/]PiscesFeb 19 – Mar 20[/a]
+[nav aria-label] Mobile
+The site[a /birth-chart/]Birth chart[/a][a /compatibility/]Compatibility[/a][a /today/]TodayYour daily reading and personal chart highlights[/a][a /learn/]Learn[/a][a /horoscopes/]HoroscopesDaily readings for your zodiac sign[/a][a /profile/]Saved chartsYour birth chart and the people you’ve added[/a]
+Tools
+[a aria-label] Transits. Explore today’s planets and their connections to your chart.
+[a /transits/]Transits[/a]
+[a aria-label] Moon sign. How you feel, and what settles you.
+[a /moon-sign/]Moon sign[/a]
+[a aria-label] Rising sign. Find the sign people meet first. Birth time helps.
+[a /rising-sign/]Rising sign[/a]
+[a aria-label] Moon phase. Tonight’s moon, and the moon of any date you care about.
+[a /moon-phase/]Moon phase[/a]
+[a aria-label] Saturn return. When yours hits, exactly, and what it tends to ask.
+[a /saturn-return/]Saturn return[/a]
+[a aria-label] Birthday. Find your Sun sign from your birthday, including dates near a sign change.
+[a /birthday/]Birthday[/a][a /tools/]All tools →[/a]
+[a /developers/]Developers[/a][a /astrofolio/]AstrofolioOfficial Zodiac token collection[/a]
+The twelve
+[a aria-label] Aries
+[a /aries/]Aries[/a]
+[a aria-label] Taurus
+[a /taurus/]Taurus[/a]
+[a aria-label] Gemini
+[a /gemini/]Gemini[/a]
+[a aria-label] Cancer
+[a /cancer/]Cancer[/a]
+[a aria-label] Leo
+[a /leo/]Leo[/a]
+[a aria-label] Virgo
+[a /virgo/]Virgo[/a]
+[a aria-label] Libra
+[a /libra/]Libra[/a]
+[a aria-label] Scorpio
+[a /scorpio/]Scorpio[/a]
+[a aria-label] Sagittarius
+[a /sagittarius/]Sagittarius[/a]
+[a aria-label] Capricorn
+[a /capricorn/]Capricorn[/a]
+[a aria-label] Aquarius
+[a /aquarius/]Aquarius[/a]
+[a aria-label] Pisces
+[a /pisces/]Pisces[/a]
+The Thesis · Nº 10
+Why Zodiacs Matter.
+Your sign already shows up in birthday wishes, dating profiles and group chats. Now it is also a coin you can own, give and prove is yours.
+[time 2026-08-01]Published 1 Aug 2026[time 2026-11-12]Updated 12 Nov 2026Evidence checked 10 Nov 2026
+[div aria-label] The twelve digital assets
+[a aria-label] Aries — digital asset
+[a /registry/aries/][/a]
+[a aria-label] Taurus — digital asset
+[a /registry/taurus/][/a]
+[a aria-label] Gemini — digital asset
+[a /registry/gemini/][/a]
+[a aria-label] Cancer — digital asset
+[a /registry/cancer/][/a]
+[a aria-label] Leo — digital asset
+[a /registry/leo/][/a]
+[a aria-label] Virgo — digital asset
+[a /registry/virgo/][/a]
+[a aria-label] Libra — digital asset
+[a /registry/libra/][/a]
+[a aria-label] Scorpio — digital asset
+[a /registry/scorpio/][/a]
+[a aria-label] Sagittarius — digital asset
+[a /registry/sagittarius/][/a]
+[a aria-label] Capricorn — digital asset
+[a /registry/capricorn/][/a]
+[a aria-label] Aquarius — digital asset
+[a /registry/aquarius/][/a]
+[a aria-label] Pisces — digital asset
+[a /registry/pisces/][/a]
+Read the story
+Nº 10 · Why Zodiacs MatterAn essay · about 4 minutes
+Zodiacs.org runs Astrofolio and wrote this essay. We hold some of these coins and take no fee when you buy one. They are thinly traded and can fall to zero. [a /disclosure/]Full disclosures[/a]
+Before you had a username, you had a sign. Somebody told you when you were small, and you have known it ever since, whether or not you ever read a horoscope. YouGov once showed Americans the twelve signs and asked them to pick their own. [a https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology]Nine in ten could[/a], although only about one in four said they believe in astrology. Very few ideas are known by nearly everyone and owned by no one, and this one has held that position for about 2,400 years.
+Almost everyone knows their sign. Few say they believe.
+[svg aria-label] Two dot grids of one hundred U.S. adults each. 90% picked their own sign when shown the twelve. 27% said they believe in astrology. YouGov, April 2022.
+Two grids of one hundred dots, each dot one in a hundred U.S. adults. In the first, 90 dots are filled: they picked their own sign. In the second, 27 are filled: they say they believe in astrology.
+90%
+picked their own sign
+when shown the twelve
+27%
+say they believe
+in astrology
+[svg aria-label] Two dot grids of one hundred U.S. adults each. 90% picked their own sign when shown the twelve. 27% said they believe in astrology. YouGov, April 2022.
+Two grids of one hundred dots, each dot one in a hundred U.S. adults. In the first, 90 dots are filled: they picked their own sign. In the second, 27 are filled: they say they believe in astrology.
+90%
+picked their own sign
+when shown the twelve
+27%
+say they believe
+in astrology
+Each grid is one hundred U.S. adults, and each dot one of them. The survey reports each share on its own, not how they overlap, so the two groups are drawn apart.
+[a https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology]YouGov[/a], U.S. adults, April 2022. Respondents were shown the twelve signs and asked to pick their own.
+It got there by moving. The twelve signs took shape in Babylon and travelled on clay tablets, then in manuscripts, then in printed almanacs. In 1930 a London newspaper printed a horoscope for the newborn Princess Margaret, readers asked for more, and [a https://www.smithsonianmag.com/history/how-are-horoscopes-still-thing-180957701/]the horoscope column was born[/a]. The phone put a sign in every pocket, and today the zodiac is some of the most dependable material on social media. Search any app for your sign and you will find posts from the last hour, most of them made by people who were paid nothing to make them.
+The transmission.
+[div aria-label] The zodiac moving through seven forms across history
+One shared language · many forms
+Clay tabletc. 450 BCE
+Star map150 BCE to 150 CE
+Manuscript850 to 1150 CE
+Almanacc. 1500
+Newspaper1930
+Phonec. 2010
+Coin5 Jul 2024
+The twelve-sign vocabulary survived by moving with people. Coins are its newest form.
+In July 2024 twelve coins appeared on Solana, one for each sign. They are memecoins. Anyone can buy one, send one to a friend, and check on a public ledger that it is the one we list. We run the registry that lists them.
+Most memecoins do not last a day. [a https://www.coingecko.com/research/publications/average-lifespan-of-pumpfun-tokens]CoinGecko studied[/a] 18.7 million coins launched on Pump.fun between January 2024 and June 2026 and found that 69% of them traded for the last time on the day they were created. Fewer than one in twenty were still trading ninety days later. A memecoin is built on a joke, and a joke is funniest the first time. The coin lasts as long as people keep retelling it, which for most of them is an afternoon.
+Most memecoins stop trading the day they are made.
+85of 1,868 dots still lit
+[svg aria-label] All twelve zodiac coins traded in the 30 days before 10 November 2026, on day 858 since they were made.
+Aries
+Taurus
+Gemini
+Cancer
+Leo
+Virgo
+Libra
+Scorpio
+Sagittarius
+Capricorn
+Aquarius
+Pisces
+12 of 12 zodiac coins still trading on day 858
+[div aria-label] Replay the coin field
+Made1,868
+Day 1585
+Day 2367
+Day 9085
+[svg aria-label] Dot field. Of 18.7 million coins launched on Pump.fun, 31% traded after their first day, 20% after their second day and under 5% after ninety days, according to CoinGecko. One dot for every 10,000 coins: 85 of 1,868 are still lit.
+1,868 dots, one for every 10,000 coins. 85 are still lit after ninety days.
+[svg aria-label] Dot field. Of 18.7 million coins launched on Pump.fun, 31% traded after their first day, 20% after their second day and under 5% after ninety days, according to CoinGecko. One dot for every 10,000 coins: 85 of 1,868 are still lit.
+1,868 dots, one for every 10,000 coins. 85 are still lit after ninety days.
+Each grey dot stands for 10,000 of the 18.7 million coins launched on Pump.fun, lit while they still traded. Each coloured dot is one of the twelve zodiac coins.
+[a https://www.coingecko.com/research/publications/average-lifespan-of-pumpfun-tokens]CoinGecko[/a], updated 23 June 2026. CoinGecko counted trades on Pump.fun only, so a coin that moved to another exchange may have traded for longer. The twelve were made on 5 July 2024; each was checked for a trade in the 30 days before 10 Nov 2026 on the public ledger.
+These twelve are in their third year, and we think the reason is their subject. A meme about a dog is about the dog. A meme about Scorpio is about you, and you will still be a Scorpio when the joke of the month has been forgotten. The zodiac also keeps its own calendar. Every month the Sun enters a new sign, everyone born under it has a birthday coming, and the group chat fills up with it again. Nobody has to schedule any of that.
+Each sign is looked up most in its own season.
+Every sign is read 45% to 80% more while the Sun is in it.
+[svg aria-label] Ridgeline chart of English Wikipedia reads for the twelve sign articles, 2016 to 2025. Every sign is read more in its own season, from 45% more to 80% more than in the rest of the year.
+Twelve ridgelines, one per sign, from January at the left to December at the right. Each rises when its article is read more than on its own typical day. Each sign's line peaks in its own season.
+Jan
+Feb
+Mar
+Apr
+May
+Jun
+Jul
+Aug
+Sep
+Oct
+Nov
+Dec
+[g aria-label] Capricorn: read 77% more in its own season
+Capricorn
++77%
+[g aria-label] Aquarius: read 80% more in its own season
+Aquarius
++80%
+[g aria-label] Pisces: read 76% more in its own season
+Pisces
++76%
+[g aria-label] Aries: read 51% more in its own season
+Aries
++51%
+[g aria-label] Taurus: read 50% more in its own season
+Taurus
++50%
+[g aria-label] Gemini: read 45% more in its own season
+Gemini
++45%
+[g aria-label] Cancer: read 53% more in its own season
+Cancer
++53%
+[g aria-label] Leo: read 71% more in its own season
+Leo
++71%
+[g aria-label] Virgo: read 64% more in its own season
+Virgo
++64%
+[g aria-label] Libra: read 63% more in its own season
+Libra
++63%
+[g aria-label] Scorpio: read 61% more in its own season
+Scorpio
++61%
+[g aria-label] Sagittarius: read 52% more in its own season
+Sagittarius
++52%
+Today
+[svg aria-label] Ridgeline chart of English Wikipedia reads for the twelve sign articles, 2016 to 2025. Every sign is read more in its own season, from 45% more to 80% more than in the rest of the year.
+Twelve ridgelines, one per sign, from January at the left to December at the right. Each rises when its article is read more than on its own typical day. Each sign's line peaks in its own season.
+Jan
+Mar
+May
+Jul
+Sep
+Nov
+[g aria-label] Capricorn: read 77% more in its own season
+Capricorn
++77%
+[g aria-label] Aquarius: read 80% more in its own season
+Aquarius
++80%
+[g aria-label] Pisces: read 76% more in its own season
+Pisces
++76%
+[g aria-label] Aries: read 51% more in its own season
+Aries
++51%
+[g aria-label] Taurus: read 50% more in its own season
+Taurus
++50%
+[g aria-label] Gemini: read 45% more in its own season
+Gemini
++45%
+[g aria-label] Cancer: read 53% more in its own season
+Cancer
++53%
+[g aria-label] Leo: read 71% more in its own season
+Leo
++71%
+[g aria-label] Virgo: read 64% more in its own season
+Virgo
++64%
+[g aria-label] Libra: read 63% more in its own season
+Libra
++63%
+[g aria-label] Scorpio: read 61% more in its own season
+Scorpio
++61%
+[g aria-label] Sagittarius: read 52% more in its own season
+Sagittarius
++52%
+Today
+Each line is one sign’s English Wikipedia article on a typical day of the year, 2016 to 2025, against that sign’s own typical day. The bright stretch is the sign’s season. Aquarius gains the most (80% more reads), Gemini the least (45%), and the lift shows in 118 of 120 sign-years. This measures curiosity, not demand for the coins.
+Wikimedia pageviews, user traffic, each sign article on its own, fetched 2026-11-12 · [a /thesis/thesis-seasons.json]reduced data[/a] · seasons from the Sun’s computed sign entries each year.
+You do with one what people already do with their sign. Your friend is a Leo, so on her birthday you send her Leo with a note only she would understand, and it arrives in her own wallet, where no app can take it back. A couple swaps, so that he holds her Cancer and she holds his Taurus, which is a small gesture in the way that wearing someone’s initial is a small gesture. Or you keep your own, as people have always worn their sign on a necklace. A picture of a lion can be copied forever, but a Leo that leaves your wallet has left it. And because our list of the twelve addresses is public, any app can recognise the listed Leo without asking us, so a dating profile could show it and a horoscope app could greet it.
+Anyone can launch another Leo this afternoon, and the copy will have the name without the history. Each of these coins has had one published address since [a /disclosure/#origin]the day it was made[/a], and nobody can make more of them, including us. They have also lived through things a new coin has not. In [a https://x.com/stoolpresidente/status/1891528769770279114]February 2025[/a] Dave Portnoy bought our Libra by mistake while trying to buy a different coin of the same name, and he told his followers so in a post that has now been seen about three million times.
+Anybody wanna buy some fake Libra? Warning. This is a meme coin. I bought it by accident. It will be volatile. It will eventually go to zero.
+[a https://x.com/stoolpresidente/status/1891528769770279114]Dave Portnoy · @stoolpresidente · 17 Feb 2025[/a] · the address he posted matches the registry, character for character
+We kept that post on our record. We kept the critics too, including the ones who said a few wallets held too much and the ones who called the coins dead.
+The public past includes the awkward parts.
+[a aria-label] 2024-07-05: The twelve are created.
+[a https://zodiacs.org/disclosure/#origin]
+2024-07-05: The twelve are created.
+2024-07-05
+The twelve
+are created.
+Open the receipt ↗
+[/a]
+[a aria-label] 2024-07-14: Concentration is challenged.
+[a https://x.com/wantonwallet/status/1812520143638962302]
+2024-07-14: Concentration is challenged.
+2024-07-14
+Concentration
+is challenged.
+Open the receipt ↗
+[/a]
+[a aria-label] 2025-02-17: Portnoy buys Libra by mistake.
+[a https://x.com/stoolpresidente/status/1891528769770279114]
+2025-02-17: Portnoy buys Libra by mistake.
+2025-02-17
+Portnoy buys Libra
+by mistake.
+Open the receipt ↗
+[/a]
+[a aria-label] 2025-05-20: “Dead bag” criticism enters the archive.; archive entry, search-only receipt
+[a /thesis/thesis-history.json]
+2025-05-20: “Dead bag” criticism enters the archive.
+2025-05-20
+“Dead bag” criticism
+enters the archive.
+Archive · search-only receipt ↗
+[/a]
+Creation, criticism and an accidental purchase belong in the same history. The “dead bag” entry has a search link rather than an individual post receipt.
+[a /thesis/thesis-history.json]Public-history register[/a] · reviewed 31 Jul 2026. Events are spaced equally, not to a time scale.
+More than two years on, about 2,800 wallets hold Leo alone, and the community that formed around these coins in 2024 is still building. This year it built [a /]Zodiacs.org[/a], a free astrology site with birth charts, compatibility readings and daily horoscopes in five languages, and plugins that bring it into [a /apps/]ChatGPT and Claude[/a]. People come for the astrology. The coins sit one labelled link away, for the ones who want to own their sign as well as read about it.
+A memecoin can go to zero, and these can too. Portnoy said so in the post above. Trading in them is thin, and on a slow day the total traded in one of them is less than the price of a lunch. The ten largest accounts hold between 23% and 31% of each coin, a figure that includes the trading pool. No outside app has adopted them yet. We publish all of it, with the numbers, on [a #the-candidacy]a scoreboard[/a] below this essay, because we would rather you checked our claim than took it on trust.
+The zodiac finds something new for people to do in every medium it reaches, and a public ledger lets them hold their sign. We expect people and apps to settle on a single set of twelve coins, as they settled long ago on a single set of twelve names, and we have spent more than two years making the case that it should be this set.
+Evidence & disclosuresDefinitions, tests, risks, and complete receipts
+[a /thesis/thesis-claims.json]Every claim on this page, with its source[/a]
+E1
+What still has to be earned.
+No one appointed these digital assets “official,” and this registry has no authority to make them so. The only meaningful kind of standing is chosen standing: independent people and builders using these assets when they could use anything else.
+The latest snapshot is mixed, and mostly early. The markets and archive are still present. Independent adoption has not arrived. Holder concentration has not improved. That is not a verdict; it is the starting score.
+The strict rule is simple: friends, paid campaigns, operator-owned apps, and operator-controlled wallets do not count as outside adoption. Only strangers count.
+[div aria-label] Plain-language candidacy snapshot, July 2026
+Not yetIndependent builders
+No qualifying outside app integration found in the defined search.
+Not yetUnprompted citations
+No qualifying editorial use of the listed asset addresses found.
+Needs workBroader ownership
+The first snapshots became slightly more concentrated, not less.
+PresentMarkets and archive
+All twelve tracked pools were live, and the project archive remained continuous.
+Open the dated candidacy scoreboard
+[div aria-label] Candidacy scoreboard
+CriterionCurrent evidenceAs of
+Independent integrationsno qualifying results found in the defined search · public package-registry and web queries for consumers of this registry or @zodiacs/sdk, excluding Zodiacs.org, Astrofolio, and the SDK's own examples · @zodiacs/sdk: 593 npm downloads in 30 days as of 2026-11-10[a https://zodiacs.org/thesis/thesis-candidacy-evidence.json] Verify ↗[/a]2026-11-10
+Unprompted third-party citationsno qualifying editorial citations found in the defined searches · automated wallet and aggregator listings of the addresses were observed and are excluded by definition as of 2026-11-10[a https://zodiacs.org/thesis/thesis-candidacy-evidence.json] Verify ↗[/a]2026-11-10
+Holder dispersionbaseline established, no widening yet · four weekly public snapshots since 2026-06-29 · median top-10 share 26.6% → 27.2% (slightly more concentrated) as of 2026-07-23[a https://zodiacs.org/thesis/thesis-candidacy-evidence.json] Verify ↗[/a]2026-07-23
+Liquidity persistence12 of 12 canonical Raydium pools traded on chain in the 30 days before the 2026-11-10 capture (every pool's newest swap fell on 9 or 10 Nov) · Dexscreener returned 9 of the 12 pools: $10.5k to $18.7k depth, $0.88 to $100 of 24h volume · Leo, Scorpio and Aquarius were not returned by Dexscreener · continuous historical depth was not archived as of 2026-11-10[a https://zodiacs.org/thesis/thesis-candidacy-evidence.json] Verify ↗[/a]2026-11-10
+Archive continuityown version archive continuous in the public repository since 2024 · Internet Archive: 13 captures since 2024-01-01, latest 2026-10-11, largest gap 326 days as of 2026-11-10[a https://zodiacs.org/thesis/thesis-candidacy-evidence.json] Verify ↗[/a]2026-11-10
+The candidacy is judged on these. The same list defines the loss condition.
+These criteria work both ways. If another set earns stronger independent use, the same evidence should favor it. If these assets fail to spread beyond their origin, the claim fails with them.
+E2
+Three questions, one honest test.
+We missed our own deadline. We said this test would start by 31 October 2026. It did not. The plan needed us to hand out coins, and we never built that. We are redesigning the test so that it needs nothing from us except a public count. Until it starts, this page makes no new promise about dates. The original plan stays below, unchanged, so you can see what we said.
+It is easy to say people would hold their signs if crypto were simpler. So the complexity will be removed: one tap, clear language, and no need to understand a blockchain first. Then three ordinary questions decide what happened.
+[div aria-label] The three questions in the one-tap test
+Will people claim one?Not followers recruited for a campaign — real, unique participants.
+Will they keep it?Still held ninety days later, after the novelty has passed.
+Will ownership spread?More broadly held, rather than gathering in the same few wallets.
+The thresholds and deadline were published before the test began. All three must pass for a success. The result will be published even if the answer is no. A thesis that cannot lose is not a thesis.
+See the preregistered thresholds and verdict rule
+[aside aria-label] The one-tap test, commitment card
+The one-tap testPREREGISTERED · START MISSED
+Startwas due by 2026-10-31 · not started · redesign pending as of 2026-11-10
+Unique claimantssuccess ≥ 500 wallets · one claim per wallet · sybil exclusions preregistered as of 2026-07-23
+90-day retentionsuccess ≥ 20% of claimants still holding the claimed amount at day 90 as of 2026-07-23
+Holder dispersionsuccess = median top-10 share falls ≥ 2.0pp vs the 2026-07-23 baseline (27.2%) as of 2026-07-23
+Verdict rulesuccess = all three · mixed = two · failure = one or none as of 2026-07-23
+The start date of 31 October 2026 was missed. The test has not begun. The thresholds above are unchanged and will carry into the redesigned test.
+E3
+What you would actually hold.
+A beautiful name can still be attached to a badly designed token. So the basic facts should be understandable before anyone reaches a block explorer. Here is the plain-language snapshot; the full sign-by-sign table and every available receipt remain directly below it.
+[div aria-label] Plain-language facts about the twelve digital assets
+Total across twelveAbout 12 billion
+Roughly one billion units per sign.
+Can more be minted?No
+All twelve recorded mint authorities are renounced.
+Can wallets be frozen?No
+All twelve recorded freeze authorities are renounced.
+How concentrated?23–31%
+The ten largest token accounts still hold a meaningful share.
+Where can they travel?Solana and Base
+Native on Solana, with matching bridged representations on Base.
+Project treasuryNone disclosed
+The published instrument reports no project treasury.
+Open the complete sign-by-sign disclosure
+[div aria-label] Disclosure table — the instrument, per sign
+Sign
+Supply
+Mint authority
+Freeze authority
+Top-10 holders
+Liquidity
+Bridge
+Treasury / insider
+Continuity
+Aries
+999,596,350.537038 total as of 2026-11-10[a https://solscan.io/token/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv] Verify ↗[/a]
+28.4% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv] Verify ↗[/a]
+7.8% of supply · Raydium pool · LP 99.99% burned as of 2026-07-14[a https://solscan.io/account/HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0x3ffB5282F5891Dd8c813E64059EdB0607537eC91] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Taurus
+999,956,490.259699 total as of 2026-11-10[a https://solscan.io/token/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp] Verify ↗[/a]
+25.7% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp] Verify ↗[/a]
+7.2% of supply · Raydium pool · LP 99.51% burned as of 2026-07-14[a https://solscan.io/account/2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0xd5356c6E529569c6912978433DAfb7ca72B5f09C] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Gemini
+999,823,945.485411 total as of 2026-11-10[a https://solscan.io/token/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc] Verify ↗[/a]
+23.0% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc] Verify ↗[/a]
+6.4% of supply · Raydium pool · LP 99.98% burned as of 2026-07-14[a https://solscan.io/account/HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0x8F6eb25aB4CD2F8f064f7da5E35136D4EC600b4f] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Cancer
+999,937,225.455531 total as of 2026-11-10[a https://solscan.io/token/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ] Verify ↗[/a]
+25.9% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ] Verify ↗[/a]
+8.1% of supply · Raydium pool · LP 95.94% burned as of 2026-07-14[a https://solscan.io/account/DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0xb9Fd3c3157C7b69260Ca285FbbC74F6309226378] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Leo
+999,790,687.091088 total as of 2026-11-10[a https://solscan.io/token/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm] Verify ↗[/a]
+26.8% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm] Verify ↗[/a]
+8.1% of supply · Raydium pool · LP 92.04% burned as of 2026-07-14[a https://solscan.io/account/48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0x4f7B4c12DE5d47314C86Ed3BA25E289aA139CF75] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Virgo
+999,901,230.758444 total as of 2026-11-10[a https://solscan.io/token/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso] Verify ↗[/a]
+27.5% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso] Verify ↗[/a]
+7.6% of supply · Raydium pool · LP burned as of 2026-07-14[a https://solscan.io/account/5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0xAcFd97106bbE5D931aC430Be76A8E362832D48f4] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Libra
+999,793,750.6232 total as of 2026-11-10[a https://solscan.io/token/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe] Verify ↗[/a]
+27.1% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe] Verify ↗[/a]
+9.5% of supply · Raydium pool · LP 99.42% burned as of 2026-07-14[a https://solscan.io/account/DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0x4201eff5F419CD6EEDFb28fa240edeaFc9002204] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Scorpio
+999,990,990.891822 total as of 2026-11-10[a https://solscan.io/token/J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1] Verify ↗[/a]
+25.9% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1] Verify ↗[/a]
+7.7% of supply · Raydium pool · LP burned as of 2026-07-14[a https://solscan.io/account/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0x0057C9cB6D16C2ecA808788f14d0d0c367b26676] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Sagittarius
+999,520,132.436445 total as of 2026-11-10[a https://solscan.io/token/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3] Verify ↗[/a]
+28.7% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3] Verify ↗[/a]
+7.8% of supply · Raydium pool · LP burned as of 2026-07-14[a https://solscan.io/account/7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0xD21fAb1EB5E11AC3C281F7cF8096eCC4683eEa9c] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Capricorn
+999,981,308.976726 total as of 2026-11-10[a https://solscan.io/token/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2] Verify ↗[/a]
+30.6% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2] Verify ↗[/a]
+7.5% of supply · Raydium pool · LP burned as of 2026-07-14[a https://solscan.io/account/549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0xbFB102C18FDf49f2ffCB9B3aF4522f7DC9f51018] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Aquarius
+999,986,134.488303 total as of 2026-11-10[a https://solscan.io/token/C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt] Verify ↗[/a]
+24.7% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt] Verify ↗[/a]
+7.4% of supply · Raydium pool · LP 99.99% burned as of 2026-07-14[a https://solscan.io/account/BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0xccA7CD4F96336Fd26eF6c5F579eaC651bAC5535F] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Pisces
+999,915,684.507524 total as of 2026-11-10[a https://solscan.io/token/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE] Verify ↗[/a]
+renounced as of 2026-11-10[a https://solscan.io/token/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE] Verify ↗[/a]
+28.9% · top-10 token accounts as of 2026-07-14[a https://solscan.io/token/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE] Verify ↗[/a]
+7.1% of supply · Raydium pool · LP burned as of 2026-07-14[a https://solscan.io/account/Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko] Verify ↗[/a]
+Wormhole BridgeToken · lock-and-mint from Solana as of 2026-07-14[a https://basescan.org/token/0x43fA1855a89b7A3e07426Fa7a1B44b4187d29Daf] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/token/3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE#holders] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+All twelve · aggregate
+11,998,193,931.511231 total as of 2026-11-10
+12 of 12 renounced as of 2026-11-10
+12 of 12 renounced as of 2026-11-10
+lowest 23.0% – highest 30.6% as of 2026-07-14
+6.4–9.5% per sign · Raydium pools · LP ≥92% burned as of 2026-07-14[a https://raydium.io/liquidity-pools/] Verify ↗[/a]
+12 Wormhole BridgeToken contracts · lock-and-mint from Solana as of 2026-07-14[a https://wormhole.com/docs/products/token-transfers/wrapped-token-transfers/overview/] Verify ↗[/a]
+none · no project treasury; supply is in circulation as of 2026-07-14[a https://solscan.io/account/DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13] Verify ↗[/a]
+Astrofolio at zodiacs.org/astrofolio · the official consumer collection experience as of 2026-08-23[a https://zodiacs.org/astrofolio/] Verify ↗[/a]
+Last updated: 2026-11-10
+Each figure above is published with its definition, its date, and its verification status. No adverse figure is omitted. Concentration is usually unflattering early, and it is printed anyway.
+A public cross-check today
+Leo, checked in three places.
+Check one exact mint independently across three public surfaces.
+[a /registry/leo/]RegistryListed as LeoThe entry publishes its native Solana mint.↗[/a]
+[a https://explorer.solana.com/address/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm]Explorer
+Verifiable onchainThe same address opens in Solana Explorer.↗[/a]
+[a https://www.solflare.com/prices/leo/8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm/]Wallet
+Recognized by a walletSolflare resolves it as Leo (LEO).↗[/a]
+Same mint throughout8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm
+Solflare is a third-party wallet surface. This demonstrates wallet recognition of the mint; it does not show that Solflare consumes the Zodiacs Registry or SDK.
+See the supply and ownership records
+The people who made these coins gave up the power to make more or to freeze yours. There is no project treasury. We do hold some of these coins ourselves, and say so on [a /disclosure/]the disclosure page[/a]. Most of the pool shares were burned, and the recorded amounts are below. Any holder can still sell. These rules do not protect the price.
+The issuer gave up the power to print or freeze.
+Mint moreIssuer permission
+Removed on all twelve.
+Freeze your tokensIssuer permission
+Removed on all twelve.
+Project treasuryNone
+Our own statement, not an audit. We hold some of these coins ourselves.
+Withdraw pool fundsPool shares burned
+The recorded amounts are below. A partial burn stays partial.
+Recorded Raydium pool-share burns: Aries, Taurus, Gemini, Cancer, Leo, Virgo. Snapshot 14 July 2026.
+Aries
+99.99%
+Taurus
+99.51%
+Gemini
+99.98%
+Cancer
+95.94%
+Leo
+92.04%
+Virgo
+% not stated
+Recorded Raydium pool-share burns: Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces. Snapshot 14 July 2026.
+Libra
+99.42%
+Scorpio
+% not stated
+Sagittarius
+% not stated
+Capricorn
+% not stated
+Aquarius
+99.99%
+Pisces
+% not stated
+Native Solana assets: no minting or freezing permission remains. Burned pool shares cannot be redeemed; burns are not uniformly complete. Dotted rows report a burn without a percentage.
+[a /thesis/thesis-disclosure.json]Committed disclosure[/a] · authorities: 23 Jul 2026 · pool shares and treasury: 14 Jul 2026 · [a #the-instrument]every sign’s receipt[/a]
+E4
+Market context and risk.
+Zodiacs are transferable digital assets. Prices can move with attention, liquidity, concentration, and broader market conditions. The registry publishes the relevant relationships and receipts here.
+Official status
+The registry documents twelve listed digital assets; no institution appointed them as an official zodiac standard. Candidacy is measured through the published adoption criteria above.
+Operator relationships
+[a /astrofolio/]Astrofolio[/a] is the official Zodiacs.org consumer collection experience at zodiacs.org/astrofolio; Astrofolio.xyz redirects there rather than operating as a separate app. Because the page is operator-controlled, the conservative methodology still excludes it from independent-adoption counts.
+Market risk
+Zodiacs are transferable digital assets. Zodiac history does not remove price, liquidity, concentration, bridge, or broader market risk. The registry promises no yield, buyback, price, or roadmap.
+Astrology market context
+Source-labeled figures from [a https://www.alliedmarketresearch.com/press-release/astrology-market.html]Allied Market Research[/a], [a https://sensortower.com/blog/astrology-apps-2019-revenue-downloads]Sensor Tower[/a], and [a https://www.axios.com/2021/04/14/astrology-app-co-star-raises-15-million-funding]Axios[/a] describe astrology products and audiences. They are kept separate from ownership of the twelve digital assets.
+Verification
+Each instrument row links to a receipt or carries an operator-attested or pending label. If page copy and a receipt disagree, use the receipt.
+See the complete dated history
+[svg aria-label] Dated public history of the twelve digital assets from July 2024 to July 2026, including adverse events.
+Jul 2024
+Jan 2025
+Jul 2025
+Jan 2026
+Jul 2026
+5 Jul 2024
+twelve mints created
+first documented trading
+(unaffiliated, from 6 Jul)
+concentration criticism
+answered publicly
+accidental Libra purchase
+highest-visibility moment
+'dead bag' commentary
+quiet-period dismissals
+registry + disclosures live
+this page
+● documented event ○ adverse commentary ◉ accidental purchase · every node carries receipts in the evidence register
+Receipts for every node: /thesis/thesis-history.json
+E5
+The audience and the calendar.
+These are the surveys, counts and dates behind the essay.
+[div aria-label] Reported figures
+12
+names · fixed scheme, ~5th century BCE
+REPORTED
+~90%
+of U.S. adults selected a sign when shown the twelve · YouGov 2022, prompted
+SURVEYED
+28%
+of U.S. adults consult astrology or a horoscope at least yearly · Pew, surveyed Oct 2024
+SURVEYED
+Sources: [a https://today.yougov.com/entertainment/articles/42292-one-four-americans-say-they-believe-astrology]YouGov, 2022[/a] · [a https://www.pewresearch.org/religion/2025/05/21/3-in-10-americans-consult-astrology-tarot-cards-or-fortune-tellers/]Pew Research, 2025[/a]
+Live and committed dataCultural activity only; buying intent sits outside the measure.
+The Pulse — attention, measuredLoading…
+Encyclopedia reads · all twelve signs
+— / day
+Trailing 30 days · en.wikipedia
+One sign at a timeWikimedia · single articles, same window
+Searching the sky
+[a https://trends.google.com/trends/explore?date=today%2012-m&q=horoscope%2Cdogecoin%2Csolana%2Cethereum]Open the live comparison ↗[/a]
+Searching, sign by sign
+Bare sign terms are ambiguous in English (cancer the disease, gemini the model), so each bar measures the explicit query, an undercount by design. The reference line is the anchor token's search interest over the same twelve months, set to 1.
+Across the feeds · editorial estimates
+Platform figures are editorial estimates from public cumulative hashtag and search-volume data — directional, not measured. Encyclopedia figures are measured; search figures are Google Trends relative interest.
+Your keyboard already knows the twelve.
+Aries, U+2648, Unicode 1.1, June 1993
+Aries
+U+2648
+Taurus, U+2649, Unicode 1.1, June 1993
+Taurus
+U+2649
+Gemini, U+264A, Unicode 1.1, June 1993
+Gemini
+U+264A
+Cancer, U+264B, Unicode 1.1, June 1993
+Cancer
+U+264B
+Leo, U+264C, Unicode 1.1, June 1993
+Leo
+U+264C
+Virgo, U+264D, Unicode 1.1, June 1993
+Virgo
+U+264D
+Libra, U+264E, Unicode 1.1, June 1993
+Libra
+U+264E
+Scorpio, U+264F, Unicode 1.1, June 1993
+Scorpio
+U+264F
+Sagittarius, U+2650, Unicode 1.1, June 1993
+Sagittarius
+U+2650
+Capricorn, U+2651, Unicode 1.1, June 1993
+Capricorn
+U+2651
+Aquarius, U+2652, Unicode 1.1, June 1993
+Aquarius
+U+2652
+Pisces, U+2653, Unicode 1.1, June 1993
+Pisces
+U+2653
+The symbols were in Unicode by June 1993, long before these coins. Glyphs redrawn here in the twelve sign hues.
+[a https://www.unicode.org/Public/17.0.0/ucd/DerivedAge.txt]Unicode character ages[/a] · [a https://www.unicode.org/versions/Unicode1.1.0/]Unicode 1.1 · June 1993[/a]
+A calendar gives the meme a reason to return.
+A person can leave.
+[svg aria-label] Schematic attention around a person fades after a peak.
+A moment can pass.
+[svg aria-label] Schematic attention around a news event peaks sharply, then fades.
+A joke can wear thin.
+[svg aria-label] Schematic attention around a joke rises then gradually fades.
+The seasons come back.
+[svg aria-label] Schematic: twelve recurring seasons, one peak in each sign hue. Not measured attention.
+Aries → Pisces → repeat
+Schematic: attention tied to a person, moment or joke can fade. The zodiac renews its subject every season. These curves are illustrative, not measured coin performance.
+Illustration · [a #fig-2]measured Wikipedia reads[/a]. No mortality rate or price forecast is implied.
+See the dated historical timeline
+[svg aria-label] Timeline of the fixed twelve-sign zodiac from the fifth century BCE to the present, over the lifespans of empires and currencies that ended.
+500 BCE
+1 CE
+500 CE
+1000 CE
+1500 CE
+2000 CE
+astral antecedents · star lists, omen series
+Babylon · the fixed twelve
+Hellenistic horoscopy
+Ptolemy
+Arabic astronomy
+Latin Europe
+print
+the newspaper column
+apps
+Neo-Babylonian empire · ended 539 BCE
+the denarius · ended 274 CE
+Roman empire · ended 476 CE
+Byzantine empire · ended 1453 CE
+Abbasid caliphate · ended 1258 CE
+carriers beneath the line, all ended:
+The newspaper column: [a https://www.smithsonianmag.com/history/how-are-horoscopes-still-thing-180957701/]Smithsonian Magazine[/a] (R. H. Naylor, Sunday Express, 1930).
+＋
+Appendix — the technical record.
+Definitions, source methods, and verification paths for the public record.
+A
+Reading the instrument.
+The column legend for the complete instrument table:
+Supply — total and circulating, per sign
+Mint authority — status per sign (retained / renounced), address if retained
+Freeze authority — status per sign
+Holder concentration — top-10 wallet share per sign, dated
+Liquidity — venue, pool addresses, LP ownership and any locks
+Bridge — mechanism for Base representations, custody model, what fails if the bridge fails
+Treasury and insider holdings — project-controlled wallets, amounts, any lockups or vesting, disposal policy
+Registry continuity — governance of the record itself; what survives if the operating entity disappears (static registry file, forkable SDK, mirrored archive)
+Statuses are three-valued and mean what they say: verified (a stranger can check the receipt), operator-attested (the operator states it, dated, not independently verified), pending (neither, and labeled so). Pending is never dressed as verified.
+B
+Why Solana. Why Base.
+The native digital assets were deployed on Solana. The relevant selection factors are technical and practical: transaction cost, confirmation behavior, consumer wallet availability, existing liquidity venues, and the operator's existing infrastructure at deployment time. Official bridged representations extend each sign to Base through the Wormhole lock-and-mint contracts listed per sign in the instrument. The Base representations trace to the specified Solana mints through those bridge contracts, and their validity depends on the bridge's stated contracts and trust assumptions. If the bridge fails, the native Solana assets stand unaffected; the bridged representations are conveniences, not the native assets.
+See the network definitions and sources
+The native digital assets use Solana token standards. The registry also lists official Base representations connected through Wormhole contracts. Network fees, confirmation behavior, and bridge assumptions are documented in the technical appendix and dated disclosure.
+[a https://solana.com/docs/core/fees]Solana fees[/a] · [a https://solana.com/developers/guides/advanced/confirmation]Solana confirmation[/a] · [a https://zodiacs.org/registry/zodiacs.registry.json]Zodiacs registry[/a] · [a https://zodiacs.org/disclosure/]disclosures[/a]
+C
+Methodology and evidence.
+The Pulse reads open sources on a published schedule: encyclopedia pageviews from the Wikimedia API (live, with a weekly committed snapshot as fallback) and search interest from public Trends data, with the comparison set and its limits stated inline. Pageviews measure curiosity, not bids; the essay never uses them as demand.
+The candidacy scoreboard and the one-tap test read their committed JSON registers, which carry measurement definitions, capture times, exclusions, and raw captures in the published [a https://zodiacs.org/thesis/thesis-candidacy-evidence.json]evidence file[/a]. Every observation carries an independence classification (unsolicited-unaffiliated, unsolicited-unknown, prompted, campaign, affiliated) and an economic-interest classification; only unsolicited-unaffiliated observations count toward pass conditions, and each exclusion decision is recorded. The public-history events in Part V carry the same schema — post identifiers, capture times, artifact grades A–E, live/deleted status — in the same register family. The test is preregistered: criteria, cohort, thresholds, and dates were fixed and published before the test began, and the result publishes either way.
+D
+Verify it yourself.
+Each instrument row links to an independently checkable receipt, or is labeled operator-attested or pending. Mint addresses and origin transactions are on a public explorer; pool and holder data are on chain; the registry file is at [a https://zodiacs.org/registry/zodiacs.registry.json]/registry/zodiacs.registry.json[/a]; the [a https://zodiacs.org/sdk/]SDK[/a] reads it all programmatically. The [a https://zodiacs.org/disclosure/]disclosure register[/a] carries the operator statements. If a claim on this page and a receipt ever disagree, the receipt wins, and the page is wrong until corrected.
+Choose the sign you already carry.
+[a /registry/]Choose your signOpen the twelve coins→[/a][a /registry/collection/]View a wallet collectionRead-only · no signing↗[/a]
+Copy this thesisShare the canonical link⧉
+Published 1 Aug 2026 · Evidence checked 10 Nov 2026 · Zodiacs.org · The Registry · An editorial thesis · not advice · Nº 10
+Explore the artwork for the twelve Zodiac signs.
+[section aria-label] Interactive Zodiac artwork selector
+[div aria-label] Choose among the twelve Zodiac signs
+View Leo
+Drag to browse · Choose a sign to open.
+[nav aria-label] Static catalogue of the twelve Zodiac signs
+[a /registry/aries/]
+[img alt] Aries Zodiac artwork
+Aries[/a][a /registry/taurus/]
+[img alt] Taurus Zodiac artwork
+Taurus[/a][a /registry/gemini/]
+[img alt] Gemini Zodiac artwork
+Gemini[/a][a /registry/cancer/]
+[img alt] Cancer Zodiac artwork
+Cancer[/a][a /registry/leo/]
+[img alt] Leo Zodiac artwork
+Leo[/a][a /registry/virgo/]
+[img alt] Virgo Zodiac artwork
+Virgo[/a][a /registry/libra/]
+[img alt] Libra Zodiac artwork
+Libra[/a][a /registry/scorpio/]
+[img alt] Scorpio Zodiac artwork
+Scorpio[/a][a /registry/sagittarius/]
+[img alt] Sagittarius Zodiac artwork
+Sagittarius[/a][a /registry/capricorn/]
+[img alt] Capricorn Zodiac artwork
+Capricorn[/a][a /registry/aquarius/]
+[img alt] Aquarius Zodiac artwork
+Aquarius[/a][a /registry/pisces/]
+[img alt] Pisces Zodiac artwork
+Pisces[/a]
+[button aria-label] Return to the twelve signs
+✕
+Loading market context.
+[a https://jup.ag/]Open Jupiter route↗[/a][a https://dexscreener.com/]View market data↗[/a]
+[a /registry/]Open catalogue entry→[/a]
+[section aria-label] The Twelve — catalogue entries
+The TwelveCatalogue
+Open a sign's entry — lore, provenance & the listed digital asset.
+[nav aria-label] Sign catalogue pages
+[a /registry/aries/]Aries[/a][a /registry/taurus/]Taurus[/a][a /registry/gemini/]Gemini[/a][a /registry/cancer/]Cancer[/a][a /registry/leo/]Leo[/a][a /registry/virgo/]Virgo[/a][a /registry/libra/]Libra[/a][a /registry/scorpio/]Scorpio[/a][a /registry/sagittarius/]Sagittarius[/a][a /registry/capricorn/]Capricorn[/a][a /registry/aquarius/]Aquarius[/a][a /registry/pisces/]Pisces[/a]
+[nav aria-label] Continue
+[a /registry/#verify]Verify a listed address→[/a][a /sdk/]Build with the SDK↗[/a]
+[a /]Zodiacs.org[/a]
+The argument for the Twelve, and the public record behind it.
+[aside aria-label] Guide
+Guide→
+An AI assistant for astrology questions and help using Zodiacs.
+Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. [a /disclosure/]Read our disclosure[/a].
+[nav aria-label] Explore
+Explore
+[a /]Astrology[/a][a /astrofolio/]Astrofolio[/a][a /registry/]Official Registry[/a][a /thesis/]Thesis[/a][a /archive/]Archive[/a]
+[nav aria-label] Trust and policies
+Trust
+[a /astrofolio/#verify]Verify a token[/a][a /registry/technical/]Methodology[/a][a /disclosure/]Disclosure[/a][a /sdk/]SDK[/a]
+[nav aria-label] Official channels
+Follow
+[a https://x.com/astrofoliosol]X[/a][a https://www.instagram.com/astrofolioonsol/]Instagram[/a][a https://tiktok.com/@astrofolio]TikTok[/a][a https://t.me/astrofoliosol]Telegram[/a]
+[nav aria-label] The twelve zodiac signs
+The Twelve
+[a aria-label] Aries
+[a title] Aries
+[a /aries/]Aries[/a]
+[a aria-label] Taurus
+[a title] Taurus
+[a /taurus/]Taurus[/a]
+[a aria-label] Gemini
+[a title] Gemini
+[a /gemini/]Gemini[/a]
+[a aria-label] Cancer
+[a title] Cancer
+[a /cancer/]Cancer[/a]
+[a aria-label] Leo
+[a title] Leo
+[a /leo/]Leo[/a]
+[a aria-label] Virgo
+[a title] Virgo
+[a /virgo/]Virgo[/a]
+[a aria-label] Libra
+[a title] Libra
+[a /libra/]Libra[/a]
+[a aria-label] Scorpio
+[a title] Scorpio
+[a /scorpio/]Scorpio[/a]
+[a aria-label] Sagittarius
+[a title] Sagittarius
+[a /sagittarius/]Sagittarius[/a]
+[a aria-label] Capricorn
+[a title] Capricorn
+[a /capricorn/]Capricorn[/a]
+[a aria-label] Aquarius
+[a title] Aquarius
+[a /aquarius/]Aquarius[/a]
+[a aria-label] Pisces
+[a title] Pisces
+[a /pisces/]Pisces[/a]
+Language
+English[a /es/]Español[/a][a /pt/]Português (Brasil)[/a][a /fr/]Français[/a][a /it/]Italiano[/a]
+© 2026 Zodiacs.org
+[nav aria-label] Legal
+Legal
+[a /about/]About[/a][a /privacy/]Privacy[/a][a /terms/]Terms[/a]
+[nav aria-label] More
+More
+[a /widgets/]Widgets[/a][a /feeds/horoscopes.xml]RSS[/a]
+Data & licenses
+Place data: [a https://www.geonames.org/]GeoNames[/a] · CC BY 4.0
+Typefaces licensed under [a /fonts/OFL-instrument-sans.txt]SIL OFL 1.1[/a]
+Registry record: Zodiac assets originated MMXXIV · [a /disclosure/#origin]Origin receipts[/a]
