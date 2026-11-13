@@ -4,7 +4,9 @@ Evidence for Linear ZOD-99 (parent ZOD-58): the Zodiacs connector checked agains
 the connector directories' live rules and the live server, as a submission dry run.
 Nothing was submitted, and no product code was changed.
 
-- `REPORT.md`: the pass or fail list for tests D1 to D8, with the rule, what the
+- `BREAKER.md`: the second session's review of the report; its one blocker and
+  seven corrections are applied in `REPORT.md` (fix round, 13 November 2026).
+- `REPORT.md`: the pass or fail list for tests D1 to D8 and R1, with the rule, what the
   live server or page did, and the proposed fix for each failure. Start here.
 - `DRAFT-PRS.md`: what draft pull requests 968, 970, 971 and 972 would fix and what
   still needs the owner.

@@ -13,7 +13,8 @@ server (0.6.6) and the live developer page still behave as `REPORT.md` describes
 
 ## 970: no love horoscope for a birth date under 18
 
-- **Fixes:** the D2 fail. With a birth date under 18, a love request gets the general
+- **Fixes:** the D2 fail, and by its description the panel data too (it empties the
+  panel's love readings for a birth date under 18; read, not run). With a birth date under 18, a love request gets the general
   reading and the note "This birth date is under 18, and Zodiacs does not give love
   or romance readings for anyone under 18, so this is the general reading", and the
   pointer to a love week goes. No tool definition changes.
@@ -26,13 +27,22 @@ server (0.6.6) and the live developer page still behave as `REPORT.md` describes
 ## 971: tool descriptions describe the tool
 
 - **Fixes:** the D1 fail on `get_horoscope` (the scheduling offer is removed) and the
-  thirteen flags; it rewrites 15 of the 19 live descriptions and the server
+  most of the flags; it rewrites 15 of the 19 live descriptions and the server
   instructions as statements, and adds the under-13 refusal and the under-18 limits
-  to the descriptions of the tools that take a birth date. The four it leaves alone
-  (`get_sky`, `get_upcoming_events`, `check_sky_fact`, `get_chinese_zodiac`) are four
-  of the five this dry run passed.
-- **Does not fix:** the sign-up and invite links inside results (it lists them for
-  Dias); the en dashes in input fields; the "right now" refusal text.
+  to the descriptions of seven of the eight tools that take a birth date. The four
+  it leaves alone are `get_sky`, `get_upcoming_events`, `check_sky_fact` and
+  `get_chinese_zodiac`; the last of these refuses a birth date under 13 without
+  saying so and is a flag in this dry run, so it should join the change.
+- **Does not fix:** `get_chinese_zodiac`; any input field description (it leaves
+  them on purpose, so "Never guess it", "Do not request coordinates for modern
+  birthdays" and the en dashes stay); the server instructions' under-13 sentence,
+  "do not send a child's name, birth date or birthplace to its tools"; the sign-up
+  and invite links inside results (it lists them for Dias); the "right now" refusal
+  text. It makes descriptions longer, which works against R1 in `REPORT.md`.
+- **Check after it:** OpenAI's negative test cases on file expect "Does not invoke
+  Zodiacs" for stock picks, scheduling and a guaranteed outcome. Today that rests on
+  the directive sentences this draft rewrites as facts, so rerun those cases in
+  ChatGPT before resubmitting.
 - **For Dias:** it changes 10 of the 13 published definitions, which the house rule
   keeps byte-identical. Its description says the owner approved the change with a
   version bump on 11 November and the branch now reports **0.6.7**; I could not
@@ -60,6 +70,9 @@ server (0.6.6) and the live developer page still behave as `REPORT.md` describes
   (`REVIEWER-NOTE-DRAFT.md`, marked "Draft, not sent") would withdraw the 15 October
   sentence about first names in links, the 6 November "thirteen unchanged" and the
   7 November 0.6.5.
+- **Does not cover:** the five further statements `REPORT.md` D5 lists (no eclipses,
+  "sees only what you choose to share", the portal's shortened tool copy, the 0.5.1
+  demo recording, the `get_horoscope` justification).
 - **Does not fix by itself:** anything a reviewer sees. That needs the note sent and
   the listing description resubmitted, which are Dias's to do.
 - **For Dias:** whether and when to send the note, and whether to save a newer
@@ -67,6 +80,12 @@ server (0.6.6) and the live developer page still behave as `REPORT.md` describes
   which still says no personal predictions). The draft says 0.6.6 throughout; if 971
   merges, the server reports 0.6.7 and this note and these records must say 0.6.7
   before anything is sent.
+
+## Not covered by any draft
+
+R1 in `REPORT.md` (receipts, versions, digests and a timestamp in results, every
+result sent twice, a 150 KB tool list), the "right now" refusal (ZOD-62), a bare
+birth year under 13, and the links inside results. Each needs Dias's decision first.
 
 ## Also read
 

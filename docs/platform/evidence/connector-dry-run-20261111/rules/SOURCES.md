@@ -1,7 +1,8 @@
 # Directory rules read for the dry run
 
 Every page below was fetched in this job on 11 November 2026, between 15:57 and
-15:58 UTC, with curl (no sign-in). The rule lines quoted in `REPORT.md` are copied
+15:58 UTC, with curl (no sign-in), except the OpenAI review requirements page, which
+the first pass missed and the fix round fetched on 13 November 2026. The rule lines quoted in `REPORT.md` are copied
 from these fetches, not from an earlier review. The full copies are kept outside
 the repository, in the job's scratch folder (they are other publishers' pages); the SHA-256 is of the bytes as served, so a later reader can
 tell whether a page has changed since.
@@ -17,12 +18,15 @@ tell whether a page has changed since.
 | Anthropic docs index | https://claude.com/docs/llms.txt | `a6afb58b8f46a5884f693a13fa261329db0c4916dbe29da887d693d8c6bec4ff` |
 | OpenAI guidelines | https://developers.openai.com/apps-sdk/app-submission-guidelines, which now redirects to https://developers.openai.com/plugins/plugin-guidelines ("Plugin guidelines") | `4d1e22c59fd2fe663c44ee7ab37ddc8061abf8e707a8d20971629dd9462a6497` |
 | OpenAI submission | https://developers.openai.com/apps-sdk/deploy/submission, which now redirects to https://developers.openai.com/plugins/deploy/submission | `1186c96b154c72806a9eb50e66675e39ee5766790639436ee585a281478bbcdb` |
+| OpenAI review requirements | https://developers.openai.com/plugins/deploy/app-review ("Remote MCP server review requirements"), fetched in the fix round on 13 November 2026 at 04:04 UTC | `c76f013098591330f6a6e0a627eb3f13376d2659802b4e7192559619f7010dd8` |
 | MCP Registry quickstart | https://raw.githubusercontent.com/modelcontextprotocol/registry/main/docs/modelcontextprotocol-io/quickstart.mdx | `e4041720b593caffdeb51d12e3e72efe0e4d5ced6b7c1dbc84a8ca81b35024b4` |
 | MCP Registry authentication | the same folder, `authentication.mdx` | `d49ab361f60e3074f7a5f3cb117cac9c0c1c148fe4c55bf8cd9559d43010f85f` |
 | MCP Registry moderation | the same folder, `moderation-policy.mdx` | `057a158e103754e1403f1d77924ce933cb70e18bf07b152c72af0c7d7bba560a` |
 
-The two OpenAI pages are HTML with a build stamp, so their digests will differ on
-a refetch even if the rules have not changed; compare the quoted lines instead.
+The three OpenAI pages and the Anthropic policy page are HTML, so their digests
+differ on a refetch even if the rules have not changed (the second session's fetch
+of the policy page had another digest and the same text); compare the quoted lines
+instead.
 
 ## The rule lines the report cites
 
@@ -52,6 +56,7 @@ Each has a label used in `REPORT.md`. Quotations are exact.
 - **AC-desc** ("Write narrow, accurate descriptions"): "Each tool description should state precisely what the tool does and when to invoke it. The description must match the tool's actual behavior."
 - **AC-inject** ("Avoid prompt-injection patterns"): "Describe what the tool does, and don't tell Claude how to behave. Tool descriptions are rejected if they:" followed by five items, of which the report uses the first, "Instruct Claude to call external software or tools the user didn't request", and the fifth, "Tell Claude to behave in ways unrelated to the tool's function, attempt to override system instructions, or promote products and services".
 - **AC-quality** ("Functional quality"): "Every tool must return a successful response when called with valid parameters, and generic errors such as "Internal Server Error" or "Bad Request" with no detail fail review" and "Validate inputs and return actionable error messages rather than silently accepting invalid data".
+- **AC-size** ("Functional quality"): "Keep responses reasonably sized for the task, and don't return a full database dump when a summary was requested".
 - **AC-annot** ("Provide tool annotations"): "Every tool must include a `title` and the applicable hint: `readOnlyHint: true` for read-only tools, and `destructiveHint: true` for tools that modify or delete data."
 - **AC-docs** ("Gather what to include with your submission"): "Public documentation: required by your publish date."
 
@@ -77,6 +82,12 @@ Each has a label used in `REPORT.md`. Quotations are exact.
 - **O-ads** ("Advertising"): "Plugins must not serve advertisements and must not exist primarily as an advertising vehicle."
 - **O-crypto** (prohibited services, which a plugin may not "sell, promote, facilitate, or meaningfully enable"): "Crypto or NFT offerings involving speculation, consumer deception, or financial abuse".
 - **O-update** (submission page, "Update to your MCP server"): "After initial publication, OpenAI scans your hosted MCP server daily. Eligible updates become available after automated checks pass" and "New tools remain unavailable until approved; existing tools retain their previously approved metadata when an update is held."
+
+### OpenAI "Remote MCP server review requirements"
+
+- **OR-scan** ("Metadata stored during tool scanning"): "When you select Scan Tools, the dashboard imports metadata advertised by your MCP endpoint into the draft. This includes tool names, titles, and descriptions; input and output schemas; security schemes; _meta fields; tool annotations; linked UI resource metadata, including CSP settings; and MCP server instructions."
+- **OR-extraneous** (common rejection reasons): "Ensure that the returned textual output closely adheres to the user’s request, and does not offer extraneous information that is irrelevant to the request, including personal identifiers."
+- **OR-audit** (the same list): "Ensure tools return only what’s strictly necessary for the user’s request and remove any unnecessary PII, telemetry/internal identifiers (for example, session, trace, or request IDs; timestamps; internal account IDs; or logs) and any auth secrets (tokens, keys, or passwords)."
 
 ### MCP Registry
 

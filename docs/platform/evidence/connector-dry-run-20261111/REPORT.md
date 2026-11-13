@@ -4,19 +4,22 @@ A dry run of the Zodiacs connector against the directories' rules as they are
 published today and against the live server at `https://zodiacs.org/mcp`, read as
 a strict reviewer would. Parent issue: ZOD-58.
 
-**Result: the dry run fails. D1, D2, D4, D5 and D6 fail; D3 passes; D8 holds.**
+**Result: the dry run fails. D1, D2, D4, D5 and D6 fail; D3 passes; D8 holds.** One
+more live-rule failure sits outside the six tests as written and is listed with them:
+results carry more than the answer (R1).
 Nothing was submitted, saved in a portal, emailed, merged or marked ready. No
 product code or tool description was changed; each fix below is a proposal.
 
 | Test | Result | In one line |
 |---|---|---|
-| D1 Tool names and descriptions | **Fail** | Names pass. `get_horoscope` breaks a named rejection rule; 13 more descriptions tell the assistant how to behave; the age limits are missing from the descriptions of the tools that enforce them. |
-| D2 Safety wording | **Fail** | `get_horoscope` still returns a love reading for a birth date under 18. No betting, investment or health framing found. |
+| D1 Tool names and descriptions | **Fail** | Names pass. `get_horoscope` breaks a named rejection rule; 14 more descriptions are flagged (13 tell the assistant how to behave, and `get_chinese_zodiac` refuses under 13 without saying so); the age limits are missing from the descriptions of the tools that enforce them. |
+| D2 Safety wording | **Fail** | `get_horoscope` still returns a love reading for a birth date under 18, and its panel data carries love readings even when the general reading was asked for. No betting, investment or health framing found. |
 | D3 Privacy | Pass | No link in 76 recorded calls carries a birth date, year, time, place, coordinate or name that was sent. The live privacy policy supports the claim. |
-| D4 Errors and age rules | **Fail** | The under-13 refusal holds on every tool. A chart for right now is refused with wording about a child (ZOD-62), and the refusal is not in the tool descriptions or the developer page. |
-| D5 Earlier review notes | **Fail** | The live server matches the portal (0.6.6, 19 tools), but four statements reviewers hold are contradicted and none has been withdrawn. |
+| D4 Errors and age rules | **Fail** | The under-13 refusal holds for every full birth date and every birthday card; a bare birth year is answered. A chart for right now is refused with wording about a child (ZOD-62), and the refusal is not in the tool descriptions or the developer page. |
+| D5 Earlier review notes | **Fail** | The live server matches the portal (0.6.6, 19 tools), but nine things reviewers hold are contradicted or out of date and none has been withdrawn. |
 | D6 Developer and support pages | **Fail** | The live developer page describes about five tools, says there are no predictions, and has no limits, troubleshooting or support contact. |
-| D7 Draft fixes | Informational | 968, 970, 971 and 972 are open, unmerged drafts. Together they would fix D2, D6 and most of D1 and D5. They do not fix ZOD-62 or the links inside results. |
+| R1 Results carry more than the answer | **Fail** (outside D1 to D6 as written) | Sky results carry receipts, versions and digests, one result carries a server timestamp, every result is sent twice, and `tools/list` is 150 KB. No draft covers it. |
+| D7 Draft fixes | Informational | 968, 970, 971 and 972 are open, unmerged drafts. Together they would fix most of D2, D6 and most of D1 and D5. They do not fix ZOD-62, R1 or the links inside results. |
 | D8 Nothing submitted | Holds | See the end of this report. |
 
 ## What was checked, and how
@@ -36,10 +39,18 @@ product code or tool description was changed; each fix below is a proposal.
 - **Live rules.** Fetched in this job, digests and the exact lines cited in
   `rules/SOURCES.md`. The labels below (A-2B, AC-inject, O-desc and so on) point
   there. A is Anthropic's Software Directory Policy, AC its connector checklist, AS
-  its submission pages, O OpenAI's plugin guidelines.
+  its submission pages, O OpenAI's plugin guidelines, OR OpenAI's "Remote MCP server
+  review requirements" (added in the fix round, fetched 13 November 2026).
 - **Records.** `docs/platform/zodiacs-ai/` and `integrations/chatgpt/` on
   `origin/main` at `47fee79f`; ZOD-58 with its 10 and 11 November comments, ZOD-62,
   ZOD-63; draft pull requests 968, 970, 971, 972, 975 and 943 read with `gh`.
+
+**Fix round, 13 November 2026.** A second session reviewed this report
+(`BREAKER.md`): no result flipped, and it asked for one finding to move into the fail
+list (now R1) and seven corrections. They are applied here from the calls already on
+record; the only new fetch is the OpenAI review page. The link and word scan in
+`raw/mcp/scan.txt` leaves out each result's `_meta` block; the horoscope results'
+`_meta` was read by hand for D2 and D3.
 
 **Not checked at source.** I had no access to the Claude or OpenAI portals or to the
 admin mailbox. What reviewers were told (D5) is taken from the repository's records
@@ -67,7 +78,8 @@ AC-annot, O-annot). `check_sky_fact` links its API documentation.
    items; A-2D; O-independent; O-intent). The same description also says "Decline
    those requests without a tool call", "Share the reading as written" and "Lead with
    those personal lines".
-2. **Thirteen more descriptions tell the assistant how to behave**, against the
+2. **Thirteen more descriptions tell the assistant how to behave** (a fourteenth,
+   `get_chinese_zodiac`, is flagged under item 3 only), against the
    opening line of AC-inject ("Describe what the tool does, and don't tell Claude how
    to behave"). None of these is as clear a breach as item 1; a strict reviewer flags
    them, a lenient one may not.
@@ -96,12 +108,12 @@ AC-annot, O-annot). `check_sky_fact` links its API documentation.
 | 13 | get_sky_calendar | Flag | "give them the returned shareUrl exactly" |
 | 14 | get_natal_chart | Flag | "tell the person"; "do not frame the chart as romance or attraction"; "give it as the page to open"; no under-13 limit |
 | 15 | get_horoscope_period | Flag | "Share the forecast plainly and confidently"; "never write a reading yourself in its place"; "Do not call it for stock picks" |
-| 16 | get_chinese_zodiac | Pass | (it also refuses a birth date under 13 without saying so; minor) |
+| 16 | get_chinese_zodiac | Flag | no under-13 limit, although it refuses a full birth date under 13 (call 56); it answers a bare birth year (call 61, see D4) |
 | 17 | get_personal_transits | Flag | "Present each line plainly and confidently as astrology's reading"; no under-13 limit |
 | 18 | explain_astrology | Flag | "do not present an explainer of your own as Zodiacs'"; "give the friendship reading and do not frame the pair as romance or attraction" |
-| 19 | find_birthplace | Pass | ("Never guess a birth time from a place" is a note on filling in a field) |
+| 19 | find_birthplace | Pass | ("Never guess a birth time from a place" is counted as a note on filling in a field; draft 971 rewrites it as a fact all the same, so a stricter reader could flag it) |
 
-One fail, thirteen flags, five passes. I counted as acceptable the sentences that
+One fail, fourteen flags, four passes. I counted as acceptable the sentences that
 say when to use a tool or how to fill in a field ("Use it when someone asks ...",
 "Pass the person's time zone if you know it"), because A-2A and O-desc ask for
 exactly that.
@@ -109,13 +121,17 @@ exactly that.
 **Server instructions** (the text every assistant reads first, in
 `raw/mcp/00-initialize.response.txt`): most sentences are orders, among them "Answer
 in plain words first" and "Share the scores, ratings and astrological forecasts
-plainly and confidently". AC-inject is written about tool descriptions, so this is a
-flag, not a fail; O-intent covers "plugin and tool metadata" more broadly.
+plainly and confidently". AC-inject is written about tool descriptions, so at
+Anthropic this is a flag. At OpenAI it is inside the review: the portal's scan imports
+"MCP server instructions" with the tool metadata (OR-scan), and the guidelines' fair
+play rule covers "other model-readable fields, at either the tool or plugin level".
+Treat the instructions as part of the D1 fail for the OpenAI directory.
 
 **Fix.** Rewrite the descriptions and the server instructions as statements of what
 each tool does, when to use it, what it returns and its limits; drop the scheduling
 offer; put the under-13 refusal and the under-18 limits in the descriptions of the
-tools that enforce them. Draft 971 does this for 15 of the 19 (see D7). Any such
+tools that enforce them, `get_chinese_zodiac` included. Draft 971 does most of this
+for 15 of the 19; what it leaves is listed under D7. Any such
 change alters published definitions, so it needs Dias's approval.
 
 ## D2. Safety wording: fail
@@ -132,6 +148,13 @@ live.
   attraction readings are left out", which is not true of the answer it sits in.
 - Calls 40, 41 and 42 (a general reading for the same 15-year-old) end by pointing to
   "a love or career week, use get_horoscope_period".
+- **The panel data carries love readings whatever was asked.** Each `get_horoscope`
+  result has a `_meta["zodiacs/horoscope"]` block that feeds the horoscope panel:
+  three days, each with the general, love and career readings. So call 42, a
+  **general** request for the synthetic 15-year-old, also delivers three love readings
+  and three share links ending `f=love` to the panel, where the Love button shows
+  them. The first version of this report missed it because the scan leaves out
+  `_meta`.
 
 Rules: the server's own stated rule ("If a person or a birth date is under 18, do not
 frame the reading as romance, attraction or a sexual relationship, and say that
@@ -142,7 +165,10 @@ bans a love horoscope for a 16-year-old outright; the failure is that Zodiacs te
 reviewers it gives none and then gives one.
 
 **Fix.** For a birth date under 18, return the general reading with a plain note in
-place of a love reading, and do not point to a love week. Draft 970 does this.
+place of a love reading, leave the love readings out of the panel data, and do not
+point to a love week. Draft 970's description says it does all three (the panel's
+Love button would stay and show "There's no love reading here yet"). That was read,
+not run: 970 is not deployed.
 
 **Two paths the server cannot check**, to tell reviewers plainly: `get_horoscope`
 with `focus: "love"` and no birth date, and `get_horoscope_period` with
@@ -190,12 +216,25 @@ logged" was not verified from inside the server in this job.
 
 ## D4. Errors and age rules: fail
 
-**Under-13 refusal: holds.** All eight tools that take a birth date refused the
-synthetic date 2016-02-02 (calls 50 to 57), as did a birthday card for 2020-05-03
-(call 60). The boundary is right: 2013-11-13 is refused, 2013-11-09 is answered
+**Under-13 refusal: holds for a full birth date and a birthday card.** All eight
+tools that take a birth date refused the synthetic date 2016-02-02 (calls 50 to 57),
+as did a birthday card for 2020-05-03 (call 60). The boundary is right: 2013-11-13 is refused, 2013-11-09 is answered
 (calls 58, 59). The message is the same each time and is clear: "Zodiacs is not
 directed at children under 13, so it makes no card, chart or reading from a birth
 date less than 13 years ago, or a birthday card for a day in those years. ..."
+
+**Two paths it does not cover, both by design, both visible to a reviewer.**
+
+- **A bare birth year.** `get_chinese_zodiac` with `year: 2020` and no birth date
+  returns a full reading (call 61: "Metal Rat", associations and pairings). The
+  field is described as for "when the person gives only a year", so it can be a
+  seven-year-old's birth year. The server's rule as written ("they refuse a birth
+  date less than 13 years ago") is not broken by a year. Whether a birth year under
+  13 should be refused is an open call for Dias; this report does not decide it.
+- **The refusal goes by the label on the date, not the date.** `get_occasion_sky`
+  with `occasion: "pet"` and 2024-08-01 (call 62), and `get_sky` with any instant
+  (call 67), return the sky of a day in the last 13 years. A reviewer who relabels a
+  child's birth date gets an answer, without a chart or a reading of a person.
 
 **Error messages: clear, with four small notes.** An impossible date, a time without
 a zone, a missing field, a bad sign, a window over 92 days, a year out of range, an
@@ -220,20 +259,24 @@ misleading: it speaks of a child, tells them to "give their own birth date", and
 does not say that `get_sky` gives the sky for any moment (call 67 shows it does,
 without houses or a rising sign). Rules: A-5A ("helpful feedback"), AC-quality
 ("actionable error messages"), O-quality ("clear messaging or fallback behaviors").
-ZOD-62 is confirmed as written.
+ZOD-62 is confirmed as written. The second session called this part arguable: the
+refusal is specific, not generic, and the field is named `birthDate`; a lenient
+reader calls it a flag. D4 fails either way on the documentation gap below.
 
 **Fail: the refusal is not documented where a reviewer looks.** The under-13 rule is
 in the server instructions, in `get_capabilities` and on the privacy page. It is in
 none of the eight tool descriptions and not on the live developer page (D1 item 3,
-D6).
+D6). Draft 971 would add it to seven of the eight; `get_chinese_zodiac` is one of
+the four descriptions it leaves alone.
 
 **Fix.** Keep the under-13 refusal exactly as it is for births. For ZOD-62, the
 smallest change is to the refusal text: add one sentence saying that for the sky at
 a moment, not a person's birth, `get_sky` gives the positions. A separate "chart for
 a moment" call that takes no birth details is the larger change ZOD-62 proposes; it
 is a new tool, so it needs Dias's decision and a new review. Add the under-13 line
-to the descriptions (draft 971) and to the developer page (draft 972). No open draft
-changes the "right now" refusal.
+to the descriptions (draft 971, which still needs `get_chinese_zodiac` added) and to
+the developer page (draft 972). No open draft changes the "right now" refusal or the
+birth-year path.
 
 ## D5. Earlier review notes: fail
 
@@ -247,10 +290,19 @@ Live today: version **0.6.6**, **19 tools**, no name in any link (D3).
 | Email of 6 November: the thirteen reviewed tools are unchanged | 0.6.5 changed `get_occasion_sky` the next day | Contradicted (the 7 November note says so) |
 | Email of 15 October, 18:01 UTC: "share links carry only first names, signs, scores and an occasion's date and place" | No link carries a name (calls 19 and 22 sent names; none came back in a link) | **Contradicted and never withdrawn** |
 | The directory description on file, which `LISTING.md` says "still says Zodiacs makes no personal predictions" | Server instructions: "Share the scores, ratings and astrological forecasts plainly and confidently" | **Contradicted; not resubmitted** |
+| The same Claude listing description: "Zodiacs does not list eclipses" | `get_capabilities` (call 10): "Eclipses are listed by get_sky_calendar, get_horoscope_period and get_personal_transits (year-ahead)" | **Contradicted; not resubmitted** |
+| The same description, "The assistant sees only what you choose to share", and the listing's authentication entry, "Everything the server returns is public data or is worked out inside the person's own panel" | `get_natal_chart`, `get_personal_transits`, `get_compatibility` and others compute on the server from birth details the assistant sends (calls 22, 30, 35) | **Contradicted; not resubmitted** |
+| The Claude portal's saved copy of the tools, 8 November, "with a portal note that some items were left out to fit its size limits" (`LISTING.md`) | `tools/list` is 150,468 bytes | Incomplete: reviewers there do not see all of what the server lists (see R1) |
+| OpenAI submission: demo recording `zodiacs-sky-0.5.1.mp4` (`plugins/zodiacs-sky/plugin.json`) | The submission is 0.6.6 with six tools the 0.5.1 recording cannot show | Out of date |
+| OpenAI read-only justification for `get_horoscope`: "Reads the published, dated horoscope edition for a Sun sign; nothing is stored." (`integrations/chatgpt/chatgpt-app-submission.json`) | It also computes a personal weekly forecast from a birth date (calls 17, 40 to 42) | Incomplete |
 
 So a reviewer who reads the email thread sees 0.6.5 and first names in links, and a
-reviewer who reads the listing description sees "no personal predictions" beside a
-server that gives forecasts. The test fails when such a statement stands and the dry
+reviewer who reads the listing description sees "no personal predictions", "does not
+list eclipses" and "sees only what you choose to share" beside a server that gives
+forecasts, lists eclipses and computes charts from birth details it is sent. One
+thing on file was checked and still holds: the second session ran the submitted
+OpenAI test case for two published famous charts and the live server returned
+exactly the expected scores (`BREAKER.md`, probe b40). The test fails when such a statement stands and the dry
 run does not say so. This report says so; the statements still stand, so I mark the
 test failed for the purpose of resubmitting, not passed on a technicality.
 
@@ -262,8 +314,12 @@ prediction of future events" while the connector is told to share forecasts
 "plainly and confidently".
 
 **Fix.** One note to each directory that states the current behaviour once and
-withdraws the four statements by date (A-3H requires telling Anthropic of material
-changes). Draft 968 holds such a note, marked not sent, and corrects the records.
+withdraws the stale statements by date; a new listing description for the Claude
+portal without the three contradicted sentences; a current demo recording and a
+corrected `get_horoscope` justification for OpenAI; and a tool copy in the Claude
+portal that is not cut short, which depends on R1 (A-3H requires telling Anthropic of material
+changes). Draft 968 holds such a note, marked not sent, and corrects the records; it covers
+the four email and version statements, not the five added in the fix round.
 Send it only after the description and under-18 changes are live, with the version
 the server then reports: draft 971 now moves the server to 0.6.7, so the 0.6.6 in
 968's note and records would be wrong on the day 971 merges. Sending anything is
@@ -307,13 +363,14 @@ merged or deployed: the live server and page still show the old behaviour (D2, D
 
 | Draft | Would fix | Still needs Dias |
 |---|---|---|
-| 970, no love horoscope under 18 | The D2 fail | Whether the server reports a new version when it goes live. Merge first. |
-| 971, descriptions describe the tool | The D1 `get_horoscope` fail and the thirteen flags; adds the age limits to descriptions | Approval to change 10 of the 13 published definitions (its text says this was given, with a bump to 0.6.7; I could not confirm that outside the pull request). Telling both directories. The sign-up and invite links in results, which it leaves in. |
+| 970, no love horoscope under 18 | The D2 fail, the panel data included by its own description (read, not run) | Whether the server reports a new version when it goes live. Merge first. |
+| 971, descriptions describe the tool | The D1 `get_horoscope` fail and most of the flags in 15 descriptions and the server instructions; adds the age limits to seven of the eight birth-date tools. It leaves `get_chinese_zodiac`, every input field description ("Never guess it", "Do not request coordinates for modern birthdays", the en dashes) and the server instructions' under-13 sentence as they are, and it makes descriptions longer, which works against R1 | Approval to change 10 of the 13 published definitions (its text says this was given, with a bump to 0.6.7; I could not confirm that outside the pull request). Telling both directories. The sign-up and invite links in results, which it leaves in. Rerunning OpenAI's negative test cases after it: they expect "Does not invoke Zodiacs" for stock picks, scheduling and a guaranteed outcome, which today rests on the directive sentences 971 rewrites as facts. |
 | 972, developer page | The D6 fail | The support address; merge after 970 so its under-18 line is true. |
 | 968, listing and version records | The D5 record gaps; holds the reviewer note | Whether and when to send the note. Its 0.6.6 must become 0.6.7 if 971 merges. |
 
-Not fixed by any of the four: the "right now" refusal wording (ZOD-62), the three
-small error messages, and the extra findings below.
+Not fixed by any of the four: R1 (what results carry), the "right now" refusal
+wording (ZOD-62), the birth-year path, the five reviewer-held statements added to D5,
+the small error messages, and the other findings below.
 
 ## D8. Nothing submitted or published
 
@@ -327,9 +384,58 @@ this directory.
 
 ---
 
+## R1. Results carry more than the answer: fail
+
+This was item 5 under "Other findings" in the first version, with no fix. It is a
+named rejection reason on the live pages, so it belongs in the fail list. It is
+outside D1 to D6 as the issue wrote them, which is why it has its own label.
+
+**Rules.** O-minimal ("Do not include diagnostic, telemetry, or internal
+identifiers" such as timestamps "unless they are strictly required"); OR-extraneous
+and OR-audit, from OpenAI's list of common rejection reasons; A-5B ("frugal with
+their use of tokens ... options to exclude unnecessary text"); AC-size ("Keep
+responses reasonably sized for the task").
+
+**What the live server does, from the recorded calls.**
+
+- **Receipts, versions and digests.** `get_sky` (call 11) returns a `receipt` with a
+  schema name, the engine and ephemeris versions (`@zodiacs/engine` `1.1.0-rc.2`,
+  `astronomy-engine` `2.1.19`), convention lists, table digests and a coverage
+  block, then a `backend` block that repeats the versions and a `cite` block with a
+  `sha256:` receipt digest: 3,195 of the 6,558 characters of the structured result.
+  For `check_sky_fact` (call 13) it is 3,916 of 5,371. The server's own instructions
+  say "Mention calculation details such as versions, receipts or UTC only if the
+  person asks how something was calculated", which concedes the answer does not need
+  them. The engine named is a release candidate, which a reviewer may also ask about.
+- **A server timestamp.** `get_life_milestones` (call 21) returns `asOf` to the
+  millisecond.
+- **Everything twice.** In all 44 successful tool results on record, the text part
+  is the structured part again as JSON (the yearly horoscope, call 33, is about
+  14,600 characters each way).
+- **No way to ask for less.** No tool has an input that shortens its answer.
+- **A 150 KB tool list.** `tools/list` is 150,468 bytes, about 115,000 of them
+  output schemas. `LISTING.md` records that on 8 November the Claude portal saved its
+  copy of the tools "with a portal note that some items were left out to fit its size
+  limits".
+- Nothing is cut off today: the second session's largest probe, a 92-day
+  `get_upcoming_events` window, came to 43,431 characters, inside Claude's published
+  limits. The failure is the diagnostic content and the duplication, not a hard limit.
+
+**Proposed fix (not made here; a product change for Dias to approve).** Leave the
+receipt, backend and cite blocks and the `asOf` stamp out of tool results unless
+asked for, for example behind a `detail` input, which would also meet A-5B's
+"options to exclude"; send each result once in full, with a short text summary in
+place of the second JSON copy; and trim the output schemas so `tools/list` fits the
+Claude portal's copy. This changes what the 13 published tools return, though not
+their names or descriptions, and a `detail` input would change input schemas. It
+needs its own draft and both directories told. **Whether to trim what results carry
+is an open call for Dias; this report does not decide it.**
+
+---
+
 ## Other findings a strict reviewer could raise
 
-These are outside D1 to D6 as written. None changes a result above.
+These are outside D1 to D6 as written and weaker than R1. None changes a result above.
 
 1. **Sign-up and invite links inside results.** `get_horoscope` and
    `get_horoscope_period` results carry a link titled "The Leo horoscope by email
@@ -340,24 +446,47 @@ These are outside D1 to D6 as written. None changes a result above.
    so this is a flag. No draft removes them; 971 lists them for Dias.
 2. **Two times for one event (ZOD-63), still live.** `check_sky_fact` gives Neptune
    entering Aries at 2026-01-26 14:31:41 UTC (call 14); the live methodology page
-   gives 17:35 UTC. O-quality asks for accurate results. Draft 975 is the fix.
+   gives 17:35 UTC. O-quality asks for accurate results, so of the findings in this list it is the
+   nearest to a fail. Draft 975 is the fix.
 3. **The token wing.** A-4A: "We do not generally allow cryptocurrency software in
    our directory". The connector has no token tool, and none of the 76 results links
    to Astrofolio, the Registry or the Terminal. But every zodiacs.org page a result
    links to, the documentation page included, carries the footer line "Zodiacs.org
    also operates Astrofolio, the Zodiac token collection" and the Astrofolio link in
-   the navigation (O-crypto is the nearest OpenAI rule). A reviewer may ask. Whether
-   to say something first is Dias's call.
+   the navigation (O-crypto is the nearest OpenAI rule). The response headers of `/mcp` itself
+   (`raw/mcp/00-initialize.headers.txt`) also carry the site-wide content security
+   policy, which names `api.jup.ag`, `api.dexscreener.com` and
+   `api.geckoterminal.com`, so a reviewer reading headers sees market data hosts on
+   the connector's endpoint. A reviewer may ask. Whether to say something first is
+   Dias's call.
 4. **Location fields.** O-location asks plugins to avoid "raw location fields (for
    example, city or coordinates)". Eight tools take a birthplace or venue as a place
    name, coordinates or a longitude. They are not the user's own location, and the
    records show OpenAI's scan has already held `get_occasion_sky` and
    `get_compatibility` for further review. Have a one-line reason ready.
-5. **Size of results.** Every result is sent twice, once as text and once as
-   structured content (the yearly horoscope is about 14,600 characters each way), and
-   sky results carry calculation receipts, engine versions and convention lists that
-   the server instructions then tell the assistant not to mention. Rules: A-5B,
-   O-minimal.
-6. **Dashes.** Input field descriptions in five tools write the year range 1800 to
+5. **Dashes.** Input field descriptions in five tools write the year range 1800 to
    2199 with an en dash (`raw/mcp/descriptions-check.txt`). That is the house rule,
    not a directory rule; changing them changes published definitions.
+6. **Share links and the privacy wording.** The milestone share link carries the age
+   at the next milestone (`a=44` in call 21): not a birth year, but an age band the
+   privacy policy's list of what links carry does not mention. And the policy says
+   both "a birthday link carries only the month and day" and "A birthday gets no card
+   or share link"; `get_birthday` returns a share link (calls 27, 28). The second
+   sentence means birthday cards from the occasion tool but does not say so. D3 still
+   passes: no link carries anything that was sent.
+7. **Near-duplicate titles.** `get_upcoming_events` is titled "Sky calendar" and
+   `get_sky_calendar` "Sky calendar for your calendar app"; `get_sky` is titled "Sky
+   right now" though it answers for any moment (O-names asks for "specific").
+
+## Open calls for Dias (not decided here)
+
+1. Whether a bare birth year under 13 should be refused (`get_chinese_zodiac`, D4).
+2. Whether to trim what results carry (R1), which changes what the published tools
+   return.
+3. Draft 971's change to published definitions and the 0.6.7 version, and whether
+   `get_chinese_zodiac` and the input field descriptions join it.
+4. Whether and when to send the reviewer note, replace the listing description and
+   the demo recording, and rescan at OpenAI.
+5. ZOD-62: one sentence in the refusal, or a separate tool for a chart of a moment.
+6. The sign-up and invite links inside results.
+7. Whether to tell reviewers about the token wing first.
