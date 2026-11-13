@@ -9,7 +9,7 @@
  * never stored, logged or put in a link; or a public figure from the Year
  * Ahead directory (src/data/year-people.json) by name.
  *
- * The words read money, career, wellbeing and legal themes as the tradition
+ * The words read career, wellbeing and legal themes as the tradition
  * does, never as a price or trading call, a diagnosis, a death prediction or a
  * legal outcome (src/lib/year-score/reading.ts). Pure: no network, storage or
  * logging.

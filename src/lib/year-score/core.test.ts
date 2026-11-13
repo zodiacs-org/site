@@ -175,7 +175,7 @@ describe('the words', () => {
   // price or trading calls, buy or sell signals, diagnoses, death predictions, legal outcomes and doom are not.
   const banned = /\b(?:buy|sell|selling|price targets?|stocks?|crypto\w*|bitcoin|tokens?|diagnos\w*|prognos\w*|death|die|dies|dying|doom\w*|disaster|ruin\w*|catastroph\w*)\b|\byou will (?:win|lose)\b|[–—]/iu;
   it('frames every tier plainly, low scores as pressure rather than doom, with no trading call or diagnosis', () => {
-    for (const score of [0, 1.5, 3.5, 5, 7, 9.5]) {
+    for (const score of [0, 1.5, 2.5, 3.5, 5, 7, 9.5]) {
       const tier = scoreTier(score);
       expect(`${tier.label} ${tier.summary}`).not.toMatch(banned);
     }
@@ -193,8 +193,8 @@ describe('the words', () => {
     expect(scoreTier(8).key).toBe('open');
     // Traditional themes are welcome: career in a strong year, rest in a hard one. No money forecasts (ZOD-30).
     expect(scoreTier(9).summary).toContain('career growth');
-    const money = /\b(?:money|earn|earns|earned|earner|earners|earning|earnings|promotions?|income|salary|salaries|savings?|wealth\w*|profit\w*|budgets?|financ\w*|riches|prosper\w*)\b/iu;
-    for (const score of [0, 1.5, 3.5, 5, 7, 9.5]) expect(scoreTier(score).summary).not.toMatch(money);
+    const money = /\b(?:money|earn|earns|earned|earner|earners|earning|earnings|promot\w*|income|salary|salaries|savings?|wealth\w*|profit\w*|budgets?|financ\w*|riches|prosper\w*|spend\w*|cash|bonus\w*)\b/iu;
+    for (const score of [0, 1.5, 2.5, 3.5, 5, 7, 9.5]) expect(scoreTier(score).summary).not.toMatch(money);
     expect(scoreTier(1).summary).toContain('look after your energy');
   });
   it('keeps month and driver lines free of trading calls, diagnoses, death, doom and dashes', () => {
