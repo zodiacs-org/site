@@ -102,13 +102,18 @@ it, so passing means outside reach grew whatever that share was. The fail line
 cannot use it: week 4 is counted with our calls taken out, and comparing that
 with a count that still holds them could call real growth a miss. So the fail
 line compares like with like: week 1 (16 to 22 Nov, read on 23 Nov), the first
-week our test calls are logged, counted the same way.
+week our test calls are logged. Taking out a logged hour also takes out the
+outside requests in that hour, so a week with more logged hours would look
+smaller for that reason alone. The fail line therefore compares the hourly
+rate over the hours no log line covers, not the weekly totals. The pass line
+can use the total: it is a lower bound on outside requests, so reaching 8,000
+still means outside reach got there.
 
 | Result | Condition |
 | --- | --- |
 | Not measurable | Week 1 or week 4 holds a large burst of Claude user requests in an hour no log line covers |
 | Pass | At least 8,000 Claude user requests in week 4, after taking out our own tests |
-| Fail | Week 4 is lower than week 1, both after taking out our own tests |
+| Fail | Week 4's requests per uncovered hour are lower than week 1's (each week's requests outside logged hours, divided by its number of unlogged hours) |
 | Too early | Anything else |
 
 **Our own test calls.** The logs cannot tell our calls from anyone else's:
@@ -135,15 +140,17 @@ GitHub's own traffic report count them.
 
 | Result | Condition |
 | --- | --- |
-| Pass | At least 20 new engine stars, or at least 100 repository views referred by news.ycombinator.com or reddit.com |
+| Pass | At least 20 new engine stars, or at least 100 referred views from news.ycombinator.com and reddit.com in the day 14 and day 28 snapshots added together |
 | Fail | Under 5 new stars and under 25 such referred views |
 | Too few to judge | Anything else |
 
 **How it is counted.** Stars from the GitHub API. Referred views from the
-engine repository's Insights, Traffic, "Referring sites" (owner access; GitHub
-keeps only 14 days, so it is read and written down weekly, and once on day 3
-after the post). npm weekly downloads are recorded beside them as a supporting
-sign.
+engine repository's Insights, Traffic, "Referring sites" (owner access). That
+report always covers the last 14 days, so two snapshots a week apart overlap
+and must not be added. The verdict adds only the day 14 snapshot (days 1 to 14)
+and the day 28 snapshot (days 15 to 28), which do not overlap. The day 3, day 7
+and day 21 snapshots are written down as supporting observations only. npm
+weekly downloads are recorded beside them as a supporting sign.
 
 **Why not the site's own analytics.** The site's Plausible shim sends every
 pageview with a null referrer by design (docs/ANALYTICS.md), so it cannot see
