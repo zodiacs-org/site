@@ -16,7 +16,7 @@ EDITORIAL SOURCE:
 
 You already know your sign. Now it is also a coin you can own, give and prove is yours.
 
-*Published 1 Aug 2026 · Updated 13 Nov 2026 · Evidence checked 10 Nov 2026*
+*Updated 13 Nov 2026 · Evidence checked 10 Nov 2026*
 
 ---
 
@@ -58,13 +58,13 @@ You do with one of these coins what people already do with their sign. Your frie
 
 Getting one used to mean opening an exchange account and learning a new vocabulary. Now a phone app called [fomo](/fomo/) sets up a wallet for you, and you tap your sign to buy a little of it. fomo is a separate company for adults, it is not offered everywhere, and it charges its own fees. We earn nothing when you use it.
 
-Anyone can launch another Leo this afternoon, and the copy will have the name without the history. Each of these coins has had one published address since [the day it was made](/disclosure/#origin), and nobody can make more of them, including us. They have been through a few things too. In [February 2025](https://x.com/stoolpresidente/status/1891528769770279114) the founder of a large American sports site bought our Libra by mistake and warned his followers it would end up worthless, in a post seen about three million times. We kept that post on our record, beside the critics who said a few wallets held too much.
+Anyone can launch another Leo this afternoon, and the copy will have the name without the history. Each of these coins still has the Solana address it was [created with on 5 July 2024](/disclosure/#origin), and nobody can make more of them, including us. They have been through a few things too. In [February 2025](https://x.com/stoolpresidente/status/1891528769770279114) the founder of a large American sports site bought our Libra by mistake and warned his followers it would end up worthless, in a post seen about three million times. We kept that post on our record, beside the critics who said a few wallets held too much.
 
-More than two years on, about 2,800 wallets hold Leo alone, and the people who gathered around these coins in 2024 are still building. This year they built [Zodiacs.org](/), a free astrology site with birth charts, compatibility readings and daily horoscopes in five languages, and plugins that bring it into [ChatGPT and Claude](/apps/).
+More than two years on, about 2,800 wallets hold Leo alone. [Zodiacs.org](/) is a free astrology site with birth charts, compatibility readings and daily horoscopes in five languages, and plugins that bring it into [ChatGPT and Claude](/apps/).
 
 A memecoin can go to zero, and these can too. Trading in them is thin, and on a slow day the total traded in one of them is less than the price of a lunch. The ten largest accounts hold between 23% and 31% of each coin, a figure that includes the trading pool. No outside app has adopted them yet. Knowing your sign is also a long way from wanting to own it, and most people who know theirs will never buy a coin. We publish all of it, with the numbers, on [a scoreboard](#the-candidacy) below this essay, because we would rather you checked our claim than took it on trust.
 
-The zodiac finds something new for people to do in every medium it reaches, and a public ledger lets them hold their sign. We expect people and apps to settle on a single set of twelve coins, as they settled long ago on a single set of twelve names, and we have spent more than two years making the case that it should be this set.
+The zodiac finds something new for people to do in every medium it reaches, and a public ledger lets them hold their sign. We expect people and apps to settle on a single set of twelve coins, as they settled long ago on a single set of twelve names, and we are making the case that it should be this set.
 
 ---
 

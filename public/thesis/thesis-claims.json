@@ -172,12 +172,12 @@
     },
     {
       "id": "one-address",
-      "match": "one published address since",
-      "claim": "The registry lists one native Solana address per sign",
+      "match": "still has the Solana address it was created with on 5 July 2024",
+      "claim": "For each sign, the native Solana address in the registry is the mint created on 5 July 2024",
       "source": "https://zodiacs.org/registry/zodiacs.registry.json",
-      "sourceDate": "2026-11-10",
-      "checkedAt": "2026-11-10",
-      "status": "listed"
+      "sourceDate": "2026-11-13",
+      "checkedAt": "2026-11-13",
+      "status": "checked"
     },
     {
       "id": "no-more",
@@ -232,15 +232,6 @@
       "sourceDate": "2024-07-05",
       "checkedAt": "2026-11-10",
       "status": "checked"
-    },
-    {
-      "id": "community-built",
-      "match": "the people who gathered around these coins in 2024 are still building",
-      "claim": "This year the community built Zodiacs.org and the AI plugins at zodiacs.org/apps",
-      "source": "Statement by the operator, 10 Nov 2026",
-      "sourceDate": "2026-11-10",
-      "checkedAt": "2026-11-13",
-      "status": "operator-statement"
     },
     {
       "id": "five-languages",
@@ -304,15 +295,6 @@
       "sourceDate": "2026-11-13",
       "checkedAt": "2026-11-13",
       "status": "listed"
-    },
-    {
-      "id": "making-the-case",
-      "match": "we have spent more than two years making the case",
-      "claim": "Created 5 July 2024",
-      "source": "https://zodiacs.org/disclosure/#origin",
-      "sourceDate": "2024-07-05",
-      "checkedAt": "2026-11-10",
-      "status": "checked"
     }
   ]
 }

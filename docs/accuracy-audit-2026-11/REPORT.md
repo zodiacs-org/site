@@ -14,6 +14,19 @@ The site's published sky facts agree with NASA in every one of these:
 - every eclipse, to the second;
 - every Moon sign change, to the second.
 
+> **Correction, 13 November 2026.** "To the second" in this report (here and
+> in the verdict below) says more than the audit measured: its tolerance for
+> lunations, eclipses and Moon sign changes was 60 seconds (Method, step 4),
+> and the pages print those times to the minute. A later sample of the
+> engine's own times against NASA JPL's DE421 ephemeris
+> (`engine-de421-sample-2026-11-13.json`) found the new and full Moons within
+> 5.4 s from 2026 to 2030 (10.3 s at most from 1900 to 2050), and the Moon's
+> sign changes and quarter Moons within 5.8 s from 2020 to 2031 (Moon sign
+> changes 7.6 s at most from 1900 to 2050). The Sun's sign changes, which
+> keep the engine's times, are within 43.6 s of Horizons in the data files
+> and 42.8 s of DE421 from 2026 to 2030, and up to 50.3 s from 1900 to 2050.
+> The findings and counts below are unchanged.
+
 What remains is precision, not wrong facts:
 
 1. **Rounding (fixed here).** Whole degrees were rounded, so 9°55′ printed as

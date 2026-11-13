@@ -1,0 +1,12 @@
+Aries_(astrology) 2641
+Taurus_(astrology) 1146
+Gemini_(astrology) 2310
+Cancer_(astrology) 873
+Leo_(astrology) 846
+Virgo_(astrology) 22543
+Libra_(astrology) 1098
+Scorpio_(astrology) 1099
+Sagittarius_(astrology) 1642
+Capricorn_(astrology) 1394
+Aquarius_(astrology) 1199
+Pisces_(astrology) 1299

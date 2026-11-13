@@ -202,15 +202,14 @@ function render(data, small) {
 
 export function seasonFigure(data) {
   const [a, b] = data.liftRange;
-  const strongest = data.signs.reduce((m, x) => (x.lift > m.lift ? x : m));
-  const weakest = data.signs.reduce((m, x) => (x.lift < m.lift ? x : m));
-  const name = (s) => NAMES[SIGNS.indexOf(s.sign)];
+  // The caption names no top or bottom sign (owner, 2026-11-13): which sign
+  // gains most depends on how the lift is measured.
   return `<figure class="zfig thesis-plate thesis-seasons" id="fig-2" data-motion="seasons">
             <figcaption class="zfig-head">Each sign is looked up most in its own season.</figcaption>
             <p class="season-readout" data-season-readout aria-live="polite">Every sign is read ${a}% to ${b}% more while the Sun is in it.</p>
             ${render(data, false)}
             ${render(data, true)}
-            <p class="zfig-cap">Each line is one sign’s English Wikipedia article on a typical day of the year, ${data.years[0]} to ${data.years[1]}, against that sign’s own typical day. The bright stretch is the sign’s season. ${name(strongest)} gains the most (${strongest.lift}% more reads), ${name(weakest)} the least (${weakest.lift}%), and the lift shows in ${data.liftedYears} of ${data.signYears} sign-years. This measures curiosity, not demand for the coins.</p>
+            <p class="zfig-cap">Each line is one sign’s English Wikipedia article on a typical day of the year, ${data.years[0]} to ${data.years[1]}, against that sign’s own typical day. The bright stretch is the sign’s season. The lift shows in ${data.liftedYears} of ${data.signYears} sign-years. This measures curiosity, not demand for the coins.</p>
             <p class="zfig-src">Wikimedia pageviews, user traffic, each sign article on its own, fetched ${data.raw.fetchedAt} · <a href="/thesis/thesis-seasons.json">reduced data</a> · seasons from the Sun’s computed sign entries each year.</p>
           </figure>`;
 }

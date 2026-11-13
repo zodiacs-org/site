@@ -185,11 +185,14 @@ describe('thesis publication metadata contract', () => {
       label: textOf(inner),
     }));
 
+    // The hero prints no "Published" date (owner, 2026-11-13): the date the
+    // page was first published is not on record, so none is stated.
     expect(dates).toEqual([
-      { datetime: '2026-08-01', label: 'Published 1 Aug 2026' },
       { datetime: '2026-11-13', label: 'Updated 13 Nov 2026' },
     ]);
     expect(textOf(hero)).toContain('Evidence checked 10 Nov 2026');
+    expect(textOf(HTML)).not.toMatch(/\bPublished \d{1,2} [A-Z][a-z]{2} \d{4}/);
+    expect(HTML).not.toMatch(/article:published_time/);
   });
 
   it('publishes valid Article JSON-LD with matching canonical dates', () => {
@@ -203,9 +206,9 @@ describe('thesis publication metadata contract', () => {
       '@id': 'https://zodiacs.org/thesis/#article',
       headline: 'Why Zodiacs Matter',
       url: 'https://zodiacs.org/thesis/',
-      datePublished: '2026-08-01',
       dateModified: '2026-11-13',
     });
+    expect(Object.hasOwn(article, 'datePublished')).toBe(false);
   });
 });
 
@@ -784,7 +787,9 @@ describe('thesis pass bar', () => {
     for (const pattern of [/\bportnoy\b/i, /pump\.fun/i, /\bblockchain\b/i, /\btokens?\b/i, /\bliquidity\b/i, /\bon-chain\b/i, /\bDEX\b/]) {
       expect(prose, `essay says ${pattern}`).not.toMatch(pattern);
     }
-    expect(count(prose, 'Solana')).toBeLessThanOrEqual(1);
+    // Two: "on Solana" where the coins are introduced, and the address
+    // sentence the owner chose on 2026-11-13 ("still has the Solana address").
+    expect(count(prose, 'Solana')).toBeLessThanOrEqual(2);
   });
 
   it('7. reading level: Flesch-Kincaid grade 8 or below', () => {
@@ -801,7 +806,7 @@ describe('thesis pass bar', () => {
 
   it('8. fresh: evidence and chart data within 30 days of "Updated"', () => {
     const hero = sliceElement(HTML, /<header\b[^>]*class=["'][^"']*\bhero\b[^"']*["'][^>]*>/i, 'header');
-    const updated = [...hero.matchAll(/<time\b[^>]*datetime=["']([^"']+)["']/gi)][1]?.[1];
+    const updated = [...hero.matchAll(/<time\b[^>]*datetime=["']([^"']+)["']/gi)][0]?.[1];
     const checked = textOf(hero).match(/Evidence checked (\d{1,2} [A-Z][a-z]{2} \d{4})/)?.[1];
     const days = (a, b) => (Date.parse(b) - Date.parse(a)) / 86_400_000;
     expect(updated).toBeTruthy();

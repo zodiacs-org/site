@@ -1,0 +1,776 @@
+{
+ "capturedAtUtc": "2026-11-11T16:04:43.247407+00:00",
+ "rpcs": [
+  "https://api.mainnet-beta.solana.com",
+  "https://solana-rpc.publicnode.com"
+ ],
+ "signs": {
+  "aries": {
+   "mint": "GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv",
+   "pool": "HRn98YLGigP475eS1GaQYRMbqk1V4dkV6tdKyLhVh2iS",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999596350537038"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "57NTMA2KZ1kM4mXvEwPGFDVS5yFs3M8AwehbowSP2morWTScjE4XTguJDAuwNNc92biEMTcFASnpY2YoTxsT5kpP",
+     "time": "2026-11-11T03:14:01+00:00",
+     "err": {
+      "InstructionError": [
+       3,
+       {
+        "Custom": 43008
+       }
+      ]
+     }
+    },
+    {
+     "sig": "22N8m49Fh5QF51XbZcCjy3qUSHe6ZEeu2wMqhuRqv76oagtYPCYGDw1bmEntFMWGrDZPhdvCx8dHjAW98TSighr8",
+     "time": "2026-11-11T03:14:01+00:00",
+     "err": {
+      "InstructionError": [
+       3,
+       {
+        "Custom": 15
+       }
+      ]
+     }
+    },
+    {
+     "sig": "2kPgb9FZvLucJYpnUBZtC6PyRErxzrukb1rDveuqQvk6SGD7u6kRuf6697FC3qFUnbrwLypgDhm8zF3S3he76fVM",
+     "time": "2026-11-11T03:14:01+00:00",
+     "err": null
+    },
+    {
+     "sig": "5U9EkV6WUGujyUd8Gx2YCZkPyfxvmJ9PzKUSfX2LhVYLmRmx8gsqzUjsiGTJbYgTfwachNchMucHX4SaCFf6tvst",
+     "time": "2026-11-10T23:41:45+00:00",
+     "err": {
+      "InstructionError": [
+       5,
+       {
+        "Custom": 5000
+       }
+      ]
+     }
+    },
+    {
+     "sig": "5eGfjQ6Do24vaHq2SuC8seNCYqVV2Nf53WHDRnddLM7vQvvQAiMtQEz9xjw2hDuA3JRe3nQLe1MxMMg52poAnWLA",
+     "time": "2026-11-10T23:41:44+00:00",
+     "err": {
+      "InstructionError": [
+       5,
+       {
+        "Custom": 5000
+       }
+      ]
+     }
+    }
+   ],
+   "origin": {
+    "sig": "5v7R4CzrqvTzBZSrh7DnAqmDWYJhqe818mK37u1eYeeESgiJCGVGPHW1UNYFZ2qEntWsZwAFVPXF3F8apqXHyuMu",
+    "time": "2024-07-05T17:57:25+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0x3ffB5282F5891Dd8c813E64059EdB0607537eC91",
+   "baseSymbol": "\u0005ARIES"
+  },
+  "taurus": {
+   "mint": "EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp",
+   "pool": "2GNtxia4fLW3URj5MLqVfgoKrAgDpphtAVazK41eTPfu",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999956490259699"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "3KM1vKE4H29Xtj6AgXNTbwtXKu2Zztuu4vzYjGGoWf6Nd9cNTBxHMapXLon3NzobydwqsN9gUqPgEFiqBhLtjjj4",
+     "time": "2026-11-11T03:15:15+00:00",
+     "err": null
+    },
+    {
+     "sig": "3iEYSBLh3GAbQ1XPHWn6ics2zA6tj2LTGosxtvFfKcPaXMsmv7E5DHa4UxkjX4SvJxKoQxeaA8VxL86JztjMh4tN",
+     "time": "2026-11-10T16:26:27+00:00",
+     "err": null
+    },
+    {
+     "sig": "4nhbPy4DmALiHAyhooEh41qh2SGV2EZUfBGtJS9evtSGKGUwEhhSQSt58bHDSWwvPDD93oy9Kjn4dF7mSZ5uTkWZ",
+     "time": "2026-11-09T17:21:47+00:00",
+     "err": null
+    },
+    {
+     "sig": "4MdjAgw8mVwwGzhvTQmcRoRfxsGmqr4rcWemUM6DYqADujWpYv4kVbXcUqTDKQrkCJ2L3M3EksK5bDYYbW9gbdTT",
+     "time": "2026-11-09T16:16:48+00:00",
+     "err": null
+    },
+    {
+     "sig": "2A25WbeNnmzBFd3kBbM4C7S6TPTtk1xzZXJH8i85S3XRz2QxCyoETehEeigtfDSffzb993gwXsHG1UHDRYTY2xUQ",
+     "time": "2026-11-09T06:46:40+00:00",
+     "err": {
+      "InstructionError": [
+       7,
+       {
+        "Custom": 3
+       }
+      ]
+     }
+    }
+   ],
+   "origin": {
+    "sig": "5HjV4Lrp6BVTSNavioaqGX5tniguedTULyNDtTS8KJ4KVYBSukRqwY7fYeGpvJJBwa8v6xRCRxHLm2nzqvD6CCjp",
+    "time": "2024-07-05T18:05:23+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0xd5356c6E529569c6912978433DAfb7ca72B5f09C",
+   "baseSymbol": "\u0006TAURUS"
+  },
+  "gemini": {
+   "mint": "ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc",
+   "pool": "HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999823945485411"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "4TQ37LvPQhNfVx7xppzx5DQhAB3iFonHGJTJVT9Nim9LZcNwkGgLehq9nfMKKKyKRRtE1VgcLnvLj4nKBwphhxpD",
+     "time": "2026-11-11T03:16:02+00:00",
+     "err": null
+    },
+    {
+     "sig": "57NTMA2KZ1kM4mXvEwPGFDVS5yFs3M8AwehbowSP2morWTScjE4XTguJDAuwNNc92biEMTcFASnpY2YoTxsT5kpP",
+     "time": "2026-11-11T03:14:01+00:00",
+     "err": {
+      "InstructionError": [
+       3,
+       {
+        "Custom": 43008
+       }
+      ]
+     }
+    },
+    {
+     "sig": "22N8m49Fh5QF51XbZcCjy3qUSHe6ZEeu2wMqhuRqv76oagtYPCYGDw1bmEntFMWGrDZPhdvCx8dHjAW98TSighr8",
+     "time": "2026-11-11T03:14:01+00:00",
+     "err": {
+      "InstructionError": [
+       3,
+       {
+        "Custom": 15
+       }
+      ]
+     }
+    },
+    {
+     "sig": "2kPgb9FZvLucJYpnUBZtC6PyRErxzrukb1rDveuqQvk6SGD7u6kRuf6697FC3qFUnbrwLypgDhm8zF3S3he76fVM",
+     "time": "2026-11-11T03:14:01+00:00",
+     "err": null
+    },
+    {
+     "sig": "ZjK62LtgbovhpKkfU7RuMwSEzKdk3WfvY9bY3PR1axfmPndocWrd8Q6DZHRroTZ7S3HHoMQcG7dNdQGzzEMDupN",
+     "time": "2026-11-11T03:14:01+00:00",
+     "err": null
+    }
+   ],
+   "origin": {
+    "sig": "58Vo9aqtCrjHrny8awbHpE6ssCpa9XJdDLvkoz2we3me5DR7ypnnNh89o81PxyZTTq4vAAFKKduMtApyMTFLziuk",
+    "time": "2024-07-05T18:00:50+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0x8F6eb25aB4CD2F8f064f7da5E35136D4EC600b4f",
+   "baseSymbol": "\u0006GEMINI"
+  },
+  "cancer": {
+   "mint": "CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ",
+   "pool": "DaTEcH6da4i1evZU37F9ibQirYXhLKZpKDzDno346nSW",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999937225455531"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "31kjGY4wmttSfj8q6tLTQqXDbuzT7JJxdBqgheWAyNdVMyyRRZXAicnfyTVQSyU7DfUBk6qdyH6JmKF7QBu5eLDR",
+     "time": "2026-11-11T03:33:51+00:00",
+     "err": null
+    },
+    {
+     "sig": "3KM1vKE4H29Xtj6AgXNTbwtXKu2Zztuu4vzYjGGoWf6Nd9cNTBxHMapXLon3NzobydwqsN9gUqPgEFiqBhLtjjj4",
+     "time": "2026-11-11T03:15:15+00:00",
+     "err": null
+    },
+    {
+     "sig": "2edcjbMz9SA65b66AGuoCPtcAT255Hriqtm3AczCs4wWDpgKapRpHE5sqGJ5rAeJsb9tetDHKio5LQWwkbjujBVz",
+     "time": "2026-11-10T16:25:45+00:00",
+     "err": null
+    },
+    {
+     "sig": "Pn8xkpw3oyrwM13iD4qXjSdumsUtxU23HhwLqKnRm3ugLXHbm2LKUrvv1dcwYL7rH9hpHx2FwAiLT6Lt29i73iv",
+     "time": "2026-11-09T17:22:56+00:00",
+     "err": null
+    },
+    {
+     "sig": "4nhbPy4DmALiHAyhooEh41qh2SGV2EZUfBGtJS9evtSGKGUwEhhSQSt58bHDSWwvPDD93oy9Kjn4dF7mSZ5uTkWZ",
+     "time": "2026-11-09T17:21:47+00:00",
+     "err": null
+    }
+   ],
+   "origin": {
+    "sig": "2wiST7gGN5WmGNPHhvAyJ7MtHhr91VYcUjFkqcesmRtETHqvfVVzRQoFxNxJ7C972DwM5hrzZD6c3x98XRJiHW2H",
+    "time": "2024-07-05T17:58:48+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0xb9Fd3c3157C7b69260Ca285FbbC74F6309226378",
+   "baseSymbol": "\u0006CANCER"
+  },
+  "leo": {
+   "mint": "8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm",
+   "pool": "48ErBGMqiZekyLoCcebd7cS5KNQPzqr7QQAK9mzAPQGQ",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999790687091088"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "Dw87Gp1BqBnn9U4yZLoR2sKE2xxT8FUtZFoP6JDDFLmX9MvvSr8YvCJFgAvEEf3kb3EBGrjc2rh1YzVewjw3yvu",
+     "time": "2026-11-11T02:49:19+00:00",
+     "err": null
+    },
+    {
+     "sig": "SZvSvsdJryAEPmiSny9KbdHsxpvtMsRkwtx3mWKjG6cA6E1MTTVtbW5LH4ViSXYzcDKzUkvF8PpgxEHkuRrG8cr",
+     "time": "2026-11-09T17:22:33+00:00",
+     "err": null
+    },
+    {
+     "sig": "4geFwNcNwvGGP8jmiLKuYP1wXJM7bnoMmsRfzMXpu8b1jpa9xU1NAzcXjeheXLhH8eQUGMoQA5H6mzhJvpeJmcpj",
+     "time": "2026-11-09T16:30:24+00:00",
+     "err": null
+    },
+    {
+     "sig": "9GNCyGXnKrab5DZXKbUHaQ2VFymnCJhzS1j8XNZUfryP96sWL5cPEu984FYKDUwb1ShAw8Zqq5pNjqoV312H1No",
+     "time": "2026-11-09T12:58:58+00:00",
+     "err": null
+    },
+    {
+     "sig": "5B5jM68MCeFDrBY55aFgtfk9mbSrv13TJc3mfxkux8f98YjmKYwaQe8Dpjwiqk6fWksmoSJbD6DRfYzz26ZbMGDp",
+     "time": "2026-11-09T06:46:59+00:00",
+     "err": {
+      "InstructionError": [
+       6,
+       {
+        "Custom": 2052
+       }
+      ]
+     }
+    }
+   ],
+   "origin": {
+    "sig": "3S3sXU7E8oHbpMijHGQvnR858HgQTGgn3CdVH7rvV7xLkQvsp6htbzY6cqxcCHdxYdp9zVjQRbFyhYDUHpvdfDKp",
+    "time": "2024-07-05T18:01:43+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "ComputeBudget111111111111111111111111111111",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0x4f7B4c12DE5d47314C86Ed3BA25E289aA139CF75",
+   "baseSymbol": "\u0003LEO"
+  },
+  "virgo": {
+   "mint": "Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso",
+   "pool": "5WcVjf8fzPkHaZqTSZDdbDFL6p2bLbAgEigxpevNrcRh",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999901230758444"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "EMde1LbFTemaYNRft4fKTY35GxuWc2Lq5WqqyWXKCcTxBG5wAkXUiwDrDNRuDtz8G59LSKS1TWRWdgnYyR2qp6u",
+     "time": "2026-11-11T14:05:01+00:00",
+     "err": null
+    },
+    {
+     "sig": "3fmaJucLnioPdTBXpCXZUzUJTfouxXjaMpEaEHY6KKDADxcdehDbhpY6Cu5kbTgsbCGiyrhNMFiz94meR1f28gtG",
+     "time": "2026-11-11T14:04:52+00:00",
+     "err": null
+    },
+    {
+     "sig": "5XjaeWwszAzGEXGaqcLDGPHwQiQ8Jgn13oCKHp5ZtnqAYhFZ9PZ95U1q2KojdCwfZKNJqXYFUxv2J8txVmsX3aga",
+     "time": "2026-11-11T14:04:23+00:00",
+     "err": null
+    },
+    {
+     "sig": "5uAMt8K6N4vsreu4coEiV27VAHt1XujKCPDRj4S3NV6To4C6q37wxDUsffKah8wPq4UNz9enTwYRpEdHn7WdnoEy",
+     "time": "2026-11-11T14:01:40+00:00",
+     "err": null
+    },
+    {
+     "sig": "2TVD5tSKNdhhUyp2P1Ay8eviQQfbUQVuenbN7QzpVaDxHSP2M9Ra5y6U9Nm4gtZzAVNzkXyVGqhvKDjduKxEYMCv",
+     "time": "2026-11-11T01:39:35+00:00",
+     "err": {
+      "InstructionError": [
+       1,
+       {
+        "Custom": 1004
+       }
+      ]
+     }
+    }
+   ],
+   "origin": {
+    "sig": "4Ei66n3t7AdowzDfmUQfxzwg7BN9CQiCZkVArPWHDvqdQmnLdwnUmtC7ayt8JsCAivVVGH6hBSXKHMMLVxpXCdFF",
+    "time": "2024-07-05T18:06:24+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0xAcFd97106bbE5D931aC430Be76A8E362832D48f4",
+   "baseSymbol": "\u0005VIRGO"
+  },
+  "libra": {
+   "mint": "7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe",
+   "pool": "DTXPQjK4ae4h2Wc7D5Rpij8YmSQxqLuTcNKrpBCjcAN9",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999793750623200"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "5eGtwb4eycH3qivKNtfeVetVMspEAawEegGvVgn6pM6JjSPELXncc2gw5R46quFtuaGsBZVF2jiSqmgjLZmBfyMC",
+     "time": "2026-11-10T18:09:52+00:00",
+     "err": null
+    },
+    {
+     "sig": "ibbs5U5DyyV5x99ZQ4XFf1iBmnJS2MSWANe7awmXf6KMkkEszR9cErxzEHVZmP2yQ5K5bpFNTqS2wEhQ2NbRpjf",
+     "time": "2026-11-10T16:53:48+00:00",
+     "err": null
+    },
+    {
+     "sig": "38jmgcPm253NLFtthqbJfAR3dgi1LeRCfyo7syYb1TSUUGoqCNMzTsSZbQEYPrqKuCNT9zPC4LQJAZ5kJDPPWpFQ",
+     "time": "2026-11-10T16:22:21+00:00",
+     "err": null
+    },
+    {
+     "sig": "YC6A1KywHTjHRDLNgWeG6wjN51vEb31Xm8PboLxmWWbuEDymTAL6yyTAwjCzi8e32ojTGWjufuihySnSTV7HPM7",
+     "time": "2026-11-09T17:21:30+00:00",
+     "err": null
+    },
+    {
+     "sig": "51g9MY8aR9jPM3eHf8mb78fH1oC35poduP9LJ1eVct4vWGxZ23SyvJ4hzbmcMS3WUZteqBkH1TY5Ge6vx28NowDP",
+     "time": "2026-11-09T06:46:59+00:00",
+     "err": null
+    }
+   ],
+   "origin": {
+    "sig": "5JYYmNkViHtaQZ6hJRpaqarPYK6bt4jQBqvVEjsm92vh2p6ETfiTthsBuffyTpCDhZYn4JCcNFjrz35AkqhokfjF",
+    "time": "2024-07-05T18:02:35+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0x4201eff5F419CD6EEDFb28fa240edeaFc9002204",
+   "baseSymbol": "\u0005LIBRA"
+  },
+  "scorpio": {
+   "mint": "J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1",
+   "pool": "3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999990990891822"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "5XjaeWwszAzGEXGaqcLDGPHwQiQ8Jgn13oCKHp5ZtnqAYhFZ9PZ95U1q2KojdCwfZKNJqXYFUxv2J8txVmsX3aga",
+     "time": "2026-11-11T14:04:23+00:00",
+     "err": null
+    },
+    {
+     "sig": "4dudo9oDX5q1Y5gssG9KZQ6uAyeSsqbNF56f2HgKPy9ui4AxuVdjZptpbE7RsUKxNerBHFFfca6DvYU5AkoCu3zD",
+     "time": "2026-11-11T14:02:54+00:00",
+     "err": null
+    },
+    {
+     "sig": "5oFGCMBKkShsovtMfo6gUL3Mu8T5diwNUcMMDWZvmVCpwnVadctzN8X6yAyV66LreeYgPhrCmt17NNJt5wU9nkK5",
+     "time": "2026-11-11T01:39:35+00:00",
+     "err": null
+    },
+    {
+     "sig": "4fAs9VzkCrvq339oXr94ibcajgLMBjGcfVy2jnCo82GEPj6hoohtge8WSPGCvEQRU8As7YpayqqgTNdfVtrgmUxU",
+     "time": "2026-11-11T01:32:09+00:00",
+     "err": null
+    },
+    {
+     "sig": "5G3Der8PfV3ATFsrcjCN1h2WZFzLo7Xk8VZSeNGeenjqy3ZewEpLTzcoWXrseQuakuBZr8TtB7eTLqjUkLWgoczv",
+     "time": "2026-11-09T07:06:39+00:00",
+     "err": null
+    }
+   ],
+   "origin": {
+    "sig": "2679DKhAVdEVCpodh5te1zbwPRQfPefnEnSrf1ygaykm8Qura6B7thTKgYPmAZ2MRYa8oS4Jm5dLK7FcCP6HuvBK",
+    "time": "2024-07-05T18:04:35+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0x0057C9cB6D16C2ecA808788f14d0d0c367b26676",
+   "baseSymbol": "\u0007SCORPIO"
+  },
+  "sagittarius": {
+   "mint": "8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3",
+   "pool": "7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999520132436445"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "4dudo9oDX5q1Y5gssG9KZQ6uAyeSsqbNF56f2HgKPy9ui4AxuVdjZptpbE7RsUKxNerBHFFfca6DvYU5AkoCu3zD",
+     "time": "2026-11-11T14:02:54+00:00",
+     "err": null
+    },
+    {
+     "sig": "5uAMt8K6N4vsreu4coEiV27VAHt1XujKCPDRj4S3NV6To4C6q37wxDUsffKah8wPq4UNz9enTwYRpEdHn7WdnoEy",
+     "time": "2026-11-11T14:01:40+00:00",
+     "err": null
+    },
+    {
+     "sig": "5thHXEDNX99y9dp5jJoepVPFzAec6YubmKEVo8mpzmNTHyWt6xopeCWAaitpBvBdkD8gAac4LohykWaAKyhan2fu",
+     "time": "2026-11-11T04:35:34+00:00",
+     "err": null
+    },
+    {
+     "sig": "2JwXMhzMM5Lyh9FzCzYdwcWUgzaC3EcJurryrg1nGhpcYFHjCCDe667CaCf3U2ZbahbfqKh8FadFphioxe85Jczc",
+     "time": "2026-11-11T02:02:49+00:00",
+     "err": null
+    },
+    {
+     "sig": "2TVD5tSKNdhhUyp2P1Ay8eviQQfbUQVuenbN7QzpVaDxHSP2M9Ra5y6U9Nm4gtZzAVNzkXyVGqhvKDjduKxEYMCv",
+     "time": "2026-11-11T01:39:35+00:00",
+     "err": {
+      "InstructionError": [
+       1,
+       {
+        "Custom": 1004
+       }
+      ]
+     }
+    }
+   ],
+   "origin": {
+    "sig": "4Ei8HNCMqA5ih8W4i18obifAmAJtiC55WaVhoeVCaoJGwyfqwCiZz94RRB9tH53j7QW5EhnnK86w28R4JM7h2dA6",
+    "time": "2024-07-05T18:07:58+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0xD21fAb1EB5E11AC3C281F7cF8096eCC4683eEa9c",
+   "baseSymbol": "\u0005SAGIT"
+  },
+  "capricorn": {
+   "mint": "3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2",
+   "pool": "549aknNCvxbiqmikS6sAnY6Dbg37MeENWn6ZFBfc7sin",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999981308976726"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "DAckFdGbgmBhHbhVQ3noKUuVMcFW75oMdmPs8bK9etUnQXsbkiDhFSFzWwx7nuy9oeeNNu6srkAoazJ9Afr4B5m",
+     "time": "2026-11-11T14:04:31+00:00",
+     "err": null
+    },
+    {
+     "sig": "4oyQhoUDCKgt5ML8QkagLXfpYJZ6eABB2cd9DMt6VS61uGR1i2XZ45yRixyVHTHwYb9CAHEFx64DF4YjTHrqjB31",
+     "time": "2026-11-11T14:04:23+00:00",
+     "err": null
+    },
+    {
+     "sig": "261131pqCW54wiyAwBsAdvvoh9WsjbHfKHCFxMUCDa9AXGFaDC7xLhrQdPWoaYYDkenMgbmAM7N5Ycek38Zs4oAk",
+     "time": "2026-11-11T14:01:51+00:00",
+     "err": null
+    },
+    {
+     "sig": "5uAMt8K6N4vsreu4coEiV27VAHt1XujKCPDRj4S3NV6To4C6q37wxDUsffKah8wPq4UNz9enTwYRpEdHn7WdnoEy",
+     "time": "2026-11-11T14:01:40+00:00",
+     "err": null
+    },
+    {
+     "sig": "2JwXMhzMM5Lyh9FzCzYdwcWUgzaC3EcJurryrg1nGhpcYFHjCCDe667CaCf3U2ZbahbfqKh8FadFphioxe85Jczc",
+     "time": "2026-11-11T02:02:49+00:00",
+     "err": null
+    }
+   ],
+   "origin": {
+    "sig": "k1f3QRpJeaDFsgTtrXdzaKBqGSBksXcYFDSwHeMeV7N1rGGeYt4idvVyqFzpXepu8WtCJjA69Y1zkYGzroPH4w6",
+    "time": "2024-07-05T18:38:08+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "ComputeBudget111111111111111111111111111111",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0xbFB102C18FDf49f2ffCB9B3aF4522f7DC9f51018",
+   "baseSymbol": "CAPRICORN"
+  },
+  "aquarius": {
+   "mint": "C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt",
+   "pool": "BygCEAhCNyWC8Co9yPa4K84NGkgkgMWdib2FG5hhuiUv",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999986134488303"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "4rgztMkySG5iDqL322NFcS4kac6QRKMoZQeZ7dWJ72f88KHCR8mJwSNvJYLzyHYAWUFa2s71WhqVavB46fCDc9fr",
+     "time": "2026-11-11T05:01:31+00:00",
+     "err": null
+    },
+    {
+     "sig": "49fzjycg9JLCuKEYJ43dLpax7su5UnKuJKTybnfpThheT2bvvnf4KrsGtrhLU6AEMChKiWVZ8Kh1AvACEWFDVZJ8",
+     "time": "2026-11-09T19:03:30+00:00",
+     "err": null
+    },
+    {
+     "sig": "3F3qaGjDRkd2i6DmywBvW23dfZr9K6STFTS1xG9L6u4hV4sf5PcttQCkHAHrceZ3i8ocUNUYg8pYJWugjdrdg6dw",
+     "time": "2026-11-09T07:11:59+00:00",
+     "err": null
+    },
+    {
+     "sig": "2tZbgienb5r1ts4sahajcgDhQSa94bg3NpbPAG7xJtvzDo5bTtU1ZK1UpYA2H5RTXskH4fdaUhzk8iSWvZEWLGC1",
+     "time": "2026-11-09T06:51:59+00:00",
+     "err": {
+      "InstructionError": [
+       0,
+       {
+        "Custom": 1004
+       }
+      ]
+     }
+    },
+    {
+     "sig": "27CD94qGaVrofBcFPdXJnVKWJYDSa1cZQGbiPMXhLE9gSZcgz3xJkp9jKZS7xVfHouTdFJqsrsGv8uuHmY5h58Cj",
+     "time": "2026-11-09T06:51:59+00:00",
+     "err": null
+    }
+   ],
+   "origin": {
+    "sig": "3ntKqfqu4LYkSpqJ1DmLNdZHPNgDkkYjdUmZHH3Ejzk8Np6mA8rnaBT3C33dCHeGZhHm6j9sRpJzgtrtcvCWK9jX",
+    "time": "2024-07-05T17:54:34+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0xccA7CD4F96336Fd26eF6c5F579eaC651bAC5535F",
+   "baseSymbol": "\bAQUARIUS"
+  },
+  "pisces": {
+   "mint": "3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+   "pool": "Fzz8QrSV8sPKsTtHocwYARE8Zo6Rd4Wv2Ee4JtCuiDko",
+   "mintInfo": {
+    "decimals": 6,
+    "freezeAuthority": null,
+    "isInitialized": true,
+    "mintAuthority": null,
+    "supply": "999915684507524"
+   },
+   "ownerProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+   "poolNewest": [
+    {
+     "sig": "4oyQhoUDCKgt5ML8QkagLXfpYJZ6eABB2cd9DMt6VS61uGR1i2XZ45yRixyVHTHwYb9CAHEFx64DF4YjTHrqjB31",
+     "time": "2026-11-11T14:04:23+00:00",
+     "err": null
+    },
+    {
+     "sig": "5XjaeWwszAzGEXGaqcLDGPHwQiQ8Jgn13oCKHp5ZtnqAYhFZ9PZ95U1q2KojdCwfZKNJqXYFUxv2J8txVmsX3aga",
+     "time": "2026-11-11T14:04:23+00:00",
+     "err": null
+    },
+    {
+     "sig": "4dudo9oDX5q1Y5gssG9KZQ6uAyeSsqbNF56f2HgKPy9ui4AxuVdjZptpbE7RsUKxNerBHFFfca6DvYU5AkoCu3zD",
+     "time": "2026-11-11T14:02:54+00:00",
+     "err": null
+    },
+    {
+     "sig": "4fAs9VzkCrvq339oXr94ibcajgLMBjGcfVy2jnCo82GEPj6hoohtge8WSPGCvEQRU8As7YpayqqgTNdfVtrgmUxU",
+     "time": "2026-11-11T01:32:09+00:00",
+     "err": null
+    },
+    {
+     "sig": "5GGxhfovjNSnNpiXbyL2JupFuspU2LbuTygNQ7DnEAf7hsEUkXev8VqgNHFYzTXM61DEy5GYnPbp8eirUjwSDycF",
+     "time": "2026-11-10T16:26:05+00:00",
+     "err": null
+    }
+   ],
+   "origin": {
+    "sig": "3qSMX2ADNTZU9LSV5ZmHijPCvLCwJP6cD9w8iZzo7CKrEDwz8RVQxefUcitAAjDVRfNimkXuizTLhRU41BzneDxh",
+    "time": "2024-07-05T18:37:23+00:00",
+    "feePayer": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+    "programs": [
+     "11111111111111111111111111111111",
+     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    ]
+   },
+   "base": "0x43fA1855a89b7A3e07426Fa7a1B44b4187d29Daf",
+   "baseSymbol": "\u0006PISCES"
+  }
+ },
+ "newestTxDetail": {
+  "taurus": {
+   "sig": "3KM1vKE4H29Xtj6AgXNTbwtXKu2Zztuu4vzYjGGoWf6Nd9cNTBxHMapXLon3NzobydwqsN9gUqPgEFiqBhLtjjj4",
+   "time": "2026-11-11T03:15:15+00:00",
+   "signer": "2yqDqpGDRvY3EFNttdDKWYqYwqWmA8Bwf4Dgb4GvV5W3",
+   "programs": [
+    "11111111111111111111111111111111",
+    "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "ComputeBudget111111111111111111111111111111",
+    "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+   ],
+   "zodiacPoolsTouched": [
+    "taurus",
+    "cancer"
+   ],
+   "logHasSwap": true
+  },
+  "virgo": {
+   "sig": "EMde1LbFTemaYNRft4fKTY35GxuWc2Lq5WqqyWXKCcTxBG5wAkXUiwDrDNRuDtz8G59LSKS1TWRWdgnYyR2qp6u",
+   "time": "2026-11-11T14:05:01+00:00",
+   "signer": "J2K7hdiGUvsuR1TBMrBCAwuE4BZxj8RHWmJM4dfwTuG8",
+   "programs": [
+    "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "ComputeBudget111111111111111111111111111111",
+    "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+   ],
+   "zodiacPoolsTouched": [
+    "virgo"
+   ],
+   "logHasSwap": true
+  },
+  "leo": {
+   "sig": "Dw87Gp1BqBnn9U4yZLoR2sKE2xxT8FUtZFoP6JDDFLmX9MvvSr8YvCJFgAvEEf3kb3EBGrjc2rh1YzVewjw3yvu",
+   "time": "2026-11-11T02:49:19+00:00",
+   "signer": "2yqDqpGDRvY3EFNttdDKWYqYwqWmA8Bwf4Dgb4GvV5W3",
+   "programs": [
+    "11111111111111111111111111111111",
+    "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "ComputeBudget111111111111111111111111111111",
+    "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+   ],
+   "zodiacPoolsTouched": [
+    "leo"
+   ],
+   "logHasSwap": true
+  }
+ },
+ "treasuryVerifyAccount": {
+  "address": "DUK1VN3WatYKsVLwRX2JxfJfaKX6bDXvijpPtT28ed13",
+  "info": {
+   "data": [
+    "",
+    "base64"
+   ],
+   "executable": false,
+   "lamports": 26880843,
+   "owner": "11111111111111111111111111111111",
+   "rentEpoch": 18446744073709551615,
+   "space": 0
+  }
+ }
+}
