@@ -206,9 +206,12 @@ function isTranslatedFamilyPath(path: string): boolean {
 function withExpansion(
   canonical: string,
   base: readonly Locale[] | undefined,
-  extra: (path: string) => readonly string[],
+  kind: 'published' | 'enabled',
 ): readonly Locale[] | undefined {
+  // The policy is reached only inside this server branch, so browser bundles
+  // drop it (and the publication record) entirely.
   if (!import.meta.env.SSR) return base;
+  const extra: (path: string) => readonly string[] = kind === 'published' ? publishedLocalesForPath : enabledLocalesForPath;
   const added = extra(canonical).filter((locale) => !base?.includes(locale as Locale)) as Locale[];
   if (!added.length) return base;
   return [...(base ?? [DEFAULT_LOCALE]), ...added];
@@ -216,7 +219,7 @@ function withExpansion(
 
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
-  return withExpansion(canonical, baseAvailableLocalesForPath(canonical), publishedLocalesForPath);
+  return withExpansion(canonical, baseAvailableLocalesForPath(canonical), 'published');
 }
 
 function baseAvailableLocalesForPath(canonical: string): readonly Locale[] | undefined {
@@ -230,7 +233,7 @@ function baseAvailableLocalesForPath(canonical: string): readonly Locale[] | und
 /** Internal rendering availability; never use this for discovery metadata. */
 export function renderableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
-  return withExpansion(canonical, baseRenderableLocalesForPath(canonical), enabledLocalesForPath);
+  return withExpansion(canonical, baseRenderableLocalesForPath(canonical), 'enabled');
 }
 
 function baseRenderableLocalesForPath(canonical: string): readonly Locale[] | undefined {

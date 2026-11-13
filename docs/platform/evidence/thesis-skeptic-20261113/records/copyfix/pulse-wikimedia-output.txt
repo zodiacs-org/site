@@ -1,0 +1,86 @@
+
+== window snapshot: 20261010 to 20261108
+Aries          status 200 days 30 total   33366 avg/day 1112
+Taurus         status 200 days 30 total   25466 avg/day 849
+Gemini         status 200 days 30 total   60942 avg/day 2031
+Cancer         status 200 days 30 total   18354 avg/day 612
+Leo            status 200 days 30 total   18453 avg/day 615
+Virgo          status 200 days 30 total   25776 avg/day 859
+Libra          status 200 days 30 total   31569 avg/day 1052
+Scorpio        status 200 days 30 total   52187 avg/day 1740
+Sagittarius    status 200 days 30 total   63030 avg/day 2101
+Capricorn      status 200 days 30 total   37348 avg/day 1245
+Aquarius       status 200 days 30 total   29291 avg/day 976
+Pisces         status 200 days 30 total   26893 avg/day 896
+twelve together avg/day 14089; highest sign Sagittarius 2101; lowest Cancer 612
+median sign, page's rule (7th of 12) 1052; mean of the two middle values 1014.0
+Dogecoin                             days 30 avg/day    314  twelve/article   44.9 (rounded 45)  median sign/article 3.35  signs above it 12
+Ethereum                             days 30 avg/day    705  twelve/article   20.0 (rounded 20)  median sign/article 1.49  signs above it 10
+Solana_(blockchain_platform)         days 30 avg/day    278  twelve/article   50.7 (rounded 51)  median sign/article 3.78  signs above it 12
+Shiba_Inu_(cryptocurrency)           days 30 avg/day     70  twelve/article  201.3 (rounded 201)  median sign/article 15.03  signs above it 12
+Bitcoin                              days 30 avg/day   3238  twelve/article    4.4 (rounded 4)  median sign/article 0.32  signs above it 0
+Cryptocurrency                       days 30 avg/day   1641  twelve/article    8.6 (rounded 9)  median sign/article 0.64  signs above it 3
+Tether_(cryptocurrency)              days 30 avg/day    602  twelve/article   23.4 (rounded 23)  median sign/article 1.75  signs above it 12
+XRP_Ledger                           days 30 avg/day    158  twelve/article   89.2 (rounded 89)  median sign/article 6.66  signs above it 12
+Binance                              days 30 avg/day   4968  twelve/article    2.8 (rounded 3)  median sign/article 0.21  signs above it 0
+BNB_(cryptocurrency)                 status 404 (no data)
+Cardano_(blockchain_platform)        days 30 avg/day     67  twelve/article  210.3 (rounded 210)  median sign/article 15.70  signs above it 12
+Tron_(blockchain)                    days 30 avg/day     93  twelve/article  151.5 (rounded 151)  median sign/article 11.31  signs above it 12
+USD_Coin                             days 30 avg/day     15  twelve/article  939.3 (rounded 939)  median sign/article 70.13  signs above it 12
+Litecoin                             days 30 avg/day    142  twelve/article   99.2 (rounded 99)  median sign/article 7.41  signs above it 12
+Monero                               days 30 avg/day    230  twelve/article   61.3 (rounded 61)  median sign/article 4.57  signs above it 12
+Pepe_(cryptocurrency)                status 404 (no data)
+$Trump                               days 30 avg/day    431  twelve/article   32.7 (rounded 33)  median sign/article 2.44  signs above it 12
+Chainlink_(blockchain_oracle)        days 30 avg/day     39  twelve/article  361.3 (rounded 361)  median sign/article 26.97  signs above it 12
+Avalanche_(blockchain_platform)      days 30 avg/day     44  twelve/article  320.2 (rounded 320)  median sign/article 23.91  signs above it 12
+Polkadot_(blockchain_platform)       days 30 avg/day     34  twelve/article  414.4 (rounded 414)  median sign/article 30.94  signs above it 12
+Hyperliquid                          status 404 (no data)
+Pi_Network                           days 2 avg/day      0  twelve/article 14089.0 (rounded 14089)  median sign/article 1052.00  signs above it 12
+Bitcoin_Cash                         days 30 avg/day     66  twelve/article  213.5 (rounded 213)  median sign/article 15.94  signs above it 12
+Toncoin                              days 30 avg/day      1  twelve/article 14089.0 (rounded 14089)  median sign/article 1052.00  signs above it 12
+Stablecoin                           days 30 avg/day    469  twelve/article   30.0 (rounded 30)  median sign/article 2.24  signs above it 12
+Memecoin                             days 30 avg/day     18  twelve/article  782.7 (rounded 783)  median sign/article 58.44  signs above it 12
+Satoshi_Nakamoto                     days 30 avg/day   2465  twelve/article    5.7 (rounded 6)  median sign/article 0.43  signs above it 0
+
+== window live: 20261014 to 20261112
+Aries          status 200 days 30 total   34016 avg/day 1134
+Taurus         status 200 days 30 total   25808 avg/day 860
+Gemini         status 200 days 30 total   63125 avg/day 2104
+Cancer         status 200 days 30 total   18462 avg/day 615
+Leo            status 200 days 30 total   18337 avg/day 611
+Virgo          status 200 days 30 total   25606 avg/day 854
+Libra          status 200 days 30 total   29606 avg/day 987
+Scorpio        status 200 days 30 total   54441 avg/day 1815
+Sagittarius    status 200 days 30 total   64768 avg/day 2159
+Capricorn      status 200 days 30 total   38227 avg/day 1274
+Aquarius       status 200 days 30 total   29520 avg/day 984
+Pisces         status 200 days 30 total   27193 avg/day 906
+twelve together avg/day 14304; highest sign Sagittarius 2159; lowest Leo 611
+median sign, page's rule (7th of 12) 987; mean of the two middle values 985.5
+Dogecoin                             days 30 avg/day    307  twelve/article   46.6 (rounded 47)  median sign/article 3.21  signs above it 12
+Ethereum                             days 30 avg/day    734  twelve/article   19.5 (rounded 19)  median sign/article 1.34  signs above it 10
+Solana_(blockchain_platform)         days 30 avg/day    266  twelve/article   53.8 (rounded 54)  median sign/article 3.71  signs above it 12
+Shiba_Inu_(cryptocurrency)           days 30 avg/day     66  twelve/article  216.7 (rounded 217)  median sign/article 14.95  signs above it 12
+Bitcoin                              days 30 avg/day   3397  twelve/article    4.2 (rounded 4)  median sign/article 0.29  signs above it 0
+Cryptocurrency                       days 30 avg/day   1595  twelve/article    9.0 (rounded 9)  median sign/article 0.62  signs above it 3
+Tether_(cryptocurrency)              days 30 avg/day    582  twelve/article   24.6 (rounded 25)  median sign/article 1.70  signs above it 12
+XRP_Ledger                           days 30 avg/day    153  twelve/article   93.5 (rounded 93)  median sign/article 6.45  signs above it 12
+Binance                              days 30 avg/day   5090  twelve/article    2.8 (rounded 3)  median sign/article 0.19  signs above it 0
+BNB_(cryptocurrency)                 status 404 (no data)
+Cardano_(blockchain_platform)        days 30 avg/day     62  twelve/article  230.7 (rounded 231)  median sign/article 15.92  signs above it 12
+Tron_(blockchain)                    days 30 avg/day     93  twelve/article  153.8 (rounded 154)  median sign/article 10.61  signs above it 12
+USD_Coin                             days 30 avg/day     14  twelve/article 1021.7 (rounded 1022)  median sign/article 70.50  signs above it 12
+Litecoin                             days 30 avg/day    146  twelve/article   98.0 (rounded 98)  median sign/article 6.76  signs above it 12
+Monero                               days 30 avg/day    235  twelve/article   60.9 (rounded 61)  median sign/article 4.20  signs above it 12
+Pepe_(cryptocurrency)                days 1 avg/day      0  twelve/article 14304.0 (rounded 14304)  median sign/article 987.00  signs above it 12
+$Trump                               days 30 avg/day    430  twelve/article   33.3 (rounded 33)  median sign/article 2.30  signs above it 12
+Chainlink_(blockchain_oracle)        days 30 avg/day     37  twelve/article  386.6 (rounded 387)  median sign/article 26.68  signs above it 12
+Avalanche_(blockchain_platform)      days 30 avg/day     53  twelve/article  269.9 (rounded 270)  median sign/article 18.62  signs above it 12
+Polkadot_(blockchain_platform)       days 30 avg/day     32  twelve/article  447.0 (rounded 447)  median sign/article 30.84  signs above it 12
+Hyperliquid                          status 404 (no data)
+Pi_Network                           days 1 avg/day      0  twelve/article 14304.0 (rounded 14304)  median sign/article 987.00  signs above it 12
+Bitcoin_Cash                         days 30 avg/day     65  twelve/article  220.1 (rounded 220)  median sign/article 15.18  signs above it 12
+Toncoin                              days 30 avg/day      1  twelve/article 14304.0 (rounded 14304)  median sign/article 987.00  signs above it 12
+Stablecoin                           days 30 avg/day    474  twelve/article   30.2 (rounded 30)  median sign/article 2.08  signs above it 12
+Memecoin                             days 30 avg/day     18  twelve/article  794.7 (rounded 795)  median sign/article 54.83  signs above it 12
+Satoshi_Nakamoto                     days 30 avg/day   2543  twelve/article    5.6 (rounded 6)  median sign/article 0.39  signs above it 0

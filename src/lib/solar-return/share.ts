@@ -5,7 +5,7 @@
  * birth date, a time, a place or a name. Each key once, each value from a
  * fixed vocabulary. Pure.
  */
-import { SHARE_SIGNS, type ShareRef, type ShareSign } from '../share-results.js';
+import { readShareRef, SHARE_SIGNS, type ShareRef, type ShareSign } from '../share-results.js';
 
 export const SOLAR_RETURN_SHARE_PATH = '/share/solar-return/';
 export const SOLAR_RETURN_SHARE_IMAGE_PATH = '/api/og/solar-return-image';
@@ -36,6 +36,7 @@ export function parseSolarReturnShare(params: URLSearchParams): SolarReturnShare
   }
   const [sun, year, rising, jupiter, ref] = ['s', 'y', 'r', 'j', 'ref'].map((key) => fields.get(key));
   if (!isSign(sun) || !isSign(jupiter) || (rising !== undefined && !isSign(rising)) || !year || !/^(?:18|19|20|21)\d{2}$/u.test(year)) return null;
-  if (ref !== undefined && ref !== 'chatgpt' && ref !== 'assistant') return null;
-  return { sun, year: Number(year), rising: rising ?? null, jupiter, ref: (ref ?? null) as ShareRef | null };
+  const shareRef = readShareRef(ref);
+  if (shareRef === undefined) return null;
+  return { sun, year: Number(year), rising: rising ?? null, jupiter, ref: shareRef };
 }

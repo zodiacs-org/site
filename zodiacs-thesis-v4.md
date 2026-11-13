@@ -15,7 +15,7 @@ EDITORIAL SOURCE:
 
 Your sign already shows up in birthday wishes, dating profiles and group chats. Now it is also a coin you can own, give and prove is yours.
 
-*Published 1 Aug 2026 · Updated 10 Nov 2026 · Evidence checked 31 Jul 2026*
+*Updated 13 Nov 2026 · Evidence checked 10 Nov 2026*
 
 ---
 
@@ -41,7 +41,7 @@ These twelve are in their third year, and we think the reason is their subject. 
 
 You do with one what people already do with their sign. Your friend is a Leo, so on her birthday you send her Leo with a note only she would understand, and it arrives in her own wallet, where no app can take it back. A couple swaps, so that he holds her Cancer and she holds his Taurus, which is a small gesture in the way that wearing someone’s initial is a small gesture. Or you keep your own, as people have always worn their sign on a necklace. A picture of a lion can be copied forever, but a Leo that leaves your wallet has left it. And because our list of the twelve addresses is public, any app can recognise the listed Leo without asking us, so a dating profile could show it and a horoscope app could greet it.
 
-Anyone can launch another Leo this afternoon, and the copy will have the name without the history. Each of these coins has had one published address since [the day it was made](/disclosure/#origin), and nobody can make more of them, including us. They have also lived through things a new coin has not. In [February 2025](https://x.com/stoolpresidente/status/1891528769770279114) Dave Portnoy bought our Libra by mistake while trying to buy a different coin of the same name, and he told his followers so in a post that has now been seen about three million times.
+Anyone can launch another Leo this afternoon, and the copy will have the name without the history. Each of these coins still has the Solana address it was [created with on 5 July 2024](/disclosure/#origin), and nobody can make more of them, including us. They have also lived through things a new coin has not. In [February 2025](https://x.com/stoolpresidente/status/1891528769770279114) Dave Portnoy bought our Libra by mistake while trying to buy a different coin of the same name, and he told his followers so in a post that has now been seen about three million times.
 
 > Anybody wanna buy some fake Libra? Warning. This is a meme coin. I bought it by accident. It will be volatile. It will eventually go to zero.
 >
@@ -51,11 +51,11 @@ We kept that post on our record. We kept the critics too, including the ones who
 
 [FIGURE fig-provenance. "The public past includes the awkward parts." Four dated cards: the twelve are created, concentration is challenged, Portnoy buys by mistake, "dead bag" criticism.]
 
-More than two years on, about 2,800 wallets hold Leo alone, and the community that formed around these coins in 2024 is still building. This year it built [Zodiacs.org](/), a free astrology site with birth charts, compatibility readings and daily horoscopes in five languages, and plugins that bring it into [ChatGPT and Claude](/apps/). People come for the astrology. The coins sit one labelled link away, for the ones who want to own their sign as well as read about it.
+More than two years on, about 2,800 wallets hold Leo alone. [Zodiacs.org](/) is a free astrology site with birth charts, compatibility readings and daily horoscopes in five languages, and plugins that bring it into [ChatGPT and Claude](/apps/). People come for the astrology. The coins sit one labelled link away, for the ones who want to own their sign as well as read about it.
 
 A memecoin can go to zero, and these can too. Portnoy said so in the post above. Trading in them is thin, and on a slow day the total traded in one of them is less than the price of a lunch. The ten largest accounts hold between 23% and 31% of each coin, a figure that includes the trading pool. No outside app has adopted them yet. We publish all of it, with the numbers, on [a scoreboard](#the-candidacy) below this essay, because we would rather you checked our claim than took it on trust.
 
-The zodiac finds something new for people to do in every medium it reaches, and a public ledger lets them hold their sign. We expect people and apps to settle on a single set of twelve coins, as they settled long ago on a single set of twelve names, and we have spent more than two years making the case that it should be this set.
+The zodiac finds something new for people to do in every medium it reaches, and a public ledger lets them hold their sign. We expect people and apps to settle on a single set of twelve coins, as they settled long ago on a single set of twelve names, and we are making the case that it should be this set.
 
 ---
 
