@@ -49,9 +49,15 @@ the save and the save RPC stores the row under (migration
 saved result, so it gives back nothing about it; a saved week's result is worked
 out from the birth date, so a digest of it could be used to test guessed dates.
 Until 13 November 2026 the value was the first 16 hex characters of a SHA-256 of
-the result; that migration rewrote every stored link to the row id, a check now
-keeps any `saved=` value in a stored link equal to its row's id, and an old
-16 hex value opens only the plain profile page. Every page such a link names
+the result. That migration rewrote those old values, and only those (exactly 16
+lowercase hex digits), to the row id in the stored link and in the stored
+record's copy of it, rows of accounts being deleted included; a row that a UUID
+would push past the 2,048 character link limit or the 16,384 byte record limit
+is left whole and counted by `docs/platform/accounts/saved-link-ids-verify.sql`.
+A check (`saved_pages_no_digest_link`) refuses any new 16 hex `saved=` value,
+and an old 16 hex value opens only the plain profile page. The save RPC takes
+the account owner lock before the account's saved pages lock, the order every
+saved_pages insert uses. Every page such a link names
 sends it on to `/profile/#saved=<id>` before anything paints
 (`src/lib/profile/saved-result-link.ts`), where the saved list opens that result
 for the signed-in person and asks anyone signed out to sign in. The summary and
