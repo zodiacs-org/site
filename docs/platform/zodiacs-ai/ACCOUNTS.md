@@ -60,7 +60,16 @@ rewritten and the record's copy keeps the old value. Both cases are counted by
 `docs/platform/accounts/saved-link-ids-verify.sql` (`digest_href_too_long`,
 `digest_detail_too_long`).
 A check (`saved_pages_no_digest_link`) refuses any new 16 hex `saved=` value,
-and an old 16 hex value opens only the plain profile page. The save RPC takes
+and an old 16 hex value opens only the plain profile page.
+The migration runs on a database without this accounts layer too (production on
+13 November 2026, where saved_pages has no `source`, `summary` or `detail` and
+there is no save RPC): there it leaves the save RPC to this layer's own
+migration, rewrites links only, and the check covers the link only. When this
+layer reaches such a database, its migration (and the retention migration
+`20261113090000`) puts back a save RPC without row ids, so apply
+`20261113091500_saved_link_row_ids.sql` again right after them; the verify file's
+`accounts_function_row_ids` and `check_covers_detail` show whether that is still
+needed. The save RPC takes
 the account owner lock before the account's saved pages lock, the order every
 saved_pages insert uses. Every page such a link names
 sends it on to `/profile/#saved=<id>` before anything paints
