@@ -148,11 +148,14 @@ export function mineFigure() {
   return `<figure class="zfig thesis-plate thesis-mine" id="fig-mine" data-motion="mine">
             <figcaption class="zfig-head">Nobody has to explain the twelve.</figcaption>
             <div class="mine-film">
-              <video class="thesis-film" controls muted playsinline preload="none" width="1280" height="720" poster="${FILM.poster}" aria-describedby="thesis-film-desc">
+              <div class="mine-film__stage">
+              <video class="thesis-film" muted playsinline preload="none" width="1280" height="720" data-poster="${FILM.poster}" aria-describedby="thesis-film-desc">
                 <source src="${FILM.av1}" type='video/mp4; codecs="av01.0.05M.08"'>
                 <source src="${FILM.h264}" type="video/mp4">
               </video>
-              <p class="mine-film__desc" id="thesis-film-desc">Watch: 32 seconds, no sound. Why the zodiac lasts, one sourced fact at a time: the signs are about 2,400 years old, nine in ten people can pick out their own, three in ten Americans consult astrology every year, and the twelve sign articles on Wikipedia have been read 156 million times since 2016. It ends on the twelve signs and asks which one is yours.</p>
+              <button type="button" class="film-play" aria-label="Play the film, 32 seconds, no sound"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="23" fill="rgba(11,13,18,0.72)" stroke="rgba(238,241,247,0.55)"/><path d="M19 15.5v17l14-8.5z" fill="#EEF1F7"/></svg><span>Play the film</span></button>
+              </div>
+              <p class="mine-film__desc" id="thesis-film-desc">Watch: 32 seconds, no sound. Why the zodiac lasts, one sourced fact at a time: the signs are about 2,400 years old, nine in ten people can pick out their own, three in ten Americans consult astrology every year, and the twelve sign articles on Wikipedia have been read 156 million times since 2016. It ends on the twelve signs and asks which one is yours. <a class="mine-film__file" href="${FILM.h264}">Open the film</a>.</p>
             </div>
             <div class="mine-panels">
               <div class="mine-panel">
@@ -190,13 +193,23 @@ function peopleSvg(data, { small, label }) {
   let body = '';
   groups.forEach((g, gi) => {
     const [left, gtop] = spots[gi];
+    // Dots of one colour share one path (a circle is two arcs), so a grid of
+    // one hundred costs a few elements instead of a hundred. Keeps the page's
+    // element count, and with it the first paint, close to edition Nº 10.
+    // A dot is a zero-length round-capped stroke, a ring a stroked circle.
+    const dot = (cx, cy) => `M${cx} ${cy}h0`;
+    const ring = (cx, cy, rr) => `M${(cx - rr).toFixed(1)} ${cy}a${rr} ${rr} 0 1 0 ${(rr * 2).toFixed(1)} 0a${rr} ${rr} 0 1 0 ${(-rr * 2).toFixed(1)} 0`;
+    const filled = new Map();
+    let off = '';
     for (let i = 0; i < 100; i++) {
       const cx = left + (i % 10) * step + step / 2;
       const cy = gtop + Math.floor(i / 10) * step + step / 2;
-      body += i < g.n
-        ? `<circle class="pd" style="--i:${i + gi * 30}" cx="${cx}" cy="${cy}" r="${r}" fill="${g.hue(i)}"/>`
-        : `<circle class="pd pd--off" style="--i:${i + gi * 30}" cx="${cx}" cy="${cy}" r="${(r - 0.6).toFixed(1)}" fill="none" stroke="rgba(198,204,218,0.34)" stroke-width="1.1"/>`;
+      if (i < g.n) { const hue = g.hue(i); filled.set(hue, (filled.get(hue) ?? '') + dot(cx, cy)); }
+      else off += ring(cx, cy, +(r - 0.6).toFixed(1));
     }
+    let order = 0;
+    for (const [hue, d] of filled) body += `<path class="pd" style="--i:${gi * 30 + order++ * 6}" d="${d}" stroke="${hue}" stroke-width="${r * 2}" stroke-linecap="round"/>`;
+    if (off) body += `<path class="pd pd--off" style="--i:${gi * 30 + 70}" d="${off}" fill="none" stroke="rgba(198,204,218,0.34)" stroke-width="1.1"/>`;
     const statY = gtop + grid + (small ? 38 : 56);
     body += `<text x="${left}" y="${statY}" class="stat-num stat-num--${g.cls}">${g.n}%</text>`;
     body += `<text x="${left}" y="${statY + (small ? 17 : 26)}" class="stat-lab">${esc(g.line1)}</text>`;
@@ -477,8 +490,16 @@ export function motionBlock() {
     .thesis-mine .zfig-cap, .thesis-shelf .zfig-cap, .thesis-calendar .zfig-cap { max-width:68ch; font-family:'Instrument Sans',system-ui,sans-serif; font-style:normal; font-size:14px; line-height:1.65; color:var(--ink-2); }
     .thesis-mine .zfig-src, .thesis-shelf .zfig-src, .thesis-calendar .zfig-src { max-width:none; font-size:11px; line-height:1.6; color:var(--ink-dim); }
     .mine-film { margin:0 0 16px; }
+    .mine-film__stage { position:relative; }
+    .film-play { display:none; position:absolute; inset:0; margin:auto; width:max-content; height:max-content; align-items:center; gap:10px; padding:0; border:0; background:none; color:var(--ink); font:500 14px/1 'Instrument Sans',system-ui,sans-serif; cursor:pointer; }
+    .film-play svg { width:56px; height:56px; }
+    .film-play span { background:rgba(11,13,18,0.78); padding:8px 12px; border-radius:999px; }
+    .film-play:focus-visible { outline:2px solid var(--ink); outline-offset:6px; border-radius:30px; }
+    html.has-js .film-play { display:flex; }
+    html.has-js .is-playing .film-play { display:none; }
     .thesis-mine video.thesis-film { display:block; width:100%; height:auto; aspect-ratio:16/9; border-radius:10px; background:#0B0D12; }
     .mine-film__desc { margin:8px 0 0; font-family:'Instrument Sans',system-ui,sans-serif; font-size:12px; line-height:1.55; color:var(--ink-dim); }
+    .mine-film__file { color:var(--ink-2); text-decoration:underline; text-underline-offset:2px; }
     .mine-panels { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
     .mine-panel { border:1px solid var(--hair); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; }
     .thesis-mine svg.mine-coins { display:block; width:100%; height:auto; }
@@ -514,7 +535,31 @@ export function motionBlock() {
       .is-armed .cal-pass--again .cal-draw { transition-duration:.7s; }
     }`;
   const js = `
-(function () {
+// Armed after load, so none of this work delays the first paint.
+(function (go) { if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true }); })(function () {
+  // The film's poster is set only after the page has loaded and the reader
+  // is near it, so it never competes with the hero for the first paint.
+  var film = document.querySelector('video.thesis-film[data-poster]');
+  // The poster arrives as the reader nears the film, and the player's own
+  // controls only when they press play: drawn at parse time either one
+  // pushed the hero's first paint past the Lighthouse gate (LCP 2.5 s).
+  function posterNow() { if (!film.poster) film.poster = film.getAttribute('data-poster'); }
+  var play = film && film.parentNode.querySelector('.film-play');
+  if (play) play.addEventListener('click', function () {
+    posterNow(); film.controls = true; film.parentNode.classList.add('is-playing');
+    var started = film.play(); if (started && started.catch) started.catch(function () {});
+    film.focus();
+  });
+  function armPoster() {
+    if (!('IntersectionObserver' in window)) return posterNow();
+    var fo = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { fo.disconnect(); posterNow(); }
+    }, { rootMargin: '100px 0px' });
+    fo.observe(film);
+  }
+  if (film) {
+    if (document.readyState === 'complete') armPoster(); else window.addEventListener('load', armPoster, { once: true });
+  }
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var animate = !reduce && ('IntersectionObserver' in window);
   function below(el) { return el.getBoundingClientRect().top > window.innerHeight * 0.9; }
@@ -606,9 +651,10 @@ export function motionBlock() {
     timers.push(setTimeout(function () { run(3, 1500); }, 3900));
   });
   var rt; window.addEventListener('resize', function () { if (!canvas) return; clearTimeout(rt); rt = setTimeout(function () { setup(); draw(level); }, 120); });
-})();`;
+});`;
   const pick = `
-(function () {
+// Armed after load, so none of this work delays the first paint.
+(function (go) { if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true }); })(function () {
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var animate = !reduce && ('IntersectionObserver' in window);
   function below(el) { return el.getBoundingClientRect().top > window.innerHeight * 0.9; }
@@ -683,7 +729,7 @@ export function motionBlock() {
       if (!done) requestAnimationFrame(tick); else shelf.classList.add('is-twelve');
     })(t0);
   });
-})();`;
+});`;
   return `<style data-thesis-figures>${css}\n  </style>\n  <script data-thesis-figures>${js}${pick}\n  </script>`;
 }
 

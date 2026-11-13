@@ -873,7 +873,10 @@ describe('thesis pass bar', () => {
   it('13. the film loads nothing before play, and the reader\'s pick is never stored', () => {
     const mine = sliceElement(HTML, /<figure\b[^>]*\bid=["']fig-mine["'][^>]*>/i, 'figure');
     const video = mine.match(/<video\b[^>]*>/i)?.[0] ?? '';
-    for (const attr of ['controls', 'muted', 'playsinline', 'preload="none"']) expect(video).toContain(attr);
+    for (const attr of ['muted', 'playsinline', 'preload="none"']) expect(video).toContain(attr);
+    // Controls are switched on when the reader presses play (Lighthouse LCP gate).
+    expect(HTML).toContain('film.controls = true');
+    expect(HTML).toContain('class="film-play"');
     for (const source of [...mine.matchAll(/<source\b[^>]*src=["']([^"']+)["']/gi)].map((m) => m[1])) {
       expect(existsSync(resolve(ROOT, `public${source}`)), source).toBe(true);
     }

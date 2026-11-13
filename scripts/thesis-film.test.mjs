@@ -84,10 +84,17 @@ describe('the thesis film, "Why the zodiac lasts"', () => {
   it('sits on the page without loading before play', async () => {
     const page = await readFile(resolve(root, 'public/thesis/index.html'), 'utf8');
     const video = page.match(/<video class="thesis-film"[^>]*>/u)?.[0] ?? '';
-    for (const attr of ['controls', 'muted', 'playsinline', 'preload="none"', 'width="1280"', 'height="720"']) expect(video).toContain(attr);
+    for (const attr of ['muted', 'playsinline', 'preload="none"', 'width="1280"', 'height="720"']) expect(video).toContain(attr);
+    // Controls are switched on when the reader presses play, and a plain link opens the film without script.
+    expect(page).toContain('film.controls = true');
+    expect(page).toContain('class="film-play"');
+    expect(page).toContain(`<a class="mine-film__file" href="${FILM.dir}/${FILM.wide.h264}">Open the film</a>`);
     expect(page).toContain(`${FILM.dir}/${FILM.wide.av1}`);
     expect(page).toContain(`${FILM.dir}/${FILM.wide.h264}`);
-    expect(video).toContain(`${FILM.dir}/${FILM.poster.webp}`);
+    // The poster is set from data-poster after load, so it never competes with
+    // the hero for the first paint (Lighthouse LCP on /thesis/).
+    expect(video).toContain(`data-poster="${FILM.dir}/${FILM.poster.webp}"`);
+    expect(video).not.toMatch(/\sposter=/u);
     expect(page).not.toContain('two-conversations');
   });
 });
