@@ -210,11 +210,35 @@ const SAVED_PAGE_ROWS = [{
   saved_at: '2026-10-17T00:00:00.000Z',
 }];
 
+// A payload living_chart_payload_valid accepts (synthetic, no real person).
+const LIVING_MOMENT_PAYLOAD = {
+  schema: 'zodiacs.living-chart.cloud-moment.v1',
+  primaryChartId: '99999999-9999-4999-8999-999999999991',
+  occurredAt: '2026-08-18T09:00:00.000Z',
+  timePrecision: 'exact',
+  category: 'relationships',
+  note: 'A useful conversation.',
+  forecast: {
+    schema: 'zodiacs.living-chart.today-forecast.v1',
+    editionDate: '2026-08-18',
+    chartId: '99999999-9999-4999-8999-999999999991',
+    source: 'personalized',
+    generatorVersion: 'today-1.0.0',
+    capturedAt: '2026-08-18T08:00:00.000Z',
+    lines: [{
+      id: 'transit:mars-moon',
+      text: 'Make room before answering too quickly.',
+      receipt: 'Mars 14.2 degrees Cancer square natal Moon.',
+    }],
+  },
+  reflectionQuestionId: 'reflection:notice',
+};
+
 const LIVING_MOMENT_ROWS = [{
   moment_id: '88888888-8888-4888-8888-888888888881',
   consent_epoch: 1,
   revision: 2,
-  payload: { schema: 'zodiacs.living-chart.cloud-moment.v1', note: 'A useful conversation.' },
+  payload: LIVING_MOMENT_PAYLOAD,
   created_at: '2026-08-20T00:00:00.000Z',
   updated_at: '2026-08-21T00:00:00.000Z',
   deleted_at: null,
@@ -313,7 +337,7 @@ describe('account lifecycle API foundation', () => {
       momentId: '88888888-8888-4888-8888-888888888881',
       consentEpoch: 1,
       revision: 2,
-      payload: { schema: 'zodiacs.living-chart.cloud-moment.v1', note: 'A useful conversation.' },
+      payload: LIVING_MOMENT_PAYLOAD,
       createdAt: '2026-08-20T00:00:00.000Z',
       updatedAt: '2026-08-21T00:00:00.000Z',
       deletedAt: null,
@@ -551,6 +575,17 @@ describe('account lifecycle API foundation', () => {
       [[{ ...site, summary: 'site rows carry no summary' }], []],
       [[{ ...assistant, detail: null }], []],
       [[{ ...site, href: 'https://example.com/' }], []],
+      [[{ ...site, kind: 'week', href: '/horoscopes/aries/' }], []],
+      [[{ ...site, href: '/compatibility/aries-taurus/' }], []],
+      [[{ ...assistant, detail: {} }], []],
+      [[{ ...assistant, detail: { schema: 'zodiacs.assistant-save.v2' } }], []],
+      [[{ ...assistant, detail: { ...assistant.detail, data: 'x'.repeat(16_400) } }], []],
+      [[{ ...assistant, summary: 'A <b>bold</b> week.' }], []],
+      [[{ ...assistant, summary: '' }], []],
+      [[], [{ ...live, payload: {} }]],
+      [[], [{ ...live, payload: { schema: 'zodiacs.living-chart.cloud-moment.v1', note: 'A useful conversation.' } }]],
+      [[], [{ ...live, payload: { ...LIVING_MOMENT_PAYLOAD, extra: true } }]],
+      [[], [{ ...live, payload: { ...LIVING_MOMENT_PAYLOAD, forecast: { ...LIVING_MOMENT_PAYLOAD.forecast, lines: [] } } }]],
       [[], [{ ...live, payload: null }]],
       [[], [{ ...deleted, payload: { note: 'kept after delete' } }]],
       [[], [{ ...live, user_id: USER_ID }]],

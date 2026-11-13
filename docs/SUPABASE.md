@@ -295,6 +295,10 @@ Editor, and update this table in the same change.
   included), then remove completed expired receipts. Check it with
   `select jobname, schedule, active from cron.job where jobname = 'account-v2-retention';`
   and its runs in `cron.job_run_details`. The GitHub workflow
-  `account-deletion-receipt-cleanup.yml` stays as a backup.
+  `account-deletion-receipt-cleanup.yml` stays as a backup. The same
+  migration also replaces `public.account_v2_prepare_deletion` (its recovery
+  rotation keeps an expired, incomplete receipt of a deleting account and
+  its provider record for the reaper) and `public.zodiacs_accounts_v1` (the
+  assistant save takes the account owner lock before it replaces a row).
 - **Unused-index cleanup** (live performance advisor, 7 INFO entries) can
   wait for real traffic before pruning.
